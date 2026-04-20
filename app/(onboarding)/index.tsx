@@ -33,6 +33,7 @@ import { useSettings } from '../../src/providers/SettingsProvider';
 import { useTheme } from '../../src/providers/ThemeProvider';
 import { BackupService } from '../../src/features/backup/api/backup.service';
 import { File } from 'expo-file-system';
+import { NotificationService } from '../../src/services/notification.service';
 
 export default function OnboardingScreen() {
   const router = useRouter();
@@ -62,6 +63,9 @@ export default function OnboardingScreen() {
     hasProfile: boolean;
   } | null>(null);
   const [isImporting, setIsImporting] = useState(false);
+
+  // Reminder activation dialog state
+  const [showReminderDialog, setShowReminderDialog] = useState(false);
 
   const methods = useForm<OnboardingFormValues>({
     mode: 'onChange',
@@ -108,11 +112,11 @@ export default function OnboardingScreen() {
     try {
       setIsImporting(true);
       setShowRestoreDialog(false);
-      
+
       const data = await BackupService.readBackupFile(selectedBackupFile);
       await BackupService.restoreBackup(data);
       await completeOnboarding();
-      
+
       Alert.alert(
         'Restore Complete',
         'Your data has been restored successfully. Welcome back!',
@@ -134,6 +138,29 @@ export default function OnboardingScreen() {
       setBackupSummary(null);
     }
   }, [selectedBackupFile, completeOnboarding, router]);
+
+  const handleEnableReminders = useCallback(async () => {
+    setShowReminderDialog(false);
+
+    const granted = await NotificationService.requestPermissions();
+
+    if (granted) {
+      await updateProfile({ reminderEnabled: true });
+      // Notification will be scheduled automatically by SettingsProvider
+    } else {
+      Alert.alert(
+        'Permission Required',
+        'To receive daily reminders, please enable notifications for Luno in your device settings. You can always enable this later in the app settings.'
+      );
+    }
+
+    router.replace('/(main)');
+  }, [updateProfile, router]);
+
+  const handleSkipReminders = useCallback(() => {
+    setShowReminderDialog(false);
+    router.replace('/(main)');
+  }, [router]);
 
   const validateStep = async () => {
     if (currentStep.id === 'profile') {
@@ -239,7 +266,8 @@ export default function OnboardingScreen() {
 
       await seedCategories();
       await completeOnboarding();
-      router.replace('/(main)');
+      // Show reminder activation dialog instead of immediately navigating
+      setShowReminderDialog(true);
     } catch {
       Alert.alert('Setup failed', 'Could not initialize your workspace. Please try again.');
     }
@@ -359,6 +387,17 @@ export default function OnboardingScreen() {
             : 'Are you sure you want to restore this backup?'
         }
         onConfirm={handleConfirmRestore}
+      />
+
+      <ConfirmDialog
+        visible={showReminderDialog}
+        onClose={handleSkipReminders}
+        title="Stay on Track 🔔"
+        confirmLabel="Enable Reminders"
+        cancelLabel="Not Now"
+        destructive={false}
+        message={`Get a gentle nudge at 8:00 PM to log your daily transactions and keep your finances up to date. You can change this anytime in Settings.`}
+        onConfirm={handleEnableReminders}
       />
     </SafeAreaView>
   );
