@@ -54,7 +54,8 @@
       "expo-font",
       "expo-localization",
       "expo-iap",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-system-ui"
     ],
     "experiments": {
       "typedRoutes": true,
