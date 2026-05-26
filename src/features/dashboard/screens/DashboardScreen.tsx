@@ -13,7 +13,6 @@ import { useSettings } from '../../../providers/SettingsProvider';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import type { Account } from '../../accounts/api/accounts';
-import { AccountFormModal } from '../../accounts/components/AccountFormModal';
 import { useAccounts, useDeleteAccount } from '../../accounts/hooks/accounts';
 import { useTransactions } from '../../transactions/hooks/transactions';
 import { usePremium } from '@/src/providers/PremiumProvider';
@@ -55,8 +54,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
   const { mutateAsync: deleteAccount } = useDeleteAccount();
 
-  const [showAccountForm, setShowAccountForm] = React.useState(false);
-  const [editingAccount, setEditingAccount] = React.useState<Account | undefined>(undefined);
   const [showAccountOptionsDialog, setShowAccountOptionsDialog] = React.useState(false);
   const [showDeleteAccountDialog, setShowDeleteAccountDialog] = React.useState(false);
   const [activeAccount, setActiveAccount] = React.useState<Account | undefined>(undefined);
@@ -142,13 +139,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   }, [router]);
 
   const openAccountForm = useCallback(() => {
-    setEditingAccount(undefined);
-    setShowAccountForm(true);
-  }, []);
-
-  const closeAccountForm = useCallback(() => {
-    setShowAccountForm(false);
-  }, []);
+    router.push('/(main)/accounts/form');
+  }, [router]);
 
   const closeOptionsDialog = useCallback(() => {
     setShowAccountOptionsDialog(false);
@@ -172,8 +164,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         label: 'Edit account',
         icon: 'create-outline' as const,
         onPress: () => {
-          setEditingAccount(activeAccount);
-          setShowAccountForm(true);
+          router.push(`/(main)/accounts/form?id=${activeAccount.id}`);
         },
       },
       {
@@ -184,7 +175,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         onPress: () => setShowDeleteAccountDialog(true),
       },
     ];
-  }, [activeAccount]);
+  }, [activeAccount, router]);
 
   if (txLoading || accountsLoading) {
     return (
@@ -438,12 +429,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       <TouchableOpacity style={styles.fab} onPress={navigateToCreateTransaction} activeOpacity={0.9}>
         <Ionicons name="add" size={28} color={colors.background} />
       </TouchableOpacity>
-
-      <AccountFormModal
-        visible={showAccountForm}
-        onClose={closeAccountForm}
-        account={editingAccount}
-      />
 
       <OptionsDialog
         visible={showAccountOptionsDialog}

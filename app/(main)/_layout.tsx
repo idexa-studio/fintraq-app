@@ -17,6 +17,8 @@ export default function StackLayout() {
         <Stack.Screen name="stats" />
         <Stack.Screen name="categories" />
         <Stack.Screen name="settings" />
+        <Stack.Screen name="accounts/form" />
+        <Stack.Screen name="categories/form" />
       </Stack>
     </ErrorBoundary>
   );

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { resolveIcon } from '../../../utils/icons';
-import React, { useMemo, useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
@@ -15,162 +15,83 @@ interface CategoryCardProps {
 
 export const CategoryCard = React.memo(function CategoryCard({
   item,
-  index,
   onPress,
   onLongPress,
 }: CategoryCardProps) {
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const catColor = useMemo(() =>
-    item.color ? colorNumberToHex(item.color) : colors.primary,
-    [item.color, colors.primary]
+
+  const catColor = useMemo(
+    () => (item.color ? colorNumberToHex(item.color) : colors.primary),
+    [item.color, colors.primary],
   );
 
-  const handlePress = useCallback(() => {
-    onPress(item);
-  }, [onPress, item]);
-
-  const handleLongPress = useCallback(() => {
-    onLongPress(item);
-  }, [onLongPress, item]);
-
-  const cardStyle = useMemo(() => [
-    styles.categoryCard,
-    index % 2 === 0 ? styles.categoryCardLeft : styles.categoryCardRight,
-  ], [styles, index]);
+  const handlePress = useCallback(() => onPress(item), [onPress, item]);
+  const handleLongPress = useCallback(() => onLongPress(item), [onLongPress, item]);
 
   return (
     <TouchableOpacity
-      style={cardStyle}
+      style={styles.row}
       onPress={handlePress}
       onLongPress={handleLongPress}
       delayLongPress={280}
-      activeOpacity={0.92}
+      activeOpacity={0.75}
     >
-      <View style={[styles.cardGlow, { backgroundColor: catColor + '30' }]} />
+      <View style={[styles.accent, { backgroundColor: catColor }]} />
 
-      <View style={styles.cardTopRow}>
-        <View style={[styles.categoryIconBox, { backgroundColor: catColor + '22' }]}>
-          <Ionicons name={resolveIcon(item.icon, 'grid-outline')} size={20} color={catColor} />
-        </View>
-        <View style={[styles.typeBadge, item.type === 'DR' ? styles.typeBadgeDanger : styles.typeBadgeSuccess]}>
-          <Text style={[styles.typeBadgeText, item.type === 'DR' ? styles.typeBadgeTextDanger : styles.typeBadgeTextSuccess]}>
-            {item.type === 'DR' ? 'EXPENSE' : 'INCOME'}
-          </Text>
-        </View>
+      <View style={[styles.iconWrap, { backgroundColor: catColor + '1A' }]}>
+        <Ionicons
+          name={resolveIcon(item.icon, 'grid-outline')}
+          size={18}
+          color={catColor}
+        />
       </View>
 
-      <View style={styles.cardMainRow}>
-        <View style={styles.cardInfo}>
-          <Text style={styles.categoryName} numberOfLines={2}>{item.name}</Text>
-          <Text style={styles.categorySubtext}>Tap to edit</Text>
-        </View>
-      </View>
+      <Text style={styles.name} numberOfLines={1}>
+        {item.name}
+      </Text>
 
-      <View style={styles.cardFooter}>
-        <Text style={styles.cardFooterText}>Hold for options</Text>
-        <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
-      </View>
+      <Ionicons name="chevron-forward" size={14} color={colors.textMuted + '80'} />
     </TouchableOpacity>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
-  categoryCard: {
-    position: 'relative',
-    flex: 1,
-    backgroundColor: colors.surface,
-    borderRadius: radius('xl'),
-    padding: spacing('3.5'),
-    marginBottom: spacing('2.5'),
-    overflow: 'hidden',
-    minHeight: 156,
-  },
-  categoryCardLeft: {
-    marginRight: spacing('1.5'),
-  },
-  categoryCardRight: {
-    marginLeft: spacing('1.5'),
-  },
-  cardGlow: {
-    position: 'absolute',
-    right: -spacing('6'),
-    top: -spacing('6'),
-    width: 88,
-    height: 88,
-    borderRadius: radius('full'),
-  },
-  cardTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing('3'),
-  },
-  categoryIconBox: {
-    width: 42,
-    height: 42,
-    borderRadius: radius('md'),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  typeBadge: {
-    height: 22,
-    borderRadius: radius('full'),
-    paddingHorizontal: spacing('2'),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  typeBadgeDanger: {
-    backgroundColor: colors.danger + '18',
-  },
-  typeBadgeSuccess: {
-    backgroundColor: colors.success + '18',
-  },
-  typeBadgeText: {
-    fontFamily: typography.fonts.semibold,
-    fontSize: 9,
-    letterSpacing: 0.7,
-  },
-  typeBadgeTextDanger: {
-    color: colors.danger,
-  },
-  typeBadgeTextSuccess: {
-    color: colors.success,
-  },
-  cardMainRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  cardInfo: {
-    flex: 1,
-  },
-  categoryName: {
-    fontFamily: typography.fonts.headingRegular,
-    color: colors.text,
-    fontSize: 20,
-    letterSpacing: -0.5,
-    lineHeight: 23,
-  },
-  categorySubtext: {
-    fontFamily: typography.fonts.regular,
-    color: colors.textMuted,
-    fontSize: 11,
-    marginTop: spacing('1.5'),
-  },
-  cardFooter: {
-    marginTop: 'auto',
-    paddingTop: spacing('3'),
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  cardFooterText: {
-    fontFamily: typography.fonts.semibold,
-    fontSize: 10,
-    letterSpacing: 0.6,
-    textTransform: 'uppercase',
-    color: colors.textMuted,
-  },
-});
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
+  StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: radius('lg'),
+      paddingRight: spacing('4'),
+      paddingVertical: spacing('3'),
+      overflow: 'hidden',
+      gap: spacing('3'),
+      marginBottom: spacing('2'),
+    },
+    accent: {
+      width: 4,
+      height: '100%',
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      bottom: 0,
+      borderRadius: 2,
+    },
+    iconWrap: {
+      width: 40,
+      height: 40,
+      borderRadius: radius('md'),
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginLeft: spacing('4'),
+    },
+    name: {
+      flex: 1,
+      fontFamily: typography.fonts.semibold,
+      fontSize: 15,
+      color: colors.text,
+      letterSpacing: -0.2,
+    },
+  });
