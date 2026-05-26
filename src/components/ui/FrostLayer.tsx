@@ -1,22 +1,18 @@
-import { BlurView } from '@sbaiahmed1/react-native-blur';
+import { BlurView } from 'expo-blur';
 import React from 'react';
 import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
 
 type FrostLayerProps = {
-  /** Blur intensity — 80 for screen backdrops, 20–25 for panel frost */
+  /** Blur intensity 1–100. 80 for screen backdrops, 20–25 for panel frost. */
   intensity?: number;
-  /** Android solid-color fallback (blur not available on Android) */
+  /** Android solid-color fallback (expo-blur Android blur is experimental). */
   androidColor?: string;
-  /** Applied to both BlurView and Android fallback */
+  /** Applied to both BlurView and Android fallback. */
   borderRadius?: number;
   style?: ViewStyle;
 };
 
-/**
- * Platform-aware blur layer. Renders as absoluteFillObject.
- * iOS: real BlurView. Android: solid-color fallback.
- */
 export const FrostLayer = React.memo(function FrostLayer({
   intensity = 80,
   androidColor,
@@ -42,9 +38,10 @@ export const FrostLayer = React.memo(function FrostLayer({
 
   return (
     <BlurView
-      blurAmount={intensity}
-      blurType={isDark ? 'dark' : 'light'}
+      intensity={intensity}
+      tint={isDark ? 'dark' : 'light'}
       style={resolvedStyle}
+      pointerEvents="none"
     />
   );
 });
