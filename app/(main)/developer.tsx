@@ -4,6 +4,7 @@ import React from 'react';
 import { Alert, DevSettings, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurBackground } from '../../src/components/ui/BlurBackground';
+import { IconAvatar } from '../../src/components/ui/IconAvatar';
 import { toErrorMessage } from '../../src/utils/errors';
 import { ConfirmDialog } from '../../src/components/ui/ConfirmDialog';
 import { Header } from '../../src/components/ui/Header';
@@ -77,9 +78,7 @@ export default function DeveloperScreen() {
           style={styles.keyboardContent}
         >
           <View style={styles.lockContainer}>
-            <View style={[styles.lockIconBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-              <Ionicons name="lock-closed" size={32} color={colors.text} />
-            </View>
+            <IconAvatar icon="lock-closed" bg={colors.surface} color={colors.text} size={80} iconSize={32} style={{ marginBottom: 24 }} />
             
             <View style={styles.lockInfo}>
               <Text style={styles.lockTitle}>SYSTEM LOCK</Text>
@@ -120,9 +119,7 @@ export default function DeveloperScreen() {
           <Text style={styles.sectionLabel}>PRO ENTITLEMENTS</Text>
           <View style={styles.card}>
             <View style={styles.overrideHeader}>
-              <View style={[styles.iconBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Ionicons name="sparkles-outline" size={18} color={colors.primary} />
-              </View>
+              <IconAvatar icon="sparkles-outline" bg={colors.background} color={colors.primary} size={44} iconSize={18} style={{ marginRight: 14 }} />
               <View style={styles.textDetails}>
                 <Text style={styles.rowTitle}>Premium Bypass</Text>
                 <Text style={styles.rowSubtitle}>Force entitlement state for testing</Text>
@@ -161,9 +158,7 @@ export default function DeveloperScreen() {
           <Text style={styles.sectionLabel}>DATA UTILITIES</Text>
           <View style={styles.card}>
             <TouchableOpacity style={styles.row} onPress={() => setShowSeedConfirm(true)} activeOpacity={0.7}>
-              <View style={[styles.iconBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Ionicons name="flask-outline" size={18} color={colors.primary} />
-              </View>
+              <IconAvatar icon="flask-outline" bg={colors.background} color={colors.primary} size={44} iconSize={18} style={{ marginRight: 14 }} />
               <View style={styles.textDetails}>
                 <Text style={styles.rowTitle}>Seed Dummy Data</Text>
                 <Text style={styles.rowSubtitle}>Generate 12 months of test history</Text>
@@ -261,15 +256,6 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     paddingHorizontal: 40,
     paddingBottom: 80,
   },
-  lockIconBox: {
-    width: 80,
-    height: 80,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    marginBottom: 24,
-  },
   lockInfo: {
     alignItems: 'center',
     marginBottom: 32,
@@ -354,15 +340,6 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     fontFamily: TYPOGRAPHY.fonts.bold,
     fontSize: 10,
     letterSpacing: 0.5,
-  },
-  iconBox: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    marginRight: 14,
   },
   textDetails: {
     flex: 1,

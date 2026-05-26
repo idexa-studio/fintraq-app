@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { IconAvatar } from './IconAvatar';
 import { colorNumberToHex } from '../../utils/format';
 import { TransactionType } from '../../types';
 import { MoneyText } from './MoneyText';
@@ -81,14 +82,7 @@ export const TransactionRow = React.memo(function TransactionRow({
       activeOpacity={0.75}
       onPress={handlePress}
     >
-      <View
-        style={[
-          styles.iconBox,
-          { backgroundColor: categoryColor + '20' },
-        ]}
-      >
-        <Ionicons name={iconName} size={18} color={categoryColor} />
-      </View>
+      <IconAvatar icon={iconName} bg={categoryColor + '20'} color={categoryColor} size={40} iconSize={18} />
       <View style={styles.info}>
         <Text
           style={[styles.title, { color: colors.text }]}
@@ -133,13 +127,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     paddingVertical: spacing('3.5'),
     paddingHorizontal: spacing('3.5'),
     gap: spacing('2.5'),
-  },
-  iconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: radius('md'),
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   info: {
     flex: 1,

@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { IconAvatar } from '../../../components/ui/IconAvatar';
+import { resolveIcon } from '../../../utils/icons';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { formatCurrency } from '../../../utils/format';
 import { DashboardInsight } from '../api/insights';
@@ -38,9 +40,7 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
   return (
     <View style={[styles.card, { backgroundColor: colors.surface + '90', borderColor: colors.border }]}>
       <View style={styles.header}>
-        <View style={[styles.iconBox, { backgroundColor: status.bg }]}>
-          <Ionicons name={insight.icon} size={16} color={status.text} />
-        </View>
+        <IconAvatar icon={resolveIcon(insight.icon, 'analytics-outline')} bg={status.bg} color={status.text} size={28} iconSize={14} />
         <Text style={[styles.title, { color: colors.textMuted }]}>{insight.title.toUpperCase()}</Text>
       </View>
 
@@ -81,13 +81,6 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) => Styl
     alignItems: 'center',
     gap: spacing('2'),
     marginBottom: spacing('2'),
-  },
-  iconBox: {
-    width: 28,
-    height: 28,
-    borderRadius: radius('sm'),
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   title: {
     fontFamily: typography.fonts.bold,

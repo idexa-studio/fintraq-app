@@ -17,6 +17,7 @@ import { useAccounts, useDeleteAccount } from '../../accounts/hooks/accounts';
 import { useTransactions } from '../../transactions/hooks/transactions';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { BlurBackground } from '../../../components/ui/BlurBackground';
+import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { SectionHeader } from '../components/SectionHeader';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
@@ -324,9 +325,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
                 <View style={styles.accountCardInner}>
                   <View style={styles.accountCardTop}>
                     <View style={styles.accountCardLead}>
-                      <View style={[styles.accountIconBox, { backgroundColor: accColor + '20' }]}>
-                        <Ionicons name={resolveIconName(acc.icon, 'wallet-outline')} size={18} color={accColor} />
-                      </View>
+                      <IconAvatar icon={resolveIconName(acc.icon, 'wallet-outline')} bg={accColor + '20'} color={accColor} size={38} iconSize={18} />
                       <View style={styles.accountCardMeta}>
                         <Text style={styles.accountCardName} numberOfLines={1}>{acc.name}</Text>
                         <Text style={styles.accountCardHint}>
@@ -366,9 +365,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
             activeOpacity={0.88}
           >
             <View style={styles.accountPlaceholderInner}>
-              <View style={styles.accountPlaceholderIcon}>
-                <Ionicons name="add" size={22} color={colors.text} />
-              </View>
+              <IconAvatar icon="add" bg={colors.background + '88'} color={colors.text} size={44} iconSize={22} style={{ marginBottom: 14 }} />
               <Text style={styles.accountPlaceholderTitle}>New Account</Text>
               <Text style={styles.accountPlaceholderText}>Add another wallet, bank, or cash account.</Text>
             </View>
@@ -651,15 +648,6 @@ const createStyles = ({ colors, typography }: ThemeContextType, screenWidth: num
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-  accountPlaceholderIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: colors.background + '88',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 14,
-  },
   accountPlaceholderTitle: {
     fontFamily: typography.fonts.semibold,
     color: colors.text,
@@ -688,13 +676,6 @@ const createStyles = ({ colors, typography }: ThemeContextType, screenWidth: num
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-  },
-  accountIconBox: {
-    width: 38,
-    height: 38,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   accountCardMeta: {
     flex: 1,

@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurBackground } from '../../src/components/ui/BlurBackground';
+import { IconAvatar } from '../../src/components/ui/IconAvatar';
 import { ConfirmDialog } from '../../src/components/ui/ConfirmDialog';
 import { Header } from '../../src/components/ui/Header';
 import { OptionsDialog } from '../../src/components/ui/OptionsDialog';
@@ -56,7 +57,7 @@ const PreferenceRow = React.memo(function PreferenceRow({
   isLast,
   theme,
 }: RowProps) {
-  const { colors, spacing, radius, typography } = theme;
+  const { colors, spacing, typography } = theme;
   const iconColor = accentColor ?? (destructive ? colors.danger : colors.text);
   const labelColor = destructive ? colors.danger : colors.text;
 
@@ -70,20 +71,7 @@ const PreferenceRow = React.memo(function PreferenceRow({
         !isLast && { borderBottomWidth: 1, borderBottomColor: colors.border },
       ]}
     >
-      <View
-        style={[
-          rowStyles.iconBox,
-          {
-            width: 36,
-            height: 36,
-            borderRadius: radius('sm'),
-            backgroundColor: colors.background,
-            marginRight: spacing('3'),
-          },
-        ]}
-      >
-        <Ionicons name={icon} size={18} color={iconColor} />
-      </View>
+      <IconAvatar icon={icon} bg={colors.background} color={iconColor} size={36} iconSize={18} style={{ marginRight: spacing('3') }} />
 
       <View style={rowStyles.textBlock}>
         <Text style={[rowStyles.label, { fontFamily: typography.fonts.semibold, color: labelColor }]}>
@@ -110,7 +98,6 @@ const PreferenceRow = React.memo(function PreferenceRow({
 
 const rowStyles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
-  iconBox: { justifyContent: 'center', alignItems: 'center' },
   textBlock: { flex: 1 },
   label: { fontSize: 15 },
   subtitle: { fontSize: 12, marginTop: 2 },
@@ -130,7 +117,7 @@ const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: 
 
 export default function SettingsScreen() {
   const theme = useTheme();
-  const { colors, radius, overlay } = theme;
+  const { colors, overlay } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { isPremium, resetPremium } = usePremium();
@@ -239,9 +226,7 @@ export default function SettingsScreen() {
         {/* ── Profile panel ── */}
         <View style={styles.profilePanel}>
           <View style={styles.profileLeft}>
-            <View style={[styles.avatar, { backgroundColor: colors.primary + '18', borderRadius: radius('md') }]}>
-              <Ionicons name="person" size={22} color={colors.primary} />
-            </View>
+            <IconAvatar icon="person" bg={colors.primary + '18'} color={colors.primary} size={48} iconSize={22} />
             <View>
               <Text style={styles.profileName} numberOfLines={1}>
                 {profile.name || 'No name set'}
@@ -495,12 +480,6 @@ const createStyles = ({ colors, spacing, radius, typography, shadow }: ThemeCont
       alignItems: 'center',
       gap: spacing('3'),
       flex: 1,
-    },
-    avatar: {
-      width: 48,
-      height: 48,
-      justifyContent: 'center',
-      alignItems: 'center',
     },
     profileName: {
       fontFamily: typography.fonts.semibold,

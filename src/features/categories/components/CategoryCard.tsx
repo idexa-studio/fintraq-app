@@ -3,6 +3,7 @@ import { resolveIcon } from '../../../utils/icons';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { colorNumberToHex } from '../../../utils/format';
 import { Category } from '../api/categories';
 
@@ -40,13 +41,7 @@ export const CategoryCard = React.memo(function CategoryCard({
     >
       <View style={[styles.accent, { backgroundColor: catColor }]} />
 
-      <View style={[styles.iconWrap, { backgroundColor: catColor + '1A' }]}>
-        <Ionicons
-          name={resolveIcon(item.icon, 'grid-outline')}
-          size={18}
-          color={catColor}
-        />
-      </View>
+      <IconAvatar icon={resolveIcon(item.icon, 'grid-outline')} bg={catColor + '1A'} color={catColor} size={40} iconSize={18} />
 
       <Text style={styles.name} numberOfLines={1}>
         {item.name}
@@ -78,14 +73,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       top: 0,
       bottom: 0,
       borderRadius: 2,
-    },
-    iconWrap: {
-      width: 40,
-      height: 40,
-      borderRadius: radius('md'),
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginLeft: spacing('4'),
     },
     name: {
       flex: 1,

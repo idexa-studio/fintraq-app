@@ -4,6 +4,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurBackground } from '../../../src/components/ui/BlurBackground';
+import { IconAvatar } from '../../../src/components/ui/IconAvatar';
 import { ReportHeader } from '../../../src/features/reports/components/ReportHeader';
 import { StreakBadge } from '../../../src/features/reports/components/StreakBadge';
 import { useTheme } from '../../../src/providers/ThemeProvider';
@@ -73,9 +74,7 @@ export default function ReportsHub() {
                 onPress={() => router.push(type.route)}
                 activeOpacity={0.7}
               >
-                <View style={[styles.iconBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                  <Ionicons name={type.icon} size={18} color={colors.text} />
-                </View>
+                <IconAvatar icon={type.icon} bg={colors.background} color={colors.text} size={44} iconSize={18} style={{ marginRight: 14 }} />
                 <View style={styles.textDetails}>
                   <Text style={styles.rowTitle}>{type.title}</Text>
                   <Text style={styles.rowSubtitle} numberOfLines={1}>{type.subtitle}</Text>
@@ -164,15 +163,6 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
-  },
-  iconBox: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    marginRight: 14,
   },
   textDetails: {
     flex: 1,

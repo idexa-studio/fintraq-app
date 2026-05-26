@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
@@ -40,9 +41,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               onPress={() => handleSelect(acc.id)}
               activeOpacity={0.8}
             >
-              <View style={[styles.iconBox, { backgroundColor: accColor + '15' }]}>
-                <Ionicons name={resolveIcon(acc.icon, 'wallet-outline')} size={18} color={accColor} />
-              </View>
+              <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} bg={accColor + '15'} color={accColor} size={32} iconSize={18} />
               <View>
                 <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>{acc.name}</Text>
                 <Text style={[styles.currency, { color: colors.textMuted }]}>{acc.currency}</Text>
@@ -85,13 +84,6 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) => Styl
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing('2.5'),
-  },
-  iconBox: {
-    width: 32,
-    height: 32,
-    borderRadius: radius('sm'),
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   name: {
     fontFamily: typography.fonts.semibold,

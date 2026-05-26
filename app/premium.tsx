@@ -1,4 +1,5 @@
 import { BlurBackground } from '@/src/components/ui/BlurBackground';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { Header } from '@/src/components/ui/Header';
 import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
 import { usePremium } from '@/src/providers/PremiumProvider';
@@ -151,9 +152,7 @@ export default function PremiumScreen() {
           <View style={styles.settingsCard}>
             {FEATURES.map((feature, index) => (
               <View key={index} style={[styles.settingsRow, index === FEATURES.length - 1 && { borderBottomWidth: 0 }]}>
-                <View style={[styles.iconBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                  <Ionicons name={feature.icon} size={18} color={colors.text} />
-                </View>
+                <IconAvatar icon={feature.icon} bg={colors.background} color={colors.text} size={44} iconSize={18} style={{ marginRight: 14 }} />
                 <View style={styles.textDetails}>
                   <Text style={styles.rowTitle}>{feature.title}</Text>
                   <Text style={styles.rowSubtitle} numberOfLines={1}>{feature.description}</Text>
@@ -261,15 +260,6 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
-  },
-  iconBox: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    marginRight: 14,
   },
   textDetails: {
     flex: 1,

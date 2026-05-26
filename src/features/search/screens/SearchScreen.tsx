@@ -1,4 +1,5 @@
 import { BlurBackground } from '@/src/components/ui/BlurBackground';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { TransactionRow } from '@/src/components/ui/TransactionRow';
 import type { Account } from '@/src/features/accounts/api/accounts';
@@ -70,9 +71,7 @@ const AccountRow = React.memo(function AccountRow({
       onPress={handlePress}
       activeOpacity={0.75}
     >
-      <View style={[styles.iconBox, { backgroundColor: accentColor + '18' }]}>
-        <Ionicons name={resolveIcon(account.icon, 'wallet-outline')} size={18} color={accentColor} />
-      </View>
+      <IconAvatar icon={resolveIcon(account.icon, 'wallet-outline')} bg={accentColor + '18'} color={accentColor} size={40} iconSize={18} />
       <View style={styles.info}>
         <Text style={[styles.name, { color: colors.text }]}>{account.name}</Text>
         <Text style={[styles.meta, { color: colors.textMuted }]}>
@@ -92,20 +91,13 @@ const AccountRow = React.memo(function AccountRow({
   );
 });
 
-const createAccountRowStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
+const createAccountRowStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: spacing('3'),
     paddingHorizontal: spacing('4'),
     gap: spacing('3'),
-  },
-  iconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: radius('md'),
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   info: {
     flex: 1,
@@ -159,9 +151,7 @@ const CategoryRow = React.memo(function CategoryRow({
       onPress={handlePress}
       activeOpacity={0.75}
     >
-      <View style={[styles.iconBox, { backgroundColor: catColor + '18' }]}>
-        <Ionicons name={resolveIcon(category.icon, 'pricetag-outline')} size={18} color={catColor} />
-      </View>
+      <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} bg={catColor + '18'} color={catColor} size={40} iconSize={18} />
       <Text style={[styles.name, { color: colors.text }]}>{category.name}</Text>
       <View style={[
         styles.typeBadge,
@@ -186,13 +176,6 @@ const createCategoryRowStyles = ({ typography, spacing, radius }: ThemeContextTy
     paddingVertical: spacing('3'),
     paddingHorizontal: spacing('4'),
     gap: spacing('3'),
-  },
-  iconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: radius('md'),
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   name: {
     flex: 1,
@@ -375,9 +358,7 @@ export function SearchScreen() {
 
       {!isEnabled ? (
         <View style={styles.promptWrap}>
-          <View style={styles.promptIconBox}>
-            <Ionicons name="search" size={28} color={colors.textMuted} />
-          </View>
+          <IconAvatar icon="search" bg={colors.surface} color={colors.textMuted} size={68} iconSize={28} />
           <Text style={styles.promptTitle}>Find anything</Text>
           <Text style={styles.promptSubtitle}>
             Search across transactions, accounts{'\n'}and categories in one place.
@@ -385,9 +366,7 @@ export function SearchScreen() {
         </View>
       ) : noResults ? (
         <View style={styles.promptWrap}>
-          <View style={styles.promptIconBox}>
-            <Ionicons name="file-tray-outline" size={28} color={colors.textMuted} />
-          </View>
+          <IconAvatar icon="file-tray-outline" bg={colors.surface} color={colors.textMuted} size={68} iconSize={28} />
           <Text style={styles.promptTitle}>No results</Text>
           <Text style={styles.promptSubtitle}>
             {`Nothing matched "${debouncedQuery}".\nTry a different term.`}
@@ -469,15 +448,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       justifyContent: 'center',
       paddingBottom: 80,
       gap: spacing('3'),
-    },
-    promptIconBox: {
-      width: 68,
-      height: 68,
-      borderRadius: radius('2xl'),
-      backgroundColor: colors.surface,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: spacing('1'),
     },
     promptTitle: {
       fontFamily: typography.fonts.semibold,

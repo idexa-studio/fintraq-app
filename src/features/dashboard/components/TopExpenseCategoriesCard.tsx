@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
@@ -67,9 +68,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
                 <View style={styles.rankBadge}>
                   <Text style={styles.rankText}>{idx + 1}</Text>
                 </View>
-                <View style={[styles.iconWrap, { backgroundColor: accent + '22' }]}>
-                  <Ionicons name={resolveIcon(category.icon, 'pricetag-outline')} size={14} color={accent} />
-                </View>
+                <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} bg={accent + '22'} color={accent} size={28} iconSize={14} />
                 <View style={styles.meta}>
                   <Text style={styles.name} numberOfLines={1}>{category.name}</Text>
                   <View style={styles.barTrack}>
@@ -165,13 +164,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
       fontSize: 10,
-    },
-    iconWrap: {
-      width: 28,
-      height: 28,
-      borderRadius: radius('sm'),
-      justifyContent: 'center',
-      alignItems: 'center',
     },
     meta: {
       flex: 1,
