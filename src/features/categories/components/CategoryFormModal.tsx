@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import { resolveIcon } from '../../../utils/icons';
-import { BlurView } from '@sbaiahmed1/react-native-blur';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
@@ -15,10 +14,10 @@ import {
     View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { FrostLayer } from '../../../components/ui/FrostLayer';
 import { CATEGORY_COLORS, CATEGORY_ICONS } from '../../../constants/picker';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { ThemeColors } from '../../../theme/colors';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { colorNumberToHex } from '../../../utils/format';
 import { Category } from '../api/categories';
 import { useCreateCategory, useUpdateCategory } from '../hooks/categories';
 
@@ -33,9 +32,10 @@ export type CategoryFormModalProps = {
 };
 
 export function CategoryFormModal({ visible, onClose, category }: CategoryFormModalProps) {
-  const { colors, isDark } = useTheme();
+  const theme = useTheme();
+  const { colors, onAccent } = theme;
   const insets = useSafeAreaInsets();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const isEditing = !!category;
   const ModalWrapper = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 
@@ -65,7 +65,7 @@ export function CategoryFormModal({ visible, onClose, category }: CategoryFormMo
       });
       setType(category.type);
       setIcon(typeof category.icon === 'string' ? category.icon : CATEGORY_ICONS[0]);
-      setColorHex(`#${category.color.toString(16).padStart(6, '0').toUpperCase()}`);
+      setColorHex(colorNumberToHex(category.color).toUpperCase());
       return;
     }
 
@@ -110,18 +110,7 @@ export function CategoryFormModal({ visible, onClose, category }: CategoryFormMo
             <View style={[styles.glow, { bottom: -90, left: 40, width: 320, height: 320, backgroundColor: colors.primary + '1C' }]} />
           </View>
 
-          <BlurView
-            blurAmount={Platform.OS === 'ios' ? 80 : 96}
-            blurType={isDark ? 'dark' : 'light'}
-            style={StyleSheet.absoluteFillObject}
-          />
-
-          {Platform.OS === 'android' && (
-            <View
-              pointerEvents="none"
-              style={[StyleSheet.absoluteFillObject, { backgroundColor: colors.background + '60' }]}
-            />
-          )}
+          <FrostLayer intensity={80} androidColor={colors.background + '60'} />
 
           <View style={styles.handle} />
 
@@ -203,7 +192,7 @@ export function CategoryFormModal({ visible, onClose, category }: CategoryFormMo
                       icon === item && styles.iconCellActive,
                     ]}
                   >
-                    <Ionicons name={resolveIcon(item, 'grid-outline')} size={18} color={icon === item ? '#000100' : colors.text} />
+                    <Ionicons name={resolveIcon(item, 'grid-outline')} size={18} color={icon === item ? onAccent : colors.text} />
                   </TouchableOpacity>
                 ))}
               </View>
@@ -223,7 +212,7 @@ export function CategoryFormModal({ visible, onClose, category }: CategoryFormMo
                       colorHex === item && styles.colorCellActive,
                     ]}
                   >
-                    {colorHex === item ? <Ionicons name="checkmark" size={14} color="#000100" /> : null}
+                    {colorHex === item ? <Ionicons name="checkmark" size={14} color={onAccent} /> : null}
                   </TouchableOpacity>
                 ))}
               </View>
@@ -240,7 +229,7 @@ export function CategoryFormModal({ visible, onClose, category }: CategoryFormMo
               disabled={!isValid}
             >
               <Text style={styles.primaryBtnText}>{isEditing ? 'Save Category' : 'Create Category'}</Text>
-              <Ionicons name="arrow-forward" size={16} color="#FFF" />
+              <Ionicons name="arrow-forward" size={16} color={colors.background} />
             </TouchableOpacity>
           </View>
         </View>
@@ -249,11 +238,11 @@ export function CategoryFormModal({ visible, onClose, category }: CategoryFormMo
   );
 }
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, overlay, typography }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.55)',
+      backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
     },
     backdrop: {
@@ -290,13 +279,13 @@ const createStyles = (colors: ThemeColors) =>
       alignItems: 'flex-start',
     },
     title: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 30,
       color: colors.text,
       letterSpacing: -1,
     },
     subtitle: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 12,
       color: colors.textMuted,
       marginTop: 3,
@@ -331,14 +320,14 @@ const createStyles = (colors: ThemeColors) =>
       paddingBottom: 0,
     },
     label: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 13,
       color: colors.textMuted,
       letterSpacing: 0.1,
       marginBottom: 6,
     },
     answerInput: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 28,
       lineHeight: 34,
       color: colors.text,
@@ -375,7 +364,7 @@ const createStyles = (colors: ThemeColors) =>
       borderColor: colors.text,
     },
     typeTabText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.textMuted,
       letterSpacing: 0.4,
@@ -385,7 +374,7 @@ const createStyles = (colors: ThemeColors) =>
     },
     lockHint: {
       marginTop: 8,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 12,
       color: colors.textMuted,
     },
@@ -448,9 +437,9 @@ const createStyles = (colors: ThemeColors) =>
       opacity: 0.45,
     },
     primaryBtnText: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 14,
-      color: '#FFFFFF',
+      color: colors.background,
       letterSpacing: 0.3,
       marginRight: 10,
     },

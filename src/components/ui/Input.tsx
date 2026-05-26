@@ -1,9 +1,6 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
-import { spacing, COMPONENT_SIZES } from '../../theme/tokens';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 type InputSize = 'sm' | 'md' | 'lg';
 type InputVariant = 'default' | 'minimal' | 'filled';
@@ -37,10 +34,11 @@ export const Input = React.memo(function Input({
   placeholderTextColor,
   ...props 
 }: InputProps) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors, size), [colors, size]);
+  const theme = useTheme();
+  const { colors, sizes } = theme;
+  const styles = useMemo(() => createStyles(theme, size), [theme, size]);
 
-  const sizeConfig = COMPONENT_SIZES.input[size];
+  const sizeConfig = sizes.input[size];
 
   const containerStyle = useMemo(() => {
     switch (variant) {
@@ -103,7 +101,7 @@ export const Input = React.memo(function Input({
   );
 });
 
-const createStyles = (colors: ThemeColors, size: InputSize) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing }: ThemeContextType, size: InputSize) => StyleSheet.create({
   container: {
     marginBottom: 0,
   },
@@ -111,21 +109,21 @@ const createStyles = (colors: ThemeColors, size: InputSize) => StyleSheet.create
     fontSize: 14,
     color: colors.textMuted,
     marginBottom: spacing('2'),
-    fontFamily: TYPOGRAPHY.fonts.medium,
-    fontWeight: TYPOGRAPHY.weights.medium,
+    fontFamily: typography.fonts.medium,
+    fontWeight: typography.weights.medium,
   },
   inputContainer: {
     overflow: 'hidden',
     justifyContent: 'center',
   },
   input: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     textAlignVertical: 'center',
   },
   errorText: {
     color: colors.danger,
     fontSize: 12,
     marginTop: spacing('1'),
-    fontFamily: TYPOGRAPHY.fonts.medium,
+    fontFamily: typography.fonts.medium,
   },
 });

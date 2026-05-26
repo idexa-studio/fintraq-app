@@ -1,8 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { ActivityIndicator, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 type ConfirmDialogProps = {
   visible: boolean;
@@ -27,8 +25,9 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   destructive = true,
   isLoading = false,
 }: ConfirmDialogProps) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handleConfirm = useCallback(() => {
     onClose();
@@ -63,7 +62,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
               disabled={isLoading}
             >
               {isLoading ? (
-                <ActivityIndicator color="#FFFFFF" size="small" />
+                <ActivityIndicator color={colors.background} size="small" />
               ) : (
                 <Text style={styles.confirmText}>{confirmLabel}</Text>
               )}
@@ -75,11 +74,11 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   );
 });
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, overlay, typography }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.52)',
+      backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
       paddingHorizontal: 24,
       paddingBottom: 42,
@@ -98,7 +97,7 @@ const createStyles = (colors: ThemeColors) =>
       elevation: 10,
     },
     title: {
-      fontFamily: TYPOGRAPHY.fonts.headingRegular,
+      fontFamily: typography.fonts.headingRegular,
       fontSize: 24,
       color: colors.text,
       letterSpacing: -0.6,
@@ -106,7 +105,7 @@ const createStyles = (colors: ThemeColors) =>
     message: {
       marginTop: 6,
       marginBottom: 16,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 13,
       lineHeight: 18,
       color: colors.textMuted,
@@ -126,7 +125,7 @@ const createStyles = (colors: ThemeColors) =>
       justifyContent: 'center',
     },
     cancelText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 14,
       color: colors.text,
     },
@@ -144,8 +143,8 @@ const createStyles = (colors: ThemeColors) =>
       backgroundColor: colors.primary,
     },
     confirmText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 14,
-      color: '#FFFFFF',
+      color: colors.background,
     },
   });

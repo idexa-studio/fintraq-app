@@ -13,10 +13,8 @@ import {
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Account } from '@/src/features/accounts/api/accounts';
 import { Category } from '@/src/features/categories/api/categories';
-import { useTheme } from '@/src/providers/ThemeProvider';
-import { ThemeColors } from '@/src/theme/colors';
-import { RADIUS, SHADOWS, SPACING } from '@/src/theme/tokens';
-import { TYPOGRAPHY } from '@/src/theme/typography';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
 import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../api/advanced-filters.service';
 
@@ -31,8 +29,6 @@ interface AdvancedFilterSheetProps {
   resultCount: number;
 }
 
-const toHexColor = (value: number) => `#${value.toString(16).padStart(6, '0')}`;
-
 export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
   visible,
   onClose,
@@ -43,8 +39,9 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
   categories,
   resultCount,
 }: AdvancedFilterSheetProps) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [localFilters, setLocalFilters] = useState<AdvancedFilters>(filters);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
@@ -343,7 +340,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                   {accounts.map((account, index) => {
                     const isSelected = localFilters.accountIds?.includes(account.id) || false;
                     const isLast = index === accounts.length - 1;
-                    const accColor = toHexColor(account.color);
+                    const accColor = colorNumberToHex(account.color);
 
                     return (
                       <TouchableOpacity
@@ -387,7 +384,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                 <View style={styles.chipGrid}>
                   {categories.map((category) => {
                     const isSelected = localFilters.categoryIds?.includes(category.id) || false;
-                    const catColor = toHexColor(category.color);
+                    const catColor = colorNumberToHex(category.color);
 
                     return (
                       <TouchableOpacity
@@ -511,30 +508,30 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
   );
 });
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius, shadow }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.55)',
+      backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
     },
     sheet: {
       backgroundColor: Platform.OS === 'ios' ? colors.background + 'F5' : colors.background,
-      borderTopLeftRadius: RADIUS['2xl'],
-      borderTopRightRadius: RADIUS['2xl'],
+      borderTopLeftRadius: radius('2xl'),
+      borderTopRightRadius: radius('2xl'),
       borderWidth: 1,
       borderColor: colors.text + '15',
       borderBottomWidth: 0,
       maxHeight: '88%',
-      ...SHADOWS.lg,
+      ...shadow('lg'),
     },
     handle: {
       width: 36,
       height: 4,
-      borderRadius: RADIUS.xs,
+      borderRadius: radius('xs'),
       backgroundColor: colors.text + '20',
       alignSelf: 'center',
-      marginTop: SPACING['2.5'],
+      marginTop: spacing('2.5'),
     },
 
     // ─── Header ─────────────────────────────────────────────────────────────
@@ -542,17 +539,17 @@ const createStyles = (colors: ThemeColors) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: SPACING['6'],
-      paddingTop: SPACING['4'],
-      paddingBottom: SPACING['2'],
+      paddingHorizontal: spacing('6'),
+      paddingTop: spacing('4'),
+      paddingBottom: spacing('2'),
     },
     headerLeft: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: SPACING['2'],
+      gap: spacing('2'),
     },
     title: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 28,
       color: colors.text,
       letterSpacing: -1,
@@ -560,34 +557,34 @@ const createStyles = (colors: ThemeColors) =>
     countBadge: {
       minWidth: 22,
       height: 22,
-      borderRadius: RADIUS.full,
+      borderRadius: radius('full'),
       backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'center',
-      paddingHorizontal: SPACING['1'],
+      paddingHorizontal: spacing('1'),
     },
     countBadgeText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.background,
     },
     resetBtn: {
       height: 30,
-      paddingHorizontal: SPACING['3'],
-      borderRadius: RADIUS.md,
+      paddingHorizontal: spacing('3'),
+      borderRadius: radius('md'),
       backgroundColor: colors.danger + '12',
       alignItems: 'center',
       justifyContent: 'center',
     },
     resetBtnText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 12,
       color: colors.danger,
     },
     closeIconBtn: {
       width: 30,
       height: 30,
-      borderRadius: RADIUS.sm,
+      borderRadius: radius('sm'),
       backgroundColor: colors.text + '08',
       alignItems: 'center',
       justifyContent: 'center',
@@ -595,22 +592,22 @@ const createStyles = (colors: ThemeColors) =>
 
     // ─── Search ──────────────────────────────────────────────────────────────
     searchRow: {
-      paddingHorizontal: SPACING['6'],
-      paddingTop: SPACING['2'],
-      paddingBottom: SPACING['3'],
+      paddingHorizontal: spacing('6'),
+      paddingTop: spacing('2'),
+      paddingBottom: spacing('3'),
     },
     searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',
       height: 44,
-      borderRadius: RADIUS.md,
+      borderRadius: radius('md'),
       backgroundColor: colors.surface,
-      paddingHorizontal: SPACING['3'],
-      gap: SPACING['2'],
+      paddingHorizontal: spacing('3'),
+      gap: spacing('2'),
     },
     searchInput: {
       flex: 1,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 14,
       color: colors.text,
       padding: 0,
@@ -618,66 +615,66 @@ const createStyles = (colors: ThemeColors) =>
 
     // ─── Scroll body ─────────────────────────────────────────────────────────
     scrollContent: {
-      paddingHorizontal: SPACING['6'],
-      paddingTop: SPACING['1'],
+      paddingHorizontal: spacing('6'),
+      paddingTop: spacing('1'),
     },
     section: {
-      marginBottom: SPACING['5'],
+      marginBottom: spacing('5'),
     },
     sectionLabel: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 9,
       color: colors.textMuted,
       letterSpacing: 1.2,
       textTransform: 'uppercase',
-      marginBottom: SPACING['2'],
-      paddingLeft: SPACING['1'],
+      marginBottom: spacing('2'),
+      paddingLeft: spacing('1'),
     },
 
     // ─── Shared card surface ─────────────────────────────────────────────────
     card: {
       backgroundColor: colors.surface,
-      borderRadius: RADIUS.lg,
+      borderRadius: radius('lg'),
       overflow: 'hidden',
     },
 
     // ─── Type ────────────────────────────────────────────────────────────────
     typeRow: {
       flexDirection: 'row',
-      gap: SPACING['2'],
+      gap: spacing('2'),
     },
     typeCard: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       height: 60,
-      borderRadius: RADIUS.lg,
+      borderRadius: radius('lg'),
       backgroundColor: colors.surface,
       overflow: 'hidden',
     },
     typeAccentBar: {
       width: 3,
       alignSelf: 'stretch',
-      marginVertical: SPACING['3'],
-      marginLeft: SPACING['1.5'],
-      borderRadius: RADIUS.full,
+      marginVertical: spacing('3'),
+      marginLeft: spacing('1.5'),
+      borderRadius: radius('full'),
     },
     typeBody: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: SPACING['3'],
-      gap: SPACING['2'],
+      paddingHorizontal: spacing('3'),
+      gap: spacing('2'),
     },
     typeIconBox: {
       width: 32,
       height: 32,
-      borderRadius: RADIUS.sm,
+      borderRadius: radius('sm'),
       alignItems: 'center',
       justifyContent: 'center',
     },
     typeLabel: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 14,
     },
 
@@ -685,23 +682,23 @@ const createStyles = (colors: ThemeColors) =>
     dateActiveRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: SPACING['4'],
-      paddingVertical: SPACING['3'],
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3'),
     },
     dateField: {
       flex: 1,
-      paddingVertical: SPACING['1'],
+      paddingVertical: spacing('1'),
     },
     dateFieldLabel: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 8,
       color: colors.textMuted,
       letterSpacing: 1.2,
       textTransform: 'uppercase',
-      marginBottom: SPACING['0.5'],
+      marginBottom: spacing('0.5'),
     },
     dateFieldValue: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 15,
       color: colors.text,
       letterSpacing: -0.3,
@@ -710,16 +707,16 @@ const createStyles = (colors: ThemeColors) =>
       width: 1,
       height: 36,
       backgroundColor: colors.text + '10',
-      marginHorizontal: SPACING['3'],
+      marginHorizontal: spacing('3'),
     },
     dateClearBtn: {
       width: 26,
       height: 26,
-      borderRadius: RADIUS.sm,
+      borderRadius: radius('sm'),
       backgroundColor: colors.text + '10',
       alignItems: 'center',
       justifyContent: 'center',
-      marginLeft: SPACING['2'],
+      marginLeft: spacing('2'),
     },
     dateInactiveRow: {
       flexDirection: 'row',
@@ -730,8 +727,8 @@ const createStyles = (colors: ThemeColors) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: SPACING['2'],
-      paddingVertical: SPACING['4'],
+      gap: spacing('2'),
+      paddingVertical: spacing('4'),
     },
     datePickerInternalSep: {
       width: 1,
@@ -739,7 +736,7 @@ const createStyles = (colors: ThemeColors) =>
       backgroundColor: colors.text + '10',
     },
     datePickerBtnText: {
-      fontFamily: TYPOGRAPHY.fonts.medium,
+      fontFamily: typography.fonts.medium,
       fontSize: 14,
       color: colors.primary,
     },
@@ -751,19 +748,19 @@ const createStyles = (colors: ThemeColors) =>
     },
     amountField: {
       flex: 1,
-      paddingHorizontal: SPACING['4'],
-      paddingVertical: SPACING['3'],
-      gap: SPACING['1'],
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3'),
+      gap: spacing('1'),
     },
     amountFieldLabel: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 8,
       color: colors.textMuted,
       letterSpacing: 1.2,
       textTransform: 'uppercase',
     },
     amountInput: {
-      fontFamily: TYPOGRAPHY.fonts.bold,
+      fontFamily: typography.fonts.bold,
       fontSize: 22,
       color: colors.text,
       letterSpacing: -0.5,
@@ -772,16 +769,16 @@ const createStyles = (colors: ThemeColors) =>
     amountFieldSep: {
       width: 1,
       backgroundColor: colors.text + '10',
-      marginVertical: SPACING['3'],
+      marginVertical: spacing('3'),
     },
 
     // ─── Account / Category list rows ─────────────────────────────────────
     listRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: SPACING['4'],
-      paddingVertical: SPACING['3'],
-      gap: SPACING['3'],
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3'),
+      gap: spacing('3'),
     },
     listRowDivider: {
       borderBottomWidth: 1,
@@ -793,20 +790,20 @@ const createStyles = (colors: ThemeColors) =>
     listIconBox: {
       width: 34,
       height: 34,
-      borderRadius: RADIUS.sm,
+      borderRadius: radius('sm'),
       alignItems: 'center',
       justifyContent: 'center',
     },
     listRowLabel: {
       flex: 1,
-      fontFamily: TYPOGRAPHY.fonts.medium,
+      fontFamily: typography.fonts.medium,
       fontSize: 14,
       color: colors.textMuted,
     },
     checkbox: {
       width: 20,
       height: 20,
-      borderRadius: RADIUS.xs,
+      borderRadius: radius('xs'),
       borderWidth: 1.5,
       borderColor: colors.text + '20',
       alignItems: 'center',
@@ -821,19 +818,19 @@ const createStyles = (colors: ThemeColors) =>
     chipGrid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      gap: SPACING['2'],
+      gap: spacing('2'),
     },
     chip: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: SPACING['3'],
+      paddingHorizontal: spacing('3'),
       height: 34,
-      borderRadius: RADIUS.md,
+      borderRadius: radius('md'),
       backgroundColor: colors.surface,
-      gap: SPACING['1'],
+      gap: spacing('1'),
     },
     chipText: {
-      fontFamily: TYPOGRAPHY.fonts.medium,
+      fontFamily: typography.fonts.medium,
       fontSize: 13,
       color: colors.textMuted,
     },
@@ -843,37 +840,37 @@ const createStyles = (colors: ThemeColors) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: SPACING['4'],
-      paddingVertical: SPACING['3'],
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3'),
     },
     sortRowSep: {
       height: 1,
       backgroundColor: colors.text + '08',
-      marginHorizontal: SPACING['4'],
+      marginHorizontal: spacing('4'),
     },
     sortRowLabel: {
-      fontFamily: TYPOGRAPHY.fonts.medium,
+      fontFamily: typography.fonts.medium,
       fontSize: 13,
       color: colors.textMuted,
     },
     sortToggleGroup: {
       flexDirection: 'row',
-      gap: SPACING['1.5'],
+      gap: spacing('1.5'),
     },
     sortToggle: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: SPACING['1'],
-      paddingHorizontal: SPACING['3'],
+      gap: spacing('1'),
+      paddingHorizontal: spacing('3'),
       height: 30,
-      borderRadius: RADIUS.md,
+      borderRadius: radius('md'),
       backgroundColor: colors.text + '08',
     },
     sortToggleActive: {
       backgroundColor: colors.text,
     },
     sortToggleText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 12,
       color: colors.textMuted,
     },
@@ -887,22 +884,22 @@ const createStyles = (colors: ThemeColors) =>
       bottom: 0,
       left: 0,
       right: 0,
-      paddingHorizontal: SPACING['6'],
-      paddingTop: SPACING['4'],
-      paddingBottom: SPACING['9'],
+      paddingHorizontal: spacing('6'),
+      paddingTop: spacing('4'),
+      paddingBottom: spacing('9'),
       backgroundColor: colors.background,
       borderTopWidth: 1,
       borderTopColor: colors.text + '08',
     },
     applyBtn: {
       height: 52,
-      borderRadius: RADIUS.lg,
+      borderRadius: radius('lg'),
       backgroundColor: colors.text,
       alignItems: 'center',
       justifyContent: 'center',
     },
     applyBtnText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 15,
       color: colors.background,
     },

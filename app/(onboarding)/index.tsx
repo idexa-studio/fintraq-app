@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
   Alert,
@@ -15,30 +15,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurBackground } from '../../src/components/ui/BlurBackground';
 import { Button } from '../../src/components/ui/Button';
 import { ConfirmDialog } from '../../src/components/ui/ConfirmDialog';
-import { ACCOUNT_COLORS, ACCOUNT_ICONS } from '../../src/constants/picker';
+import { getDeviceCurrencyCode } from '../../src/constants/currency';
 import { useCreateAccount } from '../../src/features/accounts/hooks/accounts';
 import { useCreateCategory } from '../../src/features/categories/hooks/categories';
-import { AccountStep } from '../../src/features/onboarding/components/AccountStep';
+import { CurrencyStep } from '../../src/features/onboarding/components/CurrencyStep';
 import { ProfileStep } from '../../src/features/onboarding/components/ProfileStep';
 import { WelcomeStep } from '../../src/features/onboarding/components/WelcomeStep';
-import { getDeviceCurrencyCode } from '../../src/constants/currency';
-import {
-  ONBOARDING_STEPS,
-} from '../../src/features/onboarding/constants';
+import { ONBOARDING_STEPS } from '../../src/features/onboarding/constants';
 import { createOnboardingStyles } from '../../src/features/onboarding/styles';
 import { OnboardingFormValues } from '../../src/features/onboarding/types';
-import { parseAmount, toDbColor } from '../../src/utils/format';
+import { toDbColor } from '../../src/utils/format';
 import { useOnboarding } from '../../src/providers/OnboardingProvider';
 import { useSettings } from '../../src/providers/SettingsProvider';
 import { useTheme } from '../../src/providers/ThemeProvider';
-import { BackupService } from '../../src/features/backup/api/backup.service';
-import { File } from 'expo-file-system';
 import { NotificationService } from '../../src/services/notification.service';
 
 export default function OnboardingScreen() {
   const router = useRouter();
-  const { colors } = useTheme();
-  const styles = React.useMemo(() => createOnboardingStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = React.useMemo(() => createOnboardingStyles(theme), [theme]);
   const { completeOnboarding } = useOnboarding();
   const { updateProfile } = useSettings();
   const { mutateAsync: createAccount, isPending: accountPending } = useCreateAccount();
@@ -47,113 +43,29 @@ export default function OnboardingScreen() {
   const [stepIndex, setStepIndex] = React.useState(0);
   const currentStep = ONBOARDING_STEPS[stepIndex];
 
-  const [accountCurrency, setAccountCurrency] = React.useState<string>(() => getDeviceCurrencyCode());
-  const [accountIcon, setAccountIcon] = React.useState<string>(ACCOUNT_ICONS[0]);
-  const [accountColor, setAccountColor] = React.useState<string>(ACCOUNT_COLORS[0]);
-
-  // Import from backup state
-  const [showRestoreDialog, setShowRestoreDialog] = useState(false);
-  const [selectedBackupFile, setSelectedBackupFile] = useState<File | null>(null);
-  const [backupSummary, setBackupSummary] = useState<{
-    version: string;
-    exportedAt: string;
-    accountsCount: number;
-    categoriesCount: number;
-    transactionsCount: number;
-    hasProfile: boolean;
-  } | null>(null);
-  const [isImporting, setIsImporting] = useState(false);
-
-  // Reminder activation dialog state
-  const [showReminderDialog, setShowReminderDialog] = useState(false);
+  const [currency, setCurrency] = React.useState<string>(() => getDeviceCurrencyCode());
+  const [showReminderDialog, setShowReminderDialog] = React.useState(false);
 
   const methods = useForm<OnboardingFormValues>({
     mode: 'onChange',
-    defaultValues: {
-      name: '',
-      accountName: '',
-      accountHolder: '',
-      accountNumber: '',
-      openingBalance: '0',
-    },
+    defaultValues: { name: '' },
   });
 
   const { trigger, getValues } = methods;
 
-  const isPending = accountPending || categoryPending || isImporting;
-
-  const handleImportFromBackup = useCallback(async () => {
-    try {
-      setIsImporting(true);
-      const file = await BackupService.pickBackupFile();
-      
-      if (!file) {
-        setIsImporting(false);
-        return;
-      }
-
-      const summary = await BackupService.getBackupSummary(file);
-      setBackupSummary(summary);
-      setSelectedBackupFile(file);
-      setShowRestoreDialog(true);
-    } catch (error) {
-      Alert.alert(
-        'Invalid Backup',
-        error instanceof Error ? error.message : 'Failed to read backup file'
-      );
-    } finally {
-      setIsImporting(false);
-    }
-  }, []);
-
-  const handleConfirmRestore = useCallback(async () => {
-    if (!selectedBackupFile) return;
-
-    try {
-      setIsImporting(true);
-      setShowRestoreDialog(false);
-
-      const data = await BackupService.readBackupFile(selectedBackupFile);
-      await BackupService.restoreBackup(data);
-      await completeOnboarding();
-
-      Alert.alert(
-        'Restore Complete',
-        'Your data has been restored successfully. Welcome back!',
-        [
-          {
-            text: 'Continue',
-            onPress: () => router.replace('/(main)'),
-          },
-        ]
-      );
-    } catch (error) {
-      Alert.alert(
-        'Restore Failed',
-        error instanceof Error ? error.message : 'Failed to restore backup'
-      );
-    } finally {
-      setIsImporting(false);
-      setSelectedBackupFile(null);
-      setBackupSummary(null);
-    }
-  }, [selectedBackupFile, completeOnboarding, router]);
+  const isPending = accountPending || categoryPending;
 
   const handleEnableReminders = useCallback(async () => {
     setShowReminderDialog(false);
-
     const granted = await NotificationService.requestPermissions();
-
-    if (granted) {
-      await updateProfile({ reminderEnabled: true });
-      // Notification will be scheduled automatically by SettingsProvider
-    } else {
+    if (!granted) {
       Alert.alert(
-        'Permission Required',
-        'To receive daily reminders, please enable notifications for Luno in your device settings. You can always enable this later in the app settings.'
+        'Permission required',
+        'Enable notifications in device settings to receive daily reminders. You can turn this on anytime in Settings.'
       );
+    } else {
+      await updateProfile({ reminderEnabled: true });
     }
-
     router.replace('/(main)');
   }, [updateProfile, router]);
 
@@ -163,12 +75,7 @@ export default function OnboardingScreen() {
   }, [router]);
 
   const validateStep = async () => {
-    if (currentStep.id === 'profile') {
-      return trigger('name');
-    }
-    if (currentStep.id === 'account') {
-      return trigger(['accountName', 'accountHolder', 'accountNumber', 'openingBalance']);
-    }
+    if (currentStep.id === 'profile') return trigger('name');
     return true;
   };
 
@@ -196,7 +103,7 @@ export default function OnboardingScreen() {
       // ── Food & Drink ────────────────────────────────────────────────
       { name: 'Groceries',     icon: 'basket-outline',        color: toDbColor('#F5C451'), type: 'DR' },
       { name: 'Dining Out',    icon: 'restaurant-outline',    color: toDbColor('#FB923C'), type: 'DR' },
-      { name: 'Delivery',      icon: 'bicycle-outline',      color: toDbColor('#F87171'), type: 'DR' },
+      { name: 'Delivery',      icon: 'bicycle-outline',       color: toDbColor('#F87171'), type: 'DR' },
       { name: 'Coffee',        icon: 'cafe-outline',          color: toDbColor('#C4A35A'), type: 'DR' },
       { name: 'Drinks',        icon: 'wine-outline',          color: toDbColor('#C084FC'), type: 'DR' },
 
@@ -242,31 +149,30 @@ export default function OnboardingScreen() {
   };
 
   const finalizeSetup = async () => {
-    const values = getValues();
+    const { name } = getValues();
     try {
       await updateProfile({
-        name: values.name.trim(),
+        name: name.trim(),
         email: '',
         phone: '',
-        defaultCurrency: accountCurrency,
+        defaultCurrency: currency,
       });
 
       await createAccount({
-        name: values.accountName.trim(),
-        holderName: values.accountHolder.trim(),
-        accountNumber: values.accountNumber.trim(),
-        icon: accountIcon.replace('-outline', ''),
-        color: toDbColor(accountColor),
+        name: 'Cash',
+        holderName: name.trim() || 'Personal',
+        accountNumber: '',
+        icon: 'wallet',
+        color: toDbColor('#6BD498'),
         isDefault: true,
-        currency: accountCurrency,
-        balance: parseAmount(values.openingBalance),
+        currency,
+        balance: 0,
         income: 0,
         expense: 0,
       });
 
       await seedCategories();
       await completeOnboarding();
-      // Show reminder activation dialog instead of immediately navigating
       setShowReminderDialog(true);
     } catch {
       Alert.alert('Setup failed', 'Could not initialize your workspace. Please try again.');
@@ -282,26 +188,17 @@ export default function OnboardingScreen() {
       return;
     }
 
-    setStepIndex((current) => current + 1);
+    setStepIndex((i) => i + 1);
   };
 
   const renderStepContent = () => {
     switch (currentStep.id) {
       case 'welcome':
-        return <WelcomeStep onImportPress={handleImportFromBackup} />;
+        return <WelcomeStep />;
       case 'profile':
         return <ProfileStep />;
-      case 'account':
-        return (
-          <AccountStep
-            accountCurrency={accountCurrency}
-            accountIcon={accountIcon}
-            accountColor={accountColor}
-            onCurrencyChange={setAccountCurrency}
-            onIconChange={setAccountIcon}
-            onColorChange={setAccountColor}
-          />
-        );
+      case 'currency':
+        return <CurrencyStep currency={currency} onCurrencyChange={setCurrency} />;
       default:
         return null;
     }
@@ -313,90 +210,64 @@ export default function OnboardingScreen() {
 
       <FormProvider {...methods}>
         <KeyboardAvoidingView style={styles.keyboardWrap} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <View style={styles.header}>
-          <View style={styles.headerTopRow}>
-            {stepIndex > 0 ? (
-              <TouchableOpacity style={styles.headerBackButton} onPress={() => setStepIndex((current) => current - 1)} activeOpacity={0.9}>
-                <Ionicons name="chevron-back" size={18} color={colors.text} />
-              </TouchableOpacity>
-            ) : (
-              <View style={styles.headerBackPlaceholder} />
-            )}
+          <View style={styles.header}>
+            <View style={styles.headerTopRow}>
+              {stepIndex > 0 ? (
+                <TouchableOpacity style={styles.headerBackButton} onPress={() => setStepIndex((i) => i - 1)} activeOpacity={0.9}>
+                  <Ionicons name="chevron-back" size={18} color={colors.text} />
+                </TouchableOpacity>
+              ) : (
+                <View style={styles.headerBackPlaceholder} />
+              )}
 
-            <Text style={styles.brand}>LUNO.</Text>
+              <Text style={styles.brand}>LUNO.</Text>
 
-            <View style={styles.stepPill}>
-              <Text style={styles.stepPillText}>{stepIndex + 1}/{ONBOARDING_STEPS.length}</Text>
+              <View style={styles.stepPill}>
+                <Text style={styles.stepPillText}>{stepIndex + 1}/{ONBOARDING_STEPS.length}</Text>
+              </View>
+            </View>
+
+            <View style={styles.progressTrack}>
+              {ONBOARDING_STEPS.map((step, index) => (
+                <View key={step.id} style={[styles.progressDot, index <= stepIndex && styles.progressDotActive]} />
+              ))}
             </View>
           </View>
 
-          <View style={styles.progressTrack}>
-            {ONBOARDING_STEPS.map((step, index) => (
-              <View key={step.id} style={[styles.progressDot, index <= stepIndex && styles.progressDotActive]} />
-            ))}
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.stepMeta}>
+              <Text style={styles.eyebrow}>{currentStep.eyebrow}</Text>
+              <Text style={styles.stepTitle}>{currentStep.title}</Text>
+              <Text style={styles.stepSubtitle}>{currentStep.subtitle}</Text>
+            </View>
+
+            <View style={styles.contentCard}>{renderStepContent()}</View>
+          </ScrollView>
+
+          <View style={styles.footer}>
+            <Button
+              title={stepIndex === ONBOARDING_STEPS.length - 1 ? 'Launch Luno' : 'Continue'}
+              onPress={handleContinue}
+              size="lg"
+              isLoading={isPending}
+              style={styles.primaryAction}
+            />
           </View>
-        </View>
-
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-          <View style={styles.stepMeta}>
-            <Text style={styles.eyebrow}>{currentStep.eyebrow}</Text>
-            <Text style={styles.stepTitle}>{currentStep.title}</Text>
-            <Text style={styles.stepSubtitle}>{currentStep.subtitle}</Text>
-          </View>
-
-          <View style={styles.contentCard}>{renderStepContent()}</View>
-        </ScrollView>
-
-        <View style={styles.footer}>
-          <Button
-            title={stepIndex === ONBOARDING_STEPS.length - 1 ? 'Launch Luno' : 'Continue'}
-            onPress={handleContinue}
-            size="lg"
-            isLoading={isPending}
-            style={styles.primaryAction}
-          />
-        </View>
         </KeyboardAvoidingView>
       </FormProvider>
 
       <ConfirmDialog
-        visible={showRestoreDialog}
-        onClose={() => {
-          setShowRestoreDialog(false);
-          setSelectedBackupFile(null);
-          setBackupSummary(null);
-        }}
-        title="Restore from Backup"
-        confirmLabel="Restore"
-        destructive
-        message={
-          backupSummary
-            ? `This backup contains:\n\n` +
-              `• ${backupSummary.accountsCount} account${backupSummary.accountsCount !== 1 ? 's' : ''}\n` +
-              `• ${backupSummary.categoriesCount} categor${backupSummary.categoriesCount !== 1 ? 'ies' : 'y'}\n` +
-              `• ${backupSummary.transactionsCount} transaction${backupSummary.transactionsCount !== 1 ? 's' : ''}\n` +
-              `• ${backupSummary.hasProfile ? 'Settings & profile' : 'No settings'}\n\n` +
-              `Exported: ${new Date(backupSummary.exportedAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              })}\n\n` +
-              `This will replace any existing data.`
-            : 'Are you sure you want to restore this backup?'
-        }
-        onConfirm={handleConfirmRestore}
-      />
-
-      <ConfirmDialog
         visible={showReminderDialog}
         onClose={handleSkipReminders}
-        title="Stay on Track 🔔"
-        confirmLabel="Enable Reminders"
-        cancelLabel="Not Now"
+        title="Stay on track"
+        confirmLabel="Enable reminders"
+        cancelLabel="Not now"
         destructive={false}
-        message={`Get a gentle nudge at 8:00 PM to log your daily transactions and keep your finances up to date. You can change this anytime in Settings.`}
+        message="Get a gentle nudge at 8:00 PM to log your daily transactions. You can change this anytime in Settings."
         onConfirm={handleEnableReminders}
       />
     </SafeAreaView>

@@ -1,30 +1,35 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ThemeColors } from '../../../theme/colors';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { colorNumberToHex } from '../../../utils/format';
+import { resolveIcon } from '../../../utils/icons';
 import type { Account } from '../../accounts/api/accounts';
 
 type Props = {
   accounts: Account[];
   selectedId: number | null;
   onSelect: (id: number) => void;
-  colors: ThemeColors;
 };
 
-const resolveIconName = (raw: string | null | undefined): keyof typeof Ionicons.glyphMap => {
-  if (raw && raw in Ionicons.glyphMap) return raw as keyof typeof Ionicons.glyphMap;
-  return 'wallet-outline';
-};
+export const TransactionAccountPicker = React.memo(function TransactionAccountPicker({
+  accounts,
+  selectedId,
+  onSelect,
+}: Props) {
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
-export const TransactionAccountPicker = ({ accounts, selectedId, onSelect, colors }: Props) => {
+  const handleSelect = useCallback((id: number) => onSelect(id), [onSelect]);
+
   return (
     <View style={styles.container}>
       <Text style={[styles.label, { color: colors.textMuted }]}>ACCOUNT</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {accounts.map((acc) => {
           const selected = selectedId === acc.id;
-          const accColor = '#' + acc.color.toString(16).padStart(6, '0');
+          const accColor = colorNumberToHex(acc.color);
           return (
             <TouchableOpacity
               key={acc.id}
@@ -32,18 +37,18 @@ export const TransactionAccountPicker = ({ accounts, selectedId, onSelect, color
                 styles.card,
                 { backgroundColor: colors.surface, borderColor: selected ? accColor : colors.border },
               ]}
-              onPress={() => onSelect(acc.id)}
+              onPress={() => handleSelect(acc.id)}
               activeOpacity={0.8}
             >
               <View style={[styles.iconBox, { backgroundColor: accColor + '15' }]}>
-                <Ionicons name={resolveIconName(acc.icon)} size={18} color={accColor} />
+                <Ionicons name={resolveIcon(acc.icon, 'wallet-outline')} size={18} color={accColor} />
               </View>
               <View>
                 <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>{acc.name}</Text>
                 <Text style={[styles.currency, { color: colors.textMuted }]}>{acc.currency}</Text>
               </View>
               {selected && (
-                <View style={[styles.check, { backgroundColor: accColor }]}>
+                <View style={[styles.check, { backgroundColor: accColor, borderColor: colors.background }]}>
                   <Ionicons name="checkmark" size={10} color={colors.background} />
                 </View>
               )}
@@ -53,47 +58,47 @@ export const TransactionAccountPicker = ({ accounts, selectedId, onSelect, color
       </ScrollView>
     </View>
   );
-};
+});
 
-const styles = StyleSheet.create({
+const createStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
   container: {
-    paddingVertical: 12,
+    paddingVertical: spacing('3'),
   },
   label: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 10,
     letterSpacing: 1.5,
-    marginBottom: 12,
-    paddingHorizontal: 24,
+    marginBottom: spacing('3'),
+    paddingHorizontal: spacing('6'),
   },
   scrollContent: {
-    paddingHorizontal: 24,
-    gap: 12,
-    paddingVertical: 4
+    paddingHorizontal: spacing('6'),
+    gap: spacing('3'),
+    paddingVertical: spacing('1'),
   },
   card: {
     minWidth: 100,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 16,
+    paddingHorizontal: spacing('4'),
+    paddingVertical: spacing('3'),
+    borderRadius: radius('lg'),
     borderWidth: 1.5,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing('2.5'),
   },
   iconBox: {
     width: 32,
     height: 32,
-    borderRadius: 10,
+    borderRadius: radius('sm'),
     alignItems: 'center',
     justifyContent: 'center',
   },
   name: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 13,
   },
   currency: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     fontSize: 11,
   },
   check: {
@@ -106,6 +111,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: 'white',
   },
 });

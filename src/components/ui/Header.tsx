@@ -2,10 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
-import { spacing, radius, LAYOUT } from '../../theme/tokens';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 export type HeaderProps = {
   title: string;
@@ -34,8 +31,9 @@ export const Header = React.memo(function Header({
   rightAction 
 }: HeaderProps) {
   const router = useRouter();
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handleBack = useCallback(() => {
     router.back();
@@ -78,12 +76,12 @@ export const Header = React.memo(function Header({
   );
 });
 
-const createStyles = (colors: ThemeColors) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: LAYOUT.screenPadding,
+    paddingHorizontal: layout.screenPadding,
     paddingTop: spacing('3'),
     paddingBottom: spacing('4'),
     backgroundColor: 'transparent',
@@ -95,8 +93,8 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     gap: spacing('4'),
   },
   backBtn: {
-    width: LAYOUT.minTouchTarget,
-    height: LAYOUT.minTouchTarget,
+    width: layout.minTouchTarget,
+    height: layout.minTouchTarget,
     borderRadius: radius('md'),
     backgroundColor: colors.surface,
     justifyContent: 'center',
@@ -109,14 +107,14 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontFamily: TYPOGRAPHY.fonts.heading,
+    fontFamily: typography.fonts.heading,
     color: colors.text,
     fontSize: 28,
     letterSpacing: -1,
     lineHeight: 32,
   },
   subtitle: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     color: colors.textMuted,
     fontSize: 13,
     letterSpacing: 0.1,

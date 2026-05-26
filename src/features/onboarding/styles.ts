@@ -1,8 +1,7 @@
 import { Platform, StyleSheet } from 'react-native';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
+import { ThemeContextType } from '../../providers/ThemeProvider';
 
-export const createOnboardingStyles = (colors: ThemeColors) =>
+export const createOnboardingStyles = ({ colors, typography }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -11,10 +10,6 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
     },
     keyboardWrap: {
       flex: 1,
-    },
-    bgCircle: {
-      position: 'absolute',
-      borderRadius: 999,
     },
     header: {
       paddingHorizontal: 24,
@@ -41,7 +36,7 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
       height: 42,
     },
     brand: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 30,
       color: colors.text,
       letterSpacing: -1,
@@ -59,7 +54,7 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
       borderColor: colors.primary + '22',
     },
     stepPillText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.text,
       letterSpacing: 0.4,
@@ -87,14 +82,14 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
       marginBottom: 20,
     },
     eyebrow: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.primary,
       letterSpacing: 1.5,
       marginBottom: 12,
     },
     stepTitle: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 34,
       lineHeight: 36,
       color: colors.text,
@@ -102,7 +97,7 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
     },
     stepSubtitle: {
       marginTop: 10,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 14,
       lineHeight: 22,
       color: colors.textMuted,

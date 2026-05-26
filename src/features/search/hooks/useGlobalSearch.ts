@@ -1,11 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { QUERY_KEYS } from '../../../lib/query-keys';
 import { globalSearch } from '../api/global-search';
-
-const SEARCH_KEYS = {
-  all: ['globalSearch'] as const,
-  results: (query: string) => [...SEARCH_KEYS.all, query] as const,
-};
 
 export function useGlobalSearch(rawQuery: string) {
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -19,7 +15,7 @@ export function useGlobalSearch(rawQuery: string) {
 
   return {
     ...useQuery({
-      queryKey: SEARCH_KEYS.results(debouncedQuery),
+      queryKey: QUERY_KEYS.search.results(debouncedQuery),
       queryFn: () => globalSearch(debouncedQuery),
       enabled: isEnabled,
       staleTime: 15_000,

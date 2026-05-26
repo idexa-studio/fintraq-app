@@ -2,10 +2,9 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { MoneyText } from '../../../components/ui/MoneyText';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { TYPOGRAPHY } from '../../../theme/typography';
-
-type IoniconName = keyof typeof Ionicons.glyphMap;
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { colorNumberToHex } from '../../../utils/format';
+import { resolveIcon } from '../../../utils/icons';
 
 type TopExpenseCategory = {
   name: string;
@@ -21,23 +20,15 @@ type TopExpenseCategoriesCardProps = {
   categories: TopExpenseCategory[];
 };
 
-const resolveIconName = (raw: string | null | undefined, fallback: IoniconName): IoniconName => {
-  if (raw && raw in Ionicons.glyphMap) return raw as IoniconName;
-  if (raw) {
-    const outlined = `${raw}-outline`;
-    if (outlined in Ionicons.glyphMap) return outlined as IoniconName;
-  }
-  return fallback;
-};
-
 export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategoriesCard({
   currencies,
   selectedCurrency,
   onSelectCurrency,
   categories,
 }: TopExpenseCategoriesCardProps) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const maxAmount = useMemo(
     () => categories.reduce((max, item) => (item.amount > max ? item.amount : max), 0),
@@ -68,7 +59,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
       {categories.length > 0 ? (
         categories.map((category, idx) => {
           const isLast = idx === categories.length - 1;
-          const accent = `#${category.color.toString(16).padStart(6, '0')}`;
+          const accent = colorNumberToHex(category.color);
           const ratio = maxAmount > 0 ? category.amount / maxAmount : 0;
           return (
             <View key={`${category.name}-${idx}`} style={[styles.row, isLast && styles.rowLast]}>
@@ -77,7 +68,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
                   <Text style={styles.rankText}>{idx + 1}</Text>
                 </View>
                 <View style={[styles.iconWrap, { backgroundColor: accent + '22' }]}>
-                  <Ionicons name={resolveIconName(category.icon, 'pricetag-outline')} size={14} color={accent} />
+                  <Ionicons name={resolveIcon(category.icon, 'pricetag-outline')} size={14} color={accent} />
                 </View>
                 <View style={styles.meta}>
                   <Text style={styles.name} numberOfLines={1}>{category.name}</Text>
@@ -103,31 +94,29 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
   );
 });
 
-const createStyles = (colors: { [key: string]: string }) =>
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     card: {
-      marginHorizontal: 24,
-      borderRadius: 18,
+      marginHorizontal: spacing('6'),
+      borderRadius: radius('xl'),
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
       overflow: 'hidden',
-      marginBottom: 22,
+      marginBottom: spacing('5'),
     },
     tabsRow: {
       flexDirection: 'row',
-      gap: 6,
-      paddingHorizontal: 12,
-      paddingTop: 10,
-      paddingBottom: 6,
+      gap: spacing('1.5'),
+      paddingHorizontal: spacing('3'),
+      paddingTop: spacing('2.5'),
+      paddingBottom: spacing('1.5'),
     },
     tab: {
       height: 26,
-      borderRadius: 999,
+      borderRadius: radius('full'),
       borderWidth: 1,
       borderColor: colors.border,
       backgroundColor: colors.background + 'AA',
-      paddingHorizontal: 10,
+      paddingHorizontal: spacing('2.5'),
       justifyContent: 'center',
     },
     tabActive: {
@@ -135,7 +124,7 @@ const createStyles = (colors: { [key: string]: string }) =>
       borderColor: colors.text,
     },
     tabText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
       fontSize: 11,
       letterSpacing: 0.4,
@@ -147,9 +136,9 @@ const createStyles = (colors: { [key: string]: string }) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      gap: 12,
-      paddingHorizontal: 14,
-      paddingVertical: 10,
+      gap: spacing('3'),
+      paddingHorizontal: spacing('3.5'),
+      paddingVertical: spacing('2.5'),
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
     },
@@ -160,7 +149,7 @@ const createStyles = (colors: { [key: string]: string }) =>
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 9,
+      gap: spacing('2'),
     },
     rankBadge: {
       width: 20,
@@ -173,14 +162,14 @@ const createStyles = (colors: { [key: string]: string }) =>
       borderColor: colors.border,
     },
     rankText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
       fontSize: 10,
     },
     iconWrap: {
       width: 28,
       height: 28,
-      borderRadius: 9,
+      borderRadius: radius('sm'),
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -188,20 +177,20 @@ const createStyles = (colors: { [key: string]: string }) =>
       flex: 1,
     },
     name: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       color: colors.text,
       fontSize: 12,
-      marginBottom: 5,
+      marginBottom: spacing('1'),
     },
     barTrack: {
       height: 4,
-      borderRadius: 999,
+      borderRadius: radius('full'),
       backgroundColor: colors.background + 'CC',
       overflow: 'hidden',
     },
     barFill: {
       height: '100%',
-      borderRadius: 999,
+      borderRadius: radius('full'),
       minWidth: 8,
     },
     right: {
@@ -213,20 +202,20 @@ const createStyles = (colors: { [key: string]: string }) =>
       lineHeight: 15,
     },
     percent: {
-      marginTop: 3,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      marginTop: spacing('0.5'),
+      fontFamily: typography.fonts.regular,
       color: colors.textMuted,
       fontSize: 10,
     },
     empty: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 8,
-      paddingHorizontal: 14,
-      paddingVertical: 14,
+      gap: spacing('2'),
+      paddingHorizontal: spacing('3.5'),
+      paddingVertical: spacing('3.5'),
     },
     emptyText: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       color: colors.textMuted,
       fontSize: 12,
     },

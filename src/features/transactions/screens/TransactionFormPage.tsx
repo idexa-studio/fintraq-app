@@ -17,9 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurBackground } from '../../../components/ui/BlurBackground';
 import { Header } from '../../../components/ui/Header';
 import { useSettings } from '../../../providers/SettingsProvider';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { ThemeColors } from '../../../theme/colors';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
 import {
@@ -50,9 +48,10 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
   const router = useRouter();
   const isEditMode = mode === 'edit';
 
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
   const { profile } = useSettings();
-  const styles = React.useMemo(() => createStyles(colors), [colors]);
+  const styles = React.useMemo(() => createStyles(theme), [theme]);
 
   const accountsQuery = useAccounts();
   const categoriesQuery = useCategories();
@@ -199,13 +198,12 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
       <Header title={isEditMode ? 'Edit Entry' : 'New Entry'} subtitle="Record flow with precision" showBack />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-        <TransactionTypePicker value={type} onChange={setType} colors={colors} />
+        <TransactionTypePicker value={type} onChange={setType} />
 
         <TransactionAmountInput
           value={amountInput}
           onChange={setAmountInput}
           currency={selectedAccount?.currency ?? profile.defaultCurrency}
-          colors={colors}
         />
 
         <View style={styles.formBody}>
@@ -214,14 +212,12 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
             accounts={accounts}
             selectedId={selectedAccountId}
             onSelect={setSelectedAccountId}
-            colors={colors}
           />
 
           <TransactionCategoryPicker
             categories={filteredCategories}
             selectedId={selectedCategoryId}
             onSelect={setSelectedCategoryId}
-            colors={colors}
           />
 
           <View style={styles.section}>
@@ -278,7 +274,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
   );
 }
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, typography }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -301,7 +297,7 @@ const createStyles = (colors: ThemeColors) =>
       gap: 12,
     },
     sectionLabel: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 10,
       color: colors.textMuted,
       letterSpacing: 1.5,
@@ -323,7 +319,7 @@ const createStyles = (colors: ThemeColors) =>
       gap: 8,
     },
     dateTimeText: {
-      fontFamily: TYPOGRAPHY.fonts.medium,
+      fontFamily: typography.fonts.medium,
       fontSize: 13,
       color: colors.text,
     },
@@ -336,7 +332,7 @@ const createStyles = (colors: ThemeColors) =>
       minHeight: 100,
     },
     noteInput: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 15,
       color: colors.text,
       textAlignVertical: 'top',
@@ -358,7 +354,7 @@ const createStyles = (colors: ThemeColors) =>
       opacity: 0.5,
     },
     saveBtnText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 16,
       color: colors.background,
     },

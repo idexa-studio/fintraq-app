@@ -1,11 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from '@sbaiahmed1/react-native-blur';
 import React, { useMemo, useCallback } from 'react';
-import { ActivityIndicator, Platform, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
-import { spacing, COMPONENT_SIZES, ShadowToken, shadow } from '../../theme/tokens';
+import { ActivityIndicator, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import type { ShadowToken } from '../../theme/tokens';
+import { FrostLayer } from './FrostLayer';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'success' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -51,16 +49,17 @@ export const Button = React.memo(function Button({
   shadow: shadowToken,
   icon,
 }: ButtonProps) {
-  const { colors, isDark } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors, sizes, spacing, shadow } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const sizeConfig = COMPONENT_SIZES.button[size];
+  const sizeConfig = sizes.button[size];
 
   const textColor = useMemo(() => {
     if (disabled) return colors.textMuted;
     if (variant === 'secondary' || variant === 'outline' || variant === 'ghost') return colors.text;
-    return '#FFFFFF';
-  }, [variant, disabled, colors.text, colors.textMuted]);
+    return colors.background;
+  }, [variant, disabled, colors.text, colors.textMuted, colors.background]);
 
   const backgroundColor = useMemo(() => {
     if (disabled) return colors.surface;
@@ -86,7 +85,7 @@ export const Button = React.memo(function Button({
     if (shadowToken) return shadow(shadowToken);
     if (variant === 'primary' && !disabled) return shadow('sm');
     return shadow('none');
-  }, [shadowToken, variant, disabled]);
+  }, [shadowToken, variant, disabled, shadow]);
 
   const handlePress = useCallback(() => {
     if (!disabled && !isLoading) {
@@ -115,14 +114,7 @@ export const Button = React.memo(function Button({
       activeOpacity={0.75}
     >
       {(variant === 'secondary' || variant === 'outline') && (
-        <BlurView
-          blurAmount={Platform.OS === 'ios' ? 20 : 0}
-          blurType={isDark ? "dark" : "light"}
-          style={[StyleSheet.absoluteFillObject, { 
-            backgroundColor: Platform.OS === 'android' ? colors.surface : 'transparent',
-            borderRadius: sizeConfig.borderRadius,
-          }]}
-        />
+        <FrostLayer intensity={20} androidColor={colors.surface} borderRadius={sizeConfig.borderRadius} />
       )}
       
       {icon && !isLoading && (
@@ -154,7 +146,7 @@ export const Button = React.memo(function Button({
   );
 });
 
-const createStyles = (colors: ThemeColors) => StyleSheet.create({
+const createStyles = ({ colors, typography }: ThemeContextType) => StyleSheet.create({
   base: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -162,8 +154,8 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     overflow: 'hidden',
   },
   text: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
-    fontWeight: TYPOGRAPHY.weights.semibold,
+    fontFamily: typography.fonts.semibold,
+    fontWeight: typography.weights.semibold,
     letterSpacing: -0.2,
   },
 });

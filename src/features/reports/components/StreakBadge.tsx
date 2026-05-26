@@ -1,20 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { ThemeColors } from '../../../theme/colors';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { useUsageStreak } from '../hooks/useStreak';
 
-/**
- * StreakBadge: A tiny, high-contrast indicator of usage consistency.
- * Sits on the Dashboard to provide dopamine and retention.
- * Re-aligned with core patterns and properly typed.
- */
-export function StreakBadge() {
-  const { colors } = useTheme();
+export const StreakBadge = React.memo(function StreakBadge() {
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const { data: streak, isLoading } = useUsageStreak();
-  const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   if (isLoading || !streak || streak === 0) return null;
 
@@ -26,23 +20,23 @@ export function StreakBadge() {
       </Text>
     </View>
   );
-}
+});
 
-const createStyles = (colors: ThemeColors) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
   container: {
-    height: 24, // Matches accountCurrencyBadge exactly
+    height: 24,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    borderRadius: 999,
-    gap: 4,
-    backgroundColor: colors.background + '80', // Translucent dark-mode friendly bg
+    paddingHorizontal: spacing('2.5'),
+    borderRadius: radius('full'),
+    gap: spacing('1'),
+    backgroundColor: colors.background + '80',
     borderWidth: 1,
     borderColor: colors.border,
     alignSelf: 'flex-start',
   },
   text: {
-    fontFamily: TYPOGRAPHY.fonts.semibold, // Matches currency chip
+    fontFamily: typography.fonts.semibold,
     fontSize: 10,
     letterSpacing: 0.5,
   },

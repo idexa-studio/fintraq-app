@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 
 type SectionHeaderProps = {
   title: string;
@@ -9,9 +8,13 @@ type SectionHeaderProps = {
   onPressRight?: () => void;
 };
 
-export function SectionHeader({ title, rightText, onPressRight }: SectionHeaderProps) {
-  const { colors } = useTheme();
-  const styles = React.useMemo(() => createStyles(colors), [colors]);
+export const SectionHeader = React.memo(function SectionHeader({
+  title,
+  rightText,
+  onPressRight,
+}: SectionHeaderProps) {
+  const theme = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
     <View style={styles.wrap}>
@@ -27,25 +30,25 @@ export function SectionHeader({ title, rightText, onPressRight }: SectionHeaderP
       ) : null}
     </View>
   );
-}
+});
 
-const createStyles = (colors: { [key: string]: string }) =>
+const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
   StyleSheet.create({
     wrap: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: 24,
-      marginBottom: 12,
+      paddingHorizontal: spacing('6'),
+      marginBottom: spacing('3'),
     },
     title: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
       fontSize: 10,
       letterSpacing: 1.5,
     },
     right: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       color: colors.primary,
       fontSize: 12,
     },

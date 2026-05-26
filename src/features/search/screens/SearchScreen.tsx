@@ -4,10 +4,8 @@ import { TransactionRow } from '@/src/components/ui/TransactionRow';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import type { Category } from '@/src/features/categories/api/categories';
 import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
-import { useTheme } from '@/src/providers/ThemeProvider';
-import { ThemeColors } from '@/src/theme/colors';
-import { RADIUS, SPACING } from '@/src/theme/tokens';
-import { TYPOGRAPHY } from '@/src/theme/typography';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -25,8 +23,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalSearch } from '../hooks/useGlobalSearch';
-
-const toHexColor = (value: number) => `#${value.toString(16).padStart(6, '0')}`;
 
 type SearchItem =
   | { kind: 'transaction'; data: TransactionListItem }
@@ -52,32 +48,34 @@ const AccountRow = React.memo(function AccountRow({
   isFirst: boolean;
   isLast: boolean;
 }) {
-  const { colors } = useTheme();
-  const accentColor = useMemo(() => toHexColor(account.color), [account.color]);
+  const theme = useTheme();
+  const { colors, radius } = theme;
+  const styles = useMemo(() => createAccountRowStyles(theme), [theme]);
+  const accentColor = useMemo(() => colorNumberToHex(account.color), [account.color]);
   const handlePress = useCallback(() => onPress(account.id), [onPress, account.id]);
 
   const containerStyle = useMemo(() => ({
     backgroundColor: colors.surface,
-    borderTopLeftRadius: isFirst ? RADIUS.lg : 0,
-    borderTopRightRadius: isFirst ? RADIUS.lg : 0,
-    borderBottomLeftRadius: isLast ? RADIUS.lg : 0,
-    borderBottomRightRadius: isLast ? RADIUS.lg : 0,
+    borderTopLeftRadius: isFirst ? radius('lg') : 0,
+    borderTopRightRadius: isFirst ? radius('lg') : 0,
+    borderBottomLeftRadius: isLast ? radius('lg') : 0,
+    borderBottomRightRadius: isLast ? radius('lg') : 0,
     borderBottomWidth: isLast ? 0 : 1,
     borderBottomColor: colors.text + '08',
-  }), [isFirst, isLast, colors]);
+  }), [isFirst, isLast, colors, radius]);
 
   return (
     <TouchableOpacity
-      style={[accountRowStyles.container, containerStyle]}
+      style={[styles.container, containerStyle]}
       onPress={handlePress}
       activeOpacity={0.75}
     >
-      <View style={[accountRowStyles.iconBox, { backgroundColor: accentColor + '18' }]}>
+      <View style={[styles.iconBox, { backgroundColor: accentColor + '18' }]}>
         <Ionicons name={resolveIcon(account.icon, 'wallet-outline')} size={18} color={accentColor} />
       </View>
-      <View style={accountRowStyles.info}>
-        <Text style={[accountRowStyles.name, { color: colors.text }]}>{account.name}</Text>
-        <Text style={[accountRowStyles.meta, { color: colors.textMuted }]}>
+      <View style={styles.info}>
+        <Text style={[styles.name, { color: colors.text }]}>{account.name}</Text>
+        <Text style={[styles.meta, { color: colors.textMuted }]}>
           {account.currency} · {account.accountNumber && account.accountNumber !== 'N/A'
             ? `•••• ${account.accountNumber.slice(-4)}`
             : 'Account'}
@@ -87,38 +85,38 @@ const AccountRow = React.memo(function AccountRow({
         amount={account.balance}
         currency={account.currency}
         weight="bold"
-        style={accountRowStyles.balance}
+        style={styles.balance}
       />
       <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
     </TouchableOpacity>
   );
 });
 
-const accountRowStyles = StyleSheet.create({
+const createAccountRowStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: SPACING['3'],
-    paddingHorizontal: SPACING['4'],
-    gap: SPACING['3'],
+    paddingVertical: spacing('3'),
+    paddingHorizontal: spacing('4'),
+    gap: spacing('3'),
   },
   iconBox: {
     width: 40,
     height: 40,
-    borderRadius: RADIUS.md,
+    borderRadius: radius('md'),
     alignItems: 'center',
     justifyContent: 'center',
   },
   info: {
     flex: 1,
-    gap: SPACING['0.5'],
+    gap: spacing('0.5'),
   },
   name: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 14,
   },
   meta: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     fontSize: 12,
   },
   balance: {
@@ -139,36 +137,38 @@ const CategoryRow = React.memo(function CategoryRow({
   isFirst: boolean;
   isLast: boolean;
 }) {
-  const { colors } = useTheme();
-  const catColor = useMemo(() => toHexColor(category.color), [category.color]);
+  const theme = useTheme();
+  const { colors, radius } = theme;
+  const styles = useMemo(() => createCategoryRowStyles(theme), [theme]);
+  const catColor = useMemo(() => colorNumberToHex(category.color), [category.color]);
   const handlePress = useCallback(() => onPress(category.id), [onPress, category.id]);
 
   const containerStyle = useMemo(() => ({
     backgroundColor: colors.surface,
-    borderTopLeftRadius: isFirst ? RADIUS.lg : 0,
-    borderTopRightRadius: isFirst ? RADIUS.lg : 0,
-    borderBottomLeftRadius: isLast ? RADIUS.lg : 0,
-    borderBottomRightRadius: isLast ? RADIUS.lg : 0,
+    borderTopLeftRadius: isFirst ? radius('lg') : 0,
+    borderTopRightRadius: isFirst ? radius('lg') : 0,
+    borderBottomLeftRadius: isLast ? radius('lg') : 0,
+    borderBottomRightRadius: isLast ? radius('lg') : 0,
     borderBottomWidth: isLast ? 0 : 1,
     borderBottomColor: colors.text + '08',
-  }), [isFirst, isLast, colors]);
+  }), [isFirst, isLast, colors, radius]);
 
   return (
     <TouchableOpacity
-      style={[categoryRowStyles.container, containerStyle]}
+      style={[styles.container, containerStyle]}
       onPress={handlePress}
       activeOpacity={0.75}
     >
-      <View style={[categoryRowStyles.iconBox, { backgroundColor: catColor + '18' }]}>
+      <View style={[styles.iconBox, { backgroundColor: catColor + '18' }]}>
         <Ionicons name={resolveIcon(category.icon, 'pricetag-outline')} size={18} color={catColor} />
       </View>
-      <Text style={[categoryRowStyles.name, { color: colors.text }]}>{category.name}</Text>
+      <Text style={[styles.name, { color: colors.text }]}>{category.name}</Text>
       <View style={[
-        categoryRowStyles.typeBadge,
+        styles.typeBadge,
         { backgroundColor: (category.type === 'CR' ? colors.success : colors.danger) + '15' },
       ]}>
         <Text style={[
-          categoryRowStyles.typeBadgeText,
+          styles.typeBadgeText,
           { color: category.type === 'CR' ? colors.success : colors.danger },
         ]}>
           {category.type === 'CR' ? 'Income' : 'Expense'}
@@ -179,35 +179,35 @@ const CategoryRow = React.memo(function CategoryRow({
   );
 });
 
-const categoryRowStyles = StyleSheet.create({
+const createCategoryRowStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: SPACING['3'],
-    paddingHorizontal: SPACING['4'],
-    gap: SPACING['3'],
+    paddingVertical: spacing('3'),
+    paddingHorizontal: spacing('4'),
+    gap: spacing('3'),
   },
   iconBox: {
     width: 40,
     height: 40,
-    borderRadius: RADIUS.md,
+    borderRadius: radius('md'),
     alignItems: 'center',
     justifyContent: 'center',
   },
   name: {
     flex: 1,
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 14,
   },
   typeBadge: {
-    paddingHorizontal: SPACING['2'],
+    paddingHorizontal: spacing('2'),
     height: 22,
-    borderRadius: RADIUS.sm,
+    borderRadius: radius('sm'),
     alignItems: 'center',
     justifyContent: 'center',
   },
   typeBadgeText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 11,
   },
 });
@@ -215,9 +215,10 @@ const categoryRowStyles = StyleSheet.create({
 // ─── SearchScreen ─────────────────────────────────────────────────────────────
 
 export function SearchScreen() {
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
   const router = useRouter();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const inputRef = useRef<TextInput>(null);
 
   const [query, setQuery] = useState('');
@@ -284,7 +285,6 @@ export function SearchScreen() {
         return (
           <TransactionRow
             tx={item.data}
-            colors={colors}
             isFirst={isFirst}
             isLast={isLast}
             showDate
@@ -311,7 +311,7 @@ export function SearchScreen() {
         />
       );
     },
-    [colors, handleTransactionPress, handleAccountPress, handleCategoryPress],
+    [handleTransactionPress, handleAccountPress, handleCategoryPress],
   );
 
   const renderSectionHeader = useCallback(
@@ -324,7 +324,10 @@ export function SearchScreen() {
     [styles],
   );
 
-  const renderSectionFooter = useCallback(() => <View style={{ height: SPACING['5'] }} />, []);
+  const renderSectionFooter = useCallback(
+    () => <View style={styles.sectionFooter} />,
+    [styles],
+  );
 
   const keyExtractor = useCallback((item: SearchItem) => {
     if (item.kind === 'transaction') return `tx-${item.data.id}`;
@@ -336,7 +339,6 @@ export function SearchScreen() {
     <SafeAreaView style={styles.container}>
       <BlurBackground />
 
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={handleBack} activeOpacity={0.75}>
           <Ionicons name="arrow-back" size={20} color={colors.text} />
@@ -349,7 +351,6 @@ export function SearchScreen() {
         )}
       </View>
 
-      {/* Search input */}
       <View style={styles.searchRow}>
         <View style={styles.searchWrap}>
           <Ionicons name="search-outline" size={18} color={colors.textMuted} />
@@ -372,7 +373,6 @@ export function SearchScreen() {
         </View>
       </View>
 
-      {/* Results / States */}
       {!isEnabled ? (
         <View style={styles.promptWrap}>
           <View style={styles.promptIconBox}>
@@ -411,26 +411,24 @@ export function SearchScreen() {
   );
 }
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
     },
-
-    // ─── Header ────────────────────────────────────────────────────────────
     header: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: SPACING['6'],
-      paddingTop: SPACING['3'],
-      paddingBottom: SPACING['2'],
-      gap: SPACING['4'],
+      paddingHorizontal: spacing('6'),
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('2'),
+      gap: spacing('4'),
     },
     backBtn: {
       width: 44,
       height: 44,
-      borderRadius: RADIUS.md,
+      borderRadius: radius('md'),
       backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
@@ -439,90 +437,87 @@ const createStyles = (colors: ThemeColors) =>
       flex: 1,
     },
     title: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 28,
       color: colors.text,
       letterSpacing: -1,
     },
     loadingIndicator: {
-      marginRight: SPACING['1'],
+      marginRight: spacing('1'),
     },
-
-    // ─── Search input ───────────────────────────────────────────────────────
     searchRow: {
-      paddingHorizontal: SPACING['6'],
-      paddingBottom: SPACING['4'],
+      paddingHorizontal: spacing('6'),
+      paddingBottom: spacing('4'),
     },
     searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',
       height: 52,
-      borderRadius: RADIUS.md,
+      borderRadius: radius('md'),
       backgroundColor: colors.surface,
-      paddingHorizontal: SPACING['4'],
-      gap: SPACING['2'],
+      paddingHorizontal: spacing('4'),
+      gap: spacing('2'),
     },
     searchInput: {
       flex: 1,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 16,
       color: colors.text,
       padding: 0,
     },
-
-    // ─── Empty / prompt states ─────────────────────────────────────────────
     promptWrap: {
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
       paddingBottom: 80,
-      gap: SPACING['3'],
+      gap: spacing('3'),
     },
     promptIconBox: {
       width: 68,
       height: 68,
-      borderRadius: RADIUS['2xl'],
+      borderRadius: radius('2xl'),
       backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
-      marginBottom: SPACING['1'],
+      marginBottom: spacing('1'),
     },
     promptTitle: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 18,
       color: colors.text,
       letterSpacing: -0.3,
     },
     promptSubtitle: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 14,
       color: colors.textMuted,
       textAlign: 'center',
       lineHeight: 20,
     },
-
-    // ─── Results list ───────────────────────────────────────────────────────
     listContent: {
-      paddingHorizontal: SPACING['6'],
+      paddingHorizontal: spacing('6'),
       paddingBottom: 60,
     },
     sectionHeader: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingLeft: SPACING['1'],
-      marginBottom: SPACING['2'],
+      paddingLeft: spacing('1'),
+      marginBottom: spacing('2'),
     },
     sectionHeaderText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 9,
       color: colors.textMuted,
       letterSpacing: 1.2,
       textTransform: 'uppercase',
     },
     sectionHeaderCount: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 10,
       color: colors.textMuted,
+    },
+    sectionFooter: {
+      height: spacing('5'),
     },
   });

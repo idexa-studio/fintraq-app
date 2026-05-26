@@ -1,8 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from '@sbaiahmed1/react-native-blur';
 import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
-import { ActivityIndicator, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
@@ -11,14 +10,14 @@ import { OptionsDialog } from '../../../components/ui/OptionsDialog';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { DEFAULT_CURRENCY } from '../../../constants/currency';
 import { useSettings } from '../../../providers/SettingsProvider';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { ThemeColors } from '../../../theme/colors';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { colorNumberToHex } from '../../../utils/format';
 import type { Account } from '../../accounts/api/accounts';
 import { AccountFormModal } from '../../accounts/components/AccountFormModal';
 import { useAccounts, useDeleteAccount } from '../../accounts/hooks/accounts';
 import { useTransactions } from '../../transactions/hooks/transactions';
 import { usePremium } from '@/src/providers/PremiumProvider';
+import { FrostLayer } from '../../../components/ui/FrostLayer';
 import { SectionHeader } from '../components/SectionHeader';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
@@ -44,11 +43,12 @@ const resolveIconName = (raw: string | null | undefined, fallback: IoniconName):
 };
 
 export const DashboardScreen = React.memo(function DashboardScreen() {
-  const { colors, isDark } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
   const { isPremium } = usePremium();
   const { profile } = useSettings();
   const { width: screenWidth } = useWindowDimensions();
-  const styles = React.useMemo(() => createStyles(colors, screenWidth), [colors, screenWidth]);
+  const styles = React.useMemo(() => createStyles(theme, screenWidth), [theme, screenWidth]);
   const router = useRouter();
 
   const { data: transactions, isLoading: txLoading } = useTransactions(6);
@@ -206,10 +206,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         <View style={[styles.bgCircle, { top: 180, right: -110, width: 440, height: 440, backgroundColor: colors.primaryDark, opacity: 0.52 }]} />
         <View style={[styles.bgCircle, { bottom: -110, left: 40, width: 380, height: 380, backgroundColor: colors.primary, opacity: 0.6 }]} />
       </View>
-      <BlurView blurAmount={Platform.OS === 'ios' ? 80 : 95} blurType={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFillObject} />
-      {Platform.OS === 'android' && (
-        <View style={[StyleSheet.absoluteFillObject, { backgroundColor: colors.background + '60' }]} pointerEvents="none" />
-      )}
+      <FrostLayer intensity={80} androidColor={colors.background + '60'} />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
@@ -330,7 +327,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           contentContainerStyle={styles.accountsScrollContent}
         >
           {accounts?.map(acc => {
-            const accColor = '#' + acc.color.toString(16).padStart(6, '0');
+            const accColor = colorNumberToHex(acc.color);
             return (
               <TouchableOpacity
                 key={acc.id}
@@ -416,7 +413,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
                 <TransactionRow
                   key={tx.id}
                   tx={tx}
-                  colors={colors}
                   isFirst={idx === 0}
                   isLast={isLast}
                   showDate
@@ -469,7 +465,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   );
 });
 
-const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.create({
+const createStyles = ({ colors, typography }: ThemeContextType, screenWidth: number) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -544,7 +540,7 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     borderColor: colors.text,
   },
   currencyTabText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     color: colors.textMuted,
     fontSize: 11,
     letterSpacing: 0.4,
@@ -553,7 +549,7 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     color: colors.background,
   },
   heroBadge: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     color: colors.textMuted,
     fontSize: 10,
     letterSpacing: 1.5,
@@ -582,7 +578,7 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     borderRadius: 4,
   },
   splitLabel: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     color: colors.textMuted,
     fontSize: 10,
     letterSpacing: 1.2,
@@ -630,7 +626,7 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     backgroundColor: colors.text,
   },
   quickActionPrimaryText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     color: colors.background,
     fontSize: 14,
   },
@@ -647,7 +643,7 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     borderColor: colors.border,
   },
   quickActionSecondaryText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     color: colors.text,
     fontSize: 14,
   },
@@ -697,13 +693,13 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     marginBottom: 14,
   },
   accountPlaceholderTitle: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     color: colors.text,
     fontSize: 16,
     marginBottom: 6,
   },
   accountPlaceholderText: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     color: colors.textMuted,
     fontSize: 12,
     lineHeight: 18,
@@ -740,12 +736,12 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     flex: 1,
   },
   accountCardName: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     color: colors.text,
     fontSize: 14,
   },
   accountCardHint: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     color: colors.textMuted,
     fontSize: 11,
     marginTop: 2,
@@ -760,12 +756,12 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     backgroundColor: colors.background + '80',
   },
   accountCurrencyText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 10,
     letterSpacing: 0.8,
   },
   accountBalanceLabel: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 9,
     color: colors.textMuted,
     letterSpacing: 1.2,
@@ -785,7 +781,7 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     gap: 4,
   },
   accountCardStatLabel: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 8,
     color: colors.textMuted,
     letterSpacing: 1,
@@ -812,7 +808,7 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     gap: 8,
   },
   emptyActivityText: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     fontSize: 13,
     color: colors.textMuted,
   },
@@ -827,7 +823,7 @@ const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.cr
     marginTop: 4,
   },
   emptyActivityActionText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 11,
     color: colors.background,
   },

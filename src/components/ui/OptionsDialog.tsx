@@ -1,9 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
 import { Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -34,8 +32,9 @@ export const OptionsDialog = React.memo(function OptionsDialog({
   options,
   closeLabel = 'Close',
 }: OptionsDialogProps) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handleOptionPress = useCallback((option: OptionsDialogOption) => {
     if (option.closeOnPress !== false) {
@@ -111,11 +110,11 @@ export const OptionsDialog = React.memo(function OptionsDialog({
   );
 });
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, overlay, typography }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.52)',
+      backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
       paddingHorizontal: 24,
       paddingBottom: 42,
@@ -134,13 +133,13 @@ const createStyles = (colors: ThemeColors) =>
       elevation: 10,
     },
     title: {
-      fontFamily: TYPOGRAPHY.fonts.headingRegular,
+      fontFamily: typography.fonts.headingRegular,
       fontSize: 24,
       color: colors.text,
       letterSpacing: -0.6,
     },
     subtitle: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 12,
       color: colors.textMuted,
       marginTop: 4,
@@ -183,7 +182,7 @@ const createStyles = (colors: ThemeColors) =>
     },
     optionText: {
       flex: 1,
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 13,
       color: colors.text,
     },
@@ -204,7 +203,7 @@ const createStyles = (colors: ThemeColors) =>
       alignItems: 'center',
     },
     closeButtonText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 14,
       color: colors.text,
     },

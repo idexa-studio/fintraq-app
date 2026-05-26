@@ -38,7 +38,7 @@ export type TransactionListItem = {
   };
 };
 
-const TRANSACTION_LIST_SELECT = {
+export const TRANSACTION_LIST_SELECT = {
   id: payments.id,
   accountId: payments.accountId,
   categoryId: payments.categoryId,

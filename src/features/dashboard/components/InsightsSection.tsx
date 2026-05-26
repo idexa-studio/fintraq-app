@@ -1,10 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { PremiumGuard } from '../../../components/ui/PremiumGuard';
 import { usePremium } from '../../../providers/PremiumProvider';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { useDashboardInsights } from '../hooks/dashboard';
 import { InsightCard } from './InsightCard';
 import { SectionHeader } from './SectionHeader';
@@ -13,16 +12,10 @@ interface InsightsSectionProps {
   currency: string;
 }
 
-/**
- * InsightsSection: Orchestrates the display of financial insights on the dashboard.
- * 
- * Features:
- * 1. Pro-Only: Wrapped in PremiumGuard to emphasize premium value.
- * 2. Horizontal Scroll: Provides a clean, modern way to explore multiple insights.
- * 3. Loading & Empty States: Managed internally with React Query.
- */
-export function InsightsSection({ currency }: InsightsSectionProps) {
-  const { colors } = useTheme();
+export const InsightsSection = React.memo(function InsightsSection({ currency }: InsightsSectionProps) {
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const { isPremium } = usePremium();
   const { data: insights, isLoading } = useDashboardInsights(currency);
 
@@ -32,13 +25,11 @@ export function InsightsSection({ currency }: InsightsSectionProps) {
     <View style={styles.container}>
       <SectionHeader title="PRO INSIGHTS" />
 
-      <PremiumGuard 
-        label="Upgrade to Pro for insights" 
+      <PremiumGuard
+        label="Upgrade to Pro for insights"
         size="large"
         containerStyle={[
           styles.premiumContainer,
-          // Only use edge-to-edge (0) margin if premium is active to allow scrolling
-          // Otherwise, it should have the default 24px margin to look like a card
           !isPremium && { marginHorizontal: 24 }
         ]}
       >
@@ -48,12 +39,12 @@ export function InsightsSection({ currency }: InsightsSectionProps) {
             <Text style={[styles.loadingText, { color: colors.textMuted }]}>Analyzing your patterns...</Text>
           </View>
         ) : hasInsights ? (
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}
             decelerationRate="fast"
-            snapToInterval={190} // 180 (card width) + 10 (gap)
+            snapToInterval={190}
             snapToAlignment="start"
           >
             <View style={{ width: 24 }} />
@@ -71,56 +62,55 @@ export function InsightsSection({ currency }: InsightsSectionProps) {
       </PremiumGuard>
     </View>
   );
-}
+});
 
-const styles = StyleSheet.create({
+const createStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
   container: {
-    marginVertical: 4,
-    marginBottom: 20,
+    marginVertical: spacing('1'),
+    marginBottom: spacing('5'),
   },
   premiumContainer: {
-    borderRadius: 20,
+    borderRadius: radius('xl'),
     overflow: 'hidden',
-    marginHorizontal: 0, // Default to 0 for pro scrolling context
+    marginHorizontal: 0,
   },
   scrollContent: {
     paddingRight: 0,
-    gap: 0, 
+    gap: 0,
   },
   placeholderCard: {
     height: 110,
-    marginHorizontal: 24,
-    borderRadius: 18,
+    marginHorizontal: spacing('6'),
+    borderRadius: radius('xl'),
     backgroundColor: 'rgba(0,0,0,0.03)',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 12,
+    gap: spacing('3'),
   },
   loadingCircle: {
-     width: 20,
-     height: 20,
-     borderRadius: 10,
-     borderWidth: 2,
-     borderColor: 'rgba(0,0,0,0.1)',
-     borderStyle: 'dashed',
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderStyle: 'dashed',
   },
   loadingText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 9,
     letterSpacing: 0.5,
   },
   emptyCard: {
     height: 110,
-    marginHorizontal: 24,
-    borderRadius: 18,
+    marginHorizontal: spacing('6'),
+    borderRadius: radius('xl'),
     borderWidth: 1,
-    padding: 20,
+    padding: spacing('5'),
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    gap: spacing('2'),
   },
   emptyText: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     fontSize: 11,
     textAlign: 'center',
     lineHeight: 16,

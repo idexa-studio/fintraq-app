@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ThemeColors } from '../../../theme/colors';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 
 type Props = {
   value: 'CR' | 'DR';
   onChange: (value: 'CR' | 'DR') => void;
-  colors: ThemeColors;
 };
 
-export const TransactionTypePicker = ({ value, onChange, colors }: Props) => {
+export const TransactionTypePicker = React.memo(function TransactionTypePicker({
+  value,
+  onChange,
+}: Props) {
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const handleDR = useCallback(() => onChange('DR'), [onChange]);
+  const handleCR = useCallback(() => onChange('CR'), [onChange]);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -18,7 +26,7 @@ export const TransactionTypePicker = ({ value, onChange, colors }: Props) => {
           { backgroundColor: colors.surface, borderColor: colors.border },
           value === 'DR' && { backgroundColor: colors.danger, borderColor: colors.danger },
         ]}
-        onPress={() => onChange('DR')}
+        onPress={handleDR}
         activeOpacity={0.8}
       >
         <Text style={[styles.pillText, { color: value === 'DR' ? colors.background : colors.textMuted }]}>Expense</Text>
@@ -30,33 +38,33 @@ export const TransactionTypePicker = ({ value, onChange, colors }: Props) => {
           { backgroundColor: colors.surface, borderColor: colors.border },
           value === 'CR' && { backgroundColor: colors.success, borderColor: colors.success },
         ]}
-        onPress={() => onChange('CR')}
+        onPress={handleCR}
         activeOpacity={0.8}
       >
         <Text style={[styles.pillText, { color: value === 'CR' ? colors.background : colors.textMuted }]}>Income</Text>
       </TouchableOpacity>
     </View>
   );
-};
+});
 
-const styles = StyleSheet.create({
+const createStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
   container: {
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 8,
+    paddingHorizontal: spacing('6'),
+    paddingTop: spacing('4'),
+    paddingBottom: spacing('2'),
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing('2.5'),
   },
   pill: {
-    paddingHorizontal: 16,
+    paddingHorizontal: spacing('4'),
     height: 36,
-    borderRadius: 18,
+    borderRadius: radius('full'),
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
   },
   pillText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 13,
   },
 });

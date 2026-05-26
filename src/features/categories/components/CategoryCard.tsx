@@ -2,14 +2,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { resolveIcon } from '../../../utils/icons';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ThemeColors } from '../../../theme/colors';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { colorNumberToHex } from '../../../utils/format';
 import { Category } from '../api/categories';
 
 interface CategoryCardProps {
   item: Category;
   index: number;
-  colors: ThemeColors;
   onPress: (item: Category) => void;
   onLongPress: (item: Category) => void;
 }
@@ -17,13 +16,14 @@ interface CategoryCardProps {
 export const CategoryCard = React.memo(function CategoryCard({
   item,
   index,
-  colors,
   onPress,
   onLongPress,
 }: CategoryCardProps) {
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const catColor = useMemo(() =>
-    item.color ? '#' + item.color.toString(16).padStart(6, '0') : colors.primary,
+    item.color ? colorNumberToHex(item.color) : colors.primary,
     [item.color, colors.primary]
   );
 
@@ -76,50 +76,48 @@ export const CategoryCard = React.memo(function CategoryCard({
   );
 });
 
-const createStyles = (colors: ThemeColors) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
   categoryCard: {
     position: 'relative',
     flex: 1,
     backgroundColor: colors.surface,
-    borderRadius: 18,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    marginBottom: 10,
+    borderRadius: radius('xl'),
+    padding: spacing('3.5'),
+    marginBottom: spacing('2.5'),
     overflow: 'hidden',
     minHeight: 156,
   },
   categoryCardLeft: {
-    marginRight: 6,
+    marginRight: spacing('1.5'),
   },
   categoryCardRight: {
-    marginLeft: 6,
+    marginLeft: spacing('1.5'),
   },
   cardGlow: {
     position: 'absolute',
-    right: -24,
-    top: -24,
+    right: -spacing('6'),
+    top: -spacing('6'),
     width: 88,
     height: 88,
-    borderRadius: 999,
+    borderRadius: radius('full'),
   },
   cardTopRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: spacing('3'),
   },
   categoryIconBox: {
     width: 42,
     height: 42,
-    borderRadius: 14,
+    borderRadius: radius('md'),
     justifyContent: 'center',
     alignItems: 'center',
   },
   typeBadge: {
     height: 22,
-    borderRadius: 999,
-    paddingHorizontal: 8,
+    borderRadius: radius('full'),
+    paddingHorizontal: spacing('2'),
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -130,7 +128,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.success + '18',
   },
   typeBadgeText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 9,
     letterSpacing: 0.7,
   },
@@ -149,27 +147,27 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     flex: 1,
   },
   categoryName: {
-    fontFamily: TYPOGRAPHY.fonts.headingRegular,
+    fontFamily: typography.fonts.headingRegular,
     color: colors.text,
     fontSize: 20,
     letterSpacing: -0.5,
     lineHeight: 23,
   },
   categorySubtext: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     color: colors.textMuted,
     fontSize: 11,
-    marginTop: 6,
+    marginTop: spacing('1.5'),
   },
   cardFooter: {
     marginTop: 'auto',
-    paddingTop: 12,
+    paddingTop: spacing('3'),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   cardFooterText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 10,
     letterSpacing: 0.6,
     textTransform: 'uppercase',

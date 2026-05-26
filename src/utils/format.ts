@@ -21,6 +21,16 @@ export const toDbColor = (value: string): number => {
 };
 
 /**
+ * Converts a numeric color (as stored in the DB) to a CSS hex string.
+ * e.g. 11591744 → '#B0E000'
+ */
+export const colorNumberToHex = (value: number): string =>
+  `#${value.toString(16).padStart(6, '0')}`;
+
+export const withAlpha = (color: string, hexAlpha: string): string =>
+  `${color}${hexAlpha}`;
+
+/**
  * Formats a numeric amount into a currency string using the Intl library.
  * If no currency code is provided, it formats the number as a localized decimal.
  */

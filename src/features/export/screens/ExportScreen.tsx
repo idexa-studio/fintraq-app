@@ -17,15 +17,15 @@ import { BlurBackground } from '@/src/components/ui/BlurBackground';
 import { Header } from '@/src/components/ui/Header';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
-import { useTheme } from '@/src/providers/ThemeProvider';
-import { ThemeColors } from '@/src/theme/colors';
-import { TYPOGRAPHY } from '@/src/theme/typography';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex } from '@/src/utils/format';
 import { CsvExportService, ExportDateRange } from '../api/csv-export.service';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 
 export function ExportScreen() {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const accountsQuery = useAccounts();
 
@@ -151,8 +151,6 @@ export function ExportScreen() {
       setExportedData(null);
     }
   }, [exportedData]);
-
-  const toHexColor = (value: number) => `#${value.toString(16).padStart(6, '0')}`;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -290,8 +288,8 @@ export function ExportScreen() {
                   activeOpacity={0.7}
                 >
                   <View style={styles.filterLeft}>
-                    <View style={[styles.filterIconBox, { backgroundColor: toHexColor(account.color) + '20' }]}>
-                      <Ionicons name={resolveIcon(account.icon, 'wallet-outline')} size={16} color={toHexColor(account.color)} />
+                    <View style={[styles.filterIconBox, { backgroundColor: colorNumberToHex(account.color) + '20' }]}>
+                      <Ionicons name={resolveIcon(account.icon, 'wallet-outline')} size={16} color={colorNumberToHex(account.color)} />
                     </View>
                     <Text style={styles.filterLabel}>{account.name}</Text>
                   </View>
@@ -398,7 +396,7 @@ export function ExportScreen() {
   );
 }
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, typography }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -426,13 +424,13 @@ const createStyles = (colors: ThemeColors) =>
       marginBottom: 16,
     },
     heroTitle: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 20,
       color: colors.text,
       marginBottom: 8,
     },
     heroSubtitle: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 14,
       color: colors.textMuted,
       textAlign: 'center',
@@ -442,7 +440,7 @@ const createStyles = (colors: ThemeColors) =>
       marginBottom: 24,
     },
     sectionLabel: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 10,
       color: colors.textMuted,
       letterSpacing: 2,
@@ -485,7 +483,7 @@ const createStyles = (colors: ThemeColors) =>
       borderRadius: 5,
     },
     presetLabel: {
-      fontFamily: TYPOGRAPHY.fonts.medium,
+      fontFamily: typography.fonts.medium,
       fontSize: 15,
       color: colors.text,
     },
@@ -511,14 +509,14 @@ const createStyles = (colors: ThemeColors) =>
       borderColor: colors.border,
     },
     dateLabel: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 10,
       color: colors.textMuted,
       letterSpacing: 0.5,
       marginBottom: 4,
     },
     dateValue: {
-      fontFamily: TYPOGRAPHY.fonts.medium,
+      fontFamily: typography.fonts.medium,
       fontSize: 14,
       color: colors.text,
     },
@@ -549,7 +547,7 @@ const createStyles = (colors: ThemeColors) =>
       justifyContent: 'center',
     },
     filterLabel: {
-      fontFamily: TYPOGRAPHY.fonts.medium,
+      fontFamily: typography.fonts.medium,
       fontSize: 15,
       color: colors.text,
     },
@@ -568,7 +566,7 @@ const createStyles = (colors: ThemeColors) =>
       alignItems: 'center',
     },
     typeChipText: {
-      fontFamily: TYPOGRAPHY.fonts.medium,
+      fontFamily: typography.fonts.medium,
       fontSize: 13,
       color: colors.text,
     },
@@ -585,17 +583,17 @@ const createStyles = (colors: ThemeColors) =>
       justifyContent: 'space-between',
     },
     summaryLabel: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 14,
       color: colors.textMuted,
     },
     summaryValue: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 20,
       color: colors.text,
     },
     summaryValueSmall: {
-      fontFamily: TYPOGRAPHY.fonts.medium,
+      fontFamily: typography.fonts.medium,
       fontSize: 13,
       color: colors.text,
     },
@@ -610,7 +608,7 @@ const createStyles = (colors: ThemeColors) =>
       marginBottom: 16,
     },
     exportButtonText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 16,
       color: colors.background,
     },
@@ -624,7 +622,7 @@ const createStyles = (colors: ThemeColors) =>
     },
     warningText: {
       flex: 1,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 13,
       color: colors.warning || '#F59E0B',
       lineHeight: 18,

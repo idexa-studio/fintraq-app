@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from '@sbaiahmed1/react-native-blur';
 import React, { useMemo, useState, useCallback } from 'react';
 import {
     FlatList,
@@ -13,9 +12,8 @@ import {
     View,
 } from 'react-native';
 import { CURRENCIES } from '../../constants/currency';
-import { useTheme } from '../../providers/ThemeProvider';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
+import { FrostLayer } from './FrostLayer';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 export type CurrencyPickerModalProps = {
   visible: boolean;
@@ -32,8 +30,9 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
   value,
   onChange
 }: CurrencyPickerModalProps) {
-  const { colors, isDark } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [query, setQuery] = useState('');
 
   const filtered = useMemo(() => {
@@ -103,17 +102,7 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
             <View style={[styles.glow, { bottom: -60, right: -80, width: 360, height: 360, backgroundColor: colors.text + '0A' }]} />
           </View>
 
-          <BlurView
-            blurAmount={Platform.OS === 'ios' ? 80 : 96}
-            blurType={isDark ? 'dark' : 'light'}
-            style={StyleSheet.absoluteFillObject}
-          />
-          {Platform.OS === 'android' && (
-            <View
-              pointerEvents="none"
-              style={[StyleSheet.absoluteFillObject, { backgroundColor: colors.background + '60' }]}
-            />
-          )}
+          <FrostLayer intensity={80} androidColor={colors.background + '60'} />
 
           <View style={styles.handle} />
 
@@ -174,11 +163,11 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
   );
 });
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, overlay, typography }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.55)',
+      backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
     },
     backdrop: {
@@ -214,13 +203,13 @@ const createStyles = (colors: ThemeColors) =>
       justifyContent: 'space-between',
     },
     title: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 28,
       color: colors.text,
       letterSpacing: -0.8,
     },
     subtitle: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 12,
       color: colors.textMuted,
       marginTop: 2,
@@ -253,7 +242,7 @@ const createStyles = (colors: ThemeColors) =>
     },
     searchInput: {
       flex: 1,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 14,
       color: colors.text,
       paddingVertical: 0,
@@ -289,7 +278,7 @@ const createStyles = (colors: ThemeColors) =>
       borderColor: colors.primary + '50',
     },
     code: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.textMuted,
       letterSpacing: 0.5,
@@ -299,12 +288,12 @@ const createStyles = (colors: ThemeColors) =>
     },
     name: {
       flex: 1,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 14,
       color: colors.text,
     },
     nameSelected: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       color: colors.text,
     },
     emptyWrap: {
@@ -312,7 +301,7 @@ const createStyles = (colors: ThemeColors) =>
       alignItems: 'center',
     },
     emptyText: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 14,
       color: colors.textMuted,
     },

@@ -2,6 +2,7 @@ import { and, eq, sql } from 'drizzle-orm';
 import { db } from '../../../db/client';
 import { accounts, categories, payments } from '../../../db/schema';
 import { getDaysAgoLocal, getLocalISOString, getStartOfMonthLocal } from '../../../utils/date';
+import { colorNumberToHex } from '../../../utils/format';
 import { TransactionType } from '../../../types';
 
 export interface ReportCategory {
@@ -94,7 +95,7 @@ export async function getWeeklyReport(currency: string): Promise<ReportData> {
   const totalExpense = current.expense || 1;
   const categoriesWithPercent: ReportCategory[] = topCats.map(cat => ({
     ...cat,
-    color: `#${cat.color.toString(16).padStart(6, '0')}`,
+    color: colorNumberToHex(cat.color),
     percentage: (cat.amount / totalExpense) * 100,
   }));
 
@@ -165,7 +166,7 @@ export async function getMonthlyReport(currency: string): Promise<ReportData> {
   
   const categoriesWithPercent: ReportCategory[] = topCats.map(cat => ({
     ...cat,
-    color: `#${cat.color.toString(16).padStart(6, '0')}`,
+    color: colorNumberToHex(cat.color),
     percentage: (cat.amount / totalExpense) * 100,
   }));
 

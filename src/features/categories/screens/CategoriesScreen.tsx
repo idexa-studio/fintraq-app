@@ -6,9 +6,7 @@ import { BlurBackground } from '../../../components/ui/BlurBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
 import { OptionsDialog } from '../../../components/ui/OptionsDialog';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { ThemeColors } from '../../../theme/colors';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { Category } from '../api/categories';
 import { CategoryCard } from '../components/CategoryCard';
 import { CategoryFormModal } from '../components/CategoryFormModal';
@@ -16,8 +14,9 @@ import { CategoryTypeSelector } from '../components/CategoryTypeSelector';
 import { useCategories, useDeleteCategory } from '../hooks/categories';
 
 export const CategoriesScreen = () => {
-  const { colors } = useTheme();
-  const styles = React.useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = React.useMemo(() => createStyles(theme), [theme]);
   const { data: categories, isLoading } = useCategories();
   const { mutateAsync: deleteCategory } = useDeleteCategory();
 
@@ -91,7 +90,6 @@ export const CategoriesScreen = () => {
             <CategoryTypeSelector
               activeType={activeType}
               onTypeChange={setActiveType}
-              colors={colors}
             />
 
             <View style={styles.searchWrap}>
@@ -123,7 +121,6 @@ export const CategoriesScreen = () => {
               <CategoryCard
                 item={item}
                 index={index}
-                colors={colors}
                 onPress={handleEdit}
                 onLongPress={(cat) => {
                   setSelectedCategory(cat);
@@ -183,7 +180,7 @@ export const CategoriesScreen = () => {
   );
 };
 
-const createStyles = (colors: ThemeColors) => StyleSheet.create({
+const createStyles = ({ colors, typography }: ThemeContextType) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
 
   listContent: {
@@ -214,7 +211,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   searchInput: {
     flex: 1,
     height: '100%',
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     fontSize: 14,
     color: colors.text,
   },
@@ -226,7 +223,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
 
   filterMetaText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 10,
     letterSpacing: 0.4,
     color: colors.textMuted,
@@ -239,7 +236,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
 
   emptyTitle: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     color: colors.text,
     fontSize: 20,
     marginTop: 10,
@@ -247,7 +244,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
   },
 
   emptyText: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     color: colors.textMuted,
     fontSize: 13,
     marginTop: 4,
@@ -267,7 +264,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     alignItems: 'center',
   },
   emptyBtnText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 12,
     color: colors.text,
   },

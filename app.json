@@ -15,7 +15,8 @@
       "iosDisplayInForeground": true
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "me.nafish.luno",
     },
     "android": {
       "adaptiveIcon": {

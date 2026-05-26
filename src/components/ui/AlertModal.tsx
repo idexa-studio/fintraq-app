@@ -1,8 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { TYPOGRAPHY } from '../../theme/typography';
-import { ThemeColors } from '../../theme/colors';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { Ionicons } from '@expo/vector-icons';
 
 export type AlertButton = {
@@ -28,18 +26,20 @@ export const AlertModal = React.memo(function AlertModal({
   onClose,
   type = 'info',
 }: AlertModalProps) {
-  const { colors, isDark } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
   const { width } = useWindowDimensions();
-  const styles = useMemo(() => createStyles(colors, isDark, width), [colors, isDark, width]);
+  const styles = useMemo(() => createStyles(theme, width), [theme, width]);
 
   const icon = useMemo(() => {
     switch (type) {
       case 'success': return { name: 'checkmark-circle' as const, color: colors.primary };
       case 'error': return { name: 'alert-circle' as const, color: colors.danger };
-      case 'warning': return { name: 'warning' as const, color: '#FFB800' };
-      default: return { name: 'information-circle' as const, color: colors.primary };
+      case 'warning': return { name: 'warning' as const, color: colors.warning };
+      case 'info':
+      default: return { name: 'information-circle' as const, color: colors.info };
     }
-  }, [type, colors.primary, colors.danger]);
+  }, [type, colors.primary, colors.danger, colors.warning, colors.info]);
 
   const handleButtonPress = useCallback((button: AlertButton) => {
     if (button.onPress) button.onPress();
@@ -96,11 +96,11 @@ export const AlertModal = React.memo(function AlertModal({
   );
 });
 
-const createStyles = (colors: ThemeColors, isDark: boolean, width: number) =>
+const createStyles = ({ colors, isDark, overlay, typography }: ThemeContextType, width: number) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.7)',
+      backgroundColor: overlay.dark,
       justifyContent: 'center',
       alignItems: 'center',
       padding: 24,
@@ -129,13 +129,13 @@ const createStyles = (colors: ThemeColors, isDark: boolean, width: number) =>
     },
     title: {
       flex: 1,
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 22,
       color: colors.text,
       letterSpacing: -1,
     },
     message: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 15,
       color: colors.textMuted,
       lineHeight: 22,
@@ -162,7 +162,7 @@ const createStyles = (colors: ThemeColors, isDark: boolean, width: number) =>
       borderColor: colors.border,
     },
     buttonText: {
-      fontFamily: TYPOGRAPHY.fonts.bold,
+      fontFamily: typography.fonts.bold,
       fontSize: 13,
       color: colors.background,
       letterSpacing: 1,

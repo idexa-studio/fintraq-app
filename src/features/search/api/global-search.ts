@@ -3,31 +3,7 @@ import { db } from '@/src/db/client';
 import { accounts, categories, payments } from '@/src/db/schema';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import type { Category } from '@/src/features/categories/api/categories';
-import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
-
-const TRANSACTION_SELECT = {
-  id: payments.id,
-  accountId: payments.accountId,
-  categoryId: payments.categoryId,
-  amount: payments.amount,
-  type: payments.type,
-  datetime: payments.datetime,
-  note: payments.note,
-  account: {
-    id: accounts.id,
-    name: accounts.name,
-    currency: accounts.currency,
-    color: accounts.color,
-  },
-  category: {
-    id: categories.id,
-    name: categories.name,
-    icon: categories.icon,
-    color: categories.color,
-  },
-  createdAt: payments.createdAt,
-  updatedAt: payments.updatedAt,
-} as const;
+import { TRANSACTION_LIST_SELECT, type TransactionListItem } from '@/src/features/transactions/api/transactions';
 
 export interface GlobalSearchResults {
   query: string;
@@ -42,7 +18,7 @@ const searchTransactions = async (
 ): Promise<TransactionListItem[]> => {
   const q = `%${query}%`;
   return db
-    .select(TRANSACTION_SELECT)
+    .select(TRANSACTION_LIST_SELECT)
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
     .innerJoin(categories, eq(payments.categoryId, categories.id))

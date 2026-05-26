@@ -1,21 +1,14 @@
-import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { StyleSheet, Text, View } from 'react-native';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 
-interface WelcomeStepProps {
-  onImportPress?: () => void;
-}
-
-export function WelcomeStep({ onImportPress }: WelcomeStepProps) {
-  const { colors } = useTheme();
-  const styles = React.useMemo(() => createStyles(colors), [colors]);
+export function WelcomeStep() {
+  const theme = useTheme();
+  const styles = React.useMemo(() => createStyles(theme), [theme]);
 
   return (
     <View style={styles.wrapper}>
       <View style={styles.badge}>
-        <Ionicons name="sparkles-outline" size={16} color={colors.background} />
         <Text style={styles.badgeText}>LOCAL-FIRST MONEY OS</Text>
       </View>
 
@@ -34,24 +27,11 @@ export function WelcomeStep({ onImportPress }: WelcomeStepProps) {
           <Text style={styles.statValue}>ACCOUNT + CATEGORIES</Text>
         </View>
       </View>
-
-      {onImportPress && (
-        <TouchableOpacity style={styles.importButton} onPress={onImportPress} activeOpacity={0.7}>
-          <View style={styles.importIconBox}>
-            <Ionicons name="cloud-download-outline" size={18} color={colors.primary} />
-          </View>
-          <View style={styles.importTextContainer}>
-            <Text style={styles.importTitle}>Restore from backup</Text>
-            <Text style={styles.importSubtitle}>Import your existing data</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
-        </TouchableOpacity>
-      )}
     </View>
   );
 }
 
-const createStyles = (colors: { [key: string]: string }) =>
+const createStyles = ({ colors, typography }: ThemeContextType) =>
   StyleSheet.create({
     wrapper: {
       flex: 1,
@@ -66,17 +46,16 @@ const createStyles = (colors: { [key: string]: string }) =>
       backgroundColor: colors.primary,
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 8,
     },
     badgeText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.background,
       letterSpacing: 0.8,
     },
     title: {
       marginTop: 18,
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 44,
       lineHeight: 46,
       color: colors.text,
@@ -84,7 +63,7 @@ const createStyles = (colors: { [key: string]: string }) =>
     },
     body: {
       marginTop: 14,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 15,
       lineHeight: 24,
       color: colors.textMuted,
@@ -100,49 +79,16 @@ const createStyles = (colors: { [key: string]: string }) =>
       paddingVertical: 6,
     },
     statLabel: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 10,
       color: colors.textMuted,
       letterSpacing: 1.1,
       marginBottom: 8,
     },
     statValue: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 13,
       color: colors.text,
       lineHeight: 18,
-    },
-    importButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: 24,
-      padding: 16,
-      backgroundColor: colors.surface,
-      borderRadius: 16,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    importIconBox: {
-      width: 40,
-      height: 40,
-      borderRadius: 12,
-      backgroundColor: colors.primary + '15',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginRight: 12,
-    },
-    importTextContainer: {
-      flex: 1,
-    },
-    importTitle: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
-      fontSize: 15,
-      color: colors.text,
-      marginBottom: 2,
-    },
-    importSubtitle: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
-      fontSize: 13,
-      color: colors.textMuted,
     },
   });

@@ -1,9 +1,8 @@
-import { BlurView } from '@sbaiahmed1/react-native-blur';
 import React, { useMemo } from 'react';
-import { StyleSheet, View, ViewStyle, Platform } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { ThemeColors } from '../../theme/colors';
-import { COMPONENT_SIZES, shadow, ShadowToken } from '../../theme/tokens';
+import { StyleSheet, View, ViewStyle } from 'react-native';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import type { ShadowToken } from '../../theme/tokens';
+import { FrostLayer } from './FrostLayer';
 
 type CardSize = 'sm' | 'md' | 'lg';
 type CardVariant = 'default' | 'filled' | 'outlined';
@@ -36,10 +35,11 @@ export const Card = React.memo(function Card({
   variant = 'default',
   shadow: shadowToken,
 }: CardProps) {
-  const { colors, isDark } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors, sizes, shadow } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const sizeConfig = COMPONENT_SIZES.card[size];
+  const sizeConfig = sizes.card[size];
 
   const backgroundStyle = useMemo(() => {
     switch (variant) {
@@ -49,21 +49,15 @@ export const Card = React.memo(function Card({
         return { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.border };
       case 'default':
       default:
-        return { backgroundColor: Platform.OS === 'android' ? colors.card : 'transparent' };
+        return { backgroundColor: 'transparent' };
     }
-  }, [variant, colors.surface, colors.card, colors.border]);
+  }, [variant, colors.surface, colors.border]);
 
   const shadowStyle = useMemo(() => {
     if (shadowToken) return shadow(shadowToken);
     if (variant === 'default') return shadow('sm');
     return shadow('none');
-  }, [shadowToken, variant]);
-
-  const blurStyle = useMemo(() => ({
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: Platform.OS === 'android' ? colors.card : 'transparent',
-    borderRadius: sizeConfig.borderRadius,
-  }), [colors.card, sizeConfig.borderRadius]);
+  }, [shadowToken, variant, shadow]);
 
   return (
     <View
@@ -79,11 +73,7 @@ export const Card = React.memo(function Card({
       ]}
     >
       {variant === 'default' && (
-        <BlurView
-          blurAmount={Platform.OS === 'ios' ? 25 : 0}
-          blurType={isDark ? "dark" : "light"}
-          style={blurStyle}
-        />
+        <FrostLayer intensity={25} androidColor={colors.card} borderRadius={sizeConfig.borderRadius} />
       )}
       <View style={styles.content}>
         {children}
@@ -92,7 +82,7 @@ export const Card = React.memo(function Card({
   );
 });
 
-const createStyles = (colors: ThemeColors) => StyleSheet.create({
+const createStyles = ({ colors }: ThemeContextType) => StyleSheet.create({
   card: {
     overflow: 'hidden',
     position: 'relative',

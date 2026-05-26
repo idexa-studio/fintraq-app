@@ -2,9 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { format } from 'date-fns';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
-import { spacing, radius } from '../../theme/tokens';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { colorNumberToHex } from '../../utils/format';
 import { TransactionType } from '../../types';
 import { MoneyText } from './MoneyText';
 
@@ -27,36 +26,34 @@ type TransactionData = {
 
 type Props = {
   tx: TransactionData;
-  colors: ThemeColors;
   onPress?: (tx: TransactionData) => void;
   isFirst?: boolean;
   isLast?: boolean;
   showDate?: boolean;
 };
 
-const toHexColor = (value: number) => `#${value.toString(16).padStart(6, '0')}`;
-
 /**
  * TransactionRow - Editorial Brutalist Design
- * 
+ *
  * Layout:
  * - Card radius: 0 for middle items, 16px (lg) for first/last corners
  * - Padding: 14px vertical
  * - Gap: 10px between elements
  * - Icon box: 40px, 12px radius (md)
  */
-export const TransactionRow = React.memo(function TransactionRow({ 
-  tx, 
-  colors, 
-  onPress, 
-  isFirst, 
-  isLast, 
-  showDate 
+export const TransactionRow = React.memo(function TransactionRow({
+  tx,
+  onPress,
+  isFirst,
+  isLast,
+  showDate
 }: Props) {
-  const styles = useMemo(() => createStyles(colors), [colors]);
-  
-  const categoryColor = useMemo(() => toHexColor(tx.category.color), [tx.category.color]);
-  
+  const theme = useTheme();
+  const { colors, radius } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const categoryColor = useMemo(() => colorNumberToHex(tx.category.color), [tx.category.color]);
+
   const iconName: keyof typeof Ionicons.glyphMap = useMemo(() =>
     tx.category.icon in Ionicons.glyphMap
       ? (tx.category.icon as keyof typeof Ionicons.glyphMap)
@@ -76,7 +73,7 @@ export const TransactionRow = React.memo(function TransactionRow({
     borderTopRightRadius: isFirst ? radius('lg') : 0,
     borderBottomLeftRadius: isLast ? radius('lg') : 0,
     borderBottomRightRadius: isLast ? radius('lg') : 0,
-  }), [isFirst, isLast, colors.border, colors.surface]);
+  }), [isFirst, isLast, colors.border, colors.surface, radius]);
 
   return (
     <TouchableOpacity
@@ -135,7 +132,7 @@ export const TransactionRow = React.memo(function TransactionRow({
 
 TransactionRow.displayName = 'TransactionRow';
 
-const createStyles = (colors: ThemeColors) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -162,7 +159,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     gap: spacing('1'),
   },
   title: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 14,
   },
   metaRow: {
@@ -176,7 +173,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     borderRadius: 3,
   },
   meta: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     fontSize: 12,
   },
   right: {
@@ -187,7 +184,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     fontSize: 14,
   },
   date: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     fontSize: 11,
   },
 });

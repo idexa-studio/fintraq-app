@@ -19,10 +19,7 @@ import { Header } from '../../../components/ui/Header';
 import { KPICard } from '../../../components/ui/KPICard';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { ThemeColors } from '../../../theme/colors';
-import { RADIUS, SHADOWS, SPACING } from '../../../theme/tokens';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
 import { AdvancedFilterService, AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../../filters/api/advanced-filters.service';
@@ -206,7 +203,6 @@ const SwipeableRow = React.memo(function SwipeableRow({
     >
       <TransactionRow
         tx={tx}
-        colors={colors}
         isFirst={isFirst}
         isLast={isLast}
         onPress={handleEdit}
@@ -221,8 +217,9 @@ export function TransactionsScreen() {
   const initialAccountId = React.useMemo(() => resolveParamNumber(params.accountId), [params.accountId]);
   const initialCategoryId = React.useMemo(() => resolveParamNumber(params.categoryId), [params.categoryId]);
 
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   // Advanced filters state
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(() => {
@@ -517,7 +514,6 @@ export function TransactionsScreen() {
               selectedCurrency={selectedKpiCurrency}
               onSelectCurrency={setSelectedKpiCurrency}
               metrics={activeTotals}
-              colors={colors}
             />
 
             {activeFilterCount > 0 && (
@@ -585,7 +581,7 @@ export function TransactionsScreen() {
   );
 }
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -600,12 +596,12 @@ const createStyles = (colors: ThemeColors) =>
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: SPACING['2'],
+      gap: spacing('2'),
     },
     headerBtn: {
       width: 44,
       height: 44,
-      borderRadius: RADIUS.md,
+      borderRadius: radius('md'),
       backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
@@ -616,7 +612,7 @@ const createStyles = (colors: ThemeColors) =>
       right: -2,
       minWidth: 18,
       height: 18,
-      borderRadius: RADIUS.full,
+      borderRadius: radius('full'),
       backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'center',
@@ -625,17 +621,17 @@ const createStyles = (colors: ThemeColors) =>
     },
     filterBadgeText: {
       color: colors.background,
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 10,
     },
     content: {
-      paddingHorizontal: SPACING['6'],
-      paddingTop: SPACING['3'],
+      paddingHorizontal: spacing('6'),
+      paddingTop: spacing('3'),
       paddingBottom: 120,
     },
     listHeader: {
-      gap: SPACING['5'],
-      marginBottom: SPACING['6'],
+      gap: spacing('5'),
+      marginBottom: spacing('6'),
     },
     activeFiltersRow: {
       flexDirection: 'row',
@@ -643,71 +639,71 @@ const createStyles = (colors: ThemeColors) =>
       justifyContent: 'space-between',
     },
     activeFiltersLabel: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 10,
       color: colors.textMuted,
       letterSpacing: 1.5,
     },
     clearChip: {
       backgroundColor: colors.danger + '12',
-      paddingHorizontal: SPACING['3'],
+      paddingHorizontal: spacing('3'),
       height: 28,
-      borderRadius: RADIUS.md,
+      borderRadius: radius('md'),
       alignItems: 'center',
       justifyContent: 'center',
     },
     clearChipText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.danger,
     },
-    daySection: { gap: SPACING['3'] },
+    daySection: { gap: spacing('3') },
     dayHeaderRow: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: SPACING['1'],
-      marginBottom: SPACING['3'],
+      paddingHorizontal: spacing('1'),
+      marginBottom: spacing('3'),
     },
     dayTitle: {
       color: colors.textMuted,
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       letterSpacing: 1.2,
       textTransform: 'uppercase',
     },
     dayTotals: {
       flexDirection: 'row',
-      gap: SPACING['3'],
+      gap: spacing('3'),
     },
     dayTotalValue: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 12,
     },
     dayCard: {
-      borderRadius: RADIUS.xl,
+      borderRadius: radius('xl'),
       overflow: 'hidden',
     },
     emptyWrap: {
       paddingVertical: 60,
       alignItems: 'center',
-      gap: SPACING['4'],
+      gap: spacing('4'),
     },
     emptyIconBox: {
       width: 80,
       height: 80,
-      borderRadius: RADIUS['2xl'],
+      borderRadius: radius('2xl'),
       backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
     },
     emptyTitle: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       color: colors.text,
       fontSize: 18,
     },
     emptySubtitle: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       color: colors.textMuted,
       fontSize: 14,
       textAlign: 'center',
@@ -717,32 +713,32 @@ const createStyles = (colors: ThemeColors) =>
     emptyAction: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: SPACING['2.5'],
-      paddingHorizontal: SPACING['5'],
+      gap: spacing('2.5'),
+      paddingHorizontal: spacing('5'),
       height: 48,
-      borderRadius: RADIUS.lg,
+      borderRadius: radius('lg'),
       backgroundColor: colors.text,
-      marginTop: SPACING['2'],
+      marginTop: spacing('2'),
     },
     emptyActionText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       color: colors.background,
       fontSize: 15,
     },
     loadMoreWrap: {
-      paddingVertical: SPACING['7'],
+      paddingVertical: spacing('7'),
       alignItems: 'center',
     },
     fab: {
       position: 'absolute',
       bottom: 34,
-      right: SPACING['6'],
+      right: spacing('6'),
       width: 60,
       height: 60,
-      borderRadius: RADIUS.xl,
+      borderRadius: radius('xl'),
       backgroundColor: colors.text,
       alignItems: 'center',
       justifyContent: 'center',
-      ...SHADOWS.lg,
+      ...shadow("lg"),
     },
   });

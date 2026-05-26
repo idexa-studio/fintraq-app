@@ -1,4 +1,4 @@
-export type OnboardingStepId = 'welcome' | 'profile' | 'account';
+export type OnboardingStepId = 'welcome' | 'profile' | 'currency';
 
 export type OnboardingStepDefinition = {
   id: OnboardingStepId;
@@ -9,8 +9,4 @@ export type OnboardingStepDefinition = {
 
 export type OnboardingFormValues = {
   name: string;
-  accountName: string;
-  accountHolder: string;
-  accountNumber: string;
-  openingBalance: string;
 };

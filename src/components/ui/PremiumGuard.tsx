@@ -3,9 +3,7 @@ import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { useTheme } from '../../providers/ThemeProvider';
-import { TYPOGRAPHY } from '../../theme/typography';
-import { spacing, radius } from '../../theme/tokens';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 interface PremiumGuardProps {
   children: React.ReactNode;
@@ -32,7 +30,9 @@ export const PremiumGuard = React.memo(function PremiumGuard({
   containerStyle
 }: PremiumGuardProps) {
   const { isPremium } = usePremium();
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors, spacing, radius } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
 
   const handlePress = useCallback(() => {
@@ -83,7 +83,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
       ],
       actionTextLabel: small ? 'Pro' : 'Unlock'
     };
-  }, [size, colors.surface, colors.border, colors.background, colors.text, containerStyle]);
+  }, [size, colors.surface, colors.border, colors.background, colors.text, containerStyle, styles, spacing, radius]);
 
   if (isPremium) {
     return <>{children}</>;
@@ -135,7 +135,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
   );
 });
 
-const styles = StyleSheet.create({
+const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.create({
   container: {
     borderWidth: 1,
     overflow: 'hidden',
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontFamily: TYPOGRAPHY.fonts.bold,
+    fontFamily: typography.fonts.bold,
     fontSize: 14,
     marginBottom: spacing('1'),
   },
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   subtitle: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     fontSize: 12,
   },
   actionBadge: {
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionText: {
-    fontFamily: TYPOGRAPHY.fonts.bold,
+    fontFamily: typography.fonts.bold,
     fontSize: 10,
     letterSpacing: 1,
   },

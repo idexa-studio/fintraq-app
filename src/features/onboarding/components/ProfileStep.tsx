@@ -2,13 +2,13 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { OnboardingFormValues } from '../types';
 
 export function ProfileStep() {
-  const { colors } = useTheme();
-  const styles = React.useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = React.useMemo(() => createStyles(theme), [theme]);
   const { control, formState: { errors } } = useFormContext<OnboardingFormValues>();
 
   return (
@@ -41,19 +41,19 @@ export function ProfileStep() {
   );
 }
 
-const createStyles = (colors: { [key: string]: string }) =>
+const createStyles = ({ colors, typography }: ThemeContextType) =>
   StyleSheet.create({
     wrapper: {
       gap: 12,
     },
     prompt: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 14,
       color: colors.textMuted,
       letterSpacing: 0.2,
     },
     nameInput: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 44,
       lineHeight: 48,
       color: colors.text,
@@ -87,7 +87,7 @@ const createStyles = (colors: { [key: string]: string }) =>
     },
     noteText: {
       flex: 1,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 12,
       lineHeight: 18,
       color: colors.text,
