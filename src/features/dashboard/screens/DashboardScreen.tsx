@@ -16,7 +16,7 @@ import type { Account } from '../../accounts/api/accounts';
 import { useAccounts, useDeleteAccount } from '../../accounts/hooks/accounts';
 import { useTransactions } from '../../transactions/hooks/transactions';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { FrostLayer } from '../../../components/ui/FrostLayer';
+import { BlurBackground } from '../../../components/ui/BlurBackground';
 import { SectionHeader } from '../components/SectionHeader';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
@@ -191,20 +191,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Static background circles */}
-      <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-        <View style={[styles.bgCircle, { top: -60, left: -60, width: 340, height: 340, backgroundColor: colors.primary, opacity: 0.72 }]} />
-        <View style={[styles.bgCircle, { top: 180, right: -110, width: 440, height: 440, backgroundColor: colors.primaryDark, opacity: 0.52 }]} />
-        <View style={[styles.bgCircle, { bottom: -110, left: 40, width: 380, height: 380, backgroundColor: colors.primary, opacity: 0.6 }]} />
-      </View>
-      <FrostLayer intensity={80} androidColor={colors.background + '60'} />
+      <BlurBackground />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
         {/* ── Header ── */}
         <Header
           title="Dashboard"
-          subtitle={`${getGreeting()}${profile.name ? `, ${profile.name.split(' ')[0]}` : ''}`}
           rightAction={(
             <View style={styles.headerActions}>
               <TouchableOpacity
@@ -328,8 +321,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
                 delayLongPress={250}
                 activeOpacity={0.88}
               >
-                <View style={[styles.accountAccentBar, { backgroundColor: accColor }]} />
-
                 <View style={styles.accountCardInner}>
                   <View style={styles.accountCardTop}>
                     <View style={styles.accountCardLead}>
@@ -456,10 +447,6 @@ const createStyles = ({ colors, typography }: ThemeContextType, screenWidth: num
     backgroundColor: colors.background,
     overflow: 'hidden',
   },
-  bgCircle: {
-    position: 'absolute',
-    borderRadius: 999,
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -479,12 +466,8 @@ const createStyles = ({ colors, typography }: ThemeContextType, screenWidth: num
   iconButton: {
     width: 36,
     height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
     position: 'relative',
   },
   proDot: {
@@ -689,10 +672,6 @@ const createStyles = ({ colors, typography }: ThemeContextType, screenWidth: num
     fontSize: 12,
     lineHeight: 18,
     maxWidth: 180,
-  },
-  accountAccentBar: {
-    height: 3,
-    width: '100%',
   },
   accountCardInner: {
     padding: 14,

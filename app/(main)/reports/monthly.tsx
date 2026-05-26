@@ -41,7 +41,7 @@ export default function MonthlyReport() {
       <BlurBackground />
       <ReportHeader 
         title="Monthly Ledger" 
-        subtitle={report.periodLabel} 
+        
       />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>

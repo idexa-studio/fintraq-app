@@ -6,7 +6,6 @@ import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 export type HeaderProps = {
   title: string;
-  subtitle?: string;
   showBack?: boolean;
   rightAction?: React.ReactNode;
 };
@@ -24,11 +23,10 @@ export type HeaderProps = {
  * - Size: 44px (touch target)
  * - Radius: 12px (md)
  */
-export const Header = React.memo(function Header({ 
-  title, 
-  subtitle, 
-  showBack, 
-  rightAction 
+export const Header = React.memo(function Header({
+  title,
+  showBack,
+  rightAction
 }: HeaderProps) {
   const router = useRouter();
   const theme = useTheme();
@@ -59,11 +57,6 @@ export const Header = React.memo(function Header({
           <Text style={styles.title} numberOfLines={1}>
             {title}
           </Text>
-          {subtitle && (
-            <Text style={styles.subtitle} numberOfLines={1}>
-              {subtitle}
-            </Text>
-          )}
         </View>
       </View>
 
@@ -76,7 +69,7 @@ export const Header = React.memo(function Header({
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -95,12 +88,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   backBtn: {
     width: layout.minTouchTarget,
     height: layout.minTouchTarget,
-    borderRadius: radius('md'),
-    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
   },
   titleBlock: {
     flex: 1,
@@ -112,13 +101,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     fontSize: 28,
     letterSpacing: -1,
     lineHeight: 32,
-  },
-  subtitle: {
-    fontFamily: typography.fonts.regular,
-    color: colors.textMuted,
-    fontSize: 13,
-    letterSpacing: 0.1,
-    marginTop: spacing('0.5'),
   },
   rightActionWrap: {
     justifyContent: 'center',

@@ -83,12 +83,6 @@ export const TransactionRow = React.memo(function TransactionRow({
     >
       <View
         style={[
-          styles.accentBar,
-          { backgroundColor: tx.type === 'CR' ? colors.success : colors.danger },
-        ]}
-      />
-      <View
-        style={[
           styles.iconBox,
           { backgroundColor: categoryColor + '20' },
         ]}
@@ -137,15 +131,8 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: spacing('3.5'),
-    paddingRight: spacing('3.5'),
+    paddingHorizontal: spacing('3.5'),
     gap: spacing('2.5'),
-  },
-  accentBar: {
-    width: 3,
-    alignSelf: 'stretch',
-    borderRadius: radius('full'),
-    marginLeft: spacing('1'),
-    marginVertical: spacing('1.5'),
   },
   iconBox: {
     width: 40,

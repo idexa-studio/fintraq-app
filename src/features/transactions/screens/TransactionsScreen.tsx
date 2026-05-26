@@ -473,7 +473,6 @@ export function TransactionsScreen() {
 
       <Header
         title="Transactions"
-        subtitle={`${transactions.length} records`}
         showBack
         rightAction={(
           <View style={styles.headerActions}>
@@ -601,8 +600,6 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
     headerBtn: {
       width: 44,
       height: 44,
-      borderRadius: radius('md'),
-      backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
     },

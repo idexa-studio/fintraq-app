@@ -61,7 +61,6 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
         </View>
       </View>
 
-      <View style={[styles.accentLine, { backgroundColor: status.text }]} />
     </View>
   );
 });
@@ -117,14 +116,5 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) => Styl
   },
   trendIcon: {
     marginLeft: spacing('1'),
-  },
-  accentLine: {
-    position: 'absolute',
-    bottom: -1,
-    left: 20,
-    right: 20,
-    height: 3,
-    borderRadius: 1.5,
-    opacity: 0.8,
   },
 });

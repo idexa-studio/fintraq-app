@@ -156,7 +156,7 @@ export function ExportScreen() {
     <SafeAreaView style={styles.container}>
       <BlurBackground />
 
-      <Header title="Export CSV" subtitle="Download your data" showBack />
+      <Header title="Export CSV" showBack />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <PremiumGuard label="CSV Export">

@@ -42,7 +42,7 @@ export default function ReportsHub() {
   return (
     <SafeAreaView style={styles.container}>
       <BlurBackground />
-      <ReportHeader title="Reports" subtitle="Reflect & Adjust" />
+      <ReportHeader title="Reports" />
       
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.section}>

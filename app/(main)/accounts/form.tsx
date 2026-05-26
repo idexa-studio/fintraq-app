@@ -247,7 +247,7 @@ export default React.memo(function AccountFormScreen() {
       <BlurBackground />
       <Header
         title={isEditing ? 'Edit Account' : 'New Account'}
-        subtitle="Configure where your money lives"
+       
         showBack
       />
 

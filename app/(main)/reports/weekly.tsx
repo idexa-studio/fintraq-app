@@ -39,7 +39,7 @@ export default function WeeklyReport() {
       <BlurBackground />
       <ReportHeader 
         title="Weekly Journal" 
-        subtitle={report.periodLabel} 
+        
       />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>

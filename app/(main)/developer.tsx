@@ -70,7 +70,7 @@ export default function DeveloperScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <BlurBackground />
-        <Header title="Restricted" subtitle="Authentication required" showBack />
+        <Header title="Restricted" showBack />
         
         <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -113,7 +113,7 @@ export default function DeveloperScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <BlurBackground />
-      <Header title="Developer" subtitle="Secret system tools" showBack />
+      <Header title="Developer" showBack />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.section}>

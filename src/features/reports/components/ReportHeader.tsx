@@ -6,10 +6,9 @@ import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 
 interface ReportHeaderProps {
   title: string;
-  subtitle: string;
 }
 
-export const ReportHeader = React.memo(function ReportHeader({ title, subtitle }: ReportHeaderProps) {
+export const ReportHeader = React.memo(function ReportHeader({ title }: ReportHeaderProps) {
   const theme = useTheme();
   const { colors } = theme;
   const router = useRouter();
@@ -24,7 +23,6 @@ export const ReportHeader = React.memo(function ReportHeader({ title, subtitle }
       </TouchableOpacity>
       <View style={styles.content}>
         <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
-        <Text style={[styles.subtitle, { color: colors.textMuted }]}>{subtitle}</Text>
       </View>
     </View>
   );
@@ -42,12 +40,8 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
   backButton: {
     width: 44,
     height: 44,
-    borderRadius: radius('full'),
-    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
   },
   content: {
     flex: 1,
@@ -57,10 +51,5 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     fontSize: 28,
     lineHeight: 32,
     letterSpacing: -1,
-  },
-  subtitle: {
-    fontFamily: typography.fonts.regular,
-    fontSize: 13,
-    marginTop: spacing('0.5'),
   },
 });

@@ -229,7 +229,7 @@ export default function SettingsScreen() {
     <SafeAreaView style={styles.container}>
       <BlurBackground />
 
-      <Header title="Settings" subtitle="Preferences & data" showBack />
+      <Header title="Settings" showBack />
 
       <ScrollView
         contentContainerStyle={styles.scroll}
@@ -294,7 +294,7 @@ export default function SettingsScreen() {
             theme={theme}
             icon="notifications-outline"
             label="Daily reminder"
-            subtitle="Get prompted to log your spending"
+           
             value={profile.reminderEnabled ? 'ON' : 'OFF'}
             onPress={handleToggleReminders}
           />
@@ -302,7 +302,7 @@ export default function SettingsScreen() {
             theme={theme}
             icon="time-outline"
             label="Reminder time"
-            subtitle="When to send the daily nudge"
+           
             value={profile.reminderTime}
             onPress={() => setShowTimePicker(true)}
             isLast
@@ -326,7 +326,7 @@ export default function SettingsScreen() {
             theme={theme}
             icon="contrast-outline"
             label="Theme"
-            subtitle="Light, dark, or follow system"
+           
             value={themeLabel.toUpperCase()}
             onPress={() => setShowThemeDialog(true)}
             isLast
@@ -340,14 +340,14 @@ export default function SettingsScreen() {
             theme={theme}
             icon="grid-outline"
             label="Categories"
-            subtitle="Customise income and expense tags"
+           
             onPress={() => router.push('/categories')}
           />
           <PreferenceRow
             theme={theme}
             icon="download-outline"
             label="Export CSV"
-            subtitle="Download transactions as spreadsheet"
+           
             onPress={() => router.push('/export')}
             isLast
           />
@@ -360,7 +360,7 @@ export default function SettingsScreen() {
             theme={theme}
             icon="trash-bin-outline"
             label="Factory reset"
-            subtitle="Permanently erase all local data"
+           
             onPress={() => setShowResetDialog(true)}
             destructive
             isLast
@@ -396,7 +396,7 @@ export default function SettingsScreen() {
         visible={showThemeDialog}
         onClose={() => setShowThemeDialog(false)}
         title="Theme"
-        subtitle="Choose your preferred appearance"
+       
         options={themeDialogOptions}
       />
 

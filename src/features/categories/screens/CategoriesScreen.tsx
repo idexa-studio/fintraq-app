@@ -169,7 +169,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     <SafeAreaView style={styles.container}>
       <BlurBackground />
 
-      <Header title="Categories" subtitle="Organize your spending" showBack />
+      <Header title="Categories" showBack />
 
       {isLoading ? (
         <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />

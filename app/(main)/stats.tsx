@@ -349,7 +349,7 @@ const StatsScreen = React.memo(function StatsScreen() {
     <SafeAreaView style={styles.container}>
       <BlurBackground />
 
-      <Header title="Stats" subtitle="Your financial insights" showBack />
+      <Header title="Stats" showBack />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.controlCard}>

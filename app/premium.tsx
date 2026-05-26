@@ -1,4 +1,4 @@
-import { FrostLayer } from '@/src/components/ui/FrostLayer';
+import { BlurBackground } from '@/src/components/ui/BlurBackground';
 import { Header } from '@/src/components/ui/Header';
 import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
 import { usePremium } from '@/src/providers/PremiumProvider';
@@ -43,11 +43,7 @@ export default function PremiumScreen() {
   if (isPremium && !isProcessing) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-          <View style={[styles.bgCircle, { top: -100, left: -100, width: 500, height: 500, backgroundColor: colors.primary, opacity: 0.15 }]} />
-          <View style={[styles.bgCircle, { bottom: -150, right: -150, width: 600, height: 600, backgroundColor: colors.primary, opacity: 0.1 }]} />
-        </View>
-        <FrostLayer intensity={80} />
+        <BlurBackground />
 
         <SafeAreaView style={styles.successWrapper}>
           <View style={styles.proContent}>
@@ -89,13 +85,7 @@ export default function PremiumScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* ── Immersive Background ── */}
-      <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-        <View style={[styles.bgCircle, { top: -60, left: -60, width: 340, height: 340, backgroundColor: colors.primary, opacity: 0.72 }]} />
-        <View style={[styles.bgCircle, { top: 180, right: -110, width: 440, height: 440, backgroundColor: colors.primaryDark, opacity: 0.52 }]} />
-        <View style={[styles.bgCircle, { bottom: -110, left: 40, width: 380, height: 380, backgroundColor: colors.primary, opacity: 0.6 }]} />
-      </View>
-      <FrostLayer intensity={80} androidColor={colors.background + '60'} />
+      <BlurBackground />
 
       {/* ── Header ── */}
       <Header title="Luno Pro" showBack />
@@ -215,7 +205,6 @@ export default function PremiumScreen() {
 
 const createStyles = (colors: ThemeColors, screenWidth: number) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  bgCircle: { position: 'absolute', borderRadius: 999 },
   scrollContent: { paddingHorizontal: 24, paddingBottom: 40 },
 
   heroSection: { marginTop: 20, marginBottom: 24 },

@@ -428,8 +428,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     backBtn: {
       width: 44,
       height: 44,
-      borderRadius: radius('md'),
-      backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
     },

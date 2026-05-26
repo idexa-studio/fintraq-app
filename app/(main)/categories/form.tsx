@@ -243,7 +243,7 @@ export default React.memo(function CategoryFormScreen() {
       <BlurBackground />
       <Header
         title={isEditing ? 'Edit Category' : 'New Category'}
-        subtitle="Make your transaction groups clear and clean"
+       
         showBack
       />
 
