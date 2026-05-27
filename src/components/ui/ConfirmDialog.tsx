@@ -35,19 +35,15 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   }, [onClose, onConfirm]);
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      presentationStyle="overFullScreen"
-      onRequestClose={onClose}
-    >
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
 
         <View style={styles.card}>
-          <Text style={styles.title}>{title}</Text>
-          {message ? <Text style={styles.message}>{message}</Text> : null}
+          <View style={styles.body}>
+            <Text style={styles.title}>{title}</Text>
+            {message ? <Text style={styles.message}>{message}</Text> : null}
+          </View>
 
           <View style={styles.actions}>
             <TouchableOpacity style={styles.btnCancel} onPress={onClose} activeOpacity={0.7}>
@@ -79,18 +75,20 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flex: 1,
       backgroundColor: 'rgba(0,0,0,0.45)',
       justifyContent: 'flex-end',
-      paddingHorizontal: layout.screenPadding,
+      padding: layout.screenPadding,
       paddingBottom: spacing('9'),
     },
     card: {
-      alignSelf: 'stretch',
       backgroundColor: colors.background,
       borderRadius: radius('2xl'),
+      overflow: 'hidden',
+    },
+    body: {
       padding: spacing('5'),
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 18,
+      fontSize: 20,
       color: colors.text,
       marginBottom: spacing('2'),
     },
@@ -99,16 +97,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: typography.sizes.sm,
       color: colors.textMuted,
       lineHeight: 20,
-      marginBottom: spacing('5'),
     },
     actions: {
       flexDirection: 'row',
-      gap: spacing('2.5'),
     },
     btnCancel: {
       flex: 1,
-      height: 44,
-      borderRadius: radius('md'),
+      height: 52,
       backgroundColor: colors.surface,
       justifyContent: 'center',
       alignItems: 'center',
@@ -120,8 +115,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     btnConfirm: {
       flex: 1,
-      height: 44,
-      borderRadius: radius('md'),
+      height: 52,
       backgroundColor: colors.text,
       justifyContent: 'center',
       alignItems: 'center',

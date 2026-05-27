@@ -5,17 +5,14 @@ import React, { useCallback } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurBackground } from '../../../components/ui/BlurBackground';
-import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { MoneyText } from '../../../components/ui/MoneyText';
-import { OptionsDialog } from '../../../components/ui/OptionsDialog';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { DEFAULT_CURRENCY } from '../../../constants/currency';
 import { useSettings } from '../../../providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
-import type { Account } from '../../accounts/api/accounts';
-import { useAccounts, useDeleteAccount } from '../../accounts/hooks/accounts';
+import { useAccounts } from '../../accounts/hooks/accounts';
 import { StreakBadge } from '../../reports/components/StreakBadge';
 import { useTransactions } from '../../transactions/hooks/transactions';
 import { InsightsSection } from '../components/InsightsSection';
@@ -54,11 +51,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   const { data: transactions, isLoading: txLoading } = useTransactions(6);
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
-  const { mutateAsync: deleteAccount } = useDeleteAccount();
-
-  const [showAccountOptionsDialog, setShowAccountOptionsDialog] = React.useState(false);
-  const [showDeleteAccountDialog, setShowDeleteAccountDialog] = React.useState(false);
-  const [activeAccount, setActiveAccount] = React.useState<Account | undefined>(undefined);
 
   const balancesByCurrency = React.useMemo(() => {
     return accounts?.reduce((acc, account) => {
@@ -92,17 +84,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
     setSelectedTopCategoryCurrency(selectedCurrency);
   }, [selectedCurrency]);
 
-  const handleAccountLongPress = useCallback((acc: Account) => {
-    setActiveAccount(acc);
-    setShowAccountOptionsDialog(true);
-  }, []);
-
-  const handleCurrencySelect = useCallback((curr: string) => {
-    setSelectedCurrency(curr);
-  }, []);
-
-  const navigateToSearch = useCallback(() => {
-    router.push('/search');
+  const navigateToAccountTransactions = useCallback((accountId: number) => {
+    router.push(`/transactions?accountId=${accountId}`);
   }, [router]);
 
   const navigateToAnalytics = useCallback(() => {
@@ -117,16 +100,20 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
     router.push('/premium');
   }, [router]);
 
+  const navigateToSearch = useCallback(() => {
+    router.push('/search');
+  }, [router]);
+
+  const handleCurrencySelect = useCallback((curr: string) => {
+    setSelectedCurrency(curr);
+  }, []);
+
   const navigateToTransactions = useCallback(() => {
     router.push('/transactions');
   }, [router]);
 
   const navigateToCreateTransaction = useCallback(() => {
     router.push('/transactions/create');
-  }, [router]);
-
-  const navigateToAccountTransactions = useCallback((accountId: number) => {
-    router.push(`/transactions?accountId=${accountId}`);
   }, [router]);
 
   const navigateToEditTransaction = useCallback((txId: number) => {
@@ -137,40 +124,9 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
     router.push('/(main)/accounts/form');
   }, [router]);
 
-  const closeOptionsDialog = useCallback(() => {
-    setShowAccountOptionsDialog(false);
-  }, []);
-
-  const closeDeleteDialog = useCallback(() => {
-    setShowDeleteAccountDialog(false);
-  }, []);
-
-  const handleDeleteConfirm = useCallback(() => {
-    if (!activeAccount) return;
-    deleteAccount(activeAccount.id);
-    setActiveAccount(undefined);
-  }, [activeAccount, deleteAccount]);
-
-  const accountOptions = React.useMemo(() => {
-    if (!activeAccount) return [];
-    return [
-      {
-        key: 'edit-account',
-        label: 'Edit account',
-        icon: 'create-outline' as const,
-        onPress: () => {
-          router.push(`/(main)/accounts/form?id=${activeAccount.id}`);
-        },
-      },
-      {
-        key: 'delete-account',
-        label: 'Delete account',
-        icon: 'trash-outline' as const,
-        destructive: true,
-        onPress: () => setShowDeleteAccountDialog(true),
-      },
-    ];
-  }, [activeAccount, router]);
+  const openAccountsScreen = useCallback(() => {
+    router.push('/(main)/accounts');
+  }, [router]);
 
   const todayStr = React.useMemo(() => todayLabel(), []);
 
@@ -297,8 +253,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         <View style={styles.divider} />
         <View style={styles.sectionRow}>
           <Text style={styles.sectionLabel}>ACCOUNTS</Text>
-          <TouchableOpacity onPress={openAccountForm} activeOpacity={0.7}>
-            <Text style={styles.sectionAction}>New</Text>
+          <TouchableOpacity onPress={openAccountsScreen} activeOpacity={0.7}>
+            <Text style={styles.sectionAction}>Manage</Text>
           </TouchableOpacity>
         </View>
 
@@ -315,8 +271,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
                 key={acc.id}
                 style={styles.accountCard}
                 onPress={() => navigateToAccountTransactions(acc.id)}
-                onLongPress={() => handleAccountLongPress(acc)}
-                delayLongPress={250}
                 activeOpacity={0.88}
               >
                 <View style={styles.accountCardInner}>
@@ -422,23 +376,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       <TouchableOpacity style={styles.fab} onPress={navigateToCreateTransaction} activeOpacity={0.9}>
         <Ionicons name="add" size={28} color={colors.background} />
       </TouchableOpacity>
-
-      <OptionsDialog
-        visible={showAccountOptionsDialog}
-        onClose={closeOptionsDialog}
-        title="Manage Account"
-        subtitle={activeAccount?.name}
-        options={accountOptions}
-      />
-
-      <ConfirmDialog
-        visible={showDeleteAccountDialog}
-        onClose={closeDeleteDialog}
-        title="Delete Account"
-        message={activeAccount ? `Delete ${activeAccount.name}? This action cannot be undone.` : undefined}
-        confirmLabel="Delete"
-        onConfirm={handleDeleteConfirm}
-      />
     </SafeAreaView>
   );
 });

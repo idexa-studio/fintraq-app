@@ -48,12 +48,14 @@ export const AlertModal = React.memo(function AlertModal({
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.card}>
-          <View style={[styles.iconBox, { backgroundColor: iconCfg.bg }]}>
-            <Ionicons name={iconCfg.name} size={22} color={iconCfg.fg} />
-          </View>
+          <View style={styles.body}>
+            <View style={[styles.iconBox, { backgroundColor: iconCfg.bg }]}>
+              <Ionicons name={iconCfg.name} size={22} color={iconCfg.fg} />
+            </View>
 
-          <Text style={styles.title}>{title}</Text>
-          {message ? <Text style={styles.message}>{message}</Text> : null}
+            <Text style={styles.title}>{title}</Text>
+            {message ? <Text style={styles.message}>{message}</Text> : null}
+          </View>
 
           <View style={styles.actions}>
             {buttons.map((btn, i) => {
@@ -62,11 +64,11 @@ export const AlertModal = React.memo(function AlertModal({
               return (
                 <TouchableOpacity
                   key={i}
-                  style={[styles.btn, isCancel && styles.btnMuted, isDestructive && styles.btnDanger]}
+                  style={[styles.btn, isCancel && styles.btnCancel, isDestructive && styles.btnDanger]}
                   onPress={() => handleButtonPress(btn)}
                   activeOpacity={0.7}
                 >
-                  <Text style={[styles.btnText, isCancel && styles.btnTextMuted]}>
+                  <Text style={[styles.btnText, isCancel && styles.btnCancelText]}>
                     {btn.text}
                   </Text>
                 </TouchableOpacity>
@@ -89,10 +91,15 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType,
       padding: spacing('6'),
     },
     card: {
-      width: Math.min(screenWidth - spacing('12'), 300),
+      width: Math.min(screenWidth - spacing('12'), 320),
       backgroundColor: colors.background,
       borderRadius: radius('2xl'),
-      padding: spacing('6'),
+      overflow: 'hidden',
+      alignItems: 'center',
+    },
+    body: {
+      padding: spacing('5'),
+      paddingBottom: spacing('3'),
       alignItems: 'center',
     },
     iconBox: {
@@ -101,11 +108,11 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType,
       borderRadius: radius('full'),
       justifyContent: 'center',
       alignItems: 'center',
-      marginBottom: spacing('4'),
+      marginBottom: spacing('3'),
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 18,
+      fontSize: 20,
       color: colors.text,
       textAlign: 'center',
       marginBottom: spacing('2'),
@@ -116,22 +123,19 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType,
       color: colors.textMuted,
       lineHeight: 20,
       textAlign: 'center',
-      marginBottom: spacing('5'),
     },
     actions: {
       flexDirection: 'row',
-      gap: spacing('2.5'),
       width: '100%',
     },
     btn: {
       flex: 1,
-      height: 44,
-      borderRadius: radius('md'),
+      height: 52,
       backgroundColor: colors.text,
       justifyContent: 'center',
       alignItems: 'center',
     },
-    btnMuted: {
+    btnCancel: {
       backgroundColor: colors.surface,
     },
     btnDanger: {
@@ -142,7 +146,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType,
       fontSize: typography.sizes.sm,
       color: colors.background,
     },
-    btnTextMuted: {
+    btnCancelText: {
       color: colors.text,
     },
   });
