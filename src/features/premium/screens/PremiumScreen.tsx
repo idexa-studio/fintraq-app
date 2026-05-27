@@ -174,7 +174,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           <Text style={[styles.featuresTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
             {"What's included"}
           </Text>
-          <Text style={[styles.featuresCount, { fontFamily: typography.fonts.amountRegular, color: colors.textMuted }]}>
+          <Text style={[styles.featuresCount, { fontFamily: typography.fonts.amountRegular, color: colors.primary }]}>
             {featureCount} tools
           </Text>
         </View>
@@ -184,12 +184,12 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             <View key={rowIdx} style={styles.bentoRow}>
               {row.map((item) =>
                 item.span === 'full' ? (
-                  <View key={item.feature.title} style={styles.bentoFull}>
+                  <View key={item.feature.title} style={[styles.bentoFull, rowIdx === 0 && styles.bentoFullFirst]}>
                     <View style={styles.bentoFullTop}>
                       <IconAvatar
                         icon={item.feature.icon}
-                        bg={colors.surface}
-                        color={colors.text}
+                        bg={colors.primary + '15'}
+                        color={colors.primary}
                         size={28}
                         iconSize={12}
                       />
@@ -211,8 +211,8 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
                   <View key={item.feature.title} style={styles.bentoHalf}>
                     <IconAvatar
                       icon={item.feature.icon}
-                      bg={colors.surface}
-                      color={colors.text}
+                      bg={colors.primary + '15'}
+                      color={colors.primary}
                       size={28}
                       iconSize={12}
                     />
@@ -296,10 +296,10 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     },
 
     priceStrip: {
-      backgroundColor: colors.surface,
+      backgroundColor: colors.primary + '0A',
       borderRadius: radius('xl'),
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.primary + '25',
       padding: spacing('4'),
       marginBottom: spacing('7'),
     },
@@ -375,6 +375,9 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       borderColor: colors.border,
       padding: spacing('4'),
       gap: spacing('3'),
+    },
+    bentoFullFirst: {
+      borderColor: colors.primary + '40',
     },
     bentoFullTop: {
       flexDirection: 'row',
