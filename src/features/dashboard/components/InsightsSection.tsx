@@ -2,8 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { PremiumGuard } from '../../../components/ui/PremiumGuard';
-import { usePremium } from '../../../providers/PremiumProvider';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useDashboardInsights } from '../hooks/dashboard';
 import { InsightCard } from './InsightCard';
 import { SectionHeader } from './SectionHeader';
@@ -14,9 +13,8 @@ interface InsightsSectionProps {
 
 export const InsightsSection = React.memo(function InsightsSection({ currency }: InsightsSectionProps) {
   const theme = useTheme();
-  const { colors, layout } = theme;
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const { isPremium } = usePremium();
   const { data: insights, isLoading } = useDashboardInsights(currency);
 
   const hasInsights = insights && insights.length > 0;
@@ -28,10 +26,6 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
       <PremiumGuard
         label="Upgrade to Pro for insights"
         size="large"
-        containerStyle={[
-          styles.premiumContainer,
-          !isPremium && { marginHorizontal: layout.screenPadding }
-        ]}
       >
         {isLoading ? (
           <View style={styles.placeholderCard}>

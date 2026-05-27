@@ -168,8 +168,9 @@ export async function seedDummyData() {
     }
 
     return totalSeeded;
-  } catch (err: any) {
+  } catch (err) {
     console.error('[Seeder Error]:', err);
-    throw new Error(`Failed to seed realistic data: ${err.message}`);
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new Error(`Failed to seed realistic data: ${msg}`);
   }
 }

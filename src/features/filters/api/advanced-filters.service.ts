@@ -1,3 +1,4 @@
+import type { TransactionType } from '@/src/types';
 import { TransactionFilters } from '@/src/features/transactions/api/transactions';
 
 export interface AdvancedFilters {
@@ -13,8 +14,8 @@ export interface AdvancedFilters {
   // Multi-select categories
   categoryIds?: number[];
   
-  // Transaction types (can select multiple: ['CR', 'DR'] or single)
-  types?: ('CR' | 'DR')[];
+  // Transaction types (can select multiple)
+  types?: TransactionType[];
   
   // Amount range
   amountRange?: {

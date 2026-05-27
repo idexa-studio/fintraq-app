@@ -12,7 +12,6 @@ import {
     View,
 } from 'react-native';
 import { CURRENCIES } from '../../constants/currency';
-import { FrostLayer } from './FrostLayer';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 export type CurrencyPickerModalProps = {
@@ -97,13 +96,6 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
         <TouchableOpacity style={styles.backdrop} onPress={handleClose} activeOpacity={1} />
 
         <View style={styles.sheet}>
-          <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-            <View style={[styles.glow, { top: -60, left: -60, width: 280, height: 280, backgroundColor: colors.primary + '28' }]} />
-            <View style={[styles.glow, { bottom: -60, right: -80, width: 360, height: 360, backgroundColor: colors.text + '0A' }]} />
-          </View>
-
-          <FrostLayer intensity={80} />
-
           <View style={styles.handle} />
 
           {/* Header */}
@@ -163,7 +155,7 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
   );
 });
 
-const createStyles = ({ colors, overlay, typography , layout }: ThemeContextType) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
@@ -175,16 +167,12 @@ const createStyles = ({ colors, overlay, typography , layout }: ThemeContextType
     },
     sheet: {
       height: '82%',
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
+      borderTopLeftRadius: radius('2xl'),
+      borderTopRightRadius: radius('2xl'),
       borderTopWidth: 1,
       borderColor: colors.border,
       overflow: 'hidden',
-      backgroundColor: 'transparent',
-    },
-    glow: {
-      position: 'absolute',
-      borderRadius: 999,
+      backgroundColor: colors.background,
     },
     handle: {
       alignSelf: 'center',
@@ -217,7 +205,7 @@ const createStyles = ({ colors, overlay, typography , layout }: ThemeContextType
     closeBtn: {
       width: 38,
       height: 38,
-      borderRadius: 19,
+      borderRadius: radius('full'),
       backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,
@@ -228,14 +216,14 @@ const createStyles = ({ colors, overlay, typography , layout }: ThemeContextType
       flexDirection: 'row',
       alignItems: 'center',
       marginHorizontal: layout.screenPadding,
-      marginBottom: 10,
+      marginBottom: spacing('2.5'),
       height: 44,
-      borderRadius: 14,
+      borderRadius: radius('lg'),
       backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,
-      paddingHorizontal: 12,
-      gap: 8,
+      paddingHorizontal: spacing('3'),
+      gap: spacing('2'),
     },
     searchIcon: {
       flexShrink: 0,
@@ -259,14 +247,14 @@ const createStyles = ({ colors, overlay, typography , layout }: ThemeContextType
     row: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: 13,
-      gap: 12,
+      paddingVertical: spacing('3'),
+      gap: spacing('3'),
     },
     rowSelected: {},
     codeWrap: {
       width: 42,
       height: 30,
-      borderRadius: 8,
+      borderRadius: radius('md'),
       backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,

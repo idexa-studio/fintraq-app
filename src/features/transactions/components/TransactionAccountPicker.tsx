@@ -11,12 +11,14 @@ type Props = {
   accounts: Account[];
   selectedId: number | null;
   onSelect: (id: number) => void;
+  label?: string;
 };
 
 export const TransactionAccountPicker = React.memo(function TransactionAccountPicker({
   accounts,
   selectedId,
   onSelect,
+  label = 'ACCOUNT',
 }: Props) {
   const theme = useTheme();
   const { colors } = theme;
@@ -26,7 +28,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>ACCOUNT</Text>
+      <Text style={[styles.label, { color: colors.textMuted }]}>{label}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {accounts.map((acc) => {
           const selected = selectedId === acc.id;

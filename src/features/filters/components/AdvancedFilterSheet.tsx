@@ -16,6 +16,7 @@ import { Category } from '@/src/features/categories/api/categories';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
+import type { TransactionType } from '@/src/types';
 import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../api/advanced-filters.service';
 
 interface AdvancedFilterSheetProps {
@@ -77,7 +78,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
     }));
   }, [toggleSelection]);
 
-  const toggleType = useCallback((type: 'CR' | 'DR') => {
+  const toggleType = useCallback((type: TransactionType) => {
     setLocalFilters(prev => ({
       ...prev,
       types: toggleSelection(prev.types, type),

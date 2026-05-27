@@ -68,6 +68,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
 
   const [type, setType] = React.useState<TransactionType>('DR');
   const [selectedAccountId, setSelectedAccountId] = React.useState<number | null>(null);
+  const [toAccountId, setToAccountId] = React.useState<number | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<number | null>(null);
   const [transactionDateTime, setTransactionDateTime] = React.useState<Date>(() => new Date());
   const [showDatePicker, setShowDatePicker] = React.useState(false);
@@ -79,6 +80,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
     if (!isEditMode || !editingTransaction) return;
     setType(editingTransaction.type);
     setSelectedAccountId(editingTransaction.accountId);
+    setToAccountId(editingTransaction.toAccountId ?? null);
     setSelectedCategoryId(editingTransaction.categoryId);
     setTransactionDateTime(new Date(editingTransaction.datetime));
     setAmountInput(String(editingTransaction.amount));
@@ -86,8 +88,17 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
   }, [isEditMode, editingTransaction]);
 
   const filteredCategories = React.useMemo(
-    () => categories.filter((category) => category.type === type),
-    [categories, type]
+    () => categories.filter((c) => c.type === type),
+    [categories, type],
+  );
+
+  // When type changes, clear toAccountId so stale selection doesn't persist
+  const handleTypeChange = React.useCallback(
+    (next: TransactionType) => {
+      setType(next);
+      setToAccountId(null);
+    },
+    [],
   );
 
   React.useEffect(() => {
@@ -95,8 +106,11 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
       setSelectedAccountId(null);
       return;
     }
-    if (selectedAccountId === null || !accounts.some((account) => account.id === selectedAccountId)) {
-      const preferred = accounts.find((account) => account.isDefault) ?? accounts[0];
+    if (
+      selectedAccountId === null ||
+      !accounts.some((a) => a.id === selectedAccountId)
+    ) {
+      const preferred = accounts.find((a) => a.isDefault) ?? accounts[0];
       setSelectedAccountId(preferred.id);
     }
   }, [accounts, selectedAccountId]);
@@ -106,31 +120,51 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
       setSelectedCategoryId(null);
       return;
     }
-    if (selectedCategoryId === null || !filteredCategories.some((category) => category.id === selectedCategoryId)) {
+    if (
+      selectedCategoryId === null ||
+      !filteredCategories.some((c) => c.id === selectedCategoryId)
+    ) {
       setSelectedCategoryId(filteredCategories[0].id);
     }
   }, [filteredCategories, selectedCategoryId]);
 
   const amountValue = React.useMemo(() => parseAmount(amountInput), [amountInput]);
+
   const selectedAccount = React.useMemo(
-    () => accounts.find((account) => account.id === selectedAccountId) ?? null,
-    [accounts, selectedAccountId]
+    () => accounts.find((a) => a.id === selectedAccountId) ?? null,
+    [accounts, selectedAccountId],
   );
+
   const selectedCategory = React.useMemo(
-    () => categories.find((category) => category.id === selectedCategoryId) ?? null,
-    [categories, selectedCategoryId]
+    () => categories.find((c) => c.id === selectedCategoryId) ?? null,
+    [categories, selectedCategoryId],
   );
+
+  // TO account options: same currency as FROM, excluding FROM itself
+  const toAccountOptions = React.useMemo(() => {
+    if (type !== 'TR' || !selectedAccount) return [];
+    return accounts.filter(
+      (a) => a.id !== selectedAccountId && a.currency === selectedAccount.currency,
+    );
+  }, [type, accounts, selectedAccountId, selectedAccount]);
+
+  // Auto-clear toAccountId if it's no longer a valid option
+  React.useEffect(() => {
+    if (type !== 'TR') return;
+    if (toAccountId != null && !toAccountOptions.some((a) => a.id === toAccountId)) {
+      setToAccountId(null);
+    }
+  }, [type, toAccountOptions, toAccountId]);
 
   const formattedDate = React.useMemo(
     () => format(transactionDateTime, 'EEE, d MMM yyyy'),
-    [transactionDateTime]
+    [transactionDateTime],
   );
 
   const formattedTime = React.useMemo(
     () => format(transactionDateTime, 'HH:mm'),
-    [transactionDateTime]
+    [transactionDateTime],
   );
-
 
   const onDatePicked = (event: DateTimePickerEvent, picked?: Date) => {
     if (Platform.OS === 'android') setShowDatePicker(false);
@@ -155,17 +189,27 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
   };
 
   const isSubmitting = createTransaction.isPending || updateTransaction.isPending;
-  const canSubmit = amountValue > 0 && !!selectedAccountId && !!selectedCategoryId && !isSubmitting;
+
+  const canSubmit = React.useMemo(() => {
+    if (amountValue <= 0 || !selectedAccountId || !selectedCategoryId || isSubmitting) return false;
+    if (type === 'TR') return !!toAccountId && toAccountId !== selectedAccountId;
+    return true;
+  }, [amountValue, selectedAccountId, selectedCategoryId, isSubmitting, type, toAccountId]);
 
   const handleSave = async () => {
     if (!selectedAccountId || !selectedCategoryId || amountValue <= 0) {
       Alert.alert('Missing details', 'Please select account, category, and a valid amount.');
       return;
     }
+    if (type === 'TR' && !toAccountId) {
+      Alert.alert('Missing destination', 'Please select a destination account for the transfer.');
+      return;
+    }
 
     const payload = {
       accountId: selectedAccountId,
       categoryId: selectedCategoryId,
+      toAccountId: type === 'TR' ? toAccountId : null,
       amount: amountValue,
       type,
       datetime: transactionDateTime.toISOString(),
@@ -184,7 +228,10 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
     }
   };
 
-  if ((accountsQuery.isLoading || categoriesQuery.isLoading || transactionByIdQuery.isLoading) && isEditMode) {
+  if (
+    (accountsQuery.isLoading || categoriesQuery.isLoading || transactionByIdQuery.isLoading) &&
+    isEditMode
+  ) {
     return (
       <View style={styles.loadingWrap}>
         <ActivityIndicator size="large" color={colors.primary} />
@@ -197,8 +244,12 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
       <BlurBackground />
       <Header title={isEditMode ? 'Edit Entry' : 'New Entry'} showBack />
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-        <TransactionTypePicker value={type} onChange={setType} />
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <TransactionTypePicker value={type} onChange={handleTypeChange} />
 
         <TransactionAmountInput
           value={amountInput}
@@ -207,12 +258,32 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
         />
 
         <View style={styles.formBody}>
-          
           <TransactionAccountPicker
+            label="FROM ACCOUNT"
             accounts={accounts}
             selectedId={selectedAccountId}
             onSelect={setSelectedAccountId}
           />
+
+          {type === 'TR' && (
+            <>
+              {toAccountOptions.length > 0 ? (
+                <TransactionAccountPicker
+                  label="TO ACCOUNT"
+                  accounts={toAccountOptions}
+                  selectedId={toAccountId}
+                  onSelect={setToAccountId}
+                />
+              ) : (
+                <View style={styles.section}>
+                  <Text style={styles.sectionLabel}>TO ACCOUNT</Text>
+                  <Text style={styles.transferHint}>
+                    No other accounts with the same currency.
+                  </Text>
+                </View>
+              )}
+            </>
+          )}
 
           <TransactionCategoryPicker
             categories={filteredCategories}
@@ -223,11 +294,17 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>DATE & TIME</Text>
             <View style={styles.dateTimeRow}>
-              <TouchableOpacity style={styles.dateTimeBtn} onPress={() => setShowDatePicker(true)}>
+              <TouchableOpacity
+                style={styles.dateTimeBtn}
+                onPress={() => setShowDatePicker(true)}
+              >
                 <Ionicons name="calendar-outline" size={18} color={colors.primary} />
                 <Text style={styles.dateTimeText}>{formattedDate}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.dateTimeBtn} onPress={() => setShowTimePicker(true)}>
+              <TouchableOpacity
+                style={styles.dateTimeBtn}
+                onPress={() => setShowTimePicker(true)}
+              >
                 <Ionicons name="time-outline" size={18} color={colors.primary} />
                 <Text style={styles.dateTimeText}>{formattedTime}</Text>
               </TouchableOpacity>
@@ -235,10 +312,20 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
           </View>
 
           {showDatePicker && (
-            <DateTimePicker value={transactionDateTime} mode="date" display="default" onChange={onDatePicked} />
+            <DateTimePicker
+              value={transactionDateTime}
+              mode="date"
+              display="default"
+              onChange={onDatePicked}
+            />
           )}
           {showTimePicker && (
-            <DateTimePicker value={transactionDateTime} mode="time" display="default" onChange={onTimePicked} />
+            <DateTimePicker
+              value={transactionDateTime}
+              mode="time"
+              display="default"
+              onChange={onTimePicked}
+            />
           )}
 
           <View style={styles.section}>
@@ -266,7 +353,9 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
           {isSubmitting ? (
             <ActivityIndicator size="small" color={colors.background} />
           ) : (
-            <Text style={styles.saveBtnText}>{isEditMode ? 'Save Changes' : 'Save Transaction'}</Text>
+            <Text style={styles.saveBtnText}>
+              {isEditMode ? 'Save changes' : 'Save transaction'}
+            </Text>
           )}
         </TouchableOpacity>
       </View>
@@ -274,7 +363,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
   );
 }
 
-const createStyles = ({ colors, typography , layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -290,11 +379,11 @@ const createStyles = ({ colors, typography , layout }: ThemeContextType) =>
       paddingBottom: 120,
     },
     formBody: {
-      gap: 16,
+      gap: spacing('4'),
     },
     section: {
       paddingHorizontal: layout.screenPadding,
-      gap: 12,
+      gap: spacing('3'),
     },
     sectionLabel: {
       fontFamily: typography.fonts.semibold,
@@ -302,21 +391,26 @@ const createStyles = ({ colors, typography , layout }: ThemeContextType) =>
       color: colors.textMuted,
       letterSpacing: 1.5,
     },
+    transferHint: {
+      fontFamily: typography.fonts.regular,
+      fontSize: 13,
+      color: colors.textMuted,
+    },
     dateTimeRow: {
       flexDirection: 'row',
-      gap: 12,
+      gap: spacing('3'),
     },
     dateTimeBtn: {
       flex: 1,
       height: 48,
-      borderRadius: 16,
+      borderRadius: radius('lg'),
       backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: 8,
+      gap: spacing('2'),
     },
     dateTimeText: {
       fontFamily: typography.fonts.medium,
@@ -324,11 +418,11 @@ const createStyles = ({ colors, typography , layout }: ThemeContextType) =>
       color: colors.text,
     },
     noteContainer: {
-      borderRadius: 16,
+      borderRadius: radius('lg'),
       backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,
-      padding: 12,
+      padding: spacing('3'),
       minHeight: 100,
     },
     noteInput: {
@@ -345,7 +439,7 @@ const createStyles = ({ colors, typography , layout }: ThemeContextType) =>
     },
     saveBtn: {
       height: 52,
-      borderRadius: 20,
+      borderRadius: radius('xl'),
       backgroundColor: colors.text,
       alignItems: 'center',
       justifyContent: 'center',

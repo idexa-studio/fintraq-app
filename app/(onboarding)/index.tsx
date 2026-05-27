@@ -25,6 +25,7 @@ import { ONBOARDING_STEPS } from '../../src/features/onboarding/constants';
 import { createOnboardingStyles } from '../../src/features/onboarding/styles';
 import { OnboardingFormValues } from '../../src/features/onboarding/types';
 import { toDbColor } from '../../src/utils/format';
+import type { TransactionType } from '../../src/types';
 import { useOnboarding } from '../../src/providers/OnboardingProvider';
 import { useSettings } from '../../src/providers/SettingsProvider';
 import { useTheme } from '../../src/providers/ThemeProvider';
@@ -80,7 +81,7 @@ export default function OnboardingScreen() {
   };
 
   const seedCategories = async () => {
-    const defaults: { name: string; icon: string; color: number; type: 'CR' | 'DR' }[] = [
+    const defaults: { name: string; icon: string; color: number; type: TransactionType }[] = [
       // ── Income ──────────────────────────────────────────────────────
       { name: 'Salary',        icon: 'cash-outline',          color: toDbColor('#6BD498'), type: 'CR' },
       { name: 'Freelance',     icon: 'sparkles-outline',      color: toDbColor('#B8D641'), type: 'CR' },

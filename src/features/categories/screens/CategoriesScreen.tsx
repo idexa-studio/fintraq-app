@@ -29,7 +29,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const { data: categories, isLoading } = useCategories();
   const { mutateAsync: deleteCategory } = useDeleteCategory();
 
-  const [activeType, setActiveType] = useState<'CR' | 'DR'>('DR');
+  const [activeType, setActiveType] = useState<'CR' | 'DR' | 'TR'>('DR');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [showManageDialog, setShowManageDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -116,6 +116,15 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
               Income
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.typeTab, activeType === 'TR' && styles.typeTabActive]}
+            onPress={() => setActiveType('TR')}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.typeTabText, activeType === 'TR' && styles.typeTabTextActive]}>
+              Transfer
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     ),
@@ -130,7 +139,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         </View>
         <Text style={styles.emptyTitle}>No categories</Text>
         <Text style={styles.emptyText}>
-          {`No ${activeType === 'DR' ? 'expense' : 'income'} categories yet.`}
+          {`No ${activeType === 'DR' ? 'expense' : activeType === 'CR' ? 'income' : 'transfer'} categories yet.`}
         </Text>
         <TouchableOpacity style={styles.emptyBtn} onPress={handleCreate} activeOpacity={0.85}>
           <Ionicons name="add" size={15} color={colors.background} />

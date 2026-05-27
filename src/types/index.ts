@@ -7,8 +7,9 @@
  * TransactionType: Represents the nature of a financial movement.
  * CR = Credit (Income / Inflow)
  * DR = Debit (Expense / Outflow)
+ * TR = Transfer (Move funds between accounts)
  */
-export type TransactionType = 'CR' | 'DR';
+export type TransactionType = 'CR' | 'DR' | 'TR';
 
 /**
  * TrendMode: Dictates how a percentage change should be visually interpreted.

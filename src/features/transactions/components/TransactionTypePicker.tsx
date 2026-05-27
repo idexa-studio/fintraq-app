@@ -1,10 +1,11 @@
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import type { TransactionType } from '../../../types';
 
 type Props = {
-  value: 'CR' | 'DR';
-  onChange: (value: 'CR' | 'DR') => void;
+  value: TransactionType;
+  onChange: (value: TransactionType) => void;
 };
 
 export const TransactionTypePicker = React.memo(function TransactionTypePicker({
@@ -17,6 +18,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
 
   const handleDR = useCallback(() => onChange('DR'), [onChange]);
   const handleCR = useCallback(() => onChange('CR'), [onChange]);
+  const handleTR = useCallback(() => onChange('TR'), [onChange]);
 
   return (
     <View style={styles.container}>
@@ -29,7 +31,9 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
         onPress={handleDR}
         activeOpacity={0.8}
       >
-        <Text style={[styles.pillText, { color: value === 'DR' ? colors.background : colors.textMuted }]}>Expense</Text>
+        <Text style={[styles.pillText, { color: value === 'DR' ? colors.background : colors.textMuted }]}>
+          Expense
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -41,30 +45,47 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
         onPress={handleCR}
         activeOpacity={0.8}
       >
-        <Text style={[styles.pillText, { color: value === 'CR' ? colors.background : colors.textMuted }]}>Income</Text>
+        <Text style={[styles.pillText, { color: value === 'CR' ? colors.background : colors.textMuted }]}>
+          Income
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[
+          styles.pill,
+          { backgroundColor: colors.surface, borderColor: colors.border },
+          value === 'TR' && { backgroundColor: colors.primary, borderColor: colors.primary },
+        ]}
+        onPress={handleTR}
+        activeOpacity={0.8}
+      >
+        <Text style={[styles.pillText, { color: value === 'TR' ? colors.background : colors.textMuted }]}>
+          Transfer
+        </Text>
       </TouchableOpacity>
     </View>
   );
 });
 
-const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
-  container: {
-    paddingHorizontal: layout.screenPadding,
-    paddingTop: spacing('4'),
-    paddingBottom: spacing('2'),
-    flexDirection: 'row',
-    gap: spacing('2.5'),
-  },
-  pill: {
-    paddingHorizontal: spacing('4'),
-    height: 36,
-    borderRadius: radius('full'),
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-  },
-  pillText: {
-    fontFamily: typography.fonts.semibold,
-    fontSize: 13,
-  },
-});
+const createStyles = ({ typography, spacing, radius, layout }: ThemeContextType) =>
+  StyleSheet.create({
+    container: {
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('4'),
+      paddingBottom: spacing('2'),
+      flexDirection: 'row',
+      gap: spacing('2.5'),
+    },
+    pill: {
+      paddingHorizontal: spacing('4'),
+      height: 36,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+    },
+    pillText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 13,
+    },
+  });

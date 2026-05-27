@@ -2,14 +2,14 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 
 interface PremiumGuardProps {
   children: React.ReactNode;
   label?: string;
   size?: 'small' | 'medium' | 'large';
-  containerStyle?: any;
+  containerStyle?: ViewStyle;
 }
 
 /**
