@@ -123,7 +123,7 @@ export class AdvancedFilterService {
     }
     
     if (advanced.types && advanced.types.length > 0) {
-      const typeLabels = advanced.types.map(t => t === 'CR' ? 'Income' : 'Expense');
+      const typeLabels = advanced.types.map(t => t === 'CR' ? 'Income' : t === 'DR' ? 'Expense' : 'Transfer');
       parts.push(typeLabels.join(' & '));
     }
     

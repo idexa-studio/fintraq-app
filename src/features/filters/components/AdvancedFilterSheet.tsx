@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Modal,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -41,7 +40,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
   resultCount,
 }: AdvancedFilterSheetProps) {
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [localFilters, setLocalFilters] = useState<AdvancedFilters>(filters);
@@ -205,39 +204,28 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
           >
             {/* TYPE */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>TYPE</Text>
-              <View style={styles.typeRow}>
-                {(['CR', 'DR'] as const).map((type) => {
-                  const isSelected = localFilters.types?.includes(type) || false;
-                  const accentColor = type === 'CR' ? colors.success : colors.danger;
-                  const icon = type === 'CR' ? 'arrow-down' : 'arrow-up';
-                  const label = type === 'CR' ? 'Income' : 'Expense';
-
+              <Text style={styles.sectionLabel}>Type</Text>
+              <View style={styles.typePillRow}>
+                {([
+                  { key: 'CR' as const, label: 'Income', color: colors.success },
+                  { key: 'DR' as const, label: 'Expense', color: colors.danger },
+                  { key: 'TR' as const, label: 'Transfer', color: colors.info },
+                ]).map((opt) => {
+                  const selected = localFilters.types?.includes(opt.key) || false;
                   return (
                     <TouchableOpacity
-                      key={type}
-                      style={[
-                        styles.typeCard,
-                        isSelected && { backgroundColor: accentColor + '12' },
-                      ]}
-                      onPress={() => toggleType(type)}
-                      activeOpacity={0.75}
+                      key={opt.key}
+                      style={[styles.typePill, selected && { backgroundColor: opt.color + '15' }]}
+                      onPress={() => toggleType(opt.key)}
+                      activeOpacity={0.7}
                     >
-                      <View style={[
-                        styles.typeAccentBar,
-                        { backgroundColor: isSelected ? accentColor : colors.text + '15' },
-                      ]} />
-                      <View style={styles.typeBody}>
-                        <View style={[styles.typeIconBox, { backgroundColor: accentColor + '18' }]}>
-                          <Ionicons name={icon} size={15} color={accentColor} />
-                        </View>
-                        <Text style={[
-                          styles.typeLabel,
-                          { color: isSelected ? accentColor : colors.textMuted },
-                        ]}>
-                          {label}
-                        </Text>
-                      </View>
+                      <Text style={[
+                        styles.typePillText,
+                        { fontFamily: typography.fonts.semibold },
+                        selected ? { color: opt.color } : { color: colors.textMuted },
+                      ]}>
+                        {opt.label}
+                      </Text>
                     </TouchableOpacity>
                   );
                 })}
@@ -246,7 +234,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
 
             {/* DATE RANGE */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>DATE RANGE</Text>
+              <Text style={styles.sectionLabel}>Date range</Text>
               <View style={styles.card}>
                 {localFilters.dateRange ? (
                   <View style={styles.dateActiveRow}>
@@ -255,7 +243,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                       onPress={() => setShowStartDatePicker(true)}
                       activeOpacity={0.7}
                     >
-                      <Text style={styles.dateFieldLabel}>FROM</Text>
+                      <Text style={styles.dateFieldLabel}>From</Text>
                       <Text style={styles.dateFieldValue}>
                         {formatDate(localFilters.dateRange.startDate)}
                       </Text>
@@ -266,7 +254,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                       onPress={() => setShowEndDatePicker(true)}
                       activeOpacity={0.7}
                     >
-                      <Text style={styles.dateFieldLabel}>TO</Text>
+                      <Text style={styles.dateFieldLabel}>To</Text>
                       <Text style={styles.dateFieldValue}>
                         {formatDate(localFilters.dateRange.endDate)}
                       </Text>
@@ -301,11 +289,11 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
 
             {/* AMOUNT RANGE */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>AMOUNT RANGE</Text>
+              <Text style={styles.sectionLabel}>Amount range</Text>
               <View style={styles.card}>
                 <View style={styles.amountRow}>
                   <View style={styles.amountField}>
-                    <Text style={styles.amountFieldLabel}>MIN</Text>
+                      <Text style={styles.amountFieldLabel}>Min</Text>
                     <TextInput
                       style={styles.amountInput}
                       value={minAmount}
@@ -318,7 +306,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                   </View>
                   <View style={styles.amountFieldSep} />
                   <View style={styles.amountField}>
-                    <Text style={styles.amountFieldLabel}>MAX</Text>
+                      <Text style={styles.amountFieldLabel}>Max</Text>
                     <TextInput
                       style={styles.amountInput}
                       value={maxAmount}
@@ -336,7 +324,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
             {/* ACCOUNTS */}
             {accounts.length > 0 && (
               <View style={styles.section}>
-                <Text style={styles.sectionLabel}>ACCOUNTS</Text>
+                <Text style={styles.sectionLabel}>Accounts</Text>
                 <View style={styles.card}>
                   {accounts.map((account, index) => {
                     const isSelected = localFilters.accountIds?.includes(account.id) || false;
@@ -381,7 +369,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
             {/* CATEGORIES */}
             {categories.length > 0 && (
               <View style={styles.section}>
-                <Text style={styles.sectionLabel}>CATEGORIES</Text>
+                <Text style={styles.sectionLabel}>Categories</Text>
                 <View style={styles.chipGrid}>
                   {categories.map((category) => {
                     const isSelected = localFilters.categoryIds?.includes(category.id) || false;
@@ -419,7 +407,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
 
             {/* SORT */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>SORT</Text>
+              <Text style={styles.sectionLabel}>Sort</Text>
               <View style={styles.card}>
                 <View style={styles.sortRow}>
                   <Text style={styles.sortRowLabel}>Sort by</Text>
@@ -517,12 +505,9 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       justifyContent: 'flex-end',
     },
     sheet: {
-      backgroundColor: Platform.OS === 'ios' ? colors.background + 'F5' : colors.background,
+      backgroundColor: colors.background,
       borderTopLeftRadius: radius('2xl'),
       borderTopRightRadius: radius('2xl'),
-      borderWidth: 1,
-      borderColor: colors.text + '15',
-      borderBottomWidth: 0,
       maxHeight: '88%',
     },
     handle: {
@@ -550,9 +535,8 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 28,
+      fontSize: typography.sizes.xxl,
       color: colors.text,
-      letterSpacing: -1,
     },
     countBadge: {
       minWidth: 22,
@@ -623,10 +607,9 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     },
     sectionLabel: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 9,
+      fontSize: 10,
       color: colors.textMuted,
-      letterSpacing: 1.2,
-      textTransform: 'uppercase',
+      opacity: 0.7,
       marginBottom: spacing('2'),
       paddingLeft: spacing('1'),
     },
@@ -639,43 +622,21 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     },
 
     // ─── Type ────────────────────────────────────────────────────────────────
-    typeRow: {
+    typePillRow: {
       flexDirection: 'row',
       gap: spacing('2'),
+      marginBottom: spacing('5'),
     },
-    typeCard: {
+    typePill: {
       flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 60,
-      borderRadius: radius('lg'),
+      height: 36,
+      borderRadius: radius('md'),
       backgroundColor: colors.surface,
-      overflow: 'hidden',
-    },
-    typeAccentBar: {
-      width: 3,
-      alignSelf: 'stretch',
-      marginVertical: spacing('3'),
-      marginLeft: spacing('1.5'),
-      borderRadius: radius('full'),
-    },
-    typeBody: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing('3'),
-      gap: spacing('2'),
-    },
-    typeIconBox: {
-      width: 32,
-      height: 32,
-      borderRadius: radius('sm'),
       alignItems: 'center',
       justifyContent: 'center',
     },
-    typeLabel: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 14,
+    typePillText: {
+      fontSize: typography.sizes.xs,
     },
 
     // ─── Date range ──────────────────────────────────────────────────────────
@@ -691,17 +652,15 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     },
     dateFieldLabel: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 8,
+      fontSize: 10,
       color: colors.textMuted,
-      letterSpacing: 1.2,
-      textTransform: 'uppercase',
+      opacity: 0.6,
       marginBottom: spacing('0.5'),
     },
     dateFieldValue: {
       fontFamily: typography.fonts.semibold,
       fontSize: 15,
       color: colors.text,
-      letterSpacing: -0.3,
     },
     dateFieldSep: {
       width: 1,
@@ -754,16 +713,14 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     },
     amountFieldLabel: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 8,
+      fontSize: 10,
       color: colors.textMuted,
-      letterSpacing: 1.2,
-      textTransform: 'uppercase',
+      opacity: 0.6,
     },
     amountInput: {
       fontFamily: typography.fonts.bold,
       fontSize: 22,
       color: colors.text,
-      letterSpacing: -0.5,
       padding: 0,
     },
     amountFieldSep: {
