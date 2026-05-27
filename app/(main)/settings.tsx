@@ -20,9 +20,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurBackground } from '../../src/components/ui/BlurBackground';
-import { IconAvatar } from '../../src/components/ui/IconAvatar';
 import { ConfirmDialog } from '../../src/components/ui/ConfirmDialog';
 import { Header } from '../../src/components/ui/Header';
+import { IconAvatar } from '../../src/components/ui/IconAvatar';
 import { OptionsDialog } from '../../src/components/ui/OptionsDialog';
 import { db } from '../../src/db/client';
 import { accounts, categories, payments } from '../../src/db/schema';
@@ -453,14 +453,14 @@ export default function SettingsScreen() {
   );
 }
 
-const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
     },
     scroll: {
-      paddingHorizontal: spacing('6'),
+      paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
       paddingBottom: spacing('9'),
     },

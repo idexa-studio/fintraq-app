@@ -438,11 +438,11 @@ function EmptyState({ icon, text }: { icon: keyof typeof Ionicons.glyphMap; text
 
 // ─── styles ───────────────────────────────────────────────────────────────────
 
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    content: { paddingHorizontal: 24, paddingBottom: 60, paddingTop: 4 },
+    content: { paddingHorizontal: layout.screenPadding, paddingBottom: 60, paddingTop: 4 },
 
     pillRow: {
       flexDirection: 'row',
