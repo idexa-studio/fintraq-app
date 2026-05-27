@@ -1,9 +1,12 @@
 import { desc, eq, like, or } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments } from '@/src/db/schema';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import type { Category } from '@/src/features/categories/api/categories';
 import { TRANSACTION_LIST_SELECT, type TransactionListItem } from '@/src/features/transactions/api/transactions';
+
+const toAccounts = alias(accounts, 'to_accounts');
 
 export interface GlobalSearchResults {
   query: string;
@@ -17,11 +20,12 @@ const searchTransactions = async (
   limit = 12,
 ): Promise<TransactionListItem[]> => {
   const q = `%${query}%`;
-  return db
+  const result = await db
     .select(TRANSACTION_LIST_SELECT)
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
     .innerJoin(categories, eq(payments.categoryId, categories.id))
+    .leftJoin(toAccounts, eq(payments.toAccountId, toAccounts.id))
     .where(
       or(
         like(payments.note, q),
@@ -31,6 +35,8 @@ const searchTransactions = async (
     )
     .orderBy(desc(payments.datetime))
     .limit(limit);
+
+  return result as TransactionListItem[];
 };
 
 const searchAccounts = async (query: string): Promise<Account[]> => {
