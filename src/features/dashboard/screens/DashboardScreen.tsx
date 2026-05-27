@@ -1,26 +1,26 @@
+import { usePremium } from '@/src/providers/PremiumProvider';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BlurBackground } from '../../../components/ui/BlurBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
+import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { OptionsDialog } from '../../../components/ui/OptionsDialog';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { DEFAULT_CURRENCY } from '../../../constants/currency';
 import { useSettings } from '../../../providers/SettingsProvider';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import type { Account } from '../../accounts/api/accounts';
 import { useAccounts, useDeleteAccount } from '../../accounts/hooks/accounts';
+import { StreakBadge } from '../../reports/components/StreakBadge';
 import { useTransactions } from '../../transactions/hooks/transactions';
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { BlurBackground } from '../../../components/ui/BlurBackground';
-import { IconAvatar } from '../../../components/ui/IconAvatar';
+import { InsightsSection } from '../components/InsightsSection';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
-import { InsightsSection } from '../components/InsightsSection';
-import { StreakBadge } from '../../reports/components/StreakBadge';
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -375,8 +375,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         </View>
         <TopExpenseCategoriesCard
           currencies={topCategoryCurrencies}
-          selectedCurrency={selectedTopCategoryCurrency}
-          onSelectCurrency={setSelectedTopCategoryCurrency}
+          currency={selectedTopCategoryCurrency}
           categories={topExpenseCategories}
         />
 
@@ -665,7 +664,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
 
   /* ── Accounts carousel ── */
   accountsScroll: {
-    paddingLeft: spacing('6'),
+    paddingLeft: spacing('4'),
   },
   accountsScrollContent: {
     paddingRight: spacing('7'),

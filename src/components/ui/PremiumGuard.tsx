@@ -1,9 +1,9 @@
+import { usePremium } from '@/src/providers/PremiumProvider';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useMemo, useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 
 interface PremiumGuardProps {
   children: React.ReactNode;
@@ -39,7 +39,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
     router.push('/premium');
   }, [router]);
 
-  const { isSmall, containerStyles, iconBoxStyles, iconSize, actionBadgeStyles, actionTextLabel } = useMemo(() => {
+  const { isSmall, containerStyles, iconBoxStyles, iconSize } = useMemo(() => {
     const small = size === 'small';
     const medium = size === 'medium';
     
@@ -68,22 +68,12 @@ export const PremiumGuard = React.memo(function PremiumGuard({
           borderColor: colors.border,
           width: small ? 32 : 44,
           height: small ? 32 : 44,
-          borderRadius: small ? radius('sm') : radius('md'),
+          borderRadius: radius('full'),
         },
       ],
       iconSize: small ? 14 : 18,
-      actionBadgeStyles: [
-        styles.actionBadge,
-        { 
-          backgroundColor: colors.text,
-          paddingHorizontal: small ? spacing('2.5') : spacing('3.5'),
-          paddingVertical: small ? spacing('1.5') : spacing('2.5'),
-          borderRadius: small ? radius('sm') : radius('md'),
-        },
-      ],
-      actionTextLabel: small ? 'Pro' : 'Unlock'
     };
-  }, [size, colors.surface, colors.border, colors.background, colors.text, containerStyle, styles, spacing, radius]);
+  }, [size, colors.surface, colors.border, colors.background, containerStyle, styles, spacing, radius]);
 
   if (isPremium) {
     return <>{children}</>;
@@ -121,12 +111,6 @@ export const PremiumGuard = React.memo(function PremiumGuard({
                  Premium member exclusive
                </Text>
              )}
-          </View>
-
-          <View style={actionBadgeStyles}>
-             <Text style={[styles.actionText, { color: colors.background }]}>
-               {actionTextLabel}
-             </Text>
           </View>
 
         </View>

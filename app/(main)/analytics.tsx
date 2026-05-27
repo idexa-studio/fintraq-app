@@ -29,7 +29,7 @@ import {
   useAnalyticsMonthlyData,
 } from '../../src/features/analytics/hooks/useAnalyticsData';
 import { usePremium } from '../../src/providers/PremiumProvider';
-import { useTheme, ThemeContextType } from '../../src/providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '../../src/providers/ThemeProvider';
 import { colorNumberToHex } from '../../src/utils/format';
 import { resolveIcon } from '../../src/utils/icons';
 
@@ -94,7 +94,7 @@ export default function AnalyticsScreen() {
   }, [accounts]);
 
   const [selectedCurrency, setSelectedCurrency] = React.useState<string>(currencyKeys[0]);
-  const [selectedRange, setSelectedRange] = React.useState<RangeDays>(30);
+  const [selectedRange, setSelectedRange] = React.useState<RangeDays>(7);
 
   React.useEffect(() => {
     if (!currencyKeys.includes(selectedCurrency)) setSelectedCurrency(currencyKeys[0]);

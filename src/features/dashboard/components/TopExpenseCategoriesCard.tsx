@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useMemo, useCallback } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { MoneyText } from '../../../components/ui/MoneyText';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
 
@@ -16,15 +16,13 @@ type TopExpenseCategory = {
 
 type TopExpenseCategoriesCardProps = {
   currencies: string[];
-  selectedCurrency: string;
-  onSelectCurrency: (value: string) => void;
+  currency: string;
   categories: TopExpenseCategory[];
 };
 
 export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategoriesCard({
   currencies,
-  selectedCurrency,
-  onSelectCurrency,
+  currency,
   categories,
 }: TopExpenseCategoriesCardProps) {
   const theme = useTheme();
@@ -36,27 +34,9 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
     [categories]
   );
 
-  const handleCurrencyPress = useCallback((curr: string) => {
-    onSelectCurrency(curr);
-  }, [onSelectCurrency]);
 
   return (
     <View style={styles.card}>
-      {currencies.length > 1 && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsRow}>
-          {currencies.map((curr) => (
-            <TouchableOpacity
-              key={curr}
-              style={[styles.tab, selectedCurrency === curr && styles.tabActive]}
-              onPress={() => handleCurrencyPress(curr)}
-              activeOpacity={0.85}
-            >
-              <Text style={[styles.tabText, selectedCurrency === curr && styles.tabTextActive]}>{curr}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      )}
-
       {categories.length > 0 ? (
         categories.map((category, idx) => {
           const isLast = idx === categories.length - 1;
@@ -77,7 +57,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
                 </View>
               </View>
               <View style={styles.right}>
-                <MoneyText amount={category.amount} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.amount} />
+                <MoneyText amount={category.amount} currency={currency} type="DR" weight="bold" compact style={styles.amount} />
                 <Text style={styles.percent}>{`${(ratio * 100).toFixed(0)}%`}</Text>
               </View>
             </View>
@@ -86,7 +66,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
       ) : (
         <View style={styles.empty}>
           <Ionicons name="pie-chart-outline" size={18} color={colors.textMuted} />
-          <Text style={styles.emptyText}>No expense data yet for {selectedCurrency}</Text>
+          <Text style={styles.emptyText}>No expense data yet for {currency}</Text>
         </View>
       )}
     </View>
