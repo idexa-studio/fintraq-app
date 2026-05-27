@@ -18,18 +18,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurBackground } from '../../../components/ui/BlurBackground';
 import { Header } from '../../../components/ui/Header';
 import { useSettings } from '../../../providers/SettingsProvider';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
+import { TransactionAccountPicker } from '../components/TransactionAccountPicker';
+import { TransactionAmountInput } from '../components/TransactionAmountInput';
+import { TransactionCategoryPicker } from '../components/TransactionCategoryPicker';
+import { TransactionTypePicker } from '../components/TransactionTypePicker';
 import {
   useCreateTransaction,
   useTransactionById,
   useUpdateTransaction,
 } from '../hooks/transactions';
-import { TransactionAmountInput } from '../components/TransactionAmountInput';
-import { TransactionTypePicker } from '../components/TransactionTypePicker';
-import { TransactionAccountPicker } from '../components/TransactionAccountPicker';
-import { TransactionCategoryPicker } from '../components/TransactionCategoryPicker';
 
 import { format } from 'date-fns';
 import { TransactionType } from '../../../types';
@@ -443,7 +443,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      paddingBottom: spacing('8'),
+      paddingBottom: spacing('0'),
     },
     saveBtn: {
       height: 52,
