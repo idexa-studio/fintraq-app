@@ -37,132 +37,163 @@ type SearchSection = {
   data: SearchItem[];
 };
 
-// ─── AccountRow ──────────────────────────────────────────────────────────────
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: colors.background },
+
+    searchRow: {
+      paddingHorizontal: layout.screenPadding,
+      paddingBottom: spacing('4'),
+    },
+    searchWrap: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 48,
+      borderRadius: radius('lg'),
+      backgroundColor: colors.surface,
+      paddingHorizontal: spacing('4'),
+      gap: spacing('2'),
+    },
+    searchInput: {
+      flex: 1,
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.md,
+      color: colors.text,
+      padding: 0,
+    },
+
+    prompt: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingBottom: 80,
+      gap: spacing('4'),
+    },
+    promptIcon: {
+      width: 64,
+      height: 64,
+      borderRadius: radius('full'),
+      backgroundColor: colors.surface,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    promptTitle: {
+      fontFamily: typography.fonts.heading,
+      fontSize: typography.sizes.xl,
+      color: colors.text,
+    },
+    promptSub: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.sm,
+      color: colors.textMuted,
+      textAlign: 'center',
+      lineHeight: 20,
+      maxWidth: '80%',
+    },
+
+    listContent: {
+      paddingHorizontal: layout.screenPadding,
+      paddingBottom: spacing('9'),
+    },
+
+    sectionHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingLeft: spacing('1'),
+      marginBottom: spacing('2.5'),
+    },
+    sectionTitle: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 10,
+      color: colors.textMuted,
+      opacity: 0.7,
+    },
+    sectionCount: {
+      fontFamily: typography.fonts.regular,
+      fontSize: 10,
+      color: colors.textMuted,
+      opacity: 0.5,
+    },
+
+    resultCard: {
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      overflow: 'hidden',
+      marginBottom: spacing('3'),
+    },
+
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: spacing('3.5'),
+      gap: spacing('3'),
+    },
+    rowInfo: { flex: 1, gap: spacing('0.5') },
+    rowName: { fontFamily: typography.fonts.semibold, fontSize: typography.sizes.sm, color: colors.text },
+    rowMeta: { fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted },
+
+    typeBadge: {
+      paddingHorizontal: spacing('2'),
+      height: 22,
+      borderRadius: radius('sm'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    typeBadgeText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 10,
+    },
+
+    sectionFooter: { height: spacing('5') },
+  });
 
 const AccountRow = React.memo(function AccountRow({
   account,
   onPress,
-  isFirst,
-  isLast,
 }: {
   account: Account;
   onPress: (id: number) => void;
-  isFirst: boolean;
-  isLast: boolean;
 }) {
   const theme = useTheme();
-  const { colors, radius } = theme;
-  const styles = useMemo(() => createAccountRowStyles(theme), [theme]);
+  const { colors } = theme;
   const accentColor = useMemo(() => colorNumberToHex(account.color), [account.color]);
   const handlePress = useCallback(() => onPress(account.id), [onPress, account.id]);
 
-  const containerStyle = useMemo(() => ({
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: isFirst ? radius('lg') : 0,
-    borderTopRightRadius: isFirst ? radius('lg') : 0,
-    borderBottomLeftRadius: isLast ? radius('lg') : 0,
-    borderBottomRightRadius: isLast ? radius('lg') : 0,
-    borderBottomWidth: isLast ? 0 : 1,
-    borderBottomColor: colors.text + '08',
-  }), [isFirst, isLast, colors, radius]);
-
   return (
-    <TouchableOpacity
-      style={[styles.container, containerStyle]}
-      onPress={handlePress}
-      activeOpacity={0.75}
-    >
-      <IconAvatar icon={resolveIcon(account.icon, 'wallet-outline')} bg={accentColor + '18'} color={accentColor} size={40} iconSize={18} />
-      <View style={styles.info}>
-        <Text style={[styles.name, { color: colors.text }]}>{account.name}</Text>
-        <Text style={[styles.meta, { color: colors.textMuted }]}>
-          {account.currency} · {account.accountNumber && account.accountNumber !== 'N/A'
-            ? `•••• ${account.accountNumber.slice(-4)}`
-            : 'Account'}
+    <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]} onPress={handlePress} activeOpacity={0.7}>
+      <IconAvatar icon={resolveIcon(account.icon, 'wallet-outline')} bg={accentColor + '18'} color={accentColor} size={36} iconSize={16} />
+      <View style={{ flex: 1, gap: theme.spacing('0.5') }}>
+        <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{account.name}</Text>
+        <Text style={{ fontFamily: theme.typography.fonts.regular, fontSize: theme.typography.sizes.xs, color: colors.textMuted }}>
+          {account.currency}{account.accountNumber && account.accountNumber !== 'N/A' ? ` · •••• ${account.accountNumber.slice(-4)}` : ''}
         </Text>
       </View>
-      <MoneyText
-        amount={account.balance}
-        currency={account.currency}
-        weight="bold"
-        style={styles.balance}
-      />
+      <MoneyText amount={account.balance} currency={account.currency} weight="bold" style={{ fontSize: 14 }} />
       <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
     </TouchableOpacity>
   );
 });
-
-const createAccountRowStyles = ({ typography, spacing , layout }: ThemeContextType) => StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing('3'),
-    paddingHorizontal: spacing('4'),
-    gap: spacing('3'),
-  },
-  info: {
-    flex: 1,
-    gap: spacing('0.5'),
-  },
-  name: {
-    fontFamily: typography.fonts.semibold,
-    fontSize: 14,
-  },
-  meta: {
-    fontFamily: typography.fonts.regular,
-    fontSize: 12,
-  },
-  balance: {
-    fontSize: 14,
-  },
-});
-
-// ─── CategoryRow ─────────────────────────────────────────────────────────────
 
 const CategoryRow = React.memo(function CategoryRow({
   category,
   onPress,
-  isFirst,
-  isLast,
 }: {
   category: Category;
   onPress: (id: number) => void;
-  isFirst: boolean;
-  isLast: boolean;
 }) {
   const theme = useTheme();
-  const { colors, radius } = theme;
-  const styles = useMemo(() => createCategoryRowStyles(theme), [theme]);
+  const { colors } = theme;
   const catColor = useMemo(() => colorNumberToHex(category.color), [category.color]);
   const handlePress = useCallback(() => onPress(category.id), [onPress, category.id]);
 
-  const containerStyle = useMemo(() => ({
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: isFirst ? radius('lg') : 0,
-    borderTopRightRadius: isFirst ? radius('lg') : 0,
-    borderBottomLeftRadius: isLast ? radius('lg') : 0,
-    borderBottomRightRadius: isLast ? radius('lg') : 0,
-    borderBottomWidth: isLast ? 0 : 1,
-    borderBottomColor: colors.text + '08',
-  }), [isFirst, isLast, colors, radius]);
-
   return (
-    <TouchableOpacity
-      style={[styles.container, containerStyle]}
-      onPress={handlePress}
-      activeOpacity={0.75}
-    >
-      <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} bg={catColor + '18'} color={catColor} size={40} iconSize={18} />
-      <Text style={[styles.name, { color: colors.text }]}>{category.name}</Text>
-      <View style={[
-        styles.typeBadge,
-        { backgroundColor: (category.type === 'CR' ? colors.success : colors.danger) + '15' },
-      ]}>
-        <Text style={[
-          styles.typeBadgeText,
-          { color: category.type === 'CR' ? colors.success : colors.danger },
-        ]}>
-          {category.type === 'CR' ? 'Income' : 'Expense'}
+    <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]} onPress={handlePress} activeOpacity={0.7}>
+      <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} bg={catColor + '18'} color={catColor} size={36} iconSize={16} />
+      <Text style={{ flex: 1, fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{category.name}</Text>
+      <View style={[{ backgroundColor: (category.type === 'CR' ? colors.success : colors.danger) + '15', paddingHorizontal: theme.spacing('2'), height: 22, borderRadius: theme.radius('sm'), alignItems: 'center', justifyContent: 'center' }]}>
+        <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: 10, color: category.type === 'CR' ? colors.success : colors.danger }}>
+          {category.type === 'CR' ? 'Income' : category.type === 'TR' ? 'Transfer' : 'Expense'}
         </Text>
       </View>
       <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
@@ -170,39 +201,11 @@ const CategoryRow = React.memo(function CategoryRow({
   );
 });
 
-const createCategoryRowStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing('3'),
-    paddingHorizontal: spacing('4'),
-    gap: spacing('3'),
-  },
-  name: {
-    flex: 1,
-    fontFamily: typography.fonts.semibold,
-    fontSize: 14,
-  },
-  typeBadge: {
-    paddingHorizontal: spacing('2'),
-    height: 22,
-    borderRadius: radius('sm'),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  typeBadgeText: {
-    fontFamily: typography.fonts.semibold,
-    fontSize: 11,
-  },
-});
-
-// ─── SearchScreen ─────────────────────────────────────────────────────────────
-
-export function SearchScreen() {
+export const SearchScreen = React.memo(function SearchScreen() {
   const theme = useTheme();
-  const { colors } = theme;
-  const router = useRouter();
+  const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const router = useRouter();
   const inputRef = useRef<TextInput>(null);
 
   const [query, setQuery] = useState('');
@@ -230,24 +233,23 @@ export function SearchScreen() {
   const sections = useMemo((): SearchSection[] => {
     if (!data) return [];
     const result: SearchSection[] = [];
-
     if (data.transactions.length > 0) {
       result.push({
-        title: 'TRANSACTIONS',
+        title: 'Transactions',
         count: data.transactions.length,
         data: data.transactions.map(item => ({ kind: 'transaction' as const, data: item })),
       });
     }
     if (data.accounts.length > 0) {
       result.push({
-        title: 'ACCOUNTS',
+        title: 'Accounts',
         count: data.accounts.length,
         data: data.accounts.map(item => ({ kind: 'account' as const, data: item })),
       });
     }
     if (data.categories.length > 0) {
       result.push({
-        title: 'CATEGORIES',
+        title: 'Categories',
         count: data.categories.length,
         data: data.categories.map(item => ({ kind: 'category' as const, data: item })),
       });
@@ -265,45 +267,48 @@ export function SearchScreen() {
 
       if (item.kind === 'transaction') {
         return (
-          <TransactionRow
-            tx={item.data}
-            isFirst={isFirst}
-            isLast={isLast}
-            showDate
-            onPress={handleTransactionPress}
-          />
+          <TransactionRow tx={item.data} isFirst={isFirst} isLast={isLast} showDate onPress={handleTransactionPress} />
         );
       }
+
+      const cardStyle = {
+        backgroundColor: theme.colors.surface,
+        borderTopLeftRadius: isFirst ? theme.radius('xl') : 0,
+        borderTopRightRadius: isFirst ? theme.radius('xl') : 0,
+        borderBottomLeftRadius: isLast ? theme.radius('xl') : 0,
+        borderBottomRightRadius: isLast ? theme.radius('xl') : 0,
+        borderBottomWidth: isLast ? 0 : 1,
+        borderBottomColor: theme.colors.text + '08',
+      };
+
       if (item.kind === 'account') {
         return (
-          <AccountRow
-            account={item.data}
-            onPress={handleAccountPress}
-            isFirst={isFirst}
-            isLast={isLast}
-          />
+          <View style={cardStyle}>
+            <AccountRow account={item.data} onPress={handleAccountPress} />
+          </View>
         );
       }
       return (
-        <CategoryRow
-          category={item.data}
-          onPress={handleCategoryPress}
-          isFirst={isFirst}
-          isLast={isLast}
-        />
+        <View style={cardStyle}>
+          <CategoryRow category={item.data} onPress={handleCategoryPress} />
+        </View>
       );
     },
-    [handleTransactionPress, handleAccountPress, handleCategoryPress],
+    [handleTransactionPress, handleAccountPress, handleCategoryPress, theme],
   );
 
   const renderSectionHeader = useCallback(
     ({ section }: { section: SectionListData<SearchItem, SearchSection> }) => (
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>{section.title}</Text>
-        <Text style={styles.sectionHeaderCount}>{section.count}</Text>
+        <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          {section.title}
+        </Text>
+        <Text style={[styles.sectionCount, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+          {section.count}
+        </Text>
       </View>
     ),
-    [styles],
+    [styles, typography.fonts.semibold, typography.fonts.regular, colors.textMuted],
   );
 
   const renderSectionFooter = useCallback(
@@ -324,9 +329,7 @@ export function SearchScreen() {
       <Header
         title="Search"
         showBack
-        rightAction={isFetching && isEnabled ? (
-          <ActivityIndicator size="small" color={colors.primary} />
-        ) : undefined}
+        rightAction={isFetching && isEnabled ? <ActivityIndicator size="small" color={colors.primary} /> : undefined}
       />
 
       <View style={styles.searchRow}>
@@ -334,37 +337,41 @@ export function SearchScreen() {
           <Ionicons name="search-outline" size={18} color={colors.textMuted} />
           <TextInput
             ref={inputRef}
-            style={styles.searchInput}
+            style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
             value={query}
             onChangeText={setQuery}
-            placeholder="Transactions, accounts, categories..."
+            placeholder="Search transactions, accounts, categories..."
             placeholderTextColor={colors.textMuted + '80'}
             returnKeyType="search"
             autoCorrect={false}
             autoCapitalize="none"
           />
-          {query.length > 0 && (
+          {query.length > 0 ? (
             <TouchableOpacity onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Ionicons name="close-circle" size={17} color={colors.textMuted} />
             </TouchableOpacity>
-          )}
+          ) : null}
         </View>
       </View>
 
       {!isEnabled ? (
-        <View style={styles.promptWrap}>
-          <IconAvatar icon="search" bg={colors.surface} color={colors.textMuted} size={68} iconSize={28} />
-          <Text style={styles.promptTitle}>Find anything</Text>
-          <Text style={styles.promptSubtitle}>
-            Search across transactions, accounts{'\n'}and categories in one place.
+        <View style={styles.prompt}>
+          <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
+            <Ionicons name="search" size={28} color={colors.textMuted} />
+          </View>
+          <Text style={[styles.promptTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>Search everything</Text>
+          <Text style={[styles.promptSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+            Transactions, accounts, and categories. Type at least 2 characters to start.
           </Text>
         </View>
       ) : noResults ? (
-        <View style={styles.promptWrap}>
-          <IconAvatar icon="file-tray-outline" bg={colors.surface} color={colors.textMuted} size={68} iconSize={28} />
-          <Text style={styles.promptTitle}>No results</Text>
-          <Text style={styles.promptSubtitle}>
-            {`Nothing matched "${debouncedQuery}".\nTry a different term.`}
+        <View style={styles.prompt}>
+          <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
+            <Ionicons name="file-tray-outline" size={28} color={colors.textMuted} />
+          </View>
+          <Text style={[styles.promptTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>No results</Text>
+          <Text style={[styles.promptSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+            Nothing matched \u201C{debouncedQuery}\u201D. Try a different term.
           </Text>
         </View>
       ) : (
@@ -383,78 +390,4 @@ export function SearchScreen() {
       )}
     </SafeAreaView>
   );
-}
-
-const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeContextType) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    searchRow: {
-      paddingHorizontal: layout.screenPadding,
-      paddingBottom: spacing('4'),
-    },
-    searchWrap: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 52,
-      borderRadius: radius('md'),
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing('4'),
-      gap: spacing('2'),
-    },
-    searchInput: {
-      flex: 1,
-      fontFamily: typography.fonts.regular,
-      fontSize: 16,
-      color: colors.text,
-      padding: 0,
-    },
-    promptWrap: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingBottom: 80,
-      gap: spacing('3'),
-    },
-    promptTitle: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 18,
-      color: colors.text,
-      letterSpacing: -0.3,
-    },
-    promptSubtitle: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 14,
-      color: colors.textMuted,
-      textAlign: 'center',
-      lineHeight: 20,
-    },
-    listContent: {
-      paddingHorizontal: layout.screenPadding,
-      paddingBottom: 60,
-    },
-    sectionHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingLeft: spacing('1'),
-      marginBottom: spacing('2'),
-    },
-    sectionHeaderText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 9,
-      color: colors.textMuted,
-      letterSpacing: 1.2,
-      textTransform: 'uppercase',
-    },
-    sectionHeaderCount: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 10,
-      color: colors.textMuted,
-    },
-    sectionFooter: {
-      height: spacing('5'),
-    },
-  });
+});
