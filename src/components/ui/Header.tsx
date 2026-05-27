@@ -87,9 +87,8 @@ titleBlock: {
   title: {
     fontFamily: typography.fonts.heading,
     color: colors.text,
-    fontSize: 28,
-    letterSpacing: -1,
-    lineHeight: 32,
+    fontSize: typography.sizes.xxl,
+    lineHeight: 26,
   },
   rightActionWrap: {
     justifyContent: 'center',
