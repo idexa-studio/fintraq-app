@@ -86,7 +86,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const { data: topCategoriesData } = useTopExpenseCategories(selectedCurrency);
   const topExpenseCategories = React.useMemo(() => topCategoriesData ?? [], [topCategoriesData]);
 
-  const topCategoryCurrencies = currencyKeys;
   const [selectedTopCategoryCurrency, setSelectedTopCategoryCurrency] = React.useState<string>(selectedCurrency);
 
   React.useEffect(() => {
@@ -220,9 +219,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* ── Hero Balance ── */}
-        <View style={styles.heroCard}>
+        {/* ── Currency selector ── */}
+        <View style={styles.currencySelector}>
           {currencyKeys.length > 1 && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.currencyTabsRow}>
               {currencyKeys.map(curr => (
@@ -237,6 +235,10 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
               ))}
             </ScrollView>
           )}
+        </View>
+        {/* ── Hero Balance ── */}
+        <View style={styles.heroCard}>
+
 
           <View style={styles.heroLabelRow}>
             <Text style={styles.heroLabel}>TOTAL BALANCE</Text>
@@ -374,7 +376,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           <Text style={[styles.sectionAction, { color: colors.textMuted }]}>{selectedTopCategoryCurrency}</Text>
         </View>
         <TopExpenseCategoriesCard
-          currencies={topCategoryCurrencies}
           currency={selectedTopCategoryCurrency}
           categories={topExpenseCategories}
         />
@@ -485,6 +486,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing('6'),
+  },
+  
+  /* ── Currency selector ── */
+  currencySelector: {
+    marginHorizontal: layout.screenPadding,
   },
 
   /* ── Hero balance ── */

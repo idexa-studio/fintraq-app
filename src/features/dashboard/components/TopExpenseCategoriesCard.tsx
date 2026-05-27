@@ -15,13 +15,11 @@ type TopExpenseCategory = {
 };
 
 type TopExpenseCategoriesCardProps = {
-  currencies: string[];
   currency: string;
   categories: TopExpenseCategory[];
 };
 
 export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategoriesCard({
-  currencies,
   currency,
   categories,
 }: TopExpenseCategoriesCardProps) {
