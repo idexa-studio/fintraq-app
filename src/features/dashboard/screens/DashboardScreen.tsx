@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurBackground } from '../../../components/ui/BlurBackground';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
@@ -17,6 +18,7 @@ import { StreakBadge } from '../../reports/components/StreakBadge';
 import { useTransactions } from '../../transactions/hooks/transactions';
 import { InsightsSection } from '../components/InsightsSection';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
+import { PremiumUpsellSheet } from '../components/PremiumUpsellSheet';
 import { useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
 
 const getGreeting = () => {
@@ -51,6 +53,23 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   const { data: transactions, isLoading: txLoading } = useTransactions(6);
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
+
+  const [showUpsell, setShowUpsell] = React.useState(false);
+  const UPSELL_KEY = '@luno/upsell_dismissed_at';
+  const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
+
+  React.useEffect(() => {
+    if (isPremium) return;
+    AsyncStorage.getItem(UPSELL_KEY).then(val => {
+      if (!val) { setShowUpsell(true); return; }
+      if (Date.now() - parseInt(val, 10) > UPSELL_TTL) setShowUpsell(true);
+    });
+  }, [isPremium]);
+
+  const dismissUpsell = useCallback(() => {
+    setShowUpsell(false);
+    AsyncStorage.setItem(UPSELL_KEY, String(Date.now()));
+  }, []);
 
   const balancesByCurrency = React.useMemo(() => {
     return accounts?.reduce((acc, account) => {
@@ -376,6 +395,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       <TouchableOpacity style={styles.fab} onPress={navigateToCreateTransaction} activeOpacity={0.9}>
         <Ionicons name="add" size={28} color={colors.background} />
       </TouchableOpacity>
+
+      <PremiumUpsellSheet visible={showUpsell} onClose={dismissUpsell} />
     </SafeAreaView>
   );
 });
