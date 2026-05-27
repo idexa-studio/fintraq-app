@@ -48,8 +48,8 @@ export const DARK_THEME: ThemePalette = {
 
   border: 'transparent',
 
-  success: '#6BD498',
-  danger: '#EF4444',
+  success: '#0E9F6E',
+  danger: '#B42318',
   warning: '#F59E0B',
   info: '#60A5FA',
 };
@@ -69,8 +69,8 @@ export const LIGHT_THEME: ThemePalette = {
 
   border: 'transparent',
 
-  success: '#43B875',
-  danger: '#DC2626',
+  success: '#0E9F6E',
+  danger: '#B42318',
   warning: '#D97706',
   info: '#2563EB',
 };

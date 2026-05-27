@@ -203,13 +203,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
               onPress={isPremium ? navigateToSearch : navigateToPremium}
               activeOpacity={0.7}
             >
-              <Ionicons name="search-outline" size={20} color={isPremium ? colors.text : colors.textMuted} />
+              <Ionicons name="search-outline" size={20} color={colors.text} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={navigateToAnalytics}
               activeOpacity={0.7}
             >
-              <Ionicons name="analytics-outline" size={20} color={colors.text} />
+              <Ionicons name="pie-chart-outline" size={20} color={colors.text} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={navigateToSettings}
@@ -485,9 +485,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing('6'),
+    gap: spacing('4'),
   },
-  
+
   /* ── Currency selector ── */
   currencySelector: {
     marginHorizontal: layout.screenPadding,
@@ -585,7 +585,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   },
   flowBar: {
     flexDirection: 'row',
-    height: 3,
+    height: 4,
     borderRadius: radius('full'),
     overflow: 'hidden',
     gap: spacing('0.5'),
@@ -828,11 +828,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   /* ── FAB ── */
   fab: {
     position: 'absolute',
-    bottom: spacing('7'),
-    right: spacing('7'),
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    bottom: layout.screenPadding,
+    right: layout.screenPadding,
+    width: 55,
+    height: 55,
+    borderRadius: radius('full'),
     backgroundColor: colors.text,
     justifyContent: 'center',
     alignItems: 'center',

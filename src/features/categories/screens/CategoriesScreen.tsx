@@ -15,7 +15,7 @@ import { BlurBackground } from '../../../components/ui/BlurBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
 import { OptionsDialog } from '../../../components/ui/OptionsDialog';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { Category } from '../api/categories';
 import { CategoryCard } from '../components/CategoryCard';
 import { useCategories, useDeleteCategory } from '../hooks/categories';
@@ -299,11 +299,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     /* ── FAB ── */
     fab: {
       position: 'absolute',
-      bottom: 30,
+      bottom: layout.screenPadding,
       right: layout.screenPadding,
-      width: 52,
-      height: 52,
-      borderRadius: radius('xl'),
+      width: 55,
+      height: 55,
+      borderRadius: radius('full'),
       backgroundColor: colors.text,
       justifyContent: 'center',
       alignItems: 'center',

@@ -99,7 +99,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
         <View style={styles.headerRow}>
 
           <View style={iconBoxStyles}>
-             <Ionicons name="lock-closed" size={iconSize} color={colors.text} />
+             <Ionicons name="lock-closed-outline" size={iconSize} color={colors.text} />
           </View>
 
           <View style={styles.textDetails}>
