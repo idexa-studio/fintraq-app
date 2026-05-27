@@ -28,9 +28,9 @@ export const ReportHeader = React.memo(function ReportHeader({ title }: ReportHe
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
   container: {
-    paddingHorizontal: spacing('6'),
+    paddingHorizontal: layout.screenPadding,
     paddingTop: spacing('3'),
     paddingBottom: spacing('6'),
     flexDirection: 'row',

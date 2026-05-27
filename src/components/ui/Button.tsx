@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
-import type { ShadowToken } from '../../theme/tokens';
 import { FrostLayer } from './FrostLayer';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'success' | 'ghost';
@@ -17,7 +16,6 @@ type ButtonProps = {
   disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
-  shadow?: ShadowToken;
   icon?: keyof typeof Ionicons.glyphMap;
 };
 
@@ -46,11 +44,10 @@ export const Button = React.memo(function Button({
   disabled = false,
   style,
   textStyle,
-  shadow: shadowToken,
   icon,
 }: ButtonProps) {
   const theme = useTheme();
-  const { colors, sizes, spacing, shadow } = theme;
+  const { colors, sizes, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const sizeConfig = sizes.button[size];
@@ -81,12 +78,6 @@ export const Button = React.memo(function Button({
     return 'transparent';
   }, [variant, disabled, colors.border]);
 
-  const shadowStyle = useMemo(() => {
-    if (shadowToken) return shadow(shadowToken);
-    if (variant === 'primary' && !disabled) return shadow('sm');
-    return shadow('none');
-  }, [shadowToken, variant, disabled, shadow]);
-
   const handlePress = useCallback(() => {
     if (!disabled && !isLoading) {
       onPress();
@@ -106,7 +97,6 @@ export const Button = React.memo(function Button({
           borderWidth: variant === 'secondary' || variant === 'outline' ? 1 : 0,
           opacity: disabled ? 0.5 : 1,
         },
-        shadowStyle,
         style,
       ]}
       onPress={handlePress}

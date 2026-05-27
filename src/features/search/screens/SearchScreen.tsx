@@ -1,4 +1,5 @@
 import { BlurBackground } from '@/src/components/ui/BlurBackground';
+import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { TransactionRow } from '@/src/components/ui/TransactionRow';
@@ -91,7 +92,7 @@ const AccountRow = React.memo(function AccountRow({
   );
 });
 
-const createAccountRowStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.create({
+const createAccountRowStyles = ({ typography, spacing , layout }: ThemeContextType) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -169,7 +170,7 @@ const CategoryRow = React.memo(function CategoryRow({
   );
 });
 
-const createCategoryRowStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
+const createCategoryRowStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -213,8 +214,6 @@ export function SearchScreen() {
   }, []);
 
   const handleClear = useCallback(() => setQuery(''), []);
-
-  const handleBack = useCallback(() => router.back(), [router]);
 
   const handleTransactionPress = useCallback((tx: { id: number }) => {
     router.push(`/transactions/edit/${tx.id}`);
@@ -322,17 +321,13 @@ export function SearchScreen() {
     <SafeAreaView style={styles.container}>
       <BlurBackground />
 
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={handleBack} activeOpacity={0.75}>
-          <Ionicons name="arrow-back" size={20} color={colors.text} />
-        </TouchableOpacity>
-        <View style={styles.headerText}>
-          <Text style={styles.title}>Search</Text>
-        </View>
-        {isFetching && isEnabled && (
-          <ActivityIndicator size="small" color={colors.primary} style={styles.loadingIndicator} />
-        )}
-      </View>
+      <Header
+        title="Search"
+        showBack
+        rightAction={isFetching && isEnabled ? (
+          <ActivityIndicator size="small" color={colors.primary} />
+        ) : undefined}
+      />
 
       <View style={styles.searchRow}>
         <View style={styles.searchWrap}>
@@ -390,40 +385,14 @@ export function SearchScreen() {
   );
 }
 
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
     },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing('6'),
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('2'),
-      gap: spacing('4'),
-    },
-    backBtn: {
-      width: 44,
-      height: 44,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    headerText: {
-      flex: 1,
-    },
-    title: {
-      fontFamily: typography.fonts.heading,
-      fontSize: 28,
-      color: colors.text,
-      letterSpacing: -1,
-    },
-    loadingIndicator: {
-      marginRight: spacing('1'),
-    },
     searchRow: {
-      paddingHorizontal: spacing('6'),
+      paddingHorizontal: layout.screenPadding,
       paddingBottom: spacing('4'),
     },
     searchWrap: {
@@ -463,7 +432,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       lineHeight: 20,
     },
     listContent: {
-      paddingHorizontal: spacing('6'),
+      paddingHorizontal: layout.screenPadding,
       paddingBottom: 60,
     },
     sectionHeader: {

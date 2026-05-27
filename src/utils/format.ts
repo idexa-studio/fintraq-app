@@ -34,9 +34,9 @@ export const withAlpha = (color: string, hexAlpha: string): string =>
  * Formats a numeric amount into a currency string using the Intl library.
  * If no currency code is provided, it formats the number as a localized decimal.
  */
-export const formatCurrency = (amount: number, currencyCode?: string): string => {
+export const formatCurrency = (amount: number, currencyCode?: string, compact?: boolean): string => {
   const locale = Localization.getLocales()?.[0]?.languageTag ?? 'en-US';
-  
+
   if (!currencyCode) {
     return new Intl.NumberFormat(locale, {
       style: 'decimal',
@@ -46,12 +46,19 @@ export const formatCurrency = (amount: number, currencyCode?: string): string =>
   }
 
   try {
+    if (compact) {
+      return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: currencyCode.toUpperCase(),
+        notation: 'compact',
+        maximumFractionDigits: 1,
+      }).format(amount);
+    }
     return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: currencyCode.toUpperCase(),
     }).format(amount);
   } catch {
-    // Fallback if the currency code is invalid or Intl fails
     return `${currencyCode.toUpperCase()} ${amount.toFixed(2)}`;
   }
 };

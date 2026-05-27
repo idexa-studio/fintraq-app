@@ -47,9 +47,9 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
   );
 });
 
-const createStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
   container: {
-    paddingHorizontal: spacing('6'),
+    paddingHorizontal: layout.screenPadding,
     paddingTop: spacing('4'),
     paddingBottom: spacing('2'),
     flexDirection: 'row',

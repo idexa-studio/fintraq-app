@@ -82,7 +82,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
           <Text style={[styles.centerLabel, { color: colors.textMuted, fontFamily: typography.fonts.semibold }]}>
             TOTAL
           </Text>
-          <MoneyText amount={total} currency={currency} type="DR" weight="bold" style={styles.centerAmt} />
+          <MoneyText amount={total} currency={currency} type="DR" weight="bold" compact style={styles.centerAmt} />
         </View>
       </View>
 
@@ -107,7 +107,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
               </View>
             </View>
             <View style={styles.legendRight}>
-              <MoneyText amount={d.amount} currency={currency} type="DR" style={styles.legendAmt} weight="bold" />
+              <MoneyText amount={d.amount} currency={currency} type="DR" style={styles.legendAmt} weight="bold" compact />
               <Text style={[styles.legendPct, { color: colors.textMuted, fontFamily: typography.fonts.regular }]}>
                 {pct.toFixed(0)}%
               </Text>

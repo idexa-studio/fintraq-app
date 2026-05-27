@@ -93,8 +93,8 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) => Styl
   },
   value: {
     fontFamily: typography.fonts.amountBold,
-    fontSize: 24,
-    letterSpacing: -1,
+    fontSize: 20,
+    letterSpacing: -0.5,
   },
   trendContainer: {
     flexDirection: 'row',

@@ -476,10 +476,10 @@ export function TransactionsScreen() {
         showBack
         rightAction={(
           <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.headerBtn} onPress={() => router.push('/search')} activeOpacity={0.85}>
+            <TouchableOpacity onPress={() => router.push('/search')} activeOpacity={0.7}>
               <Ionicons name="search-outline" size={19} color={colors.text} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.headerBtn} onPress={() => setShowAdvancedFilterSheet(true)} activeOpacity={0.9}>
+            <TouchableOpacity onPress={() => setShowAdvancedFilterSheet(true)} activeOpacity={0.7} style={{ position: 'relative' }}>
               <Ionicons name="filter-outline" size={19} color={colors.text} />
               {activeFilterCount > 0 && (
                 <View style={styles.filterBadge}>
@@ -580,7 +580,7 @@ export function TransactionsScreen() {
   );
 }
 
-const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -595,13 +595,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('2'),
-    },
-    headerBtn: {
-      width: 44,
-      height: 44,
-      alignItems: 'center',
-      justifyContent: 'center',
+      gap: spacing('5'),
     },
     filterBadge: {
       position: 'absolute',
@@ -622,7 +616,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
       fontSize: 10,
     },
     content: {
-      paddingHorizontal: spacing('6'),
+      paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
       paddingBottom: 120,
     },
@@ -711,7 +705,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2.5'),
-      paddingHorizontal: spacing('5'),
+      paddingHorizontal: layout.screenPadding,
       height: 48,
       borderRadius: radius('lg'),
       backgroundColor: colors.text,
@@ -736,6 +730,5 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
       backgroundColor: colors.text,
       alignItems: 'center',
       justifyContent: 'center',
-      ...shadow("lg"),
     },
   });

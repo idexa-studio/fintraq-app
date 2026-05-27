@@ -33,46 +33,51 @@ export const CategoryCard = React.memo(function CategoryCard({
 
   return (
     <TouchableOpacity
-      style={styles.row}
+      style={styles.card}
       onPress={handlePress}
       onLongPress={handleLongPress}
       delayLongPress={280}
       activeOpacity={0.75}
     >
-      <View style={[styles.accent, { backgroundColor: catColor }]} />
+      <View style={[styles.colorBar, { backgroundColor: catColor }]} />
 
-      <IconAvatar icon={resolveIcon(item.icon, 'grid-outline')} bg={catColor + '1A'} color={catColor} size={40} iconSize={18} />
+      <View style={styles.inner}>
+        <IconAvatar
+          icon={resolveIcon(item.icon, 'grid-outline')}
+          bg={catColor + '20'}
+          color={catColor}
+          size={40}
+          iconSize={18}
+        />
 
-      <Text style={styles.name} numberOfLines={1}>
-        {item.name}
-      </Text>
+        <Text style={styles.name} numberOfLines={1}>
+          {item.name}
+        </Text>
 
-      <Ionicons name="chevron-forward" size={14} color={colors.textMuted + '80'} />
+        <Ionicons name="chevron-forward" size={14} color={colors.textMuted + '80'} />
+      </View>
     </TouchableOpacity>
   );
 });
 
 const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
-    row: {
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      marginBottom: spacing('2.5'),
+      overflow: 'hidden',
+    },
+    colorBar: {
+      height: 3,
+      width: '100%',
+    },
+    inner: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: colors.surface,
-      borderRadius: radius('lg'),
-      paddingRight: spacing('4'),
+      paddingHorizontal: spacing('4'),
       paddingVertical: spacing('3'),
-      overflow: 'hidden',
       gap: spacing('3'),
-      marginBottom: spacing('2'),
-    },
-    accent: {
-      width: 4,
-      height: '100%',
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      bottom: 0,
-      borderRadius: 2,
     },
     name: {
       flex: 1,

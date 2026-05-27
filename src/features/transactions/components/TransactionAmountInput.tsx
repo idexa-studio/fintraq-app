@@ -38,9 +38,9 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
   );
 });
 
-const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ typography, spacing , layout }: ThemeContextType) => StyleSheet.create({
   container: {
-    paddingHorizontal: spacing('6'),
+    paddingHorizontal: layout.screenPadding,
     paddingVertical: spacing('3'),
   },
   label: {

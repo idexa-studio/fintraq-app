@@ -453,7 +453,7 @@ export default function SettingsScreen() {
   );
 }
 
-const createStyles = ({ colors, spacing, radius, typography, shadow }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -566,7 +566,6 @@ const createStyles = ({ colors, spacing, radius, typography, shadow }: ThemeCont
       borderRadius: radius('2xl'),
       borderWidth: 1,
       padding: spacing('6'),
-      ...shadow('md'),
     },
     modalTitle: {
       fontFamily: typography.fonts.heading,

@@ -63,10 +63,10 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
   );
 });
 
-const createStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
   container: {
     paddingVertical: spacing('3'),
-    paddingHorizontal: spacing('6'),
+    paddingHorizontal: layout.screenPadding,
   },
   label: {
     fontFamily: typography.fonts.semibold,

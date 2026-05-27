@@ -163,7 +163,7 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
   );
 });
 
-const createStyles = ({ colors, overlay, typography }: ThemeContextType) =>
+const createStyles = ({ colors, overlay, typography , layout }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
@@ -195,7 +195,7 @@ const createStyles = ({ colors, overlay, typography }: ThemeContextType) =>
       backgroundColor: colors.textMuted + '55',
     },
     header: {
-      paddingHorizontal: 24,
+      paddingHorizontal: layout.screenPadding,
       paddingTop: 14,
       paddingBottom: 10,
       flexDirection: 'row',
@@ -227,7 +227,7 @@ const createStyles = ({ colors, overlay, typography }: ThemeContextType) =>
     searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginHorizontal: 24,
+      marginHorizontal: layout.screenPadding,
       marginBottom: 10,
       height: 44,
       borderRadius: 14,
@@ -248,7 +248,7 @@ const createStyles = ({ colors, overlay, typography }: ThemeContextType) =>
       paddingVertical: 0,
     },
     listContent: {
-      paddingHorizontal: 24,
+      paddingHorizontal: layout.screenPadding,
       paddingBottom: Platform.OS === 'ios' ? 24 : 32,
     },
     separator: {

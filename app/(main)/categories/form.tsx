@@ -25,7 +25,7 @@ type CategoryFormValues = {
   name: string;
 };
 
-const createStyles = ({ colors, typography }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -39,76 +39,64 @@ const createStyles = ({ colors, typography }: ThemeContextType) =>
       flex: 1,
     },
     content: {
-      paddingHorizontal: 24,
-      paddingTop: 10,
-      paddingBottom: 40,
+      paddingTop: spacing('4'),
+      paddingBottom: 120,
+    },
+    formBody: {
+      gap: spacing('5'),
     },
     section: {
-      paddingBottom: 22,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
-      marginBottom: 22,
+      paddingHorizontal: layout.screenPadding,
+      gap: spacing('3'),
     },
-    sectionLast: {
-      borderBottomWidth: 0,
-      marginBottom: 0,
-      paddingBottom: 0,
+    sectionLabel: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 10,
+      color: colors.textMuted,
+      letterSpacing: 1.5,
     },
-    label: {
+    fieldInput: {
+      height: 50,
+      borderRadius: radius('lg'),
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      paddingHorizontal: spacing('4'),
+      fontFamily: typography.fonts.regular,
+      fontSize: 15,
+      color: colors.text,
+    },
+    typeRow: {
+      flexDirection: 'row',
+      gap: spacing('2.5'),
+    },
+    typePill: {
+      paddingHorizontal: spacing('4'),
+      height: 36,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      backgroundColor: colors.surface,
+      borderColor: colors.border,
+    },
+    typePillExpense: {
+      backgroundColor: colors.danger,
+      borderColor: colors.danger,
+    },
+    typePillIncome: {
+      backgroundColor: colors.success,
+      borderColor: colors.success,
+    },
+    typePillText: {
       fontFamily: typography.fonts.semibold,
       fontSize: 13,
       color: colors.textMuted,
-      letterSpacing: 0.1,
-      marginBottom: 6,
     },
-    answerInput: {
-      fontFamily: typography.fonts.heading,
-      fontSize: 28,
-      lineHeight: 34,
-      color: colors.text,
-      letterSpacing: -0.7,
-      paddingHorizontal: 0,
-      paddingVertical: 4,
-    },
-    answerLine: {
-      height: 2,
-      borderRadius: 999,
-      backgroundColor: colors.primary + '55',
-      marginTop: 4,
-    },
-    answerLineError: {
-      backgroundColor: colors.danger + '88',
-    },
-    typeTabsRow: {
-      flexDirection: 'row',
-      gap: 6,
-      alignSelf: 'flex-start',
-    },
-    typeTab: {
-      paddingHorizontal: 12,
-      paddingVertical: 7,
-      borderRadius: 12,
-      backgroundColor: colors.background + 'AA',
-      borderWidth: 1,
-      borderColor: colors.border,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    typeTabActive: {
-      backgroundColor: colors.text,
-      borderColor: colors.text,
-    },
-    typeTabText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
-      color: colors.textMuted,
-      letterSpacing: 0.4,
-    },
-    typeTabTextActive: {
+    typePillTextActive: {
       color: colors.background,
     },
     lockHint: {
-      marginTop: 8,
       fontFamily: typography.fonts.regular,
       fontSize: 12,
       color: colors.textMuted,
@@ -116,22 +104,22 @@ const createStyles = ({ colors, typography }: ThemeContextType) =>
     iconGrid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      gap: 10,
+      gap: spacing('2.5'),
     },
     iconCell: {
-      width: 46,
-      height: 46,
-      borderRadius: 23,
+      width: 44,
+      height: 44,
+      borderRadius: radius('md'),
       borderWidth: 1,
-      borderColor: colors.text + '10',
-      backgroundColor: colors.background + 'B8',
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
       justifyContent: 'center',
       alignItems: 'center',
     },
     colorGrid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      gap: 12,
+      gap: spacing('3'),
     },
     colorCell: {
       width: 34,
@@ -147,35 +135,25 @@ const createStyles = ({ colors, typography }: ThemeContextType) =>
       transform: [{ scale: 1.08 }],
     },
     footer: {
-      paddingHorizontal: 24,
-      paddingTop: 10,
-      paddingBottom: Platform.OS === 'ios' ? 36 : 22,
-      borderTopWidth: 1,
-      borderTopColor: colors.border,
-      backgroundColor: colors.background + 'F2',
+      position: 'absolute',
+      bottom: 34,
+      left: layout.screenPadding,
+      right: layout.screenPadding,
     },
     primaryBtn: {
-      height: 56,
-      borderRadius: 16,
-      backgroundColor: colors.primary,
-      flexDirection: 'row',
+      height: 52,
+      borderRadius: radius('xl'),
+      backgroundColor: colors.text,
       justifyContent: 'center',
       alignItems: 'center',
-      shadowColor: colors.primary,
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.25,
-      shadowRadius: 12,
-      elevation: 5,
     },
     primaryBtnDisabled: {
       opacity: 0.45,
     },
     primaryBtnText: {
-      fontFamily: typography.fonts.heading,
-      fontSize: 14,
+      fontFamily: typography.fonts.semibold,
+      fontSize: 15,
       color: colors.background,
-      letterSpacing: 0.3,
-      marginRight: 10,
     },
   });
 
@@ -241,11 +219,7 @@ export default React.memo(function CategoryFormScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <BlurBackground />
-      <Header
-        title={isEditing ? 'Edit Category' : 'New Category'}
-       
-        showBack
-      />
+      <Header title={isEditing ? 'Edit Category' : 'New Category'} showBack />
 
       <KeyboardAvoidingView
         style={styles.body}
@@ -257,119 +231,121 @@ export default React.memo(function CategoryFormScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.section}>
-            <Text style={styles.label}>Type</Text>
-            <View style={styles.typeTabsRow}>
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => !isEditing && setType('DR')}
-                disabled={isEditing}
-                style={[styles.typeTab, type === 'DR' && styles.typeTabActive]}
-              >
-                <Text style={[styles.typeTabText, type === 'DR' && styles.typeTabTextActive]}>
-                  EXPENSE
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => !isEditing && setType('CR')}
-                disabled={isEditing}
-                style={[styles.typeTab, type === 'CR' && styles.typeTabActive]}
-              >
-                <Text style={[styles.typeTabText, type === 'CR' && styles.typeTabTextActive]}>
-                  INCOME
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {isEditing && (
-              <Text style={styles.lockHint}>Type cannot be changed for existing categories</Text>
-            )}
-          </View>
+          <View style={styles.formBody}>
 
-          <View style={styles.section}>
-            <Text style={styles.label}>Name</Text>
-            <Controller
-              control={control}
-              name="name"
-              rules={{ required: 'Category name is required' }}
-              render={({ field }) => (
-                <TextInput
-                  value={field.value}
-                  onChangeText={field.onChange}
-                  onBlur={field.onBlur}
-                  placeholder="Groceries"
-                  placeholderTextColor={colors.textMuted + '50'}
-                  autoFocus={!isEditing}
-                  style={styles.answerInput}
-                  autoCapitalize="words"
-                  autoCorrect={false}
-                  returnKeyType="next"
-                />
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>TYPE</Text>
+              <View style={styles.typeRow}>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => !isEditing && setType('DR')}
+                  disabled={isEditing}
+                  style={[styles.typePill, type === 'DR' && styles.typePillExpense]}
+                >
+                  <Text style={[styles.typePillText, type === 'DR' && styles.typePillTextActive]}>
+                    Expense
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => !isEditing && setType('CR')}
+                  disabled={isEditing}
+                  style={[styles.typePill, type === 'CR' && styles.typePillIncome]}
+                >
+                  <Text style={[styles.typePillText, type === 'CR' && styles.typePillTextActive]}>
+                    Income
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {isEditing && (
+                <Text style={styles.lockHint}>Type cannot be changed for existing categories.</Text>
               )}
-            />
-            <View style={[styles.answerLine, errors.name && styles.answerLineError]} />
-          </View>
+            </View>
 
-          <View style={styles.section}>
-            <Text style={styles.label}>Icon</Text>
-            <View style={styles.iconGrid}>
-              {CATEGORY_ICONS.map((item) => (
-                <TouchableOpacity
-                  key={item}
-                  activeOpacity={0.9}
-                  onPress={() => setIcon(item)}
-                  style={[
-                    styles.iconCell,
-                    icon === item && { backgroundColor: colorHex, borderColor: colorHex },
-                  ]}
-                >
-                  <Ionicons
-                    name={resolveIcon(item, 'grid-outline')}
-                    size={18}
-                    color={icon === item ? onAccent : colors.text}
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>NAME</Text>
+              <Controller
+                control={control}
+                name="name"
+                rules={{ required: 'Category name is required' }}
+                render={({ field }) => (
+                  <TextInput
+                    value={field.value}
+                    onChangeText={field.onChange}
+                    onBlur={field.onBlur}
+                    placeholder="Groceries"
+                    placeholderTextColor={colors.textMuted + '50'}
+                    autoFocus={!isEditing}
+                    style={[styles.fieldInput, errors.name && { borderColor: colors.danger }]}
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                    returnKeyType="done"
                   />
-                </TouchableOpacity>
-              ))}
+                )}
+              />
             </View>
-          </View>
 
-          <View style={[styles.section, styles.sectionLast]}>
-            <Text style={styles.label}>Color</Text>
-            <View style={styles.colorGrid}>
-              {CATEGORY_COLORS.map((item) => (
-                <TouchableOpacity
-                  key={item}
-                  activeOpacity={0.9}
-                  onPress={() => setColorHex(item)}
-                  style={[
-                    styles.colorCell,
-                    { backgroundColor: item },
-                    colorHex === item && styles.colorCellActive,
-                  ]}
-                >
-                  {colorHex === item ? (
-                    <Ionicons name="checkmark" size={14} color={onAccent} />
-                  ) : null}
-                </TouchableOpacity>
-              ))}
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>ICON</Text>
+              <View style={styles.iconGrid}>
+                {CATEGORY_ICONS.map((item) => (
+                  <TouchableOpacity
+                    key={item}
+                    activeOpacity={0.9}
+                    onPress={() => setIcon(item)}
+                    style={[
+                      styles.iconCell,
+                      icon === item && { backgroundColor: colorHex, borderColor: colorHex },
+                    ]}
+                  >
+                    <Ionicons
+                      name={resolveIcon(item, 'grid-outline')}
+                      size={18}
+                      color={icon === item ? onAccent : colors.text}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>COLOR</Text>
+              <View style={styles.colorGrid}>
+                {CATEGORY_COLORS.map((item) => (
+                  <TouchableOpacity
+                    key={item}
+                    activeOpacity={0.9}
+                    onPress={() => setColorHex(item)}
+                    style={[
+                      styles.colorCell,
+                      { backgroundColor: item },
+                      colorHex === item && styles.colorCellActive,
+                    ]}
+                  >
+                    {colorHex === item ? (
+                      <Ionicons name="checkmark" size={14} color={onAccent} />
+                    ) : null}
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
           </View>
         </ScrollView>
-
-        <View style={styles.footer}>
-          <TouchableOpacity
-            activeOpacity={0.9}
-            style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
-            onPress={handleSave}
-            disabled={!isValid}
-          >
-            <Text style={styles.primaryBtnText}>
-              {isEditing ? 'Save Category' : 'Create Category'}
-            </Text>
-            <Ionicons name="arrow-forward" size={16} color={colors.background} />
-          </TouchableOpacity>
-        </View>
       </KeyboardAvoidingView>
+
+      <View style={styles.footer}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
+          onPress={handleSave}
+          disabled={!isValid}
+        >
+          <Text style={styles.primaryBtnText}>
+            {isEditing ? 'Save category' : 'Create category'}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 });

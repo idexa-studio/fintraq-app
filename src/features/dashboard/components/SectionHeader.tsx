@@ -32,13 +32,13 @@ export const SectionHeader = React.memo(function SectionHeader({
   );
 });
 
-const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing , layout }: ThemeContextType) =>
   StyleSheet.create({
     wrap: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: spacing('6'),
+      paddingHorizontal: layout.screenPadding,
       marginBottom: spacing('3'),
     },
     title: {

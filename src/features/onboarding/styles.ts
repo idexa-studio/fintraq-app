@@ -1,7 +1,7 @@
 import { Platform, StyleSheet } from 'react-native';
 import { ThemeContextType } from '../../providers/ThemeProvider';
 
-export const createOnboardingStyles = ({ colors, typography }: ThemeContextType) =>
+export const createOnboardingStyles = ({ colors, typography , layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -12,7 +12,7 @@ export const createOnboardingStyles = ({ colors, typography }: ThemeContextType)
       flex: 1,
     },
     header: {
-      paddingHorizontal: 24,
+      paddingHorizontal: layout.screenPadding,
       paddingTop: 12,
       gap: 14,
     },
@@ -73,7 +73,7 @@ export const createOnboardingStyles = ({ colors, typography }: ThemeContextType)
       backgroundColor: colors.primary,
     },
     scrollContent: {
-      paddingHorizontal: 24,
+      paddingHorizontal: layout.screenPadding,
       paddingTop: 20,
       paddingBottom: 24,
       flexGrow: 1,
@@ -109,7 +109,7 @@ export const createOnboardingStyles = ({ colors, typography }: ThemeContextType)
       minHeight: 420,
     },
     footer: {
-      paddingHorizontal: 24,
+      paddingHorizontal: layout.screenPadding,
       paddingBottom: Platform.OS === 'ios' ? 18 : 24,
       paddingTop: 8,
     },

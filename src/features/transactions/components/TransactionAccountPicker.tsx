@@ -59,7 +59,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
   );
 });
 
-const createStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
   container: {
     paddingVertical: spacing('3'),
   },
@@ -68,10 +68,10 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) => Styl
     fontSize: 10,
     letterSpacing: 1.5,
     marginBottom: spacing('3'),
-    paddingHorizontal: spacing('6'),
+    paddingHorizontal: layout.screenPadding,
   },
   scrollContent: {
-    paddingHorizontal: spacing('6'),
+    paddingHorizontal: layout.screenPadding,
     gap: spacing('3'),
     paddingVertical: spacing('1'),
   },

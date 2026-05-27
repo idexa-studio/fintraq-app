@@ -14,7 +14,7 @@ interface InsightsSectionProps {
 
 export const InsightsSection = React.memo(function InsightsSection({ currency }: InsightsSectionProps) {
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors, layout } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { isPremium } = usePremium();
   const { data: insights, isLoading } = useDashboardInsights(currency);
@@ -30,7 +30,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
         size="large"
         containerStyle={[
           styles.premiumContainer,
-          !isPremium && { marginHorizontal: 24 }
+          !isPremium && { marginHorizontal: layout.screenPadding }
         ]}
       >
         {isLoading ? (
@@ -64,7 +64,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
   );
 });
 
-const createStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
   container: {
     marginVertical: spacing('1'),
     marginBottom: spacing('5'),
@@ -80,7 +80,7 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) => Styl
   },
   placeholderCard: {
     height: 110,
-    marginHorizontal: spacing('6'),
+    marginHorizontal: layout.screenPadding,
     borderRadius: radius('xl'),
     backgroundColor: 'rgba(0,0,0,0.03)',
     justifyContent: 'center',
@@ -101,7 +101,7 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) => Styl
   },
   emptyCard: {
     height: 110,
-    marginHorizontal: spacing('6'),
+    marginHorizontal: layout.screenPadding,
     borderRadius: radius('xl'),
     borderWidth: 1,
     padding: spacing('5'),

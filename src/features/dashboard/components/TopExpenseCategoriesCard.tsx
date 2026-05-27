@@ -77,7 +77,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
                 </View>
               </View>
               <View style={styles.right}>
-                <MoneyText amount={category.amount} currency={selectedCurrency} type="DR" weight="bold" style={styles.amount} />
+                <MoneyText amount={category.amount} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.amount} />
                 <Text style={styles.percent}>{`${(ratio * 100).toFixed(0)}%`}</Text>
               </View>
             </View>
@@ -93,10 +93,10 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeContextType) =>
   StyleSheet.create({
     card: {
-      marginHorizontal: spacing('6'),
+      marginHorizontal: layout.screenPadding,
       borderRadius: radius('xl'),
       backgroundColor: colors.surface,
       overflow: 'hidden',

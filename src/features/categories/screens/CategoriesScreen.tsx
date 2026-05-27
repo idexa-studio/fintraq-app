@@ -3,9 +3,8 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  SectionList,
-  SectionListData,
-  SectionListRenderItemInfo,
+  FlatList,
+  ListRenderItemInfo,
   StyleSheet,
   Text,
   TextInput,
@@ -22,21 +21,6 @@ import { Category } from '../api/categories';
 import { CategoryCard } from '../components/CategoryCard';
 import { CategoryTypeSelector } from '../components/CategoryTypeSelector';
 import { useCategories, useDeleteCategory } from '../hooks/categories';
-
-type CategorySection = { title: string; data: Category[] };
-
-const buildSections = (items: Category[]): CategorySection[] => {
-  const map = new Map<string, Category[]>();
-  for (const item of items) {
-    const letter = item.name[0]?.toUpperCase() ?? '#';
-    const bucket = map.get(letter) ?? [];
-    bucket.push(item);
-    map.set(letter, bucket);
-  }
-  return Array.from(map.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([title, data]) => ({ title, data }));
-};
 
 export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const theme = useTheme();
@@ -62,8 +46,6 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         .sort((a, b) => a.name.localeCompare(b.name)) ?? []
     );
   }, [categories, activeType, query]);
-
-  const sections = useMemo(() => buildSections(filtered), [filtered]);
 
   const totalForType = useMemo(
     () => categories?.filter((c) => c.type === activeType).length ?? 0,
@@ -113,7 +95,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const keyExtractor = useCallback((item: Category) => item.id.toString(), []);
 
   const renderItem = useCallback(
-    ({ item }: SectionListRenderItemInfo<Category, CategorySection>) => (
+    ({ item }: ListRenderItemInfo<Category>) => (
       <CategoryCard
         item={item}
         index={0}
@@ -124,24 +106,13 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     [handleEdit, handleLongPress],
   );
 
-  const renderSectionHeader = useCallback(
-    ({ section }: { section: SectionListData<Category, CategorySection> }) => (
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionLetter}>{section.title}</Text>
-      </View>
-    ),
-    [styles],
-  );
-
   const ListHeader = useMemo(
     () => (
       <View style={styles.listHeader}>
-        <Text style={styles.countLine}>
-          <Text style={styles.countNum}>{filtered.length}</Text>
-          <Text style={styles.countOf}> / {totalForType}</Text>
-        </Text>
+        <Text style={styles.countNum}>{filtered.length}</Text>
         <Text style={styles.countLabel}>
-          {activeType === 'DR' ? 'Expense' : 'Income'} categories
+          {activeType === 'DR' ? 'expense' : 'income'} categories
+          {totalForType !== filtered.length ? ` (${totalForType} total)` : ''}
         </Text>
       </View>
     ),
@@ -197,14 +168,12 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
             </View>
           </View>
 
-          <SectionList
-            sections={sections}
+          <FlatList
+            data={filtered}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            renderSectionHeader={renderSectionHeader}
             ListHeaderComponent={ListHeader}
             ListEmptyComponent={ListEmpty}
-            stickySectionHeadersEnabled={false}
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
             initialNumToRender={15}
@@ -243,7 +212,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -256,7 +225,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
 
     /* ── Toolbar ── */
     toolbar: {
-      paddingHorizontal: spacing('6'),
+      paddingHorizontal: layout.screenPadding,
       paddingBottom: spacing('3'),
       gap: spacing('2.5'),
     },
@@ -266,7 +235,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       alignItems: 'center',
       gap: spacing('2'),
       backgroundColor: colors.surface,
-      borderRadius: radius('md'),
+      borderRadius: radius('lg'),
       paddingHorizontal: spacing('3'),
     },
     searchInput: {
@@ -279,7 +248,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
 
     /* ── List ── */
     listContent: {
-      paddingHorizontal: spacing('6'),
+      paddingHorizontal: layout.screenPadding,
       paddingBottom: 110,
     },
     listHeader: {
@@ -287,7 +256,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       paddingBottom: spacing('4'),
       flexDirection: 'row',
       alignItems: 'baseline',
-      gap: spacing('1.5'),
+      gap: spacing('2'),
     },
     countNum: {
       fontFamily: typography.fonts.heading,
@@ -295,31 +264,10 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       color: colors.text,
       letterSpacing: -1,
     },
-    countOf: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 14,
-      color: colors.textMuted,
-    },
-    countLine: {
-      lineHeight: 28,
-    },
     countLabel: {
       fontFamily: typography.fonts.regular,
       fontSize: 13,
       color: colors.textMuted,
-    },
-
-    /* ── Section header ── */
-    sectionHeader: {
-      paddingVertical: spacing('1.5'),
-      marginBottom: spacing('1'),
-    },
-    sectionLetter: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
-      letterSpacing: 1.2,
-      color: colors.textMuted,
-      textTransform: 'uppercase',
     },
 
     /* ── Empty ── */
@@ -349,8 +297,8 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       gap: spacing('1.5'),
       height: 38,
       paddingHorizontal: spacing('4'),
-      borderRadius: radius('md'),
-      backgroundColor: colors.primary,
+      borderRadius: radius('lg'),
+      backgroundColor: colors.text,
       marginTop: spacing('1'),
     },
     emptyBtnText: {
@@ -363,17 +311,12 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     fab: {
       position: 'absolute',
       bottom: 30,
-      right: 24,
-      width: 56,
-      height: 56,
+      right: layout.screenPadding,
+      width: 52,
+      height: 52,
       borderRadius: radius('xl'),
       backgroundColor: colors.text,
       justifyContent: 'center',
       alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.2,
-      shadowRadius: 8,
-      elevation: 6,
     },
   });

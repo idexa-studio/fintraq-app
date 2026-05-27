@@ -274,7 +274,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
   );
 }
 
-const createStyles = ({ colors, typography }: ThemeContextType) =>
+const createStyles = ({ colors, typography , layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -293,7 +293,7 @@ const createStyles = ({ colors, typography }: ThemeContextType) =>
       gap: 16,
     },
     section: {
-      paddingHorizontal: 24,
+      paddingHorizontal: layout.screenPadding,
       gap: 12,
     },
     sectionLabel: {
@@ -340,12 +340,12 @@ const createStyles = ({ colors, typography }: ThemeContextType) =>
     footer: {
       position: 'absolute',
       bottom: 34,
-      left: 24,
-      right: 24,
+      left: layout.screenPadding,
+      right: layout.screenPadding,
     },
     saveBtn: {
-      height: 56,
-      borderRadius: 18,
+      height: 52,
+      borderRadius: 20,
       backgroundColor: colors.text,
       alignItems: 'center',
       justifyContent: 'center',

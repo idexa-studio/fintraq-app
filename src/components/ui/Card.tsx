@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
-import type { ShadowToken } from '../../theme/tokens';
 import { FrostLayer } from './FrostLayer';
 
 type CardSize = 'sm' | 'md' | 'lg';
@@ -12,31 +11,16 @@ type CardProps = {
   style?: ViewStyle;
   size?: CardSize;
   variant?: CardVariant;
-  shadow?: ShadowToken;
 };
 
-/**
- * Card - Editorial Brutalist Design
- * 
- * Size variants (padding + radius):
- * - sm: 12px padding, 16px radius (lg)
- * - md: 16px padding, 20px radius (xl) - DEFAULT
- * - lg: 20px padding, 24px radius (2xl)
- * 
- * Variants:
- * - default: Subtle surface background with blur
- * - filled: Solid surface background
- * - outlined: Border only, transparent background
- */
-export const Card = React.memo(function Card({ 
-  children, 
+export const Card = React.memo(function Card({
+  children,
   style,
   size = 'md',
   variant = 'default',
-  shadow: shadowToken,
 }: CardProps) {
   const theme = useTheme();
-  const { colors, sizes, shadow } = theme;
+  const { colors, sizes } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const sizeConfig = sizes.card[size];
@@ -53,12 +37,6 @@ export const Card = React.memo(function Card({
     }
   }, [variant, colors.surface, colors.border]);
 
-  const shadowStyle = useMemo(() => {
-    if (shadowToken) return shadow(shadowToken);
-    if (variant === 'default') return shadow('sm');
-    return shadow('none');
-  }, [shadowToken, variant, shadow]);
-
   return (
     <View
       style={[
@@ -68,7 +46,6 @@ export const Card = React.memo(function Card({
           borderRadius: sizeConfig.borderRadius,
         },
         backgroundStyle,
-        shadowStyle,
         style,
       ]}
     >
@@ -82,7 +59,7 @@ export const Card = React.memo(function Card({
   );
 });
 
-const createStyles = ({ colors }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ }: ThemeContextType) => StyleSheet.create({
   card: {
     overflow: 'hidden',
     position: 'relative',

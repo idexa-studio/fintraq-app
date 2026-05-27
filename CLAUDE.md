@@ -2,12 +2,13 @@
 
 This document serves as the core system memory for the AI assistant working on the **Luno** codebase. It outlines the project's technical stack, aesthetic guidelines, folder structure, and current roadmap state.
 
-## 1. App Aesthetic: "Editorial Brutalist"
-Luno aims to be a top-tier, premium financial tracker. The design system rigidly adheres to an **Editorial Brutalist** aesthetic:
-- **Flawless Minimalism**: No aggressive drop shadows, no soft blurry borders, just stark, flat, elegant surfaces.
-- **Micro-borders**: Heavy reliance on 1px solid borders (`colors.border`) to demarcate components and cards.
-- **Typography & Casing**: High-contrast, sophisticated typography. Action buttons and primary text elements must use **Sentence case** (e.g., "Upgrade to Pro", not "UPGRADE TO PRO") to feel mature and journalistic rather than salesy.
-- **Shape Language**: Interactive elements and buttons strictly use **12px - 16px rounded corners**. Avoid pill-shaped (999px) buttons unless they are tiny micro-badges.
+## 1. App Aesthetic: "Bento"
+Luno aims to be a top-tier, premium financial tracker. The design system adheres to a **Bento** aesthetic:
+- **Card-based, modular layout**: UI is composed of well-defined card tiles of varying sizes, like a bento box grid. Cards have clear boundaries and breathing room.
+- **Depth & softness**: Cards use subtle shadows (`shadow('sm')` / `shadow('xs')`) and `colors.surface` backgrounds. Avoid stark flat-only surfaces.
+- **Shape Language**: Generous rounding — prefer `radius('xl')` (20px) to `radius('2xl')` (24px) for cards and containers. Inputs and small controls use `radius('lg')` (16px). Pill shapes (`radius('full')`) allowed for type-selectors and small badges.
+- **Typography & Casing**: Clean, premium typography. Buttons and actions use **Sentence case** (e.g., "Save account", not "SAVE ACCOUNT"). Section labels still use uppercase small caps (10px, letterSpacing 1.5) for structure.
+- **Color**: Accent colors used expressively in icon avatars and status indicators. Muted borders (`colors.border`) remain but are secondary to depth/shadow for separation.
 
 ### 1.1 Design Token System
 All styling MUST use the design tokens in `/src/theme/tokens.ts`:

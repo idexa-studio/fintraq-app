@@ -508,7 +508,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
   );
 });
 
-const createStyles = ({ colors, overlay, typography, spacing, radius, shadow }: ThemeContextType) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
@@ -523,7 +523,6 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, shadow }: 
       borderColor: colors.text + '15',
       borderBottomWidth: 0,
       maxHeight: '88%',
-      ...shadow('lg'),
     },
     handle: {
       width: 36,
@@ -539,7 +538,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, shadow }: 
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: spacing('6'),
+      paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('4'),
       paddingBottom: spacing('2'),
     },
@@ -592,7 +591,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, shadow }: 
 
     // ─── Search ──────────────────────────────────────────────────────────────
     searchRow: {
-      paddingHorizontal: spacing('6'),
+      paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
       paddingBottom: spacing('3'),
     },
@@ -615,7 +614,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, shadow }: 
 
     // ─── Scroll body ─────────────────────────────────────────────────────────
     scrollContent: {
-      paddingHorizontal: spacing('6'),
+      paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('1'),
     },
     section: {
@@ -884,7 +883,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, shadow }: 
       bottom: 0,
       left: 0,
       right: 0,
-      paddingHorizontal: spacing('6'),
+      paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('4'),
       paddingBottom: spacing('9'),
       backgroundColor: colors.background,

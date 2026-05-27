@@ -16,14 +16,15 @@ export type TypographyWeight = {
 };
 
 export type TypographyFonts = {
-  heading: 'BricolageGrotesque_700Bold';
-  headingRegular: 'BricolageGrotesque_400Regular';
-  regular: 'BricolageGrotesque_400Regular';
-  medium: 'BricolageGrotesque_500Medium';
-  semibold: 'BricolageGrotesque_600SemiBold';
-  bold: 'BricolageGrotesque_700Bold';
-  amountRegular: 'JetBrainsMono_400Regular';
-  amountBold: 'JetBrainsMono_700Bold';
+  heading: 'GoogleSans_Bold';
+  headingRegular: 'GoogleSans_Regular';
+  regular: 'GoogleSans_Regular';
+  medium: 'GoogleSans_Medium';
+  semibold: 'GoogleSans_SemiBold';
+  bold: 'GoogleSans_Bold';
+  amountLight: 'GoogleSans_Regular';
+  amountRegular: 'GoogleSans_Medium';
+  amountBold: 'GoogleSans_SemiBold';
 };
 
 export type TypographyTheme = {
@@ -34,13 +35,13 @@ export type TypographyTheme = {
 
 export const TYPOGRAPHY: TypographyTheme = {
   sizes: {
-    xs: 12,
-    sm: 14,
-    md: 16,
-    lg: 18,
-    xl: 20,
-    xxl: 24,
-    xxxl: 32,
+    xs: 11,
+    sm: 13,
+    md: 14,
+    lg: 16,
+    xl: 18,
+    xxl: 22,
+    xxxl: 28,
   },
   weights: {
     regular: '400',
@@ -49,13 +50,14 @@ export const TYPOGRAPHY: TypographyTheme = {
     bold: '700',
   },
   fonts: {
-    heading: 'BricolageGrotesque_700Bold',
-    headingRegular: 'BricolageGrotesque_400Regular',
-    regular: 'BricolageGrotesque_400Regular',
-    medium: 'BricolageGrotesque_500Medium',
-    semibold: 'BricolageGrotesque_600SemiBold',
-    bold: 'BricolageGrotesque_700Bold',
-    amountRegular: 'JetBrainsMono_400Regular',
-    amountBold: 'JetBrainsMono_700Bold',
+    heading: 'GoogleSans_Bold',
+    headingRegular: 'GoogleSans_Regular',
+    regular: 'GoogleSans_Regular',
+    medium: 'GoogleSans_Medium',
+    semibold: 'GoogleSans_SemiBold',
+    bold: 'GoogleSans_Bold',
+    amountLight: 'GoogleSans_Regular',
+    amountRegular: 'GoogleSans_Medium',
+    amountBold: 'GoogleSans_SemiBold',
   },
 };

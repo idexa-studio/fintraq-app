@@ -396,14 +396,14 @@ export function ExportScreen() {
   );
 }
 
-const createStyles = ({ colors, typography }: ThemeContextType) =>
+const createStyles = ({ colors, typography , layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
     },
     content: {
-      paddingHorizontal: 24,
+      paddingHorizontal: layout.screenPadding,
       paddingTop: 12,
       paddingBottom: 48,
     },

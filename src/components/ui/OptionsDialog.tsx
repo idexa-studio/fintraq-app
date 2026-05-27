@@ -110,13 +110,13 @@ export const OptionsDialog = React.memo(function OptionsDialog({
   );
 });
 
-const createStyles = ({ colors, overlay, typography }: ThemeContextType) =>
+const createStyles = ({ colors, overlay, typography , layout }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
       backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
-      paddingHorizontal: 24,
+      paddingHorizontal: layout.screenPadding,
       paddingBottom: 42,
     },
     card: {
@@ -126,11 +126,6 @@ const createStyles = ({ colors, overlay, typography }: ThemeContextType) =>
       borderWidth: 1,
       borderColor: colors.text + '18',
       padding: 18,
-      shadowColor: '#000000',
-      shadowOpacity: 0.22,
-      shadowRadius: 24,
-      shadowOffset: { width: 0, height: 10 },
-      elevation: 10,
     },
     title: {
       fontFamily: typography.fonts.headingRegular,

@@ -41,16 +41,11 @@ export const Header = React.memo(function Header({
     <View style={styles.container}>
       <View style={styles.left}>
         {showBack && (
-          <TouchableOpacity 
-            onPress={handleBack} 
-            style={styles.backBtn} 
-            activeOpacity={0.75}
+          <TouchableOpacity
+            onPress={handleBack}
+            activeOpacity={0.7}
           >
-            <Ionicons 
-              name="arrow-back" 
-              size={20} 
-              color={colors.text} 
-            />
+            <Ionicons name="arrow-back" size={20} color={colors.text} />
           </TouchableOpacity>
         )}
         <View style={styles.titleBlock}>
@@ -85,13 +80,7 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
     alignItems: 'center',
     gap: spacing('4'),
   },
-  backBtn: {
-    width: layout.minTouchTarget,
-    height: layout.minTouchTarget,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  titleBlock: {
+titleBlock: {
     flex: 1,
     justifyContent: 'center',
   },
