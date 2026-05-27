@@ -68,7 +68,7 @@ export function BlurBackground({
         </View>
       )}
 
-      <FrostLayer intensity={blurAmount} />
+      <FrostLayer intensity={blurAmount} experimentalAndroid />
 
       {Platform.OS === 'android' && (
         <View
