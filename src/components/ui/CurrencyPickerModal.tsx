@@ -102,7 +102,7 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
             <View style={[styles.glow, { bottom: -60, right: -80, width: 360, height: 360, backgroundColor: colors.text + '0A' }]} />
           </View>
 
-          <FrostLayer intensity={80} androidColor={colors.background + '60'} />
+          <FrostLayer intensity={80} />
 
           <View style={styles.handle} />
 

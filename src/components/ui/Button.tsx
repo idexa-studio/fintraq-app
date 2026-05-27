@@ -114,7 +114,7 @@ export const Button = React.memo(function Button({
       activeOpacity={0.75}
     >
       {(variant === 'secondary' || variant === 'outline') && (
-        <FrostLayer intensity={20} androidColor={colors.surface} borderRadius={sizeConfig.borderRadius} />
+        <FrostLayer intensity={20} borderRadius={sizeConfig.borderRadius} />
       )}
       
       {icon && !isLoading && (

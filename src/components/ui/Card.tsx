@@ -73,7 +73,7 @@ export const Card = React.memo(function Card({
       ]}
     >
       {variant === 'default' && (
-        <FrostLayer intensity={25} androidColor={colors.card} borderRadius={sizeConfig.borderRadius} />
+        <FrostLayer intensity={25} borderRadius={sizeConfig.borderRadius} />
       )}
       <View style={styles.content}>
         {children}
