@@ -107,12 +107,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
     router.push('/search');
   }, [router]);
 
-  const navigateToStats = useCallback(() => {
-    router.push('/(main)/stats');
-  }, [router]);
-
-  const navigateToReports = useCallback(() => {
-    router.push('/(main)/reports');
+  const navigateToAnalytics = useCallback(() => {
+    router.push('/(main)/analytics');
   }, [router]);
 
   const navigateToSettings = useCallback(() => {
@@ -211,18 +207,10 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.iconButton}
-                onPress={isPremium ? navigateToStats : navigateToPremium}
+                onPress={isPremium ? navigateToAnalytics : navigateToPremium}
                 activeOpacity={0.85}
               >
-                <Ionicons name="stats-chart-outline" size={18} color={isPremium ? colors.text : colors.textMuted} />
-                {!isPremium && <View style={[styles.proDot, { backgroundColor: colors.primary }]} />}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.iconButton}
-                onPress={isPremium ? navigateToReports : navigateToPremium}
-                activeOpacity={0.85}
-              >
-                <Ionicons name="newspaper-outline" size={18} color={isPremium ? colors.text : colors.textMuted} />
+                <Ionicons name="analytics-outline" size={18} color={isPremium ? colors.text : colors.textMuted} />
                 {!isPremium && <View style={[styles.proDot, { backgroundColor: colors.primary }]} />}
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconButton} onPress={navigateToSettings} activeOpacity={0.85}>

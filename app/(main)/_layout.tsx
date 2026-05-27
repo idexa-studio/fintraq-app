@@ -14,7 +14,7 @@ export default function StackLayout() {
     <ErrorBoundary>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
-        <Stack.Screen name="stats" />
+        <Stack.Screen name="analytics" />
         <Stack.Screen name="categories" />
         <Stack.Screen name="settings" />
         <Stack.Screen name="accounts/form" />
