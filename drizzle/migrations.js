@@ -2,7 +2,7 @@
 
 import journal from './meta/_journal.json';
 import m0000 from './0000_futuristic_ego.sql';
-import m0001 from './0002_first_whirlwind.sql';
+import m0001 from './0001_cute_the_enforcers.sql';
 
 export default {
   journal,
