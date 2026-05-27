@@ -476,11 +476,8 @@ export function TransactionsScreen() {
         showBack
         rightAction={(
           <View style={styles.headerActions}>
-            <TouchableOpacity onPress={() => router.push('/search')} activeOpacity={0.7}>
-              <Ionicons name="search-outline" size={19} color={colors.text} />
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => setShowAdvancedFilterSheet(true)} activeOpacity={0.7} style={{ position: 'relative' }}>
-              <Ionicons name="filter-outline" size={19} color={colors.text} />
+              <Ionicons name="options-outline" size={19} color={colors.text} />
               {activeFilterCount > 0 && (
                 <View style={styles.filterBadge}>
                   <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
