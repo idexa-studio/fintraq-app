@@ -134,7 +134,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
       gap: spacing('2.5'),
       paddingVertical: spacing('2'),
       borderBottomWidth: 1,
-      borderBottomColor: colors.border + '50',
+      borderBottomColor: colors.border,
     },
     legendRowLast: { borderBottomWidth: 0 },
     legendInfo: { flex: 1, gap: spacing('1') },

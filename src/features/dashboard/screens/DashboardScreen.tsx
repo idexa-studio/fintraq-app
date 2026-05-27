@@ -207,11 +207,10 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.iconButton}
-                onPress={isPremium ? navigateToAnalytics : navigateToPremium}
+                onPress={navigateToAnalytics}
                 activeOpacity={0.85}
               >
-                <Ionicons name="analytics-outline" size={18} color={isPremium ? colors.text : colors.textMuted} />
-                {!isPremium && <View style={[styles.proDot, { backgroundColor: colors.primary }]} />}
+                <Ionicons name="analytics-outline" size={18} color={colors.text} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconButton} onPress={navigateToSettings} activeOpacity={0.85}>
                 <Ionicons name="settings-outline" size={19} color={colors.text} />

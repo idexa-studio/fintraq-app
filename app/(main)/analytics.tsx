@@ -303,71 +303,79 @@ export default function AnalyticsScreen() {
               <Text style={styles.legendText}>Out</Text>
             </View>
           </View>
-          <View style={styles.card}>
-            <BarGroupChart data={barData} width={chartWidth - 28} height={170} />
-          </View>
+          <PremiumGuard label="Period Flow" size="medium">
+            <View style={styles.card}>
+              <BarGroupChart data={barData} width={chartWidth - 28} height={170} />
+            </View>
+          </PremiumGuard>
 
           {/* ── Category breakdown ── */}
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>CATEGORY BREAKDOWN</Text>
             <Text style={styles.sectionHint}>{(categoryData ?? []).length} groups</Text>
           </View>
-          <View style={styles.card}>
-            {(categoryData ?? []).length > 0 ? (
-              <DonutChart data={categoryData ?? []} currency={selectedCurrency} size={168} />
-            ) : (
-              <EmptyState icon="pricetag-outline" text="No expense data in this period" />
-            )}
-          </View>
+          <PremiumGuard label="Category Breakdown" size="medium">
+            <View style={styles.card}>
+              {(categoryData ?? []).length > 0 ? (
+                <DonutChart data={categoryData ?? []} currency={selectedCurrency} size={168} />
+              ) : (
+                <EmptyState icon="pricetag-outline" text="No expense data in this period" />
+              )}
+            </View>
+          </PremiumGuard>
 
           {/* ── Account distribution ── */}
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>ACCOUNT SPLIT</Text>
             <Text style={styles.sectionHint}>{accountDistribution.length} accounts</Text>
           </View>
-          <View style={styles.card}>
-            {accountDistribution.length > 0 ? (
-              accountDistribution.map((acc, i) => (
-                <View key={acc.id} style={[styles.accountRow, i === accountDistribution.length - 1 && styles.rowLast]}>
-                  <IconAvatar
-                    icon={resolveIcon(acc.icon, 'wallet-outline')}
-                    bg={acc.hex + '18'}
-                    color={acc.hex}
-                    size={34}
-                    iconSize={16}
-                  />
-                  <View style={styles.accountInfo}>
-                    <View style={styles.accountTopLine}>
-                      <Text style={[styles.accountName, { color: colors.text }]} numberOfLines={1}>{acc.name}</Text>
-                      <MoneyText amount={acc.balance} currency={acc.currency} weight="bold" style={styles.accountBal} />
+          <PremiumGuard label="Account Split" size="medium">
+            <View style={styles.card}>
+              {accountDistribution.length > 0 ? (
+                accountDistribution.map((acc, i) => (
+                  <View key={acc.id} style={[styles.accountRow, i === accountDistribution.length - 1 && styles.rowLast]}>
+                    <IconAvatar
+                      icon={resolveIcon(acc.icon, 'wallet-outline')}
+                      bg={acc.hex + '18'}
+                      color={acc.hex}
+                      size={34}
+                      iconSize={16}
+                    />
+                    <View style={styles.accountInfo}>
+                      <View style={styles.accountTopLine}>
+                        <Text style={[styles.accountName, { color: colors.text }]} numberOfLines={1}>{acc.name}</Text>
+                        <MoneyText amount={acc.balance} currency={acc.currency} weight="bold" style={styles.accountBal} />
+                      </View>
+                      <View style={[styles.accountBarTrack, { backgroundColor: colors.background }]}>
+                        <View style={[styles.accountBarFill, { width: `${acc.share * 100}%`, backgroundColor: acc.hex }]} />
+                      </View>
+                      <Text style={[styles.accountShare, { color: colors.textMuted, fontFamily: theme.typography.fonts.regular }]}>
+                        {Math.round(acc.share * 100)}% of total balance
+                      </Text>
                     </View>
-                    <View style={[styles.accountBarTrack, { backgroundColor: colors.background }]}>
-                      <View style={[styles.accountBarFill, { width: `${acc.share * 100}%`, backgroundColor: acc.hex }]} />
-                    </View>
-                    <Text style={[styles.accountShare, { color: colors.textMuted, fontFamily: theme.typography.fonts.regular }]}>
-                      {Math.round(acc.share * 100)}% of total balance
-                    </Text>
                   </View>
-                </View>
-              ))
-            ) : (
-              <EmptyState icon="wallet-outline" text={`No accounts in ${selectedCurrency}`} />
-            )}
-          </View>
+                ))
+              ) : (
+                <EmptyState icon="wallet-outline" text={`No accounts in ${selectedCurrency}`} />
+              )}
+            </View>
+          </PremiumGuard>
 
           {/* ── Day of week ── */}
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>SPENDING BY WEEKDAY</Text>
             <Text style={styles.sectionHint}>Average pattern</Text>
           </View>
-          <View style={styles.card}>
-            <DowChart data={dowData ?? []} />
-            <View style={styles.dowLegend}>
-              <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.success }]} /><Text style={styles.legendText}>Low</Text></View>
-              <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.warning }]} /><Text style={styles.legendText}>Mid</Text></View>
-              <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.danger }]} /><Text style={styles.legendText}>High</Text></View>
+          <PremiumGuard label="Spending by Weekday" size="medium">
+            <View style={styles.card}>
+              <DowChart data={dowData ?? []} />
+              <View style={styles.dowLegend}>
+                <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.success }]} /><Text style={styles.legendText}>Low</Text></View>
+                <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.warning }]} /><Text style={styles.legendText}>Mid</Text></View>
+                <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.danger }]} /><Text style={styles.legendText}>High</Text></View>
+              </View>
             </View>
-          </View>
+          </PremiumGuard>
 
           {/* ── Behavioral KPIs (Premium) ── */}
           <View style={styles.sectionHeader}>
