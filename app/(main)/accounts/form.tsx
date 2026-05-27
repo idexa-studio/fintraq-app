@@ -97,7 +97,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     iconCell: {
       width: 44,
       height: 44,
-      borderRadius: radius('md'),
+      borderRadius: radius('full'),
       borderWidth: 1,
       borderColor: colors.border,
       backgroundColor: colors.surface,

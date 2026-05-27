@@ -7,7 +7,6 @@ import {
   ListRenderItemInfo,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -19,12 +18,11 @@ import { OptionsDialog } from '../../../components/ui/OptionsDialog';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { Category } from '../api/categories';
 import { CategoryCard } from '../components/CategoryCard';
-import { CategoryTypeSelector } from '../components/CategoryTypeSelector';
 import { useCategories, useDeleteCategory } from '../hooks/categories';
 
 export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors, spacing, radius, layout } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
 
@@ -32,25 +30,17 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const { mutateAsync: deleteCategory } = useDeleteCategory();
 
   const [activeType, setActiveType] = useState<'CR' | 'DR'>('DR');
-  const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [showManageDialog, setShowManageDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
     return (
       categories
         ?.filter((c) => c.type === activeType)
-        .filter((c) => (q ? c.name.toLowerCase().includes(q) : true))
         .sort((a, b) => a.name.localeCompare(b.name)) ?? []
     );
-  }, [categories, activeType, query]);
-
-  const totalForType = useMemo(
-    () => categories?.filter((c) => c.type === activeType).length ?? 0,
-    [categories, activeType],
-  );
+  }, [categories, activeType]);
 
   const handleCreate = useCallback(() => {
     router.push('/(main)/categories/form');
@@ -67,8 +57,6 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     setSelectedCategory(category);
     setShowManageDialog(true);
   }, []);
-
-  const clearQuery = useCallback(() => setQuery(''), []);
 
   const manageOptions = useMemo(() => {
     if (!selectedCategory) return [];
@@ -109,27 +97,44 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const ListHeader = useMemo(
     () => (
       <View style={styles.listHeader}>
-        <Text style={styles.countNum}>{filtered.length}</Text>
-        <Text style={styles.countLabel}>
-          {activeType === 'DR' ? 'expense' : 'income'} categories
-          {totalForType !== filtered.length ? ` (${totalForType} total)` : ''}
-        </Text>
+        <View style={styles.typeTabs}>
+          <TouchableOpacity
+            style={[styles.typeTab, activeType === 'DR' && styles.typeTabActive]}
+            onPress={() => setActiveType('DR')}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.typeTabText, activeType === 'DR' && styles.typeTabTextActive]}>
+              Expense
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.typeTab, activeType === 'CR' && styles.typeTabActive]}
+            onPress={() => setActiveType('CR')}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.typeTabText, activeType === 'CR' && styles.typeTabTextActive]}>
+              Income
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     ),
-    [filtered.length, totalForType, activeType, styles],
+    [activeType, styles],
   );
 
   const ListEmpty = useMemo(
     () => (
       <View style={styles.empty}>
-        <Ionicons name="file-tray-outline" size={28} color={colors.textMuted} />
-        <Text style={styles.emptyTitle}>Nothing here</Text>
+        <View style={styles.emptyIcon}>
+          <Ionicons name="folder-open-outline" size={28} color={colors.textMuted} />
+        </View>
+        <Text style={styles.emptyTitle}>No categories</Text>
         <Text style={styles.emptyText}>
-          No {activeType === 'DR' ? 'expense' : 'income'} categories match your filter.
+          {`No ${activeType === 'DR' ? 'expense' : 'income'} categories yet.`}
         </Text>
         <TouchableOpacity style={styles.emptyBtn} onPress={handleCreate} activeOpacity={0.85}>
-          <Ionicons name="add" size={14} color={colors.background} />
-          <Text style={styles.emptyBtnText}>Create category</Text>
+          <Ionicons name="add" size={15} color={colors.background} />
+          <Text style={styles.emptyBtnText}>Create one</Text>
         </TouchableOpacity>
       </View>
     ),
@@ -139,59 +144,36 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <BlurBackground />
-
       <Header title="Categories" showBack />
 
       {isLoading ? (
         <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
       ) : (
-        <>
-          <View style={styles.toolbar}>
-            <CategoryTypeSelector activeType={activeType} onTypeChange={setActiveType} />
-
-            <View style={styles.searchBar}>
-              <Ionicons name="search-outline" size={15} color={colors.textMuted} />
-              <TextInput
-                value={query}
-                onChangeText={setQuery}
-                placeholder="Search…"
-                placeholderTextColor={colors.textMuted + '80'}
-                style={styles.searchInput}
-                returnKeyType="search"
-                autoCorrect={false}
-              />
-              {query.length > 0 && (
-                <TouchableOpacity onPress={clearQuery} activeOpacity={0.8} hitSlop={8}>
-                  <Ionicons name="close-circle" size={15} color={colors.textMuted} />
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-
-          <FlatList
-            data={filtered}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            ListHeaderComponent={ListHeader}
-            ListEmptyComponent={ListEmpty}
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={false}
-            initialNumToRender={15}
-            maxToRenderPerBatch={10}
-            windowSize={5}
-            removeClippedSubviews={true}
-          />
-        </>
+        <FlatList
+          data={filtered}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          numColumns={2}
+          ListHeaderComponent={ListHeader}
+          ListEmptyComponent={ListEmpty}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.grid}
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={16}
+          maxToRenderPerBatch={12}
+          windowSize={5}
+          removeClippedSubviews={true}
+        />
       )}
 
       <TouchableOpacity style={styles.fab} onPress={handleCreate} activeOpacity={0.9}>
-        <Ionicons name="add" size={24} color={colors.background} />
+        <Ionicons name="add" size={22} color={colors.background} />
       </TouchableOpacity>
 
       <OptionsDialog
         visible={showManageDialog}
         onClose={() => setShowManageDialog(false)}
-        title="Manage Category"
+        title="Manage category"
         subtitle={selectedCategory?.name}
         options={manageOptions}
       />
@@ -199,8 +181,8 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       <ConfirmDialog
         visible={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
-        title="Delete Category"
-        message="This will delete the category and associated transactions."
+        title="Delete category"
+        message="This will delete the category and its associated transactions."
         confirmLabel="Delete"
         onConfirm={() => {
           if (!selectedCategory) return;
@@ -223,72 +205,70 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginTop: 60,
     },
 
-    /* ── Toolbar ── */
-    toolbar: {
-      paddingHorizontal: layout.screenPadding,
-      paddingBottom: spacing('3'),
-      gap: spacing('2.5'),
-    },
-    searchBar: {
-      height: 44,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-      backgroundColor: colors.surface,
-      borderRadius: radius('lg'),
-      paddingHorizontal: spacing('3'),
-    },
-    searchInput: {
-      flex: 1,
-      fontFamily: typography.fonts.regular,
-      fontSize: 14,
-      color: colors.text,
-      height: '100%',
-    },
-
-    /* ── List ── */
-    listContent: {
+    /* ── Grid ── */
+    grid: {
       paddingHorizontal: layout.screenPadding,
       paddingBottom: 110,
+      gap: spacing('3'),
     },
+    row: {
+      gap: spacing('3'),
+    },
+
+    /* ── List header (tabs) ── */
     listHeader: {
-      paddingTop: spacing('2'),
-      paddingBottom: spacing('4'),
+      paddingBottom: spacing('3'),
+    },
+    typeTabs: {
       flexDirection: 'row',
-      alignItems: 'baseline',
       gap: spacing('2'),
     },
-    countNum: {
-      fontFamily: typography.fonts.heading,
-      fontSize: 26,
-      color: colors.text,
-      letterSpacing: -1,
+    typeTab: {
+      height: 34,
+      paddingHorizontal: spacing('4'),
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
     },
-    countLabel: {
-      fontFamily: typography.fonts.regular,
+    typeTabActive: {
+      backgroundColor: colors.text,
+    },
+    typeTabText: {
+      fontFamily: typography.fonts.semibold,
       fontSize: 13,
       color: colors.textMuted,
+    },
+    typeTabTextActive: {
+      color: colors.background,
     },
 
     /* ── Empty ── */
     empty: {
-      paddingVertical: 60,
+      paddingTop: 60,
       alignItems: 'center',
       gap: spacing('2'),
     },
+    emptyIcon: {
+      width: 64,
+      height: 64,
+      borderRadius: radius('xl'),
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: spacing('1'),
+    },
     emptyTitle: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 18,
+      fontSize: 17,
       color: colors.text,
-      letterSpacing: -0.4,
-      marginTop: spacing('1'),
+      letterSpacing: -0.3,
     },
     emptyText: {
       fontFamily: typography.fonts.regular,
       fontSize: 13,
       color: colors.textMuted,
       textAlign: 'center',
-      maxWidth: 240,
+      maxWidth: 220,
       lineHeight: 20,
     },
     emptyBtn: {
@@ -299,7 +279,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingHorizontal: spacing('4'),
       borderRadius: radius('lg'),
       backgroundColor: colors.text,
-      marginTop: spacing('1'),
+      marginTop: spacing('2'),
     },
     emptyBtnText: {
       fontFamily: typography.fonts.semibold,

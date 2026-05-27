@@ -1,10 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import { resolveIcon } from '../../../utils/icons';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
-import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { colorNumberToHex } from '../../../utils/format';
+import { resolveIcon } from '../../../utils/icons';
 import { Category } from '../api/categories';
 
 interface CategoryCardProps {
@@ -20,12 +19,11 @@ export const CategoryCard = React.memo(function CategoryCard({
   onLongPress,
 }: CategoryCardProps) {
   const theme = useTheme();
-  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const catColor = useMemo(
-    () => (item.color ? colorNumberToHex(item.color) : colors.primary),
-    [item.color, colors.primary],
+    () => (item.color ? colorNumberToHex(item.color) : theme.colors.primary),
+    [item.color, theme.colors.primary],
   );
 
   const handlePress = useCallback(() => onPress(item), [onPress, item]);
@@ -33,57 +31,52 @@ export const CategoryCard = React.memo(function CategoryCard({
 
   return (
     <TouchableOpacity
-      style={styles.card}
+      style={styles.tile}
       onPress={handlePress}
       onLongPress={handleLongPress}
       delayLongPress={280}
-      activeOpacity={0.75}
+      activeOpacity={0.72}
     >
-      <View style={[styles.colorBar, { backgroundColor: catColor }]} />
-
-      <View style={styles.inner}>
-        <IconAvatar
-          icon={resolveIcon(item.icon, 'grid-outline')}
-          bg={catColor + '20'}
+      <View style={[styles.iconWrap, { backgroundColor: catColor + '22' }]}>
+        <Ionicons
+          name={resolveIcon(item.icon, 'grid-outline')}
+          size={14}
           color={catColor}
-          size={40}
-          iconSize={18}
         />
-
-        <Text style={styles.name} numberOfLines={1}>
-          {item.name}
-        </Text>
-
-        <Ionicons name="chevron-forward" size={14} color={colors.textMuted + '80'} />
       </View>
+      <Text style={styles.name} numberOfLines={2}>
+        {item.name}
+      </Text>
     </TouchableOpacity>
   );
 });
 
 const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
-    card: {
+    tile: {
+      flex: 1,
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
-      marginBottom: spacing('2.5'),
-      overflow: 'hidden',
-    },
-    colorBar: {
-      height: 3,
-      width: '100%',
-    },
-    inner: {
+      paddingVertical: spacing('3.5'),
+      paddingHorizontal: spacing('3'),
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3'),
-      gap: spacing('3'),
+      gap: spacing('2.5'),
+    },
+    iconWrap: {
+      width: 30,
+      height: 30,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
     },
     name: {
       flex: 1,
       fontFamily: typography.fonts.semibold,
-      fontSize: 15,
+      fontSize: 13,
       color: colors.text,
-      letterSpacing: -0.2,
+      letterSpacing: -0.1,
+      lineHeight: 18,
     },
   });
