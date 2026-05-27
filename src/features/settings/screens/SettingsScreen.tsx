@@ -171,7 +171,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
   const handleFooterTap = useCallback(() => {
     const next = devTaps + 1;
-    if (next >= 7) {
+    if (next >= 10) {
       router.push('/developer');
       setDevTaps(0);
     } else {
