@@ -42,13 +42,7 @@ export const OptionsDialog = React.memo(function OptionsDialog({
   }, [onClose]);
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      presentationStyle="overFullScreen"
-      onRequestClose={onClose}
-    >
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
 
@@ -56,45 +50,41 @@ export const OptionsDialog = React.memo(function OptionsDialog({
           <Text style={styles.title}>{title}</Text>
           {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
 
-          {options.map((opt, i) => {
-            const selected = !!opt.selected;
-            return (
-              <TouchableOpacity
-                key={opt.key}
-                style={[
-                  styles.row,
-                  i === 0 && styles.rowFirst,
-                  i === options.length - 1 && styles.rowLast,
-                  selected && styles.rowSelected,
-                  opt.destructive && !selected && styles.rowDanger,
-                ]}
-                activeOpacity={0.7}
-                onPress={() => handleOptionPress(opt)}
-              >
-                {opt.icon ? (
-                  <Ionicons
-                    name={opt.icon}
-                    size={18}
-                    color={selected ? colors.primary : opt.destructive ? colors.danger : colors.text}
-                  />
-                ) : null}
-                <Text
-                  style={[
-                    styles.rowLabel,
-                    selected && styles.rowLabelSelected,
-                    opt.destructive && !selected && styles.rowLabelDanger,
-                  ]}
+          <View style={styles.optionsWrap}>
+            {options.map((opt) => {
+              const selected = !!opt.selected;
+              return (
+                <TouchableOpacity
+                  key={opt.key}
+                  style={[styles.tile, selected && styles.tileSelected]}
+                  activeOpacity={0.7}
+                  onPress={() => handleOptionPress(opt)}
                 >
-                  {opt.label}
-                </Text>
-                {selected ? (
-                  <Ionicons name="checkmark" size={16} color={colors.primary} />
-                ) : (
-                  <View style={styles.rowSpacer} />
-                )}
-              </TouchableOpacity>
-            );
-          })}
+                  <View style={[styles.tileIcon, selected && styles.tileIconSelected]}>
+                    {opt.icon ? (
+                      <Ionicons
+                        name={opt.icon}
+                        size={18}
+                        color={selected ? colors.primary : opt.destructive ? colors.danger : colors.text}
+                      />
+                    ) : null}
+                  </View>
+                  <Text
+                    style={[
+                      styles.tileLabel,
+                      selected && styles.tileLabelSelected,
+                      opt.destructive && !selected && { color: colors.danger },
+                    ]}
+                  >
+                    {opt.label}
+                  </Text>
+                  <View style={[styles.tileRadio, selected && styles.tileRadioSelected]}>
+                    {selected && <View style={styles.tileRadioDot} />}
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
 
           <TouchableOpacity style={styles.btnClose} onPress={onClose} activeOpacity={0.7}>
             <Text style={styles.btnCloseText}>{closeLabel}</Text>
@@ -119,11 +109,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.background,
       borderRadius: radius('2xl'),
       padding: spacing('5'),
-      gap: spacing('0.5'),
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 18,
+      fontSize: 20,
       color: colors.text,
       marginBottom: spacing('1'),
     },
@@ -131,48 +120,66 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.regular,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
-      marginBottom: spacing('3'),
+      marginBottom: spacing('5'),
     },
-    row: {
+    optionsWrap: {
+      gap: spacing('2.5'),
+      marginBottom: spacing('4'),
+    },
+    tile: {
       flexDirection: 'row',
       alignItems: 'center',
-      height: 48,
-      paddingHorizontal: spacing('3'),
-      borderRadius: radius('md'),
+      backgroundColor: colors.surface,
+      borderRadius: radius('lg'),
+      padding: spacing('3.5'),
       gap: spacing('3'),
     },
-    rowFirst: {
-      borderTopLeftRadius: radius('md'),
-      borderTopRightRadius: radius('md'),
+    tileSelected: {
+      backgroundColor: colors.primary + '0C',
+      borderWidth: 1.5,
+      borderColor: colors.primary + '40',
+      padding: spacing('3.5') - 1.5,
     },
-    rowLast: {
-      borderBottomLeftRadius: radius('md'),
-      borderBottomRightRadius: radius('md'),
+    tileIcon: {
+      width: 36,
+      height: 36,
+      borderRadius: radius('full'),
+      backgroundColor: colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
-    rowSelected: {
-      backgroundColor: colors.primary + '10',
+    tileIconSelected: {
+      backgroundColor: colors.primary + '15',
     },
-    rowDanger: {
-      backgroundColor: colors.danger + '06',
-    },
-    rowLabel: {
+    tileLabel: {
       flex: 1,
       fontFamily: typography.fonts.regular,
       fontSize: typography.sizes.md,
       color: colors.text,
     },
-    rowLabelSelected: {
+    tileLabelSelected: {
       fontFamily: typography.fonts.semibold,
       color: colors.primary,
     },
-    rowLabelDanger: {
-      color: colors.danger,
+    tileRadio: {
+      width: 20,
+      height: 20,
+      borderRadius: radius('full'),
+      borderWidth: 2,
+      borderColor: colors.text + '18',
     },
-    rowSpacer: {
-      width: 16,
+    tileRadioSelected: {
+      borderColor: colors.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    tileRadioDot: {
+      width: 10,
+      height: 10,
+      borderRadius: radius('full'),
+      backgroundColor: colors.primary,
     },
     btnClose: {
-      marginTop: spacing('4'),
       height: 44,
       borderRadius: radius('md'),
       backgroundColor: colors.surface,

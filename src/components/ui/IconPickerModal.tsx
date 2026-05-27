@@ -9,10 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { FrostLayer } from './FrostLayer';
-import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
-import { resolveIcon } from '../../utils/icons';
 import type { IconGroup } from '../../constants/picker';
+import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
+import { resolveIcon } from '../../utils/icons';
 
 type Props = {
   visible: boolean;
@@ -23,6 +22,8 @@ type Props = {
   accentColor?: string;
   title?: string;
 };
+
+const CELL_SIZE = 38;
 
 export const IconPickerModal = React.memo(function IconPickerModal({
   visible,
@@ -52,14 +53,12 @@ export const IconPickerModal = React.memo(function IconPickerModal({
         <TouchableOpacity style={styles.backdrop} onPress={onClose} activeOpacity={1} />
 
         <View style={styles.sheet}>
-          <FrostLayer intensity={85} />
-
           <View style={styles.handle} />
 
           <View style={styles.header}>
             <Text style={styles.title}>{title}</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.8}>
-              <Ionicons name="close" size={16} color={colors.text} />
+            <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.7}>
+              <Ionicons name="close" size={18} color={colors.text} />
             </TouchableOpacity>
           </View>
 
@@ -77,21 +76,17 @@ export const IconPickerModal = React.memo(function IconPickerModal({
                     return (
                       <TouchableOpacity
                         key={icon}
-                        style={[
-                          styles.iconCell,
-                          selected && {
-                            backgroundColor: accent + '20',
-                            borderColor: accent,
-                          },
-                        ]}
+                        style={[styles.iconCell, selected && styles.iconCellSelected]}
                         onPress={() => handleSelect(icon)}
-                        activeOpacity={0.75}
+                        activeOpacity={0.65}
                       >
-                        <Ionicons
-                          name={resolveIcon(icon, 'grid-outline')}
-                          size={18}
-                          color={selected ? accent : colors.textMuted}
-                        />
+                        <View style={[styles.iconCircle, selected && { backgroundColor: accent }]}>
+                          <Ionicons
+                            name={resolveIcon(icon, 'grid-outline')}
+                            size={selected ? 19 : 18}
+                            color={selected ? colors.background : colors.text}
+                          />
+                        </View>
                       </TouchableOpacity>
                     );
                   })}
@@ -121,16 +116,15 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       borderTopRightRadius: radius('2xl'),
       borderTopWidth: 1,
       borderColor: colors.text + '0C',
-      overflow: 'hidden',
       backgroundColor: colors.background,
     },
     handle: {
       alignSelf: 'center',
-      width: 42,
+      width: 36,
       height: 4,
       borderRadius: radius('full'),
       marginTop: spacing('2.5'),
-      backgroundColor: colors.textMuted + '30',
+      backgroundColor: colors.text + '12',
     },
     header: {
       flexDirection: 'row',
@@ -146,41 +140,46 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       color: colors.text,
     },
     closeBtn: {
-      width: 32,
-      height: 32,
+      width: 36,
+      height: 36,
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.text + '0C',
       justifyContent: 'center',
       alignItems: 'center',
     },
     scrollContent: {
       paddingHorizontal: layout.screenPadding,
       paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
-      gap: spacing('5'),
+      gap: spacing('4'),
     },
     group: {
-      gap: spacing('2.5'),
+      gap: spacing('2'),
     },
     groupLabel: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontSize: 12,
       color: colors.textMuted,
+      paddingLeft: spacing('1'),
+      opacity: 0.7,
     },
     iconGrid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      gap: spacing('1.5'),
+      gap: spacing('2.5'),
     },
     iconCell: {
-      width: 42,
-      height: 42,
-      borderRadius: radius('lg'),
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.text + '0C',
+      width: CELL_SIZE,
+      height: CELL_SIZE,
       justifyContent: 'center',
       alignItems: 'center',
     },
+    iconCircle: {
+      width: CELL_SIZE,
+      height: CELL_SIZE,
+      borderRadius: radius('full'),
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+    },
+    iconCellSelected: {},
   });

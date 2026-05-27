@@ -83,7 +83,11 @@ export const TRANSACTION_LIST_SELECT = {
 const buildWhere = (filters: TransactionFilters): SQL | undefined => {
   const conditions: SQL[] = [];
   if (filters.type) conditions.push(eq(payments.type, filters.type));
-  if (filters.accountId != null) conditions.push(eq(payments.accountId, filters.accountId));
+  if (filters.accountId != null) {
+    conditions.push(
+      sql`(${eq(payments.accountId, filters.accountId)} OR ${payments.toAccountId} = ${filters.accountId})`,
+    );
+  }
   if (filters.categoryId != null) conditions.push(eq(payments.categoryId, filters.categoryId));
   return conditions.length > 0 ? and(...conditions) : undefined;
 };

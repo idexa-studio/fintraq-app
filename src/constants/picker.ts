@@ -10,19 +10,25 @@ export type IconGroup = {
 export const ACCOUNT_ICONS = [
   // Wallets & Cards
   'wallet-outline', 'card-outline', 'cash-outline', 'receipt-outline',
-  'document-text-outline', 'shield-checkmark-outline',
+  'document-text-outline', 'shield-checkmark-outline', 'key-outline',
+  'lock-closed-outline', 'id-card-outline',
   // Savings & Investments
   'diamond-outline', 'trending-up-outline', 'stats-chart-outline',
   'pie-chart-outline', 'analytics-outline', 'layers-outline', 'bar-chart-outline',
+  'rocket-outline', 'pulse-outline',
   // Business & Work
   'briefcase-outline', 'business-outline', 'server-outline',
-  'laptop-outline', 'archive-outline',
+  'laptop-outline', 'archive-outline', 'calculator-outline',
+  'desktop-outline', 'print-outline',
   // Goals
   'home-outline', 'car-outline', 'airplane-outline',
   'heart-outline', 'school-outline', 'trophy-outline',
+  'flag-outline', 'compass-outline',
   // Other
   'phone-portrait-outline', 'globe-outline', 'people-outline',
   'leaf-outline', 'gift-outline', 'star-outline',
+  'moon-outline', 'sunny-outline', 'cog-outline',
+  'hammer-outline', 'flash-outline', 'water-outline',
 ] as const;
 
 export type AccountIconName = (typeof ACCOUNT_ICONS)[number];
@@ -30,23 +36,23 @@ export type AccountIconName = (typeof ACCOUNT_ICONS)[number];
 export const ACCOUNT_ICON_GROUPS: IconGroup[] = [
   {
     label: 'Wallets & Cards',
-    icons: ['wallet-outline', 'card-outline', 'cash-outline', 'receipt-outline', 'document-text-outline', 'shield-checkmark-outline'],
+    icons: ['wallet-outline', 'card-outline', 'cash-outline', 'receipt-outline', 'document-text-outline', 'shield-checkmark-outline', 'key-outline', 'lock-closed-outline', 'id-card-outline'],
   },
   {
     label: 'Savings & Investments',
-    icons: ['diamond-outline', 'trending-up-outline', 'stats-chart-outline', 'pie-chart-outline', 'analytics-outline', 'layers-outline', 'bar-chart-outline'],
+    icons: ['diamond-outline', 'trending-up-outline', 'stats-chart-outline', 'pie-chart-outline', 'analytics-outline', 'layers-outline', 'bar-chart-outline', 'rocket-outline', 'pulse-outline'],
   },
   {
     label: 'Business & Work',
-    icons: ['briefcase-outline', 'business-outline', 'server-outline', 'laptop-outline', 'archive-outline'],
+    icons: ['briefcase-outline', 'business-outline', 'server-outline', 'laptop-outline', 'archive-outline', 'calculator-outline', 'desktop-outline', 'print-outline'],
   },
   {
     label: 'Goals',
-    icons: ['home-outline', 'car-outline', 'airplane-outline', 'heart-outline', 'school-outline', 'trophy-outline'],
+    icons: ['home-outline', 'car-outline', 'airplane-outline', 'heart-outline', 'school-outline', 'trophy-outline', 'flag-outline', 'compass-outline'],
   },
   {
     label: 'Other',
-    icons: ['phone-portrait-outline', 'globe-outline', 'people-outline', 'leaf-outline', 'gift-outline', 'star-outline'],
+    icons: ['phone-portrait-outline', 'globe-outline', 'people-outline', 'leaf-outline', 'gift-outline', 'star-outline', 'moon-outline', 'sunny-outline', 'cog-outline', 'hammer-outline', 'flash-outline', 'water-outline'],
   },
 ];
 
@@ -101,80 +107,46 @@ export const ACCOUNT_COLORS = PALETTE_COLORS;
 
 export const CATEGORY_ICONS = [
   // Finance & Money
-  'cash-outline',
-  'wallet-outline',
-  'card-outline',
-  'briefcase-outline',
-  'trending-up-outline',
-  'refresh-outline',
-  'receipt-outline',
-  'document-text-outline',
+  'cash-outline', 'wallet-outline', 'card-outline', 'briefcase-outline',
+  'trending-up-outline', 'refresh-outline', 'receipt-outline',
+  'document-text-outline', 'calculator-outline', 'layers-outline',
   // Food & Drink
-  'fast-food-outline',
-  'restaurant-outline',
-  'cafe-outline',
-  'pizza-outline',
-  'wine-outline',
-  'beer-outline',
-  'ice-cream-outline',
-  'basket-outline',
+  'fast-food-outline', 'restaurant-outline', 'cafe-outline',
+  'pizza-outline', 'wine-outline', 'beer-outline', 'ice-cream-outline',
+  'basket-outline', 'nutrition-outline', 'egg-outline',
   // Transport
-  'car-outline',
-  'bus-outline',
-  'airplane-outline',
-  'train-outline',
-  'bicycle-outline',
-  'boat-outline',
-  'speedometer-outline',
-  'locate-outline',
+  'car-outline', 'bus-outline', 'airplane-outline', 'train-outline',
+  'bicycle-outline', 'boat-outline', 'speedometer-outline', 'locate-outline',
+  'walk-outline', 'subway-outline',
   // Home & Utilities
-  'home-outline',
-  'business-outline',
-  'flash-outline',
-  'wifi-outline',
-  'build-outline',
-  'bed-outline',
-  'leaf-outline',
+  'home-outline', 'business-outline', 'flash-outline', 'wifi-outline',
+  'build-outline', 'bed-outline', 'leaf-outline', 'water-outline',
+  'thermometer-outline', 'flame-outline',
   // Health & Fitness
-  'medkit-outline',
-  'bandage-outline',
-  'barbell-outline',
-  'fitness-outline',
+  'medkit-outline', 'bandage-outline', 'barbell-outline',
+  'fitness-outline', 'heart-outline', 'pulse-outline',
+  'accessibility-outline', 'body-outline',
   // Tech & Communication
-  'phone-portrait-outline',
-  'hardware-chip-outline',
-  'globe-outline',
+  'phone-portrait-outline', 'hardware-chip-outline', 'globe-outline',
+  'tablet-portrait-outline', 'headset-outline', 'cloud-outline',
   // Shopping & Lifestyle
-  'bag-outline',
-  'cart-outline',
-  'repeat-outline',
-  'cut-outline',
-  'shield-checkmark-outline',
-  'umbrella-outline',
+  'bag-outline', 'cart-outline', 'repeat-outline', 'cut-outline',
+  'shield-checkmark-outline', 'umbrella-outline', 'shirt-outline',
   // Entertainment & Hobbies
-  'film-outline',
-  'game-controller-outline',
-  'musical-notes-outline',
-  'camera-outline',
-  'color-palette-outline',
-  'book-outline',
+  'film-outline', 'game-controller-outline', 'musical-notes-outline',
+  'camera-outline', 'color-palette-outline', 'book-outline',
+  'football-outline', 'golf-outline',
   // Education
-  'school-outline',
+  'school-outline', 'library-outline', 'pencil-outline',
   // Personal & Social
-  'person-outline',
-  'people-outline',
-  'happy-outline',
-  'paw-outline',
-  'heart-outline',
-  'gift-outline',
-  'ribbon-outline',
-  'trophy-outline',
+  'person-outline', 'people-outline', 'happy-outline',
+  'paw-outline', 'heart-circle-outline', 'gift-outline',
+  'ribbon-outline', 'trophy-outline', 'chatbubbles-outline',
   // Misc
-  'sparkles-outline',
-  'star-outline',
-  'bulb-outline',
-  'grid-outline',
-  'ellipsis-horizontal-outline',
+  'sparkles-outline', 'star-outline', 'bulb-outline',
+  'grid-outline', 'ellipsis-horizontal-outline',
+  'time-outline', 'alarm-outline', 'moon-outline', 'sunny-outline',
+  'calendar-outline', 'map-outline',
 ] as const;
 
 export type CategoryIconName = (typeof CATEGORY_ICONS)[number];
@@ -182,47 +154,47 @@ export type CategoryIconName = (typeof CATEGORY_ICONS)[number];
 export const CATEGORY_ICON_GROUPS: IconGroup[] = [
   {
     label: 'Finance',
-    icons: ['cash-outline', 'wallet-outline', 'card-outline', 'briefcase-outline', 'trending-up-outline', 'refresh-outline', 'receipt-outline', 'document-text-outline'],
+    icons: ['cash-outline', 'wallet-outline', 'card-outline', 'briefcase-outline', 'trending-up-outline', 'refresh-outline', 'receipt-outline', 'document-text-outline', 'calculator-outline', 'layers-outline'],
   },
   {
     label: 'Food & Drink',
-    icons: ['fast-food-outline', 'restaurant-outline', 'cafe-outline', 'pizza-outline', 'wine-outline', 'beer-outline', 'ice-cream-outline', 'basket-outline'],
+    icons: ['fast-food-outline', 'restaurant-outline', 'cafe-outline', 'pizza-outline', 'wine-outline', 'beer-outline', 'ice-cream-outline', 'basket-outline', 'nutrition-outline', 'egg-outline'],
   },
   {
     label: 'Transport',
-    icons: ['car-outline', 'bus-outline', 'airplane-outline', 'train-outline', 'bicycle-outline', 'boat-outline', 'speedometer-outline', 'locate-outline'],
+    icons: ['car-outline', 'bus-outline', 'airplane-outline', 'train-outline', 'bicycle-outline', 'boat-outline', 'speedometer-outline', 'locate-outline', 'walk-outline', 'subway-outline'],
   },
   {
     label: 'Home & Utilities',
-    icons: ['home-outline', 'business-outline', 'flash-outline', 'wifi-outline', 'build-outline', 'bed-outline', 'leaf-outline'],
+    icons: ['home-outline', 'business-outline', 'flash-outline', 'wifi-outline', 'build-outline', 'bed-outline', 'leaf-outline', 'water-outline', 'thermometer-outline', 'flame-outline'],
   },
   {
     label: 'Health & Fitness',
-    icons: ['medkit-outline', 'bandage-outline', 'barbell-outline', 'fitness-outline'],
+    icons: ['medkit-outline', 'bandage-outline', 'barbell-outline', 'fitness-outline', 'heart-outline', 'pulse-outline', 'accessibility-outline', 'body-outline'],
   },
   {
     label: 'Tech',
-    icons: ['phone-portrait-outline', 'hardware-chip-outline', 'globe-outline'],
+    icons: ['phone-portrait-outline', 'hardware-chip-outline', 'globe-outline', 'tablet-portrait-outline', 'headset-outline', 'cloud-outline'],
   },
   {
     label: 'Shopping',
-    icons: ['bag-outline', 'cart-outline', 'repeat-outline', 'cut-outline', 'shield-checkmark-outline', 'umbrella-outline'],
+    icons: ['bag-outline', 'cart-outline', 'repeat-outline', 'cut-outline', 'shield-checkmark-outline', 'umbrella-outline', 'shirt-outline'],
   },
   {
     label: 'Entertainment',
-    icons: ['film-outline', 'game-controller-outline', 'musical-notes-outline', 'camera-outline', 'color-palette-outline', 'book-outline'],
+    icons: ['film-outline', 'game-controller-outline', 'musical-notes-outline', 'camera-outline', 'color-palette-outline', 'book-outline', 'football-outline', 'golf-outline'],
   },
   {
     label: 'Education',
-    icons: ['school-outline'],
+    icons: ['school-outline', 'library-outline', 'pencil-outline'],
   },
   {
     label: 'Personal',
-    icons: ['person-outline', 'people-outline', 'happy-outline', 'paw-outline', 'heart-outline', 'gift-outline', 'ribbon-outline', 'trophy-outline'],
+    icons: ['person-outline', 'people-outline', 'happy-outline', 'paw-outline', 'heart-circle-outline', 'gift-outline', 'ribbon-outline', 'trophy-outline', 'chatbubbles-outline'],
   },
   {
     label: 'Misc',
-    icons: ['sparkles-outline', 'star-outline', 'bulb-outline', 'grid-outline', 'ellipsis-horizontal-outline'],
+    icons: ['sparkles-outline', 'star-outline', 'bulb-outline', 'grid-outline', 'ellipsis-horizontal-outline', 'time-outline', 'alarm-outline', 'moon-outline', 'sunny-outline', 'calendar-outline', 'map-outline'],
   },
 ];
 
