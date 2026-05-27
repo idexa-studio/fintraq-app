@@ -2,9 +2,9 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
-import { resolveIcon } from '../../../utils/icons';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { formatCurrency } from '../../../utils/format';
+import { resolveIcon } from '../../../utils/icons';
 import { DashboardInsight } from '../api/insights';
 
 interface InsightCardProps {
@@ -72,7 +72,6 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) => Styl
     borderRadius: radius('2xl'),
     borderWidth: 1,
     padding: spacing('3.5'),
-    marginRight: spacing('2.5'),
     justifyContent: 'space-between',
     overflow: 'hidden',
   },

@@ -14,7 +14,7 @@ interface InsightsSectionProps {
 
 export const InsightsSection = React.memo(function InsightsSection({ currency }: InsightsSectionProps) {
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors,layout, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { data: insights, isLoading } = useDashboardInsights(currency);
   const { isPremium } = usePremium();
@@ -43,11 +43,11 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
             snapToInterval={190}
             snapToAlignment="start"
           >
-            <View style={{ width: 24 }} />
+            <View style={{ paddingHorizontal: layout.screenPadding, flexDirection:"row", gap: spacing('3') }} >
             {insights.map((insight) => (
               <InsightCard key={insight.id} insight={insight} />
             ))}
-            <View style={{ width: 14 }} />
+           </View>
           </ScrollView>
         ) : (
           <View style={[styles.emptyCard, { backgroundColor: colors.surface + '50', borderColor: colors.border }]}>

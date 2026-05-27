@@ -15,6 +15,7 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurBackground } from '@/src/components/ui/BlurBackground';
 import { Header } from '@/src/components/ui/Header';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
@@ -22,14 +23,32 @@ import { colorNumberToHex } from '@/src/utils/format';
 import { CsvExportService, ExportDateRange } from '../api/csv-export.service';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 
-export function ExportScreen() {
-  const theme = useTheme();
+const DURATION_PRESETS = [
+  { key: '7d', label: 'Last 7 days', days: 7 },
+  { key: '30d', label: 'Last 30 days', days: 30 },
+  { key: '90d', label: 'Last 90 days', days: 90 },
+  { key: '12m', label: 'Last 12 months', days: 365 },
+] as const;
+
+const TYPE_OPTIONS = [
+  { key: 'ALL', label: 'All' },
+  { key: 'CR', label: 'Income' },
+  { key: 'DR', label: 'Expense' },
+] as const;
+
+const Divider = React.memo(function Divider({ theme }: { theme: ThemeContextType }) {
   const { colors } = theme;
+  return <View style={{ height: 1, backgroundColor: colors.text + '0C', marginHorizontal: 16 }} />;
+});
+
+export const ExportScreen = React.memo(function ExportScreen() {
+  const theme = useTheme();
+  const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const accountsQuery = useAccounts();
 
-  const [selectedPreset, setSelectedPreset] = useState<number>(0);
+  const [selectedPreset, setSelectedPreset] = useState<string>(DURATION_PRESETS[1].key);
   const [customRange, setCustomRange] = useState<ExportDateRange | null>(null);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
@@ -40,23 +59,24 @@ export function ExportScreen() {
   const [exportedData, setExportedData] = useState<{ content: string; filename: string } | null>(null);
   const [previewCount, setPreviewCount] = useState<number | null>(null);
 
-  const presets = useMemo(() => CsvExportService.getDateRangePresets(), []);
-
   const effectiveDateRange = useMemo(() => {
     if (customRange) return customRange;
-    return presets[selectedPreset].getRange();
-  }, [customRange, selectedPreset, presets]);
+    const preset = DURATION_PRESETS.find(p => p.key === selectedPreset);
+    if (preset) {
+      const end = new Date();
+      const start = new Date();
+      start.setDate(start.getDate() - preset.days);
+      return { startDate: start, endDate: end };
+    }
+    return { startDate: new Date(), endDate: new Date() };
+  }, [customRange, selectedPreset]);
 
   const formatDate = useCallback((date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   }, []);
 
-  const handlePresetSelect = useCallback((index: number) => {
-    setSelectedPreset(index);
+  const handlePresetSelect = useCallback((key: string) => {
+    setSelectedPreset(key);
     setCustomRange(null);
   }, []);
 
@@ -81,7 +101,6 @@ export function ExportScreen() {
     }
   }, []);
 
-  // Update preview count when filters change
   useEffect(() => {
     let mounted = true;
     const options = {
@@ -98,21 +117,16 @@ export function ExportScreen() {
   const handleExport = useCallback(async () => {
     try {
       setIsExporting(true);
-
       const options = {
         dateRange: effectiveDateRange,
         ...(selectedAccountId !== null && { accountId: selectedAccountId }),
         ...(selectedType !== 'ALL' && { type: selectedType as 'CR' | 'DR' }),
       };
-
       const result = await CsvExportService.exportToCsv(options);
       setExportedData(result);
       setShowExportOptions(true);
     } catch (error) {
-      Alert.alert(
-        'Export Failed',
-        error instanceof Error ? error.message : 'Failed to export transactions'
-      );
+      Alert.alert('Export failed', error instanceof Error ? error.message : 'Failed to export transactions');
     } finally {
       setIsExporting(false);
     }
@@ -120,16 +134,11 @@ export function ExportScreen() {
 
   const handleSaveToFolder = useCallback(async () => {
     if (!exportedData) return;
-    
     setShowExportOptions(false);
-    
     try {
       await CsvExportService.saveToFolder(exportedData.content, exportedData.filename);
     } catch (error) {
-      Alert.alert(
-        'Save Failed',
-        error instanceof Error ? error.message : 'Failed to save CSV'
-      );
+      Alert.alert('Save failed', error instanceof Error ? error.message : 'Failed to save CSV');
     } finally {
       setExportedData(null);
     }
@@ -137,16 +146,11 @@ export function ExportScreen() {
 
   const handleShare = useCallback(async () => {
     if (!exportedData) return;
-    
     setShowExportOptions(false);
-    
     try {
       await CsvExportService.shareFile(exportedData.content, exportedData.filename);
     } catch (error) {
-      Alert.alert(
-        'Share Failed',
-        error instanceof Error ? error.message : 'Failed to share CSV'
-      );
+      Alert.alert('Share failed', error instanceof Error ? error.message : 'Failed to share CSV');
     } finally {
       setExportedData(null);
     }
@@ -158,83 +162,84 @@ export function ExportScreen() {
 
       <Header title="Export CSV" showBack />
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <PremiumGuard label="CSV Export">
-          <View style={styles.heroCard}>
-            <View style={styles.heroIconContainer}>
-              <Ionicons name="document-text" size={32} color={colors.primary} />
+          <View style={styles.hero}>
+            <IconAvatar icon="document-text" bg={colors.primary + '18'} color={colors.primary} size={48} iconSize={22} />
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.heroTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>
+                Export to spreadsheet
+              </Text>
+              <Text style={[styles.heroSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                Download your transactions as a CSV file
+              </Text>
             </View>
-            <Text style={styles.heroTitle}>Export to Spreadsheet</Text>
-            <Text style={styles.heroSubtitle}>
-              Export your transactions as CSV. Choose to save to a folder or share to other apps.
-            </Text>
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>DATE RANGE</Text>
-            <View style={styles.card}>
-              {presets.map((preset, index) => (
+          <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+            Date range
+          </Text>
+          <View style={styles.card}>
+            {DURATION_PRESETS.map((preset, i) => (
+              <React.Fragment key={preset.key}>
                 <TouchableOpacity
-                  key={preset.label}
-                  style={[
-                    styles.presetRow,
-                    index === presets.length - 1 && styles.presetRowLast,
-                  ]}
-                  onPress={() => handlePresetSelect(index)}
+                  style={styles.cardRow}
+                  onPress={() => handlePresetSelect(preset.key)}
+                  activeOpacity={0.65}
+                >
+                  <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>
+                    {preset.label}
+                  </Text>
+                  {selectedPreset === preset.key && !customRange ? (
+                    <Ionicons name="checkmark" size={16} color={colors.primary} />
+                  ) : null}
+                </TouchableOpacity>
+                {i < DURATION_PRESETS.length - 1 ? <Divider theme={theme} /> : null}
+              </React.Fragment>
+            ))}
+            <Divider theme={theme} />
+            <TouchableOpacity
+              style={styles.cardRow}
+              onPress={() => setShowStartPicker(true)}
+              activeOpacity={0.65}
+            >
+              <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>
+                Custom range
+              </Text>
+              {customRange ? (
+                <Ionicons name="checkmark" size={16} color={colors.primary} />
+              ) : null}
+            </TouchableOpacity>
+
+            {customRange && (
+              <View style={styles.dateRow}>
+                <TouchableOpacity
+                  style={styles.dateBtn}
+                  onPress={() => setShowStartPicker(true)}
                   activeOpacity={0.7}
                 >
-                  <View style={styles.presetLeft}>
-                    <View style={[
-                      styles.radioCircle,
-                      selectedPreset === index && !customRange && { borderColor: colors.primary, borderWidth: 2 },
-                    ]}>
-                      {selectedPreset === index && !customRange && (
-                        <View style={[styles.radioDot, { backgroundColor: colors.primary }]} />
-                      )}
-                    </View>
-                    <Text style={styles.presetLabel}>{preset.label}</Text>
-                  </View>
+                  <Text style={[styles.dateLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                    From
+                  </Text>
+                  <Text style={[styles.dateValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                    {formatDate(customRange.startDate)}
+                  </Text>
                 </TouchableOpacity>
-              ))}
-
-              <View style={styles.divider} />
-
-              <TouchableOpacity
-                style={[styles.presetRow, styles.presetRowLast]}
-                onPress={() => setShowStartPicker(true)}
-                activeOpacity={0.7}
-              >
-                <View style={styles.presetLeft}>
-                  <View style={[
-                    styles.radioCircle,
-                    customRange && { borderColor: colors.primary, borderWidth: 2 },
-                  ]}>
-                    {customRange && <View style={[styles.radioDot, { backgroundColor: colors.primary }]} />}
-                  </View>
-                  <Text style={styles.presetLabel}>Custom Range</Text>
-                </View>
-              </TouchableOpacity>
-
-              {customRange && (
-                <View style={styles.customDatesContainer}>
-                  <TouchableOpacity
-                    style={styles.dateButton}
-                    onPress={() => setShowStartPicker(true)}
-                  >
-                    <Text style={styles.dateLabel}>From</Text>
-                    <Text style={styles.dateValue}>{formatDate(customRange.startDate)}</Text>
-                  </TouchableOpacity>
-                  <Ionicons name="arrow-forward" size={16} color={colors.textMuted} />
-                  <TouchableOpacity
-                    style={styles.dateButton}
-                    onPress={() => setShowEndPicker(true)}
-                  >
-                    <Text style={styles.dateLabel}>To</Text>
-                    <Text style={styles.dateValue}>{formatDate(customRange.endDate)}</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
+                <Ionicons name="arrow-forward" size={14} color={colors.textMuted} />
+                <TouchableOpacity
+                  style={styles.dateBtn}
+                  onPress={() => setShowEndPicker(true)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.dateLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                    To
+                  </Text>
+                  <Text style={[styles.dateValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                    {formatDate(customRange.endDate)}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
 
           {showStartPicker && (
@@ -246,7 +251,6 @@ export function ExportScreen() {
               maximumDate={new Date()}
             />
           )}
-
           {showEndPicker && (
             <DateTimePicker
               value={customRange?.endDate || new Date()}
@@ -257,91 +261,103 @@ export function ExportScreen() {
             />
           )}
 
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>ACCOUNT (OPTIONAL)</Text>
-            <View style={styles.card}>
-              <TouchableOpacity
-                style={[styles.filterRow, selectedAccountId === null && styles.filterRowSelected]}
-                onPress={() => setSelectedAccountId(null)}
-                activeOpacity={0.7}
-              >
-                <View style={styles.filterLeft}>
-                  <View style={[styles.filterIconBox, { backgroundColor: colors.surface }]}>
-                    <Ionicons name="wallet-outline" size={16} color={colors.textMuted} />
-                  </View>
-                  <Text style={styles.filterLabel}>All Accounts</Text>
-                </View>
-                {selectedAccountId === null && (
-                  <Ionicons name="checkmark" size={18} color={colors.primary} />
-                )}
-              </TouchableOpacity>
+          <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+            Account
+          </Text>
+          <View style={styles.card}>
+            <TouchableOpacity
+              style={styles.cardRow}
+              onPress={() => setSelectedAccountId(null)}
+              activeOpacity={0.65}
+            >
+              <View style={styles.filterLeft}>
+                <IconAvatar icon="wallet-outline" bg={colors.background} color={colors.text} size={28} iconSize={12} />
+                <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>
+                  All accounts
+                </Text>
+              </View>
+              {selectedAccountId === null ? (
+                <Ionicons name="checkmark" size={16} color={colors.primary} />
+              ) : null}
+            </TouchableOpacity>
 
-              {accountsQuery.data?.map((account, index) => (
-                <TouchableOpacity
-                  key={account.id}
-                  style={[
-                    styles.filterRow,
-                    index === (accountsQuery.data?.length || 0) - 1 && styles.filterRowLast,
-                    selectedAccountId === account.id && styles.filterRowSelected,
-                  ]}
-                  onPress={() => setSelectedAccountId(account.id)}
-                  activeOpacity={0.7}
-                >
-                  <View style={styles.filterLeft}>
-                    <View style={[styles.filterIconBox, { backgroundColor: colorNumberToHex(account.color) + '20' }]}>
-                      <Ionicons name={resolveIcon(account.icon, 'wallet-outline')} size={16} color={colorNumberToHex(account.color)} />
+            {accountsQuery.data?.map((account) => {
+              const accColor = colorNumberToHex(account.color);
+              return (
+                <React.Fragment key={account.id}>
+                  <Divider theme={theme} />
+                  <TouchableOpacity
+                    style={styles.cardRow}
+                    onPress={() => setSelectedAccountId(account.id)}
+                    activeOpacity={0.65}
+                  >
+                    <View style={styles.filterLeft}>
+                      <IconAvatar
+                        icon={resolveIcon(account.icon, 'wallet-outline')}
+                        bg={accColor + '18'}
+                        color={accColor}
+                        size={28}
+                        iconSize={12}
+                      />
+                      <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>
+                        {account.name}
+                      </Text>
                     </View>
-                    <Text style={styles.filterLabel}>{account.name}</Text>
-                  </View>
-                  {selectedAccountId === account.id && (
-                    <Ionicons name="checkmark" size={18} color={colors.primary} />
-                  )}
-                </TouchableOpacity>
-              ))}
-            </View>
+                    {selectedAccountId === account.id ? (
+                      <Ionicons name="checkmark" size={16} color={colors.primary} />
+                    ) : null}
+                  </TouchableOpacity>
+                </React.Fragment>
+              );
+            })}
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>TYPE (OPTIONAL)</Text>
-            <View style={styles.typeGrid}>
-              {(['ALL', 'CR', 'DR'] as const).map((type) => (
+          <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+            Type
+          </Text>
+          <View style={styles.pillRow}>
+            {TYPE_OPTIONS.map((type) => {
+              const active = selectedType === type.key;
+              return (
                 <TouchableOpacity
-                  key={type}
-                  style={[
-                    styles.typeChip,
-                    selectedType === type && { backgroundColor: colors.text },
-                  ]}
-                  onPress={() => setSelectedType(type)}
+                  key={type.key}
+                  style={[styles.pill, active && styles.pillActive]}
+                  onPress={() => setSelectedType(type.key)}
                   activeOpacity={0.7}
                 >
                   <Text style={[
-                    styles.typeChipText,
-                    selectedType === type && { color: colors.background },
+                    styles.pillText,
+                    { fontFamily: typography.fonts.semibold },
+                    active && styles.pillTextActive,
                   ]}>
-                    {type === 'ALL' ? 'All' : type === 'CR' ? 'Income' : 'Expense'}
+                    {type.label}
                   </Text>
                 </TouchableOpacity>
-              ))}
-            </View>
+              );
+            })}
           </View>
 
-          <View style={styles.summaryCard}>
+          <View style={styles.summary}>
             <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Transactions to export</Text>
-              <Text style={styles.summaryValue}>
+              <Text style={[styles.summaryLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                Transactions
+              </Text>
+              <Text style={[styles.summaryValue, { fontFamily: typography.fonts.heading, color: colors.text }]}>
                 {previewCount !== null ? previewCount.toLocaleString() : '...'}
               </Text>
             </View>
             <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Date range</Text>
-              <Text style={styles.summaryValueSmall}>
-                {formatDate(effectiveDateRange.startDate)} - {formatDate(effectiveDateRange.endDate)}
+              <Text style={[styles.summaryLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                Period
+              </Text>
+              <Text style={[styles.summaryPeriod, { fontFamily: typography.fonts.regular, color: colors.text }]}>
+                {formatDate(effectiveDateRange.startDate)} — {formatDate(effectiveDateRange.endDate)}
               </Text>
             </View>
           </View>
 
           <TouchableOpacity
-            style={[styles.exportButton, isExporting && { opacity: 0.7 }]}
+            style={[styles.exportBtn, (isExporting || previewCount === 0) && { opacity: 0.5 }]}
             onPress={handleExport}
             disabled={isExporting || previewCount === 0}
             activeOpacity={0.8}
@@ -350,17 +366,19 @@ export function ExportScreen() {
               <ActivityIndicator size="small" color={colors.background} />
             ) : (
               <>
-                <Ionicons name="download-outline" size={20} color={colors.background} />
-                <Text style={styles.exportButtonText}>Export CSV</Text>
+                <Ionicons name="download-outline" size={18} color={colors.background} />
+                <Text style={[styles.exportBtnText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+                  Export CSV
+                </Text>
               </>
             )}
           </TouchableOpacity>
 
           {previewCount === 0 && (
-            <View style={styles.warningCard}>
-              <Ionicons name="information-circle-outline" size={18} color={colors.warning || colors.textMuted} />
-              <Text style={styles.warningText}>
-                No transactions match the selected filters. Adjust your date range or filters.
+            <View style={styles.warning}>
+              <Ionicons name="information-circle-outline" size={16} color={colors.warning} />
+              <Text style={[styles.warningText, { fontFamily: typography.fonts.regular, color: colors.warning }]}>
+                No transactions match the selected filters.
               </Text>
             </View>
           )}
@@ -373,19 +391,19 @@ export function ExportScreen() {
           setShowExportOptions(false);
           setExportedData(null);
         }}
-        title="Export Complete"
-        subtitle={exportedData ? `${previewCount?.toLocaleString()} transactions` : 'Choose how to save your CSV'}
+        title="Export complete"
+        subtitle={exportedData ? `${previewCount?.toLocaleString()} transactions ready` : 'Choose how to save'}
         options={[
           {
             key: 'save',
-            label: Platform.OS === 'ios' ? 'Save to Files' : 'Save to Folder',
+            label: Platform.OS === 'ios' ? 'Save to files' : 'Save to folder',
             icon: 'folder-outline',
             selected: false,
             onPress: handleSaveToFolder,
           },
           {
             key: 'share',
-            label: 'Share to Apps',
+            label: 'Share to apps',
             icon: 'share-outline',
             selected: false,
             onPress: handleShare,
@@ -394,237 +412,167 @@ export function ExportScreen() {
       />
     </SafeAreaView>
   );
-}
+});
 
-const createStyles = ({ colors, typography , layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
     },
-    content: {
+    scroll: {
       paddingHorizontal: layout.screenPadding,
-      paddingTop: 12,
-      paddingBottom: 48,
+      paddingTop: spacing('2'),
+      paddingBottom: spacing('9'),
     },
-    heroCard: {
+
+    hero: {
+      flexDirection: 'row',
+      alignItems: 'center',
       backgroundColor: colors.surface,
-      borderRadius: 20,
-      padding: 24,
-      alignItems: 'center',
-      marginBottom: 32,
-    },
-    heroIconContainer: {
-      width: 64,
-      height: 64,
-      borderRadius: 32,
-      backgroundColor: colors.primary + '15',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: 16,
+      borderRadius: radius('xl'),
+      padding: spacing('4'),
+      marginBottom: spacing('6'),
+      gap: spacing('3'),
     },
     heroTitle: {
-      fontFamily: typography.fonts.heading,
-      fontSize: 20,
-      color: colors.text,
-      marginBottom: 8,
+      fontSize: typography.sizes.lg,
     },
-    heroSubtitle: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 14,
-      color: colors.textMuted,
-      textAlign: 'center',
-      lineHeight: 20,
+    heroSub: {
+      fontSize: typography.sizes.xs,
+      marginTop: 2,
+      opacity: 0.65,
     },
-    section: {
-      marginBottom: 24,
-    },
+
     sectionLabel: {
-      fontFamily: typography.fonts.semibold,
       fontSize: 10,
-      color: colors.textMuted,
-      letterSpacing: 2,
-      marginBottom: 12,
-      paddingLeft: 4,
+      marginBottom: spacing('2.5'),
+      paddingLeft: spacing('1'),
+      opacity: 0.7,
     },
+
     card: {
       backgroundColor: colors.surface,
-      borderRadius: 20,
+      borderRadius: radius('xl'),
       overflow: 'hidden',
+      marginBottom: spacing('6'),
     },
-    presetRow: {
+    cardRow: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: 16,
-      borderBottomWidth: 1,
-      borderColor: colors.border,
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
     },
-    presetRowLast: {
-      borderBottomWidth: 0,
+    cardRowText: {
+      fontSize: typography.sizes.md,
     },
-    presetLeft: {
+
+    dateRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 12,
+      gap: spacing('2.5'),
+      paddingHorizontal: spacing('4'),
+      paddingBottom: spacing('4'),
     },
-    radioCircle: {
-      width: 20,
-      height: 20,
-      borderRadius: 10,
-      borderWidth: 1.5,
-      borderColor: colors.border,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    radioDot: {
-      width: 10,
-      height: 10,
-      borderRadius: 5,
-    },
-    presetLabel: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 15,
-      color: colors.text,
-    },
-    divider: {
-      height: 1,
-      backgroundColor: colors.border,
-      marginHorizontal: 16,
-    },
-    customDatesContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 12,
-      padding: 16,
-      paddingTop: 8,
-      backgroundColor: colors.background,
-    },
-    dateButton: {
+    dateBtn: {
       flex: 1,
-      backgroundColor: colors.surface,
-      borderRadius: 12,
-      padding: 12,
+      backgroundColor: colors.background,
+      borderRadius: radius('md'),
+      padding: spacing('3'),
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.text + '0C',
     },
     dateLabel: {
-      fontFamily: typography.fonts.semibold,
       fontSize: 10,
-      color: colors.textMuted,
-      letterSpacing: 0.5,
-      marginBottom: 4,
+      marginBottom: spacing('0.5'),
+      opacity: 0.6,
     },
     dateValue: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 14,
-      color: colors.text,
+      fontSize: typography.sizes.sm,
     },
-    filterRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: 14,
-      borderBottomWidth: 1,
-      borderColor: colors.border,
-    },
-    filterRowLast: {
-      borderBottomWidth: 0,
-    },
-    filterRowSelected: {
-      backgroundColor: colors.primary + '08',
-    },
+
     filterLeft: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 12,
+      gap: spacing('3'),
     },
-    filterIconBox: {
-      width: 36,
-      height: 36,
-      borderRadius: 10,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    filterLabel: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 15,
-      color: colors.text,
-    },
-    typeGrid: {
+
+    pillRow: {
       flexDirection: 'row',
-      gap: 10,
+      gap: spacing('2'),
+      marginBottom: spacing('6'),
     },
-    typeChip: {
+    pill: {
       flex: 1,
-      paddingVertical: 12,
-      paddingHorizontal: 8,
-      borderRadius: 12,
+      height: 40,
+      borderRadius: radius('md'),
       backgroundColor: colors.surface,
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.text + '0C',
+      justifyContent: 'center',
       alignItems: 'center',
     },
-    typeChipText: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 13,
+    pillActive: {
+      backgroundColor: colors.text,
+      borderColor: colors.text,
+    },
+    pillText: {
+      fontSize: typography.sizes.sm,
       color: colors.text,
     },
-    summaryCard: {
+    pillTextActive: {
+      color: colors.background,
+    },
+
+    summary: {
       backgroundColor: colors.surface,
-      borderRadius: 16,
-      padding: 16,
-      marginBottom: 20,
-      gap: 12,
+      borderRadius: radius('xl'),
+      padding: spacing('4'),
+      marginBottom: spacing('4'),
+      gap: spacing('3'),
     },
     summaryRow: {
       flexDirection: 'row',
-      alignItems: 'center',
       justifyContent: 'space-between',
+      alignItems: 'center',
     },
     summaryLabel: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 14,
-      color: colors.textMuted,
+      fontSize: typography.sizes.sm,
     },
     summaryValue: {
-      fontFamily: typography.fonts.heading,
       fontSize: 20,
-      color: colors.text,
     },
-    summaryValueSmall: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 13,
-      color: colors.text,
+    summaryPeriod: {
+      fontSize: typography.sizes.xs,
+      opacity: 0.7,
     },
-    exportButton: {
+
+    exportBtn: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: 10,
-      height: 56,
-      borderRadius: 16,
+      gap: spacing('2.5'),
+      height: sizes.button.lg.height,
+      borderRadius: sizes.button.lg.borderRadius,
       backgroundColor: colors.text,
-      marginBottom: 16,
+      marginBottom: spacing('3'),
     },
-    exportButtonText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 16,
-      color: colors.background,
+    exportBtnText: {
+      fontSize: sizes.button.lg.fontSize,
     },
-    warningCard: {
+
+    warning: {
       flexDirection: 'row',
-      alignItems: 'flex-start',
-      gap: 12,
-      backgroundColor: (colors.warning || '#F59E0B') + '10',
-      borderRadius: 12,
-      padding: 12,
+      alignItems: 'center',
+      gap: spacing('2.5'),
+      backgroundColor: colors.warning + '10',
+      borderRadius: radius('md'),
+      padding: spacing('3'),
     },
     warningText: {
       flex: 1,
-      fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      color: colors.warning || '#F59E0B',
+      fontSize: typography.sizes.xs,
       lineHeight: 18,
     },
   });
