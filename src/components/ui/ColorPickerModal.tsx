@@ -29,7 +29,7 @@ export const ColorPickerModal = React.memo(function ColorPickerModal({
   value,
   onChange,
   palette,
-  title = 'Choose Color',
+  title = 'Choose color',
 }: Props) {
   const theme = useTheme();
   const { colors } = theme;
@@ -93,10 +93,10 @@ export const ColorPickerModal = React.memo(function ColorPickerModal({
           <View style={styles.header}>
             <View style={{ flex: 1 }}>
               <Text style={styles.title}>{title}</Text>
-              <Text style={styles.subtitle}>{palette.length} colors available</Text>
+              <Text style={styles.subtitle}>{palette.length} colors</Text>
             </View>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.8}>
-              <Ionicons name="close" size={18} color={colors.text} />
+              <Ionicons name="close" size={16} color={colors.text} />
             </TouchableOpacity>
           </View>
 
@@ -111,7 +111,7 @@ export const ColorPickerModal = React.memo(function ColorPickerModal({
             initialNumToRender={15}
             maxToRenderPerBatch={10}
             windowSize={5}
-            removeClippedSubviews={true}
+            removeClippedSubviews
           />
         </View>
       </View>
@@ -134,7 +134,7 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       borderTopLeftRadius: radius('2xl'),
       borderTopRightRadius: radius('2xl'),
       borderTopWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.text + '0C',
       overflow: 'hidden',
       backgroundColor: colors.background,
     },
@@ -142,46 +142,45 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       alignSelf: 'center',
       width: 42,
       height: 4,
-      borderRadius: 999,
-      marginTop: 10,
-      backgroundColor: colors.textMuted + '55',
+      borderRadius: radius('full'),
+      marginTop: spacing('2.5'),
+      backgroundColor: colors.textMuted + '30',
     },
     header: {
       paddingHorizontal: layout.screenPadding,
-      paddingTop: 14,
-      paddingBottom: 10,
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('3'),
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 28,
+      fontSize: 22,
       color: colors.text,
-      letterSpacing: -0.8,
     },
     subtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: 12,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
       marginTop: 2,
     },
     closeBtn: {
-      width: 38,
-      height: 38,
+      width: 32,
+      height: 32,
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.text + '0C',
       justifyContent: 'center',
       alignItems: 'center',
     },
     listContent: {
-      paddingBottom: Platform.OS === 'ios' ? 24 : 32,
+      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
     },
     separator: {
       height: 1,
-      backgroundColor: colors.border,
+      backgroundColor: colors.text + '0C',
       marginLeft: layout.screenPadding + 32 + spacing('3'),
     },
     row: {
@@ -208,9 +207,8 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       fontFamily: typography.fonts.semibold,
     },
     colorHex: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 12,
+      fontFamily: typography.fonts.amountRegular,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
-      letterSpacing: 0.5,
     },
   });

@@ -18,28 +18,26 @@ type AlertModalProps = {
   type?: 'info' | 'success' | 'error' | 'warning';
 };
 
+const ICONS = {
+  info: { name: 'information-circle' as const, bg: '#60A5FA15', fg: '#60A5FA' },
+  success: { name: 'checkmark-circle' as const, bg: '#0E9F6E15', fg: '#0E9F6E' },
+  error: { name: 'alert-circle' as const, bg: '#B4231815', fg: '#B42318' },
+  warning: { name: 'warning' as const, bg: '#F59E0B15', fg: '#F59E0B' },
+} as const;
+
 export const AlertModal = React.memo(function AlertModal({
   visible,
   title,
   message,
-  buttons = [{ text: 'OK', style: 'default' }],
+  buttons = [{ text: 'Ok', style: 'default' }],
   onClose,
   type = 'info',
 }: AlertModalProps) {
   const theme = useTheme();
-  const { colors } = theme;
-  const { width } = useWindowDimensions();
-  const styles = useMemo(() => createStyles(theme, width), [theme, width]);
+  const { width: screenWidth } = useWindowDimensions();
+  const styles = useMemo(() => createStyles(theme, screenWidth), [theme, screenWidth]);
 
-  const icon = useMemo(() => {
-    switch (type) {
-      case 'success': return { name: 'checkmark-circle' as const, color: colors.primary };
-      case 'error': return { name: 'alert-circle' as const, color: colors.danger };
-      case 'warning': return { name: 'warning' as const, color: colors.warning };
-      case 'info':
-      default: return { name: 'information-circle' as const, color: colors.info };
-    }
-  }, [type, colors.primary, colors.danger, colors.warning, colors.info]);
+  const iconCfg = ICONS[type];
 
   const handleButtonPress = useCallback((button: AlertButton) => {
     if (button.onPress) button.onPress();
@@ -47,44 +45,29 @@ export const AlertModal = React.memo(function AlertModal({
   }, [onClose]);
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onClose}
-    >
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <View style={[styles.iconContainer, { backgroundColor: icon.color + '15' }]}>
-              <Ionicons name={icon.name} size={28} color={icon.color} />
-            </View>
-            <Text style={styles.title}>{title}</Text>
+        <View style={styles.card}>
+          <View style={[styles.iconBox, { backgroundColor: iconCfg.bg }]}>
+            <Ionicons name={iconCfg.name} size={22} color={iconCfg.fg} />
           </View>
-          
-          {message && <Text style={styles.message}>{message}</Text>}
 
-          <View style={styles.buttonContainer}>
-            {buttons.map((button, index) => {
-              const isDestructive = button.style === 'destructive';
-              const isCancel = button.style === 'cancel';
-              
+          <Text style={styles.title}>{title}</Text>
+          {message ? <Text style={styles.message}>{message}</Text> : null}
+
+          <View style={styles.actions}>
+            {buttons.map((btn, i) => {
+              const isCancel = btn.style === 'cancel';
+              const isDestructive = btn.style === 'destructive';
               return (
                 <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.button,
-                    isCancel ? styles.cancelButton : styles.primaryButton,
-                    isDestructive && { backgroundColor: colors.danger },
-                    buttons.length > 2 ? { width: '100%' } : { flex: 1 }
-                  ]}
-                  onPress={() => handleButtonPress(button)}
+                  key={i}
+                  style={[styles.btn, isCancel && styles.btnMuted, isDestructive && styles.btnDanger]}
+                  onPress={() => handleButtonPress(btn)}
+                  activeOpacity={0.7}
                 >
-                  <Text style={[
-                    styles.buttonText,
-                    isCancel && { color: colors.text }
-                  ]}>
-                    {button.text.toUpperCase()}
+                  <Text style={[styles.btnText, isCancel && styles.btnTextMuted]}>
+                    {btn.text}
                   </Text>
                 </TouchableOpacity>
               );
@@ -96,75 +79,70 @@ export const AlertModal = React.memo(function AlertModal({
   );
 });
 
-const createStyles = ({ colors, isDark, overlay, typography }: ThemeContextType, width: number) =>
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType, screenWidth: number) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: overlay.dark,
+      backgroundColor: 'rgba(0,0,0,0.45)',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 24,
+      padding: spacing('6'),
     },
-    content: {
-      width: Math.min(width - 48, 340),
+    card: {
+      width: Math.min(screenWidth - spacing('12'), 300),
       backgroundColor: colors.background,
-      borderRadius: 22,
-      borderWidth: 1,
-      borderColor: colors.border,
-      padding: 24,
-      alignItems: 'flex-start',
-    },
-    header: {
-      flexDirection: 'row',
+      borderRadius: radius('2xl'),
+      padding: spacing('6'),
       alignItems: 'center',
-      gap: 16,
-      marginBottom: 20,
     },
-    iconContainer: {
+    iconBox: {
       width: 48,
       height: 48,
-      borderRadius: 16,
+      borderRadius: radius('full'),
       justifyContent: 'center',
       alignItems: 'center',
+      marginBottom: spacing('4'),
     },
     title: {
-      flex: 1,
       fontFamily: typography.fonts.heading,
-      fontSize: 22,
+      fontSize: 18,
       color: colors.text,
-      letterSpacing: -1,
+      textAlign: 'center',
+      marginBottom: spacing('2'),
     },
     message: {
       fontFamily: typography.fonts.regular,
-      fontSize: 15,
+      fontSize: typography.sizes.sm,
       color: colors.textMuted,
-      lineHeight: 22,
-      marginBottom: 32,
+      lineHeight: 20,
+      textAlign: 'center',
+      marginBottom: spacing('5'),
     },
-    buttonContainer: {
+    actions: {
       flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: 12,
+      gap: spacing('2.5'),
       width: '100%',
     },
-    button: {
-      height: 56,
-      borderRadius: 20,
+    btn: {
+      flex: 1,
+      height: 44,
+      borderRadius: radius('md'),
+      backgroundColor: colors.text,
       justifyContent: 'center',
       alignItems: 'center',
     },
-    primaryButton: {
-      backgroundColor: colors.text,
-    },
-    cancelButton: {
+    btnMuted: {
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
     },
-    buttonText: {
-      fontFamily: typography.fonts.bold,
-      fontSize: 13,
+    btnDanger: {
+      backgroundColor: colors.danger,
+    },
+    btnText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.sm,
       color: colors.background,
-      letterSpacing: 1,
+    },
+    btnTextMuted: {
+      color: colors.text,
     },
   });

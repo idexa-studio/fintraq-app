@@ -268,7 +268,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           </Text>
 
           <View style={styles.heroInfo}>
-            <Text style={[styles.heroName, { fontFamily: typography.fonts.headingRegular, color: HERO_TEXT }]}>
+            <Text style={[styles.heroName, { fontFamily: typography.fonts.bold, color: HERO_TEXT }]}>
               {profile.name || 'Welcome'}
             </Text>
             <View style={styles.heroMeta}>

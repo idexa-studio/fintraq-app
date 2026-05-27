@@ -21,7 +21,7 @@ export type CurrencyPickerModalProps = {
   onChange: (code: string) => void;
 };
 
-const ITEM_HEIGHT = 54; // Height of each currency row
+const ITEM_HEIGHT = 54;
 
 export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
   visible,
@@ -98,25 +98,23 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
         <View style={styles.sheet}>
           <View style={styles.handle} />
 
-          {/* Header */}
           <View style={styles.header}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.title}>Select Currency</Text>
-              <Text style={styles.subtitle}>{CURRENCIES.length} currencies worldwide</Text>
+              <Text style={styles.title}>Select currency</Text>
+              <Text style={styles.subtitle}>{CURRENCIES.length} currencies available</Text>
             </View>
             <TouchableOpacity onPress={handleClose} style={styles.closeBtn}>
-              <Ionicons name="close" size={18} color={colors.text} />
+              <Ionicons name="close" size={16} color={colors.text} />
             </TouchableOpacity>
           </View>
 
-          {/* Search */}
           <View style={styles.searchWrap}>
             <Ionicons name="search-outline" size={16} color={colors.textMuted} style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
               value={query}
               onChangeText={setQuery}
-              placeholder="Search by code or name…"
+              placeholder="Search currencies..."
               placeholderTextColor={colors.textMuted}
               autoCorrect={false}
               autoCapitalize="none"
@@ -129,7 +127,6 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
             )}
           </View>
 
-          {/* List */}
           <FlatList
             data={filtered}
             keyExtractor={keyExtractor}
@@ -142,10 +139,10 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
             initialNumToRender={15}
             maxToRenderPerBatch={10}
             windowSize={5}
-            removeClippedSubviews={true}
+            removeClippedSubviews
             ListEmptyComponent={
               <View style={styles.emptyWrap}>
-                <Text style={styles.emptyText}>No currencies match &ldquo;{query}&rdquo;</Text>
+                <Text style={styles.emptyText}>No results for {query}</Text>
               </View>
             }
           />
@@ -170,7 +167,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       borderTopLeftRadius: radius('2xl'),
       borderTopRightRadius: radius('2xl'),
       borderTopWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.text + '0C',
       overflow: 'hidden',
       backgroundColor: colors.background,
     },
@@ -178,37 +175,36 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       alignSelf: 'center',
       width: 42,
       height: 4,
-      borderRadius: 999,
-      marginTop: 10,
-      backgroundColor: colors.textMuted + '55',
+      borderRadius: radius('full'),
+      marginTop: spacing('2.5'),
+      backgroundColor: colors.textMuted + '30',
     },
     header: {
       paddingHorizontal: layout.screenPadding,
-      paddingTop: 14,
-      paddingBottom: 10,
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('2.5'),
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 28,
+      fontSize: 22,
       color: colors.text,
-      letterSpacing: -0.8,
     },
     subtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: 12,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
       marginTop: 2,
     },
     closeBtn: {
-      width: 38,
-      height: 38,
+      width: 32,
+      height: 32,
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.text + '0C',
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -221,7 +217,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       borderRadius: radius('lg'),
       backgroundColor: colors.surface,
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.text + '0C',
       paddingHorizontal: spacing('3'),
       gap: spacing('2'),
     },
@@ -231,17 +227,17 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     searchInput: {
       flex: 1,
       fontFamily: typography.fonts.regular,
-      fontSize: 14,
+      fontSize: typography.sizes.md,
       color: colors.text,
       paddingVertical: 0,
     },
     listContent: {
       paddingHorizontal: layout.screenPadding,
-      paddingBottom: Platform.OS === 'ios' ? 24 : 32,
+      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
     },
     separator: {
       height: 1,
-      backgroundColor: colors.border,
+      backgroundColor: colors.text + '0C',
       marginLeft: 54,
     },
     row: {
@@ -257,7 +253,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       borderRadius: radius('md'),
       backgroundColor: colors.surface,
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.text + '0C',
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -267,9 +263,8 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     },
     code: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
-      letterSpacing: 0.5,
     },
     codeSelected: {
       color: colors.primary,
@@ -277,7 +272,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     name: {
       flex: 1,
       fontFamily: typography.fonts.regular,
-      fontSize: 14,
+      fontSize: typography.sizes.md,
       color: colors.text,
     },
     nameSelected: {
@@ -285,12 +280,12 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       color: colors.text,
     },
     emptyWrap: {
-      paddingVertical: 48,
+      paddingVertical: spacing('9'),
       alignItems: 'center',
     },
     emptyText: {
       fontFamily: typography.fonts.regular,
-      fontSize: 14,
+      fontSize: typography.sizes.sm,
       color: colors.textMuted,
     },
   });

@@ -114,55 +114,55 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
         bounces={false}
       >
         <View style={styles.hero}>
-          <Text style={[styles.heroLabel, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>
+          <Text style={[styles.heroLabel, { fontFamily: typography.fonts.semibold, color: '#00010080' }]}>
             Lifetime upgrade
           </Text>
-          <Text style={[styles.heroTitle, { fontFamily: typography.fonts.headingRegular, color: colors.text }]}>
+          <Text style={[styles.heroTitle, { fontFamily: typography.fonts.headingRegular, color: '#000100' }]}>
             The professional{'\n'}toolkit, unlocked.
           </Text>
-          <Text style={[styles.heroDesc, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+          <Text style={[styles.heroDesc, { fontFamily: typography.fonts.regular, color: '#00010090' }]}>
             One payment. Every feature.{'\n'}No subscriptions. No expiry.
           </Text>
-        </View>
 
-        <View style={styles.priceStrip}>
-          <View style={styles.priceStripInner}>
-            <View style={styles.priceLeft}>
+          <View style={styles.heroDivider} />
+
+          <View style={styles.heroPriceRow}>
+            <View style={styles.heroPriceLeft}>
               {lifetimeProduct ? (
                 <>
                   <View style={styles.priceRow}>
                     {lifetimeProduct.originalPrice && (
-                      <Text style={[styles.priceStrike, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                      <Text style={[styles.priceStrike, { fontFamily: typography.fonts.regular, color: '#00010060' }]}>
                         {lifetimeProduct.originalPrice}
                       </Text>
                     )}
-                    <Text style={[styles.priceValue, { fontFamily: typography.fonts.amountBold, color: colors.text }]}>
+                    <Text style={[styles.priceValue, { fontFamily: typography.fonts.amountBold, color: '#000100' }]}>
                       {lifetimeProduct.displayPrice}
                     </Text>
                   </View>
-                  <Text style={[styles.priceTag, { fontFamily: typography.fonts.medium, color: colors.textMuted }]}>
+                  <Text style={[styles.priceTag, { fontFamily: typography.fonts.medium, color: '#00010070' }]}>
                     One time, forever
                   </Text>
                 </>
               ) : isLoading ? (
-                <ActivityIndicator color={colors.primary} />
+                <ActivityIndicator color="#000100" />
               ) : (
-                <Text style={[styles.priceError, { fontFamily: typography.fonts.regular, color: colors.danger }]}>
+                <Text style={[styles.priceError, { fontFamily: typography.fonts.regular, color: '#000100' }]}>
                   Unavailable
                 </Text>
               )}
             </View>
 
-            <View style={styles.priceRight}>
-              <View style={styles.priceCheckRow}>
-                <Ionicons name="checkmark-circle" size={13} color={colors.success} />
-                <Text style={[styles.priceCheckText, { fontFamily: typography.fonts.medium, color: colors.success }]}>
+            <View style={styles.heroPriceRight}>
+              <View style={styles.heroCheckRow}>
+                <Ionicons name="checkmark-circle" size={13} color="#000100" />
+                <Text style={[styles.heroCheckText, { fontFamily: typography.fonts.medium, color: '#00010080' }]}>
                   All updates
                 </Text>
               </View>
-              <View style={styles.priceCheckRow}>
-                <Ionicons name="checkmark-circle" size={13} color={colors.success} />
-                <Text style={[styles.priceCheckText, { fontFamily: typography.fonts.medium, color: colors.success }]}>
+              <View style={styles.heroCheckRow}>
+                <Ionicons name="checkmark-circle" size={13} color="#000100" />
+                <Text style={[styles.heroCheckText, { fontFamily: typography.fonts.medium, color: '#00010080' }]}>
                   No limits
                 </Text>
               </View>
@@ -279,9 +279,11 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     bottomPad: { height: spacing('8') },
 
     hero: {
-      paddingTop: spacing('4'),
-      paddingBottom: spacing('6'),
-      gap: spacing('3'),
+      backgroundColor: colors.primary,
+      borderRadius: radius('2xl'),
+      padding: spacing('5'),
+      marginBottom: spacing('6'),
+      gap: spacing('4'),
     },
     heroLabel: {
       fontSize: typography.sizes.xs,
@@ -294,23 +296,31 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       fontSize: typography.sizes.sm,
       lineHeight: 20,
     },
-
-    priceStrip: {
-      backgroundColor: colors.primary + '0A',
-      borderRadius: radius('xl'),
-      borderWidth: 1,
-      borderColor: colors.primary + '25',
-      padding: spacing('4'),
-      marginBottom: spacing('7'),
+    heroDivider: {
+      height: 1,
+      backgroundColor: '#00010018',
     },
-    priceStripInner: {
+    heroPriceRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      alignItems: 'center',
+      alignItems: 'flex-end',
     },
-    priceLeft: {
+    heroPriceLeft: {
       gap: spacing('1'),
     },
+    heroPriceRight: {
+      gap: spacing('2'),
+      alignItems: 'flex-end',
+    },
+    heroCheckRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1.5'),
+    },
+    heroCheckText: {
+      fontSize: 11,
+    },
+
     priceRow: {
       flexDirection: 'row',
       alignItems: 'baseline',
@@ -319,31 +329,15 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     priceStrike: {
       fontSize: typography.sizes.md,
       textDecorationLine: 'line-through',
-      opacity: 0.5,
     },
     priceValue: {
       fontSize: 40,
     },
     priceTag: {
       fontSize: typography.sizes.xs,
-      opacity: 0.7,
     },
     priceError: {
       fontSize: typography.sizes.sm,
-      paddingVertical: spacing('2'),
-    },
-    priceRight: {
-      gap: spacing('2'),
-      alignItems: 'flex-end',
-    },
-    priceCheckRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1.5'),
-    },
-    priceCheckText: {
-      fontSize: 11,
-      opacity: 0.8,
     },
 
     featuresHeader: {

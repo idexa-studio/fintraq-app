@@ -31,10 +31,10 @@ export const IconPickerModal = React.memo(function IconPickerModal({
   onChange,
   groups,
   accentColor,
-  title = 'Choose Icon',
+  title = 'Choose icon',
 }: Props) {
   const theme = useTheme();
-  const { colors, onAccent } = theme;
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const accent = accentColor ?? colors.primary;
 
@@ -59,7 +59,7 @@ export const IconPickerModal = React.memo(function IconPickerModal({
           <View style={styles.header}>
             <Text style={styles.title}>{title}</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.8}>
-              <Ionicons name="close" size={18} color={colors.text} />
+              <Ionicons name="close" size={16} color={colors.text} />
             </TouchableOpacity>
           </View>
 
@@ -70,7 +70,7 @@ export const IconPickerModal = React.memo(function IconPickerModal({
           >
             {groups.map((group) => (
               <View key={group.label} style={styles.group}>
-                <Text style={styles.groupLabel}>{group.label.toUpperCase()}</Text>
+                <Text style={styles.groupLabel}>{group.label}</Text>
                 <View style={styles.iconGrid}>
                   {group.icons.map((icon) => {
                     const selected = value === icon;
@@ -89,7 +89,7 @@ export const IconPickerModal = React.memo(function IconPickerModal({
                       >
                         <Ionicons
                           name={resolveIcon(icon, 'grid-outline')}
-                          size={19}
+                          size={18}
                           color={selected ? accent : colors.textMuted}
                         />
                       </TouchableOpacity>
@@ -117,10 +117,10 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
     },
     sheet: {
       maxHeight: '80%',
-      borderTopLeftRadius: 28,
-      borderTopRightRadius: 28,
+      borderTopLeftRadius: radius('2xl'),
+      borderTopRightRadius: radius('2xl'),
       borderTopWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.text + '0C',
       overflow: 'hidden',
       backgroundColor: colors.background,
     },
@@ -128,37 +128,36 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       alignSelf: 'center',
       width: 42,
       height: 4,
-      borderRadius: 999,
-      marginTop: 10,
-      backgroundColor: colors.textMuted + '55',
+      borderRadius: radius('full'),
+      marginTop: spacing('2.5'),
+      backgroundColor: colors.textMuted + '30',
     },
     header: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
       paddingHorizontal: layout.screenPadding,
-      paddingTop: 14,
-      paddingBottom: 12,
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('3'),
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 24,
+      fontSize: 22,
       color: colors.text,
-      letterSpacing: -0.6,
     },
     closeBtn: {
-      width: 36,
-      height: 36,
-      borderRadius: 18,
+      width: 32,
+      height: 32,
+      borderRadius: radius('full'),
       backgroundColor: colors.surface,
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.text + '0C',
       justifyContent: 'center',
       alignItems: 'center',
     },
     scrollContent: {
       paddingHorizontal: layout.screenPadding,
-      paddingBottom: Platform.OS === 'ios' ? 36 : 24,
+      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
       gap: spacing('5'),
     },
     group: {
@@ -168,7 +167,6 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       fontFamily: typography.fonts.semibold,
       fontSize: 10,
       color: colors.textMuted,
-      letterSpacing: 1.5,
     },
     iconGrid: {
       flexDirection: 'row',
@@ -180,6 +178,8 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       height: 42,
       borderRadius: radius('lg'),
       backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.text + '0C',
       justifyContent: 'center',
       alignItems: 'center',
     },

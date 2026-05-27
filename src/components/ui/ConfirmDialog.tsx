@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import { ActivityIndicator, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 type ConfirmDialogProps = {
@@ -40,7 +40,6 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
       transparent
       animationType="fade"
       presentationStyle="overFullScreen"
-      statusBarTranslucent
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
@@ -50,21 +49,21 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
           <Text style={styles.title}>{title}</Text>
           {message ? <Text style={styles.message}>{message}</Text> : null}
 
-          <View style={styles.actionsRow}>
-            <TouchableOpacity style={styles.cancelButton} onPress={onClose} activeOpacity={0.9}>
-              <Text style={styles.cancelText}>{cancelLabel}</Text>
+          <View style={styles.actions}>
+            <TouchableOpacity style={styles.btnCancel} onPress={onClose} activeOpacity={0.7}>
+              <Text style={styles.btnCancelText}>{cancelLabel}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.confirmButton, destructive ? styles.confirmButtonDestructive : styles.confirmButtonNeutral, isLoading && { opacity: 0.7 }]}
+              style={[styles.btnConfirm, destructive && styles.btnDanger]}
               onPress={handleConfirm}
-              activeOpacity={0.9}
+              activeOpacity={0.7}
               disabled={isLoading}
             >
               {isLoading ? (
                 <ActivityIndicator color={colors.background} size="small" />
               ) : (
-                <Text style={styles.confirmText}>{confirmLabel}</Text>
+                <Text style={styles.btnConfirmText}>{confirmLabel}</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -74,72 +73,65 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   );
 });
 
-const createStyles = ({ colors, overlay, typography , layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: overlay.dim,
+      backgroundColor: 'rgba(0,0,0,0.45)',
       justifyContent: 'flex-end',
       paddingHorizontal: layout.screenPadding,
-      paddingBottom: 42,
+      paddingBottom: spacing('9'),
     },
     card: {
       alignSelf: 'stretch',
-      borderRadius: 22,
-      backgroundColor: Platform.OS === 'ios' ? colors.background + 'F2' : colors.background,
-      borderWidth: 1,
-      borderColor: colors.text + '18',
-      padding: 18,
+      backgroundColor: colors.background,
+      borderRadius: radius('2xl'),
+      padding: spacing('5'),
     },
     title: {
-      fontFamily: typography.fonts.headingRegular,
-      fontSize: 24,
+      fontFamily: typography.fonts.heading,
+      fontSize: 18,
       color: colors.text,
-      letterSpacing: -0.6,
+      marginBottom: spacing('2'),
     },
     message: {
-      marginTop: 6,
-      marginBottom: 16,
       fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      lineHeight: 18,
+      fontSize: typography.sizes.sm,
       color: colors.textMuted,
+      lineHeight: 20,
+      marginBottom: spacing('5'),
     },
-    actionsRow: {
+    actions: {
       flexDirection: 'row',
-      gap: 10,
+      gap: spacing('2.5'),
     },
-    cancelButton: {
+    btnCancel: {
       flex: 1,
-      height: 46,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: colors.primary + '22',
+      height: 44,
+      borderRadius: radius('md'),
       backgroundColor: colors.surface,
-      alignItems: 'center',
       justifyContent: 'center',
+      alignItems: 'center',
     },
-    cancelText: {
+    btnCancelText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 14,
+      fontSize: typography.sizes.sm,
       color: colors.text,
     },
-    confirmButton: {
+    btnConfirm: {
       flex: 1,
-      height: 46,
-      borderRadius: 12,
-      alignItems: 'center',
+      height: 44,
+      borderRadius: radius('md'),
+      backgroundColor: colors.text,
       justifyContent: 'center',
+      alignItems: 'center',
     },
-    confirmButtonDestructive: {
+    btnDanger: {
       backgroundColor: colors.danger,
     },
-    confirmButtonNeutral: {
-      backgroundColor: colors.primary,
-    },
-    confirmText: {
+    btnConfirmText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 14,
+      fontSize: typography.sizes.sm,
       color: colors.background,
     },
   });
