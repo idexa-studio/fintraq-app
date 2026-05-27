@@ -23,6 +23,7 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -30,59 +31,104 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-type RowProps = {
+const Divider = React.memo(function Divider({ theme }: { theme: ThemeContextType }) {
+  const { colors } = theme;
+  return <View style={[dividerStyles.base, { backgroundColor: colors.text + '0C' }]} />;
+});
+
+const dividerStyles = StyleSheet.create({
+  base: { height: 1, marginHorizontal: 16 },
+});
+
+type SwitchRowProps = {
   icon: IoniconName;
   label: string;
-  subtitle?: string;
+  subtitle: string;
+  value: boolean;
+  onToggle: () => void;
+};
+
+const SwitchRow = React.memo(function SwitchRow({
+  icon,
+  label,
+  subtitle,
+  value,
+  onToggle,
+  theme,
+}: SwitchRowProps & { theme: ThemeContextType }) {
+  const { colors, typography, spacing } = theme;
+  return (
+    <View style={[switchRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5') }]}>
+      <IconAvatar icon={icon} bg={colors.background} color={colors.text} size={32} iconSize={14} />
+      <View style={switchRowStyles.textBlock}>
+        <Text style={[switchRowStyles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+          {label}
+        </Text>
+        <Text style={[switchRowStyles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+          {subtitle}
+        </Text>
+      </View>
+      <Switch
+        value={value}
+        onValueChange={onToggle}
+        trackColor={{ false: colors.surface, true: colors.primary + '40' }}
+        thumbColor={value ? colors.primary : colors.textMuted}
+        ios_backgroundColor={colors.surface}
+      />
+    </View>
+  );
+});
+
+const switchRowStyles = StyleSheet.create({
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  textBlock: { flex: 1 },
+  label: { fontSize: 14 },
+  subtitle: { fontSize: 11, marginTop: 2, opacity: 0.65 },
+});
+
+type NavRowProps = {
+  icon: IoniconName;
+  label: string;
+  subtitle: string;
   value?: string;
   onPress: () => void;
   destructive?: boolean;
-  accentColor?: string;
-  isLast?: boolean;
+  iconColor?: string;
   theme: ThemeContextType;
 };
 
-const PreferenceRow = React.memo(function PreferenceRow({
+const NavRow = React.memo(function NavRow({
   icon,
   label,
   subtitle,
   value,
   onPress,
-  destructive,
-  accentColor,
-  isLast,
+  destructive = false,
+  iconColor: iconColorOverride,
   theme,
-}: RowProps) {
-  const { colors, spacing, typography } = theme;
-  const iconColor = accentColor ?? (destructive ? colors.danger : colors.text);
+}: NavRowProps) {
+  const { colors, typography, spacing } = theme;
+  const iconColor = iconColorOverride ?? (destructive ? colors.danger : colors.text);
   const labelColor = destructive ? colors.danger : colors.text;
 
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.7}
-      style={[
-        rowStyles.row,
-        { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5') },
-        !isLast && { borderBottomWidth: 1, borderBottomColor: colors.border },
-      ]}
+      activeOpacity={0.65}
+      style={[navRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5') }]}
     >
-      <IconAvatar icon={icon} bg={colors.background} color={iconColor} size={36} iconSize={18} style={{ marginRight: spacing('3') }} />
-
-      <View style={rowStyles.textBlock}>
-        <Text style={[rowStyles.label, { fontFamily: typography.fonts.semibold, color: labelColor }]}>
+      <IconAvatar icon={icon} bg={colors.background} color={iconColor} size={32} iconSize={14} />
+      <View style={navRowStyles.textBlock}>
+        <Text style={[navRowStyles.label, { fontFamily: typography.fonts.semibold, color: labelColor }]}>
           {label}
         </Text>
-        {subtitle ? (
-          <Text style={[rowStyles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
-            {subtitle}
-          </Text>
-        ) : null}
+        <Text style={[navRowStyles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+          {subtitle}
+        </Text>
       </View>
-
-      <View style={rowStyles.right}>
+      <View style={navRowStyles.right}>
         {value ? (
-          <Text style={[rowStyles.value, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>
+          <Text style={[navRowStyles.value, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>
             {value}
           </Text>
         ) : null}
@@ -92,14 +138,16 @@ const PreferenceRow = React.memo(function PreferenceRow({
   );
 });
 
-const rowStyles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center' },
+const navRowStyles = StyleSheet.create({
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   textBlock: { flex: 1 },
-  label: { fontSize: 15 },
-  subtitle: { fontSize: 12, marginTop: 2 },
+  label: { fontSize: 14 },
+  subtitle: { fontSize: 11, marginTop: 2, opacity: 0.65 },
   right: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  value: { fontSize: 11, letterSpacing: 0.8 },
+  value: { fontSize: 11 },
 });
+
+const HERO_TEXT = '#000100';
 
 const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: IoniconName }[] = [
   { label: 'Light', value: 'light', icon: 'sunny-outline' },
@@ -109,7 +157,7 @@ const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: 
 
 export const SettingsScreen = React.memo(function SettingsScreen() {
   const theme = useTheme();
-  const { colors, overlay } = theme;
+  const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { isPremium } = usePremium();
@@ -118,10 +166,22 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
   const [showThemeDialog, setShowThemeDialog] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
-  const [showNameModal, setShowNameModal] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showNameModal, setShowNameModal] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const [devTaps, setDevTaps] = useState(0);
+
+  const handleToggleReminders = useCallback(async () => {
+    const next = !profile.reminderEnabled;
+    if (next) {
+      const granted = await NotificationService.requestPermissions();
+      if (!granted) {
+        Alert.alert('Permission required', 'Enable notifications in device settings.');
+        return;
+      }
+    }
+    await updateProfile({ reminderEnabled: next });
+  }, [profile.reminderEnabled, updateProfile]);
 
   const openNameModal = useCallback(() => {
     setNameInput(profile.name || '');
@@ -134,18 +194,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     await updateProfile({ name: nameInput.trim() });
     setShowNameModal(false);
   }, [nameInput, updateProfile]);
-
-  const handleToggleReminders = useCallback(async () => {
-    const next = !profile.reminderEnabled;
-    if (next) {
-      const granted = await NotificationService.requestPermissions();
-      if (!granted) {
-        Alert.alert('Permission required', 'Enable notifications in device settings to use reminders.');
-        return;
-      }
-    }
-    await updateProfile({ reminderEnabled: next });
-  }, [profile.reminderEnabled, updateProfile]);
 
   const onTimeChange = useCallback(async (event: DateTimePickerEvent, date?: Date) => {
     setShowTimePicker(false);
@@ -214,69 +262,83 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.heroCard}>
+          <Text style={[styles.heroMonogram, { fontFamily: typography.fonts.heading, color: HERO_TEXT }]}>
+            {(profile.name || 'W').charAt(0).toUpperCase()}
+          </Text>
 
-        <View style={styles.profilePanel}>
-          <View style={styles.profileLeft}>
-            <IconAvatar icon="person" bg={colors.primary + '18'} color={colors.primary} size={48} iconSize={22} />
-            <View>
-              <Text style={styles.profileName} numberOfLines={1}>
-                {profile.name || 'No name set'}
+          <View style={styles.heroInfo}>
+            <Text style={[styles.heroName, { fontFamily: typography.fonts.headingRegular, color: HERO_TEXT }]}>
+              {profile.name || 'Welcome'}
+            </Text>
+            <View style={styles.heroMeta}>
+              <Text style={[styles.heroMetaText, { fontFamily: typography.fonts.regular, color: HERO_TEXT }]}>
+                {isPremium ? 'Pro member' : 'Free plan'}
               </Text>
-              <Text style={styles.profileSub}>
-                v{version} · {isPremium ? 'Pro' : 'Free'}
+              <View style={[styles.heroMetaDot, { backgroundColor: HERO_TEXT }]} />
+              <Text style={[styles.heroMetaText, { fontFamily: typography.fonts.regular, color: HERO_TEXT }]}>
+                v{version}
               </Text>
             </View>
           </View>
-          {isPremium && (
-            <View style={[styles.proBadge, { backgroundColor: colors.primary + '18' }]}>
-              <Ionicons name="sparkles" size={12} color={colors.primary} />
-              <Text style={[styles.proBadgeText, { color: colors.primary }]}>PRO</Text>
-            </View>
-          )}
         </View>
 
-        <Text style={styles.sectionLabel}>Subscription</Text>
-        <View style={[styles.card, isPremium && { borderWidth: 1.5, borderColor: colors.primary }]}>
-          <PreferenceRow
+        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          Plan
+        </Text>
+        <View style={styles.card}>
+          <NavRow
             theme={theme}
             icon="sparkles"
             label={isPremium ? 'Luno Pro — Lifetime' : 'Upgrade to Pro'}
-            subtitle={isPremium ? 'Full access to all features' : 'Unlock analytics, insights & more'}
-            value={isPremium ? 'ACTIVE' : undefined}
-            accentColor={isPremium ? colors.primary : undefined}
+            subtitle={isPremium ? 'You have permanent access to every feature' : 'Unlock analytics, insights, and more'}
+            value={isPremium ? 'Active' : undefined}
             onPress={() => router.push('/premium')}
-            isLast
           />
         </View>
 
-        <Text style={styles.sectionLabel}>Account</Text>
+        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          Preferences
+        </Text>
         <View style={styles.card}>
-          <PreferenceRow
-            theme={theme}
-            icon="person-outline"
-            label="Display name"
-            subtitle={profile.name || 'Tap to set your name'}
-            onPress={openNameModal}
-            isLast
-          />
-        </View>
-
-        <Text style={styles.sectionLabel}>Notifications</Text>
-        <View style={styles.card}>
-          <PreferenceRow
+          <SwitchRow
             theme={theme}
             icon="notifications-outline"
             label="Daily reminder"
-            value={profile.reminderEnabled ? 'ON' : 'OFF'}
-            onPress={handleToggleReminders}
+            subtitle="Get a nudge to log your daily transactions"
+            value={profile.reminderEnabled}
+            onToggle={handleToggleReminders}
           />
-          <PreferenceRow
+          {profile.reminderEnabled && (
+            <>
+              <Divider theme={theme} />
+              <NavRow
+                theme={theme}
+                icon="time-outline"
+                label="Reminder time"
+                subtitle="When you receive your daily notification"
+                value={profile.reminderTime}
+                onPress={() => setShowTimePicker(true)}
+              />
+            </>
+          )}
+          <Divider theme={theme} />
+          <NavRow
             theme={theme}
-            icon="time-outline"
-            label="Reminder time"
-            value={profile.reminderTime}
-            onPress={() => setShowTimePicker(true)}
-            isLast
+            icon="person-outline"
+            label="Display name"
+            subtitle="How you appear throughout the app"
+            value={profile.name || 'Not set'}
+            onPress={openNameModal}
+          />
+          <Divider theme={theme} />
+          <NavRow
+            theme={theme}
+            icon="contrast-outline"
+            label="Theme"
+            subtitle="Light, dark, or follow your system setting"
+            value={themeLabel}
+            onPress={() => setShowThemeDialog(true)}
           />
         </View>
 
@@ -290,53 +352,51 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         )}
 
-        <Text style={styles.sectionLabel}>Appearance</Text>
+        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          Data
+        </Text>
         <View style={styles.card}>
-          <PreferenceRow
-            theme={theme}
-            icon="contrast-outline"
-            label="Theme"
-            value={themeLabel.toUpperCase()}
-            onPress={() => setShowThemeDialog(true)}
-            isLast
-          />
-        </View>
-
-        <Text style={styles.sectionLabel}>Manage</Text>
-        <View style={styles.card}>
-          <PreferenceRow
+          <NavRow
             theme={theme}
             icon="grid-outline"
             label="Categories"
+            subtitle="Manage your income and expense groups"
             onPress={() => router.push('/categories')}
           />
-          <PreferenceRow
+          <Divider theme={theme} />
+          <NavRow
             theme={theme}
             icon="download-outline"
             label="Export CSV"
+            subtitle="Download transactions as a spreadsheet file"
             onPress={() => router.push('/export')}
-            isLast
           />
         </View>
 
-        <Text style={styles.sectionLabel}>Danger zone</Text>
+        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
+          Danger zone
+        </Text>
         <View style={styles.card}>
-          <PreferenceRow
+          <NavRow
             theme={theme}
             icon="trash-bin-outline"
             label="Factory reset"
+            subtitle="Permanently erase all data and start fresh"
             onPress={() => setShowResetDialog(true)}
             destructive
-            isLast
           />
         </View>
 
-        <View style={styles.footer}>
-          <TouchableOpacity onPress={handleFooterTap} activeOpacity={1} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}>
-            <Text style={styles.footerBrand}>LUNO / CORE</Text>
-          </TouchableOpacity>
-          <Text style={styles.footerCopy}>All data is encrypted and stored locally.</Text>
-        </View>
+        <TouchableOpacity onPress={handleFooterTap} activeOpacity={1} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}>
+          <View style={styles.footer}>
+            <Text style={[styles.footerBrand, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+              LUNO / CORE
+            </Text>
+            <Text style={[styles.footerCopy, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+              Data encrypted and stored locally.
+            </Text>
+          </View>
+        </TouchableOpacity>
       </ScrollView>
 
       <OptionsDialog
@@ -368,18 +428,22 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           style={{ flex: 1 }}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <View style={[styles.modalOverlay, { backgroundColor: overlay.dark }]}>
+          <View style={[styles.modalOverlay, { backgroundColor: theme.overlay.dark }]}>
             <TouchableOpacity
               style={StyleSheet.absoluteFillObject}
               activeOpacity={1}
               onPress={closeNameModal}
             />
             <View style={[styles.modalCard, { backgroundColor: colors.background, borderColor: colors.border }]}>
-              <Text style={styles.modalTitle}>Display name</Text>
-              <Text style={styles.modalSub}>How you{"'"}re greeted on the dashboard</Text>
+              <Text style={[styles.modalTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>
+                Display name
+              </Text>
+              <Text style={[styles.modalSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                How you are greeted on the dashboard
+              </Text>
 
               <TextInput
-                style={[styles.modalInput, { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border }]}
+                style={[styles.modalInput, { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border, fontFamily: typography.fonts.regular }]}
                 value={nameInput}
                 onChangeText={setNameInput}
                 placeholder="Your name"
@@ -395,14 +459,18 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
                   onPress={closeNameModal}
                   activeOpacity={0.8}
                 >
-                  <Text style={[styles.modalBtnText, { color: colors.text }]}>Cancel</Text>
+                  <Text style={[styles.modalBtnText, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                    Cancel
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.modalBtn, { backgroundColor: colors.text }]}
                   onPress={saveName}
                   activeOpacity={0.8}
                 >
-                  <Text style={[styles.modalBtnText, { color: colors.background }]}>Save</Text>
+                  <Text style={[styles.modalBtnText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+                    Save
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -424,91 +492,73 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
       paddingTop: spacing('2'),
       paddingBottom: spacing('9'),
     },
-    profilePanel: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('4'),
+
+    heroCard: {
+      backgroundColor: colors.primary,
+      borderRadius: radius('2xl'),
+      padding: spacing('6'),
       marginBottom: spacing('7'),
-    },
-    profileLeft: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('3'),
+      gap: spacing('5'),
+    },
+    heroMonogram: {
+      fontSize: 72,
+      lineHeight: 76,
+      opacity: 0.35,
+    },
+    heroInfo: {
       flex: 1,
+      gap: spacing('1.5'),
     },
-    profileName: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 16,
-      color: colors.text,
-      letterSpacing: -0.2,
+    heroName: {
+      fontSize: 22,
     },
-    profileSub: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 12,
-      color: colors.textMuted,
-      marginTop: 2,
-    },
-    proBadge: {
+    heroMeta: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('1'),
-      paddingHorizontal: spacing('2'),
-      paddingVertical: spacing('1'),
-      borderRadius: radius('sm'),
+      gap: spacing('2'),
     },
-    proBadgeText: {
-      fontFamily: typography.fonts.bold,
-      fontSize: 9,
-      letterSpacing: 1.5,
+    heroMetaText: {
+      fontSize: 12,
+      opacity: 0.7,
     },
+    heroMetaDot: {
+      width: 3,
+      height: 3,
+      borderRadius: radius('full'),
+      opacity: 0.4,
+    },
+
     sectionLabel: {
-      fontFamily: typography.fonts.semibold,
       fontSize: 10,
-      color: colors.textMuted,
-      letterSpacing: 1.5,
       marginBottom: spacing('2.5'),
       paddingLeft: spacing('1'),
+      opacity: 0.7,
     },
+
     card: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
       overflow: 'hidden',
       marginBottom: spacing('6'),
     },
+
     footer: {
       alignItems: 'center',
       gap: spacing('1.5'),
       marginTop: spacing('3'),
+      paddingVertical: spacing('4'),
     },
     footerBrand: {
-      fontFamily: typography.fonts.bold,
       fontSize: 10,
-      color: colors.text,
-      letterSpacing: 3,
-      opacity: 0.4,
+      opacity: 0.3,
     },
     footerCopy: {
-      fontFamily: typography.fonts.regular,
       fontSize: 10,
-      color: colors.textMuted,
-      letterSpacing: 0.3,
-      opacity: 0.7,
+      opacity: 0.4,
     },
-    devResetBtn: {
-      marginTop: spacing('3'),
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('1.5'),
-      borderRadius: radius('sm'),
-      borderWidth: 1,
-    },
-    devResetText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 10,
-      letterSpacing: 0.5,
-    },
+
     modalOverlay: {
       flex: 1,
       justifyContent: 'center',
@@ -520,16 +570,11 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
       padding: spacing('6'),
     },
     modalTitle: {
-      fontFamily: typography.fonts.heading,
       fontSize: 26,
-      color: colors.text,
-      letterSpacing: -0.8,
       marginBottom: spacing('1'),
     },
     modalSub: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      color: colors.textMuted,
+      fontSize: typography.sizes.sm,
       marginBottom: spacing('5'),
     },
     modalInput: {
@@ -537,8 +582,7 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
       borderRadius: radius('md'),
       borderWidth: 1,
       paddingHorizontal: spacing('4'),
-      fontSize: 16,
-      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.lg,
       marginBottom: spacing('5'),
     },
     modalActions: {
@@ -555,7 +599,6 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
       alignItems: 'center',
     },
     modalBtnText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 14,
+      fontSize: typography.sizes.md,
     },
   });
