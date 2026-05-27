@@ -115,7 +115,7 @@ export default React.memo(function AccountFormScreen() {
 
       <KeyboardAvoidingView
         style={styles.body}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView
           style={styles.scroll}
@@ -308,20 +308,20 @@ export default React.memo(function AccountFormScreen() {
 
           </View>
         </ScrollView>
-      </KeyboardAvoidingView>
 
-      <View style={styles.footer}>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
-          onPress={handleSave}
-          disabled={!isValid}
-        >
-          <Text style={styles.primaryBtnText}>
-            {isEditing ? 'Save account' : 'Create account'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.footer}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
+            onPress={handleSave}
+            disabled={!isValid}
+          >
+            <Text style={styles.primaryBtnText}>
+              {isEditing ? 'Save account' : 'Create account'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
 
       <CurrencyPickerModal
         visible={showCurrencyPicker}
@@ -359,7 +359,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     scroll: { flex: 1 },
     content: {
       paddingTop: spacing('4'),
-      paddingBottom: 120,
+      paddingBottom: spacing('4'),
     },
     formBody: {
       gap: spacing('5'),
@@ -467,10 +467,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
 
     // ── Footer ──
     footer: {
-      position: 'absolute',
-      bottom: 34,
-      left: layout.screenPadding,
-      right: layout.screenPadding,
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('8'),
     },
     primaryBtn: {
       height: 52,

@@ -97,7 +97,7 @@ export default React.memo(function CategoryFormScreen() {
 
       <KeyboardAvoidingView
         style={styles.body}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView
           style={styles.scroll}
@@ -217,20 +217,20 @@ export default React.memo(function CategoryFormScreen() {
 
           </View>
         </ScrollView>
-      </KeyboardAvoidingView>
 
-      <View style={styles.footer}>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
-          onPress={handleSave}
-          disabled={!isValid}
-        >
-          <Text style={styles.primaryBtnText}>
-            {isEditing ? 'Save category' : 'Create category'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.footer}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
+            onPress={handleSave}
+            disabled={!isValid}
+          >
+            <Text style={styles.primaryBtnText}>
+              {isEditing ? 'Save category' : 'Create category'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
 
       <IconPickerModal
         visible={showIconPicker}
@@ -269,7 +269,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     content: {
       paddingTop: spacing('4'),
-      paddingBottom: 120,
+      paddingBottom: spacing('4'),
     },
     formBody: {
       gap: spacing('5'),
@@ -379,10 +379,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       borderRadius: radius('full'),
     },
     footer: {
-      position: 'absolute',
-      bottom: 34,
-      left: layout.screenPadding,
-      right: layout.screenPadding,
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('8'),
     },
     primaryBtn: {
       height: 52,

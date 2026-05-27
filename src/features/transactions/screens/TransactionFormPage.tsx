@@ -5,6 +5,7 @@ import React from 'react';
 import {
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -244,6 +245,10 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
       <BlurBackground />
       <Header title={isEditMode ? 'Edit Entry' : 'New Entry'} showBack />
 
+      <KeyboardAvoidingView
+        style={styles.body}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -359,6 +364,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
           )}
         </TouchableOpacity>
       </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -369,6 +375,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flex: 1,
       backgroundColor: colors.background,
     },
+    body: {
+      flex: 1,
+    },
     loadingWrap: {
       flex: 1,
       justifyContent: 'center',
@@ -376,7 +385,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.background,
     },
     content: {
-      paddingBottom: 120,
+      paddingBottom: spacing('4'),
     },
     formBody: {
       gap: spacing('4'),
@@ -432,10 +441,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       textAlignVertical: 'top',
     },
     footer: {
-      position: 'absolute',
-      bottom: 34,
-      left: layout.screenPadding,
-      right: layout.screenPadding,
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('8'),
     },
     saveBtn: {
       height: 52,

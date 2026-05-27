@@ -1,3 +1,4 @@
+import { usePremium } from '@/src/providers/PremiumProvider';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -16,16 +17,17 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { data: insights, isLoading } = useDashboardInsights(currency);
+  const { isPremium } = usePremium();
 
   const hasInsights = insights && insights.length > 0;
 
   return (
     <View style={styles.container}>
       <SectionHeader title="PRO INSIGHTS" />
-
       <PremiumGuard
         label="Upgrade to Pro for insights"
         size="large"
+        containerStyle={{ marginHorizontal: isPremium ? 0 : theme.layout.screenPadding }}
       >
         {isLoading ? (
           <View style={styles.placeholderCard}>
@@ -58,7 +60,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
   );
 });
 
-const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ typography, spacing, radius, layout }: ThemeContextType) => StyleSheet.create({
   container: {
     marginVertical: spacing('1'),
     marginBottom: spacing('5'),
@@ -66,7 +68,7 @@ const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType
   premiumContainer: {
     borderRadius: radius('xl'),
     overflow: 'hidden',
-    marginHorizontal: 0,
+    marginHorizontal: 0
   },
   scrollContent: {
     paddingRight: 0,
