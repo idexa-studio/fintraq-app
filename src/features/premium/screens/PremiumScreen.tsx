@@ -27,11 +27,10 @@ type BentoItem = {
 };
 
 const BENTO_ROWS: BentoItem[][] = [
-  [{ feature: FEATURES[0], span: 'full' }],
-  [{ feature: FEATURES[1], span: 'half' }, { feature: FEATURES[3], span: 'half' }],
-  [{ feature: FEATURES[4], span: 'full' }],
-  [{ feature: FEATURES[5], span: 'half' }, { feature: FEATURES[2], span: 'half' }],
-  [{ feature: FEATURES[7], span: 'full' }],
+  [{ feature: FEATURES[0], span: 'half' }, { feature: FEATURES[1], span: 'half' }],
+  [{ feature: FEATURES[2], span: 'half' }, { feature: FEATURES[3], span: 'half' }],
+  [{ feature: FEATURES[4], span: 'half' }, { feature: FEATURES[5], span: 'half' }],
+  [{ feature: FEATURES[6], span: 'half' }, { feature: FEATURES[7], span: 'half' }],
 ];
 
 export const PremiumScreen = React.memo(function PremiumScreen() {

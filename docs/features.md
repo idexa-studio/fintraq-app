@@ -33,14 +33,14 @@ Last updated: 2026-05-27
 
 | Feature | Gate |
 |---|---|
-| Dashboard insights (burn, runway, deltas) | `PremiumGuard` label="Upgrade to Pro for insights" |
-| Analytics screen | `PremiumGuard` wraps entire screen |
-| Area, bar, donut, DOW charts | Inside AnalyticsScreen |
-| Period flow chart | `PremiumGuard` label="Period Flow" |
-| Global search | Route-level gate (`app/search.tsx`) |
-| CSV export screen | `PremiumGuard` label="CSV Export" |
-| Save to folder / Share | Inside ExportScreen |
-| Weekly & monthly reports | Hooks present, screens removed in current build |
+| Spending trends (charts by day, month, category) | `PremiumGuard` — Analytics screen |
+| Burn velocity tracking | `PremiumGuard` — Dashboard insights |
+| Runway forecasts (days remaining) | `PremiumGuard` — Dashboard insights |
+| Performance deltas (current vs previous) | `PremiumGuard` — Dashboard insights |
+| Global search (transactions, accounts, categories) | Route-level gate (`app/search.tsx`) |
+| CSV export (spreadsheet with filters) | `PremiumGuard` label="CSV Export" |
+| Weekly reports (auto summaries + breakdowns) | `PremiumGuard` (hooks present, screen pending) |
+| Monthly reports (full statement view) | `PremiumGuard` (hooks present, screen pending) |
 
 ## Pricing
 

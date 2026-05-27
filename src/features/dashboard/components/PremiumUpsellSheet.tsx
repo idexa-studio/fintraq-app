@@ -47,7 +47,7 @@ export const PremiumUpsellSheet = React.memo(function PremiumUpsellSheet({
         <View style={styles.sheet}>
           <Text style={styles.title}>Luno Pro</Text>
           <Text style={styles.headline}>
-            One-time purchase. Lifetime access. Every feature included.
+            One-time purchase. Unlock analytics, search, reports, and CSV export.
           </Text>
 
           {canDismiss ? (
@@ -59,15 +59,11 @@ export const PremiumUpsellSheet = React.memo(function PremiumUpsellSheet({
           <View style={styles.list}>
             <View style={styles.row}>
               <View style={[styles.dot, { backgroundColor: theme.colors.primary }]} />
-              <Text style={styles.rowText}>Analytics & burn tracking</Text>
+              <Text style={styles.rowText}>Spending trends & burn velocity</Text>
             </View>
             <View style={styles.row}>
               <View style={[styles.dot, { backgroundColor: theme.colors.primary }]} />
-              <Text style={styles.rowText}>Weekly & monthly reports</Text>
-            </View>
-            <View style={styles.row}>
-              <View style={[styles.dot, { backgroundColor: theme.colors.primary }]} />
-              <Text style={styles.rowText}>CSV export for spreadsheets</Text>
+              <Text style={styles.rowText}>Runway forecasts & performance deltas</Text>
             </View>
             <View style={styles.row}>
               <View style={[styles.dot, { backgroundColor: theme.colors.primary }]} />
@@ -75,7 +71,7 @@ export const PremiumUpsellSheet = React.memo(function PremiumUpsellSheet({
             </View>
             <View style={styles.row}>
               <View style={[styles.dot, { backgroundColor: theme.colors.primary }]} />
-              <Text style={styles.rowText}>Advanced multi-select filters</Text>
+              <Text style={styles.rowText}>CSV export & weekly/monthly reports</Text>
             </View>
           </View>
 
