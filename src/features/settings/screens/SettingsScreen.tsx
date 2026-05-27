@@ -19,6 +19,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
+  Linking,
   Modal,
   Platform,
   ScrollView,
@@ -227,6 +228,16 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     }
   }, [devTaps, router]);
 
+  const openPrivacy = useCallback(() => {
+    const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+    Linking.openURL(`https://tryluno.app/in-app/privacy?platform=${platform}`);
+  }, []);
+
+  const openTerms = useCallback(() => {
+    const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+    Linking.openURL(`https://tryluno.app/in-app/terms?platform=${platform}`);
+  }, []);
+
   const themeLabel = useMemo(() => {
     const match = THEME_OPTIONS.find(o => o.value === (profile.theme || 'system'));
     return match?.label ?? 'Follow system';
@@ -384,6 +395,27 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             subtitle="Permanently erase all data and start fresh"
             onPress={() => setShowResetDialog(true)}
             destructive
+          />
+        </View>
+
+        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          Legal
+        </Text>
+        <View style={styles.card}>
+          <NavRow
+            theme={theme}
+            icon="shield-checkmark-outline"
+            label="Privacy policy"
+            subtitle="How we handle your data"
+            onPress={openPrivacy}
+          />
+          <Divider theme={theme} />
+          <NavRow
+            theme={theme}
+            icon="document-text-outline"
+            label="Terms of service"
+            subtitle="Rules and guidelines for using Luno"
+            onPress={openTerms}
           />
         </View>
 

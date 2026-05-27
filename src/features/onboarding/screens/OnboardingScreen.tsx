@@ -142,6 +142,9 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       { name: 'Insurance',     icon: 'shield-checkmark-outline', color: toDbColor('#4B5563'), type: 'DR' },
       { name: 'Fees',          icon: 'receipt-outline',       color: toDbColor('#94A3B8'), type: 'DR' },
       { name: 'Other',         icon: 'ellipsis-horizontal-outline', color: toDbColor('#cbd5e1'), type: 'DR' },
+
+      // ── Transfers ────────────────────────────────────────────────────
+      { name: 'Transfer',      icon: 'swap-horizontal-outline', color: toDbColor('#60A5FA'), type: 'TR' },
     ];
 
     for (const category of defaults) {

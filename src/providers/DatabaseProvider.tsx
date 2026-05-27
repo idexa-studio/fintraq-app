@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { db } from '../db/client';
 import migrations from '../../drizzle/migrations';
+import { runSeeds } from '../db/seeds/runner';
 
 export function DatabaseProvider({ children }: { children: React.ReactNode }) {
   const { success, error } = useMigrations(db, migrations);
+
+  useEffect(() => {
+    if (success) {
+      runSeeds();
+    }
+  }, [success]);
 
   if (error) {
     return (

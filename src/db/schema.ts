@@ -63,3 +63,9 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
     references: [categories.id],
   }),
 }));
+
+export const seederState = sqliteTable('seeder_state', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull().unique(),
+  executedAt: text('executed_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
+});
