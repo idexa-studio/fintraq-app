@@ -384,20 +384,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
-          Danger zone
-        </Text>
-        <View style={styles.card}>
-          <NavRow
-            theme={theme}
-            icon="trash-bin-outline"
-            label="Factory reset"
-            subtitle="Permanently erase all data and start fresh"
-            onPress={() => setShowResetDialog(true)}
-            destructive
-          />
-        </View>
-
         <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
           Legal
         </Text>
@@ -416,6 +402,20 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             label="Terms of service"
             subtitle="Rules and guidelines for using Luno"
             onPress={openTerms}
+          />
+        </View>
+
+        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
+          Danger zone
+        </Text>
+        <View style={styles.card}>
+          <NavRow
+            theme={theme}
+            icon="trash-bin-outline"
+            label="Factory reset"
+            subtitle="Permanently erase all data and start fresh"
+            onPress={() => setShowResetDialog(true)}
+            destructive
           />
         </View>
 
