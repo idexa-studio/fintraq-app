@@ -40,10 +40,10 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
   visible, onClose, filters, onApply, onReset, accounts, categories, resultCount,
 }: AdvancedFilterSheetProps) {
   const theme = useTheme();
-  const { colors, typography, layout } = theme;
+  const { colors, typography, overlay } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const [local, setLocal]       = useState<AdvancedFilters>(filters);
+  const [local, setLocal]         = useState<AdvancedFilters>(filters);
   const [showStart, setShowStart] = useState(false);
   const [showEnd, setShowEnd]     = useState(false);
   const [minAmt, setMinAmt]       = useState('');
@@ -109,7 +109,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={styles.overlay}>
+      <View style={[styles.overlay, { backgroundColor: overlay.dim }]}>
         <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
 
         <View style={styles.sheet}>
@@ -122,7 +122,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                 Filters
               </Text>
               {activeCount > 0 && (
-                <View style={styles.badge}>
+                <View style={[styles.badge, { backgroundColor: colors.primary }]}>
                   <Text style={[styles.badgeText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
                     {activeCount}
                   </Text>
@@ -131,20 +131,16 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
             </View>
             <View style={styles.headerRight}>
               {activeCount > 0 && (
-                <TouchableOpacity
-                  onPress={handleReset}
-                  activeOpacity={0.7}
-                  style={[styles.resetChip, { backgroundColor: colors.danger + '12' }]}
-                >
+                <TouchableOpacity onPress={handleReset} activeOpacity={0.7}>
                   <Text style={[styles.resetText, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
-                    Reset all
+                    Reset
                   </Text>
                 </TouchableOpacity>
               )}
               <TouchableOpacity
                 onPress={onClose}
                 activeOpacity={0.6}
-                style={[styles.closeBtn, { backgroundColor: colors.text + '08' }]}
+                style={[styles.closeBtn, { backgroundColor: colors.text + '0A' }]}
               >
                 <Ionicons name="close" size={16} color={colors.textMuted} />
               </TouchableOpacity>
@@ -157,30 +153,22 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
             keyboardShouldPersistTaps="handled"
           >
 
-            {/* ── Type ── */}
-            <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-              Transaction type
+            {/* ── TYPE: horizontal pills ── */}
+            <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              TYPE
             </Text>
-            <View style={styles.typeGrid}>
+            <View style={styles.typeRow}>
               {TYPE_OPTS.map(opt => {
                 const sel = local.types?.includes(opt.key) || false;
                 const c   = colors[opt.colorKey];
                 return (
                   <TouchableOpacity
                     key={opt.key}
-                    style={[styles.typeCard, { backgroundColor: sel ? c + '12' : colors.background }]}
+                    style={[styles.typePill, { backgroundColor: sel ? c : colors.card, borderColor: sel ? c : colors.border }]}
                     onPress={() => toggleType(opt.key)}
-                    activeOpacity={0.75}
+                    activeOpacity={0.8}
                   >
-                    {sel && (
-                      <View style={[styles.typeCheckDot, { backgroundColor: c }]}>
-                        <Ionicons name="checkmark" size={9} color={colors.background} />
-                      </View>
-                    )}
-                    <View style={[styles.typeIconRing, { backgroundColor: sel ? c + '1E' : colors.text + '08' }]}>
-                      <Ionicons name={opt.icon} size={18} color={sel ? c : colors.textMuted} />
-                    </View>
-                    <Text style={[styles.typeCardLabel, { fontFamily: typography.fonts.semibold, color: sel ? c : colors.textMuted }]}>
+                    <Text style={[styles.typePillLabel, { fontFamily: typography.fonts.semibold, color: sel ? colors.background : colors.textMuted }]}>
                       {opt.label}
                     </Text>
                   </TouchableOpacity>
@@ -188,144 +176,132 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
               })}
             </View>
 
-            {/* ── Date range ── */}
-            <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-              Date range
+            {/* ── DATE RANGE: group card with rows ── */}
+            <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              DATE RANGE
             </Text>
-            {local.dateRange ? (
-              <View style={[styles.dateCard, { backgroundColor: colors.background }]}>
-                <TouchableOpacity style={styles.dateSide} onPress={() => setShowStart(true)} activeOpacity={0.7}>
-                  <Text style={[styles.dateSideLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>From</Text>
-                  <Text style={[styles.dateSideValue, { fontFamily: typography.fonts.bold, color: colors.text }]}>
-                    {fmt(local.dateRange.startDate)}
+            <View style={[styles.group, { backgroundColor: colors.card }]}>
+              {local.dateRange ? (
+                <>
+                  <TouchableOpacity style={styles.groupRow} onPress={() => setShowStart(true)} activeOpacity={0.7}>
+                    <Ionicons name="calendar-outline" size={16} color={colors.primary} />
+                    <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                      From
+                    </Text>
+                    <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                      {fmt(local.dateRange.startDate)}
+                    </Text>
+                  </TouchableOpacity>
+                  <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
+                  <TouchableOpacity style={styles.groupRow} onPress={() => setShowEnd(true)} activeOpacity={0.7}>
+                    <Ionicons name="calendar-outline" size={16} color={colors.primary} />
+                    <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                      To
+                    </Text>
+                    <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                      {fmt(local.dateRange.endDate)}
+                    </Text>
+                    <TouchableOpacity onPress={clearDateRange} activeOpacity={0.6} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                      <Ionicons name="close-circle" size={18} color={colors.textMuted} />
+                    </TouchableOpacity>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)} activeOpacity={0.7}>
+                  <Ionicons name="calendar-outline" size={16} color={colors.primary} />
+                  <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                    Set date range
                   </Text>
+                  <Ionicons name="chevron-forward" size={14} color={colors.textMuted} style={styles.groupChevron} />
                 </TouchableOpacity>
-                <View style={[styles.dateArrow, { backgroundColor: colors.text + '0C' }]}>
-                  <Ionicons name="arrow-forward" size={11} color={colors.textMuted} />
-                </View>
-                <TouchableOpacity style={styles.dateSide} onPress={() => setShowEnd(true)} activeOpacity={0.7}>
-                  <Text style={[styles.dateSideLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>To</Text>
-                  <Text style={[styles.dateSideValue, { fontFamily: typography.fonts.bold, color: colors.text }]}>
-                    {fmt(local.dateRange.endDate)}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={clearDateRange} activeOpacity={0.6} style={styles.dateClearBtn}>
-                  <Ionicons name="close-circle" size={20} color={colors.textMuted + 'BB'} />
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <TouchableOpacity
-                style={[styles.dateEmpty, { backgroundColor: colors.background }]}
-                onPress={() => setShowStart(true)}
-                activeOpacity={0.7}
-              >
-                <View style={[styles.dateEmptyIcon, { backgroundColor: colors.primary + '14' }]}>
-                  <Ionicons name="calendar-outline" size={18} color={colors.primary} />
-                </View>
-                <View style={styles.dateEmptyMeta}>
-                  <Text style={[styles.dateEmptyTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-                    Select date range
-                  </Text>
-                  <Text style={[styles.dateEmptyHint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                    Tap to set start and end dates
-                  </Text>
-                </View>
-                <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
-              </TouchableOpacity>
-            )}
+              )}
+            </View>
 
-            {/* ── Amount ── */}
-            <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-              Amount range
+            {/* ── AMOUNT: group card with rows ── */}
+            <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              AMOUNT
             </Text>
-            <View style={[styles.amountCard, { backgroundColor: colors.background }]}>
-              <View style={styles.amountSide}>
-                <Text style={[styles.amountFieldLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                  Minimum
+            <View style={[styles.group, { backgroundColor: colors.card }]}>
+              <View style={styles.groupRow}>
+                <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                  Min
                 </Text>
                 <TextInput
-                  style={[styles.amountInput, { fontFamily: typography.fonts.bold, color: colors.text }]}
+                  style={[styles.amountInput, { fontFamily: typography.fonts.semibold, color: colors.text }]}
                   value={minAmt}
                   onChangeText={setMinAmt}
                   keyboardType="decimal-pad"
                   placeholder="0.00"
-                  placeholderTextColor={colors.textMuted + '40'}
+                  placeholderTextColor={colors.textMuted + '50'}
                   returnKeyType="done"
+                  textAlign="right"
                 />
               </View>
-              <View style={[styles.amountDivider, { backgroundColor: colors.text + '0C' }]} />
-              <View style={styles.amountSide}>
-                <Text style={[styles.amountFieldLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                  Maximum
+              <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
+              <View style={styles.groupRow}>
+                <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                  Max
                 </Text>
                 <TextInput
-                  style={[styles.amountInput, { fontFamily: typography.fonts.bold, color: colors.text }]}
+                  style={[styles.amountInput, { fontFamily: typography.fonts.semibold, color: colors.text }]}
                   value={maxAmt}
                   onChangeText={setMaxAmt}
                   keyboardType="decimal-pad"
                   placeholder="Any"
-                  placeholderTextColor={colors.textMuted + '40'}
+                  placeholderTextColor={colors.textMuted + '50'}
                   returnKeyType="done"
+                  textAlign="right"
                 />
               </View>
             </View>
 
-            {/* ── Accounts ── */}
+            {/* ── ACCOUNTS: pill chips ── */}
             {accounts.length > 0 && (
               <>
-                <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                  Accounts
+                <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+                  ACCOUNTS
                 </Text>
-                <View style={[styles.listCard, { backgroundColor: colors.background }]}>
-                  {accounts.map((a, i) => {
+                <View style={styles.pillGrid}>
+                  {accounts.map(a => {
                     const sel = local.accountIds?.includes(a.id) || false;
                     const ac  = colorNumberToHex(a.color);
                     return (
-                      <View key={a.id}>
-                        <TouchableOpacity style={styles.listRow} onPress={() => toggleAccount(a.id)} activeOpacity={0.7}>
-                          <View style={[styles.accountAvatar, { backgroundColor: ac + '18' }]}>
-                            <Ionicons name={resolveIcon(a.icon, 'wallet-outline')} size={16} color={ac} />
-                          </View>
-                          <Text style={[styles.listLabel, { fontFamily: typography.fonts.regular, color: colors.text }]}>
-                            {a.name}
-                          </Text>
-                          <View style={[
-                            styles.checkbox,
-                            { borderColor: colors.text + '20' },
-                            sel && { backgroundColor: colors.text, borderColor: colors.text },
-                          ]}>
-                            {sel && <Ionicons name="checkmark" size={11} color={colors.background} />}
-                          </View>
-                        </TouchableOpacity>
-                        {i < accounts.length - 1 && (
-                          <View style={[styles.rowSep, { backgroundColor: colors.text + '08' }]} />
-                        )}
-                      </View>
+                      <TouchableOpacity
+                        key={a.id}
+                        style={[styles.pill, { backgroundColor: sel ? ac : colors.card, borderColor: sel ? ac : colors.border }]}
+                        onPress={() => toggleAccount(a.id)}
+                        activeOpacity={0.8}
+                      >
+                        <Ionicons name={resolveIcon(a.icon, 'wallet-outline')} size={14} color={sel ? colors.background : ac} />
+                        <Text style={[styles.pillLabel, { color: sel ? colors.background : colors.text }]}>
+                          {a.name}
+                        </Text>
+                      </TouchableOpacity>
                     );
                   })}
                 </View>
               </>
             )}
 
-            {/* ── Categories ── */}
+            {/* ── CATEGORIES: pill chips ── */}
             {categories.length > 0 && (
               <>
-                <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                  Categories
+                <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+                  CATEGORIES
                 </Text>
-                <View style={styles.chipGrid}>
+                <View style={styles.pillGrid}>
                   {categories.map(c => {
                     const sel = local.categoryIds?.includes(c.id) || false;
                     const cc  = colorNumberToHex(c.color);
                     return (
                       <TouchableOpacity
                         key={c.id}
-                        style={[styles.chip, { backgroundColor: sel ? cc + '18' : colors.background }]}
+                        style={[styles.pill, { backgroundColor: sel ? cc : colors.card, borderColor: sel ? cc : colors.border }]}
                         onPress={() => toggleCategory(c.id)}
-                        activeOpacity={0.75}
+                        activeOpacity={0.8}
                       >
-                        <Ionicons name={resolveIcon(c.icon, 'pricetag-outline')} size={13} color={sel ? cc : colors.textMuted} />
-                        <Text style={[styles.chipText, { fontFamily: typography.fonts.medium, color: sel ? cc : colors.textMuted }]}>
+                        <Ionicons name={resolveIcon(c.icon, 'pricetag-outline')} size={14} color={sel ? colors.background : cc} />
+                        <Text style={[styles.pillLabel, { color: sel ? colors.background : colors.text }]}>
                           {c.name}
                         </Text>
                       </TouchableOpacity>
@@ -335,55 +311,57 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
               </>
             )}
 
-            {/* ── Sort ── */}
-            <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-              Sort
+            {/* ── SORT: group card, inline text toggles ── */}
+            <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              SORT
             </Text>
-            <View style={[styles.listCard, { backgroundColor: colors.background }]}>
-              <View style={styles.sortRow}>
-                <Text style={[styles.sortLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>Sort by</Text>
-                <View style={[styles.segmented, { backgroundColor: colors.text + '08' }]}>
-                  {(['date', 'amount'] as const).map(s => (
-                    <TouchableOpacity
-                      key={s}
-                      style={[styles.segment, local.sortBy === s && { backgroundColor: colors.text }]}
-                      onPress={() => setLocal(p => ({ ...p, sortBy: s }))}
-                      activeOpacity={0.75}
-                    >
-                      <Text style={[
-                        styles.segmentText,
-                        { fontFamily: typography.fonts.semibold, color: local.sortBy === s ? colors.background : colors.textMuted },
-                      ]}>
-                        {s === 'date' ? 'Date' : 'Amount'}
-                      </Text>
-                    </TouchableOpacity>
+            <View style={[styles.group, { backgroundColor: colors.card }]}>
+              <View style={styles.groupRow}>
+                <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                  Sort by
+                </Text>
+                <View style={styles.inlineToggles}>
+                  {(['date', 'amount'] as const).map((s, i) => (
+                    <React.Fragment key={s}>
+                      {i > 0 && <Text style={[styles.toggleSep, { color: colors.textMuted }]}>·</Text>}
+                      <TouchableOpacity onPress={() => setLocal(p => ({ ...p, sortBy: s }))} activeOpacity={0.7}>
+                        <Text style={[
+                          styles.toggleOption,
+                          { fontFamily: local.sortBy === s ? typography.fonts.semibold : typography.fonts.regular },
+                          { color: local.sortBy === s ? colors.text : colors.textMuted },
+                        ]}>
+                          {s === 'date' ? 'Date' : 'Amount'}
+                        </Text>
+                      </TouchableOpacity>
+                    </React.Fragment>
                   ))}
                 </View>
               </View>
-              <View style={[styles.rowSep, { backgroundColor: colors.text + '08' }]} />
-              <View style={styles.sortRow}>
-                <Text style={[styles.sortLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>Order</Text>
-                <View style={[styles.segmented, { backgroundColor: colors.text + '08' }]}>
-                  {(['desc', 'asc'] as const).map(o => (
-                    <TouchableOpacity
-                      key={o}
-                      style={[styles.segment, local.sortOrder === o && { backgroundColor: colors.text }]}
-                      onPress={() => setLocal(p => ({ ...p, sortOrder: o }))}
-                      activeOpacity={0.75}
-                    >
-                      <Text style={[
-                        styles.segmentText,
-                        { fontFamily: typography.fonts.semibold, color: local.sortOrder === o ? colors.background : colors.textMuted },
-                      ]}>
-                        {o === 'desc' ? 'Newest' : 'Oldest'}
-                      </Text>
-                    </TouchableOpacity>
+              <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
+              <View style={styles.groupRow}>
+                <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                  Order
+                </Text>
+                <View style={styles.inlineToggles}>
+                  {(['desc', 'asc'] as const).map((o, i) => (
+                    <React.Fragment key={o}>
+                      {i > 0 && <Text style={[styles.toggleSep, { color: colors.textMuted }]}>·</Text>}
+                      <TouchableOpacity onPress={() => setLocal(p => ({ ...p, sortOrder: o }))} activeOpacity={0.7}>
+                        <Text style={[
+                          styles.toggleOption,
+                          { fontFamily: local.sortOrder === o ? typography.fonts.semibold : typography.fonts.regular },
+                          { color: local.sortOrder === o ? colors.text : colors.textMuted },
+                        ]}>
+                          {o === 'desc' ? 'Newest' : 'Oldest'}
+                        </Text>
+                      </TouchableOpacity>
+                    </React.Fragment>
                   ))}
                 </View>
               </View>
             </View>
 
-            <View style={{ height: 120 }} />
+            <View style={{ height: 100 }} />
           </ScrollView>
 
           {/* ── Footer ── */}
@@ -393,8 +371,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
               onPress={handleApply}
               activeOpacity={0.85}
             >
-              <Ionicons name="checkmark-circle-outline" size={18} color={colors.background} />
-              <Text style={[styles.applyBtnText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+              <Text style={[styles.applyLabel, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
                 Show {resultCount} result{resultCount !== 1 ? 's' : ''}
               </Text>
             </TouchableOpacity>
@@ -424,11 +401,10 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.52)',
       justifyContent: 'flex-end',
     },
     sheet: {
@@ -438,7 +414,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       maxHeight: '90%',
     },
     handle: {
-      width: 40,
+      width: 36,
       height: 4,
       borderRadius: radius('full'),
       backgroundColor: colors.text + '18',
@@ -453,30 +429,24 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       justifyContent: 'space-between',
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('4'),
-      paddingBottom: spacing('3'),
+      paddingBottom: spacing('2'),
     },
     headerLeft:  { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
-    headerRight: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
+    headerRight: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
     title:       { fontSize: typography.sizes.xxl },
     badge: {
-      minWidth: 22,
-      height: 22,
+      minWidth: 20,
+      height: 20,
       borderRadius: radius('full'),
-      backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'center',
       paddingHorizontal: spacing('1'),
     },
-    badgeText: { fontSize: 11 },
-    resetChip: {
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('1.5'),
-      borderRadius: radius('md'),
-    },
-    resetText: { fontSize: typography.sizes.xs },
+    badgeText: { fontSize: 10 },
+    resetText: { fontSize: typography.sizes.sm },
     closeBtn: {
-      width: 32,
-      height: 32,
+      width: 30,
+      height: 30,
       borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
@@ -485,187 +455,90 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     // ── Scroll
     scroll: {
       paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('1'),
+      paddingTop: spacing('3'),
     },
-    sectionLabel: {
+    sectionTitle: {
       fontSize: 10,
       letterSpacing: 1.5,
-      textTransform: 'uppercase',
+      opacity: 0.55,
+      marginBottom: spacing('2'),
       marginTop: spacing('5'),
-      marginBottom: spacing('2.5'),
       paddingLeft: spacing('0.5'),
-      opacity: 0.6,
     },
 
-    // ── Type cards
-    typeGrid: { flexDirection: 'row', gap: spacing('2') },
-    typeCard: {
+    // ── TYPE: horizontal pills
+    typeRow:  { flexDirection: 'row', gap: spacing('2') },
+    typePill: {
       flex: 1,
-      paddingVertical: spacing('4'),
-      borderRadius: radius('xl'),
-      alignItems: 'center',
-      gap: spacing('2'),
-      position: 'relative',
-      ...shadow('xs'),
-    },
-    typeCheckDot: {
-      position: 'absolute',
-      top: 8,
-      right: 8,
-      width: 16,
-      height: 16,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    typeIconRing: {
-      width: 40,
-      height: 40,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    typeCardLabel: { fontSize: typography.sizes.xs },
-
-    // ── Date range
-    dateCard: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderRadius: radius('xl'),
-      paddingVertical: spacing('4'),
-      paddingHorizontal: spacing('4'),
-      gap: spacing('2'),
-      ...shadow('xs'),
-    },
-    dateSide:      { flex: 1, gap: spacing('1') },
-    dateSideLabel: { fontSize: 10, opacity: 0.7 },
-    dateSideValue: { fontSize: typography.sizes.sm },
-    dateArrow: {
-      width: 26,
-      height: 26,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    dateClearBtn: {
-      width: 32,
-      height: 32,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    dateEmpty: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderRadius: radius('xl'),
-      padding: spacing('4'),
-      gap: spacing('3'),
-      ...shadow('xs'),
-    },
-    dateEmptyIcon: {
-      width: 44,
-      height: 44,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    dateEmptyMeta:  { flex: 1, gap: spacing('0.5') },
-    dateEmptyTitle: { fontSize: typography.sizes.sm },
-    dateEmptyHint:  { fontSize: typography.sizes.xs },
-
-    // ── Amount
-    amountCard: {
-      flexDirection: 'row',
-      borderRadius: radius('xl'),
-      overflow: 'hidden',
-      ...shadow('xs'),
-    },
-    amountSide:       { flex: 1, padding: spacing('4'), gap: spacing('1') },
-    amountFieldLabel: { fontSize: 10, opacity: 0.7 },
-    amountInput:      { fontSize: 22, padding: 0 },
-    amountDivider:    { width: 1, marginVertical: spacing('4') },
-
-    // ── List card (Accounts / Sort)
-    listCard: {
-      borderRadius: radius('xl'),
-      overflow: 'hidden',
-      ...shadow('xs'),
-    },
-    listRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3'),
-      gap: spacing('3'),
-    },
-    accountAvatar: {
-      width: 36,
       height: 36,
       borderRadius: radius('full'),
+      borderWidth: 1,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    listLabel: { flex: 1, fontSize: typography.sizes.sm },
-    checkbox: {
-      width: 22,
-      height: 22,
-      borderRadius: radius('sm'),
-      borderWidth: 1.5,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    rowSep: { height: 1, marginHorizontal: spacing('4') },
+    typePillLabel: { fontSize: 13 },
 
-    // ── Category chips
-    chipGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
-    chip: {
+    // ── Group card (Date / Amount / Accounts / Sort)
+    group: {
+      borderRadius: radius('xl'),
+      overflow: 'hidden',
+    },
+    groupRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: spacing('3'),
-      height: 34,
-      borderRadius: radius('lg'),
-      gap: spacing('1.5'),
-      ...shadow('xs'),
-    },
-    chipText: { fontSize: typography.sizes.xs },
-
-    // ── Sort
-    sortRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
       paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3'),
+      height: 52,
+      gap: spacing('3'),
     },
-    sortLabel: { fontSize: typography.sizes.sm },
-    segmented: {
+    groupRowPrompt: {
+      height: 52,
+    },
+    groupRowLabel: { fontSize: typography.sizes.sm },
+    groupRowValue: { flex: 1, fontSize: typography.sizes.sm, textAlign: 'right' },
+    groupChevron:  { marginLeft: 'auto' },
+    groupSep:      { height: 1, marginHorizontal: spacing('4') },
+
+    // ── Amount inputs
+    amountInput: {
+      flex: 1,
+      fontSize: typography.sizes.md,
+      padding: 0,
+      textAlign: 'right',
+    },
+
+    // ── Pill chips (accounts + categories)
+    pillGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
+    pill: {
       flexDirection: 'row',
-      borderRadius: radius('md'),
-      padding: 3,
-      gap: 2,
-    },
-    segment: {
-      paddingHorizontal: spacing('3'),
-      height: 28,
-      borderRadius: radius('sm'),
       alignItems: 'center',
-      justifyContent: 'center',
+      gap: spacing('2'),
+      paddingHorizontal: spacing('3'),
+      height: 36,
+      borderRadius: radius('full'),
+      borderWidth: 1,
     },
-    segmentText: { fontSize: typography.sizes.xs },
+    pillLabel: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 13,
+    },
+
+    // ── Sort inline toggles
+    inlineToggles: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
+    toggleSep:     { fontSize: typography.sizes.xs, opacity: 0.4 },
+    toggleOption:  { fontSize: typography.sizes.sm },
 
     // ── Footer
     footer: {
       paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('4'),
-      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
+      paddingTop: spacing('3'),
+      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('5'),
       borderTopWidth: 1,
     },
     applyBtn: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
       height: 52,
       borderRadius: radius('xl'),
-      gap: spacing('2'),
+      alignItems: 'center',
+      justifyContent: 'center',
     },
-    applyBtnText: { fontSize: typography.sizes.md },
+    applyLabel: { fontSize: typography.sizes.md },
   });
