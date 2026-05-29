@@ -15,7 +15,7 @@ Last updated: 2026-05-27
 | Create / edit / delete transactions | |
 | Account-to-account transfers (TR type) | |
 | View transactions list | |
-| Advanced filters (multi-select, date, amount) | Available to all users |
+| Advanced filters (multi-select, date, amount) | Available to all |
 | View / create / edit / delete accounts | Unlimited — no account count restriction |
 | View / create / edit / delete categories | CR, DR, TR types |
 | Transfer (TR) type categories | |
@@ -33,14 +33,15 @@ Last updated: 2026-05-27
 
 | Feature | Gate |
 |---|---|
-| Spending trends (charts by day, month, category) | `PremiumGuard` — Analytics screen |
-| Burn velocity tracking | `PremiumGuard` — Dashboard insights |
-| Runway forecasts (days remaining) | `PremiumGuard` — Dashboard insights |
-| Performance deltas (current vs previous) | `PremiumGuard` — Dashboard insights |
+| Dashboard insights (spending spikes, saving alerts, weekly trends) | `PremiumGuard` |
+| Analytics — 30/90/12 month time ranges (7D is free) | Pill lock icon → premium page |
+| Analytics — Period flow chart | `PremiumGuard` |
+| Analytics — Category breakdown donut | `PremiumGuard` |
+| Analytics — Account split bars | `PremiumGuard` |
+| Analytics — Spending by weekday heatmap | `PremiumGuard` |
+| Analytics — Behavioral insights (burn, runway, ratio, active days) | `PremiumGuard` |
 | Global search (transactions, accounts, categories) | Route-level gate (`app/search.tsx`) |
-| CSV export (spreadsheet with filters) | `PremiumGuard` label="CSV Export" |
-| Weekly reports (auto summaries + breakdowns) | `PremiumGuard` (hooks present, screen pending) |
-| Monthly reports (full statement view) | `PremiumGuard` (hooks present, screen pending) |
+| CSV export (spreadsheet with filters, save/share) | `PremiumGuard` |
 
 ## Pricing
 

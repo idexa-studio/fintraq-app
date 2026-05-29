@@ -3,7 +3,7 @@ import { accounts, categories, payments } from '../../../db/schema';
 import * as Sharing from 'expo-sharing';
 import { File, Paths } from 'expo-file-system';
 import { StorageAccessFramework } from 'expo-file-system/legacy';
-import { and, count, desc, eq, gte, lte } from 'drizzle-orm';
+import { and, count, desc, eq, gte, lte, or, sql } from 'drizzle-orm';
 import { Platform, Alert } from 'react-native';
 
 export interface ExportDateRange {
@@ -15,14 +15,14 @@ export interface CsvExportOptions {
   dateRange?: ExportDateRange;
   accountId?: number;
   categoryId?: number;
-  type?: 'CR' | 'DR';
+  type?: 'CR' | 'DR' | 'TR';
 }
 
 interface TransactionExportRow {
   id: number;
   date: string;
   time: string;
-  type: 'Income' | 'Expense';
+  type: 'Income' | 'Expense' | 'Transfer';
   amount: string;
   currency: string;
   account: string;
@@ -89,7 +89,12 @@ export class CsvExportService {
     }
 
     if (options.accountId !== undefined) {
-      conditions.push(eq(payments.accountId, options.accountId));
+      conditions.push(
+        or(
+          eq(payments.accountId, options.accountId),
+          sql`${payments.toAccountId} = ${options.accountId}`,
+        ),
+      );
     }
 
     if (options.categoryId !== undefined) {
@@ -139,7 +144,7 @@ export class CsvExportService {
         id: row.id,
         date,
         time,
-        type: row.type === 'CR' ? 'Income' : 'Expense',
+        type: row.type === 'CR' ? 'Income' : row.type === 'DR' ? 'Expense' : 'Transfer',
         amount: row.amount.toFixed(2),
         currency: row.account.currency,
         account: row.account.name,

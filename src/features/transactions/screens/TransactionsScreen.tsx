@@ -358,7 +358,7 @@ export function TransactionsScreen() {
 
       if (tx.type === 'CR') {
         map[currency].income += tx.amount;
-      } else {
+      } else if (tx.type === 'DR') {
         map[currency].expense += tx.amount;
       }
     });
@@ -435,7 +435,7 @@ export function TransactionsScreen() {
       const dayTotal = data.reduce<DayTotals>(
         (acc, tx) => {
           if (tx.type === 'CR') acc.in += tx.amount;
-          else acc.out += tx.amount;
+          else if (tx.type === 'DR') acc.out += tx.amount;
           return acc;
         },
         { in: 0, out: 0 },

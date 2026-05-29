@@ -17,23 +17,28 @@ export const ALL_SKUS = [SKU_LIFETIME];
 export const FEATURES: ProFeature[] = [
   {
     icon: 'bar-chart-outline',
-    title: 'Spending trends',
-    description: 'Visual charts showing exactly where your money goes — daily, monthly, and by category.',
+    title: 'Dashboard insights',
+    description: 'Real-time spending alerts, saving trends, and weekly summaries right on your home screen.',
   },
   {
-    icon: 'trending-up-outline',
-    title: 'Burn velocity',
-    description: 'See how fast you\'re spending. Spot anomalies before they drain your balance.',
-  },
-  {
-    icon: 'infinite',
-    title: 'Runway forecasts',
-    description: 'Know exactly how many days your capital will last at your current spending rate.',
+    icon: 'analytics-outline',
+    title: 'Extended analytics',
+    description: '30-day, 90-day, and 12-month charts. 7-day view is always free.',
   },
   {
     icon: 'git-compare',
-    title: 'Performance deltas',
-    description: 'Compare income and expenses against previous periods. Track real growth over time.',
+    title: 'Period flow',
+    description: 'Side-by-side income vs expense bars to see how your money moves over time.',
+  },
+  {
+    icon: 'pie-chart-outline',
+    title: 'Category breakdown',
+    description: 'Donut chart of your top spending categories with exact amounts and percentages.',
+  },
+  {
+    icon: 'infinite',
+    title: 'Behavioral insights',
+    description: 'Daily burn rate, financial runway in days, in/out ratio, and active day count.',
   },
   {
     icon: 'search-outline',
@@ -41,18 +46,13 @@ export const FEATURES: ProFeature[] = [
     description: 'Find any transaction, account, or category instantly across your entire history.',
   },
   {
+    icon: 'stats-chart-outline',
+    title: 'Weekday patterns',
+    description: 'Heatmap showing which days of the week you spend the most.',
+  },
+  {
     icon: 'download-outline',
     title: 'CSV export',
     description: 'Export filtered transactions as a spreadsheet. Save to device or share to any app.',
-  },
-  {
-    icon: 'newspaper-outline',
-    title: 'Weekly reports',
-    description: 'Auto-generated summaries of your weekly activity with category breakdowns and comparisons.',
-  },
-  {
-    icon: 'calendar-outline',
-    title: 'Monthly reports',
-    description: 'Detailed monthly financial statements. Income, expenses, and net change in one view.',
   },
 ];
