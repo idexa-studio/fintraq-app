@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BlurBackground } from '../../../components/ui/BlurBackground';
+import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
 import { KPICard } from '../../../components/ui/KPICard';
@@ -469,7 +469,7 @@ export function TransactionsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground />
+      <PageBackground />
 
       <Header
         title="Transactions"

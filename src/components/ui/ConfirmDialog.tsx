@@ -69,18 +69,20 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.45)',
+      backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
       padding: layout.screenPadding,
       paddingBottom: spacing('9'),
     },
     card: {
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
       borderRadius: radius('2xl'),
+      borderWidth: 0.5,
+      borderColor: colors.text + '0C',
       overflow: 'hidden',
     },
     body: {

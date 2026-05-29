@@ -15,7 +15,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BlurBackground } from '../../../components/ui/BlurBackground';
+import { PageBackground } from '../../../components/ui/PageBackground';
 import { Header } from '../../../components/ui/Header';
 import { useSettings } from '../../../providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
@@ -242,7 +242,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground />
+      <PageBackground />
       <Header title={isEditMode ? 'Edit Entry' : 'New Entry'} showBack />
 
       <KeyboardAvoidingView

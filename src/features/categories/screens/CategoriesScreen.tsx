@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BlurBackground } from '../../../components/ui/BlurBackground';
+import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
 import { OptionsDialog } from '../../../components/ui/OptionsDialog';
@@ -152,7 +152,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground />
+      <PageBackground />
       <Header title="Categories" showBack />
 
       {isLoading ? (

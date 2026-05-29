@@ -38,7 +38,7 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
   }, [insight]);
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.surface + '90', borderColor: colors.border }]}>
+    <View style={[styles.card, { backgroundColor: colors.surface }]}>
       <View style={styles.header}>
         <IconAvatar icon={resolveIcon(insight.icon, 'analytics-outline')} bg={status.bg} color={status.text} size={28} iconSize={14} />
         <Text style={[styles.title, { color: colors.textMuted }]}>{insight.title.toUpperCase()}</Text>

@@ -97,18 +97,20 @@ export const PremiumUpsellSheet = React.memo(function PremiumUpsellSheet({
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.45)',
+      backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
       padding: layout.screenPadding,
       paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
     },
     sheet: {
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
       borderRadius: radius('2xl'),
+      borderWidth: 0.5,
+      borderColor: colors.text + '0C',
       padding: spacing('5'),
     },
     title: {

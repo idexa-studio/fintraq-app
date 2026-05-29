@@ -81,25 +81,26 @@ export const AlertModal = React.memo(function AlertModal({
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType, screenWidth: number) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeContextType, screenWidth: number) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.45)',
+      backgroundColor: overlay.dark,
       justifyContent: 'center',
       alignItems: 'center',
       padding: spacing('6'),
     },
     card: {
       width: Math.min(screenWidth - spacing('12'), 320),
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
       borderRadius: radius('2xl'),
+      borderWidth: 0.5,
+      borderColor: colors.text + '0C',
       overflow: 'hidden',
       alignItems: 'center',
     },
     body: {
       padding: spacing('5'),
-      paddingBottom: spacing('3'),
       alignItems: 'center',
     },
     iconBox: {

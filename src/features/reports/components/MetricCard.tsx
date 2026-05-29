@@ -70,7 +70,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
   container: {
     padding: spacing('4'),
     borderRadius: radius('xl'),
-    backgroundColor: colors.surface + '80',
+    backgroundColor: colors.surface,
     flex: 1,
     minHeight: 100,
     justifyContent: 'center',

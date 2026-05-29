@@ -5,7 +5,7 @@ import React, { useCallback } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BlurBackground } from '../../../components/ui/BlurBackground';
+import { PageBackground } from '../../../components/ui/PageBackground';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
@@ -163,7 +163,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground />
+      <PageBackground />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 

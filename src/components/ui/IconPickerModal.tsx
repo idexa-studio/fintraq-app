@@ -116,7 +116,7 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       borderTopRightRadius: radius('2xl'),
       borderTopWidth: 1,
       borderColor: colors.text + '0C',
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
     },
     handle: {
       alignSelf: 'center',

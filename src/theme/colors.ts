@@ -34,45 +34,45 @@ export type ThemePalette = {
 };
 
 export const DARK_THEME: ThemePalette = {
-  background: '#000100',
-  card: 'rgba(255, 255, 255, 0.02)',
-  surface: 'rgba(255, 255, 255, 0.05)',
+  background: '#0D0D0F',
+  card: '#18181B',
+  surface: '#252528',
 
   primary: '#B8D641',
-  primaryLight: '#cae560',
-  primaryDark: '#a0c119',
-  secondary: '#f9fff3',
+  primaryLight: '#C5E055',
+  primaryDark: '#9CB82D',
+  secondary: '#F4F7E8',
 
-  text: '#fbfff3',
-  textMuted: '#b2bb8b',
+  text: '#F0F0EB',
+  textMuted: '#979994',
 
   border: 'transparent',
 
-  success: '#0E9F6E',
-  danger: '#B42318',
-  warning: '#F59E0B',
-  info: '#60A5FA',
+  success: '#2DCF8B',
+  danger: '#EF4444',
+  warning: '#EAB308',
+  info: '#5B9EF5',
 };
 
 export const LIGHT_THEME: ThemePalette = {
-  background: '#F6FFF9',
-  card: 'rgba(0, 0, 0, 0.02)',
-  surface: 'rgba(0, 0, 0, 0.05)',
+  background: '#FCFCF9',
+  card: '#F4F4F0',
+  surface: '#EBEBE6',
 
-  primary: '#a6c13a',
-  primaryLight: '#b9d253',
-  primaryDark: '#8caa14',
-  secondary: '#000100',
+  primary: '#9CB82D',
+  primaryLight: '#B2D043',
+  primaryDark: '#849925',
+  secondary: '#1A1B18',
 
-  text: '#000100',
-  textMuted: '#737a5f',
+  text: '#1B1B18',
+  textMuted: '#6B6B65',
 
   border: 'transparent',
 
-  success: '#0E9F6E',
-  danger: '#B42318',
-  warning: '#D97706',
-  info: '#2563EB',
+  success: '#1EA371',
+  danger: '#DC2626',
+  warning: '#CA8A04',
+  info: '#3B82F6',
 };
 
 export type ThemeColors = ThemePalette;

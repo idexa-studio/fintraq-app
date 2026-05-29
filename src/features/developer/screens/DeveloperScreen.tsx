@@ -13,7 +13,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BlurBackground } from '@/src/components/ui/BlurBackground';
+import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
@@ -85,7 +85,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
   if (!isAuthenticated) {
     return (
       <SafeAreaView style={styles.container}>
-        <BlurBackground />
+        <PageBackground />
 
         <Header title="Developer" showBack />
 
@@ -126,7 +126,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground />
+      <PageBackground />
 
       <Header title="Developer" showBack />
 

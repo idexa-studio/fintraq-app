@@ -6,11 +6,11 @@ import {
   LAYOUT,
   OVERLAY,
   radius,
-  shadow,
-  spacing,
-  ShadowToken,
-  SpacingToken,
   RadiusToken,
+  shadow,
+  ShadowToken,
+  spacing,
+  SpacingToken,
 } from '../theme/tokens';
 import { TYPOGRAPHY } from '../theme/typography';
 import { useSettings } from './SettingsProvider';
@@ -19,8 +19,8 @@ export type ThemeContextType = {
   /** Theme-dependent palette (switches with light/dark mode) */
   colors: ThemeColors;
   isDark: boolean;
-  /** Fixed dark overlay used behind modals/sheets */
-  overlay: typeof OVERLAY;
+  /** Theme-aware overlay used behind modals/sheets */
+  overlay: { dim: string; dark: string };
   /** Always-dark colour for icons/checkmarks on user-chosen bright swatches */
   onAccent: string;
   /** Typography scale — font families, sizes, weights */
@@ -40,7 +40,7 @@ export type ThemeContextType = {
 const defaultContext: ThemeContextType = {
   colors: DARK_THEME,
   isDark: true,
-  overlay: OVERLAY,
+  overlay: OVERLAY.dark,
   onAccent: PICKER_CONTRAST_COLOR,
   typography: TYPOGRAPHY,
   sizes: COMPONENT_SIZES,
@@ -64,10 +64,12 @@ export const ThemeProvider = React.memo(function ThemeProvider({ children }: { c
 
   const colors = useMemo(() => isDark ? DARK_THEME : LIGHT_THEME, [isDark]);
 
+  const overlay = useMemo(() => isDark ? OVERLAY.dark : OVERLAY.light, [isDark]);
+
   const contextValue = useMemo<ThemeContextType>(() => ({
     colors,
     isDark,
-    overlay: OVERLAY,
+    overlay,
     onAccent: PICKER_CONTRAST_COLOR,
     typography: TYPOGRAPHY,
     sizes: COMPONENT_SIZES,
@@ -75,7 +77,7 @@ export const ThemeProvider = React.memo(function ThemeProvider({ children }: { c
     spacing,
     radius,
     shadow,
-  }), [colors, isDark]);
+  }), [colors, isDark, overlay]);
 
   return (
     <ThemeContext.Provider value={contextValue}>

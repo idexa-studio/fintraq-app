@@ -50,7 +50,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
            </View>
           </ScrollView>
         ) : (
-          <View style={[styles.emptyCard, { backgroundColor: colors.surface + '50', borderColor: colors.border }]}>
+          <View style={[styles.emptyCard, { backgroundColor: colors.surface }]}>
             <Ionicons name="analytics-outline" size={24} color={colors.textMuted} />
             <Text style={[styles.emptyText, { color: colors.textMuted }]}>No insights available yet. Keep tracking to unlock trends.</Text>
           </View>

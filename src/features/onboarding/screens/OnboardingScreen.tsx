@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BlurBackground } from '@/src/components/ui/BlurBackground';
+import { PageBackground } from '@/src/components/ui/PageBackground';
 import { Button } from '@/src/components/ui/Button';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { getDeviceCurrencyCode } from '@/src/constants/currency';
@@ -210,7 +210,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground androidOverlayOpacity="76" />
+      <PageBackground />
 
       <FormProvider {...methods}>
         <KeyboardAvoidingView style={styles.keyboardWrap} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>

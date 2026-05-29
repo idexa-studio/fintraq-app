@@ -136,7 +136,7 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       borderTopWidth: 1,
       borderColor: colors.text + '0C',
       overflow: 'hidden',
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
     },
     handle: {
       alignSelf: 'center',

@@ -1,4 +1,4 @@
-import { BlurBackground } from '@/src/components/ui/BlurBackground';
+import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
@@ -78,7 +78,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground />
+      <PageBackground />
 
       <Header title="Accounts" showBack />
 

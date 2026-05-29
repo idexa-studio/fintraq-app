@@ -251,8 +251,14 @@ export const LETTER_SPACING = {
 // Used for modal backdrops — never hardcode rgba in components
 // ============================================
 export const OVERLAY = {
-  dim: 'rgba(0,0,0,0.52)',
-  dark: 'rgba(0,0,0,0.65)',
+  light: {
+    dim: 'rgba(0,0,0,0.52)',
+    dark: 'rgba(0,0,0,0.65)',
+  },
+  dark: {
+    dim: 'rgba(0,0,0,0.78)',
+    dark: 'rgba(0,0,0,0.88)',
+  },
 } as const;
 
 // ============================================

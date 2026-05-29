@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
-import { FrostLayer } from './FrostLayer';
 
 type CardSize = 'sm' | 'md' | 'lg';
 type CardVariant = 'default' | 'filled' | 'outlined';
@@ -33,7 +32,7 @@ export const Card = React.memo(function Card({
         return { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.border };
       case 'default':
       default:
-        return { backgroundColor: 'transparent' };
+        return { backgroundColor: colors.surface };
     }
   }, [variant, colors.surface, colors.border]);
 
@@ -49,12 +48,7 @@ export const Card = React.memo(function Card({
         style,
       ]}
     >
-      {variant === 'default' && (
-        <FrostLayer intensity={25} borderRadius={sizeConfig.borderRadius} />
-      )}
-      <View style={styles.content}>
-        {children}
-      </View>
+      {children}
     </View>
   );
 });
@@ -62,10 +56,5 @@ export const Card = React.memo(function Card({
 const createStyles = ({ }: ThemeContextType) => StyleSheet.create({
   card: {
     overflow: 'hidden',
-    position: 'relative',
-  },
-  content: {
-    position: 'relative',
-    zIndex: 1,
   },
 });

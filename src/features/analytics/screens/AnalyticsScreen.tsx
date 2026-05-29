@@ -1,4 +1,4 @@
-import { BlurBackground } from '@/src/components/ui/BlurBackground';
+import { PageBackground } from '@/src/components/ui/PageBackground';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
@@ -190,7 +190,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground />
+      <PageBackground />
       <Header title="Analytics" showBack />
 
       {isLoading ? (

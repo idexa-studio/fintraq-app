@@ -93,18 +93,20 @@ export const OptionsDialog = React.memo(function OptionsDialog({
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.45)',
+      backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
       padding: spacing('4'),
       paddingBottom: spacing('9'),
     },
     card: {
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
       borderRadius: radius('2xl'),
+      borderWidth: 0.5,
+      borderColor: colors.text + '0C',
       overflow: 'hidden',
     },
     head: {
@@ -117,7 +119,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       color: colors.text,
     },
     subtitle: {
-      fontFamily: typography.fonts.regular,
+      fontFamily: typography.fonts.medium,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       marginTop: spacing('1'),
@@ -134,7 +136,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     optLast: {},
     optLabel: {
       flex: 1,
-      fontFamily: typography.fonts.regular,
+      fontFamily: typography.fonts.medium,
       fontSize: typography.sizes.md,
       color: colors.text,
     },
@@ -142,11 +144,11 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       height: 52,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
     },
     cancelText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       fontSize: typography.sizes.md,
-      color: colors.text,
+      color: colors.textMuted,
     },
   });

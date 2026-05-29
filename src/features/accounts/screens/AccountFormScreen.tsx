@@ -13,7 +13,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BlurBackground } from '@/src/components/ui/BlurBackground';
+import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ColorPickerModal } from '@/src/components/ui/ColorPickerModal';
 import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
 import { Header } from '@/src/components/ui/Header';
@@ -110,7 +110,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground />
+      <PageBackground />
       <Header title={isEditing ? 'Edit Account' : 'New Account'} showBack />
 
       <KeyboardAvoidingView

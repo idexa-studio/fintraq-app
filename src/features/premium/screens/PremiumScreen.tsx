@@ -1,4 +1,4 @@
-import { BlurBackground } from '@/src/components/ui/BlurBackground';
+import { PageBackground } from '@/src/components/ui/PageBackground';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { Header } from '@/src/components/ui/Header';
 import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
@@ -67,7 +67,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
   if (isPremium && !isProcessing) {
     return (
       <View style={styles.container}>
-        <BlurBackground />
+        <PageBackground />
 
         <SafeAreaView style={styles.successWrapper}>
           <View style={styles.successContent}>
@@ -103,7 +103,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground />
+      <PageBackground />
 
       <Header title="Luno Pro" showBack />
 
