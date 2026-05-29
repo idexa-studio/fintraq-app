@@ -238,6 +238,10 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     Linking.openURL(`https://tryluno.app/in-app/terms?platform=${platform}`);
   }, []);
 
+  const openExport = useCallback(() => {
+    router.push(isPremium ? '/export' : '/premium');
+  }, [isPremium, router]);
+
   const themeLabel = useMemo(() => {
     const match = THEME_OPTIONS.find(o => o.value === (profile.theme || 'system'));
     return match?.label ?? 'Follow system';
@@ -380,7 +384,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon="download-outline"
             label="Export CSV"
             subtitle="Download transactions as a spreadsheet file"
-            onPress={() => router.push('/export')}
+            onPress={openExport}
           />
         </View>
 

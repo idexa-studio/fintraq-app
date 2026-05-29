@@ -17,7 +17,6 @@ import { BlurBackground } from '@/src/components/ui/BlurBackground';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
-import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { CsvExportService, ExportDateRange } from '../api/csv-export.service';
@@ -144,8 +143,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
       <Header title="Export CSV" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        <PremiumGuard label="CSV Export">
-          <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>Date range</Text>
+        <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>Date range</Text>
           <View style={styles.card}>
             {DATE_PRESETS.map((p, i) => (
               <React.Fragment key={p.key}>
@@ -238,7 +236,6 @@ export const ExportScreen = React.memo(function ExportScreen() {
               <Text style={[styles.warningText, { fontFamily: typography.fonts.regular, color: colors.warning }]}>No transactions match the selected filters.</Text>
             </View>
           ) : null}
-        </PremiumGuard>
       </ScrollView>
 
       {showStartPicker ? <DateTimePicker value={customRange?.startDate || new Date()} mode="date" display="default" onChange={handleStartChange} maximumDate={new Date()} /> : null}
