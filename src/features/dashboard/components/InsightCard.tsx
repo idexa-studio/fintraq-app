@@ -70,7 +70,6 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) => Styl
     width: 210,
     minHeight: 115,
     borderRadius: radius('2xl'),
-    borderWidth: 1,
     padding: spacing('3.5'),
     justifyContent: 'space-between',
     overflow: 'hidden',
