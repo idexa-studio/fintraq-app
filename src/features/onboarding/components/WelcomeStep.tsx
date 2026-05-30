@@ -1,94 +1,77 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 
-export function WelcomeStep() {
+const FEATURES = [
+  {
+    icon: 'flash-outline' as const,
+    label: 'Fast capture',
+    detail: 'Log transactions anywhere in seconds.',
+  },
+  {
+    icon: 'bar-chart-outline' as const,
+    label: 'Built-in analytics',
+    detail: 'Spending trends, category breakdown, insights.',
+  },
+  {
+    icon: 'lock-closed-outline' as const,
+    label: 'Private by design',
+    detail: 'All data stays on your device. Always.',
+  },
+] as const;
+
+export const WelcomeStep = React.memo(function WelcomeStep() {
   const theme = useTheme();
+  const { colors, typography } = theme;
   const styles = React.useMemo(() => createStyles(theme), [theme]);
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.badge}>
-        <Text style={styles.badgeText}>LOCAL-FIRST MONEY OS</Text>
-      </View>
-
-      <Text style={styles.title}>LUNO.</Text>
-      <Text style={styles.body}>
-        Clean structure, fast capture, and calm control. This setup gives you a complete first account and a clear taxonomy to start with.
-      </Text>
-
-      <View style={styles.statsRow}>
-        <View style={styles.statCard}>
-          <Text style={styles.statLabel}>DEFAULTS</Text>
-          <Text style={styles.statValue}>PROFILE + CURRENCY</Text>
+      {FEATURES.map((f, i) => (
+        <View key={i} style={styles.row}>
+          <View style={styles.iconWrap}>
+            <Ionicons name={f.icon} size={20} color={colors.primary} />
+          </View>
+          <View style={styles.text}>
+            <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+              {f.label}
+            </Text>
+            <Text style={[styles.detail, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={2}>
+              {f.detail}
+            </Text>
+          </View>
         </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statLabel}>BOOTSTRAP</Text>
-          <Text style={styles.statValue}>ACCOUNT + CATEGORIES</Text>
-        </View>
-      </View>
+      ))}
     </View>
   );
-}
+});
 
-const createStyles = ({ colors, typography }: ThemeContextType) =>
+const createStyles = ({ typography, spacing }: ThemeContextType) =>
   StyleSheet.create({
     wrapper: {
-      flex: 1,
-      justifyContent: 'space-between',
-      minHeight: 380,
+      gap: spacing('6'),
+      paddingHorizontal: spacing('2'),
     },
-    badge: {
-      alignSelf: 'flex-start',
-      height: 34,
-      borderRadius: 999,
-      paddingHorizontal: 12,
-      backgroundColor: colors.primary,
+    row: {
       flexDirection: 'row',
+      gap: spacing('4'),
+    },
+    iconWrap: {
+      width: 24,
       alignItems: 'center',
+      paddingTop: 2,
     },
-    badgeText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
-      color: colors.background,
-      letterSpacing: 0.8,
-    },
-    title: {
-      marginTop: 18,
-      fontFamily: typography.fonts.heading,
-      fontSize: 44,
-      lineHeight: 46,
-      color: colors.text,
-      letterSpacing: -1.6,
-    },
-    body: {
-      marginTop: 14,
-      fontFamily: typography.fonts.regular,
-      fontSize: 15,
-      lineHeight: 24,
-      color: colors.textMuted,
-      maxWidth: 320,
-    },
-    statsRow: {
-      flexDirection: 'row',
-      gap: 10,
-      marginTop: 24,
-    },
-    statCard: {
+    text: {
       flex: 1,
-      paddingVertical: 6,
+      gap: spacing('0.5'),
     },
-    statLabel: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 10,
-      color: colors.textMuted,
-      letterSpacing: 1.1,
-      marginBottom: 8,
+    label: {
+      fontSize: typography.sizes.md,
     },
-    statValue: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 13,
-      color: colors.text,
+    detail: {
+      fontSize: typography.sizes.xs,
       lineHeight: 18,
+      opacity: 0.65,
     },
   });

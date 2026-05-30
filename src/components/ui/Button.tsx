@@ -117,6 +117,5 @@ const createStyles = ({ typography }: ThemeContextType) => StyleSheet.create({
   },
   text: {
     fontFamily: typography.fonts.semibold,
-    fontWeight: typography.weights.semibold,
   },
 });

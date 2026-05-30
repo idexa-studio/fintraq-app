@@ -13,7 +13,7 @@ type CurrencyStepProps = {
 
 export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurrencyChange }: CurrencyStepProps) {
   const theme = useTheme();
-  const { colors, typography, spacing, radius } = theme;
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [query, setQuery] = useState('');
@@ -23,7 +23,6 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) {
-      // Show popular currencies first, then rest alphabetically
       const popular = POPULAR_CODES
         .map(code => CURRENCIES.find(c => c.code === code))
         .filter((c): c is typeof CURRENCIES[0] => !!c);
@@ -65,7 +64,6 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
 
   return (
     <View style={styles.wrapper}>
-      {/* Selected preview */}
       <View style={styles.preview}>
         <Text style={styles.previewSymbol}>{selected?.symbol ?? currency}</Text>
         <View>
@@ -74,7 +72,6 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
         </View>
       </View>
 
-      {/* Search bar */}
       <View style={styles.searchRow}>
         <Ionicons name="search-outline" size={15} color={colors.textMuted} />
         <TextInput
@@ -94,23 +91,22 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
         )}
       </View>
 
-      {/* Currency list */}
       <View style={styles.list}>
         {!filtered.isSearching && (
-          <Text style={styles.listSection}>POPULAR</Text>
+          <Text style={styles.listSection}>Popular</Text>
         )}
         {filtered.popular.map(renderRow)}
 
         {!filtered.isSearching && filtered.rest.length > 0 && (
           <>
-            <Text style={[styles.listSection, { marginTop: spacing('4') }]}>ALL CURRENCIES</Text>
+            <Text style={styles.listSectionSpaced}>All currencies</Text>
             {filtered.rest.map(renderRow)}
           </>
         )}
 
         {filtered.isSearching && filtered.popular.length === 0 && (
           <View style={styles.empty}>
-            <Text style={styles.emptyText}>No currencies match \u201C{query}\u201D</Text>
+            <Text style={styles.emptyText}>No currencies match "{query}"</Text>
           </View>
         )}
       </View>
@@ -124,7 +120,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       gap: spacing('4'),
     },
 
-    // Selected preview
     preview: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -151,10 +146,9 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       fontFamily: typography.fonts.regular,
       fontSize: 12,
       color: colors.textMuted,
-      marginTop: 2,
+      marginTop: spacing('0.5'),
     },
 
-    // Search
     searchRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -162,8 +156,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       height: 44,
       borderRadius: radius('md'),
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
       paddingHorizontal: spacing('3'),
     },
     searchInput: {
@@ -174,15 +166,21 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       paddingVertical: 0,
     },
 
-    // List
     list: {
       gap: 0,
     },
     listSection: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 9,
+      fontSize: 10,
       color: colors.textMuted,
-      letterSpacing: 1.5,
+      marginBottom: spacing('2'),
+      paddingLeft: spacing('1'),
+    },
+    listSectionSpaced: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 10,
+      color: colors.textMuted,
+      marginTop: spacing('4'),
       marginBottom: spacing('2'),
       paddingLeft: spacing('1'),
     },
@@ -202,14 +200,11 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       height: 30,
       borderRadius: radius('xs'),
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
       alignItems: 'center',
       justifyContent: 'center',
     },
     codeBadgeSelected: {
       backgroundColor: colors.primary + '20',
-      borderColor: colors.primary + '50',
     },
     codeText: {
       fontFamily: typography.fonts.semibold,

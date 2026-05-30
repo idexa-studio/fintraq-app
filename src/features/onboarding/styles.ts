@@ -1,7 +1,7 @@
 import { Platform, StyleSheet } from 'react-native';
 import { ThemeContextType } from '../../providers/ThemeProvider';
 
-export const createOnboardingStyles = ({ colors, typography , layout }: ThemeContextType) =>
+export const createOnboardingStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -13,8 +13,8 @@ export const createOnboardingStyles = ({ colors, typography , layout }: ThemeCon
     },
     header: {
       paddingHorizontal: layout.screenPadding,
-      paddingTop: 12,
-      gap: 14,
+      paddingTop: spacing('3'),
+      gap: spacing('3.5'),
     },
     headerTopRow: {
       flexDirection: 'row',
@@ -24,12 +24,10 @@ export const createOnboardingStyles = ({ colors, typography , layout }: ThemeCon
     headerBackButton: {
       width: 42,
       height: 42,
-      borderRadius: 21,
+      borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.primary + '22',
     },
     headerBackPlaceholder: {
       width: 42,
@@ -45,13 +43,11 @@ export const createOnboardingStyles = ({ colors, typography , layout }: ThemeCon
     stepPill: {
       minWidth: 42,
       height: 42,
-      borderRadius: 21,
-      paddingHorizontal: 10,
+      borderRadius: radius('full'),
+      paddingHorizontal: spacing('2.5'),
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.primary + '22',
     },
     stepPillText: {
       fontFamily: typography.fonts.semibold,
@@ -61,12 +57,12 @@ export const createOnboardingStyles = ({ colors, typography , layout }: ThemeCon
     },
     progressTrack: {
       flexDirection: 'row',
-      gap: 8,
+      gap: spacing('2'),
     },
     progressDot: {
       flex: 1,
-      height: 6,
-      borderRadius: 999,
+      height: spacing('1.5'),
+      borderRadius: radius('full'),
       backgroundColor: colors.surface,
     },
     progressDotActive: {
@@ -74,19 +70,18 @@ export const createOnboardingStyles = ({ colors, typography , layout }: ThemeCon
     },
     scrollContent: {
       paddingHorizontal: layout.screenPadding,
-      paddingTop: 20,
-      paddingBottom: 24,
+      paddingTop: spacing('5'),
+      paddingBottom: spacing('6'),
       flexGrow: 1,
     },
     stepMeta: {
-      marginBottom: 20,
+      marginBottom: spacing('5'),
     },
     eyebrow: {
       fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.primary,
-      letterSpacing: 1.5,
-      marginBottom: 12,
+      marginBottom: spacing('3'),
     },
     stepTitle: {
       fontFamily: typography.fonts.heading,
@@ -96,7 +91,7 @@ export const createOnboardingStyles = ({ colors, typography , layout }: ThemeCon
       letterSpacing: -1.1,
     },
     stepSubtitle: {
-      marginTop: 10,
+      marginTop: spacing('2.5'),
       fontFamily: typography.fonts.regular,
       fontSize: 14,
       lineHeight: 22,
@@ -105,13 +100,12 @@ export const createOnboardingStyles = ({ colors, typography , layout }: ThemeCon
     },
     contentCard: {
       paddingHorizontal: 0,
-      paddingVertical: 0,
-      minHeight: 420,
+      paddingVertical: 0
     },
     footer: {
       paddingHorizontal: layout.screenPadding,
-      paddingBottom: Platform.OS === 'ios' ? 18 : 24,
-      paddingTop: 8,
+      paddingBottom: Platform.OS === 'ios' ? spacing('5') : spacing('6'),
+      paddingTop: spacing('2'),
     },
     primaryAction: {
       width: '100%',

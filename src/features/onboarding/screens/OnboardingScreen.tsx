@@ -15,10 +15,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { Button } from '@/src/components/ui/Button';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
+import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
 import { getDeviceCurrencyCode } from '@/src/constants/currency';
 import { useCreateAccount } from '@/src/features/accounts/hooks/accounts';
 import { useCreateCategory } from '@/src/features/categories/hooks/categories';
-import { CurrencyStep } from '@/src/features/onboarding/components/CurrencyStep';
 import { ProfileStep } from '@/src/features/onboarding/components/ProfileStep';
 import { WelcomeStep } from '@/src/features/onboarding/components/WelcomeStep';
 import { ONBOARDING_STEPS } from '@/src/features/onboarding/constants';
@@ -45,6 +45,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const currentStep = ONBOARDING_STEPS[stepIndex];
 
   const [currency, setCurrency] = React.useState<string>(() => getDeviceCurrencyCode());
+  const [showCurrencyPicker, setShowCurrencyPicker] = React.useState(false);
   const [showReminderDialog, setShowReminderDialog] = React.useState(false);
 
   const methods = useForm<OnboardingFormValues>({
@@ -195,14 +196,20 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
     setStepIndex((i) => i + 1);
   };
 
+  const openCurrencyPicker  = useCallback(() => setShowCurrencyPicker(true),  []);
+  const closeCurrencyPicker = useCallback(() => setShowCurrencyPicker(false), []);
+
   const renderStepContent = () => {
     switch (currentStep.id) {
       case 'welcome':
         return <WelcomeStep />;
       case 'profile':
-        return <ProfileStep />;
-      case 'currency':
-        return <CurrencyStep currency={currency} onCurrencyChange={setCurrency} />;
+        return (
+          <ProfileStep
+            currency={currency}
+            onOpenCurrencyPicker={openCurrencyPicker}
+          />
+        );
       default:
         return null;
     }
@@ -263,6 +270,16 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           </View>
         </KeyboardAvoidingView>
       </FormProvider>
+
+      <CurrencyPickerModal
+        visible={showCurrencyPicker}
+        onClose={closeCurrencyPicker}
+        value={currency}
+        onChange={(code) => {
+          setCurrency(code);
+          closeCurrencyPicker();
+        }}
+      />
 
       <ConfirmDialog
         visible={showReminderDialog}

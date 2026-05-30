@@ -110,7 +110,6 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType, size: I
     color: colors.textMuted,
     marginBottom: spacing('2'),
     fontFamily: typography.fonts.medium,
-    fontWeight: typography.weights.medium,
   },
   inputContainer: {
     overflow: 'hidden',

@@ -1,4 +1,4 @@
-export type OnboardingStepId = 'welcome' | 'profile' | 'currency';
+export type OnboardingStepId = 'welcome' | 'profile';
 
 export type OnboardingStepDefinition = {
   id: OnboardingStepId;
