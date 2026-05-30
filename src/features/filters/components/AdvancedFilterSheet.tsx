@@ -459,8 +459,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     sectionTitle: {
       fontSize: 10,
-      letterSpacing: 1.5,
-      opacity: 0.55,
+      opacity: 0.7,
       marginBottom: spacing('2'),
       marginTop: spacing('5'),
       paddingLeft: spacing('0.5'),
@@ -531,7 +530,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('5'),
+      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
       borderTopWidth: 1,
     },
     applyBtn: {
