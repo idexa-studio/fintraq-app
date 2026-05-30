@@ -81,7 +81,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     color: colors.textMuted,
     letterSpacing: 2,
     marginBottom: spacing('2'),
-    textTransform: 'uppercase',
   },
   valueRow: {
     flexDirection: 'row',

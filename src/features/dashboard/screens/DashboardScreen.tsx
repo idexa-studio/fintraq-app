@@ -538,7 +538,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   statSeparator: {
     width: 1,
     height: 34,
-    backgroundColor: colors.border,
+    backgroundColor: colors.text + '0C',
     marginHorizontal: spacing('4'),
   },
   flowBar: {
@@ -560,7 +560,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   /* ── Section divider ── */
   divider: {
     height: 1,
-    backgroundColor: colors.border,
+    backgroundColor: colors.text + '0C',
     opacity: 0.5,
     marginHorizontal: layout.screenPadding,
   },
@@ -747,7 +747,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   accountCardStatDivider: {
     width: 1,
     height: 20,
-    backgroundColor: colors.border,
+    backgroundColor: colors.text + '0C',
     marginHorizontal: spacing('3'),
   },
 

@@ -1,4 +1,5 @@
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { PICKER_CONTRAST_COLOR } from '@/src/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
@@ -161,7 +162,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     ctaText: {
       fontFamily: typography.fonts.bold,
       fontSize: typography.sizes.md,
-      color: '#000100',
+      color: PICKER_CONTRAST_COLOR,
     },
     skip: {
       alignItems: 'center',

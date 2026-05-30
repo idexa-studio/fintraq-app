@@ -174,7 +174,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     kpiVerticalSep: {
       width: 1,
       height: 24,
-      backgroundColor: colors.border,
+      backgroundColor: colors.text + '0C',
       marginHorizontal: spacing('4'),
       opacity: 0.6,
     },
@@ -183,7 +183,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       fontFamily: typography.fonts.semibold,
       fontSize: 9,
       letterSpacing: 1.2,
-      textTransform: 'uppercase',
       marginBottom: spacing('0.5'),
     },
     kpiLabelSmall: {
@@ -191,7 +190,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       fontFamily: typography.fonts.semibold,
       fontSize: 8,
       letterSpacing: 1,
-      textTransform: 'uppercase',
     },
     kpiValueLarge: {
       fontSize: 24,
@@ -203,7 +201,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     kpiDivider: {
       height: 1,
-      backgroundColor: colors.border,
+      backgroundColor: colors.text + '0C',
       opacity: 0.5,
     },
   });

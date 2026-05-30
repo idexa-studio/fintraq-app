@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTheme } from '../../providers/ThemeProvider';
 
 type Props = {
   children: React.ReactNode;
@@ -10,6 +11,29 @@ type State = {
   hasError: boolean;
   error: Error | null;
 };
+
+function ErrorFallback({ error, onReset }: { error: Error | null; onReset: () => void }) {
+  const { colors, typography } = useTheme();
+  return (
+    <View style={styles.container}>
+      <Text style={[styles.title, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+        Something went wrong
+      </Text>
+      <Text style={[styles.message, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+        {error?.message}
+      </Text>
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: colors.text }]}
+        onPress={onReset}
+        activeOpacity={0.75}
+      >
+        <Text style={[styles.buttonText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+          Try again
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 export class ErrorBoundary extends React.Component<Props, State> {
   state: State = { hasError: false, error: null };
@@ -25,18 +49,8 @@ export class ErrorBoundary extends React.Component<Props, State> {
   render() {
     if (this.state.hasError) {
       if (this.props.fallback) return this.props.fallback;
-
-      return (
-        <View style={styles.container}>
-          <Text style={styles.title}>Something went wrong</Text>
-          <Text style={styles.message}>{this.state.error?.message}</Text>
-          <TouchableOpacity style={styles.button} onPress={this.handleReset} activeOpacity={0.75}>
-            <Text style={styles.buttonText}>Try again</Text>
-          </TouchableOpacity>
-        </View>
-      );
+      return <ErrorFallback error={this.state.error} onReset={this.handleReset} />;
     }
-
     return this.props.children;
   }
 }
@@ -51,13 +65,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#000',
-    letterSpacing: -0.4,
   },
   message: {
     fontSize: 13,
-    color: '#666',
     textAlign: 'center',
     lineHeight: 18,
   },
@@ -66,13 +76,10 @@ const styles = StyleSheet.create({
     height: 44,
     paddingHorizontal: 20,
     borderRadius: 12,
-    backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttonText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#fff',
   },
 });

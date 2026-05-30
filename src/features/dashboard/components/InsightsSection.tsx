@@ -50,7 +50,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
            </View>
           </ScrollView>
         ) : (
-          <View style={[styles.emptyCard, { backgroundColor: colors.surface }]}>
+          <View style={[styles.emptyCard, { backgroundColor: colors.surface, borderColor: colors.text + '0C' }]}>
             <Ionicons name="analytics-outline" size={24} color={colors.textMuted} />
             <Text style={[styles.emptyText, { color: colors.textMuted }]}>No insights available yet. Keep tracking to unlock trends.</Text>
           </View>
@@ -60,7 +60,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
   );
 });
 
-const createStyles = ({ typography, spacing, radius, layout }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) => StyleSheet.create({
   container: {
     marginVertical: spacing('1'),
     marginBottom: spacing('5'),
@@ -78,7 +78,7 @@ const createStyles = ({ typography, spacing, radius, layout }: ThemeContextType)
     height: 110,
     marginHorizontal: layout.screenPadding,
     borderRadius: radius('xl'),
-    backgroundColor: 'rgba(0,0,0,0.03)',
+    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     gap: spacing('3'),

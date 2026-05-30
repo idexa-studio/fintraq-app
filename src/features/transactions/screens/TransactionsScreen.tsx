@@ -658,7 +658,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.semibold,
       fontSize: 11,
       letterSpacing: 1.2,
-      textTransform: 'uppercase',
     },
     dayTotals: {
       flexDirection: 'row',

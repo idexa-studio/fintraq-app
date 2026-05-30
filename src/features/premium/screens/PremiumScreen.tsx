@@ -19,6 +19,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+const HERO_TEXT = '#0D0D0F';
+
 type BentoSpan = 'full' | 'half';
 
 type BentoItem = {
@@ -113,13 +115,13 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
         bounces={false}
       >
         <View style={styles.hero}>
-          <Text style={[styles.heroLabel, { fontFamily: typography.fonts.semibold, color: '#00010080' }]}>
+          <Text style={[styles.heroLabel, { fontFamily: typography.fonts.semibold, color: '#0D0D0F80' }]}>
             Lifetime upgrade
           </Text>
-          <Text style={[styles.heroTitle, { fontFamily: typography.fonts.headingRegular, color: '#000100' }]}>
+          <Text style={[styles.heroTitle, { fontFamily: typography.fonts.headingRegular, color: '#0D0D0F' }]}>
             The professional{'\n'}toolkit, unlocked.
           </Text>
-          <Text style={[styles.heroDesc, { fontFamily: typography.fonts.regular, color: '#00010090' }]}>
+          <Text style={[styles.heroDesc, { fontFamily: typography.fonts.regular, color: '#0D0D0F90' }]}>
             One payment. Every feature.{'\n'}No subscriptions. No expiry.
           </Text>
 
@@ -131,22 +133,22 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
                 <>
                   <View style={styles.priceRow}>
                     {lifetimeProduct.originalPrice && (
-                      <Text style={[styles.priceStrike, { fontFamily: typography.fonts.regular, color: '#00010060' }]}>
+                      <Text style={[styles.priceStrike, { fontFamily: typography.fonts.regular, color: '#0D0D0F60' }]}>
                         {lifetimeProduct.originalPrice}
                       </Text>
                     )}
-                    <Text style={[styles.priceValue, { fontFamily: typography.fonts.amountBold, color: '#000100' }]}>
+                    <Text style={[styles.priceValue, { fontFamily: typography.fonts.amountBold, color: '#0D0D0F' }]}>
                       {lifetimeProduct.displayPrice}
                     </Text>
                   </View>
-                  <Text style={[styles.priceTag, { fontFamily: typography.fonts.medium, color: '#00010070' }]}>
+                  <Text style={[styles.priceTag, { fontFamily: typography.fonts.medium, color: '#0D0D0F70' }]}>
                     One time, forever
                   </Text>
                 </>
               ) : isLoading ? (
                 <ActivityIndicator color="#000100" />
               ) : (
-                <Text style={[styles.priceError, { fontFamily: typography.fonts.regular, color: '#000100' }]}>
+                <Text style={[styles.priceError, { fontFamily: typography.fonts.regular, color: '#0D0D0F' }]}>
                   Unavailable
                 </Text>
               )}
@@ -155,13 +157,13 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             <View style={styles.heroPriceRight}>
               <View style={styles.heroCheckRow}>
                 <Ionicons name="checkmark-circle" size={13} color="#000100" />
-                <Text style={[styles.heroCheckText, { fontFamily: typography.fonts.medium, color: '#00010080' }]}>
+                <Text style={[styles.heroCheckText, { fontFamily: typography.fonts.medium, color: '#0D0D0F80' }]}>
                   All updates
                 </Text>
               </View>
               <View style={styles.heroCheckRow}>
                 <Ionicons name="checkmark-circle" size={13} color="#000100" />
-                <Text style={[styles.heroCheckText, { fontFamily: typography.fonts.medium, color: '#00010080' }]}>
+                <Text style={[styles.heroCheckText, { fontFamily: typography.fonts.medium, color: '#0D0D0F80' }]}>
                   No limits
                 </Text>
               </View>
@@ -297,7 +299,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     },
     heroDivider: {
       height: 1,
-      backgroundColor: '#00010018',
+      backgroundColor: HERO_TEXT + '18',
     },
     heroPriceRow: {
       flexDirection: 'row',
