@@ -33,9 +33,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+
 const Divider = React.memo(function Divider({ theme }: { theme: ThemeContextType }) {
-  const { colors } = theme;
-  return <View style={[dividerStyles.base, { backgroundColor: colors.text + '0C' }]} />;
+  return <View style={[dividerStyles.base, { backgroundColor: theme.colors.text + '0C' }]} />;
 });
 
 const dividerStyles = StyleSheet.create({
@@ -300,7 +300,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           </View>
         </View>
 
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+        <Text style={styles.sectionLabel}>
           Plan
         </Text>
         <View style={styles.card}>
@@ -314,7 +314,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+        <Text style={styles.sectionLabel}>
           Preferences
         </Text>
         <View style={styles.card}>
@@ -378,7 +378,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         )}
 
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+        <Text style={styles.sectionLabel}>
           Data
         </Text>
         <View style={styles.card}>
@@ -399,7 +399,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+        <Text style={styles.sectionLabel}>
           Legal
         </Text>
         <View style={styles.card}>
@@ -420,7 +420,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
+        <Text style={styles.sectionLabel}>
           Danger zone
         </Text>
         <View style={styles.card}>
@@ -585,10 +585,11 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     },
 
     sectionLabel: {
-      fontSize: 10,
-      marginBottom: spacing('2.5'),
-      paddingLeft: spacing('1'),
-      opacity: 0.7,
+      fontFamily: typography.fonts.semibold,
+      color: colors.textMuted,
+      fontSize: typography.sizes.sm,
+      marginTop: spacing('5'),
+      marginBottom: spacing('3'),
     },
 
     card: {

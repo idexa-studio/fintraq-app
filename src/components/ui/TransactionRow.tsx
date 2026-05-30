@@ -24,7 +24,7 @@ type TransactionData = {
     color: number;
   };
   toAccount?: {
-    name: string;
+    name: string | null;
   } | null;
 };
 

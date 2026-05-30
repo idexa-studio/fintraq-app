@@ -23,7 +23,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
 
   return (
     <View style={styles.container}>
-      <SectionHeader title="PRO INSIGHTS" />
+      <SectionHeader title="Pro Insights" />
       <PremiumGuard
         label="Upgrade to Pro for insights"
         size="large"

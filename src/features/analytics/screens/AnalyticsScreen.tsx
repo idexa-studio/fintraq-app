@@ -1,5 +1,6 @@
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { Header } from '@/src/components/ui/Header';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
@@ -253,10 +254,10 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           </View>
 
           {/* Spending trend */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>SPENDING TREND</Text>
-            <Text style={styles.sectionHint}>{RANGES.find(r => r.days === selectedRange)?.label} · {selectedCurrency}</Text>
-          </View>
+          <SectionHeader
+            title="Spending trend"
+            rightText={`${RANGES.find(r => r.days === selectedRange)?.label} · ${selectedCurrency}`}
+          />
           <View style={styles.card}>
             <View style={styles.chartLegend}>
               <View style={styles.legendItem}>
@@ -272,15 +273,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           </View>
 
           {/* Period flow */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>PERIOD FLOW</Text>
-            <View style={styles.legendRow}>
-              <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
-              <Text style={styles.legendText}>In</Text>
-              <View style={[styles.legendDot, { backgroundColor: colors.danger }]} />
-              <Text style={styles.legendText}>Out</Text>
-            </View>
-          </View>
+          <SectionHeader title="Period flow" />
           <PremiumGuard label="Period Flow" size="medium">
             <View style={styles.card}>
               <BarGroupChart data={barData} width={chartWidth - 28} height={170} />
@@ -288,10 +281,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           </PremiumGuard>
 
           {/* Category breakdown */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>CATEGORY BREAKDOWN</Text>
-            <Text style={styles.sectionHint}>{(categoryData ?? []).length} groups</Text>
-          </View>
+          <SectionHeader title="Category breakdown" rightText={`${(categoryData ?? []).length} groups`} />
           <PremiumGuard label="Category Breakdown" size="medium">
             <View style={styles.card}>
               {(categoryData ?? []).length > 0 ? (
@@ -303,10 +293,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           </PremiumGuard>
 
           {/* Account split */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>ACCOUNT SPLIT</Text>
-            <Text style={styles.sectionHint}>{accountDistribution.length} accounts</Text>
-          </View>
+          <SectionHeader title="Account split" rightText={`${accountDistribution.length} accounts`} />
           <PremiumGuard label="Account Split" size="medium">
             <View style={styles.card}>
               {accountDistribution.length > 0 ? (
@@ -338,10 +325,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           </PremiumGuard>
 
           {/* Spending by weekday */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>SPENDING BY WEEKDAY</Text>
-            <Text style={styles.sectionHint}>Average pattern</Text>
-          </View>
+          <SectionHeader title="Spending by weekday" rightText="Average pattern" />
           <PremiumGuard label="Spending by Weekday" size="medium">
             <View style={styles.card}>
               <DowChart data={dowData ?? []} />
@@ -354,9 +338,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           </PremiumGuard>
 
           {/* Behavioral insights */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>BEHAVIORAL INSIGHTS</Text>
-          </View>
+          <SectionHeader title="Behavioral insights" />
           <PremiumGuard label="Behavioral Insights" size="medium">
             <View style={styles.card}>
               <View style={styles.kpiGrid}>
@@ -398,7 +380,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading:   { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    content:   { paddingHorizontal: layout.screenPadding, paddingBottom: spacing('10'), paddingTop: spacing('2') },
+    content:   { paddingBottom: spacing('10'), paddingTop: spacing('2') },
 
     // ── Pill selectors
     pillRow: {
@@ -406,6 +388,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('2'),
       marginBottom: spacing('3'),
       flexWrap: 'wrap',
+      paddingHorizontal: layout.screenPadding,
     },
     pill: {
       flexDirection: 'row',
@@ -426,6 +409,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexDirection: 'row',
       gap: spacing('2'),
       marginBottom: spacing('2'),
+      paddingHorizontal: layout.screenPadding,
     },
     metricTile: {
       flex: 1,
@@ -451,37 +435,17 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       letterSpacing: -0.5,
     },
 
-    // ── Section headers
-    sectionHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginTop: spacing('5'),
-      marginBottom: spacing('2.5'),
-    },
-    sectionTitle: {
-      fontFamily: typography.fonts.semibold,
-      color: colors.text,
-      fontSize: 10,
-      letterSpacing: 1.4,
-    },
-    sectionHint: {
-      fontFamily: typography.fonts.regular,
-      color: colors.textMuted,
-      fontSize: 11,
-    },
-
     // ── Card
     card: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
       padding: spacing('3.5'),
       overflow: 'hidden',
+      marginHorizontal: layout.screenPadding,
     },
 
     // ── Chart legend
     chartLegend: { flexDirection: 'row', gap: spacing('4'), marginBottom: spacing('2') },
-    legendRow:   { flexDirection: 'row', alignItems: 'center', gap: spacing('1') },
     legendItem:  { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
     legendDot:   { width: 7, height: 7, borderRadius: radius('full') },
     legendDash:  { width: 14, height: 2, borderRadius: radius('full') },
@@ -533,6 +497,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
 
     // ── Footer
-    footer:     { alignItems: 'center', marginTop: spacing('8') },
+    footer:     { alignItems: 'center', marginTop: spacing('8'), paddingHorizontal: layout.screenPadding },
     footerText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 9, letterSpacing: 3, opacity: 0.4 },
   });

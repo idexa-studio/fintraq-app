@@ -57,7 +57,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
       const sweep = (d.amount / total) * (Math.PI * 2 - GAP * data.length);
       const path = arcPath(cx, cy, outerR, innerR, angle + GAP / 2, angle + sweep + GAP / 2);
       angle += sweep + GAP;
-      return { path, color: colorNumberToHex(d.color), ...d };
+      return { ...d, path, hexColor: colorNumberToHex(d.color) };
     });
     return { segments, total };
   }, [data, size]);
@@ -75,7 +75,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
       <View style={{ alignSelf: 'center', marginBottom: 20, width: size, height: size }}>
         <Svg width={size} height={size} style={StyleSheet.absoluteFillObject}>
           {segments.map((seg, i) => (
-            <Path key={i} d={seg.path} fill={seg.color} />
+            <Path key={i} d={seg.path} fill={seg.hexColor} />
           ))}
         </Svg>
         <View style={styles.center}>
