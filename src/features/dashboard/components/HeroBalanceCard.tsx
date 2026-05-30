@@ -64,7 +64,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   StyleSheet.create({
     card: {
       marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('6'),
+      marginBottom: spacing('4'),
       borderRadius: radius('xl'),
       backgroundColor: colors.surface,
       overflow: 'hidden',

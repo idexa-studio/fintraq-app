@@ -39,6 +39,7 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: layout.screenPadding,
+      marginTop: spacing('5'),
       marginBottom: spacing('3'),
     },
     title: {

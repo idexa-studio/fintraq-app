@@ -35,9 +35,16 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
     scrollRef.current?.scrollTo({ x: i * snapInterval, animated: true });
   }, [snapInterval]);
 
+  const clearTimer = useCallback(() => {
+    if (timerRef.current !== null) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
   const startTimer = useCallback(() => {
     if (total <= 1) return;
-    stopTimer();
+    clearTimer();
     timerRef.current = setInterval(() => {
       setIndex(prev => {
         const next = prev >= total - 1 ? 0 : prev + 1;
@@ -45,20 +52,19 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
         return next;
       });
     }, INTERVAL);
-  }, [total, scrollTo]);
+  }, [total, clearTimer, scrollTo]);
 
-  const stopTimer = useCallback(() => {
-    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-  }, []);
-
-  useEffect(() => { startTimer(); return stopTimer; }, [startTimer, stopTimer]);
+  useEffect(() => {
+    startTimer();
+    return clearTimer;
+  }, [startTimer, clearTimer]);
 
   const onScrollEnd = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const i = Math.round(e.nativeEvent.contentOffset.x / snapInterval);
     setIndex(Math.max(0, Math.min(i, total - 1)));
   }, [snapInterval, total]);
 
-  const hasInsights = insights && insights.length > 0;
+  const hasInsights = (insights?.length ?? 0) > 0;
 
   if (!hasInsights && !isLoading) {
     return (
@@ -67,7 +73,9 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
         <PremiumGuard label="Upgrade to Pro for insights" size="large" containerStyle={{ marginHorizontal: isPremium ? 0 : theme.layout.screenPadding }}>
           <View style={styles.empty}>
             <Ionicons name="analytics-outline" size={24} color={colors.textMuted} />
-            <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>No insights yet. Keep tracking to unlock trends.</Text>
+            <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+              No insights yet. Keep tracking to unlock trends.
+            </Text>
           </View>
         </PremiumGuard>
       </View>
@@ -77,10 +85,16 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
   return (
     <View style={styles.container}>
       <SectionHeader title="Pro Insights" />
-      <PremiumGuard label="Upgrade to Pro for insights" size="large" containerStyle={{ marginHorizontal: isPremium ? 0 : theme.layout.screenPadding }}>
+      <PremiumGuard
+        label="Upgrade to Pro for insights"
+        size="large"
+        containerStyle={{ marginHorizontal: isPremium ? 0 : theme.layout.screenPadding }}
+      >
         {isLoading ? (
           <View style={styles.placeholder}>
-            <Text style={[styles.placeholderText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>Analysing your patterns...</Text>
+            <Text style={[styles.placeholderText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+              Analysing your patterns...
+            </Text>
           </View>
         ) : (
           <>
@@ -93,12 +107,12 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
               snapToInterval={snapInterval}
               snapToAlignment="start"
               onMomentumScrollEnd={onScrollEnd}
-              onTouchStart={stopTimer}
+              onTouchStart={clearTimer}
               onTouchEnd={startTimer}
               scrollEventThrottle={16}
             >
               <View style={{ width: theme.layout.screenPadding - GAP / 2 }} />
-              {insights!.map((insight) => (
+              {insights?.map((insight) => (
                 <View key={insight.id} style={{ width: cardWidth }}>
                   <InsightCard insight={insight} />
                 </View>
@@ -108,8 +122,14 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
 
             {total > 1 && (
               <View style={styles.dots}>
-                {insights!.map((_, i) => (
-                  <View key={i} style={[styles.dot, { backgroundColor: i === index ? colors.primary : colors.text + '18' }]} />
+                {insights?.map((_, i) => (
+                  <View
+                    key={i}
+                    style={[
+                      styles.dot,
+                      { backgroundColor: i === index ? colors.primary : colors.text + '18' },
+                    ]}
+                  />
                 ))}
               </View>
             )}
@@ -122,10 +142,8 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
 
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    container: { marginBottom: spacing('6') },
-    scroll: {
-      gap: GAP,
-    },
+    container: {},
+    scroll: { gap: GAP },
     placeholder: {
       height: 80,
       marginHorizontal: layout.screenPadding,
@@ -144,7 +162,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       gap: spacing('2'),
     },
-    emptyText: { fontSize: typography.sizes.xs, textAlign: 'center', lineHeight: 16, maxWidth: '80%', opacity: 0.6 },
+    emptyText: {
+      fontSize: typography.sizes.xs,
+      textAlign: 'center',
+      lineHeight: 16,
+      maxWidth: '80%',
+      opacity: 0.6,
+    },
     dots: {
       flexDirection: 'row',
       justifyContent: 'center',
