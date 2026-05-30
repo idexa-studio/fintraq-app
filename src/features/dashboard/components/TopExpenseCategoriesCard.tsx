@@ -78,7 +78,7 @@ const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeCon
       borderRadius: radius('xl'),
       backgroundColor: colors.surface,
       overflow: 'hidden',
-      marginBottom: spacing('5'),
+      marginBottom: spacing('6'),
     },
     tabsRow: {
       flexDirection: 'row',

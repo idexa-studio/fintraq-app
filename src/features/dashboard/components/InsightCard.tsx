@@ -1,9 +1,7 @@
-import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { formatCurrency } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
 import { DashboardInsight } from '../api/insights';
 
@@ -13,99 +11,55 @@ interface InsightCardProps {
 
 export const InsightCard = React.memo(function InsightCard({ insight }: InsightCardProps) {
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const status = useMemo(() => {
+  const accent = useMemo(() => {
     switch (insight.type) {
-      case 'success': return { bg: colors.success + '15', text: colors.success };
-      case 'danger': return { bg: colors.danger + '15', text: colors.danger };
-      case 'warning': return { bg: colors.warning + '15', text: colors.warning };
-      case 'info': return { bg: colors.info + '15', text: colors.info };
-      default: return { bg: colors.surface, text: colors.text };
+      case 'success': return colors.success;
+      case 'danger': return colors.danger;
+      case 'warning': return colors.warning;
+      case 'info': return colors.info;
+      default: return colors.text;
     }
-  }, [insight.type, colors.success, colors.danger, colors.warning, colors.info, colors.surface, colors.text]);
-
-  const displayValue = useMemo(() => {
-    switch (insight.valueType) {
-      case 'amount':
-        return formatCurrency(insight.amount, insight.currency);
-      case 'percentage':
-        return `${insight.percentage > 0 ? '+' : ''}${insight.percentage.toFixed(0)}%`;
-      case 'text':
-        return insight.text;
-    }
-  }, [insight]);
+  }, [insight.type, colors]);
 
   return (
     <View style={[styles.card, { backgroundColor: colors.surface }]}>
-      <View style={styles.header}>
-        <IconAvatar icon={resolveIcon(insight.icon, 'analytics-outline')} bg={status.bg} color={status.text} size={28} iconSize={14} />
-        <Text style={[styles.title, { color: colors.textMuted }]}>{insight.title.toUpperCase()}</Text>
+      <IconAvatar icon={resolveIcon(insight.icon, 'analytics-outline')} bg={accent + '15'} color={accent} size={36} iconSize={16} />
+      <View style={styles.text}>
+        <Text style={[styles.title, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+          {insight.title}
+        </Text>
+        <Text style={[styles.sub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={2}>
+          {insight.subtitle}
+        </Text>
       </View>
-
-      <View style={styles.body}>
-        <Text style={[styles.value, { color: colors.text }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>{displayValue}</Text>
-        <View style={styles.trendContainer}>
-          <Text style={[styles.subtitle, { color: colors.textMuted }]} numberOfLines={1}>
-            {insight.subtitle}
-          </Text>
-          {insight.trend && (
-            <Ionicons
-              name={insight.trend === 'up' ? 'arrow-up' : 'arrow-down'}
-              size={12}
-              color={insight.type === 'danger' ? colors.danger : colors.success}
-              style={styles.trendIcon}
-            />
-          )}
-        </View>
-      </View>
-
     </View>
   );
 });
 
-const createStyles = ({ typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
-  card: {
-    width: 210,
-    minHeight: 115,
-    borderRadius: radius('2xl'),
-    padding: spacing('3.5'),
-    justifyContent: 'space-between',
-    overflow: 'hidden',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing('2'),
-    marginBottom: spacing('2'),
-  },
-  title: {
-    fontFamily: typography.fonts.bold,
-    fontSize: 9,
-    letterSpacing: 1.5,
-  },
-  body: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  value: {
-    fontFamily: typography.fonts.amountBold,
-    fontSize: 20,
-    letterSpacing: -0.5,
-  },
-  trendContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: spacing('0.5'),
-  },
-  subtitle: {
-    fontFamily: typography.fonts.semibold,
-    fontSize: 9,
-    letterSpacing: 0.2,
-    flex: 1,
-  },
-  trendIcon: {
-    marginLeft: spacing('1'),
-  },
-});
+const createStyles = ({ typography, spacing, radius }: ThemeContextType) =>
+  StyleSheet.create({
+    card: {
+      flexDirection: 'row',
+      borderRadius: radius('xl'),
+      padding: spacing('3.5'),
+      gap: spacing('3'),
+      alignItems: 'flex-start',
+      minHeight: 80,
+    },
+    text: {
+      flex: 1,
+      gap: spacing('1'),
+    },
+    title: {
+      fontSize: typography.sizes.sm,
+      lineHeight: 19,
+    },
+    sub: {
+      fontSize: typography.sizes.xs,
+      lineHeight: 17,
+      opacity: 0.65,
+    },
+  });

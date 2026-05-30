@@ -153,18 +153,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
         <InsightsSection currency={selectedCurrency} />
 
-        {/* Quick actions */}
-        <View style={styles.actions}>
-          <TouchableOpacity style={styles.actionPrimary} onPress={navigateToCreateTx} activeOpacity={0.85}>
-            <Ionicons name="add" size={16} color={colors.background} />
-            <Text style={styles.actionPrimaryText}>Add transaction</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionSecondary} onPress={navigateToTransactions} activeOpacity={0.85}>
-            <Text style={styles.actionSecondaryText}>View all</Text>
-            <Ionicons name="arrow-forward" size={14} color={colors.text} />
-          </TouchableOpacity>
-        </View>
-
         <SectionHeader title="Accounts" rightText="Manage" onPressRight={openAccountsScreen} />
         <AccountsCarousel
           accounts={accounts ?? []}
@@ -227,38 +215,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.surface,
     },
     currencyTabActive:     { backgroundColor: colors.text },
-    currencyTabText:       { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11, letterSpacing: 0.4 },
+    currencyTabText:       { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
     currencyTabTextActive: { color: colors.background },
-
-    // ── Quick actions
-    actions: {
-      flexDirection: 'row',
-      paddingHorizontal: layout.screenPadding,
-      paddingVertical: spacing('4'),
-      gap: spacing('2.5'),
-    },
-    actionPrimary: {
-      flex: 2,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing('2'),
-      height: 46,
-      borderRadius: radius('lg'),
-      backgroundColor: colors.text,
-    },
-    actionPrimaryText:  { fontFamily: typography.fonts.semibold, color: colors.background, fontSize: 14 },
-    actionSecondary: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing('1.5'),
-      height: 46,
-      borderRadius: radius('lg'),
-      backgroundColor: colors.surface,
-    },
-    actionSecondaryText: { fontFamily: typography.fonts.semibold, color: colors.text, fontSize: 14 },
 
     // ── Activity card
     activityCard: {

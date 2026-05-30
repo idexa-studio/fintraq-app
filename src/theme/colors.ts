@@ -38,9 +38,9 @@ export const DARK_THEME: ThemePalette = {
   card: '#1A1A1A',
   surface: '#262626',
 
-  primary: '#B8D641',
-  primaryLight: '#C8E455',
-  primaryDark: '#9CB82D',
+  primary: '#00A884',
+  primaryLight: '#1ABF92',
+  primaryDark: '#008A6D',
   secondary: '#F4F7E8',
 
   text: '#F5F5F5',
@@ -59,9 +59,9 @@ export const LIGHT_THEME: ThemePalette = {
   card: '#F5F5F5',
   surface: '#EBEBEB',
 
-  primary: '#9CB82D',
-  primaryLight: '#B2D043',
-  primaryDark: '#849925',
+  primary: '#00A884',
+  primaryLight: '#1ABF92',
+  primaryDark: '#008A6D',
   secondary: '#1A1B18',
 
   text: '#171717',

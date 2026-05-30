@@ -18,41 +18,43 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({
   expense,
 }: Props) {
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const incomeRatio = income + expense > 0 ? income / (income + expense) : 0.5;
 
   return (
     <View style={styles.card}>
-      <View style={styles.glow} pointerEvents="none" />
+      <View style={styles.content}>
+        <View style={styles.labelRow}>
+          <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+            Total balance
+          </Text>
+          <StreakBadge />
+        </View>
 
-      <View style={styles.labelRow}>
-        <Text style={styles.label}>Total balance</Text>
-        <StreakBadge />
-      </View>
+        <MoneyText amount={balance} currency={currency} style={styles.balance} weight="bold" />
 
-      <MoneyText amount={balance} currency={currency} style={styles.amount} weight="bold" />
-
-      <View style={styles.stats}>
-        <View style={styles.statItem}>
-          <View style={styles.statBody}>
-            <Text style={styles.statLabel}>INCOME</Text>
+        <View style={styles.stats}>
+          <View style={styles.stat}>
+            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              Income
+            </Text>
             <MoneyText amount={income} currency={currency} type="CR" weight="bold" style={styles.statValue} />
           </View>
-        </View>
-        <View style={styles.statSep} />
-        <View style={styles.statItem}>
-          <View style={styles.statBody}>
-            <Text style={styles.statLabel}>EXPENSES</Text>
+          <View style={[styles.statDivider, { backgroundColor: colors.text + '0C' }]} />
+          <View style={styles.stat}>
+            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              Expenses
+            </Text>
             <MoneyText amount={expense} currency={currency} type="DR" weight="bold" style={styles.statValue} />
           </View>
         </View>
-      </View>
 
-      <View style={styles.flowBar}>
-        <View style={[styles.flowIn, { flex: incomeRatio }]} />
-        <View style={[styles.flowOut, { flex: 1 - incomeRatio }]} />
+        <View style={styles.flow}>
+          <View style={[styles.flowBar, { flex: incomeRatio, backgroundColor: colors.success }]} />
+          <View style={[styles.flowBar, { flex: 1 - incomeRatio, backgroundColor: colors.danger }]} />
+        </View>
       </View>
     </View>
   );
@@ -62,73 +64,57 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   StyleSheet.create({
     card: {
       marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('5'),
+      marginBottom: spacing('6'),
       borderRadius: radius('xl'),
       backgroundColor: colors.surface,
-      padding: spacing('5'),
       overflow: 'hidden',
     },
-    glow: {
-      position: 'absolute',
-      top: -50,
-      right: -50,
-      width: 180,
-      height: 180,
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary + '18',
+    content: {
+      padding: spacing('5'),
     },
     labelRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginBottom: spacing('1.5'),
+      marginBottom: spacing('2'),
     },
     label: {
-      fontFamily: typography.fonts.semibold,
-      color: colors.primary,
       fontSize: 10,
-      letterSpacing: 1.5,
     },
-    amount: {
-      fontSize: 38,
-      lineHeight: 42,
-      letterSpacing: -1.5,
+    balance: {
+      fontSize: 40,
+      lineHeight: 44,
       marginBottom: spacing('5'),
     },
     stats: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: spacing('3.5'),
+      marginBottom: spacing('4'),
     },
-    statItem: {
+    stat: {
       flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-      minWidth: 0,
+      gap: spacing('1'),
     },
-    statBody: { flex: 1, minWidth: 0 },
-    statLabel: {
-      fontFamily: typography.fonts.semibold,
-      color: colors.textMuted,
-      fontSize: 9,
-      letterSpacing: 1.2,
-      marginBottom: spacing('0.5'),
-    },
-    statValue: { fontSize: 15 },
-    statSep: {
+    statDivider: {
       width: 1,
-      height: 34,
-      backgroundColor: colors.text + '0C',
+      height: 32,
       marginHorizontal: spacing('4'),
     },
-    flowBar: {
+    statLabel: {
+      fontSize: 9,
+      opacity: 0.6,
+    },
+    statValue: {
+      fontSize: 16,
+    },
+    flow: {
       flexDirection: 'row',
       height: 4,
       borderRadius: radius('full'),
       overflow: 'hidden',
-      gap: spacing('0.5'),
+      gap: 1,
     },
-    flowIn: { borderRadius: radius('full'), backgroundColor: colors.success },
-    flowOut: { borderRadius: radius('full'), backgroundColor: colors.danger },
+    flowBar: {
+      borderRadius: radius('full'),
+    },
   });
