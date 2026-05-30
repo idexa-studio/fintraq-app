@@ -24,90 +24,70 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
   categories,
 }: TopExpenseCategoriesCardProps) {
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const maxAmount = useMemo(
     () => categories.reduce((max, item) => (item.amount > max ? item.amount : max), 0),
-    [categories]
+    [categories],
   );
 
+  if (categories.length === 0) {
+    return (
+      <View style={styles.card}>
+        <View style={styles.empty}>
+          <Ionicons name="pie-chart-outline" size={18} color={colors.textMuted} />
+          <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+            No expense data yet
+          </Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.card}>
-      {categories.length > 0 ? (
-        categories.map((category, idx) => {
-          const isLast = idx === categories.length - 1;
-          const accent = colorNumberToHex(category.color);
-          const ratio = maxAmount > 0 ? category.amount / maxAmount : 0;
-          return (
-            <View key={`${category.name}-${idx}`} style={[styles.row, isLast && styles.rowLast]}>
-              <View style={styles.left}>
-                <View style={styles.rankBadge}>
-                  <Text style={styles.rankText}>{idx + 1}</Text>
+      {categories.map((category, idx) => {
+        const isLast = idx === categories.length - 1;
+        const accent = colorNumberToHex(category.color);
+        const ratio = maxAmount > 0 ? category.amount / maxAmount : 0;
+
+        return (
+          <View key={`${category.name}-${idx}`} style={[styles.row, isLast && styles.rowLast]}>
+            <View style={styles.left}>
+              <Text style={[styles.rank, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+                {idx + 1}
+              </Text>
+              <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} bg={accent + '18'} color={accent} size={28} iconSize={13} />
+              <View style={styles.meta}>
+                <Text style={[styles.name, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+                  {category.name}
+                </Text>
+                <View style={styles.barTrack}>
+                  <View style={[styles.barFill, { width: `${Math.max(6, ratio * 100)}%`, backgroundColor: accent }]} />
                 </View>
-                <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} bg={accent + '22'} color={accent} size={28} iconSize={14} />
-                <View style={styles.meta}>
-                  <Text style={styles.name} numberOfLines={1}>{category.name}</Text>
-                  <View style={styles.barTrack}>
-                    <View style={[styles.barFill, { width: `${Math.max(8, ratio * 100)}%`, backgroundColor: accent }]} />
-                  </View>
-                </View>
-              </View>
-              <View style={styles.right}>
-                <MoneyText amount={category.amount} currency={currency} type="DR" weight="bold" compact style={styles.amount} />
-                <Text style={styles.percent}>{`${(ratio * 100).toFixed(0)}%`}</Text>
               </View>
             </View>
-          );
-        })
-      ) : (
-        <View style={styles.empty}>
-          <Ionicons name="pie-chart-outline" size={18} color={colors.textMuted} />
-          <Text style={styles.emptyText}>No expense data yet for {currency}</Text>
-        </View>
-      )}
+            <View style={styles.right}>
+              <MoneyText amount={category.amount} currency={currency} type="DR" weight="bold" compact style={styles.amount} />
+              <Text style={[styles.percent, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                {`${(ratio * 100).toFixed(0)}%`}
+              </Text>
+            </View>
+          </View>
+        );
+      })}
     </View>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     card: {
       marginHorizontal: layout.screenPadding,
       borderRadius: radius('xl'),
       backgroundColor: colors.surface,
       overflow: 'hidden',
-      marginBottom: spacing('6'),
-    },
-    tabsRow: {
-      flexDirection: 'row',
-      gap: spacing('1.5'),
-      paddingHorizontal: spacing('3'),
-      paddingTop: spacing('2.5'),
-      paddingBottom: spacing('1.5'),
-    },
-    tab: {
-      height: 26,
-      borderRadius: radius('full'),
-      borderWidth: 1,
-      borderColor: colors.border,
-      backgroundColor: colors.background + 'AA',
-      paddingHorizontal: spacing('2.5'),
-      justifyContent: 'center',
-    },
-    tabActive: {
-      backgroundColor: colors.text,
-      borderColor: colors.text,
-    },
-    tabText: {
-      fontFamily: typography.fonts.semibold,
-      color: colors.textMuted,
-      fontSize: 11,
-      letterSpacing: 0.4,
-    },
-    tabTextActive: {
-      color: colors.background,
     },
     row: {
       flexDirection: 'row',
@@ -117,65 +97,45 @@ const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeCon
       paddingHorizontal: spacing('3.5'),
       paddingVertical: spacing('2.5'),
       borderBottomWidth: 1,
-      borderBottomColor: colors.border,
+      borderBottomColor: colors.text + '0C',
     },
-    rowLast: {
-      borderBottomWidth: 0,
-    },
+    rowLast: { borderBottomWidth: 0 },
     left: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2'),
     },
-    rankBadge: {
-      width: 20,
-      height: 20,
-      borderRadius: 10,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.background + 'AA',
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    rankText: {
-      fontFamily: typography.fonts.semibold,
-      color: colors.textMuted,
+    rank: {
       fontSize: 10,
+      opacity: 0.5,
+      width: 16,
     },
-    meta: {
-      flex: 1,
-    },
+    meta: { flex: 1 },
     name: {
-      fontFamily: typography.fonts.semibold,
-      color: colors.text,
-      fontSize: 12,
+      fontSize: typography.sizes.xs,
       marginBottom: spacing('1'),
     },
     barTrack: {
-      height: 4,
+      height: 3,
       borderRadius: radius('full'),
-      backgroundColor: colors.background + 'CC',
+      backgroundColor: colors.background,
       overflow: 'hidden',
     },
     barFill: {
-      height: '100%',
+      height: 3,
       borderRadius: radius('full'),
-      minWidth: 8,
     },
     right: {
-      minWidth: 88,
       alignItems: 'flex-end',
+      gap: spacing('0.5'),
     },
     amount: {
-      fontSize: 13,
-      lineHeight: 15,
+      fontSize: typography.sizes.sm,
     },
     percent: {
-      marginTop: spacing('0.5'),
-      fontFamily: typography.fonts.regular,
-      color: colors.textMuted,
       fontSize: 10,
+      opacity: 0.5,
     },
     empty: {
       flexDirection: 'row',
@@ -185,8 +145,6 @@ const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeCon
       paddingVertical: spacing('3.5'),
     },
     emptyText: {
-      fontFamily: typography.fonts.regular,
-      color: colors.textMuted,
-      fontSize: 12,
+      fontSize: typography.sizes.xs,
     },
   });
