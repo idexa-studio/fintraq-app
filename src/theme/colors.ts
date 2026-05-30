@@ -55,9 +55,9 @@ export const DARK_THEME: ThemePalette = {
 };
 
 export const LIGHT_THEME: ThemePalette = {
-  background: '#FAFAFA',
-  card: '#F5F5F5',
-  surface: '#EBEBEB',
+  background: '#FCFCF9',
+  card: '#F9F9F6',
+  surface: '#F5F5F2',
 
   primary: '#B0C443',
   primaryLight: '#C4D65A',
