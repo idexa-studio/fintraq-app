@@ -34,9 +34,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const RANGES = [
-  { label: '7D', days: 7 },
-  { label: '30D', days: 30 },
-  { label: '90D', days: 90 },
+  { label: '7D',  days: 7   },
+  { label: '30D', days: 30  },
+  { label: '90D', days: 90  },
   { label: '12M', days: 365 },
 ] as const;
 
@@ -47,7 +47,7 @@ const SHORT_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct
 const fmtDayLabel = (iso: string, rangeDays: number): string => {
   const parts = iso.split('-');
   if (rangeDays <= 30) return `${parts[2]}/${SHORT_MONTHS[Number(parts[1]) - 1]}`;
-  return SHORT_MONTHS[Number(parts[1]) - 1];
+  return SHORT_MONTHS[Number(parts[1]) - 1] ?? '';
 };
 
 const fmtMonthLabel = (ym: string): string => {
@@ -74,13 +74,16 @@ const chunkAggregate = (
 };
 
 function EmptyState({ icon, text }: { icon: keyof typeof Ionicons.glyphMap; text: string }) {
-  const { colors, typography } = useTheme();
+  const theme = useTheme();
+  const { colors, typography, spacing } = theme;
+  const styles = useMemo(() => StyleSheet.create({
+    wrap: { paddingVertical: spacing('8'), alignItems: 'center' as const, gap: spacing('2.5') },
+    text: { fontFamily: typography.fonts.regular, color: colors.textMuted, fontSize: 12, textAlign: 'center' as const },
+  }), [theme]);
   return (
-    <View style={{ paddingVertical: 32, alignItems: 'center', gap: 10 }}>
+    <View style={styles.wrap}>
       <Ionicons name={icon} size={28} color={colors.textMuted} />
-      <Text style={{ color: colors.textMuted, fontFamily: typography.fonts.regular, fontSize: 12, textAlign: 'center' }}>
-        {text}
-      </Text>
+      <Text style={styles.text}>{text}</Text>
     </View>
   );
 }
@@ -107,9 +110,9 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
     if (!currencyKeys.includes(selectedCurrency)) setSelectedCurrency(currencyKeys[0]);
   }, [currencyKeys, selectedCurrency]);
 
-  const { data: dailyData, isLoading: dailyLoading } = useAnalyticsDailyData(selectedCurrency, selectedRange);
+  const { data: dailyData,   isLoading: dailyLoading   } = useAnalyticsDailyData(selectedCurrency, selectedRange);
   const { data: monthlyData, isLoading: monthlyLoading } = useAnalyticsMonthlyData(selectedCurrency);
-  const { data: categoryData, isLoading: catLoading } = useAnalyticsCategoryBreakdown(selectedCurrency, selectedRange);
+  const { data: categoryData, isLoading: catLoading    } = useAnalyticsCategoryBreakdown(selectedCurrency, selectedRange);
   const { data: dowData } = useAnalyticsDow(selectedCurrency, selectedRange);
 
   const isLoading = dailyLoading || monthlyLoading || catLoading;
@@ -117,7 +120,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const summary = useMemo(() => {
     const src = selectedRange === 365 ? monthlyData : dailyData;
     if (!src || src.length === 0) return { income: 0, expense: 0, net: 0, savingsRate: 0 };
-    const income = src.reduce((s, d) => s + d.income, 0);
+    const income  = src.reduce((s, d) => s + d.income,  0);
     const expense = src.reduce((s, d) => s + d.expense, 0);
     const net = income - expense;
     const savingsRate = income > 0 ? (net / income) * 100 : 0;
@@ -126,37 +129,19 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
   const areaData = useMemo((): AreaChartPoint[] => {
     if (selectedRange === 365) {
-      return (monthlyData ?? []).map(m => ({
-        label: fmtMonthLabel(m.month),
-        income: m.income,
-        expense: m.expense,
-      }));
+      return (monthlyData ?? []).map(m => ({ label: fmtMonthLabel(m.month), income: m.income, expense: m.expense }));
     }
-    return (dailyData ?? []).map(d => ({
-      label: fmtDayLabel(d.day, selectedRange),
-      income: d.income,
-      expense: d.expense,
-    }));
+    return (dailyData ?? []).map(d => ({ label: fmtDayLabel(d.day, selectedRange), income: d.income, expense: d.expense }));
   }, [dailyData, monthlyData, selectedRange]);
 
   const barData = useMemo((): BarBucket[] => {
     if (selectedRange === 7) {
-      return (dailyData ?? []).map(d => ({
-        label: fmtDayLabel(d.day, 7),
-        income: d.income,
-        expense: d.expense,
-      }));
+      return (dailyData ?? []).map(d => ({ label: fmtDayLabel(d.day, 7), income: d.income, expense: d.expense }));
     }
-    if (selectedRange === 30) {
-      return chunkAggregate(dailyData ?? [], 5);
-    }
+    if (selectedRange === 30) return chunkAggregate(dailyData ?? [], 5);
     const monthly = monthlyData ?? [];
     const take = selectedRange === 90 ? 3 : 12;
-    return monthly.slice(-take).map(m => ({
-      label: fmtMonthLabel(m.month),
-      income: m.income,
-      expense: m.expense,
-    }));
+    return monthly.slice(-take).map(m => ({ label: fmtMonthLabel(m.month), income: m.income, expense: m.expense }));
   }, [dailyData, monthlyData, selectedRange]);
 
   const currencyAccounts = useMemo(
@@ -169,24 +154,26 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
     return currencyAccounts
       .map(a => ({
         ...a,
-        hex: colorNumberToHex(a.color),
+        hex:   colorNumberToHex(a.color),
         share: totalBalance > 0 ? Math.max(a.balance, 0) / totalBalance : 0,
       }))
       .sort((a, b) => b.balance - a.balance);
   }, [currencyAccounts]);
 
   const metrics = useMemo(() => {
-    const balance = currencyAccounts.reduce((s, a) => s + a.balance, 0);
+    const balance  = currencyAccounts.reduce((s, a) => s + a.balance, 0);
     const dailyBurn = summary.expense / selectedRange;
-    const runway = dailyBurn > 0 ? balance / dailyBurn : null;
+    const runway    = dailyBurn > 0 ? balance / dailyBurn : null;
     const flowRatio = summary.expense > 0 ? summary.income / summary.expense : null;
-    const txCount = (dailyData ?? []).reduce((s, d) => s + (d.expense > 0 ? 1 : 0), 0);
+    const txCount   = (dailyData ?? []).reduce((s, d) => s + (d.expense > 0 ? 1 : 0), 0);
     return { dailyBurn, runway, flowRatio, txCount };
   }, [summary, currencyAccounts, selectedRange, dailyData]);
 
   const handleCurrencySelect = useCallback((c: string) => setSelectedCurrency(c), []);
-  const handleRangeSelect = useCallback((d: RangeDays) => setSelectedRange(d), []);
-  const navigateToPremium = useCallback(() => router.push('/premium'), [router]);
+  const handleRangeSelect    = useCallback((d: RangeDays) => setSelectedRange(d), []);
+  const navigateToPremium    = useCallback(() => router.push('/premium'), [router]);
+
+  const savingsColor = summary.savingsRate >= 0 ? colors.success : colors.danger;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -200,6 +187,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
       ) : (
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
+          {/* Currency picker */}
           {currencyKeys.length > 1 && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>
               {currencyKeys.map(c => (
@@ -215,6 +203,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             </ScrollView>
           )}
 
+          {/* Range picker */}
           <View style={styles.pillRow}>
             {RANGES.map(r => {
               const locked = !isPremium && r.days !== 7;
@@ -226,14 +215,15 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   activeOpacity={0.8}
                 >
                   <Text style={[styles.pillText, r.days === selectedRange && styles.pillTextActive]}>{r.label}</Text>
-                  {locked && <Ionicons name="lock-closed" size={9} color={colors.textMuted} style={{ marginLeft: 3 }} />}
+                  {locked && <Ionicons name="lock-closed" size={9} color={colors.textMuted} style={styles.lockIcon} />}
                 </TouchableOpacity>
               );
             })}
           </View>
 
+          {/* Summary metrics */}
           <View style={styles.metricsGrid}>
-            <View style={[styles.metricTile, { flex: 2 }]}>
+            <View style={[styles.metricTile, styles.metricTileWide]}>
               <Text style={styles.metricLabel}>NET POSITION</Text>
               <MoneyText
                 amount={Math.abs(summary.net)}
@@ -245,10 +235,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             </View>
             <View style={styles.metricTile}>
               <Text style={styles.metricLabel}>SAVINGS</Text>
-              <Text style={[
-                styles.metricPlain,
-                { color: summary.savingsRate >= 0 ? colors.success : colors.danger, fontFamily: theme.typography.fonts.amountBold },
-              ]}>
+              <Text style={[styles.metricPlain, { color: savingsColor }]}>
                 {summary.savingsRate >= 0 ? '+' : ''}{summary.savingsRate.toFixed(0)}%
               </Text>
             </View>
@@ -265,6 +252,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             </View>
           </View>
 
+          {/* Spending trend */}
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>SPENDING TREND</Text>
             <Text style={styles.sectionHint}>{RANGES.find(r => r.days === selectedRange)?.label} · {selectedCurrency}</Text>
@@ -283,12 +271,13 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             <AreaChart data={areaData} width={chartWidth - 28} height={190} />
           </View>
 
+          {/* Period flow */}
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>PERIOD FLOW</Text>
             <View style={styles.legendRow}>
               <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
               <Text style={styles.legendText}>In</Text>
-              <View style={[styles.legendDot, { backgroundColor: colors.danger, marginLeft: 8 }]} />
+              <View style={[styles.legendDot, { backgroundColor: colors.danger }]} />
               <Text style={styles.legendText}>Out</Text>
             </View>
           </View>
@@ -298,6 +287,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             </View>
           </PremiumGuard>
 
+          {/* Category breakdown */}
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>CATEGORY BREAKDOWN</Text>
             <Text style={styles.sectionHint}>{(categoryData ?? []).length} groups</Text>
@@ -312,6 +302,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             </View>
           </PremiumGuard>
 
+          {/* Account split */}
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>ACCOUNT SPLIT</Text>
             <Text style={styles.sectionHint}>{accountDistribution.length} accounts</Text>
@@ -330,15 +321,13 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                     />
                     <View style={styles.accountInfo}>
                       <View style={styles.accountTopLine}>
-                        <Text style={[styles.accountName, { color: colors.text }]} numberOfLines={1}>{acc.name}</Text>
+                        <Text style={styles.accountName} numberOfLines={1}>{acc.name}</Text>
                         <MoneyText amount={acc.balance} currency={acc.currency} weight="bold" style={styles.accountBal} />
                       </View>
                       <View style={[styles.accountBarTrack, { backgroundColor: colors.background }]}>
                         <View style={[styles.accountBarFill, { width: `${acc.share * 100}%`, backgroundColor: acc.hex }]} />
                       </View>
-                      <Text style={[styles.accountShare, { color: colors.textMuted, fontFamily: theme.typography.fonts.regular }]}>
-                        {Math.round(acc.share * 100)}% of total balance
-                      </Text>
+                      <Text style={styles.accountShare}>{Math.round(acc.share * 100)}% of total balance</Text>
                     </View>
                   </View>
                 ))
@@ -348,6 +337,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             </View>
           </PremiumGuard>
 
+          {/* Spending by weekday */}
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>SPENDING BY WEEKDAY</Text>
             <Text style={styles.sectionHint}>Average pattern</Text>
@@ -358,11 +348,12 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               <View style={styles.dowLegend}>
                 <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.success }]} /><Text style={styles.legendText}>Low</Text></View>
                 <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.warning }]} /><Text style={styles.legendText}>Mid</Text></View>
-                <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.danger }]} /><Text style={styles.legendText}>High</Text></View>
+                <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.danger  }]} /><Text style={styles.legendText}>High</Text></View>
               </View>
             </View>
           </PremiumGuard>
 
+          {/* Behavioral insights */}
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>BEHAVIORAL INSIGHTS</Text>
           </View>
@@ -375,30 +366,26 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                 </View>
                 <View style={styles.kpiCell}>
                   <Text style={styles.kpiLabel}>RUNWAY</Text>
-                  <Text style={[styles.kpiPlain, { color: colors.text, fontFamily: theme.typography.fonts.amountBold }]}>
+                  <Text style={styles.kpiPlain}>
                     {metrics.runway === null ? '∞' : `${Math.max(0, metrics.runway).toFixed(0)}d`}
                   </Text>
                 </View>
                 <View style={styles.kpiCell}>
                   <Text style={styles.kpiLabel}>IN/OUT RATIO</Text>
-                  <Text style={[styles.kpiPlain, { color: colors.text, fontFamily: theme.typography.fonts.amountBold }]}>
+                  <Text style={styles.kpiPlain}>
                     {metrics.flowRatio === null ? '—' : `${metrics.flowRatio.toFixed(2)}×`}
                   </Text>
                 </View>
                 <View style={styles.kpiCell}>
                   <Text style={styles.kpiLabel}>ACTIVE DAYS</Text>
-                  <Text style={[styles.kpiPlain, { color: colors.text, fontFamily: theme.typography.fonts.amountBold }]}>
-                    {metrics.txCount}
-                  </Text>
+                  <Text style={styles.kpiPlain}>{metrics.txCount}</Text>
                 </View>
               </View>
             </View>
           </PremiumGuard>
 
           <View style={styles.footer}>
-            <Text style={[styles.footerText, { color: colors.textMuted, fontFamily: theme.typography.fonts.semibold }]}>
-              LUNO / ANALYTICS
-            </Text>
+            <Text style={styles.footerText}>LUNO / ANALYTICS</Text>
           </View>
 
         </ScrollView>
@@ -410,9 +397,10 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
-    loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    content: { paddingHorizontal: layout.screenPadding, paddingBottom: 60, paddingTop: 4 },
+    loading:   { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    content:   { paddingHorizontal: layout.screenPadding, paddingBottom: spacing('10'), paddingTop: spacing('2') },
 
+    // ── Pill selectors
     pillRow: {
       flexDirection: 'row',
       gap: spacing('2'),
@@ -426,17 +414,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingHorizontal: spacing('3'),
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
     },
-    pillActive: {
-      backgroundColor: colors.text,
-      borderColor: colors.text,
-    },
-    pillLocked: { opacity: 0.55 },
-    pillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11, letterSpacing: 0.5 },
-    pillTextActive: { color: colors.background },
+    pillActive:  { backgroundColor: colors.text },
+    pillLocked:  { opacity: 0.55 },
+    pillText:        { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11, letterSpacing: 0.5 },
+    pillTextActive:  { color: colors.background },
+    lockIcon:        { marginLeft: spacing('1') },
 
+    // ── Metric tiles
     metricsGrid: {
       flexDirection: 'row',
       gap: spacing('2'),
@@ -450,17 +435,23 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       minHeight: 76,
       justifyContent: 'space-between',
     },
+    metricTileWide: { flex: 2 },
     metricLabel: {
       fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
-      fontSize: 8.5,
+      fontSize: 10,
       letterSpacing: 1.2,
       marginBottom: spacing('1.5'),
     },
     metricValue: { fontSize: 26, lineHeight: 30, letterSpacing: -0.8 },
     metricSmall: { fontSize: 16 },
-    metricPlain: { fontSize: 24, letterSpacing: -0.5 },
+    metricPlain: {
+      fontFamily: typography.fonts.amountBold,
+      fontSize: 24,
+      letterSpacing: -0.5,
+    },
 
+    // ── Section headers
     sectionHeader: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -480,6 +471,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: 11,
     },
 
+    // ── Card
     card: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
@@ -487,67 +479,60 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       overflow: 'hidden',
     },
 
-    chartLegend: {
-      flexDirection: 'row',
-      gap: spacing('4'),
-      marginBottom: spacing('2'),
-    },
-    legendRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-    legendItem: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-    legendDot: { width: 7, height: 7, borderRadius: 4 },
-    legendDash: { width: 14, height: 2, borderRadius: 1 },
-    legendText: {
-      fontFamily: typography.fonts.regular,
-      color: colors.textMuted,
-      fontSize: 10,
-    },
+    // ── Chart legend
+    chartLegend: { flexDirection: 'row', gap: spacing('4'), marginBottom: spacing('2') },
+    legendRow:   { flexDirection: 'row', alignItems: 'center', gap: spacing('1') },
+    legendItem:  { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
+    legendDot:   { width: 7, height: 7, borderRadius: radius('full') },
+    legendDash:  { width: 14, height: 2, borderRadius: radius('full') },
+    legendText:  { fontFamily: typography.fonts.regular, color: colors.textMuted, fontSize: 10 },
 
+    // ── Account rows
     accountRow: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2.5'),
       paddingVertical: spacing('2.5'),
       borderBottomWidth: 1,
-      borderBottomColor: colors.border + '50',
+      borderBottomColor: colors.text + '08',
     },
-    rowLast: { borderBottomWidth: 0 },
-    accountInfo: { flex: 1, gap: spacing('1') },
-    accountTopLine: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    accountName: { fontFamily: typography.fonts.semibold, fontSize: 13, flex: 1 },
-    accountBal: { fontSize: 13 },
-    accountBarTrack: { height: 3, borderRadius: 2, overflow: 'hidden' },
-    accountBarFill: { height: 3, borderRadius: 2 },
-    accountShare: { fontSize: 10 },
+    rowLast:       { borderBottomWidth: 0 },
+    accountInfo:   { flex: 1, gap: spacing('1') },
+    accountTopLine: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+    accountName:   { fontFamily: typography.fonts.semibold, color: colors.text, fontSize: 13, flex: 1 },
+    accountBal:    { fontSize: 13 },
+    accountBarTrack: { height: 3, borderRadius: radius('full'), overflow: 'hidden' },
+    accountBarFill:  { height: 3, borderRadius: radius('full') },
+    accountShare:  { fontFamily: typography.fonts.regular, color: colors.textMuted, fontSize: 10 },
 
-    dowLegend: {
-      flexDirection: 'row',
-      gap: spacing('3'),
-      marginTop: spacing('2'),
-      justifyContent: 'center',
-    },
+    // ── DOW legend
+    dowLegend: { flexDirection: 'row', gap: spacing('3'), marginTop: spacing('2'), justifyContent: 'center' },
 
+    // ── KPI grid
     kpiGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
     kpiCell: {
       width: '47%',
       minHeight: 72,
       borderRadius: radius('lg'),
-      backgroundColor: colors.background + '80',
+      backgroundColor: colors.card,
       padding: spacing('3'),
       justifyContent: 'space-between',
     },
     kpiLabel: {
       fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
-      fontSize: 8.5,
+      fontSize: 10,
       letterSpacing: 1.1,
     },
     kpiValue: { fontSize: 14 },
-    kpiPlain: { fontSize: 18, letterSpacing: -0.5 },
+    kpiPlain: {
+      fontFamily: typography.fonts.amountBold,
+      color: colors.text,
+      fontSize: 18,
+      letterSpacing: -0.5,
+    },
 
-    footer: { alignItems: 'center', marginTop: spacing('8') },
-    footerText: { fontSize: 9, letterSpacing: 3, opacity: 0.4 },
+    // ── Footer
+    footer:     { alignItems: 'center', marginTop: spacing('8') },
+    footerText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 9, letterSpacing: 3, opacity: 0.4 },
   });
