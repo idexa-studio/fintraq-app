@@ -1,6 +1,7 @@
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { StreakBadge } from '@/src/features/reports/components/StreakBadge';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -25,6 +26,13 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({
 
   return (
     <View style={styles.card}>
+      <LinearGradient
+        colors={[colors.primary + '18', colors.primary + '06', 'transparent']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFillObject}
+        pointerEvents="none"
+      />
       <View style={styles.content}>
         <View style={styles.labelRow}>
           <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
