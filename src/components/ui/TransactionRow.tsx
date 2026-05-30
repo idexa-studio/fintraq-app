@@ -23,6 +23,9 @@ type TransactionData = {
     icon: string;
     color: number;
   };
+  toAccount?: {
+    name: string;
+  } | null;
 };
 
 type Props = {
@@ -66,6 +69,8 @@ export const TransactionRow = React.memo(function TransactionRow({
     onPress?.(tx);
   }, [onPress, tx]);
 
+  const isTransfer = tx.type === 'TR';
+
   const containerStyle = useMemo(() => ({
     borderBottomWidth: isLast ? 0 : 1,
     borderBottomColor: colors.border,
@@ -84,19 +89,14 @@ export const TransactionRow = React.memo(function TransactionRow({
     >
       <IconAvatar icon={iconName} bg={categoryColor + '20'} color={categoryColor} size={40} iconSize={18} />
       <View style={styles.info}>
-        <Text
-          style={[styles.title, { color: colors.text }]}
-          numberOfLines={1}
-        >
+        <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
           {tx.note || tx.category.name}
         </Text>
         <View style={styles.metaRow}>
-          <View style={[styles.dot, { backgroundColor: categoryColor }]} />
-          <Text
-            style={[styles.meta, { color: colors.textMuted }]}
-            numberOfLines={1}
-          >
-            {tx.category.name} · {tx.account.name}
+          <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
+            {isTransfer
+              ? `${tx.category.name} · ${tx.account.name} → ${tx.toAccount?.name ?? 'Account'}`
+              : `${tx.category.name} · ${tx.account.name}`}
           </Text>
         </View>
       </View>
@@ -141,11 +141,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     alignItems: 'center',
     gap: spacing('1'),
   },
-  dot: {
-    width: 5,
-    height: 5,
-    borderRadius: 3,
-  },
   meta: {
     fontFamily: typography.fonts.regular,
     fontSize: 12,
@@ -155,7 +150,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     gap: spacing('1'),
   },
   amount: {
-    fontSize: 14,
+    fontSize: 13,
   },
   date: {
     fontFamily: typography.fonts.regular,
