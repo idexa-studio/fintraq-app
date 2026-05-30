@@ -1,5 +1,6 @@
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
+import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
@@ -166,6 +167,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const router = useRouter();
 
   const [showThemeDialog, setShowThemeDialog] = useState(false);
+  const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
@@ -340,6 +342,15 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <Divider theme={theme} />
           <NavRow
             theme={theme}
+            icon="cash-outline"
+            label="Default currency"
+            subtitle="Used for new accounts and display"
+            value={profile.defaultCurrency || 'USD'}
+            onPress={() => setShowCurrencyPicker(true)}
+          />
+          <Divider theme={theme} />
+          <NavRow
+            theme={theme}
             icon="person-outline"
             label="Display name"
             subtitle="How you appear throughout the app"
@@ -434,6 +445,13 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           </View>
         </TouchableOpacity>
       </ScrollView>
+
+      <CurrencyPickerModal
+        visible={showCurrencyPicker}
+        onClose={() => setShowCurrencyPicker(false)}
+        value={profile.defaultCurrency || 'USD'}
+        onChange={(code) => { updateProfile({ defaultCurrency: code }); }}
+      />
 
       <OptionsDialog
         visible={showThemeDialog}
