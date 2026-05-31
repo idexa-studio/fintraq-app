@@ -21,6 +21,7 @@ import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { IconPickerModal } from '@/src/components/ui/IconPickerModal';
 import { ACCOUNT_COLORS, ACCOUNT_ICON_GROUPS, ACCOUNT_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
+import { useSettings } from '@/src/providers/SettingsProvider';
 import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
 import { parseAmount, toDbColor, colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
@@ -49,7 +50,9 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
   const { mutateAsync: createAccount } = useCreateAccount();
   const { mutateAsync: updateAccount } = useUpdateAccount();
 
-  const [currency, setCurrency] = useState<string>('USD');
+  const { profile } = useSettings();
+
+  const [currency, setCurrency] = useState<string>(profile.defaultCurrency || 'USD');
   const [colorHex, setColorHex] = useState<string>(ACCOUNT_COLORS[0]);
   const [iconKey, setIconKey] = useState<string>(ACCOUNT_ICONS[0]);
 
