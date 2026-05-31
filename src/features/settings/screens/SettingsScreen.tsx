@@ -5,7 +5,7 @@ import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { db } from '@/src/db/client';
-import { accounts, categories, payments } from '@/src/db/schema';
+import { accounts, categories, payments, seederState } from '@/src/db/schema';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -212,6 +212,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       await db.delete(payments);
       await db.delete(categories);
       await db.delete(accounts);
+      await db.delete(seederState);
       await AsyncStorage.clear();
       Alert.alert('Wipe complete', 'All data erased. Restart the app.');
       router.replace('/(onboarding)');
