@@ -151,14 +151,14 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           expense={totals.expense}
         />
 
-        <InsightsSection currency={selectedCurrency} />
-
         <SectionHeader title="Accounts" rightText="Manage" onPressRight={openAccountsScreen} />
         <AccountsCarousel
           accounts={accounts ?? []}
           onPressAccount={navigateToAccountTx}
           onPressAdd={openAccountForm}
         />
+
+        <InsightsSection currency={selectedCurrency} />
 
         <SectionHeader title="Top expenses" rightText={selectedCurrency} />
         <TopExpenseCategoriesCard currency={selectedCurrency} categories={topExpenseCategories} />
@@ -191,7 +191,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       </ScrollView>
 
       <TouchableOpacity style={styles.fab} onPress={navigateToCreateTx} activeOpacity={0.9}>
-        <Ionicons name="add" size={28} color={colors.background} />
+        <Ionicons name="add" size={26} color={colors.background} />
       </TouchableOpacity>
 
       <PremiumUpsellSheet visible={showUpsell} onClose={dismissUpsell} />
@@ -222,6 +222,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     activityCard: {
       marginHorizontal: layout.screenPadding,
       borderRadius: radius('xl'),
+      backgroundColor: colors.surface,
       overflow: 'hidden',
     },
     emptyActivity: { paddingVertical: spacing('8'), alignItems: 'center', gap: spacing('2') },
@@ -243,10 +244,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       position: 'absolute',
       bottom: layout.screenPadding,
       right: layout.screenPadding,
-      width: 55,
-      height: 55,
+      width: 52,
+      height: 52,
       borderRadius: radius('full'),
-      backgroundColor: colors.text,
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },

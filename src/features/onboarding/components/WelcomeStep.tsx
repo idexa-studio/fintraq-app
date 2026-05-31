@@ -1,25 +1,30 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 
-const FEATURES = [
+type ColorKey = 'primary' | 'info' | 'success';
+
+const FEATURES: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string; detail: string; colorKey: ColorKey }[] = [
   {
-    icon: 'flash-outline' as const,
+    icon: 'flash-outline',
     label: 'Fast capture',
     detail: 'Log transactions anywhere in seconds.',
+    colorKey: 'primary',
   },
   {
-    icon: 'bar-chart-outline' as const,
+    icon: 'bar-chart-outline',
     label: 'Built-in analytics',
-    detail: 'Spending trends, category breakdown, insights.',
+    detail: 'Spending trends, category breakdown, and smart insights.',
+    colorKey: 'info',
   },
   {
-    icon: 'lock-closed-outline' as const,
+    icon: 'lock-closed-outline',
     label: 'Private by design',
-    detail: 'All data stays on your device. Always.',
+    detail: 'All your data stays on your device. Always.',
+    colorKey: 'success',
   },
-] as const;
+];
 
 export const WelcomeStep = React.memo(function WelcomeStep() {
   const theme = useTheme();
@@ -28,50 +33,58 @@ export const WelcomeStep = React.memo(function WelcomeStep() {
 
   return (
     <View style={styles.wrapper}>
-      {FEATURES.map((f, i) => (
-        <View key={i} style={styles.row}>
-          <View style={styles.iconWrap}>
-            <Ionicons name={f.icon} size={20} color={colors.primary} />
+      {FEATURES.map((f) => {
+        const accent = colors[f.colorKey];
+        return (
+          <View key={f.label} style={styles.card}>
+            <View style={[styles.iconWrap, { backgroundColor: accent + '1A' }]}>
+              <Ionicons name={f.icon} size={22} color={accent} />
+            </View>
+            <View style={styles.text}>
+              <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                {f.label}
+              </Text>
+              <Text style={[styles.detail, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                {f.detail}
+              </Text>
+            </View>
           </View>
-          <View style={styles.text}>
-            <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
-              {f.label}
-            </Text>
-            <Text style={[styles.detail, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={2}>
-              {f.detail}
-            </Text>
-          </View>
-        </View>
-      ))}
+        );
+      })}
     </View>
   );
 });
 
-const createStyles = ({ typography, spacing }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     wrapper: {
-      gap: spacing('6'),
-      paddingHorizontal: spacing('2'),
+      gap: spacing('3'),
     },
-    row: {
+    card: {
       flexDirection: 'row',
+      alignItems: 'center',
       gap: spacing('4'),
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      padding: spacing('4'),
     },
     iconWrap: {
-      width: 24,
+      width: 48,
+      height: 48,
+      borderRadius: radius('full'),
       alignItems: 'center',
-      paddingTop: 2,
+      justifyContent: 'center',
+      flexShrink: 0,
     },
     text: {
       flex: 1,
-      gap: spacing('0.5'),
+      gap: spacing('1'),
     },
     label: {
-      fontSize: typography.sizes.md,
+      fontSize: 15,
     },
     detail: {
-      fontSize: typography.sizes.xs,
-      lineHeight: 18,
-      opacity: 0.65,
+      fontSize: typography.sizes.sm,
+      lineHeight: 20,
     },
   });

@@ -15,7 +15,6 @@ type Props = {
 export const DashboardHeader = React.memo(function DashboardHeader({
   greeting,
   dateLabel,
-  isPremium,
   onSearch,
   onAnalytics,
   onSettings,
@@ -31,14 +30,14 @@ export const DashboardHeader = React.memo(function DashboardHeader({
         <Text style={styles.date}>{dateLabel}</Text>
       </View>
       <View style={styles.actions}>
-        <TouchableOpacity onPress={onSearch} activeOpacity={0.7}>
-          <Ionicons name={isPremium ? 'search-outline' : 'search-outline'} size={20} color={colors.text} />
+        <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.7}>
+          <Ionicons name="search-outline" size={18} color={colors.text} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={onAnalytics} activeOpacity={0.7}>
-          <Ionicons name="pie-chart-outline" size={20} color={colors.text} />
+        <TouchableOpacity style={styles.iconBtn} onPress={onAnalytics} activeOpacity={0.7}>
+          <Ionicons name="pie-chart-outline" size={18} color={colors.text} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={onSettings} activeOpacity={0.7}>
-          <Ionicons name="settings-outline" size={20} color={colors.text} />
+        <TouchableOpacity style={styles.iconBtn} onPress={onSettings} activeOpacity={0.7}>
+          <Ionicons name="settings-outline" size={18} color={colors.text} />
         </TouchableOpacity>
       </View>
     </View>
@@ -70,6 +69,12 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
     actions: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('4'),
+      gap: spacing('2'),
+    },
+    iconBtn: {
+      width: 24,
+      height: 24,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });

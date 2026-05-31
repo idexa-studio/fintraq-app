@@ -12,12 +12,7 @@ type Props = {
   expense: number;
 };
 
-export const HeroBalanceCard = React.memo(function HeroBalanceCard({
-  balance,
-  currency,
-  income,
-  expense,
-}: Props) {
+export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, income, expense }: Props) {
   const theme = useTheme();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -27,41 +22,39 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({
   return (
     <View style={styles.card}>
       <LinearGradient
-        colors={[colors.primary + '18', colors.primary + '06', 'transparent']}
+        colors={[colors.primary + '22', colors.primary + '08', 'transparent']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFillObject}
         pointerEvents="none"
       />
-      <View style={styles.content}>
-        <View style={styles.labelRow}>
-          <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-            Total balance
-          </Text>
-          <StreakBadge />
-        </View>
 
-        <MoneyText amount={balance} currency={currency} style={styles.balance} weight="bold" />
+      <View style={styles.labelRow}>
+        <Text style={[styles.label, { fontFamily: typography.fonts.semibold }]}>Total balance</Text>
+        <StreakBadge />
+      </View>
 
-        <View style={styles.stats}>
-          <View style={styles.stat}>
-            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-              Income
-            </Text>
+      <MoneyText amount={balance} currency={currency} style={styles.balance} weight="bold" />
+
+      <View style={styles.flowTrack}>
+        <View style={[styles.flowSeg, { flex: incomeRatio, backgroundColor: colors.success }]} />
+        <View style={[styles.flowSeg, { flex: 1 - incomeRatio, backgroundColor: colors.danger }]} />
+      </View>
+
+      <View style={styles.stats}>
+        <View style={styles.stat}>
+          <View style={[styles.dot, { backgroundColor: colors.success }]} />
+          <View>
+            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold }]}>Income</Text>
             <MoneyText amount={income} currency={currency} type="CR" weight="bold" style={styles.statValue} />
           </View>
-          <View style={[styles.statDivider, { backgroundColor: colors.text + '0C' }]} />
-          <View style={styles.stat}>
-            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-              Expenses
-            </Text>
+        </View>
+        <View style={styles.stat}>
+          <View style={[styles.dot, { backgroundColor: colors.danger }]} />
+          <View>
+            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold }]}>Expenses</Text>
             <MoneyText amount={expense} currency={currency} type="DR" weight="bold" style={styles.statValue} />
           </View>
-        </View>
-
-        <View style={styles.flow}>
-          <View style={[styles.flowBar, { flex: incomeRatio, backgroundColor: colors.success }]} />
-          <View style={[styles.flowBar, { flex: 1 - incomeRatio, backgroundColor: colors.danger }]} />
         </View>
       </View>
     </View>
@@ -76,8 +69,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       borderRadius: radius('xl'),
       backgroundColor: colors.surface,
       overflow: 'hidden',
-    },
-    content: {
       padding: spacing('5'),
     },
     labelRow: {
@@ -87,42 +78,49 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: spacing('2'),
     },
     label: {
-      fontSize: 10,
+      fontSize: 11,
+      color: colors.textMuted,
+      letterSpacing: 0.3,
     },
     balance: {
-      fontSize: 40,
-      lineHeight: 44,
-      marginBottom: spacing('5'),
+      fontSize: 44,
+      lineHeight: 50,
+      letterSpacing: -1.5,
+      marginBottom: spacing('4'),
+    },
+    flowTrack: {
+      flexDirection: 'row',
+      height: 6,
+      borderRadius: radius('full'),
+      overflow: 'hidden',
+      gap: 2,
+      marginBottom: spacing('4'),
+    },
+    flowSeg: {
+      borderRadius: radius('full'),
     },
     stats: {
       flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: spacing('4'),
+      gap: spacing('6'),
     },
     stat: {
-      flex: 1,
-      gap: spacing('1'),
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: spacing('2'),
     },
-    statDivider: {
-      width: 1,
-      height: 32,
-      marginHorizontal: spacing('4'),
+    dot: {
+      width: 8,
+      height: 8,
+      borderRadius: radius('full'),
+      marginTop: 4,
     },
     statLabel: {
-      fontSize: 9,
-      opacity: 0.6,
+      fontSize: 10,
+      color: colors.textMuted,
+      opacity: 0.7,
+      marginBottom: spacing('0.5'),
     },
     statValue: {
-      fontSize: 16,
-    },
-    flow: {
-      flexDirection: 'row',
-      height: 4,
-      borderRadius: radius('full'),
-      overflow: 'hidden',
-      gap: 1,
-    },
-    flowBar: {
-      borderRadius: radius('full'),
+      fontSize: 15,
     },
   });

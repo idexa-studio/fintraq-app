@@ -48,12 +48,11 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
   return (
     <View style={styles.card}>
       {categories.map((category, idx) => {
-        const isLast = idx === categories.length - 1;
         const accent = colorNumberToHex(category.color);
         const ratio = maxAmount > 0 ? category.amount / maxAmount : 0;
 
         return (
-          <View key={`${category.name}-${idx}`} style={[styles.row, isLast && styles.rowLast]}>
+          <View key={`${category.name}-${idx}`} style={styles.row}>
             <View style={styles.left}>
               <Text style={[styles.rank, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
                 {idx + 1}
@@ -95,11 +94,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'space-between',
       gap: spacing('3'),
       paddingHorizontal: spacing('3.5'),
-      paddingVertical: spacing('2.5'),
-      borderBottomWidth: 1,
-      borderBottomColor: colors.text + '0C',
+      paddingVertical: spacing('3'),
     },
-    rowLast: { borderBottomWidth: 0 },
     left: {
       flex: 1,
       flexDirection: 'row',
