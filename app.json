@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "Numeo",
-    "slug": "numeo",
+    "slug": "luno",
     "version": "1.1.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "numeo",
+    "scheme": "luno",
     "userInterfaceStyle": "automatic",
     "jsEngine": "hermes",
     "newArchEnabled": true,
