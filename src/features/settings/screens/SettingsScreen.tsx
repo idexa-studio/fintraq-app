@@ -1,9 +1,9 @@
-import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
+import { PageBackground } from '@/src/components/ui/PageBackground';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments, seederState } from '@/src/db/schema';
 import { usePremium } from '@/src/providers/PremiumProvider';
@@ -52,7 +52,7 @@ const SwitchRow = React.memo(function SwitchRow({
 }: SwitchRowProps & { theme: ThemeContextType }) {
   const { colors, typography, spacing } = theme;
   return (
-    <View style={[switchRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5') }]}>
+    <View style={[switchRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5'), backgroundColor: colors.surface }]}>
       <IconAvatar icon={icon} bg={colors.background} color={colors.text} size={32} iconSize={14} />
       <View style={switchRowStyles.textBlock}>
         <Text style={[switchRowStyles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
@@ -88,6 +88,7 @@ type NavRowProps = {
   onPress: () => void;
   destructive?: boolean;
   iconColor?: string;
+  isLast?: boolean;
   theme: ThemeContextType;
 };
 
@@ -99,6 +100,7 @@ const NavRow = React.memo(function NavRow({
   onPress,
   destructive = false,
   iconColor: iconColorOverride,
+  isLast,
   theme,
 }: NavRowProps) {
   const { colors, typography, spacing } = theme;
@@ -109,7 +111,7 @@ const NavRow = React.memo(function NavRow({
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.65}
-      style={[navRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5') }]}
+      style={[navRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5'), backgroundColor: colors.surface }, !isLast && { marginBottom: spacing('0.5') }]}
     >
       <IconAvatar icon={icon} bg={colors.background} color={iconColor} size={32} iconSize={14} />
       <View style={navRowStyles.textBlock}>
@@ -296,7 +298,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <Text style={styles.sectionLabel}>
           Plan
         </Text>
-        <View style={styles.card}>
+        <View style={styles.group}>
           <NavRow
             theme={theme}
             icon="sparkles"
@@ -304,13 +306,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             subtitle={isPremium ? 'You have permanent access to every feature' : 'Unlock analytics, insights, and more'}
             value={isPremium ? 'Active' : undefined}
             onPress={() => router.push('/premium')}
+            isLast
           />
         </View>
 
         <Text style={styles.sectionLabel}>
           Preferences
         </Text>
-        <View style={styles.card}>
+        <View style={styles.group}>
           <SwitchRow
             theme={theme}
             icon="notifications-outline"
@@ -354,6 +357,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             subtitle="Light, dark, or follow your system setting"
             value={themeLabel}
             onPress={() => setShowThemeDialog(true)}
+            isLast
           />
         </View>
 
@@ -370,7 +374,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <Text style={styles.sectionLabel}>
           Data
         </Text>
-        <View style={styles.card}>
+        <View style={styles.group}>
           <NavRow
             theme={theme}
             icon="grid-outline"
@@ -384,13 +388,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             label="Export CSV"
             subtitle="Download transactions as a spreadsheet file"
             onPress={openExport}
+            isLast
           />
         </View>
 
         <Text style={styles.sectionLabel}>
           Legal
         </Text>
-        <View style={styles.card}>
+        <View style={styles.group}>
           <NavRow
             theme={theme}
             icon="shield-checkmark-outline"
@@ -404,13 +409,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             label="Terms of service"
             subtitle="Rules and guidelines for using Numeo"
             onPress={openTerms}
+            isLast
           />
         </View>
 
         <Text style={styles.sectionLabel}>
           Danger zone
         </Text>
-        <View style={styles.card}>
+        <View style={styles.group}>
           <NavRow
             theme={theme}
             icon="trash-bin-outline"
@@ -418,6 +424,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             subtitle="Permanently erase all data and start fresh"
             onPress={() => setShowResetDialog(true)}
             destructive
+            isLast
           />
         </View>
 
@@ -579,8 +586,7 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
       marginBottom: spacing('3'),
     },
 
-    card: {
-      backgroundColor: colors.surface,
+    group: {
       borderRadius: radius('xl'),
       overflow: 'hidden',
       marginBottom: spacing('6'),
