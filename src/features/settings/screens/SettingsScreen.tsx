@@ -52,7 +52,7 @@ const SwitchRow = React.memo(function SwitchRow({
 }: SwitchRowProps & { theme: ThemeContextType }) {
   const { colors, typography, spacing } = theme;
   return (
-    <View style={[switchRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5'), backgroundColor: colors.surface }]}>
+    <View style={[switchRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5'), backgroundColor: colors.surface, marginBottom: spacing('0.5') }]}>
       <IconAvatar icon={icon} bg={colors.background} color={colors.text} size={32} iconSize={14} />
       <View style={switchRowStyles.textBlock}>
         <Text style={[switchRowStyles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
