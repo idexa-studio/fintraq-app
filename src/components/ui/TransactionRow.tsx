@@ -53,7 +53,7 @@ export const TransactionRow = React.memo(function TransactionRow({
   showDate
 }: Props) {
   const theme = useTheme();
-  const { colors, radius } = theme;
+  const { colors, radius, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const categoryColor = useMemo(() => colorNumberToHex(tx.category.color), [tx.category.color]);
@@ -72,14 +72,13 @@ export const TransactionRow = React.memo(function TransactionRow({
   const isTransfer = tx.type === 'TR';
 
   const containerStyle = useMemo(() => ({
-    borderBottomWidth: isLast ? 0 : 1,
-    borderBottomColor: colors.border,
     backgroundColor: colors.surface,
-    borderTopLeftRadius: isFirst ? radius('lg') : 0,
-    borderTopRightRadius: isFirst ? radius('lg') : 0,
-    borderBottomLeftRadius: isLast ? radius('lg') : 0,
-    borderBottomRightRadius: isLast ? radius('lg') : 0,
-  }), [isFirst, isLast, colors.border, colors.surface, radius]);
+    borderTopLeftRadius: isFirst ? radius('xl') : 0,
+    borderTopRightRadius: isFirst ? radius('xl') : 0,
+    borderBottomLeftRadius: isLast ? radius('xl') : 0,
+    borderBottomRightRadius: isLast ? radius('xl') : 0,
+    marginBottom: isLast ? 0 : spacing('0.5'),
+  }), [isFirst, isLast, colors.surface, radius, spacing]);
 
   return (
     <TouchableOpacity
