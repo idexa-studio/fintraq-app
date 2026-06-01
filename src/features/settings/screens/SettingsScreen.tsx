@@ -34,14 +34,6 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-const Divider = React.memo(function Divider({ theme }: { theme: ThemeContextType }) {
-  return <View style={[dividerStyles.base, { backgroundColor: theme.colors.text + '0C' }]} />;
-});
-
-const dividerStyles = StyleSheet.create({
-  base: { height: 1, marginHorizontal: 16 },
-});
-
 type SwitchRowProps = {
   icon: IoniconName;
   label: string;
@@ -329,7 +321,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
           {profile.reminderEnabled && (
             <>
-              <Divider theme={theme} />
               <NavRow
                 theme={theme}
                 icon="time-outline"
@@ -340,7 +331,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
               />
             </>
           )}
-          <Divider theme={theme} />
           <NavRow
             theme={theme}
             icon="cash-outline"
@@ -349,7 +339,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             value={profile.defaultCurrency || 'USD'}
             onPress={() => setShowCurrencyPicker(true)}
           />
-          <Divider theme={theme} />
           <NavRow
             theme={theme}
             icon="person-outline"
@@ -358,7 +347,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             value={profile.name || 'Not set'}
             onPress={openNameModal}
           />
-          <Divider theme={theme} />
           <NavRow
             theme={theme}
             icon="contrast-outline"
@@ -390,7 +378,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             subtitle="Manage your income and expense groups"
             onPress={() => router.push('/categories')}
           />
-          <Divider theme={theme} />
           <NavRow
             theme={theme}
             icon="download-outline"
@@ -411,7 +398,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             subtitle="How we handle your data"
             onPress={openPrivacy}
           />
-          <Divider theme={theme} />
           <NavRow
             theme={theme}
             icon="document-text-outline"
