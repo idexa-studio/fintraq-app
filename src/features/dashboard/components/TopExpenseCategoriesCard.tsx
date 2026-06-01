@@ -57,7 +57,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
               <Text style={[styles.rank, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
                 {idx + 1}
               </Text>
-              <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} bg={colors.surface} color={accent} size={28} iconSize={13} />
+              <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} bg={accent + '18'} color={accent} size={28} iconSize={13} />
               <View style={styles.meta}>
                 <Text style={[styles.name, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
                   {category.name}
