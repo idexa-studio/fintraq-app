@@ -233,12 +233,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
   const openPrivacy = useCallback(() => {
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://trynumeo.app/in-app/privacy?platform=${platform}`);
+    Linking.openURL(`https://numeo.idexa.app/in-app/privacy?platform=${platform}`);
   }, []);
 
   const openTerms = useCallback(() => {
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://trynumeo.app/in-app/terms?platform=${platform}`);
+    Linking.openURL(`https://numeo.idexa.app/in-app/terms?platform=${platform}`);
   }, []);
 
   const openExport = useCallback(() => {
