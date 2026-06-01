@@ -29,8 +29,8 @@ export const ProfileStep = React.memo(function ProfileStep({ currency, onOpenCur
           name="name"
           rules={{
             required: 'Please enter your name',
-            minLength: { value: 2, message: 'Name must be at least 2 characters' },
-            maxLength: { value: 30, message: 'Name must be under 30 characters' },
+            minLength: { value: 2, message: 'At least 2 characters' },
+            maxLength: { value: 30, message: 'Under 30 characters' },
           }}
           render={({ field }) => (
             <TextInput
@@ -59,11 +59,9 @@ export const ProfileStep = React.memo(function ProfileStep({ currency, onOpenCur
           Default currency
         </Text>
         <TouchableOpacity style={styles.currencyRow} onPress={onOpenCurrencyPicker} activeOpacity={0.7}>
-          <View style={[styles.currencyBadge, { backgroundColor: colors.primary + '14' }]}>
-            <Text style={[styles.currencyCode, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>
-              {currency}
-            </Text>
-          </View>
+          <Text style={[styles.currencyCode, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>
+            {currency}
+          </Text>
           <Text style={[styles.currencyHint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
             Tap to change
           </Text>
@@ -77,17 +75,18 @@ export const ProfileStep = React.memo(function ProfileStep({ currency, onOpenCur
 const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     wrapper: {
-      gap: spacing('7'),
+      gap: spacing('6'),
     },
     field: {
       gap: spacing('2'),
     },
     label: {
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
+      opacity: 0.7,
     },
     input: {
-      fontSize: 40,
-      lineHeight: 46,
+      fontSize: typography.sizes.xxxl,
+      lineHeight: 34,
       paddingHorizontal: 0,
       paddingVertical: spacing('1'),
     },
@@ -101,7 +100,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     error: {
       fontSize: typography.sizes.xs,
-      marginTop: spacing('1'),
+      marginTop: spacing('0.5'),
     },
     currencyRow: {
       flexDirection: 'row',
@@ -112,18 +111,11 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       borderRadius: radius('xl'),
       paddingHorizontal: spacing('4'),
     },
-    currencyBadge: {
-      height: 28,
-      paddingHorizontal: spacing('2.5'),
-      borderRadius: radius('md'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
     currencyCode: {
-      fontSize: 13,
+      fontSize: typography.sizes.sm,
     },
     currencyHint: {
       flex: 1,
-      fontSize: typography.sizes.sm,
+      fontSize: typography.sizes.xs,
     },
   });
