@@ -18,7 +18,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { width: screenWidth } = useWindowDimensions();
-  const cardWidth = useMemo(() => screenWidth * 0.72, [screenWidth]);
+  const cardWidth = useMemo(() => screenWidth * 0.62, [screenWidth]);
 
   return (
     <ScrollView
@@ -41,9 +41,16 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
             onPress={() => onPressAccount(acc.id)}
             activeOpacity={0.85}
           >
-            <View style={styles.cardContent}>
+            {/* Upper: identity + balance */}
+            <View style={styles.upper}>
               <View style={styles.topRow}>
-                <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} color={c} variant="solid" size={40} iconSize={18} />
+                <IconAvatar
+                  icon={resolveIcon(acc.icon, 'wallet-outline')}
+                  color={c}
+                  variant="solid"
+                  size={32}
+                  iconSize={14}
+                />
                 <View style={styles.meta}>
                   <Text style={[styles.name, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
                     {acc.name}
@@ -52,7 +59,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
                     {hint}
                   </Text>
                 </View>
-                <View style={[styles.currencyBadge, { backgroundColor: c + '18' }]}>
+                <View style={[styles.currencyBadge, { backgroundColor: c + '1A' }]}>
                   <Text style={[styles.currency, { fontFamily: typography.fonts.semibold, color: c }]}>
                     {acc.currency}
                   </Text>
@@ -65,34 +72,42 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
                 </Text>
                 <MoneyText amount={acc.balance} currency={acc.currency} style={styles.balance} weight="bold" />
               </View>
+            </View>
 
-              <View style={styles.stats}>
-                <View style={styles.stat}>
-                  <Text style={[styles.statTag, { fontFamily: typography.fonts.semibold, color: colors.success }]}>IN</Text>
-                  <MoneyText amount={acc.income} currency={acc.currency} type="CR" compact style={styles.statValue} />
-                </View>
-                <View style={styles.stat}>
-                  <Text style={[styles.statTag, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>OUT</Text>
-                  <MoneyText amount={acc.expense} currency={acc.currency} type="DR" compact style={styles.statValue} />
-                </View>
+            {/* Lower: stats on contrasting background */}
+            <View style={styles.lower}>
+              <View style={styles.stat}>
+                <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.success }]}>
+                  Income
+                </Text>
+                <MoneyText amount={acc.income} currency={acc.currency} type="CR" compact style={styles.statValue} />
+              </View>
+              <View style={styles.stat}>
+                <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
+                  Expenses
+                </Text>
+                <MoneyText amount={acc.expense} currency={acc.currency} type="DR" compact style={styles.statValue} />
               </View>
             </View>
           </TouchableOpacity>
         );
       })}
 
+      {/* Add account card */}
       <TouchableOpacity
         style={[styles.addCard, { width: cardWidth }]}
         onPress={onPressAdd}
         activeOpacity={0.85}
       >
         <IconAvatar icon="add" color={colors.primary} variant="subtle" size={48} iconSize={22} />
-        <Text style={[styles.addTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-          Add account
-        </Text>
-        <Text style={[styles.addSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-          Track another wallet, bank, or cash.
-        </Text>
+        <View style={styles.addText}>
+          <Text style={[styles.addTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+            Add account
+          </Text>
+          <Text style={[styles.addSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+            Track another wallet, bank, or cash.
+          </Text>
+        </View>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -107,12 +122,13 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       borderRadius: radius('xl'),
       backgroundColor: colors.surface,
       overflow: 'hidden',
-    },
-    cardContent: {
-      padding: spacing('4'),
-      gap: spacing('3'),
+      minHeight: 148,
     },
 
+    upper: {
+      padding: spacing('3.5'),
+      gap: spacing('2.5'),
+    },
     topRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -126,27 +142,34 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     hint: { fontSize: typography.sizes.xs, opacity: 0.55 },
     currencyBadge: {
       paddingHorizontal: spacing('2'),
-      paddingVertical: spacing('0.5'),
+      paddingVertical: spacing('1'),
       borderRadius: radius('md'),
     },
     currency: { fontSize: 10 },
 
     balanceLabel: { fontSize: 9, opacity: 0.5, marginBottom: spacing('0.5') },
-    balance: { fontSize: 26, lineHeight: 30 },
+    balance: { fontSize: 22, lineHeight: 26, letterSpacing: -0.5 },
 
-    stats: { flexDirection: 'row', gap: spacing('4') },
+    lower: {
+      flexDirection: 'row',
+      gap: spacing('4'),
+      backgroundColor: colors.card,
+      paddingHorizontal: spacing('3.5'),
+      paddingVertical: spacing('2.5'),
+    },
     stat: { gap: spacing('0.5') },
-    statTag: { fontSize: 8, letterSpacing: 0.5 },
-    statValue: { fontSize: 12 },
+    statLabel: { fontSize: 9, letterSpacing: 0.2 },
+    statValue: { fontSize: 13 },
 
     addCard: {
       borderRadius: radius('xl'),
       backgroundColor: colors.surface,
-      padding: spacing('4'),
+      padding: spacing('3.5'),
       justifyContent: 'center',
       gap: spacing('3'),
-      minHeight: 170,
+      minHeight: 148,
     },
-    addTitle: { fontSize: typography.sizes.lg },
+    addText: { gap: spacing('1') },
+    addTitle: { fontSize: typography.sizes.md },
     addSub: { fontSize: typography.sizes.xs, lineHeight: 18, maxWidth: 180, opacity: 0.6 },
   });

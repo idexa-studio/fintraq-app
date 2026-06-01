@@ -194,7 +194,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         <Ionicons name="add" size={26} color={colors.background} />
       </TouchableOpacity>
 
-      <PremiumUpsellSheet visible={showUpsell} onClose={dismissUpsell} />
+      <PremiumUpsellSheet visible={showUpsell && !isPremium} onClose={dismissUpsell} />
     </SafeAreaView>
   );
 });

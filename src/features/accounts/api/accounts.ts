@@ -1,9 +1,15 @@
+import { eq } from 'drizzle-orm';
 import { db } from '../../../db/client';
 import { accounts } from '../../../db/schema';
-import { eq } from 'drizzle-orm';
 
 export type Account = typeof accounts.$inferSelect;
 export type InsertAccount = typeof accounts.$inferInsert;
+
+/** Fields allowed to be mutated via the account form. Financial fields are intentionally excluded
+ *  — balance, income, and expense are owned exclusively by transaction mutations. */
+export type UpdateAccountData = Partial<
+  Omit<InsertAccount, 'balance' | 'income' | 'expense'>
+>;
 
 export const getAccounts = async (): Promise<Account[]> => {
   return await db.select().from(accounts);
@@ -14,11 +20,16 @@ export const createAccount = async (data: InsertAccount) => {
   return result[0];
 };
 
-export const updateAccount = async (id: number, data: Partial<InsertAccount>) => {
+export const updateAccount = async (id: number, data: UpdateAccountData) => {
   const result = await db.update(accounts).set(data).where(eq(accounts.id, id)).returning();
   return result[0];
 };
 
 export const deleteAccount = async (id: number) => {
   return await db.delete(accounts).where(eq(accounts.id, id));
+};
+
+/** Explicit manual balance correction — only called when user deliberately overrides the stored balance. */
+export const adjustAccountBalance = async (id: number, balance: number): Promise<void> => {
+  await db.update(accounts).set({ balance }).where(eq(accounts.id, id));
 };

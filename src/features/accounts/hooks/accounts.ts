@@ -25,7 +25,7 @@ export const useCreateAccount = () => {
 export const useUpdateAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<api.InsertAccount> }) =>
+    mutationFn: ({ id, data }: { id: number; data: api.UpdateAccountData }) =>
       api.updateAccount(id, data),
     onSuccess: (_, { id }) => invalidateAll(queryClient,
       QUERY_KEYS.accounts.all,

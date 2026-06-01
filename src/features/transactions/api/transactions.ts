@@ -151,6 +151,39 @@ export const getTransactionById = async (id: number): Promise<Payment | null> =>
   return payment ?? null;
 };
 
+// ─── Account balance helpers ──────────────────────────────────────────────────
+
+const applyBalanceDelta = async (
+  accountId: number,
+  type: TransactionType,
+  amount: number,
+  direction: 1 | -1,
+): Promise<void> => {
+  if (type === 'TR') {
+    await db
+      .update(accounts)
+      .set({ balance: sql`${accounts.balance} + ${direction * amount}` })
+      .where(eq(accounts.id, accountId));
+    return;
+  }
+
+  const sign = type === 'CR' ? 1 : -1;
+  const balanceDelta = sign * direction * amount;
+  const incomeDelta  = type === 'CR' ? direction * amount : 0;
+  const expenseDelta = type === 'DR' ? direction * amount : 0;
+
+  await db
+    .update(accounts)
+    .set({
+      balance: sql`${accounts.balance} + ${balanceDelta}`,
+      income:  sql`${accounts.income}  + ${incomeDelta}`,
+      expense: sql`${accounts.expense} + ${expenseDelta}`,
+    })
+    .where(eq(accounts.id, accountId));
+};
+
+// ─── Mutations ────────────────────────────────────────────────────────────────
+
 export const createTransaction = async (data: InsertPayment): Promise<Payment> => {
   if (__DEV__) {
     console.log('[TX] createTransaction', {
@@ -162,81 +195,47 @@ export const createTransaction = async (data: InsertPayment): Promise<Payment> =
     });
   }
   try {
-    return await db.transaction(async (tx) => {
-      const [payment] = await tx.insert(payments).values(data).returning();
+    const [payment] = await db.insert(payments).values(data).returning();
 
-      if (data.type === 'TR') {
-        if (data.toAccountId == null) throw new Error('Transfer requires toAccountId');
-        if (__DEV__) console.log('[TX] transfer: debit accountId', data.accountId, 'credit accountId', data.toAccountId, 'amount', data.amount);
-        await tx
-          .update(accounts)
-          .set({ balance: sql`${accounts.balance} - ${data.amount}` })
-          .where(eq(accounts.id, data.accountId));
-        await tx
-          .update(accounts)
-          .set({ balance: sql`${accounts.balance} + ${data.amount}` })
-          .where(eq(accounts.id, data.toAccountId));
-      } else {
-        const balanceDelta = data.type === 'CR' ? data.amount : -data.amount;
-        const incomeDelta = data.type === 'CR' ? data.amount : 0;
-        const expenseDelta = data.type === 'DR' ? data.amount : 0;
-        if (__DEV__) console.log('[TX] balance update: accountId', data.accountId, { balanceDelta, incomeDelta, expenseDelta });
-        await tx
-          .update(accounts)
-          .set({
-            balance: sql`${accounts.balance} + ${balanceDelta}`,
-            income: sql`${accounts.income} + ${incomeDelta}`,
-            expense: sql`${accounts.expense} + ${expenseDelta}`,
-          })
-          .where(eq(accounts.id, data.accountId));
-      }
+    if (data.type === 'TR') {
+      if (data.toAccountId == null) throw new Error('Transfer requires toAccountId');
+      // Debit source, credit destination
+      await applyBalanceDelta(data.accountId, 'TR', data.amount, -1);
+      await applyBalanceDelta(data.toAccountId, 'TR', data.amount, 1);
+    } else {
+      await applyBalanceDelta(data.accountId, data.type, data.amount, 1);
+    }
 
-      return payment;
-    });
+    if (__DEV__) console.log('[TX] createTransaction success id', payment.id);
+    return payment;
   } catch (err) {
     console.error('[TX] createTransaction FAILED', { data, err });
     throw err;
   }
 };
 
-export const deleteTransaction = async (id: number) => {
+export const deleteTransaction = async (id: number): Promise<void> => {
   if (__DEV__) console.log('[TX] deleteTransaction id', id);
   try {
-    return await db.transaction(async (tx) => {
-      const [payment] = await tx.select().from(payments).where(eq(payments.id, id));
-      if (!payment) {
-        if (__DEV__) console.warn('[TX] deleteTransaction: payment not found id', id);
-        return null;
-      }
-      if (__DEV__) console.log('[TX] deleting payment', { type: payment.type, amount: payment.amount, accountId: payment.accountId, toAccountId: payment.toAccountId });
+    const [payment] = await db.select().from(payments).where(eq(payments.id, id));
+    if (!payment) {
+      if (__DEV__) console.warn('[TX] deleteTransaction: payment not found id', id);
+      return;
+    }
 
-      if (payment.type === 'TR') {
-        if (payment.toAccountId != null) {
-          await tx
-            .update(accounts)
-            .set({ balance: sql`${accounts.balance} + ${payment.amount}` })
-            .where(eq(accounts.id, payment.accountId));
-          await tx
-            .update(accounts)
-            .set({ balance: sql`${accounts.balance} - ${payment.amount}` })
-            .where(eq(accounts.id, payment.toAccountId));
-        }
-      } else {
-        const balanceDelta = payment.type === 'CR' ? -payment.amount : payment.amount;
-        const incomeDelta = payment.type === 'CR' ? -payment.amount : 0;
-        const expenseDelta = payment.type === 'DR' ? -payment.amount : 0;
-        await tx
-          .update(accounts)
-          .set({
-            balance: sql`${accounts.balance} + ${balanceDelta}`,
-            income: sql`${accounts.income} + ${incomeDelta}`,
-            expense: sql`${accounts.expense} + ${expenseDelta}`,
-          })
-          .where(eq(accounts.id, payment.accountId));
-      }
+    await db.delete(payments).where(eq(payments.id, id));
 
-      return await tx.delete(payments).where(eq(payments.id, id));
-    });
+    if (payment.type === 'TR') {
+      if (payment.toAccountId != null) {
+        // Reverse: credit source back, debit destination back
+        await applyBalanceDelta(payment.accountId, 'TR', payment.amount, 1);
+        await applyBalanceDelta(payment.toAccountId, 'TR', payment.amount, -1);
+      }
+    } else {
+      await applyBalanceDelta(payment.accountId, payment.type, payment.amount, -1);
+    }
+
+    if (__DEV__) console.log('[TX] deleteTransaction success id', id);
   } catch (err) {
     console.error('[TX] deleteTransaction FAILED', { id, err });
     throw err;
@@ -253,66 +252,31 @@ export const updateTransaction = async (id: number, data: UpdatePayment): Promis
     });
   }
   try {
-  return await db.transaction(async (tx) => {
-    const [old] = await tx.select().from(payments).where(eq(payments.id, id));
+    const [old] = await db.select().from(payments).where(eq(payments.id, id));
     if (!old) throw new Error('Transaction not found');
-    if (__DEV__) console.log('[TX] old payment', { type: old.type, amount: old.amount, accountId: old.accountId, toAccountId: old.toAccountId });
 
     // Reverse old impact
     if (old.type === 'TR') {
       if (old.toAccountId != null) {
-        await tx
-          .update(accounts)
-          .set({ balance: sql`${accounts.balance} + ${old.amount}` })
-          .where(eq(accounts.id, old.accountId));
-        await tx
-          .update(accounts)
-          .set({ balance: sql`${accounts.balance} - ${old.amount}` })
-          .where(eq(accounts.id, old.toAccountId));
+        await applyBalanceDelta(old.accountId, 'TR', old.amount, 1);
+        await applyBalanceDelta(old.toAccountId, 'TR', old.amount, -1);
       }
     } else {
-      const balanceDelta = old.type === 'CR' ? -old.amount : old.amount;
-      const incomeDelta = old.type === 'CR' ? -old.amount : 0;
-      const expenseDelta = old.type === 'DR' ? -old.amount : 0;
-      await tx
-        .update(accounts)
-        .set({
-          balance: sql`${accounts.balance} + ${balanceDelta}`,
-          income: sql`${accounts.income} + ${incomeDelta}`,
-          expense: sql`${accounts.expense} + ${expenseDelta}`,
-        })
-        .where(eq(accounts.id, old.accountId));
+      await applyBalanceDelta(old.accountId, old.type, old.amount, -1);
     }
 
     // Apply new impact
     if (data.type === 'TR') {
       if (data.toAccountId == null) throw new Error('Transfer requires toAccountId');
-      await tx
-        .update(accounts)
-        .set({ balance: sql`${accounts.balance} - ${data.amount}` })
-        .where(eq(accounts.id, data.accountId));
-      await tx
-        .update(accounts)
-        .set({ balance: sql`${accounts.balance} + ${data.amount}` })
-        .where(eq(accounts.id, data.toAccountId));
+      await applyBalanceDelta(data.accountId, 'TR', data.amount, -1);
+      await applyBalanceDelta(data.toAccountId, 'TR', data.amount, 1);
     } else {
-      const balanceDelta = data.type === 'CR' ? data.amount : -data.amount;
-      const incomeDelta = data.type === 'CR' ? data.amount : 0;
-      const expenseDelta = data.type === 'DR' ? data.amount : 0;
-      await tx
-        .update(accounts)
-        .set({
-          balance: sql`${accounts.balance} + ${balanceDelta}`,
-          income: sql`${accounts.income} + ${incomeDelta}`,
-          expense: sql`${accounts.expense} + ${expenseDelta}`,
-        })
-        .where(eq(accounts.id, data.accountId));
+      await applyBalanceDelta(data.accountId, data.type, data.amount, 1);
     }
 
-    const [updated] = await tx.update(payments).set(data).where(eq(payments.id, id)).returning();
+    const [updated] = await db.update(payments).set(data).where(eq(payments.id, id)).returning();
     if (__DEV__) console.log('[TX] updateTransaction success id', updated.id);
     return updated;
-  });
   } catch (err) {
     console.error('[TX] updateTransaction FAILED', { id, data, err });
     throw err;

@@ -52,7 +52,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
             <View style={[styles.tile, { marginRight, marginLeft }]}>
               <IconAvatar icon={resolveIcon(cat.icon, 'pricetag-outline')} color={accent} variant="solid" size={26}  />
               <View style={styles.text}>
-                <Text style={[styles.name, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>{cat.name}</Text>
+                <Text style={[styles.name, {  }]} numberOfLines={1}>{cat.name}</Text>
                 <MoneyText amount={cat.amount} currency={currency} type="DR" weight="bold" compact style={styles.amount} />
               </View>
             </View>
@@ -91,6 +91,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       borderRadius: radius('lg'),
     },
     text: { gap: spacing('0.5') },
-    name: { fontSize: typography.sizes.xs },
+    name: { fontSize: typography.sizes.sm, fontFamily: typography.fonts.semibold, color: colors.text },
     amount: { fontSize: typography.sizes.xs },
   });

@@ -23,8 +23,10 @@ import { ACCOUNT_COLORS, ACCOUNT_ICON_GROUPS, ACCOUNT_ICONS, PALETTE_COLOR_OPTIO
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
+import { adjustAccountBalance } from '@/src/features/accounts/api/accounts';
 import { parseAmount, toDbColor, colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
+import type { InsertAccount, UpdateAccountData } from '@/src/features/accounts/api/accounts';
 
 type AccountFormValues = {
   name: string;
@@ -76,7 +78,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         name: account.name,
         holderName: account.holderName,
         accountNumber: account.accountNumber,
-        balance: '',
+        balance: String(account.balance),
       });
       setCurrency(account.currency);
       setColorHex(colorNumberToHex(account.color).toUpperCase());
@@ -90,20 +92,34 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
   const closeCurrencyPicker = useCallback(() => setShowCurrencyPicker(false), []);
 
   const handleSave = handleSubmit(async (data) => {
-    const payload = {
-      name: data.name.trim(),
-      holderName: data.holderName.trim(),
-      accountNumber: data.accountNumber.trim(),
-      balance: parseAmount(data.balance),
-      currency,
-      color: toDbColor(colorHex),
-      icon: iconKey.replace('-outline', ''),
-    };
     try {
       if (isEditing && account) {
-        await updateAccount({ id: account.id, data: payload });
+        const updateData: UpdateAccountData = {
+          name: data.name.trim(),
+          holderName: data.holderName.trim(),
+          accountNumber: data.accountNumber.trim(),
+          currency,
+          color: toDbColor(colorHex),
+          icon: iconKey.replace('-outline', ''),
+        };
+        await updateAccount({ id: account.id, data: updateData });
+
+        const newBalance = parseAmount(data.balance);
+        if (Math.abs(newBalance - account.balance) > 0.001) {
+          await adjustAccountBalance(account.id, newBalance);
+        }
       } else {
-        await createAccount(payload);
+        const createData: InsertAccount = {
+          name: data.name.trim(),
+          holderName: data.holderName.trim(),
+          accountNumber: data.accountNumber.trim(),
+          balance: parseAmount(data.balance),
+          currency,
+          color: toDbColor(colorHex),
+          icon: iconKey.replace('-outline', ''),
+          isDefault: false,
+        };
+        await createAccount(createData);
       }
       router.back();
     } catch (error) {
@@ -210,65 +226,53 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
             </View>
 
             {/* ── Balance + Currency ── */}
-            {!isEditing ? (
-              <View style={styles.section}>
-                <View style={styles.twoCol}>
-                  <View style={styles.colBalance}>
-                    <Text style={styles.sectionLabel}>OPENING BALANCE</Text>
-                    <Controller
-                      control={control}
-                      name="balance"
-                      rules={{
-                        validate: (v) =>
-                          !v.trim() ||
-                          (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) ||
-                          'Enter a valid positive amount',
-                      }}
-                      render={({ field }) => (
-                        <TextInput
-                          value={field.value}
-                          onChangeText={field.onChange}
-                          onBlur={field.onBlur}
-                          placeholder="0.00"
-                          placeholderTextColor={colors.textMuted + '50'}
-                          keyboardType="decimal-pad"
-                          style={[
-                            styles.fieldInput,
-                            styles.fieldInputAmount,
-                            errors.balance && styles.fieldInputError,
-                          ]}
-                          returnKeyType="done"
-                        />
-                      )}
-                    />
-                    {errors.balance && <Text style={styles.errorText}>{errors.balance.message}</Text>}
-                  </View>
-                  <View style={styles.colCurrency}>
-                    <Text style={styles.sectionLabel}>CURRENCY</Text>
-                    <TouchableOpacity
-                      style={styles.currencyBtn}
-                      onPress={openCurrencyPicker}
-                      activeOpacity={0.85}
-                    >
-                      <Text style={styles.currencyValue}>{currency}</Text>
-                      <Ionicons name="chevron-expand-outline" size={14} color={colors.textMuted} />
-                    </TouchableOpacity>
-                  </View>
+            <View style={styles.section}>
+              <View style={styles.twoCol}>
+                <View style={styles.colBalance}>
+                  <Text style={styles.sectionLabel}>
+                    {isEditing ? 'ADJUST BALANCE' : 'OPENING BALANCE'}
+                  </Text>
+                  <Controller
+                    control={control}
+                    name="balance"
+                    rules={{
+                      validate: (v) =>
+                        !v.trim() ||
+                        (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) ||
+                        'Enter a valid positive amount',
+                    }}
+                    render={({ field }) => (
+                      <TextInput
+                        value={field.value}
+                        onChangeText={field.onChange}
+                        onBlur={field.onBlur}
+                        placeholder="0.00"
+                        placeholderTextColor={colors.textMuted + '50'}
+                        keyboardType="decimal-pad"
+                        style={[
+                          styles.fieldInput,
+                          styles.fieldInputAmount,
+                          errors.balance && styles.fieldInputError,
+                        ]}
+                        returnKeyType="done"
+                      />
+                    )}
+                  />
+                  {errors.balance && <Text style={styles.errorText}>{errors.balance.message}</Text>}
+                </View>
+                <View style={styles.colCurrency}>
+                  <Text style={styles.sectionLabel}>CURRENCY</Text>
+                  <TouchableOpacity
+                    style={styles.currencyBtn}
+                    onPress={openCurrencyPicker}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.currencyValue}>{currency}</Text>
+                    <Ionicons name="chevron-expand-outline" size={14} color={colors.textMuted} />
+                  </TouchableOpacity>
                 </View>
               </View>
-            ) : (
-              <View style={styles.section}>
-                <Text style={styles.sectionLabel}>CURRENCY</Text>
-                <TouchableOpacity
-                  style={styles.currencyBtn}
-                  onPress={openCurrencyPicker}
-                  activeOpacity={0.85}
-                >
-                  <Text style={styles.currencyValue}>{currency}</Text>
-                  <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
-                </TouchableOpacity>
-              </View>
-            )}
+            </View>
 
             {/* ── Appearance ── */}
             <View style={styles.section}>
