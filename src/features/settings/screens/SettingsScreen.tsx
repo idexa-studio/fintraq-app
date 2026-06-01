@@ -113,7 +113,7 @@ const NavRow = React.memo(function NavRow({
       activeOpacity={0.65}
       style={[navRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5'), backgroundColor: colors.surface }, !isLast && { marginBottom: spacing('0.5') }]}
     >
-      <IconAvatar icon={icon} bg={colors.surface} color={iconColor} size={32} iconSize={14} />
+      <IconAvatar icon={icon} bg={colors.surface} color={colors.text} size={32} iconSize={14} />
       <View style={navRowStyles.textBlock}>
         <Text style={[navRowStyles.label, { fontFamily: typography.fonts.semibold, color: labelColor }]}>
           {label}

@@ -200,7 +200,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
                   <View style={styles.sep} />
                   <TouchableOpacity style={styles.cardRow} onPress={() => setSelectedAccountId(acc.id)} activeOpacity={0.65}>
                     <View style={styles.accRow}>
-                      <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} bg={c + '18'} color={c} size={24} iconSize={11} />
+                      <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} bg={c} color={colors.text} size={24} iconSize={11} />
                       <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>{acc.name}</Text>
                     </View>
                     {selected ? <Ionicons name="checkmark" size={16} color={colors.primary} /> : null}

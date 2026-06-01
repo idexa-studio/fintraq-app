@@ -23,7 +23,7 @@ export const IconAvatar = React.memo(function IconAvatar({
   const resolved = iconSize ?? Math.round(size * 0.45);
   return (
     <View style={[styles.base, { width: size, height: size, borderRadius: size / 2, backgroundColor: bg }, style]}>
-      <Ionicons name={icon} size={resolved} color={color} />
+      <Ionicons name={icon} size={resolved} color={colors.text} />
     </View>
   );
 });

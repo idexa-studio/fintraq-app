@@ -34,9 +34,9 @@ export type ThemePalette = {
 };
 
 export const DARK_THEME: ThemePalette = {
-  background: '#0D0D0F',
-  card: '#1C1C1F',
-  surface: '#2E2E33',
+  background: '#1C1C1E',
+  card: '#28282B',
+  surface: '#2C2C2E',
 
   primary: '#059669',
   primaryLight: '#34D399',
@@ -55,9 +55,9 @@ export const DARK_THEME: ThemePalette = {
 };
 
 export const LIGHT_THEME: ThemePalette = {
-  background: '#FCFCF9',
-  card: '#F6F6F2',
-  surface: '#EEEEE9',
+  background: '#F2F2F7',
+  card: '#FAFAFA',
+  surface: '#FFFFFF',
 
   primary: '#047857',
   primaryLight: '#059669',

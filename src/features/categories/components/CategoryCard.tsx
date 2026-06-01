@@ -41,7 +41,7 @@ export const CategoryCard = React.memo(function CategoryCard({
         <Ionicons
           name={resolveIcon(item.icon, 'grid-outline')}
           size={14}
-          color={catColor}
+          color={colors.text}
         />
       </View>
       <Text style={styles.name} numberOfLines={2}>

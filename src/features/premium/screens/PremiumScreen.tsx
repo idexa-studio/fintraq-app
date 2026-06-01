@@ -189,7 +189,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
                     <View style={styles.bentoFullTop}>
                       <IconAvatar
                         icon={item.feature.icon}
-                        bg={colors.primary + '15'}
+                        bg={colors.primary}
                         color={colors.primary}
                         size={28}
                         iconSize={12}
@@ -212,7 +212,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
                   <View key={item.feature.title} style={styles.bentoHalf}>
                     <IconAvatar
                       icon={item.feature.icon}
-                      bg={colors.primary + '15'}
+                      bg={colors.primary}
                       color={colors.primary}
                       size={28}
                       iconSize={12}

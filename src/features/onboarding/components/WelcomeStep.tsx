@@ -38,7 +38,7 @@ export const WelcomeStep = React.memo(function WelcomeStep() {
         return (
           <View key={f.label} style={styles.card}>
             <View style={[styles.iconWrap, { backgroundColor: accent + '1A' }]}>
-              <Ionicons name={f.icon} size={22} color={accent} />
+              <Ionicons name={f.icon} size={22} color={colors.text} />
             </View>
             <View style={styles.text}>
               <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]}>

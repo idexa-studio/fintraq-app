@@ -82,7 +82,7 @@ const SwipeActionButton = React.memo(function SwipeActionButton({
       activeOpacity={0.75}
       style={[swipeActionStyles.actionBase, { backgroundColor }]}
     >
-      <Ionicons name={icon} size={18} color={color} />
+      <Ionicons name={icon} size={18} color={colors.text} />
     </TouchableOpacity>
   );
 });
@@ -108,13 +108,13 @@ const RightActions = React.memo(function RightActions({
       <SwipeActionButton
         onPress={onEdit}
         icon="pencil"
-        color={editIconColor}
+        color={colors.text}
         backgroundColor={editBgColor}
       />
       <SwipeActionButton
         onPress={onDelete}
         icon="trash"
-        color={deleteIconColor}
+        color={colors.text}
         backgroundColor={deleteBgColor}
       />
     </View>
