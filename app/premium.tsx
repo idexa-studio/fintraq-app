@@ -1,5 +1,8 @@
-import { PremiumScreen } from "@/src/features/premium/screens/PremiumScreen";
+import { usePremium } from '@/src/providers/PremiumProvider';
+import { PremiumScreen } from '@/src/features/premium/screens/PremiumScreen';
+import { ProSuccessScreen } from '@/src/features/premium/screens/ProSuccessScreen';
 
 export default function Screen() {
-  return <PremiumScreen/>
+  const { isPremium } = usePremium();
+  return isPremium ? <ProSuccessScreen /> : <PremiumScreen />;
 }

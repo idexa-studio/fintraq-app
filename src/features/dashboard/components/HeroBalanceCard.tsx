@@ -4,11 +4,6 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-const CARD_BG    = '#1D1D28';
-const CARD_TEXT  = '#FFFFFF';
-const CARD_MUTED = 'rgba(255,255,255,0.40)';
-const CARD_SEP   = 'rgba(255,255,255,0.08)';
-
 type Props = {
   balance: number;
   currency: string;
@@ -48,13 +43,13 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   );
 });
 
-const createStyles = ({ spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     card: {
       marginHorizontal: layout.screenPadding,
       marginBottom: spacing('4'),
       borderRadius: radius('xl'),
-      backgroundColor: CARD_BG,
+      backgroundColor: colors.surface,
       padding: spacing('5'),
       gap: spacing('4'),
     },
@@ -66,7 +61,7 @@ const createStyles = ({ spacing, radius, layout }: ThemeContextType) =>
     },
     label: {
       fontSize: 9,
-      color: CARD_MUTED,
+      color: colors.textMuted,
       letterSpacing: 1.5,
     },
 
@@ -74,12 +69,12 @@ const createStyles = ({ spacing, radius, layout }: ThemeContextType) =>
       fontSize: 46,
       lineHeight: 52,
       letterSpacing: -1.5,
-      color: CARD_TEXT,
+      color: colors.text,
     },
 
     sep: {
       height: 1,
-      backgroundColor: CARD_SEP,
+      backgroundColor: colors.text + '0C',
       marginVertical: -spacing('1'),
     },
 
@@ -92,7 +87,7 @@ const createStyles = ({ spacing, radius, layout }: ThemeContextType) =>
     },
     statLabel: {
       fontSize: 10,
-      color: CARD_MUTED,
+      color: colors.textMuted,
     },
     statValue: {
       fontSize: 16,
