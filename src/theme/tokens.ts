@@ -1,5 +1,5 @@
 /**
- * Design Tokens - Luno Design System
+ * Design Tokens - Numeo Design System
  * 
  * Editorial Brutalist Design Language
  * - Clean, minimal aesthetics with precise spacing

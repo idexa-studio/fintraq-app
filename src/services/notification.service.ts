@@ -4,9 +4,9 @@ import { Platform } from 'react-native';
 const REMINDER_POOL = [
   { title: "Financial Hygiene Check 🧼", body: "Where did those funds go? Log your spends now to keep your dashboard accurate." },
   { title: "Your Streak is Sweating 💦", body: "Don't let your persistence drop. Log one transaction today to save your streak." },
-  { title: "Luno OS: Action Required ⚠️", body: "A gap in your data detected. Ensure your financial ledger is up to date." },
+  { title: "Numeo OS: Action Required ⚠️", body: "A gap in your data detected. Ensure your financial ledger is up to date." },
   { title: "The Money Trail 👣", body: "Keeping track of every cent is the first step to freedom. Spend 30 seconds logging now." },
-  { title: "Wallet Audit 🧐", body: "Did you buy lunch? Coffee? A small spend is still a spend. Log it in Luno." },
+  { title: "Wallet Audit 🧐", body: "Did you buy lunch? Coffee? A small spend is still a spend. Log it in Numeo." },
   { title: "Consistency > Intensity 🔄", body: "Tiny daily tracking wins lead to massive insights. Keep going!" },
   { title: "Don't Break the Chain ⛓️", body: "Your streak is looking strong. Keep it alive by logging today's activity." },
   { title: "Mindful Spending 🧘", body: "Knowledge is power. Log your latest transaction to see its impact on your runway." },

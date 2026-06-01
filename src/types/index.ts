@@ -1,5 +1,5 @@
 /**
- * Core Type Definitions for Luno
+ * Core Type Definitions for Numeo
  * Centralizing types ensures consistency across DB, API, and UI layers.
  */
 

@@ -367,7 +367,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           </PremiumGuard>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>LUNO / ANALYTICS</Text>
+            <Text style={styles.footerText}>NUMEO / ANALYTICS</Text>
           </View>
 
         </ScrollView>

@@ -81,7 +81,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             </View>
 
             <Text style={[styles.successHeading, { fontFamily: typography.fonts.heading, color: colors.text }]}>
-              You have Luno Pro.
+              You have Numeo Pro.
             </Text>
 
             <Text style={[styles.successBody, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
@@ -107,7 +107,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
     <SafeAreaView style={styles.container}>
       <PageBackground />
 
-      <Header title="Luno Pro" showBack />
+      <Header title="Numeo Pro" showBack />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -257,7 +257,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           </TouchableOpacity>
           <View style={styles.footerSep} />
           <TouchableOpacity
-            onPress={() => Alert.alert('Terms', 'Luno Pro is a one-time purchase tied to your store account.')}
+            onPress={() => Alert.alert('Terms', 'Numeo Pro is a one-time purchase tied to your store account.')}
             hitSlop={{ top: 8, bottom: 8, left: 12, right: 12 }}
           >
             <Text style={[styles.footerLink, { fontFamily: typography.fonts.medium, color: colors.textMuted }]}>

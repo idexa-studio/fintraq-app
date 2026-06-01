@@ -1,5 +1,5 @@
 
-# Luno — Website Brief for Developer
+# Numeo — Website Brief for Developer
 
 > Everything you need to build the marketing website. Last updated: 2026-05-27.
 
@@ -9,9 +9,9 @@
 
 | Item | Value |
 |---|---|
-| Name | Luno |
+| Name | Numeo |
 | Tagline | "Free = Tracking. Premium = Insights + Control." |
-| Website | `https://tryluno.app` |
+| Website | `https://trynumeo.app` |
 | Pricing model | Lifetime one-time purchase. No subscriptions. |
 | Platform | iOS & Android (React Native + Expo) |
 | Version | 1.1.0 |
@@ -38,7 +38,7 @@
 
 ## What the App Does
 
-Luno is a personal finance tracker. Users add accounts (bank, cash, wallet), log transactions, and categorise their spending. The free tier covers everyday tracking. Luno Pro unlocks insights, analytics, search, and export.
+Numeo is a personal finance tracker. Users add accounts (bank, cash, wallet), log transactions, and categorise their spending. The free tier covers everyday tracking. Numeo Pro unlocks insights, analytics, search, and export.
 
 ---
 
@@ -59,7 +59,7 @@ Luno is a personal finance tracker. Users add accounts (bank, cash, wallet), log
 
 ---
 
-## Luno Pro (Lifetime Purchase)
+## Numeo Pro (Lifetime Purchase)
 
 One payment. Every pro feature. Forever. All future updates included.
 
@@ -110,5 +110,5 @@ React Native, Expo, TypeScript, SQLite, Drizzle ORM, TanStack React Query
 
 ## Legal Links
 
-- Privacy: `https://tryluno.app/in-app/privacy?platform=ios|android`
-- Terms: `https://tryluno.app/in-app/terms?platform=ios|android`
+- Privacy: `https://trynumeo.app/in-app/privacy?platform=ios|android`
+- Terms: `https://trynumeo.app/in-app/terms?platform=ios|android`

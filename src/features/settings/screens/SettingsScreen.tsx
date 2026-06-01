@@ -233,12 +233,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
   const openPrivacy = useCallback(() => {
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://tryluno.app/in-app/privacy?platform=${platform}`);
+    Linking.openURL(`https://trynumeo.app/in-app/privacy?platform=${platform}`);
   }, []);
 
   const openTerms = useCallback(() => {
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://tryluno.app/in-app/terms?platform=${platform}`);
+    Linking.openURL(`https://trynumeo.app/in-app/terms?platform=${platform}`);
   }, []);
 
   const openExport = useCallback(() => {
@@ -308,7 +308,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="sparkles"
-            label={isPremium ? 'Luno Pro — Lifetime' : 'Upgrade to Pro'}
+            label={isPremium ? 'Numeo Pro — Lifetime' : 'Upgrade to Pro'}
             subtitle={isPremium ? 'You have permanent access to every feature' : 'Unlock analytics, insights, and more'}
             value={isPremium ? 'Active' : undefined}
             onPress={() => router.push('/premium')}
@@ -416,7 +416,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             theme={theme}
             icon="document-text-outline"
             label="Terms of service"
-            subtitle="Rules and guidelines for using Luno"
+            subtitle="Rules and guidelines for using Numeo"
             onPress={openTerms}
           />
         </View>
@@ -438,7 +438,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <TouchableOpacity onPress={handleFooterTap} activeOpacity={1} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}>
           <View style={styles.footer}>
             <Text style={[styles.footerBrand, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-              LUNO / CORE
+              NUMEO / CORE
             </Text>
             <Text style={[styles.footerCopy, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               Data encrypted and stored locally.
