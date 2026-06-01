@@ -162,7 +162,7 @@ const AccountRow = React.memo(function AccountRow({
 
   return (
     <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]} onPress={handlePress} activeOpacity={0.7}>
-      <IconAvatar icon={resolveIcon(account.icon, 'wallet-outline')} bg={accentColor + '18'} color={accentColor} size={36} iconSize={16} />
+      <IconAvatar icon={resolveIcon(account.icon, 'wallet-outline')} bg={colors.surface} color={accentColor} size={36} iconSize={16} />
       <View style={{ flex: 1, gap: theme.spacing('0.5') }}>
         <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{account.name}</Text>
         <Text style={{ fontFamily: theme.typography.fonts.regular, fontSize: theme.typography.sizes.xs, color: colors.textMuted }}>
@@ -189,7 +189,7 @@ const CategoryRow = React.memo(function CategoryRow({
 
   return (
     <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]} onPress={handlePress} activeOpacity={0.7}>
-      <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} bg={catColor + '18'} color={catColor} size={36} iconSize={16} />
+      <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} bg={colors.surface} color={catColor} size={36} iconSize={16} />
       <Text style={{ flex: 1, fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{category.name}</Text>
       <View style={[{ backgroundColor: (category.type === 'CR' ? colors.success : colors.danger) + '15', paddingHorizontal: theme.spacing('2'), height: 22, borderRadius: theme.radius('sm'), alignItems: 'center', justifyContent: 'center' }]}>
         <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: 10, color: category.type === 'CR' ? colors.success : colors.danger }}>

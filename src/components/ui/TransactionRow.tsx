@@ -86,7 +86,7 @@ export const TransactionRow = React.memo(function TransactionRow({
       activeOpacity={0.75}
       onPress={handlePress}
     >
-      <IconAvatar icon={iconName} bg={categoryColor + '20'} color={categoryColor} size={40} iconSize={18} />
+      <IconAvatar icon={iconName} bg={colors.surface} color={categoryColor} size={40} iconSize={18} />
       <View style={styles.info}>
         <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
           {tx.note || tx.category.name}
