@@ -222,8 +222,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     activityCard: {
       marginHorizontal: layout.screenPadding,
       borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
-      overflow: 'hidden',
     },
     emptyActivity: { paddingVertical: spacing('8'), alignItems: 'center', gap: spacing('2') },
     emptyText:     { fontFamily: typography.fonts.regular, fontSize: 13, color: colors.textMuted },
