@@ -115,8 +115,8 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
 
 const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
-    scroll: { paddingLeft: spacing('4') },
-    scrollContent: { paddingRight: spacing('7'), gap: spacing('3') },
+    scroll: { paddingLeft: spacing('3') },
+    scrollContent: { paddingRight: spacing('5'), gap: spacing('2.5') },
 
     card: {
       borderRadius: radius('xl'),

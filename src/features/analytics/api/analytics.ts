@@ -91,7 +91,7 @@ export const getCategoryBreakdown = async (
     .where(where)
     .groupBy(categories.id)
     .orderBy(sql`SUM(${payments.amount}) DESC`)
-    .limit(7);
+    .limit(8);
 };
 
 export const getSpendByDayOfWeek = async (
