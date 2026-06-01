@@ -301,8 +301,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   <View key={acc.id} style={[styles.accountRow, i === accountDistribution.length - 1 && styles.rowLast]}>
                     <IconAvatar
                       icon={resolveIcon(acc.icon, 'wallet-outline')}
-                      bg={acc.hex}
-                      color={acc.hex}
+                      color={acc.hex} variant="subtle"
                       size={34}
                       iconSize={16}
                     />

@@ -43,7 +43,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               onPress={() => handleSelect(acc.id)}
               activeOpacity={0.8}
             >
-              <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} bg={accColor} color={colors.text} size={32} iconSize={18} />
+              <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} color={accColor} variant="solid" size={32} iconSize={18} />
               <View>
                 <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>{acc.name}</Text>
                 <Text style={[styles.currency, { color: colors.textMuted }]}>{acc.currency}</Text>

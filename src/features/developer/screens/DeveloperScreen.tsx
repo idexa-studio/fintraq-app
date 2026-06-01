@@ -95,7 +95,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         >
           <View style={styles.lockWrap}>
             <View style={styles.lockIcon}>
-              <IconAvatar icon="lock-closed" bg={colors.surface} color={colors.text} size={64} iconSize={26} />
+              <IconAvatar icon="lock-closed" color={colors.surface} variant="solid" size={64} iconSize={26} />
             </View>
 
             <Text style={[styles.lockTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>
@@ -136,7 +136,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         </Text>
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <IconAvatar icon="sparkles" bg={colors.background} color={colors.primary} size={32} iconSize={14} />
+            <IconAvatar icon="sparkles" color={colors.primary} variant="subtle" size={32} iconSize={14} />
             <View style={{ flex: 1 }}>
               <Text style={[styles.cardTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
                 Premium bypass
@@ -183,7 +183,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
             onPress={() => setShowSeedConfirm(true)}
             activeOpacity={0.65}
           >
-            <IconAvatar icon="flask-outline" bg={colors.background} color={colors.primary} size={32} iconSize={14} />
+            <IconAvatar icon="flask-outline" color={colors.primary} variant="subtle" size={32} iconSize={14} />
             <View style={{ flex: 1 }}>
               <Text style={[styles.rowTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
                 Seed dummy data

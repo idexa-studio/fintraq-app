@@ -26,7 +26,7 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
 
   return (
     <View style={[styles.card, { backgroundColor: colors.surface }]}>
-      <IconAvatar icon={resolveIcon(insight.icon, 'analytics-outline')} bg={accent} color={colors.text} size={36} iconSize={16} />
+      <IconAvatar icon={resolveIcon(insight.icon, 'analytics-outline')} color={accent} variant="solid" size={36} iconSize={16} />
       <View style={styles.text}>
         <Text style={[styles.title, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
           {insight.title}

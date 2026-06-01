@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { format } from 'date-fns';
-import React, { useMemo, useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
-import { IconAvatar } from './IconAvatar';
-import { colorNumberToHex } from '../../utils/format';
+import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { TransactionType } from '../../types';
+import { colorNumberToHex } from '../../utils/format';
+import { IconAvatar } from './IconAvatar';
 import { MoneyText } from './MoneyText';
 
 type TransactionData = {
@@ -53,7 +53,7 @@ export const TransactionRow = React.memo(function TransactionRow({
   showDate
 }: Props) {
   const theme = useTheme();
-  const { colors, radius, spacing } = theme;
+  const { colors, radius, spacing, sizes } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const categoryColor = useMemo(() => colorNumberToHex(tx.category.color), [tx.category.color]);
@@ -86,7 +86,7 @@ export const TransactionRow = React.memo(function TransactionRow({
       activeOpacity={0.75}
       onPress={handlePress}
     >
-      <IconAvatar icon={iconName} bg={categoryColor} color={colors.text} size={40} iconSize={18} />
+      <IconAvatar icon={iconName} color={categoryColor} variant="solid" size={sizes.iconButton.md} />
       <View style={styles.info}>
         <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
           {tx.note || tx.category.name}
@@ -129,7 +129,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
   },
   info: {
     flex: 1,
-    gap: spacing('1'),
+    gap: spacing('0.5'),
   },
   title: {
     fontFamily: typography.fonts.semibold,
@@ -149,7 +149,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     gap: spacing('1'),
   },
   amount: {
-    fontSize: 13,
+    fontSize: typography.sizes.xs,
   },
   date: {
     fontFamily: typography.fonts.regular,

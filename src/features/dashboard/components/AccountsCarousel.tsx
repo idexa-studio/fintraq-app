@@ -43,7 +43,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
           >
             <View style={styles.cardContent}>
               <View style={styles.topRow}>
-                <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} bg={c} color={colors.text} size={40} iconSize={18} />
+                <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} color={c} variant="solid" size={40} iconSize={18} />
                 <View style={styles.meta}>
                   <Text style={[styles.name, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
                     {acc.name}
@@ -86,7 +86,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
         onPress={onPressAdd}
         activeOpacity={0.85}
       >
-        <IconAvatar icon="add" bg={colors.primary} color={colors.primary} size={48} iconSize={22} />
+        <IconAvatar icon="add" color={colors.primary} variant="subtle" size={48} iconSize={22} />
         <Text style={[styles.addTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
           Add account
         </Text>

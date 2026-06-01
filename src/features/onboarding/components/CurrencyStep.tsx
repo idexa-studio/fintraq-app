@@ -106,7 +106,7 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
 
         {filtered.isSearching && filtered.popular.length === 0 && (
           <View style={styles.empty}>
-            <Text style={styles.emptyText}>No currencies match "{query}"</Text>
+            <Text style={styles.emptyText}>No currencies match \u201C{query}\u201D</Text>
           </View>
         )}
       </View>

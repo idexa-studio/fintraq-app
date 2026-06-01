@@ -281,9 +281,8 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                   activeOpacity={0.85}
                 >
                   <IconAvatar
-                    icon={resolveIcon(iconKey, 'wallet-outline')}
-                    bg={colorHex}
-                    color={colors.text}
+                     icon={resolveIcon(iconKey, 'wallet-outline')}
+                     color={colorHex} variant="solid"
                     size={32}
                   />
                   <View style={styles.appearanceCardMeta}>

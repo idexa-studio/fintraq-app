@@ -186,8 +186,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                 >
                   <IconAvatar
                     icon={resolveIcon(icon, 'grid-outline')}
-                    bg={colorHex}
-                    color={colors.text}
+                    color={colorHex} variant="solid"
                     size={32}
                   />
                   <View style={styles.appearanceCardMeta}>

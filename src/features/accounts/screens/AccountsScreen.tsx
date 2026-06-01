@@ -96,8 +96,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                 <View style={styles.cardLead}>
                   <IconAvatar
                     icon={resolveIcon(account.icon, 'wallet-outline')}
-                    bg={accColor}
-                    color={colors.text}
+                    color={accColor} variant="solid"
                     size={38}
                     iconSize={18}
                   />

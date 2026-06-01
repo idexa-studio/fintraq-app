@@ -1,4 +1,4 @@
-import { eq, sql, and, desc, sum } from 'drizzle-orm';
+import { and, desc, eq, sql, sum } from 'drizzle-orm';
 import { db } from '../../../db/client';
 import { accounts, categories, payments } from '../../../db/schema';
 
@@ -31,7 +31,7 @@ export type CategorySpend = {
   amount: number;
 };
 
-export const getTopExpenseCategories = async (currency: string, limit: number = 5): Promise<CategorySpend[]> => {
+export const getTopExpenseCategories = async (currency: string, limit: number = 4): Promise<CategorySpend[]> => {
   const result = await db
     .select({
       id: categories.id,

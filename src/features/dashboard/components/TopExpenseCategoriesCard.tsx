@@ -14,7 +14,7 @@ type TopExpenseCategory = {
   amount: number;
 };
 
-type TopExpenseCategoriesCardProps = {
+type Props = {
   currency: string;
   categories: TopExpenseCategory[];
 };
@@ -22,56 +22,39 @@ type TopExpenseCategoriesCardProps = {
 export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategoriesCard({
   currency,
   categories,
-}: TopExpenseCategoriesCardProps) {
+}: Props) {
   const theme = useTheme();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const maxAmount = useMemo(
-    () => categories.reduce((max, item) => (item.amount > max ? item.amount : max), 0),
-    [categories],
-  );
+  const items = categories.slice(0, 6);
 
-  if (categories.length === 0) {
+  if (items.length === 0) {
     return (
-      <View style={styles.card}>
-        <View style={styles.empty}>
-          <Ionicons name="pie-chart-outline" size={18} color={colors.textMuted} />
-          <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-            No expense data yet
-          </Text>
-        </View>
+      <View style={styles.empty}>
+        <Ionicons name="pie-chart-outline" size={typography.sizes.md} color={colors.textMuted} />
+        <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>No expense data yet</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.card}>
-      {categories.map((category, idx) => {
-        const accent = colorNumberToHex(category.color);
-        const ratio = maxAmount > 0 ? category.amount / maxAmount : 0;
+    <View style={styles.grid}>
+      {items.map((cat, index) => {
+        const accent = colorNumberToHex(cat.color);
+
+
+        const marginRight = index % 2 === 0 ? theme.spacing('1') : 0;
+        const marginLeft = index % 2 === 1 ? theme.spacing('1') : 0;
 
         return (
-          <View key={`${category.name}-${idx}`} style={styles.row}>
-            <View style={styles.left}>
-              <Text style={[styles.rank, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                {idx + 1}
-              </Text>
-              <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} bg={accent} color={colors.text} size={28} iconSize={13} />
-              <View style={styles.meta}>
-                <Text style={[styles.name, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
-                  {category.name}
-                </Text>
-                <View style={styles.barTrack}>
-                  <View style={[styles.barFill, { width: `${Math.max(6, ratio * 100)}%`, backgroundColor: accent }]} />
-                </View>
+          <View key={cat.name} style={styles.itemContainer}>
+            <View style={[styles.tile, { marginRight, marginLeft }]}>
+              <IconAvatar icon={resolveIcon(cat.icon, 'pricetag-outline')} color={accent} variant="solid" size={26}  />
+              <View style={styles.text}>
+                <Text style={[styles.name, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>{cat.name}</Text>
+                <MoneyText amount={cat.amount} currency={currency} type="DR" weight="bold" compact style={styles.amount} />
               </View>
-            </View>
-            <View style={styles.right}>
-              <MoneyText amount={category.amount} currency={currency} type="DR" weight="bold" compact style={styles.amount} />
-              <Text style={[styles.percent, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                {`${(ratio * 100).toFixed(0)}%`}
-              </Text>
             </View>
           </View>
         );
@@ -82,65 +65,32 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
 
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    card: {
-      marginHorizontal: layout.screenPadding,
-      borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
-      overflow: 'hidden',
-    },
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: spacing('3'),
-      paddingHorizontal: spacing('3.5'),
-      paddingVertical: spacing('3'),
-    },
-    left: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-    },
-    rank: {
-      fontSize: 10,
-      opacity: 0.5,
-      width: 16,
-    },
-    meta: { flex: 1 },
-    name: {
-      fontSize: typography.sizes.xs,
-      marginBottom: spacing('1'),
-    },
-    barTrack: {
-      height: 3,
-      borderRadius: radius('full'),
-      backgroundColor: colors.background,
-      overflow: 'hidden',
-    },
-    barFill: {
-      height: 3,
-      borderRadius: radius('full'),
-    },
-    right: {
-      alignItems: 'flex-end',
-      gap: spacing('0.5'),
-    },
-    amount: {
-      fontSize: typography.sizes.sm,
-    },
-    percent: {
-      fontSize: 10,
-      opacity: 0.5,
-    },
     empty: {
+      marginHorizontal: layout.screenPadding,
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2'),
-      paddingHorizontal: spacing('3.5'),
-      paddingVertical: spacing('3.5'),
+      padding: spacing('3.5'),
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
     },
-    emptyText: {
-      fontSize: typography.sizes.xs,
+    emptyText: { fontSize: typography.sizes.xs },
+    grid: {
+      marginHorizontal: layout.screenPadding,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
     },
+    itemContainer: { width: '50%', marginBottom: spacing('2') },
+    tile: {
+      backgroundColor: colors.surface,
+      padding: spacing('2.5'),
+      gap: spacing('3'),
+      flexDirection: 'row',
+      flex: 1,
+      alignItems: 'center',
+      borderRadius: radius('lg'),
+    },
+    text: { gap: spacing('0.5') },
+    name: { fontSize: typography.sizes.xs },
+    amount: { fontSize: typography.sizes.xs },
   });
