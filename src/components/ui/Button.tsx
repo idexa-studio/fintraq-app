@@ -83,13 +83,13 @@ export const Button = React.memo(function Button({
         <Ionicons
           name={icon}
           size={size === 'sm' ? 16 : size === 'lg' ? 24 : 20}
-          color={colors.text}
+          color={textColor}
           style={{ marginRight: spacing('2') }}
         />
       )}
 
       {isLoading ? (
-        <ActivityIndicator color={colors.text} size="small" />
+        <ActivityIndicator color={textColor} size="small" />
       ) : (
         <Text
           style={[
