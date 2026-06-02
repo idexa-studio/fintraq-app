@@ -35,7 +35,7 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
     },
     brand: {
       fontFamily: typography.fonts.heading,
-      fontSize: 30,
+      fontSize: typography.sizes.xxl,
       color: colors.text,
       letterSpacing: -1,
       textAlign: 'center',

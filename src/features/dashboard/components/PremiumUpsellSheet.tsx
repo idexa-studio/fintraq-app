@@ -46,7 +46,7 @@ export const PremiumUpsellSheet = React.memo(function PremiumUpsellSheet({
     <Modal transparent visible={visible} animationType="fade" onRequestClose={() => {}}>
       <View style={styles.overlay}>
         <View style={styles.sheet}>
-          <Text style={styles.title}>Numeo Pro</Text>
+          <Text style={styles.title}>Keeep Pro</Text>
           <Text style={styles.headline}>
             One-time purchase. Unlock analytics, search, reports, and CSV export.
           </Text>

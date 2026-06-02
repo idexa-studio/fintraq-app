@@ -1,5 +1,5 @@
 /**
- * Design Tokens - Numeo Design System
+ * Design Tokens - Keeep Design System
  * 
  * Editorial Brutalist Design Language
  * - Clean, minimal aesthetics with precise spacing

@@ -17,7 +17,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title="Numeo Pro" showBack />
+      <Header title="Keeep Pro" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <View style={styles.hero}>

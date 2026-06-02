@@ -42,7 +42,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title="Numeo Pro" showBack />
+      <Header title="Keeep Pro" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false} bounces={false}>
         <View style={styles.hero}>

@@ -302,7 +302,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="sparkles"
-            label={isPremium ? 'Numeo Pro — Lifetime' : 'Upgrade to Pro'}
+            label={isPremium ? 'Keeep Pro — Lifetime' : 'Upgrade to Pro'}
             subtitle={isPremium ? 'You have permanent access to every feature' : 'Unlock analytics, insights, and more'}
             value={isPremium ? 'Active' : undefined}
             onPress={() => router.push('/premium')}
@@ -407,7 +407,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             theme={theme}
             icon="document-text-outline"
             label="Terms of service"
-            subtitle="Rules and guidelines for using Numeo"
+            subtitle="Rules and guidelines for using Keeep"
             onPress={openTerms}
             isLast
           />
@@ -431,7 +431,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <TouchableOpacity onPress={handleFooterTap} activeOpacity={1} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}>
           <View style={styles.footer}>
             <Text style={[styles.footerBrand, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-              NUMEO / CORE
+              Keeep / Core
             </Text>
             <Text style={[styles.footerCopy, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               Data encrypted and stored locally.

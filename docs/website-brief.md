@@ -1,4 +1,4 @@
-# Numeo — Website Brief for Developer
+# Keeep — Website Brief for Developer
 
 > Everything you need to build the marketing website. Last updated: 2026-05-29.
 
@@ -8,9 +8,9 @@
 
 | Item | Value |
 |---|---|
-| Name | Numeo |
+| Name | Keeep |
 | Tagline | "Free = Tracking. Premium = Insights + Control." |
-| Website | `https://numeo.idexa.app` |
+| Website | `https://keeep.idexa.app` |
 | Pricing model | Lifetime one-time purchase. No subscriptions. |
 | Platform | iOS & Android (React Native + Expo) |
 | Version | 1.1.1 |
@@ -37,7 +37,7 @@
 
 ## What the App Does
 
-Numeo is a personal finance tracker. Users add accounts (bank, cash, wallet), log transactions, and categorise their spending. The free tier covers everyday tracking. Numeo Pro unlocks insights, analytics, search, and export.
+Keeep is a personal finance tracker. Users add accounts (bank, cash, wallet), log transactions, and categorise their spending. The free tier covers everyday tracking. Keeep Pro unlocks insights, analytics, search, and export.
 
 ---
 
@@ -58,7 +58,7 @@ Numeo is a personal finance tracker. Users add accounts (bank, cash, wallet), lo
 
 ---
 
-## Numeo Pro (Lifetime Purchase)
+## Keeep Pro (Lifetime Purchase)
 
 One payment. Every pro feature. Forever. All future updates included.
 
@@ -109,5 +109,5 @@ React Native, Expo, TypeScript, SQLite, Drizzle ORM, TanStack React Query
 
 ## Legal Links
 
-- Privacy: `https://numeo.idexa.app/in-app/privacy?platform=ios|android`
-- Terms: `https://numeo.idexa.app/in-app/terms?platform=ios|android`
+- Privacy: `https://keeep.idexa.app/in-app/privacy?platform=ios|android`
+- Terms: `https://keeep.idexa.app/in-app/terms?platform=ios|android`

@@ -273,7 +273,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
 
         <View style={styles.footer}>
           <Text style={[styles.footerBrand, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-            Numeo / Dev tools
+            Keeep / Dev tools
           </Text>
           <Text style={[styles.footerCopy, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
             Internal debugging and testing utilities.

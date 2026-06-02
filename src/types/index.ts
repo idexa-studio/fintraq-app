@@ -1,5 +1,5 @@
 /**
- * Core Type Definitions for Numeo
+ * Core Type Definitions for Keeep
  * Centralizing types ensures consistency across DB, API, and UI layers.
  */
 
