@@ -24,7 +24,9 @@ import { useCategories } from '../../categories/hooks/categories';
 import { TransactionAccountPicker } from '../components/TransactionAccountPicker';
 import { TransactionAmountInput } from '../components/TransactionAmountInput';
 import { TransactionCategoryPicker } from '../components/TransactionCategoryPicker';
+import { PersonPickerModal } from '../../persons/components/PersonPickerModal';
 import { TransactionTypePicker } from '../components/TransactionTypePicker';
+import { usePersons } from '../../persons/hooks/persons';
 import {
   useCreateTransaction,
   useTransactionById,
@@ -56,12 +58,14 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
 
   const accountsQuery = useAccounts();
   const categoriesQuery = useCategories();
+  const personsQuery = usePersons();
   const transactionByIdQuery = useTransactionById(isEditMode ? transactionId ?? null : null);
   const createTransaction = useCreateTransaction();
   const updateTransaction = useUpdateTransaction();
 
   const accounts = React.useMemo(() => accountsQuery.data ?? [], [accountsQuery.data]);
   const categories = React.useMemo(() => categoriesQuery.data ?? [], [categoriesQuery.data]);
+  const persons = React.useMemo(() => personsQuery.data ?? [], [personsQuery.data]);
   const editingTransaction = React.useMemo(() => {
     if (!isEditMode) return null;
     return transactionByIdQuery.data ?? null;
@@ -74,6 +78,8 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
   const [transactionDateTime, setTransactionDateTime] = React.useState<Date>(() => new Date());
   const [showDatePicker, setShowDatePicker] = React.useState(false);
   const [showTimePicker, setShowTimePicker] = React.useState(false);
+  const [selectedPersonId, setSelectedPersonId] = React.useState<number | null>(null);
+  const [showPersonPicker, setShowPersonPicker] = React.useState(false);
   const [amountInput, setAmountInput] = React.useState('');
   const [note, setNote] = React.useState('');
 
@@ -82,6 +88,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
     setType(editingTransaction.type);
     setSelectedAccountId(editingTransaction.accountId);
     setToAccountId(editingTransaction.toAccountId ?? null);
+    setSelectedPersonId(editingTransaction.personId ?? null);
     setSelectedCategoryId(editingTransaction.categoryId);
     setTransactionDateTime(new Date(editingTransaction.datetime));
     setAmountInput(String(editingTransaction.amount));
@@ -211,6 +218,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
       accountId: selectedAccountId,
       categoryId: selectedCategoryId,
       toAccountId: type === 'TR' ? toAccountId : null,
+      personId: selectedPersonId,
       amount: amountValue,
       type,
       datetime: transactionDateTime.toISOString(),
@@ -254,7 +262,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <TransactionTypePicker value={type} onChange={handleTypeChange} />
+        <TransactionTypePicker value={type} onChange={handleTypeChange} disabled={isEditMode} />
 
         <TransactionAmountInput
           value={amountInput}
@@ -295,6 +303,25 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
             selectedId={selectedCategoryId}
             onSelect={setSelectedCategoryId}
           />
+
+          {persons.length > 0 && type !== 'TR' && (
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>LINKED PERSON</Text>
+              <TouchableOpacity
+                style={styles.personBtn}
+                onPress={() => setShowPersonPicker(true)}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="person-outline" size={16} color={colors.primary} />
+                <Text style={[styles.dateTimeText, { flex: 1 }, !selectedPersonId && { color: colors.textMuted }]}>
+                  {selectedPersonId
+                    ? (persons.find(p => p.id === selectedPersonId)?.name ?? 'Unknown')
+                    : 'No person'}
+                </Text>
+                <Ionicons name="chevron-expand-outline" size={14} color={colors.textMuted} />
+              </TouchableOpacity>
+            </View>
+          )}
 
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>DATE & TIME</Text>
@@ -365,6 +392,14 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
         </TouchableOpacity>
       </View>
       </KeyboardAvoidingView>
+
+      <PersonPickerModal
+        visible={showPersonPicker}
+        onClose={() => setShowPersonPicker(false)}
+        persons={persons}
+        selectedId={selectedPersonId}
+        onSelect={setSelectedPersonId}
+      />
     </SafeAreaView>
   );
 }
@@ -424,6 +459,17 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.medium,
       fontSize: 13,
       color: colors.text,
+    },
+    personBtn: {
+      height: 48,
+      borderRadius: radius('lg'),
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: spacing('3.5'),
+      gap: spacing('2.5'),
     },
     noteContainer: {
       borderRadius: radius('lg'),

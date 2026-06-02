@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+import { QUERY_KEYS } from '../../../lib/query-keys';
 import { getDaysAgoLocal } from '../../../utils/date';
 import * as api from '../api/analytics';
+import { getPersonBreakdown } from '../../persons/api/persons';
 
 export const useAnalyticsDailyData = (currency: string, rangeDays: number) =>
   useQuery({
@@ -30,6 +32,14 @@ export const useAnalyticsDow = (currency: string, rangeDays: number | null) =>
   useQuery({
     queryKey: ['analytics', 'dow', currency, rangeDays] as const,
     queryFn: () => api.getSpendByDayOfWeek(currency, rangeDays ? getDaysAgoLocal(rangeDays) : null),
+    enabled: !!currency,
+    staleTime: 30_000,
+  });
+
+export const useAnalyticsPersonBreakdown = (currency: string, rangeDays: number) =>
+  useQuery({
+    queryKey: QUERY_KEYS.analytics.personBreakdown(currency, rangeDays),
+    queryFn: () => getPersonBreakdown(currency, rangeDays),
     enabled: !!currency,
     staleTime: 30_000,
   });

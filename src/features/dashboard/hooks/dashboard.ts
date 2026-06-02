@@ -19,6 +19,14 @@ export const useTopExpenseCategories = (currency: string) => {
   });
 };
 
+export const useDashboardPersons = (currency: string) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.dashboard.topPersons(currency),
+    queryFn: () => api.getDashboardPersons(currency),
+    enabled: !!currency,
+  });
+};
+
 export const useDashboardInsights = (currency: string) => {
   return useQuery({
     queryKey: QUERY_KEYS.dashboard.insights(currency),

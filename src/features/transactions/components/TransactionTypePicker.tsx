@@ -6,30 +6,33 @@ import type { TransactionType } from '../../../types';
 type Props = {
   value: TransactionType;
   onChange: (value: TransactionType) => void;
+  disabled?: boolean;
 };
 
 export const TransactionTypePicker = React.memo(function TransactionTypePicker({
   value,
   onChange,
+  disabled = false,
 }: Props) {
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const handleDR = useCallback(() => onChange('DR'), [onChange]);
-  const handleCR = useCallback(() => onChange('CR'), [onChange]);
-  const handleTR = useCallback(() => onChange('TR'), [onChange]);
+  const handleDR = useCallback(() => { if (!disabled) onChange('DR'); }, [onChange, disabled]);
+  const handleCR = useCallback(() => { if (!disabled) onChange('CR'); }, [onChange, disabled]);
+  const handleTR = useCallback(() => { if (!disabled) onChange('TR'); }, [onChange, disabled]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, disabled && styles.containerDisabled]}>
       <TouchableOpacity
         style={[
           styles.pill,
           { backgroundColor: colors.surface, borderColor: colors.border },
           value === 'DR' && { backgroundColor: colors.danger, borderColor: colors.danger },
+          disabled && value !== 'DR' && styles.pillHidden,
         ]}
         onPress={handleDR}
-        activeOpacity={0.8}
+        activeOpacity={disabled ? 1 : 0.8}
       >
         <Text style={[styles.pillText, { color: value === 'DR' ? colors.background : colors.textMuted }]}>
           Expense
@@ -41,9 +44,10 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           styles.pill,
           { backgroundColor: colors.surface, borderColor: colors.border },
           value === 'CR' && { backgroundColor: colors.success, borderColor: colors.success },
+          disabled && value !== 'CR' && styles.pillHidden,
         ]}
         onPress={handleCR}
-        activeOpacity={0.8}
+        activeOpacity={disabled ? 1 : 0.8}
       >
         <Text style={[styles.pillText, { color: value === 'CR' ? colors.background : colors.textMuted }]}>
           Income
@@ -55,9 +59,10 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           styles.pill,
           { backgroundColor: colors.surface, borderColor: colors.border },
           value === 'TR' && { backgroundColor: colors.primary, borderColor: colors.primary },
+          disabled && value !== 'TR' && styles.pillHidden,
         ]}
         onPress={handleTR}
-        activeOpacity={0.8}
+        activeOpacity={disabled ? 1 : 0.8}
       >
         <Text style={[styles.pillText, { color: value === 'TR' ? colors.background : colors.textMuted }]}>
           Transfer
@@ -76,6 +81,9 @@ const createStyles = ({ typography, spacing, radius, layout }: ThemeContextType)
       flexDirection: 'row',
       gap: spacing('2.5'),
     },
+    containerDisabled: {
+      opacity: 0.75,
+    },
     pill: {
       paddingHorizontal: spacing('4'),
       height: 36,
@@ -83,6 +91,9 @@ const createStyles = ({ typography, spacing, radius, layout }: ThemeContextType)
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 1,
+    },
+    pillHidden: {
+      display: 'none',
     },
     pillText: {
       fontFamily: typography.fonts.semibold,

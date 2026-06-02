@@ -36,24 +36,21 @@ type Props = {
   showDate?: boolean;
 };
 
-/**
- * TransactionRow - Editorial Brutalist Design
- *
- * Layout:
- * - Card radius: 0 for middle items, 16px (lg) for first/last corners
- * - Padding: 14px vertical
- * - Gap: 10px between elements
- * - Icon box: 40px, 12px radius (md)
- */
+const TYPE_CONFIG: Record<TransactionType, { label: string; colorKey: 'success' | 'danger' | 'info' }> = {
+  CR: { label: 'Income',   colorKey: 'success' },
+  DR: { label: 'Expense',  colorKey: 'danger'  },
+  TR: { label: 'Transfer', colorKey: 'info'     },
+};
+
 export const TransactionRow = React.memo(function TransactionRow({
   tx,
   onPress,
   isFirst,
   isLast,
-  showDate
+  showDate,
 }: Props) {
   const theme = useTheme();
-  const { colors, radius, spacing, sizes } = theme;
+  const { colors, radius, spacing, sizes, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const categoryColor = useMemo(() => colorNumberToHex(tx.category.color), [tx.category.color]);
@@ -69,7 +66,8 @@ export const TransactionRow = React.memo(function TransactionRow({
     onPress?.(tx);
   }, [onPress, tx]);
 
-  const isTransfer = tx.type === 'TR';
+  const typeConfig = TYPE_CONFIG[tx.type];
+  const typeColor = colors[typeConfig.colorKey];
 
   const containerStyle = useMemo(() => ({
     backgroundColor: colors.surface,
@@ -80,25 +78,30 @@ export const TransactionRow = React.memo(function TransactionRow({
     marginBottom: isLast ? 0 : spacing('0.5'),
   }), [isFirst, isLast, colors.surface, radius, spacing]);
 
+  const metaText = tx.type === 'TR'
+    ? `${tx.account.name} → ${tx.toAccount?.name ?? 'Account'}`
+    : tx.account.name;
+
   return (
     <TouchableOpacity
       style={[styles.container, containerStyle]}
       activeOpacity={0.75}
       onPress={handlePress}
     >
-      <IconAvatar icon={iconName} color={categoryColor} variant="solid" size={sizes.iconButton.md} />
+      <IconAvatar icon={iconName} color={categoryColor} variant="solid" size={sizes.iconButton.lg} iconSize={18} />
+
       <View style={styles.info}>
         <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
           {tx.note || tx.category.name}
         </Text>
         <View style={styles.metaRow}>
+          <View style={[styles.typeDot, { backgroundColor: typeColor }]} />
           <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
-            {isTransfer
-              ? `${tx.category.name} · ${tx.account.name} → ${tx.toAccount?.name ?? 'Account'}`
-              : `${tx.category.name} · ${tx.account.name}`}
+            {typeConfig.label} · {metaText}
           </Text>
         </View>
       </View>
+
       <View style={styles.right}>
         <MoneyText
           amount={tx.amount}
@@ -124,35 +127,46 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: spacing('3.5'),
-    paddingHorizontal: spacing('3.5'),
-    gap: spacing('2.5'),
+    paddingHorizontal: spacing('4'),
+    gap: spacing('3'),
   },
   info: {
     flex: 1,
-    gap: spacing('0.5'),
+    gap: spacing('1'),
   },
   title: {
     fontFamily: typography.fonts.semibold,
     fontSize: 14,
+    lineHeight: 18,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing('1'),
+    gap: spacing('1.5'),
+    flexShrink: 1,
+  },
+  typeDot: {
+    width: 5,
+    height: 5,
+    borderRadius: radius('full'),
+    flexShrink: 0,
   },
   meta: {
     fontFamily: typography.fonts.regular,
-    fontSize: 12,
+    fontSize: 11,
+    lineHeight: 14,
+    flexShrink: 1,
   },
   right: {
     alignItems: 'flex-end',
     gap: spacing('1'),
   },
   amount: {
-    fontSize: typography.sizes.xs,
+    fontSize: 13,
   },
   date: {
     fontFamily: typography.fonts.regular,
     fontSize: 11,
+    opacity: 0.55,
   },
 });

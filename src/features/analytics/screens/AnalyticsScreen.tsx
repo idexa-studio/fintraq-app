@@ -14,6 +14,7 @@ import {
   useAnalyticsDailyData,
   useAnalyticsDow,
   useAnalyticsMonthlyData,
+  useAnalyticsPersonBreakdown,
 } from '@/src/features/analytics/hooks/useAnalyticsData';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -90,10 +91,10 @@ function EmptyState({ icon, text }: { icon: keyof typeof Ionicons.glyphMap; text
 
 export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
-  const { colors, layout } = theme;
+  const { colors, layout, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { width: screenWidth } = useWindowDimensions();
-  const chartWidth = screenWidth - 48;
+  const chartWidth = screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2;
   const router = useRouter();
   const { isPremium } = usePremium();
 
@@ -114,6 +115,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const { data: monthlyData, isLoading: monthlyLoading } = useAnalyticsMonthlyData(selectedCurrency);
   const { data: categoryData, isLoading: catLoading } = useAnalyticsCategoryBreakdown(selectedCurrency, selectedRange);
   const { data: dowData } = useAnalyticsDow(selectedCurrency, selectedRange);
+  const { data: personBreakdown } = useAnalyticsPersonBreakdown(selectedCurrency, selectedRange);
 
   const isLoading = dailyLoading || monthlyLoading || catLoading;
 
@@ -269,14 +271,14 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                 <Text style={styles.legendText}>Income</Text>
               </View>
             </View>
-            <AreaChart data={areaData} width={chartWidth - 28} height={190} />
+            <AreaChart data={areaData} width={chartWidth} height={190} />
           </View>
 
           {/* Period flow */}
           <SectionHeader title="Period flow" />
           <PremiumGuard label="Period Flow" size="medium">
             <View style={styles.card}>
-              <BarGroupChart data={barData} width={chartWidth - 28} height={170} />
+              <BarGroupChart data={barData} width={chartWidth} height={170} />
             </View>
           </PremiumGuard>
 
@@ -328,6 +330,45 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               </View>
             )}
           </PremiumGuard>
+
+          {/* Person breakdown */}
+          {(personBreakdown ?? []).length > 0 && (
+            <>
+              <SectionHeader title="Person breakdown" rightText={`${(personBreakdown ?? []).length} persons`} />
+              <PremiumGuard label="Person Breakdown" size="medium">
+                <View style={styles.catSection}>
+                  <View style={styles.stackedBar}>
+                    {(personBreakdown ?? []).map((p, idx) => (
+                      <View
+                        key={`ps-${idx}`}
+                        style={[styles.stackedSeg, { flex: p.amount, backgroundColor: colorNumberToHex(p.color) }]}
+                      />
+                    ))}
+                  </View>
+                  <View style={styles.categoryGrid}>
+                    {(personBreakdown ?? []).map((p, idx) => {
+                      const hex = colorNumberToHex(p.color);
+                      const total = (personBreakdown ?? []).reduce((s, x) => s + x.amount, 0);
+                      const pct = total > 0 ? (p.amount / total) * 100 : 0;
+                      const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
+                      return (
+                        <View key={`pp-${p.id}-${idx}`} style={styles.categoryCell}>
+                          <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: hex, alignItems: 'center', justifyContent: 'center' }}>
+                            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 10 }}>{initials}</Text>
+                          </View>
+                          <View style={styles.catContent}>
+                            <Text style={styles.catName} numberOfLines={1}>{p.name}</Text>
+                            <MoneyText amount={p.amount} currency={selectedCurrency} type="DR" compact style={styles.catAmount} />
+                          </View>
+                          <Text style={[styles.catPercent, { color: colors.textMuted }]}>{pct.toFixed(0)}%</Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+                </View>
+              </PremiumGuard>
+            </>
+          )}
 
           {/* Account split */}
           <SectionHeader title="Account split" rightText={`${accountDistribution.length} accounts`} />

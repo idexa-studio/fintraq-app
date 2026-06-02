@@ -20,6 +20,9 @@ export default function StackLayout() {
         <Stack.Screen name="accounts/index" />
         <Stack.Screen name="accounts/form" />
         <Stack.Screen name="categories/form" />
+        <Stack.Screen name="persons/index" />
+        <Stack.Screen name="persons/form" />
+        <Stack.Screen name="persons/[id]" />
       </Stack>
     </ErrorBoundary>
   );

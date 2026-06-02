@@ -1,9 +1,17 @@
 import { InferSelectModel, eq, sql } from 'drizzle-orm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from '../db/client';
-import { accounts, categories, payments } from '../db/schema';
+import { accounts, categories, payments, persons } from '../db/schema';
+import { toDbColor } from './format';
 
-const SEED_KEY = '@luno/seed_v1';
+const SEED_KEY = '@luno/seed_v2';
+
+const SEED_PERSONS = [
+  { name: 'Sarah Mitchell', email: 'sarah.m@example.com', phone: '+1 555 0101', designation: 'Product Manager', company: 'Acme Corp', color: toDbColor('#059669') },
+  { name: 'James Okafor',  email: 'james.o@example.com', phone: '+1 555 0102', designation: 'Engineer',         company: 'TechFlow',  color: toDbColor('#2563EB') },
+  { name: 'Priya Nair',    email: 'priya.n@example.com', phone: '+1 555 0103', designation: 'Designer',         company: 'Pixel Lab',  color: toDbColor('#9333EA') },
+  { name: 'Tom Reyes',     email: 'tom.r@example.com',   phone: '+1 555 0104', designation: 'CFO',              company: 'Reyes Co',   color: toDbColor('#EA580C') },
+] as const;
 
 type Category = InferSelectModel<typeof categories>;
 
@@ -207,6 +215,31 @@ export async function seedDummyData() {
       if (transferTransactions.length > 0) {
         await db.insert(payments).values(transferTransactions);
         totalSeeded += transferTransactions.length;
+      }
+    }
+
+    // Seed persons
+    const insertedPersons = await db
+      .insert(persons)
+      .values(SEED_PERSONS.map(p => ({ ...p })))
+      .returning();
+
+    // Link some recent transactions to persons
+    if (insertedPersons.length > 0) {
+      const recentPayments = await db
+        .select({ id: payments.id })
+        .from(payments)
+        .orderBy(sql`datetime DESC`)
+        .limit(40);
+
+      for (let i = 0; i < recentPayments.length; i++) {
+        const person = insertedPersons[i % insertedPersons.length];
+        if (i % 3 === 0) {
+          await db
+            .update(payments)
+            .set({ personId: person.id })
+            .where(eq(payments.id, recentPayments[i].id));
+        }
       }
     }
 

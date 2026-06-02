@@ -84,7 +84,14 @@ export function useAdvancedFilters(
           return false;
         }
       }
-      
+
+      // Multi-select person filter
+      if (filters.personIds && filters.personIds.length > 0) {
+        if (transaction.personId == null || !filters.personIds.includes(transaction.personId)) {
+          return false;
+        }
+      }
+
       // Amount range filter
       if (filters.amountRange) {
         const amount = transaction.amount;

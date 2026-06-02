@@ -5,6 +5,8 @@ import { MoneyText } from '@/src/components/ui/MoneyText';
 import { TransactionRow } from '@/src/components/ui/TransactionRow';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import type { Category } from '@/src/features/categories/api/categories';
+import type { Person } from '@/src/features/persons/api/persons';
+import { colorNumberToHex as personColorHex } from '@/src/utils/format';
 import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
@@ -29,7 +31,8 @@ import { useGlobalSearch } from '../hooks/useGlobalSearch';
 type SearchItem =
   | { kind: 'transaction'; data: TransactionListItem }
   | { kind: 'account'; data: Account }
-  | { kind: 'category'; data: Category };
+  | { kind: 'category'; data: Category }
+  | { kind: 'person'; data: Person };
 
 type SearchSection = {
   title: string;
@@ -201,6 +204,50 @@ const CategoryRow = React.memo(function CategoryRow({
   );
 });
 
+const PersonRow = React.memo(function PersonRow({
+  person,
+  onPress,
+}: {
+  person: Person;
+  onPress: (id: number) => void;
+}) {
+  const theme = useTheme();
+  const { colors } = theme;
+  const hex = useMemo(() => personColorHex(person.color), [person.color]);
+  const initials = useMemo(() =>
+    person.name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join(''),
+    [person.name],
+  );
+  const handlePress = useCallback(() => onPress(person.id), [onPress, person.id]);
+
+  return (
+    <TouchableOpacity
+      style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]}
+      onPress={handlePress}
+      activeOpacity={0.7}
+    >
+      <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: hex, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: '#fff', fontWeight: '700', fontSize: 13 }}>{initials}</Text>
+      </View>
+      <View style={{ flex: 1, gap: theme.spacing('0.5') }}>
+        <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>
+          {person.name}
+        </Text>
+        {(person.designation || person.company) ? (
+          <Text style={{ fontFamily: theme.typography.fonts.regular, fontSize: theme.typography.sizes.xs, color: colors.textMuted }}>
+            {[person.designation, person.company].filter(Boolean).join(' · ')}
+          </Text>
+        ) : person.email ? (
+          <Text style={{ fontFamily: theme.typography.fonts.regular, fontSize: theme.typography.sizes.xs, color: colors.textMuted }}>
+            {person.email}
+          </Text>
+        ) : null}
+      </View>
+      <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
+    </TouchableOpacity>
+  );
+});
+
 export const SearchScreen = React.memo(function SearchScreen() {
   const theme = useTheme();
   const { colors, typography } = theme;
@@ -230,6 +277,10 @@ export const SearchScreen = React.memo(function SearchScreen() {
     router.push(`/transactions?categoryId=${id}`);
   }, [router]);
 
+  const handlePersonPress = useCallback((id: number) => {
+    router.push(`/(main)/persons/${id}`);
+  }, [router]);
+
   const sections = useMemo((): SearchSection[] => {
     if (!data) return [];
     const result: SearchSection[] = [];
@@ -252,6 +303,13 @@ export const SearchScreen = React.memo(function SearchScreen() {
         title: 'Categories',
         count: data.categories.length,
         data: data.categories.map(item => ({ kind: 'category' as const, data: item })),
+      });
+    }
+    if (data.persons.length > 0) {
+      result.push({
+        title: 'Persons',
+        count: data.persons.length,
+        data: data.persons.map(item => ({ kind: 'person' as const, data: item })),
       });
     }
     return result;
@@ -288,13 +346,20 @@ export const SearchScreen = React.memo(function SearchScreen() {
           </View>
         );
       }
+      if (item.kind === 'category') {
+        return (
+          <View style={cardStyle}>
+            <CategoryRow category={item.data} onPress={handleCategoryPress} />
+          </View>
+        );
+      }
       return (
         <View style={cardStyle}>
-          <CategoryRow category={item.data} onPress={handleCategoryPress} />
+          <PersonRow person={item.data} onPress={handlePersonPress} />
         </View>
       );
     },
-    [handleTransactionPress, handleAccountPress, handleCategoryPress, theme],
+    [handleTransactionPress, handleAccountPress, handleCategoryPress, handlePersonPress, theme],
   );
 
   const renderSectionHeader = useCallback(
@@ -319,7 +384,8 @@ export const SearchScreen = React.memo(function SearchScreen() {
   const keyExtractor = useCallback((item: SearchItem) => {
     if (item.kind === 'transaction') return `tx-${item.data.id}`;
     if (item.kind === 'account') return `acc-${item.data.id}`;
-    return `cat-${item.data.id}`;
+    if (item.kind === 'category') return `cat-${item.data.id}`;
+    return `per-${item.data.id}`;
   }, []);
 
   return (

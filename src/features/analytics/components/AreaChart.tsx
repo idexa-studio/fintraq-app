@@ -22,7 +22,7 @@ type Props = {
   height?: number;
 };
 
-const PAD = { top: 16, bottom: 28, left: 44, right: 8 };
+const PAD = { top: 12, bottom: 24, left: 30, right: 8 };
 
 const buildCurvePath = (pts: { x: number; y: number }[]) => {
   if (pts.length === 0) return '';
@@ -37,14 +37,16 @@ const buildCurvePath = (pts: { x: number; y: number }[]) => {
   return d;
 };
 
-const fmtY = (v: number) => {
+const fmtY = (v: number): string => {
   if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`;
-  if (v >= 1_000) return `${(v / 1_000).toFixed(1)}K`;
+  if (v >= 1_000) return `${(v / 1_000).toFixed(0)}K`;
   return `${Math.round(v)}`;
 };
 
 export const AreaChart = React.memo(function AreaChart({ data, width, height = 190 }: Props) {
   const { colors, typography } = useTheme();
+  const gridColor = colors.text + '10';
+  const labelColor = colors.textMuted;
 
   const chart = useMemo(() => {
     const n = data.length;
@@ -62,21 +64,22 @@ export const AreaChart = React.memo(function AreaChart({ data, width, height = 1
 
     const expLine = buildCurvePath(expPts);
     const incLine = buildCurvePath(incPts);
-    const expArea = expLine
-      + ` L ${expPts[n - 1].x} ${bottomY}`
-      + ` L ${expPts[0].x} ${bottomY} Z`;
+    const expArea = expLine + ` L ${expPts[n - 1].x} ${bottomY} L ${expPts[0].x} ${bottomY} Z`;
+    const incArea = incLine + ` L ${incPts[n - 1].x} ${bottomY} L ${incPts[0].x} ${bottomY} Z`;
 
-    const yTicks = Array.from({ length: 5 }, (_, i) => ({
+    // 4 grid lines at 25% intervals — skip 0
+    const yTicks = [1, 2, 3, 4].map(i => ({
       v: (maxVal * i) / 4,
       y: PAD.top + ch - (ch * i) / 4,
     }));
 
-    const xStep = Math.max(1, Math.ceil(n / 5));
+    // max 6 x-labels
+    const step = Math.max(1, Math.ceil(n / 6));
     const xLabels = data
-      .map((d, i) => ({ label: d.label, x: xOf(i), show: i % xStep === 0 || i === n - 1 }))
+      .map((d, i) => ({ label: d.label, x: xOf(i), show: i % step === 0 || i === n - 1 }))
       .filter(l => l.show);
 
-    return { expLine, incLine, expArea, yTicks, xLabels };
+    return { expLine, incLine, expArea, incArea, yTicks, xLabels, bottomY };
   }, [data, width, height]);
 
   if (!chart) {
@@ -93,44 +96,46 @@ export const AreaChart = React.memo(function AreaChart({ data, width, height = 1
     <Svg width={width} height={height}>
       <Defs>
         <LinearGradient id="areaExp" x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0%" stopColor={colors.danger} stopOpacity="0.3" />
-          <Stop offset="100%" stopColor={colors.danger} stopOpacity="0.02" />
+          <Stop offset="0%" stopColor={colors.danger} stopOpacity="0.18" />
+          <Stop offset="100%" stopColor={colors.danger} stopOpacity="0.01" />
         </LinearGradient>
         <LinearGradient id="areaInc" x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0%" stopColor={colors.success} stopOpacity="0.15" />
-          <Stop offset="100%" stopColor={colors.success} stopOpacity="0.0" />
+          <Stop offset="0%" stopColor={colors.success} stopOpacity="0.12" />
+          <Stop offset="100%" stopColor={colors.success} stopOpacity="0.01" />
         </LinearGradient>
       </Defs>
 
+      {/* Horizontal grid lines */}
       {chart.yTicks.map((tick, i) => (
         <React.Fragment key={i}>
           <SvgLine
             x1={PAD.left} y1={tick.y}
             x2={width - PAD.right} y2={tick.y}
-            stroke={colors.border}
-            strokeWidth={i === 0 ? 1 : 0.5}
-            strokeDasharray={i === 0 ? undefined : '3,5'}
+            stroke={gridColor} strokeWidth={1}
           />
-          {i > 0 && (
-            <SvgText
-              x={PAD.left - 4} y={tick.y + 3.5}
-              fontSize={8.5} fill={colors.textMuted}
-              textAnchor="end" fontFamily={typography.fonts.regular}
-            >
-              {fmtY(tick.v)}
-            </SvgText>
-          )}
+          <SvgText
+            x={PAD.left - 5} y={tick.y + 3.5}
+            fontSize={9} fill={labelColor}
+            textAnchor="end" fontFamily={typography.fonts.regular}
+          >
+            {fmtY(tick.v)}
+          </SvgText>
         </React.Fragment>
       ))}
 
+      {/* Area fills */}
+      <Path d={chart.incArea} fill="url(#areaInc)" />
       <Path d={chart.expArea} fill="url(#areaExp)" />
-      <Path d={chart.expLine} stroke={colors.danger} strokeWidth={2} fill="none" />
-      <Path d={chart.incLine} stroke={colors.success} strokeWidth={1.5} fill="none" strokeDasharray="5,3" />
 
+      {/* Lines */}
+      <Path d={chart.incLine} stroke={colors.success} strokeWidth={1.5} fill="none" />
+      <Path d={chart.expLine} stroke={colors.danger} strokeWidth={2} fill="none" />
+
+      {/* X-axis labels */}
       {chart.xLabels.map((l, i) => (
         <SvgText key={i}
-          x={l.x} y={height - 6}
-          fontSize={8.5} fill={colors.textMuted}
+          x={l.x} y={height - 4}
+          fontSize={9} fill={labelColor}
           textAnchor="middle" fontFamily={typography.fonts.regular}
         >
           {l.label}

@@ -46,7 +46,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
 
   const [type, setType] = useState<'CR' | 'DR' | 'TR'>('DR');
   const [icon, setIcon] = useState<string>(CATEGORY_ICONS[0]);
-  const [colorHex, setColorHex] = useState<string>(CATEGORY_COLORS[0]);
+  const [colorHex, setColorHex] = useState<string>(() => CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)]);
 
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);

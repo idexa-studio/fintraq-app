@@ -123,7 +123,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                     hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                     activeOpacity={0.4}
                   >
-                    <Ionicons name="ellipsis-horizontal" size={18} color={colors.textMuted} />
+                    <Ionicons name="ellipsis-vertical" size={18} color={colors.textMuted} />
                   </TouchableOpacity>
                 </View>
               </View>

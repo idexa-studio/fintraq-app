@@ -19,7 +19,8 @@ import { InsightsSection } from '../components/InsightsSection';
 import { PremiumUpsellSheet } from '../components/PremiumUpsellSheet';
 import { SectionHeader } from '../components/SectionHeader';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
-import { useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
+import { TopPersonsCard } from '../components/TopPersonsCard';
+import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -81,6 +82,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const totals = useMemo(() => statsData ?? { income: 0, expense: 0 }, [statsData]);
 
   const { data: topCategoriesData } = useTopExpenseCategories(selectedCurrency);
+  const { data: topPersonsData } = useDashboardPersons(selectedCurrency);
   const topExpenseCategories = useMemo(() => topCategoriesData ?? [], [topCategoriesData]);
 
   const handleCurrencySelect  = useCallback((c: string) => setSelectedCurrency(c), []);
@@ -162,6 +164,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
         <SectionHeader title="Top expenses" />
         <TopExpenseCategoriesCard currency={selectedCurrency} categories={topExpenseCategories} />
+
+        {topPersonsData && topPersonsData.length > 0 && (
+          <>
+            <SectionHeader title="Persons" rightText="See all" onPressRight={() => router.push('/(main)/persons')} />
+            <TopPersonsCard currency={selectedCurrency} persons={topPersonsData} onPressPerson={(id) => router.push(`/(main)/persons/${id}`)} />
+          </>
+        )}
 
         <SectionHeader title="Recent" rightText="See all" onPressRight={navigateToTransactions} />
         <View style={styles.activityCard}>

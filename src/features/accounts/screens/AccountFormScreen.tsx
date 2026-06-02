@@ -56,7 +56,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
   const { profile } = useSettings();
 
   const [currency, setCurrency] = useState<string>(profile.defaultCurrency || 'USD');
-  const [colorHex, setColorHex] = useState<string>(ACCOUNT_COLORS[0]);
+  const [colorHex, setColorHex] = useState<string>(() => ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)]);
   const [iconKey, setIconKey] = useState<string>(ACCOUNT_ICONS[0]);
 
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);

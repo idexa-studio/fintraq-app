@@ -23,6 +23,7 @@ export type TransactionListItem = {
   accountId: number;
   categoryId: number;
   toAccountId: number | null;
+  personId: number | null;
   amount: number;
   type: TransactionType;
   datetime: string;
@@ -54,6 +55,7 @@ export const TRANSACTION_LIST_SELECT = {
   accountId: payments.accountId,
   categoryId: payments.categoryId,
   toAccountId: payments.toAccountId,
+  personId: payments.personId,
   amount: payments.amount,
   type: payments.type,
   datetime: payments.datetime,

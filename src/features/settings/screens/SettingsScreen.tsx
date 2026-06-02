@@ -6,7 +6,7 @@ import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { TextInputSheet } from '@/src/components/ui/TextInputSheet';
 import { db } from '@/src/db/client';
-import { accounts, categories, payments, seederState } from '@/src/db/schema';
+import { accounts, categories, payments, persons, seederState } from '@/src/db/schema';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -193,6 +193,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const runReset = useCallback(async () => {
     try {
       await db.delete(payments);
+      await db.delete(persons);
       await db.delete(categories);
       await db.delete(accounts);
       await db.delete(seederState);
@@ -364,6 +365,13 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           Data
         </Text>
         <View style={styles.group}>
+          <NavRow
+            theme={theme}
+            icon="people-outline"
+            label="Persons"
+            subtitle="Manage people linked to transactions"
+            onPress={() => router.push('/(main)/persons')}
+          />
           <NavRow
             theme={theme}
             icon="grid-outline"

@@ -13,6 +13,7 @@ import {
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Account } from '@/src/features/accounts/api/accounts';
 import { Category } from '@/src/features/categories/api/categories';
+import { Person } from '@/src/features/persons/api/persons';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
@@ -27,6 +28,7 @@ interface AdvancedFilterSheetProps {
   onReset: () => void;
   accounts: Account[];
   categories: Category[];
+  persons: Person[];
   resultCount: number;
 }
 
@@ -37,7 +39,7 @@ const TYPE_OPTS = [
 ] as const;
 
 export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
-  visible, onClose, filters, onApply, onReset, accounts, categories, resultCount,
+  visible, onClose, filters, onApply, onReset, accounts, categories, persons, resultCount,
 }: AdvancedFilterSheetProps) {
   const theme = useTheme();
   const { colors, typography, overlay } = theme;
@@ -64,6 +66,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
 
   const toggleAccount  = useCallback((id: number) => setLocal(p => ({ ...p, accountIds:  toggle(p.accountIds,  id) })), [toggle]);
   const toggleCategory = useCallback((id: number) => setLocal(p => ({ ...p, categoryIds: toggle(p.categoryIds, id) })), [toggle]);
+  const togglePerson   = useCallback((id: number) => setLocal(p => ({ ...p, personIds:   toggle(p.personIds,   id) })), [toggle]);
   const toggleType     = useCallback((t: TransactionType) => setLocal(p => ({ ...p, types: toggle(p.types, t) })), [toggle]);
   const clearDateRange = useCallback(() => setLocal(p => ({ ...p, dateRange: undefined })), []);
 
@@ -97,6 +100,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
   const activeCount = useMemo(() =>
     (local.accountIds?.length  || 0) +
     (local.categoryIds?.length || 0) +
+    (local.personIds?.length   || 0) +
     (local.types?.length       || 0) +
     (local.dateRange            ? 1 : 0) +
     (minAmt || maxAmt           ? 1 : 0) +
@@ -303,6 +307,37 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                         <Ionicons name={resolveIcon(c.icon, 'pricetag-outline')} size={14} color={sel ? colors.background : cc} />
                         <Text style={[styles.pillLabel, { color: sel ? colors.background : colors.text }]}>
                           {c.name}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </>
+            )}
+
+            {/* ── PERSONS: pill chips ── */}
+            {persons.length > 0 && (
+              <>
+                <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+                  PERSONS
+                </Text>
+                <View style={styles.pillGrid}>
+                  {persons.map(p => {
+                    const sel = local.personIds?.includes(p.id) || false;
+                    const pc  = colorNumberToHex(p.color);
+                    const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
+                    return (
+                      <TouchableOpacity
+                        key={p.id}
+                        style={[styles.pill, { backgroundColor: sel ? pc : colors.card, borderColor: sel ? pc : colors.border }]}
+                        onPress={() => togglePerson(p.id)}
+                        activeOpacity={0.8}
+                      >
+                        <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: sel ? 'rgba(255,255,255,0.3)' : pc, alignItems: 'center', justifyContent: 'center' }}>
+                          <Text style={{ color: sel ? colors.background : '#fff', fontWeight: '700', fontSize: 8 }}>{initials}</Text>
+                        </View>
+                        <Text style={[styles.pillLabel, { color: sel ? colors.background : colors.text }]}>
+                          {p.name.split(' ')[0]}
                         </Text>
                       </TouchableOpacity>
                     );

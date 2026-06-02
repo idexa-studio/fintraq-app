@@ -24,6 +24,7 @@ import { WelcomeStep } from '@/src/features/onboarding/components/WelcomeStep';
 import { ONBOARDING_STEPS } from '@/src/features/onboarding/constants';
 import { createOnboardingStyles } from '@/src/features/onboarding/styles';
 import { OnboardingFormValues } from '@/src/features/onboarding/types';
+import { ACCOUNT_COLORS } from '@/src/constants/picker';
 import { toDbColor } from '@/src/utils/format';
 import type { TransactionType } from '@/src/types';
 import { useOnboarding } from '@/src/providers/OnboardingProvider';
@@ -168,7 +169,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         holderName: name.trim() || 'Personal',
         accountNumber: '',
         icon: 'wallet',
-        color: toDbColor('#6BD498'),
+        color: toDbColor(ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)]),
         isDefault: true,
         currency,
         balance: 0,

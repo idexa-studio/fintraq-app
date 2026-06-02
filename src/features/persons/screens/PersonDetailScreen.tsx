@@ -1,0 +1,280 @@
+import { Header } from '@/src/components/ui/Header';
+import { MoneyText } from '@/src/components/ui/MoneyText';
+import { PageBackground } from '@/src/components/ui/PageBackground';
+import { TransactionRow } from '@/src/components/ui/TransactionRow';
+import { usePersonWithStats, useTransactionsByPerson } from '@/src/features/persons/hooks/persons';
+import { useAccounts } from '@/src/features/accounts/hooks/accounts';
+import { useCategories } from '@/src/features/categories/hooks/categories';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex } from '@/src/utils/format';
+import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+function PersonInitials({ name, color, size = 64 }: { name: string; color: string; size?: number }) {
+  const initials = name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
+  return (
+    <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: color, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ color: '#fff', fontWeight: '700', fontSize: size * 0.38 }}>{initials}</Text>
+    </View>
+  );
+}
+
+export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const personId = Number(id);
+  const router = useRouter();
+  const theme = useTheme();
+  const { colors, typography } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const { data: txList } = useTransactionsByPerson(personId);
+  const { data: accounts } = useAccounts();
+  const { data: categories } = useCategories();
+
+  const availableCurrencies = useMemo(() => {
+    if (!txList || !accounts) return ['USD'];
+    const currencies = Array.from(new Set(
+      txList.map(tx => accounts.find(a => a.id === tx.accountId)?.currency).filter((c): c is string => !!c)
+    ));
+    return currencies.length > 0 ? currencies : ['USD'];
+  }, [txList, accounts]);
+
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('');
+  const currency = selectedCurrency || (availableCurrencies[0] ?? 'USD');
+
+  const { data: person, isLoading } = usePersonWithStats(personId, currency);
+
+  const enrichedTx = useMemo(() => {
+    if (!txList || !accounts || !categories) return [];
+    return txList
+      .filter(tx => {
+        const account = accounts.find(a => a.id === tx.accountId);
+        return account?.currency === currency;
+      })
+      .map(tx => {
+        const account = accounts.find(a => a.id === tx.accountId);
+        const category = categories.find(c => c.id === tx.categoryId);
+        return {
+          id: tx.id,
+          amount: tx.amount,
+          type: tx.type,
+          datetime: tx.datetime,
+          note: tx.note,
+          account: { name: account?.name ?? '', currency: account?.currency ?? currency },
+          category: { name: category?.name ?? '', icon: category?.icon ?? 'grid', color: category?.color ?? 0 },
+          toAccount: null,
+        };
+      });
+  }, [txList, accounts, categories, currency]);
+
+  const handleEdit = useCallback(() => {
+    router.push(`/(main)/persons/form?id=${personId}`);
+  }, [personId, router]);
+
+  const handleTxPress = useCallback((tx: { id: number }) => {
+    router.push(`/transactions/edit/${tx.id}`);
+  }, [router]);
+
+  if (isLoading || !person) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <PageBackground />
+        <Header title="Person" showBack />
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const hex = colorNumberToHex(person.color);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <PageBackground />
+      <Header
+        title={person.name}
+        showBack
+        rightAction={
+          <TouchableOpacity onPress={handleEdit} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Ionicons name="create-outline" size={20} color={colors.text} />
+          </TouchableOpacity>
+        }
+      />
+
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+
+        {/* Hero card */}
+        <View style={styles.heroCard}>
+          <View style={styles.heroTop}>
+            <PersonInitials name={person.name} color={hex} size={60} />
+            <View style={styles.heroInfo}>
+              <Text style={[styles.heroName, { fontFamily: typography.fonts.bold, color: colors.text }]}>
+                {person.name}
+              </Text>
+              {(person.designation || person.company) ? (
+                <Text style={[styles.heroRole, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                  {[person.designation, person.company].filter(Boolean).join(' · ')}
+                </Text>
+              ) : null}
+            </View>
+          </View>
+
+          {(person.email || person.phone) ? (
+            <View style={styles.contactRow}>
+              {person.email ? (
+                <View style={styles.contactChip}>
+                  <Ionicons name="mail-outline" size={12} color={colors.textMuted} />
+                  <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
+                    {person.email}
+                  </Text>
+                </View>
+              ) : null}
+              {person.phone ? (
+                <View style={styles.contactChip}>
+                  <Ionicons name="call-outline" size={12} color={colors.textMuted} />
+                  <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                    {person.phone}
+                  </Text>
+                </View>
+              ) : null}
+            </View>
+          ) : null}
+        </View>
+
+        {/* Currency switcher — only when multiple currencies */}
+        {availableCurrencies.length > 1 && (
+          <View style={styles.currencyRow}>
+            {availableCurrencies.map(c => (
+              <TouchableOpacity
+                key={c}
+                style={[styles.currencyPill, c === currency && styles.currencyPillActive]}
+                onPress={() => setSelectedCurrency(c)}
+                activeOpacity={0.8}
+              >
+                <Text style={[styles.currencyPillText, c === currency && styles.currencyPillTextActive]}>
+                  {c}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        {/* Stats */}
+        <View style={styles.statsRow}>
+          <View style={[styles.statTile, { backgroundColor: colors.danger + '15' }]}>
+            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>Spent</Text>
+            <MoneyText amount={person.totalSpent} currency={currency} type="DR" weight="bold" compact style={styles.statValue} />
+          </View>
+          <View style={[styles.statTile, { backgroundColor: colors.success + '15' }]}>
+            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.success }]}>Received</Text>
+            <MoneyText amount={person.totalReceived} currency={currency} type="CR" weight="bold" compact style={styles.statValue} />
+          </View>
+          <View style={styles.statTile}>
+            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>Txns</Text>
+            <Text style={[styles.statPlain, { fontFamily: typography.fonts.amountBold, color: colors.text }]}>
+              {person.txCount}
+            </Text>
+          </View>
+        </View>
+
+        {/* Transactions */}
+        {enrichedTx.length > 0 ? (
+          <View style={styles.txSection}>
+            <Text style={[styles.txTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              Transactions
+            </Text>
+            {enrichedTx.map((tx, idx) => (
+              <TransactionRow
+                key={tx.id}
+                tx={tx}
+                isFirst={idx === 0}
+                isLast={idx === enrichedTx.length - 1}
+                showDate
+                onPress={handleTxPress}
+              />
+            ))}
+          </View>
+        ) : (
+          <View style={styles.emptyTx}>
+            <Ionicons name="receipt-outline" size={28} color={colors.textMuted} />
+            <Text style={[styles.emptyTxText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+              No transactions in {currency}
+            </Text>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+});
+
+const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeContextType) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: colors.background },
+    loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    scroll: { paddingTop: spacing('3'), paddingBottom: spacing('10') },
+
+    heroCard: {
+      backgroundColor: colors.surface,
+      borderRadius: radius('2xl'),
+      marginHorizontal: layout.screenPadding,
+      padding: spacing('5'),
+      marginBottom: spacing('3'),
+      gap: spacing('3'),
+    },
+    heroTop: { flexDirection: 'row', alignItems: 'center', gap: spacing('4') },
+    heroInfo: { flex: 1, gap: spacing('1') },
+    heroName: { fontSize: 20 },
+    heroRole: { fontSize: 13, opacity: 0.7 },
+    contactRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('3') },
+    contactChip: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
+    contactText: { fontSize: 12 },
+
+    currencyRow: {
+      flexDirection: 'row',
+      gap: spacing('2'),
+      paddingHorizontal: layout.screenPadding,
+      marginBottom: spacing('3'),
+    },
+    currencyPill: {
+      paddingHorizontal: spacing('3'),
+      paddingVertical: spacing('1.5'),
+      borderRadius: radius('full'),
+      backgroundColor: colors.surface,
+    },
+    currencyPillActive: { backgroundColor: colors.text },
+    currencyPillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
+    currencyPillTextActive: { color: colors.background },
+
+    statsRow: {
+      flexDirection: 'row',
+      gap: spacing('2'),
+      paddingHorizontal: layout.screenPadding,
+      marginBottom: spacing('4'),
+    },
+    statTile: {
+      flex: 1,
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      padding: spacing('3'),
+      gap: spacing('1'),
+    },
+    statLabel: { fontSize: 10 },
+    statValue: { fontSize: 14 },
+    statPlain: { fontSize: 18 },
+
+    txSection: { paddingHorizontal: layout.screenPadding },
+    txTitle: { fontSize: typography.sizes.xs, marginBottom: spacing('2') },
+    emptyTx: { alignItems: 'center', paddingVertical: spacing('9'), gap: spacing('2') },
+    emptyTxText: { fontSize: typography.sizes.sm },
+  });

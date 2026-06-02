@@ -22,6 +22,7 @@ import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
+import { usePersons } from '../../persons/hooks/persons';
 import { AdvancedFilterService, AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../../filters/api/advanced-filters.service';
 import { AdvancedFilterSheet } from '../../filters/components/AdvancedFilterSheet';
 import type { TransactionListItem } from '../api/transactions';
@@ -246,6 +247,7 @@ export function TransactionsScreen() {
   const txQuery = useInfiniteTransactions(basicFilters);
   const accountsQuery = useAccounts();
   const categoriesQuery = useCategories();
+  const personsQuery = usePersons();
   const deleteTransaction = useDeleteTransaction();
 
   // Apply client-side filtering for advanced features
@@ -571,6 +573,7 @@ export function TransactionsScreen() {
         onReset={handleResetFilters}
         accounts={accountsQuery.data ?? []}
         categories={categoriesQuery.data ?? []}
+        persons={personsQuery.data ?? []}
         resultCount={transactions.length}
       />
     </SafeAreaView>
