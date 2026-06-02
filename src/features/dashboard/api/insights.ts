@@ -2,6 +2,7 @@ import { and, desc, eq, sql } from 'drizzle-orm';
 import { db } from '../../../db/client';
 import { accounts, payments } from '../../../db/schema';
 import { getDaysAgoLocal, getStartOfMonthLocal } from '../../../utils/date';
+import { formatCurrency } from '../../../utils/format';
 import { InsightStatus, InsightTrend, TransactionType } from '../../../types';
 import { IoniconName } from '../../../utils/icons';
 
@@ -173,7 +174,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
         title: 'Your week in review',
         valueType: 'text',
         text: '',
-        subtitle: `₹${thisWeek.income.toLocaleString()} in · ₹${thisWeek.expense.toLocaleString()} out · ₹${Math.abs(saved).toLocaleString()} ${saved >= 0 ? 'saved' : 'overspent'}${best}`,
+        subtitle: `${formatCurrency(thisWeek.income, currency)} in · ${formatCurrency(thisWeek.expense, currency)} out · ${formatCurrency(Math.abs(saved), currency)} ${saved >= 0 ? 'saved' : 'overspent'}${best}`,
         icon: 'newspaper-outline',
       });
     }

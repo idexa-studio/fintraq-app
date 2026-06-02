@@ -160,7 +160,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
         <InsightsSection currency={selectedCurrency} />
 
-        <SectionHeader title="Top expenses" rightText={selectedCurrency} />
+        <SectionHeader title="Top expenses" />
         <TopExpenseCategoriesCard currency={selectedCurrency} categories={topExpenseCategories} />
 
         <SectionHeader title="Recent" rightText="See all" onPressRight={navigateToTransactions} />
