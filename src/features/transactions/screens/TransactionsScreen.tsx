@@ -13,16 +13,13 @@ import {
 } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BlurBackground } from '../../../components/ui/BlurBackground';
+import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
 import { KPICard } from '../../../components/ui/KPICard';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { ThemeColors } from '../../../theme/colors';
-import { RADIUS, SHADOWS, SPACING } from '../../../theme/tokens';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
 import { AdvancedFilterService, AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../../filters/api/advanced-filters.service';
@@ -110,8 +107,8 @@ const RightActions = React.memo(function RightActions({
     <View style={swipeActionStyles.container}>
       <SwipeActionButton
         onPress={onEdit}
-        icon="pencil"
-        color={editIconColor}
+         icon="pencil"
+         color={editIconColor}
         backgroundColor={editBgColor}
       />
       <SwipeActionButton
@@ -206,7 +203,6 @@ const SwipeableRow = React.memo(function SwipeableRow({
     >
       <TransactionRow
         tx={tx}
-        colors={colors}
         isFirst={isFirst}
         isLast={isLast}
         onPress={handleEdit}
@@ -221,8 +217,9 @@ export function TransactionsScreen() {
   const initialAccountId = React.useMemo(() => resolveParamNumber(params.accountId), [params.accountId]);
   const initialCategoryId = React.useMemo(() => resolveParamNumber(params.categoryId), [params.categoryId]);
 
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   // Advanced filters state
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(() => {
@@ -235,7 +232,7 @@ export function TransactionsScreen() {
     }
     return initial;
   });
-  
+
   const [showAdvancedFilterSheet, setShowAdvancedFilterSheet] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [pendingDeleteTx, setPendingDeleteTx] = useState<TransactionListItem | null>(null);
@@ -254,12 +251,12 @@ export function TransactionsScreen() {
   // Apply client-side filtering for advanced features
   const transactions = useMemo(() => {
     const allTransactions = txQuery.data?.pages.flat() ?? [];
-    
+
     // If no advanced filtering needed, return all
     if (!AdvancedFilterService.requiresClientSideFiltering(advancedFilters)) {
       return allTransactions;
     }
-    
+
     return allTransactions.filter((transaction) => {
       // Date range filter
       if (advancedFilters.dateRange) {
@@ -268,33 +265,33 @@ export function TransactionsScreen() {
         startDate.setHours(0, 0, 0, 0);
         const endDate = new Date(advancedFilters.dateRange.endDate);
         endDate.setHours(23, 59, 59, 999);
-        
+
         if (txDate < startDate || txDate > endDate) {
           return false;
         }
       }
-      
+
       // Multi-select type filter
       if (advancedFilters.types && advancedFilters.types.length > 0) {
         if (!advancedFilters.types.includes(transaction.type)) {
           return false;
         }
       }
-      
+
       // Multi-select account filter
       if (advancedFilters.accountIds && advancedFilters.accountIds.length > 0) {
         if (!advancedFilters.accountIds.includes(transaction.accountId)) {
           return false;
         }
       }
-      
+
       // Multi-select category filter
       if (advancedFilters.categoryIds && advancedFilters.categoryIds.length > 0) {
         if (!advancedFilters.categoryIds.includes(transaction.categoryId)) {
           return false;
         }
       }
-      
+
       // Amount range filter
       if (advancedFilters.amountRange) {
         const amount = transaction.amount;
@@ -305,28 +302,28 @@ export function TransactionsScreen() {
           return false;
         }
       }
-      
+
       // Search in notes/category/account
       if (advancedFilters.searchQuery?.trim()) {
         const query = advancedFilters.searchQuery.toLowerCase().trim();
         const noteMatch = transaction.note.toLowerCase().includes(query);
         const categoryMatch = transaction.category.name.toLowerCase().includes(query);
         const accountMatch = transaction.account.name.toLowerCase().includes(query);
-        
+
         if (!noteMatch && !categoryMatch && !accountMatch) {
           return false;
         }
       }
-      
+
       return true;
     }).sort((a, b) => {
       // Sort by selected criteria
       if (advancedFilters.sortBy === 'amount') {
-        return advancedFilters.sortOrder === 'asc' 
-          ? a.amount - b.amount 
+        return advancedFilters.sortOrder === 'asc'
+          ? a.amount - b.amount
           : b.amount - a.amount;
       }
-      
+
       // Default sort by date
       const dateA = new Date(a.datetime).getTime();
       const dateB = new Date(b.datetime).getTime();
@@ -354,18 +351,18 @@ export function TransactionsScreen() {
   // Calculate KPI totals from filtered transactions
   const kpiTotalsByCurrency = useMemo(() => {
     const map: Record<string, { income: number; expense: number }> = {};
-    
+
     transactions.forEach((tx) => {
       const currency = tx.account.currency;
       if (!map[currency]) map[currency] = { income: 0, expense: 0 };
-      
+
       if (tx.type === 'CR') {
         map[currency].income += tx.amount;
-      } else {
+      } else if (tx.type === 'DR') {
         map[currency].expense += tx.amount;
       }
     });
-    
+
     return map;
   }, [transactions]);
 
@@ -427,7 +424,7 @@ export function TransactionsScreen() {
   );
 
   // Stable key extractor - prevents unnecessary re-renders
-  const keyExtractor = React.useCallback((item: TransactionListItem) => 
+  const keyExtractor = React.useCallback((item: TransactionListItem) =>
     item.id.toString(), []
   );
 
@@ -435,29 +432,29 @@ export function TransactionsScreen() {
 
   const renderSectionHeader = React.useCallback(
     ({ section: { title, data } }: { section: SectionListData<TransactionListItem, TxSection> }) => {
-    const dayTotal = data.reduce<DayTotals>(
-      (acc, tx) => {
-        if (tx.type === 'CR') acc.in += tx.amount;
-        else acc.out += tx.amount;
-        return acc;
-      },
-      { in: 0, out: 0 },
-    );
-    return (
-      <View style={styles.dayHeaderRow}>
-        <Text style={styles.dayTitle}>{title}</Text>
-        <View style={styles.dayTotals}>
-          {dayTotal.in > 0 && (
-            <MoneyText amount={dayTotal.in} type="CR" style={styles.dayTotalValue} />
-          )}
-          {dayTotal.out > 0 && (
-            <MoneyText amount={dayTotal.out} type="DR" style={styles.dayTotalValue} />
-          )}
+      const dayTotal = data.reduce<DayTotals>(
+        (acc, tx) => {
+          if (tx.type === 'CR') acc.in += tx.amount;
+          else if (tx.type === 'DR') acc.out += tx.amount;
+          return acc;
+        },
+        { in: 0, out: 0 },
+      );
+      return (
+        <View style={styles.dayHeaderRow}>
+          <Text style={styles.dayTitle}>{title}</Text>
+          <View style={styles.dayTotals}>
+            {dayTotal.in > 0 && (
+              <MoneyText amount={dayTotal.in} type="CR" style={styles.dayTotalValue} />
+            )}
+            {dayTotal.out > 0 && (
+              <MoneyText amount={dayTotal.out} type="DR" style={styles.dayTotalValue} />
+            )}
+          </View>
         </View>
-      </View>
-    );
-  },
-  [styles]);
+      );
+    },
+    [styles]);
 
 
   const renderSectionFooter = React.useCallback(() => <View style={{ height: 24 }} />, []);
@@ -472,19 +469,15 @@ export function TransactionsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground />
+      <PageBackground />
 
       <Header
         title="Transactions"
-        subtitle={`${transactions.length} records`}
         showBack
         rightAction={(
           <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.headerBtn} onPress={() => router.push('/search')} activeOpacity={0.85}>
-              <Ionicons name="search-outline" size={19} color={colors.text} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.headerBtn} onPress={() => setShowAdvancedFilterSheet(true)} activeOpacity={0.9}>
-              <Ionicons name="filter-outline" size={19} color={colors.text} />
+            <TouchableOpacity onPress={() => setShowAdvancedFilterSheet(true)} activeOpacity={0.7} style={{ position: 'relative' }}>
+              <Ionicons name="options-outline" size={19} color={colors.text} />
               {activeFilterCount > 0 && (
                 <View style={styles.filterBadge}>
                   <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
@@ -517,7 +510,6 @@ export function TransactionsScreen() {
               selectedCurrency={selectedKpiCurrency}
               onSelectCurrency={setSelectedKpiCurrency}
               metrics={activeTotals}
-              colors={colors}
             />
 
             {activeFilterCount > 0 && (
@@ -585,7 +577,7 @@ export function TransactionsScreen() {
   );
 }
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -600,15 +592,7 @@ const createStyles = (colors: ThemeColors) =>
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: SPACING['2'],
-    },
-    headerBtn: {
-      width: 44,
-      height: 44,
-      borderRadius: RADIUS.md,
-      backgroundColor: colors.surface,
-      alignItems: 'center',
-      justifyContent: 'center',
+      gap: spacing('5'),
     },
     filterBadge: {
       position: 'absolute',
@@ -616,7 +600,7 @@ const createStyles = (colors: ThemeColors) =>
       right: -2,
       minWidth: 18,
       height: 18,
-      borderRadius: RADIUS.full,
+      borderRadius: radius('full'),
       backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'center',
@@ -625,17 +609,17 @@ const createStyles = (colors: ThemeColors) =>
     },
     filterBadgeText: {
       color: colors.background,
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 10,
     },
     content: {
-      paddingHorizontal: SPACING['6'],
-      paddingTop: SPACING['3'],
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('3'),
       paddingBottom: 120,
     },
     listHeader: {
-      gap: SPACING['5'],
-      marginBottom: SPACING['6'],
+      gap: spacing('5'),
+      marginBottom: spacing('6'),
     },
     activeFiltersRow: {
       flexDirection: 'row',
@@ -643,71 +627,70 @@ const createStyles = (colors: ThemeColors) =>
       justifyContent: 'space-between',
     },
     activeFiltersLabel: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 10,
       color: colors.textMuted,
       letterSpacing: 1.5,
     },
     clearChip: {
       backgroundColor: colors.danger + '12',
-      paddingHorizontal: SPACING['3'],
+      paddingHorizontal: spacing('3'),
       height: 28,
-      borderRadius: RADIUS.md,
+      borderRadius: radius('md'),
       alignItems: 'center',
       justifyContent: 'center',
     },
     clearChipText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.danger,
     },
-    daySection: { gap: SPACING['3'] },
+    daySection: { gap: spacing('3') },
     dayHeaderRow: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: SPACING['1'],
-      marginBottom: SPACING['3'],
+      paddingHorizontal: spacing('1'),
+      marginBottom: spacing('3'),
     },
     dayTitle: {
       color: colors.textMuted,
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       letterSpacing: 1.2,
-      textTransform: 'uppercase',
     },
     dayTotals: {
       flexDirection: 'row',
-      gap: SPACING['3'],
+      gap: spacing('3'),
     },
     dayTotalValue: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 12,
     },
     dayCard: {
-      borderRadius: RADIUS.xl,
+      borderRadius: radius('xl'),
       overflow: 'hidden',
     },
     emptyWrap: {
       paddingVertical: 60,
       alignItems: 'center',
-      gap: SPACING['4'],
+      gap: spacing('4'),
     },
     emptyIconBox: {
       width: 80,
       height: 80,
-      borderRadius: RADIUS['2xl'],
+      borderRadius: radius('2xl'),
       backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
     },
     emptyTitle: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       color: colors.text,
       fontSize: 18,
     },
     emptySubtitle: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       color: colors.textMuted,
       fontSize: 14,
       textAlign: 'center',
@@ -717,32 +700,31 @@ const createStyles = (colors: ThemeColors) =>
     emptyAction: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: SPACING['2.5'],
-      paddingHorizontal: SPACING['5'],
+      gap: spacing('2.5'),
+      paddingHorizontal: layout.screenPadding,
       height: 48,
-      borderRadius: RADIUS.lg,
+      borderRadius: radius('lg'),
       backgroundColor: colors.text,
-      marginTop: SPACING['2'],
+      marginTop: spacing('2'),
     },
     emptyActionText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       color: colors.background,
       fontSize: 15,
     },
     loadMoreWrap: {
-      paddingVertical: SPACING['7'],
+      paddingVertical: spacing('7'),
       alignItems: 'center',
     },
     fab: {
       position: 'absolute',
-      bottom: 34,
-      right: SPACING['6'],
-      width: 60,
-      height: 60,
-      borderRadius: RADIUS.xl,
+      bottom: layout.screenPadding,
+      right: layout.screenPadding,
+      width: 55,
+      height: 55,
+      borderRadius: radius('full'),
       backgroundColor: colors.text,
-      alignItems: 'center',
       justifyContent: 'center',
-      ...SHADOWS.lg,
+      alignItems: 'center',
     },
   });

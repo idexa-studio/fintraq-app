@@ -1,8 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
-import { ActivityIndicator, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
+import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 type ConfirmDialogProps = {
   visible: boolean;
@@ -27,8 +25,9 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   destructive = true,
   isLoading = false,
 }: ConfirmDialogProps) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handleConfirm = useCallback(() => {
     onClose();
@@ -36,36 +35,31 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   }, [onClose, onConfirm]);
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      presentationStyle="overFullScreen"
-      statusBarTranslucent
-      onRequestClose={onClose}
-    >
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
 
         <View style={styles.card}>
-          <Text style={styles.title}>{title}</Text>
-          {message ? <Text style={styles.message}>{message}</Text> : null}
+          <View style={styles.body}>
+            <Text style={styles.title}>{title}</Text>
+            {message ? <Text style={styles.message}>{message}</Text> : null}
+          </View>
 
-          <View style={styles.actionsRow}>
-            <TouchableOpacity style={styles.cancelButton} onPress={onClose} activeOpacity={0.9}>
-              <Text style={styles.cancelText}>{cancelLabel}</Text>
+          <View style={styles.actions}>
+            <TouchableOpacity style={styles.btnCancel} onPress={onClose} activeOpacity={0.7}>
+              <Text style={styles.btnCancelText}>{cancelLabel}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.confirmButton, destructive ? styles.confirmButtonDestructive : styles.confirmButtonNeutral, isLoading && { opacity: 0.7 }]}
+              style={[styles.btnConfirm, destructive && styles.btnDanger]}
               onPress={handleConfirm}
-              activeOpacity={0.9}
+              activeOpacity={0.7}
               disabled={isLoading}
             >
               {isLoading ? (
-                <ActivityIndicator color="#FFFFFF" size="small" />
+                <ActivityIndicator color={colors.background} size="small" />
               ) : (
-                <Text style={styles.confirmText}>{confirmLabel}</Text>
+                <Text style={styles.btnConfirmText}>{confirmLabel}</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -75,77 +69,65 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   );
 });
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.52)',
+      backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
-      paddingHorizontal: 24,
-      paddingBottom: 42,
+      padding: layout.screenPadding,
+      paddingBottom: spacing('9'),
     },
     card: {
-      alignSelf: 'stretch',
-      borderRadius: 22,
-      backgroundColor: Platform.OS === 'ios' ? colors.background + 'F2' : colors.background,
-      borderWidth: 1,
-      borderColor: colors.text + '18',
-      padding: 18,
-      shadowColor: '#000000',
-      shadowOpacity: 0.22,
-      shadowRadius: 24,
-      shadowOffset: { width: 0, height: 10 },
-      elevation: 10,
+      backgroundColor: colors.surface,
+      borderRadius: radius('2xl'),
+      borderWidth: 0.5,
+      borderColor: colors.text + '0C',
+      overflow: 'hidden',
+    },
+    body: {
+      padding: spacing('5'),
     },
     title: {
-      fontFamily: TYPOGRAPHY.fonts.headingRegular,
-      fontSize: 24,
+      fontFamily: typography.fonts.heading,
+      fontSize: 20,
       color: colors.text,
-      letterSpacing: -0.6,
+      marginBottom: spacing('2'),
     },
     message: {
-      marginTop: 6,
-      marginBottom: 16,
-      fontFamily: TYPOGRAPHY.fonts.regular,
-      fontSize: 13,
-      lineHeight: 18,
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.sm,
       color: colors.textMuted,
+      lineHeight: 20,
     },
-    actionsRow: {
+    actions: {
       flexDirection: 'row',
-      gap: 10,
     },
-    cancelButton: {
+    btnCancel: {
       flex: 1,
-      height: 46,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: colors.primary + '22',
+      height: 52,
       backgroundColor: colors.surface,
-      alignItems: 'center',
       justifyContent: 'center',
+      alignItems: 'center',
     },
-    cancelText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
-      fontSize: 14,
+    btnCancelText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.sm,
       color: colors.text,
     },
-    confirmButton: {
+    btnConfirm: {
       flex: 1,
-      height: 46,
-      borderRadius: 12,
-      alignItems: 'center',
+      height: 52,
+      backgroundColor: colors.text,
       justifyContent: 'center',
+      alignItems: 'center',
     },
-    confirmButtonDestructive: {
+    btnDanger: {
       backgroundColor: colors.danger,
     },
-    confirmButtonNeutral: {
-      backgroundColor: colors.primary,
-    },
-    confirmText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
-      fontSize: 14,
-      color: '#FFFFFF',
+    btnConfirmText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.sm,
+      color: colors.background,
     },
   });

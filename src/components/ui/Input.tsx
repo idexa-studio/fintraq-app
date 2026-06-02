@@ -1,9 +1,6 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
-import { spacing, COMPONENT_SIZES } from '../../theme/tokens';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 type InputSize = 'sm' | 'md' | 'lg';
 type InputVariant = 'default' | 'minimal' | 'filled';
@@ -15,117 +12,55 @@ interface InputProps extends TextInputProps {
   variant?: InputVariant;
 }
 
-/**
- * Input - Editorial Brutalist Design
- * 
- * Size variants (height + padding + radius):
- * - sm: 40px height, 12px padding, 12px radius (md)
- * - md: 56px height, 16px padding, 16px radius (lg) - DEFAULT
- * - lg: 64px height, 16px padding, 20px radius (xl)
- * 
- * Variants:
- * - default: Outlined with border
- * - minimal: Bottom border only
- * - filled: Solid background, no border
- */
-export const Input = React.memo(function Input({ 
-  label, 
-  error, 
+const FONT_SIZES: Record<InputSize, number> = { sm: 14, md: 16, lg: 18 };
+
+export const Input = React.memo(function Input({
+  label,
+  error,
   size = 'md',
   variant = 'default',
   style,
   placeholderTextColor,
-  ...props 
+  ...props
 }: InputProps) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors, size), [colors, size]);
+  const theme = useTheme();
+  const { colors, sizes, typography } = theme;
+  const styles = useMemo(() => createStyles(theme, size), [theme, size]);
 
-  const sizeConfig = COMPONENT_SIZES.input[size];
+  const sizeConfig = sizes.input[size];
 
   const containerStyle = useMemo(() => {
     switch (variant) {
       case 'filled':
-        return { 
-          backgroundColor: colors.surface,
-          borderWidth: 0,
-        };
+        return { backgroundColor: colors.surface, borderWidth: 0 };
       case 'minimal':
-        return { 
-          backgroundColor: 'transparent',
-          borderBottomWidth: 1,
-          borderBottomColor: error ? colors.danger : colors.border,
-        };
+        return { backgroundColor: 'transparent', borderBottomWidth: 1, borderBottomColor: error ? colors.danger : colors.text + '0C' };
       case 'default':
       default:
-        return { 
-          backgroundColor: colors.surface,
-          borderWidth: 1,
-          borderColor: error ? colors.danger : colors.border,
-        };
+        return { backgroundColor: colors.surface, borderWidth: 1, borderColor: error ? colors.danger : colors.text + '0C' };
     }
-  }, [variant, error, colors.surface, colors.border, colors.danger]);
-
-  const placeholderColor = placeholderTextColor || colors.textMuted + '80';
+  }, [variant, error, colors]);
 
   return (
-    <View style={styles.container}>
-      {label && (
-        <Text style={styles.label}>{label}</Text>
-      )}
-      <View style={[
-        styles.inputContainer,
-        {
-          height: sizeConfig.height,
-          paddingHorizontal: variant === 'minimal' ? 0 : sizeConfig.paddingHorizontal,
-          borderRadius: variant === 'minimal' ? 0 : sizeConfig.borderRadius,
-        },
-        containerStyle,
-      ]}>
+    <View style={styles.wrap}>
+      {label ? <Text style={[styles.label, { fontFamily: typography.fonts.medium, color: colors.textMuted }]}>{label}</Text> : null}
+      <View style={[styles.box, { height: sizeConfig.height, paddingHorizontal: variant === 'minimal' ? 0 : sizeConfig.paddingHorizontal, borderRadius: variant === 'minimal' ? 0 : sizeConfig.borderRadius }, containerStyle]}>
         <TextInput
-          style={[
-            styles.input,
-            {
-              color: colors.text,
-              fontSize: size === 'sm' ? 14 : size === 'lg' ? 18 : 16,
-              paddingVertical: 0,
-            },
-            variant === 'minimal' && { paddingHorizontal: 0 },
-            style,
-          ]}
-          placeholderTextColor={placeholderColor}
+          style={[styles.input, { fontFamily: typography.fonts.regular, color: colors.text, fontSize: FONT_SIZES[size] }, variant === 'minimal' && { paddingHorizontal: 0 }, style]}
+          placeholderTextColor={placeholderTextColor || colors.textMuted + '80'}
           {...props}
         />
       </View>
-      {error && (
-        <Text style={styles.errorText}>{error}</Text>
-      )}
+      {error ? <Text style={[styles.error, { fontFamily: typography.fonts.medium, color: colors.danger }]}>{error}</Text> : null}
     </View>
   );
 });
 
-const createStyles = (colors: ThemeColors, size: InputSize) => StyleSheet.create({
-  container: {
-    marginBottom: 0,
-  },
-  label: {
-    fontSize: 14,
-    color: colors.textMuted,
-    marginBottom: spacing('2'),
-    fontFamily: TYPOGRAPHY.fonts.medium,
-    fontWeight: TYPOGRAPHY.weights.medium,
-  },
-  inputContainer: {
-    overflow: 'hidden',
-    justifyContent: 'center',
-  },
-  input: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
-    textAlignVertical: 'center',
-  },
-  errorText: {
-    color: colors.danger,
-    fontSize: 12,
-    marginTop: spacing('1'),
-    fontFamily: TYPOGRAPHY.fonts.medium,
-  },
-});
+const createStyles = ({ typography, spacing }: ThemeContextType, _size: InputSize) =>
+  StyleSheet.create({
+    wrap: { marginBottom: 0 },
+    label: { fontSize: typography.sizes.xs, marginBottom: spacing('2') },
+    box: { overflow: 'hidden', justifyContent: 'center' },
+    input: { paddingVertical: 0 },
+    error: { fontSize: typography.sizes.xs, marginTop: spacing('1') },
+  });

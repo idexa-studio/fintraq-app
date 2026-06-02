@@ -1,3 +1,4 @@
+import type { TransactionType } from '@/src/types';
 import { TransactionFilters } from '@/src/features/transactions/api/transactions';
 
 export interface AdvancedFilters {
@@ -13,8 +14,8 @@ export interface AdvancedFilters {
   // Multi-select categories
   categoryIds?: number[];
   
-  // Transaction types (can select multiple: ['CR', 'DR'] or single)
-  types?: ('CR' | 'DR')[];
+  // Transaction types (can select multiple)
+  types?: TransactionType[];
   
   // Amount range
   amountRange?: {
@@ -122,7 +123,7 @@ export class AdvancedFilterService {
     }
     
     if (advanced.types && advanced.types.length > 0) {
-      const typeLabels = advanced.types.map(t => t === 'CR' ? 'Income' : 'Expense');
+      const typeLabels = advanced.types.map(t => t === 'CR' ? 'Income' : t === 'DR' ? 'Expense' : 'Transfer');
       parts.push(typeLabels.join(' & '));
     }
     

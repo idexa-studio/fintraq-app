@@ -2,14 +2,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
-import { spacing, radius, LAYOUT } from '../../theme/tokens';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 export type HeaderProps = {
   title: string;
-  subtitle?: string;
   showBack?: boolean;
   rightAction?: React.ReactNode;
 };
@@ -27,15 +23,15 @@ export type HeaderProps = {
  * - Size: 44px (touch target)
  * - Radius: 12px (md)
  */
-export const Header = React.memo(function Header({ 
-  title, 
-  subtitle, 
-  showBack, 
-  rightAction 
+export const Header = React.memo(function Header({
+  title,
+  showBack,
+  rightAction
 }: HeaderProps) {
   const router = useRouter();
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handleBack = useCallback(() => {
     router.back();
@@ -45,27 +41,17 @@ export const Header = React.memo(function Header({
     <View style={styles.container}>
       <View style={styles.left}>
         {showBack && (
-          <TouchableOpacity 
-            onPress={handleBack} 
-            style={styles.backBtn} 
-            activeOpacity={0.75}
+          <TouchableOpacity
+            onPress={handleBack}
+            activeOpacity={0.7}
           >
-            <Ionicons 
-              name="arrow-back" 
-              size={20} 
-              color={colors.text} 
-            />
+            <Ionicons name="arrow-back" size={20} color={colors.text} />
           </TouchableOpacity>
         )}
         <View style={styles.titleBlock}>
           <Text style={styles.title} numberOfLines={1}>
             {title}
           </Text>
-          {subtitle && (
-            <Text style={styles.subtitle} numberOfLines={1}>
-              {subtitle}
-            </Text>
-          )}
         </View>
       </View>
 
@@ -78,12 +64,12 @@ export const Header = React.memo(function Header({
   );
 });
 
-const createStyles = (colors: ThemeColors) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: LAYOUT.screenPadding,
+    paddingHorizontal: layout.screenPadding,
     paddingTop: spacing('3'),
     paddingBottom: spacing('4'),
     backgroundColor: 'transparent',
@@ -94,33 +80,15 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     alignItems: 'center',
     gap: spacing('4'),
   },
-  backBtn: {
-    width: LAYOUT.minTouchTarget,
-    height: LAYOUT.minTouchTarget,
-    borderRadius: radius('md'),
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  titleBlock: {
+titleBlock: {
     flex: 1,
     justifyContent: 'center',
   },
   title: {
-    fontFamily: TYPOGRAPHY.fonts.heading,
+    fontFamily: typography.fonts.heading,
     color: colors.text,
-    fontSize: 28,
-    letterSpacing: -1,
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
-    color: colors.textMuted,
-    fontSize: 13,
-    letterSpacing: 0.1,
-    marginTop: spacing('0.5'),
+    fontSize: typography.sizes.xxl,
+    lineHeight: 26,
   },
   rightActionWrap: {
     justifyContent: 'center',

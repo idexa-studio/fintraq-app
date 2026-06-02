@@ -12,54 +12,21 @@ import { SettingsProvider } from '@/src/providers/SettingsProvider';
 import { PremiumProvider } from '@/src/providers/PremiumProvider';
 import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
-import {
-  BricolageGrotesque_400Regular,
-  BricolageGrotesque_500Medium,
-  BricolageGrotesque_600SemiBold,
-  BricolageGrotesque_700Bold,
-  useFonts as useBricolageFonts
-} from '@expo-google-fonts/bricolage-grotesque';
-
-import {
-  JetBrainsMono_400Regular,
-  JetBrainsMono_700Bold,
-  useFonts as useMonoFonts
-} from '@expo-google-fonts/jetbrains-mono';
-import { Text, TextInput } from 'react-native';
-
-const customizeText = () => {
-  const customTextProps = {
-    style: {
-      fontFamily: 'BricolageGrotesque_400Regular',
-    }
-  };
-  // @ts-ignore
-  if (Text.defaultProps) { Text.defaultProps.style = customTextProps.style; } else { Text.defaultProps = customTextProps; }
-  // @ts-ignore
-  if (TextInput.defaultProps) { TextInput.defaultProps.style = customTextProps.style; } else { TextInput.defaultProps = customTextProps; }
-};
+import { useFonts } from 'expo-font';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [bricolageLoaded] = useBricolageFonts({
-    BricolageGrotesque_400Regular,
-    BricolageGrotesque_500Medium,
-    BricolageGrotesque_600SemiBold,
-    BricolageGrotesque_700Bold,
-  });
 
-  const [monoLoaded] = useMonoFonts({
-    JetBrainsMono_400Regular,
-    JetBrainsMono_700Bold,
+  const [fontsLoaded] = useFonts({
+    GoogleSans_Bold: require('../assets/fonts/GoogleSanaFlex/Bold.ttf'),
+    GoogleSans_Regular: require('../assets/fonts/GoogleSanaFlex/Regular.ttf'),
+    GoogleSans_Medium: require('../assets/fonts/GoogleSanaFlex/Medium.ttf'),
+    GoogleSans_SemiBold: require('../assets/fonts/GoogleSanaFlex/SemiBold.ttf'),
   });
-
-  const fontsLoaded = bricolageLoaded && monoLoaded;
 
   if (!fontsLoaded) return null;
 
   NotificationService.init();
-
-  customizeText();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

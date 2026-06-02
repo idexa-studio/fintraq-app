@@ -1,17 +1,15 @@
+import { usePremium } from '@/src/providers/PremiumProvider';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useMemo, useCallback } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { useTheme } from '../../providers/ThemeProvider';
-import { TYPOGRAPHY } from '../../theme/typography';
-import { spacing, radius } from '../../theme/tokens';
+import React, { useCallback, useMemo } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 
 interface PremiumGuardProps {
   children: React.ReactNode;
   label?: string;
   size?: 'small' | 'medium' | 'large';
-  containerStyle?: any;
+  containerStyle?: ViewStyle;
 }
 
 /**
@@ -32,14 +30,16 @@ export const PremiumGuard = React.memo(function PremiumGuard({
   containerStyle
 }: PremiumGuardProps) {
   const { isPremium } = usePremium();
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors, spacing, radius } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
 
   const handlePress = useCallback(() => {
     router.push('/premium');
   }, [router]);
 
-  const { isSmall, containerStyles, iconBoxStyles, iconSize, actionBadgeStyles, actionTextLabel } = useMemo(() => {
+  const { isSmall, containerStyles, iconBoxStyles, iconSize } = useMemo(() => {
     const small = size === 'small';
     const medium = size === 'medium';
     
@@ -68,22 +68,12 @@ export const PremiumGuard = React.memo(function PremiumGuard({
           borderColor: colors.border,
           width: small ? 32 : 44,
           height: small ? 32 : 44,
-          borderRadius: small ? radius('sm') : radius('md'),
+          borderRadius: radius('full'),
         },
       ],
       iconSize: small ? 14 : 18,
-      actionBadgeStyles: [
-        styles.actionBadge,
-        { 
-          backgroundColor: colors.text,
-          paddingHorizontal: small ? spacing('2.5') : spacing('3.5'),
-          paddingVertical: small ? spacing('1.5') : spacing('2.5'),
-          borderRadius: small ? radius('sm') : radius('md'),
-        },
-      ],
-      actionTextLabel: small ? 'Pro' : 'Unlock'
     };
-  }, [size, colors.surface, colors.border, colors.background, colors.text, containerStyle]);
+  }, [size, colors.surface, colors.border, colors.background, containerStyle, styles, spacing, radius]);
 
   if (isPremium) {
     return <>{children}</>;
@@ -109,7 +99,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
         <View style={styles.headerRow}>
 
           <View style={iconBoxStyles}>
-             <Ionicons name="lock-closed" size={iconSize} color={colors.text} />
+             <Ionicons name="lock-closed-outline" size={iconSize} color={colors.text} />
           </View>
 
           <View style={styles.textDetails}>
@@ -123,19 +113,13 @@ export const PremiumGuard = React.memo(function PremiumGuard({
              )}
           </View>
 
-          <View style={actionBadgeStyles}>
-             <Text style={[styles.actionText, { color: colors.background }]}>
-               {actionTextLabel}
-             </Text>
-          </View>
-
         </View>
       </View>
     </TouchableOpacity>
   );
 });
 
-const styles = StyleSheet.create({
+const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.create({
   container: {
     borderWidth: 1,
     overflow: 'hidden',
@@ -165,7 +149,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontFamily: TYPOGRAPHY.fonts.bold,
+    fontFamily: typography.fonts.bold,
     fontSize: 14,
     marginBottom: spacing('1'),
   },
@@ -174,7 +158,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   subtitle: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
+    fontFamily: typography.fonts.regular,
     fontSize: 12,
   },
   actionBadge: {
@@ -182,7 +166,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionText: {
-    fontFamily: TYPOGRAPHY.fonts.bold,
+    fontFamily: typography.fonts.bold,
     fontSize: 10,
     letterSpacing: 1,
   },

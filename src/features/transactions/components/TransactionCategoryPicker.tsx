@@ -1,32 +1,35 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ThemeColors } from '../../../theme/colors';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { colorNumberToHex } from '../../../utils/format';
+import { resolveIcon } from '../../../utils/icons';
 import type { Category } from '../../categories/api/categories';
 
 type Props = {
   categories: Category[];
   selectedId: number | null;
   onSelect: (id: number) => void;
-  colors: ThemeColors;
 };
 
-const toHexColor = (value: number) => `#${value.toString(16).padStart(6, '0')}`;
+export const TransactionCategoryPicker = React.memo(function TransactionCategoryPicker({
+  categories,
+  selectedId,
+  onSelect,
+}: Props) {
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
-const resolveIconName = (raw: string | null | undefined): keyof typeof Ionicons.glyphMap => {
-  if (raw && raw in Ionicons.glyphMap) return raw as keyof typeof Ionicons.glyphMap;
-  return 'pricetag-outline';
-};
+  const handleSelect = useCallback((id: number) => onSelect(id), [onSelect]);
 
-export const TransactionCategoryPicker = ({ categories, selectedId, onSelect, colors }: Props) => {
   return (
     <View style={styles.container}>
       <Text style={[styles.label, { color: colors.textMuted }]}>CATEGORY</Text>
       <View style={styles.grid}>
         {categories.map((cat) => {
           const selected = selectedId === cat.id;
-          const catColor = toHexColor(cat.color);
+          const catColor = colorNumberToHex(cat.color);
           return (
             <TouchableOpacity
               key={cat.id}
@@ -35,11 +38,11 @@ export const TransactionCategoryPicker = ({ categories, selectedId, onSelect, co
                 { backgroundColor: colors.surface, borderColor: colors.border },
                 selected && { backgroundColor: catColor, borderColor: catColor },
               ]}
-              onPress={() => onSelect(cat.id)}
+              onPress={() => handleSelect(cat.id)}
               activeOpacity={0.8}
             >
               <Ionicons
-                name={resolveIconName(cat.icon)}
+                name={resolveIcon(cat.icon, 'pricetag-outline')}
                 size={14}
                 color={selected ? colors.background : catColor}
               />
@@ -58,35 +61,35 @@ export const TransactionCategoryPicker = ({ categories, selectedId, onSelect, co
       </View>
     </View>
   );
-};
+});
 
-const styles = StyleSheet.create({
+const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
   container: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingVertical: spacing('3'),
+    paddingHorizontal: layout.screenPadding,
   },
   label: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
+    fontFamily: typography.fonts.semibold,
     fontSize: 10,
     letterSpacing: 1.5,
-    marginBottom: 12,
+    marginBottom: spacing('3'),
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: spacing('2'),
   },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    paddingHorizontal: 12,
+    gap: spacing('2'),
+    paddingHorizontal: spacing('3'),
     height: 36,
-    borderRadius: 18,
+    borderRadius: radius('full'),
     borderWidth: 1,
   },
   name: {
-    fontFamily: TYPOGRAPHY.fonts.medium,
+    fontFamily: typography.fonts.medium,
     fontSize: 13,
   },
 });

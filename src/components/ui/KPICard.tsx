@@ -1,8 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
-import { spacing, radius } from '../../theme/tokens';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { MoneyText } from './MoneyText';
 
 type KPIMetrics = {
@@ -15,12 +13,11 @@ type Props = {
   selectedCurrency: string | null;
   onSelectCurrency: (currency: string) => void;
   metrics: KPIMetrics;
-  colors: ThemeColors;
 };
 
 /**
  * KPICard - Editorial Brutalist Design
- * 
+ *
  * Structure:
  * - Card: 16px radius (lg), 16px padding, surface background
  * - Currency tabs: 12px radius (md), 8px gap
@@ -32,9 +29,9 @@ export const KPICard = React.memo(function KPICard({
   selectedCurrency,
   onSelectCurrency,
   metrics,
-  colors
 }: Props) {
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handleCurrencyPress = useCallback((curr: string) => {
     onSelectCurrency(curr);
@@ -44,9 +41,9 @@ export const KPICard = React.memo(function KPICard({
     <View style={styles.kpiCard}>
       {currencies.length > 1 && (
         <View style={styles.kpiTabsWrap}>
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.currencyTabsRow}
           >
             {currencies.map((cur) => (
@@ -70,9 +67,8 @@ export const KPICard = React.memo(function KPICard({
           </ScrollView>
         </View>
       )}
-      
+
       <View style={styles.kpiBody}>
-        {/* Top: Net Balance */}
         <View style={styles.kpiMainContent}>
           <View>
             <Text style={styles.kpiLabel}>NET SAVINGS</Text>
@@ -88,7 +84,6 @@ export const KPICard = React.memo(function KPICard({
 
         <View style={styles.kpiDivider} />
 
-        {/* Bottom: In/Out Split */}
         <View style={styles.kpiSecondaryContent}>
           <View style={styles.kpiCell}>
             <Text style={styles.kpiLabelSmall}>INCOME</Text>
@@ -117,7 +112,7 @@ export const KPICard = React.memo(function KPICard({
   );
 });
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     kpiCard: {
       borderRadius: radius('lg'),
@@ -150,7 +145,7 @@ const createStyles = (colors: ThemeColors) =>
       borderColor: colors.primary,
     },
     currencyTabText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 12,
       color: colors.textMuted,
       letterSpacing: 0.3,
@@ -179,24 +174,22 @@ const createStyles = (colors: ThemeColors) =>
     kpiVerticalSep: {
       width: 1,
       height: 24,
-      backgroundColor: colors.border,
+      backgroundColor: colors.text + '0C',
       marginHorizontal: spacing('4'),
       opacity: 0.6,
     },
     kpiLabel: {
       color: colors.textMuted,
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 9,
       letterSpacing: 1.2,
-      textTransform: 'uppercase',
       marginBottom: spacing('0.5'),
     },
     kpiLabelSmall: {
       color: colors.textMuted,
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 8,
       letterSpacing: 1,
-      textTransform: 'uppercase',
     },
     kpiValueLarge: {
       fontSize: 24,
@@ -208,7 +201,7 @@ const createStyles = (colors: ThemeColors) =>
     },
     kpiDivider: {
       height: 1,
-      backgroundColor: colors.border,
+      backgroundColor: colors.text + '0C',
       opacity: 0.5,
     },
   });

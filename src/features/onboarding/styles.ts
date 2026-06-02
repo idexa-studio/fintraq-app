@@ -1,8 +1,7 @@
 import { Platform, StyleSheet } from 'react-native';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
+import { ThemeContextType } from '../../providers/ThemeProvider';
 
-export const createOnboardingStyles = (colors: ThemeColors) =>
+export const createOnboardingStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -12,14 +11,10 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
     keyboardWrap: {
       flex: 1,
     },
-    bgCircle: {
-      position: 'absolute',
-      borderRadius: 999,
-    },
     header: {
-      paddingHorizontal: 24,
-      paddingTop: 12,
-      gap: 14,
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('3'),
+      gap: spacing('3.5'),
     },
     headerTopRow: {
       flexDirection: 'row',
@@ -29,20 +24,18 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
     headerBackButton: {
       width: 42,
       height: 42,
-      borderRadius: 21,
+      borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.primary + '22',
     },
     headerBackPlaceholder: {
       width: 42,
       height: 42,
     },
     brand: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
-      fontSize: 30,
+      fontFamily: typography.fonts.heading,
+      fontSize: typography.sizes.xxl,
       color: colors.text,
       letterSpacing: -1,
       textAlign: 'center',
@@ -50,59 +43,56 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
     stepPill: {
       minWidth: 42,
       height: 42,
-      borderRadius: 21,
-      paddingHorizontal: 10,
+      borderRadius: radius('full'),
+      paddingHorizontal: spacing('2.5'),
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.primary + '22',
     },
     stepPillText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.text,
       letterSpacing: 0.4,
     },
     progressTrack: {
       flexDirection: 'row',
-      gap: 8,
+      gap: spacing('2'),
     },
     progressDot: {
       flex: 1,
-      height: 6,
-      borderRadius: 999,
+      height: spacing('1.5'),
+      borderRadius: radius('full'),
       backgroundColor: colors.surface,
     },
     progressDotActive: {
       backgroundColor: colors.primary,
     },
     scrollContent: {
-      paddingHorizontal: 24,
-      paddingTop: 20,
-      paddingBottom: 24,
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('5'),
+      paddingBottom: spacing('6'),
       flexGrow: 1,
     },
     stepMeta: {
-      marginBottom: 20,
+      marginBottom: spacing('5'),
     },
     eyebrow: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.primary,
-      letterSpacing: 1.5,
-      marginBottom: 12,
+      marginBottom: spacing('3'),
     },
     stepTitle: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 34,
       lineHeight: 36,
       color: colors.text,
       letterSpacing: -1.1,
     },
     stepSubtitle: {
-      marginTop: 10,
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      marginTop: spacing('2.5'),
+      fontFamily: typography.fonts.regular,
       fontSize: 14,
       lineHeight: 22,
       color: colors.textMuted,
@@ -110,13 +100,12 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
     },
     contentCard: {
       paddingHorizontal: 0,
-      paddingVertical: 0,
-      minHeight: 420,
+      paddingVertical: 0
     },
     footer: {
-      paddingHorizontal: 24,
-      paddingBottom: Platform.OS === 'ios' ? 18 : 24,
-      paddingTop: 8,
+      paddingHorizontal: layout.screenPadding,
+      paddingBottom: Platform.OS === 'ios' ? spacing('5') : spacing('6'),
+      paddingTop: spacing('2'),
     },
     primaryAction: {
       width: '100%',

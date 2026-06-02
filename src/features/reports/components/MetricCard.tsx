@@ -1,10 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { MoneyText } from '../../../components/ui/MoneyText';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { ThemeColors } from '../../../theme/colors';
-import { TYPOGRAPHY } from '../../../theme/typography';
-
+import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { TrendMode } from '../../../types';
 
 interface MetricCardProps {
@@ -17,13 +14,6 @@ interface MetricCardProps {
   isAmount?: boolean;
 }
 
-/**
- * MetricCard: A key performance indicator card for reports.
- * Used for displaying totals like "Weekly Expense" or "Savings Rate".
- *
- * Primitive Logic:
- * Internally handles trend color-coding based on trendMode.
- */
 export const MetricCard = React.memo(function MetricCard({
   label,
   value,
@@ -33,22 +23,19 @@ export const MetricCard = React.memo(function MetricCard({
   suffix,
   isAmount = true
 }: MetricCardProps) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const trendColor = useMemo(() => {
     if (changeValue === undefined || changeValue === 0 || trendMode === 'neutral') {
       return colors.textMuted;
     }
-
     const isPositive = changeValue > 0;
-
     if (trendMode === 'high_is_good') {
       return isPositive ? colors.success : colors.danger;
-    } else {
-      // low_is_good (e.g. expenses)
-      return isPositive ? colors.danger : colors.success;
     }
+    return isPositive ? colors.danger : colors.success;
   }, [changeValue, trendMode, colors.textMuted, colors.success, colors.danger]);
 
   return (
@@ -56,11 +43,11 @@ export const MetricCard = React.memo(function MetricCard({
       <Text style={styles.label}>{label}</Text>
       <View style={styles.valueRow}>
         {isAmount ? (
-          <MoneyText 
-            amount={value} 
-            currency={currency} 
-            style={styles.value} 
-            weight="bold" 
+          <MoneyText
+            amount={value}
+            currency={currency}
+            style={styles.value}
+            weight="bold"
           />
         ) : (
           <Text style={[styles.value, { color: colors.text }]}>
@@ -79,24 +66,21 @@ export const MetricCard = React.memo(function MetricCard({
   );
 });
 
-const createStyles = (colors: ThemeColors) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
   container: {
-    padding: 16,
-    borderRadius: 20,
-    backgroundColor: colors.surface + '80',
-    borderWidth: 1,
-    borderColor: colors.border, 
+    padding: spacing('4'),
+    borderRadius: radius('xl'),
+    backgroundColor: colors.surface,
     flex: 1,
     minHeight: 100,
     justifyContent: 'center',
   },
   label: {
-    fontFamily: TYPOGRAPHY.fonts.bold,
+    fontFamily: typography.fonts.bold,
     fontSize: 9,
     color: colors.textMuted,
     letterSpacing: 2,
-    marginBottom: 8,
-    textTransform: 'uppercase',
+    marginBottom: spacing('2'),
   },
   valueRow: {
     flexDirection: 'row',
@@ -107,10 +91,10 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     lineHeight: 28,
   },
   percentageRow: {
-    marginTop: 8,
+    marginTop: spacing('2'),
   },
   percentageText: {
-    fontFamily: TYPOGRAPHY.fonts.bold,
+    fontFamily: typography.fonts.bold,
     fontSize: 9,
     letterSpacing: 0.5,
   },

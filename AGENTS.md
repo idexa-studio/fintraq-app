@@ -1,6 +1,6 @@
 # Luno - AI Agent Instructions
 
-A React Native financial tracker built with Expo, following an "Editorial Brutalist" design system.
+A React Native financial tracker built with Expo, following a "Bento" design system.
 
 ## Quick Commands
 
@@ -62,12 +62,13 @@ import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
 2. Run `npm run db:generate` to create migration
 3. Migrations auto-apply on app start via `DatabaseProvider`
 
-### 4. Styling Rules (Editorial Brutalist)
+### 4. Styling Rules (Bento)
 
 From `CLAUDE.md` - **cross-reference before UI changes**:
-- **Borders**: Use 1px `colors.border` (not drop shadows)
-- **Shape**: Buttons/cards use **12px-16px radius** (avoid 999px pill shapes except micro-badges)
-- **Text**: **Sentence case** everywhere ("Upgrade to Pro", not "UPGRADE TO PRO")
+- **Cards**: Modular, well-defined tiles of varying sizes, like a bento box grid. No borders — separation via layout and surface backgrounds.
+- **Shape**: Cards use `radius('xl')` (20px) to `radius('2xl')` (24px). Inputs and small controls use `radius('lg')` (16px). Pill shapes (`radius('full')`) allowed for badges and selectors.
+- **Text**: Buttons and actions use **Sentence case** ("Save account", not "SAVE ACCOUNT"). Section labels use uppercase small caps (10px, letterSpacing 1.5).
+- **Depth**: No shadows, no borders. Depth comes from card-based modular layout and surface background contrast.
 - **Performance**: High-density lists need `SectionList`/`FlatList` with memoized items + native optimization props
 
 ### 5. Path Alias
@@ -76,9 +77,9 @@ Use `@/` prefix for imports: `import { useTheme } from '@/src/providers/ThemePro
 
 ## Design System
 
-### Editorial Brutalist Design Language
+### Bento Design Language
 
-Luno uses a refined "Editorial Brutalist" aesthetic with strict design tokens:
+Luno uses a refined "Bento" aesthetic with strict design tokens:
 
 ### Design Tokens
 
@@ -107,28 +108,28 @@ radius('none')  // 0
 radius('xs')    // 4px
 radius('sm')    // 8px
 radius('md')    // 12px - Buttons, icon boxes
-radius('lg')    // 16px - Cards, inputs
-radius('xl')    // 20px - Large cards
-radius('2xl')   // 24px - Modals
-radius('full')  // 999px - Use sparingly (micro-badges only)
+radius('lg')    // 16px - Inputs, small controls
+radius('xl')    // 20px - Cards
+radius('2xl')   // 24px - Large cards, modals
+radius('full')  // 999px - Badges, selectors, pills
 ```
 
 **Component Size Variants:**
 ```typescript
 import { COMPONENT_SIZES } from '@/src/theme/tokens';
 
-// Buttons: sm (36px), md (48px), lg (56px)
-COMPONENT_SIZES.button.md.height           // 48
+// Buttons: sm (32px), md (44px), lg (52px)
+COMPONENT_SIZES.button.md.height           // 44
 COMPONENT_SIZES.button.md.paddingHorizontal // 16
 COMPONENT_SIZES.button.md.borderRadius        // 16 (lg)
-COMPONENT_SIZES.button.md.fontSize            // 16
+COMPONENT_SIZES.button.md.fontSize            // 14
 
-// Cards: sm (12px padding), md (16px), lg (20px)
-COMPONENT_SIZES.card.md.padding        // 16
-COMPONENT_SIZES.card.md.borderRadius   // 20 (xl)
+// Cards: sm (10px padding), md (14px), lg (16px)
+COMPONENT_SIZES.card.md.padding        // 14
+COMPONENT_SIZES.card.md.borderRadius   // 16 (lg)
 
-// Inputs: sm (40px), md (56px), lg (64px)
-COMPONENT_SIZES.input.md.height           // 56
+// Inputs: sm (36px), md (50px), lg (58px)
+COMPONENT_SIZES.input.md.height           // 50
 COMPONENT_SIZES.input.md.paddingHorizontal  // 16
 COMPONENT_SIZES.input.md.borderRadius       // 16 (lg)
 ```
@@ -137,7 +138,7 @@ COMPONENT_SIZES.input.md.borderRadius       // 16 (lg)
 ```typescript
 import { shadow } from '@/src/theme/tokens';
 
-shadow('none')  // No shadow
+shadow('none')  // No shadow — default for all elements
 shadow('xs')    // Subtle
 shadow('sm')    // Cards default
 shadow('md')    // Elevated
@@ -148,33 +149,33 @@ shadow('lg')    // Modals, FABs
 ```typescript
 import { LAYOUT } from '@/src/theme/tokens';
 
-LAYOUT.screenPadding    // 24px - Standard screen margin
-LAYOUT.sectionGap       // 24px - Between sections
-LAYOUT.cardGap          // 12px - Between cards
-LAYOUT.elementGap       // 8px - Between elements
+LAYOUT.screenPadding    // 16px - Standard screen margin
+LAYOUT.sectionGap       // 20px - Between sections
+LAYOUT.cardGap          // 10px - Between cards
+LAYOUT.elementGap       // 6px - Between elements
 LAYOUT.minTouchTarget   // 44px - Minimum touch target
 ```
 
 ### Design Rules
 
-1. **Borders**: Use 1px `colors.border` - no drop shadows except on elevated elements
+1. **Borders**: No borders. Separation comes from layout, surface backgrounds, and card-based modularity.
 2. **Shape**: 
-   - Buttons: 12px-16px radius (`md` to `lg`)
-   - Cards: 16px-20px radius (`lg` to `xl`)
-   - Never use 999px (pill shapes) except for micro-badges
-3. **Text**: Sentence case everywhere ("Upgrade to Pro", not "UPGRADE TO PRO")
+   - Cards: 20px-24px radius (`xl` to `2xl`)
+   - Buttons: 16px radius (`lg`)
+   - Inputs/small controls: 16px radius (`lg`)
+   - Pill shapes (`radius('full')`) allowed for badges and selectors
+3. **Text**: Sentence case everywhere ("Upgrade to Pro", not "UPGRADE TO PRO"). Section labels: uppercase small caps (10px, letterSpacing 1.5).
 4. **Spacing**: Only use token values (4, 8, 12, 16, 20, 24, 32...)
 
 ### Example Usage
 ```typescript
-import { spacing, radius, shadow, COMPONENT_SIZES } from '@/src/theme/tokens';
+import { spacing, radius, COMPONENT_SIZES } from '@/src/theme/tokens';
 
-// Card with proper tokens
+// Bento card with proper tokens
 <View style={{
   padding: spacing('4'),
   borderRadius: radius('xl'),
   backgroundColor: colors.surface,
-  ...shadow('sm'),
 }} />
 
 // Button following size variant

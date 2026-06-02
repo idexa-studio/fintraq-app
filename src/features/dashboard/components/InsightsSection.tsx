@@ -1,10 +1,9 @@
+import { usePremium } from '@/src/providers/PremiumProvider';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import { ScrollView, StyleSheet, Text, View, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { PremiumGuard } from '../../../components/ui/PremiumGuard';
-import { usePremium } from '../../../providers/PremiumProvider';
-import { useTheme } from '../../../providers/ThemeProvider';
-import { TYPOGRAPHY } from '../../../theme/typography';
+import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useDashboardInsights } from '../hooks/dashboard';
 import { InsightCard } from './InsightCard';
 import { SectionHeader } from './SectionHeader';
@@ -13,117 +12,172 @@ interface InsightsSectionProps {
   currency: string;
 }
 
-/**
- * InsightsSection: Orchestrates the display of financial insights on the dashboard.
- * 
- * Features:
- * 1. Pro-Only: Wrapped in PremiumGuard to emphasize premium value.
- * 2. Horizontal Scroll: Provides a clean, modern way to explore multiple insights.
- * 3. Loading & Empty States: Managed internally with React Query.
- */
-export function InsightsSection({ currency }: InsightsSectionProps) {
-  const { colors } = useTheme();
-  const { isPremium } = usePremium();
-  const { data: insights, isLoading } = useDashboardInsights(currency);
+const GAP = 12;
+const INTERVAL = 4000;
 
-  const hasInsights = insights && insights.length > 0;
+export const InsightsSection = React.memo(function InsightsSection({ currency }: InsightsSectionProps) {
+  const theme = useTheme();
+  const { colors, typography } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { data: insights, isLoading } = useDashboardInsights(currency);
+  const { isPremium } = usePremium();
+  const { width: screenWidth } = useWindowDimensions();
+
+  const scrollRef = useRef<ScrollView>(null);
+  const [index, setIndex] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const total = insights?.length ?? 0;
+  const cardWidth = screenWidth - theme.layout.screenPadding * 2 - 20;
+  const snapInterval = cardWidth + GAP;
+
+  const scrollTo = useCallback((i: number) => {
+    scrollRef.current?.scrollTo({ x: i * snapInterval, animated: true });
+  }, [snapInterval]);
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current !== null) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  const startTimer = useCallback(() => {
+    if (total <= 1) return;
+    clearTimer();
+    timerRef.current = setInterval(() => {
+      setIndex(prev => {
+        const next = prev >= total - 1 ? 0 : prev + 1;
+        scrollTo(next);
+        return next;
+      });
+    }, INTERVAL);
+  }, [total, clearTimer, scrollTo]);
+
+  useEffect(() => {
+    startTimer();
+    return clearTimer;
+  }, [startTimer, clearTimer]);
+
+  const onScrollEnd = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const i = Math.round(e.nativeEvent.contentOffset.x / snapInterval);
+    setIndex(Math.max(0, Math.min(i, total - 1)));
+  }, [snapInterval, total]);
+
+  const hasInsights = (insights?.length ?? 0) > 0;
+
+  if (!hasInsights && !isLoading) {
+    return (
+      <View style={styles.container}>
+        <SectionHeader title="Pro Insights" />
+        <PremiumGuard label="Upgrade to Pro for insights" size="large" containerStyle={{ marginHorizontal: isPremium ? 0 : theme.layout.screenPadding }}>
+          <View style={styles.empty}>
+            <Ionicons name="analytics-outline" size={24} color={colors.textMuted} />
+            <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+              No insights yet. Keep tracking to unlock trends.
+            </Text>
+          </View>
+        </PremiumGuard>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <SectionHeader title="PRO INSIGHTS" />
-
-      <PremiumGuard 
-        label="Upgrade to Pro for insights" 
+      <SectionHeader title="Pro Insights" />
+      <PremiumGuard
+        label="Upgrade to Pro for insights"
         size="large"
-        containerStyle={[
-          styles.premiumContainer,
-          // Only use edge-to-edge (0) margin if premium is active to allow scrolling
-          // Otherwise, it should have the default 24px margin to look like a card
-          !isPremium && { marginHorizontal: 24 }
-        ]}
+        containerStyle={{ marginHorizontal: isPremium ? 0 : theme.layout.screenPadding }}
       >
         {isLoading ? (
-          <View style={styles.placeholderCard}>
-            <View style={[styles.loadingCircle, { borderColor: colors.border }]} />
-            <Text style={[styles.loadingText, { color: colors.textMuted }]}>Analyzing your patterns...</Text>
+          <View style={styles.placeholder}>
+            <Text style={[styles.placeholderText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+              Analysing your patterns...
+            </Text>
           </View>
-        ) : hasInsights ? (
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
-            contentContainerStyle={styles.scrollContent}
-            decelerationRate="fast"
-            snapToInterval={190} // 180 (card width) + 10 (gap)
-            snapToAlignment="start"
-          >
-            <View style={{ width: 24 }} />
-            {insights.map((insight) => (
-              <InsightCard key={insight.id} insight={insight} />
-            ))}
-            <View style={{ width: 14 }} />
-          </ScrollView>
         ) : (
-          <View style={[styles.emptyCard, { backgroundColor: colors.surface + '50', borderColor: colors.border }]}>
-            <Ionicons name="analytics-outline" size={24} color={colors.textMuted} />
-            <Text style={[styles.emptyText, { color: colors.textMuted }]}>No insights available yet. Keep tracking to unlock trends.</Text>
-          </View>
+          <>
+            <ScrollView
+              ref={scrollRef}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.scroll}
+              decelerationRate="fast"
+              snapToInterval={snapInterval}
+              snapToAlignment="start"
+              onMomentumScrollEnd={onScrollEnd}
+              onTouchStart={clearTimer}
+              onTouchEnd={startTimer}
+              scrollEventThrottle={16}
+            >
+              <View style={{ width: theme.layout.screenPadding - GAP / 2 }} />
+              {insights?.map((insight) => (
+                <View key={insight.id} style={{ width: cardWidth }}>
+                  <InsightCard insight={insight} />
+                </View>
+              ))}
+              <View style={{ width: theme.layout.screenPadding - GAP / 2 }} />
+            </ScrollView>
+
+            {total > 1 && (
+              <View style={styles.dots}>
+                {insights?.map((_, i) => (
+                  <View
+                    key={i}
+                    style={[
+                      styles.dot,
+                      { backgroundColor: i === index ? colors.primary : colors.text + '18' },
+                    ]}
+                  />
+                ))}
+              </View>
+            )}
+          </>
         )}
       </PremiumGuard>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 4,
-    marginBottom: 20,
-  },
-  premiumContainer: {
-    borderRadius: 20,
-    overflow: 'hidden',
-    marginHorizontal: 0, // Default to 0 for pro scrolling context
-  },
-  scrollContent: {
-    paddingRight: 0,
-    gap: 0, 
-  },
-  placeholderCard: {
-    height: 110,
-    marginHorizontal: 24,
-    borderRadius: 18,
-    backgroundColor: 'rgba(0,0,0,0.03)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 12,
-  },
-  loadingCircle: {
-     width: 20,
-     height: 20,
-     borderRadius: 10,
-     borderWidth: 2,
-     borderColor: 'rgba(0,0,0,0.1)',
-     borderStyle: 'dashed',
-  },
-  loadingText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
-    fontSize: 9,
-    letterSpacing: 0.5,
-  },
-  emptyCard: {
-    height: 110,
-    marginHorizontal: 24,
-    borderRadius: 18,
-    borderWidth: 1,
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 8,
-  },
-  emptyText: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
-    fontSize: 11,
-    textAlign: 'center',
-    lineHeight: 16,
-    maxWidth: '80%',
-  },
 });
+
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+  StyleSheet.create({
+    container: {},
+    scroll: { gap: GAP },
+    placeholder: {
+      height: 80,
+      marginHorizontal: layout.screenPadding,
+      borderRadius: radius('xl'),
+      backgroundColor: colors.surface,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    placeholderText: { fontSize: typography.sizes.xs, opacity: 0.6 },
+    empty: {
+      height: 80,
+      marginHorizontal: layout.screenPadding,
+      borderRadius: radius('xl'),
+      backgroundColor: colors.surface,
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: spacing('2'),
+    },
+    emptyText: {
+      fontSize: typography.sizes.xs,
+      textAlign: 'center',
+      lineHeight: 16,
+      maxWidth: '80%',
+      opacity: 0.6,
+    },
+    dots: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      gap: spacing('2'),
+      marginTop: spacing('3'),
+    },
+    dot: {
+      width: 6,
+      height: 6,
+      borderRadius: radius('full'),
+    },
+  });

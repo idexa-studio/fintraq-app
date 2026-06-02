@@ -15,12 +15,44 @@ export const SKU_LIFETIME = Platform.select({
 export const ALL_SKUS = [SKU_LIFETIME];
 
 export const FEATURES: ProFeature[] = [
-  { icon: 'search-outline', title: 'Global Search', description: 'Instantly find any transaction, account, or category across your entire history.' },
-  { icon: 'options-outline', title: 'Advanced Filters', description: 'Multi-select filters by account, category, type, date range, amount, and sort order.' },
-  { icon: 'infinite', title: 'Absolute Runway', description: 'Real-time calculation of exactly how long your capital will last.' },
-  { icon: 'trending-up', title: 'Burn Analytics', description: 'Identify spending velocity and anomalies before they become a problem.' },
-  { icon: 'newspaper-outline', title: 'Weekly & Monthly Reports', description: 'Detailed historical summaries with performance comparisons.' },
-  { icon: 'git-compare', title: 'Performance Deltas', description: 'Objective growth and burn metrics: current vs. previous period.' },
-  { icon: 'cloud-outline', title: 'Backup & Restore', description: 'Export your full data to a file and restore it on any device.' },
-  { icon: 'download-outline', title: 'CSV Export', description: 'Export transactions as a spreadsheet for accounting or analysis.' },
+  {
+    icon: 'bar-chart-outline',
+    title: 'Dashboard insights',
+    description: 'Real-time spending alerts, saving trends, and weekly summaries right on your home screen.',
+  },
+  {
+    icon: 'analytics-outline',
+    title: 'Extended analytics',
+    description: '30-day, 90-day, and 12-month charts. 7-day view is always free.',
+  },
+  {
+    icon: 'git-compare',
+    title: 'Period flow',
+    description: 'Side-by-side income vs expense bars to see how your money moves over time.',
+  },
+  {
+    icon: 'pie-chart-outline',
+    title: 'Category breakdown',
+    description: 'Donut chart of your top spending categories with exact amounts and percentages.',
+  },
+  {
+    icon: 'infinite',
+    title: 'Behavioral insights',
+    description: 'Daily burn rate, financial runway in days, in/out ratio, and active day count.',
+  },
+  {
+    icon: 'search-outline',
+    title: 'Global search',
+    description: 'Find any transaction, account, or category instantly across your entire history.',
+  },
+  {
+    icon: 'stats-chart-outline',
+    title: 'Weekday patterns',
+    description: 'Heatmap showing which days of the week you spend the most.',
+  },
+  {
+    icon: 'download-outline',
+    title: 'CSV export',
+    description: 'Export filtered transactions as a spreadsheet. Save to device or share to any app.',
+  },
 ];

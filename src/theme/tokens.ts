@@ -1,5 +1,5 @@
 /**
- * Design Tokens - Luno Design System
+ * Design Tokens - Keeep Design System
  * 
  * Editorial Brutalist Design Language
  * - Clean, minimal aesthetics with precise spacing
@@ -56,15 +56,15 @@ export type RadiusToken = keyof typeof RADIUS;
 // ============================================
 export const LAYOUT = {
   // Screen margins
-  screenPadding: 24,
+  screenPadding: 12,
   
   // Content max widths for readability
   maxContentWidth: 400,
   
   // Component gaps
-  sectionGap: 24,
-  cardGap: 12,
-  elementGap: 8,
+  sectionGap: 20,
+  cardGap: 10,
+  elementGap: 6,
   
   // Touch targets
   minTouchTarget: 44,
@@ -82,62 +82,62 @@ export const LAYOUT = {
 export const COMPONENT_SIZES = {
   button: {
     sm: {
+      height: 32,
+      paddingHorizontal: SPACING['3'],
+      borderRadius: RADIUS.md,
+      fontSize: 13,
+    },
+    md: {
+      height: 44,
+      paddingHorizontal: SPACING['4'],
+      borderRadius: RADIUS.lg,
+      fontSize: 14,
+    },
+    lg: {
+      height: 52,
+      paddingHorizontal: SPACING['5'],
+      borderRadius: RADIUS.xl,
+      fontSize: 15,
+    },
+  },
+
+  input: {
+    sm: {
       height: 36,
       paddingHorizontal: SPACING['3'],
       borderRadius: RADIUS.md,
-      fontSize: 14,
     },
     md: {
-      height: 48,
+      height: 50,
       paddingHorizontal: SPACING['4'],
       borderRadius: RADIUS.lg,
-      fontSize: 16,
     },
     lg: {
-      height: 56,
-      paddingHorizontal: SPACING['5'],
+      height: 58,
+      paddingHorizontal: SPACING['4'],
       borderRadius: RADIUS.xl,
-      fontSize: 16,
     },
   },
-  
-  input: {
+
+  card: {
     sm: {
-      height: 40,
-      paddingHorizontal: SPACING['3'],
+      padding: SPACING['2.5'],
       borderRadius: RADIUS.md,
     },
     md: {
-      height: 56,
-      paddingHorizontal: SPACING['4'],
+      padding: SPACING['3.5'],
       borderRadius: RADIUS.lg,
     },
     lg: {
-      height: 64,
-      paddingHorizontal: SPACING['4'],
-      borderRadius: RADIUS.xl,
-    },
-  },
-  
-  card: {
-    sm: {
-      padding: SPACING['3'],
-      borderRadius: RADIUS.lg,
-    },
-    md: {
       padding: SPACING['4'],
       borderRadius: RADIUS.xl,
     },
-    lg: {
-      padding: SPACING['5'],
-      borderRadius: RADIUS['2xl'],
-    },
   },
-  
+
   iconButton: {
-    sm: 32,
-    md: 40,
-    lg: 44,
+    sm: 28,
+    md: 36,
+    lg: 40,
   },
 } as const;
 
@@ -244,6 +244,39 @@ export const LETTER_SPACING = {
   wide: 0.5,
   wider: 1,
   widest: 2,
+} as const;
+
+// ============================================
+// HERO CARD PALETTE
+// Fixed dark-context palette — always dark regardless of theme.
+// Use for full-bleed hero cards (dashboard balance, settings profile).
+// Never hardcode these values in components — import from here.
+// ============================================
+export const HERO_CARD = {
+  background:  '#052920',
+  textPrimary: '#FFFFFF',
+  textMuted:   'rgba(255, 255, 255, 0.45)',
+  separator:   'rgba(255, 255, 255, 0.07)',
+  income:      '#34D399',
+  expense:     '#F87171',
+  decoOverlay: 'rgba(255, 255, 255, 0.03)',
+} as const;
+
+export type HeroCardPalette = typeof HERO_CARD;
+
+// ============================================
+// OVERLAY BACKGROUNDS
+// Used for modal backdrops — never hardcode rgba in components
+// ============================================
+export const OVERLAY = {
+  light: {
+    dim: 'rgba(0,0,0,0.52)',
+    dark: 'rgba(0,0,0,0.65)',
+  },
+  dark: {
+    dim: 'rgba(0,0,0,0.78)',
+    dark: 'rgba(0,0,0,0.88)',
+  },
 } as const;
 
 // ============================================

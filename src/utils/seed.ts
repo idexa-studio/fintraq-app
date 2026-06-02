@@ -1,6 +1,9 @@
 import { InferSelectModel, eq, sql } from 'drizzle-orm';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from '../db/client';
 import { accounts, categories, payments } from '../db/schema';
+
+const SEED_KEY = '@luno/seed_v1';
 
 type Category = InferSelectModel<typeof categories>;
 
@@ -18,6 +21,7 @@ type SeedContext = {
   multiplier: number;
   incomeCategories: Category[];
   expenseCategories: Category[];
+  transferCategories: Category[];
   now: Date;
 };
 
@@ -101,9 +105,15 @@ function generateRandomExpenses(monthDate: Date, ctx: SeedContext, isCurrentMont
 
 /**
  * Robust utility to professionally seed the database with realistic multi-account data.
+ * Runs only once per install — checks AsyncStorage before proceeding.
  */
 export async function seedDummyData() {
   try {
+    const alreadySeeded = await AsyncStorage.getItem(SEED_KEY);
+    if (alreadySeeded === 'true') {
+      throw new Error('Seed data has already been generated. To re-seed, factory reset the app.');
+    }
+
     const allAccounts = await db.select().from(accounts);
     if (allAccounts.length === 0) {
       throw new Error('No accounts found. Please complete onboarding first.');
@@ -112,6 +122,7 @@ export async function seedDummyData() {
     const allCategories = await db.select().from(categories);
     const incomeCats = allCategories.filter(c => c.type === 'CR');
     const expenseCats = allCategories.filter(c => c.type === 'DR');
+    const transferCats = allCategories.filter(c => c.type === 'TR');
 
     if (incomeCats.length === 0 || expenseCats.length === 0) {
       throw new Error('Required categories missing. Ensure base categories are seeded.');
@@ -126,6 +137,7 @@ export async function seedDummyData() {
         multiplier: CURRENCY_MULTIPLIERS[account.currency.toUpperCase()] ?? 1,
         incomeCategories: incomeCats,
         expenseCategories: expenseCats,
+        transferCategories: transferCats,
         now,
       };
 
@@ -167,9 +179,42 @@ export async function seedDummyData() {
       }
     }
 
+    if (allAccounts.length >= 2 && transferCats.length > 0) {
+      const transferTransactions = [];
+      const now = new Date();
+      const transferCat = transferCats[0];
+
+      for (let i = 0; i < allAccounts.length; i++) {
+        const source = allAccounts[i];
+        const dest = allAccounts[(i + 1) % allAccounts.length];
+        const multiplier = CURRENCY_MULTIPLIERS[source.currency.toUpperCase()] ?? 1;
+        const amount = Math.round((200 + Math.floor(Math.random() * 300)) * multiplier);
+
+        for (let m = 0; m < 6; m++) {
+          const monthDate = new Date(now.getFullYear(), now.getMonth() - m, 15);
+          transferTransactions.push({
+            accountId: source.id,
+            toAccountId: dest.id,
+            categoryId: transferCat.id,
+            amount,
+            type: 'TR' as const,
+            datetime: monthDate.toISOString(),
+            note: `Transfer to ${dest.name}`,
+          });
+        }
+      }
+
+      if (transferTransactions.length > 0) {
+        await db.insert(payments).values(transferTransactions);
+        totalSeeded += transferTransactions.length;
+      }
+    }
+
+    await AsyncStorage.setItem(SEED_KEY, 'true');
     return totalSeeded;
-  } catch (err: any) {
+  } catch (err) {
     console.error('[Seeder Error]:', err);
-    throw new Error(`Failed to seed realistic data: ${err.message}`);
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new Error(`Failed to seed realistic data: ${msg}`);
   }
 }

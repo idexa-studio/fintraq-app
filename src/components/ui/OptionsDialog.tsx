@@ -1,9 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
-import { Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { ThemeColors } from '../../theme/colors';
-import { TYPOGRAPHY } from '../../theme/typography';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -32,78 +30,62 @@ export const OptionsDialog = React.memo(function OptionsDialog({
   title,
   subtitle,
   options,
-  closeLabel = 'Close',
+  closeLabel = 'Cancel',
 }: OptionsDialogProps) {
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
+  const theme = useTheme();
+  const { colors, typography } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handleOptionPress = useCallback((option: OptionsDialogOption) => {
-    if (option.closeOnPress !== false) {
-      onClose();
-    }
+    if (option.closeOnPress !== false) onClose();
     option.onPress();
   }, [onClose]);
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      presentationStyle="overFullScreen"
-      statusBarTranslucent
-      onRequestClose={onClose}
-    >
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
 
         <View style={styles.card}>
-          <Text style={styles.title}>{title}</Text>
-          {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
-
-          <View style={styles.optionsWrap}>
-            {options.map((option) => {
-              const selected = !!option.selected;
-              const iconColor = selected
-                ? colors.background
-                : option.destructive
-                  ? colors.danger
-                  : colors.textMuted;
-
-              return (
-                <TouchableOpacity
-                  key={option.key}
-                  style={[
-                    styles.optionRow,
-                    selected && styles.optionRowActive,
-                    option.destructive && !selected && styles.optionRowDestructive,
-                  ]}
-                  activeOpacity={0.9}
-                  onPress={() => handleOptionPress(option)}
-                >
-                  {option.icon ? (
-                    <View style={[styles.optionIconWrap, selected && styles.optionIconWrapActive]}>
-                      <Ionicons name={option.icon} size={16} color={iconColor} />
-                    </View>
-                  ) : null}
-
-                  <Text
-                    style={[
-                      styles.optionText,
-                      selected && styles.optionTextActive,
-                      option.destructive && !selected && styles.optionTextDestructive,
-                    ]}
-                  >
-                    {option.label}
-                  </Text>
-
-                  {selected ? <Ionicons name="checkmark" size={16} color={colors.background} /> : null}
-                </TouchableOpacity>
-              );
-            })}
+          <View style={styles.head}>
+            <Text style={styles.title}>{title}</Text>
+            {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
           </View>
 
-          <TouchableOpacity style={styles.closeButton} onPress={onClose} activeOpacity={0.9}>
-            <Text style={styles.closeButtonText}>{closeLabel}</Text>
+          {options.map((opt) => {
+            const selected = !!opt.selected;
+            return (
+              <TouchableOpacity
+                key={opt.key}
+                style={styles.opt}
+                activeOpacity={0.6}
+                onPress={() => handleOptionPress(opt)}
+              >
+                {opt.icon ? (
+                  <Ionicons
+                    name={opt.icon}
+                    size={20}
+                    color={selected ? colors.primary : opt.destructive ? colors.danger : colors.text}
+                  />
+                ) : null}
+                <Text
+                  style={[
+                    styles.optLabel,
+                    selected && { fontFamily: typography.fonts.semibold, color: colors.primary },
+                    opt.destructive && { color: colors.danger },
+                  ]}
+                >
+                  {opt.label}
+                </Text>
+                {selected ? (
+                  <Ionicons name="checkmark" size={18} color={colors.primary} />
+                ) : null}
+              </TouchableOpacity>
+            );
+          })}
+
+          <TouchableOpacity style={styles.cancel} onPress={onClose} activeOpacity={0.6}>
+            <Text style={styles.cancelText}>{closeLabel}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -111,101 +93,62 @@ export const OptionsDialog = React.memo(function OptionsDialog({
   );
 });
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.52)',
+      backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
-      paddingHorizontal: 24,
-      paddingBottom: 42,
+      padding: spacing('4'),
+      paddingBottom: spacing('9'),
     },
     card: {
-      alignSelf: 'stretch',
-      borderRadius: 22,
-      backgroundColor: Platform.OS === 'ios' ? colors.background + 'F2' : colors.background,
-      borderWidth: 1,
-      borderColor: colors.text + '18',
-      padding: 18,
-      shadowColor: '#000000',
-      shadowOpacity: 0.22,
-      shadowRadius: 24,
-      shadowOffset: { width: 0, height: 10 },
-      elevation: 10,
-    },
-    title: {
-      fontFamily: TYPOGRAPHY.fonts.headingRegular,
-      fontSize: 24,
-      color: colors.text,
-      letterSpacing: -0.6,
-    },
-    subtitle: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
-      fontSize: 12,
-      color: colors.textMuted,
-      marginTop: 4,
-      marginBottom: 16,
-    },
-    optionsWrap: {
-      borderRadius: 16,
+      backgroundColor: colors.surface,
+      borderRadius: radius('2xl'),
+      borderWidth: 0.5,
+      borderColor: colors.text + '0C',
       overflow: 'hidden',
     },
-    optionRow: {
-      height: 48,
-      borderRadius: 12,
-      marginBottom: 8,
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.text + '10',
-      paddingHorizontal: 10,
+    head: {
+      padding: spacing('5'),
+      paddingBottom: spacing('3'),
+    },
+    title: {
+      fontFamily: typography.fonts.heading,
+      fontSize: 20,
+      color: colors.text,
+    },
+    subtitle: {
+      fontFamily: typography.fonts.medium,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+      marginTop: spacing('1'),
+    },
+    opt: {
       flexDirection: 'row',
       alignItems: 'center',
+      height: 52,
+      paddingHorizontal: spacing('5'),
+      gap: spacing('3'),
+      borderTopWidth: 1,
+      borderTopColor: colors.text + '08',
     },
-    optionRowActive: {
-      backgroundColor: colors.text,
-      borderColor: colors.text,
-    },
-    optionRowDestructive: {
-      borderColor: colors.danger + '35',
-      backgroundColor: colors.danger + '10',
-    },
-    optionIconWrap: {
-      width: 26,
-      height: 26,
-      borderRadius: 13,
-      backgroundColor: colors.background + 'CC',
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginRight: 10,
-    },
-    optionIconWrapActive: {
-      backgroundColor: colors.background + '66',
-    },
-    optionText: {
+    optLast: {},
+    optLabel: {
       flex: 1,
-      fontFamily: TYPOGRAPHY.fonts.semibold,
-      fontSize: 13,
+      fontFamily: typography.fonts.medium,
+      fontSize: typography.sizes.md,
       color: colors.text,
     },
-    optionTextActive: {
-      color: colors.background,
-    },
-    optionTextDestructive: {
-      color: colors.danger,
-    },
-    closeButton: {
-      marginTop: 8,
-      height: 44,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: colors.primary + '22',
-      backgroundColor: colors.surface,
+    cancel: {
+      height: 52,
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: colors.background,
     },
-    closeButtonText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
-      fontSize: 14,
-      color: colors.text,
+    cancelText: {
+      fontFamily: typography.fonts.medium,
+      fontSize: typography.sizes.md,
+      color: colors.textMuted,
     },
   });

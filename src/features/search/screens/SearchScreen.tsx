@@ -1,13 +1,13 @@
-import { BlurBackground } from '@/src/components/ui/BlurBackground';
+import { PageBackground } from '@/src/components/ui/PageBackground';
+import { Header } from '@/src/components/ui/Header';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { TransactionRow } from '@/src/components/ui/TransactionRow';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import type { Category } from '@/src/features/categories/api/categories';
 import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
-import { useTheme } from '@/src/providers/ThemeProvider';
-import { ThemeColors } from '@/src/theme/colors';
-import { RADIUS, SPACING } from '@/src/theme/tokens';
-import { TYPOGRAPHY } from '@/src/theme/typography';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -26,8 +26,6 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalSearch } from '../hooks/useGlobalSearch';
 
-const toHexColor = (value: number) => `#${value.toString(16).padStart(6, '0')}`;
-
 type SearchItem =
   | { kind: 'transaction'; data: TransactionListItem }
   | { kind: 'account'; data: Account }
@@ -39,139 +37,163 @@ type SearchSection = {
   data: SearchItem[];
 };
 
-// ─── AccountRow ──────────────────────────────────────────────────────────────
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: colors.background },
+
+    searchRow: {
+      paddingHorizontal: layout.screenPadding,
+      paddingBottom: spacing('4'),
+    },
+    searchWrap: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 48,
+      borderRadius: radius('lg'),
+      backgroundColor: colors.surface,
+      paddingHorizontal: spacing('4'),
+      gap: spacing('2'),
+    },
+    searchInput: {
+      flex: 1,
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.md,
+      color: colors.text,
+      padding: 0,
+    },
+
+    prompt: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingBottom: 80,
+      gap: spacing('4'),
+    },
+    promptIcon: {
+      width: 64,
+      height: 64,
+      borderRadius: radius('full'),
+      backgroundColor: colors.surface,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    promptTitle: {
+      fontFamily: typography.fonts.heading,
+      fontSize: typography.sizes.xl,
+      color: colors.text,
+    },
+    promptSub: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.sm,
+      color: colors.textMuted,
+      textAlign: 'center',
+      lineHeight: 20,
+      maxWidth: '80%',
+    },
+
+    listContent: {
+      paddingHorizontal: layout.screenPadding,
+      paddingBottom: spacing('9'),
+    },
+
+    sectionHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingLeft: spacing('1'),
+      marginBottom: spacing('2.5'),
+    },
+    sectionTitle: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 10,
+      color: colors.textMuted,
+      opacity: 0.7,
+    },
+    sectionCount: {
+      fontFamily: typography.fonts.regular,
+      fontSize: 10,
+      color: colors.textMuted,
+      opacity: 0.5,
+    },
+
+    resultCard: {
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      overflow: 'hidden',
+      marginBottom: spacing('3'),
+    },
+
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: spacing('3.5'),
+      gap: spacing('3'),
+    },
+    rowInfo: { flex: 1, gap: spacing('0.5') },
+    rowName: { fontFamily: typography.fonts.semibold, fontSize: typography.sizes.sm, color: colors.text },
+    rowMeta: { fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted },
+
+    typeBadge: {
+      paddingHorizontal: spacing('2'),
+      height: 22,
+      borderRadius: radius('sm'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    typeBadgeText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 10,
+    },
+
+    sectionFooter: { height: spacing('5') },
+  });
 
 const AccountRow = React.memo(function AccountRow({
   account,
   onPress,
-  isFirst,
-  isLast,
 }: {
   account: Account;
   onPress: (id: number) => void;
-  isFirst: boolean;
-  isLast: boolean;
 }) {
-  const { colors } = useTheme();
-  const accentColor = useMemo(() => toHexColor(account.color), [account.color]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const accentColor = useMemo(() => colorNumberToHex(account.color), [account.color]);
   const handlePress = useCallback(() => onPress(account.id), [onPress, account.id]);
 
-  const containerStyle = useMemo(() => ({
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: isFirst ? RADIUS.lg : 0,
-    borderTopRightRadius: isFirst ? RADIUS.lg : 0,
-    borderBottomLeftRadius: isLast ? RADIUS.lg : 0,
-    borderBottomRightRadius: isLast ? RADIUS.lg : 0,
-    borderBottomWidth: isLast ? 0 : 1,
-    borderBottomColor: colors.text + '08',
-  }), [isFirst, isLast, colors]);
-
   return (
-    <TouchableOpacity
-      style={[accountRowStyles.container, containerStyle]}
-      onPress={handlePress}
-      activeOpacity={0.75}
-    >
-      <View style={[accountRowStyles.iconBox, { backgroundColor: accentColor + '18' }]}>
-        <Ionicons name={resolveIcon(account.icon, 'wallet-outline')} size={18} color={accentColor} />
-      </View>
-      <View style={accountRowStyles.info}>
-        <Text style={[accountRowStyles.name, { color: colors.text }]}>{account.name}</Text>
-        <Text style={[accountRowStyles.meta, { color: colors.textMuted }]}>
-          {account.currency} · {account.accountNumber && account.accountNumber !== 'N/A'
-            ? `•••• ${account.accountNumber.slice(-4)}`
-            : 'Account'}
+    <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]} onPress={handlePress} activeOpacity={0.7}>
+      <IconAvatar icon={resolveIcon(account.icon, 'wallet-outline')} color={accentColor} variant="solid" size={36} iconSize={16} />
+      <View style={{ flex: 1, gap: theme.spacing('0.5') }}>
+        <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{account.name}</Text>
+        <Text style={{ fontFamily: theme.typography.fonts.regular, fontSize: theme.typography.sizes.xs, color: colors.textMuted }}>
+          {account.currency}{account.accountNumber && account.accountNumber !== 'N/A' ? ` · •••• ${account.accountNumber.slice(-4)}` : ''}
         </Text>
       </View>
-      <MoneyText
-        amount={account.balance}
-        currency={account.currency}
-        weight="bold"
-        style={accountRowStyles.balance}
-      />
+      <MoneyText amount={account.balance} currency={account.currency} weight="bold" style={{ fontSize: 14 }} />
       <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
     </TouchableOpacity>
   );
 });
-
-const accountRowStyles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: SPACING['3'],
-    paddingHorizontal: SPACING['4'],
-    gap: SPACING['3'],
-  },
-  iconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: RADIUS.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  info: {
-    flex: 1,
-    gap: SPACING['0.5'],
-  },
-  name: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
-    fontSize: 14,
-  },
-  meta: {
-    fontFamily: TYPOGRAPHY.fonts.regular,
-    fontSize: 12,
-  },
-  balance: {
-    fontSize: 14,
-  },
-});
-
-// ─── CategoryRow ─────────────────────────────────────────────────────────────
 
 const CategoryRow = React.memo(function CategoryRow({
   category,
   onPress,
-  isFirst,
-  isLast,
 }: {
   category: Category;
   onPress: (id: number) => void;
-  isFirst: boolean;
-  isLast: boolean;
 }) {
-  const { colors } = useTheme();
-  const catColor = useMemo(() => toHexColor(category.color), [category.color]);
+  const theme = useTheme();
+  const { colors } = theme;
+  const catColor = useMemo(() => colorNumberToHex(category.color), [category.color]);
   const handlePress = useCallback(() => onPress(category.id), [onPress, category.id]);
 
-  const containerStyle = useMemo(() => ({
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: isFirst ? RADIUS.lg : 0,
-    borderTopRightRadius: isFirst ? RADIUS.lg : 0,
-    borderBottomLeftRadius: isLast ? RADIUS.lg : 0,
-    borderBottomRightRadius: isLast ? RADIUS.lg : 0,
-    borderBottomWidth: isLast ? 0 : 1,
-    borderBottomColor: colors.text + '08',
-  }), [isFirst, isLast, colors]);
-
   return (
-    <TouchableOpacity
-      style={[categoryRowStyles.container, containerStyle]}
-      onPress={handlePress}
-      activeOpacity={0.75}
-    >
-      <View style={[categoryRowStyles.iconBox, { backgroundColor: catColor + '18' }]}>
-        <Ionicons name={resolveIcon(category.icon, 'pricetag-outline')} size={18} color={catColor} />
-      </View>
-      <Text style={[categoryRowStyles.name, { color: colors.text }]}>{category.name}</Text>
-      <View style={[
-        categoryRowStyles.typeBadge,
-        { backgroundColor: (category.type === 'CR' ? colors.success : colors.danger) + '15' },
-      ]}>
-        <Text style={[
-          categoryRowStyles.typeBadgeText,
-          { color: category.type === 'CR' ? colors.success : colors.danger },
-        ]}>
-          {category.type === 'CR' ? 'Income' : 'Expense'}
+    <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]} onPress={handlePress} activeOpacity={0.7}>
+      <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} color={catColor} variant="solid" size={36} iconSize={16} />
+      <Text style={{ flex: 1, fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{category.name}</Text>
+      <View style={[{ backgroundColor: (category.type === 'CR' ? colors.success : colors.danger) + '15', paddingHorizontal: theme.spacing('2'), height: 22, borderRadius: theme.radius('sm'), alignItems: 'center', justifyContent: 'center' }]}>
+        <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: 10, color: category.type === 'CR' ? colors.success : colors.danger }}>
+          {category.type === 'CR' ? 'Income' : category.type === 'TR' ? 'Transfer' : 'Expense'}
         </Text>
       </View>
       <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
@@ -179,45 +201,11 @@ const CategoryRow = React.memo(function CategoryRow({
   );
 });
 
-const categoryRowStyles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: SPACING['3'],
-    paddingHorizontal: SPACING['4'],
-    gap: SPACING['3'],
-  },
-  iconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: RADIUS.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  name: {
-    flex: 1,
-    fontFamily: TYPOGRAPHY.fonts.semibold,
-    fontSize: 14,
-  },
-  typeBadge: {
-    paddingHorizontal: SPACING['2'],
-    height: 22,
-    borderRadius: RADIUS.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  typeBadgeText: {
-    fontFamily: TYPOGRAPHY.fonts.semibold,
-    fontSize: 11,
-  },
-});
-
-// ─── SearchScreen ─────────────────────────────────────────────────────────────
-
-export function SearchScreen() {
-  const { colors } = useTheme();
+export const SearchScreen = React.memo(function SearchScreen() {
+  const theme = useTheme();
+  const { colors, typography } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
-  const styles = useMemo(() => createStyles(colors), [colors]);
   const inputRef = useRef<TextInput>(null);
 
   const [query, setQuery] = useState('');
@@ -229,8 +217,6 @@ export function SearchScreen() {
   }, []);
 
   const handleClear = useCallback(() => setQuery(''), []);
-
-  const handleBack = useCallback(() => router.back(), [router]);
 
   const handleTransactionPress = useCallback((tx: { id: number }) => {
     router.push(`/transactions/edit/${tx.id}`);
@@ -247,24 +233,23 @@ export function SearchScreen() {
   const sections = useMemo((): SearchSection[] => {
     if (!data) return [];
     const result: SearchSection[] = [];
-
     if (data.transactions.length > 0) {
       result.push({
-        title: 'TRANSACTIONS',
+        title: 'Transactions',
         count: data.transactions.length,
         data: data.transactions.map(item => ({ kind: 'transaction' as const, data: item })),
       });
     }
     if (data.accounts.length > 0) {
       result.push({
-        title: 'ACCOUNTS',
+        title: 'Accounts',
         count: data.accounts.length,
         data: data.accounts.map(item => ({ kind: 'account' as const, data: item })),
       });
     }
     if (data.categories.length > 0) {
       result.push({
-        title: 'CATEGORIES',
+        title: 'Categories',
         count: data.categories.length,
         data: data.categories.map(item => ({ kind: 'category' as const, data: item })),
       });
@@ -282,49 +267,54 @@ export function SearchScreen() {
 
       if (item.kind === 'transaction') {
         return (
-          <TransactionRow
-            tx={item.data}
-            colors={colors}
-            isFirst={isFirst}
-            isLast={isLast}
-            showDate
-            onPress={handleTransactionPress}
-          />
+          <TransactionRow tx={item.data} isFirst={isFirst} isLast={isLast} showDate onPress={handleTransactionPress} />
         );
       }
+
+      const cardStyle = {
+        backgroundColor: theme.colors.surface,
+        borderTopLeftRadius: isFirst ? theme.radius('xl') : 0,
+        borderTopRightRadius: isFirst ? theme.radius('xl') : 0,
+        borderBottomLeftRadius: isLast ? theme.radius('xl') : 0,
+        borderBottomRightRadius: isLast ? theme.radius('xl') : 0,
+        borderBottomWidth: isLast ? 0 : 1,
+        borderBottomColor: theme.colors.text + '08',
+      };
+
       if (item.kind === 'account') {
         return (
-          <AccountRow
-            account={item.data}
-            onPress={handleAccountPress}
-            isFirst={isFirst}
-            isLast={isLast}
-          />
+          <View style={cardStyle}>
+            <AccountRow account={item.data} onPress={handleAccountPress} />
+          </View>
         );
       }
       return (
-        <CategoryRow
-          category={item.data}
-          onPress={handleCategoryPress}
-          isFirst={isFirst}
-          isLast={isLast}
-        />
+        <View style={cardStyle}>
+          <CategoryRow category={item.data} onPress={handleCategoryPress} />
+        </View>
       );
     },
-    [colors, handleTransactionPress, handleAccountPress, handleCategoryPress],
+    [handleTransactionPress, handleAccountPress, handleCategoryPress, theme],
   );
 
   const renderSectionHeader = useCallback(
     ({ section }: { section: SectionListData<SearchItem, SearchSection> }) => (
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>{section.title}</Text>
-        <Text style={styles.sectionHeaderCount}>{section.count}</Text>
+        <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          {section.title}
+        </Text>
+        <Text style={[styles.sectionCount, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+          {section.count}
+        </Text>
       </View>
     ),
-    [styles],
+    [styles, typography.fonts.semibold, typography.fonts.regular, colors.textMuted],
   );
 
-  const renderSectionFooter = useCallback(() => <View style={{ height: SPACING['5'] }} />, []);
+  const renderSectionFooter = useCallback(
+    () => <View style={styles.sectionFooter} />,
+    [styles],
+  );
 
   const keyExtractor = useCallback((item: SearchItem) => {
     if (item.kind === 'transaction') return `tx-${item.data.id}`;
@@ -334,63 +324,54 @@ export function SearchScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BlurBackground />
+      <PageBackground />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={handleBack} activeOpacity={0.75}>
-          <Ionicons name="arrow-back" size={20} color={colors.text} />
-        </TouchableOpacity>
-        <View style={styles.headerText}>
-          <Text style={styles.title}>Search</Text>
-        </View>
-        {isFetching && isEnabled && (
-          <ActivityIndicator size="small" color={colors.primary} style={styles.loadingIndicator} />
-        )}
-      </View>
+      <Header
+        title="Search"
+        showBack
+        rightAction={isFetching && isEnabled ? <ActivityIndicator size="small" color={colors.primary} /> : undefined}
+      />
 
-      {/* Search input */}
       <View style={styles.searchRow}>
         <View style={styles.searchWrap}>
           <Ionicons name="search-outline" size={18} color={colors.textMuted} />
           <TextInput
             ref={inputRef}
-            style={styles.searchInput}
+            style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
             value={query}
             onChangeText={setQuery}
-            placeholder="Transactions, accounts, categories..."
+            placeholder="Search transactions, accounts, categories..."
             placeholderTextColor={colors.textMuted + '80'}
             returnKeyType="search"
             autoCorrect={false}
             autoCapitalize="none"
           />
-          {query.length > 0 && (
+          {query.length > 0 ? (
             <TouchableOpacity onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Ionicons name="close-circle" size={17} color={colors.textMuted} />
             </TouchableOpacity>
-          )}
+          ) : null}
         </View>
       </View>
 
-      {/* Results / States */}
       {!isEnabled ? (
-        <View style={styles.promptWrap}>
-          <View style={styles.promptIconBox}>
+        <View style={styles.prompt}>
+          <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
             <Ionicons name="search" size={28} color={colors.textMuted} />
           </View>
-          <Text style={styles.promptTitle}>Find anything</Text>
-          <Text style={styles.promptSubtitle}>
-            Search across transactions, accounts{'\n'}and categories in one place.
+          <Text style={[styles.promptTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>Search everything</Text>
+          <Text style={[styles.promptSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+            Transactions, accounts, and categories. Type at least 2 characters to start.
           </Text>
         </View>
       ) : noResults ? (
-        <View style={styles.promptWrap}>
-          <View style={styles.promptIconBox}>
+        <View style={styles.prompt}>
+          <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
             <Ionicons name="file-tray-outline" size={28} color={colors.textMuted} />
           </View>
-          <Text style={styles.promptTitle}>No results</Text>
-          <Text style={styles.promptSubtitle}>
-            {`Nothing matched "${debouncedQuery}".\nTry a different term.`}
+          <Text style={[styles.promptTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>No results</Text>
+          <Text style={[styles.promptSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+            Nothing matched \u201C{debouncedQuery}\u201D. Try a different term.
           </Text>
         </View>
       ) : (
@@ -409,120 +390,4 @@ export function SearchScreen() {
       )}
     </SafeAreaView>
   );
-}
-
-const createStyles = (colors: ThemeColors) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-
-    // ─── Header ────────────────────────────────────────────────────────────
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: SPACING['6'],
-      paddingTop: SPACING['3'],
-      paddingBottom: SPACING['2'],
-      gap: SPACING['4'],
-    },
-    backBtn: {
-      width: 44,
-      height: 44,
-      borderRadius: RADIUS.md,
-      backgroundColor: colors.surface,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    headerText: {
-      flex: 1,
-    },
-    title: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
-      fontSize: 28,
-      color: colors.text,
-      letterSpacing: -1,
-    },
-    loadingIndicator: {
-      marginRight: SPACING['1'],
-    },
-
-    // ─── Search input ───────────────────────────────────────────────────────
-    searchRow: {
-      paddingHorizontal: SPACING['6'],
-      paddingBottom: SPACING['4'],
-    },
-    searchWrap: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 52,
-      borderRadius: RADIUS.md,
-      backgroundColor: colors.surface,
-      paddingHorizontal: SPACING['4'],
-      gap: SPACING['2'],
-    },
-    searchInput: {
-      flex: 1,
-      fontFamily: TYPOGRAPHY.fonts.regular,
-      fontSize: 16,
-      color: colors.text,
-      padding: 0,
-    },
-
-    // ─── Empty / prompt states ─────────────────────────────────────────────
-    promptWrap: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingBottom: 80,
-      gap: SPACING['3'],
-    },
-    promptIconBox: {
-      width: 68,
-      height: 68,
-      borderRadius: RADIUS['2xl'],
-      backgroundColor: colors.surface,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: SPACING['1'],
-    },
-    promptTitle: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
-      fontSize: 18,
-      color: colors.text,
-      letterSpacing: -0.3,
-    },
-    promptSubtitle: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
-      fontSize: 14,
-      color: colors.textMuted,
-      textAlign: 'center',
-      lineHeight: 20,
-    },
-
-    // ─── Results list ───────────────────────────────────────────────────────
-    listContent: {
-      paddingHorizontal: SPACING['6'],
-      paddingBottom: 60,
-    },
-    sectionHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingLeft: SPACING['1'],
-      marginBottom: SPACING['2'],
-    },
-    sectionHeaderText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
-      fontSize: 9,
-      color: colors.textMuted,
-      letterSpacing: 1.2,
-      textTransform: 'uppercase',
-    },
-    sectionHeaderCount: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
-      fontSize: 10,
-      color: colors.textMuted,
-    },
-  });
+});

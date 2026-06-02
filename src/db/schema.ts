@@ -26,7 +26,7 @@ export const categories = sqliteTable('categories', {
   name: text('name').notNull(),
   icon: text('icon').notNull().default('grid'),
   color: integer('color').notNull(),
-  type: text('type', { enum: ['CR', 'DR'] }).notNull().default('DR'),
+  type: text('type', { enum: ['CR', 'DR', 'TR'] }).notNull().default('DR'),
   createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
 });
@@ -39,17 +39,19 @@ export const payments = sqliteTable('payments', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   accountId: integer('account_id').notNull().references(() => accounts.id, { onDelete: 'cascade' }),
   categoryId: integer('category_id').notNull().references(() => categories.id, { onDelete: 'cascade' }),
+  toAccountId: integer('to_account_id').references(() => accounts.id, { onDelete: 'set null' }),
   amount: real('amount').notNull(),
-  type: text('type', { enum: ['CR', 'DR'] }).notNull(),
+  type: text('type', { enum: ['CR', 'DR', 'TR'] }).notNull(),
   datetime: text('datetime').notNull(),
   note: text('note').notNull(),
   createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
-}, (table) => ({
-  accountIdIdx: index('payments_account_id_idx').on(table.accountId),
-  categoryIdIdx: index('payments_category_id_idx').on(table.categoryId),
-  datetimeIdx: index('payments_datetime_idx').on(table.datetime),
-}));
+}, (table) => [
+  index('payments_account_id_idx').on(table.accountId),
+  index('payments_category_id_idx').on(table.categoryId),
+  index('payments_to_account_id_idx').on(table.toAccountId),
+  index('payments_datetime_idx').on(table.datetime),
+]);
 
 export const paymentsRelations = relations(payments, ({ one }) => ({
   account: one(accounts, {
@@ -61,3 +63,9 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
     references: [categories.id],
   }),
 }));
+
+export const seederState = sqliteTable('seeder_state', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull().unique(),
+  executedAt: text('executed_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
+});

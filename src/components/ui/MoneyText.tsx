@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TextProps } from 'react-native';
 import { formatCurrency } from '../../utils/format';
-import { useTheme } from '../../providers/ThemeProvider';
-import { TYPOGRAPHY } from '../../theme/typography';
+import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { TransactionType } from '../../types';
 
 interface MoneyTextProps extends TextProps {
@@ -10,6 +9,8 @@ interface MoneyTextProps extends TextProps {
   currency?: string;
   type?: TransactionType | 'NONE';
   weight?: 'regular' | 'medium' | 'semibold' | 'bold';
+  /** Abbreviate large amounts: $1.2K, $3.4M */
+  compact?: boolean;
 }
 
 export const MoneyText = React.memo(function MoneyText({
@@ -17,15 +18,18 @@ export const MoneyText = React.memo(function MoneyText({
   currency,
   type = 'NONE',
   weight = 'bold',
+  compact = false,
   style,
   ...props
 }: MoneyTextProps) {
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors, typography } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { prefix, color, formattedAmount, fontFamily } = useMemo(() => {
     const isCustomSign = type === 'CR' || type === 'DR';
     const valToFormat = isCustomSign ? Math.abs(amount) : amount;
-    const formatted = formatCurrency(valToFormat, currency);
+    const formatted = formatCurrency(valToFormat, currency, compact);
 
     let p = '';
     let c = colors.text;
@@ -38,12 +42,14 @@ export const MoneyText = React.memo(function MoneyText({
       c = colors.danger;
     }
 
-    const ff = weight === 'regular' || weight === 'medium'
-      ? TYPOGRAPHY.fonts.amountRegular
-      : TYPOGRAPHY.fonts.amountBold;
+    let ff: string;
+    if (weight === 'regular') ff = typography.fonts.amountLight;
+    else if (weight === 'medium') ff = typography.fonts.amountRegular;
+    else if (weight === 'semibold') ff = typography.fonts.amountRegular;
+    else ff = typography.fonts.amountBold;
 
     return { prefix: p, color: c, formattedAmount: formatted, fontFamily: ff };
-  }, [amount, currency, type, weight, colors.text, colors.success, colors.danger]);
+  }, [amount, currency, type, weight, colors.text, colors.success, colors.danger, typography.fonts]);
 
   return (
     <Text
@@ -53,8 +59,6 @@ export const MoneyText = React.memo(function MoneyText({
         style
       ]}
       numberOfLines={1}
-      adjustsFontSizeToFit
-      minimumFontScale={0.72}
       ellipsizeMode="tail"
       {...props}
     >
@@ -63,9 +67,9 @@ export const MoneyText = React.memo(function MoneyText({
   );
 });
 
-const styles = StyleSheet.create({
+const createStyles = ({ typography }: ThemeContextType) => StyleSheet.create({
   base: {
-    fontSize: TYPOGRAPHY.sizes.md,
+    fontSize: typography.sizes.md,
     flexShrink: 1,
   }
 });
