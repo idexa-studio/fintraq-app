@@ -2,6 +2,7 @@ import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { Input } from '@/src/components/ui/Input';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { db } from '@/src/db/client';
@@ -27,7 +28,6 @@ import {
   StyleSheet,
   Switch,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -490,15 +490,15 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
                 How you are greeted on the dashboard
               </Text>
 
-              <TextInput
-                style={[styles.modalInput, { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border, fontFamily: typography.fonts.regular }]}
+              <Input
                 value={nameInput}
                 onChangeText={setNameInput}
                 placeholder="Your name"
-                placeholderTextColor={colors.textMuted}
                 autoFocus
                 returnKeyType="done"
                 onSubmitEditing={saveName}
+                size="md"
+                variant="filled"
               />
 
               <View style={styles.modalActions}>
@@ -623,14 +623,6 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     },
     modalSub: {
       fontSize: typography.sizes.sm,
-      marginBottom: spacing('5'),
-    },
-    modalInput: {
-      height: 52,
-      borderRadius: radius('md'),
-      borderWidth: 1,
-      paddingHorizontal: spacing('4'),
-      fontSize: typography.sizes.lg,
       marginBottom: spacing('5'),
     },
     modalActions: {
