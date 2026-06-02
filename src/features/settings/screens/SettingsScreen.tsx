@@ -482,7 +482,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
               activeOpacity={1}
               onPress={closeNameModal}
             />
-            <View style={[styles.modalCard, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <View style={[styles.modalCard, { backgroundColor: colors.surface, borderColor: colors.text + '0C' }]}>
               <Text style={[styles.modalTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>
                 Display name
               </Text>
@@ -503,7 +503,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
               <View style={styles.modalActions}>
                 <TouchableOpacity
-                  style={[styles.modalBtn, { backgroundColor: colors.surface, borderColor: colors.border }]}
+                  style={[styles.modalBtn, { backgroundColor: colors.surface }]}
                   onPress={closeNameModal}
                   activeOpacity={0.8}
                 >

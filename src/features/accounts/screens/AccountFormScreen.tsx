@@ -1,3 +1,18 @@
+import { ColorPickerModal } from '@/src/components/ui/ColorPickerModal';
+import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
+import { Header } from '@/src/components/ui/Header';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { IconPickerModal } from '@/src/components/ui/IconPickerModal';
+import { Input } from '@/src/components/ui/Input';
+import { PageBackground } from '@/src/components/ui/PageBackground';
+import { ACCOUNT_COLORS, ACCOUNT_ICON_GROUPS, ACCOUNT_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
+import type { InsertAccount, UpdateAccountData } from '@/src/features/accounts/api/accounts';
+import { adjustAccountBalance } from '@/src/features/accounts/api/accounts';
+import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
+import { useSettings } from '@/src/providers/SettingsProvider';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex, parseAmount, toDbColor } from '@/src/utils/format';
+import { resolveIcon } from '@/src/utils/icons';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -13,21 +28,6 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { PageBackground } from '@/src/components/ui/PageBackground';
-import { ColorPickerModal } from '@/src/components/ui/ColorPickerModal';
-import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
-import { Header } from '@/src/components/ui/Header';
-import { Input } from '@/src/components/ui/Input';
-import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { IconPickerModal } from '@/src/components/ui/IconPickerModal';
-import { ACCOUNT_COLORS, ACCOUNT_ICON_GROUPS, ACCOUNT_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
-import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
-import { useSettings } from '@/src/providers/SettingsProvider';
-import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
-import { adjustAccountBalance } from '@/src/features/accounts/api/accounts';
-import { parseAmount, toDbColor, colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
-import type { InsertAccount, UpdateAccountData } from '@/src/features/accounts/api/accounts';
 
 type AccountFormValues = {
   name: string;
@@ -198,7 +198,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
               <View style={styles.twoCol}>
                 <View style={styles.colBalance}>
                   <Text style={styles.sectionLabel}>
-                    {isEditing ? 'ADJUST BALANCE' : 'OPENING BALANCE'}
+                    {isEditing ? 'Adjust balance' : 'Initial balance'}
                   </Text>
                   <Controller
                     control={control}
