@@ -221,7 +221,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             })}
           </View>
 
-          {/* Summary metrics — row 1: net position + savings rate */}
+          {/* Summary metrics 2×2 */}
           <View style={styles.metricsGrid}>
             <View style={[styles.metricTile, styles.metricTileWide]}>
               <Text style={styles.metricLabel}>Net position</Text>
@@ -230,6 +230,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                 currency={selectedCurrency}
                 type={summary.net >= 0 ? 'CR' : 'DR'}
                 weight="bold"
+                compact
                 style={styles.metricValue}
               />
             </View>
@@ -241,15 +242,14 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             </View>
           </View>
 
-          {/* Row 2: income + expense with semantic tints */}
           <View style={styles.metricsGrid}>
-            <View style={[styles.metricTile, { backgroundColor: colors.success + '1A' }]}>
-              <Text style={[styles.metricLabel, { color: colors.success + 'BB' }]}>Income</Text>
-              <MoneyText amount={summary.income} currency={selectedCurrency} type="CR" weight="bold" style={styles.metricSmall} />
+            <View style={[styles.metricTile, { backgroundColor: colors.success + '15' }]}>
+              <Text style={[styles.metricLabel, { color: colors.success }]}>Income</Text>
+              <MoneyText amount={summary.income} currency={selectedCurrency} type="CR" weight="bold" compact style={styles.metricSmall} />
             </View>
-            <View style={[styles.metricTile, { backgroundColor: colors.danger + '1A' }]}>
-              <Text style={[styles.metricLabel, { color: colors.danger + 'BB' }]}>Expenses</Text>
-              <MoneyText amount={summary.expense} currency={selectedCurrency} type="DR" weight="bold" style={styles.metricSmall} />
+            <View style={[styles.metricTile, { backgroundColor: colors.danger + '15' }]}>
+              <Text style={[styles.metricLabel, { color: colors.danger }]}>Expenses</Text>
+              <MoneyText amount={summary.expense} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.metricSmall} />
             </View>
           </View>
 
@@ -332,32 +332,40 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           {/* Account split */}
           <SectionHeader title="Account split" rightText={`${accountDistribution.length} accounts`} />
           <PremiumGuard label="Account Split" size="medium">
-            <View style={styles.card}>
-              {accountDistribution.length > 0 ? (
-                accountDistribution.map((acc) => (
-                  <View key={acc.id} style={styles.accountRow}>
-                    <IconAvatar
-                      icon={resolveIcon(acc.icon, 'wallet-outline')}
-                      color={acc.hex} variant="subtle"
-                      size={34}
-                      iconSize={16}
+            {accountDistribution.length > 0 ? (
+              <View style={styles.catSection}>
+                <View style={styles.stackedBar}>
+                  {accountDistribution.map((acc, idx) => (
+                    <View
+                      key={`acc-seg-${idx}`}
+                      style={[styles.stackedSeg, { flex: acc.share, backgroundColor: acc.hex }]}
                     />
-                    <View style={styles.accountInfo}>
-                      <View style={styles.accountTopLine}>
-                        <Text style={styles.accountName} numberOfLines={1}>{acc.name}</Text>
-                        <MoneyText amount={acc.balance} currency={acc.currency} weight="bold" style={styles.accountBal} />
+                  ))}
+                </View>
+                <View style={styles.categoryGrid}>
+                  {accountDistribution.map((acc, idx) => (
+                    <View key={`${acc.id}-${idx}`} style={styles.categoryCell}>
+                      <IconAvatar
+                        icon={resolveIcon(acc.icon, 'wallet-outline')}
+                        color={acc.hex}
+                        variant="solid"
+                        size={28}
+                        iconSize={13}
+                      />
+                      <View style={styles.catContent}>
+                        <Text style={styles.catName} numberOfLines={1}>{acc.name}</Text>
+                        <MoneyText amount={acc.balance} currency={acc.currency} weight="bold" compact style={styles.catAmount} />
                       </View>
-                      <View style={[styles.accountBarTrack, { backgroundColor: colors.background }]}>
-                        <View style={[styles.accountBarFill, { width: `${acc.share * 100}%`, backgroundColor: acc.hex }]} />
-                      </View>
-                      <Text style={styles.accountShare}>{Math.round(acc.share * 100)}% of total balance</Text>
+                      <Text style={[styles.catPercent, { color: colors.textMuted }]}>{Math.round(acc.share * 100)}%</Text>
                     </View>
-                  </View>
-                ))
-              ) : (
+                  ))}
+                </View>
+              </View>
+            ) : (
+              <View style={[styles.card, { marginHorizontal: layout.screenPadding }]}>
                 <EmptyState icon="wallet-outline" text={`No accounts in ${selectedCurrency}`} />
-              )}
-            </View>
+              </View>
+            )}
           </PremiumGuard>
 
           {/* Spending by weekday */}
@@ -448,21 +456,19 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
       padding: spacing('3.5'),
-      minHeight: 80,
-      justifyContent: 'space-between',
+      gap: spacing('1.5'),
     },
     metricTileWide: { flex: 2 },
     metricLabel: {
       fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
       fontSize: 11,
-      marginBottom: spacing('1'),
     },
-    metricValue: { fontSize: 26, lineHeight: 30, letterSpacing: -0.8 },
-    metricSmall: { fontSize: 16 },
+    metricValue: { fontSize: 22, lineHeight: 26, letterSpacing: -0.5 },
+    metricSmall: { fontSize: 15 },
     metricPlain: {
       fontFamily: typography.fonts.amountBold,
-      fontSize: 24,
+      fontSize: 22,
       letterSpacing: -0.5,
     },
 
@@ -481,21 +487,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     legendDot: { width: 7, height: 7, borderRadius: radius('full') },
     legendDash: { width: 14, height: 2, borderRadius: radius('full') },
     legendText: { fontFamily: typography.fonts.regular, color: colors.textMuted, fontSize: 10 },
-
-    // ── Account rows (no borders — spacing does the work)
-    accountRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2.5'),
-      paddingVertical: spacing('2.5'),
-    },
-    accountInfo: { flex: 1, gap: spacing('1') },
-    accountTopLine: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-    accountName: { fontFamily: typography.fonts.semibold, color: colors.text, fontSize: 13, flex: 1 },
-    accountBal: { fontSize: 13 },
-    accountBarTrack: { height: 3, borderRadius: radius('full'), overflow: 'hidden' },
-    accountBarFill: { height: 3, borderRadius: radius('full') },
-    accountShare: { fontFamily: typography.fonts.regular, color: colors.textMuted, fontSize: 10 },
 
     // ── Category breakdown section
     catSection: {
