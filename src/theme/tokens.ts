@@ -247,6 +247,24 @@ export const LETTER_SPACING = {
 } as const;
 
 // ============================================
+// HERO CARD PALETTE
+// Fixed dark-context palette — always dark regardless of theme.
+// Use for full-bleed hero cards (dashboard balance, settings profile).
+// Never hardcode these values in components — import from here.
+// ============================================
+export const HERO_CARD = {
+  background:  '#052920',
+  textPrimary: '#FFFFFF',
+  textMuted:   'rgba(255, 255, 255, 0.45)',
+  separator:   'rgba(255, 255, 255, 0.07)',
+  income:      '#34D399',
+  expense:     '#F87171',
+  decoOverlay: 'rgba(255, 255, 255, 0.03)',
+} as const;
+
+export type HeroCardPalette = typeof HERO_CARD;
+
+// ============================================
 // OVERLAY BACKGROUNDS
 // Used for modal backdrops — never hardcode rgba in components
 // ============================================

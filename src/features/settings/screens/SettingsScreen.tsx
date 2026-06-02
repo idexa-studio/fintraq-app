@@ -141,8 +141,6 @@ const navRowStyles = StyleSheet.create({
   value: { fontSize: 11 },
 });
 
-const HERO_TEXT = '#000100';
-
 const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: IoniconName }[] = [
   { label: 'Light', value: 'light', icon: 'sunny-outline' },
   { label: 'Dark', value: 'dark', icon: 'moon-outline' },
@@ -151,7 +149,7 @@ const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: 
 
 export const SettingsScreen = React.memo(function SettingsScreen() {
   const theme = useTheme();
-  const { colors, typography } = theme;
+  const { colors, typography, heroCard } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { isPremium } = usePremium();
@@ -266,20 +264,20 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.heroCard}>
-          <Text style={[styles.heroMonogram, { fontFamily: typography.fonts.heading, color: HERO_TEXT }]}>
+          <Text style={[styles.heroMonogram, { fontFamily: typography.fonts.heading, color: heroCard.textPrimary }]}>
             {(profile.name || 'W').charAt(0).toUpperCase()}
           </Text>
 
           <View style={styles.heroInfo}>
-            <Text style={[styles.heroName, { fontFamily: typography.fonts.bold, color: HERO_TEXT }]}>
+            <Text style={[styles.heroName, { fontFamily: typography.fonts.bold, color: heroCard.textPrimary }]}>
               {profile.name || 'Welcome'}
             </Text>
             <View style={styles.heroMeta}>
-              <Text style={[styles.heroMetaText, { fontFamily: typography.fonts.regular, color: HERO_TEXT }]}>
+              <Text style={[styles.heroMetaText, { fontFamily: typography.fonts.regular, color: heroCard.textMuted }]}>
                 {isPremium ? 'Pro member' : 'Free plan'}
               </Text>
-              <View style={[styles.heroMetaDot, { backgroundColor: HERO_TEXT }]} />
-              <Text style={[styles.heroMetaText, { fontFamily: typography.fonts.regular, color: HERO_TEXT }]}>
+              <View style={[styles.heroMetaDot, { backgroundColor: heroCard.textMuted }]} />
+              <Text style={[styles.heroMetaText, { fontFamily: typography.fonts.regular, color: heroCard.textMuted }]}>
                 v{version}
               </Text>
             </View>
@@ -471,7 +469,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   );
 });
 
-const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeContextType) =>
+const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -484,7 +482,7 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     },
 
     heroCard: {
-      backgroundColor: colors.primary,
+      backgroundColor: heroCard.background,
       borderRadius: radius('2xl'),
       padding: spacing('6'),
       marginBottom: spacing('7'),

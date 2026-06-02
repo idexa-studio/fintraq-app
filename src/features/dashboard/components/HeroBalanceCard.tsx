@@ -5,15 +5,6 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-// Fixed dark-context palette for the hero card
-const CARD_BG       = '#052920';
-const TEXT_PRIMARY  = '#FFFFFF';
-const TEXT_MUTED    = 'rgba(255, 255, 255, 0.45)';
-const SEP_COLOR     = 'rgba(255, 255, 255, 0.07)';
-const INCOME_COLOR  = '#34D399';
-const EXPENSE_COLOR = '#F87171';
-const DECO_COLOR    = 'rgba(255, 255, 255, 0.03)';
-
 type Props = {
   balance: number;
   currency: string;
@@ -23,12 +14,11 @@ type Props = {
 
 export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, income, expense }: Props) {
   const theme = useTheme();
-  const { typography } = theme;
+  const { typography, heroCard } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
     <View style={styles.card}>
-      {/* decorative background circle */}
       <View style={styles.deco} pointerEvents="none" />
 
       <View style={styles.header}>
@@ -50,7 +40,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
       <View style={styles.stats}>
         <View style={styles.stat}>
           <View style={styles.statLabelRow}>
-            <Ionicons name="arrow-up-circle" size={12} color={INCOME_COLOR} />
+            <Ionicons name="arrow-up-circle" size={12} color={heroCard.income} />
             <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold }]}>Income</Text>
           </View>
           <MoneyText
@@ -58,7 +48,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
             currency={currency}
             type="CR"
             weight="bold"
-            style={[styles.statValue, { color: INCOME_COLOR }]}
+            style={[styles.statValue, { color: heroCard.income }]}
           />
         </View>
 
@@ -66,7 +56,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
 
         <View style={styles.stat}>
           <View style={styles.statLabelRow}>
-            <Ionicons name="arrow-down-circle" size={12} color={EXPENSE_COLOR} />
+            <Ionicons name="arrow-down-circle" size={12} color={heroCard.expense} />
             <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold }]}>Expenses</Text>
           </View>
           <MoneyText
@@ -74,7 +64,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
             currency={currency}
             type="DR"
             weight="bold"
-            style={[styles.statValue, { color: EXPENSE_COLOR }]}
+            style={[styles.statValue, { color: heroCard.expense }]}
           />
         </View>
       </View>
@@ -82,28 +72,26 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   );
 });
 
-const createStyles = ({ spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ heroCard, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     card: {
       marginHorizontal: layout.screenPadding,
       marginBottom: spacing('4'),
       borderRadius: radius('2xl'),
-      backgroundColor: CARD_BG,
+      backgroundColor: heroCard.background,
       padding: spacing('5'),
       gap: spacing('4'),
       overflow: 'hidden',
     },
-
     deco: {
       position: 'absolute',
       width: 280,
       height: 280,
       borderRadius: 140,
-      backgroundColor: DECO_COLOR,
+      backgroundColor: heroCard.decoOverlay,
       top: -100,
       right: -80,
     },
-
     header: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -111,23 +99,20 @@ const createStyles = ({ spacing, radius, layout }: ThemeContextType) =>
     },
     label: {
       fontSize: 11,
-      color: TEXT_MUTED,
+      color: heroCard.textMuted,
       letterSpacing: 0.3,
     },
-
     balance: {
       fontSize: 46,
       lineHeight: 52,
       letterSpacing: -1.5,
-      color: TEXT_PRIMARY,
+      color: heroCard.textPrimary,
     },
-
     sep: {
       height: 1,
-      backgroundColor: SEP_COLOR,
+      backgroundColor: heroCard.separator,
       marginVertical: -spacing('1'),
     },
-
     stats: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -144,7 +129,7 @@ const createStyles = ({ spacing, radius, layout }: ThemeContextType) =>
     },
     statLabel: {
       fontSize: 10,
-      color: TEXT_MUTED,
+      color: heroCard.textMuted,
     },
     statValue: {
       fontSize: 16,
@@ -152,6 +137,6 @@ const createStyles = ({ spacing, radius, layout }: ThemeContextType) =>
     statDivider: {
       width: 1,
       height: 36,
-      backgroundColor: SEP_COLOR,
+      backgroundColor: heroCard.separator,
     },
   });
