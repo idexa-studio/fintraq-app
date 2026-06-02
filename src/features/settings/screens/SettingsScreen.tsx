@@ -2,9 +2,9 @@ import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { Input } from '@/src/components/ui/Input';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { PageBackground } from '@/src/components/ui/PageBackground';
+import { TextInputSheet } from '@/src/components/ui/TextInputSheet';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments, seederState } from '@/src/db/schema';
 import { usePremium } from '@/src/providers/PremiumProvider';
@@ -20,9 +20,7 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
-  KeyboardAvoidingView,
   Linking,
-  Modal,
   Platform,
   ScrollView,
   StyleSheet,
@@ -113,7 +111,7 @@ const NavRow = React.memo(function NavRow({
       activeOpacity={0.65}
       style={[navRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5'), backgroundColor: colors.surface }, !isLast && { marginBottom: spacing('0.5') }]}
     >
-      <IconAvatar icon={icon} color={colors.text} variant="subtle" size={32} iconSize={14} />
+      <IconAvatar icon={icon} color={iconColor} variant="subtle" size={32} iconSize={14} />
       <View style={navRowStyles.textBlock}>
         <Text style={[navRowStyles.label, { fontFamily: typography.fonts.semibold, color: labelColor }]}>
           {label}
@@ -165,7 +163,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
-  const [nameInput, setNameInput] = useState('');
   const [devTaps, setDevTaps] = useState(0);
 
   const handleToggleReminders = useCallback(async () => {
@@ -180,17 +177,11 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     await updateProfile({ reminderEnabled: next });
   }, [profile.reminderEnabled, updateProfile]);
 
-  const openNameModal = useCallback(() => {
-    setNameInput(profile.name || '');
-    setShowNameModal(true);
-  }, [profile.name]);
-
+  const openNameModal = useCallback(() => setShowNameModal(true), []);
   const closeNameModal = useCallback(() => setShowNameModal(false), []);
-
-  const saveName = useCallback(async () => {
-    await updateProfile({ name: nameInput.trim() });
-    setShowNameModal(false);
-  }, [nameInput, updateProfile]);
+  const saveName = useCallback(async (name: string) => {
+    await updateProfile({ name });
+  }, [updateProfile]);
 
   const onTimeChange = useCallback(async (event: DateTimePickerEvent, date?: Date) => {
     setShowTimePicker(false);
@@ -464,67 +455,18 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         onConfirm={runReset}
       />
 
-      <Modal
+      <TextInputSheet
         visible={showNameModal}
-        transparent
-        animationType="fade"
-        presentationStyle="overFullScreen"
-        statusBarTranslucent
-        onRequestClose={closeNameModal}
-      >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-          <View style={[styles.modalOverlay, { backgroundColor: theme.overlay.dark }]}>
-            <TouchableOpacity
-              style={StyleSheet.absoluteFillObject}
-              activeOpacity={1}
-              onPress={closeNameModal}
-            />
-            <View style={[styles.modalCard, { backgroundColor: colors.surface, borderColor: colors.text + '0C' }]}>
-              <Text style={[styles.modalTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>
-                Display name
-              </Text>
-              <Text style={[styles.modalSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                How you are greeted on the dashboard
-              </Text>
-
-              <Input
-                value={nameInput}
-                onChangeText={setNameInput}
-                placeholder="Your name"
-                autoFocus
-                returnKeyType="done"
-                onSubmitEditing={saveName}
-                size="md"
-                variant="filled"
-              />
-
-              <View style={styles.modalActions}>
-                <TouchableOpacity
-                  style={[styles.modalBtn, { backgroundColor: colors.surface }]}
-                  onPress={closeNameModal}
-                  activeOpacity={0.8}
-                >
-                  <Text style={[styles.modalBtnText, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.modalBtn, { backgroundColor: colors.text }]}
-                  onPress={saveName}
-                  activeOpacity={0.8}
-                >
-                  <Text style={[styles.modalBtnText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
-                    Save
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+        onClose={closeNameModal}
+        onSave={saveName}
+        title="Display name"
+        subtitle="How you are greeted on the dashboard"
+        initialValue={profile.name || ''}
+        placeholder="Your name"
+        maxLength={30}
+        saveLabel="Save"
+        inputProps={{ autoCapitalize: 'words' }}
+      />
     </SafeAreaView>
   );
 });
@@ -605,40 +547,5 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     footerCopy: {
       fontSize: 10,
       opacity: 0.4,
-    },
-
-    modalOverlay: {
-      flex: 1,
-      justifyContent: 'center',
-      paddingHorizontal: spacing('6'),
-    },
-    modalCard: {
-      borderRadius: radius('2xl'),
-      borderWidth: 1,
-      padding: spacing('6'),
-    },
-    modalTitle: {
-      fontSize: 26,
-      marginBottom: spacing('1'),
-    },
-    modalSub: {
-      fontSize: typography.sizes.sm,
-      marginBottom: spacing('5'),
-    },
-    modalActions: {
-      flexDirection: 'row',
-      gap: spacing('3'),
-    },
-    modalBtn: {
-      flex: 1,
-      height: 48,
-      borderRadius: radius('md'),
-      borderWidth: 1,
-      borderColor: 'transparent',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    modalBtnText: {
-      fontSize: typography.sizes.md,
     },
   });
