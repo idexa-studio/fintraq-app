@@ -7,7 +7,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -15,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ColorPickerModal } from '@/src/components/ui/ColorPickerModal';
 import { Header } from '@/src/components/ui/Header';
+import { Input } from '@/src/components/ui/Input';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { IconPickerModal } from '@/src/components/ui/IconPickerModal';
 import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
@@ -158,18 +158,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                   maxLength: { value: 50, message: 'Name must be 50 characters or less' },
                 }}
                 render={({ field }) => (
-                  <TextInput
-                    value={field.value}
-                    onChangeText={field.onChange}
-                    onBlur={field.onBlur}
-                    placeholder="e.g. Groceries, Salary"
-                    placeholderTextColor={colors.textMuted + '50'}
-                    autoFocus={!isEditing}
-                    style={[styles.fieldInput, errors.name && styles.fieldInputError]}
-                    autoCapitalize="words"
-                    autoCorrect={false}
-                    returnKeyType="done"
-                  />
+                  <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="e.g. Groceries, Salary" error={errors.name?.message} size="md" variant="filled" autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
                 )}
               />
               {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}

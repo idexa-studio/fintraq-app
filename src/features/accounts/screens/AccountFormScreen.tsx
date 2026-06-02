@@ -17,6 +17,7 @@ import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ColorPickerModal } from '@/src/components/ui/ColorPickerModal';
 import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
 import { Header } from '@/src/components/ui/Header';
+import { Input } from '@/src/components/ui/Input';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { IconPickerModal } from '@/src/components/ui/IconPickerModal';
 import { ACCOUNT_COLORS, ACCOUNT_ICON_GROUPS, ACCOUNT_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
@@ -156,18 +157,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                   maxLength: { value: 50, message: 'Name must be 50 characters or less' },
                 }}
                 render={({ field }) => (
-                  <TextInput
-                    value={field.value}
-                    onChangeText={field.onChange}
-                    onBlur={field.onBlur}
-                    placeholder="e.g. Main Wallet, Savings"
-                    placeholderTextColor={colors.textMuted + '50'}
-                    autoFocus={!isEditing}
-                    style={[styles.fieldInput, errors.name && styles.fieldInputError]}
-                    autoCapitalize="words"
-                    autoCorrect={false}
-                    returnKeyType="next"
-                  />
+                  <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="e.g. Main Wallet, Savings" error={errors.name?.message} size="md" variant="filled" autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
                 )}
               />
               {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
@@ -183,20 +173,9 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                   maxLength: { value: 50, message: 'Holder name must be 50 characters or less' },
                 }}
                 render={({ field }) => (
-                  <TextInput
-                    value={field.value}
-                    onChangeText={field.onChange}
-                    onBlur={field.onBlur}
-                    placeholder="e.g. John Doe (optional)"
-                    placeholderTextColor={colors.textMuted + '50'}
-                    style={[styles.fieldInput, errors.holderName && styles.fieldInputError]}
-                    autoCapitalize="words"
-                    autoCorrect={false}
-                    returnKeyType="next"
-                  />
+                  <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="e.g. John Doe (optional)" error={errors.holderName?.message} size="md" variant="filled" autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
                 )}
               />
-              {errors.holderName && <Text style={styles.errorText}>{errors.holderName.message}</Text>}
             </View>
 
             {/* ── Account Number ── */}
@@ -209,20 +188,9 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                   maxLength: { value: 100, message: 'Account number must be 100 characters or less' },
                 }}
                 render={({ field }) => (
-                  <TextInput
-                    value={field.value}
-                    onChangeText={field.onChange}
-                    onBlur={field.onBlur}
-                    placeholder="IBAN or account number (optional)"
-                    placeholderTextColor={colors.textMuted + '50'}
-                    style={[styles.fieldInput, errors.accountNumber && styles.fieldInputError]}
-                    autoCorrect={false}
-                    autoCapitalize="none"
-                    returnKeyType="next"
-                  />
+                  <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="IBAN or account number (optional)" error={errors.accountNumber?.message} size="md" variant="filled" autoCorrect={false} autoCapitalize="none" returnKeyType="next" />
                 )}
               />
-              {errors.accountNumber && <Text style={styles.errorText}>{errors.accountNumber.message}</Text>}
             </View>
 
             {/* ── Balance + Currency ── */}
