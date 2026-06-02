@@ -1,18 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
-    FlatList,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  FlatList,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { CURRENCIES } from '../../constants/currency';
-import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 
 export type CurrencyPickerModalProps = {
   visible: boolean;
@@ -21,13 +21,13 @@ export type CurrencyPickerModalProps = {
   onChange: (code: string) => void;
 };
 
-const ITEM_HEIGHT = 54;
+const ITEM_HEIGHT = 60;
 
 export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
   visible,
   onClose,
   value,
-  onChange
+  onChange,
 }: CurrencyPickerModalProps) {
   const theme = useTheme();
   const { colors } = theme;
@@ -36,11 +36,20 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return CURRENCIES;
-    return CURRENCIES.filter(
-      (c) => c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q)
-    );
-  }, [query]);
+    const list = q
+      ? CURRENCIES.filter(c => c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q))
+      : CURRENCIES;
+    // pin selected to top when not searching
+    if (!q) {
+      const selectedIdx = list.findIndex(c => c.code === value);
+      if (selectedIdx > 0) {
+        const copy = [...list];
+        const [sel] = copy.splice(selectedIdx, 1);
+        return [sel, ...copy];
+      }
+    }
+    return list;
+  }, [query, value]);
 
   const handleSelect = useCallback((code: string) => {
     onChange(code);
@@ -52,9 +61,13 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
     onClose();
   }, [onClose]);
 
-  const handleClearQuery = useCallback(() => {
-    setQuery('');
-  }, []);
+  const keyExtractor = useCallback((item: typeof CURRENCIES[0]) => item.code, []);
+
+  const getItemLayout = useCallback((_: unknown, index: number) => ({
+    length: ITEM_HEIGHT,
+    offset: ITEM_HEIGHT * index,
+    index,
+  }), []);
 
   const renderItem = useCallback(({ item }: { item: typeof CURRENCIES[0] }) => {
     const selected = item.code === value;
@@ -62,30 +75,28 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
       <TouchableOpacity
         style={[styles.row, selected && styles.rowSelected]}
         onPress={() => handleSelect(item.code)}
-        activeOpacity={0.85}
+        activeOpacity={0.7}
       >
-        <View style={[styles.codeWrap, selected && styles.codeWrapSelected]}>
-          <Text style={[styles.code, selected && styles.codeSelected]}>{item.code}</Text>
+        <View style={[styles.chip, selected && styles.chipSelected]}>
+          <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
+            {item.code}
+          </Text>
         </View>
+
         <Text style={[styles.name, selected && styles.nameSelected]} numberOfLines={1}>
           {item.name}
         </Text>
-        {selected && (
-          <Ionicons name="checkmark-circle" size={18} color={colors.primary} />
+
+        {selected ? (
+          <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
+            <Ionicons name="checkmark" size={11} color={colors.background} />
+          </View>
+        ) : (
+          <View style={styles.checkPlaceholder} />
         )}
       </TouchableOpacity>
     );
-  }, [value, handleSelect, styles, colors.primary]);
-
-  const getItemLayout = useCallback((data: ArrayLike<typeof CURRENCIES[0]> | null | undefined, index: number) => ({
-    length: ITEM_HEIGHT,
-    offset: ITEM_HEIGHT * index,
-    index,
-  }), []);
-
-  const keyExtractor = useCallback((item: typeof CURRENCIES[0]) => item.code, []);
-
-  const ItemSeparatorComponent = useCallback(() => <View style={styles.separator} />, [styles.separator]);
+  }, [value, handleSelect, styles, colors]);
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={handleClose}>
@@ -99,30 +110,30 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
           <View style={styles.handle} />
 
           <View style={styles.header}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.title}>Select currency</Text>
-              <Text style={styles.subtitle}>{CURRENCIES.length} currencies available</Text>
+            <View style={styles.headerText}>
+              <Text style={styles.title}>Currency</Text>
+              <Text style={styles.subtitle}>{CURRENCIES.length} currencies</Text>
             </View>
-            <TouchableOpacity onPress={handleClose} style={styles.closeBtn}>
-              <Ionicons name="close" size={16} color={colors.text} />
+            <TouchableOpacity onPress={handleClose} style={styles.closeBtn} activeOpacity={0.7}>
+              <Ionicons name="close" size={14} color={colors.text} />
             </TouchableOpacity>
           </View>
 
           <View style={styles.searchWrap}>
-            <Ionicons name="search-outline" size={16} color={colors.textMuted} style={styles.searchIcon} />
+            <Ionicons name="search-outline" size={15} color={colors.textMuted} />
             <TextInput
               style={styles.searchInput}
               value={query}
               onChangeText={setQuery}
-              placeholder="Search currencies..."
-              placeholderTextColor={colors.textMuted}
+              placeholder="Search by name or code"
+              placeholderTextColor={colors.textMuted + '80'}
               autoCorrect={false}
               autoCapitalize="none"
               returnKeyType="search"
             />
             {query.length > 0 && (
-              <TouchableOpacity onPress={handleClearQuery} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <Ionicons name="close-circle" size={16} color={colors.textMuted} />
+              <TouchableOpacity onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                <Ionicons name="close-circle" size={15} color={colors.textMuted} />
               </TouchableOpacity>
             )}
           </View>
@@ -133,7 +144,6 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.listContent}
-            ItemSeparatorComponent={ItemSeparatorComponent}
             renderItem={renderItem}
             getItemLayout={getItemLayout}
             initialNumToRender={15}
@@ -142,7 +152,8 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
             removeClippedSubviews
             ListEmptyComponent={
               <View style={styles.emptyWrap}>
-                <Text style={styles.emptyText}>No results for {query}</Text>
+                <Ionicons name="search-outline" size={24} color={colors.textMuted} />
+                <Text style={styles.emptyText}>No results for "{query}"</Text>
               </View>
             }
           />
@@ -166,27 +177,32 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       height: '82%',
       borderTopLeftRadius: radius('2xl'),
       borderTopRightRadius: radius('2xl'),
-      borderTopWidth: 1,
-      borderColor: colors.text + '0C',
-      overflow: 'hidden',
+      borderTopWidth: 0.5,
+      borderLeftWidth: 0.5,
+      borderRightWidth: 0.5,
+      borderColor: colors.text + '10',
       backgroundColor: colors.surface,
+      overflow: 'hidden',
     },
     handle: {
       alignSelf: 'center',
-      width: 42,
+      width: 36,
       height: 4,
       borderRadius: radius('full'),
-      marginTop: spacing('2.5'),
-      backgroundColor: colors.textMuted + '30',
+      marginTop: spacing('3'),
+      backgroundColor: colors.text + '18',
     },
+
+    // Header
     header: {
       paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('2.5'),
+      paddingTop: spacing('4'),
+      paddingBottom: spacing('3'),
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      gap: spacing('3'),
     },
+    headerText: { flex: 1 },
     title: {
       fontFamily: typography.fonts.heading,
       fontSize: 22,
@@ -197,91 +213,109 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       marginTop: 2,
+      opacity: 0.7,
     },
     closeBtn: {
-      width: 32,
-      height: 32,
+      width: 30,
+      height: 30,
       borderRadius: radius('full'),
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.text + '0C',
+      backgroundColor: colors.background,
       justifyContent: 'center',
       alignItems: 'center',
     },
+
+    // Search
     searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',
       marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('2.5'),
-      height: 44,
-      borderRadius: radius('lg'),
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.text + '0C',
-      paddingHorizontal: spacing('3'),
+      marginBottom: spacing('2'),
+      height: 46,
+      borderRadius: radius('xl'),
+      backgroundColor: colors.background,
+      paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
-    },
-    searchIcon: {
-      flexShrink: 0,
     },
     searchInput: {
       flex: 1,
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.md,
+      fontSize: typography.sizes.sm,
       color: colors.text,
       paddingVertical: 0,
     },
+
+    // List
     listContent: {
       paddingHorizontal: layout.screenPadding,
-      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
+      paddingTop: spacing('1'),
+      paddingBottom: Platform.OS === 'ios' ? spacing('9') : spacing('6'),
+      gap: spacing('0.5'),
     },
-    separator: {
-      height: 1,
-      backgroundColor: colors.text + '0C',
-      marginLeft: 54,
-    },
+
+    // Row
     row: {
+      height: ITEM_HEIGHT,
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: spacing('3'),
+      paddingHorizontal: spacing('3'),
+      borderRadius: radius('xl'),
       gap: spacing('3'),
     },
-    rowSelected: {},
-    codeWrap: {
-      width: 42,
-      height: 30,
+    rowSelected: {
+      backgroundColor: colors.primary + '0F',
+    },
+
+    // Currency code chip
+    chip: {
+      width: 46,
+      height: 28,
       borderRadius: radius('md'),
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.text + '0C',
+      backgroundColor: colors.background,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    codeWrapSelected: {
-      backgroundColor: colors.primary + '20',
-      borderColor: colors.primary + '50',
+    chipSelected: {
+      backgroundColor: colors.primary + '18',
     },
-    code: {
+    chipText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: typography.sizes.xs,
+      fontSize: 11,
       color: colors.textMuted,
+      letterSpacing: 0.3,
     },
-    codeSelected: {
+    chipTextSelected: {
       color: colors.primary,
     },
+
+    // Name
     name: {
       flex: 1,
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.md,
+      fontSize: typography.sizes.sm,
       color: colors.text,
     },
     nameSelected: {
       fontFamily: typography.fonts.semibold,
-      color: colors.text,
     },
+
+    // Check indicator
+    checkCircle: {
+      width: 20,
+      height: 20,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    checkPlaceholder: {
+      width: 20,
+      height: 20,
+    },
+
+    // Empty
     emptyWrap: {
       paddingVertical: spacing('9'),
       alignItems: 'center',
+      gap: spacing('2'),
     },
     emptyText: {
       fontFamily: typography.fonts.regular,
