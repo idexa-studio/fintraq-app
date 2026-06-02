@@ -147,7 +147,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
 
             {/* ── Account Name ── */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>ACCOUNT NAME</Text>
+              <Text style={styles.sectionLabel}>Account name</Text>
               <Controller
                 control={control}
                 name="name"
@@ -165,7 +165,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
 
             {/* ── Holder Name ── */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>HOLDER NAME</Text>
+              <Text style={styles.sectionLabel}>Holder name</Text>
               <Controller
                 control={control}
                 name="holderName"
@@ -180,7 +180,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
 
             {/* ── Account Number ── */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>ACCOUNT NUMBER</Text>
+              <Text style={styles.sectionLabel}>Account number</Text>
               <Controller
                 control={control}
                 name="accountNumber"
@@ -229,7 +229,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                   {errors.balance && <Text style={styles.errorText}>{errors.balance.message}</Text>}
                 </View>
                 <View style={styles.colCurrency}>
-                  <Text style={styles.sectionLabel}>CURRENCY</Text>
+                  <Text style={styles.sectionLabel}>Currency</Text>
                   <TouchableOpacity
                     style={styles.currencyBtn}
                     onPress={openCurrencyPicker}
@@ -244,7 +244,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
 
             {/* ── Appearance ── */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>APPEARANCE</Text>
+              <Text style={styles.sectionLabel}>Appearance</Text>
               <View style={styles.appearanceRow}>
 
                 <TouchableOpacity
@@ -344,9 +344,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     sectionLabel: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
-      letterSpacing: 1.5,
+      opacity: 0.6,
     },
     fieldInput: {
       height: 50,

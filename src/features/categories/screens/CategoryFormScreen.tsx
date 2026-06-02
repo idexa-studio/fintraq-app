@@ -108,7 +108,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
 
             {/* ── Type ── */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>TYPE</Text>
+              <Text style={styles.sectionLabel}>Type</Text>
               <View style={styles.typeRow}>
                 <TouchableOpacity
                   activeOpacity={0.9}
@@ -148,7 +148,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
 
             {/* ── Name ── */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>NAME</Text>
+              <Text style={styles.sectionLabel}>Name</Text>
               <Controller
                 control={control}
                 name="name"
@@ -166,7 +166,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
 
             {/* ── Appearance ── */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>APPEARANCE</Text>
+              <Text style={styles.sectionLabel}>Appearance</Text>
               <View style={styles.appearanceRow}>
                 <TouchableOpacity
                   style={styles.appearanceCard}
@@ -267,9 +267,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     sectionLabel: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
-      letterSpacing: 1.5,
+      opacity: 0.6,
     },
     fieldInput: {
       height: 50,

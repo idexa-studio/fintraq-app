@@ -396,9 +396,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     sectionLabel: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
-      letterSpacing: 1.5,
     },
     transferHint: {
       fontFamily: typography.fonts.regular,
