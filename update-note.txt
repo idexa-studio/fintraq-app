@@ -1,0 +1,10 @@
+What's new in 1.1.2
+
+- Transfer money between your accounts with clear direction labels
+- Fresh dark theme with emerald accents — easier on your eyes
+- Redesigned premium page with cleaner layout
+- Smarter insights — 6 types of personalised financial tips
+- Polished forms and settings — smoother, more consistent
+- Improved charts and analytics visualisation
+- Faster, cleaner UI — no blur, solid cards throughout
+- Multiple stability fixes and performance improvements
