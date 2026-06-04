@@ -1,6 +1,6 @@
 Luno is now Keeep — same app, fresh name.
 
-Fresh in this update
+Fresh in this update (1.1.3)
 
 - Transfer between accounts with clear direction labels
 - Fresh emerald theme — easier on your eyes
