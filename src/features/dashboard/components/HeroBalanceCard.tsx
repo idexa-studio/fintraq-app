@@ -20,6 +20,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   return (
     <View style={styles.card}>
       <View style={styles.deco} pointerEvents="none" />
+      <View style={styles.deco2} pointerEvents="none" />
 
       <View style={styles.header}>
         <Text style={[styles.label, { fontFamily: typography.fonts.semibold }]}>
@@ -40,7 +41,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
       <View style={styles.stats}>
         <View style={styles.stat}>
           <View style={styles.statLabelRow}>
-            <MaterialCommunityIcons name="arrow-up-circle" size={12} color={heroCard.income} />
+            <MaterialCommunityIcons name="arrow-up-circle" size={14} color={heroCard.income} />
             <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold }]}>Income</Text>
           </View>
           <MoneyText
@@ -56,7 +57,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
 
         <View style={styles.stat}>
           <View style={styles.statLabelRow}>
-            <MaterialCommunityIcons name="arrow-down-circle" size={12} color={heroCard.expense} />
+            <MaterialCommunityIcons name="arrow-down-circle" size={14} color={heroCard.expense} />
             <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold }]}>Expenses</Text>
           </View>
           <MoneyText
@@ -91,6 +92,15 @@ const createStyles = ({ heroCard, spacing, radius, layout }: ThemeContextType) =
       backgroundColor: heroCard.decoOverlay,
       top: -100,
       right: -80,
+    },
+    deco2: {
+      position: 'absolute',
+      width: 160,
+      height: 160,
+      borderRadius: 80,
+      backgroundColor: heroCard.decoOverlay,
+      bottom: -60,
+      left: -40,
     },
     header: {
       flexDirection: 'row',

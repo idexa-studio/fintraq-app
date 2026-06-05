@@ -47,8 +47,8 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
                 <IconAvatar
                   icon={resolveIcon(acc.icon, 'wallet-outline')}
                   color={c}
-                  variant="solid"
-                  size={32}
+                  variant="subtle"
+                  size={34}
                   iconSize={14}
                 />
                 <View style={styles.meta}>

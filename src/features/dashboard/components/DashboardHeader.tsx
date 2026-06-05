@@ -30,29 +30,29 @@ export const DashboardHeader = React.memo(function DashboardHeader({
         <Text style={styles.date}>{dateLabel}</Text>
       </View>
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.7}>
-          <MaterialCommunityIcons name="magnify" size={18} color={colors.text} />
+        <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.75}>
+          <MaterialCommunityIcons name="magnify" size={19} color={colors.text} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconBtn} onPress={onAnalytics} activeOpacity={0.7}>
-          <MaterialCommunityIcons name="chart-pie" size={18} color={colors.text} />
+        <TouchableOpacity style={styles.iconBtn} onPress={onAnalytics} activeOpacity={0.75}>
+          <MaterialCommunityIcons name="chart-pie" size={19} color={colors.text} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconBtn} onPress={onSettings} activeOpacity={0.7}>
-          <MaterialCommunityIcons name="cog-outline" size={18} color={colors.text} />
+        <TouchableOpacity style={styles.iconBtn} onPress={onSettings} activeOpacity={0.75}>
+          <MaterialCommunityIcons name="cog-outline" size={19} color={colors.text} />
         </TouchableOpacity>
       </View>
     </View>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     wrap: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('2'),
-      paddingBottom: spacing('5'),
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('4'),
     },
     left: { gap: spacing('1') },
     greeting: {
@@ -72,8 +72,10 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
       gap: spacing('2'),
     },
     iconBtn: {
-      width: 24,
-      height: 24,
+      width: 38,
+      height: 38,
+      borderRadius: radius('full'),
+      backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
     },

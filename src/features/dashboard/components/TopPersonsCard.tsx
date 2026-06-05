@@ -1,6 +1,6 @@
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex, withAlpha } from '@/src/utils/format';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { PersonNetRow } from '../api/dashboard';
@@ -11,11 +11,11 @@ type Props = {
   onPressPerson: (id: number) => void;
 };
 
-function PersonInitials({ name, color, size = 28 }: { name: string; color: string; size?: number }) {
+function PersonInitials({ name, color, size = 24 }: { name: string; color: string; size?: number }) {
   const initials = name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
   return (
-    <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: color, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      <Text style={{ color: '#fff', fontWeight: '700', fontSize: size * 0.36 }}>{initials}</Text>
+    <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: withAlpha(color, '18'), alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <Text style={{ color: color, fontWeight: '700', fontSize: size * 0.36 }}>{initials}</Text>
     </View>
   );
 }
@@ -31,14 +31,14 @@ export const TopPersonsCard = React.memo(function TopPersonsCard({ currency, per
     <View style={styles.grid}>
       {persons.map((person, idx) => {
         const hex = colorNumberToHex(person.color);
-        const marginRight = idx % 2 === 0 ? theme.spacing('1') : 0;
-        const marginLeft = idx % 2 === 1 ? theme.spacing('1') : 0;
+        const marginRight = idx % 2 === 0 ? theme.spacing('1.5') : 0;
+        const marginLeft = idx % 2 === 1 ? theme.spacing('1.5') : 0;
         const isPositive = person.net >= 0;
 
         return (
           <View key={person.id} style={styles.itemWrap}>
             <TouchableOpacity style={[styles.cell, { marginRight, marginLeft }]} onPress={handlePress(person.id)} activeOpacity={0.7}>
-              <PersonInitials name={person.name} color={hex} size={28} />
+              <PersonInitials name={person.name} color={hex} size={24} />
               <View style={styles.cellContent}>
                 <Text style={[styles.cellName, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
                   {person.name.split(' ')[0]}
@@ -69,7 +69,7 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     },
     itemWrap: {
       width: '50%',
-      marginBottom: spacing('2'),
+      marginBottom: spacing('3'),
     },
     cell: {
       backgroundColor: colors.surface,

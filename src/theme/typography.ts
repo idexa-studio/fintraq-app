@@ -1,4 +1,5 @@
 export type TypographyScale = {
+  xxs: number;
   xs: number;
   sm: number;
   md: number;
@@ -35,6 +36,7 @@ export type TypographyTheme = {
 
 export const TYPOGRAPHY: TypographyTheme = {
   sizes: {
+    xxs: 9.5,
     xs: 11,
     sm: 13,
     md: 14,

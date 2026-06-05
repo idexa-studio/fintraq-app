@@ -102,7 +102,7 @@ export const TransactionRow = React.memo(function TransactionRow({
       activeOpacity={0.75}
       onPress={handlePress}
     >
-      <IconAvatar icon={iconName} color={categoryColor} variant="solid" size={sizes.iconButton.md} iconSize={16} />
+      <IconAvatar icon={iconName} color={categoryColor} variant="subtle" size={sizes.iconButton.md} iconSize={16} />
 
       <View style={styles.info}>
         <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
@@ -184,7 +184,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
   },
   meta: {
     fontFamily: typography.fonts.medium,
-    fontSize: typography.sizes.xs,
+    fontSize: typography.sizes.xxs,
     lineHeight: 14,
     flexShrink: 1,
   },

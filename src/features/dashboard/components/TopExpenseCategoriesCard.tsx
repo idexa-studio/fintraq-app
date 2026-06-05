@@ -44,13 +44,13 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
         const accent = colorNumberToHex(cat.color);
 
 
-        const marginRight = index % 2 === 0 ? theme.spacing('1') : 0;
-        const marginLeft = index % 2 === 1 ? theme.spacing('1') : 0;
+        const marginRight = index % 2 === 0 ? theme.spacing('1.5') : 0;
+        const marginLeft = index % 2 === 1 ? theme.spacing('1.5') : 0;
 
         return (
           <View key={cat.name} style={styles.itemContainer}>
             <View style={[styles.tile, { marginRight, marginLeft }]}>
-              <IconAvatar icon={resolveIcon(cat.icon, 'tag-outline')} color={accent} variant="solid" size={26}  />
+              <IconAvatar icon={resolveIcon(cat.icon, 'tag-outline')} color={accent} variant="subtle" size={24} />
               <View style={styles.text}>
                 <Text style={[styles.name, {  }]} numberOfLines={1}>{cat.name}</Text>
                 <MoneyText amount={cat.amount} currency={currency} type="DR" weight="bold" compact style={styles.amount} />
@@ -80,7 +80,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexDirection: 'row',
       flexWrap: 'wrap',
     },
-    itemContainer: { width: '50%', marginBottom: spacing('2') },
+    itemContainer: { width: '50%', marginBottom: spacing('3') },
     tile: {
       backgroundColor: colors.surface,
       padding: spacing('2.5'),

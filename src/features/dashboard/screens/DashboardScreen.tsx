@@ -216,15 +216,15 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
 
     // ── Currency tabs
     currencyTabsWrap: { marginHorizontal: layout.screenPadding, marginBottom: spacing('4') },
-    currencyTabs: { flexDirection: 'row', gap: spacing('1') },
+    currencyTabs: { flexDirection: 'row', gap: spacing('2') },
     currencyTab: {
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('1.5') - 1,
+      paddingHorizontal: spacing('3.5'),
+      paddingVertical: spacing('1.5'),
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
     },
     currencyTabActive: { backgroundColor: colors.text },
-    currencyTabText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
+    currencyTabText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 12 },
     currencyTabTextActive: { color: colors.background },
 
     // ── Activity card
