@@ -36,13 +36,11 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
         weight="bold"
       />
 
-      <View style={styles.sep} />
-
       <View style={styles.stats}>
-        <View style={styles.stat}>
-          <View style={styles.statLabelRow}>
-            <MaterialCommunityIcons name="arrow-up-circle" size={14} color={heroCard.income} />
-            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold }]}>Income</Text>
+        <View style={styles.statContainer}>
+          <View style={styles.statHeader}>
+            <MaterialCommunityIcons name="arrow-up" size={14} color={heroCard.income} />
+            <Text style={styles.statLabel}>Income</Text>
           </View>
           <MoneyText
             amount={income}
@@ -53,12 +51,10 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
           />
         </View>
 
-        <View style={styles.statDivider} />
-
-        <View style={styles.stat}>
-          <View style={styles.statLabelRow}>
-            <MaterialCommunityIcons name="arrow-down-circle" size={14} color={heroCard.expense} />
-            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold }]}>Expenses</Text>
+        <View style={styles.statContainer}>
+          <View style={styles.statHeader}>
+            <MaterialCommunityIcons name="arrow-down" size={14} color={heroCard.expense} />
+            <Text style={styles.statLabel}>Expenses</Text>
           </View>
           <MoneyText
             amount={expense}
@@ -73,7 +69,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   );
 });
 
-const createStyles = ({ heroCard, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ heroCard, spacing, radius, layout, typography }: ThemeContextType) =>
   StyleSheet.create({
     card: {
       marginHorizontal: layout.screenPadding,
@@ -81,7 +77,7 @@ const createStyles = ({ heroCard, spacing, radius, layout }: ThemeContextType) =
       borderRadius: radius('2xl'),
       backgroundColor: heroCard.background,
       padding: spacing('5'),
-      gap: spacing('4'),
+      gap: spacing('5'),
       overflow: 'hidden',
     },
     deco: {
@@ -112,39 +108,35 @@ const createStyles = ({ heroCard, spacing, radius, layout }: ThemeContextType) =
       color: heroCard.textMuted,
     },
     balance: {
-      fontSize: 46,
-      lineHeight: 52,
+      fontSize: 40,
+      lineHeight: 46,
       color: heroCard.textPrimary,
-    },
-    sep: {
-      height: 1,
-      backgroundColor: heroCard.separator,
-      marginVertical: -spacing('1'),
     },
     stats: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('4'),
+      gap: spacing('3'),
     },
-    stat: {
+    statContainer: {
       flex: 1,
+      backgroundColor: 'rgba(255, 255, 255, 0.045)',
+      paddingVertical: spacing('2.5'),
+      paddingHorizontal: spacing('3.5'),
+      borderRadius: radius('lg'),
       gap: spacing('1'),
     },
-    statLabelRow: {
+    statHeader: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('1'),
     },
     statLabel: {
-      fontSize: 10,
+      fontSize: 11,
+      fontFamily: typography.fonts.regular,
       color: heroCard.textMuted,
     },
     statValue: {
-      fontSize: 16,
-    },
-    statDivider: {
-      width: 1,
-      height: 36,
-      backgroundColor: heroCard.separator,
+      fontSize: 15,
+      lineHeight: 18,
     },
   });

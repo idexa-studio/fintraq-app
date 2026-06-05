@@ -24,9 +24,19 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
     }
   }, [insight.type, colors]);
 
+  const bg = useMemo(() => {
+    return accent + '0A'; // ~4% opacity for container tint
+  }, [accent]);
+
   return (
-    <View style={[styles.card, { backgroundColor: colors.surface }]}>
-      <IconAvatar icon={resolveIcon(insight.icon, 'chart-timeline-variant')} color={accent} variant="subtle" size={25} iconSize={14} />
+    <View style={[styles.card, { backgroundColor: bg }]}>
+      <IconAvatar
+        icon={resolveIcon(insight.icon, 'chart-timeline-variant')}
+        color={accent}
+        variant="subtle"
+        size={34}
+        iconSize={16}
+      />
       <View style={styles.text}>
         <Text style={[styles.title, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
           {insight.title}
@@ -44,22 +54,22 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) =>
     card: {
       flexDirection: 'row',
       borderRadius: radius('xl'),
-      padding: spacing('3.5'),
-      gap: spacing('3'),
-      alignItems: 'flex-start',
+      padding: spacing('4'),
+      gap: spacing('3.5'),
+      alignItems: 'center',
       minHeight: 80,
     },
     text: {
       flex: 1,
-      gap: spacing('1'),
+      gap: spacing('0.5'),
     },
     title: {
       fontSize: typography.sizes.sm,
-      lineHeight: 19,
+      lineHeight: 18,
     },
     sub: {
       fontSize: typography.sizes.xs,
-      lineHeight: 17,
+      lineHeight: 16,
       opacity: 0.65,
     },
   });

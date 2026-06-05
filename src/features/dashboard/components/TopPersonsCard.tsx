@@ -11,11 +11,24 @@ type Props = {
   onPressPerson: (id: number) => void;
 };
 
-function PersonInitials({ name, color, size = 24 }: { name: string; color: string; size?: number }) {
+function PersonInitials({ name, color, size = 32 }: { name: string; color: string; size?: number }) {
+  const { typography } = useTheme();
   const initials = name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
   return (
-    <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: withAlpha(color, '18'), alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      <Text style={{ color: color, fontWeight: '700', fontSize: size * 0.36 }}>{initials}</Text>
+    <View style={{
+      width: size,
+      height: size,
+      borderRadius: size / 2,
+      backgroundColor: withAlpha(color, '12'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+    }}>
+      <Text style={{
+        color: color,
+        fontFamily: typography.fonts.semibold,
+        fontSize: Math.round(size * 0.38),
+      }}>{initials}</Text>
     </View>
   );
 }
@@ -37,7 +50,7 @@ export const TopPersonsCard = React.memo(function TopPersonsCard({ currency, per
         return (
           <View key={person.id} style={styles.itemWrap}>
             <TouchableOpacity style={[styles.cell, { marginRight, marginLeft }]} onPress={handlePress(person.id)} activeOpacity={0.7}>
-              <PersonInitials name={person.name} color={hex} size={24} />
+              <PersonInitials name={person.name} color={hex} size={32} />
               <View style={styles.cellContent}>
                 <Text style={styles.cellName} numberOfLines={1}>
                   {person.name.split(' ')[0]}
@@ -74,9 +87,10 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
       backgroundColor: colors.surface,
       borderRadius: radius('lg'),
       padding: spacing('3'),
-      gap: spacing('2'),
+      gap: spacing('3'),
       flexDirection: 'row',
       alignItems: 'center',
+      flex: 1,
     },
     cellContent: {
       flex: 1,
@@ -88,6 +102,6 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
       color: colors.text,
     },
     cellAmount: {
-      fontSize: typography.sizes.xs,
+      fontSize: 12,
     },
   });

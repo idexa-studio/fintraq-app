@@ -29,6 +29,10 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
 
   const items = categories.slice(0, 6);
 
+  const maxAmount = useMemo(() => {
+    return items.reduce((max, cat) => Math.max(max, cat.amount), 0);
+  }, [items]);
+
   if (items.length === 0) {
     return (
       <View style={styles.empty}>
@@ -42,7 +46,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
     <View style={styles.grid}>
       {items.map((cat, index) => {
         const accent = colorNumberToHex(cat.color);
-
+        const ratio = maxAmount > 0 ? cat.amount / maxAmount : 0;
 
         const marginRight = index % 2 === 0 ? theme.spacing('1.5') : 0;
         const marginLeft = index % 2 === 1 ? theme.spacing('1.5') : 0;
@@ -50,10 +54,15 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
         return (
           <View key={cat.name} style={styles.itemContainer}>
             <View style={[styles.tile, { marginRight, marginLeft }]}>
-              <IconAvatar icon={resolveIcon(cat.icon, 'tag-outline')} color={accent} variant="subtle" size={24} />
-              <View style={styles.text}>
-                <Text style={[styles.name, {  }]} numberOfLines={1}>{cat.name}</Text>
-                <MoneyText amount={cat.amount} currency={currency} type="DR" weight="bold" compact style={styles.amount} />
+              <View style={styles.contentRow}>
+                <IconAvatar icon={resolveIcon(cat.icon, 'tag-outline')} color={accent} variant="subtle" size={32} iconSize={15} />
+                <View style={styles.textContainer}>
+                  <Text style={styles.name} numberOfLines={1}>{cat.name}</Text>
+                  <MoneyText amount={cat.amount} currency={currency} type="DR" weight="bold" compact style={styles.amount} />
+                </View>
+              </View>
+              <View style={styles.progressContainer}>
+                <View style={[styles.progressBar, { width: `${Math.max(4, ratio * 100)}%`, backgroundColor: accent }]} />
               </View>
             </View>
           </View>
@@ -83,14 +92,32 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     itemContainer: { width: '50%', marginBottom: spacing('3') },
     tile: {
       backgroundColor: colors.surface,
-      padding: spacing('2.5'),
-      gap: spacing('3'),
-      flexDirection: 'row',
-      flex: 1,
-      alignItems: 'center',
+      padding: spacing('3'),
       borderRadius: radius('lg'),
+      flex: 1,
+      gap: spacing('1'),
     },
-    text: { gap: spacing('0.5') },
+    contentRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3'),
+    },
+    textContainer: {
+      flex: 1,
+      gap: spacing('0.5'),
+    },
     name: { fontSize: typography.sizes.sm, fontFamily: typography.fonts.semibold, color: colors.text },
     amount: { fontSize: typography.sizes.xs },
+    progressContainer: {
+      height: 4,
+      backgroundColor: colors.background + '40',
+      borderRadius: radius('full'),
+      marginTop: spacing('2.5'),
+      width: '100%',
+      overflow: 'hidden',
+    },
+    progressBar: {
+      height: '100%',
+      borderRadius: radius('full'),
+    },
   });

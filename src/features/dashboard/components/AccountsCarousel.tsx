@@ -122,11 +122,11 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       borderRadius: radius('xl'),
       backgroundColor: colors.surface,
       overflow: 'hidden',
-      minHeight: 148,
+      minHeight: 154,
     },
 
     upper: {
-      padding: spacing('3.5'),
+      padding: spacing('4'),
       gap: spacing('2.5'),
     },
     topRow: {
@@ -142,34 +142,37 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     hint: { fontSize: typography.sizes.xs, opacity: 0.55 },
     currencyBadge: {
       paddingHorizontal: spacing('2'),
-      paddingVertical: spacing('1'),
-      borderRadius: radius('md'),
+      paddingVertical: spacing('0.5'),
+      borderRadius: radius('full'),
     },
-    currency: { fontSize: typography.sizes.xs },
+    currency: { fontSize: 11 },
 
-    balanceLabel: { fontSize: typography.sizes.xs, opacity: 0.5, marginBottom: spacing('0.5') },
+    balanceLabel: { fontSize: 11, opacity: 0.45, marginBottom: spacing('0.5') },
     balance: { fontSize: 22, lineHeight: 26 },
 
     lower: {
       flexDirection: 'row',
       gap: spacing('4'),
-      backgroundColor: colors.card,
-      paddingHorizontal: spacing('3.5'),
+      backgroundColor: colors.background + '40',
+      paddingHorizontal: spacing('4'),
       paddingVertical: spacing('2.5'),
     },
     stat: { gap: spacing('0.5') },
-    statLabel: { fontSize: typography.sizes.xs },
-    statValue: { fontSize: 13 },
+    statLabel: { fontSize: 11 },
+    statValue: { fontSize: 13, fontFamily: typography.fonts.semibold },
 
     addCard: {
       borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
-      padding: spacing('3.5'),
+      backgroundColor: colors.surface + '80',
+      borderWidth: 1.5,
+      borderColor: colors.text + '12',
+      borderStyle: 'dashed',
+      padding: spacing('4'),
       justifyContent: 'center',
       gap: spacing('3'),
-      minHeight: 148,
+      minHeight: 154,
     },
     addText: { gap: spacing('1') },
     addTitle: { fontSize: typography.sizes.md },
-    addSub: { fontSize: typography.sizes.xs, lineHeight: 18, maxWidth: 180, opacity: 0.6 },
+    addSub: { fontSize: typography.sizes.xs, lineHeight: 18, maxWidth: 180, opacity: 0.5 },
   });

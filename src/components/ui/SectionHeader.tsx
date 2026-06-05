@@ -44,12 +44,12 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
     },
     title: {
       fontFamily: typography.fonts.semibold,
-      color: colors.textMuted,
-      fontSize: typography.sizes.sm,
+      color: colors.text,
+      fontSize: 16,
     },
     right: {
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.fonts.semibold,
       color: colors.primary,
-      fontSize: typography.sizes.sm,
+      fontSize: 13,
     },
   });
