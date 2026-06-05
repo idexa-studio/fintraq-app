@@ -34,23 +34,23 @@ export type ThemePalette = {
 };
 
 export const DARK_THEME: ThemePalette = {
-  background: '#1C1C1E',
-  card: '#28282B',
-  surface: '#2C2C2E',
+  background: '#1E1F24', // Lighter slate/charcoal background for reversed contrast
+  card: '#0C0D0F',       // Premium deep obsidian black (darker than background)
+  surface: '#15161A',    // Deep dark gray for inputs/chips (stands out inside card)
 
-  primary: '#059669',
-  primaryLight: '#34D399',
-  primaryDark: '#047857',
-  secondary: '#F4F7E8',
+  primary: '#10B981',       // Vibrant premium emerald green
+  primaryLight: '#34D399',  // Soft mint green
+  primaryDark: '#047857',   // Deep forest green
+  secondary: '#E6F4EA',     // Premium mint-white tint for ambient effects
 
-  text: '#F5F5F5',
-  textMuted: '#A3A3A3',
+  text: '#FFFFFF',          // Crisp white text
+  textMuted: '#94A3B8',     // Sleek slate-gray for muted text
 
   border: 'transparent',
 
-  success: '#22C55E',
-  danger: '#EF4444',
-  warning: '#EAB308',
+  success: '#10B981',
+  danger: '#F43F5E',
+  warning: '#F59E0B',
   info: '#3B82F6',
 };
 
