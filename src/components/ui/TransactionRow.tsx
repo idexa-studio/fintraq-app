@@ -50,7 +50,7 @@ export const TransactionRow = React.memo(function TransactionRow({
   showDate,
 }: Props) {
   const theme = useTheme();
-  const { colors, radius } = theme;
+  const { colors, radius, spacing, sizes } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const categoryColor = useMemo(() => colorNumberToHex(tx.category.color), [tx.category.color]);
@@ -67,7 +67,8 @@ export const TransactionRow = React.memo(function TransactionRow({
     borderTopRightRadius: isFirst ? radius('xl') : 0,
     borderBottomLeftRadius: isLast ? radius('xl') : 0,
     borderBottomRightRadius: isLast ? radius('xl') : 0,
-  }), [isFirst, isLast, colors.surface, radius]);
+    marginBottom: isLast ? 0 : spacing('0.5'),
+  }), [isFirst, isLast, colors.surface, radius, spacing]);
 
   const accountIconName = useMemo(() => resolveIcon(tx.account.icon, 'wallet-outline'), [tx.account.icon]);
 
@@ -99,15 +100,12 @@ export const TransactionRow = React.memo(function TransactionRow({
 
   const metaText = useMemo(() => {
     const parts = [];
-    if (tx.note && tx.note.trim()) {
-      parts.push(tx.category.name);
-    }
     parts.push(timeText);
     if (showDate) {
       parts.push(dateText);
     }
-    return parts.join(' · ');
-  }, [tx.note, tx.category.name, timeText, dateText, showDate]);
+    return parts.join(' • ');
+  }, [timeText, dateText, showDate]);
 
   return (
     <TouchableOpacity
@@ -119,9 +117,8 @@ export const TransactionRow = React.memo(function TransactionRow({
         icon={iconName}
         color={categoryColor}
         variant="subtle"
-        size={42}
-        iconSize={18}
-        style={{ borderRadius: radius('md') }}
+        size={sizes.iconButton.md}
+        iconSize={16}
       />
 
       <View style={styles.info}>
@@ -135,7 +132,7 @@ export const TransactionRow = React.memo(function TransactionRow({
             </Text>
           ) : null}
 
-          {metaText ? <Text style={styles.bullet}>·</Text> : null}
+          {metaText ? <Text style={styles.bullet}>•</Text> : null}
 
           {tx.type === 'TR' ? (
             <View style={styles.transferBadge}>
@@ -173,8 +170,6 @@ export const TransactionRow = React.memo(function TransactionRow({
           style={styles.amount}
         />
       </View>
-
-      {!isLast && <View style={[styles.divider, { backgroundColor: colors.text + '0A' }]} />}
     </TouchableOpacity>
   );
 });
@@ -185,7 +180,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: spacing('3'),
+    paddingVertical: spacing('3.5'),
     paddingHorizontal: spacing('4'),
     gap: spacing('3'),
   },
@@ -196,7 +191,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   },
   title: {
     fontFamily: typography.fonts.semibold,
-    fontSize: typography.sizes.md,
+    fontSize: typography.sizes.sm,
     lineHeight: 18,
   },
   metaRow: {
@@ -231,20 +226,12 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
     justifyContent: 'center',
   },
   amount: {
-    fontSize: 15,
+    fontSize: typography.sizes.sm,
   },
   bullet: {
-    fontFamily: typography.fonts.regular,
     fontSize: typography.sizes.xs,
     lineHeight: 14,
     color: colors.textMuted,
-    opacity: 0.5,
-  },
-  divider: {
-    position: 'absolute',
-    bottom: 0,
-    left: spacing('4') + 42 + spacing('3'), // 16 + 42 + 12 = 70px
-    right: spacing('4'),
-    height: 0.5,
+    opacity: 0.35,
   },
 });
