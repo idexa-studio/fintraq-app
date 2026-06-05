@@ -8,7 +8,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   Platform,
   ScrollView,
@@ -28,9 +28,9 @@ function PersonInitials({ name, color, size = 40 }: { name: string; color: strin
   return (
     <View style={{
       width: size, height: size, borderRadius: size / 2,
-      backgroundColor: color, alignItems: 'center', justifyContent: 'center',
+      backgroundColor: color + '18', alignItems: 'center', justifyContent: 'center',
     }}>
-      <Text style={{ color: '#fff', fontWeight: '700', fontSize: size * 0.38 }}>{initials}</Text>
+      <Text style={{ color: color, fontWeight: '700', fontSize: size * 0.38 }}>{initials}</Text>
     </View>
   );
 }
@@ -48,7 +48,24 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   const persons = useMemo(() => personList ?? [], [personList]);
   const atLimit = !isPremium && persons.length >= FREE_PERSON_LIMIT;
 
+  const searchInputRef = useRef<TextInput>(null);
+  const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState('');
+
+  const toggleSearch = useCallback(() => {
+    setShowSearch(prev => {
+      const next = !prev;
+      if (!next) {
+        setQuery('');
+      } else {
+        setTimeout(() => {
+          searchInputRef.current?.focus();
+        }, 100);
+      }
+      return next;
+    });
+  }, []);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return persons;
@@ -110,12 +127,23 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title="Persons" showBack />
+      <Header
+        title="Persons"
+        showBack
+        rightAction={
+          persons.length > 0 ? (
+            <TouchableOpacity onPress={toggleSearch} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} activeOpacity={0.7}>
+              <MaterialCommunityIcons name={showSearch ? 'close' : 'magnify'} size={20} color={colors.text} />
+            </TouchableOpacity>
+          ) : undefined
+        }
+      />
 
-      {persons.length > 0 && (
+      {showSearch && (
         <View style={styles.searchWrap}>
           <MaterialCommunityIcons name="magnify" size={15} color={colors.textMuted} />
           <TextInput
+            ref={searchInputRef}
             style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
             value={query}
             onChangeText={setQuery}
@@ -158,15 +186,15 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
                   <PersonInitials name={person.name} color={hex} size={40} />
 
                   <View style={styles.rowMeta}>
-                    <Text style={[styles.rowName, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+                    <Text style={styles.rowName} numberOfLines={1}>
                       {person.name}
                     </Text>
                     {(person.designation || person.company) ? (
-                      <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
+                      <Text style={styles.rowSub} numberOfLines={1}>
                         {[person.designation, person.company].filter(Boolean).join(' · ')}
                       </Text>
                     ) : person.phone ? (
-                      <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
+                      <Text style={styles.rowSub} numberOfLines={1}>
                         {person.phone}
                       </Text>
                     ) : null}
@@ -245,30 +273,30 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       flexDirection: 'row',
       alignItems: 'center',
       marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('3'),
-      height: 44,
-      borderRadius: radius('xl'),
+      marginBottom: spacing('3.5'),
+      height: 38,
+      borderRadius: radius('lg'),
       backgroundColor: colors.surface,
       paddingHorizontal: spacing('3'),
       gap: spacing('2'),
     },
     searchInput: {
       flex: 1,
-      fontSize: 14,
+      fontSize: typography.sizes.md,
       paddingVertical: 0,
     },
-
+ 
     limitBanner: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('1.5'),
       backgroundColor: colors.surface,
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       padding: spacing('3'),
       marginBottom: spacing('3'),
     },
     limitText: { fontSize: typography.sizes.xs },
-
+ 
     group: {
       borderRadius: radius('xl'),
       overflow: 'hidden',
@@ -284,8 +312,18 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     },
     rowGap: { marginBottom: spacing('0.5') },
     rowMeta: { flex: 1 },
-    rowName: { fontSize: 14 },
-    rowSub: { fontSize: 11, marginTop: 2, opacity: 0.65 },
+    rowName: {
+      fontSize: typography.sizes.md,
+      fontFamily: typography.fonts.semibold,
+      color: colors.text,
+    },
+    rowSub: {
+      fontSize: typography.sizes.xs,
+      fontFamily: typography.fonts.regular,
+      color: colors.textMuted,
+      marginTop: 2,
+      opacity: 0.65,
+    },
 
     empty: { alignItems: 'center', paddingVertical: spacing('11'), gap: spacing('2') },
     emptyText: { fontSize: 15 },

@@ -96,15 +96,15 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                 <View style={styles.cardLead}>
                   <IconAvatar
                     icon={resolveIcon(account.icon, 'wallet-outline')}
-                    color={accColor} variant="solid"
-                    size={38}
-                    iconSize={18}
+                    color={accColor} variant="subtle"
+                    size={36}
+                    iconSize={16}
                   />
                   <View style={styles.cardMeta}>
-                    <Text style={[styles.cardName, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+                    <Text style={styles.cardName} numberOfLines={1}>
                       {account.name}
                     </Text>
-                    <Text style={[styles.cardHint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                    <Text style={styles.cardHint}>
                       {account.accountNumber && account.accountNumber !== 'N/A'
                         ? `•••• ${account.accountNumber.slice(-4)}`
                         : 'Tap to view activity'}
@@ -113,8 +113,8 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                 </View>
 
                 <View style={styles.cardTopRight}>
-                  <View style={styles.currencyBadge}>
-                    <Text style={[styles.currencyText, { fontFamily: typography.fonts.semibold, color: accColor }]}>
+                  <View style={[styles.currencyBadge, { backgroundColor: accColor + '12' }]}>
+                    <Text style={[styles.currencyText, { color: accColor }]}>
                       {account.currency}
                     </Text>
                   </View>
@@ -128,8 +128,8 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                 </View>
               </View>
 
-              <Text style={[styles.balanceLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                AVAILABLE
+              <Text style={styles.balanceLabel}>
+                Available
               </Text>
               <MoneyText
                 amount={account.balance}
@@ -140,15 +140,15 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
 
               <View style={styles.cardStats}>
                 <View style={styles.statCol}>
-                  <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                    TOTAL IN
+                  <Text style={styles.statLabel}>
+                    Total in
                   </Text>
                   <MoneyText amount={account.income} currency={account.currency} type="CR" compact style={styles.statValue} />
                 </View>
                 <View style={styles.statDivider} />
                 <View style={styles.statCol}>
-                  <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                    TOTAL OUT
+                  <Text style={styles.statLabel}>
+                    Total out
                   </Text>
                   <MoneyText amount={account.expense} currency={account.currency} type="DR" compact style={styles.statValue} />
                 </View>
@@ -224,11 +224,15 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       gap: spacing('0.5'),
     },
     cardName: {
+      fontFamily: typography.fonts.semibold,
+      color: colors.text,
       fontSize: typography.sizes.md,
     },
     cardHint: {
+      fontFamily: typography.fonts.regular,
+      color: colors.textMuted,
       fontSize: typography.sizes.xs,
-      opacity: 0.55,
+      opacity: 0.65,
     },
     cardTopRight: {
       flexDirection: 'row',
@@ -237,18 +241,18 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       marginLeft: spacing('2'),
     },
     currencyBadge: {
-      backgroundColor: colors.background,
-      paddingHorizontal: spacing('2'),
+      paddingHorizontal: spacing('2.5'),
       paddingVertical: spacing('0.5'),
-      borderRadius: radius('sm'),
+      borderRadius: radius('full'),
     },
     currencyText: {
+      fontFamily: typography.fonts.bold,
       fontSize: 10,
     },
     balanceLabel: {
-      fontSize: 9,
-      letterSpacing: 1.2,
-      opacity: 0.5,
+      fontFamily: typography.fonts.semibold,
+      color: colors.textMuted,
+      fontSize: typography.sizes.xs,
     },
     cardBalance: {
       fontSize: 26,
@@ -266,9 +270,9 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       backgroundColor: colors.text + '0C',
     },
     statLabel: {
-      fontSize: 8,
-      letterSpacing: 1,
-      opacity: 0.5,
+      fontFamily: typography.fonts.semibold,
+      color: colors.textMuted,
+      fontSize: typography.sizes.xs,
     },
     statValue: {
       fontSize: 14,

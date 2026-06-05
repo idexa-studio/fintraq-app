@@ -38,6 +38,7 @@ type SwitchRowProps = {
   subtitle: string;
   value: boolean;
   onToggle: () => void;
+  iconColor?: string;
 };
 
 const SwitchRow = React.memo(function SwitchRow({
@@ -46,36 +47,40 @@ const SwitchRow = React.memo(function SwitchRow({
   subtitle,
   value,
   onToggle,
+  iconColor,
   theme,
 }: SwitchRowProps & { theme: ThemeContextType }) {
   const { colors, typography, spacing } = theme;
+  const resolvedIconColor = iconColor ?? colors.text;
+
   return (
-    <View style={[switchRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5'), backgroundColor: colors.surface, marginBottom: spacing('0.5') }]}>
-      <IconAvatar icon={icon} color={colors.text} variant="subtle" size={32} iconSize={14} />
-      <View style={switchRowStyles.textBlock}>
-        <Text style={[switchRowStyles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+    <View style={{
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3'),
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
+      backgroundColor: colors.surface,
+      marginBottom: spacing('0.5'),
+    }}>
+      <IconAvatar icon={icon} color={resolvedIconColor} variant="subtle" size={32} iconSize={14} />
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontFamily: typography.fonts.semibold, fontSize: typography.sizes.md, color: colors.text }}>
           {label}
         </Text>
-        <Text style={[switchRowStyles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+        <Text style={{ fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted, marginTop: 2, opacity: 0.65 }}>
           {subtitle}
         </Text>
       </View>
       <Switch
         value={value}
         onValueChange={onToggle}
-        trackColor={{ false: colors.surface, true: colors.primary + '40' }}
+        trackColor={{ false: colors.background, true: colors.primary + '40' }}
         thumbColor={value ? colors.primary : colors.textMuted}
-        ios_backgroundColor={colors.surface}
+        ios_backgroundColor={colors.background}
       />
     </View>
   );
-});
-
-const switchRowStyles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  textBlock: { flex: 1 },
-  label: { fontSize: 14 },
-  subtitle: { fontSize: 11, marginTop: 2, opacity: 0.65 },
 });
 
 type NavRowProps = {
@@ -109,20 +114,28 @@ const NavRow = React.memo(function NavRow({
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.65}
-      style={[navRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5'), backgroundColor: colors.surface }, !isLast && { marginBottom: spacing('0.5') }]}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing('3'),
+        paddingHorizontal: spacing('4'),
+        paddingVertical: spacing('3.5'),
+        backgroundColor: colors.surface,
+        marginBottom: isLast ? 0 : spacing('0.5'),
+      }}
     >
       <IconAvatar icon={icon} color={iconColor} variant="subtle" size={32} iconSize={14} />
-      <View style={navRowStyles.textBlock}>
-        <Text style={[navRowStyles.label, { fontFamily: typography.fonts.semibold, color: labelColor }]}>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontFamily: typography.fonts.semibold, fontSize: typography.sizes.md, color: labelColor }}>
           {label}
         </Text>
-        <Text style={[navRowStyles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+        <Text style={{ fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted, marginTop: 2, opacity: 0.65 }}>
           {subtitle}
         </Text>
       </View>
-      <View style={navRowStyles.right}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') }}>
         {value ? (
-          <Text style={[navRowStyles.value, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>
+          <Text style={{ fontFamily: typography.fonts.semibold, fontSize: typography.sizes.xs, color: colors.primary }}>
             {value}
           </Text>
         ) : null}
@@ -130,15 +143,6 @@ const NavRow = React.memo(function NavRow({
       </View>
     </TouchableOpacity>
   );
-});
-
-const navRowStyles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  textBlock: { flex: 1 },
-  label: { fontSize: 14 },
-  subtitle: { fontSize: 11, marginTop: 2, opacity: 0.65 },
-  right: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  value: { fontSize: 11 },
 });
 
 const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: MaterialIconName }[] = [
@@ -265,9 +269,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.heroCard}>
-          <Text style={[styles.heroMonogram, { fontFamily: typography.fonts.heading, color: heroCard.textPrimary }]}>
-            {(profile.name || 'W').charAt(0).toUpperCase()}
-          </Text>
+          <View style={styles.deco} pointerEvents="none" />
+          <View style={styles.deco2} pointerEvents="none" />
+
+          <View style={styles.heroAvatar}>
+            <Text style={[styles.heroMonogram, { fontFamily: typography.fonts.bold, color: heroCard.textPrimary }]}>
+              {(profile.name || 'W').charAt(0).toUpperCase()}
+            </Text>
+          </View>
 
           <View style={styles.heroInfo}>
             <Text style={[styles.heroName, { fontFamily: typography.fonts.bold, color: heroCard.textPrimary }]}>
@@ -292,6 +301,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="creation"
+            iconColor={colors.warning}
             label={isPremium ? 'Keeep Pro — Lifetime' : 'Upgrade to Pro'}
             subtitle={isPremium ? 'You have permanent access to every feature' : 'Unlock analytics, insights, and more'}
             value={isPremium ? 'Active' : undefined}
@@ -307,6 +317,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <SwitchRow
             theme={theme}
             icon="bell-outline"
+            iconColor={colors.info}
             label="Daily reminder"
             subtitle="Get a nudge to log your daily transactions"
             value={profile.reminderEnabled}
@@ -317,6 +328,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
               <NavRow
                 theme={theme}
                 icon="clock-outline"
+                iconColor={colors.info}
                 label="Reminder time"
                 subtitle="When you receive your daily notification"
                 value={profile.reminderTime}
@@ -327,6 +339,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="cash"
+            iconColor={colors.success}
             label="Default currency"
             subtitle="Used for new accounts and display"
             value={profile.defaultCurrency || 'USD'}
@@ -335,6 +348,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="account-outline"
+            iconColor={colors.textMuted}
             label="Display name"
             subtitle="How you appear throughout the app"
             value={profile.name || 'Not set'}
@@ -343,6 +357,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="theme-light-dark"
+            iconColor={colors.textMuted}
             label="Theme"
             subtitle="Light, dark, or follow your system setting"
             value={themeLabel}
@@ -368,6 +383,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="account-group-outline"
+            iconColor={colors.info}
             label="Persons"
             subtitle="Manage people linked to transactions"
             onPress={() => router.push('/(main)/persons')}
@@ -375,6 +391,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="grid"
+            iconColor={colors.success}
             label="Categories"
             subtitle="Manage your income and expense groups"
             onPress={() => router.push('/categories')}
@@ -382,6 +399,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="download-outline"
+            iconColor={colors.textMuted}
             label="Export CSV"
             subtitle="Download transactions as a spreadsheet file"
             onPress={openExport}
@@ -396,6 +414,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="shield-check-outline"
+            iconColor={colors.textMuted}
             label="Privacy policy"
             subtitle="How we handle your data"
             onPress={openPrivacy}
@@ -403,6 +422,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="file-document-outline"
+            iconColor={colors.textMuted}
             label="Terms of service"
             subtitle="Rules and guidelines for using Keeep"
             onPress={openTerms}
@@ -497,11 +517,36 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('5'),
+      overflow: 'hidden',
+    },
+    deco: {
+      position: 'absolute',
+      width: 200,
+      height: 200,
+      borderRadius: 100,
+      backgroundColor: heroCard.decoOverlay,
+      top: -80,
+      right: -60,
+    },
+    deco2: {
+      position: 'absolute',
+      width: 120,
+      height: 120,
+      borderRadius: 60,
+      backgroundColor: heroCard.decoOverlay,
+      bottom: -40,
+      left: -30,
+    },
+    heroAvatar: {
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      backgroundColor: heroCard.textPrimary + '15',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     heroMonogram: {
-      fontSize: 72,
-      lineHeight: 76,
-      opacity: 0.35,
+      fontSize: 22,
     },
     heroInfo: {
       flex: 1,
@@ -529,7 +574,7 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
     sectionLabel: {
       fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
-      fontSize: typography.sizes.sm,
+      fontSize: typography.sizes.xs,
       marginTop: spacing('5'),
       marginBottom: spacing('3'),
     },

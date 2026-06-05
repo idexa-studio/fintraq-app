@@ -46,9 +46,9 @@ function PersonInitialsPreview({ name, color }: { name: string; color: string })
   return (
     <View style={{
       width: 64, height: 64, borderRadius: 32,
-      backgroundColor: color, alignItems: 'center', justifyContent: 'center',
+      backgroundColor: color + '18', alignItems: 'center', justifyContent: 'center',
     }}>
-      <Text style={{ color: '#fff', fontWeight: '700', fontSize: 24 }}>{initials}</Text>
+      <Text style={{ color: color, fontWeight: '700', fontSize: 24 }}>{initials}</Text>
     </View>
   );
 }
@@ -305,7 +305,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     body: { flex: 1 },
@@ -328,7 +328,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     colorDot: { width: 12, height: 12, borderRadius: 6 },
     colorBtnText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 13,
+      fontSize: typography.sizes.sm,
       color: colors.text,
     },
 
@@ -342,9 +342,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     rowCol: { flex: 1, gap: spacing('2.5') },
     sectionLabel: {
       fontFamily: typography.fonts.semibold,
-      fontSize: typography.sizes.xs,
       color: colors.textMuted,
-      opacity: 0.6,
+      fontSize: typography.sizes.xs,
     },
 
     footer: {
@@ -353,8 +352,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingBottom: spacing('8'),
     },
     primaryBtn: {
-      height: 52,
-      borderRadius: radius('xl'),
+      height: sizes.button.lg.height,
+      borderRadius: sizes.button.lg.borderRadius,
       backgroundColor: colors.text,
       justifyContent: 'center',
       alignItems: 'center',
@@ -362,7 +361,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     primaryBtnDisabled: { opacity: 0.45 },
     primaryBtnText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 15,
+      fontSize: sizes.button.lg.fontSize,
       color: colors.background,
     },
   });

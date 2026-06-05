@@ -45,9 +45,7 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
     title: {
       fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
-      fontSize: 10,
-      textTransform: 'uppercase',
-      letterSpacing: 1.5,
+      fontSize: typography.sizes.xs,
     },
     right: {
       fontFamily: typography.fonts.medium,
