@@ -1,8 +1,8 @@
 import { SQL, and, count, desc, eq, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
-import { db } from '../../../db/client';
-import { accounts, categories, payments } from '../../../db/schema';
-import type { TransactionType } from '../../../types';
+import { db } from '@/src/db/client';
+import { accounts, categories, payments } from '@/src/db/schema';
+import type { TransactionType } from '@/src/types';
 
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = typeof payments.$inferInsert;
@@ -35,6 +35,7 @@ export type TransactionListItem = {
     name: string;
     currency: string;
     color: number;
+    icon: string;
   };
   category: {
     id: number;
@@ -47,6 +48,7 @@ export type TransactionListItem = {
     name: string | null;
     currency: string | null;
     color: number | null;
+    icon: string | null;
   };
 };
 
@@ -65,6 +67,7 @@ export const TRANSACTION_LIST_SELECT = {
     name: accounts.name,
     currency: accounts.currency,
     color: accounts.color,
+    icon: accounts.icon,
   },
   category: {
     id: categories.id,
@@ -77,6 +80,7 @@ export const TRANSACTION_LIST_SELECT = {
     name: toAccounts.name,
     currency: toAccounts.currency,
     color: toAccounts.color,
+    icon: toAccounts.icon,
   },
   createdAt: payments.createdAt,
   updatedAt: payments.updatedAt,

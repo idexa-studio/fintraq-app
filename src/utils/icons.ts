@@ -10,6 +10,14 @@ export function resolveIcon(
   icon: string | null | undefined,
   fallback: IoniconName,
 ): IoniconName {
-  if (icon && icon in Ionicons.glyphMap) return icon as IoniconName;
+  if (!icon) return fallback;
+
+  let resolved = icon;
+  // If the icon is a filled version, check if we can make it an outline version
+  if (!resolved.endsWith('-outline') && `${resolved}-outline` in Ionicons.glyphMap) {
+    resolved = `${resolved}-outline`;
+  }
+
+  if (resolved in Ionicons.glyphMap) return resolved as IoniconName;
   return fallback;
 }

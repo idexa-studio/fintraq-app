@@ -1,12 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
-import { format } from 'date-fns';
+import { format, isToday, isYesterday } from 'date-fns';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
-import { TransactionType } from '../../types';
-import { colorNumberToHex } from '../../utils/format';
-import { IconAvatar } from './IconAvatar';
-import { MoneyText } from './MoneyText';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { TransactionType } from '@/src/types';
+import { colorNumberToHex } from '@/src/utils/format';
+import { resolveIcon } from '@/src/utils/icons';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { MoneyText } from '@/src/components/ui/MoneyText';
 
 type TransactionData = {
   id: number;
@@ -17,6 +18,8 @@ type TransactionData = {
   account: {
     name: string;
     currency: string;
+    icon: string;
+    color: number;
   };
   category: {
     name: string;
@@ -25,6 +28,8 @@ type TransactionData = {
   };
   toAccount?: {
     name: string | null;
+    icon: string | null;
+    color: number | null;
   } | null;
 };
 
@@ -36,11 +41,6 @@ type Props = {
   showDate?: boolean;
 };
 
-const TYPE_CONFIG: Record<TransactionType, { label: string; colorKey: 'success' | 'danger' | 'info' }> = {
-  CR: { label: 'Income',   colorKey: 'success' },
-  DR: { label: 'Expense',  colorKey: 'danger'  },
-  TR: { label: 'Transfer', colorKey: 'info'     },
-};
 
 export const TransactionRow = React.memo(function TransactionRow({
   tx,
@@ -50,24 +50,18 @@ export const TransactionRow = React.memo(function TransactionRow({
   showDate,
 }: Props) {
   const theme = useTheme();
-  const { colors, radius, spacing, sizes, typography } = theme;
+  const { colors, radius, spacing, sizes } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const categoryColor = useMemo(() => colorNumberToHex(tx.category.color), [tx.category.color]);
 
-  const iconName: keyof typeof Ionicons.glyphMap = useMemo(() =>
-    tx.category.icon in Ionicons.glyphMap
-      ? (tx.category.icon as keyof typeof Ionicons.glyphMap)
-      : 'pricetag-outline',
-    [tx.category.icon]
-  );
+  const iconName = useMemo(() => resolveIcon(tx.category.icon, 'pricetag-outline'), [tx.category.icon]);
 
   const handlePress = useCallback(() => {
     onPress?.(tx);
   }, [onPress, tx]);
 
-  const typeConfig = TYPE_CONFIG[tx.type];
-  const typeColor = colors[typeConfig.colorKey];
+
 
   const containerStyle = useMemo(() => ({
     backgroundColor: colors.surface,
@@ -78,9 +72,29 @@ export const TransactionRow = React.memo(function TransactionRow({
     marginBottom: isLast ? 0 : spacing('0.5'),
   }), [isFirst, isLast, colors.surface, radius, spacing]);
 
-  const metaText = tx.type === 'TR'
-    ? `${tx.account.name} → ${tx.toAccount?.name ?? 'Account'}`
-    : tx.account.name;
+  const accountIconName = useMemo(() => resolveIcon(tx.account.icon, 'wallet-outline'), [tx.account.icon]);
+
+  const toAccountIconName = useMemo(() => resolveIcon(tx.toAccount?.icon, 'wallet-outline'), [tx.toAccount?.icon]);
+
+  const accountColor = useMemo(() => colorNumberToHex(tx.account.color), [tx.account.color]);
+
+  const toAccountColor = useMemo(() =>
+    tx.toAccount?.color != null
+      ? colorNumberToHex(tx.toAccount.color)
+      : colors.textMuted,
+    [tx.toAccount?.color, colors.textMuted]
+  );
+
+  const timeText = useMemo(() => {
+    return format(new Date(tx.datetime), 'h:mm a');
+  }, [tx.datetime]);
+
+  const dateText = useMemo(() => {
+    const d = new Date(tx.datetime);
+    if (isToday(d)) return 'Today';
+    if (isYesterday(d)) return 'Yesterday';
+    return format(d, 'MMM d');
+  }, [tx.datetime]);
 
   return (
     <TouchableOpacity
@@ -88,17 +102,39 @@ export const TransactionRow = React.memo(function TransactionRow({
       activeOpacity={0.75}
       onPress={handlePress}
     >
-      <IconAvatar icon={iconName} color={categoryColor} variant="solid" size={sizes.iconButton.lg} iconSize={18} />
+      <IconAvatar icon={iconName} color={categoryColor} variant="solid" size={sizes.iconButton.md} iconSize={16} />
 
       <View style={styles.info}>
         <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
-          {tx.note || tx.category.name}
+          {tx.category.name}
         </Text>
         <View style={styles.metaRow}>
-          <View style={[styles.typeDot, { backgroundColor: typeColor }]} />
-          <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
-            {typeConfig.label} · {metaText}
+          <Text style={[styles.meta, { color: colors.textMuted }]}>
+            {timeText}
           </Text>
+          <Text style={[styles.bullet, { color: colors.textMuted }]}>•</Text>
+          <Text style={[styles.meta, { color: colors.textMuted }]}>
+            {dateText}
+          </Text>
+          <Text style={[styles.bullet, { color: colors.textMuted }]}>•</Text>
+          <View style={styles.accountBadge}>
+            <Ionicons name={accountIconName} size={11} color={accountColor} />
+            <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
+              {tx.account.name}
+            </Text>
+          </View>
+
+          {tx.type === 'TR' && (
+            <>
+              <Ionicons name="arrow-forward" size={10} color={colors.textMuted} />
+              <View style={styles.accountBadge}>
+                <Ionicons name={toAccountIconName} size={11} color={toAccountColor} />
+                <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
+                  {tx.toAccount?.name ?? 'Account'}
+                </Text>
+              </View>
+            </>
+          )}
         </View>
       </View>
 
@@ -107,14 +143,9 @@ export const TransactionRow = React.memo(function TransactionRow({
           amount={tx.amount}
           currency={tx.account.currency}
           type={tx.type}
-          weight="bold"
+          weight="semibold"
           style={styles.amount}
         />
-        <Text style={[styles.date, { color: colors.textMuted }]}>
-          {showDate
-            ? format(new Date(tx.datetime), 'MMM d')
-            : format(new Date(tx.datetime), 'HH:mm')}
-        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -136,24 +167,24 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
   },
   title: {
     fontFamily: typography.fonts.semibold,
-    fontSize: 14,
-    lineHeight: 18,
+    fontSize: typography.sizes.sm,
+    lineHeight: 16,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing('1.5'),
+    gap: spacing('1'),
     flexShrink: 1,
   },
-  typeDot: {
-    width: 5,
-    height: 5,
-    borderRadius: radius('full'),
-    flexShrink: 0,
+  accountBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing('0.5'),
+    flexShrink: 1,
   },
   meta: {
-    fontFamily: typography.fonts.regular,
-    fontSize: 11,
+    fontFamily: typography.fonts.medium,
+    fontSize: typography.sizes.xs,
     lineHeight: 14,
     flexShrink: 1,
   },
@@ -162,11 +193,11 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     gap: spacing('1'),
   },
   amount: {
-    fontSize: 13,
+    fontSize: typography.sizes.sm,
   },
-  date: {
-    fontFamily: typography.fonts.regular,
-    fontSize: 11,
-    opacity: 0.55,
+  bullet: {
+    fontSize: typography.sizes.xs,
+    lineHeight: 14,
+    opacity: 0.35,
   },
 });

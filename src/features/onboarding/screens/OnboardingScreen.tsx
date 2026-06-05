@@ -168,7 +168,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         name: 'Cash',
         holderName: name.trim() || 'Personal',
         accountNumber: '',
-        icon: 'wallet',
+        icon: 'wallet-outline',
         color: toDbColor(ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)]),
         isDefault: true,
         currency,
