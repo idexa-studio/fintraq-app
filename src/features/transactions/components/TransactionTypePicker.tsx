@@ -28,13 +28,13 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
         style={[
           styles.pill,
           { backgroundColor: colors.surface },
-          value === 'DR' && { backgroundColor: colors.danger },
+          value === 'DR' && { backgroundColor: colors.danger + '18' },
           disabled && value !== 'DR' && styles.pillHidden,
         ]}
         onPress={handleDR}
         activeOpacity={disabled ? 1 : 0.8}
       >
-        <Text style={[styles.pillText, { color: value === 'DR' ? colors.background : colors.textMuted }]}>
+        <Text style={[styles.pillText, { color: value === 'DR' ? colors.danger : colors.textMuted }]}>
           Expense
         </Text>
       </TouchableOpacity>
@@ -43,13 +43,13 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
         style={[
           styles.pill,
           { backgroundColor: colors.surface },
-          value === 'CR' && { backgroundColor: colors.success },
+          value === 'CR' && { backgroundColor: colors.success + '18' },
           disabled && value !== 'CR' && styles.pillHidden,
         ]}
         onPress={handleCR}
         activeOpacity={disabled ? 1 : 0.8}
       >
-        <Text style={[styles.pillText, { color: value === 'CR' ? colors.background : colors.textMuted }]}>
+        <Text style={[styles.pillText, { color: value === 'CR' ? colors.success : colors.textMuted }]}>
           Income
         </Text>
       </TouchableOpacity>
@@ -58,13 +58,13 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
         style={[
           styles.pill,
           { backgroundColor: colors.surface },
-          value === 'TR' && { backgroundColor: colors.primary },
+          value === 'TR' && { backgroundColor: colors.primary + '18' },
           disabled && value !== 'TR' && styles.pillHidden,
         ]}
         onPress={handleTR}
         activeOpacity={disabled ? 1 : 0.8}
       >
-        <Text style={[styles.pillText, { color: value === 'TR' ? colors.background : colors.textMuted }]}>
+        <Text style={[styles.pillText, { color: value === 'TR' ? colors.primary : colors.textMuted }]}>
           Transfer
         </Text>
       </TouchableOpacity>

@@ -192,7 +192,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
 });
 
 const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: ThemeContextType, bottomInset: number) => {
-  const barHeight = 80 + bottomInset;
+  const barHeight = 70 + bottomInset;
 
   return StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },

@@ -115,7 +115,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                   disabled={isEditing}
                   style={[styles.typePill, type === 'DR' && styles.typePillExpense]}
                 >
-                  <Text style={[styles.typePillText, type === 'DR' && styles.typePillTextActive]}>
+                  <Text style={[styles.typePillText, type === 'DR' && { color: theme.colors.danger }]}>
                     Expense
                   </Text>
                 </TouchableOpacity>
@@ -125,7 +125,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                   disabled={isEditing}
                   style={[styles.typePill, type === 'CR' && styles.typePillIncome]}
                 >
-                  <Text style={[styles.typePillText, type === 'CR' && styles.typePillTextActive]}>
+                  <Text style={[styles.typePillText, type === 'CR' && { color: theme.colors.success }]}>
                     Income
                   </Text>
                 </TouchableOpacity>
@@ -135,7 +135,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                   disabled={isEditing}
                   style={[styles.typePill, type === 'TR' && styles.typePillTransfer]}
                 >
-                  <Text style={[styles.typePillText, type === 'TR' && styles.typePillTextActive]}>
+                  <Text style={[styles.typePillText, type === 'TR' && { color: theme.colors.primary }]}>
                     Transfer
                   </Text>
                 </TouchableOpacity>
@@ -302,16 +302,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.surface,
     },
     typePillExpense: {
-      backgroundColor: colors.danger,
-      borderColor: colors.danger,
+      backgroundColor: colors.danger + '18',
     },
     typePillIncome: {
-      backgroundColor: colors.success,
-      borderColor: colors.success,
+      backgroundColor: colors.success + '18',
     },
     typePillTransfer: {
-      backgroundColor: colors.primary,
-      borderColor: colors.primary,
+      backgroundColor: colors.primary + '18',
     },
     typePillText: {
       fontFamily: typography.fonts.semibold,

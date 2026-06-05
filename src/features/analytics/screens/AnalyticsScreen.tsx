@@ -459,7 +459,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 });
 
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, bottomInset: number) => {
-  const barHeight = 80 + bottomInset;
+  const barHeight = 70 + bottomInset;
 
   return StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
@@ -482,10 +482,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
     },
-    pillActive: { backgroundColor: colors.text },
+    pillActive: { backgroundColor: colors.primary + '18' },
     pillLocked: { opacity: 0.55 },
     pillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
-    pillTextActive: { color: colors.background },
+    pillTextActive: { color: colors.primary },
     lockIcon: { marginLeft: spacing('1') },
 
     // ── Metric tiles

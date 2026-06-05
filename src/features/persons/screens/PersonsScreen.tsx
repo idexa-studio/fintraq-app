@@ -237,7 +237,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 });
 
 const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeContextType, bottomInset: number) => {
-  const barHeight = 80 + bottomInset;
+  const barHeight = 70 + bottomInset;
 
   return StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },

@@ -490,7 +490,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 });
 
 const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }: ThemeContextType, bottomInset: number) => {
-  const barHeight = 80 + bottomInset;
+  const barHeight = 70 + bottomInset;
 
   return StyleSheet.create({
     container: {

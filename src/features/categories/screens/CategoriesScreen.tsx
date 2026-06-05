@@ -240,7 +240,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
     },
     typeTabActive: {
-      backgroundColor: colors.text,
+      backgroundColor: colors.primary + '18',
     },
     typeTabText: {
       fontFamily: typography.fonts.semibold,
@@ -248,7 +248,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.textMuted,
     },
     typeTabTextActive: {
-      color: colors.background,
+      color: colors.primary,
     },
 
     /* ── Empty ── */

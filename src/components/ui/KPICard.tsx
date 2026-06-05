@@ -115,16 +115,12 @@ export const KPICard = React.memo(function KPICard({
 const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     kpiCard: {
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
       overflow: 'hidden',
     },
     kpiTabsWrap: {
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
-      paddingVertical: spacing('2'),
+      paddingVertical: spacing('2.5'),
       paddingLeft: spacing('3'),
     },
     currencyTabsRow: {
@@ -133,16 +129,13 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       paddingRight: spacing('3'),
     },
     currencyTab: {
-      paddingHorizontal: spacing('3'),
+      paddingHorizontal: spacing('3.5'),
       paddingVertical: spacing('2'),
       borderRadius: radius('full'),
       backgroundColor: colors.background,
-      borderWidth: 1,
-      borderColor: colors.border,
     },
     currencyTabActive: {
-      backgroundColor: colors.primary,
-      borderColor: colors.primary,
+      backgroundColor: colors.primary + '18',
     },
     currencyTabText: {
       fontFamily: typography.fonts.medium,
@@ -150,7 +143,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       color: colors.textMuted,
     },
     currencyTabTextActive: {
-      color: colors.background,
+      color: colors.primary,
     },
     kpiBody: {
       padding: spacing('4'),

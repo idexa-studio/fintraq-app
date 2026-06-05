@@ -261,9 +261,9 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
     },
-    currencyPillActive: { backgroundColor: colors.text },
+    currencyPillActive: { backgroundColor: colors.primary + '18' },
     currencyPillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
-    currencyPillTextActive: { color: colors.background },
+    currencyPillTextActive: { color: colors.primary },
 
     statsRow: {
       flexDirection: 'row',

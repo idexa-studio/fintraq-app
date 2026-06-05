@@ -206,7 +206,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 });
 
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, bottomInset: number) => {
-  const barHeight = 80 + bottomInset;
+  const barHeight = 70 + bottomInset;
 
   return StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
