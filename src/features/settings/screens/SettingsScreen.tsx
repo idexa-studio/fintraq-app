@@ -377,14 +377,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="account-group-outline"
-            iconColor={colors.info}
-            label="Persons"
-            subtitle="Manage people linked to transactions"
-            onPress={() => router.push('/persons')}
-          />
-          <NavRow
-            theme={theme}
             icon="grid"
             iconColor={colors.success}
             label="Categories"

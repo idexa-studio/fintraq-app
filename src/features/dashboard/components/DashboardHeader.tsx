@@ -4,15 +4,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 
 type Props = {
-  greeting: string;
-  dateLabel: string;
+  name?: string;
   isPremium: boolean;
   onSearch: () => void;
 };
 
 export const DashboardHeader = React.memo(function DashboardHeader({
-  greeting,
-  dateLabel,
+  name,
   isPremium,
   onSearch,
 }: Props) {
@@ -20,28 +18,26 @@ export const DashboardHeader = React.memo(function DashboardHeader({
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
+  const monogram = useMemo(() => {
+    return (name || 'L').charAt(0).toUpperCase();
+  }, [name]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.topRow}>
-        <View style={styles.left}>
-          <Text style={styles.greeting}>{greeting}</Text>
-          <Text style={styles.date}>{dateLabel}</Text>
-        </View>
-        {isPremium && (
-          <View style={styles.premiumBadge}>
-            <MaterialCommunityIcons name="crown" size={12} color={colors.primary} />
-            <Text style={styles.premiumText}>Pro</Text>
-          </View>
-        )}
-      </View>
-
       <TouchableOpacity style={styles.searchBar} onPress={onSearch} activeOpacity={0.8}>
         <MaterialCommunityIcons name="magnify" size={20} color={colors.textMuted} />
         <Text style={styles.placeholder} numberOfLines={1}>
           Search transactions, accounts...
         </Text>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{isPremium ? '★' : 'L'}</Text>
+        <View style={styles.avatarContainer}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{monogram}</Text>
+          </View>
+          {isPremium && (
+            <View style={styles.crownBadge}>
+              <MaterialCommunityIcons name="crown" size={8} color="#FFFFFF" />
+            </View>
+          )}
         </View>
       </TouchableOpacity>
     </View>
@@ -52,45 +48,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   StyleSheet.create({
     container: {
       paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('4'),
-      paddingBottom: spacing('5'),
-      gap: spacing('3'),
-    },
-    topRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    left: { gap: spacing('0.5') },
-    greeting: {
-      fontFamily: typography.fonts.semibold,
-      color: colors.text,
-      fontSize: 24,
-    },
-    date: {
-      fontFamily: typography.fonts.regular,
-      color: colors.textMuted,
-      fontSize: 13,
-    },
-    premiumBadge: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1'),
-      backgroundColor: colors.primary + '15',
-      paddingHorizontal: spacing('2.5'),
-      paddingVertical: spacing('1.5'),
-      borderRadius: radius('full'),
-    },
-    premiumText: {
-      fontFamily: typography.fonts.medium,
-      color: colors.primary,
-      fontSize: 11,
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('4'),
     },
     searchBar: {
       flexDirection: 'row',
       alignItems: 'center',
       height: 48,
-      borderRadius: radius('xl'),
+      borderRadius: radius('full'),
       backgroundColor: colors.surface,
       paddingLeft: spacing('4'),
       paddingRight: spacing('2'),
@@ -102,6 +67,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.textMuted,
       fontSize: 14,
       opacity: 0.7,
+    },
+    avatarContainer: {
+      position: 'relative',
     },
     avatar: {
       width: 32,
@@ -116,4 +84,18 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.primary,
       fontSize: 13,
     },
+    crownBadge: {
+      position: 'absolute',
+      right: -3,
+      top: -3,
+      backgroundColor: colors.warning,
+      width: 14,
+      height: 14,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1.5,
+      borderColor: colors.surface,
+    },
   });
+

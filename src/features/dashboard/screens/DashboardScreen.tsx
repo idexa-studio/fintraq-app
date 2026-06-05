@@ -22,23 +22,13 @@ import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard
 import { TopPersonsCard } from '../components/TopPersonsCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
 
-const getGreeting = () => {
-  const h = new Date().getHours();
-  if (h < 12) return 'Good morning';
-  if (h < 18) return 'Good afternoon';
-  return 'Good evening';
-};
-
-const todayLabel = () =>
-  new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-
 export const DashboardScreen = React.memo(function DashboardScreen() {
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { isPremium } = usePremium();
   const router = useRouter();
-  useSettings();
+  const { profile } = useSettings();
 
   const { data: transactions, isLoading: txLoading } = useTransactions(6);
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
@@ -95,8 +85,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const openAccountForm = useCallback(() => router.push('/(main)/accounts/form'), [router]);
   const openAccountsScreen = useCallback(() => router.push('/accounts'), [router]);
 
-  const greeting = useMemo(() => getGreeting(), []);
-  const dateLabel = useMemo(() => todayLabel(), []);
 
   if (txLoading || accountsLoading) {
     return (
@@ -113,8 +101,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
         <DashboardHeader
-          greeting={greeting}
-          dateLabel={dateLabel}
+          name={profile.name}
           isPremium={isPremium}
           onSearch={isPremium ? navigateToSearch : navigateToPremium}
         />
