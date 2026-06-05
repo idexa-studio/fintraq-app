@@ -38,7 +38,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               key={acc.id}
               style={[
                 styles.card,
-                { backgroundColor: colors.surface, borderColor: selected ? accColor : colors.border },
+                { backgroundColor: selected ? accColor + '18' : colors.surface },
               ]}
               onPress={() => handleSelect(acc.id)}
               activeOpacity={0.8}
@@ -80,8 +80,7 @@ const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType
     minWidth: 100,
     paddingHorizontal: spacing('4'),
     paddingVertical: spacing('3'),
-    borderRadius: radius('lg'),
-    borderWidth: 1.5,
+    borderRadius: radius('xl'),
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing('2.5'),

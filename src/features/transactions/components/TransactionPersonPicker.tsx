@@ -37,7 +37,7 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
           onPress={handleNone}
           activeOpacity={0.8}
         >
-          <Text style={[styles.chipText, { color: selectedId === null ? colors.background : colors.textMuted }]}>
+          <Text style={[styles.chipText, { color: selectedId === null ? colors.primary : colors.textMuted }]}>
             None
           </Text>
         </TouchableOpacity>
@@ -50,7 +50,7 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
           return (
             <TouchableOpacity
               key={person.id}
-              style={[styles.personChip, selected && { borderColor: hex }]}
+              style={[styles.personChip, selected && { backgroundColor: hex + '18' }]}
               onPress={() => onSelect(person.id)}
               activeOpacity={0.8}
             >
@@ -84,8 +84,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     scroll: {
       paddingHorizontal: layout.screenPadding,
-      gap: spacing('2'),
-      paddingVertical: spacing('1'),
+      gap: spacing('2.5'),
     },
 
     chip: {
@@ -96,7 +95,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
       alignItems: 'center',
     },
-    chipActive: { backgroundColor: colors.text },
+    chipActive: { backgroundColor: colors.primary + '15' },
     chipText: { fontFamily: typography.fonts.semibold, fontSize: 13 },
 
     personChip: {
@@ -108,8 +107,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingVertical: spacing('2'),
       borderRadius: radius('xl'),
       backgroundColor: colors.surface,
-      borderWidth: 1.5,
-      borderColor: 'transparent',
       minWidth: 80,
     },
     avatar: {

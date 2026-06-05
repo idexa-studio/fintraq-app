@@ -353,8 +353,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
     },
     primaryBtn: {
       height: sizes.button.lg.height,
-      borderRadius: sizes.button.lg.borderRadius,
-      backgroundColor: colors.text,
+      borderRadius: radius('full'),
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },

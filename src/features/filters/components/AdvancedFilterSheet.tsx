@@ -168,11 +168,11 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                 return (
                   <TouchableOpacity
                     key={opt.key}
-                    style={[styles.typePill, { backgroundColor: sel ? c : colors.card, borderColor: sel ? c : colors.border }]}
+                    style={[styles.typePill, { backgroundColor: sel ? c + '18' : colors.card }]}
                     onPress={() => toggleType(opt.key)}
                     activeOpacity={0.8}
                   >
-                    <Text style={[styles.typePillLabel, { fontFamily: typography.fonts.semibold, color: sel ? colors.background : colors.textMuted }]}>
+                    <Text style={[styles.typePillLabel, { fontFamily: typography.fonts.semibold, color: sel ? c : colors.textMuted }]}>
                       {opt.label}
                     </Text>
                   </TouchableOpacity>
@@ -272,12 +272,12 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                     return (
                       <TouchableOpacity
                         key={a.id}
-                        style={[styles.pill, { backgroundColor: sel ? ac : colors.card, borderColor: sel ? ac : colors.border }]}
+                        style={[styles.pill, { backgroundColor: sel ? ac + '18' : colors.card }]}
                         onPress={() => toggleAccount(a.id)}
                         activeOpacity={0.8}
                       >
-                        <MaterialCommunityIcons name={resolveIcon(a.icon, 'wallet-outline')} size={16} color={sel ? colors.background : ac} />
-                        <Text style={[styles.pillLabel, { color: sel ? colors.background : colors.text }]}>
+                        <MaterialCommunityIcons name={resolveIcon(a.icon, 'wallet-outline')} size={16} color={ac} />
+                        <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
                           {a.name}
                         </Text>
                       </TouchableOpacity>
@@ -300,12 +300,12 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                     return (
                       <TouchableOpacity
                         key={c.id}
-                        style={[styles.pill, { backgroundColor: sel ? cc : colors.card, borderColor: sel ? cc : colors.border }]}
+                        style={[styles.pill, { backgroundColor: sel ? cc + '18' : colors.card }]}
                         onPress={() => toggleCategory(c.id)}
                         activeOpacity={0.8}
                       >
-                        <MaterialCommunityIcons name={resolveIcon(c.icon, 'tag-outline')} size={16} color={sel ? colors.background : cc} />
-                        <Text style={[styles.pillLabel, { color: sel ? colors.background : colors.text }]}>
+                        <MaterialCommunityIcons name={resolveIcon(c.icon, 'tag-outline')} size={16} color={cc} />
+                        <Text style={[styles.pillLabel, { color: sel ? cc : colors.text }]}>
                           {c.name}
                         </Text>
                       </TouchableOpacity>
@@ -329,14 +329,14 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                     return (
                       <TouchableOpacity
                         key={p.id}
-                        style={[styles.pill, { backgroundColor: sel ? pc : colors.card, borderColor: sel ? pc : colors.border }]}
+                        style={[styles.pill, { backgroundColor: sel ? pc + '18' : colors.card }]}
                         onPress={() => togglePerson(p.id)}
                         activeOpacity={0.8}
                       >
-                        <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: sel ? 'rgba(255,255,255,0.3)' : pc, alignItems: 'center', justifyContent: 'center' }}>
-                          <Text style={{ color: sel ? colors.background : '#fff', fontWeight: '700', fontSize: 8 }}>{initials}</Text>
+                        <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: pc, alignItems: 'center', justifyContent: 'center' }}>
+                          <Text style={{ color: '#fff', fontWeight: '700', fontSize: 8 }}>{initials}</Text>
                         </View>
-                        <Text style={[styles.pillLabel, { color: sel ? colors.background : colors.text }]}>
+                        <Text style={[styles.pillLabel, { color: sel ? pc : colors.text }]}>
                           {p.name.split(' ')[0]}
                         </Text>
                       </TouchableOpacity>
@@ -506,7 +506,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flex: 1,
       height: 36,
       borderRadius: radius('full'),
-      borderWidth: 1,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -549,7 +548,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingHorizontal: spacing('3'),
       height: 36,
       borderRadius: radius('full'),
-      borderWidth: 1,
     },
     pillLabel: {
       fontFamily: typography.fonts.medium,
@@ -566,11 +564,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
       paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
-      borderTopWidth: 1,
     },
     applyBtn: {
       height: 52,
-      borderRadius: radius('xl'),
+      borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
     },

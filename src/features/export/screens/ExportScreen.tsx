@@ -262,15 +262,15 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     sep: { height: 1, backgroundColor: colors.text + '0C', marginHorizontal: 16 },
 
     dateRow: { flexDirection: 'row', alignItems: 'center', gap: spacing('2.5'), paddingHorizontal: spacing('4'), paddingBottom: spacing('4') },
-    dateBtn: { flex: 1, backgroundColor: colors.background, borderRadius: radius('md'), padding: spacing('3'), borderWidth: 1, borderColor: colors.text + '0C' },
+    dateBtn: { flex: 1, backgroundColor: colors.background, borderRadius: radius('md'), padding: spacing('3') },
     dateLbl: { fontSize: 10, marginBottom: spacing('0.5'), opacity: 0.6 },
     dateVal: { fontSize: typography.sizes.sm },
 
     pillRow: { flexDirection: 'row', gap: spacing('2'), marginBottom: spacing('5') },
-    pill: { flex: 1, height: 36, borderRadius: radius('md'), backgroundColor: colors.surface, justifyContent: 'center', alignItems: 'center' },
-    pillActive: { backgroundColor: colors.text },
-    pillText: { fontSize: typography.sizes.xs, color: colors.text },
-    pillTextActive: { color: colors.background },
+    pill: { flex: 1, height: 36, borderRadius: radius('full'), backgroundColor: colors.surface, justifyContent: 'center', alignItems: 'center' },
+    pillActive: { backgroundColor: colors.primary + '15' },
+    pillText: { fontSize: typography.sizes.xs, color: colors.textMuted, fontFamily: typography.fonts.medium },
+    pillTextActive: { color: colors.primary, fontFamily: typography.fonts.semibold },
 
     accRow: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
 
@@ -280,8 +280,8 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     summaryValue: { fontSize: 20 },
     summaryPeriod: { fontSize: typography.sizes.xs, opacity: 0.7 },
 
-    exportBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing('2.5'), height: sizes.button.lg.height, borderRadius: sizes.button.lg.borderRadius, backgroundColor: colors.text, marginBottom: spacing('3') },
-    exportBtnText: { fontSize: sizes.button.lg.fontSize },
+    exportBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing('2.5'), height: sizes.button.lg.height, borderRadius: radius('full'), backgroundColor: colors.primary, marginBottom: spacing('3') },
+    exportBtnText: { fontSize: sizes.button.lg.fontSize, fontFamily: typography.fonts.semibold, color: colors.background },
 
     warning: { flexDirection: 'row', alignItems: 'center', gap: spacing('2.5'), backgroundColor: colors.warning + '10', borderRadius: radius('md'), padding: spacing('3') },
     warningText: { flex: 1, fontSize: typography.sizes.xs, lineHeight: 18 },

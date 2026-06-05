@@ -35,8 +35,7 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
               key={cat.id}
               style={[
                 styles.pill,
-                { backgroundColor: colors.surface, borderColor: colors.border },
-                selected && { backgroundColor: catColor, borderColor: catColor },
+                { backgroundColor: selected ? catColor + '18' : colors.surface },
               ]}
               onPress={() => handleSelect(cat.id)}
               activeOpacity={0.8}
@@ -44,12 +43,12 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
               <MaterialCommunityIcons
                 name={resolveIcon(cat.icon, 'tag-outline')}
                 size={14}
-                color={selected ? colors.background : catColor}
+                color={catColor}
               />
               <Text
                 style={[
                   styles.name,
-                  { color: selected ? colors.background : colors.text },
+                  { color: selected ? catColor : colors.text },
                 ]}
                 numberOfLines={1}
               >
@@ -85,7 +84,6 @@ const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType
     paddingHorizontal: spacing('3'),
     height: 36,
     borderRadius: radius('full'),
-    borderWidth: 1,
   },
   name: {
     fontFamily: typography.fonts.medium,

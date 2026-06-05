@@ -27,8 +27,8 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
       <TouchableOpacity
         style={[
           styles.pill,
-          { backgroundColor: colors.surface, borderColor: colors.border },
-          value === 'DR' && { backgroundColor: colors.danger, borderColor: colors.danger },
+          { backgroundColor: colors.surface },
+          value === 'DR' && { backgroundColor: colors.danger },
           disabled && value !== 'DR' && styles.pillHidden,
         ]}
         onPress={handleDR}
@@ -42,8 +42,8 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
       <TouchableOpacity
         style={[
           styles.pill,
-          { backgroundColor: colors.surface, borderColor: colors.border },
-          value === 'CR' && { backgroundColor: colors.success, borderColor: colors.success },
+          { backgroundColor: colors.surface },
+          value === 'CR' && { backgroundColor: colors.success },
           disabled && value !== 'CR' && styles.pillHidden,
         ]}
         onPress={handleCR}
@@ -57,8 +57,8 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
       <TouchableOpacity
         style={[
           styles.pill,
-          { backgroundColor: colors.surface, borderColor: colors.border },
-          value === 'TR' && { backgroundColor: colors.primary, borderColor: colors.primary },
+          { backgroundColor: colors.surface },
+          value === 'TR' && { backgroundColor: colors.primary },
           disabled && value !== 'TR' && styles.pillHidden,
         ]}
         onPress={handleTR}
@@ -90,7 +90,6 @@ const createStyles = ({ typography, spacing, radius, layout }: ThemeContextType)
       borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
-      borderWidth: 1,
     },
     pillHidden: {
       display: 'none',
