@@ -1,9 +1,9 @@
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
@@ -40,8 +40,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const router = useRouter();
   useSettings();
 
-  const { data: transactions, isLoading: txLoading }    = useTransactions(6);
-  const { data: accounts,    isLoading: accountsLoading } = useAccounts();
+  const { data: transactions, isLoading: txLoading } = useTransactions(6);
+  const { data: accounts, isLoading: accountsLoading } = useAccounts();
 
   const [showUpsell, setShowUpsell] = React.useState(false);
   const UPSELL_KEY = '@luno/upsell_dismissed_at';
@@ -85,19 +85,19 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const { data: topPersonsData } = useDashboardPersons(selectedCurrency);
   const topExpenseCategories = useMemo(() => topCategoriesData ?? [], [topCategoriesData]);
 
-  const handleCurrencySelect  = useCallback((c: string) => setSelectedCurrency(c), []);
-  const navigateToAccountTx   = useCallback((id: number) => router.push(`/transactions?accountId=${id}`), [router]);
-  const navigateToAnalytics   = useCallback(() => router.push('/(main)/analytics'), [router]);
-  const navigateToSettings    = useCallback(() => router.push('/settings'), [router]);
-  const navigateToPremium     = useCallback(() => router.push('/premium'), [router]);
-  const navigateToSearch      = useCallback(() => router.push('/search'), [router]);
+  const handleCurrencySelect = useCallback((c: string) => setSelectedCurrency(c), []);
+  const navigateToAccountTx = useCallback((id: number) => router.push(`/transactions?accountId=${id}`), [router]);
+  const navigateToAnalytics = useCallback(() => router.push('/(main)/analytics'), [router]);
+  const navigateToSettings = useCallback(() => router.push('/settings'), [router]);
+  const navigateToPremium = useCallback(() => router.push('/premium'), [router]);
+  const navigateToSearch = useCallback(() => router.push('/search'), [router]);
   const navigateToTransactions = useCallback(() => router.push('/transactions'), [router]);
-  const navigateToCreateTx    = useCallback(() => router.push('/transactions/create'), [router]);
-  const navigateToEditTx      = useCallback((id: number) => router.push(`/transactions/edit/${id}`), [router]);
-  const openAccountForm       = useCallback(() => router.push('/(main)/accounts/form'), [router]);
-  const openAccountsScreen    = useCallback(() => router.push('/(main)/accounts'), [router]);
+  const navigateToCreateTx = useCallback(() => router.push('/transactions/create'), [router]);
+  const navigateToEditTx = useCallback((id: number) => router.push(`/transactions/edit/${id}`), [router]);
+  const openAccountForm = useCallback(() => router.push('/(main)/accounts/form'), [router]);
+  const openAccountsScreen = useCallback(() => router.push('/(main)/accounts'), [router]);
 
-  const greeting  = useMemo(() => getGreeting(), []);
+  const greeting = useMemo(() => getGreeting(), []);
   const dateLabel = useMemo(() => todayLabel(), []);
 
   if (txLoading || accountsLoading) {
@@ -211,20 +211,20 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
-    loading:   { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
-    content:   { paddingBottom: 110 },
+    loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
+    content: { paddingBottom: 110 },
 
     // ── Currency tabs
     currencyTabsWrap: { marginHorizontal: layout.screenPadding, marginBottom: spacing('4') },
-    currencyTabs:     { flexDirection: 'row', gap: spacing('1') },
+    currencyTabs: { flexDirection: 'row', gap: spacing('1') },
     currencyTab: {
       paddingHorizontal: spacing('3'),
       paddingVertical: spacing('1.5') - 1,
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
     },
-    currencyTabActive:     { backgroundColor: colors.text },
-    currencyTabText:       { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
+    currencyTabActive: { backgroundColor: colors.text },
+    currencyTabText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
     currencyTabTextActive: { color: colors.background },
 
     // ── Activity card
@@ -233,7 +233,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       borderRadius: radius('xl'),
     },
     emptyActivity: { paddingVertical: spacing('8'), alignItems: 'center', gap: spacing('2') },
-    emptyText:     { fontFamily: typography.fonts.regular, fontSize: 13, color: colors.textMuted },
+    emptyText: { fontFamily: typography.fonts.regular, fontSize: 13, color: colors.textMuted },
     emptyAction: {
       flexDirection: 'row',
       alignItems: 'center',
