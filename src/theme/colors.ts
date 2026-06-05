@@ -55,24 +55,24 @@ export const DARK_THEME: ThemePalette = {
 };
 
 export const LIGHT_THEME: ThemePalette = {
-  background: '#F2F2F7',
-  card: '#FAFAFA',
-  surface: '#FFFFFF',
+  background: '#EDF0F3', // Soft clean light gray (darkest light layer)
+  card: '#F5F7FA',       // Premium light slate card (lighter than background)
+  surface: '#FFFFFF',    // Crisp white for inputs/chips (lightest layer, stands out inside card)
 
-  primary: '#047857',
-  primaryLight: '#059669',
-  primaryDark: '#065F46',
-  secondary: '#1A1B18',
+  primary: '#059669',       // Premium rich emerald green
+  primaryLight: '#D1FAE5',  // Very soft mint tint (great for badges)
+  primaryDark: '#064E3B',   // Deep dark forest green
+  secondary: '#0F172A',     // Slate-black ambient accent
 
-  text: '#171717',
-  textMuted: '#737373',
+  text: '#0F172A',          // Deep premium slate-black text
+  textMuted: '#64748B',     // Elegant neutral slate-gray for muted text
 
   border: 'transparent',
 
-  success: '#16A34A',
-  danger: '#DC2626',
-  warning: '#CA8A04',
-  info: '#2563EB',
+  success: '#10B981',
+  danger: '#EF4444',
+  warning: '#F59E0B',
+  info: '#3B82F6',
 };
 
 export type ThemeColors = ThemePalette;
