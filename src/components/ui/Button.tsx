@@ -30,7 +30,7 @@ export const Button = React.memo(function Button({
   icon,
 }: ButtonProps) {
   const theme = useTheme();
-  const { colors, sizes, spacing } = theme;
+  const { colors, sizes, spacing, radius } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const sizeConfig = sizes.button[size];
@@ -69,7 +69,7 @@ export const Button = React.memo(function Button({
         {
           height: sizeConfig.height,
           paddingHorizontal: sizeConfig.paddingHorizontal,
-          borderRadius: sizeConfig.borderRadius,
+          borderRadius: radius('full'),
           backgroundColor,
           opacity: disabled ? 0.5 : 1,
         },

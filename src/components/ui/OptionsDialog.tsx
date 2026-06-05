@@ -47,6 +47,8 @@ export const OptionsDialog = React.memo(function OptionsDialog({
         <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
 
         <View style={styles.card}>
+          <View style={styles.dragHandle} />
+
           <View style={styles.head}>
             <Text style={styles.title}>{title}</Text>
             {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
@@ -102,15 +104,26 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       padding: spacing('4'),
       paddingBottom: spacing('9'),
     },
+    dragHandle: {
+      width: 32,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: colors.text + '20',
+      alignSelf: 'center',
+      marginTop: spacing('2.5'),
+      marginBottom: spacing('1'),
+    },
     card: {
       backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
       borderWidth: 0.5,
       borderColor: colors.text + '0C',
       overflow: 'hidden',
     },
     head: {
       padding: spacing('5'),
+      paddingTop: spacing('2'),
       paddingBottom: spacing('3'),
     },
     title: {
@@ -141,14 +154,19 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       color: colors.text,
     },
     cancel: {
-      height: 52,
+      height: 44,
+      margin: spacing('4'),
+      marginTop: spacing('2'),
+      borderRadius: radius('full'),
+      borderWidth: 1.5,
+      borderColor: colors.text + '18',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.background,
+      backgroundColor: 'transparent',
     },
     cancelText: {
-      fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.md,
-      color: colors.textMuted,
+      fontFamily: typography.fonts.semibold,
+      fontSize: 14,
+      color: colors.text,
     },
   });

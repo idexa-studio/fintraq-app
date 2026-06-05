@@ -31,7 +31,6 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
   const theme = useTheme();
-  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { data: categories } = useCategories();

@@ -87,8 +87,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   const handleCurrencySelect = useCallback((c: string) => setSelectedCurrency(c), []);
   const navigateToAccountTx = useCallback((id: number) => router.push(`/transactions?accountId=${id}`), [router]);
-  const navigateToAnalytics = useCallback(() => router.push('/analytics'), [router]);
-  const navigateToSettings = useCallback(() => router.push('/settings'), [router]);
   const navigateToPremium = useCallback(() => router.push('/premium'), [router]);
   const navigateToSearch = useCallback(() => router.push('/search'), [router]);
   const navigateToTransactions = useCallback(() => router.push('/transactions'), [router]);
@@ -119,8 +117,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           dateLabel={dateLabel}
           isPremium={isPremium}
           onSearch={isPremium ? navigateToSearch : navigateToPremium}
-          onAnalytics={navigateToAnalytics}
-          onSettings={navigateToSettings}
         />
 
         {/* Currency tabs */}
@@ -253,7 +249,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       right: layout.screenPadding,
       width: 52,
       height: 52,
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',

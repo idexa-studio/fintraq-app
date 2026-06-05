@@ -22,7 +22,7 @@ import { useCategories, useDeleteCategory } from '../hooks/categories';
 
 export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const theme = useTheme();
-  const { colors, spacing, radius, layout } = theme;
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
 
@@ -302,7 +302,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       right: layout.screenPadding,
       width: 55,
       height: 55,
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
       backgroundColor: colors.text,
       justifyContent: 'center',
       alignItems: 'center',

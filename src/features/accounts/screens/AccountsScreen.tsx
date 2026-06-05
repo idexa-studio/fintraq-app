@@ -284,7 +284,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       right: layout.screenPadding,
       width: 56,
       height: 56,
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
       backgroundColor: colors.text,
       justifyContent: 'center',
       alignItems: 'center',

@@ -50,7 +50,7 @@ export const AlertModal = React.memo(function AlertModal({
         <View style={styles.card}>
           <View style={styles.body}>
             <View style={[styles.iconBox, { backgroundColor: iconCfg.bg }]}>
-              <MaterialCommunityIcons name={iconCfg.name} size={22} color={iconCfg.fg} />
+              <MaterialCommunityIcons name={iconCfg.name} size={24} color={iconCfg.fg} />
             </View>
 
             <Text style={styles.title}>{title}</Text>
@@ -64,11 +64,21 @@ export const AlertModal = React.memo(function AlertModal({
               return (
                 <TouchableOpacity
                   key={i}
-                  style={[styles.btn, isCancel && styles.btnCancel, isDestructive && styles.btnDanger]}
+                  style={[
+                    styles.btn,
+                    isCancel && styles.btnCancel,
+                    isDestructive && styles.btnDanger,
+                    !isCancel && !isDestructive && styles.btnPrimary
+                  ]}
                   onPress={() => handleButtonPress(btn)}
                   activeOpacity={0.7}
                 >
-                  <Text style={[styles.btnText, isCancel && styles.btnCancelText]}>
+                  <Text style={[
+                    styles.btnText,
+                    isCancel && styles.btnCancelText,
+                    isDestructive && styles.btnDangerText,
+                    !isCancel && !isDestructive && styles.btnPrimaryText
+                  ]}>
                     {btn.text}
                   </Text>
                 </TouchableOpacity>
@@ -93,15 +103,17 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     card: {
       width: Math.min(screenWidth - spacing('12'), 320),
       backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
+      borderRadius: 28,
       borderWidth: 0.5,
       borderColor: colors.text + '0C',
       overflow: 'hidden',
+      padding: spacing('6'),
+      gap: spacing('4'),
       alignItems: 'center',
     },
     body: {
-      padding: spacing('5'),
       alignItems: 'center',
+      width: '100%',
     },
     iconBox: {
       width: 48,
@@ -109,45 +121,56 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       borderRadius: radius('full'),
       justifyContent: 'center',
       alignItems: 'center',
-      marginBottom: spacing('3'),
+      marginBottom: spacing('4'),
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 20,
+      fontSize: 24,
       color: colors.text,
       textAlign: 'center',
-      marginBottom: spacing('2'),
+      marginBottom: spacing('3'),
     },
     message: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      fontSize: 14,
       color: colors.textMuted,
       lineHeight: 20,
       textAlign: 'center',
     },
     actions: {
       flexDirection: 'row',
+      justifyContent: 'flex-end',
       width: '100%',
+      gap: spacing('2'),
+      marginTop: spacing('2'),
     },
     btn: {
-      flex: 1,
-      height: 52,
-      backgroundColor: colors.text,
+      height: 40,
+      paddingHorizontal: spacing('4'),
       justifyContent: 'center',
       alignItems: 'center',
+      borderRadius: radius('full'),
     },
     btnCancel: {
-      backgroundColor: colors.surface,
+      backgroundColor: 'transparent',
+    },
+    btnPrimary: {
+      backgroundColor: colors.primary,
     },
     btnDanger: {
       backgroundColor: colors.danger,
     },
     btnText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: typography.sizes.sm,
+      fontSize: 14,
+    },
+    btnPrimaryText: {
       color: colors.background,
     },
     btnCancelText: {
-      color: colors.text,
+      color: colors.primary,
+    },
+    btnDangerText: {
+      color: '#fff',
     },
   });

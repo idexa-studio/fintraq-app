@@ -725,7 +725,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       right: layout.screenPadding,
       width: 55,
       height: 55,
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
       backgroundColor: colors.text,
       justifyContent: 'center',
       alignItems: 'center',

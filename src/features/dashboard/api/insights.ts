@@ -150,8 +150,6 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
     // 4. Weekly Summary
     if (thisWeek.income > 0 || thisWeek.expense > 0) {
       const saved = thisWeek.income - thisWeek.expense;
-      const fourWeekData = await getRangeSums(28, 0, currency);
-      const fourWeekAvg = fourWeekData.income > 0 ? ((fourWeekData.income - fourWeekData.expense) / fourWeekData.income) * 100 : 0;
 
       let best = '';
       if (saved > 0) {

@@ -105,12 +105,12 @@ export const TextInputSheet = React.memo(function TextInputSheet({
 
             <View style={styles.actions}>
               <TouchableOpacity style={styles.btnCancel} onPress={onClose} activeOpacity={0.7}>
-                <Text style={[styles.btnCancelText, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                <Text style={styles.btnCancelText}>
                   {cancelLabel}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.btnSave, { backgroundColor: colors.text }]} onPress={handleSave} activeOpacity={0.7}>
-                <Text style={[styles.btnSaveText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+              <TouchableOpacity style={styles.btnSave} onPress={handleSave} activeOpacity={0.7}>
+                <Text style={styles.btnSaveText}>
                   {saveLabel}
                 </Text>
               </TouchableOpacity>
@@ -132,22 +132,23 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     },
     card: {
       backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
+      borderRadius: 28,
       borderWidth: 0.5,
       borderColor: colors.text + '0C',
       overflow: 'hidden',
+      padding: spacing('6'),
+      gap: spacing('4'),
     },
     body: {
-      padding: spacing('5'),
+      padding: 0,
       gap: spacing('3'),
     },
     title: {
-      fontSize: 20,
+      fontSize: 24,
     },
     subtitle: {
       fontSize: typography.sizes.sm,
       opacity: 0.7,
-      marginTop: -spacing('1'),
     },
     counter: {
       fontSize: typography.sizes.xs,
@@ -155,24 +156,33 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     },
     actions: {
       flexDirection: 'row',
+      justifyContent: 'flex-end',
+      gap: spacing('2'),
+      marginTop: spacing('2'),
     },
     btnCancel: {
-      flex: 1,
-      height: 52,
-      backgroundColor: colors.surface,
+      height: 40,
+      paddingHorizontal: spacing('4'),
       justifyContent: 'center',
       alignItems: 'center',
+      borderRadius: radius('full'),
     },
     btnCancelText: {
-      fontSize: typography.sizes.sm,
+      fontSize: 14,
+      fontFamily: typography.fonts.semibold,
+      color: colors.primary,
     },
     btnSave: {
-      flex: 1,
-      height: 52,
+      height: 40,
+      paddingHorizontal: spacing('5'),
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
+      borderRadius: radius('full'),
     },
     btnSaveText: {
-      fontSize: typography.sizes.sm,
+      fontSize: 14,
+      fontFamily: typography.fonts.semibold,
+      color: colors.background,
     },
   });
