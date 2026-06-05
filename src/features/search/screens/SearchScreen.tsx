@@ -1,12 +1,10 @@
 import { PageBackground } from '@/src/components/ui/PageBackground';
-import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { TransactionRow } from '@/src/components/ui/TransactionRow';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import type { Category } from '@/src/features/categories/api/categories';
 import type { Person } from '@/src/features/persons/api/persons';
-import { colorNumberToHex as personColorHex } from '@/src/utils/format';
 import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
@@ -44,15 +42,26 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
 
-    searchRow: {
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('2'),
       paddingBottom: spacing('4'),
+      gap: spacing('3'),
+    },
+    backButton: {
+      width: 32,
+      height: 32,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     searchWrap: {
+      flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       height: 48,
-      borderRadius: radius('lg'),
+      borderRadius: radius('full'),
       backgroundColor: colors.surface,
       paddingHorizontal: spacing('4'),
       gap: spacing('2'),
@@ -213,7 +222,7 @@ const PersonRow = React.memo(function PersonRow({
 }) {
   const theme = useTheme();
   const { colors } = theme;
-  const hex = useMemo(() => personColorHex(person.color), [person.color]);
+  const hex = useMemo(() => colorNumberToHex(person.color), [person.color]);
   const initials = useMemo(() =>
     person.name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join(''),
     [person.name],
@@ -392,15 +401,12 @@ export const SearchScreen = React.memo(function SearchScreen() {
     <SafeAreaView style={styles.container}>
       <PageBackground />
 
-      <Header
-        title="Search"
-        showBack
-        rightAction={isFetching && isEnabled ? <ActivityIndicator size="small" color={colors.primary} /> : undefined}
-      />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} style={styles.backButton}>
+          <MaterialCommunityIcons name="arrow-left" size={22} color={colors.text} />
+        </TouchableOpacity>
 
-      <View style={styles.searchRow}>
         <View style={styles.searchWrap}>
-          <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
           <TextInput
             ref={inputRef}
             style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
@@ -412,9 +418,11 @@ export const SearchScreen = React.memo(function SearchScreen() {
             autoCorrect={false}
             autoCapitalize="none"
           />
-          {query.length > 0 ? (
+          {isFetching && isEnabled ? (
+            <ActivityIndicator size="small" color={colors.primary} />
+          ) : query.length > 0 ? (
             <TouchableOpacity onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
+              <MaterialCommunityIcons name="close" size={18} color={colors.textMuted} />
             </TouchableOpacity>
           ) : null}
         </View>
