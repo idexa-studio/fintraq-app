@@ -98,7 +98,7 @@ export const TransactionRow = React.memo(function TransactionRow({
     return tx.note && tx.note.trim() ? tx.note.trim() : tx.category.name;
   }, [tx.note, tx.category.name]);
 
-  const metaText = useMemo(() => {
+  const dateTimeText = useMemo(() => {
     const parts = [];
     parts.push(timeText);
     if (showDate) {
@@ -126,14 +126,6 @@ export const TransactionRow = React.memo(function TransactionRow({
           {displayTitle}
         </Text>
         <View style={styles.metaRow}>
-          {metaText ? (
-            <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
-              {metaText}
-            </Text>
-          ) : null}
-
-          {metaText ? <Text style={styles.bullet}>•</Text> : null}
-
           {tx.type === 'TR' ? (
             <View style={styles.transferBadge}>
               <View style={styles.accountBadge}>
@@ -169,6 +161,9 @@ export const TransactionRow = React.memo(function TransactionRow({
           weight="semibold"
           style={styles.amount}
         />
+        <Text style={[styles.meta, { color: colors.textMuted, marginTop: 2 }]} numberOfLines={1}>
+          {dateTimeText}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -227,11 +222,5 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   },
   amount: {
     fontSize: typography.sizes.sm,
-  },
-  bullet: {
-    fontSize: typography.sizes.xs,
-    lineHeight: 14,
-    color: colors.textMuted,
-    opacity: 0.35,
   },
 });
