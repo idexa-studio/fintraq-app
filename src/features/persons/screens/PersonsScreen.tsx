@@ -8,7 +8,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Platform,
   ScrollView,
@@ -48,23 +48,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   const persons = useMemo(() => personList ?? [], [personList]);
   const atLimit = !isPremium && persons.length >= FREE_PERSON_LIMIT;
 
-  const searchInputRef = useRef<TextInput>(null);
-  const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState('');
-
-  const toggleSearch = useCallback(() => {
-    setShowSearch(prev => {
-      const next = !prev;
-      if (!next) {
-        setQuery('');
-      } else {
-        setTimeout(() => {
-          searchInputRef.current?.focus();
-        }, 100);
-      }
-      return next;
-    });
-  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -125,39 +109,30 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   }, [selected, handleEdit, handleDeletePress]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header
-        title="Persons"
-        showBack
-        rightAction={
-          persons.length > 0 ? (
-            <TouchableOpacity onPress={toggleSearch} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} activeOpacity={0.7}>
-              <MaterialCommunityIcons name={showSearch ? 'close' : 'magnify'} size={20} color={colors.text} />
-            </TouchableOpacity>
-          ) : undefined
-        }
-      />
+      <Header title="Persons" />
 
-      {showSearch && (
-        <View style={styles.searchWrap}>
-          <MaterialCommunityIcons name="magnify" size={15} color={colors.textMuted} />
-          <TextInput
-            ref={searchInputRef}
-            style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
-            value={query}
-            onChangeText={setQuery}
-            placeholder="Search persons..."
-            placeholderTextColor={colors.textMuted + '80'}
-            autoCorrect={false}
-            autoCapitalize="none"
-            returnKeyType="search"
-          />
-          {query.length > 0 && (
-            <TouchableOpacity onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
-            </TouchableOpacity>
-          )}
+      {persons.length > 0 && (
+        <View style={styles.searchRow}>
+          <View style={styles.searchWrap}>
+            <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
+            <TextInput
+              style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
+              value={query}
+              onChangeText={setQuery}
+              placeholder="Search persons..."
+              placeholderTextColor={colors.textMuted + '80'}
+              autoCorrect={false}
+              autoCapitalize="none"
+              returnKeyType="search"
+            />
+            {query.length > 0 && (
+              <TouchableOpacity onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       )}
 
@@ -269,21 +244,23 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     scroll: { paddingHorizontal: layout.screenPadding, paddingTop: spacing('2') },
     bottomPad: { height: spacing('9') },
 
+    searchRow: {
+      paddingHorizontal: layout.screenPadding,
+      paddingBottom: spacing('3'),
+    },
     searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('3.5'),
-      height: 38,
+      height: 48,
       borderRadius: radius('lg'),
       backgroundColor: colors.surface,
-      paddingHorizontal: spacing('3'),
+      paddingHorizontal: spacing('4'),
       gap: spacing('2'),
     },
     searchInput: {
       flex: 1,
       fontSize: typography.sizes.md,
-      paddingVertical: 0,
+      padding: 0,
     },
  
     limitBanner: {

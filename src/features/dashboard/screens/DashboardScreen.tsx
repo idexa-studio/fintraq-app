@@ -87,7 +87,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   const handleCurrencySelect = useCallback((c: string) => setSelectedCurrency(c), []);
   const navigateToAccountTx = useCallback((id: number) => router.push(`/transactions?accountId=${id}`), [router]);
-  const navigateToAnalytics = useCallback(() => router.push('/(main)/analytics'), [router]);
+  const navigateToAnalytics = useCallback(() => router.push('/analytics'), [router]);
   const navigateToSettings = useCallback(() => router.push('/settings'), [router]);
   const navigateToPremium = useCallback(() => router.push('/premium'), [router]);
   const navigateToSearch = useCallback(() => router.push('/search'), [router]);
@@ -95,7 +95,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const navigateToCreateTx = useCallback(() => router.push('/transactions/create'), [router]);
   const navigateToEditTx = useCallback((id: number) => router.push(`/transactions/edit/${id}`), [router]);
   const openAccountForm = useCallback(() => router.push('/(main)/accounts/form'), [router]);
-  const openAccountsScreen = useCallback(() => router.push('/(main)/accounts'), [router]);
+  const openAccountsScreen = useCallback(() => router.push('/accounts'), [router]);
 
   const greeting = useMemo(() => getGreeting(), []);
   const dateLabel = useMemo(() => todayLabel(), []);
@@ -109,7 +109,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -167,8 +167,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
         {topPersonsData && topPersonsData.length > 0 && (
           <>
-            <SectionHeader title="Persons" rightText="See all" onPressRight={() => router.push('/(main)/persons')} />
-            <TopPersonsCard currency={selectedCurrency} persons={topPersonsData} onPressPerson={(id) => router.push(`/(main)/persons/${id}`)} />
+            <SectionHeader title="Persons" rightText="See all" onPressRight={() => router.push('/persons')} />
+            <TopPersonsCard currency={selectedCurrency} persons={topPersonsData} onPressPerson={(id) => router.push(`/persons/${id}`)} />
           </>
         )}
 

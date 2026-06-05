@@ -178,9 +178,9 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const savingsColor = summary.savingsRate >= 0 ? colors.success : colors.danger;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header title="Analytics" showBack />
+      <Header title="Analytics" />
 
       {isLoading ? (
         <View style={styles.loading}>

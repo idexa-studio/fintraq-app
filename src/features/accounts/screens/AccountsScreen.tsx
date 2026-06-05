@@ -77,10 +77,10 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   }, [selectedAccount, handleEdit, handleDeletePress]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
 
-      <Header title="Accounts" showBack />
+      <Header title="Accounts" />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {accounts?.map((account) => {
@@ -247,7 +247,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     },
     currencyText: {
       fontFamily: typography.fonts.bold,
-      fontSize: 10,
+      fontSize: typography.sizes.xs,
     },
     balanceLabel: {
       fontFamily: typography.fonts.semibold,

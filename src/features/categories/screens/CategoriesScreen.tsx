@@ -270,7 +270,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.semibold,
       fontSize: 17,
       color: colors.text,
-      letterSpacing: -0.3,
     },
     emptyText: {
       fontFamily: typography.fonts.regular,

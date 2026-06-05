@@ -22,7 +22,6 @@ function PersonInitials({ name, color, size = 24 }: { name: string; color: strin
 
 export const TopPersonsCard = React.memo(function TopPersonsCard({ currency, persons, onPressPerson }: Props) {
   const theme = useTheme();
-  const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handlePress = useCallback((id: number) => () => onPressPerson(id), [onPressPerson]);
@@ -40,7 +39,7 @@ export const TopPersonsCard = React.memo(function TopPersonsCard({ currency, per
             <TouchableOpacity style={[styles.cell, { marginRight, marginLeft }]} onPress={handlePress(person.id)} activeOpacity={0.7}>
               <PersonInitials name={person.name} color={hex} size={24} />
               <View style={styles.cellContent}>
-                <Text style={[styles.cellName, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+                <Text style={styles.cellName} numberOfLines={1}>
                   {person.name.split(' ')[0]}
                 </Text>
                 <MoneyText
@@ -84,9 +83,11 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
       gap: spacing('0.5'),
     },
     cellName: {
-      fontSize: 11,
+      fontSize: typography.sizes.sm,
+      fontFamily: typography.fonts.semibold,
+      color: colors.text,
     },
     cellAmount: {
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
     },
   });

@@ -21,7 +21,7 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>AMOUNT</Text>
+      <Text style={[styles.label, { color: colors.textMuted }]}>Amount</Text>
       <View style={styles.inputRow}>
         <Text style={[styles.currency, { color: colors.textMuted }]}>{currency}</Text>
         <TextInput
@@ -45,8 +45,7 @@ const createStyles = ({ typography, spacing , layout }: ThemeContextType) => Sty
   },
   label: {
     fontFamily: typography.fonts.semibold,
-    fontSize: 10,
-    letterSpacing: 1.5,
+    fontSize: typography.sizes.xs,
     marginBottom: spacing('2'),
   },
   inputRow: {
@@ -62,6 +61,5 @@ const createStyles = ({ typography, spacing , layout }: ThemeContextType) => Sty
     flex: 1,
     fontSize: 48,
     fontFamily: typography.fonts.bold,
-    letterSpacing: -1,
   },
 });

@@ -38,8 +38,7 @@ const createStyles = ({ typography }: ThemeContextType) =>
     },
     text: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontSize: 11,
       color: TEXT_COLOR,
-      letterSpacing: 0.2,
     },
   });

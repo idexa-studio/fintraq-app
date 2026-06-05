@@ -259,10 +259,10 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const version = Constants.expoConfig?.version ?? '1.0.0';
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
 
-      <Header title="Settings" showBack />
+      <Header title="Settings" />
 
       <ScrollView
         contentContainerStyle={styles.scroll}
@@ -386,7 +386,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             iconColor={colors.info}
             label="Persons"
             subtitle="Manage people linked to transactions"
-            onPress={() => router.push('/(main)/persons')}
+            onPress={() => router.push('/persons')}
           />
           <NavRow
             theme={theme}

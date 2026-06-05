@@ -37,7 +37,6 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
       fontFamily: typography.fonts.heading,
       fontSize: typography.sizes.xxl,
       color: colors.text,
-      letterSpacing: -1,
       textAlign: 'center',
     },
     stepPill: {
@@ -53,7 +52,6 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
       fontFamily: typography.fonts.semibold,
       fontSize: 11,
       color: colors.text,
-      letterSpacing: 0.4,
     },
     progressTrack: {
       flexDirection: 'row',
@@ -88,7 +86,6 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
       fontSize: 34,
       lineHeight: 36,
       color: colors.text,
-      letterSpacing: -1.1,
     },
     stepSubtitle: {
       marginTop: spacing('2.5'),

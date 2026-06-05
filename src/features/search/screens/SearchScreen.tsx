@@ -108,13 +108,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     sectionTitle: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
       opacity: 0.7,
     },
     sectionCount: {
       fontFamily: typography.fonts.regular,
-      fontSize: 10,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
       opacity: 0.5,
     },

@@ -71,7 +71,7 @@ export const KPICard = React.memo(function KPICard({
       <View style={styles.kpiBody}>
         <View style={styles.kpiMainContent}>
           <View>
-            <Text style={styles.kpiLabel}>NET SAVINGS</Text>
+            <Text style={styles.kpiLabel}>Net savings</Text>
             <MoneyText
               amount={Math.abs(metrics.income - metrics.expense)}
               currency={selectedCurrency ?? undefined}
@@ -86,7 +86,7 @@ export const KPICard = React.memo(function KPICard({
 
         <View style={styles.kpiSecondaryContent}>
           <View style={styles.kpiCell}>
-            <Text style={styles.kpiLabelSmall}>INCOME</Text>
+            <Text style={styles.kpiLabelSmall}>Income</Text>
             <MoneyText
               amount={metrics.income}
               currency={selectedCurrency ?? undefined}
@@ -97,7 +97,7 @@ export const KPICard = React.memo(function KPICard({
           </View>
           <View style={styles.kpiVerticalSep} />
           <View style={styles.kpiCell}>
-            <Text style={styles.kpiLabelSmall}>EXPENSES</Text>
+            <Text style={styles.kpiLabelSmall}>Expenses</Text>
             <MoneyText
               amount={metrics.expense}
               currency={selectedCurrency ?? undefined}
@@ -148,7 +148,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       fontFamily: typography.fonts.semibold,
       fontSize: 12,
       color: colors.textMuted,
-      letterSpacing: 0.3,
     },
     currencyTabTextActive: {
       color: colors.background,
@@ -181,15 +180,13 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     kpiLabel: {
       color: colors.textMuted,
       fontFamily: typography.fonts.semibold,
-      fontSize: 9,
-      letterSpacing: 1.2,
+      fontSize: 11,
       marginBottom: spacing('0.5'),
     },
     kpiLabelSmall: {
       color: colors.textMuted,
       fontFamily: typography.fonts.semibold,
-      fontSize: 8,
-      letterSpacing: 1,
+      fontSize: 11,
     },
     kpiValueLarge: {
       fontSize: 24,

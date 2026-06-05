@@ -110,12 +110,10 @@ const createStyles = ({ heroCard, spacing, radius, layout }: ThemeContextType) =
     label: {
       fontSize: 11,
       color: heroCard.textMuted,
-      letterSpacing: 0.3,
     },
     balance: {
       fontSize: 46,
       lineHeight: 52,
-      letterSpacing: -1.5,
       color: heroCard.textPrimary,
     },
     sep: {

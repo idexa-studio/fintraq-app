@@ -145,10 +145,10 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       paddingVertical: spacing('1'),
       borderRadius: radius('md'),
     },
-    currency: { fontSize: 10 },
+    currency: { fontSize: typography.sizes.xs },
 
-    balanceLabel: { fontSize: 9, opacity: 0.5, marginBottom: spacing('0.5') },
-    balance: { fontSize: 22, lineHeight: 26, letterSpacing: -0.5 },
+    balanceLabel: { fontSize: typography.sizes.xs, opacity: 0.5, marginBottom: spacing('0.5') },
+    balance: { fontSize: 22, lineHeight: 26 },
 
     lower: {
       flexDirection: 'row',
@@ -158,7 +158,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       paddingVertical: spacing('2.5'),
     },
     stat: { gap: spacing('0.5') },
-    statLabel: { fontSize: 9, letterSpacing: 0.2 },
+    statLabel: { fontSize: typography.sizes.xs },
     statValue: { fontSize: 13 },
 
     addCard: {

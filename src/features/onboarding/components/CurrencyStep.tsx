@@ -171,14 +171,14 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     listSection: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
       marginBottom: spacing('2'),
       paddingLeft: spacing('1'),
     },
     listSectionSpaced: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
       marginTop: spacing('4'),
       marginBottom: spacing('2'),
@@ -208,9 +208,8 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     codeText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
-      letterSpacing: 0.5,
     },
     codeTextSelected: {
       color: colors.primary,

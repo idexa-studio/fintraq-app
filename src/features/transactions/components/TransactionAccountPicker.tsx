@@ -67,8 +67,7 @@ const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType
   },
   label: {
     fontFamily: typography.fonts.semibold,
-    fontSize: 10,
-    letterSpacing: 1.5,
+    fontSize: typography.sizes.xs,
     marginBottom: spacing('3'),
     paddingHorizontal: layout.screenPadding,
   },

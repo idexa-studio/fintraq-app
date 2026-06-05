@@ -167,7 +167,6 @@ const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.c
   },
   actionText: {
     fontFamily: typography.fonts.bold,
-    fontSize: 10,
-    letterSpacing: 1,
+    fontSize: typography.sizes.xs,
   },
 });

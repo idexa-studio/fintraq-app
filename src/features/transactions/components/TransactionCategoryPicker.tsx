@@ -25,7 +25,7 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>CATEGORY</Text>
+      <Text style={[styles.label, { color: colors.textMuted }]}>Category</Text>
       <View style={styles.grid}>
         {categories.map((cat) => {
           const selected = selectedId === cat.id;
@@ -70,8 +70,7 @@ const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType
   },
   label: {
     fontFamily: typography.fonts.semibold,
-    fontSize: 10,
-    letterSpacing: 1.5,
+    fontSize: typography.sizes.xs,
     marginBottom: spacing('3'),
   },
   grid: {

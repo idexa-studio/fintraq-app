@@ -15,7 +15,7 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
   persons,
   selectedId,
   onSelect,
-  label = 'LINKED PERSON',
+  label = 'Linked person',
 }: Props) {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -78,8 +78,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     container: { paddingVertical: spacing('3') },
     label: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
-      letterSpacing: 1.5,
+      fontSize: typography.sizes.xs,
       marginBottom: spacing('3'),
       paddingHorizontal: layout.screenPadding,
     },
@@ -120,7 +119,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       justifyContent: 'center',
     },
-    avatarText: { color: '#fff', fontSize: 10 },
+    avatarText: { color: '#fff', fontSize: 11 },
     personName: { fontSize: 13, flex: 1 },
     checkDot: {
       position: 'absolute',

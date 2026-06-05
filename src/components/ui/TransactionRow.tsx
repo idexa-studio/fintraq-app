@@ -184,7 +184,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
   },
   meta: {
     fontFamily: typography.fonts.medium,
-    fontSize: typography.sizes.xxs,
+    fontSize: typography.sizes.xs,
     lineHeight: 14,
     flexShrink: 1,
   },

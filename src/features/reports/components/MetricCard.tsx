@@ -77,9 +77,8 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
   },
   label: {
     fontFamily: typography.fonts.bold,
-    fontSize: 9,
+    fontSize: typography.sizes.xs,
     color: colors.textMuted,
-    letterSpacing: 2,
     marginBottom: spacing('2'),
   },
   valueRow: {
@@ -95,7 +94,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
   },
   percentageText: {
     fontFamily: typography.fonts.bold,
-    fontSize: 9,
-    letterSpacing: 0.5,
+    fontSize: typography.sizes.xs,
   },
 });

@@ -59,7 +59,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.bold,
       color: colors.text,
       fontSize: 22,
-      letterSpacing: -0.5,
     },
     date: {
       fontFamily: typography.fonts.regular,

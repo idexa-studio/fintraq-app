@@ -69,12 +69,12 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
     } else {
       await updateProfile({ reminderEnabled: true });
     }
-    router.replace('/(main)');
+    router.replace('/');
   }, [updateProfile, router]);
 
   const handleSkipReminders = useCallback(() => {
     setShowReminderDialog(false);
-    router.replace('/(main)');
+    router.replace('/');
   }, [router]);
 
   const validateStep = async () => {
