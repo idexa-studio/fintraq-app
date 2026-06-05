@@ -18,14 +18,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { Account } from '../api/accounts';
 
 export const AccountsScreen = React.memo(function AccountsScreen() {
   const theme = useTheme();
   const { colors, typography } = theme;
-  const insets = useSafeAreaInsets();
-  const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { data: accounts } = useAccounts();
   const deleteAccount = useDeleteAccount();
@@ -191,15 +190,13 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: ThemeContextType, bottomInset: number) => {
-  const barHeight = 70 + bottomInset;
-
-  return StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: ThemeContextType) =>
+  StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
-      paddingBottom: barHeight + 20,
+      paddingBottom: 100,
     },
 
     card: {
@@ -281,12 +278,12 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
 
     fab: {
       position: 'absolute',
-      bottom: barHeight + 16,
-      right: layout.screenPadding,
+      bottom: 20,
+      right: 16,
       width: 56,
       height: 56,
       borderRadius: radius('lg'),
-      backgroundColor: colors.text,
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -300,4 +297,4 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       opacity: 0.4,
     },
   });
-};
+

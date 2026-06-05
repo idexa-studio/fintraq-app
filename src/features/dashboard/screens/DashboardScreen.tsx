@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { DEFAULT_CURRENCY } from '../../../constants/currency';
@@ -35,8 +35,7 @@ const todayLabel = () =>
 export const DashboardScreen = React.memo(function DashboardScreen() {
   const theme = useTheme();
   const { colors } = theme;
-  const insets = useSafeAreaInsets();
-  const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const { isPremium } = usePremium();
   const router = useRouter();
   useSettings();
@@ -205,13 +204,11 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, bottomInset: number) => {
-  const barHeight = 70 + bottomInset;
-
-  return StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+  StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
-    content: { paddingBottom: barHeight + 20 },
+    content: { paddingBottom: 100 },
 
     // ── Currency tabs
     currencyTabsWrap: { marginHorizontal: layout.screenPadding, marginBottom: spacing('4') },
@@ -255,14 +252,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     // ── FAB
     fab: {
       position: 'absolute',
-      bottom: barHeight + 16,
-      right: layout.screenPadding,
-      width: 52,
-      height: 52,
+      bottom: 20,
+      right: 16,
+      width: 56,
+      height: 56,
       borderRadius: radius('lg'),
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },
   });
-};

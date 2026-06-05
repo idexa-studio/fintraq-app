@@ -549,7 +549,7 @@ export function TransactionsScreen() {
       />
 
       <TouchableOpacity style={styles.fab} onPress={() => router.push('/transactions/create')} activeOpacity={0.9}>
-        <MaterialCommunityIcons name="plus" size={28} color={colors.background} />
+        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
       </TouchableOpacity>
 
       <ConfirmDialog
@@ -618,7 +618,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     content: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      paddingBottom: 120,
+      paddingBottom: 100,
     },
     listHeader: {
       gap: spacing('5'),
@@ -720,12 +720,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     fab: {
       position: 'absolute',
-      bottom: layout.screenPadding,
-      right: layout.screenPadding,
-      width: 55,
-      height: 55,
+      bottom: 20,
+      right: 16,
+      width: 56,
+      height: 56,
       borderRadius: radius('lg'),
-      backgroundColor: colors.text,
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },

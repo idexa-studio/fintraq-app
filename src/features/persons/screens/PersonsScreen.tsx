@@ -17,7 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { Person } from '../api/persons';
 
 const FREE_PERSON_LIMIT = 10;
@@ -37,8 +37,7 @@ function PersonInitials({ name, color, size = 40 }: { name: string; color: strin
 export const PersonsScreen = React.memo(function PersonsScreen() {
   const theme = useTheme();
   const { colors, typography } = theme;
-  const insets = useSafeAreaInsets();
-  const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
   const { isPremium } = usePremium();
 
@@ -209,7 +208,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
         )}
       </ScrollView>
 
-      <TouchableOpacity style={[styles.fab, { backgroundColor: atLimit ? colors.textMuted : colors.text }]} onPress={handleAdd} activeOpacity={0.85}>
+      <TouchableOpacity style={[styles.fab, { backgroundColor: atLimit ? colors.textMuted : colors.primary }]} onPress={handleAdd} activeOpacity={0.85}>
         {atLimit
           ? <MaterialCommunityIcons name="lock" size={20} color={colors.background} />
           : <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
@@ -236,15 +235,13 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   );
 });
 
-const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeContextType, bottomInset: number) => {
-  const barHeight = 70 + bottomInset;
-
-  return StyleSheet.create({
+const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeContextType) =>
+  StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
-      paddingBottom: barHeight + 20,
+      paddingBottom: 100,
     },
 
     searchRow: {
@@ -311,8 +308,8 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
 
     fab: {
       position: 'absolute',
-      bottom: barHeight + 16,
-      right: layout.screenPadding,
+      bottom: 20,
+      right: 16,
       width: 56,
       height: 56,
       borderRadius: radius('lg'),
@@ -320,4 +317,4 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       alignItems: 'center',
     },
   });
-};
+

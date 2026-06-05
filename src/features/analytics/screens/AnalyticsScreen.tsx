@@ -32,7 +32,7 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const RANGES = [
   { label: '7D', days: 7 },
@@ -92,8 +92,7 @@ function EmptyState({ icon, text }: { icon: keyof typeof MaterialCommunityIcons.
 export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
   const { colors, layout, spacing } = theme;
-  const insets = useSafeAreaInsets();
-  const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const { width: screenWidth } = useWindowDimensions();
   const chartWidth = screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2;
   const router = useRouter();
@@ -458,13 +457,11 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, bottomInset: number) => {
-  const barHeight = 70 + bottomInset;
-
-  return StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+  StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    content: { paddingBottom: barHeight + 20, paddingTop: spacing('2') },
+    content: { paddingBottom: 24, paddingTop: spacing('2') },
 
     // ── Pill selectors
     pillRow: {
@@ -616,4 +613,4 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       letterSpacing: -0.5,
     },
   });
-};
+

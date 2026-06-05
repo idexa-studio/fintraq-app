@@ -30,7 +30,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type SwitchRowProps = {
@@ -155,8 +155,7 @@ const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: 
 export const SettingsScreen = React.memo(function SettingsScreen() {
   const theme = useTheme();
   const { colors, typography, heroCard } = theme;
-  const insets = useSafeAreaInsets();
-  const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { isPremium } = usePremium();
   const { profile, updateProfile } = useSettings();
@@ -489,10 +488,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   );
 });
 
-const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }: ThemeContextType, bottomInset: number) => {
-  const barHeight = 70 + bottomInset;
-
-  return StyleSheet.create({
+const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }: ThemeContextType) =>
+  StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
@@ -500,7 +497,7 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
-      paddingBottom: barHeight + 20,
+      paddingBottom: 24,
     },
 
     heroCard: {
@@ -586,4 +583,4 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
       opacity: 0.4,
     },
   });
-};
+

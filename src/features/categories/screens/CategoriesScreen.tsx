@@ -176,7 +176,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       )}
 
       <TouchableOpacity style={styles.fab} onPress={handleCreate} activeOpacity={0.9}>
-        <MaterialCommunityIcons name="plus" size={22} color={colors.background} />
+        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
       </TouchableOpacity>
 
       <OptionsDialog
@@ -217,7 +217,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     /* ── Grid ── */
     grid: {
       paddingHorizontal: layout.screenPadding,
-      paddingBottom: 110,
+      paddingBottom: 100,
       gap: spacing('3'),
     },
     row: {
@@ -298,12 +298,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     /* ── FAB ── */
     fab: {
       position: 'absolute',
-      bottom: layout.screenPadding,
-      right: layout.screenPadding,
-      width: 55,
-      height: 55,
+      bottom: 20,
+      right: 16,
+      width: 56,
+      height: 56,
       borderRadius: radius('lg'),
-      backgroundColor: colors.text,
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },
