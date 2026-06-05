@@ -38,7 +38,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const { colors } = theme;
   const styles = React.useMemo(() => createOnboardingStyles(theme), [theme]);
   const { completeOnboarding } = useOnboarding();
-  const { updateProfile } = useSettings();
+  const { profile, updateProfile } = useSettings();
   const { mutateAsync: createAccount, isPending: accountPending } = useCreateAccount();
   const { mutateAsync: createCategory, isPending: categoryPending } = useCreateCategory();
 
@@ -68,9 +68,12 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       );
     } else {
       await updateProfile({ reminderEnabled: true });
+      // Explicitly schedule here to avoid race condition with SettingsProvider useEffect.
+      // reminderTime defaults to '20:00' and the user hasn't changed it during onboarding.
+      await NotificationService.scheduleDailyReminder(profile.reminderTime);
     }
     router.replace('/(main)/(tabs)');
-  }, [updateProfile, router]);
+  }, [updateProfile, profile.reminderTime, router]);
 
   const handleSkipReminders = useCallback(() => {
     setShowReminderDialog(false);
