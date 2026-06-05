@@ -11,7 +11,7 @@ import type { TransactionListItem } from '@/src/features/transactions/api/transa
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
@@ -173,7 +173,7 @@ const AccountRow = React.memo(function AccountRow({
         </Text>
       </View>
       <MoneyText amount={account.balance} currency={account.currency} weight="bold" style={{ fontSize: 14 }} />
-      <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
+      <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
     </TouchableOpacity>
   );
 });
@@ -192,14 +192,14 @@ const CategoryRow = React.memo(function CategoryRow({
 
   return (
     <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]} onPress={handlePress} activeOpacity={0.7}>
-      <IconAvatar icon={resolveIcon(category.icon, 'pricetag-outline')} color={catColor} variant="solid" size={36} iconSize={16} />
+      <IconAvatar icon={resolveIcon(category.icon, 'tag-outline')} color={catColor} variant="solid" size={36} iconSize={16} />
       <Text style={{ flex: 1, fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{category.name}</Text>
       <View style={[{ backgroundColor: (category.type === 'CR' ? colors.success : colors.danger) + '15', paddingHorizontal: theme.spacing('2'), height: 22, borderRadius: theme.radius('sm'), alignItems: 'center', justifyContent: 'center' }]}>
         <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: 10, color: category.type === 'CR' ? colors.success : colors.danger }}>
           {category.type === 'CR' ? 'Income' : category.type === 'TR' ? 'Transfer' : 'Expense'}
         </Text>
       </View>
-      <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
+      <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
     </TouchableOpacity>
   );
 });
@@ -243,7 +243,7 @@ const PersonRow = React.memo(function PersonRow({
           </Text>
         ) : null}
       </View>
-      <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
+      <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
     </TouchableOpacity>
   );
 });
@@ -400,7 +400,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
 
       <View style={styles.searchRow}>
         <View style={styles.searchWrap}>
-          <Ionicons name="search-outline" size={18} color={colors.textMuted} />
+          <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
           <TextInput
             ref={inputRef}
             style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
@@ -414,7 +414,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
           />
           {query.length > 0 ? (
             <TouchableOpacity onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Ionicons name="close-circle" size={17} color={colors.textMuted} />
+              <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
             </TouchableOpacity>
           ) : null}
         </View>
@@ -423,7 +423,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
       {!isEnabled ? (
         <View style={styles.prompt}>
           <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
-            <Ionicons name="search" size={28} color={colors.textMuted} />
+            <MaterialCommunityIcons name="magnify" size={32} color={colors.textMuted} />
           </View>
           <Text style={[styles.promptTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>Search everything</Text>
           <Text style={[styles.promptSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
@@ -433,7 +433,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
       ) : noResults ? (
         <View style={styles.prompt}>
           <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
-            <Ionicons name="file-tray-outline" size={28} color={colors.textMuted} />
+            <MaterialCommunityIcons name="inbox-outline" size={32} color={colors.textMuted} />
           </View>
           <Text style={[styles.promptTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>No results</Text>
           <Text style={[styles.promptSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>

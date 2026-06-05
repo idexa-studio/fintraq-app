@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -45,7 +45,7 @@ export const Header = React.memo(function Header({
             onPress={handleBack}
             activeOpacity={0.7}
           >
-            <Ionicons name="arrow-back" size={20} color={colors.text} />
+            <MaterialCommunityIcons name="arrow-left" size={20} color={colors.text} />
           </TouchableOpacity>
         )}
         <View style={styles.titleBlock}>

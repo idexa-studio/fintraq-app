@@ -8,7 +8,7 @@ import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/acc
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -71,8 +71,8 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   const accountOptions = useMemo((): OptionsDialogOption[] => {
     if (!selectedAccount) return [];
     return [
-      { key: 'edit', label: 'Edit', icon: 'create-outline', onPress: handleEdit },
-      { key: 'delete', label: 'Delete', icon: 'trash-outline', destructive: true, onPress: handleDeletePress },
+      { key: 'edit', label: 'Edit', icon: 'pencil-outline', onPress: handleEdit },
+      { key: 'delete', label: 'Delete', icon: 'trash-can-outline', destructive: true, onPress: handleDeletePress },
     ];
   }, [selectedAccount, handleEdit, handleDeletePress]);
 
@@ -123,7 +123,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                     hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                     activeOpacity={0.4}
                   >
-                    <Ionicons name="ellipsis-vertical" size={18} color={colors.textMuted} />
+                    <MaterialCommunityIcons name="dots-vertical" size={18} color={colors.textMuted} />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -169,7 +169,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
       </ScrollView>
 
       <TouchableOpacity style={styles.fab} onPress={handleAdd} activeOpacity={0.85}>
-        <Ionicons name="add" size={24} color={colors.background} />
+        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
       </TouchableOpacity>
 
       <OptionsDialog

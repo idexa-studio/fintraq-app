@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -64,7 +64,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'edit-category',
         label: 'Edit category',
-        icon: 'create-outline' as const,
+        icon: 'pencil-outline' as const,
         onPress: () => {
           setShowManageDialog(false);
           handleEdit(selectedCategory);
@@ -73,7 +73,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'delete-category',
         label: 'Delete category',
-        icon: 'trash-outline' as const,
+        icon: 'trash-can-outline' as const,
         destructive: true,
         onPress: () => setShowDeleteDialog(true),
       },
@@ -135,14 +135,14 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     () => (
       <View style={styles.empty}>
         <View style={styles.emptyIcon}>
-          <Ionicons name="folder-open-outline" size={28} color={colors.textMuted} />
+          <MaterialCommunityIcons name="folder-open-outline" size={32} color={colors.textMuted} />
         </View>
         <Text style={styles.emptyTitle}>No categories</Text>
         <Text style={styles.emptyText}>
           {`No ${activeType === 'DR' ? 'expense' : activeType === 'CR' ? 'income' : 'transfer'} categories yet.`}
         </Text>
         <TouchableOpacity style={styles.emptyBtn} onPress={handleCreate} activeOpacity={0.85}>
-          <Ionicons name="add" size={15} color={colors.background} />
+          <MaterialCommunityIcons name="plus" size={15} color={colors.background} />
           <Text style={styles.emptyBtnText}>Create one</Text>
         </TouchableOpacity>
       </View>
@@ -176,7 +176,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       )}
 
       <TouchableOpacity style={styles.fab} onPress={handleCreate} activeOpacity={0.9}>
-        <Ionicons name="add" size={22} color={colors.background} />
+        <MaterialCommunityIcons name="plus" size={22} color={colors.background} />
       </TouchableOpacity>
 
       <OptionsDialog

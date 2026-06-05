@@ -6,7 +6,7 @@ import { useDeletePerson, usePersons } from '@/src/features/persons/hooks/person
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -102,8 +102,8 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   const menuOptions = useMemo((): OptionsDialogOption[] => {
     if (!selected) return [];
     return [
-      { key: 'edit', label: 'Edit', icon: 'create-outline', onPress: handleEdit },
-      { key: 'delete', label: 'Delete', icon: 'trash-outline', destructive: true, onPress: handleDeletePress },
+      { key: 'edit', label: 'Edit', icon: 'pencil-outline', onPress: handleEdit },
+      { key: 'delete', label: 'Delete', icon: 'trash-can-outline', destructive: true, onPress: handleDeletePress },
     ];
   }, [selected, handleEdit, handleDeletePress]);
 
@@ -114,7 +114,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
       {persons.length > 0 && (
         <View style={styles.searchWrap}>
-          <Ionicons name="search-outline" size={15} color={colors.textMuted} />
+          <MaterialCommunityIcons name="magnify" size={15} color={colors.textMuted} />
           <TextInput
             style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
             value={query}
@@ -127,7 +127,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
           />
           {query.length > 0 && (
             <TouchableOpacity onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Ionicons name="close-circle" size={15} color={colors.textMuted} />
+              <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
             </TouchableOpacity>
           )}
         </View>
@@ -136,7 +136,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {!isPremium && (
           <View style={styles.limitBanner}>
-            <Ionicons name="people-outline" size={14} color={colors.textMuted} />
+            <MaterialCommunityIcons name="account-group-outline" size={16} color={colors.textMuted} />
             <Text style={[styles.limitText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               {persons.length}/{FREE_PERSON_LIMIT} persons — upgrade for unlimited
             </Text>
@@ -177,7 +177,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
                     hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                     activeOpacity={0.4}
                   >
-                    <Ionicons name="ellipsis-vertical" size={18} color={colors.textMuted} />
+                    <MaterialCommunityIcons name="dots-vertical" size={18} color={colors.textMuted} />
                   </TouchableOpacity>
                 </TouchableOpacity>
               );
@@ -187,7 +187,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
         {persons.length === 0 && (
           <View style={styles.empty}>
-            <Ionicons name="people-outline" size={32} color={colors.textMuted} />
+            <MaterialCommunityIcons name="account-group-outline" size={32} color={colors.textMuted} />
             <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               No persons yet
             </Text>
@@ -200,7 +200,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
         {persons.length > 0 && filtered.length === 0 && (
           <View style={styles.empty}>
             <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              No results for "{query}"
+              No results for &quot;{query}&quot;
             </Text>
           </View>
         )}
@@ -210,8 +210,8 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
       <TouchableOpacity style={[styles.fab, { backgroundColor: atLimit ? colors.textMuted : colors.text }]} onPress={handleAdd} activeOpacity={0.85}>
         {atLimit
-          ? <Ionicons name="lock-closed" size={20} color={colors.background} />
-          : <Ionicons name="add" size={24} color={colors.background} />
+          ? <MaterialCommunityIcons name="lock" size={20} color={colors.background} />
+          : <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
         }
       </TouchableOpacity>
 

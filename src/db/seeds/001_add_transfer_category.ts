@@ -15,8 +15,8 @@ export async function seed(): Promise<void> {
 
   await db.insert(categories).values({
     name: 'Transfer',
-    icon: 'swap-horizontal-outline',
-    color: 0x60a5fa,
+    icon: 'swap-horizontal',
+    color: 0x2563eb,
     type: 'TR',
   });
 }

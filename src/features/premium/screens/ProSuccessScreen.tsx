@@ -2,7 +2,7 @@ import { Header } from '@/src/components/ui/Header';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { FEATURES } from '@/src/constants/iap';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -33,7 +33,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
         <View style={styles.grid}>
           {FEATURES.map(f => (
             <View key={f.title} style={styles.tile}>
-              <Ionicons name={f.icon} size={20} color={colors.primary} />
+              <MaterialCommunityIcons name={f.icon} size={20} color={colors.primary} />
               <Text style={[styles.tileTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>{f.title}</Text>
               <Text style={[styles.tileDesc, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={3}>{f.description}</Text>
             </View>

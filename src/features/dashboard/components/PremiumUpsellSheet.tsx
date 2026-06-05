@@ -1,6 +1,6 @@
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { PICKER_CONTRAST_COLOR } from '@/src/theme/colors';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -53,7 +53,7 @@ export const PremiumUpsellSheet = React.memo(function PremiumUpsellSheet({
 
           {canDismiss ? (
             <TouchableOpacity onPress={onClose} style={styles.closeBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Ionicons name="close" size={20} color={theme.colors.textMuted} />
+              <MaterialCommunityIcons name="close" size={20} color={theme.colors.textMuted} />
             </TouchableOpacity>
           ) : null}
 

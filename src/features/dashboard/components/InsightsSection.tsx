@@ -1,5 +1,5 @@
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { PremiumGuard } from '../../../components/ui/PremiumGuard';
@@ -72,7 +72,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
         <SectionHeader title="Pro Insights" />
         <PremiumGuard label="Upgrade to Pro for insights" size="large" containerStyle={{ marginHorizontal: isPremium ? 0 : theme.layout.screenPadding }}>
           <View style={styles.empty}>
-            <Ionicons name="analytics-outline" size={24} color={colors.textMuted} />
+            <MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.textMuted} />
             <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               No insights yet. Keep tracking to unlock trends.
             </Text>

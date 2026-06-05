@@ -11,8 +11,8 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
-import { IoniconName } from '@/src/utils/icons';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIconName } from '@/src/utils/icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import Constants from 'expo-constants';
@@ -33,7 +33,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type SwitchRowProps = {
-  icon: IoniconName;
+  icon: MaterialIconName;
   label: string;
   subtitle: string;
   value: boolean;
@@ -79,7 +79,7 @@ const switchRowStyles = StyleSheet.create({
 });
 
 type NavRowProps = {
-  icon: IoniconName;
+  icon: MaterialIconName;
   label: string;
   subtitle: string;
   value?: string;
@@ -126,7 +126,7 @@ const NavRow = React.memo(function NavRow({
             {value}
           </Text>
         ) : null}
-        <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
+        <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
       </View>
     </TouchableOpacity>
   );
@@ -141,10 +141,10 @@ const navRowStyles = StyleSheet.create({
   value: { fontSize: 11 },
 });
 
-const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: IoniconName }[] = [
-  { label: 'Light', value: 'light', icon: 'sunny-outline' },
-  { label: 'Dark', value: 'dark', icon: 'moon-outline' },
-  { label: 'Follow system', value: 'system', icon: 'phone-portrait-outline' },
+const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: MaterialIconName }[] = [
+  { label: 'Light', value: 'light', icon: 'weather-sunny' },
+  { label: 'Dark', value: 'dark', icon: 'moon-waning-crescent' },
+  { label: 'Follow system', value: 'system', icon: 'cellphone' },
 ];
 
 export const SettingsScreen = React.memo(function SettingsScreen() {
@@ -291,7 +291,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="sparkles"
+            icon="creation"
             label={isPremium ? 'Keeep Pro — Lifetime' : 'Upgrade to Pro'}
             subtitle={isPremium ? 'You have permanent access to every feature' : 'Unlock analytics, insights, and more'}
             value={isPremium ? 'Active' : undefined}
@@ -306,7 +306,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <SwitchRow
             theme={theme}
-            icon="notifications-outline"
+            icon="bell-outline"
             label="Daily reminder"
             subtitle="Get a nudge to log your daily transactions"
             value={profile.reminderEnabled}
@@ -316,7 +316,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             <>
               <NavRow
                 theme={theme}
-                icon="time-outline"
+                icon="clock-outline"
                 label="Reminder time"
                 subtitle="When you receive your daily notification"
                 value={profile.reminderTime}
@@ -326,7 +326,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           )}
           <NavRow
             theme={theme}
-            icon="cash-outline"
+            icon="cash"
             label="Default currency"
             subtitle="Used for new accounts and display"
             value={profile.defaultCurrency || 'USD'}
@@ -334,7 +334,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
           <NavRow
             theme={theme}
-            icon="person-outline"
+            icon="account-outline"
             label="Display name"
             subtitle="How you appear throughout the app"
             value={profile.name || 'Not set'}
@@ -342,7 +342,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
           <NavRow
             theme={theme}
-            icon="contrast-outline"
+            icon="theme-light-dark"
             label="Theme"
             subtitle="Light, dark, or follow your system setting"
             value={themeLabel}
@@ -367,14 +367,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="people-outline"
+            icon="account-group-outline"
             label="Persons"
             subtitle="Manage people linked to transactions"
             onPress={() => router.push('/(main)/persons')}
           />
           <NavRow
             theme={theme}
-            icon="grid-outline"
+            icon="grid"
             label="Categories"
             subtitle="Manage your income and expense groups"
             onPress={() => router.push('/categories')}
@@ -395,14 +395,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="shield-checkmark-outline"
+            icon="shield-check-outline"
             label="Privacy policy"
             subtitle="How we handle your data"
             onPress={openPrivacy}
           />
           <NavRow
             theme={theme}
-            icon="document-text-outline"
+            icon="file-document-outline"
             label="Terms of service"
             subtitle="Rules and guidelines for using Keeep"
             onPress={openTerms}
@@ -416,7 +416,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="trash-bin-outline"
+            icon="trash-can-outline"
             label="Factory reset"
             subtitle="Permanently erase all data and start fresh"
             onPress={() => setShowResetDialog(true)}

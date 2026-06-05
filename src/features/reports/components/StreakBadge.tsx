@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
@@ -18,7 +18,7 @@ export const StreakBadge = React.memo(function StreakBadge() {
 
   return (
     <View style={styles.container}>
-      <Ionicons name="flame" size={10} color={FLAME_COLOR} />
+      <MaterialCommunityIcons name="fire" size={12} color={FLAME_COLOR} />
       <Text style={styles.text}>{streak}d streak</Text>
     </View>
   );

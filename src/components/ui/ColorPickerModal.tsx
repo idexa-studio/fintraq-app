@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo } from 'react';
 import {
   FlatList,
@@ -58,7 +58,7 @@ export const ColorPickerModal = React.memo(function ColorPickerModal({
           </Text>
           <Text style={styles.colorHex}>{item.hex.toUpperCase()}</Text>
           {selected && (
-            <Ionicons name="checkmark-circle" size={20} color={item.hex} />
+            <MaterialCommunityIcons name="check-circle" size={20} color={item.hex} />
           )}
         </TouchableOpacity>
       );
@@ -96,7 +96,7 @@ export const ColorPickerModal = React.memo(function ColorPickerModal({
               <Text style={styles.subtitle}>{palette.length} colors</Text>
             </View>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.8}>
-              <Ionicons name="close" size={16} color={colors.text} />
+              <MaterialCommunityIcons name="close" size={16} color={colors.text} />
             </TouchableOpacity>
           </View>
 

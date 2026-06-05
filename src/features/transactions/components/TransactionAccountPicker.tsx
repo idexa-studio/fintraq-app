@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
@@ -50,7 +50,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               </View>
               {selected && (
                 <View style={[styles.check, { backgroundColor: accColor, borderColor: colors.background }]}>
-                  <Ionicons name="checkmark" size={10} color={colors.background} />
+                  <MaterialCommunityIcons name="check" size={12} color={colors.background} />
                 </View>
               )}
             </TouchableOpacity>

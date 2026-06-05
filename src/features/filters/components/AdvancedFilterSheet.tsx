@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Modal,
@@ -35,7 +35,7 @@ interface AdvancedFilterSheetProps {
 const TYPE_OPTS = [
   { key: 'CR' as const, label: 'Income',   icon: 'arrow-down-circle-outline' as const, colorKey: 'success' as const },
   { key: 'DR' as const, label: 'Expense',  icon: 'arrow-up-circle-outline' as const,   colorKey: 'danger'  as const },
-  { key: 'TR' as const, label: 'Transfer', icon: 'swap-horizontal-outline' as const,   colorKey: 'info'    as const },
+  { key: 'TR' as const, label: 'Transfer', icon: 'swap-horizontal' as const,           colorKey: 'info'    as const },
 ] as const;
 
 export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
@@ -146,7 +146,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                 activeOpacity={0.6}
                 style={[styles.closeBtn, { backgroundColor: colors.text + '0A' }]}
               >
-                <Ionicons name="close" size={16} color={colors.textMuted} />
+                <MaterialCommunityIcons name="close" size={16} color={colors.textMuted} />
               </TouchableOpacity>
             </View>
           </View>
@@ -188,7 +188,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
               {local.dateRange ? (
                 <>
                   <TouchableOpacity style={styles.groupRow} onPress={() => setShowStart(true)} activeOpacity={0.7}>
-                    <Ionicons name="calendar-outline" size={16} color={colors.primary} />
+                    <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
                     <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                       From
                     </Text>
@@ -198,7 +198,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                   </TouchableOpacity>
                   <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
                   <TouchableOpacity style={styles.groupRow} onPress={() => setShowEnd(true)} activeOpacity={0.7}>
-                    <Ionicons name="calendar-outline" size={16} color={colors.primary} />
+                    <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
                     <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                       To
                     </Text>
@@ -206,17 +206,17 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                       {fmt(local.dateRange.endDate)}
                     </Text>
                     <TouchableOpacity onPress={clearDateRange} activeOpacity={0.6} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                      <Ionicons name="close-circle" size={18} color={colors.textMuted} />
+                      <MaterialCommunityIcons name="close-circle" size={18} color={colors.textMuted} />
                     </TouchableOpacity>
                   </TouchableOpacity>
                 </>
               ) : (
                 <TouchableOpacity style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)} activeOpacity={0.7}>
-                  <Ionicons name="calendar-outline" size={16} color={colors.primary} />
+                  <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     Set date range
                   </Text>
-                  <Ionicons name="chevron-forward" size={14} color={colors.textMuted} style={styles.groupChevron} />
+                  <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} style={styles.groupChevron} />
                 </TouchableOpacity>
               )}
             </View>
@@ -276,7 +276,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                         onPress={() => toggleAccount(a.id)}
                         activeOpacity={0.8}
                       >
-                        <Ionicons name={resolveIcon(a.icon, 'wallet-outline')} size={14} color={sel ? colors.background : ac} />
+                        <MaterialCommunityIcons name={resolveIcon(a.icon, 'wallet-outline')} size={16} color={sel ? colors.background : ac} />
                         <Text style={[styles.pillLabel, { color: sel ? colors.background : colors.text }]}>
                           {a.name}
                         </Text>
@@ -304,7 +304,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
                         onPress={() => toggleCategory(c.id)}
                         activeOpacity={0.8}
                       >
-                        <Ionicons name={resolveIcon(c.icon, 'pricetag-outline')} size={14} color={sel ? colors.background : cc} />
+                        <MaterialCommunityIcons name={resolveIcon(c.icon, 'tag-outline')} size={16} color={sel ? colors.background : cc} />
                         <Text style={[styles.pillLabel, { color: sel ? colors.background : colors.text }]}>
                           {c.name}
                         </Text>

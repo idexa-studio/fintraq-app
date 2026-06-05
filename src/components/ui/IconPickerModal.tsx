@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo } from 'react';
 import {
   Modal,
@@ -55,10 +55,10 @@ export const IconPickerModal = React.memo(function IconPickerModal({
         <View style={styles.sheet}>
           <View style={styles.handle} />
 
-          <View style={styles.header}>
+            <View style={styles.header}>
             <Text style={styles.title}>{title}</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.7}>
-              <Ionicons name="close" size={18} color={colors.text} />
+              <MaterialCommunityIcons name="close" size={18} color={colors.text} />
             </TouchableOpacity>
           </View>
 
@@ -81,8 +81,8 @@ export const IconPickerModal = React.memo(function IconPickerModal({
                         activeOpacity={0.65}
                       >
                         <View style={[styles.iconCircle, selected && { backgroundColor: accent }]}>
-                          <Ionicons
-                            name={resolveIcon(icon, 'grid-outline')}
+                          <MaterialCommunityIcons
+                            name={resolveIcon(icon, 'grid')}
                             size={selected ? 19 : 18}
                             color={selected ? colors.background : colors.text}
                           />

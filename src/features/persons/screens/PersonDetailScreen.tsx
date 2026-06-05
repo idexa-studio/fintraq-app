@@ -7,7 +7,7 @@ import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -70,8 +70,17 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
           type: tx.type,
           datetime: tx.datetime,
           note: tx.note,
-          account: { name: account?.name ?? '', currency: account?.currency ?? currency },
-          category: { name: category?.name ?? '', icon: category?.icon ?? 'grid', color: category?.color ?? 0 },
+          account: {
+            name: account?.name ?? '',
+            currency: account?.currency ?? currency,
+            icon: account?.icon ?? 'wallet-outline',
+            color: account?.color ?? 0,
+          },
+          category: {
+            name: category?.name ?? '',
+            icon: category?.icon ?? 'grid',
+            color: category?.color ?? 0,
+          },
           toAccount: null,
         };
       });
@@ -107,7 +116,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         showBack
         rightAction={
           <TouchableOpacity onPress={handleEdit} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Ionicons name="create-outline" size={20} color={colors.text} />
+            <MaterialCommunityIcons name="pencil-outline" size={20} color={colors.text} />
           </TouchableOpacity>
         }
       />
@@ -134,7 +143,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
             <View style={styles.contactRow}>
               {person.email ? (
                 <View style={styles.contactChip}>
-                  <Ionicons name="mail-outline" size={12} color={colors.textMuted} />
+                  <MaterialCommunityIcons name="email-outline" size={14} color={colors.textMuted} />
                   <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
                     {person.email}
                   </Text>
@@ -142,7 +151,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
               ) : null}
               {person.phone ? (
                 <View style={styles.contactChip}>
-                  <Ionicons name="call-outline" size={12} color={colors.textMuted} />
+                  <MaterialCommunityIcons name="phone-outline" size={14} color={colors.textMuted} />
                   <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     {person.phone}
                   </Text>
@@ -207,7 +216,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
           </View>
         ) : (
           <View style={styles.emptyTx}>
-            <Ionicons name="receipt-outline" size={28} color={colors.textMuted} />
+            <MaterialCommunityIcons name="receipt-text-outline" size={28} color={colors.textMuted} />
             <Text style={[styles.emptyTxText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               No transactions in {currency}
             </Text>

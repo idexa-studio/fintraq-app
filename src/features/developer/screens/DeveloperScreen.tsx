@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import React from 'react';
 import {
@@ -95,7 +95,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         >
           <View style={styles.lockWrap}>
             <View style={styles.lockIcon}>
-              <IconAvatar icon="lock-closed" color={colors.surface} variant="solid" size={64} iconSize={26} />
+              <IconAvatar icon="lock" color={colors.surface} variant="solid" size={64} iconSize={26} />
             </View>
 
             <Text style={[styles.lockTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>
@@ -136,7 +136,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         </Text>
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <IconAvatar icon="sparkles" color={colors.primary} variant="subtle" size={32} iconSize={14} />
+            <IconAvatar icon="creation" color={colors.primary} variant="subtle" size={32} iconSize={14} />
             <View style={{ flex: 1 }}>
               <Text style={[styles.cardTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
                 Premium bypass
@@ -192,7 +192,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
                 Generate 12 months of test transactions
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
+            <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
           </TouchableOpacity>
         </View>
 

@@ -1,13 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
-import { format, isToday, isYesterday } from 'date-fns';
-import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { TransactionType } from '@/src/types';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { MoneyText } from '@/src/components/ui/MoneyText';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { format, isToday, isYesterday } from 'date-fns';
+import React, { useCallback, useMemo } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type TransactionData = {
   id: number;
@@ -55,7 +55,7 @@ export const TransactionRow = React.memo(function TransactionRow({
 
   const categoryColor = useMemo(() => colorNumberToHex(tx.category.color), [tx.category.color]);
 
-  const iconName = useMemo(() => resolveIcon(tx.category.icon, 'pricetag-outline'), [tx.category.icon]);
+  const iconName = useMemo(() => resolveIcon(tx.category.icon, 'tag-outline'), [tx.category.icon]);
 
   const handlePress = useCallback(() => {
     onPress?.(tx);
@@ -118,7 +118,7 @@ export const TransactionRow = React.memo(function TransactionRow({
           </Text>
           <Text style={[styles.bullet, { color: colors.textMuted }]}>•</Text>
           <View style={styles.accountBadge}>
-            <Ionicons name={accountIconName} size={11} color={accountColor} />
+            <MaterialCommunityIcons name={accountIconName} size={12} color={accountColor} />
             <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
               {tx.account.name}
             </Text>
@@ -126,9 +126,9 @@ export const TransactionRow = React.memo(function TransactionRow({
 
           {tx.type === 'TR' && (
             <>
-              <Ionicons name="arrow-forward" size={10} color={colors.textMuted} />
+              <MaterialCommunityIcons name="arrow-right" size={12} color={colors.textMuted} />
               <View style={styles.accountBadge}>
-                <Ionicons name={toAccountIconName} size={11} color={toAccountColor} />
+                <MaterialCommunityIcons name={toAccountIconName} size={12} color={toAccountColor} />
                 <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
                   {tx.toAccount?.name ?? 'Account'}
                 </Text>

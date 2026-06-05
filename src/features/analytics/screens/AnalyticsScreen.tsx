@@ -20,7 +20,7 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import {
@@ -74,7 +74,7 @@ const chunkAggregate = (
   return result;
 };
 
-function EmptyState({ icon, text }: { icon: keyof typeof Ionicons.glyphMap; text: string }) {
+function EmptyState({ icon, text }: { icon: keyof typeof MaterialCommunityIcons.glyphMap; text: string }) {
   const theme = useTheme();
   const { colors, typography, spacing } = theme;
   const styles = useMemo(() => StyleSheet.create({
@@ -83,7 +83,7 @@ function EmptyState({ icon, text }: { icon: keyof typeof Ionicons.glyphMap; text
   }), [theme]);
   return (
     <View style={styles.wrap}>
-      <Ionicons name={icon} size={28} color={colors.textMuted} />
+      <MaterialCommunityIcons name={icon} size={28} color={colors.textMuted} />
       <Text style={styles.text}>{text}</Text>
     </View>
   );
@@ -217,7 +217,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   activeOpacity={0.8}
                 >
                   <Text style={[styles.pillText, r.days === selectedRange && styles.pillTextActive]}>{r.label}</Text>
-                  {locked && <Ionicons name="lock-closed" size={9} color={colors.textMuted} style={styles.lockIcon} />}
+                  {locked && <MaterialCommunityIcons name="lock" size={9} color={colors.textMuted} style={styles.lockIcon} />}
                 </TouchableOpacity>
               );
             })}
@@ -307,7 +307,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                       <View key={`${cat.name}-${idx}`} style={styles.categoryCell}>
 
                         <IconAvatar
-                          icon={resolveIcon(cat.icon, 'pricetag-outline')}
+                          icon={resolveIcon(cat.icon, 'tag-outline')}
                           color={accent}
                           variant="solid"
                           size={28}
@@ -326,7 +326,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               </View>
             ) : (
               <View style={[styles.card, { marginHorizontal: layout.screenPadding }]}>
-                <EmptyState icon="pricetag-outline" text="No expense data in this period" />
+                <EmptyState icon="tag-outline" text="No expense data in this period" />
               </View>
             )}
           </PremiumGuard>

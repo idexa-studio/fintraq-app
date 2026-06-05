@@ -9,7 +9,7 @@ const SEED_KEY = '@luno/seed_v2';
 const SEED_PERSONS = [
   { name: 'Sarah Mitchell', email: 'sarah.m@example.com', phone: '+1 555 0101', designation: 'Product Manager', company: 'Acme Corp', color: toDbColor('#059669') },
   { name: 'James Okafor',  email: 'james.o@example.com', phone: '+1 555 0102', designation: 'Engineer',         company: 'TechFlow',  color: toDbColor('#2563EB') },
-  { name: 'Priya Nair',    email: 'priya.n@example.com', phone: '+1 555 0103', designation: 'Designer',         company: 'Pixel Lab',  color: toDbColor('#9333EA') },
+  { name: 'Priya Nair',    email: 'priya.n@example.com', phone: '+1 555 0103', designation: 'Designer',         company: 'Pixel Lab',  color: toDbColor('#6D28D9') },
   { name: 'Tom Reyes',     email: 'tom.r@example.com',   phone: '+1 555 0104', designation: 'CFO',              company: 'Reyes Co',   color: toDbColor('#EA580C') },
 ] as const;
 

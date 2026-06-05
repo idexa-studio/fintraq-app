@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { resolveIcon } from '@/src/utils/icons';
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import {
@@ -149,7 +149,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
               <React.Fragment key={p.key}>
                 <TouchableOpacity style={styles.cardRow} onPress={() => handlePresetSelect(p.key)} activeOpacity={0.65}>
                   <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>{p.label}</Text>
-                  {selectedPreset === p.key && !customRange ? <Ionicons name="checkmark" size={16} color={colors.primary} /> : null}
+                  {selectedPreset === p.key && !customRange ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
                 </TouchableOpacity>
                 {i < DATE_PRESETS.length - 1 ? <View style={styles.sep} /> : null}
               </React.Fragment>
@@ -157,7 +157,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
             <View style={styles.sep} />
             <TouchableOpacity style={styles.cardRow} onPress={() => setShowStartPicker(true)} activeOpacity={0.65}>
               <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>Custom range</Text>
-              {customRange ? <Ionicons name="checkmark" size={16} color={colors.primary} /> : null}
+              {customRange ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
             </TouchableOpacity>
             {customRange ? (
               <View style={styles.dateRow}>
@@ -165,7 +165,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
                   <Text style={[styles.dateLbl, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>From</Text>
                   <Text style={[styles.dateVal, { fontFamily: typography.fonts.semibold, color: colors.text }]}>{formatDate(customRange.startDate)}</Text>
                 </TouchableOpacity>
-                <Ionicons name="arrow-forward" size={14} color={colors.textMuted} />
+                <MaterialCommunityIcons name="arrow-right" size={14} color={colors.textMuted} />
                 <TouchableOpacity style={styles.dateBtn} onPress={() => setShowEndPicker(true)} activeOpacity={0.7}>
                   <Text style={[styles.dateLbl, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>To</Text>
                   <Text style={[styles.dateVal, { fontFamily: typography.fonts.semibold, color: colors.text }]}>{formatDate(customRange.endDate)}</Text>
@@ -190,7 +190,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
           <View style={styles.card}>
             <TouchableOpacity style={styles.cardRow} onPress={() => setSelectedAccountId(null)} activeOpacity={0.65}>
               <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>All accounts</Text>
-              {selectedAccountId === null ? <Ionicons name="checkmark" size={16} color={colors.primary} /> : null}
+              {selectedAccountId === null ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
             </TouchableOpacity>
             {accountsQuery.data?.map(acc => {
               const c = colorNumberToHex(acc.color);
@@ -203,7 +203,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
                       <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} color={c} variant="solid" size={24} iconSize={11} />
                       <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>{acc.name}</Text>
                     </View>
-                    {selected ? <Ionicons name="checkmark" size={16} color={colors.primary} /> : null}
+                    {selected ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
                   </TouchableOpacity>
                 </React.Fragment>
               );
@@ -224,7 +224,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
           <TouchableOpacity style={[styles.exportBtn, (isExporting || previewCount === 0) && { opacity: 0.5 }]} onPress={handleExport} disabled={isExporting || previewCount === 0} activeOpacity={0.8}>
             {isExporting ? <ActivityIndicator size="small" color={colors.background} /> : (
               <>
-                <Ionicons name="download-outline" size={18} color={colors.background} />
+                <MaterialCommunityIcons name="download-outline" size={18} color={colors.background} />
                 <Text style={[styles.exportBtnText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>Export CSV</Text>
               </>
             )}
@@ -232,7 +232,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
 
           {previewCount === 0 ? (
             <View style={styles.warning}>
-              <Ionicons name="information-circle-outline" size={16} color={colors.warning} />
+              <MaterialCommunityIcons name="information-outline" size={16} color={colors.warning} />
               <Text style={[styles.warningText, { fontFamily: typography.fonts.regular, color: colors.warning }]}>No transactions match the selected filters.</Text>
             </View>
           ) : null}

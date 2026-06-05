@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export type AlertButton = {
   text: string;
@@ -19,10 +19,10 @@ type AlertModalProps = {
 };
 
 const ICONS = {
-  info: { name: 'information-circle' as const, bg: '#60A5FA15', fg: '#60A5FA' },
-  success: { name: 'checkmark-circle' as const, bg: '#0E9F6E15', fg: '#0E9F6E' },
+  info: { name: 'information' as const, bg: '#60A5FA15', fg: '#60A5FA' },
+  success: { name: 'check-circle' as const, bg: '#0E9F6E15', fg: '#0E9F6E' },
   error: { name: 'alert-circle' as const, bg: '#B4231815', fg: '#B42318' },
-  warning: { name: 'warning' as const, bg: '#F59E0B15', fg: '#F59E0B' },
+  warning: { name: 'alert' as const, bg: '#F59E0B15', fg: '#F59E0B' },
 } as const;
 
 export const AlertModal = React.memo(function AlertModal({
@@ -50,7 +50,7 @@ export const AlertModal = React.memo(function AlertModal({
         <View style={styles.card}>
           <View style={styles.body}>
             <View style={[styles.iconBox, { backgroundColor: iconCfg.bg }]}>
-              <Ionicons name={iconCfg.name} size={22} color={iconCfg.fg} />
+              <MaterialCommunityIcons name={iconCfg.name} size={22} color={iconCfg.fg} />
             </View>
 
             <Text style={styles.title}>{title}</Text>

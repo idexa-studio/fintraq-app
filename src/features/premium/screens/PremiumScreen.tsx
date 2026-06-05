@@ -3,7 +3,7 @@ import { Header } from '@/src/components/ui/Header';
 import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -70,8 +70,8 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           </View>
           <View style={styles.priceSep} />
           <View style={styles.perks}>
-            <View style={styles.perk}><Ionicons name="shield-checkmark" size={14} color={colors.success} /><Text style={[styles.perkText, { fontFamily: typography.fonts.regular, color: colors.success }]}>Permanent license</Text></View>
-            <View style={styles.perk}><Ionicons name="sync" size={14} color={colors.success} /><Text style={[styles.perkText, { fontFamily: typography.fonts.regular, color: colors.success }]}>Future updates included</Text></View>
+            <View style={styles.perk}><MaterialCommunityIcons name="shield-check" size={14} color={colors.success} /><Text style={[styles.perkText, { fontFamily: typography.fonts.regular, color: colors.success }]}>Permanent license</Text></View>
+            <View style={styles.perk}><MaterialCommunityIcons name="sync" size={14} color={colors.success} /><Text style={[styles.perkText, { fontFamily: typography.fonts.regular, color: colors.success }]}>Future updates included</Text></View>
           </View>
         </View>
 
@@ -80,7 +80,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
         <View style={styles.grid}>
           {FEATURES.map(f => (
             <View key={f.title} style={styles.tile}>
-              <Ionicons name={f.icon} size={20} color={colors.primary} />
+              <MaterialCommunityIcons name={f.icon} size={20} color={colors.primary} />
               <Text style={[styles.tileTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>{f.title}</Text>
               <Text style={[styles.tileDesc, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={3}>{f.description}</Text>
             </View>

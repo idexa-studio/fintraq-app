@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -12,9 +12,9 @@ import { RADIUS, SPACING } from '@/src/theme/tokens';
 import { TYPOGRAPHY } from '@/src/theme/typography';
 
 const SEARCH_FEATURES = [
-  { icon: 'receipt-outline' as const, label: 'Full-text search across all transactions' },
+  { icon: 'receipt-text-outline' as const, label: 'Full-text search across all transactions' },
   { icon: 'wallet-outline' as const, label: 'Find accounts by name instantly' },
-  { icon: 'pricetag-outline' as const, label: 'Locate categories across your history' },
+  { icon: 'tag-outline' as const, label: 'Locate categories across your history' },
 ];
 
 function SearchGate() {
@@ -27,14 +27,14 @@ function SearchGate() {
       <PageBackground />
 
       <TouchableOpacity style={styles.backBtn} onPress={() => router.back()} activeOpacity={0.75}>
-        <Ionicons name="arrow-back" size={20} color={colors.text} />
+        <MaterialCommunityIcons name="arrow-left" size={20} color={colors.text} />
       </TouchableOpacity>
 
       <View style={styles.body}>
         <View style={styles.iconWrap}>
-          <Ionicons name="search" size={32} color={colors.text} />
+          <MaterialCommunityIcons name="magnify" size={36} color={colors.text} />
           <View style={styles.proBadge}>
-            <Ionicons name="sparkles" size={10} color={colors.background} />
+            <MaterialCommunityIcons name="creation" size={12} color={colors.background} />
             <Text style={[styles.proBadgeText, { color: colors.background }]}>PRO</Text>
           </View>
         </View>
@@ -48,7 +48,7 @@ function SearchGate() {
           {SEARCH_FEATURES.map((f) => (
             <View key={f.label} style={styles.featureRow}>
               <View style={[styles.featureIcon, { backgroundColor: colors.surface }]}>
-                <Ionicons name={f.icon} size={15} color={colors.text} />
+                <MaterialCommunityIcons name={f.icon} size={16} color={colors.text} />
               </View>
               <Text style={[styles.featureLabel, { color: colors.textMuted }]}>{f.label}</Text>
             </View>
@@ -60,7 +60,7 @@ function SearchGate() {
           onPress={() => router.push('/premium')}
           activeOpacity={0.85}
         >
-          <Ionicons name="sparkles" size={16} color={colors.background} />
+          <MaterialCommunityIcons name="creation" size={16} color={colors.background} />
           <Text style={[styles.ctaBtnText, { color: colors.background }]}>Upgrade to Pro</Text>
         </TouchableOpacity>
 

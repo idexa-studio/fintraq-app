@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
@@ -32,7 +32,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
   if (items.length === 0) {
     return (
       <View style={styles.empty}>
-        <Ionicons name="pie-chart-outline" size={typography.sizes.md} color={colors.textMuted} />
+        <MaterialCommunityIcons name="chart-pie" size={typography.sizes.md} color={colors.textMuted} />
         <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>No expense data yet</Text>
       </View>
     );
@@ -50,7 +50,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
         return (
           <View key={cat.name} style={styles.itemContainer}>
             <View style={[styles.tile, { marginRight, marginLeft }]}>
-              <IconAvatar icon={resolveIcon(cat.icon, 'pricetag-outline')} color={accent} variant="solid" size={26}  />
+              <IconAvatar icon={resolveIcon(cat.icon, 'tag-outline')} color={accent} variant="solid" size={26}  />
               <View style={styles.text}>
                 <Text style={[styles.name, {  }]} numberOfLines={1}>{cat.name}</Text>
                 <MoneyText amount={cat.amount} currency={currency} type="DR" weight="bold" compact style={styles.amount} />

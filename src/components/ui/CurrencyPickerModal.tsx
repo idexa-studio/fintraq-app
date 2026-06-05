@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
@@ -89,7 +89,7 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
 
         {selected ? (
           <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-            <Ionicons name="checkmark" size={11} color={colors.background} />
+            <MaterialCommunityIcons name="check" size={12} color={colors.background} />
           </View>
         ) : (
           <View style={styles.checkPlaceholder} />
@@ -115,12 +115,12 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
               <Text style={styles.subtitle}>{CURRENCIES.length} currencies</Text>
             </View>
             <TouchableOpacity onPress={handleClose} style={styles.closeBtn} activeOpacity={0.7}>
-              <Ionicons name="close" size={14} color={colors.text} />
+              <MaterialCommunityIcons name="close" size={18} color={colors.text} />
             </TouchableOpacity>
           </View>
 
           <View style={styles.searchWrap}>
-            <Ionicons name="search-outline" size={15} color={colors.textMuted} />
+            <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
             <TextInput
               style={styles.searchInput}
               value={query}
@@ -133,7 +133,7 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
             />
             {query.length > 0 && (
               <TouchableOpacity onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <Ionicons name="close-circle" size={15} color={colors.textMuted} />
+                <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
               </TouchableOpacity>
             )}
           </View>
@@ -152,8 +152,8 @@ export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
             removeClippedSubviews
             ListEmptyComponent={
               <View style={styles.emptyWrap}>
-                <Ionicons name="search-outline" size={24} color={colors.textMuted} />
-                <Text style={styles.emptyText}>No results for "{query}"</Text>
+                <MaterialCommunityIcons name="magnify" size={24} color={colors.textMuted} />
+                <Text style={styles.emptyText}>No results for &quot;{query}&quot;</Text>
               </View>
             }
           />

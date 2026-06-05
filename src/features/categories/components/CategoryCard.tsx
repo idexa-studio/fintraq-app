@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
@@ -38,8 +38,8 @@ export const CategoryCard = React.memo(function CategoryCard({
       activeOpacity={0.72}
     >
       <View style={[styles.iconWrap, { backgroundColor: catColor + '22' }]}>
-        <Ionicons
-          name={resolveIcon(item.icon, 'grid-outline')}
+        <MaterialCommunityIcons
+          name={resolveIcon(item.icon, 'grid')}
           size={14}
           color={catColor}
         />

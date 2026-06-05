@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
@@ -15,7 +15,7 @@ type ButtonProps = {
   disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
-  icon?: keyof typeof Ionicons.glyphMap;
+  icon?: keyof typeof MaterialCommunityIcons.glyphMap;
 };
 
 export const Button = React.memo(function Button({
@@ -80,7 +80,7 @@ export const Button = React.memo(function Button({
       activeOpacity={0.75}
     >
       {icon && !isLoading && (
-        <Ionicons
+        <MaterialCommunityIcons
           name={icon}
           size={size === 'sm' ? 16 : size === 'lg' ? 24 : 20}
           color={textColor}

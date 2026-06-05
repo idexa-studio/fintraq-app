@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useState, useCallback } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { CURRENCIES } from '../../../constants/currency';
@@ -56,7 +56,7 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
           <Text style={styles.symbolText}>{item.symbol}</Text>
         </View>
         {isSelected && (
-          <Ionicons name="checkmark-circle" size={18} color={colors.primary} />
+          <MaterialCommunityIcons name="check-circle" size={18} color={colors.primary} />
         )}
       </TouchableOpacity>
     );
@@ -73,7 +73,7 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
       </View>
 
       <View style={styles.searchRow}>
-        <Ionicons name="search-outline" size={15} color={colors.textMuted} />
+        <MaterialCommunityIcons name="magnify" size={15} color={colors.textMuted} />
         <TextInput
           style={styles.searchInput}
           value={query}
@@ -86,7 +86,7 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
         />
         {query.length > 0 && (
           <TouchableOpacity onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Ionicons name="close-circle" size={15} color={colors.textMuted} />
+            <MaterialCommunityIcons name="close-circle" size={15} color={colors.textMuted} />
           </TouchableOpacity>
         )}
       </View>

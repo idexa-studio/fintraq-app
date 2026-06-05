@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
@@ -31,13 +31,13 @@ export const DashboardHeader = React.memo(function DashboardHeader({
       </View>
       <View style={styles.actions}>
         <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.7}>
-          <Ionicons name="search-outline" size={18} color={colors.text} />
+          <MaterialCommunityIcons name="magnify" size={18} color={colors.text} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconBtn} onPress={onAnalytics} activeOpacity={0.7}>
-          <Ionicons name="pie-chart-outline" size={18} color={colors.text} />
+          <MaterialCommunityIcons name="chart-pie" size={18} color={colors.text} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconBtn} onPress={onSettings} activeOpacity={0.7}>
-          <Ionicons name="settings-outline" size={18} color={colors.text} />
+          <MaterialCommunityIcons name="cog-outline" size={18} color={colors.text} />
         </TouchableOpacity>
       </View>
     </View>

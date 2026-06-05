@@ -13,7 +13,7 @@ import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, parseAmount, toDbColor } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -236,7 +236,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                     activeOpacity={0.85}
                   >
                     <Text style={styles.currencyValue}>{currency}</Text>
-                    <Ionicons name="chevron-expand-outline" size={14} color={colors.textMuted} />
+                    <MaterialCommunityIcons name="unfold-more-vertical" size={14} color={colors.textMuted} />
                   </TouchableOpacity>
                 </View>
               </View>

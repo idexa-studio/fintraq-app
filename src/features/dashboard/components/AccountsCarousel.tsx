@@ -99,7 +99,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
         onPress={onPressAdd}
         activeOpacity={0.85}
       >
-        <IconAvatar icon="add" color={colors.primary} variant="subtle" size={48} iconSize={22} />
+        <IconAvatar icon="plus" color={colors.primary} variant="subtle" size={48} iconSize={22} />
         <View style={styles.addText}>
           <Text style={[styles.addTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
             Add account

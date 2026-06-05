@@ -45,11 +45,11 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
     title: {
       fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
-      fontSize: 13,
+      fontSize: typography.sizes.md,
     },
     right: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       color: colors.primary,
-      fontSize: 10,
+      fontSize: typography.sizes.xs,
     },
   });

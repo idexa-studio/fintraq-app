@@ -1,5 +1,5 @@
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
@@ -187,11 +187,11 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
             ))
           ) : (
             <View style={styles.emptyActivity}>
-              <Ionicons name="receipt-outline" size={28} color={colors.textMuted} />
+              <MaterialCommunityIcons name="receipt-text-outline" size={28} color={colors.textMuted} />
               <Text style={styles.emptyText}>No transactions yet</Text>
               <TouchableOpacity style={styles.emptyAction} onPress={navigateToCreateTx}>
                 <Text style={styles.emptyActionText}>Add one now</Text>
-                <Ionicons name="arrow-forward" size={12} color={colors.background} />
+                <MaterialCommunityIcons name="arrow-right" size={12} color={colors.background} />
               </TouchableOpacity>
             </View>
           )}
@@ -200,7 +200,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       </ScrollView>
 
       <TouchableOpacity style={styles.fab} onPress={navigateToCreateTx} activeOpacity={0.9}>
-        <Ionicons name="add" size={26} color={colors.background} />
+        <MaterialCommunityIcons name="plus" size={26} color={colors.background} />
       </TouchableOpacity>
 
       <PremiumUpsellSheet visible={showUpsell && !isPremium} onClose={dismissUpsell} />

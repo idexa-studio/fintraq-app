@@ -1,9 +1,9 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
-type IconName = keyof typeof Ionicons.glyphMap;
+type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
 export type OptionsDialogOption = {
   key: string;
@@ -62,7 +62,7 @@ export const OptionsDialog = React.memo(function OptionsDialog({
                 onPress={() => handleOptionPress(opt)}
               >
                 {opt.icon ? (
-                  <Ionicons
+                  <MaterialCommunityIcons
                     name={opt.icon}
                     size={20}
                     color={selected ? colors.primary : opt.destructive ? colors.danger : colors.text}
@@ -78,7 +78,7 @@ export const OptionsDialog = React.memo(function OptionsDialog({
                   {opt.label}
                 </Text>
                 {selected ? (
-                  <Ionicons name="checkmark" size={18} color={colors.primary} />
+                  <MaterialCommunityIcons name="check" size={18} color={colors.primary} />
                 ) : null}
               </TouchableOpacity>
             );

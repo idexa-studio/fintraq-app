@@ -1,6 +1,6 @@
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
@@ -96,7 +96,7 @@ export const PersonPickerModal = React.memo(function PersonPickerModal({
         </View>
         {selected && (
           <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-            <Ionicons name="checkmark" size={11} color={colors.background} />
+            <MaterialCommunityIcons name="check" size={12} color={colors.background} />
           </View>
         )}
       </TouchableOpacity>
@@ -117,7 +117,7 @@ export const PersonPickerModal = React.memo(function PersonPickerModal({
           </View>
 
           <View style={styles.searchWrap}>
-            <Ionicons name="search-outline" size={15} color={colors.textMuted} />
+            <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
             <TextInput
               style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
               value={query}
@@ -130,7 +130,7 @@ export const PersonPickerModal = React.memo(function PersonPickerModal({
             />
             {query.length > 0 && (
               <TouchableOpacity onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <Ionicons name="close-circle" size={15} color={colors.textMuted} />
+                <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
               </TouchableOpacity>
             )}
           </View>
@@ -142,7 +142,7 @@ export const PersonPickerModal = React.memo(function PersonPickerModal({
             activeOpacity={0.7}
           >
             <View style={styles.noneAvatar}>
-              <Ionicons name="person-outline" size={16} color={colors.textMuted} />
+              <MaterialCommunityIcons name="account-outline" size={18} color={colors.textMuted} />
             </View>
             <View style={styles.rowMeta}>
               <Text style={[styles.rowName, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
@@ -151,7 +151,7 @@ export const PersonPickerModal = React.memo(function PersonPickerModal({
             </View>
             {selectedId === null && (
               <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-                <Ionicons name="checkmark" size={11} color={colors.background} />
+                <MaterialCommunityIcons name="check" size={12} color={colors.background} />
               </View>
             )}
           </TouchableOpacity>

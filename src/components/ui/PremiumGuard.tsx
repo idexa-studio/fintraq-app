@@ -1,5 +1,5 @@
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
@@ -87,8 +87,8 @@ export const PremiumGuard = React.memo(function PremiumGuard({
     >
       {/* Background Accent & Watermark */}
       <View style={[StyleSheet.absoluteFillObject, { backgroundColor: colors.primary, opacity: 0.02 }]} />
-      <Ionicons
-        name="sparkles"
+      <MaterialCommunityIcons
+        name="creation"
         size={isSmall ? 60 : 120}
         color={colors.primary}
         style={[styles.watermark, { opacity: 0.05 }]}
@@ -99,7 +99,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
         <View style={styles.headerRow}>
 
           <View style={iconBoxStyles}>
-             <Ionicons name="lock-closed-outline" size={iconSize} color={colors.text} />
+             <MaterialCommunityIcons name="lock-outline" size={iconSize} color={colors.text} />
           </View>
 
           <View style={styles.textDetails}>

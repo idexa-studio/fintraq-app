@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
@@ -41,8 +41,8 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
               onPress={() => handleSelect(cat.id)}
               activeOpacity={0.8}
             >
-              <Ionicons
-                name={resolveIcon(cat.icon, 'pricetag-outline')}
+              <MaterialCommunityIcons
+                name={resolveIcon(cat.icon, 'tag-outline')}
                 size={14}
                 color={selected ? colors.background : catColor}
               />

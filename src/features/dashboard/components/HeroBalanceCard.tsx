@@ -1,7 +1,7 @@
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { StreakBadge } from '@/src/features/reports/components/StreakBadge';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -40,7 +40,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
       <View style={styles.stats}>
         <View style={styles.stat}>
           <View style={styles.statLabelRow}>
-            <Ionicons name="arrow-up-circle" size={12} color={heroCard.income} />
+            <MaterialCommunityIcons name="arrow-up-circle" size={12} color={heroCard.income} />
             <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold }]}>Income</Text>
           </View>
           <MoneyText
@@ -56,7 +56,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
 
         <View style={styles.stat}>
           <View style={styles.statLabelRow}>
-            <Ionicons name="arrow-down-circle" size={12} color={heroCard.expense} />
+            <MaterialCommunityIcons name="arrow-down-circle" size={12} color={heroCard.expense} />
             <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold }]}>Expenses</Text>
           </View>
           <MoneyText

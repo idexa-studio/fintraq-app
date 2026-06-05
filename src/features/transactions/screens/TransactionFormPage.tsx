@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -312,13 +312,13 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
                 onPress={() => setShowPersonPicker(true)}
                 activeOpacity={0.8}
               >
-                <Ionicons name="person-outline" size={16} color={colors.primary} />
+                <MaterialCommunityIcons name="account-outline" size={18} color={colors.primary} />
                 <Text style={[styles.dateTimeText, { flex: 1 }, !selectedPersonId && { color: colors.textMuted }]}>
                   {selectedPersonId
                     ? (persons.find(p => p.id === selectedPersonId)?.name ?? 'Unknown')
                     : 'No person'}
                 </Text>
-                <Ionicons name="chevron-expand-outline" size={14} color={colors.textMuted} />
+                <MaterialCommunityIcons name="unfold-more-vertical" size={16} color={colors.textMuted} />
               </TouchableOpacity>
             </View>
           )}
@@ -330,14 +330,14 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
                 style={styles.dateTimeBtn}
                 onPress={() => setShowDatePicker(true)}
               >
-                <Ionicons name="calendar-outline" size={18} color={colors.primary} />
+                <MaterialCommunityIcons name="calendar-outline" size={18} color={colors.primary} />
                 <Text style={styles.dateTimeText}>{formattedDate}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.dateTimeBtn}
                 onPress={() => setShowTimePicker(true)}
               >
-                <Ionicons name="time-outline" size={18} color={colors.primary} />
+                <MaterialCommunityIcons name="clock-outline" size={18} color={colors.primary} />
                 <Text style={styles.dateTimeText}>{formattedTime}</Text>
               </TouchableOpacity>
             </View>

@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
@@ -73,7 +73,7 @@ const SwipeActionButton = React.memo(function SwipeActionButton({
   backgroundColor,
 }: {
   onPress: () => void;
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
   color: string;
   backgroundColor: string;
 }) {
@@ -83,7 +83,7 @@ const SwipeActionButton = React.memo(function SwipeActionButton({
       activeOpacity={0.75}
       style={[swipeActionStyles.actionBase, { backgroundColor }]}
     >
-      <Ionicons name={icon} size={18} color={color} />
+      <MaterialCommunityIcons name={icon} size={18} color={color} />
     </TouchableOpacity>
   );
 });
@@ -108,13 +108,13 @@ const RightActions = React.memo(function RightActions({
     <View style={swipeActionStyles.container}>
       <SwipeActionButton
         onPress={onEdit}
-         icon="pencil"
+         icon="pencil-outline"
          color={editIconColor}
         backgroundColor={editBgColor}
       />
       <SwipeActionButton
         onPress={onDelete}
-        icon="trash"
+        icon="trash-can-outline"
         color={deleteIconColor}
         backgroundColor={deleteBgColor}
       />
@@ -479,7 +479,7 @@ export function TransactionsScreen() {
         rightAction={(
           <View style={styles.headerActions}>
             <TouchableOpacity onPress={() => setShowAdvancedFilterSheet(true)} activeOpacity={0.7} style={{ position: 'relative' }}>
-              <Ionicons name="options-outline" size={19} color={colors.text} />
+              <MaterialCommunityIcons name="tune" size={19} color={colors.text} />
               {activeFilterCount > 0 && (
                 <View style={styles.filterBadge}>
                   <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
@@ -527,7 +527,7 @@ export function TransactionsScreen() {
         ListEmptyComponent={(
           <View style={styles.emptyWrap}>
             <View style={styles.emptyIconBox}>
-              <Ionicons name="receipt-outline" size={32} color={colors.textMuted} />
+              <MaterialCommunityIcons name="receipt-text-outline" size={32} color={colors.textMuted} />
             </View>
             <Text style={styles.emptyTitle}>Nothing here yet</Text>
             <Text style={styles.emptySubtitle}>
@@ -537,7 +537,7 @@ export function TransactionsScreen() {
             </Text>
             <TouchableOpacity style={styles.emptyAction} onPress={() => router.push('/transactions/create')}>
               <Text style={styles.emptyActionText}>Add Transaction</Text>
-              <Ionicons name="arrow-forward" size={14} color={colors.background} />
+              <MaterialCommunityIcons name="arrow-right" size={14} color={colors.background} />
             </TouchableOpacity>
           </View>
         )}
@@ -549,7 +549,7 @@ export function TransactionsScreen() {
       />
 
       <TouchableOpacity style={styles.fab} onPress={() => router.push('/transactions/create')} activeOpacity={0.9}>
-        <Ionicons name="add" size={28} color={colors.background} />
+        <MaterialCommunityIcons name="plus" size={28} color={colors.background} />
       </TouchableOpacity>
 
       <ConfirmDialog
