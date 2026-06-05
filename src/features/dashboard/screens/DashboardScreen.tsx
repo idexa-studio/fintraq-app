@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { DEFAULT_CURRENCY } from '../../../constants/currency';
@@ -17,7 +17,7 @@ import { DashboardHeader } from '../components/DashboardHeader';
 import { HeroBalanceCard } from '../components/HeroBalanceCard';
 import { InsightsSection } from '../components/InsightsSection';
 import { PremiumUpsellSheet } from '../components/PremiumUpsellSheet';
-import { SectionHeader } from '../components/SectionHeader';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '../components/TopPersonsCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
@@ -35,7 +35,8 @@ const todayLabel = () =>
 export const DashboardScreen = React.memo(function DashboardScreen() {
   const theme = useTheme();
   const { colors } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
   const { isPremium } = usePremium();
   const router = useRouter();
   useSettings();
@@ -204,11 +205,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
-  StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, bottomInset: number) => {
+  const barHeight = 80 + bottomInset;
+
+  return StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
-    content: { paddingBottom: 110 },
+    content: { paddingBottom: barHeight + 20 },
 
     // ── Currency tabs
     currencyTabsWrap: { marginHorizontal: layout.screenPadding, marginBottom: spacing('4') },
@@ -220,7 +223,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.surface,
     },
     currencyTabActive: { backgroundColor: colors.primary + '15' },
-    currencyTabText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 12 },
+    currencyTabText: { fontFamily: typography.fonts.medium, color: colors.textMuted, fontSize: 12 },
     currencyTabTextActive: { color: colors.primary },
 
     // ── Activity card
@@ -252,7 +255,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     // ── FAB
     fab: {
       position: 'absolute',
-      bottom: layout.screenPadding,
+      bottom: barHeight + 16,
       right: layout.screenPadding,
       width: 52,
       height: 52,
@@ -262,3 +265,4 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
     },
   });
+};

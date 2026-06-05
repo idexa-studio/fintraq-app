@@ -6,7 +6,7 @@ import { PremiumGuard } from '../../../components/ui/PremiumGuard';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useDashboardInsights } from '../hooks/dashboard';
 import { InsightCard } from './InsightCard';
-import { SectionHeader } from './SectionHeader';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
 
 interface InsightsSectionProps {
   currency: string;
@@ -173,7 +173,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexDirection: 'row',
       justifyContent: 'center',
       gap: spacing('2'),
-      marginTop: spacing('3'),
+      marginTop: spacing('2'),
     },
     dot: {
       width: 6,

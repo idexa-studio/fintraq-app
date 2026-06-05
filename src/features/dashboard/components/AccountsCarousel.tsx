@@ -60,14 +60,14 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
                   </Text>
                 </View>
                 <View style={[styles.currencyBadge, { backgroundColor: c + '1A' }]}>
-                  <Text style={[styles.currency, { fontFamily: typography.fonts.semibold, color: c }]}>
+                  <Text style={[styles.currency, { fontFamily: typography.fonts.medium, color: c }]}>
                     {acc.currency}
                   </Text>
                 </View>
               </View>
 
               <View>
-                <Text style={[styles.balanceLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+                <Text style={[styles.balanceLabel, { fontFamily: typography.fonts.medium, color: colors.textMuted }]}>
                   Available
                 </Text>
                 <MoneyText amount={acc.balance} currency={acc.currency} style={styles.balance} weight="bold" />
@@ -77,13 +77,13 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
             {/* Lower: stats on contrasting background */}
             <View style={styles.lower}>
               <View style={styles.stat}>
-                <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.success }]}>
+                <Text style={[styles.statLabel, { fontFamily: typography.fonts.medium, color: colors.success }]}>
                   Income
                 </Text>
                 <MoneyText amount={acc.income} currency={acc.currency} type="CR" compact style={styles.statValue} />
               </View>
               <View style={styles.stat}>
-                <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
+                <Text style={[styles.statLabel, { fontFamily: typography.fonts.medium, color: colors.danger }]}>
                   Expenses
                 </Text>
                 <MoneyText amount={acc.expense} currency={acc.currency} type="DR" compact style={styles.statValue} />
@@ -159,7 +159,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     stat: { gap: spacing('0.5') },
     statLabel: { fontSize: 11 },
-    statValue: { fontSize: 13, fontFamily: typography.fonts.semibold },
+    statValue: { fontSize: 13, fontFamily: typography.fonts.medium },
 
     addCard: {
       borderRadius: radius('xl'),

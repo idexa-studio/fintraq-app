@@ -58,7 +58,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
                 <IconAvatar icon={resolveIcon(cat.icon, 'tag-outline')} color={accent} variant="subtle" size={32} iconSize={15} />
                 <View style={styles.textContainer}>
                   <Text style={styles.name} numberOfLines={1}>{cat.name}</Text>
-                  <MoneyText amount={cat.amount} currency={currency} type="DR" weight="bold" compact style={styles.amount} />
+                  <MoneyText amount={cat.amount} currency={currency} type="DR" weight="medium" compact style={styles.amount} />
                 </View>
               </View>
               <View style={styles.progressContainer}>
@@ -89,7 +89,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexDirection: 'row',
       flexWrap: 'wrap',
     },
-    itemContainer: { width: '50%', marginBottom: spacing('3') },
+    itemContainer: { width: '50%', marginBottom: spacing('2') },
     tile: {
       backgroundColor: colors.surface,
       padding: spacing('3'),
@@ -106,7 +106,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flex: 1,
       gap: spacing('0.5'),
     },
-    name: { fontSize: typography.sizes.sm, fontFamily: typography.fonts.semibold, color: colors.text },
+    name: { fontSize: typography.sizes.sm, fontFamily: typography.fonts.medium, color: colors.text },
     amount: { fontSize: typography.sizes.xs },
     progressContainer: {
       height: 4,

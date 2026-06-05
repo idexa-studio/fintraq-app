@@ -10,7 +10,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -18,7 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Person } from '../api/persons';
 
 const FREE_PERSON_LIMIT = 10;
@@ -38,7 +37,8 @@ function PersonInitials({ name, color, size = 40 }: { name: string; color: strin
 export const PersonsScreen = React.memo(function PersonsScreen() {
   const theme = useTheme();
   const { colors, typography } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
   const router = useRouter();
   const { isPremium } = usePremium();
 
@@ -207,8 +207,6 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
             </Text>
           </View>
         )}
-
-        <View style={styles.bottomPad} />
       </ScrollView>
 
       <TouchableOpacity style={[styles.fab, { backgroundColor: atLimit ? colors.textMuted : colors.text }]} onPress={handleAdd} activeOpacity={0.85}>
@@ -238,11 +236,16 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   );
 });
 
-const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeContextType) =>
-  StyleSheet.create({
+const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeContextType, bottomInset: number) => {
+  const barHeight = 80 + bottomInset;
+
+  return StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
-    scroll: { paddingHorizontal: layout.screenPadding, paddingTop: spacing('2') },
-    bottomPad: { height: spacing('9') },
+    scroll: {
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('2'),
+      paddingBottom: barHeight + 20,
+    },
 
     searchRow: {
       paddingHorizontal: layout.screenPadding,
@@ -291,7 +294,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     rowMeta: { flex: 1 },
     rowName: {
       fontSize: typography.sizes.md,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       color: colors.text,
     },
     rowSub: {
@@ -308,7 +311,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
 
     fab: {
       position: 'absolute',
-      bottom: Platform.OS === 'ios' ? spacing('9') : spacing('6'),
+      bottom: barHeight + 16,
       right: layout.screenPadding,
       width: 56,
       height: 56,
@@ -317,3 +320,4 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       alignItems: 'center',
     },
   });
+};

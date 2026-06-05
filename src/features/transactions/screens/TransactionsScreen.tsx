@@ -658,16 +658,15 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     dayTitle: {
       color: colors.textMuted,
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
-      letterSpacing: 1.2,
+      fontFamily: typography.fonts.medium,
+      fontSize: typography.sizes.xs,
     },
     dayTotals: {
       flexDirection: 'row',
       gap: spacing('3'),
     },
     dayTotalValue: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       fontSize: 12,
     },
     dayCard: {

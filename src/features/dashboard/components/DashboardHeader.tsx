@@ -63,7 +63,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     left: { gap: spacing('0.5') },
     greeting: {
-      fontFamily: typography.fonts.heading,
+      fontFamily: typography.fonts.semibold,
       color: colors.text,
       fontSize: 24,
     },
@@ -82,7 +82,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       borderRadius: radius('full'),
     },
     premiumText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       color: colors.primary,
       fontSize: 11,
     },
@@ -112,7 +112,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
     },
     avatarText: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.fonts.semibold,
       color: colors.primary,
       fontSize: 13,
     },

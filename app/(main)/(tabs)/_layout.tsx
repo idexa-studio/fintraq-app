@@ -2,10 +2,15 @@ import { useTheme } from '@/src/providers/ThemeProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React, { useCallback } from 'react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
   const { colors, typography } = useTheme();
+  const insets = useSafeAreaInsets();
+
+  const bottomPadding = insets.bottom > 0 ? insets.bottom : 12;
+  const barHeight = 80 + insets.bottom;
 
   const renderTabBarIcon = useCallback((iconName: string) => {
     const TabBarIconComponent = ({ focused }: { focused: boolean }) => {
@@ -50,9 +55,9 @@ export default function TabsLayout() {
           borderTopWidth: 0,
           elevation: 0,
           shadowOpacity: 0,
-          height: Platform.OS === 'ios' ? 92 : 76,
+          height: barHeight,
           paddingTop: 12,
-          paddingBottom: Platform.OS === 'ios' ? 28 : 16,
+          paddingBottom: bottomPadding,
         },
       }}
     >

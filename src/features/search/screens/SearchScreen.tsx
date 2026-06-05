@@ -107,7 +107,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: spacing('2.5'),
     },
     sectionTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       opacity: 0.7,

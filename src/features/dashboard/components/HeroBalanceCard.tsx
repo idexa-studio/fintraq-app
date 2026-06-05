@@ -23,7 +23,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
       <View style={styles.deco2} pointerEvents="none" />
 
       <View style={styles.header}>
-        <Text style={[styles.label, { fontFamily: typography.fonts.semibold }]}>
+        <Text style={[styles.label, { fontFamily: typography.fonts.medium }]}>
           Total balance
         </Text>
         <StreakBadge />
@@ -46,7 +46,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
             amount={income}
             currency={currency}
             type="CR"
-            weight="bold"
+            weight="semibold"
             style={[styles.statValue, { color: heroCard.income }]}
           />
         </View>
@@ -60,7 +60,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
             amount={expense}
             currency={currency}
             type="DR"
-            weight="bold"
+            weight="semibold"
             style={[styles.statValue, { color: heroCard.expense }]}
           />
         </View>
@@ -73,7 +73,7 @@ const createStyles = ({ heroCard, spacing, radius, layout, typography }: ThemeCo
   StyleSheet.create({
     card: {
       marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('4'),
+      marginBottom: spacing('2'),
       borderRadius: radius('2xl'),
       backgroundColor: heroCard.background,
       padding: spacing('5'),

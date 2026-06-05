@@ -4,6 +4,7 @@ import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { PageBackground } from '@/src/components/ui/PageBackground';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { TextInputSheet } from '@/src/components/ui/TextInputSheet';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments, persons, seederState } from '@/src/db/schema';
@@ -29,7 +30,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 type SwitchRowProps = {
@@ -154,7 +155,8 @@ const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: 
 export const SettingsScreen = React.memo(function SettingsScreen() {
   const theme = useTheme();
   const { colors, typography, heroCard } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
 
   const { isPremium } = usePremium();
   const { profile, updateProfile } = useSettings();
@@ -294,9 +296,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           </View>
         </View>
 
-        <Text style={styles.sectionLabel}>
-          Plan
-        </Text>
+        <SectionHeader title="Plan" noPadding />
         <View style={styles.group}>
           <NavRow
             theme={theme}
@@ -310,9 +310,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <Text style={styles.sectionLabel}>
-          Preferences
-        </Text>
+        <SectionHeader title="Preferences" noPadding />
         <View style={styles.group}>
           <SwitchRow
             theme={theme}
@@ -376,9 +374,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         )}
 
-        <Text style={styles.sectionLabel}>
-          Data
-        </Text>
+        <SectionHeader title="Data" noPadding />
         <View style={styles.group}>
           <NavRow
             theme={theme}
@@ -407,9 +403,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <Text style={styles.sectionLabel}>
-          Legal
-        </Text>
+        <SectionHeader title="Legal" noPadding />
         <View style={styles.group}>
           <NavRow
             theme={theme}
@@ -430,9 +424,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <Text style={styles.sectionLabel}>
-          Danger zone
-        </Text>
+        <SectionHeader title="Danger zone" noPadding />
         <View style={styles.group}>
           <NavRow
             theme={theme}
@@ -497,8 +489,10 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   );
 });
 
-const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }: ThemeContextType) =>
-  StyleSheet.create({
+const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }: ThemeContextType, bottomInset: number) => {
+  const barHeight = 80 + bottomInset;
+
+  return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
@@ -506,7 +500,7 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
-      paddingBottom: spacing('9'),
+      paddingBottom: barHeight + 20,
     },
 
     heroCard: {
@@ -571,18 +565,10 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
       opacity: 0.4,
     },
 
-    sectionLabel: {
-      fontFamily: typography.fonts.semibold,
-      color: colors.textMuted,
-      fontSize: typography.sizes.xs,
-      marginTop: spacing('5'),
-      marginBottom: spacing('3'),
-    },
-
     group: {
       borderRadius: radius('xl'),
       overflow: 'hidden',
-      marginBottom: spacing('6'),
+      marginBottom: spacing('3'),
     },
 
     footer: {
@@ -600,3 +586,4 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
       opacity: 0.4,
     },
   });
+};

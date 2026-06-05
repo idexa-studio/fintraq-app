@@ -342,7 +342,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
       overflow: 'hidden',
-      marginBottom: spacing('6'),
+      marginBottom: spacing('3'),
     },
     cardHeader: {
       flexDirection: 'row',

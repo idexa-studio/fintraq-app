@@ -1,5 +1,6 @@
 import { Header } from '@/src/components/ui/Header';
 import { PageBackground } from '@/src/components/ui/PageBackground';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES } from '@/src/constants/iap';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -28,7 +29,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
           </Text>
         </View>
 
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>Your pro tools</Text>
+        <SectionHeader title="Your pro tools" noPadding />
 
         <View style={styles.grid}>
           {FEATURES.map(f => (
@@ -60,7 +61,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     heroLabel: { fontSize: typography.sizes.xs },
     heroTitle: { fontSize: typography.sizes.xxxl, lineHeight: 34 },
     heroSub: { fontSize: typography.sizes.sm, lineHeight: 20, opacity: 0.7 },
-    sectionLabel: { fontSize: 10, opacity: 0.6, marginBottom: spacing('3'), paddingLeft: spacing('1') },
+
     grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
     tile: { width: '47%', backgroundColor: colors.surface, borderRadius: radius('xl'), padding: spacing('3.5'), gap: spacing('2') },
     tileTitle: { fontSize: typography.sizes.sm },

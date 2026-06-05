@@ -73,10 +73,9 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     name: {
       flex: 1,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       fontSize: 13,
       color: colors.text,
-      letterSpacing: -0.1,
       lineHeight: 18,
     },
   });

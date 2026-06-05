@@ -12,20 +12,20 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Account } from '../api/accounts';
 
 export const AccountsScreen = React.memo(function AccountsScreen() {
   const theme = useTheme();
   const { colors, typography } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
 
   const { data: accounts } = useAccounts();
   const deleteAccount = useDeleteAccount();
@@ -165,7 +165,6 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
           </View>
         ) : null}
 
-        <View style={styles.bottomPad} />
       </ScrollView>
 
       <TouchableOpacity style={styles.fab} onPress={handleAdd} activeOpacity={0.85}>
@@ -192,14 +191,16 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: ThemeContextType) =>
-  StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: ThemeContextType, bottomInset: number) => {
+  const barHeight = 80 + bottomInset;
+
+  return StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
+      paddingBottom: barHeight + 20,
     },
-    bottomPad: { height: spacing('9') },
 
     card: {
       backgroundColor: colors.surface,
@@ -224,7 +225,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       gap: spacing('0.5'),
     },
     cardName: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       color: colors.text,
       fontSize: typography.sizes.md,
     },
@@ -246,11 +247,11 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       borderRadius: radius('full'),
     },
     currencyText: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.fonts.medium,
       fontSize: typography.sizes.xs,
     },
     balanceLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
     },
@@ -270,7 +271,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       backgroundColor: colors.text + '0C',
     },
     statLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
     },
@@ -280,7 +281,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
 
     fab: {
       position: 'absolute',
-      bottom: Platform.OS === 'ios' ? spacing('9') : spacing('6'),
+      bottom: barHeight + 16,
       right: layout.screenPadding,
       width: 56,
       height: 56,
@@ -299,3 +300,4 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       opacity: 0.4,
     },
   });
+};

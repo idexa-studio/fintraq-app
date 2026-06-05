@@ -85,7 +85,7 @@ titleBlock: {
     justifyContent: 'center',
   },
   title: {
-    fontFamily: typography.fonts.heading,
+    fontFamily: typography.fonts.semibold,
     color: colors.text,
     fontSize: typography.sizes.xxl,
     lineHeight: 26,

@@ -185,7 +185,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
     justifyContent: 'center',
   },
   title: {
-    fontFamily: typography.fonts.semibold,
+    fontFamily: typography.fonts.medium,
     fontSize: typography.sizes.sm,
     lineHeight: 18,
   },

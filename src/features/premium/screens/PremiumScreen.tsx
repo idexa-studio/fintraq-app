@@ -1,5 +1,6 @@
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { Header } from '@/src/components/ui/Header';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -75,7 +76,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           </View>
         </View>
 
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>Everything included</Text>
+        <SectionHeader title="Everything included" noPadding />
 
         <View style={styles.grid}>
           {FEATURES.map(f => (
@@ -125,7 +126,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     perks: { gap: spacing('2') },
     perk: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
     perkText: { fontSize: typography.sizes.xs },
-    sectionLabel: { fontSize: 10, opacity: 0.6, marginBottom: spacing('3'), paddingLeft: spacing('1') },
+
     grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
     tile: { width: '47%', backgroundColor: colors.surface, borderRadius: radius('xl'), padding: spacing('3.5'), gap: spacing('2') },
     tileTitle: { fontSize: typography.sizes.sm },

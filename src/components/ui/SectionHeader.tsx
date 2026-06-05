@@ -1,3 +1,4 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
@@ -6,23 +7,27 @@ type Props = {
   title: string;
   rightText?: string;
   onPressRight?: () => void;
+  noPadding?: boolean;
 };
 
 export const SectionHeader = React.memo(function SectionHeader({
   title,
   rightText,
   onPressRight,
+  noPadding = false,
 }: Props) {
   const theme = useTheme();
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <View style={styles.wrap}>
+    <View style={[styles.wrap, noPadding && styles.noPadding]}>
       <Text style={styles.title}>{title}</Text>
       {rightText ? (
         onPressRight ? (
-          <TouchableOpacity onPress={onPressRight} activeOpacity={0.8}>
+          <TouchableOpacity onPress={onPressRight} activeOpacity={0.7} style={styles.rightBtn}>
             <Text style={styles.right}>{rightText}</Text>
+            <MaterialCommunityIcons name="chevron-right" size={14} color={colors.primary} />
           </TouchableOpacity>
         ) : (
           <Text style={styles.right}>{rightText}</Text>
@@ -39,17 +44,25 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: layout.screenPadding,
-      marginTop: spacing('5'),
-      marginBottom: spacing('3'),
+      marginTop: spacing('4'),
+      marginBottom: spacing('2'),
+    },
+    noPadding: {
+      paddingHorizontal: 0,
     },
     title: {
       fontFamily: typography.fonts.semibold,
       color: colors.text,
-      fontSize: 16,
+      fontSize: 12,
+    },
+    rightBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('0.5'),
     },
     right: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       color: colors.primary,
-      fontSize: 13,
+      fontSize: 12,
     },
   });

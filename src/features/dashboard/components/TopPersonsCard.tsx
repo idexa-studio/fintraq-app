@@ -26,7 +26,7 @@ function PersonInitials({ name, color, size = 32 }: { name: string; color: strin
     }}>
       <Text style={{
         color: color,
-        fontFamily: typography.fonts.semibold,
+        fontFamily: typography.fonts.medium,
         fontSize: Math.round(size * 0.38),
       }}>{initials}</Text>
     </View>
@@ -59,7 +59,7 @@ export const TopPersonsCard = React.memo(function TopPersonsCard({ currency, per
                   amount={Math.abs(person.net)}
                   currency={currency}
                   type={isPositive ? 'CR' : 'DR'}
-                  weight="bold"
+                  weight="medium"
                   compact
                   style={styles.cellAmount}
                 />
@@ -81,7 +81,7 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     },
     itemWrap: {
       width: '50%',
-      marginBottom: spacing('3'),
+      marginBottom: spacing('2'),
     },
     cell: {
       backgroundColor: colors.surface,
@@ -98,7 +98,7 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     },
     cellName: {
       fontSize: typography.sizes.sm,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       color: colors.text,
     },
     cellAmount: {
