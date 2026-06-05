@@ -9,8 +9,8 @@ export default function TabsLayout() {
   const { colors, typography } = useTheme();
   const insets = useSafeAreaInsets();
 
-  const bottomPadding = insets.bottom > 0 ? insets.bottom : 12;
-  const barHeight = 80 + insets.bottom;
+  const bottomPadding = insets.bottom > 0 ? insets.bottom : 6;
+  const barHeight = 70 + insets.bottom;
 
   const renderTabBarIcon = useCallback((iconName: string) => {
     const TabBarIconComponent = ({ focused }: { focused: boolean }) => {
@@ -56,7 +56,7 @@ export default function TabsLayout() {
           elevation: 0,
           shadowOpacity: 0,
           height: barHeight,
-          paddingTop: 12,
+          paddingTop: 6,
           paddingBottom: bottomPadding,
         },
       }}
