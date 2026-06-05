@@ -1,8 +1,6 @@
-import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
-import { OptionsDialog, type OptionsDialogOption } from '@/src/components/ui/OptionsDialog';
 import { PageBackground } from '@/src/components/ui/PageBackground';
-import { useDeletePerson, usePersons } from '@/src/features/persons/hooks/persons';
+import { usePersons } from '@/src/features/persons/hooks/persons';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
@@ -18,7 +16,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import type { Person } from '../api/persons';
+
 
 const FREE_PERSON_LIMIT = 10;
 
@@ -42,8 +40,6 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   const { isPremium } = usePremium();
 
   const { data: personList } = usePersons();
-  const deletePerson = useDeletePerson();
-
   const persons = useMemo(() => personList ?? [], [personList]);
   const atLimit = !isPremium && persons.length >= FREE_PERSON_LIMIT;
 
@@ -61,32 +57,6 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
     );
   }, [persons, query]);
 
-  const [selected, setSelected] = useState<Person | null>(null);
-  const [showOptions, setShowOptions] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-  const handleMenuOpen = useCallback((p: Person) => {
-    setSelected(p);
-    setShowOptions(true);
-  }, []);
-
-  const handleEdit = useCallback(() => {
-    if (!selected) return;
-    router.push(`/(main)/persons/form?id=${selected.id}`);
-  }, [selected, router]);
-
-  const handleDeletePress = useCallback(() => {
-    setShowOptions(false);
-    setShowDeleteConfirm(true);
-  }, []);
-
-  const handleDeleteConfirm = useCallback(() => {
-    if (!selected) return;
-    deletePerson.mutate(selected.id);
-    setSelected(null);
-    setShowDeleteConfirm(false);
-  }, [selected, deletePerson]);
-
   const handleAdd = useCallback(() => {
     if (atLimit) {
       router.push('/premium');
@@ -98,14 +68,6 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   const handlePersonPress = useCallback((id: number) => {
     router.push(`/(main)/persons/${id}`);
   }, [router]);
-
-  const menuOptions = useMemo((): OptionsDialogOption[] => {
-    if (!selected) return [];
-    return [
-      { key: 'edit', label: 'Edit', icon: 'pencil-outline', onPress: handleEdit },
-      { key: 'delete', label: 'Delete', icon: 'trash-can-outline', destructive: true, onPress: handleDeletePress },
-    ];
-  }, [selected, handleEdit, handleDeletePress]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -174,13 +136,6 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
                     ) : null}
                   </View>
 
-                  <TouchableOpacity
-                    onPress={() => handleMenuOpen(person)}
-                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    activeOpacity={0.4}
-                  >
-                    <MaterialCommunityIcons name="dots-vertical" size={18} color={colors.textMuted} />
-                  </TouchableOpacity>
                 </TouchableOpacity>
               );
             })}
@@ -214,23 +169,6 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
           : <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
         }
       </TouchableOpacity>
-
-      <OptionsDialog
-        visible={showOptions}
-        onClose={() => setShowOptions(false)}
-        title={selected?.name ?? 'Person'}
-        options={menuOptions}
-      />
-
-      <ConfirmDialog
-        visible={showDeleteConfirm}
-        onClose={() => setShowDeleteConfirm(false)}
-        title="Delete person"
-        message={selected ? `Delete ${selected.name}? Their linked transactions will keep the data but lose the person link.` : undefined}
-        confirmLabel="Delete"
-        onConfirm={handleDeleteConfirm}
-        isLoading={deletePerson.isPending}
-      />
     </SafeAreaView>
   );
 });

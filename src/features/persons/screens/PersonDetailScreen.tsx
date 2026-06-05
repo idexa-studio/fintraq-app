@@ -1,8 +1,9 @@
+import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { TransactionRow } from '@/src/components/ui/TransactionRow';
-import { usePersonWithStats, useTransactionsByPerson } from '@/src/features/persons/hooks/persons';
+import { usePersonWithStats, useTransactionsByPerson, useDeletePerson } from '@/src/features/persons/hooks/persons';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -36,6 +37,9 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
   const theme = useTheme();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const deletePerson = useDeletePerson();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const { data: txList } = useTransactionsByPerson(personId);
   const { data: accounts } = useAccounts();
@@ -90,6 +94,12 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
     router.push(`/(main)/persons/form?id=${personId}`);
   }, [personId, router]);
 
+  const handleDeleteConfirm = useCallback(() => {
+    deletePerson.mutate(personId);
+    setShowDeleteConfirm(false);
+    router.back();
+  }, [personId, deletePerson, router]);
+
   const handleTxPress = useCallback((tx: { id: number }) => {
     router.push(`/transactions/edit/${tx.id}`);
   }, [router]);
@@ -115,9 +125,14 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         title={person.name}
         showBack
         rightAction={
-          <TouchableOpacity onPress={handleEdit} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <MaterialCommunityIcons name="pencil-outline" size={20} color={colors.text} />
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+            <TouchableOpacity onPress={() => setShowDeleteConfirm(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <MaterialCommunityIcons name="trash-can-outline" size={20} color={colors.danger} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleEdit} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <MaterialCommunityIcons name="pencil-outline" size={20} color={colors.text} />
+            </TouchableOpacity>
+          </View>
         }
       />
 
@@ -189,12 +204,6 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
             <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.success }]}>Received</Text>
             <MoneyText amount={person.totalReceived} currency={currency} type="CR" weight="bold" compact style={styles.statValue} />
           </View>
-          <View style={styles.statTile}>
-            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>Txns</Text>
-            <Text style={[styles.statPlain, { fontFamily: typography.fonts.amountBold, color: colors.text }]}>
-              {person.txCount}
-            </Text>
-          </View>
         </View>
 
         {/* Transactions */}
@@ -223,6 +232,16 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
           </View>
         )}
       </ScrollView>
+
+      <ConfirmDialog
+        visible={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        title="Delete person"
+        message={`Delete ${person.name}? Their linked transactions will keep the data but lose the person link.`}
+        confirmLabel="Delete"
+        onConfirm={handleDeleteConfirm}
+        isLoading={deletePerson.isPending}
+      />
     </SafeAreaView>
   );
 });
