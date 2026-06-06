@@ -6,8 +6,7 @@ import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { DEFAULT_CURRENCY } from '@/src/constants/currency';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
-import { AreaChart, type AreaChartPoint } from '@/src/features/analytics/components/AreaChart';
-import { BarGroupChart, type BarBucket } from '@/src/features/analytics/components/BarGroupChart';
+import { LinearAreaChart, type BarBucket } from '@/src/features/analytics/components/LinearAreaChart';
 import { DowChart } from '@/src/features/analytics/components/DowChart';
 import {
   useAnalyticsCategoryBreakdown,
@@ -174,7 +173,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
     return { income, expense, net, savingsRate };
   }, [dailyData, monthlyData, selectedRange]);
 
-  const areaData = useMemo((): AreaChartPoint[] => {
+  const areaData = useMemo((): BarBucket[] => {
     if (selectedRange === 365) {
       return (monthlyData ?? []).map(m => ({ label: fmtMonthLabel(m.month), income: m.income, expense: m.expense }));
     }
@@ -317,11 +316,11 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   <Text style={styles.legendText}>Expense</Text>
                 </View>
                 <View style={styles.legendItem}>
-                  <View style={[styles.legendDash, { backgroundColor: colors.success }]} />
+                  <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
                   <Text style={styles.legendText}>Income</Text>
                 </View>
               </View>
-              <AreaChart data={areaData} width={chartWidth} height={190} />
+              <LinearAreaChart data={areaData} width={chartWidth} height={190} />
             </View>
           )}
 
@@ -330,13 +329,23 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           <PremiumGuard label="Period Flow" size="medium">
             {barData.length === 0 ? (
               <EmptyState
-                icon="chart-bar"
+                icon="chart-line"
                 title="No period data yet"
                 subtitle="Record transactions to visualise income vs expense by period."
               />
             ) : (
               <View style={styles.card}>
-                <BarGroupChart data={barData} width={chartWidth} height={170} />
+                <View style={styles.chartLegend}>
+                  <View style={styles.legendItem}>
+                    <View style={[styles.legendDot, { backgroundColor: colors.danger }]} />
+                    <Text style={styles.legendText}>Expense</Text>
+                  </View>
+                  <View style={styles.legendItem}>
+                    <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
+                    <Text style={styles.legendText}>Income</Text>
+                  </View>
+                </View>
+                <LinearAreaChart data={barData} width={chartWidth} height={170} />
               </View>
             )}
           </PremiumGuard>

@@ -10,31 +10,24 @@ import Svg, {
 } from 'react-native-svg';
 import { useTheme } from '../../../providers/ThemeProvider';
 
-export type AreaChartPoint = {
+export type BarBucket = {
   label: string;
   income: number;
   expense: number;
 };
 
 type Props = {
-  data: AreaChartPoint[];
+  data: BarBucket[];
   width: number;
   height?: number;
 };
 
 const PAD = { top: 12, bottom: 24, left: 30, right: 8 };
 
-const buildCurvePath = (pts: { x: number; y: number }[]) => {
+const buildLinearPath = (pts: { x: number; y: number }[]) => {
   if (pts.length === 0) return '';
   if (pts.length === 1) return `M ${pts[0].x} ${pts[0].y}`;
-  let d = `M ${pts[0].x} ${pts[0].y}`;
-  for (let i = 1; i < pts.length; i++) {
-    const p = pts[i - 1];
-    const n = pts[i];
-    const mx = (p.x + n.x) / 2;
-    d += ` C ${mx} ${p.y} ${mx} ${n.y} ${n.x} ${n.y}`;
-  }
-  return d;
+  return pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
 };
 
 const fmtY = (v: number): string => {
@@ -43,7 +36,11 @@ const fmtY = (v: number): string => {
   return `${Math.round(v)}`;
 };
 
-export const AreaChart = React.memo(function AreaChart({ data, width, height = 190 }: Props) {
+export const LinearAreaChart = React.memo(function LinearAreaChart({
+  data,
+  width,
+  height = 170,
+}: Props) {
   const { colors, typography } = useTheme();
   const gridColor = colors.text + '10';
   const labelColor = colors.textMuted;
@@ -62,10 +59,10 @@ export const AreaChart = React.memo(function AreaChart({ data, width, height = 1
     const incPts = data.map((d, i) => ({ x: xOf(i), y: yOf(d.income) }));
     const bottomY = PAD.top + ch;
 
-    const expLine = buildCurvePath(expPts);
-    const incLine = buildCurvePath(incPts);
-    const expArea = expLine + ` L ${expPts[n - 1].x} ${bottomY} L ${expPts[0].x} ${bottomY} Z`;
-    const incArea = incLine + ` L ${incPts[n - 1].x} ${bottomY} L ${incPts[0].x} ${bottomY} Z`;
+    const expLine = buildLinearPath(expPts);
+    const incLine = buildLinearPath(incPts);
+    const expArea = expPts.length > 0 ? `${expLine} L ${expPts[n - 1].x} ${bottomY} L ${expPts[0].x} ${bottomY} Z` : '';
+    const incArea = incPts.length > 0 ? `${incLine} L ${incPts[n - 1].x} ${bottomY} L ${incPts[0].x} ${bottomY} Z` : '';
 
     // 4 grid lines at 25% intervals — skip 0
     const yTicks = [1, 2, 3, 4].map(i => ({
@@ -95,11 +92,11 @@ export const AreaChart = React.memo(function AreaChart({ data, width, height = 1
   return (
     <Svg width={width} height={height}>
       <Defs>
-        <LinearGradient id="areaExp" x1="0" y1="0" x2="0" y2="1">
+        <LinearGradient id="linearAreaExp" x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0%" stopColor={colors.danger} stopOpacity="0.18" />
           <Stop offset="100%" stopColor={colors.danger} stopOpacity="0.01" />
         </LinearGradient>
-        <LinearGradient id="areaInc" x1="0" y1="0" x2="0" y2="1">
+        <LinearGradient id="linearAreaInc" x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0%" stopColor={colors.success} stopOpacity="0.12" />
           <Stop offset="100%" stopColor={colors.success} stopOpacity="0.01" />
         </LinearGradient>
@@ -124,12 +121,12 @@ export const AreaChart = React.memo(function AreaChart({ data, width, height = 1
       ))}
 
       {/* Area fills */}
-      <Path d={chart.incArea} fill="url(#areaInc)" />
-      <Path d={chart.expArea} fill="url(#areaExp)" />
+      {chart.incArea ? <Path d={chart.incArea} fill="url(#linearAreaInc)" /> : null}
+      {chart.expArea ? <Path d={chart.expArea} fill="url(#linearAreaExp)" /> : null}
 
       {/* Lines */}
-      <Path d={chart.incLine} stroke={colors.success} strokeWidth={1.5} fill="none" />
-      <Path d={chart.expLine} stroke={colors.danger} strokeWidth={2} fill="none" />
+      {chart.incLine ? <Path d={chart.incLine} stroke={colors.success} strokeWidth={1.5} fill="none" /> : null}
+      {chart.expLine ? <Path d={chart.expLine} stroke={colors.danger} strokeWidth={2} fill="none" /> : null}
 
       {/* X-axis labels */}
       {chart.xLabels.map((l, i) => (
