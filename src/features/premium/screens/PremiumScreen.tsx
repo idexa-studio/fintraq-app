@@ -56,6 +56,8 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             end={{ x: 0, y: 1 }}
             style={styles.heroCard}
           >
+            <View style={styles.decoCircle1} />
+            <View style={styles.decoCircle2} />
             <View style={styles.crownWrapper}>
               <MaterialCommunityIcons name="check-decagram" size={32} color="#FBBF24" />
             </View>
@@ -82,17 +84,20 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           {/* Features list */}
           <Text style={styles.sectionTitle}>UNLOCKED FEATURES</Text>
 
-          <View style={styles.featuresList}>
-            {FEATURES.map(f => (
-              <View key={f.title} style={styles.featureItem}>
-                <View style={[styles.iconWrapper, { backgroundColor: colors.success + '12' }]}>
-                  <MaterialCommunityIcons name="check" size={20} color={colors.success} />
+          <View style={styles.featuresCard}>
+            {FEATURES.map((f, index) => (
+              <React.Fragment key={f.title}>
+                <View style={styles.featureItem}>
+                  <View style={[styles.iconWrapper, { backgroundColor: colors.success + '12' }]}>
+                    <MaterialCommunityIcons name={f.icon} size={20} color={colors.success} />
+                  </View>
+                  <View style={styles.featureContent}>
+                    <Text style={[styles.featureTitle, { color: colors.text }]}>{f.title}</Text>
+                    <Text style={[styles.featureDesc, { color: colors.textMuted }]}>{f.description}</Text>
+                  </View>
                 </View>
-                <View style={styles.featureContent}>
-                  <Text style={[styles.featureTitle, { color: colors.text }]}>{f.title}</Text>
-                  <Text style={[styles.featureDesc, { color: colors.textMuted }]}>{f.description}</Text>
-                </View>
-              </View>
+                {index < FEATURES.length - 1 && <View style={styles.featureDivider} />}
+              </React.Fragment>
             ))}
           </View>
           <View style={{ height: 40 }} />
@@ -127,6 +132,8 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           end={{ x: 0, y: 1 }}
           style={styles.heroCard}
         >
+          <View style={styles.decoCircle1} />
+          <View style={styles.decoCircle2} />
           <View style={styles.crownWrapper}>
             <MaterialCommunityIcons name="crown" size={32} color="#FBBF24" />
           </View>
@@ -175,17 +182,20 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
         {/* Features list */}
         <Text style={styles.sectionTitle}>EVERYTHING INCLUDED</Text>
 
-        <View style={styles.featuresList}>
-          {FEATURES.map(f => (
-            <View key={f.title} style={styles.featureItem}>
-              <View style={[styles.iconWrapper, { backgroundColor: colors.primary + '12' }]}>
-                <MaterialCommunityIcons name={f.icon} size={20} color={colors.primary} />
+        <View style={styles.featuresCard}>
+          {FEATURES.map((f, index) => (
+            <React.Fragment key={f.title}>
+              <View style={styles.featureItem}>
+                <View style={[styles.iconWrapper, { backgroundColor: colors.primary + '12' }]}>
+                  <MaterialCommunityIcons name={f.icon} size={20} color={colors.primary} />
+                </View>
+                <View style={styles.featureContent}>
+                  <Text style={[styles.featureTitle, { color: colors.text }]}>{f.title}</Text>
+                  <Text style={[styles.featureDesc, { color: colors.textMuted }]}>{f.description}</Text>
+                </View>
               </View>
-              <View style={styles.featureContent}>
-                <Text style={[styles.featureTitle, { color: colors.text }]}>{f.title}</Text>
-                <Text style={[styles.featureDesc, { color: colors.textMuted }]}>{f.description}</Text>
-              </View>
-            </View>
+              {index < FEATURES.length - 1 && <View style={styles.featureDivider} />}
+            </React.Fragment>
           ))}
         </View>
 
@@ -240,6 +250,24 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('2'),
       overflow: 'hidden',
     },
+    decoCircle1: {
+      position: 'absolute',
+      top: -40,
+      right: -30,
+      width: 150,
+      height: 150,
+      borderRadius: 75,
+      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    decoCircle2: {
+      position: 'absolute',
+      bottom: -50,
+      left: -20,
+      width: 120,
+      height: 120,
+      borderRadius: 60,
+      backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    },
     crownWrapper: {
       width: 48,
       height: 48,
@@ -248,12 +276,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: spacing('2'),
+      zIndex: 2,
     },
     heroBadge: {
       fontFamily: typography.fonts.semibold,
       fontSize: 10,
       color: '#A7F3D0',
       letterSpacing: 1.5,
+      zIndex: 2,
     },
     heroTitle: {
       fontFamily: typography.fonts.heading,
@@ -261,6 +291,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       lineHeight: 32,
       color: '#FFFFFF',
       marginTop: spacing('1'),
+      zIndex: 2,
     },
     heroDesc: {
       fontFamily: typography.fonts.regular,
@@ -269,6 +300,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: '#E0F2FE',
       opacity: 0.9,
       marginTop: spacing('1'),
+      zIndex: 2,
     },
     // Price Card
     priceContainer: {
@@ -353,9 +385,16 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingLeft: spacing('1'),
     },
     // Features list
-    featuresList: {
-      gap: spacing('4'),
-      paddingLeft: spacing('1'),
+    featuresCard: {
+      backgroundColor: colors.surface,
+      borderRadius: 24,
+      padding: spacing('4'),
+    },
+    featureDivider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: colors.text + '0C',
+      marginLeft: 56,
+      marginVertical: spacing('3'),
     },
     featureItem: {
       flexDirection: 'row',
