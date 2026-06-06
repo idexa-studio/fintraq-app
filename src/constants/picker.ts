@@ -61,68 +61,35 @@ export type ColorOption = { readonly hex: string; readonly name: string };
 export const PALETTE_COLOR_OPTIONS: readonly ColorOption[] = [
   // Greens & Teals
   { hex: '#15803D', name: 'Forest' },
-  { hex: '#166534', name: 'Deep Forest' },
   { hex: '#059669', name: 'Emerald' },
-  { hex: '#065F46', name: 'Deep Emerald' },
-  { hex: '#0F766E', name: 'Teal' },
-  { hex: '#115E59', name: 'Deep Teal' },
-  { hex: '#0D9488', name: 'Cyan Teal' },
+  { hex: '#0D9488', name: 'Teal' },
   // Blues & Cyans
-  { hex: '#0369A1', name: 'Ocean' },
-  { hex: '#075985', name: 'Deep Ocean' },
   { hex: '#0284C7', name: 'Sky' },
+  { hex: '#0369A1', name: 'Ocean' },
   { hex: '#2563EB', name: 'Blue' },
   { hex: '#1D4ED8', name: 'Cobalt' },
-  { hex: '#1E40AF', name: 'Navy' },
-  { hex: '#1E3A8A', name: 'Midnight Blue' },
-  // Indigo & Violet
-  { hex: '#4338CA', name: 'Indigo' },
-  { hex: '#312E81', name: 'Midnight Indigo' },
+  // Indigos, Purples & Violets
   { hex: '#4F46E5', name: 'Iris' },
-  { hex: '#6D28D9', name: 'Violet' },
-  { hex: '#581C87', name: 'Deep Violet' },
+  { hex: '#4338CA', name: 'Indigo' },
   { hex: '#7C3AED', name: 'Purple' },
-  { hex: '#4A148C', name: 'Midnight Purple' },
-  // Pink & Fuchsia
-  { hex: '#7E22CE', name: 'Deep Purple' },
+  { hex: '#6D28D9', name: 'Violet' },
+  // Pinks & Fuchsias
   { hex: '#A21CAF', name: 'Fuchsia' },
-  { hex: '#701A75', name: 'Midnight Fuchsia' },
-  { hex: '#BE185D', name: 'Pink' },
-  { hex: '#9D174D', name: 'Deep Pink' },
-  { hex: '#DB2777', name: 'Hot Pink' },
-  { hex: '#880E4F', name: 'Mulberry' },
-  // Rose & Red
-  { hex: '#BE123C', name: 'Crimson' },
-  { hex: '#9F1239', name: 'Ruby' },
+  { hex: '#DB2777', name: 'Pink' },
+  { hex: '#BE185D', name: 'Deep Pink' },
+  // Reds & Roses
   { hex: '#E11D48', name: 'Rose' },
   { hex: '#DC2626', name: 'Red' },
-  { hex: '#B91C1C', name: 'Deep Red' },
-  { hex: '#7F1D1D', name: 'Burgundy' },
-  { hex: '#581845', name: 'Wine' },
-  // Orange, Amber & Earthy
-  { hex: '#C2410C', name: 'Burnt Orange' },
+  { hex: '#BE123C', name: 'Crimson' },
+  // Warm Tones (Orange, Amber, Gold)
   { hex: '#EA580C', name: 'Orange' },
-  { hex: '#9A3412', name: 'Rust' },
-  { hex: '#A73B24', name: 'Terracotta' },
   { hex: '#D97706', name: 'Amber' },
   { hex: '#B45309', name: 'Gold' },
-  { hex: '#92400E', name: 'Bronze' },
-  { hex: '#78350F', name: 'Chocolate' },
-  { hex: '#451A03', name: 'Espresso' },
-  // Lime, Olive & Mustard
-  { hex: '#4D7C0F', name: 'Olive' },
-  { hex: '#3F6212', name: 'Deep Olive' },
+  // Lime, Olive & Slate
   { hex: '#65A30D', name: 'Lime' },
-  { hex: '#854D0E', name: 'Mustard' },
-  { hex: '#0E7490', name: 'Cyan' },
-  { hex: '#155E75', name: 'Deep Cyan' },
-  { hex: '#164E63', name: 'Midnight Cyan' },
-  // Neutral
+  { hex: '#4D7C0F', name: 'Olive' },
   { hex: '#334155', name: 'Slate' },
-  { hex: '#1E293B', name: 'Charcoal' },
   { hex: '#475569', name: 'Cool Gray' },
-  { hex: '#374151', name: 'Steel' },
-  { hex: '#1C1917', name: 'Onyx' },
 ];
 
 export const PALETTE_COLORS: readonly string[] = PALETTE_COLOR_OPTIONS.map((c) => c.hex);
