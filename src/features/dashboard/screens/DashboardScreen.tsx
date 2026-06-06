@@ -24,6 +24,9 @@ import { TopPersonsCard } from '../components/TopPersonsCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
 import { WalkthroughOverlay, DASHBOARD_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 
+const UPSELL_KEY = '@luno/upsell_dismissed_at';
+const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
+
 export const DashboardScreen = React.memo(function DashboardScreen() {
   const theme = useTheme();
   const { colors } = theme;
@@ -36,8 +39,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
 
   const [showUpsell, setShowUpsell] = React.useState(false);
-  const UPSELL_KEY = '@luno/upsell_dismissed_at';
-  const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
 
   React.useEffect(() => {
     if (isPremium) return;

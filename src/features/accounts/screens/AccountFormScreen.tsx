@@ -8,7 +8,6 @@ import { Input } from '@/src/components/ui/Input';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ACCOUNT_COLORS, ACCOUNT_ICON_GROUPS, ACCOUNT_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
 import type { InsertAccount, UpdateAccountData } from '@/src/features/accounts/api/accounts';
-import { adjustAccountBalance } from '@/src/features/accounts/api/accounts';
 import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -96,11 +95,6 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           icon: iconKey.replace('-outline', ''),
         };
         await updateAccount({ id: account.id, data: updateData });
-
-        const newBalance = parseAmount(data.balance);
-        if (Math.abs(newBalance - account.balance) > 0.001) {
-          await adjustAccountBalance(account.id, newBalance);
-        }
       } else {
         const createData: InsertAccount = {
           name: data.name.trim(),
@@ -190,7 +184,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
               <View style={styles.twoCol}>
                 <View style={styles.colBalance}>
                   <Text style={styles.sectionLabel}>
-                    {isEditing ? 'Adjust balance' : 'Initial balance'}
+                    {isEditing ? 'Current balance' : 'Initial balance'}
                   </Text>
                   <Controller
                     control={control}
@@ -213,8 +207,11 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                           styles.fieldInput,
                           styles.fieldInputAmount,
                           errors.balance && styles.fieldInputError,
+                          isEditing && styles.fieldInputDisabled,
                         ]}
                         returnKeyType="done"
+                        editable={!isEditing}
+                        selectTextOnFocus={!isEditing}
                       />
                     )}
                   />
@@ -348,6 +345,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     fieldInputError: {
       borderWidth: 1,
       borderColor: colors.danger,
+    },
+    fieldInputDisabled: {
+      color: colors.textMuted,
+      opacity: 0.6,
     },
     fieldInputAmount: {
       fontFamily: typography.fonts.amountBold,

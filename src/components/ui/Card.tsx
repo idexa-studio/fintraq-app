@@ -53,7 +53,7 @@ export const Card = React.memo(function Card({
   );
 });
 
-const createStyles = ({ }: ThemeContextType) => StyleSheet.create({
+const createStyles = (_theme: ThemeContextType) => StyleSheet.create({
   card: {
     overflow: 'hidden',
   },

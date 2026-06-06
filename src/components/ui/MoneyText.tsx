@@ -49,7 +49,7 @@ export const MoneyText = React.memo(function MoneyText({
     else ff = typography.fonts.amountBold;
 
     return { prefix: p, color: c, formattedAmount: formatted, fontFamily: ff };
-  }, [amount, currency, type, weight, colors.text, colors.success, colors.danger, typography.fonts]);
+  }, [amount, currency, type, weight, compact, colors.text, colors.success, colors.danger, typography.fonts]);
 
   return (
     <Text

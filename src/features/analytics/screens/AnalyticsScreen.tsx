@@ -85,10 +85,10 @@ function EmptyState({
   subtitle: string;
 }) {
   const theme = useTheme();
-  const { colors, typography, spacing, radius } = theme;
   const styles = useMemo(
-    () =>
-      StyleSheet.create({
+    () => {
+      const { colors, typography, spacing, radius } = theme;
+      return StyleSheet.create({
         row: {
           flexDirection: 'row' as const,
           alignItems: 'center' as const,
@@ -118,13 +118,14 @@ function EmptyState({
           color: colors.textMuted,
           lineHeight: 15,
         },
-      }),
+      });
+    },
     [theme],
   );
   return (
     <View style={styles.row}>
       <View style={styles.iconRing}>
-        <MaterialCommunityIcons name={icon} size={18} color={colors.primary} />
+        <MaterialCommunityIcons name={icon} size={18} color={theme.colors.primary} />
       </View>
       <View style={styles.texts}>
         <Text style={styles.titleText}>{title}</Text>
