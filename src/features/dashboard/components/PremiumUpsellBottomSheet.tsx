@@ -11,11 +11,19 @@ type PremiumUpsellBottomSheetProps = {
 
 const BLOCK = 5;
 
+const PRO_FEATURES = [
+  { icon: 'chart-timeline-variant' as const, text: 'Spending trends & burn velocity' },
+  { icon: 'lightning-bolt' as const, text: 'Runway forecasts & metrics' },
+  { icon: 'magnify' as const, text: 'Global search across all data' },
+  { icon: 'file-document-outline' as const, text: 'CSV export & weekly/monthly reports' },
+];
+
 export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomSheet({
   visible,
   onClose,
 }: PremiumUpsellBottomSheetProps) {
   const theme = useTheme();
+  const { colors } = theme;
   const router = useRouter();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [canDismiss, setCanDismiss] = useState(false);
@@ -48,38 +56,37 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
         <View style={styles.sheet}>
           <View style={styles.dragHandle} />
 
-          <Text style={styles.title}>Keeep Pro</Text>
-          <Text style={styles.headline}>
-            One-time purchase. Unlock analytics, search, reports, and CSV export.
-          </Text>
-
-          {canDismiss ? (
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <MaterialCommunityIcons name="close" size={20} color={theme.colors.textMuted} />
-            </TouchableOpacity>
-          ) : null}
-
-          <View style={styles.list}>
-            <View style={styles.row}>
-              <View style={[styles.dot, { backgroundColor: theme.colors.primary }]} />
-              <Text style={styles.rowText}>Spending trends & burn velocity</Text>
+          {/* Header Row with Crown Icon */}
+          <View style={styles.header}>
+            <View style={styles.crownWrapper}>
+              <MaterialCommunityIcons name="crown" size={24} color={colors.warning} />
             </View>
-            <View style={styles.row}>
-              <View style={[styles.dot, { backgroundColor: theme.colors.primary }]} />
-              <Text style={styles.rowText}>Runway forecasts & performance deltas</Text>
-            </View>
-            <View style={styles.row}>
-              <View style={[styles.dot, { backgroundColor: theme.colors.primary }]} />
-              <Text style={styles.rowText}>Global search across all data</Text>
-            </View>
-            <View style={styles.row}>
-              <View style={[styles.dot, { backgroundColor: theme.colors.primary }]} />
-              <Text style={styles.rowText}>CSV export & weekly/monthly reports</Text>
+            <View style={styles.headerText}>
+              <Text style={styles.title}>Unlock Keeep Pro</Text>
+              <Text style={styles.subtitle}>One-time lifetime access</Text>
             </View>
           </View>
 
+          {canDismiss ? (
+            <TouchableOpacity onPress={onClose} style={styles.closeBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <MaterialCommunityIcons name="close" size={20} color={colors.textMuted} />
+            </TouchableOpacity>
+          ) : null}
+
+          {/* Feature Bento List */}
+          <View style={styles.list}>
+            {PRO_FEATURES.map((item, index) => (
+              <View key={index} style={styles.row}>
+                <View style={styles.iconWrapper}>
+                  <MaterialCommunityIcons name={item.icon} size={18} color={colors.primary} />
+                </View>
+                <Text style={styles.rowText}>{item.text}</Text>
+              </View>
+            ))}
+          </View>
+
           <TouchableOpacity
-            style={[styles.cta, !canDismiss && { opacity: 0.6 }]}
+            style={[styles.cta, !canDismiss && styles.ctaDisabled]}
             onPress={handleUpgrade}
             activeOpacity={0.85}
             disabled={!canDismiss}
@@ -123,22 +130,36 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, on
       backgroundColor: colors.surface,
       borderTopLeftRadius: 28,
       borderTopRightRadius: 28,
-      paddingHorizontal: spacing('5'),
+      paddingHorizontal: spacing('6'),
       paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3'),
+      marginBottom: spacing('5'),
+    },
+    crownWrapper: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: colors.warning + '12',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    headerText: {
+      flex: 1,
+      gap: spacing('0.5'),
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 22,
+      fontSize: 20,
       color: colors.text,
-      marginBottom: spacing('2'),
     },
-    headline: {
+    subtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      fontSize: 12,
       color: colors.textMuted,
-      lineHeight: 20,
-      marginBottom: spacing('4'),
-      paddingRight: spacing('8'),
     },
     closeBtn: {
       position: 'absolute',
@@ -146,39 +167,49 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, on
       right: spacing('4'),
     },
     list: {
-      gap: spacing('3'),
+      gap: spacing('2'),
       marginBottom: spacing('5'),
     },
     row: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('3'),
+      gap: spacing('3.5'),
+      backgroundColor: colors.background,
+      padding: spacing('3'),
+      borderRadius: radius('lg'),
     },
-    dot: {
-      width: 6,
-      height: 6,
-      borderRadius: radius('full'),
+    iconWrapper: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: colors.primary + '12',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     rowText: {
-      fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      fontFamily: typography.fonts.semibold,
+      fontSize: 13,
       color: colors.text,
+      flex: 1,
     },
     cta: {
       height: 52,
-      borderRadius: radius('md'),
+      borderRadius: radius('full'),
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },
+    ctaDisabled: {
+      opacity: 0.65,
+    },
     ctaText: {
       fontFamily: typography.fonts.bold,
       fontSize: typography.sizes.md,
-      color: onAccent,
+      color: colors.background,
     },
     skip: {
       alignItems: 'center',
-      marginTop: spacing('3'),
+      marginTop: spacing('3.5'),
     },
     skipText: {
       fontFamily: typography.fonts.regular,
