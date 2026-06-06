@@ -75,17 +75,61 @@ const chunkAggregate = (
   return result;
 };
 
-function EmptyState({ icon, text }: { icon: keyof typeof MaterialCommunityIcons.glyphMap; text: string }) {
+function EmptyState({
+  icon,
+  title,
+  subtitle,
+}: {
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  title: string;
+  subtitle: string;
+}) {
   const theme = useTheme();
-  const { colors, typography, spacing } = theme;
-  const styles = useMemo(() => StyleSheet.create({
-    wrap: { paddingVertical: spacing('8'), alignItems: 'center' as const, gap: spacing('2.5') },
-    text: { fontFamily: typography.fonts.regular, color: colors.textMuted, fontSize: 12, textAlign: 'center' as const },
-  }), [theme]);
+  const { colors, typography, spacing, radius } = theme;
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        row: {
+          flexDirection: 'row' as const,
+          alignItems: 'center' as const,
+          gap: spacing('3'),
+          backgroundColor: colors.surface,
+          borderRadius: radius('xl'),
+          padding: spacing('4'),
+          marginHorizontal: 16,
+        },
+        iconRing: {
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          backgroundColor: colors.primary + '14',
+          justifyContent: 'center' as const,
+          alignItems: 'center' as const,
+        },
+        texts: { flex: 1, gap: 2 },
+        titleText: {
+          fontFamily: typography.fonts.semibold,
+          fontSize: 13,
+          color: colors.text,
+        },
+        subText: {
+          fontFamily: typography.fonts.regular,
+          fontSize: 11,
+          color: colors.textMuted,
+          lineHeight: 15,
+        },
+      }),
+    [theme],
+  );
   return (
-    <View style={styles.wrap}>
-      <MaterialCommunityIcons name={icon} size={28} color={colors.textMuted} />
-      <Text style={styles.text}>{text}</Text>
+    <View style={styles.row}>
+      <View style={styles.iconRing}>
+        <MaterialCommunityIcons name={icon} size={18} color={colors.primary} />
+      </View>
+      <View style={styles.texts}>
+        <Text style={styles.titleText}>{title}</Text>
+        <Text style={styles.subText}>{subtitle}</Text>
+      </View>
     </View>
   );
 }
@@ -261,26 +305,42 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             title="Spending trend"
             rightText={`${RANGES.find(r => r.days === selectedRange)?.label} · ${selectedCurrency}`}
           />
-          <View style={styles.card}>
-            <View style={styles.chartLegend}>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDot, { backgroundColor: colors.danger }]} />
-                <Text style={styles.legendText}>Expense</Text>
+          {areaData.length === 0 ? (
+            <EmptyState
+              icon="chart-line"
+              title="No trend data yet"
+              subtitle="Add income or expense transactions to see your spending trend."
+            />
+          ) : (
+            <View style={styles.card}>
+              <View style={styles.chartLegend}>
+                <View style={styles.legendItem}>
+                  <View style={[styles.legendDot, { backgroundColor: colors.danger }]} />
+                  <Text style={styles.legendText}>Expense</Text>
+                </View>
+                <View style={styles.legendItem}>
+                  <View style={[styles.legendDash, { backgroundColor: colors.success }]} />
+                  <Text style={styles.legendText}>Income</Text>
+                </View>
               </View>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDash, { backgroundColor: colors.success }]} />
-                <Text style={styles.legendText}>Income</Text>
-              </View>
+              <AreaChart data={areaData} width={chartWidth} height={190} />
             </View>
-            <AreaChart data={areaData} width={chartWidth} height={190} />
-          </View>
+          )}
 
           {/* Period flow */}
           <SectionHeader title="Period flow" />
           <PremiumGuard label="Period Flow" size="medium">
-            <View style={styles.card}>
-              <BarGroupChart data={barData} width={chartWidth} height={170} />
-            </View>
+            {barData.length === 0 ? (
+              <EmptyState
+                icon="chart-bar"
+                title="No period data yet"
+                subtitle="Record transactions to visualise income vs expense by period."
+              />
+            ) : (
+              <View style={styles.card}>
+                <BarGroupChart data={barData} width={chartWidth} height={170} />
+              </View>
+            )}
           </PremiumGuard>
 
           {/* Category breakdown — stacked bar + 2-column cards */}
@@ -326,9 +386,11 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                 </View>
               </View>
             ) : (
-              <View style={[styles.card, { marginHorizontal: layout.screenPadding }]}>
-                <EmptyState icon="tag-outline" text="No expense data in this period" />
-              </View>
+              <EmptyState
+                icon="tag-outline"
+                title="No category data yet"
+                subtitle="Add expense transactions to see a breakdown by category."
+              />
             )}
           </PremiumGuard>
 
@@ -404,23 +466,33 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                 </View>
               </View>
             ) : (
-              <View style={[styles.card, { marginHorizontal: layout.screenPadding }]}>
-                <EmptyState icon="wallet-outline" text={`No accounts in ${selectedCurrency}`} />
-              </View>
+              <EmptyState
+                icon="wallet-outline"
+                title={`No ${selectedCurrency} accounts`}
+                subtitle="Add an account in this currency to see the balance split."
+              />
             )}
           </PremiumGuard>
 
           {/* Spending by weekday */}
           <SectionHeader title="Spending by weekday" rightText="Average pattern" />
           <PremiumGuard label="Spending by Weekday" size="medium">
-            <View style={styles.card}>
-              <DowChart data={dowData ?? []} />
-              <View style={styles.dowLegend}>
-                <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.success }]} /><Text style={styles.legendText}>Low</Text></View>
-                <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.warning }]} /><Text style={styles.legendText}>Mid</Text></View>
-                <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.danger }]} /><Text style={styles.legendText}>High</Text></View>
+            {(dowData ?? []).length === 0 ? (
+              <EmptyState
+                icon="calendar-week"
+                title="No weekday pattern yet"
+                subtitle="More transactions will reveal your spending rhythm by day."
+              />
+            ) : (
+              <View style={styles.card}>
+                <DowChart data={dowData ?? []} />
+                <View style={styles.dowLegend}>
+                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.success }]} /><Text style={styles.legendText}>Low</Text></View>
+                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.warning }]} /><Text style={styles.legendText}>Mid</Text></View>
+                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.danger }]} /><Text style={styles.legendText}>High</Text></View>
+                </View>
               </View>
-            </View>
+            )}
           </PremiumGuard>
 
           {/* Behavioral insights */}
