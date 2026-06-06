@@ -16,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { Input } from '@/src/components/ui/Input';
 import { usePremium } from '@/src/providers/PremiumProvider';
@@ -101,7 +102,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
               <IconAvatar icon="lock" color={colors.primary} variant="subtle" size={64} iconSize={26} />
             </View>
 
-            <Text style={[styles.lockBadge, { color: colors.primary }]}>SECURE GATEWAY</Text>
+            <Text style={[styles.lockBadge, { color: colors.primary }]}>Secure gateway</Text>
 
             <Text style={[styles.lockTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>
               Developer tools
@@ -136,9 +137,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
       <Header title="Developer" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        <Text style={styles.sectionLabel}>
-          Premium override
-        </Text>
+        <SectionHeader title="Premium override" noPadding />
         <View style={styles.card}>
           {([
             { mode: 'DEFAULT', title: 'Default (Sync with Store)', desc: 'Use standard Play Store / App Store purchase status', icon: 'sync' },
@@ -180,9 +179,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           })}
         </View>
 
-        <Text style={styles.sectionLabel}>
-          Data
-        </Text>
+        <SectionHeader title="Data" noPadding />
         <View style={styles.card}>
           <TouchableOpacity
             style={styles.optionRow}
@@ -202,9 +199,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.sectionLabel}>
-          Notifications
-        </Text>
+        <SectionHeader title="Notifications" noPadding />
         <View style={styles.card}>
           {scheduledNotifs.length === 0 ? (
             <View style={styles.optionRow}>
@@ -278,9 +273,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.sectionLabel}>
-          System
-        </Text>
+        <SectionHeader title="System" noPadding />
         <View style={styles.card}>
           <View style={styles.optionRow}>
             <IconAvatar icon="cog-outline" color={colors.textMuted} variant="subtle" size={36} iconSize={16} />
@@ -380,8 +373,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     lockBadge: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
-      letterSpacing: 1.5,
+      fontSize: 11,
       zIndex: 2,
       marginBottom: spacing('1'),
     },
@@ -401,16 +393,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       maxWidth: 240,
       marginTop: spacing('2'),
       zIndex: 2,
-    },
-
-    sectionLabel: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 10,
-      color: colors.textMuted,
-      letterSpacing: 1.5,
-      marginBottom: spacing('2.5'),
-      paddingLeft: spacing('1'),
-      textTransform: 'uppercase',
     },
 
     card: {

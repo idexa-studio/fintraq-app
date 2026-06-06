@@ -1,5 +1,6 @@
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { Header } from '@/src/components/ui/Header';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -82,7 +83,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           </View>
 
           {/* Features list */}
-          <Text style={styles.sectionTitle}>UNLOCKED FEATURES</Text>
+          <SectionHeader title="Unlocked features" noPadding />
 
           <View style={styles.featuresCard}>
             {FEATURES.map((f, index) => (
@@ -180,7 +181,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
         </View>
 
         {/* Features list */}
-        <Text style={styles.sectionTitle}>EVERYTHING INCLUDED</Text>
+        <SectionHeader title="Everything included" noPadding />
 
         <View style={styles.featuresCard}>
           {FEATURES.map((f, index) => (
@@ -374,15 +375,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.regular,
       fontSize: 13,
       opacity: 0.85,
-    },
-    // Section Header
-    sectionTitle: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 10,
-      color: colors.textMuted,
-      letterSpacing: 1.5,
-      marginBottom: spacing('3'),
-      paddingLeft: spacing('1'),
     },
     // Features list
     featuresCard: {

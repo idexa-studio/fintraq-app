@@ -1,5 +1,6 @@
 import { Header } from '@/src/components/ui/Header';
 import { PageBackground } from '@/src/components/ui/PageBackground';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES } from '@/src/constants/iap';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -54,7 +55,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
         </View>
 
         {/* Features list */}
-        <Text style={styles.sectionTitle}>UNLOCKED FEATURES</Text>
+        <SectionHeader title="Unlocked features" noPadding />
 
         <View style={styles.featuresCard}>
           {FEATURES.map((f, index) => (
@@ -195,15 +196,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     pillText: {
       fontSize: typography.sizes.xs,
-    },
-    // Section Header
-    sectionTitle: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 10,
-      color: colors.textMuted,
-      letterSpacing: 1.5,
-      marginBottom: spacing('3'),
-      paddingLeft: spacing('1'),
     },
     // Features list
     featuresCard: {
