@@ -5,6 +5,8 @@ export type ThemePalette = {
   card: string;
   /** Component surface fill — chips, inputs, rows */
   surface: string;
+  /** Bottom navigation bar background with proper contrast */
+  tabBarBackground: string;
 
   /** Brand accent — buttons, active states, highlights */
   primary: string;
@@ -37,6 +39,7 @@ export const DARK_THEME: ThemePalette = {
   background: '#1E1F24', // Lighter slate/charcoal background for reversed contrast
   card: '#0C0D0F',       // Premium deep obsidian black (darker than background)
   surface: '#15161A',    // Deep dark gray for inputs/chips (stands out inside card)
+  tabBarBackground: '#2A2B36', // Slightly lighter slate/charcoal for dark mode tab contrast
 
   primary: '#10B981',       // Vibrant premium emerald green
   primaryLight: '#34D399',  // Soft mint green
@@ -58,6 +61,7 @@ export const LIGHT_THEME: ThemePalette = {
   background: '#EDF0F3', // Soft clean light gray (darkest light layer)
   card: '#F5F7FA',       // Premium light slate card (lighter than background)
   surface: '#FFFFFF',    // Crisp white for inputs/chips (lightest layer, stands out inside card)
+  tabBarBackground: '#E4E8EC', // Slightly darker slate-gray for light mode tab contrast
 
   primary: '#059669',       // Premium rich emerald green
   primaryLight: '#D1FAE5',  // Very soft mint tint (great for badges)

@@ -51,7 +51,7 @@ export default function TabsLayout() {
           marginTop: 4,
         },
         tabBarStyle: {
-          backgroundColor: colors.surface,
+          backgroundColor: colors.tabBarBackground,
           borderTopWidth: 0,
           elevation: 0,
           shadowOpacity: 0,
