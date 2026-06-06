@@ -21,6 +21,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
 import { WalkthroughOverlay, ANALYTICS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
@@ -29,7 +30,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -238,14 +238,13 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           {currencyKeys.length > 1 && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>
               {currencyKeys.map(c => (
-                <TouchableOpacity
+                <BentoPressable
                   key={c}
                   style={[styles.pill, c === selectedCurrency && styles.pillActive]}
                   onPress={() => handleCurrencySelect(c)}
-                  activeOpacity={0.8}
                 >
                   <Text style={[styles.pillText, c === selectedCurrency && styles.pillTextActive]}>{c}</Text>
-                </TouchableOpacity>
+                </BentoPressable>
               ))}
             </ScrollView>
           )}
@@ -255,15 +254,14 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             {RANGES.map(r => {
               const locked = !isPremium && r.days !== 7;
               return (
-                <TouchableOpacity
+                <BentoPressable
                   key={r.label}
                   style={[styles.pill, r.days === selectedRange && styles.pillActive, locked && styles.pillLocked]}
                   onPress={locked ? navigateToPremium : () => handleRangeSelect(r.days)}
-                  activeOpacity={0.8}
                 >
                   <Text style={[styles.pillText, r.days === selectedRange && styles.pillTextActive]}>{r.label}</Text>
                   {locked && <MaterialCommunityIcons name="lock" size={9} color={colors.textMuted} style={styles.lockIcon} />}
-                </TouchableOpacity>
+                </BentoPressable>
               );
             })}
           </View>

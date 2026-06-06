@@ -1,10 +1,11 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
 import React, { useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import type { Account } from '../../accounts/api/accounts';
 
 type Props = {
@@ -35,11 +36,10 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
             : 'Tap to view';
 
         return (
-          <TouchableOpacity
+          <BentoPressable
             key={acc.id}
             style={[styles.card, { width: cardWidth }]}
             onPress={() => onPressAccount(acc.id)}
-            activeOpacity={0.85}
           >
             {/* Upper: identity + balance */}
             <View style={styles.upper}>
@@ -73,21 +73,20 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
                 <MoneyText amount={acc.balance} currency={acc.currency} style={styles.balance} weight="bold" />
               </View>
             </View>
-          </TouchableOpacity>
+          </BentoPressable>
         );
       })}
 
       {/* Add account card */}
-      <TouchableOpacity
+      <BentoPressable
         style={[styles.addCard, { width: cardWidth }]}
         onPress={onPressAdd}
-        activeOpacity={0.85}
       >
         <IconAvatar icon="plus" color={colors.primary} variant="subtle" size={36} iconSize={16} />
         <Text style={[styles.addTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
           Add account
         </Text>
-      </TouchableOpacity>
+      </BentoPressable>
     </ScrollView>
   );
 });

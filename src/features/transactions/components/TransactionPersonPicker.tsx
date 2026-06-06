@@ -1,7 +1,8 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import React, { useCallback, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { Person } from '../../persons/api/persons';
 
 type Props = {
@@ -32,15 +33,14 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
         contentContainerStyle={styles.scroll}
       >
         {/* None chip */}
-        <TouchableOpacity
+        <BentoPressable
           style={[styles.chip, selectedId === null && styles.chipActive]}
           onPress={handleNone}
-          activeOpacity={0.8}
         >
           <Text style={[styles.chipText, { color: selectedId === null ? colors.primary : colors.textMuted }]}>
             None
           </Text>
-        </TouchableOpacity>
+        </BentoPressable>
 
         {persons.map(person => {
           const selected = selectedId === person.id;
@@ -48,11 +48,10 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
           const initials = person.name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
 
           return (
-            <TouchableOpacity
+            <BentoPressable
               key={person.id}
               style={[styles.personChip, selected && { backgroundColor: hex + '18' }]}
               onPress={() => onSelect(person.id)}
-              activeOpacity={0.8}
             >
               <View style={[styles.avatar, { backgroundColor: hex }]}>
                 <Text style={[styles.avatarText, { fontFamily: typography.fonts.semibold }]}>
@@ -65,7 +64,7 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
               {selected && (
                 <View style={[styles.checkDot, { backgroundColor: hex }]} />
               )}
-            </TouchableOpacity>
+            </BentoPressable>
           );
         })}
       </ScrollView>

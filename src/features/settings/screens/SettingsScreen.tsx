@@ -1,3 +1,4 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
@@ -19,17 +20,7 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  Alert,
-  Linking,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, Linking, Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
@@ -112,9 +103,8 @@ const NavRow = React.memo(function NavRow({
   const labelColor = destructive ? colors.danger : colors.text;
 
   return (
-    <TouchableOpacity
+    <BentoPressable
       onPress={onPress}
-      activeOpacity={0.65}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -142,7 +132,7 @@ const NavRow = React.memo(function NavRow({
         ) : null}
         <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
       </View>
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 
@@ -428,7 +418,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <TouchableOpacity onPress={handleFooterTap} activeOpacity={1} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}>
+        <BentoPressable onPress={handleFooterTap} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}>
           <View style={styles.footer}>
             <Text style={[styles.footerBrand, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
               Keeep / Core
@@ -437,7 +427,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
               Data encrypted and stored locally.
             </Text>
           </View>
-        </TouchableOpacity>
+        </BentoPressable>
       </ScrollView>
 
       <CurrencyPickerBottomSheet

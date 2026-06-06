@@ -13,9 +13,9 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -106,15 +106,14 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
 
         {/* Back Button Footer */}
         <View style={styles.footer}>
-          <TouchableOpacity
+          <BentoPressable
             style={styles.cta}
             onPress={() => router.back()}
-            activeOpacity={0.85}
           >
             <Text style={[styles.ctaText, { color: colors.background }]}>
               Back to dashboard
             </Text>
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
       </SafeAreaView>
     );
@@ -205,11 +204,10 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
 
       {/* Pinned Bottom CTA */}
       <View style={styles.footer}>
-        <TouchableOpacity
+        <BentoPressable
           style={[styles.cta, (!lifetimeProduct || isProcessing) && styles.disabledCta]}
           onPress={handlePurchase}
           disabled={isProcessing || !lifetimeProduct}
-          activeOpacity={0.85}
         >
           {isProcessing ? (
             <ActivityIndicator color={colors.background} />
@@ -218,15 +216,15 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
               Upgrade for {lifetimeProduct?.displayPrice || 'Pro'}
             </Text>
           )}
-        </TouchableOpacity>
+        </BentoPressable>
         <View style={styles.legal}>
-          <TouchableOpacity onPress={handleRestore} disabled={isProcessing}>
+          <BentoPressable onPress={handleRestore} disabled={isProcessing}>
             <Text style={styles.legalText}>Restore purchase</Text>
-          </TouchableOpacity>
+          </BentoPressable>
           <View style={styles.legalDot} />
-          <TouchableOpacity onPress={() => Alert.alert('Terms', 'This purchase binds to your Play Store / App Store account and restores automatically on login.')}>
+          <BentoPressable onPress={() => Alert.alert('Terms', 'This purchase binds to your Play Store / App Store account and restores automatically on login.')}>
             <Text style={styles.legalText}>Terms of Service</Text>
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
       </View>
     </SafeAreaView>

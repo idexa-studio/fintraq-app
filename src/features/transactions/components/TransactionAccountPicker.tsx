@@ -1,11 +1,12 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
 import type { Account } from '../../accounts/api/accounts';
+import { BentoPressable } from '../../../components/ui/BentoPressable';
 
 type Props = {
   accounts: Account[];
@@ -34,14 +35,14 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
           const selected = selectedId === acc.id;
           const accColor = colorNumberToHex(acc.color);
           return (
-            <TouchableOpacity
+            <BentoPressable
               key={acc.id}
               style={[
                 styles.card,
                 { backgroundColor: selected ? accColor + '18' : colors.surface },
               ]}
               onPress={() => handleSelect(acc.id)}
-              activeOpacity={0.8}
+              overflow="visible"
             >
               <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} color={accColor} variant="solid" size={32} iconSize={18} />
               <View>
@@ -53,7 +54,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
                   <MaterialCommunityIcons name="check" size={12} color={colors.background} />
                 </View>
               )}
-            </TouchableOpacity>
+            </BentoPressable>
           );
         })}
       </ScrollView>

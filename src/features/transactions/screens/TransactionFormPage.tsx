@@ -11,9 +11,9 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
+import { BentoPressable } from '../../../components/ui/BentoPressable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { Header } from '../../../components/ui/Header';
@@ -307,10 +307,9 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
           {persons.length > 0 && type !== 'TR' && (
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>Linked person</Text>
-              <TouchableOpacity
+              <BentoPressable
                 style={styles.personBtn}
                 onPress={() => setShowPersonPicker(true)}
-                activeOpacity={0.8}
               >
                 <MaterialCommunityIcons name="account-outline" size={18} color={colors.primary} />
                 <Text style={[styles.dateTimeText, { flex: 1 }, !selectedPersonId && { color: colors.textMuted }]}>
@@ -319,27 +318,27 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
                     : 'No person'}
                 </Text>
                 <MaterialCommunityIcons name="unfold-more-vertical" size={16} color={colors.textMuted} />
-              </TouchableOpacity>
+              </BentoPressable>
             </View>
           )}
 
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>Date & time</Text>
             <View style={styles.dateTimeRow}>
-              <TouchableOpacity
+              <BentoPressable
                 style={styles.dateTimeBtn}
                 onPress={() => setShowDatePicker(true)}
               >
                 <MaterialCommunityIcons name="calendar-outline" size={18} color={colors.primary} />
                 <Text style={styles.dateTimeText}>{formattedDate}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </BentoPressable>
+              <BentoPressable
                 style={styles.dateTimeBtn}
                 onPress={() => setShowTimePicker(true)}
               >
                 <MaterialCommunityIcons name="clock-outline" size={18} color={colors.primary} />
                 <Text style={styles.dateTimeText}>{formattedTime}</Text>
-              </TouchableOpacity>
+              </BentoPressable>
             </View>
           </View>
 
@@ -377,7 +376,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity
+        <BentoPressable
           style={[styles.saveBtn, !canSubmit && styles.saveBtnDisabled]}
           onPress={handleSave}
           disabled={!canSubmit}
@@ -389,7 +388,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
               {isEditMode ? 'Save changes' : 'Save transaction'}
             </Text>
           )}
-        </TouchableOpacity>
+        </BentoPressable>
       </View>
       </KeyboardAvoidingView>
 

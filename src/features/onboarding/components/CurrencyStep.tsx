@@ -1,6 +1,7 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useState, useCallback } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { CURRENCIES } from '../../../constants/currency';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 
@@ -40,11 +41,10 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
   const renderRow = useCallback((item: typeof CURRENCIES[0]) => {
     const isSelected = item.code === currency;
     return (
-      <TouchableOpacity
+      <BentoPressable
         key={item.code}
         style={[styles.row, isSelected && styles.rowSelected]}
         onPress={() => onCurrencyChange(item.code)}
-        activeOpacity={0.75}
       >
         <View style={[styles.codeBadge, isSelected && styles.codeBadgeSelected]}>
           <Text style={[styles.codeText, isSelected && styles.codeTextSelected]}>{item.code}</Text>
@@ -58,7 +58,7 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
         {isSelected && (
           <MaterialCommunityIcons name="check-circle" size={18} color={colors.primary} />
         )}
-      </TouchableOpacity>
+      </BentoPressable>
     );
   }, [currency, onCurrencyChange, styles, colors.primary]);
 
@@ -85,9 +85,9 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
           returnKeyType="search"
         />
         {query.length > 0 && (
-          <TouchableOpacity onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <BentoPressable onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
             <MaterialCommunityIcons name="close-circle" size={15} color={colors.textMuted} />
-          </TouchableOpacity>
+          </BentoPressable>
         )}
       </View>
 

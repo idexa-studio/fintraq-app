@@ -1,16 +1,9 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  ListRenderItemInfo,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, FlatList, ListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
@@ -99,33 +92,30 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     () => (
       <View style={styles.listHeader}>
         <View style={styles.typeTabs}>
-          <TouchableOpacity
+          <BentoPressable
             style={[styles.typeTab, activeType === 'DR' && styles.typeTabActive]}
             onPress={() => setActiveType('DR')}
-            activeOpacity={0.8}
           >
             <Text style={[styles.typeTabText, activeType === 'DR' && styles.typeTabTextActive]}>
               Expense
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </BentoPressable>
+          <BentoPressable
             style={[styles.typeTab, activeType === 'CR' && styles.typeTabActive]}
             onPress={() => setActiveType('CR')}
-            activeOpacity={0.8}
           >
             <Text style={[styles.typeTabText, activeType === 'CR' && styles.typeTabTextActive]}>
               Income
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </BentoPressable>
+          <BentoPressable
             style={[styles.typeTab, activeType === 'TR' && styles.typeTabActive]}
             onPress={() => setActiveType('TR')}
-            activeOpacity={0.8}
           >
             <Text style={[styles.typeTabText, activeType === 'TR' && styles.typeTabTextActive]}>
               Transfer
             </Text>
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
       </View>
     ),
@@ -142,10 +132,10 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         <Text style={styles.emptyText}>
           {`No ${activeType === 'DR' ? 'expense' : activeType === 'CR' ? 'income' : 'transfer'} categories yet.`}
         </Text>
-        <TouchableOpacity style={styles.emptyBtn} onPress={handleCreate} activeOpacity={0.85}>
+        <BentoPressable style={styles.emptyBtn} onPress={handleCreate}>
           <MaterialCommunityIcons name="plus" size={15} color={colors.background} />
           <Text style={styles.emptyBtnText}>Create one</Text>
-        </TouchableOpacity>
+        </BentoPressable>
       </View>
     ),
     [activeType, colors, handleCreate, styles],
@@ -176,9 +166,9 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         />
       )}
 
-      <TouchableOpacity style={styles.fab} onPress={handleCreate} activeOpacity={0.9}>
+      <BentoPressable style={styles.fab} onPress={handleCreate}>
         <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
-      </TouchableOpacity>
+      </BentoPressable>
 
       <OptionsBottomSheet
         visible={showManageDialog}

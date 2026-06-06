@@ -1,16 +1,9 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  FlatList,
-  Modal,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { FlatList, Modal, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { Person } from '../api/persons';
 
 type PersonPickerBottomSheetProps = {
@@ -74,10 +67,9 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
     const selected = item.id === selectedId;
     const hex = colorNumberToHex(item.color);
     return (
-      <TouchableOpacity
+      <BentoPressable
         style={[styles.row, selected && styles.rowSelected]}
         onPress={() => handleSelect(item.id)}
-        activeOpacity={0.7}
       >
         <PersonInitials name={item.name} color={hex} size={36} />
         <View style={styles.rowMeta}>
@@ -99,14 +91,14 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
             <MaterialCommunityIcons name="check" size={12} color={colors.background} />
           </View>
         )}
-      </TouchableOpacity>
+      </BentoPressable>
     );
   }, [selectedId, handleSelect, styles, colors, typography]);
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={handleClose}>
       <View style={styles.overlay}>
-        <TouchableOpacity style={styles.backdrop} onPress={handleClose} activeOpacity={1} />
+        <BentoPressable style={styles.backdrop} onPress={handleClose} />
         <View style={styles.sheet}>
           <View style={styles.handle} />
 
@@ -129,17 +121,16 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
               returnKeyType="search"
             />
             {query.length > 0 && (
-              <TouchableOpacity onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                 <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
-              </TouchableOpacity>
+              </BentoPressable>
             )}
           </View>
 
           {/* None option */}
-          <TouchableOpacity
+          <BentoPressable
             style={[styles.row, styles.noneRow, selectedId === null && styles.rowSelected]}
             onPress={() => handleSelect(null)}
-            activeOpacity={0.7}
           >
             <View style={styles.noneAvatar}>
               <MaterialCommunityIcons name="account-outline" size={18} color={colors.textMuted} />
@@ -154,7 +145,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
                 <MaterialCommunityIcons name="check" size={12} color={colors.background} />
               </View>
             )}
-          </TouchableOpacity>
+          </BentoPressable>
 
           <FlatList
             data={filtered}

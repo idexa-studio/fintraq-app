@@ -1,3 +1,4 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
 import { MoneyText } from '@/src/components/ui/MoneyText';
@@ -11,14 +12,7 @@ import { colorNumberToHex } from '@/src/utils/format';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 function PersonInitials({ name, color, size = 64 }: { name: string; color: string; size?: number }) {
@@ -126,12 +120,12 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         showBack
         rightAction={
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-            <TouchableOpacity onPress={() => setShowDeleteConfirm(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <BentoPressable onPress={() => setShowDeleteConfirm(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <MaterialCommunityIcons name="trash-can-outline" size={20} color={colors.danger} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleEdit} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            </BentoPressable>
+            <BentoPressable onPress={handleEdit} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <MaterialCommunityIcons name="pencil-outline" size={20} color={colors.text} />
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
         }
       />
@@ -180,16 +174,15 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {availableCurrencies.length > 1 && (
           <View style={styles.currencyRow}>
             {availableCurrencies.map(c => (
-              <TouchableOpacity
+              <BentoPressable
                 key={c}
                 style={[styles.currencyPill, c === currency && styles.currencyPillActive]}
                 onPress={() => setSelectedCurrency(c)}
-                activeOpacity={0.8}
               >
                 <Text style={[styles.currencyPillText, c === currency && styles.currencyPillTextActive]}>
                   {c}
                 </Text>
-              </TouchableOpacity>
+              </BentoPressable>
             ))}
           </View>
         )}

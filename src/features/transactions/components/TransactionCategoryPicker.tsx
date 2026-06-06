@@ -1,6 +1,7 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
@@ -31,14 +32,13 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
           const selected = selectedId === cat.id;
           const catColor = colorNumberToHex(cat.color);
           return (
-            <TouchableOpacity
+            <BentoPressable
               key={cat.id}
               style={[
                 styles.pill,
                 { backgroundColor: selected ? catColor + '18' : colors.surface },
               ]}
               onPress={() => handleSelect(cat.id)}
-              activeOpacity={0.8}
             >
               <MaterialCommunityIcons
                 name={resolveIcon(cat.icon, 'tag-outline')}
@@ -54,7 +54,7 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
               >
                 {cat.name}
               </Text>
-            </TouchableOpacity>
+            </BentoPressable>
           );
         })}
       </View>

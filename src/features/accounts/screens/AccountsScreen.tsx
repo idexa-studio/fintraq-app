@@ -1,3 +1,4 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
@@ -12,13 +13,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { WalkthroughOverlay, ACCOUNTS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { Account } from '../api/accounts';
 
@@ -86,11 +81,10 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
         {accounts?.map((account) => {
           const accColor = colorNumberToHex(account.color);
           return (
-            <TouchableOpacity
+            <BentoPressable
               key={account.id}
               style={styles.card}
               onPress={() => handleCardPress(account.id)}
-              activeOpacity={0.7}
             >
               <View style={styles.cardTop}>
                 <View style={styles.cardLead}>
@@ -118,13 +112,12 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                       {account.currency}
                     </Text>
                   </View>
-                  <TouchableOpacity
+                  <BentoPressable
                     onPress={() => handleMenuOpen(account)}
                     hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    activeOpacity={0.4}
                   >
                     <MaterialCommunityIcons name="dots-vertical" size={18} color={colors.textMuted} />
-                  </TouchableOpacity>
+                  </BentoPressable>
                 </View>
               </View>
 
@@ -153,7 +146,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                   <MoneyText amount={account.expense} currency={account.currency} type="DR" compact style={styles.statValue} />
                 </View>
               </View>
-            </TouchableOpacity>
+            </BentoPressable>
           );
         })}
 
@@ -167,9 +160,9 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
 
       </ScrollView>
 
-      <TouchableOpacity style={styles.fab} onPress={handleAdd} activeOpacity={0.85}>
+      <BentoPressable style={styles.fab} onPress={handleAdd}>
         <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
-      </TouchableOpacity>
+      </BentoPressable>
 
       <OptionsBottomSheet
         visible={showOptions}

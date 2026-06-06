@@ -1,7 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
-import { Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { BentoPressable } from './BentoPressable';
 
 type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -44,7 +45,7 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
   return (
     <Modal transparent visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
+        <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
 
         <View style={styles.sheet}>
           <View style={styles.dragHandle} />
@@ -58,11 +59,11 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
             {options.map((opt) => {
               const selected = !!opt.selected;
               return (
-                <TouchableOpacity
+                <BentoPressable
                   key={opt.key}
                   style={styles.opt}
-                  activeOpacity={0.6}
                   onPress={() => handleOptionPress(opt)}
+                  scaleOnPress={false}
                 >
                   {opt.icon ? (
                     <MaterialCommunityIcons
@@ -83,14 +84,14 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
                   {selected ? (
                     <MaterialCommunityIcons name="check" size={18} color={colors.primary} />
                   ) : null}
-                </TouchableOpacity>
+                </BentoPressable>
               );
             })}
           </View>
 
-          <TouchableOpacity style={styles.cancel} onPress={onClose} activeOpacity={0.6}>
+          <BentoPressable style={styles.cancel} onPress={onClose}>
             <Text style={styles.cancelText}>{closeLabel}</Text>
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
       </View>
     </Modal>

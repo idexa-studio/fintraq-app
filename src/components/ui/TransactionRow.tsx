@@ -7,7 +7,8 @@ import { resolveIcon } from '@/src/utils/icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { format, isToday, isYesterday } from 'date-fns';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { BentoPressable } from './BentoPressable';
 
 type TransactionData = {
   id: number;
@@ -108,10 +109,10 @@ export const TransactionRow = React.memo(function TransactionRow({
   }, [timeText, dateText, showDate]);
 
   return (
-    <TouchableOpacity
+    <BentoPressable
       style={[styles.container, containerStyle]}
-      activeOpacity={0.75}
       onPress={handlePress}
+      scaleOnPress={false}
     >
       <IconAvatar
         icon={iconName}
@@ -165,7 +166,7 @@ export const TransactionRow = React.memo(function TransactionRow({
           {dateTimeText}
         </Text>
       </View>
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 

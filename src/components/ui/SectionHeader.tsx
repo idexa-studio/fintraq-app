@@ -1,7 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
+import { BentoPressable } from './BentoPressable';
 
 type Props = {
   title: string;
@@ -25,10 +26,10 @@ export const SectionHeader = React.memo(function SectionHeader({
       <Text style={styles.title}>{title}</Text>
       {rightText ? (
         onPressRight ? (
-          <TouchableOpacity onPress={onPressRight} activeOpacity={0.7} style={styles.rightBtn}>
+          <BentoPressable onPress={onPressRight} style={styles.rightBtn}>
             <Text style={styles.right}>{rightText}</Text>
             <MaterialCommunityIcons name="chevron-right" size={14} color={colors.primary} />
-          </TouchableOpacity>
+          </BentoPressable>
         ) : (
           <Text style={styles.right}>{rightText}</Text>
         )

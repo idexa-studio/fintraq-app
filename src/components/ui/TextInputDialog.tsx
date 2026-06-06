@@ -5,12 +5,13 @@ import {
   KeyboardAvoidingView,
   Modal,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   TextInputProps,
-  TouchableOpacity,
   View,
 } from 'react-native';
+import { BentoPressable } from './BentoPressable';
 
 type TextInputDialogProps = {
   visible: boolean;
@@ -70,7 +71,7 @@ export const TextInputDialog = React.memo(function TextInputDialog({
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <View style={styles.overlay}>
-          <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
+          <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
 
           <View style={styles.card}>
             <View style={styles.body}>
@@ -104,16 +105,16 @@ export const TextInputDialog = React.memo(function TextInputDialog({
             </View>
 
             <View style={styles.actions}>
-              <TouchableOpacity style={styles.btnCancel} onPress={onClose} activeOpacity={0.7}>
+              <BentoPressable style={styles.btnCancel} onPress={onClose}>
                 <Text style={styles.btnCancelText}>
                   {cancelLabel}
                 </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.btnSave} onPress={handleSave} activeOpacity={0.7}>
+              </BentoPressable>
+              <BentoPressable style={styles.btnSave} onPress={handleSave}>
                 <Text style={styles.btnSaveText}>
                   {saveLabel}
                 </Text>
-              </TouchableOpacity>
+              </BentoPressable>
             </View>
           </View>
         </View>

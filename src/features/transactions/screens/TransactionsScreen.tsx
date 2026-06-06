@@ -1,19 +1,11 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  SectionList,
-  SectionListData,
-  SectionListRenderItemInfo,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WalkthroughOverlay, TRANSACTIONS_LIST_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
@@ -79,13 +71,12 @@ const SwipeActionButton = React.memo(function SwipeActionButton({
   backgroundColor: string;
 }) {
   return (
-    <TouchableOpacity
+    <BentoPressable
       onPress={onPress}
-      activeOpacity={0.75}
       style={[swipeActionStyles.actionBase, { backgroundColor }]}
     >
       <MaterialCommunityIcons name={icon} size={18} color={color} />
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 
@@ -479,14 +470,14 @@ export function TransactionsScreen() {
         showBack
         rightAction={(
           <View style={styles.headerActions}>
-            <TouchableOpacity onPress={() => setShowAdvancedFilterSheet(true)} activeOpacity={0.7} style={{ position: 'relative' }}>
+            <BentoPressable onPress={() => setShowAdvancedFilterSheet(true)} style={{ position: 'relative' }}>
               <MaterialCommunityIcons name="tune" size={19} color={colors.text} />
               {activeFilterCount > 0 && (
                 <View style={styles.filterBadge}>
                   <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
                 </View>
               )}
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
         )}
       />
@@ -518,9 +509,9 @@ export function TransactionsScreen() {
             {activeFilterCount > 0 && (
               <View style={styles.activeFiltersRow}>
                 <Text style={styles.activeFiltersLabel}>Active filters</Text>
-                <TouchableOpacity style={styles.clearChip} onPress={clearFilters}>
+                <BentoPressable style={styles.clearChip} onPress={clearFilters}>
                   <Text style={styles.clearChipText}>Clear All</Text>
-                </TouchableOpacity>
+                </BentoPressable>
               </View>
             )}
           </View>
@@ -536,10 +527,10 @@ export function TransactionsScreen() {
                 ? 'No transactions match the active filters.'
                 : 'Add your first transaction to start tracking.'}
             </Text>
-            <TouchableOpacity style={styles.emptyAction} onPress={() => router.push('/transactions/create')}>
+            <BentoPressable style={styles.emptyAction} onPress={() => router.push('/transactions/create')}>
               <Text style={styles.emptyActionText}>Add Transaction</Text>
               <MaterialCommunityIcons name="arrow-right" size={14} color={colors.background} />
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
         )}
         ListFooterComponent={txQuery.isFetchingNextPage ? (
@@ -549,9 +540,9 @@ export function TransactionsScreen() {
         ) : null}
       />
 
-      <TouchableOpacity style={styles.fab} onPress={() => router.push('/transactions/create')} activeOpacity={0.9}>
+      <BentoPressable style={styles.fab} onPress={() => router.push('/transactions/create')}>
         <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
-      </TouchableOpacity>
+      </BentoPressable>
 
       <ConfirmDialog
         visible={showDeleteDialog}

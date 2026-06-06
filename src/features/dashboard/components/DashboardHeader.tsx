@@ -1,6 +1,7 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 
 type Props = {
@@ -24,7 +25,7 @@ export const DashboardHeader = React.memo(function DashboardHeader({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.searchBar} onPress={onSearch} activeOpacity={0.8}>
+      <BentoPressable style={styles.searchBar} onPress={onSearch}>
         <MaterialCommunityIcons name="magnify" size={20} color={colors.textMuted} />
         <Text style={styles.placeholder} numberOfLines={1}>
           Search transactions, accounts...
@@ -39,7 +40,7 @@ export const DashboardHeader = React.memo(function DashboardHeader({
             </View>
           )}
         </View>
-      </TouchableOpacity>
+      </BentoPressable>
     </View>
   );
 });

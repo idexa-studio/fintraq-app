@@ -1,3 +1,4 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Header } from '@/src/components/ui/Header';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
@@ -6,7 +7,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -78,15 +79,14 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
 
       {/* Pinned Bottom CTA */}
       <View style={styles.footer}>
-        <TouchableOpacity
+        <BentoPressable
           style={styles.cta}
           onPress={() => router.replace('/(main)/(tabs)')}
-          activeOpacity={0.85}
         >
           <Text style={[styles.ctaText, { color: colors.background }]}>
             Open dashboard
           </Text>
-        </TouchableOpacity>
+        </BentoPressable>
       </View>
     </SafeAreaView>
   );

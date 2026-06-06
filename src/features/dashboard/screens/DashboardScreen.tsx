@@ -3,8 +3,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { DEFAULT_CURRENCY } from '../../../constants/currency';
@@ -116,16 +117,15 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
             style={styles.currencyTabsWrap}
           >
             {currencyKeys.map(c => (
-              <TouchableOpacity
+              <BentoPressable
                 key={c}
                 style={[styles.currencyTab, c === selectedCurrency && styles.currencyTabActive]}
                 onPress={() => handleCurrencySelect(c)}
-                activeOpacity={0.8}
               >
                 <Text style={[styles.currencyTabText, c === selectedCurrency && styles.currencyTabTextActive]}>
                   {c}
                 </Text>
-              </TouchableOpacity>
+              </BentoPressable>
             ))}
           </ScrollView>
         )}
@@ -176,19 +176,19 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
               </View>
               <Text style={styles.emptyTitle}>No transactions yet</Text>
               <Text style={styles.emptySubtext}>Start recording your daily payments, income, or transfers here.</Text>
-              <TouchableOpacity style={styles.emptyAction} onPress={navigateToCreateTx} activeOpacity={0.8}>
+              <BentoPressable style={styles.emptyAction} onPress={navigateToCreateTx}>
                 <Text style={styles.emptyActionText}>Add transaction</Text>
                 <MaterialCommunityIcons name="arrow-right" size={12} color={colors.background} />
-              </TouchableOpacity>
+              </BentoPressable>
             </View>
           )}
         </View>
 
       </ScrollView>
 
-      <TouchableOpacity style={styles.fab} onPress={navigateToCreateTx} activeOpacity={0.9}>
+      <BentoPressable style={styles.fab} onPress={navigateToCreateTx}>
         <MaterialCommunityIcons name="plus" size={26} color={colors.background} />
-      </TouchableOpacity>
+      </BentoPressable>
 
       <WalkthroughOverlay storageKey="@luno_walkthrough_dashboard" steps={DASHBOARD_WALKTHROUGH_STEPS} />
       <PremiumUpsellBottomSheet visible={showUpsell && !isPremium} onClose={dismissUpsell} />

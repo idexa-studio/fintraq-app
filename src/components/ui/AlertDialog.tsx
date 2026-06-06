@@ -1,7 +1,8 @@
 import React, { useMemo, useCallback } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
+import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { BentoPressable } from './BentoPressable';
 
 export type AlertButton = {
   text: string;
@@ -47,7 +48,7 @@ export const AlertDialog = React.memo(function AlertDialog({
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
+        <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
         <View style={styles.card}>
           <View style={styles.body}>
             <View style={[styles.iconBox, { backgroundColor: iconCfg.bg }]}>
@@ -63,11 +64,10 @@ export const AlertDialog = React.memo(function AlertDialog({
               const isCancel = btn.style === 'cancel';
               const isDestructive = btn.style === 'destructive';
               return (
-                <TouchableOpacity
+                <BentoPressable
                   key={i}
                   style={styles.btn}
                   onPress={() => handleButtonPress(btn)}
-                  activeOpacity={0.7}
                 >
                   <Text style={[
                     styles.btnText,
@@ -77,7 +77,7 @@ export const AlertDialog = React.memo(function AlertDialog({
                   ]}>
                     {btn.text}
                   </Text>
-                </TouchableOpacity>
+                </BentoPressable>
               );
             })}
           </View>

@@ -1,7 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
-import { ActivityIndicator, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { BentoPressable } from './BentoPressable';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'success' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -63,7 +64,7 @@ export const Button = React.memo(function Button({
   }, [disabled, isLoading, onPress]);
 
   return (
-    <TouchableOpacity
+    <BentoPressable
       style={[
         styles.base,
         {
@@ -77,7 +78,6 @@ export const Button = React.memo(function Button({
       ]}
       onPress={handlePress}
       disabled={disabled || isLoading}
-      activeOpacity={0.75}
     >
       {icon && !isLoading && (
         <MaterialCommunityIcons
@@ -104,7 +104,7 @@ export const Button = React.memo(function Button({
           {title}
         </Text>
       )}
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 

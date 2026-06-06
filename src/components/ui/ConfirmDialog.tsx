@@ -1,6 +1,7 @@
-import React, { useMemo, useCallback } from 'react';
-import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { BentoPressable } from './BentoPressable';
 
 type ConfirmDialogProps = {
   visible: boolean;
@@ -37,7 +38,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
+        <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
 
         <View style={styles.card}>
           <View style={styles.body}>
@@ -46,14 +47,13 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
           </View>
 
           <View style={styles.actions}>
-            <TouchableOpacity style={styles.btnCancel} onPress={onClose} activeOpacity={0.7}>
+            <BentoPressable style={styles.btnCancel} onPress={onClose}>
               <Text style={styles.btnCancelText}>{cancelLabel}</Text>
-            </TouchableOpacity>
+            </BentoPressable>
 
-            <TouchableOpacity
+            <BentoPressable
               style={[styles.btnConfirm, destructive && styles.btnDanger]}
               onPress={handleConfirm}
-              activeOpacity={0.7}
               disabled={isLoading}
             >
               {isLoading ? (
@@ -61,7 +61,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
               ) : (
                 <Text style={styles.btnConfirmText}>{confirmLabel}</Text>
               )}
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
         </View>
       </View>

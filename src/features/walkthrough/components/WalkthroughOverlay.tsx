@@ -1,7 +1,8 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, Text, View } from 'react-native';
 import { WalkthroughStep } from '../constants/steps';
 import { useWalkthrough } from '../hooks/useWalkthrough';
 
@@ -65,11 +66,11 @@ export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
 
           {/* Footer Actions */}
           <View style={styles.footer}>
-            <TouchableOpacity onPress={handleSkip} activeOpacity={0.6} style={styles.skipBtn}>
+            <BentoPressable onPress={handleSkip} style={styles.skipBtn}>
               <Text style={styles.skipText}>Skip guide</Text>
-            </TouchableOpacity>
+            </BentoPressable>
 
-            <TouchableOpacity onPress={handleNext} activeOpacity={0.8} style={styles.nextBtn}>
+            <BentoPressable onPress={handleNext} style={styles.nextBtn}>
               <Text style={styles.nextText}>
                 {index === steps.length - 1 ? 'Get started' : 'Continue'}
               </Text>
@@ -78,7 +79,7 @@ export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
                 size={14}
                 color={colors.background}
               />
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
         </View>
       </View>

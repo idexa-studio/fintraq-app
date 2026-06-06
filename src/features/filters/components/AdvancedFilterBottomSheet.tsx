@@ -1,15 +1,7 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Modal,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Modal, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Account } from '@/src/features/accounts/api/accounts';
 import { Category } from '@/src/features/categories/api/categories';
@@ -114,7 +106,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={[styles.overlay, { backgroundColor: overlay.dim }]}>
-        <TouchableOpacity style={styles.backdrop} onPress={onClose} activeOpacity={1} />
+        <BentoPressable style={styles.backdrop} onPress={onClose} />
 
         <View style={styles.sheet}>
           <View style={styles.handle} />
@@ -135,19 +127,18 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             </View>
             <View style={styles.headerRight}>
               {activeCount > 0 && (
-                <TouchableOpacity onPress={handleReset} activeOpacity={0.7}>
+                <BentoPressable onPress={handleReset}>
                   <Text style={[styles.resetText, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
                     Reset
                   </Text>
-                </TouchableOpacity>
+                </BentoPressable>
               )}
-              <TouchableOpacity
+              <BentoPressable
                 onPress={onClose}
-                activeOpacity={0.6}
                 style={[styles.closeBtn, { backgroundColor: colors.text + '0A' }]}
               >
                 <MaterialCommunityIcons name="close" size={16} color={colors.textMuted} />
-              </TouchableOpacity>
+              </BentoPressable>
             </View>
           </View>
 
@@ -166,16 +157,15 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 const sel = local.types?.includes(opt.key) || false;
                 const c   = colors[opt.colorKey];
                 return (
-                  <TouchableOpacity
+                  <BentoPressable
                     key={opt.key}
                     style={[styles.typePill, { backgroundColor: sel ? c + '18' : colors.card }]}
                     onPress={() => toggleType(opt.key)}
-                    activeOpacity={0.8}
                   >
                     <Text style={[styles.typePillLabel, { fontFamily: typography.fonts.semibold, color: sel ? c : colors.textMuted }]}>
                       {opt.label}
                     </Text>
-                  </TouchableOpacity>
+                  </BentoPressable>
                 );
               })}
             </View>
@@ -187,7 +177,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             <View style={[styles.group, { backgroundColor: colors.card }]}>
               {local.dateRange ? (
                 <>
-                  <TouchableOpacity style={styles.groupRow} onPress={() => setShowStart(true)} activeOpacity={0.7}>
+                  <BentoPressable style={styles.groupRow} onPress={() => setShowStart(true)}>
                     <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
                     <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                       From
@@ -195,9 +185,9 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                     <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
                       {fmt(local.dateRange.startDate)}
                     </Text>
-                  </TouchableOpacity>
+                  </BentoPressable>
                   <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
-                  <TouchableOpacity style={styles.groupRow} onPress={() => setShowEnd(true)} activeOpacity={0.7}>
+                  <BentoPressable style={styles.groupRow} onPress={() => setShowEnd(true)}>
                     <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
                     <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                       To
@@ -205,19 +195,19 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                     <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
                       {fmt(local.dateRange.endDate)}
                     </Text>
-                    <TouchableOpacity onPress={clearDateRange} activeOpacity={0.6} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                    <BentoPressable onPress={clearDateRange} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
                       <MaterialCommunityIcons name="close-circle" size={18} color={colors.textMuted} />
-                    </TouchableOpacity>
-                  </TouchableOpacity>
+                    </BentoPressable>
+                  </BentoPressable>
                 </>
               ) : (
-                <TouchableOpacity style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)} activeOpacity={0.7}>
+                <BentoPressable style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)}>
                   <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     Set date range
                   </Text>
                   <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} style={styles.groupChevron} />
-                </TouchableOpacity>
+                </BentoPressable>
               )}
             </View>
 
@@ -270,17 +260,16 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                     const sel = local.accountIds?.includes(a.id) || false;
                     const ac  = colorNumberToHex(a.color);
                     return (
-                      <TouchableOpacity
+                      <BentoPressable
                         key={a.id}
                         style={[styles.pill, { backgroundColor: sel ? ac + '18' : colors.card }]}
                         onPress={() => toggleAccount(a.id)}
-                        activeOpacity={0.8}
                       >
                         <MaterialCommunityIcons name={resolveIcon(a.icon, 'wallet-outline')} size={16} color={ac} />
                         <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
                           {a.name}
                         </Text>
-                      </TouchableOpacity>
+                      </BentoPressable>
                     );
                   })}
                 </View>
@@ -298,17 +287,16 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                     const sel = local.categoryIds?.includes(c.id) || false;
                     const cc  = colorNumberToHex(c.color);
                     return (
-                      <TouchableOpacity
+                      <BentoPressable
                         key={c.id}
                         style={[styles.pill, { backgroundColor: sel ? cc + '18' : colors.card }]}
                         onPress={() => toggleCategory(c.id)}
-                        activeOpacity={0.8}
                       >
                         <MaterialCommunityIcons name={resolveIcon(c.icon, 'tag-outline')} size={16} color={cc} />
                         <Text style={[styles.pillLabel, { color: sel ? cc : colors.text }]}>
                           {c.name}
                         </Text>
-                      </TouchableOpacity>
+                      </BentoPressable>
                     );
                   })}
                 </View>
@@ -327,11 +315,10 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                     const pc  = colorNumberToHex(p.color);
                     const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
                     return (
-                      <TouchableOpacity
+                      <BentoPressable
                         key={p.id}
                         style={[styles.pill, { backgroundColor: sel ? pc + '18' : colors.card }]}
                         onPress={() => togglePerson(p.id)}
-                        activeOpacity={0.8}
                       >
                         <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: pc, alignItems: 'center', justifyContent: 'center' }}>
                           <Text style={{ color: '#fff', fontWeight: '700', fontSize: 8 }}>{initials}</Text>
@@ -339,7 +326,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                         <Text style={[styles.pillLabel, { color: sel ? pc : colors.text }]}>
                           {p.name.split(' ')[0]}
                         </Text>
-                      </TouchableOpacity>
+                      </BentoPressable>
                     );
                   })}
                 </View>
@@ -359,7 +346,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                   {(['date', 'amount'] as const).map((s, i) => (
                     <React.Fragment key={s}>
                       {i > 0 && <Text style={[styles.toggleSep, { color: colors.textMuted }]}>·</Text>}
-                      <TouchableOpacity onPress={() => setLocal(p => ({ ...p, sortBy: s }))} activeOpacity={0.7}>
+                      <BentoPressable onPress={() => setLocal(p => ({ ...p, sortBy: s }))}>
                         <Text style={[
                           styles.toggleOption,
                           { fontFamily: local.sortBy === s ? typography.fonts.semibold : typography.fonts.regular },
@@ -367,7 +354,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                         ]}>
                           {s === 'date' ? 'Date' : 'Amount'}
                         </Text>
-                      </TouchableOpacity>
+                      </BentoPressable>
                     </React.Fragment>
                   ))}
                 </View>
@@ -381,7 +368,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                   {(['desc', 'asc'] as const).map((o, i) => (
                     <React.Fragment key={o}>
                       {i > 0 && <Text style={[styles.toggleSep, { color: colors.textMuted }]}>·</Text>}
-                      <TouchableOpacity onPress={() => setLocal(p => ({ ...p, sortOrder: o }))} activeOpacity={0.7}>
+                      <BentoPressable onPress={() => setLocal(p => ({ ...p, sortOrder: o }))}>
                         <Text style={[
                           styles.toggleOption,
                           { fontFamily: local.sortOrder === o ? typography.fonts.semibold : typography.fonts.regular },
@@ -389,7 +376,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                         ]}>
                           {o === 'desc' ? 'Newest' : 'Oldest'}
                         </Text>
-                      </TouchableOpacity>
+                      </BentoPressable>
                     </React.Fragment>
                   ))}
                 </View>
@@ -401,15 +388,14 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
 
           {/* ── Footer ── */}
           <View style={[styles.footer, { backgroundColor: colors.surface }]}>
-            <TouchableOpacity
+            <BentoPressable
               style={[styles.applyBtn, { backgroundColor: colors.text }]}
               onPress={handleApply}
-              activeOpacity={0.85}
             >
               <Text style={[styles.applyLabel, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
                 Show {resultCount} result{resultCount !== 1 ? 's' : ''}
               </Text>
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
 
           {showStart && (

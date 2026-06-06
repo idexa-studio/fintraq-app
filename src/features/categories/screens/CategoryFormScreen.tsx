@@ -1,16 +1,9 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ColorPickerBottomSheet } from '@/src/components/ui/ColorPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
@@ -109,8 +102,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>Type</Text>
               <View style={styles.typeRow}>
-                <TouchableOpacity
-                  activeOpacity={0.9}
+                <BentoPressable
                   onPress={() => !isEditing && setType('DR')}
                   disabled={isEditing}
                   style={[styles.typePill, type === 'DR' && styles.typePillExpense]}
@@ -118,9 +110,8 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                   <Text style={[styles.typePillText, type === 'DR' && { color: theme.colors.danger }]}>
                     Expense
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.9}
+                </BentoPressable>
+                <BentoPressable
                   onPress={() => !isEditing && setType('CR')}
                   disabled={isEditing}
                   style={[styles.typePill, type === 'CR' && styles.typePillIncome]}
@@ -128,9 +119,8 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                   <Text style={[styles.typePillText, type === 'CR' && { color: theme.colors.success }]}>
                     Income
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.9}
+                </BentoPressable>
+                <BentoPressable
                   onPress={() => !isEditing && setType('TR')}
                   disabled={isEditing}
                   style={[styles.typePill, type === 'TR' && styles.typePillTransfer]}
@@ -138,7 +128,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                   <Text style={[styles.typePillText, type === 'TR' && { color: theme.colors.primary }]}>
                     Transfer
                   </Text>
-                </TouchableOpacity>
+                </BentoPressable>
               </View>
               {isEditing && (
                 <Text style={styles.lockHint}>Type cannot be changed for existing categories.</Text>
@@ -167,10 +157,9 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>Appearance</Text>
               <View style={styles.appearanceRow}>
-                <TouchableOpacity
+                <BentoPressable
                   style={styles.appearanceCard}
                   onPress={() => setShowIconPicker(true)}
-                  activeOpacity={0.85}
                 >
                   <IconAvatar
                     icon={resolveIcon(icon, 'grid')}
@@ -183,12 +172,11 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                       {icon.replace('-outline', '')}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </BentoPressable>
 
-                <TouchableOpacity
+                <BentoPressable
                   style={styles.appearanceCard}
                   onPress={() => setShowColorPicker(true)}
-                  activeOpacity={0.85}
                 >
                   <View style={[styles.colorSwatch, { backgroundColor: colorHex }]} />
                   <View style={styles.appearanceCardMeta}>
@@ -197,7 +185,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                       {colorHex}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </BentoPressable>
               </View>
             </View>
 
@@ -205,8 +193,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
         </ScrollView>
 
         <View style={styles.footer}>
-          <TouchableOpacity
-            activeOpacity={0.9}
+          <BentoPressable
             style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
             onPress={handleSave}
             disabled={!isValid}
@@ -214,7 +201,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
             <Text style={styles.primaryBtnText}>
               {isEditing ? 'Save category' : 'Create category'}
             </Text>
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
       </KeyboardAvoidingView>
 

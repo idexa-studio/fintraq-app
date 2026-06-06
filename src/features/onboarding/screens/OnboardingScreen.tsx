@@ -1,3 +1,4 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Button } from '@/src/components/ui/Button';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
@@ -21,15 +22,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const OnboardingScreen = React.memo(function OnboardingScreen() {
@@ -228,9 +221,9 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           <View style={styles.header}>
             <View style={styles.headerTopRow}>
               {stepIndex > 0 ? (
-                <TouchableOpacity style={styles.headerBackButton} onPress={() => setStepIndex((i) => i - 1)} activeOpacity={0.9}>
+                <BentoPressable style={styles.headerBackButton} onPress={() => setStepIndex((i) => i - 1)}>
                   <MaterialCommunityIcons name="chevron-left" size={18} color={colors.text} />
-                </TouchableOpacity>
+                </BentoPressable>
               ) : (
                 <View style={styles.headerBackPlaceholder} />
               )}

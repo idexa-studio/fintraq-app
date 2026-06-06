@@ -5,14 +5,15 @@ import {
   KeyboardAvoidingView,
   Modal,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { CURRENCIES } from '../../constants/currency';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
+import { BentoPressable } from './BentoPressable';
 
 export type CurrencyPickerBottomSheetProps = {
   visible: boolean;
@@ -72,10 +73,10 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
   const renderItem = useCallback(({ item }: { item: typeof CURRENCIES[0] }) => {
     const selected = item.code === value;
     return (
-      <TouchableOpacity
+      <BentoPressable
         style={[styles.row, selected && styles.rowSelected]}
         onPress={() => handleSelect(item.code)}
-        activeOpacity={0.7}
+        scaleOnPress={false}
       >
         <View style={[styles.chip, selected && styles.chipSelected]}>
           <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
@@ -94,7 +95,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
         ) : (
           <View style={styles.checkPlaceholder} />
         )}
-      </TouchableOpacity>
+      </BentoPressable>
     );
   }, [value, handleSelect, styles, colors]);
 
@@ -104,7 +105,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.overlay}
       >
-        <TouchableOpacity style={styles.backdrop} onPress={handleClose} activeOpacity={1} />
+        <Pressable style={styles.backdrop} onPress={handleClose} />
 
         <View style={styles.sheet}>
           <View style={styles.handle} />
@@ -114,9 +115,9 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
               <Text style={styles.title}>Currency</Text>
               <Text style={styles.subtitle}>{CURRENCIES.length} currencies</Text>
             </View>
-            <TouchableOpacity onPress={handleClose} style={styles.closeBtn} activeOpacity={0.7}>
+            <BentoPressable onPress={handleClose} style={styles.closeBtn}>
               <MaterialCommunityIcons name="close" size={18} color={colors.text} />
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
 
           <View style={styles.searchWrap}>
@@ -132,9 +133,9 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
               returnKeyType="search"
             />
             {query.length > 0 && (
-              <TouchableOpacity onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                 <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
-              </TouchableOpacity>
+              </BentoPressable>
             )}
           </View>
 

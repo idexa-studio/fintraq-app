@@ -1,8 +1,9 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
-import { Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, Platform, StyleSheet, Text, View } from 'react-native';
 
 type PremiumUpsellBottomSheetProps = {
   visible: boolean;
@@ -52,7 +53,7 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
   return (
     <Modal transparent visible={visible} animationType="slide" onRequestClose={() => {}}>
       <View style={styles.overlay}>
-        <TouchableOpacity style={styles.backdrop} onPress={canDismiss ? onClose : undefined} activeOpacity={1} />
+        <BentoPressable style={styles.backdrop} onPress={canDismiss ? onClose : undefined} />
         <View style={styles.sheet}>
           <View style={styles.dragHandle} />
 
@@ -68,9 +69,9 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
           </View>
 
           {canDismiss ? (
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <BentoPressable onPress={onClose} style={styles.closeBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <MaterialCommunityIcons name="close" size={20} color={colors.textMuted} />
-            </TouchableOpacity>
+            </BentoPressable>
           ) : null}
 
           {/* Feature Bento List */}
@@ -85,21 +86,20 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
             ))}
           </View>
 
-          <TouchableOpacity
+          <BentoPressable
             style={[styles.cta, !canDismiss && styles.ctaDisabled]}
             onPress={handleUpgrade}
-            activeOpacity={0.85}
             disabled={!canDismiss}
           >
             <Text style={styles.ctaText}>
               {canDismiss ? 'Get lifetime access' : `Get lifetime access in ${left}s`}
             </Text>
-          </TouchableOpacity>
+          </BentoPressable>
 
           {canDismiss ? (
-            <TouchableOpacity onPress={onClose} activeOpacity={0.6} style={styles.skip}>
+            <BentoPressable onPress={onClose} style={styles.skip}>
               <Text style={styles.skipText}>Not now</Text>
-            </TouchableOpacity>
+            </BentoPressable>
           ) : null}
         </View>
       </View>

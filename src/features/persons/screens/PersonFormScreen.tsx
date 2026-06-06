@@ -1,3 +1,4 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ColorPickerBottomSheet } from '@/src/components/ui/ColorPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { Input } from '@/src/components/ui/Input';
@@ -15,16 +16,7 @@ import { colorNumberToHex, toDbColor } from '@/src/utils/format';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const FREE_PERSON_LIMIT = 10;
@@ -153,14 +145,13 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
           {/* Avatar preview + color picker */}
           <View style={styles.avatarSection}>
             <PersonInitialsPreview name={nameValue} color={colorHex} />
-            <TouchableOpacity
+            <BentoPressable
               style={[styles.colorBtn, { backgroundColor: colors.surface }]}
               onPress={openColorPicker}
-              activeOpacity={0.8}
             >
               <View style={[styles.colorDot, { backgroundColor: colorHex }]} />
               <Text style={styles.colorBtnText}>Change color</Text>
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
 
           <View style={styles.formBody}>
@@ -281,8 +272,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
         </ScrollView>
 
         <View style={styles.footer}>
-          <TouchableOpacity
-            activeOpacity={0.9}
+          <BentoPressable
             style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
             onPress={handleSave}
             disabled={!isValid}
@@ -290,7 +280,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
             <Text style={styles.primaryBtnText}>
               {isEditing ? 'Save person' : 'Add person'}
             </Text>
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
       </KeyboardAvoidingView>
 

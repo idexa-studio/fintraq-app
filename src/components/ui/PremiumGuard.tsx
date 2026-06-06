@@ -2,8 +2,9 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
+import { BentoPressable } from './BentoPressable';
 
 interface PremiumGuardProps {
   children: React.ReactNode;
@@ -75,8 +76,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
   }
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.75}
+    <BentoPressable
       onPress={handlePress}
       style={containerStyles}
     >
@@ -108,7 +108,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 

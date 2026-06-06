@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { MoneyText } from './MoneyText';
+import { BentoPressable } from './BentoPressable';
 
 type KPIMetrics = {
   income: number;
@@ -47,14 +48,13 @@ export const KPICard = React.memo(function KPICard({
             contentContainerStyle={styles.currencyTabsRow}
           >
             {currencies.map((cur) => (
-              <TouchableOpacity
+              <BentoPressable
                 key={cur}
                 style={[
                   styles.currencyTab,
                   selectedCurrency === cur && styles.currencyTabActive,
                 ]}
                 onPress={() => handleCurrencyPress(cur)}
-                activeOpacity={0.75}
               >
                 <Text style={[
                   styles.currencyTabText,
@@ -62,7 +62,7 @@ export const KPICard = React.memo(function KPICard({
                 ]}>
                   {cur}
                 </Text>
-              </TouchableOpacity>
+              </BentoPressable>
             ))}
           </ScrollView>
         </View>

@@ -1,3 +1,4 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ColorPickerBottomSheet } from '@/src/components/ui/ColorPickerBottomSheet';
 import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
@@ -17,16 +18,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type AccountFormValues = {
@@ -230,14 +222,13 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                 </View>
                 <View style={styles.colCurrency}>
                   <Text style={styles.sectionLabel}>Currency</Text>
-                  <TouchableOpacity
+                  <BentoPressable
                     style={styles.currencyBtn}
                     onPress={openCurrencyPicker}
-                    activeOpacity={0.85}
                   >
                     <Text style={styles.currencyValue}>{currency}</Text>
                     <MaterialCommunityIcons name="unfold-more-vertical" size={14} color={colors.textMuted} />
-                  </TouchableOpacity>
+                  </BentoPressable>
                 </View>
               </View>
             </View>
@@ -247,10 +238,9 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
               <Text style={styles.sectionLabel}>Appearance</Text>
               <View style={styles.appearanceRow}>
 
-                <TouchableOpacity
+                <BentoPressable
                   style={styles.appearanceCard}
                   onPress={() => setShowIconPicker(true)}
-                  activeOpacity={0.85}
                 >
                   <IconAvatar
                      icon={resolveIcon(iconKey, 'wallet-outline')}
@@ -263,19 +253,18 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                       {iconKey.replace('-outline', '')}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </BentoPressable>
 
-                <TouchableOpacity
+                <BentoPressable
                   style={styles.appearanceCard}
                   onPress={() => setShowColorPicker(true)}
-                  activeOpacity={0.85}
                 >
                   <View style={[styles.colorSwatch, { backgroundColor: colorHex }]} />
                   <View style={styles.appearanceCardMeta}>
                     <Text style={styles.appearanceCardLabel}>Color</Text>
                     <Text style={styles.appearanceCardHint} numberOfLines={1}>{colorHex}</Text>
                   </View>
-                </TouchableOpacity>
+                </BentoPressable>
 
               </View>
             </View>
@@ -284,8 +273,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         </ScrollView>
 
         <View style={styles.footer}>
-          <TouchableOpacity
-            activeOpacity={0.9}
+          <BentoPressable
             style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
             onPress={handleSave}
             disabled={!isValid}
@@ -293,7 +281,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
             <Text style={styles.primaryBtnText}>
               {isEditing ? 'Save account' : 'Create account'}
             </Text>
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
       </KeyboardAvoidingView>
 

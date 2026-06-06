@@ -4,13 +4,14 @@ import {
   FlatList,
   Modal,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import type { ColorOption } from '../../constants/picker';
+import { BentoPressable } from './BentoPressable';
 
 const ITEM_HEIGHT = 60;
 
@@ -47,10 +48,10 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
     ({ item }: { item: ColorOption }) => {
       const selected = value.toUpperCase() === item.hex.toUpperCase();
       return (
-        <TouchableOpacity
+        <BentoPressable
           style={[styles.row, selected && styles.rowSelected]}
           onPress={() => handleSelect(item.hex)}
-          activeOpacity={0.85}
+          scaleOnPress={false}
         >
           <View style={[styles.swatch, { backgroundColor: item.hex }]} />
           <Text style={[styles.colorName, selected && styles.colorNameSelected]}>
@@ -60,7 +61,7 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
           {selected && (
             <MaterialCommunityIcons name="check-circle" size={20} color={item.hex} />
           )}
-        </TouchableOpacity>
+        </BentoPressable>
       );
     },
     [value, handleSelect, styles],
@@ -85,7 +86,7 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <TouchableOpacity style={styles.backdrop} onPress={onClose} activeOpacity={1} />
+        <Pressable style={styles.backdrop} onPress={onClose} />
 
         <View style={styles.sheet}>
           <View style={styles.handle} />
@@ -95,9 +96,9 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
               <Text style={styles.title}>{title}</Text>
               <Text style={styles.subtitle}>{palette.length} colors</Text>
             </View>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.8}>
+            <BentoPressable onPress={onClose} style={styles.closeBtn}>
               <MaterialCommunityIcons name="close" size={16} color={colors.text} />
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
 
           <FlatList

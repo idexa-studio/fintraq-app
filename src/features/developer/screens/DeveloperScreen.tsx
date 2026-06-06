@@ -1,18 +1,9 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import React from 'react';
-import {
-  Alert,
-  DevSettings,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, DevSettings, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
@@ -137,11 +128,10 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
             const active = devOverride === item.mode;
             const isLast = index === 2;
             return (
-              <TouchableOpacity
+              <BentoPressable
                 key={item.mode}
                 style={[styles.optionRow, isLast && styles.noMargin]}
                 onPress={() => setDevOverride(item.mode)}
-                activeOpacity={0.7}
               >
                 <IconAvatar
                   icon={item.icon}
@@ -159,17 +149,16 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
                   size={22}
                   color={active ? colors.primary : colors.textMuted}
                 />
-              </TouchableOpacity>
+              </BentoPressable>
             );
           })}
         </View>
 
         <SectionHeader title="Data" noPadding />
         <View style={styles.card}>
-          <TouchableOpacity
+          <BentoPressable
             style={[styles.optionRow, styles.noMargin]}
             onPress={() => setShowSeedConfirm(true)}
-            activeOpacity={0.65}
           >
             <IconAvatar icon="flask-outline" color={colors.primary} variant="subtle" size={36} iconSize={16} />
             <View style={{ flex: 1, gap: 2 }}>
@@ -177,7 +166,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
               <Text style={styles.rowSub}>Generate 12 months of test transactions</Text>
             </View>
             <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
 
         <SectionHeader title="Notifications" noPadding />
@@ -208,13 +197,12 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
               </View>
             ))
           )}
-          <TouchableOpacity
+          <BentoPressable
             style={styles.optionRow}
             onPress={() => {
               NotificationService.triggerInstantNotification();
               Alert.alert('Test notification', 'An instant notification has been queued.');
             }}
-            activeOpacity={0.65}
           >
             <IconAvatar icon="bell-ring-outline" color={colors.primary} variant="subtle" size={36} iconSize={16} />
             <View style={{ flex: 1, gap: 2 }}>
@@ -222,11 +210,10 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
               <Text style={styles.rowSub}>Queue an instant check-in alert for debugging</Text>
             </View>
             <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
-          </TouchableOpacity>
-          <TouchableOpacity
+          </BentoPressable>
+          <BentoPressable
             style={[styles.optionRow, styles.noMargin]}
             onPress={fetchScheduled}
-            activeOpacity={0.65}
           >
             <IconAvatar icon="refresh" color={colors.primary} variant="subtle" size={36} iconSize={16} />
             <View style={{ flex: 1, gap: 2 }}>
@@ -234,7 +221,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
               <Text style={styles.rowSub}>Force reload notification schedules list</Text>
             </View>
             <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
 
         <SectionHeader title="System" noPadding />

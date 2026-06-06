@@ -1,8 +1,9 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, withAlpha } from '@/src/utils/format';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import type { PersonNetRow } from '../api/dashboard';
 
 type Props = {
@@ -49,7 +50,7 @@ export const TopPersonsCard = React.memo(function TopPersonsCard({ currency, per
 
         return (
           <View key={person.id} style={styles.itemWrap}>
-            <TouchableOpacity style={[styles.cell, { marginRight, marginLeft }]} onPress={handlePress(person.id)} activeOpacity={0.7}>
+            <BentoPressable style={[styles.cell, { marginRight, marginLeft }]} onPress={handlePress(person.id)}>
               <PersonInitials name={person.name} color={hex} size={32} />
               <View style={styles.cellContent}>
                 <Text style={styles.cellName} numberOfLines={1}>
@@ -64,7 +65,7 @@ export const TopPersonsCard = React.memo(function TopPersonsCard({ currency, per
                   style={styles.cellAmount}
                 />
               </View>
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
         );
       })}

@@ -8,9 +8,9 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '@/src/components/ui/PageBackground';
@@ -147,29 +147,29 @@ export const ExportScreen = React.memo(function ExportScreen() {
           <View style={styles.card}>
             {DATE_PRESETS.map((p, i) => (
               <React.Fragment key={p.key}>
-                <TouchableOpacity style={styles.cardRow} onPress={() => handlePresetSelect(p.key)} activeOpacity={0.65}>
+                <BentoPressable style={styles.cardRow} onPress={() => handlePresetSelect(p.key)} scaleOnPress={false}>
                   <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>{p.label}</Text>
                   {selectedPreset === p.key && !customRange ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
-                </TouchableOpacity>
+                </BentoPressable>
                 {i < DATE_PRESETS.length - 1 ? <View style={styles.sep} /> : null}
               </React.Fragment>
             ))}
             <View style={styles.sep} />
-            <TouchableOpacity style={styles.cardRow} onPress={() => setShowStartPicker(true)} activeOpacity={0.65}>
+            <BentoPressable style={styles.cardRow} onPress={() => setShowStartPicker(true)} scaleOnPress={false}>
               <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>Custom range</Text>
               {customRange ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
-            </TouchableOpacity>
+            </BentoPressable>
             {customRange ? (
               <View style={styles.dateRow}>
-                <TouchableOpacity style={styles.dateBtn} onPress={() => setShowStartPicker(true)} activeOpacity={0.7}>
+                <BentoPressable style={styles.dateBtn} onPress={() => setShowStartPicker(true)}>
                   <Text style={[styles.dateLbl, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>From</Text>
                   <Text style={[styles.dateVal, { fontFamily: typography.fonts.semibold, color: colors.text }]}>{formatDate(customRange.startDate)}</Text>
-                </TouchableOpacity>
+                </BentoPressable>
                 <MaterialCommunityIcons name="arrow-right" size={14} color={colors.textMuted} />
-                <TouchableOpacity style={styles.dateBtn} onPress={() => setShowEndPicker(true)} activeOpacity={0.7}>
+                <BentoPressable style={styles.dateBtn} onPress={() => setShowEndPicker(true)}>
                   <Text style={[styles.dateLbl, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>To</Text>
                   <Text style={[styles.dateVal, { fontFamily: typography.fonts.semibold, color: colors.text }]}>{formatDate(customRange.endDate)}</Text>
-                </TouchableOpacity>
+                </BentoPressable>
               </View>
             ) : null}
           </View>
@@ -179,32 +179,32 @@ export const ExportScreen = React.memo(function ExportScreen() {
             {TYPE_OPTIONS.map(t => {
               const active = selectedType === t.key;
               return (
-                <TouchableOpacity key={t.key} style={[styles.pill, active && styles.pillActive]} onPress={() => setSelectedType(t.key)} activeOpacity={0.7}>
+                <BentoPressable key={t.key} style={[styles.pill, active && styles.pillActive]} onPress={() => setSelectedType(t.key)}>
                   <Text style={[styles.pillText, { fontFamily: typography.fonts.semibold }, active && styles.pillTextActive]}>{t.label}</Text>
-                </TouchableOpacity>
+                </BentoPressable>
               );
             })}
           </View>
 
           <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>Account</Text>
           <View style={styles.card}>
-            <TouchableOpacity style={styles.cardRow} onPress={() => setSelectedAccountId(null)} activeOpacity={0.65}>
+            <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(null)} scaleOnPress={false}>
               <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>All accounts</Text>
               {selectedAccountId === null ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
-            </TouchableOpacity>
+            </BentoPressable>
             {accountsQuery.data?.map(acc => {
               const c = colorNumberToHex(acc.color);
               const selected = selectedAccountId === acc.id;
               return (
                 <React.Fragment key={acc.id}>
                   <View style={styles.sep} />
-                  <TouchableOpacity style={styles.cardRow} onPress={() => setSelectedAccountId(acc.id)} activeOpacity={0.65}>
+                  <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(acc.id)} scaleOnPress={false}>
                     <View style={styles.accRow}>
                       <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} color={c} variant="solid" size={24} iconSize={11} />
                       <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>{acc.name}</Text>
                     </View>
                     {selected ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
-                  </TouchableOpacity>
+                  </BentoPressable>
                 </React.Fragment>
               );
             })}
@@ -221,14 +221,14 @@ export const ExportScreen = React.memo(function ExportScreen() {
             </View>
           </View>
 
-          <TouchableOpacity style={[styles.exportBtn, (isExporting || previewCount === 0) && { opacity: 0.5 }]} onPress={handleExport} disabled={isExporting || previewCount === 0} activeOpacity={0.8}>
+          <BentoPressable style={[styles.exportBtn, (isExporting || previewCount === 0) && { opacity: 0.5 }]} onPress={handleExport} disabled={isExporting || previewCount === 0}>
             {isExporting ? <ActivityIndicator size="small" color={colors.background} /> : (
               <>
                 <MaterialCommunityIcons name="download-outline" size={18} color={colors.background} />
                 <Text style={[styles.exportBtnText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>Export CSV</Text>
               </>
             )}
-          </TouchableOpacity>
+          </BentoPressable>
 
           {previewCount === 0 ? (
             <View style={styles.warning}>

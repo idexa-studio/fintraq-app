@@ -20,7 +20,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
   ScrollView,
 } from 'react-native';
@@ -28,6 +27,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalSearch } from '../hooks/useGlobalSearch';
 import { useRecentSearches } from '../hooks/useRecentSearches';
 import { WalkthroughOverlay, SEARCH_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 
 type SearchItem =
   | { kind: 'transaction'; data: TransactionListItem }
@@ -54,10 +54,10 @@ const AccountRow = React.memo(function AccountRow({
   const handlePress = useCallback(() => onPress(account.id), [onPress, account.id]);
 
   return (
-    <TouchableOpacity
+    <BentoPressable
       style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]}
       onPress={handlePress}
-      activeOpacity={0.7}
+      scaleOnPress={false}
     >
       <IconAvatar icon={resolveIcon(account.icon, 'wallet-outline')} color={accentColor} variant="solid" size={36} iconSize={16} />
       <View style={{ flex: 1, gap: theme.spacing('0.5') }}>
@@ -68,7 +68,7 @@ const AccountRow = React.memo(function AccountRow({
       </View>
       <MoneyText amount={account.balance} currency={account.currency} weight="bold" style={{ fontSize: 14 }} />
       <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 
@@ -85,10 +85,10 @@ const CategoryRow = React.memo(function CategoryRow({
   const handlePress = useCallback(() => onPress(category.id), [onPress, category.id]);
 
   return (
-    <TouchableOpacity
+    <BentoPressable
       style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]}
       onPress={handlePress}
-      activeOpacity={0.7}
+      scaleOnPress={false}
     >
       <IconAvatar icon={resolveIcon(category.icon, 'tag-outline')} color={catColor} variant="solid" size={36} iconSize={16} />
       <Text style={{ flex: 1, fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{category.name}</Text>
@@ -98,7 +98,7 @@ const CategoryRow = React.memo(function CategoryRow({
         </Text>
       </View>
       <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 
@@ -119,10 +119,10 @@ const PersonRow = React.memo(function PersonRow({
   const handlePress = useCallback(() => onPress(person.id), [onPress, person.id]);
 
   return (
-    <TouchableOpacity
+    <BentoPressable
       style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]}
       onPress={handlePress}
-      activeOpacity={0.7}
+      scaleOnPress={false}
     >
       <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: hex, alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ color: '#fff', fontWeight: '700', fontSize: 13 }}>{initials}</Text>
@@ -142,7 +142,7 @@ const PersonRow = React.memo(function PersonRow({
         ) : null}
       </View>
       <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 
@@ -318,9 +318,9 @@ export const SearchScreen = React.memo(function SearchScreen() {
       <PageBackground />
 
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} style={styles.backButton}>
+        <BentoPressable onPress={() => router.back()} style={styles.backButton}>
           <MaterialCommunityIcons name="arrow-left" size={22} color={colors.text} />
-        </TouchableOpacity>
+        </BentoPressable>
 
         <View style={styles.searchWrap}>
           <TextInput
@@ -337,9 +337,9 @@ export const SearchScreen = React.memo(function SearchScreen() {
           {isFetching && isEnabled ? (
             <ActivityIndicator size="small" color={colors.primary} />
           ) : query.length > 0 ? (
-            <TouchableOpacity onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <BentoPressable onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <MaterialCommunityIcons name="close" size={18} color={colors.textMuted} />
-            </TouchableOpacity>
+            </BentoPressable>
           ) : (
             <View style={styles.premiumHeaderBadge}>
               <MaterialCommunityIcons name="creation" size={12} color={colors.warning} />
@@ -364,11 +364,10 @@ export const SearchScreen = React.memo(function SearchScreen() {
               const isActive = activeFilter === tab;
 
               return (
-                <TouchableOpacity
+                <BentoPressable
                   key={tab}
                   style={[styles.filterTab, isActive && styles.filterTabActive]}
                   onPress={() => setActiveFilter(tab)}
-                  activeOpacity={0.75}
                 >
                   <Text style={[styles.filterTabText, isActive && styles.filterTabTextActive]}>
                     {tab === 'all' ? 'All' : tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -378,7 +377,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
                       {count}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </BentoPressable>
               );
             })}
           </ScrollView>
@@ -390,28 +389,26 @@ export const SearchScreen = React.memo(function SearchScreen() {
         <View style={styles.recentsWrap}>
           <View style={styles.recentsHeader}>
             <Text style={styles.recentsTitle}>Recent searches</Text>
-            <TouchableOpacity onPress={clearRecents} activeOpacity={0.6}>
+            <BentoPressable onPress={clearRecents}>
               <Text style={styles.recentsClear}>Clear history</Text>
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
           <View style={styles.recentsList}>
             {recents.map((item) => (
-              <TouchableOpacity
+              <BentoPressable
                 key={item}
                 style={styles.recentChip}
                 onPress={() => setQuery(item)}
-                activeOpacity={0.7}
               >
                 <MaterialCommunityIcons name="history" size={14} color={colors.textMuted} />
                 <Text style={styles.recentChipText}>{item}</Text>
-                <TouchableOpacity
+                <BentoPressable
                   onPress={() => removeRecent(item)}
                   hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                  activeOpacity={0.5}
                 >
                   <MaterialCommunityIcons name="close" size={12} color={colors.textMuted} />
-                </TouchableOpacity>
-              </TouchableOpacity>
+                </BentoPressable>
+              </BentoPressable>
             ))}
           </View>
         </View>

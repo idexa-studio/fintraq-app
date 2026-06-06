@@ -1,3 +1,4 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Header } from '@/src/components/ui/Header';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { usePersons } from '@/src/features/persons/hooks/persons';
@@ -8,14 +9,7 @@ import { WalkthroughOverlay, PERSONS_WALKTHROUGH_STEPS } from '@/src/features/wa
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
@@ -90,9 +84,9 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
               returnKeyType="search"
             />
             {query.length > 0 && (
-              <TouchableOpacity onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                 <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
-              </TouchableOpacity>
+              </BentoPressable>
             )}
           </View>
         </View>
@@ -114,11 +108,10 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
               const hex = colorNumberToHex(person.color);
               const isLast = idx === filtered.length - 1;
               return (
-                <TouchableOpacity
+                <BentoPressable
                   key={person.id}
                   style={[styles.row, !isLast && styles.rowGap]}
                   onPress={() => handlePersonPress(person.id)}
-                  activeOpacity={0.7}
                 >
                   <PersonInitials name={person.name} color={hex} size={40} />
 
@@ -137,7 +130,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
                     ) : null}
                   </View>
 
-                </TouchableOpacity>
+                </BentoPressable>
               );
             })}
           </View>
@@ -164,12 +157,12 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
         )}
       </ScrollView>
 
-      <TouchableOpacity style={[styles.fab, { backgroundColor: atLimit ? colors.textMuted : colors.primary }]} onPress={handleAdd} activeOpacity={0.85}>
+      <BentoPressable style={[styles.fab, { backgroundColor: atLimit ? colors.textMuted : colors.primary }]} onPress={handleAdd}>
         {atLimit
           ? <MaterialCommunityIcons name="lock" size={20} color={colors.background} />
           : <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
         }
-      </TouchableOpacity>
+      </BentoPressable>
       <WalkthroughOverlay storageKey="@luno_walkthrough_persons" steps={PERSONS_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );

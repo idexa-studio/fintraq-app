@@ -1,7 +1,8 @@
 import React, { useMemo, useCallback } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import type { TransactionType } from '../../../types';
+import { BentoPressable } from '../../../components/ui/BentoPressable';
 
 type Props = {
   value: TransactionType;
@@ -24,7 +25,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
 
   return (
     <View style={[styles.container, disabled && styles.containerDisabled]}>
-      <TouchableOpacity
+      <BentoPressable
         style={[
           styles.pill,
           { backgroundColor: colors.surface },
@@ -32,14 +33,14 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           disabled && value !== 'DR' && styles.pillHidden,
         ]}
         onPress={handleDR}
-        activeOpacity={disabled ? 1 : 0.8}
+        disabled={disabled}
       >
         <Text style={[styles.pillText, { color: value === 'DR' ? colors.danger : colors.textMuted }]}>
           Expense
         </Text>
-      </TouchableOpacity>
+      </BentoPressable>
 
-      <TouchableOpacity
+      <BentoPressable
         style={[
           styles.pill,
           { backgroundColor: colors.surface },
@@ -47,14 +48,14 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           disabled && value !== 'CR' && styles.pillHidden,
         ]}
         onPress={handleCR}
-        activeOpacity={disabled ? 1 : 0.8}
+        disabled={disabled}
       >
         <Text style={[styles.pillText, { color: value === 'CR' ? colors.success : colors.textMuted }]}>
           Income
         </Text>
-      </TouchableOpacity>
+      </BentoPressable>
 
-      <TouchableOpacity
+      <BentoPressable
         style={[
           styles.pill,
           { backgroundColor: colors.surface },
@@ -62,12 +63,12 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           disabled && value !== 'TR' && styles.pillHidden,
         ]}
         onPress={handleTR}
-        activeOpacity={disabled ? 1 : 0.8}
+        disabled={disabled}
       >
         <Text style={[styles.pillText, { color: value === 'TR' ? colors.primary : colors.textMuted }]}>
           Transfer
         </Text>
-      </TouchableOpacity>
+      </BentoPressable>
     </View>
   );
 });

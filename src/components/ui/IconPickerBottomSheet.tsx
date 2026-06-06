@@ -3,15 +3,16 @@ import React, { useCallback, useMemo } from 'react';
 import {
   Modal,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import type { IconGroup } from '../../constants/picker';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { resolveIcon } from '../../utils/icons';
+import { BentoPressable } from './BentoPressable';
 
 type IconPickerBottomSheetProps = {
   visible: boolean;
@@ -50,16 +51,16 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <TouchableOpacity style={styles.backdrop} onPress={onClose} activeOpacity={1} />
+        <Pressable style={styles.backdrop} onPress={onClose} />
 
         <View style={styles.sheet}>
           <View style={styles.handle} />
 
           <View style={styles.header}>
             <Text style={styles.title}>{title}</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.7}>
+            <BentoPressable onPress={onClose} style={styles.closeBtn}>
               <MaterialCommunityIcons name="close" size={18} color={colors.text} />
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
 
           <ScrollView
@@ -74,11 +75,11 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                   {group.icons.map((icon) => {
                     const selected = value === icon;
                     return (
-                      <TouchableOpacity
+                      <BentoPressable
                         key={icon}
                         style={[styles.iconCell, selected && styles.iconCellSelected]}
                         onPress={() => handleSelect(icon)}
-                        activeOpacity={0.65}
+                        scaleOnPress={true}
                       >
                         <View style={[styles.iconCircle, selected && { backgroundColor: accent }]}>
                           <MaterialCommunityIcons
@@ -87,7 +88,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                             color={selected ? colors.background : colors.text}
                           />
                         </View>
-                      </TouchableOpacity>
+                      </BentoPressable>
                     );
                   })}
                 </View>
