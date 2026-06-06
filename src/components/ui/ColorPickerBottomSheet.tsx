@@ -14,7 +14,7 @@ import type { ColorOption } from '../../constants/picker';
 
 const ITEM_HEIGHT = 60;
 
-type Props = {
+type ColorPickerBottomSheetProps = {
   visible: boolean;
   onClose: () => void;
   value: string;
@@ -23,14 +23,14 @@ type Props = {
   title?: string;
 };
 
-export const ColorPickerModal = React.memo(function ColorPickerModal({
+export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet({
   visible,
   onClose,
   value,
   onChange,
   palette,
   title = 'Choose color',
-}: Props) {
+}: ColorPickerBottomSheetProps) {
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -127,24 +127,22 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       justifyContent: 'flex-end',
     },
     backdrop: {
-      flex: 1,
+      ...StyleSheet.absoluteFillObject,
     },
     sheet: {
       height: '75%',
-      borderTopLeftRadius: radius('2xl'),
-      borderTopRightRadius: radius('2xl'),
-      borderTopWidth: 1,
-      borderColor: colors.text + '0C',
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
       overflow: 'hidden',
       backgroundColor: colors.surface,
     },
     handle: {
       alignSelf: 'center',
-      width: 42,
+      width: 32,
       height: 4,
       borderRadius: radius('full'),
-      marginTop: spacing('2.5'),
-      backgroundColor: colors.textMuted + '30',
+      marginTop: spacing('3'),
+      backgroundColor: colors.text + '24',
     },
     header: {
       paddingHorizontal: layout.screenPadding,
@@ -170,8 +168,6 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       height: 32,
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.text + '0C',
       justifyContent: 'center',
       alignItems: 'center',
     },

@@ -12,11 +12,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '@/src/components/ui/PageBackground';
-import { ColorPickerModal } from '@/src/components/ui/ColorPickerModal';
+import { ColorPickerBottomSheet } from '@/src/components/ui/ColorPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { Input } from '@/src/components/ui/Input';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { IconPickerModal } from '@/src/components/ui/IconPickerModal';
+import { IconPickerBottomSheet } from '@/src/components/ui/IconPickerBottomSheet';
 import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
@@ -218,7 +218,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
         </View>
       </KeyboardAvoidingView>
 
-      <IconPickerModal
+      <IconPickerBottomSheet
         visible={showIconPicker}
         onClose={() => setShowIconPicker(false)}
         value={icon}
@@ -228,7 +228,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
         title="Choose Icon"
       />
 
-      <ColorPickerModal
+      <ColorPickerBottomSheet
         visible={showColorPicker}
         onClose={() => setShowColorPicker(false)}
         value={colorHex}

@@ -24,7 +24,7 @@ import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
 import { usePersons } from '../../persons/hooks/persons';
 import { AdvancedFilterService, AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../../filters/api/advanced-filters.service';
-import { AdvancedFilterSheet } from '../../filters/components/AdvancedFilterSheet';
+import { AdvancedFilterBottomSheet } from '../../filters/components/AdvancedFilterBottomSheet';
 import type { TransactionListItem } from '../api/transactions';
 import {
   useDeleteTransaction,
@@ -565,7 +565,7 @@ export function TransactionsScreen() {
         }}
       />
 
-      <AdvancedFilterSheet
+      <AdvancedFilterBottomSheet
         visible={showAdvancedFilterSheet}
         onClose={() => setShowAdvancedFilterSheet(false)}
         filters={advancedFilters}

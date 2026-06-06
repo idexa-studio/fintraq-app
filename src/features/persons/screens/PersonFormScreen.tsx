@@ -1,4 +1,4 @@
-import { ColorPickerModal } from '@/src/components/ui/ColorPickerModal';
+import { ColorPickerBottomSheet } from '@/src/components/ui/ColorPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { Input } from '@/src/components/ui/Input';
 import { PageBackground } from '@/src/components/ui/PageBackground';
@@ -294,7 +294,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
         </View>
       </KeyboardAvoidingView>
 
-      <ColorPickerModal
+      <ColorPickerBottomSheet
         visible={showColorPicker}
         onClose={closeColorPicker}
         value={colorHex}

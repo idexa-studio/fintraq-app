@@ -80,8 +80,6 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     card: {
       backgroundColor: colors.surface,
       borderRadius: 28,
-      borderWidth: 0.5,
-      borderColor: colors.text + '0C',
       overflow: 'hidden',
       padding: spacing('6'),
       gap: spacing('4'),
@@ -93,7 +91,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       fontFamily: typography.fonts.heading,
       fontSize: 24,
       color: colors.text,
-      marginBottom: spacing('3'),
+      marginBottom: spacing('2'),
     },
     message: {
       fontFamily: typography.fonts.regular,
@@ -105,7 +103,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       flexDirection: 'row',
       justifyContent: 'flex-end',
       gap: spacing('2'),
-      marginTop: spacing('2'),
+      marginTop: spacing('4'),
     },
     btnCancel: {
       height: 40,
@@ -117,7 +115,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     btnCancelText: {
       fontFamily: typography.fonts.semibold,
       fontSize: 14,
-      color: colors.primary,
+      color: colors.textMuted,
     },
     btnConfirm: {
       height: 40,

@@ -1,6 +1,6 @@
 import { Button } from '@/src/components/ui/Button';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
-import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
+import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { getDeviceCurrencyCode } from '@/src/constants/currency';
 import { ACCOUNT_COLORS } from '@/src/constants/picker';
@@ -275,7 +275,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         </KeyboardAvoidingView>
       </FormProvider>
 
-      <CurrencyPickerModal
+      <CurrencyPickerBottomSheet
         visible={showCurrencyPicker}
         onClose={closeCurrencyPicker}
         value={currency}

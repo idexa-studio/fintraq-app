@@ -9,7 +9,7 @@ export type AlertButton = {
   style?: 'default' | 'cancel' | 'destructive';
 };
 
-type AlertModalProps = {
+type AlertDialogProps = {
   visible: boolean;
   title: string;
   message?: string;
@@ -25,14 +25,14 @@ const ICONS = {
   warning: { name: 'alert' as const, bg: '#F59E0B15', fg: '#F59E0B' },
 } as const;
 
-export const AlertModal = React.memo(function AlertModal({
+export const AlertDialog = React.memo(function AlertDialog({
   visible,
   title,
   message,
   buttons = [{ text: 'Ok', style: 'default' }],
   onClose,
   type = 'info',
-}: AlertModalProps) {
+}: AlertDialogProps) {
   const theme = useTheme();
   const { width: screenWidth } = useWindowDimensions();
   const styles = useMemo(() => createStyles(theme, screenWidth), [theme, screenWidth]);
@@ -47,6 +47,7 @@ export const AlertModal = React.memo(function AlertModal({
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
+        <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
         <View style={styles.card}>
           <View style={styles.body}>
             <View style={[styles.iconBox, { backgroundColor: iconCfg.bg }]}>
@@ -64,12 +65,7 @@ export const AlertModal = React.memo(function AlertModal({
               return (
                 <TouchableOpacity
                   key={i}
-                  style={[
-                    styles.btn,
-                    isCancel && styles.btnCancel,
-                    isDestructive && styles.btnDanger,
-                    !isCancel && !isDestructive && styles.btnPrimary
-                  ]}
+                  style={styles.btn}
                   onPress={() => handleButtonPress(btn)}
                   activeOpacity={0.7}
                 >
@@ -95,7 +91,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: overlay.dark,
+      backgroundColor: overlay.dim,
       justifyContent: 'center',
       alignItems: 'center',
       padding: spacing('6'),
@@ -104,20 +100,17 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       width: Math.min(screenWidth - spacing('12'), 320),
       backgroundColor: colors.surface,
       borderRadius: 28,
-      borderWidth: 0.5,
-      borderColor: colors.text + '0C',
       overflow: 'hidden',
       padding: spacing('6'),
-      gap: spacing('4'),
-      alignItems: 'center',
+      gap: spacing('5'),
     },
     body: {
-      alignItems: 'center',
+      alignItems: 'flex-start',
       width: '100%',
     },
     iconBox: {
-      width: 48,
-      height: 48,
+      width: 40,
+      height: 40,
       borderRadius: radius('full'),
       justifyContent: 'center',
       alignItems: 'center',
@@ -127,50 +120,40 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       fontFamily: typography.fonts.heading,
       fontSize: 24,
       color: colors.text,
-      textAlign: 'center',
-      marginBottom: spacing('3'),
+      textAlign: 'left',
+      marginBottom: spacing('2'),
     },
     message: {
       fontFamily: typography.fonts.regular,
       fontSize: 14,
       color: colors.textMuted,
       lineHeight: 20,
-      textAlign: 'center',
+      textAlign: 'left',
     },
     actions: {
       flexDirection: 'row',
       justifyContent: 'flex-end',
       width: '100%',
       gap: spacing('2'),
-      marginTop: spacing('2'),
     },
     btn: {
       height: 40,
-      paddingHorizontal: spacing('4'),
+      paddingHorizontal: spacing('3'),
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: radius('full'),
-    },
-    btnCancel: {
-      backgroundColor: 'transparent',
-    },
-    btnPrimary: {
-      backgroundColor: colors.primary,
-    },
-    btnDanger: {
-      backgroundColor: colors.danger,
     },
     btnText: {
       fontFamily: typography.fonts.semibold,
       fontSize: 14,
     },
     btnPrimaryText: {
-      color: colors.background,
-    },
-    btnCancelText: {
       color: colors.primary,
     },
+    btnCancelText: {
+      color: colors.textMuted,
+    },
     btnDangerText: {
-      color: '#fff',
+      color: colors.danger,
     },
   });

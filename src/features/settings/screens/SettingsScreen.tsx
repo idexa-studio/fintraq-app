@@ -1,11 +1,11 @@
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
-import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
+import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
+import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
-import { TextInputSheet } from '@/src/components/ui/TextInputSheet';
+import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments, persons, seederState } from '@/src/db/schema';
 import { usePremium } from '@/src/providers/PremiumProvider';
@@ -440,14 +440,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         </TouchableOpacity>
       </ScrollView>
 
-      <CurrencyPickerModal
+      <CurrencyPickerBottomSheet
         visible={showCurrencyPicker}
         onClose={() => setShowCurrencyPicker(false)}
         value={profile.defaultCurrency || 'USD'}
         onChange={(code) => { updateProfile({ defaultCurrency: code }); }}
       />
 
-      <OptionsDialog
+      <OptionsBottomSheet
         visible={showThemeDialog}
         onClose={() => setShowThemeDialog(false)}
         title="Theme"
@@ -464,7 +464,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         onConfirm={runReset}
       />
 
-      <TextInputSheet
+      <TextInputDialog
         visible={showNameModal}
         onClose={closeNameModal}
         onSave={saveName}

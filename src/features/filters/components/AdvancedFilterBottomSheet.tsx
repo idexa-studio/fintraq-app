@@ -20,7 +20,7 @@ import { resolveIcon } from '@/src/utils/icons';
 import type { TransactionType } from '@/src/types';
 import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../api/advanced-filters.service';
 
-interface AdvancedFilterSheetProps {
+interface AdvancedFilterBottomSheetProps {
   visible: boolean;
   onClose: () => void;
   filters: AdvancedFilters;
@@ -38,9 +38,9 @@ const TYPE_OPTS = [
   { key: 'TR' as const, label: 'Transfer', icon: 'swap-horizontal' as const,           colorKey: 'info'    as const },
 ] as const;
 
-export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
+export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBottomSheet({
   visible, onClose, filters, onApply, onReset, accounts, categories, persons, resultCount,
-}: AdvancedFilterSheetProps) {
+}: AdvancedFilterBottomSheetProps) {
   const theme = useTheme();
   const { colors, typography, overlay } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -114,7 +114,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={[styles.overlay, { backgroundColor: overlay.dim }]}>
-        <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
+        <TouchableOpacity style={styles.backdrop} onPress={onClose} activeOpacity={1} />
 
         <View style={styles.sheet}>
           <View style={styles.handle} />
@@ -400,7 +400,7 @@ export const AdvancedFilterSheet = React.memo(function AdvancedFilterSheet({
           </ScrollView>
 
           {/* ── Footer ── */}
-          <View style={[styles.footer, { backgroundColor: colors.surface, borderTopColor: colors.text + '08' }]}>
+          <View style={[styles.footer, { backgroundColor: colors.surface }]}>
             <TouchableOpacity
               style={[styles.applyBtn, { backgroundColor: colors.text }]}
               onPress={handleApply}
@@ -442,17 +442,20 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flex: 1,
       justifyContent: 'flex-end',
     },
+    backdrop: {
+      ...StyleSheet.absoluteFillObject,
+    },
     sheet: {
       backgroundColor: colors.surface,
-      borderTopLeftRadius: radius('2xl'),
-      borderTopRightRadius: radius('2xl'),
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
       maxHeight: '90%',
     },
     handle: {
-      width: 36,
+      width: 32,
       height: 4,
       borderRadius: radius('full'),
-      backgroundColor: colors.text + '18',
+      backgroundColor: colors.text + '24',
       alignSelf: 'center',
       marginTop: spacing('3'),
     },
@@ -468,7 +471,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     headerLeft:  { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
     headerRight: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
-    title:       { fontSize: typography.sizes.xxl },
+    title:       { fontSize: 22 },
     badge: {
       minWidth: 20,
       height: 20,

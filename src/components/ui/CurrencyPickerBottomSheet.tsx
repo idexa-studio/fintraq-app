@@ -14,7 +14,7 @@ import {
 import { CURRENCIES } from '../../constants/currency';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 
-export type CurrencyPickerModalProps = {
+export type CurrencyPickerBottomSheetProps = {
   visible: boolean;
   onClose: () => void;
   value: string;
@@ -23,12 +23,12 @@ export type CurrencyPickerModalProps = {
 
 const ITEM_HEIGHT = 60;
 
-export const CurrencyPickerModal = React.memo(function CurrencyPickerModal({
+export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBottomSheet({
   visible,
   onClose,
   value,
   onChange,
-}: CurrencyPickerModalProps) {
+}: CurrencyPickerBottomSheetProps) {
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -171,26 +171,22 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       justifyContent: 'flex-end',
     },
     backdrop: {
-      flex: 1,
+      ...StyleSheet.absoluteFillObject,
     },
     sheet: {
       height: '82%',
-      borderTopLeftRadius: radius('2xl'),
-      borderTopRightRadius: radius('2xl'),
-      borderTopWidth: 0.5,
-      borderLeftWidth: 0.5,
-      borderRightWidth: 0.5,
-      borderColor: colors.text + '10',
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
       backgroundColor: colors.surface,
       overflow: 'hidden',
     },
     handle: {
       alignSelf: 'center',
-      width: 36,
+      width: 32,
       height: 4,
       borderRadius: radius('full'),
       marginTop: spacing('3'),
-      backgroundColor: colors.text + '18',
+      backgroundColor: colors.text + '24',
     },
 
     // Header

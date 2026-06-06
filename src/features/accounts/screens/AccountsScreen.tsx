@@ -3,7 +3,7 @@ import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
-import { OptionsDialog, OptionsDialogOption } from '@/src/components/ui/OptionsDialog';
+import { OptionsBottomSheet, OptionsBottomSheetOption } from '@/src/components/ui/OptionsBottomSheet';
 import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/accounts';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
@@ -67,7 +67,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
     router.push('/(main)/accounts/form');
   }, [router]);
 
-  const accountOptions = useMemo((): OptionsDialogOption[] => {
+  const accountOptions = useMemo((): OptionsBottomSheetOption[] => {
     if (!selectedAccount) return [];
     return [
       { key: 'edit', label: 'Edit', icon: 'pencil-outline', onPress: handleEdit },
@@ -170,7 +170,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
         <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
       </TouchableOpacity>
 
-      <OptionsDialog
+      <OptionsBottomSheet
         visible={showOptions}
         onClose={closeOptions}
         title={selectedAccount?.name ?? 'Account'}

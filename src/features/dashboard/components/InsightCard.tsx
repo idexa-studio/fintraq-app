@@ -24,12 +24,8 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
     }
   }, [insight.type, colors]);
 
-  const bg = useMemo(() => {
-    return accent + '0A'; // ~4% opacity for container tint
-  }, [accent]);
-
   return (
-    <View style={[styles.card, { backgroundColor: bg }]}>
+    <View style={[styles.card, { backgroundColor: colors.surface }]}>
       <IconAvatar
         icon={resolveIcon(insight.icon, 'chart-timeline-variant')}
         color={accent}

@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Svg, { Circle } from 'react-native-svg';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
@@ -55,14 +56,42 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
           <View key={cat.name} style={styles.itemContainer}>
             <View style={[styles.tile, { marginRight, marginLeft }]}>
               <View style={styles.contentRow}>
-                <IconAvatar icon={resolveIcon(cat.icon, 'tag-outline')} color={accent} variant="subtle" size={32} iconSize={15} />
+                <View style={styles.avatarWrapper}>
+                  <Svg width={40} height={40} style={styles.svg}>
+                    <Circle
+                      cx={20}
+                      cy={20}
+                      r={16.5}
+                      stroke={colors.text + '08'}
+                      strokeWidth={2.5}
+                      fill="none"
+                    />
+                    <Circle
+                      cx={20}
+                      cy={20}
+                      r={16.5}
+                      stroke={accent}
+                      strokeWidth={2.5}
+                      strokeDasharray={103.67} // 2 * Math.PI * 16.5
+                      strokeDashoffset={103.67 - (103.67 * ratio)}
+                      strokeLinecap="round"
+                      fill="none"
+                      transform="rotate(-90 20 20)"
+                    />
+                  </Svg>
+                  <IconAvatar
+                    icon={resolveIcon(cat.icon, 'tag-outline')}
+                    color={accent}
+                    variant="subtle"
+                    size={28}
+                    iconSize={13}
+                    style={styles.avatar}
+                  />
+                </View>
                 <View style={styles.textContainer}>
                   <Text style={styles.name} numberOfLines={1}>{cat.name}</Text>
                   <MoneyText amount={cat.amount} currency={currency} type="DR" weight="medium" compact style={styles.amount} />
                 </View>
-              </View>
-              <View style={styles.progressContainer}>
-                <View style={[styles.progressBar, { width: `${Math.max(4, ratio * 100)}%`, backgroundColor: accent }]} />
               </View>
             </View>
           </View>
@@ -95,12 +124,27 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       padding: spacing('3'),
       borderRadius: radius('lg'),
       flex: 1,
-      gap: spacing('1'),
     },
     contentRow: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
+    },
+    avatarWrapper: {
+      width: 40,
+      height: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    svg: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+    },
+    avatar: {
+      position: 'absolute',
+      top: 6,
+      left: 6,
     },
     textContainer: {
       flex: 1,
@@ -108,16 +152,4 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     name: { fontSize: typography.sizes.sm, fontFamily: typography.fonts.medium, color: colors.text },
     amount: { fontSize: typography.sizes.xs },
-    progressContainer: {
-      height: 4,
-      backgroundColor: colors.background + '40',
-      borderRadius: radius('full'),
-      marginTop: spacing('2.5'),
-      width: '100%',
-      overflow: 'hidden',
-    },
-    progressBar: {
-      height: '100%',
-      borderRadius: radius('full'),
-    },
   });

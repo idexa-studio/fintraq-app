@@ -24,7 +24,7 @@ import { useCategories } from '../../categories/hooks/categories';
 import { TransactionAccountPicker } from '../components/TransactionAccountPicker';
 import { TransactionAmountInput } from '../components/TransactionAmountInput';
 import { TransactionCategoryPicker } from '../components/TransactionCategoryPicker';
-import { PersonPickerModal } from '../../persons/components/PersonPickerModal';
+import { PersonPickerBottomSheet } from '../../persons/components/PersonPickerBottomSheet';
 import { TransactionTypePicker } from '../components/TransactionTypePicker';
 import { usePersons } from '../../persons/hooks/persons';
 import {
@@ -393,7 +393,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
       </View>
       </KeyboardAvoidingView>
 
-      <PersonPickerModal
+      <PersonPickerBottomSheet
         visible={showPersonPicker}
         onClose={() => setShowPersonPicker(false)}
         persons={persons}

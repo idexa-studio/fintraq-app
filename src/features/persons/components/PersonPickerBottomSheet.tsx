@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import type { Person } from '../api/persons';
 
-type Props = {
+type PersonPickerBottomSheetProps = {
   visible: boolean;
   onClose: () => void;
   persons: Person[];
@@ -32,13 +32,13 @@ function PersonInitials({ name, color, size = 36 }: { name: string; color: strin
   );
 }
 
-export const PersonPickerModal = React.memo(function PersonPickerModal({
+export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomSheet({
   visible,
   onClose,
   persons,
   selectedId,
   onSelect,
-}: Props) {
+}: PersonPickerBottomSheetProps) {
   const theme = useTheme();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -178,30 +178,28 @@ export const PersonPickerModal = React.memo(function PersonPickerModal({
 const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     overlay: { flex: 1, backgroundColor: overlay.dim, justifyContent: 'flex-end' },
-    backdrop: { flex: 1 },
+    backdrop: { ...StyleSheet.absoluteFillObject },
     sheet: {
       height: '75%',
-      borderTopLeftRadius: radius('2xl'),
-      borderTopRightRadius: radius('2xl'),
-      borderTopWidth: 0.5,
-      borderColor: colors.text + '10',
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
       backgroundColor: colors.surface,
       overflow: 'hidden',
     },
     handle: {
       alignSelf: 'center',
-      width: 36,
+      width: 32,
       height: 4,
       borderRadius: radius('full'),
       marginTop: spacing('3'),
-      backgroundColor: colors.text + '18',
+      backgroundColor: colors.text + '24',
     },
     header: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('4'),
       paddingBottom: spacing('3'),
     },
-    title: { fontSize: 20 },
+    title: { fontSize: 22 },
     searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',

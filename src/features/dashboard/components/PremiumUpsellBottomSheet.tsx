@@ -4,17 +4,17 @@ import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-type Props = {
+type PremiumUpsellBottomSheetProps = {
   visible: boolean;
   onClose: () => void;
 };
 
 const BLOCK = 5;
 
-export const PremiumUpsellSheet = React.memo(function PremiumUpsellSheet({
+export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomSheet({
   visible,
   onClose,
-}: Props) {
+}: PremiumUpsellBottomSheetProps) {
   const theme = useTheme();
   const router = useRouter();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -42,9 +42,12 @@ export const PremiumUpsellSheet = React.memo(function PremiumUpsellSheet({
   }, [onClose, router]);
 
   return (
-    <Modal transparent visible={visible} animationType="fade" onRequestClose={() => {}}>
+    <Modal transparent visible={visible} animationType="slide" onRequestClose={() => {}}>
       <View style={styles.overlay}>
+        <TouchableOpacity style={styles.backdrop} onPress={canDismiss ? onClose : undefined} activeOpacity={1} />
         <View style={styles.sheet}>
+          <View style={styles.dragHandle} />
+
           <Text style={styles.title}>Keeep Pro</Text>
           <Text style={styles.headline}>
             One-time purchase. Unlock analytics, search, reports, and CSV export.
@@ -103,15 +106,25 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, on
       flex: 1,
       backgroundColor: overlay.dim,
       justifyContent: 'flex-end',
-      padding: layout.screenPadding,
-      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
+    },
+    backdrop: {
+      ...StyleSheet.absoluteFillObject,
+    },
+    dragHandle: {
+      width: 32,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: colors.text + '24',
+      alignSelf: 'center',
+      marginTop: spacing('2'),
+      marginBottom: spacing('4'),
     },
     sheet: {
       backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
-      borderWidth: 0.5,
-      borderColor: colors.text + '0C',
-      padding: spacing('5'),
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
+      paddingHorizontal: spacing('5'),
+      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
     },
     title: {
       fontFamily: typography.fonts.heading,
@@ -129,7 +142,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, on
     },
     closeBtn: {
       position: 'absolute',
-      top: spacing('4'),
+      top: spacing('5'),
       right: spacing('4'),
     },
     list: {

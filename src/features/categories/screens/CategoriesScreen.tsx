@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
-import { OptionsDialog } from '../../../components/ui/OptionsDialog';
+import { OptionsBottomSheet } from '../../../components/ui/OptionsBottomSheet';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { Category } from '../api/categories';
 import { CategoryCard } from '../components/CategoryCard';
@@ -179,7 +179,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
       </TouchableOpacity>
 
-      <OptionsDialog
+      <OptionsBottomSheet
         visible={showManageDialog}
         onClose={() => setShowManageDialog(false)}
         title="Manage category"

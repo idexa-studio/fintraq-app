@@ -1,8 +1,8 @@
-import { ColorPickerModal } from '@/src/components/ui/ColorPickerModal';
-import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
+import { ColorPickerBottomSheet } from '@/src/components/ui/ColorPickerBottomSheet';
+import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { IconPickerModal } from '@/src/components/ui/IconPickerModal';
+import { IconPickerBottomSheet } from '@/src/components/ui/IconPickerBottomSheet';
 import { Input } from '@/src/components/ui/Input';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ACCOUNT_COLORS, ACCOUNT_ICON_GROUPS, ACCOUNT_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
@@ -297,13 +297,13 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         </View>
       </KeyboardAvoidingView>
 
-      <CurrencyPickerModal
+      <CurrencyPickerBottomSheet
         visible={showCurrencyPicker}
         onClose={closeCurrencyPicker}
         value={currency}
         onChange={setCurrency}
       />
-      <IconPickerModal
+      <IconPickerBottomSheet
         visible={showIconPicker}
         onClose={() => setShowIconPicker(false)}
         value={iconKey}
@@ -311,7 +311,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         groups={ACCOUNT_ICON_GROUPS}
         accentColor={colorHex}
       />
-      <ColorPickerModal
+      <ColorPickerBottomSheet
         visible={showColorPicker}
         onClose={() => setShowColorPicker(false)}
         value={colorHex}

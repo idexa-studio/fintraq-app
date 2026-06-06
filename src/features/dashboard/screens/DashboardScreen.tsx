@@ -16,7 +16,7 @@ import { AccountsCarousel } from '../components/AccountsCarousel';
 import { DashboardHeader } from '../components/DashboardHeader';
 import { HeroBalanceCard } from '../components/HeroBalanceCard';
 import { InsightsSection } from '../components/InsightsSection';
-import { PremiumUpsellSheet } from '../components/PremiumUpsellSheet';
+import { PremiumUpsellBottomSheet } from '../components/PremiumUpsellBottomSheet';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '../components/TopPersonsCard';
@@ -186,7 +186,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         <MaterialCommunityIcons name="plus" size={26} color={colors.background} />
       </TouchableOpacity>
 
-      <PremiumUpsellSheet visible={showUpsell && !isPremium} onClose={dismissUpsell} />
+      <PremiumUpsellBottomSheet visible={showUpsell && !isPremium} onClose={dismissUpsell} />
     </SafeAreaView>
   );
 });

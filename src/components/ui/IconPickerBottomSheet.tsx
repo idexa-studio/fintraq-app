@@ -13,7 +13,7 @@ import type { IconGroup } from '../../constants/picker';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { resolveIcon } from '../../utils/icons';
 
-type Props = {
+type IconPickerBottomSheetProps = {
   visible: boolean;
   onClose: () => void;
   value: string;
@@ -25,7 +25,7 @@ type Props = {
 
 const CELL_SIZE = 38;
 
-export const IconPickerModal = React.memo(function IconPickerModal({
+export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
   visible,
   onClose,
   value,
@@ -33,7 +33,7 @@ export const IconPickerModal = React.memo(function IconPickerModal({
   groups,
   accentColor,
   title = 'Choose icon',
-}: Props) {
+}: IconPickerBottomSheetProps) {
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -55,7 +55,7 @@ export const IconPickerModal = React.memo(function IconPickerModal({
         <View style={styles.sheet}>
           <View style={styles.handle} />
 
-            <View style={styles.header}>
+          <View style={styles.header}>
             <Text style={styles.title}>{title}</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.7}>
               <MaterialCommunityIcons name="close" size={18} color={colors.text} />
@@ -108,23 +108,21 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       justifyContent: 'flex-end',
     },
     backdrop: {
-      flex: 1,
+      ...StyleSheet.absoluteFillObject,
     },
     sheet: {
       maxHeight: '80%',
-      borderTopLeftRadius: radius('2xl'),
-      borderTopRightRadius: radius('2xl'),
-      borderTopWidth: 1,
-      borderColor: colors.text + '0C',
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
       backgroundColor: colors.surface,
     },
     handle: {
       alignSelf: 'center',
-      width: 36,
+      width: 32,
       height: 4,
       borderRadius: radius('full'),
-      marginTop: spacing('2.5'),
-      backgroundColor: colors.text + '12',
+      marginTop: spacing('3'),
+      backgroundColor: colors.text + '24',
     },
     header: {
       flexDirection: 'row',

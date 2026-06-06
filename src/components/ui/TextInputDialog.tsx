@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 
-type TextInputSheetProps = {
+type TextInputDialogProps = {
   visible: boolean;
   onClose: () => void;
   onSave: (value: string) => void;
@@ -26,7 +26,7 @@ type TextInputSheetProps = {
   inputProps?: Omit<TextInputProps, 'value' | 'onChangeText' | 'placeholder' | 'maxLength'>;
 };
 
-export const TextInputSheet = React.memo(function TextInputSheet({
+export const TextInputDialog = React.memo(function TextInputDialog({
   visible,
   onClose,
   onSave,
@@ -38,7 +38,7 @@ export const TextInputSheet = React.memo(function TextInputSheet({
   cancelLabel = 'Cancel',
   maxLength,
   inputProps,
-}: TextInputSheetProps) {
+}: TextInputDialogProps) {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { colors, typography } = theme;
@@ -128,13 +128,11 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       flex: 1,
       backgroundColor: overlay.dim,
       justifyContent: 'center',
-      paddingHorizontal: layout.screenPadding,
+      paddingHorizontal: spacing('6'),
     },
     card: {
       backgroundColor: colors.surface,
       borderRadius: 28,
-      borderWidth: 0.5,
-      borderColor: colors.text + '0C',
       overflow: 'hidden',
       padding: spacing('6'),
       gap: spacing('4'),
@@ -158,7 +156,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       flexDirection: 'row',
       justifyContent: 'flex-end',
       gap: spacing('2'),
-      marginTop: spacing('2'),
+      marginTop: spacing('4'),
     },
     btnCancel: {
       height: 40,
@@ -170,7 +168,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     btnCancelText: {
       fontSize: 14,
       fontFamily: typography.fonts.semibold,
-      color: colors.primary,
+      color: colors.textMuted,
     },
     btnSave: {
       height: 40,
