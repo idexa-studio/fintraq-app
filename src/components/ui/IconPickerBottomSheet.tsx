@@ -24,7 +24,7 @@ type IconPickerBottomSheetProps = {
   title?: string;
 };
 
-const CELL_SIZE = 38;
+const CELL_SIZE = 44;
 
 export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
   visible,
@@ -77,17 +77,18 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                     return (
                       <BentoPressable
                         key={icon}
-                        style={[styles.iconCell, selected && styles.iconCellSelected]}
+                        style={[
+                          styles.iconCell,
+                          { backgroundColor: selected ? accent : colors.background }
+                        ]}
                         onPress={() => handleSelect(icon)}
                         scaleOnPress={true}
                       >
-                        <View style={[styles.iconCircle, selected && { backgroundColor: accent }]}>
-                          <MaterialCommunityIcons
-                            name={resolveIcon(icon, 'grid')}
-                            size={selected ? 19 : 18}
-                            color={selected ? colors.background : colors.text}
-                          />
-                        </View>
+                        <MaterialCommunityIcons
+                          name={resolveIcon(icon, 'grid')}
+                          size={20}
+                          color={selected ? colors.background : colors.text}
+                        />
                       </BentoPressable>
                     );
                   })}
@@ -116,6 +117,7 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       borderTopLeftRadius: 28,
       borderTopRightRadius: 28,
       backgroundColor: colors.surface,
+      overflow: 'hidden',
     },
     handle: {
       alignSelf: 'center',
@@ -142,7 +144,7 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       width: 36,
       height: 36,
       borderRadius: radius('full'),
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -169,16 +171,8 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
     iconCell: {
       width: CELL_SIZE,
       height: CELL_SIZE,
+      borderRadius: radius('md'),
       justifyContent: 'center',
       alignItems: 'center',
     },
-    iconCircle: {
-      width: CELL_SIZE,
-      height: CELL_SIZE,
-      borderRadius: radius('full'),
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: colors.surface,
-    },
-    iconCellSelected: {},
   });
