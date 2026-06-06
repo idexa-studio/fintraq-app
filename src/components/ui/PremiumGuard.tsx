@@ -13,15 +13,12 @@ interface PremiumGuardProps {
 }
 
 /**
- * PremiumGuard - Editorial Bento Design
+ * PremiumGuard - Editorial Bento & MD3 Locked Card Design
  * 
  * Sizes:
  * - small: 56px min height, 12px padding, 12px radius (md)
  * - medium: 76px min height, 16px padding, 16px radius (lg)
  * - large: 90px min height, 20px padding, 20px radius (xl)
- * 
- * Icon box: 44px (md), 32px (sm)
- * Action badge: 12px radius (md), 8px (sm)
  */
 export const PremiumGuard = React.memo(function PremiumGuard({
   children,
@@ -43,7 +40,6 @@ export const PremiumGuard = React.memo(function PremiumGuard({
     const small = size === 'small';
     const medium = size === 'medium';
     
-    // Size-specific values
     const padding = small ? spacing('3') : medium ? spacing('4') : spacing('5');
     const borderRadius = small ? radius('md') : medium ? radius('lg') : radius('xl');
     const minHeight = small ? 56 : medium ? 76 : 90;
@@ -64,7 +60,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
       iconBoxStyles: [
         styles.iconBox,
         { 
-          backgroundColor: colors.background, 
+          backgroundColor: colors.primary + '12', 
           width: small ? 32 : 44,
           height: small ? 32 : 44,
           borderRadius: radius('full'),
@@ -72,7 +68,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
       ],
       iconSize: small ? 14 : 18,
     };
-  }, [size, colors.surface, colors.background, layout.screenPadding, containerStyle, styles, spacing, radius]);
+  }, [size, colors.surface, colors.primary, layout.screenPadding, containerStyle, styles, spacing, radius]);
 
   if (isPremium) {
     return <>{children}</>;
@@ -97,7 +93,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
       <View style={styles.content}>
         <View style={styles.headerRow}>
           <View style={iconBoxStyles}>
-            <MaterialCommunityIcons name="lock-outline" size={iconSize} color={colors.text} />
+            <MaterialCommunityIcons name="lock-outline" size={iconSize} color={colors.primary} />
           </View>
 
           <View style={styles.textDetails}>
@@ -106,7 +102,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
             </Text>
             {!isSmall && (
               <Text style={styles.subtitle}>
-                Premium member exclusive
+                Unlock with Keeep Pro
               </Text>
             )}
           </View>
@@ -120,7 +116,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   container: {
     overflow: 'hidden',
     justifyContent: 'center',
-    borderWidth: 0, // Enforce borderless Bento style
+    borderWidth: 0,
   },
   accentOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -165,13 +161,5 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
     fontFamily: typography.fonts.regular,
     fontSize: 12,
     color: colors.textMuted,
-  },
-  actionBadge: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  actionText: {
-    fontFamily: typography.fonts.bold,
-    fontSize: typography.sizes.xs,
   },
 });
