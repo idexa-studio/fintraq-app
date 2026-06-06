@@ -171,10 +171,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
             ))
           ) : (
             <View style={styles.emptyActivity}>
-              <MaterialCommunityIcons name="receipt-text-outline" size={28} color={colors.textMuted} />
-              <Text style={styles.emptyText}>No transactions yet</Text>
-              <TouchableOpacity style={styles.emptyAction} onPress={navigateToCreateTx}>
-                <Text style={styles.emptyActionText}>Add one now</Text>
+              <View style={styles.emptyIconWrapper}>
+                <MaterialCommunityIcons name="receipt-text-outline" size={20} color={colors.primary} />
+              </View>
+              <Text style={styles.emptyTitle}>No transactions yet</Text>
+              <Text style={styles.emptySubtext}>Start recording your daily payments, income, or transfers here.</Text>
+              <TouchableOpacity style={styles.emptyAction} onPress={navigateToCreateTx} activeOpacity={0.8}>
+                <Text style={styles.emptyActionText}>Add transaction</Text>
                 <MaterialCommunityIcons name="arrow-right" size={12} color={colors.background} />
               </TouchableOpacity>
             </View>
@@ -220,23 +223,48 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     emptyActivity: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
-      paddingVertical: spacing('8'),
+      paddingVertical: spacing('7'),
       paddingHorizontal: spacing('4'),
       alignItems: 'center',
-      gap: spacing('2'),
+      gap: spacing('2.5'),
     },
-    emptyText: { fontFamily: typography.fonts.regular, fontSize: 13, color: colors.textMuted },
+    emptyIconWrapper: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: colors.primary + '12',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: spacing('1'),
+    },
+    emptyTitle: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 14,
+      color: colors.text,
+    },
+    emptySubtext: {
+      fontFamily: typography.fonts.regular,
+      fontSize: 12,
+      color: colors.textMuted,
+      textAlign: 'center',
+      maxWidth: 240,
+      lineHeight: 16,
+      marginBottom: spacing('1.5'),
+    },
     emptyAction: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('1.5'),
-      height: 32,
+      height: 36,
       paddingHorizontal: spacing('4'),
       borderRadius: radius('full'),
       backgroundColor: colors.primary,
-      marginTop: spacing('2'),
     },
-    emptyActionText: { fontFamily: typography.fonts.semibold, fontSize: 11, color: colors.background },
+    emptyActionText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 12,
+      color: colors.background,
+    },
 
     // ── FAB
     fab: {

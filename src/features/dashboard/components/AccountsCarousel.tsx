@@ -138,10 +138,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
 
     addCard: {
       borderRadius: radius('xl'),
-      backgroundColor: colors.surface + '80',
-      borderWidth: 1.5,
-      borderColor: colors.text + '12',
-      borderStyle: 'dashed',
+      backgroundColor: colors.surface,
       padding: spacing('4'),
       justifyContent: 'center',
       alignItems: 'center',

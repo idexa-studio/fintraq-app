@@ -25,7 +25,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
   categories,
 }: Props) {
   const theme = useTheme();
-  const { colors, typography } = theme;
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const items = categories.slice(0, 6);
@@ -37,8 +37,13 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
   if (items.length === 0) {
     return (
       <View style={styles.empty}>
-        <MaterialCommunityIcons name="chart-pie" size={typography.sizes.md} color={colors.textMuted} />
-        <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>No expense data yet</Text>
+        <View style={styles.emptyIconWrapper}>
+          <MaterialCommunityIcons name="chart-pie" size={18} color={colors.primary} />
+        </View>
+        <View style={styles.emptyContent}>
+          <Text style={styles.emptyTitle}>No expenses yet</Text>
+          <Text style={styles.emptyText}>Add some transactions to see your top spending categories.</Text>
+        </View>
       </View>
     );
   }
@@ -104,15 +109,37 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     empty: {
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      padding: spacing('4'),
       marginHorizontal: layout.screenPadding,
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('2'),
-      padding: spacing('3.5'),
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
+      gap: spacing('3'),
     },
-    emptyText: { fontSize: typography.sizes.xs },
+    emptyIconWrapper: {
+      width: 38,
+      height: 38,
+      borderRadius: 19,
+      backgroundColor: colors.primary + '12',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    emptyContent: {
+      flex: 1,
+      gap: 2,
+    },
+    emptyTitle: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 13,
+      color: colors.text,
+    },
+    emptyText: {
+      fontFamily: typography.fonts.regular,
+      fontSize: 11,
+      color: colors.textMuted,
+      lineHeight: 15,
+    },
     grid: {
       marginHorizontal: layout.screenPadding,
       flexDirection: 'row',

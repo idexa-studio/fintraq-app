@@ -70,10 +70,13 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
         <SectionHeader title="Pro Insights" />
         <PremiumGuard label="Upgrade to Pro for insights" size="large">
           <View style={styles.empty}>
-            <MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.textMuted} />
-            <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              No insights yet. Keep tracking to unlock trends.
-            </Text>
+            <View style={styles.emptyIconWrapper}>
+              <MaterialCommunityIcons name="chart-timeline-variant" size={18} color={colors.primary} />
+            </View>
+            <View style={styles.emptyContent}>
+              <Text style={styles.emptyTitle}>No insights yet</Text>
+              <Text style={styles.emptyText}>Keep tracking to unlock personalized spending trends.</Text>
+            </View>
           </View>
         </PremiumGuard>
       </View>
@@ -151,20 +154,36 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     placeholderText: { fontSize: typography.sizes.xs, opacity: 0.6 },
     empty: {
-      height: 80,
-      marginHorizontal: layout.screenPadding,
-      borderRadius: radius('xl'),
       backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      padding: spacing('4'),
+      marginHorizontal: layout.screenPadding,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3'),
+    },
+    emptyIconWrapper: {
+      width: 38,
+      height: 38,
+      borderRadius: 19,
+      backgroundColor: colors.primary + '12',
       justifyContent: 'center',
       alignItems: 'center',
-      gap: spacing('2'),
+    },
+    emptyContent: {
+      flex: 1,
+      gap: 2,
+    },
+    emptyTitle: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 13,
+      color: colors.text,
     },
     emptyText: {
-      fontSize: typography.sizes.xs,
-      textAlign: 'center',
-      lineHeight: 16,
-      maxWidth: '80%',
-      opacity: 0.6,
+      fontFamily: typography.fonts.regular,
+      fontSize: 11,
+      color: colors.textMuted,
+      lineHeight: 15,
     },
     dots: {
       flexDirection: 'row',
