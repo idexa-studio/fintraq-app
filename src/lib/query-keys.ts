@@ -41,8 +41,6 @@ const dashboard = {
 
 const reports = {
   all: ['reports'] as const,
-  weekly: (currency: string) => [...reports.all, 'weekly', currency] as const,
-  monthly: (currency: string) => [...reports.all, 'monthly', currency] as const,
   streak: () => [...reports.all, 'streak'] as const,
 };
 

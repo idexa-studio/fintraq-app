@@ -28,7 +28,7 @@ export const getStartOfMonthLocal = (): string => {
  */
 export const formatDisplayDate = (dateStr: string): string => {
   try {
-    return format(new Date(dateStr), 'dd MMM yyyy').toUpperCase();
+    return format(new Date(dateStr), 'dd MMM yyyy');
   } catch {
     return dateStr;
   }

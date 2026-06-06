@@ -14,7 +14,7 @@ const SEARCH_FEATURES = [
   { icon: 'tag-outline' as const, label: 'Locate categories across your history' },
 ];
 
-function SearchGate() {
+const SearchGate = React.memo(function SearchGate() {
   const theme = useTheme();
   const { colors } = theme;
   const router = useRouter();
@@ -68,12 +68,12 @@ function SearchGate() {
       </View>
     </SafeAreaView>
   );
-}
+});
 
-export default function SearchRoute() {
+export default React.memo(function SearchRoute() {
   const { isPremium } = usePremium();
   return isPremium ? <SearchScreen /> : <SearchGate />;
-}
+});
 
 const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({

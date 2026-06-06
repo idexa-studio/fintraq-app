@@ -516,7 +516,7 @@ export function TransactionsScreen() {
 
             {activeFilterCount > 0 && (
               <View style={styles.activeFiltersRow}>
-                <Text style={styles.activeFiltersLabel}>ACTIVE FILTERS</Text>
+                <Text style={styles.activeFiltersLabel}>Active filters</Text>
                 <TouchableOpacity style={styles.clearChip} onPress={clearFilters}>
                   <Text style={styles.clearChipText}>Clear All</Text>
                 </TouchableOpacity>
@@ -633,7 +633,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.semibold,
       fontSize: 10,
       color: colors.textMuted,
-      letterSpacing: 1.5,
     },
     clearChip: {
       backgroundColor: colors.danger + '12',
