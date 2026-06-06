@@ -22,7 +22,7 @@ import { useRouter } from 'expo-router';
 
 export const PremiumScreen = React.memo(function PremiumScreen() {
   const theme = useTheme();
-  const { colors, typography } = theme;
+  const { colors } = theme;
   const router = useRouter();
   const { products, purchasePremium, restorePurchase, isLoading, isPremium } = usePremium();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -52,7 +52,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           {/* Subscribed Hero */}
           <LinearGradient
-            colors={['#047857', '#022c22']}
+            colors={[colors.primary, colors.primaryDark]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={styles.heroCard}
@@ -60,10 +60,10 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             <View style={styles.decoCircle1} />
             <View style={styles.decoCircle2} />
             <View style={styles.crownWrapper}>
-              <MaterialCommunityIcons name="check-decagram" size={32} color="#FBBF24" />
+              <MaterialCommunityIcons name="check-decagram" size={32} color={colors.warning} />
             </View>
-            <Text style={styles.heroBadge}>PRO MEMBER</Text>
-            <Text style={styles.heroTitle}>Keeep Pro is Active</Text>
+            <Text style={styles.heroBadge}>Pro active</Text>
+            <Text style={styles.heroTitle}>Keeep Pro is active</Text>
             <Text style={styles.heroDesc}>
               Thank you for your support! You have permanent lifetime access to every professional tool, report export, and future update.
             </Text>
@@ -76,8 +76,8 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
                 <Text style={styles.priceLabel}>Lifetime license</Text>
                 <Text style={styles.priceSubText}>Linked to your Google Play / App Store</Text>
               </View>
-              <View style={[styles.pill, { backgroundColor: colors.success + '15' }]}>
-                <Text style={[styles.pillText, { color: colors.success, fontFamily: typography.fonts.semibold }]}>Active</Text>
+              <View style={styles.pill}>
+                <Text style={styles.pillText}>Active</Text>
               </View>
             </View>
           </View>
@@ -86,20 +86,20 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           <SectionHeader title="Unlocked features" noPadding />
 
           <View style={styles.featuresCard}>
-            {FEATURES.map((f, index) => (
-              <React.Fragment key={f.title}>
-                <View style={styles.featureItem}>
-                  <View style={[styles.iconWrapper, { backgroundColor: colors.success + '12' }]}>
+            {FEATURES.map((f, index) => {
+              const isLast = index === FEATURES.length - 1;
+              return (
+                <View key={f.title} style={[styles.featureItem, isLast && styles.noMargin]}>
+                  <View style={styles.iconWrapperActive}>
                     <MaterialCommunityIcons name={f.icon} size={20} color={colors.success} />
                   </View>
                   <View style={styles.featureContent}>
-                    <Text style={[styles.featureTitle, { color: colors.text }]}>{f.title}</Text>
-                    <Text style={[styles.featureDesc, { color: colors.textMuted }]}>{f.description}</Text>
+                    <Text style={styles.featureTitle}>{f.title}</Text>
+                    <Text style={styles.featureDesc}>{f.description}</Text>
                   </View>
                 </View>
-                {index < FEATURES.length - 1 && <View style={styles.featureDivider} />}
-              </React.Fragment>
-            ))}
+              );
+            })}
           </View>
           <View style={{ height: 40 }} />
         </ScrollView>
@@ -128,7 +128,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Play Store Premium Hero */}
         <LinearGradient
-          colors={['#047857', '#022c22']}
+          colors={[colors.primary, colors.primaryDark]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.heroCard}
@@ -136,9 +136,9 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           <View style={styles.decoCircle1} />
           <View style={styles.decoCircle2} />
           <View style={styles.crownWrapper}>
-            <MaterialCommunityIcons name="crown" size={32} color="#FBBF24" />
+            <MaterialCommunityIcons name="crown" size={32} color={colors.warning} />
           </View>
-          <Text style={styles.heroBadge}>LIFETIME UPGRADE</Text>
+          <Text style={styles.heroBadge}>Lifetime upgrade</Text>
           <Text style={styles.heroTitle}>One payment. Everything. Forever.</Text>
           <Text style={styles.heroDesc}>
             No subscriptions. No recurring charges. Unlock advanced financial analytics, exports, and global search instantly.
@@ -163,7 +163,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           ) : isLoading ? (
             <ActivityIndicator color={colors.primary} style={{ paddingVertical: 12 }} />
           ) : (
-            <Text style={[styles.priceError, { color: colors.danger }]}>Pricing currently unavailable</Text>
+            <Text style={styles.priceError}>Pricing currently unavailable</Text>
           )}
 
           <View style={styles.separator} />
@@ -171,11 +171,11 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           <View style={styles.perks}>
             <View style={styles.perk}>
               <MaterialCommunityIcons name="shield-check" size={16} color={colors.success} />
-              <Text style={[styles.perkText, { color: colors.text }]}>Secure one-time payment</Text>
+              <Text style={styles.perkText}>Secure one-time payment</Text>
             </View>
             <View style={styles.perk}>
               <MaterialCommunityIcons name="sync" size={16} color={colors.success} />
-              <Text style={[styles.perkText, { color: colors.text }]}>Entitlements bind to your store account</Text>
+              <Text style={styles.perkText}>Entitlements bind to your store account</Text>
             </View>
           </View>
         </View>
@@ -184,20 +184,20 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
         <SectionHeader title="Everything included" noPadding />
 
         <View style={styles.featuresCard}>
-          {FEATURES.map((f, index) => (
-            <React.Fragment key={f.title}>
-              <View style={styles.featureItem}>
-                <View style={[styles.iconWrapper, { backgroundColor: colors.primary + '12' }]}>
+          {FEATURES.map((f, index) => {
+            const isLast = index === FEATURES.length - 1;
+            return (
+              <View key={f.title} style={[styles.featureItem, isLast && styles.noMargin]}>
+                <View style={styles.iconWrapperInactive}>
                   <MaterialCommunityIcons name={f.icon} size={20} color={colors.primary} />
                 </View>
                 <View style={styles.featureContent}>
-                  <Text style={[styles.featureTitle, { color: colors.text }]}>{f.title}</Text>
-                  <Text style={[styles.featureDesc, { color: colors.textMuted }]}>{f.description}</Text>
+                  <Text style={styles.featureTitle}>{f.title}</Text>
+                  <Text style={styles.featureDesc}>{f.description}</Text>
                 </View>
               </View>
-              {index < FEATURES.length - 1 && <View style={styles.featureDivider} />}
-            </React.Fragment>
-          ))}
+            );
+          })}
         </View>
 
         <View style={{ height: 40 }} />
@@ -221,11 +221,11 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
         </TouchableOpacity>
         <View style={styles.legal}>
           <TouchableOpacity onPress={handleRestore} disabled={isProcessing}>
-            <Text style={[styles.legalText, { color: colors.textMuted }]}>Restore purchase</Text>
+            <Text style={styles.legalText}>Restore purchase</Text>
           </TouchableOpacity>
-          <View style={[styles.legalDot, { backgroundColor: colors.textMuted }]} />
+          <View style={styles.legalDot} />
           <TouchableOpacity onPress={() => Alert.alert('Terms', 'This purchase binds to your Play Store / App Store account and restores automatically on login.')}>
-            <Text style={[styles.legalText, { color: colors.textMuted }]}>Terms of Service</Text>
+            <Text style={styles.legalText}>Terms of Service</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -233,7 +233,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -258,7 +258,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       width: 150,
       height: 150,
       borderRadius: 75,
-      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+      backgroundColor: heroCard.textPrimary + '14',
     },
     decoCircle2: {
       position: 'absolute',
@@ -267,13 +267,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       width: 120,
       height: 120,
       borderRadius: 60,
-      backgroundColor: 'rgba(255, 255, 255, 0.04)',
+      backgroundColor: heroCard.textPrimary + '0A',
     },
     crownWrapper: {
       width: 48,
       height: 48,
       borderRadius: 24,
-      backgroundColor: 'rgba(255, 255, 255, 0.12)',
+      backgroundColor: heroCard.textPrimary + '1E',
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: spacing('2'),
@@ -282,15 +282,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     heroBadge: {
       fontFamily: typography.fonts.semibold,
       fontSize: 10,
-      color: '#A7F3D0',
-      letterSpacing: 1.5,
+      color: colors.primaryLight,
       zIndex: 2,
     },
     heroTitle: {
       fontFamily: typography.fonts.heading,
       fontSize: 26,
       lineHeight: 32,
-      color: '#FFFFFF',
+      color: heroCard.textPrimary,
       marginTop: spacing('1'),
       zIndex: 2,
     },
@@ -298,7 +297,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.regular,
       fontSize: 13,
       lineHeight: 18,
-      color: '#E0F2FE',
+      color: heroCard.textMuted,
       opacity: 0.9,
       marginTop: spacing('1'),
       zIndex: 2,
@@ -324,6 +323,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     pillText: {
       fontSize: typography.sizes.xs,
+      color: colors.success,
+      fontFamily: typography.fonts.semibold,
     },
     priceLeft: {
       gap: spacing('0.5'),
@@ -356,6 +357,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     priceError: {
       fontFamily: typography.fonts.regular,
       fontSize: 14,
+      color: colors.danger,
       textAlign: 'center',
       width: '100%',
     },
@@ -374,31 +376,41 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     perkText: {
       fontFamily: typography.fonts.regular,
       fontSize: 13,
+      color: colors.text,
       opacity: 0.85,
     },
     // Features list
     featuresCard: {
-      backgroundColor: colors.surface,
       borderRadius: 24,
-      padding: spacing('4'),
-    },
-    featureDivider: {
-      height: StyleSheet.hairlineWidth,
-      backgroundColor: colors.text + '0C',
-      marginLeft: 56,
-      marginVertical: spacing('3'),
+      overflow: 'hidden',
     },
     featureItem: {
       flexDirection: 'row',
       gap: spacing('4'),
       alignItems: 'flex-start',
+      backgroundColor: colors.surface,
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
+      marginBottom: spacing('0.5'),
     },
-    iconWrapper: {
+    noMargin: {
+      marginBottom: 0,
+    },
+    iconWrapperActive: {
       width: 40,
       height: 40,
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: colors.success + '12',
+    },
+    iconWrapperInactive: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.primary + '12',
     },
     featureContent: {
       flex: 1,
@@ -407,11 +419,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     featureTitle: {
       fontFamily: typography.fonts.semibold,
       fontSize: 15,
+      color: colors.text,
     },
     featureDesc: {
       fontFamily: typography.fonts.regular,
       fontSize: 13,
       lineHeight: 18,
+      color: colors.textMuted,
       opacity: 0.85,
     },
     // Pinned Footer
@@ -445,12 +459,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     legalText: {
       fontFamily: typography.fonts.regular,
       fontSize: 12,
+      color: colors.textMuted,
       opacity: 0.8,
     },
     legalDot: {
       width: 4,
       height: 4,
       borderRadius: 2,
+      backgroundColor: colors.textMuted,
       opacity: 0.5,
     },
   });

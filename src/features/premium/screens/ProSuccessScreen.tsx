@@ -12,7 +12,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   const theme = useTheme();
-  const { colors, typography } = theme;
+  const { colors } = theme;
   const router = useRouter();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -24,7 +24,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Subscribed Success Hero */}
         <LinearGradient
-          colors={['#047857', '#022c22']}
+          colors={[colors.primary, colors.primaryDark]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.heroCard}
@@ -32,9 +32,9 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
           <View style={styles.decoCircle1} />
           <View style={styles.decoCircle2} />
           <View style={styles.crownWrapper}>
-            <MaterialCommunityIcons name="check-decagram" size={32} color="#FBBF24" />
+            <MaterialCommunityIcons name="check-decagram" size={32} color={colors.warning} />
           </View>
-          <Text style={styles.heroBadge}>PRO MEMBER</Text>
+          <Text style={styles.heroBadge}>Pro active</Text>
           <Text style={styles.heroTitle}>You{"'"}re all set.</Text>
           <Text style={styles.heroDesc}>
             Every professional tool, every future update — yours forever. No subscriptions, no limits.
@@ -48,8 +48,8 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
               <Text style={styles.priceLabel}>Lifetime license</Text>
               <Text style={styles.priceSubText}>Linked to your Google Play / App Store</Text>
             </View>
-            <View style={[styles.pill, { backgroundColor: colors.success + '15' }]}>
-              <Text style={[styles.pillText, { color: colors.success, fontFamily: typography.fonts.semibold }]}>Active</Text>
+            <View style={styles.pill}>
+              <Text style={styles.pillText}>Active</Text>
             </View>
           </View>
         </View>
@@ -58,20 +58,20 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
         <SectionHeader title="Unlocked features" noPadding />
 
         <View style={styles.featuresCard}>
-          {FEATURES.map((f, index) => (
-            <React.Fragment key={f.title}>
-              <View style={styles.featureItem}>
-                <View style={[styles.iconWrapper, { backgroundColor: colors.success + '12' }]}>
+          {FEATURES.map((f, index) => {
+            const isLast = index === FEATURES.length - 1;
+            return (
+              <View key={f.title} style={[styles.featureItem, isLast && styles.noMargin]}>
+                <View style={styles.iconWrapperActive}>
                   <MaterialCommunityIcons name={f.icon} size={20} color={colors.success} />
                 </View>
                 <View style={styles.featureContent}>
-                  <Text style={[styles.featureTitle, { color: colors.text }]}>{f.title}</Text>
-                  <Text style={[styles.featureDesc, { color: colors.textMuted }]}>{f.description}</Text>
+                  <Text style={styles.featureTitle}>{f.title}</Text>
+                  <Text style={styles.featureDesc}>{f.description}</Text>
                 </View>
               </View>
-              {index < FEATURES.length - 1 && <View style={styles.featureDivider} />}
-            </React.Fragment>
-          ))}
+            );
+          })}
         </View>
         <View style={{ height: 40 }} />
       </ScrollView>
@@ -92,7 +92,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -117,7 +117,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       width: 150,
       height: 150,
       borderRadius: 75,
-      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+      backgroundColor: heroCard.textPrimary + '14',
     },
     decoCircle2: {
       position: 'absolute',
@@ -126,13 +126,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       width: 120,
       height: 120,
       borderRadius: 60,
-      backgroundColor: 'rgba(255, 255, 255, 0.04)',
+      backgroundColor: heroCard.textPrimary + '0A',
     },
     crownWrapper: {
       width: 48,
       height: 48,
       borderRadius: 24,
-      backgroundColor: 'rgba(255, 255, 255, 0.12)',
+      backgroundColor: heroCard.textPrimary + '1E',
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: spacing('2'),
@@ -141,15 +141,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     heroBadge: {
       fontFamily: typography.fonts.semibold,
       fontSize: 10,
-      color: '#A7F3D0',
-      letterSpacing: 1.5,
+      color: colors.primaryLight,
       zIndex: 2,
     },
     heroTitle: {
       fontFamily: typography.fonts.heading,
       fontSize: 26,
       lineHeight: 32,
-      color: '#FFFFFF',
+      color: heroCard.textPrimary,
       marginTop: spacing('1'),
       zIndex: 2,
     },
@@ -157,7 +156,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.regular,
       fontSize: 13,
       lineHeight: 18,
-      color: '#E0F2FE',
+      color: heroCard.textMuted,
       opacity: 0.9,
       marginTop: spacing('1'),
       zIndex: 2,
@@ -196,30 +195,33 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     pillText: {
       fontSize: typography.sizes.xs,
+      color: colors.success,
+      fontFamily: typography.fonts.semibold,
     },
     // Features list
     featuresCard: {
-      backgroundColor: colors.surface,
       borderRadius: 24,
-      padding: spacing('4'),
-    },
-    featureDivider: {
-      height: StyleSheet.hairlineWidth,
-      backgroundColor: colors.text + '0C',
-      marginLeft: 56,
-      marginVertical: spacing('3'),
+      overflow: 'hidden',
     },
     featureItem: {
       flexDirection: 'row',
       gap: spacing('4'),
       alignItems: 'flex-start',
+      backgroundColor: colors.surface,
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
+      marginBottom: spacing('0.5'),
     },
-    iconWrapper: {
+    noMargin: {
+      marginBottom: 0,
+    },
+    iconWrapperActive: {
       width: 40,
       height: 40,
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: colors.success + '12',
     },
     featureContent: {
       flex: 1,
@@ -228,11 +230,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     featureTitle: {
       fontFamily: typography.fonts.semibold,
       fontSize: 15,
+      color: colors.text,
     },
     featureDesc: {
       fontFamily: typography.fonts.regular,
       fontSize: 13,
       lineHeight: 18,
+      color: colors.textMuted,
       opacity: 0.85,
     },
     // Pinned Footer
