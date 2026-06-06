@@ -32,9 +32,9 @@ import {
   useTransactionById,
   useUpdateTransaction,
 } from '../hooks/transactions';
-
 import { format } from 'date-fns';
 import { TransactionType } from '../../../types';
+import { WalkthroughOverlay, TRANSACTION_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 
 type Props = {
   mode: 'create' | 'edit';
@@ -289,7 +289,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
                 />
               ) : (
                 <View style={styles.section}>
-                  <Text style={styles.sectionLabel}>TO ACCOUNT</Text>
+                  <Text style={styles.sectionLabel}>To account</Text>
                   <Text style={styles.transferHint}>
                     No other accounts with the same currency.
                   </Text>
@@ -306,7 +306,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
 
           {persons.length > 0 && type !== 'TR' && (
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>LINKED PERSON</Text>
+              <Text style={styles.sectionLabel}>Linked person</Text>
               <TouchableOpacity
                 style={styles.personBtn}
                 onPress={() => setShowPersonPicker(true)}
@@ -324,7 +324,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
           )}
 
           <View style={styles.section}>
-            <Text style={styles.sectionLabel}>DATE & TIME</Text>
+            <Text style={styles.sectionLabel}>Date & time</Text>
             <View style={styles.dateTimeRow}>
               <TouchableOpacity
                 style={styles.dateTimeBtn}
@@ -361,7 +361,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
           )}
 
           <View style={styles.section}>
-            <Text style={styles.sectionLabel}>NOTE</Text>
+            <Text style={styles.sectionLabel}>Note</Text>
             <View style={styles.noteContainer}>
               <TextInput
                 style={styles.noteInput}
@@ -400,6 +400,10 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
         selectedId={selectedPersonId}
         onSelect={setSelectedPersonId}
       />
+
+      {mode === 'create' && (
+        <WalkthroughOverlay storageKey="@luno_walkthrough_transaction_create" steps={TRANSACTION_WALKTHROUGH_STEPS} />
+      )}
     </SafeAreaView>
   );
 }

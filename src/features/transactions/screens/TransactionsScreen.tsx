@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { WalkthroughOverlay, TRANSACTIONS_LIST_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
@@ -576,6 +577,7 @@ export function TransactionsScreen() {
         persons={personsQuery.data ?? []}
         resultCount={transactions.length}
       />
+      <WalkthroughOverlay storageKey="@luno_walkthrough_transactions_list" steps={TRANSACTIONS_LIST_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 }

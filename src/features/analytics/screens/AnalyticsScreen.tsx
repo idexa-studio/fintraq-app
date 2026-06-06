@@ -20,6 +20,7 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
+import { WalkthroughOverlay, ANALYTICS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
@@ -453,6 +454,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
         </ScrollView>
       )}
+      <WalkthroughOverlay storageKey="@luno_walkthrough_analytics" steps={ANALYTICS_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });

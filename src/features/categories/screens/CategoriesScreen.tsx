@@ -19,6 +19,7 @@ import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { Category } from '../api/categories';
 import { CategoryCard } from '../components/CategoryCard';
 import { useCategories, useDeleteCategory } from '../hooks/categories';
+import { WalkthroughOverlay, CATEGORIES_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 
 export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const theme = useTheme();
@@ -199,6 +200,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
           setSelectedCategory(null);
         }}
       />
+      <WalkthroughOverlay storageKey="@luno_walkthrough_categories" steps={CATEGORIES_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });

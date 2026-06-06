@@ -25,6 +25,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalSearch } from '../hooks/useGlobalSearch';
+import { WalkthroughOverlay, SEARCH_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 
 type SearchItem =
   | { kind: 'transaction'; data: TransactionListItem }
@@ -462,6 +463,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
           stickySectionHeadersEnabled={false}
         />
       )}
+      <WalkthroughOverlay storageKey="@luno_walkthrough_search" steps={SEARCH_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });

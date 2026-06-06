@@ -4,6 +4,7 @@ import { usePersons } from '@/src/features/persons/hooks/persons';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
+import { WalkthroughOverlay, PERSONS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -169,6 +170,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
           : <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
         }
       </TouchableOpacity>
+      <WalkthroughOverlay storageKey="@luno_walkthrough_persons" steps={PERSONS_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });

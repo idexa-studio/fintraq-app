@@ -21,6 +21,7 @@ import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '../components/TopPersonsCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
+import { WalkthroughOverlay, DASHBOARD_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 
 export const DashboardScreen = React.memo(function DashboardScreen() {
   const theme = useTheme();
@@ -186,6 +187,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         <MaterialCommunityIcons name="plus" size={26} color={colors.background} />
       </TouchableOpacity>
 
+      <WalkthroughOverlay storageKey="@luno_walkthrough_dashboard" steps={DASHBOARD_WALKTHROUGH_STEPS} />
       <PremiumUpsellBottomSheet visible={showUpsell && !isPremium} onClose={dismissUpsell} />
     </SafeAreaView>
   );
