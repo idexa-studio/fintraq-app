@@ -7,7 +7,7 @@ Luno aims to be a top-tier, premium financial tracker. The design system adheres
 - **Card-based, modular layout**: UI is composed of well-defined card tiles of varying sizes, like a bento box grid. Cards have clear boundaries and breathing room.
 - **Depth & softness**: Cards use subtle shadows (`shadow('sm')` / `shadow('xs')`) and `colors.surface` backgrounds. Avoid stark flat-only surfaces.
 - **Shape Language**: Generous rounding — prefer `radius('xl')` (20px) to `radius('2xl')` (24px) for cards and containers. Inputs and small controls use `radius('lg')` (16px). Pill shapes (`radius('full')`) allowed for type-selectors and small badges.
-- **Typography & Casing**: Clean, premium typography. Buttons and actions use **Sentence case** (e.g., "Save account", not "SAVE ACCOUNT"). Section labels still use uppercase small caps (10px, letterSpacing 1.5) for structure.
+- **Typography & Casing**: Clean, premium typography. Buttons and actions use **Sentence case** (e.g., "Save account", not "SAVE ACCOUNT"). Section labels and headers use **Sentence case** with no custom letter spacing.
 - **Color**: Accent colors used expressively in icon avatars and status indicators. Muted borders (`colors.border`) remain but are secondary to depth/shadow for separation.
 
 ### 1.1 Design Token System

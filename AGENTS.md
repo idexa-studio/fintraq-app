@@ -67,7 +67,7 @@ import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
 From `CLAUDE.md` - **cross-reference before UI changes**:
 - **Cards**: Modular, well-defined tiles of varying sizes, like a bento box grid. No borders — separation via layout and surface backgrounds.
 - **Shape**: Cards use `radius('xl')` (20px) to `radius('2xl')` (24px). Inputs and small controls use `radius('lg')` (16px). Pill shapes (`radius('full')`) allowed for badges and selectors.
-- **Text**: Buttons and actions use **Sentence case** ("Save account", not "SAVE ACCOUNT"). Section labels use uppercase small caps (10px, letterSpacing 1.5).
+- **Text**: Buttons and actions use **Sentence case** ("Save account", not "SAVE ACCOUNT"). Section labels use **Sentence case** with no custom letter spacing.
 - **Depth**: No shadows, no borders. Depth comes from card-based modular layout and surface background contrast.
 - **Performance**: High-density lists need `SectionList`/`FlatList` with memoized items + native optimization props
 
@@ -164,7 +164,7 @@ LAYOUT.minTouchTarget   // 44px - Minimum touch target
    - Buttons: 16px radius (`lg`)
    - Inputs/small controls: 16px radius (`lg`)
    - Pill shapes (`radius('full')`) allowed for badges and selectors
-3. **Text**: Sentence case everywhere ("Upgrade to Pro", not "UPGRADE TO PRO"). Section labels: uppercase small caps (10px, letterSpacing 1.5).
+3. **Text**: Sentence case everywhere ("Upgrade to Pro", not "UPGRADE TO PRO"). Section labels use **Sentence case** with no custom letter spacing.
 4. **Spacing**: Only use token values (4, 8, 12, 16, 20, 24, 32...)
 
 ### Example Usage
