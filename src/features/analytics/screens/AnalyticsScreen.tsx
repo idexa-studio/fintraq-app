@@ -1,5 +1,6 @@
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { format } from 'date-fns';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
@@ -190,6 +191,20 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
     return monthly.slice(-take).map(m => ({ label: fmtMonthLabel(m.month), income: m.income, expense: m.expense }));
   }, [dailyData, monthlyData, selectedRange]);
 
+  const rangeSubtitle = useMemo(() => {
+    const now = new Date();
+    if (selectedRange === 365) {
+      const start = new Date();
+      start.setDate(1);
+      start.setMonth(start.getMonth() - 11);
+      return `${format(start, 'MMM yyyy')} – ${format(now, 'MMM yyyy')}`;
+    } else {
+      const start = new Date();
+      start.setDate(start.getDate() - selectedRange + 1);
+      return `${format(start, 'd MMM yyyy')} – ${format(now, 'd MMM yyyy')}`;
+    }
+  }, [selectedRange]);
+
   const currencyAccounts = useMemo(
     () => (accounts ?? []).filter(a => a.currency === selectedCurrency),
     [accounts, selectedCurrency],
@@ -264,6 +279,8 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               );
             })}
           </View>
+
+          <Text style={styles.durationText}>{rangeSubtitle}</Text>
 
           {/* Summary metrics 2×2 */}
           <View style={styles.metricsGrid}>
@@ -565,6 +582,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     pillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
     pillTextActive: { color: colors.primary },
     lockIcon: { marginLeft: spacing('1') },
+    durationText: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 12,
+      color: colors.textMuted,
+      paddingHorizontal: layout.screenPadding,
+      marginBottom: spacing('3'),
+    },
 
     // ── Metric tiles
     metricsGrid: {
