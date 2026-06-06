@@ -13,7 +13,7 @@ interface PremiumGuardProps {
 }
 
 /**
- * PremiumGuard - Editorial Brutalist Design
+ * PremiumGuard - Editorial Bento Design
  * 
  * Sizes:
  * - small: 56px min height, 12px padding, 12px radius (md)
@@ -31,7 +31,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
 }: PremiumGuardProps) {
   const { isPremium } = usePremium();
   const theme = useTheme();
-  const { colors, spacing, radius } = theme;
+  const { colors, spacing, radius, layout } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
 
@@ -54,10 +54,10 @@ export const PremiumGuard = React.memo(function PremiumGuard({
         styles.container,
         { 
           backgroundColor: colors.surface, 
-          borderColor: colors.border,
           padding,
           borderRadius,
           minHeight,
+          marginHorizontal: layout.screenPadding, // Default margin to align with bento layout
         },
         containerStyle
       ],
@@ -65,7 +65,6 @@ export const PremiumGuard = React.memo(function PremiumGuard({
         styles.iconBox,
         { 
           backgroundColor: colors.background, 
-          borderColor: colors.border,
           width: small ? 32 : 44,
           height: small ? 32 : 44,
           borderRadius: radius('full'),
@@ -73,7 +72,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
       ],
       iconSize: small ? 14 : 18,
     };
-  }, [size, colors.surface, colors.border, colors.background, containerStyle, styles, spacing, radius]);
+  }, [size, colors.surface, colors.background, layout.screenPadding, containerStyle, styles, spacing, radius]);
 
   if (isPremium) {
     return <>{children}</>;
@@ -86,49 +85,53 @@ export const PremiumGuard = React.memo(function PremiumGuard({
       style={containerStyles}
     >
       {/* Background Accent & Watermark */}
-      <View style={[StyleSheet.absoluteFillObject, { backgroundColor: colors.primary, opacity: 0.02 }]} />
+      <View style={styles.accentOverlay} />
       <MaterialCommunityIcons
         name="creation"
         size={isSmall ? 60 : 120}
         color={colors.primary}
-        style={[styles.watermark, { opacity: 0.05 }]}
+        style={styles.watermark}
         pointerEvents="none"
       />
 
       <View style={styles.content}>
         <View style={styles.headerRow}>
-
           <View style={iconBoxStyles}>
-             <MaterialCommunityIcons name="lock-outline" size={iconSize} color={colors.text} />
+            <MaterialCommunityIcons name="lock-outline" size={iconSize} color={colors.text} />
           </View>
 
           <View style={styles.textDetails}>
-             <Text style={[styles.title, { color: colors.text }, isSmall && styles.titleSmall]}>
-               {label}
-             </Text>
-             {!isSmall && (
-               <Text style={[styles.subtitle, { color: colors.textMuted }]}>
-                 Premium member exclusive
-               </Text>
-             )}
+            <Text style={[styles.title, isSmall && styles.titleSmall]}>
+              {label}
+            </Text>
+            {!isSmall && (
+              <Text style={styles.subtitle}>
+                Premium member exclusive
+              </Text>
+            )}
           </View>
-
         </View>
       </View>
     </TouchableOpacity>
   );
 });
 
-const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing }: ThemeContextType) => StyleSheet.create({
   container: {
-    borderWidth: 1,
     overflow: 'hidden',
     justifyContent: 'center',
+    borderWidth: 0, // Enforce borderless Bento style
+  },
+  accentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: colors.primary,
+    opacity: 0.02,
   },
   watermark: {
     position: 'absolute',
     right: -spacing('5'),
     bottom: -spacing('8'),
+    opacity: 0.05,
     transform: [{ rotate: '-15deg' }],
   },
   content: {
@@ -143,7 +146,7 @@ const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.c
   iconBox: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 0,
   },
   textDetails: {
     flex: 1,
@@ -151,6 +154,7 @@ const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.c
   title: {
     fontFamily: typography.fonts.bold,
     fontSize: 14,
+    color: colors.text,
     marginBottom: spacing('1'),
   },
   titleSmall: {
@@ -160,6 +164,7 @@ const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.c
   subtitle: {
     fontFamily: typography.fonts.regular,
     fontSize: 12,
+    color: colors.textMuted,
   },
   actionBadge: {
     justifyContent: 'center',

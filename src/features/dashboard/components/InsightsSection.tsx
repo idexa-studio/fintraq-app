@@ -1,4 +1,3 @@
-import { usePremium } from '@/src/providers/PremiumProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
@@ -20,7 +19,6 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { data: insights, isLoading } = useDashboardInsights(currency);
-  const { isPremium } = usePremium();
   const { width: screenWidth } = useWindowDimensions();
 
   const scrollRef = useRef<ScrollView>(null);
@@ -70,7 +68,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
     return (
       <View style={styles.container}>
         <SectionHeader title="Pro Insights" />
-        <PremiumGuard label="Upgrade to Pro for insights" size="large" containerStyle={{ marginHorizontal: isPremium ? 0 : theme.layout.screenPadding }}>
+        <PremiumGuard label="Upgrade to Pro for insights" size="large">
           <View style={styles.empty}>
             <MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.textMuted} />
             <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
@@ -88,7 +86,6 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
       <PremiumGuard
         label="Upgrade to Pro for insights"
         size="large"
-        containerStyle={{ marginHorizontal: isPremium ? 0 : theme.layout.screenPadding }}
       >
         {isLoading ? (
           <View style={styles.placeholder}>
