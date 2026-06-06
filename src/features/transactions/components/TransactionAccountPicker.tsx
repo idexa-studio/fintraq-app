@@ -19,7 +19,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
   accounts,
   selectedId,
   onSelect,
-  label = 'ACCOUNT',
+  label = 'Account',
 }: Props) {
   const theme = useTheme();
   const { colors } = theme;
@@ -39,13 +39,19 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               key={acc.id}
               style={[
                 styles.card,
-                { backgroundColor: selected ? accColor + '18' : colors.surface },
+                { backgroundColor: selected ? accColor + '12' : colors.surface },
               ]}
               onPress={() => handleSelect(acc.id)}
               overflow="visible"
             >
-              <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} color={accColor} variant="solid" size={32} iconSize={18} />
-              <View>
+              <IconAvatar
+                icon={resolveIcon(acc.icon, 'wallet-outline')}
+                color={accColor}
+                variant="solid"
+                size={32}
+                iconSize={16}
+              />
+              <View style={styles.textColumn}>
                 <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>{acc.name}</Text>
                 <Text style={[styles.currency, { color: colors.textMuted }]}>{acc.currency}</Text>
               </View>
@@ -62,7 +68,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
   );
 });
 
-const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeContextType) => StyleSheet.create({
   container: {
     paddingVertical: spacing('3'),
   },
@@ -75,23 +81,26 @@ const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType
   scrollContent: {
     paddingHorizontal: layout.screenPadding,
     gap: spacing('3'),
-    paddingVertical: spacing('1'),
+    paddingVertical: spacing('1.5'),
   },
   card: {
-    minWidth: 100,
-    paddingHorizontal: spacing('4'),
-    paddingVertical: spacing('3'),
+    minWidth: 132,
+    paddingHorizontal: sizes.card.md.padding,
+    paddingVertical: spacing('3.5'),
     borderRadius: radius('xl'),
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing('2.5'),
   },
+  textColumn: {
+    flex: 1,
+  },
   name: {
     fontFamily: typography.fonts.semibold,
-    fontSize: 13,
+    fontSize: 14,
   },
   currency: {
-    fontFamily: typography.fonts.regular,
+    fontFamily: typography.fonts.medium,
     fontSize: 11,
   },
   check: {

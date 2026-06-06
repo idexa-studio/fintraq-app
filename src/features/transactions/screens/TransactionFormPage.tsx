@@ -251,7 +251,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title={isEditMode ? 'Edit Entry' : 'New Entry'} showBack />
+      <Header title={isEditMode ? 'Edit entry' : 'New entry'} showBack />
 
       <KeyboardAvoidingView
         style={styles.body}
@@ -272,7 +272,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
 
         <View style={styles.formBody}>
           <TransactionAccountPicker
-            label="FROM ACCOUNT"
+            label="From account"
             accounts={accounts}
             selectedId={selectedAccountId}
             onSelect={setSelectedAccountId}
@@ -282,7 +282,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
             <>
               {toAccountOptions.length > 0 ? (
                 <TransactionAccountPicker
-                  label="TO ACCOUNT"
+                  label="To account"
                   accounts={toAccountOptions}
                   selectedId={toAccountId}
                   onSelect={setToAccountId}
@@ -306,38 +306,58 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
 
           {persons.length > 0 && type !== 'TR' && (
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>Linked person</Text>
               <BentoPressable
                 style={styles.personBtn}
                 onPress={() => setShowPersonPicker(true)}
               >
-                <MaterialCommunityIcons name="account-outline" size={18} color={colors.primary} />
-                <Text style={[styles.dateTimeText, { flex: 1 }, !selectedPersonId && { color: colors.textMuted }]}>
-                  {selectedPersonId
-                    ? (persons.find(p => p.id === selectedPersonId)?.name ?? 'Unknown')
-                    : 'No person'}
-                </Text>
+                <View style={styles.iconContainer}>
+                  <MaterialCommunityIcons name="account-outline" size={18} color={colors.primary} />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.triggerLabel}>Linked person</Text>
+                  <Text
+                    style={[
+                      styles.dateTimeText,
+                      !selectedPersonId && { color: colors.textMuted },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {selectedPersonId
+                      ? (persons.find((p) => p.id === selectedPersonId)?.name ?? 'Unknown')
+                      : 'No person linked'}
+                  </Text>
+                </View>
                 <MaterialCommunityIcons name="unfold-more-vertical" size={16} color={colors.textMuted} />
               </BentoPressable>
             </View>
           )}
 
           <View style={styles.section}>
-            <Text style={styles.sectionLabel}>Date & time</Text>
             <View style={styles.dateTimeRow}>
               <BentoPressable
                 style={styles.dateTimeBtn}
                 onPress={() => setShowDatePicker(true)}
               >
-                <MaterialCommunityIcons name="calendar-outline" size={18} color={colors.primary} />
-                <Text style={styles.dateTimeText}>{formattedDate}</Text>
+                <View style={styles.iconContainer}>
+                  <MaterialCommunityIcons name="calendar-outline" size={18} color={colors.primary} />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.triggerLabel}>Date</Text>
+                  <Text style={styles.dateTimeText} numberOfLines={1}>{formattedDate}</Text>
+                </View>
               </BentoPressable>
+
               <BentoPressable
                 style={styles.dateTimeBtn}
                 onPress={() => setShowTimePicker(true)}
               >
-                <MaterialCommunityIcons name="clock-outline" size={18} color={colors.primary} />
-                <Text style={styles.dateTimeText}>{formattedTime}</Text>
+                <View style={styles.iconContainer}>
+                  <MaterialCommunityIcons name="clock-outline" size={18} color={colors.primary} />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.triggerLabel}>Time</Text>
+                  <Text style={styles.dateTimeText} numberOfLines={1}>{formattedTime}</Text>
+                </View>
               </BentoPressable>
             </View>
           </View>
@@ -360,8 +380,13 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
           )}
 
           <View style={styles.section}>
-            <Text style={styles.sectionLabel}>Note</Text>
             <View style={styles.noteContainer}>
+              <View style={styles.noteHeader}>
+                <View style={styles.noteIconContainer}>
+                  <MaterialCommunityIcons name="pencil-outline" size={16} color={colors.primary} />
+                </View>
+                <Text style={styles.noteLabel}>Note</Text>
+              </View>
               <TextInput
                 style={styles.noteInput}
                 value={note}
@@ -407,7 +432,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
   );
 }
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -423,7 +448,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.background,
     },
     content: {
-      paddingBottom: spacing('4'),
+      paddingBottom: spacing('6'),
     },
     formBody: {
       gap: spacing('4'),
@@ -448,39 +473,77 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     dateTimeBtn: {
       flex: 1,
-      height: 48,
-      borderRadius: radius('lg'),
+      height: sizes.input.md.height,
+      borderRadius: sizes.input.md.borderRadius,
       backgroundColor: colors.surface,
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing('2'),
+      paddingHorizontal: spacing('3'),
+      gap: spacing('2.5'),
     },
     dateTimeText: {
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.fonts.semibold,
       fontSize: 13,
       color: colors.text,
     },
     personBtn: {
-      height: 48,
-      borderRadius: radius('lg'),
+      height: sizes.input.md.height,
+      borderRadius: sizes.input.md.borderRadius,
       backgroundColor: colors.surface,
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: spacing('3.5'),
+      paddingHorizontal: spacing('3'),
       gap: spacing('2.5'),
     },
+    iconContainer: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.primary + '10',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    textContainer: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    triggerLabel: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 10,
+      color: colors.textMuted,
+      marginBottom: Platform.OS === 'ios' ? 1 : 0,
+    },
     noteContainer: {
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       backgroundColor: colors.surface,
-      padding: spacing('3'),
-      minHeight: 100,
+      padding: sizes.card.md.padding,
+    },
+    noteHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('2.5'),
+      marginBottom: spacing('2'),
+    },
+    noteIconContainer: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: colors.primary + '10',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    noteLabel: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 13,
+      color: colors.text,
     },
     noteInput: {
       fontFamily: typography.fonts.regular,
-      fontSize: 15,
+      fontSize: 14,
       color: colors.text,
       textAlignVertical: 'top',
+      minHeight: 80,
+      padding: 0,
     },
     footer: {
       paddingHorizontal: layout.screenPadding,

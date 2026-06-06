@@ -36,7 +36,7 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
               key={cat.id}
               style={[
                 styles.pill,
-                { backgroundColor: selected ? catColor + '18' : colors.surface },
+                { backgroundColor: selected ? catColor + '14' : colors.surface },
               ]}
               onPress={() => handleSelect(cat.id)}
             >
@@ -62,7 +62,7 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
   );
 });
 
-const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
   container: {
     paddingVertical: spacing('3'),
     paddingHorizontal: layout.screenPadding,
@@ -81,12 +81,12 @@ const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing('2'),
-    paddingHorizontal: spacing('3'),
+    paddingHorizontal: spacing('3.5'),
     height: 36,
     borderRadius: radius('full'),
   },
   name: {
-    fontFamily: typography.fonts.medium,
+    fontFamily: typography.fonts.semibold,
     fontSize: 13,
   },
 });

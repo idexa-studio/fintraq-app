@@ -1,3 +1,4 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
@@ -25,72 +26,104 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
 
   return (
     <View style={[styles.container, disabled && styles.containerDisabled]}>
-      <BentoPressable
-        style={[
-          styles.pill,
-          { backgroundColor: colors.surface },
-          value === 'DR' && { backgroundColor: colors.danger + '18' },
-          disabled && value !== 'DR' && styles.pillHidden,
-        ]}
-        onPress={handleDR}
-        disabled={disabled}
-      >
-        <Text style={[styles.pillText, { color: value === 'DR' ? colors.danger : colors.textMuted }]}>
-          Expense
-        </Text>
-      </BentoPressable>
+      <View style={styles.segmentContainer}>
+        <BentoPressable
+          style={[
+            styles.segmentButton,
+            value === 'DR' && { backgroundColor: colors.danger + '14' },
+            disabled && value !== 'DR' && styles.pillHidden,
+          ]}
+          onPress={handleDR}
+          disabled={disabled}
+        >
+          <View style={styles.contentRow}>
+            <MaterialCommunityIcons
+              name="minus-circle-outline"
+              size={15}
+              color={value === 'DR' ? colors.danger : colors.textMuted}
+            />
+            <Text style={[styles.pillText, { color: value === 'DR' ? colors.danger : colors.textMuted }]}>
+              Expense
+            </Text>
+          </View>
+        </BentoPressable>
 
-      <BentoPressable
-        style={[
-          styles.pill,
-          { backgroundColor: colors.surface },
-          value === 'CR' && { backgroundColor: colors.success + '18' },
-          disabled && value !== 'CR' && styles.pillHidden,
-        ]}
-        onPress={handleCR}
-        disabled={disabled}
-      >
-        <Text style={[styles.pillText, { color: value === 'CR' ? colors.success : colors.textMuted }]}>
-          Income
-        </Text>
-      </BentoPressable>
+        <BentoPressable
+          style={[
+            styles.segmentButton,
+            value === 'CR' && { backgroundColor: colors.success + '14' },
+            disabled && value !== 'CR' && styles.pillHidden,
+          ]}
+          onPress={handleCR}
+          disabled={disabled}
+        >
+          <View style={styles.contentRow}>
+            <MaterialCommunityIcons
+              name="plus-circle-outline"
+              size={15}
+              color={value === 'CR' ? colors.success : colors.textMuted}
+            />
+            <Text style={[styles.pillText, { color: value === 'CR' ? colors.success : colors.textMuted }]}>
+              Income
+            </Text>
+          </View>
+        </BentoPressable>
 
-      <BentoPressable
-        style={[
-          styles.pill,
-          { backgroundColor: colors.surface },
-          value === 'TR' && { backgroundColor: colors.primary + '18' },
-          disabled && value !== 'TR' && styles.pillHidden,
-        ]}
-        onPress={handleTR}
-        disabled={disabled}
-      >
-        <Text style={[styles.pillText, { color: value === 'TR' ? colors.primary : colors.textMuted }]}>
-          Transfer
-        </Text>
-      </BentoPressable>
+        <BentoPressable
+          style={[
+            styles.segmentButton,
+            value === 'TR' && { backgroundColor: colors.primary + '14' },
+            disabled && value !== 'TR' && styles.pillHidden,
+          ]}
+          onPress={handleTR}
+          disabled={disabled}
+        >
+          <View style={styles.contentRow}>
+            <MaterialCommunityIcons
+              name="swap-horizontal"
+              size={15}
+              color={value === 'TR' ? colors.primary : colors.textMuted}
+            />
+            <Text style={[styles.pillText, { color: value === 'TR' ? colors.primary : colors.textMuted }]}>
+              Transfer
+            </Text>
+          </View>
+        </BentoPressable>
+      </View>
     </View>
   );
 });
 
-const createStyles = ({ typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('4'),
       paddingBottom: spacing('2'),
-      flexDirection: 'row',
-      gap: spacing('2.5'),
     },
     containerDisabled: {
       opacity: 0.75,
     },
-    pill: {
-      paddingHorizontal: spacing('4'),
-      height: 36,
-      borderRadius: radius('full'),
+    segmentContainer: {
+      flexDirection: 'row',
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      padding: spacing('1'),
+      gap: spacing('1'),
+      height: sizes.button.md.height,
+      alignItems: 'center',
+    },
+    segmentButton: {
+      flex: 1,
+      height: '100%',
+      borderRadius: radius('lg'),
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    contentRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1.5'),
     },
     pillHidden: {
       display: 'none',
