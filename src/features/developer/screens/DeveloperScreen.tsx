@@ -28,7 +28,7 @@ const DEV_PIN = '32159';
 
 const Divider = React.memo(function Divider({ theme }: { theme: ThemeContextType }) {
   const { colors } = theme;
-  return <View style={{ height: 1, backgroundColor: colors.text + '0C', marginHorizontal: 16 }} />;
+  return <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: colors.text + '0C', marginHorizontal: 16 }} />;
 });
 
 export const DeveloperScreen = React.memo(function DeveloperScreen() {
@@ -94,9 +94,14 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           style={{ flex: 1 }}
         >
           <View style={styles.lockWrap}>
+            <View style={styles.decoCircle1} />
+            <View style={styles.decoCircle2} />
+
             <View style={styles.lockIcon}>
-              <IconAvatar icon="lock" color={colors.surface} variant="solid" size={64} iconSize={26} />
+              <IconAvatar icon="lock" color={colors.primary} variant="subtle" size={64} iconSize={26} />
             </View>
+
+            <Text style={[styles.lockBadge, { color: colors.primary }]}>SECURE GATEWAY</Text>
 
             <Text style={[styles.lockTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>
               Developer tools
@@ -131,60 +136,61 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
       <Header title="Developer" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+        <Text style={styles.sectionLabel}>
           Premium override
         </Text>
         <View style={styles.card}>
-          <View style={styles.cardHeader}>
-            <IconAvatar icon="creation" color={colors.primary} variant="subtle" size={32} iconSize={14} />
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.cardTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-                Premium bypass
-              </Text>
-              <Text style={[styles.cardSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                Force entitlement state for testing
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.pillRow}>
-            {(['FORCED_ON', 'FORCED_OFF', 'DEFAULT'] as const).map((mode) => {
-              const active = devOverride === mode;
-              const label = mode === 'FORCED_ON' ? 'On' : mode === 'FORCED_OFF' ? 'Off' : 'Default';
-              return (
+          {([
+            { mode: 'DEFAULT', title: 'Default (Sync with Store)', desc: 'Use standard Play Store / App Store purchase status', icon: 'sync' },
+            { mode: 'FORCED_ON', title: 'Force Enabled', desc: 'Force entitlement state as active for testing', icon: 'check-decagram-outline' },
+            { mode: 'FORCED_OFF', title: 'Force Disabled', desc: 'Force entitlement state as inactive for testing', icon: 'close-circle-outline' },
+          ] as const).map((item, index) => {
+            const active = devOverride === item.mode;
+            return (
+              <React.Fragment key={item.mode}>
                 <TouchableOpacity
-                  key={mode}
-                  style={[
-                    styles.pill,
-                    active && styles.pillActive,
-                  ]}
-                  onPress={() => setDevOverride(mode)}
+                  style={styles.optionRow}
+                  onPress={() => setDevOverride(item.mode)}
                   activeOpacity={0.7}
                 >
-                  <Text style={[
-                    styles.pillText,
-                    { fontFamily: typography.fonts.semibold },
-                    active && styles.pillTextActive,
-                  ]}>
-                    {label}
-                  </Text>
+                  <IconAvatar
+                    icon={item.icon}
+                    color={active ? colors.primary : colors.textMuted}
+                    variant="subtle"
+                    size={36}
+                    iconSize={16}
+                  />
+                  <View style={{ flex: 1, gap: 2 }}>
+                    <Text style={[styles.rowTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                      {item.title}
+                    </Text>
+                    <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                      {item.desc}
+                    </Text>
+                  </View>
+                  <MaterialCommunityIcons
+                    name={active ? "radiobox-marked" : "radiobox-blank"}
+                    size={22}
+                    color={active ? colors.primary : colors.textMuted}
+                  />
                 </TouchableOpacity>
-              );
-            })}
-          </View>
+                {index < 2 && <Divider theme={theme} />}
+              </React.Fragment>
+            );
+          })}
         </View>
 
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+        <Text style={styles.sectionLabel}>
           Data
         </Text>
         <View style={styles.card}>
           <TouchableOpacity
-            style={styles.row}
+            style={styles.optionRow}
             onPress={() => setShowSeedConfirm(true)}
             activeOpacity={0.65}
           >
-            <IconAvatar icon="flask-outline" color={colors.primary} variant="subtle" size={32} iconSize={14} />
-            <View style={{ flex: 1 }}>
+            <IconAvatar icon="flask-outline" color={colors.primary} variant="subtle" size={36} iconSize={16} />
+            <View style={{ flex: 1, gap: 2 }}>
               <Text style={[styles.rowTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
                 Seed dummy data
               </Text>
@@ -196,27 +202,37 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           </TouchableOpacity>
         </View>
 
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+        <Text style={styles.sectionLabel}>
           Notifications
         </Text>
         <View style={styles.card}>
           {scheduledNotifs.length === 0 ? (
-            <View style={styles.row}>
-              <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                No active schedules found
-              </Text>
+            <View style={styles.optionRow}>
+              <IconAvatar icon="bell-off-outline" color={colors.textMuted} variant="subtle" size={36} iconSize={16} />
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={[styles.rowTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                  No active schedules
+                </Text>
+                <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                  All reminder notifications are currently disabled
+                </Text>
+              </View>
             </View>
           ) : (
             scheduledNotifs.map((n, i) => (
               <React.Fragment key={n.identifier}>
-                <View style={styles.row}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[styles.rowTitle, { fontFamily: typography.fonts.semibold, color: colors.text, fontSize: 13 }]}>
-                      {n.content.title}
+                <View style={styles.optionRow}>
+                  <IconAvatar icon="bell-outline" color={colors.primary} variant="subtle" size={36} iconSize={16} />
+                  <View style={{ flex: 1, gap: 2 }}>
+                    <Text style={[styles.rowTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                      {n.content.title || 'Scheduled Reminder'}
                     </Text>
-                    <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                      {JSON.stringify(n.trigger)}
+                    <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
+                      {n.content.body || 'Daily check-in alert'}
                     </Text>
+                  </View>
+                  <View style={styles.badge}>
+                    <Text style={[styles.badgeText, { color: colors.primary }]}>Active</Text>
                   </View>
                 </View>
                 {i < scheduledNotifs.length - 1 ? <Divider theme={theme} /> : null}
@@ -225,48 +241,74 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           )}
           <Divider theme={theme} />
           <TouchableOpacity
-            style={styles.row}
+            style={styles.optionRow}
             onPress={() => {
               NotificationService.triggerInstantNotification();
               Alert.alert('Test notification', 'An instant notification has been queued.');
             }}
             activeOpacity={0.65}
           >
-            <Text style={[styles.actionText, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>
-              Trigger sample notification
-            </Text>
+            <IconAvatar icon="bell-ring-outline" color={colors.primary} variant="subtle" size={36} iconSize={16} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={[styles.rowTitle, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>
+                Trigger sample notification
+              </Text>
+              <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                Queue an instant check-in alert for debugging
+              </Text>
+            </View>
+            <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
           </TouchableOpacity>
           <Divider theme={theme} />
           <TouchableOpacity
-            style={styles.row}
+            style={styles.optionRow}
             onPress={fetchScheduled}
             activeOpacity={0.65}
           >
-            <Text style={[styles.actionText, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>
-              Refresh schedules
-            </Text>
+            <IconAvatar icon="refresh" color={colors.primary} variant="subtle" size={36} iconSize={16} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={[styles.rowTitle, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>
+                Refresh schedules
+              </Text>
+              <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                Force reload notification schedules list
+              </Text>
+            </View>
+            <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
           </TouchableOpacity>
         </View>
 
-        <Text style={[styles.sectionLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+        <Text style={styles.sectionLabel}>
           System
         </Text>
         <View style={styles.card}>
-          <View style={styles.row}>
-            <Text style={[styles.infoLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              Environment
-            </Text>
+          <View style={styles.optionRow}>
+            <IconAvatar icon="cog-outline" color={colors.textMuted} variant="subtle" size={36} iconSize={16} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={[styles.rowTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                Environment
+              </Text>
+              <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                App runtime build environment
+              </Text>
+            </View>
             <Text style={[styles.infoValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
               {__DEV__ ? 'Development' : 'Production'}
             </Text>
           </View>
           <Divider theme={theme} />
-          <View style={styles.row}>
-            <Text style={[styles.infoLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              Platform
-            </Text>
+          <View style={styles.optionRow}>
+            <IconAvatar icon={Platform.OS === 'ios' ? 'apple' : 'android'} color={colors.textMuted} variant="subtle" size={36} iconSize={16} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={[styles.rowTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                Platform
+              </Text>
+              <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                OS runtime target
+              </Text>
+            </View>
             <Text style={[styles.infoValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-              {process.env.EXPO_PUBLIC_PLATFORM || 'Native'}
+              {Platform.OS === 'ios' ? 'iOS' : 'Android'}
             </Text>
           </View>
         </View>
@@ -312,106 +354,97 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       paddingHorizontal: spacing('8'),
       gap: spacing('4'),
+      overflow: 'hidden',
+    },
+    decoCircle1: {
+      position: 'absolute',
+      top: 40,
+      right: 20,
+      width: 140,
+      height: 140,
+      borderRadius: 70,
+      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    decoCircle2: {
+      position: 'absolute',
+      bottom: 60,
+      left: 10,
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      backgroundColor: 'rgba(255, 255, 255, 0.04)',
     },
     lockIcon: {
       marginBottom: spacing('2'),
+      zIndex: 2,
+    },
+    lockBadge: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 10,
+      letterSpacing: 1.5,
+      zIndex: 2,
+      marginBottom: spacing('1'),
     },
     lockTitle: {
-      fontSize: 20,
+      fontSize: 24,
+      zIndex: 2,
     },
     lockSub: {
       fontSize: typography.sizes.sm,
       textAlign: 'center',
       lineHeight: 20,
       opacity: 0.7,
+      zIndex: 2,
     },
     lockInputWrap: {
       width: '100%',
-      maxWidth: 200,
+      maxWidth: 240,
       marginTop: spacing('2'),
+      zIndex: 2,
     },
 
     sectionLabel: {
+      fontFamily: typography.fonts.semibold,
       fontSize: 10,
+      color: colors.textMuted,
+      letterSpacing: 1.5,
       marginBottom: spacing('2.5'),
       paddingLeft: spacing('1'),
-      opacity: 0.7,
+      textTransform: 'uppercase',
     },
 
     card: {
       backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
+      borderRadius: 24,
       overflow: 'hidden',
       marginBottom: spacing('3'),
     },
-    cardHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      padding: spacing('4'),
-      paddingBottom: spacing('3'),
-      gap: spacing('3'),
-    },
-    cardTitle: {
-      fontSize: typography.sizes.md,
-    },
-    cardSub: {
-      fontSize: typography.sizes.xs,
-      marginTop: 2,
-      opacity: 0.65,
-    },
 
-    pillRow: {
-      flexDirection: 'row',
-      paddingHorizontal: spacing('4'),
-      paddingBottom: spacing('4'),
-      gap: spacing('2'),
-    },
-    pill: {
-      flex: 1,
-      height: 36,
-      borderRadius: radius('md'),
-      backgroundColor: colors.background,
-      borderWidth: 1,
-      borderColor: colors.text + '0C',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    pillActive: {
-      backgroundColor: colors.text,
-      borderColor: colors.text,
-    },
-    pillText: {
-      fontSize: 11,
-      color: colors.textMuted,
-    },
-    pillTextActive: {
-      color: colors.background,
-    },
-
-    row: {
+    optionRow: {
       flexDirection: 'row',
       alignItems: 'center',
       paddingHorizontal: spacing('4'),
       paddingVertical: spacing('3.5'),
-      gap: spacing('3'),
+      gap: spacing('3.5'),
     },
     rowTitle: {
       fontSize: typography.sizes.md,
     },
     rowSub: {
       fontSize: typography.sizes.xs,
-      marginTop: 2,
       opacity: 0.65,
     },
-
-    actionText: {
-      fontSize: typography.sizes.sm,
+    badge: {
+      paddingHorizontal: spacing('2'),
+      paddingVertical: spacing('0.5'),
+      borderRadius: radius('full'),
+      backgroundColor: colors.success + '15',
+    },
+    badgeText: {
+      fontSize: 10,
+      fontFamily: typography.fonts.semibold,
     },
 
-    infoLabel: {
-      fontSize: typography.sizes.sm,
-      flex: 1,
-    },
     infoValue: {
       fontSize: typography.sizes.sm,
     },
