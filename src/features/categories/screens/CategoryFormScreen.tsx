@@ -150,7 +150,6 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                   <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="e.g. Groceries, Salary" error={errors.name?.message} size="md" variant="filled" autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
                 )}
               />
-              {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
             </View>
 
             {/* ── Appearance ── */}
@@ -269,12 +268,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     fieldInputError: {
       borderWidth: 1,
       borderColor: colors.danger,
-    },
-    errorText: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 12,
-      color: colors.danger,
-      marginTop: -spacing('1'),
     },
     typeRow: {
       flexDirection: 'row',

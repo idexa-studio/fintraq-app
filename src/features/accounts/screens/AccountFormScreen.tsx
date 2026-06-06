@@ -146,7 +146,6 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                   <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="e.g. Main Wallet, Savings" error={errors.name?.message} size="md" variant="filled" autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
                 )}
               />
-              {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
             </View>
 
             {/* ── Holder Name ── */}
