@@ -114,7 +114,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                   </View>
                   <BentoPressable
                     onPress={() => handleMenuOpen(account)}
-                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    style={styles.iconBtn}
                   >
                     <MaterialCommunityIcons name="dots-vertical" size={18} color={colors.textMuted} />
                   </BentoPressable>
@@ -232,6 +232,15 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       alignItems: 'center',
       gap: spacing('2.5'),
       marginLeft: spacing('2'),
+    },
+    iconBtn: {
+      width: 32,
+      height: 32,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+      marginRight: -spacing('1.5'),
     },
     currencyBadge: {
       paddingHorizontal: spacing('2.5'),

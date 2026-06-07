@@ -640,6 +640,7 @@ export function TransactionsScreen() {
                 Haptics.selectionAsync().catch(() => { });
                 setShowAdvancedFilterSheet(true);
               }}
+              style={styles.iconBtn}
             >
               <MaterialCommunityIcons name="tune" size={22} color={colors.text} />
             </BentoPressable>
@@ -648,6 +649,7 @@ export function TransactionsScreen() {
                 Haptics.selectionAsync().catch(() => { });
                 setShowSortSheet(true);
               }}
+              style={styles.iconBtn}
             >
               <MaterialCommunityIcons name="sort-variant" size={22} color={colors.text} />
             </BentoPressable>
@@ -848,7 +850,15 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('5'),
+      marginRight: -spacing('2'),
+    },
+    iconBtn: {
+      width: 40,
+      height: 40,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
     },
     searchHeader: {
       flexDirection: 'row',

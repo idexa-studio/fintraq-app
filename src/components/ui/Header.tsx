@@ -44,6 +44,7 @@ export const Header = React.memo(function Header({
         {showBack && (
           <BentoPressable
             onPress={handleBack}
+            style={styles.backButton}
           >
             <MaterialCommunityIcons name="arrow-left" size={20} color={colors.text} />
           </BentoPressable>
@@ -64,7 +65,7 @@ export const Header = React.memo(function Header({
   );
 });
 
-const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -80,7 +81,7 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
     alignItems: 'center',
     gap: spacing('4'),
   },
-titleBlock: {
+  titleBlock: {
     flex: 1,
     justifyContent: 'center',
   },
@@ -92,5 +93,14 @@ titleBlock: {
   },
   rightActionWrap: {
     justifyContent: 'center',
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: radius('full'),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    marginLeft: -spacing('2'),
   },
 });

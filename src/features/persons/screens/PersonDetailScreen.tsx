@@ -119,11 +119,17 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         title={person.name}
         showBack
         rightAction={
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-            <BentoPressable onPress={() => setShowDeleteConfirm(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <View style={styles.headerActions}>
+            <BentoPressable
+              onPress={() => setShowDeleteConfirm(true)}
+              style={styles.iconBtn}
+            >
               <MaterialCommunityIcons name="trash-can-outline" size={20} color={colors.danger} />
             </BentoPressable>
-            <BentoPressable onPress={handleEdit} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <BentoPressable
+              onPress={handleEdit}
+              style={styles.iconBtn}
+            >
               <MaterialCommunityIcons name="pencil-outline" size={20} color={colors.text} />
             </BentoPressable>
           </View>
@@ -244,6 +250,19 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     container: { flex: 1, backgroundColor: colors.background },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     scroll: { paddingTop: spacing('3'), paddingBottom: spacing('10') },
+    headerActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginRight: -spacing('2'),
+    },
+    iconBtn: {
+      width: 40,
+      height: 40,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+    },
 
     heroCard: {
       backgroundColor: colors.surface,
