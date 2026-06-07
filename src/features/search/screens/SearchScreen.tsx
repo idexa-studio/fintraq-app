@@ -449,6 +449,11 @@ export const SearchScreen = React.memo(function SearchScreen() {
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
           stickySectionHeadersEnabled={false}
+          initialNumToRender={12}
+          maxToRenderPerBatch={8}
+          windowSize={5}
+          removeClippedSubviews={true}
+          updateCellsBatchingPeriod={50}
         />
       )}
       <WalkthroughOverlay storageKey="@luno_walkthrough_search" steps={SEARCH_WALKTHROUGH_STEPS} />

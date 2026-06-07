@@ -47,7 +47,7 @@ const parseAmount = (raw: string): number => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
-export function TransactionFormPage({ mode, transactionId }: Props) {
+export const TransactionFormPage = React.memo(function TransactionFormPage({ mode, transactionId }: Props) {
   const router = useRouter();
   const isEditMode = mode === 'edit';
 
@@ -430,7 +430,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
       )}
     </SafeAreaView>
   );
-}
+});
 
 const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
   StyleSheet.create({

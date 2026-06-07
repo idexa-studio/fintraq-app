@@ -262,7 +262,7 @@ const FilterChip = React.memo(function FilterChip({
 });
 
 
-export function TransactionsScreen() {
+export const TransactionsScreen = React.memo(function TransactionsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ accountId?: string | string[]; categoryId?: string | string[] }>();
   const initialAccountId = React.useMemo(() => resolveParamNumber(params.accountId), [params.accountId]);
@@ -831,7 +831,7 @@ export function TransactionsScreen() {
       <WalkthroughOverlay storageKey="@luno_walkthrough_transactions_list" steps={TRANSACTIONS_LIST_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
-}
+});
 
 const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
   StyleSheet.create({

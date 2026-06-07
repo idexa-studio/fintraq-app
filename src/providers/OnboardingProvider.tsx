@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator, View } from 'react-native';
 import { DARK_THEME } from '../theme/colors';
@@ -37,14 +37,16 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
     checkOnboardingStatus();
   }, []);
 
-  const completeOnboarding = async () => {
+  const completeOnboarding = useCallback(async () => {
     try {
       await AsyncStorage.setItem('@luno_onboarded', 'true');
       setHasOnboarded(true);
     } catch (e) {
       console.error('Error setting onboarding status', e);
     }
-  };
+  }, []);
+
+  const contextValue = useMemo(() => ({ hasOnboarded, completeOnboarding }), [hasOnboarded, completeOnboarding]);
 
   if (isLoading) {
     return (
@@ -55,7 +57,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <OnboardingContext.Provider value={{ hasOnboarded, completeOnboarding }}>
+    <OnboardingContext.Provider value={contextValue}>
       {children}
     </OnboardingContext.Provider>
   );

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { NotificationService } from '../services/notification.service';
 
@@ -91,7 +91,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.remove();
   }, [profile.reminderEnabled, profile.reminderTime, isLoading]);
 
-  const updateProfile = async (updates: Partial<UserProfile>) => {
+  const updateProfile = useCallback(async (updates: Partial<UserProfile>) => {
     try {
       const newProfile = { ...profile, ...updates };
       await AsyncStorage.setItem('@luno_profile', JSON.stringify(newProfile));
@@ -99,10 +99,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {
       console.error('Failed to save profile settings', e);
     }
-  };
+  }, [profile]);
+
+  const contextValue = useMemo(() => ({ profile, updateProfile, isLoading }), [profile, updateProfile, isLoading]);
 
   return (
-    <SettingsContext.Provider value={{ profile, updateProfile, isLoading }}>
+    <SettingsContext.Provider value={contextValue}>
       {children}
     </SettingsContext.Provider>
   );
