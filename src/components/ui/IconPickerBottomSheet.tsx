@@ -1,9 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo } from 'react';
 import {
-  Modal,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,6 +11,7 @@ import type { IconGroup } from '../../constants/picker';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { resolveIcon } from '../../utils/icons';
 import { BentoPressable } from './BentoPressable';
+import { BentoBottomSheet, useBottomSheet } from './BottomSheet';
 
 type IconPickerBottomSheetProps = {
   visible: boolean;
@@ -39,6 +38,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const accent = accentColor ?? colors.primary;
+  const bottomSheet = useBottomSheet();
 
   const handleSelect = useCallback(
     (icon: string) => {
@@ -48,92 +48,71 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
     [onChange, onClose],
   );
 
+  const snapPoints = useMemo(() => ['80%'], []);
+
   return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <View style={styles.overlay}>
-        <Pressable style={styles.backdrop} onPress={onClose} />
-
-        <View style={styles.sheet}>
-          <View style={styles.handle} />
-
-          <View style={styles.header}>
-            <Text style={styles.title}>{title}</Text>
-            <BentoPressable onPress={onClose} style={styles.closeBtn}>
-              <MaterialCommunityIcons name="close" size={18} color={colors.text} />
-            </BentoPressable>
-          </View>
-
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContent}
-            keyboardShouldPersistTaps="handled"
-          >
-            {groups.map((group) => (
-              <View key={group.label} style={styles.group}>
-                <Text style={styles.groupLabel}>{group.label}</Text>
-                <View style={styles.iconGrid}>
-                  {group.icons.map((icon) => {
-                    const selected = value === icon;
-                    return (
-                      <BentoPressable
-                        key={icon}
-                        style={[
-                          styles.iconCell,
-                          { backgroundColor: selected ? accent : colors.background }
-                        ]}
-                        onPress={() => handleSelect(icon)}
-                        scaleOnPress={true}
-                      >
-                        <MaterialCommunityIcons
-                          name={resolveIcon(icon, 'grid')}
-                          size={20}
-                          color={selected ? colors.background : colors.text}
-                        />
-                      </BentoPressable>
-                    );
-                  })}
-                </View>
-              </View>
-            ))}
-          </ScrollView>
+    <BentoBottomSheet
+      visible={visible}
+      onClose={onClose}
+      snapPoints={snapPoints}
+    >
+      <View style={{ flex: 1 }}>
+        <View style={styles.header}>
+          <Text style={styles.title}>{title}</Text>
+          <BentoPressable onPress={onClose} style={styles.closeBtn}>
+            <MaterialCommunityIcons name="close" size={18} color={colors.text} />
+          </BentoPressable>
         </View>
+
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          onScroll={bottomSheet?.onScroll}
+          scrollEventThrottle={16}
+        >
+          {groups.map((group) => (
+            <View key={group.label} style={styles.group}>
+              <Text style={styles.groupLabel}>{group.label}</Text>
+              <View style={styles.iconGrid}>
+                {group.icons.map((icon) => {
+                  const selected = value === icon;
+                  return (
+                    <BentoPressable
+                      key={icon}
+                      style={[
+                        styles.iconCell,
+                        { backgroundColor: selected ? accent : colors.background }
+                      ]}
+                      onPress={() => handleSelect(icon)}
+                      scaleOnPress={true}
+                    >
+                      <MaterialCommunityIcons
+                        name={resolveIcon(icon, 'grid')}
+                        size={20}
+                        color={selected ? colors.background : colors.text}
+                      />
+                    </BentoPressable>
+                  );
+                })}
+              </View>
+            </View>
+          ))}
+        </ScrollView>
       </View>
-    </Modal>
+    </BentoBottomSheet>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    overlay: {
-      flex: 1,
-      backgroundColor: overlay.dim,
-      justifyContent: 'flex-end',
-    },
-    backdrop: {
-      ...StyleSheet.absoluteFillObject,
-    },
-    sheet: {
-      maxHeight: '80%',
-      borderTopLeftRadius: 28,
-      borderTopRightRadius: 28,
-      backgroundColor: colors.surface,
-      overflow: 'hidden',
-    },
-    handle: {
-      alignSelf: 'center',
-      width: 32,
-      height: 4,
-      borderRadius: radius('full'),
-      marginTop: spacing('3'),
-      backgroundColor: colors.text + '24',
-    },
     header: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
       paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('3'),
+      paddingTop: spacing('4'),
+      paddingBottom: spacing('2'),
     },
     title: {
       fontFamily: typography.fonts.heading,
@@ -141,10 +120,10 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       color: colors.text,
     },
     closeBtn: {
-      width: 36,
-      height: 36,
+      width: 32,
+      height: 32,
       borderRadius: radius('full'),
-      backgroundColor: colors.background,
+      backgroundColor: colors.text + '0C',
       justifyContent: 'center',
       alignItems: 'center',
     },

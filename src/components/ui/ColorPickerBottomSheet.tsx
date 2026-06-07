@@ -2,9 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo } from 'react';
 import {
   FlatList,
-  Modal,
   Platform,
-  Pressable,
   StyleSheet,
   Text,
   View,
@@ -12,6 +10,7 @@ import {
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import type { ColorOption } from '../../constants/picker';
 import { BentoPressable } from './BentoPressable';
+import { BentoBottomSheet, useBottomSheet } from './BottomSheet';
 
 const ITEM_HEIGHT = 60;
 
@@ -35,6 +34,7 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const bottomSheet = useBottomSheet();
 
   const handleSelect = useCallback(
     (hex: string) => {
@@ -83,72 +83,51 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
     [styles.separator],
   );
 
+  const snapPoints = useMemo(() => ['75%'], []);
+
   return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <View style={styles.overlay}>
-        <Pressable style={styles.backdrop} onPress={onClose} />
-
-        <View style={styles.sheet}>
-          <View style={styles.handle} />
-
-          <View style={styles.header}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.title}>{title}</Text>
-              <Text style={styles.subtitle}>{palette.length} colors</Text>
-            </View>
-            <BentoPressable onPress={onClose} style={styles.closeBtn}>
-              <MaterialCommunityIcons name="close" size={16} color={colors.text} />
-            </BentoPressable>
+    <BentoBottomSheet
+      visible={visible}
+      onClose={onClose}
+      snapPoints={snapPoints}
+    >
+      <View style={{ flex: 1 }}>
+        <View style={styles.header}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.subtitle}>{palette.length} colors</Text>
           </View>
-
-          <FlatList
-            data={palette as ColorOption[]}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            getItemLayout={getItemLayout}
-            ItemSeparatorComponent={ItemSeparatorComponent}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContent}
-            initialNumToRender={15}
-            maxToRenderPerBatch={10}
-            windowSize={5}
-            removeClippedSubviews
-          />
+          <BentoPressable onPress={onClose} style={styles.closeBtn}>
+            <MaterialCommunityIcons name="close" size={18} color={colors.text} />
+          </BentoPressable>
         </View>
+
+        <FlatList
+          data={palette as ColorOption[]}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          getItemLayout={getItemLayout}
+          ItemSeparatorComponent={ItemSeparatorComponent}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+          initialNumToRender={15}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          removeClippedSubviews
+          onScroll={bottomSheet?.onScroll}
+          scrollEventThrottle={16}
+        />
       </View>
-    </Modal>
+    </BentoBottomSheet>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    overlay: {
-      flex: 1,
-      backgroundColor: overlay.dim,
-      justifyContent: 'flex-end',
-    },
-    backdrop: {
-      ...StyleSheet.absoluteFillObject,
-    },
-    sheet: {
-      height: '75%',
-      borderTopLeftRadius: 28,
-      borderTopRightRadius: 28,
-      overflow: 'hidden',
-      backgroundColor: colors.surface,
-    },
-    handle: {
-      alignSelf: 'center',
-      width: 32,
-      height: 4,
-      borderRadius: radius('full'),
-      marginTop: spacing('3'),
-      backgroundColor: colors.text + '24',
-    },
     header: {
       paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('3'),
+      paddingTop: spacing('4'),
+      paddingBottom: spacing('2'),
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -168,7 +147,7 @@ const createStyles = ({ colors, typography, spacing, radius, overlay, layout }: 
       width: 32,
       height: 32,
       borderRadius: radius('full'),
-      backgroundColor: colors.surface,
+      backgroundColor: colors.text + '0C',
       justifyContent: 'center',
       alignItems: 'center',
     },

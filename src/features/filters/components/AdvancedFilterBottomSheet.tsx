@@ -1,7 +1,7 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Modal, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Account } from '@/src/features/accounts/api/accounts';
 import { Category } from '@/src/features/categories/api/categories';
@@ -11,6 +11,7 @@ import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
 import type { TransactionType } from '@/src/types';
 import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../api/advanced-filters.service';
+import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 
 interface AdvancedFilterBottomSheetProps {
   visible: boolean;
@@ -34,7 +35,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   visible, onClose, filters, onApply, onReset, accounts, categories, persons, resultCount,
 }: AdvancedFilterBottomSheetProps) {
   const theme = useTheme();
-  const { colors, typography, overlay } = theme;
+  const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [local, setLocal]         = useState<AdvancedFilters>(filters);
@@ -42,6 +43,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   const [showEnd, setShowEnd]     = useState(false);
   const [minAmt, setMinAmt]       = useState('');
   const [maxAmt, setMaxAmt]       = useState('');
+  const bottomSheet = useBottomSheet();
 
   useEffect(() => {
     if (visible) {
@@ -103,350 +105,280 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   const fmt = useCallback((d: Date) =>
     d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), []);
 
+  const snapPoints = useMemo(() => ['90%'], []);
+
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={[styles.overlay, { backgroundColor: overlay.dim }]}>
-        <BentoPressable style={styles.backdrop} onPress={onClose} />
-
-        <View style={styles.sheet}>
-          <View style={styles.handle} />
-
-          {/* ── Header ── */}
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
-                Filters
-              </Text>
-              {activeCount > 0 && (
-                <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-                  <Text style={[styles.badgeText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
-                    {activeCount}
-                  </Text>
-                </View>
-              )}
-            </View>
-            <View style={styles.headerRight}>
-              {activeCount > 0 && (
-                <BentoPressable onPress={handleReset}>
-                  <Text style={[styles.resetText, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
-                    Reset
-                  </Text>
-                </BentoPressable>
-              )}
-              <BentoPressable
-                onPress={onClose}
-                style={[styles.closeBtn, { backgroundColor: colors.text + '0A' }]}
-              >
-                <MaterialCommunityIcons name="close" size={16} color={colors.textMuted} />
-              </BentoPressable>
-            </View>
+    <BentoBottomSheet
+      visible={visible}
+      onClose={onClose}
+      snapPoints={snapPoints}
+      keyboardBehavior="interactive"
+    >
+      <View style={{ flex: 1 }}>
+        {/* ── Header ── */}
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
+              Filters
+            </Text>
+            {activeCount > 0 && (
+              <View style={[styles.badge, { backgroundColor: colors.primary }]}>
+                <Text style={[styles.badgeText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+                  {activeCount}
+                </Text>
+              </View>
+            )}
           </View>
-
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scroll}
-            keyboardShouldPersistTaps="handled"
-          >
-
-            {/* ── TYPE: horizontal pills ── */}
-            <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-              TYPE
-            </Text>
-            <View style={styles.typeRow}>
-              {TYPE_OPTS.map(opt => {
-                const sel = local.types?.includes(opt.key) || false;
-                const c   = colors[opt.colorKey];
-                return (
-                  <BentoPressable
-                    key={opt.key}
-                    style={[styles.typePill, { backgroundColor: sel ? c + '18' : colors.card }]}
-                    onPress={() => toggleType(opt.key)}
-                  >
-                    <Text style={[styles.typePillLabel, { fontFamily: typography.fonts.semibold, color: sel ? c : colors.textMuted }]}>
-                      {opt.label}
-                    </Text>
-                  </BentoPressable>
-                );
-              })}
-            </View>
-
-            {/* ── DATE RANGE: group card with rows ── */}
-            <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-              DATE RANGE
-            </Text>
-            <View style={[styles.group, { backgroundColor: colors.card }]}>
-              {local.dateRange ? (
-                <>
-                  <BentoPressable style={styles.groupRow} onPress={() => setShowStart(true)}>
-                    <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
-                    <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                      From
-                    </Text>
-                    <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-                      {fmt(local.dateRange.startDate)}
-                    </Text>
-                  </BentoPressable>
-                  <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
-                  <BentoPressable style={styles.groupRow} onPress={() => setShowEnd(true)}>
-                    <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
-                    <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                      To
-                    </Text>
-                    <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-                      {fmt(local.dateRange.endDate)}
-                    </Text>
-                    <BentoPressable onPress={clearDateRange} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                      <MaterialCommunityIcons name="close-circle" size={18} color={colors.textMuted} />
-                    </BentoPressable>
-                  </BentoPressable>
-                </>
-              ) : (
-                <BentoPressable style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)}>
-                  <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
-                  <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                    Set date range
-                  </Text>
-                  <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} style={styles.groupChevron} />
-                </BentoPressable>
-              )}
-            </View>
-
-            {/* ── AMOUNT: group card with rows ── */}
-            <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-              AMOUNT
-            </Text>
-            <View style={[styles.group, { backgroundColor: colors.card }]}>
-              <View style={styles.groupRow}>
-                <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                  Min
+          <View style={styles.headerRight}>
+            {activeCount > 0 && (
+              <BentoPressable onPress={handleReset}>
+                <Text style={[styles.resetText, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
+                  Reset
                 </Text>
-                <TextInput
-                  style={[styles.amountInput, { fontFamily: typography.fonts.semibold, color: colors.text }]}
-                  value={minAmt}
-                  onChangeText={setMinAmt}
-                  keyboardType="decimal-pad"
-                  placeholder="0.00"
-                  placeholderTextColor={colors.textMuted + '50'}
-                  returnKeyType="done"
-                  textAlign="right"
-                />
-              </View>
-              <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
-              <View style={styles.groupRow}>
-                <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                  Max
-                </Text>
-                <TextInput
-                  style={[styles.amountInput, { fontFamily: typography.fonts.semibold, color: colors.text }]}
-                  value={maxAmt}
-                  onChangeText={setMaxAmt}
-                  keyboardType="decimal-pad"
-                  placeholder="Any"
-                  placeholderTextColor={colors.textMuted + '50'}
-                  returnKeyType="done"
-                  textAlign="right"
-                />
-              </View>
-            </View>
-
-            {/* ── ACCOUNTS: pill chips ── */}
-            {accounts.length > 0 && (
-              <>
-                <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                  ACCOUNTS
-                </Text>
-                <View style={styles.pillGrid}>
-                  {accounts.map(a => {
-                    const sel = local.accountIds?.includes(a.id) || false;
-                    const ac  = colorNumberToHex(a.color);
-                    return (
-                      <BentoPressable
-                        key={a.id}
-                        style={[styles.pill, { backgroundColor: sel ? ac + '18' : colors.card }]}
-                        onPress={() => toggleAccount(a.id)}
-                      >
-                        <MaterialCommunityIcons name={resolveIcon(a.icon, 'wallet-outline')} size={16} color={ac} />
-                        <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
-                          {a.name}
-                        </Text>
-                      </BentoPressable>
-                    );
-                  })}
-                </View>
-              </>
+              </BentoPressable>
             )}
-
-            {/* ── CATEGORIES: pill chips ── */}
-            {categories.length > 0 && (
-              <>
-                <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                  CATEGORIES
-                </Text>
-                <View style={styles.pillGrid}>
-                  {categories.map(c => {
-                    const sel = local.categoryIds?.includes(c.id) || false;
-                    const cc  = colorNumberToHex(c.color);
-                    return (
-                      <BentoPressable
-                        key={c.id}
-                        style={[styles.pill, { backgroundColor: sel ? cc + '18' : colors.card }]}
-                        onPress={() => toggleCategory(c.id)}
-                      >
-                        <MaterialCommunityIcons name={resolveIcon(c.icon, 'tag-outline')} size={16} color={cc} />
-                        <Text style={[styles.pillLabel, { color: sel ? cc : colors.text }]}>
-                          {c.name}
-                        </Text>
-                      </BentoPressable>
-                    );
-                  })}
-                </View>
-              </>
-            )}
-
-            {/* ── PERSONS: pill chips ── */}
-            {persons.length > 0 && (
-              <>
-                <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                  PERSONS
-                </Text>
-                <View style={styles.pillGrid}>
-                  {persons.map(p => {
-                    const sel = local.personIds?.includes(p.id) || false;
-                    const pc  = colorNumberToHex(p.color);
-                    const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
-                    return (
-                      <BentoPressable
-                        key={p.id}
-                        style={[styles.pill, { backgroundColor: sel ? pc + '18' : colors.card }]}
-                        onPress={() => togglePerson(p.id)}
-                      >
-                        <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: pc, alignItems: 'center', justifyContent: 'center' }}>
-                          <Text style={{ color: '#fff', fontWeight: '700', fontSize: 8 }}>{initials}</Text>
-                        </View>
-                        <Text style={[styles.pillLabel, { color: sel ? pc : colors.text }]}>
-                          {p.name.split(' ')[0]}
-                        </Text>
-                      </BentoPressable>
-                    );
-                  })}
-                </View>
-              </>
-            )}
-
-            {/* ── SORT: group card, inline text toggles ── */}
-            <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-              SORT
-            </Text>
-            <View style={[styles.group, { backgroundColor: colors.card }]}>
-              <View style={styles.groupRow}>
-                <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                  Sort by
-                </Text>
-                <View style={styles.inlineToggles}>
-                  {(['date', 'amount'] as const).map((s, i) => (
-                    <React.Fragment key={s}>
-                      {i > 0 && <Text style={[styles.toggleSep, { color: colors.textMuted }]}>·</Text>}
-                      <BentoPressable onPress={() => setLocal(p => ({ ...p, sortBy: s }))}>
-                        <Text style={[
-                          styles.toggleOption,
-                          { fontFamily: local.sortBy === s ? typography.fonts.semibold : typography.fonts.regular },
-                          { color: local.sortBy === s ? colors.text : colors.textMuted },
-                        ]}>
-                          {s === 'date' ? 'Date' : 'Amount'}
-                        </Text>
-                      </BentoPressable>
-                    </React.Fragment>
-                  ))}
-                </View>
-              </View>
-              <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
-              <View style={styles.groupRow}>
-                <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                  Order
-                </Text>
-                <View style={styles.inlineToggles}>
-                  {(['desc', 'asc'] as const).map((o, i) => (
-                    <React.Fragment key={o}>
-                      {i > 0 && <Text style={[styles.toggleSep, { color: colors.textMuted }]}>·</Text>}
-                      <BentoPressable onPress={() => setLocal(p => ({ ...p, sortOrder: o }))}>
-                        <Text style={[
-                          styles.toggleOption,
-                          { fontFamily: local.sortOrder === o ? typography.fonts.semibold : typography.fonts.regular },
-                          { color: local.sortOrder === o ? colors.text : colors.textMuted },
-                        ]}>
-                          {o === 'desc' ? 'Newest' : 'Oldest'}
-                        </Text>
-                      </BentoPressable>
-                    </React.Fragment>
-                  ))}
-                </View>
-              </View>
-            </View>
-
-            <View style={{ height: 100 }} />
-          </ScrollView>
-
-          {/* ── Footer ── */}
-          <View style={[styles.footer, { backgroundColor: colors.surface }]}>
             <BentoPressable
-              style={[styles.applyBtn, { backgroundColor: colors.text }]}
-              onPress={handleApply}
+              onPress={onClose}
+              style={styles.closeBtn}
             >
-              <Text style={[styles.applyLabel, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
-                Show {resultCount} result{resultCount !== 1 ? 's' : ''}
-              </Text>
+              <MaterialCommunityIcons name="close" size={18} color={colors.text} />
             </BentoPressable>
           </View>
-
-          {showStart && (
-            <DateTimePicker
-              value={local.dateRange?.startDate || new Date()}
-              mode="date"
-              display="default"
-              onChange={onStartDate}
-              maximumDate={new Date()}
-            />
-          )}
-          {showEnd && (
-            <DateTimePicker
-              value={local.dateRange?.endDate || new Date()}
-              mode="date"
-              display="default"
-              onChange={onEndDate}
-              maximumDate={new Date()}
-            />
-          )}
         </View>
+
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+          onScroll={bottomSheet?.onScroll}
+          scrollEventThrottle={16}
+        >
+
+          {/* ── TYPE: horizontal pills ── */}
+          <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+            TYPE
+          </Text>
+          <View style={styles.typeRow}>
+            {TYPE_OPTS.map(opt => {
+              const sel = local.types?.includes(opt.key) || false;
+              const c   = colors[opt.colorKey];
+              return (
+                <BentoPressable
+                  key={opt.key}
+                  style={[styles.typePill, { backgroundColor: sel ? c + '18' : colors.card }]}
+                  onPress={() => toggleType(opt.key)}
+                >
+                  <Text style={[styles.typePillLabel, { fontFamily: typography.fonts.semibold, color: sel ? c : colors.textMuted }]}>
+                    {opt.label}
+                  </Text>
+                </BentoPressable>
+              );
+            })}
+          </View>
+
+          {/* ── DATE RANGE: group card with rows ── */}
+          <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+            DATE RANGE
+          </Text>
+          <View style={[styles.group, { backgroundColor: colors.card }]}>
+            {local.dateRange ? (
+              <>
+                <BentoPressable style={styles.groupRow} onPress={() => setShowStart(true)}>
+                  <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
+                  <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                    From
+                  </Text>
+                  <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                    {fmt(local.dateRange.startDate)}
+                  </Text>
+                </BentoPressable>
+                <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
+                <BentoPressable style={styles.groupRow} onPress={() => setShowEnd(true)}>
+                  <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
+                  <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                    To
+                  </Text>
+                  <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                    {fmt(local.dateRange.endDate)}
+                  </Text>
+                  <BentoPressable onPress={clearDateRange} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                    <MaterialCommunityIcons name="close-circle" size={18} color={colors.textMuted} />
+                  </BentoPressable>
+                </BentoPressable>
+              </>
+            ) : (
+              <BentoPressable style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)}>
+                <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
+                <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                  Set date range
+                </Text>
+                <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} style={styles.groupChevron} />
+              </BentoPressable>
+            )}
+          </View>
+
+          {/* ── AMOUNT: group card with rows ── */}
+          <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+            AMOUNT
+          </Text>
+          <View style={[styles.group, { backgroundColor: colors.card }]}>
+            <View style={styles.groupRow}>
+              <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                Min
+              </Text>
+              <TextInput
+                style={[styles.amountInput, { fontFamily: typography.fonts.semibold, color: colors.text }]}
+                value={minAmt}
+                onChangeText={setMinAmt}
+                keyboardType="decimal-pad"
+                placeholder="0.00"
+                placeholderTextColor={colors.textMuted + '50'}
+                returnKeyType="done"
+                textAlign="right"
+              />
+            </View>
+            <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
+            <View style={styles.groupRow}>
+              <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                Max
+              </Text>
+              <TextInput
+                style={[styles.amountInput, { fontFamily: typography.fonts.semibold, color: colors.text }]}
+                value={maxAmt}
+                onChangeText={setMaxAmt}
+                keyboardType="decimal-pad"
+                placeholder="Any"
+                placeholderTextColor={colors.textMuted + '50'}
+                returnKeyType="done"
+                textAlign="right"
+              />
+            </View>
+          </View>
+
+          {/* ── ACCOUNTS: pill chips ── */}
+          {accounts.length > 0 && (
+            <>
+              <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+                ACCOUNTS
+              </Text>
+              <View style={styles.pillGrid}>
+                {accounts.map(a => {
+                  const sel = local.accountIds?.includes(a.id) || false;
+                  const ac  = colorNumberToHex(a.color);
+                  return (
+                    <BentoPressable
+                      key={a.id}
+                      style={[styles.pill, { backgroundColor: sel ? ac + '18' : colors.card }]}
+                      onPress={() => toggleAccount(a.id)}
+                    >
+                      <MaterialCommunityIcons name={resolveIcon(a.icon, 'wallet-outline')} size={16} color={ac} />
+                      <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
+                        {a.name}
+                      </Text>
+                    </BentoPressable>
+                  );
+                })}
+              </View>
+            </>
+          )}
+
+          {/* ── CATEGORIES: pill chips ── */}
+          {categories.length > 0 && (
+            <>
+              <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+                CATEGORIES
+              </Text>
+              <View style={styles.pillGrid}>
+                {categories.map(c => {
+                  const sel = local.categoryIds?.includes(c.id) || false;
+                  const cc  = colorNumberToHex(c.color);
+                  return (
+                    <BentoPressable
+                      key={c.id}
+                      style={[styles.pill, { backgroundColor: sel ? cc + '18' : colors.card }]}
+                      onPress={() => toggleCategory(c.id)}
+                    >
+                      <MaterialCommunityIcons name={resolveIcon(c.icon, 'tag-outline')} size={16} color={cc} />
+                      <Text style={[styles.pillLabel, { color: sel ? cc : colors.text }]}>
+                        {c.name}
+                      </Text>
+                    </BentoPressable>
+                  );
+                })}
+              </View>
+            </>
+          )}
+
+          {/* ── PERSONS: pill chips ── */}
+          {persons.length > 0 && (
+            <>
+              <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+                PERSONS
+              </Text>
+              <View style={styles.pillGrid}>
+                {persons.map(p => {
+                  const sel = local.personIds?.includes(p.id) || false;
+                  const pc  = colorNumberToHex(p.color);
+                  const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
+                  return (
+                    <BentoPressable
+                      key={p.id}
+                      style={[styles.pill, { backgroundColor: sel ? pc + '18' : colors.card }]}
+                      onPress={() => togglePerson(p.id)}
+                    >
+                      <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: pc, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ color: '#fff', fontWeight: '700', fontSize: 8 }}>{initials}</Text>
+                      </View>
+                      <Text style={[styles.pillLabel, { color: sel ? pc : colors.text }]}>
+                        {p.name.split(' ')[0]}
+                      </Text>
+                    </BentoPressable>
+                  );
+                })}
+              </View>
+            </>
+          )}
+
+          <View style={{ height: 100 }} />
+        </ScrollView>
+
+        {/* ── Footer ── */}
+        <View style={[styles.footer, { backgroundColor: colors.surface }]}>
+          <BentoPressable
+            style={[styles.applyBtn, { backgroundColor: colors.text }]}
+            onPress={handleApply}
+          >
+            <Text style={[styles.applyLabel, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+              Show {resultCount} result{resultCount !== 1 ? 's' : ''}
+            </Text>
+          </BentoPressable>
+        </View>
+
+        {showStart && (
+          <DateTimePicker
+            value={local.dateRange?.startDate || new Date()}
+            mode="date"
+            display="default"
+            onChange={onStartDate}
+            maximumDate={new Date()}
+          />
+        )}
+        {showEnd && (
+          <DateTimePicker
+            value={local.dateRange?.endDate || new Date()}
+            mode="date"
+            display="default"
+            onChange={onEndDate}
+            maximumDate={new Date()}
+          />
+        )}
       </View>
-    </Modal>
+    </BentoBottomSheet>
   );
 });
 
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    overlay: {
-      flex: 1,
-      justifyContent: 'flex-end',
-    },
-    backdrop: {
-      ...StyleSheet.absoluteFillObject,
-    },
-    sheet: {
-      backgroundColor: colors.surface,
-      borderTopLeftRadius: 28,
-      borderTopRightRadius: 28,
-      maxHeight: '90%',
-    },
-    handle: {
-      width: 32,
-      height: 4,
-      borderRadius: radius('full'),
-      backgroundColor: colors.text + '24',
-      alignSelf: 'center',
-      marginTop: spacing('3'),
-    },
-
-    // ── Header
     header: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -469,14 +401,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     badgeText: { fontSize: 10 },
     resetText: { fontSize: typography.sizes.sm },
     closeBtn: {
-      width: 30,
-      height: 30,
+      width: 32,
+      height: 32,
       borderRadius: radius('full'),
+      backgroundColor: colors.text + '0C',
       alignItems: 'center',
       justifyContent: 'center',
     },
-
-    // ── Scroll
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
@@ -488,8 +419,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginTop: spacing('5'),
       paddingLeft: spacing('0.5'),
     },
-
-    // ── TYPE: horizontal pills
     typeRow:  { flexDirection: 'row', gap: spacing('2') },
     typePill: {
       flex: 1,
@@ -499,8 +428,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
     },
     typePillLabel: { fontSize: 13 },
-
-    // ── Group card (Date / Amount / Accounts / Sort)
     group: {
       borderRadius: radius('xl'),
       overflow: 'hidden',
@@ -519,16 +446,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     groupRowValue: { flex: 1, fontSize: typography.sizes.sm, textAlign: 'right' },
     groupChevron:  { marginLeft: 'auto' },
     groupSep:      { height: 1, marginHorizontal: spacing('4') },
-
-    // ── Amount inputs
     amountInput: {
       flex: 1,
       fontSize: typography.sizes.md,
       padding: 0,
       textAlign: 'right',
     },
-
-    // ── Pill chips (accounts + categories)
     pillGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
     pill: {
       flexDirection: 'row',
@@ -542,13 +465,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.medium,
       fontSize: 13,
     },
-
-    // ── Sort inline toggles
     inlineToggles: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
     toggleSep:     { fontSize: typography.sizes.xs, opacity: 0.4 },
     toggleOption:  { fontSize: typography.sizes.sm },
-
-    // ── Footer
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),

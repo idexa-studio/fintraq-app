@@ -3,8 +3,9 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
-import { FlatList, Modal, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { Person } from '../api/persons';
+import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 
 type PersonPickerBottomSheetProps = {
   visible: boolean;
@@ -36,6 +37,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [query, setQuery] = useState('');
+  const bottomSheet = useBottomSheet();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -95,114 +97,115 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
     );
   }, [selectedId, handleSelect, styles, colors, typography]);
 
-  return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={handleClose}>
-      <View style={styles.overlay}>
-        <BentoPressable style={styles.backdrop} onPress={handleClose} />
-        <View style={styles.sheet}>
-          <View style={styles.handle} />
+  const snapPoints = useMemo(() => ['75%'], []);
 
-          <View style={styles.header}>
-            <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
-              Link person
+  return (
+    <BentoBottomSheet
+      visible={visible}
+      onClose={handleClose}
+      snapPoints={snapPoints}
+      keyboardBehavior="interactive"
+    >
+      <View style={{ flex: 1 }}>
+        <View style={styles.header}>
+          <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
+            Link person
+          </Text>
+          <BentoPressable onPress={handleClose} style={styles.closeBtn}>
+            <MaterialCommunityIcons name="close" size={18} color={colors.text} />
+          </BentoPressable>
+        </View>
+
+        <View style={styles.searchWrap}>
+          <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
+          <TextInput
+            style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search persons..."
+            placeholderTextColor={colors.textMuted + '80'}
+            autoCorrect={false}
+            autoCapitalize="none"
+            returnKeyType="search"
+          />
+          {query.length > 0 && (
+            <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
+            </BentoPressable>
+          )}
+        </View>
+
+        {/* None option */}
+        <BentoPressable
+          style={[styles.row, styles.noneRow, selectedId === null && styles.rowSelected]}
+          onPress={() => handleSelect(null)}
+        >
+          <View style={styles.noneAvatar}>
+            <MaterialCommunityIcons name="account-outline" size={18} color={colors.textMuted} />
+          </View>
+          <View style={styles.rowMeta}>
+            <Text style={[styles.rowName, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              No person
             </Text>
           </View>
-
-          <View style={styles.searchWrap}>
-            <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
-            <TextInput
-              style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Search persons..."
-              placeholderTextColor={colors.textMuted + '80'}
-              autoCorrect={false}
-              autoCapitalize="none"
-              returnKeyType="search"
-            />
-            {query.length > 0 && (
-              <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
-              </BentoPressable>
-            )}
-          </View>
-
-          {/* None option */}
-          <BentoPressable
-            style={[styles.row, styles.noneRow, selectedId === null && styles.rowSelected]}
-            onPress={() => handleSelect(null)}
-          >
-            <View style={styles.noneAvatar}>
-              <MaterialCommunityIcons name="account-outline" size={18} color={colors.textMuted} />
+          {selectedId === null && (
+            <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
+              <MaterialCommunityIcons name="check" size={12} color={colors.background} />
             </View>
-            <View style={styles.rowMeta}>
-              <Text style={[styles.rowName, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                No person
-              </Text>
-            </View>
-            {selectedId === null && (
-              <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-                <MaterialCommunityIcons name="check" size={12} color={colors.background} />
-              </View>
-            )}
-          </BentoPressable>
+          )}
+        </BentoPressable>
 
-          <FlatList
-            data={filtered}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            getItemLayout={getItemLayout}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContent}
-            initialNumToRender={15}
-            maxToRenderPerBatch={10}
-            windowSize={5}
-            removeClippedSubviews
-          />
-        </View>
+        <FlatList
+          data={filtered}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          getItemLayout={getItemLayout}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+          initialNumToRender={15}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          removeClippedSubviews
+          onScroll={bottomSheet?.onScroll}
+          scrollEventThrottle={16}
+        />
       </View>
-    </Modal>
+    </BentoBottomSheet>
   );
 });
 
-const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    overlay: { flex: 1, backgroundColor: overlay.dim, justifyContent: 'flex-end' },
-    backdrop: { ...StyleSheet.absoluteFillObject },
-    sheet: {
-      height: '75%',
-      borderTopLeftRadius: 28,
-      borderTopRightRadius: 28,
-      backgroundColor: colors.surface,
-      overflow: 'hidden',
-    },
-    handle: {
-      alignSelf: 'center',
-      width: 32,
-      height: 4,
-      borderRadius: radius('full'),
-      marginTop: spacing('3'),
-      backgroundColor: colors.text + '24',
-    },
     header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('4'),
-      paddingBottom: spacing('3'),
+      paddingBottom: spacing('2'),
     },
     title: { fontSize: 22 },
+    closeBtn: {
+      width: 32,
+      height: 32,
+      borderRadius: radius('full'),
+      backgroundColor: colors.text + '0C',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',
       marginHorizontal: layout.screenPadding,
       marginBottom: spacing('2'),
-      height: 44,
+      height: 46,
       borderRadius: radius('xl'),
       backgroundColor: colors.background,
-      paddingHorizontal: spacing('3'),
+      paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
     },
-    searchInput: { flex: 1, fontSize: 14, paddingVertical: 0 },
+    searchInput: { flex: 1, fontFamily: typography.fonts.regular, fontSize: typography.sizes.sm, paddingVertical: 0 },
     listContent: {
       paddingHorizontal: layout.screenPadding,
       paddingBottom: spacing('9'),

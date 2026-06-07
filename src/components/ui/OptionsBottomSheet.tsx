@@ -1,8 +1,9 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
-import { Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
+import { BentoBottomSheet } from './BottomSheet';
 
 type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -43,85 +44,65 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
   }, [onClose]);
 
   return (
-    <Modal transparent visible={visible} animationType="slide" onRequestClose={onClose}>
-      <View style={styles.overlay}>
-        <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
-
-        <View style={styles.sheet}>
-          <View style={styles.dragHandle} />
-
-          <View style={styles.head}>
-            <Text style={styles.title}>{title}</Text>
-            {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
-          </View>
-
-          <View style={styles.list}>
-            {options.map((opt) => {
-              const selected = !!opt.selected;
-              return (
-                <BentoPressable
-                  key={opt.key}
-                  style={styles.opt}
-                  onPress={() => handleOptionPress(opt)}
-                  scaleOnPress={false}
-                >
-                  {opt.icon ? (
-                    <MaterialCommunityIcons
-                      name={opt.icon}
-                      size={22}
-                      color={selected ? colors.primary : opt.destructive ? colors.danger : colors.text}
-                    />
-                  ) : null}
-                  <Text
-                    style={[
-                      styles.optLabel,
-                      selected && { fontFamily: typography.fonts.semibold, color: colors.primary },
-                      opt.destructive && { color: colors.danger },
-                    ]}
-                  >
-                    {opt.label}
-                  </Text>
-                  {selected ? (
-                    <MaterialCommunityIcons name="check" size={18} color={colors.primary} />
-                  ) : null}
-                </BentoPressable>
-              );
-            })}
-          </View>
-
-          <BentoPressable style={styles.cancel} onPress={onClose}>
-            <Text style={styles.cancelText}>{closeLabel}</Text>
-          </BentoPressable>
+    <BentoBottomSheet
+      visible={visible}
+      onClose={onClose}
+    >
+      <View style={styles.content}>
+        <View style={styles.head}>
+          <Text style={styles.title}>{title}</Text>
+          {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
         </View>
+
+        <View style={styles.list}>
+          {options.map((opt) => {
+            const selected = !!opt.selected;
+            return (
+              <BentoPressable
+                key={opt.key}
+                style={styles.opt}
+                onPress={() => handleOptionPress(opt)}
+                scaleOnPress={false}
+              >
+                {opt.icon ? (
+                  <MaterialCommunityIcons
+                    name={opt.icon}
+                    size={22}
+                    color={selected ? colors.primary : opt.destructive ? colors.danger : colors.text}
+                  />
+                ) : null}
+                <Text
+                  style={[
+                    styles.optLabel,
+                    selected && { fontFamily: typography.fonts.semibold, color: colors.primary },
+                    opt.destructive && { color: colors.danger },
+                  ]}
+                >
+                  {opt.label}
+                </Text>
+                {selected ? (
+                  <MaterialCommunityIcons name="check" size={18} color={colors.primary} />
+                ) : null}
+              </BentoPressable>
+            );
+          })}
+        </View>
+
+        <BentoPressable style={styles.cancel} onPress={onClose}>
+          <Text style={styles.cancelText}>{closeLabel}</Text>
+        </BentoPressable>
       </View>
-    </Modal>
+    </BentoBottomSheet>
   );
 });
 
-const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    overlay: {
-      flex: 1,
-      backgroundColor: overlay.dim,
-      justifyContent: 'flex-end',
-    },
-    dragHandle: {
-      width: 32,
-      height: 4,
-      borderRadius: 2,
-      backgroundColor: colors.text + '24',
-      alignSelf: 'center',
-      marginTop: spacing('3'),
-      marginBottom: spacing('2'),
-    },
-    sheet: {
-      backgroundColor: colors.surface,
-      borderTopLeftRadius: 28,
-      borderTopRightRadius: 28,
-      overflow: 'hidden',
+    content: {
+      paddingBottom: Platform.OS === 'ios' ? spacing('4') : spacing('2'),
     },
     head: {
-      paddingHorizontal: spacing('5'),
+      paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
       paddingBottom: spacing('4'),
     },
@@ -155,7 +136,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     cancel: {
       height: 48,
-      marginHorizontal: spacing('4'),
+      marginHorizontal: layout.screenPadding,
       marginTop: spacing('2'),
       marginBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
       borderRadius: radius('full'),

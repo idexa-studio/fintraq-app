@@ -3,7 +3,8 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
-import { Modal, Platform, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import { BentoBottomSheet } from '@/src/components/ui/BottomSheet';
 
 type PremiumUpsellBottomSheetProps = {
   visible: boolean;
@@ -51,87 +52,68 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
   }, [onClose, router]);
 
   return (
-    <Modal transparent visible={visible} animationType="slide" onRequestClose={() => {}}>
-      <View style={styles.overlay}>
-        <BentoPressable style={styles.backdrop} onPress={canDismiss ? onClose : undefined} />
-        <View style={styles.sheet}>
-          <View style={styles.dragHandle} />
-
-          {/* Header Row with Crown Icon */}
-          <View style={styles.header}>
-            <View style={styles.crownWrapper}>
-              <MaterialCommunityIcons name="crown" size={24} color={colors.warning} />
-            </View>
-            <View style={styles.headerText}>
-              <Text style={styles.title}>Unlock Keeep Pro</Text>
-              <Text style={styles.subtitle}>One-time lifetime access</Text>
-            </View>
+    <BentoBottomSheet
+      visible={visible}
+      onClose={onClose}
+      enablePanDownToClose={canDismiss}
+      enableBackdropDismiss={canDismiss}
+    >
+      <View style={styles.content}>
+        {/* Header Row with Crown Icon */}
+        <View style={styles.header}>
+          <View style={styles.crownWrapper}>
+            <MaterialCommunityIcons name="crown" size={24} color={colors.warning} />
           </View>
-
-          {canDismiss ? (
-            <BentoPressable onPress={onClose} style={styles.closeBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <MaterialCommunityIcons name="close" size={20} color={colors.textMuted} />
-            </BentoPressable>
-          ) : null}
-
-          {/* Feature Bento List */}
-          <View style={styles.list}>
-            {PRO_FEATURES.map((item, index) => (
-              <View key={index} style={styles.row}>
-                <View style={styles.iconWrapper}>
-                  <MaterialCommunityIcons name={item.icon} size={18} color={colors.primary} />
-                </View>
-                <Text style={styles.rowText}>{item.text}</Text>
-              </View>
-            ))}
+          <View style={styles.headerText}>
+            <Text style={styles.title}>Unlock Keeep Pro</Text>
+            <Text style={styles.subtitle}>One-time lifetime access</Text>
           </View>
-
-          <BentoPressable
-            style={[styles.cta, !canDismiss && styles.ctaDisabled]}
-            onPress={handleUpgrade}
-            disabled={!canDismiss}
-          >
-            <Text style={styles.ctaText}>
-              {canDismiss ? 'Get lifetime access' : `Get lifetime access in ${left}s`}
-            </Text>
-          </BentoPressable>
-
-          {canDismiss ? (
-            <BentoPressable onPress={onClose} style={styles.skip}>
-              <Text style={styles.skipText}>Not now</Text>
-            </BentoPressable>
-          ) : null}
         </View>
+
+        {canDismiss ? (
+          <BentoPressable onPress={onClose} style={styles.closeBtn}>
+            <MaterialCommunityIcons name="close" size={18} color={colors.text} />
+          </BentoPressable>
+        ) : null}
+
+        {/* Feature Bento List */}
+        <View style={styles.list}>
+          {PRO_FEATURES.map((item, index) => (
+            <View key={index} style={styles.row}>
+              <View style={styles.iconWrapper}>
+                <MaterialCommunityIcons name={item.icon} size={18} color={colors.primary} />
+              </View>
+              <Text style={styles.rowText}>{item.text}</Text>
+            </View>
+          ))}
+        </View>
+
+        <BentoPressable
+          style={[styles.cta, !canDismiss && styles.ctaDisabled]}
+          onPress={handleUpgrade}
+          disabled={!canDismiss}
+        >
+          <Text style={styles.ctaText}>
+            {canDismiss ? 'Get lifetime access' : `Get lifetime access in ${left}s`}
+          </Text>
+        </BentoPressable>
+
+        {canDismiss ? (
+          <BentoPressable onPress={onClose} style={styles.skip}>
+            <Text style={styles.skipText}>Not now</Text>
+          </BentoPressable>
+        ) : null}
       </View>
-    </Modal>
+    </BentoBottomSheet>
   );
 });
 
-const createStyles = ({ colors, overlay, typography, spacing, radius, layout, onAccent }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
-    overlay: {
-      flex: 1,
-      backgroundColor: overlay.dim,
-      justifyContent: 'flex-end',
-    },
-    backdrop: {
-      ...StyleSheet.absoluteFillObject,
-    },
-    dragHandle: {
-      width: 32,
-      height: 4,
-      borderRadius: 2,
-      backgroundColor: colors.text + '24',
-      alignSelf: 'center',
-      marginTop: spacing('2'),
-      marginBottom: spacing('4'),
-    },
-    sheet: {
-      backgroundColor: colors.surface,
-      borderTopLeftRadius: 28,
-      borderTopRightRadius: 28,
+    content: {
       paddingHorizontal: spacing('6'),
       paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
+      paddingTop: spacing('2'),
     },
     header: {
       flexDirection: 'row',
@@ -163,8 +145,14 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, on
     },
     closeBtn: {
       position: 'absolute',
-      top: spacing('5'),
-      right: spacing('4'),
+      top: spacing('4'),
+      right: spacing('6'),
+      width: 32,
+      height: 32,
+      borderRadius: radius('full'),
+      backgroundColor: colors.text + '0C',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     list: {
       gap: spacing('2'),

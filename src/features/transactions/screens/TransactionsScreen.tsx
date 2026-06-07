@@ -18,6 +18,7 @@ import { useCategories } from '../../categories/hooks/categories';
 import { usePersons } from '../../persons/hooks/persons';
 import { AdvancedFilterService, AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../../filters/api/advanced-filters.service';
 import { AdvancedFilterBottomSheet } from '../../filters/components/AdvancedFilterBottomSheet';
+import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
 import type { TransactionListItem } from '../api/transactions';
 import {
   useDeleteTransaction,
@@ -227,8 +228,14 @@ export function TransactionsScreen() {
   });
 
   const [showAdvancedFilterSheet, setShowAdvancedFilterSheet] = useState(false);
+  const [showSortSheet, setShowSortSheet] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [pendingDeleteTx, setPendingDeleteTx] = useState<TransactionListItem | null>(null);
+
+  const handleSortSelect = useCallback((sortBy: 'date' | 'amount', sortOrder: 'asc' | 'desc') => {
+    setAdvancedFilters(p => ({ ...p, sortBy, sortOrder }));
+    setShowSortSheet(false);
+  }, []);
 
   // Convert advanced filters to basic API filters
   const basicFilters = useMemo(() => {
@@ -506,6 +513,20 @@ export function TransactionsScreen() {
               metrics={activeTotals}
             />
 
+            <View style={styles.toolbar}>
+              <Text style={styles.resultsCount}>
+                {transactions.length} transaction{transactions.length !== 1 ? 's' : ''}
+              </Text>
+              <BentoPressable style={styles.sortDropdown} onPress={() => setShowSortSheet(true)}>
+                <Text style={styles.sortDropdownText}>
+                  {advancedFilters.sortBy === 'date'
+                    ? advancedFilters.sortOrder === 'desc' ? 'Newest first' : 'Oldest first'
+                    : advancedFilters.sortOrder === 'desc' ? 'Highest amount' : 'Lowest amount'}
+                </Text>
+                <MaterialCommunityIcons name="chevron-down" size={14} color={colors.textMuted} />
+              </BentoPressable>
+            </View>
+
             {activeFilterCount > 0 && (
               <View style={styles.activeFiltersRow}>
                 <Text style={styles.activeFiltersLabel}>Active filters</Text>
@@ -567,6 +588,38 @@ export function TransactionsScreen() {
         categories={categoriesQuery.data ?? []}
         persons={personsQuery.data ?? []}
         resultCount={transactions.length}
+      />
+
+      <OptionsBottomSheet
+        visible={showSortSheet}
+        onClose={() => setShowSortSheet(false)}
+        title="Sort transactions"
+        options={[
+          {
+            key: 'newest',
+            label: 'Newest first',
+            selected: advancedFilters.sortBy === 'date' && advancedFilters.sortOrder === 'desc',
+            onPress: () => handleSortSelect('date', 'desc'),
+          },
+          {
+            key: 'oldest',
+            label: 'Oldest first',
+            selected: advancedFilters.sortBy === 'date' && advancedFilters.sortOrder === 'asc',
+            onPress: () => handleSortSelect('date', 'asc'),
+          },
+          {
+            key: 'highest',
+            label: 'Highest amount',
+            selected: advancedFilters.sortBy === 'amount' && advancedFilters.sortOrder === 'desc',
+            onPress: () => handleSortSelect('amount', 'desc'),
+          },
+          {
+            key: 'lowest',
+            label: 'Lowest amount',
+            selected: advancedFilters.sortBy === 'amount' && advancedFilters.sortOrder === 'asc',
+            onPress: () => handleSortSelect('amount', 'asc'),
+          },
+        ]}
       />
       <WalkthroughOverlay storageKey="@luno_walkthrough_transactions_list" steps={TRANSACTIONS_LIST_WALKTHROUGH_STEPS} />
     </SafeAreaView>
@@ -720,5 +773,30 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    toolbar: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: spacing('2'),
+    },
+    resultsCount: {
+      fontFamily: typography.fonts.medium,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+    },
+    sortDropdown: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1.5'),
+      backgroundColor: colors.surface,
+      paddingHorizontal: spacing('3'),
+      paddingVertical: spacing('1.5'),
+      borderRadius: radius('full'),
+    },
+    sortDropdownText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 12,
+      color: colors.text,
     },
   });

@@ -2,10 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
-  KeyboardAvoidingView,
-  Modal,
   Platform,
-  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -14,6 +11,7 @@ import {
 import { CURRENCIES } from '../../constants/currency';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
+import { BentoBottomSheet, useBottomSheet } from './BottomSheet';
 
 export type CurrencyPickerBottomSheetProps = {
   visible: boolean;
@@ -34,6 +32,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [query, setQuery] = useState('');
+  const bottomSheet = useBottomSheet();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -99,102 +98,77 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
     );
   }, [value, handleSelect, styles, colors]);
 
+  const snapPoints = useMemo(() => ['82%'], []);
+
   return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={handleClose}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.overlay}
-      >
-        <Pressable style={styles.backdrop} onPress={handleClose} />
-
-        <View style={styles.sheet}>
-          <View style={styles.handle} />
-
-          <View style={styles.header}>
-            <View style={styles.headerText}>
-              <Text style={styles.title}>Currency</Text>
-              <Text style={styles.subtitle}>{CURRENCIES.length} currencies</Text>
-            </View>
-            <BentoPressable onPress={handleClose} style={styles.closeBtn}>
-              <MaterialCommunityIcons name="close" size={18} color={colors.text} />
-            </BentoPressable>
+    <BentoBottomSheet
+      visible={visible}
+      onClose={handleClose}
+      snapPoints={snapPoints}
+      keyboardBehavior="interactive"
+    >
+      <View style={{ flex: 1 }}>
+        <View style={styles.header}>
+          <View style={styles.headerText}>
+            <Text style={styles.title}>Currency</Text>
+            <Text style={styles.subtitle}>{CURRENCIES.length} currencies</Text>
           </View>
-
-          <View style={styles.searchWrap}>
-            <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
-            <TextInput
-              style={styles.searchInput}
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Search by name or code"
-              placeholderTextColor={colors.textMuted + '80'}
-              autoCorrect={false}
-              autoCapitalize="none"
-              returnKeyType="search"
-            />
-            {query.length > 0 && (
-              <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
-              </BentoPressable>
-            )}
-          </View>
-
-          <FlatList
-            data={filtered}
-            keyExtractor={keyExtractor}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContent}
-            renderItem={renderItem}
-            getItemLayout={getItemLayout}
-            initialNumToRender={15}
-            maxToRenderPerBatch={10}
-            windowSize={5}
-            removeClippedSubviews
-            ListEmptyComponent={
-              <View style={styles.emptyWrap}>
-                <MaterialCommunityIcons name="magnify" size={24} color={colors.textMuted} />
-                <Text style={styles.emptyText}>No results for &quot;{query}&quot;</Text>
-              </View>
-            }
-          />
+          <BentoPressable onPress={handleClose} style={styles.closeBtn}>
+            <MaterialCommunityIcons name="close" size={18} color={colors.text} />
+          </BentoPressable>
         </View>
-      </KeyboardAvoidingView>
-    </Modal>
+
+        <View style={styles.searchWrap}>
+          <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
+          <TextInput
+            style={styles.searchInput}
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search by name or code"
+            placeholderTextColor={colors.textMuted + '80'}
+            autoCorrect={false}
+            autoCapitalize="none"
+            returnKeyType="search"
+          />
+          {query.length > 0 && (
+            <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
+            </BentoPressable>
+          )}
+        </View>
+
+        <FlatList
+          data={filtered}
+          keyExtractor={keyExtractor}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+          renderItem={renderItem}
+          getItemLayout={getItemLayout}
+          initialNumToRender={15}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          removeClippedSubviews
+          onScroll={bottomSheet?.onScroll}
+          scrollEventThrottle={16}
+          ListEmptyComponent={
+            <View style={styles.emptyWrap}>
+              <MaterialCommunityIcons name="magnify" size={24} color={colors.textMuted} />
+              <Text style={styles.emptyText}>No results for &quot;{query}&quot;</Text>
+            </View>
+          }
+        />
+      </View>
+    </BentoBottomSheet>
   );
 });
 
-const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    overlay: {
-      flex: 1,
-      backgroundColor: overlay.dim,
-      justifyContent: 'flex-end',
-    },
-    backdrop: {
-      ...StyleSheet.absoluteFillObject,
-    },
-    sheet: {
-      height: '82%',
-      borderTopLeftRadius: 28,
-      borderTopRightRadius: 28,
-      backgroundColor: colors.surface,
-      overflow: 'hidden',
-    },
-    handle: {
-      alignSelf: 'center',
-      width: 32,
-      height: 4,
-      borderRadius: radius('full'),
-      marginTop: spacing('3'),
-      backgroundColor: colors.text + '24',
-    },
-
-    // Header
     header: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('4'),
-      paddingBottom: spacing('3'),
+      paddingBottom: spacing('2'),
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
@@ -213,10 +187,10 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       opacity: 0.7,
     },
     closeBtn: {
-      width: 30,
-      height: 30,
+      width: 32,
+      height: 32,
       borderRadius: radius('full'),
-      backgroundColor: colors.background,
+      backgroundColor: colors.text + '0C',
       justifyContent: 'center',
       alignItems: 'center',
     },
