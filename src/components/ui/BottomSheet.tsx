@@ -13,7 +13,7 @@ import {
   Platform,
   DimensionValue,
 } from 'react-native';
-import { useSafeAreaInsets, SafeAreaProvider } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -77,7 +77,6 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
 
   return (
     <Animated.View
-      {...contentPanResponder.panHandlers}
       style={[
         styles.sheet,
         {
@@ -115,6 +114,12 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
 
   // Internal state to hold the Modal visibility, allowing close animations to complete before unmounting.
   const [modalVisible, setModalVisible] = useState(visible);
+
+  // Keep onClose in a ref to prevent recreating animateClose when parent inline callbacks change.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   // Track the animation state to prevent loop restarts
   const animState = useRef<'closed' | 'opening' | 'open' | 'closing'>(visible ? 'open' : 'closed');
@@ -179,9 +184,9 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
     ]).start(() => {
       animState.current = 'closed';
       setModalVisible(false);
-      onClose();
+      onCloseRef.current();
     });
-  }, [translateY, backdropOpacity, onClose]);
+  }, [translateY, backdropOpacity]);
 
   // Sync the `visible` prop with animations
   useEffect(() => {
@@ -311,32 +316,30 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
       animationType="none"
       onRequestClose={enablePanDownToClose ? animateClose : undefined}
     >
-      <SafeAreaProvider style={{ flex: 1 }}>
-        <View style={styles.container}>
-          {/* Backdrop */}
-          <TouchableWithoutFeedback onPress={handleBackdropPress}>
-            <Animated.View style={animatedBackdropStyle} />
-          </TouchableWithoutFeedback>
+      <View style={styles.container}>
+        {/* Backdrop */}
+        <TouchableWithoutFeedback onPress={handleBackdropPress}>
+          <Animated.View style={animatedBackdropStyle} />
+        </TouchableWithoutFeedback>
 
-          {/* Bottom Sheet Box */}
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={styles.keyboardAvoid}
+        {/* Bottom Sheet Box */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.keyboardAvoid}
+        >
+          <BottomSheetContent
+            resolvedHeight={resolvedHeight}
+            resolvedMaxHeight={resolvedMaxHeight}
+            translateY={translateY}
+            headerPanResponder={headerPanResponder}
+            contentPanResponder={contentPanResponder}
+            contextValue={contextValue}
+            colors={colors}
           >
-            <BottomSheetContent
-              resolvedHeight={resolvedHeight}
-              resolvedMaxHeight={resolvedMaxHeight}
-              translateY={translateY}
-              headerPanResponder={headerPanResponder}
-              contentPanResponder={contentPanResponder}
-              contextValue={contextValue}
-              colors={colors}
-            >
-              {children}
-            </BottomSheetContent>
-          </KeyboardAvoidingView>
-        </View>
-      </SafeAreaProvider>
+            {children}
+          </BottomSheetContent>
+        </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 });
