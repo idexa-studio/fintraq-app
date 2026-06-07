@@ -1,8 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo } from 'react';
 import {
   FlatList,
-  Platform,
   StyleSheet,
   Text,
   View,
@@ -32,12 +32,12 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
   title = 'Choose color',
 }: ColorPickerBottomSheetProps) {
   const theme = useTheme();
-  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const bottomSheet = useBottomSheet();
 
   const handleSelect = useCallback(
     (hex: string) => {
+      Haptics.selectionAsync().catch(() => {});
       onChange(hex);
       onClose();
     },
@@ -78,10 +78,7 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
 
   const keyExtractor = useCallback((item: ColorOption) => item.hex, []);
 
-  const ItemSeparatorComponent = useCallback(
-    () => <View style={styles.separator} />,
-    [styles.separator],
-  );
+
 
   const snapPoints = useMemo(() => ['75%'], []);
 
@@ -93,13 +90,13 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
     >
       <View style={{ flex: 1 }}>
         <View style={styles.header}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.subtitle}>{palette.length} colors</Text>
+          <View style={styles.headerTitleRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.title}>{title}</Text>
+              <Text style={styles.subtitle}>{palette.length} colors</Text>
+            </View>
+            <View style={[styles.headerColorDot, { backgroundColor: value }]} />
           </View>
-          <BentoPressable onPress={onClose} style={styles.closeBtn}>
-            <MaterialCommunityIcons name="close" size={18} color={colors.text} />
-          </BentoPressable>
         </View>
 
         <FlatList
@@ -107,7 +104,6 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
           keyExtractor={keyExtractor}
           renderItem={renderItem}
           getItemLayout={getItemLayout}
-          ItemSeparatorComponent={ItemSeparatorComponent}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
           initialNumToRender={15}
@@ -122,7 +118,7 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
   StyleSheet.create({
     header: {
       paddingHorizontal: layout.screenPadding,
@@ -131,6 +127,18 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
+    },
+    headerTitleRow: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    headerColorDot: {
+      width: 16,
+      height: 16,
+      borderRadius: radius('full'),
+      marginLeft: spacing('3'),
     },
     title: {
       fontFamily: typography.fonts.heading,
@@ -143,30 +151,20 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.textMuted,
       marginTop: 2,
     },
-    closeBtn: {
-      width: 32,
-      height: 32,
-      borderRadius: radius('full'),
-      backgroundColor: colors.text + '0C',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
     listContent: {
-      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
-    },
-    separator: {
-      height: 1,
-      backgroundColor: colors.text + '0C',
-      marginLeft: layout.screenPadding + 32 + spacing('3'),
+      paddingBottom: spacing('3'),
     },
     row: {
       flexDirection: 'row',
       alignItems: 'center',
-      height: ITEM_HEIGHT,
+      height: 50,
       paddingHorizontal: layout.screenPadding,
+      marginVertical: spacing('0.5'),
       gap: spacing('3'),
     },
-    rowSelected: {},
+    rowSelected: {
+      backgroundColor: isDark ? '#163228' : '#E6F4EA',
+    },
     swatch: {
       width: 32,
       height: 32,

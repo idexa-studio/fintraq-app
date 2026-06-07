@@ -3,7 +3,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { BentoBottomSheet } from '@/src/components/ui/BottomSheet';
 
 type PremiumUpsellBottomSheetProps = {
@@ -112,7 +112,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
   StyleSheet.create({
     content: {
       paddingHorizontal: spacing('6'),
-      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
+      paddingBottom: spacing('3'),
       paddingTop: spacing('2'),
     },
     header: {

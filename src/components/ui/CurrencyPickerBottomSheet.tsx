@@ -1,8 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
-  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -52,6 +52,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
   }, [query, value]);
 
   const handleSelect = useCallback((code: string) => {
+    Haptics.selectionAsync().catch(() => {});
     onChange(code);
     onClose();
   }, [onChange, onClose]);
@@ -113,9 +114,11 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
             <Text style={styles.title}>Currency</Text>
             <Text style={styles.subtitle}>{CURRENCIES.length} currencies</Text>
           </View>
-          <BentoPressable onPress={handleClose} style={styles.closeBtn}>
-            <MaterialCommunityIcons name="close" size={18} color={colors.text} />
-          </BentoPressable>
+          {value ? (
+            <View style={styles.headerBadge}>
+              <Text style={styles.headerBadgeText}>{value}</Text>
+            </View>
+          ) : null}
         </View>
 
         <View style={styles.searchWrap}>
@@ -163,7 +166,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
   StyleSheet.create({
     header: {
       paddingHorizontal: layout.screenPadding,
@@ -186,13 +189,16 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginTop: 2,
       opacity: 0.7,
     },
-    closeBtn: {
-      width: 32,
-      height: 32,
+    headerBadge: {
+      paddingHorizontal: spacing('2.5'),
+      paddingVertical: spacing('1'),
       borderRadius: radius('full'),
-      backgroundColor: colors.text + '0C',
-      justifyContent: 'center',
-      alignItems: 'center',
+      backgroundColor: colors.primary + '14',
+    },
+    headerBadgeText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 12,
+      color: colors.primary,
     },
 
     // Search
@@ -217,25 +223,22 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
 
     // List
     listContent: {
-      paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('1'),
-      paddingBottom: Platform.OS === 'ios' ? spacing('9') : spacing('6'),
-      gap: spacing('0.5'),
+      paddingBottom: spacing('3'),
     },
 
     // Row
     row: {
-      height: ITEM_HEIGHT,
+      height: 52,
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: spacing('3'),
-      borderRadius: radius('xl'),
+      paddingHorizontal: layout.screenPadding,
+      marginVertical: spacing('0.5'),
       gap: spacing('3'),
     },
     rowSelected: {
-      backgroundColor: colors.primary + '0F',
+      backgroundColor: isDark ? '#163228' : '#E6F4EA',
     },
-
     // Currency code chip
     chip: {
       width: 46,

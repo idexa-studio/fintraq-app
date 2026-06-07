@@ -440,7 +440,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       <OptionsBottomSheet
         visible={showThemeDialog}
         onClose={() => setShowThemeDialog(false)}
-        title="Theme"
         options={themeDialogOptions}
       />
 

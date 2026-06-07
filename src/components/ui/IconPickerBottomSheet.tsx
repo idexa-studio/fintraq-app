@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo } from 'react';
 import {
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,7 +23,7 @@ type IconPickerBottomSheetProps = {
   title?: string;
 };
 
-const CELL_SIZE = 44;
+const CELL_SIZE = 48;
 
 export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
   visible,
@@ -42,6 +42,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
 
   const handleSelect = useCallback(
     (icon: string) => {
+      Haptics.selectionAsync().catch(() => {});
       onChange(icon);
       onClose();
     },
@@ -59,9 +60,15 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
       <View style={{ flex: 1 }}>
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
-          <BentoPressable onPress={onClose} style={styles.closeBtn}>
-            <MaterialCommunityIcons name="close" size={18} color={colors.text} />
-          </BentoPressable>
+          {value ? (
+            <View style={styles.headerIconContainer}>
+              <MaterialCommunityIcons
+                name={resolveIcon(value, 'grid')}
+                size={20}
+                color={colors.primary}
+              />
+            </View>
+          ) : null}
         </View>
 
         <ScrollView
@@ -73,7 +80,9 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
         >
           {groups.map((group) => (
             <View key={group.label} style={styles.group}>
-              <Text style={styles.groupLabel}>{group.label}</Text>
+              <Text style={styles.groupLabel}>
+                {group.label.charAt(0).toUpperCase() + group.label.slice(1).toLowerCase()}
+              </Text>
               <View style={styles.iconGrid}>
                 {group.icons.map((icon) => {
                   const selected = value === icon;
@@ -82,7 +91,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                       key={icon}
                       style={[
                         styles.iconCell,
-                        { backgroundColor: selected ? accent : colors.background }
+                        { backgroundColor: selected ? (theme.isDark ? '#163228' : '#E6F4EA') : colors.background }
                       ]}
                       onPress={() => handleSelect(icon)}
                       scaleOnPress={true}
@@ -90,7 +99,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                       <MaterialCommunityIcons
                         name={resolveIcon(icon, 'grid')}
                         size={20}
-                        color={selected ? colors.background : colors.text}
+                        color={selected ? accent : colors.text}
                       />
                     </BentoPressable>
                   );
@@ -119,20 +128,20 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: 22,
       color: colors.text,
     },
-    closeBtn: {
+    headerIconContainer: {
       width: 32,
       height: 32,
-      borderRadius: radius('full'),
-      backgroundColor: colors.text + '0C',
+      borderRadius: radius('md'),
+      backgroundColor: colors.primary + '12',
       justifyContent: 'center',
       alignItems: 'center',
     },
     scrollContent: {
-      paddingHorizontal: layout.screenPadding,
-      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
+      paddingBottom: spacing('3'),
       gap: spacing('4'),
     },
     group: {
+      paddingHorizontal: layout.screenPadding,
       gap: spacing('2'),
     },
     groupLabel: {

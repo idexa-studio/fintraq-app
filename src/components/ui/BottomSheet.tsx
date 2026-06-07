@@ -1,4 +1,5 @@
 import { useTheme } from '@/src/providers/ThemeProvider';
+import * as Haptics from 'expo-haptics';
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
   Animated,
@@ -12,6 +13,7 @@ import {
   Platform,
   DimensionValue,
 } from 'react-native';
+import { useSafeAreaInsets, SafeAreaProvider } from 'react-native-safe-area-context';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -44,6 +46,61 @@ const TIMING_CONFIG = {
   duration: 220,
   useNativeDriver: true,
 };
+
+const BottomSheetContent = React.memo(function BottomSheetContent({
+  children,
+  resolvedHeight,
+  resolvedMaxHeight,
+  translateY,
+  headerPanResponder,
+  contentPanResponder,
+  contextValue,
+  colors,
+}: {
+  children: React.ReactNode;
+  resolvedHeight: DimensionValue | undefined;
+  resolvedMaxHeight: DimensionValue;
+  translateY: Animated.Value;
+  headerPanResponder: any;
+  contentPanResponder: any;
+  contextValue: any;
+  colors: any;
+}) {
+  const insets = useSafeAreaInsets();
+
+  const bottomPadding = useMemo(() => {
+    if (insets.bottom > 0) {
+      return insets.bottom + 12;
+    }
+    return Platform.OS === 'android' ? 36 : 20;
+  }, [insets.bottom]);
+
+  return (
+    <Animated.View
+      {...contentPanResponder.panHandlers}
+      style={[
+        styles.sheet,
+        {
+          backgroundColor: colors.surface,
+          height: resolvedHeight,
+          maxHeight: resolvedMaxHeight,
+          transform: [{ translateY }],
+          paddingBottom: bottomPadding,
+        },
+      ]}
+    >
+      {/* Header/Drag area */}
+      <View {...headerPanResponder.panHandlers} style={styles.dragArea}>
+        <View style={[styles.handle, { backgroundColor: colors.text + '24' }]} />
+      </View>
+
+      {/* Children content wrapper */}
+      <BottomSheetContext.Provider value={contextValue}>
+        <View style={styles.content}>{children}</View>
+      </BottomSheetContext.Provider>
+    </Animated.View>
+  );
+});
 
 export const BentoBottomSheet = React.memo(function BentoBottomSheet({
   visible,
@@ -83,6 +140,7 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
     if (animState.current === 'open' || animState.current === 'opening') return;
     animState.current = 'opening';
     setModalVisible(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
 
     Animated.parallel([
       Animated.timing(backdropOpacity, {
@@ -105,6 +163,7 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
   const animateClose = useCallback(() => {
     if (animState.current === 'closed' || animState.current === 'closing') return;
     animState.current = 'closing';
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
 
     Animated.parallel([
       Animated.timing(backdropOpacity, {
@@ -252,41 +311,32 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
       animationType="none"
       onRequestClose={enablePanDownToClose ? animateClose : undefined}
     >
-      <View style={styles.container}>
-        {/* Backdrop */}
-        <TouchableWithoutFeedback onPress={handleBackdropPress}>
-          <Animated.View style={animatedBackdropStyle} />
-        </TouchableWithoutFeedback>
+      <SafeAreaProvider style={{ flex: 1 }}>
+        <View style={styles.container}>
+          {/* Backdrop */}
+          <TouchableWithoutFeedback onPress={handleBackdropPress}>
+            <Animated.View style={animatedBackdropStyle} />
+          </TouchableWithoutFeedback>
 
-        {/* Bottom Sheet Box */}
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={styles.keyboardAvoid}
-        >
-          <Animated.View
-            {...contentPanResponder.panHandlers}
-            style={[
-              styles.sheet,
-              {
-                backgroundColor: colors.surface,
-                height: resolvedHeight,
-                maxHeight: resolvedMaxHeight,
-                transform: [{ translateY }],
-              },
-            ]}
+          {/* Bottom Sheet Box */}
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={styles.keyboardAvoid}
           >
-            {/* Header/Drag area */}
-            <View {...headerPanResponder.panHandlers} style={styles.dragArea}>
-              <View style={[styles.handle, { backgroundColor: colors.text + '24' }]} />
-            </View>
-
-            {/* Children content wrapper */}
-            <BottomSheetContext.Provider value={contextValue}>
-              <View style={styles.content}>{children}</View>
-            </BottomSheetContext.Provider>
-          </Animated.View>
-        </KeyboardAvoidingView>
-      </View>
+            <BottomSheetContent
+              resolvedHeight={resolvedHeight}
+              resolvedMaxHeight={resolvedMaxHeight}
+              translateY={translateY}
+              headerPanResponder={headerPanResponder}
+              contentPanResponder={contentPanResponder}
+              contextValue={contextValue}
+              colors={colors}
+            >
+              {children}
+            </BottomSheetContent>
+          </KeyboardAvoidingView>
+        </View>
+      </SafeAreaProvider>
     </Modal>
   );
 });

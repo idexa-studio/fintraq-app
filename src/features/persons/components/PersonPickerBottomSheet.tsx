@@ -3,6 +3,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
+import * as Haptics from 'expo-haptics';
 import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { Person } from '../api/persons';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
@@ -50,6 +51,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
   }, [persons, query]);
 
   const handleSelect = useCallback((id: number | null) => {
+    Haptics.selectionAsync().catch(() => {});
     onSelect(id);
     onClose();
   }, [onSelect, onClose]);
@@ -111,9 +113,6 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
             Link person
           </Text>
-          <BentoPressable onPress={handleClose} style={styles.closeBtn}>
-            <MaterialCommunityIcons name="close" size={18} color={colors.text} />
-          </BentoPressable>
         </View>
 
         <View style={styles.searchWrap}>
@@ -175,7 +174,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
   StyleSheet.create({
     header: {
       flexDirection: 'row',
@@ -186,14 +185,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingBottom: spacing('2'),
     },
     title: { fontSize: 22 },
-    closeBtn: {
-      width: 32,
-      height: 32,
-      borderRadius: radius('full'),
-      backgroundColor: colors.text + '0C',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
     searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -207,19 +198,21 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     searchInput: { flex: 1, fontFamily: typography.fonts.regular, fontSize: typography.sizes.sm, paddingVertical: 0 },
     listContent: {
-      paddingHorizontal: layout.screenPadding,
-      paddingBottom: spacing('9'),
+      paddingBottom: spacing('3'),
     },
     row: {
       height: ITEM_HEIGHT,
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
-      paddingHorizontal: spacing('2'),
-      borderRadius: radius('xl'),
+      paddingHorizontal: layout.screenPadding,
+      marginVertical: spacing('0.5'),
     },
-    noneRow: { marginHorizontal: layout.screenPadding, marginBottom: spacing('1') },
-    rowSelected: { backgroundColor: colors.primary + '0F' },
+    noneRow: {
+      marginTop: spacing('2'),
+      marginBottom: spacing('1'),
+    },
+    rowSelected: { backgroundColor: isDark ? '#163228' : '#E6F4EA' },
     rowMeta: { flex: 1 },
     rowName: { fontSize: 14 },
     rowSub: { fontSize: 11, opacity: 0.65, marginTop: 2 },

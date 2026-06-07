@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
@@ -233,6 +234,7 @@ export function TransactionsScreen() {
   const [pendingDeleteTx, setPendingDeleteTx] = useState<TransactionListItem | null>(null);
 
   const handleSortSelect = useCallback((sortBy: 'date' | 'amount', sortOrder: 'asc' | 'desc') => {
+    Haptics.selectionAsync().catch(() => {});
     setAdvancedFilters(p => ({ ...p, sortBy, sortOrder }));
     setShowSortSheet(false);
   }, []);
@@ -382,9 +384,20 @@ export function TransactionsScreen() {
 
   const activeFilterCount = AdvancedFilterService.countActiveFilters(advancedFilters);
 
-  const clearFilters = () => {
+  const isSortActive = useMemo(() => {
+    return advancedFilters.sortBy !== 'date' || advancedFilters.sortOrder !== 'desc';
+  }, [advancedFilters.sortBy, advancedFilters.sortOrder]);
+
+  const clearFilters = useCallback(() => {
+    Haptics.selectionAsync().catch(() => {});
     setAdvancedFilters(DEFAULT_ADVANCED_FILTERS);
-  };
+  }, []);
+
+  const handleResetSort = useCallback((e?: any) => {
+    e?.stopPropagation?.();
+    Haptics.selectionAsync().catch(() => {});
+    setAdvancedFilters(p => ({ ...p, sortBy: 'date', sortOrder: 'desc' }));
+  }, []);
 
   const handleApplyFilters = useCallback((filters: AdvancedFilters) => {
     setAdvancedFilters(filters);
@@ -477,7 +490,13 @@ export function TransactionsScreen() {
         showBack
         rightAction={(
           <View style={styles.headerActions}>
-            <BentoPressable onPress={() => setShowAdvancedFilterSheet(true)} style={{ position: 'relative' }}>
+            <BentoPressable
+              onPress={() => {
+                Haptics.selectionAsync().catch(() => {});
+                setShowAdvancedFilterSheet(true);
+              }}
+              style={{ position: 'relative' }}
+            >
               <MaterialCommunityIcons name="tune" size={19} color={colors.text} />
               {activeFilterCount > 0 && (
                 <View style={styles.filterBadge}>
@@ -517,14 +536,46 @@ export function TransactionsScreen() {
               <Text style={styles.resultsCount}>
                 {transactions.length} transaction{transactions.length !== 1 ? 's' : ''}
               </Text>
-              <BentoPressable style={styles.sortDropdown} onPress={() => setShowSortSheet(true)}>
-                <Text style={styles.sortDropdownText}>
-                  {advancedFilters.sortBy === 'date'
-                    ? advancedFilters.sortOrder === 'desc' ? 'Newest first' : 'Oldest first'
-                    : advancedFilters.sortOrder === 'desc' ? 'Highest amount' : 'Lowest amount'}
-                </Text>
-                <MaterialCommunityIcons name="chevron-down" size={14} color={colors.textMuted} />
-              </BentoPressable>
+              <View
+                style={[
+                  styles.sortDropdown,
+                  isSortActive && { backgroundColor: colors.primary + '1A' }
+                ]}
+              >
+                <BentoPressable
+                  style={[
+                    styles.sortDropdownButton,
+                    isSortActive && styles.sortDropdownButtonActive
+                  ]}
+                  onPress={() => {
+                    Haptics.selectionAsync().catch(() => {});
+                    setShowSortSheet(true);
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.sortDropdownText,
+                      isSortActive && { color: colors.primary }
+                    ]}
+                  >
+                    {advancedFilters.sortBy === 'date'
+                      ? advancedFilters.sortOrder === 'desc' ? 'Newest first' : 'Oldest first'
+                      : advancedFilters.sortOrder === 'desc' ? 'Highest amount' : 'Lowest amount'}
+                  </Text>
+                  {!isSortActive && (
+                    <MaterialCommunityIcons name="chevron-down" size={14} color={colors.textMuted} />
+                  )}
+                </BentoPressable>
+                {isSortActive && (
+                  <BentoPressable
+                    style={styles.sortResetBtn}
+                    onPress={handleResetSort}
+                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                  >
+                    <MaterialCommunityIcons name="close" size={14} color={colors.primary} />
+                  </BentoPressable>
+                )}
+              </View>
             </View>
 
             {activeFilterCount > 0 && (
@@ -561,7 +612,13 @@ export function TransactionsScreen() {
         ) : null}
       />
 
-      <BentoPressable style={styles.fab} onPress={() => router.push('/transactions/create')}>
+      <BentoPressable
+        style={styles.fab}
+        onPress={() => {
+          Haptics.selectionAsync().catch(() => {});
+          router.push('/transactions/create');
+        }}
+      >
         <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
       </BentoPressable>
 
@@ -593,7 +650,6 @@ export function TransactionsScreen() {
       <OptionsBottomSheet
         visible={showSortSheet}
         onClose={() => setShowSortSheet(false)}
-        title="Sort transactions"
         options={[
           {
             key: 'newest',
@@ -778,21 +834,39 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
+      backgroundColor: colors.surface,
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('2.5'),
+      borderRadius: radius('xl'),
       marginTop: spacing('2'),
     },
     resultsCount: {
-      fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      fontFamily: typography.fonts.semibold,
+      fontSize: 13,
       color: colors.textMuted,
     },
     sortDropdown: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('1.5'),
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('1.5'),
+      backgroundColor: colors.background,
       borderRadius: radius('full'),
+    },
+    sortDropdownButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1'),
+      paddingLeft: spacing('3'),
+      paddingRight: spacing('3'),
+      paddingVertical: spacing('1.5'),
+    },
+    sortDropdownButtonActive: {
+      paddingRight: spacing('1'),
+    },
+    sortResetBtn: {
+      paddingRight: spacing('2.5'),
+      paddingLeft: spacing('1'),
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     sortDropdownText: {
       fontFamily: typography.fonts.semibold,

@@ -1,7 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import React, { useMemo, useCallback } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import * as Haptics from 'expo-haptics';
+import React, { useCallback, useMemo } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
 import { BentoBottomSheet } from './BottomSheet';
 
@@ -20,7 +21,7 @@ export type OptionsBottomSheetOption = {
 type OptionsBottomSheetProps = {
   visible: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   subtitle?: string;
   options: OptionsBottomSheetOption[];
   closeLabel?: string;
@@ -39,6 +40,7 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handleOptionPress = useCallback((option: OptionsBottomSheetOption) => {
+    Haptics.selectionAsync().catch(() => { });
     if (option.closeOnPress !== false) onClose();
     option.onPress();
   }, [onClose]);
@@ -49,10 +51,12 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
       onClose={onClose}
     >
       <View style={styles.content}>
-        <View style={styles.head}>
-          <Text style={styles.title}>{title}</Text>
-          {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
-        </View>
+        {title ? (
+          <View style={styles.head}>
+            <Text style={styles.title}>{title}</Text>
+            {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+          </View>
+        ) : null}
 
         <View style={styles.list}>
           {options.map((opt) => {
@@ -60,7 +64,7 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
             return (
               <BentoPressable
                 key={opt.key}
-                style={styles.opt}
+                style={[styles.opt, selected && styles.optSelected]}
                 onPress={() => handleOptionPress(opt)}
                 scaleOnPress={false}
               >
@@ -87,19 +91,16 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
             );
           })}
         </View>
-
-        <BentoPressable style={styles.cancel} onPress={onClose}>
-          <Text style={styles.cancelText}>{closeLabel}</Text>
-        </BentoPressable>
       </View>
     </BentoBottomSheet>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
   StyleSheet.create({
     content: {
-      paddingBottom: Platform.OS === 'ios' ? spacing('4') : spacing('2'),
+      paddingBottom: spacing("3"),
+
     },
     head: {
       paddingHorizontal: layout.screenPadding,
@@ -118,35 +119,23 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginTop: spacing('1'),
     },
     list: {
-      paddingHorizontal: spacing('2'),
+      paddingVertical: spacing('1'),
     },
     opt: {
       flexDirection: 'row',
       alignItems: 'center',
-      height: 54,
-      paddingHorizontal: spacing('4'),
+      height: 50,
+      paddingHorizontal: layout.screenPadding,
+      marginVertical: spacing('0.5'),
       gap: spacing('3'),
-      borderRadius: radius('xl'),
+    },
+    optSelected: {
+      backgroundColor: isDark ? '#163228' : '#E6F4EA',
     },
     optLabel: {
       flex: 1,
       fontFamily: typography.fonts.medium,
       fontSize: typography.sizes.md,
-      color: colors.text,
-    },
-    cancel: {
-      height: 48,
-      marginHorizontal: layout.screenPadding,
-      marginTop: spacing('2'),
-      marginBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
-      borderRadius: radius('full'),
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: colors.background,
-    },
-    cancelText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 14,
       color: colors.text,
     },
   });
