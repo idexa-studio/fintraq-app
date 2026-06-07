@@ -60,6 +60,10 @@ export class AdvancedFilterService {
     if (advanced.categoryIds && advanced.categoryIds.length === 1) {
       basic.categoryId = advanced.categoryIds[0];
     }
+
+    // Always pass sort to DB — never sort 500+ items on the JS thread
+    basic.sortBy = advanced.sortBy;
+    basic.sortOrder = advanced.sortOrder;
     
     return basic;
   }

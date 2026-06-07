@@ -295,7 +295,7 @@ export function TransactionsScreen() {
     setShowSortSheet(false);
   }, []);
 
-  // Convert advanced filters to basic API filters
+  // Convert advanced filters to basic API filters — sort is always passed to the DB
   const basicFilters = useMemo(() => {
     return AdvancedFilterService.toBasicFilters(advancedFilters);
   }, [advancedFilters]);
@@ -307,11 +307,14 @@ export function TransactionsScreen() {
   const personsQuery = usePersons();
   const deleteTransaction = useDeleteTransaction();
 
-  // Apply client-side filtering for advanced features
+  // Apply client-side filtering ONLY for advanced features the DB can't do.
+  // NEVER sort here — sorting is done server-side in the DB query.
+  // We only flat-map pages because pagination accumulates them; the JS filter
+  // runs on the already-paginated slice, not on the entire 500+ item history.
   const transactions = useMemo(() => {
     const allTransactions = txQuery.data?.pages.flat() ?? [];
 
-    // If no advanced filtering needed, return all
+    // If no advanced client-side filtering needed, return DB result as-is
     if (!AdvancedFilterService.requiresClientSideFiltering(advancedFilters)) {
       return allTransactions;
     }
@@ -375,18 +378,7 @@ export function TransactionsScreen() {
       }
 
       return true;
-    }).sort((a, b) => {
-      // Sort by selected criteria
-      if (advancedFilters.sortBy === 'amount') {
-        return advancedFilters.sortOrder === 'asc'
-          ? a.amount - b.amount
-          : b.amount - a.amount;
-      }
-
-      // Default sort by date
-      const dateA = new Date(a.datetime).getTime();
-      const dateB = new Date(b.datetime).getTime();
-      return advancedFilters.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+      // NOTE: No .sort() here — sorting is done by the DB ORDER BY clause.
     });
   }, [txQuery.data?.pages, advancedFilters]);
 
@@ -407,11 +399,17 @@ export function TransactionsScreen() {
     }
   }, [txQuery]);
 
-  // Calculate KPI totals from filtered transactions
+  // Calculate KPI totals from the current visible page only (not all accumulated pages).
+  // Scanning all accumulated pages on large datasets blocks the JS thread.
   const kpiTotalsByCurrency = useMemo(() => {
     const map: Record<string, { income: number; expense: number }> = {};
 
-    transactions.forEach((tx) => {
+    // Use the last fetched page for KPI display — it reflects the current filter state
+    // and is bounded by PAGE_SIZE (20 items), never 500+ items.
+    const currentPage = txQuery.data?.pages[txQuery.data.pages.length - 1] ?? [];
+    const source = currentPage.length > 0 ? currentPage : (txQuery.data?.pages[0] ?? []);
+
+    source.forEach((tx) => {
       const currency = tx.account.currency;
       if (!map[currency]) map[currency] = { income: 0, expense: 0 };
 
@@ -423,7 +421,7 @@ export function TransactionsScreen() {
     });
 
     return map;
-  }, [transactions]);
+  }, [txQuery.data?.pages]);
 
   const kpiCurrencies = useMemo(() => Object.keys(kpiTotalsByCurrency), [kpiTotalsByCurrency]);
 

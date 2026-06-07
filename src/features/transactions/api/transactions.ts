@@ -1,4 +1,4 @@
-import { SQL, and, count, desc, eq, sql } from 'drizzle-orm';
+import { SQL, and, asc, count, desc, eq, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments } from '@/src/db/schema';
@@ -14,6 +14,8 @@ export type TransactionFilters = {
   type?: TransactionType;
   accountId?: number;
   categoryId?: number;
+  sortBy?: 'date' | 'amount';
+  sortOrder?: 'asc' | 'desc';
 };
 
 const toAccounts = alias(accounts, 'to_accounts');
@@ -105,6 +107,15 @@ export const getTransactionsPaged = async (
   if (__DEV__) console.log('[TX] getTransactionsPaged', { page, filters });
   try {
     const where = buildWhere(filters);
+
+    // Build ORDER BY from filters — keeps heavy sorting in SQLite, not JS thread
+    const orderBy = (() => {
+      if (filters.sortBy === 'amount') {
+        return filters.sortOrder === 'asc' ? asc(payments.amount) : desc(payments.amount);
+      }
+      return filters.sortOrder === 'asc' ? asc(payments.datetime) : desc(payments.datetime);
+    })();
+
     const rows = await db
       .select(TRANSACTION_LIST_SELECT)
       .from(payments)
@@ -112,7 +123,7 @@ export const getTransactionsPaged = async (
       .innerJoin(categories, eq(payments.categoryId, categories.id))
       .leftJoin(toAccounts, eq(payments.toAccountId, toAccounts.id))
       .where(where)
-      .orderBy(desc(payments.datetime))
+      .orderBy(orderBy)
       .limit(PAGE_SIZE)
       .offset(page * PAGE_SIZE);
     if (__DEV__) console.log('[TX] getTransactionsPaged returned', rows.length, 'rows');

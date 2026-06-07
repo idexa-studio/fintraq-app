@@ -1,18 +1,26 @@
 import { useTheme } from '@/src/providers/ThemeProvider';
 import * as Haptics from 'expo-haptics';
-import React, { createContext, useContext, useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
-  Animated,
   Dimensions,
   Modal,
-  PanResponder,
+  Platform,
   StyleSheet,
   TouchableWithoutFeedback,
   View,
   KeyboardAvoidingView,
-  Platform,
   DimensionValue,
 } from 'react-native';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
+import Reanimated, { runOnJS, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -35,71 +43,155 @@ export type BentoBottomSheetProps = {
   enableBackdropDismiss?: boolean;
 };
 
-// Spring options matching Bento MD3 feel
 const SPRING_CONFIG = {
-  tension: 65,
-  friction: 11,
-  useNativeDriver: true,
+  damping: 20,
+  stiffness: 200,
+  mass: 0.8,
+  overshootClamping: false,
 };
 
-const TIMING_CONFIG = {
-  duration: 220,
-  useNativeDriver: true,
-};
+const CLOSE_THRESHOLD_Y = 120;
+const CLOSE_THRESHOLD_VY = 800; // px/s in worklet context
+
+// ─── Inner content (inside Modal, rendered per-open cycle) ───────────────────
 
 const BottomSheetContent = React.memo(function BottomSheetContent({
   children,
   resolvedHeight,
   resolvedMaxHeight,
-  translateY,
-  headerPanResponder,
-  contentPanResponder,
-  contextValue,
+  onDismiss,
+  onScroll,
   colors,
+  enablePanDownToClose,
 }: {
   children: React.ReactNode;
   resolvedHeight: DimensionValue | undefined;
   resolvedMaxHeight: DimensionValue;
-  translateY: Animated.Value;
-  headerPanResponder: any;
-  contentPanResponder: any;
-  contextValue: any;
+  onDismiss: () => void;
+  onScroll: (e: any) => void;
   colors: any;
+  enablePanDownToClose: boolean;
 }) {
   const insets = useSafeAreaInsets();
 
   const bottomPadding = useMemo(() => {
-    if (insets.bottom > 0) {
-      return insets.bottom + 12;
-    }
+    if (insets.bottom > 0) return insets.bottom + 12;
     return Platform.OS === 'android' ? 36 : 20;
   }, [insets.bottom]);
 
-  return (
-    <Animated.View
-      style={[
-        styles.sheet,
-        {
-          backgroundColor: colors.surface,
-          height: resolvedHeight,
-          maxHeight: resolvedMaxHeight,
-          transform: [{ translateY }],
-          paddingBottom: bottomPadding,
-        },
-      ]}
-    >
-      {/* Header/Drag area */}
-      <View {...headerPanResponder.panHandlers} style={styles.dragArea}>
-        <View style={[styles.handle, { backgroundColor: colors.text + '24' }]} />
-      </View>
+  // Reanimated shared values — run on UI thread, no bridge round-trip
+  const translateY = useSharedValue(SCREEN_HEIGHT);
+  const backdropOpacity = useSharedValue(0);
 
-      {/* Children content wrapper */}
-      <BottomSheetContext.Provider value={contextValue}>
-        <View style={styles.content}>{children}</View>
-      </BottomSheetContext.Provider>
-    </Animated.View>
+  // JS-thread scroll offset (via ref — no state, no re-renders)
+  const scrollOffsetRef = useRef(0);
+
+  const handleScroll = useCallback((event: any) => {
+    scrollOffsetRef.current = event.nativeEvent?.contentOffset?.y ?? 0;
+  }, []);
+
+  const contextValue = useMemo(() => ({ onScroll: handleScroll }), [handleScroll]);
+
+  // ── Open animation on mount ──────────────────────────────────────────────
+  useEffect(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    translateY.value = withSpring(0, SPRING_CONFIG);
+    backdropOpacity.value = withTiming(1, { duration: 200 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── Close helper (called from JS thread) ─────────────────────────────────
+  const animateClose = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    translateY.value = withTiming(SCREEN_HEIGHT, { duration: 220 });
+    backdropOpacity.value = withTiming(0, { duration: 200 }, (finished) => {
+      if (finished) {
+        runOnJS(onDismiss)();
+      }
+    });
+  }, [translateY, backdropOpacity, onDismiss]);
+
+  // ── Pan gesture — RNGH, so it cooperates with Swipeable rows ─────────────
+  const startY = useSharedValue(0);
+
+  const dragGesture = Gesture.Pan()
+    .enabled(enablePanDownToClose)
+    .activeOffsetY(8) // start only on downward intent
+    .failOffsetY(-8)  // fail if clearly scrolling up
+    .onStart(() => {
+      startY.value = translateY.value;
+    })
+    .onUpdate((e) => {
+      const next = startY.value + e.translationY;
+      if (next > 0) {
+        translateY.value = next;
+        const remainingPct = Math.max(0, 1 - next / 300);
+        backdropOpacity.value = remainingPct;
+      }
+    })
+    .onEnd((e) => {
+      const shouldClose =
+        e.translationY > CLOSE_THRESHOLD_Y ||
+        e.velocityY > CLOSE_THRESHOLD_VY;
+
+      if (shouldClose) {
+        translateY.value = withTiming(SCREEN_HEIGHT, { duration: 220 });
+        backdropOpacity.value = withTiming(0, { duration: 200 }, (finished) => {
+          if (finished) runOnJS(onDismiss)();
+        });
+      } else {
+        translateY.value = withSpring(0, SPRING_CONFIG);
+        backdropOpacity.value = withTiming(1, { duration: 150 });
+      }
+    });
+
+  const animatedSheetStyle = useMemo(() => ({
+    transform: [{ translateY: translateY as any }],
+    height: resolvedHeight,
+    maxHeight: resolvedMaxHeight,
+    backgroundColor: colors.surface,
+    paddingBottom: bottomPadding,
+  }), [translateY, resolvedHeight, resolvedMaxHeight, colors.surface, bottomPadding]);
+
+  const animatedBackdropStyle = useMemo(() => ({
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    opacity: backdropOpacity as any,
+  }), [backdropOpacity]);
+
+  return (
+    // GestureHandlerRootView inside the Modal window so RNGH gesture
+    // recognizers are registered in the correct UIWindow on iOS.
+    <GestureHandlerRootView style={styles.container}>
+      {/* Backdrop */}
+      <TouchableWithoutFeedback onPress={animateClose}>
+        <Reanimated.View style={animatedBackdropStyle} />
+      </TouchableWithoutFeedback>
+
+      {/* Sheet */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.keyboardAvoid}
+      >
+        <GestureDetector gesture={dragGesture}>
+          <Reanimated.View style={[styles.sheet, animatedSheetStyle]}>
+            {/* Handle pill */}
+            <View style={styles.dragArea}>
+              <View style={[styles.handle, { backgroundColor: colors.text + '24' }]} />
+            </View>
+
+            {/* Children */}
+            <BottomSheetContext.Provider value={contextValue}>
+              <View style={styles.content}>{children}</View>
+            </BottomSheetContext.Provider>
+          </Reanimated.View>
+        </GestureDetector>
+      </KeyboardAvoidingView>
+    </GestureHandlerRootView>
   );
 });
+
+// ─── Public component ────────────────────────────────────────────────────────
 
 export const BentoBottomSheet = React.memo(function BentoBottomSheet({
   visible,
@@ -110,236 +202,70 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
   enablePanDownToClose = true,
   enableBackdropDismiss = true,
 }: BentoBottomSheetProps) {
-  const { colors, overlay } = useTheme();
+  const { colors } = useTheme();
 
-  // Internal state to hold the Modal visibility, allowing close animations to complete before unmounting.
+  // Modal-level visibility — we keep the Modal mounted until the close
+  // animation finishes, then unmount the entire subtree via key reset.
   const [modalVisible, setModalVisible] = useState(visible);
+  // Increment key to fully remount BottomSheetContent on each open cycle
+  // so animation shared values reset cleanly.
+  const [contentKey, setContentKey] = useState(0);
 
-  // Keep onClose in a ref to prevent recreating animateClose when parent inline callbacks change.
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;
   }, [onClose]);
 
-  // Track the animation state to prevent loop restarts
-  const animState = useRef<'closed' | 'opening' | 'open' | 'closing'>(visible ? 'open' : 'closed');
-
-  // Animation values
-  const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
-  const backdropOpacity = useRef(new Animated.Value(0)).current;
-
-  // Track the scroll offset of any inner scrollable content
-  const scrollOffset = useRef(0);
-
-  // Event handler for scrolling content
-  const handleScroll = useCallback((event: any) => {
-    scrollOffset.current = event.nativeEvent?.contentOffset?.y ?? 0;
-  }, []);
-
-  const contextValue = useMemo(() => ({
-    onScroll: handleScroll,
-  }), [handleScroll]);
-
-  // Open animation helper
-  const animateOpen = useCallback(() => {
-    if (animState.current === 'open' || animState.current === 'opening') return;
-    animState.current = 'opening';
-    setModalVisible(true);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-
-    Animated.parallel([
-      Animated.timing(backdropOpacity, {
-        toValue: 1,
-        duration: TIMING_CONFIG.duration,
-        useNativeDriver: TIMING_CONFIG.useNativeDriver,
-      }),
-      Animated.spring(translateY, {
-        toValue: 0,
-        tension: SPRING_CONFIG.tension,
-        friction: SPRING_CONFIG.friction,
-        useNativeDriver: SPRING_CONFIG.useNativeDriver,
-      }),
-    ]).start(() => {
-      animState.current = 'open';
-    });
-  }, [translateY, backdropOpacity]);
-
-  // Close animation helper
-  const animateClose = useCallback(() => {
-    if (animState.current === 'closed' || animState.current === 'closing') return;
-    animState.current = 'closing';
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-
-    Animated.parallel([
-      Animated.timing(backdropOpacity, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateY, {
-        toValue: SCREEN_HEIGHT,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      animState.current = 'closed';
-      setModalVisible(false);
-      onCloseRef.current();
-    });
-  }, [translateY, backdropOpacity]);
-
-  // Sync the `visible` prop with animations
   useEffect(() => {
     if (visible) {
-      animateOpen();
-    } else {
-      animateClose();
+      // New open cycle — remount content with fresh animation state
+      setContentKey((k) => k + 1);
+      setModalVisible(true);
     }
-  }, [visible, animateOpen, animateClose]);
+    // When visible goes false, the BottomSheetContent's gesture/animation
+    // handles closing and calls onDismiss which closes the Modal.
+  }, [visible]);
 
-  const handleBackdropPress = () => {
-    if (enableBackdropDismiss) {
-      animateClose();
-    }
-  };
+  const handleDismiss = useCallback(() => {
+    setModalVisible(false);
+    onCloseRef.current();
+  }, []);
 
-  // Pan Responder for the drag handle area (ALWAYS responds to vertical drag)
-  const headerPanResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => enablePanDownToClose,
-      onMoveShouldSetPanResponder: () => enablePanDownToClose,
-      onPanResponderMove: (_, gestureState) => {
-        if (gestureState.dy > 0) {
-          translateY.setValue(gestureState.dy);
-          const remainingPercent = Math.max(0, 1 - gestureState.dy / 300);
-          backdropOpacity.setValue(remainingPercent);
-        }
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dy > 120 || gestureState.vy > 0.5) {
-          animateClose();
-        } else {
-          // Snap back
-          Animated.parallel([
-            Animated.spring(translateY, {
-              toValue: 0,
-              tension: 60,
-              friction: 9,
-              useNativeDriver: true,
-            }),
-            Animated.timing(backdropOpacity, {
-              toValue: 1,
-              duration: 150,
-              useNativeDriver: true,
-            }),
-          ]).start();
-        }
-      },
-    })
-  ).current;
-
-  // Pan Responder for the content area (intercepts only when swiping down and scrolled to the top)
-  const contentPanResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => false,
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        if (!enablePanDownToClose) return false;
-        
-        // Intercept touch if dragging down (dy > 5) and the inner ScrollView is scrolled to the top (scrollOffset <= 0)
-        const isDraggingDown = gestureState.dy > 5;
-        const isAtTop = scrollOffset.current <= 0;
-        return isDraggingDown && isAtTop;
-      },
-      onPanResponderMove: (_, gestureState) => {
-        if (gestureState.dy > 0) {
-          translateY.setValue(gestureState.dy);
-          const remainingPercent = Math.max(0, 1 - gestureState.dy / 300);
-          backdropOpacity.setValue(remainingPercent);
-        }
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dy > 120 || gestureState.vy > 0.5) {
-          animateClose();
-        } else {
-          // Snap back
-          Animated.parallel([
-            Animated.spring(translateY, {
-              toValue: 0,
-              tension: 60,
-              friction: 9,
-              useNativeDriver: true,
-            }),
-            Animated.timing(backdropOpacity, {
-              toValue: 1,
-              duration: 150,
-              useNativeDriver: true,
-            }),
-          ]).start();
-        }
-      },
-      onPanResponderTerminate: () => {
-        // Snap back if gesture was cancelled/interrupted by system
-        Animated.spring(translateY, {
-          toValue: 0,
-          tension: 60,
-          friction: 9,
-          useNativeDriver: true,
-        }).start();
-      },
-    })
-  ).current;
-
-  // Resolve sheet max height based on snapPoints
   const resolvedMaxHeight = useMemo<DimensionValue>(() => {
     if (!snapPoints || snapPoints.length === 0) return '90%';
-    const lastPoint = snapPoints[snapPoints.length - 1];
-    return (typeof lastPoint === 'number' ? lastPoint : lastPoint) as DimensionValue;
+    const last = snapPoints[snapPoints.length - 1];
+    return last as DimensionValue;
   }, [snapPoints]);
 
-  // Resolve sheet height based on snapPoints and dynamic sizing
   const resolvedHeight = useMemo<DimensionValue | undefined>(() => {
     if (enableDynamicSizing || !snapPoints || snapPoints.length === 0) return undefined;
-    const lastPoint = snapPoints[snapPoints.length - 1];
-    return (typeof lastPoint === 'number' ? lastPoint : lastPoint) as DimensionValue;
+    const last = snapPoints[snapPoints.length - 1];
+    return last as DimensionValue;
   }, [snapPoints, enableDynamicSizing]);
 
-  const animatedBackdropStyle = {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: overlay.dim,
-    opacity: backdropOpacity,
-  };
-
+  // When visible goes false externally (parent state changes before animation
+  // finishes), we still want to run the close animation. So we pass `visible`
+  // into content and let it drive itself.
   return (
     <Modal
       transparent
       visible={modalVisible}
       animationType="none"
-      onRequestClose={enablePanDownToClose ? animateClose : undefined}
+      onRequestClose={enablePanDownToClose ? handleDismiss : undefined}
     >
-      <View style={styles.container}>
-        {/* Backdrop */}
-        <TouchableWithoutFeedback onPress={handleBackdropPress}>
-          <Animated.View style={animatedBackdropStyle} />
-        </TouchableWithoutFeedback>
-
-        {/* Bottom Sheet Box */}
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={styles.keyboardAvoid}
+      {modalVisible && (
+        <BottomSheetContent
+          key={contentKey}
+          resolvedHeight={resolvedHeight}
+          resolvedMaxHeight={resolvedMaxHeight}
+          onDismiss={handleDismiss}
+          onScroll={() => {}}
+          colors={colors}
+          enablePanDownToClose={enablePanDownToClose}
         >
-          <BottomSheetContent
-            resolvedHeight={resolvedHeight}
-            resolvedMaxHeight={resolvedMaxHeight}
-            translateY={translateY}
-            headerPanResponder={headerPanResponder}
-            contentPanResponder={contentPanResponder}
-            contextValue={contextValue}
-            colors={colors}
-          >
-            {children}
-          </BottomSheetContent>
-        </KeyboardAvoidingView>
-      </View>
+          {children}
+        </BottomSheetContent>
+      )}
     </Modal>
   );
 });

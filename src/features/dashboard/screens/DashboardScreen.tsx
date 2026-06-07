@@ -42,15 +42,34 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   React.useEffect(() => {
     if (isPremium) return;
-    AsyncStorage.getItem(UPSELL_KEY).then(val => {
-      if (!val || Date.now() - parseInt(val, 10) > UPSELL_TTL) setShowUpsell(true);
-    });
+
+    const checkUpsell = async () => {
+      // Prevent rendering the premium upsell modal at the same time as the walkthrough modal to avoid iOS UIKit lockup/freeze.
+      const walkthroughCompleted = await AsyncStorage.getItem('@luno_walkthrough_dashboard');
+      if (walkthroughCompleted !== 'true') return;
+
+      const val = await AsyncStorage.getItem(UPSELL_KEY);
+      if (!val || Date.now() - parseInt(val, 10) > UPSELL_TTL) {
+        setShowUpsell(true);
+      }
+    };
+
+    checkUpsell();
   }, [isPremium]);
 
   const dismissUpsell = useCallback(() => {
     setShowUpsell(false);
     AsyncStorage.setItem(UPSELL_KEY, String(Date.now()));
   }, []);
+
+  const handleWalkthroughFinish = useCallback(() => {
+    if (isPremium) return;
+    AsyncStorage.getItem(UPSELL_KEY).then(val => {
+      if (!val || Date.now() - parseInt(val, 10) > UPSELL_TTL) {
+        setShowUpsell(true);
+      }
+    });
+  }, [isPremium]);
 
   const balancesByCurrency = useMemo(() =>
     accounts?.reduce((acc, a) => {
@@ -191,7 +210,11 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         <MaterialCommunityIcons name="plus" size={26} color={colors.background} />
       </BentoPressable>
 
-      <WalkthroughOverlay storageKey="@luno_walkthrough_dashboard" steps={DASHBOARD_WALKTHROUGH_STEPS} />
+      <WalkthroughOverlay
+        storageKey="@luno_walkthrough_dashboard"
+        steps={DASHBOARD_WALKTHROUGH_STEPS}
+        onFinish={handleWalkthroughFinish}
+      />
       <PremiumUpsellBottomSheet visible={showUpsell && !isPremium} onClose={dismissUpsell} />
     </SafeAreaView>
   );
