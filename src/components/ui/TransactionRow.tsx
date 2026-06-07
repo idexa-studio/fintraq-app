@@ -1,12 +1,14 @@
-import { Ionicons } from '@expo/vector-icons';
-import { format } from 'date-fns';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { MoneyText } from '@/src/components/ui/MoneyText';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { TransactionType } from '@/src/types';
+import { colorNumberToHex } from '@/src/utils/format';
+import { resolveIcon } from '@/src/utils/icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { format, isToday, isYesterday } from 'date-fns';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
-import { TransactionType } from '../../types';
-import { colorNumberToHex } from '../../utils/format';
-import { IconAvatar } from './IconAvatar';
-import { MoneyText } from './MoneyText';
+import { StyleSheet, Text, View } from 'react-native';
+import { BentoPressable } from './BentoPressable';
 
 type TransactionData = {
   id: number;
@@ -17,6 +19,8 @@ type TransactionData = {
   account: {
     name: string;
     currency: string;
+    icon: string;
+    color: number;
   };
   category: {
     name: string;
@@ -25,6 +29,8 @@ type TransactionData = {
   };
   toAccount?: {
     name: string | null;
+    icon: string | null;
+    color: number | null;
   } | null;
 };
 
@@ -36,21 +42,13 @@ type Props = {
   showDate?: boolean;
 };
 
-/**
- * TransactionRow - Editorial Brutalist Design
- *
- * Layout:
- * - Card radius: 0 for middle items, 16px (lg) for first/last corners
- * - Padding: 14px vertical
- * - Gap: 10px between elements
- * - Icon box: 40px, 12px radius (md)
- */
+
 export const TransactionRow = React.memo(function TransactionRow({
   tx,
   onPress,
   isFirst,
   isLast,
-  showDate
+  showDate,
 }: Props) {
   const theme = useTheme();
   const { colors, radius, spacing, sizes } = theme;
@@ -58,18 +56,11 @@ export const TransactionRow = React.memo(function TransactionRow({
 
   const categoryColor = useMemo(() => colorNumberToHex(tx.category.color), [tx.category.color]);
 
-  const iconName: keyof typeof Ionicons.glyphMap = useMemo(() =>
-    tx.category.icon in Ionicons.glyphMap
-      ? (tx.category.icon as keyof typeof Ionicons.glyphMap)
-      : 'pricetag-outline',
-    [tx.category.icon]
-  );
+  const iconName = useMemo(() => resolveIcon(tx.category.icon, 'tag-outline'), [tx.category.icon]);
 
   const handlePress = useCallback(() => {
     onPress?.(tx);
   }, [onPress, tx]);
-
-  const isTransfer = tx.type === 'TR';
 
   const containerStyle = useMemo(() => ({
     backgroundColor: colors.surface,
@@ -80,79 +71,157 @@ export const TransactionRow = React.memo(function TransactionRow({
     marginBottom: isLast ? 0 : spacing('0.5'),
   }), [isFirst, isLast, colors.surface, radius, spacing]);
 
+  const accountIconName = useMemo(() => resolveIcon(tx.account.icon, 'wallet-outline'), [tx.account.icon]);
+
+  const toAccountIconName = useMemo(() => resolveIcon(tx.toAccount?.icon, 'wallet-outline'), [tx.toAccount?.icon]);
+
+  const accountColor = useMemo(() => colorNumberToHex(tx.account.color), [tx.account.color]);
+
+  const toAccountColor = useMemo(() =>
+    tx.toAccount?.color != null
+      ? colorNumberToHex(tx.toAccount.color)
+      : colors.textMuted,
+    [tx.toAccount?.color, colors.textMuted]
+  );
+
+  const timeText = useMemo(() => {
+    return format(new Date(tx.datetime), 'h:mm a');
+  }, [tx.datetime]);
+
+  const dateText = useMemo(() => {
+    const d = new Date(tx.datetime);
+    if (isToday(d)) return 'Today';
+    if (isYesterday(d)) return 'Yesterday';
+    return format(d, 'MMM d');
+  }, [tx.datetime]);
+
+  const displayTitle = useMemo(() => {
+    return tx.note && tx.note.trim() ? tx.note.trim() : tx.category.name;
+  }, [tx.note, tx.category.name]);
+
+  const dateTimeText = useMemo(() => {
+    const parts = [];
+    parts.push(timeText);
+    if (showDate) {
+      parts.push(dateText);
+    }
+    return parts.join(' • ');
+  }, [timeText, dateText, showDate]);
+
   return (
-    <TouchableOpacity
+    <BentoPressable
       style={[styles.container, containerStyle]}
-      activeOpacity={0.75}
       onPress={handlePress}
+      scaleOnPress={false}
     >
-      <IconAvatar icon={iconName} color={categoryColor} variant="solid" size={sizes.iconButton.md} />
+      <IconAvatar
+        icon={iconName}
+        color={categoryColor}
+        variant="subtle"
+        size={sizes.iconButton.md}
+        iconSize={16}
+      />
+
       <View style={styles.info}>
         <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
-          {tx.note || tx.category.name}
+          {displayTitle}
         </Text>
         <View style={styles.metaRow}>
-          <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
-            {isTransfer
-              ? `${tx.category.name} · ${tx.account.name} → ${tx.toAccount?.name ?? 'Account'}`
-              : `${tx.category.name} · ${tx.account.name}`}
-          </Text>
+          {tx.type === 'TR' ? (
+            <View style={styles.transferBadge}>
+              <View style={styles.accountBadge}>
+                <MaterialCommunityIcons name={accountIconName} size={11} color={accountColor} />
+                <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
+                  {tx.account.name}
+                </Text>
+              </View>
+              <MaterialCommunityIcons name="arrow-right" size={11} color={colors.textMuted} style={styles.transferArrow} />
+              <View style={styles.accountBadge}>
+                <MaterialCommunityIcons name={toAccountIconName} size={11} color={toAccountColor} />
+                <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
+                  {tx.toAccount?.name ?? 'Account'}
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <View style={styles.accountBadge}>
+              <MaterialCommunityIcons name={accountIconName} size={11} color={accountColor} />
+              <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
+                {tx.account.name}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
+
       <View style={styles.right}>
         <MoneyText
           amount={tx.amount}
           currency={tx.account.currency}
           type={tx.type}
-          weight="bold"
+          weight="semibold"
           style={styles.amount}
         />
-        <Text style={[styles.date, { color: colors.textMuted }]}>
-          {showDate
-            ? format(new Date(tx.datetime), 'MMM d')
-            : format(new Date(tx.datetime), 'HH:mm')}
+        <Text style={[styles.meta, { color: colors.textMuted, marginTop: 2 }]} numberOfLines={1}>
+          {dateTimeText}
         </Text>
       </View>
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 
 TransactionRow.displayName = 'TransactionRow';
 
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing }: ThemeContextType) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: spacing('3.5'),
-    paddingHorizontal: spacing('3.5'),
-    gap: spacing('2.5'),
+    paddingHorizontal: spacing('4'),
+    gap: spacing('3'),
   },
   info: {
     flex: 1,
     gap: spacing('0.5'),
+    justifyContent: 'center',
   },
   title: {
-    fontFamily: typography.fonts.semibold,
-    fontSize: 14,
+    fontFamily: typography.fonts.medium,
+    fontSize: typography.sizes.sm,
+    lineHeight: 18,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing('1'),
+    flexShrink: 1,
+  },
+  accountBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing('1'),
+    flexShrink: 1,
+  },
+  transferBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing('1'),
+    flexShrink: 1,
+  },
+  transferArrow: {
+    opacity: 0.5,
   },
   meta: {
     fontFamily: typography.fonts.regular,
-    fontSize: 12,
+    fontSize: typography.sizes.xs,
+    lineHeight: 14,
+    flexShrink: 1,
   },
   right: {
     alignItems: 'flex-end',
-    gap: spacing('1'),
+    justifyContent: 'center',
   },
   amount: {
-    fontSize: typography.sizes.xs,
-  },
-  date: {
-    fontFamily: typography.fonts.regular,
-    fontSize: 11,
+    fontSize: typography.sizes.sm,
   },
 });

@@ -1,24 +1,19 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
-import { OptionsDialog, OptionsDialogOption } from '@/src/components/ui/OptionsDialog';
+import { OptionsBottomSheet, OptionsBottomSheetOption } from '@/src/components/ui/OptionsBottomSheet';
 import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/accounts';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { WalkthroughOverlay, ACCOUNTS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { Account } from '../api/accounts';
 
@@ -68,43 +63,42 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
     router.push('/(main)/accounts/form');
   }, [router]);
 
-  const accountOptions = useMemo((): OptionsDialogOption[] => {
+  const accountOptions = useMemo((): OptionsBottomSheetOption[] => {
     if (!selectedAccount) return [];
     return [
-      { key: 'edit', label: 'Edit', icon: 'create-outline', onPress: handleEdit },
-      { key: 'delete', label: 'Delete', icon: 'trash-outline', destructive: true, onPress: handleDeletePress },
+      { key: 'edit', label: 'Edit', icon: 'pencil-outline', onPress: handleEdit },
+      { key: 'delete', label: 'Delete', icon: 'trash-can-outline', destructive: true, onPress: handleDeletePress },
     ];
   }, [selectedAccount, handleEdit, handleDeletePress]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
 
-      <Header title="Accounts" showBack />
+      <Header title="Accounts" />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {accounts?.map((account) => {
           const accColor = colorNumberToHex(account.color);
           return (
-            <TouchableOpacity
+            <BentoPressable
               key={account.id}
               style={styles.card}
               onPress={() => handleCardPress(account.id)}
-              activeOpacity={0.7}
             >
               <View style={styles.cardTop}>
                 <View style={styles.cardLead}>
                   <IconAvatar
                     icon={resolveIcon(account.icon, 'wallet-outline')}
-                    color={accColor} variant="solid"
-                    size={38}
-                    iconSize={18}
+                    color={accColor} variant="subtle"
+                    size={36}
+                    iconSize={16}
                   />
                   <View style={styles.cardMeta}>
-                    <Text style={[styles.cardName, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+                    <Text style={styles.cardName} numberOfLines={1}>
                       {account.name}
                     </Text>
-                    <Text style={[styles.cardHint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                    <Text style={styles.cardHint}>
                       {account.accountNumber && account.accountNumber !== 'N/A'
                         ? `•••• ${account.accountNumber.slice(-4)}`
                         : 'Tap to view activity'}
@@ -113,23 +107,22 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                 </View>
 
                 <View style={styles.cardTopRight}>
-                  <View style={styles.currencyBadge}>
-                    <Text style={[styles.currencyText, { fontFamily: typography.fonts.semibold, color: accColor }]}>
+                  <View style={[styles.currencyBadge, { backgroundColor: accColor + '12' }]}>
+                    <Text style={[styles.currencyText, { color: accColor }]}>
                       {account.currency}
                     </Text>
                   </View>
-                  <TouchableOpacity
+                  <BentoPressable
                     onPress={() => handleMenuOpen(account)}
                     hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    activeOpacity={0.4}
                   >
-                    <Ionicons name="ellipsis-horizontal" size={18} color={colors.textMuted} />
-                  </TouchableOpacity>
+                    <MaterialCommunityIcons name="dots-vertical" size={18} color={colors.textMuted} />
+                  </BentoPressable>
                 </View>
               </View>
 
-              <Text style={[styles.balanceLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                AVAILABLE
+              <Text style={styles.balanceLabel}>
+                Available
               </Text>
               <MoneyText
                 amount={account.balance}
@@ -140,20 +133,20 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
 
               <View style={styles.cardStats}>
                 <View style={styles.statCol}>
-                  <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                    TOTAL IN
+                  <Text style={styles.statLabel}>
+                    Total in
                   </Text>
                   <MoneyText amount={account.income} currency={account.currency} type="CR" compact style={styles.statValue} />
                 </View>
                 <View style={styles.statDivider} />
                 <View style={styles.statCol}>
-                  <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-                    TOTAL OUT
+                  <Text style={styles.statLabel}>
+                    Total out
                   </Text>
                   <MoneyText amount={account.expense} currency={account.currency} type="DR" compact style={styles.statValue} />
                 </View>
               </View>
-            </TouchableOpacity>
+            </BentoPressable>
           );
         })}
 
@@ -165,14 +158,13 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
           </View>
         ) : null}
 
-        <View style={styles.bottomPad} />
       </ScrollView>
 
-      <TouchableOpacity style={styles.fab} onPress={handleAdd} activeOpacity={0.85}>
-        <Ionicons name="add" size={24} color={colors.background} />
-      </TouchableOpacity>
+      <BentoPressable style={styles.fab} onPress={handleAdd}>
+        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
+      </BentoPressable>
 
-      <OptionsDialog
+      <OptionsBottomSheet
         visible={showOptions}
         onClose={closeOptions}
         title={selectedAccount?.name ?? 'Account'}
@@ -188,6 +180,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
         onConfirm={handleDeleteConfirm}
         isLoading={deleteAccount.isPending}
       />
+      <WalkthroughOverlay storageKey="@luno_walkthrough_accounts" steps={ACCOUNTS_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });
@@ -198,8 +191,8 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
+      paddingBottom: 100,
     },
-    bottomPad: { height: spacing('9') },
 
     card: {
       backgroundColor: colors.surface,
@@ -224,11 +217,15 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       gap: spacing('0.5'),
     },
     cardName: {
+      fontFamily: typography.fonts.medium,
+      color: colors.text,
       fontSize: typography.sizes.md,
     },
     cardHint: {
+      fontFamily: typography.fonts.regular,
+      color: colors.textMuted,
       fontSize: typography.sizes.xs,
-      opacity: 0.55,
+      opacity: 0.65,
     },
     cardTopRight: {
       flexDirection: 'row',
@@ -237,18 +234,18 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       marginLeft: spacing('2'),
     },
     currencyBadge: {
-      backgroundColor: colors.background,
-      paddingHorizontal: spacing('2'),
+      paddingHorizontal: spacing('2.5'),
       paddingVertical: spacing('0.5'),
-      borderRadius: radius('sm'),
+      borderRadius: radius('full'),
     },
     currencyText: {
-      fontSize: 10,
+      fontFamily: typography.fonts.medium,
+      fontSize: typography.sizes.xs,
     },
     balanceLabel: {
-      fontSize: 9,
-      letterSpacing: 1.2,
-      opacity: 0.5,
+      fontFamily: typography.fonts.medium,
+      color: colors.textMuted,
+      fontSize: typography.sizes.xs,
     },
     cardBalance: {
       fontSize: 26,
@@ -266,9 +263,9 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       backgroundColor: colors.text + '0C',
     },
     statLabel: {
-      fontSize: 8,
-      letterSpacing: 1,
-      opacity: 0.5,
+      fontFamily: typography.fonts.medium,
+      color: colors.textMuted,
+      fontSize: typography.sizes.xs,
     },
     statValue: {
       fontSize: 14,
@@ -276,12 +273,12 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
 
     fab: {
       position: 'absolute',
-      bottom: Platform.OS === 'ios' ? spacing('9') : spacing('6'),
-      right: layout.screenPadding,
+      bottom: 20,
+      right: 16,
       width: 56,
       height: 56,
-      borderRadius: radius('full'),
-      backgroundColor: colors.text,
+      borderRadius: radius('lg'),
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -295,3 +292,4 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       opacity: 0.4,
     },
   });
+

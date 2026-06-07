@@ -4,14 +4,14 @@ import { accounts, payments } from '../../../db/schema';
 import { getDaysAgoLocal, getStartOfMonthLocal } from '../../../utils/date';
 import { formatCurrency } from '../../../utils/format';
 import { InsightStatus, InsightTrend, TransactionType } from '../../../types';
-import { IoniconName } from '../../../utils/icons';
+import { MaterialIconName } from '../../../utils/icons';
 
 type InsightBase = {
   id: string;
   type: InsightStatus;
   title: string;
   subtitle: string;
-  icon: IoniconName;
+  icon: MaterialIconName;
   trend?: InsightTrend;
 };
 
@@ -56,7 +56,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
         subtitle: isUp
           ? `vs last week. Check if anything snuck in — a quick audit never hurts.`
           : `vs last week. You kept things tighter than usual — well done.`,
-        icon: isUp ? 'trending-up-outline' : 'trending-down-outline',
+        icon: isUp ? 'trending-up' : 'trending-down',
         trend: (isUp ? 'up' : 'down') as InsightTrend,
       });
     }
@@ -78,7 +78,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
             subtitle: isUp
               ? `vs last week. Extra cash coming in — put some aside if you can.`
               : `vs last week. Totally normal — income ebbs and flows.`,
-            icon: isUp ? 'cash-outline' : 'trending-down-outline',
+            icon: isUp ? 'cash' : 'trending-down',
             trend: (isUp ? 'up' : 'down') as InsightTrend,
           });
         }
@@ -139,7 +139,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
             subtitle: isUp
               ? `Up ${pct.toFixed(0)}% vs your average. You spent more on ${r.name} than usual this week.`
               : `Down ${Math.abs(pct).toFixed(0)}% vs your average. You spent less on ${r.name} — nice discipline.`,
-            icon: isUp ? 'flame-outline' : 'leaf-outline',
+            icon: isUp ? 'fire' : 'leaf',
             trend: (isUp ? 'up' : 'down') as InsightTrend,
           });
           break;
@@ -150,8 +150,6 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
     // 4. Weekly Summary
     if (thisWeek.income > 0 || thisWeek.expense > 0) {
       const saved = thisWeek.income - thisWeek.expense;
-      const fourWeekData = await getRangeSums(28, 0, currency);
-      const fourWeekAvg = fourWeekData.income > 0 ? ((fourWeekData.income - fourWeekData.expense) / fourWeekData.income) * 100 : 0;
 
       let best = '';
       if (saved > 0) {
@@ -175,7 +173,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
         valueType: 'text',
         text: '',
         subtitle: `${formatCurrency(thisWeek.income, currency)} in · ${formatCurrency(thisWeek.expense, currency)} out · ${formatCurrency(Math.abs(saved), currency)} ${saved >= 0 ? 'saved' : 'overspent'}${best}`,
-        icon: 'newspaper-outline',
+        icon: 'newspaper',
       });
     }
 

@@ -1,25 +1,28 @@
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { format } from 'date-fns';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { DEFAULT_CURRENCY } from '@/src/constants/currency';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
-import { AreaChart, type AreaChartPoint } from '@/src/features/analytics/components/AreaChart';
-import { BarGroupChart, type BarBucket } from '@/src/features/analytics/components/BarGroupChart';
+import { LinearAreaChart, type BarBucket } from '@/src/features/analytics/components/LinearAreaChart';
 import { DowChart } from '@/src/features/analytics/components/DowChart';
 import {
   useAnalyticsCategoryBreakdown,
   useAnalyticsDailyData,
   useAnalyticsDow,
   useAnalyticsMonthlyData,
+  useAnalyticsPersonBreakdown,
 } from '@/src/features/analytics/hooks/useAnalyticsData';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { Ionicons } from '@expo/vector-icons';
+import { WalkthroughOverlay, ANALYTICS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import {
@@ -27,7 +30,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -73,27 +75,72 @@ const chunkAggregate = (
   return result;
 };
 
-function EmptyState({ icon, text }: { icon: keyof typeof Ionicons.glyphMap; text: string }) {
+function EmptyState({
+  icon,
+  title,
+  subtitle,
+}: {
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  title: string;
+  subtitle: string;
+}) {
   const theme = useTheme();
-  const { colors, typography, spacing } = theme;
-  const styles = useMemo(() => StyleSheet.create({
-    wrap: { paddingVertical: spacing('8'), alignItems: 'center' as const, gap: spacing('2.5') },
-    text: { fontFamily: typography.fonts.regular, color: colors.textMuted, fontSize: 12, textAlign: 'center' as const },
-  }), [theme]);
+  const styles = useMemo(
+    () => {
+      const { colors, typography, spacing, radius } = theme;
+      return StyleSheet.create({
+        row: {
+          flexDirection: 'row' as const,
+          alignItems: 'center' as const,
+          gap: spacing('3'),
+          backgroundColor: colors.surface,
+          borderRadius: radius('xl'),
+          padding: spacing('4'),
+          marginHorizontal: 16,
+        },
+        iconRing: {
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          backgroundColor: colors.primary + '14',
+          justifyContent: 'center' as const,
+          alignItems: 'center' as const,
+        },
+        texts: { flex: 1, gap: 2 },
+        titleText: {
+          fontFamily: typography.fonts.semibold,
+          fontSize: 13,
+          color: colors.text,
+        },
+        subText: {
+          fontFamily: typography.fonts.regular,
+          fontSize: 11,
+          color: colors.textMuted,
+          lineHeight: 15,
+        },
+      });
+    },
+    [theme],
+  );
   return (
-    <View style={styles.wrap}>
-      <Ionicons name={icon} size={28} color={colors.textMuted} />
-      <Text style={styles.text}>{text}</Text>
+    <View style={styles.row}>
+      <View style={styles.iconRing}>
+        <MaterialCommunityIcons name={icon} size={18} color={theme.colors.primary} />
+      </View>
+      <View style={styles.texts}>
+        <Text style={styles.titleText}>{title}</Text>
+        <Text style={styles.subText}>{subtitle}</Text>
+      </View>
     </View>
   );
 }
 
 export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
-  const { colors, layout } = theme;
+  const { colors, layout, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { width: screenWidth } = useWindowDimensions();
-  const chartWidth = screenWidth - 48;
+  const chartWidth = screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2;
   const router = useRouter();
   const { isPremium } = usePremium();
 
@@ -114,6 +161,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const { data: monthlyData, isLoading: monthlyLoading } = useAnalyticsMonthlyData(selectedCurrency);
   const { data: categoryData, isLoading: catLoading } = useAnalyticsCategoryBreakdown(selectedCurrency, selectedRange);
   const { data: dowData } = useAnalyticsDow(selectedCurrency, selectedRange);
+  const { data: personBreakdown } = useAnalyticsPersonBreakdown(selectedCurrency, selectedRange);
 
   const isLoading = dailyLoading || monthlyLoading || catLoading;
 
@@ -127,7 +175,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
     return { income, expense, net, savingsRate };
   }, [dailyData, monthlyData, selectedRange]);
 
-  const areaData = useMemo((): AreaChartPoint[] => {
+  const areaData = useMemo((): BarBucket[] => {
     if (selectedRange === 365) {
       return (monthlyData ?? []).map(m => ({ label: fmtMonthLabel(m.month), income: m.income, expense: m.expense }));
     }
@@ -143,6 +191,20 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
     const take = selectedRange === 90 ? 3 : 12;
     return monthly.slice(-take).map(m => ({ label: fmtMonthLabel(m.month), income: m.income, expense: m.expense }));
   }, [dailyData, monthlyData, selectedRange]);
+
+  const rangeSubtitle = useMemo(() => {
+    const now = new Date();
+    if (selectedRange === 365) {
+      const start = new Date();
+      start.setDate(1);
+      start.setMonth(start.getMonth() - 11);
+      return `${format(start, 'MMM yyyy')} – ${format(now, 'MMM yyyy')}`;
+    } else {
+      const start = new Date();
+      start.setDate(start.getDate() - selectedRange + 1);
+      return `${format(start, 'd MMM yyyy')} – ${format(now, 'd MMM yyyy')}`;
+    }
+  }, [selectedRange]);
 
   const currencyAccounts = useMemo(
     () => (accounts ?? []).filter(a => a.currency === selectedCurrency),
@@ -176,9 +238,9 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const savingsColor = summary.savingsRate >= 0 ? colors.success : colors.danger;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header title="Analytics" showBack />
+      <Header title="Analytics" />
 
       {isLoading ? (
         <View style={styles.loading}>
@@ -191,14 +253,13 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           {currencyKeys.length > 1 && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>
               {currencyKeys.map(c => (
-                <TouchableOpacity
+                <BentoPressable
                   key={c}
                   style={[styles.pill, c === selectedCurrency && styles.pillActive]}
                   onPress={() => handleCurrencySelect(c)}
-                  activeOpacity={0.8}
                 >
                   <Text style={[styles.pillText, c === selectedCurrency && styles.pillTextActive]}>{c}</Text>
-                </TouchableOpacity>
+                </BentoPressable>
               ))}
             </ScrollView>
           )}
@@ -208,18 +269,19 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             {RANGES.map(r => {
               const locked = !isPremium && r.days !== 7;
               return (
-                <TouchableOpacity
+                <BentoPressable
                   key={r.label}
                   style={[styles.pill, r.days === selectedRange && styles.pillActive, locked && styles.pillLocked]}
                   onPress={locked ? navigateToPremium : () => handleRangeSelect(r.days)}
-                  activeOpacity={0.8}
                 >
                   <Text style={[styles.pillText, r.days === selectedRange && styles.pillTextActive]}>{r.label}</Text>
-                  {locked && <Ionicons name="lock-closed" size={9} color={colors.textMuted} style={styles.lockIcon} />}
-                </TouchableOpacity>
+                  {locked && <MaterialCommunityIcons name="lock" size={9} color={colors.textMuted} style={styles.lockIcon} />}
+                </BentoPressable>
               );
             })}
           </View>
+
+          <Text style={styles.durationText}>{rangeSubtitle}</Text>
 
           {/* Summary metrics 2×2 */}
           <View style={styles.metricsGrid}>
@@ -258,26 +320,52 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             title="Spending trend"
             rightText={`${RANGES.find(r => r.days === selectedRange)?.label} · ${selectedCurrency}`}
           />
-          <View style={styles.card}>
-            <View style={styles.chartLegend}>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDot, { backgroundColor: colors.danger }]} />
-                <Text style={styles.legendText}>Expense</Text>
+          {areaData.length === 0 ? (
+            <EmptyState
+              icon="chart-line"
+              title="No trend data yet"
+              subtitle="Add income or expense transactions to see your spending trend."
+            />
+          ) : (
+            <View style={styles.card}>
+              <View style={styles.chartLegend}>
+                <View style={styles.legendItem}>
+                  <View style={[styles.legendDot, { backgroundColor: colors.danger }]} />
+                  <Text style={styles.legendText}>Expense</Text>
+                </View>
+                <View style={styles.legendItem}>
+                  <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
+                  <Text style={styles.legendText}>Income</Text>
+                </View>
               </View>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDash, { backgroundColor: colors.success }]} />
-                <Text style={styles.legendText}>Income</Text>
-              </View>
+              <LinearAreaChart data={areaData} width={chartWidth} height={190} />
             </View>
-            <AreaChart data={areaData} width={chartWidth - 28} height={190} />
-          </View>
+          )}
 
           {/* Period flow */}
           <SectionHeader title="Period flow" />
           <PremiumGuard label="Period Flow" size="medium">
-            <View style={styles.card}>
-              <BarGroupChart data={barData} width={chartWidth - 28} height={170} />
-            </View>
+            {barData.length === 0 ? (
+              <EmptyState
+                icon="chart-line"
+                title="No period data yet"
+                subtitle="Record transactions to visualise income vs expense by period."
+              />
+            ) : (
+              <View style={styles.card}>
+                <View style={styles.chartLegend}>
+                  <View style={styles.legendItem}>
+                    <View style={[styles.legendDot, { backgroundColor: colors.danger }]} />
+                    <Text style={styles.legendText}>Expense</Text>
+                  </View>
+                  <View style={styles.legendItem}>
+                    <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
+                    <Text style={styles.legendText}>Income</Text>
+                  </View>
+                </View>
+                <LinearAreaChart data={barData} width={chartWidth} height={170} />
+              </View>
+            )}
           </PremiumGuard>
 
           {/* Category breakdown — stacked bar + 2-column cards */}
@@ -305,7 +393,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                       <View key={`${cat.name}-${idx}`} style={styles.categoryCell}>
 
                         <IconAvatar
-                          icon={resolveIcon(cat.icon, 'pricetag-outline')}
+                          icon={resolveIcon(cat.icon, 'tag-outline')}
                           color={accent}
                           variant="solid"
                           size={28}
@@ -323,11 +411,52 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                 </View>
               </View>
             ) : (
-              <View style={[styles.card, { marginHorizontal: layout.screenPadding }]}>
-                <EmptyState icon="pricetag-outline" text="No expense data in this period" />
-              </View>
+              <EmptyState
+                icon="tag-outline"
+                title="No category data yet"
+                subtitle="Add expense transactions to see a breakdown by category."
+              />
             )}
           </PremiumGuard>
+
+          {/* Person breakdown */}
+          {(personBreakdown ?? []).length > 0 && (
+            <>
+              <SectionHeader title="Person breakdown" rightText={`${(personBreakdown ?? []).length} persons`} />
+              <PremiumGuard label="Person Breakdown" size="medium">
+                <View style={styles.catSection}>
+                  <View style={styles.stackedBar}>
+                    {(personBreakdown ?? []).map((p, idx) => (
+                      <View
+                        key={`ps-${idx}`}
+                        style={[styles.stackedSeg, { flex: p.amount, backgroundColor: colorNumberToHex(p.color) }]}
+                      />
+                    ))}
+                  </View>
+                  <View style={styles.categoryGrid}>
+                    {(personBreakdown ?? []).map((p, idx) => {
+                      const hex = colorNumberToHex(p.color);
+                      const total = (personBreakdown ?? []).reduce((s, x) => s + x.amount, 0);
+                      const pct = total > 0 ? (p.amount / total) * 100 : 0;
+                      const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
+                      return (
+                        <View key={`pp-${p.id}-${idx}`} style={styles.categoryCell}>
+                          <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: hex, alignItems: 'center', justifyContent: 'center' }}>
+                            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 10 }}>{initials}</Text>
+                          </View>
+                          <View style={styles.catContent}>
+                            <Text style={styles.catName} numberOfLines={1}>{p.name}</Text>
+                            <MoneyText amount={p.amount} currency={selectedCurrency} type="DR" compact style={styles.catAmount} />
+                          </View>
+                          <Text style={[styles.catPercent, { color: colors.textMuted }]}>{pct.toFixed(0)}%</Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+                </View>
+              </PremiumGuard>
+            </>
+          )}
 
           {/* Account split */}
           <SectionHeader title="Account split" rightText={`${accountDistribution.length} accounts`} />
@@ -362,23 +491,33 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                 </View>
               </View>
             ) : (
-              <View style={[styles.card, { marginHorizontal: layout.screenPadding }]}>
-                <EmptyState icon="wallet-outline" text={`No accounts in ${selectedCurrency}`} />
-              </View>
+              <EmptyState
+                icon="wallet-outline"
+                title={`No ${selectedCurrency} accounts`}
+                subtitle="Add an account in this currency to see the balance split."
+              />
             )}
           </PremiumGuard>
 
           {/* Spending by weekday */}
           <SectionHeader title="Spending by weekday" rightText="Average pattern" />
           <PremiumGuard label="Spending by Weekday" size="medium">
-            <View style={styles.card}>
-              <DowChart data={dowData ?? []} />
-              <View style={styles.dowLegend}>
-                <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.success }]} /><Text style={styles.legendText}>Low</Text></View>
-                <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.warning }]} /><Text style={styles.legendText}>Mid</Text></View>
-                <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.danger }]} /><Text style={styles.legendText}>High</Text></View>
+            {(dowData ?? []).length === 0 ? (
+              <EmptyState
+                icon="calendar-week"
+                title="No weekday pattern yet"
+                subtitle="More transactions will reveal your spending rhythm by day."
+              />
+            ) : (
+              <View style={styles.card}>
+                <DowChart data={dowData ?? []} />
+                <View style={styles.dowLegend}>
+                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.success }]} /><Text style={styles.legendText}>Low</Text></View>
+                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.warning }]} /><Text style={styles.legendText}>Mid</Text></View>
+                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.danger }]} /><Text style={styles.legendText}>High</Text></View>
+                </View>
               </View>
-            </View>
+            )}
           </PremiumGuard>
 
           {/* Behavioral insights */}
@@ -412,6 +551,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
         </ScrollView>
       )}
+      <WalkthroughOverlay storageKey="@luno_walkthrough_analytics" steps={ANALYTICS_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });
@@ -420,7 +560,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    content: { paddingBottom: spacing('10'), paddingTop: spacing('2') },
+    content: { paddingBottom: 24, paddingTop: spacing('2') },
 
     // ── Pill selectors
     pillRow: {
@@ -438,11 +578,18 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
     },
-    pillActive: { backgroundColor: colors.text },
+    pillActive: { backgroundColor: colors.primary + '18' },
     pillLocked: { opacity: 0.55 },
     pillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
-    pillTextActive: { color: colors.background },
+    pillTextActive: { color: colors.primary },
     lockIcon: { marginLeft: spacing('1') },
+    durationText: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 12,
+      color: colors.textMuted,
+      paddingHorizontal: layout.screenPadding,
+      marginBottom: spacing('3'),
+    },
 
     // ── Metric tiles
     metricsGrid: {
@@ -572,3 +719,4 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       letterSpacing: -0.5,
     },
   });
+

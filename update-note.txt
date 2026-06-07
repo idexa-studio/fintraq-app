@@ -1,0 +1,12 @@
+Luno is now Keeep — same app, fresh name.
+
+Fresh in this update (1.1.3)
+
+- Transfer between accounts with clear direction labels
+- Fresh emerald theme — easier on your eyes
+- Redesigned premium page with cleaner layout
+- 6 types of personalised financial insights
+- Polished forms and settings throughout
+- Improved charts and analytics
+- Faster UI — solid cards, no blur
+- Stability and performance improvements

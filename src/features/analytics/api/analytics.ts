@@ -51,6 +51,7 @@ export const getMonthlyTimeSeries = async (
   monthsBack = 12,
 ): Promise<MonthBucket[]> => {
   const d = new Date();
+  d.setDate(1);
   d.setMonth(d.getMonth() - monthsBack);
   const startStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   return db

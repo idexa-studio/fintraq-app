@@ -1,12 +1,11 @@
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { PremiumGuard } from '../../../components/ui/PremiumGuard';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useDashboardInsights } from '../hooks/dashboard';
 import { InsightCard } from './InsightCard';
-import { SectionHeader } from './SectionHeader';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
 
 interface InsightsSectionProps {
   currency: string;
@@ -20,7 +19,6 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { data: insights, isLoading } = useDashboardInsights(currency);
-  const { isPremium } = usePremium();
   const { width: screenWidth } = useWindowDimensions();
 
   const scrollRef = useRef<ScrollView>(null);
@@ -70,12 +68,15 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
     return (
       <View style={styles.container}>
         <SectionHeader title="Pro Insights" />
-        <PremiumGuard label="Upgrade to Pro for insights" size="large" containerStyle={{ marginHorizontal: isPremium ? 0 : theme.layout.screenPadding }}>
+        <PremiumGuard label="Upgrade to Pro for insights" size="large">
           <View style={styles.empty}>
-            <Ionicons name="analytics-outline" size={24} color={colors.textMuted} />
-            <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              No insights yet. Keep tracking to unlock trends.
-            </Text>
+            <View style={styles.emptyIconWrapper}>
+              <MaterialCommunityIcons name="chart-timeline-variant" size={18} color={colors.primary} />
+            </View>
+            <View style={styles.emptyContent}>
+              <Text style={styles.emptyTitle}>No insights yet</Text>
+              <Text style={styles.emptyText}>Keep tracking to unlock personalized spending trends.</Text>
+            </View>
           </View>
         </PremiumGuard>
       </View>
@@ -88,7 +89,6 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
       <PremiumGuard
         label="Upgrade to Pro for insights"
         size="large"
-        containerStyle={{ marginHorizontal: isPremium ? 0 : theme.layout.screenPadding }}
       >
         {isLoading ? (
           <View style={styles.placeholder}>
@@ -154,26 +154,42 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     placeholderText: { fontSize: typography.sizes.xs, opacity: 0.6 },
     empty: {
-      height: 80,
-      marginHorizontal: layout.screenPadding,
-      borderRadius: radius('xl'),
       backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      padding: spacing('4'),
+      marginHorizontal: layout.screenPadding,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3'),
+    },
+    emptyIconWrapper: {
+      width: 38,
+      height: 38,
+      borderRadius: 19,
+      backgroundColor: colors.primary + '12',
       justifyContent: 'center',
       alignItems: 'center',
-      gap: spacing('2'),
+    },
+    emptyContent: {
+      flex: 1,
+      gap: 2,
+    },
+    emptyTitle: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 13,
+      color: colors.text,
     },
     emptyText: {
-      fontSize: typography.sizes.xs,
-      textAlign: 'center',
-      lineHeight: 16,
-      maxWidth: '80%',
-      opacity: 0.6,
+      fontFamily: typography.fonts.regular,
+      fontSize: 11,
+      color: colors.textMuted,
+      lineHeight: 15,
     },
     dots: {
       flexDirection: 'row',
       justifyContent: 'center',
       gap: spacing('2'),
-      marginTop: spacing('3'),
+      marginTop: spacing('2'),
     },
     dot: {
       width: 6,

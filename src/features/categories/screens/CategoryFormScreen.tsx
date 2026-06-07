@@ -1,22 +1,15 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '@/src/components/ui/PageBackground';
-import { ColorPickerModal } from '@/src/components/ui/ColorPickerModal';
+import { ColorPickerBottomSheet } from '@/src/components/ui/ColorPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { Input } from '@/src/components/ui/Input';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { IconPickerModal } from '@/src/components/ui/IconPickerModal';
+import { IconPickerBottomSheet } from '@/src/components/ui/IconPickerBottomSheet';
 import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
@@ -31,7 +24,6 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
   const theme = useTheme();
-  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { data: categories } = useCategories();
@@ -46,7 +38,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
 
   const [type, setType] = useState<'CR' | 'DR' | 'TR'>('DR');
   const [icon, setIcon] = useState<string>(CATEGORY_ICONS[0]);
-  const [colorHex, setColorHex] = useState<string>(CATEGORY_COLORS[0]);
+  const [colorHex, setColorHex] = useState<string>(() => CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)]);
 
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
@@ -110,36 +102,33 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>Type</Text>
               <View style={styles.typeRow}>
-                <TouchableOpacity
-                  activeOpacity={0.9}
+                <BentoPressable
                   onPress={() => !isEditing && setType('DR')}
                   disabled={isEditing}
                   style={[styles.typePill, type === 'DR' && styles.typePillExpense]}
                 >
-                  <Text style={[styles.typePillText, type === 'DR' && styles.typePillTextActive]}>
+                  <Text style={[styles.typePillText, type === 'DR' && { color: theme.colors.danger }]}>
                     Expense
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.9}
+                </BentoPressable>
+                <BentoPressable
                   onPress={() => !isEditing && setType('CR')}
                   disabled={isEditing}
                   style={[styles.typePill, type === 'CR' && styles.typePillIncome]}
                 >
-                  <Text style={[styles.typePillText, type === 'CR' && styles.typePillTextActive]}>
+                  <Text style={[styles.typePillText, type === 'CR' && { color: theme.colors.success }]}>
                     Income
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.9}
+                </BentoPressable>
+                <BentoPressable
                   onPress={() => !isEditing && setType('TR')}
                   disabled={isEditing}
                   style={[styles.typePill, type === 'TR' && styles.typePillTransfer]}
                 >
-                  <Text style={[styles.typePillText, type === 'TR' && styles.typePillTextActive]}>
+                  <Text style={[styles.typePillText, type === 'TR' && { color: theme.colors.primary }]}>
                     Transfer
                   </Text>
-                </TouchableOpacity>
+                </BentoPressable>
               </View>
               {isEditing && (
                 <Text style={styles.lockHint}>Type cannot be changed for existing categories.</Text>
@@ -161,20 +150,18 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                   <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="e.g. Groceries, Salary" error={errors.name?.message} size="md" variant="filled" autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
                 )}
               />
-              {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
             </View>
 
             {/* ── Appearance ── */}
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>Appearance</Text>
               <View style={styles.appearanceRow}>
-                <TouchableOpacity
+                <BentoPressable
                   style={styles.appearanceCard}
                   onPress={() => setShowIconPicker(true)}
-                  activeOpacity={0.85}
                 >
                   <IconAvatar
-                    icon={resolveIcon(icon, 'grid-outline')}
+                    icon={resolveIcon(icon, 'grid')}
                     color={colorHex} variant="solid"
                     size={32}
                   />
@@ -184,12 +171,11 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                       {icon.replace('-outline', '')}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </BentoPressable>
 
-                <TouchableOpacity
+                <BentoPressable
                   style={styles.appearanceCard}
                   onPress={() => setShowColorPicker(true)}
-                  activeOpacity={0.85}
                 >
                   <View style={[styles.colorSwatch, { backgroundColor: colorHex }]} />
                   <View style={styles.appearanceCardMeta}>
@@ -198,7 +184,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                       {colorHex}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </BentoPressable>
               </View>
             </View>
 
@@ -206,8 +192,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
         </ScrollView>
 
         <View style={styles.footer}>
-          <TouchableOpacity
-            activeOpacity={0.9}
+          <BentoPressable
             style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
             onPress={handleSave}
             disabled={!isValid}
@@ -215,11 +200,11 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
             <Text style={styles.primaryBtnText}>
               {isEditing ? 'Save category' : 'Create category'}
             </Text>
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
       </KeyboardAvoidingView>
 
-      <IconPickerModal
+      <IconPickerBottomSheet
         visible={showIconPicker}
         onClose={() => setShowIconPicker(false)}
         value={icon}
@@ -229,7 +214,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
         title="Choose Icon"
       />
 
-      <ColorPickerModal
+      <ColorPickerBottomSheet
         visible={showColorPicker}
         onClose={() => setShowColorPicker(false)}
         value={colorHex}
@@ -275,21 +260,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       height: 50,
       borderRadius: radius('lg'),
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
       paddingHorizontal: spacing('4'),
       fontFamily: typography.fonts.regular,
       fontSize: 15,
       color: colors.text,
     },
     fieldInputError: {
+      borderWidth: 1,
       borderColor: colors.danger,
-    },
-    errorText: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 12,
-      color: colors.danger,
-      marginTop: -spacing('1'),
     },
     typeRow: {
       flexDirection: 'row',
@@ -301,21 +279,16 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
-      borderWidth: 1,
       backgroundColor: colors.surface,
-      borderColor: colors.border,
     },
     typePillExpense: {
-      backgroundColor: colors.danger,
-      borderColor: colors.danger,
+      backgroundColor: colors.danger + '18',
     },
     typePillIncome: {
-      backgroundColor: colors.success,
-      borderColor: colors.success,
+      backgroundColor: colors.success + '18',
     },
     typePillTransfer: {
-      backgroundColor: colors.primary,
-      borderColor: colors.primary,
+      backgroundColor: colors.primary + '18',
     },
     typePillText: {
       fontFamily: typography.fonts.semibold,
@@ -341,8 +314,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('2.5'),
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
-      borderWidth: 1,
-      borderColor: colors.border,
       paddingHorizontal: spacing('3'),
       paddingVertical: spacing('3'),
     },
@@ -372,8 +343,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     primaryBtn: {
       height: 52,
-      borderRadius: radius('xl'),
-      backgroundColor: colors.text,
+      borderRadius: radius('full'),
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },

@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -11,9 +11,9 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
+import { BentoPressable } from '../../../components/ui/BentoPressable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { Header } from '../../../components/ui/Header';
@@ -24,15 +24,17 @@ import { useCategories } from '../../categories/hooks/categories';
 import { TransactionAccountPicker } from '../components/TransactionAccountPicker';
 import { TransactionAmountInput } from '../components/TransactionAmountInput';
 import { TransactionCategoryPicker } from '../components/TransactionCategoryPicker';
+import { PersonPickerBottomSheet } from '../../persons/components/PersonPickerBottomSheet';
 import { TransactionTypePicker } from '../components/TransactionTypePicker';
+import { usePersons } from '../../persons/hooks/persons';
 import {
   useCreateTransaction,
   useTransactionById,
   useUpdateTransaction,
 } from '../hooks/transactions';
-
 import { format } from 'date-fns';
 import { TransactionType } from '../../../types';
+import { WalkthroughOverlay, TRANSACTION_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 
 type Props = {
   mode: 'create' | 'edit';
@@ -56,12 +58,14 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
 
   const accountsQuery = useAccounts();
   const categoriesQuery = useCategories();
+  const personsQuery = usePersons();
   const transactionByIdQuery = useTransactionById(isEditMode ? transactionId ?? null : null);
   const createTransaction = useCreateTransaction();
   const updateTransaction = useUpdateTransaction();
 
   const accounts = React.useMemo(() => accountsQuery.data ?? [], [accountsQuery.data]);
   const categories = React.useMemo(() => categoriesQuery.data ?? [], [categoriesQuery.data]);
+  const persons = React.useMemo(() => personsQuery.data ?? [], [personsQuery.data]);
   const editingTransaction = React.useMemo(() => {
     if (!isEditMode) return null;
     return transactionByIdQuery.data ?? null;
@@ -74,6 +78,8 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
   const [transactionDateTime, setTransactionDateTime] = React.useState<Date>(() => new Date());
   const [showDatePicker, setShowDatePicker] = React.useState(false);
   const [showTimePicker, setShowTimePicker] = React.useState(false);
+  const [selectedPersonId, setSelectedPersonId] = React.useState<number | null>(null);
+  const [showPersonPicker, setShowPersonPicker] = React.useState(false);
   const [amountInput, setAmountInput] = React.useState('');
   const [note, setNote] = React.useState('');
 
@@ -82,6 +88,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
     setType(editingTransaction.type);
     setSelectedAccountId(editingTransaction.accountId);
     setToAccountId(editingTransaction.toAccountId ?? null);
+    setSelectedPersonId(editingTransaction.personId ?? null);
     setSelectedCategoryId(editingTransaction.categoryId);
     setTransactionDateTime(new Date(editingTransaction.datetime));
     setAmountInput(String(editingTransaction.amount));
@@ -211,6 +218,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
       accountId: selectedAccountId,
       categoryId: selectedCategoryId,
       toAccountId: type === 'TR' ? toAccountId : null,
+      personId: selectedPersonId,
       amount: amountValue,
       type,
       datetime: transactionDateTime.toISOString(),
@@ -243,7 +251,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title={isEditMode ? 'Edit Entry' : 'New Entry'} showBack />
+      <Header title={isEditMode ? 'Edit entry' : 'New entry'} showBack />
 
       <KeyboardAvoidingView
         style={styles.body}
@@ -254,7 +262,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <TransactionTypePicker value={type} onChange={handleTypeChange} />
+        <TransactionTypePicker value={type} onChange={handleTypeChange} disabled={isEditMode} />
 
         <TransactionAmountInput
           value={amountInput}
@@ -264,7 +272,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
 
         <View style={styles.formBody}>
           <TransactionAccountPicker
-            label="FROM ACCOUNT"
+            label="From account"
             accounts={accounts}
             selectedId={selectedAccountId}
             onSelect={setSelectedAccountId}
@@ -274,14 +282,14 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
             <>
               {toAccountOptions.length > 0 ? (
                 <TransactionAccountPicker
-                  label="TO ACCOUNT"
+                  label="To account"
                   accounts={toAccountOptions}
                   selectedId={toAccountId}
                   onSelect={setToAccountId}
                 />
               ) : (
                 <View style={styles.section}>
-                  <Text style={styles.sectionLabel}>TO ACCOUNT</Text>
+                  <Text style={styles.sectionLabel}>To account</Text>
                   <Text style={styles.transferHint}>
                     No other accounts with the same currency.
                   </Text>
@@ -296,23 +304,61 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
             onSelect={setSelectedCategoryId}
           />
 
+          {persons.length > 0 && type !== 'TR' && (
+            <View style={styles.section}>
+              <BentoPressable
+                style={styles.personBtn}
+                onPress={() => setShowPersonPicker(true)}
+              >
+                <View style={styles.iconContainer}>
+                  <MaterialCommunityIcons name="account-outline" size={18} color={colors.primary} />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.triggerLabel}>Linked person</Text>
+                  <Text
+                    style={[
+                      styles.dateTimeText,
+                      !selectedPersonId && { color: colors.textMuted },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {selectedPersonId
+                      ? (persons.find((p) => p.id === selectedPersonId)?.name ?? 'Unknown')
+                      : 'No person linked'}
+                  </Text>
+                </View>
+                <MaterialCommunityIcons name="unfold-more-vertical" size={16} color={colors.textMuted} />
+              </BentoPressable>
+            </View>
+          )}
+
           <View style={styles.section}>
-            <Text style={styles.sectionLabel}>DATE & TIME</Text>
             <View style={styles.dateTimeRow}>
-              <TouchableOpacity
+              <BentoPressable
                 style={styles.dateTimeBtn}
                 onPress={() => setShowDatePicker(true)}
               >
-                <Ionicons name="calendar-outline" size={18} color={colors.primary} />
-                <Text style={styles.dateTimeText}>{formattedDate}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+                <View style={styles.iconContainer}>
+                  <MaterialCommunityIcons name="calendar-outline" size={18} color={colors.primary} />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.triggerLabel}>Date</Text>
+                  <Text style={styles.dateTimeText} numberOfLines={1}>{formattedDate}</Text>
+                </View>
+              </BentoPressable>
+
+              <BentoPressable
                 style={styles.dateTimeBtn}
                 onPress={() => setShowTimePicker(true)}
               >
-                <Ionicons name="time-outline" size={18} color={colors.primary} />
-                <Text style={styles.dateTimeText}>{formattedTime}</Text>
-              </TouchableOpacity>
+                <View style={styles.iconContainer}>
+                  <MaterialCommunityIcons name="clock-outline" size={18} color={colors.primary} />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.triggerLabel}>Time</Text>
+                  <Text style={styles.dateTimeText} numberOfLines={1}>{formattedTime}</Text>
+                </View>
+              </BentoPressable>
             </View>
           </View>
 
@@ -334,8 +380,13 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
           )}
 
           <View style={styles.section}>
-            <Text style={styles.sectionLabel}>NOTE</Text>
             <View style={styles.noteContainer}>
+              <View style={styles.noteHeader}>
+                <View style={styles.noteIconContainer}>
+                  <MaterialCommunityIcons name="pencil-outline" size={16} color={colors.primary} />
+                </View>
+                <Text style={styles.noteLabel}>Note</Text>
+              </View>
               <TextInput
                 style={styles.noteInput}
                 value={note}
@@ -350,7 +401,7 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity
+        <BentoPressable
           style={[styles.saveBtn, !canSubmit && styles.saveBtnDisabled]}
           onPress={handleSave}
           disabled={!canSubmit}
@@ -362,14 +413,26 @@ export function TransactionFormPage({ mode, transactionId }: Props) {
               {isEditMode ? 'Save changes' : 'Save transaction'}
             </Text>
           )}
-        </TouchableOpacity>
+        </BentoPressable>
       </View>
       </KeyboardAvoidingView>
+
+      <PersonPickerBottomSheet
+        visible={showPersonPicker}
+        onClose={() => setShowPersonPicker(false)}
+        persons={persons}
+        selectedId={selectedPersonId}
+        onSelect={setSelectedPersonId}
+      />
+
+      {mode === 'create' && (
+        <WalkthroughOverlay storageKey="@luno_walkthrough_transaction_create" steps={TRANSACTION_WALKTHROUGH_STEPS} />
+      )}
     </SafeAreaView>
   );
 }
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -385,7 +448,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.background,
     },
     content: {
-      paddingBottom: spacing('4'),
+      paddingBottom: spacing('6'),
     },
     formBody: {
       gap: spacing('4'),
@@ -410,34 +473,77 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     dateTimeBtn: {
       flex: 1,
-      height: 48,
-      borderRadius: radius('lg'),
+      height: sizes.input.md.height,
+      borderRadius: sizes.input.md.borderRadius,
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing('2'),
+      paddingHorizontal: spacing('3'),
+      gap: spacing('2.5'),
     },
     dateTimeText: {
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.fonts.semibold,
       fontSize: 13,
       color: colors.text,
     },
-    noteContainer: {
-      borderRadius: radius('lg'),
+    personBtn: {
+      height: sizes.input.md.height,
+      borderRadius: sizes.input.md.borderRadius,
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
-      padding: spacing('3'),
-      minHeight: 100,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: spacing('3'),
+      gap: spacing('2.5'),
+    },
+    iconContainer: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.primary + '10',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    textContainer: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    triggerLabel: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 10,
+      color: colors.textMuted,
+      marginBottom: Platform.OS === 'ios' ? 1 : 0,
+    },
+    noteContainer: {
+      borderRadius: radius('xl'),
+      backgroundColor: colors.surface,
+      padding: sizes.card.md.padding,
+    },
+    noteHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('2.5'),
+      marginBottom: spacing('2'),
+    },
+    noteIconContainer: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: colors.primary + '10',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    noteLabel: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 13,
+      color: colors.text,
     },
     noteInput: {
       fontFamily: typography.fonts.regular,
-      fontSize: 15,
+      fontSize: 14,
       color: colors.text,
       textAlignVertical: 'top',
+      minHeight: 80,
+      padding: 0,
     },
     footer: {
       paddingHorizontal: layout.screenPadding,
@@ -446,8 +552,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     saveBtn: {
       height: 52,
-      borderRadius: radius('xl'),
-      backgroundColor: colors.text,
+      borderRadius: radius('full'),
+      backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'center',
     },

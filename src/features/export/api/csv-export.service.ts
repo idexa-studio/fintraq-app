@@ -1,9 +1,10 @@
 import { db } from '../../../db/client';
-import { accounts, categories, payments } from '../../../db/schema';
+import { accounts, categories, payments, persons } from '../../../db/schema';
 import * as Sharing from 'expo-sharing';
 import { File, Paths } from 'expo-file-system';
 import { StorageAccessFramework } from 'expo-file-system/legacy';
 import { and, count, desc, eq, gte, lte, or, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
 import { Platform, Alert } from 'react-native';
 
 export interface ExportDateRange {
@@ -26,9 +27,11 @@ interface TransactionExportRow {
   amount: string;
   currency: string;
   account: string;
-  category: string;
-  note: string;
   accountHolder: string;
+  toAccount: string;
+  category: string;
+  linkedPerson: string;
+  note: string;
 }
 
 export class CsvExportService {
@@ -40,7 +43,9 @@ export class CsvExportService {
     'Currency',
     'Account',
     'Account Holder',
+    'To Account',
     'Category',
+    'Linked Person',
     'Note',
   ].join(',');
 
@@ -61,7 +66,9 @@ export class CsvExportService {
       row.currency,
       row.account,
       row.accountHolder,
+      row.toAccount,
       row.category,
+      row.linkedPerson,
       row.note,
     ].map(field => this.escapeCsvField(field));
     return fields.join(',');
@@ -110,6 +117,7 @@ export class CsvExportService {
 
   static async exportToCsv(options: CsvExportOptions = {}): Promise<{ content: string; filename: string }> {
     const conditions = this.buildConditions(options);
+    const toAccounts = alias(accounts, 'to_accounts');
 
     // Fetch all matching transactions
     const rows = await db
@@ -124,13 +132,21 @@ export class CsvExportService {
           currency: accounts.currency,
           holderName: accounts.holderName,
         },
+        toAccount: {
+          name: toAccounts.name,
+        },
         category: {
           name: categories.name,
+        },
+        person: {
+          name: persons.name,
         },
       })
       .from(payments)
       .innerJoin(accounts, eq(payments.accountId, accounts.id))
       .innerJoin(categories, eq(payments.categoryId, categories.id))
+      .leftJoin(toAccounts, eq(payments.toAccountId, toAccounts.id))
+      .leftJoin(persons, eq(payments.personId, persons.id))
       .where(conditions)
       .orderBy(desc(payments.datetime));
 
@@ -149,7 +165,9 @@ export class CsvExportService {
         currency: row.account.currency,
         account: row.account.name,
         accountHolder: row.account.holderName,
+        toAccount: row.toAccount?.name || '',
         category: row.category.name,
+        linkedPerson: row.person?.name || '',
         note: row.note || '',
       };
     });

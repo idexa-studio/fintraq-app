@@ -28,8 +28,3 @@ export const updateAccount = async (id: number, data: UpdateAccountData) => {
 export const deleteAccount = async (id: number) => {
   return await db.delete(accounts).where(eq(accounts.id, id));
 };
-
-/** Explicit manual balance correction — only called when user deliberately overrides the stored balance. */
-export const adjustAccountBalance = async (id: number, balance: number): Promise<void> => {
-  await db.update(accounts).set({ balance }).where(eq(accounts.id, id));
-};

@@ -1,80 +1,102 @@
-import { Ionicons } from '@expo/vector-icons';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 
 type Props = {
-  greeting: string;
-  dateLabel: string;
+  name?: string;
   isPremium: boolean;
   onSearch: () => void;
-  onAnalytics: () => void;
-  onSettings: () => void;
 };
 
 export const DashboardHeader = React.memo(function DashboardHeader({
-  greeting,
-  dateLabel,
+  name,
+  isPremium,
   onSearch,
-  onAnalytics,
-  onSettings,
 }: Props) {
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
+  const monogram = useMemo(() => {
+    return (name || 'L').charAt(0).toUpperCase();
+  }, [name]);
+
   return (
-    <View style={styles.wrap}>
-      <View style={styles.left}>
-        <Text style={styles.greeting}>{greeting}</Text>
-        <Text style={styles.date}>{dateLabel}</Text>
-      </View>
-      <View style={styles.actions}>
-        <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.7}>
-          <Ionicons name="search-outline" size={18} color={colors.text} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconBtn} onPress={onAnalytics} activeOpacity={0.7}>
-          <Ionicons name="pie-chart-outline" size={18} color={colors.text} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconBtn} onPress={onSettings} activeOpacity={0.7}>
-          <Ionicons name="settings-outline" size={18} color={colors.text} />
-        </TouchableOpacity>
-      </View>
+    <View style={styles.container}>
+      <BentoPressable style={styles.searchBar} onPress={onSearch}>
+        <MaterialCommunityIcons name="magnify" size={20} color={colors.textMuted} />
+        <Text style={styles.placeholder} numberOfLines={1}>
+          Search transactions, accounts...
+        </Text>
+        <View style={styles.avatarContainer}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{monogram}</Text>
+          </View>
+          {isPremium && (
+            <View style={styles.crownBadge}>
+              <MaterialCommunityIcons name="crown" size={8} color="#FFFFFF" />
+            </View>
+          )}
+        </View>
+      </BentoPressable>
     </View>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    wrap: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
+    container: {
       paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('2'),
-      paddingBottom: spacing('5'),
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('4'),
     },
-    left: { gap: spacing('1') },
-    greeting: {
-      fontFamily: typography.fonts.bold,
-      color: colors.text,
-      fontSize: 22,
-      letterSpacing: -0.5,
+    searchBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 48,
+      borderRadius: radius('full'),
+      backgroundColor: colors.surface,
+      paddingLeft: spacing('4'),
+      paddingRight: spacing('2'),
+      gap: spacing('3'),
     },
-    date: {
+    placeholder: {
+      flex: 1,
       fontFamily: typography.fonts.regular,
       color: colors.textMuted,
-      fontSize: 12,
+      fontSize: 14,
+      opacity: 0.7,
     },
-    actions: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
+    avatarContainer: {
+      position: 'relative',
     },
-    iconBtn: {
-      width: 24,
-      height: 24,
+    avatar: {
+      width: 32,
+      height: 32,
+      borderRadius: radius('full'),
+      backgroundColor: colors.primary + '18',
       alignItems: 'center',
       justifyContent: 'center',
     },
+    avatarText: {
+      fontFamily: typography.fonts.semibold,
+      color: colors.primary,
+      fontSize: 13,
+    },
+    crownBadge: {
+      position: 'absolute',
+      right: -3,
+      top: -3,
+      backgroundColor: colors.warning,
+      width: 14,
+      height: 14,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1.5,
+      borderColor: colors.surface,
+    },
   });
+

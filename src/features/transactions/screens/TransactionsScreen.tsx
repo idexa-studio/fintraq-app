@@ -1,18 +1,11 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  SectionList,
-  SectionListData,
-  SectionListRenderItemInfo,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { WalkthroughOverlay, TRANSACTIONS_LIST_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
@@ -22,8 +15,9 @@ import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
+import { usePersons } from '../../persons/hooks/persons';
 import { AdvancedFilterService, AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../../filters/api/advanced-filters.service';
-import { AdvancedFilterSheet } from '../../filters/components/AdvancedFilterSheet';
+import { AdvancedFilterBottomSheet } from '../../filters/components/AdvancedFilterBottomSheet';
 import type { TransactionListItem } from '../api/transactions';
 import {
   useDeleteTransaction,
@@ -72,18 +66,17 @@ const SwipeActionButton = React.memo(function SwipeActionButton({
   backgroundColor,
 }: {
   onPress: () => void;
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
   color: string;
   backgroundColor: string;
 }) {
   return (
-    <TouchableOpacity
+    <BentoPressable
       onPress={onPress}
-      activeOpacity={0.75}
       style={[swipeActionStyles.actionBase, { backgroundColor }]}
     >
-      <Ionicons name={icon} size={18} color={color} />
-    </TouchableOpacity>
+      <MaterialCommunityIcons name={icon} size={18} color={color} />
+    </BentoPressable>
   );
 });
 
@@ -107,13 +100,13 @@ const RightActions = React.memo(function RightActions({
     <View style={swipeActionStyles.container}>
       <SwipeActionButton
         onPress={onEdit}
-         icon="pencil"
+         icon="pencil-outline"
          color={editIconColor}
         backgroundColor={editBgColor}
       />
       <SwipeActionButton
         onPress={onDelete}
-        icon="trash"
+        icon="trash-can-outline"
         color={deleteIconColor}
         backgroundColor={deleteBgColor}
       />
@@ -246,6 +239,7 @@ export function TransactionsScreen() {
   const txQuery = useInfiniteTransactions(basicFilters);
   const accountsQuery = useAccounts();
   const categoriesQuery = useCategories();
+  const personsQuery = usePersons();
   const deleteTransaction = useDeleteTransaction();
 
   // Apply client-side filtering for advanced features
@@ -476,14 +470,14 @@ export function TransactionsScreen() {
         showBack
         rightAction={(
           <View style={styles.headerActions}>
-            <TouchableOpacity onPress={() => setShowAdvancedFilterSheet(true)} activeOpacity={0.7} style={{ position: 'relative' }}>
-              <Ionicons name="options-outline" size={19} color={colors.text} />
+            <BentoPressable onPress={() => setShowAdvancedFilterSheet(true)} style={{ position: 'relative' }}>
+              <MaterialCommunityIcons name="tune" size={19} color={colors.text} />
               {activeFilterCount > 0 && (
                 <View style={styles.filterBadge}>
                   <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
                 </View>
               )}
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
         )}
       />
@@ -514,10 +508,10 @@ export function TransactionsScreen() {
 
             {activeFilterCount > 0 && (
               <View style={styles.activeFiltersRow}>
-                <Text style={styles.activeFiltersLabel}>ACTIVE FILTERS</Text>
-                <TouchableOpacity style={styles.clearChip} onPress={clearFilters}>
+                <Text style={styles.activeFiltersLabel}>Active filters</Text>
+                <BentoPressable style={styles.clearChip} onPress={clearFilters}>
                   <Text style={styles.clearChipText}>Clear All</Text>
-                </TouchableOpacity>
+                </BentoPressable>
               </View>
             )}
           </View>
@@ -525,7 +519,7 @@ export function TransactionsScreen() {
         ListEmptyComponent={(
           <View style={styles.emptyWrap}>
             <View style={styles.emptyIconBox}>
-              <Ionicons name="receipt-outline" size={32} color={colors.textMuted} />
+              <MaterialCommunityIcons name="receipt-text-outline" size={32} color={colors.textMuted} />
             </View>
             <Text style={styles.emptyTitle}>Nothing here yet</Text>
             <Text style={styles.emptySubtitle}>
@@ -533,10 +527,10 @@ export function TransactionsScreen() {
                 ? 'No transactions match the active filters.'
                 : 'Add your first transaction to start tracking.'}
             </Text>
-            <TouchableOpacity style={styles.emptyAction} onPress={() => router.push('/transactions/create')}>
+            <BentoPressable style={styles.emptyAction} onPress={() => router.push('/transactions/create')}>
               <Text style={styles.emptyActionText}>Add Transaction</Text>
-              <Ionicons name="arrow-forward" size={14} color={colors.background} />
-            </TouchableOpacity>
+              <MaterialCommunityIcons name="arrow-right" size={14} color={colors.background} />
+            </BentoPressable>
           </View>
         )}
         ListFooterComponent={txQuery.isFetchingNextPage ? (
@@ -546,9 +540,9 @@ export function TransactionsScreen() {
         ) : null}
       />
 
-      <TouchableOpacity style={styles.fab} onPress={() => router.push('/transactions/create')} activeOpacity={0.9}>
-        <Ionicons name="add" size={28} color={colors.background} />
-      </TouchableOpacity>
+      <BentoPressable style={styles.fab} onPress={() => router.push('/transactions/create')}>
+        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
+      </BentoPressable>
 
       <ConfirmDialog
         visible={showDeleteDialog}
@@ -563,7 +557,7 @@ export function TransactionsScreen() {
         }}
       />
 
-      <AdvancedFilterSheet
+      <AdvancedFilterBottomSheet
         visible={showAdvancedFilterSheet}
         onClose={() => setShowAdvancedFilterSheet(false)}
         filters={advancedFilters}
@@ -571,8 +565,10 @@ export function TransactionsScreen() {
         onReset={handleResetFilters}
         accounts={accountsQuery.data ?? []}
         categories={categoriesQuery.data ?? []}
+        persons={personsQuery.data ?? []}
         resultCount={transactions.length}
       />
+      <WalkthroughOverlay storageKey="@luno_walkthrough_transactions_list" steps={TRANSACTIONS_LIST_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 }
@@ -615,7 +611,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     content: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      paddingBottom: 120,
+      paddingBottom: 100,
     },
     listHeader: {
       gap: spacing('5'),
@@ -630,7 +626,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.semibold,
       fontSize: 10,
       color: colors.textMuted,
-      letterSpacing: 1.5,
     },
     clearChip: {
       backgroundColor: colors.danger + '12',
@@ -655,16 +650,15 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     dayTitle: {
       color: colors.textMuted,
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
-      letterSpacing: 1.2,
+      fontFamily: typography.fonts.medium,
+      fontSize: typography.sizes.xs,
     },
     dayTotals: {
       flexDirection: 'row',
       gap: spacing('3'),
     },
     dayTotalValue: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       fontSize: 12,
     },
     dayCard: {
@@ -718,12 +712,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     fab: {
       position: 'absolute',
-      bottom: layout.screenPadding,
-      right: layout.screenPadding,
-      width: 55,
-      height: 55,
-      borderRadius: radius('full'),
-      backgroundColor: colors.text,
+      bottom: 20,
+      right: 16,
+      width: 56,
+      height: 56,
+      borderRadius: radius('lg'),
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },

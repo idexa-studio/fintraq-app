@@ -80,7 +80,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
         </Svg>
         <View style={styles.center}>
           <Text style={[styles.centerLabel, { color: colors.textMuted, fontFamily: typography.fonts.semibold }]}>
-            TOTAL
+            Total
           </Text>
           <MoneyText amount={total} currency={currency} type="DR" weight="bold" compact style={styles.centerAmt} />
         </View>
@@ -92,7 +92,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
         return (
           <View key={d.id} style={[styles.legendRow, i === data.length - 1 && styles.legendRowLast]}>
             <IconAvatar
-              icon={resolveIcon(d.icon, 'pricetag-outline')}
+              icon={resolveIcon(d.icon, 'tag-outline')}
               color={hex} variant="solid"
               size={32}
               iconSize={15}
@@ -126,7 +126,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
       position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
       justifyContent: 'center', alignItems: 'center',
     },
-    centerLabel: { fontSize: 8, letterSpacing: 1.5, marginBottom: 4 },
+    centerLabel: { fontSize: 8, marginBottom: 4 },
     centerAmt: { fontSize: 18 },
     legendRow: {
       flexDirection: 'row', alignItems: 'center',

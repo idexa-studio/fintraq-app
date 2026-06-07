@@ -1,43 +1,36 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
-import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
+import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
+import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
 import { PageBackground } from '@/src/components/ui/PageBackground';
-import { TextInputSheet } from '@/src/components/ui/TextInputSheet';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
+import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
 import { db } from '@/src/db/client';
-import { accounts, categories, payments, seederState } from '@/src/db/schema';
+import { accounts, categories, payments, persons, seederState } from '@/src/db/schema';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
-import { IoniconName } from '@/src/utils/icons';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIconName } from '@/src/utils/icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  Alert,
-  Linking,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, Linking, Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type SwitchRowProps = {
-  icon: IoniconName;
+  icon: MaterialIconName;
   label: string;
   subtitle: string;
   value: boolean;
   onToggle: () => void;
+  iconColor?: string;
 };
 
 const SwitchRow = React.memo(function SwitchRow({
@@ -46,40 +39,44 @@ const SwitchRow = React.memo(function SwitchRow({
   subtitle,
   value,
   onToggle,
+  iconColor,
   theme,
 }: SwitchRowProps & { theme: ThemeContextType }) {
   const { colors, typography, spacing } = theme;
+  const resolvedIconColor = iconColor ?? colors.text;
+
   return (
-    <View style={[switchRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5'), backgroundColor: colors.surface, marginBottom: spacing('0.5') }]}>
-      <IconAvatar icon={icon} color={colors.text} variant="subtle" size={32} iconSize={14} />
-      <View style={switchRowStyles.textBlock}>
-        <Text style={[switchRowStyles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+    <View style={{
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3'),
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
+      backgroundColor: colors.surface,
+      marginBottom: spacing('0.5'),
+    }}>
+      <IconAvatar icon={icon} color={resolvedIconColor} variant="subtle" size={32} iconSize={14} />
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontFamily: typography.fonts.semibold, fontSize: typography.sizes.md, color: colors.text }}>
           {label}
         </Text>
-        <Text style={[switchRowStyles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+        <Text style={{ fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted, marginTop: 2, opacity: 0.65 }}>
           {subtitle}
         </Text>
       </View>
       <Switch
         value={value}
         onValueChange={onToggle}
-        trackColor={{ false: colors.surface, true: colors.primary + '40' }}
+        trackColor={{ false: colors.background, true: colors.primary + '40' }}
         thumbColor={value ? colors.primary : colors.textMuted}
-        ios_backgroundColor={colors.surface}
+        ios_backgroundColor={colors.background}
       />
     </View>
   );
 });
 
-const switchRowStyles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  textBlock: { flex: 1 },
-  label: { fontSize: 14 },
-  subtitle: { fontSize: 11, marginTop: 2, opacity: 0.65 },
-});
-
 type NavRowProps = {
-  icon: IoniconName;
+  icon: MaterialIconName;
   label: string;
   subtitle: string;
   value?: string;
@@ -106,45 +103,43 @@ const NavRow = React.memo(function NavRow({
   const labelColor = destructive ? colors.danger : colors.text;
 
   return (
-    <TouchableOpacity
+    <BentoPressable
       onPress={onPress}
-      activeOpacity={0.65}
-      style={[navRowStyles.row, { paddingHorizontal: spacing('4'), paddingVertical: spacing('3.5'), backgroundColor: colors.surface }, !isLast && { marginBottom: spacing('0.5') }]}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing('3'),
+        paddingHorizontal: spacing('4'),
+        paddingVertical: spacing('3.5'),
+        backgroundColor: colors.surface,
+        marginBottom: isLast ? 0 : spacing('0.5'),
+      }}
     >
       <IconAvatar icon={icon} color={iconColor} variant="subtle" size={32} iconSize={14} />
-      <View style={navRowStyles.textBlock}>
-        <Text style={[navRowStyles.label, { fontFamily: typography.fonts.semibold, color: labelColor }]}>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontFamily: typography.fonts.semibold, fontSize: typography.sizes.md, color: labelColor }}>
           {label}
         </Text>
-        <Text style={[navRowStyles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+        <Text style={{ fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted, marginTop: 2, opacity: 0.65 }}>
           {subtitle}
         </Text>
       </View>
-      <View style={navRowStyles.right}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') }}>
         {value ? (
-          <Text style={[navRowStyles.value, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>
+          <Text style={{ fontFamily: typography.fonts.semibold, fontSize: typography.sizes.xs, color: colors.primary }}>
             {value}
           </Text>
         ) : null}
-        <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
+        <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
       </View>
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 
-const navRowStyles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  textBlock: { flex: 1 },
-  label: { fontSize: 14 },
-  subtitle: { fontSize: 11, marginTop: 2, opacity: 0.65 },
-  right: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  value: { fontSize: 11 },
-});
-
-const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: IoniconName }[] = [
-  { label: 'Light', value: 'light', icon: 'sunny-outline' },
-  { label: 'Dark', value: 'dark', icon: 'moon-outline' },
-  { label: 'Follow system', value: 'system', icon: 'phone-portrait-outline' },
+const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: MaterialIconName }[] = [
+  { label: 'Light', value: 'light', icon: 'weather-sunny' },
+  { label: 'Dark', value: 'dark', icon: 'moon-waning-crescent' },
+  { label: 'Follow system', value: 'system', icon: 'cellphone' },
 ];
 
 export const SettingsScreen = React.memo(function SettingsScreen() {
@@ -193,6 +188,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const runReset = useCallback(async () => {
     try {
       await db.delete(payments);
+      await db.delete(persons);
       await db.delete(categories);
       await db.delete(accounts);
       await db.delete(seederState);
@@ -216,12 +212,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
   const openPrivacy = useCallback(() => {
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://numeo.idexa.app/in-app/privacy?platform=${platform}`);
+    Linking.openURL(`https://keeep.idexa.app/in-app/privacy?platform=${platform}`);
   }, []);
 
   const openTerms = useCallback(() => {
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://numeo.idexa.app/in-app/terms?platform=${platform}`);
+    Linking.openURL(`https://keeep.idexa.app/in-app/terms?platform=${platform}`);
   }, []);
 
   const openExport = useCallback(() => {
@@ -254,19 +250,24 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const version = Constants.expoConfig?.version ?? '1.0.0';
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
 
-      <Header title="Settings" showBack />
+      <Header title="Settings" />
 
       <ScrollView
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.heroCard}>
-          <Text style={[styles.heroMonogram, { fontFamily: typography.fonts.heading, color: heroCard.textPrimary }]}>
-            {(profile.name || 'W').charAt(0).toUpperCase()}
-          </Text>
+          <View style={styles.deco} pointerEvents="none" />
+          <View style={styles.deco2} pointerEvents="none" />
+
+          <View style={styles.heroAvatar}>
+            <Text style={[styles.heroMonogram, { fontFamily: typography.fonts.bold, color: heroCard.textPrimary }]}>
+              {(profile.name || 'W').charAt(0).toUpperCase()}
+            </Text>
+          </View>
 
           <View style={styles.heroInfo}>
             <Text style={[styles.heroName, { fontFamily: typography.fonts.bold, color: heroCard.textPrimary }]}>
@@ -284,13 +285,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           </View>
         </View>
 
-        <Text style={styles.sectionLabel}>
-          Plan
-        </Text>
+        <SectionHeader title="Plan" noPadding />
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="sparkles"
+            icon="creation"
+            iconColor={colors.warning}
             label={isPremium ? 'Keeep Pro — Lifetime' : 'Upgrade to Pro'}
             subtitle={isPremium ? 'You have permanent access to every feature' : 'Unlock analytics, insights, and more'}
             value={isPremium ? 'Active' : undefined}
@@ -299,13 +299,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <Text style={styles.sectionLabel}>
-          Preferences
-        </Text>
+        <SectionHeader title="Preferences" noPadding />
         <View style={styles.group}>
           <SwitchRow
             theme={theme}
-            icon="notifications-outline"
+            icon="bell-outline"
+            iconColor={colors.info}
             label="Daily reminder"
             subtitle="Get a nudge to log your daily transactions"
             value={profile.reminderEnabled}
@@ -315,7 +314,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             <>
               <NavRow
                 theme={theme}
-                icon="time-outline"
+                icon="clock-outline"
+                iconColor={colors.info}
                 label="Reminder time"
                 subtitle="When you receive your daily notification"
                 value={profile.reminderTime}
@@ -325,7 +325,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           )}
           <NavRow
             theme={theme}
-            icon="cash-outline"
+            icon="cash"
+            iconColor={colors.success}
             label="Default currency"
             subtitle="Used for new accounts and display"
             value={profile.defaultCurrency || 'USD'}
@@ -333,7 +334,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
           <NavRow
             theme={theme}
-            icon="person-outline"
+            icon="account-outline"
+            iconColor={colors.textMuted}
             label="Display name"
             subtitle="How you appear throughout the app"
             value={profile.name || 'Not set'}
@@ -341,7 +343,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
           <NavRow
             theme={theme}
-            icon="contrast-outline"
+            icon="theme-light-dark"
+            iconColor={colors.textMuted}
             label="Theme"
             subtitle="Light, dark, or follow your system setting"
             value={themeLabel}
@@ -360,13 +363,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         )}
 
-        <Text style={styles.sectionLabel}>
-          Data
-        </Text>
+        <SectionHeader title="Data" noPadding />
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="grid-outline"
+            icon="grid"
+            iconColor={colors.success}
             label="Categories"
             subtitle="Manage your income and expense groups"
             onPress={() => router.push('/categories')}
@@ -374,6 +376,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon="download-outline"
+            iconColor={colors.textMuted}
             label="Export CSV"
             subtitle="Download transactions as a spreadsheet file"
             onPress={openExport}
@@ -381,20 +384,20 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <Text style={styles.sectionLabel}>
-          Legal
-        </Text>
+        <SectionHeader title="Legal" noPadding />
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="shield-checkmark-outline"
+            icon="shield-check-outline"
+            iconColor={colors.textMuted}
             label="Privacy policy"
             subtitle="How we handle your data"
             onPress={openPrivacy}
           />
           <NavRow
             theme={theme}
-            icon="document-text-outline"
+            icon="file-document-outline"
+            iconColor={colors.textMuted}
             label="Terms of service"
             subtitle="Rules and guidelines for using Keeep"
             onPress={openTerms}
@@ -402,13 +405,11 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <Text style={styles.sectionLabel}>
-          Danger zone
-        </Text>
+        <SectionHeader title="Danger zone" noPadding />
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="trash-bin-outline"
+            icon="trash-can-outline"
             label="Factory reset"
             subtitle="Permanently erase all data and start fresh"
             onPress={() => setShowResetDialog(true)}
@@ -417,7 +418,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <TouchableOpacity onPress={handleFooterTap} activeOpacity={1} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}>
+        <BentoPressable onPress={handleFooterTap} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}>
           <View style={styles.footer}>
             <Text style={[styles.footerBrand, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
               Keeep / Core
@@ -426,17 +427,17 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
               Data encrypted and stored locally.
             </Text>
           </View>
-        </TouchableOpacity>
+        </BentoPressable>
       </ScrollView>
 
-      <CurrencyPickerModal
+      <CurrencyPickerBottomSheet
         visible={showCurrencyPicker}
         onClose={() => setShowCurrencyPicker(false)}
         value={profile.defaultCurrency || 'USD'}
         onChange={(code) => { updateProfile({ defaultCurrency: code }); }}
       />
 
-      <OptionsDialog
+      <OptionsBottomSheet
         visible={showThemeDialog}
         onClose={() => setShowThemeDialog(false)}
         title="Theme"
@@ -453,7 +454,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         onConfirm={runReset}
       />
 
-      <TextInputSheet
+      <TextInputDialog
         visible={showNameModal}
         onClose={closeNameModal}
         onSave={saveName}
@@ -478,7 +479,7 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
-      paddingBottom: spacing('9'),
+      paddingBottom: 24,
     },
 
     heroCard: {
@@ -489,11 +490,36 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('5'),
+      overflow: 'hidden',
+    },
+    deco: {
+      position: 'absolute',
+      width: 200,
+      height: 200,
+      borderRadius: 100,
+      backgroundColor: heroCard.decoOverlay,
+      top: -80,
+      right: -60,
+    },
+    deco2: {
+      position: 'absolute',
+      width: 120,
+      height: 120,
+      borderRadius: 60,
+      backgroundColor: heroCard.decoOverlay,
+      bottom: -40,
+      left: -30,
+    },
+    heroAvatar: {
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      backgroundColor: heroCard.textPrimary + '15',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     heroMonogram: {
-      fontSize: 72,
-      lineHeight: 76,
-      opacity: 0.35,
+      fontSize: 22,
     },
     heroInfo: {
       flex: 1,
@@ -518,18 +544,10 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
       opacity: 0.4,
     },
 
-    sectionLabel: {
-      fontFamily: typography.fonts.semibold,
-      color: colors.textMuted,
-      fontSize: typography.sizes.sm,
-      marginTop: spacing('5'),
-      marginBottom: spacing('3'),
-    },
-
     group: {
       borderRadius: radius('xl'),
       overflow: 'hidden',
-      marginBottom: spacing('6'),
+      marginBottom: spacing('3'),
     },
 
     footer: {
@@ -547,3 +565,4 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
       opacity: 0.4,
     },
   });
+

@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { MoneyText } from './MoneyText';
+import { BentoPressable } from './BentoPressable';
 
 type KPIMetrics = {
   income: number;
@@ -47,14 +48,13 @@ export const KPICard = React.memo(function KPICard({
             contentContainerStyle={styles.currencyTabsRow}
           >
             {currencies.map((cur) => (
-              <TouchableOpacity
+              <BentoPressable
                 key={cur}
                 style={[
                   styles.currencyTab,
                   selectedCurrency === cur && styles.currencyTabActive,
                 ]}
                 onPress={() => handleCurrencyPress(cur)}
-                activeOpacity={0.75}
               >
                 <Text style={[
                   styles.currencyTabText,
@@ -62,7 +62,7 @@ export const KPICard = React.memo(function KPICard({
                 ]}>
                   {cur}
                 </Text>
-              </TouchableOpacity>
+              </BentoPressable>
             ))}
           </ScrollView>
         </View>
@@ -71,7 +71,7 @@ export const KPICard = React.memo(function KPICard({
       <View style={styles.kpiBody}>
         <View style={styles.kpiMainContent}>
           <View>
-            <Text style={styles.kpiLabel}>NET SAVINGS</Text>
+            <Text style={styles.kpiLabel}>Net savings</Text>
             <MoneyText
               amount={Math.abs(metrics.income - metrics.expense)}
               currency={selectedCurrency ?? undefined}
@@ -86,7 +86,7 @@ export const KPICard = React.memo(function KPICard({
 
         <View style={styles.kpiSecondaryContent}>
           <View style={styles.kpiCell}>
-            <Text style={styles.kpiLabelSmall}>INCOME</Text>
+            <Text style={styles.kpiLabelSmall}>Income</Text>
             <MoneyText
               amount={metrics.income}
               currency={selectedCurrency ?? undefined}
@@ -97,7 +97,7 @@ export const KPICard = React.memo(function KPICard({
           </View>
           <View style={styles.kpiVerticalSep} />
           <View style={styles.kpiCell}>
-            <Text style={styles.kpiLabelSmall}>EXPENSES</Text>
+            <Text style={styles.kpiLabelSmall}>Expenses</Text>
             <MoneyText
               amount={metrics.expense}
               currency={selectedCurrency ?? undefined}
@@ -115,16 +115,12 @@ export const KPICard = React.memo(function KPICard({
 const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     kpiCard: {
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
       overflow: 'hidden',
     },
     kpiTabsWrap: {
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
-      paddingVertical: spacing('2'),
+      paddingVertical: spacing('2.5'),
       paddingLeft: spacing('3'),
     },
     currencyTabsRow: {
@@ -133,25 +129,21 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       paddingRight: spacing('3'),
     },
     currencyTab: {
-      paddingHorizontal: spacing('3'),
+      paddingHorizontal: spacing('3.5'),
       paddingVertical: spacing('2'),
       borderRadius: radius('full'),
       backgroundColor: colors.background,
-      borderWidth: 1,
-      borderColor: colors.border,
     },
     currencyTabActive: {
-      backgroundColor: colors.primary,
-      borderColor: colors.primary,
+      backgroundColor: colors.primary + '18',
     },
     currencyTabText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       fontSize: 12,
       color: colors.textMuted,
-      letterSpacing: 0.3,
     },
     currencyTabTextActive: {
-      color: colors.background,
+      color: colors.primary,
     },
     kpiBody: {
       padding: spacing('4'),
@@ -180,16 +172,14 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     kpiLabel: {
       color: colors.textMuted,
-      fontFamily: typography.fonts.semibold,
-      fontSize: 9,
-      letterSpacing: 1.2,
+      fontFamily: typography.fonts.medium,
+      fontSize: 11,
       marginBottom: spacing('0.5'),
     },
     kpiLabelSmall: {
       color: colors.textMuted,
-      fontFamily: typography.fonts.semibold,
-      fontSize: 8,
-      letterSpacing: 1,
+      fontFamily: typography.fonts.medium,
+      fontSize: 11,
     },
     kpiValueLarge: {
       fontSize: 24,

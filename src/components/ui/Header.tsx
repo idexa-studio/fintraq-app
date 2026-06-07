@@ -1,8 +1,9 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { BentoPressable } from './BentoPressable';
 
 export type HeaderProps = {
   title: string;
@@ -41,12 +42,11 @@ export const Header = React.memo(function Header({
     <View style={styles.container}>
       <View style={styles.left}>
         {showBack && (
-          <TouchableOpacity
+          <BentoPressable
             onPress={handleBack}
-            activeOpacity={0.7}
           >
-            <Ionicons name="arrow-back" size={20} color={colors.text} />
-          </TouchableOpacity>
+            <MaterialCommunityIcons name="arrow-left" size={20} color={colors.text} />
+          </BentoPressable>
         )}
         <View style={styles.titleBlock}>
           <Text style={styles.title} numberOfLines={1}>
@@ -85,7 +85,7 @@ titleBlock: {
     justifyContent: 'center',
   },
   title: {
-    fontFamily: typography.fonts.heading,
+    fontFamily: typography.fonts.semibold,
     color: colors.text,
     fontSize: typography.sizes.xxl,
     lineHeight: 26,

@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -6,36 +6,34 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { SearchScreen } from '@/src/features/search/screens/SearchScreen';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { useTheme } from '@/src/providers/ThemeProvider';
-import { ThemeColors } from '@/src/theme/colors';
-import { RADIUS, SPACING } from '@/src/theme/tokens';
-import { TYPOGRAPHY } from '@/src/theme/typography';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 const SEARCH_FEATURES = [
-  { icon: 'receipt-outline' as const, label: 'Full-text search across all transactions' },
+  { icon: 'receipt-text-outline' as const, label: 'Full-text search across all transactions' },
   { icon: 'wallet-outline' as const, label: 'Find accounts by name instantly' },
-  { icon: 'pricetag-outline' as const, label: 'Locate categories across your history' },
+  { icon: 'tag-outline' as const, label: 'Locate categories across your history' },
 ];
 
-function SearchGate() {
-  const { colors } = useTheme();
+const SearchGate = React.memo(function SearchGate() {
+  const theme = useTheme();
+  const { colors } = theme;
   const router = useRouter();
-  const styles = React.useMemo(() => createStyles(colors), [colors]);
+  const styles = React.useMemo(() => createStyles(theme), [theme]);
 
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
 
       <TouchableOpacity style={styles.backBtn} onPress={() => router.back()} activeOpacity={0.75}>
-        <Ionicons name="arrow-back" size={20} color={colors.text} />
+        <MaterialCommunityIcons name="arrow-left" size={20} color={colors.text} />
       </TouchableOpacity>
 
       <View style={styles.body}>
         <View style={styles.iconWrap}>
-          <Ionicons name="search" size={32} color={colors.text} />
+          <MaterialCommunityIcons name="magnify" size={36} color={colors.text} />
           <View style={styles.proBadge}>
-            <Ionicons name="sparkles" size={10} color={colors.background} />
-            <Text style={[styles.proBadgeText, { color: colors.background }]}>PRO</Text>
+            <MaterialCommunityIcons name="creation" size={12} color={colors.background} />
+            <Text style={styles.proBadgeText}>Pro</Text>
           </View>
         </View>
 
@@ -47,37 +45,37 @@ function SearchGate() {
         <View style={styles.featureList}>
           {SEARCH_FEATURES.map((f) => (
             <View key={f.label} style={styles.featureRow}>
-              <View style={[styles.featureIcon, { backgroundColor: colors.surface }]}>
-                <Ionicons name={f.icon} size={15} color={colors.text} />
+              <View style={styles.featureIcon}>
+                <MaterialCommunityIcons name={f.icon} size={16} color={colors.text} />
               </View>
-              <Text style={[styles.featureLabel, { color: colors.textMuted }]}>{f.label}</Text>
+              <Text style={styles.featureLabel}>{f.label}</Text>
             </View>
           ))}
         </View>
 
         <TouchableOpacity
-          style={[styles.ctaBtn, { backgroundColor: colors.text }]}
+          style={styles.ctaBtn}
           onPress={() => router.push('/premium')}
           activeOpacity={0.85}
         >
-          <Ionicons name="sparkles" size={16} color={colors.background} />
-          <Text style={[styles.ctaBtnText, { color: colors.background }]}>Upgrade to Pro</Text>
+          <MaterialCommunityIcons name="creation" size={16} color={colors.background} />
+          <Text style={styles.ctaBtnText}>Upgrade to Pro</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => router.back()} activeOpacity={0.6} style={styles.dismissBtn}>
-          <Text style={[styles.dismissText, { color: colors.textMuted }]}>Not now</Text>
+          <Text style={styles.dismissText}>Not now</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
-}
+});
 
-export default function SearchRoute() {
+export default React.memo(function SearchRoute() {
   const { isPremium } = usePremium();
   return isPremium ? <SearchScreen /> : <SearchGate />;
-}
+});
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -86,28 +84,28 @@ const createStyles = (colors: ThemeColors) =>
     backBtn: {
       width: 44,
       height: 44,
-      borderRadius: RADIUS.md,
+      borderRadius: radius('md'),
       backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
-      margin: SPACING['4'],
+      margin: spacing('4'),
     },
     body: {
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      paddingHorizontal: SPACING['8'],
+      paddingHorizontal: spacing('8'),
       paddingBottom: 80,
-      gap: SPACING['4'],
+      gap: spacing('4'),
     },
     iconWrap: {
       width: 72,
       height: 72,
-      borderRadius: RADIUS['2xl'],
+      borderRadius: radius('2xl'),
       backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
-      marginBottom: SPACING['2'],
+      marginBottom: spacing('2'),
     },
     proBadge: {
       position: 'absolute',
@@ -118,23 +116,23 @@ const createStyles = (colors: ThemeColors) =>
       gap: 3,
       paddingHorizontal: 7,
       height: 20,
-      borderRadius: RADIUS.sm,
+      borderRadius: radius('sm'),
       backgroundColor: colors.text,
     },
     proBadgeText: {
-      fontFamily: TYPOGRAPHY.fonts.bold,
+      fontFamily: typography.fonts.bold,
       fontSize: 9,
-      letterSpacing: 1,
+      color: colors.background,
     },
     title: {
-      fontFamily: TYPOGRAPHY.fonts.heading,
+      fontFamily: typography.fonts.heading,
       fontSize: 32,
       color: colors.text,
       letterSpacing: -1,
       textAlign: 'center',
     },
     subtitle: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 15,
       color: colors.textMuted,
       textAlign: 'center',
@@ -143,45 +141,51 @@ const createStyles = (colors: ThemeColors) =>
     },
     featureList: {
       width: '100%',
-      gap: SPACING['2'],
-      marginVertical: SPACING['2'],
+      gap: spacing('2'),
+      marginVertical: spacing('2'),
     },
     featureRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: SPACING['3'],
+      gap: spacing('3'),
     },
     featureIcon: {
       width: 34,
       height: 34,
-      borderRadius: RADIUS.md,
+      borderRadius: radius('md'),
+      backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
     },
     featureLabel: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 14,
+      color: colors.textMuted,
       flex: 1,
     },
     ctaBtn: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: SPACING['2'],
+      gap: spacing('2'),
       width: '100%',
       height: 52,
-      borderRadius: RADIUS.lg,
-      marginTop: SPACING['2'],
+      borderRadius: radius('lg'),
+      backgroundColor: colors.text,
+      marginTop: spacing('2'),
     },
     ctaBtnText: {
-      fontFamily: TYPOGRAPHY.fonts.semibold,
+      fontFamily: typography.fonts.semibold,
       fontSize: 15,
+      color: colors.background,
     },
     dismissBtn: {
-      paddingVertical: SPACING['2'],
+      paddingVertical: spacing('2'),
     },
     dismissText: {
-      fontFamily: TYPOGRAPHY.fonts.regular,
+      fontFamily: typography.fonts.regular,
       fontSize: 13,
+      color: colors.textMuted,
     },
   });
+

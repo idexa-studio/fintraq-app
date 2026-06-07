@@ -1,28 +1,22 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  ListRenderItemInfo,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, FlatList, ListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
-import { OptionsDialog } from '../../../components/ui/OptionsDialog';
+import { OptionsBottomSheet } from '../../../components/ui/OptionsBottomSheet';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { Category } from '../api/categories';
 import { CategoryCard } from '../components/CategoryCard';
 import { useCategories, useDeleteCategory } from '../hooks/categories';
+import { WalkthroughOverlay, CATEGORIES_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 
 export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const theme = useTheme();
-  const { colors, spacing, radius, layout } = theme;
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
 
@@ -64,7 +58,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'edit-category',
         label: 'Edit category',
-        icon: 'create-outline' as const,
+        icon: 'pencil-outline' as const,
         onPress: () => {
           setShowManageDialog(false);
           handleEdit(selectedCategory);
@@ -73,7 +67,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'delete-category',
         label: 'Delete category',
-        icon: 'trash-outline' as const,
+        icon: 'trash-can-outline' as const,
         destructive: true,
         onPress: () => setShowDeleteDialog(true),
       },
@@ -98,33 +92,30 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     () => (
       <View style={styles.listHeader}>
         <View style={styles.typeTabs}>
-          <TouchableOpacity
+          <BentoPressable
             style={[styles.typeTab, activeType === 'DR' && styles.typeTabActive]}
             onPress={() => setActiveType('DR')}
-            activeOpacity={0.8}
           >
             <Text style={[styles.typeTabText, activeType === 'DR' && styles.typeTabTextActive]}>
               Expense
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </BentoPressable>
+          <BentoPressable
             style={[styles.typeTab, activeType === 'CR' && styles.typeTabActive]}
             onPress={() => setActiveType('CR')}
-            activeOpacity={0.8}
           >
             <Text style={[styles.typeTabText, activeType === 'CR' && styles.typeTabTextActive]}>
               Income
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </BentoPressable>
+          <BentoPressable
             style={[styles.typeTab, activeType === 'TR' && styles.typeTabActive]}
             onPress={() => setActiveType('TR')}
-            activeOpacity={0.8}
           >
             <Text style={[styles.typeTabText, activeType === 'TR' && styles.typeTabTextActive]}>
               Transfer
             </Text>
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
       </View>
     ),
@@ -135,16 +126,16 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     () => (
       <View style={styles.empty}>
         <View style={styles.emptyIcon}>
-          <Ionicons name="folder-open-outline" size={28} color={colors.textMuted} />
+          <MaterialCommunityIcons name="folder-open-outline" size={32} color={colors.textMuted} />
         </View>
         <Text style={styles.emptyTitle}>No categories</Text>
         <Text style={styles.emptyText}>
           {`No ${activeType === 'DR' ? 'expense' : activeType === 'CR' ? 'income' : 'transfer'} categories yet.`}
         </Text>
-        <TouchableOpacity style={styles.emptyBtn} onPress={handleCreate} activeOpacity={0.85}>
-          <Ionicons name="add" size={15} color={colors.background} />
+        <BentoPressable style={styles.emptyBtn} onPress={handleCreate}>
+          <MaterialCommunityIcons name="plus" size={15} color={colors.background} />
           <Text style={styles.emptyBtnText}>Create one</Text>
-        </TouchableOpacity>
+        </BentoPressable>
       </View>
     ),
     [activeType, colors, handleCreate, styles],
@@ -175,11 +166,11 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         />
       )}
 
-      <TouchableOpacity style={styles.fab} onPress={handleCreate} activeOpacity={0.9}>
-        <Ionicons name="add" size={22} color={colors.background} />
-      </TouchableOpacity>
+      <BentoPressable style={styles.fab} onPress={handleCreate}>
+        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
+      </BentoPressable>
 
-      <OptionsDialog
+      <OptionsBottomSheet
         visible={showManageDialog}
         onClose={() => setShowManageDialog(false)}
         title="Manage category"
@@ -199,6 +190,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
           setSelectedCategory(null);
         }}
       />
+      <WalkthroughOverlay storageKey="@luno_walkthrough_categories" steps={CATEGORIES_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });
@@ -217,7 +209,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     /* ── Grid ── */
     grid: {
       paddingHorizontal: layout.screenPadding,
-      paddingBottom: 110,
+      paddingBottom: 100,
       gap: spacing('3'),
     },
     row: {
@@ -240,7 +232,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
     },
     typeTabActive: {
-      backgroundColor: colors.text,
+      backgroundColor: colors.primary + '18',
     },
     typeTabText: {
       fontFamily: typography.fonts.semibold,
@@ -248,7 +240,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.textMuted,
     },
     typeTabTextActive: {
-      color: colors.background,
+      color: colors.primary,
     },
 
     /* ── Empty ── */
@@ -270,7 +262,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.semibold,
       fontSize: 17,
       color: colors.text,
-      letterSpacing: -0.3,
     },
     emptyText: {
       fontFamily: typography.fonts.regular,
@@ -299,12 +290,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     /* ── FAB ── */
     fab: {
       position: 'absolute',
-      bottom: layout.screenPadding,
-      right: layout.screenPadding,
-      width: 55,
-      height: 55,
-      borderRadius: radius('full'),
-      backgroundColor: colors.text,
+      bottom: 20,
+      right: 16,
+      width: 56,
+      height: 56,
+      borderRadius: radius('lg'),
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },

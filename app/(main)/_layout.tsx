@@ -13,13 +13,12 @@ export default function StackLayout() {
   return (
     <ErrorBoundary>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="analytics" />
+        <Stack.Screen name="(tabs)" />
         <Stack.Screen name="categories" />
-        <Stack.Screen name="settings" />
-        <Stack.Screen name="accounts/index" />
         <Stack.Screen name="accounts/form" />
         <Stack.Screen name="categories/form" />
+        <Stack.Screen name="persons/form" />
+        <Stack.Screen name="persons/[id]" />
       </Stack>
     </ErrorBoundary>
   );

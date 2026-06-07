@@ -21,11 +21,11 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>AMOUNT</Text>
+      <Text style={styles.label}>Amount</Text>
       <View style={styles.inputRow}>
-        <Text style={[styles.currency, { color: colors.textMuted }]}>{currency}</Text>
+        <Text style={styles.currency}>{currency}</Text>
         <TextInput
-          style={[styles.input, { color: colors.text }]}
+          style={styles.input}
           value={value}
           onChangeText={handleChange}
           keyboardType="decimal-pad"
@@ -38,30 +38,36 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
   );
 });
 
-const createStyles = ({ typography, spacing , layout }: ThemeContextType) => StyleSheet.create({
-  container: {
-    paddingHorizontal: layout.screenPadding,
-    paddingVertical: spacing('3'),
-  },
-  label: {
-    fontFamily: typography.fonts.semibold,
-    fontSize: 10,
-    letterSpacing: 1.5,
-    marginBottom: spacing('2'),
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: spacing('3'),
-  },
-  currency: {
-    fontSize: 24,
-    fontFamily: typography.fonts.medium,
-  },
-  input: {
-    flex: 1,
-    fontSize: 48,
-    fontFamily: typography.fonts.bold,
-    letterSpacing: -1,
-  },
-});
+const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.surface,
+      borderRadius: sizes.card.lg.borderRadius,
+      padding: sizes.card.lg.padding,
+      marginHorizontal: layout.screenPadding,
+      marginVertical: spacing('2'),
+    },
+    label: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+      marginBottom: spacing('1.5'),
+    },
+    inputRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    currency: {
+      fontSize: 22,
+      fontFamily: typography.fonts.semibold,
+      color: colors.textMuted,
+      marginRight: spacing('2.5'),
+    },
+    input: {
+      flex: 1,
+      fontSize: 40,
+      fontFamily: typography.fonts.bold,
+      color: colors.text,
+      paddingVertical: 0,
+    },
+  });

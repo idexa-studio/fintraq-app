@@ -1,13 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
-import { IoniconName } from '../../utils/icons';
+import { MaterialIconName } from '../../utils/icons';
 import { useTheme } from '../../providers/ThemeProvider';
 
 type IconAvatarVariant = 'solid' | 'subtle' | 'outline';
 
 type IconAvatarProps = {
-  icon: IoniconName;
+  icon: MaterialIconName;
   color: string;
   variant?: IconAvatarVariant;
   size?: number;
@@ -40,7 +40,7 @@ export const IconAvatar = React.memo(function IconAvatar({
 
   return (
     <View style={[styles.base, { width: size, height: size, borderRadius: size / 2, backgroundColor: bg }, border, style]}>
-      <Ionicons name={icon} size={resolved} color={iconColor} />
+      <MaterialCommunityIcons name={icon} size={resolved} color={iconColor} />
     </View>
   );
 });

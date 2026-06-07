@@ -23,17 +23,24 @@ const transactions = {
   count: (filters: TransactionFilters) => [...transactions.all, 'count', { filters }] as const,
 };
 
+const persons = {
+  all: ['persons'] as const,
+  lists: () => [...persons.all, 'list'] as const,
+  details: () => [...persons.all, 'detail'] as const,
+  detail: (id: number) => [...persons.details(), id] as const,
+  txByPerson: (id: number) => [...persons.all, 'transactions', id] as const,
+};
+
 const dashboard = {
   all: ['dashboard'] as const,
   stats: (currency: string) => [...dashboard.all, 'stats', currency] as const,
   topCategories: (currency: string) => [...dashboard.all, 'top-categories', currency] as const,
+  topPersons: (currency: string) => [...dashboard.all, 'top-persons', currency] as const,
   insights: (currency: string) => [...dashboard.all, 'insights', currency] as const,
 };
 
 const reports = {
   all: ['reports'] as const,
-  weekly: (currency: string) => [...reports.all, 'weekly', currency] as const,
-  monthly: (currency: string) => [...reports.all, 'monthly', currency] as const,
   streak: () => [...reports.all, 'streak'] as const,
 };
 
@@ -42,4 +49,9 @@ const search = {
   results: (query: string) => [...search.all, query] as const,
 };
 
-export const QUERY_KEYS = { accounts, categories, transactions, dashboard, reports, search } as const;
+const analytics = {
+  all: ['analytics'] as const,
+  personBreakdown: (currency: string, days: number) => [...analytics.all, 'person-breakdown', currency, days] as const,
+};
+
+export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics } as const;

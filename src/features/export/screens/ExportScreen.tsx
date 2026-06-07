@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { resolveIcon } from '@/src/utils/icons';
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import {
@@ -8,15 +8,15 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
+import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { CsvExportService, ExportDateRange } from '../api/csv-export.service';
@@ -147,29 +147,29 @@ export const ExportScreen = React.memo(function ExportScreen() {
           <View style={styles.card}>
             {DATE_PRESETS.map((p, i) => (
               <React.Fragment key={p.key}>
-                <TouchableOpacity style={styles.cardRow} onPress={() => handlePresetSelect(p.key)} activeOpacity={0.65}>
+                <BentoPressable style={styles.cardRow} onPress={() => handlePresetSelect(p.key)} scaleOnPress={false}>
                   <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>{p.label}</Text>
-                  {selectedPreset === p.key && !customRange ? <Ionicons name="checkmark" size={16} color={colors.primary} /> : null}
-                </TouchableOpacity>
+                  {selectedPreset === p.key && !customRange ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
+                </BentoPressable>
                 {i < DATE_PRESETS.length - 1 ? <View style={styles.sep} /> : null}
               </React.Fragment>
             ))}
             <View style={styles.sep} />
-            <TouchableOpacity style={styles.cardRow} onPress={() => setShowStartPicker(true)} activeOpacity={0.65}>
+            <BentoPressable style={styles.cardRow} onPress={() => setShowStartPicker(true)} scaleOnPress={false}>
               <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>Custom range</Text>
-              {customRange ? <Ionicons name="checkmark" size={16} color={colors.primary} /> : null}
-            </TouchableOpacity>
+              {customRange ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
+            </BentoPressable>
             {customRange ? (
               <View style={styles.dateRow}>
-                <TouchableOpacity style={styles.dateBtn} onPress={() => setShowStartPicker(true)} activeOpacity={0.7}>
+                <BentoPressable style={styles.dateBtn} onPress={() => setShowStartPicker(true)}>
                   <Text style={[styles.dateLbl, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>From</Text>
                   <Text style={[styles.dateVal, { fontFamily: typography.fonts.semibold, color: colors.text }]}>{formatDate(customRange.startDate)}</Text>
-                </TouchableOpacity>
-                <Ionicons name="arrow-forward" size={14} color={colors.textMuted} />
-                <TouchableOpacity style={styles.dateBtn} onPress={() => setShowEndPicker(true)} activeOpacity={0.7}>
+                </BentoPressable>
+                <MaterialCommunityIcons name="arrow-right" size={14} color={colors.textMuted} />
+                <BentoPressable style={styles.dateBtn} onPress={() => setShowEndPicker(true)}>
                   <Text style={[styles.dateLbl, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>To</Text>
                   <Text style={[styles.dateVal, { fontFamily: typography.fonts.semibold, color: colors.text }]}>{formatDate(customRange.endDate)}</Text>
-                </TouchableOpacity>
+                </BentoPressable>
               </View>
             ) : null}
           </View>
@@ -179,32 +179,32 @@ export const ExportScreen = React.memo(function ExportScreen() {
             {TYPE_OPTIONS.map(t => {
               const active = selectedType === t.key;
               return (
-                <TouchableOpacity key={t.key} style={[styles.pill, active && styles.pillActive]} onPress={() => setSelectedType(t.key)} activeOpacity={0.7}>
+                <BentoPressable key={t.key} style={[styles.pill, active && styles.pillActive]} onPress={() => setSelectedType(t.key)}>
                   <Text style={[styles.pillText, { fontFamily: typography.fonts.semibold }, active && styles.pillTextActive]}>{t.label}</Text>
-                </TouchableOpacity>
+                </BentoPressable>
               );
             })}
           </View>
 
           <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>Account</Text>
           <View style={styles.card}>
-            <TouchableOpacity style={styles.cardRow} onPress={() => setSelectedAccountId(null)} activeOpacity={0.65}>
+            <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(null)} scaleOnPress={false}>
               <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>All accounts</Text>
-              {selectedAccountId === null ? <Ionicons name="checkmark" size={16} color={colors.primary} /> : null}
-            </TouchableOpacity>
+              {selectedAccountId === null ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
+            </BentoPressable>
             {accountsQuery.data?.map(acc => {
               const c = colorNumberToHex(acc.color);
               const selected = selectedAccountId === acc.id;
               return (
                 <React.Fragment key={acc.id}>
                   <View style={styles.sep} />
-                  <TouchableOpacity style={styles.cardRow} onPress={() => setSelectedAccountId(acc.id)} activeOpacity={0.65}>
+                  <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(acc.id)} scaleOnPress={false}>
                     <View style={styles.accRow}>
                       <IconAvatar icon={resolveIcon(acc.icon, 'wallet-outline')} color={c} variant="solid" size={24} iconSize={11} />
                       <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>{acc.name}</Text>
                     </View>
-                    {selected ? <Ionicons name="checkmark" size={16} color={colors.primary} /> : null}
-                  </TouchableOpacity>
+                    {selected ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
+                  </BentoPressable>
                 </React.Fragment>
               );
             })}
@@ -221,18 +221,18 @@ export const ExportScreen = React.memo(function ExportScreen() {
             </View>
           </View>
 
-          <TouchableOpacity style={[styles.exportBtn, (isExporting || previewCount === 0) && { opacity: 0.5 }]} onPress={handleExport} disabled={isExporting || previewCount === 0} activeOpacity={0.8}>
+          <BentoPressable style={[styles.exportBtn, (isExporting || previewCount === 0) && { opacity: 0.5 }]} onPress={handleExport} disabled={isExporting || previewCount === 0}>
             {isExporting ? <ActivityIndicator size="small" color={colors.background} /> : (
               <>
-                <Ionicons name="download-outline" size={18} color={colors.background} />
+                <MaterialCommunityIcons name="download-outline" size={18} color={colors.background} />
                 <Text style={[styles.exportBtnText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>Export CSV</Text>
               </>
             )}
-          </TouchableOpacity>
+          </BentoPressable>
 
           {previewCount === 0 ? (
             <View style={styles.warning}>
-              <Ionicons name="information-circle-outline" size={16} color={colors.warning} />
+              <MaterialCommunityIcons name="information-outline" size={16} color={colors.warning} />
               <Text style={[styles.warningText, { fontFamily: typography.fonts.regular, color: colors.warning }]}>No transactions match the selected filters.</Text>
             </View>
           ) : null}
@@ -241,7 +241,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
       {showStartPicker ? <DateTimePicker value={customRange?.startDate || new Date()} mode="date" display="default" onChange={handleStartChange} maximumDate={new Date()} /> : null}
       {showEndPicker ? <DateTimePicker value={customRange?.endDate || new Date()} mode="date" display="default" onChange={handleEndChange} maximumDate={new Date()} /> : null}
 
-      <OptionsDialog visible={showExportOptions} onClose={() => { setShowExportOptions(false); setExportedData(null); }} title="Export complete" subtitle={exportedData ? `${previewCount?.toLocaleString()} transactions ready` : 'Choose how to save'} options={[
+      <OptionsBottomSheet visible={showExportOptions} onClose={() => { setShowExportOptions(false); setExportedData(null); }} title="Export complete" subtitle={exportedData ? `${previewCount?.toLocaleString()} transactions ready` : 'Choose how to save'} options={[
         { key: 'save', label: Platform.OS === 'ios' ? 'Save to files' : 'Save to folder', icon: 'folder-outline', selected: false, onPress: handleSave },
         { key: 'share', label: 'Share to apps', icon: 'share-outline', selected: false, onPress: handleShare },
       ]} />
@@ -262,15 +262,15 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     sep: { height: 1, backgroundColor: colors.text + '0C', marginHorizontal: 16 },
 
     dateRow: { flexDirection: 'row', alignItems: 'center', gap: spacing('2.5'), paddingHorizontal: spacing('4'), paddingBottom: spacing('4') },
-    dateBtn: { flex: 1, backgroundColor: colors.background, borderRadius: radius('md'), padding: spacing('3'), borderWidth: 1, borderColor: colors.text + '0C' },
+    dateBtn: { flex: 1, backgroundColor: colors.background, borderRadius: radius('md'), padding: spacing('3') },
     dateLbl: { fontSize: 10, marginBottom: spacing('0.5'), opacity: 0.6 },
     dateVal: { fontSize: typography.sizes.sm },
 
     pillRow: { flexDirection: 'row', gap: spacing('2'), marginBottom: spacing('5') },
-    pill: { flex: 1, height: 36, borderRadius: radius('md'), backgroundColor: colors.surface, justifyContent: 'center', alignItems: 'center' },
-    pillActive: { backgroundColor: colors.text },
-    pillText: { fontSize: typography.sizes.xs, color: colors.text },
-    pillTextActive: { color: colors.background },
+    pill: { flex: 1, height: 36, borderRadius: radius('full'), backgroundColor: colors.surface, justifyContent: 'center', alignItems: 'center' },
+    pillActive: { backgroundColor: colors.primary + '15' },
+    pillText: { fontSize: typography.sizes.xs, color: colors.textMuted, fontFamily: typography.fonts.medium },
+    pillTextActive: { color: colors.primary, fontFamily: typography.fonts.semibold },
 
     accRow: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
 
@@ -280,8 +280,8 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     summaryValue: { fontSize: 20 },
     summaryPeriod: { fontSize: typography.sizes.xs, opacity: 0.7 },
 
-    exportBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing('2.5'), height: sizes.button.lg.height, borderRadius: sizes.button.lg.borderRadius, backgroundColor: colors.text, marginBottom: spacing('3') },
-    exportBtnText: { fontSize: sizes.button.lg.fontSize },
+    exportBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing('2.5'), height: sizes.button.lg.height, borderRadius: radius('full'), backgroundColor: colors.primary, marginBottom: spacing('3') },
+    exportBtnText: { fontSize: sizes.button.lg.fontSize, fontFamily: typography.fonts.semibold, color: colors.background },
 
     warning: { flexDirection: 'row', alignItems: 'center', gap: spacing('2.5'), backgroundColor: colors.warning + '10', borderRadius: radius('md'), padding: spacing('3') },
     warningText: { flex: 1, fontSize: typography.sizes.xs, lineHeight: 18 },

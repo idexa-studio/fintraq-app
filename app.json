@@ -2,7 +2,7 @@
   "expo": {
     "name": "Keeep",
     "slug": "luno",
-    "version": "1.1.1",
+    "version": "1.1.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "luno",
@@ -23,8 +23,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
+        "foregroundImage": "./assets/images/adaptive-icon/foreground.png",
+        "backgroundImage": "./assets/images/adaptive-icon/background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png",
         "backgroundColor": "#7fce09"
       },
@@ -44,12 +44,12 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/splash.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#000100",
+          "backgroundColor": "#062922",
           "dark": {
-            "backgroundColor": "#000100"
+            "backgroundColor": "#062922"
           }
         }
       ],

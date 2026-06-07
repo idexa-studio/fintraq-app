@@ -1,6 +1,20 @@
 import { relations, sql } from 'drizzle-orm';
 import { index, integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
+export const persons = sqliteTable('persons', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  email: text('email'),
+  phone: text('phone'),
+  designation: text('designation'),
+  company: text('company'),
+  color: integer('color').notNull(),
+  createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
+}, (table) => [
+  index('persons_name_idx').on(table.name),
+]);
+
 export const accounts = sqliteTable('accounts', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
@@ -40,6 +54,7 @@ export const payments = sqliteTable('payments', {
   accountId: integer('account_id').notNull().references(() => accounts.id, { onDelete: 'cascade' }),
   categoryId: integer('category_id').notNull().references(() => categories.id, { onDelete: 'cascade' }),
   toAccountId: integer('to_account_id').references(() => accounts.id, { onDelete: 'set null' }),
+  personId: integer('person_id').references(() => persons.id, { onDelete: 'set null' }),
   amount: real('amount').notNull(),
   type: text('type', { enum: ['CR', 'DR', 'TR'] }).notNull(),
   datetime: text('datetime').notNull(),
@@ -50,8 +65,13 @@ export const payments = sqliteTable('payments', {
   index('payments_account_id_idx').on(table.accountId),
   index('payments_category_id_idx').on(table.categoryId),
   index('payments_to_account_id_idx').on(table.toAccountId),
+  index('payments_person_id_idx').on(table.personId),
   index('payments_datetime_idx').on(table.datetime),
 ]);
+
+export const personsRelations = relations(persons, ({ many }) => ({
+  payments: many(payments),
+}));
 
 export const paymentsRelations = relations(payments, ({ one }) => ({
   account: one(accounts, {
@@ -61,6 +81,10 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
   category: one(categories, {
     fields: [payments.categoryId],
     references: [categories.id],
+  }),
+  person: one(persons, {
+    fields: [payments.personId],
+    references: [persons.id],
   }),
 }));
 

@@ -1,7 +1,8 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Input } from '../../../components/ui/Input';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { OnboardingFormValues } from '../types';
@@ -54,11 +55,11 @@ export const ProfileStep = React.memo(function ProfileStep({ currency, onOpenCur
         <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
           Default currency
         </Text>
-        <TouchableOpacity style={styles.currencyRow} onPress={onOpenCurrencyPicker} activeOpacity={0.7}>
+        <BentoPressable style={styles.currencyRow} onPress={onOpenCurrencyPicker}>
           <Text style={[styles.currencyCode, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>{currency}</Text>
           <Text style={[styles.currencyHint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>Tap to change</Text>
-          <Ionicons name="chevron-forward" size={14} color={colors.textMuted} />
-        </TouchableOpacity>
+          <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
+        </BentoPressable>
       </View>
     </View>
   );

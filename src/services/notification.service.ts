@@ -73,10 +73,6 @@ export const NotificationService = {
    * @param timeStr "HH:mm" format (e.g., "20:00")
    */
   async scheduleDailyReminder(timeStr: string) {
-    // 1. Clear existing reminders to prevent duplication
-    await this.cancelAllReminders();
-
-    // 2. Parse the time string
     const [hours, minutes] = timeStr.split(':').map(Number);
 
     if (isNaN(hours) || isNaN(minutes)) {
@@ -84,11 +80,26 @@ export const NotificationService = {
       return;
     }
 
-    // 3. Pick a random message from the pool
+    // Check if the exact same schedule is already in place — avoid cancel+reschedule race
+    const existing = await Notifications.getAllScheduledNotificationsAsync();
+    const alreadyScheduled = existing.some((n) => {
+      if (n.identifier !== 'daily_reminder') return false;
+      const t = n.trigger as { hour?: number; minute?: number };
+      return t?.hour === hours && t?.minute === minutes;
+    });
+
+    if (alreadyScheduled) {
+      console.log(`[NotificationService] Daily reminder already scheduled for ${timeStr}, skipping.`);
+      return;
+    }
+
+    // Cancel existing before creating a new one (different time)
+    await this.cancelAllReminders();
+
+    // Pick a random message from the pool
     const randomIndex = Math.floor(Math.random() * REMINDER_POOL.length);
     const message = REMINDER_POOL[randomIndex];
 
-    // 4. Schedule the new daily notification
     await Notifications.scheduleNotificationAsync({
       content: {
         title: message.title,
@@ -112,13 +123,14 @@ export const NotificationService = {
    * Useful when the user has already recorded their transactions for the day.
    */
   async dismissToday(timeStr: string) {
-    // 1. Clear existing reminders
+    // Cancel the current trigger so today's notification is suppressed
     await this.cancelAllReminders();
 
-    // 2. Schedule for tomorrow (this pushes the next notification to over 24h away)
     const [hours, minutes] = timeStr.split(':').map(Number);
-    // const tomorrow = addDays(new Date(), 1);
 
+    // Re-schedule using DAILY — the OS will fire it at the same time tomorrow
+    // (a DAILY trigger that was just cancelled and rescheduled won't fire again
+    // until the next 24-hour cycle.)
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "Stay consistent! ✍️",
@@ -127,10 +139,9 @@ export const NotificationService = {
         priority: Notifications.AndroidNotificationPriority.HIGH,
       },
       trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
+        type: Notifications.SchedulableTriggerInputTypes.DAILY,
         hour: hours,
         minute: minutes,
-        repeats: true,
       },
       identifier: 'daily_reminder',
     });

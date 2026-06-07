@@ -37,7 +37,11 @@ export const Input = React.memo(function Input({
         return { backgroundColor: 'transparent', borderBottomWidth: 1, borderBottomColor: error ? colors.danger : colors.text + '0C' };
       case 'default':
       default:
-        return { backgroundColor: colors.surface, borderWidth: 1, borderColor: error ? colors.danger : colors.text + '0C' };
+        return {
+          backgroundColor: colors.surface,
+          borderWidth: error ? 1 : 0,
+          borderColor: error ? colors.danger : 'transparent',
+        };
     }
   }, [variant, error, colors]);
 

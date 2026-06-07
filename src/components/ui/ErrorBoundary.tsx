@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
+import { BentoPressable } from './BentoPressable';
 
 type Props = {
   children: React.ReactNode;
@@ -22,15 +23,14 @@ function ErrorFallback({ error, onReset }: { error: Error | null; onReset: () =>
       <Text style={[styles.message, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
         {error?.message}
       </Text>
-      <TouchableOpacity
+      <BentoPressable
         style={[styles.button, { backgroundColor: colors.text }]}
         onPress={onReset}
-        activeOpacity={0.75}
       >
         <Text style={[styles.buttonText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
           Try again
         </Text>
-      </TouchableOpacity>
+      </BentoPressable>
     </View>
   );
 }

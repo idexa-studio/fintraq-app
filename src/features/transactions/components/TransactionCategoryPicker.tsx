@@ -1,6 +1,7 @@
-import { Ionicons } from '@expo/vector-icons';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
@@ -25,37 +26,35 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>CATEGORY</Text>
+      <Text style={[styles.label, { color: colors.textMuted }]}>Category</Text>
       <View style={styles.grid}>
         {categories.map((cat) => {
           const selected = selectedId === cat.id;
           const catColor = colorNumberToHex(cat.color);
           return (
-            <TouchableOpacity
+            <BentoPressable
               key={cat.id}
               style={[
                 styles.pill,
-                { backgroundColor: colors.surface, borderColor: colors.border },
-                selected && { backgroundColor: catColor, borderColor: catColor },
+                { backgroundColor: selected ? catColor + '14' : colors.surface },
               ]}
               onPress={() => handleSelect(cat.id)}
-              activeOpacity={0.8}
             >
-              <Ionicons
-                name={resolveIcon(cat.icon, 'pricetag-outline')}
+              <MaterialCommunityIcons
+                name={resolveIcon(cat.icon, 'tag-outline')}
                 size={14}
-                color={selected ? colors.background : catColor}
+                color={catColor}
               />
               <Text
                 style={[
                   styles.name,
-                  { color: selected ? colors.background : colors.text },
+                  { color: selected ? catColor : colors.text },
                 ]}
                 numberOfLines={1}
               >
                 {cat.name}
               </Text>
-            </TouchableOpacity>
+            </BentoPressable>
           );
         })}
       </View>
@@ -63,15 +62,14 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
   );
 });
 
-const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeContextType) => StyleSheet.create({
   container: {
     paddingVertical: spacing('3'),
     paddingHorizontal: layout.screenPadding,
   },
   label: {
     fontFamily: typography.fonts.semibold,
-    fontSize: 10,
-    letterSpacing: 1.5,
+    fontSize: typography.sizes.xs,
     marginBottom: spacing('3'),
   },
   grid: {
@@ -83,13 +81,12 @@ const createStyles = ({ typography, spacing, radius , layout }: ThemeContextType
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing('2'),
-    paddingHorizontal: spacing('3'),
+    paddingHorizontal: spacing('3.5'),
     height: 36,
     borderRadius: radius('full'),
-    borderWidth: 1,
   },
   name: {
-    fontFamily: typography.fonts.medium,
+    fontFamily: typography.fonts.semibold,
     fontSize: 13,
   },
 });

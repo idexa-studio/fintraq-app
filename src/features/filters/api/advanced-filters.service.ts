@@ -13,7 +13,10 @@ export interface AdvancedFilters {
   
   // Multi-select categories
   categoryIds?: number[];
-  
+
+  // Multi-select persons
+  personIds?: number[];
+
   // Transaction types (can select multiple)
   types?: TransactionType[];
   
@@ -69,15 +72,17 @@ export class AdvancedFilterService {
     const hasMultipleTypes = (advanced.types?.length || 0) > 1;
     const hasMultipleAccounts = (advanced.accountIds?.length || 0) > 1;
     const hasMultipleCategories = (advanced.categoryIds?.length || 0) > 1;
+    const hasPersons = (advanced.personIds?.length || 0) > 0;
     const hasDateRange = !!advanced.dateRange;
     const hasAmountRange = !!advanced.amountRange;
     const hasSearchQuery = !!advanced.searchQuery?.trim();
-    
-    return hasMultipleTypes || 
-           hasMultipleAccounts || 
-           hasMultipleCategories || 
-           hasDateRange || 
-           hasAmountRange || 
+
+    return hasMultipleTypes ||
+           hasMultipleAccounts ||
+           hasMultipleCategories ||
+           hasPersons ||
+           hasDateRange ||
+           hasAmountRange ||
            hasSearchQuery;
   }
   
@@ -90,6 +95,7 @@ export class AdvancedFilterService {
     if (advanced.dateRange) count++;
     if (advanced.accountIds && advanced.accountIds.length > 0) count++;
     if (advanced.categoryIds && advanced.categoryIds.length > 0) count++;
+    if (advanced.personIds && advanced.personIds.length > 0) count++;
     if (advanced.types && advanced.types.length > 0) count++;
     if (advanced.amountRange && (advanced.amountRange.min !== undefined || advanced.amountRange.max !== undefined)) count++;
     if (advanced.searchQuery?.trim()) count++;
@@ -121,7 +127,11 @@ export class AdvancedFilterService {
     if (advanced.categoryIds && advanced.categoryIds.length > 0) {
       parts.push(`${advanced.categoryIds.length} categor${advanced.categoryIds.length > 1 ? 'ies' : 'y'}`);
     }
-    
+
+    if (advanced.personIds && advanced.personIds.length > 0) {
+      parts.push(`${advanced.personIds.length} person${advanced.personIds.length > 1 ? 's' : ''}`);
+    }
+
     if (advanced.types && advanced.types.length > 0) {
       const typeLabels = advanced.types.map(t => t === 'CR' ? 'Income' : t === 'DR' ? 'Expense' : 'Transfer');
       parts.push(typeLabels.join(' & '));

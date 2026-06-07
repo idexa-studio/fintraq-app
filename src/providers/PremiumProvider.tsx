@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as IAP from 'expo-iap';
 import React, { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
-import { AlertButton, AlertModal } from '../components/ui/AlertModal';
+import { AlertButton, AlertDialog } from '../components/ui/AlertDialog';
 import { ALL_SKUS, SKU_LIFETIME } from '../constants/iap';
 import { IAPProduct, IAPService } from '../services/iap.service';
 
@@ -315,7 +315,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
   return (
     <PremiumContext.Provider value={contextValue}>
       {children}
-      <AlertModal
+      <AlertDialog
         visible={alertConfig.visible}
         title={alertConfig.title}
         message={alertConfig.message}

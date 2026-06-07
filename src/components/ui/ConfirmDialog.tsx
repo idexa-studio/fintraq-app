@@ -1,6 +1,7 @@
-import React, { useMemo, useCallback } from 'react';
-import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { BentoPressable } from './BentoPressable';
 
 type ConfirmDialogProps = {
   visible: boolean;
@@ -37,7 +38,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <TouchableOpacity style={StyleSheet.absoluteFillObject} activeOpacity={1} onPress={onClose} />
+        <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
 
         <View style={styles.card}>
           <View style={styles.body}>
@@ -46,14 +47,13 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
           </View>
 
           <View style={styles.actions}>
-            <TouchableOpacity style={styles.btnCancel} onPress={onClose} activeOpacity={0.7}>
+            <BentoPressable style={styles.btnCancel} onPress={onClose}>
               <Text style={styles.btnCancelText}>{cancelLabel}</Text>
-            </TouchableOpacity>
+            </BentoPressable>
 
-            <TouchableOpacity
+            <BentoPressable
               style={[styles.btnConfirm, destructive && styles.btnDanger]}
               onPress={handleConfirm}
-              activeOpacity={0.7}
               disabled={isLoading}
             >
               {isLoading ? (
@@ -61,7 +61,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
               ) : (
                 <Text style={styles.btnConfirmText}>{confirmLabel}</Text>
               )}
-            </TouchableOpacity>
+            </BentoPressable>
           </View>
         </View>
       </View>
@@ -74,60 +74,63 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     overlay: {
       flex: 1,
       backgroundColor: overlay.dim,
-      justifyContent: 'flex-end',
-      padding: layout.screenPadding,
-      paddingBottom: spacing('9'),
+      justifyContent: 'center',
+      padding: spacing('7'),
     },
     card: {
       backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
-      borderWidth: 0.5,
-      borderColor: colors.text + '0C',
+      borderRadius: 28,
       overflow: 'hidden',
+      padding: spacing('6'),
+      gap: spacing('4'),
     },
     body: {
-      padding: spacing('5'),
+      padding: 0,
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 20,
+      fontSize: 24,
       color: colors.text,
       marginBottom: spacing('2'),
     },
     message: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      fontSize: 14,
       color: colors.textMuted,
       lineHeight: 20,
     },
     actions: {
       flexDirection: 'row',
+      justifyContent: 'flex-end',
+      gap: spacing('2'),
+      marginTop: spacing('4'),
     },
     btnCancel: {
-      flex: 1,
-      height: 52,
-      backgroundColor: colors.surface,
+      height: 40,
+      paddingHorizontal: spacing('4'),
       justifyContent: 'center',
       alignItems: 'center',
+      borderRadius: radius('full'),
     },
     btnCancelText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: typography.sizes.sm,
-      color: colors.text,
+      fontSize: 14,
+      color: colors.textMuted,
     },
     btnConfirm: {
-      flex: 1,
-      height: 52,
-      backgroundColor: colors.text,
+      height: 40,
+      paddingHorizontal: spacing('5'),
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
+      borderRadius: radius('full'),
     },
     btnDanger: {
       backgroundColor: colors.danger,
     },
     btnConfirmText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: typography.sizes.sm,
+      fontSize: 14,
       color: colors.background,
     },
   });

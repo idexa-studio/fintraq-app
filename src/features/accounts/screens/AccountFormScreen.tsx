@@ -1,32 +1,23 @@
-import { ColorPickerModal } from '@/src/components/ui/ColorPickerModal';
-import { CurrencyPickerModal } from '@/src/components/ui/CurrencyPickerModal';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { ColorPickerBottomSheet } from '@/src/components/ui/ColorPickerBottomSheet';
+import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { IconPickerModal } from '@/src/components/ui/IconPickerModal';
+import { IconPickerBottomSheet } from '@/src/components/ui/IconPickerBottomSheet';
 import { Input } from '@/src/components/ui/Input';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ACCOUNT_COLORS, ACCOUNT_ICON_GROUPS, ACCOUNT_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
 import type { InsertAccount, UpdateAccountData } from '@/src/features/accounts/api/accounts';
-import { adjustAccountBalance } from '@/src/features/accounts/api/accounts';
 import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, parseAmount, toDbColor } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type AccountFormValues = {
@@ -56,7 +47,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
   const { profile } = useSettings();
 
   const [currency, setCurrency] = useState<string>(profile.defaultCurrency || 'USD');
-  const [colorHex, setColorHex] = useState<string>(ACCOUNT_COLORS[0]);
+  const [colorHex, setColorHex] = useState<string>(() => ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)]);
   const [iconKey, setIconKey] = useState<string>(ACCOUNT_ICONS[0]);
 
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
@@ -104,11 +95,6 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           icon: iconKey.replace('-outline', ''),
         };
         await updateAccount({ id: account.id, data: updateData });
-
-        const newBalance = parseAmount(data.balance);
-        if (Math.abs(newBalance - account.balance) > 0.001) {
-          await adjustAccountBalance(account.id, newBalance);
-        }
       } else {
         const createData: InsertAccount = {
           name: data.name.trim(),
@@ -160,7 +146,6 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                   <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="e.g. Main Wallet, Savings" error={errors.name?.message} size="md" variant="filled" autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
                 )}
               />
-              {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
             </View>
 
             {/* ── Holder Name ── */}
@@ -198,7 +183,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
               <View style={styles.twoCol}>
                 <View style={styles.colBalance}>
                   <Text style={styles.sectionLabel}>
-                    {isEditing ? 'Adjust balance' : 'Initial balance'}
+                    {isEditing ? 'Current balance' : 'Initial balance'}
                   </Text>
                   <Controller
                     control={control}
@@ -221,8 +206,11 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                           styles.fieldInput,
                           styles.fieldInputAmount,
                           errors.balance && styles.fieldInputError,
+                          isEditing && styles.fieldInputDisabled,
                         ]}
                         returnKeyType="done"
+                        editable={!isEditing}
+                        selectTextOnFocus={!isEditing}
                       />
                     )}
                   />
@@ -230,14 +218,13 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                 </View>
                 <View style={styles.colCurrency}>
                   <Text style={styles.sectionLabel}>Currency</Text>
-                  <TouchableOpacity
+                  <BentoPressable
                     style={styles.currencyBtn}
                     onPress={openCurrencyPicker}
-                    activeOpacity={0.85}
                   >
                     <Text style={styles.currencyValue}>{currency}</Text>
-                    <Ionicons name="chevron-expand-outline" size={14} color={colors.textMuted} />
-                  </TouchableOpacity>
+                    <MaterialCommunityIcons name="unfold-more-vertical" size={14} color={colors.textMuted} />
+                  </BentoPressable>
                 </View>
               </View>
             </View>
@@ -247,10 +234,9 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
               <Text style={styles.sectionLabel}>Appearance</Text>
               <View style={styles.appearanceRow}>
 
-                <TouchableOpacity
+                <BentoPressable
                   style={styles.appearanceCard}
                   onPress={() => setShowIconPicker(true)}
-                  activeOpacity={0.85}
                 >
                   <IconAvatar
                      icon={resolveIcon(iconKey, 'wallet-outline')}
@@ -263,19 +249,18 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                       {iconKey.replace('-outline', '')}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </BentoPressable>
 
-                <TouchableOpacity
+                <BentoPressable
                   style={styles.appearanceCard}
                   onPress={() => setShowColorPicker(true)}
-                  activeOpacity={0.85}
                 >
                   <View style={[styles.colorSwatch, { backgroundColor: colorHex }]} />
                   <View style={styles.appearanceCardMeta}>
                     <Text style={styles.appearanceCardLabel}>Color</Text>
                     <Text style={styles.appearanceCardHint} numberOfLines={1}>{colorHex}</Text>
                   </View>
-                </TouchableOpacity>
+                </BentoPressable>
 
               </View>
             </View>
@@ -284,8 +269,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         </ScrollView>
 
         <View style={styles.footer}>
-          <TouchableOpacity
-            activeOpacity={0.9}
+          <BentoPressable
             style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
             onPress={handleSave}
             disabled={!isValid}
@@ -293,17 +277,17 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
             <Text style={styles.primaryBtnText}>
               {isEditing ? 'Save account' : 'Create account'}
             </Text>
-          </TouchableOpacity>
+          </BentoPressable>
         </View>
       </KeyboardAvoidingView>
 
-      <CurrencyPickerModal
+      <CurrencyPickerBottomSheet
         visible={showCurrencyPicker}
         onClose={closeCurrencyPicker}
         value={currency}
         onChange={setCurrency}
       />
-      <IconPickerModal
+      <IconPickerBottomSheet
         visible={showIconPicker}
         onClose={() => setShowIconPicker(false)}
         value={iconKey}
@@ -311,7 +295,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         groups={ACCOUNT_ICON_GROUPS}
         accentColor={colorHex}
       />
-      <ColorPickerModal
+      <ColorPickerBottomSheet
         visible={showColorPicker}
         onClose={() => setShowColorPicker(false)}
         value={colorHex}
@@ -352,15 +336,18 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       height: 50,
       borderRadius: radius('lg'),
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
       paddingHorizontal: spacing('4'),
       fontFamily: typography.fonts.regular,
       fontSize: 15,
       color: colors.text,
     },
     fieldInputError: {
+      borderWidth: 1,
       borderColor: colors.danger,
+    },
+    fieldInputDisabled: {
+      color: colors.textMuted,
+      opacity: 0.6,
     },
     fieldInputAmount: {
       fontFamily: typography.fonts.amountBold,
@@ -387,8 +374,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       height: 50,
       borderRadius: radius('lg'),
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
       paddingHorizontal: spacing('3.5'),
       flexDirection: 'row',
       alignItems: 'center',
@@ -410,8 +395,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('2.5'),
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
-      borderWidth: 1,
-      borderColor: colors.border,
       paddingHorizontal: spacing('3'),
       paddingVertical: spacing('3'),
     },
@@ -441,8 +424,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     primaryBtn: {
       height: 52,
-      borderRadius: radius('xl'),
-      backgroundColor: colors.text,
+      borderRadius: radius('full'),
+      backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },

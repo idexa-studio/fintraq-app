@@ -1,6 +1,7 @@
-import { Ionicons } from '@expo/vector-icons';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
@@ -30,16 +31,15 @@ export const CategoryCard = React.memo(function CategoryCard({
   const handleLongPress = useCallback(() => onLongPress(item), [onLongPress, item]);
 
   return (
-    <TouchableOpacity
+    <BentoPressable
       style={styles.tile}
       onPress={handlePress}
       onLongPress={handleLongPress}
       delayLongPress={280}
-      activeOpacity={0.72}
     >
       <View style={[styles.iconWrap, { backgroundColor: catColor + '22' }]}>
-        <Ionicons
-          name={resolveIcon(item.icon, 'grid-outline')}
+        <MaterialCommunityIcons
+          name={resolveIcon(item.icon, 'grid')}
           size={14}
           color={catColor}
         />
@@ -47,7 +47,7 @@ export const CategoryCard = React.memo(function CategoryCard({
       <Text style={styles.name} numberOfLines={2}>
         {item.name}
       </Text>
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 
@@ -73,10 +73,9 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     name: {
       flex: 1,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.fonts.medium,
       fontSize: 13,
       color: colors.text,
-      letterSpacing: -0.1,
       lineHeight: 18,
     },
   });

@@ -1,7 +1,8 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useCallback } from 'react';
-import { ActivityIndicator, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { BentoPressable } from './BentoPressable';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'success' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -15,7 +16,7 @@ type ButtonProps = {
   disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
-  icon?: keyof typeof Ionicons.glyphMap;
+  icon?: keyof typeof MaterialCommunityIcons.glyphMap;
 };
 
 export const Button = React.memo(function Button({
@@ -30,7 +31,7 @@ export const Button = React.memo(function Button({
   icon,
 }: ButtonProps) {
   const theme = useTheme();
-  const { colors, sizes, spacing } = theme;
+  const { colors, sizes, spacing, radius } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const sizeConfig = sizes.button[size];
@@ -63,13 +64,13 @@ export const Button = React.memo(function Button({
   }, [disabled, isLoading, onPress]);
 
   return (
-    <TouchableOpacity
+    <BentoPressable
       style={[
         styles.base,
         {
           height: sizeConfig.height,
           paddingHorizontal: sizeConfig.paddingHorizontal,
-          borderRadius: sizeConfig.borderRadius,
+          borderRadius: radius('full'),
           backgroundColor,
           opacity: disabled ? 0.5 : 1,
         },
@@ -77,10 +78,9 @@ export const Button = React.memo(function Button({
       ]}
       onPress={handlePress}
       disabled={disabled || isLoading}
-      activeOpacity={0.75}
     >
       {icon && !isLoading && (
-        <Ionicons
+        <MaterialCommunityIcons
           name={icon}
           size={size === 'sm' ? 16 : size === 'lg' ? 24 : 20}
           color={textColor}
@@ -104,7 +104,7 @@ export const Button = React.memo(function Button({
           {title}
         </Text>
       )}
-    </TouchableOpacity>
+    </BentoPressable>
   );
 });
 

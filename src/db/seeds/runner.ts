@@ -2,13 +2,17 @@ import { eq } from 'drizzle-orm';
 import { db } from '../client';
 import { seederState } from '../schema';
 import * as transferCategorySeed from './001_add_transfer_category';
+import * as migrateIconsAndColorsSeed from './002_migrate_icons_and_colors';
 
 type SeedModule = {
   name: string;
   seed: () => Promise<void>;
 };
 
-const seeds: readonly SeedModule[] = [transferCategorySeed] as const;
+const seeds: readonly SeedModule[] = [
+  transferCategorySeed,
+  migrateIconsAndColorsSeed,
+] as const;
 
 export async function runSeeds(): Promise<void> {
   for (const seedModule of seeds) {
