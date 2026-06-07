@@ -23,7 +23,6 @@ interface AdvancedFilterBottomSheetProps {
   accounts: Account[];
   categories: Category[];
   persons: Person[];
-  resultCount: number;
 }
 
 const TYPE_OPTS = [
@@ -33,7 +32,7 @@ const TYPE_OPTS = [
 ] as const;
 
 export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBottomSheet({
-  visible, onClose, filters, onApply, onReset, accounts, categories, persons, resultCount,
+  visible, onClose, filters, onApply, onReset, accounts, categories, persons,
 }: AdvancedFilterBottomSheetProps) {
   const theme = useTheme();
   const { colors, typography } = theme;
@@ -374,7 +373,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             onPress={handleApply}
           >
             <Text style={[styles.applyLabel, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
-              Show {resultCount} result{resultCount !== 1 ? 's' : ''}
+              Apply filters
             </Text>
           </BentoPressable>
         </View>

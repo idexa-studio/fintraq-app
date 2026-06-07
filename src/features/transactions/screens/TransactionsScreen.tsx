@@ -1,25 +1,25 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
+import { TRANSACTIONS_LIST_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { WalkthroughOverlay, TRANSACTIONS_LIST_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
 import { KPICard } from '../../../components/ui/KPICard';
 import { MoneyText } from '../../../components/ui/MoneyText';
+import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
-import { usePersons } from '../../persons/hooks/persons';
 import { AdvancedFilterService, AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../../filters/api/advanced-filters.service';
 import { AdvancedFilterBottomSheet } from '../../filters/components/AdvancedFilterBottomSheet';
-import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
+import { usePersons } from '../../persons/hooks/persons';
 import type { TransactionListItem } from '../api/transactions';
 import {
   useDeleteTransaction,
@@ -102,8 +102,8 @@ const RightActions = React.memo(function RightActions({
     <View style={swipeActionStyles.container}>
       <SwipeActionButton
         onPress={onEdit}
-         icon="pencil-outline"
-         color={editIconColor}
+        icon="pencil-outline"
+        color={editIconColor}
         backgroundColor={editBgColor}
       />
       <SwipeActionButton
@@ -206,6 +206,62 @@ const SwipeableRow = React.memo(function SwipeableRow({
   );
 });
 
+interface FilterChipProps {
+  label: string;
+  isActive: boolean;
+  onPress: () => void;
+  onClear?: () => void;
+  showChevron?: boolean;
+}
+
+const FilterChip = React.memo(function FilterChip({
+  label,
+  isActive,
+  onPress,
+  onClear,
+  showChevron = true,
+}: FilterChipProps) {
+  const theme = useTheme();
+  const { colors, spacing, isDark } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const tintColor = isDark ? colors.primaryLight : colors.primaryDark;
+
+  return (
+    <View style={[styles.chip, isActive ? styles.chipActive : styles.chipInactive]}>
+      <BentoPressable
+        onPress={onPress}
+        style={[
+          styles.chipButton,
+          isActive ? { paddingLeft: spacing('2.5'), paddingRight: spacing('1') } : { paddingHorizontal: spacing('3') }
+        ]}
+        scaleOnPress={false}
+      >
+        {isActive && (
+          <MaterialCommunityIcons name="check" size={13} color={tintColor} style={{ marginRight: spacing('1') }} />
+        )}
+        <Text style={isActive ? styles.chipTextActive : styles.chipTextInactive}>
+          {label}
+        </Text>
+        {!isActive && showChevron && (
+          <MaterialCommunityIcons name="chevron-down" size={13} color={colors.textMuted} style={{ marginLeft: spacing('1') }} />
+        )}
+      </BentoPressable>
+      {isActive && onClear && (
+        <BentoPressable
+          onPress={onClear}
+          style={styles.chipCloseBtn}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          scaleOnPress={false}
+        >
+          <MaterialCommunityIcons name="close" size={13} color={tintColor} />
+        </BentoPressable>
+      )}
+    </View>
+  );
+});
+
+
 export function TransactionsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ accountId?: string | string[]; categoryId?: string | string[] }>();
@@ -234,7 +290,7 @@ export function TransactionsScreen() {
   const [pendingDeleteTx, setPendingDeleteTx] = useState<TransactionListItem | null>(null);
 
   const handleSortSelect = useCallback((sortBy: 'date' | 'amount', sortOrder: 'asc' | 'desc') => {
-    Haptics.selectionAsync().catch(() => {});
+    Haptics.selectionAsync().catch(() => { });
     setAdvancedFilters(p => ({ ...p, sortBy, sortOrder }));
     setShowSortSheet(false);
   }, []);
@@ -388,14 +444,103 @@ export function TransactionsScreen() {
     return advancedFilters.sortBy !== 'date' || advancedFilters.sortOrder !== 'desc';
   }, [advancedFilters.sortBy, advancedFilters.sortOrder]);
 
-  const clearFilters = useCallback(() => {
-    Haptics.selectionAsync().catch(() => {});
-    setAdvancedFilters(DEFAULT_ADVANCED_FILTERS);
+  const activeTypesCount = useMemo(() => advancedFilters.types?.length ?? 0, [advancedFilters.types]);
+  const activeAccountsCount = useMemo(() => advancedFilters.accountIds?.length ?? 0, [advancedFilters.accountIds]);
+  const activeCategoriesCount = useMemo(() => advancedFilters.categoryIds?.length ?? 0, [advancedFilters.categoryIds]);
+  const isDateActive = useMemo(() => !!advancedFilters.dateRange, [advancedFilters.dateRange]);
+  const isAmountActive = useMemo(() => !!advancedFilters.amountRange, [advancedFilters.amountRange]);
+
+  const sortLabel = useMemo(() => {
+    if (advancedFilters.sortBy === 'date') {
+      return advancedFilters.sortOrder === 'desc' ? 'Sort' : 'Oldest first';
+    } else {
+      return advancedFilters.sortOrder === 'desc' ? 'Highest amount' : 'Lowest amount';
+    }
+  }, [advancedFilters.sortBy, advancedFilters.sortOrder]);
+
+  const typeLabel = useMemo(() => {
+    const types = advancedFilters.types ?? [];
+    if (types.length === 0) return 'Type';
+    if (types.length === 1) {
+      return types[0] === 'CR' ? 'Income' : types[0] === 'DR' ? 'Expense' : 'Transfer';
+    }
+    return `${types.length} types`;
+  }, [advancedFilters.types]);
+
+  const accountLabel = useMemo(() => {
+    const ids = advancedFilters.accountIds ?? [];
+    if (ids.length === 0) return 'Account';
+    if (ids.length === 1) {
+      const acc = accountsQuery.data?.find(a => a.id === ids[0]);
+      return acc ? acc.name : '1 account';
+    }
+    return `${ids.length} accounts`;
+  }, [advancedFilters.accountIds, accountsQuery.data]);
+
+  const categoryLabel = useMemo(() => {
+    const ids = advancedFilters.categoryIds ?? [];
+    if (ids.length === 0) return 'Category';
+    if (ids.length === 1) {
+      const cat = categoriesQuery.data?.find(c => c.id === ids[0]);
+      return cat ? cat.name : '1 category';
+    }
+    return `${ids.length} categories`;
+  }, [advancedFilters.categoryIds, categoriesQuery.data]);
+
+  const dateLabel = useMemo(() => {
+    if (!advancedFilters.dateRange) return 'Date';
+    const start = format(new Date(advancedFilters.dateRange.startDate), 'MMM d');
+    const end = format(new Date(advancedFilters.dateRange.endDate), 'MMM d');
+    return `${start} - ${end}`;
+  }, [advancedFilters.dateRange]);
+
+  const amountLabel = useMemo(() => {
+    if (!advancedFilters.amountRange) return 'Amount';
+    const { min, max } = advancedFilters.amountRange;
+    if (min !== undefined && max !== undefined) return `${min} - ${max}`;
+    if (min !== undefined) return `>${min}`;
+    if (max !== undefined) return `<${max}`;
+    return 'Amount';
+  }, [advancedFilters.amountRange]);
+
+  const handleOpenSort = useCallback(() => {
+    Haptics.selectionAsync().catch(() => { });
+    setShowSortSheet(true);
+  }, []);
+
+  const handleOpenFilter = useCallback(() => {
+    Haptics.selectionAsync().catch(() => { });
+    setShowAdvancedFilterSheet(true);
+  }, []);
+
+  const clearTypes = useCallback(() => {
+    Haptics.selectionAsync().catch(() => { });
+    setAdvancedFilters(p => ({ ...p, types: undefined }));
+  }, []);
+
+  const clearAccounts = useCallback(() => {
+    Haptics.selectionAsync().catch(() => { });
+    setAdvancedFilters(p => ({ ...p, accountIds: undefined }));
+  }, []);
+
+  const clearCategories = useCallback(() => {
+    Haptics.selectionAsync().catch(() => { });
+    setAdvancedFilters(p => ({ ...p, categoryIds: undefined }));
+  }, []);
+
+  const clearDateRange = useCallback(() => {
+    Haptics.selectionAsync().catch(() => { });
+    setAdvancedFilters(p => ({ ...p, dateRange: undefined }));
+  }, []);
+
+  const clearAmountRange = useCallback(() => {
+    Haptics.selectionAsync().catch(() => { });
+    setAdvancedFilters(p => ({ ...p, amountRange: undefined }));
   }, []);
 
   const handleResetSort = useCallback((e?: any) => {
     e?.stopPropagation?.();
-    Haptics.selectionAsync().catch(() => {});
+    Haptics.selectionAsync().catch(() => { });
     setAdvancedFilters(p => ({ ...p, sortBy: 'date', sortOrder: 'desc' }));
   }, []);
 
@@ -488,6 +633,26 @@ export function TransactionsScreen() {
       <Header
         title="Transactions"
         showBack
+        rightAction={(
+          <View style={styles.headerActions}>
+            <BentoPressable
+              onPress={() => {
+                Haptics.selectionAsync().catch(() => { });
+                setShowAdvancedFilterSheet(true);
+              }}
+            >
+              <MaterialCommunityIcons name="tune" size={22} color={colors.text} />
+            </BentoPressable>
+            <BentoPressable
+              onPress={() => {
+                Haptics.selectionAsync().catch(() => { });
+                setShowSortSheet(true);
+              }}
+            >
+              <MaterialCommunityIcons name="sort-variant" size={22} color={colors.text} />
+            </BentoPressable>
+          </View>
+        )}
       />
 
       <SectionList
@@ -514,109 +679,65 @@ export function TransactionsScreen() {
               metrics={activeTotals}
             />
 
-            <View style={styles.toolbar}>
-              <Text style={styles.resultsCount}>
-                {transactions.length} transaction{transactions.length !== 1 ? 's' : ''}
-              </Text>
-              <View style={styles.toolbarControls}>
-                {/* ── Sort Button ── */}
-                <View
-                  style={[
-                    styles.sortDropdown,
-                    isSortActive && { backgroundColor: colors.primary + '1A' }
-                  ]}
+            {/* ── MD3 Play Store Filter Chips Row ── */}
+            {isSortActive || activeTypesCount > 0 || activeAccountsCount > 0 || activeCategoriesCount > 0 || isDateActive || isAmountActive ? (
+              <View style={styles.chipsScrollContainer}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.chipsScroll}
                 >
-                  <BentoPressable
-                    style={[
-                      styles.sortDropdownButton,
-                      isSortActive && styles.sortDropdownButtonActive
-                    ]}
-                    onPress={() => {
-                      Haptics.selectionAsync().catch(() => {});
-                      setShowSortSheet(true);
-                    }}
-                  >
-                    <MaterialCommunityIcons 
-                      name="sort-variant" 
-                      size={12} 
-                      color={isSortActive ? colors.primary : colors.textMuted} 
-                    />
-                    <Text
-                      style={[
-                        styles.sortDropdownText,
-                        isSortActive && { color: colors.primary }
-                      ]}
-                    >
-                      {advancedFilters.sortBy === 'date'
-                        ? advancedFilters.sortOrder === 'desc' ? 'Newest' : 'Oldest'
-                        : advancedFilters.sortOrder === 'desc' ? 'Highest' : 'Lowest'}
-                    </Text>
-                    {!isSortActive && (
-                      <MaterialCommunityIcons name="chevron-down" size={12} color={colors.textMuted} />
-                    )}
-                  </BentoPressable>
                   {isSortActive && (
-                    <BentoPressable
-                      style={styles.sortResetBtn}
-                      onPress={handleResetSort}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    >
-                      <MaterialCommunityIcons name="close" size={12} color={colors.primary} />
-                    </BentoPressable>
-                  )}
-                </View>
-
-                {/* ── Filter Button ── */}
-                <View
-                  style={[
-                    styles.filterDropdown,
-                    activeFilterCount > 0 && { backgroundColor: colors.primary + '1A' }
-                  ]}
-                >
-                  <BentoPressable
-                    style={[
-                      styles.filterDropdownButton,
-                      activeFilterCount > 0 && styles.filterDropdownButtonActive
-                    ]}
-                    onPress={() => {
-                      Haptics.selectionAsync().catch(() => {});
-                      setShowAdvancedFilterSheet(true);
-                    }}
-                  >
-                    <MaterialCommunityIcons 
-                      name="tune" 
-                      size={12} 
-                      color={activeFilterCount > 0 ? colors.primary : colors.textMuted} 
+                    <FilterChip
+                      label={sortLabel}
+                      isActive={isSortActive}
+                      onPress={handleOpenSort}
+                      onClear={handleResetSort}
                     />
-                    <Text
-                      style={[
-                        styles.filterDropdownText,
-                        activeFilterCount > 0 && { color: colors.primary }
-                      ]}
-                    >
-                      Filter
-                    </Text>
-                    {activeFilterCount > 0 && (
-                      <View style={styles.chipBadge}>
-                        <Text style={styles.chipBadgeText}>{activeFilterCount}</Text>
-                      </View>
-                    )}
-                    {activeFilterCount === 0 && (
-                      <MaterialCommunityIcons name="chevron-down" size={12} color={colors.textMuted} />
-                    )}
-                  </BentoPressable>
-                  {activeFilterCount > 0 && (
-                    <BentoPressable
-                      style={styles.filterResetBtn}
-                      onPress={clearFilters}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    >
-                      <MaterialCommunityIcons name="close" size={12} color={colors.primary} />
-                    </BentoPressable>
                   )}
-                </View>
+                  {activeTypesCount > 0 && (
+                    <FilterChip
+                      label={typeLabel}
+                      isActive={activeTypesCount > 0}
+                      onPress={handleOpenFilter}
+                      onClear={clearTypes}
+                    />
+                  )}
+                  {activeAccountsCount > 0 && (
+                    <FilterChip
+                      label={accountLabel}
+                      isActive={activeAccountsCount > 0}
+                      onPress={handleOpenFilter}
+                      onClear={clearAccounts}
+                    />
+                  )}
+                  {activeCategoriesCount > 0 && (
+                    <FilterChip
+                      label={categoryLabel}
+                      isActive={activeCategoriesCount > 0}
+                      onPress={handleOpenFilter}
+                      onClear={clearCategories}
+                    />
+                  )}
+                  {isDateActive && (
+                    <FilterChip
+                      label={dateLabel}
+                      isActive={isDateActive}
+                      onPress={handleOpenFilter}
+                      onClear={clearDateRange}
+                    />
+                  )}
+                  {isAmountActive && (
+                    <FilterChip
+                      label={amountLabel}
+                      isActive={isAmountActive}
+                      onPress={handleOpenFilter}
+                      onClear={clearAmountRange}
+                    />
+                  )}
+                </ScrollView>
               </View>
-            </View>
+            ) : null}
           </View>
         )}
         ListEmptyComponent={(
@@ -646,7 +767,7 @@ export function TransactionsScreen() {
       <BentoPressable
         style={styles.fab}
         onPress={() => {
-          Haptics.selectionAsync().catch(() => {});
+          Haptics.selectionAsync().catch(() => { });
           router.push('/transactions/create');
         }}
       >
@@ -675,7 +796,6 @@ export function TransactionsScreen() {
         accounts={accountsQuery.data ?? []}
         categories={categoriesQuery.data ?? []}
         persons={personsQuery.data ?? []}
-        resultCount={transactions.length}
       />
 
       <OptionsBottomSheet
@@ -713,7 +833,7 @@ export function TransactionsScreen() {
   );
 }
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -730,23 +850,39 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       gap: spacing('5'),
     },
-    filterBadge: {
-      position: 'absolute',
-      top: -2,
-      right: -2,
-      minWidth: 18,
-      height: 18,
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary,
+    searchHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('4'),
+      gap: spacing('3'),
+      backgroundColor: colors.background,
+    },
+    searchBackBtn: {
+      width: 44,
+      height: 44,
+      borderRadius: radius('md'),
+      backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
-      borderWidth: 2,
-      borderColor: colors.background,
     },
-    filterBadgeText: {
-      color: colors.background,
-      fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+    searchHeaderInput: {
+      flex: 1,
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.md,
+      color: colors.text,
+      height: 44,
+      paddingHorizontal: spacing('4'),
+      borderRadius: radius('xl'),
+      backgroundColor: colors.surface,
+    },
+    searchClearBtn: {
+      position: 'absolute',
+      right: spacing('4') + 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
     },
     content: {
       paddingHorizontal: layout.screenPadding,
@@ -756,29 +892,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     listHeader: {
       gap: spacing('5'),
       marginBottom: spacing('6'),
-    },
-    activeFiltersRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    activeFiltersLabel: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 10,
-      color: colors.textMuted,
-    },
-    clearChip: {
-      backgroundColor: colors.danger + '12',
-      paddingHorizontal: spacing('3'),
-      height: 28,
-      borderRadius: radius('md'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    clearChipText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
-      color: colors.danger,
     },
     daySection: { gap: spacing('3') },
     dayHeaderRow: {
@@ -861,98 +974,50 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
       alignItems: 'center',
     },
-    toolbar: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('2.5'),
-      borderRadius: radius('xl'),
+    chipsScrollContainer: {
       marginTop: spacing('2'),
+      marginBottom: spacing('1'),
     },
-    resultsCount: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 13,
+    chipsScroll: {
+      gap: spacing('2'),
+      paddingBottom: spacing('1.5'),
+    },
+    chip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderRadius: radius('full'),
+      height: 30,
+      borderWidth: 1,
+      overflow: 'hidden',
+    },
+    chipInactive: {
+      backgroundColor: colors.surface,
+      borderColor: isDark ? '#2E3039' : '#E2E8F0',
+    },
+    chipActive: {
+      backgroundColor: isDark ? '#11352A' : '#E6F4EA',
+      borderColor: isDark ? colors.primary + '50' : colors.primary + '30',
+    },
+    chipButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: '100%',
+    },
+    chipCloseBtn: {
+      paddingRight: spacing('2.5'),
+      paddingLeft: spacing('1.5'),
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    chipTextInactive: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 11.5,
       color: colors.textMuted,
     },
-    toolbarControls: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-    },
-    sortDropdown: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: colors.background,
-      borderRadius: radius('full'),
-      height: 28,
-    },
-    sortDropdownButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1'),
-      paddingHorizontal: spacing('2.5'),
-      height: '100%',
-    },
-    sortDropdownButtonActive: {
-      paddingRight: spacing('1.5'),
-    },
-    sortResetBtn: {
-      paddingRight: spacing('2'),
-      paddingLeft: spacing('0.5'),
-      height: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    sortDropdownText: {
+    chipTextActive: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 11,
-      color: colors.text,
-    },
-    filterDropdown: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: colors.background,
-      borderRadius: radius('full'),
-      height: 28,
-    },
-    filterDropdownButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1'),
-      paddingHorizontal: spacing('2.5'),
-      height: '100%',
-    },
-    filterDropdownButtonActive: {
-      paddingRight: spacing('1.5'),
-    },
-    filterResetBtn: {
-      paddingRight: spacing('2'),
-      paddingLeft: spacing('0.5'),
-      height: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    filterDropdownText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
-      color: colors.text,
-    },
-    chipBadge: {
-      minWidth: 14,
-      height: 14,
-      borderRadius: 7,
-      backgroundColor: colors.primary,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: 2,
-      marginLeft: spacing('1'),
-    },
-    chipBadgeText: {
-      color: colors.background,
-      fontFamily: typography.fonts.bold,
-      fontSize: 9,
-      lineHeight: 11,
+      fontSize: 11.5,
+      color: isDark ? colors.primaryLight : colors.primaryDark,
     },
   });
