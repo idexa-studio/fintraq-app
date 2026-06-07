@@ -488,24 +488,6 @@ export function TransactionsScreen() {
       <Header
         title="Transactions"
         showBack
-        rightAction={(
-          <View style={styles.headerActions}>
-            <BentoPressable
-              onPress={() => {
-                Haptics.selectionAsync().catch(() => {});
-                setShowAdvancedFilterSheet(true);
-              }}
-              style={{ position: 'relative' }}
-            >
-              <MaterialCommunityIcons name="tune" size={19} color={colors.text} />
-              {activeFilterCount > 0 && (
-                <View style={styles.filterBadge}>
-                  <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
-                </View>
-              )}
-            </BentoPressable>
-          </View>
-        )}
       />
 
       <SectionList
@@ -536,56 +518,105 @@ export function TransactionsScreen() {
               <Text style={styles.resultsCount}>
                 {transactions.length} transaction{transactions.length !== 1 ? 's' : ''}
               </Text>
-              <View
-                style={[
-                  styles.sortDropdown,
-                  isSortActive && { backgroundColor: colors.primary + '1A' }
-                ]}
-              >
-                <BentoPressable
+              <View style={styles.toolbarControls}>
+                {/* ── Sort Button ── */}
+                <View
                   style={[
-                    styles.sortDropdownButton,
-                    isSortActive && styles.sortDropdownButtonActive
+                    styles.sortDropdown,
+                    isSortActive && { backgroundColor: colors.primary + '1A' }
                   ]}
-                  onPress={() => {
-                    Haptics.selectionAsync().catch(() => {});
-                    setShowSortSheet(true);
-                  }}
                 >
-                  <Text
-                    style={[
-                      styles.sortDropdownText,
-                      isSortActive && { color: colors.primary }
-                    ]}
-                  >
-                    {advancedFilters.sortBy === 'date'
-                      ? advancedFilters.sortOrder === 'desc' ? 'Newest first' : 'Oldest first'
-                      : advancedFilters.sortOrder === 'desc' ? 'Highest amount' : 'Lowest amount'}
-                  </Text>
-                  {!isSortActive && (
-                    <MaterialCommunityIcons name="chevron-down" size={14} color={colors.textMuted} />
-                  )}
-                </BentoPressable>
-                {isSortActive && (
                   <BentoPressable
-                    style={styles.sortResetBtn}
-                    onPress={handleResetSort}
-                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    style={[
+                      styles.sortDropdownButton,
+                      isSortActive && styles.sortDropdownButtonActive
+                    ]}
+                    onPress={() => {
+                      Haptics.selectionAsync().catch(() => {});
+                      setShowSortSheet(true);
+                    }}
                   >
-                    <MaterialCommunityIcons name="close" size={14} color={colors.primary} />
+                    <MaterialCommunityIcons 
+                      name="sort-variant" 
+                      size={12} 
+                      color={isSortActive ? colors.primary : colors.textMuted} 
+                    />
+                    <Text
+                      style={[
+                        styles.sortDropdownText,
+                        isSortActive && { color: colors.primary }
+                      ]}
+                    >
+                      {advancedFilters.sortBy === 'date'
+                        ? advancedFilters.sortOrder === 'desc' ? 'Newest' : 'Oldest'
+                        : advancedFilters.sortOrder === 'desc' ? 'Highest' : 'Lowest'}
+                    </Text>
+                    {!isSortActive && (
+                      <MaterialCommunityIcons name="chevron-down" size={12} color={colors.textMuted} />
+                    )}
                   </BentoPressable>
-                )}
+                  {isSortActive && (
+                    <BentoPressable
+                      style={styles.sortResetBtn}
+                      onPress={handleResetSort}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    >
+                      <MaterialCommunityIcons name="close" size={12} color={colors.primary} />
+                    </BentoPressable>
+                  )}
+                </View>
+
+                {/* ── Filter Button ── */}
+                <View
+                  style={[
+                    styles.filterDropdown,
+                    activeFilterCount > 0 && { backgroundColor: colors.primary + '1A' }
+                  ]}
+                >
+                  <BentoPressable
+                    style={[
+                      styles.filterDropdownButton,
+                      activeFilterCount > 0 && styles.filterDropdownButtonActive
+                    ]}
+                    onPress={() => {
+                      Haptics.selectionAsync().catch(() => {});
+                      setShowAdvancedFilterSheet(true);
+                    }}
+                  >
+                    <MaterialCommunityIcons 
+                      name="tune" 
+                      size={12} 
+                      color={activeFilterCount > 0 ? colors.primary : colors.textMuted} 
+                    />
+                    <Text
+                      style={[
+                        styles.filterDropdownText,
+                        activeFilterCount > 0 && { color: colors.primary }
+                      ]}
+                    >
+                      Filter
+                    </Text>
+                    {activeFilterCount > 0 && (
+                      <View style={styles.chipBadge}>
+                        <Text style={styles.chipBadgeText}>{activeFilterCount}</Text>
+                      </View>
+                    )}
+                    {activeFilterCount === 0 && (
+                      <MaterialCommunityIcons name="chevron-down" size={12} color={colors.textMuted} />
+                    )}
+                  </BentoPressable>
+                  {activeFilterCount > 0 && (
+                    <BentoPressable
+                      style={styles.filterResetBtn}
+                      onPress={clearFilters}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    >
+                      <MaterialCommunityIcons name="close" size={12} color={colors.primary} />
+                    </BentoPressable>
+                  )}
+                </View>
               </View>
             </View>
-
-            {activeFilterCount > 0 && (
-              <View style={styles.activeFiltersRow}>
-                <Text style={styles.activeFiltersLabel}>Active filters</Text>
-                <BentoPressable style={styles.clearChip} onPress={clearFilters}>
-                  <Text style={styles.clearChipText}>Clear All</Text>
-                </BentoPressable>
-              </View>
-            )}
           </View>
         )}
         ListEmptyComponent={(
@@ -845,32 +876,83 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: 13,
       color: colors.textMuted,
     },
+    toolbarControls: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('2'),
+    },
     sortDropdown: {
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: colors.background,
       borderRadius: radius('full'),
+      height: 28,
     },
     sortDropdownButton: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('1'),
-      paddingLeft: spacing('3'),
-      paddingRight: spacing('3'),
-      paddingVertical: spacing('1.5'),
+      paddingHorizontal: spacing('2.5'),
+      height: '100%',
     },
     sortDropdownButtonActive: {
-      paddingRight: spacing('1'),
+      paddingRight: spacing('1.5'),
     },
     sortResetBtn: {
-      paddingRight: spacing('2.5'),
-      paddingLeft: spacing('1'),
-      alignItems: 'center',
+      paddingRight: spacing('2'),
+      paddingLeft: spacing('0.5'),
+      height: '100%',
       justifyContent: 'center',
+      alignItems: 'center',
     },
     sortDropdownText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 12,
+      fontSize: 11,
       color: colors.text,
+    },
+    filterDropdown: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.background,
+      borderRadius: radius('full'),
+      height: 28,
+    },
+    filterDropdownButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1'),
+      paddingHorizontal: spacing('2.5'),
+      height: '100%',
+    },
+    filterDropdownButtonActive: {
+      paddingRight: spacing('1.5'),
+    },
+    filterResetBtn: {
+      paddingRight: spacing('2'),
+      paddingLeft: spacing('0.5'),
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    filterDropdownText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 11,
+      color: colors.text,
+    },
+    chipBadge: {
+      minWidth: 14,
+      height: 14,
+      borderRadius: 7,
+      backgroundColor: colors.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 2,
+      marginLeft: spacing('1'),
+    },
+    chipBadgeText: {
+      color: colors.background,
+      fontFamily: typography.fonts.bold,
+      fontSize: 9,
+      lineHeight: 11,
     },
   });
