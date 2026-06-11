@@ -9,6 +9,11 @@ import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments, persons, seederState } from '@/src/db/schema';
+import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
+import { getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
+import { LockStorage } from '@/src/features/lock/api/lockStorage';
+import { authenticateWithBiometrics } from '@/src/features/lock/hooks/useLocalAuth';
+import { useAppLock } from '@/src/providers/AppLockProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -151,12 +156,61 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const { profile, updateProfile } = useSettings();
   const router = useRouter();
 
+  const { lockEnabled, lockMode, enableLock, disableLock } = useAppLock();
+  const [showPinSetup, setShowPinSetup] = useState(false);
+
   const [showThemeDialog, setShowThemeDialog] = useState(false);
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
   const [devTaps, setDevTaps] = useState(0);
+
+  const handleToggleLock = useCallback(async () => {
+    if (lockEnabled) {
+      // require auth before disabling
+      const cap = await getBiometricCapability();
+      let confirmed = false;
+      if (lockMode === 'biometric' && cap.available) {
+        confirmed = await authenticateWithBiometrics('Confirm to disable lock');
+      } else {
+        // PIN mode — user will just confirm via alert (PIN already set, trust session)
+        confirmed = await new Promise<boolean>(resolve => {
+          Alert.alert(
+            'Disable app lock',
+            'Are you sure you want to remove the app lock?',
+            [
+              { text: 'Cancel', style: 'cancel', onPress: () => resolve(false) },
+              { text: 'Disable', style: 'destructive', onPress: () => resolve(true) },
+            ],
+          );
+        });
+      }
+      if (confirmed) await disableLock();
+    } else {
+      const cap = await getBiometricCapability();
+      if (cap.available) {
+        const confirmed = await authenticateWithBiometrics('Confirm to enable lock');
+        if (confirmed) await enableLock('biometric');
+      } else {
+        setShowPinSetup(true);
+      }
+    }
+  }, [lockEnabled, lockMode, enableLock, disableLock]);
+
+  const handlePinSetupComplete = useCallback(async (pin: string) => {
+    setShowPinSetup(false);
+    await LockStorage.setPin(pin);
+    await enableLock('pin');
+  }, [enableLock]);
+
+  const handleChangePinPress = useCallback(() => {
+    setShowPinSetup(true);
+  }, []);
+
+  const handlePinSetupCancel = useCallback(() => {
+    setShowPinSetup(false);
+  }, []);
 
   const handleToggleReminders = useCallback(async () => {
     const next = !profile.reminderEnabled;
@@ -363,6 +417,30 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         )}
 
+        <SectionHeader title="Security" noPadding />
+        <View style={styles.group}>
+          <SwitchRow
+            theme={theme}
+            icon="lock-outline"
+            iconColor={colors.primary}
+            label="App lock"
+            subtitle={lockMode === 'biometric' ? 'Face ID / fingerprint' : lockMode === 'pin' ? 'PIN lock' : 'Require biometrics or PIN on open'}
+            value={lockEnabled}
+            onToggle={handleToggleLock}
+          />
+          {lockMode === 'pin' && lockEnabled && (
+            <NavRow
+              theme={theme}
+              icon="numeric"
+              iconColor={colors.primary}
+              label="Change PIN"
+              subtitle="Update your 6-digit unlock code"
+              onPress={handleChangePinPress}
+              isLast
+            />
+          )}
+        </View>
+
         <SectionHeader title="Data" noPadding />
         <View style={styles.group}>
           <NavRow
@@ -464,6 +542,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         maxLength={30}
         saveLabel="Save"
         inputProps={{ autoCapitalize: 'words' }}
+      />
+
+      <PinSetupModal
+        visible={showPinSetup}
+        onCancel={handlePinSetupCancel}
+        onComplete={handlePinSetupComplete}
       />
     </SafeAreaView>
   );

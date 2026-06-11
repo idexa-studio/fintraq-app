@@ -59,7 +59,8 @@
       "expo-localization",
       "expo-iap",
       "expo-notifications",
-      "expo-system-ui"
+      "expo-system-ui",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

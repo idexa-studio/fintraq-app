@@ -11,6 +11,7 @@ import { OnboardingProvider } from '@/src/providers/OnboardingProvider';
 import { QueryProvider } from '@/src/providers/QueryProvider';
 import { SettingsProvider } from '@/src/providers/SettingsProvider';
 import { PremiumProvider } from '@/src/providers/PremiumProvider';
+import { AppLockProvider } from '@/src/providers/AppLockProvider';
 import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
 import { useFonts } from 'expo-font';
@@ -39,8 +40,10 @@ export default function RootLayout() {
                 <OnboardingProvider>
                   <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                     <CustomThemeProvider>
-                      <Stack screenOptions={{ headerShown: false }} />
-                      <StatusBar style="auto" />
+                      <AppLockProvider>
+                        <Stack screenOptions={{ headerShown: false }} />
+                        <StatusBar style="auto" />
+                      </AppLockProvider>
                     </CustomThemeProvider>
                   </ThemeProvider>
                 </OnboardingProvider>
