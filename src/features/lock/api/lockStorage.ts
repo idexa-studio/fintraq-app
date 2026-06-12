@@ -1,4 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
+import * as Crypto from 'expo-crypto';
 
 const KEY_PIN_HASH = 'luno_lock_pin_hash';
 const KEY_LOCK_MODE = 'luno_lock_mode'; // 'biometric' | 'pin' | null
@@ -6,10 +7,10 @@ const KEY_LOCK_MODE = 'luno_lock_mode'; // 'biometric' | 'pin' | null
 export type LockMode = 'biometric' | 'pin';
 
 async function sha256(text: string): Promise<string> {
-  const data = new TextEncoder().encode(text);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return await Crypto.digestStringAsync(
+    Crypto.CryptoDigestAlgorithm.SHA256,
+    text
+  );
 }
 
 export const LockStorage = {

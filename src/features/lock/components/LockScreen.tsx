@@ -1,7 +1,7 @@
-import { useTheme } from '@/src/providers/ThemeProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Button } from '@/src/components/ui/Button';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LockStorage } from '../api/lockStorage';
 import { authenticateWithBiometrics, getBiometricCapability } from '../hooks/useLocalAuth';
@@ -12,8 +12,9 @@ type Props = {
 };
 
 export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
-  const { colors, typography, spacing } = useTheme();
-  const styles = useMemo(() => createStyles({ colors, spacing }), [colors, spacing]);
+  const theme = useTheme();
+  const { colors, typography } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [mode, setMode] = useState<'loading' | 'biometric' | 'pin'>('loading');
   const [pin, setPin] = useState('');
@@ -25,7 +26,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
     setAuthInProgress(true);
     setError('');
     try {
-      const success = await authenticateWithBiometrics('Unlock Luno');
+      const success = await authenticateWithBiometrics('Unlock app');
       if (success) {
         onUnlock();
       } else {
@@ -50,7 +51,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
         if (cap.available) {
           setMode('biometric');
           // auto-prompt on mount
-          const success = await authenticateWithBiometrics('Unlock Luno');
+          const success = await authenticateWithBiometrics('Unlock app');
           if (!cancelled && success) onUnlock();
           else if (!cancelled) setError('Use the button below to try again.');
         } else {
@@ -91,54 +92,47 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Decorative background elements for a creative look */}
+      <View style={styles.decoTop} pointerEvents="none" />
+      <View style={styles.decoBottom} pointerEvents="none" />
+
       <View style={styles.content}>
-        <View style={[styles.iconWrap, { backgroundColor: colors.primary + '18' }]}>
-          <MaterialCommunityIcons
-            name={mode === 'biometric' ? 'face-recognition' : 'lock-outline'}
-            size={36}
-            color={colors.primary}
-          />
+        <View style={styles.header}>
+          <Text style={[styles.title, { fontFamily: typography.fonts.bold, color: colors.text }]}>
+            App is locked
+          </Text>
+          <Text style={[styles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+            Secure your financial data
+          </Text>
         </View>
 
-        <Text style={[styles.title, { fontFamily: typography.fonts.bold, color: colors.text }]}>
-          Luno is locked
-        </Text>
+        <View style={styles.padContainer}>
+          {error ? (
+            <Text style={[styles.error, { fontFamily: typography.fonts.medium, color: colors.danger }]}>
+              {error}
+            </Text>
+          ) : null}
 
-        {error ? (
-          <Text style={[styles.error, { fontFamily: typography.fonts.medium, color: colors.danger }]}>
-            {error}
-          </Text>
-        ) : null}
-
-        {mode === 'biometric' ? (
-          <TouchableOpacity
-            style={[styles.biometricBtn, { backgroundColor: colors.primary }]}
-            onPress={tryBiometric}
-            disabled={authInProgress}
-            activeOpacity={0.8}
-          >
-            {authInProgress ? (
-              <ActivityIndicator color="#fff" size="small" />
-            ) : (
-              <>
-                <MaterialCommunityIcons name="fingerprint" size={20} color="#fff" />
-                <Text style={[styles.biometricBtnText, { fontFamily: typography.fonts.semibold }]}>
-                  Unlock with biometrics
-                </Text>
-              </>
-            )}
-          </TouchableOpacity>
-        ) : (
-          <PinPad value={pin} onChange={handlePinChange} maxLength={6} />
-        )}
+          {mode === 'biometric' ? (
+            <View style={styles.biometricWrap}>
+              <Button
+                title="Use biometrics"
+                variant="primary"
+                size="lg"
+                onPress={tryBiometric}
+                isLoading={authInProgress}
+              />
+            </View>
+          ) : (
+            <PinPad value={pin} onChange={handlePinChange} maxLength={6} />
+          )}
+        </View>
       </View>
     </SafeAreaView>
   );
 });
 
-type StyleDeps = Pick<ReturnType<typeof useTheme>, 'colors' | 'spacing'>;
-
-function createStyles({ spacing }: StyleDeps) {
+function createStyles({ spacing, colors }: ThemeContextType) {
   return StyleSheet.create({
     centered: {
       flex: 1,
@@ -147,39 +141,60 @@ function createStyles({ spacing }: StyleDeps) {
     },
     container: {
       flex: 1,
+      position: 'relative',
+      overflow: 'hidden',
+    },
+    decoTop: {
+      position: 'absolute',
+      width: 400,
+      height: 400,
+      borderRadius: 200,
+      backgroundColor: colors.primary + '0A',
+      top: -150,
+      left: -100,
+    },
+    decoBottom: {
+      position: 'absolute',
+      width: 300,
+      height: 300,
+      borderRadius: 150,
+      backgroundColor: colors.primary + '0C',
+      bottom: -100,
+      right: -50,
     },
     content: {
       flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing('6'),
+      justifyContent: 'space-between',
+      paddingTop: spacing('12'),
       paddingBottom: spacing('12'),
     },
-    iconWrap: {
-      width: 80,
-      height: 80,
-      borderRadius: 40,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    title: {
-      fontSize: 26,
-    },
-    error: {
-      fontSize: 13,
-    },
-    biometricBtn: {
-      flexDirection: 'row',
+    header: {
       alignItems: 'center',
       gap: spacing('2'),
-      paddingHorizontal: spacing('6'),
-      paddingVertical: spacing('4'),
-      borderRadius: 50,
-      marginTop: spacing('4'),
+      marginTop: spacing('6'),
     },
-    biometricBtnText: {
-      fontSize: 16,
-      color: '#fff',
+    title: {
+      fontSize: 32,
+    },
+    subtitle: {
+      fontSize: 15,
+    },
+    padContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: spacing('6'),
+    },
+    error: {
+      fontSize: 14,
+      textAlign: 'center',
+      paddingHorizontal: spacing('6'),
+      marginBottom: spacing('4'),
+    },
+    biometricWrap: {
+      width: '100%',
+      paddingHorizontal: spacing('6'),
+      maxWidth: 320,
     },
   });
 }

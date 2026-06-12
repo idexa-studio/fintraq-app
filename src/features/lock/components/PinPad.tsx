@@ -1,7 +1,7 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { StyleSheet, Text, View } from 'react-native';
 
 type Props = {
   value: string;
@@ -10,7 +10,7 @@ type Props = {
   disabled?: boolean;
 };
 
-const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'] as const;
+const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'Del'] as const;
 
 export const PinPad = React.memo(function PinPad({
   value,
@@ -23,7 +23,7 @@ export const PinPad = React.memo(function PinPad({
 
   const handleKey = useCallback((key: string) => {
     if (disabled) return;
-    if (key === 'del') {
+    if (key === 'Del') {
       onChange(value.slice(0, -1));
     } else if (key !== '' && value.length < maxLength) {
       onChange(value + key);
@@ -55,21 +55,23 @@ export const PinPad = React.memo(function PinPad({
             return <View key={i} style={styles.keyPlaceholder} />;
           }
           return (
-            <TouchableOpacity
+            <BentoPressable
               key={i}
-              style={[styles.key, { backgroundColor: colors.surface }]}
+              style={styles.key}
               onPress={() => handleKey(key)}
-              activeOpacity={0.6}
               disabled={disabled}
+              scaleOnPress
             >
-              {key === 'del' ? (
-                <MaterialCommunityIcons name="backspace-outline" size={22} color={colors.text} />
+              {key === 'Del' ? (
+                <Text style={[styles.delText, { fontFamily: typography.fonts.medium, color: colors.text }]}>
+                  Del
+                </Text>
               ) : (
                 <Text style={[styles.keyText, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
                   {key}
                 </Text>
               )}
-            </TouchableOpacity>
+            </BentoPressable>
           );
         })}
       </View>
@@ -87,7 +89,7 @@ function createStyles({ colors, spacing, radius }: StyleDeps) {
     },
     dots: {
       flexDirection: 'row',
-      gap: spacing('4'),
+      gap: spacing('6'),
     },
     dot: {
       width: 12,
@@ -113,7 +115,10 @@ function createStyles({ colors, spacing, radius }: StyleDeps) {
       height: 80,
     },
     keyText: {
-      fontSize: 24,
+      fontSize: 32,
+    },
+    delText: {
+      fontSize: 20,
     },
   });
 }
