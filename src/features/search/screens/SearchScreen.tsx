@@ -27,6 +27,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalSearch } from '../hooks/useGlobalSearch';
 import { useRecentSearches } from '../hooks/useRecentSearches';
 import { WalkthroughOverlay, SEARCH_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { StorageKeys } from '@/src/constants/keys';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 
 type SearchItem =
@@ -456,7 +457,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
           updateCellsBatchingPeriod={50}
         />
       )}
-      <WalkthroughOverlay storageKey="@luno_walkthrough_search" steps={SEARCH_WALKTHROUGH_STEPS} />
+      <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_SEARCH} steps={SEARCH_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });

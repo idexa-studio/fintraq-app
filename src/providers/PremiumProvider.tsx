@@ -5,6 +5,7 @@ import { AppState, AppStateStatus } from 'react-native';
 import { AlertButton, AlertDialog } from '../components/ui/AlertDialog';
 import { ALL_SKUS, SKU_LIFETIME } from '../constants/iap';
 import { IAPProduct, IAPService } from '../services/iap.service';
+import { StorageKeys } from '../constants/keys';
 
 /**
  * PremiumState: The persistent representation of user access.
@@ -34,6 +35,7 @@ export type PremiumContextType = {
 
 export const PremiumContext = createContext<PremiumContextType | null>(null);
 
+
 /**
  * usePremium: Access the Keeep Pro ecosystem within any functional component.
  */
@@ -43,8 +45,8 @@ export function usePremium() {
   return ctx;
 }
 
-const STORAGE_KEY = '@luno_premium_v7';
-const DEV_OVERRIDE_KEY = '@luno_dev_force_pro';
+const STORAGE_KEY = StorageKeys.PREMIUM;
+const DEV_OVERRIDE_KEY = StorageKeys.PREMIUM_DEV_OVERRIDE;
 const INITIAL_STATE: PremiumState = { isPremium: false };
 
 /**

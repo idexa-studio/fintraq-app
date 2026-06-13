@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { NotificationService } from '../services/notification.service';
+import { StorageKeys } from '../constants/keys';
 
 export type UserProfile = {
   name: string;
@@ -44,7 +45,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const storedProfile = await AsyncStorage.getItem('@luno_profile');
+        const storedProfile = await AsyncStorage.getItem(StorageKeys.PROFILE);
         if (storedProfile) {
           const parsed = JSON.parse(storedProfile);
           setProfile(prev => ({ ...prev, ...parsed }));
@@ -94,7 +95,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const updateProfile = useCallback(async (updates: Partial<UserProfile>) => {
     try {
       const newProfile = { ...profile, ...updates };
-      await AsyncStorage.setItem('@luno_profile', JSON.stringify(newProfile));
+      await AsyncStorage.setItem(StorageKeys.PROFILE, JSON.stringify(newProfile));
       setProfile(newProfile);
     } catch (e) {
       console.error('Failed to save profile settings', e);

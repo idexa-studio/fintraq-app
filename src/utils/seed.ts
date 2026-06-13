@@ -3,8 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from '../db/client';
 import { accounts, categories, payments, persons } from '../db/schema';
 import { toDbColor } from './format';
+import { StorageKeys } from '../constants/keys';
 
-const SEED_KEY = '@luno/seed_v2';
 
 const SEED_PERSONS = [
   { name: 'Sarah Mitchell', email: 'sarah.m@example.com', phone: '+1 555 0101', designation: 'Product Manager', company: 'Acme Corp', color: toDbColor('#059669') },
@@ -117,7 +117,7 @@ function generateRandomExpenses(monthDate: Date, ctx: SeedContext, isCurrentMont
  */
 export async function seedDummyData() {
   try {
-    const alreadySeeded = await AsyncStorage.getItem(SEED_KEY);
+    const alreadySeeded = await AsyncStorage.getItem(StorageKeys.SEED_EXECUTED);
     if (alreadySeeded === 'true') {
       throw new Error('Seed data has already been generated. To re-seed, factory reset the app.');
     }
@@ -243,7 +243,7 @@ export async function seedDummyData() {
       }
     }
 
-    await AsyncStorage.setItem(SEED_KEY, 'true');
+    await AsyncStorage.setItem(StorageKeys.SEED_EXECUTED, 'true');
     return totalSeeded;
   } catch (err) {
     console.error('[Seeder Error]:', err);

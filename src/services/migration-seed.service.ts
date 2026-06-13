@@ -2,8 +2,7 @@ import { db } from '@/src/db/client';
 import { accounts, categories, payments, persons } from '@/src/db/schema';
 import { File, Paths } from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-export const MIGRATION_SEED_FILENAME = 'flutter_migration_seed.json';
+import { DatabaseKeys, StorageKeys } from '@/src/constants/keys';
 
 export class MigrationSeedService {
   /**
@@ -19,9 +18,9 @@ export class MigrationSeedService {
       const allPersons = await db.select().from(persons);
 
       // 2. Fetch AsyncStorage settings/keys
-      const profileRaw = await AsyncStorage.getItem('@luno_profile');
-      const onboardedRaw = await AsyncStorage.getItem('@luno_onboarded');
-      const premiumRaw = await AsyncStorage.getItem('@luno_premium_v7');
+      const profileRaw = await AsyncStorage.getItem(StorageKeys.PROFILE);
+      const onboardedRaw = await AsyncStorage.getItem(StorageKeys.ONBOARDED);
+      const premiumRaw = await AsyncStorage.getItem(StorageKeys.PREMIUM);
 
       const seedData = {
         meta: {
@@ -43,7 +42,7 @@ export class MigrationSeedService {
         },
       };
 
-      const seedFile = new File(Paths.document, MIGRATION_SEED_FILENAME);
+      const seedFile = new File(Paths.document, DatabaseKeys.MIGRATION_SEED_FILENAME);
       await seedFile.write(JSON.stringify(seedData, null, 2));
 
       if (__DEV__) {

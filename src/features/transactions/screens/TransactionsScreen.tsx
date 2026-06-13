@@ -1,6 +1,7 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
 import { TRANSACTIONS_LIST_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
+import { StorageKeys } from '../../../constants/keys';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -828,7 +829,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
           },
         ]}
       />
-      <WalkthroughOverlay storageKey="@luno_walkthrough_transactions_list" steps={TRANSACTIONS_LIST_WALKTHROUGH_STEPS} />
+      <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_TRANSACTIONS} steps={TRANSACTIONS_LIST_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });

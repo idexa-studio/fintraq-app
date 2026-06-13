@@ -25,8 +25,9 @@ import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard
 import { TopPersonsCard } from '../components/TopPersonsCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
 import { WalkthroughOverlay, DASHBOARD_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { StorageKeys } from '../../../constants/keys';
 
-const UPSELL_KEY = '@luno/upsell_dismissed_at';
+const UPSELL_KEY = StorageKeys.UPSELL_DISMISSED_AT;
 const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
 
 export const DashboardScreen = React.memo(function DashboardScreen() {
@@ -50,7 +51,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
     const checkUpsell = async () => {
       // Prevent rendering the premium upsell modal at the same time as the walkthrough modal to avoid iOS UIKit lockup/freeze.
-      const walkthroughCompleted = await AsyncStorage.getItem('@luno_walkthrough_dashboard');
+      const walkthroughCompleted = await AsyncStorage.getItem(StorageKeys.WALKTHROUGH_DASHBOARD);
       if (walkthroughCompleted !== 'true') return;
 
       const val = await AsyncStorage.getItem(UPSELL_KEY);
@@ -216,7 +217,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       </BentoPressable>
 
       <WalkthroughOverlay
-        storageKey="@luno_walkthrough_dashboard"
+        storageKey={StorageKeys.WALKTHROUGH_DASHBOARD}
         steps={DASHBOARD_WALKTHROUGH_STEPS}
         onFinish={handleWalkthroughFinish}
         enabled={!isLocked && !hasActivePrompt}

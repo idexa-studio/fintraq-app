@@ -1,8 +1,9 @@
 import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
+import { SecureStoreKeys } from '../../../constants/keys';
 
-const KEY_PIN_HASH = 'luno_lock_pin_hash';
-const KEY_LOCK_MODE = 'luno_lock_mode'; // 'biometric' | 'pin' | null
+const KEY_PIN_HASH = SecureStoreKeys.PIN_HASH;
+const KEY_LOCK_MODE = SecureStoreKeys.LOCK_MODE; // 'biometric' | 'pin' | null
 
 export type LockMode = 'biometric' | 'pin';
 

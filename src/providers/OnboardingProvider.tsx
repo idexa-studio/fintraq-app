@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator, View } from 'react-native';
 import { DARK_THEME } from '../theme/colors';
+import { StorageKeys } from '../constants/keys';
 
 type OnboardingContextType = {
   hasOnboarded: boolean;
@@ -23,7 +24,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
       try {
-        const value = await AsyncStorage.getItem('@luno_onboarded');
+        const value = await AsyncStorage.getItem(StorageKeys.ONBOARDED);
         if (value === 'true') {
           setHasOnboarded(true);
         }
@@ -39,7 +40,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
   const completeOnboarding = useCallback(async () => {
     try {
-      await AsyncStorage.setItem('@luno_onboarded', 'true');
+      await AsyncStorage.setItem(StorageKeys.ONBOARDED, 'true');
       setHasOnboarded(true);
     } catch (e) {
       console.error('Error setting onboarding status', e);

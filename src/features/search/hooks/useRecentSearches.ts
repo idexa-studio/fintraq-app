@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StorageKeys } from '../../../constants/keys';
 
-const STORAGE_KEY = '@luno_recent_searches';
+const STORAGE_KEY = StorageKeys.RECENT_SEARCHES;
 
 export function useRecentSearches() {
   const [recents, setRecents] = useState<string[]>([]);

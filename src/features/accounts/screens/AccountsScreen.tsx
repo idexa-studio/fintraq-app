@@ -12,6 +12,7 @@ import { resolveIcon } from '@/src/utils/icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { WalkthroughOverlay, ACCOUNTS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { StorageKeys } from '@/src/constants/keys';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -180,7 +181,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
         onConfirm={handleDeleteConfirm}
         isLoading={deleteAccount.isPending}
       />
-      <WalkthroughOverlay storageKey="@luno_walkthrough_accounts" steps={ACCOUNTS_WALKTHROUGH_STEPS} />
+      <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_ACCOUNTS} steps={ACCOUNTS_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });

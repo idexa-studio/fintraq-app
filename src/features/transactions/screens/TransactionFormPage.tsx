@@ -35,6 +35,7 @@ import {
 import { format } from 'date-fns';
 import { TransactionType } from '../../../types';
 import { WalkthroughOverlay, TRANSACTION_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { StorageKeys } from '../../../constants/keys';
 
 type Props = {
   mode: 'create' | 'edit';
@@ -426,7 +427,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       />
 
       {mode === 'create' && (
-        <WalkthroughOverlay storageKey="@luno_walkthrough_transaction_create" steps={TRANSACTION_WALKTHROUGH_STEPS} />
+        <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_TRANSACTION_CREATE} steps={TRANSACTION_WALKTHROUGH_STEPS} />
       )}
     </SafeAreaView>
   );
