@@ -18,11 +18,15 @@ import { NotificationService } from '@/src/services/notification.service';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
+import { LocalMigrationService } from '@/src/services/local-migration.service';
+import React, { useState, useEffect } from 'react';
+
 // Prevent the splash screen from auto-hiding before version check completes
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [migrationReady, setMigrationReady] = useState(false);
 
   const [fontsLoaded] = useFonts({
     GoogleSans_Bold: require('../assets/fonts/GoogleSanaFlex/Bold.ttf'),
@@ -31,9 +35,18 @@ export default function RootLayout() {
     GoogleSans_SemiBold: require('../assets/fonts/GoogleSanaFlex/SemiBold.ttf'),
   });
 
-  if (!fontsLoaded) return null;
+  useEffect(() => {
+    async function runMigration() {
+      await LocalMigrationService.execute();
+      setMigrationReady(true);
+    }
+    runMigration();
+  }, []);
+
+  if (!fontsLoaded || !migrationReady) return null;
 
   NotificationService.init();
+
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
