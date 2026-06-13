@@ -2,8 +2,11 @@ import { useTheme } from '@/src/providers/ThemeProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React, { useCallback } from 'react';
+import { ComponentProps } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+type MCIName = ComponentProps<typeof MaterialCommunityIcons>['name'];
 
 export default function TabsLayout() {
   const { colors, typography } = useTheme();
@@ -12,11 +15,11 @@ export default function TabsLayout() {
   const bottomPadding = insets.bottom > 0 ? insets.bottom : 6;
   const barHeight = 70 + insets.bottom;
 
-  const renderTabBarIcon = useCallback((iconName: string) => {
+  const renderTabBarIcon = useCallback((iconName: MCIName) => {
     const TabBarIconComponent = ({ focused }: { focused: boolean }) => {
-      const solidName = iconName.endsWith('-outline')
+      const solidName = (iconName.endsWith('-outline')
         ? iconName.slice(0, -8)
-        : iconName;
+        : iconName) as MCIName;
 
       return (
         <View style={{
@@ -28,7 +31,7 @@ export default function TabsLayout() {
           justifyContent: 'center',
         }}>
           <MaterialCommunityIcons
-            name={(focused ? solidName : iconName) as any}
+            name={focused ? solidName : iconName}
             size={22}
             color={focused ? colors.primary : colors.textMuted}
           />

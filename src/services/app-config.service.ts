@@ -31,13 +31,14 @@ export async function fetchAppConfig(): Promise<AppConfigResponse> {
     });
 
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     console.error('[AppConfigService] Error fetching app config:', error);
+    const message = error instanceof Error ? error.message : 'Network error';
     return {
       success: false,
-      message: error.message || 'Network error',
+      message,
       data: null,
-      error: error.message || 'Unknown error',
+      error: message,
     };
   }
 }

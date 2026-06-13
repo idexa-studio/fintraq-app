@@ -1,4 +1,5 @@
 import { useTheme } from '@/src/providers/ThemeProvider';
+import { ThemeColors } from '@/src/theme/colors';
 import * as Haptics from 'expo-haptics';
 import React, {
   createContext,
@@ -12,6 +13,8 @@ import React, {
 import {
   Dimensions,
   Modal,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   Platform,
   StyleSheet,
   TouchableWithoutFeedback,
@@ -20,14 +23,14 @@ import {
   DimensionValue,
 } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
-import Reanimated, { runOnJS, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Reanimated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 // Bottom sheet scroll context to track nested ScrollView/FlatList scroll offsets
 export const BottomSheetContext = createContext<{
-  onScroll: (event: any) => void;
+  onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 } | null>(null);
 
 export const useBottomSheet = () => useContext(BottomSheetContext);
@@ -68,8 +71,8 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
   resolvedHeight: DimensionValue | undefined;
   resolvedMaxHeight: DimensionValue;
   onDismiss: () => void;
-  onScroll: (e: any) => void;
-  colors: any;
+  onScroll: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  colors: ThemeColors;
   enablePanDownToClose: boolean;
 }) {
   const insets = useSafeAreaInsets();
@@ -86,8 +89,8 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
   // JS-thread scroll offset (via ref — no state, no re-renders)
   const scrollOffsetRef = useRef(0);
 
-  const handleScroll = useCallback((event: any) => {
-    scrollOffsetRef.current = event.nativeEvent?.contentOffset?.y ?? 0;
+  const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    scrollOffsetRef.current = event.nativeEvent.contentOffset.y;
   }, []);
 
   const contextValue = useMemo(() => ({ onScroll: handleScroll }), [handleScroll]);
@@ -145,19 +148,22 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
       }
     });
 
-  const animatedSheetStyle = useMemo(() => ({
-    transform: [{ translateY: translateY as any }],
+  const staticSheetStyle = useMemo(() => ({
     height: resolvedHeight,
     maxHeight: resolvedMaxHeight,
     backgroundColor: colors.surface,
     paddingBottom: bottomPadding,
-  }), [translateY, resolvedHeight, resolvedMaxHeight, colors.surface, bottomPadding]);
+  }), [resolvedHeight, resolvedMaxHeight, colors.surface, bottomPadding]);
 
-  const animatedBackdropStyle = useMemo(() => ({
+  const animatedSheetStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  const animatedBackdropStyle = useAnimatedStyle(() => ({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.5)',
-    opacity: backdropOpacity as any,
-  }), [backdropOpacity]);
+    opacity: backdropOpacity.value,
+  }));
 
   return (
     // GestureHandlerRootView inside the Modal window so RNGH gesture
@@ -174,7 +180,7 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
         style={styles.keyboardAvoid}
       >
         <GestureDetector gesture={dragGesture}>
-          <Reanimated.View style={[styles.sheet, animatedSheetStyle]}>
+          <Reanimated.View style={[styles.sheet, staticSheetStyle, animatedSheetStyle]}>
             {/* Handle pill */}
             <View style={styles.dragArea}>
               <View style={[styles.handle, { backgroundColor: colors.text + '24' }]} />

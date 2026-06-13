@@ -537,7 +537,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     setAdvancedFilters(p => ({ ...p, amountRange: undefined }));
   }, []);
 
-  const handleResetSort = useCallback((e?: any) => {
+  const handleResetSort = useCallback((e?: { stopPropagation?: () => void }) => {
     e?.stopPropagation?.();
     Haptics.selectionAsync().catch(() => { });
     setAdvancedFilters(p => ({ ...p, sortBy: 'date', sortOrder: 'desc' }));
