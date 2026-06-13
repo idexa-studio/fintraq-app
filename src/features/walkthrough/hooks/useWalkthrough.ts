@@ -4,12 +4,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export function useWalkthrough(
   storageKey: string,
   stepsLength: number,
-  onFinish?: () => void
+  onFinish?: () => void,
+  enabled: boolean = true
 ) {
   const [visible, setVisible] = useState(false);
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    if (!enabled) {
+      setVisible(false);
+      return;
+    }
     const checkStatus = async () => {
       try {
         const val = await AsyncStorage.getItem(storageKey);
@@ -21,7 +26,7 @@ export function useWalkthrough(
       }
     };
     checkStatus();
-  }, [storageKey]);
+  }, [storageKey, enabled]);
 
   const handleNext = useCallback(async () => {
     if (index >= stepsLength - 1) {

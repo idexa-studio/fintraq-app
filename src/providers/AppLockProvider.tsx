@@ -20,6 +20,7 @@ type AppLockContextType = {
   enableLock: (mode: LockMode) => Promise<void>;
   disableLock: () => Promise<void>;
   isReady: boolean;
+  isLocked: boolean;
 };
 
 const AppLockContext = createContext<AppLockContextType | null>(null);
@@ -79,8 +80,8 @@ export function AppLockProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const contextValue = useMemo(
-    () => ({ lockEnabled: lockMode !== null, lockMode, enableLock, disableLock, isReady }),
-    [lockMode, enableLock, disableLock, isReady],
+    () => ({ lockEnabled: lockMode !== null, lockMode, enableLock, disableLock, isReady, isLocked }),
+    [lockMode, enableLock, disableLock, isReady, isLocked],
   );
 
   return (

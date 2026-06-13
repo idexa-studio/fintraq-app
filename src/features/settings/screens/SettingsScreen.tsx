@@ -10,9 +10,8 @@ import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments, persons, seederState } from '@/src/db/schema';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
-import { getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
+import { getBiometricCapability, authenticateWithBiometrics } from '@/src/features/lock/hooks/useLocalAuth';
 import { LockStorage } from '@/src/features/lock/api/lockStorage';
-import { authenticateWithBiometrics } from '@/src/features/lock/hooks/useLocalAuth';
 import { useAppLock } from '@/src/providers/AppLockProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
@@ -22,7 +21,7 @@ import { MaterialIconName } from '@/src/utils/icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import Constants from 'expo-constants';
+import { getFormattedAppVersion } from '@/src/utils/version';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Alert, Linking, Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
@@ -301,7 +300,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     [profile.theme, updateProfile],
   );
 
-  const version = Constants.expoConfig?.version ?? '1.0.0';
+  const appVersion = getFormattedAppVersion();
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -314,9 +313,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.heroCard}>
-          <View style={styles.deco} pointerEvents="none" />
-          <View style={styles.deco2} pointerEvents="none" />
-
           <View style={styles.heroAvatar}>
             <Text style={[styles.heroMonogram, { fontFamily: typography.fonts.bold, color: heroCard.textPrimary }]}>
               {(profile.name || 'W').charAt(0).toUpperCase()}
@@ -333,7 +329,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
               </Text>
               <View style={[styles.heroMetaDot, { backgroundColor: heroCard.textMuted }]} />
               <Text style={[styles.heroMetaText, { fontFamily: typography.fonts.regular, color: heroCard.textMuted }]}>
-                v{version}
+                v{appVersion}
               </Text>
             </View>
           </View>
@@ -574,24 +570,6 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
       alignItems: 'center',
       gap: spacing('5'),
       overflow: 'hidden',
-    },
-    deco: {
-      position: 'absolute',
-      width: 200,
-      height: 200,
-      borderRadius: 100,
-      backgroundColor: heroCard.decoOverlay,
-      top: -80,
-      right: -60,
-    },
-    deco2: {
-      position: 'absolute',
-      width: 120,
-      height: 120,
-      borderRadius: 60,
-      backgroundColor: heroCard.decoOverlay,
-      bottom: -40,
-      left: -30,
     },
     heroAvatar: {
       width: 56,

@@ -10,12 +10,14 @@ type WalkthroughOverlayProps = {
   storageKey: string;
   steps: WalkthroughStep[];
   onFinish?: () => void;
+  enabled?: boolean;
 };
 
 export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
   storageKey,
   steps,
   onFinish,
+  enabled = true,
 }: WalkthroughOverlayProps) {
   const theme = useTheme();
   const { colors } = theme;
@@ -24,7 +26,8 @@ export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
   const { visible, index, handleNext, handleSkip } = useWalkthrough(
     storageKey,
     steps.length,
-    onFinish
+    onFinish,
+    enabled
   );
 
   if (!visible || steps.length === 0) return null;

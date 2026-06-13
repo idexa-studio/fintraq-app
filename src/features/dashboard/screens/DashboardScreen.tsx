@@ -1,4 +1,6 @@
 import { usePremium } from '@/src/providers/PremiumProvider';
+import { useAppLock } from '@/src/providers/AppLockProvider';
+import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -38,10 +40,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const { data: transactions, isLoading: txLoading } = useTransactions(6);
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
 
+  const { isLocked } = useAppLock();
+  const { hasActivePrompt } = useAppConfig();
+
   const [showUpsell, setShowUpsell] = React.useState(false);
 
   React.useEffect(() => {
-    if (isPremium) return;
+    if (isPremium || isLocked || hasActivePrompt) return;
 
     const checkUpsell = async () => {
       // Prevent rendering the premium upsell modal at the same time as the walkthrough modal to avoid iOS UIKit lockup/freeze.
@@ -55,7 +60,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
     };
 
     checkUpsell();
-  }, [isPremium]);
+  }, [isPremium, isLocked, hasActivePrompt]);
 
   const dismissUpsell = useCallback(() => {
     setShowUpsell(false);
@@ -63,13 +68,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   }, []);
 
   const handleWalkthroughFinish = useCallback(() => {
-    if (isPremium) return;
+    if (isPremium || isLocked || hasActivePrompt) return;
     AsyncStorage.getItem(UPSELL_KEY).then(val => {
       if (!val || Date.now() - parseInt(val, 10) > UPSELL_TTL) {
         setShowUpsell(true);
       }
     });
-  }, [isPremium]);
+  }, [isPremium, isLocked, hasActivePrompt]);
 
   const balancesByCurrency = useMemo(() =>
     accounts?.reduce((acc, a) => {
@@ -214,8 +219,9 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         storageKey="@luno_walkthrough_dashboard"
         steps={DASHBOARD_WALKTHROUGH_STEPS}
         onFinish={handleWalkthroughFinish}
+        enabled={!isLocked && !hasActivePrompt}
       />
-      <PremiumUpsellBottomSheet visible={showUpsell && !isPremium} onClose={dismissUpsell} />
+      <PremiumUpsellBottomSheet visible={showUpsell && !isPremium && !isLocked && !hasActivePrompt} onClose={dismissUpsell} />
     </SafeAreaView>
   );
 });

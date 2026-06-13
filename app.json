@@ -60,7 +60,8 @@
       "expo-iap",
       "expo-notifications",
       "expo-system-ui",
-      "expo-secure-store"
+      "expo-secure-store",
+      "./plugins/with-fingerprint-not-required"
     ],
     "experiments": {
       "typedRoutes": true,

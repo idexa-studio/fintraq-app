@@ -3,6 +3,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LockStorage } from '../api/lockStorage';
 import { authenticateWithBiometrics, getBiometricCapability } from '../hooks/useLocalAuth';
 import { PinPad } from './PinPad';
@@ -50,12 +51,10 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
         if (cancelled) return;
         if (cap.available) {
           setMode('biometric');
-          // auto-prompt on mount
           const success = await authenticateWithBiometrics('Unlock app');
           if (!cancelled && success) onUnlock();
           else if (!cancelled) setError('Use the button below to try again.');
         } else {
-          // biometric was enrolled when lock was set but now unavailable — fall to PIN
           setMode('pin');
         }
       } else {
@@ -64,23 +63,28 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
     }
 
     init();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [onUnlock]);
 
-  const handlePinChange = useCallback(async (val: string) => {
-    setError('');
-    setPin(val);
+  const handlePinChange = useCallback(
+    async (val: string) => {
+      setError('');
+      setPin(val);
 
-    if (val.length < 6) return;
+      if (val.length < 6) return;
 
-    const correct = await LockStorage.verifyPin(val);
-    if (correct) {
-      onUnlock();
-    } else {
-      setError('Incorrect PIN. Try again.');
-      setPin('');
-    }
-  }, [onUnlock]);
+      const correct = await LockStorage.verifyPin(val);
+      if (correct) {
+        onUnlock();
+      } else {
+        setError('Incorrect PIN. Try again.');
+        setPin('');
+      }
+    },
+    [onUnlock],
+  );
 
   if (mode === 'loading') {
     return (
@@ -91,21 +95,24 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Decorative background elements for a creative look */}
-      <View style={styles.decoTop} pointerEvents="none" />
-      <View style={styles.decoBottom} pointerEvents="none" />
-
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'bottom']}>
       <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={[styles.title, { fontFamily: typography.fonts.bold, color: colors.text }]}>
-            App is locked
-          </Text>
-          <Text style={[styles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-            Secure your financial data
-          </Text>
+        {/* Glowing Pulse Ring Graphic */}
+        <View style={styles.graphicContainer}>
+          <View style={styles.pulseOuter}>
+            <View style={styles.pulseInner}>
+              <MaterialCommunityIcons name="lock-outline" size={32} color={colors.primary} />
+            </View>
+          </View>
         </View>
 
+        {/* Text Details block */}
+        <View style={styles.infoContainer}>
+          <Text style={styles.title}>App is locked</Text>
+          <Text style={styles.subtitle}>Secure your financial data</Text>
+        </View>
+
+        {/* PinPad or Biometrics block */}
         <View style={styles.padContainer}>
           {error ? (
             <Text style={[styles.error, { fontFamily: typography.fonts.medium, color: colors.danger }]}>
@@ -132,7 +139,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
   );
 });
 
-function createStyles({ spacing, colors }: ThemeContextType) {
+function createStyles({ spacing, radius, typography, colors }: ThemeContextType) {
   return StyleSheet.create({
     centered: {
       flex: 1,
@@ -141,55 +148,69 @@ function createStyles({ spacing, colors }: ThemeContextType) {
     },
     container: {
       flex: 1,
-      position: 'relative',
-      overflow: 'hidden',
-    },
-    decoTop: {
-      position: 'absolute',
-      width: 400,
-      height: 400,
-      borderRadius: 200,
-      backgroundColor: colors.primary + '0A',
-      top: -150,
-      left: -100,
-    },
-    decoBottom: {
-      position: 'absolute',
-      width: 300,
-      height: 300,
-      borderRadius: 150,
-      backgroundColor: colors.primary + '0C',
-      bottom: -100,
-      right: -50,
     },
     content: {
       flex: 1,
       justifyContent: 'space-between',
-      paddingTop: spacing('12'),
-      paddingBottom: spacing('12'),
+      paddingHorizontal: spacing('8'),
+      paddingVertical: spacing('10'),
     },
-    header: {
+    // Graphic element
+    graphicContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
       alignItems: 'center',
-      gap: spacing('2'),
-      marginTop: spacing('6'),
+      paddingBottom: spacing('4'),
+    },
+    pulseOuter: {
+      width: 96,
+      height: 96,
+      borderRadius: 48,
+      backgroundColor: colors.primary + '0B',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    pulseInner: {
+      width: 68,
+      height: 68,
+      borderRadius: 34,
+      backgroundColor: colors.primary + '18',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    // Text container
+    infoContainer: {
+      alignItems: 'center',
+      gap: spacing('3'),
+      paddingHorizontal: spacing('2'),
+      paddingTop: spacing('2'),
     },
     title: {
-      fontSize: 32,
+      fontFamily: typography.fonts.semibold,
+      fontSize: 20,
+      color: colors.text,
+      textAlign: 'center',
     },
     subtitle: {
-      fontSize: 15,
+      fontFamily: typography.fonts.regular,
+      fontSize: 13,
+      color: colors.textMuted,
+      textAlign: 'center',
+      lineHeight: 19,
+      opacity: 0.85,
     },
+    // PinPad/Biometrics Container
     padContainer: {
-      flex: 1,
+      flex: 1.5,
       justifyContent: 'center',
       alignItems: 'center',
       gap: spacing('6'),
+      width: '100%',
     },
     error: {
-      fontSize: 14,
+      fontSize: 13,
       textAlign: 'center',
       paddingHorizontal: spacing('6'),
-      marginBottom: spacing('4'),
     },
     biometricWrap: {
       width: '100%',

@@ -12,9 +12,14 @@ import { QueryProvider } from '@/src/providers/QueryProvider';
 import { SettingsProvider } from '@/src/providers/SettingsProvider';
 import { PremiumProvider } from '@/src/providers/PremiumProvider';
 import { AppLockProvider } from '@/src/providers/AppLockProvider';
+import { AppConfigProvider } from '@/src/providers/AppConfigProvider';
 import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
 import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+
+// Prevent the splash screen from auto-hiding before version check completes
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -40,10 +45,12 @@ export default function RootLayout() {
                 <OnboardingProvider>
                   <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                     <CustomThemeProvider>
-                      <AppLockProvider>
-                        <Stack screenOptions={{ headerShown: false }} />
-                        <StatusBar style="auto" />
-                      </AppLockProvider>
+                        <AppLockProvider>
+                          <AppConfigProvider>
+                            <Stack screenOptions={{ headerShown: false }} />
+                            <StatusBar style="auto" />
+                          </AppConfigProvider>
+                        </AppLockProvider>
                     </CustomThemeProvider>
                   </ThemeProvider>
                 </OnboardingProvider>

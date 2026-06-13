@@ -81,9 +81,6 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           style={{ flex: 1 }}
         >
           <View style={styles.lockWrap}>
-            <View style={styles.decoCircle1} />
-            <View style={styles.decoCircle2} />
-
             <View style={styles.lockIcon}>
               <IconAvatar icon="lock" color={colors.primary} variant="subtle" size={64} iconSize={26} />
             </View>
@@ -286,24 +283,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingHorizontal: spacing('8'),
       gap: spacing('4'),
       overflow: 'hidden',
-    },
-    decoCircle1: {
-      position: 'absolute',
-      top: 40,
-      right: 20,
-      width: 140,
-      height: 140,
-      borderRadius: 70,
-      backgroundColor: colors.text + '14',
-    },
-    decoCircle2: {
-      position: 'absolute',
-      bottom: 60,
-      left: 10,
-      width: 100,
-      height: 100,
-      borderRadius: 50,
-      backgroundColor: colors.text + '08',
     },
     lockIcon: {
       marginBottom: spacing('2'),

@@ -57,8 +57,6 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             end={{ x: 0, y: 1 }}
             style={styles.heroCard}
           >
-            <View style={styles.decoCircle1} />
-            <View style={styles.decoCircle2} />
             <View style={styles.crownWrapper}>
               <MaterialCommunityIcons name="check-decagram" size={32} color={colors.warning} />
             </View>
@@ -132,8 +130,6 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           end={{ x: 0, y: 1 }}
           style={styles.heroCard}
         >
-          <View style={styles.decoCircle1} />
-          <View style={styles.decoCircle2} />
           <View style={styles.crownWrapper}>
             <MaterialCommunityIcons name="crown" size={32} color={colors.warning} />
           </View>
@@ -248,24 +244,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }:
       marginBottom: spacing('5'),
       gap: spacing('2'),
       overflow: 'hidden',
-    },
-    decoCircle1: {
-      position: 'absolute',
-      top: -40,
-      right: -30,
-      width: 150,
-      height: 150,
-      borderRadius: 75,
-      backgroundColor: heroCard.textPrimary + '14',
-    },
-    decoCircle2: {
-      position: 'absolute',
-      bottom: -50,
-      left: -20,
-      width: 120,
-      height: 120,
-      borderRadius: 60,
-      backgroundColor: heroCard.textPrimary + '0A',
     },
     crownWrapper: {
       width: 48,

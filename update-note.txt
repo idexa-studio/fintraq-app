@@ -1,12 +1,11 @@
-Luno is now Keeep — same app, fresh name.
+Keeep Update Notes
 
-Fresh in this update (1.1.3)
+Luno is now Keeep - same app, fresh name.
 
-- Transfer between accounts with clear direction labels
-- Fresh emerald theme — easier on your eyes
-- Redesigned premium page with cleaner layout
-- 6 types of personalised financial insights
-- Polished forms and settings throughout
-- Improved charts and analytics
-- Faster UI — solid cards, no blur
-- Stability and performance improvements
+What's New in this Update (1.1.5)
+
+App Lock Security
+- Protect your financial data by enabling App Lock.
+- Support for biometric authentication (Face ID / Fingerprint) or a secure 6-digit PIN.
+- Automatically locks after a short grace period in the background to keep your data private.
+- Configurable directly from Settings > Security.

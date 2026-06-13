@@ -19,9 +19,6 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
 
   return (
     <View style={styles.card}>
-      <View style={styles.deco} pointerEvents="none" />
-      <View style={styles.deco2} pointerEvents="none" />
-
       <View style={styles.header}>
         <Text style={[styles.label, { fontFamily: typography.fonts.medium }]}>
           Total balance
@@ -79,24 +76,6 @@ const createStyles = ({ heroCard, spacing, radius, layout, typography }: ThemeCo
       padding: spacing('5'),
       gap: spacing('5'),
       overflow: 'hidden',
-    },
-    deco: {
-      position: 'absolute',
-      width: 280,
-      height: 280,
-      borderRadius: 140,
-      backgroundColor: heroCard.decoOverlay,
-      top: -100,
-      right: -80,
-    },
-    deco2: {
-      position: 'absolute',
-      width: 160,
-      height: 160,
-      borderRadius: 80,
-      backgroundColor: heroCard.decoOverlay,
-      bottom: -60,
-      left: -40,
     },
     header: {
       flexDirection: 'row',
