@@ -2,7 +2,6 @@ import { usePathname } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
-import { AnalyticsService } from '../services/analytics';
 import {
   configureFirebaseTelemetry,
   logFirebaseScreenView,
@@ -17,7 +16,7 @@ export const FirebaseProvider = React.memo(function FirebaseProvider({ children 
 
   useEffect(() => {
     const enabled = !__DEV__;
-    configureFirebaseTelemetry(enabled).catch(() => {});
+    configureFirebaseTelemetry(enabled).catch((e) => { if (__DEV__) console.warn('[Firebase]', e); });
   }, []);
 
   useEffect(() => {
@@ -28,14 +27,13 @@ export const FirebaseProvider = React.memo(function FirebaseProvider({ children 
       theme: profile.theme,
       defaultCurrency: profile.defaultCurrency,
       hasProfileName: Boolean(profile.name.trim()),
-    }).catch(() => {});
+    }).catch((e) => { if (__DEV__) console.warn('[Firebase]', e); });
   }, [isLoading, isPremium, profile.defaultCurrency, profile.name, profile.theme]);
 
   useEffect(() => {
     if (!pathname || lastTrackedPath.current === pathname) return;
     lastTrackedPath.current = pathname;
-    logFirebaseScreenView(pathname).catch(() => {});
-    AnalyticsService.screenViewed(pathname).catch(() => {});
+    logFirebaseScreenView(pathname).catch((e) => { if (__DEV__) console.warn('[Firebase]', e); });
   }, [pathname]);
 
   return <>{children}</>;

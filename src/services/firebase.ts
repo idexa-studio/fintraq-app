@@ -99,7 +99,7 @@ export async function logFirebaseMessage(message: string) {
   if (!modules) return;
 
   const crashlytics = modules.crashlyticsModule.getCrashlytics();
-  modules.crashlyticsModule.log(crashlytics, message);
+  await modules.crashlyticsModule.log(crashlytics, message);
 }
 
 export async function recordFirebaseError(error: Error, context?: string) {
@@ -109,7 +109,7 @@ export async function recordFirebaseError(error: Error, context?: string) {
   const crashlytics = modules.crashlyticsModule.getCrashlytics();
 
   if (context) {
-    modules.crashlyticsModule.log(crashlytics, context);
+    await modules.crashlyticsModule.log(crashlytics, context);
   }
-  modules.crashlyticsModule.recordError(crashlytics, error);
+  await modules.crashlyticsModule.recordError(crashlytics, error);
 }
