@@ -29,7 +29,7 @@
     "drizzle-orm": "^0.45.1",
     "expo": "~54.0.35",
     "expo-application": "~7.0.8",
-    "expo-build-properties": "^56.0.19",
+    "expo-build-properties": "~1.0.10",
     "expo-constants": "~18.0.13",
     "expo-crypto": "~15.0.9",
     "expo-dev-client": "~6.0.20",
