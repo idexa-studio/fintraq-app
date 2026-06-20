@@ -4,6 +4,7 @@ import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { AnalyticsService } from '@/src/services/analytics';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -30,6 +31,10 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const lifetimeProduct = useMemo(() => products.find(p => p.id === SKU_LIFETIME), [products]);
+
+  React.useEffect(() => {
+    AnalyticsService.premiumPaywallViewed('premium_screen').catch(() => {});
+  }, []);
 
   const handlePurchase = useCallback(async () => {
     setIsProcessing(true);

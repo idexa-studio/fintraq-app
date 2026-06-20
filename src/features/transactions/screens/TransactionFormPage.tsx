@@ -35,6 +35,7 @@ import {
 import { format } from 'date-fns';
 import { TransactionType } from '../../../types';
 import { WalkthroughOverlay, TRANSACTION_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { AnalyticsService } from '@/src/services/analytics';
 import { StorageKeys } from '../../../constants/keys';
 
 type Props = {
@@ -232,6 +233,14 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       } else {
         await createTransaction.mutateAsync(payload);
       }
+      await AnalyticsService.transactionSaved(
+        isEditMode ? 'edit' : 'create',
+        type,
+        amountValue,
+        selectedAccount?.currency ?? profile.defaultCurrency,
+        Boolean(note.trim()),
+        selectedPersonId != null
+      );
       router.back();
     } catch {
       Alert.alert('Unable to save', 'Could not save transaction. Please try again.');

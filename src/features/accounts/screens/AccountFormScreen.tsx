@@ -11,6 +11,7 @@ import type { InsertAccount, UpdateAccountData } from '@/src/features/accounts/a
 import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { AnalyticsService } from '@/src/services/analytics';
 import { colorNumberToHex, parseAmount, toDbColor } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -108,6 +109,12 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         };
         await createAccount(createData);
       }
+      await AnalyticsService.accountSaved(
+        isEditing ? 'edit' : 'create',
+        currency,
+        !isEditing && parseAmount(data.balance) > 0,
+        iconKey.replace('-outline', '')
+      );
       router.back();
     } catch (error) {
       console.error('Failed to save account:', error);

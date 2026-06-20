@@ -13,6 +13,7 @@ import { SettingsProvider } from '@/src/providers/SettingsProvider';
 import { PremiumProvider } from '@/src/providers/PremiumProvider';
 import { AppLockProvider } from '@/src/providers/AppLockProvider';
 import { AppConfigProvider } from '@/src/providers/AppConfigProvider';
+import { FirebaseProvider } from '@/src/providers/FirebaseProvider';
 import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
 import { useFonts } from 'expo-font';
@@ -43,10 +44,11 @@ export default function RootLayout() {
     runMigration();
   }, []);
 
+  useEffect(() => {
+    NotificationService.init();
+  }, []);
+
   if (!fontsLoaded || !migrationReady) return null;
-
-  NotificationService.init();
-
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -55,18 +57,20 @@ export default function RootLayout() {
           <DatabaseProvider>
             <SettingsProvider>
               <PremiumProvider>
-                <OnboardingProvider>
-                  <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                    <CustomThemeProvider>
-                        <AppLockProvider>
-                          <AppConfigProvider>
-                            <Stack screenOptions={{ headerShown: false }} />
-                            <StatusBar style="auto" />
-                          </AppConfigProvider>
-                        </AppLockProvider>
-                    </CustomThemeProvider>
-                  </ThemeProvider>
-                </OnboardingProvider>
+                <FirebaseProvider>
+                  <OnboardingProvider>
+                    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+                      <CustomThemeProvider>
+                          <AppLockProvider>
+                            <AppConfigProvider>
+                              <Stack screenOptions={{ headerShown: false }} />
+                              <StatusBar style="auto" />
+                            </AppConfigProvider>
+                          </AppLockProvider>
+                      </CustomThemeProvider>
+                    </ThemeProvider>
+                  </OnboardingProvider>
+                </FirebaseProvider>
               </PremiumProvider>
             </SettingsProvider>
           </DatabaseProvider>

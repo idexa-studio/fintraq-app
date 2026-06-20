@@ -15,6 +15,7 @@ import { OnboardingFormValues } from '@/src/features/onboarding/types';
 import { useOnboarding } from '@/src/providers/OnboardingProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { useTheme } from '@/src/providers/ThemeProvider';
+import { AnalyticsService } from '@/src/services/analytics';
 import { NotificationService } from '@/src/services/notification.service';
 import type { TransactionType } from '@/src/types';
 import { toDbColor } from '@/src/utils/format';
@@ -175,6 +176,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
 
       await seedCategories();
       await completeOnboarding();
+      await AnalyticsService.onboardingCompleted(currency);
       setShowReminderDialog(true);
     } catch {
       Alert.alert('Setup failed', 'Could not initialize your workspace. Please try again.');

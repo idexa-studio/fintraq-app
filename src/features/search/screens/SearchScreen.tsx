@@ -27,6 +27,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalSearch } from '../hooks/useGlobalSearch';
 import { useRecentSearches } from '../hooks/useRecentSearches';
 import { WalkthroughOverlay, SEARCH_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { AnalyticsService } from '@/src/services/analytics';
 import { StorageKeys } from '@/src/constants/keys';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 
@@ -160,6 +161,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
 
   // Selected quick filter tab: 'all' | 'transactions' | 'accounts' | 'categories' | 'persons'
   const [activeFilter, setActiveFilter] = useState<'all' | 'transactions' | 'accounts' | 'categories' | 'persons'>('all');
+  const lastTrackedSearchRef = useRef<string>('');
 
   useEffect(() => {
     const t = setTimeout(() => inputRef.current?.focus(), 150);
@@ -237,6 +239,23 @@ export const SearchScreen = React.memo(function SearchScreen() {
       addRecent(debouncedQuery);
     }
   }, [debouncedQuery, hasResults, addRecent]);
+
+  useEffect(() => {
+    if (!isEnabled || isFetching || debouncedQuery.length < 2) return;
+
+    const signature = `${debouncedQuery}|${sections.length}|${sections[0]?.title ?? 'none'}`;
+    if (lastTrackedSearchRef.current === signature) return;
+    lastTrackedSearchRef.current = signature;
+
+    const resultCount = sections.reduce((sum, section) => sum + section.count, 0);
+    const topSection = sections[0]?.title.toLowerCase() as 'transactions' | 'accounts' | 'categories' | 'persons' | undefined;
+
+    AnalyticsService.searchPerformed(
+      debouncedQuery.length,
+      resultCount,
+      topSection ?? 'none'
+    ).catch(() => {});
+  }, [debouncedQuery, isEnabled, isFetching, sections]);
 
   // Client-side quick filter tabs implementation
   const filteredSections = useMemo((): SearchSection[] => {

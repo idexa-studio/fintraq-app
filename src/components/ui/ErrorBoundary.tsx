@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
+import { recordFirebaseError } from '../../services/firebase';
 import { BentoPressable } from './BentoPressable';
 
 type Props = {
@@ -45,6 +46,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
   handleReset = () => {
     this.setState({ hasError: false, error: null });
   };
+
+  componentDidCatch(error: Error) {
+    recordFirebaseError(error, 'ErrorBoundary').catch(() => {});
+  }
 
   render() {
     if (this.state.hasError) {
