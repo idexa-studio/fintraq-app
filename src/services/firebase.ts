@@ -71,7 +71,7 @@ export async function logFirebaseScreenView(pathname: string) {
 
   const screenName = pathname === '/' ? 'root' : pathname.replace(/[\/[\]]+/g, '_').replace(/^_+|_+$/g, '') || 'root';
 
-  await modules.analyticsModule.logScreenView(analytics, {
+  await modules.analyticsModule.logEvent(analytics, 'screen_view', {
     screen_name: screenName,
     screen_class: screenName,
   });
