@@ -1,13 +1,13 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Flame } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useUsageStreak } from '../hooks/useStreak';
 
 // Fixed dark-context palette — badge always renders on the dark HeroBalanceCard
 const BADGE_BG    = 'rgba(255,107,53,0.15)';
 const FLAME_COLOR = '#FF6B35';
-const TEXT_COLOR  = 'rgba(255,255,255,0.88)';
 
 export const StreakBadge = React.memo(function StreakBadge() {
   const theme = useTheme();
@@ -18,13 +18,13 @@ export const StreakBadge = React.memo(function StreakBadge() {
 
   return (
     <View style={styles.container}>
-      <MaterialCommunityIcons name="fire" size={12} color={FLAME_COLOR} />
+      <HugeiconsIcon icon={Flame} size={12} color={FLAME_COLOR} />
       <Text style={styles.text}>{streak}d streak</Text>
     </View>
   );
 });
 
-const createStyles = ({ typography }: ThemeContextType) =>
+const createStyles = ({ typography, colors }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flexDirection: 'row',
@@ -39,6 +39,6 @@ const createStyles = ({ typography }: ThemeContextType) =>
     text: {
       fontFamily: typography.fonts.semibold,
       fontSize: 11,
-      color: TEXT_COLOR,
+      color: colors.text,
     },
   });

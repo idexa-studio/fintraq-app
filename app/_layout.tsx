@@ -2,25 +2,25 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'react-native-reanimated';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { AppConfigProvider } from '@/src/providers/AppConfigProvider';
+import { AppLockProvider } from '@/src/providers/AppLockProvider';
 import { DatabaseProvider } from '@/src/providers/DatabaseProvider';
+import { FirebaseProvider } from '@/src/providers/FirebaseProvider';
 import { OnboardingProvider } from '@/src/providers/OnboardingProvider';
+import { PremiumProvider } from '@/src/providers/PremiumProvider';
 import { QueryProvider } from '@/src/providers/QueryProvider';
 import { SettingsProvider } from '@/src/providers/SettingsProvider';
-import { PremiumProvider } from '@/src/providers/PremiumProvider';
-import { AppLockProvider } from '@/src/providers/AppLockProvider';
-import { AppConfigProvider } from '@/src/providers/AppConfigProvider';
-import { FirebaseProvider } from '@/src/providers/FirebaseProvider';
 import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { LocalMigrationService } from '@/src/services/local-migration.service';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Prevent the splash screen from auto-hiding before version check completes
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -30,10 +30,10 @@ export default function RootLayout() {
   const [migrationReady, setMigrationReady] = useState(false);
 
   const [fontsLoaded] = useFonts({
-    GoogleSans_Bold: require('../assets/fonts/GoogleSanaFlex/Bold.ttf'),
-    GoogleSans_Regular: require('../assets/fonts/GoogleSanaFlex/Regular.ttf'),
-    GoogleSans_Medium: require('../assets/fonts/GoogleSanaFlex/Medium.ttf'),
-    GoogleSans_SemiBold: require('../assets/fonts/GoogleSanaFlex/SemiBold.ttf'),
+    MuseoModerno_Bold: require('../assets/fonts/MuseoModerno/MuseoModerno-Bold.ttf'),
+    MuseoModerno_Regular: require('../assets/fonts/MuseoModerno/MuseoModerno-Regular.ttf'),
+    MuseoModerno_Medium: require('../assets/fonts/MuseoModerno/MuseoModerno-Medium.ttf'),
+    MuseoModerno_SemiBold: require('../assets/fonts/MuseoModerno/MuseoModerno-SemiBold.ttf'),
   });
 
   useEffect(() => {

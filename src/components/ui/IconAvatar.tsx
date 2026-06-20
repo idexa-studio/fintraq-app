@@ -1,8 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
-import { MaterialIconName } from '../../utils/icons';
 import { useTheme } from '../../providers/ThemeProvider';
+import { MaterialIconName } from '../../utils/icons';
 
 type IconAvatarVariant = 'solid' | 'subtle' | 'outline';
 
@@ -23,7 +23,7 @@ export const IconAvatar = React.memo(function IconAvatar({
   iconSize,
   style,
 }: IconAvatarProps) {
-  const { colors } = useTheme();
+  const { colors, radius } = useTheme();
   const resolved = iconSize ?? Math.round(size * 0.45);
 
   const { bg, iconColor, border } = React.useMemo(() => {
@@ -39,7 +39,7 @@ export const IconAvatar = React.memo(function IconAvatar({
   }, [variant, color, colors.background]);
 
   return (
-    <View style={[styles.base, { width: size, height: size, borderRadius: size / 2, backgroundColor: bg }, border, style]}>
+    <View style={[styles.base, { width: size, height: size, borderRadius: radius('md'), backgroundColor: bg }, border, style]}>
       <MaterialCommunityIcons name={icon} size={resolved} color={iconColor} />
     </View>
   );

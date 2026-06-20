@@ -1,31 +1,29 @@
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { useAppLock } from '@/src/providers/AppLockProvider';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
+import { DASHBOARD_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
 import { useAppConfig } from '@/src/providers/AppConfigProvider';
+import { useAppLock } from '@/src/providers/AppLockProvider';
+import { usePremium } from '@/src/providers/PremiumProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { DEFAULT_CURRENCY } from '../../../constants/currency';
-import { useSettings } from '../../../providers/SettingsProvider';
+import { StorageKeys } from '../../../constants/keys';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useTransactions } from '../../transactions/hooks/transactions';
 import { AccountsCarousel } from '../components/AccountsCarousel';
-import { DashboardHeader } from '../components/DashboardHeader';
 import { HeroBalanceCard } from '../components/HeroBalanceCard';
 import { InsightsSection } from '../components/InsightsSection';
 import { PremiumUpsellBottomSheet } from '../components/PremiumUpsellBottomSheet';
-import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '../components/TopPersonsCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
-import { WalkthroughOverlay, DASHBOARD_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
-import { StorageKeys } from '../../../constants/keys';
 
 const UPSELL_KEY = StorageKeys.UPSELL_DISMISSED_AT;
 const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
@@ -36,7 +34,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { isPremium } = usePremium();
   const router = useRouter();
-  const { profile } = useSettings();
+
 
   const { data: transactions, isLoading: txLoading } = useTransactions(6);
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
@@ -105,8 +103,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   const handleCurrencySelect = useCallback((c: string) => setSelectedCurrency(c), []);
   const navigateToAccountTx = useCallback((id: number) => router.push(`/transactions?accountId=${id}`), [router]);
-  const navigateToPremium = useCallback(() => router.push('/premium'), [router]);
-  const navigateToSearch = useCallback(() => router.push('/search'), [router]);
+
   const navigateToTransactions = useCallback(() => router.push('/transactions'), [router]);
   const navigateToCreateTx = useCallback(() => router.push('/transactions/create'), [router]);
   const navigateToEditTx = useCallback((id: number) => router.push(`/transactions/edit/${id}`), [router]);
@@ -123,44 +120,19 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={[]}>
       <PageBackground />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
-        <DashboardHeader
-          name={profile.name}
-          isPremium={isPremium}
-          onSearch={isPremium ? navigateToSearch : navigateToPremium}
-        />
-
-        {/* Currency tabs */}
-        {currencyKeys.length > 1 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.currencyTabs}
-            style={styles.currencyTabsWrap}
-          >
-            {currencyKeys.map(c => (
-              <BentoPressable
-                key={c}
-                style={[styles.currencyTab, c === selectedCurrency && styles.currencyTabActive]}
-                onPress={() => handleCurrencySelect(c)}
-              >
-                <Text style={[styles.currencyTabText, c === selectedCurrency && styles.currencyTabTextActive]}>
-                  {c}
-                </Text>
-              </BentoPressable>
-            ))}
-          </ScrollView>
-        )}
-
+      
         <HeroBalanceCard
           balance={balancesByCurrency[selectedCurrency] || 0}
           currency={selectedCurrency}
           income={totals.income}
           expense={totals.expense}
+          onCurrencySelect={handleCurrencySelect}
+          currencies={currencyKeys}
         />
 
         <SectionHeader title="Accounts" rightText="Manage" onPressRight={openAccountsScreen} />
@@ -233,18 +205,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
     content: { paddingBottom: 100 },
 
-    // ── Currency tabs
-    currencyTabsWrap: { marginHorizontal: layout.screenPadding, marginBottom: spacing('4') },
-    currencyTabs: { flexDirection: 'row', gap: spacing('2') },
-    currencyTab: {
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('2'),
-      borderRadius: radius('lg'),
-      backgroundColor: colors.surface,
-    },
-    currencyTabActive: { backgroundColor: colors.primary + '15' },
-    currencyTabText: { fontFamily: typography.fonts.medium, color: colors.textMuted, fontSize: 12 },
-    currencyTabTextActive: { color: colors.primary },
+  
 
     // ── Activity card
     activityCard: {

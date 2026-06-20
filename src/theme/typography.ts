@@ -17,15 +17,15 @@ export type TypographyWeight = {
 };
 
 export type TypographyFonts = {
-  heading: 'GoogleSans_Bold';
-  headingRegular: 'GoogleSans_Regular';
-  regular: 'GoogleSans_Regular';
-  medium: 'GoogleSans_Medium';
-  semibold: 'GoogleSans_SemiBold';
-  bold: 'GoogleSans_Bold';
-  amountLight: 'GoogleSans_Regular';
-  amountRegular: 'GoogleSans_Medium';
-  amountBold: 'GoogleSans_SemiBold';
+  heading: 'MuseoModerno_Bold';
+  headingRegular: 'MuseoModerno_Regular';
+  regular: 'MuseoModerno_Regular';
+  medium: 'MuseoModerno_Medium';
+  semibold: 'MuseoModerno_SemiBold';
+  bold: 'MuseoModerno_Bold';
+  amountLight: 'MuseoModerno_Regular';
+  amountRegular: 'MuseoModerno_Medium';
+  amountBold: 'MuseoModerno_SemiBold';
 };
 
 export type TypographyTheme = {
@@ -52,14 +52,14 @@ export const TYPOGRAPHY: TypographyTheme = {
     bold: '700',
   },
   fonts: {
-    heading: 'GoogleSans_Bold',
-    headingRegular: 'GoogleSans_Regular',
-    regular: 'GoogleSans_Regular',
-    medium: 'GoogleSans_Medium',
-    semibold: 'GoogleSans_SemiBold',
-    bold: 'GoogleSans_Bold',
-    amountLight: 'GoogleSans_Regular',
-    amountRegular: 'GoogleSans_Medium',
-    amountBold: 'GoogleSans_SemiBold',
+    heading: 'MuseoModerno_Bold',
+    headingRegular: 'MuseoModerno_Regular',
+    regular: 'MuseoModerno_Regular',
+    medium: 'MuseoModerno_Medium',
+    semibold: 'MuseoModerno_SemiBold',
+    bold: 'MuseoModerno_Bold',
+    amountLight: 'MuseoModerno_Regular',
+    amountRegular: 'MuseoModerno_Medium',
+    amountBold: 'MuseoModerno_SemiBold',
   },
 };
