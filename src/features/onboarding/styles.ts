@@ -95,12 +95,6 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
       color: colors.textMuted,
       maxWidth: 320,
     },
-    contentCard: {
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('4'),
-      borderRadius: radius('2xl'),
-      backgroundColor: colors.card,
-    },
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingBottom: Platform.OS === 'ios' ? spacing('5') : spacing('6'),

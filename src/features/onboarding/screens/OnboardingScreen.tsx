@@ -253,7 +253,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
               <Text style={styles.stepSubtitle}>{currentStep.subtitle}</Text>
             </View>
 
-            <View style={styles.contentCard}>{renderStepContent()}</View>
+            {renderStepContent()}
           </ScrollView>
 
           <View style={styles.footer}>
