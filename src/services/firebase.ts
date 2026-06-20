@@ -18,21 +18,24 @@ function toFirebaseValue(value: string | number | boolean | null | undefined) {
 async function getFirebaseModules() {
   if (Platform.OS === 'web') return null;
 
-  const [{ default: analytics }, { default: crashlytics }] = await Promise.all([
+  const [analyticsModule, crashlyticsModule] = await Promise.all([
     import('@react-native-firebase/analytics'),
     import('@react-native-firebase/crashlytics'),
   ]);
 
-  return { analytics, crashlytics };
+  return { analyticsModule, crashlyticsModule };
 }
 
 export async function configureFirebaseTelemetry(enabled: boolean) {
   const modules = await getFirebaseModules();
   if (!modules) return;
 
+  const analytics = modules.analyticsModule.getAnalytics();
+  const crashlytics = modules.crashlyticsModule.getCrashlytics();
+
   await Promise.all([
-    modules.analytics().setAnalyticsCollectionEnabled(enabled),
-    modules.crashlytics().setCrashlyticsCollectionEnabled(enabled),
+    modules.analyticsModule.setAnalyticsCollectionEnabled(analytics, enabled),
+    modules.crashlyticsModule.setCrashlyticsCollectionEnabled(crashlytics, enabled),
   ]);
 }
 
@@ -40,13 +43,19 @@ export async function setFirebaseUserTraits(traits: FirebaseUserTraits) {
   const modules = await getFirebaseModules();
   if (!modules) return;
 
+  const analytics = modules.analyticsModule.getAnalytics();
+  const crashlytics = modules.crashlyticsModule.getCrashlytics();
+
   const entries = Object.entries(traits).filter(([, value]) => value != null);
 
   await Promise.all(
-    entries.map(([key, value]) => modules.analytics().setUserProperty(toFirebaseValue(value), key))
+    entries.map(([key, value]) =>
+      modules.analyticsModule.setUserProperty(analytics, key, toFirebaseValue(value))
+    )
   );
 
-  await modules.crashlytics().setAttributes(
+  await modules.crashlyticsModule.setAttributes(
+    crashlytics,
     entries.reduce<Record<string, string>>((acc, [key, value]) => {
       acc[key] = toFirebaseValue(value);
       return acc;
@@ -58,9 +67,11 @@ export async function logFirebaseScreenView(pathname: string) {
   const modules = await getFirebaseModules();
   if (!modules) return;
 
+  const analytics = modules.analyticsModule.getAnalytics();
+
   const screenName = pathname === '/' ? 'root' : pathname.replace(/[\/[\]]+/g, '_').replace(/^_+|_+$/g, '') || 'root';
 
-  await modules.analytics().logScreenView({
+  await modules.analyticsModule.logScreenView(analytics, {
     screen_name: screenName,
     screen_class: screenName,
   });
@@ -70,6 +81,8 @@ export async function logFirebaseEvent(name: string, params?: FirebaseEventParam
   const modules = await getFirebaseModules();
   if (!modules) return;
 
+  const analytics = modules.analyticsModule.getAnalytics();
+
   const sanitizedParams = params
     ? Object.entries(params).reduce<Record<string, string | number | boolean | string[] | number[]>>((acc, [key, value]) => {
         if (value == null) return acc;
@@ -78,22 +91,25 @@ export async function logFirebaseEvent(name: string, params?: FirebaseEventParam
       }, {})
     : undefined;
 
-  await modules.analytics().logEvent(name, sanitizedParams);
+  await modules.analyticsModule.logEvent(analytics, name, sanitizedParams);
 }
 
 export async function logFirebaseMessage(message: string) {
   const modules = await getFirebaseModules();
   if (!modules) return;
 
-  modules.crashlytics().log(message);
+  const crashlytics = modules.crashlyticsModule.getCrashlytics();
+  modules.crashlyticsModule.log(crashlytics, message);
 }
 
 export async function recordFirebaseError(error: Error, context?: string) {
   const modules = await getFirebaseModules();
   if (!modules) return;
 
+  const crashlytics = modules.crashlyticsModule.getCrashlytics();
+
   if (context) {
-    modules.crashlytics().log(context);
+    modules.crashlyticsModule.log(crashlytics, context);
   }
-  modules.crashlytics().recordError(error);
+  modules.crashlyticsModule.recordError(crashlytics, error);
 }
