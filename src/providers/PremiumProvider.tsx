@@ -37,7 +37,7 @@ export const PremiumContext = createContext<PremiumContextType | null>(null);
 
 
 /**
- * usePremium: Access the Keeep Pro ecosystem within any functional component.
+ * usePremium: Access the Fintraq Pro ecosystem within any functional component.
  */
 export function usePremium() {
   const ctx = useContext(PremiumContext);
@@ -263,7 +263,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
 
       if (hasLifetime) {
         await savePremiumState({ isPremium: true });
-        showAlert({ title: 'Access Restored', message: 'Keeep Pro has been successfully re-enabled.', type: 'success' });
+        showAlert({ title: 'Access Restored', message: 'Fintraq Pro has been successfully re-enabled.', type: 'success' });
       } else {
         showAlert({ title: 'No Purchase Found', message: "We couldn't find an active Pro license for this account.", type: 'info' });
       }

@@ -265,12 +265,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
   const openPrivacy = useCallback(() => {
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://keeep.idexa.app/in-app/privacy?platform=${platform}`);
+    Linking.openURL(`https://fintraq.idexa.app/in-app/privacy?platform=${platform}`);
   }, []);
 
   const openTerms = useCallback(() => {
     const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://keeep.idexa.app/in-app/terms?platform=${platform}`);
+    Linking.openURL(`https://fintraq.idexa.app/in-app/terms?platform=${platform}`);
   }, []);
 
   const openExport = useCallback(() => {
@@ -341,7 +341,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             theme={theme}
             icon="creation"
             iconColor={colors.warning}
-            label={isPremium ? 'Keeep Pro — Lifetime' : 'Upgrade to Pro'}
+            label={isPremium ? 'Fintraq Pro — Lifetime' : 'Upgrade to Pro'}
             subtitle={isPremium ? 'You have permanent access to every feature' : 'Unlock analytics, insights, and more'}
             value={isPremium ? 'Active' : undefined}
             onPress={() => router.push('/premium')}
@@ -473,7 +473,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon="file-document-outline"
             iconColor={colors.textMuted}
             label="Terms of service"
-            subtitle="Rules and guidelines for using Keeep"
+            subtitle="Rules and guidelines for using Fintraq"
             onPress={openTerms}
             isLast
           />
@@ -495,7 +495,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <BentoPressable onPress={handleFooterTap} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}>
           <View style={styles.footer}>
             <Text style={[styles.footerBrand, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-              Keeep / Core
+              Fintraq / Core
             </Text>
             <Text style={[styles.footerCopy, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               Data encrypted and stored locally.

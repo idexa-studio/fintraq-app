@@ -1,19 +1,18 @@
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import React, { useCallback } from 'react';
-import { ComponentProps } from 'react';
+import React, { ComponentProps, useCallback } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type MCIName = ComponentProps<typeof MaterialCommunityIcons>['name'];
 
 export default function TabsLayout() {
-  const { colors, typography } = useTheme();
+  const { colors, typography, radius } = useTheme();
   const insets = useSafeAreaInsets();
 
-  const bottomPadding = insets.bottom > 0 ? insets.bottom : 6;
-  const barHeight = 70 + insets.bottom;
+  const bottomPadding = insets.bottom > 0 ? insets.bottom : 8;
+  const barHeight = 78 + insets.bottom;
 
   const renderTabBarIcon = useCallback((iconName: MCIName) => {
     const TabBarIconComponent = ({ focused }: { focused: boolean }) => {
@@ -23,10 +22,10 @@ export default function TabsLayout() {
 
       return (
         <View style={{
-          width: 56,
-          height: 32,
-          borderRadius: 16,
-          backgroundColor: focused ? colors.primary + '18' : 'transparent', // 10% opacity primary container
+          width: 64,
+          height: 34,
+          borderRadius: radius('full'),
+          backgroundColor: focused ? colors.primaryLight : 'transparent',
           alignItems: 'center',
           justifyContent: 'center',
         }}>
@@ -40,7 +39,7 @@ export default function TabsLayout() {
     };
     TabBarIconComponent.displayName = `TabBarIcon(${iconName})`;
     return TabBarIconComponent;
-  }, [colors.primary, colors.textMuted]);
+  }, [colors.primary, colors.primaryLight, colors.textMuted, radius]);
 
   return (
     <Tabs
@@ -49,9 +48,9 @@ export default function TabsLayout() {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarLabelStyle: {
-          fontFamily: typography.fonts.semibold,
-          fontSize: 11,
-          marginTop: 4,
+          fontFamily: typography.fonts.medium,
+          fontSize: 12,
+          marginTop: 2,
         },
         tabBarStyle: {
           backgroundColor: colors.tabBarBackground,
@@ -59,7 +58,7 @@ export default function TabsLayout() {
           elevation: 0,
           shadowOpacity: 0,
           height: barHeight,
-          paddingTop: 6,
+          paddingTop: 8,
           paddingBottom: bottomPadding,
         },
       }}

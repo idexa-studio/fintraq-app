@@ -12,10 +12,10 @@ export type HeaderProps = {
 };
 
 /**
- * Header - Editorial Brutalist Design
+ * Header - Material 3 app bar
  * 
  * Layout:
- * - Screen padding: 24px
+ * - Screen padding: 16px
  * - Top padding: 12px
  * - Bottom padding: 16px
  * - Gap between elements: 16px
@@ -88,19 +88,19 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   title: {
     fontFamily: typography.fonts.semibold,
     color: colors.text,
-    fontSize: typography.sizes.xxl,
-    lineHeight: 26,
+    fontSize: typography.sizes.xl,
+    lineHeight: 24,
   },
   rightActionWrap: {
     justifyContent: 'center',
   },
   backButton: {
-    width: 40,
-    height: 40,
+    width: layout.minTouchTarget,
+    height: layout.minTouchTarget,
     borderRadius: radius('full'),
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'transparent',
-    marginLeft: -spacing('2'),
+    backgroundColor: colors.surface,
+    marginLeft: -spacing('1'),
   },
 });

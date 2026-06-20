@@ -246,7 +246,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerBrand}>Keeep / Dev tools</Text>
+          <Text style={styles.footerBrand}>Fintraq / Dev tools</Text>
           <Text style={styles.footerCopy}>Internal debugging and testing utilities.</Text>
         </View>
       </ScrollView>

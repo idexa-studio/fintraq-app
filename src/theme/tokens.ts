@@ -1,9 +1,9 @@
 /**
- * Design Tokens - Keeep Design System
+ * Design Tokens - Fintraq Design System
  * 
- * Editorial Brutalist Design Language
- * - Clean, minimal aesthetics with precise spacing
- * - No arbitrary values - everything uses the token system
+ * Material 3-inspired Design Language
+ * - Tonal surfaces with rounded shapes
+ * - No arbitrary values - everything uses token system
  * - Consistent 4px base grid
  */
 
@@ -35,8 +35,7 @@ export type SpacingToken = keyof typeof SPACING;
 
 // ============================================
 // BORDER RADIUS SCALE
-// Editorial Brutalist: 12px-20px for most elements
-// Avoid 999px pill shapes except for micro-badges
+// MD3-friendly: rounded, soft, touch-first
 // ============================================
 export const RADIUS = {
   'none': 0,
@@ -56,7 +55,7 @@ export type RadiusToken = keyof typeof RADIUS;
 // ============================================
 export const LAYOUT = {
   // Screen margins
-  screenPadding: 12,
+  screenPadding: 16,
   
   // Content max widths for readability
   maxContentWidth: 400,
@@ -82,15 +81,15 @@ export const LAYOUT = {
 export const COMPONENT_SIZES = {
   button: {
     sm: {
-      height: 32,
+      height: 36,
       paddingHorizontal: SPACING['3'],
-      borderRadius: RADIUS.md,
+      borderRadius: RADIUS.lg,
       fontSize: 13,
     },
     md: {
       height: 44,
       paddingHorizontal: SPACING['4'],
-      borderRadius: RADIUS.lg,
+      borderRadius: RADIUS.xl,
       fontSize: 14,
     },
     lg: {
@@ -103,9 +102,9 @@ export const COMPONENT_SIZES = {
 
   input: {
     sm: {
-      height: 36,
+      height: 40,
       paddingHorizontal: SPACING['3'],
-      borderRadius: RADIUS.md,
+      borderRadius: RADIUS.lg,
     },
     md: {
       height: 50,
@@ -121,23 +120,23 @@ export const COMPONENT_SIZES = {
 
   card: {
     sm: {
-      padding: SPACING['2.5'],
-      borderRadius: RADIUS.md,
-    },
-    md: {
-      padding: SPACING['3.5'],
+      padding: SPACING['3'],
       borderRadius: RADIUS.lg,
     },
-    lg: {
+    md: {
       padding: SPACING['4'],
       borderRadius: RADIUS.xl,
+    },
+    lg: {
+      padding: SPACING['5'],
+      borderRadius: RADIUS['2xl'],
     },
   },
 
   iconButton: {
-    sm: 28,
-    md: 36,
-    lg: 40,
+    sm: 32,
+    md: 40,
+    lg: 48,
   },
 } as const;
 
@@ -160,7 +159,7 @@ export const OPACITY = {
 
 // ============================================
 // ELEVATION / SHADOWS
-// Editorial Brutalist: Subtle, never harsh
+// MD3: low, soft elevation
 // ============================================
 export const SHADOWS = {
   none: {
@@ -173,30 +172,30 @@ export const SHADOWS = {
   xs: {
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 1,
   },
   sm: {
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
   },
   md: {
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 6,
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 4,
   },
   lg: {
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 10,
+    shadowOpacity: 0.16,
+    shadowRadius: 18,
+    elevation: 6,
   },
 } as const;
 

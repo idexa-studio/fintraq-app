@@ -1,4 +1,4 @@
-import { api } from '@/src/services/api';
+import { api, type ApiError } from '@/src/services/api';
 import { getAppBuildNumber } from '@/src/utils/version';
 
 export interface StoreLinks {
@@ -32,8 +32,16 @@ export async function fetchAppConfig(): Promise<AppConfigResponse> {
 
     return response.data;
   } catch (error) {
-    console.error('[AppConfigService] Error fetching app config:', error);
+    const apiError = error as ApiError | undefined;
+    const isExpectedOfflineCase = apiError?.isNetworkError || apiError?.isTimeoutError;
     const message = error instanceof Error ? error.message : 'Network error';
+
+    if (isExpectedOfflineCase) {
+      console.warn('[AppConfigService] App config unavailable. Continuing with cached/default behavior.');
+    } else {
+      console.error('[AppConfigService] Error fetching app config:', error);
+    }
+
     return {
       success: false,
       message,

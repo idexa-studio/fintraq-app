@@ -102,7 +102,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
             </Text>
             {!isSmall && (
               <Text style={styles.subtitle}>
-                Unlock with Keeep Pro
+                Unlock with Fintraq Pro
               </Text>
             )}
           </View>

@@ -9,7 +9,7 @@ export type WalkthroughStep = {
 export const DASHBOARD_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     icon: 'hand-wave-outline',
-    title: 'Welcome to Keeep!',
+    title: 'Welcome to Fintraq!',
     desc: "Let's take a quick tour of your new premium financial dashboard.",
   },
   {

@@ -58,7 +58,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
           <Text style={styles.title}>Update required</Text>
           <Text style={styles.subtitle}>
             {message ||
-              'A new version of Keeep is available. To continue using the app securely, please download the latest update from the store.'}
+              'A new version of Fintraq is available. To continue using the app securely, please download the latest update from the store.'}
           </Text>
 
           <View style={styles.versionBadge}>

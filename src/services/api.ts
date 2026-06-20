@@ -4,7 +4,14 @@ import { Platform } from 'react-native';
 import * as Localization from 'expo-localization';
 import { getAppVersion, getAppBuildNumber } from '@/src/utils/version';
 
-const BASE_URL = 'https://keeep.idexa.app';
+const BASE_URL = 'https://fintraq.idexa.app';
+
+export type ApiError = Error & {
+  status?: number;
+  data?: unknown;
+  isNetworkError?: boolean;
+  isTimeoutError?: boolean;
+};
 
 // Create a configured Axios instance
 export const api = create({
@@ -28,7 +35,7 @@ api.interceptors.request.use(
     const timezone = calendars[0]?.timeZone || 'UTC';
     
     // Inject centralized request headers
-    config.headers['X-App-Name'] = 'Keeep';
+    config.headers['X-App-Name'] = 'Fintraq';
     config.headers['X-App-Platform'] = Platform.OS;
     config.headers['X-App-Build-Number'] = String(getAppBuildNumber());
     config.headers['X-App-Version'] = getAppVersion();
@@ -57,15 +64,16 @@ api.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
-    console.error(`[API Response Error] from ${error.config?.url}:`, error.message);
-    
-    // Normalize errors to return a unified interface or custom API error
-    const normalizedError = {
-      message: error.message,
+    const normalizedError = Object.assign(new Error(error.message), {
       status: error.response?.status,
       data: error.response?.data,
-    };
-    
+      isNetworkError: !error.response,
+      isTimeoutError: error.code === 'ECONNABORTED',
+    }) as ApiError;
+
+    const log = normalizedError.isNetworkError || normalizedError.isTimeoutError ? console.warn : console.error;
+    log(`[API Response Error] from ${error.config?.url}:`, error.message);
+
     return Promise.reject(normalizedError);
   }
 );

@@ -1,5 +1,5 @@
 /**
- * Core Type Definitions for Keeep
+ * Core Type Definitions for Fintraq
  * Centralizing types ensures consistency across DB, API, and UI layers.
  */
 

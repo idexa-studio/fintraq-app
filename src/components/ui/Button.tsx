@@ -31,7 +31,7 @@ export const Button = React.memo(function Button({
   icon,
 }: ButtonProps) {
   const theme = useTheme();
-  const { colors, sizes, spacing, radius } = theme;
+  const { colors, sizes } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const sizeConfig = sizes.button[size];
@@ -70,7 +70,7 @@ export const Button = React.memo(function Button({
         {
           height: sizeConfig.height,
           paddingHorizontal: sizeConfig.paddingHorizontal,
-          borderRadius: radius('full'),
+          borderRadius: sizeConfig.borderRadius,
           backgroundColor,
           opacity: disabled ? 0.5 : 1,
         },
@@ -84,7 +84,6 @@ export const Button = React.memo(function Button({
           name={icon}
           size={size === 'sm' ? 16 : size === 'lg' ? 24 : 20}
           color={textColor}
-          style={{ marginRight: spacing('2') }}
         />
       )}
 
@@ -110,12 +109,15 @@ export const Button = React.memo(function Button({
 
 const createStyles = ({ typography }: ThemeContextType) => StyleSheet.create({
   base: {
+    minWidth: 88,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     overflow: 'hidden',
+    gap: 8,
   },
   text: {
     fontFamily: typography.fonts.semibold,
+    letterSpacing: 0.1,
   },
 });

@@ -36,47 +36,47 @@ export type ThemePalette = {
 };
 
 export const DARK_THEME: ThemePalette = {
-  background: '#1E1F24', // Lighter slate/charcoal background for reversed contrast
-  card: '#0C0D0F',       // Premium deep obsidian black (darker than background)
-  surface: '#15161A',    // Deep dark gray for inputs/chips (stands out inside card)
-  tabBarBackground: '#2A2B36', // Slightly lighter slate/charcoal for dark mode tab contrast
+  background: '#11131A',
+  card: '#171A22',
+  surface: '#1F2430',
+  tabBarBackground: '#171A22',
 
-  primary: '#10B981',       // Vibrant premium emerald green
-  primaryLight: '#34D399',  // Soft mint green
-  primaryDark: '#047857',   // Deep forest green
-  secondary: '#E6F4EA',     // Premium mint-white tint for ambient effects
+  primary: '#8FE7B8',
+  primaryLight: '#21392C',
+  primaryDark: '#59C78D',
+  secondary: '#D7F6E3',
 
-  text: '#FFFFFF',          // Crisp white text
-  textMuted: '#94A3B8',     // Sleek slate-gray for muted text
+  text: '#F3F6FB',
+  textMuted: '#A8B3C7',
 
   border: 'transparent',
 
-  success: '#10B981',
-  danger: '#F43F5E',
-  warning: '#F59E0B',
-  info: '#3B82F6',
+  success: '#7FE3AA',
+  danger: '#FFB4AB',
+  warning: '#F2C66D',
+  info: '#A9C7FF',
 };
 
 export const LIGHT_THEME: ThemePalette = {
-  background: '#EDF0F3', // Soft clean light gray (darkest light layer)
-  card: '#F5F7FA',       // Premium light slate card (lighter than background)
-  surface: '#FFFFFF',    // Crisp white for inputs/chips (lightest layer, stands out inside card)
-  tabBarBackground: '#E4E8EC', // Slightly darker slate-gray for light mode tab contrast
+  background: '#F6F8FB',
+  card: '#EEF3F6',
+  surface: '#FFFFFF',
+  tabBarBackground: '#FFFFFF',
 
-  primary: '#059669',       // Premium rich emerald green
-  primaryLight: '#D1FAE5',  // Very soft mint tint (great for badges)
-  primaryDark: '#064E3B',   // Deep dark forest green
-  secondary: '#0F172A',     // Slate-black ambient accent
+  primary: '#126B43',
+  primaryLight: '#D6F2DF',
+  primaryDark: '#0B5132',
+  secondary: '#0F1F16',
 
-  text: '#0F172A',          // Deep premium slate-black text
-  textMuted: '#64748B',     // Elegant neutral slate-gray for muted text
+  text: '#182129',
+  textMuted: '#5F6B7A',
 
   border: 'transparent',
 
-  success: '#10B981',
-  danger: '#EF4444',
-  warning: '#F59E0B',
-  info: '#3B82F6',
+  success: '#126B43',
+  danger: '#B3261E',
+  warning: '#8A5B00',
+  info: '#205FA8',
 };
 
 export type ThemeColors = ThemePalette;

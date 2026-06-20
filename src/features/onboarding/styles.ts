@@ -14,7 +14,7 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
     header: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      gap: spacing('3.5'),
+      gap: spacing('3'),
     },
     headerTopRow: {
       flexDirection: 'row',
@@ -83,8 +83,8 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
     },
     stepTitle: {
       fontFamily: typography.fonts.heading,
-      fontSize: 34,
-      lineHeight: 36,
+      fontSize: 30,
+      lineHeight: 34,
       color: colors.text,
     },
     stepSubtitle: {
@@ -96,8 +96,10 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
       maxWidth: 320,
     },
     contentCard: {
-      paddingHorizontal: 0,
-      paddingVertical: 0
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('4'),
+      borderRadius: radius('2xl'),
+      backgroundColor: colors.card,
     },
     footer: {
       paddingHorizontal: layout.screenPadding,

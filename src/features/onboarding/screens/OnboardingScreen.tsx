@@ -228,7 +228,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
                 <View style={styles.headerBackPlaceholder} />
               )}
 
-              <Text style={styles.brand}>Keeep<Text style={{ color: colors.primary }}>.</Text></Text>
+              <Text style={styles.brand}>Fintraq<Text style={{ color: colors.primary }}>.</Text></Text>
 
               <View style={styles.stepPill}>
                 <Text style={styles.stepPillText}>{stepIndex + 1}/{ONBOARDING_STEPS.length}</Text>
@@ -258,7 +258,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
 
           <View style={styles.footer}>
             <Button
-              title={stepIndex === ONBOARDING_STEPS.length - 1 ? 'Launch Keeep' : 'Continue'}
+              title={stepIndex === ONBOARDING_STEPS.length - 1 ? 'Launch Fintraq' : 'Continue'}
               onPress={handleContinue}
               size="lg"
               isLoading={isPending}

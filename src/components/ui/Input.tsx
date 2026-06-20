@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 
@@ -21,29 +21,51 @@ export const Input = React.memo(function Input({
   variant = 'default',
   style,
   placeholderTextColor,
+  onFocus,
+  onBlur,
   ...props
 }: InputProps) {
   const theme = useTheme();
   const { colors, sizes, typography } = theme;
   const styles = useMemo(() => createStyles(theme, size), [theme, size]);
+  const [isFocused, setIsFocused] = useState(false);
 
   const sizeConfig = sizes.input[size];
 
   const containerStyle = useMemo(() => {
+    const activeColor = error ? colors.danger : colors.primary;
+
     switch (variant) {
       case 'filled':
-        return { backgroundColor: colors.surface, borderWidth: 0 };
+        return {
+          backgroundColor: isFocused ? colors.primaryLight : colors.surface,
+          borderWidth: 0,
+        };
       case 'minimal':
-        return { backgroundColor: 'transparent', borderBottomWidth: 1, borderBottomColor: error ? colors.danger : colors.text + '0C' };
+        return {
+          backgroundColor: 'transparent',
+          borderBottomWidth: 1,
+          borderBottomColor: isFocused ? activeColor : colors.text + '14',
+        };
       case 'default':
       default:
         return {
           backgroundColor: colors.surface,
-          borderWidth: error ? 1 : 0,
-          borderColor: error ? colors.danger : 'transparent',
+          borderWidth: 1,
+          borderColor: isFocused ? activeColor : 'transparent',
         };
     }
-  }, [variant, error, colors]);
+  }, [variant, error, colors, isFocused]);
+
+  const handleFocus = useCallback<NonNullable<TextInputProps['onFocus']>>((event) => {
+    setIsFocused(true);
+    onFocus?.(event);
+  }, [onFocus]);
+
+  const handleBlur = useCallback<NonNullable<TextInputProps['onBlur']>>((event) => {
+    setIsFocused(false);
+    onBlur?.(event);
+  }, [onBlur]);
 
   return (
     <View style={styles.wrap}>
@@ -52,6 +74,8 @@ export const Input = React.memo(function Input({
         <TextInput
           style={[styles.input, { fontFamily: typography.fonts.regular, color: colors.text, fontSize: FONT_SIZES[size] }, variant === 'minimal' && { paddingHorizontal: 0 }, style]}
           placeholderTextColor={placeholderTextColor || colors.textMuted + '80'}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           {...props}
         />
       </View>

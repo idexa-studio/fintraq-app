@@ -65,7 +65,7 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
             <MaterialCommunityIcons name="crown" size={24} color={colors.warning} />
           </View>
           <View style={styles.headerText}>
-            <Text style={styles.title}>Unlock Keeep Pro</Text>
+            <Text style={styles.title}>Unlock Fintraq Pro</Text>
             <Text style={styles.subtitle}>One-time lifetime access</Text>
           </View>
         </View>

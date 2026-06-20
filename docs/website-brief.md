@@ -1,4 +1,4 @@
-# Keeep — Website Brief for Developer
+# Fintraq — Website Brief for Developer
 
 > Everything you need to build the marketing website. Last updated: 2026-05-29.
 
@@ -8,9 +8,9 @@
 
 | Item | Value |
 |---|---|
-| Name | Keeep |
+| Name | Fintraq |
 | Tagline | "Free = Tracking. Premium = Insights + Control." |
-| Website | `https://keeep.idexa.app` |
+| Website | `https://fintraq.idexa.app` |
 | Pricing model | Lifetime one-time purchase. No subscriptions. |
 | Platform | iOS & Android (React Native + Expo) |
 | Version | 1.1.1 |
@@ -37,7 +37,7 @@
 
 ## What the App Does
 
-Keeep is a personal finance tracker. Users add accounts (bank, cash, wallet), log transactions, and categorise their spending. The free tier covers everyday tracking. Keeep Pro unlocks insights, analytics, search, and export.
+Fintraq is a personal finance tracker. Users add accounts (bank, cash, wallet), log transactions, and categorise their spending. The free tier covers everyday tracking. Fintraq Pro unlocks insights, analytics, search, and export.
 
 ---
 
@@ -58,7 +58,7 @@ Keeep is a personal finance tracker. Users add accounts (bank, cash, wallet), lo
 
 ---
 
-## Keeep Pro (Lifetime Purchase)
+## Fintraq Pro (Lifetime Purchase)
 
 One payment. Every pro feature. Forever. All future updates included.
 
@@ -70,7 +70,7 @@ One payment. Every pro feature. Forever. All future updates included.
 | Category breakdown | Top expense categories with amounts and percentages |
 | Account split | See how your balance is distributed across accounts |
 | Weekday patterns | Heatmap of spending by day of week |
-| Behavioral insights | Daily burn rate, financial runway, in/out ratio, active days count |
+| Behavioral insights | Daily burn rate, financial runway in days, in/out ratio, active days count |
 | Global search | Find any transaction, account, or category instantly across your entire history |
 | CSV export | Export filtered transactions to a spreadsheet. Save to device or share to any app. |
 
@@ -109,5 +109,5 @@ React Native, Expo, TypeScript, SQLite, Drizzle ORM, TanStack React Query
 
 ## Legal Links
 
-- Privacy: `https://keeep.idexa.app/in-app/privacy?platform=ios|android`
-- Terms: `https://keeep.idexa.app/in-app/terms?platform=ios|android`
+- Privacy: `https://fintraq.idexa.app/in-app/privacy?platform=ios|android`
+- Terms: `https://fintraq.idexa.app/in-app/terms?platform=ios|android`

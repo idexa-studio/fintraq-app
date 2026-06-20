@@ -20,7 +20,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title="Keeep Pro" showBack />
+      <Header title="Fintraq Pro" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Subscribed Success Hero */}

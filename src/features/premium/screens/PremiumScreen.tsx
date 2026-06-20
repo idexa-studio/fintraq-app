@@ -47,7 +47,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <PageBackground />
-        <Header title="Keeep Pro" showBack />
+        <Header title="Fintraq Pro" showBack />
 
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
           {/* Subscribed Hero */}
@@ -61,7 +61,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
               <MaterialCommunityIcons name="check-decagram" size={32} color={colors.warning} />
             </View>
             <Text style={styles.heroBadge}>Pro active</Text>
-            <Text style={styles.heroTitle}>Keeep Pro is active</Text>
+            <Text style={styles.heroTitle}>Fintraq Pro is active</Text>
             <Text style={styles.heroDesc}>
               Thank you for your support! You have permanent lifetime access to every professional tool, report export, and future update.
             </Text>
@@ -120,7 +120,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title="Keeep Pro" showBack />
+      <Header title="Fintraq Pro" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Play Store Premium Hero */}

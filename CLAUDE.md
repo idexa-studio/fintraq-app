@@ -1,9 +1,9 @@
-# Luno Application Architecture & Context
+# Fintraq Application Architecture & Context
 
-This document serves as the core system memory for the AI assistant working on the **Luno** codebase. It outlines the project's technical stack, aesthetic guidelines, folder structure, and current roadmap state.
+This document serves as the core system memory for the AI assistant working on the **Fintraq** codebase. It outlines the project's technical stack, aesthetic guidelines, folder structure, and current roadmap state.
 
 ## 1. App Aesthetic: "Bento"
-Luno aims to be a top-tier, premium financial tracker. The design system adheres to a **Bento** aesthetic:
+Fintraq aims to be a top-tier, premium financial tracker. The design system adheres to a **Bento** aesthetic:
 - **Card-based, modular layout**: UI is composed of well-defined card tiles of varying sizes, like a bento box grid. Cards have clear boundaries and breathing room.
 - **Depth & softness**: Cards use subtle shadows (`shadow('sm')` / `shadow('xs')`) and `colors.surface` backgrounds. Avoid stark flat-only surfaces.
 - **Shape Language**: Generous rounding — prefer `radius('xl')` (20px) to `radius('2xl')` (24px) for cards and containers. Inputs and small controls use `radius('lg')` (16px). Pill shapes (`radius('full')`) allowed for type-selectors and small badges.
