@@ -71,7 +71,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
           account: {
             name: account?.name ?? '',
             currency: account?.currency ?? currency,
-            icon: account?.icon ?? 'wallet-outline',
+            icon: account?.icon ?? 'domain',
             color: account?.color ?? 0,
           },
           category: {

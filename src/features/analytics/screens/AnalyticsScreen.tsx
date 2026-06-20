@@ -476,7 +476,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   {accountDistribution.map((acc, idx) => (
                     <View key={`${acc.id}-${idx}`} style={styles.categoryCell}>
                       <IconAvatar
-                        icon={resolveIcon(acc.icon, 'wallet-outline')}
+                        icon={resolveIcon(acc.icon, 'domain')}
                         color={acc.hex}
                         variant="solid"
                         size={28}
@@ -493,7 +493,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               </View>
             ) : (
               <EmptyState
-                icon="wallet-outline"
+                icon="domain"
                 title={`No ${selectedCurrency} accounts`}
                 subtitle="Add an account in this currency to see the balance split."
               />
@@ -720,4 +720,3 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       letterSpacing: -0.5,
     },
   });
-

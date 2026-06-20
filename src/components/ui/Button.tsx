@@ -57,6 +57,11 @@ export const Button = React.memo(function Button({
     }
   }, [variant, disabled, colors.primary, colors.danger, colors.success, colors.surface]);
 
+  const borderColor = useMemo(() => {
+    if (variant === 'outline') return colors.text + '12';
+    return 'transparent';
+  }, [variant, colors.text]);
+
   const handlePress = useCallback(() => {
     if (!disabled && !isLoading) {
       onPress();
@@ -72,6 +77,8 @@ export const Button = React.memo(function Button({
           paddingHorizontal: sizeConfig.paddingHorizontal,
           borderRadius: sizeConfig.borderRadius,
           backgroundColor,
+          borderWidth: variant === 'outline' ? 1 : 0,
+          borderColor,
           opacity: disabled ? 0.5 : 1,
         },
         style,
@@ -107,17 +114,17 @@ export const Button = React.memo(function Button({
   );
 });
 
-const createStyles = ({ typography }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.create({
   base: {
     minWidth: 88,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     overflow: 'hidden',
-    gap: 8,
+    gap: spacing('2'),
   },
   text: {
     fontFamily: typography.fonts.semibold,
-    letterSpacing: 0.1,
+    includeFontPadding: false,
   },
 });

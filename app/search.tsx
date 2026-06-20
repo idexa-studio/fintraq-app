@@ -10,7 +10,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 const SEARCH_FEATURES = [
   { icon: 'receipt-text-outline' as const, label: 'Full-text search across all transactions' },
-  { icon: 'wallet-outline' as const, label: 'Find accounts by name instantly' },
+  { icon: 'domain' as const, label: 'Find accounts by name instantly' },
   { icon: 'tag-outline' as const, label: 'Locate categories across your history' },
 ];
 
@@ -188,4 +188,3 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
       color: colors.textMuted,
     },
   });
-

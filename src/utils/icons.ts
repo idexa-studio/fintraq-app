@@ -4,7 +4,7 @@ export type MaterialIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 export type IoniconName = MaterialIconName; // Temporary alias to prevent compile errors during migration
 
 export const LEGACY_ICON_MAP: Record<string, MaterialIconName> = {
-  "wallet-outline": "wallet-outline",
+  "wallet-outline": "domain",
   "card-outline": "card-outline",
   "cash-outline": "cash",
   "receipt-outline": "receipt-text-outline",
@@ -141,4 +141,3 @@ export function resolveIcon(
   }
   return fallback;
 }
-

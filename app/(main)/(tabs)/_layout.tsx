@@ -11,8 +11,8 @@ export default function TabsLayout() {
   const { colors, typography, radius } = useTheme();
   const insets = useSafeAreaInsets();
 
-  const bottomPadding = insets.bottom > 0 ? insets.bottom : 8;
-  const barHeight = 78 + insets.bottom;
+  const bottomPadding = insets.bottom > 0 ? insets.bottom - 2 : 6;
+  const barHeight = 70 + insets.bottom;
 
   const renderTabBarIcon = useCallback((iconName: MCIName) => {
     const TabBarIconComponent = ({ focused }: { focused: boolean }) => {
@@ -22,8 +22,8 @@ export default function TabsLayout() {
 
       return (
         <View style={{
-          width: 64,
-          height: 34,
+          width: 56,
+          height: 30,
           borderRadius: radius('full'),
           backgroundColor: focused ? colors.primaryLight : 'transparent',
           alignItems: 'center',
@@ -31,7 +31,7 @@ export default function TabsLayout() {
         }}>
           <MaterialCommunityIcons
             name={focused ? solidName : iconName}
-            size={22}
+            size={20}
             color={focused ? colors.primary : colors.textMuted}
           />
         </View>
@@ -49,8 +49,8 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: colors.textMuted,
         tabBarLabelStyle: {
           fontFamily: typography.fonts.medium,
-          fontSize: 12,
-          marginTop: 2,
+          fontSize: 11,
+          marginTop: 1,
         },
         tabBarStyle: {
           backgroundColor: colors.tabBarBackground,
@@ -58,7 +58,7 @@ export default function TabsLayout() {
           elevation: 0,
           shadowOpacity: 0,
           height: barHeight,
-          paddingTop: 8,
+          paddingTop: 5,
           paddingBottom: bottomPadding,
         },
       }}
@@ -76,7 +76,7 @@ export default function TabsLayout() {
         options={{
           title: 'Accounts',
           tabBarLabel: 'Accounts',
-          tabBarIcon: renderTabBarIcon('wallet-outline'),
+          tabBarIcon: renderTabBarIcon('domain'),
         }}
       />
       <Tabs.Screen

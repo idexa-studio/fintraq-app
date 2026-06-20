@@ -45,7 +45,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               overflow="visible"
             >
               <IconAvatar
-                icon={resolveIcon(acc.icon, 'wallet-outline')}
+                icon={resolveIcon(acc.icon, 'domain')}
                 color={accColor}
                 variant="solid"
                 size={32}

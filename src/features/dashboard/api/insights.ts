@@ -102,7 +102,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
           subtitle: dir
             ? `Your savings rate is ${dir} from last week. ${rate > 50 ? 'You\'re building a nice cushion.' : 'Keep at it — every bit counts.'}`
             : `Keeping things consistent. ${rate > 50 ? 'Your future self will thank you.' : 'Steady wins the race.'}`,
-          icon: 'wallet-outline',
+          icon: 'domain',
         });
       }
     }

@@ -1,17 +1,17 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="146" y1="132" x2="886" y2="892" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#132821"/>
-      <stop offset="0.5" stop-color="#0C1915"/>
-      <stop offset="1" stop-color="#08110E"/>
+      <stop stop-color="#101A2C"/>
+      <stop offset="0.5" stop-color="#0B121E"/>
+      <stop offset="1" stop-color="#080D16"/>
     </linearGradient>
     <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(704 222) rotate(126.562) scale(370.502 500.487)">
-      <stop stop-color="#49E2AC" stop-opacity="0.24"/>
-      <stop offset="1" stop-color="#49E2AC" stop-opacity="0"/>
+      <stop stop-color="#71AEFF" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#71AEFF" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(302 804) rotate(26.013) scale(337.753 253.75)">
-      <stop stop-color="#0D6C50" stop-opacity="0.42"/>
-      <stop offset="1" stop-color="#0D6C50" stop-opacity="0"/>
+      <stop stop-color="#1C4F8F" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#1C4F8F" stop-opacity="0"/>
     </radialGradient>
   </defs>
 

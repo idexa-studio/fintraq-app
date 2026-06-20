@@ -132,7 +132,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       paddingHorizontal: spacing('3.5'),
       paddingVertical: spacing('2'),
       borderRadius: radius('full'),
-      backgroundColor: colors.background,
+      backgroundColor: colors.card,
     },
     currencyTabActive: {
       backgroundColor: colors.primary + '18',
@@ -174,12 +174,14 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       color: colors.textMuted,
       fontFamily: typography.fonts.medium,
       fontSize: 11,
+      lineHeight: 14,
       marginBottom: spacing('0.5'),
     },
     kpiLabelSmall: {
       color: colors.textMuted,
       fontFamily: typography.fonts.medium,
       fontSize: 11,
+      lineHeight: 14,
     },
     kpiValueLarge: {
       fontSize: 24,

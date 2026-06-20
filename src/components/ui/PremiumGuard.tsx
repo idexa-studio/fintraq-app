@@ -29,7 +29,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
 }: PremiumGuardProps) {
   const { isPremium } = usePremium();
   const theme = useTheme();
-  const { colors, spacing, radius, layout } = theme;
+  const { colors, spacing, radius } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
 
@@ -50,11 +50,10 @@ export const PremiumGuard = React.memo(function PremiumGuard({
       containerStyles: [
         styles.container,
         { 
-          backgroundColor: colors.surface, 
+          backgroundColor: colors.card, 
           padding,
           borderRadius,
           minHeight,
-          marginHorizontal: layout.screenPadding, // Default margin to align with bento layout
         },
         containerStyle
       ],
@@ -69,7 +68,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
       ],
       iconSize: small ? 14 : 18,
     };
-  }, [size, colors.surface, colors.primary, layout.screenPadding, containerStyle, styles, spacing, radius]);
+  }, [size, colors.card, colors.primary, containerStyle, styles, spacing, radius]);
 
   if (isPremium) {
     return <>{children}</>;
@@ -150,6 +149,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   title: {
     fontFamily: typography.fonts.bold,
     fontSize: 14,
+    lineHeight: 18,
     color: colors.text,
     marginBottom: spacing('1'),
   },
@@ -160,6 +160,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   subtitle: {
     fontFamily: typography.fonts.regular,
     fontSize: 12,
+    lineHeight: 16,
     color: colors.textMuted,
   },
 });

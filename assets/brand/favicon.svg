@@ -1,22 +1,22 @@
 <svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="48" y1="36" x2="220" y2="224" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#12251F"/>
-      <stop offset="1" stop-color="#09120F"/>
+      <stop stop-color="#101B2D"/>
+      <stop offset="1" stop-color="#09111B"/>
     </linearGradient>
     <linearGradient id="mint" x1="97" y1="69" x2="160" y2="156" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#57F0B7"/>
-      <stop offset="1" stop-color="#21BA86"/>
+      <stop stop-color="#8DBDFF"/>
+      <stop offset="1" stop-color="#4F8FFF"/>
     </linearGradient>
     <linearGradient id="deep" x1="97" y1="145" x2="159" y2="194" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#145E48"/>
-      <stop offset="1" stop-color="#0C4335"/>
+      <stop stop-color="#234777"/>
+      <stop offset="1" stop-color="#163054"/>
     </linearGradient>
   </defs>
 
   <rect width="256" height="256" rx="58" fill="url(#bg)"/>
   <circle cx="128" cy="85" r="22" fill="url(#mint)"/>
-  <circle cx="128" cy="85" r="16" stroke="#EFFCF5" stroke-width="3"/>
+  <circle cx="128" cy="85" r="16" stroke="#EEF5FF" stroke-width="3"/>
   <rect x="74" y="114" width="108" height="36" rx="18" fill="url(#mint)"/>
   <rect x="74" y="157" width="108" height="36" rx="18" fill="url(#deep)"/>
 </svg>

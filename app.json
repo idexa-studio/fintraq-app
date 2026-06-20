@@ -11,7 +11,7 @@
     "newArchEnabled": true,
     "notification": {
       "icon": "./assets/images/android-icon-monochrome.png",
-      "color": "#10b981",
+      "color": "#205FA8",
       "iosDisplayInForeground": true
     },
     "ios": {
@@ -47,9 +47,9 @@
           "image": "./assets/images/splash.png",
           "imageWidth": 224,
           "resizeMode": "contain",
-          "backgroundColor": "#08110E",
+          "backgroundColor": "#080D16",
           "dark": {
-            "backgroundColor": "#08110E"
+            "backgroundColor": "#080D16"
           }
         }
       ],

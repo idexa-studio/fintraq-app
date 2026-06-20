@@ -41,10 +41,10 @@ export const DARK_THEME: ThemePalette = {
   surface: '#1F2430',
   tabBarBackground: '#171A22',
 
-  primary: '#8FE7B8',
-  primaryLight: '#21392C',
-  primaryDark: '#59C78D',
-  secondary: '#D7F6E3',
+  primary: '#8DBDFF',
+  primaryLight: '#1E2C42',
+  primaryDark: '#5A9CFF',
+  secondary: '#D7E7FF',
 
   text: '#F3F6FB',
   textMuted: '#A8B3C7',
@@ -63,10 +63,10 @@ export const LIGHT_THEME: ThemePalette = {
   surface: '#FFFFFF',
   tabBarBackground: '#FFFFFF',
 
-  primary: '#126B43',
-  primaryLight: '#D6F2DF',
-  primaryDark: '#0B5132',
-  secondary: '#0F1F16',
+  primary: '#205FA8',
+  primaryLight: '#DCEBFF',
+  primaryDark: '#174C87',
+  secondary: '#102033',
 
   text: '#182129',
   textMuted: '#5F6B7A',

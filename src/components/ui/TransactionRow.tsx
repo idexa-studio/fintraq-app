@@ -71,9 +71,9 @@ export const TransactionRow = React.memo(function TransactionRow({
     marginBottom: isLast ? 0 : spacing('0.5'),
   }), [isFirst, isLast, colors.surface, radius, spacing]);
 
-  const accountIconName = useMemo(() => resolveIcon(tx.account.icon, 'wallet-outline'), [tx.account.icon]);
+  const accountIconName = useMemo(() => resolveIcon(tx.account.icon, 'domain'), [tx.account.icon]);
 
-  const toAccountIconName = useMemo(() => resolveIcon(tx.toAccount?.icon, 'wallet-outline'), [tx.toAccount?.icon]);
+  const toAccountIconName = useMemo(() => resolveIcon(tx.toAccount?.icon, 'domain'), [tx.toAccount?.icon]);
 
   const accountColor = useMemo(() => colorNumberToHex(tx.account.color), [tx.account.color]);
 
@@ -220,8 +220,10 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   right: {
     alignItems: 'flex-end',
     justifyContent: 'center',
+    minWidth: 84,
   },
   amount: {
     fontSize: typography.sizes.sm,
+    lineHeight: 18,
   },
 });

@@ -55,6 +55,7 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
       fontFamily: typography.fonts.semibold,
       color: colors.text,
       fontSize: 12,
+      lineHeight: 18,
     },
     rightBtn: {
       flexDirection: 'row',
@@ -65,5 +66,6 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
       fontFamily: typography.fonts.medium,
       color: colors.primary,
       fontSize: 12,
+      lineHeight: 16,
     },
   });

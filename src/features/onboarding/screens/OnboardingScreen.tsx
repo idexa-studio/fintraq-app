@@ -88,7 +88,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       { name: 'Interests', icon: 'plus-circle-outline', color: toDbColor('#7C3AED'), type: 'CR' },
       { name: 'Gifts', icon: 'gift-outline', color: toDbColor('#BE185D'), type: 'CR' },
       { name: 'Refunds', icon: 'refresh', color: toDbColor('#059669'), type: 'CR' },
-      { name: 'Other Income', icon: 'wallet-outline', color: toDbColor('#334155'), type: 'CR' },
+      { name: 'Other Income', icon: 'domain', color: toDbColor('#334155'), type: 'CR' },
 
       // ── Housing & Utilities ──────────────────────────────────────────
       { name: 'Rent', icon: 'domain', color: toDbColor('#EA580C'), type: 'DR' },
@@ -164,7 +164,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         name: 'Cash',
         holderName: name.trim() || 'Personal',
         accountNumber: '',
-        icon: 'wallet-outline',
+        icon: 'domain',
         color: toDbColor(ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)]),
         isDefault: true,
         currency,

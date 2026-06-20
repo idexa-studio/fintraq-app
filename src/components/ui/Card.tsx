@@ -32,9 +32,9 @@ export const Card = React.memo(function Card({
         return { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.border };
       case 'default':
       default:
-        return { backgroundColor: colors.surface };
+        return { backgroundColor: colors.card };
     }
-  }, [variant, colors.surface, colors.border]);
+  }, [variant, colors.surface, colors.card, colors.border]);
 
   return (
     <View

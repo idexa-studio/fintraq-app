@@ -60,7 +60,7 @@ const AccountRow = React.memo(function AccountRow({
       onPress={handlePress}
       scaleOnPress={false}
     >
-      <IconAvatar icon={resolveIcon(account.icon, 'wallet-outline')} color={accentColor} variant="solid" size={36} iconSize={16} />
+      <IconAvatar icon={resolveIcon(account.icon, 'domain')} color={accentColor} variant="solid" size={36} iconSize={16} />
       <View style={{ flex: 1, gap: theme.spacing('0.5') }}>
         <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{account.name}</Text>
         <Text style={{ fontFamily: theme.typography.fonts.regular, fontSize: theme.typography.sizes.xs, color: colors.textMuted }}>

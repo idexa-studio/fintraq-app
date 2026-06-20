@@ -13,7 +13,7 @@ export const DASHBOARD_WALKTHROUGH_STEPS: WalkthroughStep[] = [
     desc: "Let's take a quick tour of your new premium financial dashboard.",
   },
   {
-    icon: 'wallet-outline',
+    icon: 'domain',
     title: 'Track Net Savings',
     desc: 'The top card displays your total net position (Income minus Expenses). Swipe it to view different currencies.',
   },
@@ -51,7 +51,7 @@ export const TRANSACTION_WALKTHROUGH_STEPS: WalkthroughStep[] = [
     desc: 'Select a category to structure your transaction. Custom categories can be configured in Settings.',
   },
   {
-    icon: 'wallet-outline',
+    icon: 'domain',
     title: 'Pick Account',
     desc: 'Choose which account or wallet this transaction is associated with.',
   },
@@ -92,7 +92,7 @@ export const ANALYTICS_WALKTHROUGH_STEPS: WalkthroughStep[] = [
     desc: 'Select custom periods (7 days, 30 days, 90 days, or a whole year) to track seasonal patterns.',
   },
   {
-    icon: 'wallet-outline',
+    icon: 'domain',
     title: 'Portfolio Distribution',
     desc: 'View percentage distributions of assets across cash, bank, or credit accounts.',
   },
@@ -141,7 +141,7 @@ export const PERSONS_WALKTHROUGH_STEPS: WalkthroughStep[] = [
 
 export const ACCOUNTS_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
-    icon: 'wallet-outline',
+    icon: 'domain',
     title: 'Accounts List',
     desc: 'View all your credit cards, cash wallets, and bank accounts in one place.',
   },
@@ -179,4 +179,3 @@ export const TRANSACTIONS_LIST_WALKTHROUGH_STEPS: WalkthroughStep[] = [
     desc: "Tap the plus button to open the transaction creator screen instantly.",
   },
 ];
-

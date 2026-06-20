@@ -295,7 +295,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                       style={[styles.pill, { backgroundColor: sel ? ac + '18' : colors.card }]}
                       onPress={() => toggleAccount(a.id)}
                     >
-                      <MaterialCommunityIcons name={resolveIcon(a.icon, 'wallet-outline')} size={16} color={ac} />
+                      <MaterialCommunityIcons name={resolveIcon(a.icon, 'domain')} size={16} color={ac} />
                       <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
                         {a.name}
                       </Text>

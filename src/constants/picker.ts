@@ -9,7 +9,7 @@ export type IconGroup = {
 
 export const ACCOUNT_ICONS = [
   // Wallets & Cards
-  'wallet-outline', 'card-outline', 'cash', 'receipt-text-outline',
+  'card-outline', 'cash', 'receipt-text-outline',
   'file-document-outline', 'shield-check-outline', 'key-outline',
   'lock-outline', 'card-account-details-outline',
   // Savings & Investments
@@ -36,7 +36,7 @@ export type AccountIconName = (typeof ACCOUNT_ICONS)[number];
 export const ACCOUNT_ICON_GROUPS: IconGroup[] = [
   {
     label: 'Wallets & Cards',
-    icons: ['wallet-outline', 'card-outline', 'cash', 'receipt-text-outline', 'file-document-outline', 'shield-check-outline', 'key-outline', 'lock-outline', 'card-account-details-outline'],
+    icons: ['card-outline', 'cash', 'receipt-text-outline', 'file-document-outline', 'shield-check-outline', 'key-outline', 'lock-outline', 'card-account-details-outline'],
   },
   {
     label: 'Savings & Investments',
@@ -100,7 +100,7 @@ export const ACCOUNT_COLORS = PALETTE_COLORS;
 
 export const CATEGORY_ICONS = [
   // Finance & Money
-  'cash', 'wallet-outline', 'card-outline', 'briefcase-outline',
+  'cash', 'card-outline', 'briefcase-outline',
   'trending-up', 'refresh', 'receipt-text-outline',
   'file-document-outline', 'calculator', 'layers-outline',
   // Food & Drink
@@ -147,7 +147,7 @@ export type CategoryIconName = (typeof CATEGORY_ICONS)[number];
 export const CATEGORY_ICON_GROUPS: IconGroup[] = [
   {
     label: 'Finance',
-    icons: ['cash', 'wallet-outline', 'card-outline', 'briefcase-outline', 'trending-up', 'refresh', 'receipt-text-outline', 'file-document-outline', 'calculator', 'layers-outline'],
+    icons: ['cash', 'card-outline', 'briefcase-outline', 'trending-up', 'refresh', 'receipt-text-outline', 'file-document-outline', 'calculator', 'layers-outline'],
   },
   {
     label: 'Food & Drink',

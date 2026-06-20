@@ -239,7 +239,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                   onPress={() => setShowIconPicker(true)}
                 >
                   <IconAvatar
-                     icon={resolveIcon(iconKey, 'wallet-outline')}
+                     icon={resolveIcon(iconKey, 'domain')}
                      color={colorHex} variant="solid"
                     size={32}
                   />

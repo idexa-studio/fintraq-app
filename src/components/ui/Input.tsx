@@ -39,7 +39,8 @@ export const Input = React.memo(function Input({
       case 'filled':
         return {
           backgroundColor: isFocused ? colors.card : colors.surface,
-          borderWidth: 0,
+          borderWidth: 1,
+          borderColor: isFocused ? colors.primary + '20' : 'transparent',
         };
       case 'minimal':
         return {
@@ -89,6 +90,6 @@ const createStyles = ({ typography, spacing }: ThemeContextType, _size: InputSiz
     wrap: { marginBottom: 0 },
     label: { fontSize: typography.sizes.xs, marginBottom: spacing('2') },
     box: { overflow: 'hidden', justifyContent: 'center' },
-    input: { paddingVertical: 0 },
+    input: { paddingVertical: 0, includeFontPadding: false },
     error: { fontSize: typography.sizes.xs, marginTop: spacing('1') },
   });
