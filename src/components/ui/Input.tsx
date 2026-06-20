@@ -38,7 +38,7 @@ export const Input = React.memo(function Input({
     switch (variant) {
       case 'filled':
         return {
-          backgroundColor: isFocused ? colors.primaryLight : colors.surface,
+          backgroundColor: isFocused ? colors.card : colors.surface,
           borderWidth: 0,
         };
       case 'minimal':
