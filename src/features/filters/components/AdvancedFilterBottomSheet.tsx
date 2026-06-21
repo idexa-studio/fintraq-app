@@ -1,5 +1,6 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowRight01Icon, Building01Icon, Calendar03Icon, CancelCircleIcon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import * as Haptics from 'expo-haptics';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -208,7 +209,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             {local.dateRange ? (
               <>
                 <BentoPressable style={styles.groupRow} onPress={() => setShowStart(true)}>
-                  <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
+                  <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     From
                   </Text>
@@ -218,7 +219,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 </BentoPressable>
                 <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
                 <BentoPressable style={styles.groupRow} onPress={() => setShowEnd(true)}>
-                  <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
+                  <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     To
                   </Text>
@@ -226,17 +227,17 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                     {fmt(local.dateRange.endDate)}
                   </Text>
                   <BentoPressable onPress={clearDateRange} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                    <MaterialCommunityIcons name="close-circle" size={18} color={colors.textMuted} />
+                    <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
                   </BentoPressable>
                 </BentoPressable>
               </>
             ) : (
               <BentoPressable style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)}>
-                <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
+                <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
                 <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                   Set date range
                 </Text>
-                <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} style={styles.groupChevron} />
+                <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} style={styles.groupChevron} />
               </BentoPressable>
             )}
           </View>
@@ -295,7 +296,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                       style={[styles.pill, { backgroundColor: sel ? ac + '18' : colors.card }]}
                       onPress={() => toggleAccount(a.id)}
                     >
-                      <MaterialCommunityIcons name={resolveIcon(a.icon, 'domain')} size={16} color={ac} />
+                      <HugeiconsIcon icon={resolveIcon(a.icon, Building01Icon)} size={16} color={ac} />
                       <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
                         {a.name}
                       </Text>
@@ -322,7 +323,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                       style={[styles.pill, { backgroundColor: sel ? cc + '18' : colors.card }]}
                       onPress={() => toggleCategory(c.id)}
                     >
-                      <MaterialCommunityIcons name={resolveIcon(c.icon, 'tag-outline')} size={16} color={cc} />
+                      <HugeiconsIcon icon={resolveIcon(c.icon, Tag01Icon)} size={16} color={cc} />
                       <Text style={[styles.pillLabel, { color: sel ? cc : colors.text }]}>
                         {c.name}
                       </Text>

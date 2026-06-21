@@ -1,14 +1,14 @@
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { StreakBadge } from '@/src/features/reports/components/StreakBadge';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { Down, Up } from '@hugeicons/core-free-icons';
+import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { CurrencyPickerTab } from './CurrencyPickerTab';
 import { DashboardHeader } from './DashboardHeader';
 
 type Props = {
@@ -22,7 +22,7 @@ type Props = {
 
 export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, income, expense, currencies, onCurrencySelect }: Props) {
   const theme = useTheme();
-  const { typography, heroCard, colors } = theme;
+  const { typography, colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { profile } = useSettings();
   const { isPremium } = usePremium();
@@ -33,11 +33,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
 
   return (
     <View>
-
       <View style={styles.card}>
-        {/* Currency tabs */}
-
-
         <DashboardHeader
           name={profile.name}
           isPremium={isPremium}
@@ -61,7 +57,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
         <View style={styles.stats}>
           <View style={styles.statContainer}>
             <View style={styles.statHeader}>
-              <HugeiconsIcon icon={Up} size={14} color={colors.text} />
+              <HugeiconsIcon icon={ArrowUp01Icon} size={14} color={colors.success} />
               <Text style={styles.statLabel}>Income</Text>
             </View>
             <MoneyText
@@ -69,13 +65,13 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
               currency={currency}
               type="CR"
               weight="semibold"
-              style={[styles.statValue]}
+              style={styles.statValue}
             />
           </View>
 
           <View style={styles.statContainer}>
             <View style={styles.statHeader}>
-              <HugeiconsIcon icon={Down} size={14} color={colors.text} />
+              <HugeiconsIcon icon={ArrowDown01Icon} size={14} color={colors.danger} />
               <Text style={styles.statLabel}>Expenses</Text>
             </View>
             <MoneyText
@@ -83,51 +79,23 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
               currency={currency}
               type="DR"
               weight="semibold"
-              style={[styles.statValue]}
+              style={styles.statValue}
             />
           </View>
         </View>
       </View>
-      {currencies && currencies.length > 1 && (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.currencyTabs}
-          style={styles.currencyTabsWrap}
-        >
-          {currencies.map(c => (
-            <BentoPressable
-              key={c}
-              style={[styles.currencyTab, c === currency && styles.currencyTabActive]}
-              onPress={() => onCurrencySelect?.(c)}
-            >
-              <Text style={[styles.currencyTabText, c === currency && styles.currencyTabTextActive]}>
-                {c}
-              </Text>
-            </BentoPressable>
-          ))}
-        </ScrollView>
-      )}
+
+      <CurrencyPickerTab
+        currencies={currencies || []}
+        selectedCurrency={currency}
+        onCurrencySelect={onCurrencySelect}
+      />
     </View>
   );
 });
 
-const createStyles = ({ heroCard, spacing, radius, layout, typography, colors }: ThemeContextType) =>
+const createStyles = ({ spacing, radius, layout, typography, colors }: ThemeContextType) =>
   StyleSheet.create({
-
-    // ── Currency tabs
-    currencyTabsWrap: { marginHorizontal: layout.screenPadding, marginBottom: spacing('2'), },
-    currencyTabs: { flexDirection: 'row' },
-    currencyTab: {
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('1.5'),
-      borderBottomLeftRadius: radius('lg'),
-      borderBottomRightRadius: radius('lg'),
-    },
-    currencyTabActive: { backgroundColor: colors.primary },
-    currencyTabText: { fontFamily: typography.fonts.medium, color: colors.textMuted, fontSize: 12 },
-    currencyTabTextActive: { color: colors.text, fontFamily: typography.fonts.semibold },
-
     // ── Hero card
     card: {
       backgroundColor: colors.primary,

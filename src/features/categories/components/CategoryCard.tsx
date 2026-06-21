@@ -1,5 +1,6 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { GridIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
@@ -38,8 +39,8 @@ export const CategoryCard = React.memo(function CategoryCard({
       delayLongPress={280}
     >
       <View style={[styles.iconWrap, { backgroundColor: catColor + '22' }]}>
-        <MaterialCommunityIcons
-          name={resolveIcon(item.icon, 'grid')}
+        <HugeiconsIcon
+          icon={resolveIcon(item.icon, GridIcon)}
           size={14}
           color={catColor}
         />

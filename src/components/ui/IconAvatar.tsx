@@ -1,13 +1,13 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSvgElement } from '@hugeicons/react-native';
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
-import { MaterialIconName } from '../../utils/icons';
 
 type IconAvatarVariant = 'solid' | 'subtle' | 'outline';
 
 type IconAvatarProps = {
-  icon: MaterialIconName;
+  icon: IconSvgElement;
   color: string;
   variant?: IconAvatarVariant;
   size?: number;
@@ -40,7 +40,7 @@ export const IconAvatar = React.memo(function IconAvatar({
 
   return (
     <View style={[styles.base, { width: size, height: size, borderRadius: radius('md'), backgroundColor: bg }, border, style]}>
-      <MaterialCommunityIcons name={icon} size={resolved} color={iconColor} />
+      <HugeiconsIcon icon={icon} size={resolved} color={iconColor} />
     </View>
   );
 });

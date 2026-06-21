@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo } from 'react';
 import {
@@ -59,7 +60,7 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
           </Text>
           <Text style={styles.colorHex}>{item.hex.toUpperCase()}</Text>
           {selected && (
-            <MaterialCommunityIcons name="check-circle" size={20} color={item.hex} />
+            <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={item.hex} />
           )}
         </BentoPressable>
       );

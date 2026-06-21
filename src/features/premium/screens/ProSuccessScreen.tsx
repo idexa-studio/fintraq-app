@@ -4,7 +4,8 @@ import { PageBackground } from '@/src/components/ui/PageBackground';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES } from '@/src/constants/iap';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CheckmarkBadge01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -31,7 +32,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
           style={styles.heroCard}
         >
           <View style={styles.crownWrapper}>
-            <MaterialCommunityIcons name="check-decagram" size={32} color={colors.warning} />
+            <HugeiconsIcon icon={CheckmarkBadge01Icon} size={32} color={colors.warning} />
           </View>
           <Text style={styles.heroBadge}>Pro active</Text>
           <Text style={styles.heroTitle}>You{"'"}re all set.</Text>
@@ -62,7 +63,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
             return (
               <View key={f.title} style={[styles.featureItem, isLast && styles.noMargin]}>
                 <View style={styles.iconWrapperActive}>
-                  <MaterialCommunityIcons name={f.icon} size={20} color={colors.success} />
+                  <HugeiconsIcon icon={f.icon} size={20} color={colors.success} />
                 </View>
                 <View style={styles.featureContent}>
                   <Text style={styles.featureTitle}>{f.title}</Text>

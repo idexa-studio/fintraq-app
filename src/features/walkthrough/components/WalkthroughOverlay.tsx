@@ -1,6 +1,7 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowRight01Icon, CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { WalkthroughStep } from '../constants/steps';
@@ -41,7 +42,7 @@ export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
           {/* Header Row */}
           <View style={styles.header}>
             <View style={styles.iconWrapper}>
-              <MaterialCommunityIcons name={currentStep.icon} size={20} color={colors.primary} />
+              <HugeiconsIcon icon={currentStep.icon} size={20} color={colors.primary} />
             </View>
             <View style={styles.stepsBadge}>
               <Text style={styles.stepsBadgeText}>
@@ -77,8 +78,8 @@ export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
               <Text style={styles.nextText}>
                 {index === steps.length - 1 ? 'Get started' : 'Continue'}
               </Text>
-              <MaterialCommunityIcons
-                name={index === steps.length - 1 ? 'check' : 'arrow-right'}
+              <HugeiconsIcon
+                icon={index === steps.length - 1 ? CheckmarkCircle01Icon : ArrowRight01Icon}
                 size={14}
                 color={colors.background}
               />

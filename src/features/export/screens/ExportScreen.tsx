@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowRight01Icon, Building01Icon, CheckmarkCircle01Icon, Download01Icon, Folder01Icon, InformationCircleIcon, Share01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { resolveIcon } from '@/src/utils/icons';
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import {
@@ -149,7 +150,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
               <React.Fragment key={p.key}>
                 <BentoPressable style={styles.cardRow} onPress={() => handlePresetSelect(p.key)} scaleOnPress={false}>
                   <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>{p.label}</Text>
-                  {selectedPreset === p.key && !customRange ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
+                  {selectedPreset === p.key && !customRange ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}
                 </BentoPressable>
                 {i < DATE_PRESETS.length - 1 ? <View style={styles.sep} /> : null}
               </React.Fragment>
@@ -157,7 +158,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
             <View style={styles.sep} />
             <BentoPressable style={styles.cardRow} onPress={() => setShowStartPicker(true)} scaleOnPress={false}>
               <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>Custom range</Text>
-              {customRange ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
+              {customRange ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}
             </BentoPressable>
             {customRange ? (
               <View style={styles.dateRow}>
@@ -165,7 +166,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
                   <Text style={[styles.dateLbl, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>From</Text>
                   <Text style={[styles.dateVal, { fontFamily: typography.fonts.semibold, color: colors.text }]}>{formatDate(customRange.startDate)}</Text>
                 </BentoPressable>
-                <MaterialCommunityIcons name="arrow-right" size={14} color={colors.textMuted} />
+                <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
                 <BentoPressable style={styles.dateBtn} onPress={() => setShowEndPicker(true)}>
                   <Text style={[styles.dateLbl, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>To</Text>
                   <Text style={[styles.dateVal, { fontFamily: typography.fonts.semibold, color: colors.text }]}>{formatDate(customRange.endDate)}</Text>
@@ -190,7 +191,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
           <View style={styles.card}>
             <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(null)} scaleOnPress={false}>
               <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>All accounts</Text>
-              {selectedAccountId === null ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
+              {selectedAccountId === null ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}
             </BentoPressable>
             {accountsQuery.data?.map(acc => {
               const c = colorNumberToHex(acc.color);
@@ -200,10 +201,10 @@ export const ExportScreen = React.memo(function ExportScreen() {
                   <View style={styles.sep} />
                   <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(acc.id)} scaleOnPress={false}>
                     <View style={styles.accRow}>
-                      <IconAvatar icon={resolveIcon(acc.icon, 'domain')} color={c} variant="solid" size={24} iconSize={11} />
+                      <IconAvatar icon={resolveIcon(acc.icon, Building01Icon)} color={c} variant="solid" size={24} iconSize={11} />
                       <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>{acc.name}</Text>
                     </View>
-                    {selected ? <MaterialCommunityIcons name="check" size={16} color={colors.primary} /> : null}
+                    {selected ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}
                   </BentoPressable>
                 </React.Fragment>
               );
@@ -224,7 +225,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
           <BentoPressable style={[styles.exportBtn, (isExporting || previewCount === 0) && { opacity: 0.5 }]} onPress={handleExport} disabled={isExporting || previewCount === 0}>
             {isExporting ? <ActivityIndicator size="small" color={colors.background} /> : (
               <>
-                <MaterialCommunityIcons name="download-outline" size={18} color={colors.background} />
+                <HugeiconsIcon icon={Download01Icon} size={18} color={colors.background} />
                 <Text style={[styles.exportBtnText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>Export CSV</Text>
               </>
             )}
@@ -232,7 +233,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
 
           {previewCount === 0 ? (
             <View style={styles.warning}>
-              <MaterialCommunityIcons name="information-outline" size={16} color={colors.warning} />
+              <HugeiconsIcon icon={InformationCircleIcon} size={16} color={colors.warning} />
               <Text style={[styles.warningText, { fontFamily: typography.fonts.regular, color: colors.warning }]}>No transactions match the selected filters.</Text>
             </View>
           ) : null}
@@ -242,8 +243,8 @@ export const ExportScreen = React.memo(function ExportScreen() {
       {showEndPicker ? <DateTimePicker value={customRange?.endDate || new Date()} mode="date" display="default" onChange={handleEndChange} maximumDate={new Date()} /> : null}
 
       <OptionsBottomSheet visible={showExportOptions} onClose={() => { setShowExportOptions(false); setExportedData(null); }} title="Export complete" subtitle={exportedData ? `${previewCount?.toLocaleString()} transactions ready` : 'Choose how to save'} options={[
-        { key: 'save', label: Platform.OS === 'ios' ? 'Save to files' : 'Save to folder', icon: 'folder-outline', selected: false, onPress: handleSave },
-        { key: 'share', label: 'Share to apps', icon: 'share-outline', selected: false, onPress: handleShare },
+        { key: 'save', label: Platform.OS === 'ios' ? 'Save to files' : 'Save to folder', icon: Folder01Icon, selected: false, onPress: handleSave },
+        { key: 'share', label: 'Share to apps', icon: Share01Icon, selected: false, onPress: handleShare },
       ]} />
     </SafeAreaView>
   );

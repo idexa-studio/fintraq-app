@@ -4,7 +4,8 @@ import { DASHBOARD_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/
 import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { useAppLock } from '@/src/providers/AppLockProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowRight01Icon, PlusSignIcon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
@@ -170,13 +171,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           ) : (
             <View style={styles.emptyActivity}>
               <View style={styles.emptyIconWrapper}>
-                <MaterialCommunityIcons name="receipt-text-outline" size={20} color={colors.primary} />
+                <HugeiconsIcon icon={ReceiptTextIcon} size={20} color={colors.primary} />
               </View>
               <Text style={styles.emptyTitle}>No transactions yet</Text>
               <Text style={styles.emptySubtext}>Start recording your daily payments, income, or transfers here.</Text>
               <BentoPressable style={styles.emptyAction} onPress={navigateToCreateTx}>
                 <Text style={styles.emptyActionText}>Add transaction</Text>
-                <MaterialCommunityIcons name="arrow-right" size={12} color={colors.background} />
+                <HugeiconsIcon icon={ArrowRight01Icon} size={12} color={colors.background} />
               </BentoPressable>
             </View>
           )}
@@ -185,7 +186,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       </ScrollView>
 
       <BentoPressable style={styles.fab} onPress={navigateToCreateTx}>
-        <MaterialCommunityIcons name="plus" size={26} color={colors.background} />
+        <HugeiconsIcon icon={PlusSignIcon} size={26} color={colors.background} />
       </BentoPressable>
 
       <WalkthroughOverlay
@@ -223,7 +224,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     emptyIconWrapper: {
       width: 44,
       height: 44,
-      borderRadius: 22,
+      borderRadius: radius('full'),
       backgroundColor: colors.primary + '12',
       justifyContent: 'center',
       alignItems: 'center',

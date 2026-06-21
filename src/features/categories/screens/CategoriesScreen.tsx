@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Delete01Icon, FolderOpenIcon, PencilEdit01Icon, PlusSignIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, ListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
@@ -59,7 +60,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'edit-category',
         label: 'Edit category',
-        icon: 'pencil-outline' as const,
+        icon: PencilEdit01Icon,
         onPress: () => {
           setShowManageDialog(false);
           handleEdit(selectedCategory);
@@ -68,7 +69,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'delete-category',
         label: 'Delete category',
-        icon: 'trash-can-outline' as const,
+        icon: Delete01Icon,
         destructive: true,
         onPress: () => setShowDeleteDialog(true),
       },
@@ -127,14 +128,14 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     () => (
       <View style={styles.empty}>
         <View style={styles.emptyIcon}>
-          <MaterialCommunityIcons name="folder-open-outline" size={32} color={colors.textMuted} />
+          <HugeiconsIcon icon={FolderOpenIcon} size={32} color={colors.textMuted} />
         </View>
         <Text style={styles.emptyTitle}>No categories</Text>
         <Text style={styles.emptyText}>
           {`No ${activeType === 'DR' ? 'expense' : activeType === 'CR' ? 'income' : 'transfer'} categories yet.`}
         </Text>
         <BentoPressable style={styles.emptyBtn} onPress={handleCreate}>
-          <MaterialCommunityIcons name="plus" size={15} color={colors.background} />
+          <HugeiconsIcon icon={PlusSignIcon} size={15} color={colors.background} />
           <Text style={styles.emptyBtnText}>Create one</Text>
         </BentoPressable>
       </View>
@@ -168,7 +169,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       )}
 
       <BentoPressable style={styles.fab} onPress={handleCreate}>
-        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
+        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.background} />
       </BentoPressable>
 
       <OptionsBottomSheet

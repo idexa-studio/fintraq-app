@@ -1,5 +1,6 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Tag01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
@@ -40,8 +41,8 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
               ]}
               onPress={() => handleSelect(cat.id)}
             >
-              <MaterialCommunityIcons
-                name={resolveIcon(cat.icon, 'tag-outline')}
+              <HugeiconsIcon
+                icon={resolveIcon(cat.icon, Tag01Icon)}
                 size={14}
                 color={catColor}
               />

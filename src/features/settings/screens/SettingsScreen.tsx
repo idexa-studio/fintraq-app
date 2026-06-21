@@ -17,8 +17,28 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
-import { MaterialIconName } from '@/src/utils/icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  AlarmClockIcon,
+  ArrowRight01Icon,
+  BellIcon,
+  Calendar01Icon,
+  CellularNetworkIcon,
+  CoinsIcon,
+  Delete01Icon,
+  Download01Icon,
+  File01Icon,
+  GridIcon,
+  LockPasswordIcon,
+  PinCodeIcon,
+  Moon01Icon,
+  ShieldKeyIcon,
+  SparklesIcon,
+  Sun01Icon,
+  UserAccountIcon,
+  ContrastIcon,
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSvgElement } from '@hugeicons/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { getFormattedAppVersion } from '@/src/utils/version';
@@ -29,7 +49,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type SwitchRowProps = {
-  icon: MaterialIconName;
+  icon: IconSvgElement;
   label: string;
   subtitle: string;
   value: boolean;
@@ -80,7 +100,7 @@ const SwitchRow = React.memo(function SwitchRow({
 });
 
 type NavRowProps = {
-  icon: MaterialIconName;
+  icon: IconSvgElement;
   label: string;
   subtitle: string;
   value?: string;
@@ -134,16 +154,16 @@ const NavRow = React.memo(function NavRow({
             {value}
           </Text>
         ) : null}
-        <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
+        <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
       </View>
     </BentoPressable>
   );
 });
 
-const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: MaterialIconName }[] = [
-  { label: 'Light', value: 'light', icon: 'weather-sunny' },
-  { label: 'Dark', value: 'dark', icon: 'moon-waning-crescent' },
-  { label: 'Follow system', value: 'system', icon: 'cellphone' },
+const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: IconSvgElement }[] = [
+  { label: 'Light', value: 'light', icon: Sun01Icon },
+  { label: 'Dark', value: 'dark', icon: Moon01Icon },
+  { label: 'Follow system', value: 'system', icon: ContrastIcon },
 ];
 
 export const SettingsScreen = React.memo(function SettingsScreen() {
@@ -339,7 +359,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="creation"
+            icon={SparklesIcon}
             iconColor={colors.warning}
             label={isPremium ? 'Fintraq Pro — Lifetime' : 'Upgrade to Pro'}
             subtitle={isPremium ? 'You have permanent access to every feature' : 'Unlock analytics, insights, and more'}
@@ -353,7 +373,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <SwitchRow
             theme={theme}
-            icon="bell-outline"
+            icon={BellIcon}
             iconColor={colors.info}
             label="Daily reminder"
             subtitle="Get a nudge to log your daily transactions"
@@ -364,7 +384,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             <>
               <NavRow
                 theme={theme}
-                icon="clock-outline"
+                icon={AlarmClockIcon}
                 iconColor={colors.info}
                 label="Reminder time"
                 subtitle="When you receive your daily notification"
@@ -375,7 +395,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           )}
           <NavRow
             theme={theme}
-            icon="cash"
+            icon={CoinsIcon}
             iconColor={colors.success}
             label="Default currency"
             subtitle="Used for new accounts and display"
@@ -384,7 +404,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
           <NavRow
             theme={theme}
-            icon="account-outline"
+            icon={UserAccountIcon}
             iconColor={colors.textMuted}
             label="Display name"
             subtitle="How you appear throughout the app"
@@ -393,7 +413,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
           <NavRow
             theme={theme}
-            icon="theme-light-dark"
+            icon={ContrastIcon}
             iconColor={colors.textMuted}
             label="Theme"
             subtitle="Light, dark, or follow your system setting"
@@ -417,7 +437,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <SwitchRow
             theme={theme}
-            icon="lock-outline"
+            icon={LockPasswordIcon}
             iconColor={colors.primary}
             label="App lock"
             subtitle={lockMode === 'biometric' ? 'Face ID / fingerprint' : lockMode === 'pin' ? 'PIN lock' : 'Require biometrics or PIN on open'}
@@ -427,7 +447,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           {lockMode === 'pin' && lockEnabled && (
             <NavRow
               theme={theme}
-              icon="numeric"
+              icon={PinCodeIcon}
               iconColor={colors.primary}
               label="Change PIN"
               subtitle="Update your 6-digit unlock code"
@@ -441,7 +461,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="grid"
+            icon={GridIcon}
             iconColor={colors.success}
             label="Categories"
             subtitle="Manage your income and expense groups"
@@ -449,7 +469,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
           <NavRow
             theme={theme}
-            icon="download-outline"
+            icon={Download01Icon}
             iconColor={colors.textMuted}
             label="Export CSV"
             subtitle="Download transactions as a spreadsheet file"
@@ -462,7 +482,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="shield-check-outline"
+            icon={ShieldKeyIcon}
             iconColor={colors.textMuted}
             label="Privacy policy"
             subtitle="How we handle your data"
@@ -470,7 +490,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
           <NavRow
             theme={theme}
-            icon="file-document-outline"
+            icon={File01Icon}
             iconColor={colors.textMuted}
             label="Terms of service"
             subtitle="Rules and guidelines for using Fintraq"
@@ -483,7 +503,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon="trash-can-outline"
+            icon={Delete01Icon}
             label="Factory reset"
             subtitle="Permanently erase all data and start fresh"
             onPress={() => setShowResetDialog(true)}
@@ -627,3 +647,6 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
     },
   });
 
+// Suppress unused import warnings for icons only used in THEME_OPTIONS
+void Calendar01Icon;
+void CellularNetworkIcon;

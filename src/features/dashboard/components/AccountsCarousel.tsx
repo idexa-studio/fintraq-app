@@ -3,6 +3,7 @@ import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
+import { Building01Icon, PlusSignIcon } from '@hugeicons/core-free-icons';
 import { resolveIcon } from '@/src/utils/icons';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
@@ -45,7 +46,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
             <View style={styles.upper}>
               <View style={styles.topRow}>
                 <IconAvatar
-                  icon={resolveIcon(acc.icon, 'domain')}
+                  icon={resolveIcon(acc.icon, Building01Icon)}
                   color={c}
                   variant="subtle"
                   size={34}
@@ -82,7 +83,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
         style={[styles.addCard, { width: cardWidth }]}
         onPress={onPressAdd}
       >
-        <IconAvatar icon="plus" color={colors.primary} variant="subtle" size={36} iconSize={16} />
+        <IconAvatar icon={PlusSignIcon} color={colors.primary} variant="subtle" size={36} iconSize={16} />
         <Text style={[styles.addTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
           Add account
         </Text>
@@ -118,7 +119,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       gap: spacing('0.5'),
     },
     name: { fontSize: typography.sizes.sm },
-    hint: { fontSize: typography.sizes.xs, opacity: 0.55 },
+    hint: { fontSize: typography.sizes.xs },
     currencyBadge: {
       paddingHorizontal: spacing('2'),
       paddingVertical: spacing('0.5'),
@@ -129,9 +130,8 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     balanceContainer: {
       gap: spacing('0.5'),
     },
-    balanceLabel: { 
-      fontSize: 11, 
-      opacity: 0.55, 
+    balanceLabel: {
+      fontSize: 11,
     },
     balance: { fontSize: 20, lineHeight: 24 },
 

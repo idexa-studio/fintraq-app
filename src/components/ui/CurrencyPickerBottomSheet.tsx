@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CancelCircleIcon, CheckIcon, Search01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -90,7 +91,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
 
         {selected ? (
           <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-            <MaterialCommunityIcons name="check" size={12} color={colors.background} />
+            <HugeiconsIcon icon={CheckIcon} size={12} color={colors.background} />
           </View>
         ) : (
           <View style={styles.checkPlaceholder} />
@@ -122,7 +123,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
         </View>
 
         <View style={styles.searchWrap}>
-          <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
+          <HugeiconsIcon icon={Search01Icon} size={18} color={colors.textMuted} />
           <TextInput
             style={styles.searchInput}
             value={query}
@@ -135,7 +136,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
           />
           {query.length > 0 && (
             <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
+              <HugeiconsIcon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
             </BentoPressable>
           )}
         </View>
@@ -156,7 +157,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
           scrollEventThrottle={16}
           ListEmptyComponent={
             <View style={styles.emptyWrap}>
-              <MaterialCommunityIcons name="magnify" size={24} color={colors.textMuted} />
+              <HugeiconsIcon icon={Search01Icon} size={24} color={colors.textMuted} />
               <Text style={styles.emptyText}>No results for &quot;{query}&quot;</Text>
             </View>
           }

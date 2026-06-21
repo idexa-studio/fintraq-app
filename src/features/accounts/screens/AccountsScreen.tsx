@@ -9,7 +9,8 @@ import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/acc
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Building01Icon, Delete01Icon, MoreVerticalCircle01Icon, PencilEdit01Icon, PlusSignIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import { WalkthroughOverlay, ACCOUNTS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { StorageKeys } from '@/src/constants/keys';
@@ -67,8 +68,8 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   const accountOptions = useMemo((): OptionsBottomSheetOption[] => {
     if (!selectedAccount) return [];
     return [
-      { key: 'edit', label: 'Edit', icon: 'pencil-outline', onPress: handleEdit },
-      { key: 'delete', label: 'Delete', icon: 'trash-can-outline', destructive: true, onPress: handleDeletePress },
+      { key: 'edit', label: 'Edit', icon: PencilEdit01Icon, onPress: handleEdit },
+      { key: 'delete', label: 'Delete', icon: Delete01Icon, destructive: true, onPress: handleDeletePress },
     ];
   }, [selectedAccount, handleEdit, handleDeletePress]);
 
@@ -90,7 +91,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
               <View style={styles.cardTop}>
                 <View style={styles.cardLead}>
                   <IconAvatar
-                    icon={resolveIcon(account.icon, 'domain')}
+                    icon={resolveIcon(account.icon, Building01Icon)}
                     color={accColor} variant="subtle"
                     size={36}
                     iconSize={16}
@@ -117,7 +118,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                     onPress={() => handleMenuOpen(account)}
                     style={styles.iconBtn}
                   >
-                    <MaterialCommunityIcons name="dots-vertical" size={18} color={colors.textMuted} />
+                    <HugeiconsIcon icon={MoreVerticalCircle01Icon} size={18} color={colors.textMuted} />
                   </BentoPressable>
                 </View>
               </View>
@@ -162,7 +163,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
       </ScrollView>
 
       <BentoPressable style={styles.fab} onPress={handleAdd}>
-        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
+        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.background} />
       </BentoPressable>
 
       <OptionsBottomSheet

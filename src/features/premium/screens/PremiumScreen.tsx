@@ -5,7 +5,8 @@ import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { AnalyticsService } from '@/src/services/analytics';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CheckmarkBadge01Icon, CrownIcon, ReloadIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -63,7 +64,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             style={styles.heroCard}
           >
             <View style={styles.crownWrapper}>
-              <MaterialCommunityIcons name="check-decagram" size={32} color={colors.warning} />
+              <HugeiconsIcon icon={CheckmarkBadge01Icon} size={32} color={colors.warning} />
             </View>
             <Text style={styles.heroBadge}>Pro active</Text>
             <Text style={styles.heroTitle}>Fintraq Pro is active</Text>
@@ -94,7 +95,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
               return (
                 <View key={f.title} style={[styles.featureItem, isLast && styles.noMargin]}>
                   <View style={styles.iconWrapperActive}>
-                    <MaterialCommunityIcons name={f.icon} size={20} color={colors.success} />
+                    <HugeiconsIcon icon={f.icon} size={20} color={colors.success} />
                   </View>
                   <View style={styles.featureContent}>
                     <Text style={styles.featureTitle}>{f.title}</Text>
@@ -136,7 +137,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           style={styles.heroCard}
         >
           <View style={styles.crownWrapper}>
-            <MaterialCommunityIcons name="crown" size={32} color={colors.warning} />
+            <HugeiconsIcon icon={CrownIcon} size={32} color={colors.warning} />
           </View>
           <Text style={styles.heroBadge}>Lifetime upgrade</Text>
           <Text style={styles.heroTitle}>One payment. Everything. Forever.</Text>
@@ -170,11 +171,11 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
 
           <View style={styles.perks}>
             <View style={styles.perk}>
-              <MaterialCommunityIcons name="shield-check" size={16} color={colors.success} />
+              <HugeiconsIcon icon={ShieldKeyIcon} size={16} color={colors.success} />
               <Text style={styles.perkText}>Secure one-time payment</Text>
             </View>
             <View style={styles.perk}>
-              <MaterialCommunityIcons name="sync" size={16} color={colors.success} />
+              <HugeiconsIcon icon={ReloadIcon} size={16} color={colors.success} />
               <Text style={styles.perkText}>Entitlements bind to your store account</Text>
             </View>
           </View>
@@ -189,7 +190,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             return (
               <View key={f.title} style={[styles.featureItem, isLast && styles.noMargin]}>
                 <View style={styles.iconWrapperInactive}>
-                  <MaterialCommunityIcons name={f.icon} size={20} color={colors.primary} />
+                  <HugeiconsIcon icon={f.icon} size={20} color={colors.primary} />
                 </View>
                 <View style={styles.featureContent}>
                   <Text style={styles.featureTitle}>{f.title}</Text>

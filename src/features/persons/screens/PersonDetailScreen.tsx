@@ -9,7 +9,8 @@ import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Call02Icon, Delete01Icon, Mail01Icon, PencilEdit01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -124,13 +125,13 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
               onPress={() => setShowDeleteConfirm(true)}
               style={styles.iconBtn}
             >
-              <MaterialCommunityIcons name="trash-can-outline" size={20} color={colors.danger} />
+              <HugeiconsIcon icon={Delete01Icon} size={20} color={colors.danger} />
             </BentoPressable>
             <BentoPressable
               onPress={handleEdit}
               style={styles.iconBtn}
             >
-              <MaterialCommunityIcons name="pencil-outline" size={20} color={colors.text} />
+              <HugeiconsIcon icon={PencilEdit01Icon} size={20} color={colors.text} />
             </BentoPressable>
           </View>
         }
@@ -158,7 +159,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
             <View style={styles.contactRow}>
               {person.email ? (
                 <View style={styles.contactChip}>
-                  <MaterialCommunityIcons name="email-outline" size={14} color={colors.textMuted} />
+                  <HugeiconsIcon icon={Mail01Icon} size={14} color={colors.textMuted} />
                   <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
                     {person.email}
                   </Text>
@@ -166,7 +167,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
               ) : null}
               {person.phone ? (
                 <View style={styles.contactChip}>
-                  <MaterialCommunityIcons name="phone-outline" size={14} color={colors.textMuted} />
+                  <HugeiconsIcon icon={Call02Icon} size={14} color={colors.textMuted} />
                   <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     {person.phone}
                   </Text>
@@ -224,7 +225,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
           </View>
         ) : (
           <View style={styles.emptyTx}>
-            <MaterialCommunityIcons name="receipt-text-outline" size={28} color={colors.textMuted} />
+            <HugeiconsIcon icon={ReceiptTextIcon} size={28} color={colors.textMuted} />
             <Text style={[styles.emptyTxText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               No transactions in {currency}
             </Text>

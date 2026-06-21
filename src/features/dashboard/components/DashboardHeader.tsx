@@ -1,7 +1,7 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Search } from '@hugeicons/core-free-icons';
+import { CrownIcon, Search } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
@@ -38,7 +38,7 @@ export const DashboardHeader = React.memo(function DashboardHeader({
           </View>
           {isPremium && (
             <View style={styles.crownBadge}>
-              <MaterialCommunityIcons name="crown" size={8} color="#FFFFFF" />
+              <HugeiconsIcon icon={CrownIcon} size={8} color="#FFFFFF" />
             </View>
           )}
         </View>

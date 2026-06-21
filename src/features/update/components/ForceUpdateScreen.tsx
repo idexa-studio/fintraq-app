@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 import { Linking, Platform, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CloudDownloadIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { Button } from '@/src/components/ui/Button';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
@@ -48,7 +49,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
         <View style={styles.graphicContainer}>
           <View style={styles.pulseOuter}>
             <View style={styles.pulseInner}>
-              <MaterialCommunityIcons name="cloud-download-outline" size={32} color={colors.primary} />
+              <HugeiconsIcon icon={CloudDownloadIcon} size={32} color={colors.primary} />
             </View>
           </View>
         </View>
@@ -75,7 +76,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
             onPress={handleUpdatePress}
             variant="primary"
             size="lg"
-            icon="download"
+            icon={CloudDownloadIcon}
           />
         </View>
       </View>

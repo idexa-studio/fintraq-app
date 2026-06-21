@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ChartLineData01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { PremiumGuard } from '../../../components/ui/PremiumGuard';
@@ -71,7 +72,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
         <PremiumGuard label="Upgrade to Pro for insights" size="large">
           <View style={styles.empty}>
             <View style={styles.emptyIconWrapper}>
-              <MaterialCommunityIcons name="chart-timeline-variant" size={18} color={colors.primary} />
+              <HugeiconsIcon icon={ChartLineData01Icon} size={18} color={colors.primary} />
             </View>
             <View style={styles.emptyContent}>
               <Text style={styles.emptyTitle}>No insights yet</Text>

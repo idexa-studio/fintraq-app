@@ -14,7 +14,8 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { AnalyticsService } from '@/src/services/analytics';
 import { colorNumberToHex, parseAmount, toDbColor } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Building01Icon, UnfoldMoreIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -230,7 +231,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                     onPress={openCurrencyPicker}
                   >
                     <Text style={styles.currencyValue}>{currency}</Text>
-                    <MaterialCommunityIcons name="unfold-more-vertical" size={14} color={colors.textMuted} />
+                    <HugeiconsIcon icon={UnfoldMoreIcon} size={14} color={colors.textMuted} />
                   </BentoPressable>
                 </View>
               </View>
@@ -246,7 +247,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                   onPress={() => setShowIconPicker(true)}
                 >
                   <IconAvatar
-                     icon={resolveIcon(iconKey, 'domain')}
+                     icon={resolveIcon(iconKey, Building01Icon)}
                      color={colorHex} variant="solid"
                     size={32}
                   />

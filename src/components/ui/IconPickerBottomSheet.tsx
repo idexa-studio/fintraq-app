@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { GridIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo } from 'react';
 import {
@@ -62,8 +63,8 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
           <Text style={styles.title}>{title}</Text>
           {value ? (
             <View style={styles.headerIconContainer}>
-              <MaterialCommunityIcons
-                name={resolveIcon(value, 'grid')}
+              <HugeiconsIcon
+                icon={resolveIcon(value, GridIcon)}
                 size={20}
                 color={colors.primary}
               />
@@ -96,8 +97,8 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                       onPress={() => handleSelect(icon)}
                       scaleOnPress={true}
                     >
-                      <MaterialCommunityIcons
-                        name={resolveIcon(icon, 'grid')}
+                      <HugeiconsIcon
+                        icon={resolveIcon(icon, GridIcon)}
                         size={20}
                         color={selected ? accent : colors.text}
                       />

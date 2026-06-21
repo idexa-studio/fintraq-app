@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Building01Icon, CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
@@ -45,7 +46,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               overflow="visible"
             >
               <IconAvatar
-                icon={resolveIcon(acc.icon, 'domain')}
+                icon={resolveIcon(acc.icon, Building01Icon)}
                 color={accColor}
                 variant="solid"
                 size={32}
@@ -57,7 +58,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               </View>
               {selected && (
                 <View style={[styles.check, { backgroundColor: accColor, borderColor: colors.background }]}>
-                  <MaterialCommunityIcons name="check" size={12} color={colors.background} />
+                  <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.background} />
                 </View>
               )}
             </BentoPressable>

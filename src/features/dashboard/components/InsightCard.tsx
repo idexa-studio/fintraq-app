@@ -1,3 +1,4 @@
+import { ChartLineData01Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
@@ -27,7 +28,7 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
   return (
     <View style={[styles.card, { backgroundColor: colors.surface }]}>
       <IconAvatar
-        icon={resolveIcon(insight.icon, 'chart-timeline-variant')}
+        icon={resolveIcon(insight.icon, ChartLineData01Icon)}
         color={accent}
         variant="subtle"
         size={34}
@@ -52,8 +53,8 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) =>
       borderRadius: radius('xl'),
       padding: spacing('4'),
       gap: spacing('3.5'),
-      alignItems: 'center',
-      minHeight: 80,
+      alignItems: 'flex-start',
+      minHeight: 88,
     },
     text: {
       flex: 1,

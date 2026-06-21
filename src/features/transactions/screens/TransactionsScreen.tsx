@@ -2,7 +2,9 @@ import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
 import { TRANSACTIONS_LIST_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
 import { StorageKeys } from '../../../constants/keys';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowRight01Icon, CancelCircleIcon, Delete01Icon, FilterIcon, PencilEdit01Icon, PlusSignIcon, ReceiptTextIcon, SortingDownIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSvgElement } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -69,7 +71,7 @@ const SwipeActionButton = React.memo(function SwipeActionButton({
   backgroundColor,
 }: {
   onPress: () => void;
-  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  icon: IconSvgElement;
   color: string;
   backgroundColor: string;
 }) {
@@ -78,7 +80,7 @@ const SwipeActionButton = React.memo(function SwipeActionButton({
       onPress={onPress}
       style={[swipeActionStyles.actionBase, { backgroundColor }]}
     >
-      <MaterialCommunityIcons name={icon} size={18} color={color} />
+      <HugeiconsIcon icon={icon} size={18} color={color} />
     </BentoPressable>
   );
 });
@@ -103,13 +105,13 @@ const RightActions = React.memo(function RightActions({
     <View style={swipeActionStyles.container}>
       <SwipeActionButton
         onPress={onEdit}
-        icon="pencil-outline"
+        icon={PencilEdit01Icon}
         color={editIconColor}
         backgroundColor={editBgColor}
       />
       <SwipeActionButton
         onPress={onDelete}
-        icon="trash-can-outline"
+        icon={Delete01Icon}
         color={deleteIconColor}
         backgroundColor={deleteBgColor}
       />
@@ -239,13 +241,13 @@ const FilterChip = React.memo(function FilterChip({
         scaleOnPress={false}
       >
         {isActive && (
-          <MaterialCommunityIcons name="check" size={13} color={tintColor} style={{ marginRight: spacing('1') }} />
+          <HugeiconsIcon icon={FilterIcon} size={13} color={tintColor} style={{ marginRight: spacing('1') }} />
         )}
         <Text style={isActive ? styles.chipTextActive : styles.chipTextInactive}>
           {label}
         </Text>
         {!isActive && showChevron && (
-          <MaterialCommunityIcons name="chevron-down" size={13} color={colors.textMuted} style={{ marginLeft: spacing('1') }} />
+          <HugeiconsIcon icon={SortingDownIcon} size={13} color={colors.textMuted} style={{ marginLeft: spacing('1') }} />
         )}
       </BentoPressable>
       {isActive && onClear && (
@@ -255,7 +257,7 @@ const FilterChip = React.memo(function FilterChip({
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           scaleOnPress={false}
         >
-          <MaterialCommunityIcons name="close" size={13} color={tintColor} />
+          <HugeiconsIcon icon={CancelCircleIcon} size={13} color={tintColor} />
         </BentoPressable>
       )}
     </View>
@@ -641,7 +643,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
               }}
               style={styles.iconBtn}
             >
-              <MaterialCommunityIcons name="tune" size={22} color={colors.text} />
+              <HugeiconsIcon icon={FilterIcon} size={22} color={colors.text} />
             </BentoPressable>
             <BentoPressable
               onPress={() => {
@@ -650,7 +652,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
               }}
               style={styles.iconBtn}
             >
-              <MaterialCommunityIcons name="sort-variant" size={22} color={colors.text} />
+              <HugeiconsIcon icon={SortingDownIcon} size={22} color={colors.text} />
             </BentoPressable>
           </View>
         )}
@@ -744,7 +746,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         ListEmptyComponent={(
           <View style={styles.emptyWrap}>
             <View style={styles.emptyIconBox}>
-              <MaterialCommunityIcons name="receipt-text-outline" size={32} color={colors.textMuted} />
+              <HugeiconsIcon icon={ReceiptTextIcon} size={32} color={colors.textMuted} />
             </View>
             <Text style={styles.emptyTitle}>Nothing here yet</Text>
             <Text style={styles.emptySubtitle}>
@@ -754,7 +756,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
             </Text>
             <BentoPressable style={styles.emptyAction} onPress={() => router.push('/transactions/create')}>
               <Text style={styles.emptyActionText}>Add Transaction</Text>
-              <MaterialCommunityIcons name="arrow-right" size={14} color={colors.background} />
+              <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.background} />
             </BentoPressable>
           </View>
         )}
@@ -772,7 +774,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
           router.push('/transactions/create');
         }}
       >
-        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
+        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.background} />
       </BentoPressable>
 
       <ConfirmDialog

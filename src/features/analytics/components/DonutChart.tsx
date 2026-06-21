@@ -6,6 +6,7 @@ import { MoneyText } from '../../../components/ui/MoneyText';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
+import { Tag01Icon } from '@hugeicons/core-free-icons';
 import type { CategoryBreakdown } from '../api/analytics';
 
 type Props = {
@@ -92,7 +93,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
         return (
           <View key={d.id} style={[styles.legendRow, i === data.length - 1 && styles.legendRowLast]}>
             <IconAvatar
-              icon={resolveIcon(d.icon, 'tag-outline')}
+              icon={resolveIcon(d.icon, Tag01Icon)}
               color={hex} variant="solid"
               size={32}
               iconSize={15}

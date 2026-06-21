@@ -19,7 +19,8 @@ import { AnalyticsService } from '@/src/services/analytics';
 import { NotificationService } from '@/src/services/notification.service';
 import type { TransactionType } from '@/src/types';
 import { toDbColor } from '@/src/utils/format';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -224,7 +225,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
             <View style={styles.headerTopRow}>
               {stepIndex > 0 ? (
                 <BentoPressable style={styles.headerBackButton} onPress={() => setStepIndex((i) => i - 1)}>
-                  <MaterialCommunityIcons name="chevron-left" size={18} color={colors.text} />
+                  <HugeiconsIcon icon={ArrowLeft01Icon} size={18} color={colors.text} />
                 </BentoPressable>
               ) : (
                 <View style={styles.headerBackPlaceholder} />

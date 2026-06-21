@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Calendar03Icon, Clock01Icon, PencilEdit01Icon, UnfoldMoreIcon, UserCircleIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -321,7 +322,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                 onPress={() => setShowPersonPicker(true)}
               >
                 <View style={styles.iconContainer}>
-                  <MaterialCommunityIcons name="account-outline" size={18} color={colors.primary} />
+                  <HugeiconsIcon icon={UserCircleIcon} size={18} color={colors.primary} />
                 </View>
                 <View style={styles.textContainer}>
                   <Text style={styles.triggerLabel}>Linked person</Text>
@@ -337,7 +338,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                       : 'No person linked'}
                   </Text>
                 </View>
-                <MaterialCommunityIcons name="unfold-more-vertical" size={16} color={colors.textMuted} />
+                <HugeiconsIcon icon={UnfoldMoreIcon} size={16} color={colors.textMuted} />
               </BentoPressable>
             </View>
           )}
@@ -349,7 +350,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                 onPress={() => setShowDatePicker(true)}
               >
                 <View style={styles.iconContainer}>
-                  <MaterialCommunityIcons name="calendar-outline" size={18} color={colors.primary} />
+                  <HugeiconsIcon icon={Calendar03Icon} size={18} color={colors.primary} />
                 </View>
                 <View style={styles.textContainer}>
                   <Text style={styles.triggerLabel}>Date</Text>
@@ -362,7 +363,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                 onPress={() => setShowTimePicker(true)}
               >
                 <View style={styles.iconContainer}>
-                  <MaterialCommunityIcons name="clock-outline" size={18} color={colors.primary} />
+                  <HugeiconsIcon icon={Clock01Icon} size={18} color={colors.primary} />
                 </View>
                 <View style={styles.textContainer}>
                   <Text style={styles.triggerLabel}>Time</Text>
@@ -393,7 +394,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
             <View style={styles.noteContainer}>
               <View style={styles.noteHeader}>
                 <View style={styles.noteIconContainer}>
-                  <MaterialCommunityIcons name="pencil-outline" size={16} color={colors.primary} />
+                  <HugeiconsIcon icon={PencilEdit01Icon} size={16} color={colors.primary} />
                 </View>
                 <Text style={styles.noteLabel}>Note</Text>
               </View>

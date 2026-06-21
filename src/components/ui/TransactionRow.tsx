@@ -1,10 +1,11 @@
+import { ArrowRight01Icon, Building01Icon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { TransactionType } from '@/src/types';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { format, isToday, isYesterday } from 'date-fns';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -56,7 +57,7 @@ export const TransactionRow = React.memo(function TransactionRow({
 
   const categoryColor = useMemo(() => colorNumberToHex(tx.category.color), [tx.category.color]);
 
-  const iconName = useMemo(() => resolveIcon(tx.category.icon, 'tag-outline'), [tx.category.icon]);
+  const iconName = useMemo(() => resolveIcon(tx.category.icon, Tag01Icon), [tx.category.icon]);
 
   const handlePress = useCallback(() => {
     onPress?.(tx);
@@ -71,9 +72,9 @@ export const TransactionRow = React.memo(function TransactionRow({
     marginBottom: isLast ? 0 : spacing('0.5'),
   }), [isFirst, isLast, colors.surface, radius, spacing]);
 
-  const accountIconName = useMemo(() => resolveIcon(tx.account.icon, 'domain'), [tx.account.icon]);
+  const accountIconName = useMemo(() => resolveIcon(tx.account.icon, Building01Icon), [tx.account.icon]);
 
-  const toAccountIconName = useMemo(() => resolveIcon(tx.toAccount?.icon, 'domain'), [tx.toAccount?.icon]);
+  const toAccountIconName = useMemo(() => resolveIcon(tx.toAccount?.icon, Building01Icon), [tx.toAccount?.icon]);
 
   const accountColor = useMemo(() => colorNumberToHex(tx.account.color), [tx.account.color]);
 
@@ -130,14 +131,14 @@ export const TransactionRow = React.memo(function TransactionRow({
           {tx.type === 'TR' ? (
             <View style={styles.transferBadge}>
               <View style={styles.accountBadge}>
-                <MaterialCommunityIcons name={accountIconName} size={11} color={accountColor} />
+                <HugeiconsIcon icon={accountIconName} size={11} color={accountColor} />
                 <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
                   {tx.account.name}
                 </Text>
               </View>
-              <MaterialCommunityIcons name="arrow-right" size={11} color={colors.textMuted} style={styles.transferArrow} />
+              <HugeiconsIcon icon={ArrowRight01Icon} size={11} color={colors.textMuted} style={styles.transferArrow} />
               <View style={styles.accountBadge}>
-                <MaterialCommunityIcons name={toAccountIconName} size={11} color={toAccountColor} />
+                <HugeiconsIcon icon={toAccountIconName} size={11} color={toAccountColor} />
                 <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
                   {tx.toAccount?.name ?? 'Account'}
                 </Text>
@@ -145,7 +146,7 @@ export const TransactionRow = React.memo(function TransactionRow({
             </View>
           ) : (
             <View style={styles.accountBadge}>
-              <MaterialCommunityIcons name={accountIconName} size={11} color={accountColor} />
+              <HugeiconsIcon icon={accountIconName} size={11} color={accountColor} />
               <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
                 {tx.account.name}
               </Text>

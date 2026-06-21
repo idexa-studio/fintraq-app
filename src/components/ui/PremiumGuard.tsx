@@ -1,5 +1,6 @@
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { LockPasswordIcon, SparklesIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
@@ -81,18 +82,17 @@ export const PremiumGuard = React.memo(function PremiumGuard({
     >
       {/* Background Accent & Watermark */}
       <View style={styles.accentOverlay} />
-      <MaterialCommunityIcons
-        name="creation"
+      <HugeiconsIcon
+        icon={SparklesIcon}
         size={isSmall ? 60 : 120}
         color={colors.primary}
         style={styles.watermark}
-        pointerEvents="none"
       />
 
       <View style={styles.content}>
         <View style={styles.headerRow}>
           <View style={iconBoxStyles}>
-            <MaterialCommunityIcons name="lock-outline" size={iconSize} color={colors.primary} />
+            <HugeiconsIcon icon={LockPasswordIcon} size={iconSize} color={colors.primary} />
           </View>
 
           <View style={styles.textDetails}>

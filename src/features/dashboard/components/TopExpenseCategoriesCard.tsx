@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { PieChart01Icon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
@@ -38,7 +39,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
     return (
       <View style={styles.empty}>
         <View style={styles.emptyIconWrapper}>
-          <MaterialCommunityIcons name="chart-pie" size={18} color={colors.primary} />
+          <HugeiconsIcon icon={PieChart01Icon} size={18} color={colors.primary} />
         </View>
         <View style={styles.emptyContent}>
           <Text style={styles.emptyTitle}>No expenses yet</Text>
@@ -85,7 +86,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
                     />
                   </Svg>
                   <IconAvatar
-                    icon={resolveIcon(cat.icon, 'tag-outline')}
+                    icon={resolveIcon(cat.icon, Tag01Icon)}
                     color={accent}
                     variant="subtle"
                     size={28}
@@ -149,7 +150,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     tile: {
       backgroundColor: colors.surface,
       padding: spacing('3'),
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       flex: 1,
     },
     contentRow: {

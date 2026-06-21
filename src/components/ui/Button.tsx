@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSvgElement } from '@hugeicons/react-native';
 import React, { useMemo, useCallback } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
@@ -16,7 +17,7 @@ type ButtonProps = {
   disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
-  icon?: keyof typeof MaterialCommunityIcons.glyphMap;
+  icon?: IconSvgElement;
 };
 
 export const Button = React.memo(function Button({
@@ -87,8 +88,8 @@ export const Button = React.memo(function Button({
       disabled={disabled || isLoading}
     >
       {icon && !isLoading && (
-        <MaterialCommunityIcons
-          name={icon}
+        <HugeiconsIcon
+          icon={icon}
           size={size === 'sm' ? 16 : size === 'lg' ? 24 : 20}
           color={textColor}
         />

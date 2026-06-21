@@ -9,7 +9,8 @@ import type { TransactionListItem } from '@/src/features/transactions/api/transa
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowLeft01Icon, ArrowRight01Icon, Building01Icon, CancelCircleIcon, Clock01Icon, InboxIcon, Search01Icon, SparklesIcon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import {
@@ -61,7 +62,7 @@ const AccountRow = React.memo(function AccountRow({
       onPress={handlePress}
       scaleOnPress={false}
     >
-      <IconAvatar icon={resolveIcon(account.icon, 'domain')} color={accentColor} variant="solid" size={36} iconSize={16} />
+      <IconAvatar icon={resolveIcon(account.icon, Building01Icon)} color={accentColor} variant="solid" size={36} iconSize={16} />
       <View style={{ flex: 1, gap: theme.spacing('0.5') }}>
         <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{account.name}</Text>
         <Text style={{ fontFamily: theme.typography.fonts.regular, fontSize: theme.typography.sizes.xs, color: colors.textMuted }}>
@@ -69,7 +70,7 @@ const AccountRow = React.memo(function AccountRow({
         </Text>
       </View>
       <MoneyText amount={account.balance} currency={account.currency} weight="bold" style={{ fontSize: 14 }} />
-      <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
+      <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
     </BentoPressable>
   );
 });
@@ -92,14 +93,14 @@ const CategoryRow = React.memo(function CategoryRow({
       onPress={handlePress}
       scaleOnPress={false}
     >
-      <IconAvatar icon={resolveIcon(category.icon, 'tag-outline')} color={catColor} variant="solid" size={36} iconSize={16} />
+      <IconAvatar icon={resolveIcon(category.icon, Tag01Icon)} color={catColor} variant="solid" size={36} iconSize={16} />
       <Text style={{ flex: 1, fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{category.name}</Text>
       <View style={[{ backgroundColor: (category.type === 'CR' ? colors.success : colors.danger) + '15', paddingHorizontal: theme.spacing('2'), height: 22, borderRadius: theme.radius('sm'), alignItems: 'center', justifyContent: 'center' }]}>
         <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: 10, color: category.type === 'CR' ? colors.success : colors.danger }}>
           {category.type === 'CR' ? 'Income' : category.type === 'TR' ? 'Transfer' : 'Expense'}
         </Text>
       </View>
-      <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
+      <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
     </BentoPressable>
   );
 });
@@ -143,7 +144,7 @@ const PersonRow = React.memo(function PersonRow({
           </Text>
         ) : null}
       </View>
-      <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
+      <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
     </BentoPressable>
   );
 });
@@ -339,7 +340,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
 
       <View style={styles.header}>
         <BentoPressable onPress={() => router.back()} style={styles.backButton}>
-          <MaterialCommunityIcons name="arrow-left" size={22} color={colors.text} />
+          <HugeiconsIcon icon={ArrowLeft01Icon} size={22} color={colors.text} />
         </BentoPressable>
 
         <View style={styles.searchWrap}>
@@ -358,11 +359,11 @@ export const SearchScreen = React.memo(function SearchScreen() {
             <ActivityIndicator size="small" color={colors.primary} />
           ) : query.length > 0 ? (
             <BentoPressable onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <MaterialCommunityIcons name="close" size={18} color={colors.textMuted} />
+              <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
             </BentoPressable>
           ) : (
             <View style={styles.premiumHeaderBadge}>
-              <MaterialCommunityIcons name="creation" size={12} color={colors.warning} />
+              <HugeiconsIcon icon={SparklesIcon} size={12} color={colors.warning} />
             </View>
           )}
         </View>
@@ -420,13 +421,13 @@ export const SearchScreen = React.memo(function SearchScreen() {
                 style={styles.recentChip}
                 onPress={() => setQuery(item)}
               >
-                <MaterialCommunityIcons name="history" size={14} color={colors.textMuted} />
+                <HugeiconsIcon icon={Clock01Icon} size={14} color={colors.textMuted} />
                 <Text style={styles.recentChipText}>{item}</Text>
                 <BentoPressable
                   onPress={() => removeRecent(item)}
                   hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
-                  <MaterialCommunityIcons name="close" size={12} color={colors.textMuted} />
+                  <HugeiconsIcon icon={CancelCircleIcon} size={12} color={colors.textMuted} />
                 </BentoPressable>
               </BentoPressable>
             ))}
@@ -437,10 +438,10 @@ export const SearchScreen = React.memo(function SearchScreen() {
       {!isEnabled ? (
         <View style={styles.prompt}>
           <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
-            <MaterialCommunityIcons name="magnify" size={32} color={colors.textMuted} />
+            <HugeiconsIcon icon={Search01Icon} size={32} color={colors.textMuted} />
           </View>
           <View style={styles.proTitleWrap}>
-            <MaterialCommunityIcons name="creation" size={14} color={colors.warning} />
+            <HugeiconsIcon icon={SparklesIcon} size={14} color={colors.warning} />
             <Text style={styles.proTitleText}>Premium search</Text>
           </View>
           <Text style={[styles.promptSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
@@ -450,7 +451,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
       ) : noResults ? (
         <View style={styles.prompt}>
           <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
-            <MaterialCommunityIcons name="inbox-outline" size={32} color={colors.textMuted} />
+            <HugeiconsIcon icon={InboxIcon} size={32} color={colors.textMuted} />
           </View>
           <Text style={[styles.promptTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>No results</Text>
           <Text style={[styles.promptSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>

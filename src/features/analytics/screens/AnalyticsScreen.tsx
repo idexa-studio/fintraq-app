@@ -23,7 +23,9 @@ import { resolveIcon } from '@/src/utils/icons';
 import { WalkthroughOverlay, ANALYTICS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { StorageKeys } from '@/src/constants/keys';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Building01Icon, Calendar01Icon, ChartLineData01Icon, LockPasswordIcon, Tag01Icon } from '@hugeicons/core-free-icons';
+import type { IconSvgElement } from '@hugeicons/react-native';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import {
@@ -81,7 +83,7 @@ function EmptyState({
   title,
   subtitle,
 }: {
-  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  icon: IconSvgElement;
   title: string;
   subtitle: string;
 }) {
@@ -126,7 +128,7 @@ function EmptyState({
   return (
     <View style={styles.row}>
       <View style={styles.iconRing}>
-        <MaterialCommunityIcons name={icon} size={18} color={theme.colors.primary} />
+        <HugeiconsIcon icon={icon} size={18} color={theme.colors.primary} />
       </View>
       <View style={styles.texts}>
         <Text style={styles.titleText}>{title}</Text>
@@ -276,7 +278,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   onPress={locked ? navigateToPremium : () => handleRangeSelect(r.days)}
                 >
                   <Text style={[styles.pillText, r.days === selectedRange && styles.pillTextActive]}>{r.label}</Text>
-                  {locked && <MaterialCommunityIcons name="lock" size={9} color={colors.textMuted} style={styles.lockIcon} />}
+                  {locked && <HugeiconsIcon icon={LockPasswordIcon} size={9} color={colors.textMuted} />}
                 </BentoPressable>
               );
             })}
@@ -323,7 +325,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           />
           {areaData.length === 0 ? (
             <EmptyState
-              icon="chart-line"
+              icon={ChartLineData01Icon}
               title="No trend data yet"
               subtitle="Add income or expense transactions to see your spending trend."
             />
@@ -348,7 +350,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           <PremiumGuard label="Period Flow" size="medium">
             {barData.length === 0 ? (
               <EmptyState
-                icon="chart-line"
+                icon={ChartLineData01Icon}
                 title="No period data yet"
                 subtitle="Record transactions to visualise income vs expense by period."
               />
@@ -394,7 +396,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                       <View key={`${cat.name}-${idx}`} style={styles.categoryCell}>
 
                         <IconAvatar
-                          icon={resolveIcon(cat.icon, 'tag-outline')}
+                          icon={resolveIcon(cat.icon, Tag01Icon)}
                           color={accent}
                           variant="solid"
                           size={28}
@@ -413,7 +415,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               </View>
             ) : (
               <EmptyState
-                icon="tag-outline"
+                icon={Tag01Icon}
                 title="No category data yet"
                 subtitle="Add expense transactions to see a breakdown by category."
               />
@@ -476,7 +478,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   {accountDistribution.map((acc, idx) => (
                     <View key={`${acc.id}-${idx}`} style={styles.categoryCell}>
                       <IconAvatar
-                        icon={resolveIcon(acc.icon, 'domain')}
+                        icon={resolveIcon(acc.icon, Building01Icon)}
                         color={acc.hex}
                         variant="solid"
                         size={28}
@@ -493,7 +495,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               </View>
             ) : (
               <EmptyState
-                icon="domain"
+                icon={Building01Icon}
                 title={`No ${selectedCurrency} accounts`}
                 subtitle="Add an account in this currency to see the balance split."
               />
@@ -505,7 +507,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           <PremiumGuard label="Spending by Weekday" size="medium">
             {(dowData ?? []).length === 0 ? (
               <EmptyState
-                icon="calendar-week"
+                icon={Calendar01Icon}
                 title="No weekday pattern yet"
                 subtitle="More transactions will reveal your spending rhythm by day."
               />

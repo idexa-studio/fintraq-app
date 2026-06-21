@@ -7,7 +7,8 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { WalkthroughOverlay, PERSONS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { StorageKeys } from '@/src/constants/keys';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CancelCircleIcon, LockPasswordIcon, PlusSignIcon, Search01Icon, UserGroupIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -73,7 +74,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
       {persons.length > 0 && (
         <View style={styles.searchRow}>
           <View style={styles.searchWrap}>
-            <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
+            <HugeiconsIcon icon={Search01Icon} size={18} color={colors.textMuted} />
             <TextInput
               style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
               value={query}
@@ -86,7 +87,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
             />
             {query.length > 0 && (
               <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
+                <HugeiconsIcon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
               </BentoPressable>
             )}
           </View>
@@ -96,7 +97,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {!isPremium && (
           <View style={styles.limitBanner}>
-            <MaterialCommunityIcons name="account-group-outline" size={16} color={colors.textMuted} />
+            <HugeiconsIcon icon={UserGroupIcon} size={16} color={colors.textMuted} />
             <Text style={[styles.limitText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               {persons.length}/{FREE_PERSON_LIMIT} persons — upgrade for unlimited
             </Text>
@@ -139,7 +140,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
         {persons.length === 0 && (
           <View style={styles.empty}>
-            <MaterialCommunityIcons name="account-group-outline" size={32} color={colors.textMuted} />
+            <HugeiconsIcon icon={UserGroupIcon} size={32} color={colors.textMuted} />
             <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               No persons yet
             </Text>
@@ -160,8 +161,8 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
       <BentoPressable style={[styles.fab, { backgroundColor: atLimit ? colors.textMuted : colors.primary }]} onPress={handleAdd}>
         {atLimit
-          ? <MaterialCommunityIcons name="lock" size={20} color={colors.background} />
-          : <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
+          ? <HugeiconsIcon icon={LockPasswordIcon} size={20} color={colors.background} />
+          : <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.background} />
         }
       </BentoPressable>
       <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_PERSONS} steps={PERSONS_WALKTHROUGH_STEPS} />

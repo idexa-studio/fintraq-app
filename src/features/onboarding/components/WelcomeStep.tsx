@@ -1,25 +1,27 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { BarChartIcon, FlashIcon, LockPasswordIcon } from '@hugeicons/core-free-icons';
+import type { IconSvgElement } from '@hugeicons/react-native';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 
 type ColorKey = 'primary' | 'info' | 'success';
 
-const FEATURES: { icon: React.ComponentProps<typeof MaterialCommunityIcons>['name']; label: string; detail: string; colorKey: ColorKey }[] = [
+const FEATURES: { icon: IconSvgElement; label: string; detail: string; colorKey: ColorKey }[] = [
   {
-    icon: 'flash-outline',
+    icon: FlashIcon,
     label: 'Fast capture',
     detail: 'Log transactions anywhere in seconds.',
     colorKey: 'primary',
   },
   {
-    icon: 'chart-bar',
+    icon: BarChartIcon,
     label: 'Built-in analytics',
     detail: 'Spending trends, category breakdown, and smart insights.',
     colorKey: 'info',
   },
   {
-    icon: 'lock-outline',
+    icon: LockPasswordIcon,
     label: 'Private by design',
     detail: 'All your data stays on your device. Always.',
     colorKey: 'success',
@@ -38,7 +40,7 @@ export const WelcomeStep = React.memo(function WelcomeStep() {
         return (
           <View key={f.label} style={styles.card}>
             <View style={[styles.iconWrap, { backgroundColor: accent + '1A' }]}>
-              <MaterialCommunityIcons name={f.icon} size={22} color={colors.text} />
+              <HugeiconsIcon icon={f.icon} size={22} color={colors.text} />
             </View>
             <View style={styles.text}>
               <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]}>

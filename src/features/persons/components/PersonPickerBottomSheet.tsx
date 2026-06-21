@@ -1,7 +1,8 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CancelCircleIcon, CheckmarkCircle01Icon, Search01Icon, UserCircleIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useCallback, useMemo, useState } from 'react';
 import * as Haptics from 'expo-haptics';
 import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -92,7 +93,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
         </View>
         {selected && (
           <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-            <MaterialCommunityIcons name="check" size={12} color={colors.background} />
+            <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.background} />
           </View>
         )}
       </BentoPressable>
@@ -116,7 +117,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
         </View>
 
         <View style={styles.searchWrap}>
-          <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
+          <HugeiconsIcon icon={Search01Icon} size={18} color={colors.textMuted} />
           <TextInput
             style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
             value={query}
@@ -129,7 +130,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           />
           {query.length > 0 && (
             <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
+              <HugeiconsIcon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
             </BentoPressable>
           )}
         </View>
@@ -140,7 +141,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           onPress={() => handleSelect(null)}
         >
           <View style={styles.noneAvatar}>
-            <MaterialCommunityIcons name="account-outline" size={18} color={colors.textMuted} />
+            <HugeiconsIcon icon={UserCircleIcon} size={18} color={colors.textMuted} />
           </View>
           <View style={styles.rowMeta}>
             <Text style={[styles.rowName, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
@@ -149,7 +150,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           </View>
           {selectedId === null && (
             <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-              <MaterialCommunityIcons name="check" size={12} color={colors.background} />
+              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.background} />
             </View>
           )}
         </BentoPressable>

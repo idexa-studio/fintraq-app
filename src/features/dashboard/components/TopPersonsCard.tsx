@@ -86,7 +86,7 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     },
     cell: {
       backgroundColor: colors.surface,
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       padding: spacing('3'),
       gap: spacing('3'),
       flexDirection: 'row',

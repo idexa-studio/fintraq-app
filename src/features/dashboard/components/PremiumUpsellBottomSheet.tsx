@@ -1,6 +1,15 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  CancelCircleIcon,
+  ChartLineData01Icon,
+  CrownIcon,
+  File01Icon,
+  Rocket01Icon,
+  Search01Icon,
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSvgElement } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -13,11 +22,11 @@ type PremiumUpsellBottomSheetProps = {
 
 const BLOCK = 5;
 
-const PRO_FEATURES = [
-  { icon: 'chart-timeline-variant' as const, text: 'Spending trends & burn velocity' },
-  { icon: 'lightning-bolt' as const, text: 'Runway forecasts & metrics' },
-  { icon: 'magnify' as const, text: 'Global search across all data' },
-  { icon: 'file-document-outline' as const, text: 'CSV export & weekly/monthly reports' },
+const PRO_FEATURES: { icon: IconSvgElement; text: string }[] = [
+  { icon: ChartLineData01Icon, text: 'Spending trends & burn velocity' },
+  { icon: Rocket01Icon, text: 'Runway forecasts & metrics' },
+  { icon: Search01Icon, text: 'Global search across all data' },
+  { icon: File01Icon, text: 'CSV export & weekly/monthly reports' },
 ];
 
 export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomSheet({
@@ -62,7 +71,7 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
         {/* Header Row with Crown Icon */}
         <View style={styles.header}>
           <View style={styles.crownWrapper}>
-            <MaterialCommunityIcons name="crown" size={24} color={colors.warning} />
+            <HugeiconsIcon icon={CrownIcon} size={24} color={colors.warning} />
           </View>
           <View style={styles.headerText}>
             <Text style={styles.title}>Unlock Fintraq Pro</Text>
@@ -72,7 +81,7 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
 
         {canDismiss ? (
           <BentoPressable onPress={onClose} style={styles.closeBtn}>
-            <MaterialCommunityIcons name="close" size={18} color={colors.text} />
+            <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.text} />
           </BentoPressable>
         ) : null}
 
@@ -81,7 +90,7 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
           {PRO_FEATURES.map((item, index) => (
             <View key={index} style={styles.row}>
               <View style={styles.iconWrapper}>
-                <MaterialCommunityIcons name={item.icon} size={18} color={colors.primary} />
+                <HugeiconsIcon icon={item.icon} size={18} color={colors.primary} />
               </View>
               <Text style={styles.rowText}>{item.text}</Text>
             </View>

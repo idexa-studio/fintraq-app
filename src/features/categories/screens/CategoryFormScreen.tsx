@@ -14,6 +14,7 @@ import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS, PALETTE_COLOR_OP
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
+import { GridIcon } from '@hugeicons/core-free-icons';
 import { useCategories, useCreateCategory, useUpdateCategory } from '@/src/features/categories/hooks/categories';
 
 type CategoryFormValues = {
@@ -161,7 +162,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                   onPress={() => setShowIconPicker(true)}
                 >
                   <IconAvatar
-                    icon={resolveIcon(icon, 'grid')}
+                    icon={resolveIcon(icon, GridIcon)}
                     color={colorHex} variant="solid"
                     size={32}
                   />

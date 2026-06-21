@@ -1,7 +1,9 @@
+import { AlertCircleIcon, CheckmarkCircle01Icon, InformationCircleIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSvgElement } from '@hugeicons/react-native';
 import React, { useMemo, useCallback } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { BentoPressable } from './BentoPressable';
 
 export type AlertButton = {
@@ -19,12 +21,12 @@ type AlertDialogProps = {
   type?: 'info' | 'success' | 'error' | 'warning';
 };
 
-const ICONS = {
-  info: { name: 'information' as const, bg: '#60A5FA15', fg: '#60A5FA' },
-  success: { name: 'check-circle' as const, bg: '#0E9F6E15', fg: '#0E9F6E' },
-  error: { name: 'alert-circle' as const, bg: '#B4231815', fg: '#B42318' },
-  warning: { name: 'alert' as const, bg: '#F59E0B15', fg: '#F59E0B' },
-} as const;
+const ICONS: Record<string, { icon: IconSvgElement; bg: string; fg: string }> = {
+  info: { icon: InformationCircleIcon, bg: '#60A5FA15', fg: '#60A5FA' },
+  success: { icon: CheckmarkCircle01Icon, bg: '#0E9F6E15', fg: '#0E9F6E' },
+  error: { icon: AlertCircleIcon, bg: '#B4231815', fg: '#B42318' },
+  warning: { icon: AlertCircleIcon, bg: '#F59E0B15', fg: '#F59E0B' },
+};
 
 export const AlertDialog = React.memo(function AlertDialog({
   visible,
@@ -52,7 +54,7 @@ export const AlertDialog = React.memo(function AlertDialog({
         <View style={styles.card}>
           <View style={styles.body}>
             <View style={[styles.iconBox, { backgroundColor: iconCfg.bg }]}>
-              <MaterialCommunityIcons name={iconCfg.name} size={24} color={iconCfg.fg} />
+              <HugeiconsIcon icon={iconCfg.icon} size={24} color={iconCfg.fg} />
             </View>
 
             <Text style={styles.title}>{title}</Text>
