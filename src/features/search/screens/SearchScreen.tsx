@@ -47,56 +47,93 @@ type SearchSection = {
 const AccountRow = React.memo(function AccountRow({
   account,
   onPress,
+  isFirst,
+  isLast,
 }: {
   account: Account;
   onPress: (id: number) => void;
+  isFirst: boolean;
+  isLast: boolean;
 }) {
   const theme = useTheme();
   const { colors } = theme;
+  const styles = useMemo(() => createAccountRowStyles(theme, isFirst, isLast), [theme, isFirst, isLast]);
   const accentColor = useMemo(() => colorNumberToHex(account.color), [account.color]);
   const handlePress = useCallback(() => onPress(account.id), [onPress, account.id]);
 
   return (
-    <BentoPressable
-      style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]}
-      onPress={handlePress}
-      scaleOnPress={false}
-    >
-      <IconAvatar icon={resolveIcon(account.icon, Building01Icon)} color={accentColor} variant="solid" size={36} iconSize={16} />
-      <View style={{ flex: 1, gap: theme.spacing('0.5') }}>
-        <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{account.name}</Text>
-        <Text style={{ fontFamily: theme.typography.fonts.regular, fontSize: theme.typography.sizes.xs, color: colors.textMuted }}>
+    <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
+      <IconAvatar icon={resolveIcon(account.icon, Building01Icon)} color={accentColor} variant="solid" size={36} iconSize={18} />
+      <View style={styles.info}>
+        <Text style={styles.name}>{account.name}</Text>
+        <Text style={styles.meta}>
           {account.currency}{account.accountNumber && account.accountNumber !== 'N/A' ? ` · •••• ${account.accountNumber.slice(-4)}` : ''}
         </Text>
       </View>
-      <MoneyText amount={account.balance} currency={account.currency} weight="bold" style={{ fontSize: 14 }} />
+      <MoneyText amount={account.balance} currency={account.currency} weight="bold" style={styles.balance} />
       <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
     </BentoPressable>
   );
 });
 
+const createAccountRowStyles = (
+  { colors, typography, spacing, radius }: ThemeContextType,
+  isFirst: boolean,
+  isLast: boolean,
+) =>
+  StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: spacing('3.5'),
+      gap: spacing('3'),
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: isFirst ? radius('xl') : 0,
+      borderTopRightRadius: isFirst ? radius('xl') : 0,
+      borderBottomLeftRadius: isLast ? radius('xl') : 0,
+      borderBottomRightRadius: isLast ? radius('xl') : 0,
+      marginBottom: isLast ? 0 : spacing('0.5'),
+    },
+    info: { flex: 1, gap: spacing('0.5') },
+    name: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.sm,
+      color: colors.text,
+    },
+    meta: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+    },
+    balance: {
+      fontSize: typography.sizes.md,
+    },
+  });
+
 const CategoryRow = React.memo(function CategoryRow({
   category,
   onPress,
+  isFirst,
+  isLast,
 }: {
   category: Category;
   onPress: (id: number) => void;
+  isFirst: boolean;
+  isLast: boolean;
 }) {
   const theme = useTheme();
   const { colors } = theme;
+  const styles = useMemo(() => createCategoryRowStyles(theme, isFirst, isLast), [theme, isFirst, isLast]);
   const catColor = useMemo(() => colorNumberToHex(category.color), [category.color]);
   const handlePress = useCallback(() => onPress(category.id), [onPress, category.id]);
+  const badgeColor = category.type === 'CR' ? colors.success : category.type === 'TR' ? colors.info : colors.danger;
 
   return (
-    <BentoPressable
-      style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]}
-      onPress={handlePress}
-      scaleOnPress={false}
-    >
-      <IconAvatar icon={resolveIcon(category.icon, Tag01Icon)} color={catColor} variant="solid" size={36} iconSize={16} />
-      <Text style={{ flex: 1, fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>{category.name}</Text>
-      <View style={[{ backgroundColor: (category.type === 'CR' ? colors.success : colors.danger) + '15', paddingHorizontal: theme.spacing('2'), height: 22, borderRadius: theme.radius('sm'), alignItems: 'center', justifyContent: 'center' }]}>
-        <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: 10, color: category.type === 'CR' ? colors.success : colors.danger }}>
+    <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
+      <IconAvatar icon={resolveIcon(category.icon, Tag01Icon)} color={catColor} variant="solid" size={36} iconSize={18} />
+      <Text style={styles.name}>{category.name}</Text>
+      <View style={[styles.badge, { backgroundColor: badgeColor + '1A' }]}>
+        <Text style={[styles.badgeText, { color: badgeColor }]}>
           {category.type === 'CR' ? 'Income' : category.type === 'TR' ? 'Transfer' : 'Expense'}
         </Text>
       </View>
@@ -105,15 +142,57 @@ const CategoryRow = React.memo(function CategoryRow({
   );
 });
 
+const createCategoryRowStyles = (
+  { colors, typography, spacing, radius }: ThemeContextType,
+  isFirst: boolean,
+  isLast: boolean,
+) =>
+  StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: spacing('3.5'),
+      gap: spacing('3'),
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: isFirst ? radius('xl') : 0,
+      borderTopRightRadius: isFirst ? radius('xl') : 0,
+      borderBottomLeftRadius: isLast ? radius('xl') : 0,
+      borderBottomRightRadius: isLast ? radius('xl') : 0,
+      marginBottom: isLast ? 0 : spacing('0.5'),
+    },
+    name: {
+      flex: 1,
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.sm,
+      color: colors.text,
+    },
+    badge: {
+      paddingHorizontal: spacing('2'),
+      height: 22,
+      borderRadius: radius('sm'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    badgeText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.xxs,
+    },
+  });
+
 const PersonRow = React.memo(function PersonRow({
   person,
   onPress,
+  isFirst,
+  isLast,
 }: {
   person: Person;
   onPress: (id: number) => void;
+  isFirst: boolean;
+  isLast: boolean;
 }) {
   const theme = useTheme();
   const { colors } = theme;
+  const styles = useMemo(() => createPersonRowStyles(theme, isFirst, isLast), [theme, isFirst, isLast]);
   const hex = useMemo(() => colorNumberToHex(person.color), [person.color]);
   const initials = useMemo(() =>
     person.name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join(''),
@@ -122,32 +201,68 @@ const PersonRow = React.memo(function PersonRow({
   const handlePress = useCallback(() => onPress(person.id), [onPress, person.id]);
 
   return (
-    <BentoPressable
-      style={[{ flexDirection: 'row', alignItems: 'center', padding: theme.spacing('3.5'), gap: theme.spacing('3') }]}
-      onPress={handlePress}
-      scaleOnPress={false}
-    >
-      <View style={{ width: 36, height: 36, borderRadius: Math.round(36 * 0.25), backgroundColor: hex, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ color: '#FFFFFF', fontFamily: theme.typography.fonts.bold, fontSize: theme.typography.sizes.sm }}>{initials}</Text>
+    <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
+      <View style={[styles.avatar, { backgroundColor: hex }]}>
+        <Text style={styles.initials}>{initials}</Text>
       </View>
-      <View style={{ flex: 1, gap: theme.spacing('0.5') }}>
-        <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>
-          {person.name}
-        </Text>
+      <View style={styles.info}>
+        <Text style={styles.name}>{person.name}</Text>
         {(person.designation || person.company) ? (
-          <Text style={{ fontFamily: theme.typography.fonts.regular, fontSize: theme.typography.sizes.xs, color: colors.textMuted }}>
+          <Text style={styles.meta}>
             {[person.designation, person.company].filter(Boolean).join(' · ')}
           </Text>
         ) : person.email ? (
-          <Text style={{ fontFamily: theme.typography.fonts.regular, fontSize: theme.typography.sizes.xs, color: colors.textMuted }}>
-            {person.email}
-          </Text>
+          <Text style={styles.meta}>{person.email}</Text>
         ) : null}
       </View>
       <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
     </BentoPressable>
   );
 });
+
+const createPersonRowStyles = (
+  { colors, typography, spacing, radius }: ThemeContextType,
+  isFirst: boolean,
+  isLast: boolean,
+) =>
+  StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: spacing('3.5'),
+      gap: spacing('3'),
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: isFirst ? radius('xl') : 0,
+      borderTopRightRadius: isFirst ? radius('xl') : 0,
+      borderBottomLeftRadius: isLast ? radius('xl') : 0,
+      borderBottomRightRadius: isLast ? radius('xl') : 0,
+      marginBottom: isLast ? 0 : spacing('0.5'),
+    },
+    avatar: {
+      width: 36,
+      height: 36,
+      borderRadius: radius('sm'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    initials: {
+      color: '#FFFFFF',
+      fontFamily: typography.fonts.bold,
+      fontSize: typography.sizes.sm,
+    },
+    info: { flex: 1, gap: spacing('0.5') },
+    name: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.sm,
+      color: colors.text,
+    },
+    meta: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+    },
+  });
+
 
 export const SearchScreen = React.memo(function SearchScreen() {
   const theme = useTheme();
@@ -275,37 +390,15 @@ export const SearchScreen = React.memo(function SearchScreen() {
         );
       }
 
-      const cardStyle = {
-        backgroundColor: theme.colors.surface,
-        borderTopLeftRadius: isFirst ? theme.radius('xl') : 0,
-        borderTopRightRadius: isFirst ? theme.radius('xl') : 0,
-        borderBottomLeftRadius: isLast ? theme.radius('xl') : 0,
-        borderBottomRightRadius: isLast ? theme.radius('xl') : 0,
-        borderBottomWidth: isLast ? 0 : 1,
-        borderBottomColor: theme.colors.text + '08',
-      };
-
       if (item.kind === 'account') {
-        return (
-          <View style={cardStyle}>
-            <AccountRow account={item.data} onPress={handleAccountPress} />
-          </View>
-        );
+        return <AccountRow account={item.data} onPress={handleAccountPress} isFirst={isFirst} isLast={isLast} />;
       }
       if (item.kind === 'category') {
-        return (
-          <View style={cardStyle}>
-            <CategoryRow category={item.data} onPress={handleCategoryPress} />
-          </View>
-        );
+        return <CategoryRow category={item.data} onPress={handleCategoryPress} isFirst={isFirst} isLast={isLast} />;
       }
-      return (
-        <View style={cardStyle}>
-          <PersonRow person={item.data} onPress={handlePersonPress} />
-        </View>
-      );
+      return <PersonRow person={item.data} onPress={handlePersonPress} isFirst={isFirst} isLast={isLast} />;
     },
-    [handleTransactionPress, handleAccountPress, handleCategoryPress, handlePersonPress, theme],
+    [handleTransactionPress, handleAccountPress, handleCategoryPress, handlePersonPress],
   );
 
   const renderSectionHeader = useCallback(
