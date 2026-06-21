@@ -133,7 +133,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 24,
+      fontSize: typography.sizes.xxl,
       color: colors.text,
     },
     subtitle: {
@@ -162,7 +162,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     optLabel: {
       flex: 1,
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.fonts.semibold,
       fontSize: typography.sizes.sm,
       color: colors.text,
     },
@@ -181,7 +181,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     cancelBtnText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 14,
+      fontSize: typography.sizes.md,
       color: colors.textMuted,
     },
   });

@@ -127,8 +127,8 @@ const PersonRow = React.memo(function PersonRow({
       onPress={handlePress}
       scaleOnPress={false}
     >
-      <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: hex, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ color: '#fff', fontWeight: '700', fontSize: 13 }}>{initials}</Text>
+      <View style={{ width: 36, height: 36, borderRadius: Math.round(36 * 0.25), backgroundColor: hex, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: '#FFFFFF', fontFamily: theme.typography.fonts.bold, fontSize: theme.typography.sizes.sm }}>{initials}</Text>
       </View>
       <View style={{ flex: 1, gap: theme.spacing('0.5') }}>
         <Text style={{ fontFamily: theme.typography.fonts.semibold, fontSize: theme.typography.sizes.sm, color: colors.text }}>

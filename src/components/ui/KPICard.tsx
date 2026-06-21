@@ -138,8 +138,8 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       backgroundColor: colors.primary + '18',
     },
     currencyTabText: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 12,
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
     },
     currencyTabTextActive: {
@@ -172,23 +172,23 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     kpiLabel: {
       color: colors.textMuted,
-      fontFamily: typography.fonts.medium,
-      fontSize: 11,
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.xs,
       lineHeight: 14,
       marginBottom: spacing('0.5'),
     },
     kpiLabelSmall: {
       color: colors.textMuted,
-      fontFamily: typography.fonts.medium,
-      fontSize: 11,
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.xs,
       lineHeight: 14,
     },
     kpiValueLarge: {
-      fontSize: 24,
+      fontSize: typography.sizes.xxl,
       lineHeight: 28,
     },
     kpiValueSmall: {
-      fontSize: 14,
+      fontSize: typography.sizes.md,
       lineHeight: 18,
     },
     kpiDivider: {

@@ -120,14 +120,14 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 24,
+      fontSize: typography.sizes.xxl,
       color: colors.text,
       textAlign: 'left',
       marginBottom: spacing('2'),
     },
     message: {
       fontFamily: typography.fonts.regular,
-      fontSize: 14,
+      fontSize: typography.sizes.md,
       color: colors.textMuted,
       lineHeight: 20,
       textAlign: 'left',
@@ -147,7 +147,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     btnText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 14,
+      fontSize: typography.sizes.md,
     },
     btnPrimaryText: {
       color: colors.primary,
