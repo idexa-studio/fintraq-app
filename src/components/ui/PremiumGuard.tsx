@@ -112,6 +112,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
     justifyContent: 'center',
     borderWidth: 0,
     backgroundColor: colors.surface,
+    alignSelf: 'stretch',
   },
   content: {
     flex: 1,

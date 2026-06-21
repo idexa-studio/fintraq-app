@@ -1,22 +1,22 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { TRANSACTIONS_LIST_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
-import { StorageKeys } from '../../../constants/keys';
 import { ArrowRight01Icon, CancelCircleIcon, Delete01Icon, FilterIcon, PencilEdit01Icon, PlusSignIcon, ReceiptTextIcon, SortingDownIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import type { IconSvgElement } from '@hugeicons/react-native';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
 import { KPICard } from '../../../components/ui/KPICard';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
+import { StorageKeys } from '../../../constants/keys';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
@@ -226,7 +226,8 @@ const FilterChip = React.memo(function FilterChip({
 }: FilterChipProps) {
   const theme = useTheme();
   const { colors, spacing, isDark } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
 
   const tintColor = isDark ? colors.primaryLight : colors.primaryDark;
 
@@ -273,7 +274,8 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
 
   const theme = useTheme();
   const { colors } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
 
   // Advanced filters state
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(() => {
@@ -837,7 +839,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType, insets: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -899,7 +901,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     content: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      paddingBottom: 100,
+      paddingBottom: insets.bottom > 0 ? insets.bottom + 90 : 100,
     },
     listHeader: {
       gap: spacing('5'),
@@ -977,7 +979,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     },
     fab: {
       position: 'absolute',
-      bottom: 20,
+      bottom: insets.bottom > 0 ? insets.bottom + 16 : 16,
       right: 16,
       width: 56,
       height: 56,
@@ -999,16 +1001,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       alignItems: 'center',
       borderRadius: radius('full'),
       height: 30,
-      borderWidth: 1,
       overflow: 'hidden',
     },
     chipInactive: {
       backgroundColor: colors.surface,
-      borderColor: isDark ? '#2E3039' : '#E2E8F0',
     },
     chipActive: {
-      backgroundColor: isDark ? '#11352A' : '#E6F4EA',
-      borderColor: isDark ? colors.primary + '50' : colors.primary + '30',
+      backgroundColor: colors.primaryLight,
     },
     chipButton: {
       flexDirection: 'row',

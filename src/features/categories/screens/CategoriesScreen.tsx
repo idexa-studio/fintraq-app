@@ -3,7 +3,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, ListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
@@ -19,7 +19,8 @@ import { StorageKeys } from '../../../constants/keys';
 export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const theme = useTheme();
   const { colors } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const router = useRouter();
 
   const { data: categories, isLoading } = useCategories();
@@ -197,7 +198,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: ThemeContextType, insets: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -211,7 +212,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: T
     /* ── Grid ── */
     grid: {
       paddingHorizontal: layout.screenPadding,
-      paddingBottom: 100,
+      paddingBottom: insets.bottom > 0 ? insets.bottom + 90 : 100,
       gap: spacing('3'),
     },
     row: {
@@ -225,11 +226,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: T
     typeTabs: {
       flexDirection: 'row',
       gap: spacing('2'),
+      width: '100%',
     },
     typeTab: {
-      height: 34,
-      paddingHorizontal: spacing('4'),
+      flex: 1,
+      height: 36,
       borderRadius: radius('full'),
+      backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -292,7 +295,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: T
     /* ── FAB ── */
     fab: {
       position: 'absolute',
-      bottom: 20,
+      bottom: insets.bottom > 0 ? insets.bottom + 16 : 16,
       right: 16,
       width: 56,
       height: 56,

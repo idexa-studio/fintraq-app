@@ -9,6 +9,7 @@ import { Account } from '@/src/features/accounts/api/accounts';
 import { Category } from '@/src/features/categories/api/categories';
 import { Person } from '@/src/features/persons/api/persons';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
 import type { TransactionType } from '@/src/types';
@@ -37,7 +38,6 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
 }: AdvancedFilterBottomSheetProps) {
   const theme = useTheme();
   const { colors, typography } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [local, setLocal]         = useState<AdvancedFilters>(filters);
   const [showStart, setShowStart] = useState(false);
@@ -45,6 +45,8 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   const [minAmt, setMinAmt]       = useState('');
   const [maxAmt, setMaxAmt]       = useState('');
   const bottomSheet = useBottomSheet();
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
 
   useEffect(() => {
     if (visible) {
@@ -137,7 +139,6 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
       keyboardBehavior="interactive"
     >
       <View style={{ flex: 1 }}>
-        {/* ── Header ── */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
@@ -170,7 +171,6 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           scrollEventThrottle={16}
         >
 
-          {/* ── TYPE: horizontal pills ── */}
           <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
             Type
           </Text>
@@ -184,11 +184,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                   style={[
                     styles.typePill,
                     {
-                      backgroundColor: sel
-                        ? theme.isDark
-                          ? opt.key === 'CR' ? '#163228' : opt.key === 'DR' ? '#321B21' : '#1B2A4A'
-                          : opt.key === 'CR' ? '#E6F4EA' : opt.key === 'DR' ? '#FCE8E6' : '#E8F0FE'
-                        : colors.card
+                      backgroundColor: sel ? c + '1A' : colors.card
                     }
                   ]}
                   onPress={() => toggleType(opt.key)}
@@ -201,7 +197,6 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             })}
           </View>
 
-          {/* ── DATE RANGE: group card with rows ── */}
           <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
             Date range
           </Text>
@@ -242,7 +237,6 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             )}
           </View>
 
-          {/* ── AMOUNT: group card with rows ── */}
           <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
             Amount
           </Text>
@@ -280,7 +274,6 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             </View>
           </View>
 
-          {/* ── ACCOUNTS: pill chips ── */}
           {accounts.length > 0 && (
             <>
               <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
@@ -307,7 +300,6 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             </>
           )}
 
-          {/* ── CATEGORIES: pill chips ── */}
           {categories.length > 0 && (
             <>
               <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
@@ -334,7 +326,6 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             </>
           )}
 
-          {/* ── PERSONS: pill chips ── */}
           {persons.length > 0 && (
             <>
               <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
@@ -351,8 +342,8 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                       style={[styles.pill, { backgroundColor: sel ? pc + '18' : colors.card }]}
                       onPress={() => togglePerson(p.id)}
                     >
-                      <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: pc, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ color: '#fff', fontWeight: '700', fontSize: 8 }}>{initials}</Text>
+                      <View style={{ width: 16, height: 16, borderRadius: 4, backgroundColor: pc, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ color: '#FFFFFF', fontFamily: typography.fonts.bold, fontSize: 8 }}>{initials}</Text>
                       </View>
                       <Text style={[styles.pillLabel, { color: sel ? pc : colors.text }]}>
                         {p.name.split(' ')[0]}
@@ -402,7 +393,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, insets: any) =>
   StyleSheet.create({
     header: {
       flexDirection: 'row',
@@ -498,11 +489,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      paddingBottom: spacing('3'),
+      paddingBottom: insets.bottom > 0 ? insets.bottom + spacing('2') : spacing('3'),
     },
     applyBtn: {
       height: 52,
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
       alignItems: 'center',
       justifyContent: 'center',
     },

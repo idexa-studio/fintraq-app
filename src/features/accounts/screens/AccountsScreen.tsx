@@ -94,8 +94,8 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                   <IconAvatar
                     icon={resolveIcon(account.icon, Building01Icon)}
                     color={accColor} variant="subtle"
-                    size={36}
-                    iconSize={16}
+                    size={40}
+                    iconSize={18}
                   />
                   <View style={styles.cardMeta}>
                     <Text style={styles.cardName} numberOfLines={1}>
@@ -135,18 +135,17 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
               />
 
               <View style={styles.cardStats}>
-                <View style={styles.statCol}>
+                <View style={styles.statCell}>
                   <Text style={styles.statLabel}>
                     Total in
                   </Text>
-                  <MoneyText amount={account.income} currency={account.currency} type="CR" compact style={styles.statValue} />
+                  <MoneyText amount={account.income} currency={account.currency} type="CR" compact style={[styles.statValue, { color: colors.success }]} />
                 </View>
-                <View style={styles.statDivider} />
-                <View style={styles.statCol}>
+                <View style={styles.statCell}>
                   <Text style={styles.statLabel}>
                     Total out
                   </Text>
-                  <MoneyText amount={account.expense} currency={account.currency} type="DR" compact style={styles.statValue} />
+                  <MoneyText amount={account.expense} currency={account.currency} type="DR" compact style={[styles.statValue, { color: colors.danger }]} />
                 </View>
               </View>
             </BentoPressable>
@@ -266,18 +265,17 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout, shad
     },
     cardStats: {
       flexDirection: 'row',
-      gap: spacing('3'),
+      gap: spacing('2'),
     },
-    statCol: {
+    statCell: {
       flex: 1,
+      backgroundColor: colors.background,
+      borderRadius: radius('lg'),
+      padding: spacing('3'),
       gap: spacing('1'),
     },
-    statDivider: {
-      width: 1,
-      backgroundColor: colors.text + '0C',
-    },
     statLabel: {
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
     },
