@@ -9,14 +9,16 @@ import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments, persons, seederState } from '@/src/db/schema';
-import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
-import { getBiometricCapability, authenticateWithBiometrics } from '@/src/features/lock/hooks/useLocalAuth';
 import { LockStorage } from '@/src/features/lock/api/lockStorage';
+import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
+import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
 import { useAppLock } from '@/src/providers/AppLockProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
+import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
+import { getFormattedAppVersion } from '@/src/utils/version';
 import {
   AlarmClockIcon,
   ArrowRight01Icon,
@@ -24,28 +26,26 @@ import {
   Calendar01Icon,
   CellularNetworkIcon,
   CoinsIcon,
+  ContrastIcon,
   Delete01Icon,
   Download01Icon,
   File01Icon,
   GridIcon,
   LockPasswordIcon,
-  PinCodeIcon,
   Moon01Icon,
+  PinCodeIcon,
   ShieldKeyIcon,
   SparklesIcon,
   Sun01Icon,
   UserAccountIcon,
-  ContrastIcon,
 } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
 import type { IconSvgElement } from '@hugeicons/react-native';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { getFormattedAppVersion } from '@/src/utils/version';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, Linking, Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Linking, Platform, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
@@ -525,7 +525,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         </View>
 
-        <BentoPressable onPress={handleFooterTap} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}>
+        <TouchableOpacity onPress={handleFooterTap} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }} activeOpacity={1}>
           <View style={styles.footer}>
             <Text style={[styles.footerBrand, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
               Fintraq / Core
@@ -534,7 +534,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
               Data encrypted and stored locally.
             </Text>
           </View>
-        </BentoPressable>
+        </TouchableOpacity>
       </ScrollView>
 
       <CurrencyPickerBottomSheet

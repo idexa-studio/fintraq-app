@@ -85,7 +85,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   backButton: {
     width: layout.minTouchTarget,
     height: layout.minTouchTarget,
-    borderRadius: radius('full'),
+    borderRadius: radius('lg'),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.surface,

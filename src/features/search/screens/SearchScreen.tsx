@@ -241,7 +241,7 @@ const createPersonRowStyles = (
     avatar: {
       width: 36,
       height: 36,
-      borderRadius: radius('sm'),
+      borderRadius: radius('xl'),
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -587,7 +587,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     backButton: {
       width: layout.minTouchTarget,
       height: layout.minTouchTarget,
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.surface,
@@ -613,7 +613,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     premiumHeaderBadge: {
       width: 24,
       height: 24,
-      borderRadius: 12,
+      borderRadius: radius('full'),
       backgroundColor: colors.warning + '12',
       alignItems: 'center',
       justifyContent: 'center',
@@ -721,7 +721,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     promptIcon: {
       width: 64,
       height: 64,
-      borderRadius: radius('full'),
+      borderRadius: radius('xl'),
       backgroundColor: colors.surface,
       justifyContent: 'center',
       alignItems: 'center',
@@ -765,19 +765,18 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       justifyContent: 'space-between',
       paddingLeft: spacing('1'),
+      paddingTop: spacing('3'),
       marginBottom: spacing('2.5'),
     },
     sectionTitle: {
       fontFamily: typography.fonts.semibold,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
-      opacity: 0.7,
     },
     sectionCount: {
       fontFamily: typography.fonts.regular,
       fontSize: typography.sizes.xs,
-      color: colors.textMuted,
-      opacity: 0.5,
+      color: colors.textMuted + 'AA',
     },
 
     resultCard: {
@@ -809,5 +808,5 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: typography.sizes.xxs,
     },
 
-    sectionFooter: { height: spacing('5') },
+    sectionFooter: { height: spacing('4') },
   });
