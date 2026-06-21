@@ -69,7 +69,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
     return (
       <View style={styles.container}>
         <SectionHeader title="Pro Insights" />
-        <PremiumGuard label="Upgrade to Pro for insights" size="large">
+        <PremiumGuard label="Upgrade to Pro for insights" size="large" containerStyle={styles.guard}>
           <View style={styles.empty}>
             <View style={styles.emptyIconWrapper}>
               <HugeiconsIcon icon={ChartLineData01Icon} size={18} color={colors.primary} />
@@ -90,6 +90,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
       <PremiumGuard
         label="Upgrade to Pro for insights"
         size="large"
+        containerStyle={styles.guard}
       >
         {isLoading ? (
           <View style={styles.placeholder}>
@@ -144,6 +145,9 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {},
+    guard: {
+      marginHorizontal: layout.screenPadding,
+    },
     scroll: { gap: GAP },
     placeholder: {
       height: 80,

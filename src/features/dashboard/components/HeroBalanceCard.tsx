@@ -22,7 +22,7 @@ type Props = {
 
 export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, income, expense, currencies, onCurrencySelect }: Props) {
   const theme = useTheme();
-  const { typography, colors } = theme;
+  const { typography, heroCard } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { profile } = useSettings();
   const { isPremium } = usePremium();
@@ -32,56 +32,54 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   const navigateToSearch = useCallback(() => router.push('/search'), [router]);
 
   return (
-    <View>
-      <View style={styles.card}>
-        <DashboardHeader
-          name={profile.name}
-          isPremium={isPremium}
-          onSearch={isPremium ? navigateToSearch : navigateToPremium}
-        />
+    <View style={styles.card}>
+      <DashboardHeader
+        name={profile.name}
+        isPremium={isPremium}
+        onSearch={isPremium ? navigateToSearch : navigateToPremium}
+      />
 
-        <View style={styles.header}>
-          <Text style={[styles.label, { fontFamily: typography.fonts.medium }]}>
-            Your balance
-          </Text>
-          <StreakBadge />
+      <View style={styles.header}>
+        <Text style={[styles.label, { fontFamily: typography.fonts.medium }]}>
+          Your balance
+        </Text>
+        <StreakBadge />
+      </View>
+
+      <MoneyText
+        amount={balance}
+        currency={currency}
+        style={styles.balance}
+        weight="bold"
+      />
+
+      <View style={styles.stats}>
+        <View style={styles.statContainer}>
+          <View style={styles.statHeader}>
+            <HugeiconsIcon icon={ArrowUp01Icon} size={14} color={heroCard.income} />
+            <Text style={styles.statLabel}>Income</Text>
+          </View>
+          <MoneyText
+            amount={income}
+            currency={currency}
+            type="CR"
+            weight="semibold"
+            style={[styles.statValue, { color: heroCard.income }]}
+          />
         </View>
 
-        <MoneyText
-          amount={balance}
-          currency={currency}
-          style={styles.balance}
-          weight="bold"
-        />
-
-        <View style={styles.stats}>
-          <View style={styles.statContainer}>
-            <View style={styles.statHeader}>
-              <HugeiconsIcon icon={ArrowUp01Icon} size={14} color={colors.success} />
-              <Text style={styles.statLabel}>Income</Text>
-            </View>
-            <MoneyText
-              amount={income}
-              currency={currency}
-              type="CR"
-              weight="semibold"
-              style={styles.statValue}
-            />
+        <View style={styles.statContainer}>
+          <View style={styles.statHeader}>
+            <HugeiconsIcon icon={ArrowDown01Icon} size={14} color={heroCard.expense} />
+            <Text style={styles.statLabel}>Expenses</Text>
           </View>
-
-          <View style={styles.statContainer}>
-            <View style={styles.statHeader}>
-              <HugeiconsIcon icon={ArrowDown01Icon} size={14} color={colors.danger} />
-              <Text style={styles.statLabel}>Expenses</Text>
-            </View>
-            <MoneyText
-              amount={expense}
-              currency={currency}
-              type="DR"
-              weight="semibold"
-              style={styles.statValue}
-            />
-          </View>
+          <MoneyText
+            amount={expense}
+            currency={currency}
+            type="DR"
+            weight="semibold"
+            style={[styles.statValue, { color: heroCard.expense }]}
+          />
         </View>
       </View>
 
@@ -94,13 +92,16 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   );
 });
 
-const createStyles = ({ spacing, radius, layout, typography, colors }: ThemeContextType) =>
+const createStyles = ({ spacing, radius, layout, typography, colors, heroCard }: ThemeContextType) =>
   StyleSheet.create({
     // ── Hero card
     card: {
-      backgroundColor: colors.primary,
+      backgroundColor: heroCard.background,
       padding: spacing('5'),
       paddingTop: spacing('7'),
+      paddingBottom: spacing('5'),
+      borderBottomLeftRadius: radius('2xl'),
+      borderBottomRightRadius: radius('2xl'),
       overflow: 'hidden',
     },
 
@@ -111,19 +112,19 @@ const createStyles = ({ spacing, radius, layout, typography, colors }: ThemeCont
       marginTop: spacing('2'),
     },
     label: {
-      fontSize: 11,
-      color: colors.text,
+      fontSize: typography.sizes.xs,
+      color: heroCard.textMuted,
     },
     balance: {
       fontSize: 40,
       lineHeight: 46,
-      color: colors.text,
+      color: heroCard.textPrimary,
     },
     stats: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
-      marginBottom: spacing('3')
+      marginBottom: spacing('1'),
     },
     statContainer: {
       flex: 1,
@@ -137,13 +138,12 @@ const createStyles = ({ spacing, radius, layout, typography, colors }: ThemeCont
       gap: spacing('1'),
     },
     statLabel: {
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
       fontFamily: typography.fonts.regular,
-      color: colors.text,
+      color: heroCard.textMuted,
     },
     statValue: {
-      fontSize: 15,
+      fontSize: typography.sizes.md,
       lineHeight: 18,
-      color: colors.text,
     },
   });

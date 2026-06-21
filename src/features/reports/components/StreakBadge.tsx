@@ -24,7 +24,7 @@ export const StreakBadge = React.memo(function StreakBadge() {
   );
 });
 
-const createStyles = ({ typography, colors }: ThemeContextType) =>
+const createStyles = ({ typography, colors, heroCard }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flexDirection: 'row',
@@ -39,6 +39,6 @@ const createStyles = ({ typography, colors }: ThemeContextType) =>
     text: {
       fontFamily: typography.fonts.semibold,
       fontSize: 11,
-      color: colors.text,
+      color: heroCard.textPrimary,
     },
   });

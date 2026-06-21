@@ -125,13 +125,13 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       paddingVertical: spacing('0.5'),
       borderRadius: radius('full'),
     },
-    currency: { fontSize: 11 },
+    currency: { fontSize: typography.sizes.xs },
 
     balanceContainer: {
       gap: spacing('0.5'),
     },
     balanceLabel: {
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
     },
     balance: { fontSize: 20, lineHeight: 24 },
 

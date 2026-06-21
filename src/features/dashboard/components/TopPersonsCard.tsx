@@ -19,7 +19,7 @@ function PersonInitials({ name, color, size = 32 }: { name: string; color: strin
     <View style={{
       width: size,
       height: size,
-      borderRadius: size / 2,
+      borderRadius: Math.round(size * 0.25),
       backgroundColor: withAlpha(color, '12'),
       alignItems: 'center',
       justifyContent: 'center',
@@ -103,6 +103,6 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
       color: colors.text,
     },
     cellAmount: {
-      fontSize: 12,
+      fontSize: typography.sizes.xs,
     },
   });

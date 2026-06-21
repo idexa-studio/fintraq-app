@@ -1,5 +1,5 @@
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import type { IconSvgElement } from '@hugeicons/react-native';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
@@ -23,7 +23,7 @@ export const IconAvatar = React.memo(function IconAvatar({
   iconSize,
   style,
 }: IconAvatarProps) {
-  const { colors, radius } = useTheme();
+  const { colors } = useTheme();
   const resolved = iconSize ?? Math.round(size * 0.45);
 
   const { bg, iconColor, border } = React.useMemo(() => {
@@ -39,7 +39,7 @@ export const IconAvatar = React.memo(function IconAvatar({
   }, [variant, color, colors.background]);
 
   return (
-    <View style={[styles.base, { width: size, height: size, borderRadius: radius('md'), backgroundColor: bg }, border, style]}>
+    <View style={[styles.base, { width: size, height: size, borderRadius: Math.round(size * 0.30), backgroundColor: bg }, border, style]}>
       <HugeiconsIcon icon={icon} size={resolved} color={iconColor} />
     </View>
   );

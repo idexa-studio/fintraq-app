@@ -19,7 +19,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 function PersonInitials({ name, color, size = 64 }: { name: string; color: string; size?: number }) {
   const initials = name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
   return (
-    <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: color + '18', alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ width: size, height: size, borderRadius: Math.round(size * 0.25), backgroundColor: color + '18', alignItems: 'center', justifyContent: 'center' }}>
       <Text style={{ color: color, fontWeight: '700', fontSize: size * 0.38 }}>{initials}</Text>
     </View>
   );

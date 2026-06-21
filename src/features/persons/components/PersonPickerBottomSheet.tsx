@@ -22,7 +22,7 @@ const ITEM_HEIGHT = 60;
 function PersonInitials({ name, color, size = 36 }: { name: string; color: string; size?: number }) {
   const initials = name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
   return (
-    <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: color, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ width: size, height: size, borderRadius: Math.round(size * 0.25), backgroundColor: color, alignItems: 'center', justifyContent: 'center' }}>
       <Text style={{ color: '#fff', fontWeight: '700', fontSize: size * 0.36 }}>{initials}</Text>
     </View>
   );
@@ -220,7 +220,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     noneAvatar: {
       width: 36,
       height: 36,
-      borderRadius: 18,
+      borderRadius: Math.round(36 * 0.25),
       backgroundColor: colors.background,
       alignItems: 'center',
       justifyContent: 'center',

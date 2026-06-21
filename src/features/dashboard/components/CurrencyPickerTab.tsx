@@ -39,18 +39,15 @@ export const CurrencyPickerTab = React.memo(function CurrencyPickerTab({
   );
 });
 
-const createStyles = ({ spacing, radius, typography, colors }: ThemeContextType) =>
+const createStyles = ({ spacing, radius, typography, colors, heroCard }: ThemeContextType) =>
   StyleSheet.create({
     track: {
       flexDirection: "row",
-      backgroundColor: colors.primary,
-      borderBottomLeftRadius: radius("lg"),
-      borderBottomRightRadius: radius("lg"),
-      borderRadius: radius("lg"),
+      backgroundColor: "rgba(255, 255, 255, 0.08)",
+      borderRadius: radius("full"),
       padding: spacing("0.5"),
-      alignSelf: "flex-start",
-      marginHorizontal: "auto",
-      marginTop: -15,
+      alignSelf: "center",
+      marginTop: spacing("2.5"),
     },
     pill: {
       paddingHorizontal: spacing("3.5"),
@@ -58,15 +55,15 @@ const createStyles = ({ spacing, radius, typography, colors }: ThemeContextType)
       borderRadius: radius("full"),
     },
     pillActive: {
-      backgroundColor: colors.background,
+      backgroundColor: "#FFFFFF",
     },
     label: {
       fontFamily: typography.fonts.medium,
-      fontSize: 12,
-      color: "#fff",
+      fontSize: typography.sizes.xs,
+      color: "rgba(255, 255, 255, 0.6)",
     },
     labelActive: {
-      color: colors.primary,
+      color: heroCard.background,
       fontFamily: typography.fonts.semibold,
     },
   });

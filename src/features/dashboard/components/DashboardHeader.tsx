@@ -18,7 +18,7 @@ export const DashboardHeader = React.memo(function DashboardHeader({
   onSearch,
 }: Props) {
   const theme = useTheme();
-  const { colors } = theme;
+  const { heroCard } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const monogram = useMemo(() => {
@@ -28,7 +28,7 @@ export const DashboardHeader = React.memo(function DashboardHeader({
   return (
     <View style={styles.container}>
       <BentoPressable style={styles.searchBar} onPress={onSearch}>
-        <HugeiconsIcon icon={Search} size={20} color={colors.textMuted} />
+        <HugeiconsIcon icon={Search} size={20} color={heroCard.textMuted} />
         <Text style={styles.placeholder} numberOfLines={1}>
           Search transactions, accounts...
         </Text>
@@ -47,7 +47,7 @@ export const DashboardHeader = React.memo(function DashboardHeader({
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       paddingTop: spacing('3'),
@@ -58,7 +58,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       height: 48,
       borderRadius: radius('lg'),
-      backgroundColor: colors.surface,
+      backgroundColor: 'rgba(255, 255, 255, 0.08)',
       paddingLeft: spacing('4'),
       paddingRight: spacing('2'),
       gap: spacing('3'),
@@ -66,9 +66,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     placeholder: {
       flex: 1,
       fontFamily: typography.fonts.regular,
-      color: colors.textMuted,
+      color: heroCard.textMuted,
       fontSize: 14,
-      opacity: 0.7,
     },
     avatarContainer: {
       position: 'relative',
@@ -77,13 +76,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       width: 32,
       height: 32,
       borderRadius: radius('full'),
-      backgroundColor: colors.primary + '18',
+      backgroundColor: 'rgba(255, 255, 255, 0.12)',
       alignItems: 'center',
       justifyContent: 'center',
     },
     avatarText: {
       fontFamily: typography.fonts.semibold,
-      color: colors.primary,
+      color: heroCard.textPrimary,
       fontSize: 13,
     },
     crownBadge: {
@@ -97,7 +96,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 1.5,
-      borderColor: colors.surface,
+      borderColor: heroCard.background,
     },
   });
 
