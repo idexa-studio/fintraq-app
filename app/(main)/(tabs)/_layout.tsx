@@ -1,65 +1,82 @@
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  BarChartIcon,
+  Building01Icon,
+  Home01Icon,
+  Settings01Icon,
+  UserGroupIcon
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { Tabs } from 'expo-router';
-import React, { ComponentProps, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-type MCIName = ComponentProps<typeof MaterialCommunityIcons>['name'];
-
 export default function TabsLayout() {
-  const { colors, typography, radius } = useTheme();
+  const { colors, spacing, radius } = useTheme();
   const insets = useSafeAreaInsets();
 
-  const bottomPadding = insets.bottom > 0 ? insets.bottom - 2 : 6;
-  const barHeight = 70 + insets.bottom;
+  const floatingBottom = insets.bottom > 0 ? insets.bottom + spacing('2') : spacing('4');
+  const barHeight = 60;
 
-  const renderTabBarIcon = useCallback((iconName: MCIName) => {
+  const renderTabBarIcon = useCallback((IconComponent: typeof Home01Icon) => {
     const TabBarIconComponent = ({ focused }: { focused: boolean }) => {
-      const solidName = (iconName.endsWith('-outline')
-        ? iconName.slice(0, -8)
-        : iconName) as MCIName;
-
       return (
-        <View style={{
-          width: 56,
-          height: 30,
-          borderRadius: radius('full'),
-          backgroundColor: focused ? colors.primaryLight : 'transparent',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <MaterialCommunityIcons
-            name={focused ? solidName : iconName}
-            size={20}
-            color={focused ? colors.primary : colors.textMuted}
-          />
+        <View style={{ alignItems: 'center', justifyContent: 'center', }}>
+          <View style={{
+            width: 40,
+            height: 40,
+            borderRadius: radius('md'), // Squircle / rounded box
+            backgroundColor: focused ? `${colors.primary}` : 'transparent',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <HugeiconsIcon
+              icon={IconComponent}
+              size={22}
+              color={focused ? "#111" : colors.textMuted}
+            />
+          </View>
         </View>
       );
     };
-    TabBarIconComponent.displayName = `TabBarIcon(${iconName})`;
+    TabBarIconComponent.displayName = `TabBarIcon`;
     return TabBarIconComponent;
-  }, [colors.primary, colors.primaryLight, colors.textMuted, radius]);
+  }, [colors.primary, colors.textMuted, radius]);
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarShowLabel: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: {
-          fontFamily: typography.fonts.medium,
-          fontSize: 11,
-          marginTop: 1,
+        tabBarLabelStyle: { height: 0, fontSize: 0, },
+        tabBarIconStyle: {
+          height: barHeight - 10,
+        },
+        tabBarItemStyle: {
+          justifyContent: 'center',
+          alignItems: 'center',
         },
         tabBarStyle: {
+          position: 'absolute',
+          bottom: floatingBottom,
+          left: 0,
+          right: 0,
+          marginHorizontal: spacing('6'),
           backgroundColor: colors.tabBarBackground,
-          borderTopWidth: 0,
-          elevation: 0,
-          shadowOpacity: 0,
+          borderRadius: radius('2xl'),
+          borderWidth: 1.5,
+          borderColor: 'rgba(255, 255, 255, 0.05)',
           height: barHeight,
-          paddingTop: 5,
-          paddingBottom: bottomPadding,
+          elevation: 12,
+          shadowColor: '#000000',
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.35,
+          shadowRadius: 20,
+          paddingBottom: 0,
+          paddingTop: 0,
         },
       }}
     >
@@ -67,40 +84,35 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarLabel: 'Home',
-          tabBarIcon: renderTabBarIcon('home-outline'),
+          tabBarIcon: renderTabBarIcon(Home01Icon),
         }}
       />
       <Tabs.Screen
         name="accounts"
         options={{
           title: 'Accounts',
-          tabBarLabel: 'Accounts',
-          tabBarIcon: renderTabBarIcon('domain'),
+          tabBarIcon: renderTabBarIcon(Building01Icon),
         }}
       />
       <Tabs.Screen
         name="persons"
         options={{
           title: 'Persons',
-          tabBarLabel: 'Persons',
-          tabBarIcon: renderTabBarIcon('account-group-outline'),
+          tabBarIcon: renderTabBarIcon(UserGroupIcon),
         }}
       />
       <Tabs.Screen
         name="analytics"
         options={{
           title: 'Analytics',
-          tabBarLabel: 'Analytics',
-          tabBarIcon: renderTabBarIcon('chart-bar'),
+          tabBarIcon: renderTabBarIcon(BarChartIcon),
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
-          tabBarLabel: 'Settings',
-          tabBarIcon: renderTabBarIcon('cog-outline'),
+          tabBarIcon: renderTabBarIcon(Settings01Icon),
         }}
       />
     </Tabs>

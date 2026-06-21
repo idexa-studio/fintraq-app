@@ -252,13 +252,15 @@ export const LETTER_SPACING = {
 // Never hardcode these values in components — import from here.
 // ============================================
 export const HERO_CARD = {
-  background:  '#052920',
-  textPrimary: '#FFFFFF',
-  textMuted:   'rgba(255, 255, 255, 0.45)',
-  separator:   'rgba(255, 255, 255, 0.07)',
-  income:      '#34D399',
-  expense:     '#F87171',
-  decoOverlay: 'rgba(255, 255, 255, 0.03)',
+  background:  '#00D473',
+  backgroundDark: '#00B362',
+  textPrimary: '#0A0A0A',
+  textMuted:   '#2B2D30',
+  separator:   'rgba(0, 0, 0, 0.07)',
+  income:      '#004D20',
+  expense:     '#800000',
+  decoOverlay: 'rgba(255, 255, 255, 0.12)',
+  glowLight:   'rgba(255, 255, 255, 0.04)',
 } as const;
 
 export type HeroCardPalette = typeof HERO_CARD;

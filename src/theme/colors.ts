@@ -84,3 +84,49 @@ export type ThemeColors = ThemePalette;
 // kLimeBlack — fixed contrast color for text/icons rendered on top of the lime
 // primary (#00CC6A). Lime is always vivid/bright so this stays dark regardless of theme.
 export const PICKER_CONTRAST_COLOR = '#0A0A0A';
+
+export type HeroCardPalette = {
+  background: string;
+  backgroundDark: string;
+  textPrimary: string;
+  textMuted: string;
+  separator: string;
+  income: string;
+  expense: string;
+  decoOverlay: string;
+  glowLight: string;
+};
+
+export function getHeroColors(
+  isDark: boolean,
+  primary: string,
+  primaryDark: string,
+  text: string,
+  textMuted: string
+): HeroCardPalette {
+  if (isDark) {
+    return {
+      background: '#008040', // Deep emerald green for dark mode balance backing
+      backgroundDark: '#006633', // Deep forest green
+      textPrimary: '#FFFFFF', // Pure white for perfect contrast
+      textMuted: '#D1FADF', // Soft bright mint-white for highly legible labels
+      separator: 'rgba(255, 255, 255, 0.15)',
+      income: '#00FF88', // Bright mint/green indicator
+      expense: '#FF8F8F', // Bright coral/red indicator
+      decoOverlay: 'rgba(255, 255, 255, 0.08)',
+      glowLight: 'rgba(255, 255, 255, 0.03)',
+    };
+  } else {
+    return {
+      background: primary, // #00CC6A (bright primary green)
+      backgroundDark: primaryDark, // #009950
+      textPrimary: '#0A0A0A', // Deep black text for readability
+      textMuted: '#1E3A2B', // Dark forest green for label contrast
+      separator: 'rgba(0, 0, 0, 0.08)',
+      income: '#00602F', // Dark green indicator
+      expense: '#9E0000', // Dark red indicator
+      decoOverlay: 'rgba(0, 0, 0, 0.06)',
+      glowLight: 'rgba(255, 255, 255, 0.04)',
+    };
+  }
+}

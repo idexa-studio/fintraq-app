@@ -76,8 +76,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   title: {
     fontFamily: typography.fonts.semibold,
     color: colors.text,
-    fontSize: typography.sizes.xl,
-    lineHeight: 24,
+    fontSize: typography.sizes.xxl,
+    lineHeight: 28,
   },
   rightActionWrap: {
     justifyContent: 'center',

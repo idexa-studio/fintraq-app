@@ -12,7 +12,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 const FREE_PERSON_LIMIT = 10;
@@ -32,7 +32,8 @@ function PersonInitials({ name, color, size = 40 }: { name: string; color: strin
 export const PersonsScreen = React.memo(function PersonsScreen() {
   const theme = useTheme();
   const { colors, typography } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const router = useRouter();
   const { isPremium } = usePremium();
 

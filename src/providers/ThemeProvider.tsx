@@ -3,8 +3,6 @@ import { useColorScheme } from 'react-native';
 import { DARK_THEME, LIGHT_THEME, PICKER_CONTRAST_COLOR, ThemeColors } from '../theme/colors';
 import {
   COMPONENT_SIZES,
-  HERO_CARD,
-  HeroCardPalette,
   LAYOUT,
   OVERLAY,
   radius,
@@ -23,8 +21,6 @@ export type ThemeContextType = {
   isDark: boolean;
   /** Theme-aware overlay used behind modals/sheets */
   overlay: { dim: string; dark: string };
-  /** Fixed dark-context palette for full-bleed hero cards */
-  heroCard: HeroCardPalette;
   /** Always-dark colour for icons/checkmarks on user-chosen bright swatches */
   onAccent: string;
   /** Typography scale — font families, sizes, weights */
@@ -45,7 +41,6 @@ const defaultContext: ThemeContextType = {
   colors: DARK_THEME,
   isDark: true,
   overlay: OVERLAY.dark,
-  heroCard: HERO_CARD,
   onAccent: PICKER_CONTRAST_COLOR,
   typography: TYPOGRAPHY,
   sizes: COMPONENT_SIZES,
@@ -75,7 +70,6 @@ export const ThemeProvider = React.memo(function ThemeProvider({ children }: { c
     colors,
     isDark,
     overlay,
-    heroCard: HERO_CARD,
     onAccent: PICKER_CONTRAST_COLOR,
     typography: TYPOGRAPHY,
     sizes: COMPONENT_SIZES,

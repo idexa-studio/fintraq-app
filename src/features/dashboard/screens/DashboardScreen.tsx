@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { DEFAULT_CURRENCY } from '../../../constants/currency';
@@ -32,7 +32,8 @@ const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
 export const DashboardScreen = React.memo(function DashboardScreen() {
   const theme = useTheme();
   const { colors } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const { isPremium } = usePremium();
   const router = useRouter();
 
@@ -200,11 +201,11 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, insets: any) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
-    content: { paddingBottom: 100 },
+    content: { paddingBottom: insets.bottom > 0 ? insets.bottom + 80 + 24 : 110 },
 
   
 
@@ -262,7 +263,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     // ── FAB
     fab: {
       position: 'absolute',
-      bottom: 20,
+      bottom: insets.bottom > 0 ? insets.bottom + 8 + 64 + 16 : 16 + 64 + 16,
       right: 16,
       width: 56,
       height: 56,
@@ -270,5 +271,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.15,
+      shadowRadius: 8,
+      elevation: 4,
     },
   });

@@ -4,6 +4,7 @@ import { PageBackground } from '@/src/components/ui/PageBackground';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES } from '@/src/constants/iap';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
 import { CheckmarkBadge01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
@@ -14,9 +15,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors, isDark } = theme;
   const router = useRouter();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const heroCard = useMemo(() => getHeroColors(isDark, colors.primary, colors.primaryDark, colors.text, colors.textMuted), [isDark, colors]);
+  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -91,7 +93,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
     container: {
       flex: 1,

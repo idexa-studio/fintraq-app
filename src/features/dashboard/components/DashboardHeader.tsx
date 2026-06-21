@@ -5,21 +5,23 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
+import { HeroCardPalette } from '@/src/theme/colors';
 
 type Props = {
   name?: string;
   isPremium: boolean;
   onSearch: () => void;
+  heroCard: HeroCardPalette;
 };
 
 export const DashboardHeader = React.memo(function DashboardHeader({
   name,
   isPremium,
   onSearch,
+  heroCard,
 }: Props) {
   const theme = useTheme();
-  const { heroCard } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
 
   const monogram = useMemo(() => {
     return (name || 'L').charAt(0).toUpperCase();
@@ -28,9 +30,9 @@ export const DashboardHeader = React.memo(function DashboardHeader({
   return (
     <View style={styles.container}>
       <BentoPressable style={styles.searchBar} onPress={onSearch}>
-        <HugeiconsIcon icon={Search} size={20} color={heroCard.textMuted} />
+        <HugeiconsIcon icon={Search} size={18} color={heroCard.textMuted} />
         <Text style={styles.placeholder} numberOfLines={1}>
-          Search transactions, accounts...
+          Search...
         </Text>
         <View style={styles.avatarContainer}>
           <View style={styles.avatar}>
@@ -47,27 +49,27 @@ export const DashboardHeader = React.memo(function DashboardHeader({
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
     container: {
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('4'),
+      paddingTop: spacing('2'),
+      paddingBottom: spacing('3'),
     },
     searchBar: {
       flexDirection: 'row',
       alignItems: 'center',
-      height: 48,
+      height: 44,
       borderRadius: radius('lg'),
-      backgroundColor: 'rgba(255, 255, 255, 0.08)',
-      paddingLeft: spacing('4'),
-      paddingRight: spacing('2'),
-      gap: spacing('3'),
+      backgroundColor: heroCard.separator,
+      paddingLeft: spacing('3.5'),
+      paddingRight: spacing('1.5'),
+      gap: spacing('2.5'),
     },
     placeholder: {
       flex: 1,
       fontFamily: typography.fonts.regular,
       color: heroCard.textMuted,
-      fontSize: 14,
+      fontSize: 13,
     },
     avatarContainer: {
       position: 'relative',
@@ -75,8 +77,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }:
     avatar: {
       width: 32,
       height: 32,
-      borderRadius: radius('full'),
-      backgroundColor: 'rgba(255, 255, 255, 0.12)',
+      borderRadius: 8, // Squircle: Math.round(32 * 0.25)
+      backgroundColor: 'rgba(0, 0, 0, 0.08)',
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -96,7 +98,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }:
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 1.5,
-      borderColor: heroCard.background,
+      borderColor: colors.primary,
     },
   });
 

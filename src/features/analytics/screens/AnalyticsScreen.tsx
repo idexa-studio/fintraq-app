@@ -563,7 +563,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    content: { paddingBottom: 24, paddingTop: spacing('2') },
+    content: { paddingBottom: 110, paddingTop: spacing('2') },
 
     // ── Pill selectors
     pillRow: {

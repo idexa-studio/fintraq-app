@@ -38,6 +38,7 @@ import {
   ContrastIcon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
@@ -73,25 +74,25 @@ const SwitchRow = React.memo(function SwitchRow({
     <View style={{
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('3'),
+      gap: spacing('3.5'),
       paddingHorizontal: spacing('4'),
       paddingVertical: spacing('3.5'),
       backgroundColor: colors.surface,
       marginBottom: spacing('0.5'),
     }}>
-      <IconAvatar icon={icon} color={resolvedIconColor} variant="subtle" size={32} iconSize={14} />
+      <IconAvatar icon={icon} color={resolvedIconColor} variant="subtle" size={36} />
       <View style={{ flex: 1 }}>
         <Text style={{ fontFamily: typography.fonts.semibold, fontSize: typography.sizes.md, color: colors.text }}>
           {label}
         </Text>
-        <Text style={{ fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted, marginTop: 2, opacity: 0.65 }}>
+        <Text style={{ fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted, marginTop: 2 }}>
           {subtitle}
         </Text>
       </View>
       <Switch
         value={value}
         onValueChange={onToggle}
-        trackColor={{ false: colors.background, true: colors.primary + '40' }}
+        trackColor={{ false: colors.background, true: colors.primaryLight }}
         thumbColor={value ? colors.primary : colors.textMuted}
         ios_backgroundColor={colors.background}
       />
@@ -122,7 +123,7 @@ const NavRow = React.memo(function NavRow({
   isLast,
   theme,
 }: NavRowProps) {
-  const { colors, typography, spacing } = theme;
+  const { colors, typography, spacing, radius } = theme;
   const iconColor = iconColorOverride ?? (destructive ? colors.danger : colors.text);
   const labelColor = destructive ? colors.danger : colors.text;
 
@@ -132,27 +133,38 @@ const NavRow = React.memo(function NavRow({
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        gap: spacing('3'),
+        gap: spacing('3.5'),
         paddingHorizontal: spacing('4'),
         paddingVertical: spacing('3.5'),
         backgroundColor: colors.surface,
         marginBottom: isLast ? 0 : spacing('0.5'),
       }}
     >
-      <IconAvatar icon={icon} color={iconColor} variant="subtle" size={32} iconSize={14} />
+      <IconAvatar icon={icon} color={iconColor} variant="subtle" size={36} />
       <View style={{ flex: 1 }}>
         <Text style={{ fontFamily: typography.fonts.semibold, fontSize: typography.sizes.md, color: labelColor }}>
           {label}
         </Text>
-        <Text style={{ fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted, marginTop: 2, opacity: 0.65 }}>
+        <Text style={{ fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted, marginTop: 2 }}>
           {subtitle}
         </Text>
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing('2') }}>
         {value ? (
-          <Text style={{ fontFamily: typography.fonts.semibold, fontSize: typography.sizes.xs, color: colors.primary }}>
-            {value}
-          </Text>
+          <View style={{
+            backgroundColor: colors.background,
+            paddingHorizontal: spacing('2.5'),
+            paddingVertical: spacing('1'),
+            borderRadius: radius('sm'),
+          }}>
+            <Text style={{
+              fontFamily: typography.fonts.semibold,
+              fontSize: typography.sizes.xs - 1,
+              color: destructive ? colors.danger : colors.textMuted,
+            }}>
+              {value}
+            </Text>
+          </View>
         ) : null}
         <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
       </View>
@@ -168,8 +180,9 @@ const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: 
 
 export const SettingsScreen = React.memo(function SettingsScreen() {
   const theme = useTheme();
-  const { colors, typography, heroCard } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { colors, isDark, typography } = theme;
+  const heroCard = useMemo(() => getHeroColors(isDark, colors.primary, colors.primaryDark, colors.text, colors.textMuted), [isDark, colors]);
+  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
 
   const { isPremium } = usePremium();
   const { profile, updateProfile } = useSettings();
@@ -362,7 +375,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon={SparklesIcon}
             iconColor={colors.warning}
             label={isPremium ? 'Fintraq Pro — Lifetime' : 'Upgrade to Pro'}
-            subtitle={isPremium ? 'You have permanent access to every feature' : 'Unlock analytics, insights, and more'}
+            subtitle={isPremium ? 'Permanent access to all features' : 'Unlock advanced insights and charts'}
             value={isPremium ? 'Active' : undefined}
             onPress={() => router.push('/premium')}
             isLast
@@ -376,7 +389,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon={BellIcon}
             iconColor={colors.info}
             label="Daily reminder"
-            subtitle="Get a nudge to log your daily transactions"
+            subtitle="Get a nudge to log transactions"
             value={profile.reminderEnabled}
             onToggle={handleToggleReminders}
           />
@@ -387,7 +400,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
                 icon={AlarmClockIcon}
                 iconColor={colors.info}
                 label="Reminder time"
-                subtitle="When you receive your daily notification"
+                subtitle="Set daily notification time"
                 value={profile.reminderTime}
                 onPress={() => setShowTimePicker(true)}
               />
@@ -398,7 +411,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon={CoinsIcon}
             iconColor={colors.success}
             label="Default currency"
-            subtitle="Used for new accounts and display"
+            subtitle="Used for new transactions"
             value={profile.defaultCurrency || 'USD'}
             onPress={() => setShowCurrencyPicker(true)}
           />
@@ -407,7 +420,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon={UserAccountIcon}
             iconColor={colors.textMuted}
             label="Display name"
-            subtitle="How you appear throughout the app"
+            subtitle="Set your app nickname"
             value={profile.name || 'Not set'}
             onPress={openNameModal}
           />
@@ -416,7 +429,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon={ContrastIcon}
             iconColor={colors.textMuted}
             label="Theme"
-            subtitle="Light, dark, or follow your system setting"
+            subtitle="Light, dark, or system matching"
             value={themeLabel}
             onPress={() => setShowThemeDialog(true)}
             isLast
@@ -440,7 +453,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon={LockPasswordIcon}
             iconColor={colors.primary}
             label="App lock"
-            subtitle={lockMode === 'biometric' ? 'Face ID / fingerprint' : lockMode === 'pin' ? 'PIN lock' : 'Require biometrics or PIN on open'}
+            subtitle={lockMode === 'biometric' ? 'Face ID / Fingerprint enabled' : lockMode === 'pin' ? 'PIN lock enabled' : 'Secure app opening'}
             value={lockEnabled}
             onToggle={handleToggleLock}
           />
@@ -450,7 +463,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
               icon={PinCodeIcon}
               iconColor={colors.primary}
               label="Change PIN"
-              subtitle="Update your 6-digit unlock code"
+              subtitle="Update security PIN code"
               onPress={handleChangePinPress}
               isLast
             />
@@ -464,7 +477,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon={GridIcon}
             iconColor={colors.success}
             label="Categories"
-            subtitle="Manage your income and expense groups"
+            subtitle="Manage expense/income categories"
             onPress={() => router.push('/categories')}
           />
           <NavRow
@@ -472,7 +485,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon={Download01Icon}
             iconColor={colors.textMuted}
             label="Export CSV"
-            subtitle="Download transactions as a spreadsheet file"
+            subtitle="Download data as spreadsheet"
             onPress={openExport}
             isLast
           />
@@ -485,7 +498,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon={ShieldKeyIcon}
             iconColor={colors.textMuted}
             label="Privacy policy"
-            subtitle="How we handle your data"
+            subtitle="How we manage your data"
             onPress={openPrivacy}
           />
           <NavRow
@@ -493,7 +506,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon={File01Icon}
             iconColor={colors.textMuted}
             label="Terms of service"
-            subtitle="Rules and guidelines for using Fintraq"
+            subtitle="App rules and conditions"
             onPress={openTerms}
             isLast
           />
@@ -505,7 +518,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             theme={theme}
             icon={Delete01Icon}
             label="Factory reset"
-            subtitle="Permanently erase all data and start fresh"
+            subtitle="Erase all data and start fresh"
             onPress={() => setShowResetDialog(true)}
             destructive
             isLast
@@ -569,7 +582,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   );
 });
 
-const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -578,7 +591,7 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
-      paddingBottom: 24,
+      paddingBottom: 110,
     },
 
     heroCard: {
@@ -594,8 +607,8 @@ const createStyles = ({ colors, heroCard, spacing, radius, typography, layout }:
     heroAvatar: {
       width: 56,
       height: 56,
-      borderRadius: 28,
-      backgroundColor: heroCard.textPrimary + '15',
+      borderRadius: 14, // Squircle: Math.round(56 * 0.25)
+      backgroundColor: heroCard.separator,
       alignItems: 'center',
       justifyContent: 'center',
     },

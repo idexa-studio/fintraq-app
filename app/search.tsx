@@ -1,4 +1,12 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  ArrowLeft01Icon,
+  Search01Icon,
+  SparklesIcon,
+  ReceiptTextIcon,
+  Building01Icon,
+  Tag01Icon
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -9,9 +17,9 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 const SEARCH_FEATURES = [
-  { icon: 'receipt-text-outline' as const, label: 'Full-text search across all transactions' },
-  { icon: 'domain' as const, label: 'Find accounts by name instantly' },
-  { icon: 'tag-outline' as const, label: 'Locate categories across your history' },
+  { icon: ReceiptTextIcon, label: 'Full-text search across all transactions' },
+  { icon: Building01Icon, label: 'Find accounts by name instantly' },
+  { icon: Tag01Icon, label: 'Locate categories across your history' },
 ];
 
 const SearchGate = React.memo(function SearchGate() {
@@ -25,14 +33,14 @@ const SearchGate = React.memo(function SearchGate() {
       <PageBackground />
 
       <TouchableOpacity style={styles.backBtn} onPress={() => router.back()} activeOpacity={0.75}>
-        <MaterialCommunityIcons name="arrow-left" size={20} color={colors.text} />
+        <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color={colors.text} />
       </TouchableOpacity>
 
       <View style={styles.body}>
         <View style={styles.iconWrap}>
-          <MaterialCommunityIcons name="magnify" size={36} color={colors.text} />
+          <HugeiconsIcon icon={Search01Icon} size={36} color={colors.text} />
           <View style={styles.proBadge}>
-            <MaterialCommunityIcons name="creation" size={12} color={colors.background} />
+            <HugeiconsIcon icon={SparklesIcon} size={12} color={colors.background} />
             <Text style={styles.proBadgeText}>Pro</Text>
           </View>
         </View>
@@ -46,7 +54,7 @@ const SearchGate = React.memo(function SearchGate() {
           {SEARCH_FEATURES.map((f) => (
             <View key={f.label} style={styles.featureRow}>
               <View style={styles.featureIcon}>
-                <MaterialCommunityIcons name={f.icon} size={16} color={colors.text} />
+                <HugeiconsIcon icon={f.icon} size={16} color={colors.text} />
               </View>
               <Text style={styles.featureLabel}>{f.label}</Text>
             </View>
@@ -58,7 +66,7 @@ const SearchGate = React.memo(function SearchGate() {
           onPress={() => router.push('/premium')}
           activeOpacity={0.85}
         >
-          <MaterialCommunityIcons name="creation" size={16} color={colors.background} />
+          <HugeiconsIcon icon={SparklesIcon} size={16} color={colors.background} />
           <Text style={styles.ctaBtnText}>Upgrade to Pro</Text>
         </TouchableOpacity>
 

@@ -1,5 +1,6 @@
 import { BentoPressable } from "@/src/components/ui/BentoPressable";
 import { ThemeContextType, useTheme } from "@/src/providers/ThemeProvider";
+import { HeroCardPalette } from "@/src/theme/colors";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -7,15 +8,18 @@ type Props = {
   currencies: string[];
   selectedCurrency: string;
   onCurrencySelect?: (currency: string) => void;
+  heroCard: HeroCardPalette;
 };
 
 export const CurrencyPickerTab = React.memo(function CurrencyPickerTab({
   currencies,
   selectedCurrency,
   onCurrencySelect,
+  heroCard,
 }: Props) {
   const theme = useTheme();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { isDark } = theme;
+  const styles = useMemo(() => createStyles(theme, heroCard, isDark), [theme, heroCard, isDark]);
 
   if (currencies.length <= 1) return null;
 
@@ -39,11 +43,11 @@ export const CurrencyPickerTab = React.memo(function CurrencyPickerTab({
   );
 });
 
-const createStyles = ({ spacing, radius, typography, colors, heroCard }: ThemeContextType) =>
+const createStyles = ({ spacing, radius, typography }: ThemeContextType, heroCard: HeroCardPalette, isDark: boolean) =>
   StyleSheet.create({
-    track: {
+     track: {
       flexDirection: "row",
-      backgroundColor: "rgba(255, 255, 255, 0.08)",
+      backgroundColor: heroCard.separator,
       borderRadius: radius("full"),
       padding: spacing("0.5"),
       alignSelf: "center",
@@ -55,15 +59,15 @@ const createStyles = ({ spacing, radius, typography, colors, heroCard }: ThemeCo
       borderRadius: radius("full"),
     },
     pillActive: {
-      backgroundColor: "#FFFFFF",
+      backgroundColor: heroCard.textPrimary,
     },
     label: {
       fontFamily: typography.fonts.medium,
       fontSize: typography.sizes.xs,
-      color: "rgba(255, 255, 255, 0.6)",
+      color: heroCard.textMuted,
     },
     labelActive: {
-      color: heroCard.background,
+      color: isDark ? '#008040' : '#FFFFFF',
       fontFamily: typography.fonts.semibold,
     },
   });

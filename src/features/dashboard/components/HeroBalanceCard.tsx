@@ -3,6 +3,7 @@ import { StreakBadge } from '@/src/features/reports/components/StreakBadge';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
 import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
@@ -22,8 +23,9 @@ type Props = {
 
 export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, income, expense, currencies, onCurrencySelect }: Props) {
   const theme = useTheme();
-  const { typography, heroCard } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { colors, isDark } = theme;
+  const heroCard = useMemo(() => getHeroColors(isDark, colors.primary, colors.primaryDark, colors.text, colors.textMuted), [isDark, colors]);
+  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
   const { profile } = useSettings();
   const { isPremium } = usePremium();
   const router = useRouter();
@@ -32,18 +34,19 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   const navigateToSearch = useCallback(() => router.push('/search'), [router]);
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: heroCard.background }]}>
       <DashboardHeader
         name={profile.name}
         isPremium={isPremium}
         onSearch={isPremium ? navigateToSearch : navigateToPremium}
+        heroCard={heroCard}
       />
 
       <View style={styles.header}>
-        <Text style={[styles.label, { fontFamily: typography.fonts.medium }]}>
+        <Text style={styles.label}>
           Your balance
         </Text>
-        <StreakBadge />
+        <StreakBadge heroCard={heroCard} />
       </View>
 
       <MoneyText
@@ -64,7 +67,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
             currency={currency}
             type="CR"
             weight="semibold"
-            style={[styles.statValue, { color: heroCard.income }]}
+            style={styles.statValue}
           />
         </View>
 
@@ -78,7 +81,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
             currency={currency}
             type="DR"
             weight="semibold"
-            style={[styles.statValue, { color: heroCard.expense }]}
+            style={styles.statValue}
           />
         </View>
       </View>
@@ -87,12 +90,13 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
         currencies={currencies || []}
         selectedCurrency={currency}
         onCurrencySelect={onCurrencySelect}
+        heroCard={heroCard}
       />
     </View>
   );
 });
 
-const createStyles = ({ spacing, radius, layout, typography, colors, heroCard }: ThemeContextType) =>
+const createStyles = ({ spacing, radius, layout, typography }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
     // ── Hero card
     card: {
@@ -103,6 +107,7 @@ const createStyles = ({ spacing, radius, layout, typography, colors, heroCard }:
       borderBottomLeftRadius: radius('2xl'),
       borderBottomRightRadius: radius('2xl'),
       overflow: 'hidden',
+      position: 'relative',
     },
 
     header: {
@@ -113,6 +118,7 @@ const createStyles = ({ spacing, radius, layout, typography, colors, heroCard }:
     },
     label: {
       fontSize: typography.sizes.xs,
+      fontFamily: typography.fonts.medium,
       color: heroCard.textMuted,
     },
     balance: {
@@ -124,13 +130,16 @@ const createStyles = ({ spacing, radius, layout, typography, colors, heroCard }:
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
+      marginTop: spacing('4'), // Beautiful vertical gap between balance and stats
       marginBottom: spacing('1'),
     },
     statContainer: {
       flex: 1,
-      paddingVertical: spacing('2.5'),
+      backgroundColor: heroCard.separator,
+      paddingVertical: spacing('2'),
+      paddingHorizontal: spacing('3'),
       borderRadius: radius('lg'),
-      gap: spacing('1'),
+      gap: spacing('0.5'),
     },
     statHeader: {
       flexDirection: 'row',
@@ -145,5 +154,6 @@ const createStyles = ({ spacing, radius, layout, typography, colors, heroCard }:
     statValue: {
       fontSize: typography.sizes.md,
       lineHeight: 18,
+      color: heroCard.textPrimary,
     },
   });

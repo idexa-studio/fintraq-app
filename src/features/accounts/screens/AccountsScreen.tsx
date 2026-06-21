@@ -16,13 +16,14 @@ import { WalkthroughOverlay, ACCOUNTS_WALKTHROUGH_STEPS } from '@/src/features/w
 import { StorageKeys } from '@/src/constants/keys';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Account } from '../api/accounts';
 
 export const AccountsScreen = React.memo(function AccountsScreen() {
   const theme = useTheme();
   const { colors, typography } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
 
   const { data: accounts } = useAccounts();
   const deleteAccount = useDeleteAccount();
@@ -187,13 +188,13 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: ThemeContextType, insets: any) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
-      paddingBottom: 100,
+      paddingBottom: insets.bottom > 0 ? insets.bottom + 80 + 24 : 110,
     },
 
     card: {
@@ -284,7 +285,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
 
     fab: {
       position: 'absolute',
-      bottom: 20,
+      bottom: insets.bottom > 0 ? insets.bottom + 8 + 64 + 16 : 16 + 64 + 16,
       right: 16,
       width: 56,
       height: 56,
@@ -292,6 +293,11 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.15,
+      shadowRadius: 8,
+      elevation: 4,
     },
 
     empty: {

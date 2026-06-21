@@ -39,7 +39,7 @@ export const IconAvatar = React.memo(function IconAvatar({
   }, [variant, color, colors.background]);
 
   return (
-    <View style={[styles.base, { width: size, height: size, borderRadius: Math.round(size * 0.30), backgroundColor: bg }, border, style]}>
+    <View style={[styles.base, { width: size, height: size, borderRadius: Math.round(size * 0.25), backgroundColor: bg }, border, style]}>
       <HugeiconsIcon icon={icon} size={resolved} color={iconColor} />
     </View>
   );
