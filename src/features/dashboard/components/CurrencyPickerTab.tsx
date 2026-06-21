@@ -43,12 +43,14 @@ const createStyles = ({ spacing, radius, typography, colors }: ThemeContextType)
   StyleSheet.create({
     track: {
       flexDirection: "row",
-      backgroundColor: colors.surface,
-      borderRadius: radius("full"),
+      backgroundColor: colors.primary,
+      borderBottomLeftRadius: radius("lg"),
+      borderBottomRightRadius: radius("lg"),
+      borderRadius: radius("lg"),
       padding: spacing("0.5"),
       alignSelf: "flex-start",
-      marginHorizontal: spacing("5"),
-      marginTop: spacing("3"),
+      marginHorizontal: "auto",
+      marginTop: -15,
     },
     pill: {
       paddingHorizontal: spacing("3.5"),
@@ -56,15 +58,15 @@ const createStyles = ({ spacing, radius, typography, colors }: ThemeContextType)
       borderRadius: radius("full"),
     },
     pillActive: {
-      backgroundColor: colors.primary,
+      backgroundColor: colors.background,
     },
     label: {
       fontFamily: typography.fonts.medium,
       fontSize: 12,
-      color: colors.textMuted,
+      color: "#fff",
     },
     labelActive: {
-      color: colors.background,
+      color: colors.primary,
       fontFamily: typography.fonts.semibold,
     },
   });

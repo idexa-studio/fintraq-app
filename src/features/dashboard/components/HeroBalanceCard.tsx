@@ -123,6 +123,7 @@ const createStyles = ({ spacing, radius, layout, typography, colors }: ThemeCont
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
+      marginBottom: spacing('3')
     },
     statContainer: {
       flex: 1,
