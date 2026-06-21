@@ -34,13 +34,14 @@ type PersonFormValues = {
 };
 
 function PersonInitialsPreview({ name, color }: { name: string; color: string }) {
-  const initials = name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('') || '?';
+  const { typography } = useTheme();
+  const initials = useMemo(() => name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('') || '?', [name]);
   return (
     <View style={{
       width: 64, height: 64, borderRadius: 16,
       backgroundColor: color + '18', alignItems: 'center', justifyContent: 'center',
     }}>
-      <Text style={{ color: color, fontWeight: '700', fontSize: 24 }}>{initials}</Text>
+      <Text style={{ color: color, fontFamily: typography.fonts.bold, fontSize: 24 }}>{initials}</Text>
     </View>
   );
 }

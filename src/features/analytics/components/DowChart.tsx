@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import type { DowSpend } from '../api/analytics';
 
 type Props = { data: DowSpend[] };
@@ -46,7 +46,7 @@ export const DowChart = React.memo(function DowChart({ data }: Props) {
   );
 });
 
-const createStyles = ({ colors, spacing }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ colors, spacing, typography }: ThemeContextType) => StyleSheet.create({
   row: {
     flexDirection: 'row',
     height: 80,
@@ -71,5 +71,5 @@ const createStyles = ({ colors, spacing }: ThemeContextType) => StyleSheet.creat
     width: '100%',
     borderRadius: 4,
   },
-  lbl: { fontSize: 9, letterSpacing: 0.5 },
+  lbl: { fontSize: typography.sizes.xxs, letterSpacing: 0.5 },
 });

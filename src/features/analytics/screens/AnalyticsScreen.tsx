@@ -99,7 +99,7 @@ function EmptyState({
           backgroundColor: colors.surface,
           borderRadius: radius('xl'),
           padding: spacing('4'),
-          marginHorizontal: 16,
+          marginHorizontal: theme.layout.screenPadding,
         },
         iconRing: {
           width: 40,
@@ -140,9 +140,11 @@ function EmptyState({
 
 export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
-  const { colors, layout, spacing } = theme;
+  const { colors, layout, spacing, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { width: screenWidth } = useWindowDimensions();
+  const gridCellWidth = useMemo(() => (screenWidth - layout.screenPadding * 2 - spacing('2')) / 2, [screenWidth, layout, spacing]);
+  const cardCellWidth = useMemo(() => (screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2 - spacing('2')) / 2, [screenWidth, layout, spacing]);
   const chartWidth = screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2;
   const router = useRouter();
   const { isPremium } = usePremium();
@@ -254,7 +256,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* Currency picker */}
           {currencyKeys.length > 1 && (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollPillRow}>
               {currencyKeys.map(c => (
                 <BentoPressable
                   key={c}
@@ -347,7 +349,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* Period flow */}
           <SectionHeader title="Period flow" />
-          <PremiumGuard label="Period Flow" size="medium">
+          <PremiumGuard label="Period Flow" size="medium" containerStyle={styles.guard}>
             {barData.length === 0 ? (
               <EmptyState
                 icon={ChartLineData01Icon}
@@ -373,7 +375,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* Category breakdown — stacked bar + 2-column cards */}
           <SectionHeader title="Category breakdown" rightText={`${(categoryData ?? []).length} groups`} />
-          <PremiumGuard label="Category Breakdown" size="medium">
+          <PremiumGuard label="Category Breakdown" size="medium" containerStyle={styles.guard}>
             {(categoryData ?? []).length > 0 ? (
               <View style={styles.catSection}>
                 {/* Single stacked bar */}
@@ -393,7 +395,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                     const total = (categoryData ?? []).reduce((s, c) => s + c.amount, 0);
                     const pct = total > 0 ? (cat.amount / total) * 100 : 0;
                     return (
-                      <View key={`${cat.name}-${idx}`} style={styles.categoryCell}>
+                      <View key={`${cat.name}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
 
                         <IconAvatar
                           icon={resolveIcon(cat.icon, Tag01Icon)}
@@ -426,7 +428,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           {(personBreakdown ?? []).length > 0 && (
             <>
               <SectionHeader title="Person breakdown" rightText={`${(personBreakdown ?? []).length} persons`} />
-              <PremiumGuard label="Person Breakdown" size="medium">
+              <PremiumGuard label="Person Breakdown" size="medium" containerStyle={styles.guard}>
                 <View style={styles.catSection}>
                   <View style={styles.stackedBar}>
                     {(personBreakdown ?? []).map((p, idx) => (
@@ -443,9 +445,20 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                       const pct = total > 0 ? (p.amount / total) * 100 : 0;
                       const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
                       return (
-                        <View key={`pp-${p.id}-${idx}`} style={styles.categoryCell}>
-                          <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: hex, alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 10 }}>{initials}</Text>
+                        <View key={`pp-${p.id}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
+                          <View style={{
+                            width: 28,
+                            height: 28,
+                            borderRadius: Math.round(28 * 0.25),
+                            backgroundColor: hex + '18',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                            <Text style={{
+                              color: hex,
+                              fontFamily: typography.fonts.bold,
+                              fontSize: 10,
+                            }}>{initials}</Text>
                           </View>
                           <View style={styles.catContent}>
                             <Text style={styles.catName} numberOfLines={1}>{p.name}</Text>
@@ -463,7 +476,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* Account split */}
           <SectionHeader title="Account split" rightText={`${accountDistribution.length} accounts`} />
-          <PremiumGuard label="Account Split" size="medium">
+          <PremiumGuard label="Account Split" size="medium" containerStyle={styles.guard}>
             {accountDistribution.length > 0 ? (
               <View style={styles.catSection}>
                 <View style={styles.stackedBar}>
@@ -476,7 +489,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                 </View>
                 <View style={styles.categoryGrid}>
                   {accountDistribution.map((acc, idx) => (
-                    <View key={`${acc.id}-${idx}`} style={styles.categoryCell}>
+                    <View key={`${acc.id}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
                       <IconAvatar
                         icon={resolveIcon(acc.icon, Building01Icon)}
                         color={acc.hex}
@@ -504,7 +517,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* Spending by weekday */}
           <SectionHeader title="Spending by weekday" rightText="Average pattern" />
-          <PremiumGuard label="Spending by Weekday" size="medium">
+          <PremiumGuard label="Spending by Weekday" size="medium" containerStyle={styles.guard}>
             {(dowData ?? []).length === 0 ? (
               <EmptyState
                 icon={Calendar01Icon}
@@ -525,26 +538,26 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* Behavioral insights */}
           <SectionHeader title="Behavioral insights" />
-          <PremiumGuard label="Behavioral Insights" size="medium">
+          <PremiumGuard label="Behavioral Insights" size="medium" containerStyle={styles.guard}>
             <View style={styles.card}>
               <View style={styles.kpiGrid}>
-                <View style={styles.kpiCell}>
+                <View style={[styles.kpiCell, { width: cardCellWidth }]}>
                   <Text style={styles.kpiLabel}>Daily burn</Text>
                   <MoneyText amount={metrics.dailyBurn} currency={selectedCurrency} type="DR" weight="bold" style={styles.kpiValue} />
                 </View>
-                <View style={styles.kpiCell}>
+                <View style={[styles.kpiCell, { width: cardCellWidth }]}>
                   <Text style={styles.kpiLabel}>Runway</Text>
                   <Text style={styles.kpiPlain}>
                     {metrics.runway === null ? '∞' : `${Math.max(0, metrics.runway).toFixed(0)}d`}
                   </Text>
                 </View>
-                <View style={styles.kpiCell}>
+                <View style={[styles.kpiCell, { width: cardCellWidth }]}>
                   <Text style={styles.kpiLabel}>In/out ratio</Text>
                   <Text style={styles.kpiPlain}>
                     {metrics.flowRatio === null ? '—' : `${metrics.flowRatio.toFixed(2)}×`}
                   </Text>
                 </View>
-                <View style={styles.kpiCell}>
+                <View style={[styles.kpiCell, { width: cardCellWidth }]}>
                   <Text style={styles.kpiLabel}>Active days</Text>
                   <Text style={styles.kpiPlain}>{metrics.txCount}</Text>
                 </View>
@@ -564,6 +577,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     content: { paddingBottom: 110, paddingTop: spacing('2') },
+    guard: { marginHorizontal: layout.screenPadding },
 
     // ── Pill selectors
     pillRow: {
@@ -571,6 +585,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('2'),
       marginBottom: spacing('3'),
       flexWrap: 'wrap',
+      paddingHorizontal: layout.screenPadding,
+    },
+    scrollPillRow: {
+      flexDirection: 'row',
+      gap: spacing('2'),
+      marginBottom: spacing('3'),
       paddingHorizontal: layout.screenPadding,
     },
     pill: {
@@ -583,7 +603,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     pillActive: { backgroundColor: colors.primary + '18' },
     pillLocked: { opacity: 0.55 },
-    pillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
+    pillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: typography.sizes.xs },
     pillTextActive: { color: colors.primary },
     lockIcon: { marginLeft: spacing('1') },
     durationText: {
@@ -612,13 +632,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     metricLabel: {
       fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
     },
-    metricValue: { fontSize: 22, lineHeight: 26, letterSpacing: -0.5 },
-    metricSmall: { fontSize: 15 },
+    metricValue: { fontSize: typography.sizes.xxl, lineHeight: 26, letterSpacing: -0.5 },
+    metricSmall: { fontSize: typography.sizes.lg },
     metricPlain: {
       fontFamily: typography.fonts.amountBold,
-      fontSize: 22,
+      fontSize: typography.sizes.xxl,
       letterSpacing: -0.5,
     },
 
@@ -656,11 +676,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     categoryGrid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      gap: spacing('1'),
+      gap: spacing('2'),
       paddingHorizontal: layout.screenPadding,
     },
     categoryCell: {
-      width: '49.2%',
       backgroundColor: colors.surface,
       borderRadius: radius('lg'),
       padding: spacing('3'),
@@ -671,7 +690,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     catName: {
       flex: 1,
       fontFamily: typography.fonts.semibold,
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
       color: colors.text,
     },
     catBarTrack: {
@@ -687,10 +706,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     catContent: {
       flexDirection: 'column'
     },
-    catAmount: { fontSize: 11 },
+    catAmount: { fontSize: typography.sizes.xs },
     catPercent: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontSize: typography.sizes.xxs,
       position: 'absolute',
       right: spacing('3'),
       top: spacing('3'),
@@ -702,7 +721,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     // ── KPI grid
     kpiGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
     kpiCell: {
-      width: '47%',
       minHeight: 72,
       borderRadius: radius('lg'),
       backgroundColor: colors.card,
@@ -712,13 +730,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     kpiLabel: {
       fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
     },
-    kpiValue: { fontSize: 14 },
+    kpiValue: { fontSize: typography.sizes.md },
     kpiPlain: {
       fontFamily: typography.fonts.amountBold,
       color: colors.text,
-      fontSize: 18,
+      fontSize: typography.sizes.xl,
       letterSpacing: -0.5,
     },
   });

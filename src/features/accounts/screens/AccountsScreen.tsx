@@ -4,7 +4,7 @@ import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
-import { OptionsBottomSheet, OptionsBottomSheetOption } from '@/src/components/ui/OptionsBottomSheet';
+import { OptionsDialog, OptionsDialogOption } from '@/src/components/ui/OptionsDialog';
 import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/accounts';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
@@ -66,7 +66,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
     router.push('/(main)/accounts/form');
   }, [router]);
 
-  const accountOptions = useMemo((): OptionsBottomSheetOption[] => {
+  const accountOptions = useMemo((): OptionsDialogOption[] => {
     if (!selectedAccount) return [];
     return [
       { key: 'edit', label: 'Edit', icon: PencilEdit01Icon, onPress: handleEdit },
@@ -99,7 +99,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                   />
                   <View style={styles.cardMeta}>
                     <Text style={styles.cardName} numberOfLines={1}>
-                      {account.name}
+                       {account.name}
                     </Text>
                     <Text style={styles.cardHint}>
                       {account.accountNumber && account.accountNumber !== 'N/A'
@@ -167,7 +167,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
         <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.background} />
       </BentoPressable>
 
-      <OptionsBottomSheet
+      <OptionsDialog
         visible={showOptions}
         onClose={closeOptions}
         title={selectedAccount?.name ?? 'Account'}
@@ -188,7 +188,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: ThemeContextType, insets: any) =>
+const createStyles = ({ colors, typography, spacing, radius, sizes, layout, shadow }: ThemeContextType, insets: any) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: {
@@ -260,7 +260,9 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       fontSize: typography.sizes.xs,
     },
     cardBalance: {
-      fontSize: 26,
+      fontSize: typography.sizes.xxxl,
+      fontFamily: typography.fonts.bold,
+      lineHeight: 32,
     },
     cardStats: {
       flexDirection: 'row',
@@ -280,12 +282,12 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       fontSize: typography.sizes.xs,
     },
     statValue: {
-      fontSize: 14,
+      fontSize: typography.sizes.md,
     },
 
     fab: {
       position: 'absolute',
-      bottom: insets.bottom > 0 ? insets.bottom + 8 + 64 + 16 : 16 + 64 + 16,
+      bottom: insets.bottom > 0 ? insets.bottom + 8 + 60 + 16 : 16 + 60 + 16,
       right: 16,
       width: 56,
       height: 56,
@@ -293,11 +295,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
-      shadowColor: '#000000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.15,
-      shadowRadius: 8,
-      elevation: 4,
+      ...shadow('lg'),
     },
 
     empty: {

@@ -8,7 +8,7 @@ import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
-import { OptionsBottomSheet } from '../../../components/ui/OptionsBottomSheet';
+import { OptionsDialog } from '../../../components/ui/OptionsDialog';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { Category } from '../api/categories';
 import { CategoryCard } from '../components/CategoryCard';
@@ -172,7 +172,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.background} />
       </BentoPressable>
 
-      <OptionsBottomSheet
+      <OptionsDialog
         visible={showManageDialog}
         onClose={() => setShowManageDialog(false)}
         title="Manage category"
@@ -197,7 +197,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -238,7 +238,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     typeTabText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 13,
+      fontSize: typography.sizes.sm,
       color: colors.textMuted,
     },
     typeTabTextActive: {
@@ -262,12 +262,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     emptyTitle: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 17,
+      fontSize: typography.sizes.xl,
       color: colors.text,
     },
     emptyText: {
       fontFamily: typography.fonts.regular,
-      fontSize: 13,
+      fontSize: typography.sizes.sm,
       color: colors.textMuted,
       textAlign: 'center',
       maxWidth: 220,
@@ -285,7 +285,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     emptyBtnText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 13,
+      fontSize: typography.sizes.sm,
       color: colors.background,
     },
 
@@ -300,5 +300,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
+      ...shadow('lg'),
     },
   });

@@ -13,11 +13,11 @@ import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
-  const { colors, spacing, radius } = useTheme();
+  const { colors, spacing, radius, layout } = useTheme();
   const insets = useSafeAreaInsets();
 
   const floatingBottom = insets.bottom > 0 ? insets.bottom + spacing('2') : spacing('4');
-  const barHeight = 60;
+  const barHeight = 70;
 
   const renderTabBarIcon = useCallback((IconComponent: typeof Home01Icon) => {
     const TabBarIconComponent = ({ focused }: { focused: boolean }) => {
@@ -64,7 +64,7 @@ export default function TabsLayout() {
           bottom: floatingBottom,
           left: 0,
           right: 0,
-          marginHorizontal: spacing('6'),
+          marginHorizontal: layout.screenPadding,
           backgroundColor: colors.tabBarBackground,
           borderRadius: radius('2xl'),
           borderWidth: 1.5,

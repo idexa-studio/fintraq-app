@@ -3,7 +3,7 @@ import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
+import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
@@ -544,9 +544,10 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         onChange={(code) => { updateProfile({ defaultCurrency: code }); }}
       />
 
-      <OptionsBottomSheet
+      <OptionsDialog
         visible={showThemeDialog}
         onClose={() => setShowThemeDialog(false)}
+        title="App theme"
         options={themeDialogOptions}
       />
 

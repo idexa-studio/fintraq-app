@@ -17,7 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
+import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { CsvExportService, ExportDateRange } from '../api/csv-export.service';
@@ -242,7 +242,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
       {showStartPicker ? <DateTimePicker value={customRange?.startDate || new Date()} mode="date" display="default" onChange={handleStartChange} maximumDate={new Date()} /> : null}
       {showEndPicker ? <DateTimePicker value={customRange?.endDate || new Date()} mode="date" display="default" onChange={handleEndChange} maximumDate={new Date()} /> : null}
 
-      <OptionsBottomSheet visible={showExportOptions} onClose={() => { setShowExportOptions(false); setExportedData(null); }} title="Export complete" subtitle={exportedData ? `${previewCount?.toLocaleString()} transactions ready` : 'Choose how to save'} options={[
+      <OptionsDialog visible={showExportOptions} onClose={() => { setShowExportOptions(false); setExportedData(null); }} title="Export complete" subtitle={exportedData ? `${previewCount?.toLocaleString()} transactions ready` : 'Choose how to save'} options={[
         { key: 'save', label: Platform.OS === 'ios' ? 'Save to files' : 'Save to folder', icon: Folder01Icon, selected: false, onPress: handleSave },
         { key: 'share', label: 'Share to apps', icon: Share01Icon, selected: false, onPress: handleShare },
       ]} />

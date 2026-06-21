@@ -1,5 +1,5 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
+import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { TRANSACTIONS_LIST_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
 import { StorageKeys } from '../../../constants/keys';
 import { ArrowRight01Icon, CancelCircleIcon, Delete01Icon, FilterIcon, PencilEdit01Icon, PlusSignIcon, ReceiptTextIcon, SortingDownIcon } from '@hugeicons/core-free-icons';
@@ -801,9 +801,10 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         persons={personsQuery.data ?? []}
       />
 
-      <OptionsBottomSheet
+      <OptionsDialog
         visible={showSortSheet}
         onClose={() => setShowSortSheet(false)}
+        title="Sort transactions"
         options={[
           {
             key: 'newest',
