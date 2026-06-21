@@ -20,7 +20,6 @@ import {
 } from 'react-native';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 
 export const PremiumScreen = React.memo(function PremiumScreen() {
@@ -58,13 +57,8 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
         <Header title="Fintraq Pro" showBack />
 
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-          {/* Subscribed Hero */}
-          <LinearGradient
-            colors={[colors.primary, colors.primaryDark]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={styles.heroCard}
-          >
+          {/* Hero Card — edge-to-edge, dashboard style */}
+          <View style={[styles.heroCard, { backgroundColor: heroCard.background }]}>
             <View style={styles.crownWrapper}>
               <HugeiconsIcon icon={CheckmarkBadge01Icon} size={32} color={colors.warning} />
             </View>
@@ -73,7 +67,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             <Text style={styles.heroDesc}>
               Thank you for your support! You have permanent lifetime access to every professional tool, report export, and future update.
             </Text>
-          </LinearGradient>
+          </View>
 
           {/* Subscription Status Card */}
           <View style={styles.priceContainer}>
@@ -89,7 +83,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           </View>
 
           {/* Features list */}
-          <SectionHeader title="Unlocked features" noPadding />
+          <SectionHeader title="Unlocked features" />
 
           <View style={styles.featuresCard}>
             {FEATURES.map((f, index) => {
@@ -131,13 +125,8 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
       <Header title="Fintraq Pro" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Play Store Premium Hero */}
-        <LinearGradient
-          colors={[colors.primary, colors.primaryDark]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.heroCard}
-        >
+        {/* Hero Card — edge-to-edge, dashboard style */}
+        <View style={[styles.heroCard, { backgroundColor: heroCard.background }]}>
           <View style={styles.crownWrapper}>
             <HugeiconsIcon icon={CrownIcon} size={32} color={colors.warning} />
           </View>
@@ -146,7 +135,17 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           <Text style={styles.heroDesc}>
             No subscriptions. No recurring charges. Unlock advanced financial analytics, exports, and global search instantly.
           </Text>
-        </LinearGradient>
+          <View style={styles.heroPerkRow}>
+            <View style={styles.heroPerk}>
+              <HugeiconsIcon icon={ShieldKeyIcon} size={14} color={heroCard.textPrimary} />
+              <Text style={styles.heroPerkText}>One-time payment</Text>
+            </View>
+            <View style={styles.heroPerk}>
+              <HugeiconsIcon icon={ReloadIcon} size={14} color={heroCard.textPrimary} />
+              <Text style={styles.heroPerkText}>Store-linked license</Text>
+            </View>
+          </View>
+        </View>
 
         {/* Pricing details */}
         <View style={styles.priceContainer}>
@@ -168,23 +167,10 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           ) : (
             <Text style={styles.priceError}>Pricing currently unavailable</Text>
           )}
-
-          <View style={styles.separator} />
-
-          <View style={styles.perks}>
-            <View style={styles.perk}>
-              <HugeiconsIcon icon={ShieldKeyIcon} size={16} color={colors.success} />
-              <Text style={styles.perkText}>Secure one-time payment</Text>
-            </View>
-            <View style={styles.perk}>
-              <HugeiconsIcon icon={ReloadIcon} size={16} color={colors.success} />
-              <Text style={styles.perkText}>Entitlements bind to your store account</Text>
-            </View>
-          </View>
         </View>
 
         {/* Features list */}
-        <SectionHeader title="Everything included" noPadding />
+        <SectionHeader title="Everything included" />
 
         <View style={styles.featuresCard}>
           {FEATURES.map((f, index) => {
@@ -242,32 +228,33 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.background,
     },
     scroll: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
+      paddingTop: 0,
     },
-    // Hero Card
+    // ── Hero Card
     heroCard: {
-      borderRadius: 28,
-      padding: spacing('6'),
-      marginBottom: spacing('5'),
-      gap: spacing('2'),
+      paddingHorizontal: spacing('5'),
+      paddingTop: spacing('5'),
+      paddingBottom: spacing('6'),
+      borderRadius: radius('2xl'),
+      marginHorizontal: layout.screenPadding,
+      marginBottom: spacing('4'),
       overflow: 'hidden',
     },
     crownWrapper: {
       width: 48,
       height: 48,
-      borderRadius: 24,
+      borderRadius: radius('xl'),
       backgroundColor: heroCard.textPrimary + '1E',
       justifyContent: 'center',
       alignItems: 'center',
-      marginBottom: spacing('2'),
-      zIndex: 2,
+      marginBottom: spacing('3'),
     },
     heroBadge: {
       fontFamily: typography.fonts.semibold,
       fontSize: 10,
-      color: colors.primaryLight,
-      zIndex: 2,
+      letterSpacing: 0.5,
+      color: heroCard.textMuted,
+      textTransform: 'uppercase',
     },
     heroTitle: {
       fontFamily: typography.fonts.heading,
@@ -275,24 +262,43 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       lineHeight: 32,
       color: heroCard.textPrimary,
       marginTop: spacing('1'),
-      zIndex: 2,
     },
     heroDesc: {
       fontFamily: typography.fonts.regular,
       fontSize: 13,
       lineHeight: 18,
       color: heroCard.textMuted,
-      opacity: 0.9,
       marginTop: spacing('1'),
-      zIndex: 2,
     },
-    // Price Card
+    // ── Perks inside hero (stat-pill style like HeroBalanceCard)
+    heroPerkRow: {
+      flexDirection: 'row',
+      gap: spacing('2'),
+      marginTop: spacing('4'),
+    },
+    heroPerk: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1.5'),
+      backgroundColor: heroCard.separator,
+      paddingVertical: spacing('2'),
+      paddingHorizontal: spacing('3'),
+      borderRadius: radius('lg'),
+    },
+    heroPerkText: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 11,
+      color: heroCard.textPrimary,
+      flex: 1,
+    },
+    // ── Price Card
     priceContainer: {
       backgroundColor: colors.surface,
-      borderRadius: 24,
+      borderRadius: radius('xl'),
       padding: spacing('5'),
-      marginBottom: spacing('5'),
-      gap: spacing('4'),
+      marginHorizontal: layout.screenPadding,
+      marginBottom: spacing('4'),
     },
     priceRow: {
       flexDirection: 'row',
@@ -345,28 +351,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       textAlign: 'center',
       width: '100%',
     },
-    separator: {
-      height: 1,
-      backgroundColor: colors.text + '08',
-    },
-    perks: {
-      gap: spacing('2'),
-    },
-    perk: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2.5'),
-    },
-    perkText: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      color: colors.text,
-      opacity: 0.85,
-    },
-    // Features list
+    // ── Features list
     featuresCard: {
-      borderRadius: 24,
+      borderRadius: radius('xl'),
       overflow: 'hidden',
+      marginHorizontal: layout.screenPadding,
     },
     featureItem: {
       flexDirection: 'row',
@@ -383,7 +372,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     iconWrapperActive: {
       width: 40,
       height: 40,
-      borderRadius: 20,
+      borderRadius: radius('xl'),
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: colors.success + '12',
@@ -391,7 +380,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     iconWrapperInactive: {
       width: 40,
       height: 40,
-      borderRadius: 20,
+      borderRadius: radius('xl'),
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: colors.primary + '12',
@@ -410,9 +399,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: 13,
       lineHeight: 18,
       color: colors.textMuted,
-      opacity: 0.85,
     },
-    // Pinned Footer
+    // ── Pinned Footer
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('4'),

@@ -11,7 +11,6 @@ import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   const theme = useTheme();
@@ -26,13 +25,8 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
       <Header title="Fintraq Pro" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Subscribed Success Hero */}
-        <LinearGradient
-          colors={[colors.primary, colors.primaryDark]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.heroCard}
-        >
+        {/* Hero Card — edge-to-edge, dashboard style */}
+        <View style={[styles.heroCard, { backgroundColor: heroCard.background }]}>
           <View style={styles.crownWrapper}>
             <HugeiconsIcon icon={CheckmarkBadge01Icon} size={32} color={colors.warning} />
           </View>
@@ -41,7 +35,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
           <Text style={styles.heroDesc}>
             Every professional tool, every future update — yours forever. No subscriptions, no limits.
           </Text>
-        </LinearGradient>
+        </View>
 
         {/* Subscription Status Card */}
         <View style={styles.priceContainer}>
@@ -57,7 +51,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
         </View>
 
         {/* Features list */}
-        <SectionHeader title="Unlocked features" noPadding />
+        <SectionHeader title="Unlocked features" />
 
         <View style={styles.featuresCard}>
           {FEATURES.map((f, index) => {
@@ -100,32 +94,33 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.background,
     },
     scroll: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
+      paddingTop: 0,
     },
-    // Hero Card
+    // ── Hero Card
     heroCard: {
-      borderRadius: 28,
-      padding: spacing('6'),
-      marginBottom: spacing('5'),
-      gap: spacing('2'),
+      paddingHorizontal: spacing('5'),
+      paddingTop: spacing('5'),
+      paddingBottom: spacing('6'),
+      borderRadius: radius('2xl'),
+      marginHorizontal: layout.screenPadding,
+      marginBottom: spacing('4'),
       overflow: 'hidden',
     },
     crownWrapper: {
       width: 48,
       height: 48,
-      borderRadius: 24,
+      borderRadius: radius('xl'),
       backgroundColor: heroCard.textPrimary + '1E',
       justifyContent: 'center',
       alignItems: 'center',
-      marginBottom: spacing('2'),
-      zIndex: 2,
+      marginBottom: spacing('3'),
     },
     heroBadge: {
       fontFamily: typography.fonts.semibold,
       fontSize: 10,
-      color: colors.primaryLight,
-      zIndex: 2,
+      letterSpacing: 0.5,
+      color: heroCard.textMuted,
+      textTransform: 'uppercase',
     },
     heroTitle: {
       fontFamily: typography.fonts.heading,
@@ -133,24 +128,21 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       lineHeight: 32,
       color: heroCard.textPrimary,
       marginTop: spacing('1'),
-      zIndex: 2,
     },
     heroDesc: {
       fontFamily: typography.fonts.regular,
       fontSize: 13,
       lineHeight: 18,
       color: heroCard.textMuted,
-      opacity: 0.9,
       marginTop: spacing('1'),
-      zIndex: 2,
     },
-    // Price Card
+    // ── Status Card
     priceContainer: {
       backgroundColor: colors.surface,
-      borderRadius: 24,
+      borderRadius: radius('xl'),
       padding: spacing('5'),
-      marginBottom: spacing('5'),
-      gap: spacing('4'),
+      marginHorizontal: layout.screenPadding,
+      marginBottom: spacing('4'),
     },
     priceRow: {
       flexDirection: 'row',
@@ -181,10 +173,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.success,
       fontFamily: typography.fonts.semibold,
     },
-    // Features list
+    // ── Features list
     featuresCard: {
-      borderRadius: 24,
+      borderRadius: radius('xl'),
       overflow: 'hidden',
+      marginHorizontal: layout.screenPadding,
     },
     featureItem: {
       flexDirection: 'row',
@@ -201,7 +194,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     iconWrapperActive: {
       width: 40,
       height: 40,
-      borderRadius: 20,
+      borderRadius: radius('xl'),
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: colors.success + '12',
@@ -220,9 +213,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: 13,
       lineHeight: 18,
       color: colors.textMuted,
-      opacity: 0.85,
     },
-    // Pinned Footer
+    // ── Pinned Footer
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('4'),

@@ -266,7 +266,7 @@ const createPersonRowStyles = (
 
 export const SearchScreen = React.memo(function SearchScreen() {
   const theme = useTheme();
-  const { colors, typography, spacing } = theme;
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
   const inputRef = useRef<TextInput>(null);
@@ -404,15 +404,11 @@ export const SearchScreen = React.memo(function SearchScreen() {
   const renderSectionHeader = useCallback(
     ({ section }: { section: SectionListData<SearchItem, SearchSection> }) => (
       <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
-          {section.title}
-        </Text>
-        <Text style={[styles.sectionCount, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-          {section.count}
-        </Text>
+        <Text style={styles.sectionTitle}>{section.title}</Text>
+        <Text style={styles.sectionCount}>{section.count}</Text>
       </View>
     ),
-    [styles, typography.fonts.semibold, typography.fonts.regular, colors.textMuted],
+    [styles],
   );
 
   const renderSectionFooter = useCallback(
@@ -433,16 +429,17 @@ export const SearchScreen = React.memo(function SearchScreen() {
 
       <View style={styles.header}>
         <BentoPressable onPress={() => router.back()} style={styles.backButton}>
-          <HugeiconsIcon icon={ArrowLeft01Icon} size={22} color={colors.text} />
+          <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color={colors.text} />
         </BentoPressable>
 
         <View style={styles.searchWrap}>
+          <HugeiconsIcon icon={Search01Icon} size={16} color={colors.textMuted} />
           <TextInput
             ref={inputRef}
-            style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
+            style={styles.searchInput}
             value={query}
             onChangeText={setQuery}
-            placeholder="Search transactions, accounts, categories..."
+            placeholder="Search transactions, accounts..."
             placeholderTextColor={colors.textMuted + '80'}
             returnKeyType="search"
             autoCorrect={false}
@@ -464,7 +461,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
 
       {/* Quick filters row when search results exist */}
       {hasResults && query.length >= 2 && (
-        <View style={{ marginBottom: spacing('2') }}>
+        <View style={styles.filterWrap}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -537,7 +534,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
             <HugeiconsIcon icon={SparklesIcon} size={14} color={colors.warning} />
             <Text style={styles.proTitleText}>Premium search</Text>
           </View>
-          <Text style={[styles.promptSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+          <Text style={styles.promptSub}>
             Transactions, accounts, and categories. Type at least 2 characters to start.
           </Text>
         </View>
@@ -546,9 +543,9 @@ export const SearchScreen = React.memo(function SearchScreen() {
           <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
             <HugeiconsIcon icon={InboxIcon} size={32} color={colors.textMuted} />
           </View>
-          <Text style={[styles.promptTitle, { fontFamily: typography.fonts.heading, color: colors.text }]}>No results</Text>
-          <Text style={[styles.promptSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-            Nothing matched \u201C{debouncedQuery}\u201D. Try a different term.
+          <Text style={styles.promptTitle}>No results</Text>
+          <Text style={styles.promptSub}>
+            Nothing matched “{debouncedQuery}”. Try a different term.
           </Text>
         </View>
       ) : (
@@ -577,30 +574,33 @@ export const SearchScreen = React.memo(function SearchScreen() {
 
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background },
+    container: { flex: 1 },
 
     header: {
       flexDirection: 'row',
       alignItems: 'center',
       paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('2'),
+      paddingTop: spacing('3'),
       paddingBottom: spacing('4'),
       gap: spacing('3'),
     },
     backButton: {
-      width: 32,
-      height: 32,
-      justifyContent: 'center',
+      width: layout.minTouchTarget,
+      height: layout.minTouchTarget,
+      borderRadius: radius('full'),
       alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.surface,
+      marginLeft: -spacing('1'),
     },
     searchWrap: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
-      height: 48,
-      borderRadius: radius('full'),
+      height: 50,
+      borderRadius: radius('xl'),
       backgroundColor: colors.surface,
-      paddingHorizontal: spacing('4'),
+      paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
     },
     searchInput: {
@@ -617,6 +617,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.warning + '12',
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    filterWrap: {
+      marginBottom: spacing('2'),
     },
 
     /* ── Quick Results Filter Tabs ── */
@@ -641,7 +644,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     filterTabText: {
       fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
-      fontSize: 11,
+      fontSize: typography.sizes.xxs,
     },
     filterTabTextActive: {
       color: colors.primary,
@@ -659,7 +662,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     tabBadgeText: {
       fontFamily: typography.fonts.bold,
-      fontSize: 9,
+      fontSize: typography.sizes.xxs,
       color: colors.textMuted,
     },
     tabBadgeTextActive: {
@@ -680,12 +683,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     recentsTitle: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 12,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
     },
     recentsClear: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 11,
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.xxs,
       color: colors.danger,
     },
     recentsList: {
@@ -704,7 +707,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     recentChipText: {
       fontFamily: typography.fonts.regular,
-      fontSize: 12,
+      fontSize: typography.sizes.xs,
       color: colors.text,
     },
 
@@ -735,7 +738,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     proTitleText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 11,
+      fontSize: typography.sizes.xxs,
       color: colors.warning,
     },
     promptTitle: {
@@ -765,7 +768,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: spacing('2.5'),
     },
     sectionTitle: {
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.fonts.semibold,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       opacity: 0.7,
@@ -803,7 +806,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     typeBadgeText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontSize: typography.sizes.xxs,
     },
 
     sectionFooter: { height: spacing('5') },
