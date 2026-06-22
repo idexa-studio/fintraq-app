@@ -131,7 +131,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       alignItems: 'center',
     },
     stepsBadgeText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: 10,
       color: colors.textMuted,
     },
@@ -186,7 +186,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       justifyContent: 'center',
     },
     nextText: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
       fontSize: 13,
       color: colors.primaryForeground,
     },

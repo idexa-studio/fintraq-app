@@ -130,7 +130,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       display: 'none',
     },
     pillText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabel.fontFamily,
       fontSize: typography.sizes.sm,
     },
   });

@@ -54,11 +54,11 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
               onPress={() => onSelect(person.id)}
             >
               <View style={[styles.avatar, { backgroundColor: hex }]}>
-                <Text style={[styles.avatarText, { fontFamily: typography.fonts.semibold }]}>
+                <Text style={[styles.avatarText, { fontFamily: typography.styles.profileMono.fontFamily }]}>
                   {initials}
                 </Text>
               </View>
-              <Text style={[styles.personName, { fontFamily: typography.fonts.semibold, color: selected ? colors.text : colors.textMuted }]} numberOfLines={1}>
+              <Text style={[styles.personName, { fontFamily: typography.styles.rowLabel.fontFamily, color: selected ? colors.text : colors.textMuted }]} numberOfLines={1}>
                 {person.name.split(' ')[0]}
               </Text>
               {selected && (
@@ -76,7 +76,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   StyleSheet.create({
     container: { paddingVertical: spacing('3') },
     label: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       marginBottom: spacing('3'),
       paddingHorizontal: layout.screenPadding,
@@ -95,7 +95,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
     },
     chipActive: { backgroundColor: colors.primary + '15' },
-    chipText: { fontFamily: typography.fonts.semibold, fontSize: typography.sizes.sm },
+    chipText: { fontFamily: typography.styles.rowLabel.fontFamily, fontSize: typography.sizes.sm },
 
     personChip: {
       flexDirection: 'row',

@@ -184,7 +184,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       alignItems: 'center',
     },
     rowText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: 13,
       color: colors.text,
       flex: 1,
@@ -200,7 +200,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       opacity: 0.65,
     },
     ctaText: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
       fontSize: typography.sizes.md,
       color: colors.primaryForeground,
     },

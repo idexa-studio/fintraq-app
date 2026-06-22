@@ -179,7 +179,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       color: colors.text,
     },
     colorNameSelected: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabelActive.fontFamily,
     },
     colorHex: {
       fontFamily: typography.fonts.amountRegular,

@@ -54,7 +54,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
                   iconSize={14}
                 />
                 <View style={styles.meta}>
-                  <Text style={[styles.name, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+                  <Text style={[styles.name, { fontFamily: typography.styles.cardTitle.fontFamily, color: colors.text }]} numberOfLines={1}>
                     {acc.name}
                   </Text>
                   <Text style={[styles.hint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
@@ -69,7 +69,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
               </View>
 
               <View style={styles.balanceContainer}>
-                <Text style={[styles.balanceLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+                <Text style={[styles.balanceLabel, { fontFamily: typography.styles.caption.fontFamily, color: colors.textMuted }]}>
                   Available balance
                 </Text>
                 <MoneyText amount={acc.balance} currency={acc.currency} style={styles.balance} weight="bold" />
@@ -85,7 +85,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
         onPress={onPressAdd}
       >
         <IconAvatar icon={PlusSignIcon} color={colors.primary} variant="subtle" size={36} iconSize={16} />
-        <Text style={[styles.addTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+        <Text style={[styles.addTitle, { fontFamily: typography.styles.cardTitle.fontFamily, color: colors.text }]}>
           Add account
         </Text>
       </BentoPressable>

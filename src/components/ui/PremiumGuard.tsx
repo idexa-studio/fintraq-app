@@ -133,7 +133,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
     flex: 1,
   },
   title: {
-    fontFamily: typography.fonts.bold,
+    fontFamily: typography.styles.cardTitle.fontFamily,
     fontSize: typography.sizes.md,
     lineHeight: 18,
     color: colors.text,
@@ -149,7 +149,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
     marginTop: spacing('0.5'),
   },
   subtitle: {
-    fontFamily: typography.fonts.semibold,
+    fontFamily: typography.styles.badge.fontFamily,
     fontSize: typography.sizes.xs,
     lineHeight: 14,
     color: colors.primary,

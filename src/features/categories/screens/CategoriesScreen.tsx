@@ -240,7 +240,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: T
       backgroundColor: colors.primary + '18',
     },
     typeTabText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabel.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.textMuted,
     },
@@ -264,7 +264,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: T
       marginBottom: spacing('1'),
     },
     emptyTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
       fontSize: typography.sizes.xl,
       color: colors.text,
     },
@@ -287,7 +287,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: T
       marginTop: spacing('2'),
     },
     emptyBtnText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyAction.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.primaryForeground,
     },

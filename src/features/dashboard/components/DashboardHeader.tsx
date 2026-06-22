@@ -73,7 +73,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.textMuted,
     },
     name: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.profileName.fontFamily,
       fontSize: typography.sizes.xl,
       color: colors.text,
       marginTop: 1,
@@ -98,7 +98,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
     },
     avatarText: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.profileMono.fontFamily,
       color: colors.primary,
       fontSize: 13,
     },

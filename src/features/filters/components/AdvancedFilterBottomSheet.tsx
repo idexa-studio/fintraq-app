@@ -147,7 +147,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             </Text>
             {activeCount > 0 && (
               <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-                <Text style={[styles.badgeText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+                <Text style={[styles.badgeText, { fontFamily: typography.styles.badge.fontFamily, color: colors.background }]}>
                   {activeCount}
                 </Text>
               </View>
@@ -156,7 +156,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           <View style={styles.headerRight}>
             {activeCount > 0 && (
               <BentoPressable onPress={handleReset}>
-                <Text style={[styles.resetText, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
+                <Text style={[styles.resetText, { fontFamily: typography.styles.buttonLabel.fontFamily, color: colors.danger }]}>
                   Reset
                 </Text>
               </BentoPressable>
@@ -172,7 +172,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           scrollEventThrottle={16}
         >
 
-          <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
             Type
           </Text>
           <View style={styles.typeRow}>
@@ -190,7 +190,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                   ]}
                   onPress={() => toggleType(opt.key)}
                 >
-                  <Text style={[styles.typePillLabel, { fontFamily: typography.fonts.semibold, color: sel ? c : colors.textMuted }]}>
+                  <Text style={[styles.typePillLabel, { fontFamily: typography.styles.chipLabel.fontFamily, color: sel ? c : colors.textMuted }]}>
                     {opt.label}
                   </Text>
                 </BentoPressable>
@@ -198,7 +198,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             })}
           </View>
 
-          <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
             Date range
           </Text>
           <View style={[styles.group, { backgroundColor: colors.card }]}>
@@ -209,7 +209,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     From
                   </Text>
-                  <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                  <Text style={[styles.groupRowValue, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
                     {fmt(local.dateRange.startDate)}
                   </Text>
                 </BentoPressable>
@@ -219,7 +219,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     To
                   </Text>
-                  <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                  <Text style={[styles.groupRowValue, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
                     {fmt(local.dateRange.endDate)}
                   </Text>
                   <BentoPressable onPress={clearDateRange} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
@@ -238,7 +238,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             )}
           </View>
 
-          <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
             Amount
           </Text>
           <View style={[styles.group, { backgroundColor: colors.card }]}>
@@ -247,7 +247,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 Min
               </Text>
               <TextInput
-                style={[styles.amountInput, { fontFamily: typography.fonts.semibold, color: colors.text }]}
+                style={[styles.amountInput, { fontFamily: typography.styles.inputValue.fontFamily, color: colors.text }]}
                 value={minAmt}
                 onChangeText={setMinAmt}
                 keyboardType="decimal-pad"
@@ -263,7 +263,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 Max
               </Text>
               <TextInput
-                style={[styles.amountInput, { fontFamily: typography.fonts.semibold, color: colors.text }]}
+                style={[styles.amountInput, { fontFamily: typography.styles.inputValue.fontFamily, color: colors.text }]}
                 value={maxAmt}
                 onChangeText={setMaxAmt}
                 keyboardType="decimal-pad"
@@ -277,7 +277,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
 
           {accounts.length > 0 && (
             <>
-              <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
                 Accounts
               </Text>
               <View style={styles.pillGrid}>
@@ -303,7 +303,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
 
           {categories.length > 0 && (
             <>
-              <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
                 Categories
               </Text>
               <View style={styles.pillGrid}>
@@ -329,7 +329,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
 
           {persons.length > 0 && (
             <>
-              <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
                 Persons
               </Text>
               <View style={styles.pillGrid}>
@@ -344,7 +344,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                       onPress={() => togglePerson(p.id)}
                     >
                       <View style={{ width: 16, height: 16, borderRadius: 4, backgroundColor: pc, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ color: '#FFFFFF', fontFamily: typography.fonts.bold, fontSize: 8 }}>{initials}</Text>
+                        <Text style={{ color: '#FFFFFF', fontFamily: typography.styles.profileMono.fontFamily, fontSize: 8 }}>{initials}</Text>
                       </View>
                       <Text style={[styles.pillLabel, { color: sel ? pc : colors.text }]}>
                         {p.name.split(' ')[0]}
@@ -365,7 +365,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             style={[styles.applyBtn, { backgroundColor: colors.text }]}
             onPress={handleApply}
           >
-            <Text style={[styles.applyLabel, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+            <Text style={[styles.applyLabel, { fontFamily: typography.styles.buttonLabel.fontFamily, color: colors.background }]}>
               Apply filters
             </Text>
           </BentoPressable>

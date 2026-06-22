@@ -898,7 +898,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       justifyContent: 'center',
     },
     emptyTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
       color: colors.text,
       fontSize: 18,
     },
@@ -921,7 +921,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       marginTop: spacing('2'),
     },
     emptyActionText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
       color: colors.primaryForeground,
       fontSize: 15,
     },
@@ -980,7 +980,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       color: colors.textMuted,
     },
     chipTextActive: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabelActive.fontFamily,
       fontSize: 11.5,
       color: isDark ? colors.primaryLight : colors.primaryDark,
     },

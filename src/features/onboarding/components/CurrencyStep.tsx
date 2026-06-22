@@ -138,7 +138,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       textAlign: 'center',
     },
     previewCode: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: 16,
       color: colors.text,
     },
@@ -170,14 +170,14 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       gap: 0,
     },
     listSection: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       marginBottom: spacing('2'),
       paddingLeft: spacing('1'),
     },
     listSectionSpaced: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       marginTop: spacing('4'),
@@ -207,7 +207,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       backgroundColor: colors.primary + '20',
     },
     codeText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
     },
@@ -227,10 +227,10 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       color: colors.text,
     },
     currencyNameSelected: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
     },
     symbolText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: 12,
       color: colors.textMuted,
     },

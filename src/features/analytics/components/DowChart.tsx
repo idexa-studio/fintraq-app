@@ -37,7 +37,7 @@ export const DowChart = React.memo(function DowChart({ data }: Props) {
               },
             ]} />
           </View>
-          <Text style={[styles.lbl, { color: colors.textMuted, fontFamily: typography.fonts.semibold }]}>
+          <Text style={[styles.lbl, { color: colors.textMuted, fontFamily: typography.styles.sectionLabel.fontFamily }]}>
             {d.label}
           </Text>
         </View>

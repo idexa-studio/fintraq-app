@@ -41,7 +41,7 @@ export const WelcomeStep = React.memo(function WelcomeStep() {
           <View key={f.label} style={styles.card}>
             <IconAvatar icon={f.icon} color={accent} variant="subtle" size={48} iconSize={22} />
             <View style={styles.text}>
-              <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+              <Text style={[styles.label, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
                 {f.label}
               </Text>
               <Text style={[styles.detail, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>

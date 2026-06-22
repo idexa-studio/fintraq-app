@@ -42,7 +42,7 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType, heroCar
       alignSelf: 'flex-start',
     },
     text: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xs,
       color: heroCard.textPrimary,
     },

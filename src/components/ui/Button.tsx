@@ -126,7 +126,7 @@ const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.c
     gap: spacing('2'),
   },
   text: {
-    fontFamily: typography.fonts.semibold,
+    fontFamily: typography.styles.buttonLabel.fontFamily,
     includeFontPadding: false,
   },
 });

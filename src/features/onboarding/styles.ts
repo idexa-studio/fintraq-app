@@ -48,7 +48,7 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
       backgroundColor: colors.surface,
     },
     stepPillText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.text,
     },
@@ -75,7 +75,7 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
       marginBottom: spacing('5'),
     },
     eyebrow: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.primary,
       marginBottom: spacing('3'),

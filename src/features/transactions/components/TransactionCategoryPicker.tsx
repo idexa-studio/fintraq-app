@@ -69,7 +69,7 @@ const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeCon
     paddingHorizontal: layout.screenPadding,
   },
   label: {
-    fontFamily: typography.fonts.semibold,
+    fontFamily: typography.styles.sectionLabel.fontFamily,
     fontSize: typography.sizes.xs,
     marginBottom: spacing('3'),
     opacity: 0.6,
@@ -88,7 +88,7 @@ const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeCon
     borderRadius: radius('full'),
   },
   name: {
-    fontFamily: typography.fonts.semibold,
+    fontFamily: typography.styles.chipLabel.fontFamily,
     fontSize: typography.sizes.sm,
   },
 });

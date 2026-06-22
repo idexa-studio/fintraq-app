@@ -245,7 +245,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('1.5'),
     },
     heroName: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.profileName.fontFamily,
       fontSize: typography.sizes.xl,
       color: colors.text,
     },
@@ -298,7 +298,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     statValue: {
       fontSize: typography.sizes.md,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
     },
 
     /* ── Account number ── */
@@ -330,7 +330,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: spacing('2'),
     },
     sectionTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.text,
     },
@@ -369,7 +369,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: spacing('1'),
     },
     emptyTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
       fontSize: 14,
       color: colors.text,
     },

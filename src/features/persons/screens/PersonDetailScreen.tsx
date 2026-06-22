@@ -21,7 +21,7 @@ function PersonInitials({ name, color, size = 64 }: { name: string; color: strin
   const initials = useMemo(() => name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join(''), [name]);
   return (
     <View style={{ width: size, height: size, borderRadius: Math.round(size * 0.25), backgroundColor: color + '18', alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ color: color, fontFamily: typography.fonts.bold, fontSize: size * 0.38 }}>{initials}</Text>
+      <Text style={{ color: color, fontFamily: typography.styles.profileMono.fontFamily, fontSize: size * 0.38 }}>{initials}</Text>
     </View>
   );
 }
@@ -145,7 +145,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
           <View style={styles.heroTop}>
             <PersonInitials name={person.name} color={hex} size={60} />
             <View style={styles.heroInfo}>
-              <Text style={[styles.heroName, { fontFamily: typography.fonts.bold, color: colors.text }]}>
+              <Text style={[styles.heroName, { fontFamily: typography.styles.profileName.fontFamily, color: colors.text }]}>
                 {person.name}
               </Text>
               {(person.designation || person.company) ? (
@@ -198,11 +198,11 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {/* Stats */}
         <View style={styles.statsRow}>
           <View style={[styles.statTile, { backgroundColor: colors.danger + '15' }]}>
-            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>Spent</Text>
+            <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.danger }]}>Spent</Text>
             <MoneyText amount={person.totalSpent} currency={currency} type="DR" weight="bold" compact style={styles.statValue} />
           </View>
           <View style={[styles.statTile, { backgroundColor: colors.success + '15' }]}>
-            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.success }]}>Received</Text>
+            <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.success }]}>Received</Text>
             <MoneyText amount={person.totalReceived} currency={currency} type="CR" weight="bold" compact style={styles.statValue} />
           </View>
         </View>
@@ -295,7 +295,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       backgroundColor: colors.surface,
     },
     currencyPillActive: { backgroundColor: colors.primary + '18' },
-    currencyPillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
+    currencyPillText: { fontFamily: typography.styles.badge.fontFamily, color: colors.textMuted, fontSize: 11 },
     currencyPillTextActive: { color: colors.primary },
 
     statsRow: {
@@ -313,14 +313,14 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     },
     statLabel: {
       fontSize: typography.sizes.xs,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
     },
     statValue: { fontSize: 14 },
     statPlain: { fontSize: 18 },
 
     txSection: { paddingHorizontal: layout.screenPadding },
     txTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
       marginBottom: spacing('2'),

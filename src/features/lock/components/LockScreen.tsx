@@ -187,7 +187,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       paddingTop: spacing('2'),
     },
     title: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
       fontSize: 20,
       color: colors.text,
       textAlign: 'center',

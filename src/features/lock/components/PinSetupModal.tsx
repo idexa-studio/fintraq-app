@@ -66,7 +66,7 @@ export const PinSetupModal = React.memo(function PinSetupModal({ visible, onCanc
         </TouchableOpacity>
 
         <View style={styles.content}>
-          <Text style={[styles.title, { fontFamily: typography.fonts.bold, color: colors.text }]}>
+          <Text style={[styles.title, { fontFamily: typography.styles.dialogTitle.fontFamily, color: colors.text }]}>
             {step === 'enter' ? 'Create PIN' : 'Confirm PIN'}
           </Text>
           <Text style={[styles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>

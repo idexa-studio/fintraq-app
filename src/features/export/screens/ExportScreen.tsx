@@ -291,7 +291,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     },
 
     sectionLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xxs,
       color: colors.textMuted,
       marginBottom: spacing('2'),
@@ -350,7 +350,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       marginBottom: spacing('0.5'),
     },
     dateVal: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowValue.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.text,
     },
@@ -378,7 +378,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       color: colors.textMuted,
     },
     pillTextActive: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabelActive.fontFamily,
       color: colors.primary,
     },
 
@@ -437,7 +437,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       opacity: 0.5,
     },
     exportBtnText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
       fontSize: sizes.button.lg.fontSize,
       color: colors.primaryForeground,
     },

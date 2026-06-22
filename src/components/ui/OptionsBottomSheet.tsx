@@ -78,7 +78,7 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
                 <Text
                   style={[
                     styles.optLabel,
-                    selected && { fontFamily: typography.fonts.semibold, color: colors.primary },
+                    selected && { fontFamily: typography.styles.chipLabelActive.fontFamily, color: colors.primary },
                     opt.destructive && { color: colors.danger },
                   ]}
                 >

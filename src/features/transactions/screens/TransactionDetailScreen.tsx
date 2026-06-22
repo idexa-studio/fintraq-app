@@ -449,7 +449,7 @@ const createInfoRowStyles = ({ colors, typography, spacing, radius }: ThemeConte
       justifyContent: 'center',
     },
     personInitials: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.profileMono.fontFamily,
       fontSize: typography.sizes.xxs,
     },
   });
@@ -492,7 +492,7 @@ const createStyles = (
       gap: spacing('2'),
     },
     heroTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.lg,
       color: colors.text,
       textAlign: 'center',
@@ -509,7 +509,7 @@ const createStyles = (
       borderRadius: radius('full'),
     },
     typeBadgeText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xs,
     },
 

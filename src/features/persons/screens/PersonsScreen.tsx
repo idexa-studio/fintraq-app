@@ -25,7 +25,7 @@ function PersonInitials({ name, color, size = 40 }: { name: string; color: strin
       width: size, height: size, borderRadius: Math.round(size * 0.25),
       backgroundColor: color + '18', alignItems: 'center', justifyContent: 'center',
     }}>
-      <Text style={{ color: color, fontFamily: typography.fonts.bold, fontSize: size * 0.38 }}>{initials}</Text>
+      <Text style={{ color: color, fontFamily: typography.styles.profileMono.fontFamily, fontSize: size * 0.38 }}>{initials}</Text>
     </View>
   );
 }

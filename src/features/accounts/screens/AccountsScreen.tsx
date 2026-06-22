@@ -246,7 +246,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       gap: spacing('0.5'),
     },
     cardName: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       color: colors.text,
       fontSize: typography.sizes.md,
     },
@@ -275,7 +275,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       borderRadius: radius('full'),
     },
     currencyText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
     },
@@ -330,7 +330,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     },
     statValue: {
       fontSize: typography.sizes.md,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
     },
 
     /* ── FAB ── */

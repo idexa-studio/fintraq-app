@@ -96,7 +96,7 @@ const createAccountRowStyles = (
     },
     info: { flex: 1, gap: spacing('0.5') },
     name: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.text,
     },
@@ -162,7 +162,7 @@ const createCategoryRowStyles = (
     },
     name: {
       flex: 1,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.text,
     },
@@ -174,7 +174,7 @@ const createCategoryRowStyles = (
       justifyContent: 'center',
     },
     badgeText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xxs,
     },
   });
@@ -247,12 +247,12 @@ const createPersonRowStyles = (
     },
     initials: {
       color: '#FFFFFF',
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.profileMono.fontFamily,
       fontSize: typography.sizes.sm,
     },
     info: { flex: 1, gap: spacing('0.5') },
     name: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.text,
     },
@@ -642,7 +642,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.primary + '18',
     },
     filterTabText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabel.fontFamily,
       color: colors.textMuted,
       fontSize: typography.sizes.xxs,
     },
@@ -661,7 +661,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.primary + '15',
     },
     tabBadgeText: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xxs,
       color: colors.textMuted,
     },
@@ -682,12 +682,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingHorizontal: spacing('1'),
     },
     recentsTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
     },
     recentsClear: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.dialogAction.fontFamily,
       fontSize: typography.sizes.xxs,
       color: colors.danger,
     },
@@ -737,7 +737,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.warning + '12',
     },
     proTitleText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xxs,
       color: colors.warning,
     },
@@ -769,7 +769,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: spacing('2.5'),
     },
     sectionTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
     },
@@ -793,7 +793,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('3'),
     },
     rowInfo: { flex: 1, gap: spacing('0.5') },
-    rowName: { fontFamily: typography.fonts.semibold, fontSize: typography.sizes.sm, color: colors.text },
+    rowName: { fontFamily: typography.styles.rowLabel.fontFamily, fontSize: typography.sizes.sm, color: colors.text },
     rowMeta: { fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted },
 
     typeBadge: {
@@ -804,7 +804,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
     },
     typeBadgeText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xxs,
     },
 

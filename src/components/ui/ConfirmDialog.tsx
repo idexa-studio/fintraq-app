@@ -113,7 +113,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, si
       borderRadius: radius('lg'),
     },
     btnCancelText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.dialogAction.fontFamily,
       fontSize: typography.sizes.md,
       color: colors.textMuted,
     },
@@ -129,7 +129,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, si
       backgroundColor: colors.danger,
     },
     btnConfirmText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.dialogAction.fontFamily,
       fontSize: typography.sizes.md,
       color: colors.primaryForeground,
     },

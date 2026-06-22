@@ -128,7 +128,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       paddingTop: spacing('2'),
     },
     title: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
       fontSize: 20,
       color: colors.text,
       textAlign: 'center',
@@ -149,7 +149,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       marginTop: spacing('2'),
     },
     versionBadgeText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: 11,
       color: colors.primary,
     },

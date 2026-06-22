@@ -102,7 +102,7 @@ function EmptyState({ icon, title, subtitle }: { icon: IconSvgElement; title: st
         alignItems: 'center' as const,
       },
       texts: { flex: 1, gap: 2 },
-      titleText: { fontFamily: typography.fonts.semibold, fontSize: 13, color: colors.text },
+      titleText: { fontFamily: typography.styles.rowLabel.fontFamily, fontSize: 13, color: colors.text },
       subText: { fontFamily: typography.fonts.regular, fontSize: 11, color: colors.textMuted, lineHeight: 15 },
     });
   }, [theme]);
@@ -578,7 +578,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     pillActive: { backgroundColor: colors.primary + '18' },
     pillLocked: { opacity: 0.55 },
-    pillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: typography.sizes.xs },
+    pillText: { fontFamily: typography.styles.chipLabel.fontFamily, color: colors.textMuted, fontSize: typography.sizes.xs },
     pillTextActive: { color: colors.primary },
     durationText: {
       fontFamily: typography.fonts.medium,
@@ -607,7 +607,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     metricTileWide: { flex: 2 },
     metricLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
     },
@@ -668,13 +668,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexDirection: 'column',
     },
     catName: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.text,
     },
     catAmount: { fontSize: typography.sizes.xs },
     catPercent: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xxs,
       position: 'absolute',
       right: spacing('3'),
@@ -690,7 +690,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
     },
     personInitials: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.profileMono.fontFamily,
       fontSize: 10,
     },
 
@@ -707,7 +707,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'space-between',
     },
     kpiLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
     },

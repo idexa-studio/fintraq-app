@@ -189,7 +189,7 @@ const createRowStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     },
     rowInfo: { flex: 1, gap: 2 },
     rowLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.md,
       color: colors.text,
     },
@@ -205,7 +205,7 @@ const createRowStyles = ({ colors, typography, spacing }: ThemeContextType) =>
       gap: spacing('2'),
     },
     rowValue: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowValue.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.textMuted,
     },
@@ -702,7 +702,7 @@ const createStyles = (
       justifyContent: 'center',
     },
     profileMonogram: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.profileMono.fontFamily,
       fontSize: typography.sizes.xl,
       color: colors.primaryForeground,
     },
@@ -711,7 +711,7 @@ const createStyles = (
       gap: spacing('0.5'),
     },
     profileName: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.profileName.fontFamily,
       fontSize: typography.sizes.lg,
       color: '#FFFFFF',
     },
@@ -730,7 +730,7 @@ const createStyles = (
 
     /* ── Section label ── */
     sectionLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       marginBottom: spacing('2'),
@@ -748,7 +748,7 @@ const createStyles = (
     },
     upgradeInfo: { flex: 1, gap: 2 },
     upgradeLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.md,
       color: colors.text,
     },
@@ -765,7 +765,7 @@ const createStyles = (
       borderRadius: radius('full'),
     },
     upgradePillText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.primaryForeground,
     },
@@ -778,7 +778,7 @@ const createStyles = (
       paddingVertical: spacing('4'),
     },
     footerBrand: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xxs,
       color: colors.text,
       opacity: 0.25,

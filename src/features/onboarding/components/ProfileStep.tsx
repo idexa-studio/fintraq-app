@@ -53,11 +53,11 @@ export const ProfileStep = React.memo(function ProfileStep({ currency, onOpenCur
       )}
 
       <View style={styles.field}>
-        <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+        <Text style={[styles.label, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
           Default currency
         </Text>
         <BentoPressable style={styles.currencyRow} onPress={onOpenCurrencyPicker}>
-          <Text style={[styles.currencyCode, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>{currency}</Text>
+          <Text style={[styles.currencyCode, { fontFamily: typography.styles.badge.fontFamily, color: colors.primary }]}>{currency}</Text>
           <Text style={[styles.currencyHint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>Tap to change</Text>
           <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
         </BentoPressable>

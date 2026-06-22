@@ -292,12 +292,12 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       gap: spacing('0.5'),
     },
     heroName: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.profileName.fontFamily,
       fontSize: 18,
       color: colors.text,
     },
     heroSub: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: 13,
     },
     heroHint: {
@@ -334,7 +334,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       gap: spacing('2.5'),
     },
     sectionLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       opacity: 0.6,
@@ -354,7 +354,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       backgroundColor: colors.surface,
     },
     typePillText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabel.fontFamily,
       fontSize: 13,
       color: colors.textMuted,
     },
@@ -399,7 +399,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     },
     primaryBtnDisabled: { opacity: 0.45 },
     primaryBtnText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
       fontSize: 15,
       color: colors.primaryForeground,
     },

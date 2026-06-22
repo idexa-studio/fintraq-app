@@ -238,7 +238,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: spacing('1'),
     },
     emptyTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
       fontSize: 14,
       color: colors.text,
     },
@@ -261,7 +261,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.primary,
     },
     emptyActionText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyAction.fontFamily,
       fontSize: 12,
       color: colors.primaryForeground,
     },

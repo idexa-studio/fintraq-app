@@ -67,6 +67,6 @@ const createStyles = ({ spacing, radius, typography }: ThemeContextType, heroCar
     },
     labelActive: {
       color: isDark ? '#008040' : '#FFFFFF',
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabelActive.fontFamily,
     },
   });

@@ -180,7 +180,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: 2,
     },
     emptyTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.cardTitle.fontFamily,
       fontSize: 13,
       color: colors.text,
     },

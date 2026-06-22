@@ -101,7 +101,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       overflow: 'hidden',
     },
     heroBadge: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: 10,
       letterSpacing: 0.5,
       color: heroCard.textMuted,
@@ -138,7 +138,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('0.5'),
     },
     priceLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: 16,
       color: colors.text,
     },
@@ -156,7 +156,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     pillText: {
       fontSize: typography.sizes.xs,
       color: colors.success,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabel.fontFamily,
     },
     // ── Features list
     featuresCard: {
@@ -189,7 +189,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('0.5'),
     },
     featureTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: 15,
       color: colors.text,
     },
@@ -215,7 +215,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: spacing('3'),
     },
     ctaText: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
       fontSize: 16,
     },
   });

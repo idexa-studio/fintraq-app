@@ -151,7 +151,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
       borderRadius: radius('lg'),
     },
     btnText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.dialogAction.fontFamily,
       fontSize: typography.sizes.md,
     },
     btnPrimaryText: {

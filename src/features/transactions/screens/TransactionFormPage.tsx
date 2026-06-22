@@ -470,7 +470,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       gap: spacing('3'),
     },
     sectionLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       opacity: 0.6,
@@ -495,7 +495,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       gap: spacing('2.5'),
     },
     dateTimeText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: 13,
       color: colors.text,
     },
@@ -530,7 +530,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       marginBottom: spacing('2'),
     },
     noteLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: 13,
       color: colors.text,
     },
@@ -558,7 +558,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       opacity: 0.5,
     },
     saveBtnText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
       fontSize: 16,
       color: colors.primaryForeground,
     },

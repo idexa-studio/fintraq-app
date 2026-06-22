@@ -75,7 +75,7 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
     paddingVertical: spacing('3'),
   },
   label: {
-    fontFamily: typography.fonts.semibold,
+    fontFamily: typography.styles.sectionLabel.fontFamily,
     fontSize: typography.sizes.xs,
     marginBottom: spacing('3'),
     paddingHorizontal: layout.screenPadding,
@@ -99,7 +99,7 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
     flex: 1,
   },
   name: {
-    fontFamily: typography.fonts.semibold,
+    fontFamily: typography.styles.rowLabel.fontFamily,
     fontSize: typography.sizes.md,
   },
   currency: {

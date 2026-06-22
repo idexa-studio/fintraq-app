@@ -53,7 +53,7 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
       paddingHorizontal: 0,
     },
     title: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.text,
       fontSize: 12,
       lineHeight: 18,

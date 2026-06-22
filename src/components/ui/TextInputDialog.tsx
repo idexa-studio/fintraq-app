@@ -168,7 +168,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, si
     },
     btnCancelText: {
       fontSize: typography.sizes.md,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.dialogAction.fontFamily,
       color: colors.textMuted,
     },
     btnSave: {
@@ -181,7 +181,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, si
     },
     btnSaveText: {
       fontSize: typography.sizes.md,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.dialogAction.fontFamily,
       color: colors.primaryForeground,
     },
   });

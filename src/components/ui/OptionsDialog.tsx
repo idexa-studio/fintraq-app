@@ -85,7 +85,7 @@ export const OptionsDialog = React.memo(function OptionsDialog({
                   <Text
                     style={[
                       styles.optLabel,
-                      selected && { fontFamily: typography.fonts.semibold, color: colors.primary },
+                      selected && { fontFamily: typography.styles.chipLabelActive.fontFamily, color: colors.primary },
                       opt.destructive && { color: colors.danger },
                     ]}
                   >
@@ -162,7 +162,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
     },
     optLabel: {
       flex: 1,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.text,
     },
@@ -180,7 +180,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
       borderRadius: radius('lg'),
     },
     cancelBtnText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.dialogAction.fontFamily,
       fontSize: typography.sizes.md,
       color: colors.textMuted,
     },

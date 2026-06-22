@@ -304,7 +304,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       zIndex: 2,
     },
     lockBadge: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: 11,
       color: colors.primary,
       zIndex: 2,
@@ -351,12 +351,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: 0,
     },
     rowTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.md,
       color: colors.text,
     },
     rowTitleAction: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.md,
       color: colors.primary,
     },
@@ -374,12 +374,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     badgeText: {
       fontSize: 10,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       color: colors.primary,
     },
 
     infoValue: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowValue.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.text,
     },
@@ -391,7 +391,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingVertical: spacing('4'),
     },
     footerBrand: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: 10,
       color: colors.text,
       opacity: 0.3,

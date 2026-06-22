@@ -197,7 +197,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
       backgroundColor: colors.primary + '14',
     },
     headerBadgeText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.primary,
     },
@@ -253,7 +253,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
       backgroundColor: colors.primary + '18',
     },
     chipText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       letterSpacing: 0.3,
@@ -270,7 +270,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
       color: colors.text,
     },
     nameSelected: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabelActive.fontFamily,
     },
 
     // Check indicator

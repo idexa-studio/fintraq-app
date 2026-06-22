@@ -35,7 +35,7 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
         iconSize={16}
       />
       <View style={styles.text}>
-        <Text style={[styles.title, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+        <Text style={[styles.title, { fontFamily: typography.styles.cardTitle.fontFamily, color: colors.text }]} numberOfLines={1}>
           {insight.title}
         </Text>
         <Text style={[styles.sub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={2}>

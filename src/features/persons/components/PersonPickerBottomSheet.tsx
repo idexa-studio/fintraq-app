@@ -24,7 +24,7 @@ function PersonInitials({ name, color, size = 36 }: { name: string; color: strin
   const initials = useMemo(() => name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join(''), [name]);
   return (
     <View style={{ width: size, height: size, borderRadius: Math.round(size * 0.25), backgroundColor: color, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ color: '#fff', fontFamily: typography.fonts.bold, fontSize: size * 0.36 }}>{initials}</Text>
+      <Text style={{ color: '#fff', fontFamily: typography.styles.profileMono.fontFamily, fontSize: size * 0.36 }}>{initials}</Text>
     </View>
   );
 }
@@ -79,7 +79,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
       >
         <PersonInitials name={item.name} color={hex} size={36} />
         <View style={styles.rowMeta}>
-          <Text style={[styles.rowName, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+          <Text style={[styles.rowName, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]} numberOfLines={1}>
             {item.name}
           </Text>
           {(item.designation || item.company) ? (
@@ -145,7 +145,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
             <HugeiconsIcon icon={UserCircleIcon} size={18} color={colors.textMuted} />
           </View>
           <View style={styles.rowMeta}>
-            <Text style={[styles.rowName, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+            <Text style={[styles.rowName, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.textMuted }]}>
               No person
             </Text>
           </View>
