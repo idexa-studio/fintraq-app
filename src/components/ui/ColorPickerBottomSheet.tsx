@@ -143,7 +143,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 22,
+      fontSize: typography.sizes.xl,
       color: colors.text,
     },
     subtitle: {
@@ -164,7 +164,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       gap: spacing('3'),
     },
     rowSelected: {
-      backgroundColor: isDark ? '#163228' : '#E6F4EA',
+      backgroundColor: colors.primaryLight,
     },
     swatch: {
       width: 32,
@@ -175,7 +175,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     colorName: {
       flex: 1,
       fontFamily: typography.fonts.regular,
-      fontSize: 15,
+      fontSize: typography.sizes.md,
       color: colors.text,
     },
     colorNameSelected: {

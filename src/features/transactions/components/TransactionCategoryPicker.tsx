@@ -88,6 +88,6 @@ const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeCon
   },
   name: {
     fontFamily: typography.fonts.semibold,
-    fontSize: 13,
+    fontSize: typography.sizes.sm,
   },
 });

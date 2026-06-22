@@ -176,7 +176,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, isDark, sizes }: ThemeContextType) =>
   StyleSheet.create({
     header: {
       flexDirection: 'row',
@@ -186,14 +186,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       paddingTop: spacing('4'),
       paddingBottom: spacing('2'),
     },
-    title: { fontSize: 22 },
+    title: { fontSize: typography.sizes.xl },
     searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',
       marginHorizontal: layout.screenPadding,
       marginBottom: spacing('2'),
-      height: 46,
-      borderRadius: radius('xl'),
+      height: sizes.input.md.height,
+      borderRadius: radius('lg'),
       backgroundColor: colors.background,
       paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
@@ -214,10 +214,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       marginTop: spacing('2'),
       marginBottom: spacing('1'),
     },
-    rowSelected: { backgroundColor: isDark ? '#163228' : '#E6F4EA' },
+    rowSelected: { backgroundColor: colors.primaryLight },
     rowMeta: { flex: 1 },
-    rowName: { fontSize: 14 },
-    rowSub: { fontSize: 11, opacity: 0.65, marginTop: 2 },
+    rowName: { fontSize: typography.sizes.md },
+    rowSub: { fontSize: typography.sizes.xs, opacity: 0.65, marginTop: 2 },
     noneAvatar: {
       width: 36,
       height: 36,

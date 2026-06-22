@@ -167,7 +167,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, isDark, sizes }: ThemeContextType) =>
   StyleSheet.create({
     header: {
       paddingHorizontal: layout.screenPadding,
@@ -180,7 +180,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     headerText: { flex: 1 },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 22,
+      fontSize: typography.sizes.xl,
       color: colors.text,
     },
     subtitle: {
@@ -198,7 +198,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     },
     headerBadgeText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 12,
+      fontSize: typography.sizes.xs,
       color: colors.primary,
     },
 
@@ -208,8 +208,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       alignItems: 'center',
       marginHorizontal: layout.screenPadding,
       marginBottom: spacing('2'),
-      height: 46,
-      borderRadius: radius('xl'),
+      height: sizes.input.md.height,
+      borderRadius: radius('lg'),
       backgroundColor: colors.background,
       paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
@@ -238,7 +238,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       gap: spacing('3'),
     },
     rowSelected: {
-      backgroundColor: isDark ? '#163228' : '#E6F4EA',
+      backgroundColor: colors.primaryLight,
     },
     // Currency code chip
     chip: {
@@ -254,7 +254,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     },
     chipText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
       letterSpacing: 0.3,
     },

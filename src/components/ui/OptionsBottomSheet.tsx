@@ -100,7 +100,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
   StyleSheet.create({
     content: {
       paddingBottom: spacing("3"),
-
     },
     head: {
       paddingHorizontal: layout.screenPadding,
@@ -109,7 +108,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 22,
+      fontSize: typography.sizes.xl,
       color: colors.text,
     },
     subtitle: {
@@ -130,7 +129,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       gap: spacing('3'),
     },
     optSelected: {
-      backgroundColor: isDark ? '#163228' : '#E6F4EA',
+      backgroundColor: colors.primaryLight,
     },
     optLabel: {
       flex: 1,

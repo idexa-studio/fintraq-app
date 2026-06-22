@@ -110,7 +110,7 @@ export const OptionsDialog = React.memo(function OptionsDialog({
   );
 });
 
-const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeContextType, screenWidth: number) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: ThemeContextType, screenWidth: number) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
@@ -122,7 +122,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     card: {
       width: Math.min(screenWidth - spacing('12'), 320),
       backgroundColor: colors.surface,
-      borderRadius: 28,
+      borderRadius: radius('2xl'),
       overflow: 'hidden',
       padding: spacing('6'),
       gap: spacing('4'),
@@ -133,7 +133,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: typography.sizes.xxl,
+      fontSize: typography.sizes.xl,
       color: colors.text,
     },
     subtitle: {
@@ -158,7 +158,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       width: '100%',
     },
     optSelected: {
-      backgroundColor: colors.primary + '15',
+      backgroundColor: colors.primaryLight,
     },
     optLabel: {
       flex: 1,
@@ -173,11 +173,11 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       marginTop: spacing('2'),
     },
     cancelBtn: {
-      height: 40,
+      height: sizes.button.md.height,
       paddingHorizontal: spacing('4'),
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
     },
     cancelBtnText: {
       fontFamily: typography.fonts.semibold,

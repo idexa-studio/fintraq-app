@@ -123,7 +123,7 @@ export const TextInputDialog = React.memo(function TextInputDialog({
   );
 });
 
-const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
@@ -133,7 +133,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     },
     card: {
       backgroundColor: colors.surface,
-      borderRadius: 28,
+      borderRadius: radius('2xl'),
       overflow: 'hidden',
       padding: spacing('6'),
       gap: spacing('4'),
@@ -143,7 +143,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       gap: spacing('3'),
     },
     title: {
-      fontSize: 24,
+      fontSize: typography.sizes.xl,
     },
     subtitle: {
       fontSize: typography.sizes.sm,
@@ -160,27 +160,27 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       marginTop: spacing('4'),
     },
     btnCancel: {
-      height: 40,
+      height: sizes.button.md.height,
       paddingHorizontal: spacing('4'),
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
     },
     btnCancelText: {
-      fontSize: 14,
+      fontSize: typography.sizes.md,
       fontFamily: typography.fonts.semibold,
       color: colors.textMuted,
     },
     btnSave: {
-      height: 40,
+      height: sizes.button.md.height,
       paddingHorizontal: spacing('5'),
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
     },
     btnSaveText: {
-      fontSize: 14,
+      fontSize: typography.sizes.md,
       fontFamily: typography.fonts.semibold,
       color: colors.primaryForeground,
     },

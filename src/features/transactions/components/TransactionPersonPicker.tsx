@@ -95,7 +95,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
     },
     chipActive: { backgroundColor: colors.primary + '15' },
-    chipText: { fontFamily: typography.fonts.semibold, fontSize: 13 },
+    chipText: { fontFamily: typography.fonts.semibold, fontSize: typography.sizes.sm },
 
     personChip: {
       flexDirection: 'row',
@@ -115,8 +115,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       justifyContent: 'center',
     },
-    avatarText: { color: '#fff', fontSize: 11 },
-    personName: { fontSize: 13, flex: 1 },
+    avatarText: { color: '#fff', fontSize: typography.sizes.xs },
+    personName: { fontSize: typography.sizes.sm, flex: 1 },
     checkDot: {
       position: 'absolute',
       top: -4,

@@ -76,6 +76,7 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
   enablePanDownToClose: boolean;
 }) {
   const insets = useSafeAreaInsets();
+  const { radius } = useTheme();
 
   const bottomPadding = useMemo(() => {
     if (insets.bottom > 0) return insets.bottom + 12;
@@ -153,7 +154,9 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
     maxHeight: resolvedMaxHeight,
     backgroundColor: colors.surface,
     paddingBottom: bottomPadding,
-  }), [resolvedHeight, resolvedMaxHeight, colors.surface, bottomPadding]);
+    borderTopLeftRadius: radius('2xl'),
+    borderTopRightRadius: radius('2xl'),
+  }), [resolvedHeight, resolvedMaxHeight, colors.surface, bottomPadding, radius]);
 
   const animatedSheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
@@ -286,8 +289,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   sheet: {
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
     overflow: 'hidden',
     width: '100%',
     flexShrink: 1,

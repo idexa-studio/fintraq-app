@@ -131,6 +131,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
     },
     pillText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 13,
+      fontSize: typography.sizes.sm,
     },
   });

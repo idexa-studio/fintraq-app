@@ -98,11 +98,11 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
   },
   name: {
     fontFamily: typography.fonts.semibold,
-    fontSize: 14,
+    fontSize: typography.sizes.md,
   },
   currency: {
     fontFamily: typography.fonts.medium,
-    fontSize: 11,
+    fontSize: typography.sizes.xs,
   },
   check: {
     position: 'absolute',

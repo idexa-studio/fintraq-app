@@ -92,7 +92,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                       key={icon}
                       style={[
                         styles.iconCell,
-                        { backgroundColor: selected ? (theme.isDark ? '#163228' : '#E6F4EA') : colors.background }
+                        { backgroundColor: selected ? colors.primaryLight : colors.background }
                       ]}
                       onPress={() => handleSelect(icon)}
                       scaleOnPress={true}
@@ -126,7 +126,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 22,
+      fontSize: typography.sizes.xl,
       color: colors.text,
     },
     headerIconContainer: {
@@ -147,7 +147,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     groupLabel: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 12,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
       paddingLeft: spacing('1'),
       opacity: 0.7,
