@@ -141,7 +141,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       fontFamily: typography.fonts.bold,
       fontSize: 16,
       color: colors.text,
-      letterSpacing: 0.5,
     },
     previewName: {
       fontFamily: typography.fonts.regular,
@@ -155,7 +154,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       alignItems: 'center',
       gap: spacing('2'),
       height: 44,
-      borderRadius: radius('md'),
+      borderRadius: radius('xl'),
       backgroundColor: colors.surface,
       paddingHorizontal: spacing('3'),
     },

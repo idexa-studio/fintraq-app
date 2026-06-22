@@ -1,6 +1,6 @@
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { BarChartIcon, FlashIcon, LockPasswordIcon } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
@@ -39,9 +39,7 @@ export const WelcomeStep = React.memo(function WelcomeStep() {
         const accent = colors[f.colorKey];
         return (
           <View key={f.label} style={styles.card}>
-            <View style={[styles.iconWrap, { backgroundColor: accent + '1A' }]}>
-              <HugeiconsIcon icon={f.icon} size={22} color={colors.text} />
-            </View>
+            <IconAvatar icon={f.icon} color={accent} variant="subtle" size={48} iconSize={22} />
             <View style={styles.text}>
               <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
                 {f.label}
@@ -69,14 +67,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
       padding: spacing('4'),
-    },
-    iconWrap: {
-      width: 48,
-      height: 48,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
     },
     text: {
       flex: 1,

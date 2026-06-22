@@ -6,8 +6,9 @@ import { PageBackground } from '@/src/components/ui/PageBackground';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
-import { ArrowRight01Icon, BankIcon, CheckmarkCircle01Icon, Download01Icon, Folder01Icon, InformationCircleIcon, Share01Icon } from '@hugeicons/core-free-icons';
+import { resolveAccountTypeIcon } from '@/src/utils/icons';
+import type { AccountType } from '@/src/types';
+import { ArrowRight01Icon, CheckmarkCircle01Icon, Download01Icon, Folder01Icon, InformationCircleIcon, Share01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -201,7 +202,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
                 <View style={styles.sep} />
                 <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(acc.id)} scaleOnPress={false}>
                   <View style={styles.accRow}>
-                    <IconAvatar icon={resolveIcon(acc.icon, BankIcon)} color={c} variant="solid" size={24} iconSize={11} />
+                    <IconAvatar icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)} color={c} variant="solid" size={24} iconSize={11} />
                     <Text style={[styles.cardRowText, { fontFamily: typography.fonts.regular, color: colors.text }]}>{acc.name}</Text>
                   </View>
                   {selected ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}

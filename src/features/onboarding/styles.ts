@@ -6,7 +6,6 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
     container: {
       flex: 1,
       backgroundColor: colors.background,
-      overflow: 'hidden',
     },
     keyboardWrap: {
       flex: 1,
@@ -24,7 +23,7 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
     headerBackButton: {
       width: 42,
       height: 42,
-      borderRadius: radius('full'),
+      borderRadius: radius('xl'),
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.surface,
@@ -50,7 +49,7 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
     },
     stepPillText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
       color: colors.text,
     },
     progressTrack: {
@@ -77,7 +76,7 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
     },
     eyebrow: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
       color: colors.primary,
       marginBottom: spacing('3'),
     },

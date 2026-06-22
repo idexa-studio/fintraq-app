@@ -1,8 +1,8 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { GridIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
@@ -38,13 +38,7 @@ export const CategoryCard = React.memo(function CategoryCard({
       onLongPress={handleLongPress}
       delayLongPress={280}
     >
-      <View style={[styles.iconWrap, { backgroundColor: catColor + '22' }]}>
-        <HugeiconsIcon
-          icon={resolveIcon(item.icon, GridIcon)}
-          size={14}
-          color={catColor}
-        />
-      </View>
+      <IconAvatar icon={resolveIcon(item.icon, GridIcon)} color={catColor} variant="subtle" size={30} iconSize={14} />
       <Text style={styles.name} numberOfLines={2}>
         {item.name}
       </Text>
@@ -63,14 +57,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2.5'),
-    },
-    iconWrap: {
-      width: 30,
-      height: 30,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
     },
     name: {
       flex: 1,

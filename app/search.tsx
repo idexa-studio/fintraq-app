@@ -4,6 +4,7 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import {
   ArrowLeft01Icon,
+  BankIcon,
   ReceiptTextIcon,
   Search01Icon,
   SparklesIcon,

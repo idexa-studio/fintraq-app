@@ -71,7 +71,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     wrapper: { gap: spacing('5') },
     hint: { fontSize: typography.sizes.xs, opacity: 0.6, paddingLeft: spacing('1') },
     field: { gap: spacing('2') },
-    label: { fontSize: typography.sizes.xs, opacity: 0.7 },
+    label: { fontSize: typography.sizes.xs, opacity: 0.6 },
     currencyRow: {
       flexDirection: 'row',
       alignItems: 'center',

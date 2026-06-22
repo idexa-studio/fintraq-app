@@ -16,6 +16,7 @@ import {
   View,
 } from 'react-native';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
+import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { Header } from '../../../components/ui/Header';
@@ -322,9 +323,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                 style={styles.personBtn}
                 onPress={() => setShowPersonPicker(true)}
               >
-                <View style={styles.iconContainer}>
-                  <HugeiconsIcon icon={UserCircleIcon} size={18} color={colors.primary} />
-                </View>
+                <IconAvatar icon={UserCircleIcon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
                 <View style={styles.textContainer}>
                   <Text style={styles.triggerLabel}>Linked person</Text>
                   <Text
@@ -350,9 +349,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                 style={styles.dateTimeBtn}
                 onPress={() => setShowDatePicker(true)}
               >
-                <View style={styles.iconContainer}>
-                  <HugeiconsIcon icon={Calendar03Icon} size={18} color={colors.primary} />
-                </View>
+                <IconAvatar icon={Calendar03Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
                 <View style={styles.textContainer}>
                   <Text style={styles.triggerLabel}>Date</Text>
                   <Text style={styles.dateTimeText} numberOfLines={1}>{formattedDate}</Text>
@@ -363,9 +360,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                 style={styles.dateTimeBtn}
                 onPress={() => setShowTimePicker(true)}
               >
-                <View style={styles.iconContainer}>
-                  <HugeiconsIcon icon={Clock01Icon} size={18} color={colors.primary} />
-                </View>
+                <IconAvatar icon={Clock01Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
                 <View style={styles.textContainer}>
                   <Text style={styles.triggerLabel}>Time</Text>
                   <Text style={styles.dateTimeText} numberOfLines={1}>{formattedTime}</Text>
@@ -394,9 +389,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
           <View style={styles.section}>
             <View style={styles.noteContainer}>
               <View style={styles.noteHeader}>
-                <View style={styles.noteIconContainer}>
-                  <HugeiconsIcon icon={PencilEdit01Icon} size={16} color={colors.primary} />
-                </View>
+                <IconAvatar icon={PencilEdit01Icon} color={colors.primary} variant="subtle" size={32} iconSize={16} />
                 <Text style={styles.noteLabel}>Note</Text>
               </View>
               <TextInput
@@ -509,14 +502,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       paddingHorizontal: spacing('3'),
       gap: spacing('2.5'),
     },
-    iconContainer: {
-      width: 36,
-      height: 36,
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary + '18',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
     textContainer: {
       flex: 1,
       justifyContent: 'center',
@@ -537,14 +522,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       alignItems: 'center',
       gap: spacing('2.5'),
       marginBottom: spacing('2'),
-    },
-    noteIconContainer: {
-      width: 32,
-      height: 32,
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary + '18',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     noteLabel: {
       fontFamily: typography.fonts.semibold,
