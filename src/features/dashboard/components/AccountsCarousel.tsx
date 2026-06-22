@@ -61,7 +61,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
                     {hint}
                   </Text>
                 </View>
-                <View style={[styles.currencyBadge, { backgroundColor: c + '1A' }]}>
+                <View style={[styles.currencyBadge, { backgroundColor: c + '18' }]}>
                   <Text style={[styles.currency, { fontFamily: typography.fonts.medium, color: c }]}>
                     {acc.currency}
                   </Text>

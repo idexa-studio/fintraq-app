@@ -1,4 +1,5 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { CancelCircleIcon, CheckmarkCircle01Icon, Search01Icon, UserCircleIcon } from '@hugeicons/core-free-icons';
@@ -19,15 +20,6 @@ type PersonPickerBottomSheetProps = {
 
 const ITEM_HEIGHT = 60;
 
-function PersonInitials({ name, color, size = 36 }: { name: string; color: string; size?: number }) {
-  const { typography } = useTheme();
-  const initials = useMemo(() => name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join(''), [name]);
-  return (
-    <View style={{ width: size, height: size, borderRadius: Math.round(size * 0.25), backgroundColor: color, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ color: '#fff', fontFamily: typography.styles.profileMono.fontFamily, fontSize: size * 0.36 }}>{initials}</Text>
-    </View>
-  );
-}
 
 export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomSheet({
   visible,
@@ -77,7 +69,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
         style={[styles.row, selected && styles.rowSelected]}
         onPress={() => handleSelect(item.id)}
       >
-        <PersonInitials name={item.name} color={hex} size={36} />
+        <PersonAvatar name={item.name} color={hex} size={36} variant="solid" />
         <View style={styles.rowMeta}>
           <Text style={[styles.rowName, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]} numberOfLines={1}>
             {item.name}

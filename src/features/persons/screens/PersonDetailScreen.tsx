@@ -4,6 +4,7 @@ import { Header } from '@/src/components/ui/Header';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { TransactionRow } from '@/src/components/ui/TransactionRow';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { usePersonWithStats, useTransactionsByPerson, useDeletePerson } from '@/src/features/persons/hooks/persons';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';
@@ -16,15 +17,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-function PersonInitials({ name, color, size = 64 }: { name: string; color: string; size?: number }) {
-  const { typography } = useTheme();
-  const initials = useMemo(() => name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join(''), [name]);
-  return (
-    <View style={{ width: size, height: size, borderRadius: Math.round(size * 0.25), backgroundColor: color + '18', alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ color: color, fontFamily: typography.styles.profileMono.fontFamily, fontSize: size * 0.38 }}>{initials}</Text>
-    </View>
-  );
-}
 
 export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -143,7 +135,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {/* Hero card */}
         <View style={styles.heroCard}>
           <View style={styles.heroTop}>
-            <PersonInitials name={person.name} color={hex} size={60} />
+            <PersonAvatar name={person.name} color={hex} size={60} />
             <View style={styles.heroInfo}>
               <Text style={[styles.heroName, { fontFamily: typography.styles.profileName.fontFamily, color: colors.text }]}>
                 {person.name}

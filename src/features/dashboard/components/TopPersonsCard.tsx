@@ -1,7 +1,8 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { MoneyText } from '@/src/components/ui/MoneyText';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex, withAlpha } from '@/src/utils/format';
+import { colorNumberToHex } from '@/src/utils/format';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import type { PersonNetRow } from '../api/dashboard';
@@ -12,27 +13,6 @@ type Props = {
   onPressPerson: (id: number) => void;
 };
 
-function PersonInitials({ name, color, size = 32 }: { name: string; color: string; size?: number }) {
-  const { typography } = useTheme();
-  const initials = name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
-  return (
-    <View style={{
-      width: size,
-      height: size,
-      borderRadius: Math.round(size * 0.25),
-      backgroundColor: withAlpha(color, '12'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
-    }}>
-      <Text style={{
-        color: color,
-        fontFamily: typography.fonts.medium,
-        fontSize: Math.round(size * 0.38),
-      }}>{initials}</Text>
-    </View>
-  );
-}
 
 export const TopPersonsCard = React.memo(function TopPersonsCard({ currency, persons, onPressPerson }: Props) {
   const theme = useTheme();
@@ -51,7 +31,7 @@ export const TopPersonsCard = React.memo(function TopPersonsCard({ currency, per
         return (
           <View key={person.id} style={styles.itemWrap}>
             <BentoPressable style={[styles.cell, { marginRight, marginLeft }]} onPress={handlePress(person.id)}>
-              <PersonInitials name={person.name} color={hex} size={32} />
+              <PersonAvatar name={person.name} color={hex} size={32} />
               <View style={styles.cellContent}>
                 <Text style={styles.cellName} numberOfLines={1}>
                   {person.name.split(' ')[0]}

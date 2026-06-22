@@ -1,4 +1,5 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import React, { useCallback, useMemo } from 'react';
@@ -45,7 +46,6 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
         {persons.map(person => {
           const selected = selectedId === person.id;
           const hex = colorNumberToHex(person.color);
-          const initials = person.name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
 
           return (
             <BentoPressable
@@ -53,11 +53,7 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
               style={[styles.personChip, selected && { backgroundColor: hex + '18' }]}
               onPress={() => onSelect(person.id)}
             >
-              <View style={[styles.avatar, { backgroundColor: hex }]}>
-                <Text style={[styles.avatarText, { fontFamily: typography.styles.profileMono.fontFamily }]}>
-                  {initials}
-                </Text>
-              </View>
+              <PersonAvatar name={person.name} color={hex} size={26} variant="solid" />
               <Text style={[styles.personName, { fontFamily: typography.styles.rowLabel.fontFamily, color: selected ? colors.text : colors.textMuted }]} numberOfLines={1}>
                 {person.name.split(' ')[0]}
               </Text>
@@ -94,7 +90,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
       alignItems: 'center',
     },
-    chipActive: { backgroundColor: colors.primary + '15' },
+    chipActive: { backgroundColor: colors.primary + '18' },
     chipText: { fontFamily: typography.styles.rowLabel.fontFamily, fontSize: typography.sizes.sm },
 
     personChip: {
@@ -108,14 +104,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.surface,
       minWidth: 80,
     },
-    avatar: {
-      width: 26,
-      height: 26,
-      borderRadius: 13,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    avatarText: { color: '#fff', fontSize: typography.sizes.xs },
     personName: { fontSize: typography.sizes.sm, flex: 1 },
     checkDot: {
       position: 'absolute',

@@ -1,5 +1,6 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Header } from '@/src/components/ui/Header';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { usePersons } from '@/src/features/persons/hooks/persons';
 import { usePremium } from '@/src/providers/PremiumProvider';
@@ -17,18 +18,6 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const FREE_PERSON_LIMIT = 10;
 
-function PersonInitials({ name, color, size = 40 }: { name: string; color: string; size?: number }) {
-  const { typography } = useTheme();
-  const initials = useMemo(() => name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join(''), [name]);
-  return (
-    <View style={{
-      width: size, height: size, borderRadius: Math.round(size * 0.25),
-      backgroundColor: color + '18', alignItems: 'center', justifyContent: 'center',
-    }}>
-      <Text style={{ color: color, fontFamily: typography.styles.profileMono.fontFamily, fontSize: size * 0.38 }}>{initials}</Text>
-    </View>
-  );
-}
 
 export const PersonsScreen = React.memo(function PersonsScreen() {
   const theme = useTheme();
@@ -123,7 +112,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
                   ]}
                   onPress={() => handlePersonPress(person.id)}
                 >
-                  <PersonInitials name={person.name} color={hex} size={40} />
+                  <PersonAvatar name={person.name} color={hex} size={40} />
 
                   <View style={styles.rowMeta}>
                     <Text style={styles.rowName} numberOfLines={1}>

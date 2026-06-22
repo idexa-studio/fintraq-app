@@ -1,4 +1,5 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 import { Account } from '@/src/features/accounts/api/accounts';
 import { AccountType } from '@/src/types';
@@ -185,7 +186,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                   style={[
                     styles.typePill,
                     {
-                      backgroundColor: sel ? c + '1A' : colors.card
+                      backgroundColor: sel ? c + '18' : colors.card
                     }
                   ]}
                   onPress={() => toggleType(opt.key)}
@@ -336,16 +337,13 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 {persons.map(p => {
                   const sel = local.personIds?.includes(p.id) || false;
                   const pc = colorNumberToHex(p.color);
-                  const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
                   return (
                     <BentoPressable
                       key={p.id}
                       style={[styles.pill, { backgroundColor: sel ? pc + '18' : colors.card }]}
                       onPress={() => togglePerson(p.id)}
                     >
-                      <View style={{ width: 16, height: 16, borderRadius: 4, backgroundColor: pc, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ color: '#FFFFFF', fontFamily: typography.styles.profileMono.fontFamily, fontSize: 8 }}>{initials}</Text>
-                      </View>
+                      <PersonAvatar name={p.name} color={pc} size={16} variant="solid" />
                       <Text style={[styles.pillLabel, { color: sel ? pc : colors.text }]}>
                         {p.name.split(' ')[0]}
                       </Text>

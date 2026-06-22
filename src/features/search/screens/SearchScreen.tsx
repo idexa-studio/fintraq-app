@@ -1,5 +1,6 @@
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { TransactionRow } from '@/src/components/ui/TransactionRow';
 import type { Account } from '@/src/features/accounts/api/accounts';
@@ -194,17 +195,11 @@ const PersonRow = React.memo(function PersonRow({
   const { colors } = theme;
   const styles = useMemo(() => createPersonRowStyles(theme, isFirst, isLast), [theme, isFirst, isLast]);
   const hex = useMemo(() => colorNumberToHex(person.color), [person.color]);
-  const initials = useMemo(() =>
-    person.name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join(''),
-    [person.name],
-  );
   const handlePress = useCallback(() => onPress(person.id), [onPress, person.id]);
 
   return (
     <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
-      <View style={[styles.avatar, { backgroundColor: hex }]}>
-        <Text style={styles.initials}>{initials}</Text>
-      </View>
+      <PersonAvatar name={person.name} color={hex} size={36} variant="solid" />
       <View style={styles.info}>
         <Text style={styles.name}>{person.name}</Text>
         {(person.designation || person.company) ? (
@@ -237,18 +232,6 @@ const createPersonRowStyles = (
       borderBottomLeftRadius: isLast ? radius('xl') : 0,
       borderBottomRightRadius: isLast ? radius('xl') : 0,
       marginBottom: isLast ? 0 : spacing('0.5'),
-    },
-    avatar: {
-      width: 36,
-      height: 36,
-      borderRadius: radius('xl'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    initials: {
-      color: '#FFFFFF',
-      fontFamily: typography.styles.profileMono.fontFamily,
-      fontSize: typography.sizes.sm,
     },
     info: { flex: 1, gap: spacing('0.5') },
     name: {
