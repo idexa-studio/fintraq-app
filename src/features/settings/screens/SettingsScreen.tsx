@@ -6,8 +6,9 @@ import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
+import { StorageKeys } from '@/src/constants/keys';
 import { db } from '@/src/db/client';
-import { accounts, categories, payments, persons, seederState } from '@/src/db/schema';
+import { accounts, categories, payments, persons } from '@/src/db/schema';
 import { LockStorage } from '@/src/features/lock/api/lockStorage';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
 import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
@@ -314,12 +315,31 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   /* ── Reset ── */
   const runReset = useCallback(async () => {
     try {
+      // Delete user data only — seederState (schema migration tracking) is preserved
+      // so ALTER TABLE migrations don't re-run and crash on next launch
       await db.delete(payments);
       await db.delete(persons);
       await db.delete(categories);
       await db.delete(accounts);
-      await db.delete(seederState);
-      await AsyncStorage.clear();
+
+      // Clear user-facing AsyncStorage keys only — do NOT use AsyncStorage.clear()
+      // which would also wipe any infra keys added in the future
+      await AsyncStorage.multiRemove([
+        StorageKeys.PROFILE,
+        StorageKeys.ONBOARDED,
+        StorageKeys.SEED_EXECUTED,
+        StorageKeys.RECENT_SEARCHES,
+        StorageKeys.UPSELL_DISMISSED_AT,
+        StorageKeys.WALKTHROUGH_DASHBOARD,
+        StorageKeys.WALKTHROUGH_CATEGORIES,
+        StorageKeys.WALKTHROUGH_ANALYTICS,
+        StorageKeys.WALKTHROUGH_ACCOUNTS,
+        StorageKeys.WALKTHROUGH_TRANSACTIONS,
+        StorageKeys.WALKTHROUGH_SEARCH,
+        StorageKeys.WALKTHROUGH_TRANSACTION_CREATE,
+        StorageKeys.WALKTHROUGH_PERSONS,
+      ]);
+
       Alert.alert('Wipe complete', 'All data erased. Restart the app.');
       router.replace('/(onboarding)');
     } catch {

@@ -40,8 +40,9 @@ export const Button = React.memo(function Button({
   const textColor = useMemo(() => {
     if (disabled) return colors.textMuted;
     if (variant === 'secondary' || variant === 'outline' || variant === 'ghost') return colors.text;
+    if (variant === 'primary') return colors.primaryForeground;
     return colors.background;
-  }, [variant, disabled, colors.text, colors.textMuted, colors.background]);
+  }, [variant, disabled, colors.text, colors.textMuted, colors.background, colors.primaryForeground]);
 
   const backgroundColor = useMemo(() => {
     if (disabled) return colors.surface;

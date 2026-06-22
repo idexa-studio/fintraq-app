@@ -12,7 +12,7 @@ import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { EdgeInsets, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
-import { KPICard } from '../../../components/ui/KPICard';
+import { TransactionSummaryCard } from '../components/TransactionSummaryCard';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
@@ -669,11 +669,12 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         removeClippedSubviews={true}
         ListHeaderComponent={(
           <View style={styles.listHeader}>
-            <KPICard
+            <TransactionSummaryCard
+              income={activeTotals.income}
+              expense={activeTotals.expense}
+              currency={selectedKpiCurrency}
               currencies={kpiCurrencies}
-              selectedCurrency={selectedKpiCurrency}
-              onSelectCurrency={setSelectedKpiCurrency}
-              metrics={activeTotals}
+              onCurrencySelect={setSelectedKpiCurrency}
             />
 
             {/* ── MD3 Play Store Filter Chips Row ── */}

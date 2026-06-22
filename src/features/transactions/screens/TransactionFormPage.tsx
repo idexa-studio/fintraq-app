@@ -40,6 +40,8 @@ import { TransactionType } from '../../../types';
 import { WalkthroughOverlay, TRANSACTION_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { AnalyticsService } from '@/src/services/analytics';
 import { StorageKeys } from '../../../constants/keys';
+import { isTransferCompatible } from '../../../utils/accounts';
+import type { AccountType } from '../../../types';
 
 type Props = {
   mode: 'create' | 'edit';
@@ -153,11 +155,15 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
     [categories, selectedCategoryId],
   );
 
-  // TO account options: same currency as FROM, excluding FROM itself
+  // TO account options: same currency + type-compatible transfer, excluding FROM itself
   const toAccountOptions = React.useMemo(() => {
     if (type !== 'TR' || !selectedAccount) return [];
+    const fromType = selectedAccount.accountType as AccountType | null;
     return accounts.filter(
-      (a) => a.id !== selectedAccountId && a.currency === selectedAccount.currency,
+      (a) =>
+        a.id !== selectedAccountId &&
+        a.currency === selectedAccount.currency &&
+        isTransferCompatible(fromType, a.accountType as AccountType | null),
     );
   }, [type, accounts, selectedAccountId, selectedAccount]);
 
@@ -304,7 +310,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                 <View style={styles.section}>
                   <Text style={styles.sectionLabel}>To account</Text>
                   <Text style={styles.transferHint}>
-                    No other accounts with the same currency.
+                    No compatible accounts for this transfer.
                   </Text>
                 </View>
               )}
