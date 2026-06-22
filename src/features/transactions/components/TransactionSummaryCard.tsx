@@ -1,7 +1,6 @@
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { CurrencyPickerTab } from '@/src/features/dashboard/components/CurrencyPickerTab';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { getHeroColors } from '@/src/theme/colors';
 import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
@@ -23,13 +22,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
   onCurrencySelect,
 }: Props) {
   const theme = useTheme();
-  const { colors, isDark } = theme;
-
-  const heroCard = useMemo(
-    () => getHeroColors(isDark, colors.primary, colors.primaryDark, colors.text, colors.textMuted),
-    [isDark, colors.primary, colors.primaryDark, colors.text, colors.textMuted],
-  );
-
+  const { heroCard } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const cur = currency ?? undefined;

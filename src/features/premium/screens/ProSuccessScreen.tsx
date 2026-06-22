@@ -3,8 +3,7 @@ import { Header } from '@/src/components/ui/Header';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES } from '@/src/constants/iap';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
+import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
@@ -13,9 +12,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   const theme = useTheme();
-  const { colors, isDark } = theme;
+  const { colors, heroCard } = theme;
   const router = useRouter();
-  const heroCard = useMemo(() => getHeroColors(isDark, colors.primary, colors.primaryDark, colors.text, colors.textMuted), [isDark, colors]);
   const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
 
   return (

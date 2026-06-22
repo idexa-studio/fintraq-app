@@ -1,5 +1,4 @@
-import { useTheme } from '@/src/providers/ThemeProvider';
-import { ThemeColors } from '@/src/theme/colors';
+import { ThemeColors, useTheme } from '@/src/providers/ThemeProvider';
 import * as Haptics from 'expo-haptics';
 import React, {
   createContext,

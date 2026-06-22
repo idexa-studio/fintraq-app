@@ -1,6 +1,5 @@
 import { BentoPressable } from "@/src/components/ui/BentoPressable";
-import { ThemeContextType, useTheme } from "@/src/providers/ThemeProvider";
-import { HeroCardPalette } from "@/src/theme/colors";
+import { HeroCardPalette, ThemeContextType, useTheme } from "@/src/providers/ThemeProvider";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 

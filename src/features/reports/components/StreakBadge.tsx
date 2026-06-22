@@ -2,9 +2,8 @@ import { Flame } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useUsageStreak } from '@/src/features/reports/hooks/useStreak';
-import { HeroCardPalette } from '@/src/theme/colors';
 
 type Props = {
   heroCard: HeroCardPalette;

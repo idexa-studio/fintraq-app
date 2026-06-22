@@ -2,8 +2,7 @@ import { MoneyText } from '@/src/components/ui/MoneyText';
 import { StreakBadge } from '@/src/features/reports/components/StreakBadge';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
+import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
@@ -23,8 +22,7 @@ type Props = {
 
 export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, income, expense, currencies, onCurrencySelect }: Props) {
   const theme = useTheme();
-  const { colors, isDark } = theme;
-  const heroCard = useMemo(() => getHeroColors(isDark, colors.primary, colors.primaryDark, colors.text, colors.textMuted), [isDark, colors]);
+  const { heroCard } = theme;
   const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
   const { profile } = useSettings();
   const { isPremium } = usePremium();
@@ -96,7 +94,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   );
 });
 
-const createStyles = ({ spacing, radius, layout, typography }: ThemeContextType, heroCard: HeroCardPalette) =>
+const createStyles = ({ spacing, radius, typography }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
     // ── Hero card
     card: {

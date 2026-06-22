@@ -4,9 +4,8 @@ import { PageBackground } from '@/src/components/ui/PageBackground';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { AnalyticsService } from '@/src/services/analytics';
-import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
 import { ReloadIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
@@ -24,12 +23,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const PremiumScreen = React.memo(function PremiumScreen() {
   const theme = useTheme();
-  const { colors, isDark } = theme;
+  const { colors, heroCard } = theme;
   const router = useRouter();
   const { products, purchasePremium, restorePurchase, isLoading, isPremium } = usePremium();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const heroCard = useMemo(() => getHeroColors(isDark, colors.primary, colors.primaryDark, colors.text, colors.textMuted), [isDark, colors]);
   const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
 
   const lifetimeProduct = useMemo(() => products.find(p => p.id === SKU_LIFETIME), [products]);
