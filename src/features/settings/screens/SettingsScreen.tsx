@@ -5,7 +5,6 @@ import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { PageBackground } from '@/src/components/ui/PageBackground';
-import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments, persons, seederState } from '@/src/db/schema';
@@ -17,14 +16,11 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
-import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
 import { getFormattedAppVersion } from '@/src/utils/version';
 import {
   AlarmClockIcon,
   ArrowRight01Icon,
   BellIcon,
-  Calendar01Icon,
-  CellularNetworkIcon,
   CoinsIcon,
   ContrastIcon,
   Delete01Icon,
@@ -33,11 +29,11 @@ import {
   GridIcon,
   LockPasswordIcon,
   Moon01Icon,
+  PencilEdit01Icon,
   PinCodeIcon,
   ShieldKeyIcon,
   SparklesIcon,
   Sun01Icon,
-  UserAccountIcon,
 } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -45,17 +41,51 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, Linking, Platform, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Linking,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+/* ─────────────────────────────────────────────────────────────
+   Shared row separator
+───────────────────────────────────────────────────────────── */
+
+const RowSeparator = React.memo(function RowSeparator({
+  theme,
+}: {
+  theme: ThemeContextType;
+}) {
+  return (
+    <View
+      style={{
+        height: StyleSheet.hairlineWidth,
+        backgroundColor: theme.colors.text + '18',
+        marginLeft: theme.layout.screenPadding + 36 + theme.spacing('3.5'),
+      }}
+    />
+  );
+});
+
+/* ─────────────────────────────────────────────────────────────
+   SwitchRow
+───────────────────────────────────────────────────────────── */
 
 type SwitchRowProps = {
   icon: IconSvgElement;
   label: string;
-  subtitle: string;
+  subtitle?: string;
   value: boolean;
   onToggle: () => void;
   iconColor?: string;
+  theme: ThemeContextType;
 };
 
 const SwitchRow = React.memo(function SwitchRow({
@@ -66,49 +96,42 @@ const SwitchRow = React.memo(function SwitchRow({
   onToggle,
   iconColor,
   theme,
-}: SwitchRowProps & { theme: ThemeContextType }) {
-  const { colors, typography, spacing } = theme;
+}: SwitchRowProps) {
+  const styles = useMemo(() => createRowStyles(theme), [theme]);
+  const { colors } = theme;
   const resolvedIconColor = iconColor ?? colors.text;
 
   return (
-    <View style={{
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3.5'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-      backgroundColor: colors.surface,
-      marginBottom: spacing('0.5'),
-    }}>
+    <View style={styles.row}>
       <IconAvatar icon={icon} color={resolvedIconColor} variant="subtle" size={36} />
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontFamily: typography.fonts.semibold, fontSize: typography.sizes.md, color: colors.text }}>
-          {label}
-        </Text>
-        <Text style={{ fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted, marginTop: 2 }}>
-          {subtitle}
-        </Text>
+      <View style={styles.rowInfo}>
+        <Text style={styles.rowLabel}>{label}</Text>
+        {subtitle ? <Text style={styles.rowSubtitle}>{subtitle}</Text> : null}
       </View>
       <Switch
         value={value}
         onValueChange={onToggle}
-        trackColor={{ false: colors.background, true: colors.primaryLight }}
-        thumbColor={value ? colors.primary : colors.textMuted}
-        ios_backgroundColor={colors.background}
+        trackColor={{ false: colors.text + '18', true: colors.primary }}
+        thumbColor={'#FFFFFF'}
+        ios_backgroundColor={colors.text + '18'}
       />
     </View>
   );
 });
 
+/* ─────────────────────────────────────────────────────────────
+   NavRow
+───────────────────────────────────────────────────────────── */
+
 type NavRowProps = {
   icon: IconSvgElement;
   label: string;
-  subtitle: string;
+  subtitle?: string;
   value?: string;
   onPress: () => void;
   destructive?: boolean;
   iconColor?: string;
-  isLast?: boolean;
+  showArrow?: boolean;
   theme: ThemeContextType;
 };
 
@@ -120,57 +143,75 @@ const NavRow = React.memo(function NavRow({
   onPress,
   destructive = false,
   iconColor: iconColorOverride,
-  isLast,
+  showArrow = true,
   theme,
 }: NavRowProps) {
-  const { colors, typography, spacing, radius } = theme;
+  const styles = useMemo(() => createRowStyles(theme), [theme]);
+  const { colors } = theme;
   const iconColor = iconColorOverride ?? (destructive ? colors.danger : colors.text);
   const labelColor = destructive ? colors.danger : colors.text;
 
   return (
-    <BentoPressable
-      onPress={onPress}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: spacing('3.5'),
-        paddingHorizontal: spacing('4'),
-        paddingVertical: spacing('3.5'),
-        backgroundColor: colors.surface,
-        marginBottom: isLast ? 0 : spacing('0.5'),
-      }}
-    >
+    <BentoPressable onPress={onPress} style={styles.row}>
       <IconAvatar icon={icon} color={iconColor} variant="subtle" size={36} />
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontFamily: typography.fonts.semibold, fontSize: typography.sizes.md, color: labelColor }}>
-          {label}
-        </Text>
-        <Text style={{ fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted, marginTop: 2 }}>
-          {subtitle}
-        </Text>
+      <View style={styles.rowInfo}>
+        <Text style={[styles.rowLabel, { color: labelColor }]}>{label}</Text>
+        {subtitle ? <Text style={styles.rowSubtitle}>{subtitle}</Text> : null}
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing('2') }}>
-        {value ? (
-          <View style={{
-            backgroundColor: colors.background,
-            paddingHorizontal: spacing('2.5'),
-            paddingVertical: spacing('1'),
-            borderRadius: radius('sm'),
-          }}>
-            <Text style={{
-              fontFamily: typography.fonts.semibold,
-              fontSize: typography.sizes.xs - 1,
-              color: destructive ? colors.danger : colors.textMuted,
-            }}>
+      {value || showArrow ? (
+        <View style={styles.rowRight}>
+          {value ? (
+            <Text style={[styles.rowValue, destructive && { color: colors.danger }]}>
               {value}
             </Text>
-          </View>
-        ) : null}
-        <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
-      </View>
+          ) : null}
+          {showArrow ? (
+            <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
+          ) : null}
+        </View>
+      ) : null}
     </BentoPressable>
   );
 });
+
+/* Shared row styles */
+const createRowStyles = ({ colors, typography, spacing }: ThemeContextType) =>
+  StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3.5'),
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
+      backgroundColor: colors.surface,
+    },
+    rowInfo: { flex: 1, gap: 2 },
+    rowLabel: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.md,
+      color: colors.text,
+    },
+    rowSubtitle: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+      marginTop: 1,
+    },
+    rowRight: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('2'),
+    },
+    rowValue: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.sm,
+      color: colors.textMuted,
+    },
+  });
+
+/* ─────────────────────────────────────────────────────────────
+   Theme options
+───────────────────────────────────────────────────────────── */
 
 const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: IconSvgElement }[] = [
   { label: 'Light', value: 'light', icon: Sun01Icon },
@@ -178,11 +219,14 @@ const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: 
   { label: 'Follow system', value: 'system', icon: ContrastIcon },
 ];
 
+/* ─────────────────────────────────────────────────────────────
+   SettingsScreen
+───────────────────────────────────────────────────────────── */
+
 export const SettingsScreen = React.memo(function SettingsScreen() {
   const theme = useTheme();
-  const { colors, isDark, typography } = theme;
-  const heroCard = useMemo(() => getHeroColors(isDark, colors.primary, colors.primaryDark, colors.text, colors.textMuted), [isDark, colors]);
-  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
+  const { colors, isDark } = theme;
+  const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
   const { isPremium } = usePremium();
   const { profile, updateProfile } = useSettings();
@@ -190,7 +234,6 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
   const { lockEnabled, lockMode, enableLock, disableLock } = useAppLock();
   const [showPinSetup, setShowPinSetup] = useState(false);
-
   const [showThemeDialog, setShowThemeDialog] = useState(false);
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
@@ -198,15 +241,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const [showNameModal, setShowNameModal] = useState(false);
   const [devTaps, setDevTaps] = useState(0);
 
+  /* ── App lock ── */
   const handleToggleLock = useCallback(async () => {
     if (lockEnabled) {
-      // require auth before disabling
       const cap = await getBiometricCapability();
       let confirmed = false;
       if (lockMode === 'biometric' && cap.available) {
         confirmed = await authenticateWithBiometrics('Confirm to disable lock');
       } else {
-        // PIN mode — user will just confirm via alert (PIN already set, trust session)
         confirmed = await new Promise<boolean>(resolve => {
           Alert.alert(
             'Disable app lock',
@@ -236,14 +278,10 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     await enableLock('pin');
   }, [enableLock]);
 
-  const handleChangePinPress = useCallback(() => {
-    setShowPinSetup(true);
-  }, []);
+  const handleChangePinPress = useCallback(() => setShowPinSetup(true), []);
+  const handlePinSetupCancel = useCallback(() => setShowPinSetup(false), []);
 
-  const handlePinSetupCancel = useCallback(() => {
-    setShowPinSetup(false);
-  }, []);
-
+  /* ── Reminders ── */
   const handleToggleReminders = useCallback(async () => {
     const next = !profile.reminderEnabled;
     if (next) {
@@ -256,12 +294,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     await updateProfile({ reminderEnabled: next });
   }, [profile.reminderEnabled, updateProfile]);
 
+  /* ── Name ── */
   const openNameModal = useCallback(() => setShowNameModal(true), []);
   const closeNameModal = useCallback(() => setShowNameModal(false), []);
   const saveName = useCallback(async (name: string) => {
     await updateProfile({ name });
   }, [updateProfile]);
 
+  /* ── Time picker ── */
   const onTimeChange = useCallback(async (event: DateTimePickerEvent, date?: Date) => {
     setShowTimePicker(false);
     if (date && event.type === 'set') {
@@ -271,6 +311,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     }
   }, [updateProfile]);
 
+  /* ── Reset ── */
   const runReset = useCallback(async () => {
     try {
       await db.delete(payments);
@@ -286,6 +327,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     }
   }, [router]);
 
+  /* ── Easter egg ── */
   const handleFooterTap = useCallback(() => {
     const next = devTaps + 1;
     if (next >= 10) {
@@ -296,20 +338,22 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     }
   }, [devTaps, router]);
 
+  /* ── Links ── */
   const openPrivacy = useCallback(() => {
-    const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://fintraq.idexa.app/in-app/privacy?platform=${platform}`);
+    const p = Platform.OS === 'ios' ? 'ios' : 'android';
+    Linking.openURL(`https://fintraq.idexa.app/in-app/privacy?platform=${p}`);
   }, []);
 
   const openTerms = useCallback(() => {
-    const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://fintraq.idexa.app/in-app/terms?platform=${platform}`);
+    const p = Platform.OS === 'ios' ? 'ios' : 'android';
+    Linking.openURL(`https://fintraq.idexa.app/in-app/terms?platform=${p}`);
   }, []);
 
   const openExport = useCallback(() => {
     router.push(isPremium ? '/export' : '/premium');
   }, [isPremium, router]);
 
+  /* ── Memos ── */
   const themeLabel = useMemo(() => {
     const match = THEME_OPTIONS.find(o => o.value === (profile.theme || 'system'));
     return match?.label ?? 'Follow system';
@@ -334,6 +378,13 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   );
 
   const appVersion = getFormattedAppVersion();
+  const monogram = (profile.name || 'W').charAt(0).toUpperCase();
+
+  const lockSubtitle = lockMode === 'biometric'
+    ? 'Face ID / Fingerprint enabled'
+    : lockMode === 'pin'
+    ? 'PIN lock enabled'
+    : 'Biometric / PIN on resume';
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -341,98 +392,176 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
       <Header title="Settings" />
 
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.heroCard}>
-          <View style={styles.heroAvatar}>
-            <Text style={[styles.heroMonogram, { fontFamily: typography.fonts.bold, color: heroCard.textPrimary }]}>
-              {(profile.name || 'W').charAt(0).toUpperCase()}
-            </Text>
-          </View>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
-          <View style={styles.heroInfo}>
-            <Text style={[styles.heroName, { fontFamily: typography.fonts.bold, color: heroCard.textPrimary }]}>
-              {profile.name || 'Welcome'}
-            </Text>
-            <View style={styles.heroMeta}>
-              <Text style={[styles.heroMetaText, { fontFamily: typography.fonts.regular, color: heroCard.textMuted }]}>
-                {isPremium ? 'Pro member' : 'Free plan'}
-              </Text>
-              <View style={[styles.heroMetaDot, { backgroundColor: heroCard.textMuted }]} />
-              <Text style={[styles.heroMetaText, { fontFamily: typography.fonts.regular, color: heroCard.textMuted }]}>
-                v{appVersion}
-              </Text>
-            </View>
+        {/* ── Profile card ── */}
+        <BentoPressable style={styles.profileCard} onPress={openNameModal}>
+          <View style={styles.profileAvatar}>
+            <Text style={styles.profileMonogram}>{monogram}</Text>
           </View>
-        </View>
+          <View style={styles.profileInfo}>
+            <Text style={styles.profileName}>{profile.name || 'Welcome'}</Text>
+            <Text style={styles.profilePlan}>{isPremium ? 'Pro member' : 'Free Tier'}</Text>
+          </View>
+          <HugeiconsIcon icon={PencilEdit01Icon} size={18} color={'rgba(255,255,255,0.5)'} />
+        </BentoPressable>
 
-        <SectionHeader title="Plan" noPadding />
+        {/* ── Upgrade card (free users) or Pro badge (premium) ── */}
         <View style={styles.group}>
-          <NavRow
-            theme={theme}
-            icon={SparklesIcon}
-            iconColor={colors.warning}
-            label={isPremium ? 'Fintraq Pro — Lifetime' : 'Upgrade to Pro'}
-            subtitle={isPremium ? 'Permanent access to all features' : 'Unlock advanced insights and charts'}
-            value={isPremium ? 'Active' : undefined}
-            onPress={() => router.push('/premium')}
-            isLast
-          />
+          {!isPremium ? (
+            <BentoPressable onPress={() => router.push('/premium')} style={styles.upgradeRow}>
+              <IconAvatar icon={SparklesIcon} color={colors.warning} variant="subtle" size={36} />
+              <View style={styles.upgradeInfo}>
+                <Text style={styles.upgradeLabel}>Upgrade to Pro</Text>
+                <Text style={styles.upgradeSub}>Unlock all features</Text>
+              </View>
+              <View style={styles.upgradePill}>
+                <Text style={styles.upgradePillText}>Upgrade</Text>
+              </View>
+            </BentoPressable>
+          ) : (
+            <NavRow
+              theme={theme}
+              icon={SparklesIcon}
+              iconColor={colors.warning}
+              label="Fintraq Pro — Lifetime"
+              subtitle="Permanent access to all features"
+              value="Active"
+              showArrow={false}
+              onPress={() => router.push('/premium')}
+            />
+          )}
         </View>
 
-        <SectionHeader title="Preferences" noPadding />
+        {/* ── Notifications ── */}
+        <Text style={styles.sectionLabel}>Notifications</Text>
         <View style={styles.group}>
           <SwitchRow
             theme={theme}
             icon={BellIcon}
             iconColor={colors.info}
             label="Daily reminder"
-            subtitle="Get a nudge to log transactions"
+            subtitle={profile.reminderEnabled ? `On · ${profile.reminderTime}` : 'Get a nudge to log transactions'}
             value={profile.reminderEnabled}
             onToggle={handleToggleReminders}
           />
           {profile.reminderEnabled && (
             <>
+              <RowSeparator theme={theme} />
               <NavRow
                 theme={theme}
                 icon={AlarmClockIcon}
                 iconColor={colors.info}
                 label="Reminder time"
-                subtitle="Set daily notification time"
                 value={profile.reminderTime}
+                showArrow={false}
                 onPress={() => setShowTimePicker(true)}
               />
             </>
           )}
+        </View>
+
+        {/* ── Preferences ── */}
+        <Text style={styles.sectionLabel}>Preferences</Text>
+        <View style={styles.group}>
           <NavRow
             theme={theme}
             icon={CoinsIcon}
             iconColor={colors.success}
             label="Default currency"
-            subtitle="Used for new transactions"
             value={profile.defaultCurrency || 'USD'}
+            showArrow={false}
             onPress={() => setShowCurrencyPicker(true)}
           />
-          <NavRow
-            theme={theme}
-            icon={UserAccountIcon}
-            iconColor={colors.textMuted}
-            label="Display name"
-            subtitle="Set your app nickname"
-            value={profile.name || 'Not set'}
-            onPress={openNameModal}
-          />
+          <RowSeparator theme={theme} />
           <NavRow
             theme={theme}
             icon={ContrastIcon}
             iconColor={colors.textMuted}
-            label="Theme"
-            subtitle="Light, dark, or system matching"
-            value={themeLabel}
+            label="Appearance"
+            subtitle={themeLabel}
+            showArrow={false}
             onPress={() => setShowThemeDialog(true)}
-            isLast
+          />
+          <RowSeparator theme={theme} />
+          <SwitchRow
+            theme={theme}
+            icon={LockPasswordIcon}
+            iconColor={colors.primary}
+            label="App lock"
+            subtitle={lockSubtitle}
+            value={lockEnabled}
+            onToggle={handleToggleLock}
+          />
+          {lockMode === 'pin' && lockEnabled && (
+            <>
+              <RowSeparator theme={theme} />
+              <NavRow
+                theme={theme}
+                icon={PinCodeIcon}
+                iconColor={colors.primary}
+                label="Change PIN"
+                subtitle="Update security PIN code"
+                onPress={handleChangePinPress}
+              />
+            </>
+          )}
+        </View>
+
+        {/* ── Data ── */}
+        <Text style={styles.sectionLabel}>Data</Text>
+        <View style={styles.group}>
+          <NavRow
+            theme={theme}
+            icon={GridIcon}
+            iconColor={colors.success}
+            label="Categories"
+            subtitle="Manage expense/income categories"
+            onPress={() => router.push('/categories')}
+          />
+          <RowSeparator theme={theme} />
+          <NavRow
+            theme={theme}
+            icon={Download01Icon}
+            iconColor={colors.textMuted}
+            label="Export CSV"
+            subtitle="Download data as spreadsheet"
+            onPress={openExport}
+          />
+        </View>
+
+        {/* ── Legal ── */}
+        <Text style={styles.sectionLabel}>Legal</Text>
+        <View style={styles.group}>
+          <NavRow
+            theme={theme}
+            icon={ShieldKeyIcon}
+            iconColor={colors.textMuted}
+            label="Privacy policy"
+            subtitle="How we manage your data"
+            onPress={openPrivacy}
+          />
+          <RowSeparator theme={theme} />
+          <NavRow
+            theme={theme}
+            icon={File01Icon}
+            iconColor={colors.textMuted}
+            label="Terms of service"
+            subtitle="App rules and conditions"
+            onPress={openTerms}
+          />
+        </View>
+
+        {/* ── Danger zone ── */}
+        <Text style={styles.sectionLabel}>Danger zone</Text>
+        <View style={styles.group}>
+          <NavRow
+            theme={theme}
+            icon={Delete01Icon}
+            label="Factory reset"
+            subtitle="Erase all data and start fresh"
+            onPress={() => setShowResetDialog(true)}
+            destructive
           />
         </View>
 
@@ -446,97 +575,20 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         )}
 
-        <SectionHeader title="Security" noPadding />
-        <View style={styles.group}>
-          <SwitchRow
-            theme={theme}
-            icon={LockPasswordIcon}
-            iconColor={colors.primary}
-            label="App lock"
-            subtitle={lockMode === 'biometric' ? 'Face ID / Fingerprint enabled' : lockMode === 'pin' ? 'PIN lock enabled' : 'Secure app opening'}
-            value={lockEnabled}
-            onToggle={handleToggleLock}
-          />
-          {lockMode === 'pin' && lockEnabled && (
-            <NavRow
-              theme={theme}
-              icon={PinCodeIcon}
-              iconColor={colors.primary}
-              label="Change PIN"
-              subtitle="Update security PIN code"
-              onPress={handleChangePinPress}
-              isLast
-            />
-          )}
-        </View>
-
-        <SectionHeader title="Data" noPadding />
-        <View style={styles.group}>
-          <NavRow
-            theme={theme}
-            icon={GridIcon}
-            iconColor={colors.success}
-            label="Categories"
-            subtitle="Manage expense/income categories"
-            onPress={() => router.push('/categories')}
-          />
-          <NavRow
-            theme={theme}
-            icon={Download01Icon}
-            iconColor={colors.textMuted}
-            label="Export CSV"
-            subtitle="Download data as spreadsheet"
-            onPress={openExport}
-            isLast
-          />
-        </View>
-
-        <SectionHeader title="Legal" noPadding />
-        <View style={styles.group}>
-          <NavRow
-            theme={theme}
-            icon={ShieldKeyIcon}
-            iconColor={colors.textMuted}
-            label="Privacy policy"
-            subtitle="How we manage your data"
-            onPress={openPrivacy}
-          />
-          <NavRow
-            theme={theme}
-            icon={File01Icon}
-            iconColor={colors.textMuted}
-            label="Terms of service"
-            subtitle="App rules and conditions"
-            onPress={openTerms}
-            isLast
-          />
-        </View>
-
-        <SectionHeader title="Danger zone" noPadding />
-        <View style={styles.group}>
-          <NavRow
-            theme={theme}
-            icon={Delete01Icon}
-            label="Factory reset"
-            subtitle="Erase all data and start fresh"
-            onPress={() => setShowResetDialog(true)}
-            destructive
-            isLast
-          />
-        </View>
-
-        <TouchableOpacity onPress={handleFooterTap} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }} activeOpacity={1}>
+        {/* ── Footer ── */}
+        <TouchableOpacity
+          onPress={handleFooterTap}
+          hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }}
+          activeOpacity={1}
+        >
           <View style={styles.footer}>
-            <Text style={[styles.footerBrand, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-              Fintraq / Core
-            </Text>
-            <Text style={[styles.footerCopy, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              Data encrypted and stored locally.
-            </Text>
+            <Text style={styles.footerBrand}>Fintraq / Core</Text>
+            <Text style={styles.footerCopy}>Data encrypted and stored locally. v{appVersion}</Text>
           </View>
         </TouchableOpacity>
       </ScrollView>
 
+      {/* ── Overlays ── */}
       <CurrencyPickerBottomSheet
         visible={showCurrencyPicker}
         onClose={() => setShowCurrencyPicker(false)}
@@ -583,84 +635,129 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   );
 });
 
-const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeContextType, heroCard: HeroCardPalette) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
+/* ─────────────────────────────────────────────────────────────
+   Screen-level styles
+───────────────────────────────────────────────────────────── */
+
+const createStyles = (
+  { colors, spacing, radius, typography, layout }: ThemeContextType,
+  isDark: boolean,
+) => {
+  const profileBg = isDark ? '#2C2C2E' : '#111111';
+
+  return StyleSheet.create({
+    container: { flex: 1 },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
       paddingBottom: 110,
     },
 
-    heroCard: {
-      backgroundColor: heroCard.background,
+    /* ── Profile card ── */
+    profileCard: {
+      backgroundColor: profileBg,
       borderRadius: radius('2xl'),
-      padding: spacing('6'),
-      marginBottom: spacing('7'),
+      padding: spacing('5'),
+      marginBottom: spacing('4'),
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('5'),
-      overflow: 'hidden',
+      gap: spacing('4'),
     },
-    heroAvatar: {
-      width: 56,
-      height: 56,
-      borderRadius: 14, // Squircle: Math.round(56 * 0.25)
-      backgroundColor: heroCard.separator,
+    profileAvatar: {
+      width: 48,
+      height: 48,
+      borderRadius: radius('full'),
+      backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    heroMonogram: {
-      fontSize: 22,
+    profileMonogram: {
+      fontFamily: typography.fonts.bold,
+      fontSize: typography.sizes.xl,
+      color: '#FFFFFF',
     },
-    heroInfo: {
+    profileInfo: {
       flex: 1,
-      gap: spacing('1.5'),
+      gap: spacing('0.5'),
     },
-    heroName: {
-      fontSize: 22,
+    profileName: {
+      fontFamily: typography.fonts.bold,
+      fontSize: typography.sizes.lg,
+      color: '#FFFFFF',
     },
-    heroMeta: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-    },
-    heroMetaText: {
-      fontSize: 12,
-      opacity: 0.7,
-    },
-    heroMetaDot: {
-      width: 3,
-      height: 3,
-      borderRadius: radius('full'),
-      opacity: 0.4,
+    profilePlan: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.xs,
+      color: 'rgba(255,255,255,0.55)',
     },
 
+    /* ── Group ── */
     group: {
       borderRadius: radius('xl'),
       overflow: 'hidden',
-      marginBottom: spacing('3'),
+      marginBottom: spacing('4'),
     },
 
+    /* ── Section label ── */
+    sectionLabel: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+      marginBottom: spacing('2'),
+      marginLeft: spacing('1'),
+    },
+
+    /* ── Upgrade row ── */
+    upgradeRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3.5'),
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
+      backgroundColor: colors.surface,
+    },
+    upgradeInfo: { flex: 1, gap: 2 },
+    upgradeLabel: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.md,
+      color: colors.text,
+    },
+    upgradeSub: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+      marginTop: 1,
+    },
+    upgradePill: {
+      backgroundColor: colors.primary,
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('2'),
+      borderRadius: radius('full'),
+    },
+    upgradePillText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.sm,
+      color: '#FFFFFF',
+    },
+
+    /* ── Footer ── */
     footer: {
       alignItems: 'center',
-      gap: spacing('1.5'),
-      marginTop: spacing('3'),
+      gap: spacing('1'),
+      marginTop: spacing('2'),
       paddingVertical: spacing('4'),
     },
     footerBrand: {
-      fontSize: 10,
-      opacity: 0.3,
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.xxs,
+      color: colors.text,
+      opacity: 0.25,
     },
     footerCopy: {
-      fontSize: 10,
-      opacity: 0.4,
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.xxs,
+      color: colors.textMuted,
+      opacity: 0.35,
     },
   });
-
-// Suppress unused import warnings for icons only used in THEME_OPTIONS
-void Calendar01Icon;
-void CellularNetworkIcon;
+};
