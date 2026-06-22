@@ -38,6 +38,7 @@ export type TransactionListItem = {
     currency: string;
     color: number;
     icon: string;
+    accountType: 'cash' | 'bank' | 'savings' | 'credit_card' | 'investment' | 'loan' | 'ewallet' | null;
   };
   category: {
     id: number;
@@ -51,6 +52,7 @@ export type TransactionListItem = {
     currency: string | null;
     color: number | null;
     icon: string | null;
+    accountType: 'cash' | 'bank' | 'savings' | 'credit_card' | 'investment' | 'loan' | 'ewallet' | null;
   };
 };
 
@@ -70,6 +72,7 @@ export const TRANSACTION_LIST_SELECT = {
     currency: accounts.currency,
     color: accounts.color,
     icon: accounts.icon,
+    accountType: accounts.accountType,
   },
   category: {
     id: categories.id,
@@ -83,6 +86,7 @@ export const TRANSACTION_LIST_SELECT = {
     currency: toAccounts.currency,
     color: toAccounts.color,
     icon: toAccounts.icon,
+    accountType: toAccounts.accountType,
   },
   createdAt: payments.createdAt,
   updatedAt: payments.updatedAt,

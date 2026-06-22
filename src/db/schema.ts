@@ -21,6 +21,9 @@ export const accounts = sqliteTable('accounts', {
   holderName: text('holderName').notNull(),
   accountNumber: text('accountNumber').notNull(),
   icon: text('icon').notNull().default('building'),
+  accountType: text('account_type', {
+    enum: ['cash', 'bank', 'savings', 'credit_card', 'investment', 'loan', 'ewallet'],
+  }).default('bank'),
   color: integer('color').notNull(),
   isDefault: integer('isDefault', { mode: 'boolean' }).notNull().default(false),
   currency: text('currency').notNull().default('USD'),

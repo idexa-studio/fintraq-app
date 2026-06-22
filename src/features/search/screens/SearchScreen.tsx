@@ -8,8 +8,8 @@ import type { Person } from '@/src/features/persons/api/persons';
 import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
-import { ArrowLeft01Icon, ArrowRight01Icon, Building01Icon, CancelCircleIcon, Clock01Icon, InboxIcon, Search01Icon, SparklesIcon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
+import { ArrowLeft01Icon, ArrowRight01Icon, CancelCircleIcon, Clock01Icon, InboxIcon, Search01Icon, SparklesIcon, Tag01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
@@ -63,7 +63,7 @@ const AccountRow = React.memo(function AccountRow({
 
   return (
     <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
-      <IconAvatar icon={resolveIcon(account.icon, Building01Icon)} color={accentColor} variant="solid" size={36} iconSize={18} />
+      <IconAvatar icon={resolveAccountTypeIcon(account.accountType)} color={accentColor} variant="solid" size={36} iconSize={18} />
       <View style={styles.info}>
         <Text style={styles.name}>{account.name}</Text>
         <Text style={styles.meta}>

@@ -1,11 +1,11 @@
-import { ArrowRight01Icon, Building01Icon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { ArrowRight01Icon, Tag01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { TransactionType } from '@/src/types';
+import type { AccountType, TransactionType } from '@/src/types';
 import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
+import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 import { format, isToday, isYesterday } from 'date-fns';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -22,6 +22,7 @@ type TransactionData = {
     currency: string;
     icon: string;
     color: number;
+    accountType?: AccountType | null;
   };
   category: {
     name: string;
@@ -32,6 +33,7 @@ type TransactionData = {
     name: string | null;
     icon: string | null;
     color: number | null;
+    accountType?: AccountType | null;
   } | null;
 };
 
@@ -72,9 +74,15 @@ export const TransactionRow = React.memo(function TransactionRow({
     marginBottom: isLast ? 0 : spacing('0.5'),
   }), [isFirst, isLast, colors.surface, radius, spacing]);
 
-  const accountIconName = useMemo(() => resolveIcon(tx.account.icon, Building01Icon), [tx.account.icon]);
+  const accountIconName = useMemo(
+    () => resolveAccountTypeIcon(tx.account.accountType),
+    [tx.account.accountType],
+  );
 
-  const toAccountIconName = useMemo(() => resolveIcon(tx.toAccount?.icon, Building01Icon), [tx.toAccount?.icon]);
+  const toAccountIconName = useMemo(
+    () => resolveAccountTypeIcon(tx.toAccount?.accountType),
+    [tx.toAccount?.accountType],
+  );
 
   const accountColor = useMemo(() => colorNumberToHex(tx.account.color), [tx.account.color]);
 

@@ -8,6 +8,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -412,7 +413,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       </ScrollView>
 
       <View style={styles.footer}>
-        <BentoPressable
+        <Pressable
           style={[styles.saveBtn, !canSubmit && styles.saveBtnDisabled]}
           onPress={handleSave}
           disabled={!canSubmit}
@@ -424,7 +425,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
               {isEditMode ? 'Save changes' : 'Save transaction'}
             </Text>
           )}
-        </BentoPressable>
+        </Pressable>
       </View>
       </KeyboardAvoidingView>
 
@@ -472,6 +473,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       fontFamily: typography.fonts.semibold,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
+      opacity: 0.6,
     },
     transferHint: {
       fontFamily: typography.fonts.regular,

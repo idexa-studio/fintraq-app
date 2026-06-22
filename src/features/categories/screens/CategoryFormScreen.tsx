@@ -1,30 +1,44 @@
+import { CheckIcon, GridIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { PageBackground } from '@/src/components/ui/PageBackground';
-import { ColorPickerBottomSheet } from '@/src/components/ui/ColorPickerBottomSheet';
-import { Header } from '@/src/components/ui/Header';
-import { Input } from '@/src/components/ui/Input';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { IconPickerBottomSheet } from '@/src/components/ui/IconPickerBottomSheet';
-import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
-import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
-import { GridIcon } from '@hugeicons/core-free-icons';
+import { Header } from '@/src/components/ui/Header';
+import { PageBackground } from '@/src/components/ui/PageBackground';
+import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS } from '@/src/constants/picker';
 import { useCategories, useCreateCategory, useUpdateCategory } from '@/src/features/categories/hooks/categories';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex, toDbColor } from '@/src/utils/format';
+import { resolveIcon } from '@/src/utils/icons';
 
 type CategoryFormValues = {
   name: string;
 };
 
+const TYPE_OPTIONS = [
+  { value: 'DR' as const, label: 'Expense' },
+  { value: 'CR' as const, label: 'Income' },
+  { value: 'TR' as const, label: 'Transfer' },
+] as const;
+
 export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
   const theme = useTheme();
+  const { colors, layout } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { data: categories } = useCategories();
@@ -39,20 +53,23 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
 
   const [type, setType] = useState<'CR' | 'DR' | 'TR'>('DR');
   const [icon, setIcon] = useState<string>(CATEGORY_ICONS[0]);
-  const [colorHex, setColorHex] = useState<string>(() => CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)]);
-
+  const [colorHex, setColorHex] = useState<string>(
+    () => CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)],
+  );
   const [showIconPicker, setShowIconPicker] = useState(false);
-  const [showColorPicker, setShowColorPicker] = useState(false);
 
   const {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isValid },
   } = useForm<CategoryFormValues>({
     mode: 'onChange',
     defaultValues: { name: '' },
   });
+
+  const categoryName = watch('name');
 
   useEffect(() => {
     if (category) {
@@ -63,12 +80,20 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
     }
   }, [category, reset]);
 
+  const resolvedIcon = useMemo(() => resolveIcon(icon, GridIcon), [icon]);
+
+  const typeColor = useMemo(() => {
+    if (type === 'DR') return colors.danger;
+    if (type === 'CR') return colors.success;
+    return colors.primary;
+  }, [type, colors]);
+
   const handleSave = handleSubmit(async (data) => {
     const payload = {
       name: data.name.trim(),
       type,
       icon,
-      color: parseInt(colorHex.replace('#', ''), 16),
+      color: toDbColor(colorHex),
     };
     try {
       if (isEditing && category) {
@@ -85,7 +110,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title={isEditing ? 'Edit Category' : 'New Category'} showBack />
+      <Header title={isEditing ? 'Edit category' : 'New category'} showBack />
 
       <KeyboardAvoidingView
         style={styles.body}
@@ -97,103 +122,123 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.formBody}>
 
-            {/* ── Type ── */}
-            <View style={styles.section}>
-              <Text style={styles.sectionLabel}>Type</Text>
-              <View style={styles.typeRow}>
-                <BentoPressable
-                  onPress={() => !isEditing && setType('DR')}
-                  disabled={isEditing}
-                  style={[styles.typePill, type === 'DR' && styles.typePillExpense]}
-                >
-                  <Text style={[styles.typePillText, type === 'DR' && { color: theme.colors.danger }]}>
-                    Expense
-                  </Text>
-                </BentoPressable>
-                <BentoPressable
-                  onPress={() => !isEditing && setType('CR')}
-                  disabled={isEditing}
-                  style={[styles.typePill, type === 'CR' && styles.typePillIncome]}
-                >
-                  <Text style={[styles.typePillText, type === 'CR' && { color: theme.colors.success }]}>
-                    Income
-                  </Text>
-                </BentoPressable>
-                <BentoPressable
-                  onPress={() => !isEditing && setType('TR')}
-                  disabled={isEditing}
-                  style={[styles.typePill, type === 'TR' && styles.typePillTransfer]}
-                >
-                  <Text style={[styles.typePillText, type === 'TR' && { color: theme.colors.primary }]}>
-                    Transfer
-                  </Text>
-                </BentoPressable>
+          {/* ── Hero preview card ── */}
+          <Pressable
+            style={[styles.heroCard, { marginHorizontal: layout.screenPadding }]}
+            onPress={() => setShowIconPicker(true)}
+          >
+            <View style={styles.heroTop}>
+              <View style={[styles.heroAvatarWrap, { backgroundColor: colorHex + '22' }]}>
+                <IconAvatar icon={resolvedIcon} color={colorHex} variant="solid" size={56} iconSize={26} />
               </View>
-              {isEditing && (
-                <Text style={styles.lockHint}>Type cannot be changed for existing categories.</Text>
-              )}
+              <View style={styles.heroMeta}>
+                <Text style={styles.heroName} numberOfLines={1}>
+                  {categoryName.trim() || 'Category name'}
+                </Text>
+                <Text style={[styles.heroSub, { color: typeColor }]}>
+                  {TYPE_OPTIONS.find((o) => o.value === type)?.label ?? 'Expense'}
+                </Text>
+                <Text style={styles.heroHint}>Tap to change icon</Text>
+              </View>
             </View>
 
-            {/* ── Name ── */}
-            <View style={styles.section}>
-              <Text style={styles.sectionLabel}>Name</Text>
+            <View style={styles.heroDivider} />
+
+            {/* Inline color palette */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.colorRow}
+            >
+              {CATEGORY_COLORS.map((hex) => {
+                const isSelected = colorHex === hex;
+                return (
+                  <Pressable
+                    key={hex}
+                    onPress={(e) => { e.stopPropagation?.(); setColorHex(hex); }}
+                    style={[
+                      styles.colorDot,
+                      { backgroundColor: hex },
+                      isSelected && styles.colorDotSelected,
+                    ]}
+                  >
+                    {isSelected && (
+                      <HugeiconsIcon icon={CheckIcon} size={12} color="#fff" />
+                    )}
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </Pressable>
+
+          {/* ── Type selector ── */}
+          <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
+            <Text style={styles.sectionLabel}>Type</Text>
+            <View style={styles.typeRow}>
+              {TYPE_OPTIONS.map((opt) => {
+                const isSelected = type === opt.value;
+                const activeColor =
+                  opt.value === 'DR' ? colors.danger :
+                  opt.value === 'CR' ? colors.success :
+                  colors.primary;
+                return (
+                  <Pressable
+                    key={opt.value}
+                    onPress={() => !isEditing && setType(opt.value)}
+                    style={[
+                      styles.typePill,
+                      isSelected && { backgroundColor: activeColor + '20' },
+                      isEditing && { opacity: 0.5 },
+                    ]}
+                    disabled={isEditing}
+                  >
+                    <Text style={[styles.typePillText, isSelected && { color: activeColor }]}>
+                      {opt.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            {isEditing && (
+              <Text style={styles.lockHint}>Type cannot be changed for existing categories.</Text>
+            )}
+          </View>
+
+          {/* ── Name field ── */}
+          <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
+            <Text style={styles.sectionLabel}>Category name</Text>
+            <View style={styles.fieldCard}>
               <Controller
                 control={control}
                 name="name"
                 rules={{
-                  required: 'Category name is required',
-                  minLength: { value: 2, message: 'Name must be at least 2 characters' },
-                  maxLength: { value: 50, message: 'Name must be 50 characters or less' },
+                  required: 'Required',
+                  minLength: { value: 2, message: 'Min 2 characters' },
+                  maxLength: { value: 50, message: 'Max 50 characters' },
                 }}
                 render={({ field }) => (
-                  <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="e.g. Groceries, Salary" error={errors.name?.message} size="md" variant="filled" autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
+                  <TextInput
+                    value={field.value}
+                    onChangeText={field.onChange}
+                    onBlur={field.onBlur}
+                    placeholder="e.g. Groceries, Salary"
+                    placeholderTextColor={colors.textMuted + '60'}
+                    style={[styles.nameInput, errors.name && { color: colors.danger }]}
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                    returnKeyType="done"
+                  />
                 )}
               />
             </View>
-
-            {/* ── Appearance ── */}
-            <View style={styles.section}>
-              <Text style={styles.sectionLabel}>Appearance</Text>
-              <View style={styles.appearanceRow}>
-                <BentoPressable
-                  style={styles.appearanceCard}
-                  onPress={() => setShowIconPicker(true)}
-                >
-                  <IconAvatar
-                    icon={resolveIcon(icon, GridIcon)}
-                    color={colorHex} variant="solid"
-                    size={32}
-                  />
-                  <View style={styles.appearanceCardMeta}>
-                    <Text style={styles.appearanceCardLabel}>Icon</Text>
-                    <Text style={styles.appearanceCardHint} numberOfLines={1}>
-                      {icon.replace('-outline', '')}
-                    </Text>
-                  </View>
-                </BentoPressable>
-
-                <BentoPressable
-                  style={styles.appearanceCard}
-                  onPress={() => setShowColorPicker(true)}
-                >
-                  <View style={[styles.colorSwatch, { backgroundColor: colorHex }]} />
-                  <View style={styles.appearanceCardMeta}>
-                    <Text style={styles.appearanceCardLabel}>Color</Text>
-                    <Text style={styles.appearanceCardHint} numberOfLines={1}>
-                      {colorHex}
-                    </Text>
-                  </View>
-                </BentoPressable>
-              </View>
-            </View>
-
+            {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
           </View>
+
         </ScrollView>
 
         <View style={styles.footer}>
-          <BentoPressable
+          <Pressable
             style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
             onPress={handleSave}
             disabled={!isValid}
@@ -201,7 +246,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
             <Text style={styles.primaryBtnText}>
               {isEditing ? 'Save category' : 'Create category'}
             </Text>
-          </BentoPressable>
+          </Pressable>
         </View>
       </KeyboardAvoidingView>
 
@@ -212,44 +257,90 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
         onChange={setIcon}
         groups={CATEGORY_ICON_GROUPS}
         accentColor={colorHex}
-        title="Choose Icon"
-      />
-
-      <ColorPickerBottomSheet
-        visible={showColorPicker}
-        onClose={() => setShowColorPicker(false)}
-        value={colorHex}
-        onChange={setColorHex}
-        palette={PALETTE_COLOR_OPTIONS}
-        title="Choose Color"
+        title="Choose icon"
       />
     </SafeAreaView>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
       overflow: 'hidden',
     },
-    body: {
-      flex: 1,
-    },
-    scroll: {
-      flex: 1,
-    },
+    body: { flex: 1 },
+    scroll: { flex: 1 },
     content: {
       paddingTop: spacing('4'),
-      paddingBottom: spacing('4'),
+      paddingBottom: spacing('6'),
     },
-    formBody: {
-      gap: spacing('5'),
+
+    // ── Hero card
+    heroCard: {
+      backgroundColor: colors.surface,
+      borderRadius: radius('2xl'),
+      ...shadow('sm'),
     },
-    section: {
-      paddingHorizontal: layout.screenPadding,
-      gap: spacing('3'),
+    heroTop: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3.5'),
+      padding: spacing('4'),
+    },
+    heroAvatarWrap: {
+      width: 72,
+      height: 72,
+      borderRadius: radius('xl'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    heroMeta: {
+      flex: 1,
+      gap: spacing('0.5'),
+    },
+    heroName: {
+      fontFamily: typography.fonts.bold,
+      fontSize: 18,
+      color: colors.text,
+    },
+    heroSub: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 13,
+    },
+    heroHint: {
+      fontFamily: typography.fonts.regular,
+      fontSize: 12,
+      color: colors.textMuted,
+      marginTop: spacing('1'),
+    },
+    heroDivider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: colors.border,
+      marginHorizontal: spacing('4'),
+    },
+    colorRow: {
+      flexDirection: 'row',
+      gap: spacing('2'),
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
+    },
+    colorDot: {
+      width: 26,
+      height: 26,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    colorDotSelected: {
+      ...shadow('sm'),
+    },
+
+    // ── Section
+    sectionGap: {
+      marginTop: spacing('5'),
+      gap: spacing('2.5'),
     },
     sectionLabel: {
       fontFamily: typography.fonts.semibold,
@@ -257,86 +348,52 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.textMuted,
       opacity: 0.6,
     },
-    fieldInput: {
-      height: 50,
-      borderRadius: radius('lg'),
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing('4'),
-      fontFamily: typography.fonts.regular,
-      fontSize: 15,
-      color: colors.text,
-    },
-    fieldInputError: {
-      borderWidth: 1,
-      borderColor: colors.danger,
-    },
+
+    // ── Type
     typeRow: {
       flexDirection: 'row',
-      gap: spacing('2.5'),
+      gap: spacing('2'),
     },
     typePill: {
-      paddingHorizontal: spacing('4'),
-      height: 36,
+      flex: 1,
+      height: 40,
       borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.surface,
-    },
-    typePillExpense: {
-      backgroundColor: colors.danger + '18',
-    },
-    typePillIncome: {
-      backgroundColor: colors.success + '18',
-    },
-    typePillTransfer: {
-      backgroundColor: colors.primary + '18',
     },
     typePillText: {
       fontFamily: typography.fonts.semibold,
       fontSize: 13,
       color: colors.textMuted,
     },
-    typePillTextActive: {
-      color: colors.primaryForeground,
-    },
     lockHint: {
       fontFamily: typography.fonts.regular,
       fontSize: 12,
       color: colors.textMuted,
     },
-    appearanceRow: {
-      flexDirection: 'row',
-      gap: spacing('3'),
-    },
-    appearanceCard: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2.5'),
+
+    // ── Name field
+    fieldCard: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('3'),
+      overflow: 'hidden',
     },
-    appearanceCardMeta: {
-      flex: 1,
-      gap: 2,
-    },
-    appearanceCardLabel: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 13,
-      color: colors.text,
-    },
-    appearanceCardHint: {
+    nameInput: {
       fontFamily: typography.fonts.regular,
-      fontSize: 11,
-      color: colors.textMuted,
+      fontSize: 15,
+      color: colors.text,
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
+      minHeight: 52,
     },
-    colorSwatch: {
-      width: 32,
-      height: 32,
-      borderRadius: radius('full'),
+    errorText: {
+      fontFamily: typography.fonts.regular,
+      fontSize: 12,
+      color: colors.danger,
     },
+
+    // ── Footer
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
@@ -349,9 +406,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
       alignItems: 'center',
     },
-    primaryBtnDisabled: {
-      opacity: 0.45,
-    },
+    primaryBtnDisabled: { opacity: 0.45 },
     primaryBtnText: {
       fontFamily: typography.fonts.semibold,
       fontSize: 15,

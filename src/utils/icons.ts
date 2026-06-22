@@ -457,3 +457,22 @@ export function resolveIcon(
   const resolvedKey = LEGACY_ICON_MAP[icon] || icon;
   return ICON_MAP[resolvedKey] || fallback;
 }
+
+import type { AccountType } from '@/src/types';
+
+export const ACCOUNT_TYPE_ICON_MAP: Record<AccountType, IconSvgElement> = {
+  cash: ICON_MAP['cash']!,
+  bank: ICON_MAP['building']!,
+  savings: ICON_MAP['diamond']!,
+  credit_card: ICON_MAP['credit-card']!,
+  investment: ICON_MAP['chart-line-data']!,
+  loan: ICON_MAP['receipt-text']!,
+  ewallet: ICON_MAP['wallet']!,
+};
+
+export function resolveAccountTypeIcon(
+  accountType: AccountType | null | undefined,
+): IconSvgElement {
+  if (!accountType) return ICON_MAP['building']!;
+  return ACCOUNT_TYPE_ICON_MAP[accountType] ?? ICON_MAP['building']!;
+}

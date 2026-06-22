@@ -8,11 +8,10 @@ import { OptionsDialog, OptionsDialogOption } from '@/src/components/ui/OptionsD
 import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/accounts';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
+import { resolveAccountTypeIcon } from '@/src/utils/icons';
 import {
   ArrowDown01Icon,
   ArrowUp01Icon,
-  Building01Icon,
   Delete01Icon,
   MoreVerticalCircle01Icon,
   PencilEdit01Icon,
@@ -102,7 +101,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
               <View style={styles.cardTop}>
                 <View style={styles.cardLead}>
                   <IconAvatar
-                    icon={resolveIcon(account.icon, Building01Icon)}
+                    icon={resolveAccountTypeIcon(account.accountType)}
                     color={accColor}
                     variant="subtle"
                     size={44}

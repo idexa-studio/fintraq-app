@@ -1,25 +1,32 @@
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { ColorPickerBottomSheet } from '@/src/components/ui/ColorPickerBottomSheet';
 import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { IconPickerBottomSheet } from '@/src/components/ui/IconPickerBottomSheet';
-import { Input } from '@/src/components/ui/Input';
 import { PageBackground } from '@/src/components/ui/PageBackground';
-import { ACCOUNT_COLORS, ACCOUNT_ICON_GROUPS, ACCOUNT_ICONS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
+import { ACCOUNT_COLORS } from '@/src/constants/picker';
 import type { InsertAccount, UpdateAccountData } from '@/src/features/accounts/api/accounts';
 import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { AnalyticsService } from '@/src/services/analytics';
+import type { AccountType } from '@/src/types';
 import { colorNumberToHex, parseAmount, toDbColor } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
-import { Building01Icon, UnfoldMoreIcon } from '@hugeicons/core-free-icons';
+import { ACCOUNT_TYPE_ICON_MAP, resolveAccountTypeIcon } from '@/src/utils/icons';
+import { CheckIcon, UnfoldMoreIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type AccountFormValues = {
@@ -29,11 +36,26 @@ type AccountFormValues = {
   balance: string;
 };
 
+type AccountTypeOption = {
+  value: AccountType;
+  label: string;
+};
+
+const ACCOUNT_TYPE_OPTIONS: AccountTypeOption[] = [
+  { value: 'cash', label: 'Cash' },
+  { value: 'bank', label: 'Bank' },
+  { value: 'savings', label: 'Savings' },
+  { value: 'credit_card', label: 'Credit card' },
+  { value: 'investment', label: 'Investment' },
+  { value: 'loan', label: 'Loan' },
+  { value: 'ewallet', label: 'E-wallet' },
+];
+
 export const AccountFormScreen = React.memo(function AccountFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors, layout } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { data: accounts } = useAccounts();
@@ -45,26 +67,31 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
 
   const { mutateAsync: createAccount } = useCreateAccount();
   const { mutateAsync: updateAccount } = useUpdateAccount();
-
   const { profile } = useSettings();
 
   const [currency, setCurrency] = useState<string>(profile.defaultCurrency || 'USD');
-  const [colorHex, setColorHex] = useState<string>(() => ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)]);
-  const [iconKey, setIconKey] = useState<string>(ACCOUNT_ICONS[0]);
-
+  const [colorHex, setColorHex] = useState<string>(
+    () => ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)],
+  );
+  const [accountType, setAccountType] = useState<AccountType>('bank');
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
-  const [showIconPicker, setShowIconPicker] = useState(false);
-  const [showColorPicker, setShowColorPicker] = useState(false);
+
+  const holderRef = useRef<TextInput>(null);
+  const accountNumberRef = useRef<TextInput>(null);
+  const balanceRef = useRef<TextInput>(null);
 
   const {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isValid },
   } = useForm<AccountFormValues>({
     mode: 'onChange',
     defaultValues: { name: '', holderName: '', accountNumber: '', balance: '' },
   });
+
+  const accountName = watch('name');
 
   useEffect(() => {
     if (account) {
@@ -76,14 +103,20 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
       });
       setCurrency(account.currency);
       setColorHex(colorNumberToHex(account.color).toUpperCase());
-      const matchedIcon =
-        ACCOUNT_ICONS.find((i) => i === account.icon) ?? ACCOUNT_ICONS[0];
-      setIconKey(matchedIcon);
+      if (account.accountType) {
+        setAccountType(account.accountType as AccountType);
+      }
     }
   }, [account, reset]);
 
   const openCurrencyPicker = useCallback(() => setShowCurrencyPicker(true), []);
   const closeCurrencyPicker = useCallback(() => setShowCurrencyPicker(false), []);
+
+  const resolvedIcon = useMemo(() => resolveAccountTypeIcon(accountType), [accountType]);
+  const selectedTypeLabel = useMemo(
+    () => ACCOUNT_TYPE_OPTIONS.find((o) => o.value === accountType)?.label ?? 'Bank',
+    [accountType],
+  );
 
   const handleSave = handleSubmit(async (data) => {
     try {
@@ -94,7 +127,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           accountNumber: data.accountNumber.trim(),
           currency,
           color: toDbColor(colorHex),
-          icon: iconKey,
+          accountType,
         };
         await updateAccount({ id: account.id, data: updateData });
       } else {
@@ -105,7 +138,8 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           balance: parseAmount(data.balance),
           currency,
           color: toDbColor(colorHex),
-          icon: iconKey,
+          icon: 'building',
+          accountType,
           isDefault: false,
         };
         await createAccount(createData);
@@ -114,7 +148,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         isEditing ? 'edit' : 'create',
         currency,
         !isEditing && parseAmount(data.balance) > 0,
-        iconKey
+        accountType,
       );
       router.back();
     } catch (error) {
@@ -125,7 +159,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title={isEditing ? 'Edit Account' : 'New Account'} showBack />
+      <Header title={isEditing ? 'Edit account' : 'New account'} showBack />
 
       <KeyboardAvoidingView
         style={styles.body}
@@ -137,147 +171,233 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.formBody}>
 
-            {/* ── Account Name ── */}
-            <View style={styles.section}>
-              <Text style={styles.sectionLabel}>Account name</Text>
+          {/* ── Hero preview card ── */}
+          <View style={[styles.heroCard, { marginHorizontal: layout.screenPadding }]}>
+            <View style={styles.heroTop}>
+              <View style={[styles.heroAvatarWrap, { backgroundColor: colorHex + '22' }]}>
+                <IconAvatar icon={resolvedIcon} color={colorHex} variant="solid" size={56} iconSize={26} />
+              </View>
+              <View style={styles.heroMeta}>
+                <Text style={styles.heroName} numberOfLines={1}>
+                  {accountName.trim() || 'Account name'}
+                </Text>
+                <Text style={styles.heroSub}>{selectedTypeLabel} · {currency}</Text>
+              </View>
+            </View>
+
+            <View style={styles.heroDivider} />
+
+            {/* Inline color palette */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.colorRow}
+            >
+              {ACCOUNT_COLORS.map((hex) => {
+                const isSelected = colorHex === hex;
+                return (
+                  <Pressable
+                    key={hex}
+                    onPress={() => setColorHex(hex)}
+                    style={[
+                      styles.colorDot,
+                      { backgroundColor: hex },
+                      isSelected && styles.colorDotSelected,
+                    ]}
+                  >
+                    {isSelected && (
+                      <HugeiconsIcon icon={CheckIcon} size={12} color="#fff" />
+                    )}
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </View>
+
+          {/* ── Account type ── */}
+          <View style={styles.sectionGap}>
+            <Text style={[styles.sectionLabel, { paddingHorizontal: layout.screenPadding }]}>
+              Account type
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={[styles.typeRow, { paddingHorizontal: layout.screenPadding }]}
+            >
+              {ACCOUNT_TYPE_OPTIONS.map((opt) => {
+                const isSelected = accountType === opt.value;
+                return (
+                  <Pressable
+                    key={opt.value}
+                    onPress={() => setAccountType(opt.value)}
+                    style={[
+                      styles.typeChip,
+                      isSelected && { backgroundColor: colors.primary },
+                    ]}
+                  >
+                    <HugeiconsIcon
+                      icon={ACCOUNT_TYPE_ICON_MAP[opt.value]}
+                      size={15}
+                      color={isSelected ? '#111' : colors.textMuted}
+                    />
+                    <Text style={[styles.typeChipLabel, isSelected && styles.typeChipLabelActive]}>
+                      {opt.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </View>
+
+          {/* ── Details card ── */}
+          <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
+            <Text style={styles.sectionLabel}>Account details</Text>
+            <View style={styles.fieldCard}>
+
+              {/* Account name */}
               <Controller
                 control={control}
                 name="name"
                 rules={{
-                  required: 'Account name is required',
-                  minLength: { value: 2, message: 'Name must be at least 2 characters' },
-                  maxLength: { value: 50, message: 'Name must be 50 characters or less' },
+                  required: 'Required',
+                  minLength: { value: 2, message: 'Min 2 characters' },
+                  maxLength: { value: 50, message: 'Max 50 characters' },
                 }}
                 render={({ field }) => (
-                  <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="e.g. Main Wallet, Savings" error={errors.name?.message} size="md" variant="filled" autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
+                  <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Name</Text>
+                    <TextInput
+                      value={field.value}
+                      onChangeText={field.onChange}
+                      onBlur={field.onBlur}
+                      placeholder="e.g. Main Wallet"
+                      placeholderTextColor={colors.textMuted + '60'}
+                      style={[styles.fieldInput, errors.name && styles.fieldInputError]}
+                      autoCapitalize="words"
+                      autoCorrect={false}
+                      returnKeyType="next"
+                      onSubmitEditing={() => holderRef.current?.focus()}
+                    />
+                  </View>
                 )}
               />
-            </View>
 
-            {/* ── Holder Name ── */}
-            <View style={styles.section}>
-              <Text style={styles.sectionLabel}>Holder name</Text>
+              <View style={styles.fieldDivider} />
+
+              {/* Holder name */}
               <Controller
                 control={control}
                 name="holderName"
                 rules={{
-                  maxLength: { value: 50, message: 'Holder name must be 50 characters or less' },
+                  maxLength: { value: 50, message: 'Max 50 characters' },
                 }}
                 render={({ field }) => (
-                  <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="e.g. John Doe (optional)" error={errors.holderName?.message} size="md" variant="filled" autoCapitalize="words" autoCorrect={false} returnKeyType="next" />
+                  <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Holder</Text>
+                    <TextInput
+                      ref={holderRef}
+                      value={field.value}
+                      onChangeText={field.onChange}
+                      onBlur={field.onBlur}
+                      placeholder="John Doe (optional)"
+                      placeholderTextColor={colors.textMuted + '60'}
+                      style={styles.fieldInput}
+                      autoCapitalize="words"
+                      autoCorrect={false}
+                      returnKeyType="next"
+                      onSubmitEditing={() => accountNumberRef.current?.focus()}
+                    />
+                  </View>
                 )}
               />
-            </View>
 
-            {/* ── Account Number ── */}
-            <View style={styles.section}>
-              <Text style={styles.sectionLabel}>Account number</Text>
+              <View style={styles.fieldDivider} />
+
+              {/* Account number */}
               <Controller
                 control={control}
                 name="accountNumber"
                 rules={{
-                  maxLength: { value: 100, message: 'Account number must be 100 characters or less' },
+                  maxLength: { value: 100, message: 'Max 100 characters' },
                 }}
                 render={({ field }) => (
-                  <Input value={field.value} onChangeText={field.onChange} onBlur={field.onBlur} placeholder="IBAN or account number (optional)" error={errors.accountNumber?.message} size="md" variant="filled" autoCorrect={false} autoCapitalize="none" returnKeyType="next" />
+                  <View style={styles.fieldRow}>
+                    <Text style={styles.fieldLabel}>Number</Text>
+                    <TextInput
+                      ref={accountNumberRef}
+                      value={field.value}
+                      onChangeText={field.onChange}
+                      onBlur={field.onBlur}
+                      placeholder="IBAN (optional)"
+                      placeholderTextColor={colors.textMuted + '60'}
+                      style={styles.fieldInput}
+                      autoCorrect={false}
+                      autoCapitalize="none"
+                      returnKeyType="next"
+                      onSubmitEditing={() => balanceRef.current?.focus()}
+                    />
+                  </View>
                 )}
               />
             </View>
-
-            {/* ── Balance + Currency ── */}
-            <View style={styles.section}>
-              <View style={styles.twoCol}>
-                <View style={styles.colBalance}>
-                  <Text style={styles.sectionLabel}>
-                    {isEditing ? 'Current balance' : 'Initial balance'}
-                  </Text>
-                  <Controller
-                    control={control}
-                    name="balance"
-                    rules={{
-                      validate: (v) =>
-                        !v.trim() ||
-                        (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) ||
-                        'Enter a valid positive amount',
-                    }}
-                    render={({ field }) => (
-                      <TextInput
-                        value={field.value}
-                        onChangeText={field.onChange}
-                        onBlur={field.onBlur}
-                        placeholder="0.00"
-                        placeholderTextColor={colors.textMuted + '50'}
-                        keyboardType="decimal-pad"
-                        style={[
-                          styles.fieldInput,
-                          styles.fieldInputAmount,
-                          errors.balance && styles.fieldInputError,
-                          isEditing && styles.fieldInputDisabled,
-                        ]}
-                        returnKeyType="done"
-                        editable={!isEditing}
-                        selectTextOnFocus={!isEditing}
-                      />
-                    )}
-                  />
-                  {errors.balance && <Text style={styles.errorText}>{errors.balance.message}</Text>}
-                </View>
-                <View style={styles.colCurrency}>
-                  <Text style={styles.sectionLabel}>Currency</Text>
-                  <BentoPressable
-                    style={styles.currencyBtn}
-                    onPress={openCurrencyPicker}
-                  >
-                    <Text style={styles.currencyValue}>{currency}</Text>
-                    <HugeiconsIcon icon={UnfoldMoreIcon} size={14} color={colors.textMuted} />
-                  </BentoPressable>
-                </View>
-              </View>
-            </View>
-
-            {/* ── Appearance ── */}
-            <View style={styles.section}>
-              <Text style={styles.sectionLabel}>Appearance</Text>
-              <View style={styles.appearanceRow}>
-
-                <BentoPressable
-                  style={styles.appearanceCard}
-                  onPress={() => setShowIconPicker(true)}
-                >
-                  <IconAvatar
-                     icon={resolveIcon(iconKey, Building01Icon)}
-                     color={colorHex} variant="solid"
-                    size={32}
-                  />
-                  <View style={styles.appearanceCardMeta}>
-                    <Text style={styles.appearanceCardLabel}>Icon</Text>
-                    <Text style={styles.appearanceCardHint} numberOfLines={1}>
-                      {iconKey.replace('-outline', '')}
-                    </Text>
-                  </View>
-                </BentoPressable>
-
-                <BentoPressable
-                  style={styles.appearanceCard}
-                  onPress={() => setShowColorPicker(true)}
-                >
-                  <View style={[styles.colorSwatch, { backgroundColor: colorHex }]} />
-                  <View style={styles.appearanceCardMeta}>
-                    <Text style={styles.appearanceCardLabel}>Color</Text>
-                    <Text style={styles.appearanceCardHint} numberOfLines={1}>{colorHex}</Text>
-                  </View>
-                </BentoPressable>
-
-              </View>
-            </View>
-
+            {errors.name && (
+              <Text style={styles.errorText}>{errors.name.message}</Text>
+            )}
           </View>
+
+          {/* ── Balance + Currency ── */}
+          <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
+            <Text style={styles.sectionLabel}>
+              {isEditing ? 'Current balance' : 'Initial balance'}
+            </Text>
+            <View style={styles.fieldCard}>
+              <View style={styles.balanceRow}>
+                <Controller
+                  control={control}
+                  name="balance"
+                  rules={{
+                    validate: (v) =>
+                      !v.trim() ||
+                      (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) ||
+                      'Enter a valid amount',
+                  }}
+                  render={({ field }) => (
+                    <TextInput
+                      ref={balanceRef}
+                      value={field.value}
+                      onChangeText={field.onChange}
+                      onBlur={field.onBlur}
+                      placeholder="0.00"
+                      placeholderTextColor={colors.textMuted + '50'}
+                      keyboardType="decimal-pad"
+                      style={[
+                        styles.balanceInput,
+                        errors.balance && styles.fieldInputError,
+                        isEditing && styles.balanceInputDisabled,
+                      ]}
+                      returnKeyType="done"
+                      editable={!isEditing}
+                      selectTextOnFocus={!isEditing}
+                    />
+                  )}
+                />
+                <View style={styles.fieldDivider} />
+                <TouchableOpacity style={styles.currencyBtn} onPress={openCurrencyPicker} activeOpacity={0.7}>
+                  <Text style={styles.currencyValue}>{currency}</Text>
+                  <HugeiconsIcon icon={UnfoldMoreIcon} size={13} color={colors.textMuted} />
+                </TouchableOpacity>
+              </View>
+            </View>
+            {errors.balance && (
+              <Text style={styles.errorText}>{errors.balance.message}</Text>
+            )}
+          </View>
+
         </ScrollView>
 
         <View style={styles.footer}>
-          <BentoPressable
+          <Pressable
             style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
             onPress={handleSave}
             disabled={!isValid}
@@ -285,7 +405,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
             <Text style={styles.primaryBtnText}>
               {isEditing ? 'Save account' : 'Create account'}
             </Text>
-          </BentoPressable>
+          </Pressable>
         </View>
       </KeyboardAvoidingView>
 
@@ -295,26 +415,11 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         value={currency}
         onChange={setCurrency}
       />
-      <IconPickerBottomSheet
-        visible={showIconPicker}
-        onClose={() => setShowIconPicker(false)}
-        value={iconKey}
-        onChange={setIconKey}
-        groups={ACCOUNT_ICON_GROUPS}
-        accentColor={colorHex}
-      />
-      <ColorPickerBottomSheet
-        visible={showColorPicker}
-        onClose={() => setShowColorPicker(false)}
-        value={colorHex}
-        onChange={setColorHex}
-        palette={PALETTE_COLOR_OPTIONS}
-      />
     </SafeAreaView>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -325,13 +430,68 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     scroll: { flex: 1 },
     content: {
       paddingTop: spacing('4'),
-      paddingBottom: spacing('4'),
+      paddingBottom: spacing('6'),
+      gap: 0,
     },
-    formBody: {
-      gap: spacing('5'),
+
+    // ── Hero card
+    heroCard: {
+      backgroundColor: colors.surface,
+      borderRadius: radius('2xl'),
+      ...shadow('sm'),
     },
-    section: {
-      paddingHorizontal: layout.screenPadding,
+    heroTop: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3.5'),
+      padding: spacing('4'),
+    },
+    heroAvatarWrap: {
+      width: 72,
+      height: 72,
+      borderRadius: radius('xl'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    heroMeta: {
+      flex: 1,
+      gap: spacing('1'),
+    },
+    heroName: {
+      fontFamily: typography.fonts.bold,
+      fontSize: 18,
+      color: colors.text,
+    },
+    heroSub: {
+      fontFamily: typography.fonts.regular,
+      fontSize: 13,
+      color: colors.textMuted,
+    },
+    heroDivider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: colors.border,
+      marginHorizontal: spacing('4'),
+    },
+    colorRow: {
+      flexDirection: 'row',
+      gap: spacing('2'),
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
+    },
+    colorDot: {
+      width: 26,
+      height: 26,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    colorDotSelected: {
+      ...shadow('sm'),
+    },
+
+    // ── Section
+    sectionGap: {
+      marginTop: spacing('5'),
       gap: spacing('2.5'),
     },
     sectionLabel: {
@@ -340,91 +500,101 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.textMuted,
       opacity: 0.6,
     },
-    fieldInput: {
-      height: 50,
-      borderRadius: radius('lg'),
+
+    // ── Type chips
+    typeRow: {
+      flexDirection: 'row',
+      gap: spacing('2'),
+    },
+    typeChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1.5'),
+      paddingHorizontal: spacing('3'),
+      paddingVertical: spacing('2'),
+      borderRadius: radius('full'),
       backgroundColor: colors.surface,
+    },
+    typeChipLabel: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 13,
+      color: colors.textMuted,
+    },
+    typeChipLabelActive: {
+      color: '#111',
+    },
+
+    // ── Field card (grouped inputs)
+    fieldCard: {
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      overflow: 'hidden',
+    },
+    fieldRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingHorizontal: spacing('4'),
+      minHeight: 52,
+      gap: spacing('3'),
+    },
+    fieldLabel: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 14,
+      color: colors.textMuted,
+      width: 56,
+    },
+    fieldInput: {
+      flex: 1,
       fontFamily: typography.fonts.regular,
       fontSize: 15,
       color: colors.text,
+      paddingVertical: spacing('3'),
     },
     fieldInputError: {
-      borderWidth: 1,
-      borderColor: colors.danger,
+      color: colors.danger,
     },
-    fieldInputDisabled: {
-      color: colors.textMuted,
-      opacity: 0.6,
-    },
-    fieldInputAmount: {
-      fontFamily: typography.fonts.amountBold,
+    fieldDivider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: colors.border,
+      marginLeft: spacing('4') + 56 + spacing('3'),
     },
     errorText: {
       fontFamily: typography.fonts.regular,
       fontSize: 12,
       color: colors.danger,
-      marginTop: -spacing('1'),
     },
-    twoCol: {
-      flexDirection: 'row',
-      gap: spacing('3'),
-    },
-    colBalance: {
-      flex: 1,
-      gap: spacing('2.5'),
-    },
-    colCurrency: {
-      width: 110,
-      gap: spacing('2.5'),
-    },
-    currencyBtn: {
-      height: 50,
-      borderRadius: radius('lg'),
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing('3.5'),
+
+    // ── Balance row
+    balanceRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
+    },
+    balanceInput: {
+      flex: 1,
+      fontFamily: typography.fonts.amountBold,
+      fontSize: 20,
+      color: colors.text,
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
+    },
+    balanceInputDisabled: {
+      color: colors.textMuted,
+      opacity: 0.6,
+    },
+    currencyBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1.5'),
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3.5'),
     },
     currencyValue: {
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.fonts.semibold,
       fontSize: 15,
       color: colors.text,
     },
-    appearanceRow: {
-      flexDirection: 'row',
-      gap: spacing('3'),
-    },
-    appearanceCard: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2.5'),
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('3'),
-    },
-    appearanceCardMeta: {
-      flex: 1,
-      gap: 2,
-    },
-    appearanceCardLabel: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 13,
-      color: colors.text,
-    },
-    appearanceCardHint: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 11,
-      color: colors.textMuted,
-    },
-    colorSwatch: {
-      width: 32,
-      height: 32,
-      borderRadius: radius('full'),
-    },
+
+    // ── Footer
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
