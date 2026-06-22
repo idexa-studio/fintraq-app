@@ -119,6 +119,7 @@ import {
   Wifi01Icon,
   Wrench01Icon,
   Chat01Icon,
+  Wallet01Icon,
 } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 export type { IconSvgElement } from '@hugeicons/react-native';
@@ -129,7 +130,7 @@ export type IoniconName = string;
 
 // Legacy map: old Ionicons names → current ICON_MAP keys (used by DB migrations)
 export const LEGACY_ICON_MAP: Record<string, string> = {
-  "wallet-outline": "domain",
+  "wallet-outline": "wallet-outline",
   "card-outline": "card-outline",
   "cash-outline": "cash",
   "receipt-outline": "receipt-text-outline",
@@ -239,6 +240,7 @@ export const LEGACY_ICON_MAP: Record<string, string> = {
 
 export const ICON_MAP: Record<string, IconSvgElement> = {
   // Account picker icons (MaterialCommunityIcons keys)
+  'wallet-outline': Wallet01Icon,
   'card-outline': CreditCardIcon,
   'cash': Cash01Icon,
   'receipt-text-outline': ReceiptTextIcon,
@@ -385,7 +387,6 @@ export const ICON_MAP: Record<string, IconSvgElement> = {
   'account-group-outline-dup': UserMultipleIcon,
   'tag-multiple-outline': Tag01Icon,
   // Legacy Ionicons keys
-  'wallet-outline': Building01Icon,
   'card-outline-ionicon': CreditCardIcon,
   'cash-outline': Cash01Icon,
   'receipt-outline': ReceiptTextIcon,

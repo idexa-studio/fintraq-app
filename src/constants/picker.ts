@@ -9,7 +9,7 @@ export type IconGroup = {
 
 export const ACCOUNT_ICONS = [
   // Wallets & Cards
-  'card-outline', 'cash', 'receipt-text-outline',
+  'wallet-outline', 'card-outline', 'cash', 'receipt-text-outline',
   'file-document-outline', 'shield-check-outline', 'key-outline',
   'lock-outline', 'card-account-details-outline',
   // Savings & Investments
@@ -36,7 +36,7 @@ export type AccountIconName = (typeof ACCOUNT_ICONS)[number];
 export const ACCOUNT_ICON_GROUPS: IconGroup[] = [
   {
     label: 'Wallets & Cards',
-    icons: ['card-outline', 'cash', 'receipt-text-outline', 'file-document-outline', 'shield-check-outline', 'key-outline', 'lock-outline', 'card-account-details-outline'],
+    icons: ['wallet-outline', 'card-outline', 'cash', 'receipt-text-outline', 'file-document-outline', 'shield-check-outline', 'key-outline', 'lock-outline', 'card-account-details-outline'],
   },
   {
     label: 'Savings & Investments',
