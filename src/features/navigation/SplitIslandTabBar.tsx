@@ -16,10 +16,10 @@ import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-// Tab indices matching _layout.tsx order: 0=index, 1=accounts, 2=persons(hidden), 3=analytics, 4=settings
-const TAB_ICONS: (IconSvgElement | null)[] = [Home01Icon, BankIcon, null, BarChartIcon, Settings01Icon];
+// Tab indices matching _layout.tsx order: 0=index, 1=accounts, 2=analytics, 3=settings
+const TAB_ICONS: IconSvgElement[] = [Home01Icon, BankIcon, BarChartIcon, Settings01Icon];
 const LEFT_INDICES = [0, 1];
-const RIGHT_INDICES = [3, 4];
+const RIGHT_INDICES = [2, 3];
 
 type TabButtonProps = {
   icon: IconSvgElement;
@@ -78,51 +78,50 @@ export const SplitIslandTabBar = React.memo(function SplitIslandTabBar({
 
   const handleFab = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    router.push('/transactions/create');
-  }, [router]);
+    if (state.index === 1) {
+      // Accounts tab → add account
+      router.push('/(main)/accounts/form');
+    } else {
+      router.push('/transactions/create');
+    }
+  }, [router, state.index]);
+
+  const fabIcon = state.index === 1 ? BankIcon : PlusSignIcon;
 
   return (
     <View style={styles.container} pointerEvents="box-none">
       {/* Left pill: Home + Accounts */}
       <View style={styles.leftWrap}>
         <View style={styles.pill}>
-          {LEFT_INDICES.map((tabIdx) => {
-            const icon = TAB_ICONS[tabIdx];
-            if (!icon) return null;
-            return (
-              <TabButton
-                key={tabIdx}
-                icon={icon}
-                focused={state.index === tabIdx}
-                onPress={() => handleTabPress(tabIdx)}
-              />
-            );
-          })}
+          {LEFT_INDICES.map((tabIdx) => (
+            <TabButton
+              key={tabIdx}
+              icon={TAB_ICONS[tabIdx]!}
+              focused={state.index === tabIdx}
+              onPress={() => handleTabPress(tabIdx)}
+            />
+          ))}
         </View>
       </View>
 
-      {/* Center FAB */}
+      {/* Center FAB — context-aware */}
       <View style={styles.fabWrap}>
         <BentoPressable style={styles.fab} onPress={handleFab}>
-          <HugeiconsIcon icon={PlusSignIcon} size={26} color={theme.colors.primaryForeground} />
+          <HugeiconsIcon icon={fabIcon} size={26} color={theme.colors.primaryForeground} />
         </BentoPressable>
       </View>
 
       {/* Right pill: Analytics + Settings */}
       <View style={styles.rightWrap}>
         <View style={styles.pill}>
-          {RIGHT_INDICES.map((tabIdx) => {
-            const icon = TAB_ICONS[tabIdx];
-            if (!icon) return null;
-            return (
-              <TabButton
-                key={tabIdx}
-                icon={icon}
-                focused={state.index === tabIdx}
-                onPress={() => handleTabPress(tabIdx)}
-              />
-            );
-          })}
+          {RIGHT_INDICES.map((tabIdx) => (
+            <TabButton
+              key={tabIdx}
+              icon={TAB_ICONS[tabIdx]!}
+              focused={state.index === tabIdx}
+              onPress={() => handleTabPress(tabIdx)}
+            />
+          ))}
         </View>
       </View>
     </View>

@@ -762,9 +762,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         ) : null}
       />
 
-      <BentoPressable style={styles.fab} onPress={handleAddTransaction}>
-        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
-      </BentoPressable>
+
 
       <ConfirmDialog
         visible={showDeleteDialog}
@@ -821,13 +819,17 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
           },
         ]}
       />
+      <BentoPressable style={styles.fab} onPress={handleAddTransaction}>
+        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
+      </BentoPressable>
+
       <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_TRANSACTIONS} steps={TRANSACTIONS_LIST_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });
 
 const ZERO_INSETS: EdgeInsets = { top: 0, bottom: 0, left: 0, right: 0 };
-const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType, insets: EdgeInsets = ZERO_INSETS) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isDark }: ThemeContextType, insets: EdgeInsets = ZERO_INSETS) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -929,14 +931,15 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     },
     fab: {
       position: 'absolute',
-      bottom: insets.bottom > 0 ? insets.bottom + 16 : 16,
-      right: 16,
+      bottom: insets.bottom > 0 ? insets.bottom + 16 : 24,
+      right: layout.screenPadding,
       width: 56,
       height: 56,
       borderRadius: radius('xl'),
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
+      ...shadow('md'),
     },
     chipsScrollContainer: {
       marginTop: spacing('2'),

@@ -10,7 +10,6 @@ export default function TabsLayout() {
     >
       <Tabs.Screen name="index" options={{ title: 'Home' }} />
       <Tabs.Screen name="accounts" options={{ title: 'Accounts' }} />
-      <Tabs.Screen name="persons" options={{ title: 'Persons' }} />
       <Tabs.Screen name="analytics" options={{ title: 'Analytics' }} />
       <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
     </Tabs>

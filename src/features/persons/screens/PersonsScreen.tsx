@@ -71,7 +71,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header title="Persons" />
+      <Header title="People" showBack />
 
       {persons.length > 0 && (
         <View style={styles.searchRow}>
@@ -184,7 +184,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: T
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
-      paddingBottom: insets.bottom > 0 ? insets.bottom + 80 + 24 : 110,
+      paddingBottom: insets.bottom > 0 ? insets.bottom + 56 + 24 : 96,
     },
 
     searchRow: {
@@ -248,11 +248,11 @@ const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: T
 
     fab: {
       position: 'absolute',
-      bottom: insets.bottom > 0 ? insets.bottom + 8 + 60 + 16 : 16 + 60 + 16,
+      bottom: insets.bottom > 0 ? insets.bottom + 16 : 24,
       right: 16,
       width: 56,
       height: 56,
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       justifyContent: 'center',
       alignItems: 'center',
       ...shadow('lg'),

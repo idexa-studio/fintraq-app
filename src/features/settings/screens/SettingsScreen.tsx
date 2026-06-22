@@ -35,6 +35,7 @@ import {
   ShieldKeyIcon,
   SparklesIcon,
   Sun01Icon,
+  UserGroupIcon,
 } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -538,6 +539,15 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             label="Categories"
             subtitle="Manage expense/income categories"
             onPress={() => router.push('/categories')}
+          />
+          <RowSeparator theme={theme} />
+          <NavRow
+            theme={theme}
+            icon={UserGroupIcon}
+            iconColor={colors.info}
+            label="People"
+            subtitle="Manage people linked to transactions"
+            onPress={() => router.push('/persons')}
           />
           <RowSeparator theme={theme} />
           <NavRow

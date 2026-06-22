@@ -4,7 +4,7 @@ import { DASHBOARD_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/
 import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { useAppLock } from '@/src/providers/AppLockProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { ArrowRight01Icon, PlusSignIcon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
+import { ArrowRight01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -186,10 +186,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
       </ScrollView>
 
-      <BentoPressable style={styles.fab} onPress={navigateToCreateTx}>
-        <HugeiconsIcon icon={PlusSignIcon} size={26} color={colors.primaryForeground} />
-      </BentoPressable>
-
       <WalkthroughOverlay
         storageKey={StorageKeys.WALKTHROUGH_DASHBOARD}
         steps={DASHBOARD_WALKTHROUGH_STEPS}
@@ -260,21 +256,4 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.primaryForeground,
     },
 
-    // ── FAB
-    fab: {
-      position: 'absolute',
-      bottom: insets.bottom > 0 ? insets.bottom + 8 + 64 + 16 : 16 + 64 + 16,
-      right: 16,
-      width: 56,
-      height: 56,
-      borderRadius: radius('lg'),
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: '#000000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.15,
-      shadowRadius: 8,
-      elevation: 4,
-    },
   });
