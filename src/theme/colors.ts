@@ -14,6 +14,9 @@ export type ThemePalette = {
   primaryLight: string;
   /** Darker shade of primary — pressed states, depth circles */
   primaryDark: string;
+  /** Text/icon color for elements rendered ON a primary-colored surface.
+   *  Always dark (#0A0A0A) because the lime green primary is always vivid/bright. */
+  primaryForeground: string;
   /** Ambient inverse color — used for background blur/glow circles */
   secondary: string;
 
@@ -44,6 +47,7 @@ export const DARK_THEME: ThemePalette = {
   primary: '#00CC6A',
   primaryLight: '#00331A',
   primaryDark: '#009950',
+  primaryForeground: '#0A0A0A',
   secondary: '#E8E7E1',
 
   text: '#E8E7E1',
@@ -66,6 +70,7 @@ export const LIGHT_THEME: ThemePalette = {
   primary: '#00CC6A',
   primaryLight: '#CCFFE8',
   primaryDark: '#009950',
+  primaryForeground: '#0A0A0A',
   secondary: '#0A0A0A',
 
   text: '#0A0A0A',

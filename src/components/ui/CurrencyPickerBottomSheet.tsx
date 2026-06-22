@@ -91,7 +91,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
 
         {selected ? (
           <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-            <HugeiconsIcon icon={CheckIcon} size={12} color={colors.background} />
+            <HugeiconsIcon icon={CheckIcon} size={12} color={colors.primaryForeground} />
           </View>
         ) : (
           <View style={styles.checkPlaceholder} />

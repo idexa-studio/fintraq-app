@@ -297,7 +297,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.textMuted,
     },
     typePillTextActive: {
-      color: colors.background,
+      color: colors.primaryForeground,
     },
     lockHint: {
       fontFamily: typography.fonts.regular,
@@ -355,6 +355,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     primaryBtnText: {
       fontFamily: typography.fonts.semibold,
       fontSize: 15,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
   });

@@ -178,7 +178,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
               <Text style={styles.emptySubtext}>Start recording your daily payments, income, or transfers here.</Text>
               <BentoPressable style={styles.emptyAction} onPress={navigateToCreateTx}>
                 <Text style={styles.emptyActionText}>Add transaction</Text>
-                <HugeiconsIcon icon={ArrowRight01Icon} size={12} color={colors.background} />
+                <HugeiconsIcon icon={ArrowRight01Icon} size={12} color={colors.primaryForeground} />
               </BentoPressable>
             </View>
           )}
@@ -187,7 +187,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       </ScrollView>
 
       <BentoPressable style={styles.fab} onPress={navigateToCreateTx}>
-        <HugeiconsIcon icon={PlusSignIcon} size={26} color={colors.background} />
+        <HugeiconsIcon icon={PlusSignIcon} size={26} color={colors.primaryForeground} />
       </BentoPressable>
 
       <WalkthroughOverlay
@@ -257,7 +257,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     emptyActionText: {
       fontFamily: typography.fonts.semibold,
       fontSize: 12,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
 
     // ── FAB

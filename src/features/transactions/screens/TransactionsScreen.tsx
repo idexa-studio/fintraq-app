@@ -758,7 +758,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
             </Text>
             <BentoPressable style={styles.emptyAction} onPress={() => router.push('/transactions/create')}>
               <Text style={styles.emptyActionText}>Add Transaction</Text>
-              <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.background} />
+              <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primaryForeground} />
             </BentoPressable>
           </View>
         )}
@@ -776,7 +776,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
           router.push('/transactions/create');
         }}
       >
-        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.background} />
+        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
       </BentoPressable>
 
       <ConfirmDialog
@@ -970,7 +970,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     },
     emptyActionText: {
       fontFamily: typography.fonts.semibold,
-      color: colors.background,
+      color: colors.primaryForeground,
       fontSize: 15,
     },
     loadMoreWrap: {

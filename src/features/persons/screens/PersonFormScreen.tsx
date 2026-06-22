@@ -353,6 +353,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
     primaryBtnText: {
       fontFamily: typography.fonts.semibold,
       fontSize: sizes.button.lg.fontSize,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
   });

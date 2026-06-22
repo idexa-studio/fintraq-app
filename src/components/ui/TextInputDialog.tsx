@@ -182,6 +182,6 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     btnSaveText: {
       fontSize: 14,
       fontFamily: typography.fonts.semibold,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
   });

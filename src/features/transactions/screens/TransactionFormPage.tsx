@@ -574,6 +574,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
     saveBtnText: {
       fontFamily: typography.fonts.semibold,
       fontSize: 16,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
   });

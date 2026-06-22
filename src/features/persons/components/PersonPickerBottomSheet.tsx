@@ -94,7 +94,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
         </View>
         {selected && (
           <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-            <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.background} />
+            <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.primaryForeground} />
           </View>
         )}
       </BentoPressable>
@@ -151,7 +151,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           </View>
           {selectedId === null && (
             <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.background} />
+              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.primaryForeground} />
             </View>
           )}
         </BentoPressable>

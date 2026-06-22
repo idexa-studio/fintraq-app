@@ -136,7 +136,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
           {`No ${activeType === 'DR' ? 'expense' : activeType === 'CR' ? 'income' : 'transfer'} categories yet.`}
         </Text>
         <BentoPressable style={styles.emptyBtn} onPress={handleCreate}>
-          <HugeiconsIcon icon={PlusSignIcon} size={15} color={colors.background} />
+          <HugeiconsIcon icon={PlusSignIcon} size={15} color={colors.primaryForeground} />
           <Text style={styles.emptyBtnText}>Create one</Text>
         </BentoPressable>
       </View>
@@ -170,7 +170,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       )}
 
       <BentoPressable style={styles.fab} onPress={handleCreate}>
-        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.background} />
+        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
       </BentoPressable>
 
       <OptionsDialog
@@ -289,7 +289,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: T
     emptyBtnText: {
       fontFamily: typography.fonts.semibold,
       fontSize: typography.sizes.sm,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
 
     /* ── FAB ── */

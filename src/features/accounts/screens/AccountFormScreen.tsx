@@ -441,6 +441,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     primaryBtnText: {
       fontFamily: typography.fonts.semibold,
       fontSize: 15,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
   });

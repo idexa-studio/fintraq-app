@@ -191,7 +191,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
       </ScrollView>
 
       <BentoPressable style={styles.fab} onPress={handleAdd}>
-        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.background} />
+        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
       </BentoPressable>
 
       <OptionsDialog

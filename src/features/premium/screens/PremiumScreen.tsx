@@ -1,13 +1,15 @@
-import { PageBackground } from '@/src/components/ui/PageBackground';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Header } from '@/src/components/ui/Header';
+import { PageBackground } from '@/src/components/ui/PageBackground';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
 import { AnalyticsService } from '@/src/services/analytics';
-import { CheckmarkBadge01Icon, CrownIcon, ReloadIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
+import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
+import { ReloadIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -18,9 +20,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
 
 export const PremiumScreen = React.memo(function PremiumScreen() {
   const theme = useTheme();
@@ -35,7 +35,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
   const lifetimeProduct = useMemo(() => products.find(p => p.id === SKU_LIFETIME), [products]);
 
   React.useEffect(() => {
-    AnalyticsService.premiumPaywallViewed('premium_screen').catch(() => {});
+    AnalyticsService.premiumPaywallViewed('premium_screen').catch(() => { });
   }, []);
 
   const handlePurchase = useCallback(async () => {
@@ -50,74 +50,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
     setIsProcessing(false);
   }, [restorePurchase]);
 
-  if (isPremium) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <PageBackground />
-        <Header title="Fintraq Pro" showBack />
 
-        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-          {/* Hero Card — edge-to-edge, dashboard style */}
-          <View style={[styles.heroCard, { backgroundColor: heroCard.background }]}>
-            <View style={styles.crownWrapper}>
-              <HugeiconsIcon icon={CheckmarkBadge01Icon} size={32} color={colors.warning} />
-            </View>
-            <Text style={styles.heroBadge}>Pro active</Text>
-            <Text style={styles.heroTitle}>Fintraq Pro is active</Text>
-            <Text style={styles.heroDesc}>
-              Thank you for your support! You have permanent lifetime access to every professional tool, report export, and future update.
-            </Text>
-          </View>
-
-          {/* Subscription Status Card */}
-          <View style={styles.priceContainer}>
-            <View style={styles.priceRow}>
-              <View style={styles.priceLeft}>
-                <Text style={styles.priceLabel}>Lifetime license</Text>
-                <Text style={styles.priceSubText}>Linked to your Google Play / App Store</Text>
-              </View>
-              <View style={styles.pill}>
-                <Text style={styles.pillText}>Active</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Features list */}
-          <SectionHeader title="Unlocked features" />
-
-          <View style={styles.featuresCard}>
-            {FEATURES.map((f, index) => {
-              const isLast = index === FEATURES.length - 1;
-              return (
-                <View key={f.title} style={[styles.featureItem, isLast && styles.noMargin]}>
-                  <View style={styles.iconWrapperActive}>
-                    <HugeiconsIcon icon={f.icon} size={20} color={colors.success} />
-                  </View>
-                  <View style={styles.featureContent}>
-                    <Text style={styles.featureTitle}>{f.title}</Text>
-                    <Text style={styles.featureDesc}>{f.description}</Text>
-                  </View>
-                </View>
-              );
-            })}
-          </View>
-          <View style={{ height: 40 }} />
-        </ScrollView>
-
-        {/* Back Button Footer */}
-        <View style={styles.footer}>
-          <BentoPressable
-            style={styles.cta}
-            onPress={() => router.back()}
-          >
-            <Text style={[styles.ctaText, { color: colors.background }]}>
-              Back to dashboard
-            </Text>
-          </BentoPressable>
-        </View>
-      </SafeAreaView>
-    );
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -127,9 +60,6 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Hero Card — edge-to-edge, dashboard style */}
         <View style={[styles.heroCard, { backgroundColor: heroCard.background }]}>
-          <View style={styles.crownWrapper}>
-            <HugeiconsIcon icon={CrownIcon} size={32} color={colors.warning} />
-          </View>
           <Text style={styles.heroBadge}>Lifetime upgrade</Text>
           <Text style={styles.heroTitle}>One payment. Everything. Forever.</Text>
           <Text style={styles.heroDesc}>
@@ -200,9 +130,9 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           disabled={isProcessing || !lifetimeProduct}
         >
           {isProcessing ? (
-            <ActivityIndicator color={colors.background} />
+            <ActivityIndicator color={colors.primaryForeground} />
           ) : (
-            <Text style={[styles.ctaText, { color: colors.background }]}>
+            <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
               Upgrade for {lifetimeProduct?.displayPrice || 'Pro'}
             </Text>
           )}
@@ -239,15 +169,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginHorizontal: layout.screenPadding,
       marginBottom: spacing('4'),
       overflow: 'hidden',
-    },
-    crownWrapper: {
-      width: 48,
-      height: 48,
-      borderRadius: radius('xl'),
-      backgroundColor: heroCard.textPrimary + '1E',
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: spacing('3'),
     },
     heroBadge: {
       fontFamily: typography.fonts.semibold,

@@ -223,10 +223,10 @@ export const ExportScreen = React.memo(function ExportScreen() {
           </View>
 
           <BentoPressable style={[styles.exportBtn, (isExporting || previewCount === 0) && { opacity: 0.5 }]} onPress={handleExport} disabled={isExporting || previewCount === 0}>
-            {isExporting ? <ActivityIndicator size="small" color={colors.background} /> : (
+            {isExporting ? <ActivityIndicator size="small" color={colors.primaryForeground} /> : (
               <>
-                <HugeiconsIcon icon={Download01Icon} size={18} color={colors.background} />
-                <Text style={[styles.exportBtnText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>Export CSV</Text>
+                <HugeiconsIcon icon={Download01Icon} size={18} color={colors.primaryForeground} />
+                <Text style={[styles.exportBtnText, { fontFamily: typography.fonts.semibold, color: colors.primaryForeground }]}>Export CSV</Text>
               </>
             )}
           </BentoPressable>
@@ -282,7 +282,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     summaryPeriod: { fontSize: typography.sizes.xs, opacity: 0.7 },
 
     exportBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing('2.5'), height: sizes.button.lg.height, borderRadius: radius('full'), backgroundColor: colors.primary, marginBottom: spacing('3') },
-    exportBtnText: { fontSize: sizes.button.lg.fontSize, fontFamily: typography.fonts.semibold, color: colors.background },
+    exportBtnText: { fontSize: sizes.button.lg.fontSize, fontFamily: typography.fonts.semibold, color: colors.primaryForeground },
 
     warning: { flexDirection: 'row', alignItems: 'center', gap: spacing('2.5'), backgroundColor: colors.warning + '10', borderRadius: radius('md'), padding: spacing('3') },
     warningText: { flex: 1, fontSize: typography.sizes.xs, lineHeight: 18 },

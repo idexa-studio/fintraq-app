@@ -5,7 +5,6 @@ import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES } from '@/src/constants/iap';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { getHeroColors, HeroCardPalette } from '@/src/theme/colors';
-import { CheckmarkBadge01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
@@ -27,9 +26,6 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Hero Card — edge-to-edge, dashboard style */}
         <View style={[styles.heroCard, { backgroundColor: heroCard.background }]}>
-          <View style={styles.crownWrapper}>
-            <HugeiconsIcon icon={CheckmarkBadge01Icon} size={32} color={colors.warning} />
-          </View>
           <Text style={styles.heroBadge}>Pro active</Text>
           <Text style={styles.heroTitle}>You{"'"}re all set.</Text>
           <Text style={styles.heroDesc}>
@@ -78,7 +74,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
           style={styles.cta}
           onPress={() => router.replace('/(main)/(tabs)')}
         >
-          <Text style={[styles.ctaText, { color: colors.background }]}>
+          <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
             Open dashboard
           </Text>
         </BentoPressable>
@@ -105,15 +101,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginHorizontal: layout.screenPadding,
       marginBottom: spacing('4'),
       overflow: 'hidden',
-    },
-    crownWrapper: {
-      width: 48,
-      height: 48,
-      borderRadius: radius('xl'),
-      backgroundColor: heroCard.textPrimary + '1E',
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: spacing('3'),
     },
     heroBadge: {
       fontFamily: typography.fonts.semibold,

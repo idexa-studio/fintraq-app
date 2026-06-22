@@ -674,7 +674,7 @@ const createStyles = (
     profileMonogram: {
       fontFamily: typography.fonts.bold,
       fontSize: typography.sizes.xl,
-      color: '#FFFFFF',
+      color: colors.primaryForeground,
     },
     profileInfo: {
       flex: 1,
@@ -737,7 +737,7 @@ const createStyles = (
     upgradePillText: {
       fontFamily: typography.fonts.semibold,
       fontSize: typography.sizes.sm,
-      color: '#FFFFFF',
+      color: colors.primaryForeground,
     },
 
     /* ── Footer ── */

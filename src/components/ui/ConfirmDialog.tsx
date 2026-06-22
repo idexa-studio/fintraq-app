@@ -131,6 +131,6 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     btnConfirmText: {
       fontFamily: typography.fonts.semibold,
       fontSize: typography.sizes.md,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
   });

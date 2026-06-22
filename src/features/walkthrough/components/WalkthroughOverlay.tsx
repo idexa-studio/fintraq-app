@@ -81,7 +81,7 @@ export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
               <HugeiconsIcon
                 icon={index === steps.length - 1 ? CheckmarkCircle01Icon : ArrowRight01Icon}
                 size={14}
-                color={colors.background}
+                color={colors.primaryForeground}
               />
             </BentoPressable>
           </View>
@@ -188,6 +188,6 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     nextText: {
       fontFamily: typography.fonts.bold,
       fontSize: 13,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
   });

@@ -24,9 +24,9 @@ export default function TabsLayout() {
       return (
         <View style={{ alignItems: 'center', justifyContent: 'center', }}>
           <View style={{
-            width: 40,
+            width: 50,
             height: 40,
-            borderRadius: radius('md'), // Squircle / rounded box
+            borderRadius: radius('full'), // Squircle / rounded box
             backgroundColor: focused ? `${colors.primary}` : 'transparent',
             alignItems: 'center',
             justifyContent: 'center',
@@ -66,17 +66,11 @@ export default function TabsLayout() {
           right: 0,
           marginHorizontal: layout.screenPadding,
           backgroundColor: colors.tabBarBackground,
-          borderRadius: radius('2xl'),
-          borderWidth: 1.5,
-          borderColor: 'rgba(255, 255, 255, 0.05)',
+          borderRadius: radius('full'),
           height: barHeight,
-          elevation: 12,
-          shadowColor: '#000000',
-          shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: 0.35,
-          shadowRadius: 20,
           paddingBottom: 0,
           paddingTop: 0,
+          elevation: 0
         },
       }}
     >

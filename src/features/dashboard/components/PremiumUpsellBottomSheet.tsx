@@ -202,7 +202,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     ctaText: {
       fontFamily: typography.fonts.bold,
       fontSize: typography.sizes.md,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
     skip: {
       alignItems: 'center',

@@ -169,8 +169,8 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
       <BentoPressable style={[styles.fab, { backgroundColor: atLimit ? colors.textMuted : colors.primary }]} onPress={handleAdd}>
         {atLimit
-          ? <HugeiconsIcon icon={LockPasswordIcon} size={20} color={colors.background} />
-          : <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.background} />
+          ? <HugeiconsIcon icon={LockPasswordIcon} size={20} color={colors.primaryForeground} />
+          : <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
         }
       </BentoPressable>
       <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_PERSONS} steps={PERSONS_WALKTHROUGH_STEPS} />
