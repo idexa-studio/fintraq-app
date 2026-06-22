@@ -113,7 +113,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const navigateToPremium = useCallback(() => router.push('/premium'), [router]);
   const navigateToTransactions = useCallback(() => router.push('/transactions'), [router]);
   const navigateToCreateTx = useCallback(() => router.push('/transactions/create'), [router]);
-  const navigateToEditTx = useCallback((id: number) => router.push(`/transactions/edit/${id}`), [router]);
+  const navigateToEditTx = useCallback((id: number) => router.push(`/transactions/${id}`), [router]);
   const openAccountForm = useCallback(() => router.push('/(main)/accounts/form'), [router]);
   const openAccountsScreen = useCallback(() => router.push('/accounts'), [router]);
 

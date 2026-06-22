@@ -70,7 +70,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
   }, [router, accountId]);
 
   const navigateToEditTx = useCallback((txId: number) => {
-    router.push(`/transactions/edit/${txId}`);
+    router.push(`/transactions/${txId}`);
   }, [router]);
 
   const headerRight = useMemo(() => (

@@ -561,7 +561,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
 
   const handleEdit = React.useCallback(
     (tx: TransactionListItem) => {
-      router.push(`/transactions/edit/${tx.id}`);
+      router.push(`/transactions/${tx.id}`);
     },
     [router],
   );
