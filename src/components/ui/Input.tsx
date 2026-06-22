@@ -38,22 +38,22 @@ export const Input = React.memo(function Input({
     switch (variant) {
       case 'filled':
         return {
-          backgroundColor: isFocused ? colors.card : colors.surface,
+          backgroundColor: isFocused ? colors.surface : colors.surface,
           borderWidth: 1,
-          borderColor: isFocused ? colors.primary + '20' : 'transparent',
+          borderColor: isFocused ? activeColor + '80' : 'transparent',
         };
       case 'minimal':
         return {
           backgroundColor: 'transparent',
           borderBottomWidth: 1,
-          borderBottomColor: isFocused ? activeColor : colors.text + '14',
+          borderBottomColor: isFocused ? activeColor + 'A0' : colors.text + '14',
         };
       case 'default':
       default:
         return {
-          backgroundColor: colors.surface,
+          backgroundColor: colors.background,
           borderWidth: 1,
-          borderColor: isFocused ? activeColor : 'transparent',
+          borderColor: isFocused ? activeColor + '80' : 'transparent',
         };
     }
   }, [variant, error, colors, isFocused]);
