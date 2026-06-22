@@ -7,6 +7,7 @@ import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { DEFAULT_CURRENCY } from '@/src/constants/currency';
 import { StorageKeys } from '@/src/constants/keys';
+import { AccountType } from '@/src/types';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { DowChart } from '@/src/features/analytics/components/DowChart';
 import { LinearAreaChart, type BarBucket } from '@/src/features/analytics/components/LinearAreaChart';
@@ -21,7 +22,7 @@ import { ANALYTICS_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
+import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 import { Calendar01Icon, ChartLineData01Icon, LockPasswordIcon, Tag01Icon, Wallet05Icon } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -78,53 +79,34 @@ const chunkAggregate = (
   return result;
 };
 
-function EmptyState({
-  icon,
-  title,
-  subtitle,
-}: {
-  icon: IconSvgElement;
-  title: string;
-  subtitle: string;
-}) {
+function EmptyState({ icon, title, subtitle }: { icon: IconSvgElement; title: string; subtitle: string }) {
   const theme = useTheme();
-  const styles = useMemo(
-    () => {
-      const { colors, typography, spacing, radius } = theme;
-      return StyleSheet.create({
-        row: {
-          flexDirection: 'row' as const,
-          alignItems: 'center' as const,
-          gap: spacing('3'),
-          backgroundColor: colors.surface,
-          borderRadius: radius('xl'),
-          padding: spacing('4'),
-          marginHorizontal: theme.layout.screenPadding,
-        },
-        iconRing: {
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          backgroundColor: colors.primary + '14',
-          justifyContent: 'center' as const,
-          alignItems: 'center' as const,
-        },
-        texts: { flex: 1, gap: 2 },
-        titleText: {
-          fontFamily: typography.fonts.semibold,
-          fontSize: 13,
-          color: colors.text,
-        },
-        subText: {
-          fontFamily: typography.fonts.regular,
-          fontSize: 11,
-          color: colors.textMuted,
-          lineHeight: 15,
-        },
-      });
-    },
-    [theme],
-  );
+  const styles = useMemo(() => {
+    const { colors, typography, spacing, radius } = theme;
+    return StyleSheet.create({
+      row: {
+        flexDirection: 'row' as const,
+        alignItems: 'center' as const,
+        gap: spacing('3'),
+        backgroundColor: colors.surface,
+        borderRadius: radius('xl'),
+        padding: spacing('4'),
+        marginHorizontal: theme.layout.screenPadding,
+      },
+      iconRing: {
+        width: 40,
+        height: 40,
+        borderRadius: radius('xl'),
+        backgroundColor: colors.primary + '14',
+        justifyContent: 'center' as const,
+        alignItems: 'center' as const,
+      },
+      texts: { flex: 1, gap: 2 },
+      titleText: { fontFamily: typography.fonts.semibold, fontSize: 13, color: colors.text },
+      subText: { fontFamily: typography.fonts.regular, fontSize: 11, color: colors.textMuted, lineHeight: 15 },
+    });
+  }, [theme]);
+
   return (
     <View style={styles.row}>
       <View style={styles.iconRing}>
@@ -143,8 +125,14 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const { colors, layout, spacing, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { width: screenWidth } = useWindowDimensions();
-  const gridCellWidth = useMemo(() => (screenWidth - layout.screenPadding * 2 - spacing('2')) / 2, [screenWidth, layout, spacing]);
-  const cardCellWidth = useMemo(() => (screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2 - spacing('2')) / 2, [screenWidth, layout, spacing]);
+  const gridCellWidth = useMemo(
+    () => (screenWidth - layout.screenPadding * 2 - spacing('2')) / 2,
+    [screenWidth, layout, spacing],
+  );
+  const cardCellWidth = useMemo(
+    () => (screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2 - spacing('2')) / 2,
+    [screenWidth, layout, spacing],
+  );
   const chartWidth = screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2;
   const router = useRouter();
   const { isPremium } = usePremium();
@@ -254,7 +242,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
       ) : (
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
-          {/* Currency picker */}
+          {/* Currency picker — only shown when multiple */}
           {currencyKeys.length > 1 && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollPillRow}>
               {currencyKeys.map(c => (
@@ -288,8 +276,20 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           <Text style={styles.durationText}>{rangeSubtitle}</Text>
 
-          {/* Summary metrics 2×2 */}
+          {/* Row 1: Income + Expenses (raw inputs) */}
           <View style={styles.metricsGrid}>
+            <View style={[styles.metricTile, { backgroundColor: colors.success + '15' }]}>
+              <Text style={[styles.metricLabel, { color: colors.success }]}>Income</Text>
+              <MoneyText amount={summary.income} currency={selectedCurrency} type="CR" weight="bold" compact style={styles.metricSmall} />
+            </View>
+            <View style={[styles.metricTile, { backgroundColor: colors.danger + '15' }]}>
+              <Text style={[styles.metricLabel, { color: colors.danger }]}>Expenses</Text>
+              <MoneyText amount={summary.expense} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.metricSmall} />
+            </View>
+          </View>
+
+          {/* Row 2: Net position (wide) + Savings (derived) */}
+          <View style={[styles.metricsGrid, styles.metricsGridLast]}>
             <View style={[styles.metricTile, styles.metricTileWide]}>
               <Text style={styles.metricLabel}>Net position</Text>
               <MoneyText
@@ -306,17 +306,6 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               <Text style={[styles.metricPlain, { color: savingsColor }]}>
                 {summary.savingsRate >= 0 ? '+' : ''}{summary.savingsRate.toFixed(0)}%
               </Text>
-            </View>
-          </View>
-
-          <View style={styles.metricsGrid}>
-            <View style={[styles.metricTile, { backgroundColor: colors.success + '15' }]}>
-              <Text style={[styles.metricLabel, { color: colors.success }]}>Income</Text>
-              <MoneyText amount={summary.income} currency={selectedCurrency} type="CR" weight="bold" compact style={styles.metricSmall} />
-            </View>
-            <View style={[styles.metricTile, { backgroundColor: colors.danger + '15' }]}>
-              <Text style={[styles.metricLabel, { color: colors.danger }]}>Expenses</Text>
-              <MoneyText amount={summary.expense} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.metricSmall} />
             </View>
           </View>
 
@@ -378,7 +367,6 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           <PremiumGuard label="Category Breakdown" size="medium" containerStyle={styles.guard}>
             {(categoryData ?? []).length > 0 ? (
               <View style={styles.catSection}>
-                {/* Single stacked bar */}
                 <View style={styles.stackedBar}>
                   {(categoryData ?? []).map((cat, idx) => (
                     <View
@@ -388,7 +376,6 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   ))}
                 </View>
 
-                {/* 2-column category cards */}
                 <View style={styles.categoryGrid}>
                   {(categoryData ?? []).map((cat, idx) => {
                     const accent = colorNumberToHex(cat.color);
@@ -396,7 +383,6 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                     const pct = total > 0 ? (cat.amount / total) * 100 : 0;
                     return (
                       <View key={`${cat.name}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
-
                         <IconAvatar
                           icon={resolveIcon(cat.icon, Tag01Icon)}
                           color={accent}
@@ -407,7 +393,6 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                         <View style={styles.catContent}>
                           <Text style={styles.catName} numberOfLines={1}>{cat.name}</Text>
                           <MoneyText amount={cat.amount} currency={selectedCurrency} type="DR" compact style={styles.catAmount} />
-
                         </View>
                         <Text style={[styles.catPercent, { color: colors.textMuted }]}>{pct.toFixed(0)}%</Text>
                       </View>
@@ -446,19 +431,8 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                       const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
                       return (
                         <View key={`pp-${p.id}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
-                          <View style={{
-                            width: 28,
-                            height: 28,
-                            borderRadius: Math.round(28 * 0.25),
-                            backgroundColor: hex + '18',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}>
-                            <Text style={{
-                              color: hex,
-                              fontFamily: typography.fonts.bold,
-                              fontSize: 10,
-                            }}>{initials}</Text>
+                          <View style={[styles.personAvatar, { backgroundColor: hex + '18' }]}>
+                            <Text style={[styles.personInitials, { color: hex }]}>{initials}</Text>
                           </View>
                           <View style={styles.catContent}>
                             <Text style={styles.catName} numberOfLines={1}>{p.name}</Text>
@@ -491,7 +465,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   {accountDistribution.map((acc, idx) => (
                     <View key={`${acc.id}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
                       <IconAvatar
-                        icon={resolveIcon(acc.icon, Wallet05Icon)}
+                        icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)}
                         color={acc.hex}
                         variant="solid"
                         size={28}
@@ -576,7 +550,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    content: { paddingBottom: 110, paddingTop: spacing('2') },
+    content: { paddingBottom: 110, paddingTop: spacing('3') },
     guard: { marginHorizontal: layout.screenPadding },
 
     // ── Pill selectors
@@ -596,6 +570,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     pill: {
       flexDirection: 'row',
       alignItems: 'center',
+      gap: spacing('1'),
       height: 32,
       paddingHorizontal: spacing('3'),
       borderRadius: radius('full'),
@@ -605,13 +580,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     pillLocked: { opacity: 0.55 },
     pillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: typography.sizes.xs },
     pillTextActive: { color: colors.primary },
-    lockIcon: { marginLeft: spacing('1') },
     durationText: {
       fontFamily: typography.fonts.medium,
       fontSize: 12,
       color: colors.textMuted,
       paddingHorizontal: layout.screenPadding,
-      marginBottom: spacing('3'),
+      marginBottom: spacing('4'),
     },
 
     // ── Metric tiles
@@ -620,6 +594,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('2'),
       marginBottom: spacing('2'),
       paddingHorizontal: layout.screenPadding,
+    },
+    metricsGridLast: {
+      marginBottom: spacing('1'),
     },
     metricTile: {
       flex: 1,
@@ -647,7 +624,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
       padding: spacing('3.5'),
-      overflow: 'hidden',
       marginHorizontal: layout.screenPadding,
     },
 
@@ -655,10 +631,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     chartLegend: { flexDirection: 'row', gap: spacing('4'), marginBottom: spacing('2') },
     legendItem: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
     legendDot: { width: 7, height: 7, borderRadius: radius('full') },
-    legendDash: { width: 14, height: 2, borderRadius: radius('full') },
     legendText: { fontFamily: typography.fonts.regular, color: colors.textMuted, fontSize: 10 },
 
-    // ── Category breakdown section
+    // ── Category / person breakdown
     catSection: {
       gap: spacing('3'),
     },
@@ -686,25 +661,16 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('2'),
       position: 'relative',
       flexDirection: 'row',
+      alignItems: 'center',
+    },
+    catContent: {
+      flex: 1,
+      flexDirection: 'column',
     },
     catName: {
-      flex: 1,
       fontFamily: typography.fonts.semibold,
       fontSize: typography.sizes.xs,
       color: colors.text,
-    },
-    catBarTrack: {
-      height: 3,
-      borderRadius: radius('full'),
-      backgroundColor: colors.background,
-      overflow: 'hidden',
-    },
-    catBarFill: {
-      height: 3,
-      borderRadius: radius('full'),
-    },
-    catContent: {
-      flexDirection: 'column'
     },
     catAmount: { fontSize: typography.sizes.xs },
     catPercent: {
@@ -713,6 +679,19 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       position: 'absolute',
       right: spacing('3'),
       top: spacing('3'),
+    },
+
+    // ── Person avatar in breakdown grid
+    personAvatar: {
+      width: 28,
+      height: 28,
+      borderRadius: radius('xl'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    personInitials: {
+      fontFamily: typography.fonts.bold,
+      fontSize: 10,
     },
 
     // ── DOW legend

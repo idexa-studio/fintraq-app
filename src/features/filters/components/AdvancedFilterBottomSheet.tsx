@@ -1,12 +1,13 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 import { Account } from '@/src/features/accounts/api/accounts';
+import { AccountType } from '@/src/types';
 import { Category } from '@/src/features/categories/api/categories';
 import { Person } from '@/src/features/persons/api/persons';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { TransactionType } from '@/src/types';
 import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
+import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 import { ArrowRight01Icon, Calendar03Icon, CancelCircleIcon, Tag01Icon, Wallet05Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
@@ -289,7 +290,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                       style={[styles.pill, { backgroundColor: sel ? ac + '18' : colors.card }]}
                       onPress={() => toggleAccount(a.id)}
                     >
-                      <HugeiconsIcon icon={resolveIcon(a.icon, Wallet05Icon)} size={16} color={ac} />
+                      <HugeiconsIcon icon={resolveAccountTypeIcon(a.accountType as AccountType | null)} size={16} color={ac} />
                       <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
                         {a.name}
                       </Text>
