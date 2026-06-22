@@ -7,7 +7,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { TransactionType } from '@/src/types';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { ArrowRight01Icon, BankIcon, Calendar03Icon, CancelCircleIcon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { ArrowRight01Icon, Calendar03Icon, CancelCircleIcon, Tag01Icon, Wallet05Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
@@ -289,7 +289,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                       style={[styles.pill, { backgroundColor: sel ? ac + '18' : colors.card }]}
                       onPress={() => toggleAccount(a.id)}
                     >
-                      <HugeiconsIcon icon={resolveIcon(a.icon, BankIcon)} size={16} color={ac} />
+                      <HugeiconsIcon icon={resolveIcon(a.icon, Wallet05Icon)} size={16} color={ac} />
                       <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
                         {a.name}
                       </Text>

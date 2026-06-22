@@ -1,15 +1,11 @@
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { StreakBadge } from '@/src/features/reports/components/StreakBadge';
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { useSettings } from '@/src/providers/SettingsProvider';
 import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { useRouter } from 'expo-router';
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { CurrencyPickerTab } from './CurrencyPickerTab';
-import { DashboardHeader } from './DashboardHeader';
 
 type Props = {
   balance: number;
@@ -24,26 +20,11 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   const theme = useTheme();
   const { heroCard } = theme;
   const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
-  const { profile } = useSettings();
-  const { isPremium } = usePremium();
-  const router = useRouter();
-
-  const navigateToPremium = useCallback(() => router.push('/premium'), [router]);
-  const navigateToSearch = useCallback(() => router.push('/search'), [router]);
 
   return (
-    <View style={[styles.card, { backgroundColor: heroCard.background }]}>
-      <DashboardHeader
-        name={profile.name}
-        isPremium={isPremium}
-        onSearch={isPremium ? navigateToSearch : navigateToPremium}
-        heroCard={heroCard}
-      />
-
+    <View style={styles.card}>
       <View style={styles.header}>
-        <Text style={styles.label}>
-          Your balance
-        </Text>
+        <Text style={styles.label}>Your balance</Text>
         <StreakBadge heroCard={heroCard} />
       </View>
 
@@ -94,25 +75,20 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   );
 });
 
-const createStyles = ({ spacing, radius, typography }: ThemeContextType, heroCard: HeroCardPalette) =>
+const createStyles = ({ spacing, radius, layout, typography }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
-    // ── Hero card
     card: {
       backgroundColor: heroCard.background,
+      marginHorizontal: layout.screenPadding,
+      borderRadius: radius('2xl'),
       padding: spacing('5'),
-      paddingTop: spacing('7'),
       paddingBottom: spacing('5'),
-      borderBottomLeftRadius: radius('2xl'),
-      borderBottomRightRadius: radius('2xl'),
-      overflow: 'hidden',
-      position: 'relative',
     },
-
     header: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginTop: spacing('2'),
+      marginBottom: spacing('1'),
     },
     label: {
       fontSize: typography.sizes.xs,
@@ -128,7 +104,7 @@ const createStyles = ({ spacing, radius, typography }: ThemeContextType, heroCar
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
-      marginTop: spacing('4'), // Beautiful vertical gap between balance and stats
+      marginTop: spacing('4'),
       marginBottom: spacing('1'),
     },
     statContainer: {

@@ -1,6 +1,5 @@
 import {
   ArrowDataTransferHorizontalIcon,
-  BankIcon,
   BarChartIcon,
   Calendar01Icon,
   CardExchange01Icon,
@@ -17,6 +16,7 @@ import {
   SparklesIcon,
   Tag01Icon,
   UserAccountIcon,
+  Wallet05Icon,
 } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 
@@ -33,7 +33,7 @@ export const DASHBOARD_WALKTHROUGH_STEPS: WalkthroughStep[] = [
     desc: "Let's take a quick tour of your new premium financial dashboard.",
   },
   {
-    icon: BankIcon,
+    icon: Wallet05Icon,
     title: 'Track Net Savings',
     desc: 'The top card displays your total net position (Income minus Expenses). Swipe it to view different currencies.',
   },
@@ -71,7 +71,7 @@ export const TRANSACTION_WALKTHROUGH_STEPS: WalkthroughStep[] = [
     desc: 'Select a category to structure your transaction. Custom categories can be configured in Settings.',
   },
   {
-    icon: BankIcon,
+    icon: Wallet05Icon,
     title: 'Pick Account',
     desc: 'Choose which account or wallet this transaction is associated with.',
   },
@@ -112,7 +112,7 @@ export const ANALYTICS_WALKTHROUGH_STEPS: WalkthroughStep[] = [
     desc: 'Select custom periods (7 days, 30 days, 90 days, or a whole year) to track seasonal patterns.',
   },
   {
-    icon: BankIcon,
+    icon: Wallet05Icon,
     title: 'Portfolio Distribution',
     desc: 'View percentage distributions of assets across cash, bank, or credit accounts.',
   },
@@ -161,7 +161,7 @@ export const PERSONS_WALKTHROUGH_STEPS: WalkthroughStep[] = [
 
 export const ACCOUNTS_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
-    icon: BankIcon,
+    icon: Wallet05Icon,
     title: 'Accounts List',
     desc: 'View all your credit cards, cash wallets, and bank accounts in one place.',
   },

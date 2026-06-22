@@ -1,15 +1,15 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import {
-  BankIcon,
   BarChartIcon,
   Home01Icon,
   PlusSignIcon,
   Settings01Icon,
+  Wallet05Icon,
 } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import type { IconSvgElement } from '@hugeicons/react-native';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
@@ -17,7 +17,7 @@ import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Tab indices matching _layout.tsx order: 0=index, 1=accounts, 2=analytics, 3=settings
-const TAB_ICONS: IconSvgElement[] = [Home01Icon, BankIcon, BarChartIcon, Settings01Icon];
+const TAB_ICONS: IconSvgElement[] = [Home01Icon, Wallet05Icon, BarChartIcon, Settings01Icon];
 const LEFT_INDICES = [0, 1];
 const RIGHT_INDICES = [2, 3];
 
@@ -86,7 +86,7 @@ export const SplitIslandTabBar = React.memo(function SplitIslandTabBar({
     }
   }, [router, state.index]);
 
-  const fabIcon = state.index === 1 ? BankIcon : PlusSignIcon;
+  const fabIcon = state.index === 1 ? Wallet05Icon : PlusSignIcon;
 
   return (
     <View style={styles.container} pointerEvents="box-none">

@@ -10,7 +10,6 @@ import {
   ArrowUp01Icon,
   Award01Icon,
   BandageIcon,
-  BankIcon,
   BarChartIcon,
   BedIcon,
   BeerIcon,
@@ -18,6 +17,7 @@ import {
   BoatIcon,
   BookOpen01Icon,
   Briefcase01Icon,
+  Building03Icon,
   BulbIcon,
   Bus01Icon,
   Calendar01Icon,
@@ -83,6 +83,7 @@ import {
   PaintBrush01Icon,
   PencilIcon,
   PieChart01Icon,
+  PiggyBankIcon,
   Pizza01Icon,
   PrinterIcon,
   Pulse01Icon,
@@ -340,7 +341,7 @@ export const ICON_MAP: Record<string, IconSvgElement> = {
   'boat': BoatIcon,
   'book-open': BookOpen01Icon,
   'briefcase': Briefcase01Icon,
-  'building': BankIcon,
+  'building': Building03Icon,
   'bulb': BulbIcon,
   'bus': Bus01Icon,
   'calendar': Calendar01Icon,
@@ -443,6 +444,7 @@ export const ICON_MAP: Record<string, IconSvgElement> = {
   'wrench': Wrench01Icon,
   'chat': Chat01Icon,
   'wallet': Wallet01Icon,
+  'piggy-bank': PiggyBankIcon,
 };
 
 /**
@@ -463,7 +465,7 @@ import type { AccountType } from '@/src/types';
 export const ACCOUNT_TYPE_ICON_MAP: Record<AccountType, IconSvgElement> = {
   cash: ICON_MAP['cash']!,
   bank: ICON_MAP['building']!,
-  savings: ICON_MAP['diamond']!,
+  savings: ICON_MAP['piggy-bank']!,
   credit_card: ICON_MAP['credit-card']!,
   investment: ICON_MAP['chart-line-data']!,
   loan: ICON_MAP['receipt-text']!,

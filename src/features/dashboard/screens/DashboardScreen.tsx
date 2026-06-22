@@ -4,6 +4,7 @@ import { DASHBOARD_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/
 import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { useAppLock } from '@/src/providers/AppLockProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
+import { useSettings } from '@/src/providers/SettingsProvider';
 import { ArrowRight01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,6 +20,7 @@ import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useTransactions } from '../../transactions/hooks/transactions';
 import { AccountsCarousel } from '../components/AccountsCarousel';
+import { DashboardHeader } from '../components/DashboardHeader';
 import { HeroBalanceCard } from '../components/HeroBalanceCard';
 import { InsightsSection } from '../components/InsightsSection';
 import { PremiumUpsellBottomSheet } from '../components/PremiumUpsellBottomSheet';
@@ -35,6 +37,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const { isPremium } = usePremium();
+  const { profile } = useSettings();
   const router = useRouter();
 
 
@@ -106,6 +109,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const handleCurrencySelect = useCallback((c: string) => setSelectedCurrency(c), []);
   const navigateToAccountTx = useCallback((id: number) => router.push(`/(main)/accounts/${id}`), [router]);
 
+  const navigateToSearch = useCallback(() => router.push('/search'), [router]);
+  const navigateToPremium = useCallback(() => router.push('/premium'), [router]);
   const navigateToTransactions = useCallback(() => router.push('/transactions'), [router]);
   const navigateToCreateTx = useCallback(() => router.push('/transactions/create'), [router]);
   const navigateToEditTx = useCallback((id: number) => router.push(`/transactions/edit/${id}`), [router]);
@@ -122,12 +127,17 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={[]}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
-      
+        <DashboardHeader
+          name={profile.name}
+          isPremium={isPremium}
+          onSearch={isPremium ? navigateToSearch : navigateToPremium}
+        />
+
         <HeroBalanceCard
           balance={balancesByCurrency[selectedCurrency] || 0}
           currency={selectedCurrency}

@@ -22,7 +22,7 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { BankIcon, Calendar01Icon, ChartLineData01Icon, LockPasswordIcon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { Calendar01Icon, ChartLineData01Icon, LockPasswordIcon, Tag01Icon, Wallet05Icon } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { format } from 'date-fns';
@@ -491,7 +491,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   {accountDistribution.map((acc, idx) => (
                     <View key={`${acc.id}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
                       <IconAvatar
-                        icon={resolveIcon(acc.icon, BankIcon)}
+                        icon={resolveIcon(acc.icon, Wallet05Icon)}
                         color={acc.hex}
                         variant="solid"
                         size={28}
@@ -508,7 +508,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               </View>
             ) : (
               <EmptyState
-                icon={BankIcon}
+                icon={Wallet05Icon}
                 title={`No ${selectedCurrency} accounts`}
                 subtitle="Add an account in this currency to see the balance split."
               />

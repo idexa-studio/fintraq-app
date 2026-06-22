@@ -4,11 +4,11 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import {
   ArrowLeft01Icon,
-  BankIcon,
   ReceiptTextIcon,
   Search01Icon,
   SparklesIcon,
-  Tag01Icon
+  Tag01Icon,
+  Wallet05Icon
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
@@ -18,7 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SEARCH_FEATURES = [
   { icon: ReceiptTextIcon, label: 'Full-text search across all transactions' },
-  { icon: BankIcon, label: 'Find accounts by name instantly' },
+  { icon: Wallet05Icon, label: 'Find accounts by name instantly' },
   { icon: Tag01Icon, label: 'Locate categories across your history' },
 ];
 
