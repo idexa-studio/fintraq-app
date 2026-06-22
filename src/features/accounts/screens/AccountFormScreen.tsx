@@ -77,7 +77,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
       setCurrency(account.currency);
       setColorHex(colorNumberToHex(account.color).toUpperCase());
       const matchedIcon =
-        ACCOUNT_ICONS.find((i) => i === `${account.icon}-outline`) ?? ACCOUNT_ICONS[0];
+        ACCOUNT_ICONS.find((i) => i === account.icon) ?? ACCOUNT_ICONS[0];
       setIconKey(matchedIcon);
     }
   }, [account, reset]);
@@ -94,7 +94,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           accountNumber: data.accountNumber.trim(),
           currency,
           color: toDbColor(colorHex),
-          icon: iconKey.replace('-outline', ''),
+          icon: iconKey,
         };
         await updateAccount({ id: account.id, data: updateData });
       } else {
@@ -105,7 +105,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           balance: parseAmount(data.balance),
           currency,
           color: toDbColor(colorHex),
-          icon: iconKey.replace('-outline', ''),
+          icon: iconKey,
           isDefault: false,
         };
         await createAccount(createData);
@@ -114,7 +114,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         isEditing ? 'edit' : 'create',
         currency,
         !isEditing && parseAmount(data.balance) > 0,
-        iconKey.replace('-outline', '')
+        iconKey
       );
       router.back();
     } catch (error) {

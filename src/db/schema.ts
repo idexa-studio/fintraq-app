@@ -20,7 +20,7 @@ export const accounts = sqliteTable('accounts', {
   name: text('name').notNull(),
   holderName: text('holderName').notNull(),
   accountNumber: text('accountNumber').notNull(),
-  icon: text('icon').notNull().default('domain'),
+  icon: text('icon').notNull().default('building'),
   color: integer('color').notNull(),
   isDefault: integer('isDefault', { mode: 'boolean' }).notNull().default(false),
   currency: text('currency').notNull().default('USD'),
