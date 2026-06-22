@@ -1,5 +1,6 @@
 import os
 import math
+import subprocess
 from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageChops
 
 PROJECT_DIR = "/Users/ahmed/Documents/Projects/ReactNative/luno-react-native"
@@ -9,6 +10,35 @@ FONT_BOLD_PATH = os.path.join(PROJECT_DIR, "assets", "fonts", "MuseoModerno", "M
 FONT_REGULAR_PATH = os.path.join(PROJECT_DIR, "assets", "fonts", "MuseoModerno", "MuseoModerno-Medium.ttf")
 
 os.makedirs(OUT_DIR, exist_ok=True)
+
+TEMP_DIR = os.path.join(PROJECT_DIR, "assets", "temp")
+BRAND_DIR = os.path.join(PROJECT_DIR, "assets", "brand")
+
+COLOR_MAP = {
+    "#8DBDFF": "#86FFC5",
+    "#4F8FFF": "#00CC6A",
+    "#234777": "#006633",
+    "#163054": "#00331A",
+    "#7CB4FF": "#00CC6A",
+    "#71AEFF": "#00CC6A",
+    "#1C4F8F": "#004F26",
+    "#EEF5FF": "#EEFFF6",
+}
+
+def process_svg(filename):
+    """Processes brand SVGs on the fly, mapping color palette to the green emerald theme."""
+    os.makedirs(TEMP_DIR, exist_ok=True)
+    svg_path = os.path.join(BRAND_DIR, filename)
+    with open(svg_path, 'r') as f:
+        content = f.read()
+    for old_color, new_color in COLOR_MAP.items():
+        content = content.replace(old_color, new_color)
+        content = content.replace(old_color.lower(), new_color.lower())
+        content = content.replace(old_color.upper(), new_color.upper())
+    temp_path = os.path.join(TEMP_DIR, filename)
+    with open(temp_path, 'w') as f:
+        f.write(content)
+    return temp_path
 
 # Continuous wave control points across the wide 5400x1920 canvas
 WAVE_POINTS = [
@@ -336,6 +366,120 @@ def main():
         print(f"Saved: {screen['out']}")
         
     print("All seamless store screenshots generated successfully!")
+    
+    # Generate Google Play Store featured graphic
+    make_featured_graphic()
+
+def make_featured_graphic():
+    print("Generating Google Play Store featured graphic (1024x500)...")
+    
+    # 1. Base dark canvas
+    canvas = Image.new("RGBA", (1024, 500), (20, 20, 18, 255))
+    
+    # 2. Combine multiple overlapping radial glows (behind text and mockups)
+    glow_mask_wide = Image.new("L", (1024, 500), 0)
+    
+    # Glow Spot 1: Branding area (left)
+    glow_spot_left = create_radial_glow_mask(600, 600, radius_ratio=0.6, intensity=0.35)
+    glow_mask_wide.paste(glow_spot_left, (200 - 300, 250 - 300))
+    
+    # Glow Spot 2: Device mockup area (right)
+    glow_spot_right = create_radial_glow_mask(800, 800, radius_ratio=0.6, intensity=0.55)
+    glow_mask_wide.paste(glow_spot_right, (770 - 400, 250 - 400))
+    
+    glow_color_img = Image.new("RGBA", (1024, 500), (0, 50, 25, 255))
+    canvas = Image.composite(glow_color_img, canvas, glow_mask_wide)
+    
+    # 3. Draw thin, refined connecting curve behind elements
+    glow_img = Image.new("RGBA", (1024, 500), (0, 0, 0, 0))
+    glow_draw = ImageDraw.Draw(glow_img)
+    color = (0, 204, 106, 50)  # Very soft green line
+    
+    def get_featured_wave_y(x):
+        pts = [(0, 320), (250, 280), (500, 340), (750, 250), (1024, 270)]
+        for i in range(len(pts) - 1):
+            x1, y1 = pts[i]
+            x2, y2 = pts[i+1]
+            if x1 <= x <= x2:
+                mu = (x - x1) / (x2 - x1)
+                mu2 = (1 - math.cos(mu * math.pi)) / 2
+                return y1 * (1 - mu2) + y2 * mu2
+        return pts[-1][1]
+        
+    for x in range(0, 1024, 4):
+        y1 = get_featured_wave_y(x)
+        y2 = get_featured_wave_y(x + 4)
+        glow_draw.line([(x, y1), (x + 4, y2)], fill=color, width=2)
+        
+    canvas = Image.alpha_composite(canvas, glow_img)
+    
+    # 4. Render and paste overlapping phone mockups on the right side
+    # Mockup 1 (Analytics screen, slightly smaller and tilted -8 deg)
+    screenshot_1_path = os.path.join(IN_DIR, "analytics.jpeg")
+    mockup_1 = create_device_mockup(screenshot_1_path, rotation=-8, scale=0.34)
+    if mockup_1:
+        w, h = mockup_1.size
+        canvas.paste(mockup_1, (690 - w // 2, 250 - h // 2), mockup_1)
+        
+    # Mockup 2 (Dashboard screen, larger, straight)
+    screenshot_2_path = os.path.join(IN_DIR, "dashboard.jpeg")
+    mockup_2 = create_device_mockup(screenshot_2_path, rotation=0, scale=0.38)
+    if mockup_2:
+        w, h = mockup_2.size
+        canvas.paste(mockup_2, (840 - w // 2, 250 - h // 2), mockup_2)
+        
+    # 5. Render brand logo mark (using process_svg and rsvg-convert)
+    temp_logo_svg = process_svg("splash-mark.svg")
+    temp_logo_png = os.path.join(TEMP_DIR, "temp_featured_logo.png")
+    subprocess.run([
+        "/opt/homebrew/bin/rsvg-convert",
+        "-w", "140",
+        "-h", "140",
+        temp_logo_svg,
+        "-o", temp_logo_png
+    ], check=True)
+    
+    logo_img = Image.open(temp_logo_png).convert("RGBA")
+    canvas.paste(logo_img, (100, 100), logo_img)
+    
+    # Clean up temp logo files
+    os.remove(temp_logo_svg)
+    os.remove(temp_logo_png)
+    if os.path.exists(TEMP_DIR) and not os.listdir(TEMP_DIR):
+        os.rmdir(TEMP_DIR)
+        
+    # 6. Render text
+    draw = ImageDraw.Draw(canvas)
+    
+    try:
+        font_logo = ImageFont.truetype(FONT_BOLD_PATH, 56)
+        font_h1 = ImageFont.truetype(FONT_BOLD_PATH, 42)
+        font_sub = ImageFont.truetype(FONT_REGULAR_PATH, 22)
+    except IOError:
+        font_logo = ImageFont.load_default()
+        font_h1 = ImageFont.load_default()
+        font_sub = ImageFont.load_default()
+        
+    # Draw Brand Title "Fintraq." beside the logo
+    draw.text((260, 132), "Fintraq", font=font_logo, fill=(232, 231, 225, 255))
+    try:
+        left, top, right, bottom = draw.textbbox((0, 0), "Fintraq", font=font_logo)
+        w_brand = right - left
+    except AttributeError:
+        w_brand, _ = draw.textsize("Fintraq", font=font_logo)
+    draw.text((260 + w_brand, 132), ".", font=font_logo, fill=(0, 204, 106, 255))
+    
+    # Draw headlines
+    fonts = {"bold": font_h1, "regular": font_h1}
+    draw_mixed_line(draw, fonts, 275, [("Track wealth", "bold")], canvas_w=1024, align="left")
+    draw_mixed_line(draw, fonts, 335, [("simply", "bold"), (".", "regular")], canvas_w=1024, align="left")
+    
+    # Draw description
+    draw.text((100, 395), "Unified personal finance ledger.", font=font_sub, fill=(154, 153, 147, 255))
+    
+    # Save the featured graphic
+    canvas.convert("RGB").save(os.path.join(OUT_DIR, "featured_graphic.jpg"), "JPEG", quality=95)
+    print(f"Saved featured graphic: featured_graphic.jpg")
 
 if __name__ == "__main__":
     main()
