@@ -47,9 +47,9 @@
           "image": "./assets/images/splash.png",
           "imageWidth": 224,
           "resizeMode": "contain",
-          "backgroundColor": "#080D16",
+          "backgroundColor": "#141412",
           "dark": {
-            "backgroundColor": "#080D16"
+            "backgroundColor": "#141412"
           }
         }
       ],
