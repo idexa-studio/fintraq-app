@@ -460,6 +460,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       backgroundColor: colors.background,
     },
     content: {
+      paddingTop: spacing('2'),
       paddingBottom: spacing('6'),
     },
     formBody: {
@@ -511,8 +512,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
     iconContainer: {
       width: 36,
       height: 36,
-      borderRadius: 18,
-      backgroundColor: colors.primary + '10',
+      borderRadius: radius('full'),
+      backgroundColor: colors.primary + '18',
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -540,8 +541,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
     noteIconContainer: {
       width: 32,
       height: 32,
-      borderRadius: 16,
-      backgroundColor: colors.primary + '10',
+      borderRadius: radius('full'),
+      backgroundColor: colors.primary + '18',
       alignItems: 'center',
       justifyContent: 'center',
     },

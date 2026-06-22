@@ -1,20 +1,20 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { ArrowRight01Icon, Building01Icon, Calendar03Icon, CancelCircleIcon, Tag01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import * as Haptics from 'expo-haptics';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 import { Account } from '@/src/features/accounts/api/accounts';
 import { Category } from '@/src/features/categories/api/categories';
 import { Person } from '@/src/features/persons/api/persons';
-import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import type { TransactionType } from '@/src/types';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import type { TransactionType } from '@/src/types';
+import { ArrowRight01Icon, BankIcon, Calendar03Icon, CancelCircleIcon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import * as Haptics from 'expo-haptics';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../api/advanced-filters.service';
-import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 
 interface AdvancedFilterBottomSheetProps {
   visible: boolean;
@@ -28,9 +28,9 @@ interface AdvancedFilterBottomSheetProps {
 }
 
 const TYPE_OPTS = [
-  { key: 'CR' as const, label: 'Income',   icon: 'arrow-down-circle-outline' as const, colorKey: 'success' as const },
-  { key: 'DR' as const, label: 'Expense',  icon: 'arrow-up-circle-outline' as const,   colorKey: 'danger'  as const },
-  { key: 'TR' as const, label: 'Transfer', icon: 'swap-horizontal' as const,           colorKey: 'info'    as const },
+  { key: 'CR' as const, label: 'Income', icon: 'arrow-down-circle-outline' as const, colorKey: 'success' as const },
+  { key: 'DR' as const, label: 'Expense', icon: 'arrow-up-circle-outline' as const, colorKey: 'danger' as const },
+  { key: 'TR' as const, label: 'Transfer', icon: 'swap-horizontal' as const, colorKey: 'info' as const },
 ] as const;
 
 export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBottomSheet({
@@ -39,11 +39,11 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   const theme = useTheme();
   const { colors, typography } = theme;
 
-  const [local, setLocal]         = useState<AdvancedFilters>(filters);
+  const [local, setLocal] = useState<AdvancedFilters>(filters);
   const [showStart, setShowStart] = useState(false);
-  const [showEnd, setShowEnd]     = useState(false);
-  const [minAmt, setMinAmt]       = useState('');
-  const [maxAmt, setMaxAmt]       = useState('');
+  const [showEnd, setShowEnd] = useState(false);
+  const [minAmt, setMinAmt] = useState('');
+  const [maxAmt, setMaxAmt] = useState('');
   const bottomSheet = useBottomSheet();
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
@@ -61,31 +61,31 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
     return a.includes(v) ? a.filter(x => x !== v) : [...a, v];
   }, []);
 
-  const toggleAccount  = useCallback((id: number) => {
-    Haptics.selectionAsync().catch(() => {});
-    setLocal(p => ({ ...p, accountIds:  toggle(p.accountIds,  id) }));
+  const toggleAccount = useCallback((id: number) => {
+    Haptics.selectionAsync().catch(() => { });
+    setLocal(p => ({ ...p, accountIds: toggle(p.accountIds, id) }));
   }, [toggle]);
   const toggleCategory = useCallback((id: number) => {
-    Haptics.selectionAsync().catch(() => {});
+    Haptics.selectionAsync().catch(() => { });
     setLocal(p => ({ ...p, categoryIds: toggle(p.categoryIds, id) }));
   }, [toggle]);
-  const togglePerson   = useCallback((id: number) => {
-    Haptics.selectionAsync().catch(() => {});
-    setLocal(p => ({ ...p, personIds:   toggle(p.personIds,   id) }));
+  const togglePerson = useCallback((id: number) => {
+    Haptics.selectionAsync().catch(() => { });
+    setLocal(p => ({ ...p, personIds: toggle(p.personIds, id) }));
   }, [toggle]);
-  const toggleType     = useCallback((t: TransactionType) => {
-    Haptics.selectionAsync().catch(() => {});
+  const toggleType = useCallback((t: TransactionType) => {
+    Haptics.selectionAsync().catch(() => { });
     setLocal(p => ({ ...p, types: toggle(p.types, t) }));
   }, [toggle]);
   const clearDateRange = useCallback(() => {
-    Haptics.selectionAsync().catch(() => {});
+    Haptics.selectionAsync().catch(() => { });
     setLocal(p => ({ ...p, dateRange: undefined }));
   }, []);
 
   const onStartDate = useCallback((_e: DateTimePickerEvent, d?: Date) => {
     setShowStart(false);
     if (d) {
-      Haptics.selectionAsync().catch(() => {});
+      Haptics.selectionAsync().catch(() => { });
       setLocal(p => ({ ...p, dateRange: { startDate: d, endDate: p.dateRange?.endDate || new Date() } }));
     }
   }, []);
@@ -93,14 +93,14 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   const onEndDate = useCallback((_e: DateTimePickerEvent, d?: Date) => {
     setShowEnd(false);
     if (d) {
-      Haptics.selectionAsync().catch(() => {});
+      Haptics.selectionAsync().catch(() => { });
       d.setHours(23, 59, 59, 999);
       setLocal(p => ({ ...p, dateRange: { startDate: p.dateRange?.startDate || new Date(), endDate: d } }));
     }
   }, []);
 
   const handleApply = useCallback(() => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
     const mn = minAmt ? parseFloat(minAmt) : undefined;
     const mx = maxAmt ? parseFloat(maxAmt) : undefined;
     onApply({ ...local, amountRange: (mn !== undefined || mx !== undefined) ? { min: mn, max: mx } : undefined });
@@ -108,7 +108,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   }, [local, minAmt, maxAmt, onApply, onClose]);
 
   const handleReset = useCallback(() => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => { });
     setLocal(DEFAULT_ADVANCED_FILTERS);
     setMinAmt('');
     setMaxAmt('');
@@ -116,13 +116,13 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   }, [onReset]);
 
   const activeCount = useMemo(() =>
-    (local.accountIds?.length  || 0) +
+    (local.accountIds?.length || 0) +
     (local.categoryIds?.length || 0) +
-    (local.personIds?.length   || 0) +
-    (local.types?.length       || 0) +
-    (local.dateRange            ? 1 : 0) +
-    (minAmt || maxAmt           ? 1 : 0) +
-    (local.searchQuery?.trim()  ? 1 : 0),
+    (local.personIds?.length || 0) +
+    (local.types?.length || 0) +
+    (local.dateRange ? 1 : 0) +
+    (minAmt || maxAmt ? 1 : 0) +
+    (local.searchQuery?.trim() ? 1 : 0),
     [local, minAmt, maxAmt]
   );
 
@@ -177,7 +177,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           <View style={styles.typeRow}>
             {TYPE_OPTS.map(opt => {
               const sel = local.types?.includes(opt.key) || false;
-              const c   = colors[opt.colorKey];
+              const c = colors[opt.colorKey];
               return (
                 <BentoPressable
                   key={opt.key}
@@ -282,14 +282,14 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
               <View style={styles.pillGrid}>
                 {accounts.map(a => {
                   const sel = local.accountIds?.includes(a.id) || false;
-                  const ac  = colorNumberToHex(a.color);
+                  const ac = colorNumberToHex(a.color);
                   return (
                     <BentoPressable
                       key={a.id}
                       style={[styles.pill, { backgroundColor: sel ? ac + '18' : colors.card }]}
                       onPress={() => toggleAccount(a.id)}
                     >
-                      <HugeiconsIcon icon={resolveIcon(a.icon, Building01Icon)} size={16} color={ac} />
+                      <HugeiconsIcon icon={resolveIcon(a.icon, BankIcon)} size={16} color={ac} />
                       <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
                         {a.name}
                       </Text>
@@ -308,7 +308,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
               <View style={styles.pillGrid}>
                 {categories.map(c => {
                   const sel = local.categoryIds?.includes(c.id) || false;
-                  const cc  = colorNumberToHex(c.color);
+                  const cc = colorNumberToHex(c.color);
                   return (
                     <BentoPressable
                       key={c.id}
@@ -334,7 +334,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
               <View style={styles.pillGrid}>
                 {persons.map(p => {
                   const sel = local.personIds?.includes(p.id) || false;
-                  const pc  = colorNumberToHex(p.color);
+                  const pc = colorNumberToHex(p.color);
                   const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
                   return (
                     <BentoPressable
@@ -403,9 +403,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingTop: spacing('4'),
       paddingBottom: spacing('2'),
     },
-    headerLeft:  { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
+    headerLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
     headerRight: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
-    title:       { fontSize: 22 },
+    title: { fontSize: 22 },
     badge: {
       minWidth: 20,
       height: 20,
@@ -427,7 +427,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingLeft: spacing('0.5'),
       marginHorizontal: layout.screenPadding,
     },
-    typeRow:  {
+    typeRow: {
       flexDirection: 'row',
       gap: spacing('2'),
       marginHorizontal: layout.screenPadding,
@@ -457,8 +457,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     groupRowLabel: { fontSize: typography.sizes.sm },
     groupRowValue: { flex: 1, fontSize: typography.sizes.sm, textAlign: 'right' },
-    groupChevron:  { marginLeft: 'auto' },
-    groupSep:      { height: 1, marginHorizontal: spacing('4') },
+    groupChevron: { marginLeft: 'auto' },
+    groupSep: { height: 1, marginHorizontal: spacing('4') },
     amountInput: {
       flex: 1,
       fontSize: typography.sizes.md,
@@ -484,8 +484,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: 13,
     },
     inlineToggles: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
-    toggleSep:     { fontSize: typography.sizes.xs, opacity: 0.4 },
-    toggleOption:  { fontSize: typography.sizes.sm },
+    toggleSep: { fontSize: typography.sizes.xs, opacity: 0.4 },
+    toggleOption: { fontSize: typography.sizes.sm },
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),

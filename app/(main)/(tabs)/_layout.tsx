@@ -1,7 +1,7 @@
 import { useTheme } from '@/src/providers/ThemeProvider';
 import {
+  BankIcon,
   BarChartIcon,
-  Building01Icon,
   Home01Icon,
   Settings01Icon,
   UserGroupIcon
@@ -85,7 +85,7 @@ export default function TabsLayout() {
         name="accounts"
         options={{
           title: 'Accounts',
-          tabBarIcon: renderTabBarIcon(Building01Icon),
+          tabBarIcon: renderTabBarIcon(BankIcon),
         }}
       />
       <Tabs.Screen

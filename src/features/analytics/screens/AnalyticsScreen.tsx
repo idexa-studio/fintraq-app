@@ -1,14 +1,15 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { format } from 'date-fns';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { DEFAULT_CURRENCY } from '@/src/constants/currency';
+import { StorageKeys } from '@/src/constants/keys';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
-import { LinearAreaChart, type BarBucket } from '@/src/features/analytics/components/LinearAreaChart';
 import { DowChart } from '@/src/features/analytics/components/DowChart';
+import { LinearAreaChart, type BarBucket } from '@/src/features/analytics/components/LinearAreaChart';
 import {
   useAnalyticsCategoryBreakdown,
   useAnalyticsDailyData,
@@ -16,16 +17,15 @@ import {
   useAnalyticsMonthlyData,
   useAnalyticsPersonBreakdown,
 } from '@/src/features/analytics/hooks/useAnalyticsData';
+import { ANALYTICS_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
-import { WalkthroughOverlay, ANALYTICS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
-import { StorageKeys } from '@/src/constants/keys';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Building01Icon, Calendar01Icon, ChartLineData01Icon, LockPasswordIcon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { BankIcon, Calendar01Icon, ChartLineData01Icon, LockPasswordIcon, Tag01Icon } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { format } from 'date-fns';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import {
@@ -491,7 +491,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   {accountDistribution.map((acc, idx) => (
                     <View key={`${acc.id}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
                       <IconAvatar
-                        icon={resolveIcon(acc.icon, Building01Icon)}
+                        icon={resolveIcon(acc.icon, BankIcon)}
                         color={acc.hex}
                         variant="solid"
                         size={28}
@@ -508,7 +508,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               </View>
             ) : (
               <EmptyState
-                icon={Building01Icon}
+                icon={BankIcon}
                 title={`No ${selectedCurrency} accounts`}
                 subtitle="Add an account in this currency to see the balance split."
               />

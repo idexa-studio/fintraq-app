@@ -1,11 +1,12 @@
-import { Building01Icon, CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
+import { CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
-import { resolveIcon } from '../../../utils/icons';
+import { resolveAccountTypeIcon } from '../../../utils/icons';
+import type { AccountType } from '../../../types';
 import type { Account } from '../../accounts/api/accounts';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
 
@@ -46,7 +47,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               overflow="visible"
             >
               <IconAvatar
-                icon={resolveIcon(acc.icon, Building01Icon)}
+                icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)}
                 color={accColor}
                 variant="solid"
                 size={32}
@@ -78,6 +79,7 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
     fontSize: typography.sizes.xs,
     marginBottom: spacing('3'),
     paddingHorizontal: layout.screenPadding,
+    opacity: 0.6,
   },
   scrollContent: {
     paddingHorizontal: layout.screenPadding,

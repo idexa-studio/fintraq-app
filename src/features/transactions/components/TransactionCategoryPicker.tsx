@@ -72,6 +72,7 @@ const createStyles = ({ colors, typography, spacing, radius , layout }: ThemeCon
     fontFamily: typography.fonts.semibold,
     fontSize: typography.sizes.xs,
     marginBottom: spacing('3'),
+    opacity: 0.6,
   },
   grid: {
     flexDirection: 'row',

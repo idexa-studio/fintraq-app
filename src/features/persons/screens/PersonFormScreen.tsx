@@ -161,7 +161,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
           {/* ── Hero card ── */}
           <View style={[styles.heroCard, { marginHorizontal: layout.screenPadding }]}>
             <View style={styles.heroTop}>
-              <View style={[styles.initialsWrap, { backgroundColor: colorHex + '22' }]}>
+              <View style={[styles.initialsWrap, { backgroundColor: colorHex + '18' }]}>
                 <Text style={[styles.initialsText, { color: colorHex }]}>{initials}</Text>
               </View>
               <View style={styles.heroMeta}>

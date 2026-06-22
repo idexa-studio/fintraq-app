@@ -9,7 +9,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { EdgeInsets, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
 import { KPICard } from '../../../components/ui/KPICard';
@@ -226,8 +226,7 @@ const FilterChip = React.memo(function FilterChip({
 }: FilterChipProps) {
   const theme = useTheme();
   const { colors, spacing, isDark } = theme;
-  const insets = useSafeAreaInsets();
-  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const tintColor = isDark ? colors.primaryLight : colors.primaryDark;
 
@@ -555,6 +554,11 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     setAdvancedFilters(DEFAULT_ADVANCED_FILTERS);
   }, []);
 
+  const handleAddTransaction = useCallback(() => {
+    Haptics.selectionAsync().catch(() => { });
+    router.push('/transactions/create');
+  }, [router]);
+
   const handleEdit = React.useCallback(
     (tx: TransactionListItem) => {
       router.push(`/transactions/edit/${tx.id}`);
@@ -638,22 +642,10 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         showBack
         rightAction={(
           <View style={styles.headerActions}>
-            <BentoPressable
-              onPress={() => {
-                Haptics.selectionAsync().catch(() => { });
-                setShowAdvancedFilterSheet(true);
-              }}
-              style={styles.iconBtn}
-            >
+            <BentoPressable onPress={handleOpenFilter} style={styles.iconBtn}>
               <HugeiconsIcon icon={FilterIcon} size={22} color={colors.text} />
             </BentoPressable>
-            <BentoPressable
-              onPress={() => {
-                Haptics.selectionAsync().catch(() => { });
-                setShowSortSheet(true);
-              }}
-              style={styles.iconBtn}
-            >
+            <BentoPressable onPress={handleOpenSort} style={styles.iconBtn}>
               <HugeiconsIcon icon={SortingDownIcon} size={22} color={colors.text} />
             </BentoPressable>
           </View>
@@ -756,7 +748,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                 ? 'No transactions match the active filters.'
                 : 'Add your first transaction to start tracking.'}
             </Text>
-            <BentoPressable style={styles.emptyAction} onPress={() => router.push('/transactions/create')}>
+            <BentoPressable style={styles.emptyAction} onPress={handleAddTransaction}>
               <Text style={styles.emptyActionText}>Add Transaction</Text>
               <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primaryForeground} />
             </BentoPressable>
@@ -769,13 +761,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         ) : null}
       />
 
-      <BentoPressable
-        style={styles.fab}
-        onPress={() => {
-          Haptics.selectionAsync().catch(() => { });
-          router.push('/transactions/create');
-        }}
-      >
+      <BentoPressable style={styles.fab} onPress={handleAddTransaction}>
         <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
       </BentoPressable>
 
@@ -839,7 +825,8 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType, insets: any) =>
+const ZERO_INSETS: EdgeInsets = { top: 0, bottom: 0, left: 0, right: 0 };
+const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType, insets: EdgeInsets = ZERO_INSETS) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -863,40 +850,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: 'transparent',
-    },
-    searchHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('4'),
-      gap: spacing('3'),
-      backgroundColor: colors.background,
-    },
-    searchBackBtn: {
-      width: 44,
-      height: 44,
-      borderRadius: radius('md'),
-      backgroundColor: colors.surface,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    searchHeaderInput: {
-      flex: 1,
-      fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.md,
-      color: colors.text,
-      height: 44,
-      paddingHorizontal: spacing('4'),
-      borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
-    },
-    searchClearBtn: {
-      position: 'absolute',
-      right: spacing('4') + 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100%',
     },
     content: {
       paddingHorizontal: layout.screenPadding,
@@ -927,10 +880,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     dayTotalValue: {
       fontFamily: typography.fonts.medium,
       fontSize: 12,
-    },
-    dayCard: {
-      borderRadius: radius('xl'),
-      overflow: 'hidden',
     },
     emptyWrap: {
       paddingVertical: 60,
@@ -965,7 +914,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       paddingHorizontal: layout.screenPadding,
       height: 48,
       borderRadius: radius('lg'),
-      backgroundColor: colors.text,
+      backgroundColor: colors.primary,
       marginTop: spacing('2'),
     },
     emptyActionText: {
@@ -983,7 +932,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       right: 16,
       width: 56,
       height: 56,
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',

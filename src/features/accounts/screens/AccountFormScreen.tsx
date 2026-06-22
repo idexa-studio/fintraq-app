@@ -175,9 +175,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           {/* ── Hero preview card ── */}
           <View style={[styles.heroCard, { marginHorizontal: layout.screenPadding }]}>
             <View style={styles.heroTop}>
-              <View style={[styles.heroAvatarWrap, { backgroundColor: colorHex + '22' }]}>
-                <IconAvatar icon={resolvedIcon} color={colorHex} variant="solid" size={56} iconSize={26} />
-              </View>
+              <IconAvatar icon={resolvedIcon} color={colorHex} variant="solid" size={64} iconSize={28} />
               <View style={styles.heroMeta}>
                 <Text style={styles.heroName} numberOfLines={1}>
                   {accountName.trim() || 'Account name'}
@@ -445,13 +443,6 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       alignItems: 'center',
       gap: spacing('3.5'),
       padding: spacing('4'),
-    },
-    heroAvatarWrap: {
-      width: 72,
-      height: 72,
-      borderRadius: radius('xl'),
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     heroMeta: {
       flex: 1,

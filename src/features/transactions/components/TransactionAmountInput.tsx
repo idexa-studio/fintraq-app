@@ -51,6 +51,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       fontFamily: typography.fonts.semibold,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
+      opacity: 0.6,
       marginBottom: spacing('1.5'),
     },
     inputRow: {

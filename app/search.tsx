@@ -1,9 +1,12 @@
+import { PageBackground } from '@/src/components/ui/PageBackground';
+import { SearchScreen } from '@/src/features/search/screens/SearchScreen';
+import { usePremium } from '@/src/providers/PremiumProvider';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import {
   ArrowLeft01Icon,
+  ReceiptTextIcon,
   Search01Icon,
   SparklesIcon,
-  ReceiptTextIcon,
-  Building01Icon,
   Tag01Icon
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -11,14 +14,10 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { PageBackground } from '@/src/components/ui/PageBackground';
-import { SearchScreen } from '@/src/features/search/screens/SearchScreen';
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 const SEARCH_FEATURES = [
   { icon: ReceiptTextIcon, label: 'Full-text search across all transactions' },
-  { icon: Building01Icon, label: 'Find accounts by name instantly' },
+  { icon: BankIcon, label: 'Find accounts by name instantly' },
   { icon: Tag01Icon, label: 'Locate categories across your history' },
 ];
 
