@@ -3,8 +3,9 @@ import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
-import { BankIcon, PlusSignIcon } from '@hugeicons/core-free-icons';
+import { resolveAccountTypeIcon } from '@/src/utils/icons';
+import type { AccountType } from '@/src/types';
+import { PlusSignIcon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import type { Account } from '../../accounts/api/accounts';
@@ -46,7 +47,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
             <View style={styles.upper}>
               <View style={styles.topRow}>
                 <IconAvatar
-                  icon={resolveIcon(acc.icon, BankIcon)}
+                  icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)}
                   color={c}
                   variant="subtle"
                   size={34}

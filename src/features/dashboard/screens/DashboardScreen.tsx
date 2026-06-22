@@ -104,7 +104,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const topExpenseCategories = useMemo(() => topCategoriesData ?? [], [topCategoriesData]);
 
   const handleCurrencySelect = useCallback((c: string) => setSelectedCurrency(c), []);
-  const navigateToAccountTx = useCallback((id: number) => router.push(`/transactions?accountId=${id}`), [router]);
+  const navigateToAccountTx = useCallback((id: number) => router.push(`/(main)/accounts/${id}`), [router]);
 
   const navigateToTransactions = useCallback(() => router.push('/transactions'), [router]);
   const navigateToCreateTx = useCallback(() => router.push('/transactions/create'), [router]);

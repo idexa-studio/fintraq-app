@@ -10,6 +10,14 @@ export const useAccounts = () => {
   });
 };
 
+export const useAccount = (id: number | undefined) => {
+  return useQuery({
+    queryKey: id != null ? QUERY_KEYS.accounts.detail(id) : [...QUERY_KEYS.accounts.details(), 'disabled'],
+    queryFn: () => api.getAccountById(id as number),
+    enabled: id != null,
+  });
+};
+
 export const useCreateAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({

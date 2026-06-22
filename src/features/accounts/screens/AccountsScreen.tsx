@@ -66,7 +66,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   }, [selectedAccount, deleteAccount]);
 
   const handleCardPress = useCallback((accountId: number) => {
-    router.push(`/transactions?accountId=${accountId}`);
+    router.push(`/(main)/accounts/${accountId}`);
   }, [router]);
 
   const handleAdd = useCallback(() => {

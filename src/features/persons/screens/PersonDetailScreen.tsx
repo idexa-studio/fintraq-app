@@ -255,15 +255,15 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginRight: -spacing('2'),
+      gap: spacing('2'),
     },
     iconBtn: {
-      width: 40,
-      height: 40,
-      borderRadius: radius('full'),
+      width: layout.minTouchTarget,
+      height: layout.minTouchTarget,
+      borderRadius: radius('lg'),
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'transparent',
+      backgroundColor: colors.surface,
     },
 
     heroCard: {
