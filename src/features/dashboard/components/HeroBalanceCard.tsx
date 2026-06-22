@@ -96,8 +96,8 @@ const createStyles = ({ spacing, radius, layout, typography }: ThemeContextType,
       color: heroCard.textMuted,
     },
     balance: {
-      fontSize: 40,
-      lineHeight: 46,
+      fontSize: 37,
+      lineHeight: 42,
       color: heroCard.textPrimary,
     },
     stats: {
