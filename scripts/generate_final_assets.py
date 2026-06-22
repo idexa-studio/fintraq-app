@@ -1,6 +1,6 @@
 import os
 import subprocess
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 PROJECT_DIR = "/Users/ahmed/Documents/Projects/ReactNative/luno-react-native"
 ASSETS_DIR = os.path.join(PROJECT_DIR, "assets", "images")
@@ -31,6 +31,37 @@ COLOR_MAP = {
     # Adaptive backgrounds
     "#0B121E": "#0D1714",
 }
+
+def create_radial_glow(width, height, bg_color, glow_color, radius_ratio=0.5, intensity=0.75):
+    """Generates a smooth radial gradient/glow at the center of the canvas."""
+    mask_size = 256
+    mask = Image.new("L", (mask_size, mask_size))
+    center = mask_size / 2.0
+    max_dist = center * radius_ratio * 2.0
+    
+    pixels = mask.load()
+    for y in range(mask_size):
+        for x in range(mask_size):
+            dx = x - center
+            dy = y - center
+            dist = (dx*dx + dy*dy)**0.5
+            if dist < max_dist:
+                factor = (1.0 - dist / max_dist)
+                val = int(255 * (factor * factor) * intensity)
+                pixels[x, y] = val
+            else:
+                pixels[x, y] = 0
+                
+    try:
+        resampling = Image.Resampling.LANCZOS
+    except AttributeError:
+        resampling = Image.LANCZOS
+        
+    large_mask = mask.resize((width, height), resampling)
+    bg_img = Image.new("RGB", (width, height), bg_color)
+    glow_img = Image.new("RGB", (width, height), glow_color)
+    
+    return Image.composite(glow_img, bg_img, large_mask)
 
 def process_svg(filename):
     svg_path = os.path.join(BRAND_DIR, filename)
@@ -110,24 +141,68 @@ def main():
         "-o", os.path.join(ASSETS_DIR, "favicon.png")
     ], check=True)
     
-    # 6. splash.png (2048x2048 canvas with splash logo centered at 420x420)
+    # 6. splash.png (2048x2048 canvas with splash logo centered at 640x640 and typography)
     print("Processing splash-mark.svg -> temp_splash_mark.png -> splash.png")
     temp_splash_mark_svg = process_svg("splash-mark.svg")
     temp_splash_mark_png = os.path.join(TEMP_DIR, "splash-mark.png")
-    # Render splash mark to 420x420
+    # Render splash mark to 640x640 (larger to reduce padding)
     subprocess.run([
         "/opt/homebrew/bin/rsvg-convert",
-        "-w", "420",
-        "-h", "420",
+        "-w", "640",
+        "-h", "640",
         temp_splash_mark_svg,
         "-o", temp_splash_mark_png
     ], check=True)
     
-    # Paste splash mark centered on 2048x2048 transparent background
+    # Generate background with beautiful ambient radial glow (slightly wider radius)
+    splash_canvas = create_radial_glow(
+        2048, 2048, 
+        bg_color=(20, 20, 18), 
+        glow_color=(0, 61, 32), 
+        radius_ratio=0.65, 
+        intensity=0.75
+    ).convert("RGBA")
+    
+    # Paste splash mark centered (shifted up by 120px to balance with typography below)
     splash_mark_img = Image.open(temp_splash_mark_png)
-    splash_canvas = Image.new("RGBA", (2048, 2048), (0, 0, 0, 0))
-    offset = (2048 - 420) // 2
-    splash_canvas.paste(splash_mark_img, (offset, offset), splash_mark_img)
+    logo_w, logo_h = 640, 640
+    offset_x = (2048 - logo_w) // 2
+    offset_y = (2048 - logo_h) // 2 - 120
+    splash_canvas.paste(splash_mark_img, (offset_x, offset_y), splash_mark_img)
+    
+    # Draw typography (larger font to scale with the logo)
+    draw = ImageDraw.Draw(splash_canvas)
+    font_path = os.path.join(PROJECT_DIR, "assets", "fonts", "MuseoModerno", "MuseoModerno-Bold.ttf")
+    font_size = 130
+    
+    try:
+        font = ImageFont.truetype(font_path, font_size)
+    except IOError:
+        font = ImageFont.load_default()
+        print("Warning: MuseoModerno-Bold.ttf not found, using default font.")
+        
+    text_main = "Fintraq"
+    text_dot = "."
+    
+    # Calculate bounding boxes
+    try:
+        left_main, top_main, right_main, bottom_main = draw.textbbox((0, 0), text_main, font=font)
+        w_main = right_main - left_main
+        left_dot, top_dot, right_dot, bottom_dot = draw.textbbox((0, 0), text_dot, font=font)
+        w_dot = right_dot - left_dot
+    except AttributeError:
+        w_main, _ = draw.textsize(text_main, font=font)
+        w_dot, _ = draw.textsize(text_dot, font=font)
+        
+    text_w = w_main + w_dot
+    start_x = (2048 - text_w) // 2
+    text_y = 1380
+    
+    # Draw main text in off-white (#E8E7E1) and trailing dot in emerald (#00CC6A)
+    draw.text((start_x, text_y), text_main, font=font, fill=(232, 231, 225, 255))
+    draw.text((start_x + w_main, text_y), text_dot, font=font, fill=(0, 204, 106, 255))
+    
+    # Save splash screen
     splash_canvas.save(os.path.join(ASSETS_DIR, "splash.png"), "PNG")
     
     # Clean up temp directory
