@@ -1,7 +1,9 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CancelCircleIcon, CheckmarkCircle01Icon, Search01Icon, UserCircleIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useCallback, useMemo, useState } from 'react';
 import * as Haptics from 'expo-haptics';
 import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -18,14 +20,6 @@ type PersonPickerBottomSheetProps = {
 
 const ITEM_HEIGHT = 60;
 
-function PersonInitials({ name, color, size = 36 }: { name: string; color: string; size?: number }) {
-  const initials = name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
-  return (
-    <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: color, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ color: '#fff', fontWeight: '700', fontSize: size * 0.36 }}>{initials}</Text>
-    </View>
-  );
-}
 
 export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomSheet({
   visible,
@@ -75,9 +69,9 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
         style={[styles.row, selected && styles.rowSelected]}
         onPress={() => handleSelect(item.id)}
       >
-        <PersonInitials name={item.name} color={hex} size={36} />
+        <PersonAvatar name={item.name} color={hex} size={36} variant="solid" />
         <View style={styles.rowMeta}>
-          <Text style={[styles.rowName, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+          <Text style={[styles.rowName, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]} numberOfLines={1}>
             {item.name}
           </Text>
           {(item.designation || item.company) ? (
@@ -92,7 +86,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
         </View>
         {selected && (
           <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-            <MaterialCommunityIcons name="check" size={12} color={colors.background} />
+            <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.primaryForeground} />
           </View>
         )}
       </BentoPressable>
@@ -116,7 +110,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
         </View>
 
         <View style={styles.searchWrap}>
-          <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
+          <HugeiconsIcon icon={Search01Icon} size={18} color={colors.textMuted} />
           <TextInput
             style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
             value={query}
@@ -129,7 +123,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           />
           {query.length > 0 && (
             <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
+              <HugeiconsIcon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
             </BentoPressable>
           )}
         </View>
@@ -140,16 +134,16 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           onPress={() => handleSelect(null)}
         >
           <View style={styles.noneAvatar}>
-            <MaterialCommunityIcons name="account-outline" size={18} color={colors.textMuted} />
+            <HugeiconsIcon icon={UserCircleIcon} size={18} color={colors.textMuted} />
           </View>
           <View style={styles.rowMeta}>
-            <Text style={[styles.rowName, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+            <Text style={[styles.rowName, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.textMuted }]}>
               No person
             </Text>
           </View>
           {selectedId === null && (
             <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-              <MaterialCommunityIcons name="check" size={12} color={colors.background} />
+              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.primaryForeground} />
             </View>
           )}
         </BentoPressable>
@@ -174,7 +168,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, isDark, sizes }: ThemeContextType) =>
   StyleSheet.create({
     header: {
       flexDirection: 'row',
@@ -184,15 +178,15 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       paddingTop: spacing('4'),
       paddingBottom: spacing('2'),
     },
-    title: { fontSize: 22 },
+    title: { fontSize: typography.sizes.xl },
     searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',
       marginHorizontal: layout.screenPadding,
       marginBottom: spacing('2'),
-      height: 46,
-      borderRadius: radius('xl'),
-      backgroundColor: colors.background,
+      height: sizes.input.md.height,
+      borderRadius: radius('lg'),
+      backgroundColor: colors.card,
       paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
     },
@@ -212,14 +206,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       marginTop: spacing('2'),
       marginBottom: spacing('1'),
     },
-    rowSelected: { backgroundColor: isDark ? '#163228' : '#E6F4EA' },
+    rowSelected: { backgroundColor: colors.primaryLight },
     rowMeta: { flex: 1 },
-    rowName: { fontSize: 14 },
-    rowSub: { fontSize: 11, opacity: 0.65, marginTop: 2 },
+    rowName: { fontSize: typography.sizes.md },
+    rowSub: { fontSize: typography.sizes.xs, opacity: 0.65, marginTop: 2 },
     noneAvatar: {
       width: 36,
       height: 36,
-      borderRadius: 18,
+      borderRadius: Math.round(36 * 0.25),
       backgroundColor: colors.background,
       alignItems: 'center',
       justifyContent: 'center',

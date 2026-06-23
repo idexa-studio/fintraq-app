@@ -1,6 +1,6 @@
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { db } from '../../../db/client';
-import { accounts, payments } from '../../../db/schema';
+import { accounts, categories, payments } from '../../../db/schema';
 import { getDaysAgoLocal, getStartOfMonthLocal } from '../../../utils/date';
 import { formatCurrency } from '../../../utils/format';
 import { InsightStatus, InsightTrend, TransactionType } from '../../../types';
@@ -102,7 +102,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
           subtitle: dir
             ? `Your savings rate is ${dir} from last week. ${rate > 50 ? 'You\'re building a nice cushion.' : 'Keep at it — every bit counts.'}`
             : `Keeping things consistent. ${rate > 50 ? 'Your future self will thank you.' : 'Steady wins the race.'}`,
-          icon: 'wallet-outline',
+          icon: 'building',
         });
       }
     }
@@ -111,12 +111,13 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
     const rows = await db
       .select({
         categoryId: payments.categoryId,
-        name: sql<string>`(SELECT name FROM categories WHERE id = ${payments.categoryId})`,
+        name: categories.name,
         thisWeek: sql<number>`SUM(CASE WHEN date(${payments.datetime}) >= ${getDaysAgoLocal(7)} THEN ${payments.amount} ELSE 0 END)`,
         avgWeek: sql<number>`SUM(CASE WHEN date(${payments.datetime}) >= ${fourWeeksStart} AND date(${payments.datetime}) < ${getDaysAgoLocal(7)} THEN ${payments.amount} ELSE 0 END) / 3.0`,
       })
       .from(payments)
       .innerJoin(accounts, eq(payments.accountId, accounts.id))
+      .innerJoin(categories, eq(payments.categoryId, categories.id))
       .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR' as TransactionType), sql`date(${payments.datetime}) >= ${fourWeeksStart}`))
       .groupBy(payments.categoryId)
       .having(sql`SUM(CASE WHEN date(${payments.datetime}) >= ${getDaysAgoLocal(7)} THEN ${payments.amount} ELSE 0 END) > 0`)
@@ -173,7 +174,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
         valueType: 'text',
         text: '',
         subtitle: `${formatCurrency(thisWeek.income, currency)} in · ${formatCurrency(thisWeek.expense, currency)} out · ${formatCurrency(Math.abs(saved), currency)} ${saved >= 0 ? 'saved' : 'overspent'}${best}`,
-        icon: 'newspaper',
+        icon: 'receipt-text',
       });
     }
 

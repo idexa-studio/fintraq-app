@@ -1,7 +1,7 @@
 import { SQL, and, asc, count, desc, eq, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import { db } from '@/src/db/client';
-import { accounts, categories, payments } from '@/src/db/schema';
+import { accounts, categories, payments, persons } from '@/src/db/schema';
 import type { TransactionType } from '@/src/types';
 
 export type Payment = typeof payments.$inferSelect;
@@ -19,6 +19,8 @@ export type TransactionFilters = {
 };
 
 const toAccounts = alias(accounts, 'to_accounts');
+
+type AccountTypeValue = 'cash' | 'bank' | 'savings' | 'credit_card' | 'investment' | 'loan' | 'ewallet' | null;
 
 export type TransactionListItem = {
   id: number;
@@ -38,6 +40,7 @@ export type TransactionListItem = {
     currency: string;
     color: number;
     icon: string;
+    accountType: AccountTypeValue;
   };
   category: {
     id: number;
@@ -51,6 +54,17 @@ export type TransactionListItem = {
     currency: string | null;
     color: number | null;
     icon: string | null;
+    accountType: AccountTypeValue;
+  };
+};
+
+export type TransactionDetail = TransactionListItem & {
+  person: {
+    id: number | null;
+    name: string | null;
+    color: number | null;
+    designation: string | null;
+    company: string | null;
   };
 };
 
@@ -70,6 +84,7 @@ export const TRANSACTION_LIST_SELECT = {
     currency: accounts.currency,
     color: accounts.color,
     icon: accounts.icon,
+    accountType: accounts.accountType,
   },
   category: {
     id: categories.id,
@@ -83,6 +98,7 @@ export const TRANSACTION_LIST_SELECT = {
     currency: toAccounts.currency,
     color: toAccounts.color,
     icon: toAccounts.icon,
+    accountType: toAccounts.accountType,
   },
   createdAt: payments.createdAt,
   updatedAt: payments.updatedAt,
@@ -166,6 +182,29 @@ export const getTransactionById = async (id: number): Promise<Payment | null> =>
     .limit(1);
 
   return payment ?? null;
+};
+
+export const getTransactionDetailById = async (id: number): Promise<TransactionDetail | null> => {
+  const [row] = await db
+    .select({
+      ...TRANSACTION_LIST_SELECT,
+      person: {
+        id: persons.id,
+        name: persons.name,
+        color: persons.color,
+        designation: persons.designation,
+        company: persons.company,
+      },
+    })
+    .from(payments)
+    .innerJoin(accounts, eq(payments.accountId, accounts.id))
+    .innerJoin(categories, eq(payments.categoryId, categories.id))
+    .leftJoin(toAccounts, eq(payments.toAccountId, toAccounts.id))
+    .leftJoin(persons, eq(payments.personId, persons.id))
+    .where(eq(payments.id, id))
+    .limit(1);
+
+  return (row as TransactionDetail) ?? null;
 };
 
 // ─── Account balance helpers ──────────────────────────────────────────────────

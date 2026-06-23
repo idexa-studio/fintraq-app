@@ -1,13 +1,13 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import type { IconSvgElement } from '@hugeicons/react-native';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
-import { MaterialIconName } from '../../utils/icons';
 import { useTheme } from '../../providers/ThemeProvider';
 
 type IconAvatarVariant = 'solid' | 'subtle' | 'outline';
 
 type IconAvatarProps = {
-  icon: MaterialIconName;
+  icon: IconSvgElement;
   color: string;
   variant?: IconAvatarVariant;
   size?: number;
@@ -24,23 +24,48 @@ export const IconAvatar = React.memo(function IconAvatar({
   style,
 }: IconAvatarProps) {
   const { colors } = useTheme();
-  const resolved = iconSize ?? Math.round(size * 0.45);
 
-  const { bg, iconColor, border } = React.useMemo(() => {
+  const { bg, iconColor, border, resolvedIconSize, borderRadius } = React.useMemo(() => {
+    let bg: string;
+    let iconColor: string;
+    let border: { borderWidth: number; borderColor: string } | undefined;
+
     switch (variant) {
       case 'solid':
-        return { bg: color, iconColor: colors.background, border: undefined };
+        bg = color;
+        iconColor = colors.background;
+        border = undefined;
+        break;
       case 'outline':
-        return { bg: 'transparent', iconColor: color, border: { borderWidth: 1, borderColor: color } };
+        bg = 'transparent';
+        iconColor = color;
+        border = { borderWidth: 1, borderColor: color };
+        break;
       case 'subtle':
       default:
-        return { bg: color + '18', iconColor: color, border: undefined };
+        bg = color + '18';
+        iconColor = color;
+        border = undefined;
+        break;
     }
-  }, [variant, color, colors.background]);
+
+    return {
+      bg,
+      iconColor,
+      border,
+      resolvedIconSize: iconSize ?? Math.round(size * 0.45),
+      borderRadius: Math.round(size * 0.25),
+    };
+  }, [variant, color, colors.background, iconSize, size]);
+
+  const containerStyle = React.useMemo(
+    () => [styles.base, { width: size, height: size, borderRadius, backgroundColor: bg }, border, style],
+    [size, borderRadius, bg, border, style],
+  );
 
   return (
-    <View style={[styles.base, { width: size, height: size, borderRadius: size / 2, backgroundColor: bg }, border, style]}>
-      <MaterialCommunityIcons name={icon} size={resolved} color={iconColor} />
+    <View style={containerStyle}>
+      <HugeiconsIcon icon={icon} size={resolvedIconSize} color={iconColor} />
     </View>
   );
 });

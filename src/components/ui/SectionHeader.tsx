@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
@@ -28,7 +29,7 @@ export const SectionHeader = React.memo(function SectionHeader({
         onPressRight ? (
           <BentoPressable onPress={onPressRight} style={styles.rightBtn}>
             <Text style={styles.right}>{rightText}</Text>
-            <MaterialCommunityIcons name="chevron-right" size={14} color={colors.primary} />
+            <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primary} />
           </BentoPressable>
         ) : (
           <Text style={styles.right}>{rightText}</Text>
@@ -52,9 +53,10 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
       paddingHorizontal: 0,
     },
     title: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.text,
       fontSize: 12,
+      lineHeight: 18,
     },
     rightBtn: {
       flexDirection: 'row',
@@ -65,5 +67,6 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
       fontFamily: typography.fonts.medium,
       color: colors.primary,
       fontSize: 12,
+      lineHeight: 16,
     },
   });

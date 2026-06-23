@@ -1,13 +1,14 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Delete01Icon, FolderOpenIcon, PencilEdit01Icon, PlusSignIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, ListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
-import { OptionsBottomSheet } from '../../../components/ui/OptionsBottomSheet';
+import { OptionsDialog } from '../../../components/ui/OptionsDialog';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { Category } from '../api/categories';
 import { CategoryCard } from '../components/CategoryCard';
@@ -18,7 +19,8 @@ import { StorageKeys } from '../../../constants/keys';
 export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const theme = useTheme();
   const { colors } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const router = useRouter();
 
   const { data: categories, isLoading } = useCategories();
@@ -59,7 +61,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'edit-category',
         label: 'Edit category',
-        icon: 'pencil-outline' as const,
+        icon: PencilEdit01Icon,
         onPress: () => {
           setShowManageDialog(false);
           handleEdit(selectedCategory);
@@ -68,7 +70,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'delete-category',
         label: 'Delete category',
-        icon: 'trash-can-outline' as const,
+        icon: Delete01Icon,
         destructive: true,
         onPress: () => setShowDeleteDialog(true),
       },
@@ -127,14 +129,14 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     () => (
       <View style={styles.empty}>
         <View style={styles.emptyIcon}>
-          <MaterialCommunityIcons name="folder-open-outline" size={32} color={colors.textMuted} />
+          <HugeiconsIcon icon={FolderOpenIcon} size={32} color={colors.textMuted} />
         </View>
         <Text style={styles.emptyTitle}>No categories</Text>
         <Text style={styles.emptyText}>
           {`No ${activeType === 'DR' ? 'expense' : activeType === 'CR' ? 'income' : 'transfer'} categories yet.`}
         </Text>
         <BentoPressable style={styles.emptyBtn} onPress={handleCreate}>
-          <MaterialCommunityIcons name="plus" size={15} color={colors.background} />
+          <HugeiconsIcon icon={PlusSignIcon} size={15} color={colors.primaryForeground} />
           <Text style={styles.emptyBtnText}>Create one</Text>
         </BentoPressable>
       </View>
@@ -168,10 +170,10 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       )}
 
       <BentoPressable style={styles.fab} onPress={handleCreate}>
-        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
+        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
       </BentoPressable>
 
-      <OptionsBottomSheet
+      <OptionsDialog
         visible={showManageDialog}
         onClose={() => setShowManageDialog(false)}
         title="Manage category"
@@ -196,7 +198,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: ThemeContextType, insets: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -210,7 +212,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     /* ── Grid ── */
     grid: {
       paddingHorizontal: layout.screenPadding,
-      paddingBottom: 100,
+      paddingBottom: insets.bottom > 0 ? insets.bottom + 90 : 100,
       gap: spacing('3'),
     },
     row: {
@@ -224,11 +226,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     typeTabs: {
       flexDirection: 'row',
       gap: spacing('2'),
+      width: '100%',
     },
     typeTab: {
-      height: 34,
-      paddingHorizontal: spacing('4'),
+      flex: 1,
+      height: 36,
       borderRadius: radius('full'),
+      backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -236,8 +240,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.primary + '18',
     },
     typeTabText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 13,
+      fontFamily: typography.styles.chipLabel.fontFamily,
+      fontSize: typography.sizes.sm,
       color: colors.textMuted,
     },
     typeTabTextActive: {
@@ -260,13 +264,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: spacing('1'),
     },
     emptyTitle: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 17,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
+      fontSize: typography.sizes.xl,
       color: colors.text,
     },
     emptyText: {
       fontFamily: typography.fonts.regular,
-      fontSize: 13,
+      fontSize: typography.sizes.sm,
       color: colors.textMuted,
       textAlign: 'center',
       maxWidth: 220,
@@ -283,15 +287,15 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginTop: spacing('2'),
     },
     emptyBtnText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 13,
-      color: colors.background,
+      fontFamily: typography.styles.emptyAction.fontFamily,
+      fontSize: typography.sizes.sm,
+      color: colors.primaryForeground,
     },
 
     /* ── FAB ── */
     fab: {
       position: 'absolute',
-      bottom: 20,
+      bottom: insets.bottom > 0 ? insets.bottom + 16 : 16,
       right: 16,
       width: 56,
       height: 56,
@@ -299,5 +303,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
+      ...shadow('lg'),
     },
   });

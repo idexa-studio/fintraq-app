@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { StyleSheet, Text, View } from 'react-native';
@@ -52,13 +53,13 @@ export const ProfileStep = React.memo(function ProfileStep({ currency, onOpenCur
       )}
 
       <View style={styles.field}>
-        <Text style={[styles.label, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+        <Text style={[styles.label, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
           Default currency
         </Text>
         <BentoPressable style={styles.currencyRow} onPress={onOpenCurrencyPicker}>
-          <Text style={[styles.currencyCode, { fontFamily: typography.fonts.semibold, color: colors.primary }]}>{currency}</Text>
+          <Text style={[styles.currencyCode, { fontFamily: typography.styles.badge.fontFamily, color: colors.primary }]}>{currency}</Text>
           <Text style={[styles.currencyHint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>Tap to change</Text>
-          <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
+          <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
         </BentoPressable>
       </View>
     </View>
@@ -70,7 +71,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     wrapper: { gap: spacing('5') },
     hint: { fontSize: typography.sizes.xs, opacity: 0.6, paddingLeft: spacing('1') },
     field: { gap: spacing('2') },
-    label: { fontSize: typography.sizes.xs, opacity: 0.7 },
+    label: { fontSize: typography.sizes.xs, opacity: 0.6 },
     currencyRow: {
       flexDirection: 'row',
       alignItems: 'center',

@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AddCircleIcon, ArrowDataTransferHorizontalIcon, MinusSignCircleIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
@@ -37,8 +38,8 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           disabled={disabled}
         >
           <View style={styles.contentRow}>
-            <MaterialCommunityIcons
-              name="minus-circle-outline"
+            <HugeiconsIcon
+              icon={MinusSignCircleIcon}
               size={15}
               color={value === 'DR' ? colors.danger : colors.textMuted}
             />
@@ -58,8 +59,8 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           disabled={disabled}
         >
           <View style={styles.contentRow}>
-            <MaterialCommunityIcons
-              name="plus-circle-outline"
+            <HugeiconsIcon
+              icon={AddCircleIcon}
               size={15}
               color={value === 'CR' ? colors.success : colors.textMuted}
             />
@@ -79,8 +80,8 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           disabled={disabled}
         >
           <View style={styles.contentRow}>
-            <MaterialCommunityIcons
-              name="swap-horizontal"
+            <HugeiconsIcon
+              icon={ArrowDataTransferHorizontalIcon}
               size={15}
               color={value === 'TR' ? colors.primary : colors.textMuted}
             />
@@ -129,7 +130,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       display: 'none',
     },
     pillText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 13,
+      fontFamily: typography.styles.chipLabel.fontFamily,
+      fontSize: typography.sizes.sm,
     },
   });

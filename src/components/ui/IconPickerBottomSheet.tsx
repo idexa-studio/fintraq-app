@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { GridIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo } from 'react';
 import {
@@ -61,11 +62,11 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
           {value ? (
-            <View style={styles.headerIconContainer}>
-              <MaterialCommunityIcons
-                name={resolveIcon(value, 'grid')}
+            <View style={[styles.headerIconContainer, { backgroundColor: accent + '18' }]}>
+              <HugeiconsIcon
+                icon={resolveIcon(value, GridIcon)}
                 size={20}
-                color={colors.primary}
+                color={accent}
               />
             </View>
           ) : null}
@@ -91,15 +92,17 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                       key={icon}
                       style={[
                         styles.iconCell,
-                        { backgroundColor: selected ? (theme.isDark ? '#163228' : '#E6F4EA') : colors.background }
+                        selected
+                          ? { backgroundColor: accent + '18', borderColor: accent + '40', borderWidth: 1 }
+                          : { backgroundColor: colors.surface, borderColor: 'transparent', borderWidth: 1 },
                       ]}
                       onPress={() => handleSelect(icon)}
                       scaleOnPress={true}
                     >
-                      <MaterialCommunityIcons
-                        name={resolveIcon(icon, 'grid')}
+                      <HugeiconsIcon
+                        icon={resolveIcon(icon, GridIcon)}
                         size={20}
-                        color={selected ? accent : colors.text}
+                        color={selected ? accent : colors.textMuted}
                       />
                     </BentoPressable>
                   );
@@ -125,14 +128,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 22,
+      fontSize: typography.sizes.xl,
       color: colors.text,
     },
     headerIconContainer: {
-      width: 32,
-      height: 32,
-      borderRadius: radius('md'),
-      backgroundColor: colors.primary + '12',
+      width: 36,
+      height: 36,
+      borderRadius: radius('xl'),
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -145,8 +147,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('2'),
     },
     groupLabel: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 12,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
       paddingLeft: spacing('1'),
       opacity: 0.7,
@@ -159,7 +161,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     iconCell: {
       width: CELL_SIZE,
       height: CELL_SIZE,
-      borderRadius: radius('md'),
+      borderRadius: radius('lg'),
       justifyContent: 'center',
       alignItems: 'center',
     },

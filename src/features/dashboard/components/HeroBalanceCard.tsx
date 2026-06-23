@@ -1,29 +1,31 @@
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { StreakBadge } from '@/src/features/reports/components/StreakBadge';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { CurrencyPickerTab } from './CurrencyPickerTab';
 
 type Props = {
   balance: number;
   currency: string;
   income: number;
   expense: number;
+  currencies?: string[];
+  onCurrencySelect?: (currency: string) => void;
 };
 
-export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, income, expense }: Props) {
+export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, income, expense, currencies, onCurrencySelect }: Props) {
   const theme = useTheme();
-  const { typography, heroCard } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { heroCard } = theme;
+  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
 
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Text style={[styles.label, { fontFamily: typography.fonts.medium }]}>
-          Total balance
-        </Text>
-        <StreakBadge />
+        <Text style={styles.label}>Your balance</Text>
+        <StreakBadge heroCard={heroCard} />
       </View>
 
       <MoneyText
@@ -36,7 +38,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
       <View style={styles.stats}>
         <View style={styles.statContainer}>
           <View style={styles.statHeader}>
-            <MaterialCommunityIcons name="arrow-up" size={14} color={heroCard.income} />
+            <HugeiconsIcon icon={ArrowUp01Icon} size={14} color={heroCard.income} />
             <Text style={styles.statLabel}>Income</Text>
           </View>
           <MoneyText
@@ -44,13 +46,13 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
             currency={currency}
             type="CR"
             weight="semibold"
-            style={[styles.statValue, { color: heroCard.income }]}
+            style={styles.statValue}
           />
         </View>
 
         <View style={styles.statContainer}>
           <View style={styles.statHeader}>
-            <MaterialCommunityIcons name="arrow-down" size={14} color={heroCard.expense} />
+            <HugeiconsIcon icon={ArrowDown01Icon} size={14} color={heroCard.expense} />
             <Text style={styles.statLabel}>Expenses</Text>
           </View>
           <MoneyText
@@ -58,51 +60,60 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
             currency={currency}
             type="DR"
             weight="semibold"
-            style={[styles.statValue, { color: heroCard.expense }]}
+            style={styles.statValue}
           />
         </View>
       </View>
+
+      <CurrencyPickerTab
+        currencies={currencies || []}
+        selectedCurrency={currency}
+        onCurrencySelect={onCurrencySelect}
+        heroCard={heroCard}
+      />
     </View>
   );
 });
 
-const createStyles = ({ heroCard, spacing, radius, layout, typography }: ThemeContextType) =>
+const createStyles = ({ spacing, radius, layout, typography }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
     card: {
-      marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('2'),
-      borderRadius: radius('2xl'),
       backgroundColor: heroCard.background,
+      marginHorizontal: layout.screenPadding,
+      borderRadius: radius('2xl'),
       padding: spacing('5'),
-      gap: spacing('5'),
-      overflow: 'hidden',
+      paddingBottom: spacing('5'),
     },
     header: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
+      marginBottom: spacing('1'),
     },
     label: {
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
+      fontFamily: typography.fonts.medium,
       color: heroCard.textMuted,
     },
     balance: {
-      fontSize: 40,
-      lineHeight: 46,
+      fontSize: 37,
+      lineHeight: 42,
       color: heroCard.textPrimary,
     },
     stats: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
+      marginTop: spacing('4'),
+      marginBottom: spacing('1'),
     },
     statContainer: {
       flex: 1,
-      backgroundColor: 'rgba(255, 255, 255, 0.045)',
-      paddingVertical: spacing('2.5'),
-      paddingHorizontal: spacing('3.5'),
+      backgroundColor: heroCard.separator,
+      paddingVertical: spacing('2'),
+      paddingHorizontal: spacing('3'),
       borderRadius: radius('lg'),
-      gap: spacing('1'),
+      gap: spacing('0.5'),
     },
     statHeader: {
       flexDirection: 'row',
@@ -110,12 +121,13 @@ const createStyles = ({ heroCard, spacing, radius, layout, typography }: ThemeCo
       gap: spacing('1'),
     },
     statLabel: {
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
       fontFamily: typography.fonts.regular,
       color: heroCard.textMuted,
     },
     statValue: {
-      fontSize: 15,
+      fontSize: typography.sizes.md,
       lineHeight: 18,
+      color: heroCard.textPrimary,
     },
   });

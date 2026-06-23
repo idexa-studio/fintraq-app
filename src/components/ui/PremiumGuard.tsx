@@ -1,5 +1,6 @@
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { LockPasswordIcon, SparklesIcon, ArrowRight01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
@@ -17,7 +18,7 @@ interface PremiumGuardProps {
  * PremiumGuard - Editorial Bento & MD3 Locked Card Design
  * 
  * Sizes:
- * - small: 56px min height, 12px padding, 12px radius (md)
+ * - small: 56px min height, 12px padding, 8px radius (squircle)
  * - medium: 76px min height, 16px padding, 16px radius (lg)
  * - large: 90px min height, 20px padding, 20px radius (xl)
  */
@@ -29,7 +30,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
 }: PremiumGuardProps) {
   const { isPremium } = usePremium();
   const theme = useTheme();
-  const { colors, spacing, radius, layout } = theme;
+  const { colors, spacing, radius } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
 
@@ -43,33 +44,29 @@ export const PremiumGuard = React.memo(function PremiumGuard({
     
     const padding = small ? spacing('3') : medium ? spacing('4') : spacing('5');
     const borderRadius = small ? radius('md') : medium ? radius('lg') : radius('xl');
-    const minHeight = small ? 56 : medium ? 76 : 90;
     
     return {
       isSmall: small,
       containerStyles: [
         styles.container,
         { 
-          backgroundColor: colors.surface, 
           padding,
           borderRadius,
-          minHeight,
-          marginHorizontal: layout.screenPadding, // Default margin to align with bento layout
         },
         containerStyle
       ],
       iconBoxStyles: [
         styles.iconBox,
         { 
-          backgroundColor: colors.primary + '12', 
-          width: small ? 32 : 44,
-          height: small ? 32 : 44,
-          borderRadius: radius('full'),
+          backgroundColor: colors.primaryLight, 
+          width: small ? 32 : 40,
+          height: small ? 32 : 40,
+          borderRadius: small ? 8 : 10, // iOS Squircle: Math.round(size * 0.25)
         },
       ],
-      iconSize: small ? 14 : 18,
+      iconSize: small ? 14 : 16,
     };
-  }, [size, colors.surface, colors.primary, layout.screenPadding, containerStyle, styles, spacing, radius]);
+  }, [size, colors.primaryLight, containerStyle, styles, spacing, radius]);
 
   if (isPremium) {
     return <>{children}</>;
@@ -80,20 +77,10 @@ export const PremiumGuard = React.memo(function PremiumGuard({
       onPress={handlePress}
       style={containerStyles}
     >
-      {/* Background Accent & Watermark */}
-      <View style={styles.accentOverlay} />
-      <MaterialCommunityIcons
-        name="creation"
-        size={isSmall ? 60 : 120}
-        color={colors.primary}
-        style={styles.watermark}
-        pointerEvents="none"
-      />
-
       <View style={styles.content}>
         <View style={styles.headerRow}>
           <View style={iconBoxStyles}>
-            <MaterialCommunityIcons name="lock-outline" size={iconSize} color={colors.primary} />
+            <HugeiconsIcon icon={LockPasswordIcon} size={iconSize} color={colors.primary} />
           </View>
 
           <View style={styles.textDetails}>
@@ -101,11 +88,18 @@ export const PremiumGuard = React.memo(function PremiumGuard({
               {label}
             </Text>
             {!isSmall && (
-              <Text style={styles.subtitle}>
-                Unlock with Keeep Pro
-              </Text>
+              <View style={styles.ctaRow}>
+                <Text style={styles.subtitle}>
+                  Unlock with Fintraq Pro
+                </Text>
+                <HugeiconsIcon icon={SparklesIcon} size={10} color={colors.warning} />
+              </View>
             )}
           </View>
+
+          {!isSmall && (
+            <HugeiconsIcon icon={ArrowRight01Icon} size={16} color={colors.textMuted} />
+          )}
         </View>
       </View>
     </BentoPressable>
@@ -117,22 +111,13 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
     overflow: 'hidden',
     justifyContent: 'center',
     borderWidth: 0,
-  },
-  accentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.primary,
-    opacity: 0.02,
-  },
-  watermark: {
-    position: 'absolute',
-    right: -spacing('5'),
-    bottom: -spacing('8'),
-    opacity: 0.05,
-    transform: [{ rotate: '-15deg' }],
+    backgroundColor: colors.surface,
+    alignSelf: 'stretch',
   },
   content: {
     flex: 1,
     justifyContent: 'center',
+    zIndex: 1,
   },
   headerRow: {
     flexDirection: 'row',
@@ -148,18 +133,25 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
     flex: 1,
   },
   title: {
-    fontFamily: typography.fonts.bold,
-    fontSize: 14,
+    fontFamily: typography.styles.cardTitle.fontFamily,
+    fontSize: typography.sizes.md,
+    lineHeight: 18,
     color: colors.text,
-    marginBottom: spacing('1'),
   },
   titleSmall: {
-    fontSize: 11,
+    fontSize: typography.sizes.xs,
     marginBottom: 0,
   },
+  ctaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing('1'),
+    marginTop: spacing('0.5'),
+  },
   subtitle: {
-    fontFamily: typography.fonts.regular,
-    fontSize: 12,
-    color: colors.textMuted,
+    fontFamily: typography.styles.badge.fontFamily,
+    fontSize: typography.sizes.xs,
+    lineHeight: 14,
+    color: colors.primary,
   },
 });

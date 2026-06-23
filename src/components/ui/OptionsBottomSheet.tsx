@@ -1,4 +1,6 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CheckIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSvgElement } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -6,12 +8,10 @@ import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
 import { BentoBottomSheet } from './BottomSheet';
 
-type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
-
 export type OptionsBottomSheetOption = {
   key: string;
   label: string;
-  icon?: IconName;
+  icon?: IconSvgElement;
   selected?: boolean;
   destructive?: boolean;
   closeOnPress?: boolean;
@@ -69,8 +69,8 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
                 scaleOnPress={false}
               >
                 {opt.icon ? (
-                  <MaterialCommunityIcons
-                    name={opt.icon}
+                  <HugeiconsIcon
+                    icon={opt.icon}
                     size={22}
                     color={selected ? colors.primary : opt.destructive ? colors.danger : colors.text}
                   />
@@ -78,14 +78,14 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
                 <Text
                   style={[
                     styles.optLabel,
-                    selected && { fontFamily: typography.fonts.semibold, color: colors.primary },
+                    selected && { fontFamily: typography.styles.chipLabelActive.fontFamily, color: colors.primary },
                     opt.destructive && { color: colors.danger },
                   ]}
                 >
                   {opt.label}
                 </Text>
                 {selected ? (
-                  <MaterialCommunityIcons name="check" size={18} color={colors.primary} />
+                  <HugeiconsIcon icon={CheckIcon} size={18} color={colors.primary} />
                 ) : null}
               </BentoPressable>
             );
@@ -100,7 +100,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
   StyleSheet.create({
     content: {
       paddingBottom: spacing("3"),
-
     },
     head: {
       paddingHorizontal: layout.screenPadding,
@@ -109,7 +108,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 22,
+      fontSize: typography.sizes.xl,
       color: colors.text,
     },
     subtitle: {
@@ -130,7 +129,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       gap: spacing('3'),
     },
     optSelected: {
-      backgroundColor: isDark ? '#163228' : '#E6F4EA',
+      backgroundColor: colors.primaryLight,
     },
     optLabel: {
       flex: 1,

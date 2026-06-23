@@ -6,6 +6,7 @@ import { MoneyText } from '../../../components/ui/MoneyText';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
+import { Tag01Icon } from '@hugeicons/core-free-icons';
 import type { CategoryBreakdown } from '../api/analytics';
 
 type Props = {
@@ -79,7 +80,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
           ))}
         </Svg>
         <View style={styles.center}>
-          <Text style={[styles.centerLabel, { color: colors.textMuted, fontFamily: typography.fonts.semibold }]}>
+          <Text style={[styles.centerLabel, { color: colors.textMuted, fontFamily: typography.styles.sectionLabel.fontFamily }]}>
             Total
           </Text>
           <MoneyText amount={total} currency={currency} type="DR" weight="bold" compact style={styles.centerAmt} />
@@ -92,7 +93,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
         return (
           <View key={d.id} style={[styles.legendRow, i === data.length - 1 && styles.legendRowLast]}>
             <IconAvatar
-              icon={resolveIcon(d.icon, 'tag-outline')}
+              icon={resolveIcon(d.icon, Tag01Icon)}
               color={hex} variant="solid"
               size={32}
               iconSize={15}
@@ -137,7 +138,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     },
     legendRowLast: { borderBottomWidth: 0 },
     legendInfo: { flex: 1, gap: spacing('1') },
-    legendName: { fontFamily: typography.fonts.semibold, fontSize: 13 },
+    legendName: { fontFamily: typography.styles.rowLabel.fontFamily, fontSize: 13 },
     barTrack: { height: 3, borderRadius: 2, overflow: 'hidden' },
     barFill: { height: 3, borderRadius: 2 },
     legendRight: { alignItems: 'flex-end', gap: 2 },

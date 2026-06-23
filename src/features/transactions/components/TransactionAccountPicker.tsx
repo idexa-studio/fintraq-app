@@ -1,10 +1,12 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
-import { resolveIcon } from '../../../utils/icons';
+import { resolveAccountTypeIcon } from '../../../utils/icons';
+import type { AccountType } from '../../../types';
 import type { Account } from '../../accounts/api/accounts';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
 
@@ -45,7 +47,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               overflow="visible"
             >
               <IconAvatar
-                icon={resolveIcon(acc.icon, 'wallet-outline')}
+                icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)}
                 color={accColor}
                 variant="solid"
                 size={32}
@@ -57,7 +59,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               </View>
               {selected && (
                 <View style={[styles.check, { backgroundColor: accColor, borderColor: colors.background }]}>
-                  <MaterialCommunityIcons name="check" size={12} color={colors.background} />
+                  <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.background} />
                 </View>
               )}
             </BentoPressable>
@@ -73,10 +75,11 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
     paddingVertical: spacing('3'),
   },
   label: {
-    fontFamily: typography.fonts.semibold,
+    fontFamily: typography.styles.sectionLabel.fontFamily,
     fontSize: typography.sizes.xs,
     marginBottom: spacing('3'),
     paddingHorizontal: layout.screenPadding,
+    opacity: 0.6,
   },
   scrollContent: {
     paddingHorizontal: layout.screenPadding,
@@ -96,12 +99,12 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
     flex: 1,
   },
   name: {
-    fontFamily: typography.fonts.semibold,
-    fontSize: 14,
+    fontFamily: typography.styles.rowLabel.fontFamily,
+    fontSize: typography.sizes.md,
   },
   currency: {
     fontFamily: typography.fonts.medium,
-    fontSize: 11,
+    fontSize: typography.sizes.xs,
   },
   check: {
     position: 'absolute',

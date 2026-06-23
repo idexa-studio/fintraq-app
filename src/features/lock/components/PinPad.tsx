@@ -67,7 +67,7 @@ export const PinPad = React.memo(function PinPad({
                   Del
                 </Text>
               ) : (
-                <Text style={[styles.keyText, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                <Text style={[styles.keyText, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
                   {key}
                 </Text>
               )}

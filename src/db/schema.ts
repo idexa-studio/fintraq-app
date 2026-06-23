@@ -20,7 +20,10 @@ export const accounts = sqliteTable('accounts', {
   name: text('name').notNull(),
   holderName: text('holderName').notNull(),
   accountNumber: text('accountNumber').notNull(),
-  icon: text('icon').notNull().default('wallet'),
+  icon: text('icon').notNull().default('building'),
+  accountType: text('account_type', {
+    enum: ['cash', 'bank', 'savings', 'credit_card', 'investment', 'loan', 'ewallet'],
+  }).default('bank'),
   color: integer('color').notNull(),
   isDefault: integer('isDefault', { mode: 'boolean' }).notNull().default(false),
   currency: text('currency').notNull().default('USD'),
@@ -67,6 +70,8 @@ export const payments = sqliteTable('payments', {
   index('payments_to_account_id_idx').on(table.toAccountId),
   index('payments_person_id_idx').on(table.personId),
   index('payments_datetime_idx').on(table.datetime),
+  index('payments_type_idx').on(table.type),
+  index('payments_account_datetime_idx').on(table.accountId, table.datetime),
 ]);
 
 export const personsRelations = relations(persons, ({ many }) => ({

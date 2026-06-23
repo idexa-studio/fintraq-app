@@ -4,24 +4,33 @@ import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
-import { OptionsBottomSheet, OptionsBottomSheetOption } from '@/src/components/ui/OptionsBottomSheet';
+import { OptionsDialog, OptionsDialogOption } from '@/src/components/ui/OptionsDialog';
 import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/accounts';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { resolveAccountTypeIcon } from '@/src/utils/icons';
+import {
+  ArrowDown01Icon,
+  ArrowUp01Icon,
+  Delete01Icon,
+  MoreVerticalCircle01Icon,
+  PencilEdit01Icon,
+  PlusSignIcon,
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import { WalkthroughOverlay, ACCOUNTS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { StorageKeys } from '@/src/constants/keys';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Account } from '../api/accounts';
 
 export const AccountsScreen = React.memo(function AccountsScreen() {
   const theme = useTheme();
-  const { colors, typography } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { colors } = theme;
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
 
   const { data: accounts } = useAccounts();
   const deleteAccount = useDeleteAccount();
@@ -57,18 +66,18 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   }, [selectedAccount, deleteAccount]);
 
   const handleCardPress = useCallback((accountId: number) => {
-    router.push(`/transactions?accountId=${accountId}`);
+    router.push(`/(main)/accounts/${accountId}`);
   }, [router]);
 
   const handleAdd = useCallback(() => {
     router.push('/(main)/accounts/form');
   }, [router]);
 
-  const accountOptions = useMemo((): OptionsBottomSheetOption[] => {
+  const accountOptions = useMemo((): OptionsDialogOption[] => {
     if (!selectedAccount) return [];
     return [
-      { key: 'edit', label: 'Edit', icon: 'pencil-outline', onPress: handleEdit },
-      { key: 'delete', label: 'Delete', icon: 'trash-can-outline', destructive: true, onPress: handleDeletePress },
+      { key: 'edit', label: 'Edit', icon: PencilEdit01Icon, onPress: handleEdit },
+      { key: 'delete', label: 'Delete', icon: Delete01Icon, destructive: true, onPress: handleDeletePress },
     ];
   }, [selectedAccount, handleEdit, handleDeletePress]);
 
@@ -81,70 +90,92 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {accounts?.map((account) => {
           const accColor = colorNumberToHex(account.color);
+          const hasAccountNumber = account.accountNumber && account.accountNumber !== 'N/A';
           return (
             <BentoPressable
               key={account.id}
               style={styles.card}
               onPress={() => handleCardPress(account.id)}
             >
+              {/* ── Card top row: avatar + name + currency + menu ── */}
               <View style={styles.cardTop}>
                 <View style={styles.cardLead}>
                   <IconAvatar
-                    icon={resolveIcon(account.icon, 'wallet-outline')}
-                    color={accColor} variant="subtle"
-                    size={36}
-                    iconSize={16}
+                    icon={resolveAccountTypeIcon(account.accountType)}
+                    color={accColor}
+                    variant="subtle"
+                    size={44}
+                    iconSize={20}
                   />
                   <View style={styles.cardMeta}>
                     <Text style={styles.cardName} numberOfLines={1}>
                       {account.name}
                     </Text>
-                    <Text style={styles.cardHint}>
-                      {account.accountNumber && account.accountNumber !== 'N/A'
-                        ? `•••• ${account.accountNumber.slice(-4)}`
-                        : 'Tap to view activity'}
-                    </Text>
+                    {hasAccountNumber ? (
+                      <Text style={styles.cardHint}>
+                        {'•••• ' + account.accountNumber!.slice(-4)}
+                      </Text>
+                    ) : null}
                   </View>
                 </View>
 
                 <View style={styles.cardTopRight}>
-                  <View style={[styles.currencyBadge, { backgroundColor: accColor + '12' }]}>
-                    <Text style={[styles.currencyText, { color: accColor }]}>
-                      {account.currency}
-                    </Text>
+                  <View style={[styles.currencyBadge, { backgroundColor: colors.background }]}>
+                    <Text style={styles.currencyText}>{account.currency}</Text>
                   </View>
                   <BentoPressable
                     onPress={() => handleMenuOpen(account)}
                     style={styles.iconBtn}
                   >
-                    <MaterialCommunityIcons name="dots-vertical" size={18} color={colors.textMuted} />
+                    <HugeiconsIcon icon={MoreVerticalCircle01Icon} size={20} color={colors.textMuted} />
                   </BentoPressable>
                 </View>
               </View>
 
-              <Text style={styles.balanceLabel}>
-                Available
-              </Text>
-              <MoneyText
-                amount={account.balance}
-                currency={account.currency}
-                weight="bold"
-                style={styles.cardBalance}
-              />
+              {/* ── Balance section ── */}
+              <View style={styles.balanceSection}>
+                <Text style={styles.balanceLabel}>Available balance</Text>
+                <MoneyText
+                  amount={account.balance}
+                  currency={account.currency}
+                  weight="bold"
+                  style={styles.cardBalance}
+                />
+              </View>
 
-              <View style={styles.cardStats}>
-                <View style={styles.statCol}>
-                  <Text style={styles.statLabel}>
-                    Total in
-                  </Text>
-                  <MoneyText amount={account.income} currency={account.currency} type="CR" compact style={styles.statValue} />
+              {/* ── Divider ── */}
+              <View style={styles.divider} />
+
+              {/* ── Stats row ── */}
+              <View style={styles.statsRow}>
+                <View style={styles.statCell}>
+                  <View style={styles.statLabelRow}>
+                    <HugeiconsIcon icon={ArrowUp01Icon} size={12} color={colors.success} />
+                    <Text style={styles.statLabel}>Total in</Text>
+                  </View>
+                  <MoneyText
+                    amount={account.income}
+                    currency={account.currency}
+                    type="CR"
+                    compact
+                    style={[styles.statValue, { color: colors.success }]}
+                  />
                 </View>
+
                 <View style={styles.statDivider} />
-                <View style={styles.statCol}>
-                  <Text style={styles.statLabel}>
-                    Total out
-                  </Text>
-                  <MoneyText amount={account.expense} currency={account.currency} type="DR" compact style={styles.statValue} />
+
+                <View style={styles.statCell}>
+                  <View style={styles.statLabelRow}>
+                    <HugeiconsIcon icon={ArrowDown01Icon} size={12} color={colors.danger} />
+                    <Text style={styles.statLabel}>Total out</Text>
+                  </View>
+                  <MoneyText
+                    amount={account.expense}
+                    currency={account.currency}
+                    type="DR"
+                    compact
+                    style={[styles.statValue, { color: colors.danger }]}
+                  />
                 </View>
               </View>
             </BentoPressable>
@@ -153,19 +184,16 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
 
         {accounts && accounts.length === 0 ? (
           <View style={styles.empty}>
-            <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              No accounts yet
-            </Text>
+            <Text style={styles.emptyText}>No accounts yet</Text>
           </View>
         ) : null}
-
       </ScrollView>
 
       <BentoPressable style={styles.fab} onPress={handleAdd}>
-        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
+        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
       </BentoPressable>
 
-      <OptionsBottomSheet
+      <OptionsDialog
         visible={showOptions}
         onClose={closeOptions}
         title={selectedAccount?.name ?? 'Account'}
@@ -186,26 +214,26 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: ThemeContextType, insets: { bottom: number }) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background },
+    container: { flex: 1 },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
-      paddingBottom: 100,
+      paddingBottom: insets.bottom > 0 ? insets.bottom + 80 + 24 : 110,
     },
 
+    /* ── Account card ── */
     card: {
       backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('4'),
-      marginBottom: spacing('3'),
-      gap: spacing('3'),
+      borderRadius: radius('2xl'),
+      padding: spacing('5'),
+      marginBottom: spacing('4'),
     },
     cardTop: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      alignItems: 'flex-start',
+      alignItems: 'center',
     },
     cardLead: {
       flexDirection: 'row',
@@ -218,7 +246,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       gap: spacing('0.5'),
     },
     cardName: {
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       color: colors.text,
       fontSize: typography.sizes.md,
     },
@@ -226,12 +254,11 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       fontFamily: typography.fonts.regular,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
-      opacity: 0.65,
     },
     cardTopRight: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('2.5'),
+      gap: spacing('2'),
       marginLeft: spacing('2'),
     },
     iconBtn: {
@@ -240,66 +267,95 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'transparent',
-      marginRight: -spacing('1.5'),
+      marginRight: -spacing('1'),
     },
     currencyBadge: {
-      paddingHorizontal: spacing('2.5'),
-      paddingVertical: spacing('0.5'),
+      paddingHorizontal: spacing('3'),
+      paddingVertical: spacing('1'),
       borderRadius: radius('full'),
     },
     currencyText: {
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+    },
+
+    /* ── Balance ── */
+    balanceSection: {
+      marginTop: spacing('4'),
+      gap: spacing('1'),
     },
     balanceLabel: {
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.fonts.regular,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
     },
     cardBalance: {
-      fontSize: 26,
+      fontSize: typography.sizes.xxxl,
+      lineHeight: 34,
     },
-    cardStats: {
+
+    /* ── Divider ── */
+    divider: {
+      height: 1,
+      backgroundColor: colors.text + '0C',
+      marginTop: spacing('4'),
+      marginBottom: spacing('3'),
+    },
+
+    /* ── Stats ── */
+    statsRow: {
       flexDirection: 'row',
-      gap: spacing('3'),
+      alignItems: 'center',
     },
-    statCol: {
+    statCell: {
       flex: 1,
       gap: spacing('1'),
     },
     statDivider: {
       width: 1,
+      height: 32,
       backgroundColor: colors.text + '0C',
+      marginHorizontal: spacing('4'),
+    },
+    statLabelRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1'),
     },
     statLabel: {
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.fonts.regular,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
     },
     statValue: {
-      fontSize: 14,
+      fontSize: typography.sizes.md,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
     },
 
+    /* ── FAB ── */
     fab: {
       position: 'absolute',
-      bottom: 20,
+      bottom: insets.bottom > 0 ? insets.bottom + 8 + 60 + 16 : 16 + 60 + 16,
       right: 16,
       width: 56,
       height: 56,
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
+      ...shadow('lg'),
     },
 
+    /* ── Empty state ── */
     empty: {
       alignItems: 'center',
       paddingVertical: spacing('9'),
     },
     emptyText: {
+      fontFamily: typography.fonts.regular,
       fontSize: typography.sizes.sm,
-      opacity: 0.4,
+      color: colors.textMuted,
+      opacity: 0.5,
     },
   });
-

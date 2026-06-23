@@ -1,5 +1,5 @@
 /**
- * Core Type Definitions for Keeep
+ * Core Type Definitions for Fintraq
  * Centralizing types ensures consistency across DB, API, and UI layers.
  */
 
@@ -25,3 +25,16 @@ export type InsightStatus = 'success' | 'danger' | 'info' | 'warning';
  * InsightTrend: Indicates the direction of a metric change.
  */
 export type InsightTrend = 'up' | 'down' | 'neutral';
+
+/**
+ * AccountType: Classifies what kind of financial account this is.
+ * Determines the icon shown across the app — no custom icon picker needed.
+ */
+export type AccountType =
+  | 'cash'
+  | 'bank'
+  | 'savings'
+  | 'credit_card'
+  | 'investment'
+  | 'loan'
+  | 'ewallet';

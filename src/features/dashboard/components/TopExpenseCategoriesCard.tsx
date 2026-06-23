@@ -1,7 +1,7 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { PieChart01Icon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
@@ -25,20 +25,20 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
   categories,
 }: Props) {
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const items = categories.slice(0, 6);
 
-  const maxAmount = useMemo(() => {
-    return items.reduce((max, cat) => Math.max(max, cat.amount), 0);
-  }, [items]);
+  const totalAmount = useMemo(() => {
+    return categories.reduce((sum, cat) => sum + cat.amount, 0);
+  }, [categories]);
 
   if (items.length === 0) {
     return (
       <View style={styles.empty}>
         <View style={styles.emptyIconWrapper}>
-          <MaterialCommunityIcons name="chart-pie" size={18} color={colors.primary} />
+          <HugeiconsIcon icon={PieChart01Icon} size={18} color={colors.primary} />
         </View>
         <View style={styles.emptyContent}>
           <Text style={styles.emptyTitle}>No expenses yet</Text>
@@ -52,7 +52,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
     <View style={styles.grid}>
       {items.map((cat, index) => {
         const accent = colorNumberToHex(cat.color);
-        const ratio = maxAmount > 0 ? cat.amount / maxAmount : 0;
+        const pct = totalAmount > 0 ? Math.round((cat.amount / totalAmount) * 100) : 0;
 
         const marginRight = index % 2 === 0 ? theme.spacing('1.5') : 0;
         const marginLeft = index % 2 === 1 ? theme.spacing('1.5') : 0;
@@ -61,41 +61,26 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
           <View key={cat.name} style={styles.itemContainer}>
             <View style={[styles.tile, { marginRight, marginLeft }]}>
               <View style={styles.contentRow}>
-                <View style={styles.avatarWrapper}>
-                  <Svg width={40} height={40} style={styles.svg}>
-                    <Circle
-                      cx={20}
-                      cy={20}
-                      r={16.5}
-                      stroke={colors.text + '08'}
-                      strokeWidth={2.5}
-                      fill="none"
-                    />
-                    <Circle
-                      cx={20}
-                      cy={20}
-                      r={16.5}
-                      stroke={accent}
-                      strokeWidth={2.5}
-                      strokeDasharray={103.67} // 2 * Math.PI * 16.5
-                      strokeDashoffset={103.67 - (103.67 * ratio)}
-                      strokeLinecap="round"
-                      fill="none"
-                      transform="rotate(-90 20 20)"
-                    />
-                  </Svg>
-                  <IconAvatar
-                    icon={resolveIcon(cat.icon, 'tag-outline')}
-                    color={accent}
-                    variant="subtle"
-                    size={28}
-                    iconSize={13}
-                    style={styles.avatar}
-                  />
-                </View>
+                <IconAvatar
+                  icon={resolveIcon(cat.icon, Tag01Icon)}
+                  color={accent}
+                  variant="subtle"
+                  size={32}
+                  iconSize={14}
+                />
                 <View style={styles.textContainer}>
                   <Text style={styles.name} numberOfLines={1}>{cat.name}</Text>
-                  <MoneyText amount={cat.amount} currency={currency} type="DR" weight="medium" compact style={styles.amount} />
+                  <View style={styles.amountRow}>
+                    <MoneyText amount={cat.amount} currency={currency} type="DR" weight="medium" compact style={styles.amount} />
+                    {pct > 0 && (
+                      <>
+                        <Text style={[styles.dot, { color: colors.textMuted }]}>•</Text>
+                        <Text style={[styles.percentageText, { color: colors.textMuted, fontFamily: typography.fonts.medium }]}>
+                          {pct}%
+                        </Text>
+                      </>
+                    )}
+                  </View>
                 </View>
               </View>
             </View>
@@ -130,7 +115,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: 2,
     },
     emptyTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.cardTitle.fontFamily,
       fontSize: 13,
       color: colors.text,
     },
@@ -149,7 +134,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     tile: {
       backgroundColor: colors.surface,
       padding: spacing('3'),
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       flex: 1,
     },
     contentRow: {
@@ -157,26 +142,23 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       gap: spacing('3'),
     },
-    avatarWrapper: {
-      width: 40,
-      height: 40,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    svg: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-    },
-    avatar: {
-      position: 'absolute',
-      top: 6,
-      left: 6,
-    },
     textContainer: {
       flex: 1,
       gap: spacing('0.5'),
     },
     name: { fontSize: typography.sizes.sm, fontFamily: typography.fonts.medium, color: colors.text },
+    amountRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1'),
+    },
     amount: { fontSize: typography.sizes.xs },
+    dot: {
+      fontSize: typography.sizes.xxs,
+      opacity: 0.5,
+    },
+    percentageText: {
+      fontSize: typography.sizes.xxs,
+      opacity: 0.8,
+    },
   });

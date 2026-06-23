@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
-import { DARK_THEME, LIGHT_THEME, PICKER_CONTRAST_COLOR, ThemeColors } from '../theme/colors';
+import { DARK_THEME, getHeroColors, HeroCardPalette, LIGHT_THEME, PICKER_CONTRAST_COLOR, ThemeColors } from '../theme/colors';
+
+export type { ThemeColors };
 import {
   COMPONENT_SIZES,
-  HERO_CARD,
-  HeroCardPalette,
   LAYOUT,
   OVERLAY,
   radius,
@@ -17,14 +17,16 @@ import {
 import { TYPOGRAPHY } from '../theme/typography';
 import { useSettings } from './SettingsProvider';
 
+export type { HeroCardPalette };
+
 export type ThemeContextType = {
   /** Theme-dependent palette (switches with light/dark mode) */
   colors: ThemeColors;
   isDark: boolean;
+  /** Pre-computed hero card colour palette — use instead of importing getHeroColors directly */
+  heroCard: HeroCardPalette;
   /** Theme-aware overlay used behind modals/sheets */
   overlay: { dim: string; dark: string };
-  /** Fixed dark-context palette for full-bleed hero cards */
-  heroCard: HeroCardPalette;
   /** Always-dark colour for icons/checkmarks on user-chosen bright swatches */
   onAccent: string;
   /** Typography scale — font families, sizes, weights */
@@ -44,8 +46,8 @@ export type ThemeContextType = {
 const defaultContext: ThemeContextType = {
   colors: DARK_THEME,
   isDark: true,
+  heroCard: getHeroColors(true, DARK_THEME.primary, DARK_THEME.primaryDark, DARK_THEME.text, DARK_THEME.textMuted),
   overlay: OVERLAY.dark,
-  heroCard: HERO_CARD,
   onAccent: PICKER_CONTRAST_COLOR,
   typography: TYPOGRAPHY,
   sizes: COMPONENT_SIZES,
@@ -71,11 +73,16 @@ export const ThemeProvider = React.memo(function ThemeProvider({ children }: { c
 
   const overlay = useMemo(() => isDark ? OVERLAY.dark : OVERLAY.light, [isDark]);
 
+  const heroCard = useMemo(
+    () => getHeroColors(isDark, colors.primary, colors.primaryDark, colors.text, colors.textMuted),
+    [isDark, colors.primary, colors.primaryDark, colors.text, colors.textMuted],
+  );
+
   const contextValue = useMemo<ThemeContextType>(() => ({
     colors,
     isDark,
+    heroCard,
     overlay,
-    heroCard: HERO_CARD,
     onAccent: PICKER_CONTRAST_COLOR,
     typography: TYPOGRAPHY,
     sizes: COMPONENT_SIZES,
@@ -83,7 +90,7 @@ export const ThemeProvider = React.memo(function ThemeProvider({ children }: { c
     spacing,
     radius,
     shadow,
-  }), [colors, isDark, overlay]);
+  }), [colors, isDark, heroCard, overlay]);
 
   return (
     <ThemeContext.Provider value={contextValue}>

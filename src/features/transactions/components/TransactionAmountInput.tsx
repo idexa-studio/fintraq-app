@@ -48,9 +48,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       marginVertical: spacing('2'),
     },
     label: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
+      opacity: 0.6,
       marginBottom: spacing('1.5'),
     },
     inputRow: {
@@ -59,14 +60,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
     },
     currency: {
       fontSize: 22,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       color: colors.textMuted,
       marginRight: spacing('2.5'),
     },
     input: {
       flex: 1,
       fontSize: 40,
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
       color: colors.text,
       paddingVertical: 0,
     },

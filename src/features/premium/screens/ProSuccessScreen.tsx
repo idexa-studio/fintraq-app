@@ -3,42 +3,33 @@ import { Header } from '@/src/components/ui/Header';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES } from '@/src/constants/iap';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   const theme = useTheme();
-  const { colors } = theme;
+  const { colors, heroCard } = theme;
   const router = useRouter();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
 
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title="Keeep Pro" showBack />
+      <Header title="Fintraq Pro" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Subscribed Success Hero */}
-        <LinearGradient
-          colors={[colors.primary, colors.primaryDark]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.heroCard}
-        >
-          <View style={styles.crownWrapper}>
-            <MaterialCommunityIcons name="check-decagram" size={32} color={colors.warning} />
-          </View>
+        {/* Hero Card — edge-to-edge, dashboard style */}
+        <View style={[styles.heroCard, { backgroundColor: heroCard.background }]}>
           <Text style={styles.heroBadge}>Pro active</Text>
           <Text style={styles.heroTitle}>You{"'"}re all set.</Text>
           <Text style={styles.heroDesc}>
             Every professional tool, every future update — yours forever. No subscriptions, no limits.
           </Text>
-        </LinearGradient>
+        </View>
 
         {/* Subscription Status Card */}
         <View style={styles.priceContainer}>
@@ -54,7 +45,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
         </View>
 
         {/* Features list */}
-        <SectionHeader title="Unlocked features" noPadding />
+        <SectionHeader title="Unlocked features" />
 
         <View style={styles.featuresCard}>
           {FEATURES.map((f, index) => {
@@ -62,7 +53,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
             return (
               <View key={f.title} style={[styles.featureItem, isLast && styles.noMargin]}>
                 <View style={styles.iconWrapperActive}>
-                  <MaterialCommunityIcons name={f.icon} size={20} color={colors.success} />
+                  <HugeiconsIcon icon={f.icon} size={20} color={colors.success} />
                 </View>
                 <View style={styles.featureContent}>
                   <Text style={styles.featureTitle}>{f.title}</Text>
@@ -81,7 +72,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
           style={styles.cta}
           onPress={() => router.replace('/(main)/(tabs)')}
         >
-          <Text style={[styles.ctaText, { color: colors.background }]}>
+          <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
             Open dashboard
           </Text>
         </BentoPressable>
@@ -90,39 +81,31 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
     },
     scroll: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
+      paddingTop: 0,
     },
-    // Hero Card
+    // ── Hero Card
     heroCard: {
-      borderRadius: 28,
-      padding: spacing('6'),
-      marginBottom: spacing('5'),
-      gap: spacing('2'),
+      paddingHorizontal: spacing('5'),
+      paddingTop: spacing('5'),
+      paddingBottom: spacing('6'),
+      borderRadius: radius('2xl'),
+      marginHorizontal: layout.screenPadding,
+      marginBottom: spacing('4'),
       overflow: 'hidden',
     },
-    crownWrapper: {
-      width: 48,
-      height: 48,
-      borderRadius: 24,
-      backgroundColor: heroCard.textPrimary + '1E',
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: spacing('2'),
-      zIndex: 2,
-    },
     heroBadge: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: 10,
-      color: colors.primaryLight,
-      zIndex: 2,
+      letterSpacing: 0.5,
+      color: heroCard.textMuted,
+      textTransform: 'uppercase',
     },
     heroTitle: {
       fontFamily: typography.fonts.heading,
@@ -130,24 +113,21 @@ const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }:
       lineHeight: 32,
       color: heroCard.textPrimary,
       marginTop: spacing('1'),
-      zIndex: 2,
     },
     heroDesc: {
       fontFamily: typography.fonts.regular,
       fontSize: 13,
       lineHeight: 18,
       color: heroCard.textMuted,
-      opacity: 0.9,
       marginTop: spacing('1'),
-      zIndex: 2,
     },
-    // Price Card
+    // ── Status Card
     priceContainer: {
       backgroundColor: colors.surface,
-      borderRadius: 24,
+      borderRadius: radius('xl'),
       padding: spacing('5'),
-      marginBottom: spacing('5'),
-      gap: spacing('4'),
+      marginHorizontal: layout.screenPadding,
+      marginBottom: spacing('4'),
     },
     priceRow: {
       flexDirection: 'row',
@@ -158,7 +138,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }:
       gap: spacing('0.5'),
     },
     priceLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: 16,
       color: colors.text,
     },
@@ -176,12 +156,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }:
     pillText: {
       fontSize: typography.sizes.xs,
       color: colors.success,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabel.fontFamily,
     },
-    // Features list
+    // ── Features list
     featuresCard: {
-      borderRadius: 24,
+      borderRadius: radius('xl'),
       overflow: 'hidden',
+      marginHorizontal: layout.screenPadding,
     },
     featureItem: {
       flexDirection: 'row',
@@ -198,7 +179,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }:
     iconWrapperActive: {
       width: 40,
       height: 40,
-      borderRadius: 20,
+      borderRadius: radius('xl'),
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: colors.success + '12',
@@ -208,7 +189,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }:
       gap: spacing('0.5'),
     },
     featureTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: 15,
       color: colors.text,
     },
@@ -217,9 +198,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }:
       fontSize: 13,
       lineHeight: 18,
       color: colors.textMuted,
-      opacity: 0.85,
     },
-    // Pinned Footer
+    // ── Pinned Footer
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('4'),
@@ -235,7 +215,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, heroCard }:
       marginBottom: spacing('3'),
     },
     ctaText: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
       fontSize: 16,
     },
   });

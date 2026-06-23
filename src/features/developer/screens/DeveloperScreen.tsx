@@ -1,4 +1,19 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  AndroidIcon,
+  Apple01Icon,
+  ArrowRight01Icon,
+  BellIcon,
+  BellOffIcon,
+  BellRingIcon,
+  CancelCircleIcon,
+  CheckmarkBadge01Icon,
+  FlaskConicalIcon,
+  LockPasswordIcon,
+  RefreshIcon,
+  Settings01Icon,
+} from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSvgElement } from '@hugeicons/react-native';
 import * as Notifications from 'expo-notifications';
 import React from 'react';
 import { Alert, DevSettings, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -82,7 +97,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         >
           <View style={styles.lockWrap}>
             <View style={styles.lockIcon}>
-              <IconAvatar icon="lock" color={colors.primary} variant="subtle" size={64} iconSize={26} />
+              <IconAvatar icon={LockPasswordIcon} color={colors.primary} variant="subtle" size={64} iconSize={26} />
             </View>
 
             <Text style={styles.lockBadge}>Secure gateway</Text>
@@ -118,9 +133,9 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         <SectionHeader title="Premium override" noPadding />
         <View style={styles.card}>
           {([
-            { mode: 'DEFAULT', title: 'Default (Sync with Store)', desc: 'Use standard Play Store / App Store purchase status', icon: 'sync' },
-            { mode: 'FORCED_ON', title: 'Force Enabled', desc: 'Force entitlement state as active for testing', icon: 'check-decagram-outline' },
-            { mode: 'FORCED_OFF', title: 'Force Disabled', desc: 'Force entitlement state as inactive for testing', icon: 'close-circle-outline' },
+            { mode: 'DEFAULT', title: 'Default (Sync with Store)', desc: 'Use standard Play Store / App Store purchase status', icon: RefreshIcon as IconSvgElement },
+            { mode: 'FORCED_ON', title: 'Force Enabled', desc: 'Force entitlement state as active for testing', icon: CheckmarkBadge01Icon as IconSvgElement },
+            { mode: 'FORCED_OFF', title: 'Force Disabled', desc: 'Force entitlement state as inactive for testing', icon: CancelCircleIcon as IconSvgElement },
           ] as const).map((item, index) => {
             const active = devOverride === item.mode;
             const isLast = index === 2;
@@ -141,8 +156,8 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
                   <Text style={styles.rowTitle}>{item.title}</Text>
                   <Text style={styles.rowSub}>{item.desc}</Text>
                 </View>
-                <MaterialCommunityIcons
-                  name={active ? "radiobox-marked" : "radiobox-blank"}
+                <HugeiconsIcon
+                  icon={active ? CheckmarkBadge01Icon : CancelCircleIcon}
                   size={22}
                   color={active ? colors.primary : colors.textMuted}
                 />
@@ -157,12 +172,12 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
             style={[styles.optionRow, styles.noMargin]}
             onPress={() => setShowSeedConfirm(true)}
           >
-            <IconAvatar icon="flask-outline" color={colors.primary} variant="subtle" size={36} iconSize={16} />
+            <IconAvatar icon={FlaskConicalIcon} color={colors.primary} variant="subtle" size={36} iconSize={16} />
             <View style={{ flex: 1, gap: 2 }}>
               <Text style={styles.rowTitle}>Seed dummy data</Text>
               <Text style={styles.rowSub}>Generate 12 months of test transactions</Text>
             </View>
-            <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
+            <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
           </BentoPressable>
         </View>
 
@@ -170,7 +185,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         <View style={styles.card}>
           {scheduledNotifs.length === 0 ? (
             <View style={[styles.optionRow, styles.noMargin]}>
-              <IconAvatar icon="bell-off-outline" color={colors.textMuted} variant="subtle" size={36} iconSize={16} />
+              <IconAvatar icon={BellOffIcon} color={colors.textMuted} variant="subtle" size={36} iconSize={16} />
               <View style={{ flex: 1, gap: 2 }}>
                 <Text style={styles.rowTitle}>No active schedules</Text>
                 <Text style={styles.rowSub}>All reminder notifications are currently disabled</Text>
@@ -179,7 +194,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           ) : (
             scheduledNotifs.map((n) => (
               <View key={n.identifier} style={styles.optionRow}>
-                <IconAvatar icon="bell-outline" color={colors.primary} variant="subtle" size={36} iconSize={16} />
+                <IconAvatar icon={BellIcon} color={colors.primary} variant="subtle" size={36} iconSize={16} />
                 <View style={{ flex: 1, gap: 2 }}>
                   <Text style={styles.rowTitle}>
                     {n.content.title || 'Scheduled Reminder'}
@@ -201,30 +216,30 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
               Alert.alert('Test notification', 'An instant notification has been queued.');
             }}
           >
-            <IconAvatar icon="bell-ring-outline" color={colors.primary} variant="subtle" size={36} iconSize={16} />
+            <IconAvatar icon={BellRingIcon} color={colors.primary} variant="subtle" size={36} iconSize={16} />
             <View style={{ flex: 1, gap: 2 }}>
               <Text style={styles.rowTitleAction}>Trigger sample notification</Text>
               <Text style={styles.rowSub}>Queue an instant check-in alert for debugging</Text>
             </View>
-            <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
+            <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
           </BentoPressable>
           <BentoPressable
             style={[styles.optionRow, styles.noMargin]}
             onPress={fetchScheduled}
           >
-            <IconAvatar icon="refresh" color={colors.primary} variant="subtle" size={36} iconSize={16} />
+            <IconAvatar icon={RefreshIcon} color={colors.primary} variant="subtle" size={36} iconSize={16} />
             <View style={{ flex: 1, gap: 2 }}>
               <Text style={styles.rowTitleAction}>Refresh schedules</Text>
               <Text style={styles.rowSub}>Force reload notification schedules list</Text>
             </View>
-            <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} />
+            <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
           </BentoPressable>
         </View>
 
         <SectionHeader title="System" noPadding />
         <View style={styles.card}>
           <View style={styles.optionRow}>
-            <IconAvatar icon="cog-outline" color={colors.textMuted} variant="subtle" size={36} iconSize={16} />
+            <IconAvatar icon={Settings01Icon} color={colors.textMuted} variant="subtle" size={36} iconSize={16} />
             <View style={{ flex: 1, gap: 2 }}>
               <Text style={styles.rowTitle}>Environment</Text>
               <Text style={styles.rowSub}>App runtime build environment</Text>
@@ -234,7 +249,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
             </Text>
           </View>
           <View style={[styles.optionRow, styles.noMargin]}>
-            <IconAvatar icon={Platform.OS === 'ios' ? 'apple' : 'android'} color={colors.textMuted} variant="subtle" size={36} iconSize={16} />
+            <IconAvatar icon={Platform.OS === 'ios' ? Apple01Icon : AndroidIcon} color={colors.textMuted} variant="subtle" size={36} iconSize={16} />
             <View style={{ flex: 1, gap: 2 }}>
               <Text style={styles.rowTitle}>Platform</Text>
               <Text style={styles.rowSub}>OS runtime target</Text>
@@ -246,7 +261,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerBrand}>Keeep / Dev tools</Text>
+          <Text style={styles.footerBrand}>Fintraq / Dev tools</Text>
           <Text style={styles.footerCopy}>Internal debugging and testing utilities.</Text>
         </View>
       </ScrollView>
@@ -289,7 +304,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       zIndex: 2,
     },
     lockBadge: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: 11,
       color: colors.primary,
       zIndex: 2,
@@ -336,12 +351,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: 0,
     },
     rowTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.md,
       color: colors.text,
     },
     rowTitleAction: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.md,
       color: colors.primary,
     },
@@ -359,12 +374,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     badgeText: {
       fontSize: 10,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       color: colors.primary,
     },
 
     infoValue: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowValue.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.text,
     },
@@ -376,7 +391,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingVertical: spacing('4'),
     },
     footerBrand: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: 10,
       color: colors.text,
       opacity: 0.3,

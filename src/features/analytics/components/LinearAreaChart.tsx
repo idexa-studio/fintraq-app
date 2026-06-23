@@ -8,7 +8,7 @@ import Svg, {
   Stop,
   Text as SvgText,
 } from 'react-native-svg';
-import { useTheme } from '../../../providers/ThemeProvider';
+import { useTheme } from '@/src/providers/ThemeProvider';
 
 export type BarBucket = {
   label: string;

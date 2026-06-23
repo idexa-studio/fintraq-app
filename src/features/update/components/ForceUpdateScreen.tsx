@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 import { Linking, Platform, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CloudDownloadIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { Button } from '@/src/components/ui/Button';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
@@ -48,7 +49,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
         <View style={styles.graphicContainer}>
           <View style={styles.pulseOuter}>
             <View style={styles.pulseInner}>
-              <MaterialCommunityIcons name="cloud-download-outline" size={32} color={colors.primary} />
+              <HugeiconsIcon icon={CloudDownloadIcon} size={32} color={colors.primary} />
             </View>
           </View>
         </View>
@@ -58,7 +59,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
           <Text style={styles.title}>Update required</Text>
           <Text style={styles.subtitle}>
             {message ||
-              'A new version of Keeep is available. To continue using the app securely, please download the latest update from the store.'}
+              'A new version of Fintraq is available. To continue using the app securely, please download the latest update from the store.'}
           </Text>
 
           <View style={styles.versionBadge}>
@@ -75,7 +76,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
             onPress={handleUpdatePress}
             variant="primary"
             size="lg"
-            icon="download"
+            icon={CloudDownloadIcon}
           />
         </View>
       </View>
@@ -127,7 +128,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       paddingTop: spacing('2'),
     },
     title: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
       fontSize: 20,
       color: colors.text,
       textAlign: 'center',
@@ -148,7 +149,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       marginTop: spacing('2'),
     },
     versionBadgeText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: 11,
       color: colors.primary,
     },

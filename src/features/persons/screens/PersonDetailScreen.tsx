@@ -4,25 +4,19 @@ import { Header } from '@/src/components/ui/Header';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { TransactionRow } from '@/src/components/ui/TransactionRow';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { usePersonWithStats, useTransactionsByPerson, useDeletePerson } from '@/src/features/persons/hooks/persons';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Call02Icon, Delete01Icon, Mail01Icon, PencilEdit01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-function PersonInitials({ name, color, size = 64 }: { name: string; color: string; size?: number }) {
-  const initials = name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
-  return (
-    <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: color + '18', alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ color: color, fontWeight: '700', fontSize: size * 0.38 }}>{initials}</Text>
-    </View>
-  );
-}
 
 export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -71,7 +65,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
           account: {
             name: account?.name ?? '',
             currency: account?.currency ?? currency,
-            icon: account?.icon ?? 'wallet-outline',
+            icon: account?.icon ?? 'building',
             color: account?.color ?? 0,
           },
           category: {
@@ -124,13 +118,13 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
               onPress={() => setShowDeleteConfirm(true)}
               style={styles.iconBtn}
             >
-              <MaterialCommunityIcons name="trash-can-outline" size={20} color={colors.danger} />
+              <HugeiconsIcon icon={Delete01Icon} size={20} color={colors.danger} />
             </BentoPressable>
             <BentoPressable
               onPress={handleEdit}
               style={styles.iconBtn}
             >
-              <MaterialCommunityIcons name="pencil-outline" size={20} color={colors.text} />
+              <HugeiconsIcon icon={PencilEdit01Icon} size={20} color={colors.text} />
             </BentoPressable>
           </View>
         }
@@ -141,9 +135,9 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {/* Hero card */}
         <View style={styles.heroCard}>
           <View style={styles.heroTop}>
-            <PersonInitials name={person.name} color={hex} size={60} />
+            <PersonAvatar name={person.name} color={hex} size={60} />
             <View style={styles.heroInfo}>
-              <Text style={[styles.heroName, { fontFamily: typography.fonts.bold, color: colors.text }]}>
+              <Text style={[styles.heroName, { fontFamily: typography.styles.profileName.fontFamily, color: colors.text }]}>
                 {person.name}
               </Text>
               {(person.designation || person.company) ? (
@@ -158,7 +152,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
             <View style={styles.contactRow}>
               {person.email ? (
                 <View style={styles.contactChip}>
-                  <MaterialCommunityIcons name="email-outline" size={14} color={colors.textMuted} />
+                  <HugeiconsIcon icon={Mail01Icon} size={14} color={colors.textMuted} />
                   <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
                     {person.email}
                   </Text>
@@ -166,7 +160,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
               ) : null}
               {person.phone ? (
                 <View style={styles.contactChip}>
-                  <MaterialCommunityIcons name="phone-outline" size={14} color={colors.textMuted} />
+                  <HugeiconsIcon icon={Call02Icon} size={14} color={colors.textMuted} />
                   <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     {person.phone}
                   </Text>
@@ -196,11 +190,11 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {/* Stats */}
         <View style={styles.statsRow}>
           <View style={[styles.statTile, { backgroundColor: colors.danger + '15' }]}>
-            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>Spent</Text>
+            <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.danger }]}>Spent</Text>
             <MoneyText amount={person.totalSpent} currency={currency} type="DR" weight="bold" compact style={styles.statValue} />
           </View>
           <View style={[styles.statTile, { backgroundColor: colors.success + '15' }]}>
-            <Text style={[styles.statLabel, { fontFamily: typography.fonts.semibold, color: colors.success }]}>Received</Text>
+            <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.success }]}>Received</Text>
             <MoneyText amount={person.totalReceived} currency={currency} type="CR" weight="bold" compact style={styles.statValue} />
           </View>
         </View>
@@ -224,7 +218,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
           </View>
         ) : (
           <View style={styles.emptyTx}>
-            <MaterialCommunityIcons name="receipt-text-outline" size={28} color={colors.textMuted} />
+            <HugeiconsIcon icon={ReceiptTextIcon} size={28} color={colors.textMuted} />
             <Text style={[styles.emptyTxText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               No transactions in {currency}
             </Text>
@@ -253,15 +247,15 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginRight: -spacing('2'),
+      gap: spacing('2'),
     },
     iconBtn: {
-      width: 40,
-      height: 40,
-      borderRadius: radius('full'),
+      width: layout.minTouchTarget,
+      height: layout.minTouchTarget,
+      borderRadius: radius('lg'),
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'transparent',
+      backgroundColor: colors.surface,
     },
 
     heroCard: {
@@ -293,7 +287,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       backgroundColor: colors.surface,
     },
     currencyPillActive: { backgroundColor: colors.primary + '18' },
-    currencyPillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
+    currencyPillText: { fontFamily: typography.styles.badge.fontFamily, color: colors.textMuted, fontSize: 11 },
     currencyPillTextActive: { color: colors.primary },
 
     statsRow: {
@@ -311,14 +305,14 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     },
     statLabel: {
       fontSize: typography.sizes.xs,
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
     },
     statValue: { fontSize: 14 },
     statPlain: { fontSize: 18 },
 
     txSection: { paddingHorizontal: layout.screenPadding },
     txTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
       marginBottom: spacing('2'),

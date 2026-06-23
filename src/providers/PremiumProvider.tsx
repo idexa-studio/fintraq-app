@@ -6,6 +6,7 @@ import { AlertButton, AlertDialog } from '../components/ui/AlertDialog';
 import { ALL_SKUS, SKU_LIFETIME } from '../constants/iap';
 import { IAPProduct, IAPService } from '../services/iap.service';
 import { StorageKeys } from '../constants/keys';
+import { AnalyticsService } from '../services/analytics';
 
 /**
  * PremiumState: The persistent representation of user access.
@@ -37,7 +38,7 @@ export const PremiumContext = createContext<PremiumContextType | null>(null);
 
 
 /**
- * usePremium: Access the Keeep Pro ecosystem within any functional component.
+ * usePremium: Access the Fintraq Pro ecosystem within any functional component.
  */
 export function usePremium() {
   const ctx = useContext(PremiumContext);
@@ -105,6 +106,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
   const handlePurchaseSuccess = useCallback(async (purchase: IAP.Purchase) => {
     if (purchase.productId === SKU_LIFETIME) {
       await savePremiumState({ isPremium: true });
+      await AnalyticsService.premiumPurchaseCompleted();
     }
   }, [savePremiumState]);
 
@@ -239,6 +241,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      await AnalyticsService.premiumPurchaseStarted();
       await IAP.requestPurchase({
         request: { apple: { sku: SKU_LIFETIME }, google: { skus: [SKU_LIFETIME] } },
         type: 'in-app'
@@ -263,11 +266,14 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
 
       if (hasLifetime) {
         await savePremiumState({ isPremium: true });
-        showAlert({ title: 'Access Restored', message: 'Keeep Pro has been successfully re-enabled.', type: 'success' });
+        await AnalyticsService.premiumPurchaseRestore('restored');
+        showAlert({ title: 'Access Restored', message: 'Fintraq Pro has been successfully re-enabled.', type: 'success' });
       } else {
+        await AnalyticsService.premiumPurchaseRestore('not_found');
         showAlert({ title: 'No Purchase Found', message: "We couldn't find an active Pro license for this account.", type: 'info' });
       }
     } catch {
+      await AnalyticsService.premiumPurchaseRestore('failed');
       showAlert({ title: 'Restoration Failed', message: 'Please try again in a few minutes.', type: 'error' });
     }
   }, [isIapInitialized, savePremiumState, showAlert]);

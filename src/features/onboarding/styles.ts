@@ -6,7 +6,6 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
     container: {
       flex: 1,
       backgroundColor: colors.background,
-      overflow: 'hidden',
     },
     keyboardWrap: {
       flex: 1,
@@ -14,7 +13,7 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
     header: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      gap: spacing('3.5'),
+      gap: spacing('3'),
     },
     headerTopRow: {
       flexDirection: 'row',
@@ -24,7 +23,7 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
     headerBackButton: {
       width: 42,
       height: 42,
-      borderRadius: radius('full'),
+      borderRadius: radius('xl'),
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.surface,
@@ -49,8 +48,8 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
       backgroundColor: colors.surface,
     },
     stepPillText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
+      fontFamily: typography.styles.chipLabel.fontFamily,
+      fontSize: typography.sizes.xs,
       color: colors.text,
     },
     progressTrack: {
@@ -76,15 +75,15 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
       marginBottom: spacing('5'),
     },
     eyebrow: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
+      fontSize: typography.sizes.xs,
       color: colors.primary,
       marginBottom: spacing('3'),
     },
     stepTitle: {
       fontFamily: typography.fonts.heading,
-      fontSize: 34,
-      lineHeight: 36,
+      fontSize: 30,
+      lineHeight: 34,
       color: colors.text,
     },
     stepSubtitle: {
@@ -94,10 +93,6 @@ export const createOnboardingStyles = ({ colors, typography, spacing, radius, la
       lineHeight: 22,
       color: colors.textMuted,
       maxWidth: 320,
-    },
-    contentCard: {
-      paddingHorizontal: 0,
-      paddingVertical: 0
     },
     footer: {
       paddingHorizontal: layout.screenPadding,

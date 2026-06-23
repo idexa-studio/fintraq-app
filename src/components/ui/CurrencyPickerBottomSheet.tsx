@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CancelCircleIcon, CheckIcon, Search01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -20,7 +21,7 @@ export type CurrencyPickerBottomSheetProps = {
   onChange: (code: string) => void;
 };
 
-const ITEM_HEIGHT = 60;
+const ITEM_HEIGHT = 60; // 56px row + 4px gap
 
 export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBottomSheet({
   visible,
@@ -90,7 +91,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
 
         {selected ? (
           <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-            <MaterialCommunityIcons name="check" size={12} color={colors.background} />
+            <HugeiconsIcon icon={CheckIcon} size={12} color={colors.primaryForeground} />
           </View>
         ) : (
           <View style={styles.checkPlaceholder} />
@@ -122,7 +123,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
         </View>
 
         <View style={styles.searchWrap}>
-          <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
+          <HugeiconsIcon icon={Search01Icon} size={18} color={colors.textMuted} />
           <TextInput
             style={styles.searchInput}
             value={query}
@@ -135,7 +136,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
           />
           {query.length > 0 && (
             <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
+              <HugeiconsIcon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
             </BentoPressable>
           )}
         </View>
@@ -156,7 +157,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
           scrollEventThrottle={16}
           ListEmptyComponent={
             <View style={styles.emptyWrap}>
-              <MaterialCommunityIcons name="magnify" size={24} color={colors.textMuted} />
+              <HugeiconsIcon icon={Search01Icon} size={24} color={colors.textMuted} />
               <Text style={styles.emptyText}>No results for &quot;{query}&quot;</Text>
             </View>
           }
@@ -166,7 +167,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, isDark, sizes }: ThemeContextType) =>
   StyleSheet.create({
     header: {
       paddingHorizontal: layout.screenPadding,
@@ -179,7 +180,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     headerText: { flex: 1 },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 22,
+      fontSize: typography.sizes.xl,
       color: colors.text,
     },
     subtitle: {
@@ -196,8 +197,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       backgroundColor: colors.primary + '14',
     },
     headerBadgeText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 12,
+      fontFamily: typography.styles.badge.fontFamily,
+      fontSize: typography.sizes.xs,
       color: colors.primary,
     },
 
@@ -207,9 +208,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       alignItems: 'center',
       marginHorizontal: layout.screenPadding,
       marginBottom: spacing('2'),
-      height: 46,
-      borderRadius: radius('xl'),
-      backgroundColor: colors.background,
+      height: sizes.input.md.height,
+      borderRadius: radius('lg'),
+      backgroundColor: colors.card,
       paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
     },
@@ -224,36 +225,44 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     // List
     listContent: {
       paddingTop: spacing('1'),
+      paddingHorizontal: layout.screenPadding,
       paddingBottom: spacing('3'),
+      gap: spacing('1'),
     },
 
     // Row
     row: {
-      height: 52,
+      height: 56,
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: layout.screenPadding,
-      marginVertical: spacing('0.5'),
+      paddingHorizontal: spacing('3'),
+      borderRadius: radius('lg'),
       gap: spacing('3'),
+      borderWidth: 1,
+      borderColor: 'transparent',
     },
     rowSelected: {
-      backgroundColor: isDark ? '#163228' : '#E6F4EA',
+      backgroundColor: colors.surface,
+      borderColor: colors.primary + '30',
     },
     // Currency code chip
     chip: {
-      width: 46,
+      width: 50,
       height: 28,
       borderRadius: radius('md'),
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
       alignItems: 'center',
       justifyContent: 'center',
     },
     chipSelected: {
-      backgroundColor: colors.primary + '18',
+      backgroundColor: colors.primary + '14',
+      borderColor: colors.primary + '40',
     },
     chipText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
+      fontFamily: typography.styles.chipLabel.fontFamily,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
       letterSpacing: 0.3,
     },
@@ -269,20 +278,20 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       color: colors.text,
     },
     nameSelected: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabelActive.fontFamily,
     },
 
     // Check indicator
     checkCircle: {
-      width: 20,
-      height: 20,
+      width: 22,
+      height: 22,
       borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
     },
     checkPlaceholder: {
-      width: 20,
-      height: 20,
+      width: 22,
+      height: 22,
     },
 
     // Empty

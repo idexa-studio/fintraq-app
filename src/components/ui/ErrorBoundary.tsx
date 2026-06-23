@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
+import { recordFirebaseError } from '../../services/firebase';
 import { BentoPressable } from './BentoPressable';
 
 type Props = {
@@ -17,7 +18,7 @@ function ErrorFallback({ error, onReset }: { error: Error | null; onReset: () =>
   const { colors, typography } = useTheme();
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+      <Text style={[styles.title, { fontFamily: typography.styles.emptyTitle.fontFamily, color: colors.text }]}>
         Something went wrong
       </Text>
       <Text style={[styles.message, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
@@ -27,7 +28,7 @@ function ErrorFallback({ error, onReset }: { error: Error | null; onReset: () =>
         style={[styles.button, { backgroundColor: colors.text }]}
         onPress={onReset}
       >
-        <Text style={[styles.buttonText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+        <Text style={[styles.buttonText, { fontFamily: typography.styles.buttonLabel.fontFamily, color: colors.background }]}>
           Try again
         </Text>
       </BentoPressable>
@@ -45,6 +46,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
   handleReset = () => {
     this.setState({ hasError: false, error: null });
   };
+
+  componentDidCatch(error: Error) {
+    recordFirebaseError(error, 'ErrorBoundary').catch(() => {});
+  }
 
   render() {
     if (this.state.hasError) {

@@ -132,17 +132,18 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       paddingHorizontal: spacing('3.5'),
       paddingVertical: spacing('2'),
       borderRadius: radius('full'),
-      backgroundColor: colors.background,
+      backgroundColor: colors.card,
     },
     currencyTabActive: {
       backgroundColor: colors.primary + '18',
     },
     currencyTabText: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 12,
+      fontFamily: typography.styles.chipLabel.fontFamily,
+      fontSize: typography.sizes.xs,
       color: colors.textMuted,
     },
     currencyTabTextActive: {
+      fontFamily: typography.styles.chipLabelActive.fontFamily,
       color: colors.primary,
     },
     kpiBody: {
@@ -172,21 +173,23 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     kpiLabel: {
       color: colors.textMuted,
-      fontFamily: typography.fonts.medium,
-      fontSize: 11,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
+      fontSize: typography.sizes.xs,
+      lineHeight: 14,
       marginBottom: spacing('0.5'),
     },
     kpiLabelSmall: {
       color: colors.textMuted,
-      fontFamily: typography.fonts.medium,
-      fontSize: 11,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
+      fontSize: typography.sizes.xs,
+      lineHeight: 14,
     },
     kpiValueLarge: {
-      fontSize: 24,
+      fontSize: typography.sizes.xxl,
       lineHeight: 28,
     },
     kpiValueSmall: {
-      fontSize: 14,
+      fontSize: typography.sizes.md,
       lineHeight: 18,
     },
     kpiDivider: {

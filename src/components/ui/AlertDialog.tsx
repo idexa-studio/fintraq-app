@@ -1,7 +1,8 @@
+import { AlertCircleIcon, CheckmarkCircle01Icon, InformationCircleIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo, useCallback } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { BentoPressable } from './BentoPressable';
 
 export type AlertButton = {
@@ -19,13 +20,6 @@ type AlertDialogProps = {
   type?: 'info' | 'success' | 'error' | 'warning';
 };
 
-const ICONS = {
-  info: { name: 'information' as const, bg: '#60A5FA15', fg: '#60A5FA' },
-  success: { name: 'check-circle' as const, bg: '#0E9F6E15', fg: '#0E9F6E' },
-  error: { name: 'alert-circle' as const, bg: '#B4231815', fg: '#B42318' },
-  warning: { name: 'alert' as const, bg: '#F59E0B15', fg: '#F59E0B' },
-} as const;
-
 export const AlertDialog = React.memo(function AlertDialog({
   visible,
   title,
@@ -35,10 +29,23 @@ export const AlertDialog = React.memo(function AlertDialog({
   type = 'info',
 }: AlertDialogProps) {
   const theme = useTheme();
+  const { colors } = theme;
   const { width: screenWidth } = useWindowDimensions();
   const styles = useMemo(() => createStyles(theme, screenWidth), [theme, screenWidth]);
 
-  const iconCfg = ICONS[type];
+  const iconCfg = useMemo(() => {
+    switch (type) {
+      case 'success':
+        return { icon: CheckmarkCircle01Icon, bg: colors.success + '1A', fg: colors.success };
+      case 'error':
+        return { icon: AlertCircleIcon, bg: colors.danger + '1A', fg: colors.danger };
+      case 'warning':
+        return { icon: AlertCircleIcon, bg: colors.warning + '1A', fg: colors.warning };
+      case 'info':
+      default:
+        return { icon: InformationCircleIcon, bg: colors.info + '1A', fg: colors.info };
+    }
+  }, [type, colors]);
 
   const handleButtonPress = useCallback((button: AlertButton) => {
     if (button.onPress) button.onPress();
@@ -52,7 +59,7 @@ export const AlertDialog = React.memo(function AlertDialog({
         <View style={styles.card}>
           <View style={styles.body}>
             <View style={[styles.iconBox, { backgroundColor: iconCfg.bg }]}>
-              <MaterialCommunityIcons name={iconCfg.name} size={24} color={iconCfg.fg} />
+              <HugeiconsIcon icon={iconCfg.icon} size={24} color={iconCfg.fg} />
             </View>
 
             <Text style={styles.title}>{title}</Text>
@@ -87,7 +94,7 @@ export const AlertDialog = React.memo(function AlertDialog({
   );
 });
 
-const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeContextType, screenWidth: number) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: ThemeContextType, screenWidth: number) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
@@ -99,7 +106,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     card: {
       width: Math.min(screenWidth - spacing('12'), 320),
       backgroundColor: colors.surface,
-      borderRadius: 28,
+      borderRadius: radius('2xl'),
       overflow: 'hidden',
       padding: spacing('6'),
       gap: spacing('5'),
@@ -118,14 +125,14 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 24,
+      fontSize: typography.sizes.xl,
       color: colors.text,
       textAlign: 'left',
       marginBottom: spacing('2'),
     },
     message: {
       fontFamily: typography.fonts.regular,
-      fontSize: 14,
+      fontSize: typography.sizes.md,
       color: colors.textMuted,
       lineHeight: 20,
       textAlign: 'left',
@@ -137,15 +144,15 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       gap: spacing('2'),
     },
     btn: {
-      height: 40,
+      height: sizes.button.md.height,
       paddingHorizontal: spacing('3'),
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
     },
     btnText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 14,
+      fontFamily: typography.styles.dialogAction.fontFamily,
+      fontSize: typography.sizes.md,
     },
     btnPrimaryText: {
       color: colors.primary,

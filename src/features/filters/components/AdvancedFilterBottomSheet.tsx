@@ -1,18 +1,22 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import * as Haptics from 'expo-haptics';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
+import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 import { Account } from '@/src/features/accounts/api/accounts';
+import { AccountType } from '@/src/types';
 import { Category } from '@/src/features/categories/api/categories';
 import { Person } from '@/src/features/persons/api/persons';
-import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { TransactionType } from '@/src/types';
+import { colorNumberToHex } from '@/src/utils/format';
+import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
+import { ArrowRight01Icon, Calendar03Icon, CancelCircleIcon, Tag01Icon, Wallet05Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import * as Haptics from 'expo-haptics';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../api/advanced-filters.service';
-import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 
 interface AdvancedFilterBottomSheetProps {
   visible: boolean;
@@ -26,9 +30,9 @@ interface AdvancedFilterBottomSheetProps {
 }
 
 const TYPE_OPTS = [
-  { key: 'CR' as const, label: 'Income',   icon: 'arrow-down-circle-outline' as const, colorKey: 'success' as const },
-  { key: 'DR' as const, label: 'Expense',  icon: 'arrow-up-circle-outline' as const,   colorKey: 'danger'  as const },
-  { key: 'TR' as const, label: 'Transfer', icon: 'swap-horizontal' as const,           colorKey: 'info'    as const },
+  { key: 'CR' as const, label: 'Income', icon: 'arrow-down-circle-outline' as const, colorKey: 'success' as const },
+  { key: 'DR' as const, label: 'Expense', icon: 'arrow-up-circle-outline' as const, colorKey: 'danger' as const },
+  { key: 'TR' as const, label: 'Transfer', icon: 'swap-horizontal' as const, colorKey: 'info' as const },
 ] as const;
 
 export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBottomSheet({
@@ -36,14 +40,15 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
 }: AdvancedFilterBottomSheetProps) {
   const theme = useTheme();
   const { colors, typography } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const [local, setLocal]         = useState<AdvancedFilters>(filters);
+  const [local, setLocal] = useState<AdvancedFilters>(filters);
   const [showStart, setShowStart] = useState(false);
-  const [showEnd, setShowEnd]     = useState(false);
-  const [minAmt, setMinAmt]       = useState('');
-  const [maxAmt, setMaxAmt]       = useState('');
+  const [showEnd, setShowEnd] = useState(false);
+  const [minAmt, setMinAmt] = useState('');
+  const [maxAmt, setMaxAmt] = useState('');
   const bottomSheet = useBottomSheet();
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
 
   useEffect(() => {
     if (visible) {
@@ -58,31 +63,31 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
     return a.includes(v) ? a.filter(x => x !== v) : [...a, v];
   }, []);
 
-  const toggleAccount  = useCallback((id: number) => {
-    Haptics.selectionAsync().catch(() => {});
-    setLocal(p => ({ ...p, accountIds:  toggle(p.accountIds,  id) }));
+  const toggleAccount = useCallback((id: number) => {
+    Haptics.selectionAsync().catch(() => { });
+    setLocal(p => ({ ...p, accountIds: toggle(p.accountIds, id) }));
   }, [toggle]);
   const toggleCategory = useCallback((id: number) => {
-    Haptics.selectionAsync().catch(() => {});
+    Haptics.selectionAsync().catch(() => { });
     setLocal(p => ({ ...p, categoryIds: toggle(p.categoryIds, id) }));
   }, [toggle]);
-  const togglePerson   = useCallback((id: number) => {
-    Haptics.selectionAsync().catch(() => {});
-    setLocal(p => ({ ...p, personIds:   toggle(p.personIds,   id) }));
+  const togglePerson = useCallback((id: number) => {
+    Haptics.selectionAsync().catch(() => { });
+    setLocal(p => ({ ...p, personIds: toggle(p.personIds, id) }));
   }, [toggle]);
-  const toggleType     = useCallback((t: TransactionType) => {
-    Haptics.selectionAsync().catch(() => {});
+  const toggleType = useCallback((t: TransactionType) => {
+    Haptics.selectionAsync().catch(() => { });
     setLocal(p => ({ ...p, types: toggle(p.types, t) }));
   }, [toggle]);
   const clearDateRange = useCallback(() => {
-    Haptics.selectionAsync().catch(() => {});
+    Haptics.selectionAsync().catch(() => { });
     setLocal(p => ({ ...p, dateRange: undefined }));
   }, []);
 
   const onStartDate = useCallback((_e: DateTimePickerEvent, d?: Date) => {
     setShowStart(false);
     if (d) {
-      Haptics.selectionAsync().catch(() => {});
+      Haptics.selectionAsync().catch(() => { });
       setLocal(p => ({ ...p, dateRange: { startDate: d, endDate: p.dateRange?.endDate || new Date() } }));
     }
   }, []);
@@ -90,14 +95,14 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   const onEndDate = useCallback((_e: DateTimePickerEvent, d?: Date) => {
     setShowEnd(false);
     if (d) {
-      Haptics.selectionAsync().catch(() => {});
+      Haptics.selectionAsync().catch(() => { });
       d.setHours(23, 59, 59, 999);
       setLocal(p => ({ ...p, dateRange: { startDate: p.dateRange?.startDate || new Date(), endDate: d } }));
     }
   }, []);
 
   const handleApply = useCallback(() => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
     const mn = minAmt ? parseFloat(minAmt) : undefined;
     const mx = maxAmt ? parseFloat(maxAmt) : undefined;
     onApply({ ...local, amountRange: (mn !== undefined || mx !== undefined) ? { min: mn, max: mx } : undefined });
@@ -105,7 +110,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   }, [local, minAmt, maxAmt, onApply, onClose]);
 
   const handleReset = useCallback(() => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => { });
     setLocal(DEFAULT_ADVANCED_FILTERS);
     setMinAmt('');
     setMaxAmt('');
@@ -113,13 +118,13 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   }, [onReset]);
 
   const activeCount = useMemo(() =>
-    (local.accountIds?.length  || 0) +
+    (local.accountIds?.length || 0) +
     (local.categoryIds?.length || 0) +
-    (local.personIds?.length   || 0) +
-    (local.types?.length       || 0) +
-    (local.dateRange            ? 1 : 0) +
-    (minAmt || maxAmt           ? 1 : 0) +
-    (local.searchQuery?.trim()  ? 1 : 0),
+    (local.personIds?.length || 0) +
+    (local.types?.length || 0) +
+    (local.dateRange ? 1 : 0) +
+    (minAmt || maxAmt ? 1 : 0) +
+    (local.searchQuery?.trim() ? 1 : 0),
     [local, minAmt, maxAmt]
   );
 
@@ -136,7 +141,6 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
       keyboardBehavior="interactive"
     >
       <View style={{ flex: 1 }}>
-        {/* ── Header ── */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
@@ -144,7 +148,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             </Text>
             {activeCount > 0 && (
               <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-                <Text style={[styles.badgeText, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+                <Text style={[styles.badgeText, { fontFamily: typography.styles.badge.fontFamily, color: colors.background }]}>
                   {activeCount}
                 </Text>
               </View>
@@ -153,7 +157,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           <View style={styles.headerRight}>
             {activeCount > 0 && (
               <BentoPressable onPress={handleReset}>
-                <Text style={[styles.resetText, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
+                <Text style={[styles.resetText, { fontFamily: typography.styles.buttonLabel.fontFamily, color: colors.danger }]}>
                   Reset
                 </Text>
               </BentoPressable>
@@ -169,30 +173,25 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           scrollEventThrottle={16}
         >
 
-          {/* ── TYPE: horizontal pills ── */}
-          <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
             Type
           </Text>
           <View style={styles.typeRow}>
             {TYPE_OPTS.map(opt => {
               const sel = local.types?.includes(opt.key) || false;
-              const c   = colors[opt.colorKey];
+              const c = colors[opt.colorKey];
               return (
                 <BentoPressable
                   key={opt.key}
                   style={[
                     styles.typePill,
                     {
-                      backgroundColor: sel
-                        ? theme.isDark
-                          ? opt.key === 'CR' ? '#163228' : opt.key === 'DR' ? '#321B21' : '#1B2A4A'
-                          : opt.key === 'CR' ? '#E6F4EA' : opt.key === 'DR' ? '#FCE8E6' : '#E8F0FE'
-                        : colors.card
+                      backgroundColor: sel ? c + '18' : colors.card
                     }
                   ]}
                   onPress={() => toggleType(opt.key)}
                 >
-                  <Text style={[styles.typePillLabel, { fontFamily: typography.fonts.semibold, color: sel ? c : colors.textMuted }]}>
+                  <Text style={[styles.typePillLabel, { fontFamily: typography.styles.chipLabel.fontFamily, color: sel ? c : colors.textMuted }]}>
                     {opt.label}
                   </Text>
                 </BentoPressable>
@@ -200,49 +199,47 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             })}
           </View>
 
-          {/* ── DATE RANGE: group card with rows ── */}
-          <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
             Date range
           </Text>
           <View style={[styles.group, { backgroundColor: colors.card }]}>
             {local.dateRange ? (
               <>
                 <BentoPressable style={styles.groupRow} onPress={() => setShowStart(true)}>
-                  <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
+                  <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     From
                   </Text>
-                  <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                  <Text style={[styles.groupRowValue, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
                     {fmt(local.dateRange.startDate)}
                   </Text>
                 </BentoPressable>
                 <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
                 <BentoPressable style={styles.groupRow} onPress={() => setShowEnd(true)}>
-                  <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
+                  <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     To
                   </Text>
-                  <Text style={[styles.groupRowValue, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+                  <Text style={[styles.groupRowValue, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
                     {fmt(local.dateRange.endDate)}
                   </Text>
                   <BentoPressable onPress={clearDateRange} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                    <MaterialCommunityIcons name="close-circle" size={18} color={colors.textMuted} />
+                    <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
                   </BentoPressable>
                 </BentoPressable>
               </>
             ) : (
               <BentoPressable style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)}>
-                <MaterialCommunityIcons name="calendar-outline" size={16} color={colors.primary} />
+                <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
                 <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                   Set date range
                 </Text>
-                <MaterialCommunityIcons name="chevron-right" size={14} color={colors.textMuted} style={styles.groupChevron} />
+                <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} style={styles.groupChevron} />
               </BentoPressable>
             )}
           </View>
 
-          {/* ── AMOUNT: group card with rows ── */}
-          <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+          <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
             Amount
           </Text>
           <View style={[styles.group, { backgroundColor: colors.card }]}>
@@ -251,7 +248,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 Min
               </Text>
               <TextInput
-                style={[styles.amountInput, { fontFamily: typography.fonts.semibold, color: colors.text }]}
+                style={[styles.amountInput, { fontFamily: typography.styles.inputValue.fontFamily, color: colors.text }]}
                 value={minAmt}
                 onChangeText={setMinAmt}
                 keyboardType="decimal-pad"
@@ -267,7 +264,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 Max
               </Text>
               <TextInput
-                style={[styles.amountInput, { fontFamily: typography.fonts.semibold, color: colors.text }]}
+                style={[styles.amountInput, { fontFamily: typography.styles.inputValue.fontFamily, color: colors.text }]}
                 value={maxAmt}
                 onChangeText={setMaxAmt}
                 keyboardType="decimal-pad"
@@ -279,23 +276,22 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             </View>
           </View>
 
-          {/* ── ACCOUNTS: pill chips ── */}
           {accounts.length > 0 && (
             <>
-              <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
                 Accounts
               </Text>
               <View style={styles.pillGrid}>
                 {accounts.map(a => {
                   const sel = local.accountIds?.includes(a.id) || false;
-                  const ac  = colorNumberToHex(a.color);
+                  const ac = colorNumberToHex(a.color);
                   return (
                     <BentoPressable
                       key={a.id}
                       style={[styles.pill, { backgroundColor: sel ? ac + '18' : colors.card }]}
                       onPress={() => toggleAccount(a.id)}
                     >
-                      <MaterialCommunityIcons name={resolveIcon(a.icon, 'wallet-outline')} size={16} color={ac} />
+                      <HugeiconsIcon icon={resolveAccountTypeIcon(a.accountType as AccountType | null)} size={16} color={ac} />
                       <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
                         {a.name}
                       </Text>
@@ -306,23 +302,22 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             </>
           )}
 
-          {/* ── CATEGORIES: pill chips ── */}
           {categories.length > 0 && (
             <>
-              <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
                 Categories
               </Text>
               <View style={styles.pillGrid}>
                 {categories.map(c => {
                   const sel = local.categoryIds?.includes(c.id) || false;
-                  const cc  = colorNumberToHex(c.color);
+                  const cc = colorNumberToHex(c.color);
                   return (
                     <BentoPressable
                       key={c.id}
                       style={[styles.pill, { backgroundColor: sel ? cc + '18' : colors.card }]}
                       onPress={() => toggleCategory(c.id)}
                     >
-                      <MaterialCommunityIcons name={resolveIcon(c.icon, 'tag-outline')} size={16} color={cc} />
+                      <HugeiconsIcon icon={resolveIcon(c.icon, Tag01Icon)} size={16} color={cc} />
                       <Text style={[styles.pillLabel, { color: sel ? cc : colors.text }]}>
                         {c.name}
                       </Text>
@@ -333,26 +328,22 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             </>
           )}
 
-          {/* ── PERSONS: pill chips ── */}
           {persons.length > 0 && (
             <>
-              <Text style={[styles.sectionTitle, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+              <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
                 Persons
               </Text>
               <View style={styles.pillGrid}>
                 {persons.map(p => {
                   const sel = local.personIds?.includes(p.id) || false;
-                  const pc  = colorNumberToHex(p.color);
-                  const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
+                  const pc = colorNumberToHex(p.color);
                   return (
                     <BentoPressable
                       key={p.id}
                       style={[styles.pill, { backgroundColor: sel ? pc + '18' : colors.card }]}
                       onPress={() => togglePerson(p.id)}
                     >
-                      <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: pc, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ color: '#fff', fontWeight: '700', fontSize: 8 }}>{initials}</Text>
-                      </View>
+                      <PersonAvatar name={p.name} color={pc} size={16} variant="solid" />
                       <Text style={[styles.pillLabel, { color: sel ? pc : colors.text }]}>
                         {p.name.split(' ')[0]}
                       </Text>
@@ -372,7 +363,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             style={[styles.applyBtn, { backgroundColor: colors.text }]}
             onPress={handleApply}
           >
-            <Text style={[styles.applyLabel, { fontFamily: typography.fonts.semibold, color: colors.background }]}>
+            <Text style={[styles.applyLabel, { fontFamily: typography.styles.buttonLabel.fontFamily, color: colors.background }]}>
               Apply filters
             </Text>
           </BentoPressable>
@@ -401,7 +392,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, insets: any) =>
   StyleSheet.create({
     header: {
       flexDirection: 'row',
@@ -411,9 +402,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingTop: spacing('4'),
       paddingBottom: spacing('2'),
     },
-    headerLeft:  { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
+    headerLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
     headerRight: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
-    title:       { fontSize: 22 },
+    title: { fontSize: 22 },
     badge: {
       minWidth: 20,
       height: 20,
@@ -435,7 +426,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingLeft: spacing('0.5'),
       marginHorizontal: layout.screenPadding,
     },
-    typeRow:  {
+    typeRow: {
       flexDirection: 'row',
       gap: spacing('2'),
       marginHorizontal: layout.screenPadding,
@@ -465,8 +456,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     groupRowLabel: { fontSize: typography.sizes.sm },
     groupRowValue: { flex: 1, fontSize: typography.sizes.sm, textAlign: 'right' },
-    groupChevron:  { marginLeft: 'auto' },
-    groupSep:      { height: 1, marginHorizontal: spacing('4') },
+    groupChevron: { marginLeft: 'auto' },
+    groupSep: { height: 1, marginHorizontal: spacing('4') },
     amountInput: {
       flex: 1,
       fontSize: typography.sizes.md,
@@ -492,16 +483,16 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: 13,
     },
     inlineToggles: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
-    toggleSep:     { fontSize: typography.sizes.xs, opacity: 0.4 },
-    toggleOption:  { fontSize: typography.sizes.sm },
+    toggleSep: { fontSize: typography.sizes.xs, opacity: 0.4 },
+    toggleOption: { fontSize: typography.sizes.sm },
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      paddingBottom: spacing('3'),
+      paddingBottom: insets.bottom > 0 ? insets.bottom + spacing('2') : spacing('3'),
     },
     applyBtn: {
       height: 52,
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
       alignItems: 'center',
       justifyContent: 'center',
     },

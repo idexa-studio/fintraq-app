@@ -1,5 +1,6 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CancelCircleIcon, CheckmarkCircle01Icon, Search01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo, useState, useCallback } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { CURRENCIES } from '../../../constants/currency';
@@ -56,7 +57,7 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
           <Text style={styles.symbolText}>{item.symbol}</Text>
         </View>
         {isSelected && (
-          <MaterialCommunityIcons name="check-circle" size={18} color={colors.primary} />
+          <HugeiconsIcon icon={CheckmarkCircle01Icon} size={18} color={colors.primary} />
         )}
       </BentoPressable>
     );
@@ -73,7 +74,7 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
       </View>
 
       <View style={styles.searchRow}>
-        <MaterialCommunityIcons name="magnify" size={15} color={colors.textMuted} />
+        <HugeiconsIcon icon={Search01Icon} size={15} color={colors.textMuted} />
         <TextInput
           style={styles.searchInput}
           value={query}
@@ -86,7 +87,7 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
         />
         {query.length > 0 && (
           <BentoPressable onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <MaterialCommunityIcons name="close-circle" size={15} color={colors.textMuted} />
+            <HugeiconsIcon icon={CancelCircleIcon} size={15} color={colors.textMuted} />
           </BentoPressable>
         )}
       </View>
@@ -137,10 +138,9 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       textAlign: 'center',
     },
     previewCode: {
-      fontFamily: typography.fonts.bold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: 16,
       color: colors.text,
-      letterSpacing: 0.5,
     },
     previewName: {
       fontFamily: typography.fonts.regular,
@@ -154,7 +154,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       alignItems: 'center',
       gap: spacing('2'),
       height: 44,
-      borderRadius: radius('md'),
+      borderRadius: radius('xl'),
       backgroundColor: colors.surface,
       paddingHorizontal: spacing('3'),
     },
@@ -170,14 +170,14 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       gap: 0,
     },
     listSection: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       marginBottom: spacing('2'),
       paddingLeft: spacing('1'),
     },
     listSectionSpaced: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       marginTop: spacing('4'),
@@ -207,7 +207,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       backgroundColor: colors.primary + '20',
     },
     codeText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
     },
@@ -227,10 +227,10 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       color: colors.text,
     },
     currencyNameSelected: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
     },
     symbolText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.badge.fontFamily,
       fontSize: 12,
       color: colors.textMuted,
     },

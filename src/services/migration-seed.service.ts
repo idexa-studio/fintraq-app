@@ -26,7 +26,7 @@ export class MigrationSeedService {
         meta: {
           platform: 'react-native',
           exportTime: new Date().toISOString(),
-          app: 'Keeep',
+          app: 'Fintraq',
           schemaVersion: 1,
         },
         database: {

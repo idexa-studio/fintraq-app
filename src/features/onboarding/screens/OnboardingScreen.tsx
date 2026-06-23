@@ -15,10 +15,12 @@ import { OnboardingFormValues } from '@/src/features/onboarding/types';
 import { useOnboarding } from '@/src/providers/OnboardingProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { useTheme } from '@/src/providers/ThemeProvider';
+import { AnalyticsService } from '@/src/services/analytics';
 import { NotificationService } from '@/src/services/notification.service';
 import type { TransactionType } from '@/src/types';
 import { toDbColor } from '@/src/utils/format';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -82,67 +84,67 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
     const defaults: { name: string; icon: string; color: number; type: TransactionType }[] = [
       // ── Income ──────────────────────────────────────────────────────
       { name: 'Salary', icon: 'cash', color: toDbColor('#059669'), type: 'CR' },
-      { name: 'Freelance', icon: 'creation', color: toDbColor('#65A30D'), type: 'CR' },
-      { name: 'Sales', icon: 'cart-outline', color: toDbColor('#D97706'), type: 'CR' },
-      { name: 'Dividends', icon: 'trending-up', color: toDbColor('#2563EB'), type: 'CR' },
-      { name: 'Interests', icon: 'plus-circle-outline', color: toDbColor('#7C3AED'), type: 'CR' },
-      { name: 'Gifts', icon: 'gift-outline', color: toDbColor('#BE185D'), type: 'CR' },
+      { name: 'Freelance', icon: 'sparkles', color: toDbColor('#65A30D'), type: 'CR' },
+      { name: 'Sales', icon: 'shopping-cart', color: toDbColor('#D97706'), type: 'CR' },
+      { name: 'Dividends', icon: 'chart-up', color: toDbColor('#2563EB'), type: 'CR' },
+      { name: 'Interests', icon: 'chart-bar-increasing', color: toDbColor('#7C3AED'), type: 'CR' },
+      { name: 'Gifts', icon: 'gift', color: toDbColor('#BE185D'), type: 'CR' },
       { name: 'Refunds', icon: 'refresh', color: toDbColor('#059669'), type: 'CR' },
-      { name: 'Other Income', icon: 'wallet-outline', color: toDbColor('#334155'), type: 'CR' },
+      { name: 'Other Income', icon: 'building', color: toDbColor('#334155'), type: 'CR' },
 
       // ── Housing & Utilities ──────────────────────────────────────────
-      { name: 'Rent', icon: 'domain', color: toDbColor('#EA580C'), type: 'DR' },
-      { name: 'Mortgage', icon: 'home-outline', color: toDbColor('#DC2626'), type: 'DR' },
-      { name: 'Electricity', icon: 'flash-outline', color: toDbColor('#D97706'), type: 'DR' },
-      { name: 'Water', icon: 'water-outline', color: toDbColor('#0369A1'), type: 'DR' },
+      { name: 'Rent', icon: 'building', color: toDbColor('#EA580C'), type: 'DR' },
+      { name: 'Mortgage', icon: 'home', color: toDbColor('#DC2626'), type: 'DR' },
+      { name: 'Electricity', icon: 'flash', color: toDbColor('#D97706'), type: 'DR' },
+      { name: 'Water', icon: 'droplets', color: toDbColor('#0369A1'), type: 'DR' },
       { name: 'Internet', icon: 'wifi', color: toDbColor('#4338CA'), type: 'DR' },
-      { name: 'Phone', icon: 'cellphone', color: toDbColor('#4F46E5'), type: 'DR' },
-      { name: 'Maintenance', icon: 'wrench-outline', color: toDbColor('#475569'), type: 'DR' },
+      { name: 'Phone', icon: 'smartphone', color: toDbColor('#4F46E5'), type: 'DR' },
+      { name: 'Maintenance', icon: 'wrench', color: toDbColor('#475569'), type: 'DR' },
 
       // ── Food & Drink ────────────────────────────────────────────────
-      { name: 'Groceries', icon: 'basket-outline', color: toDbColor('#B45309'), type: 'DR' },
-      { name: 'Dining Out', icon: 'silverware-fork-knife', color: toDbColor('#EA580C'), type: 'DR' },
+      { name: 'Groceries', icon: 'shopping-basket', color: toDbColor('#B45309'), type: 'DR' },
+      { name: 'Dining Out', icon: 'fork', color: toDbColor('#EA580C'), type: 'DR' },
       { name: 'Delivery', icon: 'bike', color: toDbColor('#DC2626'), type: 'DR' },
-      { name: 'Coffee', icon: 'coffee-outline', color: toDbColor('#B45309'), type: 'DR' },
-      { name: 'Drinks', icon: 'glass-wine', color: toDbColor('#6D28D9'), type: 'DR' },
+      { name: 'Coffee', icon: 'coffee', color: toDbColor('#B45309'), type: 'DR' },
+      { name: 'Drinks', icon: 'drink', color: toDbColor('#6D28D9'), type: 'DR' },
 
       // ── Transport ───────────────────────────────────────────────────
-      { name: 'Fuel', icon: 'speedometer', color: toDbColor('#EA580C'), type: 'DR' },
-      { name: 'Car Payment', icon: 'car-outline', color: toDbColor('#2563EB'), type: 'DR' },
+      { name: 'Fuel', icon: 'dashboard-speed', color: toDbColor('#EA580C'), type: 'DR' },
+      { name: 'Car Payment', icon: 'car', color: toDbColor('#2563EB'), type: 'DR' },
       { name: 'Public Transit', icon: 'bus', color: toDbColor('#0E7490'), type: 'DR' },
-      { name: 'Ride Share', icon: 'car-outline', color: toDbColor('#059669'), type: 'DR' },
-      { name: 'Parking', icon: 'crosshairs-gps', color: toDbColor('#334155'), type: 'DR' },
+      { name: 'Ride Share', icon: 'car', color: toDbColor('#059669'), type: 'DR' },
+      { name: 'Parking', icon: 'map-pin', color: toDbColor('#334155'), type: 'DR' },
 
       // ── Health & Wellness ───────────────────────────────────────────
-      { name: 'Health', icon: 'medical-bag', color: toDbColor('#BE123C'), type: 'DR' },
+      { name: 'Health', icon: 'bandage', color: toDbColor('#BE123C'), type: 'DR' },
       { name: 'Pharmacy', icon: 'bandage', color: toDbColor('#059669'), type: 'DR' },
-      { name: 'Gym', icon: 'weight-lifter', color: toDbColor('#059669'), type: 'DR' },
-      { name: 'Personal Care', icon: 'content-cut', color: toDbColor('#BE185D'), type: 'DR' },
+      { name: 'Gym', icon: 'dumbbell', color: toDbColor('#059669'), type: 'DR' },
+      { name: 'Personal Care', icon: 'scissor', color: toDbColor('#BE185D'), type: 'DR' },
 
       // ── Lifestyle & Fun ──────────────────────────────────────────────
-      { name: 'Shopping', icon: 'shopping-outline', color: toDbColor('#BE185D'), type: 'DR' },
-      { name: 'Electronics', icon: 'cpu-64-bit', color: toDbColor('#4338CA'), type: 'DR' },
+      { name: 'Shopping', icon: 'shopping-bag', color: toDbColor('#BE185D'), type: 'DR' },
+      { name: 'Electronics', icon: 'cpu', color: toDbColor('#4338CA'), type: 'DR' },
       { name: 'Subscrip.', icon: 'repeat', color: toDbColor('#7C3AED'), type: 'DR' },
-      { name: 'Entertainment', icon: 'filmstrip', color: toDbColor('#E11D48'), type: 'DR' },
+      { name: 'Entertainment', icon: 'film', color: toDbColor('#E11D48'), type: 'DR' },
       { name: 'Travel', icon: 'airplane', color: toDbColor('#0E7490'), type: 'DR' },
-      { name: 'Games', icon: 'gamepad-variant-outline', color: toDbColor('#7C3AED'), type: 'DR' },
-      { name: 'Books', icon: 'book-open-page-variant-outline', color: toDbColor('#D97706'), type: 'DR' },
+      { name: 'Games', icon: 'gamepad', color: toDbColor('#7C3AED'), type: 'DR' },
+      { name: 'Books', icon: 'book-open', color: toDbColor('#D97706'), type: 'DR' },
 
       // ── Family & Education ──────────────────────────────────────────
-      { name: 'Education', icon: 'school-outline', color: toDbColor('#0369A1'), type: 'DR' },
-      { name: 'Kids', icon: 'emoticon-happy-outline', color: toDbColor('#D97706'), type: 'DR' },
-      { name: 'Pets', icon: 'paw', color: toDbColor('#65A30D'), type: 'DR' },
-      { name: 'Gifts given', icon: 'heart-outline', color: toDbColor('#E11D48'), type: 'DR' },
+      { name: 'Education', icon: 'school', color: toDbColor('#0369A1'), type: 'DR' },
+      { name: 'Kids', icon: 'smile', color: toDbColor('#D97706'), type: 'DR' },
+      { name: 'Pets', icon: 'cat', color: toDbColor('#65A30D'), type: 'DR' },
+      { name: 'Gifts given', icon: 'heart', color: toDbColor('#E11D48'), type: 'DR' },
 
       // ── Finance & Taxes ─────────────────────────────────────────────
-      { name: 'Loan/EMI', icon: 'card-outline', color: toDbColor('#DC2626'), type: 'DR' },
-      { name: 'Taxes', icon: 'file-document-outline', color: toDbColor('#475569'), type: 'DR' },
-      { name: 'Insurance', icon: 'shield-check-outline', color: toDbColor('#334155'), type: 'DR' },
-      { name: 'Fees', icon: 'receipt-text-outline', color: toDbColor('#334155'), type: 'DR' },
-      { name: 'Other', icon: 'dots-horizontal', color: toDbColor('#475569'), type: 'DR' },
+      { name: 'Loan/EMI', icon: 'credit-card', color: toDbColor('#DC2626'), type: 'DR' },
+      { name: 'Taxes', icon: 'file', color: toDbColor('#475569'), type: 'DR' },
+      { name: 'Insurance', icon: 'shield', color: toDbColor('#334155'), type: 'DR' },
+      { name: 'Fees', icon: 'receipt-text', color: toDbColor('#334155'), type: 'DR' },
+      { name: 'Other', icon: 'more-horizontal', color: toDbColor('#475569'), type: 'DR' },
 
       // ── Transfers ────────────────────────────────────────────────────
-      { name: 'Transfer', icon: 'swap-horizontal', color: toDbColor('#2563EB'), type: 'TR' },
+      { name: 'Transfer', icon: 'repeat', color: toDbColor('#2563EB'), type: 'TR' },
     ];
 
     for (const category of defaults) {
@@ -164,7 +166,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         name: 'Cash',
         holderName: name.trim() || 'Personal',
         accountNumber: '',
-        icon: 'wallet-outline',
+        icon: 'building',
         color: toDbColor(ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)]),
         isDefault: true,
         currency,
@@ -175,6 +177,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
 
       await seedCategories();
       await completeOnboarding();
+      await AnalyticsService.onboardingCompleted(currency);
       setShowReminderDialog(true);
     } catch {
       Alert.alert('Setup failed', 'Could not initialize your workspace. Please try again.');
@@ -222,13 +225,13 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
             <View style={styles.headerTopRow}>
               {stepIndex > 0 ? (
                 <BentoPressable style={styles.headerBackButton} onPress={() => setStepIndex((i) => i - 1)}>
-                  <MaterialCommunityIcons name="chevron-left" size={18} color={colors.text} />
+                  <HugeiconsIcon icon={ArrowLeft01Icon} size={18} color={colors.text} />
                 </BentoPressable>
               ) : (
                 <View style={styles.headerBackPlaceholder} />
               )}
 
-              <Text style={styles.brand}>Keeep<Text style={{ color: colors.primary }}>.</Text></Text>
+              <Text style={styles.brand}>Fintraq<Text style={{ color: colors.primary }}>.</Text></Text>
 
               <View style={styles.stepPill}>
                 <Text style={styles.stepPillText}>{stepIndex + 1}/{ONBOARDING_STEPS.length}</Text>
@@ -253,12 +256,12 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
               <Text style={styles.stepSubtitle}>{currentStep.subtitle}</Text>
             </View>
 
-            <View style={styles.contentCard}>{renderStepContent()}</View>
+            {renderStepContent()}
           </ScrollView>
 
           <View style={styles.footer}>
             <Button
-              title={stepIndex === ONBOARDING_STEPS.length - 1 ? 'Launch Keeep' : 'Continue'}
+              title={stepIndex === ONBOARDING_STEPS.length - 1 ? 'Launch Fintraq' : 'Continue'}
               onPress={handleContinue}
               size="lg"
               isLoading={isPending}

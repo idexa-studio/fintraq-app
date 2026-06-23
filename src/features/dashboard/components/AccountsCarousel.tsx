@@ -3,7 +3,9 @@ import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
+import { resolveAccountTypeIcon } from '@/src/utils/icons';
+import type { AccountType } from '@/src/types';
+import { PlusSignIcon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import type { Account } from '../../accounts/api/accounts';
@@ -45,21 +47,21 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
             <View style={styles.upper}>
               <View style={styles.topRow}>
                 <IconAvatar
-                  icon={resolveIcon(acc.icon, 'wallet-outline')}
+                  icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)}
                   color={c}
                   variant="subtle"
                   size={34}
                   iconSize={14}
                 />
                 <View style={styles.meta}>
-                  <Text style={[styles.name, { fontFamily: typography.fonts.semibold, color: colors.text }]} numberOfLines={1}>
+                  <Text style={[styles.name, { fontFamily: typography.styles.cardTitle.fontFamily, color: colors.text }]} numberOfLines={1}>
                     {acc.name}
                   </Text>
                   <Text style={[styles.hint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
                     {hint}
                   </Text>
                 </View>
-                <View style={[styles.currencyBadge, { backgroundColor: c + '1A' }]}>
+                <View style={[styles.currencyBadge, { backgroundColor: c + '18' }]}>
                   <Text style={[styles.currency, { fontFamily: typography.fonts.medium, color: c }]}>
                     {acc.currency}
                   </Text>
@@ -67,7 +69,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
               </View>
 
               <View style={styles.balanceContainer}>
-                <Text style={[styles.balanceLabel, { fontFamily: typography.fonts.semibold, color: colors.textMuted }]}>
+                <Text style={[styles.balanceLabel, { fontFamily: typography.styles.caption.fontFamily, color: colors.textMuted }]}>
                   Available balance
                 </Text>
                 <MoneyText amount={acc.balance} currency={acc.currency} style={styles.balance} weight="bold" />
@@ -82,8 +84,8 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
         style={[styles.addCard, { width: cardWidth }]}
         onPress={onPressAdd}
       >
-        <IconAvatar icon="plus" color={colors.primary} variant="subtle" size={36} iconSize={16} />
-        <Text style={[styles.addTitle, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
+        <IconAvatar icon={PlusSignIcon} color={colors.primary} variant="subtle" size={36} iconSize={16} />
+        <Text style={[styles.addTitle, { fontFamily: typography.styles.cardTitle.fontFamily, color: colors.text }]}>
           Add account
         </Text>
       </BentoPressable>
@@ -118,20 +120,19 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       gap: spacing('0.5'),
     },
     name: { fontSize: typography.sizes.sm },
-    hint: { fontSize: typography.sizes.xs, opacity: 0.55 },
+    hint: { fontSize: typography.sizes.xs },
     currencyBadge: {
       paddingHorizontal: spacing('2'),
       paddingVertical: spacing('0.5'),
       borderRadius: radius('full'),
     },
-    currency: { fontSize: 11 },
+    currency: { fontSize: typography.sizes.xs },
 
     balanceContainer: {
       gap: spacing('0.5'),
     },
-    balanceLabel: { 
-      fontSize: 11, 
-      opacity: 0.55, 
+    balanceLabel: {
+      fontSize: typography.sizes.xs,
     },
     balance: { fontSize: 20, lineHeight: 24 },
 

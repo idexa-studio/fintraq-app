@@ -1,9 +1,3 @@
-Keeep Update Notes
-
-Luno is now Keeep - same app, fresh name.
-
-What's New in this Update (1.1.5)
-
 App Lock Security
 - Protect your financial data by enabling App Lock.
 - Support for biometric authentication (Face ID / Fingerprint) or a secure 6-digit PIN.

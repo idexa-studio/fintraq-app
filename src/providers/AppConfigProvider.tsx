@@ -174,7 +174,7 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
   if (action === 'force-update') {
     return (
       <ForceUpdateScreen
-        androidStoreUrl={storeLinks?.androidStore || 'https://play.google.com/store/apps/details?id=com.keeep'}
+        androidStoreUrl={storeLinks?.androidStore || 'https://play.google.com/store/apps/details?id=me.nafish.luno'}
         iosStoreUrl={storeLinks?.iosStore || 'https://apps.apple.com/app/id123456'}
         currentVersion={getAppVersion()}
         latestVersion="Latest"
@@ -190,7 +190,7 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
         visible={showSoftPrompt}
         onClose={handleSoftUpdateClose}
         title="Update available"
-        message={message || 'A new version of Keeep is available. Would you like to update now to get the latest features?'}
+        message={message || 'A new version of Fintraq is available. Would you like to update now to get the latest features?'}
         confirmLabel="Update"
         cancelLabel="Later"
         destructive={false}

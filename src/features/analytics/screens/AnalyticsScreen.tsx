@@ -1,14 +1,16 @@
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { format } from 'date-fns';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { DEFAULT_CURRENCY } from '@/src/constants/currency';
+import { StorageKeys } from '@/src/constants/keys';
+import { AccountType } from '@/src/types';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
-import { LinearAreaChart, type BarBucket } from '@/src/features/analytics/components/LinearAreaChart';
 import { DowChart } from '@/src/features/analytics/components/DowChart';
+import { LinearAreaChart, type BarBucket } from '@/src/features/analytics/components/LinearAreaChart';
 import {
   useAnalyticsCategoryBreakdown,
   useAnalyticsDailyData,
@@ -16,14 +18,15 @@ import {
   useAnalyticsMonthlyData,
   useAnalyticsPersonBreakdown,
 } from '@/src/features/analytics/hooks/useAnalyticsData';
+import { ANALYTICS_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { resolveIcon } from '@/src/utils/icons';
-import { WalkthroughOverlay, ANALYTICS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
-import { StorageKeys } from '@/src/constants/keys';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
+import { Calendar01Icon, ChartLineData01Icon, LockPasswordIcon, Tag01Icon, Wallet05Icon } from '@hugeicons/core-free-icons';
+import type { IconSvgElement } from '@hugeicons/react-native';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import { format } from 'date-fns';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import {
@@ -76,57 +79,38 @@ const chunkAggregate = (
   return result;
 };
 
-function EmptyState({
-  icon,
-  title,
-  subtitle,
-}: {
-  icon: keyof typeof MaterialCommunityIcons.glyphMap;
-  title: string;
-  subtitle: string;
-}) {
+function EmptyState({ icon, title, subtitle }: { icon: IconSvgElement; title: string; subtitle: string }) {
   const theme = useTheme();
-  const styles = useMemo(
-    () => {
-      const { colors, typography, spacing, radius } = theme;
-      return StyleSheet.create({
-        row: {
-          flexDirection: 'row' as const,
-          alignItems: 'center' as const,
-          gap: spacing('3'),
-          backgroundColor: colors.surface,
-          borderRadius: radius('xl'),
-          padding: spacing('4'),
-          marginHorizontal: 16,
-        },
-        iconRing: {
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          backgroundColor: colors.primary + '14',
-          justifyContent: 'center' as const,
-          alignItems: 'center' as const,
-        },
-        texts: { flex: 1, gap: 2 },
-        titleText: {
-          fontFamily: typography.fonts.semibold,
-          fontSize: 13,
-          color: colors.text,
-        },
-        subText: {
-          fontFamily: typography.fonts.regular,
-          fontSize: 11,
-          color: colors.textMuted,
-          lineHeight: 15,
-        },
-      });
-    },
-    [theme],
-  );
+  const styles = useMemo(() => {
+    const { colors, typography, spacing, radius } = theme;
+    return StyleSheet.create({
+      row: {
+        flexDirection: 'row' as const,
+        alignItems: 'center' as const,
+        gap: spacing('3'),
+        backgroundColor: colors.surface,
+        borderRadius: radius('xl'),
+        padding: spacing('4'),
+        marginHorizontal: theme.layout.screenPadding,
+      },
+      iconRing: {
+        width: 40,
+        height: 40,
+        borderRadius: radius('xl'),
+        backgroundColor: colors.primary + '14',
+        justifyContent: 'center' as const,
+        alignItems: 'center' as const,
+      },
+      texts: { flex: 1, gap: 2 },
+      titleText: { fontFamily: typography.styles.rowLabel.fontFamily, fontSize: 13, color: colors.text },
+      subText: { fontFamily: typography.fonts.regular, fontSize: 11, color: colors.textMuted, lineHeight: 15 },
+    });
+  }, [theme]);
+
   return (
     <View style={styles.row}>
       <View style={styles.iconRing}>
-        <MaterialCommunityIcons name={icon} size={18} color={theme.colors.primary} />
+        <HugeiconsIcon icon={icon} size={18} color={theme.colors.primary} />
       </View>
       <View style={styles.texts}>
         <Text style={styles.titleText}>{title}</Text>
@@ -138,9 +122,17 @@ function EmptyState({
 
 export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
-  const { colors, layout, spacing } = theme;
+  const { colors, layout, spacing, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { width: screenWidth } = useWindowDimensions();
+  const gridCellWidth = useMemo(
+    () => (screenWidth - layout.screenPadding * 2 - spacing('2')) / 2,
+    [screenWidth, layout, spacing],
+  );
+  const cardCellWidth = useMemo(
+    () => (screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2 - spacing('2')) / 2,
+    [screenWidth, layout, spacing],
+  );
   const chartWidth = screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2;
   const router = useRouter();
   const { isPremium } = usePremium();
@@ -250,9 +242,9 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
       ) : (
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
-          {/* Currency picker */}
+          {/* Currency picker — only shown when multiple */}
           {currencyKeys.length > 1 && (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillRow}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollPillRow}>
               {currencyKeys.map(c => (
                 <BentoPressable
                   key={c}
@@ -276,7 +268,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   onPress={locked ? navigateToPremium : () => handleRangeSelect(r.days)}
                 >
                   <Text style={[styles.pillText, r.days === selectedRange && styles.pillTextActive]}>{r.label}</Text>
-                  {locked && <MaterialCommunityIcons name="lock" size={9} color={colors.textMuted} style={styles.lockIcon} />}
+                  {locked && <HugeiconsIcon icon={LockPasswordIcon} size={9} color={colors.textMuted} />}
                 </BentoPressable>
               );
             })}
@@ -284,8 +276,20 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           <Text style={styles.durationText}>{rangeSubtitle}</Text>
 
-          {/* Summary metrics 2×2 */}
+          {/* Row 1: Income + Expenses (raw inputs) */}
           <View style={styles.metricsGrid}>
+            <View style={[styles.metricTile, { backgroundColor: colors.success + '15' }]}>
+              <Text style={[styles.metricLabel, { color: colors.success }]}>Income</Text>
+              <MoneyText amount={summary.income} currency={selectedCurrency} type="CR" weight="bold" compact style={styles.metricSmall} />
+            </View>
+            <View style={[styles.metricTile, { backgroundColor: colors.danger + '15' }]}>
+              <Text style={[styles.metricLabel, { color: colors.danger }]}>Expenses</Text>
+              <MoneyText amount={summary.expense} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.metricSmall} />
+            </View>
+          </View>
+
+          {/* Row 2: Net position (wide) + Savings (derived) */}
+          <View style={[styles.metricsGrid, styles.metricsGridLast]}>
             <View style={[styles.metricTile, styles.metricTileWide]}>
               <Text style={styles.metricLabel}>Net position</Text>
               <MoneyText
@@ -305,17 +309,6 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             </View>
           </View>
 
-          <View style={styles.metricsGrid}>
-            <View style={[styles.metricTile, { backgroundColor: colors.success + '15' }]}>
-              <Text style={[styles.metricLabel, { color: colors.success }]}>Income</Text>
-              <MoneyText amount={summary.income} currency={selectedCurrency} type="CR" weight="bold" compact style={styles.metricSmall} />
-            </View>
-            <View style={[styles.metricTile, { backgroundColor: colors.danger + '15' }]}>
-              <Text style={[styles.metricLabel, { color: colors.danger }]}>Expenses</Text>
-              <MoneyText amount={summary.expense} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.metricSmall} />
-            </View>
-          </View>
-
           {/* Spending trend */}
           <SectionHeader
             title="Spending trend"
@@ -323,7 +316,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           />
           {areaData.length === 0 ? (
             <EmptyState
-              icon="chart-line"
+              icon={ChartLineData01Icon}
               title="No trend data yet"
               subtitle="Add income or expense transactions to see your spending trend."
             />
@@ -345,10 +338,10 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* Period flow */}
           <SectionHeader title="Period flow" />
-          <PremiumGuard label="Period Flow" size="medium">
+          <PremiumGuard label="Period Flow" size="medium" containerStyle={styles.guard}>
             {barData.length === 0 ? (
               <EmptyState
-                icon="chart-line"
+                icon={ChartLineData01Icon}
                 title="No period data yet"
                 subtitle="Record transactions to visualise income vs expense by period."
               />
@@ -371,10 +364,9 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* Category breakdown — stacked bar + 2-column cards */}
           <SectionHeader title="Category breakdown" rightText={`${(categoryData ?? []).length} groups`} />
-          <PremiumGuard label="Category Breakdown" size="medium">
+          <PremiumGuard label="Category Breakdown" size="medium" containerStyle={styles.guard}>
             {(categoryData ?? []).length > 0 ? (
               <View style={styles.catSection}>
-                {/* Single stacked bar */}
                 <View style={styles.stackedBar}>
                   {(categoryData ?? []).map((cat, idx) => (
                     <View
@@ -384,17 +376,15 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   ))}
                 </View>
 
-                {/* 2-column category cards */}
                 <View style={styles.categoryGrid}>
                   {(categoryData ?? []).map((cat, idx) => {
                     const accent = colorNumberToHex(cat.color);
                     const total = (categoryData ?? []).reduce((s, c) => s + c.amount, 0);
                     const pct = total > 0 ? (cat.amount / total) * 100 : 0;
                     return (
-                      <View key={`${cat.name}-${idx}`} style={styles.categoryCell}>
-
+                      <View key={`${cat.name}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
                         <IconAvatar
-                          icon={resolveIcon(cat.icon, 'tag-outline')}
+                          icon={resolveIcon(cat.icon, Tag01Icon)}
                           color={accent}
                           variant="solid"
                           size={28}
@@ -403,7 +393,6 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                         <View style={styles.catContent}>
                           <Text style={styles.catName} numberOfLines={1}>{cat.name}</Text>
                           <MoneyText amount={cat.amount} currency={selectedCurrency} type="DR" compact style={styles.catAmount} />
-
                         </View>
                         <Text style={[styles.catPercent, { color: colors.textMuted }]}>{pct.toFixed(0)}%</Text>
                       </View>
@@ -413,7 +402,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               </View>
             ) : (
               <EmptyState
-                icon="tag-outline"
+                icon={Tag01Icon}
                 title="No category data yet"
                 subtitle="Add expense transactions to see a breakdown by category."
               />
@@ -424,7 +413,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           {(personBreakdown ?? []).length > 0 && (
             <>
               <SectionHeader title="Person breakdown" rightText={`${(personBreakdown ?? []).length} persons`} />
-              <PremiumGuard label="Person Breakdown" size="medium">
+              <PremiumGuard label="Person Breakdown" size="medium" containerStyle={styles.guard}>
                 <View style={styles.catSection}>
                   <View style={styles.stackedBar}>
                     {(personBreakdown ?? []).map((p, idx) => (
@@ -441,9 +430,9 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                       const pct = total > 0 ? (p.amount / total) * 100 : 0;
                       const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
                       return (
-                        <View key={`pp-${p.id}-${idx}`} style={styles.categoryCell}>
-                          <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: hex, alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 10 }}>{initials}</Text>
+                        <View key={`pp-${p.id}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
+                          <View style={[styles.personAvatar, { backgroundColor: hex + '18' }]}>
+                            <Text style={[styles.personInitials, { color: hex }]}>{initials}</Text>
                           </View>
                           <View style={styles.catContent}>
                             <Text style={styles.catName} numberOfLines={1}>{p.name}</Text>
@@ -461,7 +450,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* Account split */}
           <SectionHeader title="Account split" rightText={`${accountDistribution.length} accounts`} />
-          <PremiumGuard label="Account Split" size="medium">
+          <PremiumGuard label="Account Split" size="medium" containerStyle={styles.guard}>
             {accountDistribution.length > 0 ? (
               <View style={styles.catSection}>
                 <View style={styles.stackedBar}>
@@ -474,9 +463,9 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                 </View>
                 <View style={styles.categoryGrid}>
                   {accountDistribution.map((acc, idx) => (
-                    <View key={`${acc.id}-${idx}`} style={styles.categoryCell}>
+                    <View key={`${acc.id}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
                       <IconAvatar
-                        icon={resolveIcon(acc.icon, 'wallet-outline')}
+                        icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)}
                         color={acc.hex}
                         variant="solid"
                         size={28}
@@ -493,7 +482,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               </View>
             ) : (
               <EmptyState
-                icon="wallet-outline"
+                icon={Wallet05Icon}
                 title={`No ${selectedCurrency} accounts`}
                 subtitle="Add an account in this currency to see the balance split."
               />
@@ -502,10 +491,10 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* Spending by weekday */}
           <SectionHeader title="Spending by weekday" rightText="Average pattern" />
-          <PremiumGuard label="Spending by Weekday" size="medium">
+          <PremiumGuard label="Spending by Weekday" size="medium" containerStyle={styles.guard}>
             {(dowData ?? []).length === 0 ? (
               <EmptyState
-                icon="calendar-week"
+                icon={Calendar01Icon}
                 title="No weekday pattern yet"
                 subtitle="More transactions will reveal your spending rhythm by day."
               />
@@ -523,26 +512,26 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* Behavioral insights */}
           <SectionHeader title="Behavioral insights" />
-          <PremiumGuard label="Behavioral Insights" size="medium">
+          <PremiumGuard label="Behavioral Insights" size="medium" containerStyle={styles.guard}>
             <View style={styles.card}>
               <View style={styles.kpiGrid}>
-                <View style={styles.kpiCell}>
+                <View style={[styles.kpiCell, { width: cardCellWidth }]}>
                   <Text style={styles.kpiLabel}>Daily burn</Text>
                   <MoneyText amount={metrics.dailyBurn} currency={selectedCurrency} type="DR" weight="bold" style={styles.kpiValue} />
                 </View>
-                <View style={styles.kpiCell}>
+                <View style={[styles.kpiCell, { width: cardCellWidth }]}>
                   <Text style={styles.kpiLabel}>Runway</Text>
                   <Text style={styles.kpiPlain}>
                     {metrics.runway === null ? '∞' : `${Math.max(0, metrics.runway).toFixed(0)}d`}
                   </Text>
                 </View>
-                <View style={styles.kpiCell}>
+                <View style={[styles.kpiCell, { width: cardCellWidth }]}>
                   <Text style={styles.kpiLabel}>In/out ratio</Text>
                   <Text style={styles.kpiPlain}>
                     {metrics.flowRatio === null ? '—' : `${metrics.flowRatio.toFixed(2)}×`}
                   </Text>
                 </View>
-                <View style={styles.kpiCell}>
+                <View style={[styles.kpiCell, { width: cardCellWidth }]}>
                   <Text style={styles.kpiLabel}>Active days</Text>
                   <Text style={styles.kpiPlain}>{metrics.txCount}</Text>
                 </View>
@@ -561,7 +550,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    content: { paddingBottom: 24, paddingTop: spacing('2') },
+    content: { paddingBottom: 110, paddingTop: spacing('3') },
+    guard: { marginHorizontal: layout.screenPadding },
 
     // ── Pill selectors
     pillRow: {
@@ -571,9 +561,16 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexWrap: 'wrap',
       paddingHorizontal: layout.screenPadding,
     },
+    scrollPillRow: {
+      flexDirection: 'row',
+      gap: spacing('2'),
+      marginBottom: spacing('3'),
+      paddingHorizontal: layout.screenPadding,
+    },
     pill: {
       flexDirection: 'row',
       alignItems: 'center',
+      gap: spacing('1'),
       height: 32,
       paddingHorizontal: spacing('3'),
       borderRadius: radius('full'),
@@ -581,15 +578,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     pillActive: { backgroundColor: colors.primary + '18' },
     pillLocked: { opacity: 0.55 },
-    pillText: { fontFamily: typography.fonts.semibold, color: colors.textMuted, fontSize: 11 },
+    pillText: { fontFamily: typography.styles.chipLabel.fontFamily, color: colors.textMuted, fontSize: typography.sizes.xs },
     pillTextActive: { color: colors.primary },
-    lockIcon: { marginLeft: spacing('1') },
     durationText: {
       fontFamily: typography.fonts.medium,
       fontSize: 12,
       color: colors.textMuted,
       paddingHorizontal: layout.screenPadding,
-      marginBottom: spacing('3'),
+      marginBottom: spacing('4'),
     },
 
     // ── Metric tiles
@@ -598,6 +594,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('2'),
       marginBottom: spacing('2'),
       paddingHorizontal: layout.screenPadding,
+    },
+    metricsGridLast: {
+      marginBottom: spacing('1'),
     },
     metricTile: {
       flex: 1,
@@ -608,15 +607,15 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     metricTileWide: { flex: 2 },
     metricLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
     },
-    metricValue: { fontSize: 22, lineHeight: 26, letterSpacing: -0.5 },
-    metricSmall: { fontSize: 15 },
+    metricValue: { fontSize: typography.sizes.xxl, lineHeight: 26, letterSpacing: -0.5 },
+    metricSmall: { fontSize: typography.sizes.lg },
     metricPlain: {
       fontFamily: typography.fonts.amountBold,
-      fontSize: 22,
+      fontSize: typography.sizes.xxl,
       letterSpacing: -0.5,
     },
 
@@ -625,7 +624,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
       padding: spacing('3.5'),
-      overflow: 'hidden',
       marginHorizontal: layout.screenPadding,
     },
 
@@ -633,10 +631,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     chartLegend: { flexDirection: 'row', gap: spacing('4'), marginBottom: spacing('2') },
     legendItem: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
     legendDot: { width: 7, height: 7, borderRadius: radius('full') },
-    legendDash: { width: 14, height: 2, borderRadius: radius('full') },
     legendText: { fontFamily: typography.fonts.regular, color: colors.textMuted, fontSize: 10 },
 
-    // ── Category breakdown section
+    // ── Category / person breakdown
     catSection: {
       gap: spacing('3'),
     },
@@ -654,44 +651,47 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     categoryGrid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      gap: spacing('1'),
+      gap: spacing('2'),
       paddingHorizontal: layout.screenPadding,
     },
     categoryCell: {
-      width: '49.2%',
       backgroundColor: colors.surface,
       borderRadius: radius('lg'),
       padding: spacing('3'),
       gap: spacing('2'),
       position: 'relative',
       flexDirection: 'row',
-    },
-    catName: {
-      flex: 1,
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
-      color: colors.text,
-    },
-    catBarTrack: {
-      height: 3,
-      borderRadius: radius('full'),
-      backgroundColor: colors.background,
-      overflow: 'hidden',
-    },
-    catBarFill: {
-      height: 3,
-      borderRadius: radius('full'),
+      alignItems: 'center',
     },
     catContent: {
-      flexDirection: 'column'
+      flex: 1,
+      flexDirection: 'column',
     },
-    catAmount: { fontSize: 11 },
+    catName: {
+      fontFamily: typography.styles.rowLabel.fontFamily,
+      fontSize: typography.sizes.xs,
+      color: colors.text,
+    },
+    catAmount: { fontSize: typography.sizes.xs },
     catPercent: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 10,
+      fontFamily: typography.styles.badge.fontFamily,
+      fontSize: typography.sizes.xxs,
       position: 'absolute',
       right: spacing('3'),
       top: spacing('3'),
+    },
+
+    // ── Person avatar in breakdown grid
+    personAvatar: {
+      width: 28,
+      height: 28,
+      borderRadius: radius('xl'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    personInitials: {
+      fontFamily: typography.styles.profileMono.fontFamily,
+      fontSize: 10,
     },
 
     // ── DOW legend
@@ -700,7 +700,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     // ── KPI grid
     kpiGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
     kpiCell: {
-      width: '47%',
       minHeight: 72,
       borderRadius: radius('lg'),
       backgroundColor: colors.card,
@@ -708,16 +707,15 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'space-between',
     },
     kpiLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
-      fontSize: 11,
+      fontSize: typography.sizes.xs,
     },
-    kpiValue: { fontSize: 14 },
+    kpiValue: { fontSize: typography.sizes.md },
     kpiPlain: {
       fontFamily: typography.fonts.amountBold,
       color: colors.text,
-      fontSize: 18,
+      fontSize: typography.sizes.xl,
       letterSpacing: -0.5,
     },
   });
-

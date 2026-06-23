@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -11,19 +12,6 @@ export type HeaderProps = {
   rightAction?: React.ReactNode;
 };
 
-/**
- * Header - Editorial Brutalist Design
- * 
- * Layout:
- * - Screen padding: 24px
- * - Top padding: 12px
- * - Bottom padding: 16px
- * - Gap between elements: 16px
- * 
- * Back button:
- * - Size: 44px (touch target)
- * - Radius: 12px (md)
- */
 export const Header = React.memo(function Header({
   title,
   showBack,
@@ -46,7 +34,7 @@ export const Header = React.memo(function Header({
             onPress={handleBack}
             style={styles.backButton}
           >
-            <MaterialCommunityIcons name="arrow-left" size={20} color={colors.text} />
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color={colors.text} />
           </BentoPressable>
         )}
         <View style={styles.titleBlock}>
@@ -86,21 +74,21 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     justifyContent: 'center',
   },
   title: {
-    fontFamily: typography.fonts.semibold,
+    fontFamily: typography.styles.screenTitle.fontFamily,
     color: colors.text,
     fontSize: typography.sizes.xxl,
-    lineHeight: 26,
+    lineHeight: 28,
   },
   rightActionWrap: {
     justifyContent: 'center',
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: radius('full'),
+    width: layout.minTouchTarget,
+    height: layout.minTouchTarget,
+    borderRadius: radius('lg'),
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'transparent',
-    marginLeft: -spacing('2'),
+    backgroundColor: colors.surface,
+    marginLeft: -spacing('1'),
   },
 });

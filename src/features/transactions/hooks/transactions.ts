@@ -37,6 +37,14 @@ export const useTransactionById = (id?: number | null) => {
   });
 };
 
+export const useTransactionDetail = (id?: number | null) => {
+  return useQuery({
+    queryKey: id != null ? [...QUERY_KEYS.transactions.detail(id), 'detail'] : [...QUERY_KEYS.transactions.details(), 'disabled'],
+    queryFn: () => api.getTransactionDetailById(id as number),
+    enabled: id != null,
+  });
+};
+
 export const useCreateTransaction = () => {
   const queryClient = useQueryClient();
   const { profile } = useSettings();

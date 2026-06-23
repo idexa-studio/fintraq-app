@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Keeep",
+    "name": "Fintraq",
     "slug": "luno",
     "version": "1.1.5",
     "orientation": "portrait",
@@ -11,7 +11,7 @@
     "newArchEnabled": true,
     "notification": {
       "icon": "./assets/images/android-icon-monochrome.png",
-      "color": "#10b981",
+      "color": "#205FA8",
       "iosDisplayInForeground": true
     },
     "ios": {
@@ -45,11 +45,11 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash.png",
-          "imageWidth": 200,
+          "imageWidth": 224,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#141412",
           "dark": {
-            "backgroundColor": "#1E1F24"
+            "backgroundColor": "#141412"
           }
         }
       ],

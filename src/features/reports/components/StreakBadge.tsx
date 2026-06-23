@@ -1,44 +1,49 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Flame } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
-import { useUsageStreak } from '../hooks/useStreak';
+import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { useUsageStreak } from '@/src/features/reports/hooks/useStreak';
 
-// Fixed dark-context palette — badge always renders on the dark HeroBalanceCard
-const BADGE_BG    = 'rgba(255,107,53,0.15)';
-const FLAME_COLOR = '#FF6B35';
-const TEXT_COLOR  = 'rgba(255,255,255,0.88)';
+type Props = {
+  heroCard: HeroCardPalette;
+};
 
-export const StreakBadge = React.memo(function StreakBadge() {
+export const StreakBadge = React.memo(function StreakBadge({ heroCard }: Props) {
   const theme = useTheme();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { isDark } = theme;
+  const styles = useMemo(() => createStyles(theme, heroCard, isDark), [theme, heroCard, isDark]);
   const { data: streak, isLoading } = useUsageStreak();
 
   if (isLoading || !streak || streak === 0) return null;
 
   return (
     <View style={styles.container}>
-      <MaterialCommunityIcons name="fire" size={12} color={FLAME_COLOR} />
+      <HugeiconsIcon
+        icon={Flame}
+        size={13}
+        color={isDark ? '#FF9F0A' : '#E65100'}
+      />
       <Text style={styles.text}>{streak}d streak</Text>
     </View>
   );
 });
 
-const createStyles = ({ typography }: ThemeContextType) =>
+const createStyles = ({ typography, spacing, radius }: ThemeContextType, heroCard: HeroCardPalette, isDark: boolean) =>
   StyleSheet.create({
     container: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 4,
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 999,
-      backgroundColor: BADGE_BG,
+      gap: spacing('1'),
+      paddingHorizontal: spacing('2'),
+      paddingVertical: spacing('1'),
+      borderRadius: radius('full'),
+      backgroundColor: isDark ? 'rgba(255, 159, 10, 0.15)' : 'rgba(230, 81, 0, 0.12)',
       alignSelf: 'flex-start',
     },
     text: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 11,
-      color: TEXT_COLOR,
+      fontFamily: typography.styles.badge.fontFamily,
+      fontSize: typography.sizes.xs,
+      color: heroCard.textPrimary,
     },
   });

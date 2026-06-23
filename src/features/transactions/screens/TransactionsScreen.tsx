@@ -1,20 +1,22 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
+import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { TRANSACTIONS_LIST_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
-import { StorageKeys } from '../../../constants/keys';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ArrowRight01Icon, CancelCircleIcon, Delete01Icon, FilterIcon, PencilEdit01Icon, PlusSignIcon, ReceiptTextIcon, SortingDownIcon } from '@hugeicons/core-free-icons';
+import type { IconSvgElement } from '@hugeicons/react-native';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { EdgeInsets, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
-import { KPICard } from '../../../components/ui/KPICard';
+import { TransactionSummaryCard } from '../components/TransactionSummaryCard';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
+import { StorageKeys } from '../../../constants/keys';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
@@ -69,7 +71,7 @@ const SwipeActionButton = React.memo(function SwipeActionButton({
   backgroundColor,
 }: {
   onPress: () => void;
-  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  icon: IconSvgElement;
   color: string;
   backgroundColor: string;
 }) {
@@ -78,7 +80,7 @@ const SwipeActionButton = React.memo(function SwipeActionButton({
       onPress={onPress}
       style={[swipeActionStyles.actionBase, { backgroundColor }]}
     >
-      <MaterialCommunityIcons name={icon} size={18} color={color} />
+      <HugeiconsIcon icon={icon} size={18} color={color} />
     </BentoPressable>
   );
 });
@@ -103,13 +105,13 @@ const RightActions = React.memo(function RightActions({
     <View style={swipeActionStyles.container}>
       <SwipeActionButton
         onPress={onEdit}
-        icon="pencil-outline"
+        icon={PencilEdit01Icon}
         color={editIconColor}
         backgroundColor={editBgColor}
       />
       <SwipeActionButton
         onPress={onDelete}
-        icon="trash-can-outline"
+        icon={Delete01Icon}
         color={deleteIconColor}
         backgroundColor={deleteBgColor}
       />
@@ -239,13 +241,13 @@ const FilterChip = React.memo(function FilterChip({
         scaleOnPress={false}
       >
         {isActive && (
-          <MaterialCommunityIcons name="check" size={13} color={tintColor} style={{ marginRight: spacing('1') }} />
+          <HugeiconsIcon icon={FilterIcon} size={13} color={tintColor} style={{ marginRight: spacing('1') }} />
         )}
         <Text style={isActive ? styles.chipTextActive : styles.chipTextInactive}>
           {label}
         </Text>
         {!isActive && showChevron && (
-          <MaterialCommunityIcons name="chevron-down" size={13} color={colors.textMuted} style={{ marginLeft: spacing('1') }} />
+          <HugeiconsIcon icon={SortingDownIcon} size={13} color={colors.textMuted} style={{ marginLeft: spacing('1') }} />
         )}
       </BentoPressable>
       {isActive && onClear && (
@@ -255,7 +257,7 @@ const FilterChip = React.memo(function FilterChip({
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           scaleOnPress={false}
         >
-          <MaterialCommunityIcons name="close" size={13} color={tintColor} />
+          <HugeiconsIcon icon={CancelCircleIcon} size={13} color={tintColor} />
         </BentoPressable>
       )}
     </View>
@@ -271,7 +273,8 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
 
   const theme = useTheme();
   const { colors } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
 
   // Advanced filters state
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(() => {
@@ -551,9 +554,14 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     setAdvancedFilters(DEFAULT_ADVANCED_FILTERS);
   }, []);
 
+  const handleAddTransaction = useCallback(() => {
+    Haptics.selectionAsync().catch(() => { });
+    router.push('/transactions/create');
+  }, [router]);
+
   const handleEdit = React.useCallback(
     (tx: TransactionListItem) => {
-      router.push(`/transactions/edit/${tx.id}`);
+      router.push(`/transactions/${tx.id}`);
     },
     [router],
   );
@@ -634,23 +642,11 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         showBack
         rightAction={(
           <View style={styles.headerActions}>
-            <BentoPressable
-              onPress={() => {
-                Haptics.selectionAsync().catch(() => { });
-                setShowAdvancedFilterSheet(true);
-              }}
-              style={styles.iconBtn}
-            >
-              <MaterialCommunityIcons name="tune" size={22} color={colors.text} />
+            <BentoPressable onPress={handleOpenFilter} style={styles.iconBtn}>
+              <HugeiconsIcon icon={FilterIcon} size={22} color={colors.text} />
             </BentoPressable>
-            <BentoPressable
-              onPress={() => {
-                Haptics.selectionAsync().catch(() => { });
-                setShowSortSheet(true);
-              }}
-              style={styles.iconBtn}
-            >
-              <MaterialCommunityIcons name="sort-variant" size={22} color={colors.text} />
+            <BentoPressable onPress={handleOpenSort} style={styles.iconBtn}>
+              <HugeiconsIcon icon={SortingDownIcon} size={22} color={colors.text} />
             </BentoPressable>
           </View>
         )}
@@ -673,11 +669,12 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         removeClippedSubviews={true}
         ListHeaderComponent={(
           <View style={styles.listHeader}>
-            <KPICard
+            <TransactionSummaryCard
+              income={activeTotals.income}
+              expense={activeTotals.expense}
+              currency={selectedKpiCurrency}
               currencies={kpiCurrencies}
-              selectedCurrency={selectedKpiCurrency}
-              onSelectCurrency={setSelectedKpiCurrency}
-              metrics={activeTotals}
+              onCurrencySelect={setSelectedKpiCurrency}
             />
 
             {/* ── MD3 Play Store Filter Chips Row ── */}
@@ -744,7 +741,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         ListEmptyComponent={(
           <View style={styles.emptyWrap}>
             <View style={styles.emptyIconBox}>
-              <MaterialCommunityIcons name="receipt-text-outline" size={32} color={colors.textMuted} />
+              <HugeiconsIcon icon={ReceiptTextIcon} size={32} color={colors.textMuted} />
             </View>
             <Text style={styles.emptyTitle}>Nothing here yet</Text>
             <Text style={styles.emptySubtitle}>
@@ -752,9 +749,9 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                 ? 'No transactions match the active filters.'
                 : 'Add your first transaction to start tracking.'}
             </Text>
-            <BentoPressable style={styles.emptyAction} onPress={() => router.push('/transactions/create')}>
+            <BentoPressable style={styles.emptyAction} onPress={handleAddTransaction}>
               <Text style={styles.emptyActionText}>Add Transaction</Text>
-              <MaterialCommunityIcons name="arrow-right" size={14} color={colors.background} />
+              <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primaryForeground} />
             </BentoPressable>
           </View>
         )}
@@ -765,15 +762,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         ) : null}
       />
 
-      <BentoPressable
-        style={styles.fab}
-        onPress={() => {
-          Haptics.selectionAsync().catch(() => { });
-          router.push('/transactions/create');
-        }}
-      >
-        <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
-      </BentoPressable>
+
 
       <ConfirmDialog
         visible={showDeleteDialog}
@@ -799,9 +788,10 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         persons={personsQuery.data ?? []}
       />
 
-      <OptionsBottomSheet
+      <OptionsDialog
         visible={showSortSheet}
         onClose={() => setShowSortSheet(false)}
+        title="Sort transactions"
         options={[
           {
             key: 'newest',
@@ -829,12 +819,17 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
           },
         ]}
       />
+      <BentoPressable style={styles.fab} onPress={handleAddTransaction}>
+        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
+      </BentoPressable>
+
       <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_TRANSACTIONS} steps={TRANSACTIONS_LIST_WALKTHROUGH_STEPS} />
     </SafeAreaView>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
+const ZERO_INSETS: EdgeInsets = { top: 0, bottom: 0, left: 0, right: 0 };
+const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isDark }: ThemeContextType, insets: EdgeInsets = ZERO_INSETS) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -849,54 +844,20 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginRight: -spacing('2'),
+      gap: spacing('2'),
     },
     iconBtn: {
-      width: 40,
-      height: 40,
-      borderRadius: radius('full'),
+      width: layout.minTouchTarget,
+      height: layout.minTouchTarget,
+      borderRadius: radius('lg'),
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'transparent',
-    },
-    searchHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('4'),
-      gap: spacing('3'),
-      backgroundColor: colors.background,
-    },
-    searchBackBtn: {
-      width: 44,
-      height: 44,
-      borderRadius: radius('md'),
       backgroundColor: colors.surface,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    searchHeaderInput: {
-      flex: 1,
-      fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.md,
-      color: colors.text,
-      height: 44,
-      paddingHorizontal: spacing('4'),
-      borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
-    },
-    searchClearBtn: {
-      position: 'absolute',
-      right: spacing('4') + 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100%',
     },
     content: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      paddingBottom: 100,
+      paddingBottom: insets.bottom > 0 ? insets.bottom + 90 : 100,
     },
     listHeader: {
       gap: spacing('5'),
@@ -923,10 +884,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       fontFamily: typography.fonts.medium,
       fontSize: 12,
     },
-    dayCard: {
-      borderRadius: radius('xl'),
-      overflow: 'hidden',
-    },
     emptyWrap: {
       paddingVertical: 60,
       alignItems: 'center',
@@ -941,7 +898,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       justifyContent: 'center',
     },
     emptyTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
       color: colors.text,
       fontSize: 18,
     },
@@ -960,12 +917,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       paddingHorizontal: layout.screenPadding,
       height: 48,
       borderRadius: radius('lg'),
-      backgroundColor: colors.text,
+      backgroundColor: colors.primary,
       marginTop: spacing('2'),
     },
     emptyActionText: {
-      fontFamily: typography.fonts.semibold,
-      color: colors.background,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
+      color: colors.primaryForeground,
       fontSize: 15,
     },
     loadMoreWrap: {
@@ -974,14 +931,15 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     },
     fab: {
       position: 'absolute',
-      bottom: 20,
-      right: 16,
+      bottom: insets.bottom > 0 ? insets.bottom + 16 : 24,
+      right: layout.screenPadding,
       width: 56,
       height: 56,
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
+      ...shadow('md'),
     },
     chipsScrollContainer: {
       marginTop: spacing('2'),
@@ -996,16 +954,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       alignItems: 'center',
       borderRadius: radius('full'),
       height: 30,
-      borderWidth: 1,
       overflow: 'hidden',
     },
     chipInactive: {
       backgroundColor: colors.surface,
-      borderColor: isDark ? '#2E3039' : '#E2E8F0',
     },
     chipActive: {
-      backgroundColor: isDark ? '#11352A' : '#E6F4EA',
-      borderColor: isDark ? colors.primary + '50' : colors.primary + '30',
+      backgroundColor: colors.primaryLight,
     },
     chipButton: {
       flexDirection: 'row',
@@ -1025,7 +980,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       color: colors.textMuted,
     },
     chipTextActive: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.chipLabelActive.fontFamily,
       fontSize: 11.5,
       color: isDark ? colors.primaryLight : colors.primaryDark,
     },

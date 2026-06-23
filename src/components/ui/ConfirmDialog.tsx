@@ -69,7 +69,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   );
 });
 
-const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, overlay, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
@@ -79,7 +79,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     },
     card: {
       backgroundColor: colors.surface,
-      borderRadius: 28,
+      borderRadius: radius('2xl'),
       overflow: 'hidden',
       padding: spacing('6'),
       gap: spacing('4'),
@@ -89,13 +89,13 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 24,
+      fontSize: typography.sizes.xl,
       color: colors.text,
       marginBottom: spacing('2'),
     },
     message: {
       fontFamily: typography.fonts.regular,
-      fontSize: 14,
+      fontSize: typography.sizes.md,
       color: colors.textMuted,
       lineHeight: 20,
     },
@@ -106,31 +106,31 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout }: 
       marginTop: spacing('4'),
     },
     btnCancel: {
-      height: 40,
+      height: sizes.button.md.height,
       paddingHorizontal: spacing('4'),
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
     },
     btnCancelText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 14,
+      fontFamily: typography.styles.dialogAction.fontFamily,
+      fontSize: typography.sizes.md,
       color: colors.textMuted,
     },
     btnConfirm: {
-      height: 40,
+      height: sizes.button.md.height,
       paddingHorizontal: spacing('5'),
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: radius('full'),
+      borderRadius: radius('lg'),
     },
     btnDanger: {
       backgroundColor: colors.danger,
     },
     btnConfirmText: {
-      fontFamily: typography.fonts.semibold,
-      fontSize: 14,
-      color: colors.background,
+      fontFamily: typography.styles.dialogAction.fontFamily,
+      fontSize: typography.sizes.md,
+      color: colors.primaryForeground,
     },
   });

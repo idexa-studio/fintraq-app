@@ -71,5 +71,6 @@ const createStyles = ({ typography }: ThemeContextType) => StyleSheet.create({
   base: {
     fontSize: typography.sizes.md,
     flexShrink: 1,
+    includeFontPadding: false,
   }
 });

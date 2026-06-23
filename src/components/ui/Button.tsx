@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSvgElement } from '@hugeicons/react-native';
 import React, { useMemo, useCallback } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
@@ -16,7 +17,7 @@ type ButtonProps = {
   disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
-  icon?: keyof typeof MaterialCommunityIcons.glyphMap;
+  icon?: IconSvgElement;
 };
 
 export const Button = React.memo(function Button({
@@ -31,7 +32,7 @@ export const Button = React.memo(function Button({
   icon,
 }: ButtonProps) {
   const theme = useTheme();
-  const { colors, sizes, spacing, radius } = theme;
+  const { colors, sizes } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const sizeConfig = sizes.button[size];
@@ -39,8 +40,9 @@ export const Button = React.memo(function Button({
   const textColor = useMemo(() => {
     if (disabled) return colors.textMuted;
     if (variant === 'secondary' || variant === 'outline' || variant === 'ghost') return colors.text;
+    if (variant === 'primary') return colors.primaryForeground;
     return colors.background;
-  }, [variant, disabled, colors.text, colors.textMuted, colors.background]);
+  }, [variant, disabled, colors.text, colors.textMuted, colors.background, colors.primaryForeground]);
 
   const backgroundColor = useMemo(() => {
     if (disabled) return colors.surface;
@@ -57,6 +59,11 @@ export const Button = React.memo(function Button({
     }
   }, [variant, disabled, colors.primary, colors.danger, colors.success, colors.surface]);
 
+  const borderColor = useMemo(() => {
+    if (variant === 'outline') return colors.text + '12';
+    return 'transparent';
+  }, [variant, colors.text]);
+
   const handlePress = useCallback(() => {
     if (!disabled && !isLoading) {
       onPress();
@@ -70,8 +77,10 @@ export const Button = React.memo(function Button({
         {
           height: sizeConfig.height,
           paddingHorizontal: sizeConfig.paddingHorizontal,
-          borderRadius: radius('full'),
+          borderRadius: sizeConfig.borderRadius,
           backgroundColor,
+          borderWidth: variant === 'outline' ? 1 : 0,
+          borderColor,
           opacity: disabled ? 0.5 : 1,
         },
         style,
@@ -80,11 +89,10 @@ export const Button = React.memo(function Button({
       disabled={disabled || isLoading}
     >
       {icon && !isLoading && (
-        <MaterialCommunityIcons
-          name={icon}
+        <HugeiconsIcon
+          icon={icon}
           size={size === 'sm' ? 16 : size === 'lg' ? 24 : 20}
           color={textColor}
-          style={{ marginRight: spacing('2') }}
         />
       )}
 
@@ -108,14 +116,17 @@ export const Button = React.memo(function Button({
   );
 });
 
-const createStyles = ({ typography }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.create({
   base: {
+    minWidth: 88,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     overflow: 'hidden',
+    gap: spacing('2'),
   },
   text: {
-    fontFamily: typography.fonts.semibold,
+    fontFamily: typography.styles.buttonLabel.fontFamily,
+    includeFontPadding: false,
   },
 });

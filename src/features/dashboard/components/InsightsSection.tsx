@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ChartLineData01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { PremiumGuard } from '../../../components/ui/PremiumGuard';
@@ -68,10 +69,10 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
     return (
       <View style={styles.container}>
         <SectionHeader title="Pro Insights" />
-        <PremiumGuard label="Upgrade to Pro for insights" size="large">
+        <PremiumGuard label="Upgrade to Pro for insights" size="large" containerStyle={styles.guard}>
           <View style={styles.empty}>
             <View style={styles.emptyIconWrapper}>
-              <MaterialCommunityIcons name="chart-timeline-variant" size={18} color={colors.primary} />
+              <HugeiconsIcon icon={ChartLineData01Icon} size={18} color={colors.primary} />
             </View>
             <View style={styles.emptyContent}>
               <Text style={styles.emptyTitle}>No insights yet</Text>
@@ -89,6 +90,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
       <PremiumGuard
         label="Upgrade to Pro for insights"
         size="large"
+        containerStyle={styles.guard}
       >
         {isLoading ? (
           <View style={styles.placeholder}>
@@ -143,6 +145,9 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     container: {},
+    guard: {
+      marginHorizontal: layout.screenPadding,
+    },
     scroll: { gap: GAP },
     placeholder: {
       height: 80,
@@ -175,7 +180,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: 2,
     },
     emptyTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.cardTitle.fontFamily,
       fontSize: 13,
       color: colors.text,
     },

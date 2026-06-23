@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Calendar03Icon, Clock01Icon, PencilEdit01Icon, UnfoldMoreIcon, UserCircleIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -7,6 +8,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,6 +16,7 @@ import {
   View,
 } from 'react-native';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
+import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { Header } from '../../../components/ui/Header';
@@ -35,7 +38,10 @@ import {
 import { format } from 'date-fns';
 import { TransactionType } from '../../../types';
 import { WalkthroughOverlay, TRANSACTION_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
+import { AnalyticsService } from '@/src/services/analytics';
 import { StorageKeys } from '../../../constants/keys';
+import { isTransferCompatible } from '../../../utils/accounts';
+import type { AccountType } from '../../../types';
 
 type Props = {
   mode: 'create' | 'edit';
@@ -149,11 +155,15 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
     [categories, selectedCategoryId],
   );
 
-  // TO account options: same currency as FROM, excluding FROM itself
+  // TO account options: same currency + type-compatible transfer, excluding FROM itself
   const toAccountOptions = React.useMemo(() => {
     if (type !== 'TR' || !selectedAccount) return [];
+    const fromType = selectedAccount.accountType as AccountType | null;
     return accounts.filter(
-      (a) => a.id !== selectedAccountId && a.currency === selectedAccount.currency,
+      (a) =>
+        a.id !== selectedAccountId &&
+        a.currency === selectedAccount.currency &&
+        isTransferCompatible(fromType, a.accountType as AccountType | null),
     );
   }, [type, accounts, selectedAccountId, selectedAccount]);
 
@@ -232,6 +242,14 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       } else {
         await createTransaction.mutateAsync(payload);
       }
+      await AnalyticsService.transactionSaved(
+        isEditMode ? 'edit' : 'create',
+        type,
+        amountValue,
+        selectedAccount?.currency ?? profile.defaultCurrency,
+        Boolean(note.trim()),
+        selectedPersonId != null
+      );
       router.back();
     } catch {
       Alert.alert('Unable to save', 'Could not save transaction. Please try again.');
@@ -292,7 +310,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                 <View style={styles.section}>
                   <Text style={styles.sectionLabel}>To account</Text>
                   <Text style={styles.transferHint}>
-                    No other accounts with the same currency.
+                    No compatible accounts for this transfer.
                   </Text>
                 </View>
               )}
@@ -311,9 +329,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                 style={styles.personBtn}
                 onPress={() => setShowPersonPicker(true)}
               >
-                <View style={styles.iconContainer}>
-                  <MaterialCommunityIcons name="account-outline" size={18} color={colors.primary} />
-                </View>
+                <IconAvatar icon={UserCircleIcon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
                 <View style={styles.textContainer}>
                   <Text style={styles.triggerLabel}>Linked person</Text>
                   <Text
@@ -328,7 +344,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                       : 'No person linked'}
                   </Text>
                 </View>
-                <MaterialCommunityIcons name="unfold-more-vertical" size={16} color={colors.textMuted} />
+                <HugeiconsIcon icon={UnfoldMoreIcon} size={16} color={colors.textMuted} />
               </BentoPressable>
             </View>
           )}
@@ -339,9 +355,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                 style={styles.dateTimeBtn}
                 onPress={() => setShowDatePicker(true)}
               >
-                <View style={styles.iconContainer}>
-                  <MaterialCommunityIcons name="calendar-outline" size={18} color={colors.primary} />
-                </View>
+                <IconAvatar icon={Calendar03Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
                 <View style={styles.textContainer}>
                   <Text style={styles.triggerLabel}>Date</Text>
                   <Text style={styles.dateTimeText} numberOfLines={1}>{formattedDate}</Text>
@@ -352,9 +366,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                 style={styles.dateTimeBtn}
                 onPress={() => setShowTimePicker(true)}
               >
-                <View style={styles.iconContainer}>
-                  <MaterialCommunityIcons name="clock-outline" size={18} color={colors.primary} />
-                </View>
+                <IconAvatar icon={Clock01Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
                 <View style={styles.textContainer}>
                   <Text style={styles.triggerLabel}>Time</Text>
                   <Text style={styles.dateTimeText} numberOfLines={1}>{formattedTime}</Text>
@@ -383,9 +395,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
           <View style={styles.section}>
             <View style={styles.noteContainer}>
               <View style={styles.noteHeader}>
-                <View style={styles.noteIconContainer}>
-                  <MaterialCommunityIcons name="pencil-outline" size={16} color={colors.primary} />
-                </View>
+                <IconAvatar icon={PencilEdit01Icon} color={colors.primary} variant="subtle" size={32} iconSize={16} />
                 <Text style={styles.noteLabel}>Note</Text>
               </View>
               <TextInput
@@ -402,7 +412,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       </ScrollView>
 
       <View style={styles.footer}>
-        <BentoPressable
+        <Pressable
           style={[styles.saveBtn, !canSubmit && styles.saveBtnDisabled]}
           onPress={handleSave}
           disabled={!canSubmit}
@@ -414,7 +424,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
               {isEditMode ? 'Save changes' : 'Save transaction'}
             </Text>
           )}
-        </BentoPressable>
+        </Pressable>
       </View>
       </KeyboardAvoidingView>
 
@@ -449,6 +459,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       backgroundColor: colors.background,
     },
     content: {
+      paddingTop: spacing('2'),
       paddingBottom: spacing('6'),
     },
     formBody: {
@@ -459,9 +470,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       gap: spacing('3'),
     },
     sectionLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
+      opacity: 0.6,
     },
     transferHint: {
       fontFamily: typography.fonts.regular,
@@ -483,7 +495,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       gap: spacing('2.5'),
     },
     dateTimeText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: 13,
       color: colors.text,
     },
@@ -495,14 +507,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       alignItems: 'center',
       paddingHorizontal: spacing('3'),
       gap: spacing('2.5'),
-    },
-    iconContainer: {
-      width: 36,
-      height: 36,
-      borderRadius: 18,
-      backgroundColor: colors.primary + '10',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     textContainer: {
       flex: 1,
@@ -525,16 +529,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       gap: spacing('2.5'),
       marginBottom: spacing('2'),
     },
-    noteIconContainer: {
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      backgroundColor: colors.primary + '10',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
     noteLabel: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: 13,
       color: colors.text,
     },
@@ -562,8 +558,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       opacity: 0.5,
     },
     saveBtnText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
       fontSize: 16,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
   });

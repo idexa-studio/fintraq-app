@@ -1,17 +1,21 @@
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { useAppLock } from '@/src/providers/AppLockProvider';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
+import { DASHBOARD_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
 import { useAppConfig } from '@/src/providers/AppConfigProvider';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useAppLock } from '@/src/providers/AppLockProvider';
+import { usePremium } from '@/src/providers/PremiumProvider';
+import { useSettings } from '@/src/providers/SettingsProvider';
+import { ArrowRight01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
 import { DEFAULT_CURRENCY } from '../../../constants/currency';
-import { useSettings } from '../../../providers/SettingsProvider';
+import { StorageKeys } from '../../../constants/keys';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useTransactions } from '../../transactions/hooks/transactions';
@@ -20,12 +24,9 @@ import { DashboardHeader } from '../components/DashboardHeader';
 import { HeroBalanceCard } from '../components/HeroBalanceCard';
 import { InsightsSection } from '../components/InsightsSection';
 import { PremiumUpsellBottomSheet } from '../components/PremiumUpsellBottomSheet';
-import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '../components/TopPersonsCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
-import { WalkthroughOverlay, DASHBOARD_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
-import { StorageKeys } from '../../../constants/keys';
 
 const UPSELL_KEY = StorageKeys.UPSELL_DISMISSED_AT;
 const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
@@ -33,10 +34,12 @@ const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
 export const DashboardScreen = React.memo(function DashboardScreen() {
   const theme = useTheme();
   const { colors } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const { isPremium } = usePremium();
-  const router = useRouter();
   const { profile } = useSettings();
+  const router = useRouter();
+
 
   const { data: transactions, isLoading: txLoading } = useTransactions(6);
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
@@ -104,12 +107,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const topExpenseCategories = useMemo(() => topCategoriesData ?? [], [topCategoriesData]);
 
   const handleCurrencySelect = useCallback((c: string) => setSelectedCurrency(c), []);
-  const navigateToAccountTx = useCallback((id: number) => router.push(`/transactions?accountId=${id}`), [router]);
-  const navigateToPremium = useCallback(() => router.push('/premium'), [router]);
+  const navigateToAccountTx = useCallback((id: number) => router.push(`/(main)/accounts/${id}`), [router]);
+
   const navigateToSearch = useCallback(() => router.push('/search'), [router]);
+  const navigateToPremium = useCallback(() => router.push('/premium'), [router]);
   const navigateToTransactions = useCallback(() => router.push('/transactions'), [router]);
   const navigateToCreateTx = useCallback(() => router.push('/transactions/create'), [router]);
-  const navigateToEditTx = useCallback((id: number) => router.push(`/transactions/edit/${id}`), [router]);
+  const navigateToEditTx = useCallback((id: number) => router.push(`/transactions/${id}`), [router]);
   const openAccountForm = useCallback(() => router.push('/(main)/accounts/form'), [router]);
   const openAccountsScreen = useCallback(() => router.push('/accounts'), [router]);
 
@@ -134,33 +138,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           onSearch={isPremium ? navigateToSearch : navigateToPremium}
         />
 
-        {/* Currency tabs */}
-        {currencyKeys.length > 1 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.currencyTabs}
-            style={styles.currencyTabsWrap}
-          >
-            {currencyKeys.map(c => (
-              <BentoPressable
-                key={c}
-                style={[styles.currencyTab, c === selectedCurrency && styles.currencyTabActive]}
-                onPress={() => handleCurrencySelect(c)}
-              >
-                <Text style={[styles.currencyTabText, c === selectedCurrency && styles.currencyTabTextActive]}>
-                  {c}
-                </Text>
-              </BentoPressable>
-            ))}
-          </ScrollView>
-        )}
-
         <HeroBalanceCard
           balance={balancesByCurrency[selectedCurrency] || 0}
           currency={selectedCurrency}
           income={totals.income}
           expense={totals.expense}
+          onCurrencySelect={handleCurrencySelect}
+          currencies={currencyKeys}
         />
 
         <SectionHeader title="Accounts" rightText="Manage" onPressRight={openAccountsScreen} />
@@ -198,23 +182,19 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           ) : (
             <View style={styles.emptyActivity}>
               <View style={styles.emptyIconWrapper}>
-                <MaterialCommunityIcons name="receipt-text-outline" size={20} color={colors.primary} />
+                <HugeiconsIcon icon={ReceiptTextIcon} size={20} color={colors.primary} />
               </View>
               <Text style={styles.emptyTitle}>No transactions yet</Text>
               <Text style={styles.emptySubtext}>Start recording your daily payments, income, or transfers here.</Text>
               <BentoPressable style={styles.emptyAction} onPress={navigateToCreateTx}>
                 <Text style={styles.emptyActionText}>Add transaction</Text>
-                <MaterialCommunityIcons name="arrow-right" size={12} color={colors.background} />
+                <HugeiconsIcon icon={ArrowRight01Icon} size={12} color={colors.primaryForeground} />
               </BentoPressable>
             </View>
           )}
         </View>
 
       </ScrollView>
-
-      <BentoPressable style={styles.fab} onPress={navigateToCreateTx}>
-        <MaterialCommunityIcons name="plus" size={26} color={colors.background} />
-      </BentoPressable>
 
       <WalkthroughOverlay
         storageKey={StorageKeys.WALKTHROUGH_DASHBOARD}
@@ -227,24 +207,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, insets: any) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
-    content: { paddingBottom: 100 },
+    content: { paddingBottom: insets.bottom > 0 ? insets.bottom + 80 + 24 : 110 },
 
-    // ── Currency tabs
-    currencyTabsWrap: { marginHorizontal: layout.screenPadding, marginBottom: spacing('4') },
-    currencyTabs: { flexDirection: 'row', gap: spacing('2') },
-    currencyTab: {
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('2'),
-      borderRadius: radius('lg'),
-      backgroundColor: colors.surface,
-    },
-    currencyTabActive: { backgroundColor: colors.primary + '15' },
-    currencyTabText: { fontFamily: typography.fonts.medium, color: colors.textMuted, fontSize: 12 },
-    currencyTabTextActive: { color: colors.primary },
+  
 
     // ── Activity card
     activityCard: {
@@ -262,14 +231,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     emptyIconWrapper: {
       width: 44,
       height: 44,
-      borderRadius: 22,
+      borderRadius: radius('full'),
       backgroundColor: colors.primary + '12',
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: spacing('1'),
     },
     emptyTitle: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
       fontSize: 14,
       color: colors.text,
     },
@@ -292,21 +261,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.primary,
     },
     emptyActionText: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyAction.fontFamily,
       fontSize: 12,
-      color: colors.background,
+      color: colors.primaryForeground,
     },
 
-    // ── FAB
-    fab: {
-      position: 'absolute',
-      bottom: 20,
-      right: 16,
-      width: 56,
-      height: 56,
-      borderRadius: radius('lg'),
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
   });

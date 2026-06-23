@@ -1,5 +1,6 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Header } from '@/src/components/ui/Header';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { usePersons } from '@/src/features/persons/hooks/persons';
 import { usePremium } from '@/src/providers/PremiumProvider';
@@ -7,31 +8,22 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { WalkthroughOverlay, PERSONS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { StorageKeys } from '@/src/constants/keys';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { CancelCircleIcon, LockPasswordIcon, PlusSignIcon, Search01Icon, UserGroupIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 const FREE_PERSON_LIMIT = 10;
 
-function PersonInitials({ name, color, size = 40 }: { name: string; color: string; size?: number }) {
-  const initials = name.trim().split(' ').map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
-  return (
-    <View style={{
-      width: size, height: size, borderRadius: size / 2,
-      backgroundColor: color + '18', alignItems: 'center', justifyContent: 'center',
-    }}>
-      <Text style={{ color: color, fontWeight: '700', fontSize: size * 0.38 }}>{initials}</Text>
-    </View>
-  );
-}
 
 export const PersonsScreen = React.memo(function PersonsScreen() {
   const theme = useTheme();
   const { colors, typography } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const router = useRouter();
   const { isPremium } = usePremium();
 
@@ -68,12 +60,12 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header title="Persons" />
+      <Header title="People" showBack />
 
       {persons.length > 0 && (
         <View style={styles.searchRow}>
           <View style={styles.searchWrap}>
-            <MaterialCommunityIcons name="magnify" size={18} color={colors.textMuted} />
+            <HugeiconsIcon icon={Search01Icon} size={18} color={colors.textMuted} />
             <TextInput
               style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
               value={query}
@@ -86,7 +78,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
             />
             {query.length > 0 && (
               <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <MaterialCommunityIcons name="close-circle" size={17} color={colors.textMuted} />
+                <HugeiconsIcon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
               </BentoPressable>
             )}
           </View>
@@ -96,7 +88,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {!isPremium && (
           <View style={styles.limitBanner}>
-            <MaterialCommunityIcons name="account-group-outline" size={16} color={colors.textMuted} />
+            <HugeiconsIcon icon={UserGroupIcon} size={16} color={colors.textMuted} />
             <Text style={[styles.limitText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               {persons.length}/{FREE_PERSON_LIMIT} persons — upgrade for unlimited
             </Text>
@@ -107,14 +99,20 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
           <View style={styles.group}>
             {filtered.map((person, idx) => {
               const hex = colorNumberToHex(person.color);
+              const isFirst = idx === 0;
               const isLast = idx === filtered.length - 1;
               return (
                 <BentoPressable
                   key={person.id}
-                  style={[styles.row, !isLast && styles.rowGap]}
+                  style={[
+                    styles.row,
+                    isFirst && { borderTopLeftRadius: theme.radius('xl'), borderTopRightRadius: theme.radius('xl') },
+                    isLast && { borderBottomLeftRadius: theme.radius('xl'), borderBottomRightRadius: theme.radius('xl') },
+                    !isLast && { marginBottom: theme.spacing('0.5') },
+                  ]}
                   onPress={() => handlePersonPress(person.id)}
                 >
-                  <PersonInitials name={person.name} color={hex} size={40} />
+                  <PersonAvatar name={person.name} color={hex} size={40} />
 
                   <View style={styles.rowMeta}>
                     <Text style={styles.rowName} numberOfLines={1}>
@@ -139,7 +137,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
         {persons.length === 0 && (
           <View style={styles.empty}>
-            <MaterialCommunityIcons name="account-group-outline" size={32} color={colors.textMuted} />
+            <HugeiconsIcon icon={UserGroupIcon} size={32} color={colors.textMuted} />
             <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               No persons yet
             </Text>
@@ -160,8 +158,8 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
       <BentoPressable style={[styles.fab, { backgroundColor: atLimit ? colors.textMuted : colors.primary }]} onPress={handleAdd}>
         {atLimit
-          ? <MaterialCommunityIcons name="lock" size={20} color={colors.background} />
-          : <MaterialCommunityIcons name="plus" size={24} color={colors.background} />
+          ? <HugeiconsIcon icon={LockPasswordIcon} size={20} color={colors.primaryForeground} />
+          : <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
         }
       </BentoPressable>
       <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_PERSONS} steps={PERSONS_WALKTHROUGH_STEPS} />
@@ -169,13 +167,13 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   );
 });
 
-const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: ThemeContextType, insets: any) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
-      paddingBottom: 100,
+      paddingBottom: insets.bottom > 0 ? insets.bottom + 56 + 24 : 96,
     },
 
     searchRow: {
@@ -209,8 +207,6 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     limitText: { fontSize: typography.sizes.xs },
  
     group: {
-      borderRadius: radius('xl'),
-      overflow: 'hidden',
       marginBottom: spacing('4'),
     },
     row: {
@@ -221,7 +217,6 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       paddingHorizontal: spacing('4'),
       paddingVertical: spacing('3.5'),
     },
-    rowGap: { marginBottom: spacing('0.5') },
     rowMeta: { flex: 1 },
     rowName: {
       fontSize: typography.sizes.md,
@@ -237,18 +232,19 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     },
 
     empty: { alignItems: 'center', paddingVertical: spacing('11'), gap: spacing('2') },
-    emptyText: { fontSize: 15 },
-    emptyHint: { fontSize: 12, opacity: 0.5, textAlign: 'center' },
+    emptyText: { fontSize: typography.sizes.lg },
+    emptyHint: { fontSize: typography.sizes.sm, opacity: 0.5, textAlign: 'center' },
 
     fab: {
       position: 'absolute',
-      bottom: 20,
+      bottom: insets.bottom > 0 ? insets.bottom + 16 : 24,
       right: 16,
       width: 56,
       height: 56,
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       justifyContent: 'center',
       alignItems: 'center',
+      ...shadow('lg'),
     },
   });
 

@@ -25,6 +25,11 @@ export const updateAccount = async (id: number, data: UpdateAccountData) => {
   return result[0];
 };
 
+export const getAccountById = async (id: number): Promise<Account | undefined> => {
+  const result = await db.select().from(accounts).where(eq(accounts.id, id)).limit(1);
+  return result[0];
+};
+
 export const deleteAccount = async (id: number) => {
   return await db.delete(accounts).where(eq(accounts.id, id));
 };

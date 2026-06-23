@@ -3,7 +3,8 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { LockPasswordIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import { LockStorage } from '../api/lockStorage';
 import { authenticateWithBiometrics, getBiometricCapability } from '../hooks/useLocalAuth';
 import { PinPad } from './PinPad';
@@ -101,7 +102,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
         <View style={styles.graphicContainer}>
           <View style={styles.pulseOuter}>
             <View style={styles.pulseInner}>
-              <MaterialCommunityIcons name="lock-outline" size={32} color={colors.primary} />
+              <HugeiconsIcon icon={LockPasswordIcon} size={32} color={colors.primary} />
             </View>
           </View>
         </View>
@@ -186,7 +187,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       paddingTop: spacing('2'),
     },
     title: {
-      fontFamily: typography.fonts.semibold,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
       fontSize: 20,
       color: colors.text,
       textAlign: 'center',
