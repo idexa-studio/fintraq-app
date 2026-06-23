@@ -42,6 +42,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
+import { useQueryClient } from '@tanstack/react-query';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
@@ -233,6 +234,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const { isPremium } = usePremium();
   const { profile, updateProfile } = useSettings();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { lockEnabled, lockMode, enableLock, disableLock } = useAppLock();
   const [showPinSetup, setShowPinSetup] = useState(false);
@@ -322,6 +324,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       await db.delete(persons);
       await db.delete(categories);
       await db.delete(accounts);
+      queryClient.clear();
 
       // Clear user-facing AsyncStorage keys only — do NOT use AsyncStorage.clear()
       // which would also wipe any infra keys added in the future
@@ -346,7 +349,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     } catch {
       Alert.alert('Error', 'Failed to erase data.');
     }
-  }, [router]);
+  }, [router, queryClient]);
 
   /* ── Easter egg ── */
   const handleFooterTap = useCallback(() => {

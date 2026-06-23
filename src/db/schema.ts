@@ -70,6 +70,8 @@ export const payments = sqliteTable('payments', {
   index('payments_to_account_id_idx').on(table.toAccountId),
   index('payments_person_id_idx').on(table.personId),
   index('payments_datetime_idx').on(table.datetime),
+  index('payments_type_idx').on(table.type),
+  index('payments_account_datetime_idx').on(table.accountId, table.datetime),
 ]);
 
 export const personsRelations = relations(persons, ({ many }) => ({
