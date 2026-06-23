@@ -1,7 +1,7 @@
 import { InferSelectModel, eq, sql } from 'drizzle-orm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from '../db/client';
-import { accounts, categories, payments, persons } from '../db/schema';
+import { accounts, categories, payments, persons, loans } from '../db/schema';
 import { toDbColor } from './format';
 import { StorageKeys } from '../constants/keys';
 
@@ -390,6 +390,147 @@ export async function seedDummyData() {
             .where(eq(payments.id, recentPayments[i].id));
         }
       }
+    }
+
+    // Seed demo loans (Lent, Borrowed, and Repaid)
+    if (insertedPersons.length >= 3 && allAccounts.length > 0) {
+      const usdAccount = allAccounts.find(a => a.currency === 'USD') ?? allAccounts[0];
+      const multiplier = CURRENCY_MULTIPLIERS[usdAccount.currency.toUpperCase()] ?? 1;
+      const loanCategory = allCategories.find(c => c.name.toLowerCase() === 'loan/emi' || c.name.toLowerCase() === 'uncategorized') ?? allCategories[0];
+
+      const date15DaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 15).toISOString();
+      const date30DaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30).toISOString();
+      const date10DaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 10).toISOString();
+      const date45DaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 45).toISOString();
+      const date40DaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 40).toISOString();
+
+      // 1. Insert Loans
+      const seededLoans = await db.insert(loans).values([
+        {
+          personId: insertedPersons[0].id, // Sarah
+          type: 'lend',
+          principal: 500 * multiplier,
+          currency: usdAccount.currency,
+          accountId: usdAccount.id,
+          categoryId: loanCategory.id,
+          status: 'active',
+          dueDate: new Date(now.getFullYear(), now.getMonth() + 1, now.getDate()).toISOString().slice(0, 10),
+          note: 'Lent for travel expenses',
+          createdAt: date15DaysAgo,
+          updatedAt: date15DaysAgo,
+        },
+        {
+          personId: insertedPersons[1].id, // James
+          type: 'borrow',
+          principal: 1000 * multiplier,
+          currency: usdAccount.currency,
+          accountId: usdAccount.id,
+          categoryId: loanCategory.id,
+          status: 'active',
+          dueDate: new Date(now.getFullYear(), now.getMonth() + 2, now.getDate()).toISOString().slice(0, 10),
+          note: 'Borrowed for laptop repair',
+          createdAt: date30DaysAgo,
+          updatedAt: date10DaysAgo,
+        },
+        {
+          personId: insertedPersons[2].id, // Priya
+          type: 'lend',
+          principal: 300 * multiplier,
+          currency: usdAccount.currency,
+          accountId: usdAccount.id,
+          categoryId: loanCategory.id,
+          status: 'repaid',
+          note: 'Dinner split share',
+          createdAt: date45DaysAgo,
+          updatedAt: date40DaysAgo,
+        }
+      ]).returning();
+
+      // 2. Insert Loan Payments
+      const loanPayments = [
+        // Loan 1 (Lent 500)
+        {
+          accountId: usdAccount.id,
+          categoryId: loanCategory.id,
+          personId: insertedPersons[0].id,
+          loanId: seededLoans[0].id,
+          amount: 500 * multiplier,
+          type: 'DR' as const,
+          datetime: date15DaysAgo,
+          note: 'Loan given',
+          createdAt: date15DaysAgo,
+          updatedAt: date15DaysAgo,
+        },
+        // Loan 2 (Borrowed 1000)
+        {
+          accountId: usdAccount.id,
+          categoryId: loanCategory.id,
+          personId: insertedPersons[1].id,
+          loanId: seededLoans[1].id,
+          amount: 1000 * multiplier,
+          type: 'CR' as const,
+          datetime: date30DaysAgo,
+          note: 'Loan received',
+          createdAt: date30DaysAgo,
+          updatedAt: date30DaysAgo,
+        },
+        // Loan 2 repayment (200)
+        {
+          accountId: usdAccount.id,
+          categoryId: loanCategory.id,
+          personId: insertedPersons[1].id,
+          loanId: seededLoans[1].id,
+          amount: 200 * multiplier,
+          type: 'DR' as const,
+          datetime: date10DaysAgo,
+          note: 'Loan repayment sent',
+          createdAt: date10DaysAgo,
+          updatedAt: date10DaysAgo,
+        },
+        // Loan 3 (Lent 300)
+        {
+          accountId: usdAccount.id,
+          categoryId: loanCategory.id,
+          personId: insertedPersons[2].id,
+          loanId: seededLoans[2].id,
+          amount: 300 * multiplier,
+          type: 'DR' as const,
+          datetime: date45DaysAgo,
+          note: 'Loan given',
+          createdAt: date45DaysAgo,
+          updatedAt: date45DaysAgo,
+        },
+        // Loan 3 repayment (300)
+        {
+          accountId: usdAccount.id,
+          categoryId: loanCategory.id,
+          personId: insertedPersons[2].id,
+          loanId: seededLoans[2].id,
+          amount: 300 * multiplier,
+          type: 'CR' as const,
+          datetime: date40DaysAgo,
+          note: 'Loan repayment received',
+          createdAt: date40DaysAgo,
+          updatedAt: date40DaysAgo,
+        }
+      ];
+
+      await db.insert(payments).values(loanPayments);
+
+      // 3. Update Account Balance for usdAccount
+      const loanIncome = loanPayments.filter(p => p.type === 'CR').reduce((s, p) => s + p.amount, 0);
+      const loanExpense = loanPayments.filter(p => p.type === 'DR').reduce((s, p) => s + p.amount, 0);
+
+      await db.update(accounts)
+        .set({
+          balance: sql`${accounts.balance} + ${loanIncome} - ${loanExpense}`,
+          income: sql`${accounts.income} + ${loanIncome}`,
+          expense: sql`${accounts.expense} + ${loanExpense}`,
+          updatedAt: now.toISOString(),
+        })
+        .where(eq(accounts.id, usdAccount.id));
+
+      totalSeeded += loanPayments.length;
     }
 
     await AsyncStorage.setItem(StorageKeys.SEED_EXECUTED, 'true');
