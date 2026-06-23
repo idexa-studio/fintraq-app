@@ -3,7 +3,6 @@ import { format } from 'date-fns';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -11,18 +10,21 @@ import {
   Text,
   TextInput,
   View,
+  ActivityIndicator,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
 import { Header } from '../../../components/ui/Header';
-import { MoneyText } from '../../../components/ui/MoneyText';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { PersonAvatar } from '../../../components/ui/PersonAvatar';
+import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
 import { PersonPickerBottomSheet } from '../../persons/components/PersonPickerBottomSheet';
 import { usePersons } from '../../persons/hooks/persons';
 import { TransactionAccountPicker } from '../../transactions/components/TransactionAccountPicker';
+import { TransactionAmountInput } from '../../transactions/components/TransactionAmountInput';
 import { TransactionCategoryPicker } from '../../transactions/components/TransactionCategoryPicker';
 import { usePremium } from '../../../providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
@@ -35,6 +37,7 @@ import {
   HandshakeIcon,
   Money01Icon,
   UnfoldMoreIcon,
+  PencilEdit01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 
@@ -49,7 +52,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
   const theme = useTheme();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const { isPremium } = usePremium();
+  const { isPremium, showAlert } = usePremium();
 
   const { data: allAccounts } = useAccounts();
   const { data: allCategories } = useCategories();
@@ -147,7 +150,11 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
       });
       router.back();
     } catch (e) {
-      Alert.alert('Error', toErrorMessage(e, 'Failed to create loan.'));
+      showAlert({
+        title: 'Error',
+        message: toErrorMessage(e, 'Failed to create loan.'),
+        type: 'error',
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -156,21 +163,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header
-        title="New loan"
-        showBack
-        rightAction={
-          <BentoPressable
-            style={[styles.saveBtn, (!canSubmit || isSubmitting) && styles.saveBtnDisabled]}
-            onPress={handleSubmit}
-            disabled={!canSubmit || isSubmitting}
-          >
-            <Text style={[styles.saveBtnText, { fontFamily: typography.fonts.semibold }]}>
-              {isSubmitting ? 'Saving…' : 'Save'}
-            </Text>
-          </BentoPressable>
-        }
-      />
+      <Header title="New loan" showBack />
 
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
@@ -178,120 +171,111 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
           {/* Type toggle */}
           <View style={styles.typeRow}>
             <BentoPressable
-              style={[styles.typeBtn, loanType === 'lend' && { backgroundColor: colors.primary }]}
+              style={[styles.typeBtn, loanType === 'lend' && { backgroundColor: colors.primary + '14' }]}
               onPress={() => setLoanType('lend')}
             >
-              <HugeiconsIcon icon={Money01Icon} size={16} color={loanType === 'lend' ? colors.primaryForeground : colors.textMuted} />
-              <Text style={[styles.typeBtnText, { fontFamily: typography.fonts.semibold, color: loanType === 'lend' ? colors.primaryForeground : colors.textMuted }]}>
+              <HugeiconsIcon icon={Money01Icon} size={16} color={loanType === 'lend' ? colors.primary : colors.textMuted} />
+              <Text style={[styles.typeBtnText, { color: loanType === 'lend' ? colors.primary : colors.textMuted }]}>
                 I lent
               </Text>
             </BentoPressable>
             <BentoPressable
-              style={[styles.typeBtn, loanType === 'borrow' && { backgroundColor: colors.primary }]}
+              style={[styles.typeBtn, loanType === 'borrow' && { backgroundColor: colors.primary + '14' }]}
               onPress={() => setLoanType('borrow')}
             >
-              <HugeiconsIcon icon={Coins01Icon} size={16} color={loanType === 'borrow' ? colors.primaryForeground : colors.textMuted} />
-              <Text style={[styles.typeBtnText, { fontFamily: typography.fonts.semibold, color: loanType === 'borrow' ? colors.primaryForeground : colors.textMuted }]}>
+              <HugeiconsIcon icon={Coins01Icon} size={16} color={loanType === 'borrow' ? colors.primary : colors.textMuted} />
+              <Text style={[styles.typeBtnText, { color: loanType === 'borrow' ? colors.primary : colors.textMuted }]}>
                 I borrowed
               </Text>
             </BentoPressable>
           </View>
 
-          {/* Amount */}
-          <View style={styles.amountCard}>
-            <Text style={[styles.amountLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-              {loanType === 'lend' ? 'Amount lent' : 'Amount borrowed'}
-            </Text>
-            <View style={styles.amountRow}>
-              {selectedAccount && (
-                <Text style={[styles.currency, { fontFamily: typography.fonts.bold, color: colors.textMuted }]}>
-                  {selectedAccount.currency}
-                </Text>
-              )}
-              <TextInput
-                style={[styles.amountInput, { fontFamily: typography.fonts.bold, color: colors.text }]}
-                value={amountInput}
-                onChangeText={setAmountInput}
-                keyboardType="decimal-pad"
-                placeholder="0.00"
-                placeholderTextColor={colors.textMuted + '60'}
-                returnKeyType="done"
-                onSubmitEditing={() => noteRef.current?.focus()}
-              />
-            </View>
-          </View>
+          {/* Reusable payment amount input */}
+          <TransactionAmountInput
+            value={amountInput}
+            onChange={setAmountInput}
+            currency={selectedAccount?.currency ?? ''}
+          />
 
-          {/* Person */}
+          {/* Person button trigger styled like transactions */}
           <View style={styles.fieldSection}>
-            <Text style={[styles.fieldLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
+            <Text style={styles.fieldLabel}>
               {loanType === 'lend' ? 'Lent to' : 'Borrowed from'}
             </Text>
-            <BentoPressable style={styles.personPicker} onPress={() => setShowPersonPicker(true)}>
+            <BentoPressable style={styles.personPickerBtn} onPress={() => setShowPersonPicker(true)}>
               {selectedPerson ? (
-                <View style={styles.personRow}>
-                  <PersonAvatar name={selectedPerson.name} color={colorNumberToHex(selectedPerson.color)} size={32} />
-                  <Text style={[styles.personName, { fontFamily: typography.fonts.medium, color: colors.text }]}>
-                    {selectedPerson.name}
-                  </Text>
-                </View>
+                <>
+                  <PersonAvatar name={selectedPerson.name} color={colorNumberToHex(selectedPerson.color)} size={36} />
+                  <View style={styles.textContainer}>
+                    <Text style={styles.personValueLabel}>Selected Person</Text>
+                    <Text style={styles.personValueText} numberOfLines={1}>
+                      {selectedPerson.name}
+                    </Text>
+                  </View>
+                </>
               ) : (
-                <View style={styles.personRow}>
-                  <HugeiconsIcon icon={HandshakeIcon} size={20} color={colors.textMuted} />
-                  <Text style={[styles.personPlaceholder, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                    Select person
-                  </Text>
-                </View>
+                <>
+                  <IconAvatar icon={HandshakeIcon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
+                  <View style={styles.textContainer}>
+                    <Text style={styles.personValueLabel}>Person</Text>
+                    <Text style={[styles.personValueText, { color: colors.textMuted }]} numberOfLines={1}>
+                      Select contact
+                    </Text>
+                  </View>
+                </>
               )}
-              <HugeiconsIcon icon={UnfoldMoreIcon} size={18} color={colors.textMuted} />
+              <HugeiconsIcon icon={UnfoldMoreIcon} size={16} color={colors.textMuted} />
             </BentoPressable>
           </View>
 
           {/* Account */}
-          <View style={styles.fieldSection}>
-            <TransactionAccountPicker
-              accounts={accounts}
-              selectedId={selectedAccountId}
-              onSelect={setSelectedAccountId}
-              label={loanType === 'lend' ? 'From account' : 'Into account'}
-            />
-          </View>
+          <TransactionAccountPicker
+            accounts={accounts}
+            selectedId={selectedAccountId}
+            onSelect={setSelectedAccountId}
+            label={loanType === 'lend' ? 'From account' : 'Into account'}
+          />
 
           {/* Category */}
-          <View style={styles.fieldSection}>
-            <TransactionCategoryPicker
-              categories={filteredCategories}
-              selectedId={selectedCategoryId}
-              onSelect={setSelectedCategoryId}
-            />
-          </View>
+          <TransactionCategoryPicker
+            categories={filteredCategories}
+            selectedId={selectedCategoryId}
+            onSelect={setSelectedCategoryId}
+          />
 
-          {/* Due date */}
+          {/* Due date trigger styled like transactions */}
           <View style={styles.fieldSection}>
-            <Text style={[styles.fieldLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
+            <Text style={styles.fieldLabel}>
               Due date (optional)
             </Text>
-            <BentoPressable style={styles.dateRow} onPress={() => setShowDueDatePicker(true)}>
-              <HugeiconsIcon icon={Calendar03Icon} size={18} color={colors.textMuted} />
-              <Text style={[styles.dateText, { fontFamily: typography.fonts.regular, color: dueDate ? colors.text : colors.textMuted }]}>
-                {dueDate ? format(dueDate, 'MMM d, yyyy') : 'No due date'}
-              </Text>
-              {dueDate && (
+            <BentoPressable style={styles.datePickerBtn} onPress={() => setShowDueDatePicker(true)}>
+              <IconAvatar icon={Calendar03Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
+              <View style={styles.textContainer}>
+                <Text style={styles.dateLabel}>Due Date</Text>
+                <Text style={[styles.dateValueText, !dueDate && { color: colors.textMuted }]} numberOfLines={1}>
+                  {dueDate ? format(dueDate, 'MMM d, yyyy') : 'No due date'}
+                </Text>
+              </View>
+              {dueDate ? (
                 <BentoPressable onPress={() => setDueDate(null)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                  <Text style={[{ fontFamily: typography.fonts.regular, color: colors.danger, fontSize: 13 }]}>Clear</Text>
+                  <Text style={styles.clearText}>Clear</Text>
                 </BentoPressable>
+              ) : (
+                <HugeiconsIcon icon={UnfoldMoreIcon} size={16} color={colors.textMuted} />
               )}
             </BentoPressable>
           </View>
 
-          {/* Note */}
+          {/* Note input container styled like transactions */}
           <View style={styles.fieldSection}>
-            <Text style={[styles.fieldLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-              Note (optional)
-            </Text>
-            <View style={styles.noteWrap}>
+            <View style={styles.noteContainer}>
+              <View style={styles.noteHeader}>
+                <IconAvatar icon={PencilEdit01Icon} color={colors.primary} variant="subtle" size={32} iconSize={16} />
+                <Text style={styles.noteLabel}>Note</Text>
+              </View>
               <TextInput
                 ref={noteRef}
-                style={[styles.noteInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
+                style={styles.noteInput}
                 value={note}
                 onChangeText={setNote}
                 placeholder="What's this for?"
@@ -305,7 +289,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
 
           {atFreeLimit && (
             <View style={styles.limitBanner}>
-              <Text style={[styles.limitText, { fontFamily: typography.fonts.regular, color: colors.warning }]}>
+              <Text style={styles.limitText}>
                 Free plan: {FREE_LOAN_LIMIT} active loans max. Upgrade for unlimited.
               </Text>
             </View>
@@ -313,6 +297,22 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
 
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <View style={styles.footer}>
+        <Pressable
+          style={[styles.saveBtn, (!canSubmit || isSubmitting) && styles.saveBtnDisabled]}
+          onPress={handleSubmit}
+          disabled={!canSubmit || isSubmitting}
+        >
+          {isSubmitting ? (
+            <ActivityIndicator size="small" color={colors.primaryForeground} />
+          ) : (
+            <Text style={styles.saveBtnText}>
+              Create loan
+            </Text>
+          )}
+        </Pressable>
+      </View>
 
       {showDueDatePicker && (
         <DateTimePicker
@@ -335,86 +335,142 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
   );
 });
 
-const createStyles = ({ colors, spacing, radius, shadow, layout }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: ThemeContextType) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: { paddingTop: spacing('3'), paddingBottom: spacing('12') },
+    footer: {
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('3'),
+      paddingBottom: spacing('8'),
+    },
     saveBtn: {
+      height: 52,
+      borderRadius: radius('full'),
       backgroundColor: colors.primary,
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('2'),
-      borderRadius: radius('lg'),
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     saveBtnDisabled: { opacity: 0.5 },
-    saveBtnText: { color: colors.primaryForeground, fontSize: 14 },
+    saveBtnText: {
+      fontFamily: typography.styles.buttonLabel.fontFamily,
+      fontSize: 16,
+      color: colors.primaryForeground,
+    },
     typeRow: {
       flexDirection: 'row',
       gap: spacing('2'),
-      marginHorizontal: spacing('4'),
+      marginHorizontal: layout.screenPadding,
       marginBottom: spacing('4'),
       backgroundColor: colors.surface,
       padding: spacing('1'),
       borderRadius: radius('xl'),
-      ...shadow('sm'),
+      height: sizes.button.md.height,
+      alignItems: 'center',
     },
     typeBtn: {
       flex: 1,
+      height: '100%',
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
       gap: spacing('1.5'),
-      paddingVertical: spacing('2.5'),
       borderRadius: radius('lg'),
     },
-    typeBtnText: { fontSize: 14 },
-    amountCard: {
-      marginHorizontal: spacing('4'),
-      marginBottom: spacing('4'),
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('4'),
-      ...shadow('sm'),
+    typeBtnText: {
+      fontSize: typography.sizes.md,
+      fontFamily: typography.styles.chipLabelActive.fontFamily,
     },
-    amountLabel: { fontSize: 12, textTransform: 'uppercase', marginBottom: spacing('2') },
-    amountRow: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
-    currency: { fontSize: 22 },
-    amountInput: { flex: 1, fontSize: 36, paddingVertical: 0 },
-    fieldSection: { marginHorizontal: spacing('4'), marginBottom: spacing('4') },
-    fieldLabel: { fontSize: 12, textTransform: 'uppercase', marginBottom: spacing('2') },
-    personPicker: {
+    fieldSection: { marginHorizontal: layout.screenPadding, marginBottom: spacing('4') },
+    fieldLabel: {
+      fontFamily: typography.styles.sectionLabel.fontFamily,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+      textTransform: 'uppercase',
+      marginBottom: spacing('2'),
+    },
+    personPickerBtn: {
+      height: sizes.input.md.height,
+      borderRadius: sizes.input.md.borderRadius,
+      backgroundColor: colors.surface,
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('3'),
-      ...shadow('sm'),
+      paddingHorizontal: spacing('3'),
+      gap: spacing('2.5'),
     },
-    personRow: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
-    personName: { fontSize: 15 },
-    personPlaceholder: { fontSize: 15 },
-    dateRow: {
+    textContainer: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    personValueLabel: {
+      fontFamily: typography.styles.rowMeta.fontFamily,
+      fontSize: 10,
+      color: colors.textMuted,
+      marginBottom: Platform.OS === 'ios' ? 1 : 0,
+    },
+    personValueText: {
+      fontFamily: typography.styles.rowLabel.fontFamily,
+      fontSize: 13,
+      color: colors.text,
+    },
+    datePickerBtn: {
+      height: sizes.input.md.height,
+      borderRadius: sizes.input.md.borderRadius,
+      backgroundColor: colors.surface,
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('2'),
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('3'),
-      ...shadow('sm'),
+      paddingHorizontal: spacing('3'),
+      gap: spacing('2.5'),
     },
-    dateText: { flex: 1, fontSize: 15 },
-    noteWrap: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('3'),
-      ...shadow('sm'),
+    dateLabel: {
+      fontFamily: typography.styles.rowMeta.fontFamily,
+      fontSize: 10,
+      color: colors.textMuted,
+      marginBottom: Platform.OS === 'ios' ? 1 : 0,
     },
-    noteInput: { fontSize: 15, minHeight: 60 },
+    dateValueText: {
+      fontFamily: typography.styles.rowLabel.fontFamily,
+      fontSize: 13,
+      color: colors.text,
+    },
+    clearText: {
+      fontFamily: typography.styles.rowMeta.fontFamily,
+      color: colors.danger,
+      fontSize: typography.sizes.sm,
+    },
+    noteContainer: {
+      borderRadius: radius('xl'),
+      backgroundColor: colors.surface,
+      padding: sizes.card.md.padding,
+    },
+    noteHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('2.5'),
+      marginBottom: spacing('2'),
+    },
+    noteLabel: {
+      fontFamily: typography.styles.rowLabel.fontFamily,
+      fontSize: 13,
+      color: colors.text,
+    },
+    noteInput: {
+      fontFamily: typography.styles.inputValue.fontFamily,
+      fontSize: 14,
+      color: colors.text,
+      textAlignVertical: 'top',
+      minHeight: 80,
+      padding: 0,
+    },
     limitBanner: {
-      marginHorizontal: spacing('4'),
+      marginHorizontal: layout.screenPadding,
       padding: spacing('3'),
       backgroundColor: colors.warning + '15',
       borderRadius: radius('lg'),
     },
-    limitText: { fontSize: 13 },
+    limitText: {
+      fontSize: typography.sizes.sm,
+      fontFamily: typography.styles.rowMeta.fontFamily,
+      color: colors.warning,
+    },
   });

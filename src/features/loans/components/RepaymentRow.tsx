@@ -43,10 +43,10 @@ export const RepaymentRow = React.memo(function RepaymentRow({ row, loanType, is
         }]} />
       </View>
       <View style={styles.content}>
-        <Text style={[styles.label, { fontFamily: typography.fonts.medium, color: colors.text }]}>
+        <Text style={styles.label}>
           {row.note || label}
         </Text>
-        <Text style={[styles.sub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+        <Text style={styles.sub}>
           {dateLabel} · {row.accountName}
         </Text>
       </View>
@@ -62,7 +62,7 @@ export const RepaymentRow = React.memo(function RepaymentRow({ row, loanType, is
   );
 });
 
-const createStyles = ({ colors, spacing, shadow }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, typography }: ThemeContextType) =>
   StyleSheet.create({
     row: {
       flexDirection: 'row',
@@ -70,15 +70,24 @@ const createStyles = ({ colors, spacing, shadow }: ThemeContextType) =>
       backgroundColor: colors.surface,
       paddingHorizontal: spacing('4'),
       paddingVertical: spacing('3'),
-      marginHorizontal: spacing('4'),
       marginBottom: spacing('1'),
       gap: spacing('3'),
-      ...shadow('sm'),
     },
     dot: { width: 20, alignItems: 'center', justifyContent: 'center' },
     dotInner: { width: 8, height: 8, borderRadius: 4 },
     content: { flex: 1 },
-    label: { fontSize: 14 },
-    sub: { fontSize: 12, marginTop: 2 },
-    amount: { fontSize: 14 },
+    label: {
+      fontSize: typography.sizes.md,
+      fontFamily: typography.styles.rowLabel.fontFamily,
+      color: colors.text,
+    },
+    sub: {
+      fontSize: typography.sizes.xs,
+      fontFamily: typography.styles.rowMeta.fontFamily,
+      color: colors.textMuted,
+      marginTop: spacing('0.5'),
+    },
+    amount: {
+      fontSize: typography.sizes.md,
+    },
   });

@@ -3,7 +3,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
 import { Header } from '../../../components/ui/Header';
 import { MoneyText } from '../../../components/ui/MoneyText';
@@ -20,7 +20,8 @@ type Tab = 'lend' | 'borrow';
 export const LoansScreen = React.memo(function LoansScreen() {
   const theme = useTheme();
   const { colors, typography } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const router = useRouter();
 
   const { data: accounts } = useAccounts();
@@ -70,18 +71,9 @@ export const LoansScreen = React.memo(function LoansScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header
-        title="Loans"
-        showBack
-        rightAction={
-          <BentoPressable style={styles.addBtn} onPress={handleAdd}>
-            <HugeiconsIcon icon={PlusSignIcon} size={18} color={colors.primaryForeground} />
-          </BentoPressable>
-        }
-      />
+      <Header title="Loans" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-
         {/* Currency tabs */}
         {currencies.length > 1 && (
           <View style={styles.currencyRow}>
@@ -91,8 +83,7 @@ export const LoansScreen = React.memo(function LoansScreen() {
                 style={[styles.currencyPill, c === selectedCurrency && styles.currencyPillActive]}
                 onPress={() => setSelectedCurrency(c)}
               >
-                <Text style={[styles.currencyText, { fontFamily: typography.fonts.medium },
-                  c === selectedCurrency && { color: colors.primaryForeground }]}>
+                <Text style={[styles.currencyText, c === selectedCurrency && styles.currencyTextActive]}>
                   {c}
                 </Text>
               </BentoPressable>
@@ -102,14 +93,14 @@ export const LoansScreen = React.memo(function LoansScreen() {
 
         {/* Summary */}
         <View style={styles.summaryRow}>
-          <View style={[styles.summaryTile, { backgroundColor: colors.success + '15' }]}>
-            <Text style={[styles.summaryLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.success }]}>
+          <View style={[styles.summaryTile, { backgroundColor: colors.success + '12' }]}>
+            <Text style={[styles.summaryLabel, { color: colors.success }]}>
               Lent out
             </Text>
             <MoneyText amount={totalLent} currency={selectedCurrency} type="CR" weight="bold" compact style={styles.summaryAmount} />
           </View>
-          <View style={[styles.summaryTile, { backgroundColor: colors.danger + '15' }]}>
-            <Text style={[styles.summaryLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.danger }]}>
+          <View style={[styles.summaryTile, { backgroundColor: colors.danger + '12' }]}>
+            <Text style={[styles.summaryLabel, { color: colors.danger }]}>
               Borrowed
             </Text>
             <MoneyText amount={totalBorrowed} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.summaryAmount} />
@@ -118,41 +109,47 @@ export const LoansScreen = React.memo(function LoansScreen() {
 
         {/* Tabs */}
         <View style={styles.tabRow}>
-          {(['lend', 'borrow'] as Tab[]).map(tab => (
-            <BentoPressable
-              key={tab}
-              style={[styles.tab, activeTab === tab && { borderBottomColor: colors.primary, borderBottomWidth: 2 }]}
-              onPress={() => setActiveTab(tab)}
-            >
-              <Text style={[styles.tabText, { fontFamily: typography.fonts.medium },
-                activeTab === tab ? { color: colors.primary } : { color: colors.textMuted }]}>
-                {tab === 'lend' ? `Lent (${activeLent.length})` : `Borrowed (${activeBorow.length})`}
-              </Text>
-            </BentoPressable>
-          ))}
+          {(['lend', 'borrow'] as Tab[]).map(tab => {
+            const isActive = activeTab === tab;
+            return (
+              <BentoPressable
+                key={tab}
+                style={[styles.tab, isActive && styles.tabActive]}
+                onPress={() => setActiveTab(tab)}
+              >
+                <Text style={[
+                  styles.tabText,
+                  isActive && {
+                    color: colors.primary,
+                    fontFamily: typography.styles.chipLabelActive.fontFamily,
+                  }
+                ]}>
+                  {tab === 'lend' ? `Lent (${activeLent.length})` : `Borrowed (${activeBorow.length})`}
+                </Text>
+              </BentoPressable>
+            );
+          })}
         </View>
 
         {/* Active list */}
         {displayList.length === 0 ? (
           <View style={styles.empty}>
             <HugeiconsIcon icon={HandshakeIcon} size={36} color={colors.textMuted + '60'} />
-            <Text style={[styles.emptyTitle, { fontFamily: typography.fonts.medium, color: colors.textMuted }]}>
+            <Text style={styles.emptyTitle}>
               No {activeTab === 'lend' ? 'lent' : 'borrowed'} loans
             </Text>
             <BentoPressable style={styles.emptyAction} onPress={handleAdd}>
-              <Text style={[styles.emptyActionText, { fontFamily: typography.fonts.semibold, color: colors.primaryForeground }]}>
+              <Text style={styles.emptyActionText}>
                 Add a loan
               </Text>
             </BentoPressable>
           </View>
         ) : (
-          displayList.map((loan, idx) => (
+          displayList.map((loan) => (
             <LoanCard
               key={loan.id}
               loan={loan}
               onPress={handleLoanPress}
-              isFirst={idx === 0}
-              isLast={idx === displayList.length - 1 && repaidList.length === 0}
             />
           ))
         )}
@@ -160,63 +157,121 @@ export const LoansScreen = React.memo(function LoansScreen() {
         {/* Repaid */}
         {repaidList.length > 0 && (
           <>
-            <Text style={[styles.sectionLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
+            <Text style={styles.sectionLabel}>
               Repaid
             </Text>
-            {repaidList.map((loan, idx) => (
+            {repaidList.map((loan) => (
               <LoanCard
                 key={loan.id}
                 loan={loan}
                 onPress={handleLoanPress}
-                isFirst={idx === 0}
-                isLast={idx === repaidList.length - 1}
               />
             ))}
           </>
         )}
-
       </ScrollView>
+
+      <BentoPressable style={styles.fab} onPress={handleAdd}>
+        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
+      </BentoPressable>
     </SafeAreaView>
   );
 });
 
-const createStyles = ({ colors, spacing, radius, shadow }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, shadow, layout, typography }: ThemeContextType, insets: { bottom: number }) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
-    scroll: { paddingTop: spacing('3'), paddingBottom: spacing('12') },
-    addBtn: {
-      width: 36,
-      height: 36,
-      borderRadius: radius('lg'),
-      backgroundColor: colors.primary,
-      alignItems: 'center',
-      justifyContent: 'center',
+    scroll: {
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('2'),
+      paddingBottom: insets.bottom > 0 ? insets.bottom + 80 + 24 : 110,
     },
-    currencyRow: { flexDirection: 'row', gap: spacing('2'), marginHorizontal: spacing('4'), marginBottom: spacing('3') },
+    currencyRow: { flexDirection: 'row', gap: spacing('2'), marginBottom: spacing('3') },
     currencyPill: {
-      paddingHorizontal: spacing('3'),
+      paddingHorizontal: spacing('3.5'),
       paddingVertical: spacing('1.5'),
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
-      ...shadow('sm'),
     },
-    currencyPillActive: { backgroundColor: colors.primary },
-    currencyText: { fontSize: 13, color: colors.textMuted },
-    summaryRow: { flexDirection: 'row', gap: spacing('3'), marginHorizontal: spacing('4'), marginBottom: spacing('4') },
+    currencyPillActive: {
+      backgroundColor: colors.primary + '18',
+    },
+    currencyText: {
+      fontSize: typography.sizes.xs,
+      fontFamily: typography.styles.chipLabel.fontFamily,
+      color: colors.textMuted,
+    },
+    currencyTextActive: {
+      fontFamily: typography.styles.chipLabelActive.fontFamily,
+      color: colors.primary,
+    },
+    summaryRow: { flexDirection: 'row', gap: spacing('3'), marginBottom: spacing('4') },
     summaryTile: { flex: 1, borderRadius: radius('xl'), padding: spacing('3'), gap: spacing('1') },
-    summaryLabel: { fontSize: 11, textTransform: 'uppercase' },
-    summaryAmount: { fontSize: 20 },
-    tabRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: colors.border, marginHorizontal: spacing('4'), marginBottom: spacing('3') },
-    tab: { flex: 1, alignItems: 'center', paddingVertical: spacing('2.5'), borderBottomWidth: 2, borderBottomColor: 'transparent' },
-    tabText: { fontSize: 14 },
+    summaryLabel: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: typography.sizes.xs,
+      textTransform: 'uppercase',
+    },
+    summaryAmount: {
+      fontSize: typography.sizes.xxl,
+    },
+    tabRow: {
+      flexDirection: 'row',
+      gap: spacing('2'),
+      width: '100%',
+      marginBottom: spacing('3'),
+    },
+    tab: {
+      flex: 1,
+      height: 36,
+      borderRadius: radius('full'),
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    tabActive: {
+      backgroundColor: colors.primary + '18',
+    },
+    tabText: {
+      fontFamily: typography.styles.chipLabel.fontFamily,
+      fontSize: typography.sizes.sm,
+      color: colors.textMuted,
+    },
     empty: { alignItems: 'center', paddingVertical: spacing('10'), gap: spacing('3') },
-    emptyTitle: { fontSize: 15 },
+    emptyTitle: {
+      fontSize: typography.sizes.md,
+      fontFamily: typography.fonts.medium,
+      color: colors.textMuted,
+    },
     emptyAction: {
       backgroundColor: colors.primary,
       paddingHorizontal: spacing('4'),
       paddingVertical: spacing('2'),
       borderRadius: radius('lg'),
     },
-    emptyActionText: { fontSize: 14 },
-    sectionLabel: { fontSize: 12, textTransform: 'uppercase', marginHorizontal: spacing('4'), marginTop: spacing('4'), marginBottom: spacing('2') },
+    emptyActionText: {
+      fontSize: typography.sizes.md,
+      fontFamily: typography.fonts.semibold,
+      color: colors.primaryForeground,
+    },
+    sectionLabel: {
+      fontFamily: typography.styles.sectionLabel.fontFamily,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+      textTransform: 'uppercase',
+      marginTop: spacing('4'),
+      marginBottom: spacing('2'),
+    },
+    fab: {
+      position: 'absolute',
+      bottom: insets.bottom > 0 ? insets.bottom + 16 : 16,
+      right: 16,
+      width: 56,
+      height: 56,
+      borderRadius: radius('xl'),
+      backgroundColor: colors.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+      ...shadow('lg'),
+    },
   });

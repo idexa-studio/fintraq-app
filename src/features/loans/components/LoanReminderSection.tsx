@@ -1,8 +1,9 @@
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, Platform, StyleSheet, Switch, Text, View } from 'react-native';
+import { Platform, StyleSheet, Switch, Text, View } from 'react-native';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
+import { usePremium } from '../../../providers/PremiumProvider';
 import type { LoanWithStats } from '../api/loans';
 import { useLoanReminders } from '../hooks/useLoanReminders';
 
@@ -20,6 +21,7 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { scheduleEmiReminder, cancelEmiReminder, scheduleDueReminder, cancelDueReminder } = useLoanReminders();
+  const { showAlert } = usePremium();
 
   const [emiDay, setEmiDay] = useState(loan.emiReminderDay ?? 5);
   const [emiTime, setEmiTime] = useState(loan.emiReminderTime ?? '09:00');
@@ -52,11 +54,14 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
     setEmiEnabled(val);
     if (val) {
       const ok = await scheduleEmiReminder(loan, emiDay, emiTime);
-      if (!ok) { setEmiEnabled(false); Alert.alert('Permission required', 'Enable notifications to set reminders.'); }
+      if (!ok) {
+        setEmiEnabled(false);
+        showAlert({ title: 'Permission required', message: 'Enable notifications to set reminders.', type: 'warning' });
+      }
     } else {
       await cancelEmiReminder(loan);
     }
-  }, [loan, emiDay, emiTime, scheduleEmiReminder, cancelEmiReminder]);
+  }, [loan, emiDay, emiTime, scheduleEmiReminder, cancelEmiReminder, showAlert]);
 
   const handleEmiDayPress = useCallback(() => {
     const next = ((emiDay) % 28) + 1;
@@ -76,16 +81,20 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
 
   const handleDueToggle = useCallback(async (val: boolean) => {
     if (!loan.dueDate && val) {
-      Alert.alert('No due date', 'Set a due date on this loan first.'); return;
+      showAlert({ title: 'No due date', message: 'Set a due date on this loan first.', type: 'warning' });
+      return;
     }
     setDueEnabled(val);
     if (val) {
       const ok = await scheduleDueReminder(loan, dueDaysBefore, dueTime);
-      if (!ok) { setDueEnabled(false); Alert.alert('Permission required', 'Enable notifications to set reminders.'); }
+      if (!ok) {
+        setDueEnabled(false);
+        showAlert({ title: 'Permission required', message: 'Enable notifications to set reminders.', type: 'warning' });
+      }
     } else {
       await cancelDueReminder(loan);
     }
-  }, [loan, dueDaysBefore, dueTime, scheduleDueReminder, cancelDueReminder]);
+  }, [loan, dueDaysBefore, dueTime, scheduleDueReminder, cancelDueReminder, showAlert]);
 
   const handleDueDaysPress = useCallback(() => {
     const idx = DUE_DAYS_OPTIONS.findIndex(o => o.value === dueDaysBefore);
@@ -106,7 +115,7 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
 
   return (
     <View style={styles.section}>
-      <Text style={[styles.title, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
+      <Text style={styles.title}>
         Reminders
       </Text>
 
@@ -114,10 +123,10 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
       <View style={styles.card}>
         <View style={styles.toggleRow}>
           <View style={styles.toggleInfo}>
-            <Text style={[styles.rowLabel, { fontFamily: typography.fonts.medium, color: colors.text }]}>
+            <Text style={styles.rowLabel}>
               Monthly EMI reminder
             </Text>
-            <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+            <Text style={styles.rowSub}>
               Fires every month on day {emiDay}
             </Text>
           </View>
@@ -132,12 +141,12 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
         {emiEnabled && (
           <View style={styles.subControls}>
             <BentoPressable style={styles.chip} onPress={handleEmiDayPress}>
-              <Text style={[styles.chipText, { fontFamily: typography.fonts.medium, color: colors.primary }]}>
+              <Text style={styles.chipText}>
                 Day {emiDay}
               </Text>
             </BentoPressable>
             <BentoPressable style={styles.chip} onPress={() => setShowEmiTimePicker(true)}>
-              <Text style={[styles.chipText, { fontFamily: typography.fonts.medium, color: colors.primary }]}>
+              <Text style={styles.chipText}>
                 {formatTime(emiTime)}
               </Text>
             </BentoPressable>
@@ -150,10 +159,10 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
         <View style={[styles.card, { marginTop: theme.spacing('2') }]}>
           <View style={styles.toggleRow}>
             <View style={styles.toggleInfo}>
-              <Text style={[styles.rowLabel, { fontFamily: typography.fonts.medium, color: colors.text }]}>
+              <Text style={styles.rowLabel}>
                 Due date reminder
               </Text>
-              <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+              <Text style={styles.rowSub}>
                 {DUE_DAYS_OPTIONS.find(o => o.value === dueDaysBefore)?.label ?? 'On due date'}
               </Text>
             </View>
@@ -168,12 +177,12 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
           {dueEnabled && (
             <View style={styles.subControls}>
               <BentoPressable style={styles.chip} onPress={handleDueDaysPress}>
-                <Text style={[styles.chipText, { fontFamily: typography.fonts.medium, color: colors.primary }]}>
+                <Text style={styles.chipText}>
                   {DUE_DAYS_OPTIONS.find(o => o.value === dueDaysBefore)?.label}
                 </Text>
               </BentoPressable>
               <BentoPressable style={styles.chip} onPress={() => setShowDueTimePicker(true)}>
-                <Text style={[styles.chipText, { fontFamily: typography.fonts.medium, color: colors.primary }]}>
+                <Text style={styles.chipText}>
                   {formatTime(dueTime)}
                 </Text>
               </BentoPressable>
@@ -204,22 +213,36 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
   );
 });
 
-const createStyles = ({ colors, spacing, radius, shadow }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({
     section: { marginTop: spacing('6') },
-    title: { fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, marginHorizontal: spacing('4'), marginBottom: spacing('2') },
+    title: {
+      fontFamily: typography.styles.sectionLabel.fontFamily,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      marginBottom: spacing('2'),
+    },
     card: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
       paddingHorizontal: spacing('4'),
       paddingVertical: spacing('3'),
-      marginHorizontal: spacing('4'),
-      ...shadow('sm'),
     },
     toggleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
     toggleInfo: { flex: 1, paddingRight: spacing('3') },
-    rowLabel: { fontSize: 15 },
-    rowSub: { fontSize: 12, marginTop: 2 },
+    rowLabel: {
+      fontFamily: typography.styles.rowLabel.fontFamily,
+      fontSize: typography.sizes.md,
+      color: colors.text,
+    },
+    rowSub: {
+      fontFamily: typography.styles.rowMeta.fontFamily,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+      marginTop: spacing('0.5'),
+    },
     subControls: { flexDirection: 'row', gap: spacing('2'), marginTop: spacing('3') },
     chip: {
       paddingHorizontal: spacing('3'),
@@ -227,5 +250,9 @@ const createStyles = ({ colors, spacing, radius, shadow }: ThemeContextType) =>
       backgroundColor: colors.primary + '15',
       borderRadius: radius('full'),
     },
-    chipText: { fontSize: 13 },
+    chipText: {
+      fontFamily: typography.styles.chipLabel.fontFamily,
+      fontSize: typography.sizes.sm,
+      color: colors.primary,
+    },
   });

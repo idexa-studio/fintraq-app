@@ -20,19 +20,22 @@ export const LoanStatusBadge = React.memo(function LoanStatusBadge({ status }: P
 
   return (
     <View style={[styles.badge, { backgroundColor: config.bg }]}>
-      <Text style={[styles.label, { color: config.text, fontFamily: typography.fonts.semibold }]}>
+      <Text style={[styles.label, { color: config.text }]}>
         {config.label}
       </Text>
     </View>
   );
 });
 
-const createStyles = ({ spacing, radius }: ThemeContextType) =>
+const createStyles = ({ spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({
     badge: {
       paddingHorizontal: spacing('2'),
       paddingVertical: spacing('0.5'),
       borderRadius: radius('full'),
     },
-    label: { fontSize: 11 },
+    label: {
+      fontSize: typography.sizes.xs,
+      fontFamily: typography.styles.chipLabelActive.fontFamily,
+    },
   });

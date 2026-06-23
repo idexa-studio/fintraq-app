@@ -213,13 +213,11 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {activeLoans.length > 0 && (
           <View style={styles.txSection}>
             <Text style={styles.txTitle}>Active loans</Text>
-            {activeLoans.map((loan, idx) => (
+            {activeLoans.map((loan) => (
               <LoanCard
                 key={loan.id}
                 loan={loan}
                 onPress={handleLoanPress}
-                isFirst={idx === 0}
-                isLast={idx === activeLoans.length - 1}
               />
             ))}
           </View>
