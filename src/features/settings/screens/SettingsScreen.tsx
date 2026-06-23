@@ -22,7 +22,7 @@ import {
   AlarmClockIcon,
   ArrowRight01Icon,
   BellIcon,
-  CoinsIcon,
+  Coins02Icon,
   ContrastIcon,
   Delete01Icon,
   Download01Icon,
@@ -487,7 +487,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         <View style={styles.group}>
           <NavRow
             theme={theme}
-            icon={CoinsIcon}
+            icon={Coins02Icon}
             iconColor={colors.success}
             label="Default currency"
             value={profile.defaultCurrency || 'USD'}
