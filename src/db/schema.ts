@@ -34,10 +34,6 @@ export const accounts = sqliteTable('accounts', {
   updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
 });
 
-export const accountsRelations = relations(accounts, ({ many }) => ({
-  payments: many(payments),
-}));
-
 export const categories = sqliteTable('categories', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
@@ -48,9 +44,31 @@ export const categories = sqliteTable('categories', {
   updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
 });
 
-export const categoriesRelations = relations(categories, ({ many }) => ({
-  payments: many(payments),
-}));
+export const loans = sqliteTable('loans', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  personId: integer('person_id').notNull().references(() => persons.id, { onDelete: 'cascade' }),
+  type: text('type', { enum: ['lend', 'borrow'] }).notNull(),
+  principal: real('principal').notNull(),
+  currency: text('currency').notNull(),
+  accountId: integer('account_id').notNull().references(() => accounts.id, { onDelete: 'cascade' }),
+  categoryId: integer('category_id').notNull().references(() => categories.id, { onDelete: 'restrict' }),
+  dueDate: text('due_date'),
+  note: text('note').notNull().default(''),
+  status: text('status', { enum: ['active', 'repaid', 'overdue'] }).notNull().default('active'),
+  emiReminderEnabled: integer('emi_reminder_enabled', { mode: 'boolean' }).notNull().default(false),
+  emiReminderDay: integer('emi_reminder_day'),
+  emiReminderTime: text('emi_reminder_time'),
+  emiNotificationIds: text('emi_notification_ids'),
+  dueReminderEnabled: integer('due_reminder_enabled', { mode: 'boolean' }).notNull().default(false),
+  dueReminderDaysBefore: integer('due_reminder_days_before'),
+  dueNotificationId: text('due_notification_id'),
+  createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
+}, (table) => [
+  index('loans_person_id_idx').on(table.personId),
+  index('loans_status_idx').on(table.status),
+  index('loans_currency_idx').on(table.currency),
+]);
 
 export const payments = sqliteTable('payments', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -58,6 +76,7 @@ export const payments = sqliteTable('payments', {
   categoryId: integer('category_id').notNull().references(() => categories.id, { onDelete: 'cascade' }),
   toAccountId: integer('to_account_id').references(() => accounts.id, { onDelete: 'set null' }),
   personId: integer('person_id').references(() => persons.id, { onDelete: 'set null' }),
+  loanId: integer('loan_id').references(() => loans.id, { onDelete: 'set null' }),
   amount: real('amount').notNull(),
   type: text('type', { enum: ['CR', 'DR', 'TR'] }).notNull(),
   datetime: text('datetime').notNull(),
@@ -72,9 +91,27 @@ export const payments = sqliteTable('payments', {
   index('payments_datetime_idx').on(table.datetime),
   index('payments_type_idx').on(table.type),
   index('payments_account_datetime_idx').on(table.accountId, table.datetime),
+  index('payments_loan_id_idx').on(table.loanId),
 ]);
 
+export const accountsRelations = relations(accounts, ({ many }) => ({
+  payments: many(payments),
+}));
+
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  payments: many(payments),
+  loans: many(loans),
+}));
+
 export const personsRelations = relations(persons, ({ many }) => ({
+  payments: many(payments),
+  loans: many(loans),
+}));
+
+export const loansRelations = relations(loans, ({ one, many }) => ({
+  person: one(persons, { fields: [loans.personId], references: [persons.id] }),
+  account: one(accounts, { fields: [loans.accountId], references: [accounts.id] }),
+  category: one(categories, { fields: [loans.categoryId], references: [categories.id] }),
   payments: many(payments),
 }));
 
@@ -90,6 +127,10 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
   person: one(persons, {
     fields: [payments.personId],
     references: [persons.id],
+  }),
+  loan: one(loans, {
+    fields: [payments.loanId],
+    references: [loans.id],
   }),
 }));
 

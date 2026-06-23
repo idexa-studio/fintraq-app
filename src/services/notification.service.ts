@@ -173,4 +173,158 @@ export const NotificationService = {
   async cancelAllReminders() {
     await Notifications.cancelAllScheduledNotificationsAsync();
   },
+
+  /**
+   * cancelByIdentifiers: Cancels specific notifications by ID without touching others.
+   */
+  async cancelByIdentifiers(ids: string[]) {
+    await Promise.all(ids.map(id => Notifications.cancelScheduledNotificationAsync(id)));
+  },
+
+  /**
+   * scheduleLoanEmiReminder: Schedules monthly EMI reminder for a loan.
+   * iOS: single repeating calendar trigger. Android: 6 individual monthly triggers.
+   * Returns array of scheduled notification identifiers (store on the loan record).
+   */
+  async scheduleLoanEmiReminder(
+    loanId: number,
+    day: number,
+    timeStr: string,
+    personName: string,
+    loanType: 'lend' | 'borrow',
+  ): Promise<string[]> {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    if (isNaN(hours) || isNaN(minutes)) return [];
+
+    const title = loanType === 'lend' ? 'Payment incoming?' : 'EMI due today';
+    const body = loanType === 'lend'
+      ? `${personName} should send you a repayment today.`
+      : `Don't forget — send ${personName} their repayment today.`;
+
+    const ids: string[] = [];
+
+    if (Platform.OS === 'ios') {
+      const identifier = `loan_emi_${loanId}`;
+      await Notifications.scheduleNotificationAsync({
+        identifier,
+        content: { title, body, sound: true },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
+          day,
+          hour: hours,
+          minute: minutes,
+          repeats: true,
+        },
+      });
+      ids.push(identifier);
+    } else {
+      // Android: schedule next 6 months individually
+      const now = new Date();
+      for (let i = 0; i < 6; i++) {
+        const target = new Date(now.getFullYear(), now.getMonth() + i, day, hours, minutes, 0);
+        if (target <= now) continue;
+        const identifier = `loan_emi_${loanId}_${target.getFullYear()}_${target.getMonth()}`;
+        await Notifications.scheduleNotificationAsync({
+          identifier,
+          content: { title, body, sound: true },
+          trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: target,
+          },
+        });
+        ids.push(identifier);
+      }
+    }
+
+    return ids;
+  },
+
+  /**
+   * extendAndroidEmiReminders: On app launch (Android only), fills gaps in next 6-month
+   * notification window for loans with active EMI reminders.
+   */
+  async extendAndroidEmiReminders(
+    configs: Array<{
+      loanId: number;
+      day: number;
+      timeStr: string;
+      personName: string;
+      loanType: 'lend' | 'borrow';
+      existingIds: string[];
+    }>,
+  ): Promise<Map<number, string[]>> {
+    if (Platform.OS !== 'android') return new Map();
+    const result = new Map<number, string[]>();
+
+    for (const cfg of configs) {
+      const [hours, minutes] = cfg.timeStr.split(':').map(Number);
+      if (isNaN(hours) || isNaN(minutes)) continue;
+
+      const title = cfg.loanType === 'lend' ? 'Payment incoming?' : 'EMI due today';
+      const body = cfg.loanType === 'lend'
+        ? `${cfg.personName} should send you a repayment today.`
+        : `Don't forget — send ${cfg.personName} their repayment today.`;
+
+      const now = new Date();
+      const newIds = [...cfg.existingIds];
+
+      for (let i = 0; i < 6; i++) {
+        const target = new Date(now.getFullYear(), now.getMonth() + i, cfg.day, hours, minutes, 0);
+        if (target <= now) continue;
+        const identifier = `loan_emi_${cfg.loanId}_${target.getFullYear()}_${target.getMonth()}`;
+        if (cfg.existingIds.includes(identifier)) continue;
+        await Notifications.scheduleNotificationAsync({
+          identifier,
+          content: { title, body, sound: true },
+          trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: target,
+          },
+        });
+        newIds.push(identifier);
+      }
+
+      result.set(cfg.loanId, newIds);
+    }
+
+    return result;
+  },
+
+  /**
+   * scheduleLoanDueReminder: Schedules a one-time reminder before loan due date.
+   * Returns the notification identifier.
+   */
+  async scheduleLoanDueReminder(
+    loanId: number,
+    dueDate: string,
+    daysBefore: number,
+    timeStr: string,
+    personName: string,
+    loanType: 'lend' | 'borrow',
+  ): Promise<string | null> {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    if (isNaN(hours) || isNaN(minutes)) return null;
+
+    const due = new Date(dueDate);
+    const target = new Date(due.getFullYear(), due.getMonth(), due.getDate() - daysBefore, hours, minutes, 0);
+    if (target <= new Date()) return null;
+
+    const identifier = `loan_due_${loanId}`;
+    const dayLabel = daysBefore === 0 ? 'today' : daysBefore === 1 ? 'tomorrow' : `in ${daysBefore} days`;
+    const title = loanType === 'lend' ? 'Loan due soon' : 'Repayment due soon';
+    const body = loanType === 'lend'
+      ? `${personName}'s loan is due ${dayLabel}.`
+      : `Your loan repayment to ${personName} is due ${dayLabel}.`;
+
+    await Notifications.scheduleNotificationAsync({
+      identifier,
+      content: { title, body, sound: true },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+        date: target,
+      },
+    });
+
+    return identifier;
+  },
 };

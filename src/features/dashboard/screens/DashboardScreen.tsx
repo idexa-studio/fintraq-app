@@ -26,6 +26,7 @@ import { InsightsSection } from '../components/InsightsSection';
 import { PremiumUpsellBottomSheet } from '../components/PremiumUpsellBottomSheet';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '../components/TopPersonsCard';
+import { LoansGlanceCard } from '../components/LoansGlanceCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
 
 const UPSELL_KEY = StorageKeys.UPSELL_DISMISSED_AT;
@@ -165,6 +166,9 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
             <TopPersonsCard currency={selectedCurrency} persons={topPersonsData} onPressPerson={(id) => router.push(`/persons/${id}`)} />
           </>
         )}
+
+        <SectionHeader title="Loans" rightText="See all" onPressRight={() => router.push('/(main)/loans')} />
+        <LoansGlanceCard currency={selectedCurrency} onPress={() => router.push('/(main)/loans')} />
 
         <SectionHeader title="Recent" rightText="See all" onPressRight={navigateToTransactions} />
         <View style={styles.activityCard}>

@@ -8,6 +8,9 @@ import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { usePersonWithStats, useTransactionsByPerson, useDeletePerson } from '@/src/features/persons/hooks/persons';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';
+import { useLoansByPerson } from '@/src/features/loans/hooks/loans';
+import { LoanCard } from '@/src/features/loans/components/LoanCard';
+import type { LoanWithStats } from '@/src/features/loans/api/loans';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { Call02Icon, Delete01Icon, Mail01Icon, PencilEdit01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
@@ -28,6 +31,13 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
 
   const deletePerson = useDeletePerson();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const { data: personLoans } = useLoansByPerson(personId);
+  const activeLoans = useMemo(() => (personLoans ?? []).filter(l => l.computedStatus !== 'repaid'), [personLoans]);
+
+  const handleLoanPress = useCallback((loan: LoanWithStats) => {
+    router.push(`/(main)/loans/${loan.id}`);
+  }, [router]);
 
   const { data: txList } = useTransactionsByPerson(personId);
   const { data: accounts } = useAccounts();
@@ -198,6 +208,22 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
             <MoneyText amount={person.totalReceived} currency={currency} type="CR" weight="bold" compact style={styles.statValue} />
           </View>
         </View>
+
+        {/* Loans */}
+        {activeLoans.length > 0 && (
+          <View style={styles.txSection}>
+            <Text style={styles.txTitle}>Active loans</Text>
+            {activeLoans.map((loan, idx) => (
+              <LoanCard
+                key={loan.id}
+                loan={loan}
+                onPress={handleLoanPress}
+                isFirst={idx === 0}
+                isLast={idx === activeLoans.length - 1}
+              />
+            ))}
+          </View>
+        )}
 
         {/* Transactions */}
         {enrichedTx.length > 0 ? (

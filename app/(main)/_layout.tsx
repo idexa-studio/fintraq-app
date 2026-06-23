@@ -19,6 +19,9 @@ export default function StackLayout() {
         <Stack.Screen name="categories/form" />
         <Stack.Screen name="persons/form" />
         <Stack.Screen name="persons/[id]" />
+        <Stack.Screen name="loans" />
+        <Stack.Screen name="loans/form" />
+        <Stack.Screen name="loans/[id]" />
       </Stack>
     </ErrorBoundary>
   );
