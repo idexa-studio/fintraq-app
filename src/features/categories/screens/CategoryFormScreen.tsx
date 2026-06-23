@@ -32,6 +32,7 @@ const TYPE_OPTIONS = [
   { value: 'DR' as const, label: 'Expense' },
   { value: 'CR' as const, label: 'Income' },
   { value: 'TR' as const, label: 'Transfer' },
+  { value: 'ALL' as const, label: 'All' },
 ] as const;
 
 export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
@@ -51,7 +52,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
   const { mutateAsync: createCategory } = useCreateCategory();
   const { mutateAsync: updateCategory } = useUpdateCategory();
 
-  const [type, setType] = useState<'CR' | 'DR' | 'TR'>('DR');
+  const [type, setType] = useState<'CR' | 'DR' | 'TR' | 'ALL'>('DR');
   const [icon, setIcon] = useState<string>(CATEGORY_ICONS[0]);
   const [colorHex, setColorHex] = useState<string>(
     () => CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)],
@@ -85,7 +86,8 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
   const typeColor = useMemo(() => {
     if (type === 'DR') return colors.danger;
     if (type === 'CR') return colors.success;
-    return colors.primary;
+    if (type === 'TR') return colors.primary;
+    return colors.textMuted;
   }, [type, colors]);
 
   const handleSave = handleSubmit(async (data) => {
@@ -179,10 +181,11 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                 const activeColor =
                   opt.value === 'DR' ? colors.danger :
                   opt.value === 'CR' ? colors.success :
-                  colors.primary;
+                  opt.value === 'TR' ? colors.primary :
+                  colors.textMuted;
                 return (
                   <Pressable
-                    key={opt.value}
+                    key={opt.label}
                     onPress={() => !isEditing && setType(opt.value)}
                     style={[
                       styles.typePill,

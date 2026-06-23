@@ -30,11 +30,10 @@ import { TransactionCategoryPicker } from '../components/TransactionCategoryPick
 import { PersonPickerBottomSheet } from '../../persons/components/PersonPickerBottomSheet';
 import { TransactionTypePicker } from '../components/TransactionTypePicker';
 import { usePersons } from '../../persons/hooks/persons';
-import {
-  useCreateTransaction,
-  useTransactionById,
-  useUpdateTransaction,
-} from '../hooks/transactions';
+import { useCreateTransaction, useTransactionById, useUpdateTransaction } from '../hooks/transactions';
+import { PersonAvatar } from '../../../components/ui/PersonAvatar';
+import { useLoanWithStats } from '../../loans/hooks/loans';
+import { colorNumberToHex } from '../../../utils/format';
 import { format } from 'date-fns';
 import { TransactionType } from '../../../types';
 import { WalkthroughOverlay, TRANSACTION_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
@@ -78,6 +77,9 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
     return transactionByIdQuery.data ?? null;
   }, [transactionByIdQuery.data, isEditMode]);
 
+  const isRepayment = isEditMode && !!editingTransaction && editingTransaction.loanId !== null;
+  const { data: loan } = useLoanWithStats(isRepayment && editingTransaction ? editingTransaction.loanId : null);
+
   const [type, setType] = React.useState<TransactionType>('DR');
   const [selectedAccountId, setSelectedAccountId] = React.useState<number | null>(null);
   const [toAccountId, setToAccountId] = React.useState<number | null>(null);
@@ -103,7 +105,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
   }, [isEditMode, editingTransaction]);
 
   const filteredCategories = React.useMemo(
-    () => categories.filter((c) => c.type === type),
+    () => categories.filter((c) => c.type === type || c.type === 'ALL'),
     [categories, type],
   );
 
@@ -225,6 +227,17 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       return;
     }
 
+    if (isRepayment && loan && editingTransaction) {
+      const maxAllowed = loan.outstanding + editingTransaction.amount;
+      if (amountValue > maxAllowed) {
+        Alert.alert(
+          'Repayment exceeds outstanding',
+          `The maximum allowed repayment amount is ${loan.currency} ${maxAllowed.toFixed(2)} (Outstanding: ${loan.outstanding.toFixed(2)} + Current: ${editingTransaction.amount.toFixed(2)}).`
+        );
+        return;
+      }
+    }
+
     const payload = {
       accountId: selectedAccountId,
       categoryId: selectedCategoryId,
@@ -281,7 +294,9 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <TransactionTypePicker value={type} onChange={handleTypeChange} disabled={isEditMode} />
+        {!isRepayment && (
+          <TransactionTypePicker value={type} onChange={handleTypeChange} disabled={isEditMode} />
+        )}
 
         <TransactionAmountInput
           value={amountInput}
@@ -290,6 +305,24 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
         />
 
         <View style={styles.formBody}>
+          {isRepayment && (
+            <View style={[styles.section, { opacity: 0.8 }]}>
+              <View style={[styles.personBtn, { backgroundColor: colors.surface }]}>
+                <PersonAvatar
+                  name={loan?.personName ?? 'Person'}
+                  color={colorNumberToHex(loan?.personColor ?? 0)}
+                  size={36}
+                />
+                <View style={styles.textContainer}>
+                  <Text style={styles.triggerLabel}>Loan Repayment for</Text>
+                  <Text style={styles.dateTimeText} numberOfLines={1}>
+                    {loan?.personName ?? 'Loading...'}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
+
           <TransactionAccountPicker
             label="From account"
             accounts={accounts}
@@ -317,13 +350,15 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
             </>
           )}
 
-          <TransactionCategoryPicker
-            categories={filteredCategories}
-            selectedId={selectedCategoryId}
-            onSelect={setSelectedCategoryId}
-          />
+          {!isRepayment && (
+            <TransactionCategoryPicker
+              categories={filteredCategories}
+              selectedId={selectedCategoryId}
+              onSelect={setSelectedCategoryId}
+            />
+          )}
 
-          {persons.length > 0 && type !== 'TR' && (
+          {!isRepayment && persons.length > 0 && type !== 'TR' && (
             <View style={styles.section}>
               <BentoPressable
                 style={styles.personBtn}

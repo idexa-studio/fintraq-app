@@ -127,7 +127,7 @@ const CategoryRow = React.memo(function CategoryRow({
   const styles = useMemo(() => createCategoryRowStyles(theme, isFirst, isLast), [theme, isFirst, isLast]);
   const catColor = useMemo(() => colorNumberToHex(category.color), [category.color]);
   const handlePress = useCallback(() => onPress(category.id), [onPress, category.id]);
-  const badgeColor = category.type === 'CR' ? colors.success : category.type === 'TR' ? colors.info : colors.danger;
+  const badgeColor = category.type === 'CR' ? colors.success : category.type === 'TR' ? colors.info : category.type === 'DR' ? colors.danger : colors.textMuted;
 
   return (
     <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
@@ -135,7 +135,7 @@ const CategoryRow = React.memo(function CategoryRow({
       <Text style={styles.name}>{category.name}</Text>
       <View style={[styles.badge, { backgroundColor: badgeColor + '1A' }]}>
         <Text style={[styles.badgeText, { color: badgeColor }]}>
-          {category.type === 'CR' ? 'Income' : category.type === 'TR' ? 'Transfer' : 'Expense'}
+          {category.type === 'CR' ? 'Income' : category.type === 'TR' ? 'Transfer' : category.type === 'DR' ? 'Expense' : 'All'}
         </Text>
       </View>
       <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />

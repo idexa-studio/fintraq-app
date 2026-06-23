@@ -22,6 +22,7 @@ import { useRouter } from 'expo-router';
 import { WalkthroughOverlay, ACCOUNTS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { StorageKeys } from '@/src/constants/keys';
 import React, { useCallback, useMemo, useState } from 'react';
+import { usePremium } from '@/src/providers/PremiumProvider';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Account } from '../api/accounts';
@@ -35,6 +36,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   const { data: accounts } = useAccounts();
   const deleteAccount = useDeleteAccount();
   const router = useRouter();
+  const { showAlert } = usePremium();
 
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [showOptions, setShowOptions] = useState(false);
@@ -58,12 +60,21 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
     setShowDeleteConfirm(true);
   }, []);
 
-  const handleDeleteConfirm = useCallback(() => {
+  const handleDeleteConfirm = useCallback(async () => {
     if (!selectedAccount) return;
-    deleteAccount.mutate(selectedAccount.id);
-    setSelectedAccount(null);
-    setShowDeleteConfirm(false);
-  }, [selectedAccount, deleteAccount]);
+    try {
+      await deleteAccount.mutateAsync(selectedAccount.id);
+      setSelectedAccount(null);
+      setShowDeleteConfirm(false);
+    } catch (e: any) {
+      setShowDeleteConfirm(false);
+      showAlert({
+        title: 'Cannot delete account',
+        message: e.message || 'Failed to delete account.',
+        type: 'error',
+      });
+    }
+  }, [selectedAccount, deleteAccount, showAlert]);
 
   const handleCardPress = useCallback((accountId: number) => {
     router.push(`/(main)/accounts/${accountId}`);

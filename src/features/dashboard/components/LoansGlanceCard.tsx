@@ -20,81 +20,129 @@ export const LoansGlanceCard = React.memo(function LoansGlanceCard({ currency, o
   const { data: summary } = useLoansSummary(currency);
 
   if (!summary || (summary.activeLentCount === 0 && summary.activeBorrowedCount === 0)) {
-    return null;
+    return (
+      <BentoPressable style={styles.empty} onPress={onPress}>
+        <View style={styles.emptyIconWrapper}>
+          <HugeiconsIcon icon={HandshakeIcon} size={18} color={colors.primary} />
+        </View>
+        <View style={styles.emptyContent}>
+          <Text style={styles.emptyTitle}>No active loans</Text>
+          <Text style={styles.emptyText}>Track money you lend or borrow. Tap to add a loan.</Text>
+        </View>
+      </BentoPressable>
+    );
   }
 
   return (
-    <BentoPressable style={styles.card} onPress={onPress}>
-      <View style={styles.header}>
-        <View style={styles.iconWrap}>
-          <HugeiconsIcon icon={HandshakeIcon} size={16} color={colors.primary} />
-        </View>
-        <Text style={[styles.title, { fontFamily: typography.fonts.semibold, color: colors.text }]}>
-          Loans
-        </Text>
-        {summary.overdueCount > 0 && (
-          <View style={[styles.overdueBadge, { backgroundColor: colors.danger + '20' }]}>
-            <Text style={[styles.overdueText, { fontFamily: typography.fonts.semibold, color: colors.danger }]}>
-              {summary.overdueCount} overdue
-            </Text>
-          </View>
-        )}
-      </View>
-
-      <View style={styles.row}>
-        <View style={styles.tile}>
+    <View style={styles.grid}>
+      <BentoPressable style={[styles.tile, { marginRight: theme.spacing('1.5') }]} onPress={onPress}>
+        <View style={styles.tileHeader}>
           <Text style={[styles.tileLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.success }]}>
             Lent out
           </Text>
-          <MoneyText amount={summary.totalLent} currency={currency} type="CR" weight="bold" compact style={styles.tileAmount} />
-          <Text style={[styles.tileSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-            {summary.activeLentCount} active
-          </Text>
+          {summary.overdueLentCount > 0 && (
+            <View style={[styles.badge, { backgroundColor: colors.danger + '20' }]}>
+              <Text style={[styles.badgeText, { color: colors.danger }]}>
+                {summary.overdueLentCount} overdue
+              </Text>
+            </View>
+          )}
         </View>
-        <View style={[styles.divider, { backgroundColor: colors.border }]} />
-        <View style={styles.tile}>
+        <MoneyText amount={summary.totalLent} currency={currency} type="CR" weight="bold" compact style={styles.tileAmount} />
+        <Text style={[styles.tileSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+          {summary.activeLentCount} active
+        </Text>
+      </BentoPressable>
+
+      <BentoPressable style={[styles.tile, { marginLeft: theme.spacing('1.5') }]} onPress={onPress}>
+        <View style={styles.tileHeader}>
           <Text style={[styles.tileLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.danger }]}>
             Borrowed
           </Text>
-          <MoneyText amount={summary.totalBorrowed} currency={currency} type="DR" weight="bold" compact style={styles.tileAmount} />
-          <Text style={[styles.tileSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-            {summary.activeBorrowedCount} active
-          </Text>
+          {summary.overdueBorrowedCount > 0 && (
+            <View style={[styles.badge, { backgroundColor: colors.danger + '20' }]}>
+              <Text style={[styles.badgeText, { color: colors.danger }]}>
+                {summary.overdueBorrowedCount} overdue
+              </Text>
+            </View>
+          )}
         </View>
-      </View>
-    </BentoPressable>
+        <MoneyText amount={summary.totalBorrowed} currency={currency} type="DR" weight="bold" compact style={styles.tileAmount} />
+        <Text style={[styles.tileSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+          {summary.activeBorrowedCount} active
+        </Text>
+      </BentoPressable>
+    </View>
   );
 });
 
-const createStyles = ({ colors, spacing, radius, shadow }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeContextType) =>
   StyleSheet.create({
-    card: {
-      marginHorizontal: spacing('4'),
+    empty: {
       backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
+      borderRadius: radius('xl'),
       padding: spacing('4'),
-      ...shadow('sm'),
-    },
-    header: { flexDirection: 'row', alignItems: 'center', gap: spacing('2'), marginBottom: spacing('3') },
-    iconWrap: {
-      width: 28,
-      height: 28,
-      borderRadius: radius('md'),
-      backgroundColor: colors.primary + '15',
+      marginHorizontal: layout.screenPadding,
+      flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
+      gap: spacing('3'),
     },
-    title: { flex: 1, fontSize: 15 },
-    overdueBadge: {
-      paddingHorizontal: spacing('2'),
+    emptyIconWrapper: {
+      width: 38,
+      height: 38,
+      borderRadius: 19,
+      backgroundColor: colors.primary + '12',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    emptyContent: {
+      flex: 1,
+      gap: 2,
+    },
+    emptyTitle: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 13,
+      color: colors.text,
+    },
+    emptyText: {
+      fontFamily: typography.fonts.regular,
+      fontSize: 11,
+      color: colors.textMuted,
+      lineHeight: 15,
+    },
+    grid: {
+      flexDirection: 'row',
+      paddingHorizontal: layout.screenPadding,
+    },
+    tile: {
+      flex: 1,
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      padding: spacing('4'),
+      gap: spacing('1.5'),
+    },
+    tileHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    tileLabel: {
+      fontSize: 10,
+      textTransform: 'uppercase',
+    },
+    tileAmount: {
+      fontSize: 18,
+    },
+    tileSub: {
+      fontSize: 11,
+    },
+    badge: {
+      paddingHorizontal: spacing('1.5'),
       paddingVertical: spacing('0.5'),
       borderRadius: radius('full'),
     },
-    overdueText: { fontSize: 11 },
-    row: { flexDirection: 'row', alignItems: 'stretch' },
-    tile: { flex: 1, gap: spacing('1') },
-    tileLabel: { fontSize: 11, textTransform: 'uppercase' },
-    tileAmount: { fontSize: 20 },
-    tileSub: { fontSize: 12 },
-    divider: { width: 1, marginHorizontal: spacing('4') },
+    badgeText: {
+      fontSize: 9,
+      fontFamily: typography.fonts.semibold,
+    },
   });

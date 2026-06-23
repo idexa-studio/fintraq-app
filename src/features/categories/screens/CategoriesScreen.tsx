@@ -15,6 +15,7 @@ import { CategoryCard } from '../components/CategoryCard';
 import { useCategories, useDeleteCategory } from '../hooks/categories';
 import { WalkthroughOverlay, CATEGORIES_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { StorageKeys } from '../../../constants/keys';
+import { usePremium } from '@/src/providers/PremiumProvider';
 
 export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const theme = useTheme();
@@ -22,6 +23,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const router = useRouter();
+  const { showAlert } = usePremium();
 
   const { data: categories, isLoading } = useCategories();
   const { mutateAsync: deleteCategory } = useDeleteCategory();
@@ -45,15 +47,31 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
 
   const handleEdit = useCallback(
     (category: Category) => {
+      if (category.isSystem) {
+        showAlert({
+          title: 'System category',
+          message: 'System-reserved categories cannot be modified.',
+          type: 'warning',
+        });
+        return;
+      }
       router.push(`/(main)/categories/form?id=${category.id}`);
     },
-    [router],
+    [router, showAlert],
   );
 
   const handleLongPress = useCallback((category: Category) => {
+    if (category.isSystem) {
+      showAlert({
+        title: 'System category',
+        message: 'System-reserved categories cannot be deleted or managed.',
+        type: 'warning',
+      });
+      return;
+    }
     setSelectedCategory(category);
     setShowManageDialog(true);
-  }, []);
+  }, [showAlert]);
 
   const manageOptions = useMemo(() => {
     if (!selectedCategory) return [];
@@ -187,10 +205,19 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         title="Delete category"
         message="This will delete the category and its associated transactions."
         confirmLabel="Delete"
-        onConfirm={() => {
+        onConfirm={async () => {
           if (!selectedCategory) return;
-          deleteCategory(selectedCategory.id);
-          setSelectedCategory(null);
+          setShowDeleteDialog(false);
+          try {
+            await deleteCategory(selectedCategory.id);
+            setSelectedCategory(null);
+          } catch (e: any) {
+            showAlert({
+              title: 'Cannot delete category',
+              message: e.message || 'Failed to delete category.',
+              type: 'error',
+            });
+          }
         }}
       />
       <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_CATEGORIES} steps={CATEGORIES_WALKTHROUGH_STEPS} />

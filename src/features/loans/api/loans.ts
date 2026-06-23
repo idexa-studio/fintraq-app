@@ -2,6 +2,7 @@ import { and, desc, eq, sql } from 'drizzle-orm';
 import { db } from '../../../db/client';
 import { accounts, categories, loans, payments, persons } from '../../../db/schema';
 import { TransactionType } from '../../../types';
+import { applyBalanceDelta } from '../../transactions/api/transactions';
 
 export type Loan = typeof loans.$inferSelect;
 export type InsertLoan = typeof loans.$inferInsert;
@@ -25,6 +26,8 @@ export type LoanSummary = {
   totalBorrowed: number;
   activeLentCount: number;
   activeBorrowedCount: number;
+  overdueLentCount: number;
+  overdueBorrowedCount: number;
   overdueCount: number;
 };
 
@@ -197,6 +200,8 @@ export const getLoansSummary = async (currency: string): Promise<LoanSummary> =>
   let totalBorrowed = 0;
   let activeLentCount = 0;
   let activeBorrowedCount = 0;
+  let overdueLentCount = 0;
+  let overdueBorrowedCount = 0;
   let overdueCount = 0;
 
   for (const r of rows) {
@@ -208,14 +213,24 @@ export const getLoansSummary = async (currency: string): Promise<LoanSummary> =>
     if (r.loan.type === 'lend') {
       totalLent += outstanding;
       activeLentCount++;
+      if (status === 'overdue') overdueLentCount++;
     } else {
       totalBorrowed += outstanding;
       activeBorrowedCount++;
+      if (status === 'overdue') overdueBorrowedCount++;
     }
     if (status === 'overdue') overdueCount++;
   }
 
-  return { totalLent, totalBorrowed, activeLentCount, activeBorrowedCount, overdueCount };
+  return {
+    totalLent,
+    totalBorrowed,
+    activeLentCount,
+    activeBorrowedCount,
+    overdueLentCount,
+    overdueBorrowedCount,
+    overdueCount,
+  };
 };
 
 export const getActiveLoansWithReminders = async (): Promise<Loan[]> => {
@@ -225,20 +240,59 @@ export const getActiveLoansWithReminders = async (): Promise<Loan[]> => {
     .where(and(eq(loans.status, 'active'), eq(loans.emiReminderEnabled, true)));
 };
 
+export const resolveLoanCategory = async (): Promise<number> => {
+  // Try to find 'Loan/EMI' (case-insensitive)
+  const [loanEmi] = await db
+    .select({ id: categories.id })
+    .from(categories)
+    .where(sql`LOWER(${categories.name}) = 'loan/emi'`)
+    .limit(1);
+
+  if (loanEmi) return loanEmi.id;
+
+  // Try to find 'Uncategorized' (case-insensitive)
+  const [uncategorized] = await db
+    .select({ id: categories.id })
+    .from(categories)
+    .where(sql`LOWER(${categories.name}) = 'uncategorized'`)
+    .limit(1);
+
+  if (uncategorized) return uncategorized.id;
+
+  // Fallback: create Uncategorized if it somehow doesn't exist
+  const [newUncategorized] = await db
+    .insert(categories)
+    .values({
+      name: 'Uncategorized',
+      icon: 'grid',
+      color: 4672089, // #475569
+      type: 'DR',
+      isSystem: true,
+    })
+    .returning({ id: categories.id });
+
+  return newUncategorized.id;
+};
+
 export const createLoan = async (
   data: InsertLoan,
   txPayload: {
-    categoryId: number;
+    categoryId?: number;
     note: string;
     datetime: string;
   },
 ): Promise<Loan> => {
-  const [loan] = await db.insert(loans).values(data).returning();
+  const categoryId = txPayload.categoryId ?? data.categoryId ?? await resolveLoanCategory();
+
+  const [loan] = await db.insert(loans).values({
+    ...data,
+    categoryId,
+  }).returning();
 
   const txType: TransactionType = data.type === 'lend' ? 'DR' : 'CR';
   await db.insert(payments).values({
     accountId: data.accountId,
-    categoryId: txPayload.categoryId,
+    categoryId: categoryId,
     personId: data.personId,
     loanId: loan.id,
     amount: data.principal,
@@ -246,6 +300,9 @@ export const createLoan = async (
     datetime: txPayload.datetime,
     note: txPayload.note || (data.type === 'lend' ? 'Loan given' : 'Loan received'),
   });
+
+  // Keep account balance updated
+  await applyBalanceDelta(data.accountId, txType, data.principal, 1);
 
   return loan;
 };
@@ -272,16 +329,17 @@ export const addRepayment = async (payload: {
   loanType: LoanType;
   personId: number;
   accountId: number;
-  categoryId: number;
+  categoryId?: number;
   amount: number;
   datetime: string;
   note: string;
 }): Promise<{ repaymentId: number; isFullyRepaid: boolean }> => {
+  const categoryId = payload.categoryId ?? await resolveLoanCategory();
   const txType: TransactionType = payload.loanType === 'lend' ? 'CR' : 'DR';
 
   const [tx] = await db.insert(payments).values({
     accountId: payload.accountId,
-    categoryId: payload.categoryId,
+    categoryId: categoryId,
     personId: payload.personId,
     loanId: payload.loanId,
     amount: payload.amount,
@@ -289,6 +347,9 @@ export const addRepayment = async (payload: {
     datetime: payload.datetime,
     note: payload.note || (payload.loanType === 'lend' ? 'Loan repayment received' : 'Loan repayment sent'),
   }).returning();
+
+  // Keep account balance updated
+  await applyBalanceDelta(payload.accountId, txType, payload.amount, 1);
 
   const [loanRow] = await db.select().from(loans).where(eq(loans.id, payload.loanId));
   if (!loanRow) return { repaymentId: tx.id, isFullyRepaid: false };

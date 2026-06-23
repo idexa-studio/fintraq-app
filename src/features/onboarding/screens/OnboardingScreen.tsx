@@ -81,7 +81,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   };
 
   const seedCategories = async () => {
-    const defaults: { name: string; icon: string; color: number; type: TransactionType }[] = [
+    const defaults: { name: string; icon: string; color: number; type: TransactionType | 'ALL'; isSystem?: boolean }[] = [
       // ── Income ──────────────────────────────────────────────────────
       { name: 'Salary', icon: 'cash', color: toDbColor('#059669'), type: 'CR' },
       { name: 'Freelance', icon: 'sparkles', color: toDbColor('#65A30D'), type: 'CR' },
@@ -144,11 +144,18 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       { name: 'Other', icon: 'more-horizontal', color: toDbColor('#475569'), type: 'DR' },
 
       // ── Transfers ────────────────────────────────────────────────────
-      { name: 'Transfer', icon: 'repeat', color: toDbColor('#2563EB'), type: 'TR' },
+      { name: 'Transfer', icon: 'repeat', color: toDbColor('#2563EB'), type: 'TR', isSystem: true },
+      { name: 'Uncategorized', icon: 'grid', color: toDbColor('#475569'), type: 'ALL', isSystem: true },
     ];
 
     for (const category of defaults) {
-      await createCategory(category);
+      await createCategory({
+        name: category.name,
+        icon: category.icon,
+        color: category.color,
+        type: category.type,
+        isSystem: category.isSystem ?? false,
+      });
     }
   };
 

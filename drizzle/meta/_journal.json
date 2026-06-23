@@ -43,6 +43,13 @@
       "when": 1782239094824,
       "tag": "0005_brave_the_leader",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1782242890645,
+      "tag": "0006_little_wind_dancer",
+      "breakpoints": true
     }
   ]
 }

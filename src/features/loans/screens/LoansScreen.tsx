@@ -65,8 +65,11 @@ export const LoansScreen = React.memo(function LoansScreen() {
   }, [router]);
 
   const handleAdd = useCallback(() => {
-    router.push('/(main)/loans/form');
-  }, [router]);
+    router.push({
+      pathname: '/(main)/loans/form',
+      params: { type: activeTab },
+    });
+  }, [router, activeTab]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -133,17 +136,30 @@ export const LoansScreen = React.memo(function LoansScreen() {
 
         {/* Active list */}
         {displayList.length === 0 ? (
-          <View style={styles.empty}>
-            <HugeiconsIcon icon={HandshakeIcon} size={36} color={colors.textMuted + '60'} />
-            <Text style={styles.emptyTitle}>
-              No {activeTab === 'lend' ? 'lent' : 'borrowed'} loans
-            </Text>
-            <BentoPressable style={styles.emptyAction} onPress={handleAdd}>
-              <Text style={styles.emptyActionText}>
-                Add a loan
+          repaidList.length === 0 ? (
+            <View style={styles.empty}>
+              <View style={styles.emptyIcon}>
+                <HugeiconsIcon icon={HandshakeIcon} size={32} color={colors.textMuted} />
+              </View>
+              <Text style={styles.emptyTitle}>
+                No {activeTab === 'lend' ? 'lent' : 'borrowed'} loans
               </Text>
-            </BentoPressable>
-          </View>
+              <Text style={styles.emptyText}>
+                Keep track of money you lend to or borrow from others here.
+              </Text>
+              <BentoPressable style={styles.emptyBtn} onPress={handleAdd}>
+                <HugeiconsIcon icon={PlusSignIcon} size={15} color={colors.primaryForeground} />
+                <Text style={styles.emptyBtnText}>Add a loan</Text>
+              </BentoPressable>
+            </View>
+          ) : (
+            <View style={styles.inlineEmpty}>
+              <HugeiconsIcon icon={HandshakeIcon} size={16} color={colors.textMuted} />
+              <Text style={[styles.inlineEmptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
+                All {activeTab === 'lend' ? 'lent' : 'borrowed'} loans are fully repaid
+              </Text>
+            </View>
+          )
         ) : (
           displayList.map((loan) => (
             <LoanCard
@@ -237,30 +253,67 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography }: T
       fontSize: typography.sizes.sm,
       color: colors.textMuted,
     },
-    empty: { alignItems: 'center', paddingVertical: spacing('10'), gap: spacing('3') },
+    empty: {
+      paddingTop: 60,
+      alignItems: 'center',
+      gap: spacing('2'),
+    },
+    emptyIcon: {
+      width: 64,
+      height: 64,
+      borderRadius: radius('xl'),
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: spacing('1'),
+    },
     emptyTitle: {
-      fontSize: typography.sizes.md,
-      fontFamily: typography.fonts.medium,
+      fontFamily: typography.styles.emptyTitle.fontFamily,
+      fontSize: typography.sizes.xl,
+      color: colors.text,
+    },
+    emptyText: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.sm,
       color: colors.textMuted,
+      textAlign: 'center',
+      maxWidth: 220,
+      lineHeight: 20,
     },
-    emptyAction: {
-      backgroundColor: colors.primary,
+    emptyBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1.5'),
+      height: 38,
       paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('2'),
       borderRadius: radius('lg'),
+      backgroundColor: colors.text,
+      marginTop: spacing('2'),
     },
-    emptyActionText: {
-      fontSize: typography.sizes.md,
-      fontFamily: typography.fonts.semibold,
+    emptyBtnText: {
+      fontFamily: typography.styles.emptyAction.fontFamily,
+      fontSize: typography.sizes.sm,
       color: colors.primaryForeground,
+    },
+    inlineEmpty: {
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      padding: spacing('4'),
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3'),
+      justifyContent: 'center',
+    },
+    inlineEmptyText: {
+      fontSize: 12,
     },
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
       fontSize: typography.sizes.xs,
       color: colors.textMuted,
       textTransform: 'uppercase',
-      marginTop: spacing('4'),
-      marginBottom: spacing('2'),
+      marginTop: spacing('6'),
+      marginBottom: spacing('3'),
     },
     fab: {
       position: 'absolute',

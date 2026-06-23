@@ -39,7 +39,8 @@ export const categories = sqliteTable('categories', {
   name: text('name').notNull(),
   icon: text('icon').notNull().default('grid'),
   color: integer('color').notNull(),
-  type: text('type', { enum: ['CR', 'DR', 'TR'] }).notNull().default('DR'),
+  type: text('type', { enum: ['CR', 'DR', 'TR', 'ALL'] }).notNull().default('DR'),
+  isSystem: integer('is_system', { mode: 'boolean' }).notNull().default(false),
   createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
 });

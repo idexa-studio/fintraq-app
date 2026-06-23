@@ -57,9 +57,9 @@ export const useCreateLoan = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ data, txPayload }: {
-      data: api.InsertLoan;
-      txPayload: { categoryId: number; note: string; datetime: string };
-    }) => api.createLoan(data, txPayload),
+      data: Omit<api.InsertLoan, 'categoryId'> & { categoryId?: number };
+      txPayload: { categoryId?: number; note: string; datetime: string };
+    }) => api.createLoan(data as any, txPayload),
     onSuccess: () => LOAN_INVALIDATION_KEYS(queryClient),
   });
 };
@@ -93,7 +93,16 @@ export const useDeleteLoan = () => {
 export const useAddRepayment = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: api.addRepayment,
+    mutationFn: (payload: {
+      loanId: number;
+      loanType: api.LoanType;
+      personId: number;
+      accountId: number;
+      categoryId?: number;
+      amount: number;
+      datetime: string;
+      note: string;
+    }) => api.addRepayment(payload),
     onSuccess: () => LOAN_INVALIDATION_KEYS(queryClient),
   });
 };

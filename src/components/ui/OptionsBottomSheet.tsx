@@ -3,10 +3,10 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
-import { BentoBottomSheet } from './BottomSheet';
+import { BentoBottomSheet, useBottomSheet } from './BottomSheet';
 
 export type OptionsBottomSheetOption = {
   key: string;
@@ -38,6 +38,7 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
   const theme = useTheme();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const bottomSheet = useBottomSheet();
 
   const handleOptionPress = useCallback((option: OptionsBottomSheetOption) => {
     Haptics.selectionAsync().catch(() => { });
@@ -50,7 +51,7 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
       visible={visible}
       onClose={onClose}
     >
-      <View style={styles.content}>
+      <View style={styles.container}>
         {title ? (
           <View style={styles.head}>
             <Text style={styles.title}>{title}</Text>
@@ -58,7 +59,12 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
           </View>
         ) : null}
 
-        <View style={styles.list}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          onScroll={bottomSheet?.onScroll}
+          scrollEventThrottle={16}
+          contentContainerStyle={styles.list}
+        >
           {options.map((opt) => {
             const selected = !!opt.selected;
             return (
@@ -90,7 +96,7 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
               </BentoPressable>
             );
           })}
-        </View>
+        </ScrollView>
       </View>
     </BentoBottomSheet>
   );
@@ -98,8 +104,10 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
 
 const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: ThemeContextType) =>
   StyleSheet.create({
-    content: {
-      paddingBottom: spacing("3"),
+    container: {
+      flexShrink: 1,
+      flexGrow: 1,
+      paddingBottom: spacing("2"),
     },
     head: {
       paddingHorizontal: layout.screenPadding,

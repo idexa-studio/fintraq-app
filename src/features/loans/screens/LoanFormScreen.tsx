@@ -20,12 +20,10 @@ import { PageBackground } from '../../../components/ui/PageBackground';
 import { PersonAvatar } from '../../../components/ui/PersonAvatar';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { useAccounts } from '../../accounts/hooks/accounts';
-import { useCategories } from '../../categories/hooks/categories';
 import { PersonPickerBottomSheet } from '../../persons/components/PersonPickerBottomSheet';
 import { usePersons } from '../../persons/hooks/persons';
 import { TransactionAccountPicker } from '../../transactions/components/TransactionAccountPicker';
 import { TransactionAmountInput } from '../../transactions/components/TransactionAmountInput';
-import { TransactionCategoryPicker } from '../../transactions/components/TransactionCategoryPicker';
 import { usePremium } from '../../../providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
@@ -33,7 +31,7 @@ import { toErrorMessage } from '../../../utils/errors';
 import { useCreateLoan, useLoansCount } from '../hooks/loans';
 import {
   Calendar03Icon,
-  Coins01Icon,
+  Coins02Icon,
   HandshakeIcon,
   Money01Icon,
   UnfoldMoreIcon,
@@ -55,22 +53,22 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
   const { isPremium, showAlert } = usePremium();
 
   const { data: allAccounts } = useAccounts();
-  const { data: allCategories } = useCategories();
   const { data: allPersons } = usePersons();
   const { data: activeLoansCount } = useLoansCount();
   const createLoan = useCreateLoan();
 
-  const { personId: prePersonId } = useLocalSearchParams<{ personId?: string }>();
+  const { personId: prePersonId, type: preType } = useLocalSearchParams<{ personId?: string; type?: 'lend' | 'borrow' }>();
 
   const accounts = useMemo(() => allAccounts ?? [], [allAccounts]);
   const persons = useMemo(() => allPersons ?? [], [allPersons]);
 
-  const [loanType, setLoanType] = useState<'lend' | 'borrow'>('lend');
+  const [loanType, setLoanType] = useState<'lend' | 'borrow'>(
+    preType === 'borrow' ? 'borrow' : 'lend',
+  );
   const [selectedPersonId, setSelectedPersonId] = useState<number | null>(
     prePersonId ? Number(prePersonId) : null,
   );
   const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [amountInput, setAmountInput] = useState('');
   const [note, setNote] = useState('');
   const [dueDate, setDueDate] = useState<Date | null>(null);
@@ -90,23 +88,12 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
     [persons, selectedPersonId],
   );
 
-  const filteredCategories = useMemo(() => {
-    if (!allCategories) return [];
-    return allCategories.filter(c => c.type === 'DR' || c.type === 'CR');
-  }, [allCategories]);
-
   useEffect(() => {
     if (!selectedAccountId && accounts.length > 0) {
       const def = accounts.find(a => a.isDefault) ?? accounts[0];
       setSelectedAccountId(def.id);
     }
   }, [accounts, selectedAccountId]);
-
-  useEffect(() => {
-    if (!selectedCategoryId && filteredCategories.length > 0) {
-      setSelectedCategoryId(filteredCategories[0].id);
-    }
-  }, [filteredCategories, selectedCategoryId]);
 
   const handleDueDateChange = useCallback((_: DateTimePickerEvent, date?: Date) => {
     setShowDueDatePicker(false);
@@ -115,7 +102,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
 
   const atFreeLimit = !isPremium && (activeLoansCount ?? 0) >= FREE_LOAN_LIMIT;
 
-  const canSubmit = selectedPersonId !== null && selectedAccountId !== null && selectedCategoryId !== null && parseAmount(amountInput) > 0;
+  const canSubmit = selectedPersonId !== null && selectedAccountId !== null && parseAmount(amountInput) > 0;
 
   const handleSubmit = useCallback(async () => {
     if (!canSubmit || isSubmitting) return;
@@ -138,12 +125,10 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
           principal: amount,
           currency: account.currency,
           accountId: selectedAccountId!,
-          categoryId: selectedCategoryId!,
           dueDate: dueDate ? dueDate.toISOString().slice(0, 10) : undefined,
           note: note.trim(),
         },
         txPayload: {
-          categoryId: selectedCategoryId!,
           note: note.trim(),
           datetime: new Date().toISOString(),
         },
@@ -158,7 +143,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [canSubmit, isSubmitting, atFreeLimit, amountInput, accounts, selectedAccountId, selectedPersonId, selectedCategoryId, loanType, dueDate, note, createLoan, router]);
+  }, [canSubmit, isSubmitting, atFreeLimit, amountInput, accounts, selectedAccountId, selectedPersonId, loanType, dueDate, note, createLoan, router]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -183,7 +168,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
               style={[styles.typeBtn, loanType === 'borrow' && { backgroundColor: colors.primary + '14' }]}
               onPress={() => setLoanType('borrow')}
             >
-              <HugeiconsIcon icon={Coins01Icon} size={16} color={loanType === 'borrow' ? colors.primary : colors.textMuted} />
+              <HugeiconsIcon icon={Coins02Icon} size={16} color={loanType === 'borrow' ? colors.primary : colors.textMuted} />
               <Text style={[styles.typeBtnText, { color: loanType === 'borrow' ? colors.primary : colors.textMuted }]}>
                 I borrowed
               </Text>
@@ -234,13 +219,6 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
             selectedId={selectedAccountId}
             onSelect={setSelectedAccountId}
             label={loanType === 'lend' ? 'From account' : 'Into account'}
-          />
-
-          {/* Category */}
-          <TransactionCategoryPicker
-            categories={filteredCategories}
-            selectedId={selectedCategoryId}
-            onSelect={setSelectedCategoryId}
           />
 
           {/* Due date trigger styled like transactions */}

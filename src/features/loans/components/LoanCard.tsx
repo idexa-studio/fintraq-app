@@ -22,10 +22,11 @@ export const LoanCard = React.memo(function LoanCard({ loan, onPress }: Props) {
   const personColor = useMemo(() => colorNumberToHex(loan.personColor), [loan.personColor]);
   const handlePress = useCallback(() => onPress(loan), [onPress, loan]);
 
+  const isRepaid = loan.computedStatus === 'repaid';
   const pct = loan.principal > 0 ? Math.round((loan.repaid / loan.principal) * 100) : 0;
 
   return (
-    <BentoPressable onPress={handlePress} style={styles.card}>
+    <BentoPressable onPress={handlePress} style={[styles.card, isRepaid && styles.repaidCard]}>
       {/* ── Card top row: avatar + name + status badge ── */}
       <View style={styles.cardTop}>
         <View style={styles.cardLead}>
@@ -42,74 +43,83 @@ export const LoanCard = React.memo(function LoanCard({ loan, onPress }: Props) {
         <LoanStatusBadge status={loan.computedStatus} />
       </View>
 
-      {/* ── Balance / Outstanding ── */}
-      <View style={styles.balanceSection}>
-        <View style={styles.balanceHeader}>
-          <Text style={styles.balanceLabel}>Outstanding balance</Text>
-          <Text style={[
-            styles.pctText,
-            loan.computedStatus === 'overdue' && { color: colors.danger },
-            loan.computedStatus === 'repaid' && { color: colors.success }
-          ]}>
-            {pct}% paid
+      {isRepaid ? (
+        <View style={styles.settledContainer}>
+          <Text style={[styles.settledText, { fontFamily: typography.fonts.medium, color: colors.success }]}>
+            ✓ Fully repaid & settled
           </Text>
         </View>
-        <MoneyText
-          amount={loan.outstanding}
-          currency={loan.currency}
-          type={loan.type === 'lend' ? 'CR' : 'DR'}
-          weight="semibold"
-          style={styles.cardBalance}
-        />
-      </View>
-
-      {/* ── Divider ── */}
-      <View style={styles.divider} />
-
-      {/* ── Stats row ── */}
-      <View style={styles.statsRow}>
-        <View style={styles.statCell}>
-          <View style={styles.statLabelRow}>
-            <Text style={styles.statLabel}>Principal</Text>
-          </View>
-          <MoneyText
-            amount={loan.principal}
-            currency={loan.currency}
-            type="NONE"
-            weight="medium"
-            compact
-            style={styles.statValue}
-          />
-        </View>
-
-        <View style={styles.statDivider} />
-
-        <View style={styles.statCell}>
-          <View style={styles.statLabelRow}>
-            <Text style={styles.statLabel}>Repaid</Text>
-          </View>
-          <MoneyText
-            amount={loan.repaid}
-            currency={loan.currency}
-            type="NONE"
-            weight="medium"
-            compact
-            style={[styles.statValue, { color: colors.success }]}
-          />
-        </View>
-      </View>
-
-      {/* ── Divider & Footer (Only if due date exists) ── */}
-      {loan.dueDate ? (
+      ) : (
         <>
-          <View style={styles.divider} />
-          <View style={styles.cardFooter}>
-            <Text style={[styles.footerText, loan.computedStatus === 'overdue' && { color: colors.danger }]}>
-              Due {format(new Date(loan.dueDate), 'MMM d, yyyy')}
-            </Text>
+          {/* ── Balance / Outstanding ── */}
+          <View style={styles.balanceSection}>
+            <View style={styles.balanceHeader}>
+              <Text style={styles.balanceLabel}>Outstanding balance</Text>
+              <Text style={[
+                styles.pctText,
+                loan.computedStatus === 'overdue' && { color: colors.danger }
+              ]}>
+                {pct}% paid
+              </Text>
+            </View>
+            <MoneyText
+              amount={loan.outstanding}
+              currency={loan.currency}
+              type={loan.type === 'lend' ? 'CR' : 'DR'}
+              weight="semibold"
+              style={styles.cardBalance}
+            />
           </View>
+
+          {/* ── Divider ── */}
+          <View style={styles.divider} />
+
+          {/* ── Stats row ── */}
+          <View style={styles.statsRow}>
+            <View style={styles.statCell}>
+              <View style={styles.statLabelRow}>
+                <Text style={styles.statLabel}>Principal</Text>
+              </View>
+              <MoneyText
+                amount={loan.principal}
+                currency={loan.currency}
+                type="NONE"
+                weight="medium"
+                compact
+                style={styles.statValue}
+              />
+            </View>
+
+            <View style={styles.statDivider} />
+
+            <View style={styles.statCell}>
+              <View style={styles.statLabelRow}>
+                <Text style={styles.statLabel}>Repaid</Text>
+              </View>
+              <MoneyText
+                amount={loan.repaid}
+                currency={loan.currency}
+                type="NONE"
+                weight="medium"
+                compact
+                style={[styles.statValue, { color: colors.success }]}
+              />
+            </View>
+          </View>
+
+          {/* ── Divider & Footer (Only if due date exists) ── */}
+          {loan.dueDate ? (
+            <>
+              <View style={styles.divider} />
+              <View style={styles.cardFooter}>
+                <Text style={[styles.footerText, loan.computedStatus === 'overdue' && { color: colors.danger }]}>
+                  Due {format(new Date(loan.dueDate), 'MMM d, yyyy')}
+                </Text>
+              </View>
+            </>
+          ) : null}
         </>
-      ) : null}
+      )}
     </BentoPressable>
   );
 });
@@ -121,6 +131,20 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
       borderRadius: radius('2xl'),
       padding: spacing('5'),
       marginBottom: spacing('4'),
+    },
+    repaidCard: {
+      opacity: 0.6,
+    },
+    settledContainer: {
+      marginTop: spacing('3'),
+      paddingVertical: spacing('1.5'),
+      paddingHorizontal: spacing('3'),
+      borderRadius: radius('lg'),
+      backgroundColor: colors.success + '0C',
+      alignSelf: 'flex-start',
+    },
+    settledText: {
+      fontSize: typography.sizes.xs,
     },
     cardTop: {
       flexDirection: 'row',

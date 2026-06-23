@@ -2,6 +2,7 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import React, { useCallback, useMemo, useState } from 'react';
 import { Platform, StyleSheet, Switch, Text, View } from 'react-native';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
+import { OptionsBottomSheet } from '../../../components/ui/OptionsBottomSheet';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { usePremium } from '../../../providers/PremiumProvider';
 import type { LoanWithStats } from '../api/loans';
@@ -33,6 +34,8 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
 
   const [showEmiTimePicker, setShowEmiTimePicker] = useState(false);
   const [showDueTimePicker, setShowDueTimePicker] = useState(false);
+  const [showEmiDayPicker, setShowEmiDayPicker] = useState(false);
+  const [showDueDaysPicker, setShowDueDaysPicker] = useState(false);
 
   const emiTimeDate = useMemo(() => {
     const [h, m] = emiTime.split(':').map(Number);
@@ -43,6 +46,33 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
     const [h, m] = dueTime.split(':').map(Number);
     const d = new Date(); d.setHours(h, m, 0, 0); return d;
   }, [dueTime]);
+
+  const emiDayOptions = useMemo(() => {
+    return Array.from({ length: 28 }, (_, i) => {
+      const day = i + 1;
+      return {
+        key: `day-${day}`,
+        label: `Day ${day} of the month`,
+        selected: emiDay === day,
+        onPress: () => {
+          setEmiDay(day);
+          if (emiEnabled) scheduleEmiReminder(loan, day, emiTime);
+        },
+      };
+    });
+  }, [emiDay, emiEnabled, emiTime, loan, scheduleEmiReminder]);
+
+  const dueDaysOptions = useMemo(() => {
+    return DUE_DAYS_OPTIONS.map(opt => ({
+      key: `due-before-${opt.value}`,
+      label: opt.label,
+      selected: dueDaysBefore === opt.value,
+      onPress: () => {
+        setDueDaysBefore(opt.value);
+        if (dueEnabled && loan.dueDate) scheduleDueReminder(loan, opt.value, dueTime);
+      },
+    }));
+  }, [dueDaysBefore, dueEnabled, dueTime, loan, scheduleDueReminder]);
 
   const formatTime = (str: string) => {
     const [h, m] = str.split(':').map(Number);
@@ -62,12 +92,6 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
       await cancelEmiReminder(loan);
     }
   }, [loan, emiDay, emiTime, scheduleEmiReminder, cancelEmiReminder, showAlert]);
-
-  const handleEmiDayPress = useCallback(() => {
-    const next = ((emiDay) % 28) + 1;
-    setEmiDay(next);
-    if (emiEnabled) scheduleEmiReminder(loan, next, emiTime);
-  }, [emiDay, emiEnabled, emiTime, loan, scheduleEmiReminder]);
 
   const handleEmiTimeChange = useCallback((_: DateTimePickerEvent, date?: Date) => {
     setShowEmiTimePicker(false);
@@ -95,13 +119,6 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
       await cancelDueReminder(loan);
     }
   }, [loan, dueDaysBefore, dueTime, scheduleDueReminder, cancelDueReminder, showAlert]);
-
-  const handleDueDaysPress = useCallback(() => {
-    const idx = DUE_DAYS_OPTIONS.findIndex(o => o.value === dueDaysBefore);
-    const next = DUE_DAYS_OPTIONS[(idx + 1) % DUE_DAYS_OPTIONS.length].value;
-    setDueDaysBefore(next);
-    if (dueEnabled && loan.dueDate) scheduleDueReminder(loan, next, dueTime);
-  }, [dueDaysBefore, dueEnabled, dueTime, loan, scheduleDueReminder]);
 
   const handleDueTimeChange = useCallback((_: DateTimePickerEvent, date?: Date) => {
     setShowDueTimePicker(false);
@@ -140,7 +157,7 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
 
         {emiEnabled && (
           <View style={styles.subControls}>
-            <BentoPressable style={styles.chip} onPress={handleEmiDayPress}>
+            <BentoPressable style={styles.chip} onPress={() => setShowEmiDayPicker(true)}>
               <Text style={styles.chipText}>
                 Day {emiDay}
               </Text>
@@ -176,7 +193,7 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
 
           {dueEnabled && (
             <View style={styles.subControls}>
-              <BentoPressable style={styles.chip} onPress={handleDueDaysPress}>
+              <BentoPressable style={styles.chip} onPress={() => setShowDueDaysPicker(true)}>
                 <Text style={styles.chipText}>
                   {DUE_DAYS_OPTIONS.find(o => o.value === dueDaysBefore)?.label}
                 </Text>
@@ -209,6 +226,22 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
           onChange={handleDueTimeChange}
         />
       )}
+
+      <OptionsBottomSheet
+        visible={showEmiDayPicker}
+        onClose={() => setShowEmiDayPicker(false)}
+        title="EMI reminder day"
+        subtitle="Select day of the month to receive reminder"
+        options={emiDayOptions}
+      />
+
+      <OptionsBottomSheet
+        visible={showDueDaysPicker}
+        onClose={() => setShowDueDaysPicker(false)}
+        title="Due date reminder"
+        subtitle="Select when to be reminded before the loan is due"
+        options={dueDaysOptions}
+      />
     </View>
   );
 });

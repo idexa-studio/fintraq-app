@@ -5,7 +5,7 @@ import {
   Calendar03Icon,
   CheckmarkCircle01Icon,
   Delete01Icon,
-  Coins01Icon,
+  Coins02Icon,
   PencilEdit01Icon,
   UnfoldMoreIcon,
 } from '@hugeicons/core-free-icons';
@@ -282,7 +282,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
         {loan.computedStatus !== 'repaid' && (
           <View style={styles.actionsRow}>
             <BentoPressable style={[styles.actionBtn, { backgroundColor: colors.primary }]} onPress={handleRepayOpen}>
-              <HugeiconsIcon icon={Coins01Icon} size={16} color={colors.primaryForeground} />
+              <HugeiconsIcon icon={Coins02Icon} size={16} color={colors.primaryForeground} />
               <Text style={[styles.actionText, { color: colors.primaryForeground }]}>
                 Repay
               </Text>
