@@ -186,7 +186,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
       marginBottom: spacing('2'),
       height: sizes.input.md.height,
       borderRadius: radius('lg'),
-      backgroundColor: colors.background,
+      backgroundColor: colors.card,
       paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
     },

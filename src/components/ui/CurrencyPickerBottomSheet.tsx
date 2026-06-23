@@ -21,7 +21,7 @@ export type CurrencyPickerBottomSheetProps = {
   onChange: (code: string) => void;
 };
 
-const ITEM_HEIGHT = 60;
+const ITEM_HEIGHT = 60; // 56px row + 4px gap
 
 export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBottomSheet({
   visible,
@@ -210,7 +210,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
       marginBottom: spacing('2'),
       height: sizes.input.md.height,
       borderRadius: radius('lg'),
-      backgroundColor: colors.background,
+      backgroundColor: colors.card,
       paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
     },
@@ -225,32 +225,40 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
     // List
     listContent: {
       paddingTop: spacing('1'),
+      paddingHorizontal: layout.screenPadding,
       paddingBottom: spacing('3'),
+      gap: spacing('1'),
     },
 
     // Row
     row: {
-      height: 52,
+      height: 56,
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: layout.screenPadding,
-      marginVertical: spacing('0.5'),
+      paddingHorizontal: spacing('3'),
+      borderRadius: radius('lg'),
       gap: spacing('3'),
+      borderWidth: 1,
+      borderColor: 'transparent',
     },
     rowSelected: {
-      backgroundColor: colors.primaryLight,
+      backgroundColor: colors.surface,
+      borderColor: colors.primary + '30',
     },
     // Currency code chip
     chip: {
-      width: 46,
+      width: 50,
       height: 28,
       borderRadius: radius('md'),
-      backgroundColor: colors.background,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
       alignItems: 'center',
       justifyContent: 'center',
     },
     chipSelected: {
-      backgroundColor: colors.primary + '18',
+      backgroundColor: colors.primary + '14',
+      borderColor: colors.primary + '40',
     },
     chipText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
@@ -275,15 +283,15 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
 
     // Check indicator
     checkCircle: {
-      width: 20,
-      height: 20,
+      width: 22,
+      height: 22,
       borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
     },
     checkPlaceholder: {
-      width: 20,
-      height: 20,
+      width: 22,
+      height: 22,
     },
 
     // Empty

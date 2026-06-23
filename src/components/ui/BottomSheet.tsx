@@ -2,9 +2,11 @@ import { ThemeColors, useTheme } from '@/src/providers/ThemeProvider';
 import * as Haptics from 'expo-haptics';
 import React, {
   createContext,
+  forwardRef,
   useCallback,
   useContext,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -55,17 +57,11 @@ const SPRING_CONFIG = {
 const CLOSE_THRESHOLD_Y = 120;
 const CLOSE_THRESHOLD_VY = 800; // px/s in worklet context
 
+type BottomSheetContentHandle = { close: () => void };
+
 // ─── Inner content (inside Modal, rendered per-open cycle) ───────────────────
 
-const BottomSheetContent = React.memo(function BottomSheetContent({
-  children,
-  resolvedHeight,
-  resolvedMaxHeight,
-  onDismiss,
-  onScroll,
-  colors,
-  enablePanDownToClose,
-}: {
+const BottomSheetContent = forwardRef<BottomSheetContentHandle, {
   children: React.ReactNode;
   resolvedHeight: DimensionValue | undefined;
   resolvedMaxHeight: DimensionValue;
@@ -73,7 +69,14 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
   onScroll: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
   colors: ThemeColors;
   enablePanDownToClose: boolean;
-}) {
+}>(function BottomSheetContent({
+  children,
+  resolvedHeight,
+  resolvedMaxHeight,
+  onDismiss,
+  colors,
+  enablePanDownToClose,
+}, ref) {
   const insets = useSafeAreaInsets();
   const { radius } = useTheme();
 
@@ -86,12 +89,12 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
   const translateY = useSharedValue(SCREEN_HEIGHT);
   const backdropOpacity = useSharedValue(0);
 
-  // JS-thread scroll offset (via ref — no state, no re-renders)
-  const scrollOffsetRef = useRef(0);
+  // Shared value so gesture worklet (UI thread) can read scroll position
+  const scrollOffset = useSharedValue(0);
 
   const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    scrollOffsetRef.current = event.nativeEvent.contentOffset.y;
-  }, []);
+    scrollOffset.value = event.nativeEvent.contentOffset.y;
+  }, [scrollOffset]);
 
   const contextValue = useMemo(() => ({ onScroll: handleScroll }), [handleScroll]);
 
@@ -103,7 +106,7 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Close helper (called from JS thread) ─────────────────────────────────
+  // ── Close helper (called from JS thread or via imperative ref) ───────────
   const animateClose = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     translateY.value = withTiming(SCREEN_HEIGHT, { duration: 220 });
@@ -114,17 +117,23 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
     });
   }, [translateY, backdropOpacity, onDismiss]);
 
-  // ── Pan gesture — RNGH, so it cooperates with Swipeable rows ─────────────
+  // Expose close() so BentoBottomSheet can trigger animated close when
+  // visible goes false externally (e.g. picker item selected).
+  useImperativeHandle(ref, () => ({ close: animateClose }), [animateClose]);
+
+  // ── Pan gesture — RNGH, cooperates with Swipeable rows ───────────────────
   const startY = useSharedValue(0);
 
   const dragGesture = Gesture.Pan()
     .enabled(enablePanDownToClose)
-    .activeOffsetY(8) // start only on downward intent
-    .failOffsetY(-8)  // fail if clearly scrolling up
+    .activeOffsetY(8)
+    .failOffsetY(-8)
     .onStart(() => {
       startY.value = translateY.value;
     })
     .onUpdate((e) => {
+      // If list is scrolled down, don't drag the sheet — let native scroll win
+      if (scrollOffset.value > 0) return;
       const next = startY.value + e.translationY;
       if (next > 0) {
         translateY.value = next;
@@ -133,6 +142,13 @@ const BottomSheetContent = React.memo(function BottomSheetContent({
       }
     })
     .onEnd((e) => {
+      // If list was not at top when gesture ended, snap sheet back
+      if (scrollOffset.value > 0) {
+        translateY.value = withSpring(0, SPRING_CONFIG);
+        backdropOpacity.value = withTiming(1, { duration: 150 });
+        return;
+      }
+
       const shouldClose =
         e.translationY > CLOSE_THRESHOLD_Y ||
         e.velocityY > CLOSE_THRESHOLD_VY;
@@ -212,11 +228,7 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
 }: BentoBottomSheetProps) {
   const { colors } = useTheme();
 
-  // Modal-level visibility — we keep the Modal mounted until the close
-  // animation finishes, then unmount the entire subtree via key reset.
   const [modalVisible, setModalVisible] = useState(visible);
-  // Increment key to fully remount BottomSheetContent on each open cycle
-  // so animation shared values reset cleanly.
   const [contentKey, setContentKey] = useState(0);
 
   const onCloseRef = useRef(onClose);
@@ -224,14 +236,19 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
     onCloseRef.current = onClose;
   }, [onClose]);
 
+  // Ref to BottomSheetContent so we can trigger animated close imperatively
+  const contentRef = useRef<BottomSheetContentHandle>(null);
+
   useEffect(() => {
     if (visible) {
-      // New open cycle — remount content with fresh animation state
       setContentKey((k) => k + 1);
       setModalVisible(true);
+    } else if (modalVisible) {
+      // visible went false externally (picker item selected, etc.)
+      // trigger animated close on the content
+      contentRef.current?.close();
     }
-    // When visible goes false, the BottomSheetContent's gesture/animation
-    // handles closing and calls onDismiss which closes the Modal.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
 
   const handleDismiss = useCallback(() => {
@@ -251,9 +268,6 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
     return last as DimensionValue;
   }, [snapPoints, enableDynamicSizing]);
 
-  // When visible goes false externally (parent state changes before animation
-  // finishes), we still want to run the close animation. So we pass `visible`
-  // into content and let it drive itself.
   return (
     <Modal
       transparent
@@ -264,6 +278,7 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
       {modalVisible && (
         <BottomSheetContent
           key={contentKey}
+          ref={contentRef}
           resolvedHeight={resolvedHeight}
           resolvedMaxHeight={resolvedMaxHeight}
           onDismiss={handleDismiss}

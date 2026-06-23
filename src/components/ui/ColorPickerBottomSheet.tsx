@@ -13,7 +13,7 @@ import type { ColorOption } from '../../constants/picker';
 import { BentoPressable } from './BentoPressable';
 import { BentoBottomSheet, useBottomSheet } from './BottomSheet';
 
-const ITEM_HEIGHT = 60;
+const ITEM_HEIGHT = 62; // 56px row + 6px gap
 
 type ColorPickerBottomSheetProps = {
   visible: boolean;
@@ -33,6 +33,7 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
   title = 'Choose color',
 }: ColorPickerBottomSheetProps) {
   const theme = useTheme();
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const bottomSheet = useBottomSheet();
 
@@ -50,22 +51,28 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
       const selected = value.toUpperCase() === item.hex.toUpperCase();
       return (
         <BentoPressable
-          style={[styles.row, selected && styles.rowSelected]}
+          style={[
+            styles.row,
+            selected
+              ? { backgroundColor: colors.surface, borderColor: item.hex + '50', borderWidth: 1 }
+              : { backgroundColor: 'transparent', borderColor: 'transparent', borderWidth: 1 },
+          ]}
           onPress={() => handleSelect(item.hex)}
           scaleOnPress={false}
         >
-          <View style={[styles.swatch, { backgroundColor: item.hex }]} />
+          <View style={[styles.swatch, { backgroundColor: item.hex }]}>
+            {selected && (
+              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color='#fff' />
+            )}
+          </View>
           <Text style={[styles.colorName, selected && styles.colorNameSelected]}>
             {item.name}
           </Text>
-          <Text style={styles.colorHex}>{item.hex.toUpperCase()}</Text>
-          {selected && (
-            <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={item.hex} />
-          )}
+          <Text style={[styles.colorHex, selected && { color: item.hex }]}>{item.hex.toUpperCase()}</Text>
         </BentoPressable>
       );
     },
-    [value, handleSelect, styles],
+    [value, handleSelect, styles, colors],
   );
 
   const getItemLayout = useCallback(
@@ -136,10 +143,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       justifyContent: 'space-between',
     },
     headerColorDot: {
-      width: 16,
-      height: 16,
+      width: 28,
+      height: 28,
       borderRadius: radius('full'),
       marginLeft: spacing('3'),
+      borderWidth: 2,
+      borderColor: colors.border,
     },
     title: {
       fontFamily: typography.fonts.heading,
@@ -153,24 +162,25 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
       marginTop: 2,
     },
     listContent: {
+      paddingHorizontal: layout.screenPadding,
       paddingBottom: spacing('3'),
+      gap: spacing('1.5'),
     },
     row: {
       flexDirection: 'row',
       alignItems: 'center',
-      height: 50,
-      paddingHorizontal: layout.screenPadding,
-      marginVertical: spacing('0.5'),
+      height: 56,
+      paddingHorizontal: spacing('3'),
+      borderRadius: radius('lg'),
       gap: spacing('3'),
     },
-    rowSelected: {
-      backgroundColor: colors.primaryLight,
-    },
     swatch: {
-      width: 32,
-      height: 32,
+      width: 36,
+      height: 36,
       borderRadius: radius('full'),
       flexShrink: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     colorName: {
       flex: 1,

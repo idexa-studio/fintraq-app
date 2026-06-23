@@ -62,11 +62,11 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
           {value ? (
-            <View style={styles.headerIconContainer}>
+            <View style={[styles.headerIconContainer, { backgroundColor: accent + '18' }]}>
               <HugeiconsIcon
                 icon={resolveIcon(value, GridIcon)}
                 size={20}
-                color={colors.primary}
+                color={accent}
               />
             </View>
           ) : null}
@@ -92,7 +92,9 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                       key={icon}
                       style={[
                         styles.iconCell,
-                        { backgroundColor: selected ? colors.primaryLight : colors.background }
+                        selected
+                          ? { backgroundColor: accent + '18', borderColor: accent + '40', borderWidth: 1 }
+                          : { backgroundColor: colors.surface, borderColor: 'transparent', borderWidth: 1 },
                       ]}
                       onPress={() => handleSelect(icon)}
                       scaleOnPress={true}
@@ -100,7 +102,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                       <HugeiconsIcon
                         icon={resolveIcon(icon, GridIcon)}
                         size={20}
-                        color={selected ? accent : colors.text}
+                        color={selected ? accent : colors.textMuted}
                       />
                     </BentoPressable>
                   );
@@ -130,10 +132,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.text,
     },
     headerIconContainer: {
-      width: 32,
-      height: 32,
-      borderRadius: radius('md'),
-      backgroundColor: colors.primary + '12',
+      width: 36,
+      height: 36,
+      borderRadius: radius('xl'),
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -160,7 +161,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     iconCell: {
       width: CELL_SIZE,
       height: CELL_SIZE,
-      borderRadius: radius('md'),
+      borderRadius: radius('lg'),
       justifyContent: 'center',
       alignItems: 'center',
     },
