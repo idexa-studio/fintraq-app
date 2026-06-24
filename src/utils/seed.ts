@@ -392,132 +392,125 @@ export async function seedDummyData() {
       }
     }
 
-    // Seed demo loans (Lent, Borrowed, and Repaid)
+    // Seed demo loans — realistic mix of lend/borrow, active/overdue/repaid, partial repayments
     if (insertedPersons.length >= 3 && allAccounts.length > 0) {
       const usdAccount = allAccounts.find(a => a.currency === 'USD') ?? allAccounts[0];
-      const multiplier = CURRENCY_MULTIPLIERS[usdAccount.currency.toUpperCase()] ?? 1;
+      const m = CURRENCY_MULTIPLIERS[usdAccount.currency.toUpperCase()] ?? 1;
       const loanCategory = allCategories.find(c => c.name.toLowerCase() === 'loan/emi' || c.name.toLowerCase() === 'uncategorized') ?? allCategories[0];
 
-      const date15DaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 15).toISOString();
-      const date30DaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30).toISOString();
-      const date10DaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 10).toISOString();
-      const date45DaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 45).toISOString();
-      const date40DaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 40).toISOString();
+      const daysAgo = (d: number) => new Date(now.getFullYear(), now.getMonth(), now.getDate() - d).toISOString();
+      const daysFromNow = (d: number) => new Date(now.getFullYear(), now.getMonth(), now.getDate() + d).toISOString().slice(0, 10);
+      const daysAgoDate = (d: number) => new Date(now.getFullYear(), now.getMonth(), now.getDate() - d).toISOString().slice(0, 10);
 
       // 1. Insert Loans
       const seededLoans = await db.insert(loans).values([
+        // Loan 0: Lent $800 to Sarah — active, due next month, partial repayment
         {
-          personId: insertedPersons[0].id, // Sarah
-          type: 'lend',
-          principal: 500 * multiplier,
+          personId: insertedPersons[0].id,
+          type: 'lend' as const,
+          principal: Math.round(800 * m),
           currency: usdAccount.currency,
           accountId: usdAccount.id,
           categoryId: loanCategory.id,
-          status: 'active',
-          dueDate: new Date(now.getFullYear(), now.getMonth() + 1, now.getDate()).toISOString().slice(0, 10),
-          note: 'Lent for travel expenses',
-          createdAt: date15DaysAgo,
-          updatedAt: date15DaysAgo,
+          status: 'active' as const,
+          dueDate: daysFromNow(28),
+          note: 'Emergency medical expenses',
+          createdAt: daysAgo(40),
+          updatedAt: daysAgo(10),
         },
+        // Loan 1: Borrowed $2400 from James — active, due in 2 months, partial repayment
         {
-          personId: insertedPersons[1].id, // James
-          type: 'borrow',
-          principal: 1000 * multiplier,
+          personId: insertedPersons[1].id,
+          type: 'borrow' as const,
+          principal: Math.round(2400 * m),
           currency: usdAccount.currency,
           accountId: usdAccount.id,
           categoryId: loanCategory.id,
-          status: 'active',
-          dueDate: new Date(now.getFullYear(), now.getMonth() + 2, now.getDate()).toISOString().slice(0, 10),
-          note: 'Borrowed for laptop repair',
-          createdAt: date30DaysAgo,
-          updatedAt: date10DaysAgo,
+          status: 'active' as const,
+          dueDate: daysFromNow(55),
+          note: 'MacBook Pro purchase',
+          createdAt: daysAgo(60),
+          updatedAt: daysAgo(5),
         },
+        // Loan 2: Lent $350 to Priya — OVERDUE, no repayment
         {
-          personId: insertedPersons[2].id, // Priya
-          type: 'lend',
-          principal: 300 * multiplier,
+          personId: insertedPersons[2].id,
+          type: 'lend' as const,
+          principal: Math.round(350 * m),
           currency: usdAccount.currency,
           accountId: usdAccount.id,
           categoryId: loanCategory.id,
-          status: 'repaid',
-          note: 'Dinner split share',
-          createdAt: date45DaysAgo,
-          updatedAt: date40DaysAgo,
-        }
+          status: 'active' as const,
+          dueDate: daysAgoDate(10),
+          note: 'Helped with rent shortfall',
+          createdAt: daysAgo(45),
+          updatedAt: daysAgo(45),
+        },
+        // Loan 3: Lent $200 to Tom — fully repaid
+        {
+          personId: insertedPersons[3 < insertedPersons.length ? 3 : 0].id,
+          type: 'lend' as const,
+          principal: Math.round(200 * m),
+          currency: usdAccount.currency,
+          accountId: usdAccount.id,
+          categoryId: loanCategory.id,
+          status: 'repaid' as const,
+          note: 'Conference ticket split',
+          createdAt: daysAgo(75),
+          updatedAt: daysAgo(20),
+        },
+        // Loan 4: Borrowed $600 from Sarah — fully repaid
+        {
+          personId: insertedPersons[0].id,
+          type: 'borrow' as const,
+          principal: Math.round(600 * m),
+          currency: usdAccount.currency,
+          accountId: usdAccount.id,
+          categoryId: loanCategory.id,
+          status: 'repaid' as const,
+          note: 'Bridged gap before salary',
+          createdAt: daysAgo(90),
+          updatedAt: daysAgo(35),
+        },
       ]).returning();
 
       // 2. Insert Loan Payments
-      const loanPayments = [
-        // Loan 1 (Lent 500)
-        {
-          accountId: usdAccount.id,
-          categoryId: loanCategory.id,
-          personId: insertedPersons[0].id,
-          loanId: seededLoans[0].id,
-          amount: 500 * multiplier,
-          type: 'DR' as const,
-          datetime: date15DaysAgo,
-          note: 'Loan given',
-          createdAt: date15DaysAgo,
-          updatedAt: date15DaysAgo,
-        },
-        // Loan 2 (Borrowed 1000)
-        {
-          accountId: usdAccount.id,
-          categoryId: loanCategory.id,
-          personId: insertedPersons[1].id,
-          loanId: seededLoans[1].id,
-          amount: 1000 * multiplier,
-          type: 'CR' as const,
-          datetime: date30DaysAgo,
-          note: 'Loan received',
-          createdAt: date30DaysAgo,
-          updatedAt: date30DaysAgo,
-        },
-        // Loan 2 repayment (200)
-        {
-          accountId: usdAccount.id,
-          categoryId: loanCategory.id,
-          personId: insertedPersons[1].id,
-          loanId: seededLoans[1].id,
-          amount: 200 * multiplier,
-          type: 'DR' as const,
-          datetime: date10DaysAgo,
-          note: 'Loan repayment sent',
-          createdAt: date10DaysAgo,
-          updatedAt: date10DaysAgo,
-        },
-        // Loan 3 (Lent 300)
-        {
-          accountId: usdAccount.id,
-          categoryId: loanCategory.id,
-          personId: insertedPersons[2].id,
-          loanId: seededLoans[2].id,
-          amount: 300 * multiplier,
-          type: 'DR' as const,
-          datetime: date45DaysAgo,
-          note: 'Loan given',
-          createdAt: date45DaysAgo,
-          updatedAt: date45DaysAgo,
-        },
-        // Loan 3 repayment (300)
-        {
-          accountId: usdAccount.id,
-          categoryId: loanCategory.id,
-          personId: insertedPersons[2].id,
-          loanId: seededLoans[2].id,
-          amount: 300 * multiplier,
-          type: 'CR' as const,
-          datetime: date40DaysAgo,
-          note: 'Loan repayment received',
-          createdAt: date40DaysAgo,
-          updatedAt: date40DaysAgo,
-        }
+      const lp = insertedPersons;
+      const loanPayments: Array<{
+        accountId: number;
+        categoryId: number;
+        personId: number | null;
+        loanId: number;
+        amount: number;
+        type: 'CR' | 'DR';
+        datetime: string;
+        note: string;
+        createdAt: string;
+        updatedAt: string;
+      }> = [
+        // Loan 0: Lent $800 to Sarah — initial + $250 repayment
+        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: lp[0].id, loanId: seededLoans[0].id, amount: Math.round(800 * m), type: 'DR', datetime: daysAgo(40), note: 'Lent to Sarah', createdAt: daysAgo(40), updatedAt: daysAgo(40) },
+        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: lp[0].id, loanId: seededLoans[0].id, amount: Math.round(250 * m), type: 'CR', datetime: daysAgo(10), note: 'Partial repayment from Sarah', createdAt: daysAgo(10), updatedAt: daysAgo(10) },
+
+        // Loan 1: Borrowed $2400 from James — initial + $800 repayment
+        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: lp[1].id, loanId: seededLoans[1].id, amount: Math.round(2400 * m), type: 'CR', datetime: daysAgo(60), note: 'Received from James', createdAt: daysAgo(60), updatedAt: daysAgo(60) },
+        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: lp[1].id, loanId: seededLoans[1].id, amount: Math.round(800 * m), type: 'DR', datetime: daysAgo(5), note: 'Repayment to James', createdAt: daysAgo(5), updatedAt: daysAgo(5) },
+
+        // Loan 2: Lent $350 to Priya — initial only (overdue, no repayment)
+        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: lp[2].id, loanId: seededLoans[2].id, amount: Math.round(350 * m), type: 'DR', datetime: daysAgo(45), note: 'Lent to Priya', createdAt: daysAgo(45), updatedAt: daysAgo(45) },
+
+        // Loan 3: Lent $200 to Tom — initial + full repayment
+        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: lp[3 < lp.length ? 3 : 0].id, loanId: seededLoans[3].id, amount: Math.round(200 * m), type: 'DR', datetime: daysAgo(75), note: 'Lent to Tom', createdAt: daysAgo(75), updatedAt: daysAgo(75) },
+        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: lp[3 < lp.length ? 3 : 0].id, loanId: seededLoans[3].id, amount: Math.round(200 * m), type: 'CR', datetime: daysAgo(20), note: 'Full repayment from Tom', createdAt: daysAgo(20), updatedAt: daysAgo(20) },
+
+        // Loan 4: Borrowed $600 from Sarah — initial + full repayment
+        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: lp[0].id, loanId: seededLoans[4].id, amount: Math.round(600 * m), type: 'CR', datetime: daysAgo(90), note: 'Received from Sarah', createdAt: daysAgo(90), updatedAt: daysAgo(90) },
+        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: lp[0].id, loanId: seededLoans[4].id, amount: Math.round(600 * m), type: 'DR', datetime: daysAgo(35), note: 'Full repayment to Sarah', createdAt: daysAgo(35), updatedAt: daysAgo(35) },
       ];
 
       await db.insert(payments).values(loanPayments);
 
-      // 3. Update Account Balance for usdAccount
+      // 3. Update account balance
       const loanIncome = loanPayments.filter(p => p.type === 'CR').reduce((s, p) => s + p.amount, 0);
       const loanExpense = loanPayments.filter(p => p.type === 'DR').reduce((s, p) => s + p.amount, 0);
 

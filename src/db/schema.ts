@@ -47,7 +47,7 @@ export const categories = sqliteTable('categories', {
 
 export const loans = sqliteTable('loans', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  personId: integer('person_id').notNull().references(() => persons.id, { onDelete: 'cascade' }),
+  personId: integer('person_id').references(() => persons.id, { onDelete: 'set null' }),
   type: text('type', { enum: ['lend', 'borrow'] }).notNull(),
   principal: real('principal').notNull(),
   currency: text('currency').notNull(),

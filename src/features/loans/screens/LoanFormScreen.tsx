@@ -102,7 +102,8 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
 
   const atFreeLimit = !isPremium && (activeLoansCount ?? 0) >= FREE_LOAN_LIMIT;
 
-  const canSubmit = selectedPersonId !== null && selectedAccountId !== null && parseAmount(amountInput) > 0;
+  const personRequired = loanType === 'lend';
+  const canSubmit = (!personRequired || selectedPersonId !== null) && selectedAccountId !== null && parseAmount(amountInput) > 0;
 
   const handleSubmit = useCallback(async () => {
     if (!canSubmit || isSubmitting) return;
@@ -120,7 +121,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
     try {
       await createLoan.mutateAsync({
         data: {
-          personId: selectedPersonId!,
+          personId: selectedPersonId ?? undefined,
           type: loanType,
           principal: amount,
           currency: account.currency,
@@ -182,10 +183,10 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
             currency={selectedAccount?.currency ?? ''}
           />
 
-          {/* Person button trigger styled like transactions */}
+          {/* Person picker */}
           <View style={styles.fieldSection}>
             <Text style={styles.fieldLabel}>
-              {loanType === 'lend' ? 'Lent to' : 'Borrowed from'}
+              {loanType === 'lend' ? 'Lent to' : 'Borrowed from (optional)'}
             </Text>
             <BentoPressable style={styles.personPickerBtn} onPress={() => setShowPersonPicker(true)}>
               {selectedPerson ? (
@@ -197,6 +198,9 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
                       {selectedPerson.name}
                     </Text>
                   </View>
+                  <BentoPressable onPress={() => setSelectedPersonId(null)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                    <Text style={styles.clearText}>Clear</Text>
+                  </BentoPressable>
                 </>
               ) : (
                 <>
@@ -204,12 +208,12 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
                   <View style={styles.textContainer}>
                     <Text style={styles.personValueLabel}>Person</Text>
                     <Text style={[styles.personValueText, { color: colors.textMuted }]} numberOfLines={1}>
-                      Select contact
+                      {loanType === 'lend' ? 'Select contact' : 'Select contact (optional)'}
                     </Text>
                   </View>
+                  <HugeiconsIcon icon={UnfoldMoreIcon} size={16} color={colors.textMuted} />
                 </>
               )}
-              <HugeiconsIcon icon={UnfoldMoreIcon} size={16} color={colors.textMuted} />
             </BentoPressable>
           </View>
 

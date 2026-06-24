@@ -142,7 +142,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
       const result = await addRepayment.mutateAsync({
         loanId: loan.id,
         loanType: loan.type as 'lend' | 'borrow',
-        personId: loan.personId,
+        personId: loan.personId ?? null,
         accountId: effectiveRepayAccountId,
         categoryId: defaultCategoryId,
         amount,
@@ -156,7 +156,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
         await cancelAllLoanReminders(loan);
         showAlert({
           title: 'Fully repaid',
-          message: `${loan.personName}'s loan is completely settled.`,
+          message: `${loan.personName ?? 'This'} loan is completely settled.`,
           type: 'success',
         });
       }
@@ -205,14 +205,15 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
     );
   }
 
-  const personColor = colorNumberToHex(loan.personColor);
+  const personColor = loan.personColor != null ? colorNumberToHex(loan.personColor) : '#8B8B8B';
+  const personName = loan.personName ?? (loan.type === 'lend' ? 'Unknown' : 'Unnamed source');
   const pct = loan.principal > 0 ? Math.round((loan.repaid / loan.principal) * 100) : 0;
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
       <Header
-        title={loan.type === 'lend' ? 'Lent to ' + loan.personName : 'Borrowed from ' + loan.personName}
+        title={loan.type === 'lend' ? 'Lent to ' + personName : 'Borrowed from ' + personName}
         showBack
         rightAction={
           <View style={styles.headerActions}>
@@ -228,9 +229,9 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
         {/* Hero Card styled like Account detail hero */}
         <View style={[styles.heroCard, { backgroundColor: colors.surface }]}>
           <View style={styles.heroTop}>
-            <PersonAvatar name={loan.personName} color={personColor} size={56} />
+            <PersonAvatar name={personName} color={personColor} size={56} />
             <View style={styles.heroMeta}>
-              <Text style={styles.heroName} numberOfLines={1}>{loan.personName}</Text>
+              <Text style={styles.heroName} numberOfLines={1}>{personName}</Text>
               <View style={styles.heroBadgeRow}>
                 <View style={[styles.typeBadge, { backgroundColor: personColor + '20' }]}>
                   <Text style={[styles.typeBadgeText, { color: personColor }]}>
@@ -347,18 +348,18 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
           <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
             <ScrollView contentContainerStyle={styles.modalScroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
 
-              {/* Person (locked) */}
-              <View style={styles.lockedPerson}>
-                <PersonAvatar name={loan.personName} color={personColor} size={36} />
-                <View>
-                  <Text style={styles.lockedPersonName}>
-                    {loan.personName}
-                  </Text>
-                  <Text style={styles.lockedPersonSub}>
-                    Outstanding: {loan.outstanding.toFixed(2)} {loan.currency}
-                  </Text>
+              {/* Person (locked) — only shown when a person is linked */}
+              {loan.personId != null && (
+                <View style={styles.lockedPerson}>
+                  <PersonAvatar name={personName} color={personColor} size={36} />
+                  <View>
+                    <Text style={styles.lockedPersonName}>{personName}</Text>
+                    <Text style={styles.lockedPersonSub}>
+                      Outstanding: {loan.outstanding.toFixed(2)} {loan.currency}
+                    </Text>
+                  </View>
                 </View>
-              </View>
+              )}
 
               {/* Amount */}
               <TransactionAmountInput
@@ -456,7 +457,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
         visible={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
         title="Delete loan"
-        message={`Delete this loan with ${loan.personName}? All associated transactions will keep their data but lose the loan link.`}
+        message={`Delete this loan${loan.personName ? ` with ${loan.personName}` : ''}? All associated transactions will keep their data but lose the loan link.`}
         confirmLabel="Delete"
         onConfirm={handleDelete}
         isLoading={deleteLoan.isPending}

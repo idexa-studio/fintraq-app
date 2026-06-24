@@ -308,15 +308,17 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
           {isRepayment && (
             <View style={[styles.section, { opacity: 0.8 }]}>
               <View style={[styles.personBtn, { backgroundColor: colors.surface }]}>
-                <PersonAvatar
-                  name={loan?.personName ?? 'Person'}
-                  color={colorNumberToHex(loan?.personColor ?? 0)}
-                  size={36}
-                />
+                {loan?.personName ? (
+                  <PersonAvatar
+                    name={loan.personName}
+                    color={colorNumberToHex(loan.personColor ?? 0)}
+                    size={36}
+                  />
+                ) : null}
                 <View style={styles.textContainer}>
                   <Text style={styles.triggerLabel}>Loan Repayment for</Text>
                   <Text style={styles.dateTimeText} numberOfLines={1}>
-                    {loan?.personName ?? 'Loading...'}
+                    {loan == null ? 'Loading...' : (loan.personName ?? loan.accountName)}
                   </Text>
                 </View>
               </View>

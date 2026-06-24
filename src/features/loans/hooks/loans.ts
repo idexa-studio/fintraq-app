@@ -96,7 +96,7 @@ export const useAddRepayment = () => {
     mutationFn: (payload: {
       loanId: number;
       loanType: api.LoanType;
-      personId: number;
+      personId: number | null;
       accountId: number;
       categoryId?: number;
       amount: number;

@@ -12,113 +12,102 @@ import { format } from 'date-fns';
 type Props = {
   loan: LoanWithStats;
   onPress: (loan: LoanWithStats) => void;
+  compact?: boolean;
+  isLast?: boolean;
 };
 
-export const LoanCard = React.memo(function LoanCard({ loan, onPress }: Props) {
+export const LoanCard = React.memo(function LoanCard({ loan, onPress, compact = false, isLast = false }: Props) {
   const theme = useTheme();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const personColor = useMemo(() => colorNumberToHex(loan.personColor), [loan.personColor]);
+  const personColor = useMemo(
+    () => loan.personColor != null ? colorNumberToHex(loan.personColor) : '#8B8B8B',
+    [loan.personColor],
+  );
+  const personName = loan.personName ?? (loan.type === 'lend' ? 'Unknown' : 'Unnamed source');
   const handlePress = useCallback(() => onPress(loan), [onPress, loan]);
 
+  const pct = loan.principal > 0 ? Math.min(100, Math.round((loan.repaid / loan.principal) * 100)) : 0;
   const isRepaid = loan.computedStatus === 'repaid';
-  const pct = loan.principal > 0 ? Math.round((loan.repaid / loan.principal) * 100) : 0;
+  const isOverdue = loan.computedStatus === 'overdue';
+
+  if (compact) {
+    return (
+      <BentoPressable onPress={handlePress} style={[styles.compactRow, { borderBottomColor: colors.border }, isLast && { borderBottomWidth: 0 }]}>
+        <View style={[styles.typeDot, { backgroundColor: loan.type === 'lend' ? colors.success + '30' : colors.danger + '30' }]}>
+          <Text style={[styles.typeDotText, { color: loan.type === 'lend' ? colors.success : colors.danger }]}>
+            {loan.type === 'lend' ? 'L' : 'B'}
+          </Text>
+        </View>
+        <View style={styles.compactMeta}>
+          <Text style={[styles.compactLabel, { color: colors.text }]} numberOfLines={1}>
+            {loan.type === 'lend' ? 'Lent' : 'Borrowed'} · {loan.accountName}
+          </Text>
+          {loan.dueDate && !isRepaid && (
+            <Text style={[styles.compactHint, { color: isOverdue ? colors.danger : colors.textMuted }]} numberOfLines={1}>
+              Due {format(new Date(loan.dueDate), 'MMM d, yyyy')}
+            </Text>
+          )}
+          {isRepaid && (
+            <Text style={[styles.compactHint, { color: colors.success }]}>Fully repaid</Text>
+          )}
+        </View>
+        <View style={styles.compactRight}>
+          <MoneyText
+            amount={isRepaid ? loan.principal : loan.outstanding}
+            currency={loan.currency}
+            type={isRepaid ? 'NONE' : (loan.type === 'lend' ? 'CR' : 'DR')}
+            weight="semibold"
+            compact
+            style={[styles.compactAmount, isRepaid && { color: colors.textMuted }]}
+          />
+          <LoanStatusBadge status={loan.computedStatus} />
+        </View>
+      </BentoPressable>
+    );
+  }
 
   return (
-    <BentoPressable onPress={handlePress} style={[styles.card, isRepaid && styles.repaidCard]}>
-      {/* ── Card top row: avatar + name + status badge ── */}
-      <View style={styles.cardTop}>
-        <View style={styles.cardLead}>
-          <PersonAvatar name={loan.personName} color={personColor} size={40} />
-          <View style={styles.cardMeta}>
-            <Text style={styles.cardName} numberOfLines={1}>
-              {loan.personName}
-            </Text>
-            <Text style={styles.cardHint} numberOfLines={1}>
-              {loan.type === 'lend' ? 'Lent out' : 'Borrowed'} · {loan.accountName}
-            </Text>
-          </View>
+    <BentoPressable onPress={handlePress} style={[styles.card, isRepaid && { opacity: 0.65 }]}>
+      {/* Top row */}
+      <View style={styles.top}>
+        <PersonAvatar name={personName} color={personColor} size={40} />
+        <View style={styles.meta}>
+          <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>{personName}</Text>
+          <Text style={[styles.hint, { color: colors.textMuted }]} numberOfLines={1}>
+            {loan.type === 'lend' ? 'Lent out' : 'Borrowed'} · {loan.accountName}
+          </Text>
         </View>
         <LoanStatusBadge status={loan.computedStatus} />
       </View>
 
-      {isRepaid ? (
-        <View style={styles.settledContainer}>
-          <Text style={[styles.settledText, { fontFamily: typography.fonts.medium, color: colors.success }]}>
-            ✓ Fully repaid & settled
+      {/* Amount */}
+      <View style={styles.amountRow}>
+        <View>
+          <Text style={[styles.amountLabel, { color: colors.textMuted }]}>
+            {isRepaid ? 'Total principal' : 'Outstanding'}
           </Text>
+          <MoneyText
+            amount={isRepaid ? loan.principal : loan.outstanding}
+            currency={loan.currency}
+            type={isRepaid ? 'NONE' : (loan.type === 'lend' ? 'CR' : 'DR')}
+            weight="bold"
+            style={styles.amount}
+          />
         </View>
-      ) : (
-        <>
-          {/* ── Balance / Outstanding ── */}
-          <View style={styles.balanceSection}>
-            <View style={styles.balanceHeader}>
-              <Text style={styles.balanceLabel}>Outstanding balance</Text>
-              <Text style={[
-                styles.pctText,
-                loan.computedStatus === 'overdue' && { color: colors.danger }
-              ]}>
-                {pct}% paid
-              </Text>
-            </View>
-            <MoneyText
-              amount={loan.outstanding}
-              currency={loan.currency}
-              type={loan.type === 'lend' ? 'CR' : 'DR'}
-              weight="semibold"
-              style={styles.cardBalance}
-            />
+        {!isRepaid && loan.principal > 0 && (
+          <View style={styles.pctBadge}>
+            <Text style={[styles.pctText, { color: colors.textMuted }]}>{pct}% paid</Text>
           </View>
+        )}
+      </View>
 
-          {/* ── Divider ── */}
-          <View style={styles.divider} />
-
-          {/* ── Stats row ── */}
-          <View style={styles.statsRow}>
-            <View style={styles.statCell}>
-              <View style={styles.statLabelRow}>
-                <Text style={styles.statLabel}>Principal</Text>
-              </View>
-              <MoneyText
-                amount={loan.principal}
-                currency={loan.currency}
-                type="NONE"
-                weight="medium"
-                compact
-                style={styles.statValue}
-              />
-            </View>
-
-            <View style={styles.statDivider} />
-
-            <View style={styles.statCell}>
-              <View style={styles.statLabelRow}>
-                <Text style={styles.statLabel}>Repaid</Text>
-              </View>
-              <MoneyText
-                amount={loan.repaid}
-                currency={loan.currency}
-                type="NONE"
-                weight="medium"
-                compact
-                style={[styles.statValue, { color: colors.success }]}
-              />
-            </View>
-          </View>
-
-          {/* ── Divider & Footer (Only if due date exists) ── */}
-          {loan.dueDate ? (
-            <>
-              <View style={styles.divider} />
-              <View style={styles.cardFooter}>
-                <Text style={[styles.footerText, loan.computedStatus === 'overdue' && { color: colors.danger }]}>
-                  Due {format(new Date(loan.dueDate), 'MMM d, yyyy')}
-                </Text>
-              </View>
-            </>
-          ) : null}
-        </>
+      {/* Footer */}
+      {loan.dueDate && !isRepaid && (
+        <Text style={[styles.footer, { color: isOverdue ? colors.danger : colors.textMuted }]}>
+          Due {format(new Date(loan.dueDate), 'MMM d, yyyy')}
+        </Text>
       )}
     </BentoPressable>
   );
@@ -126,117 +115,85 @@ export const LoanCard = React.memo(function LoanCard({ loan, onPress }: Props) {
 
 const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({
+    // Full card
     card: {
       backgroundColor: colors.surface,
       borderRadius: radius('2xl'),
-      padding: spacing('5'),
-      marginBottom: spacing('4'),
+      padding: spacing('4'),
+      marginBottom: spacing('3'),
+      gap: spacing('3'),
     },
-    repaidCard: {
-      opacity: 0.6,
-    },
-    settledContainer: {
-      marginTop: spacing('3'),
-      paddingVertical: spacing('1.5'),
-      paddingHorizontal: spacing('3'),
-      borderRadius: radius('lg'),
-      backgroundColor: colors.success + '0C',
-      alignSelf: 'flex-start',
-    },
-    settledText: {
-      fontSize: typography.sizes.xs,
-    },
-    cardTop: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    cardLead: {
+    top: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
-      flex: 1,
     },
-    cardMeta: {
-      flex: 1,
-      gap: spacing('0.5'),
-    },
-    cardName: {
+    meta: { flex: 1, gap: spacing('0.5') },
+    name: {
       fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.md,
-      color: colors.text,
     },
-    cardHint: {
+    hint: {
       fontFamily: typography.styles.rowMeta.fontFamily,
       fontSize: typography.sizes.xs,
-      color: colors.textMuted,
     },
-    balanceSection: {
-      marginTop: spacing('4'),
-      gap: spacing('1.5'),
-    },
-    balanceHeader: {
+    amountRow: {
       flexDirection: 'row',
+      alignItems: 'flex-end',
       justifyContent: 'space-between',
-      alignItems: 'center',
     },
-    balanceLabel: {
+    amountLabel: {
       fontFamily: typography.styles.rowMeta.fontFamily,
       fontSize: typography.sizes.xs,
-      color: colors.textMuted,
+      marginBottom: spacing('0.5'),
+    },
+    amount: { fontSize: typography.sizes.xl },
+    pctBadge: {
+      paddingHorizontal: spacing('2'),
+      paddingVertical: spacing('0.5'),
+      borderRadius: radius('full'),
+      backgroundColor: colors.text + '0C',
     },
     pctText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
       fontSize: typography.sizes.xs,
-      color: colors.textMuted,
     },
-    cardBalance: {
-      fontSize: typography.sizes.lg,
-      lineHeight: 20,
+    footer: {
+      fontFamily: typography.styles.rowMeta.fontFamily,
+      fontSize: typography.sizes.xs,
     },
-    divider: {
-      height: 1,
-      backgroundColor: colors.text + '0C',
-      marginTop: spacing('4'),
-      marginBottom: spacing('3'),
-    },
-    statsRow: {
+
+    // Compact row (used in PersonDetailScreen)
+    compactRow: {
       flexDirection: 'row',
       alignItems: 'center',
+      gap: spacing('3'),
+      paddingVertical: spacing('3'),
+      borderBottomWidth: StyleSheet.hairlineWidth,
     },
-    statCell: {
-      flex: 1,
-      gap: spacing('1'),
-    },
-    statDivider: {
-      width: 1,
+    typeDot: {
+      width: 32,
       height: 32,
-      backgroundColor: colors.text + '0C',
-      marginHorizontal: spacing('4'),
-    },
-    statLabelRow: {
-      flexDirection: 'row',
+      borderRadius: radius('lg'),
       alignItems: 'center',
+      justifyContent: 'center',
+    },
+    typeDotText: {
+      fontFamily: typography.fonts.semibold,
+      fontSize: 13,
+    },
+    compactMeta: { flex: 1, gap: spacing('0.5') },
+    compactLabel: {
+      fontFamily: typography.styles.rowLabel.fontFamily,
+      fontSize: typography.sizes.sm,
+    },
+    compactHint: {
+      fontFamily: typography.styles.rowMeta.fontFamily,
+      fontSize: typography.sizes.xs,
+    },
+    compactRight: {
+      alignItems: 'flex-end',
       gap: spacing('1'),
     },
-    statLabel: {
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      color: colors.textMuted,
-      fontSize: typography.sizes.xs,
-    },
-    statValue: {
-      fontSize: typography.sizes.md,
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      color: colors.text,
-    },
-    cardFooter: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    footerText: {
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: typography.sizes.xs,
-      color: colors.textMuted,
-    },
+    compactAmount: { fontSize: typography.sizes.md },
   });

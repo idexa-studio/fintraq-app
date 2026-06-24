@@ -26,7 +26,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
   const personId = Number(id);
   const router = useRouter();
   const theme = useTheme();
-  const { colors, typography } = theme;
+  const { colors, typography, spacing, radius } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const deletePerson = useDeletePerson();
@@ -211,15 +211,19 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
 
         {/* Loans */}
         {activeLoans.length > 0 && (
-          <View style={styles.txSection}>
+          <View style={[styles.txSection, { marginBottom: spacing('4') }]}>
             <Text style={styles.txTitle}>Active loans</Text>
-            {activeLoans.map((loan) => (
-              <LoanCard
-                key={loan.id}
-                loan={loan}
-                onPress={handleLoanPress}
-              />
-            ))}
+            <View style={styles.loansCard}>
+              {activeLoans.map((loan, i) => (
+                <LoanCard
+                  key={loan.id}
+                  loan={loan}
+                  onPress={handleLoanPress}
+                  compact
+                  isLast={i === activeLoans.length - 1}
+                />
+              ))}
+            </View>
           </View>
         )}
 
@@ -334,6 +338,11 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     statValue: { fontSize: 14 },
     statPlain: { fontSize: 18 },
 
+    loansCard: {
+      backgroundColor: colors.surface,
+      borderRadius: radius('2xl'),
+      paddingHorizontal: spacing('4'),
+    },
     txSection: { paddingHorizontal: layout.screenPadding },
     txTitle: {
       fontFamily: typography.styles.sectionLabel.fontFamily,

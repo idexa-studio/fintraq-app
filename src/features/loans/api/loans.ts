@@ -14,8 +14,8 @@ export type LoanType = 'lend' | 'borrow';
 export type LoanWithStats = Loan & {
   outstanding: number;
   repaid: number;
-  personName: string;
-  personColor: number;
+  personName: string | null;
+  personColor: number | null;
   accountName: string;
   categoryName: string;
   computedStatus: LoanStatus;
@@ -62,7 +62,7 @@ export const getLoans = async (type?: LoanType): Promise<LoanWithStats[]> => {
       ), 0)`,
     })
     .from(loans)
-    .innerJoin(persons, eq(loans.personId, persons.id))
+    .leftJoin(persons, eq(loans.personId, persons.id))
     .innerJoin(accounts, eq(loans.accountId, accounts.id))
     .innerJoin(categories, eq(loans.categoryId, categories.id))
     .orderBy(desc(loans.createdAt));
@@ -76,8 +76,8 @@ export const getLoans = async (type?: LoanType): Promise<LoanWithStats[]> => {
     const outstanding = Math.max(0, r.loan.principal - repaid);
     return {
       ...r.loan,
-      personName: r.personName,
-      personColor: r.personColor,
+      personName: r.personName ?? null,
+      personColor: r.personColor ?? null,
       accountName: r.accountName,
       categoryName: r.categoryName,
       repaid,
@@ -102,7 +102,7 @@ export const getLoansByPerson = async (personId: number): Promise<LoanWithStats[
       ), 0)`,
     })
     .from(loans)
-    .innerJoin(persons, eq(loans.personId, persons.id))
+    .leftJoin(persons, eq(loans.personId, persons.id))
     .innerJoin(accounts, eq(loans.accountId, accounts.id))
     .innerJoin(categories, eq(loans.categoryId, categories.id))
     .where(eq(loans.personId, personId))
@@ -113,8 +113,8 @@ export const getLoansByPerson = async (personId: number): Promise<LoanWithStats[
     const outstanding = Math.max(0, r.loan.principal - repaid);
     return {
       ...r.loan,
-      personName: r.personName,
-      personColor: r.personColor,
+      personName: r.personName ?? null,
+      personColor: r.personColor ?? null,
       accountName: r.accountName,
       categoryName: r.categoryName,
       repaid,
@@ -144,7 +144,7 @@ export const getLoanWithStats = async (id: number): Promise<LoanWithStats | unde
       ), 0)`,
     })
     .from(loans)
-    .innerJoin(persons, eq(loans.personId, persons.id))
+    .leftJoin(persons, eq(loans.personId, persons.id))
     .innerJoin(accounts, eq(loans.accountId, accounts.id))
     .innerJoin(categories, eq(loans.categoryId, categories.id))
     .where(eq(loans.id, id));
@@ -154,8 +154,8 @@ export const getLoanWithStats = async (id: number): Promise<LoanWithStats | unde
   const outstanding = Math.max(0, row.loan.principal - repaid);
   return {
     ...row.loan,
-    personName: row.personName,
-    personColor: row.personColor,
+    personName: row.personName ?? null,
+    personColor: row.personColor ?? null,
     accountName: row.accountName,
     categoryName: row.categoryName,
     repaid,
@@ -327,7 +327,7 @@ export const deleteLoan = async (id: number): Promise<void> => {
 export const addRepayment = async (payload: {
   loanId: number;
   loanType: LoanType;
-  personId: number;
+  personId: number | null;
   accountId: number;
   categoryId?: number;
   amount: number;

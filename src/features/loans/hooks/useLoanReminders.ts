@@ -24,7 +24,7 @@ export const useLoanReminders = () => {
         loan.id,
         day,
         timeStr,
-        loan.personName,
+        loan.personName ?? '',
         loan.type as 'lend' | 'borrow',
       );
 
@@ -78,7 +78,7 @@ export const useLoanReminders = () => {
         loan.dueDate,
         daysBefore,
         timeStr,
-        loan.personName,
+        loan.personName ?? '',
         loan.type as 'lend' | 'borrow',
       );
 

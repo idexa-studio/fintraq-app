@@ -50,6 +50,13 @@
       "when": 1782242890645,
       "tag": "0006_little_wind_dancer",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1782274665142,
+      "tag": "0007_worried_paladin",
+      "breakpoints": true
     }
   ]
 }
