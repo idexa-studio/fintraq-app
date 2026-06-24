@@ -1,4 +1,3 @@
-import { CheckIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -17,6 +16,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Header } from '@/src/components/ui/Header';
 import { PageBackground } from '@/src/components/ui/PageBackground';
+import { ColorPickerRow } from '@/src/components/ui/ColorPickerRow';
 import { PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
 import type { InsertPerson, UpdatePersonData } from '@/src/features/persons/api/persons';
 import {
@@ -174,31 +174,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
 
             <View style={styles.heroDivider} />
 
-            {/* Inline color palette */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.colorRow}
-            >
-              {PALETTE_COLORS.map((hex) => {
-                const isSelected = colorHex === hex;
-                return (
-                  <Pressable
-                    key={hex}
-                    onPress={() => setColorHex(hex)}
-                    style={[
-                      styles.colorDot,
-                      { backgroundColor: hex },
-                      isSelected && styles.colorDotSelected,
-                    ]}
-                  >
-                    {isSelected && (
-                      <HugeiconsIcon icon={CheckIcon} size={12} color="#fff" />
-                    )}
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+            <ColorPickerRow colors={PALETTE_COLORS} value={colorHex} onChange={setColorHex} />
           </View>
 
           {/* ── Contact details card ── */}
@@ -424,23 +400,6 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       backgroundColor: colors.border,
       marginHorizontal: spacing('4'),
     },
-    colorRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-    },
-    colorDot: {
-      width: 26,
-      height: 26,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    colorDotSelected: {
-      ...shadow('sm'),
-    },
-
     // ── Section
     sectionGap: {
       marginTop: spacing('5'),

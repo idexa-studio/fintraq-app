@@ -29,7 +29,7 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
 import { toErrorMessage } from '@/src/utils/errors';
-import { seedDummyData } from '@/src/utils/seed';
+import { seedDemoLoans, seedDummyData } from '@/src/utils/seed';
 
 const DEV_PIN = '32159';
 
@@ -44,6 +44,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
   const [error, setError] = React.useState('');
   const [showSeedConfirm, setShowSeedConfirm] = React.useState(false);
   const [isSeeding, setIsSeeding] = React.useState(false);
+  const [isSeedingLoans, setIsSeedingLoans] = React.useState(false);
   const [scheduledNotifs, setScheduledNotifs] = React.useState<Notifications.NotificationRequest[]>([]);
 
   const fetchScheduled = React.useCallback(async () => {
@@ -81,6 +82,22 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
       Alert.alert('Error', toErrorMessage(e, 'Failed to generate seed data.'));
     } finally {
       setIsSeeding(false);
+    }
+  };
+
+  const handleSeedLoans = async () => {
+    try {
+      setIsSeedingLoans(true);
+      const count = await seedDemoLoans();
+      if (count === 0) {
+        Alert.alert('Skipped', 'Loans already exist. Factory reset to re-seed.');
+        return;
+      }
+      Alert.alert('Done', `Added 5 demo loans (${count} payments). Reload to sync.`, [{ text: 'Reload', onPress: () => DevSettings.reload() }]);
+    } catch (e) {
+      Alert.alert('Error', toErrorMessage(e, 'Failed to seed demo loans.'));
+    } finally {
+      setIsSeedingLoans(false);
     }
   };
 
@@ -169,13 +186,25 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         <SectionHeader title="Data" noPadding />
         <View style={styles.card}>
           <BentoPressable
-            style={[styles.optionRow, styles.noMargin]}
+            style={[styles.optionRow, { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}
             onPress={() => setShowSeedConfirm(true)}
           >
             <IconAvatar icon={FlaskConicalIcon} color={colors.primary} variant="subtle" size={36} iconSize={16} />
             <View style={{ flex: 1, gap: 2 }}>
               <Text style={styles.rowTitle}>Seed dummy data</Text>
               <Text style={styles.rowSub}>Generate 12 months of test transactions</Text>
+            </View>
+            <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
+          </BentoPressable>
+          <BentoPressable
+            style={[styles.optionRow, styles.noMargin]}
+            onPress={handleSeedLoans}
+            disabled={isSeedingLoans}
+          >
+            <IconAvatar icon={FlaskConicalIcon} color={colors.success} variant="subtle" size={36} iconSize={16} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={styles.rowTitle}>Seed demo loans</Text>
+              <Text style={styles.rowSub}>{isSeedingLoans ? 'Seeding…' : 'Add 5 demo loans (skips if already present)'}</Text>
             </View>
             <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
           </BentoPressable>

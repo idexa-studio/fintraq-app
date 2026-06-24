@@ -1,7 +1,7 @@
-import { CheckIcon, GridIcon } from '@hugeicons/core-free-icons';
+import { GridIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
   KeyboardAvoidingView,
@@ -19,6 +19,7 @@ import { IconPickerBottomSheet } from '@/src/components/ui/IconPickerBottomSheet
 import { Header } from '@/src/components/ui/Header';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS } from '@/src/constants/picker';
+import { ColorPickerRow } from '@/src/components/ui/ColorPickerRow';
 import { useCategories, useCreateCategory, useUpdateCategory } from '@/src/features/categories/hooks/categories';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, toDbColor } from '@/src/utils/format';
@@ -28,12 +29,13 @@ type CategoryFormValues = {
   name: string;
 };
 
-const TYPE_OPTIONS = [
-  { value: 'DR' as const, label: 'Expense' },
-  { value: 'CR' as const, label: 'Income' },
-  { value: 'TR' as const, label: 'Transfer' },
-  { value: 'ALL' as const, label: 'All' },
-] as const;
+type TxType = 'CR' | 'DR' | 'TR';
+
+const TYPE_OPTIONS: { value: TxType; label: string }[] = [
+  { value: 'DR', label: 'Expense' },
+  { value: 'CR', label: 'Income' },
+  { value: 'TR', label: 'Transfer' },
+];
 
 export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -52,7 +54,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
   const { mutateAsync: createCategory } = useCreateCategory();
   const { mutateAsync: updateCategory } = useUpdateCategory();
 
-  const [type, setType] = useState<'CR' | 'DR' | 'TR' | 'ALL'>('DR');
+  const [selectedTypes, setSelectedTypes] = useState<Set<TxType>>(new Set(['DR']));
   const [icon, setIcon] = useState<string>(CATEGORY_ICONS[0]);
   const [colorHex, setColorHex] = useState<string>(
     () => CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)],
@@ -75,7 +77,8 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
   useEffect(() => {
     if (category) {
       reset({ name: category.name });
-      setType(category.type);
+      const parsed = category.type.split(',').filter((t): t is TxType => ['CR', 'DR', 'TR'].includes(t));
+      setSelectedTypes(new Set(parsed.length > 0 ? parsed : ['DR']));
       setIcon(typeof category.icon === 'string' ? category.icon : CATEGORY_ICONS[0]);
       setColorHex(colorNumberToHex(category.color).toUpperCase());
     }
@@ -83,17 +86,32 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
 
   const resolvedIcon = useMemo(() => resolveIcon(icon, GridIcon), [icon]);
 
-  const typeColor = useMemo(() => {
-    if (type === 'DR') return colors.danger;
-    if (type === 'CR') return colors.success;
-    if (type === 'TR') return colors.primary;
-    return colors.textMuted;
-  }, [type, colors]);
+  const toggleType = useCallback((t: TxType) => {
+    setSelectedTypes(prev => {
+      const next = new Set(prev);
+      if (next.has(t)) {
+        if (next.size === 1) return prev; // must keep at least one
+        next.delete(t);
+      } else {
+        next.add(t);
+      }
+      return next;
+    });
+  }, []);
+
+  const typeString = useMemo(
+    () => (['DR', 'CR', 'TR'] as TxType[]).filter(t => selectedTypes.has(t)).join(','),
+    [selectedTypes],
+  );
+
+  const primaryType = selectedTypes.has('DR') ? 'DR' : selectedTypes.has('CR') ? 'CR' : 'TR';
+  const typeColor = primaryType === 'DR' ? colors.danger : primaryType === 'CR' ? colors.success : colors.primary;
+  const typeLabel = Array.from(selectedTypes).map(t => TYPE_OPTIONS.find(o => o.value === t)?.label).join(', ');
 
   const handleSave = handleSubmit(async (data) => {
     const payload = {
       name: data.name.trim(),
-      type,
+      type: typeString,
       icon,
       color: toDbColor(colorHex),
     };
@@ -137,62 +155,34 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                   {categoryName.trim() || 'Category name'}
                 </Text>
                 <Text style={[styles.heroSub, { color: typeColor }]}>
-                  {TYPE_OPTIONS.find((o) => o.value === type)?.label ?? 'Expense'}
+                  {typeLabel}
                 </Text>
                 <Text style={styles.heroHint}>Tap to change icon</Text>
               </View>
             </View>
 
             <View style={styles.heroDivider} />
-
-            {/* Inline color palette */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.colorRow}
-            >
-              {CATEGORY_COLORS.map((hex) => {
-                const isSelected = colorHex === hex;
-                return (
-                  <Pressable
-                    key={hex}
-                    onPress={(e) => { e.stopPropagation?.(); setColorHex(hex); }}
-                    style={[
-                      styles.colorDot,
-                      { backgroundColor: hex },
-                      isSelected && styles.colorDotSelected,
-                    ]}
-                  >
-                    {isSelected && (
-                      <HugeiconsIcon icon={CheckIcon} size={12} color="#fff" />
-                    )}
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+            <ColorPickerRow colors={CATEGORY_COLORS} value={colorHex} onChange={setColorHex} />
           </Pressable>
 
-          {/* ── Type selector ── */}
+          {/* ── Type selector (multi-select) ── */}
           <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
-            <Text style={styles.sectionLabel}>Type</Text>
+            <Text style={styles.sectionLabel}>Applies to</Text>
             <View style={styles.typeRow}>
               {TYPE_OPTIONS.map((opt) => {
-                const isSelected = type === opt.value;
+                const isSelected = selectedTypes.has(opt.value);
                 const activeColor =
                   opt.value === 'DR' ? colors.danger :
                   opt.value === 'CR' ? colors.success :
-                  opt.value === 'TR' ? colors.primary :
-                  colors.textMuted;
+                  colors.primary;
                 return (
                   <Pressable
-                    key={opt.label}
-                    onPress={() => !isEditing && setType(opt.value)}
+                    key={opt.value}
+                    onPress={() => toggleType(opt.value)}
                     style={[
                       styles.typePill,
-                      isSelected && { backgroundColor: activeColor + '20' },
-                      isEditing && { opacity: 0.5 },
+                      isSelected && { backgroundColor: activeColor + '20', borderColor: activeColor + '40' },
                     ]}
-                    disabled={isEditing}
                   >
                     <Text style={[styles.typePillText, isSelected && { color: activeColor }]}>
                       {opt.label}
@@ -201,9 +191,6 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                 );
               })}
             </View>
-            {isEditing && (
-              <Text style={styles.lockHint}>Type cannot be changed for existing categories.</Text>
-            )}
           </View>
 
           {/* ── Name field ── */}
@@ -314,23 +301,6 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       backgroundColor: colors.border,
       marginHorizontal: spacing('4'),
     },
-    colorRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-    },
-    colorDot: {
-      width: 26,
-      height: 26,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    colorDotSelected: {
-      ...shadow('sm'),
-    },
-
     // ── Section
     sectionGap: {
       marginTop: spacing('5'),
@@ -355,18 +325,14 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.surface,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: 'transparent',
     },
     typePillText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
       fontSize: 13,
       color: colors.textMuted,
     },
-    lockHint: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 12,
-      color: colors.textMuted,
-    },
-
     // ── Name field
     fieldCard: {
       backgroundColor: colors.surface,

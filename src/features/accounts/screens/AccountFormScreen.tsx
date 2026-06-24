@@ -1,3 +1,4 @@
+import { ColorPickerRow } from '@/src/components/ui/ColorPickerRow';
 import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
@@ -11,7 +12,7 @@ import { AnalyticsService } from '@/src/services/analytics';
 import type { AccountType } from '@/src/types';
 import { colorNumberToHex, parseAmount, toDbColor } from '@/src/utils/format';
 import { ACCOUNT_TYPE_ICON_MAP, resolveAccountTypeIcon } from '@/src/utils/icons';
-import { CheckIcon, UnfoldMoreIcon } from '@hugeicons/core-free-icons';
+import { UnfoldMoreIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -186,31 +187,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
 
             <View style={styles.heroDivider} />
 
-            {/* Inline color palette */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.colorRow}
-            >
-              {ACCOUNT_COLORS.map((hex) => {
-                const isSelected = colorHex === hex;
-                return (
-                  <Pressable
-                    key={hex}
-                    onPress={() => setColorHex(hex)}
-                    style={[
-                      styles.colorDot,
-                      { backgroundColor: hex },
-                      isSelected && styles.colorDotSelected,
-                    ]}
-                  >
-                    {isSelected && (
-                      <HugeiconsIcon icon={CheckIcon} size={12} color="#fff" />
-                    )}
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+            <ColorPickerRow colors={ACCOUNT_COLORS} value={colorHex} onChange={setColorHex} />
           </View>
 
           {/* ── Account type ── */}
@@ -463,23 +440,6 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       backgroundColor: colors.border,
       marginHorizontal: spacing('4'),
     },
-    colorRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-    },
-    colorDot: {
-      width: 26,
-      height: 26,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    colorDotSelected: {
-      ...shadow('sm'),
-    },
-
     // ── Section
     sectionGap: {
       marginTop: spacing('5'),

@@ -105,7 +105,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
   }, [isEditMode, editingTransaction]);
 
   const filteredCategories = React.useMemo(
-    () => categories.filter((c) => c.type === type || c.type === 'ALL'),
+    () => categories.filter((c) => c.type.split(',').includes(type)),
     [categories, type],
   );
 

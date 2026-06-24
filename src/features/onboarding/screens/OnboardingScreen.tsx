@@ -81,7 +81,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   };
 
   const seedCategories = async () => {
-    const defaults: { name: string; icon: string; color: number; type: TransactionType | 'ALL'; isSystem?: boolean }[] = [
+    const defaults: { name: string; icon: string; color: number; type: string; isSystem?: boolean }[] = [
       // ── Income ──────────────────────────────────────────────────────
       { name: 'Salary', icon: 'cash', color: toDbColor('#059669'), type: 'CR' },
       { name: 'Freelance', icon: 'sparkles', color: toDbColor('#65A30D'), type: 'CR' },
@@ -137,7 +137,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       { name: 'Gifts given', icon: 'heart', color: toDbColor('#E11D48'), type: 'DR' },
 
       // ── Finance & Taxes ─────────────────────────────────────────────
-      { name: 'Loan/EMI', icon: 'credit-card', color: toDbColor('#DC2626'), type: 'DR' },
+      { name: 'Loan/EMI', icon: 'credit-card', color: toDbColor('#DC2626'), type: 'CR,DR' },
       { name: 'Taxes', icon: 'file', color: toDbColor('#475569'), type: 'DR' },
       { name: 'Insurance', icon: 'shield', color: toDbColor('#334155'), type: 'DR' },
       { name: 'Fees', icon: 'receipt-text', color: toDbColor('#334155'), type: 'DR' },
@@ -145,7 +145,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
 
       // ── Transfers ────────────────────────────────────────────────────
       { name: 'Transfer', icon: 'repeat', color: toDbColor('#2563EB'), type: 'TR', isSystem: true },
-      { name: 'Uncategorized', icon: 'grid', color: toDbColor('#475569'), type: 'ALL', isSystem: true },
+      { name: 'Uncategorized', icon: 'grid', color: toDbColor('#475569'), type: 'CR,DR,TR', isSystem: true },
     ];
 
     for (const category of defaults) {

@@ -1,8 +1,24 @@
-import { Delete01Icon, FolderOpenIcon, PencilEdit01Icon, PlusSignIcon } from '@hugeicons/core-free-icons';
+import {
+  CancelCircleIcon,
+  Delete01Icon,
+  FolderOpenIcon,
+  PencilEdit01Icon,
+  PlusSignIcon,
+  Search01Icon,
+} from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, ListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  ListRenderItemInfo,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PageBackground } from '../../../components/ui/PageBackground';
@@ -28,18 +44,19 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const { data: categories, isLoading } = useCategories();
   const { mutateAsync: deleteCategory } = useDeleteCategory();
 
-  const [activeType, setActiveType] = useState<'CR' | 'DR' | 'TR'>('DR');
+  const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [showManageDialog, setShowManageDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
     return (
       categories
-        ?.filter((c) => c.type === activeType)
+        ?.filter((c) => !q || c.name.toLowerCase().includes(q))
         .sort((a, b) => a.name.localeCompare(b.name)) ?? []
     );
-  }, [categories, activeType]);
+  }, [categories, search]);
 
   const handleCreate = useCallback(() => {
     router.push('/(main)/categories/form');
@@ -60,18 +77,21 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     [router, showAlert],
   );
 
-  const handleLongPress = useCallback((category: Category) => {
-    if (category.isSystem) {
-      showAlert({
-        title: 'System category',
-        message: 'System-reserved categories cannot be deleted or managed.',
-        type: 'warning',
-      });
-      return;
-    }
-    setSelectedCategory(category);
-    setShowManageDialog(true);
-  }, [showAlert]);
+  const handleLongPress = useCallback(
+    (category: Category) => {
+      if (category.isSystem) {
+        showAlert({
+          title: 'System category',
+          message: 'System-reserved categories cannot be deleted or managed.',
+          type: 'warning',
+        });
+        return;
+      }
+      setSelectedCategory(category);
+      setShowManageDialog(true);
+    },
+    [showAlert],
+  );
 
   const manageOptions = useMemo(() => {
     if (!selectedCategory) return [];
@@ -98,49 +118,44 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const keyExtractor = useCallback((item: Category) => item.id.toString(), []);
 
   const renderItem = useCallback(
-    ({ item }: ListRenderItemInfo<Category>) => (
+    ({ item, index }: ListRenderItemInfo<Category>) => (
       <CategoryCard
         item={item}
-        index={0}
+        index={index}
+        isFirst={index === 0}
+        isLast={index === filtered.length - 1}
         onPress={handleEdit}
         onLongPress={handleLongPress}
       />
     ),
-    [handleEdit, handleLongPress],
+    [handleEdit, handleLongPress, filtered.length],
   );
 
   const ListHeader = useMemo(
     () => (
       <View style={styles.listHeader}>
-        <View style={styles.typeTabs}>
-          <BentoPressable
-            style={[styles.typeTab, activeType === 'DR' && styles.typeTabActive]}
-            onPress={() => setActiveType('DR')}
-          >
-            <Text style={[styles.typeTabText, activeType === 'DR' && styles.typeTabTextActive]}>
-              Expense
-            </Text>
-          </BentoPressable>
-          <BentoPressable
-            style={[styles.typeTab, activeType === 'CR' && styles.typeTabActive]}
-            onPress={() => setActiveType('CR')}
-          >
-            <Text style={[styles.typeTabText, activeType === 'CR' && styles.typeTabTextActive]}>
-              Income
-            </Text>
-          </BentoPressable>
-          <BentoPressable
-            style={[styles.typeTab, activeType === 'TR' && styles.typeTabActive]}
-            onPress={() => setActiveType('TR')}
-          >
-            <Text style={[styles.typeTabText, activeType === 'TR' && styles.typeTabTextActive]}>
-              Transfer
-            </Text>
-          </BentoPressable>
+        <View style={styles.searchBar}>
+          <HugeiconsIcon icon={Search01Icon} size={16} color={colors.textMuted} />
+          <TextInput
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Search categories…"
+            placeholderTextColor={colors.textMuted + '60'}
+            style={styles.searchInput}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="search"
+            clearButtonMode="never"
+          />
+          {search.length > 0 && (
+            <Pressable onPress={() => setSearch('')} hitSlop={8}>
+              <HugeiconsIcon icon={CancelCircleIcon} size={16} color={colors.textMuted} />
+            </Pressable>
+          )}
         </View>
       </View>
     ),
-    [activeType, styles],
+    [search, colors, styles],
   );
 
   const ListEmpty = useMemo(
@@ -151,15 +166,17 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         </View>
         <Text style={styles.emptyTitle}>No categories</Text>
         <Text style={styles.emptyText}>
-          {`No ${activeType === 'DR' ? 'expense' : activeType === 'CR' ? 'income' : 'transfer'} categories yet.`}
+          {search.trim() ? `No results for "${search.trim()}"` : 'No categories yet.'}
         </Text>
-        <BentoPressable style={styles.emptyBtn} onPress={handleCreate}>
-          <HugeiconsIcon icon={PlusSignIcon} size={15} color={colors.primaryForeground} />
-          <Text style={styles.emptyBtnText}>Create one</Text>
-        </BentoPressable>
+        {!search.trim() && (
+          <BentoPressable style={styles.emptyBtn} onPress={handleCreate}>
+            <HugeiconsIcon icon={PlusSignIcon} size={15} color={colors.primaryForeground} />
+            <Text style={styles.emptyBtnText}>Create one</Text>
+          </BentoPressable>
+        )}
       </View>
     ),
-    [activeType, colors, handleCreate, styles],
+    [search, colors, handleCreate, styles],
   );
 
   return (
@@ -174,16 +191,15 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
           data={filtered}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
-          numColumns={2}
           ListHeaderComponent={ListHeader}
           ListEmptyComponent={ListEmpty}
-          columnWrapperStyle={styles.row}
-          contentContainerStyle={styles.grid}
+          contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
           initialNumToRender={16}
           maxToRenderPerBatch={12}
           windowSize={5}
           removeClippedSubviews={true}
+          keyboardShouldPersistTaps="handled"
         />
       )}
 
@@ -236,43 +252,32 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: T
       marginTop: 60,
     },
 
-    /* ── Grid ── */
-    grid: {
+    /* ── List ── */
+    list: {
       paddingHorizontal: layout.screenPadding,
       paddingBottom: insets.bottom > 0 ? insets.bottom + 90 : 100,
-      gap: spacing('3'),
-    },
-    row: {
-      gap: spacing('3'),
     },
 
-    /* ── List header (tabs) ── */
+    /* ── List header (search) ── */
     listHeader: {
       paddingBottom: spacing('3'),
+      paddingTop: spacing('1'),
     },
-    typeTabs: {
+    searchBar: {
       flexDirection: 'row',
-      gap: spacing('2'),
-      width: '100%',
-    },
-    typeTab: {
-      flex: 1,
-      height: 36,
-      borderRadius: radius('full'),
-      backgroundColor: colors.surface,
       alignItems: 'center',
-      justifyContent: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      paddingHorizontal: spacing('3.5'),
+      gap: spacing('2'),
+      height: 44,
     },
-    typeTabActive: {
-      backgroundColor: colors.primary + '18',
-    },
-    typeTabText: {
-      fontFamily: typography.styles.chipLabel.fontFamily,
-      fontSize: typography.sizes.sm,
-      color: colors.textMuted,
-    },
-    typeTabTextActive: {
-      color: colors.primary,
+    searchInput: {
+      flex: 1,
+      fontFamily: typography.fonts.regular,
+      fontSize: 14,
+      color: colors.text,
+      paddingVertical: 0,
     },
 
     /* ── Empty ── */
@@ -310,7 +315,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: T
       height: 38,
       paddingHorizontal: spacing('4'),
       borderRadius: radius('lg'),
-      backgroundColor: colors.text,
+      backgroundColor: colors.primary,
       marginTop: spacing('2'),
     },
     emptyBtnText: {
