@@ -12,7 +12,6 @@ import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { EdgeInsets, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
-import { TransactionSummaryCard } from '../components/TransactionSummaryCard';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
@@ -26,6 +25,7 @@ import { AdvancedFilterService, AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from
 import { AdvancedFilterBottomSheet } from '../../filters/components/AdvancedFilterBottomSheet';
 import { usePersons } from '../../persons/hooks/persons';
 import type { TransactionListItem } from '../api/transactions';
+import { TransactionSummaryCard } from '../components/TransactionSummaryCard';
 import {
   useDeleteTransaction,
   useInfiniteTransactions,
@@ -1017,7 +1017,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
     },
     chipsScroll: {
       gap: spacing('1.5'),
-      paddingHorizontal: layout.screenPadding,
+      // paddingHorizontal: layout.screenPadding,
       paddingBottom: spacing('1'),
     },
     chip: {
