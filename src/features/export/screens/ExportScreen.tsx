@@ -208,7 +208,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
                 <View style={styles.sep} />
                 <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(acc.id)} scaleOnPress={false}>
                   <View style={styles.accRow}>
-                    <IconAvatar icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)} color={c} variant="solid" size={24} iconSize={11} />
+                    <IconAvatar icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)} color={c} variant="subtle" size={24} iconSize={11} />
                     <Text style={styles.cardRowText}>{acc.name}</Text>
                   </View>
                   {selected ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}

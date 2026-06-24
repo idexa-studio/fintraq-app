@@ -386,7 +386,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                         <IconAvatar
                           icon={resolveIcon(cat.icon, Tag01Icon)}
                           color={accent}
-                          variant="solid"
+                          variant="subtle"
                           size={28}
                           iconSize={13}
                         />
@@ -467,7 +467,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                       <IconAvatar
                         icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)}
                         color={acc.hex}
-                        variant="solid"
+                        variant="subtle"
                         size={28}
                         iconSize={13}
                       />

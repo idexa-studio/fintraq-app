@@ -1,6 +1,7 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { TransactionRow } from '@/src/components/ui/TransactionRow';
@@ -9,12 +10,13 @@ import { usePersonWithStats, useTransactionsByPerson, useDeletePerson } from '@/
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';
 import { useLoansByPerson } from '@/src/features/loans/hooks/loans';
-import { LoanCard } from '@/src/features/loans/components/LoanCard';
+import { LoanStatusBadge } from '@/src/features/loans/components/LoanStatusBadge';
 import type { LoanWithStats } from '@/src/features/loans/api/loans';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { Call02Icon, Delete01Icon, Mail01Icon, PencilEdit01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
+import { ArrowDown01Icon, ArrowUp01Icon, Call02Icon, Delete01Icon, Mail01Icon, PencilEdit01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { format } from 'date-fns';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -145,7 +147,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {/* Hero card */}
         <View style={styles.heroCard}>
           <View style={styles.heroTop}>
-            <PersonAvatar name={person.name} color={hex} size={60} variant="solid" />
+            <PersonAvatar name={person.name} color={hex} size={60} variant="subtle" />
             <View style={styles.heroInfo}>
               <Text style={[styles.heroName, { fontFamily: typography.styles.profileName.fontFamily, color: colors.text }]}>
                 {person.name}
@@ -212,17 +214,59 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {/* Loans */}
         {activeLoans.length > 0 && (
           <View style={[styles.txSection, { marginBottom: spacing('4') }]}>
-            <Text style={styles.txTitle}>Active loans</Text>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.txTitle}>Active loans</Text>
+              <View style={[styles.countBadge, { backgroundColor: colors.primary + '18' }]}>
+                <Text style={[styles.countBadgeText, { color: colors.primary }]}>{activeLoans.length}</Text>
+              </View>
+            </View>
             <View style={styles.loansCard}>
-              {activeLoans.map((loan, i) => (
-                <LoanCard
-                  key={loan.id}
-                  loan={loan}
-                  onPress={handleLoanPress}
-                  compact
-                  isLast={i === activeLoans.length - 1}
-                />
-              ))}
+              {activeLoans.map((loan, i) => {
+                const isLend = loan.type === 'lend';
+                const isOverdue = loan.computedStatus === 'overdue';
+                const typeColor = isLend ? colors.success : colors.danger;
+                return (
+                  <React.Fragment key={loan.id}>
+                    <BentoPressable style={styles.loanRow} onPress={() => handleLoanPress(loan)}>
+                      <IconAvatar
+                        icon={isLend ? ArrowUp01Icon : ArrowDown01Icon}
+                        color={typeColor}
+                        variant="subtle"
+                        size={40}
+                        iconSize={18}
+                      />
+                      <View style={styles.loanMeta}>
+                        <Text style={[styles.loanLabel, { color: colors.text }]} numberOfLines={1}>
+                          {isLend ? 'Lent' : 'Borrowed'} · {loan.accountName}
+                        </Text>
+                        {loan.dueDate ? (
+                          <Text style={[styles.loanHint, { color: isOverdue ? colors.danger : colors.textMuted }]} numberOfLines={1}>
+                            Due {format(new Date(loan.dueDate), 'MMM d, yyyy')}
+                          </Text>
+                        ) : loan.note ? (
+                          <Text style={[styles.loanHint, { color: colors.textMuted }]} numberOfLines={1}>
+                            {loan.note}
+                          </Text>
+                        ) : null}
+                      </View>
+                      <View style={styles.loanRight}>
+                        <MoneyText
+                          amount={loan.outstanding}
+                          currency={loan.currency}
+                          type={isLend ? 'CR' : 'DR'}
+                          weight="semibold"
+                          compact
+                          style={styles.loanAmount}
+                        />
+                        <LoanStatusBadge status={loan.computedStatus} />
+                      </View>
+                    </BentoPressable>
+                    {i < activeLoans.length - 1 && (
+                      <View style={[styles.rowDivider, { backgroundColor: colors.border }]} />
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </View>
           </View>
         )}
@@ -338,17 +382,56 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     statValue: { fontSize: 14 },
     statPlain: { fontSize: 18 },
 
+    sectionHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('2'),
+      marginBottom: spacing('2'),
+    },
+    countBadge: {
+      borderRadius: radius('full'),
+      paddingHorizontal: spacing('2'),
+      paddingVertical: 2,
+    },
+    countBadgeText: {
+      fontFamily: typography.styles.chipLabel.fontFamily,
+      fontSize: typography.sizes.xs,
+    },
     loansCard: {
       backgroundColor: colors.surface,
       borderRadius: radius('2xl'),
+      overflow: 'hidden',
+    },
+    loanRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('3'),
       paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3'),
+    },
+    loanMeta: { flex: 1, gap: spacing('0.5') },
+    loanLabel: {
+      fontFamily: typography.styles.rowLabel.fontFamily,
+      fontSize: typography.sizes.sm,
+    },
+    loanHint: {
+      fontFamily: typography.styles.rowMeta.fontFamily,
+      fontSize: typography.sizes.xs,
+    },
+    loanRight: {
+      alignItems: 'flex-end',
+      gap: spacing('1'),
+    },
+    loanAmount: { fontSize: typography.sizes.md },
+    rowDivider: {
+      height: StyleSheet.hairlineWidth,
+      marginLeft: spacing('4') + 40 + spacing('3'),
     },
     txSection: { paddingHorizontal: layout.screenPadding },
     txTitle: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
-      marginBottom: spacing('2'),
     },
     emptyTx: { alignItems: 'center', paddingVertical: spacing('9'), gap: spacing('2') },
     emptyTxText: { fontSize: typography.sizes.sm },

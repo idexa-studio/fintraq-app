@@ -341,7 +341,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                       style={[styles.pill, { backgroundColor: sel ? pc + '18' : colors.card }]}
                       onPress={() => togglePerson(p.id)}
                     >
-                      <PersonAvatar name={p.name} color={pc} size={16} variant="solid" />
+                      <PersonAvatar name={p.name} color={pc} size={16} variant="subtle" />
                       <Text style={[styles.pillLabel, { color: sel ? pc : colors.text }]}>
                         {p.name.split(' ')[0]}
                       </Text>

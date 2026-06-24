@@ -257,11 +257,27 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
         {/* ── Hero card ── */}
-        <View style={[styles.heroCard, { backgroundColor: typeColor + '10' }]}>
-          <IconAvatar icon={categoryIcon} color={categoryColor} variant="solid" size={56} iconSize={26} />
+        <View style={[styles.heroCard, { backgroundColor: colors.surface }]}>
+          <View style={styles.heroTop}>
+            <IconAvatar icon={categoryIcon} color={categoryColor} variant="subtle" size={56} iconSize={26} />
+            <View style={styles.heroMeta}>
+              <Text style={styles.heroName} numberOfLines={2}>{displayTitle}</Text>
+              <View style={styles.heroBadgeRow}>
+                <View style={[styles.typeBadge, { backgroundColor: typeColor + '18' }]}>
+                  <Text style={[styles.typeBadgeText, { color: typeColor }]}>
+                    {TYPE_LABELS[tx.type]}
+                  </Text>
+                </View>
+                <View style={[styles.typeBadge, { backgroundColor: colors.text + '0C' }]}>
+                  <Text style={[styles.typeBadgeText, { color: colors.textMuted }]}>
+                    {tx.account.currency}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
 
-          <Text style={styles.heroTitle} numberOfLines={2}>{displayTitle}</Text>
-
+          <Text style={styles.amountLabel}>Amount</Text>
           <MoneyText
             amount={tx.amount}
             currency={tx.account.currency}
@@ -269,12 +285,6 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
             weight="bold"
             style={styles.heroAmount}
           />
-
-          <View style={[styles.typeBadge, { backgroundColor: typeColor + '18' }]}>
-            <Text style={[styles.typeBadgeText, { color: typeColor }]}>
-              {TYPE_LABELS[tx.type]}
-            </Text>
-          </View>
         </View>
 
         {/* ── Detail rows ── */}
@@ -487,15 +497,35 @@ const createStyles = (
     heroCard: {
       marginHorizontal: layout.screenPadding,
       borderRadius: radius('2xl'),
-      padding: spacing('6'),
+      paddingHorizontal: spacing('5'),
+      paddingTop: spacing('5'),
+      paddingBottom: spacing('5'),
+      gap: spacing('3'),
+    },
+    heroTop: {
+      flexDirection: 'row',
       alignItems: 'center',
+      gap: spacing('4'),
+    },
+    heroMeta: {
+      flex: 1,
       gap: spacing('2'),
     },
-    heroTitle: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
+    heroName: {
+      fontFamily: typography.styles.profileName.fontFamily,
       fontSize: typography.sizes.lg,
       color: colors.text,
-      textAlign: 'center',
+      lineHeight: 22,
+    },
+    heroBadgeRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing('1.5'),
+    },
+    amountLabel: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
       marginTop: spacing('1'),
     },
     heroAmount: {

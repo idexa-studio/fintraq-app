@@ -149,7 +149,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
             onPress={() => setShowIconPicker(true)}
           >
             <View style={styles.heroTop}>
-              <IconAvatar icon={resolvedIcon} color={colorHex} variant="solid" size={72} iconSize={32} />
+              <IconAvatar icon={resolvedIcon} color={colorHex} variant="subtle" size={72} iconSize={32} />
               <View style={styles.heroMeta}>
                 <Text style={styles.heroName} numberOfLines={1}>
                   {categoryName.trim() || 'Category name'}

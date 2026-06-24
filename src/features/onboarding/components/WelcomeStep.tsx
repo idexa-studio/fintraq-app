@@ -39,7 +39,7 @@ export const WelcomeStep = React.memo(function WelcomeStep() {
         const accent = colors[f.colorKey];
         return (
           <View key={f.label} style={styles.card}>
-            <IconAvatar icon={f.icon} color={accent} variant="solid" size={48} iconSize={22} />
+            <IconAvatar icon={f.icon} color={accent} variant="subtle" size={48} iconSize={22} />
             <View style={styles.text}>
               <Text style={[styles.label, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
                 {f.label}
