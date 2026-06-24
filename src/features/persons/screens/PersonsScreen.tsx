@@ -8,11 +8,11 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { WalkthroughOverlay, PERSONS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { StorageKeys } from '@/src/constants/keys';
-import { CancelCircleIcon, LockPasswordIcon, PlusSignIcon, Search01Icon, UserGroupIcon } from '@hugeicons/core-free-icons';
+import { AlertCircleIcon, CancelCircleIcon, LockPasswordIcon, PlusSignIcon, Search01Icon, UserGroupIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
@@ -86,13 +86,13 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
       )}
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {!isPremium && (
-          <View style={styles.limitBanner}>
-            <HugeiconsIcon icon={UserGroupIcon} size={16} color={colors.textMuted} />
-            <Text style={[styles.limitText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              {persons.length}/{FREE_PERSON_LIMIT} persons — upgrade for unlimited
+        {atLimit && (
+          <Pressable style={styles.limitBanner} onPress={() => router.push('/premium')}>
+            <HugeiconsIcon icon={AlertCircleIcon} size={16} color={colors.warning} />
+            <Text style={[styles.limitText, { fontFamily: typography.fonts.medium, color: colors.warning }]}>
+              Free plan: {FREE_PERSON_LIMIT} persons max — upgrade for unlimited
             </Text>
-          </View>
+          </Pressable>
         )}
 
         {filtered.length > 0 && (
@@ -198,13 +198,14 @@ const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: T
     limitBanner: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('1.5'),
-      backgroundColor: colors.surface,
+      gap: spacing('2'),
+      backgroundColor: colors.warning + '18',
       borderRadius: radius('xl'),
-      padding: spacing('3'),
+      paddingHorizontal: spacing('3.5'),
+      paddingVertical: spacing('2.5'),
       marginBottom: spacing('3'),
     },
-    limitText: { fontSize: typography.sizes.xs },
+    limitText: { flex: 1, fontSize: typography.sizes.xs },
  
     group: {
       marginBottom: spacing('4'),

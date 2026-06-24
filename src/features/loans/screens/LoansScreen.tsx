@@ -1,19 +1,22 @@
-import { HandshakeIcon, PlusSignIcon } from '@hugeicons/core-free-icons';
+import { AlertCircleIcon, ArrowDown01Icon, ArrowUp01Icon, HandshakeIcon, PlusSignIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
 import { Header } from '../../../components/ui/Header';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { useAccounts } from '../../accounts/hooks/accounts';
+import { usePremium } from '../../../providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { DEFAULT_CURRENCY } from '../../../constants/currency';
 import type { LoanWithStats } from '../api/loans';
 import { LoanCard } from '../components/LoanCard';
-import { useLoans } from '../hooks/loans';
+import { useLoans, useLoansCount } from '../hooks/loans';
+
+const FREE_LOAN_LIMIT = 3;
 
 type Tab = 'lend' | 'borrow';
 
@@ -23,10 +26,14 @@ export const LoansScreen = React.memo(function LoansScreen() {
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const router = useRouter();
+  const { isPremium } = usePremium();
 
   const { data: accounts } = useAccounts();
   const { data: lentLoans } = useLoans('lend');
   const { data: borrowedLoans } = useLoans('borrow');
+  const { data: activeLoansCount } = useLoansCount();
+
+  const atFreeLimit = !isPremium && (activeLoansCount ?? 0) >= FREE_LOAN_LIMIT;
 
   const [activeTab, setActiveTab] = useState<Tab>('lend');
 
@@ -65,11 +72,15 @@ export const LoansScreen = React.memo(function LoansScreen() {
   }, [router]);
 
   const handleAdd = useCallback(() => {
+    if (atFreeLimit) {
+      router.push('/premium');
+      return;
+    }
     router.push({
       pathname: '/(main)/loans/form',
       params: { type: activeTab },
     });
-  }, [router, activeTab]);
+  }, [router, activeTab, atFreeLimit]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -77,6 +88,16 @@ export const LoansScreen = React.memo(function LoansScreen() {
       <Header title="Loans" showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        {/* Limit banner */}
+        {atFreeLimit && (
+          <Pressable style={styles.limitBanner} onPress={() => router.push('/premium')}>
+            <HugeiconsIcon icon={AlertCircleIcon} size={16} color={colors.warning} />
+            <Text style={[styles.limitBannerText, { color: colors.warning }]}>
+              Free plan: {FREE_LOAN_LIMIT} active loans max — upgrade for unlimited
+            </Text>
+          </Pressable>
+        )}
+
         {/* Currency tabs */}
         {currencies.length > 1 && (
           <View style={styles.currencyRow}>
@@ -111,24 +132,28 @@ export const LoansScreen = React.memo(function LoansScreen() {
         </View>
 
         {/* Tabs */}
-        <View style={styles.tabRow}>
+        <View style={styles.tabSegment}>
           {(['lend', 'borrow'] as Tab[]).map(tab => {
             const isActive = activeTab === tab;
+            const isLend = tab === 'lend';
+            const activeColor = isLend ? colors.success : colors.danger;
+            const count = isLend ? activeLent.length : activeBorow.length;
             return (
               <BentoPressable
                 key={tab}
-                style={[styles.tab, isActive && styles.tabActive]}
+                style={[styles.tabSegmentBtn, isActive && { backgroundColor: activeColor + '14' }]}
                 onPress={() => setActiveTab(tab)}
               >
-                <Text style={[
-                  styles.tabText,
-                  isActive && {
-                    color: colors.primary,
-                    fontFamily: typography.styles.chipLabelActive.fontFamily,
-                  }
-                ]}>
-                  {tab === 'lend' ? `Lent (${activeLent.length})` : `Borrowed (${activeBorow.length})`}
-                </Text>
+                <View style={styles.tabSegmentContent}>
+                  <HugeiconsIcon
+                    icon={isLend ? ArrowUp01Icon : ArrowDown01Icon}
+                    size={15}
+                    color={isActive ? activeColor : colors.textMuted}
+                  />
+                  <Text style={[styles.tabSegmentText, { color: isActive ? activeColor : colors.textMuted }]}>
+                    {isLend ? 'Lent' : 'Borrowed'} ({count})
+                  </Text>
+                </View>
               </BentoPressable>
             );
           })}
@@ -194,13 +219,28 @@ export const LoansScreen = React.memo(function LoansScreen() {
   );
 });
 
-const createStyles = ({ colors, spacing, radius, shadow, layout, typography }: ThemeContextType, insets: { bottom: number }) =>
+const createStyles = ({ colors, spacing, radius, shadow, layout, typography, sizes }: ThemeContextType, insets: { bottom: number }) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
       paddingBottom: insets.bottom > 0 ? insets.bottom + 80 + 24 : 110,
+    },
+    limitBanner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('2'),
+      backgroundColor: colors.warning + '18',
+      borderRadius: radius('xl'),
+      paddingHorizontal: spacing('3.5'),
+      paddingVertical: spacing('2.5'),
+      marginBottom: spacing('3'),
+    },
+    limitBannerText: {
+      flex: 1,
+      fontFamily: typography.fonts.medium,
+      fontSize: typography.sizes.xs,
     },
     currencyRow: { flexDirection: 'row', gap: spacing('2'), marginBottom: spacing('3') },
     currencyPill: {
@@ -231,27 +271,31 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography }: T
     summaryAmount: {
       fontSize: typography.sizes.xxl,
     },
-    tabRow: {
+    tabSegment: {
       flexDirection: 'row',
-      gap: spacing('2'),
-      width: '100%',
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      padding: spacing('1'),
+      gap: spacing('1'),
+      height: sizes.button.md.height,
+      alignItems: 'center',
       marginBottom: spacing('3'),
     },
-    tab: {
+    tabSegmentBtn: {
       flex: 1,
-      height: 36,
-      borderRadius: radius('full'),
-      backgroundColor: colors.surface,
+      height: '100%',
+      borderRadius: radius('lg'),
       alignItems: 'center',
       justifyContent: 'center',
     },
-    tabActive: {
-      backgroundColor: colors.primary + '18',
+    tabSegmentContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1.5'),
     },
-    tabText: {
+    tabSegmentText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
       fontSize: typography.sizes.sm,
-      color: colors.textMuted,
     },
     empty: {
       paddingTop: 60,
