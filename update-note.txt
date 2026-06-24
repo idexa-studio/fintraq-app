@@ -1,3 +1,17 @@
+Analytics Overhaul
+- Period comparison badges show if income/expenses went up or down vs the previous period.
+- Highlights section surfaces your top expense category and single biggest expense — tap either to drill into transactions.
+- Category breakdown now has Expenses / Income tabs so you can switch views instantly.
+- Day-of-week chart includes an auto-generated insight (e.g. "Spend most on Friday, least on Sunday").
+- Spending patterns shows your daily average spend and a month-end forecast.
+
+CSV Export
+- New "Include loans" toggle exports all loan records as a separate section in the CSV file.
+
+Accounts
+- Currency is now locked on existing accounts to prevent data inconsistency.
+- Delete is disabled for accounts that have linked transactions or loans — remove them first.
+
 Loans & Borrowings
 - Track money you lend to others or borrow from someone — all in one place.
 - Set due dates with automatic reminders so you never miss a repayment.
@@ -14,6 +28,7 @@ Category Improvements
 - Filter categories by type (income / expense / transfer) in the category list.
 
 UI & Polish
+- Refreshed analytics screen with premium card layout and improved visual hierarchy.
 - Refreshed transaction detail screen with a cleaner hero layout.
 - Consistent icon style throughout the app.
 - Smoother premium upsell flow when free limits are reached.

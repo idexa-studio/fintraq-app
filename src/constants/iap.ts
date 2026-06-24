@@ -2,11 +2,10 @@ import {
   BarChartIcon,
   ChartLineData01Icon,
   Download01Icon,
-  FilterIcon,
-  Infinity01Icon,
   PieChart01Icon,
   Search01Icon,
   SparklesIcon,
+  TrendUp01Icon,
 } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import { Platform } from 'react-native';
@@ -33,22 +32,22 @@ export const FEATURES: ProFeature[] = [
   {
     icon: ChartLineData01Icon,
     title: 'Extended analytics',
-    description: '30-day, 90-day, and 12-month charts. 7-day view is always free.',
+    description: 'Unlock 30-day, 90-day, and 12-month views with delta badges comparing against the previous period.',
   },
   {
-    icon: FilterIcon,
-    title: 'Period flow',
-    description: 'Side-by-side income vs expense bars to see how your money moves over time.',
+    icon: SparklesIcon,
+    title: 'Highlights',
+    description: 'Instantly see your top expense category and single biggest expense. Tap to drill into transactions.',
   },
   {
     icon: PieChart01Icon,
     title: 'Category breakdown',
-    description: 'Donut chart of your top spending categories with exact amounts and percentages.',
+    description: 'Expense and income tabs with a proportion bar and per-category amounts and percentages.',
   },
   {
-    icon: Infinity01Icon,
-    title: 'Behavioral insights',
-    description: 'Daily burn rate, financial runway in days, in/out ratio, and active day count.',
+    icon: TrendUp01Icon,
+    title: 'Spending forecast',
+    description: 'Daily average spend and a month-end projection based on your current burn rate.',
   },
   {
     icon: Search01Icon,
@@ -57,12 +56,12 @@ export const FEATURES: ProFeature[] = [
   },
   {
     icon: BarChartIcon,
-    title: 'Weekday patterns',
-    description: 'Heatmap showing which days of the week you spend the most.',
+    title: 'Weekly pattern',
+    description: 'Bar chart showing which days you spend most, with an auto-generated spending insight.',
   },
   {
     icon: Download01Icon,
     title: 'CSV export',
-    description: 'Export filtered transactions as a spreadsheet. Save to device or share to any app.',
+    description: 'Export transactions and loan records as a spreadsheet. Save to device or share to any app.',
   },
 ];
