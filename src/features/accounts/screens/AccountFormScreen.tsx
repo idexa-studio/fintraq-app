@@ -205,10 +205,11 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                 return (
                   <Pressable
                     key={opt.value}
-                    onPress={() => setAccountType(opt.value)}
+                    onPress={isEditing ? undefined : () => setAccountType(opt.value)}
                     style={[
                       styles.typeChip,
                       isSelected && { backgroundColor: colors.primary },
+                      isEditing && !isSelected && styles.balanceInputDisabled,
                     ]}
                   >
                     <HugeiconsIcon
