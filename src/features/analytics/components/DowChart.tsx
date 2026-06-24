@@ -49,7 +49,7 @@ export const DowChart = React.memo(function DowChart({ data }: Props) {
 const createStyles = ({ colors, spacing, typography }: ThemeContextType) => StyleSheet.create({
   row: {
     flexDirection: 'row',
-    height: 80,
+    height: 120,
     alignItems: 'flex-end',
     gap: spacing('1.5'),
   },
