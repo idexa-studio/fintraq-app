@@ -5,9 +5,10 @@ import {
   ChartLineData01Icon,
   CheckmarkCircle01Icon,
   CrownIcon,
-  File01Icon,
-  Rocket01Icon,
+  Download01Icon,
   Search01Icon,
+  SparklesIcon,
+  TrendingUpDownIcon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import type { IconSvgElement } from '@hugeicons/react-native';
@@ -23,10 +24,11 @@ type PremiumUpsellModalProps = {
 const BLOCK = 5;
 
 const PRO_FEATURES: { icon: IconSvgElement; label: string }[] = [
-  { icon: ChartLineData01Icon, label: 'Spending trends & burn velocity' },
-  { icon: Rocket01Icon,        label: 'Runway forecasts & metrics' },
+  { icon: ChartLineData01Icon, label: 'Spending trends & period deltas' },
+  { icon: SparklesIcon,        label: 'Highlights & spending forecast' },
   { icon: Search01Icon,        label: 'Global search across all data' },
-  { icon: File01Icon,          label: 'CSV export & weekly/monthly reports' },
+  { icon: Download01Icon,      label: 'CSV export with loans data' },
+  { icon: TrendingUpDownIcon,       label: 'Extended 30 / 90 / 365-day analytics' },
 ];
 
 export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
