@@ -14,7 +14,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-nat
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
-import { DEFAULT_CURRENCY } from '../../../constants/currency';
+import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '../../../constants/currency';
 import { StorageKeys } from '../../../constants/keys';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
@@ -94,8 +94,9 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   const currencyKeys = useMemo(() => {
     const keys = Object.keys(balancesByCurrency);
-    return keys.length > 0 ? keys : [DEFAULT_CURRENCY];
-  }, [balancesByCurrency]);
+    const list = keys.length > 0 ? keys : [DEFAULT_CURRENCY];
+    return sortCurrenciesWithDefault(list, profile.defaultCurrency);
+  }, [balancesByCurrency, profile.defaultCurrency]);
 
   const [selectedCurrency, setSelectedCurrency] = React.useState<string>(currencyKeys[0]);
 

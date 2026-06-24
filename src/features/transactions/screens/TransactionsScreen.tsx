@@ -16,7 +16,9 @@ import { TransactionSummaryCard } from '../components/TransactionSummaryCard';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
+import { sortCurrenciesWithDefault } from '../../../constants/currency';
 import { StorageKeys } from '../../../constants/keys';
+import { useSettings } from '../../../providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
@@ -212,53 +214,52 @@ const SwipeableRow = React.memo(function SwipeableRow({
 
 interface FilterChipProps {
   label: string;
-  isActive: boolean;
+  icon?: IconSvgElement;
   onPress: () => void;
   onClear?: () => void;
-  showChevron?: boolean;
+  isClearAll?: boolean;
 }
 
 const FilterChip = React.memo(function FilterChip({
   label,
-  isActive,
+  icon,
   onPress,
   onClear,
-  showChevron = true,
+  isClearAll = false,
 }: FilterChipProps) {
   const theme = useTheme();
-  const { colors, spacing, isDark } = theme;
+  const { colors, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const tintColor = isDark ? colors.primaryLight : colors.primaryDark;
+  if (isClearAll) {
+    return (
+      <BentoPressable onPress={onPress} style={styles.clearAllChip} scaleOnPress={false}>
+        <HugeiconsIcon icon={CancelCircleIcon} size={12} color={colors.textMuted} />
+        <Text style={styles.clearAllText}>{label}</Text>
+      </BentoPressable>
+    );
+  }
 
   return (
-    <View style={[styles.chip, isActive ? styles.chipActive : styles.chipInactive]}>
+    <View style={styles.chip}>
       <BentoPressable
         onPress={onPress}
-        style={[
-          styles.chipButton,
-          isActive ? { paddingLeft: spacing('2.5'), paddingRight: spacing('1') } : { paddingHorizontal: spacing('3') }
-        ]}
+        style={[styles.chipButton, { paddingLeft: spacing('2.5'), paddingRight: onClear ? spacing('1') : spacing('2.5') }]}
         scaleOnPress={false}
       >
-        {isActive && (
-          <HugeiconsIcon icon={FilterIcon} size={13} color={tintColor} style={{ marginRight: spacing('1') }} />
+        {icon && (
+          <HugeiconsIcon icon={icon} size={12} color={colors.primary} style={{ marginRight: spacing('1') }} />
         )}
-        <Text style={isActive ? styles.chipTextActive : styles.chipTextInactive}>
-          {label}
-        </Text>
-        {!isActive && showChevron && (
-          <HugeiconsIcon icon={SortingDownIcon} size={13} color={colors.textMuted} style={{ marginLeft: spacing('1') }} />
-        )}
+        <Text style={styles.chipText}>{label}</Text>
       </BentoPressable>
-      {isActive && onClear && (
+      {onClear && (
         <BentoPressable
           onPress={onClear}
           style={styles.chipCloseBtn}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           scaleOnPress={false}
         >
-          <HugeiconsIcon icon={CancelCircleIcon} size={13} color={tintColor} />
+          <HugeiconsIcon icon={CancelCircleIcon} size={13} color={colors.primary} />
         </BentoPressable>
       )}
     </View>
@@ -276,6 +277,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   const { colors } = theme;
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
+  const { profile } = useSettings();
 
   // Advanced filters state
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(() => {
@@ -407,7 +409,10 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     return map;
   }, [needsClientSide, dbTotals, transactions]);
 
-  const kpiCurrencies = useMemo(() => Object.keys(kpiTotalsByCurrency), [kpiTotalsByCurrency]);
+  const kpiCurrencies = useMemo(
+    () => sortCurrenciesWithDefault(Object.keys(kpiTotalsByCurrency), profile.defaultCurrency),
+    [kpiTotalsByCurrency, profile.defaultCurrency],
+  );
 
   const [selectedKpiCurrency, setSelectedKpiCurrency] = useState<string | null>(null);
   useEffect(() => {
@@ -695,24 +700,33 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
               label={summaryLabel}
             />
 
-            {/* ── Active filter chips ── */}
-            {activeFilterCount > 0 && (
+            {/* ── Active filter + sort chips ── */}
+            {(activeFilterCount > 0 || isSortActive) && (
               <View style={styles.chipsScrollContainer}>
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.chipsScroll}
                 >
-                  <FilterChip
-                    label="Clear all"
-                    isActive={true}
-                    onPress={handleResetFilters}
-                    showChevron={false}
-                  />
+                  {activeFilterCount > 0 && (
+                    <FilterChip
+                      label="Clear all"
+                      onPress={handleResetFilters}
+                      isClearAll
+                    />
+                  )}
+                  {isSortActive && (
+                    <FilterChip
+                      label={sortLabel}
+                      icon={SortingDownIcon}
+                      onPress={handleOpenSort}
+                      onClear={handleResetSort}
+                    />
+                  )}
                   {activeTypesCount > 0 && (
                     <FilterChip
                       label={typeLabel}
-                      isActive={true}
+                      icon={FilterIcon}
                       onPress={handleOpenFilter}
                       onClear={clearTypes}
                     />
@@ -720,7 +734,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {activeAccountsCount > 0 && (
                     <FilterChip
                       label={accountLabel}
-                      isActive={true}
+                      icon={FilterIcon}
                       onPress={handleOpenFilter}
                       onClear={clearAccounts}
                     />
@@ -728,7 +742,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {activeCategoriesCount > 0 && (
                     <FilterChip
                       label={categoryLabel}
-                      isActive={true}
+                      icon={FilterIcon}
                       onPress={handleOpenFilter}
                       onClear={clearCategories}
                     />
@@ -736,7 +750,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {activePersonsCount > 0 && (
                     <FilterChip
                       label={personLabel}
-                      isActive={true}
+                      icon={FilterIcon}
                       onPress={handleOpenFilter}
                       onClear={clearPersons}
                     />
@@ -744,7 +758,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {isDateActive && (
                     <FilterChip
                       label={dateLabel}
-                      isActive={true}
+                      icon={FilterIcon}
                       onPress={handleOpenFilter}
                       onClear={clearDateRange}
                     />
@@ -752,7 +766,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {isAmountActive && (
                     <FilterChip
                       label={amountLabel}
-                      isActive={true}
+                      icon={FilterIcon}
                       onPress={handleOpenFilter}
                       onClear={clearAmountRange}
                     />
@@ -1002,21 +1016,17 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       marginBottom: spacing('1'),
     },
     chipsScroll: {
-      gap: spacing('2'),
-      paddingBottom: spacing('1.5'),
+      gap: spacing('1.5'),
+      paddingHorizontal: layout.screenPadding,
+      paddingBottom: spacing('1'),
     },
     chip: {
       flexDirection: 'row',
       alignItems: 'center',
       borderRadius: radius('full'),
       height: 30,
+      backgroundColor: colors.primary + '1A',
       overflow: 'hidden',
-    },
-    chipInactive: {
-      backgroundColor: colors.surface,
-    },
-    chipActive: {
-      backgroundColor: colors.primaryLight,
     },
     chipButton: {
       flexDirection: 'row',
@@ -1025,19 +1035,29 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
     },
     chipCloseBtn: {
       paddingRight: spacing('2.5'),
-      paddingLeft: spacing('1.5'),
+      paddingLeft: spacing('1'),
       height: '100%',
       justifyContent: 'center',
       alignItems: 'center',
     },
-    chipTextInactive: {
+    chipText: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 11.5,
+      color: colors.primary,
+    },
+    clearAllChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 30,
+      paddingHorizontal: spacing('2.5'),
+      borderRadius: radius('full'),
+      backgroundColor: colors.surface,
+      gap: spacing('1'),
+      overflow: 'hidden',
+    },
+    clearAllText: {
       fontFamily: typography.fonts.medium,
       fontSize: 11.5,
       color: colors.textMuted,
-    },
-    chipTextActive: {
-      fontFamily: typography.styles.chipLabelActive.fontFamily,
-      fontSize: 11.5,
-      color: isDark ? colors.primaryLight : colors.primaryDark,
     },
   });

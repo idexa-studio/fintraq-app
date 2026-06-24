@@ -191,3 +191,9 @@ export const CURRENCY_SYMBOLS: Record<string, string> = CURRENCIES.reduce((acc, 
 export const getCurrencySymbol = (currencyCode: string): string => {
   return CURRENCY_SYMBOLS[currencyCode?.toUpperCase()] || '';
 };
+
+/** Sort currencies so defaultCurrency is always first; rest preserve original order. */
+export const sortCurrenciesWithDefault = (currencies: string[], defaultCurrency: string): string[] => {
+  if (!defaultCurrency || !currencies.includes(defaultCurrency)) return currencies;
+  return [defaultCurrency, ...currencies.filter(c => c !== defaultCurrency)];
+};

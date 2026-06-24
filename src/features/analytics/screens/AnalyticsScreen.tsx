@@ -5,7 +5,7 @@ import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
-import { DEFAULT_CURRENCY } from '@/src/constants/currency';
+import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
 import { StorageKeys } from '@/src/constants/keys';
 import { AccountType } from '@/src/types';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
@@ -23,6 +23,7 @@ import {
 } from '@/src/features/analytics/hooks/useAnalyticsData';
 import { ANALYTICS_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
 import { usePremium } from '@/src/providers/PremiumProvider';
+import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
@@ -149,12 +150,14 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
   const router = useRouter();
   const { isPremium } = usePremium();
+  const { profile } = useSettings();
 
   const { data: accounts } = useAccounts();
   const currencyKeys = useMemo(() => {
     const keys = Array.from(new Set((accounts ?? []).map(a => a.currency)));
-    return keys.length > 0 ? keys : [DEFAULT_CURRENCY];
-  }, [accounts]);
+    const list = keys.length > 0 ? keys : [DEFAULT_CURRENCY];
+    return sortCurrenciesWithDefault(list, profile.defaultCurrency);
+  }, [accounts, profile.defaultCurrency]);
 
   const [selectedCurrency, setSelectedCurrency] = React.useState<string>(currencyKeys[0]);
   const [selectedRange, setSelectedRange] = React.useState<RangeDays>(7);
