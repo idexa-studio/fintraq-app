@@ -5,114 +5,35 @@ import { accounts, categories, payments, persons, loans } from '../db/schema';
 import { toDbColor } from './format';
 import { StorageKeys } from '../constants/keys';
 
-// ─── Seed accounts ────────────────────────────────────────────────────────────
+// ─── Seed accounts — 2 per target currency for transfer coverage ──────────────
 
-const SEED_ACCOUNTS = [
-  // USD – multiple accounts, same currency
-  {
-    name: 'Chase Checking',
-    holderName: 'Alex Morgan',
-    accountNumber: '••••  4821',
-    accountType: 'bank' as const,
-    currency: 'USD',
-    color: toDbColor('#2563EB'),
-    isDefault: true,
-  },
-  {
-    name: 'Chase Savings',
-    holderName: 'Alex Morgan',
-    accountNumber: '••••  7203',
-    accountType: 'savings' as const,
-    currency: 'USD',
-    color: toDbColor('#0EA5E9'),
-    isDefault: false,
-  },
-  {
-    name: 'Amex Gold',
-    holderName: 'Alex Morgan',
-    accountNumber: '••••  5511',
-    accountType: 'credit_card' as const,
-    currency: 'USD',
-    color: toDbColor('#D97706'),
-    isDefault: false,
-  },
-  {
-    name: 'Robinhood',
-    holderName: 'Alex Morgan',
-    accountNumber: 'AMG-9341',
-    accountType: 'investment' as const,
-    currency: 'USD',
-    color: toDbColor('#10B981'),
-    isDefault: false,
-  },
-  // EUR
-  {
-    name: 'Revolut',
-    holderName: 'Alex Morgan',
-    accountNumber: 'REV-EU-0032',
-    accountType: 'ewallet' as const,
-    currency: 'EUR',
-    color: toDbColor('#6D28D9'),
-    isDefault: false,
-  },
-  // GBP
-  {
-    name: 'Monzo',
-    holderName: 'Alex Morgan',
-    accountNumber: '••••  3870',
-    accountType: 'bank' as const,
-    currency: 'GBP',
-    color: toDbColor('#DB2777'),
-    isDefault: false,
-  },
-  // INR – multiple accounts, same currency
-  {
-    name: 'HDFC Bank',
-    holderName: 'Alex Morgan',
-    accountNumber: '••••  9914',
-    accountType: 'bank' as const,
-    currency: 'INR',
-    color: toDbColor('#EA580C'),
-    isDefault: false,
-  },
-  {
-    name: 'Paytm Wallet',
-    holderName: 'Alex Morgan',
-    accountNumber: '+91 98765 43210',
-    accountType: 'ewallet' as const,
-    currency: 'INR',
-    color: toDbColor('#0284C7'),
-    isDefault: false,
-  },
-  // SGD
-  {
-    name: 'DBS Bank',
-    holderName: 'Alex Morgan',
-    accountNumber: '••••  1156',
-    accountType: 'bank' as const,
-    currency: 'SGD',
-    color: toDbColor('#DC2626'),
-    isDefault: false,
-  },
-  // Cash wallet
-  {
-    name: 'Cash Wallet',
-    holderName: 'Alex Morgan',
-    accountNumber: 'CASH',
-    accountType: 'cash' as const,
-    currency: 'USD',
-    color: toDbColor('#059669'),
-    isDefault: false,
-  },
+type AccountTemplate = {
+  name: string; holderName: string; accountNumber: string;
+  accountType: 'bank' | 'savings' | 'credit_card' | 'investment' | 'ewallet' | 'cash';
+  color: number; currency: string;
+};
+
+const SEED_ACCOUNTS: AccountTemplate[] = [
+  // USD — 2 accounts to enable same-currency transfers
+  { name: 'Chase Checking', holderName: 'Alex Morgan', accountNumber: '••••  4821', accountType: 'bank',    color: toDbColor('#2563EB'), currency: 'USD' },
+  { name: 'Chase Savings',  holderName: 'Alex Morgan', accountNumber: '••••  7203', accountType: 'savings', color: toDbColor('#0EA5E9'), currency: 'USD' },
+  // EUR — 2 accounts
+  { name: 'Revolut',        holderName: 'Alex Morgan', accountNumber: 'REV-EU-0032', accountType: 'ewallet', color: toDbColor('#6D28D9'), currency: 'EUR' },
+  { name: 'N26',            holderName: 'Alex Morgan', accountNumber: '••••  8841',  accountType: 'bank',    color: toDbColor('#0EA5E9'), currency: 'EUR' },
+  // INR — 2 accounts
+  { name: 'HDFC Bank',      holderName: 'Alex Morgan', accountNumber: '••••  9914', accountType: 'bank',    color: toDbColor('#EA580C'), currency: 'INR' },
+  { name: 'Paytm Wallet',   holderName: 'Alex Morgan', accountNumber: '+91 98765 43210', accountType: 'ewallet', color: toDbColor('#0284C7'), currency: 'INR' },
 ];
+
+const TARGET_CURRENCIES = ['USD', 'EUR', 'INR'] as const;
 
 // ─── Seed persons ─────────────────────────────────────────────────────────────
 
 const SEED_PERSONS = [
-  { name: 'Sarah Mitchell', email: 'sarah.m@example.com', phone: '+1 555 0101', designation: 'Product Manager', company: 'Acme Corp',  color: toDbColor('#059669') },
-  { name: 'James Okafor',  email: 'james.o@example.com', phone: '+1 555 0102', designation: 'Engineer',         company: 'TechFlow',  color: toDbColor('#2563EB') },
-  { name: 'Priya Nair',    email: 'priya.n@example.com', phone: '+1 555 0103', designation: 'Designer',         company: 'Pixel Lab',  color: toDbColor('#6D28D9') },
-  { name: 'Tom Reyes',     email: 'tom.r@example.com',   phone: '+1 555 0104', designation: 'CFO',              company: 'Reyes Co',   color: toDbColor('#EA580C') },
+  { name: 'Sarah Mitchell', email: 'sarah.m@example.com', phone: '+1 555 0101', designation: 'Product Manager', company: 'Acme Corp', color: toDbColor('#059669') },
+  { name: 'James Okafor',  email: 'james.o@example.com', phone: '+1 555 0102', designation: 'Engineer',        company: 'TechFlow',  color: toDbColor('#2563EB') },
+  { name: 'Priya Nair',    email: 'priya.n@example.com', phone: '+1 555 0103', designation: 'Designer',        company: 'Pixel Lab', color: toDbColor('#6D28D9') },
+  { name: 'Tom Reyes',     email: 'tom.r@example.com',   phone: '+1 555 0104', designation: 'CFO',             company: 'Reyes Co',  color: toDbColor('#EA580C') },
 ] as const;
 
 // ─── Currency scaling ─────────────────────────────────────────────────────────
@@ -124,28 +45,23 @@ const CURRENCY_MULTIPLIERS: Record<string, number> = {
   SGD: 1.35, HKD: 7.82,  CHF: 0.90,  NOK: 10.6,  SEK: 10.4,
 };
 
-// ─── Realistic note pools ─────────────────────────────────────────────────────
+// ─── Note pools ───────────────────────────────────────────────────────────────
 
 const INCOME_NOTES = [
-  'Salary Credit — May',
-  'Freelance Invoice #2041',
-  'Client Payment — Acme Corp',
-  'Dividend Payout',
-  'Consulting Fee',
-  'Bonus — Q2 Performance',
-  'Interest Credit',
-  'Rental Income',
+  'Salary Credit — May', 'Freelance Invoice #2041', 'Client Payment — Acme Corp',
+  'Dividend Payout', 'Consulting Fee', 'Bonus — Q2 Performance',
+  'Interest Credit', 'Rental Income',
 ];
 
 const EXPENSE_NOTES: Record<string, string[]> = {
-  food: ['Whole Foods Market', 'Chipotle', 'Trader Joe\'s', 'McDonald\'s', 'Starbucks', 'Local Bakery', 'Sushi Takeout', 'Pizza Delivery'],
-  transport: ['Uber Ride', 'Lyft', 'Gas Station — Shell', 'Subway Pass', 'Parking Fee', 'Flight Ticket', 'Taxi Fare'],
-  shopping: ['Amazon Purchase', 'Zara', 'IKEA', 'Target', 'Best Buy', 'Apple Store', 'H&M', 'Nike'],
-  utilities: ['Electricity Bill', 'Internet — AT&T', 'Water Bill', 'Phone Bill', 'Gas Bill'],
-  health: ['CVS Pharmacy', 'Gym Membership', 'Doctor Visit Copay', 'Dental Checkup', 'Vitamins & Supplements'],
-  entertainment: ['Netflix Subscription', 'Spotify Premium', 'Movie Tickets', 'Steam Purchase', 'Concert Tickets', 'YouTube Premium'],
-  housing: ['Monthly Rent', 'Airbnb Stay', 'Home Insurance', 'Maintenance & Repairs'],
-  other: ['ATM Withdrawal', 'Bank Fee', 'Miscellaneous', 'Gift for Friend', 'Online Course', 'Donation'],
+  food:          ['Whole Foods Market', 'Chipotle', 'Trader Joe\'s', 'McDonald\'s', 'Starbucks', 'Local Bakery', 'Sushi Takeout', 'Pizza Delivery'],
+  transport:     ['Uber Ride', 'Lyft', 'Gas Station — Shell', 'Subway Pass', 'Parking Fee', 'Flight Ticket', 'Taxi Fare'],
+  shopping:      ['Amazon Purchase', 'Zara', 'IKEA', 'Target', 'Best Buy', 'Apple Store', 'H&M', 'Nike'],
+  utilities:     ['Electricity Bill', 'Internet — AT&T', 'Water Bill', 'Phone Bill', 'Gas Bill'],
+  health:        ['CVS Pharmacy', 'Gym Membership', 'Doctor Visit Copay', 'Dental Checkup', 'Vitamins & Supplements'],
+  entertainment: ['Netflix Subscription', 'Spotify Premium', 'Movie Tickets', 'Steam Purchase', 'Concert Tickets'],
+  housing:       ['Monthly Rent', 'Airbnb Stay', 'Home Insurance', 'Maintenance & Repairs'],
+  other:         ['ATM Withdrawal', 'Bank Fee', 'Miscellaneous', 'Gift for Friend', 'Online Course', 'Donation'],
 };
 
 const ALL_EXPENSE_NOTES = Object.values(EXPENSE_NOTES).flat();
@@ -172,86 +88,37 @@ function randFrom<T>(arr: readonly T[]): T {
 }
 
 function generateSalary(monthDate: Date, ctx: SeedContext) {
-  const base = randInt(3500, 7000);
-  const amount = Math.round(base * ctx.multiplier);
+  const amount = Math.round(randInt(3500, 7000) * ctx.multiplier);
   const date = new Date(monthDate);
   date.setDate(randInt(1, 5));
-  const note = randFrom(INCOME_NOTES);
-
-  return {
-    accountId: ctx.accountId,
-    categoryId: randFrom(ctx.incomeCategories).id,
-    amount,
-    type: 'CR' as const,
-    datetime: date.toISOString(),
-    note,
-  };
+  return { accountId: ctx.accountId, categoryId: randFrom(ctx.incomeCategories).id, amount, type: 'CR' as const, datetime: date.toISOString(), note: randFrom(INCOME_NOTES) };
 }
 
 function generateRent(monthDate: Date, ctx: SeedContext) {
-  const base = randInt(900, 2200);
-  const amount = Math.round(base * ctx.multiplier);
+  const amount = Math.round(randInt(900, 2200) * ctx.multiplier);
   const date = new Date(monthDate);
   date.setDate(1);
-
   const rentCat = ctx.expenseCategories.find(c => {
     const n = c.name.toLowerCase();
     return n.includes('rent') || n.includes('hous') || n.includes('home');
   }) ?? ctx.expenseCategories[0];
-
-  return {
-    accountId: ctx.accountId,
-    categoryId: rentCat.id,
-    amount,
-    type: 'DR' as const,
-    datetime: date.toISOString(),
-    note: 'Monthly Rent Payment',
-  };
+  return { accountId: ctx.accountId, categoryId: rentCat.id, amount, type: 'DR' as const, datetime: date.toISOString(), note: 'Monthly Rent Payment' };
 }
 
 function generateExpenses(monthDate: Date, ctx: SeedContext, isCurrentMonth: boolean) {
-  const count = randInt(8, 18);
   const maxDay = isCurrentMonth ? ctx.now.getDate() : 28;
-  const result = [];
-
-  for (let i = 0; i < count; i++) {
-    const base = randInt(4, 220);
-    const amount = Math.round(base * ctx.multiplier);
+  return Array.from({ length: randInt(8, 18) }, () => {
     const date = new Date(monthDate);
     date.setDate(randInt(1, maxDay));
-
-    const cat = randFrom(ctx.expenseCategories);
-    const note = randFrom(ALL_EXPENSE_NOTES);
-
-    result.push({
-      accountId: ctx.accountId,
-      categoryId: cat.id,
-      amount,
-      type: 'DR' as const,
-      datetime: date.toISOString(),
-      note,
-    });
-  }
-
-  return result;
+    return { accountId: ctx.accountId, categoryId: randFrom(ctx.expenseCategories).id, amount: Math.round(randInt(4, 220) * ctx.multiplier), type: 'DR' as const, datetime: date.toISOString(), note: randFrom(ALL_EXPENSE_NOTES) };
+  });
 }
 
 function generateOccasionalIncome(monthDate: Date, ctx: SeedContext) {
   if (Math.random() > 0.35) return null;
-
-  const base = randInt(200, 1500);
-  const amount = Math.round(base * ctx.multiplier);
   const date = new Date(monthDate);
   date.setDate(randInt(8, 25));
-
-  return {
-    accountId: ctx.accountId,
-    categoryId: randFrom(ctx.incomeCategories).id,
-    amount,
-    type: 'CR' as const,
-    datetime: date.toISOString(),
-    note: randFrom(['Freelance Invoice #' + randInt(1000, 9999), 'Dividend Payout', 'Referral Bonus', 'Side Project Income']),
-  };
+  return { accountId: ctx.accountId, categoryId: randFrom(ctx.incomeCategories).id, amount: Math.round(randInt(200, 1500) * ctx.multiplier), type: 'CR' as const, datetime: date.toISOString(), note: randFrom(['Freelance Invoice #' + randInt(1000, 9999), 'Dividend Payout', 'Referral Bonus', 'Side Project Income']) };
 }
 
 // ─── Main seed function ───────────────────────────────────────────────────────
@@ -264,8 +131,6 @@ export async function seedDummyData() {
     }
 
     const allCategories = await db.select().from(categories);
-
-    // Comma-separated type — a category qualifies if it includes the type
     const incomeCats   = allCategories.filter(c => c.type.split(',').includes('CR'));
     const expenseCats  = allCategories.filter(c => c.type.split(',').includes('DR'));
     const transferCats = allCategories.filter(c => c.type.split(',').includes('TR'));
@@ -274,25 +139,62 @@ export async function seedDummyData() {
       throw new Error('Required categories missing. Ensure base categories are seeded.');
     }
 
-    // Insert seed accounts
+    // ── Accounts ──────────────────────────────────────────────────────────────
+    // Seed target-currency accounts that aren't already present.
+    // We count existing accounts per currency so we don't over-seed.
+
     const existingAccounts = await db.select().from(accounts);
-    const seededAccounts = await db.insert(accounts).values(
-      SEED_ACCOUNTS.map((a, idx) => ({
-        ...a,
-        isDefault: idx === 0 && existingAccounts.length === 0 ? a.isDefault : false,
-        icon: 'building',
-        balance: 0,
-        income: 0,
-        expense: 0,
-      }))
-    ).returning();
+    const existingCountByCurrency: Record<string, number> = {};
+    for (const a of existingAccounts) {
+      const cur = a.currency.toUpperCase();
+      existingCountByCurrency[cur] = (existingCountByCurrency[cur] ?? 0) + 1;
+    }
+
+    const userDefaultCurrency = (
+      existingAccounts.find(a => a.isDefault)?.currency ??
+      existingAccounts[0]?.currency ??
+      'USD'
+    ).toUpperCase();
+
+    // For each target currency, seed enough accounts to reach 2 total
+    const accountsToInsert: (typeof SEED_ACCOUNTS[number] & { isDefault: boolean; icon: string; balance: number; income: number; expense: number })[] = [];
+    const templatesByCurrency: Record<string, AccountTemplate[]> = {};
+    for (const tmpl of SEED_ACCOUNTS) {
+      (templatesByCurrency[tmpl.currency] ??= []).push(tmpl);
+    }
+
+    for (const cur of TARGET_CURRENCIES) {
+      const existing = existingCountByCurrency[cur] ?? 0;
+      const templates = templatesByCurrency[cur] ?? [];
+      const needed = Math.max(0, 2 - existing); // need at least 2 total for transfers
+      for (let i = 0; i < Math.min(needed, templates.length); i++) {
+        accountsToInsert.push({ ...templates[i], isDefault: false, icon: 'building', balance: 0, income: 0, expense: 0 });
+      }
+    }
+
+    // If user's default currency isn't one of the targets, also seed 2 accounts for it
+    if (!TARGET_CURRENCIES.includes(userDefaultCurrency as any)) {
+      const existing = existingCountByCurrency[userDefaultCurrency] ?? 0;
+      if (existing < 2) {
+        // Seed a generic second account for their currency
+        accountsToInsert.push({
+          name: 'Savings Account', holderName: 'Alex Morgan', accountNumber: '••••  0001',
+          accountType: 'savings', color: toDbColor('#0EA5E9'), currency: userDefaultCurrency,
+          isDefault: false, icon: 'building', balance: 0, income: 0, expense: 0,
+        });
+      }
+    }
+
+    const seededAccounts = accountsToInsert.length > 0
+      ? await db.insert(accounts).values(accountsToInsert).returning()
+      : [];
 
     const allAccounts = [...existingAccounts, ...seededAccounts];
 
+    // ── Transactions — 12 months per account ─────────────────────────────────
+
     const now = new Date();
     let totalSeeded = 0;
-
-    // ── Transactions (12 months per account) ──────────────────────────────────
 
     for (const account of allAccounts) {
       const ctx: SeedContext = {
@@ -304,71 +206,71 @@ export async function seedDummyData() {
         now,
       };
 
-      const txs = [];
-
+      const txs: any[] = [];
       for (let m = 0; m < 12; m++) {
         const isCurrentMonth = m === 0;
         const monthDate = new Date(now.getFullYear(), now.getMonth() - m, 1);
-
         txs.push(generateSalary(monthDate, ctx));
         txs.push(generateRent(monthDate, ctx));
         txs.push(...generateExpenses(monthDate, ctx, isCurrentMonth));
-
-        const extraIncome = generateOccasionalIncome(monthDate, ctx);
-        if (extraIncome) txs.push(extraIncome);
+        const extra = generateOccasionalIncome(monthDate, ctx);
+        if (extra) txs.push(extra);
       }
 
       if (txs.length > 0) {
         await db.insert(payments).values(txs);
-
         const income  = txs.filter(t => t.type === 'CR').reduce((s, t) => s + t.amount, 0);
         const expense = txs.filter(t => t.type === 'DR').reduce((s, t) => s + t.amount, 0);
-
         await db.update(accounts)
-          .set({
-            balance:   sql`${accounts.balance} + ${income} - ${expense}`,
-            income:    sql`${accounts.income} + ${income}`,
-            expense:   sql`${accounts.expense} + ${expense}`,
-            updatedAt: now.toISOString(),
-          })
+          .set({ balance: sql`${accounts.balance} + ${income} - ${expense}`, income: sql`${accounts.income} + ${income}`, expense: sql`${accounts.expense} + ${expense}`, updatedAt: now.toISOString() })
           .where(eq(accounts.id, account.id));
-
         totalSeeded += txs.length;
       }
     }
 
-    // ── Cross-account transfers (same-currency pairs) ─────────────────────────
+    // ── Same-currency transfers (consecutive pairs per currency, 6 months) ────
 
     if (transferCats.length > 0) {
-      const usdAccounts = allAccounts.filter(a => a.currency === 'USD');
-      const inrAccounts = allAccounts.filter(a => a.currency === 'INR');
       const transferCat = transferCats[0];
-      const transferTxs = [];
+      const transferTxs: any[] = [];
 
-      const pairs = [
-        ...usdAccounts.slice(0, -1).map((a, i) => [a, usdAccounts[i + 1]] as const),
-        ...inrAccounts.slice(0, -1).map((a, i) => [a, inrAccounts[i + 1]] as const),
-      ];
+      // Group by currency, build consecutive pairs [0→1, 1→2, ...]
+      const byCurrency: Record<string, typeof allAccounts> = {};
+      for (const a of allAccounts) {
+        (byCurrency[a.currency.toUpperCase()] ??= []).push(a);
+      }
 
-      for (const [source, dest] of pairs) {
-        const multiplier = CURRENCY_MULTIPLIERS[source.currency.toUpperCase()] ?? 1;
-        for (let m = 0; m < 6; m++) {
-          const amount = Math.round(randInt(200, 600) * multiplier);
-          const date = new Date(now.getFullYear(), now.getMonth() - m, randInt(10, 20));
-          transferTxs.push({
-            accountId: source.id,
-            toAccountId: dest.id,
-            categoryId: transferCat.id,
-            amount,
-            type: 'TR' as const,
-            datetime: date.toISOString(),
-            note: `Transfer to ${dest.name}`,
-          });
+      for (const group of Object.values(byCurrency)) {
+        if (group.length < 2) continue;
+        const multiplier = CURRENCY_MULTIPLIERS[group[0].currency.toUpperCase()] ?? 1;
+        // Consecutive pairs: [0→1], [1→2], etc. (matches original pattern)
+        for (let i = 0; i < group.length - 1; i++) {
+          const source = group[i];
+          const dest   = group[i + 1];
+          for (let m = 0; m < 6; m++) {
+            const amount = Math.round(randInt(200, 600) * multiplier);
+            const date = new Date(now.getFullYear(), now.getMonth() - m, randInt(10, 20));
+            transferTxs.push({ accountId: source.id, toAccountId: dest.id, categoryId: transferCat.id, amount, type: 'TR' as const, datetime: date.toISOString(), note: `Transfer to ${dest.name}` });
+          }
         }
       }
 
       if (transferTxs.length > 0) {
         await db.insert(payments).values(transferTxs);
+
+        // Update balances for both sides of each transfer
+        const deltaByAccount: Record<number, { income: number; expense: number }> = {};
+        for (const tx of transferTxs) {
+          (deltaByAccount[tx.accountId]     ??= { income: 0, expense: 0 }).expense += tx.amount;
+          (deltaByAccount[tx.toAccountId]   ??= { income: 0, expense: 0 }).income  += tx.amount;
+        }
+        for (const [idStr, delta] of Object.entries(deltaByAccount)) {
+          const id = Number(idStr);
+          await db.update(accounts)
+            .set({ balance: sql`${accounts.balance} + ${delta.income} - ${delta.expense}`, income: sql`${accounts.income} + ${delta.income}`, expense: sql`${accounts.expense} + ${delta.expense}`, updatedAt: now.toISOString() })
+            .where(eq(accounts.id, id));
+        }
+
         totalSeeded += transferTxs.length;
       }
     }
@@ -379,28 +281,18 @@ export async function seedDummyData() {
       .values(SEED_PERSONS.map(p => ({ ...p })))
       .returning();
 
-    // Link ~⅓ of recent transactions to persons
     if (insertedPersons.length > 0) {
-      const recentPayments = await db
-        .select({ id: payments.id })
-        .from(payments)
-        .orderBy(sql`datetime DESC`)
-        .limit(60);
-
+      const recentPayments = await db.select({ id: payments.id }).from(payments).orderBy(sql`datetime DESC`).limit(60);
       for (let i = 0; i < recentPayments.length; i++) {
         if (i % 3 === 0) {
-          await db.update(payments)
-            .set({ personId: insertedPersons[i % insertedPersons.length].id })
-            .where(eq(payments.id, recentPayments[i].id));
+          await db.update(payments).set({ personId: insertedPersons[i % insertedPersons.length].id }).where(eq(payments.id, recentPayments[i].id));
         }
       }
     }
 
-    // ── Loans ─────────────────────────────────────────────────────────────────
+    // ── Loans — seeded in each target currency + user default currency ────────
 
     if (insertedPersons.length >= 3) {
-      const usdAccount = allAccounts.find(a => a.currency === 'USD') ?? allAccounts[0];
-      const m = CURRENCY_MULTIPLIERS[usdAccount.currency.toUpperCase()] ?? 1;
       const loanCategory =
         allCategories.find(c => c.name.toLowerCase() === 'loan/emi') ??
         allCategories.find(c => c.name.toLowerCase() === 'uncategorized') ??
@@ -410,49 +302,51 @@ export async function seedDummyData() {
       const daysFromNow = (d: number) => new Date(now.getFullYear(), now.getMonth(), now.getDate() + d).toISOString().slice(0, 10);
       const daysAgoDate = (d: number) => new Date(now.getFullYear(), now.getMonth(), now.getDate() - d).toISOString().slice(0, 10);
 
-      const p  = insertedPersons;
-      const p3 = p[3 < p.length ? 3 : 0];
+      const p = insertedPersons;
 
-      const seededLoans = await db.insert(loans).values([
-        // Lent $800 to person[0] — active, partial repayment
-        { personId: p[0].id, type: 'lend'   as const, principal: Math.round(800  * m), currency: usdAccount.currency, accountId: usdAccount.id, categoryId: loanCategory.id, status: 'active' as const, dueDate: daysFromNow(28),  note: 'Emergency medical expenses', createdAt: daysAgo(40), updatedAt: daysAgo(10) },
-        // Borrowed $2400 from person[1] — active, partial repayment
-        { personId: p[1].id, type: 'borrow' as const, principal: Math.round(2400 * m), currency: usdAccount.currency, accountId: usdAccount.id, categoryId: loanCategory.id, status: 'active' as const, dueDate: daysFromNow(55),  note: 'MacBook Pro purchase',       createdAt: daysAgo(60), updatedAt: daysAgo(5)  },
-        // Lent $350 to person[2] — overdue
-        { personId: p[2].id, type: 'lend'   as const, principal: Math.round(350  * m), currency: usdAccount.currency, accountId: usdAccount.id, categoryId: loanCategory.id, status: 'active' as const, dueDate: daysAgoDate(10), note: 'Helped with rent shortfall', createdAt: daysAgo(45), updatedAt: daysAgo(45) },
-        // Lent $200 to person[3] — fully repaid
-        { personId: p3.id,   type: 'lend'   as const, principal: Math.round(200  * m), currency: usdAccount.currency, accountId: usdAccount.id, categoryId: loanCategory.id, status: 'repaid' as const,                           note: 'Conference ticket split',   createdAt: daysAgo(75), updatedAt: daysAgo(20) },
-        // Borrowed $600 from person[0] — fully repaid
-        { personId: p[0].id, type: 'borrow' as const, principal: Math.round(600  * m), currency: usdAccount.currency, accountId: usdAccount.id, categoryId: loanCategory.id, status: 'repaid' as const,                           note: 'Bridged gap before salary', createdAt: daysAgo(90), updatedAt: daysAgo(35) },
-      ]).returning();
+      const loanCurrencies = Array.from(new Set([...TARGET_CURRENCIES, userDefaultCurrency]));
 
-      type PaymentRow = { accountId: number; categoryId: number; personId: number | null; loanId: number; amount: number; type: 'CR' | 'DR'; datetime: string; note: string; createdAt: string; updatedAt: string };
-      const loanPayments: PaymentRow[] = [
-        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: p[0].id, loanId: seededLoans[0].id, amount: Math.round(800  * m), type: 'DR', datetime: daysAgo(40), note: 'Lent to Sarah',               createdAt: daysAgo(40), updatedAt: daysAgo(40) },
-        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: p[0].id, loanId: seededLoans[0].id, amount: Math.round(250  * m), type: 'CR', datetime: daysAgo(10), note: 'Partial repayment from Sarah', createdAt: daysAgo(10), updatedAt: daysAgo(10) },
-        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: p[1].id, loanId: seededLoans[1].id, amount: Math.round(2400 * m), type: 'CR', datetime: daysAgo(60), note: 'Received from James',           createdAt: daysAgo(60), updatedAt: daysAgo(60) },
-        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: p[1].id, loanId: seededLoans[1].id, amount: Math.round(800  * m), type: 'DR', datetime: daysAgo(5),  note: 'Repayment to James',            createdAt: daysAgo(5),  updatedAt: daysAgo(5)  },
-        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: p[2].id, loanId: seededLoans[2].id, amount: Math.round(350  * m), type: 'DR', datetime: daysAgo(45), note: 'Lent to Priya',                createdAt: daysAgo(45), updatedAt: daysAgo(45) },
-        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: p3.id,   loanId: seededLoans[3].id, amount: Math.round(200  * m), type: 'DR', datetime: daysAgo(75), note: 'Lent to Tom',                  createdAt: daysAgo(75), updatedAt: daysAgo(75) },
-        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: p3.id,   loanId: seededLoans[3].id, amount: Math.round(200  * m), type: 'CR', datetime: daysAgo(20), note: 'Full repayment from Tom',       createdAt: daysAgo(20), updatedAt: daysAgo(20) },
-        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: p[0].id, loanId: seededLoans[4].id, amount: Math.round(600  * m), type: 'CR', datetime: daysAgo(90), note: 'Received from Sarah',           createdAt: daysAgo(90), updatedAt: daysAgo(90) },
-        { accountId: usdAccount.id, categoryId: loanCategory.id, personId: p[0].id, loanId: seededLoans[4].id, amount: Math.round(600  * m), type: 'DR', datetime: daysAgo(35), note: 'Full repayment to Sarah',       createdAt: daysAgo(35), updatedAt: daysAgo(35) },
-      ];
+      for (const cur of loanCurrencies) {
+        const acct = allAccounts.find(a => a.currency.toUpperCase() === cur);
+        if (!acct) continue;
 
-      await db.insert(payments).values(loanPayments);
+        const m = CURRENCY_MULTIPLIERS[cur] ?? 1;
 
-      const loanIncome  = loanPayments.filter(lp => lp.type === 'CR').reduce((s, lp) => s + lp.amount, 0);
-      const loanExpense = loanPayments.filter(lp => lp.type === 'DR').reduce((s, lp) => s + lp.amount, 0);
-      await db.update(accounts)
-        .set({
-          balance: sql`${accounts.balance} + ${loanIncome} - ${loanExpense}`,
-          income:  sql`${accounts.income} + ${loanIncome}`,
-          expense: sql`${accounts.expense} + ${loanExpense}`,
-          updatedAt: now.toISOString(),
-        })
-        .where(eq(accounts.id, usdAccount.id));
+        const seededLoans = await db.insert(loans).values([
+          // active lend — partial repayment
+          { personId: p[0].id, type: 'lend'   as const, principal: Math.round(500  * m), currency: acct.currency, accountId: acct.id, categoryId: loanCategory.id, status: 'active' as const, dueDate: daysFromNow(28),  note: 'Lent for travel expenses',   createdAt: daysAgo(15), updatedAt: daysAgo(15) },
+          // active borrow — partial repayment
+          { personId: p[1].id, type: 'borrow' as const, principal: Math.round(1000 * m), currency: acct.currency, accountId: acct.id, categoryId: loanCategory.id, status: 'active' as const, dueDate: daysFromNow(45),  note: 'Borrowed for laptop repair', createdAt: daysAgo(30), updatedAt: daysAgo(10) },
+          // overdue lend — no repayment
+          { personId: p[2].id, type: 'lend'   as const, principal: Math.round(300  * m), currency: acct.currency, accountId: acct.id, categoryId: loanCategory.id, status: 'active' as const, dueDate: daysAgoDate(5),   note: 'Dinner split share',         createdAt: daysAgo(45), updatedAt: daysAgo(45) },
+          // fully repaid lend
+          { personId: p[0].id, type: 'lend'   as const, principal: Math.round(200  * m), currency: acct.currency, accountId: acct.id, categoryId: loanCategory.id, status: 'repaid' as const,                            note: 'Conference ticket split',    createdAt: daysAgo(75), updatedAt: daysAgo(40) },
+        ]).returning();
 
-      totalSeeded += loanPayments.length;
+        type PayRow = { accountId: number; categoryId: number; personId: number | null; loanId: number; amount: number; type: 'CR' | 'DR'; datetime: string; note: string; createdAt: string; updatedAt: string };
+        const loanPayments: PayRow[] = [
+          // Loan 0: lend 500, no repayment yet
+          { accountId: acct.id, categoryId: loanCategory.id, personId: p[0].id, loanId: seededLoans[0].id, amount: Math.round(500 * m),  type: 'DR', datetime: daysAgo(15), note: 'Loan given',              createdAt: daysAgo(15), updatedAt: daysAgo(15) },
+          // Loan 1: borrow 1000, repaid 200
+          { accountId: acct.id, categoryId: loanCategory.id, personId: p[1].id, loanId: seededLoans[1].id, amount: Math.round(1000 * m), type: 'CR', datetime: daysAgo(30), note: 'Loan received',            createdAt: daysAgo(30), updatedAt: daysAgo(30) },
+          { accountId: acct.id, categoryId: loanCategory.id, personId: p[1].id, loanId: seededLoans[1].id, amount: Math.round(200 * m),  type: 'DR', datetime: daysAgo(10), note: 'Loan repayment sent',      createdAt: daysAgo(10), updatedAt: daysAgo(10) },
+          // Loan 2: lend 300, overdue, no repayment
+          { accountId: acct.id, categoryId: loanCategory.id, personId: p[2].id, loanId: seededLoans[2].id, amount: Math.round(300 * m),  type: 'DR', datetime: daysAgo(45), note: 'Loan given',              createdAt: daysAgo(45), updatedAt: daysAgo(45) },
+          // Loan 3: lend 200, fully repaid
+          { accountId: acct.id, categoryId: loanCategory.id, personId: p[0].id, loanId: seededLoans[3].id, amount: Math.round(200 * m),  type: 'DR', datetime: daysAgo(75), note: 'Loan given',              createdAt: daysAgo(75), updatedAt: daysAgo(75) },
+          { accountId: acct.id, categoryId: loanCategory.id, personId: p[0].id, loanId: seededLoans[3].id, amount: Math.round(200 * m),  type: 'CR', datetime: daysAgo(40), note: 'Loan repayment received', createdAt: daysAgo(40), updatedAt: daysAgo(40) },
+        ];
+
+        await db.insert(payments).values(loanPayments);
+
+        const loanIncome  = loanPayments.filter(lp => lp.type === 'CR').reduce((s, lp) => s + lp.amount, 0);
+        const loanExpense = loanPayments.filter(lp => lp.type === 'DR').reduce((s, lp) => s + lp.amount, 0);
+        await db.update(accounts)
+          .set({ balance: sql`${accounts.balance} + ${loanIncome} - ${loanExpense}`, income: sql`${accounts.income} + ${loanIncome}`, expense: sql`${accounts.expense} + ${loanExpense}`, updatedAt: now.toISOString() })
+          .where(eq(accounts.id, acct.id));
+
+        totalSeeded += loanPayments.length;
+      }
     }
 
     await AsyncStorage.setItem(StorageKeys.SEED_EXECUTED, 'true');
