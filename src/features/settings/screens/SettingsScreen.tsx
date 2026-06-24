@@ -8,7 +8,7 @@ import { PageBackground } from '@/src/components/ui/PageBackground';
 import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
 import { StorageKeys } from '@/src/constants/keys';
 import { db } from '@/src/db/client';
-import { accounts, categories, payments, persons } from '@/src/db/schema';
+import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import { LockStorage } from '@/src/features/lock/api/lockStorage';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
 import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
@@ -321,6 +321,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       // Delete user data only — seederState (schema migration tracking) is preserved
       // so ALTER TABLE migrations don't re-run and crash on next launch
       await db.delete(payments);
+      await db.delete(loans);
       await db.delete(persons);
       await db.delete(categories);
       await db.delete(accounts);

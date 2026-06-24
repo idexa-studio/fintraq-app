@@ -15,7 +15,6 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../api/advanced-filters.service';
 
 interface AdvancedFilterBottomSheetProps {
@@ -47,8 +46,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   const [minAmt, setMinAmt] = useState('');
   const [maxAmt, setMaxAmt] = useState('');
   const bottomSheet = useBottomSheet();
-  const insets = useSafeAreaInsets();
-  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   useEffect(() => {
     if (visible) {
@@ -392,7 +390,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, insets: any) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
     header: {
       flexDirection: 'row',
@@ -488,7 +486,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      paddingBottom: insets.bottom > 0 ? insets.bottom + spacing('2') : spacing('3'),
+      paddingBottom: spacing('3'),
     },
     applyBtn: {
       height: 52,

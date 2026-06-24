@@ -3,6 +3,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import {
   CancelCircleIcon,
   ChartLineData01Icon,
+  CheckmarkCircle01Icon,
   CrownIcon,
   File01Icon,
   Rocket01Icon,
@@ -22,11 +23,11 @@ type PremiumUpsellBottomSheetProps = {
 
 const BLOCK = 5;
 
-const PRO_FEATURES: { icon: IconSvgElement; text: string }[] = [
-  { icon: ChartLineData01Icon, text: 'Spending trends & burn velocity' },
-  { icon: Rocket01Icon, text: 'Runway forecasts & metrics' },
-  { icon: Search01Icon, text: 'Global search across all data' },
-  { icon: File01Icon, text: 'CSV export & weekly/monthly reports' },
+const PRO_FEATURES: { icon: IconSvgElement; label: string }[] = [
+  { icon: ChartLineData01Icon, label: 'Spending trends & burn velocity' },
+  { icon: Rocket01Icon,        label: 'Runway forecasts & metrics' },
+  { icon: Search01Icon,        label: 'Global search across all data' },
+  { icon: File01Icon,          label: 'CSV export & weekly/monthly reports' },
 ];
 
 export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomSheet({
@@ -67,150 +68,171 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
       enablePanDownToClose={canDismiss}
       enableBackdropDismiss={canDismiss}
     >
-      <View style={styles.content}>
-        {/* Header Row with Crown Icon */}
+      <View style={styles.root}>
+        {/* ── Header ── */}
         <View style={styles.header}>
-          <View style={styles.crownWrapper}>
-            <HugeiconsIcon icon={CrownIcon} size={24} color={colors.warning} />
+          <View style={[styles.crownBadge, { backgroundColor: colors.warning + '18' }]}>
+            <HugeiconsIcon icon={CrownIcon} size={26} color={colors.warning} />
           </View>
+
           <View style={styles.headerText}>
-            <Text style={styles.title}>Unlock Fintraq Pro</Text>
-            <Text style={styles.subtitle}>One-time lifetime access</Text>
+            <Text style={[styles.title, { color: colors.text }]}>Fintraq Pro</Text>
+            <View style={[styles.lifetimePill, { backgroundColor: colors.warning + '20' }]}>
+              <Text style={[styles.lifetimeLabel, { color: colors.warning }]}>One-time · Lifetime access</Text>
+            </View>
           </View>
+
+          {canDismiss && (
+            <BentoPressable
+              onPress={onClose}
+              style={[styles.closeBtn, { backgroundColor: colors.text + '0C' }]}
+            >
+              <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
+            </BentoPressable>
+          )}
         </View>
 
-        {canDismiss ? (
-          <BentoPressable onPress={onClose} style={styles.closeBtn}>
-            <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.text} />
-          </BentoPressable>
-        ) : null}
-
-        {/* Feature Bento List */}
-        <View style={styles.list}>
-          {PRO_FEATURES.map((item, index) => (
-            <View key={index} style={styles.row}>
-              <View style={styles.iconWrapper}>
-                <HugeiconsIcon icon={item.icon} size={18} color={colors.primary} />
+        {/* ── Feature list ── */}
+        <View style={[styles.featureCard, { backgroundColor: colors.background }]}>
+          {PRO_FEATURES.map((item, i) => (
+            <View
+              key={i}
+              style={[
+                styles.featureRow,
+                i < PRO_FEATURES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              ]}
+            >
+              <View style={[styles.featureIcon, { backgroundColor: colors.surface }]}>
+                <HugeiconsIcon icon={item.icon} size={16} color={colors.primary} />
               </View>
-              <Text style={styles.rowText}>{item.text}</Text>
+              <Text style={[styles.featureLabel, { color: colors.text }]}>{item.label}</Text>
+              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
             </View>
           ))}
         </View>
 
-        <BentoPressable
-          style={[styles.cta, !canDismiss && styles.ctaDisabled]}
-          onPress={handleUpgrade}
-          disabled={!canDismiss}
-        >
-          <Text style={styles.ctaText}>
-            {canDismiss ? 'Get lifetime access' : `Get lifetime access in ${left}s`}
-          </Text>
-        </BentoPressable>
-
-        {canDismiss ? (
-          <BentoPressable onPress={onClose} style={styles.skip}>
-            <Text style={styles.skipText}>Not now</Text>
+        {/* ── CTA ── */}
+        <View style={styles.footer}>
+          <BentoPressable
+            style={[
+              styles.cta,
+              { backgroundColor: colors.primary },
+              !canDismiss && styles.ctaDimmed,
+            ]}
+            onPress={handleUpgrade}
+            disabled={!canDismiss}
+          >
+            <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
+              {canDismiss ? 'Unlock Fintraq Pro' : `Unlock in ${left}s`}
+            </Text>
           </BentoPressable>
-        ) : null}
+
+          {canDismiss && (
+            <BentoPressable onPress={onClose} style={styles.skipBtn}>
+              <Text style={[styles.skipText, { color: colors.textMuted }]}>Maybe later</Text>
+            </BentoPressable>
+          )}
+        </View>
       </View>
     </BentoBottomSheet>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeContextType) =>
   StyleSheet.create({
-    content: {
-      paddingHorizontal: spacing('6'),
-      paddingBottom: spacing('3'),
-      paddingTop: spacing('2'),
+    root: {
+      paddingHorizontal: spacing('5'),
+      paddingTop: spacing('1'),
+      paddingBottom: spacing('6'),
+      gap: spacing('4'),
     },
+    // Header
     header: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
-      marginBottom: spacing('5'),
     },
-    crownWrapper: {
-      width: 44,
-      height: 44,
-      borderRadius: 22,
-      backgroundColor: colors.warning + '12',
-      justifyContent: 'center',
+    crownBadge: {
+      width: 48,
+      height: 48,
+      borderRadius: radius('xl'),
       alignItems: 'center',
+      justifyContent: 'center',
     },
     headerText: {
       flex: 1,
-      gap: spacing('0.5'),
+      gap: spacing('1'),
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 20,
-      color: colors.text,
+      fontSize: 22,
+      letterSpacing: -0.3,
     },
-    subtitle: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 12,
-      color: colors.textMuted,
+    lifetimePill: {
+      alignSelf: 'flex-start',
+      paddingHorizontal: spacing('2.5'),
+      paddingVertical: spacing('0.5'),
+      borderRadius: radius('full'),
+    },
+    lifetimeLabel: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 11,
     },
     closeBtn: {
-      position: 'absolute',
-      top: spacing('4'),
-      right: spacing('6'),
       width: 32,
       height: 32,
       borderRadius: radius('full'),
-      backgroundColor: colors.text + '0C',
-      justifyContent: 'center',
       alignItems: 'center',
+      justifyContent: 'center',
     },
-    list: {
-      gap: spacing('2'),
-      marginBottom: spacing('5'),
+    // Features
+    featureCard: {
+      borderRadius: radius('2xl'),
+      overflow: 'hidden',
     },
-    row: {
+    featureRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing('3.5'),
-      backgroundColor: colors.background,
-      padding: spacing('3'),
-      borderRadius: radius('lg'),
+      gap: spacing('3'),
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3'),
     },
-    iconWrapper: {
+    featureIcon: {
       width: 32,
       height: 32,
-      borderRadius: 16,
-      backgroundColor: colors.primary + '12',
-      justifyContent: 'center',
+      borderRadius: radius('lg'),
       alignItems: 'center',
+      justifyContent: 'center',
     },
-    rowText: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 13,
-      color: colors.text,
+    featureLabel: {
+      fontFamily: typography.fonts.regular,
+      fontSize: 13.5,
       flex: 1,
+    },
+    // Footer
+    footer: {
+      gap: spacing('2'),
     },
     cta: {
       height: 52,
       borderRadius: radius('full'),
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
       alignItems: 'center',
+      justifyContent: 'center',
+      ...shadow('lg'),
     },
-    ctaDisabled: {
-      opacity: 0.65,
+    ctaDimmed: {
+      opacity: 0.55,
     },
     ctaText: {
       fontFamily: typography.styles.buttonLabel.fontFamily,
       fontSize: typography.sizes.md,
-      color: colors.primaryForeground,
     },
-    skip: {
+    skipBtn: {
       alignItems: 'center',
-      marginTop: spacing('3.5'),
+      paddingVertical: spacing('1'),
     },
     skipText: {
       fontFamily: typography.fonts.regular,
       fontSize: typography.sizes.sm,
-      color: colors.textMuted,
     },
   });
