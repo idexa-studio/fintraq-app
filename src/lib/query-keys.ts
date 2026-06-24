@@ -21,6 +21,7 @@ const transactions = {
   details: () => [...transactions.all, 'detail'] as const,
   detail: (id: number) => [...transactions.details(), id] as const,
   count: (filters: TransactionFilters) => [...transactions.all, 'count', { filters }] as const,
+  totals: (filters: TransactionFilters) => [...transactions.all, 'totals', { filters }] as const,
 };
 
 const persons = {

@@ -14,6 +14,11 @@ export type TransactionFilters = {
   type?: TransactionType;
   accountId?: number;
   categoryId?: number;
+  personId?: number;
+  startDate?: string; // ISO date YYYY-MM-DD
+  endDate?: string;   // ISO date YYYY-MM-DD
+  minAmount?: number;
+  maxAmount?: number;
   sortBy?: 'date' | 'amount';
   sortOrder?: 'asc' | 'desc';
 };
@@ -113,6 +118,11 @@ const buildWhere = (filters: TransactionFilters): SQL | undefined => {
     );
   }
   if (filters.categoryId != null) conditions.push(eq(payments.categoryId, filters.categoryId));
+  if (filters.personId != null) conditions.push(eq(payments.personId, filters.personId));
+  if (filters.startDate) conditions.push(sql`date(${payments.datetime}) >= ${filters.startDate}`);
+  if (filters.endDate) conditions.push(sql`date(${payments.datetime}) <= ${filters.endDate}`);
+  if (filters.minAmount != null) conditions.push(sql`${payments.amount} >= ${filters.minAmount}`);
+  if (filters.maxAmount != null) conditions.push(sql`${payments.amount} <= ${filters.maxAmount}`);
   return conditions.length > 0 ? and(...conditions) : undefined;
 };
 
@@ -154,6 +164,25 @@ export const getTransactionsCount = async (filters: TransactionFilters = {}) => 
   const where = buildWhere(filters);
   const [row] = await db.select({ total: count() }).from(payments).where(where);
   return row?.total ?? 0;
+};
+
+export type TransactionTotals = Record<string, { income: number; expense: number }>;
+
+export const getTransactionTotals = async (filters: TransactionFilters = {}): Promise<TransactionTotals> => {
+  const where = buildWhere(filters);
+  const rows = await db
+    .select({
+      currency: accounts.currency,
+      income: sql<number>`COALESCE(SUM(CASE WHEN ${payments.type}='CR' THEN ${payments.amount} ELSE 0 END), 0)`,
+      expense: sql<number>`COALESCE(SUM(CASE WHEN ${payments.type}='DR' THEN ${payments.amount} ELSE 0 END), 0)`,
+    })
+    .from(payments)
+    .innerJoin(accounts, eq(payments.accountId, accounts.id))
+    .where(where)
+    .groupBy(accounts.currency);
+  const result: TransactionTotals = {};
+  rows.forEach(r => { result[r.currency] = { income: r.income, expense: r.expense }; });
+  return result;
 };
 
 export const getTransactions = async (

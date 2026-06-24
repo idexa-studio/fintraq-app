@@ -27,6 +27,7 @@ import type { TransactionListItem } from '../api/transactions';
 import {
   useDeleteTransaction,
   useInfiniteTransactions,
+  useTransactionTotals,
 } from '../hooks/transactions';
 
 import { format } from 'date-fns';
@@ -304,8 +305,17 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     return AdvancedFilterService.toBasicFilters(advancedFilters);
   }, [advancedFilters]);
 
+  // Memoized so both `enabled` and the `transactions` filter read the same stable boolean.
+  const needsClientSide = useMemo(
+    () => AdvancedFilterService.requiresClientSideFiltering(advancedFilters),
+    [advancedFilters],
+  );
+
   // Fetch transactions
   const txQuery = useInfiniteTransactions(basicFilters);
+  // DB aggregate for KPI — always accurate regardless of scroll position.
+  // Disabled when client-side multi-select is active; computed from loaded pages then.
+  const { data: dbTotals } = useTransactionTotals(basicFilters, !needsClientSide);
   const accountsQuery = useAccounts();
   const categoriesQuery = useCategories();
   const personsQuery = usePersons();
@@ -318,25 +328,9 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   const transactions = useMemo(() => {
     const allTransactions = txQuery.data?.pages.flat() ?? [];
 
-    // If no advanced client-side filtering needed, return DB result as-is
-    if (!AdvancedFilterService.requiresClientSideFiltering(advancedFilters)) {
-      return allTransactions;
-    }
+    if (!needsClientSide) return allTransactions;
 
     return allTransactions.filter((transaction) => {
-      // Date range filter
-      if (advancedFilters.dateRange) {
-        const txDate = new Date(transaction.datetime);
-        const startDate = new Date(advancedFilters.dateRange.startDate);
-        startDate.setHours(0, 0, 0, 0);
-        const endDate = new Date(advancedFilters.dateRange.endDate);
-        endDate.setHours(23, 59, 59, 999);
-
-        if (txDate < startDate || txDate > endDate) {
-          return false;
-        }
-      }
-
       // Multi-select type filter
       if (advancedFilters.types && advancedFilters.types.length > 0) {
         if (!advancedFilters.types.includes(transaction.type)) {
@@ -358,13 +352,9 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         }
       }
 
-      // Amount range filter
-      if (advancedFilters.amountRange) {
-        const amount = transaction.amount;
-        if (advancedFilters.amountRange.min !== undefined && amount < advancedFilters.amountRange.min) {
-          return false;
-        }
-        if (advancedFilters.amountRange.max !== undefined && amount > advancedFilters.amountRange.max) {
+      // Multi-select person filter
+      if (advancedFilters.personIds && advancedFilters.personIds.length > 0) {
+        if (!transaction.personId || !advancedFilters.personIds.includes(transaction.personId)) {
           return false;
         }
       }
@@ -384,7 +374,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
       return true;
       // NOTE: No .sort() here — sorting is done by the DB ORDER BY clause.
     });
-  }, [txQuery.data?.pages, advancedFilters]);
+  }, [txQuery.data?.pages, advancedFilters, needsClientSide]);
 
   const groupedByDate = useMemo(() => {
     const map = new Map<string, TransactionListItem[]>();
@@ -403,29 +393,19 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     }
   }, [txQuery]);
 
-  // Calculate KPI totals from the current visible page only (not all accumulated pages).
-  // Scanning all accumulated pages on large datasets blocks the JS thread.
+  // DB aggregate when filters map 1:1 to SQL (no client-side multi-select).
+  // Falls back to summing loaded pages when client-side filtering is active.
   const kpiTotalsByCurrency = useMemo(() => {
+    if (!needsClientSide && dbTotals) return dbTotals;
     const map: Record<string, { income: number; expense: number }> = {};
-
-    // Use the last fetched page for KPI display — it reflects the current filter state
-    // and is bounded by PAGE_SIZE (20 items), never 500+ items.
-    const currentPage = txQuery.data?.pages[txQuery.data.pages.length - 1] ?? [];
-    const source = currentPage.length > 0 ? currentPage : (txQuery.data?.pages[0] ?? []);
-
-    source.forEach((tx) => {
+    transactions.forEach((tx) => {
       const currency = tx.account.currency;
       if (!map[currency]) map[currency] = { income: 0, expense: 0 };
-
-      if (tx.type === 'CR') {
-        map[currency].income += tx.amount;
-      } else if (tx.type === 'DR') {
-        map[currency].expense += tx.amount;
-      }
+      if (tx.type === 'CR') map[currency].income += tx.amount;
+      else if (tx.type === 'DR') map[currency].expense += tx.amount;
     });
-
     return map;
-  }, [txQuery.data?.pages]);
+  }, [needsClientSide, dbTotals, transactions]);
 
   const kpiCurrencies = useMemo(() => Object.keys(kpiTotalsByCurrency), [kpiTotalsByCurrency]);
 
@@ -441,6 +421,10 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     : { income: 0, expense: 0 };
 
   const activeFilterCount = AdvancedFilterService.countActiveFilters(advancedFilters);
+  const summaryLabel = useMemo(
+    () => activeFilterCount > 0 ? 'Filtered summary' : 'Net savings',
+    [activeFilterCount],
+  );
 
   const isSortActive = useMemo(() => {
     return advancedFilters.sortBy !== 'date' || advancedFilters.sortOrder !== 'desc';
@@ -449,6 +433,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   const activeTypesCount = useMemo(() => advancedFilters.types?.length ?? 0, [advancedFilters.types]);
   const activeAccountsCount = useMemo(() => advancedFilters.accountIds?.length ?? 0, [advancedFilters.accountIds]);
   const activeCategoriesCount = useMemo(() => advancedFilters.categoryIds?.length ?? 0, [advancedFilters.categoryIds]);
+  const activePersonsCount = useMemo(() => advancedFilters.personIds?.length ?? 0, [advancedFilters.personIds]);
   const isDateActive = useMemo(() => !!advancedFilters.dateRange, [advancedFilters.dateRange]);
   const isAmountActive = useMemo(() => !!advancedFilters.amountRange, [advancedFilters.amountRange]);
 
@@ -499,11 +484,21 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   const amountLabel = useMemo(() => {
     if (!advancedFilters.amountRange) return 'Amount';
     const { min, max } = advancedFilters.amountRange;
-    if (min !== undefined && max !== undefined) return `${min} - ${max}`;
-    if (min !== undefined) return `>${min}`;
-    if (max !== undefined) return `<${max}`;
+    if (min !== undefined && max !== undefined) return `${min} – ${max}`;
+    if (min !== undefined) return `≥${min}`;
+    if (max !== undefined) return `≤${max}`;
     return 'Amount';
   }, [advancedFilters.amountRange]);
+
+  const personLabel = useMemo(() => {
+    const ids = advancedFilters.personIds ?? [];
+    if (ids.length === 0) return 'Person';
+    if (ids.length === 1) {
+      const person = personsQuery.data?.find(p => p.id === ids[0]);
+      return person ? person.name.split(' ')[0] : '1 person';
+    }
+    return `${ids.length} persons`;
+  }, [advancedFilters.personIds, personsQuery.data]);
 
   const handleOpenSort = useCallback(() => {
     Haptics.selectionAsync().catch(() => { });
@@ -540,6 +535,11 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     setAdvancedFilters(p => ({ ...p, amountRange: undefined }));
   }, []);
 
+  const clearPersons = useCallback(() => {
+    Haptics.selectionAsync().catch(() => { });
+    setAdvancedFilters(p => ({ ...p, personIds: undefined }));
+  }, []);
+
   const handleResetSort = useCallback((e?: { stopPropagation?: () => void }) => {
     e?.stopPropagation?.();
     Haptics.selectionAsync().catch(() => { });
@@ -551,7 +551,11 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   }, []);
 
   const handleResetFilters = useCallback(() => {
-    setAdvancedFilters(DEFAULT_ADVANCED_FILTERS);
+    setAdvancedFilters(prev => ({
+      ...DEFAULT_ADVANCED_FILTERS,
+      sortBy: prev.sortBy,
+      sortOrder: prev.sortOrder,
+    }));
   }, []);
 
   const handleAddTransaction = useCallback(() => {
@@ -594,27 +598,35 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     item.id.toString(), []
   );
 
-  type DayTotals = { in: number; out: number };
-
   const renderSectionHeader = React.useCallback(
     ({ section: { title, data } }: { section: SectionListData<TransactionListItem, TxSection> }) => {
-      const dayTotal = data.reduce<DayTotals>(
-        (acc, tx) => {
-          if (tx.type === 'CR') acc.in += tx.amount;
-          else if (tx.type === 'DR') acc.out += tx.amount;
-          return acc;
-        },
-        { in: 0, out: 0 },
-      );
+      // Group totals by currency — multi-currency days show count instead of ambiguous sum
+      const byCurrency: Record<string, { income: number; expense: number }> = {};
+      data.forEach(tx => {
+        const cur = tx.account.currency;
+        if (!byCurrency[cur]) byCurrency[cur] = { income: 0, expense: 0 };
+        if (tx.type === 'CR') byCurrency[cur].income += tx.amount;
+        else if (tx.type === 'DR') byCurrency[cur].expense += tx.amount;
+      });
+      const dayCurrencies = Object.keys(byCurrency);
+      const isSingleCurrency = dayCurrencies.length === 1;
+      const singleCur = dayCurrencies[0];
+
       return (
         <View style={styles.dayHeaderRow}>
           <Text style={styles.dayTitle}>{title}</Text>
           <View style={styles.dayTotals}>
-            {dayTotal.in > 0 && (
-              <MoneyText amount={dayTotal.in} type="CR" style={styles.dayTotalValue} />
-            )}
-            {dayTotal.out > 0 && (
-              <MoneyText amount={dayTotal.out} type="DR" style={styles.dayTotalValue} />
+            {isSingleCurrency ? (
+              <>
+                {byCurrency[singleCur].income > 0 && (
+                  <MoneyText amount={byCurrency[singleCur].income} currency={singleCur} type="CR" style={styles.dayTotalValue} />
+                )}
+                {byCurrency[singleCur].expense > 0 && (
+                  <MoneyText amount={byCurrency[singleCur].expense} currency={singleCur} type="DR" style={styles.dayTotalValue} />
+                )}
+              </>
+            ) : (
+              <Text style={styles.dayTotalCount}>{data.length} txns</Text>
             )}
           </View>
         </View>
@@ -642,11 +654,16 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         showBack
         rightAction={(
           <View style={styles.headerActions}>
-            <BentoPressable onPress={handleOpenFilter} style={styles.iconBtn}>
-              <HugeiconsIcon icon={FilterIcon} size={22} color={colors.text} />
+            <BentoPressable onPress={handleOpenFilter} style={[styles.iconBtn, activeFilterCount > 0 && styles.iconBtnActive]}>
+              <HugeiconsIcon icon={FilterIcon} size={22} color={activeFilterCount > 0 ? colors.primary : colors.text} />
+              {activeFilterCount > 0 && (
+                <View style={[styles.filterBadge, { backgroundColor: colors.primary }]}>
+                  <Text style={[styles.filterBadgeText, { color: colors.primaryForeground }]}>{activeFilterCount}</Text>
+                </View>
+              )}
             </BentoPressable>
-            <BentoPressable onPress={handleOpenSort} style={styles.iconBtn}>
-              <HugeiconsIcon icon={SortingDownIcon} size={22} color={colors.text} />
+            <BentoPressable onPress={handleOpenSort} style={[styles.iconBtn, isSortActive && styles.iconBtnActive]}>
+              <HugeiconsIcon icon={SortingDownIcon} size={22} color={isSortActive ? colors.primary : colors.text} />
             </BentoPressable>
           </View>
         )}
@@ -675,28 +692,27 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
               currency={selectedKpiCurrency}
               currencies={kpiCurrencies}
               onCurrencySelect={setSelectedKpiCurrency}
+              label={summaryLabel}
             />
 
-            {/* ── MD3 Play Store Filter Chips Row ── */}
-            {isSortActive || activeTypesCount > 0 || activeAccountsCount > 0 || activeCategoriesCount > 0 || isDateActive || isAmountActive ? (
+            {/* ── Active filter chips ── */}
+            {activeFilterCount > 0 && (
               <View style={styles.chipsScrollContainer}>
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.chipsScroll}
                 >
-                  {isSortActive && (
-                    <FilterChip
-                      label={sortLabel}
-                      isActive={isSortActive}
-                      onPress={handleOpenSort}
-                      onClear={handleResetSort}
-                    />
-                  )}
+                  <FilterChip
+                    label="Clear all"
+                    isActive={true}
+                    onPress={handleResetFilters}
+                    showChevron={false}
+                  />
                   {activeTypesCount > 0 && (
                     <FilterChip
                       label={typeLabel}
-                      isActive={activeTypesCount > 0}
+                      isActive={true}
                       onPress={handleOpenFilter}
                       onClear={clearTypes}
                     />
@@ -704,7 +720,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {activeAccountsCount > 0 && (
                     <FilterChip
                       label={accountLabel}
-                      isActive={activeAccountsCount > 0}
+                      isActive={true}
                       onPress={handleOpenFilter}
                       onClear={clearAccounts}
                     />
@@ -712,15 +728,23 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {activeCategoriesCount > 0 && (
                     <FilterChip
                       label={categoryLabel}
-                      isActive={activeCategoriesCount > 0}
+                      isActive={true}
                       onPress={handleOpenFilter}
                       onClear={clearCategories}
+                    />
+                  )}
+                  {activePersonsCount > 0 && (
+                    <FilterChip
+                      label={personLabel}
+                      isActive={true}
+                      onPress={handleOpenFilter}
+                      onClear={clearPersons}
                     />
                   )}
                   {isDateActive && (
                     <FilterChip
                       label={dateLabel}
-                      isActive={isDateActive}
+                      isActive={true}
                       onPress={handleOpenFilter}
                       onClear={clearDateRange}
                     />
@@ -728,14 +752,14 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {isAmountActive && (
                     <FilterChip
                       label={amountLabel}
-                      isActive={isAmountActive}
+                      isActive={true}
                       onPress={handleOpenFilter}
                       onClear={clearAmountRange}
                     />
                   )}
                 </ScrollView>
               </View>
-            ) : null}
+            )}
           </View>
         )}
         ListEmptyComponent={(
@@ -743,16 +767,24 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
             <View style={styles.emptyIconBox}>
               <HugeiconsIcon icon={ReceiptTextIcon} size={32} color={colors.textMuted} />
             </View>
-            <Text style={styles.emptyTitle}>Nothing here yet</Text>
+            <Text style={styles.emptyTitle}>
+              {activeFilterCount > 0 ? 'No results' : 'Nothing here yet'}
+            </Text>
             <Text style={styles.emptySubtitle}>
               {activeFilterCount > 0
-                ? 'No transactions match the active filters.'
+                ? 'No transactions match the active filters. Try adjusting or clearing them.'
                 : 'Add your first transaction to start tracking.'}
             </Text>
-            <BentoPressable style={styles.emptyAction} onPress={handleAddTransaction}>
-              <Text style={styles.emptyActionText}>Add Transaction</Text>
-              <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primaryForeground} />
-            </BentoPressable>
+            {activeFilterCount > 0 ? (
+              <BentoPressable style={[styles.emptyAction, { backgroundColor: colors.surface }]} onPress={handleResetFilters}>
+                <Text style={[styles.emptyActionText, { color: colors.text }]}>Clear filters</Text>
+              </BentoPressable>
+            ) : (
+              <BentoPressable style={styles.emptyAction} onPress={handleAddTransaction}>
+                <Text style={styles.emptyActionText}>Add Transaction</Text>
+                <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primaryForeground} />
+              </BentoPressable>
+            )}
           </View>
         )}
         ListFooterComponent={txQuery.isFetchingNextPage ? (
@@ -854,6 +886,25 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       justifyContent: 'center',
       backgroundColor: colors.surface,
     },
+    iconBtnActive: {
+      backgroundColor: colors.primary + '14',
+    },
+    filterBadge: {
+      position: 'absolute',
+      top: 4,
+      right: 4,
+      minWidth: 15,
+      height: 15,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 3,
+    },
+    filterBadgeText: {
+      fontSize: 9,
+      fontFamily: typography.styles.badge.fontFamily,
+      lineHeight: 12,
+    },
     content: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
@@ -883,6 +934,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
     dayTotalValue: {
       fontFamily: typography.fonts.medium,
       fontSize: 12,
+    },
+    dayTotalCount: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
     },
     emptyWrap: {
       paddingVertical: 60,

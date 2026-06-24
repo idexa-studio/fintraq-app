@@ -48,6 +48,39 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   const bottomSheet = useBottomSheet();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
+  const amountError = useMemo(() => {
+    const mn = minAmt ? parseFloat(minAmt) : undefined;
+    const mx = maxAmt ? parseFloat(maxAmt) : undefined;
+    if (mn !== undefined && mx !== undefined && mn > mx) return 'Min must be less than max';
+    return null;
+  }, [minAmt, maxAmt]);
+
+  const scopedCategories = useMemo(() => {
+    if (!local.types || local.types.length === 0) return categories;
+    return categories.filter(c => local.types!.includes(c.type as TransactionType));
+  }, [categories, local.types]);
+
+  const applyPreset = useCallback((preset: 'today' | 'week' | 'month' | 'last30') => {
+    Haptics.selectionAsync().catch(() => {});
+    const now = new Date();
+    const end = new Date(now);
+    end.setHours(23, 59, 59, 999);
+    let start = new Date(now);
+    if (preset === 'today') {
+      start.setHours(0, 0, 0, 0);
+    } else if (preset === 'week') {
+      const day = now.getDay();
+      start.setDate(now.getDate() - (day === 0 ? 6 : day - 1));
+      start.setHours(0, 0, 0, 0);
+    } else if (preset === 'month') {
+      start = new Date(now.getFullYear(), now.getMonth(), 1);
+    } else {
+      start.setDate(now.getDate() - 29);
+      start.setHours(0, 0, 0, 0);
+    }
+    setLocal(p => ({ ...p, dateRange: { startDate: start, endDate: end } }));
+  }, []);
+
   useEffect(() => {
     if (visible) {
       setLocal(filters);
@@ -85,27 +118,40 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   const onStartDate = useCallback((_e: DateTimePickerEvent, d?: Date) => {
     setShowStart(false);
     if (d) {
-      Haptics.selectionAsync().catch(() => { });
-      setLocal(p => ({ ...p, dateRange: { startDate: d, endDate: p.dateRange?.endDate || new Date() } }));
+      Haptics.selectionAsync().catch(() => {});
+      setLocal(p => {
+        const end = p.dateRange?.endDate ?? new Date();
+        // Auto-swap: if new start is after existing end, swap them
+        const [resolvedStart, resolvedEnd] = d > end ? [end, d] : [d, end];
+        resolvedEnd.setHours(23, 59, 59, 999);
+        return { ...p, dateRange: { startDate: resolvedStart, endDate: resolvedEnd } };
+      });
     }
   }, []);
 
   const onEndDate = useCallback((_e: DateTimePickerEvent, d?: Date) => {
     setShowEnd(false);
     if (d) {
-      Haptics.selectionAsync().catch(() => { });
+      Haptics.selectionAsync().catch(() => {});
       d.setHours(23, 59, 59, 999);
-      setLocal(p => ({ ...p, dateRange: { startDate: p.dateRange?.startDate || new Date(), endDate: d } }));
+      setLocal(p => {
+        const start = p.dateRange?.startDate ?? new Date();
+        // Auto-swap: if new end is before existing start, swap them
+        const [resolvedStart, resolvedEnd] = d < start ? [d, start] : [start, d];
+        resolvedEnd.setHours(23, 59, 59, 999);
+        return { ...p, dateRange: { startDate: resolvedStart, endDate: resolvedEnd } };
+      });
     }
   }, []);
 
   const handleApply = useCallback(() => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
+    if (amountError) return;
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     const mn = minAmt ? parseFloat(minAmt) : undefined;
     const mx = maxAmt ? parseFloat(maxAmt) : undefined;
     onApply({ ...local, amountRange: (mn !== undefined || mx !== undefined) ? { min: mn, max: mx } : undefined });
     onClose();
-  }, [local, minAmt, maxAmt, onApply, onClose]);
+  }, [local, minAmt, maxAmt, amountError, onApply, onClose]);
 
   const handleReset = useCallback(() => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => { });
@@ -200,6 +246,22 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
             Date range
           </Text>
+          <View style={styles.presetRow}>
+            {(['today', 'week', 'month', 'last30'] as const).map(preset => {
+              const label = preset === 'today' ? 'Today' : preset === 'week' ? 'This week' : preset === 'month' ? 'This month' : 'Last 30 days';
+              return (
+                <BentoPressable
+                  key={preset}
+                  style={[styles.presetPill, { backgroundColor: colors.card }]}
+                  onPress={() => applyPreset(preset)}
+                >
+                  <Text style={[styles.presetPillLabel, { fontFamily: typography.styles.chipLabel.fontFamily, color: colors.textMuted }]}>
+                    {label}
+                  </Text>
+                </BentoPressable>
+              );
+            })}
+          </View>
           <View style={[styles.group, { backgroundColor: colors.card }]}>
             {local.dateRange ? (
               <>
@@ -273,6 +335,11 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
               />
             </View>
           </View>
+          {amountError ? (
+            <Text style={[styles.fieldError, { fontFamily: typography.fonts.regular, color: colors.danger }]}>
+              {amountError}
+            </Text>
+          ) : null}
 
           {accounts.length > 0 && (
             <>
@@ -300,13 +367,13 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             </>
           )}
 
-          {categories.length > 0 && (
+          {scopedCategories.length > 0 && (
             <>
               <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-                Categories
+                Categories{local.types && local.types.length > 0 ? ' (filtered by type)' : ''}
               </Text>
               <View style={styles.pillGrid}>
-                {categories.map(c => {
+                {scopedCategories.map(c => {
                   const sel = local.categoryIds?.includes(c.id) || false;
                   const cc = colorNumberToHex(c.color);
                   return (
@@ -358,8 +425,9 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
         {/* ── Footer ── */}
         <View style={[styles.footer, { backgroundColor: colors.surface }]}>
           <BentoPressable
-            style={[styles.applyBtn, { backgroundColor: colors.text }]}
+            style={[styles.applyBtn, { backgroundColor: colors.text }, !!amountError && { opacity: 0.4 }]}
             onPress={handleApply}
+            disabled={!!amountError}
           >
             <Text style={[styles.applyLabel, { fontFamily: typography.styles.buttonLabel.fontFamily, color: colors.background }]}>
               Apply filters
@@ -422,6 +490,26 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: spacing('2'),
       marginTop: spacing('5'),
       paddingLeft: spacing('0.5'),
+      marginHorizontal: layout.screenPadding,
+    },
+    presetRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing('2'),
+      marginHorizontal: layout.screenPadding,
+      marginBottom: spacing('3'),
+    },
+    presetPill: {
+      height: 30,
+      paddingHorizontal: spacing('3'),
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    presetPillLabel: { fontSize: 12 },
+    fieldError: {
+      fontSize: typography.sizes.xs,
+      marginTop: spacing('1.5'),
       marginHorizontal: layout.screenPadding,
     },
     typeRow: {

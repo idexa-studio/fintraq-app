@@ -12,6 +12,7 @@ type Props = {
   currency: string | null;
   currencies: string[];
   onCurrencySelect: (currency: string) => void;
+  label?: string;
 };
 
 export const TransactionSummaryCard = React.memo(function TransactionSummaryCard({
@@ -20,6 +21,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
   currency,
   currencies,
   onCurrencySelect,
+  label = 'Net savings',
 }: Props) {
   const theme = useTheme();
   const { heroCard } = theme;
@@ -31,7 +33,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
 
   return (
     <View style={[styles.card, { backgroundColor: heroCard.background }]}>
-      <Text style={[styles.label, { color: heroCard.textMuted }]}>Net savings</Text>
+      <Text style={[styles.label, { color: heroCard.textMuted }]}>{label}</Text>
 
       <MoneyText
         amount={Math.abs(net)}
