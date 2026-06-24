@@ -358,9 +358,13 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                   )}
                 />
                 <View style={styles.fieldDivider} />
-                <TouchableOpacity style={styles.currencyBtn} onPress={openCurrencyPicker} activeOpacity={0.7}>
+                <TouchableOpacity
+                  style={[styles.currencyBtn, isEditing && styles.balanceInputDisabled]}
+                  onPress={isEditing ? undefined : openCurrencyPicker}
+                  activeOpacity={isEditing ? 1 : 0.7}
+                >
                   <Text style={styles.currencyValue}>{currency}</Text>
-                  <HugeiconsIcon icon={UnfoldMoreIcon} size={13} color={colors.textMuted} />
+                  {!isEditing && <HugeiconsIcon icon={UnfoldMoreIcon} size={13} color={colors.textMuted} />}
                 </TouchableOpacity>
               </View>
             </View>
