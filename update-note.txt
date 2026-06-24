@@ -1,5 +1,19 @@
-App Lock Security
-- Protect your financial data by enabling App Lock.
-- Support for biometric authentication (Face ID / Fingerprint) or a secure 6-digit PIN.
-- Automatically locks after a short grace period in the background to keep your data private.
-- Configurable directly from Settings > Security.
+Loans & Borrowings
+- Track money you lend to others or borrow from someone — all in one place.
+- Set due dates with automatic reminders so you never miss a repayment.
+- Log repayments and watch the outstanding balance update in real time.
+- View all active loans directly on a person's detail page.
+- Get a quick loans glance from the dashboard.
+
+Calculator Input
+- Tap the calculator icon on any amount field to enter values using a built-in calculator.
+- Supports addition, subtraction, multiplication, division, and percentage.
+
+Category Improvements
+- Search categories by name when picking one for a transaction.
+- Filter categories by type (income / expense / transfer) in the category list.
+
+UI & Polish
+- Refreshed transaction detail screen with a cleaner hero layout.
+- Consistent icon style throughout the app.
+- Smoother premium upsell flow when free limits are reached.

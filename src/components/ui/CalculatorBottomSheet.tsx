@@ -160,7 +160,7 @@ export const CalculatorBottomSheet = React.memo(function CalculatorBottomSheet({
     <BentoBottomSheet
       visible={visible}
       onClose={onClose}
-      snapPoints={['80%']}
+      snapPoints={['83%']}
       enablePanDownToClose={true}
       enableBackdropDismiss={true}
     >
