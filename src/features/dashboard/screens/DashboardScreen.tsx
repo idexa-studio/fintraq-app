@@ -23,10 +23,10 @@ import { AccountsCarousel } from '../components/AccountsCarousel';
 import { DashboardHeader } from '../components/DashboardHeader';
 import { HeroBalanceCard } from '../components/HeroBalanceCard';
 import { InsightsSection } from '../components/InsightsSection';
+import { LoansGlanceCard } from '../components/LoansGlanceCard';
 import { PremiumUpsellBottomSheet } from '../components/PremiumUpsellBottomSheet';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '../components/TopPersonsCard';
-import { LoansGlanceCard } from '../components/LoansGlanceCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
 
 const UPSELL_KEY = StorageKeys.UPSELL_DISMISSED_AT;
@@ -53,18 +53,21 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   React.useEffect(() => {
     if (isPremium || isLocked || hasActivePrompt) return;
 
+    let timer: ReturnType<typeof setTimeout>;
+
     const checkUpsell = async () => {
-      // Prevent rendering the premium upsell modal at the same time as the walkthrough modal to avoid iOS UIKit lockup/freeze.
       const walkthroughCompleted = await AsyncStorage.getItem(StorageKeys.WALKTHROUGH_DASHBOARD);
       if (walkthroughCompleted !== 'true') return;
 
       const val = await AsyncStorage.getItem(UPSELL_KEY);
       if (!val || Date.now() - parseInt(val, 10) > UPSELL_TTL) {
-        setShowUpsell(true);
+        // Delay so user can process the dashboard before the dialog appears
+        timer = setTimeout(() => setShowUpsell(true), 3500);
       }
     };
 
     checkUpsell();
+    return () => clearTimeout(timer);
   }, [isPremium, isLocked, hasActivePrompt]);
 
   const dismissUpsell = useCallback(() => {
@@ -76,7 +79,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
     if (isPremium || isLocked || hasActivePrompt) return;
     AsyncStorage.getItem(UPSELL_KEY).then(val => {
       if (!val || Date.now() - parseInt(val, 10) > UPSELL_TTL) {
-        setShowUpsell(true);
+        setTimeout(() => setShowUpsell(true), 1000);
       }
     });
   }, [isPremium, isLocked, hasActivePrompt]);
@@ -206,7 +209,10 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         onFinish={handleWalkthroughFinish}
         enabled={!isLocked && !hasActivePrompt}
       />
-      <PremiumUpsellBottomSheet visible={showUpsell && !isPremium && !isLocked && !hasActivePrompt} onClose={dismissUpsell} />
+      <PremiumUpsellBottomSheet 
+      visible={showUpsell && !isPremium && !isLocked && !hasActivePrompt} 
+      // visible
+      onClose={dismissUpsell} />
     </SafeAreaView>
   );
 });

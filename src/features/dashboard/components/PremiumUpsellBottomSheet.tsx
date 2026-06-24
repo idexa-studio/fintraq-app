@@ -13,8 +13,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { BentoBottomSheet } from '@/src/components/ui/BottomSheet';
+import { Modal, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 type PremiumUpsellBottomSheetProps = {
   visible: boolean;
@@ -37,7 +36,8 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
   const theme = useTheme();
   const { colors } = theme;
   const router = useRouter();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { width: screenWidth } = useWindowDimensions();
+  const styles = useMemo(() => createStyles(theme, screenWidth), [theme, screenWidth]);
   const [canDismiss, setCanDismiss] = useState(false);
   const [left, setLeft] = useState(BLOCK);
 
@@ -61,90 +61,102 @@ export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomS
     router.push('/premium');
   }, [onClose, router]);
 
+  const handleClose = useCallback(() => {
+    if (canDismiss) onClose();
+  }, [canDismiss, onClose]);
+
   return (
-    <BentoBottomSheet
+    <Modal
+      transparent
       visible={visible}
-      onClose={onClose}
-      enablePanDownToClose={canDismiss}
-      enableBackdropDismiss={canDismiss}
+      animationType="fade"
+      statusBarTranslucent
+      onRequestClose={handleClose}
     >
-      <View style={styles.root}>
-        {/* ── Header ── */}
-        <View style={styles.header}>
-          <View style={[styles.crownBadge, { backgroundColor: colors.warning + '18' }]}>
-            <HugeiconsIcon icon={CrownIcon} size={26} color={colors.warning} />
-          </View>
-
-          <View style={styles.headerText}>
-            <Text style={[styles.title, { color: colors.text }]}>Fintraq Pro</Text>
-            <View style={[styles.lifetimePill, { backgroundColor: colors.warning + '20' }]}>
-              <Text style={[styles.lifetimeLabel, { color: colors.warning }]}>One-time · Lifetime access</Text>
+      <View style={styles.overlay}>
+        <View style={styles.card}>
+          {/* ── Header ── */}
+          <View style={styles.header}>
+            <View style={[styles.crownBadge, { backgroundColor: colors.warning + '18' }]}>
+              <HugeiconsIcon icon={CrownIcon} size={26} color={colors.warning} />
             </View>
-          </View>
 
-          {canDismiss && (
-            <BentoPressable
-              onPress={onClose}
-              style={[styles.closeBtn, { backgroundColor: colors.text + '0C' }]}
-            >
-              <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
-            </BentoPressable>
-          )}
-        </View>
-
-        {/* ── Feature list ── */}
-        <View style={[styles.featureCard, { backgroundColor: colors.background }]}>
-          {PRO_FEATURES.map((item, i) => (
-            <View
-              key={i}
-              style={[
-                styles.featureRow,
-                i < PRO_FEATURES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-              ]}
-            >
-              <View style={[styles.featureIcon, { backgroundColor: colors.surface }]}>
-                <HugeiconsIcon icon={item.icon} size={16} color={colors.primary} />
+            <View style={styles.headerText}>
+              <Text style={styles.title}>Fintraq Pro</Text>
+              <View style={[styles.lifetimePill, { backgroundColor: colors.warning + '20' }]}>
+                <Text style={[styles.lifetimeLabel, { color: colors.warning }]}>One-time · Lifetime access</Text>
               </View>
-              <Text style={[styles.featureLabel, { color: colors.text }]}>{item.label}</Text>
-              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
             </View>
-          ))}
-        </View>
 
-        {/* ── CTA ── */}
-        <View style={styles.footer}>
-          <BentoPressable
-            style={[
-              styles.cta,
-              { backgroundColor: colors.primary },
-              !canDismiss && styles.ctaDimmed,
-            ]}
-            onPress={handleUpgrade}
-            disabled={!canDismiss}
-          >
-            <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
-              {canDismiss ? 'Unlock Fintraq Pro' : `Unlock in ${left}s`}
-            </Text>
-          </BentoPressable>
+            {canDismiss && (
+              <BentoPressable
+                onPress={onClose}
+                style={[styles.closeBtn, { backgroundColor: colors.text + '0C' }]}
+              >
+                <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
+              </BentoPressable>
+            )}
+          </View>
 
-          {canDismiss && (
-            <BentoPressable onPress={onClose} style={styles.skipBtn}>
-              <Text style={[styles.skipText, { color: colors.textMuted }]}>Maybe later</Text>
+          {/* ── Feature list ── */}
+          <View style={[styles.featureCard, { backgroundColor: colors.background }]}>
+            {PRO_FEATURES.map((item, i) => (
+              <View
+                key={i}
+                style={[
+                  styles.featureRow,
+                  i < PRO_FEATURES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+                ]}
+              >
+                <View style={[styles.featureIcon, { backgroundColor: colors.surface }]}>
+                  <HugeiconsIcon icon={item.icon} size={16} color={colors.primary} />
+                </View>
+                <Text style={styles.featureLabel}>{item.label}</Text>
+                <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
+              </View>
+            ))}
+          </View>
+
+          {/* ── CTA ── */}
+          <View style={styles.footer}>
+            <BentoPressable
+              style={[styles.cta, { backgroundColor: colors.primary }, !canDismiss && styles.ctaDimmed]}
+              onPress={handleUpgrade}
+              disabled={!canDismiss}
+            >
+              <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
+                {canDismiss ? 'Unlock Fintraq Pro' : `Unlock in ${left}s`}
+              </Text>
             </BentoPressable>
-          )}
+
+            {canDismiss && (
+              <BentoPressable onPress={onClose} style={styles.skipBtn}>
+                <Text style={styles.skipText}>Maybe later</Text>
+              </BentoPressable>
+            )}
+          </View>
         </View>
       </View>
-    </BentoBottomSheet>
+    </Modal>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, shadow, overlay }: ThemeContextType, screenWidth: number) =>
   StyleSheet.create({
-    root: {
-      paddingHorizontal: spacing('5'),
-      paddingTop: spacing('1'),
-      paddingBottom: spacing('6'),
+    overlay: {
+      flex: 1,
+      backgroundColor: overlay.dim,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: spacing('6'),
+    },
+    card: {
+      width: Math.min(screenWidth - spacing('8'), 380),
+      backgroundColor: colors.surface,
+      borderRadius: radius('2xl'),
+      padding: spacing('5'),
       gap: spacing('4'),
+      ...shadow('lg'),
     },
     // Header
     header: {
@@ -167,6 +179,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
       fontFamily: typography.fonts.heading,
       fontSize: 22,
       letterSpacing: -0.3,
+      color: colors.text,
     },
     lifetimePill: {
       alignSelf: 'flex-start',
@@ -187,7 +200,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
     },
     // Features
     featureCard: {
-      borderRadius: radius('2xl'),
+      borderRadius: radius('xl'),
       overflow: 'hidden',
     },
     featureRow: {
@@ -208,6 +221,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
       fontFamily: typography.fonts.regular,
       fontSize: 13.5,
       flex: 1,
+      color: colors.text,
     },
     // Footer
     footer: {
@@ -234,5 +248,6 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
     skipText: {
       fontFamily: typography.fonts.regular,
       fontSize: typography.sizes.sm,
+      color: colors.textMuted,
     },
   });
