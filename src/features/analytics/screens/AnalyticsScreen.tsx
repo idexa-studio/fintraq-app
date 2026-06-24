@@ -117,14 +117,14 @@ function DeltaBadge({ delta, positiveIsGood }: { delta: number | null; positiveI
   return (
     <View style={{
       flexDirection: 'row', alignItems: 'center', gap: 2,
-      backgroundColor: color + '18',
+      backgroundColor: color + '1A',
       borderRadius: radius('full'),
-      paddingHorizontal: spacing('1.5'),
-      paddingVertical: 2,
+      paddingHorizontal: spacing('2'),
+      paddingVertical: 3,
       alignSelf: 'flex-start',
     }}>
-      <HugeiconsIcon icon={isPositive ? ArrowUp01Icon : ArrowDown01Icon} size={9} color={color} />
-      <Text style={{ fontFamily: typography.styles.badge.fontFamily, fontSize: 9, color }}>
+      <HugeiconsIcon icon={isPositive ? ArrowUp01Icon : ArrowDown01Icon} size={10} color={color} />
+      <Text style={{ fontFamily: typography.styles.badge.fontFamily, fontSize: 10, color }}>
         {sign}{Math.abs(delta).toFixed(0)}%
       </Text>
     </View>
@@ -142,7 +142,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
     [screenWidth, layout, spacing],
   );
   const cardCellWidth = useMemo(
-    () => (screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2 - spacing('2')) / 2,
+    () => (screenWidth - layout.screenPadding * 2 - spacing('4') * 2 - spacing('2')) / 2,
     [screenWidth, layout, spacing],
   );
   const chartWidth = screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2;
@@ -342,18 +342,18 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           <SectionHeader title="Highlights" />
           <PremiumGuard label="Highlights" size="medium" containerStyle={styles.guard}>
             {(topCategory || biggestExpense) ? (
-              <View style={styles.card}>
+              <View style={styles.highlightGroup}>
                 {topCategory && (
                   <BentoPressable
-                    style={styles.highlightRow}
+                    style={[styles.highlightCard, styles.highlightCardFirst, !biggestExpense && styles.highlightCardLast]}
                     onPress={() => navigateToCategoryTransactions(topCategory.id)}
                   >
                     <IconAvatar
                       icon={resolveIcon(topCategory.icon, Tag01Icon)}
                       color={colorNumberToHex(topCategory.color)}
                       variant="subtle"
-                      size={36}
-                      iconSize={16}
+                      size={40}
+                      iconSize={18}
                     />
                     <View style={styles.highlightContent}>
                       <Text style={styles.highlightMeta}>Top expense category</Text>
@@ -362,15 +362,18 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                     <MoneyText amount={topCategory.amount} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.highlightAmount} />
                   </BentoPressable>
                 )}
-                {topCategory && biggestExpense && <View style={styles.rowDivider} />}
+
                 {biggestExpense && (
-                  <View style={styles.highlightRow}>
+                  <BentoPressable
+                    style={[styles.highlightCard, styles.highlightCardLast, !topCategory && styles.highlightCardFirst]}
+                    onPress={() => navigateToCategoryTransactions(biggestExpense.categoryId)}
+                  >
                     <IconAvatar
                       icon={resolveIcon(biggestExpense.categoryIcon, SparklesIcon)}
                       color={colorNumberToHex(biggestExpense.categoryColor)}
                       variant="subtle"
-                      size={36}
-                      iconSize={16}
+                      size={40}
+                      iconSize={18}
                     />
                     <View style={styles.highlightContent}>
                       <Text style={styles.highlightMeta}>Biggest expense</Text>
@@ -379,7 +382,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                       </Text>
                     </View>
                     <MoneyText amount={biggestExpense.amount} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.highlightAmount} />
-                  </View>
+                  </BentoPressable>
                 )}
               </View>
             ) : (
@@ -651,7 +654,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: 12,
       color: colors.textMuted,
       paddingHorizontal: layout.screenPadding,
-      marginBottom: spacing('4'),
+      marginBottom: spacing('5'),
     },
 
     // ── Metric tiles
@@ -666,8 +669,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flex: 1,
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
-      padding: spacing('3.5'),
-      gap: spacing('1.5'),
+      padding: spacing('4'),
+      gap: spacing('2'),
     },
     metricTopRow: {
       flexDirection: 'row',
@@ -678,29 +681,44 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
+      letterSpacing: 0.3,
     },
-    metricSmall: { fontSize: typography.sizes.lg },
+    metricSmall: { fontSize: typography.sizes.xl },
 
     // ── Card
     card: {
       backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('3.5'),
+      borderRadius: radius('2xl'),
+      padding: spacing('4'),
       marginHorizontal: layout.screenPadding,
     },
 
     // ── Highlights
-    highlightRow: {
+    highlightGroup: {
+      gap: 2,
+      marginHorizontal: layout.screenPadding,
+    },
+    highlightCard: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
-      paddingVertical: spacing('2'),
+      backgroundColor: colors.surface,
+      padding: spacing('3.5'),
     },
-    highlightContent: { flex: 1, gap: 2 },
+    highlightCardFirst: {
+      borderTopLeftRadius: radius('xl'),
+      borderTopRightRadius: radius('xl'),
+    },
+    highlightCardLast: {
+      borderBottomLeftRadius: radius('xl'),
+      borderBottomRightRadius: radius('xl'),
+    },
+    highlightContent: { flex: 1, gap: 3 },
     highlightMeta: {
       fontFamily: typography.fonts.regular,
       fontSize: typography.sizes.xxs,
       color: colors.textMuted,
+      letterSpacing: 0.2,
     },
     highlightName: {
       fontFamily: typography.styles.rowLabel.fontFamily,
@@ -708,11 +726,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.text,
     },
     highlightAmount: { fontSize: typography.sizes.sm },
-    rowDivider: {
-      height: 1,
-      backgroundColor: colors.text + '0C',
-      marginVertical: spacing('1'),
-    },
 
     // ── Chart legend
     chartLegend: { flexDirection: 'row', gap: spacing('4'), marginBottom: spacing('2') },
@@ -747,7 +760,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     catSection: { gap: spacing('3') },
     stackedBar: {
       flexDirection: 'row',
-      height: 8,
+      height: 10,
       borderRadius: radius('full'),
       overflow: 'hidden',
       gap: 2,
@@ -762,7 +775,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     categoryCell: {
       backgroundColor: colors.surface,
-      borderRadius: radius('lg'),
+      borderRadius: radius('xl'),
       padding: spacing('3'),
       gap: spacing('2'),
       position: 'relative',
@@ -810,16 +823,17 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     // ── KPI grid
     kpiGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
     kpiCell: {
-      minHeight: 72,
-      borderRadius: radius('lg'),
+      minHeight: 84,
+      borderRadius: radius('xl'),
       backgroundColor: colors.card,
-      padding: spacing('3'),
+      padding: spacing('3.5'),
       justifyContent: 'space-between',
     },
     kpiLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
       fontSize: typography.sizes.xs,
+      letterSpacing: 0.3,
     },
-    kpiValue: { fontSize: typography.sizes.md },
+    kpiValue: { fontSize: typography.sizes.lg },
   });
