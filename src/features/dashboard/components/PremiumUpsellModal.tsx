@@ -15,7 +15,7 @@ import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { Modal, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
-type PremiumUpsellBottomSheetProps = {
+type PremiumUpsellModalProps = {
   visible: boolean;
   onClose: () => void;
 };
@@ -29,10 +29,10 @@ const PRO_FEATURES: { icon: IconSvgElement; label: string }[] = [
   { icon: File01Icon,          label: 'CSV export & weekly/monthly reports' },
 ];
 
-export const PremiumUpsellBottomSheet = React.memo(function PremiumUpsellBottomSheet({
+export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
   visible,
   onClose,
-}: PremiumUpsellBottomSheetProps) {
+}: PremiumUpsellModalProps) {
   const theme = useTheme();
   const { colors } = theme;
   const router = useRouter();

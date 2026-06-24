@@ -24,7 +24,7 @@ import { DashboardHeader } from '../components/DashboardHeader';
 import { HeroBalanceCard } from '../components/HeroBalanceCard';
 import { InsightsSection } from '../components/InsightsSection';
 import { LoansGlanceCard } from '../components/LoansGlanceCard';
-import { PremiumUpsellBottomSheet } from '../components/PremiumUpsellBottomSheet';
+import { PremiumUpsellModal } from '../components/PremiumUpsellModal';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '../components/TopPersonsCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
@@ -209,7 +209,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         onFinish={handleWalkthroughFinish}
         enabled={!isLocked && !hasActivePrompt}
       />
-      <PremiumUpsellBottomSheet 
+      <PremiumUpsellModal 
       visible={showUpsell && !isPremium && !isLocked && !hasActivePrompt} 
       // visible
       onClose={dismissUpsell} />
