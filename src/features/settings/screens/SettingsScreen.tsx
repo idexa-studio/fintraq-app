@@ -18,6 +18,7 @@ import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
 import { getFormattedAppVersion } from '@/src/utils/version';
+import * as WebBrowser from 'expo-web-browser';
 import {
   AlarmClockIcon,
   ArrowRight01Icon,
@@ -366,12 +367,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   /* ── Links ── */
   const openPrivacy = useCallback(() => {
     const p = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://fintraq.idexa.app/in-app/privacy?platform=${p}`);
+    WebBrowser.openBrowserAsync(`https://fintraq.idexa.app/in-app/privacy?platform=${p}`);
   }, []);
 
   const openTerms = useCallback(() => {
     const p = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://fintraq.idexa.app/in-app/terms?platform=${p}`);
+    WebBrowser.openBrowserAsync(`https://fintraq.idexa.app/in-app/terms?platform=${p}`);
   }, []);
 
   const openExport = useCallback(() => {
