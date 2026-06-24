@@ -86,9 +86,18 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
 
   const accountOptions = useMemo((): OptionsDialogOption[] => {
     if (!selectedAccount) return [];
+    const hasTransactions = selectedAccount.income > 0 || selectedAccount.expense > 0;
     return [
       { key: 'edit', label: 'Edit', icon: PencilEdit01Icon, onPress: handleEdit },
-      { key: 'delete', label: 'Delete', icon: Delete01Icon, destructive: true, onPress: handleDeletePress },
+      {
+        key: 'delete',
+        label: 'Delete',
+        icon: Delete01Icon,
+        destructive: true,
+        disabled: hasTransactions,
+        hint: hasTransactions ? 'Remove all transactions first' : undefined,
+        onPress: handleDeletePress,
+      },
     ];
   }, [selectedAccount, handleEdit, handleDeletePress]);
 
@@ -215,7 +224,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
         visible={showDeleteConfirm}
         onClose={closeDelete}
         title="Delete account"
-        message={selectedAccount ? `Delete ${selectedAccount.name}? All linked transactions will be permanently removed.` : undefined}
+        message={selectedAccount ? `Delete "${selectedAccount.name}"? This action cannot be undone.` : undefined}
         confirmLabel="Delete"
         onConfirm={handleDeleteConfirm}
         isLoading={deleteAccount.isPending}
