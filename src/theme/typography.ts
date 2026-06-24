@@ -93,7 +93,7 @@ export const TEXT_STYLES = {
 
   // ── Profile / Identity ───────────────────────────────────────────
   profileName:      { fontFamily: F.bold,           fontSize: S.lg   },
-  profileMono:      { fontFamily: F.bold,           fontSize: S.xl   },
+  profileMono:      { fontFamily: F.regular,           fontSize: S.xl   },
 
   // ── Utility ──────────────────────────────────────────────────────
   badge:            { fontFamily: F.medium,         fontSize: S.xxs  },
