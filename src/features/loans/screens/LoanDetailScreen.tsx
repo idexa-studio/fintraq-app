@@ -229,7 +229,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
         {/* Hero Card styled like Account detail hero */}
         <View style={[styles.heroCard, { backgroundColor: colors.surface }]}>
           <View style={styles.heroTop}>
-            <PersonAvatar name={personName} color={personColor} size={56} />
+            <PersonAvatar name={personName} color={personColor} size={56} variant="solid" />
             <View style={styles.heroMeta}>
               <Text style={styles.heroName} numberOfLines={1}>{personName}</Text>
               <View style={styles.heroBadgeRow}>

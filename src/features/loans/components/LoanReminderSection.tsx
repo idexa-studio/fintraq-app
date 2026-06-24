@@ -1,5 +1,5 @@
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, Switch, Text, View } from 'react-native';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
 import { OptionsBottomSheet } from '../../../components/ui/OptionsBottomSheet';
@@ -28,9 +28,18 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
   const [emiTime, setEmiTime] = useState(loan.emiReminderTime ?? '09:00');
   const [emiEnabled, setEmiEnabled] = useState(loan.emiReminderEnabled);
 
-  const [dueEnabled, setDueEnabled] = useState(loan.dueReminderEnabled);
+  // Pre-activate due reminder whenever loan has a due date
+  const [dueEnabled, setDueEnabled] = useState(!!loan.dueDate);
   const [dueDaysBefore, setDueDaysBefore] = useState(loan.dueReminderDaysBefore ?? 1);
   const [dueTime, setDueTime] = useState(loan.emiReminderTime ?? '09:00');
+
+  // Auto-schedule due reminder on first open when loan has dueDate but reminder not yet persisted
+  useEffect(() => {
+    if (loan.dueDate && !loan.dueReminderEnabled) {
+      scheduleDueReminder(loan, dueDaysBefore, dueTime);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [showEmiTimePicker, setShowEmiTimePicker] = useState(false);
   const [showDueTimePicker, setShowDueTimePicker] = useState(false);

@@ -64,7 +64,7 @@ const AccountRow = React.memo(function AccountRow({
 
   return (
     <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
-      <IconAvatar icon={resolveAccountTypeIcon(account.accountType)} color={accentColor} variant="solid" size={36} iconSize={18} />
+      <IconAvatar icon={resolveAccountTypeIcon(account.accountType)} color={accentColor} variant="subtle" size={36} iconSize={18} />
       <View style={styles.info}>
         <Text style={styles.name}>{account.name}</Text>
         <Text style={styles.meta}>
@@ -131,7 +131,7 @@ const CategoryRow = React.memo(function CategoryRow({
 
   return (
     <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
-      <IconAvatar icon={resolveIcon(category.icon, Tag01Icon)} color={catColor} variant="solid" size={36} iconSize={18} />
+      <IconAvatar icon={resolveIcon(category.icon, Tag01Icon)} color={catColor} variant="subtle" size={36} iconSize={18} />
       <Text style={styles.name}>{category.name}</Text>
       <View style={[styles.badge, { backgroundColor: badgeColor + '1A' }]}>
         <Text style={[styles.badgeText, { color: badgeColor }]}>
@@ -199,7 +199,7 @@ const PersonRow = React.memo(function PersonRow({
 
   return (
     <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
-      <PersonAvatar name={person.name} color={hex} size={36} variant="solid" />
+      <PersonAvatar name={person.name} color={hex} size={36} />
       <View style={styles.info}>
         <Text style={styles.name}>{person.name}</Text>
         {(person.designation || person.company) ? (

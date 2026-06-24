@@ -145,7 +145,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {/* Hero card */}
         <View style={styles.heroCard}>
           <View style={styles.heroTop}>
-            <PersonAvatar name={person.name} color={hex} size={60} />
+            <PersonAvatar name={person.name} color={hex} size={60} variant="solid" />
             <View style={styles.heroInfo}>
               <Text style={[styles.heroName, { fontFamily: typography.styles.profileName.fontFamily, color: colors.text }]}>
                 {person.name}
