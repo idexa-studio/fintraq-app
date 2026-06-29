@@ -1,25 +1,31 @@
 import React, {
   createContext,
-  useContext,
-  useState,
-  useEffect,
   useCallback,
+  useContext,
+  useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react';
-import { AppState, AppStateStatus, Linking, Platform } from 'react-native';
-import { fetchAppConfig } from '@/src/services/app-config.service';
-import { ForceUpdateScreen } from '@/src/features/update/components/ForceUpdateScreen';
-import { getAppVersion } from '@/src/utils/version';
-import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
+import { AppState, AppStateStatus, View } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
-import { useAppLock } from './AppLockProvider';
+import {
+  fetchRemoteAppConfig,
+  initRemoteConfig,
+  type AnnouncementConfig,
+} from '@/src/services/remote-config.service';
+import { ForceUpdateScreen } from '@/src/features/update/components/ForceUpdateScreen';
+import { MaintenanceScreen } from '@/src/features/maintenance/components/MaintenanceScreen';
+import { AnnouncementBanner } from '@/src/components/ui/AnnouncementBanner';
 import { MigrationSeedService } from '@/src/services/migration-seed.service';
+import { getAppVersion } from '@/src/utils/version';
 
 interface AppConfigContextType {
   isChecking: boolean;
   checkStatus: (force?: boolean) => Promise<void>;
   hasActivePrompt: boolean;
+  privacyUrl: string;
+  termsUrl: string;
 }
 
 const AppConfigContext = createContext<AppConfigContextType | null>(null);
@@ -30,8 +36,8 @@ export function useAppConfig() {
   return ctx;
 }
 
-const FETCH_TIMEOUT_MS = 3500;
-const COOLDOWN_MS = 10 * 60 * 1000; // 10 minutes in milliseconds
+const FETCH_TIMEOUT_MS = 5_000;
+const COOLDOWN_MS = 10 * 60 * 1000;
 
 export const AppConfigProvider = React.memo(function AppConfigProvider({
   children,
@@ -39,163 +45,156 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
   children: React.ReactNode;
 }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [isCheckingStatus, setIsCheckingStatus] = useState(false);
-  const [action, setAction] = useState<'force-update' | 'suggest-update' | 'none'>('none');
-  const [message, setMessage] = useState('');
-  const [showSoftPrompt, setShowSoftPrompt] = useState(false);
-  const [storeLinks, setStoreLinks] = useState<{ androidStore: string; iosStore: string } | null>(null);
+  const [isChecking, setIsChecking] = useState(false);
 
-  const { isLocked } = useAppLock();
-  const isLockedRef = useRef(isLocked);
-  const pendingSoftPrompt = useRef(false);
+  const [forceUpdateRequired, setForceUpdateRequired] = useState(false);
+  const [forceUpdateVersionName, setForceUpdateVersionName] = useState('');
+  const [forceUpdateStoreUrl, setForceUpdateStoreUrl] = useState('');
 
-  useEffect(() => {
-    isLockedRef.current = isLocked;
-  }, [isLocked]);
+  const [maintenanceBlocked, setMaintenanceBlocked] = useState(false);
+  const [maintenanceMessage, setMaintenanceMessage] = useState('');
 
-  // When app is unlocked, show soft prompt if it was pending
-  useEffect(() => {
-    if (!isLocked && pendingSoftPrompt.current) {
-      setShowSoftPrompt(true);
-      pendingSoftPrompt.current = false;
-    }
-  }, [isLocked]);
+  const [announcement, setAnnouncement] = useState<AnnouncementConfig | null>(null);
+  const [announcementDismissed, setAnnouncementDismissed] = useState(false);
+
+  const [privacyUrl, setPrivacyUrl] = useState('');
+  const [termsUrl, setTermsUrl] = useState('');
 
   const appState = useRef(AppState.currentState);
   const lastCheckedTime = useRef(0);
+  const initialized = useRef(false);
 
   const checkStatus = useCallback(async (force = false) => {
     const now = Date.now();
-    // 10-minute rate-limiting cooldown unless forced
-    if (!force && lastCheckedTime.current > 0 && now - lastCheckedTime.current < COOLDOWN_MS) {
-      if (__DEV__) {
-        console.log('[AppConfigProvider] Skipping version check: within 10-minute cooldown.');
-      }
+    // In dev: always fetch fresh — skip cooldown so RC changes show immediately
+    const skipCooldown = __DEV__ || force;
+    if (!skipCooldown && lastCheckedTime.current > 0 && now - lastCheckedTime.current < COOLDOWN_MS) {
+      if (__DEV__) console.log('[AppConfig] Skipped — within cooldown');
       return;
     }
 
-    setIsCheckingStatus(true);
-    
-    // Create a promise that rejects after FETCH_TIMEOUT_MS
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('Fetch timeout')), FETCH_TIMEOUT_MS);
-    });
+    setIsChecking(true);
+
+    const timeout = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('RC fetch timeout')), FETCH_TIMEOUT_MS)
+    );
 
     try {
-      // Race the fetch request against the timeout
-      const result = await Promise.race([fetchAppConfig(), timeoutPromise]);
+      const config = await Promise.race([fetchRemoteAppConfig(), timeout]);
 
-      if (result.success && result.data) {
-        const { action: nextAction, message: nextMessage, links } = result.data;
-        setAction(nextAction);
-        setMessage(nextMessage || '');
-        setStoreLinks(links);
+      setForceUpdateRequired(config.forceUpdate.required);
+      setForceUpdateVersionName(config.forceUpdate.versionName);
+      setForceUpdateStoreUrl(config.forceUpdate.storeUrl);
 
-        if (nextAction === 'suggest-update') {
-          if (isLockedRef.current) {
-            pendingSoftPrompt.current = true;
-          } else {
-            setShowSoftPrompt(true);
-          }
-        }
+      setMaintenanceBlocked(config.maintenance.blocked);
+      setMaintenanceMessage(config.maintenance.message);
 
-        lastCheckedTime.current = Date.now();
-      }
+      setAnnouncement(config.announcement.showBanner ? config.announcement : null);
+
+      if (config.privacyUrl) setPrivacyUrl(config.privacyUrl);
+      if (config.termsUrl) setTermsUrl(config.termsUrl);
+
+      lastCheckedTime.current = Date.now();
     } catch (error) {
-      console.warn('[AppConfigProvider] Failed to fetch app config (offline or timeout):', error);
-      // Let the user proceed offline if fetch fails, unless a block state was already set.
+      // Offline or timeout — keep cached/default values, don't block the user
+      if (__DEV__) console.warn('[AppConfigProvider] Remote config fetch failed:', error);
     } finally {
+      setIsChecking(false);
       setIsLoading(false);
-      setIsCheckingStatus(false);
     }
   }, []);
 
-  // Check config and generate migration seed on mount
+  // Init RC defaults once, then fetch on mount
   useEffect(() => {
-    checkStatus();
+    if (initialized.current) return;
+    initialized.current = true;
+
+    initRemoteConfig()
+      .then(() => checkStatus(true))
+      .catch(() => setIsLoading(false));
+
     MigrationSeedService.writeMigrationSeed().catch(() => {});
   }, [checkStatus]);
 
-  // Release the splash screen lock once initialization completes
+  // Hide splash once initialized
   useEffect(() => {
     if (!isLoading) {
       SplashScreen.hideAsync().catch(() => {});
     }
   }, [isLoading]);
 
-  // Check config on AppState change (active/foreground)
+  // Re-fetch on foreground resume
   useEffect(() => {
-    const handleAppStateChange = (nextAppState: AppStateStatus) => {
-      if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-        // App has come to the foreground, re-fetch configuration (subject to cooldown) and write seed
+    const handleAppStateChange = (nextState: AppStateStatus) => {
+      if (appState.current.match(/inactive|background/) && nextState === 'active') {
         checkStatus();
         MigrationSeedService.writeMigrationSeed().catch(() => {});
-      } else if (nextAppState === 'background' || nextAppState === 'inactive') {
-        // App going to background: write seed to ensure Flutter has latest data
+      } else if (nextState === 'background' || nextState === 'inactive') {
         MigrationSeedService.writeMigrationSeed().catch(() => {});
       }
-      appState.current = nextAppState;
+      appState.current = nextState;
     };
 
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
-    return () => {
-      subscription.remove();
-    };
+    const sub = AppState.addEventListener('change', handleAppStateChange);
+    return () => sub.remove();
   }, [checkStatus]);
 
-  const handleSoftUpdateConfirm = useCallback(() => {
-    setShowSoftPrompt(false);
-    const storeUrl = Platform.OS === 'ios' ? storeLinks?.iosStore : storeLinks?.androidStore;
-    if (storeUrl) {
-      Linking.openURL(storeUrl).catch((err) =>
-        console.error('[AppConfigProvider] Failed to open store URL:', err)
-      );
-    }
-  }, [storeLinks]);
-
-  const handleSoftUpdateClose = useCallback(() => {
-    setShowSoftPrompt(false);
+  const handleAnnouncementDismiss = useCallback(() => {
+    setAnnouncementDismissed(true);
   }, []);
+
+  const handleMaintenanceRetry = useCallback(() => {
+    checkStatus(true);
+  }, [checkStatus]);
+
+  const showAnnouncement = !announcementDismissed && announcement !== null;
 
   const contextValue = useMemo(
     () => ({
-      isChecking: isCheckingStatus,
+      isChecking,
       checkStatus,
-      hasActivePrompt: showSoftPrompt,
+      hasActivePrompt: showAnnouncement,
+      privacyUrl,
+      termsUrl,
     }),
-    [isCheckingStatus, checkStatus, showSoftPrompt]
+    [isChecking, checkStatus, showAnnouncement, privacyUrl, termsUrl]
   );
 
-  // Return null during loading to keep the native splash screen locked without visual flicker
-  if (isLoading) {
-    return null;
+  if (isLoading) return null;
+
+  if (maintenanceBlocked) {
+    return (
+      <MaintenanceScreen
+        message={maintenanceMessage}
+        onRetry={handleMaintenanceRetry}
+        isRetrying={isChecking}
+      />
+    );
   }
 
-  if (action === 'force-update') {
+  if (forceUpdateRequired) {
     return (
       <ForceUpdateScreen
-        androidStoreUrl={storeLinks?.androidStore || 'https://play.google.com/store/apps/details?id=me.nafish.luno'}
-        iosStoreUrl={storeLinks?.iosStore || 'https://apps.apple.com/app/id123456'}
+        androidStoreUrl={forceUpdateStoreUrl}
+        iosStoreUrl={forceUpdateStoreUrl}
         currentVersion={getAppVersion()}
-        latestVersion="Latest"
-        message={message}
+        latestVersion={forceUpdateVersionName}
       />
     );
   }
 
   return (
     <AppConfigContext.Provider value={contextValue}>
-      {children}
-      <ConfirmDialog
-        visible={showSoftPrompt}
-        onClose={handleSoftUpdateClose}
-        title="Update available"
-        message={message || 'A new version of Fintraq is available. Would you like to update now to get the latest features?'}
-        confirmLabel="Update"
-        cancelLabel="Later"
-        destructive={false}
-        onConfirm={handleSoftUpdateConfirm}
-      />
+      <View style={{ flex: 1 }}>
+        {children}
+        {showAnnouncement && announcement !== null && (
+          <AnnouncementBanner
+            message={announcement.message}
+            canDismiss={announcement.canDismiss}
+            onDismiss={handleAnnouncementDismiss}
+          />
+        )}
+      </View>
     </AppConfigContext.Provider>
   );
 });

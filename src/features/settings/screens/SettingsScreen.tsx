@@ -13,6 +13,7 @@ import { LockStorage } from '@/src/features/lock/api/lockStorage';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
 import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
 import { useAppLock } from '@/src/providers/AppLockProvider';
+import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -237,6 +238,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const queryClient = useQueryClient();
 
   const { lockEnabled, lockMode, enableLock, disableLock } = useAppLock();
+  const { privacyUrl, termsUrl } = useAppConfig();
   const [showPinSetup, setShowPinSetup] = useState(false);
   const [showThemeDialog, setShowThemeDialog] = useState(false);
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
@@ -365,14 +367,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
   /* ── Links ── */
   const openPrivacy = useCallback(() => {
-    const p = Platform.OS === 'ios' ? 'ios' : 'android';
-    router.push({ pathname: '/webview', params: { url: `https://fintraq.idexa.app/in-app/privacy?platform=${p}`, title: 'Privacy Policy' } });
-  }, [router]);
+    if (!privacyUrl) return;
+    router.push({ pathname: '/webview', params: { url: privacyUrl, title: 'Privacy Policy' } });
+  }, [router, privacyUrl]);
 
   const openTerms = useCallback(() => {
-    const p = Platform.OS === 'ios' ? 'ios' : 'android';
-    router.push({ pathname: '/webview', params: { url: `https://fintraq.idexa.app/in-app/terms?platform=${p}`, title: 'Terms of Use' } });
-  }, [router]);
+    if (!termsUrl) return;
+    router.push({ pathname: '/webview', params: { url: termsUrl, title: 'Terms of Use' } });
+  }, [router, termsUrl]);
 
   const openExport = useCallback(() => {
     router.push(isPremium ? '/export' : '/premium');
