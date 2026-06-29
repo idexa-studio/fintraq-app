@@ -1,7 +1,6 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { DASHBOARD_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
-import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { useAppLock } from '@/src/providers/AppLockProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
@@ -46,12 +45,11 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
 
   const { isLocked } = useAppLock();
-  const { hasActivePrompt } = useAppConfig();
 
   const [showUpsell, setShowUpsell] = React.useState(false);
 
   React.useEffect(() => {
-    if (isPremium || isLocked || hasActivePrompt) return;
+    if (isPremium || isLocked) return;
 
     let timer: ReturnType<typeof setTimeout>;
 
@@ -68,7 +66,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
     checkUpsell();
     return () => clearTimeout(timer);
-  }, [isPremium, isLocked, hasActivePrompt]);
+  }, [isPremium, isLocked]);
 
   const dismissUpsell = useCallback(() => {
     setShowUpsell(false);
@@ -76,13 +74,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   }, []);
 
   const handleWalkthroughFinish = useCallback(() => {
-    if (isPremium || isLocked || hasActivePrompt) return;
+    if (isPremium || isLocked) return;
     AsyncStorage.getItem(UPSELL_KEY).then(val => {
       if (!val || Date.now() - parseInt(val, 10) > UPSELL_TTL) {
         setTimeout(() => setShowUpsell(true), 1000);
       }
     });
-  }, [isPremium, isLocked, hasActivePrompt]);
+  }, [isPremium, isLocked]);
 
   const balancesByCurrency = useMemo(() =>
     accounts?.reduce((acc, a) => {
@@ -208,10 +206,10 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         storageKey={StorageKeys.WALKTHROUGH_DASHBOARD}
         steps={DASHBOARD_WALKTHROUGH_STEPS}
         onFinish={handleWalkthroughFinish}
-        enabled={!isLocked && !hasActivePrompt}
+        enabled={!isLocked}
       />
-      <PremiumUpsellModal 
-      visible={showUpsell && !isPremium && !isLocked && !hasActivePrompt} 
+      <PremiumUpsellModal
+      visible={showUpsell && !isPremium && !isLocked}
       // visible
       onClose={dismissUpsell} />
     </SafeAreaView>
