@@ -10,12 +10,14 @@ export type HeaderProps = {
   title: string;
   showBack?: boolean;
   rightAction?: React.ReactNode;
+  onBack?: () => void;
 };
 
 export const Header = React.memo(function Header({
   title,
   showBack,
-  rightAction
+  rightAction,
+  onBack,
 }: HeaderProps) {
   const router = useRouter();
   const theme = useTheme();
@@ -23,8 +25,9 @@ export const Header = React.memo(function Header({
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handleBack = useCallback(() => {
+    if (onBack) { onBack(); return; }
     router.back();
-  }, [router]);
+  }, [router, onBack]);
 
   return (
     <View style={styles.container}>

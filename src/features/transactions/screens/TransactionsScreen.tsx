@@ -12,11 +12,12 @@ import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { EdgeInsets, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Header } from '../../../components/ui/Header';
-import { TransactionSummaryCard } from '../components/TransactionSummaryCard';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
+import { sortCurrenciesWithDefault } from '../../../constants/currency';
 import { StorageKeys } from '../../../constants/keys';
+import { useSettings } from '../../../providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useCategories } from '../../categories/hooks/categories';
@@ -24,9 +25,11 @@ import { AdvancedFilterService, AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from
 import { AdvancedFilterBottomSheet } from '../../filters/components/AdvancedFilterBottomSheet';
 import { usePersons } from '../../persons/hooks/persons';
 import type { TransactionListItem } from '../api/transactions';
+import { TransactionSummaryCard } from '../components/TransactionSummaryCard';
 import {
   useDeleteTransaction,
   useInfiniteTransactions,
+  useTransactionTotals,
 } from '../hooks/transactions';
 
 import { format } from 'date-fns';
@@ -211,53 +214,52 @@ const SwipeableRow = React.memo(function SwipeableRow({
 
 interface FilterChipProps {
   label: string;
-  isActive: boolean;
+  icon?: IconSvgElement;
   onPress: () => void;
   onClear?: () => void;
-  showChevron?: boolean;
+  isClearAll?: boolean;
 }
 
 const FilterChip = React.memo(function FilterChip({
   label,
-  isActive,
+  icon,
   onPress,
   onClear,
-  showChevron = true,
+  isClearAll = false,
 }: FilterChipProps) {
   const theme = useTheme();
-  const { colors, spacing, isDark } = theme;
+  const { colors, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const tintColor = isDark ? colors.primaryLight : colors.primaryDark;
+  if (isClearAll) {
+    return (
+      <BentoPressable onPress={onPress} style={styles.clearAllChip} scaleOnPress={false}>
+        <HugeiconsIcon icon={CancelCircleIcon} size={12} color={colors.textMuted} />
+        <Text style={styles.clearAllText}>{label}</Text>
+      </BentoPressable>
+    );
+  }
 
   return (
-    <View style={[styles.chip, isActive ? styles.chipActive : styles.chipInactive]}>
+    <View style={styles.chip}>
       <BentoPressable
         onPress={onPress}
-        style={[
-          styles.chipButton,
-          isActive ? { paddingLeft: spacing('2.5'), paddingRight: spacing('1') } : { paddingHorizontal: spacing('3') }
-        ]}
+        style={[styles.chipButton, { paddingLeft: spacing('2.5'), paddingRight: onClear ? spacing('1') : spacing('2.5') }]}
         scaleOnPress={false}
       >
-        {isActive && (
-          <HugeiconsIcon icon={FilterIcon} size={13} color={tintColor} style={{ marginRight: spacing('1') }} />
+        {icon && (
+          <HugeiconsIcon icon={icon} size={12} color={colors.primary} style={{ marginRight: spacing('1') }} />
         )}
-        <Text style={isActive ? styles.chipTextActive : styles.chipTextInactive}>
-          {label}
-        </Text>
-        {!isActive && showChevron && (
-          <HugeiconsIcon icon={SortingDownIcon} size={13} color={colors.textMuted} style={{ marginLeft: spacing('1') }} />
-        )}
+        <Text style={styles.chipText}>{label}</Text>
       </BentoPressable>
-      {isActive && onClear && (
+      {onClear && (
         <BentoPressable
           onPress={onClear}
           style={styles.chipCloseBtn}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           scaleOnPress={false}
         >
-          <HugeiconsIcon icon={CancelCircleIcon} size={13} color={tintColor} />
+          <HugeiconsIcon icon={CancelCircleIcon} size={13} color={colors.primary} />
         </BentoPressable>
       )}
     </View>
@@ -275,6 +277,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   const { colors } = theme;
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
+  const { profile } = useSettings();
 
   // Advanced filters state
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(() => {
@@ -304,8 +307,17 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     return AdvancedFilterService.toBasicFilters(advancedFilters);
   }, [advancedFilters]);
 
+  // Memoized so both `enabled` and the `transactions` filter read the same stable boolean.
+  const needsClientSide = useMemo(
+    () => AdvancedFilterService.requiresClientSideFiltering(advancedFilters),
+    [advancedFilters],
+  );
+
   // Fetch transactions
   const txQuery = useInfiniteTransactions(basicFilters);
+  // DB aggregate for KPI — always accurate regardless of scroll position.
+  // Disabled when client-side multi-select is active; computed from loaded pages then.
+  const { data: dbTotals } = useTransactionTotals(basicFilters, !needsClientSide);
   const accountsQuery = useAccounts();
   const categoriesQuery = useCategories();
   const personsQuery = usePersons();
@@ -318,25 +330,9 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   const transactions = useMemo(() => {
     const allTransactions = txQuery.data?.pages.flat() ?? [];
 
-    // If no advanced client-side filtering needed, return DB result as-is
-    if (!AdvancedFilterService.requiresClientSideFiltering(advancedFilters)) {
-      return allTransactions;
-    }
+    if (!needsClientSide) return allTransactions;
 
     return allTransactions.filter((transaction) => {
-      // Date range filter
-      if (advancedFilters.dateRange) {
-        const txDate = new Date(transaction.datetime);
-        const startDate = new Date(advancedFilters.dateRange.startDate);
-        startDate.setHours(0, 0, 0, 0);
-        const endDate = new Date(advancedFilters.dateRange.endDate);
-        endDate.setHours(23, 59, 59, 999);
-
-        if (txDate < startDate || txDate > endDate) {
-          return false;
-        }
-      }
-
       // Multi-select type filter
       if (advancedFilters.types && advancedFilters.types.length > 0) {
         if (!advancedFilters.types.includes(transaction.type)) {
@@ -358,13 +354,9 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         }
       }
 
-      // Amount range filter
-      if (advancedFilters.amountRange) {
-        const amount = transaction.amount;
-        if (advancedFilters.amountRange.min !== undefined && amount < advancedFilters.amountRange.min) {
-          return false;
-        }
-        if (advancedFilters.amountRange.max !== undefined && amount > advancedFilters.amountRange.max) {
+      // Multi-select person filter
+      if (advancedFilters.personIds && advancedFilters.personIds.length > 0) {
+        if (!transaction.personId || !advancedFilters.personIds.includes(transaction.personId)) {
           return false;
         }
       }
@@ -384,7 +376,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
       return true;
       // NOTE: No .sort() here — sorting is done by the DB ORDER BY clause.
     });
-  }, [txQuery.data?.pages, advancedFilters]);
+  }, [txQuery.data?.pages, advancedFilters, needsClientSide]);
 
   const groupedByDate = useMemo(() => {
     const map = new Map<string, TransactionListItem[]>();
@@ -403,31 +395,24 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     }
   }, [txQuery]);
 
-  // Calculate KPI totals from the current visible page only (not all accumulated pages).
-  // Scanning all accumulated pages on large datasets blocks the JS thread.
+  // DB aggregate when filters map 1:1 to SQL (no client-side multi-select).
+  // Falls back to summing loaded pages when client-side filtering is active.
   const kpiTotalsByCurrency = useMemo(() => {
+    if (!needsClientSide && dbTotals) return dbTotals;
     const map: Record<string, { income: number; expense: number }> = {};
-
-    // Use the last fetched page for KPI display — it reflects the current filter state
-    // and is bounded by PAGE_SIZE (20 items), never 500+ items.
-    const currentPage = txQuery.data?.pages[txQuery.data.pages.length - 1] ?? [];
-    const source = currentPage.length > 0 ? currentPage : (txQuery.data?.pages[0] ?? []);
-
-    source.forEach((tx) => {
+    transactions.forEach((tx) => {
       const currency = tx.account.currency;
       if (!map[currency]) map[currency] = { income: 0, expense: 0 };
-
-      if (tx.type === 'CR') {
-        map[currency].income += tx.amount;
-      } else if (tx.type === 'DR') {
-        map[currency].expense += tx.amount;
-      }
+      if (tx.type === 'CR') map[currency].income += tx.amount;
+      else if (tx.type === 'DR') map[currency].expense += tx.amount;
     });
-
     return map;
-  }, [txQuery.data?.pages]);
+  }, [needsClientSide, dbTotals, transactions]);
 
-  const kpiCurrencies = useMemo(() => Object.keys(kpiTotalsByCurrency), [kpiTotalsByCurrency]);
+  const kpiCurrencies = useMemo(
+    () => sortCurrenciesWithDefault(Object.keys(kpiTotalsByCurrency), profile.defaultCurrency),
+    [kpiTotalsByCurrency, profile.defaultCurrency],
+  );
 
   const [selectedKpiCurrency, setSelectedKpiCurrency] = useState<string | null>(null);
   useEffect(() => {
@@ -441,6 +426,10 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     : { income: 0, expense: 0 };
 
   const activeFilterCount = AdvancedFilterService.countActiveFilters(advancedFilters);
+  const summaryLabel = useMemo(
+    () => activeFilterCount > 0 ? 'Filtered summary' : 'Net savings',
+    [activeFilterCount],
+  );
 
   const isSortActive = useMemo(() => {
     return advancedFilters.sortBy !== 'date' || advancedFilters.sortOrder !== 'desc';
@@ -449,6 +438,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   const activeTypesCount = useMemo(() => advancedFilters.types?.length ?? 0, [advancedFilters.types]);
   const activeAccountsCount = useMemo(() => advancedFilters.accountIds?.length ?? 0, [advancedFilters.accountIds]);
   const activeCategoriesCount = useMemo(() => advancedFilters.categoryIds?.length ?? 0, [advancedFilters.categoryIds]);
+  const activePersonsCount = useMemo(() => advancedFilters.personIds?.length ?? 0, [advancedFilters.personIds]);
   const isDateActive = useMemo(() => !!advancedFilters.dateRange, [advancedFilters.dateRange]);
   const isAmountActive = useMemo(() => !!advancedFilters.amountRange, [advancedFilters.amountRange]);
 
@@ -499,11 +489,21 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   const amountLabel = useMemo(() => {
     if (!advancedFilters.amountRange) return 'Amount';
     const { min, max } = advancedFilters.amountRange;
-    if (min !== undefined && max !== undefined) return `${min} - ${max}`;
-    if (min !== undefined) return `>${min}`;
-    if (max !== undefined) return `<${max}`;
+    if (min !== undefined && max !== undefined) return `${min} – ${max}`;
+    if (min !== undefined) return `≥${min}`;
+    if (max !== undefined) return `≤${max}`;
     return 'Amount';
   }, [advancedFilters.amountRange]);
+
+  const personLabel = useMemo(() => {
+    const ids = advancedFilters.personIds ?? [];
+    if (ids.length === 0) return 'Person';
+    if (ids.length === 1) {
+      const person = personsQuery.data?.find(p => p.id === ids[0]);
+      return person ? person.name.split(' ')[0] : '1 person';
+    }
+    return `${ids.length} persons`;
+  }, [advancedFilters.personIds, personsQuery.data]);
 
   const handleOpenSort = useCallback(() => {
     Haptics.selectionAsync().catch(() => { });
@@ -540,6 +540,11 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     setAdvancedFilters(p => ({ ...p, amountRange: undefined }));
   }, []);
 
+  const clearPersons = useCallback(() => {
+    Haptics.selectionAsync().catch(() => { });
+    setAdvancedFilters(p => ({ ...p, personIds: undefined }));
+  }, []);
+
   const handleResetSort = useCallback((e?: { stopPropagation?: () => void }) => {
     e?.stopPropagation?.();
     Haptics.selectionAsync().catch(() => { });
@@ -551,7 +556,11 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   }, []);
 
   const handleResetFilters = useCallback(() => {
-    setAdvancedFilters(DEFAULT_ADVANCED_FILTERS);
+    setAdvancedFilters(prev => ({
+      ...DEFAULT_ADVANCED_FILTERS,
+      sortBy: prev.sortBy,
+      sortOrder: prev.sortOrder,
+    }));
   }, []);
 
   const handleAddTransaction = useCallback(() => {
@@ -594,27 +603,35 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     item.id.toString(), []
   );
 
-  type DayTotals = { in: number; out: number };
-
   const renderSectionHeader = React.useCallback(
     ({ section: { title, data } }: { section: SectionListData<TransactionListItem, TxSection> }) => {
-      const dayTotal = data.reduce<DayTotals>(
-        (acc, tx) => {
-          if (tx.type === 'CR') acc.in += tx.amount;
-          else if (tx.type === 'DR') acc.out += tx.amount;
-          return acc;
-        },
-        { in: 0, out: 0 },
-      );
+      // Group totals by currency — multi-currency days show count instead of ambiguous sum
+      const byCurrency: Record<string, { income: number; expense: number }> = {};
+      data.forEach(tx => {
+        const cur = tx.account.currency;
+        if (!byCurrency[cur]) byCurrency[cur] = { income: 0, expense: 0 };
+        if (tx.type === 'CR') byCurrency[cur].income += tx.amount;
+        else if (tx.type === 'DR') byCurrency[cur].expense += tx.amount;
+      });
+      const dayCurrencies = Object.keys(byCurrency);
+      const isSingleCurrency = dayCurrencies.length === 1;
+      const singleCur = dayCurrencies[0];
+
       return (
         <View style={styles.dayHeaderRow}>
           <Text style={styles.dayTitle}>{title}</Text>
           <View style={styles.dayTotals}>
-            {dayTotal.in > 0 && (
-              <MoneyText amount={dayTotal.in} type="CR" style={styles.dayTotalValue} />
-            )}
-            {dayTotal.out > 0 && (
-              <MoneyText amount={dayTotal.out} type="DR" style={styles.dayTotalValue} />
+            {isSingleCurrency ? (
+              <>
+                {byCurrency[singleCur].income > 0 && (
+                  <MoneyText amount={byCurrency[singleCur].income} currency={singleCur} type="CR" style={styles.dayTotalValue} />
+                )}
+                {byCurrency[singleCur].expense > 0 && (
+                  <MoneyText amount={byCurrency[singleCur].expense} currency={singleCur} type="DR" style={styles.dayTotalValue} />
+                )}
+              </>
+            ) : (
+              <Text style={styles.dayTotalCount}>{data.length} txns</Text>
             )}
           </View>
         </View>
@@ -642,11 +659,16 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         showBack
         rightAction={(
           <View style={styles.headerActions}>
-            <BentoPressable onPress={handleOpenFilter} style={styles.iconBtn}>
-              <HugeiconsIcon icon={FilterIcon} size={22} color={colors.text} />
+            <BentoPressable onPress={handleOpenFilter} style={[styles.iconBtn, activeFilterCount > 0 && styles.iconBtnActive]}>
+              <HugeiconsIcon icon={FilterIcon} size={22} color={activeFilterCount > 0 ? colors.primary : colors.text} />
+              {activeFilterCount > 0 && (
+                <View style={[styles.filterBadge, { backgroundColor: colors.primary }]}>
+                  <Text style={[styles.filterBadgeText, { color: colors.primaryForeground }]}>{activeFilterCount}</Text>
+                </View>
+              )}
             </BentoPressable>
-            <BentoPressable onPress={handleOpenSort} style={styles.iconBtn}>
-              <HugeiconsIcon icon={SortingDownIcon} size={22} color={colors.text} />
+            <BentoPressable onPress={handleOpenSort} style={[styles.iconBtn, isSortActive && styles.iconBtnActive]}>
+              <HugeiconsIcon icon={SortingDownIcon} size={22} color={isSortActive ? colors.primary : colors.text} />
             </BentoPressable>
           </View>
         )}
@@ -675,20 +697,28 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
               currency={selectedKpiCurrency}
               currencies={kpiCurrencies}
               onCurrencySelect={setSelectedKpiCurrency}
+              label={summaryLabel}
             />
 
-            {/* ── MD3 Play Store Filter Chips Row ── */}
-            {isSortActive || activeTypesCount > 0 || activeAccountsCount > 0 || activeCategoriesCount > 0 || isDateActive || isAmountActive ? (
+            {/* ── Active filter + sort chips ── */}
+            {(activeFilterCount > 0 || isSortActive) && (
               <View style={styles.chipsScrollContainer}>
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.chipsScroll}
                 >
+                  {activeFilterCount > 0 && (
+                    <FilterChip
+                      label="Clear all"
+                      onPress={handleResetFilters}
+                      isClearAll
+                    />
+                  )}
                   {isSortActive && (
                     <FilterChip
                       label={sortLabel}
-                      isActive={isSortActive}
+                      icon={SortingDownIcon}
                       onPress={handleOpenSort}
                       onClear={handleResetSort}
                     />
@@ -696,7 +726,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {activeTypesCount > 0 && (
                     <FilterChip
                       label={typeLabel}
-                      isActive={activeTypesCount > 0}
+                      icon={FilterIcon}
                       onPress={handleOpenFilter}
                       onClear={clearTypes}
                     />
@@ -704,7 +734,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {activeAccountsCount > 0 && (
                     <FilterChip
                       label={accountLabel}
-                      isActive={activeAccountsCount > 0}
+                      icon={FilterIcon}
                       onPress={handleOpenFilter}
                       onClear={clearAccounts}
                     />
@@ -712,15 +742,23 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {activeCategoriesCount > 0 && (
                     <FilterChip
                       label={categoryLabel}
-                      isActive={activeCategoriesCount > 0}
+                      icon={FilterIcon}
                       onPress={handleOpenFilter}
                       onClear={clearCategories}
+                    />
+                  )}
+                  {activePersonsCount > 0 && (
+                    <FilterChip
+                      label={personLabel}
+                      icon={FilterIcon}
+                      onPress={handleOpenFilter}
+                      onClear={clearPersons}
                     />
                   )}
                   {isDateActive && (
                     <FilterChip
                       label={dateLabel}
-                      isActive={isDateActive}
+                      icon={FilterIcon}
                       onPress={handleOpenFilter}
                       onClear={clearDateRange}
                     />
@@ -728,14 +766,14 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                   {isAmountActive && (
                     <FilterChip
                       label={amountLabel}
-                      isActive={isAmountActive}
+                      icon={FilterIcon}
                       onPress={handleOpenFilter}
                       onClear={clearAmountRange}
                     />
                   )}
                 </ScrollView>
               </View>
-            ) : null}
+            )}
           </View>
         )}
         ListEmptyComponent={(
@@ -743,16 +781,24 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
             <View style={styles.emptyIconBox}>
               <HugeiconsIcon icon={ReceiptTextIcon} size={32} color={colors.textMuted} />
             </View>
-            <Text style={styles.emptyTitle}>Nothing here yet</Text>
+            <Text style={styles.emptyTitle}>
+              {activeFilterCount > 0 ? 'No results' : 'Nothing here yet'}
+            </Text>
             <Text style={styles.emptySubtitle}>
               {activeFilterCount > 0
-                ? 'No transactions match the active filters.'
+                ? 'No transactions match the active filters. Try adjusting or clearing them.'
                 : 'Add your first transaction to start tracking.'}
             </Text>
-            <BentoPressable style={styles.emptyAction} onPress={handleAddTransaction}>
-              <Text style={styles.emptyActionText}>Add Transaction</Text>
-              <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primaryForeground} />
-            </BentoPressable>
+            {activeFilterCount > 0 ? (
+              <BentoPressable style={[styles.emptyAction, { backgroundColor: colors.surface }]} onPress={handleResetFilters}>
+                <Text style={[styles.emptyActionText, { color: colors.text }]}>Clear filters</Text>
+              </BentoPressable>
+            ) : (
+              <BentoPressable style={styles.emptyAction} onPress={handleAddTransaction}>
+                <Text style={styles.emptyActionText}>Add Transaction</Text>
+                <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primaryForeground} />
+              </BentoPressable>
+            )}
           </View>
         )}
         ListFooterComponent={txQuery.isFetchingNextPage ? (
@@ -854,6 +900,25 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       justifyContent: 'center',
       backgroundColor: colors.surface,
     },
+    iconBtnActive: {
+      backgroundColor: colors.primary + '14',
+    },
+    filterBadge: {
+      position: 'absolute',
+      top: 4,
+      right: 4,
+      minWidth: 15,
+      height: 15,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 3,
+    },
+    filterBadgeText: {
+      fontSize: 9,
+      fontFamily: typography.styles.badge.fontFamily,
+      lineHeight: 12,
+    },
     content: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
@@ -883,6 +948,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
     dayTotalValue: {
       fontFamily: typography.fonts.medium,
       fontSize: 12,
+    },
+    dayTotalCount: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
     },
     emptyWrap: {
       paddingVertical: 60,
@@ -946,21 +1016,17 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       marginBottom: spacing('1'),
     },
     chipsScroll: {
-      gap: spacing('2'),
-      paddingBottom: spacing('1.5'),
+      gap: spacing('1.5'),
+      // paddingHorizontal: layout.screenPadding,
+      paddingBottom: spacing('1'),
     },
     chip: {
       flexDirection: 'row',
       alignItems: 'center',
       borderRadius: radius('full'),
       height: 30,
+      backgroundColor: colors.primary + '1A',
       overflow: 'hidden',
-    },
-    chipInactive: {
-      backgroundColor: colors.surface,
-    },
-    chipActive: {
-      backgroundColor: colors.primaryLight,
     },
     chipButton: {
       flexDirection: 'row',
@@ -969,19 +1035,29 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
     },
     chipCloseBtn: {
       paddingRight: spacing('2.5'),
-      paddingLeft: spacing('1.5'),
+      paddingLeft: spacing('1'),
       height: '100%',
       justifyContent: 'center',
       alignItems: 'center',
     },
-    chipTextInactive: {
+    chipText: {
+      fontFamily: typography.fonts.medium,
+      fontSize: 11.5,
+      color: colors.primary,
+    },
+    clearAllChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 30,
+      paddingHorizontal: spacing('2.5'),
+      borderRadius: radius('full'),
+      backgroundColor: colors.surface,
+      gap: spacing('1'),
+      overflow: 'hidden',
+    },
+    clearAllText: {
       fontFamily: typography.fonts.medium,
       fontSize: 11.5,
       color: colors.textMuted,
-    },
-    chipTextActive: {
-      fontFamily: typography.styles.chipLabelActive.fontFamily,
-      fontSize: 11.5,
-      color: isDark ? colors.primaryLight : colors.primaryDark,
     },
   });

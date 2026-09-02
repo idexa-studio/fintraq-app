@@ -1,6 +1,9 @@
-import React, { useMemo, useCallback } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { Calculator01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { CalculatorBottomSheet } from '../../../components/ui/CalculatorBottomSheet';
+import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 
 type Props = {
   value: string;
@@ -17,7 +20,10 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
+  const [showCalc, setShowCalc] = useState(false);
+
   const handleChange = useCallback((v: string) => onChange(v), [onChange]);
+  const handleCalcConfirm = useCallback((v: string) => onChange(v), [onChange]);
 
   return (
     <View style={styles.container}>
@@ -33,7 +39,22 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
           placeholderTextColor={colors.textMuted + '40'}
           autoFocus
         />
+        <Pressable
+          style={({ pressed }) => [styles.calcBtn, pressed && { opacity: 0.5 }]}
+          onPress={() => { Keyboard.dismiss(); setShowCalc(true); }}
+          hitSlop={8}
+        >
+          <HugeiconsIcon icon={Calculator01Icon} size={22} color={colors.textMuted} />
+        </Pressable>
       </View>
+
+      <CalculatorBottomSheet
+        visible={showCalc}
+        onClose={() => setShowCalc(false)}
+        value={value}
+        onConfirm={handleCalcConfirm}
+        currency={currency}
+      />
     </View>
   );
 });
@@ -70,5 +91,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       fontFamily: typography.styles.buttonLabel.fontFamily,
       color: colors.text,
       paddingVertical: 0,
+    },
+    calcBtn: {
+      padding: spacing('1'),
+      marginLeft: spacing('2'),
     },
   });

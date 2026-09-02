@@ -23,7 +23,7 @@ export const Chip = React.memo(function Chip({
   onPress,
   style,
 }: ChipProps) {
-  const { colors, typography, spacing, radius } = useTheme();
+  const { colors, typography, spacing } = useTheme();
 
   const accent = color ?? colors.primary;
 

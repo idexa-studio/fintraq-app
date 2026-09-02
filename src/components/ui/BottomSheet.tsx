@@ -25,7 +25,7 @@ import {
 } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Reanimated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -77,13 +77,7 @@ const BottomSheetContent = forwardRef<BottomSheetContentHandle, {
   colors,
   enablePanDownToClose,
 }, ref) {
-  const insets = useSafeAreaInsets();
   const { radius } = useTheme();
-
-  const bottomPadding = useMemo(() => {
-    if (insets.bottom > 0) return insets.bottom + 12;
-    return Platform.OS === 'android' ? 36 : 20;
-  }, [insets.bottom]);
 
   // Reanimated shared values — run on UI thread, no bridge round-trip
   const translateY = useSharedValue(SCREEN_HEIGHT);
@@ -168,10 +162,9 @@ const BottomSheetContent = forwardRef<BottomSheetContentHandle, {
     height: resolvedHeight,
     maxHeight: resolvedMaxHeight,
     backgroundColor: colors.surface,
-    paddingBottom: bottomPadding,
     borderTopLeftRadius: radius('2xl'),
     borderTopRightRadius: radius('2xl'),
-  }), [resolvedHeight, resolvedMaxHeight, colors.surface, bottomPadding, radius]);
+  }), [resolvedHeight, resolvedMaxHeight, colors.surface, radius]);
 
   const animatedSheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
@@ -206,7 +199,9 @@ const BottomSheetContent = forwardRef<BottomSheetContentHandle, {
 
             {/* Children */}
             <BottomSheetContext.Provider value={contextValue}>
-              <View style={styles.content}>{children}</View>
+              <SafeAreaView edges={['bottom']} style={styles.safeContent}>
+                <View style={styles.content}>{children}</View>
+              </SafeAreaView>
             </BottomSheetContext.Provider>
           </Reanimated.View>
         </GestureDetector>
@@ -319,6 +314,10 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   content: {
+    flexShrink: 1,
+    flexGrow: 1,
+  },
+  safeContent: {
     flexShrink: 1,
     flexGrow: 1,
   },

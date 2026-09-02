@@ -21,6 +21,7 @@ const transactions = {
   details: () => [...transactions.all, 'detail'] as const,
   detail: (id: number) => [...transactions.details(), id] as const,
   count: (filters: TransactionFilters) => [...transactions.all, 'count', { filters }] as const,
+  totals: (filters: TransactionFilters) => [...transactions.all, 'totals', { filters }] as const,
 };
 
 const persons = {
@@ -54,4 +55,14 @@ const analytics = {
   personBreakdown: (currency: string, days: number) => [...analytics.all, 'person-breakdown', currency, days] as const,
 };
 
-export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics } as const;
+const loans = {
+  all: ['loans'] as const,
+  lists: () => [...loans.all, 'list'] as const,
+  list: (filter: string) => [...loans.lists(), filter] as const,
+  details: () => [...loans.all, 'detail'] as const,
+  detail: (id: number) => [...loans.details(), id] as const,
+  byPerson: (personId: number) => [...loans.all, 'person', personId] as const,
+  summary: (currency: string) => [...loans.all, 'summary', currency] as const,
+};
+
+export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics, loans } as const;

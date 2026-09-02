@@ -1,24 +1,23 @@
-import type { ExpoConfig } from 'expo/config';
+import type { ConfigContext, ExpoConfig } from 'expo/config';
 import fs from 'node:fs';
-
-const appJson = require('./app.json') as { expo: ExpoConfig };
-const baseConfig = appJson.expo;
 
 const androidGoogleServicesFile = fs.existsSync('./google-services.json') ? './google-services.json' : undefined;
 const iosGoogleServicesFile = fs.existsSync('./GoogleService-Info.plist') ? './GoogleService-Info.plist' : undefined;
 
-export default (): ExpoConfig => ({
-  ...baseConfig,
+export default ({ config }: ConfigContext): ExpoConfig => ({
+  ...config,
+  name: config.name ?? 'Fintraq',
+  slug: config.slug ?? 'luno',
   android: {
-    ...baseConfig.android,
+    ...config.android,
     ...(androidGoogleServicesFile ? { googleServicesFile: androidGoogleServicesFile } : {}),
   },
   ios: {
-    ...baseConfig.ios,
+    ...config.ios,
     ...(iosGoogleServicesFile ? { googleServicesFile: iosGoogleServicesFile } : {}),
   },
   plugins: [
-    ...(baseConfig.plugins ?? []),
+    ...(config.plugins ?? []),
     '@react-native-firebase/app',
     [
       '@react-native-firebase/analytics',

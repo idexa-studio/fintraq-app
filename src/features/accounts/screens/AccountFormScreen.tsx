@@ -1,3 +1,4 @@
+import { ColorPickerRow } from '@/src/components/ui/ColorPickerRow';
 import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
@@ -11,7 +12,7 @@ import { AnalyticsService } from '@/src/services/analytics';
 import type { AccountType } from '@/src/types';
 import { colorNumberToHex, parseAmount, toDbColor } from '@/src/utils/format';
 import { ACCOUNT_TYPE_ICON_MAP, resolveAccountTypeIcon } from '@/src/utils/icons';
-import { CheckIcon, UnfoldMoreIcon } from '@hugeicons/core-free-icons';
+import { UnfoldMoreIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -175,7 +176,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           {/* ── Hero preview card ── */}
           <View style={[styles.heroCard, { marginHorizontal: layout.screenPadding }]}>
             <View style={styles.heroTop}>
-              <IconAvatar icon={resolvedIcon} color={colorHex} variant="solid" size={64} iconSize={28} />
+              <IconAvatar icon={resolvedIcon} color={colorHex} variant="subtle" size={64} iconSize={28} />
               <View style={styles.heroMeta}>
                 <Text style={styles.heroName} numberOfLines={1}>
                   {accountName.trim() || 'Account name'}
@@ -186,31 +187,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
 
             <View style={styles.heroDivider} />
 
-            {/* Inline color palette */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.colorRow}
-            >
-              {ACCOUNT_COLORS.map((hex) => {
-                const isSelected = colorHex === hex;
-                return (
-                  <Pressable
-                    key={hex}
-                    onPress={() => setColorHex(hex)}
-                    style={[
-                      styles.colorDot,
-                      { backgroundColor: hex },
-                      isSelected && styles.colorDotSelected,
-                    ]}
-                  >
-                    {isSelected && (
-                      <HugeiconsIcon icon={CheckIcon} size={12} color="#fff" />
-                    )}
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+            <ColorPickerRow colors={ACCOUNT_COLORS} value={colorHex} onChange={setColorHex} />
           </View>
 
           {/* ── Account type ── */}
@@ -228,10 +205,11 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                 return (
                   <Pressable
                     key={opt.value}
-                    onPress={() => setAccountType(opt.value)}
+                    onPress={isEditing ? undefined : () => setAccountType(opt.value)}
                     style={[
                       styles.typeChip,
                       isSelected && { backgroundColor: colors.primary },
+                      isEditing && !isSelected && styles.balanceInputDisabled,
                     ]}
                   >
                     <HugeiconsIcon
@@ -381,9 +359,13 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                   )}
                 />
                 <View style={styles.fieldDivider} />
-                <TouchableOpacity style={styles.currencyBtn} onPress={openCurrencyPicker} activeOpacity={0.7}>
+                <TouchableOpacity
+                  style={[styles.currencyBtn, isEditing && styles.balanceInputDisabled]}
+                  onPress={isEditing ? undefined : openCurrencyPicker}
+                  activeOpacity={isEditing ? 1 : 0.7}
+                >
                   <Text style={styles.currencyValue}>{currency}</Text>
-                  <HugeiconsIcon icon={UnfoldMoreIcon} size={13} color={colors.textMuted} />
+                  {!isEditing && <HugeiconsIcon icon={UnfoldMoreIcon} size={13} color={colors.textMuted} />}
                 </TouchableOpacity>
               </View>
             </View>
@@ -463,23 +445,6 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
       backgroundColor: colors.border,
       marginHorizontal: spacing('4'),
     },
-    colorRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-    },
-    colorDot: {
-      width: 26,
-      height: 26,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    colorDotSelected: {
-      ...shadow('sm'),
-    },
-
     // ── Section
     sectionGap: {
       marginTop: spacing('5'),

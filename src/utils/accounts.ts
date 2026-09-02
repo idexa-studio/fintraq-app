@@ -15,7 +15,7 @@ const TRANSFER_SOURCE_BLOCKED: ReadonlySet<AccountType> = new Set(['loan', 'cred
  *   ewallet   → cash out to bank/ewallet/cash
  *   investment→ liquidate to bank/savings
  */
-const TRANSFER_COMPATIBLE_DESTINATIONS: Readonly<Record<AccountType, ReadonlyArray<AccountType>>> = {
+const TRANSFER_COMPATIBLE_DESTINATIONS: Readonly<Record<AccountType, readonly AccountType[]>> = {
   cash:        ['bank', 'savings', 'ewallet'],
   bank:        ['bank', 'savings', 'cash', 'ewallet', 'credit_card', 'investment', 'loan'],
   savings:     ['bank', 'cash', 'ewallet'],

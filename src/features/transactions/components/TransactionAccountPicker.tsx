@@ -49,7 +49,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               <IconAvatar
                 icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)}
                 color={accColor}
-                variant="solid"
+                variant="subtle"
                 size={32}
                 iconSize={16}
               />

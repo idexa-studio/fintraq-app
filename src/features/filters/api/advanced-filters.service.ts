@@ -45,26 +45,43 @@ export class AdvancedFilterService {
    */
   static toBasicFilters(advanced: AdvancedFilters): TransactionFilters {
     const basic: TransactionFilters = {};
-    
+
     // Type filter (use first if single, API only supports single)
     if (advanced.types && advanced.types.length === 1) {
       basic.type = advanced.types[0];
     }
-    
+
     // Account filter (use first if single, API only supports single)
     if (advanced.accountIds && advanced.accountIds.length === 1) {
       basic.accountId = advanced.accountIds[0];
     }
-    
+
     // Category filter (use first if single, API only supports single)
     if (advanced.categoryIds && advanced.categoryIds.length === 1) {
       basic.categoryId = advanced.categoryIds[0];
     }
 
+    // Person filter (use first if single, API only supports single)
+    if (advanced.personIds && advanced.personIds.length === 1) {
+      basic.personId = advanced.personIds[0];
+    }
+
+    // Date range — always handled by DB (avoids client-side filtering for this common case)
+    if (advanced.dateRange) {
+      basic.startDate = advanced.dateRange.startDate.toISOString().split('T')[0];
+      basic.endDate = advanced.dateRange.endDate.toISOString().split('T')[0];
+    }
+
+    // Amount range — always handled by DB
+    if (advanced.amountRange) {
+      basic.minAmount = advanced.amountRange.min;
+      basic.maxAmount = advanced.amountRange.max;
+    }
+
     // Always pass sort to DB — never sort 500+ items on the JS thread
     basic.sortBy = advanced.sortBy;
     basic.sortOrder = advanced.sortOrder;
-    
+
     return basic;
   }
   
@@ -72,21 +89,18 @@ export class AdvancedFilterService {
    * Check if advanced filters have multi-select that requires client-side filtering
    */
   static requiresClientSideFiltering(advanced: AdvancedFilters): boolean {
-    // Check for multi-select that API doesn't support
+    // Only multi-select beyond what DB supports requires client-side work.
+    // Date range, amount range, single-select fields all go to DB now.
     const hasMultipleTypes = (advanced.types?.length || 0) > 1;
     const hasMultipleAccounts = (advanced.accountIds?.length || 0) > 1;
     const hasMultipleCategories = (advanced.categoryIds?.length || 0) > 1;
-    const hasPersons = (advanced.personIds?.length || 0) > 0;
-    const hasDateRange = !!advanced.dateRange;
-    const hasAmountRange = !!advanced.amountRange;
+    const hasMultiplePersons = (advanced.personIds?.length || 0) > 1;
     const hasSearchQuery = !!advanced.searchQuery?.trim();
 
     return hasMultipleTypes ||
            hasMultipleAccounts ||
            hasMultipleCategories ||
-           hasPersons ||
-           hasDateRange ||
-           hasAmountRange ||
+           hasMultiplePersons ||
            hasSearchQuery;
   }
   

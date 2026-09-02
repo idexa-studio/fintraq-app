@@ -105,9 +105,9 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* ── Hero card ── */}
-        <View style={[styles.heroCard, { backgroundColor: accColor + '18' }]}>
+        <View style={[styles.heroCard, { backgroundColor: colors.surface }]}>
           <View style={styles.heroTop}>
-            <IconAvatar icon={accIcon} color={accColor} variant="solid" size={56} iconSize={24} />
+            <IconAvatar icon={accIcon} color={accColor} variant="subtle" size={56} iconSize={24} />
             <View style={styles.heroMeta}>
               <Text style={styles.heroName} numberOfLines={1}>{account.name}</Text>
               <View style={styles.heroBadgeRow}>

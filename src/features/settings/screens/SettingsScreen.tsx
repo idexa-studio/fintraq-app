@@ -8,11 +8,12 @@ import { PageBackground } from '@/src/components/ui/PageBackground';
 import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
 import { StorageKeys } from '@/src/constants/keys';
 import { db } from '@/src/db/client';
-import { accounts, categories, payments, persons } from '@/src/db/schema';
+import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import { LockStorage } from '@/src/features/lock/api/lockStorage';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
 import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
 import { useAppLock } from '@/src/providers/AppLockProvider';
+import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -46,7 +47,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
-  Linking,
   Platform,
   ScrollView,
   StyleSheet,
@@ -237,6 +237,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const queryClient = useQueryClient();
 
   const { lockEnabled, lockMode, enableLock, disableLock } = useAppLock();
+  const { privacyUrl, termsUrl } = useAppConfig();
   const [showPinSetup, setShowPinSetup] = useState(false);
   const [showThemeDialog, setShowThemeDialog] = useState(false);
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
@@ -321,6 +322,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       // Delete user data only — seederState (schema migration tracking) is preserved
       // so ALTER TABLE migrations don't re-run and crash on next launch
       await db.delete(payments);
+      await db.delete(loans);
       await db.delete(persons);
       await db.delete(categories);
       await db.delete(accounts);
@@ -364,14 +366,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
   /* ── Links ── */
   const openPrivacy = useCallback(() => {
-    const p = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://fintraq.idexa.app/in-app/privacy?platform=${p}`);
-  }, []);
+    if (!privacyUrl) return;
+    router.push({ pathname: '/webview', params: { url: privacyUrl, title: 'Privacy Policy' } });
+  }, [router, privacyUrl]);
 
   const openTerms = useCallback(() => {
-    const p = Platform.OS === 'ios' ? 'ios' : 'android';
-    Linking.openURL(`https://fintraq.idexa.app/in-app/terms?platform=${p}`);
-  }, []);
+    if (!termsUrl) return;
+    router.push({ pathname: '/webview', params: { url: termsUrl, title: 'Terms of Use' } });
+  }, [router, termsUrl]);
 
   const openExport = useCallback(() => {
     router.push(isPremium ? '/export' : '/premium');

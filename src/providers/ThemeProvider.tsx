@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
 import { DARK_THEME, getHeroColors, HeroCardPalette, LIGHT_THEME, PICKER_CONTRAST_COLOR, ThemeColors } from '../theme/colors';
-
-export type { ThemeColors };
 import {
   COMPONENT_SIZES,
   LAYOUT,
@@ -17,7 +15,7 @@ import {
 import { TYPOGRAPHY } from '../theme/typography';
 import { useSettings } from './SettingsProvider';
 
-export type { HeroCardPalette };
+export type { ThemeColors, HeroCardPalette };
 
 export type ThemeContextType = {
   /** Theme-dependent palette (switches with light/dark mode) */

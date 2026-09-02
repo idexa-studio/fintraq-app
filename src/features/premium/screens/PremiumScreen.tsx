@@ -8,7 +8,6 @@ import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/The
 import { AnalyticsService } from '@/src/services/analytics';
 import { ReloadIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -24,8 +23,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export const PremiumScreen = React.memo(function PremiumScreen() {
   const theme = useTheme();
   const { colors, heroCard } = theme;
-  const router = useRouter();
-  const { products, purchasePremium, restorePurchase, isLoading, isPremium } = usePremium();
+  const { products, purchasePremium, restorePurchase, isLoading } = usePremium();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);

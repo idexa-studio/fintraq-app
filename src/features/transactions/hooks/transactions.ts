@@ -29,6 +29,15 @@ export const useTransactionsCount = (filters: api.TransactionFilters = {}) => {
   });
 };
 
+export const useTransactionTotals = (filters: api.TransactionFilters = {}, enabled = true) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.transactions.totals(filters),
+    queryFn: () => api.getTransactionTotals(filters),
+    enabled,
+    staleTime: 30_000,
+  });
+};
+
 export const useTransactionById = (id?: number | null) => {
   return useQuery({
     queryKey: id != null ? QUERY_KEYS.transactions.detail(id) : [...QUERY_KEYS.transactions.details(), 'disabled'],

@@ -1,3 +1,4 @@
+import type { AccountType } from '@/src/types';
 import {
   Airplane01Icon,
   AlarmClockIcon,
@@ -459,8 +460,6 @@ export function resolveIcon(
   const resolvedKey = LEGACY_ICON_MAP[icon] || icon;
   return ICON_MAP[resolvedKey] || fallback;
 }
-
-import type { AccountType } from '@/src/types';
 
 export const ACCOUNT_TYPE_ICON_MAP: Record<AccountType, IconSvgElement> = {
   cash: ICON_MAP['cash']!,
