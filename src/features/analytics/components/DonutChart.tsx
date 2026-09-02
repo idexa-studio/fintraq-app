@@ -94,7 +94,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
           <View key={d.id} style={[styles.legendRow, i === data.length - 1 && styles.legendRowLast]}>
             <IconAvatar
               icon={resolveIcon(d.icon, Tag01Icon)}
-              color={hex} variant="solid"
+              color={hex} variant="subtle"
               size={32}
               iconSize={15}
             />

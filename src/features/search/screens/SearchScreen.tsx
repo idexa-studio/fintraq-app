@@ -64,7 +64,7 @@ const AccountRow = React.memo(function AccountRow({
 
   return (
     <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
-      <IconAvatar icon={resolveAccountTypeIcon(account.accountType)} color={accentColor} variant="solid" size={36} iconSize={18} />
+      <IconAvatar icon={resolveAccountTypeIcon(account.accountType)} color={accentColor} variant="subtle" size={36} iconSize={18} />
       <View style={styles.info}>
         <Text style={styles.name}>{account.name}</Text>
         <Text style={styles.meta}>
@@ -127,15 +127,15 @@ const CategoryRow = React.memo(function CategoryRow({
   const styles = useMemo(() => createCategoryRowStyles(theme, isFirst, isLast), [theme, isFirst, isLast]);
   const catColor = useMemo(() => colorNumberToHex(category.color), [category.color]);
   const handlePress = useCallback(() => onPress(category.id), [onPress, category.id]);
-  const badgeColor = category.type === 'CR' ? colors.success : category.type === 'TR' ? colors.info : colors.danger;
+  const badgeColor = category.type === 'CR' ? colors.success : category.type === 'TR' ? colors.info : category.type === 'DR' ? colors.danger : colors.textMuted;
 
   return (
     <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
-      <IconAvatar icon={resolveIcon(category.icon, Tag01Icon)} color={catColor} variant="solid" size={36} iconSize={18} />
+      <IconAvatar icon={resolveIcon(category.icon, Tag01Icon)} color={catColor} variant="subtle" size={36} iconSize={18} />
       <Text style={styles.name}>{category.name}</Text>
       <View style={[styles.badge, { backgroundColor: badgeColor + '1A' }]}>
         <Text style={[styles.badgeText, { color: badgeColor }]}>
-          {category.type === 'CR' ? 'Income' : category.type === 'TR' ? 'Transfer' : 'Expense'}
+          {category.type === 'CR' ? 'Income' : category.type === 'TR' ? 'Transfer' : category.type === 'DR' ? 'Expense' : 'All'}
         </Text>
       </View>
       <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
@@ -199,7 +199,7 @@ const PersonRow = React.memo(function PersonRow({
 
   return (
     <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
-      <PersonAvatar name={person.name} color={hex} size={36} variant="solid" />
+      <PersonAvatar name={person.name} color={hex} size={36} />
       <View style={styles.info}>
         <Text style={styles.name}>{person.name}</Text>
         {(person.designation || person.company) ? (

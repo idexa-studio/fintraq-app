@@ -69,7 +69,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
         style={[styles.row, selected && styles.rowSelected]}
         onPress={() => handleSelect(item.id)}
       >
-        <PersonAvatar name={item.name} color={hex} size={36} variant="solid" />
+        <PersonAvatar name={item.name} color={hex} size={36} />
         <View style={styles.rowMeta}>
           <Text style={[styles.rowName, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]} numberOfLines={1}>
             {item.name}

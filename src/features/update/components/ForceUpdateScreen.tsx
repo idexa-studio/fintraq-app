@@ -1,9 +1,10 @@
-import React, { useCallback, useMemo } from 'react';
-import { Linking, Platform, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { Animated, Linking, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CloudDownloadIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { FlashIcon, LockPasswordIcon, BarChartIcon } from '@hugeicons/core-free-icons';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { Button } from '@/src/components/ui/Button';
+import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Props = {
@@ -14,16 +15,42 @@ type Props = {
   message?: string;
 };
 
+const INFO_CARDS = [
+  {
+    icon: FlashIcon,
+    colorKey: 'primary' as const,
+    label: "What's new",
+    detail: 'Performance improvements, bug fixes, and refined experience.',
+  },
+  {
+    icon: LockPasswordIcon,
+    colorKey: 'success' as const,
+    label: 'Your data is safe',
+    detail: 'All your data stays on your device, untouched.',
+  },
+  {
+    icon: BarChartIcon,
+    colorKey: 'info' as const,
+    label: 'Free update',
+    detail: 'All Fintraq updates are free, forever.',
+  },
+];
+
 export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
   androidStoreUrl,
   iosStoreUrl,
-  currentVersion,
   latestVersion,
   message,
 }: Props) {
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(opacity, { toValue: 1, duration: 400, useNativeDriver: true }).start();
+  }, [opacity]);
 
   const handleUpdatePress = useCallback(async () => {
     const storeUrl = Platform.OS === 'ios' ? iosStoreUrl : androidStoreUrl;
@@ -32,131 +59,176 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
       if (supported) {
         await Linking.openURL(storeUrl);
       } else {
-        const fallbackUrl = Platform.OS === 'ios'
-          ? 'https://apps.apple.com'
-          : 'https://play.google.com/store';
-        await Linking.openURL(fallbackUrl);
+        await Linking.openURL(
+          Platform.OS === 'ios' ? 'https://apps.apple.com' : 'https://play.google.com/store'
+        );
       }
-    } catch (error) {
-      console.error('Error opening store URL:', error);
+    } catch {
+      // Silent — button stays available
     }
   }, [androidStoreUrl, iosStoreUrl]);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'bottom']}>
-      <View style={styles.content}>
-        {/* Glowing Pulse Ring Graphic */}
-        <View style={styles.graphicContainer}>
-          <View style={styles.pulseOuter}>
-            <View style={styles.pulseInner}>
-              <HugeiconsIcon icon={CloudDownloadIcon} size={32} color={colors.primary} />
-            </View>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      <PageBackground />
+
+      <Animated.View style={[styles.inner, { opacity }]}>
+        {/* ── Brand header ─────────────────────────────────────────────────── */}
+        <View style={styles.header}>
+          <View style={styles.headerRow}>
+            <View style={styles.headerSlot} />
+            <Text style={styles.brand}>
+              Fintraq<Text style={{ color: colors.primary }}>.</Text>
+            </Text>
+            <View style={styles.headerSlot} />
           </View>
         </View>
 
-        {/* Text Details block */}
-        <View style={styles.infoContainer}>
-          <Text style={styles.title}>Update required</Text>
-          <Text style={styles.subtitle}>
-            {message ||
-              'A new version of Fintraq is available. To continue using the app securely, please download the latest update from the store.'}
-          </Text>
-
-          <View style={styles.versionBadge}>
-            <Text style={styles.versionBadgeText}>
-              v{currentVersion} → v{latestVersion}
+        {/* ── Scrollable content ────────────────────────────────────────────── */}
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Step meta */}
+          <View style={styles.stepMeta}>
+            <Text style={styles.eyebrow}>Update required</Text>
+            <Text style={styles.stepTitle}>
+              Version {latestVersion}{'\n'}is available
+            </Text>
+            <Text style={styles.stepSubtitle}>
+              {message ||
+                'Please update Fintraq to continue. It only takes a moment.'}
             </Text>
           </View>
-        </View>
 
-        {/* Action button container */}
-        <View style={styles.buttonContainer}>
-          <Button
-            title="Update now"
-            onPress={handleUpdatePress}
-            variant="primary"
-            size="lg"
-            icon={CloudDownloadIcon}
-          />
+          {/* Info cards */}
+          <View style={styles.cards}>
+            {INFO_CARDS.map((card) => (
+              <View key={card.label} style={styles.card}>
+                <IconAvatar
+                  icon={card.icon}
+                  color={colors[card.colorKey]}
+                  variant="subtle"
+                  size={48}
+                  iconSize={22}
+                />
+                <View style={styles.cardText}>
+                  <Text style={styles.cardLabel}>{card.label}</Text>
+                  <Text style={styles.cardDetail}>{card.detail}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+
+        {/* ── Pinned footer ─────────────────────────────────────────────────── */}
+        <View style={styles.footer}>
+          <Button title="Update now" onPress={handleUpdatePress} variant="primary" size="lg" />
         </View>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 });
 
-function createStyles({ spacing, radius, typography, colors }: ThemeContextType) {
+function createStyles({ spacing, radius, typography, colors, layout }: ThemeContextType) {
   return StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: colors.background,
     },
-    content: {
+    inner: {
       flex: 1,
+    },
+
+    // ── Header
+    header: {
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('3'),
+    },
+    headerRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: spacing('8'),
-      paddingVertical: spacing('10'),
     },
-    // Graphic element
-    graphicContainer: {
-      flex: 1,
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-      paddingBottom: spacing('4'),
+    headerSlot: {
+      width: 42,
+      height: 42,
     },
-    pulseOuter: {
-      width: 96,
-      height: 96,
-      borderRadius: 48,
-      backgroundColor: colors.primary + '0B',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    pulseInner: {
-      width: 68,
-      height: 68,
-      borderRadius: 34,
-      backgroundColor: colors.primary + '18',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    // Text container
-    infoContainer: {
-      flex: 1,
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-      gap: spacing('3'),
-      paddingHorizontal: spacing('2'),
-      paddingTop: spacing('2'),
-    },
-    title: {
-      fontFamily: typography.styles.emptyTitle.fontFamily,
-      fontSize: 20,
+    brand: {
+      fontFamily: typography.fonts.heading,
+      fontSize: typography.sizes.xxl,
       color: colors.text,
       textAlign: 'center',
     },
-    subtitle: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      color: colors.textMuted,
-      textAlign: 'center',
-      lineHeight: 19,
-      opacity: 0.85,
+
+    // ── Scroll content
+    scrollContent: {
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('5'),
+      paddingBottom: spacing('6'),
+      flexGrow: 1,
     },
-    versionBadge: {
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('0.5'),
-      borderRadius: radius('full'),
-      marginTop: spacing('2'),
+
+    // Step meta (eyebrow + title + subtitle)
+    stepMeta: {
+      marginBottom: spacing('5'),
     },
-    versionBadgeText: {
-      fontFamily: typography.styles.badge.fontFamily,
-      fontSize: 11,
+    eyebrow: {
+      fontFamily: typography.styles.sectionLabel.fontFamily,
+      fontSize: typography.sizes.xs,
       color: colors.primary,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      marginBottom: spacing('3'),
     },
-    // Buttons container
-    buttonContainer: {
-      width: '100%',
-      paddingHorizontal: spacing('2'),
+    stepTitle: {
+      fontFamily: typography.fonts.heading,
+      fontSize: 30,
+      lineHeight: 34,
+      color: colors.text,
+    },
+    stepSubtitle: {
+      marginTop: spacing('2.5'),
+      fontFamily: typography.fonts.regular,
+      fontSize: 14,
+      lineHeight: 22,
+      color: colors.textMuted,
+      maxWidth: 320,
+    },
+
+    // Info cards (WelcomeStep pattern)
+    cards: {
+      gap: spacing('3'),
+    },
+    card: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('4'),
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      padding: spacing('4'),
+    },
+    cardText: {
+      flex: 1,
+      gap: spacing('1'),
+    },
+    cardLabel: {
+      fontFamily: typography.styles.rowLabel.fontFamily,
+      fontSize: 15,
+      color: colors.text,
+    },
+    cardDetail: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.sm,
+      lineHeight: 20,
+      color: colors.textMuted,
+    },
+
+    // ── Footer
+    footer: {
+      paddingHorizontal: layout.screenPadding,
+      paddingBottom: Platform.OS === 'ios' ? spacing('5') : spacing('6'),
+      paddingTop: spacing('2'),
     },
   });
 }

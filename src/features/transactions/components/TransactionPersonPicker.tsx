@@ -53,7 +53,7 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
               style={[styles.personChip, selected && { backgroundColor: hex + '18' }]}
               onPress={() => onSelect(person.id)}
             >
-              <PersonAvatar name={person.name} color={hex} size={26} variant="solid" />
+              <PersonAvatar name={person.name} color={hex} size={26} variant="subtle" />
               <Text style={[styles.personName, { fontFamily: typography.styles.rowLabel.fontFamily, color: selected ? colors.text : colors.textMuted }]} numberOfLines={1}>
                 {person.name.split(' ')[0]}
               </Text>

@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { CURRENCIES } from '../../constants/currency';
+import { useSettings } from '../../providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
 import { BentoBottomSheet, useBottomSheet } from './BottomSheet';
@@ -34,23 +35,35 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [query, setQuery] = useState('');
   const bottomSheet = useBottomSheet();
+  const { profile } = useSettings();
+  const defaultCurrency = profile.defaultCurrency;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = q
       ? CURRENCIES.filter(c => c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q))
       : CURRENCIES;
-    // pin selected to top when not searching
+
     if (!q) {
-      const selectedIdx = list.findIndex(c => c.code === value);
-      if (selectedIdx > 0) {
-        const copy = [...list];
-        const [sel] = copy.splice(selectedIdx, 1);
-        return [sel, ...copy];
+      // Always pin: [defaultCurrency, selected (if ≠ default), ...rest]
+      const pinCodes = new Set<string>();
+      const pinned: typeof CURRENCIES = [];
+
+      if (defaultCurrency) {
+        const def = CURRENCIES.find(c => c.code === defaultCurrency);
+        if (def) { pinned.push(def); pinCodes.add(def.code); }
+      }
+      if (value && value !== defaultCurrency) {
+        const sel = CURRENCIES.find(c => c.code === value);
+        if (sel) { pinned.push(sel); pinCodes.add(sel.code); }
+      }
+
+      if (pinned.length > 0) {
+        return [...pinned, ...list.filter(c => !pinCodes.has(c.code))];
       }
     }
     return list;
-  }, [query, value]);
+  }, [query, value, defaultCurrency]);
 
   const handleSelect = useCallback((code: string) => {
     Haptics.selectionAsync().catch(() => {});

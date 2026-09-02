@@ -3,7 +3,8 @@ import { db } from '../client';
 import { seederState } from '../schema';
 import * as transferCategorySeed from './001_add_transfer_category';
 import * as migrateIconsAndColorsSeed from './002_migrate_icons_and_colors';
-import * as addAccountTypeSeed from './003_add_account_type';
+import * as addUncategorizedCategorySeed from './004_add_uncategorized_category';
+import * as categoryMultiTypesSeed from './005_category_multi_types';
 
 type SeedModule = {
   name: string;
@@ -13,7 +14,8 @@ type SeedModule = {
 const seeds: readonly SeedModule[] = [
   transferCategorySeed,
   migrateIconsAndColorsSeed,
-  addAccountTypeSeed,
+  addUncategorizedCategorySeed,
+  categoryMultiTypesSeed,
 ] as const;
 
 export async function runSeeds(): Promise<void> {

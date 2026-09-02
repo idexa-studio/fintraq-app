@@ -18,6 +18,7 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   View,
 } from 'react-native';
@@ -55,6 +56,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
   const [showExportOptions, setShowExportOptions] = useState(false);
   const [exportedData, setExportedData] = useState<{ content: string; filename: string } | null>(null);
   const [previewCount, setPreviewCount] = useState<number | null>(null);
+  const [includeLoans, setIncludeLoans] = useState(false);
 
   const effectiveDateRange = useMemo(() => {
     if (customRange) return customRange;
@@ -113,6 +115,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
         dateRange: effectiveDateRange,
         ...(selectedAccountId !== null && { accountId: selectedAccountId }),
         ...(selectedType !== 'ALL' && { type: selectedType as 'CR' | 'DR' | 'TR' }),
+        includeLoans,
       });
       setExportedData(result);
       setShowExportOptions(true);
@@ -208,7 +211,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
                 <View style={styles.sep} />
                 <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(acc.id)} scaleOnPress={false}>
                   <View style={styles.accRow}>
-                    <IconAvatar icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)} color={c} variant="solid" size={24} iconSize={11} />
+                    <IconAvatar icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)} color={c} variant="subtle" size={24} iconSize={11} />
                     <Text style={styles.cardRowText}>{acc.name}</Text>
                   </View>
                   {selected ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}
@@ -216,6 +219,20 @@ export const ExportScreen = React.memo(function ExportScreen() {
               </React.Fragment>
             );
           })}
+        </View>
+
+        {/* ── Options ── */}
+        <Text style={styles.sectionLabel}>Options</Text>
+        <View style={styles.card}>
+          <View style={styles.cardRow}>
+            <Text style={styles.cardRowText}>Include loans</Text>
+            <Switch
+              value={includeLoans}
+              onValueChange={setIncludeLoans}
+              trackColor={{ false: colors.border, true: colors.primary + '60' }}
+              thumbColor={includeLoans ? colors.primary : colors.textMuted}
+            />
+          </View>
         </View>
 
         {/* ── Summary ── */}

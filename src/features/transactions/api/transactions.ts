@@ -1,7 +1,7 @@
 import { SQL, and, asc, count, desc, eq, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import { db } from '@/src/db/client';
-import { accounts, categories, payments, persons } from '@/src/db/schema';
+import { accounts, categories, payments, persons, loans } from '@/src/db/schema';
 import type { TransactionType } from '@/src/types';
 
 export type Payment = typeof payments.$inferSelect;
@@ -14,6 +14,11 @@ export type TransactionFilters = {
   type?: TransactionType;
   accountId?: number;
   categoryId?: number;
+  personId?: number;
+  startDate?: string; // ISO date YYYY-MM-DD
+  endDate?: string;   // ISO date YYYY-MM-DD
+  minAmount?: number;
+  maxAmount?: number;
   sortBy?: 'date' | 'amount';
   sortOrder?: 'asc' | 'desc';
 };
@@ -113,6 +118,11 @@ const buildWhere = (filters: TransactionFilters): SQL | undefined => {
     );
   }
   if (filters.categoryId != null) conditions.push(eq(payments.categoryId, filters.categoryId));
+  if (filters.personId != null) conditions.push(eq(payments.personId, filters.personId));
+  if (filters.startDate) conditions.push(sql`date(${payments.datetime}) >= ${filters.startDate}`);
+  if (filters.endDate) conditions.push(sql`date(${payments.datetime}) <= ${filters.endDate}`);
+  if (filters.minAmount != null) conditions.push(sql`${payments.amount} >= ${filters.minAmount}`);
+  if (filters.maxAmount != null) conditions.push(sql`${payments.amount} <= ${filters.maxAmount}`);
   return conditions.length > 0 ? and(...conditions) : undefined;
 };
 
@@ -154,6 +164,25 @@ export const getTransactionsCount = async (filters: TransactionFilters = {}) => 
   const where = buildWhere(filters);
   const [row] = await db.select({ total: count() }).from(payments).where(where);
   return row?.total ?? 0;
+};
+
+export type TransactionTotals = Record<string, { income: number; expense: number }>;
+
+export const getTransactionTotals = async (filters: TransactionFilters = {}): Promise<TransactionTotals> => {
+  const where = buildWhere(filters);
+  const rows = await db
+    .select({
+      currency: accounts.currency,
+      income: sql<number>`COALESCE(SUM(CASE WHEN ${payments.type}='CR' THEN ${payments.amount} ELSE 0 END), 0)`,
+      expense: sql<number>`COALESCE(SUM(CASE WHEN ${payments.type}='DR' THEN ${payments.amount} ELSE 0 END), 0)`,
+    })
+    .from(payments)
+    .innerJoin(accounts, eq(payments.accountId, accounts.id))
+    .where(where)
+    .groupBy(accounts.currency);
+  const result: TransactionTotals = {};
+  rows.forEach(r => { result[r.currency] = { income: r.income, expense: r.expense }; });
+  return result;
 };
 
 export const getTransactions = async (
@@ -209,7 +238,7 @@ export const getTransactionDetailById = async (id: number): Promise<TransactionD
 
 // ─── Account balance helpers ──────────────────────────────────────────────────
 
-const applyBalanceDelta = async (
+export const applyBalanceDelta = async (
   accountId: number,
   type: TransactionType,
   amount: number,
@@ -238,6 +267,34 @@ const applyBalanceDelta = async (
     .where(eq(accounts.id, accountId));
 };
 
+// ─── Loan status syncing ──────────────────────────────────────────────────────
+
+export const syncLoanStatus = async (loanId: number): Promise<void> => {
+  const [loanRow] = await db.select().from(loans).where(eq(loans.id, loanId)).limit(1);
+  if (!loanRow) return;
+
+  const txType: TransactionType = loanRow.type === 'lend' ? 'CR' : 'DR';
+  const [{ totalRepaid }] = await db
+    .select({ totalRepaid: sql<number>`COALESCE(SUM(${payments.amount}), 0)` })
+    .from(payments)
+    .where(and(eq(payments.loanId, loanId), eq(payments.type, txType)));
+
+  const repaidAmount = totalRepaid ?? 0;
+  const outstanding = Math.max(0, loanRow.principal - repaidAmount);
+
+  let status: 'repaid' | 'active' | 'overdue' = 'active';
+  if (outstanding <= 0) {
+    status = 'repaid';
+  } else if (loanRow.dueDate && new Date() > new Date(loanRow.dueDate)) {
+    status = 'overdue';
+  }
+
+  await db
+    .update(loans)
+    .set({ status, updatedAt: new Date().toISOString() })
+    .where(eq(loans.id, loanId));
+};
+
 // ─── Mutations ────────────────────────────────────────────────────────────────
 
 export const createTransaction = async (data: InsertPayment): Promise<Payment> => {
@@ -260,6 +317,10 @@ export const createTransaction = async (data: InsertPayment): Promise<Payment> =
       await applyBalanceDelta(data.toAccountId, 'TR', data.amount, 1);
     } else {
       await applyBalanceDelta(data.accountId, data.type, data.amount, 1);
+    }
+
+    if (payment.loanId) {
+      await syncLoanStatus(payment.loanId);
     }
 
     if (__DEV__) console.log('[TX] createTransaction success id', payment.id);
@@ -289,6 +350,10 @@ export const deleteTransaction = async (id: number): Promise<void> => {
       }
     } else {
       await applyBalanceDelta(payment.accountId, payment.type, payment.amount, -1);
+    }
+
+    if (payment.loanId) {
+      await syncLoanStatus(payment.loanId);
     }
 
     if (__DEV__) console.log('[TX] deleteTransaction success id', id);
@@ -331,6 +396,14 @@ export const updateTransaction = async (id: number, data: UpdatePayment): Promis
     }
 
     const [updated] = await db.update(payments).set(data).where(eq(payments.id, id)).returning();
+
+    if (updated.loanId) {
+      await syncLoanStatus(updated.loanId);
+    }
+    if (old.loanId && old.loanId !== updated.loanId) {
+      await syncLoanStatus(old.loanId);
+    }
+
     if (__DEV__) console.log('[TX] updateTransaction success id', updated.id);
     return updated;
   } catch (err) {

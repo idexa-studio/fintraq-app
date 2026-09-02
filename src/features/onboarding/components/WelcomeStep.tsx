@@ -17,7 +17,7 @@ const FEATURES: { icon: IconSvgElement; label: string; detail: string; colorKey:
   {
     icon: BarChartIcon,
     label: 'Built-in analytics',
-    detail: 'Spending trends, category breakdown, and smart insights.',
+    detail: 'Spending trends, category breakdown, highlights, and period-over-period deltas.',
     colorKey: 'info',
   },
   {

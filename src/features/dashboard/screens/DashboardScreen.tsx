@@ -1,7 +1,6 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { DASHBOARD_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
-import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { useAppLock } from '@/src/providers/AppLockProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
@@ -14,7 +13,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-nat
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
 import { TransactionRow } from '../../../components/ui/TransactionRow';
-import { DEFAULT_CURRENCY } from '../../../constants/currency';
+import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '../../../constants/currency';
 import { StorageKeys } from '../../../constants/keys';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
@@ -23,7 +22,8 @@ import { AccountsCarousel } from '../components/AccountsCarousel';
 import { DashboardHeader } from '../components/DashboardHeader';
 import { HeroBalanceCard } from '../components/HeroBalanceCard';
 import { InsightsSection } from '../components/InsightsSection';
-import { PremiumUpsellBottomSheet } from '../components/PremiumUpsellBottomSheet';
+import { LoansGlanceCard } from '../components/LoansGlanceCard';
+import { PremiumUpsellModal } from '../components/PremiumUpsellModal';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '../components/TopPersonsCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
@@ -45,26 +45,28 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
 
   const { isLocked } = useAppLock();
-  const { hasActivePrompt } = useAppConfig();
 
   const [showUpsell, setShowUpsell] = React.useState(false);
 
   React.useEffect(() => {
-    if (isPremium || isLocked || hasActivePrompt) return;
+    if (isPremium || isLocked) return;
+
+    let timer: ReturnType<typeof setTimeout>;
 
     const checkUpsell = async () => {
-      // Prevent rendering the premium upsell modal at the same time as the walkthrough modal to avoid iOS UIKit lockup/freeze.
       const walkthroughCompleted = await AsyncStorage.getItem(StorageKeys.WALKTHROUGH_DASHBOARD);
       if (walkthroughCompleted !== 'true') return;
 
       const val = await AsyncStorage.getItem(UPSELL_KEY);
       if (!val || Date.now() - parseInt(val, 10) > UPSELL_TTL) {
-        setShowUpsell(true);
+        // Delay so user can process the dashboard before the dialog appears
+        timer = setTimeout(() => setShowUpsell(true), 3500);
       }
     };
 
     checkUpsell();
-  }, [isPremium, isLocked, hasActivePrompt]);
+    return () => clearTimeout(timer);
+  }, [isPremium, isLocked]);
 
   const dismissUpsell = useCallback(() => {
     setShowUpsell(false);
@@ -72,13 +74,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   }, []);
 
   const handleWalkthroughFinish = useCallback(() => {
-    if (isPremium || isLocked || hasActivePrompt) return;
+    if (isPremium || isLocked) return;
     AsyncStorage.getItem(UPSELL_KEY).then(val => {
       if (!val || Date.now() - parseInt(val, 10) > UPSELL_TTL) {
-        setShowUpsell(true);
+        setTimeout(() => setShowUpsell(true), 1000);
       }
     });
-  }, [isPremium, isLocked, hasActivePrompt]);
+  }, [isPremium, isLocked]);
 
   const balancesByCurrency = useMemo(() =>
     accounts?.reduce((acc, a) => {
@@ -90,8 +92,9 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   const currencyKeys = useMemo(() => {
     const keys = Object.keys(balancesByCurrency);
-    return keys.length > 0 ? keys : [DEFAULT_CURRENCY];
-  }, [balancesByCurrency]);
+    const list = keys.length > 0 ? keys : [DEFAULT_CURRENCY];
+    return sortCurrenciesWithDefault(list, profile.defaultCurrency);
+  }, [balancesByCurrency, profile.defaultCurrency]);
 
   const [selectedCurrency, setSelectedCurrency] = React.useState<string>(currencyKeys[0]);
 
@@ -166,6 +169,9 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           </>
         )}
 
+        <SectionHeader title="Loans" rightText="See all" onPressRight={() => router.push('/(main)/loans')} />
+        <LoansGlanceCard currency={selectedCurrency} onPress={() => router.push('/(main)/loans')} />
+
         <SectionHeader title="Recent" rightText="See all" onPressRight={navigateToTransactions} />
         <View style={styles.activityCard}>
           {transactions && transactions.length > 0 ? (
@@ -200,9 +206,12 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         storageKey={StorageKeys.WALKTHROUGH_DASHBOARD}
         steps={DASHBOARD_WALKTHROUGH_STEPS}
         onFinish={handleWalkthroughFinish}
-        enabled={!isLocked && !hasActivePrompt}
+        enabled={!isLocked}
       />
-      <PremiumUpsellBottomSheet visible={showUpsell && !isPremium && !isLocked && !hasActivePrompt} onClose={dismissUpsell} />
+      <PremiumUpsellModal
+      visible={showUpsell && !isPremium && !isLocked}
+      // visible
+      onClose={dismissUpsell} />
     </SafeAreaView>
   );
 });

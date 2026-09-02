@@ -13,6 +13,8 @@ export type OptionsDialogOption = {
   icon?: IconSvgElement;
   selected?: boolean;
   destructive?: boolean;
+  disabled?: boolean;
+  hint?: string;
   closeOnPress?: boolean;
   onPress: () => void;
 };
@@ -68,29 +70,36 @@ export const OptionsDialog = React.memo(function OptionsDialog({
           <View style={styles.list}>
             {options.map((opt) => {
               const selected = !!opt.selected;
+              const disabled = !!opt.disabled;
               return (
                 <BentoPressable
                   key={opt.key}
-                  style={[styles.opt, selected && styles.optSelected]}
-                  onPress={() => handleOptionPress(opt)}
-                  scaleOnPress={true}
+                  style={[styles.opt, selected && styles.optSelected, disabled && styles.optDisabled]}
+                  onPress={disabled ? undefined : () => handleOptionPress(opt)}
+                  scaleOnPress={!disabled}
                 >
                   {opt.icon ? (
                     <HugeiconsIcon
                       icon={opt.icon}
                       size={20}
-                      color={selected ? colors.primary : opt.destructive ? colors.danger : colors.text}
+                      color={disabled ? colors.textMuted : selected ? colors.primary : opt.destructive ? colors.danger : colors.text}
                     />
                   ) : null}
-                  <Text
-                    style={[
-                      styles.optLabel,
-                      selected && { fontFamily: typography.styles.chipLabelActive.fontFamily, color: colors.primary },
-                      opt.destructive && { color: colors.danger },
-                    ]}
-                  >
-                    {opt.label}
-                  </Text>
+                  <View style={styles.optContent}>
+                    <Text
+                      style={[
+                        styles.optLabel,
+                        selected && { fontFamily: typography.styles.chipLabelActive.fontFamily, color: colors.primary },
+                        opt.destructive && !disabled && { color: colors.danger },
+                        disabled && styles.optLabelDisabled,
+                      ]}
+                    >
+                      {opt.label}
+                    </Text>
+                    {opt.hint ? (
+                      <Text style={styles.optHint}>{opt.hint}</Text>
+                    ) : null}
+                  </View>
                   {selected ? (
                     <HugeiconsIcon icon={CheckIcon} size={18} color={colors.primary} />
                   ) : null}
@@ -150,8 +159,9 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
     opt: {
       flexDirection: 'row',
       alignItems: 'center',
-      height: 48,
+      minHeight: 48,
       paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('2'),
       borderRadius: radius('lg'),
       backgroundColor: colors.background,
       gap: spacing('3'),
@@ -160,11 +170,25 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
     optSelected: {
       backgroundColor: colors.primaryLight,
     },
-    optLabel: {
+    optDisabled: {
+      opacity: 0.45,
+    },
+    optContent: {
       flex: 1,
+      gap: 2,
+    },
+    optLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.sm,
       color: colors.text,
+    },
+    optLabelDisabled: {
+      color: colors.textMuted,
+    },
+    optHint: {
+      fontFamily: typography.fonts.regular,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
     },
     actions: {
       flexDirection: 'row',

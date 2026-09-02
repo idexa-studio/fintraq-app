@@ -103,23 +103,23 @@ export const SEARCH_WALKTHROUGH_STEPS: WalkthroughStep[] = [
 export const ANALYTICS_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     icon: ChartLineData01Icon,
-    title: 'Interactive Analytics',
-    desc: 'View your total balance trajectory, income/expense breakdown, and daily cashburn.',
+    title: 'Summary & Deltas',
+    desc: 'Income, expenses, net position, and daily average — each tile shows a badge comparing against the previous period.',
+  },
+  {
+    icon: SparklesIcon,
+    title: 'Highlights',
+    desc: 'Instantly see your top expense category and biggest single expense. Tap either to drill into its transactions.',
+  },
+  {
+    icon: Tag01Icon,
+    title: 'Category Breakdown',
+    desc: 'Switch between Expenses and Income tabs to see a proportion bar and ranked categories for the selected period.',
   },
   {
     icon: Calendar01Icon,
-    title: 'Time Range Filtering',
-    desc: 'Select custom periods (7 days, 30 days, 90 days, or a whole year) to track seasonal patterns.',
-  },
-  {
-    icon: Wallet05Icon,
-    title: 'Portfolio Distribution',
-    desc: 'View percentage distributions of assets across cash, bank, or credit accounts.',
-  },
-  {
-    icon: Calendar01Icon,
-    title: 'Weekday Patterns',
-    desc: 'Analyze the weekday frequency heatmap to see which days you spend the most.',
+    title: 'Weekly Pattern & Forecast',
+    desc: 'Day-of-week bars reveal your spending rhythm, plus daily average and month-end projection in Spending patterns.',
   },
 ];
 
@@ -168,7 +168,7 @@ export const ACCOUNTS_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     icon: MoreVerticalCircle01Icon,
     title: 'Manage Accounts',
-    desc: 'Tap the three dots on any account card to edit details or delete the account.',
+    desc: 'Tap the three dots to edit details. Currency is locked after creation. Delete is disabled if transactions or loans exist.',
   },
   {
     icon: PlusSignIcon,
