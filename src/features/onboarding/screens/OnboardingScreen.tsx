@@ -299,6 +299,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       console.log('[OnboardingScreen] Perform restore result:', success);
       if (success) {
         await completeOnboarding();
+        router.replace('/(main)/(tabs)');
       }
     } catch (e: any) {
       console.error('[OnboardingScreen] Onboarding restore error:', e);
@@ -308,7 +309,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         type: 'error',
       });
     }
-  }, [user, connectAccount, performRestore, completeOnboarding, showAlert]);
+  }, [user, connectAccount, performRestore, completeOnboarding, router, showAlert]);
 
   const openCurrencyPicker = useCallback(() => setShowCurrencyPicker(true), []);
   const closeCurrencyPicker = useCallback(() => setShowCurrencyPicker(false), []);

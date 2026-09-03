@@ -22,7 +22,7 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const { connectAccount, isChecking } = useGoogleBackup();
+  const { connectAccount, isConnected, isChecking } = useGoogleBackup();
 
   const handleConnect = useCallback(async () => {
     try {
@@ -33,6 +33,8 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
       // Connect error handled inside hook
     }
   }, [connectAccount, onClose, onConnectSuccess]);
+
+  if (isConnected || !visible) return null;
 
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>

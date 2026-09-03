@@ -47,7 +47,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   const { data: transactions, isLoading: txLoading } = useTransactions(6);
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
-  const { isConnected: isBackupConnected } = useGoogleBackup();
+  const { isConnected: isBackupConnected, isChecking: isBackupChecking } = useGoogleBackup();
 
   const { isLocked } = useAppLock();
 
@@ -55,19 +55,26 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const [showBackupPrompt, setShowBackupPrompt] = React.useState(false);
 
   React.useEffect(() => {
-    if (isBackupConnected || isLocked) return;
+    if (isBackupChecking || isBackupConnected || isLocked) {
+      setShowBackupPrompt(false);
+      return;
+    }
     if (!transactions || transactions.length < 3) return;
 
     let timer: ReturnType<typeof setTimeout>;
     (async () => {
       const val = await AsyncStorage.getItem(BACKUP_PROMPT_KEY);
       if (!val || Date.now() - parseInt(val, 10) > BACKUP_PROMPT_TTL) {
-        timer = setTimeout(() => setShowBackupPrompt(true), 2500);
+        timer = setTimeout(() => {
+          if (!isBackupConnected && !isLocked) {
+            setShowBackupPrompt(true);
+          }
+        }, 2500);
       }
     })();
 
     return () => clearTimeout(timer);
-  }, [isBackupConnected, isLocked, transactions]);
+  }, [isBackupChecking, isBackupConnected, isLocked, transactions]);
 
   const dismissBackupPrompt = useCallback(() => {
     setShowBackupPrompt(false);
