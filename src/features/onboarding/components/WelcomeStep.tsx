@@ -1,5 +1,5 @@
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { BarChartIcon, CloudIcon, FlashIcon, LockPasswordIcon } from '@hugeicons/core-free-icons';
+import { BarChartIcon, FlashIcon, LockPasswordIcon } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -11,20 +11,14 @@ const FEATURES: { icon: IconSvgElement; label: string; detail: string; colorKey:
   {
     icon: FlashIcon,
     label: 'Fast capture',
-    detail: 'Log transactions anywhere in seconds.',
+    detail: 'Log transactions anywhere in seconds with effortless controls.',
     colorKey: 'primary',
   },
   {
     icon: BarChartIcon,
     label: 'Built-in analytics',
-    detail: 'Spending trends, category breakdown, highlights, and period-over-period deltas.',
+    detail: 'Spending trends, category breakdown, highlights, and period deltas.',
     colorKey: 'info',
-  },
-  {
-    icon: CloudIcon,
-    label: 'Optional Cloud Backup',
-    detail: 'Optionally back up & restore your data with Google Drive anytime in Settings.',
-    colorKey: 'primary',
   },
   {
     icon: LockPasswordIcon,

@@ -20,6 +20,8 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { LocalMigrationService } from '@/src/services/local-migration.service';
+import { unlockDatabaseIfLocked } from '@/src/db/client';
+import { AppState } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
 // Prevent the splash screen from auto-hiding before version check completes
@@ -38,10 +40,21 @@ export default function RootLayout() {
 
   useEffect(() => {
     async function runMigration() {
+      unlockDatabaseIfLocked();
       await LocalMigrationService.execute();
       setMigrationReady(true);
     }
     runMigration();
+
+    const subscription = AppState.addEventListener('change', (nextState) => {
+      if (nextState === 'active') {
+        unlockDatabaseIfLocked();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   useEffect(() => {

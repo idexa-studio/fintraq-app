@@ -1,3 +1,4 @@
+import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
@@ -29,7 +30,6 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Notifications from 'expo-notifications';
 import React, { useCallback, useMemo } from 'react';
 import {
-  Alert,
   DevSettings,
   KeyboardAvoidingView,
   Platform,
@@ -39,6 +39,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Updates from 'expo-updates';
 
 const DEV_PIN = '32159';
 
@@ -159,6 +160,35 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
   const [isSeeding, setIsSeeding] = React.useState(false);
   const [scheduledNotifs, setScheduledNotifs] = React.useState<Notifications.NotificationRequest[]>([]);
 
+  const [alertConfig, setAlertConfig] = React.useState<{
+    visible: boolean;
+    title: string;
+    message?: string;
+    type?: 'info' | 'success' | 'error' | 'warning';
+    buttons?: AlertButton[];
+  }>({
+    visible: false,
+    title: '',
+  });
+
+  const showAlert = useCallback(
+    (config: {
+      title: string;
+      message?: string;
+      type?: 'info' | 'success' | 'error' | 'warning';
+      buttons?: AlertButton[];
+    }) => {
+      setAlertConfig({
+        visible: true,
+        title: config.title,
+        message: config.message,
+        type: config.type || 'info',
+        buttons: config.buttons || [{ text: 'OK' }],
+      });
+    },
+    [],
+  );
+
   const fetchScheduled = useCallback(async () => {
     const list = await Notifications.getAllScheduledNotificationsAsync();
     setScheduledNotifs(list);
@@ -183,14 +213,33 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
     try {
       setIsSeeding(true);
       const count = await seedDummyData();
-      Alert.alert(
-        'Success',
-        `Generated ${count} transactions. The app will reload to sync.`,
-        [{ text: 'Ok', onPress: () => DevSettings.reload() }],
-      );
+      showAlert({
+        title: 'Success',
+        message: `Generated ${count} transactions. The app will reload to sync.`,
+        type: 'success',
+        buttons: [
+          {
+            text: 'OK',
+            onPress: async () => {
+              try {
+                await Updates.reloadAsync();
+              } catch (reloadErr) {
+                console.warn('[DeveloperScreen] Updates.reloadAsync warning (fallback to DevSettings):', reloadErr);
+                if (DevSettings?.reload) {
+                  DevSettings.reload();
+                }
+              }
+            },
+          },
+        ],
+      });
       setShowSeedConfirm(false);
     } catch (e) {
-      Alert.alert('Error', toErrorMessage(e, 'Failed to generate seed data.'));
+      showAlert({
+        title: 'Error',
+        message: toErrorMessage(e, 'Failed to generate seed data.'),
+        type: 'error',
+      });
     } finally {
       setIsSeeding(false);
     }
@@ -360,7 +409,11 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
             subtitle="Queue an instant check-in alert"
             onPress={() => {
               NotificationService.triggerInstantNotification();
-              Alert.alert('Test notification', 'Instant notification queued.');
+              showAlert({
+                title: 'Test Notification',
+                message: 'Instant check-in alert queued.',
+                type: 'info',
+              });
             }}
           />
           <RowSeparator theme={theme} />
@@ -408,6 +461,15 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         confirmLabel="Generate"
         isLoading={isSeeding}
         onConfirm={handleRunSeed}
+      />
+
+      <AlertDialog
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        buttons={alertConfig.buttons}
+        onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
       />
     </SafeAreaView>
   );

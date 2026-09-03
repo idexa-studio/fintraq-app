@@ -1,3 +1,4 @@
+import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
@@ -6,10 +7,12 @@ import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
-import { StorageKeys } from '@/src/constants/keys';
 import { db } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
+import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
+import * as Updates from 'expo-updates';
 
+import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
 import { LockStorage } from '@/src/features/lock/api/lockStorage';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
 import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
@@ -235,6 +238,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
   const { isPremium } = usePremium();
   const { profile, updateProfile } = useSettings();
+  const { isConnected: isBackupConnected } = useGoogleBackup();
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -247,6 +251,35 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
   const [devTaps, setDevTaps] = useState(0);
+
+  const [alertConfig, setAlertConfig] = useState<{
+    visible: boolean;
+    title: string;
+    message?: string;
+    type?: 'info' | 'success' | 'error' | 'warning';
+    buttons?: AlertButton[];
+  }>({
+    visible: false,
+    title: '',
+  });
+
+  const showAlert = useCallback(
+    (config: {
+      title: string;
+      message?: string;
+      type?: 'info' | 'success' | 'error' | 'warning';
+      buttons?: AlertButton[];
+    }) => {
+      setAlertConfig({
+        visible: true,
+        title: config.title,
+        message: config.message,
+        type: config.type || 'info',
+        buttons: config.buttons || [{ text: 'OK' }],
+      });
+    },
+    [],
+  );
 
   /* ── App lock ── */
   const handleToggleLock = useCallback(async () => {
@@ -321,39 +354,47 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   /* ── Reset ── */
   const runReset = useCallback(async () => {
     try {
-      // Delete user data only — seederState (schema migration tracking) is preserved
-      // so ALTER TABLE migrations don't re-run and crash on next launch
+      // 1. Sign out of Google Drive Cloud Backup
+      await GoogleDriveService.signOut().catch(() => {});
+
+      // 2. Clear query cache
+      queryClient.clear();
+
+      // 3. Delete user data tables
       await db.delete(payments);
       await db.delete(loans);
       await db.delete(persons);
       await db.delete(categories);
       await db.delete(accounts);
-      queryClient.clear();
 
-      // Clear user-facing AsyncStorage keys only — do NOT use AsyncStorage.clear()
-      // which would also wipe any infra keys added in the future
-      await AsyncStorage.multiRemove([
-        StorageKeys.PROFILE,
-        StorageKeys.ONBOARDED,
-        StorageKeys.SEED_EXECUTED,
-        StorageKeys.RECENT_SEARCHES,
-        StorageKeys.UPSELL_DISMISSED_AT,
-        StorageKeys.WALKTHROUGH_DASHBOARD,
-        StorageKeys.WALKTHROUGH_CATEGORIES,
-        StorageKeys.WALKTHROUGH_ANALYTICS,
-        StorageKeys.WALKTHROUGH_ACCOUNTS,
-        StorageKeys.WALKTHROUGH_TRANSACTIONS,
-        StorageKeys.WALKTHROUGH_SEARCH,
-        StorageKeys.WALKTHROUGH_TRANSACTION_CREATE,
-        StorageKeys.WALKTHROUGH_PERSONS,
-      ]);
+      // 4. Wipe all AsyncStorage keys cleanly
+      await AsyncStorage.clear().catch(() => {});
 
-      Alert.alert('Wipe complete', 'All data erased. Restart the app.');
-      router.replace('/(onboarding)');
+      showAlert({
+        title: 'Factory Reset Complete',
+        message: 'Your workspace data has been erased and Google Account disconnected. Tap OK to restart Fintraq.',
+        type: 'success',
+        buttons: [
+          {
+            text: 'OK',
+            onPress: async () => {
+              try {
+                await Updates.reloadAsync();
+              } catch {
+                router.replace('/(onboarding)');
+              }
+            },
+          },
+        ],
+      });
     } catch {
-      Alert.alert('Error', 'Failed to erase data.');
+      showAlert({
+        title: 'Reset Failed',
+        message: 'Could not complete factory reset. Please try again.',
+        type: 'error',
+      });
     }
-  }, [router, queryClient]);
+  }, [router, queryClient, showAlert]);
 
   /* ── Easter egg ── */
   const handleFooterTap = useCallback(() => {
@@ -542,9 +583,10 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon={CloudIcon}
-            iconColor={colors.primary}
+            iconColor={isBackupConnected ? colors.success : colors.primary}
             label="Cloud Backup"
-            subtitle="Back up & restore via Google Drive"
+            subtitle={isBackupConnected ? 'Google Drive auto-sync active' : 'Back up & restore via Google Drive'}
+            value={isBackupConnected ? 'Connected' : 'Recommended'}
             onPress={() => router.push('/backup')}
           />
           <RowSeparator theme={theme} />
@@ -676,6 +718,15 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         visible={showPinSetup}
         onCancel={handlePinSetupCancel}
         onComplete={handlePinSetupComplete}
+      />
+
+      <AlertDialog
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        buttons={alertConfig.buttons}
+        onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
       />
     </SafeAreaView>
   );

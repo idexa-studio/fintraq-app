@@ -37,7 +37,6 @@ class GoogleDriveServiceClass {
     if (this.isInitialized && !force) return;
     try {
       const webClientId = getWebClientId();
-      console.log('[GoogleDriveService] Initializing with webClientId:', webClientId ? 'FOUND' : 'NOT_FOUND');
       GoogleSignin.configure({
         ...(webClientId ? { webClientId } : {}),
         scopes: [DRIVE_APPDATA_SCOPE],
@@ -56,7 +55,6 @@ class GoogleDriveServiceClass {
 
     if (isSuccessResponse(response)) {
       const user = response.data.user;
-      console.log('[GoogleDriveService] Sign-in successful for user:', user.email);
       return {
         id: user.id,
         email: user.email,
@@ -154,7 +152,6 @@ class GoogleDriveServiceClass {
   }
 
   private async createBackupFileEntry(token: string): Promise<string> {
-    console.log('[GoogleDriveService] Creating new backup file entry in appDataFolder...');
     const response = await driveFetch('https://www.googleapis.com/drive/v3/files?fields=id', {
       method: 'POST',
       headers: {
@@ -173,7 +170,6 @@ class GoogleDriveServiceClass {
     if (!data.id) {
       throw new Error('Failed to resolve Google Drive file ID for backup.');
     }
-    console.log('[GoogleDriveService] Created new file entry ID:', data.id);
     return data.id;
   }
 
@@ -188,18 +184,9 @@ class GoogleDriveServiceClass {
     knownFileId?: string,
     onProgress?: DriveProgressCallback,
   ): Promise<CloudBackupFileMeta> {
-    console.log('[GoogleDriveService] Starting uploadBackup...');
     const token = await this.getAccessToken();
-    console.log('[GoogleDriveService] Access token acquired successfully.');
+    const fileId = knownFileId ?? (await this.findLatestBackup())?.id ?? (await this.createBackupFileEntry(token));
 
-    let fileId = knownFileId ?? (await this.findLatestBackup())?.id ?? null;
-    if (fileId) {
-      console.log('[GoogleDriveService] Using existing backup file ID:', fileId);
-    } else {
-      fileId = await this.createBackupFileEntry(token);
-    }
-
-    console.log('[GoogleDriveService] Uploading JSON content payload to file ID:', fileId);
     const uploadEndpoint = `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media&fields=id,name,modifiedTime,size`;
 
     const responseText = await driveXhrRequest(uploadEndpoint, {

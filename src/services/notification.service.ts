@@ -168,6 +168,66 @@ export const NotificationService = {
   },
 
   /**
+   * presentBackupStartNotification: Shows a sticky OS push when background backup starts.
+   */
+  async presentBackupStartNotification() {
+    try {
+      await Notifications.scheduleNotificationAsync({
+        identifier: 'cloud_backup_status',
+        content: {
+          title: '☁️ Cloud Backup Syncing',
+          body: 'Your Fintraq workspace transactions and settings are being backed up to Google Drive.',
+          sound: false,
+          priority: Notifications.AndroidNotificationPriority.HIGH,
+        },
+        trigger: null,
+      });
+    } catch (e) {
+      console.warn('[NotificationService] presentBackupStartNotification warning:', e);
+    }
+  },
+
+  /**
+   * presentBackupCompleteNotification: Shows OS push when background backup finishes.
+   */
+  async presentBackupCompleteNotification() {
+    try {
+      await Notifications.scheduleNotificationAsync({
+        identifier: 'cloud_backup_status',
+        content: {
+          title: '✅ Cloud Backup Complete',
+          body: 'Your financial history was successfully backed up to Google Drive.',
+          sound: true,
+          priority: Notifications.AndroidNotificationPriority.HIGH,
+        },
+        trigger: null,
+      });
+    } catch (e) {
+      console.warn('[NotificationService] presentBackupCompleteNotification warning:', e);
+    }
+  },
+
+  /**
+   * presentBackupFailedNotification: Shows OS push if background backup fails.
+   */
+  async presentBackupFailedNotification() {
+    try {
+      await Notifications.scheduleNotificationAsync({
+        identifier: 'cloud_backup_status',
+        content: {
+          title: '⚠️ Cloud Backup Failed',
+          body: 'Could not complete background cloud backup. Please check your internet connection.',
+          sound: true,
+          priority: Notifications.AndroidNotificationPriority.HIGH,
+        },
+        trigger: null,
+      });
+    } catch (e) {
+      console.warn('[NotificationService] presentBackupFailedNotification warning:', e);
+    }
+  },
+
+  /**
    * cancelAllReminders: Stops all future notifications.
    */
   async cancelAllReminders() {

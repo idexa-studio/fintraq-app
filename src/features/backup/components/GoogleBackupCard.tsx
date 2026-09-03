@@ -1,7 +1,9 @@
+import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import * as Updates from 'expo-updates';
 import {
   ArrowRight01Icon,
   CloudIcon,
@@ -14,8 +16,8 @@ import { format } from 'date-fns';
 import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  DevSettings,
   StyleSheet,
-  Switch,
   Text,
   View,
 } from 'react-native';
@@ -35,16 +37,133 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     progress,
     progressStage,
     lastBackup,
-    autoBackupEnabled,
+    autoBackupFrequency,
     connectAccount,
     disconnectAccount,
     performBackup,
     performRestore,
-    toggleAutoBackup,
+    setAutoBackupFrequency,
   } = useGoogleBackup();
 
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false);
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
+
+  const [alertConfig, setAlertConfig] = useState<{
+    visible: boolean;
+    title: string;
+    message?: string;
+    type?: 'info' | 'success' | 'error' | 'warning';
+    buttons?: AlertButton[];
+  }>({
+    visible: false,
+    title: '',
+  });
+
+  const showAlert = React.useCallback(
+    (config: {
+      title: string;
+      message?: string;
+      type?: 'info' | 'success' | 'error' | 'warning';
+      buttons?: AlertButton[];
+    }) => {
+      setAlertConfig({
+        visible: true,
+        title: config.title,
+        message: config.message,
+        type: config.type || 'info',
+        buttons: config.buttons || [{ text: 'OK' }],
+      });
+    },
+    [],
+  );
+
+  const handleConnect = React.useCallback(async () => {
+    try {
+      await connectAccount();
+      showAlert({
+        title: 'Google Account Connected',
+        message: 'Your Google Account has been connected and is ready for cloud backup.',
+        type: 'success',
+      });
+    } catch (e: any) {
+      showAlert({
+        title: 'Connection Failed',
+        message: e?.message || 'Could not connect Google Account.',
+        type: 'error',
+      });
+    }
+  }, [connectAccount, showAlert]);
+
+  const handleDisconnect = React.useCallback(async () => {
+    setShowDisconnectConfirm(false);
+    try {
+      await disconnectAccount();
+      showAlert({
+        title: 'Disconnected',
+        message: 'Your Google Account has been disconnected.',
+        type: 'info',
+      });
+    } catch (e: any) {
+      showAlert({
+        title: 'Disconnect Failed',
+        message: e?.message || 'Could not disconnect Google Account.',
+        type: 'error',
+      });
+    }
+  }, [disconnectAccount, showAlert]);
+
+  const handleBackup = React.useCallback(async () => {
+    try {
+      const success = await performBackup();
+      if (success) {
+        showAlert({
+          title: 'Backup Successful',
+          message: 'Your transactions, accounts, and settings have been safely backed up to Google Drive.',
+          type: 'success',
+        });
+      }
+    } catch (e: any) {
+      showAlert({
+        title: 'Backup Failed',
+        message: e?.message || 'Could not save backup to Google Drive.',
+        type: 'error',
+      });
+    }
+  }, [performBackup, showAlert]);
+
+  const handleRestore = React.useCallback(async () => {
+    setShowRestoreConfirm(false);
+    try {
+      const success = await performRestore();
+      if (success) {
+        showAlert({
+          title: 'Restore Complete',
+          message: 'Your workspace has been successfully restored from Google Drive. Tap OK to restart Fintraq.',
+          type: 'success',
+          buttons: [
+            {
+              text: 'OK',
+              onPress: async () => {
+                try {
+                  await Updates.reloadAsync();
+                } catch {
+                  if (__DEV__ && DevSettings?.reload) {
+                    DevSettings.reload();
+                  }
+                }
+              },
+            },
+          ],
+        });
+      }
+    } catch (e: any) {
+      showAlert({
+        title: 'Restore Failed',
+        message: e?.message || 'Could not restore backup from Google Drive.',
+        type: 'error',
+      });
+    }
+  }, [performRestore, showAlert]);
 
   const formattedLastBackupTime = useMemo(() => {
     if (!lastBackup?.modifiedTime) return 'No backup yet';
@@ -76,10 +195,13 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   if (!isConnected) {
     return (
       <View style={styles.groupContainer}>
-        <BentoPressable style={styles.mainRow} onPress={connectAccount}>
-          <IconAvatar icon={CloudIcon} color={colors.primary} variant="subtle" size={36} />
+        <BentoPressable style={styles.mainRow} onPress={handleConnect}>
+          <IconAvatar icon={CloudIcon} color={colors.primary} variant="subtle" size={40} />
           <View style={styles.rowInfo}>
-            <Text style={styles.rowLabel}>Google Cloud Backup</Text>
+            <View style={styles.titleRow}>
+              <Text style={styles.rowLabel}>Google Cloud Backup</Text>
+              <View style={styles.statusDotOffline} />
+            </View>
             <Text style={styles.rowSubtitle}>
               Connect Google Drive to back up your data privately
             </Text>
@@ -89,6 +211,15 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
             <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primary} />
           </View>
         </BentoPressable>
+
+        <AlertDialog
+          visible={alertConfig.visible}
+          title={alertConfig.title}
+          message={alertConfig.message}
+          type={alertConfig.type}
+          buttons={alertConfig.buttons}
+          onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
+        />
       </View>
     );
   }
@@ -97,9 +228,15 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     <View style={styles.groupContainer}>
       {/* Account Info Row */}
       <View style={styles.mainRow}>
-        <IconAvatar icon={CloudIcon} color={colors.primary} variant="subtle" size={36} />
+        <IconAvatar icon={CloudIcon} color={colors.success} variant="subtle" size={40} />
         <View style={styles.rowInfo}>
-          <Text style={styles.rowLabel}>Google Cloud Backup</Text>
+          <View style={styles.titleRow}>
+            <Text style={styles.rowLabel}>Google Drive</Text>
+            <View style={styles.activeBadge}>
+              <View style={styles.statusDotActive} />
+              <Text style={styles.activeBadgeText}>Connected</Text>
+            </View>
+          </View>
           <Text style={styles.userEmailText} numberOfLines={1}>
             {user?.email}
           </Text>
@@ -144,7 +281,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       <View style={styles.actionsRow}>
         <BentoPressable
           style={[styles.primaryActionButton, (isBackingUp || isRestoring) && styles.disabledButton]}
-          onPress={performBackup}
+          onPress={handleBackup}
           disabled={isBackingUp || isRestoring}
         >
           {isBackingUp ? (
@@ -178,19 +315,33 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
 
       <View style={styles.separator} />
 
-      {/* Auto Backup Toggle Row */}
-      <View style={styles.switchRow}>
+      {/* Auto Backup Frequency Row */}
+      <View style={styles.freqSection}>
         <View style={styles.rowInfo}>
-          <Text style={styles.rowLabel}>Auto-backup on launch</Text>
-          <Text style={styles.rowSubtitle}>Safely sync changes every time the app opens</Text>
+          <Text style={styles.rowLabel}>Scheduled Auto-Backup</Text>
+          <Text style={styles.rowSubtitle}>
+            {autoBackupFrequency === 'off'
+              ? 'Automatic background cloud backup is disabled'
+              : `Backs up your data automatically ${autoBackupFrequency} in the background`}
+          </Text>
         </View>
-        <Switch
-          value={autoBackupEnabled}
-          onValueChange={toggleAutoBackup}
-          trackColor={{ false: colors.text + '18', true: colors.primary }}
-          thumbColor={'#FFFFFF'}
-          ios_backgroundColor={colors.text + '18'}
-        />
+
+        <View style={styles.freqPillsRow}>
+          {(['off', 'daily', 'weekly', 'monthly'] as const).map((freq) => {
+            const isActive = autoBackupFrequency === freq;
+            return (
+              <BentoPressable
+                key={freq}
+                style={[styles.freqPill, isActive && styles.freqPillActive]}
+                onPress={() => setAutoBackupFrequency(freq)}
+              >
+                <Text style={[styles.freqPillText, isActive && styles.freqPillTextActive]}>
+                  {freq.charAt(0).toUpperCase() + freq.slice(1)}
+                </Text>
+              </BentoPressable>
+            );
+          })}
+        </View>
       </View>
 
       {/* Confirm Dialogs */}
@@ -200,7 +351,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         title="Restore Cloud Backup?"
         message="Restoring will replace your current local data with the backup file from Google Drive. Proceed?"
         confirmLabel="Restore Data"
-        onConfirm={performRestore}
+        onConfirm={handleRestore}
         destructive
       />
 
@@ -210,8 +361,17 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         title="Disconnect Google Drive?"
         message="Are you sure you want to disconnect your Google Account from Cloud Backup?"
         confirmLabel="Disconnect"
-        onConfirm={disconnectAccount}
+        onConfirm={handleDisconnect}
         destructive
+      />
+
+      <AlertDialog
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        buttons={alertConfig.buttons}
+        onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
       />
     </View>
   );
@@ -250,10 +410,42 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flex: 1,
       gap: 2,
     },
+    titleRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('2'),
+    },
     rowLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: typography.sizes.md,
       color: colors.text,
+    },
+    statusDotOffline: {
+      width: 6,
+      height: 6,
+      borderRadius: radius('full'),
+      backgroundColor: colors.textMuted,
+      opacity: 0.5,
+    },
+    activeBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      backgroundColor: colors.success + '15',
+      paddingHorizontal: spacing('2'),
+      paddingVertical: 2,
+      borderRadius: radius('full'),
+    },
+    statusDotActive: {
+      width: 6,
+      height: 6,
+      borderRadius: radius('full'),
+      backgroundColor: colors.success,
+    },
+    activeBadgeText: {
+      fontFamily: typography.fonts.bold,
+      fontSize: 10,
+      color: colors.success,
     },
     rowSubtitle: {
       fontFamily: typography.fonts.regular,
@@ -395,12 +587,36 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     disabledButton: {
       opacity: 0.5,
     },
-    switchRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3.5'),
+    freqSection: {
+      gap: spacing('3'),
       paddingHorizontal: spacing('4'),
       paddingVertical: spacing('3.5'),
       backgroundColor: colors.surface,
+    },
+    freqPillsRow: {
+      flexDirection: 'row',
+      backgroundColor: colors.card,
+      borderRadius: radius('xl'),
+      padding: 3,
+      gap: 2,
+    },
+    freqPill: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: spacing('2'),
+      borderRadius: radius('lg'),
+    },
+    freqPillActive: {
+      backgroundColor: colors.primary,
+    },
+    freqPillText: {
+      fontFamily: typography.fonts.medium,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+    },
+    freqPillTextActive: {
+      fontFamily: typography.fonts.bold,
+      color: colors.primaryForeground,
     },
   });

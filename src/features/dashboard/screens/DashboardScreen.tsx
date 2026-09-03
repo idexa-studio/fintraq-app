@@ -18,6 +18,8 @@ import { StorageKeys } from '../../../constants/keys';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useAccounts } from '../../accounts/hooks/accounts';
 import { useTransactions } from '../../transactions/hooks/transactions';
+import { BackupPromptModal } from '@/src/features/backup/components/BackupPromptModal';
+import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
 import { AccountsCarousel } from '../components/AccountsCarousel';
 import { DashboardHeader } from '../components/DashboardHeader';
 import { HeroBalanceCard } from '../components/HeroBalanceCard';
@@ -31,6 +33,9 @@ import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from 
 const UPSELL_KEY = StorageKeys.UPSELL_DISMISSED_AT;
 const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
 
+const BACKUP_PROMPT_KEY = '@fintraq_backup_prompt_dismissed_at';
+const BACKUP_PROMPT_TTL = 14 * 24 * 60 * 60 * 1000;
+
 export const DashboardScreen = React.memo(function DashboardScreen() {
   const theme = useTheme();
   const { colors } = theme;
@@ -40,13 +45,34 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const { profile } = useSettings();
   const router = useRouter();
 
-
   const { data: transactions, isLoading: txLoading } = useTransactions(6);
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
+  const { isConnected: isBackupConnected } = useGoogleBackup();
 
   const { isLocked } = useAppLock();
 
   const [showUpsell, setShowUpsell] = React.useState(false);
+  const [showBackupPrompt, setShowBackupPrompt] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isBackupConnected || isLocked) return;
+    if (!transactions || transactions.length < 3) return;
+
+    let timer: ReturnType<typeof setTimeout>;
+    (async () => {
+      const val = await AsyncStorage.getItem(BACKUP_PROMPT_KEY);
+      if (!val || Date.now() - parseInt(val, 10) > BACKUP_PROMPT_TTL) {
+        timer = setTimeout(() => setShowBackupPrompt(true), 2500);
+      }
+    })();
+
+    return () => clearTimeout(timer);
+  }, [isBackupConnected, isLocked, transactions]);
+
+  const dismissBackupPrompt = useCallback(() => {
+    setShowBackupPrompt(false);
+    AsyncStorage.setItem(BACKUP_PROMPT_KEY, String(Date.now()));
+  }, []);
 
   React.useEffect(() => {
     if (isPremium || isLocked) return;
@@ -209,9 +235,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         enabled={!isLocked}
       />
       <PremiumUpsellModal
-      visible={showUpsell && !isPremium && !isLocked}
-      // visible
-      onClose={dismissUpsell} />
+        visible={showUpsell && !isPremium && !isLocked}
+        onClose={dismissUpsell}
+      />
+      <BackupPromptModal
+        visible={showBackupPrompt && !isBackupConnected && !isLocked}
+        onClose={dismissBackupPrompt}
+      />
     </SafeAreaView>
   );
 });

@@ -1,9 +1,10 @@
-import { db } from '@/src/db/client';
+import { BackupLock } from '@/src/services/backup/backup-lock';
+import { db, getExpoDb, resetDbConnections } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons, seederState } from '@/src/db/schema';
 import { runSeeds } from '@/src/db/seeds/runner';
+import { MigrationSeedService } from '@/src/services/migration-seed.service';
 import { getFormattedAppVersion } from '@/src/utils/version';
 import type { QueryClient } from '@tanstack/react-query';
-import { sql } from 'drizzle-orm';
 import * as Crypto from 'expo-crypto';
 
 export type BackupMetadata = {
@@ -20,28 +21,150 @@ export type BackupMetadata = {
   };
 };
 
+export type PersonBackupRow = {
+  id: number;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  designation?: string | null;
+  company?: string | null;
+  color?: number | null;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+};
+
+export type AccountBackupRow = {
+  id: number;
+  name: string;
+  holderName?: string | null;
+  holder_name?: string | null;
+  accountNumber?: string | null;
+  account_number?: string | null;
+  icon?: string | null;
+  accountType?: string | null;
+  account_type?: string | null;
+  color?: number | null;
+  isDefault?: boolean | number | null;
+  is_default?: boolean | number | null;
+  currency?: string | null;
+  balance?: number | null;
+  income?: number | null;
+  expense?: number | null;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+};
+
+export type CategoryBackupRow = {
+  id: number;
+  name: string;
+  icon?: string | null;
+  color?: number | null;
+  type?: string | null;
+  isSystem?: boolean | number | null;
+  is_system?: boolean | number | null;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+};
+
+export type LoanBackupRow = {
+  id: number;
+  personId?: number | null;
+  person_id?: number | null;
+  type?: string | null;
+  principal?: number | null;
+  currency?: string | null;
+  accountId?: number | null;
+  account_id?: number | null;
+  categoryId?: number | null;
+  category_id?: number | null;
+  dueDate?: string | null;
+  due_date?: string | null;
+  note?: string | null;
+  status?: string | null;
+  emiReminderEnabled?: boolean | number | null;
+  emi_reminder_enabled?: boolean | number | null;
+  emiReminderDay?: number | null;
+  emi_reminder_day?: number | null;
+  emiReminderTime?: string | null;
+  emi_reminder_time?: string | null;
+  emiNotificationIds?: string | null;
+  emi_notification_ids?: string | null;
+  dueReminderEnabled?: boolean | number | null;
+  due_reminder_enabled?: boolean | number | null;
+  dueReminderDaysBefore?: number | null;
+  due_reminder_days_before?: number | null;
+  dueNotificationId?: string | null;
+  due_notification_id?: string | null;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+};
+
+export type PaymentBackupRow = {
+  id: number;
+  accountId?: number | null;
+  account_id?: number | null;
+  categoryId?: number | null;
+  category_id?: number | null;
+  toAccountId?: number | null;
+  to_account_id?: number | null;
+  personId?: number | null;
+  person_id?: number | null;
+  loanId?: number | null;
+  loan_id?: number | null;
+  amount?: number | null;
+  type?: string | null;
+  datetime?: string | null;
+  note?: string | null;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+};
+
+export type SeederBackupRow = {
+  id: number;
+  name: string;
+  executedAt?: string;
+  executed_at?: string;
+};
+
 export type BackupPackagePayload = {
   metadata: BackupMetadata;
   data: {
-    accounts: any[];
-    categories: any[];
-    persons: any[];
-    loans: any[];
-    payments: any[];
-    seederState: any[];
+    accounts: AccountBackupRow[];
+    categories: CategoryBackupRow[];
+    persons: PersonBackupRow[];
+    loans: LoanBackupRow[];
+    payments: PaymentBackupRow[];
+    seederState: SeederBackupRow[];
   };
 };
 
 class DatabaseBackupServiceClass {
   /**
+   * Returns true while a restore transaction is in flight.
+   */
+  public isRestoring(): boolean {
+    return BackupLock.isRestoring();
+  }
+
+  /**
    * Flush SQLite WAL logs and export structured backup payload
    */
   public async exportBackupData(): Promise<string> {
-    // 1. Checkpoint WAL log
+    // 1. Checkpoint WAL log natively
     try {
-      await db.run(sql`PRAGMA wal_checkpoint(FULL);`);
-    } catch (e) {
-      console.warn('[DatabaseBackupService] WAL Checkpoint warning:', e);
+      getExpoDb().execSync('PRAGMA wal_checkpoint(PASSIVE);');
+    } catch {
+      // Ignore passive checkpoint warnings
     }
 
     // 2. Query all tables
@@ -92,138 +215,259 @@ class DatabaseBackupServiceClass {
   }
 
   /**
-   * Helper to get active columns of a table dynamically via PRAGMA table_info
-   */
-  private async getTableColumns(tableName: string): Promise<Set<string>> {
-    try {
-      const result: any = await db.run(sql.raw(`PRAGMA table_info(${tableName});`));
-      const rows: any[] = result?.rows?._array || result?.rows || [];
-      const columnNames = new Set<string>();
-      for (const col of rows) {
-        if (col.name) columnNames.add(col.name);
-      }
-      return columnNames;
-    } catch {
-      return new Set();
-    }
-  }
-
-  /**
-   * Filter and adapt row object to current database columns (Backward & Forward Compatibility)
-   */
-  private adaptRowToSchema(row: Record<string, any>, validColumns: Set<string>): Record<string, any> {
-    const adapted: Record<string, any> = {};
-    for (const key of Object.keys(row)) {
-      if (validColumns.has(key)) {
-        adapted[key] = row[key];
-      }
-    }
-    return adapted;
-  }
-
-  /**
    * Restore database from backup payload with dynamic column adaptation and rollback safety
    */
   public async restoreBackupData(backupJsonStr: string, queryClient?: QueryClient): Promise<BackupMetadata> {
-    let pkg: BackupPackagePayload;
+    BackupLock.setRestoring(true);
     try {
-      pkg = JSON.parse(backupJsonStr);
-    } catch {
-      throw new Error('Invalid backup format: Corrupted JSON data.');
+      let pkg: BackupPackagePayload;
+      try {
+        pkg = JSON.parse(backupJsonStr);
+      } catch {
+        throw new Error('Invalid backup format: Corrupted JSON data.');
+      }
+
+      if ((pkg as any)?.error) {
+        throw new Error(`Google Drive download error: ${(pkg as any).error?.message || 'Failed to fetch backup file'}`);
+      }
+
+      if (!pkg.metadata || !pkg.data) {
+        throw new Error('Invalid backup structure: Missing metadata or payload.');
+      }
+
+      // Verify SHA-256 checksum integrity
+      const rawDataStr = JSON.stringify(pkg.data);
+      const computedChecksum = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        rawDataStr,
+      );
+
+      if (pkg.metadata.checksum && pkg.metadata.checksum !== computedChecksum) {
+        console.warn('[DatabaseBackupService] Checksum mismatch warning (proceeding for cross-version compatibility)');
+      }
+
+      // Extract table rows with multi-key fallbacks
+      const personsList: PersonBackupRow[] = pkg.data?.persons || (pkg.data as any)?.person || [];
+      const accountsList: AccountBackupRow[] = pkg.data?.accounts || (pkg.data as any)?.account || [];
+      const categoriesList: CategoryBackupRow[] = pkg.data?.categories || (pkg.data as any)?.category || [];
+      const loansList: LoanBackupRow[] = pkg.data?.loans || (pkg.data as any)?.loan || [];
+      const paymentsList: PaymentBackupRow[] = pkg.data?.payments || (pkg.data as any)?.payment || [];
+      const seederList: SeederBackupRow[] = pkg.data?.seederState || (pkg.data as any)?.seeder_state || (pkg.data as any)?.seeder || [];
+
+      // Wait for any active background migration seed query to finish
+      await MigrationSeedService.waitForPendingWrite();
+
+      // Reset native SQLite connection to release all cached statement handles and open cursors
+      resetDbConnections();
+      const expoDb = getExpoDb();
+
+      // Configure SQLite native connection parameters
+      try {
+        expoDb.execSync('PRAGMA busy_timeout = 30000;');
+        expoDb.execSync('PRAGMA wal_checkpoint(PASSIVE);');
+      } catch (e) {
+        console.warn('[DatabaseBackupService] Connection PRAGMA warning:', e);
+      }
+
+      // Drain any in-flight background read queries
+      await new Promise(resolve => setTimeout(resolve, 150));
+
+      // Perform atomic synchronous native transaction replacement
+      try {
+        expoDb.withTransactionSync(() => {
+          expoDb.execSync('PRAGMA foreign_keys = OFF;');
+          expoDb.execSync('DELETE FROM payments;');
+          expoDb.execSync('DELETE FROM loans;');
+          expoDb.execSync('DELETE FROM persons;');
+          expoDb.execSync('DELETE FROM categories;');
+          expoDb.execSync('DELETE FROM accounts;');
+          expoDb.execSync('DELETE FROM seeder_state;');
+
+          const clean = (val: any) => (val === undefined ? null : val);
+          const toBooleanInt = (val: any, defaultVal = 0): number => {
+            if (val === true || val === 1 || val === '1' || val === 'true' || val === 'TRUE') return 1;
+            if (val === false || val === 0 || val === '0' || val === 'false' || val === 'FALSE') return 0;
+            return defaultVal;
+          };
+
+          // 1. Insert Persons
+          if (personsList.length > 0) {
+            const stmt = expoDb.prepareSync(
+              'INSERT INTO persons (id, name, email, phone, designation, company, color, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            );
+            try {
+              for (const r of personsList) {
+                stmt.executeSync([
+                  clean(r.id),
+                  clean(r.name ?? ''),
+                  clean(r.email),
+                  clean(r.phone),
+                  clean(r.designation),
+                  clean(r.company),
+                  clean(r.color ?? 0),
+                  clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
+                  clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
+                ]);
+              }
+            } finally {
+              stmt.finalizeSync();
+            }
+          }
+
+          // 2. Insert Accounts
+          if (accountsList.length > 0) {
+            const stmt = expoDb.prepareSync(
+              'INSERT INTO accounts (id, name, holderName, accountNumber, icon, account_type, color, isDefault, currency, balance, income, expense, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            );
+            try {
+              for (const r of accountsList) {
+                stmt.executeSync([
+                  clean(r.id),
+                  clean(r.name ?? ''),
+                  clean(r.holderName ?? r.holder_name ?? r.name ?? ''),
+                  clean(r.accountNumber ?? r.account_number ?? ''),
+                  clean(r.icon ?? 'building'),
+                  clean(r.accountType ?? r.account_type ?? 'bank'),
+                  clean(r.color ?? 0),
+                  toBooleanInt(r.isDefault ?? r.is_default, 0),
+                  clean(r.currency ?? 'USD'),
+                  clean(r.balance ?? 0),
+                  clean(r.income ?? 0),
+                  clean(r.expense ?? 0),
+                  clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
+                  clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
+                ]);
+              }
+            } finally {
+              stmt.finalizeSync();
+            }
+          }
+
+          // 3. Insert Categories
+          if (categoriesList.length > 0) {
+            const stmt = expoDb.prepareSync(
+              'INSERT INTO categories (id, name, icon, color, type, is_system, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+            );
+            try {
+              for (const r of categoriesList) {
+                stmt.executeSync([
+                  clean(r.id),
+                  clean(r.name ?? ''),
+                  clean(r.icon ?? 'grid'),
+                  clean(r.color ?? 0),
+                  clean(r.type ?? 'DR'),
+                  toBooleanInt(r.isSystem ?? r.is_system, 0),
+                  clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
+                  clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
+                ]);
+              }
+            } finally {
+              stmt.finalizeSync();
+            }
+          }
+
+          // 4. Insert Loans
+          if (loansList.length > 0) {
+            const stmt = expoDb.prepareSync(
+              'INSERT INTO loans (id, person_id, type, principal, currency, account_id, category_id, due_date, note, status, emi_reminder_enabled, emi_reminder_day, emi_reminder_time, emi_notification_ids, due_reminder_enabled, due_reminder_days_before, due_notification_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            );
+            try {
+              for (const r of loansList) {
+                stmt.executeSync([
+                  clean(r.id),
+                  clean(r.personId ?? r.person_id),
+                  clean(r.type ?? 'lend'),
+                  clean(r.principal ?? 0),
+                  clean(r.currency ?? 'USD'),
+                  clean(r.accountId ?? r.account_id),
+                  clean(r.categoryId ?? r.category_id),
+                  clean(r.dueDate ?? r.due_date),
+                  clean(r.note ?? ''),
+                  clean(r.status ?? 'active'),
+                  toBooleanInt(r.emiReminderEnabled ?? r.emi_reminder_enabled, 0),
+                  clean(r.emiReminderDay ?? r.emi_reminder_day),
+                  clean(r.emiReminderTime ?? r.emi_reminder_time),
+                  clean(r.emiNotificationIds ?? r.emi_notification_ids),
+                  toBooleanInt(r.dueReminderEnabled ?? r.due_reminder_enabled, 0),
+                  clean(r.dueReminderDaysBefore ?? r.due_reminder_days_before),
+                  clean(r.dueNotificationId ?? r.due_notification_id),
+                  clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
+                  clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
+                ]);
+              }
+            } finally {
+              stmt.finalizeSync();
+            }
+          }
+
+          // 5. Insert Payments
+          if (paymentsList.length > 0) {
+            const stmt = expoDb.prepareSync(
+              'INSERT INTO payments (id, account_id, category_id, to_account_id, person_id, loan_id, amount, type, datetime, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            );
+            try {
+              for (const r of paymentsList) {
+                stmt.executeSync([
+                  clean(r.id),
+                  clean(r.accountId ?? r.account_id),
+                  clean(r.categoryId ?? r.category_id),
+                  clean(r.toAccountId ?? r.to_account_id),
+                  clean(r.personId ?? r.person_id),
+                  clean(r.loanId ?? r.loan_id),
+                  clean(r.amount ?? 0),
+                  clean(r.type ?? 'DR'),
+                  clean(r.datetime ?? new Date().toISOString()),
+                  clean(r.note ?? ''),
+                  clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
+                  clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
+                ]);
+              }
+            } finally {
+              stmt.finalizeSync();
+            }
+          }
+
+          // 6. Insert Seeder State
+          if (seederList.length > 0) {
+            const stmt = expoDb.prepareSync(
+              'INSERT INTO seeder_state (id, name, executed_at) VALUES (?, ?, ?)'
+            );
+            try {
+              for (const r of seederList) {
+                stmt.executeSync([
+                  clean(r.id),
+                  clean(r.name),
+                  clean(r.executedAt ?? r.executed_at ?? new Date().toISOString()),
+                ]);
+              }
+            } finally {
+              stmt.finalizeSync();
+            }
+          }
+
+          expoDb.execSync('PRAGMA foreign_keys = ON;');
+        });
+      } catch (error: any) {
+        console.error('[DatabaseBackupService] Synchronous restore transaction failed:', error);
+        throw new Error(`Database restore transaction failed: ${error?.message || error}`);
+      }
+
+      // Re-run seeds to guarantee mandatory system categories/records exist
+      try {
+        await runSeeds();
+      } catch (e) {
+        console.warn('[DatabaseBackupService] Re-seed warning:', e);
+      }
+
+      // Invalidate React Query cache for instant UI refresh
+      if (queryClient) {
+        queryClient.clear();
+      }
+
+      return pkg.metadata;
+    } finally {
+      BackupLock.setRestoring(false);
     }
-
-    if (!pkg.metadata || !pkg.data) {
-      throw new Error('Invalid backup structure: Missing metadata or payload.');
-    }
-
-    // Verify SHA-256 checksum integrity
-    const rawDataStr = JSON.stringify(pkg.data);
-    const computedChecksum = await Crypto.digestStringAsync(
-      Crypto.CryptoDigestAlgorithm.SHA256,
-      rawDataStr,
-    );
-
-    if (pkg.metadata.checksum && pkg.metadata.checksum !== computedChecksum) {
-      console.warn('[DatabaseBackupService] Checksum mismatch warnings bypassed for cross-version compatibility');
-    }
-
-    // Fetch dynamic database table columns
-    const [
-      accountCols,
-      categoryCols,
-      personCols,
-      loanCols,
-      paymentCols,
-      seederCols,
-    ] = await Promise.all([
-      this.getTableColumns('accounts'),
-      this.getTableColumns('categories'),
-      this.getTableColumns('persons'),
-      this.getTableColumns('loans'),
-      this.getTableColumns('payments'),
-      this.getTableColumns('seeder_state'),
-    ]);
-
-    // Perform atomic transaction replacement
-    await db.transaction(async (tx) => {
-      // Clear existing records in reverse dependency order
-      await tx.delete(payments);
-      await tx.delete(loans);
-      await tx.delete(persons);
-      await tx.delete(categories);
-      await tx.delete(accounts);
-      await tx.delete(seederState);
-
-      // 1. Insert Persons
-      if (pkg.data.persons?.length > 0) {
-        const rows = pkg.data.persons.map(r => this.adaptRowToSchema(r, personCols));
-        await tx.insert(persons).values(rows as any);
-      }
-
-      // 2. Insert Accounts
-      if (pkg.data.accounts?.length > 0) {
-        const rows = pkg.data.accounts.map(r => this.adaptRowToSchema(r, accountCols));
-        await tx.insert(accounts).values(rows as any);
-      }
-
-      // 3. Insert Categories
-      if (pkg.data.categories?.length > 0) {
-        const rows = pkg.data.categories.map(r => this.adaptRowToSchema(r, categoryCols));
-        await tx.insert(categories).values(rows as any);
-      }
-
-      // 4. Insert Loans
-      if (pkg.data.loans?.length > 0) {
-        const rows = pkg.data.loans.map(r => this.adaptRowToSchema(r, loanCols));
-        await tx.insert(loans).values(rows as any);
-      }
-
-      // 5. Insert Payments
-      if (pkg.data.payments?.length > 0) {
-        const rows = pkg.data.payments.map(r => this.adaptRowToSchema(r, paymentCols));
-        await tx.insert(payments).values(rows as any);
-      }
-
-      // 6. Insert Seeder State
-      if (pkg.data.seederState?.length > 0) {
-        const rows = pkg.data.seederState.map(r => this.adaptRowToSchema(r, seederCols));
-        await tx.insert(seederState).values(rows as any);
-      }
-    });
-
-    // Re-run seeds to guarantee mandatory system categories/records exist
-    try {
-      await runSeeds();
-    } catch (e) {
-      console.warn('[DatabaseBackupService] Re-seed warning:', e);
-    }
-
-    // Invalidate React Query cache for instant UI refresh
-    if (queryClient) {
-      queryClient.clear();
-    }
-
-    return pkg.metadata;
   }
 }
 

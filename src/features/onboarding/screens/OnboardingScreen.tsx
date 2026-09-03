@@ -1,3 +1,4 @@
+import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Button } from '@/src/components/ui/Button';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
@@ -6,7 +7,8 @@ import { PageBackground } from '@/src/components/ui/PageBackground';
 import { getDeviceCurrencyCode } from '@/src/constants/currency';
 import { ACCOUNT_COLORS } from '@/src/constants/picker';
 import { useCreateAccount } from '@/src/features/accounts/hooks/accounts';
-import { useCreateCategory } from '@/src/features/categories/hooks/categories';
+import { db } from '@/src/db/client';
+import { categories } from '@/src/db/schema';
 import { ProfileStep } from '@/src/features/onboarding/components/ProfileStep';
 import { WelcomeStep } from '@/src/features/onboarding/components/WelcomeStep';
 import { ONBOARDING_STEPS } from '@/src/features/onboarding/constants';
@@ -23,8 +25,13 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
+
+import { CloudBackupChoice, CloudBackupStep } from '@/src/features/onboarding/components/CloudBackupStep';
+import { RestoreStep, SetupOption } from '@/src/features/onboarding/components/RestoreStep';
 
 export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const router = useRouter();
@@ -34,32 +41,66 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const { completeOnboarding } = useOnboarding();
   const { profile, updateProfile } = useSettings();
   const { mutateAsync: createAccount, isPending: accountPending } = useCreateAccount();
-  const { mutateAsync: createCategory, isPending: categoryPending } = useCreateCategory();
+  const { user, isConnected, isChecking, isRestoring, connectAccount, performRestore } = useGoogleBackup();
 
   const [stepIndex, setStepIndex] = React.useState(0);
   const currentStep = ONBOARDING_STEPS[stepIndex];
+  const [setupOption, setSetupOption] = React.useState<SetupOption>('fresh');
+  const [cloudBackupChoice, setCloudBackupChoice] = React.useState<CloudBackupChoice>('enable');
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const [currency, setCurrency] = React.useState<string>(() => getDeviceCurrencyCode());
   const [showCurrencyPicker, setShowCurrencyPicker] = React.useState(false);
   const [showReminderDialog, setShowReminderDialog] = React.useState(false);
 
+  const [alertConfig, setAlertConfig] = React.useState<{
+    visible: boolean;
+    title: string;
+    message?: string;
+    type?: 'info' | 'success' | 'error' | 'warning';
+    buttons?: AlertButton[];
+  }>({
+    visible: false,
+    title: '',
+  });
+
+  const showAlert = useCallback(
+    (config: {
+      title: string;
+      message?: string;
+      type?: 'info' | 'success' | 'error' | 'warning';
+      buttons?: AlertButton[];
+    }) => {
+      setAlertConfig({
+        visible: true,
+        title: config.title,
+        message: config.message,
+        type: config.type || 'info',
+        buttons: config.buttons || [{ text: 'OK' }],
+      });
+    },
+    [],
+  );
+
   const methods = useForm<OnboardingFormValues>({
-    mode: 'onChange',
     defaultValues: { name: '' },
+    mode: 'onBlur',
   });
 
   const { trigger, getValues } = methods;
 
-  const isPending = accountPending || categoryPending;
+  const isPending = accountPending;
+  const isButtonLoading = isPending || isSubmitting || isRestoring;
 
   const handleEnableReminders = useCallback(async () => {
     setShowReminderDialog(false);
     const granted = await NotificationService.requestPermissions();
     if (!granted) {
-      Alert.alert(
-        'Permission required',
-        'Enable notifications in device settings to receive daily reminders. You can turn this on anytime in Settings.'
-      );
+      showAlert({
+        title: 'Permission required',
+        message: 'Enable notifications in device settings to receive daily reminders. You can turn this on anytime in Settings.',
+        type: 'warning',
+      });
     } else {
       await updateProfile({ reminderEnabled: true });
       // Explicitly schedule here to avoid race condition with SettingsProvider useEffect.
@@ -67,7 +108,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       await NotificationService.scheduleDailyReminder(profile.reminderTime);
     }
     router.replace('/(main)/(tabs)');
-  }, [updateProfile, profile.reminderTime, router]);
+  }, [updateProfile, profile.reminderTime, router, showAlert]);
 
   const handleSkipReminders = useCallback(() => {
     setShowReminderDialog(false);
@@ -147,14 +188,24 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       { name: 'Uncategorized', icon: 'grid', color: toDbColor('#475569'), type: 'CR,DR,TR', isSystem: true },
     ];
 
-    for (const category of defaults) {
-      await createCategory({
-        name: category.name,
-        icon: category.icon,
-        color: category.color,
-        type: category.type,
-        isSystem: category.isSystem ?? false,
-      });
+    try {
+      const existing = await db.select({ name: categories.name }).from(categories);
+      const existingNames = new Set(existing.map((c) => c.name));
+
+      const toInsert = defaults.filter((c) => !existingNames.has(c.name));
+      if (toInsert.length === 0) return;
+
+      await db.insert(categories).values(
+        toInsert.map((c) => ({
+          name: c.name,
+          icon: c.icon,
+          color: c.color,
+          type: c.type,
+          isSystem: c.isSystem ?? false,
+        }))
+      );
+    } catch (e) {
+      console.warn('[OnboardingScreen] Category batch seed warning:', e);
     }
   };
 
@@ -163,57 +214,160 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
     try {
       await updateProfile({
         name: name.trim(),
-        email: '',
-        phone: '',
+        email: profile.email || '',
+        phone: profile.phone || '',
         defaultCurrency: currency,
       });
 
-      await createAccount({
-        name: 'Cash',
-        holderName: name.trim() || 'Personal',
-        accountNumber: '',
-        icon: 'building',
-        color: toDbColor(ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)]),
-        isDefault: true,
-        currency,
-        balance: 0,
-        income: 0,
-        expense: 0,
-      });
+      try {
+        await createAccount({
+          name: 'Cash',
+          holderName: name.trim() || 'Personal',
+          accountNumber: '',
+          icon: 'building',
+          color: toDbColor(ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)]),
+          isDefault: true,
+          currency,
+          balance: 0,
+          income: 0,
+          expense: 0,
+        });
+      } catch (accErr) {
+        console.warn('[OnboardingScreen] Account creation warning (may already exist):', accErr);
+      }
 
-      await seedCategories();
+      try {
+        await seedCategories();
+      } catch (catErr) {
+        console.warn('[OnboardingScreen] Categories seed warning (may already exist):', catErr);
+      }
+
       await completeOnboarding();
       await AnalyticsService.onboardingCompleted(currency);
       setShowReminderDialog(true);
-    } catch {
-      Alert.alert('Setup failed', 'Could not initialize your workspace. Please try again.');
+    } catch (e: any) {
+      console.error('[OnboardingScreen] finalizeSetup error:', e);
+      showAlert({
+        title: 'Setup Failed',
+        message: e?.message || 'Could not initialize your workspace. Please try again.',
+        type: 'error',
+      });
     }
   };
 
   const handleContinue = async () => {
+    if (isSubmitting || isButtonLoading) return;
     const valid = await validateStep();
     if (!valid) return;
 
-    if (stepIndex === ONBOARDING_STEPS.length - 1) {
-      await finalizeSetup();
-      return;
-    }
+    setIsSubmitting(true);
+    try {
+      if (currentStep.id === 'setup_choice' && setupOption === 'restore') {
+        await handleOnboardingRestore();
+        return;
+      }
 
-    setStepIndex((i) => i + 1);
+      if (currentStep.id === 'backup_setup' && cloudBackupChoice === 'enable' && !isConnected) {
+        try {
+          await connectAccount();
+        } catch {
+          // Proceed even if Google sign-in is cancelled
+        }
+      }
+
+      if (stepIndex === ONBOARDING_STEPS.length - 1) {
+        await finalizeSetup();
+        return;
+      }
+
+      setStepIndex((i) => i + 1);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  const handleOnboardingRestore = useCallback(async () => {
+    try {
+      console.log('[OnboardingScreen] Starting restore flow...');
+      const signedInUser = user || (await connectAccount());
+      if (!signedInUser) {
+        console.log('[OnboardingScreen] User cancelled Google sign-in.');
+        return;
+      }
+      console.log('[OnboardingScreen] Performing restore for:', signedInUser.email);
+      const success = await performRestore();
+      console.log('[OnboardingScreen] Perform restore result:', success);
+      if (success) {
+        await completeOnboarding();
+      }
+    } catch (e: any) {
+      console.error('[OnboardingScreen] Onboarding restore error:', e);
+      showAlert({
+        title: 'Restore Failed',
+        message: e?.message || 'Could not complete restore during setup.',
+        type: 'error',
+      });
+    }
+  }, [user, connectAccount, performRestore, completeOnboarding, showAlert]);
 
   const openCurrencyPicker = useCallback(() => setShowCurrencyPicker(true), []);
   const closeCurrencyPicker = useCallback(() => setShowCurrencyPicker(false), []);
+
+  const buttonTitle = React.useMemo(() => {
+    if (isButtonLoading) {
+      if (currentStep.id === 'backup_setup' && cloudBackupChoice === 'enable') {
+        return isConnected ? 'Finalizing Workspace...' : 'Connecting Google Drive...';
+      }
+      if (currentStep.id === 'setup_choice' && setupOption === 'restore') {
+        return 'Restoring Cloud Backup...';
+      }
+      if (stepIndex === ONBOARDING_STEPS.length - 1) {
+        return 'Finalizing Workspace...';
+      }
+      return 'Processing...';
+    }
+
+    if (currentStep.id === 'setup_choice' && setupOption === 'restore') {
+      return user ? 'Restore Google Drive Backup' : 'Sign in & Restore Backup';
+    }
+    if (currentStep.id === 'backup_setup') {
+      if (cloudBackupChoice === 'enable') {
+        return user ? 'Launch Fintraq' : 'Connect Google Drive & Launch';
+      }
+      return 'Skip & Launch Fintraq';
+    }
+    if (stepIndex === ONBOARDING_STEPS.length - 1) {
+      return 'Launch Fintraq';
+    }
+    return 'Continue';
+  }, [isButtonLoading, currentStep.id, setupOption, cloudBackupChoice, isConnected, user, stepIndex]);
 
   const renderStepContent = () => {
     switch (currentStep.id) {
       case 'welcome':
         return <WelcomeStep />;
+      case 'setup_choice':
+        return (
+          <RestoreStep
+            selectedOption={setupOption}
+            onSelectOption={setSetupOption}
+            userEmail={user?.email}
+          />
+        );
       case 'profile':
         return (
           <ProfileStep
             currency={currency}
             onOpenCurrencyPicker={openCurrencyPicker}
+          />
+        );
+      case 'backup_setup':
+        return (
+          <CloudBackupStep
+            selectedChoice={cloudBackupChoice}
+            onSelectChoice={setCloudBackupChoice}
+            userEmail={user?.email}
+            isConnecting={isChecking}
           />
         );
       default:
@@ -267,10 +421,10 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
 
           <View style={styles.footer}>
             <Button
-              title={stepIndex === ONBOARDING_STEPS.length - 1 ? 'Launch Fintraq' : 'Continue'}
+              title={buttonTitle}
               onPress={handleContinue}
               size="lg"
-              isLoading={isPending}
+              isLoading={isButtonLoading}
               style={styles.primaryAction}
             />
           </View>
@@ -296,6 +450,15 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         destructive={false}
         message="Get a gentle nudge at 8:00 PM to log your daily transactions. You can change this anytime in Settings."
         onConfirm={handleEnableReminders}
+      />
+
+      <AlertDialog
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        buttons={alertConfig.buttons}
+        onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
       />
     </SafeAreaView>
   );

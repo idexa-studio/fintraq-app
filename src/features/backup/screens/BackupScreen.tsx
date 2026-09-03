@@ -15,18 +15,18 @@ import { GoogleBackupCard } from '../components/GoogleBackupCard';
 const HIGHLIGHTS = [
   {
     icon: LockPasswordIcon,
-    title: '100% Private & Hidden',
-    subtitle: 'Backups are stored inside your private Google Drive AppData folder, isolated from standard Drive files.',
+    title: '100% Private & Encrypted',
+    subtitle: 'Backups are stored inside your private Google Drive space, isolated from standard Drive files.',
   },
   {
     icon: ShieldKeyIcon,
-    title: 'SHA-256 Integrity Verified',
-    subtitle: 'Every backup package is signed with a cryptographic checksum to guarantee zero data corruption.',
+    title: 'Zero Data Loss Peace of Mind',
+    subtitle: 'Switching phones or recovering your device? Restore your entire workspace in 1 tap anytime.',
   },
   {
     icon: RefreshIcon,
-    title: 'Version & Schema Compatible',
-    subtitle: 'Dynamically adapts database schemas when restoring across different app versions.',
+    title: 'Automated Scheduled Sync',
+    subtitle: 'Set and forget with daily, weekly, or monthly background auto-sync without interrupting your workflow.',
   },
 ];
 

@@ -93,16 +93,13 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
       .finally(() => {
         SplashScreen.hideAsync().catch(() => {});
       });
-
-    MigrationSeedService.writeMigrationSeed().catch(() => {});
   }, [checkStatus]);
 
   useEffect(() => {
     const handleAppStateChange = (nextState: AppStateStatus) => {
       if (appState.current.match(/inactive|background/) && nextState === 'active') {
         checkStatus();
-        MigrationSeedService.writeMigrationSeed().catch(() => {});
-      } else if (nextState === 'background' || nextState === 'inactive') {
+      } else if (nextState === 'background') {
         MigrationSeedService.writeMigrationSeed().catch(() => {});
       }
       appState.current = nextState;
