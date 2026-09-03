@@ -22,6 +22,8 @@ export default function StackLayout() {
         <Stack.Screen name="loans" />
         <Stack.Screen name="loans/form" />
         <Stack.Screen name="loans/[id]" />
+        <Stack.Screen name="backup" />
+        <Stack.Screen name="export" />
         <Stack.Screen name="webview" />
       </Stack>
     </ErrorBoundary>

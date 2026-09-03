@@ -12,7 +12,20 @@
           "package_name": "me.nafish.luno"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "449022176981-q6rcaibjal3atssebadrd1bmg1h2u658.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.nafish.luno",
+            "certificate_hash": "2f225e09abd097f0d306a04fe6a99a9f32cf00c4"
+          }
+        },
+        {
+          "client_id": "449022176981-tnru9i35snf6c1kk6t8d2qochmsd7lfa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCSescTIVnhZQwafEJdEkWwoJUPSXq6Yq8"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "449022176981-s5u09guj270e47cq9rhj4qnppnmlolh3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "449022176981-2pkvnpj960uiv4l5a7e494ovn6as5r2b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "me.nafish.luno"
+              }
+            }
+          ]
         }
       }
     }

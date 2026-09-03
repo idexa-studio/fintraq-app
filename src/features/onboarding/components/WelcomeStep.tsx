@@ -1,5 +1,5 @@
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { BarChartIcon, FlashIcon, LockPasswordIcon } from '@hugeicons/core-free-icons';
+import { BarChartIcon, CloudIcon, FlashIcon, LockPasswordIcon } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -21,9 +21,15 @@ const FEATURES: { icon: IconSvgElement; label: string; detail: string; colorKey:
     colorKey: 'info',
   },
   {
+    icon: CloudIcon,
+    label: 'Optional Cloud Backup',
+    detail: 'Optionally back up & restore your data with Google Drive anytime in Settings.',
+    colorKey: 'primary',
+  },
+  {
     icon: LockPasswordIcon,
     label: 'Private by design',
-    detail: 'All your data stays on your device. Always.',
+    detail: 'All your data stays on your device. 100% offline-first.',
     colorKey: 'success',
   },
 ];

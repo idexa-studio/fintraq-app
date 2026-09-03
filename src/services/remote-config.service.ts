@@ -97,6 +97,7 @@ export async function initRemoteConfig(): Promise<void> {
   const rc = getRemoteConfig();
 
   rc.settings.minimumFetchIntervalMillis = __DEV__ ? 0 : 3_600_000;
+  rc.settings.fetchTimeoutMillis = 15_000;
   rc.defaultConfig = RC_DEFAULTS;
 }
 

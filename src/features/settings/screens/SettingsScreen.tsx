@@ -9,6 +9,7 @@ import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
 import { StorageKeys } from '@/src/constants/keys';
 import { db } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
+
 import { LockStorage } from '@/src/features/lock/api/lockStorage';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
 import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
@@ -23,6 +24,7 @@ import {
   AlarmClockIcon,
   ArrowRight01Icon,
   BellIcon,
+  CloudIcon,
   Coins02Icon,
   ContrastIcon,
   Delete01Icon,
@@ -534,9 +536,18 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           )}
         </View>
 
-        {/* ── Data ── */}
-        <Text style={styles.sectionLabel}>Data</Text>
+        {/* ── Data & Backup ── */}
+        <Text style={styles.sectionLabel}>Data & Backup</Text>
         <View style={styles.group}>
+          <NavRow
+            theme={theme}
+            icon={CloudIcon}
+            iconColor={colors.primary}
+            label="Cloud Backup"
+            subtitle="Back up & restore via Google Drive"
+            onPress={() => router.push('/backup')}
+          />
+          <RowSeparator theme={theme} />
           <NavRow
             theme={theme}
             icon={GridIcon}

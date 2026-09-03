@@ -18,6 +18,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     ...(config.plugins ?? []),
+    '@react-native-google-signin/google-signin',
     '@react-native-firebase/app',
     [
       '@react-native-firebase/analytics',

@@ -32,7 +32,6 @@ export function useAppConfig() {
   return ctx;
 }
 
-const FETCH_TIMEOUT_MS = 5_000;
 const COOLDOWN_MS = 10 * 60 * 1000;
 
 export const AppConfigProvider = React.memo(function AppConfigProvider({
@@ -40,7 +39,6 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [isLoading, setIsLoading] = useState(true);
   const [isChecking, setIsChecking] = useState(false);
 
   const [forceUpdateRequired, setForceUpdateRequired] = useState(false);
@@ -63,12 +61,8 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
 
     setIsChecking(true);
 
-    const timeout = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('RC fetch timeout')), FETCH_TIMEOUT_MS)
-    );
-
     try {
-      const config = await Promise.race([fetchRemoteAppConfig(), timeout]);
+      const config = await fetchRemoteAppConfig();
 
       setForceUpdateRequired(config.forceUpdate.required);
       setForceUpdateVersionName(config.forceUpdate.versionName);
@@ -78,11 +72,12 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
       if (config.termsUrl) setTermsUrl(config.termsUrl);
 
       lastCheckedTime.current = Date.now();
-    } catch (error) {
-      if (__DEV__) console.warn('[AppConfigProvider] Remote config fetch failed:', error);
+    } catch (error: any) {
+      if (__DEV__) {
+        console.warn('[AppConfigProvider] Remote config fetch failed:', error);
+      }
     } finally {
       setIsChecking(false);
-      setIsLoading(false);
     }
   }, []);
 
@@ -92,16 +87,15 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
 
     initRemoteConfig()
       .then(() => checkStatus(true))
-      .catch(() => setIsLoading(false));
+      .catch((err) => {
+        if (__DEV__) console.warn('[AppConfigProvider] init error:', err);
+      })
+      .finally(() => {
+        SplashScreen.hideAsync().catch(() => {});
+      });
 
     MigrationSeedService.writeMigrationSeed().catch(() => {});
   }, [checkStatus]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      SplashScreen.hideAsync().catch(() => {});
-    }
-  }, [isLoading]);
 
   useEffect(() => {
     const handleAppStateChange = (nextState: AppStateStatus) => {
@@ -122,8 +116,6 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
     () => ({ isChecking, checkStatus, privacyUrl, termsUrl }),
     [isChecking, checkStatus, privacyUrl, termsUrl]
   );
-
-  if (isLoading) return null;
 
   if (forceUpdateRequired) {
     return (
