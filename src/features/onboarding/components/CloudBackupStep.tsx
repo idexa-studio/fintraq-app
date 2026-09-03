@@ -50,7 +50,7 @@ export const CloudBackupStep = React.memo(function CloudBackupStep({
         <View style={styles.info}>
           <View style={styles.titleRow}>
             <Text style={[styles.title, isEnable && { color: colors.primary }]}>
-              Automated Google Drive Sync
+              Automated Cloud Sync
             </Text>
             {isConnecting ? (
               <ActivityIndicator size="small" color={colors.primary} />
@@ -62,10 +62,10 @@ export const CloudBackupStep = React.memo(function CloudBackupStep({
           </View>
           <Text style={styles.subtitle}>
             {isConnecting
-              ? 'Connecting to Google Drive...'
+              ? 'Connecting to Cloud Sync...'
               : userEmail
               ? `Connected as ${userEmail}. Automated daily backups active.`
-              : 'Back up your transactions, accounts & settings to private Google Drive.'}
+              : 'Back up your transactions, accounts & settings securely to your cloud.'}
           </Text>
         </View>
         <View style={styles.radio}>

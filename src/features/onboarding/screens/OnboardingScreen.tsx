@@ -317,7 +317,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const buttonTitle = React.useMemo(() => {
     if (isButtonLoading) {
       if (currentStep.id === 'backup_setup' && cloudBackupChoice === 'enable') {
-        return isConnected ? 'Finalizing Workspace...' : 'Connecting Google Drive...';
+        return isConnected ? 'Finalizing Workspace...' : 'Connecting Cloud Sync...';
       }
       if (currentStep.id === 'setup_choice' && setupOption === 'restore') {
         return 'Restoring Cloud Backup...';
@@ -329,11 +329,11 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
     }
 
     if (currentStep.id === 'setup_choice' && setupOption === 'restore') {
-      return user ? 'Restore Google Drive Backup' : 'Sign in & Restore Backup';
+      return user ? 'Restore Cloud Backup' : 'Connect Cloud & Restore';
     }
     if (currentStep.id === 'backup_setup') {
       if (cloudBackupChoice === 'enable') {
-        return user ? 'Launch Fintraq' : 'Connect Google Drive & Launch';
+        return user ? 'Launch Fintraq' : 'Enable Cloud Backup & Launch';
       }
       return 'Skip & Launch Fintraq';
     }

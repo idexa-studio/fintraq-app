@@ -16,7 +16,7 @@ const HIGHLIGHTS = [
   {
     icon: LockPasswordIcon,
     title: '100% Private & Encrypted',
-    subtitle: 'Backups are stored inside your private Google Drive space, isolated from standard Drive files.',
+    subtitle: 'Backups are stored inside your private personal cloud space, isolated from external access.',
   },
   {
     icon: ShieldKeyIcon,
@@ -46,7 +46,7 @@ export const BackupScreen = React.memo(function BackupScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Section Header */}
-        <Text style={styles.sectionLabel}>Google Drive Integration</Text>
+        <Text style={styles.sectionLabel}>Cloud Storage Integration</Text>
 
         {/* Main Google Backup Bento Card */}
         <GoogleBackupCard />

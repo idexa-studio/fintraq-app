@@ -118,14 +118,14 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       if (success) {
         showAlert({
           title: 'Backup Successful',
-          message: 'Your transactions, accounts, and settings have been safely backed up to Google Drive.',
+          message: 'Your transactions, accounts, and settings have been safely backed up to cloud storage.',
           type: 'success',
         });
       }
     } catch (e: any) {
       showAlert({
         title: 'Backup Failed',
-        message: e?.message || 'Could not save backup to Google Drive.',
+        message: e?.message || 'Could not save backup to cloud storage.',
         type: 'error',
       });
     }
@@ -138,7 +138,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       if (success) {
         showAlert({
           title: 'Restore Complete',
-          message: 'Your workspace has been successfully restored from Google Drive. Tap OK to restart Fintraq.',
+          message: 'Your workspace has been successfully restored from your cloud backup. Tap OK to restart Fintraq.',
           type: 'success',
           buttons: [
             {
@@ -159,7 +159,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     } catch (e: any) {
       showAlert({
         title: 'Restore Failed',
-        message: e?.message || 'Could not restore backup from Google Drive.',
+        message: e?.message || 'Could not restore backup from cloud storage.',
         type: 'error',
       });
     }
@@ -186,7 +186,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       <View style={styles.groupContainer}>
         <View style={styles.loadingRow}>
           <ActivityIndicator color={colors.primary} size="small" />
-          <Text style={styles.loadingText}>Checking Google Drive status...</Text>
+          <Text style={styles.loadingText}>Checking cloud status...</Text>
         </View>
       </View>
     );
@@ -199,11 +199,11 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           <IconAvatar icon={CloudIcon} color={colors.primary} variant="subtle" size={40} />
           <View style={styles.rowInfo}>
             <View style={styles.titleRow}>
-              <Text style={styles.rowLabel}>Google Cloud Backup</Text>
+              <Text style={styles.rowLabel}>Cloud Backup</Text>
               <View style={styles.statusDotOffline} />
             </View>
             <Text style={styles.rowSubtitle}>
-              Connect Google Drive to back up your data privately
+              Connect cloud storage to back up your data privately
             </Text>
           </View>
           <View style={styles.connectBadge}>
@@ -231,7 +231,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         <IconAvatar icon={CloudIcon} color={colors.success} variant="subtle" size={40} />
         <View style={styles.rowInfo}>
           <View style={styles.titleRow}>
-            <Text style={styles.rowLabel}>Google Drive</Text>
+            <Text style={styles.rowLabel}>Cloud Account</Text>
             <View style={styles.activeBadge}>
               <View style={styles.statusDotActive} />
               <Text style={styles.activeBadgeText}>Connected</Text>

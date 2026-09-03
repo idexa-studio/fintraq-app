@@ -74,12 +74,12 @@ export const RestoreStep = React.memo(function RestoreStep({
         />
         <View style={styles.info}>
           <Text style={[styles.title, isRestore && { color: colors.primary }]}>
-            Restore from Google Drive
+            Restore from Cloud
           </Text>
           <Text style={styles.subtitle}>
             {userEmail
               ? `Connected as ${userEmail}. Ready to download your cloud backup.`
-              : 'Sign in to Google Drive and restore existing accounts & transactions.'}
+              : 'Connect your cloud account to restore existing accounts & transactions.'}
           </Text>
         </View>
         <View style={styles.radio}>

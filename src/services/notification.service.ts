@@ -176,7 +176,7 @@ export const NotificationService = {
         identifier: 'cloud_backup_status',
         content: {
           title: '☁️ Cloud Backup Syncing',
-          body: 'Your Fintraq workspace transactions and settings are being backed up to Google Drive.',
+          body: 'Your Fintraq workspace transactions and settings are being backed up to cloud storage.',
           sound: false,
           priority: Notifications.AndroidNotificationPriority.HIGH,
         },
@@ -196,7 +196,7 @@ export const NotificationService = {
         identifier: 'cloud_backup_status',
         content: {
           title: '✅ Cloud Backup Complete',
-          body: 'Your financial history was successfully backed up to Google Drive.',
+          body: 'Your financial history was successfully backed up to cloud storage.',
           sound: true,
           priority: Notifications.AndroidNotificationPriority.HIGH,
         },

@@ -372,7 +372,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
       showAlert({
         title: 'Factory Reset Complete',
-        message: 'Your workspace data has been erased and Google Account disconnected. Tap OK to restart Fintraq.',
+        message: 'Your workspace data has been erased and cloud account disconnected. Tap OK to restart Fintraq.',
         type: 'success',
         buttons: [
           {
@@ -585,9 +585,9 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             icon={CloudIcon}
             iconColor={isBackupConnected ? colors.success : colors.primary}
             label="Cloud Backup"
-            subtitle={isBackupConnected ? 'Google Drive auto-sync active' : 'Back up & restore via Google Drive'}
-            value={isBackupConnected ? 'Connected' : 'Recommended'}
-            onPress={() => router.push('/backup')}
+            subtitle={isBackupConnected ? 'Cloud auto-sync active' : 'Back up & restore via Cloud Sync'}
+            value={isBackupConnected ? 'Connected' : 'Not set up'}
+            onPress={() => router.push('/(main)/backup')}
           />
           <RowSeparator theme={theme} />
           <NavRow

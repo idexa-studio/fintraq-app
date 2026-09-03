@@ -46,14 +46,14 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
             <IconAvatar icon={CloudIcon as IconSvgElement} color={colors.primary} variant="subtle" size={52} iconSize={26} />
             <Text style={styles.title}>Protect Your Financial History</Text>
             <Text style={styles.message}>
-              You have logged several transactions! Connect Google Drive to enable automated cloud backups and prevent data loss.
+              You have logged several transactions! Enable Cloud Sync to automate background backups and prevent data loss.
             </Text>
           </View>
 
           <View style={styles.features}>
             <View style={styles.featureRow}>
               <HugeiconsIcon icon={ShieldKeyIcon as IconSvgElement} size={16} color={colors.success} />
-              <Text style={styles.featureText}>100% Private & Stored in Your Personal Drive</Text>
+              <Text style={styles.featureText}>100% Private & Encrypted Personal Storage</Text>
             </View>
             <View style={styles.featureRow}>
               <HugeiconsIcon icon={CloudIcon as IconSvgElement} size={16} color={colors.primary} />
@@ -67,7 +67,7 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
                 <ActivityIndicator color={colors.primaryForeground} size="small" />
               ) : (
                 <>
-                  <Text style={styles.primaryButtonText}>Connect Google Drive</Text>
+                  <Text style={styles.primaryButtonText}>Enable Cloud Sync</Text>
                   <HugeiconsIcon icon={ArrowRight01Icon} size={16} color={colors.primaryForeground} />
                 </>
               )}
