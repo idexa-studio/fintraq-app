@@ -5,7 +5,7 @@ const DEFAULT_RETRIES = 1;
 const RETRY_DELAY_MS = 500;
 
 export type DriveRequestOptions = {
-  method: 'GET' | 'POST' | 'PATCH';
+  method: 'GET' | 'POST' | 'PATCH' | "DELETE";
   headers: Record<string, string>;
   body?: string;
   timeoutMs?: number;

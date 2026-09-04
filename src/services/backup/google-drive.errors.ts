@@ -30,3 +30,12 @@ export class GoogleDriveAuthError extends Error {
     this.name = 'GoogleDriveAuthError';
   }
 }
+
+export class NoBackupFoundError extends Error {
+  public readonly code = 'NO_BACKUP_FOUND';
+  constructor(message = 'No previous Fintraq backup file was found in your connected cloud account.') {
+    super(message);
+    this.name = 'NoBackupFoundError';
+  }
+}
+

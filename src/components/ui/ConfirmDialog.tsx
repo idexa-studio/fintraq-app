@@ -48,7 +48,9 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
 
           <View style={styles.actions}>
             <BentoPressable style={styles.btnCancel} onPress={onClose}>
-              <Text style={styles.btnCancelText}>{cancelLabel}</Text>
+              <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85} style={styles.btnCancelText}>
+                {cancelLabel}
+              </Text>
             </BentoPressable>
 
             <BentoPressable
@@ -59,7 +61,9 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
               {isLoading ? (
                 <ActivityIndicator color={colors.background} size="small" />
               ) : (
-                <Text style={styles.btnConfirmText}>{confirmLabel}</Text>
+                <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85} style={styles.btnConfirmText}>
+                  {confirmLabel}
+                </Text>
               )}
             </BentoPressable>
           </View>

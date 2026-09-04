@@ -1,9 +1,12 @@
+import { StorageKeys } from '@/src/constants/keys';
+import type { UserProfile } from '@/src/providers/SettingsProvider';
 import { BackupLock } from '@/src/services/backup/backup-lock';
 import { db, getExpoDb, resetDbConnections } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons, seederState } from '@/src/db/schema';
 import { runSeeds } from '@/src/db/seeds/runner';
 import { MigrationSeedService } from '@/src/services/migration-seed.service';
 import { getFormattedAppVersion } from '@/src/utils/version';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { QueryClient } from '@tanstack/react-query';
 import * as Crypto from 'expo-crypto';
 
@@ -99,8 +102,10 @@ export type LoanBackupRow = {
   due_reminder_enabled?: boolean | number | null;
   dueReminderDaysBefore?: number | null;
   due_reminder_days_before?: number | null;
-  dueNotificationId?: string | null;
-  due_notification_id?: string | null;
+  dueReminderTime?: string | null;
+  due_reminder_time?: string | null;
+  dueNotificationIds?: string | null;
+  due_notification_ids?: string | null;
   createdAt?: string;
   created_at?: string;
   updatedAt?: string;
@@ -138,6 +143,7 @@ export type SeederBackupRow = {
 
 export type BackupPackagePayload = {
   metadata: BackupMetadata;
+  profile?: UserProfile | null;
   data: {
     accounts: AccountBackupRow[];
     categories: CategoryBackupRow[];
@@ -206,8 +212,20 @@ class DatabaseBackupServiceClass {
       },
     };
 
+    // Query profile settings to include in backup payload
+    let userProfile: UserProfile | null = null;
+    try {
+      const storedProfileStr = await AsyncStorage.getItem(StorageKeys.PROFILE);
+      if (storedProfileStr) {
+        userProfile = JSON.parse(storedProfileStr);
+      }
+    } catch (e) {
+      console.warn('[DatabaseBackupService] Could not read user profile for backup:', e);
+    }
+
     const fullPackage: BackupPackagePayload = {
       metadata,
+      profile: userProfile,
       data: dataPart,
     };
 
@@ -233,6 +251,19 @@ class DatabaseBackupServiceClass {
 
       if (!pkg.metadata || !pkg.data) {
         throw new Error('Invalid backup structure: Missing metadata or payload.');
+      }
+
+      // Restore user profile (including name, currency, theme, reminder settings) if present in package
+      if (pkg.profile) {
+        try {
+          const currentProfileStr = await AsyncStorage.getItem(StorageKeys.PROFILE);
+          const currentProfile = currentProfileStr ? JSON.parse(currentProfileStr) : {};
+          const mergedProfile = { ...currentProfile, ...pkg.profile };
+          await AsyncStorage.setItem(StorageKeys.PROFILE, JSON.stringify(mergedProfile));
+          console.log('[DatabaseBackupService] Restored user profile & default currency:', pkg.profile.defaultCurrency);
+        } catch (e) {
+          console.warn('[DatabaseBackupService] Profile restore warning:', e);
+        }
       }
 
       // Verify SHA-256 checksum integrity
@@ -390,7 +421,7 @@ class DatabaseBackupServiceClass {
                   clean(r.emiNotificationIds ?? r.emi_notification_ids),
                   toBooleanInt(r.dueReminderEnabled ?? r.due_reminder_enabled, 0),
                   clean(r.dueReminderDaysBefore ?? r.due_reminder_days_before),
-                  clean(r.dueNotificationId ?? r.due_notification_id),
+                  clean(r.dueNotificationIds ?? r.due_notification_ids),
                   clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
                   clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
                 ]);

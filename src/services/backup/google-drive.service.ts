@@ -225,6 +225,32 @@ class GoogleDriveServiceClass {
       onProgress,
     });
   }
+
+  /**
+   * Permanently delete existing backup file from Google Drive AppData folder
+   */
+  public async deleteBackup(): Promise<boolean> {
+    const user = await this.getCurrentUser();
+    if (!user) {
+      throw new Error('Please sign in to Google Drive first.');
+    }
+
+    const file = await this.findLatestBackup();
+    if (!file?.id) {
+      return false;
+    }
+
+    const token = await this.getAccessToken();
+    const url = `https://www.googleapis.com/drive/v3/files/${file.id}`;
+
+    await driveFetch(url, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+      operation: 'deleteBackup',
+    });
+
+    return true;
+  }
 }
 
 export const GoogleDriveService = new GoogleDriveServiceClass();

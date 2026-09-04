@@ -21,6 +21,7 @@ import { useTheme } from '@/src/providers/ThemeProvider';
 import { AnalyticsService } from '@/src/services/analytics';
 import { NotificationService } from '@/src/services/notification.service';
 import { toDbColor } from '@/src/utils/format';
+import { NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
 import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
@@ -42,7 +43,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const { completeOnboarding } = useOnboarding();
   const { profile, updateProfile } = useSettings();
   const { mutateAsync: createAccount, isPending: accountPending } = useCreateAccount();
-  const { user, isConnected, isChecking, isRestoring, progress, progressStage, connectAccount, performRestore } = useGoogleBackup();
+  const { user, isConnected, isChecking, isRestoring, progress, progressStage, connectAccount, disconnectAccount, performRestore } = useGoogleBackup();
 
   const [stepIndex, setStepIndex] = React.useState(0);
   const currentStep = ONBOARDING_STEPS[stepIndex];
@@ -288,6 +289,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   };
 
   const handleOnboardingRestore = useCallback(async () => {
+    let signedInEmail = user?.email;
     try {
       console.log('[OnboardingScreen] Starting restore flow...');
       const signedInUser = user || (await connectAccount());
@@ -295,6 +297,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         console.log('[OnboardingScreen] User cancelled Google sign-in.');
         return;
       }
+      signedInEmail = signedInUser.email;
       console.log('[OnboardingScreen] Performing restore for:', signedInUser.email);
       const success = await performRestore();
       console.log('[OnboardingScreen] Perform restore result:', success);
@@ -303,14 +306,51 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         router.replace('/(main)/(tabs)');
       }
     } catch (e: any) {
-      console.error('[OnboardingScreen] Onboarding restore error:', e);
-      showAlert({
-        title: 'Restore Failed',
-        message: e?.message || 'Could not complete restore during setup.',
-        type: 'error',
-      });
+      const errorMsg = e?.message || '';
+      const isNoBackup =
+        e instanceof NoBackupFoundError ||
+        e?.code === 'NO_BACKUP_FOUND' ||
+        errorMsg.includes('No previous Fintraq backup') ||
+        errorMsg.includes('NO_BACKUP_FOUND') ||
+        errorMsg.toLowerCase().includes('no backup');
+
+      if (isNoBackup) {
+        console.log('[OnboardingScreen] Info: No backup file found for user:', signedInEmail);
+      } else {
+        console.warn('[OnboardingScreen] Onboarding restore warning:', e);
+      }
+
+      // Automatically sign out / disconnect cloud account on restore error or failure
+      await disconnectAccount().catch(() => {});
+
+      if (isNoBackup) {
+        showAlert({
+          title: 'No Backup Found',
+          message: `We checked ${signedInEmail || 'your cloud account'}, but couldn't find an existing Fintraq backup file.\n\nWould you like to start fresh instead?`,
+          type: 'warning',
+          buttons: [
+            {
+              text: 'Start Fresh',
+              onPress: () => {
+                setSetupOption('fresh');
+                setStepIndex(1); // Advance directly to Profile setup
+              },
+            },
+            {
+              text: 'Try Another Account',
+              style: 'cancel',
+            },
+          ],
+        });
+      } else {
+        showAlert({
+          title: 'Restore Failed',
+          message: errorMsg || 'Could not complete restore during setup.',
+          type: 'error',
+        });
+      }
     }
-  }, [user, connectAccount, performRestore, completeOnboarding, router, showAlert]);
+  }, [user, connectAccount, disconnectAccount, performRestore, completeOnboarding, router, showAlert]);
 
   const openCurrencyPicker = useCallback(() => setShowCurrencyPicker(true), []);
   const closeCurrencyPicker = useCallback(() => setShowCurrencyPicker(false), []);

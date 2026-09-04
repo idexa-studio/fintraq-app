@@ -21,6 +21,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
 import { useGoogleBackup } from '../hooks/useGoogleBackup';
 
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
@@ -157,13 +158,31 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         });
       }
     } catch (e: any) {
-      showAlert({
-        title: 'Restore Failed',
-        message: e?.message || 'Could not restore backup from cloud storage.',
-        type: 'error',
-      });
+      const errorMsg = e?.message || '';
+      const isNoBackup =
+        e instanceof NoBackupFoundError ||
+        e?.code === 'NO_BACKUP_FOUND' ||
+        errorMsg.includes('No previous Fintraq backup') ||
+        errorMsg.includes('NO_BACKUP_FOUND') ||
+        errorMsg.toLowerCase().includes('no backup');
+
+      if (isNoBackup) {
+        console.log('[GoogleBackupCard] Restore info: No backup file found.');
+        showAlert({
+          title: 'No Backup Found',
+          message: `We checked ${user?.email || 'your cloud account'}, but couldn't find an existing Fintraq backup file.`,
+          type: 'warning',
+        });
+      } else {
+        console.warn('[GoogleBackupCard] Restore warning:', e);
+        showAlert({
+          title: 'Restore Failed',
+          message: errorMsg || 'Could not restore backup from cloud storage.',
+          type: 'error',
+        });
+      }
     }
-  }, [performRestore, showAlert]);
+  }, [performRestore, showAlert, user?.email]);
 
   const formattedLastBackupTime = useMemo(() => {
     if (!lastBackup?.modifiedTime) return 'No backup yet';

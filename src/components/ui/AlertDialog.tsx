@@ -33,6 +33,12 @@ export const AlertDialog = React.memo(function AlertDialog({
   const { width: screenWidth } = useWindowDimensions();
   const styles = useMemo(() => createStyles(theme, screenWidth), [theme, screenWidth]);
 
+  const isVertical = useMemo(() => {
+    if (buttons.length > 2) return true;
+    const totalLength = buttons.reduce((acc, b) => acc + (b.text?.length || 0), 0);
+    return totalLength > 16;
+  }, [buttons]);
+
   const iconCfg = useMemo(() => {
     switch (type) {
       case 'success':
@@ -66,22 +72,34 @@ export const AlertDialog = React.memo(function AlertDialog({
             {message ? <Text style={styles.message}>{message}</Text> : null}
           </View>
 
-          <View style={styles.actions}>
+          <View style={[styles.actions, isVertical && styles.actionsVertical]}>
             {buttons.map((btn, i) => {
               const isCancel = btn.style === 'cancel';
               const isDestructive = btn.style === 'destructive';
+              const isPrimary = !isCancel && !isDestructive;
+
               return (
                 <BentoPressable
                   key={i}
-                  style={styles.btn}
+                  style={[
+                    styles.btn,
+                    isVertical && styles.btnVertical,
+                    isVertical && isPrimary && styles.btnPrimaryFilled,
+                    isVertical && isDestructive && styles.btnDangerFilled,
+                  ]}
                   onPress={() => handleButtonPress(btn)}
                 >
-                  <Text style={[
-                    styles.btnText,
-                    isCancel && styles.btnCancelText,
-                    isDestructive && styles.btnDangerText,
-                    !isCancel && !isDestructive && styles.btnPrimaryText
-                  ]}>
+                  <Text
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.85}
+                    style={[
+                      styles.btnText,
+                      isCancel && styles.btnCancelText,
+                      isDestructive && (isVertical ? styles.btnDangerFilledText : styles.btnDangerText),
+                      isPrimary && (isVertical ? styles.btnPrimaryFilledText : styles.btnPrimaryText),
+                    ]}
+                  >
                     {btn.text}
                   </Text>
                 </BentoPressable>
@@ -104,7 +122,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
       padding: spacing('6'),
     },
     card: {
-      width: Math.min(screenWidth - spacing('12'), 320),
+      width: Math.min(screenWidth - spacing('8'), 340),
       backgroundColor: colors.surface,
       borderRadius: radius('2xl'),
       overflow: 'hidden',
@@ -143,12 +161,27 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
       width: '100%',
       gap: spacing('2'),
     },
+    actionsVertical: {
+      flexDirection: 'column',
+      alignItems: 'stretch',
+      gap: spacing('2.5'),
+    },
     btn: {
       height: sizes.button.md.height,
-      paddingHorizontal: spacing('3'),
+      paddingHorizontal: spacing('3.5'),
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: radius('lg'),
+    },
+    btnVertical: {
+      width: '100%',
+      paddingHorizontal: spacing('4'),
+    },
+    btnPrimaryFilled: {
+      backgroundColor: colors.primary,
+    },
+    btnDangerFilled: {
+      backgroundColor: colors.danger,
     },
     btnText: {
       fontFamily: typography.styles.dialogAction.fontFamily,
@@ -157,10 +190,18 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
     btnPrimaryText: {
       color: colors.primary,
     },
+    btnPrimaryFilledText: {
+      color: colors.primaryForeground,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
+    },
     btnCancelText: {
       color: colors.textMuted,
     },
     btnDangerText: {
       color: colors.danger,
+    },
+    btnDangerFilledText: {
+      color: colors.primaryForeground,
+      fontFamily: typography.styles.buttonLabel.fontFamily,
     },
   });

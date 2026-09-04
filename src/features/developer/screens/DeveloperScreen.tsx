@@ -10,6 +10,8 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
 import { toErrorMessage } from '@/src/utils/errors';
 import { seedDummyData } from '@/src/utils/seed';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
 import {
   AndroidIcon,
   Apple01Icon,
@@ -20,6 +22,7 @@ import {
   CancelCircleIcon,
   CheckmarkBadge01Icon,
   CheckmarkCircle01Icon,
+  Delete02Icon,
   FlaskConicalIcon,
   LockPasswordIcon,
   RefreshIcon,
@@ -158,7 +161,40 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
   const [error, setError] = React.useState('');
   const [showSeedConfirm, setShowSeedConfirm] = React.useState(false);
   const [isSeeding, setIsSeeding] = React.useState(false);
+  const [showDeleteBackupConfirm, setShowDeleteBackupConfirm] = React.useState(false);
+  const [isDeletingBackup, setIsDeletingBackup] = React.useState(false);
   const [scheduledNotifs, setScheduledNotifs] = React.useState<Notifications.NotificationRequest[]>([]);
+
+  const handleDeleteBackup = async () => {
+    try {
+      setIsDeletingBackup(true);
+      const deleted = await GoogleDriveService.deleteBackup();
+      await AsyncStorage.removeItem('@fintraq_last_backup_meta');
+      setShowDeleteBackupConfirm(false);
+      if (deleted) {
+        showAlert({
+          title: 'Success',
+          message: 'Cloud backup file has been permanently deleted from Google Drive.',
+          type: 'success',
+        });
+      } else {
+        showAlert({
+          title: 'No Backup Found',
+          message: 'No backup file was found on Google Drive.',
+          type: 'info',
+        });
+      }
+    } catch (e) {
+      setShowDeleteBackupConfirm(false);
+      showAlert({
+        title: 'Error',
+        message: toErrorMessage(e, 'Failed to delete backup from Google Drive.'),
+        type: 'error',
+      });
+    } finally {
+      setIsDeletingBackup(false);
+    }
+  };
 
   const [alertConfig, setAlertConfig] = React.useState<{
     visible: boolean;
@@ -357,7 +393,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         </View>
 
         {/* ── Data ── */}
-        <Text style={styles.sectionLabel}>Data</Text>
+        <Text style={styles.sectionLabel}>Data & Cloud</Text>
         <View style={styles.group}>
           <NavRow
             theme={theme}
@@ -366,6 +402,15 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
             label="Seed dummy data"
             subtitle="Generate 12 months of transactions, persons & loans"
             onPress={() => setShowSeedConfirm(true)}
+          />
+          <RowSeparator theme={theme} />
+          <NavRow
+            theme={theme}
+            icon={Delete02Icon as IconSvgElement}
+            iconColor={colors.danger}
+            label="Delete Cloud Backup"
+            subtitle="Permanently remove backup file from Google Drive"
+            onPress={() => setShowDeleteBackupConfirm(true)}
           />
         </View>
 
@@ -461,6 +506,17 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         confirmLabel="Generate"
         isLoading={isSeeding}
         onConfirm={handleRunSeed}
+      />
+
+      <ConfirmDialog
+        visible={showDeleteBackupConfirm}
+        onClose={() => setShowDeleteBackupConfirm(false)}
+        title="Delete Cloud Backup"
+        message="This will permanently delete your database backup file from Google Drive. This action cannot be undone. Proceed?"
+        confirmLabel="Delete"
+        destructive
+        isLoading={isDeletingBackup}
+        onConfirm={handleDeleteBackup}
       />
 
       <AlertDialog

@@ -1,4 +1,5 @@
 import { DatabaseBackupService } from '@/src/services/backup/database-backup.service';
+import { NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
 import { CloudBackupFileMeta, GoogleDriveService, GoogleUserAccount } from '@/src/services/backup/google-drive.service';
 import { NotificationService } from '@/src/services/notification.service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -315,17 +316,11 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     try {
       updateSharedState({ isRestoring: true, progress: 5, progressStage: 'Locating backup...' });
 
-      let targetBackup = lastBackup;
-      if (!targetBackup?.id) {
-        targetBackup = await GoogleDriveService.findLatestBackup();
-        if (targetBackup) {
-          setLastBackup(targetBackup);
-          await AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(targetBackup));
-        }
-      }
+      // Always query Google Drive directly for the latest remote backup file
+      const targetBackup = await GoogleDriveService.findLatestBackup();
 
       if (!targetBackup?.id) {
-        throw new Error('No previous Fintraq backup was found in your Google Drive account.');
+        throw new NoBackupFoundError();
       }
 
       updateSharedState({ progress: 15, progressStage: 'Downloading backup...' });
@@ -337,21 +332,37 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         });
       });
 
+      if (!backupJsonStr || backupJsonStr.trim().length === 0) {
+        throw new Error('Downloaded backup file is empty or corrupted.');
+      }
+
       updateSharedState({ progress: 80, progressStage: 'Restoring data...' });
 
       await DatabaseBackupService.restoreBackupData(backupJsonStr, queryClient);
 
+      // Save user session & enable automated daily backup by default on successful restore
+      setUser(activeUser);
+      setLastBackup(targetBackup);
+      await Promise.all([
+        AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(targetBackup)),
+        setAutoBackupFrequency('daily'),
+      ]);
+
       updateSharedState({ progress: 100, progressStage: 'Restore complete!' });
       return true;
     } catch (e: any) {
-      console.error('[useGoogleBackup] Restore error:', e);
-      throw new Error(e?.message || 'Could not restore backup. The backup file may be corrupted or invalid.');
+      if (e instanceof NoBackupFoundError || e?.code === 'NO_BACKUP_FOUND') {
+        console.log('[useGoogleBackup] Restore info: No backup file found on Google Drive.');
+        throw e;
+      }
+      console.warn('[useGoogleBackup] Restore error:', e);
+      throw e;
     } finally {
       setTimeout(() => {
         updateSharedState({ isRestoring: false, progress: 0, progressStage: null });
       }, 1000);
     }
-  }, [user, lastBackup, queryClient]);
+  }, [user, queryClient, setAutoBackupFrequency]);
 
   const toggleAutoBackup = useCallback(async (value: boolean) => {
     const nextFreq: AutoBackupFrequency = value ? 'daily' : 'off';
