@@ -33,18 +33,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-build-properties',
       {
-        android: {
-          extraGradleProps: {
-            'org.gradle.jvmargs': '-Xmx3072m -XX:MaxMetaspaceSize=1024m',
-            'android.lint.options.checkReleaseBuilds': 'false',
-            'android.lint.options.abortOnError': 'false',
-          },
-        },
         ios: {
           useFrameworks: 'static',
           forceStaticLinking: ['RNFBApp', 'RNFBAnalytics', 'RNFBCrashlytics'],
         },
       },
     ],
+    './plugins/with-gradle-memory',
   ],
 });
