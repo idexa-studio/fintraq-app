@@ -9,6 +9,7 @@ import { DatabaseBackupService } from '@/src/services/backup/database-backup.ser
 import { isNoBackupError, NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
 import { CloudBackupFileMeta, GoogleDriveService, GoogleUserAccount } from '@/src/services/backup/google-drive.service';
 import { NotificationService } from '@/src/services/notification.service';
+import { ReviewPromptService } from '@/src/services/review-prompt.service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
@@ -230,6 +231,10 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       if (isBackground) {
         NotificationService.presentBackupCompleteNotification();
       }
+      // A successful cloud backup is a real trust moment — ask for a review
+      // here rather than on a random screen mount. No-ops after 1st ever ask
+      // or before day 2 since install (see ReviewPromptService).
+      ReviewPromptService.maybeRequestReview();
       return true;
     } catch (e: any) {
       console.warn('[useGoogleBackup] Backup error:', e);

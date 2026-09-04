@@ -4,6 +4,7 @@ import { getBackupState, updateBackupState } from './backup-state';
 import { DatabaseBackupService } from './database-backup.service';
 import { CloudBackupFileMeta, GoogleDriveService } from './google-drive.service';
 import { NotificationService } from '../notification.service';
+import { ReviewPromptService } from '../review-prompt.service';
 
 export type AutoBackupFrequency = 'off' | 'daily' | 'weekly' | 'monthly';
 
@@ -90,6 +91,11 @@ export async function runAutoBackupIfDue(): Promise<AutoBackupResult> {
 
     if (isBackground) {
       NotificationService.presentBackupCompleteNotification();
+    } else {
+      // Native review dialogs need an active foreground screen — only ask
+      // when this ran from the foreground mount check, never from the
+      // headless background task.
+      ReviewPromptService.maybeRequestReview();
     }
     return { outcome: 'ran', meta: uploadedFile };
   } catch (err) {

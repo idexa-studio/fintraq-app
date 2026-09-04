@@ -16,6 +16,7 @@ import { QueryProvider } from '@/src/providers/QueryProvider';
 import { SettingsProvider } from '@/src/providers/SettingsProvider';
 import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
+import { ReviewPromptService } from '@/src/services/review-prompt.service';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -68,6 +69,7 @@ export default function RootLayout() {
   useEffect(() => {
     NotificationService.init();
     registerBackgroundBackupTaskAsync();
+    ReviewPromptService.ensureFirstLaunchRecorded();
   }, []);
 
   if (!fontsLoaded || !migrationReady) return null;
