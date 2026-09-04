@@ -9,6 +9,7 @@ import { ACCOUNT_COLORS } from '@/src/constants/picker';
 import { useCreateAccount } from '@/src/features/accounts/hooks/accounts';
 import { db } from '@/src/db/client';
 import { categories } from '@/src/db/schema';
+import { RestoreProgressView } from '@/src/features/onboarding/components/RestoreProgressView';
 import { ProfileStep } from '@/src/features/onboarding/components/ProfileStep';
 import { WelcomeStep } from '@/src/features/onboarding/components/WelcomeStep';
 import { ONBOARDING_STEPS } from '@/src/features/onboarding/constants';
@@ -41,7 +42,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const { completeOnboarding } = useOnboarding();
   const { profile, updateProfile } = useSettings();
   const { mutateAsync: createAccount, isPending: accountPending } = useCreateAccount();
-  const { user, isConnected, isChecking, isRestoring, connectAccount, performRestore } = useGoogleBackup();
+  const { user, isConnected, isChecking, isRestoring, progress, progressStage, connectAccount, performRestore } = useGoogleBackup();
 
   const [stepIndex, setStepIndex] = React.useState(0);
   const currentStep = ONBOARDING_STEPS[stepIndex];
@@ -348,11 +349,18 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       case 'welcome':
         return <WelcomeStep />;
       case 'setup_choice':
-        return (
+        return isRestoring ? (
+          <RestoreProgressView
+            progress={progress}
+            progressStage={progressStage}
+            userEmail={user?.email}
+          />
+        ) : (
           <RestoreStep
             selectedOption={setupOption}
             onSelectOption={setSetupOption}
             userEmail={user?.email}
+            isRestoring={isRestoring}
           />
         );
       case 'profile':

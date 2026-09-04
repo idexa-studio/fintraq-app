@@ -126,6 +126,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     info: {
       flex: 1,
+      flexShrink: 1,
       gap: spacing('1'),
     },
     titleRow: {
