@@ -2,6 +2,7 @@ import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { ProgressBar } from '@/src/components/ui/ProgressBar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import * as Updates from 'expo-updates';
 import {
@@ -12,7 +13,7 @@ import {
   Upload01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { format } from 'date-fns';
+import { formatBackupTimestamp } from '@/src/utils/date';
 import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -21,13 +22,16 @@ import {
   Text,
   View,
 } from 'react-native';
-import { NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
+import { isNoBackupError } from '@/src/services/backup/google-drive.errors';
+import { toErrorMessage } from '@/src/utils/errors';
+import { useRouter } from 'expo-router';
 import { useGoogleBackup } from '../hooks/useGoogleBackup';
 
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const router = useRouter();
 
   const {
     user,
@@ -86,10 +90,10 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         message: 'Your Google Account has been connected and is ready for cloud backup.',
         type: 'success',
       });
-    } catch (e: any) {
+    } catch (e) {
       showAlert({
         title: 'Connection Failed',
-        message: e?.message || 'Could not connect Google Account.',
+        message: toErrorMessage(e, 'Could not connect Google Account.'),
         type: 'error',
       });
     }
@@ -104,10 +108,10 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         message: 'Your Google Account has been disconnected.',
         type: 'info',
       });
-    } catch (e: any) {
+    } catch (e) {
       showAlert({
         title: 'Disconnect Failed',
-        message: e?.message || 'Could not disconnect Google Account.',
+        message: toErrorMessage(e, 'Could not disconnect Google Account.'),
         type: 'error',
       });
     }
@@ -123,10 +127,10 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           type: 'success',
         });
       }
-    } catch (e: any) {
+    } catch (e) {
       showAlert({
         title: 'Backup Failed',
-        message: e?.message || 'Could not save backup to cloud storage.',
+        message: toErrorMessage(e, 'Could not save backup to cloud storage.'),
         type: 'error',
       });
     }
@@ -147,26 +151,32 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
               onPress: async () => {
                 try {
                   await Updates.reloadAsync();
-                } catch {
+                } catch (reloadErr) {
+                  console.warn('[GoogleBackupCard] Updates.reloadAsync failed:', reloadErr);
                   if (__DEV__ && DevSettings?.reload) {
                     DevSettings.reload();
+                    return;
                   }
+                  // The local DB has already been replaced underneath the
+                  // running app — leaving the user on this screen with stale
+                  // in-memory state would be worse than an imperfect restart.
+                  // Reset navigation to the app root so every screen remounts
+                  // and re-fetches from the now-restored database, and tell
+                  // the user plainly that an automatic restart didn't happen.
+                  router.replace('/(main)/(tabs)');
+                  showAlert({
+                    title: 'Restore Applied',
+                    message: 'Your data was restored, but Fintraq could not restart automatically. Please close and reopen the app to ensure everything loads correctly.',
+                    type: 'warning',
+                  });
                 }
               },
             },
           ],
         });
       }
-    } catch (e: any) {
-      const errorMsg = e?.message || '';
-      const isNoBackup =
-        e instanceof NoBackupFoundError ||
-        e?.code === 'NO_BACKUP_FOUND' ||
-        errorMsg.includes('No previous Fintraq backup') ||
-        errorMsg.includes('NO_BACKUP_FOUND') ||
-        errorMsg.toLowerCase().includes('no backup');
-
-      if (isNoBackup) {
+    } catch (e) {
+      if (isNoBackupError(e)) {
         console.log('[GoogleBackupCard] Restore info: No backup file found.');
         showAlert({
           title: 'No Backup Found',
@@ -177,20 +187,16 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         console.warn('[GoogleBackupCard] Restore warning:', e);
         showAlert({
           title: 'Restore Failed',
-          message: errorMsg || 'Could not restore backup from cloud storage.',
+          message: toErrorMessage(e, 'Could not restore backup from cloud storage.'),
           type: 'error',
         });
       }
     }
-  }, [performRestore, showAlert, user?.email]);
+  }, [performRestore, showAlert, user?.email, router]);
 
   const formattedLastBackupTime = useMemo(() => {
     if (!lastBackup?.modifiedTime) return 'No backup yet';
-    try {
-      return format(new Date(lastBackup.modifiedTime), 'MMM d, yyyy • h:mm a');
-    } catch {
-      return lastBackup.modifiedTime;
-    }
+    return formatBackupTimestamp(lastBackup.modifiedTime);
   }, [lastBackup?.modifiedTime]);
 
   const formattedSize = useMemo(() => {
@@ -290,9 +296,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
             <Text style={styles.progressStageText}>{progressStage || 'Processing...'}</Text>
             <Text style={styles.progressPercentText}>{progress}%</Text>
           </View>
-          <View style={styles.progressBarTrack}>
-            <View style={[styles.progressBarFill, { width: `${progress}%` }]} />
-          </View>
+          <ProgressBar progress={progress} height={6} />
         </View>
       )}
 
@@ -553,17 +557,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.bold,
       fontSize: typography.sizes.xs,
       color: colors.primary,
-    },
-    progressBarTrack: {
-      height: 6,
-      backgroundColor: colors.text + '12',
-      borderRadius: radius('full'),
-      overflow: 'hidden',
-    },
-    progressBarFill: {
-      height: '100%',
-      backgroundColor: colors.primary,
-      borderRadius: radius('full'),
     },
     actionsRow: {
       flexDirection: 'row',

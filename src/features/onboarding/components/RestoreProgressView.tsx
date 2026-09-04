@@ -1,4 +1,5 @@
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { ProgressBar } from '@/src/components/ui/ProgressBar';
 import { CloudIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
@@ -43,10 +44,7 @@ export const RestoreProgressView = React.memo(function RestoreProgressView({
           <Text style={styles.percentText}>{clampedProgress}%</Text>
         </View>
 
-        {/* Determinate Progress Track */}
-        <View style={styles.track}>
-          <View style={[styles.fill, { width: `${clampedProgress}%` }]} />
-        </View>
+        <ProgressBar progress={clampedProgress} height={8} />
 
         {userEmail ? (
           <Text style={styles.emailText} numberOfLines={1}>
@@ -111,17 +109,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       fontFamily: typography.styles.rowLabel.fontFamily,
       fontSize: 20,
       color: colors.primary,
-    },
-    track: {
-      height: 8,
-      backgroundColor: colors.card,
-      borderRadius: radius('full'),
-      overflow: 'hidden',
-    },
-    fill: {
-      height: '100%',
-      backgroundColor: colors.primary,
-      borderRadius: radius('full'),
     },
     emailText: {
       fontFamily: typography.fonts.regular,

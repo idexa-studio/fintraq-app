@@ -21,7 +21,8 @@ import { useTheme } from '@/src/providers/ThemeProvider';
 import { AnalyticsService } from '@/src/services/analytics';
 import { NotificationService } from '@/src/services/notification.service';
 import { toDbColor } from '@/src/utils/format';
-import { NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
+import { isNoBackupError } from '@/src/services/backup/google-drive.errors';
+import { accounts } from '@/src/db/schema';
 import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
@@ -190,25 +191,21 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       { name: 'Uncategorized', icon: 'grid', color: toDbColor('#475569'), type: 'CR,DR,TR', isSystem: true },
     ];
 
-    try {
-      const existing = await db.select({ name: categories.name }).from(categories);
-      const existingNames = new Set(existing.map((c) => c.name));
+    const existing = await db.select({ name: categories.name }).from(categories);
+    const existingNames = new Set(existing.map((c) => c.name));
 
-      const toInsert = defaults.filter((c) => !existingNames.has(c.name));
-      if (toInsert.length === 0) return;
+    const toInsert = defaults.filter((c) => !existingNames.has(c.name));
+    if (toInsert.length === 0) return;
 
-      await db.insert(categories).values(
-        toInsert.map((c) => ({
-          name: c.name,
-          icon: c.icon,
-          color: c.color,
-          type: c.type,
-          isSystem: c.isSystem ?? false,
-        }))
-      );
-    } catch (e) {
-      console.warn('[OnboardingScreen] Category batch seed warning:', e);
-    }
+    await db.insert(categories).values(
+      toInsert.map((c) => ({
+        name: c.name,
+        icon: c.icon,
+        color: c.color,
+        type: c.type,
+        isSystem: c.isSystem ?? false,
+      }))
+    );
   };
 
   const finalizeSetup = async () => {
@@ -221,7 +218,14 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         defaultCurrency: currency,
       });
 
-      try {
+      // Only create the default account if one doesn't already exist (e.g. a
+      // retried finalize after a prior partial failure) — accounts.name has
+      // no unique constraint, so an unguarded create here would silently
+      // duplicate the "Cash" account on retry. Real failures below are
+      // intentionally NOT swallowed: without a default account or categories
+      // the app is unusable, so onboarding must not be marked complete.
+      const existingAccounts = await db.select({ id: accounts.id }).from(accounts).limit(1);
+      if (existingAccounts.length === 0) {
         await createAccount({
           name: 'Cash',
           holderName: name.trim() || 'Personal',
@@ -234,15 +238,9 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           income: 0,
           expense: 0,
         });
-      } catch (accErr) {
-        console.warn('[OnboardingScreen] Account creation warning (may already exist):', accErr);
       }
 
-      try {
-        await seedCategories();
-      } catch (catErr) {
-        console.warn('[OnboardingScreen] Categories seed warning (may already exist):', catErr);
-      }
+      await seedCategories();
 
       await completeOnboarding();
       await AnalyticsService.onboardingCompleted(currency);
@@ -272,8 +270,20 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       if (currentStep.id === 'backup_setup' && cloudBackupChoice === 'enable' && !isConnected) {
         try {
           await connectAccount();
-        } catch {
-          // Proceed even if Google sign-in is cancelled
+        } catch (err: any) {
+          // Don't block onboarding on a failed/cancelled Google sign-in, but
+          // never silently proceed as if Cloud Backup were enabled — the
+          // button the user tapped promised to enable it. Finalize only
+          // after the user acknowledges, so this alert can't get stacked
+          // under (or raced by) the reminder dialog finalizeSetup triggers.
+          console.warn('[OnboardingScreen] Cloud backup connect failed:', err);
+          showAlert({
+            title: 'Cloud Backup Not Enabled',
+            message: "We couldn't connect your Google account. You can enable Cloud Backup anytime from Settings.",
+            type: 'warning',
+            buttons: [{ text: 'Continue', onPress: () => { void finalizeSetup(); } }],
+          });
+          return;
         }
       }
 
@@ -307,12 +317,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       }
     } catch (e: any) {
       const errorMsg = e?.message || '';
-      const isNoBackup =
-        e instanceof NoBackupFoundError ||
-        e?.code === 'NO_BACKUP_FOUND' ||
-        errorMsg.includes('No previous Fintraq backup') ||
-        errorMsg.includes('NO_BACKUP_FOUND') ||
-        errorMsg.toLowerCase().includes('no backup');
+      const isNoBackup = isNoBackupError(e);
 
       if (isNoBackup) {
         console.log('[OnboardingScreen] Info: No backup file found for user:', signedInEmail);
@@ -333,7 +338,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
               text: 'Start Fresh',
               onPress: () => {
                 setSetupOption('fresh');
-                setStepIndex(1); // Advance directly to Profile setup
+                setStepIndex(ONBOARDING_STEPS.findIndex((s) => s.id === 'profile'));
               },
             },
             {
@@ -433,7 +438,11 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           <View style={styles.header}>
             <View style={styles.headerTopRow}>
               {stepIndex > 0 ? (
-                <BentoPressable style={styles.headerBackButton} onPress={() => setStepIndex((i) => i - 1)}>
+                <BentoPressable
+                  style={styles.headerBackButton}
+                  onPress={() => setStepIndex((i) => i - 1)}
+                  disabled={isButtonLoading}
+                >
                   <HugeiconsIcon icon={ArrowLeft01Icon} size={18} color={colors.text} />
                 </BentoPressable>
               ) : (

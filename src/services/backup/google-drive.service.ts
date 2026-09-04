@@ -117,38 +117,36 @@ class GoogleDriveServiceClass {
 
   /**
    * Search for existing backup file in Google Drive AppData folder.
-   * Returns null both when no backup exists and when the lookup fails —
-   * callers that need to distinguish those cases should catch directly.
+   * Returns null only when there genuinely is no signed-in user or no backup
+   * file exists. Network/HTTP/timeout failures are rethrown rather than
+   * swallowed into null — callers must not treat "the lookup failed" the
+   * same as "there is no backup", since the former incorrectly leads users
+   * into a destructive "Start Fresh" flow that abandons a real backup.
    */
   public async findLatestBackup(): Promise<CloudBackupFileMeta | null> {
-    try {
-      const user = await this.getCurrentUser();
-      if (!user) return null;
+    const user = await this.getCurrentUser();
+    if (!user) return null;
 
-      const token = await this.getAccessToken();
-      const query = encodeURIComponent(`name = '${BACKUP_FILENAME}' and 'appDataFolder' in parents and trashed = false`);
-      const url = `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${query}&fields=files(id,name,modifiedTime,size)&orderBy=modifiedTime%20desc`;
+    const token = await this.getAccessToken();
+    const query = encodeURIComponent(`name = '${BACKUP_FILENAME}' and 'appDataFolder' in parents and trashed = false`);
+    const url = `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${query}&fields=files(id,name,modifiedTime,size)&orderBy=modifiedTime%20desc`;
 
-      const response = await driveFetch(url, {
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token}` },
-        operation: 'findLatestBackup',
-      });
+    const response = await driveFetch(url, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` },
+      operation: 'findLatestBackup',
+    });
 
-      const data = await response.json();
-      const files: any[] = data.files || [];
-      if (files.length === 0) return null;
+    const data = await response.json();
+    const files: any[] = data.files || [];
+    if (files.length === 0) return null;
 
-      return {
-        id: files[0].id,
-        name: files[0].name,
-        modifiedTime: files[0].modifiedTime,
-        size: Number(files[0].size || 0),
-      };
-    } catch (error) {
-      console.warn('[GoogleDriveService] findLatestBackup error:', error);
-      return null;
-    }
+    return {
+      id: files[0].id,
+      name: files[0].name,
+      modifiedTime: files[0].modifiedTime,
+      size: Number(files[0].size || 0),
+    };
   }
 
   private async createBackupFileEntry(token: string): Promise<string> {

@@ -169,7 +169,12 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
     try {
       setIsDeletingBackup(true);
       const deleted = await GoogleDriveService.deleteBackup();
-      await AsyncStorage.removeItem('@fintraq_last_backup_meta');
+      // Also clear the auto-backup timer key — otherwise useGoogleBackup's
+      // threshold check still thinks a backup was recently taken and the app
+      // goes without any cloud backup until the next full interval elapses
+      // (up to 30 days for "monthly"), silently defeating the data-loss
+      // protection auto-backup exists for.
+      await AsyncStorage.multiRemove(['@fintraq_last_backup_meta', '@fintraq_last_auto_backup_time']);
       setShowDeleteBackupConfirm(false);
       if (deleted) {
         showAlert({

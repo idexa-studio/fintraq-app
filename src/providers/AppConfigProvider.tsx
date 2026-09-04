@@ -33,6 +33,20 @@ export function useAppConfig() {
 }
 
 const COOLDOWN_MS = 10 * 60 * 1000;
+// App-level backstop on cold-start init, independent of Firebase's own
+// fetchTimeoutMillis — that only bounds the network fetch phase, not the
+// full fetchAndActivate() call (activation, native bridge round trip, the
+// dynamic import inside remote-config.service.ts). Without this, a stall
+// anywhere in that chain leaves the splash screen up indefinitely, since
+// SplashScreen.hideAsync() only fires in this effect's `.finally()`.
+const INIT_DEADLINE_MS = 8000;
+
+function withDeadline<T>(promise: Promise<T>, ms: number): Promise<T | undefined> {
+  return Promise.race([
+    promise,
+    new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), ms)),
+  ]);
+}
 
 export const AppConfigProvider = React.memo(function AppConfigProvider({
   children,
@@ -85,8 +99,10 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
     if (initialized.current) return;
     initialized.current = true;
 
-    initRemoteConfig()
-      .then(() => checkStatus(true))
+    withDeadline(
+      initRemoteConfig().then(() => checkStatus(true)),
+      INIT_DEADLINE_MS,
+    )
       .catch((err) => {
         if (__DEV__) console.warn('[AppConfigProvider] init error:', err);
       })

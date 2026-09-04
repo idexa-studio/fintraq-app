@@ -85,6 +85,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     let isMounted = true;
     (async () => {
       let currentUser: GoogleUserAccount | null = null;
+      let autoBackupRan = false;
       try {
         currentUser = await GoogleDriveService.getCurrentUser();
         if (isMounted && currentUser) {
@@ -124,7 +125,15 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
           const lastAutoTime = lastAutoTimeStr ? parseInt(lastAutoTimeStr, 10) : 0;
           const threshold = FREQUENCY_THRESHOLDS_MS[resolvedFreq];
 
-          if (now - lastAutoTime >= threshold) {
+          // Guard against multiple mounted `useGoogleBackup()` instances (e.g.
+          // Dashboard + BackupPromptModal) both passing this threshold check
+          // before either has written STORAGE_KEY_LAST_AUTO_BACKUP_TIME back —
+          // `sharedBackupState` is a module-level singleton shared by every
+          // instance, and this check-then-set is synchronous (no `await`
+          // between them), so JS run-to-completion semantics make it atomic
+          // across instances in the same app session.
+          if (now - lastAutoTime >= threshold && !sharedBackupState.isBackingUp) {
+            autoBackupRan = true;
             console.log(`[useGoogleBackup] Threshold met for ${resolvedFreq} auto-backup. Running background backup...`);
             const isBackground = AppState.currentState !== 'active';
             if (isBackground) {
@@ -167,8 +176,11 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         if (isMounted) setIsChecking(false);
       }
 
-      // Fetch remote backup meta in background without blocking initial UI render
-      if (isMounted && currentUser) {
+      // Fetch remote backup meta in background without blocking initial UI
+      // render — skip if the auto-backup branch above already ran and set
+      // lastBackup from its own upload response, to avoid a second
+      // redundant Drive files.list round trip for metadata already known.
+      if (isMounted && currentUser && !autoBackupRan) {
         try {
           const backupMeta = await GoogleDriveService.findLatestBackup();
           if (isMounted && backupMeta) {
@@ -250,6 +262,13 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
   }, []);
 
   const performBackup = useCallback(async (options?: { silent?: boolean }): Promise<boolean> => {
+    if (sharedBackupState.isBackingUp || sharedBackupState.isRestoring) {
+      if (!options?.silent) {
+        throw new Error('A backup or restore is already in progress.');
+      }
+      return false;
+    }
+
     const activeUser = user || (await GoogleDriveService.getCurrentUser());
     if (!activeUser) {
       if (!options?.silent) {
@@ -308,6 +327,10 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
   }, [user, lastBackup?.id]);
 
   const performRestore = useCallback(async (): Promise<boolean> => {
+    if (sharedBackupState.isBackingUp || sharedBackupState.isRestoring) {
+      throw new Error('A backup or restore is already in progress.');
+    }
+
     const activeUser = user || (await GoogleDriveService.getCurrentUser());
     if (!activeUser) {
       throw new Error('Please sign in to your Google Account to restore data.');

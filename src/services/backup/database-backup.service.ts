@@ -285,6 +285,16 @@ class DatabaseBackupServiceClass {
       const paymentsList: PaymentBackupRow[] = pkg.data?.payments || (pkg.data as any)?.payment || [];
       const seederList: SeederBackupRow[] = pkg.data?.seederState || (pkg.data as any)?.seeder_state || (pkg.data as any)?.seeder || [];
 
+      // Refuse to wipe local data for a backup that carries nothing to
+      // restore — a corrupted download, a stale empty snapshot, or a parsing
+      // mistake upstream would otherwise silently erase the user's real data
+      // and replace it with nothing.
+      const totalRestoreRows =
+        personsList.length + accountsList.length + categoriesList.length + loansList.length + paymentsList.length;
+      if (totalRestoreRows === 0) {
+        throw new Error('This backup appears to be empty. Restore aborted to protect your existing data.');
+      }
+
       // Wait for any active background migration seed query to finish
       await MigrationSeedService.waitForPendingWrite();
 

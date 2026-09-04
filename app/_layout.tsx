@@ -40,8 +40,12 @@ export default function RootLayout() {
 
   useEffect(() => {
     async function runMigration() {
-      unlockDatabaseIfLocked();
+      // Must run before any SQLite connection is opened — opening the
+      // fintraq.db file first would make LocalMigrationService's
+      // `!fintraqDbFile.exists` check always true, silently skipping the
+      // legacy Luno/Keep → Fintraq data migration for existing users.
       await LocalMigrationService.execute();
+      unlockDatabaseIfLocked();
       setMigrationReady(true);
     }
     runMigration();

@@ -26,13 +26,16 @@ function getDrizzleDb(): ExpoSQLiteDatabase<typeof schema> {
   return drizzleDbInstance;
 }
 
+/**
+ * Opportunistically flush the WAL file back into the main DB. Safe to call
+ * often — PASSIVE mode never blocks or fails on a busy connection, it just
+ * skips the checkpoint. journal_mode/busy_timeout/synchronous are connection-
+ * scoped and already set once in getDrizzleDb() above; re-issuing them here
+ * on every app resume would be pure wasted main-thread work.
+ */
 export function unlockDatabaseIfLocked(): void {
   try {
-    const rawDb = getExpoDb();
-    rawDb.execSync('PRAGMA journal_mode = WAL;');
-    rawDb.execSync('PRAGMA busy_timeout = 30000;');
-    rawDb.execSync('PRAGMA synchronous = NORMAL;');
-    rawDb.execSync('PRAGMA wal_checkpoint(PASSIVE);');
+    getExpoDb().execSync('PRAGMA wal_checkpoint(PASSIVE);');
   } catch {
     // Non-blocking passive checkpoint
   }

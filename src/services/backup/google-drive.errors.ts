@@ -39,3 +39,13 @@ export class NoBackupFoundError extends Error {
   }
 }
 
+/**
+ * Single source of truth for "does this error mean no backup exists" — used
+ * by both the onboarding restore flow and the Settings backup card so the
+ * two never disagree about what counts as "no backup" (e.g. after a
+ * rewording of the error message, or the error being re-wrapped upstream).
+ */
+export function isNoBackupError(error: unknown): boolean {
+  return error instanceof NoBackupFoundError || (error as any)?.code === 'NO_BACKUP_FOUND';
+}
+

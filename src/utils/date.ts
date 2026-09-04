@@ -33,3 +33,15 @@ export const formatDisplayDate = (dateStr: string): string => {
     return dateStr;
   }
 };
+
+/**
+ * formatBackupTimestamp: Formats an ISO date string for cloud backup UI display.
+ * Example: "2024-04-13T10:05:00Z" -> "Apr 13, 2024 • 10:05 AM"
+ */
+export const formatBackupTimestamp = (dateStr: string): string => {
+  try {
+    return format(new Date(dateStr), 'MMM d, yyyy • h:mm a');
+  } catch {
+    return dateStr;
+  }
+};
