@@ -21,6 +21,10 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { LocalMigrationService } from '@/src/services/local-migration.service';
 import { unlockDatabaseIfLocked } from '@/src/db/client';
+// Side-effect import: must run unconditionally at module load so
+// TaskManager.defineTask has registered the executor before the OS can ever
+// headlessly relaunch the JS engine to run it (see file for details).
+import { registerBackgroundBackupTaskAsync } from '@/src/services/backup/background-backup.task';
 import { AppState } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
@@ -63,6 +67,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     NotificationService.init();
+    registerBackgroundBackupTaskAsync();
   }, []);
 
   if (!fontsLoaded || !migrationReady) return null;

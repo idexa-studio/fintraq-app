@@ -29,6 +29,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     '@react-native-firebase/crashlytics',
+    'expo-background-task',
     [
       'expo-build-properties',
       {

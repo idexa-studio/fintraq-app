@@ -1,5 +1,12 @@
+import {
+  AUTO_BACKUP_STORAGE_KEYS,
+  AutoBackupFrequency,
+  resolveAutoBackupFrequency,
+  runAutoBackupIfDue,
+} from '@/src/services/backup/auto-backup.service';
+import { getBackupState, SharedBackupState, subscribeToBackupState, updateBackupState } from '@/src/services/backup/backup-state';
 import { DatabaseBackupService } from '@/src/services/backup/database-backup.service';
-import { NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
+import { isNoBackupError, NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
 import { CloudBackupFileMeta, GoogleDriveService, GoogleUserAccount } from '@/src/services/backup/google-drive.service';
 import { NotificationService } from '@/src/services/notification.service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,40 +14,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 
-export type AutoBackupFrequency = 'off' | 'daily' | 'weekly' | 'monthly';
+export type { AutoBackupFrequency };
 
-const STORAGE_KEY_AUTO_BACKUP = '@fintraq_auto_backup_enabled';
-const STORAGE_KEY_AUTO_BACKUP_FREQ = '@fintraq_auto_backup_frequency';
-const STORAGE_KEY_LAST_BACKUP_META = '@fintraq_last_backup_meta';
-const STORAGE_KEY_LAST_AUTO_BACKUP_TIME = '@fintraq_last_auto_backup_time';
-
-const FREQUENCY_THRESHOLDS_MS: Record<AutoBackupFrequency, number> = {
-  off: Infinity,
-  daily: 24 * 60 * 60 * 1000,
-  weekly: 7 * 24 * 60 * 60 * 1000,
-  monthly: 30 * 24 * 60 * 60 * 1000,
-};
-
-type SharedBackupState = {
-  isBackingUp: boolean;
-  isRestoring: boolean;
-  progress: number;
-  progressStage: string | null;
-};
-
-let sharedBackupState: SharedBackupState = {
-  isBackingUp: false,
-  isRestoring: false,
-  progress: 0,
-  progressStage: null,
-};
-
-const listeners = new Set<() => void>();
-
-function updateSharedState(patch: Partial<SharedBackupState>) {
-  sharedBackupState = { ...sharedBackupState, ...patch };
-  listeners.forEach((cb) => cb());
-}
+const STORAGE_KEY_AUTO_BACKUP = AUTO_BACKUP_STORAGE_KEYS.ENABLED;
+const STORAGE_KEY_AUTO_BACKUP_FREQ = AUTO_BACKUP_STORAGE_KEYS.FREQUENCY;
+const STORAGE_KEY_LAST_BACKUP_META = AUTO_BACKUP_STORAGE_KEYS.LAST_BACKUP_META;
+const STORAGE_KEY_LAST_AUTO_BACKUP_TIME = AUTO_BACKUP_STORAGE_KEYS.LAST_AUTO_BACKUP_TIME;
 
 export type UseGoogleBackupReturn = {
   user: GoogleUserAccount | null;
@@ -66,18 +45,14 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
   const queryClient = useQueryClient();
   const [user, setUser] = useState<GoogleUserAccount | null>(null);
   const [isChecking, setIsChecking] = useState(true);
-  const [backupSyncState, setBackupSyncState] = useState<SharedBackupState>(sharedBackupState);
+  const [backupSyncState, setBackupSyncState] = useState<SharedBackupState>(getBackupState());
   const [lastBackup, setLastBackup] = useState<CloudBackupFileMeta | null>(null);
   const [autoBackupEnabled, setAutoBackupEnabled] = useState(false);
   const [autoBackupFrequency, setAutoBackupFrequencyState] = useState<AutoBackupFrequency>('off');
 
   // Subscribe component to shared backup state updates
   useEffect(() => {
-    const handleChange = () => setBackupSyncState(sharedBackupState);
-    listeners.add(handleChange);
-    return () => {
-      listeners.delete(handleChange);
-    };
+    return subscribeToBackupState(() => setBackupSyncState(getBackupState()));
   }, []);
 
   // Load active user, auto-backup setting, and cached backup metadata on mount
@@ -85,26 +60,16 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     let isMounted = true;
     (async () => {
       let currentUser: GoogleUserAccount | null = null;
-      let autoBackupRan = false;
       try {
         currentUser = await GoogleDriveService.getCurrentUser();
         if (isMounted && currentUser) {
           setUser(currentUser);
         }
 
-        const [autoVal, autoFreqVal, cachedMetaStr, lastAutoTimeStr] = await Promise.all([
-          AsyncStorage.getItem(STORAGE_KEY_AUTO_BACKUP),
-          AsyncStorage.getItem(STORAGE_KEY_AUTO_BACKUP_FREQ),
+        const [resolvedFreq, cachedMetaStr] = await Promise.all([
+          resolveAutoBackupFrequency(),
           AsyncStorage.getItem(STORAGE_KEY_LAST_BACKUP_META),
-          AsyncStorage.getItem(STORAGE_KEY_LAST_AUTO_BACKUP_TIME),
         ]);
-
-        let resolvedFreq: AutoBackupFrequency = 'off';
-        if (autoFreqVal === 'daily' || autoFreqVal === 'weekly' || autoFreqVal === 'monthly') {
-          resolvedFreq = autoFreqVal as AutoBackupFrequency;
-        } else if (autoVal === 'true') {
-          resolvedFreq = 'daily';
-        }
 
         if (isMounted) {
           setAutoBackupEnabled(resolvedFreq !== 'off');
@@ -119,77 +84,33 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
           }
         }
 
-        // Trigger scheduled background auto-backup if threshold elapsed
-        if (isMounted && currentUser && resolvedFreq !== 'off') {
-          const now = Date.now();
-          const lastAutoTime = lastAutoTimeStr ? parseInt(lastAutoTimeStr, 10) : 0;
-          const threshold = FREQUENCY_THRESHOLDS_MS[resolvedFreq];
+        // Same threshold-check-and-run logic the headless background task
+        // uses (see auto-backup.service.ts) — sharing it means a change to
+        // how auto-backup runs never has to be applied in two places.
+        const result = await runAutoBackupIfDue();
+        if (isMounted && result.outcome === 'ran') {
+          setLastBackup(result.meta);
+        }
 
-          // Guard against multiple mounted `useGoogleBackup()` instances (e.g.
-          // Dashboard + BackupPromptModal) both passing this threshold check
-          // before either has written STORAGE_KEY_LAST_AUTO_BACKUP_TIME back —
-          // `sharedBackupState` is a module-level singleton shared by every
-          // instance, and this check-then-set is synchronous (no `await`
-          // between them), so JS run-to-completion semantics make it atomic
-          // across instances in the same app session.
-          if (now - lastAutoTime >= threshold && !sharedBackupState.isBackingUp) {
-            autoBackupRan = true;
-            console.log(`[useGoogleBackup] Threshold met for ${resolvedFreq} auto-backup. Running background backup...`);
-            const isBackground = AppState.currentState !== 'active';
-            if (isBackground) {
-              NotificationService.presentBackupStartNotification();
+        // Fetch remote backup meta in background without blocking initial UI
+        // render — skip if runAutoBackupIfDue already set lastBackup from its
+        // own upload response, to avoid a second redundant Drive files.list
+        // round trip for metadata already known.
+        if (isMounted && currentUser && result.outcome !== 'ran') {
+          try {
+            const backupMeta = await GoogleDriveService.findLatestBackup();
+            if (isMounted && backupMeta) {
+              setLastBackup(backupMeta);
+              await AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(backupMeta));
             }
-            try {
-              updateSharedState({ isBackingUp: true, progress: 10, progressStage: 'Auto-backing up...' });
-              const payloadStr = await DatabaseBackupService.exportBackupData();
-              updateSharedState({ progress: 50, progressStage: 'Uploading background backup...' });
-              const latestFile = await GoogleDriveService.findLatestBackup();
-              const uploadedFile = await GoogleDriveService.uploadBackup(payloadStr, latestFile?.id, (frac) => {
-                updateSharedState({ progress: 50 + Math.round(frac * 45), progressStage: `Uploading... ${Math.round(frac * 100)}%` });
-              });
-              updateSharedState({ progress: 100, progressStage: 'Backup complete!' });
-              if (isMounted) {
-                setLastBackup(uploadedFile);
-              }
-              await Promise.all([
-                AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(uploadedFile)),
-                AsyncStorage.setItem(STORAGE_KEY_LAST_AUTO_BACKUP_TIME, String(now)),
-              ]);
-              if (isBackground) {
-                NotificationService.presentBackupCompleteNotification();
-              }
-            } catch (err) {
-              console.warn('[useGoogleBackup] Background auto-backup warning:', err);
-              if (isBackground) {
-                NotificationService.presentBackupFailedNotification();
-              }
-            } finally {
-              setTimeout(() => {
-                updateSharedState({ isBackingUp: false, progress: 0, progressStage: null });
-              }, 1000);
-            }
+          } catch (e) {
+            console.warn('[useGoogleBackup] Background backup check error:', e);
           }
         }
       } catch (e) {
         console.warn('[useGoogleBackup] Mount initialization error:', e);
       } finally {
         if (isMounted) setIsChecking(false);
-      }
-
-      // Fetch remote backup meta in background without blocking initial UI
-      // render — skip if the auto-backup branch above already ran and set
-      // lastBackup from its own upload response, to avoid a second
-      // redundant Drive files.list round trip for metadata already known.
-      if (isMounted && currentUser && !autoBackupRan) {
-        try {
-          const backupMeta = await GoogleDriveService.findLatestBackup();
-          if (isMounted && backupMeta) {
-            setLastBackup(backupMeta);
-            await AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(backupMeta));
-          }
-        } catch (e) {
-          console.warn('[useGoogleBackup] Background backup check error:', e);
-        }
       }
     })();
 
@@ -262,7 +183,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
   }, []);
 
   const performBackup = useCallback(async (options?: { silent?: boolean }): Promise<boolean> => {
-    if (sharedBackupState.isBackingUp || sharedBackupState.isRestoring) {
+    if (getBackupState().isBackingUp || getBackupState().isRestoring) {
       if (!options?.silent) {
         throw new Error('A backup or restore is already in progress.');
       }
@@ -283,20 +204,20 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     }
 
     try {
-      updateSharedState({ isBackingUp: true, progress: 5, progressStage: 'Preparing workspace snapshot...' });
+      updateBackupState({ isBackingUp: true, progress: 5, progressStage: 'Preparing workspace snapshot...' });
 
       const payloadStr = await DatabaseBackupService.exportBackupData();
 
-      updateSharedState({ progress: 25, progressStage: 'Uploading backup...' });
+      updateBackupState({ progress: 25, progressStage: 'Uploading backup...' });
 
       const uploadedFile = await GoogleDriveService.uploadBackup(payloadStr, lastBackup?.id, (fraction: number) => {
-        updateSharedState({
+        updateBackupState({
           progress: 25 + Math.round(fraction * 65),
           progressStage: `Uploading to Google Drive... ${Math.round(fraction * 100)}%`,
         });
       });
 
-      updateSharedState({ progress: 95, progressStage: 'Finalizing backup...' });
+      updateBackupState({ progress: 95, progressStage: 'Finalizing backup...' });
 
       setLastBackup(uploadedFile);
       await Promise.all([
@@ -304,7 +225,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         AsyncStorage.setItem(STORAGE_KEY_LAST_AUTO_BACKUP_TIME, String(Date.now())),
       ]);
 
-      updateSharedState({ progress: 100, progressStage: 'Backup complete!' });
+      updateBackupState({ progress: 100, progressStage: 'Backup complete!' });
 
       if (isBackground) {
         NotificationService.presentBackupCompleteNotification();
@@ -321,13 +242,13 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       return false;
     } finally {
       setTimeout(() => {
-        updateSharedState({ isBackingUp: false, progress: 0, progressStage: null });
+        updateBackupState({ isBackingUp: false, progress: 0, progressStage: null });
       }, 1000);
     }
   }, [user, lastBackup?.id]);
 
   const performRestore = useCallback(async (): Promise<boolean> => {
-    if (sharedBackupState.isBackingUp || sharedBackupState.isRestoring) {
+    if (getBackupState().isBackingUp || getBackupState().isRestoring) {
       throw new Error('A backup or restore is already in progress.');
     }
 
@@ -337,7 +258,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     }
 
     try {
-      updateSharedState({ isRestoring: true, progress: 5, progressStage: 'Locating backup...' });
+      updateBackupState({ isRestoring: true, progress: 5, progressStage: 'Locating backup...' });
 
       // Always query Google Drive directly for the latest remote backup file
       const targetBackup = await GoogleDriveService.findLatestBackup();
@@ -346,10 +267,10 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         throw new NoBackupFoundError();
       }
 
-      updateSharedState({ progress: 15, progressStage: 'Downloading backup...' });
+      updateBackupState({ progress: 15, progressStage: 'Downloading backup...' });
 
       const backupJsonStr = await GoogleDriveService.downloadBackup(targetBackup.id, (fraction) => {
-        updateSharedState({
+        updateBackupState({
           progress: 15 + Math.round(fraction * 60),
           progressStage: `Downloading backup... ${Math.round(fraction * 100)}%`,
         });
@@ -359,7 +280,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         throw new Error('Downloaded backup file is empty or corrupted.');
       }
 
-      updateSharedState({ progress: 80, progressStage: 'Restoring data...' });
+      updateBackupState({ progress: 80, progressStage: 'Restoring data...' });
 
       await DatabaseBackupService.restoreBackupData(backupJsonStr, queryClient);
 
@@ -371,10 +292,10 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         setAutoBackupFrequency('daily'),
       ]);
 
-      updateSharedState({ progress: 100, progressStage: 'Restore complete!' });
+      updateBackupState({ progress: 100, progressStage: 'Restore complete!' });
       return true;
     } catch (e: any) {
-      if (e instanceof NoBackupFoundError || e?.code === 'NO_BACKUP_FOUND') {
+      if (isNoBackupError(e)) {
         console.log('[useGoogleBackup] Restore info: No backup file found on Google Drive.');
         throw e;
       }
@@ -382,7 +303,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       throw e;
     } finally {
       setTimeout(() => {
-        updateSharedState({ isRestoring: false, progress: 0, progressStage: null });
+        updateBackupState({ isRestoring: false, progress: 0, progressStage: null });
       }, 1000);
     }
   }, [user, queryClient, setAutoBackupFrequency]);
