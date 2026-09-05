@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "449022176981-8sdhobfs54r59v3qjho4i6t2k3q9fb25.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.nafish.luno",
+            "certificate_hash": "506bab1f6e8dc751baa3426c5f2e81487b6c8953"
+          }
+        },
+        {
           "client_id": "449022176981-q6rcaibjal3atssebadrd1bmg1h2u658.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
