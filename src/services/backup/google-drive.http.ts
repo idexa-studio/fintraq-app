@@ -21,11 +21,7 @@ function isRetryableStatus(status: number): boolean {
   return status === 429 || status >= 500;
 }
 
-/**
- * Fetch wrapper with real timeout attribution and bounded retry for transient
- * failures. Distinguishes timeout / network / HTTP errors so failures are
- * diagnosable instead of surfacing as a bare "Aborted".
- */
+/** Fetch wrapper with timeout attribution + bounded retry; distinguishes timeout/network/HTTP errors. */
 export async function driveFetch(url: string, options: DriveRequestOptions): Promise<Response> {
   const { method, headers, body, operation, timeoutMs = DEFAULT_TIMEOUT_MS, retries = DEFAULT_RETRIES } = options;
 
@@ -91,11 +87,7 @@ export type DriveXhrRequestOptions = {
 
 const DEFAULT_XHR_TIMEOUT_MS = 30_000;
 
-/**
- * XMLHttpRequest-based request for calls that need real byte-level progress
- * (upload/download) — the global `fetch` in React Native does not expose
- * upload progress and only exposes streamed download progress unreliably.
- */
+/** XHR-based request for real byte-level progress — RN's `fetch` doesn't expose upload progress. */
 export function driveXhrRequest(url: string, options: DriveXhrRequestOptions): Promise<string> {
   const { method, headers, body, operation, timeoutMs = DEFAULT_XHR_TIMEOUT_MS, onProgress } = options;
 

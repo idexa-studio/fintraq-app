@@ -9,10 +9,7 @@ const MIN_DAYS_SINCE_INSTALL = 2;
 const MIN_DAYS_SINCE_INSTALL_MS = MIN_DAYS_SINCE_INSTALL * 24 * 60 * 60 * 1000;
 
 export const ReviewPromptService = {
-  /**
-   * Records the first-launch timestamp exactly once. Call unconditionally on
-   * every app start — it's a no-op after the first call ever succeeds.
-   */
+  /** Records first-launch timestamp once; no-op on repeat calls. */
   async ensureFirstLaunchRecorded(): Promise<void> {
     try {
       const existing = await AsyncStorage.getItem(STORAGE_KEY_FIRST_LAUNCH_AT);
@@ -23,14 +20,7 @@ export const ReviewPromptService = {
     }
   },
 
-  /**
-   * Asks the OS to show the native in-app review prompt, but only once ever,
-   * and only once at least 2 days have passed since first launch. Call this
-   * from a positive moment (a completed backup, not a random screen mount) —
-   * both platforms already throttle how often the dialog can actually appear
-   * regardless, so this is "ask if it's a good time", not a guarantee it
-   * shows.
-   */
+  /** Asks OS to show review prompt once, 2+ days after install. Call from a positive moment. */
   async maybeRequestReview(): Promise<void> {
     try {
       const [firstLaunchStr, alreadyRequested, isAvailable] = await Promise.all([
@@ -45,8 +35,6 @@ export const ReviewPromptService = {
       const daysSinceInstall = Date.now() - firstLaunchAt;
       if (daysSinceInstall < MIN_DAYS_SINCE_INSTALL_MS) return;
 
-      // Mark as requested before calling out — the OS-level dialog can be
-      // dismissed/interrupted, but we still only want to have *asked* once.
       await AsyncStorage.setItem(STORAGE_KEY_REVIEW_REQUESTED, String(Date.now()));
       await StoreReview.requestReview();
     } catch (e) {

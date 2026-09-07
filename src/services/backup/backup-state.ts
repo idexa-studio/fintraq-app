@@ -1,9 +1,4 @@
-/**
- * In-memory backup/restore progress state, shared across every consumer —
- * React components (via useGoogleBackup) and the headless background-backup
- * task, which runs with no React tree at all. Lives here, not inside the
- * hook, precisely because the background task needs to read/write it too.
- */
+/** In-memory backup/restore progress, shared by React components and the headless background task. */
 export type SharedBackupState = {
   isBackingUp: boolean;
   isRestoring: boolean;

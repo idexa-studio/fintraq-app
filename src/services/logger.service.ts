@@ -18,15 +18,7 @@ function stringifyArg(arg: unknown): string {
   }
 }
 
-/**
- * Lightweight app-wide logger: every call writes one line to console AND
- * appends it to a plain-text file on disk, so logs survive app restarts and
- * can be shared/inspected without a debugger attached. `tag` is a short,
- * free-form label for where the log came from (e.g. 'GOOGLE_DRIVE') — no
- * enum, no structured metadata object, no console monkey-patching. Call
- * sites that used to do `console.log('[Foo]', ...)` should call
- * `LoggerService.info('FOO', ...)` instead — same variadic args as console.
- */
+/** Every call logs to console + a plain-text file on disk. `tag` is a free-form source label, e.g. 'GOOGLE_DRIVE'. */
 class LoggerServiceClass {
   private file = new File(Paths.document, LOG_FILE_NAME);
 

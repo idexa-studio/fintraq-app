@@ -81,10 +81,7 @@ const STORAGE_KEY_NAMES = Object.keys(FINTRAQ_STORAGE_KEYS) as (keyof typeof FIN
 const SECURE_KEY_NAMES = Object.keys(FINTRAQ_SECURE_KEYS) as (keyof typeof FINTRAQ_SECURE_KEYS)[];
 
 export class LocalMigrationService {
-  /**
-   * Migrate legacy luno/keep database files, AsyncStorage keys, and SecureStore
-   * keys to fintraq namespace equivalents in this version.
-   */
+  /** Migrates legacy luno/keep DB files, AsyncStorage keys, and SecureStore keys to fintraq namespace. */
   static async execute(): Promise<void> {
     try {
       const alreadyMigrated = await AsyncStorage.getItem(FINTRAQ_MIGRATION_MARKER);

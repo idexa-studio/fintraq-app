@@ -156,16 +156,11 @@ export type BackupPackagePayload = {
 };
 
 class DatabaseBackupServiceClass {
-  /**
-   * Returns true while a restore transaction is in flight.
-   */
+  /** True while a restore transaction is in flight. */
   public isRestoring(): boolean {
     return BackupLock.isRestoring();
   }
 
-  /**
-   * Flush SQLite WAL logs and export structured backup payload
-   */
   public async exportBackupData(): Promise<string> {
     // 1. Checkpoint WAL log natively
     try {
@@ -233,9 +228,6 @@ class DatabaseBackupServiceClass {
     return JSON.stringify(fullPackage);
   }
 
-  /**
-   * Restore database from backup payload with dynamic column adaptation and rollback safety
-   */
   public async restoreBackupData(backupJsonStr: string, queryClient?: QueryClient): Promise<BackupMetadata> {
     BackupLock.setRestoring(true);
     try {
@@ -286,10 +278,7 @@ class DatabaseBackupServiceClass {
       const paymentsList: PaymentBackupRow[] = pkg.data?.payments || (pkg.data as any)?.payment || [];
       const seederList: SeederBackupRow[] = pkg.data?.seederState || (pkg.data as any)?.seeder_state || (pkg.data as any)?.seeder || [];
 
-      // Refuse to wipe local data for a backup that carries nothing to
-      // restore — a corrupted download, a stale empty snapshot, or a parsing
-      // mistake upstream would otherwise silently erase the user's real data
-      // and replace it with nothing.
+      // Refuse to wipe local data for a backup with nothing to restore
       const totalRestoreRows =
         personsList.length + accountsList.length + categoriesList.length + loansList.length + paymentsList.length;
       if (totalRestoreRows === 0) {

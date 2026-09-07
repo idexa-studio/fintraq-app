@@ -178,14 +178,7 @@ class GoogleDriveServiceClass {
     }
   }
 
-  /**
-   * Search for existing backup file in Google Drive AppData folder.
-   * Returns null only when there genuinely is no signed-in user or no backup
-   * file exists. Network/HTTP/timeout failures are rethrown rather than
-   * swallowed into null — callers must not treat "the lookup failed" the
-   * same as "there is no backup", since the former incorrectly leads users
-   * into a destructive "Start Fresh" flow that abandons a real backup.
-   */
+  /** Returns null only if no signed-in user or no backup exists; network/HTTP errors are rethrown, not swallowed. */
   public async findLatestBackup(): Promise<CloudBackupFileMeta | null> {
     return this.withAuthErrorHandling(async () => {
       const user = await this.getCurrentUser();
@@ -236,12 +229,7 @@ class GoogleDriveServiceClass {
     return data.id;
   }
 
-  /**
-   * Upload (create or update) backup file payload in Google Drive AppData folder.
-   * Pass `knownFileId` (e.g. from a previously fetched CloudBackupFileMeta)
-   * to skip the extra `findLatestBackup` lookup and halve the network calls
-   * needed for a routine backup.
-   */
+  /** Pass `knownFileId` to skip the extra `findLatestBackup` lookup. */
   public async uploadBackup(
     contentJsonString: string,
     knownFileId?: string,

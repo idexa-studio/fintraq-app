@@ -42,13 +42,7 @@ export type AutoBackupResult =
   | { outcome: 'ran'; meta: CloudBackupFileMeta }
   | { outcome: 'skipped' | 'failed' };
 
-/**
- * Check whether a scheduled auto-backup is due and, if so, run it. Shared by
- * both `useGoogleBackup`'s foreground mount check and the headless
- * background-backup task (`background-backup.task.ts`) — the logic is
- * identical either way, only who calls it differs. Safe to call from outside
- * React: uses no hooks, only plain services and AsyncStorage.
- */
+/** Runs due auto-backup. Shared by foreground mount check and the headless background task. */
 export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResult> {
   const isBackground = AppState.currentState !== 'active';
   const tag = isBackground ? 'BACKGROUND' : 'FOREGROUND';
@@ -114,9 +108,7 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
     LoggerService.info('AUTO_BACKUP', `[${tag}] Completed and synced (fileId: ${uploadedFile.id}, size: ${uploadedFile.size})`);
 
     if (!isBackground) {
-      // Native review dialogs need an active foreground screen — only ask
-      // when this ran from the foreground mount check, never from the
-      // headless background task.
+      // Review dialog needs a foreground screen, skip for headless task
       ReviewPromptService.maybeRequestReview();
     }
     return { outcome: 'ran', meta: uploadedFile };

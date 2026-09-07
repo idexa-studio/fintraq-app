@@ -9,9 +9,7 @@ import { LoggerService } from '@/src/services/logger.service';
 export class MigrationSeedService {
   private static activePromise: Promise<any> | null = null;
 
-  /**
-   * Wait for any in-flight writeMigrationSeed operation to finish cleanly
-   */
+  /** Waits for any in-flight writeMigrationSeed to finish. */
   static async waitForPendingWrite(): Promise<void> {
     if (this.activePromise) {
       try {
@@ -22,10 +20,7 @@ export class MigrationSeedService {
     }
   }
 
-  /**
-   * Snaps SQLite database tables and AsyncStorage keys and writes them to a JSON file
-   * in the application's document directory so the future Flutter app can read it.
-   */
+  /** Snapshots DB tables + AsyncStorage keys to a JSON file for the future Flutter app. */
   static async writeMigrationSeed(): Promise<{ success: boolean; path?: string; error?: string }> {
     if (BackupLock.isRestoring()) {
       return { success: false, error: 'Skipped: database restore in progress.' };
