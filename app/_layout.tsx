@@ -26,8 +26,9 @@ import { unlockDatabaseIfLocked } from '@/src/db/client';
 // TaskManager.defineTask has registered the executor before the OS can ever
 // headlessly relaunch the JS engine to run it (see file for details).
 import { registerBackgroundBackupTaskAsync } from '@/src/services/backup/background-backup.task';
-import { AppState } from 'react-native';
+import { AppState, AppStateStatus } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { LoggerService } from '@/src/services/logger.service';
 
 // Prevent the splash screen from auto-hiding before version check completes
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -55,7 +56,7 @@ export default function RootLayout() {
     }
     runMigration();
 
-    const subscription = AppState.addEventListener('change', (nextState) => {
+    const subscription = AppState.addEventListener('change', (nextState: AppStateStatus) => {
       if (nextState === 'active') {
         unlockDatabaseIfLocked();
       }
@@ -67,6 +68,7 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
+    LoggerService.initialize();
     NotificationService.init();
     registerBackgroundBackupTaskAsync();
     ReviewPromptService.ensureFirstLaunchRecorded();
