@@ -350,11 +350,11 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         </View>
 
         <View style={styles.freqPillsRow}>
-          {(autoBackupFrequency === '2min'
-            ? (['off', '2min', 'daily', 'weekly', 'monthly'] as const)
+          {(autoBackupFrequency === '15min'
+            ? (['off', '15min', 'daily', 'weekly', 'monthly'] as const)
             : (['off', 'daily', 'weekly', 'monthly'] as const)).map((freq) => {
             const isActive = autoBackupFrequency === freq;
-            const label = freq === '2min' ? '2 Min (Dev)' : freq.charAt(0).toUpperCase() + freq.slice(1);
+            const label = freq === '15min' ? '15 Min (Dev)' : freq.charAt(0).toUpperCase() + freq.slice(1);
             return (
               <BentoPressable
                 key={freq}

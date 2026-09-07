@@ -6,7 +6,7 @@ import { CloudBackupFileMeta, GoogleDriveService } from './google-drive.service'
 import { NotificationService } from '../notification.service';
 import { ReviewPromptService } from '../review-prompt.service';
 
-export type AutoBackupFrequency = 'off' | 'daily' | 'weekly' | 'monthly' | '2min';
+export type AutoBackupFrequency = 'off' | 'daily' | 'weekly' | 'monthly' | '15min';
 
 export const AUTO_BACKUP_STORAGE_KEYS = {
   ENABLED: '@fintraq_auto_backup_enabled',
@@ -17,7 +17,7 @@ export const AUTO_BACKUP_STORAGE_KEYS = {
 
 export const AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS: Record<AutoBackupFrequency, number> = {
   off: Infinity,
-  '2min': 2 * 60 * 1000,
+  '15min': 15 * 60 * 1000,
   daily: 24 * 60 * 60 * 1000,
   weekly: 7 * 24 * 60 * 60 * 1000,
   monthly: 30 * 24 * 60 * 60 * 1000,
@@ -29,7 +29,7 @@ export async function resolveAutoBackupFrequency(): Promise<AutoBackupFrequency>
     AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.FREQUENCY),
   ]);
 
-  if (autoFreqVal === '2min' || autoFreqVal === 'daily' || autoFreqVal === 'weekly' || autoFreqVal === 'monthly') {
+  if (autoFreqVal === '15min' || autoFreqVal === 'daily' || autoFreqVal === 'weekly' || autoFreqVal === 'monthly') {
     return autoFreqVal;
   }
   if (autoVal === 'true') return 'daily';

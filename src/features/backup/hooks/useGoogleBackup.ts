@@ -10,6 +10,7 @@ import { isNoBackupError, NoBackupFoundError } from '@/src/services/backup/googl
 import { CloudBackupFileMeta, GoogleDriveService, GoogleUserAccount } from '@/src/services/backup/google-drive.service';
 import { NotificationService } from '@/src/services/notification.service';
 import { ReviewPromptService } from '@/src/services/review-prompt.service';
+import { registerBackgroundBackupTaskAsync } from '@/src/services/backup/background-backup.task';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
@@ -141,6 +142,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP_FREQ, freq),
         AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP, freq !== 'off' ? 'true' : 'false'),
       ]);
+      await registerBackgroundBackupTaskAsync();
     } catch (e) {
       console.warn('[useGoogleBackup] setAutoBackupFrequency failed:', e);
     }

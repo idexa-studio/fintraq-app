@@ -12,6 +12,7 @@ import { toErrorMessage } from '@/src/utils/errors';
 import { seedDummyData } from '@/src/utils/seed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
+import { registerBackgroundBackupTaskAsync } from '@/src/services/backup/background-backup.task';
 import {
   AUTO_BACKUP_STORAGE_KEYS,
   resolveAutoBackupFrequency,
@@ -184,17 +185,18 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
     }
   }, [isAuthenticated, fetchDevBackupFreq]);
 
-  const handleToggle2MinBackup = async () => {
-    const nextFreq = devBackupFreq === '2min' ? 'daily' : '2min';
+  const handleToggle15MinBackup = async () => {
+    const nextFreq = devBackupFreq === '15min' ? 'daily' : '15min';
     await Promise.all([
       AsyncStorage.setItem(AUTO_BACKUP_STORAGE_KEYS.FREQUENCY, nextFreq),
       AsyncStorage.setItem(AUTO_BACKUP_STORAGE_KEYS.ENABLED, 'true'),
     ]);
+    await registerBackgroundBackupTaskAsync();
     setDevBackupFreq(nextFreq);
     showAlert({
       title: 'Dev Auto-Backup Schedule',
-      message: nextFreq === '2min'
-        ? 'Auto-backup interval set to 2 MINUTES (Dev QA mode). Background task checks will run every 2 minutes when due.'
+      message: nextFreq === '15min'
+        ? 'Auto-backup interval set to 15 MINUTES (Dev QA mode). Background task checks will run every 15 minutes when due.'
         : 'Auto-backup interval reset to Daily.',
       type: 'success',
     });
@@ -464,11 +466,11 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           <NavRow
             theme={theme}
             icon={Clock01Icon as IconSvgElement}
-            iconColor={devBackupFreq === '2min' ? colors.warning : colors.primary}
-            label={devBackupFreq === '2min' ? '2-Min Auto-Backup Active' : 'Set 2-Min Auto-Backup (Dev)'}
-            subtitle={devBackupFreq === '2min' ? 'QA mode: background checks run every 2 mins' : 'Set auto-backup interval to 2 minutes for QA testing'}
-            value={devBackupFreq === '2min' ? '2 Min' : 'Standard'}
-            onPress={handleToggle2MinBackup}
+            iconColor={devBackupFreq === '15min' ? colors.warning : colors.primary}
+            label={devBackupFreq === '15min' ? '15-Min Auto-Backup Active' : 'Set 15-Min Auto-Backup (Dev)'}
+            subtitle={devBackupFreq === '15min' ? 'QA mode: background checks run every 15 mins' : 'Set auto-backup interval to 15 minutes for QA testing'}
+            value={devBackupFreq === '15min' ? '15 Min' : 'Standard'}
+            onPress={handleToggle15MinBackup}
           />
           <RowSeparator theme={theme} />
           <NavRow

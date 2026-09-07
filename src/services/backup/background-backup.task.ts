@@ -1,6 +1,6 @@
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
-import { runAutoBackupIfDue } from './auto-backup.service';
+import { resolveAutoBackupFrequency, runAutoBackupIfDue } from './auto-backup.service';
 
 export const BACKGROUND_BACKUP_TASK_NAME = 'fintraq-background-backup';
 
@@ -38,9 +38,21 @@ export async function registerBackgroundBackupTaskAsync(): Promise<void> {
       return;
     }
 
+    const frequency = await resolveAutoBackupFrequency();
+    if (frequency === 'off') {
+      const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_BACKUP_TASK_NAME);
+      if (isRegistered) {
+        await BackgroundTask.unregisterTaskAsync(BACKGROUND_BACKUP_TASK_NAME);
+        console.log('[BackgroundBackupTask] Unregistered background task (auto-backup disabled).');
+      }
+      return;
+    }
+
+    // Android WorkManager enforces a platform minimum of 15 minutes for periodic tasks.
     await BackgroundTask.registerTaskAsync(BACKGROUND_BACKUP_TASK_NAME, {
-      minimumInterval: 12 * 60, // minutes; OS treats this as a minimum, not exact
+      minimumInterval: 15,
     });
+    console.log('[BackgroundBackupTask] Registered background task with 15m minimum interval.');
   } catch (error) {
     console.warn('[BackgroundBackupTask] Failed to register:', error);
   }
