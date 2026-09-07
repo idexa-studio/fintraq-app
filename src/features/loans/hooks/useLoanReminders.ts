@@ -3,6 +3,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { toErrorMessage } from '../../../utils/errors';
 import { useUpdateLoan } from './loans';
 import type { LoanWithStats } from '../api/loans';
+import { LoggerService } from '@/src/services/logger.service';
 
 export const useLoanReminders = () => {
   const { mutateAsync: updateLoan } = useUpdateLoan();
@@ -40,7 +41,7 @@ export const useLoanReminders = () => {
 
       return true;
     } catch (e) {
-      console.error('[LoanReminders] EMI schedule failed:', toErrorMessage(e));
+      LoggerService.error('LOAN_REMINDERS', 'EMI schedule failed:', toErrorMessage(e));
       return false;
     }
   }, [updateLoan]);
@@ -56,7 +57,7 @@ export const useLoanReminders = () => {
         data: { emiReminderEnabled: false, emiNotificationIds: null },
       });
     } catch (e) {
-      console.error('[LoanReminders] EMI cancel failed:', toErrorMessage(e));
+      LoggerService.error('LOAN_REMINDERS', 'EMI cancel failed:', toErrorMessage(e));
     }
   }, [updateLoan]);
 
@@ -93,7 +94,7 @@ export const useLoanReminders = () => {
 
       return true;
     } catch (e) {
-      console.error('[LoanReminders] Due reminder schedule failed:', toErrorMessage(e));
+      LoggerService.error('LOAN_REMINDERS', 'Due reminder schedule failed:', toErrorMessage(e));
       return false;
     }
   }, [updateLoan]);
@@ -108,7 +109,7 @@ export const useLoanReminders = () => {
         data: { dueReminderEnabled: false, dueNotificationId: null },
       });
     } catch (e) {
-      console.error('[LoanReminders] Due reminder cancel failed:', toErrorMessage(e));
+      LoggerService.error('LOAN_REMINDERS', 'Due reminder cancel failed:', toErrorMessage(e));
     }
   }, [updateLoan]);
 

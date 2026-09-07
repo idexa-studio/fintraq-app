@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { getAppBuildNumber } from '@/src/utils/version';
+import { LoggerService } from '@/src/services/logger.service';
 
 // ─── Schema Types ─────────────────────────────────────────────────────────────
 
@@ -123,10 +124,10 @@ export async function fetchRemoteAppConfig(): Promise<RemoteAppConfig> {
   );
 
   if (__DEV__) {
-    console.log('[RC] forceUpdateConfig:', JSON.stringify(forceUpdate));
-    console.log('[RC] currentBuild:', getAppBuildNumber(), '| platform:', Platform.OS);
+    LoggerService.info('REMOTE_CONFIG', 'forceUpdateConfig:', JSON.stringify(forceUpdate));
+    LoggerService.info('REMOTE_CONFIG', 'currentBuild:', getAppBuildNumber(), '| platform:', Platform.OS);
     const result = deriveConfig(forceUpdate, privacyUrlConfig, termsUrlConfig);
-    console.log('[RC] derived → forceUpdateRequired:', result.forceUpdate.required);
+    LoggerService.info('REMOTE_CONFIG', 'derived → forceUpdateRequired:', result.forceUpdate.required);
     return result;
   }
 

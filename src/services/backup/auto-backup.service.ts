@@ -56,13 +56,13 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
 
   const frequency = await resolveAutoBackupFrequency();
   if (frequency === 'off' && !force) {
-    await LoggerService.info('AUTO_BACKUP', 'Auto-backup skipped: Feature disabled in settings', { frequency }, tag);
+    LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: feature disabled in settings`);
     return { outcome: 'skipped' };
   }
 
   const currentUser = await GoogleDriveService.getCurrentUser();
   if (!currentUser) {
-    await LoggerService.info('AUTO_BACKUP', 'Auto-backup skipped: No signed-in Google user', undefined, tag);
+    LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: no signed-in Google user`);
     return { outcome: 'skipped' };
   }
 
@@ -73,18 +73,18 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
 
   // Auto-backup is strictly background-only: skip if app is currently active in foreground (unless force = true in Dev QA)
   if (AppState.currentState === 'active' && !force) {
-    await LoggerService.info('AUTO_BACKUP', 'Auto-backup skipped: App active in foreground (background only)', undefined, 'FOREGROUND');
+    LoggerService.info('AUTO_BACKUP', 'Skipped: app active in foreground (background only)');
     return { outcome: 'skipped' };
   }
 
   if (!force && (now - lastAutoTime < threshold || getBackupState().isBackingUp)) {
     const elapsedSec = Math.round((now - lastAutoTime) / 1000);
     const thresholdSec = Math.round(threshold / 1000);
-    await LoggerService.info('AUTO_BACKUP', `Auto-backup skipped: Threshold not reached (${elapsedSec}s / ${thresholdSec}s)`, { elapsedSec, thresholdSec }, tag);
+    LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: threshold not reached (${elapsedSec}s / ${thresholdSec}s)`);
     return { outcome: 'skipped' };
   }
 
-  await LoggerService.info('AUTO_BACKUP', `Starting cloud auto-backup sync (Trigger: ${trigger})`, { trigger, frequency }, tag);
+  LoggerService.info('AUTO_BACKUP', `[${tag}] Starting cloud auto-backup sync (trigger: ${trigger}, frequency: ${frequency})`);
 
   NotificationService.presentBackupProgressNotification(10, 'Preparing database snapshot...');
 
@@ -111,7 +111,7 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
     ]);
 
     NotificationService.presentBackupCompleteNotification();
-    await LoggerService.info('AUTO_BACKUP', 'Cloud auto-backup successfully completed and synced', { fileSize: uploadedFile.size, fileId: uploadedFile.id }, tag);
+    LoggerService.info('AUTO_BACKUP', `[${tag}] Completed and synced (fileId: ${uploadedFile.id}, size: ${uploadedFile.size})`);
 
     if (!isBackground) {
       // Native review dialogs need an active foreground screen — only ask
@@ -122,7 +122,7 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
     return { outcome: 'ran', meta: uploadedFile };
   } catch (err: any) {
     const errorMsg = err?.message || String(err);
-    await LoggerService.error('AUTO_BACKUP', `Cloud auto-backup failed: ${errorMsg}`, { error: errorMsg }, tag);
+    LoggerService.error('AUTO_BACKUP', `[${tag}] Failed: ${errorMsg}`);
     NotificationService.presentBackupFailedNotification();
     return { outcome: 'failed' };
   } finally {

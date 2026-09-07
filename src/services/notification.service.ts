@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import notifee, { AndroidImportance as NotifeeAndroidImportance } from 'react-native-notify-kit';
 import { Platform } from 'react-native';
+import { LoggerService } from '@/src/services/logger.service';
 
 const REMINDER_POOL = [
   { title: "Financial Hygiene Check 🧼", body: "Where did those funds go? Log your spends now to keep your dashboard accurate." },
@@ -56,7 +57,7 @@ export const NotificationService = {
           importance: NotifeeAndroidImportance.LOW,
         });
       } catch (e) {
-        console.warn('[NotificationService] Channel setup warning:', e);
+        LoggerService.warn('NOTIFICATION', 'Channel setup warning:', e);
       }
     }
   },
@@ -93,7 +94,7 @@ export const NotificationService = {
     const [hours, minutes] = timeStr.split(':').map(Number);
 
     if (isNaN(hours) || isNaN(minutes)) {
-      console.warn('[NotificationService] Invalid time format provided:', timeStr);
+      LoggerService.warn('NOTIFICATION', 'Invalid time format provided:', timeStr);
       return;
     }
 
@@ -106,7 +107,7 @@ export const NotificationService = {
     });
 
     if (alreadyScheduled) {
-      console.log(`[NotificationService] Daily reminder already scheduled for ${timeStr}, skipping.`);
+      LoggerService.info('NOTIFICATION', `[NotificationService] Daily reminder already scheduled for ${timeStr}, skipping.`);
       return;
     }
 
@@ -132,7 +133,7 @@ export const NotificationService = {
       identifier: 'daily_reminder',
     });
 
-    console.log(`[NotificationService] Daily reminder scheduled for ${timeStr}`);
+    LoggerService.info('NOTIFICATION', `[NotificationService] Daily reminder scheduled for ${timeStr}`);
   },
 
   /**
@@ -163,7 +164,7 @@ export const NotificationService = {
       identifier: 'daily_reminder',
     });
 
-    console.log(`[NotificationService] Reminder dismissed for today. Resuming tomorrow at ${timeStr}`);
+    LoggerService.info('NOTIFICATION', `[NotificationService] Reminder dismissed for today. Resuming tomorrow at ${timeStr}`);
   },
 
   /**
@@ -209,7 +210,7 @@ export const NotificationService = {
         },
       });
     } catch (e) {
-      console.warn('[NotificationService] presentBackupProgressNotification warning:', e);
+      LoggerService.warn('NOTIFICATION', 'presentBackupProgressNotification warning:', e);
     }
   },
 
@@ -237,7 +238,7 @@ export const NotificationService = {
         },
       });
     } catch (e) {
-      console.warn('[NotificationService] presentBackupCompleteNotification warning:', e);
+      LoggerService.warn('NOTIFICATION', 'presentBackupCompleteNotification warning:', e);
     }
   },
 
@@ -258,7 +259,7 @@ export const NotificationService = {
         },
       });
     } catch (e) {
-      console.warn('[NotificationService] presentBackupFailedNotification warning:', e);
+      LoggerService.warn('NOTIFICATION', 'presentBackupFailedNotification warning:', e);
     }
   },
 

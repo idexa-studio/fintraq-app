@@ -34,6 +34,7 @@ import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
 
 import { CloudBackupChoice, CloudBackupStep } from '@/src/features/onboarding/components/CloudBackupStep';
 import { RestoreStep, SetupOption } from '@/src/features/onboarding/components/RestoreStep';
+import { LoggerService } from '@/src/services/logger.service';
 
 export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const router = useRouter();
@@ -245,7 +246,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       await AnalyticsService.onboardingCompleted(currency);
       setShowReminderDialog(true);
     } catch (e: any) {
-      console.error('[OnboardingScreen] finalizeSetup error:', e);
+      LoggerService.error('ONBOARDING', 'finalizeSetup error:', e);
       showAlert({
         title: 'Setup Failed',
         message: e?.message || 'Could not initialize your workspace. Please try again.',
@@ -275,7 +276,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           // button the user tapped promised to enable it. Finalize only
           // after the user acknowledges, so this alert can't get stacked
           // under (or raced by) the reminder dialog finalizeSetup triggers.
-          console.warn('[OnboardingScreen] Cloud backup connect failed:', err);
+          LoggerService.warn('ONBOARDING', 'Cloud backup connect failed:', err);
           showAlert({
             title: 'Cloud Backup Not Enabled',
             message: "We couldn't connect your Google account. You can enable Cloud Backup anytime from Settings.",
@@ -300,16 +301,16 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const handleOnboardingRestore = useCallback(async () => {
     let signedInEmail = user?.email;
     try {
-      console.log('[OnboardingScreen] Starting restore flow...');
+      LoggerService.info('ONBOARDING', 'Starting restore flow...');
       const signedInUser = user || (await connectAccount());
       if (!signedInUser) {
-        console.log('[OnboardingScreen] User cancelled Google sign-in.');
+        LoggerService.info('ONBOARDING', 'User cancelled Google sign-in.');
         return;
       }
       signedInEmail = signedInUser.email;
-      console.log('[OnboardingScreen] Performing restore for:', signedInUser.email);
+      LoggerService.info('ONBOARDING', 'Performing restore for:', signedInUser.email);
       const success = await performRestore();
-      console.log('[OnboardingScreen] Perform restore result:', success);
+      LoggerService.info('ONBOARDING', 'Perform restore result:', success);
       if (success) {
         await completeOnboarding();
         router.replace('/(main)/(tabs)');
@@ -319,9 +320,9 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       const isNoBackup = isNoBackupError(e);
 
       if (isNoBackup) {
-        console.log('[OnboardingScreen] Info: No backup file found for user:', signedInEmail);
+        LoggerService.info('ONBOARDING', 'Info: No backup file found for user:', signedInEmail);
       } else {
-        console.warn('[OnboardingScreen] Onboarding restore warning:', e);
+        LoggerService.warn('ONBOARDING', 'Onboarding restore warning:', e);
       }
 
       // Automatically sign out / disconnect cloud account on restore error or failure

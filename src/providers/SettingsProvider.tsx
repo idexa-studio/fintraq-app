@@ -3,6 +3,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { AppState, AppStateStatus } from 'react-native';
 import { NotificationService } from '../services/notification.service';
 import { StorageKeys } from '../constants/keys';
+import { LoggerService } from '@/src/services/logger.service';
 
 export type UserProfile = {
   name: string;
@@ -51,7 +52,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           setProfile(prev => ({ ...prev, ...parsed }));
         }
       } catch (e) {
-        console.error('Failed to load profile settings', e);
+        LoggerService.error('SETTINGS', 'Failed to load profile settings', e);
       } finally {
         setIsLoading(false);
       }
@@ -98,7 +99,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       await AsyncStorage.setItem(StorageKeys.PROFILE, JSON.stringify(newProfile));
       setProfile(newProfile);
     } catch (e) {
-      console.error('Failed to save profile settings', e);
+      LoggerService.error('SETTINGS', 'Failed to save profile settings', e);
     }
   }, [profile]);
 

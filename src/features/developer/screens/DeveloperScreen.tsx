@@ -14,7 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
 import { registerBackgroundBackupTaskAsync } from '@/src/services/backup/background-backup.task';
 import { AUTO_BACKUP_STORAGE_KEYS, resolveAutoBackupFrequency, runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
-import { LoggerService, LogEntry, formatRelativeTime } from '@/src/services/logger.service';
+import { LoggerService } from '@/src/services/logger.service';
 import {
   AndroidIcon,
   Apple01Icon,
@@ -28,6 +28,7 @@ import {
   Clock01Icon,
   CloudIcon,
   Delete02Icon,
+  File01Icon,
   FlaskConicalIcon,
   LockPasswordIcon,
   RefreshIcon,
@@ -41,13 +42,13 @@ import {
   DevSettings,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import * as Updates from 'expo-updates';
 
 const DEV_PIN = '32159';
@@ -157,8 +158,9 @@ const createRowStyles = ({ colors, typography, spacing }: ThemeContextType) =>
 /* ── DeveloperScreen ────────────────────────────────────────── */
 
 export const DeveloperScreen = React.memo(function DeveloperScreen() {
+  const router = useRouter();
   const theme = useTheme();
-  const { colors, spacing, radius, typography, isDark } = theme;
+  const { colors, isDark } = theme;
   const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
   const { devOverride, setDevOverride } = usePremium();
 
@@ -171,10 +173,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
   const [isDeletingBackup, setIsDeletingBackup] = React.useState(false);
   const [scheduledNotifs, setScheduledNotifs] = React.useState<Notifications.NotificationRequest[]>([]);
   const [devBackupFreq, setDevBackupFreq] = React.useState<string>('daily');
-  const [logs, setLogs] = React.useState<LogEntry[]>([]);
-  const [logFilter, setLogFilter] = React.useState<'ALL' | 'BACKGROUND' | 'FOREGROUND' | 'ERRORS'>('ALL');
-  const [logSearch, setLogSearch] = React.useState('');
-  const [expandedLogId, setExpandedLogId] = React.useState<string | null>(null);
+  const [logCount, setLogCount] = React.useState<number>(0);
 
   const fetchDevBackupFreq = React.useCallback(async () => {
     const freq = await resolveAutoBackupFrequency();
@@ -182,8 +181,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
   }, []);
 
   const fetchLogs = React.useCallback(async () => {
-    const loadedLogs = await LoggerService.getLogs();
-    setLogs(loadedLogs);
+    setLogCount(LoggerService.getLogCount());
   }, []);
 
   React.useEffect(() => {
@@ -192,46 +190,6 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
       fetchLogs();
     }
   }, [isAuthenticated, fetchDevBackupFreq, fetchLogs]);
-
-  const handleClearLogs = async () => {
-    await LoggerService.clearLogs();
-    setLogs([]);
-    showAlert({
-      title: 'App Logs Cleared',
-      message: 'All stored 7-day app logs have been removed.',
-      type: 'success',
-    });
-  };
-
-  const handleShareLogs = async () => {
-    const success = await LoggerService.shareLogs();
-    if (!success) {
-      showAlert({
-        title: 'Export Failed',
-        message: 'Could not export app logs.',
-        type: 'error',
-      });
-    }
-  };
-
-  const filteredLogs = useMemo(() => {
-    let result = logs;
-    if (logFilter === 'BACKGROUND') result = result.filter((l) => l.tag === 'BACKGROUND');
-    else if (logFilter === 'FOREGROUND') result = result.filter((l) => l.tag === 'FOREGROUND');
-    else if (logFilter === 'ERRORS') result = result.filter((l) => l.level === 'error' || l.level === 'warn');
-
-    if (logSearch.trim().length > 0) {
-      const q = logSearch.toLowerCase();
-      result = result.filter(
-        (l) =>
-          l.message.toLowerCase().includes(q) ||
-          l.category.toLowerCase().includes(q) ||
-          l.timeStr.includes(q) ||
-          (l.details && JSON.stringify(l.details).toLowerCase().includes(q)),
-      );
-    }
-    return result;
-  }, [logs, logFilter, logSearch]);
 
   const handleToggle15MinBackup = async () => {
     const nextFreq = devBackupFreq === '15min' ? 'daily' : '15min';
@@ -367,7 +325,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
               try {
                 await Updates.reloadAsync();
               } catch (reloadErr) {
-                console.warn('[DeveloperScreen] Updates.reloadAsync warning (fallback to DevSettings):', reloadErr);
+                LoggerService.warn('DEV_SCREEN', 'Updates.reloadAsync warning (fallback to DevSettings):', reloadErr);
                 if (DevSettings?.reload) {
                   DevSettings.reload();
                 }
@@ -540,203 +498,18 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           />
         </View>
 
-        {/* ── App Logs (Last 7 Days) ── */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing('2') }}>
-          <Text style={styles.sectionLabel}>App Logs (Last 7 Days)</Text>
-          <View style={{ flexDirection: 'row', gap: spacing('3'), alignItems: 'center' }}>
-            <Pressable onPress={fetchLogs} style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
-              <Text style={{ fontSize: typography.sizes.xs, color: colors.primary, fontFamily: typography.fonts.medium }}>
-                Refresh ({logs.length})
-              </Text>
-            </Pressable>
-            <Pressable onPress={handleShareLogs} style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
-              <Text style={{ fontSize: typography.sizes.xs, color: colors.primary, fontFamily: typography.fonts.medium }}>
-                Share Logs
-              </Text>
-            </Pressable>
-            <Pressable onPress={handleClearLogs} style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
-              <Text style={{ fontSize: typography.sizes.xs, color: colors.danger, fontFamily: typography.fonts.medium }}>
-                Clear
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-
-        {/* Search Bar & Filter Buttons */}
-        <View style={{ marginBottom: spacing('3'), gap: spacing('2') }}>
-          <Input
-            placeholder="Search logs by message or category..."
-            value={logSearch}
-            onChangeText={setLogSearch}
-          />
-          <View style={{ flexDirection: 'row', gap: spacing('2') }}>
-            {(['ALL', 'BACKGROUND', 'FOREGROUND', 'ERRORS'] as const).map((filterVal) => {
-              const isSelected = logFilter === filterVal;
-              return (
-                <BentoPressable
-                  key={filterVal}
-                  onPress={() => setLogFilter(filterVal)}
-                  style={{
-                    flex: 1,
-                    paddingVertical: spacing('2'),
-                    alignItems: 'center',
-                    backgroundColor: isSelected ? colors.primary + '22' : colors.surface,
-                    borderRadius: radius('lg'),
-                    borderWidth: 1,
-                    borderColor: isSelected ? colors.primary : colors.text + '10',
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      fontFamily: typography.fonts.bold,
-                      color: isSelected ? colors.primary : colors.textMuted,
-                    }}
-                  >
-                    {filterVal}
-                  </Text>
-                </BentoPressable>
-              );
-            })}
-          </View>
-        </View>
-
-        {/* Log Entries List */}
+        {/* ── System Logs Console ── */}
+        <Text style={styles.sectionLabel}>System Logs Console</Text>
         <View style={styles.group}>
-          {filteredLogs.length === 0 ? (
-            <InfoRow
-              theme={theme}
-              icon={Clock01Icon as IconSvgElement}
-              label="No logs match criteria"
-              value={logSearch ? 'No search results' : logFilter === 'ALL' ? 'Empty log store' : `No ${logFilter.toLowerCase()} logs`}
-            />
-          ) : (
-            filteredLogs.map((entry, idx) => {
-              const isExpanded = expandedLogId === entry.id;
-              const hasDetails = !!entry.details && Object.keys(entry.details).length > 0;
-              const relativeAge = formatRelativeTime(entry.timestamp);
-
-              const categoryColors: Record<string, string> = {
-                AUTO_BACKUP: '#10B981',
-                TASK_MANAGER: '#8B5CF6',
-                GOOGLE_DRIVE: '#3B82F6',
-                APP_LIFECYCLE: '#F59E0B',
-                NOTIFICATION: '#EC4899',
-                DATABASE: '#06B6D4',
-              };
-              const catColor = categoryColors[entry.category] || colors.primary;
-
-              return (
-                <React.Fragment key={entry.id}>
-                  {idx > 0 && <RowSeparator theme={theme} />}
-                  <Pressable
-                    onPress={() => hasDetails && setExpandedLogId(isExpanded ? null : entry.id)}
-                    style={{ padding: spacing('3.5'), backgroundColor: colors.surface }}
-                  >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
-                      {/* Tag Pill */}
-                      <View
-                        style={{
-                          backgroundColor: entry.tag === 'BACKGROUND' ? '#8B5CF625' : colors.primary + '20',
-                          paddingHorizontal: 6,
-                          paddingVertical: 2,
-                          borderRadius: 4,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 10,
-                            fontFamily: typography.fonts.bold,
-                            color: entry.tag === 'BACKGROUND' ? '#A78BFA' : colors.primary,
-                          }}
-                        >
-                          [{entry.tag}]
-                        </Text>
-                      </View>
-
-                      {/* Level Pill */}
-                      <View
-                        style={{
-                          backgroundColor:
-                            entry.level === 'error'
-                              ? colors.danger + '20'
-                              : entry.level === 'warn'
-                                ? colors.warning + '20'
-                                : colors.textMuted + '20',
-                          paddingHorizontal: 6,
-                          paddingVertical: 2,
-                          borderRadius: 4,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 10,
-                            fontFamily: typography.fonts.bold,
-                            color:
-                              entry.level === 'error'
-                                ? colors.danger
-                                : entry.level === 'warn'
-                                  ? colors.warning
-                                  : colors.textMuted,
-                          }}
-                        >
-                          {entry.level.toUpperCase()}
-                        </Text>
-                      </View>
-
-                      {/* Category Badge */}
-                      <View
-                        style={{
-                          backgroundColor: catColor + '18',
-                          paddingHorizontal: 6,
-                          paddingVertical: 2,
-                          borderRadius: 4,
-                        }}
-                      >
-                        <Text style={{ fontSize: 10, fontFamily: typography.fonts.bold, color: catColor }}>
-                          {entry.category}
-                        </Text>
-                      </View>
-
-                      {/* Timestamp & Relative Age */}
-                      <Text style={{ fontSize: 10, color: colors.textMuted, marginLeft: 'auto' }}>
-                        {relativeAge} • {entry.timeStr.split(' ')[1] || entry.timeStr}
-                      </Text>
-                    </View>
-
-                    {/* Message */}
-                    <Text style={{ fontSize: 12, fontFamily: typography.fonts.regular, color: colors.text, lineHeight: 16 }}>
-                      {entry.message}
-                    </Text>
-
-                    {/* Collapsible Details */}
-                    {hasDetails ? (
-                      <View style={{ marginTop: 4 }}>
-                        <Text style={{ fontSize: 10, fontFamily: typography.fonts.medium, color: colors.primary }}>
-                          {isExpanded ? '▼ Hide Metadata' : '▶ Tap to view metadata'}
-                        </Text>
-                        {isExpanded ? (
-                          <Text
-                            style={{
-                              fontSize: 10,
-                              fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-                              color: colors.textMuted,
-                              marginTop: 4,
-                              backgroundColor: colors.background + '80',
-                              padding: 6,
-                              borderRadius: 4,
-                            }}
-                          >
-                            {JSON.stringify(entry.details, null, 2)}
-                          </Text>
-                        ) : null}
-                      </View>
-                    ) : null}
-                  </Pressable>
-                </React.Fragment>
-              );
-            })
-          )}
+          <NavRow
+            theme={theme}
+            icon={File01Icon as IconSvgElement}
+            iconColor={colors.primary}
+            label="Open Full-Screen App Logs"
+            subtitle="View & export complete 7-day raw log stream (.txt)"
+            value={`${logCount} entries`}
+            onPress={() => router.push('/(main)/app-logs')}
+          />
         </View>
 
         {/* ── Notifications ── */}

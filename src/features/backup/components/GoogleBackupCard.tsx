@@ -26,6 +26,7 @@ import { isNoBackupError } from '@/src/services/backup/google-drive.errors';
 import { toErrorMessage } from '@/src/utils/errors';
 import { useRouter } from 'expo-router';
 import { useGoogleBackup } from '../hooks/useGoogleBackup';
+import { LoggerService } from '@/src/services/logger.service';
 
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const theme = useTheme();
@@ -152,7 +153,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
                 try {
                   await Updates.reloadAsync();
                 } catch (reloadErr) {
-                  console.warn('[GoogleBackupCard] Updates.reloadAsync failed:', reloadErr);
+                  LoggerService.warn('BACKUP_UI', 'Updates.reloadAsync failed:', reloadErr);
                   if (__DEV__ && DevSettings?.reload) {
                     DevSettings.reload();
                     return;
@@ -177,14 +178,14 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       }
     } catch (e) {
       if (isNoBackupError(e)) {
-        console.log('[GoogleBackupCard] Restore info: No backup file found.');
+        LoggerService.info('BACKUP_UI', 'Restore info: No backup file found.');
         showAlert({
           title: 'No Backup Found',
           message: `We checked ${user?.email || 'your cloud account'}, but couldn't find an existing Fintraq backup file.`,
           type: 'warning',
         });
       } else {
-        console.warn('[GoogleBackupCard] Restore warning:', e);
+        LoggerService.warn('BACKUP_UI', 'Restore warning:', e);
         showAlert({
           title: 'Restore Failed',
           message: toErrorMessage(e, 'Could not restore backup from cloud storage.'),

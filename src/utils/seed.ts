@@ -4,6 +4,7 @@ import { db } from '../db/client';
 import { accounts, categories, payments, persons, loans } from '../db/schema';
 import { toDbColor } from './format';
 import { StorageKeys } from '../constants/keys';
+import { LoggerService } from '@/src/services/logger.service';
 
 // ─── Seed accounts — 2 per target currency for transfer coverage ──────────────
 
@@ -352,7 +353,7 @@ export async function seedDummyData() {
     await AsyncStorage.setItem(StorageKeys.SEED_EXECUTED, 'true');
     return totalSeeded;
   } catch (err) {
-    console.error('[Seeder Error]:', err);
+    LoggerService.error('SEED', err);
     const msg = err instanceof Error ? err.message : String(err);
     throw new Error(`Failed to seed realistic data: ${msg}`);
   }

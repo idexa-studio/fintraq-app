@@ -29,6 +29,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LoggerService } from '@/src/services/logger.service';
 
 type AccountFormValues = {
   name: string;
@@ -153,7 +154,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
       );
       router.back();
     } catch (error) {
-      console.error('Failed to save account:', error);
+      LoggerService.error('ACCOUNT_FORM', 'Failed to save account:', error);
     }
   });
 

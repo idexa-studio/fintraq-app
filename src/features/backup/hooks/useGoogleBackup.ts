@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
+import { LoggerService } from '@/src/services/logger.service';
 
 export type { AutoBackupFrequency };
 
@@ -95,19 +96,19 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
             }
           } catch (e: any) {
             if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
-              console.log('[useGoogleBackup] Google Drive session expired. Re-authentication required.');
+              LoggerService.info('GOOGLE_BACKUP', 'Google Drive session expired. Re-authentication required.');
               if (isMounted) {
                 setUser(null);
                 setLastBackup(null);
               }
               await AsyncStorage.removeItem(STORAGE_KEY_LAST_BACKUP_META);
             } else {
-              console.warn('[useGoogleBackup] Background backup check error:', e);
+              LoggerService.warn('GOOGLE_BACKUP', 'Background backup check error:', e);
             }
           }
         }
       } catch (e) {
-        console.warn('[useGoogleBackup] Mount initialization error:', e);
+        LoggerService.warn('GOOGLE_BACKUP', 'Mount initialization error:', e);
       } finally {
         if (isMounted) setIsChecking(false);
       }
@@ -128,12 +129,12 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       }
     } catch (e: any) {
       if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
-        console.log('[useGoogleBackup] Refresh check: Google Drive session expired.');
+        LoggerService.info('GOOGLE_BACKUP', 'Refresh check: Google Drive session expired.');
         setUser(null);
         setLastBackup(null);
         await AsyncStorage.removeItem(STORAGE_KEY_LAST_BACKUP_META);
       } else {
-        console.warn('[useGoogleBackup] refreshBackupInfo failed:', e);
+        LoggerService.warn('GOOGLE_BACKUP', 'refreshBackupInfo failed:', e);
       }
     }
   }, [user]);
@@ -148,7 +149,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       ]);
       await registerBackgroundBackupTaskAsync();
     } catch (e) {
-      console.warn('[useGoogleBackup] setAutoBackupFrequency failed:', e);
+      LoggerService.warn('GOOGLE_BACKUP', 'setAutoBackupFrequency failed:', e);
     }
   }, []);
 
@@ -170,7 +171,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       }
       return signedInUser;
     } catch (e: any) {
-      console.warn('[useGoogleBackup] connectAccount failed:', e);
+      LoggerService.warn('GOOGLE_BACKUP', 'connectAccount failed:', e);
       throw new Error(e?.message || 'Failed to connect Google Account.');
     } finally {
       setIsChecking(false);
@@ -184,7 +185,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       setLastBackup(null);
       await AsyncStorage.removeItem(STORAGE_KEY_LAST_BACKUP_META);
     } catch (e: any) {
-      console.warn('[useGoogleBackup] disconnectAccount failed:', e);
+      LoggerService.warn('GOOGLE_BACKUP', 'disconnectAccount failed:', e);
       throw new Error(e?.message || 'Failed to disconnect Google Account.');
     }
   }, []);
@@ -247,7 +248,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       ReviewPromptService.maybeRequestReview();
       return true;
     } catch (e: any) {
-      console.warn('[useGoogleBackup] Backup error:', e);
+      LoggerService.warn('GOOGLE_BACKUP', 'Backup error:', e);
       NotificationService.presentBackupFailedNotification();
       if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
         setUser(null);
@@ -316,14 +317,14 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       return true;
     } catch (e: any) {
       if (isNoBackupError(e)) {
-        console.log('[useGoogleBackup] Restore info: No backup file found on Google Drive.');
+        LoggerService.info('GOOGLE_BACKUP', 'Restore info: No backup file found on Google Drive.');
         throw e;
       }
       if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
         setUser(null);
         throw new Error('Google Drive session expired. Please sign in again.');
       }
-      console.warn('[useGoogleBackup] Restore error:', e);
+      LoggerService.warn('GOOGLE_BACKUP', 'Restore error:', e);
       throw e;
     } finally {
       setTimeout(() => {

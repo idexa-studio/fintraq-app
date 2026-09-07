@@ -3,6 +3,7 @@ import { alias } from 'drizzle-orm/sqlite-core';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments, persons, loans } from '@/src/db/schema';
 import type { TransactionType } from '@/src/types';
+import { LoggerService } from '@/src/services/logger.service';
 
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = typeof payments.$inferInsert;
@@ -130,7 +131,7 @@ export const getTransactionsPaged = async (
   page: number,
   filters: TransactionFilters = {},
 ): Promise<TransactionListItem[]> => {
-  if (__DEV__) console.log('[TX] getTransactionsPaged', { page, filters });
+  if (__DEV__) LoggerService.info('TRANSACTIONS', 'getTransactionsPaged', { page, filters });
   try {
     const where = buildWhere(filters);
 
@@ -152,10 +153,10 @@ export const getTransactionsPaged = async (
       .orderBy(orderBy)
       .limit(PAGE_SIZE)
       .offset(page * PAGE_SIZE);
-    if (__DEV__) console.log('[TX] getTransactionsPaged returned', rows.length, 'rows');
+    if (__DEV__) LoggerService.info('TRANSACTIONS', 'getTransactionsPaged returned', rows.length, 'rows');
     return rows as TransactionListItem[];
   } catch (err) {
-    console.error('[TX] getTransactionsPaged FAILED', { page, filters, err });
+    LoggerService.error('TRANSACTIONS', 'getTransactionsPaged FAILED', { page, filters, err });
     throw err;
   }
 };
@@ -299,7 +300,7 @@ export const syncLoanStatus = async (loanId: number): Promise<void> => {
 
 export const createTransaction = async (data: InsertPayment): Promise<Payment> => {
   if (__DEV__) {
-    console.log('[TX] createTransaction', {
+    LoggerService.info('TRANSACTIONS', 'createTransaction', {
       type: data.type,
       amount: data.amount,
       accountId: data.accountId,
@@ -323,20 +324,20 @@ export const createTransaction = async (data: InsertPayment): Promise<Payment> =
       await syncLoanStatus(payment.loanId);
     }
 
-    if (__DEV__) console.log('[TX] createTransaction success id', payment.id);
+    if (__DEV__) LoggerService.info('TRANSACTIONS', 'createTransaction success id', payment.id);
     return payment;
   } catch (err) {
-    console.error('[TX] createTransaction FAILED', { data, err });
+    LoggerService.error('TRANSACTIONS', 'createTransaction FAILED', { data, err });
     throw err;
   }
 };
 
 export const deleteTransaction = async (id: number): Promise<void> => {
-  if (__DEV__) console.log('[TX] deleteTransaction id', id);
+  if (__DEV__) LoggerService.info('TRANSACTIONS', 'deleteTransaction id', id);
   try {
     const [payment] = await db.select().from(payments).where(eq(payments.id, id));
     if (!payment) {
-      if (__DEV__) console.warn('[TX] deleteTransaction: payment not found id', id);
+      if (__DEV__) LoggerService.warn('TRANSACTIONS', 'deleteTransaction: payment not found id', id);
       return;
     }
 
@@ -356,16 +357,16 @@ export const deleteTransaction = async (id: number): Promise<void> => {
       await syncLoanStatus(payment.loanId);
     }
 
-    if (__DEV__) console.log('[TX] deleteTransaction success id', id);
+    if (__DEV__) LoggerService.info('TRANSACTIONS', 'deleteTransaction success id', id);
   } catch (err) {
-    console.error('[TX] deleteTransaction FAILED', { id, err });
+    LoggerService.error('TRANSACTIONS', 'deleteTransaction FAILED', { id, err });
     throw err;
   }
 };
 
 export const updateTransaction = async (id: number, data: UpdatePayment): Promise<Payment> => {
   if (__DEV__) {
-    console.log('[TX] updateTransaction id', id, {
+    LoggerService.info('TRANSACTIONS', 'updateTransaction id', id, {
       newType: data.type,
       newAmount: data.amount,
       newAccountId: data.accountId,
@@ -404,10 +405,10 @@ export const updateTransaction = async (id: number, data: UpdatePayment): Promis
       await syncLoanStatus(old.loanId);
     }
 
-    if (__DEV__) console.log('[TX] updateTransaction success id', updated.id);
+    if (__DEV__) LoggerService.info('TRANSACTIONS', 'updateTransaction success id', updated.id);
     return updated;
   } catch (err) {
-    console.error('[TX] updateTransaction FAILED', { id, data, err });
+    LoggerService.error('TRANSACTIONS', 'updateTransaction FAILED', { id, data, err });
     throw err;
   }
 };

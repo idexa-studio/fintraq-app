@@ -27,6 +27,7 @@ import {
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, toDbColor } from '@/src/utils/format';
+import { LoggerService } from '@/src/services/logger.service';
 
 const FREE_PERSON_LIMIT = 10;
 const PALETTE_COLORS = PALETTE_COLOR_OPTIONS.map((c) => c.hex);
@@ -138,7 +139,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
       }
       router.back();
     } catch (e) {
-      console.error('[PersonFormScreen] save failed:', e);
+      LoggerService.error('PERSON_FORM', 'save failed:', e);
     }
   });
 

@@ -6,6 +6,7 @@ import { StorageAccessFramework } from 'expo-file-system/legacy';
 import { and, count, desc, eq, gte, lte, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import { Platform, Alert } from 'react-native';
+import { LoggerService } from '@/src/services/logger.service';
 
 export interface ExportDateRange {
   startDate: Date;
@@ -306,7 +307,7 @@ export class CsvExportService {
       await StorageAccessFramework.writeAsStringAsync(fileUri, content, { encoding: 'utf8' });
       Alert.alert('Saved', `CSV saved as ${filename}`);
     } catch (error) {
-      console.error('Save error:', error);
+      LoggerService.error('CSV_EXPORT', 'Save error:', error);
       Alert.alert('Save Failed', error instanceof Error ? error.message : 'Failed to save CSV');
     }
   }

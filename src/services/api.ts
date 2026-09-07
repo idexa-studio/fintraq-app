@@ -3,6 +3,7 @@ import type { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axio
 import { Platform } from 'react-native';
 import * as Localization from 'expo-localization';
 import { getAppVersion, getAppBuildNumber } from '@/src/utils/version';
+import { LoggerService } from '@/src/services/logger.service';
 
 const BASE_URL = 'https://fintraq.idexa.app';
 
@@ -45,12 +46,12 @@ api.interceptors.request.use(
     config.headers['X-App-Current-Time'] = new Date().toISOString();
 
     if (__DEV__) {
-      console.log(`[API Request] ${config.method?.toUpperCase()} ${config.url}`);
+      LoggerService.info('API', `[API Request] ${config.method?.toUpperCase()} ${config.url}`);
     }
     return config;
   },
   (error: AxiosError) => {
-    console.error('[API Request Error]', error);
+    LoggerService.error('API', error);
     return Promise.reject(error);
   }
 );
@@ -59,7 +60,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response: AxiosResponse) => {
     if (__DEV__) {
-      console.log(`[API Response] ${response.status} from ${response.config.url}`);
+      LoggerService.info('API', `[API Response] ${response.status} from ${response.config.url}`);
     }
     return response;
   },

@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { File, Directory, Paths } from 'expo-file-system';
 import * as SecureStore from 'expo-secure-store';
+import { LoggerService } from '@/src/services/logger.service';
 
 const FINTRAQ_MIGRATION_MARKER = '@fintraq_namespace_migrated_v2';
 
@@ -91,7 +92,7 @@ export class LocalMigrationService {
         return;
       }
 
-      console.log('[LocalMigrationService] Executing Fintraq namespace storage migration...');
+      LoggerService.info('LOCAL_MIGRATION', 'Executing Fintraq namespace storage migration...');
 
       const sqliteDir = new Directory(Paths.document, 'SQLite');
       const lunoDbFile = new File(sqliteDir, 'luno.db');
@@ -104,11 +105,11 @@ export class LocalMigrationService {
       if (!fintraqDbFile.exists && keepDbFile.exists) {
         sourceDbFile = keepDbFile;
         dbPrefix = 'keep.db';
-        console.log('[LocalMigrationService] Keep database found. Will migrate to fintraq.db.');
+        LoggerService.info('LOCAL_MIGRATION', 'Keep database found. Will migrate to fintraq.db.');
       } else if (!fintraqDbFile.exists && lunoDbFile.exists) {
         sourceDbFile = lunoDbFile;
         dbPrefix = 'luno.db';
-        console.log('[LocalMigrationService] Legacy luno database found. Will migrate to fintraq.db.');
+        LoggerService.info('LOCAL_MIGRATION', 'Legacy luno database found. Will migrate to fintraq.db.');
       }
 
       // 1. Migrate SQLite database files
@@ -130,7 +131,7 @@ export class LocalMigrationService {
             legacyFile.copy(newFile);
           }
         }
-        console.log('[LocalMigrationService] SQLite files migrated successfully.');
+        LoggerService.info('LOCAL_MIGRATION', 'SQLite files migrated successfully.');
       }
 
       // 2. Migrate AsyncStorage keys
@@ -154,7 +155,7 @@ export class LocalMigrationService {
           await AsyncStorage.removeItem(legacyKey);
         }
       }
-      console.log('[LocalMigrationService] AsyncStorage keys migrated successfully.');
+      LoggerService.info('LOCAL_MIGRATION', 'AsyncStorage keys migrated successfully.');
 
       // 3. Migrate SecureStore keys
       for (const keyName of SECURE_KEY_NAMES) {
@@ -177,13 +178,13 @@ export class LocalMigrationService {
           await SecureStore.deleteItemAsync(legacyKey);
         }
       }
-      console.log('[LocalMigrationService] SecureStore keys migrated successfully.');
+      LoggerService.info('LOCAL_MIGRATION', 'SecureStore keys migrated successfully.');
 
       // 4. Mark migration as executed
       await AsyncStorage.setItem(FINTRAQ_MIGRATION_MARKER, 'true');
-      console.log('[LocalMigrationService] Fintraq namespace migration completed successfully.');
+      LoggerService.info('LOCAL_MIGRATION', 'Fintraq namespace migration completed successfully.');
     } catch (error) {
-      console.error('[LocalMigrationService] Error during database/keys migration:', error);
+      LoggerService.error('LOCAL_MIGRATION', 'Error during database/keys migration:', error);
       // Fail silently to let the app load instead of rendering a white screen
     }
   }

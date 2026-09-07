@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as StoreReview from 'expo-store-review';
+import { LoggerService } from '@/src/services/logger.service';
 
 const STORAGE_KEY_FIRST_LAUNCH_AT = '@fintraq_first_launch_at';
 const STORAGE_KEY_REVIEW_REQUESTED = '@fintraq_review_requested_at';
@@ -18,7 +19,7 @@ export const ReviewPromptService = {
       if (existing) return;
       await AsyncStorage.setItem(STORAGE_KEY_FIRST_LAUNCH_AT, String(Date.now()));
     } catch (e) {
-      console.warn('[ReviewPromptService] ensureFirstLaunchRecorded failed:', e);
+      LoggerService.warn('REVIEW_PROMPT', 'ensureFirstLaunchRecorded failed:', e);
     }
   },
 
@@ -49,7 +50,7 @@ export const ReviewPromptService = {
       await AsyncStorage.setItem(STORAGE_KEY_REVIEW_REQUESTED, String(Date.now()));
       await StoreReview.requestReview();
     } catch (e) {
-      console.warn('[ReviewPromptService] maybeRequestReview failed:', e);
+      LoggerService.warn('REVIEW_PROMPT', 'maybeRequestReview failed:', e);
     }
   },
 };

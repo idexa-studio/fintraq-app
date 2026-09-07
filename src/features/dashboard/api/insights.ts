@@ -5,6 +5,7 @@ import { getDaysAgoLocal, getStartOfMonthLocal } from '../../../utils/date';
 import { formatCurrency } from '../../../utils/format';
 import { InsightStatus, InsightTrend, TransactionType } from '../../../types';
 import { MaterialIconName } from '../../../utils/icons';
+import { LoggerService } from '@/src/services/logger.service';
 
 type InsightBase = {
   id: string;
@@ -207,7 +208,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
     if (insights.length > 6) insights.splice(6);
 
   } catch (error) {
-    console.error('[Insights] Failed:', error);
+    LoggerService.error('INSIGHTS', 'Failed:', error);
   }
 
   return insights;

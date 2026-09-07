@@ -13,14 +13,14 @@ export const BACKGROUND_BACKUP_TASK_NAME = 'fintraq-background-backup';
 
 TaskManager.defineTask(BACKGROUND_BACKUP_TASK_NAME, async () => {
   try {
-    await LoggerService.info('TASK_MANAGER', 'OS background task executor fired', undefined, 'BACKGROUND');
+    LoggerService.info('TASK_MANAGER', 'OS background task executor fired');
     const result = await runAutoBackupIfDue();
-    await LoggerService.info('TASK_MANAGER', `Background task completed with outcome: ${result.outcome.toUpperCase()}`, { outcome: result.outcome }, 'BACKGROUND');
+    LoggerService.info('TASK_MANAGER', `[BACKGROUND] Task completed with outcome: ${result.outcome.toUpperCase()}`);
     return result.outcome === 'failed'
       ? BackgroundTask.BackgroundTaskResult.Failed
       : BackgroundTask.BackgroundTaskResult.Success;
   } catch (error: any) {
-    await LoggerService.error('TASK_MANAGER', `Unhandled background task error: ${error?.message || String(error)}`, { error: String(error) }, 'BACKGROUND');
+    LoggerService.error('TASK_MANAGER', `[BACKGROUND] Unhandled task error: ${error?.message || String(error)}`);
     return BackgroundTask.BackgroundTaskResult.Failed;
   }
 });
@@ -37,7 +37,7 @@ export async function registerBackgroundBackupTaskAsync(): Promise<void> {
   try {
     const status = await BackgroundTask.getStatusAsync();
     if (status !== BackgroundTask.BackgroundTaskStatus.Available) {
-      console.log('[BackgroundBackupTask] Background tasks unavailable on this device/OS setting.');
+      LoggerService.info('TASK_MANAGER', 'Background tasks unavailable on this device/OS setting.');
       return;
     }
 
@@ -46,7 +46,7 @@ export async function registerBackgroundBackupTaskAsync(): Promise<void> {
       const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_BACKUP_TASK_NAME);
       if (isRegistered) {
         await BackgroundTask.unregisterTaskAsync(BACKGROUND_BACKUP_TASK_NAME);
-        console.log('[BackgroundBackupTask] Unregistered background task (auto-backup disabled).');
+        LoggerService.info('TASK_MANAGER', 'Unregistered background task (auto-backup disabled).');
       }
       return;
     }
@@ -57,8 +57,8 @@ export async function registerBackgroundBackupTaskAsync(): Promise<void> {
     await BackgroundTask.registerTaskAsync(BACKGROUND_BACKUP_TASK_NAME, {
       minimumInterval,
     });
-    console.log(`[BackgroundBackupTask] Registered background task with ${minimumInterval}m minimum interval.`);
+    LoggerService.info('TASK_MANAGER', `Registered background task with ${minimumInterval}m minimum interval.`);
   } catch (error) {
-    console.warn('[BackgroundBackupTask] Failed to register:', error);
+    LoggerService.warn('TASK_MANAGER', 'Failed to register:', error);
   }
 }

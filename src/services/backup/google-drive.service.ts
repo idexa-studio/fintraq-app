@@ -3,6 +3,7 @@ import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/goo
 import googleServicesConfig from '../../../google-services.json';
 import { GoogleDriveAuthError, GoogleDriveHttpError } from './google-drive.errors';
 import { DriveProgressCallback, driveFetch, driveXhrRequest } from './google-drive.http';
+import { LoggerService } from '@/src/services/logger.service';
 
 const CACHED_GOOGLE_USER_KEY = '@fintraq_google_user';
 
@@ -47,7 +48,7 @@ class GoogleDriveServiceClass {
       });
       this.isInitialized = true;
     } catch (e) {
-      console.warn('[GoogleDriveService] Failed to configure GoogleSignin:', e);
+      LoggerService.warn('GOOGLE_DRIVE', 'Failed to configure GoogleSignin:', e);
     }
   }
 
@@ -129,7 +130,7 @@ class GoogleDriveServiceClass {
       await GoogleSignin.signOut();
       await AsyncStorage.removeItem(CACHED_GOOGLE_USER_KEY);
     } catch (e) {
-      console.warn('[GoogleDriveService] Sign out error:', e);
+      LoggerService.warn('GOOGLE_DRIVE', 'Sign out error:', e);
     }
   }
 

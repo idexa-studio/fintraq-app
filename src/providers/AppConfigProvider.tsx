@@ -16,6 +16,7 @@ import {
 import { ForceUpdateScreen } from '@/src/features/update/components/ForceUpdateScreen';
 import { MigrationSeedService } from '@/src/services/migration-seed.service';
 import { getAppVersion } from '@/src/utils/version';
+import { LoggerService } from '@/src/services/logger.service';
 
 interface AppConfigContextType {
   isChecking: boolean;
@@ -88,7 +89,7 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
       lastCheckedTime.current = Date.now();
     } catch (error: any) {
       if (__DEV__) {
-        console.warn('[AppConfigProvider] Remote config fetch failed:', error);
+        LoggerService.warn('APP_CONFIG', 'Remote config fetch failed:', error);
       }
     } finally {
       setIsChecking(false);
@@ -104,7 +105,7 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
       INIT_DEADLINE_MS,
     )
       .catch((err) => {
-        if (__DEV__) console.warn('[AppConfigProvider] init error:', err);
+        if (__DEV__) LoggerService.warn('APP_CONFIG', 'init error:', err);
       })
       .finally(() => {
         SplashScreen.hideAsync().catch(() => {});

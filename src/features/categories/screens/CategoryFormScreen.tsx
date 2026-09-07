@@ -24,6 +24,7 @@ import { useCategories, useCreateCategory, useUpdateCategory } from '@/src/featu
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, toDbColor } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
+import { LoggerService } from '@/src/services/logger.service';
 
 type CategoryFormValues = {
   name: string;
@@ -123,7 +124,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
       }
       router.back();
     } catch (error) {
-      console.error('Failed to save category:', error);
+      LoggerService.error('CATEGORY_FORM', 'Failed to save category:', error);
     }
   });
 

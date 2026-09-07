@@ -4,6 +4,7 @@ import { File, Paths } from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DatabaseKeys, StorageKeys } from '@/src/constants/keys';
 import { BackupLock } from '@/src/services/backup/backup-lock';
+import { LoggerService } from '@/src/services/logger.service';
 
 export class MigrationSeedService {
   private static activePromise: Promise<any> | null = null;
@@ -71,12 +72,12 @@ export class MigrationSeedService {
         await seedFile.write(JSON.stringify(seedData, null, 2));
 
         if (__DEV__) {
-          console.log(`[MigrationSeedService] Migration seed saved successfully to: ${seedFile.uri}`);
+          LoggerService.info('MIGRATION_SEED', `[MigrationSeedService] Migration seed saved successfully to: ${seedFile.uri}`);
         }
         return { success: true, path: seedFile.uri };
       } catch (e) {
         const errorMsg = e instanceof Error ? e.message : String(e);
-        console.error('[MigrationSeedService] Failed to write migration seed:', e);
+        LoggerService.error('MIGRATION_SEED', 'Failed to write migration seed:', e);
         return { success: false, error: errorMsg };
       } finally {
         MigrationSeedService.activePromise = null;

@@ -68,7 +68,7 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    LoggerService.initialize();
+    LoggerService.info('APP_LIFECYCLE', 'App launched');
     NotificationService.init();
     registerBackgroundBackupTaskAsync();
     ReviewPromptService.ensureFirstLaunchRecorded();

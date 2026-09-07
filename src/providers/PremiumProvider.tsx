@@ -7,6 +7,7 @@ import { ALL_SKUS, SKU_LIFETIME } from '../constants/iap';
 import { IAPProduct, IAPService } from '../services/iap.service';
 import { StorageKeys } from '../constants/keys';
 import { AnalyticsService } from '../services/analytics';
+import { LoggerService } from '@/src/services/logger.service';
 
 /**
  * PremiumState: The persistent representation of user access.
@@ -99,7 +100,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
       setPremiumState(newState);
     } catch (err) {
-      console.error('[Premium] Persistence failure:', err);
+      LoggerService.error('PREMIUM', 'Persistence failure:', err);
     }
   }, []);
 
@@ -192,7 +193,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
 
           purchaseErrorSub = IAP.purchaseErrorListener((error) => {
             if (error.code !== IAP.ErrorCode.UserCancelled) {
-              console.error('[Premium] Store error:', error);
+              LoggerService.error('PREMIUM', 'Store error:', error);
             }
           });
 

@@ -2,6 +2,7 @@ import { drizzle, ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 import { openDatabaseSync } from 'expo-sqlite';
 import * as schema from './schema';
 import { DatabaseKeys } from '../constants/keys';
+import { LoggerService } from '@/src/services/logger.service';
 
 let expoDbInstance: ReturnType<typeof openDatabaseSync> | null = null;
 let drizzleDbInstance: ExpoSQLiteDatabase<typeof schema> | null = null;
@@ -16,7 +17,7 @@ function getDrizzleDb(): ExpoSQLiteDatabase<typeof schema> {
       expoDbInstance.execSync('PRAGMA synchronous = NORMAL;');
       expoDbInstance.execSync('PRAGMA foreign_keys = ON;');
     } catch (e) {
-      console.warn('[DB] Connection PRAGMA initialization warning:', e);
+      LoggerService.warn('DB_CLIENT', 'Connection PRAGMA initialization warning:', e);
     }
     drizzleDbInstance = drizzle(expoDbInstance, {
       schema,
@@ -46,7 +47,7 @@ export function resetDbConnections(): void {
     try {
       expoDbInstance.closeSync();
     } catch (e) {
-      console.warn('[DB] Connection closeSync warning:', e);
+      LoggerService.warn('DB_CLIENT', 'Connection closeSync warning:', e);
     }
     expoDbInstance = null;
     drizzleDbInstance = null;

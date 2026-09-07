@@ -1,5 +1,6 @@
 import { api, type ApiError } from '@/src/services/api';
 import { getAppBuildNumber } from '@/src/utils/version';
+import { LoggerService } from '@/src/services/logger.service';
 
 export interface StoreLinks {
   androidStore: string;
@@ -37,9 +38,9 @@ export async function fetchAppConfig(): Promise<AppConfigResponse> {
     const message = error instanceof Error ? error.message : 'Network error';
 
     if (isExpectedOfflineCase) {
-      console.warn('[AppConfigService] App config unavailable. Continuing with cached/default behavior.');
+      LoggerService.warn('APP_CONFIG_SVC', 'App config unavailable. Continuing with cached/default behavior.');
     } else {
-      console.error('[AppConfigService] Error fetching app config:', error);
+      LoggerService.error('APP_CONFIG_SVC', 'Error fetching app config:', error);
     }
 
     return {

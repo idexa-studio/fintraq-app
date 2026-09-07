@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator, View } from 'react-native';
 import { DARK_THEME } from '../theme/colors';
 import { StorageKeys } from '../constants/keys';
+import { LoggerService } from '@/src/services/logger.service';
 
 type OnboardingContextType = {
   hasOnboarded: boolean;
@@ -29,7 +30,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
           setHasOnboarded(true);
         }
       } catch (e) {
-        console.error('Error reading onboarding status', e);
+        LoggerService.error('ONBOARDING_PROVIDER', 'Error reading onboarding status', e);
       } finally {
         setIsLoading(false);
       }
@@ -43,7 +44,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
       await AsyncStorage.setItem(StorageKeys.ONBOARDED, 'true');
       setHasOnboarded(true);
     } catch (e) {
-      console.error('Error setting onboarding status', e);
+      LoggerService.error('ONBOARDING_PROVIDER', 'Error setting onboarding status', e);
     }
   }, []);
 
