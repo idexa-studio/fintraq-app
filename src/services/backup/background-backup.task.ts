@@ -48,11 +48,13 @@ export async function registerBackgroundBackupTaskAsync(): Promise<void> {
       return;
     }
 
-    // Android WorkManager enforces a platform minimum of 15 minutes for periodic tasks.
+    // Dev 15min mode uses 15m minimum interval; Production (daily/weekly/monthly) uses 12h (720m).
+    const minimumInterval = frequency === '15min' ? 15 : 12 * 60;
+
     await BackgroundTask.registerTaskAsync(BACKGROUND_BACKUP_TASK_NAME, {
-      minimumInterval: 15,
+      minimumInterval,
     });
-    console.log('[BackgroundBackupTask] Registered background task with 15m minimum interval.');
+    console.log(`[BackgroundBackupTask] Registered background task with ${minimumInterval}m minimum interval.`);
   } catch (error) {
     console.warn('[BackgroundBackupTask] Failed to register:', error);
   }
