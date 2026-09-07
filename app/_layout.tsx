@@ -23,8 +23,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { LocalMigrationService } from '@/src/services/local-migration.service';
 import { unlockDatabaseIfLocked } from '@/src/db/client';
 // Side-effect import: must run unconditionally at module load so
-// TaskManager.defineTask has registered the executor before the OS can ever
-// headlessly relaunch the JS engine to run it (see file for details).
+// notifee.onBackgroundEvent/registerForegroundService are wired before the OS
+// can ever headlessly relaunch the JS engine to deliver a scheduled trigger.
 import { registerBackgroundBackupTaskAsync } from '@/src/services/backup/background-backup.task';
 import { AppState, AppStateStatus } from 'react-native';
 import React, { useEffect, useState } from 'react';
