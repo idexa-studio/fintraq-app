@@ -13,6 +13,12 @@ const REMINDER_POOL = [
   { title: "Mindful Spending 🧘", body: "Knowledge is power. Log your latest transaction to see its impact on your runway." },
 ];
 
+// Register Notifee background event listener at module load to handle background notification events
+// and resolve the "WARN No task registered for key app.notifee.notification-event" warning.
+notifee.onBackgroundEvent(async () => {
+  // Silent handler for background notification events
+});
+
 /**
  * NotificationService: Centralized infrastructure for local device reminders.
  * 

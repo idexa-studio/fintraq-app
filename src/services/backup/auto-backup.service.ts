@@ -6,6 +6,8 @@ import { CloudBackupFileMeta, GoogleDriveService } from './google-drive.service'
 import { NotificationService } from '../notification.service';
 import { ReviewPromptService } from '../review-prompt.service';
 
+import { LoggerService } from '../logger.service';
+
 export type AutoBackupFrequency = 'off' | 'daily' | 'weekly' | 'monthly' | '15min';
 
 export const AUTO_BACKUP_STORAGE_KEYS = {
@@ -47,27 +49,42 @@ export type AutoBackupResult =
  * identical either way, only who calls it differs. Safe to call from outside
  * React: uses no hooks, only plain services and AsyncStorage.
  */
-export async function runAutoBackupIfDue(): Promise<AutoBackupResult> {
+export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResult> {
+  const isBackground = AppState.currentState !== 'active';
+  const tag = isBackground ? 'BACKGROUND' : 'FOREGROUND';
+  const trigger = force ? 'dev_qa' : isBackground ? 'background_task' : 'auto_check';
+
   const frequency = await resolveAutoBackupFrequency();
-  if (frequency === 'off') return { outcome: 'skipped' };
+  if (frequency === 'off' && !force) {
+    await LoggerService.info('AUTO_BACKUP', 'Auto-backup skipped: Feature disabled in settings', { frequency }, tag);
+    return { outcome: 'skipped' };
+  }
 
   const currentUser = await GoogleDriveService.getCurrentUser();
-  if (!currentUser) return { outcome: 'skipped' };
+  if (!currentUser) {
+    await LoggerService.info('AUTO_BACKUP', 'Auto-backup skipped: No signed-in Google user', undefined, tag);
+    return { outcome: 'skipped' };
+  }
 
   const lastAutoTimeStr = await AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.LAST_AUTO_BACKUP_TIME);
   const now = Date.now();
   const lastAutoTime = lastAutoTimeStr ? parseInt(lastAutoTimeStr, 10) : 0;
-  const threshold = AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS[frequency];
+  const threshold = AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS[frequency] ?? (15 * 60 * 1000);
 
-  // Synchronous check-then-set against the shared in-memory state — atomic
-  // across every consumer in this JS runtime (React components and this
-  // module both import the same singleton from backup-state.ts), since
-  // there's no `await` between reading and setting isBackingUp.
-  if (now - lastAutoTime < threshold || getBackupState().isBackingUp) {
+  // Auto-backup is strictly background-only: skip if app is currently active in foreground (unless force = true in Dev QA)
+  if (AppState.currentState === 'active' && !force) {
+    await LoggerService.info('AUTO_BACKUP', 'Auto-backup skipped: App active in foreground (background only)', undefined, 'FOREGROUND');
     return { outcome: 'skipped' };
   }
 
-  const isBackground = AppState.currentState !== 'active';
+  if (!force && (now - lastAutoTime < threshold || getBackupState().isBackingUp)) {
+    const elapsedSec = Math.round((now - lastAutoTime) / 1000);
+    const thresholdSec = Math.round(threshold / 1000);
+    await LoggerService.info('AUTO_BACKUP', `Auto-backup skipped: Threshold not reached (${elapsedSec}s / ${thresholdSec}s)`, { elapsedSec, thresholdSec }, tag);
+    return { outcome: 'skipped' };
+  }
+
+  await LoggerService.info('AUTO_BACKUP', `Starting cloud auto-backup sync (Trigger: ${trigger})`, { trigger, frequency }, tag);
 
   NotificationService.presentBackupProgressNotification(10, 'Preparing database snapshot...');
 
@@ -94,6 +111,7 @@ export async function runAutoBackupIfDue(): Promise<AutoBackupResult> {
     ]);
 
     NotificationService.presentBackupCompleteNotification();
+    await LoggerService.info('AUTO_BACKUP', 'Cloud auto-backup successfully completed and synced', { fileSize: uploadedFile.size, fileId: uploadedFile.id }, tag);
 
     if (!isBackground) {
       // Native review dialogs need an active foreground screen — only ask
@@ -102,8 +120,9 @@ export async function runAutoBackupIfDue(): Promise<AutoBackupResult> {
       ReviewPromptService.maybeRequestReview();
     }
     return { outcome: 'ran', meta: uploadedFile };
-  } catch (err) {
-    console.warn('[AutoBackupService] Background auto-backup warning:', err);
+  } catch (err: any) {
+    const errorMsg = err?.message || String(err);
+    await LoggerService.error('AUTO_BACKUP', `Cloud auto-backup failed: ${errorMsg}`, { error: errorMsg }, tag);
     NotificationService.presentBackupFailedNotification();
     return { outcome: 'failed' };
   } finally {

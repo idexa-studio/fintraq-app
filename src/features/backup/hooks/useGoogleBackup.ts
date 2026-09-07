@@ -2,11 +2,10 @@ import {
   AUTO_BACKUP_STORAGE_KEYS,
   AutoBackupFrequency,
   resolveAutoBackupFrequency,
-  runAutoBackupIfDue,
 } from '@/src/services/backup/auto-backup.service';
 import { getBackupState, SharedBackupState, subscribeToBackupState, updateBackupState } from '@/src/services/backup/backup-state';
 import { DatabaseBackupService } from '@/src/services/backup/database-backup.service';
-import { isNoBackupError, NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
+import { GoogleDriveAuthError, isNoBackupError, NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
 import { CloudBackupFileMeta, GoogleDriveService, GoogleUserAccount } from '@/src/services/backup/google-drive.service';
 import { NotificationService } from '@/src/services/notification.service';
 import { ReviewPromptService } from '@/src/services/review-prompt.service';
@@ -86,27 +85,25 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
           }
         }
 
-        // Same threshold-check-and-run logic the headless background task
-        // uses (see auto-backup.service.ts) — sharing it means a change to
-        // how auto-backup runs never has to be applied in two places.
-        const result = await runAutoBackupIfDue();
-        if (isMounted && result.outcome === 'ran') {
-          setLastBackup(result.meta);
-        }
-
-        // Fetch remote backup meta in background without blocking initial UI
-        // render — skip if runAutoBackupIfDue already set lastBackup from its
-        // own upload response, to avoid a second redundant Drive files.list
-        // round trip for metadata already known.
-        if (isMounted && currentUser && result.outcome !== 'ran') {
+        // Fetch remote backup meta in background without blocking initial UI render
+        if (isMounted && currentUser) {
           try {
             const backupMeta = await GoogleDriveService.findLatestBackup();
             if (isMounted && backupMeta) {
               setLastBackup(backupMeta);
               await AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(backupMeta));
             }
-          } catch (e) {
-            console.warn('[useGoogleBackup] Background backup check error:', e);
+          } catch (e: any) {
+            if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
+              console.log('[useGoogleBackup] Google Drive session expired. Re-authentication required.');
+              if (isMounted) {
+                setUser(null);
+                setLastBackup(null);
+              }
+              await AsyncStorage.removeItem(STORAGE_KEY_LAST_BACKUP_META);
+            } else {
+              console.warn('[useGoogleBackup] Background backup check error:', e);
+            }
           }
         }
       } catch (e) {
@@ -129,8 +126,15 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         setLastBackup(backupMeta);
         await AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(backupMeta));
       }
-    } catch (e) {
-      console.warn('[useGoogleBackup] refreshBackupInfo failed:', e);
+    } catch (e: any) {
+      if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
+        console.log('[useGoogleBackup] Refresh check: Google Drive session expired.');
+        setUser(null);
+        setLastBackup(null);
+        await AsyncStorage.removeItem(STORAGE_KEY_LAST_BACKUP_META);
+      } else {
+        console.warn('[useGoogleBackup] refreshBackupInfo failed:', e);
+      }
     }
   }, [user]);
 
@@ -245,7 +249,13 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     } catch (e: any) {
       console.warn('[useGoogleBackup] Backup error:', e);
       NotificationService.presentBackupFailedNotification();
+      if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
+        setUser(null);
+      }
       if (!options?.silent) {
+        if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
+          throw new Error('Google Drive session expired. Please sign in again.');
+        }
         throw new Error('Could not save backup to Google Drive. Please check your internet connection.');
       }
       return false;
@@ -308,6 +318,10 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       if (isNoBackupError(e)) {
         console.log('[useGoogleBackup] Restore info: No backup file found on Google Drive.');
         throw e;
+      }
+      if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
+        setUser(null);
+        throw new Error('Google Drive session expired. Please sign in again.');
       }
       console.warn('[useGoogleBackup] Restore error:', e);
       throw e;

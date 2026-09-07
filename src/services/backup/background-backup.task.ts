@@ -1,5 +1,6 @@
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
+import { LoggerService } from '../logger.service';
 import { resolveAutoBackupFrequency, runAutoBackupIfDue } from './auto-backup.service';
 
 export const BACKGROUND_BACKUP_TASK_NAME = 'fintraq-background-backup';
@@ -9,15 +10,17 @@ export const BACKGROUND_BACKUP_TASK_NAME = 'fintraq-background-backup';
 // re-evaluates the app's module graph from the entry point, and TaskManager
 // only knows how to run a task if `defineTask` has already registered its
 // executor by the time the task fires.
+
 TaskManager.defineTask(BACKGROUND_BACKUP_TASK_NAME, async () => {
   try {
+    await LoggerService.info('TASK_MANAGER', 'OS background task executor fired', undefined, 'BACKGROUND');
     const result = await runAutoBackupIfDue();
-    console.log('[BackgroundBackupTask] Run result:', result.outcome);
+    await LoggerService.info('TASK_MANAGER', `Background task completed with outcome: ${result.outcome.toUpperCase()}`, { outcome: result.outcome }, 'BACKGROUND');
     return result.outcome === 'failed'
       ? BackgroundTask.BackgroundTaskResult.Failed
       : BackgroundTask.BackgroundTaskResult.Success;
-  } catch (error) {
-    console.warn('[BackgroundBackupTask] Unhandled error:', error);
+  } catch (error: any) {
+    await LoggerService.error('TASK_MANAGER', `Unhandled background task error: ${error?.message || String(error)}`, { error: String(error) }, 'BACKGROUND');
     return BackgroundTask.BackgroundTaskResult.Failed;
   }
 });

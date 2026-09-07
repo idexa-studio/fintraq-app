@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
 import googleServicesConfig from '../../../google-services.json';
-import { GoogleDriveAuthError } from './google-drive.errors';
+import { GoogleDriveAuthError, GoogleDriveHttpError } from './google-drive.errors';
 import { DriveProgressCallback, driveFetch, driveXhrRequest } from './google-drive.http';
 
 const CACHED_GOOGLE_USER_KEY = '@fintraq_google_user';
@@ -93,8 +93,22 @@ class GoogleDriveServiceClass {
         }
         return account;
       }
-    } catch {
-      // User not signed in or silent auth failed in headless mode — fallback to cached user
+    } catch (error: any) {
+      // If native sign-in indicates user is not signed in / session revoked, clear cache
+      const isUnauthenticated =
+        error?.code === '4' ||
+        error?.code === 'SIGN_IN_REQUIRED' ||
+        error?.message?.includes('SIGN_IN_REQUIRED') ||
+        error?.message?.includes('has not signed in');
+
+      if (isUnauthenticated) {
+        try {
+          await AsyncStorage.removeItem(CACHED_GOOGLE_USER_KEY);
+        } catch {
+          // Ignore
+        }
+        return null;
+      }
     }
 
     try {
@@ -138,7 +152,29 @@ class GoogleDriveServiceClass {
       // Silent auth failed
     }
 
+    try {
+      await AsyncStorage.removeItem(CACHED_GOOGLE_USER_KEY);
+    } catch {
+      // Ignore cache removal error
+    }
+
     throw new GoogleDriveAuthError();
+  }
+
+  private async withAuthErrorHandling<T>(fn: () => Promise<T>): Promise<T> {
+    try {
+      return await fn();
+    } catch (e: any) {
+      if (e instanceof GoogleDriveHttpError && e.status === 401) {
+        try {
+          await AsyncStorage.removeItem(CACHED_GOOGLE_USER_KEY);
+        } catch {
+          // Ignore
+        }
+        throw new GoogleDriveAuthError();
+      }
+      throw e;
+    }
   }
 
   /**
@@ -150,29 +186,31 @@ class GoogleDriveServiceClass {
    * into a destructive "Start Fresh" flow that abandons a real backup.
    */
   public async findLatestBackup(): Promise<CloudBackupFileMeta | null> {
-    const user = await this.getCurrentUser();
-    if (!user) return null;
+    return this.withAuthErrorHandling(async () => {
+      const user = await this.getCurrentUser();
+      if (!user) return null;
 
-    const token = await this.getAccessToken();
-    const query = encodeURIComponent(`name = '${BACKUP_FILENAME}' and 'appDataFolder' in parents and trashed = false`);
-    const url = `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${query}&fields=files(id,name,modifiedTime,size)&orderBy=modifiedTime%20desc`;
+      const token = await this.getAccessToken();
+      const query = encodeURIComponent(`name = '${BACKUP_FILENAME}' and 'appDataFolder' in parents and trashed = false`);
+      const url = `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${query}&fields=files(id,name,modifiedTime,size)&orderBy=modifiedTime%20desc`;
 
-    const response = await driveFetch(url, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${token}` },
-      operation: 'findLatestBackup',
+      const response = await driveFetch(url, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+        operation: 'findLatestBackup',
+      });
+
+      const data = await response.json();
+      const files: any[] = data.files || [];
+      if (files.length === 0) return null;
+
+      return {
+        id: files[0].id,
+        name: files[0].name,
+        modifiedTime: files[0].modifiedTime,
+        size: Number(files[0].size || 0),
+      };
     });
-
-    const data = await response.json();
-    const files: any[] = data.files || [];
-    if (files.length === 0) return null;
-
-    return {
-      id: files[0].id,
-      name: files[0].name,
-      modifiedTime: files[0].modifiedTime,
-      size: Number(files[0].size || 0),
-    };
   }
 
   private async createBackupFileEntry(token: string): Promise<string> {
@@ -208,45 +246,49 @@ class GoogleDriveServiceClass {
     knownFileId?: string,
     onProgress?: DriveProgressCallback,
   ): Promise<CloudBackupFileMeta> {
-    const token = await this.getAccessToken();
-    const fileId = knownFileId ?? (await this.findLatestBackup())?.id ?? (await this.createBackupFileEntry(token));
+    return this.withAuthErrorHandling(async () => {
+      const token = await this.getAccessToken();
+      const fileId = knownFileId ?? (await this.findLatestBackup())?.id ?? (await this.createBackupFileEntry(token));
 
-    const uploadEndpoint = `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media&fields=id,name,modifiedTime,size`;
+      const uploadEndpoint = `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media&fields=id,name,modifiedTime,size`;
 
-    const responseText = await driveXhrRequest(uploadEndpoint, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: contentJsonString,
-      operation: 'uploadBackupContent',
-      timeoutMs: 30_000,
-      onProgress,
+      const responseText = await driveXhrRequest(uploadEndpoint, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: contentJsonString,
+        operation: 'uploadBackupContent',
+        timeoutMs: 30_000,
+        onProgress,
+      });
+
+      const data = JSON.parse(responseText);
+      return {
+        id: data.id || fileId,
+        name: data.name || BACKUP_FILENAME,
+        modifiedTime: data.modifiedTime || new Date().toISOString(),
+        size: Number(data.size || contentJsonString.length),
+      };
     });
-
-    const data = JSON.parse(responseText);
-    return {
-      id: data.id || fileId,
-      name: data.name || BACKUP_FILENAME,
-      modifiedTime: data.modifiedTime || new Date().toISOString(),
-      size: Number(data.size || contentJsonString.length),
-    };
   }
 
   /**
    * Download content string of fileId from Google Drive
    */
   public async downloadBackup(fileId: string, onProgress?: DriveProgressCallback): Promise<string> {
-    const token = await this.getAccessToken();
-    const url = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`;
+    return this.withAuthErrorHandling(async () => {
+      const token = await this.getAccessToken();
+      const url = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`;
 
-    return driveXhrRequest(url, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${token}` },
-      operation: 'downloadBackup',
-      timeoutMs: 20_000,
-      onProgress,
+      return driveXhrRequest(url, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+        operation: 'downloadBackup',
+        timeoutMs: 20_000,
+        onProgress,
+      });
     });
   }
 
@@ -254,26 +296,28 @@ class GoogleDriveServiceClass {
    * Permanently delete existing backup file from Google Drive AppData folder
    */
   public async deleteBackup(): Promise<boolean> {
-    const user = await this.getCurrentUser();
-    if (!user) {
-      throw new Error('Please sign in to Google Drive first.');
-    }
+    return this.withAuthErrorHandling(async () => {
+      const user = await this.getCurrentUser();
+      if (!user) {
+        throw new Error('Please sign in to Google Drive first.');
+      }
 
-    const file = await this.findLatestBackup();
-    if (!file?.id) {
-      return false;
-    }
+      const file = await this.findLatestBackup();
+      if (!file?.id) {
+        return false;
+      }
 
-    const token = await this.getAccessToken();
-    const url = `https://www.googleapis.com/drive/v3/files/${file.id}`;
+      const token = await this.getAccessToken();
+      const url = `https://www.googleapis.com/drive/v3/files/${file.id}`;
 
-    await driveFetch(url, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
-      operation: 'deleteBackup',
+      await driveFetch(url, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+        operation: 'deleteBackup',
+      });
+
+      return true;
     });
-
-    return true;
   }
 }
 
