@@ -638,6 +638,15 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             subtitle="Download data as spreadsheet"
             onPress={openExport}
           />
+          <RowSeparator theme={theme} />
+          <NavRow
+            theme={theme}
+            icon={ShieldKeyIcon}
+            iconColor={colors.primary}
+            label="Developer Tools & App Logs"
+            subtitle="View 7-day app logs, QA options & diagnostics"
+            onPress={() => router.push('/developer')}
+          />
         </View>
 
         {/* ── Legal ── */}
