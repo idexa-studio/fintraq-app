@@ -1,9 +1,10 @@
 import { File, Paths } from 'expo-file-system';
-import { Share } from 'react-native';
+import * as Sharing from 'expo-sharing';
 
 export type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
 const LOG_FILE_NAME = 'fintraq.log';
+const SHARE_FILE_NAME = 'fintraq-logs.txt';
 const MAX_LOG_BYTES = 1_000_000; // 1MB cap — rotate (keep newest half) past this
 const encoder = new TextEncoder();
 
@@ -100,7 +101,16 @@ class LoggerServiceClass {
 
   async shareLogs(): Promise<boolean> {
     try {
-      await Share.share({ title: LOG_FILE_NAME, message: this.getRawLogText() });
+      const available = await Sharing.isAvailableAsync();
+      if (!available) return false;
+
+      const shareFile = new File(Paths.cache, SHARE_FILE_NAME);
+      shareFile.write(this.getRawLogText());
+      await Sharing.shareAsync(shareFile.uri, {
+        mimeType: 'text/plain',
+        UTI: 'public.plain-text',
+        dialogTitle: SHARE_FILE_NAME,
+      });
       return true;
     } catch {
       return false;

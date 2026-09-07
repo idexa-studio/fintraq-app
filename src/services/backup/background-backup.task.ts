@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 import { LoggerService } from '../logger.service';
@@ -5,12 +6,11 @@ import { resolveAutoBackupFrequency, runAutoBackupIfDue } from './auto-backup.se
 
 export const BACKGROUND_BACKUP_TASK_NAME = 'fintraq-background-backup';
 
-// Must run unconditionally at module load, not inside a component or effect:
-// when the OS relaunches the JS engine headlessly to execute this task, it
-// re-evaluates the app's module graph from the entry point, and TaskManager
-// only knows how to run a task if `defineTask` has already registered its
-// executor by the time the task fires.
+// Android re-enqueues with CANCEL_AND_REENQUEUE on every registerTaskAsync()
+// call, resetting the countdown — track last interval to skip no-op re-registers.
+const LAST_REGISTERED_INTERVAL_KEY = '@fintraq_bg_task_last_interval';
 
+// Must run at module load — OS relaunches JS headlessly to run this task.
 TaskManager.defineTask(BACKGROUND_BACKUP_TASK_NAME, async () => {
   try {
     LoggerService.info('TASK_MANAGER', 'OS woke the background backup task');
@@ -25,14 +25,7 @@ TaskManager.defineTask(BACKGROUND_BACKUP_TASK_NAME, async () => {
   }
 });
 
-/**
- * Registers the OS-level background backup task (Android WorkManager / iOS
- * BGTaskScheduler) so scheduled auto-backups keep running even when the app
- * is fully killed, not just backgrounded. Registration is idempotent — safe
- * to call on every app launch. The OS decides the actual execution cadence;
- * `runAutoBackupIfDue()` is still the one deciding whether a backup is
- * actually due each time the OS wakes the task.
- */
+/** Registers the OS-level background backup task. No-ops if already registered at this interval. */
 export async function registerBackgroundBackupTaskAsync(): Promise<void> {
   try {
     const status = await BackgroundTask.getStatusAsync();
@@ -42,10 +35,12 @@ export async function registerBackgroundBackupTaskAsync(): Promise<void> {
     }
 
     const frequency = await resolveAutoBackupFrequency();
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_BACKUP_TASK_NAME);
+
     if (frequency === 'off') {
-      const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_BACKUP_TASK_NAME);
       if (isRegistered) {
         await BackgroundTask.unregisterTaskAsync(BACKGROUND_BACKUP_TASK_NAME);
+        await AsyncStorage.removeItem(LAST_REGISTERED_INTERVAL_KEY);
         LoggerService.info('TASK_MANAGER', 'Unregistered background task (auto-backup disabled).');
       }
       return;
@@ -54,9 +49,15 @@ export async function registerBackgroundBackupTaskAsync(): Promise<void> {
     // Dev 15min mode uses 15m minimum interval; Production (daily/weekly/monthly) uses 12h (720m).
     const minimumInterval = frequency === '15min' ? 15 : 12 * 60;
 
+    const lastIntervalStr = await AsyncStorage.getItem(LAST_REGISTERED_INTERVAL_KEY);
+    const lastInterval = lastIntervalStr ? parseInt(lastIntervalStr, 10) : null;
+
+    if (isRegistered && lastInterval === minimumInterval) return;
+
     await BackgroundTask.registerTaskAsync(BACKGROUND_BACKUP_TASK_NAME, {
       minimumInterval,
     });
+    await AsyncStorage.setItem(LAST_REGISTERED_INTERVAL_KEY, String(minimumInterval));
     LoggerService.info('TASK_MANAGER', `Registered background task with ${minimumInterval}m minimum interval.`);
   } catch (error) {
     LoggerService.warn('TASK_MANAGER', 'Failed to register', error);
