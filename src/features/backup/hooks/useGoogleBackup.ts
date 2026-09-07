@@ -103,12 +103,12 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
               }
               await AsyncStorage.removeItem(STORAGE_KEY_LAST_BACKUP_META);
             } else {
-              LoggerService.warn('GOOGLE_BACKUP', 'Background backup check error:', e);
+              LoggerService.warn('GOOGLE_BACKUP', 'Background backup check failed', e);
             }
           }
         }
       } catch (e) {
-        LoggerService.warn('GOOGLE_BACKUP', 'Mount initialization error:', e);
+        LoggerService.warn('GOOGLE_BACKUP', 'Initialization on mount failed', e);
       } finally {
         if (isMounted) setIsChecking(false);
       }
@@ -134,7 +134,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         setLastBackup(null);
         await AsyncStorage.removeItem(STORAGE_KEY_LAST_BACKUP_META);
       } else {
-        LoggerService.warn('GOOGLE_BACKUP', 'refreshBackupInfo failed:', e);
+        LoggerService.warn('GOOGLE_BACKUP', 'Failed to refresh backup info', e);
       }
     }
   }, [user]);
@@ -149,7 +149,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       ]);
       await registerBackgroundBackupTaskAsync();
     } catch (e) {
-      LoggerService.warn('GOOGLE_BACKUP', 'setAutoBackupFrequency failed:', e);
+      LoggerService.warn('GOOGLE_BACKUP', 'Failed to save auto-backup frequency', e);
     }
   }, []);
 
@@ -171,7 +171,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       }
       return signedInUser;
     } catch (e: any) {
-      LoggerService.warn('GOOGLE_BACKUP', 'connectAccount failed:', e);
+      LoggerService.warn('GOOGLE_BACKUP', 'Failed to connect Google account', e);
       throw new Error(e?.message || 'Failed to connect Google Account.');
     } finally {
       setIsChecking(false);
@@ -185,7 +185,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       setLastBackup(null);
       await AsyncStorage.removeItem(STORAGE_KEY_LAST_BACKUP_META);
     } catch (e: any) {
-      LoggerService.warn('GOOGLE_BACKUP', 'disconnectAccount failed:', e);
+      LoggerService.warn('GOOGLE_BACKUP', 'Failed to disconnect Google account', e);
       throw new Error(e?.message || 'Failed to disconnect Google Account.');
     }
   }, []);
@@ -248,7 +248,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       ReviewPromptService.maybeRequestReview();
       return true;
     } catch (e: any) {
-      LoggerService.warn('GOOGLE_BACKUP', 'Backup error:', e);
+      LoggerService.warn('GOOGLE_BACKUP', 'Backup failed', e);
       NotificationService.presentBackupFailedNotification();
       if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
         setUser(null);
@@ -317,14 +317,14 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       return true;
     } catch (e: any) {
       if (isNoBackupError(e)) {
-        LoggerService.info('GOOGLE_BACKUP', 'Restore info: No backup file found on Google Drive.');
+        LoggerService.info('GOOGLE_BACKUP', 'No backup file found on Google Drive');
         throw e;
       }
       if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
         setUser(null);
         throw new Error('Google Drive session expired. Please sign in again.');
       }
-      LoggerService.warn('GOOGLE_BACKUP', 'Restore error:', e);
+      LoggerService.warn('GOOGLE_BACKUP', 'Restore failed', e);
       throw e;
     } finally {
       setTimeout(() => {

@@ -45,7 +45,7 @@ export class IAPService {
       this._isInitialized = !!success;
       return this._isInitialized;
     } catch (error) {
-      LoggerService.error('IAP', 'Bridge connection failed:', error instanceof Error ? error.message : error);
+      LoggerService.error('IAP', 'Bridge connection failed', error instanceof Error ? error.message : error);
       this._initPromise = null;
       return false;
     }
@@ -167,7 +167,7 @@ export class IAPService {
           await Linking.openURL(url);
         }
       } catch (error) {
-        LoggerService.error('IAP', 'Management shortcut unreachable:', error);
+        LoggerService.error('IAP', 'Management shortcut unreachable', error);
       }
     }
   }
@@ -181,7 +181,7 @@ export class IAPService {
       this._isInitialized = false;
       this._initPromise = null;
     } catch (error) {
-      LoggerService.error('IAP', 'Termination failed:', error);
+      LoggerService.error('IAP', 'Termination failed', error);
     }
   }
 }

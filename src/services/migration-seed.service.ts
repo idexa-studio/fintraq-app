@@ -72,12 +72,12 @@ export class MigrationSeedService {
         await seedFile.write(JSON.stringify(seedData, null, 2));
 
         if (__DEV__) {
-          LoggerService.info('MIGRATION_SEED', `[MigrationSeedService] Migration seed saved successfully to: ${seedFile.uri}`);
+          LoggerService.info('MIGRATION_SEED', `Migration seed saved to ${seedFile.uri}`);
         }
         return { success: true, path: seedFile.uri };
       } catch (e) {
         const errorMsg = e instanceof Error ? e.message : String(e);
-        LoggerService.error('MIGRATION_SEED', 'Failed to write migration seed:', e);
+        LoggerService.error('MIGRATION_SEED', 'Failed to write migration seed', e);
         return { success: false, error: errorMsg };
       } finally {
         MigrationSeedService.activePromise = null;

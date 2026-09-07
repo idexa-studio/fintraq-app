@@ -40,7 +40,7 @@ export async function fetchAppConfig(): Promise<AppConfigResponse> {
     if (isExpectedOfflineCase) {
       LoggerService.warn('APP_CONFIG_SVC', 'App config unavailable. Continuing with cached/default behavior.');
     } else {
-      LoggerService.error('APP_CONFIG_SVC', 'Error fetching app config:', error);
+      LoggerService.error('APP_CONFIG_SVC', 'Error fetching app config', error);
     }
 
     return {

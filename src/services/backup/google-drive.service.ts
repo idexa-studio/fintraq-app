@@ -48,7 +48,7 @@ class GoogleDriveServiceClass {
       });
       this.isInitialized = true;
     } catch (e) {
-      LoggerService.warn('GOOGLE_DRIVE', 'Failed to configure GoogleSignin:', e);
+      LoggerService.warn('GOOGLE_DRIVE', 'Failed to configure GoogleSignin', e);
     }
   }
 
@@ -130,7 +130,7 @@ class GoogleDriveServiceClass {
       await GoogleSignin.signOut();
       await AsyncStorage.removeItem(CACHED_GOOGLE_USER_KEY);
     } catch (e) {
-      LoggerService.warn('GOOGLE_DRIVE', 'Sign out error:', e);
+      LoggerService.warn('GOOGLE_DRIVE', 'Sign out error', e);
     }
   }
 

@@ -154,7 +154,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
       );
       router.back();
     } catch (error) {
-      LoggerService.error('ACCOUNT_FORM', 'Failed to save account:', error);
+      LoggerService.error('ACCOUNT_FORM', 'Failed to save account', error);
     }
   });
 

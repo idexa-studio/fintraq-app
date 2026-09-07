@@ -325,7 +325,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
               try {
                 await Updates.reloadAsync();
               } catch (reloadErr) {
-                LoggerService.warn('DEV_SCREEN', 'Updates.reloadAsync warning (fallback to DevSettings):', reloadErr);
+                LoggerService.warn('DEV_SCREEN', 'Updates.reloadAsync warning (fallback to DevSettings)', reloadErr);
                 if (DevSettings?.reload) {
                   DevSettings.reload();
                 }

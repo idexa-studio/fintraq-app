@@ -307,7 +307,7 @@ export class CsvExportService {
       await StorageAccessFramework.writeAsStringAsync(fileUri, content, { encoding: 'utf8' });
       Alert.alert('Saved', `CSV saved as ${filename}`);
     } catch (error) {
-      LoggerService.error('CSV_EXPORT', 'Save error:', error);
+      LoggerService.error('CSV_EXPORT', 'Failed to save CSV to Android folder', error);
       Alert.alert('Save Failed', error instanceof Error ? error.message : 'Failed to save CSV');
     }
   }

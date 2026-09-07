@@ -17,7 +17,7 @@ export const FirebaseProvider = React.memo(function FirebaseProvider({ children 
 
   useEffect(() => {
     const enabled = !__DEV__;
-    configureFirebaseTelemetry(enabled).catch((e) => { if (__DEV__) LoggerService.warn('FIREBASE', e); });
+    configureFirebaseTelemetry(enabled).catch((e) => { if (__DEV__) LoggerService.warn('FIREBASE', 'Failed to configure telemetry', e); });
   }, []);
 
   useEffect(() => {
@@ -28,13 +28,13 @@ export const FirebaseProvider = React.memo(function FirebaseProvider({ children 
       theme: profile.theme,
       defaultCurrency: profile.defaultCurrency,
       hasProfileName: Boolean(profile.name.trim()),
-    }).catch((e) => { if (__DEV__) LoggerService.warn('FIREBASE', e); });
+    }).catch((e) => { if (__DEV__) LoggerService.warn('FIREBASE', 'Failed to set user traits', e); });
   }, [isLoading, isPremium, profile.defaultCurrency, profile.name, profile.theme]);
 
   useEffect(() => {
     if (!pathname || lastTrackedPath.current === pathname) return;
     lastTrackedPath.current = pathname;
-    logFirebaseScreenView(pathname).catch((e) => { if (__DEV__) LoggerService.warn('FIREBASE', e); });
+    logFirebaseScreenView(pathname).catch((e) => { if (__DEV__) LoggerService.warn('FIREBASE', 'Failed to log screen view', e); });
   }, [pathname]);
 
   return <>{children}</>;

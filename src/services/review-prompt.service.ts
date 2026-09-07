@@ -19,7 +19,7 @@ export const ReviewPromptService = {
       if (existing) return;
       await AsyncStorage.setItem(STORAGE_KEY_FIRST_LAUNCH_AT, String(Date.now()));
     } catch (e) {
-      LoggerService.warn('REVIEW_PROMPT', 'ensureFirstLaunchRecorded failed:', e);
+      LoggerService.warn('REVIEW_PROMPT', 'Failed to record first-launch timestamp', e);
     }
   },
 
@@ -50,7 +50,7 @@ export const ReviewPromptService = {
       await AsyncStorage.setItem(STORAGE_KEY_REVIEW_REQUESTED, String(Date.now()));
       await StoreReview.requestReview();
     } catch (e) {
-      LoggerService.warn('REVIEW_PROMPT', 'maybeRequestReview failed:', e);
+      LoggerService.warn('REVIEW_PROMPT', 'Failed to request app review', e);
     }
   },
 };

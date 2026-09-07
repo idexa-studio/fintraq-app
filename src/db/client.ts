@@ -17,7 +17,7 @@ function getDrizzleDb(): ExpoSQLiteDatabase<typeof schema> {
       expoDbInstance.execSync('PRAGMA synchronous = NORMAL;');
       expoDbInstance.execSync('PRAGMA foreign_keys = ON;');
     } catch (e) {
-      LoggerService.warn('DB_CLIENT', 'Connection PRAGMA initialization warning:', e);
+      LoggerService.warn('DB_CLIENT', 'Connection PRAGMA initialization warning', e);
     }
     drizzleDbInstance = drizzle(expoDbInstance, {
       schema,
@@ -47,7 +47,7 @@ export function resetDbConnections(): void {
     try {
       expoDbInstance.closeSync();
     } catch (e) {
-      LoggerService.warn('DB_CLIENT', 'Connection closeSync warning:', e);
+      LoggerService.warn('DB_CLIENT', 'Connection closeSync warning', e);
     }
     expoDbInstance = null;
     drizzleDbInstance = null;

@@ -184,7 +184,7 @@ export class LocalMigrationService {
       await AsyncStorage.setItem(FINTRAQ_MIGRATION_MARKER, 'true');
       LoggerService.info('LOCAL_MIGRATION', 'Fintraq namespace migration completed successfully.');
     } catch (error) {
-      LoggerService.error('LOCAL_MIGRATION', 'Error during database/keys migration:', error);
+      LoggerService.error('LOCAL_MIGRATION', 'Error during database/keys migration', error);
       // Fail silently to let the app load instead of rendering a white screen
     }
   }

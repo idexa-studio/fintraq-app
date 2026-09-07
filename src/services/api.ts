@@ -46,12 +46,12 @@ api.interceptors.request.use(
     config.headers['X-App-Current-Time'] = new Date().toISOString();
 
     if (__DEV__) {
-      LoggerService.info('API', `[API Request] ${config.method?.toUpperCase()} ${config.url}`);
+      LoggerService.info('API', `Request: ${config.method?.toUpperCase()} ${config.url}`);
     }
     return config;
   },
   (error: AxiosError) => {
-    LoggerService.error('API', error);
+    LoggerService.error('API', 'Request setup failed', error);
     return Promise.reject(error);
   }
 );
@@ -60,7 +60,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response: AxiosResponse) => {
     if (__DEV__) {
-      LoggerService.info('API', `[API Response] ${response.status} from ${response.config.url}`);
+      LoggerService.info('API', `Response: ${response.status} from ${response.config.url}`);
     }
     return response;
   },

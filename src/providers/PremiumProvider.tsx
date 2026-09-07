@@ -100,7 +100,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
       setPremiumState(newState);
     } catch (err) {
-      LoggerService.error('PREMIUM', 'Persistence failure:', err);
+      LoggerService.error('PREMIUM', 'Failed to persist premium state to storage', err);
     }
   }, []);
 
@@ -193,7 +193,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
 
           purchaseErrorSub = IAP.purchaseErrorListener((error) => {
             if (error.code !== IAP.ErrorCode.UserCancelled) {
-              LoggerService.error('PREMIUM', 'Store error:', error);
+              LoggerService.error('PREMIUM', 'In-app purchase store reported an error', error);
             }
           });
 

@@ -41,7 +41,7 @@ export const useLoanReminders = () => {
 
       return true;
     } catch (e) {
-      LoggerService.error('LOAN_REMINDERS', 'EMI schedule failed:', toErrorMessage(e));
+      LoggerService.error('LOAN_REMINDERS', 'EMI schedule failed', toErrorMessage(e));
       return false;
     }
   }, [updateLoan]);
@@ -57,7 +57,7 @@ export const useLoanReminders = () => {
         data: { emiReminderEnabled: false, emiNotificationIds: null },
       });
     } catch (e) {
-      LoggerService.error('LOAN_REMINDERS', 'EMI cancel failed:', toErrorMessage(e));
+      LoggerService.error('LOAN_REMINDERS', 'EMI cancel failed', toErrorMessage(e));
     }
   }, [updateLoan]);
 
@@ -94,7 +94,7 @@ export const useLoanReminders = () => {
 
       return true;
     } catch (e) {
-      LoggerService.error('LOAN_REMINDERS', 'Due reminder schedule failed:', toErrorMessage(e));
+      LoggerService.error('LOAN_REMINDERS', 'Due reminder schedule failed', toErrorMessage(e));
       return false;
     }
   }, [updateLoan]);
@@ -109,7 +109,7 @@ export const useLoanReminders = () => {
         data: { dueReminderEnabled: false, dueNotificationId: null },
       });
     } catch (e) {
-      LoggerService.error('LOAN_REMINDERS', 'Due reminder cancel failed:', toErrorMessage(e));
+      LoggerService.error('LOAN_REMINDERS', 'Due reminder cancel failed', toErrorMessage(e));
     }
   }, [updateLoan]);
 

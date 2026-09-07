@@ -89,7 +89,7 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
       lastCheckedTime.current = Date.now();
     } catch (error: any) {
       if (__DEV__) {
-        LoggerService.warn('APP_CONFIG', 'Remote config fetch failed:', error);
+        LoggerService.warn('APP_CONFIG', 'Failed to fetch remote app config', error);
       }
     } finally {
       setIsChecking(false);
@@ -105,7 +105,7 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
       INIT_DEADLINE_MS,
     )
       .catch((err) => {
-        if (__DEV__) LoggerService.warn('APP_CONFIG', 'init error:', err);
+        if (__DEV__) LoggerService.warn('APP_CONFIG', 'App config initialization failed', err);
       })
       .finally(() => {
         SplashScreen.hideAsync().catch(() => {});

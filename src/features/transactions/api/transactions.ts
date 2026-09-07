@@ -131,7 +131,7 @@ export const getTransactionsPaged = async (
   page: number,
   filters: TransactionFilters = {},
 ): Promise<TransactionListItem[]> => {
-  if (__DEV__) LoggerService.info('TRANSACTIONS', 'getTransactionsPaged', { page, filters });
+  if (__DEV__) LoggerService.info('TRANSACTIONS', `Fetching page ${page}`, filters);
   try {
     const where = buildWhere(filters);
 
@@ -153,10 +153,10 @@ export const getTransactionsPaged = async (
       .orderBy(orderBy)
       .limit(PAGE_SIZE)
       .offset(page * PAGE_SIZE);
-    if (__DEV__) LoggerService.info('TRANSACTIONS', 'getTransactionsPaged returned', rows.length, 'rows');
+    if (__DEV__) LoggerService.info('TRANSACTIONS', `Returned ${rows.length} rows for page ${page}`);
     return rows as TransactionListItem[];
   } catch (err) {
-    LoggerService.error('TRANSACTIONS', 'getTransactionsPaged FAILED', { page, filters, err });
+    LoggerService.error('TRANSACTIONS', `Failed to fetch page ${page}`, filters, err);
     throw err;
   }
 };
@@ -300,7 +300,7 @@ export const syncLoanStatus = async (loanId: number): Promise<void> => {
 
 export const createTransaction = async (data: InsertPayment): Promise<Payment> => {
   if (__DEV__) {
-    LoggerService.info('TRANSACTIONS', 'createTransaction', {
+    LoggerService.info('TRANSACTIONS', 'Creating transaction', {
       type: data.type,
       amount: data.amount,
       accountId: data.accountId,
@@ -324,20 +324,20 @@ export const createTransaction = async (data: InsertPayment): Promise<Payment> =
       await syncLoanStatus(payment.loanId);
     }
 
-    if (__DEV__) LoggerService.info('TRANSACTIONS', 'createTransaction success id', payment.id);
+    if (__DEV__) LoggerService.info('TRANSACTIONS', `Created transaction ${payment.id}`);
     return payment;
   } catch (err) {
-    LoggerService.error('TRANSACTIONS', 'createTransaction FAILED', { data, err });
+    LoggerService.error('TRANSACTIONS', 'Failed to create transaction', data, err);
     throw err;
   }
 };
 
 export const deleteTransaction = async (id: number): Promise<void> => {
-  if (__DEV__) LoggerService.info('TRANSACTIONS', 'deleteTransaction id', id);
+  if (__DEV__) LoggerService.info('TRANSACTIONS', `Deleting transaction ${id}`);
   try {
     const [payment] = await db.select().from(payments).where(eq(payments.id, id));
     if (!payment) {
-      if (__DEV__) LoggerService.warn('TRANSACTIONS', 'deleteTransaction: payment not found id', id);
+      if (__DEV__) LoggerService.warn('TRANSACTIONS', `Transaction ${id} not found, nothing to delete`);
       return;
     }
 
@@ -357,16 +357,16 @@ export const deleteTransaction = async (id: number): Promise<void> => {
       await syncLoanStatus(payment.loanId);
     }
 
-    if (__DEV__) LoggerService.info('TRANSACTIONS', 'deleteTransaction success id', id);
+    if (__DEV__) LoggerService.info('TRANSACTIONS', `Deleted transaction ${id}`);
   } catch (err) {
-    LoggerService.error('TRANSACTIONS', 'deleteTransaction FAILED', { id, err });
+    LoggerService.error('TRANSACTIONS', `Failed to delete transaction ${id}`, err);
     throw err;
   }
 };
 
 export const updateTransaction = async (id: number, data: UpdatePayment): Promise<Payment> => {
   if (__DEV__) {
-    LoggerService.info('TRANSACTIONS', 'updateTransaction id', id, {
+    LoggerService.info('TRANSACTIONS', `Updating transaction ${id}`, {
       newType: data.type,
       newAmount: data.amount,
       newAccountId: data.accountId,
@@ -405,10 +405,10 @@ export const updateTransaction = async (id: number, data: UpdatePayment): Promis
       await syncLoanStatus(old.loanId);
     }
 
-    if (__DEV__) LoggerService.info('TRANSACTIONS', 'updateTransaction success id', updated.id);
+    if (__DEV__) LoggerService.info('TRANSACTIONS', `Updated transaction ${updated.id}`);
     return updated;
   } catch (err) {
-    LoggerService.error('TRANSACTIONS', 'updateTransaction FAILED', { id, data, err });
+    LoggerService.error('TRANSACTIONS', `Failed to update transaction ${id}`, data, err);
     throw err;
   }
 };

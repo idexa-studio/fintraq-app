@@ -208,7 +208,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
     if (insights.length > 6) insights.splice(6);
 
   } catch (error) {
-    LoggerService.error('INSIGHTS', 'Failed:', error);
+    LoggerService.error('INSIGHTS', 'Failed to generate dashboard insights', error);
   }
 
   return insights;

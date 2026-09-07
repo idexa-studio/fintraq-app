@@ -57,7 +57,7 @@ export const NotificationService = {
           importance: NotifeeAndroidImportance.LOW,
         });
       } catch (e) {
-        LoggerService.warn('NOTIFICATION', 'Channel setup warning:', e);
+        LoggerService.warn('NOTIFICATION', 'Failed to set up notification channel', e);
       }
     }
   },
@@ -94,7 +94,7 @@ export const NotificationService = {
     const [hours, minutes] = timeStr.split(':').map(Number);
 
     if (isNaN(hours) || isNaN(minutes)) {
-      LoggerService.warn('NOTIFICATION', 'Invalid time format provided:', timeStr);
+      LoggerService.warn('NOTIFICATION', 'Invalid reminder time format', timeStr);
       return;
     }
 
@@ -107,7 +107,7 @@ export const NotificationService = {
     });
 
     if (alreadyScheduled) {
-      LoggerService.info('NOTIFICATION', `[NotificationService] Daily reminder already scheduled for ${timeStr}, skipping.`);
+      LoggerService.info('NOTIFICATION', `Daily reminder already scheduled for ${timeStr}, skipping`);
       return;
     }
 
@@ -133,7 +133,7 @@ export const NotificationService = {
       identifier: 'daily_reminder',
     });
 
-    LoggerService.info('NOTIFICATION', `[NotificationService] Daily reminder scheduled for ${timeStr}`);
+    LoggerService.info('NOTIFICATION', `Daily reminder scheduled for ${timeStr}`);
   },
 
   /**
@@ -164,7 +164,7 @@ export const NotificationService = {
       identifier: 'daily_reminder',
     });
 
-    LoggerService.info('NOTIFICATION', `[NotificationService] Reminder dismissed for today. Resuming tomorrow at ${timeStr}`);
+    LoggerService.info('NOTIFICATION', `Reminder dismissed for today, resuming tomorrow at ${timeStr}`);
   },
 
   /**
@@ -210,7 +210,7 @@ export const NotificationService = {
         },
       });
     } catch (e) {
-      LoggerService.warn('NOTIFICATION', 'presentBackupProgressNotification warning:', e);
+      LoggerService.warn('NOTIFICATION', 'Failed to present backup progress notification', e);
     }
   },
 
@@ -238,7 +238,7 @@ export const NotificationService = {
         },
       });
     } catch (e) {
-      LoggerService.warn('NOTIFICATION', 'presentBackupCompleteNotification warning:', e);
+      LoggerService.warn('NOTIFICATION', 'Failed to present backup complete notification', e);
     }
   },
 
@@ -259,7 +259,7 @@ export const NotificationService = {
         },
       });
     } catch (e) {
-      LoggerService.warn('NOTIFICATION', 'presentBackupFailedNotification warning:', e);
+      LoggerService.warn('NOTIFICATION', 'Failed to present backup failed notification', e);
     }
   },
 

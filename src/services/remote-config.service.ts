@@ -124,10 +124,10 @@ export async function fetchRemoteAppConfig(): Promise<RemoteAppConfig> {
   );
 
   if (__DEV__) {
-    LoggerService.info('REMOTE_CONFIG', 'forceUpdateConfig:', JSON.stringify(forceUpdate));
-    LoggerService.info('REMOTE_CONFIG', 'currentBuild:', getAppBuildNumber(), '| platform:', Platform.OS);
+    LoggerService.info('REMOTE_CONFIG', 'Force-update config', JSON.stringify(forceUpdate));
+    LoggerService.info('REMOTE_CONFIG', `Current build ${getAppBuildNumber()} on ${Platform.OS}`);
     const result = deriveConfig(forceUpdate, privacyUrlConfig, termsUrlConfig);
-    LoggerService.info('REMOTE_CONFIG', 'derived → forceUpdateRequired:', result.forceUpdate.required);
+    LoggerService.info('REMOTE_CONFIG', `Derived forceUpdateRequired: ${result.forceUpdate.required}`);
     return result;
   }
 

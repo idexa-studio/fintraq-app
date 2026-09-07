@@ -139,7 +139,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
       }
       router.back();
     } catch (e) {
-      LoggerService.error('PERSON_FORM', 'save failed:', e);
+      LoggerService.error('PERSON_FORM', 'Failed to save person', e);
     }
   });
 

@@ -221,7 +221,7 @@ class DatabaseBackupServiceClass {
         userProfile = JSON.parse(storedProfileStr);
       }
     } catch (e) {
-      LoggerService.warn('DB_BACKUP', 'Could not read user profile for backup:', e);
+      LoggerService.warn('DB_BACKUP', 'Could not read user profile for backup', e);
     }
 
     const fullPackage: BackupPackagePayload = {
@@ -261,9 +261,9 @@ class DatabaseBackupServiceClass {
           const currentProfile = currentProfileStr ? JSON.parse(currentProfileStr) : {};
           const mergedProfile = { ...currentProfile, ...pkg.profile };
           await AsyncStorage.setItem(StorageKeys.PROFILE, JSON.stringify(mergedProfile));
-          LoggerService.info('DB_BACKUP', 'Restored user profile & default currency:', pkg.profile.defaultCurrency);
+          LoggerService.info('DB_BACKUP', 'Restored user profile & default currency', pkg.profile.defaultCurrency);
         } catch (e) {
-          LoggerService.warn('DB_BACKUP', 'Profile restore warning:', e);
+          LoggerService.warn('DB_BACKUP', 'Profile restore warning', e);
         }
       }
 
@@ -308,7 +308,7 @@ class DatabaseBackupServiceClass {
         expoDb.execSync('PRAGMA busy_timeout = 30000;');
         expoDb.execSync('PRAGMA wal_checkpoint(PASSIVE);');
       } catch (e) {
-        LoggerService.warn('DB_BACKUP', 'Connection PRAGMA warning:', e);
+        LoggerService.warn('DB_BACKUP', 'Connection PRAGMA warning', e);
       }
 
       // Drain any in-flight background read queries
@@ -490,7 +490,7 @@ class DatabaseBackupServiceClass {
           expoDb.execSync('PRAGMA foreign_keys = ON;');
         });
       } catch (error: any) {
-        LoggerService.error('DB_BACKUP', 'Synchronous restore transaction failed:', error);
+        LoggerService.error('DB_BACKUP', 'Synchronous restore transaction failed', error);
         throw new Error(`Database restore transaction failed: ${error?.message || error}`);
       }
 
@@ -498,7 +498,7 @@ class DatabaseBackupServiceClass {
       try {
         await runSeeds();
       } catch (e) {
-        LoggerService.warn('DB_BACKUP', 'Re-seed warning:', e);
+        LoggerService.warn('DB_BACKUP', 'Re-seed warning', e);
       }
 
       // Invalidate React Query cache for instant UI refresh

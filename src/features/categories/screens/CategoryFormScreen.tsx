@@ -124,7 +124,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
       }
       router.back();
     } catch (error) {
-      LoggerService.error('CATEGORY_FORM', 'Failed to save category:', error);
+      LoggerService.error('CATEGORY_FORM', 'Failed to save category', error);
     }
   });
 

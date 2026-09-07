@@ -13,14 +13,14 @@ export const BACKGROUND_BACKUP_TASK_NAME = 'fintraq-background-backup';
 
 TaskManager.defineTask(BACKGROUND_BACKUP_TASK_NAME, async () => {
   try {
-    LoggerService.info('TASK_MANAGER', 'OS background task executor fired');
+    LoggerService.info('TASK_MANAGER', 'OS woke the background backup task');
     const result = await runAutoBackupIfDue();
-    LoggerService.info('TASK_MANAGER', `[BACKGROUND] Task completed with outcome: ${result.outcome.toUpperCase()}`);
+    LoggerService.info('TASK_MANAGER', `Task finished with outcome: ${result.outcome}`);
     return result.outcome === 'failed'
       ? BackgroundTask.BackgroundTaskResult.Failed
       : BackgroundTask.BackgroundTaskResult.Success;
   } catch (error: any) {
-    LoggerService.error('TASK_MANAGER', `[BACKGROUND] Unhandled task error: ${error?.message || String(error)}`);
+    LoggerService.error('TASK_MANAGER', 'Unhandled error in background task', error?.message || String(error));
     return BackgroundTask.BackgroundTaskResult.Failed;
   }
 });
@@ -59,6 +59,6 @@ export async function registerBackgroundBackupTaskAsync(): Promise<void> {
     });
     LoggerService.info('TASK_MANAGER', `Registered background task with ${minimumInterval}m minimum interval.`);
   } catch (error) {
-    LoggerService.warn('TASK_MANAGER', 'Failed to register:', error);
+    LoggerService.warn('TASK_MANAGER', 'Failed to register', error);
   }
 }

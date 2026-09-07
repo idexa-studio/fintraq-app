@@ -353,7 +353,7 @@ export async function seedDummyData() {
     await AsyncStorage.setItem(StorageKeys.SEED_EXECUTED, 'true');
     return totalSeeded;
   } catch (err) {
-    LoggerService.error('SEED', err);
+    LoggerService.error('SEED', 'Failed to seed demo data', err);
     const msg = err instanceof Error ? err.message : String(err);
     throw new Error(`Failed to seed realistic data: ${msg}`);
   }
