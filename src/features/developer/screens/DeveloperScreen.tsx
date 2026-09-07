@@ -13,6 +13,11 @@ import { seedDummyData } from '@/src/utils/seed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
 import {
+  AUTO_BACKUP_STORAGE_KEYS,
+  resolveAutoBackupFrequency,
+  runAutoBackupIfDue,
+} from '@/src/services/backup/auto-backup.service';
+import {
   AndroidIcon,
   Apple01Icon,
   ArrowRight01Icon,
@@ -22,6 +27,8 @@ import {
   CancelCircleIcon,
   CheckmarkBadge01Icon,
   CheckmarkCircle01Icon,
+  Clock01Icon,
+  CloudIcon,
   Delete02Icon,
   FlaskConicalIcon,
   LockPasswordIcon,
@@ -164,6 +171,51 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
   const [showDeleteBackupConfirm, setShowDeleteBackupConfirm] = React.useState(false);
   const [isDeletingBackup, setIsDeletingBackup] = React.useState(false);
   const [scheduledNotifs, setScheduledNotifs] = React.useState<Notifications.NotificationRequest[]>([]);
+  const [devBackupFreq, setDevBackupFreq] = React.useState<string>('daily');
+
+  const fetchDevBackupFreq = React.useCallback(async () => {
+    const freq = await resolveAutoBackupFrequency();
+    setDevBackupFreq(freq);
+  }, []);
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      fetchDevBackupFreq();
+    }
+  }, [isAuthenticated, fetchDevBackupFreq]);
+
+  const handleToggle2MinBackup = async () => {
+    const nextFreq = devBackupFreq === '2min' ? 'daily' : '2min';
+    await Promise.all([
+      AsyncStorage.setItem(AUTO_BACKUP_STORAGE_KEYS.FREQUENCY, nextFreq),
+      AsyncStorage.setItem(AUTO_BACKUP_STORAGE_KEYS.ENABLED, 'true'),
+    ]);
+    setDevBackupFreq(nextFreq);
+    showAlert({
+      title: 'Dev Auto-Backup Schedule',
+      message: nextFreq === '2min'
+        ? 'Auto-backup interval set to 2 MINUTES (Dev QA mode). Background task checks will run every 2 minutes when due.'
+        : 'Auto-backup interval reset to Daily.',
+      type: 'success',
+    });
+  };
+
+  const handleRunAutoBackupTask = async () => {
+    try {
+      const res = await runAutoBackupIfDue();
+      showAlert({
+        title: 'Dev Auto-Backup Task',
+        message: `Execution outcome: ${res.outcome.toUpperCase()}`,
+        type: res.outcome === 'ran' ? 'success' : 'info',
+      });
+    } catch (err: any) {
+      showAlert({
+        title: 'Dev Auto-Backup Error',
+        message: err?.message || 'Failed to execute auto-backup task',
+        type: 'error',
+      });
+    }
+  };
 
   const handleDeleteBackup = async () => {
     try {
@@ -407,6 +459,25 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
             label="Seed dummy data"
             subtitle="Generate 12 months of transactions, persons & loans"
             onPress={() => setShowSeedConfirm(true)}
+          />
+          <RowSeparator theme={theme} />
+          <NavRow
+            theme={theme}
+            icon={Clock01Icon as IconSvgElement}
+            iconColor={devBackupFreq === '2min' ? colors.warning : colors.primary}
+            label={devBackupFreq === '2min' ? '2-Min Auto-Backup Active' : 'Set 2-Min Auto-Backup (Dev)'}
+            subtitle={devBackupFreq === '2min' ? 'QA mode: background checks run every 2 mins' : 'Set auto-backup interval to 2 minutes for QA testing'}
+            value={devBackupFreq === '2min' ? '2 Min' : 'Standard'}
+            onPress={handleToggle2MinBackup}
+          />
+          <RowSeparator theme={theme} />
+          <NavRow
+            theme={theme}
+            icon={CloudIcon as IconSvgElement}
+            iconColor={colors.primary}
+            label="Run Auto-Backup Task Now"
+            subtitle="Trigger headless auto-backup check executor"
+            onPress={handleRunAutoBackupTask}
           />
           <RowSeparator theme={theme} />
           <NavRow

@@ -18,7 +18,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "me.nafish.luno",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIBackgroundModes": ["fetch", "processing"]
       }
     },
     "android": {
@@ -32,7 +33,10 @@
       "predictiveBackGestureEnabled": false,
       "package": "me.nafish.luno",
       "permissions": [
-        "POST_NOTIFICATIONS"
+        "POST_NOTIFICATIONS",
+        "RECEIVE_BOOT_COMPLETED",
+        "WAKE_LOCK",
+        "FOREGROUND_SERVICE"
       ]
     },
     "web": {
@@ -59,6 +63,7 @@
       "expo-localization",
       "expo-iap",
       "expo-notifications",
+      "react-native-notify-kit",
       "expo-system-ui",
       "expo-secure-store",
       "./plugins/with-fingerprint-not-required"

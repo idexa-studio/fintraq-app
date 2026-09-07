@@ -206,16 +206,21 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
 
     try {
       updateBackupState({ isBackingUp: true, progress: 5, progressStage: 'Preparing workspace snapshot...' });
+      NotificationService.presentBackupProgressNotification(5, 'Preparing workspace snapshot...');
 
       const payloadStr = await DatabaseBackupService.exportBackupData();
 
       updateBackupState({ progress: 25, progressStage: 'Uploading backup...' });
+      NotificationService.presentBackupProgressNotification(25, 'Uploading to Google Drive...');
 
       const uploadedFile = await GoogleDriveService.uploadBackup(payloadStr, lastBackup?.id, (fraction: number) => {
+        const p = 25 + Math.round(fraction * 65);
+        const stage = `Uploading to Google Drive... ${Math.round(fraction * 100)}%`;
         updateBackupState({
-          progress: 25 + Math.round(fraction * 65),
-          progressStage: `Uploading to Google Drive... ${Math.round(fraction * 100)}%`,
+          progress: p,
+          progressStage: stage,
         });
+        NotificationService.presentBackupProgressNotification(p, stage);
       });
 
       updateBackupState({ progress: 95, progressStage: 'Finalizing backup...' });
@@ -228,9 +233,8 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
 
       updateBackupState({ progress: 100, progressStage: 'Backup complete!' });
 
-      if (isBackground) {
-        NotificationService.presentBackupCompleteNotification();
-      }
+      NotificationService.presentBackupCompleteNotification();
+
       // A successful cloud backup is a real trust moment — ask for a review
       // here rather than on a random screen mount. No-ops after 1st ever ask
       // or before day 2 since install (see ReviewPromptService).
@@ -238,9 +242,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       return true;
     } catch (e: any) {
       console.warn('[useGoogleBackup] Backup error:', e);
-      if (isBackground) {
-        NotificationService.presentBackupFailedNotification();
-      }
+      NotificationService.presentBackupFailedNotification();
       if (!options?.silent) {
         throw new Error('Could not save backup to Google Drive. Please check your internet connection.');
       }
@@ -248,7 +250,8 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     } finally {
       setTimeout(() => {
         updateBackupState({ isBackingUp: false, progress: 0, progressStage: null });
-      }, 1000);
+        NotificationService.dismissBackupNotification();
+      }, 3000);
     }
   }, [user, lastBackup?.id]);
 

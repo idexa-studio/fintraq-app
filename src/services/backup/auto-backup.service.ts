@@ -6,7 +6,7 @@ import { CloudBackupFileMeta, GoogleDriveService } from './google-drive.service'
 import { NotificationService } from '../notification.service';
 import { ReviewPromptService } from '../review-prompt.service';
 
-export type AutoBackupFrequency = 'off' | 'daily' | 'weekly' | 'monthly';
+export type AutoBackupFrequency = 'off' | 'daily' | 'weekly' | 'monthly' | '2min';
 
 export const AUTO_BACKUP_STORAGE_KEYS = {
   ENABLED: '@fintraq_auto_backup_enabled',
@@ -17,6 +17,7 @@ export const AUTO_BACKUP_STORAGE_KEYS = {
 
 export const AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS: Record<AutoBackupFrequency, number> = {
   off: Infinity,
+  '2min': 2 * 60 * 1000,
   daily: 24 * 60 * 60 * 1000,
   weekly: 7 * 24 * 60 * 60 * 1000,
   monthly: 30 * 24 * 60 * 60 * 1000,
@@ -28,7 +29,7 @@ export async function resolveAutoBackupFrequency(): Promise<AutoBackupFrequency>
     AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.FREQUENCY),
   ]);
 
-  if (autoFreqVal === 'daily' || autoFreqVal === 'weekly' || autoFreqVal === 'monthly') {
+  if (autoFreqVal === '2min' || autoFreqVal === 'daily' || autoFreqVal === 'weekly' || autoFreqVal === 'monthly') {
     return autoFreqVal;
   }
   if (autoVal === 'true') return 'daily';
@@ -67,19 +68,22 @@ export async function runAutoBackupIfDue(): Promise<AutoBackupResult> {
   }
 
   const isBackground = AppState.currentState !== 'active';
-  if (isBackground) {
-    NotificationService.presentBackupStartNotification();
-  }
+
+  NotificationService.presentBackupProgressNotification(10, 'Preparing database snapshot...');
 
   try {
-    updateBackupState({ isBackingUp: true, progress: 10, progressStage: 'Auto-backing up...' });
+    updateBackupState({ isBackingUp: true, progress: 10, progressStage: 'Preparing database snapshot...' });
 
     const payloadStr = await DatabaseBackupService.exportBackupData();
-    updateBackupState({ progress: 50, progressStage: 'Uploading background backup...' });
+    updateBackupState({ progress: 35, progressStage: 'Uploading to Google Drive...' });
+    NotificationService.presentBackupProgressNotification(35, 'Uploading to Google Drive...');
 
     const latestFile = await GoogleDriveService.findLatestBackup();
     const uploadedFile = await GoogleDriveService.uploadBackup(payloadStr, latestFile?.id, (frac) => {
-      updateBackupState({ progress: 50 + Math.round(frac * 45), progressStage: `Uploading... ${Math.round(frac * 100)}%` });
+      const p = 35 + Math.round(frac * 60);
+      const stage = `Uploading to Google Drive... ${Math.round(frac * 100)}%`;
+      updateBackupState({ progress: p, progressStage: stage });
+      NotificationService.presentBackupProgressNotification(p, stage);
     });
 
     updateBackupState({ progress: 100, progressStage: 'Backup complete!' });
@@ -89,9 +93,9 @@ export async function runAutoBackupIfDue(): Promise<AutoBackupResult> {
       AsyncStorage.setItem(AUTO_BACKUP_STORAGE_KEYS.LAST_AUTO_BACKUP_TIME, String(now)),
     ]);
 
-    if (isBackground) {
-      NotificationService.presentBackupCompleteNotification();
-    } else {
+    NotificationService.presentBackupCompleteNotification();
+
+    if (!isBackground) {
       // Native review dialogs need an active foreground screen — only ask
       // when this ran from the foreground mount check, never from the
       // headless background task.
@@ -100,13 +104,12 @@ export async function runAutoBackupIfDue(): Promise<AutoBackupResult> {
     return { outcome: 'ran', meta: uploadedFile };
   } catch (err) {
     console.warn('[AutoBackupService] Background auto-backup warning:', err);
-    if (isBackground) {
-      NotificationService.presentBackupFailedNotification();
-    }
+    NotificationService.presentBackupFailedNotification();
     return { outcome: 'failed' };
   } finally {
     setTimeout(() => {
       updateBackupState({ isBackingUp: false, progress: 0, progressStage: null });
-    }, 1000);
+      NotificationService.dismissBackupNotification();
+    }, 3000);
   }
 }

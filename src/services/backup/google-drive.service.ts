@@ -1,7 +1,10 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
 import googleServicesConfig from '../../../google-services.json';
 import { GoogleDriveAuthError } from './google-drive.errors';
 import { DriveProgressCallback, driveFetch, driveXhrRequest } from './google-drive.http';
+
+const CACHED_GOOGLE_USER_KEY = '@fintraq_google_user';
 
 export type GoogleUserAccount = {
   id: string;
@@ -55,12 +58,18 @@ class GoogleDriveServiceClass {
 
     if (isSuccessResponse(response)) {
       const user = response.data.user;
-      return {
+      const account: GoogleUserAccount = {
         id: user.id,
         email: user.email,
         name: user.name,
         photo: user.photo,
       };
+      try {
+        await AsyncStorage.setItem(CACHED_GOOGLE_USER_KEY, JSON.stringify(account));
+      } catch {
+        // Ignore cache error
+      }
+      return account;
     }
     return null;
   }
@@ -71,16 +80,32 @@ class GoogleDriveServiceClass {
       const response = await GoogleSignin.signInSilently();
       if (response.type === 'success') {
         const user = response.data.user;
-        return {
+        const account: GoogleUserAccount = {
           id: user.id,
           email: user.email,
           name: user.name,
           photo: user.photo,
         };
+        try {
+          await AsyncStorage.setItem(CACHED_GOOGLE_USER_KEY, JSON.stringify(account));
+        } catch {
+          // Ignore cache error
+        }
+        return account;
       }
     } catch {
-      // User not signed in or silent auth failed
+      // User not signed in or silent auth failed in headless mode — fallback to cached user
     }
+
+    try {
+      const cached = await AsyncStorage.getItem(CACHED_GOOGLE_USER_KEY);
+      if (cached) {
+        return JSON.parse(cached);
+      }
+    } catch {
+      // Ignore cache lookup error
+    }
+
     return null;
   }
 
@@ -88,6 +113,7 @@ class GoogleDriveServiceClass {
     this.initialize();
     try {
       await GoogleSignin.signOut();
+      await AsyncStorage.removeItem(CACHED_GOOGLE_USER_KEY);
     } catch (e) {
       console.warn('[GoogleDriveService] Sign out error:', e);
     }

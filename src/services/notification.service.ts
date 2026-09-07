@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import notifee, { AndroidImportance as NotifeeAndroidImportance } from 'react-native-notify-kit';
 import { Platform } from 'react-native';
 
 const REMINDER_POOL = [
@@ -24,7 +25,7 @@ export const NotificationService = {
   /**
    * Configures how the app should handle notifications while foregrounded.
    */
-  init() {
+  async init() {
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
         shouldPlaySound: true,
@@ -33,6 +34,25 @@ export const NotificationService = {
         shouldShowList: true,
       }),
     });
+
+    if (Platform.OS === 'android') {
+      try {
+        await Notifications.setNotificationChannelAsync('default', {
+          name: 'Reminders & Alerts',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+        });
+
+        await notifee.createChannel({
+          id: 'backup_status',
+          name: 'Cloud Backup Progress',
+          importance: NotifeeAndroidImportance.LOW,
+        });
+      } catch (e) {
+        console.warn('[NotificationService] Channel setup warning:', e);
+      }
+    }
   },
 
   /**
@@ -55,16 +75,7 @@ export const NotificationService = {
       finalStatus = status;
     }
 
-    // On Android, we need to set up a channel for notifications
-    if (Platform.OS === 'android') {
-      await Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-    }
-
+    await this.init();
     return finalStatus === 'granted';
   },
 
@@ -168,23 +179,39 @@ export const NotificationService = {
   },
 
   /**
-   * presentBackupStartNotification: Shows a sticky OS push when background backup starts.
+   * presentBackupProgressNotification: Shows a sticky OS notification with native Android progress bar & text progress via react-native-notify-kit.
    */
-  async presentBackupStartNotification() {
+  async presentBackupProgressNotification(progress: number, stageText: string) {
     try {
-      await Notifications.scheduleNotificationAsync({
-        identifier: 'cloud_backup_status',
-        content: {
-          title: '☁️ Cloud Backup Syncing',
-          body: 'Your Fintraq workspace transactions and settings are being backed up to cloud storage.',
-          sound: false,
-          priority: Notifications.AndroidNotificationPriority.HIGH,
+      const clampedProgress = Math.min(100, Math.max(0, Math.round(progress)));
+      const cleanStage = stageText || 'Syncing workspace data to Google Drive...';
+
+      await notifee.displayNotification({
+        id: 'cloud_backup_status',
+        title: '☁️ Cloud Backup Syncing',
+        body: cleanStage,
+        android: {
+          channelId: 'backup_status',
+          ongoing: true,
+          onlyAlertOnce: true,
+          pressAction: { id: 'default' },
+          progress: {
+            max: 100,
+            current: clampedProgress,
+            indeterminate: false,
+          },
         },
-        trigger: null,
       });
     } catch (e) {
-      console.warn('[NotificationService] presentBackupStartNotification warning:', e);
+      console.warn('[NotificationService] presentBackupProgressNotification warning:', e);
     }
+  },
+
+  /**
+   * presentBackupStartNotification: Alias for 5% initial progress notification.
+   */
+  async presentBackupStartNotification() {
+    await this.presentBackupProgressNotification(5, 'Starting background backup...');
   },
 
   /**
@@ -192,15 +219,16 @@ export const NotificationService = {
    */
   async presentBackupCompleteNotification() {
     try {
-      await Notifications.scheduleNotificationAsync({
-        identifier: 'cloud_backup_status',
-        content: {
-          title: '✅ Cloud Backup Complete',
-          body: 'Your financial history was successfully backed up to cloud storage.',
-          sound: true,
-          priority: Notifications.AndroidNotificationPriority.HIGH,
+      await notifee.cancelNotification('cloud_backup_status').catch(() => {});
+      await notifee.displayNotification({
+        id: 'cloud_backup_status_done',
+        title: '✅ Cloud Backup Complete',
+        body: 'Your workspace history was safely backed up to cloud storage.',
+        android: {
+          channelId: 'backup_status',
+          autoCancel: true,
+          pressAction: { id: 'default' },
         },
-        trigger: null,
       });
     } catch (e) {
       console.warn('[NotificationService] presentBackupCompleteNotification warning:', e);
@@ -212,18 +240,30 @@ export const NotificationService = {
    */
   async presentBackupFailedNotification() {
     try {
-      await Notifications.scheduleNotificationAsync({
-        identifier: 'cloud_backup_status',
-        content: {
-          title: '⚠️ Cloud Backup Failed',
-          body: 'Could not complete background cloud backup. Please check your internet connection.',
-          sound: true,
-          priority: Notifications.AndroidNotificationPriority.HIGH,
+      await notifee.cancelNotification('cloud_backup_status').catch(() => {});
+      await notifee.displayNotification({
+        id: 'cloud_backup_status_done',
+        title: '⚠️ Cloud Backup Failed',
+        body: 'Could not complete cloud backup. Please check your internet connection.',
+        android: {
+          channelId: 'backup_status',
+          autoCancel: true,
+          pressAction: { id: 'default' },
         },
-        trigger: null,
       });
     } catch (e) {
       console.warn('[NotificationService] presentBackupFailedNotification warning:', e);
+    }
+  },
+
+  /**
+   * dismissBackupNotification: Clears the cloud backup status notification.
+   */
+  async dismissBackupNotification() {
+    try {
+      await notifee.cancelNotification('cloud_backup_status').catch(() => {});
+    } catch {
+      // Ignore dismiss error
     }
   },
 
