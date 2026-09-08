@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import notifee, {
+  AndroidImportance,
   EventType,
   RepeatFrequency,
-  TimeUnit,
   TriggerType,
 } from 'react-native-notify-kit';
 import { LoggerService } from '../logger.service';
@@ -31,9 +31,11 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
 function frequencyToTrigger(frequency: AutoBackupFrequency) {
   if (frequency === AutoBackupFrequencyEnum.DEV_TWO_MIN) {
     return {
-      type: TriggerType.INTERVAL as const,
-      interval: 2,
-      timeUnit: TimeUnit.MINUTES,
+      type: TriggerType.TIMESTAMP as const,
+      timestamp: Date.now() + 2 * 60 * 1000,
+      alarmManager: {
+        allowWhileIdle: true,
+      },
     };
   }
 
@@ -46,7 +48,9 @@ function frequencyToTrigger(frequency: AutoBackupFrequency) {
     type: TriggerType.TIMESTAMP as const,
     timestamp: Date.now() + 60_000,
     repeatFrequency,
-    alarmManager: true,
+    alarmManager: {
+      allowWhileIdle: true,
+    },
   };
 }
 
@@ -76,6 +80,13 @@ export async function registerBackgroundBackupTaskAsync(): Promise<void> {
     if (isScheduled) {
       await notifee.cancelTriggerNotification(SCHEDULER_TRIGGER_ID);
     }
+
+    // Ensure the notification channel is created prior to trigger notification registration
+    await notifee.createChannel({
+      id: 'backup_status',
+      name: 'Cloud Backup Progress',
+      importance: AndroidImportance.LOW,
+    });
 
     await notifee.createTriggerNotification(
       {
