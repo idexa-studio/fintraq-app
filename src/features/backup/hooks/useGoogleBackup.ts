@@ -1,6 +1,7 @@
 import {
   AUTO_BACKUP_STORAGE_KEYS,
   AutoBackupFrequency,
+  AutoBackupFrequencyEnum,
   resolveAutoBackupFrequency,
 } from '@/src/services/backup/auto-backup.service';
 import { getBackupState, SharedBackupState, subscribeToBackupState, updateBackupState } from '@/src/services/backup/backup-state';
@@ -142,10 +143,10 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
   const setAutoBackupFrequency = useCallback(async (freq: AutoBackupFrequency) => {
     try {
       setAutoBackupFrequencyState(freq);
-      setAutoBackupEnabled(freq !== 'off');
+      setAutoBackupEnabled(freq !== AutoBackupFrequencyEnum.OFF);
       await Promise.all([
         AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP_FREQ, freq),
-        AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP, freq !== 'off' ? 'true' : 'false'),
+        AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP, freq !== AutoBackupFrequencyEnum.OFF ? 'true' : 'false'),
       ]);
       await registerBackgroundBackupTaskAsync();
     } catch (e) {
@@ -161,7 +162,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       setUser(signedInUser);
       if (signedInUser) {
         // By default enable automated daily cloud backups upon connecting Google Drive
-        await setAutoBackupFrequency('daily');
+        await setAutoBackupFrequency(AutoBackupFrequencyEnum.DAILY);
 
         const backupMeta = await GoogleDriveService.findLatestBackup();
         if (backupMeta) {
@@ -310,7 +311,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       setLastBackup(targetBackup);
       await Promise.all([
         AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(targetBackup)),
-        setAutoBackupFrequency('daily'),
+        setAutoBackupFrequency(AutoBackupFrequencyEnum.DAILY),
       ]);
 
       updateBackupState({ progress: 100, progressStage: 'Restore complete!' });
@@ -334,7 +335,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
   }, [user, queryClient, setAutoBackupFrequency]);
 
   const toggleAutoBackup = useCallback(async (value: boolean) => {
-    const nextFreq: AutoBackupFrequency = value ? 'daily' : 'off';
+    const nextFreq: AutoBackupFrequency = value ? AutoBackupFrequencyEnum.DAILY : AutoBackupFrequencyEnum.OFF;
     await setAutoBackupFrequency(nextFreq);
   }, [setAutoBackupFrequency]);
 

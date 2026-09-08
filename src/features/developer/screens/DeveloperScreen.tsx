@@ -13,7 +13,7 @@ import { seedDummyData } from '@/src/utils/seed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
 import { registerBackgroundBackupTaskAsync } from '@/src/services/backup/background-backup.task';
-import { AUTO_BACKUP_STORAGE_KEYS, resolveAutoBackupFrequency, runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
+import { AUTO_BACKUP_STORAGE_KEYS, AutoBackupFrequencyEnum, resolveAutoBackupFrequency, runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
 import { LoggerService } from '@/src/services/logger.service';
 import {
   AndroidIcon,
@@ -191,8 +191,8 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
     }
   }, [isAuthenticated, fetchDevBackupFreq, fetchLogs]);
 
-  const handleToggle15MinBackup = async () => {
-    const nextFreq = devBackupFreq === '15min' ? 'daily' : '15min';
+  const handleToggle2MinBackup = async () => {
+    const nextFreq = devBackupFreq === AutoBackupFrequencyEnum.DEV_TWO_MIN ? AutoBackupFrequencyEnum.DAILY : AutoBackupFrequencyEnum.DEV_TWO_MIN;
     await Promise.all([
       AsyncStorage.setItem(AUTO_BACKUP_STORAGE_KEYS.FREQUENCY, nextFreq),
       AsyncStorage.setItem(AUTO_BACKUP_STORAGE_KEYS.ENABLED, 'true'),
@@ -201,8 +201,8 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
     setDevBackupFreq(nextFreq);
     showAlert({
       title: 'Dev Auto-Backup Schedule',
-      message: nextFreq === '15min'
-        ? 'Auto-backup interval set to 15 MINUTES (Dev QA mode). Background task checks will run every 15 minutes when due.'
+      message: nextFreq === AutoBackupFrequencyEnum.DEV_TWO_MIN
+        ? 'Auto-backup interval set to 2 MINUTES (Dev QA mode). Background task checks will run every 2 minutes when due.'
         : 'Auto-backup interval reset to Daily.',
       type: 'success',
     });
@@ -472,11 +472,11 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           <NavRow
             theme={theme}
             icon={Clock01Icon as IconSvgElement}
-            iconColor={devBackupFreq === '15min' ? colors.warning : colors.primary}
-            label={devBackupFreq === '15min' ? '15-Min Auto-Backup Active' : 'Set 15-Min Auto-Backup (Dev)'}
-            subtitle={devBackupFreq === '15min' ? 'QA mode: background checks run every 15 mins' : 'Set auto-backup interval to 15 minutes for QA testing'}
-            value={devBackupFreq === '15min' ? '15 Min' : 'Standard'}
-            onPress={handleToggle15MinBackup}
+            iconColor={devBackupFreq === AutoBackupFrequencyEnum.DEV_TWO_MIN ? colors.warning : colors.primary}
+            label={devBackupFreq === AutoBackupFrequencyEnum.DEV_TWO_MIN ? '2-Min Auto-Backup Active' : 'Set 2-Min Auto-Backup (Dev QA)'}
+            subtitle={devBackupFreq === AutoBackupFrequencyEnum.DEV_TWO_MIN ? 'QA mode: background checks run every 2 mins' : 'Set auto-backup interval to 2 minutes for rapid QA testing'}
+            value={devBackupFreq === AutoBackupFrequencyEnum.DEV_TWO_MIN ? '2 Min' : 'Standard'}
+            onPress={handleToggle2MinBackup}
           />
           <RowSeparator theme={theme} />
           <NavRow

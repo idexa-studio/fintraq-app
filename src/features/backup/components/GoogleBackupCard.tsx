@@ -28,6 +28,8 @@ import { useRouter } from 'expo-router';
 import { useGoogleBackup } from '../hooks/useGoogleBackup';
 import { LoggerService } from '@/src/services/logger.service';
 
+import { AutoBackupFrequencyEnum } from '@/src/services/backup/auto-backup.service';
+
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const theme = useTheme();
   const { colors } = theme;
@@ -344,18 +346,29 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         <View style={styles.rowInfo}>
           <Text style={styles.rowLabel}>Scheduled Auto-Backup</Text>
           <Text style={styles.rowSubtitle}>
-            {autoBackupFrequency === 'off'
+            {autoBackupFrequency === AutoBackupFrequencyEnum.OFF
               ? 'Automatic background cloud backup is disabled'
               : `Backs up your data automatically ${autoBackupFrequency} in the background`}
           </Text>
         </View>
 
         <View style={styles.freqPillsRow}>
-          {(autoBackupFrequency === '15min'
-            ? (['off', '15min', 'daily', 'weekly', 'monthly'] as const)
-            : (['off', 'daily', 'weekly', 'monthly'] as const)).map((freq) => {
+          {(autoBackupFrequency === AutoBackupFrequencyEnum.DEV_TWO_MIN
+            ? ([
+                AutoBackupFrequencyEnum.OFF,
+                AutoBackupFrequencyEnum.DEV_TWO_MIN,
+                AutoBackupFrequencyEnum.DAILY,
+                AutoBackupFrequencyEnum.WEEKLY,
+                AutoBackupFrequencyEnum.MONTHLY,
+              ] as const)
+            : ([
+                AutoBackupFrequencyEnum.OFF,
+                AutoBackupFrequencyEnum.DAILY,
+                AutoBackupFrequencyEnum.WEEKLY,
+                AutoBackupFrequencyEnum.MONTHLY,
+              ] as const)).map((freq) => {
             const isActive = autoBackupFrequency === freq;
-            const label = freq === '15min' ? '15 Min (Dev)' : freq.charAt(0).toUpperCase() + freq.slice(1);
+            const label = freq === AutoBackupFrequencyEnum.DEV_TWO_MIN ? '2 Min (Dev)' : freq.charAt(0).toUpperCase() + freq.slice(1);
             return (
               <BentoPressable
                 key={freq}

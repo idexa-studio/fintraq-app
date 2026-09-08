@@ -8,7 +8,15 @@ import { ReviewPromptService } from '../review-prompt.service';
 
 import { LoggerService } from '../logger.service';
 
-export type AutoBackupFrequency = 'off' | 'daily' | 'weekly' | 'monthly' | '15min';
+export const AutoBackupFrequencyEnum = {
+  OFF: 'off',
+  DEV_TWO_MIN: '2min',
+  DAILY: 'daily',
+  WEEKLY: 'weekly',
+  MONTHLY: 'monthly',
+} as const;
+
+export type AutoBackupFrequency = (typeof AutoBackupFrequencyEnum)[keyof typeof AutoBackupFrequencyEnum];
 
 export const AUTO_BACKUP_STORAGE_KEYS = {
   ENABLED: '@fintraq_auto_backup_enabled',
@@ -18,11 +26,11 @@ export const AUTO_BACKUP_STORAGE_KEYS = {
 } as const;
 
 export const AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS: Record<AutoBackupFrequency, number> = {
-  off: Infinity,
-  '15min': 15 * 60 * 1000,
-  daily: 24 * 60 * 60 * 1000,
-  weekly: 7 * 24 * 60 * 60 * 1000,
-  monthly: 30 * 24 * 60 * 60 * 1000,
+  [AutoBackupFrequencyEnum.OFF]: Infinity,
+  [AutoBackupFrequencyEnum.DEV_TWO_MIN]: 2 * 60 * 1000,
+  [AutoBackupFrequencyEnum.DAILY]: 24 * 60 * 60 * 1000,
+  [AutoBackupFrequencyEnum.WEEKLY]: 7 * 24 * 60 * 60 * 1000,
+  [AutoBackupFrequencyEnum.MONTHLY]: 30 * 24 * 60 * 60 * 1000,
 };
 
 export async function resolveAutoBackupFrequency(): Promise<AutoBackupFrequency> {
@@ -31,11 +39,16 @@ export async function resolveAutoBackupFrequency(): Promise<AutoBackupFrequency>
     AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.FREQUENCY),
   ]);
 
-  if (autoFreqVal === '15min' || autoFreqVal === 'daily' || autoFreqVal === 'weekly' || autoFreqVal === 'monthly') {
+  if (
+    autoFreqVal === AutoBackupFrequencyEnum.DEV_TWO_MIN ||
+    autoFreqVal === AutoBackupFrequencyEnum.DAILY ||
+    autoFreqVal === AutoBackupFrequencyEnum.WEEKLY ||
+    autoFreqVal === AutoBackupFrequencyEnum.MONTHLY
+  ) {
     return autoFreqVal;
   }
-  if (autoVal === 'true') return 'daily';
-  return 'off';
+  if (autoVal === 'true') return AutoBackupFrequencyEnum.DAILY;
+  return AutoBackupFrequencyEnum.OFF;
 }
 
 export type AutoBackupResult =

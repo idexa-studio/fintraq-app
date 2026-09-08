@@ -6,7 +6,7 @@ import notifee, {
   TriggerType,
 } from 'react-native-notify-kit';
 import { LoggerService } from '../logger.service';
-import { AutoBackupFrequency, resolveAutoBackupFrequency, runAutoBackupIfDue } from './auto-backup.service';
+import { AutoBackupFrequency, AutoBackupFrequencyEnum, resolveAutoBackupFrequency, runAutoBackupIfDue } from './auto-backup.service';
 
 const SCHEDULER_TRIGGER_ID = 'fintraq_auto_backup_scheduler';
 const LAST_SCHEDULED_FREQUENCY_KEY = '@fintraq_bg_task_last_frequency';
@@ -29,17 +29,17 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
 });
 
 function frequencyToTrigger(frequency: AutoBackupFrequency) {
-  if (frequency === '15min') {
+  if (frequency === AutoBackupFrequencyEnum.DEV_TWO_MIN) {
     return {
       type: TriggerType.INTERVAL as const,
-      interval: 15,
+      interval: 2,
       timeUnit: TimeUnit.MINUTES,
     };
   }
 
   const repeatFrequency =
-    frequency === 'daily' ? RepeatFrequency.DAILY
-    : frequency === 'weekly' ? RepeatFrequency.WEEKLY
+    frequency === AutoBackupFrequencyEnum.DAILY ? RepeatFrequency.DAILY
+    : frequency === AutoBackupFrequencyEnum.WEEKLY ? RepeatFrequency.WEEKLY
     : RepeatFrequency.MONTHLY;
 
   return {
@@ -58,7 +58,7 @@ export async function registerBackgroundBackupTaskAsync(): Promise<void> {
     const isScheduled = activeTriggers.includes(SCHEDULER_TRIGGER_ID);
     const lastFrequency = await AsyncStorage.getItem(LAST_SCHEDULED_FREQUENCY_KEY);
 
-    if (frequency === 'off') {
+    if (frequency === AutoBackupFrequencyEnum.OFF) {
       if (isScheduled || lastFrequency) {
         await notifee.cancelTriggerNotification(SCHEDULER_TRIGGER_ID);
         await AsyncStorage.removeItem(LAST_SCHEDULED_FREQUENCY_KEY);
