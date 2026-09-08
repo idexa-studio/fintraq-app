@@ -65,12 +65,6 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   const lastAutoTime = lastAutoTimeStr ? parseInt(lastAutoTimeStr, 10) : 0;
   const threshold = AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS[frequency] ?? (15 * 60 * 1000);
 
-  // Auto-backup is strictly background-only: skip if app is currently active in foreground (unless force = true in Dev QA)
-  if (AppState.currentState === 'active' && !force) {
-    LoggerService.info('AUTO_BACKUP', 'Skipped: app active in foreground (background only)');
-    return { outcome: 'skipped' };
-  }
-
   if (!force && (now - lastAutoTime < threshold || getBackupState().isBackingUp)) {
     const elapsedSec = Math.round((now - lastAutoTime) / 1000);
     const thresholdSec = Math.round(threshold / 1000);
