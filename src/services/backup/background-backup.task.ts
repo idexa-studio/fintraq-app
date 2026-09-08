@@ -29,16 +29,6 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
 });
 
 function frequencyToTrigger(frequency: AutoBackupFrequency) {
-  if (frequency === AutoBackupFrequencyEnum.DEV_TWO_MIN) {
-    return {
-      type: TriggerType.TIMESTAMP as const,
-      timestamp: Date.now() + 2 * 60 * 1000,
-      alarmManager: {
-        allowWhileIdle: true,
-      },
-    };
-  }
-
   const repeatFrequency =
     frequency === AutoBackupFrequencyEnum.DAILY ? RepeatFrequency.DAILY
     : frequency === AutoBackupFrequencyEnum.WEEKLY ? RepeatFrequency.WEEKLY

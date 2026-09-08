@@ -10,7 +10,6 @@ import { LoggerService } from '../logger.service';
 
 export const AutoBackupFrequencyEnum = {
   OFF: 'off',
-  DEV_TWO_MIN: '2min',
   DAILY: 'daily',
   WEEKLY: 'weekly',
   MONTHLY: 'monthly',
@@ -27,7 +26,6 @@ export const AUTO_BACKUP_STORAGE_KEYS = {
 
 export const AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS: Record<AutoBackupFrequency, number> = {
   [AutoBackupFrequencyEnum.OFF]: Infinity,
-  [AutoBackupFrequencyEnum.DEV_TWO_MIN]: 2 * 60 * 1000,
   [AutoBackupFrequencyEnum.DAILY]: 24 * 60 * 60 * 1000,
   [AutoBackupFrequencyEnum.WEEKLY]: 7 * 24 * 60 * 60 * 1000,
   [AutoBackupFrequencyEnum.MONTHLY]: 30 * 24 * 60 * 60 * 1000,
@@ -40,7 +38,6 @@ export async function resolveAutoBackupFrequency(): Promise<AutoBackupFrequency>
   ]);
 
   if (
-    autoFreqVal === AutoBackupFrequencyEnum.DEV_TWO_MIN ||
     autoFreqVal === AutoBackupFrequencyEnum.DAILY ||
     autoFreqVal === AutoBackupFrequencyEnum.WEEKLY ||
     autoFreqVal === AutoBackupFrequencyEnum.MONTHLY
@@ -50,6 +47,13 @@ export async function resolveAutoBackupFrequency(): Promise<AutoBackupFrequency>
   if (autoVal === 'true') return AutoBackupFrequencyEnum.DAILY;
   return AutoBackupFrequencyEnum.OFF;
 }
+
+export const AUTO_BACKUP_FREQUENCIES: readonly AutoBackupFrequency[] = [
+  AutoBackupFrequencyEnum.OFF,
+  AutoBackupFrequencyEnum.DAILY,
+  AutoBackupFrequencyEnum.WEEKLY,
+  AutoBackupFrequencyEnum.MONTHLY,
+] as const;
 
 export type AutoBackupResult =
   | { outcome: 'ran'; meta: CloudBackupFileMeta }
@@ -62,7 +66,7 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   const trigger = force ? 'dev_qa' : isBackground ? 'background_task' : 'auto_check';
 
   const frequency = await resolveAutoBackupFrequency();
-  if (frequency === 'off' && !force) {
+  if (frequency === AutoBackupFrequencyEnum.OFF && !force) {
     LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: feature disabled in settings`);
     return { outcome: 'skipped' };
   }

@@ -28,7 +28,7 @@ import { useRouter } from 'expo-router';
 import { useGoogleBackup } from '../hooks/useGoogleBackup';
 import { LoggerService } from '@/src/services/logger.service';
 
-import { AutoBackupFrequencyEnum } from '@/src/services/backup/auto-backup.service';
+import { AUTO_BACKUP_FREQUENCIES, AutoBackupFrequencyEnum } from '@/src/services/backup/auto-backup.service';
 
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const theme = useTheme();
@@ -353,27 +353,14 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         </View>
 
         <View style={styles.freqPillsRow}>
-          {(autoBackupFrequency === AutoBackupFrequencyEnum.DEV_TWO_MIN
-            ? ([
-                AutoBackupFrequencyEnum.OFF,
-                AutoBackupFrequencyEnum.DEV_TWO_MIN,
-                AutoBackupFrequencyEnum.DAILY,
-                AutoBackupFrequencyEnum.WEEKLY,
-                AutoBackupFrequencyEnum.MONTHLY,
-              ] as const)
-            : ([
-                AutoBackupFrequencyEnum.OFF,
-                AutoBackupFrequencyEnum.DAILY,
-                AutoBackupFrequencyEnum.WEEKLY,
-                AutoBackupFrequencyEnum.MONTHLY,
-              ] as const)).map((freq) => {
+          {AUTO_BACKUP_FREQUENCIES.map((freq) => {
             const isActive = autoBackupFrequency === freq;
-            const label = freq === AutoBackupFrequencyEnum.DEV_TWO_MIN ? '2 Min (Dev)' : freq.charAt(0).toUpperCase() + freq.slice(1);
+            const label = freq === AutoBackupFrequencyEnum.OFF ? 'Off' : freq.charAt(0).toUpperCase() + freq.slice(1);
             return (
               <BentoPressable
                 key={freq}
                 style={[styles.freqPill, isActive && styles.freqPillActive]}
-                onPress={() => setAutoBackupFrequency(freq as any)}
+                onPress={() => setAutoBackupFrequency(freq)}
               >
                 <Text style={[styles.freqPillText, isActive && styles.freqPillTextActive]}>
                   {label}
