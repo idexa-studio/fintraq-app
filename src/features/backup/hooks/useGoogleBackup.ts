@@ -142,6 +142,12 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
 
   const setAutoBackupFrequency = useCallback(async (freq: AutoBackupFrequency) => {
     try {
+      if (freq !== AutoBackupFrequencyEnum.OFF) {
+        const granted = await NotificationService.requestPermissions();
+        if (!granted) {
+          LoggerService.info('GOOGLE_BACKUP', 'Auto-backup enabled but notification permission was denied by user');
+        }
+      }
       setAutoBackupFrequencyState(freq);
       setAutoBackupEnabled(freq !== AutoBackupFrequencyEnum.OFF);
       await Promise.all([

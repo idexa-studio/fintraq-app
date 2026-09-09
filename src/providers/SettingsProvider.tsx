@@ -68,8 +68,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
     const syncNotifications = async () => {
       if (profile.reminderEnabled) {
-        const hasPermission = await NotificationService.checkPermissions();
-        if (hasPermission) {
+        const granted = await NotificationService.requestPermissions();
+        if (granted) {
           await NotificationService.scheduleDailyReminder(profile.reminderTime);
         }
       } else {
