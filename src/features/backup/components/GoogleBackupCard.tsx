@@ -93,8 +93,8 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     switch (freq) {
       case AutoBackupFrequencyEnum.OFF:
         return 'Off';
-      case AutoBackupFrequencyEnum.DEV_TWO_MIN:
-        return '2m (Dev)';
+      case AutoBackupFrequencyEnum.DEV_ONE_MIN:
+        return '1m (Dev)';
       case AutoBackupFrequencyEnum.DAILY:
         return 'Daily';
       case AutoBackupFrequencyEnum.WEEKLY:
@@ -110,8 +110,8 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     switch (freq) {
       case AutoBackupFrequencyEnum.OFF:
         return 'Automatic background cloud backup is disabled';
-      case AutoBackupFrequencyEnum.DEV_TWO_MIN:
-        return 'Dev QA Mode: Backs up your data automatically every 2 minutes';
+      case AutoBackupFrequencyEnum.DEV_ONE_MIN:
+        return 'Dev QA Mode: Backs up your data automatically every 1 minute';
       default:
         return `Backs up your data automatically ${freq} in the background`;
     }

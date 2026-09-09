@@ -38,7 +38,7 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
 async function frequencyToTrigger(frequency: AutoBackupFrequency) {
   let repeatFrequency: RepeatFrequency;
   switch (frequency) {
-    case AutoBackupFrequencyEnum.DEV_TWO_MIN:
+    case AutoBackupFrequencyEnum.DEV_ONE_MIN:
       repeatFrequency = RepeatFrequency.HOURLY;
       break;
     case AutoBackupFrequencyEnum.DAILY:
