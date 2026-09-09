@@ -6,7 +6,7 @@ import notifee, {
   TriggerType,
 } from 'react-native-notify-kit';
 import { LoggerService } from '../logger.service';
-import { CLOUD_BACKUP_NOTIFICATION_ID, NotificationService } from '../notification.service';
+import { NotificationService } from '../notification.service';
 import {
   AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS,
   AUTO_BACKUP_STORAGE_KEYS,
@@ -16,14 +16,18 @@ import {
   runAutoBackupIfDue,
 } from './auto-backup.service';
 
+const SCHEDULER_TRIGGER_ID = 'fintraq_auto_backup_trigger';
 const LAST_SCHEDULED_FREQUENCY_KEY = '@fintraq_bg_task_last_frequency';
 
 // Must run at module load — this is how notifee headlessly relaunches JS when
 // the OS delivers a scheduled AlarmManager trigger while the app is killed/backgrounded.
 notifee.onBackgroundEvent(async ({ type, detail }) => {
-  if (detail.notification?.id !== CLOUD_BACKUP_NOTIFICATION_ID) {
+  if (detail.notification?.id !== SCHEDULER_TRIGGER_ID) {
     return;
   }
+
+  // Dismiss any static OS trigger notification immediately so it never lingers
+  await notifee.cancelNotification(SCHEDULER_TRIGGER_ID).catch(() => {});
 
   if (type === EventType.DISMISSED) {
     return;
@@ -32,7 +36,7 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
   LoggerService.info('TASK_MANAGER', `AlarmManager woke background backup scheduler (event type: ${type})`);
 
   try {
-    const result = await runAutoBackupIfDue();
+    const result = await runAutoBackupIfDue(true);
     LoggerService.info('TASK_MANAGER', `Headless background auto-backup outcome: ${result.outcome.toUpperCase()}`);
     if (result.outcome === 'skipped') {
       await NotificationService.dismissBackupNotification();
@@ -93,12 +97,13 @@ export async function registerBackgroundBackupTaskAsync(forceReschedule = false)
   try {
     const frequency = await resolveAutoBackupFrequency();
     const activeTriggers = await notifee.getTriggerNotificationIds();
-    const isScheduled = activeTriggers.includes(CLOUD_BACKUP_NOTIFICATION_ID);
+    const isScheduled = activeTriggers.includes(SCHEDULER_TRIGGER_ID);
     const lastFrequency = await AsyncStorage.getItem(LAST_SCHEDULED_FREQUENCY_KEY);
 
     if (frequency === AutoBackupFrequencyEnum.OFF) {
       if (isScheduled || lastFrequency) {
-        await notifee.cancelTriggerNotification(CLOUD_BACKUP_NOTIFICATION_ID);
+        await notifee.cancelTriggerNotification(SCHEDULER_TRIGGER_ID);
+        await notifee.cancelNotification(SCHEDULER_TRIGGER_ID).catch(() => {});
         await NotificationService.dismissBackupNotification();
         await AsyncStorage.removeItem(LAST_SCHEDULED_FREQUENCY_KEY);
         LoggerService.info('TASK_MANAGER', 'Cancelled background backup schedule (disabled).');
@@ -113,7 +118,8 @@ export async function registerBackgroundBackupTaskAsync(forceReschedule = false)
 
     // Cancel existing trigger if frequency changed or forced
     if (isScheduled) {
-      await notifee.cancelTriggerNotification(CLOUD_BACKUP_NOTIFICATION_ID);
+      await notifee.cancelTriggerNotification(SCHEDULER_TRIGGER_ID);
+      await notifee.cancelNotification(SCHEDULER_TRIGGER_ID).catch(() => {});
       await NotificationService.dismissBackupNotification();
     }
 
@@ -126,9 +132,7 @@ export async function registerBackgroundBackupTaskAsync(forceReschedule = false)
 
     await notifee.createTriggerNotification(
       {
-        id: CLOUD_BACKUP_NOTIFICATION_ID,
-        title: '☁️ Cloud Backup',
-        body: 'Syncing your workspace in background...',
+        id: SCHEDULER_TRIGGER_ID,
         android: { channelId: 'backup_status' },
       },
       await frequencyToTrigger(frequency),

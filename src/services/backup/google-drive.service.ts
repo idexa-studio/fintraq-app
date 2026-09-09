@@ -77,6 +77,19 @@ class GoogleDriveServiceClass {
 
   public async getCurrentUser(): Promise<GoogleUserAccount | null> {
     this.initialize();
+
+    // Check cached session first — essential for headless background execution where signInSilently() lacks UI context
+    try {
+      const cached = await AsyncStorage.getItem(CACHED_GOOGLE_USER_KEY);
+      if (cached) {
+        const parsedAccount: GoogleUserAccount = JSON.parse(cached);
+        LoggerService.info('GOOGLE_DRIVE', `Resolved user account from local cache: ${parsedAccount.email}`);
+        return parsedAccount;
+      }
+    } catch (cacheErr) {
+      LoggerService.warn('GOOGLE_DRIVE', 'Failed to read cached user from AsyncStorage', cacheErr);
+    }
+
     try {
       const response = await GoogleSignin.signInSilently();
       if (response.type === 'success') {
@@ -90,37 +103,18 @@ class GoogleDriveServiceClass {
         try {
           await AsyncStorage.setItem(CACHED_GOOGLE_USER_KEY, JSON.stringify(account));
         } catch {
-          // Ignore cache error
+          // Ignore cache write error
         }
+        LoggerService.info('GOOGLE_DRIVE', `Resolved user account via silent sign-in: ${account.email}`);
         return account;
       }
     } catch (error: any) {
-      // If native sign-in indicates user is not signed in / session revoked, clear cache
-      const isUnauthenticated =
-        error?.code === '4' ||
-        error?.code === 'SIGN_IN_REQUIRED' ||
-        error?.message?.includes('SIGN_IN_REQUIRED') ||
-        error?.message?.includes('has not signed in');
-
-      if (isUnauthenticated) {
-        try {
-          await AsyncStorage.removeItem(CACHED_GOOGLE_USER_KEY);
-        } catch {
-          // Ignore
-        }
-        return null;
-      }
+      const errorCode = error?.code || 'UNKNOWN';
+      const errorMsg = error?.message || String(error);
+      LoggerService.info('GOOGLE_DRIVE', `Silent sign-in check note (code: ${errorCode}): ${errorMsg}`);
     }
 
-    try {
-      const cached = await AsyncStorage.getItem(CACHED_GOOGLE_USER_KEY);
-      if (cached) {
-        return JSON.parse(cached);
-      }
-    } catch {
-      // Ignore cache lookup error
-    }
-
+    LoggerService.info('GOOGLE_DRIVE', 'No signed-in Google user resolved');
     return null;
   }
 

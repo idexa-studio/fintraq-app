@@ -98,7 +98,10 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   const tag = isBackground ? 'BACKGROUND' : 'FOREGROUND';
   const trigger = force ? 'dev_qa' : isBackground ? 'background_task' : 'auto_check';
 
+  LoggerService.info('AUTO_BACKUP', `[${tag}] Checking auto-backup eligibility (force: ${force}, appState: ${AppState.currentState})`);
+
   const isPro = await isProUserActive();
+  LoggerService.info('AUTO_BACKUP', `[${tag}] Pro status resolved: ${isPro}`);
   if (!isPro && !force) {
     LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: scheduled cloud auto-backup requires active Pro subscription`);
     await NotificationService.dismissBackupNotification();
@@ -106,6 +109,7 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   }
 
   const frequency = await resolveAutoBackupFrequency();
+  LoggerService.info('AUTO_BACKUP', `[${tag}] Resolved frequency: ${frequency}`);
   if (frequency === AutoBackupFrequencyEnum.OFF && !force) {
     LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: feature disabled in settings`);
     await NotificationService.dismissBackupNotification();
@@ -118,6 +122,7 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
     await NotificationService.dismissBackupNotification();
     return { outcome: 'skipped' };
   }
+  LoggerService.info('AUTO_BACKUP', `[${tag}] Active Google account: ${currentUser.email}`);
 
   const lastAutoTimeStr = await AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.LAST_AUTO_BACKUP_TIME);
   const now = Date.now();
@@ -129,7 +134,7 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   if (!force && (now - lastAutoTime < effectiveThreshold || getBackupState().isBackingUp)) {
     const elapsedSec = Math.round((now - lastAutoTime) / 1000);
     const thresholdSec = Math.round(threshold / 1000);
-    LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: threshold not reached (${elapsedSec}s / ${thresholdSec}s)`);
+    LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: threshold not reached (${elapsedSec}s / ${thresholdSec}s, backingUp: ${getBackupState().isBackingUp})`);
     await NotificationService.dismissBackupNotification();
     return { outcome: 'skipped' };
   }
