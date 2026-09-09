@@ -99,8 +99,10 @@ export const NotificationService = {
     const existing = await Notifications.getAllScheduledNotificationsAsync();
     const alreadyScheduled = existing.some((n) => {
       if (n.identifier !== 'daily_reminder') return false;
-      const t = n.trigger as { hour?: number; minute?: number };
-      return t?.hour === hours && t?.minute === minutes;
+      const t = n.trigger as { hour?: number; minute?: number; value?: { hour?: number; minute?: number } };
+      const h = t?.hour ?? t?.value?.hour;
+      const m = t?.minute ?? t?.value?.minute;
+      return h === hours && m === minutes;
     });
 
     if (alreadyScheduled) {
@@ -108,8 +110,8 @@ export const NotificationService = {
       return;
     }
 
-    // Cancel existing before creating a new one (different time)
-    await this.cancelAllReminders();
+    // Cancel previous daily reminder trigger specifically without wiping other notifications
+    await Notifications.cancelScheduledNotificationAsync('daily_reminder').catch(() => {});
 
     // Pick a random message from the pool
     const randomIndex = Math.floor(Math.random() * REMINDER_POOL.length);
@@ -138,8 +140,8 @@ export const NotificationService = {
    * Useful when the user has already recorded their transactions for the day.
    */
   async dismissToday(timeStr: string) {
-    // Cancel the current trigger so today's notification is suppressed
-    await this.cancelAllReminders();
+    // Cancel the current daily reminder trigger specifically without wiping other notifications
+    await Notifications.cancelScheduledNotificationAsync('daily_reminder').catch(() => {});
 
     const [hours, minutes] = timeStr.split(':').map(Number);
 

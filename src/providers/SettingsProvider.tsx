@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from 'expo-notifications';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
 import { NotificationService } from '../services/notification.service';
 import { StorageKeys } from '../constants/keys';
 import { LoggerService } from '@/src/services/logger.service';
@@ -73,24 +73,11 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           await NotificationService.scheduleDailyReminder(profile.reminderTime);
         }
       } else {
-        await NotificationService.cancelAllReminders();
+        await Notifications.cancelScheduledNotificationAsync('daily_reminder').catch(() => {});
       }
     };
 
     syncNotifications();
-  }, [profile.reminderEnabled, profile.reminderTime, isLoading]);
-
-  /**
-   * Proactive Randomization: Every time the user opens the app, we refresh 
-   * the local notification with a new random message from the pool.
-   */
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', (next: AppStateStatus) => {
-      if (next === 'active' && !isLoading && profile.reminderEnabled) {
-        NotificationService.scheduleDailyReminder(profile.reminderTime);
-      }
-    });
-    return () => subscription.remove();
   }, [profile.reminderEnabled, profile.reminderTime, isLoading]);
 
   const updateProfile = useCallback(async (updates: Partial<UserProfile>) => {

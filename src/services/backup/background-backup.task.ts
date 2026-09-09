@@ -6,7 +6,14 @@ import notifee, {
   TriggerType,
 } from 'react-native-notify-kit';
 import { LoggerService } from '../logger.service';
-import { AutoBackupFrequency, AutoBackupFrequencyEnum, resolveAutoBackupFrequency, runAutoBackupIfDue } from './auto-backup.service';
+import {
+  AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS,
+  AUTO_BACKUP_STORAGE_KEYS,
+  AutoBackupFrequency,
+  AutoBackupFrequencyEnum,
+  resolveAutoBackupFrequency,
+  runAutoBackupIfDue,
+} from './auto-backup.service';
 
 const SCHEDULER_TRIGGER_ID = 'fintraq_auto_backup_scheduler';
 const LAST_SCHEDULED_FREQUENCY_KEY = '@fintraq_bg_task_last_frequency';
@@ -28,15 +35,38 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
   }
 });
 
-function frequencyToTrigger(frequency: AutoBackupFrequency) {
-  const repeatFrequency =
-    frequency === AutoBackupFrequencyEnum.DAILY ? RepeatFrequency.DAILY
-    : frequency === AutoBackupFrequencyEnum.WEEKLY ? RepeatFrequency.WEEKLY
-    : RepeatFrequency.MONTHLY;
+async function frequencyToTrigger(frequency: AutoBackupFrequency) {
+  let repeatFrequency: RepeatFrequency;
+  switch (frequency) {
+    case AutoBackupFrequencyEnum.DEV_TWO_MIN:
+      repeatFrequency = RepeatFrequency.HOURLY;
+      break;
+    case AutoBackupFrequencyEnum.DAILY:
+      repeatFrequency = RepeatFrequency.DAILY;
+      break;
+    case AutoBackupFrequencyEnum.WEEKLY:
+      repeatFrequency = RepeatFrequency.WEEKLY;
+      break;
+    case AutoBackupFrequencyEnum.MONTHLY:
+      repeatFrequency = RepeatFrequency.MONTHLY;
+      break;
+    default:
+      repeatFrequency = RepeatFrequency.DAILY;
+      break;
+  }
+
+  const lastAutoTimeStr = await AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.LAST_AUTO_BACKUP_TIME);
+  const now = Date.now();
+  const lastAutoTime = lastAutoTimeStr ? parseInt(lastAutoTimeStr, 10) : 0;
+  const intervalMs = AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS[frequency] ?? (24 * 60 * 60 * 1000);
+
+  // If previous backup happened recently, target (lastAutoTime + intervalMs); otherwise start in 60s
+  const targetTime = lastAutoTime > 0 ? lastAutoTime + intervalMs : now + 60_000;
+  const firstTriggerTimestamp = Math.max(now + 60_000, targetTime);
 
   return {
     type: TriggerType.TIMESTAMP as const,
-    timestamp: Date.now() + 60_000,
+    timestamp: firstTriggerTimestamp,
     repeatFrequency,
     alarmManager: {
       allowWhileIdle: true,
@@ -85,7 +115,7 @@ export async function registerBackgroundBackupTaskAsync(): Promise<void> {
         body: 'Syncing your workspace in background...',
         android: { channelId: 'backup_status' },
       },
-      frequencyToTrigger(frequency),
+      await frequencyToTrigger(frequency),
     );
 
     await AsyncStorage.setItem(LAST_SCHEDULED_FREQUENCY_KEY, frequency);

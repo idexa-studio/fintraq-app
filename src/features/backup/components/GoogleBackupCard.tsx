@@ -89,6 +89,34 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     [],
   );
 
+  const getFrequencyLabel = React.useCallback((freq: AutoBackupFrequency): string => {
+    switch (freq) {
+      case AutoBackupFrequencyEnum.OFF:
+        return 'Off';
+      case AutoBackupFrequencyEnum.DEV_TWO_MIN:
+        return '2m (Dev)';
+      case AutoBackupFrequencyEnum.DAILY:
+        return 'Daily';
+      case AutoBackupFrequencyEnum.WEEKLY:
+        return 'Weekly';
+      case AutoBackupFrequencyEnum.MONTHLY:
+        return 'Monthly';
+      default:
+        return String(freq);
+    }
+  }, []);
+
+  const getFrequencySubtitle = React.useCallback((freq: AutoBackupFrequency): string => {
+    switch (freq) {
+      case AutoBackupFrequencyEnum.OFF:
+        return 'Automatic background cloud backup is disabled';
+      case AutoBackupFrequencyEnum.DEV_TWO_MIN:
+        return 'Dev QA Mode: Backs up your data automatically every 2 minutes';
+      default:
+        return `Backs up your data automatically ${freq} in the background`;
+    }
+  }, []);
+
   const handleFrequencySelect = React.useCallback(
     (freq: AutoBackupFrequency) => {
       if (freq !== AutoBackupFrequencyEnum.OFF && !isPremium) {
@@ -379,17 +407,13 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
               </View>
             )}
           </View>
-          <Text style={styles.rowSubtitle}>
-            {autoBackupFrequency === AutoBackupFrequencyEnum.OFF
-              ? 'Automatic background cloud backup is disabled'
-              : `Backs up your data automatically ${autoBackupFrequency} in the background`}
-          </Text>
+          <Text style={styles.rowSubtitle}>{getFrequencySubtitle(autoBackupFrequency)}</Text>
         </View>
 
         <View style={styles.freqPillsRow}>
           {AUTO_BACKUP_FREQUENCIES.map((freq) => {
             const isActive = autoBackupFrequency === freq;
-            const label = freq === AutoBackupFrequencyEnum.OFF ? 'Off' : freq.charAt(0).toUpperCase() + freq.slice(1);
+            const label = getFrequencyLabel(freq);
             const isLockedPill = !isPremium && freq !== AutoBackupFrequencyEnum.OFF;
             return (
               <BentoPressable

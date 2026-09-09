@@ -11,6 +11,7 @@ import { LoggerService } from '../logger.service';
 
 export const AutoBackupFrequencyEnum = {
   OFF: 'off',
+  DEV_TWO_MIN: '2min',
   DAILY: 'daily',
   WEEKLY: 'weekly',
   MONTHLY: 'monthly',
@@ -27,6 +28,7 @@ export const AUTO_BACKUP_STORAGE_KEYS = {
 
 export const AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS: Record<AutoBackupFrequency, number> = {
   [AutoBackupFrequencyEnum.OFF]: Infinity,
+  [AutoBackupFrequencyEnum.DEV_TWO_MIN]: 2 * 60 * 1000,
   [AutoBackupFrequencyEnum.DAILY]: 24 * 60 * 60 * 1000,
   [AutoBackupFrequencyEnum.WEEKLY]: 7 * 24 * 60 * 60 * 1000,
   [AutoBackupFrequencyEnum.MONTHLY]: 30 * 24 * 60 * 60 * 1000,
@@ -63,23 +65,28 @@ export async function resolveAutoBackupFrequency(isPremiumOverride?: boolean): P
     AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.FREQUENCY),
   ]);
 
-  if (
-    autoFreqVal === AutoBackupFrequencyEnum.DAILY ||
-    autoFreqVal === AutoBackupFrequencyEnum.WEEKLY ||
-    autoFreqVal === AutoBackupFrequencyEnum.MONTHLY
-  ) {
-    return autoFreqVal;
+  const VALID_FREQUENCIES = Object.values(AutoBackupFrequencyEnum) as string[];
+  if (autoFreqVal && VALID_FREQUENCIES.includes(autoFreqVal) && autoFreqVal !== AutoBackupFrequencyEnum.OFF) {
+    return autoFreqVal as AutoBackupFrequency;
   }
   if (autoVal === 'true') return AutoBackupFrequencyEnum.DAILY;
   return AutoBackupFrequencyEnum.OFF;
 }
 
-export const AUTO_BACKUP_FREQUENCIES: readonly AutoBackupFrequency[] = [
-  AutoBackupFrequencyEnum.OFF,
-  AutoBackupFrequencyEnum.DAILY,
-  AutoBackupFrequencyEnum.WEEKLY,
-  AutoBackupFrequencyEnum.MONTHLY,
-] as const;
+export const AUTO_BACKUP_FREQUENCIES: readonly AutoBackupFrequency[] = __DEV__
+  ? [
+      AutoBackupFrequencyEnum.OFF,
+      AutoBackupFrequencyEnum.DEV_TWO_MIN,
+      AutoBackupFrequencyEnum.DAILY,
+      AutoBackupFrequencyEnum.WEEKLY,
+      AutoBackupFrequencyEnum.MONTHLY,
+    ]
+  : [
+      AutoBackupFrequencyEnum.OFF,
+      AutoBackupFrequencyEnum.DAILY,
+      AutoBackupFrequencyEnum.WEEKLY,
+      AutoBackupFrequencyEnum.MONTHLY,
+    ];
 
 export type AutoBackupResult =
   | { outcome: 'ran'; meta: CloudBackupFileMeta }
