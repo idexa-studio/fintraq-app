@@ -9,7 +9,9 @@ import {
   ArrowRight01Icon,
   CloudIcon,
   Download01Icon,
+  LockPasswordIcon,
   Logout01Icon,
+  SparklesIcon,
   Upload01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
@@ -27,14 +29,16 @@ import { toErrorMessage } from '@/src/utils/errors';
 import { useRouter } from 'expo-router';
 import { useGoogleBackup } from '../hooks/useGoogleBackup';
 import { LoggerService } from '@/src/services/logger.service';
+import { usePremium } from '@/src/providers/PremiumProvider';
 
-import { AUTO_BACKUP_FREQUENCIES, AutoBackupFrequencyEnum } from '@/src/services/backup/auto-backup.service';
+import { AUTO_BACKUP_FREQUENCIES, AutoBackupFrequency, AutoBackupFrequencyEnum } from '@/src/services/backup/auto-backup.service';
 
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
+  const { isPremium } = usePremium();
 
   const {
     user,
@@ -83,6 +87,28 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       });
     },
     [],
+  );
+
+  const handleFrequencySelect = React.useCallback(
+    (freq: AutoBackupFrequency) => {
+      if (freq !== AutoBackupFrequencyEnum.OFF && !isPremium) {
+        showAlert({
+          title: 'Scheduled Auto-Backup (Pro)',
+          message: 'Automatic background cloud backups are a Fintraq Pro feature. Manual backup and restore are 100% free for everyone!',
+          type: 'info',
+          buttons: [
+            { text: 'Cancel', style: 'cancel' },
+            {
+              text: 'Upgrade to Pro',
+              onPress: () => router.push('/premium'),
+            },
+          ],
+        });
+        return;
+      }
+      setAutoBackupFrequency(freq);
+    },
+    [isPremium, setAutoBackupFrequency, showAlert, router],
   );
 
   const handleConnect = React.useCallback(async () => {
@@ -344,7 +370,15 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       {/* Auto Backup Frequency Row */}
       <View style={styles.freqSection}>
         <View style={styles.rowInfo}>
-          <Text style={styles.rowLabel}>Scheduled Auto-Backup</Text>
+          <View style={styles.titleRow}>
+            <Text style={styles.rowLabel}>Scheduled Auto-Backup</Text>
+            {!isPremium && (
+              <View style={styles.proBadge}>
+                <HugeiconsIcon icon={SparklesIcon} size={10} color={colors.warning} />
+                <Text style={styles.proBadgeText}>PRO</Text>
+              </View>
+            )}
+          </View>
           <Text style={styles.rowSubtitle}>
             {autoBackupFrequency === AutoBackupFrequencyEnum.OFF
               ? 'Automatic background cloud backup is disabled'
@@ -356,15 +390,25 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           {AUTO_BACKUP_FREQUENCIES.map((freq) => {
             const isActive = autoBackupFrequency === freq;
             const label = freq === AutoBackupFrequencyEnum.OFF ? 'Off' : freq.charAt(0).toUpperCase() + freq.slice(1);
+            const isLockedPill = !isPremium && freq !== AutoBackupFrequencyEnum.OFF;
             return (
               <BentoPressable
                 key={freq}
                 style={[styles.freqPill, isActive && styles.freqPillActive]}
-                onPress={() => setAutoBackupFrequency(freq)}
+                onPress={() => handleFrequencySelect(freq)}
               >
-                <Text style={[styles.freqPillText, isActive && styles.freqPillTextActive]}>
-                  {label}
-                </Text>
+                <View style={styles.pillLabelRow}>
+                  {isLockedPill && (
+                    <HugeiconsIcon
+                      icon={LockPasswordIcon}
+                      size={10}
+                      color={isActive ? colors.primaryForeground : colors.textMuted}
+                    />
+                  )}
+                  <Text style={[styles.freqPillText, isActive && styles.freqPillTextActive]}>
+                    {label}
+                  </Text>
+                </View>
               </BentoPressable>
             );
           })}
@@ -634,5 +678,24 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     freqPillTextActive: {
       fontFamily: typography.fonts.bold,
       color: colors.primaryForeground,
+    },
+    proBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 3,
+      paddingHorizontal: spacing('2'),
+      paddingVertical: 2,
+      borderRadius: radius('full'),
+      backgroundColor: colors.primary + '15',
+    },
+    proBadgeText: {
+      fontFamily: typography.fonts.bold,
+      fontSize: 10,
+      color: colors.primary,
+    },
+    pillLabelRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 3,
     },
   });

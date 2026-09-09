@@ -16,6 +16,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 import { LoggerService } from '@/src/services/logger.service';
+import { usePremium } from '@/src/providers/PremiumProvider';
 
 export type { AutoBackupFrequency };
 
@@ -46,6 +47,7 @@ export type UseGoogleBackupReturn = {
 
 export function useGoogleBackup(): UseGoogleBackupReturn {
   const queryClient = useQueryClient();
+  const { isPremium } = usePremium();
   const [user, setUser] = useState<GoogleUserAccount | null>(null);
   const [isChecking, setIsChecking] = useState(true);
   const [backupSyncState, setBackupSyncState] = useState<SharedBackupState>(getBackupState());
@@ -142,6 +144,10 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
 
   const setAutoBackupFrequency = useCallback(async (freq: AutoBackupFrequency) => {
     try {
+      if (freq !== AutoBackupFrequencyEnum.OFF && !isPremium) {
+        LoggerService.info('GOOGLE_BACKUP', 'Skipped frequency change: auto-backup requires active Pro subscription');
+        return;
+      }
       if (freq !== AutoBackupFrequencyEnum.OFF) {
         const granted = await NotificationService.requestPermissions();
         if (!granted) {
@@ -158,7 +164,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     } catch (e) {
       LoggerService.warn('GOOGLE_BACKUP', 'Failed to save auto-backup frequency', e);
     }
-  }, []);
+  }, [isPremium]);
 
   const connectAccount = useCallback(async (): Promise<GoogleUserAccount | null> => {
     if (isChecking) return user;
@@ -167,8 +173,8 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       const signedInUser = await GoogleDriveService.signIn();
       setUser(signedInUser);
       if (signedInUser) {
-        // By default enable automated daily cloud backups upon connecting Google Drive
-        await setAutoBackupFrequency(AutoBackupFrequencyEnum.DAILY);
+        // Enable automated daily cloud backups upon connecting Google Drive only if Pro user
+        await setAutoBackupFrequency(isPremium ? AutoBackupFrequencyEnum.DAILY : AutoBackupFrequencyEnum.OFF);
 
         const backupMeta = await GoogleDriveService.findLatestBackup();
         if (backupMeta) {
@@ -183,7 +189,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     } finally {
       setIsChecking(false);
     }
-  }, [isChecking, user, setAutoBackupFrequency]);
+  }, [isChecking, user, isPremium, setAutoBackupFrequency]);
 
   const disconnectAccount = useCallback(async () => {
     try {
@@ -312,12 +318,12 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
 
       await DatabaseBackupService.restoreBackupData(backupJsonStr, queryClient);
 
-      // Save user session & enable automated daily backup by default on successful restore
+      // Save user session & enable automated daily backup by default on successful restore (if Pro)
       setUser(activeUser);
       setLastBackup(targetBackup);
       await Promise.all([
         AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(targetBackup)),
-        setAutoBackupFrequency(AutoBackupFrequencyEnum.DAILY),
+        setAutoBackupFrequency(isPremium ? AutoBackupFrequencyEnum.DAILY : AutoBackupFrequencyEnum.OFF),
       ]);
 
       updateBackupState({ progress: 100, progressStage: 'Restore complete!' });
@@ -338,7 +344,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         updateBackupState({ isRestoring: false, progress: 0, progressStage: null });
       }, 1000);
     }
-  }, [user, queryClient, setAutoBackupFrequency]);
+  }, [user, queryClient, isPremium, setAutoBackupFrequency]);
 
   const toggleAutoBackup = useCallback(async (value: boolean) => {
     const nextFreq: AutoBackupFrequency = value ? AutoBackupFrequencyEnum.DAILY : AutoBackupFrequencyEnum.OFF;

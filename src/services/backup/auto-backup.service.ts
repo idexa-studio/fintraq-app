@@ -5,6 +5,7 @@ import { DatabaseBackupService } from './database-backup.service';
 import { CloudBackupFileMeta, GoogleDriveService } from './google-drive.service';
 import { NotificationService } from '../notification.service';
 import { ReviewPromptService } from '../review-prompt.service';
+import { StorageKeys } from '../../constants/keys';
 
 import { LoggerService } from '../logger.service';
 
@@ -59,11 +60,37 @@ export type AutoBackupResult =
   | { outcome: 'ran'; meta: CloudBackupFileMeta }
   | { outcome: 'skipped' | 'failed' };
 
+async function isProUserActive(): Promise<boolean> {
+  try {
+    const [storedPremium, storedDev] = await Promise.all([
+      AsyncStorage.getItem(StorageKeys.PREMIUM),
+      AsyncStorage.getItem(StorageKeys.PREMIUM_DEV_OVERRIDE),
+    ]);
+
+    if (storedDev === 'FORCED_ON') return true;
+    if (storedDev === 'FORCED_OFF') return false;
+
+    if (storedPremium) {
+      const parsed = JSON.parse(storedPremium);
+      return Boolean(parsed?.isPremium);
+    }
+  } catch (err) {
+    LoggerService.error('AUTO_BACKUP', 'Failed to read pro status from storage', err);
+  }
+  return false;
+}
+
 /** Runs due auto-backup. Shared by foreground mount check and the headless background task. */
 export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResult> {
   const isBackground = AppState.currentState !== 'active';
   const tag = isBackground ? 'BACKGROUND' : 'FOREGROUND';
   const trigger = force ? 'dev_qa' : isBackground ? 'background_task' : 'auto_check';
+
+  const isPro = await isProUserActive();
+  if (!isPro && !force) {
+    LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: scheduled cloud auto-backup requires active Pro subscription`);
+    return { outcome: 'skipped' };
+  }
 
   const frequency = await resolveAutoBackupFrequency();
   if (frequency === AutoBackupFrequencyEnum.OFF && !force) {
