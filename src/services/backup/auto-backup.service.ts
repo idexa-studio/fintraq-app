@@ -32,7 +32,32 @@ export const AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS: Record<AutoBackupFrequency, nu
   [AutoBackupFrequencyEnum.MONTHLY]: 30 * 24 * 60 * 60 * 1000,
 };
 
-export async function resolveAutoBackupFrequency(): Promise<AutoBackupFrequency> {
+async function isProUserActive(): Promise<boolean> {
+  try {
+    const [storedPremium, storedDev] = await Promise.all([
+      AsyncStorage.getItem(StorageKeys.PREMIUM),
+      AsyncStorage.getItem(StorageKeys.PREMIUM_DEV_OVERRIDE),
+    ]);
+
+    if (storedDev === 'FORCED_ON') return true;
+    if (storedDev === 'FORCED_OFF') return false;
+
+    if (storedPremium) {
+      const parsed = JSON.parse(storedPremium);
+      return Boolean(parsed?.isPremium);
+    }
+  } catch (err) {
+    LoggerService.error('AUTO_BACKUP', 'Failed to read pro status from storage', err);
+  }
+  return false;
+}
+
+export async function resolveAutoBackupFrequency(isPremiumOverride?: boolean): Promise<AutoBackupFrequency> {
+  const isPro = isPremiumOverride !== undefined ? isPremiumOverride : await isProUserActive();
+  if (!isPro) {
+    return AutoBackupFrequencyEnum.OFF;
+  }
+
   const [autoVal, autoFreqVal] = await Promise.all([
     AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.ENABLED),
     AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.FREQUENCY),
@@ -59,26 +84,6 @@ export const AUTO_BACKUP_FREQUENCIES: readonly AutoBackupFrequency[] = [
 export type AutoBackupResult =
   | { outcome: 'ran'; meta: CloudBackupFileMeta }
   | { outcome: 'skipped' | 'failed' };
-
-async function isProUserActive(): Promise<boolean> {
-  try {
-    const [storedPremium, storedDev] = await Promise.all([
-      AsyncStorage.getItem(StorageKeys.PREMIUM),
-      AsyncStorage.getItem(StorageKeys.PREMIUM_DEV_OVERRIDE),
-    ]);
-
-    if (storedDev === 'FORCED_ON') return true;
-    if (storedDev === 'FORCED_OFF') return false;
-
-    if (storedPremium) {
-      const parsed = JSON.parse(storedPremium);
-      return Boolean(parsed?.isPremium);
-    }
-  } catch (err) {
-    LoggerService.error('AUTO_BACKUP', 'Failed to read pro status from storage', err);
-  }
-  return false;
-}
 
 /** Runs due auto-backup. Shared by foreground mount check and the headless background task. */
 export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResult> {

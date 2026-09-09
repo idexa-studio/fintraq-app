@@ -52,8 +52,10 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
   const [isChecking, setIsChecking] = useState(true);
   const [backupSyncState, setBackupSyncState] = useState<SharedBackupState>(getBackupState());
   const [lastBackup, setLastBackup] = useState<CloudBackupFileMeta | null>(null);
-  const [autoBackupEnabled, setAutoBackupEnabled] = useState(false);
-  const [autoBackupFrequency, setAutoBackupFrequencyState] = useState<AutoBackupFrequency>('off');
+  const [rawAutoBackupFrequency, setAutoBackupFrequencyState] = useState<AutoBackupFrequency>('off');
+
+  const autoBackupFrequency: AutoBackupFrequency = isPremium ? rawAutoBackupFrequency : AutoBackupFrequencyEnum.OFF;
+  const autoBackupEnabled: boolean = isPremium && autoBackupFrequency !== AutoBackupFrequencyEnum.OFF;
 
   // Subscribe component to shared backup state updates
   useEffect(() => {
@@ -72,13 +74,12 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         }
 
         const [resolvedFreq, cachedMetaStr] = await Promise.all([
-          resolveAutoBackupFrequency(),
+          resolveAutoBackupFrequency(isPremium),
           AsyncStorage.getItem(STORAGE_KEY_LAST_BACKUP_META),
         ]);
 
         if (isMounted) {
-          setAutoBackupEnabled(resolvedFreq !== 'off');
-          setAutoBackupFrequencyState(resolvedFreq);
+          setAutoBackupFrequencyState(isPremium ? resolvedFreq : 'off');
 
           if (cachedMetaStr) {
             try {
@@ -120,7 +121,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [isPremium]);
 
   const refreshBackupInfo = useCallback(async () => {
     if (!user) return;
@@ -155,7 +156,6 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         }
       }
       setAutoBackupFrequencyState(freq);
-      setAutoBackupEnabled(freq !== AutoBackupFrequencyEnum.OFF);
       await Promise.all([
         AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP_FREQ, freq),
         AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP, freq !== AutoBackupFrequencyEnum.OFF ? 'true' : 'false'),
@@ -347,9 +347,9 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
   }, [user, queryClient, isPremium, setAutoBackupFrequency]);
 
   const toggleAutoBackup = useCallback(async (value: boolean) => {
-    const nextFreq: AutoBackupFrequency = value ? AutoBackupFrequencyEnum.DAILY : AutoBackupFrequencyEnum.OFF;
+    const nextFreq: AutoBackupFrequency = (value && isPremium) ? AutoBackupFrequencyEnum.DAILY : AutoBackupFrequencyEnum.OFF;
     await setAutoBackupFrequency(nextFreq);
-  }, [setAutoBackupFrequency]);
+  }, [isPremium, setAutoBackupFrequency]);
 
   return {
     user,
