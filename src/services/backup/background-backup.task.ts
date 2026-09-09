@@ -29,14 +29,14 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
   // Dismiss any static OS trigger notification immediately so it never lingers
   await notifee.cancelNotification(SCHEDULER_TRIGGER_ID).catch(() => {});
 
-  if (type === EventType.DISMISSED) {
+  if (type === EventType.DISMISSED || type === EventType.TRIGGER_NOTIFICATION_CREATED) {
     return;
   }
 
   LoggerService.info('TASK_MANAGER', `AlarmManager woke background backup scheduler (event type: ${type})`);
 
   try {
-    const result = await runAutoBackupIfDue(true);
+    const result = await runAutoBackupIfDue(false);
     LoggerService.info('TASK_MANAGER', `Headless background auto-backup outcome: ${result.outcome.toUpperCase()}`);
     if (result.outcome === 'skipped') {
       await NotificationService.dismissBackupNotification();

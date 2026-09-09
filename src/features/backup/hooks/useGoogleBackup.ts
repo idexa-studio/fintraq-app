@@ -156,11 +156,12 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         }
       }
       setAutoBackupFrequencyState(freq);
+      LoggerService.info('GOOGLE_BACKUP', `Updated auto-backup frequency to: ${freq}`);
       await Promise.all([
         AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP_FREQ, freq),
         AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP, freq !== AutoBackupFrequencyEnum.OFF ? 'true' : 'false'),
       ]);
-      await registerBackgroundBackupTaskAsync();
+      await registerBackgroundBackupTaskAsync(true);
     } catch (e) {
       LoggerService.warn('GOOGLE_BACKUP', 'Failed to save auto-backup frequency', e);
     }
@@ -173,6 +174,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       const signedInUser = await GoogleDriveService.signIn();
       setUser(signedInUser);
       if (signedInUser) {
+        LoggerService.info('GOOGLE_BACKUP', `Connected Google Account: ${signedInUser.email}`);
         // Enable automated daily cloud backups upon connecting Google Drive only if Pro user
         await setAutoBackupFrequency(isPremium ? AutoBackupFrequencyEnum.DAILY : AutoBackupFrequencyEnum.OFF);
 
@@ -197,6 +199,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       setUser(null);
       setLastBackup(null);
       await AsyncStorage.removeItem(STORAGE_KEY_LAST_BACKUP_META);
+      LoggerService.info('GOOGLE_BACKUP', 'Disconnected Google Account and cleared local backup cache');
     } catch (e: any) {
       LoggerService.warn('GOOGLE_BACKUP', 'Failed to disconnect Google account', e);
       throw new Error(e?.message || 'Failed to disconnect Google Account.');
