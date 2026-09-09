@@ -223,9 +223,8 @@ export const NotificationService = {
    */
   async presentBackupCompleteNotification() {
     try {
-      await notifee.cancelNotification('cloud_backup_status').catch(() => {});
       await notifee.displayNotification({
-        id: 'cloud_backup_status_done',
+        id: 'cloud_backup_status',
         title: '✅ Cloud Backup Complete',
         body: 'Your workspace history was safely backed up to cloud storage.',
         android: {
@@ -244,9 +243,8 @@ export const NotificationService = {
    */
   async presentBackupFailedNotification() {
     try {
-      await notifee.cancelNotification('cloud_backup_status').catch(() => {});
       await notifee.displayNotification({
-        id: 'cloud_backup_status_done',
+        id: 'cloud_backup_status',
         title: '⚠️ Cloud Backup Failed',
         body: 'Could not complete cloud backup. Please check your internet connection.',
         android: {
