@@ -14,6 +14,8 @@ const REMINDER_POOL = [
   { title: "Mindful Spending 🧘", body: "Knowledge is power. Log your latest transaction to see its impact on your runway." },
 ];
 
+export const CLOUD_BACKUP_NOTIFICATION_ID = 'cloud_backup_status';
+
 // The single notifee.onBackgroundEvent listener lives in background-backup.task.ts —
 // notifee only keeps the last-registered handler, so it must not be set here too.
 
@@ -193,7 +195,7 @@ export const NotificationService = {
       const cleanStage = stageText || 'Syncing workspace data to Google Drive...';
 
       await notifee.displayNotification({
-        id: 'cloud_backup_status',
+        id: CLOUD_BACKUP_NOTIFICATION_ID,
         title: '☁️ Cloud Backup Syncing',
         body: cleanStage,
         android: {
@@ -226,7 +228,7 @@ export const NotificationService = {
   async presentBackupCompleteNotification() {
     try {
       await notifee.displayNotification({
-        id: 'cloud_backup_status',
+        id: CLOUD_BACKUP_NOTIFICATION_ID,
         title: '✅ Cloud Backup Complete',
         body: 'Your workspace history was safely backed up to cloud storage.',
         android: {
@@ -246,7 +248,7 @@ export const NotificationService = {
   async presentBackupFailedNotification() {
     try {
       await notifee.displayNotification({
-        id: 'cloud_backup_status',
+        id: CLOUD_BACKUP_NOTIFICATION_ID,
         title: '⚠️ Cloud Backup Failed',
         body: 'Could not complete cloud backup. Please check your internet connection.',
         android: {
@@ -265,7 +267,7 @@ export const NotificationService = {
    */
   async dismissBackupNotification() {
     try {
-      await notifee.cancelNotification('cloud_backup_status').catch(() => {});
+      await notifee.cancelNotification(CLOUD_BACKUP_NOTIFICATION_ID).catch(() => {});
     } catch {
       // Ignore dismiss error
     }

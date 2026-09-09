@@ -101,18 +101,21 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   const isPro = await isProUserActive();
   if (!isPro && !force) {
     LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: scheduled cloud auto-backup requires active Pro subscription`);
+    await NotificationService.dismissBackupNotification();
     return { outcome: 'skipped' };
   }
 
   const frequency = await resolveAutoBackupFrequency();
   if (frequency === AutoBackupFrequencyEnum.OFF && !force) {
     LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: feature disabled in settings`);
+    await NotificationService.dismissBackupNotification();
     return { outcome: 'skipped' };
   }
 
   const currentUser = await GoogleDriveService.getCurrentUser();
   if (!currentUser) {
     LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: no signed-in Google user`);
+    await NotificationService.dismissBackupNotification();
     return { outcome: 'skipped' };
   }
 
@@ -120,11 +123,14 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   const now = Date.now();
   const lastAutoTime = lastAutoTimeStr ? parseInt(lastAutoTimeStr, 10) : 0;
   const threshold = AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS[frequency] ?? (15 * 60 * 1000);
+  const thresholdBufferMs = frequency === AutoBackupFrequencyEnum.DEV_ONE_MIN ? 10_000 : 5_000;
+  const effectiveThreshold = Math.max(0, threshold - thresholdBufferMs);
 
-  if (!force && (now - lastAutoTime < threshold || getBackupState().isBackingUp)) {
+  if (!force && (now - lastAutoTime < effectiveThreshold || getBackupState().isBackingUp)) {
     const elapsedSec = Math.round((now - lastAutoTime) / 1000);
     const thresholdSec = Math.round(threshold / 1000);
     LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: threshold not reached (${elapsedSec}s / ${thresholdSec}s)`);
+    await NotificationService.dismissBackupNotification();
     return { outcome: 'skipped' };
   }
 
