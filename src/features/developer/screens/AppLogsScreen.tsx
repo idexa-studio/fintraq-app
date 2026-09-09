@@ -1,4 +1,5 @@
 import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
+import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Header } from '@/src/components/ui/Header';
 import { Input } from '@/src/components/ui/Input';
 import { PageBackground } from '@/src/components/ui/PageBackground';
@@ -23,6 +24,7 @@ export const AppLogsScreen = React.memo(function AppLogsScreen() {
   const [rawLogText, setRawLogText] = useState<string>('');
   const [logSearch, setLogSearch] = useState('');
   const [logCount, setLogCount] = useState(0);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const [alertConfig, setAlertConfig] = useState<{
     visible: boolean;
@@ -56,7 +58,7 @@ export const AppLogsScreen = React.memo(function AppLogsScreen() {
   const fetchLogs = useCallback(async () => {
     const text = await LoggerService.getRawLogText();
     setRawLogText(text);
-    const lineCount = text === '[SYSTEM] No log records found in the last 7 days.' ? 0 : text.split('\n').length;
+    const lineCount = text === 'No log records found.' ? 0 : text.split('\n').length;
     setLogCount(lineCount);
   }, []);
 
@@ -69,7 +71,7 @@ export const AppLogsScreen = React.memo(function AppLogsScreen() {
     await fetchLogs();
     showAlert({
       title: 'Logs Cleared',
-      message: 'All system logs have been cleared.',
+      message: 'All system logs have been cleared successfully.',
       type: 'success',
     });
   };
@@ -104,16 +106,16 @@ export const AppLogsScreen = React.memo(function AppLogsScreen() {
       <View style={styles.content}>
         {/* Actions bar */}
         <View style={styles.topActionsBar}>
-          <Text style={styles.sectionLabel}>Raw Log Stream (fintraq_system.log)</Text>
+          <Text style={styles.sectionLabel}>Raw Log Stream ({logCount} lines)</Text>
           <View style={styles.actionsRow}>
             <Pressable onPress={fetchLogs} style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
-              <Text style={styles.actionPrimary}>Refresh ({logCount})</Text>
+              <Text style={styles.actionPrimary}>Refresh</Text>
             </Pressable>
             <Pressable onPress={handleShareLogs} style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
-              <Text style={styles.actionPrimary}>Share (.txt)</Text>
+              <Text style={styles.actionPrimary}>Export (.txt)</Text>
             </Pressable>
-            <Pressable onPress={handleClearLogs} style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
-              <Text style={styles.actionDanger}>Clear</Text>
+            <Pressable onPress={() => setShowClearConfirm(true)} style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
+              <Text style={styles.actionDanger}>Clear Logs</Text>
             </Pressable>
           </View>
         </View>
@@ -134,7 +136,7 @@ export const AppLogsScreen = React.memo(function AppLogsScreen() {
               <View style={[styles.dot, { backgroundColor: '#FF5F56' }]} />
               <View style={[styles.dot, { backgroundColor: '#FFBD2E' }]} />
               <View style={[styles.dot, { backgroundColor: '#27C93F' }]} />
-              <Text style={styles.terminalTitle}>fintraq_system.log</Text>
+              <Text style={styles.terminalTitle}>fintraq.log</Text>
             </View>
             <Text style={styles.terminalCounter}>Raw Plain Text</Text>
           </View>
@@ -150,6 +152,19 @@ export const AppLogsScreen = React.memo(function AppLogsScreen() {
           </ScrollView>
         </View>
       </View>
+
+      <ConfirmDialog
+        visible={showClearConfirm}
+        onClose={() => setShowClearConfirm(false)}
+        title="Clear All App Logs?"
+        message="This will permanently erase all stored system logs from device storage. Proceed?"
+        confirmLabel="Clear Logs"
+        destructive
+        onConfirm={async () => {
+          setShowClearConfirm(false);
+          await handleClearLogs();
+        }}
+      />
 
       <AlertDialog
         visible={alertConfig.visible}

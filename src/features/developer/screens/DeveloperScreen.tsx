@@ -169,73 +169,9 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
   const [isSeeding, setIsSeeding] = React.useState(false);
   const [showDeleteBackupConfirm, setShowDeleteBackupConfirm] = React.useState(false);
   const [isDeletingBackup, setIsDeletingBackup] = React.useState(false);
+  const [showClearLogsConfirm, setShowClearLogsConfirm] = React.useState(false);
   const [scheduledNotifs, setScheduledNotifs] = React.useState<Notifications.NotificationRequest[]>([]);
   const [logCount, setLogCount] = React.useState<number>(0);
-
-  const fetchLogs = React.useCallback(async () => {
-    setLogCount(LoggerService.getLogCount());
-  }, []);
-
-  React.useEffect(() => {
-    if (isAuthenticated) {
-      fetchLogs();
-    }
-  }, [isAuthenticated, fetchLogs]);
-
-
-
-  const handleRunAutoBackupTask = async () => {
-    try {
-      const res = await runAutoBackupIfDue(true);
-      showAlert({
-        title: 'Dev Auto-Backup Task',
-        message: `Execution outcome: ${res.outcome.toUpperCase()}`,
-        type: res.outcome === 'ran' ? 'success' : 'info',
-      });
-    } catch (err: any) {
-      showAlert({
-        title: 'Dev Auto-Backup Error',
-        message: err?.message || 'Failed to execute auto-backup task',
-        type: 'error',
-      });
-    }
-  };
-
-  const handleDeleteBackup = async () => {
-    try {
-      setIsDeletingBackup(true);
-      const deleted = await GoogleDriveService.deleteBackup();
-      // Also clear the auto-backup timer key — otherwise useGoogleBackup's
-      // threshold check still thinks a backup was recently taken and the app
-      // goes without any cloud backup until the next full interval elapses
-      // (up to 30 days for "monthly"), silently defeating the data-loss
-      // protection auto-backup exists for.
-      await AsyncStorage.multiRemove(['@fintraq_last_backup_meta', '@fintraq_last_auto_backup_time']);
-      setShowDeleteBackupConfirm(false);
-      if (deleted) {
-        showAlert({
-          title: 'Success',
-          message: 'Cloud backup file has been permanently deleted from Google Drive.',
-          type: 'success',
-        });
-      } else {
-        showAlert({
-          title: 'No Backup Found',
-          message: 'No backup file was found on Google Drive.',
-          type: 'info',
-        });
-      }
-    } catch (e) {
-      setShowDeleteBackupConfirm(false);
-      showAlert({
-        title: 'Error',
-        message: toErrorMessage(e, 'Failed to delete backup from Google Drive.'),
-        type: 'error',
-      });
-    } finally {
-      setIsDeletingBackup(false);
-    }
-  };
 
   const [alertConfig, setAlertConfig] = React.useState<{
     visible: boolean;
@@ -265,6 +201,75 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
     },
     [],
   );
+
+  const fetchLogs = React.useCallback(async () => {
+    setLogCount(LoggerService.getLogCount());
+  }, []);
+
+  const handleClearAllLogs = React.useCallback(async () => {
+    await LoggerService.clearLogs();
+    await fetchLogs();
+    setShowClearLogsConfirm(false);
+    showAlert({
+      title: 'Logs Cleared',
+      message: 'All system log records have been erased from storage.',
+      type: 'success',
+    });
+  }, [fetchLogs, showAlert]);
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      fetchLogs();
+    }
+  }, [isAuthenticated, fetchLogs]);
+
+  const handleRunAutoBackupTask = async () => {
+    try {
+      const res = await runAutoBackupIfDue(true);
+      showAlert({
+        title: 'Dev Auto-Backup Task',
+        message: `Execution outcome: ${res.outcome.toUpperCase()}`,
+        type: res.outcome === 'ran' ? 'success' : 'info',
+      });
+    } catch (err: any) {
+      showAlert({
+        title: 'Dev Auto-Backup Error',
+        message: err?.message || 'Failed to execute auto-backup task',
+        type: 'error',
+      });
+    }
+  };
+
+  const handleDeleteBackup = async () => {
+    try {
+      setIsDeletingBackup(true);
+      const deleted = await GoogleDriveService.deleteBackup();
+      await AsyncStorage.multiRemove(['@fintraq_last_backup_meta', '@fintraq_last_auto_backup_time']);
+      setShowDeleteBackupConfirm(false);
+      if (deleted) {
+        showAlert({
+          title: 'Success',
+          message: 'Cloud backup file has been permanently deleted from Google Drive.',
+          type: 'success',
+        });
+      } else {
+        showAlert({
+          title: 'No Backup Found',
+          message: 'No backup file was found on Google Drive.',
+          type: 'info',
+        });
+      }
+    } catch (e) {
+      setShowDeleteBackupConfirm(false);
+      showAlert({
+        title: 'Error',
+        message: toErrorMessage(e, 'Failed to delete backup from Google Drive.'),
+        type: 'error',
+      });
+    } finally {
+      setIsDeletingBackup(false);
+    }
+  };
 
   const fetchScheduled = useCallback(async () => {
     const list = await Notifications.getAllScheduledNotificationsAsync();
@@ -473,9 +478,18 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
             icon={File01Icon as IconSvgElement}
             iconColor={colors.primary}
             label="Open Full-Screen App Logs"
-            subtitle="View & export complete 7-day raw log stream (.txt)"
+            subtitle="View & export complete raw log stream (.txt)"
             value={`${logCount} entries`}
             onPress={() => router.push('/(main)/app-logs')}
+          />
+          <RowSeparator theme={theme} />
+          <NavRow
+            theme={theme}
+            icon={Delete02Icon as IconSvgElement}
+            iconColor={colors.danger}
+            label="Clear System Logs"
+            subtitle="Permanently erase all log records from device storage"
+            onPress={() => setShowClearLogsConfirm(true)}
           />
         </View>
 
@@ -582,6 +596,16 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         destructive
         isLoading={isDeletingBackup}
         onConfirm={handleDeleteBackup}
+      />
+
+      <ConfirmDialog
+        visible={showClearLogsConfirm}
+        onClose={() => setShowClearLogsConfirm(false)}
+        title="Clear System Logs"
+        message="This will permanently erase all system log records from device storage. Proceed?"
+        confirmLabel="Clear Logs"
+        destructive
+        onConfirm={handleClearAllLogs}
       />
 
       <AlertDialog
