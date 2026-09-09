@@ -36,6 +36,8 @@ function getWebClientId(): string | undefined {
 
 class GoogleDriveServiceClass {
   private isInitialized = false;
+  private activeTokenPromise: Promise<string> | null = null;
+  private activeFindBackupPromise: Promise<CloudBackupFileMeta | null> | null = null;
 
   public initialize(force = false) {
     if (this.isInitialized && !force) return;
@@ -129,26 +131,39 @@ class GoogleDriveServiceClass {
   }
 
   private async getAccessToken(): Promise<string> {
-    this.initialize();
-    try {
-      const tokens = await GoogleSignin.getTokens();
-      if (tokens.accessToken) return tokens.accessToken;
-    } catch (e) {
-      LoggerService.info('GOOGLE_DRIVE', 'getTokens initial attempt note', e);
+    if (this.activeTokenPromise) {
+      LoggerService.info('GOOGLE_DRIVE', 'Single-flight: sharing active getAccessToken request across callers');
+      return this.activeTokenPromise;
     }
 
-    try {
-      const silent = await GoogleSignin.signInSilently();
-      if (silent.type === 'success') {
+    this.activeTokenPromise = (async () => {
+      this.initialize();
+      try {
         const tokens = await GoogleSignin.getTokens();
         if (tokens.accessToken) return tokens.accessToken;
+      } catch (e) {
+        LoggerService.info('GOOGLE_DRIVE', 'getTokens initial attempt note', e);
       }
-    } catch (e) {
-      LoggerService.info('GOOGLE_DRIVE', 'signInSilently fallback attempt note', e);
-    }
 
-    LoggerService.warn('GOOGLE_DRIVE', 'Could not retrieve active OAuth access token for Google Drive API');
-    throw new GoogleDriveAuthError();
+      try {
+        const silent = await GoogleSignin.signInSilently();
+        if (silent.type === 'success') {
+          const tokens = await GoogleSignin.getTokens();
+          if (tokens.accessToken) return tokens.accessToken;
+        }
+      } catch (e) {
+        LoggerService.info('GOOGLE_DRIVE', 'signInSilently fallback attempt note', e);
+      }
+
+      LoggerService.warn('GOOGLE_DRIVE', 'Could not retrieve active OAuth access token for Google Drive API');
+      throw new GoogleDriveAuthError();
+    })();
+
+    try {
+      return await this.activeTokenPromise;
+    } finally {
+      this.activeTokenPromise = null;
+    }
   }
 
   private async withAuthErrorHandling<T>(fn: () => Promise<T>): Promise<T> {
@@ -169,7 +184,12 @@ class GoogleDriveServiceClass {
 
   /** Returns null only if no signed-in user or no backup exists; network/HTTP errors are rethrown, not swallowed. */
   public async findLatestBackup(): Promise<CloudBackupFileMeta | null> {
-    return this.withAuthErrorHandling(async () => {
+    if (this.activeFindBackupPromise) {
+      LoggerService.info('GOOGLE_DRIVE', 'Single-flight: sharing active findLatestBackup request across callers');
+      return this.activeFindBackupPromise;
+    }
+
+    this.activeFindBackupPromise = this.withAuthErrorHandling(async () => {
       const user = await this.getCurrentUser();
       if (!user) return null;
 
@@ -194,6 +214,12 @@ class GoogleDriveServiceClass {
         size: Number(files[0].size || 0),
       };
     });
+
+    try {
+      return await this.activeFindBackupPromise;
+    } finally {
+      this.activeFindBackupPromise = null;
+    }
   }
 
   private async createBackupFileEntry(token: string): Promise<string> {
