@@ -133,8 +133,8 @@ class GoogleDriveServiceClass {
     try {
       const tokens = await GoogleSignin.getTokens();
       if (tokens.accessToken) return tokens.accessToken;
-    } catch {
-      // If getTokens fails, perform silent sign in to refresh token
+    } catch (e) {
+      LoggerService.info('GOOGLE_DRIVE', 'getTokens initial attempt note', e);
     }
 
     try {
@@ -143,16 +143,11 @@ class GoogleDriveServiceClass {
         const tokens = await GoogleSignin.getTokens();
         if (tokens.accessToken) return tokens.accessToken;
       }
-    } catch {
-      // Silent auth failed
+    } catch (e) {
+      LoggerService.info('GOOGLE_DRIVE', 'signInSilently fallback attempt note', e);
     }
 
-    try {
-      await AsyncStorage.removeItem(CACHED_GOOGLE_USER_KEY);
-    } catch {
-      // Ignore cache removal error
-    }
-
+    LoggerService.warn('GOOGLE_DRIVE', 'Could not retrieve active OAuth access token for Google Drive API');
     throw new GoogleDriveAuthError();
   }
 

@@ -133,6 +133,8 @@ export async function registerBackgroundBackupTaskAsync(forceReschedule = false)
     await notifee.createTriggerNotification(
       {
         id: SCHEDULER_TRIGGER_ID,
+        title: '☁️ Cloud Backup',
+        body: 'Syncing your workspace in background...',
         android: { channelId: 'backup_status' },
       },
       await frequencyToTrigger(frequency),
