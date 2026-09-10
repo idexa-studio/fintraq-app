@@ -39,8 +39,21 @@ export class NoBackupFoundError extends Error {
   }
 }
 
+export class CloudBackupProRequiredError extends Error {
+  public readonly code = 'CLOUD_BACKUP_PRO_REQUIRED';
+  constructor(message = 'Cloud backup and restore are a Fintraq Pro feature.') {
+    super(message);
+    this.name = 'CloudBackupProRequiredError';
+  }
+}
+
 /** Single source of truth for "does this error mean no backup exists". */
 export function isNoBackupError(error: unknown): boolean {
   return error instanceof NoBackupFoundError || (error as any)?.code === 'NO_BACKUP_FOUND';
+}
+
+/** Single source of truth for "does this error mean the caller isn't Pro". */
+export function isProRequiredError(error: unknown): boolean {
+  return error instanceof CloudBackupProRequiredError || (error as any)?.code === 'CLOUD_BACKUP_PRO_REQUIRED';
 }
 

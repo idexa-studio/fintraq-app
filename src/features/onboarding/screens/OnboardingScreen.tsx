@@ -21,7 +21,7 @@ import { useTheme } from '@/src/providers/ThemeProvider';
 import { AnalyticsService } from '@/src/services/analytics';
 import { NotificationService } from '@/src/services/notification.service';
 import { toDbColor } from '@/src/utils/format';
-import { isNoBackupError } from '@/src/services/backup/google-drive.errors';
+import { isNoBackupError, isProRequiredError } from '@/src/services/backup/google-drive.errors';
 import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
@@ -277,6 +277,18 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           // after the user acknowledges, so this alert can't get stacked
           // under (or raced by) the reminder dialog finalizeSetup triggers.
           LoggerService.warn('ONBOARDING', 'Cloud backup connect failed', err);
+          if (isProRequiredError(err)) {
+            showAlert({
+              title: 'Cloud Backup (Pro)',
+              message: 'Cloud backup and restore are a Fintraq Pro feature. You can upgrade anytime from Settings.',
+              type: 'info',
+              buttons: [
+                { text: 'Continue', style: 'cancel', onPress: () => { void finalizeSetup(); } },
+                { text: 'Upgrade to Pro', onPress: () => router.push('/premium') },
+              ],
+            });
+            return;
+          }
           showAlert({
             title: 'Cloud Backup Not Enabled',
             message: "We couldn't connect your Google account. You can enable Cloud Backup anytime from Settings.",
@@ -345,6 +357,19 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
               text: 'Try Another Account',
               style: 'cancel',
             },
+          ],
+        });
+      } else if (isProRequiredError(e)) {
+        showAlert({
+          title: 'Cloud Restore (Pro)',
+          message: 'Restoring from cloud backup is a Fintraq Pro feature. You can upgrade anytime from Settings.',
+          type: 'info',
+          buttons: [
+            { text: 'Start Fresh', style: 'cancel', onPress: () => {
+              setSetupOption('fresh');
+              setStepIndex(ONBOARDING_STEPS.findIndex((s) => s.id === 'profile'));
+            } },
+            { text: 'Upgrade to Pro', onPress: () => router.push('/premium') },
           ],
         });
       } else {

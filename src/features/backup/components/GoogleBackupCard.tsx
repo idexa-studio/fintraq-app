@@ -6,7 +6,9 @@ import { ProgressBar } from '@/src/components/ui/ProgressBar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import * as Updates from 'expo-updates';
 import {
+  Alert02Icon,
   ArrowRight01Icon,
+  BatteryCharging01Icon,
   CloudIcon,
   Download01Icon,
   LockPasswordIcon,
@@ -20,6 +22,7 @@ import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   DevSettings,
+  Platform,
   StyleSheet,
   Text,
   View,
@@ -30,8 +33,14 @@ import { useRouter } from 'expo-router';
 import { useGoogleBackup } from '../hooks/useGoogleBackup';
 import { LoggerService } from '@/src/services/logger.service';
 import { usePremium } from '@/src/providers/PremiumProvider';
+import { openAppSettings, openBatteryOptimizationSettings } from '@/src/services/backup/battery-optimization';
 
-import { AUTO_BACKUP_FREQUENCIES, AutoBackupFrequency, AutoBackupFrequencyEnum } from '@/src/services/backup/auto-backup.service';
+import {
+  AUTO_BACKUP_FREQUENCIES,
+  AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS,
+  AutoBackupFrequency,
+  AutoBackupFrequencyEnum,
+} from '@/src/services/backup/auto-backup.service';
 
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const theme = useTheme();
@@ -113,26 +122,47 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     }
   }, []);
 
+  const handleReliabilityHintPress = React.useCallback(() => {
+    openBatteryOptimizationSettings(() => showAlert({
+      title: 'Battery Settings',
+      message: "Open your phone's Settings app → Apps → Fintraq → Battery, and choose Unrestricted.",
+      type: 'info',
+    }));
+  }, [showAlert]);
+
   const handleFrequencySelect = React.useCallback(
-    (freq: AutoBackupFrequency) => {
-      if (freq !== AutoBackupFrequencyEnum.OFF && !isPremium) {
+    async (freq: AutoBackupFrequency) => {
+      const { showBatteryPrompt, showNotificationPrompt } = await setAutoBackupFrequency(freq);
+
+      if (showBatteryPrompt) {
         showAlert({
-          title: 'Scheduled Auto-Backup (Pro)',
-          message: 'Automatic background cloud backups are a Fintraq Pro feature. Manual backup and restore are 100% free for everyone!',
+          title: 'Improve Background Reliability',
+          message: 'For reliable background backup on this device, allow Fintraq to run unrestricted in battery settings.',
           type: 'info',
           buttons: [
-            { text: 'Cancel', style: 'cancel' },
+            { text: 'Not Now', style: 'cancel' },
             {
-              text: 'Upgrade to Pro',
-              onPress: () => router.push('/premium'),
+              text: 'Open Settings',
+              onPress: handleReliabilityHintPress,
             },
           ],
         });
         return;
       }
-      setAutoBackupFrequency(freq);
+
+      if (showNotificationPrompt) {
+        showAlert({
+          title: 'Notifications Are Off',
+          message: "You won't see backup progress alerts, but auto-backup will still run in the background. Enable anytime in Settings.",
+          type: 'warning',
+          buttons: [
+            { text: 'OK', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => openAppSettings() },
+          ],
+        });
+      }
     },
-    [isPremium, setAutoBackupFrequency, showAlert, router],
+    [setAutoBackupFrequency, showAlert, handleReliabilityHintPress],
   );
 
   const handleConnect = React.useCallback(async () => {
@@ -259,6 +289,41 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     return `${(kb / 1024).toFixed(1)} MB`;
   }, [lastBackup?.size]);
 
+  // Background jobs can silently stop firing (OEM battery killers) — surface it
+  // instead of letting the user assume it's still working.
+  const isBackupOverdue = useMemo(() => {
+    if (autoBackupFrequency === AutoBackupFrequencyEnum.OFF || !lastBackup?.modifiedTime) return false;
+    const threshold = AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS[autoBackupFrequency];
+    if (!Number.isFinite(threshold)) return false;
+    return Date.now() - new Date(lastBackup.modifiedTime).getTime() > threshold * 2;
+  }, [autoBackupFrequency, lastBackup?.modifiedTime]);
+
+  if (!isPremium) {
+    return (
+      <View style={styles.groupContainer}>
+        <BentoPressable style={styles.mainRow} onPress={() => router.push('/premium')}>
+          <IconAvatar icon={LockPasswordIcon} color={colors.primary} variant="subtle" size={40} />
+          <View style={styles.rowInfo}>
+            <View style={styles.titleRow}>
+              <Text style={styles.rowLabel}>Cloud Backup</Text>
+              <View style={styles.proBadge}>
+                <HugeiconsIcon icon={SparklesIcon} size={10} color={colors.warning} />
+                <Text style={styles.proBadgeText}>PRO</Text>
+              </View>
+            </View>
+            <Text style={styles.rowSubtitle}>
+              Backup, restore, and auto-sync are Fintraq Pro features
+            </Text>
+          </View>
+          <View style={styles.connectBadge}>
+            <Text style={styles.connectBadgeText}>Upgrade</Text>
+            <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primary} />
+          </View>
+        </BentoPressable>
+      </View>
+    );
+  }
+
   if (isChecking) {
     return (
       <View style={styles.groupContainer}>
@@ -330,17 +395,24 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       <View style={styles.separator} />
 
       {/* Backup Status Row */}
-      <View style={styles.statusBox}>
-        <View style={styles.statusTextCol}>
-          <Text style={styles.statusLabel}>LAST BACKUP</Text>
-          <Text style={styles.statusValue}>{formattedLastBackupTime}</Text>
-        </View>
-        {formattedSize && (
-          <View style={styles.sizeBadge}>
-            <Text style={styles.sizeBadgeText}>{formattedSize}</Text>
+      {isBackupOverdue ? (
+        <BentoPressable style={styles.statusBoxWarning} onPress={handleReliabilityHintPress}>
+          <HugeiconsIcon icon={Alert02Icon} size={16} color={colors.warning} />
+          <Text style={styles.statusWarningText}>{"Auto-backup hasn't run in a while — tap for tips"}</Text>
+        </BentoPressable>
+      ) : (
+        <View style={styles.statusBox}>
+          <View style={styles.statusTextCol}>
+            <Text style={styles.statusLabel}>LAST BACKUP</Text>
+            <Text style={styles.statusValue}>{formattedLastBackupTime}</Text>
           </View>
-        )}
-      </View>
+          {formattedSize && (
+            <View style={styles.sizeBadge}>
+              <Text style={styles.sizeBadgeText}>{formattedSize}</Text>
+            </View>
+          )}
+        </View>
+      )}
 
       {/* Progress Bar during Backup or Restore */}
       {(isBackingUp || isRestoring) && (
@@ -394,15 +466,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       {/* Auto Backup Frequency Row */}
       <View style={styles.freqSection}>
         <View style={styles.rowInfo}>
-          <View style={styles.titleRow}>
-            <Text style={styles.rowLabel}>Scheduled Auto-Backup</Text>
-            {!isPremium && (
-              <View style={styles.proBadge}>
-                <HugeiconsIcon icon={SparklesIcon} size={10} color={colors.warning} />
-                <Text style={styles.proBadgeText}>PRO</Text>
-              </View>
-            )}
-          </View>
+          <Text style={styles.rowLabel}>Scheduled Auto-Backup</Text>
           <Text style={styles.rowSubtitle}>{getFrequencySubtitle(autoBackupFrequency)}</Text>
         </View>
 
@@ -410,29 +474,27 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           {AUTO_BACKUP_FREQUENCIES.map((freq) => {
             const isActive = autoBackupFrequency === freq;
             const label = getFrequencyLabel(freq);
-            const isLockedPill = !isPremium && freq !== AutoBackupFrequencyEnum.OFF;
             return (
               <BentoPressable
                 key={freq}
                 style={[styles.freqPill, isActive && styles.freqPillActive]}
                 onPress={() => handleFrequencySelect(freq)}
               >
-                <View style={styles.pillLabelRow}>
-                  {isLockedPill && (
-                    <HugeiconsIcon
-                      icon={LockPasswordIcon}
-                      size={10}
-                      color={isActive ? colors.primaryForeground : colors.textMuted}
-                    />
-                  )}
-                  <Text style={[styles.freqPillText, isActive && styles.freqPillTextActive]}>
-                    {label}
-                  </Text>
-                </View>
+                <Text style={[styles.freqPillText, isActive && styles.freqPillTextActive]}>
+                  {label}
+                </Text>
               </BentoPressable>
             );
           })}
         </View>
+
+        {Platform.OS === 'android' && autoBackupFrequency !== AutoBackupFrequencyEnum.OFF && (
+          <BentoPressable style={styles.reliabilityHintRow} onPress={handleReliabilityHintPress}>
+            <HugeiconsIcon icon={BatteryCharging01Icon} size={12} color={colors.textMuted} />
+            <Text style={styles.reliabilityHintText}>Improve background reliability</Text>
+            <HugeiconsIcon icon={ArrowRight01Icon} size={12} color={colors.textMuted} />
+          </BentoPressable>
+        )}
       </View>
 
       {/* Confirm Dialogs */}
@@ -594,6 +656,31 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: typography.sizes.sm,
       color: colors.text,
     },
+    statusBoxWarning: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('2'),
+      paddingHorizontal: spacing('4'),
+      paddingVertical: spacing('3'),
+      backgroundColor: colors.warning + '12',
+    },
+    statusWarningText: {
+      flex: 1,
+      fontFamily: typography.fonts.medium,
+      fontSize: typography.sizes.sm,
+      color: colors.warning,
+    },
+    reliabilityHintRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1.5'),
+      alignSelf: 'flex-start',
+    },
+    reliabilityHintText: {
+      fontFamily: typography.fonts.medium,
+      fontSize: typography.sizes.xs,
+      color: colors.textMuted,
+    },
     sizeBadge: {
       backgroundColor: colors.primary + '15',
       paddingHorizontal: spacing('2.5'),
@@ -712,10 +799,5 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.bold,
       fontSize: 10,
       color: colors.primary,
-    },
-    pillLabelRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 3,
     },
   });
