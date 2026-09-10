@@ -1,148 +1,59 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import notifee, {
-  AndroidImportance,
-  EventType,
-  RepeatFrequency,
-  TriggerType,
-} from 'react-native-notify-kit';
+import * as BackgroundTask from 'expo-background-task';
+import * as TaskManager from 'expo-task-manager';
 import { LoggerService } from '../logger.service';
 import { NotificationService } from '../notification.service';
-import {
-  AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS,
-  AUTO_BACKUP_STORAGE_KEYS,
-  AutoBackupFrequency,
-  AutoBackupFrequencyEnum,
-  resolveAutoBackupFrequency,
-  runAutoBackupIfDue,
-} from './auto-backup.service';
+import { AutoBackupFrequency, AutoBackupFrequencyEnum, resolveAutoBackupFrequency, runAutoBackupIfDue } from './auto-backup.service';
 
-const SCHEDULER_TRIGGER_ID = 'fintraq_auto_backup_trigger';
-const LAST_SCHEDULED_FREQUENCY_KEY = '@fintraq_bg_task_last_frequency';
+const AUTO_BACKUP_TASK = 'fintraq-auto-backup-task';
 
-// Must run at module load — this is how notifee headlessly relaunches JS when
-// the OS delivers a scheduled AlarmManager trigger while the app is killed/backgrounded.
-notifee.onBackgroundEvent(async ({ type, detail }) => {
-  if (detail.notification?.id !== SCHEDULER_TRIGGER_ID) {
-    return;
-  }
+// WorkManager (Android) / BGTaskScheduler (iOS) floor the interval around 15 minutes and the
+// OS decides actual timing — there is no way to get exact-time delivery here, unlike the old
+// AlarmManager hack (which was exact but got killed by OEM battery managers, hence "not working").
+const FREQUENCY_TO_MINUTES: Record<AutoBackupFrequency, number> = {
+  [AutoBackupFrequencyEnum.OFF]: 0,
+  [AutoBackupFrequencyEnum.DAILY]: 24 * 60,
+  [AutoBackupFrequencyEnum.WEEKLY]: 7 * 24 * 60,
+  [AutoBackupFrequencyEnum.MONTHLY]: 30 * 24 * 60,
+};
 
-  // Dismiss any static OS trigger notification immediately so it never lingers
-  await notifee.cancelNotification(SCHEDULER_TRIGGER_ID).catch(() => {});
-
-  if (type === EventType.DISMISSED || type === EventType.TRIGGER_NOTIFICATION_CREATED) {
-    return;
-  }
-
-  LoggerService.info('TASK_MANAGER', `AlarmManager woke background backup scheduler (event type: ${type})`);
+// Must run at module load so the task is defined before TaskManager/BackgroundTask
+// can invoke it, including when the OS relaunches the app headlessly.
+TaskManager.defineTask(AUTO_BACKUP_TASK, async () => {
+  LoggerService.info('TASK_MANAGER', 'OS woke background backup task');
 
   try {
     const result = await runAutoBackupIfDue(false);
-    LoggerService.info('TASK_MANAGER', `Headless background auto-backup outcome: ${result.outcome.toUpperCase()}`);
+    LoggerService.info('TASK_MANAGER', `Background auto-backup outcome: ${result.outcome.toUpperCase()}`);
     if (result.outcome === 'skipped') {
       await NotificationService.dismissBackupNotification();
     }
+    return result.outcome === 'failed' ? BackgroundTask.BackgroundTaskResult.Failed : BackgroundTask.BackgroundTaskResult.Success;
   } catch (error) {
     LoggerService.error('TASK_MANAGER', 'Failed to execute background auto-backup task', error);
     await NotificationService.presentBackupFailedNotification();
-  }
-
-  // In 1-min dev mode, re-arm the next 1-min trigger for continuous dev testing
-  const currentFrequency = await resolveAutoBackupFrequency();
-  if (currentFrequency === AutoBackupFrequencyEnum.DEV_ONE_MIN) {
-    await registerBackgroundBackupTaskAsync(true);
+    return BackgroundTask.BackgroundTaskResult.Failed;
   }
 });
 
-async function frequencyToTrigger(frequency: AutoBackupFrequency) {
-  let repeatFrequency: RepeatFrequency;
-  switch (frequency) {
-    case AutoBackupFrequencyEnum.DEV_ONE_MIN:
-      repeatFrequency = RepeatFrequency.HOURLY;
-      break;
-    case AutoBackupFrequencyEnum.DAILY:
-      repeatFrequency = RepeatFrequency.DAILY;
-      break;
-    case AutoBackupFrequencyEnum.WEEKLY:
-      repeatFrequency = RepeatFrequency.WEEKLY;
-      break;
-    case AutoBackupFrequencyEnum.MONTHLY:
-      repeatFrequency = RepeatFrequency.MONTHLY;
-      break;
-    default:
-      repeatFrequency = RepeatFrequency.DAILY;
-      break;
-  }
-
-  const lastAutoTimeStr = await AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.LAST_AUTO_BACKUP_TIME);
-  const now = Date.now();
-  const lastAutoTime = lastAutoTimeStr ? parseInt(lastAutoTimeStr, 10) : 0;
-  const intervalMs = AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS[frequency] ?? (24 * 60 * 60 * 1000);
-
-  // If previous backup happened recently, target (lastAutoTime + intervalMs); otherwise start in 60s
-  const targetTime = lastAutoTime > 0 ? lastAutoTime + intervalMs : now + 60_000;
-  const firstTriggerTimestamp = Math.max(now + 60_000, targetTime);
-
-  return {
-    type: TriggerType.TIMESTAMP as const,
-    timestamp: firstTriggerTimestamp,
-    repeatFrequency,
-    alarmManager: {
-      allowWhileIdle: true,
-    },
-  };
-}
-
-/** Registers the AlarmManager-backed auto-backup schedule. Ensures alarm stays armed. */
-export async function registerBackgroundBackupTaskAsync(forceReschedule = false): Promise<void> {
+/** Registers (or unregisters) the WorkManager/BGTaskScheduler-backed auto-backup schedule. */
+export async function registerBackgroundBackupTaskAsync(): Promise<void> {
   try {
     const frequency = await resolveAutoBackupFrequency();
-    const activeTriggers = await notifee.getTriggerNotificationIds();
-    const isScheduled = activeTriggers.includes(SCHEDULER_TRIGGER_ID);
-    const lastFrequency = await AsyncStorage.getItem(LAST_SCHEDULED_FREQUENCY_KEY);
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(AUTO_BACKUP_TASK);
 
     if (frequency === AutoBackupFrequencyEnum.OFF) {
-      if (isScheduled || lastFrequency) {
-        await notifee.cancelTriggerNotification(SCHEDULER_TRIGGER_ID);
-        await notifee.cancelNotification(SCHEDULER_TRIGGER_ID).catch(() => {});
+      if (isRegistered) {
+        await BackgroundTask.unregisterTaskAsync(AUTO_BACKUP_TASK);
         await NotificationService.dismissBackupNotification();
-        await AsyncStorage.removeItem(LAST_SCHEDULED_FREQUENCY_KEY);
-        LoggerService.info('TASK_MANAGER', 'Cancelled background backup schedule (disabled).');
+        LoggerService.info('TASK_MANAGER', 'Unregistered background backup task (disabled).');
       }
       return;
     }
 
-    // If already scheduled, frequency hasn't changed, and not forced, keep active trigger intact
-    if (!forceReschedule && isScheduled && frequency === lastFrequency) {
-      return;
-    }
-
-    // Cancel existing trigger if frequency changed or forced
-    if (isScheduled) {
-      await notifee.cancelTriggerNotification(SCHEDULER_TRIGGER_ID);
-      await notifee.cancelNotification(SCHEDULER_TRIGGER_ID).catch(() => {});
-      await NotificationService.dismissBackupNotification();
-    }
-
-    // Ensure the notification channel is created prior to trigger notification registration
-    await notifee.createChannel({
-      id: 'backup_status',
-      name: 'Cloud Backup Progress',
-      importance: AndroidImportance.LOW,
-    });
-
-    await notifee.createTriggerNotification(
-      {
-        id: SCHEDULER_TRIGGER_ID,
-        title: '☁️ Cloud Backup',
-        body: 'Syncing your workspace in background...',
-        android: { channelId: 'backup_status' },
-      },
-      await frequencyToTrigger(frequency),
-    );
-
-    await AsyncStorage.setItem(LAST_SCHEDULED_FREQUENCY_KEY, frequency);
-    LoggerService.info('TASK_MANAGER', `Scheduled background backup (frequency: ${frequency})`);
+    const minimumInterval = FREQUENCY_TO_MINUTES[frequency];
+    await BackgroundTask.registerTaskAsync(AUTO_BACKUP_TASK, { minimumInterval });
+    LoggerService.info('TASK_MANAGER', `Registered background backup task (frequency: ${frequency}, minimumInterval: ${minimumInterval}min)`);
   } catch (error) {
-    LoggerService.warn('TASK_MANAGER', 'Failed to schedule background backup', error);
+    LoggerService.warn('TASK_MANAGER', 'Failed to register background backup task', error);
   }
 }

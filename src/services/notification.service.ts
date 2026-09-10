@@ -16,9 +16,6 @@ const REMINDER_POOL = [
 
 export const CLOUD_BACKUP_NOTIFICATION_ID = 'cloud_backup_status';
 
-// The single notifee.onBackgroundEvent listener lives in background-backup.task.ts —
-// notifee only keeps the last-registered handler, so it must not be set here too.
-
 /**
  * NotificationService: Centralized infrastructure for local device reminders.
  * 

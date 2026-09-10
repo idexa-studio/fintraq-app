@@ -33,12 +33,7 @@
       "predictiveBackGestureEnabled": false,
       "package": "me.nafish.luno",
       "permissions": [
-        "POST_NOTIFICATIONS",
-        "RECEIVE_BOOT_COMPLETED",
-        "WAKE_LOCK",
-        "FOREGROUND_SERVICE",
-        "FOREGROUND_SERVICE_DATA_SYNC",
-        "SCHEDULE_EXACT_ALARM"
+        "POST_NOTIFICATIONS"
       ]
     },
     "web": {

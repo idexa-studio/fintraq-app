@@ -11,7 +11,6 @@ import { LoggerService } from '../logger.service';
 
 export const AutoBackupFrequencyEnum = {
   OFF: 'off',
-  DEV_ONE_MIN: '1min',
   DAILY: 'daily',
   WEEKLY: 'weekly',
   MONTHLY: 'monthly',
@@ -28,7 +27,6 @@ export const AUTO_BACKUP_STORAGE_KEYS = {
 
 export const AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS: Record<AutoBackupFrequency, number> = {
   [AutoBackupFrequencyEnum.OFF]: Infinity,
-  [AutoBackupFrequencyEnum.DEV_ONE_MIN]: 1 * 60 * 1000,
   [AutoBackupFrequencyEnum.DAILY]: 24 * 60 * 60 * 1000,
   [AutoBackupFrequencyEnum.WEEKLY]: 7 * 24 * 60 * 60 * 1000,
   [AutoBackupFrequencyEnum.MONTHLY]: 30 * 24 * 60 * 60 * 1000,
@@ -73,20 +71,12 @@ export async function resolveAutoBackupFrequency(isPremiumOverride?: boolean): P
   return AutoBackupFrequencyEnum.OFF;
 }
 
-export const AUTO_BACKUP_FREQUENCIES: readonly AutoBackupFrequency[] = __DEV__
-  ? [
-      AutoBackupFrequencyEnum.OFF,
-      AutoBackupFrequencyEnum.DEV_ONE_MIN,
-      AutoBackupFrequencyEnum.DAILY,
-      AutoBackupFrequencyEnum.WEEKLY,
-      AutoBackupFrequencyEnum.MONTHLY,
-    ]
-  : [
-      AutoBackupFrequencyEnum.OFF,
-      AutoBackupFrequencyEnum.DAILY,
-      AutoBackupFrequencyEnum.WEEKLY,
-      AutoBackupFrequencyEnum.MONTHLY,
-    ];
+export const AUTO_BACKUP_FREQUENCIES: readonly AutoBackupFrequency[] = [
+  AutoBackupFrequencyEnum.OFF,
+  AutoBackupFrequencyEnum.DAILY,
+  AutoBackupFrequencyEnum.WEEKLY,
+  AutoBackupFrequencyEnum.MONTHLY,
+];
 
 export type AutoBackupResult =
   | { outcome: 'ran'; meta: CloudBackupFileMeta }
@@ -128,8 +118,7 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   const now = Date.now();
   const lastAutoTime = lastAutoTimeStr ? parseInt(lastAutoTimeStr, 10) : 0;
   const threshold = AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS[frequency] ?? (15 * 60 * 1000);
-  const thresholdBufferMs = frequency === AutoBackupFrequencyEnum.DEV_ONE_MIN ? 10_000 : 5_000;
-  const effectiveThreshold = Math.max(0, threshold - thresholdBufferMs);
+  const effectiveThreshold = Math.max(0, threshold - 5_000);
 
   if (!force && (now - lastAutoTime < effectiveThreshold || getBackupState().isBackingUp)) {
     const elapsedSec = Math.round((now - lastAutoTime) / 1000);

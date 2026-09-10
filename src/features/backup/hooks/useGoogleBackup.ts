@@ -161,7 +161,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP_FREQ, freq),
         AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP, freq !== AutoBackupFrequencyEnum.OFF ? 'true' : 'false'),
       ]);
-      await registerBackgroundBackupTaskAsync(true);
+      await registerBackgroundBackupTaskAsync();
     } catch (e) {
       LoggerService.warn('GOOGLE_BACKUP', 'Failed to save auto-backup frequency', e);
     }

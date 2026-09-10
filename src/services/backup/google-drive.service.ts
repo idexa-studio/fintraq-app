@@ -1,11 +1,18 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAuth, GoogleAuthProvider, signInWithCredential, signOut as firebaseSignOut, User as FirebaseUser } from '@react-native-firebase/auth';
 import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
 import googleServicesConfig from '../../../google-services.json';
 import { GoogleDriveAuthError, GoogleDriveHttpError } from './google-drive.errors';
 import { DriveProgressCallback, driveFetch, driveXhrRequest } from './google-drive.http';
 import { LoggerService } from '@/src/services/logger.service';
 
-const CACHED_GOOGLE_USER_KEY = '@fintraq_google_user';
+function mapFirebaseUser(user: FirebaseUser): GoogleUserAccount {
+  return {
+    id: user.uid,
+    email: user.email ?? '',
+    name: user.displayName,
+    photo: user.photoURL,
+  };
+}
 
 export type GoogleUserAccount = {
   id: string;
@@ -60,71 +67,35 @@ class GoogleDriveServiceClass {
     const response = await GoogleSignin.signIn();
 
     if (isSuccessResponse(response)) {
-      const user = response.data.user;
-      const account: GoogleUserAccount = {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        photo: user.photo,
-      };
-      try {
-        await AsyncStorage.setItem(CACHED_GOOGLE_USER_KEY, JSON.stringify(account));
-      } catch {
-        // Ignore cache error
+      const idToken = response.data.idToken;
+      if (!idToken) {
+        throw new GoogleDriveAuthError();
       }
+      const credential = GoogleAuthProvider.credential(idToken);
+      const { user } = await signInWithCredential(getAuth(), credential);
+      const account = mapFirebaseUser(user);
+      LoggerService.info('GOOGLE_DRIVE', `Signed in to Firebase Auth: ${account.email}`);
       return account;
     }
     return null;
   }
 
+  /** Firebase Auth persists the session natively (Keychain/SharedPreferences) and resolves
+   * without needing UI, which is what headless background execution actually requires. */
   public async getCurrentUser(): Promise<GoogleUserAccount | null> {
-    this.initialize();
-
-    // Check cached session first — essential for headless background execution where signInSilently() lacks UI context
-    try {
-      const cached = await AsyncStorage.getItem(CACHED_GOOGLE_USER_KEY);
-      if (cached) {
-        const parsedAccount: GoogleUserAccount = JSON.parse(cached);
-        LoggerService.info('GOOGLE_DRIVE', `Resolved user account from local cache: ${parsedAccount.email}`);
-        return parsedAccount;
-      }
-    } catch (cacheErr) {
-      LoggerService.warn('GOOGLE_DRIVE', 'Failed to read cached user from AsyncStorage', cacheErr);
+    const currentUser = getAuth().currentUser;
+    if (currentUser) {
+      return mapFirebaseUser(currentUser);
     }
 
-    try {
-      const response = await GoogleSignin.signInSilently();
-      if (response.type === 'success') {
-        const user = response.data.user;
-        const account: GoogleUserAccount = {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          photo: user.photo,
-        };
-        try {
-          await AsyncStorage.setItem(CACHED_GOOGLE_USER_KEY, JSON.stringify(account));
-        } catch {
-          // Ignore cache write error
-        }
-        LoggerService.info('GOOGLE_DRIVE', `Resolved user account via silent sign-in: ${account.email}`);
-        return account;
-      }
-    } catch (error: any) {
-      const errorCode = error?.code || 'UNKNOWN';
-      const errorMsg = error?.message || String(error);
-      LoggerService.info('GOOGLE_DRIVE', `Silent sign-in check note (code: ${errorCode}): ${errorMsg}`);
-    }
-
-    LoggerService.info('GOOGLE_DRIVE', 'No signed-in Google user resolved');
+    LoggerService.info('GOOGLE_DRIVE', 'No signed-in Firebase user resolved');
     return null;
   }
 
   public async signOut(): Promise<void> {
     this.initialize();
     try {
-      await GoogleSignin.signOut();
-      await AsyncStorage.removeItem(CACHED_GOOGLE_USER_KEY);
+      await Promise.all([firebaseSignOut(getAuth()), GoogleSignin.signOut()]);
     } catch (e) {
       LoggerService.warn('GOOGLE_DRIVE', 'Sign out error', e);
     }
@@ -171,11 +142,6 @@ class GoogleDriveServiceClass {
       return await fn();
     } catch (e: any) {
       if (e instanceof GoogleDriveHttpError && e.status === 401) {
-        try {
-          await AsyncStorage.removeItem(CACHED_GOOGLE_USER_KEY);
-        } catch {
-          // Ignore
-        }
         throw new GoogleDriveAuthError();
       }
       throw e;
