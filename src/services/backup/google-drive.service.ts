@@ -1,5 +1,5 @@
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut as firebaseSignOut, User as FirebaseUser } from '@react-native-firebase/auth';
-import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
+import { GoogleSignin, isSuccessResponse, statusCodes } from '@react-native-google-signin/google-signin';
 import googleServicesConfig from '../../../google-services.json';
 import { GoogleDriveAuthError, GoogleDriveHttpError } from './google-drive.errors';
 import { DriveProgressCallback, driveFetch, driveXhrRequest } from './google-drive.http';
@@ -109,21 +109,34 @@ class GoogleDriveServiceClass {
 
     this.activeTokenPromise = (async () => {
       this.initialize();
-      try {
-        const tokens = await GoogleSignin.getTokens();
-        if (tokens.accessToken) return tokens.accessToken;
-      } catch (e) {
-        LoggerService.info('GOOGLE_DRIVE', 'getTokens initial attempt note', e);
-      }
 
-      try {
-        const silent = await GoogleSignin.signInSilently();
-        if (silent.type === 'success') {
+      // After long device sleep (headless background task woken from hours of Doze), the
+      // first signInSilently() attempt can hit a transient network/timeout blip before the
+      // radio is fully back up. Retry a couple times, but never retry SIGN_IN_REQUIRED —
+      // that means there's genuinely no session, and retrying can't fix that.
+      const maxAttempts = 3;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
           const tokens = await GoogleSignin.getTokens();
           if (tokens.accessToken) return tokens.accessToken;
+        } catch (e) {
+          LoggerService.info('GOOGLE_DRIVE', `getTokens attempt ${attempt} note`, e);
         }
-      } catch (e) {
-        LoggerService.info('GOOGLE_DRIVE', 'signInSilently fallback attempt note', e);
+
+        try {
+          const silent = await GoogleSignin.signInSilently();
+          if (silent.type === 'success') {
+            const tokens = await GoogleSignin.getTokens();
+            if (tokens.accessToken) return tokens.accessToken;
+          }
+        } catch (e: any) {
+          LoggerService.info('GOOGLE_DRIVE', `signInSilently attempt ${attempt} note`, e);
+          if (e?.code === statusCodes.SIGN_IN_REQUIRED) break;
+        }
+
+        if (attempt < maxAttempts) {
+          await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+        }
       }
 
       LoggerService.warn('GOOGLE_DRIVE', 'Could not retrieve active OAuth access token for Google Drive API');
