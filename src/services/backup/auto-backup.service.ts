@@ -3,6 +3,7 @@ import { AppState } from 'react-native';
 import { StorageKeys } from '../../constants/keys';
 import { NotificationService } from '../notification.service';
 import { ReviewPromptService } from '../review-prompt.service';
+import { BackupLock } from './backup-lock';
 import { getBackupState, updateBackupState } from './backup-state';
 import { DatabaseBackupService } from './database-backup.service';
 import { CloudBackupFileMeta, GoogleDriveService } from './google-drive.service';
@@ -82,6 +83,11 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   const now = Date.now();
   const lastAutoTime = lastAutoTimeStr ? parseInt(lastAutoTimeStr, 10) : 0;
   const effectiveThreshold = Math.max(0, AUTO_BACKUP_INTERVAL_MS - 5_000);
+
+  if (BackupLock.isRestoring() || getBackupState().isRestoring) {
+    LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: restore in progress`);
+    return { outcome: 'skipped' };
+  }
 
   if (!force && (now - lastAutoTime < effectiveThreshold || getBackupState().isBackingUp)) {
     const elapsedSec = Math.round((now - lastAutoTime) / 1000);

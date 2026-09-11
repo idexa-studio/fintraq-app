@@ -267,7 +267,8 @@ class DatabaseBackupServiceClass {
       );
 
       if (pkg.metadata.checksum && pkg.metadata.checksum !== computedChecksum) {
-        LoggerService.warn('DB_BACKUP', 'Checksum mismatch warning (proceeding for cross-version compatibility)');
+        LoggerService.error('DB_BACKUP', 'Checksum mismatch — backup file is corrupted or incomplete, aborting restore');
+        throw new Error('This backup file appears to be corrupted or incomplete. Restore aborted to protect your existing data.');
       }
 
       // Extract table rows with multi-key fallbacks

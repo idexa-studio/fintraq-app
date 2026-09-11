@@ -390,7 +390,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         StorageKeys.AUTO_BACKUP_LAST_BACKUP_META,
         StorageKeys.AUTO_BACKUP_LAST_AUTO_TIME,
         RETIRED_AUTO_BACKUP_FREQUENCY_KEY,
-      ]).catch(() => {});
+      ]);
 
       showAlert({
         title: 'Factory Reset Complete',

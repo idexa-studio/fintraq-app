@@ -1,3 +1,4 @@
+import * as Updates from 'expo-updates';
 import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Button } from '@/src/components/ui/Button';
@@ -345,7 +346,14 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       LoggerService.info('ONBOARDING', `Restore finished, success: ${success}`);
       if (success) {
         await completeOnboarding();
-        router.replace('/(main)/(tabs)');
+        // Restored data was written straight to storage/DB, bypassing providers
+        // (SettingsProvider, PremiumProvider, etc.) — reload so their in-memory
+        // state isn't stale for the rest of this session.
+        try {
+          await Updates.reloadAsync();
+        } catch {
+          router.replace('/(main)/(tabs)');
+        }
       }
     } catch (e: any) {
       const errorMsg = e?.message || '';
