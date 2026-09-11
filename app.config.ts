@@ -40,5 +40,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     './plugins/with-gradle-memory',
+    './plugins/with-disable-android-backup',
   ],
 });
