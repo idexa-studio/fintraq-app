@@ -2,8 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { File, Directory, Paths } from 'expo-file-system';
 import * as SecureStore from 'expo-secure-store';
 import { LoggerService } from '@/src/services/logger.service';
+import { StorageKeys, SecureStoreKeys } from '@/src/constants/keys';
 
-const FINTRAQ_MIGRATION_MARKER = '@fintraq_namespace_migrated_v2';
+const FINTRAQ_MIGRATION_MARKER = StorageKeys.NAMESPACE_MIGRATED;
 
 const LUNO_STORAGE_KEYS = {
   PROFILE: '@luno_profile',
@@ -42,21 +43,21 @@ const KEEP_STORAGE_KEYS = {
 };
 
 const FINTRAQ_STORAGE_KEYS = {
-  PROFILE: '@fintraq_profile',
-  ONBOARDED: '@fintraq_onboarded',
-  PREMIUM: '@fintraq_premium_v7',
-  PREMIUM_DEV_OVERRIDE: '@fintraq_dev_force_pro',
-  UPSELL_DISMISSED_AT: '@fintraq/upsell_dismissed_at',
-  SEED_EXECUTED: '@fintraq_seed_v2',
-  RECENT_SEARCHES: '@fintraq_recent_searches',
-  WALKTHROUGH_DASHBOARD: '@fintraq_walkthrough_dashboard',
-  WALKTHROUGH_CATEGORIES: '@fintraq_walkthrough_categories',
-  WALKTHROUGH_ANALYTICS: '@fintraq_walkthrough_analytics',
-  WALKTHROUGH_ACCOUNTS: '@fintraq_walkthrough_accounts',
-  WALKTHROUGH_TRANSACTIONS: '@fintraq_walkthrough_transactions_list',
-  WALKTHROUGH_SEARCH: '@fintraq_walkthrough_search',
-  WALKTHROUGH_TRANSACTION_CREATE: '@fintraq_walkthrough_transaction_create',
-  WALKTHROUGH_PERSONS: '@fintraq_walkthrough_persons',
+  PROFILE: StorageKeys.PROFILE,
+  ONBOARDED: StorageKeys.ONBOARDED,
+  PREMIUM: StorageKeys.PREMIUM,
+  PREMIUM_DEV_OVERRIDE: StorageKeys.PREMIUM_DEV_OVERRIDE,
+  UPSELL_DISMISSED_AT: StorageKeys.UPSELL_DISMISSED_AT,
+  SEED_EXECUTED: StorageKeys.SEED_EXECUTED,
+  RECENT_SEARCHES: StorageKeys.RECENT_SEARCHES,
+  WALKTHROUGH_DASHBOARD: StorageKeys.WALKTHROUGH_DASHBOARD,
+  WALKTHROUGH_CATEGORIES: StorageKeys.WALKTHROUGH_CATEGORIES,
+  WALKTHROUGH_ANALYTICS: StorageKeys.WALKTHROUGH_ANALYTICS,
+  WALKTHROUGH_ACCOUNTS: StorageKeys.WALKTHROUGH_ACCOUNTS,
+  WALKTHROUGH_TRANSACTIONS: StorageKeys.WALKTHROUGH_TRANSACTIONS,
+  WALKTHROUGH_SEARCH: StorageKeys.WALKTHROUGH_SEARCH,
+  WALKTHROUGH_TRANSACTION_CREATE: StorageKeys.WALKTHROUGH_TRANSACTION_CREATE,
+  WALKTHROUGH_PERSONS: StorageKeys.WALKTHROUGH_PERSONS,
 };
 
 const LUNO_SECURE_KEYS = {
@@ -70,8 +71,8 @@ const KEEP_SECURE_KEYS = {
 };
 
 const FINTRAQ_SECURE_KEYS = {
-  PIN_HASH: 'fintraq_lock_pin_hash',
-  LOCK_MODE: 'fintraq_lock_mode',
+  PIN_HASH: SecureStoreKeys.PIN_HASH,
+  LOCK_MODE: SecureStoreKeys.LOCK_MODE,
 };
 
 const LEGACY_STORAGE_KEYSETS = [KEEP_STORAGE_KEYS, LUNO_STORAGE_KEYS] as const;

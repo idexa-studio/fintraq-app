@@ -25,6 +25,7 @@ import { usePersons } from '../../persons/hooks/persons';
 import { TransactionAccountPicker } from '../../transactions/components/TransactionAccountPicker';
 import { TransactionAmountInput } from '../../transactions/components/TransactionAmountInput';
 import { usePremium } from '../../../providers/PremiumProvider';
+import { FREE_LOAN_LIMIT } from '../../../constants/iap';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { toErrorMessage } from '../../../utils/errors';
@@ -39,7 +40,6 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 
-const FREE_LOAN_LIMIT = 3;
 const parseAmount = (raw: string) => {
   const n = parseFloat(raw.replace(',', '.').replace(/[^0-9.]/g, ''));
   return isFinite(n) ? n : 0;

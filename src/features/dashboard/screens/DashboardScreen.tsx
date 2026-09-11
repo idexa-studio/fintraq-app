@@ -33,7 +33,7 @@ import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from 
 const UPSELL_KEY = StorageKeys.UPSELL_DISMISSED_AT;
 const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
 
-const BACKUP_PROMPT_KEY = '@fintraq_backup_prompt_dismissed_at';
+const BACKUP_PROMPT_KEY = StorageKeys.BACKUP_PROMPT_DISMISSED_AT;
 const BACKUP_PROMPT_TTL = 14 * 24 * 60 * 60 * 1000;
 
 export const DashboardScreen = React.memo(function DashboardScreen() {

@@ -14,10 +14,7 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-
-
-const FREE_PERSON_LIMIT = 10;
-
+import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
 
 export const PersonsScreen = React.memo(function PersonsScreen() {
   const theme = useTheme();

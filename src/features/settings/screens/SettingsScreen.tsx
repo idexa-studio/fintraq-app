@@ -9,7 +9,7 @@ import { PageBackground } from '@/src/components/ui/PageBackground';
 import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
 import { db } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
-import { StorageKeys } from '@/src/constants/keys';
+import { RETIRED_AUTO_BACKUP_FREQUENCY_KEY, StorageKeys } from '@/src/constants/keys';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
 import * as Updates from 'expo-updates';
 
@@ -386,10 +386,10 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         StorageKeys.WALKTHROUGH_TRANSACTION_CREATE,
         StorageKeys.WALKTHROUGH_PERSONS,
         // Cloud backup settings, owned by useGoogleBackup.ts
-        '@fintraq_auto_backup_enabled',
-        '@fintraq_auto_backup_frequency',
-        '@fintraq_last_backup_meta',
-        '@fintraq_last_auto_backup_time',
+        StorageKeys.AUTO_BACKUP_ENABLED,
+        StorageKeys.AUTO_BACKUP_LAST_BACKUP_META,
+        StorageKeys.AUTO_BACKUP_LAST_AUTO_TIME,
+        RETIRED_AUTO_BACKUP_FREQUENCY_KEY,
       ]).catch(() => {});
 
       showAlert({

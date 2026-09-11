@@ -15,8 +15,7 @@ import { DEFAULT_CURRENCY } from '../../../constants/currency';
 import type { LoanWithStats } from '../api/loans';
 import { LoanCard } from '../components/LoanCard';
 import { useLoans, useLoansCount } from '../hooks/loans';
-
-const FREE_LOAN_LIMIT = 3;
+import { FREE_LOAN_LIMIT } from '../../../constants/iap';
 
 type Tab = 'lend' | 'borrow';
 

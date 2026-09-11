@@ -9,14 +9,9 @@ import { StorageKeys } from '../../constants/keys';
 
 import { LoggerService } from '../logger.service';
 
-export const AUTO_BACKUP_STORAGE_KEYS = {
-  ENABLED: '@fintraq_auto_backup_enabled',
-  LAST_BACKUP_META: '@fintraq_last_backup_meta',
-  LAST_AUTO_BACKUP_TIME: '@fintraq_last_auto_backup_time',
-} as const;
-
-// Fixed schedule — no user-facing frequency choice. Prod = 24h, dev = 15min floor.
-export const AUTO_BACKUP_THRESHOLD_MS = __DEV__ ? 15 * 60 * 1000 : 24 * 60 * 60 * 1000;
+// Fixed schedule — no user-facing frequency choice. Prod = 24h, dev = 15min (WorkManager's floor).
+export const AUTO_BACKUP_INTERVAL_MS = __DEV__ ? 15 * 60 * 1000 : 24 * 60 * 60 * 1000;
+export const AUTO_BACKUP_INTERVAL_MINUTES = AUTO_BACKUP_INTERVAL_MS / (60 * 1000);
 
 async function isProUserActive(): Promise<boolean> {
   try {
@@ -42,7 +37,7 @@ export async function resolveAutoBackupEnabled(isPremiumOverride?: boolean): Pro
   const isPro = isPremiumOverride !== undefined ? isPremiumOverride : await isProUserActive();
   if (!isPro) return false;
 
-  const autoVal = await AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.ENABLED);
+  const autoVal = await AsyncStorage.getItem(StorageKeys.AUTO_BACKUP_ENABLED);
   return autoVal === 'true';
 }
 
@@ -82,14 +77,14 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   }
   LoggerService.info('AUTO_BACKUP', `[${tag}] Active Google account: ${currentUser.email}`);
 
-  const lastAutoTimeStr = await AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.LAST_AUTO_BACKUP_TIME);
+  const lastAutoTimeStr = await AsyncStorage.getItem(StorageKeys.AUTO_BACKUP_LAST_AUTO_TIME);
   const now = Date.now();
   const lastAutoTime = lastAutoTimeStr ? parseInt(lastAutoTimeStr, 10) : 0;
-  const effectiveThreshold = Math.max(0, AUTO_BACKUP_THRESHOLD_MS - 5_000);
+  const effectiveThreshold = Math.max(0, AUTO_BACKUP_INTERVAL_MS - 5_000);
 
   if (!force && (now - lastAutoTime < effectiveThreshold || getBackupState().isBackingUp)) {
     const elapsedSec = Math.round((now - lastAutoTime) / 1000);
-    const thresholdSec = Math.round(AUTO_BACKUP_THRESHOLD_MS / 1000);
+    const thresholdSec = Math.round(AUTO_BACKUP_INTERVAL_MS / 1000);
     LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: threshold not reached (${elapsedSec}s / ${thresholdSec}s, backingUp: ${getBackupState().isBackingUp})`);
     await NotificationService.dismissBackupNotification();
     return { outcome: 'skipped' };
@@ -117,8 +112,8 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
     updateBackupState({ progress: 100, progressStage: 'Backup complete!' });
 
     await Promise.all([
-      AsyncStorage.setItem(AUTO_BACKUP_STORAGE_KEYS.LAST_BACKUP_META, JSON.stringify(uploadedFile)),
-      AsyncStorage.setItem(AUTO_BACKUP_STORAGE_KEYS.LAST_AUTO_BACKUP_TIME, String(now)),
+      AsyncStorage.setItem(StorageKeys.AUTO_BACKUP_LAST_BACKUP_META, JSON.stringify(uploadedFile)),
+      AsyncStorage.setItem(StorageKeys.AUTO_BACKUP_LAST_AUTO_TIME, String(now)),
     ]);
 
     NotificationService.presentBackupCompleteNotification();

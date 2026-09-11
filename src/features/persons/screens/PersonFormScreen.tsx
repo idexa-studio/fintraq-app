@@ -28,8 +28,8 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, toDbColor } from '@/src/utils/format';
 import { LoggerService } from '@/src/services/logger.service';
+import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
 
-const FREE_PERSON_LIMIT = 10;
 const PALETTE_COLORS = PALETTE_COLOR_OPTIONS.map((c) => c.hex);
 
 function randomPaletteColor(): string {

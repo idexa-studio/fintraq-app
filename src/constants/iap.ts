@@ -23,6 +23,10 @@ export const SKU_LIFETIME = Platform.select({
 
 export const ALL_SKUS = [SKU_LIFETIME];
 
+// Free-tier caps before Pro is required.
+export const FREE_LOAN_LIMIT = 3;
+export const FREE_PERSON_LIMIT = 10;
+
 export const FEATURES: ProFeature[] = [
   {
     icon: SparklesIcon,

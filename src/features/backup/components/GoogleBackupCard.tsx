@@ -36,7 +36,7 @@ import { LoggerService } from '@/src/services/logger.service';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { openAppSettings, openBatteryOptimizationSettings } from '@/src/services/backup/battery-optimization';
 
-import { AUTO_BACKUP_THRESHOLD_MS } from '@/src/services/backup/auto-backup.service';
+import { AUTO_BACKUP_INTERVAL_MS } from '@/src/services/backup/auto-backup.service';
 
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const theme = useTheme();
@@ -274,7 +274,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   // instead of letting the user assume it's still working.
   const isBackupOverdue = useMemo(() => {
     if (!autoBackupEnabled || !lastBackup?.modifiedTime) return false;
-    return Date.now() - new Date(lastBackup.modifiedTime).getTime() > AUTO_BACKUP_THRESHOLD_MS * 2;
+    return Date.now() - new Date(lastBackup.modifiedTime).getTime() > AUTO_BACKUP_INTERVAL_MS * 2;
   }, [autoBackupEnabled, lastBackup?.modifiedTime]);
 
   if (!isPremium) {

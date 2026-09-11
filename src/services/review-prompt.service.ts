@@ -1,9 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as StoreReview from 'expo-store-review';
 import { LoggerService } from '@/src/services/logger.service';
+import { StorageKeys } from '@/src/constants/keys';
 
-const STORAGE_KEY_FIRST_LAUNCH_AT = '@fintraq_first_launch_at';
-const STORAGE_KEY_REVIEW_REQUESTED = '@fintraq_review_requested_at';
+const STORAGE_KEY_FIRST_LAUNCH_AT = StorageKeys.FIRST_LAUNCH_AT;
+const STORAGE_KEY_REVIEW_REQUESTED = StorageKeys.REVIEW_REQUESTED_AT;
 
 const MIN_DAYS_SINCE_INSTALL = 2;
 const MIN_DAYS_SINCE_INSTALL_MS = MIN_DAYS_SINCE_INSTALL * 24 * 60 * 60 * 1000;

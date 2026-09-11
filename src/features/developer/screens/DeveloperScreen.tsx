@@ -13,6 +13,7 @@ import { seedDummyData } from '@/src/utils/seed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
 import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
+import { StorageKeys } from '@/src/constants/keys';
 import { LoggerService } from '@/src/services/logger.service';
 import {
   AndroidIcon,
@@ -244,7 +245,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
     try {
       setIsDeletingBackup(true);
       const deleted = await GoogleDriveService.deleteBackup();
-      await AsyncStorage.multiRemove(['@fintraq_last_backup_meta', '@fintraq_last_auto_backup_time']);
+      await AsyncStorage.multiRemove([StorageKeys.AUTO_BACKUP_LAST_BACKUP_META, StorageKeys.AUTO_BACKUP_LAST_AUTO_TIME]);
       setShowDeleteBackupConfirm(false);
       if (deleted) {
         showAlert({

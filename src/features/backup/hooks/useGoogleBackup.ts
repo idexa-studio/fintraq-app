@@ -1,7 +1,4 @@
-import {
-  AUTO_BACKUP_STORAGE_KEYS,
-  resolveAutoBackupEnabled,
-} from '@/src/services/backup/auto-backup.service';
+import { resolveAutoBackupEnabled } from '@/src/services/backup/auto-backup.service';
 import { getBackupState, SharedBackupState, subscribeToBackupState, updateBackupState } from '@/src/services/backup/backup-state';
 import { DatabaseBackupService } from '@/src/services/backup/database-backup.service';
 import { CloudBackupProRequiredError, GoogleDriveAuthError, isNoBackupError, NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
@@ -15,11 +12,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { AppState, Platform } from 'react-native';
 import { LoggerService } from '@/src/services/logger.service';
 import { usePremium } from '@/src/providers/PremiumProvider';
+import { StorageKeys } from '@/src/constants/keys';
 
-const STORAGE_KEY_AUTO_BACKUP = AUTO_BACKUP_STORAGE_KEYS.ENABLED;
-const STORAGE_KEY_LAST_BACKUP_META = AUTO_BACKUP_STORAGE_KEYS.LAST_BACKUP_META;
-const STORAGE_KEY_LAST_AUTO_BACKUP_TIME = AUTO_BACKUP_STORAGE_KEYS.LAST_AUTO_BACKUP_TIME;
-const STORAGE_KEY_BATTERY_PROMPT_SHOWN = '@fintraq_battery_prompt_shown';
+const STORAGE_KEY_AUTO_BACKUP = StorageKeys.AUTO_BACKUP_ENABLED;
+const STORAGE_KEY_LAST_BACKUP_META = StorageKeys.AUTO_BACKUP_LAST_BACKUP_META;
+const STORAGE_KEY_LAST_AUTO_BACKUP_TIME = StorageKeys.AUTO_BACKUP_LAST_AUTO_TIME;
+const STORAGE_KEY_BATTERY_PROMPT_SHOWN = StorageKeys.AUTO_BACKUP_BATTERY_PROMPT_SHOWN;
 
 export type SetAutoBackupResult = {
   blockedByNotifications: boolean;
