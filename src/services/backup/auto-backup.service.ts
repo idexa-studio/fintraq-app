@@ -9,28 +9,16 @@ import { StorageKeys } from '../../constants/keys';
 
 import { LoggerService } from '../logger.service';
 
-export const AutoBackupFrequencyEnum = {
-  OFF: 'off',
-  DAILY: 'daily',
-  WEEKLY: 'weekly',
-  MONTHLY: 'monthly',
-} as const;
-
-export type AutoBackupFrequency = (typeof AutoBackupFrequencyEnum)[keyof typeof AutoBackupFrequencyEnum];
-
 export const AUTO_BACKUP_STORAGE_KEYS = {
   ENABLED: '@fintraq_auto_backup_enabled',
-  FREQUENCY: '@fintraq_auto_backup_frequency',
   LAST_BACKUP_META: '@fintraq_last_backup_meta',
   LAST_AUTO_BACKUP_TIME: '@fintraq_last_auto_backup_time',
 } as const;
 
-export const AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS: Record<AutoBackupFrequency, number> = {
-  [AutoBackupFrequencyEnum.OFF]: Infinity,
-  [AutoBackupFrequencyEnum.DAILY]: 24 * 60 * 60 * 1000,
-  [AutoBackupFrequencyEnum.WEEKLY]: 7 * 24 * 60 * 60 * 1000,
-  [AutoBackupFrequencyEnum.MONTHLY]: 30 * 24 * 60 * 60 * 1000,
-};
+// Fixed schedule — no user-facing frequency choice. Prod cadence is every 24h;
+// dev builds use 15min (WorkManager's floor) so background firing can be tested
+// without an overnight wait.
+export const AUTO_BACKUP_THRESHOLD_MS = __DEV__ ? 15 * 60 * 1000 : 24 * 60 * 60 * 1000;
 
 async function isProUserActive(): Promise<boolean> {
   try {
@@ -52,31 +40,13 @@ async function isProUserActive(): Promise<boolean> {
   return false;
 }
 
-export async function resolveAutoBackupFrequency(isPremiumOverride?: boolean): Promise<AutoBackupFrequency> {
+export async function resolveAutoBackupEnabled(isPremiumOverride?: boolean): Promise<boolean> {
   const isPro = isPremiumOverride !== undefined ? isPremiumOverride : await isProUserActive();
-  if (!isPro) {
-    return AutoBackupFrequencyEnum.OFF;
-  }
+  if (!isPro) return false;
 
-  const [autoVal, autoFreqVal] = await Promise.all([
-    AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.ENABLED),
-    AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.FREQUENCY),
-  ]);
-
-  const VALID_FREQUENCIES = Object.values(AutoBackupFrequencyEnum) as string[];
-  if (autoFreqVal && VALID_FREQUENCIES.includes(autoFreqVal) && autoFreqVal !== AutoBackupFrequencyEnum.OFF) {
-    return autoFreqVal as AutoBackupFrequency;
-  }
-  if (autoVal === 'true') return AutoBackupFrequencyEnum.DAILY;
-  return AutoBackupFrequencyEnum.OFF;
+  const autoVal = await AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.ENABLED);
+  return autoVal === 'true';
 }
-
-export const AUTO_BACKUP_FREQUENCIES: readonly AutoBackupFrequency[] = [
-  AutoBackupFrequencyEnum.OFF,
-  AutoBackupFrequencyEnum.DAILY,
-  AutoBackupFrequencyEnum.WEEKLY,
-  AutoBackupFrequencyEnum.MONTHLY,
-];
 
 export type AutoBackupResult =
   | { outcome: 'ran'; meta: CloudBackupFileMeta }
@@ -98,9 +68,9 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
     return { outcome: 'skipped' };
   }
 
-  const frequency = await resolveAutoBackupFrequency();
-  LoggerService.info('AUTO_BACKUP', `[${tag}] Resolved frequency: ${frequency}`);
-  if (frequency === AutoBackupFrequencyEnum.OFF && !force) {
+  const enabled = await resolveAutoBackupEnabled();
+  LoggerService.info('AUTO_BACKUP', `[${tag}] Resolved enabled: ${enabled}`);
+  if (!enabled && !force) {
     LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: feature disabled in settings`);
     await NotificationService.dismissBackupNotification();
     return { outcome: 'skipped' };
@@ -117,18 +87,17 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   const lastAutoTimeStr = await AsyncStorage.getItem(AUTO_BACKUP_STORAGE_KEYS.LAST_AUTO_BACKUP_TIME);
   const now = Date.now();
   const lastAutoTime = lastAutoTimeStr ? parseInt(lastAutoTimeStr, 10) : 0;
-  const threshold = AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS[frequency] ?? (15 * 60 * 1000);
-  const effectiveThreshold = Math.max(0, threshold - 5_000);
+  const effectiveThreshold = Math.max(0, AUTO_BACKUP_THRESHOLD_MS - 5_000);
 
   if (!force && (now - lastAutoTime < effectiveThreshold || getBackupState().isBackingUp)) {
     const elapsedSec = Math.round((now - lastAutoTime) / 1000);
-    const thresholdSec = Math.round(threshold / 1000);
+    const thresholdSec = Math.round(AUTO_BACKUP_THRESHOLD_MS / 1000);
     LoggerService.info('AUTO_BACKUP', `[${tag}] Skipped: threshold not reached (${elapsedSec}s / ${thresholdSec}s, backingUp: ${getBackupState().isBackingUp})`);
     await NotificationService.dismissBackupNotification();
     return { outcome: 'skipped' };
   }
 
-  LoggerService.info('AUTO_BACKUP', `[${tag}] Starting cloud auto-backup sync (trigger: ${trigger}, frequency: ${frequency})`);
+  LoggerService.info('AUTO_BACKUP', `[${tag}] Starting cloud auto-backup sync (trigger: ${trigger})`);
 
   NotificationService.presentBackupProgressNotification(10, 'Preparing database snapshot...');
 

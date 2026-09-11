@@ -24,6 +24,7 @@ import {
   DevSettings,
   Platform,
   StyleSheet,
+  Switch,
   Text,
   View,
 } from 'react-native';
@@ -35,12 +36,7 @@ import { LoggerService } from '@/src/services/logger.service';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { openAppSettings, openBatteryOptimizationSettings } from '@/src/services/backup/battery-optimization';
 
-import {
-  AUTO_BACKUP_FREQUENCIES,
-  AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS,
-  AutoBackupFrequency,
-  AutoBackupFrequencyEnum,
-} from '@/src/services/backup/auto-backup.service';
+import { AUTO_BACKUP_THRESHOLD_MS } from '@/src/services/backup/auto-backup.service';
 
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const theme = useTheme();
@@ -58,12 +54,12 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     progress,
     progressStage,
     lastBackup,
-    autoBackupFrequency,
+    autoBackupEnabled,
     connectAccount,
     disconnectAccount,
     performBackup,
     performRestore,
-    setAutoBackupFrequency,
+    toggleAutoBackup,
   } = useGoogleBackup();
 
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false);
@@ -98,30 +94,6 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     [],
   );
 
-  const getFrequencyLabel = React.useCallback((freq: AutoBackupFrequency): string => {
-    switch (freq) {
-      case AutoBackupFrequencyEnum.OFF:
-        return 'Off';
-      case AutoBackupFrequencyEnum.DAILY:
-        return 'Daily';
-      case AutoBackupFrequencyEnum.WEEKLY:
-        return 'Weekly';
-      case AutoBackupFrequencyEnum.MONTHLY:
-        return 'Monthly';
-      default:
-        return String(freq);
-    }
-  }, []);
-
-  const getFrequencySubtitle = React.useCallback((freq: AutoBackupFrequency): string => {
-    switch (freq) {
-      case AutoBackupFrequencyEnum.OFF:
-        return 'Automatic background cloud backup is disabled';
-      default:
-        return `Backs up your data automatically ${freq} in the background`;
-    }
-  }, []);
-
   const handleReliabilityHintPress = React.useCallback(() => {
     openBatteryOptimizationSettings(() => showAlert({
       title: 'Battery Settings',
@@ -130,9 +102,23 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     }));
   }, [showAlert]);
 
-  const handleFrequencySelect = React.useCallback(
-    async (freq: AutoBackupFrequency) => {
-      const { showBatteryPrompt, showNotificationPrompt } = await setAutoBackupFrequency(freq);
+  /** Returns true if it showed a prompt (notification/battery), so callers can skip a competing alert. */
+  const handleToggleAutoBackup = React.useCallback(
+    async (value: boolean): Promise<boolean> => {
+      const { blockedByNotifications, showBatteryPrompt } = await toggleAutoBackup(value);
+
+      if (blockedByNotifications) {
+        showAlert({
+          title: 'Notifications Required',
+          message: 'Auto-backup needs notification permission so you can see backup status. Enable it in Settings, then try again.',
+          type: 'warning',
+          buttons: [
+            { text: 'OK', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => openAppSettings() },
+          ],
+        });
+        return true;
+      }
 
       if (showBatteryPrompt) {
         showAlert({
@@ -147,32 +133,27 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
             },
           ],
         });
-        return;
+        return true;
       }
 
-      if (showNotificationPrompt) {
-        showAlert({
-          title: 'Notifications Are Off',
-          message: "You won't see backup progress alerts, but auto-backup will still run in the background. Enable anytime in Settings.",
-          type: 'warning',
-          buttons: [
-            { text: 'OK', style: 'cancel' },
-            { text: 'Open Settings', onPress: () => openAppSettings() },
-          ],
-        });
-      }
+      return false;
     },
-    [setAutoBackupFrequency, showAlert, handleReliabilityHintPress],
+    [toggleAutoBackup, showAlert, handleReliabilityHintPress],
   );
 
   const handleConnect = React.useCallback(async () => {
     try {
       await connectAccount();
-      showAlert({
-        title: 'Google Account Connected',
-        message: 'Your Google Account has been connected and is ready for cloud backup.',
-        type: 'success',
-      });
+      // Connecting an account is the whole "set up backup" action from the
+      // user's POV — auto-backup turns on immediately, no separate step.
+      const promptShown = await handleToggleAutoBackup(true);
+      if (!promptShown) {
+        showAlert({
+          title: 'Google Account Connected',
+          message: 'Your Google Account has been connected. Fintraq will back up your data automatically in the background.',
+          type: 'success',
+        });
+      }
     } catch (e) {
       showAlert({
         title: 'Connection Failed',
@@ -180,7 +161,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         type: 'error',
       });
     }
-  }, [connectAccount, showAlert]);
+  }, [connectAccount, handleToggleAutoBackup, showAlert]);
 
   const handleDisconnect = React.useCallback(async () => {
     setShowDisconnectConfirm(false);
@@ -292,11 +273,9 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   // Background jobs can silently stop firing (OEM battery killers) — surface it
   // instead of letting the user assume it's still working.
   const isBackupOverdue = useMemo(() => {
-    if (autoBackupFrequency === AutoBackupFrequencyEnum.OFF || !lastBackup?.modifiedTime) return false;
-    const threshold = AUTO_BACKUP_FREQUENCY_THRESHOLDS_MS[autoBackupFrequency];
-    if (!Number.isFinite(threshold)) return false;
-    return Date.now() - new Date(lastBackup.modifiedTime).getTime() > threshold * 2;
-  }, [autoBackupFrequency, lastBackup?.modifiedTime]);
+    if (!autoBackupEnabled || !lastBackup?.modifiedTime) return false;
+    return Date.now() - new Date(lastBackup.modifiedTime).getTime() > AUTO_BACKUP_THRESHOLD_MS * 2;
+  }, [autoBackupEnabled, lastBackup?.modifiedTime]);
 
   if (!isPremium) {
     return (
@@ -463,32 +442,27 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
 
       <View style={styles.separator} />
 
-      {/* Auto Backup Frequency Row */}
-      <View style={styles.freqSection}>
-        <View style={styles.rowInfo}>
-          <Text style={styles.rowLabel}>Scheduled Auto-Backup</Text>
-          <Text style={styles.rowSubtitle}>{getFrequencySubtitle(autoBackupFrequency)}</Text>
+      {/* Auto Backup Toggle Row */}
+      <View style={styles.autoBackupSection}>
+        <View style={styles.autoBackupRow}>
+          <View style={styles.rowInfo}>
+            <Text style={styles.rowLabel}>Auto Backup</Text>
+            <Text style={styles.rowSubtitle}>
+              {autoBackupEnabled
+                ? 'Backs up your data automatically in the background'
+                : 'Automatic background cloud backup is off'}
+            </Text>
+          </View>
+          <Switch
+            value={autoBackupEnabled}
+            onValueChange={(value) => { void handleToggleAutoBackup(value); }}
+            trackColor={{ false: colors.text + '18', true: colors.primary }}
+            thumbColor={'#FFFFFF'}
+            ios_backgroundColor={colors.text + '18'}
+          />
         </View>
 
-        <View style={styles.freqPillsRow}>
-          {AUTO_BACKUP_FREQUENCIES.map((freq) => {
-            const isActive = autoBackupFrequency === freq;
-            const label = getFrequencyLabel(freq);
-            return (
-              <BentoPressable
-                key={freq}
-                style={[styles.freqPill, isActive && styles.freqPillActive]}
-                onPress={() => handleFrequencySelect(freq)}
-              >
-                <Text style={[styles.freqPillText, isActive && styles.freqPillTextActive]}>
-                  {label}
-                </Text>
-              </BentoPressable>
-            );
-          })}
-        </View>
-
-        {Platform.OS === 'android' && autoBackupFrequency !== AutoBackupFrequencyEnum.OFF && (
+        {Platform.OS === 'android' && autoBackupEnabled && (
           <BentoPressable style={styles.reliabilityHintRow} onPress={handleReliabilityHintPress}>
             <HugeiconsIcon icon={BatteryCharging01Icon} size={12} color={colors.textMuted} />
             <Text style={styles.reliabilityHintText}>Improve background reliability</Text>
@@ -754,37 +728,16 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     disabledButton: {
       opacity: 0.5,
     },
-    freqSection: {
+    autoBackupSection: {
       gap: spacing('3'),
       paddingHorizontal: spacing('4'),
       paddingVertical: spacing('3.5'),
       backgroundColor: colors.surface,
     },
-    freqPillsRow: {
+    autoBackupRow: {
       flexDirection: 'row',
-      backgroundColor: colors.card,
-      borderRadius: radius('xl'),
-      padding: 3,
-      gap: 2,
-    },
-    freqPill: {
-      flex: 1,
       alignItems: 'center',
-      justifyContent: 'center',
-      paddingVertical: spacing('2'),
-      borderRadius: radius('lg'),
-    },
-    freqPillActive: {
-      backgroundColor: colors.primary,
-    },
-    freqPillText: {
-      fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
-      color: colors.textMuted,
-    },
-    freqPillTextActive: {
-      fontFamily: typography.fonts.bold,
-      color: colors.primaryForeground,
+      gap: spacing('3'),
     },
     proBadge: {
       flexDirection: 'row',

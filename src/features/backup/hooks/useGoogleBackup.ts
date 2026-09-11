@@ -1,8 +1,6 @@
 import {
   AUTO_BACKUP_STORAGE_KEYS,
-  AutoBackupFrequency,
-  AutoBackupFrequencyEnum,
-  resolveAutoBackupFrequency,
+  resolveAutoBackupEnabled,
 } from '@/src/services/backup/auto-backup.service';
 import { getBackupState, SharedBackupState, subscribeToBackupState, updateBackupState } from '@/src/services/backup/backup-state';
 import { DatabaseBackupService } from '@/src/services/backup/database-backup.service';
@@ -18,17 +16,14 @@ import { AppState, Platform } from 'react-native';
 import { LoggerService } from '@/src/services/logger.service';
 import { usePremium } from '@/src/providers/PremiumProvider';
 
-export type { AutoBackupFrequency };
-
 const STORAGE_KEY_AUTO_BACKUP = AUTO_BACKUP_STORAGE_KEYS.ENABLED;
-const STORAGE_KEY_AUTO_BACKUP_FREQ = AUTO_BACKUP_STORAGE_KEYS.FREQUENCY;
 const STORAGE_KEY_LAST_BACKUP_META = AUTO_BACKUP_STORAGE_KEYS.LAST_BACKUP_META;
 const STORAGE_KEY_LAST_AUTO_BACKUP_TIME = AUTO_BACKUP_STORAGE_KEYS.LAST_AUTO_BACKUP_TIME;
 const STORAGE_KEY_BATTERY_PROMPT_SHOWN = '@fintraq_battery_prompt_shown';
 
-export type SetAutoBackupFrequencyResult = {
+export type SetAutoBackupResult = {
+  blockedByNotifications: boolean;
   showBatteryPrompt: boolean;
-  showNotificationPrompt: boolean;
 };
 
 export type UseGoogleBackupReturn = {
@@ -41,13 +36,12 @@ export type UseGoogleBackupReturn = {
   progressStage: string | null;
   lastBackup: CloudBackupFileMeta | null;
   autoBackupEnabled: boolean;
-  autoBackupFrequency: AutoBackupFrequency;
   connectAccount: () => Promise<GoogleUserAccount | null>;
   disconnectAccount: () => Promise<void>;
   performBackup: (options?: { silent?: boolean }) => Promise<boolean>;
   performRestore: () => Promise<boolean>;
-  setAutoBackupFrequency: (freq: AutoBackupFrequency) => Promise<SetAutoBackupFrequencyResult>;
-  toggleAutoBackup: (value: boolean) => Promise<void>;
+  setAutoBackupEnabled: (value: boolean) => Promise<SetAutoBackupResult>;
+  toggleAutoBackup: (value: boolean) => Promise<SetAutoBackupResult>;
   refreshBackupInfo: () => Promise<void>;
 };
 
@@ -58,10 +52,9 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
   const [isChecking, setIsChecking] = useState(true);
   const [backupSyncState, setBackupSyncState] = useState<SharedBackupState>(getBackupState());
   const [lastBackup, setLastBackup] = useState<CloudBackupFileMeta | null>(null);
-  const [rawAutoBackupFrequency, setAutoBackupFrequencyState] = useState<AutoBackupFrequency>('off');
+  const [rawAutoBackupEnabled, setAutoBackupEnabledState] = useState(false);
 
-  const autoBackupFrequency: AutoBackupFrequency = isPremium ? rawAutoBackupFrequency : AutoBackupFrequencyEnum.OFF;
-  const autoBackupEnabled: boolean = isPremium && autoBackupFrequency !== AutoBackupFrequencyEnum.OFF;
+  const autoBackupEnabled: boolean = isPremium && rawAutoBackupEnabled;
 
   // Subscribe component to shared backup state updates
   useEffect(() => {
@@ -79,13 +72,13 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
           setUser(currentUser);
         }
 
-        const [resolvedFreq, cachedMetaStr] = await Promise.all([
-          resolveAutoBackupFrequency(isPremium),
+        const [resolvedEnabled, cachedMetaStr] = await Promise.all([
+          resolveAutoBackupEnabled(isPremium),
           AsyncStorage.getItem(STORAGE_KEY_LAST_BACKUP_META),
         ]);
 
         if (isMounted) {
-          setAutoBackupFrequencyState(isPremium ? resolvedFreq : 'off');
+          setAutoBackupEnabledState(isPremium && resolvedEnabled);
 
           if (cachedMetaStr) {
             try {
@@ -149,28 +142,30 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     }
   }, [user]);
 
-  const setAutoBackupFrequency = useCallback(async (freq: AutoBackupFrequency): Promise<SetAutoBackupFrequencyResult> => {
-    const noPrompts: SetAutoBackupFrequencyResult = { showBatteryPrompt: false, showNotificationPrompt: false };
+  const setAutoBackupEnabled = useCallback(async (value: boolean): Promise<SetAutoBackupResult> => {
+    const noPrompts: SetAutoBackupResult = { blockedByNotifications: false, showBatteryPrompt: false };
     try {
-      if (freq !== AutoBackupFrequencyEnum.OFF && !isPremium) {
-        LoggerService.info('GOOGLE_BACKUP', 'Skipped frequency change: auto-backup requires active Pro subscription');
+      if (value && !isPremium) {
+        LoggerService.info('GOOGLE_BACKUP', 'Skipped enabling auto-backup: requires active Pro subscription');
         return noPrompts;
       }
 
-      const isFirstEnable = rawAutoBackupFrequency === AutoBackupFrequencyEnum.OFF && freq !== AutoBackupFrequencyEnum.OFF;
-      let showNotificationPrompt = false;
+      const isFirstEnable = !rawAutoBackupEnabled && value;
 
-      if (freq !== AutoBackupFrequencyEnum.OFF) {
+      // Notifications are required, not advisory, for auto-backup — same hard gate the
+      // daily reminder toggle already uses (SettingsScreen.tsx handleToggleReminders):
+      // deny permission, nothing gets enabled.
+      if (value) {
         const granted = await NotificationService.requestPermissions();
-        showNotificationPrompt = !granted;
+        if (!granted) {
+          LoggerService.info('GOOGLE_BACKUP', 'Auto-backup not enabled: notification permission denied');
+          return { blockedByNotifications: true, showBatteryPrompt: false };
+        }
       }
 
-      setAutoBackupFrequencyState(freq);
-      LoggerService.info('GOOGLE_BACKUP', `Updated auto-backup frequency to: ${freq}`);
-      await Promise.all([
-        AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP_FREQ, freq),
-        AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP, freq !== AutoBackupFrequencyEnum.OFF ? 'true' : 'false'),
-      ]);
+      setAutoBackupEnabledState(value);
+      LoggerService.info('GOOGLE_BACKUP', `Updated auto-backup enabled: ${value}`);
+      await AsyncStorage.setItem(STORAGE_KEY_AUTO_BACKUP, value ? 'true' : 'false');
       await registerBackgroundBackupTaskAsync();
 
       let showBatteryPrompt = false;
@@ -182,12 +177,12 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         }
       }
 
-      return { showBatteryPrompt, showNotificationPrompt };
+      return { blockedByNotifications: false, showBatteryPrompt };
     } catch (e) {
-      LoggerService.warn('GOOGLE_BACKUP', 'Failed to save auto-backup frequency', e);
+      LoggerService.warn('GOOGLE_BACKUP', 'Failed to save auto-backup setting', e);
       return noPrompts;
     }
-  }, [isPremium, rawAutoBackupFrequency]);
+  }, [isPremium, rawAutoBackupEnabled]);
 
   const connectAccount = useCallback(async (): Promise<GoogleUserAccount | null> => {
     if (!isPremium) throw new CloudBackupProRequiredError();
@@ -198,7 +193,6 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       setUser(signedInUser);
       if (signedInUser) {
         LoggerService.info('GOOGLE_BACKUP', `Connected Google Account: ${signedInUser.email}`);
-        await setAutoBackupFrequency(AutoBackupFrequencyEnum.DAILY);
 
         const backupMeta = await GoogleDriveService.findLatestBackup();
         if (backupMeta) {
@@ -213,7 +207,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     } finally {
       setIsChecking(false);
     }
-  }, [isChecking, user, isPremium, setAutoBackupFrequency]);
+  }, [isChecking, user, isPremium]);
 
   const disconnectAccount = useCallback(async () => {
     try {
@@ -350,13 +344,9 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
 
       await DatabaseBackupService.restoreBackupData(backupJsonStr, queryClient);
 
-      // Save user session & enable automated daily backup by default on successful restore (if Pro)
       setUser(activeUser);
       setLastBackup(targetBackup);
-      await Promise.all([
-        AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(targetBackup)),
-        setAutoBackupFrequency(isPremium ? AutoBackupFrequencyEnum.DAILY : AutoBackupFrequencyEnum.OFF),
-      ]);
+      await AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(targetBackup));
 
       updateBackupState({ progress: 100, progressStage: 'Restore complete!' });
       return true;
@@ -376,12 +366,11 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         updateBackupState({ isRestoring: false, progress: 0, progressStage: null });
       }, 1000);
     }
-  }, [user, queryClient, isPremium, setAutoBackupFrequency]);
+  }, [user, queryClient, isPremium]);
 
   const toggleAutoBackup = useCallback(async (value: boolean) => {
-    const nextFreq: AutoBackupFrequency = (value && isPremium) ? AutoBackupFrequencyEnum.DAILY : AutoBackupFrequencyEnum.OFF;
-    await setAutoBackupFrequency(nextFreq);
-  }, [isPremium, setAutoBackupFrequency]);
+    return setAutoBackupEnabled(value && isPremium);
+  }, [isPremium, setAutoBackupEnabled]);
 
   return {
     user,
@@ -393,12 +382,11 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
     progressStage: backupSyncState.progressStage,
     lastBackup,
     autoBackupEnabled,
-    autoBackupFrequency,
     connectAccount,
     disconnectAccount,
     performBackup,
     performRestore,
-    setAutoBackupFrequency,
+    setAutoBackupEnabled,
     toggleAutoBackup,
     refreshBackupInfo,
   };

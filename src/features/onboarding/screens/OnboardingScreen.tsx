@@ -31,6 +31,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-na
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
+import { openAppSettings } from '@/src/services/backup/battery-optimization';
 
 import { CloudBackupChoice, CloudBackupStep } from '@/src/features/onboarding/components/CloudBackupStep';
 import { RestoreStep, SetupOption } from '@/src/features/onboarding/components/RestoreStep';
@@ -44,7 +45,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const { completeOnboarding } = useOnboarding();
   const { profile, updateProfile } = useSettings();
   const { mutateAsync: createAccount, isPending: accountPending } = useCreateAccount();
-  const { user, isConnected, isChecking, isRestoring, progress, progressStage, connectAccount, disconnectAccount, performRestore } = useGoogleBackup();
+  const { user, isConnected, isChecking, isRestoring, progress, progressStage, connectAccount, disconnectAccount, performRestore, setAutoBackupEnabled } = useGoogleBackup();
 
   const [stepIndex, setStepIndex] = React.useState(0);
   const currentStep = ONBOARDING_STEPS[stepIndex];
@@ -267,9 +268,28 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         return;
       }
 
-      if (currentStep.id === 'backup_setup' && cloudBackupChoice === 'enable' && !isConnected) {
+      if (currentStep.id === 'backup_setup' && cloudBackupChoice === 'enable') {
         try {
-          await connectAccount();
+          if (!isConnected) {
+            await connectAccount();
+          }
+
+          // This is the one place onboarding is allowed to turn scheduling on
+          // automatically — the user just explicitly picked "Automated Cloud Sync".
+          // setAutoBackupEnabled applies its own notification-permission gate.
+          const { blockedByNotifications } = await setAutoBackupEnabled(true);
+          if (blockedByNotifications) {
+            showAlert({
+              title: 'Notifications Required',
+              message: 'Automated cloud sync needs notification permission so you can see backup status. Enable it in Settings, then try again.',
+              type: 'warning',
+              buttons: [
+                { text: 'Continue', style: 'cancel', onPress: () => { void finalizeSetup(); } },
+                { text: 'Open Settings', onPress: () => openAppSettings() },
+              ],
+            });
+            return;
+          }
         } catch (err: any) {
           // Don't block onboarding on a failed/cancelled Google sign-in, but
           // never silently proceed as if Cloud Backup were enabled — the
