@@ -1,17 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
+import { StorageKeys } from '../../constants/keys';
+import { NotificationService } from '../notification.service';
+import { ReviewPromptService } from '../review-prompt.service';
 import { getBackupState, updateBackupState } from './backup-state';
 import { DatabaseBackupService } from './database-backup.service';
 import { CloudBackupFileMeta, GoogleDriveService } from './google-drive.service';
-import { NotificationService } from '../notification.service';
-import { ReviewPromptService } from '../review-prompt.service';
-import { StorageKeys } from '../../constants/keys';
 
 import { LoggerService } from '../logger.service';
 
-// Fixed schedule — no user-facing frequency choice. Prod = 24h, dev = 15min (WorkManager's floor).
-export const AUTO_BACKUP_INTERVAL_MS = __DEV__ ? 15 * 60 * 1000 : 24 * 60 * 60 * 1000;
-export const AUTO_BACKUP_INTERVAL_MINUTES = AUTO_BACKUP_INTERVAL_MS / (60 * 1000);
+// Fixed schedule — no user-facing frequency choice.
+// TEMP: locked to 15min in all builds (incl. preview/prod) for real-device testing.
+// Revert to `__DEV__ ? 15 * 60 * 1000 : 24 * 60 * 60 * 1000` once verified.
+// export const AUTO_BACKUP_INTERVAL_MINUTES = 15;
+export const AUTO_BACKUP_INTERVAL_MINUTES = 12 * 60;
+export const AUTO_BACKUP_INTERVAL_MS = AUTO_BACKUP_INTERVAL_MINUTES * 60 * 1000;
+
 
 async function isProUserActive(): Promise<boolean> {
   try {
