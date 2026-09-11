@@ -15,9 +15,7 @@ export const AUTO_BACKUP_STORAGE_KEYS = {
   LAST_AUTO_BACKUP_TIME: '@fintraq_last_auto_backup_time',
 } as const;
 
-// Fixed schedule — no user-facing frequency choice. Prod cadence is every 24h;
-// dev builds use 15min (WorkManager's floor) so background firing can be tested
-// without an overnight wait.
+// Fixed schedule — no user-facing frequency choice. Prod = 24h, dev = 15min floor.
 export const AUTO_BACKUP_THRESHOLD_MS = __DEV__ ? 15 * 60 * 1000 : 24 * 60 * 60 * 1000;
 
 async function isProUserActive(): Promise<boolean> {
