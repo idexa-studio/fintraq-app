@@ -127,16 +127,16 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
       // Review dialog needs a foreground screen, skip for headless task
       ReviewPromptService.maybeRequestReview();
     }
+    setTimeout(() => NotificationService.dismissBackupNotification(), 3000);
     return { outcome: 'ran', meta: uploadedFile };
   } catch (err: any) {
     const errorMsg = err?.message || String(err);
     LoggerService.error('AUTO_BACKUP', `[${tag}] Failed: ${errorMsg}`);
+    // Don't auto-dismiss — a failure the user never saw isn't a handled failure.
+    // Stays until they tap it or the notification.service.ts auto-cancel flow clears it.
     NotificationService.presentBackupFailedNotification();
     return { outcome: 'failed' };
   } finally {
-    setTimeout(() => {
-      updateBackupState({ isBackingUp: false, progress: 0, progressStage: null });
-      NotificationService.dismissBackupNotification();
-    }, 3000);
+    updateBackupState({ isBackingUp: false, progress: 0, progressStage: null });
   }
 }

@@ -276,6 +276,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       updateBackupState({ progress: 100, progressStage: 'Backup complete!' });
 
       NotificationService.presentBackupCompleteNotification();
+      setTimeout(() => NotificationService.dismissBackupNotification(), 3000);
 
       // A successful cloud backup is a real trust moment — ask for a review
       // here rather than on a random screen mount. No-ops after 1st ever ask
@@ -284,6 +285,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       return true;
     } catch (e: any) {
       LoggerService.warn('GOOGLE_BACKUP', 'Backup failed', e);
+      // Don't auto-dismiss — a failure the user never saw isn't a handled failure.
       NotificationService.presentBackupFailedNotification();
       if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
         setUser(null);
@@ -296,10 +298,7 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       }
       return false;
     } finally {
-      setTimeout(() => {
-        updateBackupState({ isBackingUp: false, progress: 0, progressStage: null });
-        NotificationService.dismissBackupNotification();
-      }, 3000);
+      updateBackupState({ isBackingUp: false, progress: 0, progressStage: null });
     }
   }, [user, lastBackup?.id, isPremium]);
 
