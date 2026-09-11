@@ -9,10 +9,7 @@ import { CloudBackupFileMeta, GoogleDriveService } from './google-drive.service'
 
 import { LoggerService } from '../logger.service';
 
-// Fixed schedule — no user-facing frequency choice.
-// TEMP: locked to 15min in all builds (incl. preview/prod) for real-device testing.
-// Revert to `__DEV__ ? 15 * 60 * 1000 : 24 * 60 * 60 * 1000` once verified.
-// export const AUTO_BACKUP_INTERVAL_MINUTES = 15;
+// Fixed schedule — no user-facing frequency choice. Same in all builds.
 export const AUTO_BACKUP_INTERVAL_MINUTES = 12 * 60;
 export const AUTO_BACKUP_INTERVAL_MS = AUTO_BACKUP_INTERVAL_MINUTES * 60 * 1000;
 
