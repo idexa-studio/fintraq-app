@@ -37,6 +37,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           useFrameworks: 'static',
           forceStaticLinking: ['RNFBApp', 'RNFBAnalytics', 'RNFBCrashlytics'],
         },
+        android: {
+          // Play Console flags release builds with no R8 obfuscation/shrinking.
+          // Crashlytics' own Gradle plugin uploads the mapping file automatically,
+          // so stack traces stay readable in the dashboard despite minification.
+          enableMinifyInReleaseBuilds: true,
+          enableShrinkResourcesInReleaseBuilds: true,
+        },
       },
     ],
     './plugins/with-gradle-memory',
