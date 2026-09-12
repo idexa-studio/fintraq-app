@@ -5,6 +5,7 @@ import * as transferCategorySeed from './001_add_transfer_category';
 import * as migrateIconsAndColorsSeed from './002_migrate_icons_and_colors';
 import * as addUncategorizedCategorySeed from './004_add_uncategorized_category';
 import * as categoryMultiTypesSeed from './005_category_multi_types';
+import * as dedupeCategoriesSeed from './007_dedupe_categories';
 
 type SeedModule = {
   name: string;
@@ -16,6 +17,7 @@ const seeds: readonly SeedModule[] = [
   migrateIconsAndColorsSeed,
   addUncategorizedCategorySeed,
   categoryMultiTypesSeed,
+  dedupeCategoriesSeed,
 ] as const;
 
 export async function runSeeds(): Promise<void> {
