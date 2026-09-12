@@ -14,7 +14,6 @@ import {
   initRemoteConfig,
 } from '@/src/services/remote-config.service';
 import { ForceUpdateScreen } from '@/src/features/update/components/ForceUpdateScreen';
-import { MigrationSeedService } from '@/src/services/migration-seed.service';
 import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
 import { getAppVersion } from '@/src/utils/version';
 import { LoggerService } from '@/src/services/logger.service';
@@ -113,7 +112,6 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
       if (appState.current.match(/inactive|background/) && nextState === 'active') {
         checkStatus();
       } else if (nextState === 'background') {
-        MigrationSeedService.writeMigrationSeed().catch(() => {});
         // Reliable primary path — WorkManager/BGTaskScheduler is best-effort only.
         // runAutoBackupIfDue() no-ops on its own if not due yet.
         runAutoBackupIfDue().catch(() => {});

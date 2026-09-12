@@ -4,7 +4,6 @@ import { BackupLock } from '@/src/services/backup/backup-lock';
 import { db, getExpoDb, resetDbConnections } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons, seederState } from '@/src/db/schema';
 import { runSeeds } from '@/src/db/seeds/runner';
-import { MigrationSeedService } from '@/src/services/migration-seed.service';
 import { getFormattedAppVersion } from '@/src/utils/version';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { QueryClient } from '@tanstack/react-query';
@@ -285,9 +284,6 @@ class DatabaseBackupServiceClass {
       if (totalRestoreRows === 0) {
         throw new Error('This backup appears to be empty. Restore aborted to protect your existing data.');
       }
-
-      // Wait for any active background migration seed query to finish
-      await MigrationSeedService.waitForPendingWrite();
 
       // Reset native SQLite connection to release all cached statement handles and open cursors
       resetDbConnections();

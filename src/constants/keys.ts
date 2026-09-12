@@ -45,5 +45,4 @@ export enum SecureStoreKeys {
 
 export enum DatabaseKeys {
   DB_NAME = 'fintraq.db',
-  MIGRATION_SEED_FILENAME = 'fintraq_migration_seed.json',
 }
