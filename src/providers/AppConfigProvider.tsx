@@ -1,3 +1,12 @@
+import { ForceUpdateScreen } from '@/src/features/update/components/ForceUpdateScreen';
+import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
+import { LoggerService } from '@/src/services/logger.service';
+import {
+  fetchRemoteAppConfig,
+  initRemoteConfig,
+} from '@/src/services/remote-config.service';
+import { getAppVersion } from '@/src/utils/version';
+import * as SplashScreen from 'expo-splash-screen';
 import React, {
   createContext,
   useCallback,
@@ -8,15 +17,6 @@ import React, {
   useState,
 } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
-import {
-  fetchRemoteAppConfig,
-  initRemoteConfig,
-} from '@/src/services/remote-config.service';
-import { ForceUpdateScreen } from '@/src/features/update/components/ForceUpdateScreen';
-import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
-import { getAppVersion } from '@/src/utils/version';
-import { LoggerService } from '@/src/services/logger.service';
 
 interface AppConfigContextType {
   isChecking: boolean;
@@ -103,7 +103,16 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
         if (__DEV__) LoggerService.warn('APP_CONFIG', 'App config initialization failed', err);
       })
       .finally(() => {
-        SplashScreen.hideAsync().catch(() => {});
+        if (AppState.currentState === 'active') {
+          SplashScreen.hideAsync().catch(() => {});
+        } else {
+          const sub = AppState.addEventListener('change', (nextState: AppStateStatus) => {
+            if (nextState === 'active') {
+              sub.remove();
+              SplashScreen.hideAsync().catch(() => {});
+            }
+          });
+        }
       });
   }, [checkStatus]);
 
