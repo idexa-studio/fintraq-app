@@ -1,6 +1,6 @@
+import { LoggerService } from '@/src/services/logger.service';
 import * as IAP from 'expo-iap';
 import { Linking, Platform } from 'react-native';
-import { LoggerService } from '@/src/services/logger.service';
 
 interface AndroidDiscountOffer {
   fullPriceMicrosAndroid?: string;
@@ -105,37 +105,42 @@ export class IAPService {
   static async getProducts(skus: string[]): Promise<IAPProduct[]> {
     if (skus.length === 0) return [];
 
-    return this.execute(async () => {
-      const products = await IAP.fetchProducts({ skus, type: "all" });
-      
-      if (products && products.length > 0) {
-        return products.map(p => {
-          let originalPrice: string | undefined;
+    try {
+      return await this.execute(async () => {
+        const products = await IAP.fetchProducts({ skus, type: "all" });
+        
+        if (products && products.length > 0) {
+          return products.map(p => {
+            let originalPrice: string | undefined;
 
-          // Android provides specific discount metadata for 'strikethrough' pricing logic
-          if (p.platform === 'android') {
-            const offer = (p as unknown as { discountOffers?: AndroidDiscountOffer[] }).discountOffers?.[0];
-            if (offer?.fullPriceMicrosAndroid) {
-              const fullPrice = parseFloat(offer.fullPriceMicrosAndroid) / 1000000;
-              const currency = offer.currency || 'USD';
-              originalPrice = new Intl.NumberFormat(undefined, {
-                style: 'currency',
-                currency,
-              }).format(fullPrice);
+            // Android provides specific discount metadata for 'strikethrough' pricing logic
+            if (p.platform === 'android') {
+              const offer = (p as unknown as { discountOffers?: AndroidDiscountOffer[] }).discountOffers?.[0];
+              if (offer?.fullPriceMicrosAndroid) {
+                const fullPrice = parseFloat(offer.fullPriceMicrosAndroid) / 1000000;
+                const currency = offer.currency || 'USD';
+                originalPrice = new Intl.NumberFormat(undefined, {
+                  style: 'currency',
+                  currency,
+                }).format(fullPrice);
+              }
             }
-          }
 
-          return {
-            id: p.id,
-            displayPrice: p.displayPrice || '',
-            originalPrice,
-            title: p.title,
-            description: p.description,
-          };
-        });
-      }
+            return {
+              id: p.id,
+              displayPrice: p.displayPrice || '',
+              originalPrice,
+              title: p.title,
+              description: p.description,
+            };
+          });
+        }
+        return [];
+      });
+    } catch (error) {
+      LoggerService.warn('IAP', 'Failed to fetch products from store', error);
       return [];
-    });
+    }
   }
 
   /**

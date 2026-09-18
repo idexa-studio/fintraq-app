@@ -43,6 +43,18 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           // so stack traces stay readable in the dashboard despite minification.
           enableMinifyInReleaseBuilds: true,
           enableShrinkResourcesInReleaseBuilds: true,
+          useLegacyPackaging: true,
+          extraProguardRules: [
+            '# SoLoader & React Native JNI',
+            '-keep class com.facebook.soloader.** { *; }',
+            '-keepclassmembers class com.facebook.soloader.** { *; }',
+            '-keep class com.facebook.react.** { *; }',
+            '-keepclassmembers class * { native <methods>; }',
+            '# Google Play Billing & OpenIAP',
+            '-keep class com.android.billingclient.** { *; }',
+            '-keep class dev.hyo.openiap.** { *; }',
+            '-keep class io.github.hyochan.openiap.** { *; }',
+          ].join('\n'),
         },
       },
     ],

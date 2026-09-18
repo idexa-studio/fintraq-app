@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "449022176981-auv4qf2cjbemsjdqepaalav08gaebh3n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.nafish.luno",
+            "certificate_hash": "35867b39bb7d23b0d64815ab038a2bb531028564"
+          }
+        },
+        {
           "client_id": "449022176981-q6rcaibjal3atssebadrd1bmg1h2u658.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

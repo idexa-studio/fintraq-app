@@ -1,14 +1,14 @@
 import { StorageKeys } from '@/src/constants/keys';
-import type { UserProfile } from '@/src/providers/SettingsProvider';
-import { BackupLock } from '@/src/services/backup/backup-lock';
 import { db, getExpoDb, resetDbConnections } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons, seederState } from '@/src/db/schema';
 import { runSeeds } from '@/src/db/seeds/runner';
+import type { UserProfile } from '@/src/providers/SettingsProvider';
+import { BackupLock } from '@/src/services/backup/backup-lock';
+import { LoggerService } from '@/src/services/logger.service';
 import { getFormattedAppVersion } from '@/src/utils/version';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { QueryClient } from '@tanstack/react-query';
 import * as Crypto from 'expo-crypto';
-import { LoggerService } from '@/src/services/logger.service';
 
 export type BackupMetadata = {
   version: number;
@@ -104,6 +104,8 @@ export type LoanBackupRow = {
   due_reminder_days_before?: number | null;
   dueReminderTime?: string | null;
   due_reminder_time?: string | null;
+  dueNotificationId?: string | null;
+  due_notification_id?: string | null;
   dueNotificationIds?: string | null;
   due_notification_ids?: string | null;
   createdAt?: string;
@@ -300,10 +302,17 @@ class DatabaseBackupServiceClass {
       // Drain any in-flight background read queries
       await new Promise(resolve => setTimeout(resolve, 150));
 
-      // Perform atomic synchronous native transaction replacement
+      // Build entity ID sets for schema-compliant { onDelete: 'set null' } fallback
+      const validPersonIds = new Set(personsList.map(p => p.id));
+      const validAccountIds = new Set(accountsList.map(a => a.id));
+      const validLoanIds = new Set(loansList.map(l => l.id));
+
+      // Perform atomic synchronous native transaction replacement.
+      // Disabling foreign keys MUST occur before the transaction begins;
+      // SQLite ignores PRAGMA foreign_keys once a transaction is open.
+      expoDb.execSync('PRAGMA foreign_keys = OFF;');
       try {
         expoDb.withTransactionSync(() => {
-          expoDb.execSync('PRAGMA foreign_keys = OFF;');
           expoDb.execSync('DELETE FROM payments;');
           expoDb.execSync('DELETE FROM loans;');
           expoDb.execSync('DELETE FROM persons;');
@@ -401,9 +410,10 @@ class DatabaseBackupServiceClass {
             );
             try {
               for (const r of loansList) {
+                const personId = clean(r.personId ?? r.person_id);
                 stmt.executeSync([
                   clean(r.id),
-                  clean(r.personId ?? r.person_id),
+                  personId && validPersonIds.has(personId) ? personId : null,
                   clean(r.type ?? 'lend'),
                   clean(r.principal ?? 0),
                   clean(r.currency ?? 'USD'),
@@ -418,7 +428,7 @@ class DatabaseBackupServiceClass {
                   clean(r.emiNotificationIds ?? r.emi_notification_ids),
                   toBooleanInt(r.dueReminderEnabled ?? r.due_reminder_enabled, 0),
                   clean(r.dueReminderDaysBefore ?? r.due_reminder_days_before),
-                  clean(r.dueNotificationIds ?? r.due_notification_ids),
+                  clean(r.dueNotificationId ?? r.dueNotificationIds ?? r.due_notification_ids),
                   clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
                   clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
                 ]);
@@ -435,13 +445,17 @@ class DatabaseBackupServiceClass {
             );
             try {
               for (const r of paymentsList) {
+                const toAccountId = clean(r.toAccountId ?? r.to_account_id);
+                const personId = clean(r.personId ?? r.person_id);
+                const loanId = clean(r.loanId ?? r.loan_id);
+
                 stmt.executeSync([
                   clean(r.id),
                   clean(r.accountId ?? r.account_id),
                   clean(r.categoryId ?? r.category_id),
-                  clean(r.toAccountId ?? r.to_account_id),
-                  clean(r.personId ?? r.person_id),
-                  clean(r.loanId ?? r.loan_id),
+                  toAccountId && validAccountIds.has(toAccountId) ? toAccountId : null,
+                  personId && validPersonIds.has(personId) ? personId : null,
+                  loanId && validLoanIds.has(loanId) ? loanId : null,
                   clean(r.amount ?? 0),
                   clean(r.type ?? 'DR'),
                   clean(r.datetime ?? new Date().toISOString()),
@@ -472,12 +486,12 @@ class DatabaseBackupServiceClass {
               stmt.finalizeSync();
             }
           }
-
-          expoDb.execSync('PRAGMA foreign_keys = ON;');
         });
       } catch (error: any) {
         LoggerService.error('DB_BACKUP', 'Synchronous restore transaction failed', error);
         throw new Error(`Database restore transaction failed: ${error?.message || error}`);
+      } finally {
+        expoDb.execSync('PRAGMA foreign_keys = ON;');
       }
 
       // Re-run seeds to guarantee mandatory system categories/records exist
