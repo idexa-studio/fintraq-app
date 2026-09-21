@@ -35,8 +35,6 @@ const en = {
     defaultCurrency: 'Default currency',
     language: 'Language',
     systemDefault: 'System default',
-    english: 'English',
-    hindi: 'Hindi',
     appearance: 'Appearance',
     light: 'Light',
     dark: 'Dark',

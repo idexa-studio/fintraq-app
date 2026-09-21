@@ -1,9 +1,6 @@
-import type en from './en';
+import type { Translation } from './types';
 
-type DeepStrings<T> = { [K in keyof T]: T[K] extends string ? string : DeepStrings<T[K]> };
-type TranslationShape = DeepStrings<typeof en>;
-
-const hi: TranslationShape = {
+const hi: Translation = {
   common: {
     cancel: 'रद्द करें',
     ok: 'ठीक है',
@@ -40,8 +37,6 @@ const hi: TranslationShape = {
     defaultCurrency: 'डिफ़ॉल्ट मुद्रा',
     language: 'भाषा',
     systemDefault: 'सिस्टम डिफ़ॉल्ट',
-    english: 'अंग्रेज़ी',
-    hindi: 'हिंदी',
     appearance: 'दिखावट',
     light: 'लाइट',
     dark: 'डार्क',

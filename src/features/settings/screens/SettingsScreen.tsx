@@ -4,6 +4,7 @@ import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
 import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { TextInputDialog } from '@/src/components/ui/TextInputDialog';
@@ -21,6 +22,7 @@ import { useAppLock } from '@/src/providers/AppLockProvider';
 import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
+import { languages, supportedLanguages } from '@/src/i18n';
 import { useAppLanguage } from '@/src/providers/I18nProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
@@ -475,14 +477,19 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   );
 
   const languageLabel = useMemo(() => {
-    const key = language === 'system' ? 'systemDefault' : language === 'hi' ? 'hindi' : 'english';
-    return t(`settings.${key}`);
+    return language === 'system' ? t('settings.systemDefault') : languages[language].nativeName;
   }, [language, t]);
+
+  const languageSheetSnapPoints = useMemo(() => ['70%'], []);
 
   const languageDialogOptions = useMemo(() => [
     { key: 'system', label: t('settings.systemDefault'), selected: language === 'system', onPress: () => setLanguage('system') },
-    { key: 'en', label: t('settings.english'), selected: language === 'en', onPress: () => setLanguage('en') },
-    { key: 'hi', label: t('settings.hindi'), selected: language === 'hi', onPress: () => setLanguage('hi') },
+    ...supportedLanguages.map(code => ({
+      key: code,
+      label: languages[code].nativeName,
+      selected: language === code,
+      onPress: () => setLanguage(code),
+    })),
   ], [language, setLanguage, t]);
 
   const appVersion = getFormattedAppVersion();
@@ -740,11 +747,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         options={themeDialogOptions}
       />
 
-      <OptionsDialog
+      <OptionsBottomSheet
         visible={showLanguageDialog}
         onClose={() => setShowLanguageDialog(false)}
         title={t('settings.appLanguage')}
         options={languageDialogOptions}
+        snapPoints={languageSheetSnapPoints}
       />
 
       <ConfirmDialog
