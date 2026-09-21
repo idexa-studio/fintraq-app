@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PinPad } from './PinPad';
+import { useTranslation } from 'react-i18next';
 
 type Step = 'enter' | 'confirm';
 
@@ -20,6 +21,7 @@ export const PinSetupModal = React.memo(function PinSetupModal({ visible, onCanc
   const [firstPin, setFirstPin] = useState('');
   const [currentPin, setCurrentPin] = useState('');
   const [error, setError] = useState('');
+  const { t } = useTranslation();
 
   const reset = useCallback(() => {
     setStep('enter');
@@ -48,31 +50,31 @@ export const PinSetupModal = React.memo(function PinSetupModal({ visible, onCanc
         reset();
         onComplete(val);
       } else {
-        setError('PINs do not match. Try again.');
+        setError(t('lock.pinMismatch'));
         setCurrentPin('');
         setStep('enter');
         setFirstPin('');
       }
     }
-  }, [step, firstPin, reset, onComplete]);
+  }, [step, firstPin, reset, onComplete, t]);
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={handleCancel}>
       <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
         <TouchableOpacity onPress={handleCancel} style={styles.cancelBtn}>
           <Text style={[styles.cancelText, { fontFamily: typography.fonts.medium, color: colors.textMuted }]}>
-            Cancel
+            {t('common.cancel')}
           </Text>
         </TouchableOpacity>
 
         <View style={styles.content}>
           <Text style={[styles.title, { fontFamily: typography.styles.dialogTitle.fontFamily, color: colors.text }]}>
-            {step === 'enter' ? 'Create PIN' : 'Confirm PIN'}
+            {step === 'enter' ? t('lock.createPin') : t('lock.confirmPin')}
           </Text>
           <Text style={[styles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
             {step === 'enter'
-              ? 'Choose a 6-digit PIN to lock the app'
-              : 'Enter the same PIN again'}
+              ? t('lock.choosePin')
+              : t('lock.reenterPin')}
           </Text>
 
           {error ? (

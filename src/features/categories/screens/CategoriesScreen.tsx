@@ -9,6 +9,7 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   FlatList,
@@ -34,6 +35,7 @@ import { StorageKeys } from '../../../constants/keys';
 import { usePremium } from '@/src/providers/PremiumProvider';
 
 export const CategoriesScreen = React.memo(function CategoriesScreen() {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
   const insets = useSafeAreaInsets();
@@ -66,23 +68,23 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     (category: Category) => {
       if (category.isSystem) {
         showAlert({
-          title: 'System category',
-          message: 'System-reserved categories cannot be modified.',
+          title: t('categories.systemCategory'),
+          message: t('categories.systemEdit'),
           type: 'warning',
         });
         return;
       }
       router.push(`/(main)/categories/form?id=${category.id}`);
     },
-    [router, showAlert],
+    [router, showAlert, t],
   );
 
   const handleLongPress = useCallback(
     (category: Category) => {
       if (category.isSystem) {
         showAlert({
-          title: 'System category',
-          message: 'System-reserved categories cannot be deleted or managed.',
+          title: t('categories.systemCategory'),
+          message: t('categories.systemManage'),
           type: 'warning',
         });
         return;
@@ -90,7 +92,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       setSelectedCategory(category);
       setShowManageDialog(true);
     },
-    [showAlert],
+    [showAlert, t],
   );
 
   const manageOptions = useMemo(() => {
@@ -98,7 +100,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
     return [
       {
         key: 'edit-category',
-        label: 'Edit category',
+        label: t('categories.edit'),
         icon: PencilEdit01Icon,
         onPress: () => {
           setShowManageDialog(false);
@@ -107,13 +109,13 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       },
       {
         key: 'delete-category',
-        label: 'Delete category',
+        label: t('categories.delete'),
         icon: Delete01Icon,
         destructive: true,
         onPress: () => setShowDeleteDialog(true),
       },
     ];
-  }, [selectedCategory, handleEdit]);
+  }, [selectedCategory, handleEdit, t]);
 
   const keyExtractor = useCallback((item: Category) => item.id.toString(), []);
 
@@ -139,7 +141,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
           <TextInput
             value={search}
             onChangeText={setSearch}
-            placeholder="Search categories…"
+            placeholder={t('categories.search')}
             placeholderTextColor={colors.textMuted + '60'}
             style={styles.searchInput}
             autoCapitalize="none"
@@ -155,7 +157,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         </View>
       </View>
     ),
-    [search, colors, styles],
+    [search, colors, styles, t],
   );
 
   const ListEmpty = useMemo(
@@ -164,25 +166,25 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         <View style={styles.emptyIcon}>
           <HugeiconsIcon icon={FolderOpenIcon} size={32} color={colors.textMuted} />
         </View>
-        <Text style={styles.emptyTitle}>No categories</Text>
+        <Text style={styles.emptyTitle}>{t('categories.none')}</Text>
         <Text style={styles.emptyText}>
-          {search.trim() ? `No results for "${search.trim()}"` : 'No categories yet.'}
+          {search.trim() ? t('categories.noResults', { query: search.trim() }) : t('categories.noneYet')}
         </Text>
         {!search.trim() && (
           <BentoPressable style={styles.emptyBtn} onPress={handleCreate}>
             <HugeiconsIcon icon={PlusSignIcon} size={15} color={colors.primaryForeground} />
-            <Text style={styles.emptyBtnText}>Create one</Text>
+            <Text style={styles.emptyBtnText}>{t('categories.create')}</Text>
           </BentoPressable>
         )}
       </View>
     ),
-    [search, colors, handleCreate, styles],
+    [search, colors, handleCreate, styles, t],
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title="Categories" showBack />
+      <Header title={t('categories.title')} showBack />
 
       {isLoading ? (
         <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
@@ -210,7 +212,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       <OptionsDialog
         visible={showManageDialog}
         onClose={() => setShowManageDialog(false)}
-        title="Manage category"
+        title={t('categories.manage')}
         subtitle={selectedCategory?.name}
         options={manageOptions}
       />
@@ -218,9 +220,9 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       <ConfirmDialog
         visible={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
-        title="Delete category"
-        message="This will delete the category and its associated transactions."
-        confirmLabel="Delete"
+        title={t('categories.delete')}
+        message={t('categories.deleteMessage')}
+        confirmLabel={t('categories.delete')}
         onConfirm={async () => {
           if (!selectedCategory) return;
           setShowDeleteDialog(false);
@@ -229,8 +231,8 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
             setSelectedCategory(null);
           } catch (e: any) {
             showAlert({
-              title: 'Cannot delete category',
-              message: e.message || 'Failed to delete category.',
+              title: t('categories.cannotDelete'),
+              message: e.message || t('categories.deleteFailed'),
               type: 'error',
             });
           }

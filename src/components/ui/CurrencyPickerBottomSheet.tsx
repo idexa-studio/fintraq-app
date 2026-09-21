@@ -14,6 +14,7 @@ import { useSettings } from '../../providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
 import { BentoBottomSheet, useBottomSheet } from './BottomSheet';
+import { useTranslation } from 'react-i18next';
 
 export type CurrencyPickerBottomSheetProps = {
   visible: boolean;
@@ -31,6 +32,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
   onChange,
 }: CurrencyPickerBottomSheetProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [query, setQuery] = useState('');
@@ -125,8 +127,8 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
       <View style={{ flex: 1 }}>
         <View style={styles.header}>
           <View style={styles.headerText}>
-            <Text style={styles.title}>Currency</Text>
-            <Text style={styles.subtitle}>{CURRENCIES.length} currencies</Text>
+            <Text style={styles.title}>{t('ui.currency')}</Text>
+            <Text style={styles.subtitle}>{t('ui.currenciesCount', { count: CURRENCIES.length })}</Text>
           </View>
           {value ? (
             <View style={styles.headerBadge}>
@@ -141,7 +143,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
             style={styles.searchInput}
             value={query}
             onChangeText={setQuery}
-            placeholder="Search by name or code"
+            placeholder={t('ui.searchCurrency')}
             placeholderTextColor={colors.textMuted + '80'}
             autoCorrect={false}
             autoCapitalize="none"

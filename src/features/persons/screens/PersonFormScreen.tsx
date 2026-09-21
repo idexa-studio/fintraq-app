@@ -29,6 +29,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, toDbColor } from '@/src/utils/format';
 import { LoggerService } from '@/src/services/logger.service';
 import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
+import { useTranslation } from 'react-i18next';
 
 const PALETTE_COLORS = PALETTE_COLOR_OPTIONS.map((c) => c.hex);
 
@@ -48,6 +49,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, layout } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { isPremium } = usePremium();
@@ -109,8 +111,8 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
   const handleSave = handleSubmit(async (data) => {
     if (!isEditing && !isPremium && (persons?.length ?? 0) >= FREE_PERSON_LIMIT) {
       Alert.alert(
-        'Upgrade to Pro',
-        `Free plan allows up to ${FREE_PERSON_LIMIT} persons. Upgrade for unlimited.`,
+        t('persons.upgradeTitle'),
+        t('persons.limitMessage', { limit: FREE_PERSON_LIMIT }),
       );
       return;
     }
@@ -146,7 +148,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title={isEditing ? 'Edit person' : 'New person'} showBack />
+      <Header title={isEditing ? t('persons.edit') : t('persons.new')} showBack />
 
       <KeyboardAvoidingView
         style={styles.body}
@@ -167,9 +169,9 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
               </View>
               <View style={styles.heroMeta}>
                 <Text style={styles.heroName} numberOfLines={1}>
-                  {nameValue.trim() || 'Person name'}
+                  {nameValue.trim() || t('persons.personName')}
                 </Text>
-                <Text style={styles.heroSub}>Choose accent color below</Text>
+                <Text style={styles.heroSub}>{t('persons.chooseColor')}</Text>
               </View>
             </View>
 
@@ -180,7 +182,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
 
           {/* ── Contact details card ── */}
           <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
-            <Text style={styles.sectionLabel}>Contact details</Text>
+            <Text style={styles.sectionLabel}>{t('persons.contactDetails')}</Text>
             <View style={styles.fieldCard}>
 
               {/* Name */}
@@ -188,18 +190,18 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
                 control={control}
                 name="name"
                 rules={{
-                  required: 'Required',
-                  minLength: { value: 2, message: 'Min 2 characters' },
-                  maxLength: { value: 60, message: 'Max 60 characters' },
+                  required: t('forms.required'),
+                  minLength: { value: 2, message: t('forms.minChars', { count: 2 }) },
+                  maxLength: { value: 60, message: t('forms.maxChars', { count: 60 }) },
                 }}
                 render={({ field }) => (
                   <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Name</Text>
+                    <Text style={styles.fieldLabel}>{t('forms.name')}</Text>
                     <TextInput
                       value={field.value}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
-                      placeholder="Jane Smith"
+                      placeholder={t('persons.namePlaceholder')}
                       placeholderTextColor={colors.textMuted + '60'}
                       style={[styles.fieldInput, errors.name && styles.fieldInputError]}
                       autoCapitalize="words"
@@ -218,17 +220,17 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
                 control={control}
                 name="email"
                 rules={{
-                  pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Invalid email' },
+                  pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t('forms.invalidEmail') },
                 }}
                 render={({ field }) => (
                   <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Email</Text>
+                    <Text style={styles.fieldLabel}>{t('forms.email')}</Text>
                     <TextInput
                       ref={emailRef}
                       value={field.value}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
-                      placeholder="jane@example.com"
+                      placeholder={t('persons.emailPlaceholder')}
                       placeholderTextColor={colors.textMuted + '60'}
                       style={[styles.fieldInput, errors.email && styles.fieldInputError]}
                       keyboardType="email-address"
@@ -249,7 +251,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
                 name="phone"
                 render={({ field }) => (
                   <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Phone</Text>
+                    <Text style={styles.fieldLabel}>{t('forms.phone')}</Text>
                     <TextInput
                       ref={phoneRef}
                       value={field.value}
@@ -275,7 +277,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
 
           {/* ── Work details card ── */}
           <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
-            <Text style={styles.sectionLabel}>Work (optional)</Text>
+            <Text style={styles.sectionLabel}>{t('persons.work')}</Text>
             <View style={styles.fieldCard}>
 
               {/* Designation */}
@@ -284,13 +286,13 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
                 name="designation"
                 render={({ field }) => (
                   <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Role</Text>
+                    <Text style={styles.fieldLabel}>{t('forms.role')}</Text>
                     <TextInput
                       ref={designationRef}
                       value={field.value}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
-                      placeholder="Manager"
+                      placeholder={t('persons.rolePlaceholder')}
                       placeholderTextColor={colors.textMuted + '60'}
                       style={styles.fieldInput}
                       autoCapitalize="words"
@@ -309,13 +311,13 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
                 name="company"
                 render={({ field }) => (
                   <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Company</Text>
+                    <Text style={styles.fieldLabel}>{t('forms.company')}</Text>
                     <TextInput
                       ref={companyRef}
                       value={field.value}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
-                      placeholder="Acme Inc."
+                      placeholder={t('persons.companyPlaceholder')}
                       placeholderTextColor={colors.textMuted + '60'}
                       style={styles.fieldInput}
                       autoCapitalize="words"
@@ -336,7 +338,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
             disabled={!isValid}
           >
             <Text style={styles.primaryBtnText}>
-              {isEditing ? 'Save person' : 'Add person'}
+              {isEditing ? t('persons.save') : t('persons.add')}
             </Text>
           </Pressable>
         </View>

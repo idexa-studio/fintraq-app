@@ -44,6 +44,7 @@ import { LoanStatusBadge } from '../components/LoanStatusBadge';
 import { RepaymentRow } from '../components/RepaymentRow';
 import { useAddRepayment, useDeleteLoan, useLoanRepayments, useLoanWithStats, useMarkLoanRepaid } from '../hooks/loans';
 import { useLoanReminders } from '../hooks/useLoanReminders';
+import { useTranslation } from 'react-i18next';
 
 const parseAmount = (raw: string) => {
   const n = parseFloat(raw.replace(',', '.').replace(/[^0-9.]/g, ''));
@@ -55,6 +56,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
   const loanId = Number(id);
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { showAlert } = usePremium();
@@ -117,23 +119,23 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
     if (!loan || isSubmitting) return;
     const amount = parseAmount(repayAmount);
     if (amount <= 0) {
-      showAlert({ title: 'Invalid amount', message: 'Enter a valid repayment amount.', type: 'warning' });
+      showAlert({ title: t('loans.invalidAmount'), message: t('loans.invalidAmountMessage'), type: 'warning' });
       return;
     }
     if (amount > loan.outstanding) {
       showAlert({
-        title: 'Overpayment not allowed',
-        message: `Repayment amount cannot exceed the outstanding balance of ${loan.outstanding.toFixed(2)} ${loan.currency}.`,
+        title: t('loans.overpayment'),
+        message: t('loans.overpaymentMessage', { amount: loan.outstanding.toFixed(2), currency: loan.currency }),
         type: 'warning',
       });
       return;
     }
     if (!effectiveRepayAccountId) {
-      showAlert({ title: 'No account', message: 'Select a repayment account.', type: 'warning' });
+      showAlert({ title: t('loans.noAccount'), message: t('loans.noAccountMessage'), type: 'warning' });
       return;
     }
     if (!defaultCategoryId) {
-      showAlert({ title: 'No category', message: 'No category found for this loan.', type: 'warning' });
+      showAlert({ title: t('loans.noCategory'), message: t('loans.noCategoryMessage'), type: 'warning' });
       return;
     }
 
@@ -155,21 +157,21 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
       if (result.isFullyRepaid) {
         await cancelAllLoanReminders(loan);
         showAlert({
-          title: 'Fully repaid',
-          message: `${loan.personName ?? 'This'} loan is completely settled.`,
+          title: t('loans.fullyRepaid'),
+          message: t('loans.settledMessage', { name: loan.personName ?? t('loans.thisLoan') }),
           type: 'success',
         });
       }
     } catch (e) {
       showAlert({
-        title: 'Error',
-        message: toErrorMessage(e, 'Failed to record repayment.'),
+        title: t('loans.error'),
+        message: toErrorMessage(e, t('loans.repayFailed')),
         type: 'error',
       });
     } finally {
       setIsSubmitting(false);
     }
-  }, [loan, isSubmitting, repayAmount, effectiveRepayAccountId, defaultCategoryId, repayDate, repayNote, addRepayment, cancelAllLoanReminders, showAlert]);
+  }, [loan, isSubmitting, repayAmount, effectiveRepayAccountId, defaultCategoryId, repayDate, repayNote, addRepayment, cancelAllLoanReminders, showAlert, t]);
 
   const handleMarkRepaid = useCallback(() => {
     setShowMarkRepaidConfirm(true);
@@ -199,14 +201,14 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <PageBackground />
-        <Header title="Loan" showBack />
+        <Header title={t('loans.loan')} showBack />
         <View style={styles.loading}><ActivityIndicator size="large" color={colors.primary} /></View>
       </SafeAreaView>
     );
   }
 
   const personColor = loan.personColor != null ? colorNumberToHex(loan.personColor) : '#8B8B8B';
-  const personName = loan.personName ?? (loan.type === 'lend' ? 'Unknown' : 'Unnamed source');
+  const personName = loan.personName ?? (loan.type === 'lend' ? t('loans.unknown') : t('loans.unnamedSource'));
   const pct = loan.principal > 0 ? Math.round((loan.repaid / loan.principal) * 100) : 0;
 
   return (
@@ -235,7 +237,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
               <View style={styles.heroBadgeRow}>
                 <View style={[styles.typeBadge, { backgroundColor: personColor + '20' }]}>
                   <Text style={[styles.typeBadgeText, { color: personColor }]}>
-                    {loan.type === 'lend' ? 'Lent out' : 'Borrowed'}
+                    {loan.type === 'lend' ? t('loans.lentOut') : t('loans.borrowed')}
                   </Text>
                 </View>
                 <View style={[styles.typeBadge, { backgroundColor: colors.text + '0C' }]}>
@@ -246,7 +248,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
             <LoanStatusBadge status={loan.computedStatus} />
           </View>
 
-          <Text style={styles.balanceLabel}>Outstanding balance</Text>
+          <Text style={styles.balanceLabel}>{t('loans.outstandingBalance')}</Text>
           <MoneyText
             amount={loan.outstanding}
             currency={loan.currency}
@@ -258,11 +260,11 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
           {/* Stats tiles */}
           <View style={styles.statsRow}>
             <View style={[styles.statTile, { backgroundColor: colors.text + '08' }]}>
-              <Text style={styles.statLabel}>Principal</Text>
+              <Text style={styles.statLabel}>{t('loans.principal')}</Text>
               <MoneyText amount={loan.principal} currency={loan.currency} type="NONE" weight="semibold" compact style={styles.statValue} />
             </View>
             <View style={[styles.statTile, { backgroundColor: colors.success + '12' }]}>
-              <Text style={[styles.statLabel, { color: colors.success }]}>Repaid</Text>
+              <Text style={[styles.statLabel, { color: colors.success }]}>{t('loans.repaid')}</Text>
               <MoneyText amount={loan.repaid} currency={loan.currency} type="NONE" weight="semibold" compact style={[styles.statValue, { color: colors.success }]} />
             </View>
           </View>
@@ -270,10 +272,10 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
           <View style={styles.divider} />
 
           <View style={styles.pctRow}>
-            <Text style={styles.pctText}>{pct}% repaid</Text>
+            <Text style={styles.pctText}>{t('loans.repaidPct', { pct })}</Text>
             {loan.dueDate && (
               <Text style={[styles.pctText, loan.computedStatus === 'overdue' && { color: colors.danger }]}>
-                Due {format(new Date(loan.dueDate), 'MMM d, yyyy')}
+                {t('loans.due', { date: format(new Date(loan.dueDate), 'MMM d, yyyy') })}
               </Text>
             )}
           </View>
@@ -285,13 +287,13 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
             <BentoPressable style={[styles.actionBtn, { backgroundColor: colors.primary }]} onPress={handleRepayOpen}>
               <HugeiconsIcon icon={Coins02Icon} size={16} color={colors.primaryForeground} />
               <Text style={[styles.actionText, { color: colors.primaryForeground }]}>
-                Repay
+                {t('loans.repay')}
               </Text>
             </BentoPressable>
             <BentoPressable style={[styles.actionBtn, { backgroundColor: colors.success + '20' }]} onPress={handleMarkRepaid}>
               <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
               <Text style={[styles.actionText, { color: colors.success }]}>
-                Mark repaid
+                {t('loans.markRepaid')}
               </Text>
             </BentoPressable>
           </View>
@@ -301,7 +303,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
         {sortedRepayments.length > 0 && (
           <View style={styles.timelineSection}>
             <Text style={styles.sectionLabel}>
-              History
+              {t('loans.history')}
             </Text>
             {sortedRepayments.map((row, idx) => {
               const isCreation = idx === sortedRepayments.length - 1;
@@ -325,7 +327,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
         {loan.note ? (
           <View style={styles.noteSection}>
             <Text style={styles.sectionLabel}>
-              Note
+              {t('loans.note')}
             </Text>
             <View style={styles.noteCard}>
               <Text style={styles.noteText}>
@@ -341,7 +343,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
       <Modal visible={showRepayModal} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setShowRepayModal(false)}>
         <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
           <Header
-            title="Record repayment"
+            title={t('loans.recordRepayment')}
             showBack
             onBack={() => setShowRepayModal(false)}
           />
@@ -383,18 +385,18 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
                 accounts={sameCurrencyAccounts}
                 selectedId={effectiveRepayAccountId}
                 onSelect={setRepayAccountId}
-                label={loan.type === 'lend' ? 'Received into' : 'Sent from'}
+                label={loan.type === 'lend' ? t('loans.receivedInto') : t('loans.sentFrom')}
               />
 
               {/* Date button styled like transaction date triggering */}
               <View style={styles.fieldSection}>
                 <Text style={styles.fieldLabel}>
-                  Date
+                  {t('loans.date')}
                 </Text>
                 <BentoPressable style={styles.datePickerBtn} onPress={() => setShowDatePicker(true)}>
                   <IconAvatar icon={Calendar03Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
                   <View style={styles.textContainer}>
-                    <Text style={styles.dateLabel}>Date</Text>
+                    <Text style={styles.dateLabel}>{t('loans.date')}</Text>
                     <Text style={styles.dateValueText}>
                       {format(repayDate, 'MMM d, yyyy')}
                     </Text>
@@ -408,13 +410,13 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
                 <View style={styles.noteContainer}>
                   <View style={styles.noteHeader}>
                     <IconAvatar icon={PencilEdit01Icon} color={colors.primary} variant="subtle" size={32} iconSize={16} />
-                    <Text style={styles.noteLabel}>Note</Text>
+                    <Text style={styles.noteLabel}>{t('loans.note')}</Text>
                   </View>
                   <TextInput
                     style={styles.noteInput}
                     value={repayNote}
                     onChangeText={setRepayNote}
-                    placeholder="Optional note"
+                    placeholder={t('loans.optionalNote')}
                     placeholderTextColor={colors.textMuted + '60'}
                     multiline={true}
                     returnKeyType="done"
@@ -435,7 +437,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
                 <ActivityIndicator size="small" color={colors.primaryForeground} />
               ) : (
                 <Text style={styles.saveBtnText}>
-                  Record repayment
+                  {t('loans.recordRepayment')}
                 </Text>
               )}
             </Pressable>
@@ -456,9 +458,9 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
       <ConfirmDialog
         visible={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
-        title="Delete loan"
-        message={`Delete this loan${loan.personName ? ` with ${loan.personName}` : ''}? All associated transactions will keep their data but lose the loan link.`}
-        confirmLabel="Delete"
+        title={t('loans.deleteTitle')}
+        message={loan.personName ? t('loans.deleteWithPersonMessage', { name: loan.personName }) : t('loans.deleteMessage')}
+        confirmLabel={t('loans.delete')}
         onConfirm={handleDelete}
         isLoading={deleteLoan.isPending}
       />
@@ -466,9 +468,9 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
       <ConfirmDialog
         visible={showMarkRepaidConfirm}
         onClose={() => setShowMarkRepaidConfirm(false)}
-        title="Mark as repaid?"
-        message="This will close the loan and cancel all reminders."
-        confirmLabel="Mark repaid"
+        title={t('loans.markRepaidTitle')}
+        message={t('loans.markRepaidMessage')}
+        confirmLabel={t('loans.markRepaid')}
         onConfirm={handleMarkRepaidConfirm}
         isLoading={markRepaid.isPending}
       />

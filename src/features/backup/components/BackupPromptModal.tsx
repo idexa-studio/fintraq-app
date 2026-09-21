@@ -7,6 +7,7 @@ import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useGoogleBackup } from '../hooks/useGoogleBackup';
+import { useTranslation } from 'react-i18next';
 
 type BackupPromptModalProps = {
   visible: boolean;
@@ -20,6 +21,7 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
   onConnectSuccess,
 }: BackupPromptModalProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { connectAccount, isConnected, isChecking } = useGoogleBackup();
@@ -44,20 +46,20 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
         <View style={styles.card}>
           <View style={styles.header}>
             <IconAvatar icon={CloudIcon as IconSvgElement} color={colors.primary} variant="subtle" size={52} iconSize={26} />
-            <Text style={styles.title}>Protect Your Financial History</Text>
+            <Text style={styles.title}>{t('backup.protectTitle')}</Text>
             <Text style={styles.message}>
-              You have logged several transactions! Enable Cloud Sync to automate background backups and prevent data loss.
+              {t('backup.protectMessage')}
             </Text>
           </View>
 
           <View style={styles.features}>
             <View style={styles.featureRow}>
               <HugeiconsIcon icon={ShieldKeyIcon as IconSvgElement} size={16} color={colors.success} />
-              <Text style={styles.featureText}>100% Private & Encrypted Personal Storage</Text>
+              <Text style={styles.featureText}>{t('backup.privateStorage')}</Text>
             </View>
             <View style={styles.featureRow}>
               <HugeiconsIcon icon={CloudIcon as IconSvgElement} size={16} color={colors.primary} />
-              <Text style={styles.featureText}>Automated Daily Background Backup</Text>
+              <Text style={styles.featureText}>{t('backup.dailyBackup')}</Text>
             </View>
           </View>
 
@@ -67,14 +69,14 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
                 <ActivityIndicator color={colors.primaryForeground} size="small" />
               ) : (
                 <>
-                  <Text style={styles.primaryButtonText}>Enable Cloud Sync</Text>
+                  <Text style={styles.primaryButtonText}>{t('backup.enableSync')}</Text>
                   <HugeiconsIcon icon={ArrowRight01Icon} size={16} color={colors.primaryForeground} />
                 </>
               )}
             </BentoPressable>
 
             <BentoPressable style={styles.secondaryButton} onPress={onClose}>
-              <Text style={styles.secondaryButtonText}>Maybe Later</Text>
+              <Text style={styles.secondaryButtonText}>{t('backup.maybeLater')}</Text>
             </BentoPressable>
           </View>
         </View>

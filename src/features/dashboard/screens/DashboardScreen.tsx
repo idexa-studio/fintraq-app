@@ -9,6 +9,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PageBackground } from '../../../components/ui/PageBackground';
@@ -37,6 +38,7 @@ const BACKUP_PROMPT_KEY = StorageKeys.BACKUP_PROMPT_DISMISSED_AT;
 const BACKUP_PROMPT_TTL = 14 * 24 * 60 * 60 * 1000;
 
 export const DashboardScreen = React.memo(function DashboardScreen() {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
   const insets = useSafeAreaInsets();
@@ -183,7 +185,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           currencies={currencyKeys}
         />
 
-        <SectionHeader title="Accounts" rightText="Manage" onPressRight={openAccountsScreen} />
+        <SectionHeader title={t('dashboard.accounts')} rightText={t('dashboard.manage')} onPressRight={openAccountsScreen} />
         <AccountsCarousel
           accounts={accounts ?? []}
           onPressAccount={navigateToAccountTx}
@@ -192,20 +194,20 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
         <InsightsSection currency={selectedCurrency} />
 
-        <SectionHeader title="Top expenses" />
+        <SectionHeader title={t('dashboard.topExpenses')} />
         <TopExpenseCategoriesCard currency={selectedCurrency} categories={topExpenseCategories} />
 
         {topPersonsData && topPersonsData.length > 0 && (
           <>
-            <SectionHeader title="Persons" rightText="See all" onPressRight={() => router.push('/persons')} />
+            <SectionHeader title={t('dashboard.people')} rightText={t('dashboard.seeAll')} onPressRight={() => router.push('/persons')} />
             <TopPersonsCard currency={selectedCurrency} persons={topPersonsData} onPressPerson={(id) => router.push(`/persons/${id}`)} />
           </>
         )}
 
-        <SectionHeader title="Loans" rightText="See all" onPressRight={() => router.push('/(main)/loans')} />
+        <SectionHeader title={t('dashboard.loans')} rightText={t('dashboard.seeAll')} onPressRight={() => router.push('/(main)/loans')} />
         <LoansGlanceCard currency={selectedCurrency} onPress={() => router.push('/(main)/loans')} />
 
-        <SectionHeader title="Recent" rightText="See all" onPressRight={navigateToTransactions} />
+        <SectionHeader title={t('dashboard.recent')} rightText={t('dashboard.seeAll')} onPressRight={navigateToTransactions} />
         <View style={styles.activityCard}>
           {transactions && transactions.length > 0 ? (
             transactions.slice(0, 6).map((tx, idx) => (
@@ -223,10 +225,10 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
               <View style={styles.emptyIconWrapper}>
                 <HugeiconsIcon icon={ReceiptTextIcon} size={20} color={colors.primary} />
               </View>
-              <Text style={styles.emptyTitle}>No transactions yet</Text>
-              <Text style={styles.emptySubtext}>Start recording your daily payments, income, or transfers here.</Text>
+              <Text style={styles.emptyTitle}>{t('dashboard.noTransactions')}</Text>
+              <Text style={styles.emptySubtext}>{t('dashboard.transactionHint')}</Text>
               <BentoPressable style={styles.emptyAction} onPress={navigateToCreateTx}>
-                <Text style={styles.emptyActionText}>Add transaction</Text>
+                <Text style={styles.emptyActionText}>{t('dashboard.addTransaction')}</Text>
                 <HugeiconsIcon icon={ArrowRight01Icon} size={12} color={colors.primaryForeground} />
               </BentoPressable>
             </View>

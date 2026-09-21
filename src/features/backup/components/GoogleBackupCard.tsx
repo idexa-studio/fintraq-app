@@ -37,9 +37,11 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { openAppSettings, openBatteryOptimizationSettings } from '@/src/services/backup/battery-optimization';
 
 import { AUTO_BACKUP_INTERVAL_MS } from '@/src/services/backup/auto-backup.service';
+import { useTranslation } from 'react-i18next';
 
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
@@ -88,19 +90,19 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         title: config.title,
         message: config.message,
         type: config.type || 'info',
-        buttons: config.buttons || [{ text: 'OK' }],
+        buttons: config.buttons || [{ text: t('backup.ok') }],
       });
     },
-    [],
+    [t],
   );
 
   const handleReliabilityHintPress = React.useCallback(() => {
     openBatteryOptimizationSettings(() => showAlert({
-      title: 'Battery Settings',
-      message: "Open your phone's Settings app → Apps → Fintraq → Battery, and choose Unrestricted.",
+      title: t('backup.batterySettings'),
+      message: t('backup.batteryMessage'),
       type: 'info',
     }));
-  }, [showAlert]);
+  }, [showAlert, t]);
 
   /** Returns true if it showed a prompt (notification/battery), so callers can skip a competing alert. */
   const handleToggleAutoBackup = React.useCallback(
@@ -109,12 +111,12 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
 
       if (blockedByNotifications) {
         showAlert({
-          title: 'Notifications Required',
-          message: 'Auto-backup needs notification permission so you can see backup status. Enable it in Settings, then try again.',
+          title: t('backup.notificationsRequired'),
+          message: t('backup.notificationsMessage'),
           type: 'warning',
           buttons: [
-            { text: 'OK', style: 'cancel' },
-            { text: 'Open Settings', onPress: () => openAppSettings() },
+            { text: t('backup.ok'), style: 'cancel' },
+            { text: t('backup.openSettings'), onPress: () => openAppSettings() },
           ],
         });
         return true;
@@ -122,13 +124,13 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
 
       if (showBatteryPrompt) {
         showAlert({
-          title: 'Improve Background Reliability',
-          message: 'For reliable background backup on this device, allow Fintraq to run unrestricted in battery settings.',
+          title: t('backup.improveReliability'),
+          message: t('backup.reliabilityMessage'),
           type: 'info',
           buttons: [
-            { text: 'Not Now', style: 'cancel' },
+            { text: t('backup.notNow'), style: 'cancel' },
             {
-              text: 'Open Settings',
+              text: t('backup.openSettings'),
               onPress: handleReliabilityHintPress,
             },
           ],
@@ -138,7 +140,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
 
       return false;
     },
-    [toggleAutoBackup, showAlert, handleReliabilityHintPress],
+    [toggleAutoBackup, showAlert, handleReliabilityHintPress, t],
   );
 
   const handleConnect = React.useCallback(async () => {
@@ -149,56 +151,56 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       const promptShown = await handleToggleAutoBackup(true);
       if (!promptShown) {
         showAlert({
-          title: 'Google Account Connected',
-          message: 'Your Google Account has been connected. Fintraq will back up your data automatically in the background.',
+          title: t('backup.connectedTitle'),
+          message: t('backup.connectedMessage'),
           type: 'success',
         });
       }
     } catch (e) {
       showAlert({
-        title: 'Connection Failed',
-        message: toErrorMessage(e, 'Could not connect Google Account.'),
+        title: t('backup.connectFailed'),
+        message: toErrorMessage(e, t('backup.connectFailedMessage')),
         type: 'error',
       });
     }
-  }, [connectAccount, handleToggleAutoBackup, showAlert]);
+  }, [connectAccount, handleToggleAutoBackup, showAlert, t]);
 
   const handleDisconnect = React.useCallback(async () => {
     setShowDisconnectConfirm(false);
     try {
       await disconnectAccount();
       showAlert({
-        title: 'Disconnected',
-        message: 'Your Google Account has been disconnected.',
+        title: t('backup.disconnected'),
+        message: t('backup.disconnectedMessage'),
         type: 'info',
       });
     } catch (e) {
       showAlert({
-        title: 'Disconnect Failed',
-        message: toErrorMessage(e, 'Could not disconnect Google Account.'),
+        title: t('backup.disconnectFailed'),
+        message: toErrorMessage(e, t('backup.disconnectFailedMessage')),
         type: 'error',
       });
     }
-  }, [disconnectAccount, showAlert]);
+  }, [disconnectAccount, showAlert, t]);
 
   const handleBackup = React.useCallback(async () => {
     try {
       const success = await performBackup();
       if (success) {
         showAlert({
-          title: 'Backup Successful',
-          message: 'Your transactions, accounts, and settings have been safely backed up to cloud storage.',
+          title: t('backup.backupSuccess'),
+          message: t('backup.backupSuccessMessage'),
           type: 'success',
         });
       }
     } catch (e) {
       showAlert({
-        title: 'Backup Failed',
-        message: toErrorMessage(e, 'Could not save backup to cloud storage.'),
+        title: t('backup.backupFailed'),
+        message: toErrorMessage(e, t('backup.backupFailedMessage')),
         type: 'error',
       });
     }
-  }, [performBackup, showAlert]);
+  }, [performBackup, showAlert, t]);
 
   const handleRestore = React.useCallback(async () => {
     setShowRestoreConfirm(false);
@@ -206,12 +208,12 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       const success = await performRestore();
       if (success) {
         showAlert({
-          title: 'Restore Complete',
-          message: 'Your workspace has been successfully restored from your cloud backup. Tap OK to restart Fintraq.',
+          title: t('backup.restoreComplete'),
+          message: t('backup.restoreCompleteMessage'),
           type: 'success',
           buttons: [
             {
-              text: 'OK',
+              text: t('backup.ok'),
               onPress: async () => {
                 try {
                   await Updates.reloadAsync();
@@ -229,8 +231,8 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
                   // the user plainly that an automatic restart didn't happen.
                   router.replace('/(main)/(tabs)');
                   showAlert({
-                    title: 'Restore Applied',
-                    message: 'Your data was restored, but Fintraq could not restart automatically. Please close and reopen the app to ensure everything loads correctly.',
+                    title: t('backup.restoreApplied'),
+                    message: t('backup.restoreAppliedMessage'),
                     type: 'warning',
                   });
                 }
@@ -243,25 +245,25 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       if (isNoBackupError(e)) {
         LoggerService.info('BACKUP_UI', 'No backup file found on Google Drive');
         showAlert({
-          title: 'No Backup Found',
-          message: `We checked ${user?.email || 'your cloud account'}, but couldn't find an existing Fintraq backup file.`,
+          title: t('backup.noBackupFound'),
+          message: t('backup.noBackupMessage', { email: user?.email || t('backup.yourCloudAccount') }),
           type: 'warning',
         });
       } else {
         LoggerService.warn('BACKUP_UI', 'Restore failed', e);
         showAlert({
-          title: 'Restore Failed',
-          message: toErrorMessage(e, 'Could not restore backup from cloud storage.'),
+          title: t('backup.restoreFailed'),
+          message: toErrorMessage(e, t('backup.restoreFailedMessage')),
           type: 'error',
         });
       }
     }
-  }, [performRestore, showAlert, user?.email, router]);
+  }, [performRestore, showAlert, user?.email, router, t]);
 
   const formattedLastBackupTime = useMemo(() => {
-    if (!lastBackup?.modifiedTime) return 'No backup yet';
+    if (!lastBackup?.modifiedTime) return t('backup.noBackupYet');
     return formatBackupTimestamp(lastBackup.modifiedTime);
-  }, [lastBackup?.modifiedTime]);
+  }, [lastBackup?.modifiedTime, t]);
 
   const formattedSize = useMemo(() => {
     if (!lastBackup?.size) return null;
@@ -284,18 +286,18 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           <IconAvatar icon={LockPasswordIcon} color={colors.primary} variant="subtle" size={40} />
           <View style={styles.rowInfo}>
             <View style={styles.titleRow}>
-              <Text style={styles.rowLabel}>Cloud Backup</Text>
+              <Text style={styles.rowLabel}>{t('backup.cloudBackup')}</Text>
               <View style={styles.proBadge}>
                 <HugeiconsIcon icon={SparklesIcon} size={10} color={colors.warning} />
-                <Text style={styles.proBadgeText}>PRO</Text>
+                <Text style={styles.proBadgeText}>{t('backup.pro')}</Text>
               </View>
             </View>
             <Text style={styles.rowSubtitle}>
-              Backup, restore, and auto-sync are Fintraq Pro features
+              {t('backup.proFeatures')}
             </Text>
           </View>
           <View style={styles.connectBadge}>
-            <Text style={styles.connectBadgeText}>Upgrade</Text>
+            <Text style={styles.connectBadgeText}>{t('backup.upgrade')}</Text>
             <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primary} />
           </View>
         </BentoPressable>
@@ -308,7 +310,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       <View style={styles.groupContainer}>
         <View style={styles.loadingRow}>
           <ActivityIndicator color={colors.primary} size="small" />
-          <Text style={styles.loadingText}>Checking cloud status...</Text>
+          <Text style={styles.loadingText}>{t('backup.checking')}</Text>
         </View>
       </View>
     );
@@ -321,15 +323,15 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           <IconAvatar icon={CloudIcon} color={colors.primary} variant="subtle" size={40} />
           <View style={styles.rowInfo}>
             <View style={styles.titleRow}>
-              <Text style={styles.rowLabel}>Cloud Backup</Text>
+              <Text style={styles.rowLabel}>{t('backup.cloudBackup')}</Text>
               <View style={styles.statusDotOffline} />
             </View>
             <Text style={styles.rowSubtitle}>
-              Connect cloud storage to back up your data privately
+              {t('backup.connectStorage')}
             </Text>
           </View>
           <View style={styles.connectBadge}>
-            <Text style={styles.connectBadgeText}>Connect</Text>
+            <Text style={styles.connectBadgeText}>{t('backup.connect')}</Text>
             <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primary} />
           </View>
         </BentoPressable>
@@ -353,10 +355,10 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         <IconAvatar icon={CloudIcon} color={colors.success} variant="subtle" size={40} />
         <View style={styles.rowInfo}>
           <View style={styles.titleRow}>
-            <Text style={styles.rowLabel}>Cloud Account</Text>
+            <Text style={styles.rowLabel}>{t('backup.cloudAccount')}</Text>
             <View style={styles.activeBadge}>
               <View style={styles.statusDotActive} />
-              <Text style={styles.activeBadgeText}>Connected</Text>
+              <Text style={styles.activeBadgeText}>{t('backup.connected')}</Text>
             </View>
           </View>
           <Text style={styles.userEmailText} numberOfLines={1}>
@@ -377,12 +379,12 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       {isBackupOverdue ? (
         <BentoPressable style={styles.statusBoxWarning} onPress={handleReliabilityHintPress}>
           <HugeiconsIcon icon={Alert02Icon} size={16} color={colors.warning} />
-          <Text style={styles.statusWarningText}>{"Auto-backup hasn't run in a while — tap for tips"}</Text>
+          <Text style={styles.statusWarningText}>{t('backup.overdue')}</Text>
         </BentoPressable>
       ) : (
         <View style={styles.statusBox}>
           <View style={styles.statusTextCol}>
-            <Text style={styles.statusLabel}>LAST BACKUP</Text>
+            <Text style={styles.statusLabel}>{t('backup.lastBackup')}</Text>
             <Text style={styles.statusValue}>{formattedLastBackupTime}</Text>
           </View>
           {formattedSize && (
@@ -397,7 +399,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       {(isBackingUp || isRestoring) && (
         <View style={styles.progressContainer}>
           <View style={styles.progressHeaderRow}>
-            <Text style={styles.progressStageText}>{progressStage || 'Processing...'}</Text>
+            <Text style={styles.progressStageText}>{progressStage || t('backup.processing')}</Text>
             <Text style={styles.progressPercentText}>{progress}%</Text>
           </View>
           <ProgressBar progress={progress} height={6} />
@@ -416,7 +418,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           ) : (
             <>
               <HugeiconsIcon icon={Upload01Icon} size={16} color={colors.primaryForeground} />
-              <Text style={styles.primaryActionButtonText}>Backup Now</Text>
+              <Text style={styles.primaryActionButtonText}>{t('backup.backupNow')}</Text>
             </>
           )}
         </BentoPressable>
@@ -434,7 +436,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           ) : (
             <>
               <HugeiconsIcon icon={Download01Icon} size={16} color={colors.primary} />
-              <Text style={styles.secondaryActionButtonText}>Restore</Text>
+              <Text style={styles.secondaryActionButtonText}>{t('backup.restore')}</Text>
             </>
           )}
         </BentoPressable>
@@ -446,11 +448,11 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       <View style={styles.autoBackupSection}>
         <View style={styles.autoBackupRow}>
           <View style={styles.rowInfo}>
-            <Text style={styles.rowLabel}>Auto Backup</Text>
+            <Text style={styles.rowLabel}>{t('backup.autoBackup')}</Text>
             <Text style={styles.rowSubtitle}>
               {autoBackupEnabled
-                ? 'Backs up your data automatically in the background'
-                : 'Automatic background cloud backup is off'}
+                ? t('backup.autoOn')
+                : t('backup.autoOff')}
             </Text>
           </View>
           <Switch
@@ -465,7 +467,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
         {Platform.OS === 'android' && autoBackupEnabled && (
           <BentoPressable style={styles.reliabilityHintRow} onPress={handleReliabilityHintPress}>
             <HugeiconsIcon icon={BatteryCharging01Icon} size={12} color={colors.textMuted} />
-            <Text style={styles.reliabilityHintText}>Improve background reliability</Text>
+            <Text style={styles.reliabilityHintText}>{t('backup.reliabilityHint')}</Text>
             <HugeiconsIcon icon={ArrowRight01Icon} size={12} color={colors.textMuted} />
           </BentoPressable>
         )}
@@ -475,9 +477,9 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       <ConfirmDialog
         visible={showRestoreConfirm}
         onClose={() => setShowRestoreConfirm(false)}
-        title="Restore Cloud Backup?"
-        message="Restoring will replace your current local data with the backup file from Google Drive. Proceed?"
-        confirmLabel="Restore Data"
+        title={t('backup.restoreConfirmTitle')}
+        message={t('backup.restoreConfirmMessage')}
+        confirmLabel={t('backup.restoreData')}
         onConfirm={handleRestore}
         destructive
       />
@@ -485,9 +487,9 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       <ConfirmDialog
         visible={showDisconnectConfirm}
         onClose={() => setShowDisconnectConfirm(false)}
-        title="Disconnect Google Drive?"
-        message="Are you sure you want to disconnect your Google Account from Cloud Backup?"
-        confirmLabel="Disconnect"
+        title={t('backup.disconnectTitle')}
+        message={t('backup.disconnectMessage')}
+        confirmLabel={t('backup.disconnect')}
         onConfirm={handleDisconnect}
         destructive
       />

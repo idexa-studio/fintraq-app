@@ -13,6 +13,7 @@ import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { resolveIcon } from '../../utils/icons';
 import { BentoPressable } from './BentoPressable';
 import { BentoBottomSheet, useBottomSheet } from './BottomSheet';
+import { useTranslation } from 'react-i18next';
 
 type IconPickerBottomSheetProps = {
   visible: boolean;
@@ -33,9 +34,10 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
   onChange,
   groups,
   accentColor,
-  title = 'Choose icon',
+  title,
 }: IconPickerBottomSheetProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const accent = accentColor ?? colors.primary;
@@ -60,7 +62,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
     >
       <View style={{ flex: 1 }}>
         <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title}>{title ?? t('ui.chooseIcon')}</Text>
           {value ? (
             <View style={[styles.headerIconContainer, { backgroundColor: accent + '18' }]}>
               <HugeiconsIcon
@@ -82,7 +84,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
           {groups.map((group) => (
             <View key={group.label} style={styles.group}>
               <Text style={styles.groupLabel}>
-                {group.label.charAt(0).toUpperCase() + group.label.slice(1).toLowerCase()}
+                {t(`picker.groups.${group.label}`)}
               </Text>
               <View style={styles.iconGrid}>
                 {group.icons.map((icon) => {

@@ -7,6 +7,7 @@ import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useDashboardInsights } from '../hooks/dashboard';
 import { InsightCard } from './InsightCard';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
+import { useTranslation } from 'react-i18next';
 
 interface InsightsSectionProps {
   currency: string;
@@ -17,6 +18,7 @@ const INTERVAL = 4000;
 
 export const InsightsSection = React.memo(function InsightsSection({ currency }: InsightsSectionProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { data: insights, isLoading } = useDashboardInsights(currency);
@@ -68,15 +70,15 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
   if (!hasInsights && !isLoading) {
     return (
       <View style={styles.container}>
-        <SectionHeader title="Pro Insights" />
-        <PremiumGuard label="Upgrade to Pro for insights" size="large" containerStyle={styles.guard}>
+        <SectionHeader title={t('premium.insightsTitle')} />
+        <PremiumGuard label={t('premium.upgradeForInsights')} size="large" containerStyle={styles.guard}>
           <View style={styles.empty}>
             <View style={styles.emptyIconWrapper}>
               <HugeiconsIcon icon={ChartLineData01Icon} size={18} color={colors.primary} />
             </View>
             <View style={styles.emptyContent}>
-              <Text style={styles.emptyTitle}>No insights yet</Text>
-              <Text style={styles.emptyText}>Keep tracking to unlock personalized spending trends.</Text>
+              <Text style={styles.emptyTitle}>{t('premium.noInsights')}</Text>
+              <Text style={styles.emptyText}>{t('premium.noInsightsHint')}</Text>
             </View>
           </View>
         </PremiumGuard>
@@ -86,16 +88,16 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
 
   return (
     <View style={styles.container}>
-      <SectionHeader title="Pro Insights" />
+      <SectionHeader title={t('premium.insightsTitle')} />
       <PremiumGuard
-        label="Upgrade to Pro for insights"
+        label={t('premium.upgradeForInsights')}
         size="large"
         containerStyle={styles.guard}
       >
         {isLoading ? (
           <View style={styles.placeholder}>
             <Text style={[styles.placeholderText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              Analysing your patterns...
+              {t('premium.analysing')}
             </Text>
           </View>
         ) : (

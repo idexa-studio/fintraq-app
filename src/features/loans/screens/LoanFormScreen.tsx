@@ -39,6 +39,7 @@ import {
   PencilEdit01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { useTranslation } from 'react-i18next';
 
 const parseAmount = (raw: string) => {
   const n = parseFloat(raw.replace(',', '.').replace(/[^0-9.]/g, ''));
@@ -48,6 +49,7 @@ const parseAmount = (raw: string) => {
 export const LoanFormScreen = React.memo(function LoanFormScreen() {
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { isPremium, showAlert } = usePremium();
@@ -137,19 +139,19 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
       router.back();
     } catch (e) {
       showAlert({
-        title: 'Error',
-        message: toErrorMessage(e, 'Failed to create loan.'),
+        title: t('loans.error'),
+        message: toErrorMessage(e, t('loans.createFailed')),
         type: 'error',
       });
     } finally {
       setIsSubmitting(false);
     }
-  }, [canSubmit, isSubmitting, atFreeLimit, amountInput, accounts, selectedAccountId, selectedPersonId, loanType, dueDate, note, createLoan, router, showAlert]);
+  }, [canSubmit, isSubmitting, atFreeLimit, amountInput, accounts, selectedAccountId, selectedPersonId, loanType, dueDate, note, createLoan, router, showAlert, t]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header title="New loan" showBack />
+      <Header title={t('loans.newLoan')} showBack />
 
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
@@ -162,7 +164,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
             >
               <HugeiconsIcon icon={Money01Icon} size={16} color={loanType === 'lend' ? colors.primary : colors.textMuted} />
               <Text style={[styles.typeBtnText, { color: loanType === 'lend' ? colors.primary : colors.textMuted }]}>
-                I lent
+                {t('loans.iLent')}
               </Text>
             </BentoPressable>
             <BentoPressable
@@ -171,7 +173,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
             >
               <HugeiconsIcon icon={Coins02Icon} size={16} color={loanType === 'borrow' ? colors.primary : colors.textMuted} />
               <Text style={[styles.typeBtnText, { color: loanType === 'borrow' ? colors.primary : colors.textMuted }]}>
-                I borrowed
+                {t('loans.iBorrowed')}
               </Text>
             </BentoPressable>
           </View>
@@ -186,29 +188,29 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
           {/* Person picker */}
           <View style={styles.fieldSection}>
             <Text style={styles.fieldLabel}>
-              {loanType === 'lend' ? 'Lent to' : 'Borrowed from (optional)'}
+              {loanType === 'lend' ? t('loans.lentTo') : t('loans.borrowedFrom')}
             </Text>
             <BentoPressable style={styles.personPickerBtn} onPress={() => setShowPersonPicker(true)}>
               {selectedPerson ? (
                 <>
                   <PersonAvatar name={selectedPerson.name} color={colorNumberToHex(selectedPerson.color)} size={36} />
                   <View style={styles.textContainer}>
-                    <Text style={styles.personValueLabel}>Selected Person</Text>
+                    <Text style={styles.personValueLabel}>{t('loans.selectedPerson')}</Text>
                     <Text style={styles.personValueText} numberOfLines={1}>
                       {selectedPerson.name}
                     </Text>
                   </View>
                   <BentoPressable onPress={() => setSelectedPersonId(null)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                    <Text style={styles.clearText}>Clear</Text>
+                    <Text style={styles.clearText}>{t('loans.clear')}</Text>
                   </BentoPressable>
                 </>
               ) : (
                 <>
                   <IconAvatar icon={HandshakeIcon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
                   <View style={styles.textContainer}>
-                    <Text style={styles.personValueLabel}>Person</Text>
+                    <Text style={styles.personValueLabel}>{t('loans.person')}</Text>
                     <Text style={[styles.personValueText, { color: colors.textMuted }]} numberOfLines={1}>
-                      {loanType === 'lend' ? 'Select contact' : 'Select contact (optional)'}
+                      {loanType === 'lend' ? t('loans.selectContact') : t('loans.selectContactOptional')}
                     </Text>
                   </View>
                   <HugeiconsIcon icon={UnfoldMoreIcon} size={16} color={colors.textMuted} />
@@ -222,25 +224,25 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
             accounts={accounts}
             selectedId={selectedAccountId}
             onSelect={setSelectedAccountId}
-            label={loanType === 'lend' ? 'From account' : 'Into account'}
+            label={loanType === 'lend' ? t('loans.fromAccount') : t('loans.intoAccount')}
           />
 
           {/* Due date trigger styled like transactions */}
           <View style={styles.fieldSection}>
             <Text style={styles.fieldLabel}>
-              Due date (optional)
+              {t('loans.optionalDueDate')}
             </Text>
             <BentoPressable style={styles.datePickerBtn} onPress={() => setShowDueDatePicker(true)}>
               <IconAvatar icon={Calendar03Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
               <View style={styles.textContainer}>
-                <Text style={styles.dateLabel}>Due Date</Text>
+                <Text style={styles.dateLabel}>{t('loans.dueDate')}</Text>
                 <Text style={[styles.dateValueText, !dueDate && { color: colors.textMuted }]} numberOfLines={1}>
-                  {dueDate ? format(dueDate, 'MMM d, yyyy') : 'No due date'}
+                  {dueDate ? format(dueDate, 'MMM d, yyyy') : t('loans.noDueDate')}
                 </Text>
               </View>
               {dueDate ? (
                 <BentoPressable onPress={() => setDueDate(null)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                  <Text style={styles.clearText}>Clear</Text>
+                  <Text style={styles.clearText}>{t('loans.clear')}</Text>
                 </BentoPressable>
               ) : (
                 <HugeiconsIcon icon={UnfoldMoreIcon} size={16} color={colors.textMuted} />
@@ -253,14 +255,14 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
             <View style={styles.noteContainer}>
               <View style={styles.noteHeader}>
                 <IconAvatar icon={PencilEdit01Icon} color={colors.primary} variant="subtle" size={32} iconSize={16} />
-                <Text style={styles.noteLabel}>Note</Text>
+                <Text style={styles.noteLabel}>{t('loans.note')}</Text>
               </View>
               <TextInput
                 ref={noteRef}
                 style={styles.noteInput}
                 value={note}
                 onChangeText={setNote}
-                placeholder="What's this for?"
+                placeholder={t('loans.whatsThisFor')}
                 placeholderTextColor={colors.textMuted + '60'}
                 multiline
                 maxLength={200}
@@ -290,7 +292,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
             <ActivityIndicator size="small" color={colors.primaryForeground} />
           ) : (
             <Text style={styles.saveBtnText}>
-              Create loan
+              {t('loans.createLoan')}
             </Text>
           )}
         </Pressable>

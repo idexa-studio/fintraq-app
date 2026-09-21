@@ -1,6 +1,7 @@
 import { Calculator01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { CalculatorBottomSheet } from '../../../components/ui/CalculatorBottomSheet';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
@@ -16,6 +17,7 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
   onChange,
   currency,
 }: Props) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -27,7 +29,7 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Amount</Text>
+      <Text style={styles.label}>{t('transactions.amount')}</Text>
       <View style={styles.inputRow}>
         <Text style={styles.currency}>{currency}</Text>
         <TextInput

@@ -1,3 +1,5 @@
+import i18n from '@/src/i18n';
+
 /**
  * Extract a human-readable message from an unknown caught value.
  *
@@ -8,7 +10,7 @@
  */
 export function toErrorMessage(
   err: unknown,
-  fallback = 'An unexpected error occurred',
+  fallback: string = i18n.t('common.unexpectedError'),
 ): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;

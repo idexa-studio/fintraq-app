@@ -35,14 +35,15 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const TYPE_LABELS: Record<TransactionType, string> = {
-  CR: 'Income',
-  DR: 'Expense',
-  TR: 'Transfer',
-};
+const TYPE_LABEL_KEYS = {
+  CR: 'transactions.income',
+  DR: 'transactions.expense',
+  TR: 'transactions.transfer',
+} as const satisfies Record<TransactionType, string>;
 
 // ─── InfoRow ─────────────────────────────────────────────────────────────────
 
@@ -105,6 +106,7 @@ const AccountChip = React.memo(function AccountChip({ rowStyles, icon, color, na
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 export const TransactionDetailScreen = React.memo(function TransactionDetailScreen() {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const txId = Number(id);
   const router = useRouter();
@@ -189,12 +191,12 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
 
   const handleDelete = useCallback(() => {
     Alert.alert(
-      'Delete transaction',
-      'This will reverse the balance impact and cannot be undone.',
+      t('transactions.detailDeleteTitle'),
+      t('transactions.detailDeleteMessage'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('transactions.delete'),
           style: 'destructive',
           onPress: async () => {
             await deleteTx(txId);
@@ -203,7 +205,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
         },
       ],
     );
-  }, [txId, deleteTx, router]);
+  }, [txId, deleteTx, router, t]);
 
   const headerRight = useMemo(
     () => (
@@ -224,7 +226,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <PageBackground />
-        <Header title="Transaction" showBack />
+        <Header title={t('transactions.detailTitle')} showBack />
         <View style={styles.loading}>
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
@@ -236,9 +238,9 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <PageBackground />
-        <Header title="Transaction" showBack />
+        <Header title={t('transactions.detailTitle')} showBack />
         <View style={styles.loading}>
-          <Text style={styles.missingText}>Transaction not found.</Text>
+          <Text style={styles.missingText}>{t('transactions.notFound')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -252,7 +254,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header title="Transaction" showBack rightAction={headerRight} />
+      <Header title={t('transactions.detailTitle')} showBack rightAction={headerRight} />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
@@ -265,7 +267,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
               <View style={styles.heroBadgeRow}>
                 <View style={[styles.typeBadge, { backgroundColor: typeColor + '18' }]}>
                   <Text style={[styles.typeBadgeText, { color: typeColor }]}>
-                    {TYPE_LABELS[tx.type]}
+                    {t(TYPE_LABEL_KEYS[tx.type])}
                   </Text>
                 </View>
                 <View style={[styles.typeBadge, { backgroundColor: colors.text + '0C' }]}>
@@ -277,7 +279,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
             </View>
           </View>
 
-          <Text style={styles.amountLabel}>Amount</Text>
+          <Text style={styles.amountLabel}>{t('transactions.amount')}</Text>
           <MoneyText
             amount={tx.amount}
             currency={tx.account.currency}
@@ -294,7 +296,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
           <InfoRow
             rowStyles={rowStyles}
             icon={Calendar03Icon}
-            label="Date"
+            label={t('transactions.date')}
             isFirst
             isLast={false}
           >
@@ -306,7 +308,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
           <InfoRow
             rowStyles={rowStyles}
             icon={Wallet01Icon}
-            label={isTransfer ? 'From' : 'Account'}
+            label={isTransfer ? t('transactions.from') : t('transactions.account')}
           >
             <AccountChip
               rowStyles={rowStyles}
@@ -318,7 +320,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
 
           {/* To account (transfer only) */}
           {hasToAccount && (
-            <InfoRow rowStyles={rowStyles} icon={ArrowRight01Icon} label="To">
+            <InfoRow rowStyles={rowStyles} icon={ArrowRight01Icon} label={t('transactions.to')}>
               <AccountChip
                 rowStyles={rowStyles}
                 icon={toAccountIcon}
@@ -332,7 +334,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
           <InfoRow
             rowStyles={rowStyles}
             icon={Tag01Icon}
-            label="Category"
+            label={t('transactions.category')}
             isLast={!hasNote && !hasPerson}
           >
             <AccountChip
@@ -348,7 +350,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
             <InfoRow
               rowStyles={rowStyles}
               icon={NoteIcon}
-              label="Note"
+              label={t('transactions.note')}
               isLast={lastRowIsNote}
             >
               <Text style={rowStyles.valueText}>{tx.note!.trim()}</Text>
@@ -360,7 +362,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
             <InfoRow
               rowStyles={rowStyles}
               icon={UserIcon}
-              label="Person"
+              label={t('transactions.person')}
               isLast={lastRowIsPerson}
             >
               <View style={rowStyles.chip}>
@@ -386,7 +388,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
             <InfoRow
               rowStyles={rowStyles}
               icon={Calendar03Icon}
-              label="Created"
+              label={t('transactions.created')}
               isLast
             >
               <Text style={rowStyles.valueSub}>

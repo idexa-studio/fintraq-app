@@ -15,6 +15,7 @@ import type { IconSvgElement } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { Modal, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 type PremiumUpsellModalProps = {
   visible: boolean;
@@ -23,12 +24,12 @@ type PremiumUpsellModalProps = {
 
 const BLOCK = 5;
 
-const PRO_FEATURES: { icon: IconSvgElement; label: string }[] = [
-  { icon: ChartLineData01Icon, label: 'Spending trends & period deltas' },
-  { icon: SparklesIcon,        label: 'Highlights & spending forecast' },
-  { icon: Search01Icon,        label: 'Global search across all data' },
-  { icon: Download01Icon,      label: 'CSV export with loans data' },
-  { icon: TrendingUpDownIcon,       label: 'Extended 30 / 90 / 365-day analytics' },
+const PRO_FEATURES: { icon: IconSvgElement; label: 'upsellTrends' | 'upsellHighlights' | 'upsellSearch' | 'upsellCsv' | 'upsellExtended' }[] = [
+  { icon: ChartLineData01Icon, label: 'upsellTrends' },
+  { icon: SparklesIcon,        label: 'upsellHighlights' },
+  { icon: Search01Icon,        label: 'upsellSearch' },
+  { icon: Download01Icon,      label: 'upsellCsv' },
+  { icon: TrendingUpDownIcon,       label: 'upsellExtended' },
 ];
 
 export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
@@ -36,6 +37,7 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
   onClose,
 }: PremiumUpsellModalProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const router = useRouter();
   const { width: screenWidth } = useWindowDimensions();
@@ -84,9 +86,9 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
             </View>
 
             <View style={styles.headerText}>
-              <Text style={styles.title}>Fintraq Pro</Text>
+              <Text style={styles.title}>{t('premium.title')}</Text>
               <View style={[styles.lifetimePill, { backgroundColor: colors.warning + '20' }]}>
-                <Text style={[styles.lifetimeLabel, { color: colors.warning }]}>One-time · Lifetime access</Text>
+                <Text style={[styles.lifetimeLabel, { color: colors.warning }]}>{t('premium.oneTimeLifetime')}</Text>
               </View>
             </View>
 
@@ -113,7 +115,7 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
                 <View style={[styles.featureIcon, { backgroundColor: colors.surface }]}>
                   <HugeiconsIcon icon={item.icon} size={16} color={colors.primary} />
                 </View>
-                <Text style={styles.featureLabel}>{item.label}</Text>
+                <Text style={styles.featureLabel}>{t(`premium.${item.label}`)}</Text>
                 <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
               </View>
             ))}
@@ -127,13 +129,13 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
               disabled={!canDismiss}
             >
               <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
-                {canDismiss ? 'Unlock Fintraq Pro' : `Unlock in ${left}s`}
+                {canDismiss ? t('premium.unlockPro') : t('premium.unlockIn', { seconds: left })}
               </Text>
             </BentoPressable>
 
             {canDismiss && (
               <BentoPressable onPress={onClose} style={styles.skipBtn}>
-                <Text style={styles.skipText}>Maybe later</Text>
+                <Text style={styles.skipText}>{t('premium.maybeLater')}</Text>
               </BentoPressable>
             )}
           </View>

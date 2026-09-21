@@ -4,6 +4,7 @@ import { MoneyText } from '../../../components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import type { LoanRepaymentRow, LoanType } from '../api/loans';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   row: LoanRepaymentRow;
@@ -15,6 +16,7 @@ type Props = {
 
 export const RepaymentRow = React.memo(function RepaymentRow({ row, loanType, isFirst, isLast, isCreation }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -26,9 +28,9 @@ export const RepaymentRow = React.memo(function RepaymentRow({ row, loanType, is
   }), [isFirst, isLast, theme]);
 
   const label = useMemo(() => {
-    if (isCreation) return loanType === 'lend' ? 'Loan given' : 'Loan received';
-    return loanType === 'lend' ? 'Repayment received' : 'Repayment sent';
-  }, [isCreation, loanType]);
+    if (isCreation) return loanType === 'lend' ? t('loans.loanGiven') : t('loans.loanReceived');
+    return loanType === 'lend' ? t('loans.repaymentReceived') : t('loans.repaymentSent');
+  }, [isCreation, loanType, t]);
 
   const dateLabel = useMemo(() => {
     try { return format(new Date(row.datetime), 'MMM d, yyyy'); } catch { return row.datetime; }

@@ -10,6 +10,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
+import { useTranslation } from 'react-i18next';
 
 export type SetupOption = 'fresh' | 'restore';
 
@@ -27,6 +28,7 @@ export const RestoreStep = React.memo(function RestoreStep({
   isRestoring = false,
 }: RestoreStepProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = React.useMemo(() => createStyles(theme), [theme]);
 
@@ -51,10 +53,10 @@ export const RestoreStep = React.memo(function RestoreStep({
           />
           <View style={styles.info}>
             <Text style={[styles.title, isFresh && { color: colors.primary }]}>
-              Start fresh
+              {t('onboardingFlow.startFreshTitle')}
             </Text>
             <Text style={styles.subtitle}>
-              Set up your profile, default currency, and cash account.
+              {t('onboardingFlow.startFreshDescription')}
             </Text>
           </View>
           <View style={styles.radio}>
@@ -81,12 +83,12 @@ export const RestoreStep = React.memo(function RestoreStep({
           />
           <View style={styles.info}>
             <Text style={[styles.title, isRestore && { color: colors.primary }]}>
-              Restore from Cloud
+              {t('onboardingFlow.restoreFromCloud')}
             </Text>
             <Text style={styles.subtitle}>
               {userEmail
-                ? `Connected as ${userEmail}. Ready to download your cloud backup.`
-                : 'Connect your cloud account to restore existing accounts & transactions.'}
+                ? t('onboardingFlow.connectedAs', { email: userEmail })
+                : t('onboardingFlow.connectToRestore')}
             </Text>
           </View>
           <View style={styles.radio}>

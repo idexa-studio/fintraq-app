@@ -8,6 +8,7 @@ import {
 import type { IconSvgElement } from '@hugeicons/react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 
@@ -26,6 +27,7 @@ export const CloudBackupStep = React.memo(function CloudBackupStep({
   userEmail,
   isConnecting,
 }: CloudBackupStepProps) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
   const styles = React.useMemo(() => createStyles(theme), [theme]);
@@ -50,22 +52,22 @@ export const CloudBackupStep = React.memo(function CloudBackupStep({
         <View style={styles.info}>
           <View style={styles.titleRow}>
             <Text style={[styles.title, isEnable && { color: colors.primary }]}>
-              Automated Cloud Sync
+              {t('onboarding.cloudTitle')}
             </Text>
             {isConnecting ? (
               <ActivityIndicator size="small" color={colors.primary} />
             ) : (
               <View style={styles.recBadge}>
-                <Text style={styles.recBadgeText}>Recommended</Text>
+                <Text style={styles.recBadgeText}>{t('onboarding.recommended')}</Text>
               </View>
             )}
           </View>
           <Text style={styles.subtitle}>
             {isConnecting
-              ? 'Connecting to Cloud Sync...'
+              ? t('onboarding.connecting')
               : userEmail
-              ? `Connected as ${userEmail}. Automated daily backups active.`
-              : 'Back up your transactions, accounts & settings securely to your cloud.'}
+              ? t('onboarding.connected', { email: userEmail })
+              : t('onboarding.cloudDescription')}
           </Text>
         </View>
         <View style={styles.radio}>
@@ -89,10 +91,10 @@ export const CloudBackupStep = React.memo(function CloudBackupStep({
         />
         <View style={styles.info}>
           <Text style={[styles.title, isSkip && { color: colors.primary }]}>
-            Skip for now (Offline only)
+            {t('onboarding.offlineTitle')}
           </Text>
           <Text style={styles.subtitle}>
-            Keep all workspace data strictly offline. You can enable cloud sync anytime in Settings.
+            {t('onboarding.offlineDescription')}
           </Text>
         </View>
         <View style={styles.radio}>

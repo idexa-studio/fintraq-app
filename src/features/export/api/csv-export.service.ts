@@ -7,6 +7,7 @@ import { and, count, desc, eq, gte, lte, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import { Platform, Alert } from 'react-native';
 import { LoggerService } from '@/src/services/logger.service';
+import i18n from '@/src/i18n';
 
 export interface ExportDateRange {
   startDate: Date;
@@ -288,7 +289,7 @@ export class CsvExportService {
     await Sharing.shareAsync(tempFile.uri, {
       mimeType: 'text/csv',
       UTI: 'public.comma-separated-values-text',
-      dialogTitle: 'Share CSV Export',
+      dialogTitle: i18n.t('export.shareDialog'),
     });
   }
 
@@ -296,7 +297,7 @@ export class CsvExportService {
     try {
       const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
       if (!permissions.granted) {
-        Alert.alert('Permission Denied', 'Cannot save without folder access.');
+        Alert.alert(i18n.t('export.permissionDenied'), i18n.t('export.permissionDeniedMessage'));
         return;
       }
       const fileUri = await StorageAccessFramework.createFileAsync(
@@ -305,10 +306,10 @@ export class CsvExportService {
         'text/csv',
       );
       await StorageAccessFramework.writeAsStringAsync(fileUri, content, { encoding: 'utf8' });
-      Alert.alert('Saved', `CSV saved as ${filename}`);
+      Alert.alert(i18n.t('export.saved'), i18n.t('export.savedMessage', { filename }));
     } catch (error) {
       LoggerService.error('CSV_EXPORT', 'Failed to save CSV to Android folder', error);
-      Alert.alert('Save Failed', error instanceof Error ? error.message : 'Failed to save CSV');
+      Alert.alert(i18n.t('export.saveCsvFailed'), error instanceof Error ? error.message : i18n.t('export.saveCsvFailedMessage'));
     }
   }
 
@@ -319,7 +320,7 @@ export class CsvExportService {
     await Sharing.shareAsync(tempFile.uri, {
       mimeType: 'text/csv',
       UTI: 'public.comma-separated-values-text',
-      dialogTitle: 'Save CSV Export',
+      dialogTitle: i18n.t('export.saveDialog'),
     });
   }
 

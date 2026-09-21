@@ -9,9 +9,11 @@ import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, heroCard } = theme;
   const router = useRouter();
   const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
@@ -19,15 +21,15 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title="Fintraq Pro" showBack />
+      <Header title={t('premium.title')} showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Hero Card — edge-to-edge, dashboard style */}
         <View style={[styles.heroCard, { backgroundColor: heroCard.background }]}>
-          <Text style={styles.heroBadge}>Pro active</Text>
-          <Text style={styles.heroTitle}>You{"'"}re all set.</Text>
+          <Text style={styles.heroBadge}>{t('premium.proActive')}</Text>
+          <Text style={styles.heroTitle}>{t('premium.allSet')}</Text>
           <Text style={styles.heroDesc}>
-            Every professional tool, every future update — yours forever. No subscriptions, no limits.
+            {t('premium.allSetDesc')}
           </Text>
         </View>
 
@@ -35,29 +37,29 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
         <View style={styles.priceContainer}>
           <View style={styles.priceRow}>
             <View style={styles.priceLeft}>
-              <Text style={styles.priceLabel}>Lifetime license</Text>
-              <Text style={styles.priceSubText}>Linked to your Google Play / App Store</Text>
+              <Text style={styles.priceLabel}>{t('premium.lifetimeLicense')}</Text>
+              <Text style={styles.priceSubText}>{t('premium.linkedStore')}</Text>
             </View>
             <View style={styles.pill}>
-              <Text style={styles.pillText}>Active</Text>
+              <Text style={styles.pillText}>{t('premium.active')}</Text>
             </View>
           </View>
         </View>
 
         {/* Features list */}
-        <SectionHeader title="Unlocked features" />
+        <SectionHeader title={t('premium.unlockedFeatures')} />
 
         <View style={styles.featuresCard}>
           {FEATURES.map((f, index) => {
             const isLast = index === FEATURES.length - 1;
             return (
-              <View key={f.title} style={[styles.featureItem, isLast && styles.noMargin]}>
+              <View key={f.key} style={[styles.featureItem, isLast && styles.noMargin]}>
                 <View style={styles.iconWrapperActive}>
                   <HugeiconsIcon icon={f.icon} size={20} color={colors.success} />
                 </View>
                 <View style={styles.featureContent}>
-                  <Text style={styles.featureTitle}>{f.title}</Text>
-                  <Text style={styles.featureDesc}>{f.description}</Text>
+                  <Text style={styles.featureTitle}>{t(`premium.features.${f.key}.title`)}</Text>
+                  <Text style={styles.featureDesc}>{t(`premium.features.${f.key}.description`)}</Text>
                 </View>
               </View>
             );
@@ -73,7 +75,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
           onPress={() => router.replace('/(main)/(tabs)')}
         >
           <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
-            Open dashboard
+            {t('premium.openDashboard')}
           </Text>
         </BentoPressable>
       </View>

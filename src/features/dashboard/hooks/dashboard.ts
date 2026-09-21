@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { QUERY_KEYS } from '../../../lib/query-keys';
 import * as api from '../api/dashboard';
 import * as insightsApi from '../api/insights';
@@ -28,8 +29,10 @@ export const useDashboardPersons = (currency: string) => {
 };
 
 export const useDashboardInsights = (currency: string) => {
+  const { i18n } = useTranslation();
   return useQuery({
-    queryKey: QUERY_KEYS.dashboard.insights(currency),
+    // Insight copy is generated in the active language, so refetch when it changes.
+    queryKey: [...QUERY_KEYS.dashboard.insights(currency), i18n.language],
     queryFn: () => insightsApi.getDashboardInsights(currency),
     enabled: !!currency,
   });

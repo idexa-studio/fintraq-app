@@ -24,23 +24,25 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CsvExportService, ExportDateRange } from '../api/csv-export.service';
+import { useTranslation } from 'react-i18next';
 
 const DATE_PRESETS = [
-  { key: '7d', label: 'Last 7 days', days: 7 },
-  { key: '30d', label: 'Last 30 days', days: 30 },
-  { key: '90d', label: 'Last 90 days', days: 90 },
-  { key: '12m', label: 'Last 12 months', days: 365 },
+  { key: '7d', label: 'last7', days: 7 },
+  { key: '30d', label: 'last30', days: 30 },
+  { key: '90d', label: 'last90', days: 90 },
+  { key: '12m', label: 'last12m', days: 365 },
 ] as const;
 
 const TYPE_OPTIONS = [
-  { key: 'ALL' as const, label: 'All' },
-  { key: 'CR' as const, label: 'Income' },
-  { key: 'DR' as const, label: 'Expense' },
-  { key: 'TR' as const, label: 'Transfer' },
+  { key: 'ALL' as const, label: 'all' },
+  { key: 'CR' as const, label: 'income' },
+  { key: 'DR' as const, label: 'expense' },
+  { key: 'TR' as const, label: 'transfer' },
 ] as const;
 
 export const ExportScreen = React.memo(function ExportScreen() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -120,42 +122,42 @@ export const ExportScreen = React.memo(function ExportScreen() {
       setExportedData(result);
       setShowExportOptions(true);
     } catch (error) {
-      Alert.alert('Export failed', error instanceof Error ? error.message : 'Failed to export');
+      Alert.alert(t('export.failed'), error instanceof Error ? error.message : t('export.failedMessage'));
     } finally {
       setIsExporting(false);
     }
-  }, [effectiveDateRange, selectedAccountId, selectedType, includeLoans]);
+  }, [effectiveDateRange, selectedAccountId, selectedType, includeLoans, t]);
 
   const handleSave = useCallback(async () => {
     if (!exportedData) return;
     setShowExportOptions(false);
     try { await CsvExportService.saveToFolder(exportedData.content, exportedData.filename); }
-    catch (error) { Alert.alert('Save failed', error instanceof Error ? error.message : 'Failed to save'); }
+    catch (error) { Alert.alert(t('export.saveFailed'), error instanceof Error ? error.message : t('export.saveFailedMessage')); }
     finally { setExportedData(null); }
-  }, [exportedData]);
+  }, [exportedData, t]);
 
   const handleShare = useCallback(async () => {
     if (!exportedData) return;
     setShowExportOptions(false);
     try { await CsvExportService.shareFile(exportedData.content, exportedData.filename); }
-    catch (error) { Alert.alert('Share failed', error instanceof Error ? error.message : 'Failed to share'); }
+    catch (error) { Alert.alert(t('export.shareFailed'), error instanceof Error ? error.message : t('export.shareFailedMessage')); }
     finally { setExportedData(null); }
-  }, [exportedData]);
+  }, [exportedData, t]);
 
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title="Export CSV" showBack />
+      <Header title={t('export.title')} showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
         {/* ── Date range ── */}
-        <Text style={styles.sectionLabel}>Date range</Text>
+        <Text style={styles.sectionLabel}>{t('export.dateRange')}</Text>
         <View style={styles.card}>
           {DATE_PRESETS.map((p, i) => (
             <React.Fragment key={p.key}>
               <BentoPressable style={styles.cardRow} onPress={() => handlePresetSelect(p.key)} scaleOnPress={false}>
-                <Text style={styles.cardRowText}>{p.label}</Text>
+                <Text style={styles.cardRowText}>{t(`export.${p.label}`)}</Text>
                 {selectedPreset === p.key && !customRange
                   ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} />
                   : null}
@@ -165,18 +167,18 @@ export const ExportScreen = React.memo(function ExportScreen() {
           ))}
           <View style={styles.sep} />
           <BentoPressable style={styles.cardRow} onPress={() => setShowStartPicker(true)} scaleOnPress={false}>
-            <Text style={styles.cardRowText}>Custom range</Text>
+            <Text style={styles.cardRowText}>{t('export.customRange')}</Text>
             {customRange ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}
           </BentoPressable>
           {customRange ? (
             <View style={styles.dateRow}>
               <BentoPressable style={styles.dateBtn} onPress={() => setShowStartPicker(true)}>
-                <Text style={styles.dateLbl}>From</Text>
+                <Text style={styles.dateLbl}>{t('export.from')}</Text>
                 <Text style={styles.dateVal}>{formatDate(customRange.startDate)}</Text>
               </BentoPressable>
               <View style={styles.dateSep} />
               <BentoPressable style={styles.dateBtn} onPress={() => setShowEndPicker(true)}>
-                <Text style={styles.dateLbl}>To</Text>
+                <Text style={styles.dateLbl}>{t('export.to')}</Text>
                 <Text style={styles.dateVal}>{formatDate(customRange.endDate)}</Text>
               </BentoPressable>
             </View>
@@ -184,23 +186,23 @@ export const ExportScreen = React.memo(function ExportScreen() {
         </View>
 
         {/* ── Type ── */}
-        <Text style={styles.sectionLabel}>Type</Text>
+        <Text style={styles.sectionLabel}>{t('export.type')}</Text>
         <View style={styles.pillRow}>
-          {TYPE_OPTIONS.map(t => {
-            const active = selectedType === t.key;
+          {TYPE_OPTIONS.map(opt => {
+            const active = selectedType === opt.key;
             return (
-              <BentoPressable key={t.key} style={[styles.pill, active && styles.pillActive]} onPress={() => setSelectedType(t.key)}>
-                <Text style={[styles.pillText, active && styles.pillTextActive]}>{t.label}</Text>
+              <BentoPressable key={opt.key} style={[styles.pill, active && styles.pillActive]} onPress={() => setSelectedType(opt.key)}>
+                <Text style={[styles.pillText, active && styles.pillTextActive]}>{t(`export.${opt.label}`)}</Text>
               </BentoPressable>
             );
           })}
         </View>
 
         {/* ── Account ── */}
-        <Text style={styles.sectionLabel}>Account</Text>
+        <Text style={styles.sectionLabel}>{t('export.account')}</Text>
         <View style={styles.card}>
           <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(null)} scaleOnPress={false}>
-            <Text style={styles.cardRowText}>All accounts</Text>
+            <Text style={styles.cardRowText}>{t('export.allAccounts')}</Text>
             {selectedAccountId === null ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}
           </BentoPressable>
           {accountsQuery.data?.map(acc => {
@@ -222,10 +224,10 @@ export const ExportScreen = React.memo(function ExportScreen() {
         </View>
 
         {/* ── Options ── */}
-        <Text style={styles.sectionLabel}>Options</Text>
+        <Text style={styles.sectionLabel}>{t('export.options')}</Text>
         <View style={styles.card}>
           <View style={styles.cardRow}>
-            <Text style={styles.cardRowText}>Include loans</Text>
+            <Text style={styles.cardRowText}>{t('export.includeLoans')}</Text>
             <Switch
               value={includeLoans}
               onValueChange={setIncludeLoans}
@@ -238,14 +240,14 @@ export const ExportScreen = React.memo(function ExportScreen() {
         {/* ── Summary ── */}
         <View style={styles.summary}>
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Transactions</Text>
+            <Text style={styles.summaryLabel}>{t('export.transactions')}</Text>
             <Text style={styles.summaryValue}>
               {previewCount !== null ? previewCount.toLocaleString() : '—'}
             </Text>
           </View>
           <View style={styles.summaryDivider} />
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Period</Text>
+            <Text style={styles.summaryLabel}>{t('export.period')}</Text>
             <Text style={styles.summaryPeriod}>
               {formatDate(effectiveDateRange.startDate)} — {formatDate(effectiveDateRange.endDate)}
             </Text>
@@ -263,7 +265,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
             : (
               <>
                 <HugeiconsIcon icon={Download01Icon} size={18} color={colors.primaryForeground} />
-                <Text style={styles.exportBtnText}>Export CSV</Text>
+                <Text style={styles.exportBtnText}>{t('export.title')}</Text>
               </>
             )}
         </BentoPressable>
@@ -271,7 +273,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
         {previewCount === 0 ? (
           <View style={styles.warning}>
             <HugeiconsIcon icon={InformationCircleIcon} size={15} color={colors.warning} />
-            <Text style={styles.warningText}>No transactions match the selected filters.</Text>
+            <Text style={styles.warningText}>{t('export.noMatch')}</Text>
           </View>
         ) : null}
 
@@ -287,11 +289,11 @@ export const ExportScreen = React.memo(function ExportScreen() {
       <OptionsDialog
         visible={showExportOptions}
         onClose={() => { setShowExportOptions(false); setExportedData(null); }}
-        title="Export ready"
-        subtitle={exportedData ? `${previewCount?.toLocaleString()} transactions ready` : 'Choose how to save'}
+        title={t('export.ready')}
+        subtitle={exportedData ? t('export.readyCount', { count: previewCount ?? 0 }) : t('export.chooseSave')}
         options={[
-          { key: 'save', label: Platform.OS === 'ios' ? 'Save to Files' : 'Save to folder', icon: Folder01Icon, selected: false, onPress: handleSave },
-          { key: 'share', label: 'Share to apps', icon: Share01Icon, selected: false, onPress: handleShare },
+          { key: 'save', label: Platform.OS === 'ios' ? t('export.saveToFiles') : t('export.saveToFolder'), icon: Folder01Icon, selected: false, onPress: handleSave },
+          { key: 'share', label: t('export.shareToApps'), icon: Share01Icon, selected: false, onPress: handleShare },
         ]}
       />
     </SafeAreaView>

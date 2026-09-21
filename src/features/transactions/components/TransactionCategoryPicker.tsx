@@ -1,6 +1,7 @@
 import { Chip } from '@/src/components/ui/Chip';
 import { Tag01Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
@@ -18,6 +19,7 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
   selectedId,
   onSelect,
 }: Props) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -26,7 +28,7 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>Category</Text>
+      <Text style={[styles.label, { color: colors.textMuted }]}>{t('transactions.category')}</Text>
       <View style={styles.grid}>
         {categories.map((cat) => (
           <Chip

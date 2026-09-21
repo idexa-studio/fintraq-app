@@ -6,6 +6,7 @@ import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
+import { useTranslation } from 'react-i18next';
 
 interface PremiumGuardProps {
   children: React.ReactNode;
@@ -24,12 +25,13 @@ interface PremiumGuardProps {
  */
 export const PremiumGuard = React.memo(function PremiumGuard({
   children,
-  label = 'Pro only',
+  label,
   size = 'large',
   containerStyle
 }: PremiumGuardProps) {
   const { isPremium } = usePremium();
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, spacing, radius } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
@@ -85,12 +87,12 @@ export const PremiumGuard = React.memo(function PremiumGuard({
 
           <View style={styles.textDetails}>
             <Text style={[styles.title, isSmall && styles.titleSmall]}>
-              {label}
+              {label ?? t('ui.proOnly')}
             </Text>
             {!isSmall && (
               <View style={styles.ctaRow}>
                 <Text style={styles.subtitle}>
-                  Unlock with Fintraq Pro
+                  {t('ui.unlockWithPro')}
                 </Text>
                 <HugeiconsIcon icon={SparklesIcon} size={10} color={colors.warning} />
               </View>

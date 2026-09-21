@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { BentoBottomSheet } from './BottomSheet';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   visible: boolean;
@@ -46,6 +47,7 @@ export const CalculatorBottomSheet = React.memo(function CalculatorBottomSheet({
   currency,
 }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -227,7 +229,7 @@ export const CalculatorBottomSheet = React.memo(function CalculatorBottomSheet({
 
         {/* ── Done ── */}
         <Pressable style={[styles.doneBtn, { backgroundColor: colors.primary }]} onPress={handleConfirm}>
-          <Text style={[styles.doneBtnText, { color: colors.primaryForeground }]}>Done</Text>
+          <Text style={[styles.doneBtnText, { color: colors.primaryForeground }]}>{t('common.done')}</Text>
         </Pressable>
       </View>
     </BentoBottomSheet>

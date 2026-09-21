@@ -8,6 +8,7 @@ import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
 import { Category } from '../api/categories';
+import { useTranslation } from 'react-i18next';
 
 interface CategoryCardProps {
   item: Category;
@@ -18,10 +19,10 @@ interface CategoryCardProps {
   onLongPress: (item: Category) => void;
 }
 
-const TYPE_META: Record<string, { label: string; colorKey: 'success' | 'danger' | 'primary' | 'textMuted' }> = {
-  CR: { label: 'Income',   colorKey: 'success' },
-  DR: { label: 'Expense',  colorKey: 'danger'  },
-  TR: { label: 'Transfer', colorKey: 'primary' },
+const TYPE_META: Record<string, { label: 'income' | 'expense' | 'transfer'; colorKey: 'success' | 'danger' | 'primary' | 'textMuted' }> = {
+  CR: { label: 'income',   colorKey: 'success' },
+  DR: { label: 'expense',  colorKey: 'danger'  },
+  TR: { label: 'transfer', colorKey: 'primary' },
 };
 
 export const CategoryCard = React.memo(function CategoryCard({
@@ -32,6 +33,7 @@ export const CategoryCard = React.memo(function CategoryCard({
   onLongPress,
 }: CategoryCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, radius, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -84,12 +86,12 @@ export const CategoryCard = React.memo(function CategoryCard({
           )}
         </View>
         <View style={styles.badges}>
-          {typeParts.map(t => {
-            const meta = TYPE_META[t] ?? { label: t, colorKey: 'textMuted' as const };
-            const badgeColor = colors[meta.colorKey];
+          {typeParts.map(type => {
+            const meta = TYPE_META[type];
+            const badgeColor = colors[meta?.colorKey ?? 'textMuted'];
             return (
-              <View key={t} style={[styles.badge, { backgroundColor: badgeColor + '18' }]}>
-                <Text style={[styles.badgeText, { color: badgeColor }]}>{meta.label}</Text>
+              <View key={type} style={[styles.badge, { backgroundColor: badgeColor + '18' }]}>
+                <Text style={[styles.badgeText, { color: badgeColor }]}>{meta ? t(`categoryForm.${meta.label}`) : type}</Text>
               </View>
             );
           })}

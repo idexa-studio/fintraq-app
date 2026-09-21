@@ -5,6 +5,7 @@ import type { IconSvgElement } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
+import { useTranslation } from 'react-i18next';
 
 type RestoreProgressViewProps = {
   progress: number;
@@ -18,6 +19,7 @@ export const RestoreProgressView = React.memo(function RestoreProgressView({
   userEmail,
 }: RestoreProgressViewProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -36,9 +38,9 @@ export const RestoreProgressView = React.memo(function RestoreProgressView({
             iconSize={26}
           />
           <View style={styles.headerText}>
-            <Text style={styles.title}>Restoring Workspace</Text>
+            <Text style={styles.title}>{t('onboardingFlow.restoringWorkspace')}</Text>
             <Text style={styles.stageText} numberOfLines={2}>
-              {progressStage || 'Downloading your cloud backup...'}
+              {progressStage || t('onboardingFlow.downloadingBackup')}
             </Text>
           </View>
           <Text style={styles.percentText}>{clampedProgress}%</Text>
@@ -48,7 +50,7 @@ export const RestoreProgressView = React.memo(function RestoreProgressView({
 
         {userEmail ? (
           <Text style={styles.emailText} numberOfLines={1}>
-            Connected as {userEmail}
+            {t('onboardingFlow.connectedAsShort', { email: userEmail })}
           </Text>
         ) : null}
       </View>
@@ -63,9 +65,9 @@ export const RestoreProgressView = React.memo(function RestoreProgressView({
           iconSize={20}
         />
         <View style={styles.infoText}>
-          <Text style={styles.infoTitle}>Secure Cloud Restore</Text>
+          <Text style={styles.infoTitle}>{t('onboardingFlow.secureRestore')}</Text>
           <Text style={styles.infoDetail}>
-            Your transactions, accounts, and settings are being safely downloaded and reconstructed. Please do not close the app.
+            {t('onboardingFlow.restoreWarning')}
           </Text>
         </View>
       </View>

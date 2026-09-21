@@ -4,6 +4,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { NotificationService } from '../services/notification.service';
 import { StorageKeys } from '../constants/keys';
 import { LoggerService } from '@/src/services/logger.service';
+import type { AppLanguage } from '@/src/i18n';
 
 export type UserProfile = {
   name: string;
@@ -11,6 +12,7 @@ export type UserProfile = {
   phone: string;
   defaultCurrency: string;
   theme: 'system' | 'light' | 'dark';
+  language: AppLanguage;
   reminderEnabled: boolean;
   reminderTime: string; // e.g. "20:00"
 };
@@ -35,6 +37,7 @@ const DEFAULT_PROFILE: UserProfile = {
   phone: '',
   defaultCurrency: 'USD',
   theme: 'system',
+  language: 'system',
   reminderEnabled: false,
   reminderTime: '20:00',
 };

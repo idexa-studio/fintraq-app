@@ -30,6 +30,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LoggerService } from '@/src/services/logger.service';
+import { useTranslation } from 'react-i18next';
 
 type AccountFormValues = {
   name: string;
@@ -40,23 +41,24 @@ type AccountFormValues = {
 
 type AccountTypeOption = {
   value: AccountType;
-  label: string;
+  label: 'cash' | 'bank' | 'savings' | 'creditCard' | 'investment' | 'loan' | 'ewallet';
 };
 
 const ACCOUNT_TYPE_OPTIONS: AccountTypeOption[] = [
-  { value: 'cash', label: 'Cash' },
-  { value: 'bank', label: 'Bank' },
-  { value: 'savings', label: 'Savings' },
-  { value: 'credit_card', label: 'Credit card' },
-  { value: 'investment', label: 'Investment' },
-  { value: 'loan', label: 'Loan' },
-  { value: 'ewallet', label: 'E-wallet' },
+  { value: 'cash', label: 'cash' },
+  { value: 'bank', label: 'bank' },
+  { value: 'savings', label: 'savings' },
+  { value: 'credit_card', label: 'creditCard' },
+  { value: 'investment', label: 'investment' },
+  { value: 'loan', label: 'loan' },
+  { value: 'ewallet', label: 'ewallet' },
 ];
 
 export const AccountFormScreen = React.memo(function AccountFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, layout } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -116,8 +118,8 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
 
   const resolvedIcon = useMemo(() => resolveAccountTypeIcon(accountType), [accountType]);
   const selectedTypeLabel = useMemo(
-    () => ACCOUNT_TYPE_OPTIONS.find((o) => o.value === accountType)?.label ?? 'Bank',
-    [accountType],
+    () => t(`accounts.${ACCOUNT_TYPE_OPTIONS.find((o) => o.value === accountType)?.label ?? 'bank'}`),
+    [accountType, t],
   );
 
   const handleSave = handleSubmit(async (data) => {
@@ -161,7 +163,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title={isEditing ? 'Edit account' : 'New account'} showBack />
+      <Header title={isEditing ? t('accountForm.edit') : t('accountForm.new')} showBack />
 
       <KeyboardAvoidingView
         style={styles.body}
@@ -180,7 +182,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
               <IconAvatar icon={resolvedIcon} color={colorHex} variant="subtle" size={64} iconSize={28} />
               <View style={styles.heroMeta}>
                 <Text style={styles.heroName} numberOfLines={1}>
-                  {accountName.trim() || 'Account name'}
+                  {accountName.trim() || t('accountForm.accountName')}
                 </Text>
                 <Text style={styles.heroSub}>{selectedTypeLabel} · {currency}</Text>
               </View>
@@ -194,7 +196,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           {/* ── Account type ── */}
           <View style={styles.sectionGap}>
             <Text style={[styles.sectionLabel, { paddingHorizontal: layout.screenPadding }]}>
-              Account type
+              {t('accountForm.accountType')}
             </Text>
             <ScrollView
               horizontal
@@ -219,7 +221,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                       color={isSelected ? '#111' : colors.textMuted}
                     />
                     <Text style={[styles.typeChipLabel, isSelected && styles.typeChipLabelActive]}>
-                      {opt.label}
+                      {t(`accounts.${opt.label}`)}
                     </Text>
                   </Pressable>
                 );
@@ -229,7 +231,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
 
           {/* ── Details card ── */}
           <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
-            <Text style={styles.sectionLabel}>Account details</Text>
+            <Text style={styles.sectionLabel}>{t('accountForm.accountDetails')}</Text>
             <View style={styles.fieldCard}>
 
               {/* Account name */}
@@ -237,18 +239,18 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                 control={control}
                 name="name"
                 rules={{
-                  required: 'Required',
-                  minLength: { value: 2, message: 'Min 2 characters' },
-                  maxLength: { value: 50, message: 'Max 50 characters' },
+                  required: t('forms.required'),
+                  minLength: { value: 2, message: t('forms.minChars', { count: 2 }) },
+                  maxLength: { value: 50, message: t('forms.maxChars', { count: 50 }) },
                 }}
                 render={({ field }) => (
                   <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Name</Text>
+                    <Text style={styles.fieldLabel}>{t('forms.name')}</Text>
                     <TextInput
                       value={field.value}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
-                      placeholder="e.g. Main Wallet"
+                      placeholder={t('accountForm.namePlaceholder')}
                       placeholderTextColor={colors.textMuted + '60'}
                       style={[styles.fieldInput, errors.name && styles.fieldInputError]}
                       autoCapitalize="words"
@@ -267,17 +269,17 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                 control={control}
                 name="holderName"
                 rules={{
-                  maxLength: { value: 50, message: 'Max 50 characters' },
+                  maxLength: { value: 50, message: t('forms.maxChars', { count: 50 }) },
                 }}
                 render={({ field }) => (
                   <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Holder</Text>
+                    <Text style={styles.fieldLabel}>{t('forms.holder')}</Text>
                     <TextInput
                       ref={holderRef}
                       value={field.value}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
-                      placeholder="John Doe (optional)"
+                      placeholder={t('accountForm.holderPlaceholder')}
                       placeholderTextColor={colors.textMuted + '60'}
                       style={styles.fieldInput}
                       autoCapitalize="words"
@@ -296,17 +298,17 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                 control={control}
                 name="accountNumber"
                 rules={{
-                  maxLength: { value: 100, message: 'Max 100 characters' },
+                  maxLength: { value: 100, message: t('forms.maxChars', { count: 100 }) },
                 }}
                 render={({ field }) => (
                   <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>Number</Text>
+                    <Text style={styles.fieldLabel}>{t('forms.number')}</Text>
                     <TextInput
                       ref={accountNumberRef}
                       value={field.value}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
-                      placeholder="IBAN (optional)"
+                      placeholder={t('accountForm.numberPlaceholder')}
                       placeholderTextColor={colors.textMuted + '60'}
                       style={styles.fieldInput}
                       autoCorrect={false}
@@ -326,7 +328,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           {/* ── Balance + Currency ── */}
           <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
             <Text style={styles.sectionLabel}>
-              {isEditing ? 'Current balance' : 'Initial balance'}
+              {isEditing ? t('accountForm.currentBalance') : t('accountForm.initialBalance')}
             </Text>
             <View style={styles.fieldCard}>
               <View style={styles.balanceRow}>
@@ -337,7 +339,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
                     validate: (v) =>
                       !v.trim() ||
                       (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) ||
-                      'Enter a valid amount',
+                      t('forms.invalidAmount'),
                   }}
                   render={({ field }) => (
                     <TextInput
@@ -384,7 +386,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
             disabled={!isValid}
           >
             <Text style={styles.primaryBtnText}>
-              {isEditing ? 'Save account' : 'Create account'}
+              {isEditing ? t('accountForm.save') : t('accountForm.create')}
             </Text>
           </Pressable>
         </View>

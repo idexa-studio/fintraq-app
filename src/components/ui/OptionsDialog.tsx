@@ -6,6 +6,7 @@ import React, { useCallback, useMemo } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
+import { useTranslation } from 'react-i18next';
 
 export type OptionsDialogOption = {
   key: string;
@@ -34,9 +35,10 @@ export const OptionsDialog = React.memo(function OptionsDialog({
   title,
   subtitle,
   options,
-  cancelLabel = 'Cancel',
+  cancelLabel,
 }: OptionsDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, typography } = theme;
   const { width: screenWidth } = useWindowDimensions();
   const styles = useMemo(() => createStyles(theme, screenWidth), [theme, screenWidth]);
@@ -110,7 +112,7 @@ export const OptionsDialog = React.memo(function OptionsDialog({
 
           <View style={styles.actions}>
             <BentoPressable style={styles.cancelBtn} onPress={onClose}>
-              <Text style={styles.cancelBtnText}>{cancelLabel}</Text>
+              <Text style={styles.cancelBtnText}>{cancelLabel ?? t('common.cancel')}</Text>
             </BentoPressable>
           </View>
         </View>

@@ -2,6 +2,7 @@ import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   value: string;
@@ -19,6 +20,7 @@ export const PinPad = React.memo(function PinPad({
   disabled = false,
 }: Props) {
   const { colors, typography, spacing, radius } = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => createStyles({ colors, spacing, radius }), [colors, spacing, radius]);
 
   const handleKey = useCallback((key: string) => {
@@ -64,7 +66,7 @@ export const PinPad = React.memo(function PinPad({
             >
               {key === 'Del' ? (
                 <Text style={[styles.delText, { fontFamily: typography.fonts.medium, color: colors.text }]}>
-                  Del
+                  {t('ui.delKey')}
                 </Text>
               ) : (
                 <Text style={[styles.keyText, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>

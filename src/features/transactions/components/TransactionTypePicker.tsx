@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import type { TransactionType } from '../../../types';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   value: TransactionType;
@@ -18,6 +19,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
   disabled = false,
 }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -44,7 +46,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
               color={value === 'DR' ? colors.danger : colors.textMuted}
             />
             <Text style={[styles.pillText, { color: value === 'DR' ? colors.danger : colors.textMuted }]}>
-              Expense
+              {t('transactions.expense')}
             </Text>
           </View>
         </BentoPressable>
@@ -65,7 +67,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
               color={value === 'CR' ? colors.success : colors.textMuted}
             />
             <Text style={[styles.pillText, { color: value === 'CR' ? colors.success : colors.textMuted }]}>
-              Income
+              {t('transactions.income')}
             </Text>
           </View>
         </BentoPressable>
@@ -86,7 +88,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
               color={value === 'TR' ? colors.primary : colors.textMuted}
             />
             <Text style={[styles.pillText, { color: value === 'TR' ? colors.primary : colors.textMuted }]}>
-              Transfer
+              {t('transactions.transfer')}
             </Text>
           </View>
         </BentoPressable>

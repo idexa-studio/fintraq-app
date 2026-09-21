@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { BentoPressable } from './BentoPressable';
+import { useTranslation } from 'react-i18next';
 
 type TextInputDialogProps = {
   visible: boolean;
@@ -35,12 +36,13 @@ export const TextInputDialog = React.memo(function TextInputDialog({
   subtitle,
   initialValue = '',
   placeholder,
-  saveLabel = 'Save',
-  cancelLabel = 'Cancel',
+  saveLabel,
+  cancelLabel,
   maxLength,
   inputProps,
 }: TextInputDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { colors, typography } = theme;
 
@@ -107,12 +109,12 @@ export const TextInputDialog = React.memo(function TextInputDialog({
             <View style={styles.actions}>
               <BentoPressable style={styles.btnCancel} onPress={onClose}>
                 <Text style={styles.btnCancelText}>
-                  {cancelLabel}
+                  {cancelLabel ?? t('common.cancel')}
                 </Text>
               </BentoPressable>
               <BentoPressable style={styles.btnSave} onPress={handleSave}>
                 <Text style={styles.btnSaveText}>
-                  {saveLabel}
+                  {saveLabel ?? t('common.save')}
                 </Text>
               </BentoPressable>
             </View>

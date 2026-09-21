@@ -7,18 +7,20 @@ import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { usePremium } from '../../../providers/PremiumProvider';
 import type { LoanWithStats } from '../api/loans';
 import { useLoanReminders } from '../hooks/useLoanReminders';
+import { useTranslation } from 'react-i18next';
 
 const DUE_DAYS_OPTIONS = [
-  { label: 'On due date', value: 0 },
-  { label: '1 day before', value: 1 },
-  { label: '3 days before', value: 3 },
-  { label: '1 week before', value: 7 },
-];
+  { label: 'onDueDate', value: 0 },
+  { label: 'dayBefore', value: 1 },
+  { label: 'daysBefore', value: 3 },
+  { label: 'weekBefore', value: 7 },
+] as const;
 
 type Props = { loan: LoanWithStats };
 
 export const LoanReminderSection = React.memo(function LoanReminderSection({ loan }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { scheduleEmiReminder, cancelEmiReminder, scheduleDueReminder, cancelDueReminder } = useLoanReminders();
@@ -61,7 +63,7 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
       const day = i + 1;
       return {
         key: `day-${day}`,
-        label: `Day ${day} of the month`,
+        label: t('loans.dayOfMonth', { day }),
         selected: emiDay === day,
         onPress: () => {
           setEmiDay(day);
@@ -69,23 +71,23 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
         },
       };
     });
-  }, [emiDay, emiEnabled, emiTime, loan, scheduleEmiReminder]);
+  }, [emiDay, emiEnabled, emiTime, loan, scheduleEmiReminder, t]);
 
   const dueDaysOptions = useMemo(() => {
     return DUE_DAYS_OPTIONS.map(opt => ({
       key: `due-before-${opt.value}`,
-      label: opt.label,
+      label: t(`loans.${opt.label}`),
       selected: dueDaysBefore === opt.value,
       onPress: () => {
         setDueDaysBefore(opt.value);
         if (dueEnabled && loan.dueDate) scheduleDueReminder(loan, opt.value, dueTime);
       },
     }));
-  }, [dueDaysBefore, dueEnabled, dueTime, loan, scheduleDueReminder]);
+  }, [dueDaysBefore, dueEnabled, dueTime, loan, scheduleDueReminder, t]);
 
   const formatTime = (str: string) => {
     const [h, m] = str.split(':').map(Number);
-    const ampm = h >= 12 ? 'PM' : 'AM';
+    const ampm = h >= 12 ? t('loans.pm') : t('loans.am');
     return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${ampm}`;
   };
 
@@ -95,12 +97,12 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
       const ok = await scheduleEmiReminder(loan, emiDay, emiTime);
       if (!ok) {
         setEmiEnabled(false);
-        showAlert({ title: 'Permission required', message: 'Enable notifications to set reminders.', type: 'warning' });
+        showAlert({ title: t('loans.permissionRequired'), message: t('loans.enableNotifications'), type: 'warning' });
       }
     } else {
       await cancelEmiReminder(loan);
     }
-  }, [loan, emiDay, emiTime, scheduleEmiReminder, cancelEmiReminder, showAlert]);
+  }, [loan, emiDay, emiTime, scheduleEmiReminder, cancelEmiReminder, showAlert, t]);
 
   const handleEmiTimeChange = useCallback((_: DateTimePickerEvent, date?: Date) => {
     setShowEmiTimePicker(false);
@@ -114,7 +116,7 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
 
   const handleDueToggle = useCallback(async (val: boolean) => {
     if (!loan.dueDate && val) {
-      showAlert({ title: 'No due date', message: 'Set a due date on this loan first.', type: 'warning' });
+      showAlert({ title: t('loans.noDueDate'), message: t('loans.setDueDateFirst'), type: 'warning' });
       return;
     }
     setDueEnabled(val);
@@ -122,12 +124,12 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
       const ok = await scheduleDueReminder(loan, dueDaysBefore, dueTime);
       if (!ok) {
         setDueEnabled(false);
-        showAlert({ title: 'Permission required', message: 'Enable notifications to set reminders.', type: 'warning' });
+        showAlert({ title: t('loans.permissionRequired'), message: t('loans.enableNotifications'), type: 'warning' });
       }
     } else {
       await cancelDueReminder(loan);
     }
-  }, [loan, dueDaysBefore, dueTime, scheduleDueReminder, cancelDueReminder, showAlert]);
+  }, [loan, dueDaysBefore, dueTime, scheduleDueReminder, cancelDueReminder, showAlert, t]);
 
   const handleDueTimeChange = useCallback((_: DateTimePickerEvent, date?: Date) => {
     setShowDueTimePicker(false);
@@ -142,7 +144,7 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
   return (
     <View style={styles.section}>
       <Text style={styles.title}>
-        Reminders
+        {t('loans.reminders')}
       </Text>
 
       {/* EMI Reminder */}
@@ -150,10 +152,10 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
         <View style={styles.toggleRow}>
           <View style={styles.toggleInfo}>
             <Text style={styles.rowLabel}>
-              Monthly EMI reminder
+              {t('loans.emiReminder')}
             </Text>
             <Text style={styles.rowSub}>
-              Fires every month on day {emiDay}
+              {t('loans.emiFires', { day: emiDay })}
             </Text>
           </View>
           <Switch
@@ -168,7 +170,7 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
           <View style={styles.subControls}>
             <BentoPressable style={styles.chip} onPress={() => setShowEmiDayPicker(true)}>
               <Text style={styles.chipText}>
-                Day {emiDay}
+                {t('loans.dayN', { day: emiDay })}
               </Text>
             </BentoPressable>
             <BentoPressable style={styles.chip} onPress={() => setShowEmiTimePicker(true)}>
@@ -186,10 +188,10 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
           <View style={styles.toggleRow}>
             <View style={styles.toggleInfo}>
               <Text style={styles.rowLabel}>
-                Due date reminder
+                {t('loans.dueReminder')}
               </Text>
               <Text style={styles.rowSub}>
-                {DUE_DAYS_OPTIONS.find(o => o.value === dueDaysBefore)?.label ?? 'On due date'}
+                {t(`loans.${DUE_DAYS_OPTIONS.find(o => o.value === dueDaysBefore)?.label ?? 'onDueDate'}`)}
               </Text>
             </View>
             <Switch
@@ -204,7 +206,7 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
             <View style={styles.subControls}>
               <BentoPressable style={styles.chip} onPress={() => setShowDueDaysPicker(true)}>
                 <Text style={styles.chipText}>
-                  {DUE_DAYS_OPTIONS.find(o => o.value === dueDaysBefore)?.label}
+                  {t(`loans.${DUE_DAYS_OPTIONS.find(o => o.value === dueDaysBefore)?.label ?? 'onDueDate'}`)}
                 </Text>
               </BentoPressable>
               <BentoPressable style={styles.chip} onPress={() => setShowDueTimePicker(true)}>
@@ -239,16 +241,16 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
       <OptionsBottomSheet
         visible={showEmiDayPicker}
         onClose={() => setShowEmiDayPicker(false)}
-        title="EMI reminder day"
-        subtitle="Select day of the month to receive reminder"
+        title={t('loans.emiDayTitle')}
+        subtitle={t('loans.emiDaySubtitle')}
         options={emiDayOptions}
       />
 
       <OptionsBottomSheet
         visible={showDueDaysPicker}
         onClose={() => setShowDueDaysPicker(false)}
-        title="Due date reminder"
-        subtitle="Select when to be reminded before the loan is due"
+        title={t('loans.dueReminder')}
+        subtitle={t('loans.dueReminderSubtitle')}
         options={dueDaysOptions}
       />
     </View>

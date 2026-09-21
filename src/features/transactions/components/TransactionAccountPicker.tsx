@@ -9,6 +9,7 @@ import { resolveAccountTypeIcon } from '../../../utils/icons';
 import type { AccountType } from '../../../types';
 import type { Account } from '../../accounts/api/accounts';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   accounts: Account[];
@@ -21,9 +22,10 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
   accounts,
   selectedId,
   onSelect,
-  label = 'Account',
+  label,
 }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -31,7 +33,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>{label}</Text>
+      <Text style={[styles.label, { color: colors.textMuted }]}>{label ?? t('transactions.account')}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {accounts.map((acc) => {
           const selected = selectedId === acc.id;

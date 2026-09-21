@@ -5,8 +5,10 @@ import { db, unlockDatabaseIfLocked } from '../db/client';
 import migrations from '../../drizzle/migrations';
 import { runSeeds } from '../db/seeds/runner';
 import { LoggerService } from '../services/logger.service';
+import { useTranslation } from 'react-i18next';
 
 export function DatabaseProvider({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation();
   const { success, error } = useMigrations(db, migrations);
   const [seedsReady, setSeedsReady] = React.useState(false);
 
@@ -24,7 +26,7 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
   if (error) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Error loading database migrations</Text>
+        <Text>{t('system.migrationError')}</Text>
         <Text>{error.message}</Text>
       </View>
     );
@@ -34,7 +36,7 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" />
-        <Text>Initializing database...</Text>
+        <Text>{t('system.initializingDatabase')}</Text>
       </View>
     );
   }

@@ -25,6 +25,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, toDbColor } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
 import { LoggerService } from '@/src/services/logger.service';
+import { useTranslation } from 'react-i18next';
 
 type CategoryFormValues = {
   name: string;
@@ -32,16 +33,17 @@ type CategoryFormValues = {
 
 type TxType = 'CR' | 'DR' | 'TR';
 
-const TYPE_OPTIONS: { value: TxType; label: string }[] = [
-  { value: 'DR', label: 'Expense' },
-  { value: 'CR', label: 'Income' },
-  { value: 'TR', label: 'Transfer' },
+const TYPE_OPTIONS: { value: TxType; label: 'expense' | 'income' | 'transfer' }[] = [
+  { value: 'DR', label: 'expense' },
+  { value: 'CR', label: 'income' },
+  { value: 'TR', label: 'transfer' },
 ];
 
 export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, layout } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -107,7 +109,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
 
   const primaryType = selectedTypes.has('DR') ? 'DR' : selectedTypes.has('CR') ? 'CR' : 'TR';
   const typeColor = primaryType === 'DR' ? colors.danger : primaryType === 'CR' ? colors.success : colors.primary;
-  const typeLabel = Array.from(selectedTypes).map(t => TYPE_OPTIONS.find(o => o.value === t)?.label).join(', ');
+  const typeLabel = Array.from(selectedTypes).map(type => { const key = TYPE_OPTIONS.find(o => o.value === type)?.label; return key ? t(`categoryForm.${key}`) : undefined; }).join(', ');
 
   const handleSave = handleSubmit(async (data) => {
     const payload = {
@@ -131,7 +133,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title={isEditing ? 'Edit category' : 'New category'} showBack />
+      <Header title={isEditing ? t('categoryForm.edit') : t('categoryForm.new')} showBack />
 
       <KeyboardAvoidingView
         style={styles.body}
@@ -153,12 +155,12 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
               <IconAvatar icon={resolvedIcon} color={colorHex} variant="subtle" size={72} iconSize={32} />
               <View style={styles.heroMeta}>
                 <Text style={styles.heroName} numberOfLines={1}>
-                  {categoryName.trim() || 'Category name'}
+                  {categoryName.trim() || t('categoryForm.categoryName')}
                 </Text>
                 <Text style={[styles.heroSub, { color: typeColor }]}>
                   {typeLabel}
                 </Text>
-                <Text style={styles.heroHint}>Tap to change icon</Text>
+                <Text style={styles.heroHint}>{t('categoryForm.tapToChangeIcon')}</Text>
               </View>
             </View>
 
@@ -168,7 +170,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
 
           {/* ── Type selector (multi-select) ── */}
           <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
-            <Text style={styles.sectionLabel}>Applies to</Text>
+            <Text style={styles.sectionLabel}>{t('categoryForm.appliesTo')}</Text>
             <View style={styles.typeRow}>
               {TYPE_OPTIONS.map((opt) => {
                 const isSelected = selectedTypes.has(opt.value);
@@ -186,7 +188,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                     ]}
                   >
                     <Text style={[styles.typePillText, isSelected && { color: activeColor }]}>
-                      {opt.label}
+                      {t(`categoryForm.${opt.label}`)}
                     </Text>
                   </Pressable>
                 );
@@ -196,22 +198,22 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
 
           {/* ── Name field ── */}
           <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
-            <Text style={styles.sectionLabel}>Category name</Text>
+            <Text style={styles.sectionLabel}>{t('categoryForm.categoryName')}</Text>
             <View style={styles.fieldCard}>
               <Controller
                 control={control}
                 name="name"
                 rules={{
-                  required: 'Required',
-                  minLength: { value: 2, message: 'Min 2 characters' },
-                  maxLength: { value: 50, message: 'Max 50 characters' },
+                  required: t('forms.required'),
+                  minLength: { value: 2, message: t('forms.minChars', { count: 2 }) },
+                  maxLength: { value: 50, message: t('forms.maxChars', { count: 50 }) },
                 }}
                 render={({ field }) => (
                   <TextInput
                     value={field.value}
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}
-                    placeholder="e.g. Groceries, Salary"
+                    placeholder={t('categoryForm.namePlaceholder')}
                     placeholderTextColor={colors.textMuted + '60'}
                     style={[styles.nameInput, errors.name && { color: colors.danger }]}
                     autoCapitalize="words"
@@ -233,7 +235,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
             disabled={!isValid}
           >
             <Text style={styles.primaryBtnText}>
-              {isEditing ? 'Save category' : 'Create category'}
+              {isEditing ? t('categoryForm.save') : t('categoryForm.create')}
             </Text>
           </Pressable>
         </View>
@@ -246,7 +248,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
         onChange={setIcon}
         groups={CATEGORY_ICON_GROUPS}
         accentColor={colorHex}
-        title="Choose icon"
+        title={t('categoryForm.chooseIcon')}
       />
     </SafeAreaView>
   );

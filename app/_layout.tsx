@@ -14,6 +14,7 @@ import { OnboardingProvider } from '@/src/providers/OnboardingProvider';
 import { PremiumProvider } from '@/src/providers/PremiumProvider';
 import { QueryProvider } from '@/src/providers/QueryProvider';
 import { SettingsProvider } from '@/src/providers/SettingsProvider';
+import { I18nProvider } from '@/src/providers/I18nProvider';
 import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
 import { ReviewPromptService } from '@/src/services/review-prompt.service';
@@ -82,6 +83,7 @@ export default function RootLayout() {
         <QueryProvider>
           <DatabaseProvider>
             <SettingsProvider>
+              <I18nProvider>
               <PremiumProvider>
                 <FirebaseProvider>
                   <OnboardingProvider>
@@ -98,6 +100,7 @@ export default function RootLayout() {
                   </OnboardingProvider>
                 </FirebaseProvider>
               </PremiumProvider>
+              </I18nProvider>
             </SettingsProvider>
           </DatabaseProvider>
         </QueryProvider>

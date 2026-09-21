@@ -37,11 +37,13 @@ import { openAppSettings } from '@/src/services/backup/battery-optimization';
 import { CloudBackupChoice, CloudBackupStep } from '@/src/features/onboarding/components/CloudBackupStep';
 import { RestoreStep, SetupOption } from '@/src/features/onboarding/components/RestoreStep';
 import { LoggerService } from '@/src/services/logger.service';
+import { useTranslation } from 'react-i18next';
 
 export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { colors } = theme;
+  const { t } = useTranslation();
   const styles = React.useMemo(() => createOnboardingStyles(theme), [theme]);
   const { completeOnboarding } = useOnboarding();
   const { profile, updateProfile } = useSettings();
@@ -81,10 +83,10 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         title: config.title,
         message: config.message,
         type: config.type || 'info',
-        buttons: config.buttons || [{ text: 'OK' }],
+        buttons: config.buttons || [{ text: t('common.ok') }],
       });
     },
-    [],
+    [t],
   );
 
   const methods = useForm<OnboardingFormValues>({
@@ -102,8 +104,8 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
     const granted = await NotificationService.requestPermissions();
     if (!granted) {
       showAlert({
-        title: 'Permission required',
-        message: 'Enable notifications in device settings to receive daily reminders. You can turn this on anytime in Settings.',
+        title: t('onboardingFlow.permissionRequired'),
+        message: t('onboardingFlow.permissionMessage'),
         type: 'warning',
       });
     } else {
@@ -113,7 +115,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       await NotificationService.scheduleDailyReminder(profile.reminderTime);
     }
     router.replace('/(main)/(tabs)');
-  }, [updateProfile, profile.reminderTime, router, showAlert]);
+  }, [updateProfile, profile.reminderTime, router, showAlert, t]);
 
   const handleSkipReminders = useCallback(() => {
     setShowReminderDialog(false);
@@ -250,8 +252,8 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
     } catch (e: any) {
       LoggerService.error('ONBOARDING', 'Setup finalization failed', e);
       showAlert({
-        title: 'Setup Failed',
-        message: e?.message || 'Could not initialize your workspace. Please try again.',
+        title: t('onboardingFlow.setupFailed'),
+        message: e?.message || t('onboardingFlow.setupFailedMessage'),
         type: 'error',
       });
     }
@@ -281,12 +283,12 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           const { blockedByNotifications } = await setAutoBackupEnabled(true);
           if (blockedByNotifications) {
             showAlert({
-              title: 'Notifications Required',
-              message: 'Automated cloud sync needs notification permission so you can see backup status. Enable it in Settings, then try again.',
+              title: t('onboardingFlow.notificationsRequired'),
+              message: t('onboardingFlow.notificationsRequiredMessage'),
               type: 'warning',
               buttons: [
-                { text: 'Continue', style: 'cancel', onPress: () => { void finalizeSetup(); } },
-                { text: 'Open Settings', onPress: () => openAppSettings() },
+                { text: t('onboardingFlow.continue'), style: 'cancel', onPress: () => { void finalizeSetup(); } },
+                { text: t('onboardingFlow.openSettings'), onPress: () => openAppSettings() },
               ],
             });
             return;
@@ -300,21 +302,21 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           LoggerService.warn('ONBOARDING', 'Cloud backup connect failed', err);
           if (isProRequiredError(err)) {
             showAlert({
-              title: 'Cloud Backup (Pro)',
-              message: 'Cloud backup and restore are a Fintraq Pro feature. You can upgrade anytime from Settings.',
+              title: t('onboardingFlow.cloudBackupPro'),
+              message: t('onboardingFlow.cloudBackupProMessage'),
               type: 'info',
               buttons: [
-                { text: 'Continue', style: 'cancel', onPress: () => { void finalizeSetup(); } },
-                { text: 'Upgrade to Pro', onPress: () => router.push('/premium') },
+                { text: t('onboardingFlow.continue'), style: 'cancel', onPress: () => { void finalizeSetup(); } },
+                { text: t('onboardingFlow.upgradeToPro'), onPress: () => router.push('/premium') },
               ],
             });
             return;
           }
           showAlert({
-            title: 'Cloud Backup Not Enabled',
-            message: "We couldn't connect your Google account. You can enable Cloud Backup anytime from Settings.",
+            title: t('onboardingFlow.cloudNotEnabled'),
+            message: t('onboardingFlow.cloudNotEnabledMessage'),
             type: 'warning',
-            buttons: [{ text: 'Continue', onPress: () => { void finalizeSetup(); } }],
+            buttons: [{ text: t('onboardingFlow.continue'), onPress: () => { void finalizeSetup(); } }],
           });
           return;
         }
@@ -370,45 +372,45 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
 
       if (isNoBackup) {
         showAlert({
-          title: 'No Backup Found',
-          message: `We checked ${signedInEmail || 'your cloud account'}, but couldn't find an existing Fintraq backup file.\n\nWould you like to start fresh instead?`,
+          title: t('onboardingFlow.noBackupFound'),
+          message: t('onboardingFlow.noBackupMessage', { email: signedInEmail || t('onboardingFlow.yourCloudAccount') }),
           type: 'warning',
           buttons: [
             {
-              text: 'Start Fresh',
+              text: t('onboardingFlow.startFresh'),
               onPress: () => {
                 setSetupOption('fresh');
                 setStepIndex(ONBOARDING_STEPS.findIndex((s) => s.id === 'profile'));
               },
             },
             {
-              text: 'Try Another Account',
+              text: t('onboardingFlow.tryAnotherAccount'),
               style: 'cancel',
             },
           ],
         });
       } else if (isProRequiredError(e)) {
         showAlert({
-          title: 'Cloud Restore (Pro)',
-          message: 'Restoring from cloud backup is a Fintraq Pro feature. You can upgrade anytime from Settings.',
+          title: t('onboardingFlow.cloudRestorePro'),
+          message: t('onboardingFlow.cloudRestoreProMessage'),
           type: 'info',
           buttons: [
-            { text: 'Start Fresh', style: 'cancel', onPress: () => {
+            { text: t('onboardingFlow.startFresh'), style: 'cancel', onPress: () => {
               setSetupOption('fresh');
               setStepIndex(ONBOARDING_STEPS.findIndex((s) => s.id === 'profile'));
             } },
-            { text: 'Upgrade to Pro', onPress: () => router.push('/premium') },
+            { text: t('onboardingFlow.upgradeToPro'), onPress: () => router.push('/premium') },
           ],
         });
       } else {
         showAlert({
-          title: 'Restore Failed',
-          message: errorMsg || 'Could not complete restore during setup.',
+          title: t('onboardingFlow.restoreFailed'),
+          message: errorMsg || t('onboardingFlow.restoreFailedMessage'),
           type: 'error',
         });
       }
     }
-  }, [user, connectAccount, disconnectAccount, performRestore, completeOnboarding, router, showAlert]);
+  }, [user, connectAccount, disconnectAccount, performRestore, completeOnboarding, router, showAlert, t]);
 
   const openCurrencyPicker = useCallback(() => setShowCurrencyPicker(true), []);
   const closeCurrencyPicker = useCallback(() => setShowCurrencyPicker(false), []);
@@ -416,31 +418,31 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const buttonTitle = React.useMemo(() => {
     if (isButtonLoading) {
       if (currentStep.id === 'backup_setup' && cloudBackupChoice === 'enable') {
-        return isConnected ? 'Finalizing Workspace...' : 'Connecting Cloud Sync...';
+        return isConnected ? t('onboardingFlow.finalizing') : t('onboardingFlow.connectingSync');
       }
       if (currentStep.id === 'setup_choice' && setupOption === 'restore') {
-        return 'Restoring Cloud Backup...';
+        return t('onboardingFlow.restoringBackup');
       }
       if (stepIndex === ONBOARDING_STEPS.length - 1) {
-        return 'Finalizing Workspace...';
+        return t('onboardingFlow.finalizing');
       }
-      return 'Processing...';
+      return t('onboardingFlow.processing');
     }
 
     if (currentStep.id === 'setup_choice' && setupOption === 'restore') {
-      return user ? 'Restore Cloud Backup' : 'Connect Cloud & Restore';
+      return user ? t('onboardingFlow.restoreCloudBackup') : t('onboardingFlow.connectAndRestore');
     }
     if (currentStep.id === 'backup_setup') {
       if (cloudBackupChoice === 'enable') {
-        return user ? 'Launch Fintraq' : 'Enable Cloud Backup & Launch';
+        return user ? t('onboardingFlow.launch') : t('onboardingFlow.enableAndLaunch');
       }
-      return 'Skip & Launch Fintraq';
+      return t('onboardingFlow.skipAndLaunch');
     }
     if (stepIndex === ONBOARDING_STEPS.length - 1) {
-      return 'Launch Fintraq';
+      return t('onboardingFlow.launch');
     }
-    return 'Continue';
-  }, [isButtonLoading, currentStep.id, setupOption, cloudBackupChoice, isConnected, user, stepIndex]);
+    return t('onboardingFlow.next');
+  }, [isButtonLoading, currentStep.id, setupOption, cloudBackupChoice, isConnected, user, stepIndex, t]);
 
   const renderStepContent = () => {
     switch (currentStep.id) {
@@ -522,9 +524,9 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
             keyboardShouldPersistTaps="handled"
           >
             <View style={styles.stepMeta}>
-              <Text style={styles.eyebrow}>{currentStep.eyebrow}</Text>
-              <Text style={styles.stepTitle}>{currentStep.title}</Text>
-              <Text style={styles.stepSubtitle}>{currentStep.subtitle}</Text>
+              <Text style={styles.eyebrow}>{t(`onboardingFlow.steps.${currentStep.id}.eyebrow`)}</Text>
+              <Text style={styles.stepTitle}>{t(`onboardingFlow.steps.${currentStep.id}.title`)}</Text>
+              <Text style={styles.stepSubtitle}>{t(`onboardingFlow.steps.${currentStep.id}.subtitle`)}</Text>
             </View>
 
             {renderStepContent()}
@@ -555,11 +557,11 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       <ConfirmDialog
         visible={showReminderDialog}
         onClose={handleSkipReminders}
-        title="Stay on track"
-        confirmLabel="Enable reminders"
-        cancelLabel="Not now"
+        title={t('onboardingFlow.reminderTitle')}
+        confirmLabel={t('onboardingFlow.reminderConfirm')}
+        cancelLabel={t('onboardingFlow.notNow')}
         destructive={false}
-        message="Get a gentle nudge at 8:00 PM to log your daily transactions. You can change this anytime in Settings."
+        message={t('onboardingFlow.reminderMessage')}
         onConfirm={handleEnableReminders}
       />
 

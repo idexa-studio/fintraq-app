@@ -20,6 +20,7 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   ScrollView,
@@ -29,17 +30,12 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
-  cash: 'Cash',
-  bank: 'Bank account',
-  savings: 'Savings',
-  credit_card: 'Credit card',
-  investment: 'Investment',
-  loan: 'Loan',
-  ewallet: 'E-wallet',
+const ACCOUNT_TYPE_KEYS: Record<AccountType, 'cash' | 'bank' | 'savings' | 'creditCard' | 'investment' | 'loan' | 'ewallet'> = {
+  cash: 'cash', bank: 'bank', savings: 'savings', credit_card: 'creditCard', investment: 'investment', loan: 'loan', ewallet: 'ewallet',
 };
 
 export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const accountId = Number(id);
   const router = useRouter();
@@ -57,8 +53,8 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
     [account?.accountType],
   );
   const typeLabel = useMemo(
-    () => (account?.accountType ? ACCOUNT_TYPE_LABELS[account.accountType as AccountType] ?? '' : ''),
-    [account?.accountType],
+    () => (account?.accountType ? t(`accounts.${ACCOUNT_TYPE_KEYS[account.accountType as AccountType]}`) : ''),
+    [account?.accountType, t],
   );
 
   const handleEdit = useCallback(() => {
@@ -90,9 +86,9 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
   if (!account) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
-        <Header title="Account" showBack />
+        <Header title={t('accounts.account')} showBack />
         <View style={styles.loading}>
-          <Text style={styles.missingText}>Account not found</Text>
+          <Text style={styles.missingText}>{t('accounts.notFound')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -123,7 +119,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
             </View>
           </View>
 
-          <Text style={styles.balanceLabel}>Available balance</Text>
+          <Text style={styles.balanceLabel}>{t('accounts.availableBalance')}</Text>
           <MoneyText
             amount={account.balance}
             currency={account.currency}
@@ -136,7 +132,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
             <View style={[styles.statTile, { backgroundColor: colors.success + '12' }]}>
               <View style={styles.statHeader}>
                 <HugeiconsIcon icon={ArrowUp01Icon} size={12} color={colors.success} />
-                <Text style={styles.statLabel}>Total in</Text>
+                <Text style={styles.statLabel}>{t('accounts.totalIn')}</Text>
               </View>
               <MoneyText
                 amount={account.income}
@@ -149,7 +145,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
             <View style={[styles.statTile, { backgroundColor: colors.danger + '12' }]}>
               <View style={styles.statHeader}>
                 <HugeiconsIcon icon={ArrowDown01Icon} size={12} color={colors.danger} />
-                <Text style={styles.statLabel}>Total out</Text>
+                <Text style={styles.statLabel}>{t('accounts.totalOut')}</Text>
               </View>
               <MoneyText
                 amount={account.expense}
@@ -163,7 +159,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
 
           {account.accountNumber && account.accountNumber !== 'N/A' ? (
             <View style={styles.accountNumberRow}>
-              <Text style={styles.accountNumberLabel}>Account number</Text>
+              <Text style={styles.accountNumberLabel}>{t('accounts.accountNumber')}</Text>
               <Text style={styles.accountNumber}>•••• {account.accountNumber.slice(-4)}</Text>
             </View>
           ) : null}
@@ -171,9 +167,9 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
 
         {/* ── Recent transactions ── */}
         <View style={styles.sectionRow}>
-          <Text style={styles.sectionTitle}>Recent transactions</Text>
+          <Text style={styles.sectionTitle}>{t('accounts.recentTransactions')}</Text>
           <BentoPressable style={styles.seeAllBtn} onPress={handleSeeAll}>
-            <Text style={styles.seeAllText}>See all</Text>
+            <Text style={styles.seeAllText}>{t('accounts.seeAll')}</Text>
             <HugeiconsIcon icon={ArrowRight01Icon} size={13} color={colors.primary} />
           </BentoPressable>
         </View>
@@ -196,8 +192,8 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
             <View style={[styles.emptyIcon, { backgroundColor: colors.primary + '12' }]}>
               <HugeiconsIcon icon={ReceiptTextIcon} size={20} color={colors.primary} />
             </View>
-            <Text style={styles.emptyTitle}>No transactions yet</Text>
-            <Text style={styles.emptySubtext}>Transactions for this account will appear here.</Text>
+            <Text style={styles.emptyTitle}>{t('accounts.noTransactions')}</Text>
+            <Text style={styles.emptySubtext}>{t('accounts.transactionsHint')}</Text>
           </View>
         )}
       </ScrollView>

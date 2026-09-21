@@ -19,183 +19,155 @@ import {
   Wallet05Icon,
 } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
+import type en from '@/src/i18n/locales/en';
+
+export type WalkthroughStepId = Exclude<keyof (typeof en)['walkthrough'], 'step' | 'skip' | 'getStarted' | 'next'>;
 
 export type WalkthroughStep = {
   icon: IconSvgElement;
-  title: string;
-  desc: string;
+  id: WalkthroughStepId;
 };
 
 export const DASHBOARD_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     icon: SparklesIcon,
-    title: 'Welcome to Fintraq!',
-    desc: "Let's take a quick tour of your new premium financial dashboard.",
+    id: 'welcomeToFintraq',
   },
   {
     icon: Wallet05Icon,
-    title: 'Track Net Savings',
-    desc: 'The top card displays your total net position (Income minus Expenses). Swipe it to view different currencies.',
+    id: 'trackNetSavings',
   },
   {
     icon: GridIcon,
-    title: 'Accounts & Wallets',
-    desc: 'Manage your cash, bank accounts, and credit cards. Tap them to view individual logs.',
+    id: 'accountsWallets',
   },
   {
     icon: ChartLineData01Icon,
-    title: 'Real-time Insights',
-    desc: 'Below you will find dynamic spending pattern insights, top expense category chips, and streaks.',
+    id: 'realTimeInsights',
   },
   {
     icon: PlusSignIcon,
-    title: 'Log First Transaction',
-    desc: "When you are ready, tap the green '+' action button at the bottom right to record a transaction!",
+    id: 'logFirstTransaction',
   },
 ];
 
 export const TRANSACTION_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     icon: BarChartIcon,
-    title: 'Enter Amount',
-    desc: 'Start by typing the transaction amount using the numeric input. Decimal values are fully supported.',
+    id: 'enterAmount',
   },
   {
     icon: ArrowDataTransferHorizontalIcon,
-    title: 'Select Transaction Type',
-    desc: 'Choose Expense (money spent), Income (money earned), or Transfer (moving funds between accounts).',
+    id: 'selectTransactionType',
   },
   {
     icon: Tag01Icon,
-    title: 'Choose Category',
-    desc: 'Select a category to structure your transaction. Custom categories can be configured in Settings.',
+    id: 'chooseCategory',
   },
   {
     icon: Wallet05Icon,
-    title: 'Pick Account',
-    desc: 'Choose which account or wallet this transaction is associated with.',
+    id: 'pickAccount',
   },
   {
     icon: Calendar01Icon,
-    title: 'Set Date & Save',
-    desc: 'Adjust the date and time, add optional notes or link a contact, then tap Save to record it!',
+    id: 'setDateSave',
   },
 ];
 
 export const SEARCH_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     icon: Search01Icon,
-    title: 'Global Search',
-    desc: 'Search instantly across all transactions, accounts, categories, and people.',
+    id: 'globalSearch',
   },
   {
     icon: FilterIcon,
-    title: 'Targeted Queries',
-    desc: 'Type names, companies, emails, notes, or amounts. The query searches matching criteria automatically.',
+    id: 'targetedQueries',
   },
   {
     icon: Cursor01Icon,
-    title: 'Quick Jump',
-    desc: 'Tap a result row to open the editing page or drill down directly into its transactions.',
+    id: 'quickJump',
   },
 ];
 
 export const ANALYTICS_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     icon: ChartLineData01Icon,
-    title: 'Summary & Deltas',
-    desc: 'Income, expenses, net position, and daily average — each tile shows a badge comparing against the previous period.',
+    id: 'summaryDeltas',
   },
   {
     icon: SparklesIcon,
-    title: 'Highlights',
-    desc: 'Instantly see your top expense category and biggest single expense. Tap either to drill into its transactions.',
+    id: 'highlights',
   },
   {
     icon: Tag01Icon,
-    title: 'Category Breakdown',
-    desc: 'Switch between Expenses and Income tabs to see a proportion bar and ranked categories for the selected period.',
+    id: 'categoryBreakdown',
   },
   {
     icon: Calendar01Icon,
-    title: 'Weekly Pattern & Forecast',
-    desc: 'Day-of-week bars reveal your spending rhythm, plus daily average and month-end projection in Spending patterns.',
+    id: 'weeklyPatternForecast',
   },
 ];
 
 export const CATEGORIES_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     icon: LabelImportantIcon,
-    title: 'Budget Categories',
-    desc: 'Manage income, expense, and transfer category labels in one place.',
+    id: 'budgetCategories',
   },
   {
     icon: Cursor01Icon,
-    title: 'Category Options',
-    desc: 'Hold down on a card to edit its properties or safely remove it.',
+    id: 'categoryOptions',
   },
   {
     icon: PlusSignIcon,
-    title: 'Custom Icons & Colors',
-    desc: "Press the '+' button to define custom category codes with unique color schemes.",
+    id: 'customIconsColors',
   },
 ];
 
 export const PERSONS_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     icon: Group01Icon,
-    title: 'Person Tracking',
-    desc: 'Log and trace financial transactions linked to specific friends, family, or business partners.',
+    id: 'personTracking',
   },
   {
     icon: CardExchange01Icon,
-    title: 'Debt & Settlements',
-    desc: 'Record loans, splitting, and shared expenses to keep clear calculations of who owes whom.',
+    id: 'debtSettlements',
   },
   {
     icon: PlusSignIcon,
-    title: 'Add Contacts',
-    desc: 'Tap the plus button to register new contacts with optional companies or emails.',
+    id: 'addContacts',
   },
 ];
 
 export const ACCOUNTS_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     icon: Wallet05Icon,
-    title: 'Accounts List',
-    desc: 'View all your credit cards, cash wallets, and bank accounts in one place.',
+    id: 'accountsList',
   },
   {
     icon: MoreVerticalCircle01Icon,
-    title: 'Manage Accounts',
-    desc: 'Tap the three dots to edit details. Currency is locked after creation. Delete is disabled if transactions or loans exist.',
+    id: 'manageAccounts',
   },
   {
     icon: PlusSignIcon,
-    title: 'Create Accounts',
-    desc: "Use the plus button at the bottom to register a new account with custom icons, colors, and currencies.",
+    id: 'createAccounts',
   },
 ];
 
 export const TRANSACTIONS_LIST_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     icon: ReceiptTextIcon,
-    title: 'Transaction Log',
-    desc: 'View a chronological feed of all recorded income, expenses, and transfer transactions.',
+    id: 'transactionLog',
   },
   {
     icon: FilterIcon,
-    title: 'Advanced Filtering',
-    desc: 'Filter transactions by accounts, category tags, custom dates, or amount ranges dynamically.',
+    id: 'advancedFiltering',
   },
   {
     icon: UserAccountIcon,
-    title: 'Swipe Actions',
-    desc: 'Swipe left on any transaction card to quickly edit details or delete the entry.',
+    id: 'swipeActions',
   },
   {
     icon: PlusSignIcon,
-    title: 'Quick Add',
-    desc: "Tap the plus button to open the transaction creator screen instantly.",
+    id: 'quickAdd',
   },
 ];

@@ -8,6 +8,7 @@ import { colorNumberToHex } from '../../../utils/format';
 import type { LoanWithStats } from '../api/loans';
 import { LoanStatusBadge } from './LoanStatusBadge';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   loan: LoanWithStats;
@@ -18,6 +19,7 @@ type Props = {
 
 export const LoanCard = React.memo(function LoanCard({ loan, onPress, compact = false, isLast = false }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -25,7 +27,7 @@ export const LoanCard = React.memo(function LoanCard({ loan, onPress, compact = 
     () => loan.personColor != null ? colorNumberToHex(loan.personColor) : '#8B8B8B',
     [loan.personColor],
   );
-  const personName = loan.personName ?? (loan.type === 'lend' ? 'Unknown' : 'Unnamed source');
+  const personName = loan.personName ?? (loan.type === 'lend' ? t('loans.unknown') : t('loans.unnamedSource'));
   const handlePress = useCallback(() => onPress(loan), [onPress, loan]);
 
   const pct = loan.principal > 0 ? Math.min(100, Math.round((loan.repaid / loan.principal) * 100)) : 0;
@@ -42,15 +44,15 @@ export const LoanCard = React.memo(function LoanCard({ loan, onPress, compact = 
         </View>
         <View style={styles.compactMeta}>
           <Text style={[styles.compactLabel, { color: colors.text }]} numberOfLines={1}>
-            {loan.type === 'lend' ? 'Lent' : 'Borrowed'} · {loan.accountName}
+            {loan.type === 'lend' ? t('loans.lent') : t('loans.borrowed')} · {loan.accountName}
           </Text>
           {loan.dueDate && !isRepaid && (
             <Text style={[styles.compactHint, { color: isOverdue ? colors.danger : colors.textMuted }]} numberOfLines={1}>
-              Due {format(new Date(loan.dueDate), 'MMM d, yyyy')}
+              {t('loans.due', { date: format(new Date(loan.dueDate), 'MMM d, yyyy') })}
             </Text>
           )}
           {isRepaid && (
-            <Text style={[styles.compactHint, { color: colors.success }]}>Fully repaid</Text>
+            <Text style={[styles.compactHint, { color: colors.success }]}>{t('loans.fullyRepaid')}</Text>
           )}
         </View>
         <View style={styles.compactRight}>
@@ -76,7 +78,7 @@ export const LoanCard = React.memo(function LoanCard({ loan, onPress, compact = 
         <View style={styles.meta}>
           <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>{personName}</Text>
           <Text style={[styles.hint, { color: colors.textMuted }]} numberOfLines={1}>
-            {loan.type === 'lend' ? 'Lent out' : 'Borrowed'} · {loan.accountName}
+            {loan.type === 'lend' ? t('loans.lentOut') : t('loans.borrowed')} · {loan.accountName}
           </Text>
         </View>
         <LoanStatusBadge status={loan.computedStatus} />
@@ -86,7 +88,7 @@ export const LoanCard = React.memo(function LoanCard({ loan, onPress, compact = 
       <View style={styles.amountRow}>
         <View>
           <Text style={[styles.amountLabel, { color: colors.textMuted }]}>
-            {isRepaid ? 'Total principal' : 'Outstanding'}
+            {isRepaid ? t('loans.totalPrincipal') : t('loans.outstanding')}
           </Text>
           <MoneyText
             amount={isRepaid ? loan.principal : loan.outstanding}
@@ -106,7 +108,7 @@ export const LoanCard = React.memo(function LoanCard({ loan, onPress, compact = 
       {/* Footer */}
       {loan.dueDate && !isRepaid && (
         <Text style={[styles.footer, { color: isOverdue ? colors.danger : colors.textMuted }]}>
-          Due {format(new Date(loan.dueDate), 'MMM d, yyyy')}
+          {t('loans.due', { date: format(new Date(loan.dueDate), 'MMM d, yyyy') })}
         </Text>
       )}
     </BentoPressable>

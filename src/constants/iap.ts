@@ -12,8 +12,7 @@ import { Platform } from 'react-native';
 
 export interface ProFeature {
   icon: IconSvgElement;
-  title: string;
-  description: string;
+  key: 'insights' | 'analytics' | 'highlights' | 'categories' | 'forecast' | 'search' | 'weekly' | 'csv';
 }
 
 export const SKU_LIFETIME = Platform.select({
@@ -30,42 +29,34 @@ export const FREE_PERSON_LIMIT = 10;
 export const FEATURES: ProFeature[] = [
   {
     icon: SparklesIcon,
-    title: 'Dashboard insights',
-    description: 'Real-time spending alerts, saving trends, and weekly summaries right on your home screen.',
+    key: 'insights',
   },
   {
     icon: ChartLineData01Icon,
-    title: 'Extended analytics',
-    description: 'Unlock 30-day, 90-day, and 12-month views with delta badges comparing against the previous period.',
+    key: 'analytics',
   },
   {
     icon: SparklesIcon,
-    title: 'Highlights',
-    description: 'Instantly see your top expense category and single biggest expense. Tap to drill into transactions.',
+    key: 'highlights',
   },
   {
     icon: PieChart01Icon,
-    title: 'Category breakdown',
-    description: 'Expense and income tabs with a proportion bar and per-category amounts and percentages.',
+    key: 'categories',
   },
   {
     icon: TrendingUpDownIcon,
-    title: 'Spending forecast',
-    description: 'Daily average spend and a month-end projection based on your current burn rate.',
+    key: 'forecast',
   },
   {
     icon: Search01Icon,
-    title: 'Global search',
-    description: 'Find any transaction, account, or category instantly across your entire history.',
+    key: 'search',
   },
   {
     icon: BarChartIcon,
-    title: 'Weekly pattern',
-    description: 'Bar chart showing which days you spend most, with an auto-generated spending insight.',
+    key: 'weekly',
   },
   {
     icon: Download01Icon,
-    title: 'CSV export',
-    description: 'Export transactions and loan records as a spreadsheet. Save to device or share to any app.',
+    key: 'csv',
   },
 ];

@@ -8,6 +8,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import { LockStorage } from '../api/lockStorage';
 import { authenticateWithBiometrics, getBiometricCapability } from '../hooks/useLocalAuth';
 import { PinPad } from './PinPad';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   onUnlock: () => void;
@@ -19,6 +20,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [mode, setMode] = useState<'loading' | 'biometric' | 'pin'>('loading');
+  const { t } = useTranslation();
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [authInProgress, setAuthInProgress] = useState(false);
@@ -28,16 +30,16 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
     setAuthInProgress(true);
     setError('');
     try {
-      const success = await authenticateWithBiometrics('Unlock app');
+      const success = await authenticateWithBiometrics(t('lock.unlockApp'));
       if (success) {
         onUnlock();
       } else {
-        setError('Authentication failed. Try again.');
+        setError(t('lock.authFailed'));
       }
     } finally {
       setAuthInProgress(false);
     }
-  }, [authInProgress, onUnlock]);
+  }, [authInProgress, onUnlock, t]);
 
   useEffect(() => {
     let cancelled = false;
@@ -52,9 +54,9 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
         if (cancelled) return;
         if (cap.available) {
           setMode('biometric');
-          const success = await authenticateWithBiometrics('Unlock app');
+          const success = await authenticateWithBiometrics(t('lock.unlockApp'));
           if (!cancelled && success) onUnlock();
-          else if (!cancelled) setError('Use the button below to try again.');
+          else if (!cancelled) setError(t('lock.useButton'));
         } else {
           setMode('pin');
         }
@@ -67,7 +69,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [onUnlock]);
+  }, [onUnlock, t]);
 
   const handlePinChange = useCallback(
     async (val: string) => {
@@ -80,11 +82,11 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
       if (correct) {
         onUnlock();
       } else {
-        setError('Incorrect PIN. Try again.');
+        setError(t('lock.incorrectPin'));
         setPin('');
       }
     },
-    [onUnlock],
+    [onUnlock, t],
   );
 
   if (mode === 'loading') {
@@ -109,8 +111,8 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
 
         {/* Text Details block */}
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>App is locked</Text>
-          <Text style={styles.subtitle}>Secure your financial data</Text>
+          <Text style={styles.title}>{t('common.locked')}</Text>
+          <Text style={styles.subtitle}>{t('common.secureData')}</Text>
         </View>
 
         {/* PinPad or Biometrics block */}
@@ -124,7 +126,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
           {mode === 'biometric' ? (
             <View style={styles.biometricWrap}>
               <Button
-                title="Use biometrics"
+                title={t('lock.useBiometrics')}
                 variant="primary"
                 size="lg"
                 onPress={tryBiometric}

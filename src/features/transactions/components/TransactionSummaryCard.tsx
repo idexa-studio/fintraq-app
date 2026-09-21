@@ -4,6 +4,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
 type Props = {
@@ -21,8 +22,9 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
   currency,
   currencies,
   onCurrencySelect,
-  label = 'Net savings',
+  label,
 }: Props) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { heroCard } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -33,7 +35,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
 
   return (
     <View style={[styles.card, { backgroundColor: heroCard.background }]}>
-      <Text style={[styles.label, { color: heroCard.textMuted }]}>{label}</Text>
+      <Text style={[styles.label, { color: heroCard.textMuted }]}>{label ?? t('transactions.netSavings')}</Text>
 
       <MoneyText
         amount={Math.abs(net)}
@@ -47,7 +49,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
         <View style={[styles.statTile, { backgroundColor: heroCard.separator }]}>
           <View style={styles.statHeader}>
             <HugeiconsIcon icon={ArrowUp01Icon} size={13} color={heroCard.income} />
-            <Text style={[styles.statLabel, { color: heroCard.textMuted }]}>Income</Text>
+            <Text style={[styles.statLabel, { color: heroCard.textMuted }]}>{t('transactions.income')}</Text>
           </View>
           <MoneyText
             amount={income}
@@ -61,7 +63,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
         <View style={[styles.statTile, { backgroundColor: heroCard.separator }]}>
           <View style={styles.statHeader}>
             <HugeiconsIcon icon={ArrowDown01Icon} size={13} color={heroCard.expense} />
-            <Text style={[styles.statLabel, { color: heroCard.textMuted }]}>Expenses</Text>
+            <Text style={[styles.statLabel, { color: heroCard.textMuted }]}>{t('transactions.expenses')}</Text>
           </View>
           <MoneyText
             amount={expense}

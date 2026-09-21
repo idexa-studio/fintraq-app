@@ -51,6 +51,8 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import type { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const RANGES = [
   { label: '7D', days: 7 },
@@ -61,18 +63,22 @@ const RANGES = [
 
 type RangeDays = (typeof RANGES)[number]['days'];
 
-const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const DOW_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-const fmtDayLabel = (iso: string, rangeDays: number): string => {
-  const parts = iso.split('-');
-  if (rangeDays <= 30) return `${parts[2]}/${SHORT_MONTHS[Number(parts[1]) - 1]}`;
-  return SHORT_MONTHS[Number(parts[1]) - 1] ?? '';
+const MONTH_KEYS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] as const;
+const DOW_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'] as const;
+const shortMonth = (index: number, t: TFunction): string | undefined => {
+  const key = MONTH_KEYS[index];
+  return key ? t(`calendar.months.${key}`) : undefined;
 };
 
-const fmtMonthLabel = (ym: string): string => {
+const fmtDayLabel = (iso: string, rangeDays: number, t: TFunction): string => {
+  const parts = iso.split('-');
+  if (rangeDays <= 30) return `${parts[2]}/${shortMonth(Number(parts[1]) - 1, t)}`;
+  return shortMonth(Number(parts[1]) - 1, t) ?? '';
+};
+
+const fmtMonthLabel = (ym: string, t: TFunction): string => {
   const [, m] = ym.split('-');
-  return SHORT_MONTHS[Number(m) - 1] ?? ym;
+  return shortMonth(Number(m) - 1, t) ?? ym;
 };
 
 function EmptyState({ icon, title, subtitle }: { icon: IconSvgElement; title: string; subtitle: string }) {
@@ -134,6 +140,7 @@ function DeltaBadge({ delta, positiveIsGood }: { delta: number | null; positiveI
 
 export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, layout, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { width: screenWidth } = useWindowDimensions();
@@ -205,10 +212,10 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
   const areaData = useMemo((): BarBucket[] => {
     if (selectedRange === 365) {
-      return (monthlyData ?? []).map(m => ({ label: fmtMonthLabel(m.month), income: m.income, expense: m.expense }));
+      return (monthlyData ?? []).map(m => ({ label: fmtMonthLabel(m.month, t), income: m.income, expense: m.expense }));
     }
-    return (dailyData ?? []).map(d => ({ label: fmtDayLabel(d.day, selectedRange), income: d.income, expense: d.expense }));
-  }, [dailyData, monthlyData, selectedRange]);
+    return (dailyData ?? []).map(d => ({ label: fmtDayLabel(d.day, selectedRange, t), income: d.income, expense: d.expense }));
+  }, [dailyData, monthlyData, selectedRange, t]);
 
   const rangeSubtitle = useMemo(() => {
     const now = new Date();
@@ -246,8 +253,8 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
     const peak = withData.reduce((a, b) => a.total > b.total ? a : b);
     const lowest = withData.reduce((a, b) => a.total < b.total ? a : b);
     if (peak.dow === lowest.dow) return null;
-    return `Spend most on ${DOW_NAMES[peak.dow]}, least on ${DOW_NAMES[lowest.dow]}.`;
-  }, [dowData]);
+    return t('analytics.dowInsight', { peak: t(`calendar.days.${DOW_KEYS[peak.dow]}`), lowest: t(`calendar.days.${DOW_KEYS[lowest.dow]}`) });
+  }, [dowData, t]);
 
   const activeCategoryData = catTab === 'expense' ? (categoryData ?? []) : (incomeCategoryData ?? []);
   const topCategory = (categoryData ?? [])[0] ?? null;
@@ -263,7 +270,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header title="Analytics" />
+      <Header title={t('common.analyticsTitle')} />
 
       {isLoading ? (
         <View style={styles.loading}>
@@ -310,14 +317,14 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           <View style={styles.metricsGrid}>
             <View style={[styles.metricTile, { backgroundColor: colors.success + '12' }]}>
               <View style={styles.metricTopRow}>
-                <Text style={[styles.metricLabel, { color: colors.success }]}>Income</Text>
+                <Text style={[styles.metricLabel, { color: colors.success }]}>{t('analytics.income')}</Text>
                 <DeltaBadge delta={deltas.income} positiveIsGood={true} />
               </View>
               <MoneyText amount={summary.income} currency={selectedCurrency} type="CR" weight="bold" compact style={styles.metricSmall} />
             </View>
             <View style={[styles.metricTile, { backgroundColor: colors.danger + '12' }]}>
               <View style={styles.metricTopRow}>
-                <Text style={[styles.metricLabel, { color: colors.danger }]}>Expenses</Text>
+                <Text style={[styles.metricLabel, { color: colors.danger }]}>{t('analytics.expenses')}</Text>
                 <DeltaBadge delta={deltas.expense} positiveIsGood={false} />
               </View>
               <MoneyText amount={summary.expense} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.metricSmall} />
@@ -325,7 +332,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           </View>
           <View style={[styles.metricsGrid, styles.metricsGridLast]}>
             <View style={styles.metricTile}>
-              <Text style={styles.metricLabel}>Net position</Text>
+              <Text style={styles.metricLabel}>{t('analytics.netPosition')}</Text>
               <MoneyText
                 amount={Math.abs(summary.net)}
                 currency={selectedCurrency}
@@ -336,14 +343,14 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               />
             </View>
             <View style={styles.metricTile}>
-              <Text style={styles.metricLabel}>Daily avg spend</Text>
+              <Text style={styles.metricLabel}>{t('analytics.dailyAvg')}</Text>
               <MoneyText amount={dailyAvg} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.metricSmall} />
             </View>
           </View>
 
           {/* ── Highlights ── */}
-          <SectionHeader title="Highlights" />
-          <PremiumGuard label="Highlights" size="medium" containerStyle={styles.guard}>
+          <SectionHeader title={t('analytics.highlights')} />
+          <PremiumGuard label={t('analytics.highlights')} size="medium" containerStyle={styles.guard}>
             {(topCategory || biggestExpense) ? (
               <View style={styles.highlightGroup}>
                 {topCategory && (
@@ -359,7 +366,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                       iconSize={18}
                     />
                     <View style={styles.highlightContent}>
-                      <Text style={styles.highlightMeta}>Top expense category</Text>
+                      <Text style={styles.highlightMeta}>{t('analytics.topCategory')}</Text>
                       <Text style={styles.highlightName} numberOfLines={1}>{topCategory.name}</Text>
                     </View>
                     <MoneyText amount={topCategory.amount} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.highlightAmount} />
@@ -379,7 +386,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                       iconSize={18}
                     />
                     <View style={styles.highlightContent}>
-                      <Text style={styles.highlightMeta}>Biggest expense</Text>
+                      <Text style={styles.highlightMeta}>{t('analytics.biggestExpense')}</Text>
                       <Text style={styles.highlightName} numberOfLines={1}>
                         {biggestExpense.note || biggestExpense.category}
                       </Text>
@@ -391,33 +398,33 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             ) : (
               <EmptyState
                 icon={SparklesIcon}
-                title="No highlights yet"
-                subtitle="Add expense transactions to surface key spending insights."
+                title={t('analytics.noHighlights')}
+                subtitle={t('analytics.noHighlightsHint')}
               />
             )}
           </PremiumGuard>
 
           {/* ── Spending trend ── */}
           <SectionHeader
-            title="Spending trend"
+            title={t('analytics.trend')}
             rightText={`${RANGES.find(r => r.days === selectedRange)?.label} · ${selectedCurrency}`}
           />
           {areaData.length === 0 ? (
             <EmptyState
               icon={ChartLineData01Icon}
-              title="No trend data yet"
-              subtitle="Add income or expense transactions to see your spending trend."
+              title={t('analytics.noTrend')}
+              subtitle={t('analytics.noTrendHint')}
             />
           ) : (
             <View style={styles.card}>
               <View style={styles.chartLegend}>
                 <View style={styles.legendItem}>
                   <View style={[styles.legendDot, { backgroundColor: colors.danger }]} />
-                  <Text style={styles.legendText}>Expense</Text>
+                  <Text style={styles.legendText}>{t('analytics.expense')}</Text>
                 </View>
                 <View style={styles.legendItem}>
                   <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
-                  <Text style={styles.legendText}>Income</Text>
+                  <Text style={styles.legendText}>{t('analytics.income')}</Text>
                 </View>
               </View>
               <LinearAreaChart data={areaData} width={chartWidth} height={190} />
@@ -425,21 +432,21 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           )}
 
           {/* ── Category breakdown (with expense/income tabs) ── */}
-          <SectionHeader title="Category breakdown" rightText={`${activeCategoryData.length} groups`} />
-          <PremiumGuard label="Category Breakdown" size="medium" containerStyle={styles.guard}>
+          <SectionHeader title={t('analytics.categoryBreakdown')} rightText={t('analytics.groupsCount', { count: activeCategoryData.length })} />
+          <PremiumGuard label={t('analytics.categoryBreakdown')} size="medium" containerStyle={styles.guard}>
             {/* Tab toggle */}
             <View style={styles.tabRow}>
               <BentoPressable
                 style={[styles.tab, catTab === 'expense' && styles.tabActive]}
                 onPress={() => setCatTab('expense')}
               >
-                <Text style={[styles.tabText, catTab === 'expense' && styles.tabTextActive]}>Expenses</Text>
+                <Text style={[styles.tabText, catTab === 'expense' && styles.tabTextActive]}>{t('analytics.expenses')}</Text>
               </BentoPressable>
               <BentoPressable
                 style={[styles.tab, catTab === 'income' && styles.tabActive]}
                 onPress={() => setCatTab('income')}
               >
-                <Text style={[styles.tabText, catTab === 'income' && styles.tabTextActive]}>Income</Text>
+                <Text style={[styles.tabText, catTab === 'income' && styles.tabTextActive]}>{t('analytics.income')}</Text>
               </BentoPressable>
             </View>
 
@@ -493,8 +500,8 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           {/* ── Person breakdown ── */}
           {(personBreakdown ?? []).length > 0 && (
             <>
-              <SectionHeader title="Person breakdown" rightText={`${(personBreakdown ?? []).length} persons`} />
-              <PremiumGuard label="Person Breakdown" size="medium" containerStyle={styles.guard}>
+              <SectionHeader title={t('analytics.personBreakdown')} rightText={t('analytics.personsCount', { count: (personBreakdown ?? []).length })} />
+              <PremiumGuard label={t('analytics.personBreakdown')} size="medium" containerStyle={styles.guard}>
                 <View style={styles.catSection}>
                   <View style={styles.stackedBar}>
                     {(personBreakdown ?? []).map((p, idx) => (
@@ -530,8 +537,8 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           )}
 
           {/* ── Balance distribution ── */}
-          <SectionHeader title="Balance distribution" rightText={`${accountDistribution.length} accounts`} />
-          <PremiumGuard label="Balance Distribution" size="medium" containerStyle={styles.guard}>
+          <SectionHeader title={t('analytics.balanceDistribution')} rightText={t('analytics.accountsCount', { count: accountDistribution.length })} />
+          <PremiumGuard label={t('analytics.balanceDistribution')} size="medium" containerStyle={styles.guard}>
             {accountDistribution.length > 0 ? (
               <View style={styles.catSection}>
                 <View style={styles.stackedBar}>
@@ -564,28 +571,28 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             ) : (
               <EmptyState
                 icon={Wallet05Icon}
-                title={`No ${selectedCurrency} accounts`}
-                subtitle="Add an account in this currency to see the balance distribution."
+                title={t('analytics.noCurrencyAccounts', { currency: selectedCurrency })}
+                subtitle={t('analytics.noCurrencyAccountsHint')}
               />
             )}
           </PremiumGuard>
 
           {/* ── Weekly pattern ── */}
-          <SectionHeader title="Weekly pattern" rightText="Average by day" />
-          <PremiumGuard label="Weekly Pattern" size="medium" containerStyle={styles.guard}>
+          <SectionHeader title={t('analytics.weeklyPattern')} rightText={t('analytics.averageByDay')} />
+          <PremiumGuard label={t('analytics.weeklyPattern')} size="medium" containerStyle={styles.guard}>
             {(dowData ?? []).length === 0 ? (
               <EmptyState
                 icon={Calendar01Icon}
-                title="No weekly pattern yet"
-                subtitle="More transactions will reveal your spending rhythm by day."
+                title={t('analytics.noWeekly')}
+                subtitle={t('analytics.noWeeklyHint')}
               />
             ) : (
               <View style={styles.card}>
                 <DowChart data={dowData ?? []} />
                 <View style={styles.dowLegend}>
-                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.success }]} /><Text style={styles.legendText}>Low</Text></View>
-                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.warning }]} /><Text style={styles.legendText}>Mid</Text></View>
-                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.danger }]} /><Text style={styles.legendText}>High</Text></View>
+                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.success }]} /><Text style={styles.legendText}>{t('analytics.low')}</Text></View>
+                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.warning }]} /><Text style={styles.legendText}>{t('analytics.mid')}</Text></View>
+                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.danger }]} /><Text style={styles.legendText}>{t('analytics.high')}</Text></View>
                 </View>
                 {dowInsight && (
                   <Text style={styles.dowInsight}>{dowInsight}</Text>
@@ -595,16 +602,16 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           </PremiumGuard>
 
           {/* ── Spending patterns ── */}
-          <SectionHeader title="Spending patterns" />
-          <PremiumGuard label="Spending Patterns" size="medium" containerStyle={styles.guard}>
+          <SectionHeader title={t('analytics.spendingPatterns')} />
+          <PremiumGuard label={t('analytics.spendingPatterns')} size="medium" containerStyle={styles.guard}>
             <View style={styles.card}>
               <View style={styles.kpiGrid}>
                 <View style={[styles.kpiCell, { width: cardCellWidth }]}>
-                  <Text style={styles.kpiLabel}>Daily avg spend</Text>
+                  <Text style={styles.kpiLabel}>{t('analytics.dailyAvg')}</Text>
                   <MoneyText amount={dailyAvg} currency={selectedCurrency} type="DR" weight="bold" style={styles.kpiValue} />
                 </View>
                 <View style={[styles.kpiCell, { width: cardCellWidth }]}>
-                  <Text style={styles.kpiLabel}>Month-end forecast</Text>
+                  <Text style={styles.kpiLabel}>{t('analytics.monthEndForecast')}</Text>
                   <MoneyText amount={forecast} currency={selectedCurrency} type="DR" weight="bold" style={styles.kpiValue} />
                 </View>
               </View>

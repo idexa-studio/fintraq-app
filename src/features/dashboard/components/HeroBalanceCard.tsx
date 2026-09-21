@@ -4,6 +4,7 @@ import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/The
 import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { CurrencyPickerTab } from './CurrencyPickerTab';
 
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, income, expense, currencies, onCurrencySelect }: Props) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { heroCard } = theme;
   const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
@@ -24,7 +26,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Text style={styles.label}>Your balance</Text>
+        <Text style={styles.label}>{t('dashboard.balance')}</Text>
         <StreakBadge heroCard={heroCard} />
       </View>
 
@@ -39,7 +41,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
         <View style={styles.statContainer}>
           <View style={styles.statHeader}>
             <HugeiconsIcon icon={ArrowUp01Icon} size={14} color={heroCard.income} />
-            <Text style={styles.statLabel}>Income</Text>
+            <Text style={styles.statLabel}>{t('dashboard.income')}</Text>
           </View>
           <MoneyText
             amount={income}
@@ -53,7 +55,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
         <View style={styles.statContainer}>
           <View style={styles.statHeader}>
             <HugeiconsIcon icon={ArrowDown01Icon} size={14} color={heroCard.expense} />
-            <Text style={styles.statLabel}>Expenses</Text>
+            <Text style={styles.statLabel}>{t('dashboard.expenses')}</Text>
           </View>
           <MoneyText
             amount={expense}

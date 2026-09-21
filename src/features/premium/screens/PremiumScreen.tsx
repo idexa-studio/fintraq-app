@@ -19,9 +19,11 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 export const PremiumScreen = React.memo(function PremiumScreen() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, heroCard } = theme;
   const { products, purchasePremium, restorePurchase, isLoading } = usePremium();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -51,24 +53,24 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title="Fintraq Pro" showBack />
+      <Header title={t('premium.title')} showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Hero Card — edge-to-edge, dashboard style */}
         <View style={[styles.heroCard, { backgroundColor: heroCard.background }]}>
-          <Text style={styles.heroBadge}>Lifetime upgrade</Text>
-          <Text style={styles.heroTitle}>One payment. Everything. Forever.</Text>
+          <Text style={styles.heroBadge}>{t('premium.lifetimeUpgrade')}</Text>
+          <Text style={styles.heroTitle}>{t('premium.heroTitle')}</Text>
           <Text style={styles.heroDesc}>
-            No subscriptions. No recurring charges. Unlock advanced financial analytics, exports, and global search instantly.
+            {t('premium.heroDesc')}
           </Text>
           <View style={styles.heroPerkRow}>
             <View style={styles.heroPerk}>
               <HugeiconsIcon icon={ShieldKeyIcon} size={14} color={heroCard.textPrimary} />
-              <Text style={styles.heroPerkText}>One-time payment</Text>
+              <Text style={styles.heroPerkText}>{t('premium.oneTime')}</Text>
             </View>
             <View style={styles.heroPerk}>
               <HugeiconsIcon icon={ReloadIcon} size={14} color={heroCard.textPrimary} />
-              <Text style={styles.heroPerkText}>Store-linked license</Text>
+              <Text style={styles.heroPerkText}>{t('premium.storeLinked')}</Text>
             </View>
           </View>
         </View>
@@ -78,8 +80,8 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           {lifetimeProduct ? (
             <View style={styles.priceRow}>
               <View style={styles.priceLeft}>
-                <Text style={styles.priceLabel}>Lifetime license</Text>
-                <Text style={styles.priceSubText}>All features & updates included</Text>
+                <Text style={styles.priceLabel}>{t('premium.lifetimeLicense')}</Text>
+                <Text style={styles.priceSubText}>{t('premium.allIncluded')}</Text>
               </View>
               <View style={styles.priceRight}>
                 {lifetimeProduct.originalPrice && (
@@ -91,24 +93,24 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           ) : isLoading ? (
             <ActivityIndicator color={colors.primary} style={{ paddingVertical: 12 }} />
           ) : (
-            <Text style={styles.priceError}>Pricing currently unavailable</Text>
+            <Text style={styles.priceError}>{t('premium.pricingUnavailable')}</Text>
           )}
         </View>
 
         {/* Features list */}
-        <SectionHeader title="Everything included" />
+        <SectionHeader title={t('premium.everythingIncluded')} />
 
         <View style={styles.featuresCard}>
           {FEATURES.map((f, index) => {
             const isLast = index === FEATURES.length - 1;
             return (
-              <View key={f.title} style={[styles.featureItem, isLast && styles.noMargin]}>
+              <View key={f.key} style={[styles.featureItem, isLast && styles.noMargin]}>
                 <View style={styles.iconWrapperInactive}>
                   <HugeiconsIcon icon={f.icon} size={20} color={colors.primary} />
                 </View>
                 <View style={styles.featureContent}>
-                  <Text style={styles.featureTitle}>{f.title}</Text>
-                  <Text style={styles.featureDesc}>{f.description}</Text>
+                  <Text style={styles.featureTitle}>{t(`premium.features.${f.key}.title`)}</Text>
+                  <Text style={styles.featureDesc}>{t(`premium.features.${f.key}.description`)}</Text>
                 </View>
               </View>
             );
@@ -129,17 +131,17 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             <ActivityIndicator color={colors.primaryForeground} />
           ) : (
             <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
-              Upgrade for {lifetimeProduct?.displayPrice || 'Pro'}
+              {t('premium.upgradeFor', { price: lifetimeProduct?.displayPrice || t('premium.pro') })}
             </Text>
           )}
         </BentoPressable>
         <View style={styles.legal}>
           <BentoPressable onPress={handleRestore} disabled={isProcessing}>
-            <Text style={styles.legalText}>Restore purchase</Text>
+            <Text style={styles.legalText}>{t('premium.restorePurchase')}</Text>
           </BentoPressable>
           <View style={styles.legalDot} />
-          <BentoPressable onPress={() => Alert.alert('Terms', 'This purchase binds to your Play Store / App Store account and restores automatically on login.')}>
-            <Text style={styles.legalText}>Terms of Service</Text>
+          <BentoPressable onPress={() => Alert.alert(t('premium.termsTitle'), t('premium.termsMessage'))}>
+            <Text style={styles.legalText}>{t('premium.terms')}</Text>
           </BentoPressable>
         </View>
       </View>

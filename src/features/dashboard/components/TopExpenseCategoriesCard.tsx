@@ -1,6 +1,7 @@
 import { PieChart01Icon, Tag01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { IconAvatar } from '../../../components/ui/IconAvatar';
 import { MoneyText } from '../../../components/ui/MoneyText';
@@ -24,6 +25,7 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
   currency,
   categories,
 }: Props) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -41,8 +43,8 @@ export const TopExpenseCategoriesCard = React.memo(function TopExpenseCategories
           <HugeiconsIcon icon={PieChart01Icon} size={18} color={colors.primary} />
         </View>
         <View style={styles.emptyContent}>
-          <Text style={styles.emptyTitle}>No expenses yet</Text>
-          <Text style={styles.emptyText}>Add some transactions to see your top spending categories.</Text>
+          <Text style={styles.emptyTitle}>{t('dashboard.noExpenses')}</Text>
+          <Text style={styles.emptyText}>{t('dashboard.expensesHint')}</Text>
         </View>
       </View>
     );

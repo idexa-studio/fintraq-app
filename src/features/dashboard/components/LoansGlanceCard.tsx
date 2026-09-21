@@ -1,6 +1,7 @@
 import { HandshakeIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
 import { MoneyText } from '../../../components/ui/MoneyText';
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export const LoansGlanceCard = React.memo(function LoansGlanceCard({ currency, onPress }: Props) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -26,8 +28,8 @@ export const LoansGlanceCard = React.memo(function LoansGlanceCard({ currency, o
           <HugeiconsIcon icon={HandshakeIcon} size={18} color={colors.primary} />
         </View>
         <View style={styles.emptyContent}>
-          <Text style={styles.emptyTitle}>No active loans</Text>
-          <Text style={styles.emptyText}>Track money you lend or borrow. Tap to add a loan.</Text>
+          <Text style={styles.emptyTitle}>{t('dashboard.noLoans')}</Text>
+          <Text style={styles.emptyText}>{t('dashboard.loanHint')}</Text>
         </View>
       </BentoPressable>
     );
@@ -38,38 +40,38 @@ export const LoansGlanceCard = React.memo(function LoansGlanceCard({ currency, o
       <BentoPressable style={[styles.tile, { marginRight: theme.spacing('1.5') }]} onPress={onPress}>
         <View style={styles.tileHeader}>
           <Text style={[styles.tileLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.success }]}>
-            Lent out
+            {t('dashboard.lentOut')}
           </Text>
           {summary.overdueLentCount > 0 && (
             <View style={[styles.badge, { backgroundColor: colors.danger + '20' }]}>
               <Text style={[styles.badgeText, { color: colors.danger }]}>
-                {summary.overdueLentCount} overdue
+                {t('dashboard.overdue', { count: summary.overdueLentCount })}
               </Text>
             </View>
           )}
         </View>
         <MoneyText amount={summary.totalLent} currency={currency} type="CR" weight="bold" compact style={styles.tileAmount} />
         <Text style={[styles.tileSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-          {summary.activeLentCount} active
+          {t('dashboard.active', { count: summary.activeLentCount })}
         </Text>
       </BentoPressable>
 
       <BentoPressable style={[styles.tile, { marginLeft: theme.spacing('1.5') }]} onPress={onPress}>
         <View style={styles.tileHeader}>
           <Text style={[styles.tileLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.danger }]}>
-            Borrowed
+            {t('dashboard.borrowed')}
           </Text>
           {summary.overdueBorrowedCount > 0 && (
             <View style={[styles.badge, { backgroundColor: colors.danger + '20' }]}>
               <Text style={[styles.badgeText, { color: colors.danger }]}>
-                {summary.overdueBorrowedCount} overdue
+                {t('dashboard.overdue', { count: summary.overdueBorrowedCount })}
               </Text>
             </View>
           )}
         </View>
         <MoneyText amount={summary.totalBorrowed} currency={currency} type="DR" weight="bold" compact style={styles.tileAmount} />
         <Text style={[styles.tileSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-          {summary.activeBorrowedCount} active
+          {t('dashboard.active', { count: summary.activeBorrowedCount })}
         </Text>
       </BentoPressable>
     </View>

@@ -4,31 +4,30 @@ import type { IconSvgElement } from '@hugeicons/react-native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
+import { useTranslation } from 'react-i18next';
 
 type ColorKey = 'primary' | 'info' | 'success';
 
-const FEATURES: { icon: IconSvgElement; label: string; detail: string; colorKey: ColorKey }[] = [
+const FEATURES: { icon: IconSvgElement; label: 'fastCapture' | 'analytics' | 'privacy'; colorKey: ColorKey }[] = [
   {
     icon: FlashIcon,
-    label: 'Fast capture',
-    detail: 'Log transactions anywhere in seconds with effortless controls.',
+    label: 'fastCapture',
     colorKey: 'primary',
   },
   {
     icon: BarChartIcon,
-    label: 'Built-in analytics',
-    detail: 'Spending trends, category breakdown, highlights, and period deltas.',
+    label: 'analytics',
     colorKey: 'info',
   },
   {
     icon: LockPasswordIcon,
-    label: 'Private by design',
-    detail: 'All your data stays on your device. 100% offline-first.',
+    label: 'privacy',
     colorKey: 'success',
   },
 ];
 
 export const WelcomeStep = React.memo(function WelcomeStep() {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors, typography } = theme;
   const styles = React.useMemo(() => createStyles(theme), [theme]);
@@ -42,10 +41,10 @@ export const WelcomeStep = React.memo(function WelcomeStep() {
             <IconAvatar icon={f.icon} color={accent} variant="subtle" size={48} iconSize={22} />
             <View style={styles.text}>
               <Text style={[styles.label, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
-                {f.label}
+                {t(`onboardingFlow.features.${f.label}`)}
               </Text>
               <Text style={[styles.detail, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                {f.detail}
+                {t(`onboardingFlow.features.${f.label}Detail`)}
               </Text>
             </View>
           </View>

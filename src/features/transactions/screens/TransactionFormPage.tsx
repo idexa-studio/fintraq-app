@@ -41,6 +41,7 @@ import { AnalyticsService } from '@/src/services/analytics';
 import { StorageKeys } from '../../../constants/keys';
 import { isTransferCompatible } from '../../../utils/accounts';
 import type { AccountType } from '../../../types';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   mode: 'create' | 'edit';
@@ -58,6 +59,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
   const isEditMode = mode === 'edit';
 
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const { profile } = useSettings();
   const styles = React.useMemo(() => createStyles(theme), [theme]);
@@ -219,11 +221,11 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
 
   const handleSave = async () => {
     if (!selectedAccountId || !selectedCategoryId || amountValue <= 0) {
-      Alert.alert('Missing details', 'Please select account, category, and a valid amount.');
+      Alert.alert(t('transactions.missingDetails'), t('transactions.missingDetailsMessage'));
       return;
     }
     if (type === 'TR' && !toAccountId) {
-      Alert.alert('Missing destination', 'Please select a destination account for the transfer.');
+      Alert.alert(t('transactions.missingDestination'), t('transactions.missingDestinationMessage'));
       return;
     }
 
@@ -231,8 +233,8 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       const maxAllowed = loan.outstanding + editingTransaction.amount;
       if (amountValue > maxAllowed) {
         Alert.alert(
-          'Repayment exceeds outstanding',
-          `The maximum allowed repayment amount is ${loan.currency} ${maxAllowed.toFixed(2)} (Outstanding: ${loan.outstanding.toFixed(2)} + Current: ${editingTransaction.amount.toFixed(2)}).`
+          t('transactions.repaymentExceeds'),
+          t('transactions.repaymentExceedsMessage', { currency: loan.currency, max: maxAllowed.toFixed(2), outstanding: loan.outstanding.toFixed(2), current: editingTransaction.amount.toFixed(2) })
         );
         return;
       }
@@ -246,7 +248,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       amount: amountValue,
       type,
       datetime: transactionDateTime.toISOString(),
-      note: note.trim() || selectedCategory?.name || 'Transaction',
+      note: note.trim() || selectedCategory?.name || t('transactions.defaultNote'),
     };
 
     try {
@@ -265,7 +267,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       );
       router.back();
     } catch {
-      Alert.alert('Unable to save', 'Could not save transaction. Please try again.');
+      Alert.alert(t('transactions.unableToSave'), t('transactions.unableToSaveMessage'));
     }
   };
 
@@ -283,7 +285,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title={isEditMode ? 'Edit entry' : 'New entry'} showBack />
+      <Header title={isEditMode ? t('transactions.editEntry') : t('transactions.newEntry')} showBack />
 
       <KeyboardAvoidingView
         style={styles.body}
@@ -316,9 +318,9 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                   />
                 ) : null}
                 <View style={styles.textContainer}>
-                  <Text style={styles.triggerLabel}>Loan Repayment for</Text>
+                  <Text style={styles.triggerLabel}>{t('transactions.loanRepaymentFor')}</Text>
                   <Text style={styles.dateTimeText} numberOfLines={1}>
-                    {loan == null ? 'Loading...' : (loan.personName ?? loan.accountName)}
+                    {loan == null ? t('transactions.loading') : (loan.personName ?? loan.accountName)}
                   </Text>
                 </View>
               </View>
@@ -326,7 +328,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
           )}
 
           <TransactionAccountPicker
-            label="From account"
+            label={t('transactions.fromAccount')}
             accounts={accounts}
             selectedId={selectedAccountId}
             onSelect={setSelectedAccountId}
@@ -336,16 +338,16 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
             <>
               {toAccountOptions.length > 0 ? (
                 <TransactionAccountPicker
-                  label="To account"
+                  label={t('transactions.toAccount')}
                   accounts={toAccountOptions}
                   selectedId={toAccountId}
                   onSelect={setToAccountId}
                 />
               ) : (
                 <View style={styles.section}>
-                  <Text style={styles.sectionLabel}>To account</Text>
+                  <Text style={styles.sectionLabel}>{t('transactions.toAccount')}</Text>
                   <Text style={styles.transferHint}>
-                    No compatible accounts for this transfer.
+                    {t('transactions.noCompatible')}
                   </Text>
                 </View>
               )}
@@ -368,7 +370,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
               >
                 <IconAvatar icon={UserCircleIcon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
                 <View style={styles.textContainer}>
-                  <Text style={styles.triggerLabel}>Linked person</Text>
+                  <Text style={styles.triggerLabel}>{t('transactions.linkedPerson')}</Text>
                   <Text
                     style={[
                       styles.dateTimeText,
@@ -377,8 +379,8 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
                     numberOfLines={1}
                   >
                     {selectedPersonId
-                      ? (persons.find((p) => p.id === selectedPersonId)?.name ?? 'Unknown')
-                      : 'No person linked'}
+                      ? (persons.find((p) => p.id === selectedPersonId)?.name ?? t('transactions.unknown'))
+                      : t('transactions.noPersonLinked')}
                   </Text>
                 </View>
                 <HugeiconsIcon icon={UnfoldMoreIcon} size={16} color={colors.textMuted} />
@@ -394,7 +396,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
               >
                 <IconAvatar icon={Calendar03Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
                 <View style={styles.textContainer}>
-                  <Text style={styles.triggerLabel}>Date</Text>
+                  <Text style={styles.triggerLabel}>{t('transactions.date')}</Text>
                   <Text style={styles.dateTimeText} numberOfLines={1}>{formattedDate}</Text>
                 </View>
               </BentoPressable>
@@ -405,7 +407,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
               >
                 <IconAvatar icon={Clock01Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
                 <View style={styles.textContainer}>
-                  <Text style={styles.triggerLabel}>Time</Text>
+                  <Text style={styles.triggerLabel}>{t('transactions.time')}</Text>
                   <Text style={styles.dateTimeText} numberOfLines={1}>{formattedTime}</Text>
                 </View>
               </BentoPressable>
@@ -433,13 +435,13 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
             <View style={styles.noteContainer}>
               <View style={styles.noteHeader}>
                 <IconAvatar icon={PencilEdit01Icon} color={colors.primary} variant="subtle" size={32} iconSize={16} />
-                <Text style={styles.noteLabel}>Note</Text>
+                <Text style={styles.noteLabel}>{t('transactions.note')}</Text>
               </View>
               <TextInput
                 style={styles.noteInput}
                 value={note}
                 onChangeText={setNote}
-                placeholder="Optional context"
+                placeholder={t('transactions.optionalContext')}
                 placeholderTextColor={colors.textMuted + '80'}
                 multiline
               />
@@ -458,7 +460,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
             <ActivityIndicator size="small" color={colors.background} />
           ) : (
             <Text style={styles.saveBtnText}>
-              {isEditMode ? 'Save changes' : 'Save transaction'}
+              {isEditMode ? t('transactions.saveChanges') : t('transactions.saveTransaction')}
             </Text>
           )}
         </Pressable>

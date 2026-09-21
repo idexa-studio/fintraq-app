@@ -32,6 +32,7 @@ import { WalkthroughOverlay, SEARCH_WALKTHROUGH_STEPS } from '@/src/features/wal
 import { AnalyticsService } from '@/src/services/analytics';
 import { StorageKeys } from '@/src/constants/keys';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { useTranslation } from 'react-i18next';
 
 type SearchItem =
   | { kind: 'transaction'; data: TransactionListItem }
@@ -249,6 +250,7 @@ const createPersonRowStyles = (
 
 export const SearchScreen = React.memo(function SearchScreen() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
@@ -300,34 +302,34 @@ export const SearchScreen = React.memo(function SearchScreen() {
     const result: SearchSection[] = [];
     if (data.transactions.length > 0) {
       result.push({
-        title: 'Transactions',
+        title: t('search.transactions'),
         count: data.transactions.length,
         data: data.transactions.map(item => ({ kind: 'transaction' as const, data: item })),
       });
     }
     if (data.accounts.length > 0) {
       result.push({
-        title: 'Accounts',
+        title: t('search.accounts'),
         count: data.accounts.length,
         data: data.accounts.map(item => ({ kind: 'account' as const, data: item })),
       });
     }
     if (data.categories.length > 0) {
       result.push({
-        title: 'Categories',
+        title: t('search.categories'),
         count: data.categories.length,
         data: data.categories.map(item => ({ kind: 'category' as const, data: item })),
       });
     }
     if (data.persons.length > 0) {
       result.push({
-        title: 'Persons',
+        title: t('search.persons'),
         count: data.persons.length,
         data: data.persons.map(item => ({ kind: 'person' as const, data: item })),
       });
     }
     return result;
-  }, [data]);
+  }, [data, t]);
 
   const hasResults = sections.length > 0;
   const noResults = isEnabled && !isFetching && debouncedQuery.length >= 2 && !hasResults;
@@ -422,7 +424,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
             style={styles.searchInput}
             value={query}
             onChangeText={setQuery}
-            placeholder="Search transactions, accounts..."
+            placeholder={t('search.placeholder')}
             placeholderTextColor={colors.textMuted + '80'}
             returnKeyType="search"
             autoCorrect={false}
@@ -482,9 +484,9 @@ export const SearchScreen = React.memo(function SearchScreen() {
       {query.length === 0 && recents.length > 0 && (
         <View style={styles.recentsWrap}>
           <View style={styles.recentsHeader}>
-            <Text style={styles.recentsTitle}>Recent searches</Text>
+            <Text style={styles.recentsTitle}>{t('search.recent')}</Text>
             <BentoPressable onPress={clearRecents}>
-              <Text style={styles.recentsClear}>Clear history</Text>
+              <Text style={styles.recentsClear}>{t('search.clearHistory')}</Text>
             </BentoPressable>
           </View>
           <View style={styles.recentsList}>
@@ -515,10 +517,10 @@ export const SearchScreen = React.memo(function SearchScreen() {
           </View>
           <View style={styles.proTitleWrap}>
             <HugeiconsIcon icon={SparklesIcon} size={14} color={colors.warning} />
-            <Text style={styles.proTitleText}>Premium search</Text>
+            <Text style={styles.proTitleText}>{t('search.premium')}</Text>
           </View>
           <Text style={styles.promptSub}>
-            Transactions, accounts, and categories. Type at least 2 characters to start.
+            {t('search.hint')}
           </Text>
         </View>
       ) : noResults ? (
@@ -526,9 +528,9 @@ export const SearchScreen = React.memo(function SearchScreen() {
           <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
             <HugeiconsIcon icon={InboxIcon} size={32} color={colors.textMuted} />
           </View>
-          <Text style={styles.promptTitle}>No results</Text>
+          <Text style={styles.promptTitle}>{t('search.noResults')}</Text>
           <Text style={styles.promptSub}>
-            Nothing matched “{debouncedQuery}”. Try a different term.
+            {t('search.noMatch', { query: debouncedQuery })}
           </Text>
         </View>
       ) : (

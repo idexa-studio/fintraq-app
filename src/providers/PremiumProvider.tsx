@@ -8,6 +8,7 @@ import { IAPProduct, IAPService } from '../services/iap.service';
 import { StorageKeys } from '../constants/keys';
 import { AnalyticsService } from '../services/analytics';
 import { LoggerService } from '@/src/services/logger.service';
+import i18n from '@/src/i18n';
 
 /**
  * PremiumState: The persistent representation of user access.
@@ -76,7 +77,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
     visible: false,
     title: '',
     type: 'info',
-    buttons: [{ text: 'OK' }],
+    buttons: [{ text: i18n.t('common.ok') }],
   });
 
   /**
@@ -88,7 +89,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
       title: config.title,
       message: config.message,
       type: config.type || 'info',
-      buttons: config.buttons || [{ text: 'OK' }],
+      buttons: config.buttons || [{ text: i18n.t('common.ok') }],
     });
   }, []);
 
@@ -131,8 +132,8 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
       if (premiumState.isPremium) {
         await savePremiumState(INITIAL_STATE);
         showAlert({
-          title: 'Access Revoked',
-          message: 'Your Pro access has been revoked or was refunded. You can repurchase at any time.',
+          title: i18n.t('premium.accessRevoked'),
+          message: i18n.t('premium.accessRevokedMessage'),
           type: 'warning',
         });
       }
@@ -208,7 +209,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
           await syncRef.current();
         }
       } catch {
-        if (!unmounted) setError('Billing interface currently unavailable.');
+        if (!unmounted) setError(i18n.t('premium.billingUnavailable'));
       } finally {
         if (!unmounted) setIsLoading(false);
       }
@@ -237,7 +238,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
 
   const purchasePremium = useCallback(async () => {
     if (!isIapInitialized) {
-      showAlert({ title: 'Network Required', message: 'Please check your connection to proceed.', type: 'error' });
+      showAlert({ title: i18n.t('premium.networkRequired'), message: i18n.t('premium.checkConnection'), type: 'error' });
       return;
     }
 
@@ -250,14 +251,14 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       const code = (err as { code?: string })?.code;
       if (code !== IAP.ErrorCode.UserCancelled) {
-        showAlert({ title: 'Purchase Error', message: 'We could not process your request at this time.', type: 'error' });
+        showAlert({ title: i18n.t('premium.purchaseError'), message: i18n.t('premium.purchaseErrorMessage'), type: 'error' });
       }
     }
   }, [isIapInitialized, showAlert]);
 
   const restorePurchase = useCallback(async () => {
     if (!isIapInitialized) {
-      showAlert({ title: 'Network Required', message: 'Please connect to the internet to restore access.', type: 'error' });
+      showAlert({ title: i18n.t('premium.networkRequired'), message: i18n.t('premium.connectToRestore'), type: 'error' });
       return;
     }
 
@@ -268,14 +269,14 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
       if (hasLifetime) {
         await savePremiumState({ isPremium: true });
         await AnalyticsService.premiumPurchaseRestore('restored');
-        showAlert({ title: 'Access Restored', message: 'Fintraq Pro has been successfully re-enabled.', type: 'success' });
+        showAlert({ title: i18n.t('premium.accessRestored'), message: i18n.t('premium.accessRestoredMessage'), type: 'success' });
       } else {
         await AnalyticsService.premiumPurchaseRestore('not_found');
-        showAlert({ title: 'No Purchase Found', message: "We couldn't find an active Pro license for this account.", type: 'info' });
+        showAlert({ title: i18n.t('premium.noPurchase'), message: i18n.t('premium.noPurchaseMessage'), type: 'info' });
       }
     } catch {
       await AnalyticsService.premiumPurchaseRestore('failed');
-      showAlert({ title: 'Restoration Failed', message: 'Please try again in a few minutes.', type: 'error' });
+      showAlert({ title: i18n.t('premium.restorationFailed'), message: i18n.t('premium.tryLater'), type: 'error' });
     }
   }, [isIapInitialized, savePremiumState, showAlert]);
 

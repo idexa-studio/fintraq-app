@@ -9,6 +9,7 @@ import { PlusSignIcon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import type { Account } from '../../accounts/api/accounts';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   accounts: Account[];
@@ -18,6 +19,7 @@ type Props = {
 
 export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts, onPressAccount, onPressAdd }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { width: screenWidth } = useWindowDimensions();
@@ -35,7 +37,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
         const hint =
           acc.accountNumber && acc.accountNumber !== 'N/A'
             ? `•••• ${acc.accountNumber.slice(-4)}`
-            : 'Tap to view';
+            : t('common.tapToView');
 
         return (
           <BentoPressable
@@ -70,7 +72,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
 
               <View style={styles.balanceContainer}>
                 <Text style={[styles.balanceLabel, { fontFamily: typography.styles.caption.fontFamily, color: colors.textMuted }]}>
-                  Available balance
+                  {t('common.availableBalance')}
                 </Text>
                 <MoneyText amount={acc.balance} currency={acc.currency} style={styles.balance} weight="bold" />
               </View>
@@ -86,7 +88,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
       >
         <IconAvatar icon={PlusSignIcon} color={colors.primary} variant="subtle" size={36} iconSize={16} />
         <Text style={[styles.addTitle, { fontFamily: typography.styles.cardTitle.fontFamily, color: colors.text }]}>
-          Add account
+          {t('common.addAccount')}
         </Text>
       </BentoPressable>
     </ScrollView>

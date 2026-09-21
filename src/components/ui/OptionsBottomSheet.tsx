@@ -33,7 +33,7 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
   title,
   subtitle,
   options,
-  closeLabel = 'Cancel',
+  closeLabel,
 }: OptionsBottomSheetProps) {
   const theme = useTheme();
   const { colors, typography } = theme;

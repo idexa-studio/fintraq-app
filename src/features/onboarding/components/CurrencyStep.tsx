@@ -5,6 +5,7 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { CURRENCIES } from '../../../constants/currency';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
+import { useTranslation } from 'react-i18next';
 
 const POPULAR_CODES = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR', 'BRL', 'SGD', 'AED', 'HKD', 'MXN', 'ZAR'];
 
@@ -15,6 +16,7 @@ type CurrencyStepProps = {
 
 export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurrencyChange }: CurrencyStepProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -79,7 +81,7 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
           style={styles.searchInput}
           value={query}
           onChangeText={setQuery}
-          placeholder="Search by code or name…"
+          placeholder={t('onboardingFlow.searchCurrency')}
           placeholderTextColor={colors.textMuted}
           autoCorrect={false}
           autoCapitalize="none"
@@ -94,13 +96,13 @@ export const CurrencyStep = React.memo(function CurrencyStep({ currency, onCurre
 
       <View style={styles.list}>
         {!filtered.isSearching && (
-          <Text style={styles.listSection}>Popular</Text>
+          <Text style={styles.listSection}>{t('common.popular')}</Text>
         )}
         {filtered.popular.map(renderRow)}
 
         {!filtered.isSearching && filtered.rest.length > 0 && (
           <>
-            <Text style={styles.listSectionSpaced}>All currencies</Text>
+            <Text style={styles.listSectionSpaced}>{t('common.allCurrencies')}</Text>
             {filtered.rest.map(renderRow)}
           </>
         )}

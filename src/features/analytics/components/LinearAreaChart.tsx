@@ -9,6 +9,7 @@ import Svg, {
   Text as SvgText,
 } from 'react-native-svg';
 import { useTheme } from '@/src/providers/ThemeProvider';
+import { useTranslation } from 'react-i18next';
 
 export type BarBucket = {
   label: string;
@@ -42,6 +43,7 @@ export const LinearAreaChart = React.memo(function LinearAreaChart({
   height = 170,
 }: Props) {
   const { colors, typography } = useTheme();
+  const { t } = useTranslation();
   const gridColor = colors.text + '10';
   const labelColor = colors.textMuted;
 
@@ -83,7 +85,7 @@ export const LinearAreaChart = React.memo(function LinearAreaChart({
     return (
       <View style={[styles.empty, { height }]}>
         <Text style={{ color: colors.textMuted, fontFamily: typography.fonts.regular, fontSize: 12 }}>
-          No data for period
+          {t('analytics.noDataPeriod')}
         </Text>
       </View>
     );

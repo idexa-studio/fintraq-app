@@ -8,6 +8,7 @@ import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
 import { Tag01Icon } from '@hugeicons/core-free-icons';
 import type { CategoryBreakdown } from '../api/analytics';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   data: CategoryBreakdown[];
@@ -41,6 +42,7 @@ const arcPath = (
 };
 
 export const DonutChart = React.memo(function DonutChart({ data, currency, size = 168 }: Props) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -66,7 +68,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
   if (data.length === 0) {
     return (
       <View style={[styles.empty, { height: size }]}>
-        <Text style={[styles.emptyTxt, { color: colors.textMuted }]}>No expense data</Text>
+        <Text style={[styles.emptyTxt, { color: colors.textMuted }]}>{t('analytics.noExpenseData')}</Text>
       </View>
     );
   }
@@ -81,7 +83,7 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
         </Svg>
         <View style={styles.center}>
           <Text style={[styles.centerLabel, { color: colors.textMuted, fontFamily: typography.styles.sectionLabel.fontFamily }]}>
-            Total
+            {t('analytics.total')}
           </Text>
           <MoneyText amount={total} currency={currency} type="DR" weight="bold" compact style={styles.centerAmt} />
         </View>

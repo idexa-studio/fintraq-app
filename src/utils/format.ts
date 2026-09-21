@@ -1,4 +1,5 @@
 import * as Localization from 'expo-localization';
+import i18n, { getIntlLocale } from '@/src/i18n';
 
 /**
  * Normalizes and parses a string amount into a finite number.
@@ -35,7 +36,8 @@ export const withAlpha = (color: string, hexAlpha: string): string =>
  * If no currency code is provided, it formats the number as a localized decimal.
  */
 export const formatCurrency = (amount: number, currencyCode?: string, compact?: boolean): string => {
-  const locale = Localization.getLocales()?.[0]?.languageTag ?? 'en-US';
+  const deviceLocale = Localization.getLocales()?.[0]?.languageTag ?? 'en-US';
+  const locale = getIntlLocale(i18n.resolvedLanguage ?? i18n.language, deviceLocale);
 
   if (!currencyCode) {
     return new Intl.NumberFormat(locale, {

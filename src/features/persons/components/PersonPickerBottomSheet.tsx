@@ -9,6 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { Person } from '../api/persons';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
+import { useTranslation } from 'react-i18next';
 
 type PersonPickerBottomSheetProps = {
   visible: boolean;
@@ -29,6 +30,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
   onSelect,
 }: PersonPickerBottomSheetProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [query, setQuery] = useState('');
@@ -105,7 +107,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
       <View style={{ flex: 1 }}>
         <View style={styles.header}>
           <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
-            Link person
+            {t('persons.linkPerson')}
           </Text>
         </View>
 
@@ -115,7 +117,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
             style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
             value={query}
             onChangeText={setQuery}
-            placeholder="Search persons..."
+            placeholder={t('persons.searchPlaceholder')}
             placeholderTextColor={colors.textMuted + '80'}
             autoCorrect={false}
             autoCapitalize="none"
@@ -138,7 +140,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           </View>
           <View style={styles.rowMeta}>
             <Text style={[styles.rowName, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.textMuted }]}>
-              No person
+              {t('persons.noPerson')}
             </Text>
           </View>
           {selectedId === null && (

@@ -13,16 +13,18 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SEARCH_FEATURES = [
-  { icon: ReceiptTextIcon, label: 'Full-text search across all transactions' },
-  { icon: Wallet05Icon, label: 'Find accounts by name instantly' },
-  { icon: Tag01Icon, label: 'Locate categories across your history' },
+  { icon: ReceiptTextIcon, key: 'transactions' as const },
+  { icon: Wallet05Icon, key: 'accounts' as const },
+  { icon: Tag01Icon, key: 'categories' as const },
 ];
 
 const SearchGate = React.memo(function SearchGate() {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
   const router = useRouter();
@@ -41,22 +43,20 @@ const SearchGate = React.memo(function SearchGate() {
           <HugeiconsIcon icon={Search01Icon} size={36} color={colors.text} />
           <View style={styles.proBadge}>
             <HugeiconsIcon icon={SparklesIcon} size={12} color={colors.background} />
-            <Text style={styles.proBadgeText}>Pro</Text>
+            <Text style={styles.proBadgeText}>{t('searchGate.pro')}</Text>
           </View>
         </View>
 
-        <Text style={styles.title}>Global Search</Text>
-        <Text style={styles.subtitle}>
-          Find anything across your entire financial history in one place.
-        </Text>
+        <Text style={styles.title}>{t('searchGate.title')}</Text>
+        <Text style={styles.subtitle}>{t('searchGate.subtitle')}</Text>
 
         <View style={styles.featureList}>
           {SEARCH_FEATURES.map((f) => (
-            <View key={f.label} style={styles.featureRow}>
+            <View key={f.key} style={styles.featureRow}>
               <View style={styles.featureIcon}>
                 <HugeiconsIcon icon={f.icon} size={16} color={colors.text} />
               </View>
-              <Text style={styles.featureLabel}>{f.label}</Text>
+              <Text style={styles.featureLabel}>{t(`searchGate.${f.key}`)}</Text>
             </View>
           ))}
         </View>
@@ -67,11 +67,11 @@ const SearchGate = React.memo(function SearchGate() {
           activeOpacity={0.85}
         >
           <HugeiconsIcon icon={SparklesIcon} size={16} color={colors.background} />
-          <Text style={styles.ctaBtnText}>Upgrade to Pro</Text>
+          <Text style={styles.ctaBtnText}>{t('searchGate.upgrade')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => router.back()} activeOpacity={0.6} style={styles.dismissBtn}>
-          <Text style={styles.dismissText}>Not now</Text>
+          <Text style={styles.dismissText}>{t('searchGate.notNow')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

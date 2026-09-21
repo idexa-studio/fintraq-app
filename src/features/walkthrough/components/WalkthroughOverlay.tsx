@@ -6,6 +6,7 @@ import React, { useMemo } from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { WalkthroughStep } from '../constants/steps';
 import { useWalkthrough } from '../hooks/useWalkthrough';
+import { useTranslation } from 'react-i18next';
 
 type WalkthroughOverlayProps = {
   storageKey: string;
@@ -21,6 +22,7 @@ export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
   enabled = true,
 }: WalkthroughOverlayProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -46,14 +48,14 @@ export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
             </View>
             <View style={styles.stepsBadge}>
               <Text style={styles.stepsBadgeText}>
-                Step {index + 1} of {steps.length}
+                {t('walkthrough.step', { current: index + 1, total: steps.length })}
               </Text>
             </View>
           </View>
 
           {/* Content */}
-          <Text style={styles.title}>{currentStep.title}</Text>
-          <Text style={styles.desc}>{currentStep.desc}</Text>
+          <Text style={styles.title}>{t(`walkthrough.${currentStep.id}.title`)}</Text>
+          <Text style={styles.desc}>{t(`walkthrough.${currentStep.id}.desc`)}</Text>
 
           {/* Slide Dots Indicator */}
           <View style={styles.dotsRow}>
@@ -71,12 +73,12 @@ export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
           {/* Footer Actions */}
           <View style={styles.footer}>
             <BentoPressable onPress={handleSkip} style={styles.skipBtn}>
-              <Text style={styles.skipText}>Skip guide</Text>
+              <Text style={styles.skipText}>{t('walkthrough.skip')}</Text>
             </BentoPressable>
 
             <BentoPressable onPress={handleNext} style={styles.nextBtn}>
               <Text style={styles.nextText}>
-                {index === steps.length - 1 ? 'Get started' : 'Continue'}
+                {index === steps.length - 1 ? t('walkthrough.getStarted') : t('walkthrough.next')}
               </Text>
               <HugeiconsIcon
                 icon={index === steps.length - 1 ? CheckmarkCircle01Icon : ArrowRight01Icon}

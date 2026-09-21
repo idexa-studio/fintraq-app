@@ -1,4 +1,5 @@
 import * as LocalAuthentication from 'expo-local-authentication';
+import i18n from '@/src/i18n';
 
 export type BiometricCapability = {
   available: boolean;
@@ -25,9 +26,9 @@ export async function getBiometricCapability(): Promise<BiometricCapability> {
 export async function authenticateWithBiometrics(reason: string): Promise<boolean> {
   const result = await LocalAuthentication.authenticateAsync({
     promptMessage: reason,
-    cancelLabel: 'Cancel',
+    cancelLabel: i18n.t('common.cancel'),
     disableDeviceFallback: false, // allows device PIN/passcode as fallback
-    fallbackLabel: 'Use passcode',
+    fallbackLabel: i18n.t('common.usePasscode'),
   });
   return result.success;
 }

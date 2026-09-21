@@ -5,6 +5,7 @@ import { colorNumberToHex } from '@/src/utils/format';
 import React, { useCallback, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { Person } from '../../persons/api/persons';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   persons: Person[];
@@ -17,9 +18,10 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
   persons,
   selectedId,
   onSelect,
-  label = 'Linked person',
+  label,
 }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { colors, typography } = theme;
 
@@ -27,7 +29,7 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>{label}</Text>
+      <Text style={[styles.label, { color: colors.textMuted }]}>{label ?? t('transactions.linkedPerson')}</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -39,7 +41,7 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
           onPress={handleNone}
         >
           <Text style={[styles.chipText, { color: selectedId === null ? colors.primary : colors.textMuted }]}>
-            None
+            {t('transactions.none')}
           </Text>
         </BentoPressable>
 

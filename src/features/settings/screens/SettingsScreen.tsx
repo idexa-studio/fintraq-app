@@ -21,6 +21,7 @@ import { useAppLock } from '@/src/providers/AppLockProvider';
 import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
+import { useAppLanguage } from '@/src/providers/I18nProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
 import { getFormattedAppVersion } from '@/src/utils/version';
@@ -42,6 +43,7 @@ import {
   ShieldKeyIcon,
   SparklesIcon,
   Sun01Icon,
+  TranslateIcon,
   UserGroupIcon,
 } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
@@ -51,6 +53,7 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import { useRouter } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
 import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Platform,
@@ -222,10 +225,10 @@ const createRowStyles = ({ colors, typography, spacing }: ThemeContextType) =>
    Theme options
 ───────────────────────────────────────────────────────────── */
 
-const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: IconSvgElement }[] = [
-  { label: 'Light', value: 'light', icon: Sun01Icon },
-  { label: 'Dark', value: 'dark', icon: Moon01Icon },
-  { label: 'Follow system', value: 'system', icon: ContrastIcon },
+const THEME_OPTIONS: { label: 'light' | 'dark' | 'followSystem'; value: 'light' | 'dark' | 'system'; icon: IconSvgElement }[] = [
+  { label: 'light', value: 'light', icon: Sun01Icon },
+  { label: 'dark', value: 'dark', icon: Moon01Icon },
+  { label: 'followSystem', value: 'system', icon: ContrastIcon },
 ];
 
 /* ─────────────────────────────────────────────────────────────
@@ -233,12 +236,14 @@ const THEME_OPTIONS: { label: string; value: 'light' | 'dark' | 'system'; icon: 
 ───────────────────────────────────────────────────────────── */
 
 export const SettingsScreen = React.memo(function SettingsScreen() {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors, isDark } = theme;
   const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
   const { isPremium } = usePremium();
   const { profile, updateProfile } = useSettings();
+  const { language, setLanguage } = useAppLanguage();
   const { isConnected: isBackupConnected } = useGoogleBackup();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -247,6 +252,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const { privacyUrl, termsUrl } = useAppConfig();
   const [showPinSetup, setShowPinSetup] = useState(false);
   const [showThemeDialog, setShowThemeDialog] = useState(false);
+  const [showLanguageDialog, setShowLanguageDialog] = useState(false);
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -276,10 +282,10 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         title: config.title,
         message: config.message,
         type: config.type || 'info',
-        buttons: config.buttons || [{ text: 'OK' }],
+        buttons: config.buttons || [{ text: t('common.ok') }],
       });
     },
-    [],
+    [t],
   );
 
   /* ── App lock ── */
@@ -288,15 +294,15 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       const cap = await getBiometricCapability();
       let confirmed = false;
       if (lockMode === 'biometric' && cap.available) {
-        confirmed = await authenticateWithBiometrics('Confirm to disable lock');
+        confirmed = await authenticateWithBiometrics(t('settings.confirmDisableLock'));
       } else {
         confirmed = await new Promise<boolean>(resolve => {
           Alert.alert(
-            'Disable app lock',
-            'Are you sure you want to remove the app lock?',
+            t('settings.disableLock'),
+            t('settings.disableLockMessage'),
             [
-              { text: 'Cancel', style: 'cancel', onPress: () => resolve(false) },
-              { text: 'Disable', style: 'destructive', onPress: () => resolve(true) },
+              { text: t('common.cancel'), style: 'cancel', onPress: () => resolve(false) },
+              { text: t('settings.disable'), style: 'destructive', onPress: () => resolve(true) },
             ],
           );
         });
@@ -305,13 +311,13 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     } else {
       const cap = await getBiometricCapability();
       if (cap.available) {
-        const confirmed = await authenticateWithBiometrics('Confirm to enable lock');
+        const confirmed = await authenticateWithBiometrics(t('settings.confirmEnableLock'));
         if (confirmed) await enableLock('biometric');
       } else {
         setShowPinSetup(true);
       }
     }
-  }, [lockEnabled, lockMode, enableLock, disableLock]);
+  }, [lockEnabled, lockMode, enableLock, disableLock, t]);
 
   const handlePinSetupComplete = useCallback(async (pin: string) => {
     setShowPinSetup(false);
@@ -328,12 +334,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
     if (next) {
       const granted = await NotificationService.requestPermissions();
       if (!granted) {
-        Alert.alert('Permission required', 'Enable notifications in device settings.');
+        Alert.alert(t('settings.permissionRequired'), t('settings.enableNotifications'));
         return;
       }
     }
     await updateProfile({ reminderEnabled: next });
-  }, [profile.reminderEnabled, updateProfile]);
+  }, [profile.reminderEnabled, updateProfile, t]);
 
   /* ── Name ── */
   const openNameModal = useCallback(() => setShowNameModal(true), []);
@@ -393,12 +399,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       ]);
 
       showAlert({
-        title: 'Factory Reset Complete',
-        message: 'Your workspace data has been erased and cloud account disconnected. Tap OK to restart Fintraq.',
+        title: t('settings.resetComplete'),
+        message: t('settings.resetCompleteMessage'),
         type: 'success',
         buttons: [
           {
-            text: 'OK',
+            text: t('common.ok'),
             onPress: async () => {
               try {
                 await Updates.reloadAsync();
@@ -411,12 +417,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       });
     } catch {
       showAlert({
-        title: 'Reset Failed',
-        message: 'Could not complete factory reset. Please try again.',
+        title: t('settings.resetFailed'),
+        message: t('settings.resetFailedMessage'),
         type: 'error',
       });
     }
-  }, [router, queryClient, showAlert]);
+  }, [router, queryClient, showAlert, t]);
 
   /* ── Easter egg ── */
   const handleFooterTap = useCallback(() => {
@@ -432,13 +438,13 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   /* ── Links ── */
   const openPrivacy = useCallback(() => {
     if (!privacyUrl) return;
-    router.push({ pathname: '/webview', params: { url: privacyUrl, title: 'Privacy Policy' } });
-  }, [router, privacyUrl]);
+    router.push({ pathname: '/webview', params: { url: privacyUrl, title: t('settings.privacyTitle') } });
+  }, [router, privacyUrl, t]);
 
   const openTerms = useCallback(() => {
     if (!termsUrl) return;
-    router.push({ pathname: '/webview', params: { url: termsUrl, title: 'Terms of Use' } });
-  }, [router, termsUrl]);
+    router.push({ pathname: '/webview', params: { url: termsUrl, title: t('settings.termsTitle') } });
+  }, [router, termsUrl, t]);
 
   const openExport = useCallback(() => {
     router.push(isPremium ? '/export' : '/premium');
@@ -447,8 +453,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   /* ── Memos ── */
   const themeLabel = useMemo(() => {
     const match = THEME_OPTIONS.find(o => o.value === (profile.theme || 'system'));
-    return match?.label ?? 'Follow system';
-  }, [profile.theme]);
+    return t(`settings.${match?.label ?? 'followSystem'}`);
+  }, [profile.theme, t]);
 
   const reminderTimeDate = useMemo(() => {
     const [h, m] = profile.reminderTime.split(':').map(Number);
@@ -460,28 +466,39 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const themeDialogOptions = useMemo(() =>
     THEME_OPTIONS.map(o => ({
       key: o.value,
-      label: o.label,
+      label: t(`settings.${o.label}`),
       icon: o.icon,
       selected: (profile.theme || 'system') === o.value,
       onPress: async () => { await updateProfile({ theme: o.value }); },
     })),
-    [profile.theme, updateProfile],
+    [profile.theme, updateProfile, t],
   );
+
+  const languageLabel = useMemo(() => {
+    const key = language === 'system' ? 'systemDefault' : language === 'hi' ? 'hindi' : 'english';
+    return t(`settings.${key}`);
+  }, [language, t]);
+
+  const languageDialogOptions = useMemo(() => [
+    { key: 'system', label: t('settings.systemDefault'), selected: language === 'system', onPress: () => setLanguage('system') },
+    { key: 'en', label: t('settings.english'), selected: language === 'en', onPress: () => setLanguage('en') },
+    { key: 'hi', label: t('settings.hindi'), selected: language === 'hi', onPress: () => setLanguage('hi') },
+  ], [language, setLanguage, t]);
 
   const appVersion = getFormattedAppVersion();
   const monogram = (profile.name || 'W').charAt(0).toUpperCase();
 
   const lockSubtitle = lockMode === 'biometric'
-    ? 'Face ID / Fingerprint enabled'
+    ? t('settings.lockBiometric')
     : lockMode === 'pin'
-    ? 'PIN lock enabled'
-    : 'Biometric / PIN on resume';
+    ? t('settings.lockPin')
+    : t('settings.lockOff');
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
 
-      <Header title="Settings" />
+      <Header title={t('settings.title')} />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
@@ -491,8 +508,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             <Text style={styles.profileMonogram}>{monogram}</Text>
           </View>
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>{profile.name || 'Welcome'}</Text>
-            <Text style={styles.profilePlan}>{isPremium ? 'Pro member' : 'Free Tier'}</Text>
+            <Text style={styles.profileName}>{profile.name || t('settings.welcome')}</Text>
+            <Text style={styles.profilePlan}>{isPremium ? t('settings.proMember') : t('settings.freeTier')}</Text>
           </View>
           <HugeiconsIcon icon={PencilEdit01Icon} size={18} color={'rgba(255,255,255,0.5)'} />
         </BentoPressable>
@@ -503,11 +520,11 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             <BentoPressable onPress={() => router.push('/premium')} style={styles.upgradeRow}>
               <IconAvatar icon={SparklesIcon} color={colors.warning} variant="subtle" size={36} />
               <View style={styles.upgradeInfo}>
-                <Text style={styles.upgradeLabel}>Upgrade to Pro</Text>
-                <Text style={styles.upgradeSub}>Unlock all features</Text>
+                <Text style={styles.upgradeLabel}>{t('settings.upgradeToPro')}</Text>
+                <Text style={styles.upgradeSub}>{t('settings.unlockAllFeatures')}</Text>
               </View>
               <View style={styles.upgradePill}>
-                <Text style={styles.upgradePillText}>Upgrade</Text>
+                <Text style={styles.upgradePillText}>{t('settings.upgrade')}</Text>
               </View>
             </BentoPressable>
           ) : (
@@ -515,9 +532,9 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
               theme={theme}
               icon={SparklesIcon}
               iconColor={colors.warning}
-              label="Fintraq Pro — Lifetime"
-              subtitle="Permanent access to all features"
-              value="Active"
+              label={t('settings.proLifetime')}
+              subtitle={t('settings.permanentAccess')}
+              value={t('settings.active')}
               showArrow={false}
               onPress={() => router.push('/premium')}
             />
@@ -525,14 +542,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         </View>
 
         {/* ── Notifications ── */}
-        <Text style={styles.sectionLabel}>Notifications</Text>
+        <Text style={styles.sectionLabel}>{t('settings.notifications')}</Text>
         <View style={styles.group}>
           <SwitchRow
             theme={theme}
             icon={BellIcon}
             iconColor={colors.info}
-            label="Daily reminder"
-            subtitle={profile.reminderEnabled ? `On · ${profile.reminderTime}` : 'Get a nudge to log transactions'}
+            label={t('settings.dailyReminder')}
+            subtitle={profile.reminderEnabled ? t('settings.reminderOn', { time: profile.reminderTime }) : t('settings.reminderOff')}
             value={profile.reminderEnabled}
             onToggle={handleToggleReminders}
           />
@@ -543,7 +560,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
                 theme={theme}
                 icon={AlarmClockIcon}
                 iconColor={colors.info}
-                label="Reminder time"
+                label={t('settings.reminderTime')}
                 value={profile.reminderTime}
                 showArrow={false}
                 onPress={() => setShowTimePicker(true)}
@@ -553,13 +570,13 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         </View>
 
         {/* ── Preferences ── */}
-        <Text style={styles.sectionLabel}>Preferences</Text>
+        <Text style={styles.sectionLabel}>{t('settings.preferences')}</Text>
         <View style={styles.group}>
           <NavRow
             theme={theme}
             icon={Coins02Icon}
             iconColor={colors.success}
-            label="Default currency"
+            label={t('settings.defaultCurrency')}
             value={profile.defaultCurrency || 'USD'}
             showArrow={false}
             onPress={() => setShowCurrencyPicker(true)}
@@ -567,9 +584,19 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <RowSeparator theme={theme} />
           <NavRow
             theme={theme}
+            icon={TranslateIcon}
+            iconColor={colors.info}
+            label={t('settings.language')}
+            subtitle={languageLabel}
+            showArrow={false}
+            onPress={() => setShowLanguageDialog(true)}
+          />
+          <RowSeparator theme={theme} />
+          <NavRow
+            theme={theme}
             icon={ContrastIcon}
             iconColor={colors.textMuted}
-            label="Appearance"
+            label={t('settings.appearance')}
             subtitle={themeLabel}
             showArrow={false}
             onPress={() => setShowThemeDialog(true)}
@@ -579,7 +606,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             theme={theme}
             icon={LockPasswordIcon}
             iconColor={colors.primary}
-            label="App lock"
+            label={t('settings.appLock')}
             subtitle={lockSubtitle}
             value={lockEnabled}
             onToggle={handleToggleLock}
@@ -591,8 +618,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
                 theme={theme}
                 icon={PinCodeIcon}
                 iconColor={colors.primary}
-                label="Change PIN"
-                subtitle="Update security PIN code"
+                label={t('settings.changePin')}
+                subtitle={t('settings.updatePin')}
                 onPress={handleChangePinPress}
               />
             </>
@@ -600,15 +627,15 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         </View>
 
         {/* ── Data & Backup ── */}
-        <Text style={styles.sectionLabel}>Data & Backup</Text>
+        <Text style={styles.sectionLabel}>{t('settings.dataBackup')}</Text>
         <View style={styles.group}>
           <NavRow
             theme={theme}
             icon={CloudIcon}
             iconColor={isBackupConnected ? colors.success : colors.primary}
-            label="Cloud Backup"
-            subtitle={isBackupConnected ? 'Cloud auto-sync active' : 'Back up & restore via Cloud Sync'}
-            value={isBackupConnected ? 'Connected' : 'Not set up'}
+            label={t('settings.cloudBackup')}
+            subtitle={isBackupConnected ? t('settings.cloudActive') : t('settings.cloudSetup')}
+            value={isBackupConnected ? t('settings.connected') : t('settings.notSetUp')}
             onPress={() => router.push('/(main)/backup')}
           />
           <RowSeparator theme={theme} />
@@ -616,8 +643,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             theme={theme}
             icon={GridIcon}
             iconColor={colors.success}
-            label="Categories"
-            subtitle="Manage expense/income categories"
+            label={t('settings.categories')}
+            subtitle={t('settings.categoriesHint')}
             onPress={() => router.push('/categories')}
           />
           <RowSeparator theme={theme} />
@@ -625,8 +652,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             theme={theme}
             icon={UserGroupIcon}
             iconColor={colors.info}
-            label="People"
-            subtitle="Manage people linked to transactions"
+            label={t('settings.people')}
+            subtitle={t('settings.peopleHint')}
             onPress={() => router.push('/persons')}
           />
           <RowSeparator theme={theme} />
@@ -634,21 +661,21 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             theme={theme}
             icon={Download01Icon}
             iconColor={colors.textMuted}
-            label="Export CSV"
-            subtitle="Download data as spreadsheet"
+            label={t('settings.exportCsv')}
+            subtitle={t('settings.exportHint')}
             onPress={openExport}
           />
         </View>
 
         {/* ── Legal ── */}
-        <Text style={styles.sectionLabel}>Legal</Text>
+        <Text style={styles.sectionLabel}>{t('settings.legal')}</Text>
         <View style={styles.group}>
           <NavRow
             theme={theme}
             icon={ShieldKeyIcon}
             iconColor={colors.textMuted}
-            label="Privacy policy"
-            subtitle="How we manage your data"
+            label={t('settings.privacy')}
+            subtitle={t('settings.privacyHint')}
             onPress={openPrivacy}
           />
           <RowSeparator theme={theme} />
@@ -656,20 +683,20 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             theme={theme}
             icon={File01Icon}
             iconColor={colors.textMuted}
-            label="Terms of service"
-            subtitle="App rules and conditions"
+            label={t('settings.terms')}
+            subtitle={t('settings.termsHint')}
             onPress={openTerms}
           />
         </View>
 
         {/* ── Danger zone ── */}
-        <Text style={styles.sectionLabel}>Danger zone</Text>
+        <Text style={styles.sectionLabel}>{t('settings.dangerZone')}</Text>
         <View style={styles.group}>
           <NavRow
             theme={theme}
             icon={Delete01Icon}
-            label="Factory reset"
-            subtitle="Erase all data and start fresh"
+            label={t('settings.factoryReset')}
+            subtitle={t('settings.factoryResetHint')}
             onPress={() => setShowResetDialog(true)}
             destructive
           />
@@ -693,7 +720,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         >
           <View style={styles.footer}>
             <Text style={styles.footerBrand}>Fintraq / Core</Text>
-            <Text style={styles.footerCopy}>Data encrypted and stored locally. v{appVersion}</Text>
+            <Text style={styles.footerCopy}>{t('settings.footer', { version: appVersion })}</Text>
           </View>
         </TouchableOpacity>
       </ScrollView>
@@ -709,16 +736,23 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       <OptionsDialog
         visible={showThemeDialog}
         onClose={() => setShowThemeDialog(false)}
-        title="App theme"
+        title={t('settings.appTheme')}
         options={themeDialogOptions}
+      />
+
+      <OptionsDialog
+        visible={showLanguageDialog}
+        onClose={() => setShowLanguageDialog(false)}
+        title={t('settings.appLanguage')}
+        options={languageDialogOptions}
       />
 
       <ConfirmDialog
         visible={showResetDialog}
         onClose={() => setShowResetDialog(false)}
-        title="Factory reset"
-        message="This permanently erases all accounts, categories, and transactions. Cannot be undone."
-        confirmLabel="Erase everything"
+        title={t('settings.factoryReset')}
+        message={t('settings.resetMessage')}
+        confirmLabel={t('settings.eraseEverything')}
         destructive
         onConfirm={runReset}
       />
@@ -727,12 +761,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         visible={showNameModal}
         onClose={closeNameModal}
         onSave={saveName}
-        title="Display name"
-        subtitle="How you are greeted on the dashboard"
+        title={t('settings.displayName')}
+        subtitle={t('settings.displayNameHint')}
         initialValue={profile.name || ''}
-        placeholder="Your name"
+        placeholder={t('settings.yourName')}
         maxLength={30}
-        saveLabel="Save"
+        saveLabel={t('common.save')}
         inputProps={{ autoCapitalize: 'words' }}
       />
 

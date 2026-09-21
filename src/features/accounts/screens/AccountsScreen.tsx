@@ -22,12 +22,14 @@ import { useRouter } from 'expo-router';
 import { WalkthroughOverlay, ACCOUNTS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { StorageKeys } from '@/src/constants/keys';
 import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Account } from '../api/accounts';
 
 export const AccountsScreen = React.memo(function AccountsScreen() {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
   const insets = useSafeAreaInsets();
@@ -69,12 +71,12 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
     } catch (e: any) {
       setShowDeleteConfirm(false);
       showAlert({
-        title: 'Cannot delete account',
-        message: e.message || 'Failed to delete account.',
+        title: t('accounts.cannotDelete'),
+        message: e.message || t('accounts.deleteFailed'),
         type: 'error',
       });
     }
-  }, [selectedAccount, deleteAccount, showAlert]);
+  }, [selectedAccount, deleteAccount, showAlert, t]);
 
   const handleCardPress = useCallback((accountId: number) => {
     router.push(`/(main)/accounts/${accountId}`);
@@ -88,24 +90,24 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
     if (!selectedAccount) return [];
     const hasTransactions = selectedAccount.income > 0 || selectedAccount.expense > 0;
     return [
-      { key: 'edit', label: 'Edit', icon: PencilEdit01Icon, onPress: handleEdit },
+      { key: 'edit', label: t('accounts.edit'), icon: PencilEdit01Icon, onPress: handleEdit },
       {
         key: 'delete',
-        label: 'Delete',
+        label: t('accounts.delete'),
         icon: Delete01Icon,
         destructive: true,
         disabled: hasTransactions,
-        hint: hasTransactions ? 'Remove all transactions first' : undefined,
+        hint: hasTransactions ? t('accounts.removeTransactions') : undefined,
         onPress: handleDeletePress,
       },
     ];
-  }, [selectedAccount, handleEdit, handleDeletePress]);
+  }, [selectedAccount, handleEdit, handleDeletePress, t]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
 
-      <Header title="Accounts" />
+      <Header title={t('accounts.title')} />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {accounts?.map((account) => {
@@ -154,7 +156,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
 
               {/* ── Balance section ── */}
               <View style={styles.balanceSection}>
-                <Text style={styles.balanceLabel}>Available balance</Text>
+                <Text style={styles.balanceLabel}>{t('accounts.availableBalance')}</Text>
                 <MoneyText
                   amount={account.balance}
                   currency={account.currency}
@@ -171,7 +173,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                 <View style={styles.statCell}>
                   <View style={styles.statLabelRow}>
                     <HugeiconsIcon icon={ArrowUp01Icon} size={12} color={colors.success} />
-                    <Text style={styles.statLabel}>Total in</Text>
+                    <Text style={styles.statLabel}>{t('accounts.totalIn')}</Text>
                   </View>
                   <MoneyText
                     amount={account.income}
@@ -187,7 +189,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
                 <View style={styles.statCell}>
                   <View style={styles.statLabelRow}>
                     <HugeiconsIcon icon={ArrowDown01Icon} size={12} color={colors.danger} />
-                    <Text style={styles.statLabel}>Total out</Text>
+                    <Text style={styles.statLabel}>{t('accounts.totalOut')}</Text>
                   </View>
                   <MoneyText
                     amount={account.expense}
@@ -204,7 +206,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
 
         {accounts && accounts.length === 0 ? (
           <View style={styles.empty}>
-            <Text style={styles.emptyText}>No accounts yet</Text>
+            <Text style={styles.emptyText}>{t('accounts.none')}</Text>
           </View>
         ) : null}
       </ScrollView>
@@ -216,16 +218,16 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
       <OptionsDialog
         visible={showOptions}
         onClose={closeOptions}
-        title={selectedAccount?.name ?? 'Account'}
+        title={selectedAccount?.name ?? t('accounts.account')}
         options={accountOptions}
       />
 
       <ConfirmDialog
         visible={showDeleteConfirm}
         onClose={closeDelete}
-        title="Delete account"
-        message={selectedAccount ? `Delete "${selectedAccount.name}"? This action cannot be undone.` : undefined}
-        confirmLabel="Delete"
+        title={t('accounts.deleteTitle')}
+        message={selectedAccount ? t('accounts.deleteMessage', { name: selectedAccount.name }) : undefined}
+        confirmLabel={t('accounts.delete')}
         onConfirm={handleDeleteConfirm}
         isLoading={deleteAccount.isPending}
       />

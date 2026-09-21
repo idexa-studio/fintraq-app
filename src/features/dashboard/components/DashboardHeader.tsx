@@ -4,6 +4,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   name?: string;
@@ -11,20 +12,22 @@ type Props = {
   onSearch: () => void;
 };
 
-function getGreeting(): string {
+function getGreetingKey() {
   const h = new Date().getHours();
-  if (h < 12) return 'Good morning';
-  if (h < 17) return 'Good afternoon';
-  return 'Good evening';
+  if (h < 12) return 'common.goodMorning';
+  if (h < 17) return 'common.goodAfternoon';
+  return 'common.goodEvening';
 }
 
 export const DashboardHeader = React.memo(function DashboardHeader({ name, isPremium, onSearch }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const monogram = useMemo(() => (name || 'F').charAt(0).toUpperCase(), [name]);
-  const greeting = useMemo(() => getGreeting(), []);
+  const greetingKey = useMemo(() => getGreetingKey(), []);
+  const greeting = t(greetingKey);
   const displayName = name?.split(' ')[0] ?? '';
 
   return (

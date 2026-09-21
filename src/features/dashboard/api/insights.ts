@@ -6,6 +6,7 @@ import { formatCurrency } from '../../../utils/format';
 import { InsightStatus, InsightTrend, TransactionType } from '../../../types';
 import { MaterialIconName } from '../../../utils/icons';
 import { LoggerService } from '@/src/services/logger.service';
+import i18n from '@/src/i18n';
 
 type InsightBase = {
   id: string;
@@ -51,12 +52,12 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
       insights.push({
         id: 'weekly-spend',
         type: (isUp ? 'danger' : 'success') as InsightStatus,
-        title: isUp ? `Spending up ${absChange.toFixed(0)}%` : `Spending down ${absChange.toFixed(0)}%`,
+        title: isUp ? i18n.t('insights.spendingUp', { pct: absChange.toFixed(0) }) : i18n.t('insights.spendingDown', { pct: absChange.toFixed(0) }),
         valueType: 'text',
         text: `${isUp ? '+' : ''}${absChange.toFixed(0)}%`,
         subtitle: isUp
-          ? `vs last week. Check if anything snuck in — a quick audit never hurts.`
-          : `vs last week. You kept things tighter than usual — well done.`,
+          ? i18n.t('insights.spendingUpHint')
+          : i18n.t('insights.spendingDownHint'),
         icon: isUp ? 'trending-up' : 'trending-down',
         trend: (isUp ? 'up' : 'down') as InsightTrend,
       });
@@ -73,12 +74,12 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
           insights.push({
             id: 'income-change',
             type: (isUp ? 'success' : 'warning') as InsightStatus,
-            title: isUp ? `💰 Income rose ${absChange.toFixed(0)}%` : `Income dipped ${absChange.toFixed(0)}%`,
+            title: isUp ? i18n.t('insights.incomeUp', { pct: absChange.toFixed(0) }) : i18n.t('insights.incomeDown', { pct: absChange.toFixed(0) }),
             valueType: 'text',
             text: `${isUp ? '+' : ''}${absChange.toFixed(0)}%`,
             subtitle: isUp
-              ? `vs last week. Extra cash coming in — put some aside if you can.`
-              : `vs last week. Totally normal — income ebbs and flows.`,
+              ? i18n.t('insights.incomeUpHint')
+              : i18n.t('insights.incomeDownHint'),
             icon: isUp ? 'cash' : 'trending-down',
             trend: (isUp ? 'up' : 'down') as InsightTrend,
           });
@@ -97,12 +98,12 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
         insights.push({
           id: 'savings-rate',
           type: 'success' as InsightStatus,
-          title: `Saving at ${rate.toFixed(0)}% — ${adj} pace`,
+          title: i18n.t('insights.savingAt', { rate: rate.toFixed(0), adj: i18n.t(`insights.${adj}`) }),
           valueType: 'text',
           text: `${rate.toFixed(0)}%`,
           subtitle: dir
-            ? `Your savings rate is ${dir} from last week. ${rate > 50 ? 'You\'re building a nice cushion.' : 'Keep at it — every bit counts.'}`
-            : `Keeping things consistent. ${rate > 50 ? 'Your future self will thank you.' : 'Steady wins the race.'}`,
+            ? i18n.t(dir === 'up' ? 'insights.savingsUp' : 'insights.savingsDown', { tail: rate > 50 ? i18n.t('insights.cushion') : i18n.t('insights.keepAtIt') })
+            : i18n.t('insights.savingsSame', { tail: rate > 50 ? i18n.t('insights.futureSelf') : i18n.t('insights.steadyWins') }),
           icon: 'building',
         });
       }
@@ -135,12 +136,12 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
           insights.push({
             id: `cat-${r.categoryId}`,
             type: (isUp ? 'danger' : 'success') as InsightStatus,
-            title: `${isUp ? 'Spending spike' : 'Cut back on'} — ${r.name}`,
+            title: isUp ? i18n.t('insights.spike', { name: r.name }) : i18n.t('insights.cutBack', { name: r.name }),
             valueType: 'text',
             text: r.name as string,
             subtitle: isUp
-              ? `Up ${pct.toFixed(0)}% vs your average. You spent more on ${r.name} than usual this week.`
-              : `Down ${Math.abs(pct).toFixed(0)}% vs your average. You spent less on ${r.name} — nice discipline.`,
+              ? i18n.t('insights.spikeHint', { pct: pct.toFixed(0), name: r.name })
+              : i18n.t('insights.cutHint', { pct: Math.abs(pct).toFixed(0), name: r.name }),
             icon: isUp ? 'fire' : 'leaf',
             trend: (isUp ? 'up' : 'down') as InsightTrend,
           });
@@ -165,16 +166,16 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
           lastWeek.income - lastWeek.expense,
           saved,
         ];
-        if (saved >= Math.max(...allSaved)) best = ' Best week in 90 days.';
+        if (saved >= Math.max(...allSaved)) best = i18n.t('insights.bestWeek');
       }
 
       insights.push({
         id: 'weekly-summary',
         type: saved > 0 ? 'success' : 'warning' as InsightStatus,
-        title: 'Your week in review',
+        title: i18n.t('insights.weekReview'),
         valueType: 'text',
         text: '',
-        subtitle: `${formatCurrency(thisWeek.income, currency)} in · ${formatCurrency(thisWeek.expense, currency)} out · ${formatCurrency(Math.abs(saved), currency)} ${saved >= 0 ? 'saved' : 'overspent'}${best}`,
+        subtitle: `${i18n.t('insights.weekSummary', { income: formatCurrency(thisWeek.income, currency), expense: formatCurrency(thisWeek.expense, currency), amount: formatCurrency(Math.abs(saved), currency), verb: saved >= 0 ? i18n.t('insights.saved') : i18n.t('insights.overspent') })}${best}`,
         icon: 'receipt-text',
       });
     }
@@ -194,13 +195,13 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
       insights.push({
         id: 'monthly-net',
         type: (net > 0 ? 'success' : 'warning') as InsightStatus,
-        title: net > 0 ? 'This month is looking good' : 'A tight month so far',
+        title: net > 0 ? i18n.t('insights.monthGood') : i18n.t('insights.monthTight'),
         valueType: 'amount',
         amount: Math.abs(net),
         currency,
         subtitle: net > 0
-          ? `More in than out — you're building momentum.`
-          : `Spending ahead of income. No stress — just a nudge to check in.`,
+          ? i18n.t('insights.monthGoodHint')
+          : i18n.t('insights.monthTightHint'),
         icon: 'calendar-outline',
       });
     }

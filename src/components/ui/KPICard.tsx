@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { MoneyText } from './MoneyText';
 import { BentoPressable } from './BentoPressable';
+import { useTranslation } from 'react-i18next';
 
 type KPIMetrics = {
   income: number;
@@ -32,6 +33,7 @@ export const KPICard = React.memo(function KPICard({
   metrics,
 }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handleCurrencyPress = useCallback((curr: string) => {
@@ -71,7 +73,7 @@ export const KPICard = React.memo(function KPICard({
       <View style={styles.kpiBody}>
         <View style={styles.kpiMainContent}>
           <View>
-            <Text style={styles.kpiLabel}>Net savings</Text>
+            <Text style={styles.kpiLabel}>{t('transactions.netSavings')}</Text>
             <MoneyText
               amount={Math.abs(metrics.income - metrics.expense)}
               currency={selectedCurrency ?? undefined}
@@ -86,7 +88,7 @@ export const KPICard = React.memo(function KPICard({
 
         <View style={styles.kpiSecondaryContent}>
           <View style={styles.kpiCell}>
-            <Text style={styles.kpiLabelSmall}>Income</Text>
+            <Text style={styles.kpiLabelSmall}>{t('transactions.income')}</Text>
             <MoneyText
               amount={metrics.income}
               currency={selectedCurrency ?? undefined}
@@ -97,7 +99,7 @@ export const KPICard = React.memo(function KPICard({
           </View>
           <View style={styles.kpiVerticalSep} />
           <View style={styles.kpiCell}>
-            <Text style={styles.kpiLabelSmall}>Expenses</Text>
+            <Text style={styles.kpiLabelSmall}>{t('transactions.expenses')}</Text>
             <MoneyText
               amount={metrics.expense}
               currency={selectedCurrency ?? undefined}

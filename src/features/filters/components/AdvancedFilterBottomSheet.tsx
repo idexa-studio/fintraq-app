@@ -16,6 +16,7 @@ import * as Haptics from 'expo-haptics';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../api/advanced-filters.service';
+import { useTranslation } from 'react-i18next';
 
 interface AdvancedFilterBottomSheetProps {
   visible: boolean;
@@ -29,15 +30,16 @@ interface AdvancedFilterBottomSheetProps {
 }
 
 const TYPE_OPTS = [
-  { key: 'CR' as const, label: 'Income', icon: 'arrow-down-circle-outline' as const, colorKey: 'success' as const },
-  { key: 'DR' as const, label: 'Expense', icon: 'arrow-up-circle-outline' as const, colorKey: 'danger' as const },
-  { key: 'TR' as const, label: 'Transfer', icon: 'swap-horizontal' as const, colorKey: 'info' as const },
+  { key: 'CR' as const, label: 'income', icon: 'arrow-down-circle-outline' as const, colorKey: 'success' as const },
+  { key: 'DR' as const, label: 'expense', icon: 'arrow-up-circle-outline' as const, colorKey: 'danger' as const },
+  { key: 'TR' as const, label: 'transfer', icon: 'swap-horizontal' as const, colorKey: 'info' as const },
 ] as const;
 
 export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBottomSheet({
   visible, onClose, filters, onApply, onReset, accounts, categories, persons,
 }: AdvancedFilterBottomSheetProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, typography } = theme;
 
   const [local, setLocal] = useState<AdvancedFilters>(filters);
@@ -51,9 +53,9 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   const amountError = useMemo(() => {
     const mn = minAmt ? parseFloat(minAmt) : undefined;
     const mx = maxAmt ? parseFloat(maxAmt) : undefined;
-    if (mn !== undefined && mx !== undefined && mn > mx) return 'Min must be less than max';
+    if (mn !== undefined && mx !== undefined && mn > mx) return t('filters.minLessThanMax');
     return null;
-  }, [minAmt, maxAmt]);
+  }, [minAmt, maxAmt, t]);
 
   const scopedCategories = useMemo(() => {
     if (!local.types || local.types.length === 0) return categories;
@@ -188,7 +190,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
-              Filters
+              {t('filters.title')}
             </Text>
             {activeCount > 0 && (
               <View style={[styles.badge, { backgroundColor: colors.primary }]}>
@@ -202,7 +204,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             {activeCount > 0 && (
               <BentoPressable onPress={handleReset}>
                 <Text style={[styles.resetText, { fontFamily: typography.styles.buttonLabel.fontFamily, color: colors.danger }]}>
-                  Reset
+                  {t('filters.reset')}
                 </Text>
               </BentoPressable>
             )}
@@ -218,7 +220,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
         >
 
           <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-            Type
+            {t('filters.type')}
           </Text>
           <View style={styles.typeRow}>
             {TYPE_OPTS.map(opt => {
@@ -236,7 +238,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                   onPress={() => toggleType(opt.key)}
                 >
                   <Text style={[styles.typePillLabel, { fontFamily: typography.styles.chipLabel.fontFamily, color: sel ? c : colors.textMuted }]}>
-                    {opt.label}
+                    {t(`transactions.${opt.label}`)}
                   </Text>
                 </BentoPressable>
               );
@@ -244,7 +246,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           </View>
 
           <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-            Date range
+            {t('filters.dateRange')}
           </Text>
           <View style={styles.presetRow}>
             {(['today', 'week', 'month', 'last30'] as const).map(preset => {
@@ -268,7 +270,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 <BentoPressable style={styles.groupRow} onPress={() => setShowStart(true)}>
                   <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                    From
+                    {t('filters.from')}
                   </Text>
                   <Text style={[styles.groupRowValue, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
                     {fmt(local.dateRange.startDate)}
@@ -278,7 +280,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 <BentoPressable style={styles.groupRow} onPress={() => setShowEnd(true)}>
                   <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                    To
+                    {t('filters.to')}
                   </Text>
                   <Text style={[styles.groupRowValue, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
                     {fmt(local.dateRange.endDate)}
@@ -292,7 +294,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
               <BentoPressable style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)}>
                 <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
                 <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                  Set date range
+                  {t('filters.setDateRange')}
                 </Text>
                 <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} style={styles.groupChevron} />
               </BentoPressable>
@@ -300,12 +302,12 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           </View>
 
           <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-            Amount
+            {t('filters.amount')}
           </Text>
           <View style={[styles.group, { backgroundColor: colors.card }]}>
             <View style={styles.groupRow}>
               <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                Min
+                {t('filters.min')}
               </Text>
               <TextInput
                 style={[styles.amountInput, { fontFamily: typography.styles.inputValue.fontFamily, color: colors.text }]}
@@ -321,14 +323,14 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
             <View style={styles.groupRow}>
               <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                Max
+                {t('filters.max')}
               </Text>
               <TextInput
                 style={[styles.amountInput, { fontFamily: typography.styles.inputValue.fontFamily, color: colors.text }]}
                 value={maxAmt}
                 onChangeText={setMaxAmt}
                 keyboardType="decimal-pad"
-                placeholder="Any"
+                placeholder={t('filters.any')}
                 placeholderTextColor={colors.textMuted + '50'}
                 returnKeyType="done"
                 textAlign="right"
@@ -344,7 +346,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           {accounts.length > 0 && (
             <>
               <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-                Accounts
+                {t('filters.accounts')}
               </Text>
               <View style={styles.pillGrid}>
                 {accounts.map(a => {
@@ -396,7 +398,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           {persons.length > 0 && (
             <>
               <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-                Persons
+                {t('filters.persons')}
               </Text>
               <View style={styles.pillGrid}>
                 {persons.map(p => {
@@ -430,7 +432,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             disabled={!!amountError}
           >
             <Text style={[styles.applyLabel, { fontFamily: typography.styles.buttonLabel.fontFamily, color: colors.background }]}>
-              Apply filters
+              {t('filters.apply')}
             </Text>
           </BentoPressable>
         </View>

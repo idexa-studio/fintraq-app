@@ -10,6 +10,7 @@ import { format, isToday, isYesterday } from 'date-fns';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { BentoPressable } from './BentoPressable';
+import { useTranslation } from 'react-i18next';
 
 type TransactionData = {
   id: number;
@@ -53,6 +54,7 @@ export const TransactionRow = React.memo(function TransactionRow({
   showDate,
 }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, radius, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -81,9 +83,9 @@ export const TransactionRow = React.memo(function TransactionRow({
     const d = new Date(tx.datetime);
     const time = format(d, 'h:mm a');
     if (!showDate) return time;
-    const dateLabel = isToday(d) ? 'Today' : isYesterday(d) ? 'Yesterday' : format(d, 'MMM d');
+    const dateLabel = isToday(d) ? t('common.today') : isYesterday(d) ? t('common.yesterday') : format(d, 'MMM d');
     return `${time} · ${dateLabel}`;
-  }, [tx.datetime, showDate]);
+  }, [tx.datetime, showDate, t]);
 
   const containerStyle = useMemo(
     () => ({

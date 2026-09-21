@@ -11,34 +11,24 @@ import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GoogleBackupCard } from '../components/GoogleBackupCard';
+import { useTranslation } from 'react-i18next';
 
 const HIGHLIGHTS = [
-  {
-    icon: LockPasswordIcon,
-    title: '100% Private & Encrypted',
-    subtitle: 'Backups are stored inside your private personal cloud space, isolated from external access.',
-  },
-  {
-    icon: ShieldKeyIcon,
-    title: 'Zero Data Loss Peace of Mind',
-    subtitle: 'Switching phones or recovering your device? Restore your entire workspace in 1 tap anytime.',
-  },
-  {
-    icon: RefreshIcon,
-    title: 'Automated Scheduled Sync',
-    subtitle: 'Set and forget with daily, weekly, or monthly background auto-sync without interrupting your workflow.',
-  },
-];
+  { icon: LockPasswordIcon, key: 'private' },
+  { icon: ShieldKeyIcon, key: 'peace' },
+  { icon: RefreshIcon, key: 'autoSync' },
+] as const;
 
 export const BackupScreen = React.memo(function BackupScreen() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
     <SafeAreaView style={styles.container}>
       <PageBackground />
-      <Header title="Cloud Backup" showBack />
+      <Header title={t('backup.title')} showBack />
 
       <ScrollView
         style={styles.scrollView}
@@ -46,22 +36,22 @@ export const BackupScreen = React.memo(function BackupScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Section Header */}
-        <Text style={styles.sectionLabel}>Cloud Storage Integration</Text>
+        <Text style={styles.sectionLabel}>{t('backup.storageIntegration')}</Text>
 
         {/* Main Google Backup Bento Card */}
         <GoogleBackupCard />
 
         {/* Highlights Section */}
-        <Text style={styles.sectionLabel}>Security & Compatibility</Text>
+        <Text style={styles.sectionLabel}>{t('backup.securityCompat')}</Text>
         <View style={styles.groupContainer}>
           {HIGHLIGHTS.map((item, index) => (
-            <React.Fragment key={item.title}>
+            <React.Fragment key={item.key}>
               {index > 0 && <View style={styles.separator} />}
               <View style={styles.highlightRow}>
                 <IconAvatar icon={item.icon} color={colors.primary} variant="subtle" size={36} />
                 <View style={styles.highlightInfo}>
-                  <Text style={styles.highlightTitle}>{item.title}</Text>
-                  <Text style={styles.highlightSubtitle}>{item.subtitle}</Text>
+                  <Text style={styles.highlightTitle}>{t(`backup.${item.key}`)}</Text>
+                  <Text style={styles.highlightSubtitle}>{t(`backup.${item.key}Detail`)}</Text>
                 </View>
               </View>
             </React.Fragment>

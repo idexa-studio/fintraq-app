@@ -16,11 +16,13 @@ import type { LoanWithStats } from '../api/loans';
 import { LoanCard } from '../components/LoanCard';
 import { useLoans, useLoansCount } from '../hooks/loans';
 import { FREE_LOAN_LIMIT } from '../../../constants/iap';
+import { useTranslation } from 'react-i18next';
 
 type Tab = 'lend' | 'borrow';
 
 export const LoansScreen = React.memo(function LoansScreen() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, typography } = theme;
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
@@ -84,7 +86,7 @@ export const LoansScreen = React.memo(function LoansScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header title="Loans" showBack />
+      <Header title={t('loans.title')} showBack />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Limit banner */}
@@ -118,13 +120,13 @@ export const LoansScreen = React.memo(function LoansScreen() {
         <View style={styles.summaryRow}>
           <View style={[styles.summaryTile, { backgroundColor: colors.success + '12' }]}>
             <Text style={[styles.summaryLabel, { color: colors.success }]}>
-              Lent out
+              {t('loans.lentOut')}
             </Text>
             <MoneyText amount={totalLent} currency={selectedCurrency} type="CR" weight="bold" compact style={styles.summaryAmount} />
           </View>
           <View style={[styles.summaryTile, { backgroundColor: colors.danger + '12' }]}>
             <Text style={[styles.summaryLabel, { color: colors.danger }]}>
-              Borrowed
+              {t('loans.borrowed')}
             </Text>
             <MoneyText amount={totalBorrowed} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.summaryAmount} />
           </View>
@@ -150,7 +152,7 @@ export const LoansScreen = React.memo(function LoansScreen() {
                     color={isActive ? activeColor : colors.textMuted}
                   />
                   <Text style={[styles.tabSegmentText, { color: isActive ? activeColor : colors.textMuted }]}>
-                    {isLend ? 'Lent' : 'Borrowed'} ({count})
+                    {isLend ? t('loans.lent') : t('loans.borrowed')} ({count})
                   </Text>
                 </View>
               </BentoPressable>
@@ -166,14 +168,14 @@ export const LoansScreen = React.memo(function LoansScreen() {
                 <HugeiconsIcon icon={HandshakeIcon} size={32} color={colors.textMuted} />
               </View>
               <Text style={styles.emptyTitle}>
-                No {activeTab === 'lend' ? 'lent' : 'borrowed'} loans
+                {activeTab === 'lend' ? t('loans.noLent') : t('loans.noBorrowed')}
               </Text>
               <Text style={styles.emptyText}>
-                Keep track of money you lend to or borrow from others here.
+                {t('loans.emptyHint')}
               </Text>
               <BentoPressable style={styles.emptyBtn} onPress={handleAdd}>
                 <HugeiconsIcon icon={PlusSignIcon} size={15} color={colors.primaryForeground} />
-                <Text style={styles.emptyBtnText}>Add a loan</Text>
+                <Text style={styles.emptyBtnText}>{t('loans.addLoan')}</Text>
               </BentoPressable>
             </View>
           ) : (
@@ -198,7 +200,7 @@ export const LoansScreen = React.memo(function LoansScreen() {
         {repaidList.length > 0 && (
           <>
             <Text style={styles.sectionLabel}>
-              Repaid
+              {t('loans.repaid')}
             </Text>
             {repaidList.map((loan) => (
               <LoanCard

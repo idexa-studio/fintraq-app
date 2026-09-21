@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
+import { useTranslation } from 'react-i18next';
 
 type ConfirmDialogProps = {
   visible: boolean;
@@ -21,12 +22,13 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   title,
   message,
   onConfirm,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel,
+  cancelLabel,
   destructive = true,
   isLoading = false,
 }: ConfirmDialogProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -49,7 +51,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
           <View style={styles.actions}>
             <BentoPressable style={styles.btnCancel} onPress={onClose}>
               <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85} style={styles.btnCancelText}>
-                {cancelLabel}
+                {cancelLabel ?? t('common.cancel')}
               </Text>
             </BentoPressable>
 
@@ -62,7 +64,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
                 <ActivityIndicator color={colors.background} size="small" />
               ) : (
                 <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85} style={styles.btnConfirmText}>
-                  {confirmLabel}
+                  {confirmLabel ?? t('common.confirm')}
                 </Text>
               )}
             </BentoPressable>

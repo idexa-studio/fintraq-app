@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
 import { recordFirebaseError } from '../../services/firebase';
 import { BentoPressable } from './BentoPressable';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   children: React.ReactNode;
@@ -16,10 +17,11 @@ type State = {
 
 function ErrorFallback({ error, onReset }: { error: Error | null; onReset: () => void }) {
   const { colors, typography } = useTheme();
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <Text style={[styles.title, { fontFamily: typography.styles.emptyTitle.fontFamily, color: colors.text }]}>
-        Something went wrong
+        {t('ui.somethingWrong')}
       </Text>
       <Text style={[styles.message, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
         {error?.message}
@@ -29,7 +31,7 @@ function ErrorFallback({ error, onReset }: { error: Error | null; onReset: () =>
         onPress={onReset}
       >
         <Text style={[styles.buttonText, { fontFamily: typography.styles.buttonLabel.fontFamily, color: colors.background }]}>
-          Try again
+          {t('common.tryAgain')}
         </Text>
       </BentoPressable>
     </View>

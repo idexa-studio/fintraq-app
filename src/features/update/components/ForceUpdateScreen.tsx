@@ -6,6 +6,7 @@ import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { Button } from '@/src/components/ui/Button';
 import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   androidStoreUrl: string;
@@ -19,20 +20,17 @@ const INFO_CARDS = [
   {
     icon: FlashIcon,
     colorKey: 'primary' as const,
-    label: "What's new",
-    detail: 'Performance improvements, bug fixes, and refined experience.',
+    label: 'whatsNew' as const,
   },
   {
     icon: LockPasswordIcon,
     colorKey: 'success' as const,
-    label: 'Your data is safe',
-    detail: 'All your data stays on your device, untouched.',
+    label: 'dataSafe' as const,
   },
   {
     icon: BarChartIcon,
     colorKey: 'info' as const,
-    label: 'Free update',
-    detail: 'All Fintraq updates are free, forever.',
+    label: 'freeUpdate' as const,
   },
 ];
 
@@ -43,6 +41,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
   message,
 }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -91,13 +90,12 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
         >
           {/* Step meta */}
           <View style={styles.stepMeta}>
-            <Text style={styles.eyebrow}>Update required</Text>
+            <Text style={styles.eyebrow}>{t('update.required')}</Text>
             <Text style={styles.stepTitle}>
-              Version {latestVersion}{'\n'}is available
+              {t('update.versionAvailable', { version: latestVersion })}
             </Text>
             <Text style={styles.stepSubtitle}>
-              {message ||
-                'Please update Fintraq to continue. It only takes a moment.'}
+              {message || t('update.defaultMessage')}
             </Text>
           </View>
 
@@ -113,8 +111,8 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
                   iconSize={22}
                 />
                 <View style={styles.cardText}>
-                  <Text style={styles.cardLabel}>{card.label}</Text>
-                  <Text style={styles.cardDetail}>{card.detail}</Text>
+                  <Text style={styles.cardLabel}>{t(`update.${card.label}`)}</Text>
+                  <Text style={styles.cardDetail}>{t(`update.${card.label}Detail`)}</Text>
                 </View>
               </View>
             ))}
@@ -123,7 +121,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
 
         {/* ── Pinned footer ─────────────────────────────────────────────────── */}
         <View style={styles.footer}>
-          <Button title="Update now" onPress={handleUpdatePress} variant="primary" size="lg" />
+          <Button title={t('update.updateNow')} onPress={handleUpdatePress} variant="primary" size="lg" />
         </View>
       </Animated.View>
     </SafeAreaView>

@@ -2,13 +2,15 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import type { DowSpend } from '../api/analytics';
+import { useTranslation } from 'react-i18next';
 
 type Props = { data: DowSpend[] };
 
-const DOW_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+const DOW_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'] as const;
 
 export const DowChart = React.memo(function DowChart({ data }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -19,9 +21,9 @@ export const DowChart = React.memo(function DowChart({ data }: Props) {
       const total = entry?.total ?? 0;
       const ratio = total / maxVal;
       const color = ratio > 0.7 ? colors.danger : ratio > 0.35 ? colors.warning : colors.success;
-      return { dow, label: DOW_LABELS[dow], total, ratio, color };
+      return { dow, label: t(`calendar.daysShort.${DOW_KEYS[dow]}`), total, ratio, color };
     });
-  }, [data, colors]);
+  }, [data, colors, t]);
 
   return (
     <View style={styles.row}>

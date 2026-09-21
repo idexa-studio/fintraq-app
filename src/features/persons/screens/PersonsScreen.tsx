@@ -15,9 +15,11 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
+import { useTranslation } from 'react-i18next';
 
 export const PersonsScreen = React.memo(function PersonsScreen() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, typography } = theme;
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
@@ -57,7 +59,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <PageBackground />
-      <Header title="People" showBack />
+      <Header title={t('persons.title')} showBack />
 
       {persons.length > 0 && (
         <View style={styles.searchRow}>
@@ -67,7 +69,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
               style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
               value={query}
               onChangeText={setQuery}
-              placeholder="Search persons..."
+              placeholder={t('persons.searchPlaceholder')}
               placeholderTextColor={colors.textMuted + '80'}
               autoCorrect={false}
               autoCapitalize="none"
@@ -136,10 +138,10 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
           <View style={styles.empty}>
             <HugeiconsIcon icon={UserGroupIcon} size={32} color={colors.textMuted} />
             <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              No persons yet
+              {t('persons.none')}
             </Text>
             <Text style={[styles.emptyHint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              Add people to link with transactions
+              {t('persons.noneHint')}
             </Text>
           </View>
         )}

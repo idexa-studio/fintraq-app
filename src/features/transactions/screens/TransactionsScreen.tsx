@@ -33,6 +33,7 @@ import {
 } from '../hooks/transactions';
 
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 const SWIPE_ACTION_WIDTH = 44;
 type SwipeableInstance = React.ComponentRef<typeof Swipeable>;
@@ -268,6 +269,7 @@ const FilterChip = React.memo(function FilterChip({
 
 
 export const TransactionsScreen = React.memo(function TransactionsScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<{ accountId?: string | string[]; categoryId?: string | string[] }>();
   const initialAccountId = React.useMemo(() => resolveParamNumber(params.accountId), [params.accountId]);
@@ -427,8 +429,8 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
 
   const activeFilterCount = AdvancedFilterService.countActiveFilters(advancedFilters);
   const summaryLabel = useMemo(
-    () => activeFilterCount > 0 ? 'Filtered summary' : 'Net savings',
-    [activeFilterCount],
+    () => activeFilterCount > 0 ? t('transactions.filteredSummary') : t('transactions.netSavings'),
+    [activeFilterCount, t],
   );
 
   const isSortActive = useMemo(() => {
@@ -452,58 +454,58 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
 
   const typeLabel = useMemo(() => {
     const types = advancedFilters.types ?? [];
-    if (types.length === 0) return 'Type';
+    if (types.length === 0) return t('transactions.type');
     if (types.length === 1) {
-      return types[0] === 'CR' ? 'Income' : types[0] === 'DR' ? 'Expense' : 'Transfer';
+      return types[0] === 'CR' ? t('transactions.income') : types[0] === 'DR' ? t('transactions.expense') : t('transactions.transfer');
     }
-    return `${types.length} types`;
-  }, [advancedFilters.types]);
+    return t('transactions.typesCount', { count: types.length });
+  }, [advancedFilters.types, t]);
 
   const accountLabel = useMemo(() => {
     const ids = advancedFilters.accountIds ?? [];
-    if (ids.length === 0) return 'Account';
+    if (ids.length === 0) return t('transactions.account');
     if (ids.length === 1) {
       const acc = accountsQuery.data?.find(a => a.id === ids[0]);
-      return acc ? acc.name : '1 account';
+      return acc ? acc.name : t('transactions.oneAccount');
     }
-    return `${ids.length} accounts`;
-  }, [advancedFilters.accountIds, accountsQuery.data]);
+    return t('transactions.accountsCount', { count: ids.length });
+  }, [advancedFilters.accountIds, accountsQuery.data, t]);
 
   const categoryLabel = useMemo(() => {
     const ids = advancedFilters.categoryIds ?? [];
-    if (ids.length === 0) return 'Category';
+    if (ids.length === 0) return t('transactions.category');
     if (ids.length === 1) {
       const cat = categoriesQuery.data?.find(c => c.id === ids[0]);
-      return cat ? cat.name : '1 category';
+      return cat ? cat.name : t('transactions.oneCategory');
     }
-    return `${ids.length} categories`;
-  }, [advancedFilters.categoryIds, categoriesQuery.data]);
+    return t('transactions.categoriesCount', { count: ids.length });
+  }, [advancedFilters.categoryIds, categoriesQuery.data, t]);
 
   const dateLabel = useMemo(() => {
-    if (!advancedFilters.dateRange) return 'Date';
+    if (!advancedFilters.dateRange) return t('transactions.date');
     const start = format(new Date(advancedFilters.dateRange.startDate), 'MMM d');
     const end = format(new Date(advancedFilters.dateRange.endDate), 'MMM d');
     return `${start} - ${end}`;
-  }, [advancedFilters.dateRange]);
+  }, [advancedFilters.dateRange, t]);
 
   const amountLabel = useMemo(() => {
-    if (!advancedFilters.amountRange) return 'Amount';
+    if (!advancedFilters.amountRange) return t('transactions.amount');
     const { min, max } = advancedFilters.amountRange;
     if (min !== undefined && max !== undefined) return `${min} – ${max}`;
     if (min !== undefined) return `≥${min}`;
     if (max !== undefined) return `≤${max}`;
-    return 'Amount';
-  }, [advancedFilters.amountRange]);
+    return t('transactions.amount');
+  }, [advancedFilters.amountRange, t]);
 
   const personLabel = useMemo(() => {
     const ids = advancedFilters.personIds ?? [];
-    if (ids.length === 0) return 'Person';
+    if (ids.length === 0) return t('transactions.person');
     if (ids.length === 1) {
       const person = personsQuery.data?.find(p => p.id === ids[0]);
-      return person ? person.name.split(' ')[0] : '1 person';
+      return person ? person.name.split(' ')[0] : t('transactions.onePerson');
     }
-    return `${ids.length} persons`;
-  }, [advancedFilters.personIds, personsQuery.data]);
+    return t('transactions.personsCount', { count: ids.length });
+  }, [advancedFilters.personIds, personsQuery.data, t]);
 
   const handleOpenSort = useCallback(() => {
     Haptics.selectionAsync().catch(() => { });
@@ -655,7 +657,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
       <PageBackground />
 
       <Header
-        title="Transactions"
+        title={t('transactions.title')}
         showBack
         rightAction={(
           <View style={styles.headerActions}>
@@ -710,7 +712,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                 >
                   {activeFilterCount > 0 && (
                     <FilterChip
-                      label="Clear all"
+                      label={t('transactions.clearAll')}
                       onPress={handleResetFilters}
                       isClearAll
                     />
@@ -782,20 +784,20 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
               <HugeiconsIcon icon={ReceiptTextIcon} size={32} color={colors.textMuted} />
             </View>
             <Text style={styles.emptyTitle}>
-              {activeFilterCount > 0 ? 'No results' : 'Nothing here yet'}
+              {activeFilterCount > 0 ? t('transactions.noResults') : t('transactions.nothingYet')}
             </Text>
             <Text style={styles.emptySubtitle}>
               {activeFilterCount > 0
-                ? 'No transactions match the active filters. Try adjusting or clearing them.'
-                : 'Add your first transaction to start tracking.'}
+                ? t('transactions.noMatch')
+                : t('transactions.addFirst')}
             </Text>
             {activeFilterCount > 0 ? (
               <BentoPressable style={[styles.emptyAction, { backgroundColor: colors.surface }]} onPress={handleResetFilters}>
-                <Text style={[styles.emptyActionText, { color: colors.text }]}>Clear filters</Text>
+                <Text style={[styles.emptyActionText, { color: colors.text }]}>{t('transactions.clearFilters')}</Text>
               </BentoPressable>
             ) : (
               <BentoPressable style={styles.emptyAction} onPress={handleAddTransaction}>
-                <Text style={styles.emptyActionText}>Add Transaction</Text>
+                <Text style={styles.emptyActionText}>{t('transactions.add')}</Text>
                 <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primaryForeground} />
               </BentoPressable>
             )}
@@ -813,9 +815,9 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
       <ConfirmDialog
         visible={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
-        title="Delete Transaction"
-        message="This will remove the transaction and reverse its account balance impact."
-        confirmLabel="Delete"
+        title={t('transactions.deleteTitle')}
+        message={t('transactions.deleteMessage')}
+        confirmLabel={t('transactions.delete')}
         onConfirm={() => {
           if (!pendingDeleteTx) return;
           deleteTransaction.mutate(pendingDeleteTx.id);
@@ -837,29 +839,29 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
       <OptionsDialog
         visible={showSortSheet}
         onClose={() => setShowSortSheet(false)}
-        title="Sort transactions"
+        title={t('transactions.sortTitle')}
         options={[
           {
             key: 'newest',
-            label: 'Newest first',
+            label: t('transactions.newest'),
             selected: advancedFilters.sortBy === 'date' && advancedFilters.sortOrder === 'desc',
             onPress: () => handleSortSelect('date', 'desc'),
           },
           {
             key: 'oldest',
-            label: 'Oldest first',
+            label: t('transactions.oldest'),
             selected: advancedFilters.sortBy === 'date' && advancedFilters.sortOrder === 'asc',
             onPress: () => handleSortSelect('date', 'asc'),
           },
           {
             key: 'highest',
-            label: 'Highest amount',
+            label: t('transactions.highest'),
             selected: advancedFilters.sortBy === 'amount' && advancedFilters.sortOrder === 'desc',
             onPress: () => handleSortSelect('amount', 'desc'),
           },
           {
             key: 'lowest',
-            label: 'Lowest amount',
+            label: t('transactions.lowest'),
             selected: advancedFilters.sortBy === 'amount' && advancedFilters.sortOrder === 'asc',
             onPress: () => handleSortSelect('amount', 'asc'),
           },

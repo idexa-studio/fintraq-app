@@ -21,6 +21,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 
 export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
@@ -28,6 +29,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
   const personId = Number(id);
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useTranslation();
   const { colors, typography, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -108,7 +110,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <PageBackground />
-        <Header title="Person" showBack />
+        <Header title={t('persons.person')} showBack />
         <View style={styles.loading}>
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
@@ -202,11 +204,11 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {/* Stats */}
         <View style={styles.statsRow}>
           <View style={[styles.statTile, { backgroundColor: colors.danger + '15' }]}>
-            <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.danger }]}>Spent</Text>
+            <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.danger }]}>{t('persons.spent')}</Text>
             <MoneyText amount={person.totalSpent} currency={currency} type="DR" weight="bold" compact style={styles.statValue} />
           </View>
           <View style={[styles.statTile, { backgroundColor: colors.success + '15' }]}>
-            <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.success }]}>Received</Text>
+            <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.success }]}>{t('persons.received')}</Text>
             <MoneyText amount={person.totalReceived} currency={currency} type="CR" weight="bold" compact style={styles.statValue} />
           </View>
         </View>
@@ -215,7 +217,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {activeLoans.length > 0 && (
           <View style={[styles.txSection, { marginBottom: spacing('4') }]}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.txTitle}>Active loans</Text>
+              <Text style={styles.txTitle}>{t('persons.activeLoans')}</Text>
               <View style={[styles.countBadge, { backgroundColor: colors.primary + '18' }]}>
                 <Text style={[styles.countBadgeText, { color: colors.primary }]}>{activeLoans.length}</Text>
               </View>
@@ -237,11 +239,11 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
                       />
                       <View style={styles.loanMeta}>
                         <Text style={[styles.loanLabel, { color: colors.text }]} numberOfLines={1}>
-                          {isLend ? 'Lent' : 'Borrowed'} · {loan.accountName}
+                          {isLend ? t('loans.lent') : t('loans.borrowed')} · {loan.accountName}
                         </Text>
                         {loan.dueDate ? (
                           <Text style={[styles.loanHint, { color: isOverdue ? colors.danger : colors.textMuted }]} numberOfLines={1}>
-                            Due {format(new Date(loan.dueDate), 'MMM d, yyyy')}
+                            {t('loans.due', { date: format(new Date(loan.dueDate), 'MMM d, yyyy') })}
                           </Text>
                         ) : loan.note ? (
                           <Text style={[styles.loanHint, { color: colors.textMuted }]} numberOfLines={1}>
@@ -275,7 +277,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {enrichedTx.length > 0 ? (
           <View style={styles.txSection}>
             <Text style={styles.txTitle}>
-              Transactions
+              {t('persons.transactions')}
             </Text>
             {enrichedTx.map((tx, idx) => (
               <TransactionRow
@@ -301,9 +303,9 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
       <ConfirmDialog
         visible={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
-        title="Delete person"
-        message={`Delete ${person.name}? Their linked transactions will keep the data but lose the person link.`}
-        confirmLabel="Delete"
+        title={t('persons.deleteTitle')}
+        message={t('persons.deleteMessage', { name: person.name })}
+        confirmLabel={t('persons.delete')}
         onConfirm={handleDeleteConfirm}
         isLoading={deletePerson.isPending}
       />

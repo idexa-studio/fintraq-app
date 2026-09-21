@@ -12,6 +12,7 @@ import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import type { ColorOption } from '../../constants/picker';
 import { BentoPressable } from './BentoPressable';
 import { BentoBottomSheet, useBottomSheet } from './BottomSheet';
+import { useTranslation } from 'react-i18next';
 
 const ITEM_HEIGHT = 62; // 56px row + 6px gap
 
@@ -30,8 +31,9 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
   value,
   onChange,
   palette,
-  title = 'Choose color',
+  title,
 }: ColorPickerBottomSheetProps) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -66,13 +68,13 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
             )}
           </View>
           <Text style={[styles.colorName, selected && styles.colorNameSelected]}>
-            {item.name}
+            {t(`picker.colors.${item.name}`)}
           </Text>
           <Text style={[styles.colorHex, selected && { color: item.hex }]}>{item.hex.toUpperCase()}</Text>
         </BentoPressable>
       );
     },
-    [value, handleSelect, styles, colors],
+    [value, handleSelect, styles, colors, t],
   );
 
   const getItemLayout = useCallback(
@@ -100,8 +102,8 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
         <View style={styles.header}>
           <View style={styles.headerTitleRow}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.title}>{title}</Text>
-              <Text style={styles.subtitle}>{palette.length} colors</Text>
+              <Text style={styles.title}>{title ?? t('ui.chooseColor')}</Text>
+              <Text style={styles.subtitle}>{t('ui.colorsCount', { count: palette.length })}</Text>
             </View>
             <View style={[styles.headerColorDot, { backgroundColor: value }]} />
           </View>

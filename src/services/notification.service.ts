@@ -2,17 +2,14 @@ import * as Notifications from 'expo-notifications';
 import notifee, { AndroidImportance as NotifeeAndroidImportance } from 'react-native-notify-kit';
 import { Platform } from 'react-native';
 import { LoggerService } from '@/src/services/logger.service';
+import i18n from '@/src/i18n';
 
-const REMINDER_POOL = [
-  { title: "Financial Hygiene Check 🧼", body: "Where did those funds go? Log your spends now to keep your dashboard accurate." },
-  { title: "Your Streak is Sweating 💦", body: "Don't let your persistence drop. Log one transaction today to save your streak." },
-  { title: "Fintraq OS: Action Required ⚠️", body: "A gap in your data detected. Ensure your financial ledger is up to date." },
-  { title: "The Money Trail 👣", body: "Keeping track of every cent is the first step to freedom. Spend 30 seconds logging now." },
-  { title: "Wallet Audit 🧐", body: "Did you buy lunch? Coffee? A small spend is still a spend. Log it in Fintraq." },
-  { title: "Consistency > Intensity 🔄", body: "Tiny daily tracking wins lead to massive insights. Keep going!" },
-  { title: "Don't Break the Chain ⛓️", body: "Your streak is looking strong. Keep it alive by logging today's activity." },
-  { title: "Mindful Spending 🧘", body: "Knowledge is power. Log your latest transaction to see its impact on your runway." },
-];
+const REMINDER_KEYS = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8'] as const;
+
+const pickReminder = () => {
+  const key = REMINDER_KEYS[Math.floor(Math.random() * REMINDER_KEYS.length)];
+  return { title: i18n.t(`notifications.${key}.title`), body: i18n.t(`notifications.${key}.body`) };
+};
 
 export const CLOUD_BACKUP_NOTIFICATION_ID = 'cloud_backup_status';
 
@@ -41,7 +38,7 @@ export const NotificationService = {
     if (Platform.OS === 'android') {
       try {
         await Notifications.setNotificationChannelAsync('default', {
-          name: 'Reminders & Alerts',
+          name: i18n.t('notifications.channelReminders'),
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
           lightColor: '#FF231F7C',
@@ -49,7 +46,7 @@ export const NotificationService = {
 
         await notifee.createChannel({
           id: 'backup_status',
-          name: 'Cloud Backup Progress',
+          name: i18n.t('notifications.channelBackup'),
           importance: NotifeeAndroidImportance.LOW,
         });
       } catch (e) {
@@ -113,8 +110,7 @@ export const NotificationService = {
     await Notifications.cancelScheduledNotificationAsync('daily_reminder').catch(() => {});
 
     // Pick a random message from the pool
-    const randomIndex = Math.floor(Math.random() * REMINDER_POOL.length);
-    const message = REMINDER_POOL[randomIndex];
+    const message = pickReminder();
 
     await Notifications.scheduleNotificationAsync({
       content: {
@@ -149,8 +145,8 @@ export const NotificationService = {
     // until the next 24-hour cycle.)
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "Stay consistent! ✍️",
-        body: "You're already doing great. Let's keep the streak alive tomorrow as well.",
+        title: i18n.t('notifications.stayConsistent'),
+        body: i18n.t('notifications.stayConsistentBody'),
         sound: true,
         priority: Notifications.AndroidNotificationPriority.HIGH,
       },
@@ -170,8 +166,7 @@ export const NotificationService = {
    * Useful for manual QA/Dev verification of branding and behavior.
    */
   async triggerInstantNotification() {
-    const randomIndex = Math.floor(Math.random() * REMINDER_POOL.length);
-    const message = REMINDER_POOL[randomIndex];
+    const message = pickReminder();
 
     await Notifications.scheduleNotificationAsync({
       content: {
@@ -189,11 +184,11 @@ export const NotificationService = {
   async presentBackupProgressNotification(progress: number, stageText: string) {
     try {
       const clampedProgress = Math.min(100, Math.max(0, Math.round(progress)));
-      const cleanStage = stageText || 'Syncing workspace data to Google Drive...';
+      const cleanStage = stageText || i18n.t('notifications.syncingStage');
 
       await notifee.displayNotification({
         id: CLOUD_BACKUP_NOTIFICATION_ID,
-        title: '☁️ Cloud Backup Syncing',
+        title: i18n.t('notifications.backupSyncing'),
         body: cleanStage,
         android: {
           channelId: 'backup_status',
@@ -216,7 +211,7 @@ export const NotificationService = {
    * presentBackupStartNotification: Alias for 5% initial progress notification.
    */
   async presentBackupStartNotification() {
-    await this.presentBackupProgressNotification(5, 'Starting background backup...');
+    await this.presentBackupProgressNotification(5, i18n.t('notifications.startingBackup'));
   },
 
   /**
@@ -226,8 +221,8 @@ export const NotificationService = {
     try {
       await notifee.displayNotification({
         id: CLOUD_BACKUP_NOTIFICATION_ID,
-        title: '✅ Cloud Backup Complete',
-        body: 'Your workspace history was safely backed up to cloud storage.',
+        title: i18n.t('notifications.backupComplete'),
+        body: i18n.t('notifications.backupCompleteBody'),
         android: {
           channelId: 'backup_status',
           autoCancel: true,
@@ -246,8 +241,8 @@ export const NotificationService = {
     try {
       await notifee.displayNotification({
         id: CLOUD_BACKUP_NOTIFICATION_ID,
-        title: '⚠️ Cloud Backup Failed',
-        body: 'Could not complete cloud backup. Please check your internet connection.',
+        title: i18n.t('notifications.backupFailed'),
+        body: i18n.t('notifications.backupFailedBody'),
         android: {
           channelId: 'backup_status',
           autoCancel: true,
@@ -299,10 +294,10 @@ export const NotificationService = {
     const [hours, minutes] = timeStr.split(':').map(Number);
     if (isNaN(hours) || isNaN(minutes)) return [];
 
-    const title = loanType === 'lend' ? 'Payment incoming?' : 'EMI due today';
+    const title = loanType === 'lend' ? i18n.t('notifications.paymentIncoming') : i18n.t('notifications.emiDue');
     const body = loanType === 'lend'
-      ? `${personName} should send you a repayment today.`
-      : `Don't forget — send ${personName} their repayment today.`;
+      ? i18n.t('notifications.lendEmiBody', { name: personName })
+      : i18n.t('notifications.borrowEmiBody', { name: personName });
 
     const ids: string[] = [];
 
@@ -363,10 +358,10 @@ export const NotificationService = {
       const [hours, minutes] = cfg.timeStr.split(':').map(Number);
       if (isNaN(hours) || isNaN(minutes)) continue;
 
-      const title = cfg.loanType === 'lend' ? 'Payment incoming?' : 'EMI due today';
+      const title = cfg.loanType === 'lend' ? i18n.t('notifications.paymentIncoming') : i18n.t('notifications.emiDue');
       const body = cfg.loanType === 'lend'
-        ? `${cfg.personName} should send you a repayment today.`
-        : `Don't forget — send ${cfg.personName} their repayment today.`;
+        ? i18n.t('notifications.lendEmiBody', { name: cfg.personName })
+        : i18n.t('notifications.borrowEmiBody', { name: cfg.personName });
 
       const now = new Date();
       const newIds = [...cfg.existingIds];
@@ -413,11 +408,11 @@ export const NotificationService = {
     if (target <= new Date()) return null;
 
     const identifier = `loan_due_${loanId}`;
-    const dayLabel = daysBefore === 0 ? 'today' : daysBefore === 1 ? 'tomorrow' : `in ${daysBefore} days`;
-    const title = loanType === 'lend' ? 'Loan due soon' : 'Repayment due soon';
+    const dayLabel = daysBefore === 0 ? i18n.t('notifications.today') : daysBefore === 1 ? i18n.t('notifications.tomorrow') : i18n.t('notifications.inDays', { count: daysBefore });
+    const title = loanType === 'lend' ? i18n.t('notifications.loanDueSoon') : i18n.t('notifications.repaymentDueSoon');
     const body = loanType === 'lend'
-      ? `${personName}'s loan is due ${dayLabel}.`
-      : `Your loan repayment to ${personName} is due ${dayLabel}.`;
+      ? i18n.t('notifications.lendDueBody', { name: personName, when: dayLabel })
+      : i18n.t('notifications.borrowDueBody', { name: personName, when: dayLabel });
 
     await Notifications.scheduleNotificationAsync({
       identifier,
