@@ -31,6 +31,48 @@ export const colorNumberToHex = (value: number): string =>
 export const withAlpha = (color: string, hexAlpha: string): string =>
   `${color}${hexAlpha}`;
 
+
+const COMPACT_TIERS: { limit: number; suffix: string }[] = [
+  { limit: 1e12, suffix: 'T' },
+  { limit: 1e9, suffix: 'B' },
+  { limit: 1e6, suffix: 'M' },
+  { limit: 1e3, suffix: 'K' },
+];
+
+/**
+ * Hermes ships a reduced Intl build that silently ignores `notation: 'compact'`
+ * while still honouring `maximumFractionDigits`, so every compact amount came
+ * out as an ugly one-decimal full number (₹61,254.0 instead of ₹61.3K).
+ *
+ * Scale and suffix by hand so output is identical on every JS engine, and use
+ * formatToParts so the suffix lands against the digits in both prefix (₹61.3K)
+ * and suffix (61,3 K €) currency locales.
+ */
+const formatCompactCurrency = (amount: number, locale: string, currencyCode: string): string => {
+  const abs = Math.abs(amount);
+  const tier = COMPACT_TIERS.find((t) => abs >= t.limit);
+  const scaled = tier ? amount / tier.limit : amount;
+
+  const parts = new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currencyCode,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  }).formatToParts(scaled);
+
+  if (!tier) return parts.map((part) => part.value).join('');
+
+  const NUMERIC = new Set(['integer', 'group', 'decimal', 'fraction']);
+  let lastDigit = -1;
+  parts.forEach((part, i) => {
+    if (NUMERIC.has(part.type)) lastDigit = i;
+  });
+
+  return parts
+    .map((part, i) => (i === lastDigit ? `${part.value}${tier.suffix}` : part.value))
+    .join('');
+};
+
 /**
  * Formats a numeric amount into a currency string using the Intl library.
  * If no currency code is provided, it formats the number as a localized decimal.
@@ -49,12 +91,7 @@ export const formatCurrency = (amount: number, currencyCode?: string, compact?: 
 
   try {
     if (compact) {
-      return new Intl.NumberFormat(locale, {
-        style: 'currency',
-        currency: currencyCode.toUpperCase(),
-        notation: 'compact',
-        maximumFractionDigits: 1,
-      }).format(amount);
+      return formatCompactCurrency(amount, locale, currencyCode.toUpperCase());
     }
     return new Intl.NumberFormat(locale, {
       style: 'currency',

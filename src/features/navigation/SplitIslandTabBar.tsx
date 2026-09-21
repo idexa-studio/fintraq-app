@@ -86,7 +86,11 @@ export const SplitIslandTabBar = React.memo(function SplitIslandTabBar({
     }
   }, [router, state.index]);
 
-  const fabIcon = state.index === 1 ? Wallet05Icon : PlusSignIcon;
+  // The FAB is always an "add" affordance — only its destination is
+  // context-aware. It previously swapped to a wallet glyph on the Accounts
+  // tab, which rendered the exact same icon as the active tab button sitting
+  // right beside it and read as a duplicate rather than an action.
+  const fabIcon = PlusSignIcon;
 
   return (
     <View style={styles.container} pointerEvents="box-none">
