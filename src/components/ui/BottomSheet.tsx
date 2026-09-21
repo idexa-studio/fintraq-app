@@ -19,6 +19,7 @@ import {
   Platform,
   StyleSheet,
   TouchableWithoutFeedback,
+  useWindowDimensions,
   View,
   KeyboardAvoidingView,
   DimensionValue,
@@ -120,14 +121,11 @@ const BottomSheetContent = forwardRef<BottomSheetContentHandle, {
 
   const dragGesture = Gesture.Pan()
     .enabled(enablePanDownToClose)
-    .activeOffsetY(8)
-    .failOffsetY(-8)
+    .activeOffsetY(4)
     .onStart(() => {
       startY.value = translateY.value;
     })
     .onUpdate((e) => {
-      // If list is scrolled down, don't drag the sheet — let native scroll win
-      if (scrollOffset.value > 0) return;
       const next = startY.value + e.translationY;
       if (next > 0) {
         translateY.value = next;
@@ -136,12 +134,6 @@ const BottomSheetContent = forwardRef<BottomSheetContentHandle, {
       }
     })
     .onEnd((e) => {
-      // If list was not at top when gesture ended, snap sheet back
-      if (scrollOffset.value > 0) {
-        translateY.value = withSpring(0, SPRING_CONFIG);
-        backdropOpacity.value = withTiming(1, { duration: 150 });
-        return;
-      }
 
       const shouldClose =
         e.translationY > CLOSE_THRESHOLD_Y ||
@@ -190,21 +182,21 @@ const BottomSheetContent = forwardRef<BottomSheetContentHandle, {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.keyboardAvoid}
       >
-        <GestureDetector gesture={dragGesture}>
-          <Reanimated.View style={[styles.sheet, staticSheetStyle, animatedSheetStyle]}>
-            {/* Handle pill */}
-            <View style={styles.dragArea}>
+        <Reanimated.View style={[styles.sheet, staticSheetStyle, animatedSheetStyle]}>
+          {/* Only the handle area drags the sheet; content scrolls natively */}
+          <GestureDetector gesture={dragGesture}>
+            <View style={styles.dragArea} collapsable={false}>
               <View style={[styles.handle, { backgroundColor: colors.text + '24' }]} />
             </View>
+          </GestureDetector>
 
-            {/* Children */}
-            <BottomSheetContext.Provider value={contextValue}>
-              <SafeAreaView edges={['bottom']} style={styles.safeContent}>
-                <View style={styles.content}>{children}</View>
-              </SafeAreaView>
-            </BottomSheetContext.Provider>
-          </Reanimated.View>
-        </GestureDetector>
+          {/* Children */}
+          <BottomSheetContext.Provider value={contextValue}>
+            <SafeAreaView edges={['bottom']} style={styles.safeContent}>
+              <View style={styles.content}>{children}</View>
+            </SafeAreaView>
+          </BottomSheetContext.Provider>
+        </Reanimated.View>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );
@@ -251,17 +243,29 @@ export const BentoBottomSheet = React.memo(function BentoBottomSheet({
     onCloseRef.current();
   }, []);
 
+  const { height: windowHeight } = useWindowDimensions();
+
+  // Percent heights resolve against an auto-height parent (collapse to content),
+  // so convert them to absolute pixels from the window height.
+  const toPixels = useCallback(
+    (value: string | number): DimensionValue => {
+      if (typeof value === 'string' && value.endsWith('%')) {
+        return Math.round((parseFloat(value) / 100) * windowHeight);
+      }
+      return value as DimensionValue;
+    },
+    [windowHeight],
+  );
+
   const resolvedMaxHeight = useMemo<DimensionValue>(() => {
-    if (!snapPoints || snapPoints.length === 0) return '90%';
-    const last = snapPoints[snapPoints.length - 1];
-    return last as DimensionValue;
-  }, [snapPoints]);
+    if (!snapPoints || snapPoints.length === 0) return Math.round(windowHeight * 0.9);
+    return toPixels(snapPoints[snapPoints.length - 1]);
+  }, [snapPoints, toPixels, windowHeight]);
 
   const resolvedHeight = useMemo<DimensionValue | undefined>(() => {
     if (enableDynamicSizing || !snapPoints || snapPoints.length === 0) return undefined;
-    const last = snapPoints[snapPoints.length - 1];
-    return last as DimensionValue;
-  }, [snapPoints, enableDynamicSizing]);
+    return toPixels(snapPoints[snapPoints.length - 1]);
+  }, [snapPoints, enableDynamicSizing, toPixels]);
 
   return (
     <Modal
@@ -304,7 +308,7 @@ const styles = StyleSheet.create({
   },
   dragArea: {
     width: '100%',
-    height: 32,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
   },

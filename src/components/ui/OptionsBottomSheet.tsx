@@ -25,6 +25,8 @@ type OptionsBottomSheetProps = {
   subtitle?: string;
   options: OptionsBottomSheetOption[];
   closeLabel?: string;
+  /** Fixed height for long lists (e.g. ['75%']); list scrolls inside. */
+  snapPoints?: string[];
 };
 
 export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
@@ -34,6 +36,7 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
   subtitle,
   options,
   closeLabel,
+  snapPoints,
 }: OptionsBottomSheetProps) {
   const theme = useTheme();
   const { colors, typography } = theme;
@@ -50,6 +53,7 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
     <BentoBottomSheet
       visible={visible}
       onClose={onClose}
+      snapPoints={snapPoints}
     >
       <View style={styles.container}>
         {title ? (
