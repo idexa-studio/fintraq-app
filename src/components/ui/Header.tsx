@@ -79,7 +79,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   title: {
     fontFamily: typography.styles.screenTitle.fontFamily,
     color: colors.text,
-    fontSize: typography.sizes.xxl,
+    ...typography.metrics.xxl,
     lineHeight: 28,
   },
   rightActionWrap: {

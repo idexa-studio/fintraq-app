@@ -24,6 +24,9 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { width: screenWidth } = useWindowDimensions();
   const cardWidth = useMemo(() => screenWidth * 0.62, [screenWidth]);
+  // Compact action tile — deliberately narrower than an account card so the
+  // carousel peek lands on a whole tile instead of cutting its label in half.
+  const addTileWidth = 112;
 
   return (
     <ScrollView
@@ -83,7 +86,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
 
       {/* Add account card */}
       <BentoPressable
-        style={[styles.addCard, { width: cardWidth }]}
+        style={[styles.addCard, { width: addTileWidth }]}
         onPress={onPressAdd}
       >
         <IconAvatar icon={PlusSignIcon} color={colors.primary} variant="subtle" size={36} iconSize={16} />
@@ -121,20 +124,20 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       flex: 1,
       gap: spacing('0.5'),
     },
-    name: { fontSize: typography.sizes.sm },
-    hint: { fontSize: typography.sizes.xs },
+    name: { ...typography.metrics.sm },
+    hint: { ...typography.metrics.xs },
     currencyBadge: {
       paddingHorizontal: spacing('2'),
       paddingVertical: spacing('0.5'),
       borderRadius: radius('full'),
     },
-    currency: { fontSize: typography.sizes.xs },
+    currency: { ...typography.metrics.xs },
 
     balanceContainer: {
       gap: spacing('0.5'),
     },
     balanceLabel: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     balance: { fontSize: 20, lineHeight: 24 },
 
@@ -147,5 +150,5 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       gap: spacing('2'),
       height: 124,
     },
-    addTitle: { fontSize: typography.sizes.sm },
+    addTitle: { ...typography.metrics.xs, textAlign: 'center' },
   });

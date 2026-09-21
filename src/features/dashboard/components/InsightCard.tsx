@@ -61,11 +61,11 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) =>
       gap: spacing('0.5'),
     },
     title: {
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       lineHeight: 18,
     },
     sub: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       lineHeight: 16,
       opacity: 0.65,
     },

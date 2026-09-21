@@ -4,6 +4,7 @@ import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { MoneyText } from './MoneyText';
 import { BentoPressable } from './BentoPressable';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type KPIMetrics = {
   income: number;
@@ -137,11 +138,11 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       backgroundColor: colors.card,
     },
     currencyTabActive: {
-      backgroundColor: colors.primary + '18',
+      backgroundColor: alpha(colors.primary, 'subtle'),
     },
     currencyTabText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     currencyTabTextActive: {
@@ -169,34 +170,34 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     kpiVerticalSep: {
       width: 1,
       height: 24,
-      backgroundColor: colors.text + '0C',
+      backgroundColor: alpha(colors.text, 'faint'),
       marginHorizontal: spacing('4'),
       opacity: 0.6,
     },
     kpiLabel: {
       color: colors.textMuted,
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       lineHeight: 14,
       marginBottom: spacing('0.5'),
     },
     kpiLabelSmall: {
       color: colors.textMuted,
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       lineHeight: 14,
     },
     kpiValueLarge: {
-      fontSize: typography.sizes.xxl,
+      ...typography.metrics.xxl,
       lineHeight: 28,
     },
     kpiValueSmall: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       lineHeight: 18,
     },
     kpiDivider: {
       height: 1,
-      backgroundColor: colors.text + '0C',
+      backgroundColor: alpha(colors.text, 'faint'),
       opacity: 0.5,
     },
   });

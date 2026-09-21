@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 export const PremiumScreen = React.memo(function PremiumScreen() {
   const theme = useTheme();
@@ -225,13 +226,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'space-between',
     },
     pill: {
-      backgroundColor: colors.success + '15',
+      backgroundColor: alpha(colors.success, 'subtle'),
       paddingHorizontal: spacing('2.5'),
       paddingVertical: spacing('0.5'),
       borderRadius: radius('full'),
     },
     pillText: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.success,
       fontFamily: typography.styles.chipLabel.fontFamily,
     },
@@ -294,7 +295,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       borderRadius: radius('xl'),
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.success + '12',
+      backgroundColor: alpha(colors.success, 'subtle'),
     },
     iconWrapperInactive: {
       width: 40,
@@ -302,7 +303,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       borderRadius: radius('xl'),
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.primary + '12',
+      backgroundColor: alpha(colors.primary, 'subtle'),
     },
     featureContent: {
       flex: 1,

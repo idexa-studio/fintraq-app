@@ -78,17 +78,17 @@ const createStyles = ({ colors, spacing, typography }: ThemeContextType) =>
     dotInner: { width: 8, height: 8, borderRadius: 4 },
     content: { flex: 1 },
     label: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       fontFamily: typography.styles.rowLabel.fontFamily,
       color: colors.text,
     },
     sub: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       fontFamily: typography.styles.rowMeta.fontFamily,
       color: colors.textMuted,
       marginTop: spacing('0.5'),
     },
     amount: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
     },
   });

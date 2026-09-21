@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { alpha } from '@/src/theme/tokens';
 
 type InputSize = 'sm' | 'md' | 'lg';
 type InputVariant = 'default' | 'minimal' | 'filled';
@@ -46,7 +47,7 @@ export const Input = React.memo(function Input({
         return {
           backgroundColor: 'transparent',
           borderBottomWidth: 1,
-          borderBottomColor: isFocused ? activeColor + 'A0' : colors.text + '14',
+          borderBottomColor: isFocused ? activeColor + 'A0' : alpha(colors.text, 'subtle'),
         };
       case 'default':
       default:
@@ -88,8 +89,8 @@ export const Input = React.memo(function Input({
 const createStyles = ({ typography, spacing }: ThemeContextType, _size: InputSize) =>
   StyleSheet.create({
     wrap: { marginBottom: 0 },
-    label: { fontSize: typography.sizes.xs, marginBottom: spacing('2') },
+    label: { ...typography.metrics.xs, marginBottom: spacing('2') },
     box: { overflow: 'hidden', justifyContent: 'center' },
     input: { paddingVertical: 0, includeFontPadding: false },
-    error: { fontSize: typography.sizes.xs, marginTop: spacing('1') },
+    error: { ...typography.metrics.xs, marginTop: spacing('1') },
   });

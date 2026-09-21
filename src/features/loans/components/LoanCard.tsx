@@ -9,6 +9,7 @@ import type { LoanWithStats } from '../api/loans';
 import { LoanStatusBadge } from './LoanStatusBadge';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type Props = {
   loan: LoanWithStats;
@@ -133,11 +134,11 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
     meta: { flex: 1, gap: spacing('0.5') },
     name: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
     },
     hint: {
       fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     amountRow: {
       flexDirection: 'row',
@@ -146,23 +147,23 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
     },
     amountLabel: {
       fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       marginBottom: spacing('0.5'),
     },
-    amount: { fontSize: typography.sizes.xl },
+    amount: { ...typography.metrics.xl },
     pctBadge: {
       paddingHorizontal: spacing('2'),
       paddingVertical: spacing('0.5'),
       borderRadius: radius('full'),
-      backgroundColor: colors.text + '0C',
+      backgroundColor: alpha(colors.text, 'faint'),
     },
     pctText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     footer: {
       fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
 
     // Compact row (used in PersonDetailScreen)
@@ -187,15 +188,15 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
     compactMeta: { flex: 1, gap: spacing('0.5') },
     compactLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
     },
     compactHint: {
       fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     compactRight: {
       alignItems: 'flex-end',
       gap: spacing('1'),
     },
-    compactAmount: { fontSize: typography.sizes.md },
+    compactAmount: { ...typography.metrics.md },
   });

@@ -4,6 +4,7 @@ import React, { useMemo, useCallback } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
+import { alpha } from '@/src/theme/tokens';
 
 export type AlertButton = {
   text: string;
@@ -42,14 +43,14 @@ export const AlertDialog = React.memo(function AlertDialog({
   const iconCfg = useMemo(() => {
     switch (type) {
       case 'success':
-        return { icon: CheckmarkCircle01Icon, bg: colors.success + '1A', fg: colors.success };
+        return { icon: CheckmarkCircle01Icon, bg: alpha(colors.success, 'subtle'), fg: colors.success };
       case 'error':
-        return { icon: AlertCircleIcon, bg: colors.danger + '1A', fg: colors.danger };
+        return { icon: AlertCircleIcon, bg: alpha(colors.danger, 'subtle'), fg: colors.danger };
       case 'warning':
-        return { icon: AlertCircleIcon, bg: colors.warning + '1A', fg: colors.warning };
+        return { icon: AlertCircleIcon, bg: alpha(colors.warning, 'subtle'), fg: colors.warning };
       case 'info':
       default:
-        return { icon: InformationCircleIcon, bg: colors.info + '1A', fg: colors.info };
+        return { icon: InformationCircleIcon, bg: alpha(colors.info, 'subtle'), fg: colors.info };
     }
   }, [type, colors]);
 
@@ -143,14 +144,14 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
       textAlign: 'left',
       marginBottom: spacing('2'),
     },
     message: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.textMuted,
       lineHeight: 20,
       textAlign: 'left',
@@ -185,7 +186,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
     },
     btnText: {
       fontFamily: typography.styles.dialogAction.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
     },
     btnPrimaryText: {
       color: colors.primary,

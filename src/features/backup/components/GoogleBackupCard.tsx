@@ -38,6 +38,7 @@ import { openAppSettings, openBatteryOptimizationSettings } from '@/src/services
 
 import { AUTO_BACKUP_INTERVAL_MS } from '@/src/services/backup/auto-backup.service';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const theme = useTheme();
@@ -458,9 +459,9 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           <Switch
             value={autoBackupEnabled}
             onValueChange={(value) => { void handleToggleAutoBackup(value); }}
-            trackColor={{ false: colors.text + '18', true: colors.primary }}
+            trackColor={{ false: alpha(colors.text, 'subtle'), true: colors.primary }}
             thumbColor={'#FFFFFF'}
-            ios_backgroundColor={colors.text + '18'}
+            ios_backgroundColor={alpha(colors.text, 'subtle')}
           />
         </View>
 
@@ -524,7 +525,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     loadingText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
     mainRow: {
@@ -546,7 +547,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     rowLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.text,
     },
     statusDotOffline: {
@@ -560,7 +561,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexDirection: 'row',
       alignItems: 'center',
       gap: 4,
-      backgroundColor: colors.success + '15',
+      backgroundColor: alpha(colors.success, 'subtle'),
       paddingHorizontal: spacing('2'),
       paddingVertical: 2,
       borderRadius: radius('full'),
@@ -578,13 +579,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     rowSubtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       lineHeight: 16,
     },
     userEmailText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.primary,
     },
     disconnectIconButton: {
@@ -595,19 +596,19 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('1'),
-      backgroundColor: colors.primary + '15',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       paddingHorizontal: spacing('3'),
       paddingVertical: spacing('1.5'),
       borderRadius: radius('full'),
     },
     connectBadgeText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.primary,
     },
     separator: {
       height: StyleSheet.hairlineWidth,
-      backgroundColor: colors.text + '18',
+      backgroundColor: alpha(colors.text, 'subtle'),
       marginLeft: layout.screenPadding + 36 + spacing('3.5'),
     },
     statusBox: {
@@ -629,7 +630,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     statusValue: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
     statusBoxWarning: {
@@ -638,12 +639,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('2'),
       paddingHorizontal: spacing('4'),
       paddingVertical: spacing('3'),
-      backgroundColor: colors.warning + '12',
+      backgroundColor: alpha(colors.warning, 'subtle'),
     },
     statusWarningText: {
       flex: 1,
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.warning,
     },
     reliabilityHintRow: {
@@ -654,18 +655,18 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     reliabilityHintText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     sizeBadge: {
-      backgroundColor: colors.primary + '15',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       paddingHorizontal: spacing('2.5'),
       paddingVertical: spacing('1'),
       borderRadius: radius('md'),
     },
     sizeBadgeText: {
       fontFamily: typography.fonts.bold,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.primary,
     },
     progressContainer: {
@@ -681,12 +682,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     progressStageText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     progressPercentText: {
       fontFamily: typography.fonts.bold,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.primary,
     },
     actionsRow: {
@@ -707,7 +708,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     primaryActionButtonText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.primaryForeground,
     },
     secondaryActionButton: {
@@ -724,7 +725,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     secondaryActionButtonText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.primary,
     },
     disabledButton: {
@@ -748,7 +749,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingHorizontal: spacing('2'),
       paddingVertical: 2,
       borderRadius: radius('full'),
-      backgroundColor: colors.primary + '15',
+      backgroundColor: alpha(colors.primary, 'subtle'),
     },
     proBadgeText: {
       fontFamily: typography.fonts.bold,

@@ -3,6 +3,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
+import { alpha } from '@/src/theme/tokens';
 
 type IconAvatarVariant = 'solid' | 'subtle' | 'outline';
 
@@ -43,7 +44,7 @@ export const IconAvatar = React.memo(function IconAvatar({
         break;
       case 'subtle':
       default:
-        bg = color + '18';
+        bg = alpha(color, 'subtle');
         iconColor = color;
         border = undefined;
         break;

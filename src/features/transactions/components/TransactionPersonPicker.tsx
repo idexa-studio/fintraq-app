@@ -6,6 +6,7 @@ import React, { useCallback, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { Person } from '../../persons/api/persons';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type Props = {
   persons: Person[];
@@ -52,7 +53,7 @@ export const TransactionPersonPicker = React.memo(function TransactionPersonPick
           return (
             <BentoPressable
               key={person.id}
-              style={[styles.personChip, selected && { backgroundColor: hex + '18' }]}
+              style={[styles.personChip, selected && { backgroundColor: alpha(hex, 'subtle') }]}
               onPress={() => onSelect(person.id)}
             >
               <PersonAvatar name={person.name} color={hex} size={26} variant="subtle" />
@@ -75,7 +76,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     container: { paddingVertical: spacing('3') },
     label: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       marginBottom: spacing('3'),
       paddingHorizontal: layout.screenPadding,
     },
@@ -92,8 +93,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
       alignItems: 'center',
     },
-    chipActive: { backgroundColor: colors.primary + '18' },
-    chipText: { fontFamily: typography.styles.rowLabel.fontFamily, fontSize: typography.sizes.sm },
+    chipActive: { backgroundColor: alpha(colors.primary, 'subtle') },
+    chipText: { fontFamily: typography.styles.rowLabel.fontFamily, ...typography.metrics.sm },
 
     personChip: {
       flexDirection: 'row',
@@ -106,7 +107,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.surface,
       minWidth: 80,
     },
-    personName: { fontSize: typography.sizes.sm, flex: 1 },
+    personName: { ...typography.metrics.sm, flex: 1 },
     checkDot: {
       position: 'absolute',
       top: -4,

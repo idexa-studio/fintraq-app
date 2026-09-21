@@ -7,6 +7,7 @@ import { Modal, StyleSheet, Text, View } from 'react-native';
 import { WalkthroughStep } from '../constants/steps';
 import { useWalkthrough } from '../hooks/useWalkthrough';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type WalkthroughOverlayProps = {
   storageKey: string;
@@ -64,7 +65,7 @@ export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
                 key={i}
                 style={[
                   styles.dot,
-                  i === index ? styles.dotActive : { backgroundColor: colors.text + '1E' },
+                  i === index ? styles.dotActive : { backgroundColor: alpha(colors.text, 'subtle') },
                 ]}
               />
             ))}
@@ -120,7 +121,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       width: 38,
       height: 38,
       borderRadius: 19,
-      backgroundColor: colors.primary + '12',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       justifyContent: 'center',
       alignItems: 'center',
     },

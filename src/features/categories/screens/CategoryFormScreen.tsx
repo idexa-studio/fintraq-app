@@ -26,6 +26,7 @@ import { colorNumberToHex, toDbColor } from '@/src/utils/format';
 import { resolveIcon } from '@/src/utils/icons';
 import { LoggerService } from '@/src/services/logger.service';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type CategoryFormValues = {
   name: string;
@@ -184,7 +185,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                     onPress={() => toggleType(opt.value)}
                     style={[
                       styles.typePill,
-                      isSelected && { backgroundColor: activeColor + '20', borderColor: activeColor + '40' },
+                      isSelected && { backgroundColor: alpha(activeColor, 'subtle'), borderColor: activeColor + '40' },
                     ]}
                   >
                     <Text style={[styles.typePillText, isSelected && { color: activeColor }]}>
@@ -311,7 +312,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     },
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       opacity: 0.6,
     },

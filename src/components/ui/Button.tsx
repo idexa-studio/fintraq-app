@@ -4,6 +4,7 @@ import React, { useMemo, useCallback } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native';
 import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
+import { alpha } from '@/src/theme/tokens';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'success' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -60,7 +61,7 @@ export const Button = React.memo(function Button({
   }, [variant, disabled, colors.primary, colors.danger, colors.success, colors.surface]);
 
   const borderColor = useMemo(() => {
-    if (variant === 'outline') return colors.text + '12';
+    if (variant === 'outline') return alpha(colors.text, 'subtle');
     return 'transparent';
   }, [variant, colors.text]);
 

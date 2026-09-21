@@ -14,6 +14,7 @@ import { resolveIcon } from '../../utils/icons';
 import { BentoPressable } from './BentoPressable';
 import { BentoBottomSheet, useBottomSheet } from './BottomSheet';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type IconPickerBottomSheetProps = {
   visible: boolean;
@@ -64,7 +65,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
         <View style={styles.header}>
           <Text style={styles.title}>{title ?? t('ui.chooseIcon')}</Text>
           {value ? (
-            <View style={[styles.headerIconContainer, { backgroundColor: accent + '18' }]}>
+            <View style={[styles.headerIconContainer, { backgroundColor: alpha(accent, 'subtle') }]}>
               <HugeiconsIcon
                 icon={resolveIcon(value, GridIcon)}
                 size={20}
@@ -95,7 +96,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                       style={[
                         styles.iconCell,
                         selected
-                          ? { backgroundColor: accent + '18', borderColor: accent + '40', borderWidth: 1 }
+                          ? { backgroundColor: alpha(accent, 'subtle'), borderColor: accent + '40', borderWidth: 1 }
                           : { backgroundColor: colors.surface, borderColor: 'transparent', borderWidth: 1 },
                       ]}
                       onPress={() => handleSelect(icon)}
@@ -130,7 +131,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
     },
     headerIconContainer: {
@@ -150,7 +151,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     groupLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       paddingLeft: spacing('1'),
       opacity: 0.7,

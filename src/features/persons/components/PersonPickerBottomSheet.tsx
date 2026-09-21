@@ -180,7 +180,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
       paddingTop: spacing('4'),
       paddingBottom: spacing('2'),
     },
-    title: { fontSize: typography.sizes.xl },
+    title: { ...typography.metrics.xl },
     searchWrap: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -192,7 +192,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
       paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
     },
-    searchInput: { flex: 1, fontFamily: typography.fonts.regular, fontSize: typography.sizes.sm, paddingVertical: 0 },
+    searchInput: { flex: 1, fontFamily: typography.fonts.regular, ...typography.metrics.sm, paddingVertical: 0 },
     listContent: {
       paddingBottom: spacing('3'),
     },
@@ -210,8 +210,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
     },
     rowSelected: { backgroundColor: colors.primaryLight },
     rowMeta: { flex: 1 },
-    rowName: { fontSize: typography.sizes.md },
-    rowSub: { fontSize: typography.sizes.xs, opacity: 0.65, marginTop: 2 },
+    rowName: { ...typography.metrics.md },
+    rowSub: { ...typography.metrics.xs, opacity: 0.65, marginTop: 2 },
     noneAvatar: {
       width: 36,
       height: 36,

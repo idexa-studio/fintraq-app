@@ -29,6 +29,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { alpha } from '@/src/theme/tokens';
 
 const ACCOUNT_TYPE_KEYS: Record<AccountType, 'cash' | 'bank' | 'savings' | 'creditCard' | 'investment' | 'loan' | 'ewallet'> = {
   cash: 'cash', bank: 'bank', savings: 'savings', credit_card: 'creditCard', investment: 'investment', loan: 'loan', ewallet: 'ewallet',
@@ -108,11 +109,11 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
               <Text style={styles.heroName} numberOfLines={1}>{account.name}</Text>
               <View style={styles.heroBadgeRow}>
                 {typeLabel ? (
-                  <View style={[styles.typeBadge, { backgroundColor: accColor + '20' }]}>
+                  <View style={[styles.typeBadge, { backgroundColor: alpha(accColor, 'subtle') }]}>
                     <Text style={[styles.typeBadgeText, { color: accColor }]}>{typeLabel}</Text>
                   </View>
                 ) : null}
-                <View style={[styles.typeBadge, { backgroundColor: colors.text + '0C' }]}>
+                <View style={[styles.typeBadge, { backgroundColor: alpha(colors.text, 'faint') }]}>
                   <Text style={[styles.typeBadgeText, { color: colors.textMuted }]}>{account.currency}</Text>
                 </View>
               </View>
@@ -129,7 +130,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
 
           {/* ── Stats row ── */}
           <View style={styles.statsRow}>
-            <View style={[styles.statTile, { backgroundColor: colors.success + '12' }]}>
+            <View style={[styles.statTile, { backgroundColor: alpha(colors.success, 'subtle') }]}>
               <View style={styles.statHeader}>
                 <HugeiconsIcon icon={ArrowUp01Icon} size={12} color={colors.success} />
                 <Text style={styles.statLabel}>{t('accounts.totalIn')}</Text>
@@ -142,7 +143,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
                 style={[styles.statValue, { color: colors.success }]}
               />
             </View>
-            <View style={[styles.statTile, { backgroundColor: colors.danger + '12' }]}>
+            <View style={[styles.statTile, { backgroundColor: alpha(colors.danger, 'subtle') }]}>
               <View style={styles.statHeader}>
                 <HugeiconsIcon icon={ArrowDown01Icon} size={12} color={colors.danger} />
                 <Text style={styles.statLabel}>{t('accounts.totalOut')}</Text>
@@ -189,7 +190,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
           </View>
         ) : (
           <View style={styles.emptyCard}>
-            <View style={[styles.emptyIcon, { backgroundColor: colors.primary + '12' }]}>
+            <View style={[styles.emptyIcon, { backgroundColor: alpha(colors.primary, 'subtle') }]}>
               <HugeiconsIcon icon={ReceiptTextIcon} size={20} color={colors.primary} />
             </View>
             <Text style={styles.emptyTitle}>{t('accounts.noTransactions')}</Text>
@@ -207,7 +208,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
     missingText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
     editBtn: {
@@ -242,7 +243,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     heroName: {
       fontFamily: typography.styles.profileName.fontFamily,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
     },
     heroBadgeRow: {
@@ -256,11 +257,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     typeBadgeText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     balanceLabel: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginBottom: spacing('1'),
     },
@@ -289,11 +290,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     statLabel: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     statValue: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       fontFamily: typography.styles.sectionLabel.fontFamily,
     },
 
@@ -305,16 +306,16 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginTop: spacing('4'),
       paddingTop: spacing('3'),
       borderTopWidth: 1,
-      borderTopColor: colors.text + '0C',
+      borderTopColor: alpha(colors.text, 'faint'),
     },
     accountNumberLabel: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     accountNumber: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.text,
     },
 
@@ -327,7 +328,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     sectionTitle: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
     seeAllBtn: {
@@ -337,7 +338,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     seeAllText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.primary,
     },
 

@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { BentoBottomSheet } from './BottomSheet';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type Props = {
   visible: boolean;
@@ -295,10 +296,10 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
       justifyContent: 'center',
     },
     keyOp: {
-      backgroundColor: colors.primary + '14',
+      backgroundColor: alpha(colors.primary, 'subtle'),
     },
     keyFunction: {
-      backgroundColor: colors.text + '0C',
+      backgroundColor: alpha(colors.text, 'faint'),
     },
     keyPressed: {
       opacity: 0.6,

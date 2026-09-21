@@ -10,6 +10,7 @@ import type { AccountType } from '../../../types';
 import type { Account } from '../../accounts/api/accounts';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type Props = {
   accounts: Account[];
@@ -43,7 +44,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
               key={acc.id}
               style={[
                 styles.card,
-                { backgroundColor: selected ? accColor + '12' : colors.surface },
+                { backgroundColor: selected ? alpha(accColor, 'subtle') : colors.surface },
               ]}
               onPress={() => handleSelect(acc.id)}
               overflow="visible"
@@ -78,7 +79,7 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
   },
   label: {
     fontFamily: typography.styles.sectionLabel.fontFamily,
-    fontSize: typography.sizes.xs,
+    ...typography.metrics.xs,
     marginBottom: spacing('3'),
     paddingHorizontal: layout.screenPadding,
     opacity: 0.6,
@@ -102,11 +103,11 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
   },
   name: {
     fontFamily: typography.styles.rowLabel.fontFamily,
-    fontSize: typography.sizes.md,
+    ...typography.metrics.md,
   },
   currency: {
     fontFamily: typography.fonts.medium,
-    fontSize: typography.sizes.xs,
+    ...typography.metrics.xs,
   },
   check: {
     position: 'absolute',

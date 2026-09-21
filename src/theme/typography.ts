@@ -54,6 +54,31 @@ const S = {
   xxs: 9.5, xs: 11, sm: 13, md: 14, lg: 16, xl: 18, xxl: 22, xxxl: 28,
 };
 
+// ─── Optical text metrics ───────────────────────────────────────────────────
+// Every text style in the app pulls its size from here rather than a bare
+// number, so font size, line height and tracking always travel together.
+//
+// Rhythm rules:
+//   • Display sizes get tight leading + negative tracking so large MuseoModerno
+//     headings read as one solid block instead of drifting apart.
+//   • Body sizes get generous leading (~1.45) for multi-line readability.
+//   • Micro sizes get positive tracking so small caps-ish labels stay legible.
+//   • includeFontPadding:false removes Android's extra glyph padding, which is
+//     what otherwise makes text sit off-centre inside rows, chips and badges.
+// ─────────────────────────────────────────────────────────────────────────────
+export const TEXT_METRICS = {
+  xxs:  { fontSize: S.xxs,  lineHeight: 13, letterSpacing:  0.3, includeFontPadding: false },
+  xs:   { fontSize: S.xs,   lineHeight: 15, letterSpacing:  0.2, includeFontPadding: false },
+  sm:   { fontSize: S.sm,   lineHeight: 19, letterSpacing:  0,   includeFontPadding: false },
+  md:   { fontSize: S.md,   lineHeight: 20, letterSpacing:  0,   includeFontPadding: false },
+  lg:   { fontSize: S.lg,   lineHeight: 21, letterSpacing: -0.1, includeFontPadding: false },
+  xl:   { fontSize: S.xl,   lineHeight: 23, letterSpacing: -0.2, includeFontPadding: false },
+  xxl:  { fontSize: S.xxl,  lineHeight: 27, letterSpacing: -0.4, includeFontPadding: false },
+  xxxl: { fontSize: S.xxxl, lineHeight: 33, letterSpacing: -0.6, includeFontPadding: false },
+} as const;
+
+export type TextMetricToken = keyof typeof TEXT_METRICS;
+
 export const TEXT_STYLES = {
   // ── Navigation / Screen ──────────────────────────────────────────
   screenTitle:      { fontFamily: F.heading,       fontSize: S.xxl  },
@@ -109,6 +134,8 @@ export type TypographyTheme = {
   weights: TypographyWeight;
   fonts: TypographyFonts;
   styles: typeof TEXT_STYLES;
+  /** Size + line height + tracking as one unit. Spread it: `...typography.metrics.md` */
+  metrics: typeof TEXT_METRICS;
 };
 
 export const TYPOGRAPHY: TypographyTheme = {
@@ -140,4 +167,5 @@ export const TYPOGRAPHY: TypographyTheme = {
     amountBold: 'MuseoModerno_SemiBold',
   },
   styles: TEXT_STYLES,
+  metrics: TEXT_METRICS,
 };

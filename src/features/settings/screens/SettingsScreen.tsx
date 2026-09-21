@@ -66,7 +66,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { alpha } from '@/src/theme/tokens';
 
 /* ─────────────────────────────────────────────────────────────
    Shared row separator
@@ -81,7 +82,7 @@ const RowSeparator = React.memo(function RowSeparator({
     <View
       style={{
         height: StyleSheet.hairlineWidth,
-        backgroundColor: theme.colors.text + '18',
+        backgroundColor: alpha(theme.colors.text, 'subtle'),
         marginLeft: theme.layout.screenPadding + 36 + theme.spacing('3.5'),
       }}
     />
@@ -125,9 +126,9 @@ const SwitchRow = React.memo(function SwitchRow({
       <Switch
         value={value}
         onValueChange={onToggle}
-        trackColor={{ false: colors.text + '18', true: colors.primary }}
+        trackColor={{ false: alpha(colors.text, 'subtle'), true: colors.primary }}
         thumbColor={'#FFFFFF'}
-        ios_backgroundColor={colors.text + '18'}
+        ios_backgroundColor={alpha(colors.text, 'subtle')}
       />
     </View>
   );
@@ -202,12 +203,12 @@ const createRowStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     rowInfo: { flex: 1, gap: 2 },
     rowLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.text,
     },
     rowSubtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginTop: 1,
     },
@@ -218,7 +219,7 @@ const createRowStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     },
     rowValue: {
       fontFamily: typography.styles.rowValue.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
   });
@@ -241,7 +242,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors, isDark } = theme;
-  const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, isDark, insets.bottom), [theme, isDark, insets.bottom]);
 
   const { isPremium } = usePremium();
   const { profile, updateProfile } = useSettings();
@@ -602,7 +604,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           <NavRow
             theme={theme}
             icon={ContrastIcon}
-            iconColor={colors.textMuted}
+            iconColor={colors.info}
             label={t('settings.appearance')}
             subtitle={themeLabel}
             showArrow={false}
@@ -801,8 +803,9 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 ───────────────────────────────────────────────────────────── */
 
 const createStyles = (
-  { colors, spacing, radius, typography, layout }: ThemeContextType,
+  { colors, spacing, radius, typography, layout, tabBarClearance }: ThemeContextType,
   isDark: boolean,
+  bottomInset: number,
 ) => {
   const profileBg = isDark ? '#2C2C2E' : '#111111';
 
@@ -811,7 +814,7 @@ const createStyles = (
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
-      paddingBottom: 110,
+      paddingBottom: tabBarClearance(bottomInset),
     },
 
     /* ── Profile card ── */
@@ -834,7 +837,7 @@ const createStyles = (
     },
     profileMonogram: {
       fontFamily: typography.styles.profileMono.fontFamily,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.primaryForeground,
     },
     profileInfo: {
@@ -843,12 +846,12 @@ const createStyles = (
     },
     profileName: {
       fontFamily: typography.styles.profileName.fontFamily,
-      fontSize: typography.sizes.lg,
+      ...typography.metrics.lg,
       color: '#FFFFFF',
     },
     profilePlan: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: 'rgba(255,255,255,0.55)',
     },
 
@@ -862,7 +865,7 @@ const createStyles = (
     /* ── Section label ── */
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginBottom: spacing('2'),
       marginLeft: spacing('1'),
@@ -880,12 +883,12 @@ const createStyles = (
     upgradeInfo: { flex: 1, gap: 2 },
     upgradeLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.text,
     },
     upgradeSub: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginTop: 1,
     },
@@ -897,7 +900,7 @@ const createStyles = (
     },
     upgradePillText: {
       fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.primaryForeground,
     },
 
@@ -910,13 +913,13 @@ const createStyles = (
     },
     footerBrand: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       color: colors.text,
       opacity: 0.25,
     },
     footerCopy: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       color: colors.textMuted,
       opacity: 0.35,
     },

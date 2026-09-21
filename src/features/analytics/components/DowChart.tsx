@@ -73,5 +73,5 @@ const createStyles = ({ colors, spacing, typography }: ThemeContextType) => Styl
     width: '100%',
     borderRadius: 4,
   },
-  lbl: { fontSize: typography.sizes.xxs, letterSpacing: 0.5 },
+  lbl: { ...typography.metrics.xxs, letterSpacing: 0.5 },
 });

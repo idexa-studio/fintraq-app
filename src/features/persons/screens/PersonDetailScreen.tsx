@@ -22,6 +22,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 
 export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
@@ -203,11 +204,11 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
 
         {/* Stats */}
         <View style={styles.statsRow}>
-          <View style={[styles.statTile, { backgroundColor: colors.danger + '15' }]}>
+          <View style={[styles.statTile, { backgroundColor: alpha(colors.danger, 'subtle') }]}>
             <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.danger }]}>{t('persons.spent')}</Text>
             <MoneyText amount={person.totalSpent} currency={currency} type="DR" weight="bold" compact style={styles.statValue} />
           </View>
-          <View style={[styles.statTile, { backgroundColor: colors.success + '15' }]}>
+          <View style={[styles.statTile, { backgroundColor: alpha(colors.success, 'subtle') }]}>
             <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.success }]}>{t('persons.received')}</Text>
             <MoneyText amount={person.totalReceived} currency={currency} type="CR" weight="bold" compact style={styles.statValue} />
           </View>
@@ -218,7 +219,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
           <View style={[styles.txSection, { marginBottom: spacing('4') }]}>
             <View style={styles.sectionHeader}>
               <Text style={styles.txTitle}>{t('persons.activeLoans')}</Text>
-              <View style={[styles.countBadge, { backgroundColor: colors.primary + '18' }]}>
+              <View style={[styles.countBadge, { backgroundColor: alpha(colors.primary, 'subtle') }]}>
                 <Text style={[styles.countBadgeText, { color: colors.primary }]}>{activeLoans.length}</Text>
               </View>
             </View>
@@ -360,7 +361,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
     },
-    currencyPillActive: { backgroundColor: colors.primary + '18' },
+    currencyPillActive: { backgroundColor: alpha(colors.primary, 'subtle') },
     currencyPillText: { fontFamily: typography.styles.badge.fontFamily, color: colors.textMuted, fontSize: 11 },
     currencyPillTextActive: { color: colors.primary },
 
@@ -378,7 +379,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       gap: spacing('1'),
     },
     statLabel: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       fontFamily: typography.styles.sectionLabel.fontFamily,
     },
     statValue: { fontSize: 14 },
@@ -397,7 +398,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     },
     countBadgeText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     loansCard: {
       backgroundColor: colors.surface,
@@ -414,17 +415,17 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     loanMeta: { flex: 1, gap: spacing('0.5') },
     loanLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
     },
     loanHint: {
       fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     loanRight: {
       alignItems: 'flex-end',
       gap: spacing('1'),
     },
-    loanAmount: { fontSize: typography.sizes.md },
+    loanAmount: { ...typography.metrics.md },
     rowDivider: {
       height: StyleSheet.hairlineWidth,
       marginLeft: spacing('4') + 40 + spacing('3'),
@@ -433,8 +434,8 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     txTitle: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     emptyTx: { alignItems: 'center', paddingVertical: spacing('9'), gap: spacing('2') },
-    emptyTxText: { fontSize: typography.sizes.sm },
+    emptyTxText: { ...typography.metrics.sm },
   });

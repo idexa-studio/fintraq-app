@@ -43,7 +43,7 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType, heroCar
     },
     text: {
       fontFamily: typography.styles.badge.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: heroCard.textPrimary,
     },
   });

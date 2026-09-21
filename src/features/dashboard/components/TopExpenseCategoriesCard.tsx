@@ -8,6 +8,7 @@ import { MoneyText } from '../../../components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
+import { alpha } from '@/src/theme/tokens';
 
 type TopExpenseCategory = {
   name: string;
@@ -108,7 +109,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       width: 38,
       height: 38,
       borderRadius: 19,
-      backgroundColor: colors.primary + '12',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -148,19 +149,19 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flex: 1,
       gap: spacing('0.5'),
     },
-    name: { fontSize: typography.sizes.sm, fontFamily: typography.fonts.medium, color: colors.text },
+    name: { ...typography.metrics.sm, fontFamily: typography.fonts.medium, color: colors.text },
     amountRow: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('1'),
     },
-    amount: { fontSize: typography.sizes.xs },
+    amount: { ...typography.metrics.xs },
     dot: {
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       opacity: 0.5,
     },
     percentageText: {
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       opacity: 0.8,
     },
   });

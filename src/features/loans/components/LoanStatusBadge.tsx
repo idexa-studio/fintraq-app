@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import type { LoanStatus } from '../api/loans';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type Props = { status: LoanStatus };
 
@@ -14,9 +15,9 @@ export const LoanStatusBadge = React.memo(function LoanStatusBadge({ status }: P
 
   const config = useMemo(() => {
     switch (status) {
-      case 'repaid': return { label: t('loans.statusRepaid'), bg: colors.success + '20', text: colors.success };
-      case 'overdue': return { label: t('loans.statusOverdue'), bg: colors.danger + '20', text: colors.danger };
-      default:        return { label: t('loans.statusActive'),  bg: colors.primary + '20', text: colors.primary };
+      case 'repaid': return { label: t('loans.statusRepaid'), bg: alpha(colors.success, 'subtle'), text: colors.success };
+      case 'overdue': return { label: t('loans.statusOverdue'), bg: alpha(colors.danger, 'subtle'), text: colors.danger };
+      default:        return { label: t('loans.statusActive'),  bg: alpha(colors.primary, 'subtle'), text: colors.primary };
     }
   }, [status, colors, t]);
 
@@ -37,7 +38,7 @@ const createStyles = ({ spacing, radius, typography }: ThemeContextType) =>
       borderRadius: radius('full'),
     },
     label: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       fontFamily: typography.styles.chipLabelActive.fontFamily,
     },
   });

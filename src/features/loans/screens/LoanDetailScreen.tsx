@@ -45,6 +45,7 @@ import { RepaymentRow } from '../components/RepaymentRow';
 import { useAddRepayment, useDeleteLoan, useLoanRepayments, useLoanWithStats, useMarkLoanRepaid } from '../hooks/loans';
 import { useLoanReminders } from '../hooks/useLoanReminders';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 const parseAmount = (raw: string) => {
   const n = parseFloat(raw.replace(',', '.').replace(/[^0-9.]/g, ''));
@@ -235,12 +236,12 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
             <View style={styles.heroMeta}>
               <Text style={styles.heroName} numberOfLines={1}>{personName}</Text>
               <View style={styles.heroBadgeRow}>
-                <View style={[styles.typeBadge, { backgroundColor: personColor + '20' }]}>
+                <View style={[styles.typeBadge, { backgroundColor: alpha(personColor, 'subtle') }]}>
                   <Text style={[styles.typeBadgeText, { color: personColor }]}>
                     {loan.type === 'lend' ? t('loans.lentOut') : t('loans.borrowed')}
                   </Text>
                 </View>
-                <View style={[styles.typeBadge, { backgroundColor: colors.text + '0C' }]}>
+                <View style={[styles.typeBadge, { backgroundColor: alpha(colors.text, 'faint') }]}>
                   <Text style={[styles.typeBadgeText, { color: colors.textMuted }]}>{loan.accountName}</Text>
                 </View>
               </View>
@@ -259,11 +260,11 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
 
           {/* Stats tiles */}
           <View style={styles.statsRow}>
-            <View style={[styles.statTile, { backgroundColor: colors.text + '08' }]}>
+            <View style={[styles.statTile, { backgroundColor: alpha(colors.text, 'faint') }]}>
               <Text style={styles.statLabel}>{t('loans.principal')}</Text>
               <MoneyText amount={loan.principal} currency={loan.currency} type="NONE" weight="semibold" compact style={styles.statValue} />
             </View>
-            <View style={[styles.statTile, { backgroundColor: colors.success + '12' }]}>
+            <View style={[styles.statTile, { backgroundColor: alpha(colors.success, 'subtle') }]}>
               <Text style={[styles.statLabel, { color: colors.success }]}>{t('loans.repaid')}</Text>
               <MoneyText amount={loan.repaid} currency={loan.currency} type="NONE" weight="semibold" compact style={[styles.statValue, { color: colors.success }]} />
             </View>
@@ -290,7 +291,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
                 {t('loans.repay')}
               </Text>
             </BentoPressable>
-            <BentoPressable style={[styles.actionBtn, { backgroundColor: colors.success + '20' }]} onPress={handleMarkRepaid}>
+            <BentoPressable style={[styles.actionBtn, { backgroundColor: alpha(colors.success, 'subtle') }]} onPress={handleMarkRepaid}>
               <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
               <Text style={[styles.actionText, { color: colors.success }]}>
                 {t('loans.markRepaid')}
@@ -513,7 +514,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
     },
     heroName: {
       fontFamily: typography.styles.profileName.fontFamily,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
     },
     heroBadgeRow: {
@@ -527,11 +528,11 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
     },
     typeBadgeText: {
       fontFamily: typography.styles.chipLabelActive.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     balanceLabel: {
       fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginBottom: spacing('1'),
     },
@@ -554,17 +555,17 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
     },
     statLabel: {
       fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     statValue: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.text,
     },
     divider: {
       height: 1,
-      backgroundColor: colors.text + '08',
+      backgroundColor: alpha(colors.text, 'faint'),
       marginBottom: spacing('3'),
     },
     pctRow: {
@@ -575,7 +576,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
     },
     pctText: {
       fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     actionsRow: { flexDirection: 'row', gap: spacing('3'), marginBottom: spacing('4') },
@@ -589,13 +590,13 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
       borderRadius: radius('lg'),
     },
     actionText: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       fontFamily: typography.styles.buttonLabel.fontFamily,
     },
     timelineSection: { marginBottom: spacing('2') },
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       textTransform: 'uppercase',
       marginBottom: spacing('2'),
@@ -608,7 +609,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
       padding: spacing('3'),
     },
     noteText: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       lineHeight: 20,
       fontFamily: typography.styles.cardBody.fontFamily,
       color: colors.text,
@@ -644,12 +645,12 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
       padding: spacing('3'),
     },
     lockedPersonName: {
-      fontSize: typography.sizes.lg,
+      ...typography.metrics.lg,
       fontFamily: typography.styles.rowLabel.fontFamily,
       color: colors.text,
     },
     lockedPersonSub: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       fontFamily: typography.styles.rowMeta.fontFamily,
       color: colors.textMuted,
       marginTop: 2,
@@ -663,7 +664,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
     },
     fieldLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       textTransform: 'uppercase',
       marginBottom: spacing('2'),
@@ -675,7 +676,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
       alignSelf: 'flex-start',
     },
     fullAmountText: {
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       fontFamily: typography.styles.rowLabel.fontFamily,
       color: colors.primary,
     },

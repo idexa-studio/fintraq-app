@@ -120,12 +120,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
     },
     subtitle: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginTop: spacing('1'),
     },
@@ -146,7 +146,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark }: T
     optLabel: {
       flex: 1,
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.text,
     },
   });

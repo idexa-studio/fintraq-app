@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
+import { alpha } from '@/src/theme/tokens';
 
 type PersonAvatarVariant = 'subtle' | 'solid';
 
@@ -26,7 +27,7 @@ export const PersonAvatar = React.memo(function PersonAvatar({
     const computed = words.map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
     return {
       initials: computed,
-      bg: variant === 'solid' ? color : color + '18',
+      bg: variant === 'solid' ? color : alpha(color, 'subtle'),
       textColor: variant === 'solid' ? '#FFFFFF' : color,
       borderRadius: Math.round(size * 0.25),
       fontSize: Math.round(size * 0.38),

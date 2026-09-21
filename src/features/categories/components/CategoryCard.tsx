@@ -9,6 +9,7 @@ import { colorNumberToHex } from '../../../utils/format';
 import { resolveIcon } from '../../../utils/icons';
 import { Category } from '../api/categories';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 interface CategoryCardProps {
   item: Category;
@@ -90,7 +91,7 @@ export const CategoryCard = React.memo(function CategoryCard({
             const meta = TYPE_META[type];
             const badgeColor = colors[meta?.colorKey ?? 'textMuted'];
             return (
-              <View key={type} style={[styles.badge, { backgroundColor: badgeColor + '18' }]}>
+              <View key={type} style={[styles.badge, { backgroundColor: alpha(badgeColor, 'subtle') }]}>
                 <Text style={[styles.badgeText, { color: badgeColor }]}>{meta ? t(`categoryForm.${meta.label}`) : type}</Text>
               </View>
             );
@@ -122,7 +123,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     },
     name: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
       lineHeight: 18,
       flex: 1,

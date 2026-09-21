@@ -95,13 +95,13 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, si
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
       marginBottom: spacing('2'),
     },
     message: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.textMuted,
       lineHeight: 20,
     },
@@ -120,7 +120,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, si
     },
     btnCancelText: {
       fontFamily: typography.styles.dialogAction.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.textMuted,
     },
     btnConfirm: {
@@ -136,7 +136,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, si
     },
     btnConfirmText: {
       fontFamily: typography.styles.dialogAction.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.primaryForeground,
     },
   });

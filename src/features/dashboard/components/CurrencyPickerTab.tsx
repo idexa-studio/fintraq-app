@@ -62,7 +62,7 @@ const createStyles = ({ spacing, radius, typography }: ThemeContextType, heroCar
     },
     label: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: heroCard.textMuted,
     },
     labelActive: {

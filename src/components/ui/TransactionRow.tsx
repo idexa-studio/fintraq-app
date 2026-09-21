@@ -164,7 +164,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     },
     title: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
       lineHeight: 18,
     },
@@ -177,7 +177,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     },
     metaText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       lineHeight: 14,
       flexShrink: 1,
@@ -185,7 +185,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     },
     metaSep: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       opacity: 0.5,
     },
@@ -194,12 +194,12 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
       gap: spacing('0.5'),
     },
     amount: {
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       lineHeight: 18,
     },
     time: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       lineHeight: 14,
     },

@@ -49,6 +49,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Updates from 'expo-updates';
+import { alpha } from '@/src/theme/tokens';
 
 const DEV_PIN = '32159';
 
@@ -59,7 +60,7 @@ const RowSeparator = React.memo(function RowSeparator({ theme }: { theme: ThemeC
     <View
       style={{
         height: StyleSheet.hairlineWidth,
-        backgroundColor: theme.colors.text + '18',
+        backgroundColor: alpha(theme.colors.text, 'subtle'),
         marginLeft: theme.layout.screenPadding + 36 + theme.spacing('3.5'),
       }}
     />
@@ -133,12 +134,12 @@ const createRowStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     rowInfo: { flex: 1, gap: 2 },
     rowLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.text,
     },
     rowSubtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginTop: 1,
     },
@@ -149,7 +150,7 @@ const createRowStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     },
     rowValue: {
       fontFamily: typography.styles.rowValue.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
   });
@@ -414,7 +415,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
             return (
               <React.Fragment key={item.mode}>
                 <BentoPressable
-                  style={[styles.optionRow, isActive && { backgroundColor: item.color + '0C' }]}
+                  style={[styles.optionRow, isActive && { backgroundColor: alpha(item.color, 'faint') }]}
                   onPress={() => setDevOverride(item.mode)}
                 >
                   <IconAvatar
@@ -518,7 +519,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
                       {n.content.body || 'Daily check-in alert'}
                     </Text>
                   </View>
-                  <View style={[styles.activePill, { backgroundColor: colors.success + '18' }]}>
+                  <View style={[styles.activePill, { backgroundColor: alpha(colors.success, 'subtle') }]}>
                     <Text style={[styles.activePillText, { color: colors.success }]}>Active</Text>
                   </View>
                 </View>
@@ -662,7 +663,7 @@ const createStyles = (
     },
     lockSub: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       textAlign: 'center',
       lineHeight: 20,
@@ -701,12 +702,12 @@ const createStyles = (
     badgeInfo: { flex: 1, gap: 2 },
     badgeTitle: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: '#FFFFFF',
     },
     badgeSub: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: 'rgba(255,255,255,0.45)',
     },
     badgePill: {
@@ -732,7 +733,7 @@ const createStyles = (
     /* Section label */
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginBottom: spacing('2'),
       marginLeft: spacing('1'),
@@ -750,12 +751,12 @@ const createStyles = (
     optionInfo: { flex: 1, gap: 2 },
     optionLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.text,
     },
     optionSub: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginTop: 1,
     },

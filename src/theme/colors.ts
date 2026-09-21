@@ -34,15 +34,17 @@ export type ThemePalette = {
   danger: string;
   /** Caution / notice state */
   warning: string;
-  /** Informational / neutral state */
+  /** Informational accent — transfers, info alerts, neutral-but-active rows.
+   *  Must stay a distinct hue from textMuted, otherwise every element using it
+   *  renders as dead grey. */
   info: string;
 };
 
 export const DARK_THEME: ThemePalette = {
   background: '#141412',
-  card: '#2A2A25',
-  surface: '#1C1C1A',
-  tabBarBackground: '#1C1C1A',
+  card: '#302F2A',
+  surface: '#211F1D',
+  tabBarBackground: '#2B2A26',
 
   primary: '#00CC6A',
   primaryLight: '#00331A',
@@ -58,7 +60,7 @@ export const DARK_THEME: ThemePalette = {
   success: '#34C97A',
   danger: '#FF5449',
   warning: '#F2C66D',
-  info: '#9A9993',
+  info: '#5BA8EE',
 };
 
 export const LIGHT_THEME: ThemePalette = {
@@ -81,7 +83,7 @@ export const LIGHT_THEME: ThemePalette = {
   success: '#22A45D',
   danger: '#E53935',
   warning: '#B87D00',
-  info: '#6B6A65',
+  info: '#1268AE',
 };
 
 export type ThemeColors = ThemePalette;

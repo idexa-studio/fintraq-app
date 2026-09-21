@@ -16,6 +16,7 @@ import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { Modal, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type PremiumUpsellModalProps = {
   visible: boolean;
@@ -81,13 +82,13 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
         <View style={styles.card}>
           {/* ── Header ── */}
           <View style={styles.header}>
-            <View style={[styles.crownBadge, { backgroundColor: colors.warning + '18' }]}>
+            <View style={[styles.crownBadge, { backgroundColor: alpha(colors.warning, 'subtle') }]}>
               <HugeiconsIcon icon={CrownIcon} size={26} color={colors.warning} />
             </View>
 
             <View style={styles.headerText}>
               <Text style={styles.title}>{t('premium.title')}</Text>
-              <View style={[styles.lifetimePill, { backgroundColor: colors.warning + '20' }]}>
+              <View style={[styles.lifetimePill, { backgroundColor: alpha(colors.warning, 'subtle') }]}>
                 <Text style={[styles.lifetimeLabel, { color: colors.warning }]}>{t('premium.oneTimeLifetime')}</Text>
               </View>
             </View>
@@ -95,7 +96,7 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
             {canDismiss && (
               <BentoPressable
                 onPress={onClose}
-                style={[styles.closeBtn, { backgroundColor: colors.text + '0C' }]}
+                style={[styles.closeBtn, { backgroundColor: alpha(colors.text, 'faint') }]}
               >
                 <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
               </BentoPressable>
@@ -243,7 +244,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, overlay }: 
     },
     ctaText: {
       fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
     },
     skipBtn: {
       alignItems: 'center',
@@ -251,7 +252,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, overlay }: 
     },
     skipText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
   });

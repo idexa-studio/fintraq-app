@@ -2,6 +2,8 @@ import React, { createContext, useContext, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
 import { DARK_THEME, getHeroColors, HeroCardPalette, LIGHT_THEME, PICKER_CONTRAST_COLOR, ThemeColors } from '../theme/colors';
 import {
+  alpha,
+  AlphaToken,
   COMPONENT_SIZES,
   LAYOUT,
   OVERLAY,
@@ -11,6 +13,7 @@ import {
   ShadowToken,
   spacing,
   SpacingToken,
+  tabBarClearance,
 } from '../theme/tokens';
 import { TYPOGRAPHY } from '../theme/typography';
 import { useSettings } from './SettingsProvider';
@@ -39,6 +42,10 @@ export type ThemeContextType = {
   radius: (token: RadiusToken) => number;
   /** Shadow helper: shadow('sm') → shadow style object */
   shadow: (token: ShadowToken) => object;
+  /** Bottom padding a tab screen needs to clear the floating tab bar */
+  tabBarClearance: (bottomInset: number) => number;
+  /** Tint helper: alpha(colors.primary, 'subtle') → '#00CC6A1A' */
+  alpha: (hexColor: string, level: AlphaToken) => string;
 };
 
 const defaultContext: ThemeContextType = {
@@ -53,6 +60,8 @@ const defaultContext: ThemeContextType = {
   spacing,
   radius,
   shadow,
+  tabBarClearance,
+  alpha,
 };
 
 const ThemeContext = createContext<ThemeContextType>(defaultContext);
@@ -88,6 +97,8 @@ export const ThemeProvider = React.memo(function ThemeProvider({ children }: { c
     spacing,
     radius,
     shadow,
+    tabBarClearance,
+    alpha,
   }), [colors, isDark, heroCard, overlay]);
 
   return (

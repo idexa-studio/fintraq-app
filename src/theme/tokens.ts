@@ -67,6 +67,10 @@ export const LAYOUT = {
   
   // Touch targets
   minTouchTarget: 44,
+
+  // Floating tab bar footprint — see tabBarClearance()
+  tabBarHeight: 60,
+  tabBarGap: 8,
   
   // Icon sizes
   iconSm: 16,
@@ -141,21 +145,36 @@ export const COMPONENT_SIZES = {
 } as const;
 
 // ============================================
-// OPACITY SCALE
+// ALPHA SCALE
+// Named translucency levels for tinting a solid theme colour.
+//
+// Before this existed the app hand-wrote 20 different hex suffixes
+// ('12', '14', '15', '18', '1A', '1E', '20' …) that were visually
+// indistinguishable but never matched. Use a named level instead:
+//   backgroundColor: alpha(colors.primary, 'subtle')
 // ============================================
-export const OPACITY = {
-  '0': 0,
-  '10': 0.1,
-  '20': 0.2,
-  '30': 0.3,
-  '40': 0.4,
-  '50': 0.5,
-  '60': 0.6,
-  '70': 0.7,
-  '80': 0.8,
-  '90': 0.9,
-  '100': 1,
+export const ALPHA = {
+  /** 6% — hairline separators, barely-there wash */
+  faint:  '0F',
+  /** 10% — tinted icon tiles, chip fills, soft card borders */
+  subtle: '1A',
+  /** 17% — pressed states, stronger dividers */
+  soft:   '2B',
+  /** 30% — disabled fills, inactive tracks */
+  medium: '4D',
+  /** 50% — scrims, muted overlay text */
+  strong: '80',
 } as const;
+
+export type AlphaToken = keyof typeof ALPHA;
+
+/**
+ * Tint a solid 6-digit hex colour with a named alpha level.
+ * `alpha('#00CC6A', 'subtle')` → `'#00CC6A1A'`
+ */
+export function alpha(hexColor: string, level: AlphaToken): string {
+  return `${hexColor}${ALPHA[level]}`;
+}
 
 // ============================================
 // ELEVATION / SHADOWS
@@ -202,24 +221,16 @@ export const SHADOWS = {
 export type ShadowToken = keyof typeof SHADOWS;
 
 // ============================================
-// Z-INDEX SCALE
-// ============================================
-export const Z_INDEX = {
-  '0': 0,
-  '10': 10,
-  '20': 20,
-  '30': 30,
-  '40': 40,
-  '50': 50,
-  'auto': 'auto',
-} as const;
-
-// ============================================
 // TRANSITIONS / ANIMATION
 // ============================================
 export const ANIMATION = {
+  /** 150ms — backdrop fades, colour/opacity cross-fades */
   fast: 150,
+  /** 200ms — standard enter transitions */
   normal: 200,
+  /** 220ms — sheet/modal dismissal, needs to outlast the backdrop fade */
+  exit: 220,
+  /** 300ms — large travel, full-screen transitions */
   slow: 300,
 } as const;
 
@@ -246,26 +257,6 @@ export const LETTER_SPACING = {
 } as const;
 
 // ============================================
-// HERO CARD PALETTE
-// Fixed dark-context palette — always dark regardless of theme.
-// Use for full-bleed hero cards (dashboard balance, settings profile).
-// Never hardcode these values in components — import from here.
-// ============================================
-export const HERO_CARD = {
-  background:  '#00D473',
-  backgroundDark: '#00B362',
-  textPrimary: '#0A0A0A',
-  textMuted:   '#2B2D30',
-  separator:   'rgba(0, 0, 0, 0.07)',
-  income:      '#004D20',
-  expense:     '#800000',
-  decoOverlay: 'rgba(255, 255, 255, 0.12)',
-  glowLight:   'rgba(255, 255, 255, 0.04)',
-} as const;
-
-export type HeroCardPalette = typeof HERO_CARD;
-
-// ============================================
 // OVERLAY BACKGROUNDS
 // Used for modal backdrops — never hardcode rgba in components
 // ============================================
@@ -283,6 +274,18 @@ export const OVERLAY = {
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
+
+/**
+ * Bottom padding a scrollable tab screen needs so its last row clears the
+ * floating tab bar instead of hiding behind it.
+ *
+ * The tab bar floats at `insets.bottom + tabBarGap` and is `tabBarHeight` tall.
+ * Screens use `edges={['top']}`, so the bottom inset is NOT consumed by the
+ * SafeAreaView and has to be added here.
+ */
+export function tabBarClearance(bottomInset: number): number {
+  return bottomInset + LAYOUT.tabBarHeight + LAYOUT.tabBarGap + SPACING['6'];
+}
 
 /**
  * Get spacing value from token

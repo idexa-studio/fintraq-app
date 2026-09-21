@@ -75,7 +75,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       fontSize: 15,
     },
     detail: {
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       lineHeight: 20,
     },
   });

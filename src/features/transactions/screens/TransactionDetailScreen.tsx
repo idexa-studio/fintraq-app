@@ -36,6 +36,7 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -265,12 +266,12 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
             <View style={styles.heroMeta}>
               <Text style={styles.heroName} numberOfLines={2}>{displayTitle}</Text>
               <View style={styles.heroBadgeRow}>
-                <View style={[styles.typeBadge, { backgroundColor: typeColor + '18' }]}>
+                <View style={[styles.typeBadge, { backgroundColor: alpha(typeColor, 'subtle') }]}>
                   <Text style={[styles.typeBadgeText, { color: typeColor }]}>
                     {t(TYPE_LABEL_KEYS[tx.type])}
                   </Text>
                 </View>
-                <View style={[styles.typeBadge, { backgroundColor: colors.text + '0C' }]}>
+                <View style={[styles.typeBadge, { backgroundColor: alpha(colors.text, 'faint') }]}>
                   <Text style={[styles.typeBadgeText, { color: colors.textMuted }]}>
                     {tx.account.currency}
                   </Text>
@@ -366,7 +367,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
               isLast={lastRowIsPerson}
             >
               <View style={rowStyles.chip}>
-                <View style={[rowStyles.personAvatar, { backgroundColor: personColor + '18' }]}>
+                <View style={[rowStyles.personAvatar, { backgroundColor: alpha(personColor, 'subtle') }]}>
                   <Text style={[rowStyles.personInitials, { color: personColor }]}>
                     {personInitials}
                   </Text>
@@ -427,19 +428,19 @@ const createInfoRowStyles = ({ colors, typography, spacing, radius }: ThemeConte
     iconWrap: { width: 20, alignItems: 'center' },
     label: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       width: 72,
     },
     valueWrap: { flex: 1 },
     valueText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
     valueSub: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginTop: 1,
     },
@@ -450,7 +451,7 @@ const createInfoRowStyles = ({ colors, typography, spacing, radius }: ThemeConte
     },
     chipText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
     personAvatar: {
@@ -462,7 +463,7 @@ const createInfoRowStyles = ({ colors, typography, spacing, radius }: ThemeConte
     },
     personInitials: {
       fontFamily: typography.styles.profileMono.fontFamily,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
     },
   });
 
@@ -475,7 +476,7 @@ const createStyles = (
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     missingText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
     content: {
@@ -515,7 +516,7 @@ const createStyles = (
     },
     heroName: {
       fontFamily: typography.styles.profileName.fontFamily,
-      fontSize: typography.sizes.lg,
+      ...typography.metrics.lg,
       color: colors.text,
       lineHeight: 22,
     },
@@ -526,7 +527,7 @@ const createStyles = (
     },
     amountLabel: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginTop: spacing('1'),
     },
@@ -542,7 +543,7 @@ const createStyles = (
     },
     typeBadgeText: {
       fontFamily: typography.styles.badge.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
 
     // Section

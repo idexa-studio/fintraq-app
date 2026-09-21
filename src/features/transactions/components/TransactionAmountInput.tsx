@@ -72,7 +72,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
     },
     label: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       opacity: 0.6,
       marginBottom: spacing('1.5'),

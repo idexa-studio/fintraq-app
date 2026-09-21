@@ -8,6 +8,7 @@ import { usePremium } from '../../../providers/PremiumProvider';
 import type { LoanWithStats } from '../api/loans';
 import { useLoanReminders } from '../hooks/useLoanReminders';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 const DUE_DAYS_OPTIONS = [
   { label: 'onDueDate', value: 0 },
@@ -262,7 +263,7 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
     section: { marginTop: spacing('6') },
     title: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
@@ -278,12 +279,12 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
     toggleInfo: { flex: 1, paddingRight: spacing('3') },
     rowLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.text,
     },
     rowSub: {
       fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginTop: spacing('0.5'),
     },
@@ -291,12 +292,12 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
     chip: {
       paddingHorizontal: spacing('3'),
       paddingVertical: spacing('1.5'),
-      backgroundColor: colors.primary + '15',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       borderRadius: radius('full'),
     },
     chipText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.primary,
     },
   });

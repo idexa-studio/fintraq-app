@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
+import { alpha } from '@/src/theme/tokens';
 
 type BadgeVariant =
   /** Tinted pill — type labels, status labels, currency codes */
@@ -36,14 +37,14 @@ export const Badge = React.memo(function Badge({
         return { bg: colors.surface, textColor: colors.textMuted };
       case 'label':
       default:
-        return { bg: accent + '18', textColor: accent };
+        return { bg: alpha(accent, 'subtle'), textColor: accent };
     }
   }, [variant, accent, colors.surface, colors.textMuted]);
 
   const textStyle = useMemo(
     () => ({
       fontFamily: typography.styles.badge.fontFamily,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       color: textColor,
       includeFontPadding: false,
     }),

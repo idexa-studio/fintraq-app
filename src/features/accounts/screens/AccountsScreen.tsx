@@ -27,6 +27,7 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Account } from '../api/accounts';
+import { alpha } from '@/src/theme/tokens';
 
 export const AccountsScreen = React.memo(function AccountsScreen() {
   const { t } = useTranslation();
@@ -270,12 +271,12 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     cardName: {
       fontFamily: typography.styles.rowLabel.fontFamily,
       color: colors.text,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
     },
     cardHint: {
       fontFamily: typography.fonts.regular,
       color: colors.textMuted,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     cardTopRight: {
       flexDirection: 'row',
@@ -298,7 +299,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     },
     currencyText: {
       fontFamily: typography.styles.badge.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
 
@@ -310,17 +311,17 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     balanceLabel: {
       fontFamily: typography.fonts.regular,
       color: colors.textMuted,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     cardBalance: {
-      fontSize: typography.sizes.xxxl,
+      ...typography.metrics.xxxl,
       lineHeight: 34,
     },
 
     /* ── Divider ── */
     divider: {
       height: 1,
-      backgroundColor: colors.text + '0C',
+      backgroundColor: alpha(colors.text, 'faint'),
       marginTop: spacing('4'),
       marginBottom: spacing('3'),
     },
@@ -337,7 +338,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     statDivider: {
       width: 1,
       height: 32,
-      backgroundColor: colors.text + '0C',
+      backgroundColor: alpha(colors.text, 'faint'),
       marginHorizontal: spacing('4'),
     },
     statLabelRow: {
@@ -348,10 +349,10 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     statLabel: {
       fontFamily: typography.fonts.regular,
       color: colors.textMuted,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     statValue: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       fontFamily: typography.styles.sectionLabel.fontFamily,
     },
 
@@ -376,7 +377,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     },
     emptyText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       opacity: 0.5,
     },

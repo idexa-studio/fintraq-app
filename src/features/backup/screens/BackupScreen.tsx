@@ -12,6 +12,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GoogleBackupCard } from '../components/GoogleBackupCard';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 const HIGHLIGHTS = [
   { icon: LockPasswordIcon, key: 'private' },
@@ -78,7 +79,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     sectionLabel: {
       fontFamily: typography.fonts.bold,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
@@ -104,18 +105,18 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     highlightTitle: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.text,
     },
     highlightSubtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       lineHeight: 16,
     },
     separator: {
       height: StyleSheet.hairlineWidth,
-      backgroundColor: colors.text + '18',
+      backgroundColor: alpha(colors.text, 'subtle'),
       marginLeft: layout.screenPadding + 36 + spacing('3.5'),
     },
   });

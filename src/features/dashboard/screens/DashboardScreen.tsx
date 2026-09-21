@@ -30,6 +30,7 @@ import { PremiumUpsellModal } from '../components/PremiumUpsellModal';
 import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '../components/TopPersonsCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
+import { alpha } from '@/src/theme/tokens';
 
 const UPSELL_KEY = StorageKeys.UPSELL_DISMISSED_AT;
 const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
@@ -255,11 +256,11 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, insets: any) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClearance }: ThemeContextType, insets: any) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
-    content: { paddingBottom: insets.bottom > 0 ? insets.bottom + 80 + 24 : 110 },
+    content: { paddingBottom: tabBarClearance(insets.bottom) },
 
   
 
@@ -280,7 +281,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       width: 44,
       height: 44,
       borderRadius: radius('full'),
-      backgroundColor: colors.primary + '12',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: spacing('1'),

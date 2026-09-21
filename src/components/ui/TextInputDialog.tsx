@@ -145,14 +145,14 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, si
       gap: spacing('3'),
     },
     title: {
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
     },
     subtitle: {
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       opacity: 0.7,
     },
     counter: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       textAlign: 'right',
     },
     actions: {
@@ -169,7 +169,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, si
       borderRadius: radius('lg'),
     },
     btnCancelText: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       fontFamily: typography.styles.dialogAction.fontFamily,
       color: colors.textMuted,
     },
@@ -182,7 +182,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, layout, si
       borderRadius: radius('lg'),
     },
     btnSaveText: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       fontFamily: typography.styles.dialogAction.fontFamily,
       color: colors.primaryForeground,
     },

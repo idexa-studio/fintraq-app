@@ -9,6 +9,7 @@ import { LockStorage } from '../api/lockStorage';
 import { authenticateWithBiometrics, getBiometricCapability } from '../hooks/useLocalAuth';
 import { PinPad } from './PinPad';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type Props = {
   onUnlock: () => void;
@@ -169,7 +170,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       width: 96,
       height: 96,
       borderRadius: 48,
-      backgroundColor: colors.primary + '0B',
+      backgroundColor: alpha(colors.primary, 'faint'),
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -177,7 +178,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       width: 68,
       height: 68,
       borderRadius: 34,
-      backgroundColor: colors.primary + '18',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       justifyContent: 'center',
       alignItems: 'center',
     },

@@ -11,6 +11,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
+import { alpha } from '@/src/theme/tokens';
 
 export type CloudBackupChoice = 'enable' | 'skip';
 
@@ -124,7 +125,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     cardActive: {
       borderColor: colors.primary,
-      backgroundColor: colors.primary + '0A',
+      backgroundColor: alpha(colors.primary, 'faint'),
     },
     info: {
       flex: 1,
@@ -143,7 +144,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       color: colors.text,
     },
     recBadge: {
-      backgroundColor: colors.primary + '18',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       paddingHorizontal: spacing('2'),
       paddingVertical: 2,
       borderRadius: radius('full'),
@@ -155,7 +156,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     subtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       lineHeight: 18,
     },

@@ -69,7 +69,7 @@ export const MoneyText = React.memo(function MoneyText({
 
 const createStyles = ({ typography }: ThemeContextType) => StyleSheet.create({
   base: {
-    fontSize: typography.sizes.md,
+    ...typography.metrics.md,
     flexShrink: 1,
     includeFontPadding: false,
   }

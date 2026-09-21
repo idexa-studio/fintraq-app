@@ -455,7 +455,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     },
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       opacity: 0.6,
     },

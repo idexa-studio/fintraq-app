@@ -6,6 +6,7 @@ import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import type { TransactionType } from '../../../types';
 import { BentoPressable } from '../../../components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type Props = {
   value: TransactionType;
@@ -33,7 +34,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
         <BentoPressable
           style={[
             styles.segmentButton,
-            value === 'DR' && { backgroundColor: colors.danger + '14' },
+            value === 'DR' && { backgroundColor: alpha(colors.danger, 'subtle') },
             disabled && value !== 'DR' && styles.pillHidden,
           ]}
           onPress={handleDR}
@@ -54,7 +55,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
         <BentoPressable
           style={[
             styles.segmentButton,
-            value === 'CR' && { backgroundColor: colors.success + '14' },
+            value === 'CR' && { backgroundColor: alpha(colors.success, 'subtle') },
             disabled && value !== 'CR' && styles.pillHidden,
           ]}
           onPress={handleCR}
@@ -75,7 +76,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
         <BentoPressable
           style={[
             styles.segmentButton,
-            value === 'TR' && { backgroundColor: colors.primary + '14' },
+            value === 'TR' && { backgroundColor: alpha(colors.primary, 'subtle') },
             disabled && value !== 'TR' && styles.pillHidden,
           ]}
           onPress={handleTR}
@@ -133,6 +134,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
     },
     pillText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
     },
   });

@@ -1,4 +1,5 @@
 import { ThemeColors, useTheme } from '@/src/providers/ThemeProvider';
+import { ANIMATION } from '@/src/theme/tokens';
 import * as Haptics from 'expo-haptics';
 import React, {
   createContext,
@@ -97,15 +98,15 @@ const BottomSheetContent = forwardRef<BottomSheetContentHandle, {
   useEffect(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     translateY.value = withSpring(0, SPRING_CONFIG);
-    backdropOpacity.value = withTiming(1, { duration: 200 });
+    backdropOpacity.value = withTiming(1, { duration: ANIMATION.normal });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Close helper (called from JS thread or via imperative ref) ───────────
   const animateClose = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    translateY.value = withTiming(SCREEN_HEIGHT, { duration: 220 });
-    backdropOpacity.value = withTiming(0, { duration: 200 }, (finished) => {
+    translateY.value = withTiming(SCREEN_HEIGHT, { duration: ANIMATION.exit });
+    backdropOpacity.value = withTiming(0, { duration: ANIMATION.normal }, (finished) => {
       if (finished) {
         runOnJS(onDismiss)();
       }
@@ -140,13 +141,13 @@ const BottomSheetContent = forwardRef<BottomSheetContentHandle, {
         e.velocityY > CLOSE_THRESHOLD_VY;
 
       if (shouldClose) {
-        translateY.value = withTiming(SCREEN_HEIGHT, { duration: 220 });
-        backdropOpacity.value = withTiming(0, { duration: 200 }, (finished) => {
+        translateY.value = withTiming(SCREEN_HEIGHT, { duration: ANIMATION.exit });
+        backdropOpacity.value = withTiming(0, { duration: ANIMATION.normal }, (finished) => {
           if (finished) runOnJS(onDismiss)();
         });
       } else {
         translateY.value = withSpring(0, SPRING_CONFIG);
-        backdropOpacity.value = withTiming(1, { duration: 150 });
+        backdropOpacity.value = withTiming(1, { duration: ANIMATION.fast });
       }
     });
 

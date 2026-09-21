@@ -30,6 +30,7 @@ import { colorNumberToHex, toDbColor } from '@/src/utils/format';
 import { LoggerService } from '@/src/services/logger.service';
 import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 const PALETTE_COLORS = PALETTE_COLOR_OPTIONS.map((c) => c.hex);
 
@@ -164,7 +165,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
           {/* ── Hero card ── */}
           <View style={[styles.heroCard, { marginHorizontal: layout.screenPadding }]}>
             <View style={styles.heroTop}>
-              <View style={[styles.initialsWrap, { backgroundColor: colorHex + '18' }]}>
+              <View style={[styles.initialsWrap, { backgroundColor: alpha(colorHex, 'subtle') }]}>
                 <Text style={[styles.initialsText, { color: colorHex }]}>{initials}</Text>
               </View>
               <View style={styles.heroMeta}>
@@ -410,7 +411,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: T
     },
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       opacity: 0.6,
     },

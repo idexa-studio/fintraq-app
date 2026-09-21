@@ -154,7 +154,7 @@ function createStyles({ spacing, radius, typography, colors, layout }: ThemeCont
     },
     brand: {
       fontFamily: typography.fonts.heading,
-      fontSize: typography.sizes.xxl,
+      ...typography.metrics.xxl,
       color: colors.text,
       textAlign: 'center',
     },
@@ -173,7 +173,7 @@ function createStyles({ spacing, radius, typography, colors, layout }: ThemeCont
     },
     eyebrow: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.primary,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
@@ -217,7 +217,7 @@ function createStyles({ spacing, radius, typography, colors, layout }: ThemeCont
     },
     cardDetail: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       lineHeight: 20,
       color: colors.textMuted,
     },

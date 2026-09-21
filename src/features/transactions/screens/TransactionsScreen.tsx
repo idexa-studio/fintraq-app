@@ -34,6 +34,7 @@ import {
 
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 const SWIPE_ACTION_WIDTH = 44;
 type SwipeableInstance = React.ComponentRef<typeof Swipeable>;
@@ -157,9 +158,9 @@ const SwipeableRow = React.memo(function SwipeableRow({
 
   // Memoize action colors to prevent re-renders of RightActions
   const actionColors = React.useMemo(() => ({
-    editBg: colors.primary + '1A',
+    editBg: alpha(colors.primary, 'subtle'),
     editIcon: colors.primary,
-    deleteBg: colors.danger + '1A',
+    deleteBg: alpha(colors.danger, 'subtle'),
     deleteIcon: colors.danger,
   }), [colors.primary, colors.danger]);
 
@@ -877,7 +878,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
 });
 
 const ZERO_INSETS: EdgeInsets = { top: 0, bottom: 0, left: 0, right: 0 };
-const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isDark }: ThemeContextType, insets: EdgeInsets = ZERO_INSETS) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isDark, tabBarClearance }: ThemeContextType, insets: EdgeInsets = ZERO_INSETS) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -903,7 +904,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       backgroundColor: colors.surface,
     },
     iconBtnActive: {
-      backgroundColor: colors.primary + '14',
+      backgroundColor: alpha(colors.primary, 'subtle'),
     },
     filterBadge: {
       position: 'absolute',
@@ -924,7 +925,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
     content: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
-      paddingBottom: insets.bottom > 0 ? insets.bottom + 90 : 100,
+      paddingBottom: tabBarClearance(insets.bottom),
     },
     listHeader: {
       gap: spacing('5'),
@@ -941,7 +942,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
     dayTitle: {
       color: colors.textMuted,
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     dayTotals: {
       flexDirection: 'row',
@@ -953,7 +954,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
     },
     dayTotalCount: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     emptyWrap: {
@@ -1027,7 +1028,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       alignItems: 'center',
       borderRadius: radius('full'),
       height: 30,
-      backgroundColor: colors.primary + '1A',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       overflow: 'hidden',
     },
     chipButton: {

@@ -71,9 +71,9 @@ export const ProfileStep = React.memo(function ProfileStep({ currency, onOpenCur
 const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     wrapper: { gap: spacing('5') },
-    hint: { fontSize: typography.sizes.xs, opacity: 0.6, paddingLeft: spacing('1') },
+    hint: { ...typography.metrics.xs, opacity: 0.6, paddingLeft: spacing('1') },
     field: { gap: spacing('2') },
-    label: { fontSize: typography.sizes.xs, opacity: 0.6 },
+    label: { ...typography.metrics.xs, opacity: 0.6 },
     currencyRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -83,6 +83,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       borderRadius: radius('lg'),
       paddingHorizontal: spacing('4'),
     },
-    currencyCode: { fontSize: typography.sizes.sm },
-    currencyHint: { flex: 1, fontSize: typography.sizes.xs },
+    currencyCode: { ...typography.metrics.sm },
+    currencyHint: { flex: 1, ...typography.metrics.xs },
   });

@@ -136,12 +136,12 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   },
   title: {
     fontFamily: typography.styles.cardTitle.fontFamily,
-    fontSize: typography.sizes.md,
+    ...typography.metrics.md,
     lineHeight: 18,
     color: colors.text,
   },
   titleSmall: {
-    fontSize: typography.sizes.xs,
+    ...typography.metrics.xs,
     marginBottom: 0,
   },
   ctaRow: {
@@ -152,7 +152,7 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   },
   subtitle: {
     fontFamily: typography.styles.badge.fontFamily,
-    fontSize: typography.sizes.xs,
+    ...typography.metrics.xs,
     lineHeight: 14,
     color: colors.primary,
   },

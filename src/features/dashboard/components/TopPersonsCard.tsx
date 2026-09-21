@@ -78,11 +78,11 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
       gap: spacing('0.5'),
     },
     cellName: {
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       fontFamily: typography.fonts.medium,
       color: colors.text,
     },
     cellAmount: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
   });

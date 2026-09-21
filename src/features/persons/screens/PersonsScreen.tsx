@@ -16,6 +16,7 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 export const PersonsScreen = React.memo(function PersonsScreen() {
   const theme = useTheme();
@@ -190,7 +191,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: T
     },
     searchInput: {
       flex: 1,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       padding: 0,
     },
  
@@ -198,13 +199,13 @@ const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: T
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2'),
-      backgroundColor: colors.warning + '18',
+      backgroundColor: alpha(colors.warning, 'subtle'),
       borderRadius: radius('xl'),
       paddingHorizontal: spacing('3.5'),
       paddingVertical: spacing('2.5'),
       marginBottom: spacing('3'),
     },
-    limitText: { flex: 1, fontSize: typography.sizes.xs },
+    limitText: { flex: 1, ...typography.metrics.xs },
  
     group: {
       marginBottom: spacing('4'),
@@ -219,12 +220,12 @@ const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: T
     },
     rowMeta: { flex: 1 },
     rowName: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       fontFamily: typography.fonts.medium,
       color: colors.text,
     },
     rowSub: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       fontFamily: typography.fonts.regular,
       color: colors.textMuted,
       marginTop: 2,
@@ -232,8 +233,8 @@ const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: T
     },
 
     empty: { alignItems: 'center', paddingVertical: spacing('11'), gap: spacing('2') },
-    emptyText: { fontSize: typography.sizes.lg },
-    emptyHint: { fontSize: typography.sizes.sm, opacity: 0.5, textAlign: 'center' },
+    emptyText: { ...typography.metrics.lg },
+    emptyHint: { ...typography.metrics.sm, opacity: 0.5, textAlign: 'center' },
 
     fab: {
       position: 'absolute',

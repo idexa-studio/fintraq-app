@@ -17,6 +17,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../api/advanced-filters.service';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 interface AdvancedFilterBottomSheetProps {
   visible: boolean;
@@ -276,7 +277,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                     {fmt(local.dateRange.startDate)}
                   </Text>
                 </BentoPressable>
-                <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
+                <View style={[styles.groupSep, { backgroundColor: alpha(colors.text, 'faint') }]} />
                 <BentoPressable style={styles.groupRow} onPress={() => setShowEnd(true)}>
                   <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
@@ -320,7 +321,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 textAlign="right"
               />
             </View>
-            <View style={[styles.groupSep, { backgroundColor: colors.text + '08' }]} />
+            <View style={[styles.groupSep, { backgroundColor: alpha(colors.text, 'faint') }]} />
             <View style={styles.groupRow}>
               <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                 {t('filters.max')}
@@ -355,7 +356,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                   return (
                     <BentoPressable
                       key={a.id}
-                      style={[styles.pill, { backgroundColor: sel ? ac + '18' : colors.card }]}
+                      style={[styles.pill, { backgroundColor: sel ? alpha(ac, 'subtle') : colors.card }]}
                       onPress={() => toggleAccount(a.id)}
                     >
                       <HugeiconsIcon icon={resolveAccountTypeIcon(a.accountType as AccountType | null)} size={16} color={ac} />
@@ -381,7 +382,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                   return (
                     <BentoPressable
                       key={c.id}
-                      style={[styles.pill, { backgroundColor: sel ? cc + '18' : colors.card }]}
+                      style={[styles.pill, { backgroundColor: sel ? alpha(cc, 'subtle') : colors.card }]}
                       onPress={() => toggleCategory(c.id)}
                     >
                       <HugeiconsIcon icon={resolveIcon(c.icon, Tag01Icon)} size={16} color={cc} />
@@ -407,7 +408,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                   return (
                     <BentoPressable
                       key={p.id}
-                      style={[styles.pill, { backgroundColor: sel ? pc + '18' : colors.card }]}
+                      style={[styles.pill, { backgroundColor: sel ? alpha(pc, 'subtle') : colors.card }]}
                       onPress={() => togglePerson(p.id)}
                     >
                       <PersonAvatar name={p.name} color={pc} size={16} variant="subtle" />
@@ -482,7 +483,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingHorizontal: spacing('1'),
     },
     badgeText: { fontSize: 10 },
-    resetText: { fontSize: typography.sizes.sm },
+    resetText: { ...typography.metrics.sm },
     scroll: {
       paddingTop: spacing('3'),
     },
@@ -510,7 +511,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     presetPillLabel: { fontSize: 12 },
     fieldError: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       marginTop: spacing('1.5'),
       marginHorizontal: layout.screenPadding,
     },
@@ -542,13 +543,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     groupRowPrompt: {
       height: 52,
     },
-    groupRowLabel: { fontSize: typography.sizes.sm },
-    groupRowValue: { flex: 1, fontSize: typography.sizes.sm, textAlign: 'right' },
+    groupRowLabel: { ...typography.metrics.sm },
+    groupRowValue: { flex: 1, ...typography.metrics.sm, textAlign: 'right' },
     groupChevron: { marginLeft: 'auto' },
     groupSep: { height: 1, marginHorizontal: spacing('4') },
     amountInput: {
       flex: 1,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       padding: 0,
       textAlign: 'right',
     },
@@ -571,8 +572,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontSize: 13,
     },
     inlineToggles: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
-    toggleSep: { fontSize: typography.sizes.xs, opacity: 0.4 },
-    toggleOption: { fontSize: typography.sizes.sm },
+    toggleSep: { ...typography.metrics.xs, opacity: 0.4 },
+    toggleOption: { ...typography.metrics.sm },
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
@@ -584,5 +585,5 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       justifyContent: 'center',
     },
-    applyLabel: { fontSize: typography.sizes.md },
+    applyLabel: { ...typography.metrics.md },
   });

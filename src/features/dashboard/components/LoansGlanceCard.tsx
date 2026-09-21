@@ -7,6 +7,7 @@ import { BentoPressable } from '../../../components/ui/BentoPressable';
 import { MoneyText } from '../../../components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useLoansSummary } from '../../loans/hooks/loans';
+import { alpha } from '@/src/theme/tokens';
 
 type Props = {
   currency: string;
@@ -43,7 +44,7 @@ export const LoansGlanceCard = React.memo(function LoansGlanceCard({ currency, o
             {t('dashboard.lentOut')}
           </Text>
           {summary.overdueLentCount > 0 && (
-            <View style={[styles.badge, { backgroundColor: colors.danger + '20' }]}>
+            <View style={[styles.badge, { backgroundColor: alpha(colors.danger, 'subtle') }]}>
               <Text style={[styles.badgeText, { color: colors.danger }]}>
                 {t('dashboard.overdue', { count: summary.overdueLentCount })}
               </Text>
@@ -62,7 +63,7 @@ export const LoansGlanceCard = React.memo(function LoansGlanceCard({ currency, o
             {t('dashboard.borrowed')}
           </Text>
           {summary.overdueBorrowedCount > 0 && (
-            <View style={[styles.badge, { backgroundColor: colors.danger + '20' }]}>
+            <View style={[styles.badge, { backgroundColor: alpha(colors.danger, 'subtle') }]}>
               <Text style={[styles.badgeText, { color: colors.danger }]}>
                 {t('dashboard.overdue', { count: summary.overdueBorrowedCount })}
               </Text>
@@ -93,7 +94,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       width: 38,
       height: 38,
       borderRadius: 19,
-      backgroundColor: colors.primary + '12',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       justifyContent: 'center',
       alignItems: 'center',
     },

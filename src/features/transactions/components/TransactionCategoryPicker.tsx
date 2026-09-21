@@ -52,7 +52,7 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
   },
   label: {
     fontFamily: typography.styles.sectionLabel.fontFamily,
-    fontSize: typography.sizes.xs,
+    ...typography.metrics.xs,
     marginBottom: spacing('3'),
     opacity: 0.6,
   },

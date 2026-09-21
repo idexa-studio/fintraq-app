@@ -10,6 +10,7 @@ import Svg, {
 } from 'react-native-svg';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 export type BarBucket = {
   label: string;
@@ -44,7 +45,7 @@ export const LinearAreaChart = React.memo(function LinearAreaChart({
 }: Props) {
   const { colors, typography } = useTheme();
   const { t } = useTranslation();
-  const gridColor = colors.text + '10';
+  const gridColor = alpha(colors.text, 'faint');
   const labelColor = colors.textMuted;
 
   const chart = useMemo(() => {

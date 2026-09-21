@@ -195,7 +195,7 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     },
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     actionsRow: {
@@ -204,12 +204,12 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
       alignItems: 'center',
     },
     actionPrimary: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.primary,
       fontFamily: typography.fonts.medium,
     },
     actionDanger: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.danger,
       fontFamily: typography.fonts.medium,
     },

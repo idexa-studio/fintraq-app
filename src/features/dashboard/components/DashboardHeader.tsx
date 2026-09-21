@@ -5,6 +5,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type Props = {
   name?: string;
@@ -72,12 +73,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     greeting: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
     name: {
       fontFamily: typography.styles.profileName.fontFamily,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
       marginTop: 1,
     },
@@ -96,7 +97,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       width: 32,
       height: 32,
       borderRadius: 8,
-      backgroundColor: colors.primary + '18',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       alignItems: 'center',
       justifyContent: 'center',
     },

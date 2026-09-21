@@ -4,6 +4,7 @@ import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, ViewStyle } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
+import { alpha } from '@/src/theme/tokens';
 
 type ChipProps = {
   label: string;
@@ -28,7 +29,7 @@ export const Chip = React.memo(function Chip({
   const accent = color ?? colors.primary;
 
   const bg = useMemo(
-    () => (isActive ? accent + '18' : colors.surface),
+    () => (isActive ? alpha(accent, 'subtle') : colors.surface),
     [isActive, accent, colors.surface],
   );
 
@@ -50,8 +51,8 @@ export const Chip = React.memo(function Chip({
   );
 
   const textStyle = useMemo(
-    () => ({ fontFamily, fontSize: typography.sizes.sm, color: textColor }),
-    [fontFamily, typography.sizes.sm, textColor],
+    () => ({ fontFamily, ...typography.metrics.sm, color: textColor }),
+    [fontFamily, typography.metrics.sm, textColor],
   );
 
   const handlePress = useCallback(onPress, [onPress]);

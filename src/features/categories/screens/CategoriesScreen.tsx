@@ -299,12 +299,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: T
     },
     emptyTitle: {
       fontFamily: typography.styles.emptyTitle.fontFamily,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
     },
     emptyText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       textAlign: 'center',
       maxWidth: 220,
@@ -322,7 +322,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: T
     },
     emptyBtnText: {
       fontFamily: typography.styles.emptyAction.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.primaryForeground,
     },
 

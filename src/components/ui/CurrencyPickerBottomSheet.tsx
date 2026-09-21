@@ -15,6 +15,7 @@ import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
 import { BentoBottomSheet, useBottomSheet } from './BottomSheet';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 export type CurrencyPickerBottomSheetProps = {
   visible: boolean;
@@ -195,12 +196,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
     headerText: { flex: 1 },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
     },
     subtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginTop: 2,
       opacity: 0.7,
@@ -209,11 +210,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
       paddingHorizontal: spacing('2.5'),
       paddingVertical: spacing('1'),
       borderRadius: radius('full'),
-      backgroundColor: colors.primary + '14',
+      backgroundColor: alpha(colors.primary, 'subtle'),
     },
     headerBadgeText: {
       fontFamily: typography.styles.badge.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.primary,
     },
 
@@ -232,7 +233,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
     searchInput: {
       flex: 1,
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
       paddingVertical: 0,
     },
@@ -272,12 +273,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
       justifyContent: 'center',
     },
     chipSelected: {
-      backgroundColor: colors.primary + '14',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       borderColor: colors.primary + '40',
     },
     chipText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       letterSpacing: 0.3,
     },
@@ -289,7 +290,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
     name: {
       flex: 1,
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
     nameSelected: {
@@ -317,7 +318,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
     },
     emptyText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
   });

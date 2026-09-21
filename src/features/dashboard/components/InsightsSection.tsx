@@ -8,6 +8,7 @@ import { useDashboardInsights } from '../hooks/dashboard';
 import { InsightCard } from './InsightCard';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 interface InsightsSectionProps {
   currency: string;
@@ -131,7 +132,7 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
                     key={i}
                     style={[
                       styles.dot,
-                      { backgroundColor: i === index ? colors.primary : colors.text + '18' },
+                      { backgroundColor: i === index ? colors.primary : alpha(colors.text, 'subtle') },
                     ]}
                   />
                 ))}
@@ -159,7 +160,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
       alignItems: 'center',
     },
-    placeholderText: { fontSize: typography.sizes.xs, opacity: 0.6 },
+    placeholderText: { ...typography.metrics.xs, opacity: 0.6 },
     empty: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
@@ -173,7 +174,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       width: 38,
       height: 38,
       borderRadius: 19,
-      backgroundColor: colors.primary + '12',
+      backgroundColor: alpha(colors.primary, 'subtle'),
       justifyContent: 'center',
       alignItems: 'center',
     },

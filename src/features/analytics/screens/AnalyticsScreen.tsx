@@ -50,9 +50,10 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 const RANGES = [
   { label: '7D', days: 7 },
@@ -97,7 +98,7 @@ function EmptyState({ icon, title, subtitle }: { icon: IconSvgElement; title: st
       <View style={{
         width: 40, height: 40,
         borderRadius: radius('xl'),
-        backgroundColor: colors.primary + '14',
+        backgroundColor: alpha(colors.primary, 'subtle'),
         justifyContent: 'center', alignItems: 'center',
       }}>
         <HugeiconsIcon icon={icon} size={18} color={colors.primary} />
@@ -124,7 +125,7 @@ function DeltaBadge({ delta, positiveIsGood }: { delta: number | null; positiveI
   return (
     <View style={{
       flexDirection: 'row', alignItems: 'center', gap: 2,
-      backgroundColor: color + '1A',
+      backgroundColor: alpha(color, 'subtle'),
       borderRadius: radius('full'),
       paddingHorizontal: spacing('2'),
       paddingVertical: 3,
@@ -142,7 +143,8 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
   const { t } = useTranslation();
   const { colors, layout, spacing } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
   const { width: screenWidth } = useWindowDimensions();
 
   const gridCellWidth = useMemo(
@@ -315,14 +317,14 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
           {/* ── Summary: 4 equal tiles ── */}
           <View style={styles.metricsGrid}>
-            <View style={[styles.metricTile, { backgroundColor: colors.success + '12' }]}>
+            <View style={[styles.metricTile, { backgroundColor: alpha(colors.success, 'subtle') }]}>
               <View style={styles.metricTopRow}>
                 <Text style={[styles.metricLabel, { color: colors.success }]}>{t('analytics.income')}</Text>
                 <DeltaBadge delta={deltas.income} positiveIsGood={true} />
               </View>
               <MoneyText amount={summary.income} currency={selectedCurrency} type="CR" weight="bold" compact style={styles.metricSmall} />
             </View>
-            <View style={[styles.metricTile, { backgroundColor: colors.danger + '12' }]}>
+            <View style={[styles.metricTile, { backgroundColor: alpha(colors.danger, 'subtle') }]}>
               <View style={styles.metricTopRow}>
                 <Text style={[styles.metricLabel, { color: colors.danger }]}>{t('analytics.expenses')}</Text>
                 <DeltaBadge delta={deltas.expense} positiveIsGood={false} />
@@ -519,7 +521,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                       const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
                       return (
                         <View key={`pp-${p.id}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
-                          <View style={[styles.personAvatar, { backgroundColor: hex + '18' }]}>
+                          <View style={[styles.personAvatar, { backgroundColor: alpha(hex, 'subtle') }]}>
                             <Text style={[styles.personInitials, { color: hex }]}>{initials}</Text>
                           </View>
                           <View style={styles.catContent}>
@@ -625,11 +627,11 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClearance }: ThemeContextType, bottomInset: number) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    content: { paddingBottom: 110, paddingTop: spacing('3') },
+    content: { paddingBottom: tabBarClearance(bottomInset), paddingTop: spacing('3') },
     guard: { marginHorizontal: layout.screenPadding },
 
     // ── Pill selectors
@@ -655,9 +657,9 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       borderRadius: radius('full'),
       backgroundColor: colors.surface,
     },
-    pillActive: { backgroundColor: colors.primary + '18' },
+    pillActive: { backgroundColor: alpha(colors.primary, 'subtle') },
     pillLocked: { opacity: 0.55 },
-    pillText: { fontFamily: typography.styles.chipLabel.fontFamily, color: colors.textMuted, fontSize: typography.sizes.xs },
+    pillText: { fontFamily: typography.styles.chipLabel.fontFamily, color: colors.textMuted, ...typography.metrics.xs },
     pillTextActive: { color: colors.primary },
     durationText: {
       fontFamily: typography.fonts.medium,
@@ -690,10 +692,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     metricLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       letterSpacing: 0.3,
     },
-    metricSmall: { fontSize: typography.sizes.xl },
+    metricSmall: { ...typography.metrics.xl },
 
     // ── Card
     card: {
@@ -726,16 +728,16 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     highlightContent: { flex: 1, gap: 3 },
     highlightMeta: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       color: colors.textMuted,
       letterSpacing: 0.2,
     },
     highlightName: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
-    highlightAmount: { fontSize: typography.sizes.sm },
+    highlightAmount: { ...typography.metrics.sm },
 
     // ── Chart legend
     chartLegend: { flexDirection: 'row', gap: spacing('4'), marginBottom: spacing('2') },
@@ -758,10 +760,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
       alignItems: 'center',
     },
-    tabActive: { backgroundColor: colors.primary + '18' },
+    tabActive: { backgroundColor: alpha(colors.primary, 'subtle') },
     tabText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     tabTextActive: { color: colors.primary },
@@ -795,13 +797,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     catContent: { flex: 1, flexDirection: 'column' },
     catName: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.text,
     },
-    catAmount: { fontSize: typography.sizes.xs },
+    catAmount: { ...typography.metrics.xs },
     catPercent: {
       fontFamily: typography.styles.badge.fontFamily,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       position: 'absolute',
       right: spacing('3'),
       top: spacing('3'),
@@ -823,7 +825,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     dowLegend: { flexDirection: 'row', gap: spacing('3'), marginTop: spacing('2'), justifyContent: 'center' },
     dowInsight: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       textAlign: 'center',
       marginTop: spacing('2'),
@@ -842,8 +844,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     kpiLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
       color: colors.textMuted,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       letterSpacing: 0.3,
     },
-    kpiValue: { fontSize: typography.sizes.lg },
+    kpiValue: { ...typography.metrics.lg },
   });

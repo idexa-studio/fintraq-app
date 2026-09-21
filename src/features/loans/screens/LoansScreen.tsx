@@ -17,6 +17,7 @@ import { LoanCard } from '../components/LoanCard';
 import { useLoans, useLoansCount } from '../hooks/loans';
 import { FREE_LOAN_LIMIT } from '../../../constants/iap';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type Tab = 'lend' | 'borrow';
 
@@ -118,13 +119,13 @@ export const LoansScreen = React.memo(function LoansScreen() {
 
         {/* Summary */}
         <View style={styles.summaryRow}>
-          <View style={[styles.summaryTile, { backgroundColor: colors.success + '12' }]}>
+          <View style={[styles.summaryTile, { backgroundColor: alpha(colors.success, 'subtle') }]}>
             <Text style={[styles.summaryLabel, { color: colors.success }]}>
               {t('loans.lentOut')}
             </Text>
             <MoneyText amount={totalLent} currency={selectedCurrency} type="CR" weight="bold" compact style={styles.summaryAmount} />
           </View>
-          <View style={[styles.summaryTile, { backgroundColor: colors.danger + '12' }]}>
+          <View style={[styles.summaryTile, { backgroundColor: alpha(colors.danger, 'subtle') }]}>
             <Text style={[styles.summaryLabel, { color: colors.danger }]}>
               {t('loans.borrowed')}
             </Text>
@@ -142,7 +143,7 @@ export const LoansScreen = React.memo(function LoansScreen() {
             return (
               <BentoPressable
                 key={tab}
-                style={[styles.tabSegmentBtn, isActive && { backgroundColor: activeColor + '14' }]}
+                style={[styles.tabSegmentBtn, isActive && { backgroundColor: alpha(activeColor, 'subtle') }]}
                 onPress={() => setActiveTab(tab)}
               >
                 <View style={styles.tabSegmentContent}>
@@ -232,7 +233,7 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2'),
-      backgroundColor: colors.warning + '18',
+      backgroundColor: alpha(colors.warning, 'subtle'),
       borderRadius: radius('xl'),
       paddingHorizontal: spacing('3.5'),
       paddingVertical: spacing('2.5'),
@@ -241,7 +242,7 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
     limitBannerText: {
       flex: 1,
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
     },
     currencyRow: { flexDirection: 'row', gap: spacing('2'), marginBottom: spacing('3') },
     currencyPill: {
@@ -251,10 +252,10 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
       backgroundColor: colors.surface,
     },
     currencyPillActive: {
-      backgroundColor: colors.primary + '18',
+      backgroundColor: alpha(colors.primary, 'subtle'),
     },
     currencyText: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       fontFamily: typography.styles.chipLabel.fontFamily,
       color: colors.textMuted,
     },
@@ -266,11 +267,11 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
     summaryTile: { flex: 1, borderRadius: radius('xl'), padding: spacing('3'), gap: spacing('1') },
     summaryLabel: {
       fontFamily: typography.fonts.semibold,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       textTransform: 'uppercase',
     },
     summaryAmount: {
-      fontSize: typography.sizes.xxl,
+      ...typography.metrics.xxl,
     },
     tabSegment: {
       flexDirection: 'row',
@@ -296,7 +297,7 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
     },
     tabSegmentText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
     },
     empty: {
       paddingTop: 60,
@@ -314,12 +315,12 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
     },
     emptyTitle: {
       fontFamily: typography.styles.emptyTitle.fontFamily,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
     },
     emptyText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       textAlign: 'center',
       maxWidth: 220,
@@ -337,7 +338,7 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
     },
     emptyBtnText: {
       fontFamily: typography.styles.emptyAction.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.primaryForeground,
     },
     inlineEmpty: {
@@ -354,7 +355,7 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
     },
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       textTransform: 'uppercase',
       marginTop: spacing('6'),

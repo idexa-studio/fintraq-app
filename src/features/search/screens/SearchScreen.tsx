@@ -33,6 +33,7 @@ import { AnalyticsService } from '@/src/services/analytics';
 import { StorageKeys } from '@/src/constants/keys';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type SearchItem =
   | { kind: 'transaction'; data: TransactionListItem }
@@ -99,16 +100,16 @@ const createAccountRowStyles = (
     info: { flex: 1, gap: spacing('0.5') },
     name: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
     meta: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     balance: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
     },
   });
 
@@ -134,7 +135,7 @@ const CategoryRow = React.memo(function CategoryRow({
     <BentoPressable style={styles.row} onPress={handlePress} scaleOnPress={false}>
       <IconAvatar icon={resolveIcon(category.icon, Tag01Icon)} color={catColor} variant="subtle" size={36} iconSize={18} />
       <Text style={styles.name}>{category.name}</Text>
-      <View style={[styles.badge, { backgroundColor: badgeColor + '1A' }]}>
+      <View style={[styles.badge, { backgroundColor: alpha(badgeColor, 'subtle') }]}>
         <Text style={[styles.badgeText, { color: badgeColor }]}>
           {category.type === 'CR' ? 'Income' : category.type === 'TR' ? 'Transfer' : category.type === 'DR' ? 'Expense' : 'All'}
         </Text>
@@ -165,7 +166,7 @@ const createCategoryRowStyles = (
     name: {
       flex: 1,
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
     badge: {
@@ -177,7 +178,7 @@ const createCategoryRowStyles = (
     },
     badgeText: {
       fontFamily: typography.styles.badge.fontFamily,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
     },
   });
 
@@ -237,12 +238,12 @@ const createPersonRowStyles = (
     info: { flex: 1, gap: spacing('0.5') },
     name: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
     meta: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
   });
@@ -591,7 +592,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     searchInput: {
       flex: 1,
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.text,
       padding: 0,
     },
@@ -599,7 +600,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       width: 24,
       height: 24,
       borderRadius: radius('full'),
-      backgroundColor: colors.warning + '12',
+      backgroundColor: alpha(colors.warning, 'subtle'),
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -624,12 +625,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('1.5'),
     },
     filterTabActive: {
-      backgroundColor: colors.primary + '18',
+      backgroundColor: alpha(colors.primary, 'subtle'),
     },
     filterTabText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
       color: colors.textMuted,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
     },
     filterTabTextActive: {
       color: colors.primary,
@@ -643,11 +644,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingHorizontal: 4,
     },
     tabBadgeActive: {
-      backgroundColor: colors.primary + '15',
+      backgroundColor: alpha(colors.primary, 'subtle'),
     },
     tabBadgeText: {
       fontFamily: typography.styles.badge.fontFamily,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       color: colors.textMuted,
     },
     tabBadgeTextActive: {
@@ -668,12 +669,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     recentsTitle: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     recentsClear: {
       fontFamily: typography.styles.dialogAction.fontFamily,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       color: colors.danger,
     },
     recentsList: {
@@ -692,7 +693,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     recentChipText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.text,
     },
 
@@ -719,21 +720,21 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingHorizontal: spacing('3'),
       height: 24,
       borderRadius: radius('full'),
-      backgroundColor: colors.warning + '12',
+      backgroundColor: alpha(colors.warning, 'subtle'),
     },
     proTitleText: {
       fontFamily: typography.styles.badge.fontFamily,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       color: colors.warning,
     },
     promptTitle: {
       fontFamily: typography.fonts.heading,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
     },
     promptSub: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       textAlign: 'center',
       lineHeight: 20,
@@ -755,12 +756,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     sectionTitle: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     sectionCount: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted + 'AA',
     },
 
@@ -778,8 +779,8 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('3'),
     },
     rowInfo: { flex: 1, gap: spacing('0.5') },
-    rowName: { fontFamily: typography.styles.rowLabel.fontFamily, fontSize: typography.sizes.sm, color: colors.text },
-    rowMeta: { fontFamily: typography.fonts.regular, fontSize: typography.sizes.xs, color: colors.textMuted },
+    rowName: { fontFamily: typography.styles.rowLabel.fontFamily, ...typography.metrics.sm, color: colors.text },
+    rowMeta: { fontFamily: typography.fonts.regular, ...typography.metrics.xs, color: colors.textMuted },
 
     typeBadge: {
       paddingHorizontal: spacing('2'),
@@ -790,7 +791,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     typeBadgeText: {
       fontFamily: typography.styles.badge.fontFamily,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
     },
 
     sectionFooter: { height: spacing('4') },

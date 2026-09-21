@@ -6,6 +6,7 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { CURRENCIES } from '../../../constants/currency';
 import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 const POPULAR_CODES = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR', 'BRL', 'SGD', 'AED', 'HKD', 'MXN', 'ZAR'];
 
@@ -173,14 +174,14 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     listSection: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginBottom: spacing('2'),
       paddingLeft: spacing('1'),
     },
     listSectionSpaced: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       marginTop: spacing('4'),
       marginBottom: spacing('2'),
@@ -195,7 +196,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       gap: spacing('3'),
     },
     rowSelected: {
-      backgroundColor: colors.primary + '10',
+      backgroundColor: alpha(colors.primary, 'faint'),
     },
     codeBadge: {
       width: 46,
@@ -206,11 +207,11 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       justifyContent: 'center',
     },
     codeBadgeSelected: {
-      backgroundColor: colors.primary + '20',
+      backgroundColor: alpha(colors.primary, 'subtle'),
     },
     codeText: {
       fontFamily: typography.styles.badge.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     codeTextSelected: {

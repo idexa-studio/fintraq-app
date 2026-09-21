@@ -11,6 +11,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 export type SetupOption = 'fresh' | 'restore';
 
@@ -121,7 +122,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     cardActive: {
       borderColor: colors.primary,
-      backgroundColor: colors.primary + '0A',
+      backgroundColor: alpha(colors.primary, 'faint'),
     },
     disabledCard: {
       opacity: 0.5,
@@ -138,7 +139,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     subtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       lineHeight: 18,
     },

@@ -105,13 +105,13 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
       textAlign: 'center',
     },
     message: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       lineHeight: 20,
       textAlign: 'center',
@@ -129,7 +129,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     featureText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.text,
     },
     actions: {
@@ -146,7 +146,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     primaryButtonText: {
       fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.primaryForeground,
     },
     secondaryButton: {
@@ -156,7 +156,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     secondaryButtonText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
   });

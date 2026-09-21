@@ -144,12 +144,12 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: typography.sizes.xl,
+      ...typography.metrics.xl,
       color: colors.text,
     },
     subtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       marginTop: spacing('1'),
       lineHeight: 18,
@@ -181,7 +181,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
     },
     optLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
     optLabelDisabled: {
@@ -189,7 +189,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
     },
     optHint: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     actions: {
@@ -207,7 +207,7 @@ const createStyles = ({ colors, overlay, typography, spacing, radius, sizes }: T
     },
     cancelBtnText: {
       fontFamily: typography.styles.dialogAction.fontFamily,
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       color: colors.textMuted,
     },
   });

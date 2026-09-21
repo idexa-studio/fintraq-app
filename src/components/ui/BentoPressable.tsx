@@ -10,6 +10,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { useTheme } from '../../providers/ThemeProvider';
+import { alpha } from '@/src/theme/tokens';
 
 export type BentoPressableProps = Omit<PressableProps, 'style' | 'children'> & {
   children?: React.ReactNode | ((state: PressableStateCallbackType) => React.ReactNode);
@@ -35,7 +36,7 @@ export const BentoPressable = React.memo(function BentoPressable({
   const { colors } = useTheme();
 
   const defaultRippleColor = useMemo(() => {
-    return rippleColor || colors.text + '1E'; // 12% opacity overlay (Material Design 3 standard)
+    return rippleColor || alpha(colors.text, 'subtle'); // 12% opacity overlay (Material Design 3 standard)
   }, [rippleColor, colors.text]);
 
   const androidRippleConfig = useMemo(() => {

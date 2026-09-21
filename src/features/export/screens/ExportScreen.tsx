@@ -25,6 +25,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CsvExportService, ExportDateRange } from '../api/csv-export.service';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 const DATE_PRESETS = [
   { key: '7d', label: 'last7', days: 7 },
@@ -311,7 +312,7 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
 
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       color: colors.textMuted,
       marginBottom: spacing('2'),
       marginLeft: spacing('1'),
@@ -333,12 +334,12 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     },
     cardRowText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
     sep: {
       height: 1,
-      backgroundColor: colors.text + '0C',
+      backgroundColor: alpha(colors.text, 'faint'),
       marginHorizontal: spacing('4'),
     },
 
@@ -360,17 +361,17 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     dateSep: {
       width: 1,
       height: 32,
-      backgroundColor: colors.text + '12',
+      backgroundColor: alpha(colors.text, 'subtle'),
     },
     dateLbl: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xxs,
+      ...typography.metrics.xxs,
       color: colors.textMuted,
       marginBottom: spacing('0.5'),
     },
     dateVal: {
       fontFamily: typography.styles.rowValue.fontFamily,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.text,
     },
 
@@ -389,11 +390,11 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       alignItems: 'center',
     },
     pillActive: {
-      backgroundColor: colors.primary + '15',
+      backgroundColor: alpha(colors.primary, 'subtle'),
     },
     pillText: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     pillTextActive: {
@@ -423,21 +424,21 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
     },
     summaryDivider: {
       height: 1,
-      backgroundColor: colors.text + '0C',
+      backgroundColor: alpha(colors.text, 'faint'),
     },
     summaryLabel: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
     summaryValue: {
       fontFamily: typography.fonts.heading,
-      fontSize: typography.sizes.xxl,
+      ...typography.metrics.xxl,
       color: colors.text,
     },
     summaryPeriod: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
 
@@ -466,14 +467,14 @@ const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: Th
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2'),
-      backgroundColor: colors.warning + '10',
+      backgroundColor: alpha(colors.warning, 'faint'),
       borderRadius: radius('lg'),
       padding: spacing('3'),
     },
     warningText: {
       flex: 1,
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.warning,
       lineHeight: 18,
     },

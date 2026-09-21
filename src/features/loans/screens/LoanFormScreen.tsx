@@ -40,6 +40,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 const parseAmount = (raw: string) => {
   const n = parseFloat(raw.replace(',', '.').replace(/[^0-9.]/g, ''));
@@ -159,7 +160,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
           {/* Type toggle */}
           <View style={styles.typeRow}>
             <BentoPressable
-              style={[styles.typeBtn, loanType === 'lend' && { backgroundColor: colors.primary + '14' }]}
+              style={[styles.typeBtn, loanType === 'lend' && { backgroundColor: alpha(colors.primary, 'subtle') }]}
               onPress={() => setLoanType('lend')}
             >
               <HugeiconsIcon icon={Money01Icon} size={16} color={loanType === 'lend' ? colors.primary : colors.textMuted} />
@@ -168,7 +169,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
               </Text>
             </BentoPressable>
             <BentoPressable
-              style={[styles.typeBtn, loanType === 'borrow' && { backgroundColor: colors.primary + '14' }]}
+              style={[styles.typeBtn, loanType === 'borrow' && { backgroundColor: alpha(colors.primary, 'subtle') }]}
               onPress={() => setLoanType('borrow')}
             >
               <HugeiconsIcon icon={Coins02Icon} size={16} color={loanType === 'borrow' ? colors.primary : colors.textMuted} />
@@ -362,13 +363,13 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
       borderRadius: radius('lg'),
     },
     typeBtnText: {
-      fontSize: typography.sizes.md,
+      ...typography.metrics.md,
       fontFamily: typography.styles.chipLabelActive.fontFamily,
     },
     fieldSection: { marginHorizontal: layout.screenPadding, marginBottom: spacing('4') },
     fieldLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       textTransform: 'uppercase',
       marginBottom: spacing('2'),
@@ -420,7 +421,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
     clearText: {
       fontFamily: typography.styles.rowMeta.fontFamily,
       color: colors.danger,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
     },
     noteContainer: {
       borderRadius: radius('xl'),
@@ -449,11 +450,11 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
     limitBanner: {
       marginHorizontal: layout.screenPadding,
       padding: spacing('3'),
-      backgroundColor: colors.warning + '15',
+      backgroundColor: alpha(colors.warning, 'subtle'),
       borderRadius: radius('lg'),
     },
     limitText: {
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       fontFamily: typography.styles.rowMeta.fontFamily,
       color: colors.warning,
     },

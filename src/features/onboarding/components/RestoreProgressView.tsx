@@ -103,7 +103,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     stageText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.sm,
+      ...typography.metrics.sm,
       color: colors.primary,
       lineHeight: 18,
     },
@@ -114,7 +114,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     emailText: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     infoCard: {
@@ -136,7 +136,7 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     infoDetail: {
       fontFamily: typography.fonts.regular,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       lineHeight: 17,
     },

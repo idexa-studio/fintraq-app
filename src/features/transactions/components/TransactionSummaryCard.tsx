@@ -94,7 +94,7 @@ const createStyles = ({ spacing, radius, typography }: ThemeContextType) =>
     },
     label: {
       fontFamily: typography.fonts.medium,
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       marginBottom: spacing('1'),
     },
     netAmount: {
@@ -119,11 +119,11 @@ const createStyles = ({ spacing, radius, typography }: ThemeContextType) =>
       gap: spacing('1'),
     },
     statLabel: {
-      fontSize: typography.sizes.xs,
+      ...typography.metrics.xs,
       fontFamily: typography.fonts.regular,
     },
     statValue: {
-      fontSize: typography.sizes.lg,
+      ...typography.metrics.lg,
       lineHeight: 20,
     },
   });
