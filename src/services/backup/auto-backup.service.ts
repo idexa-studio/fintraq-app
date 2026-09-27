@@ -1,14 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
-import { StorageKeys } from '../../constants/keys';
-import { NotificationService } from '../notification.service';
-import { ReviewPromptService } from '../review-prompt.service';
+import { StorageKeys } from '@/src/constants/keys';
+import { NotificationService } from '@/src/services/notification.service';
+import { ReviewPromptService } from '@/src/services/review-prompt.service';
 import { BackupLock } from './backup-lock';
 import { getBackupState, updateBackupState } from './backup-state';
 import { DatabaseBackupService } from './database-backup.service';
 import { CloudBackupFileMeta, GoogleDriveService } from './google-drive.service';
 
-import { LoggerService } from '../logger.service';
+import { LoggerService } from '@/src/services/logger.service';
 
 // Fixed schedule — no user-facing frequency choice. Same in all builds.
 export const AUTO_BACKUP_INTERVAL_MINUTES = 12 * 60;

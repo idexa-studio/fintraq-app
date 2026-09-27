@@ -1,8 +1,8 @@
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Header } from '@/src/components/ui/Header';
+import { IconButton } from '@/src/components/ui/IconButton';
+import { Screen } from '@/src/components/ui/Screen';
+import { SkeletonScreen } from '@/src/components/ui';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
-import { PageBackground } from '@/src/components/ui/PageBackground';
 import {
   useDeleteTransaction,
   useTransactionDetail,
@@ -21,20 +21,14 @@ import {
   UserIcon,
   Wallet01Icon,
 } from '@hugeicons/core-free-icons';
-import type { IconSvgElement } from '@hugeicons/react-native';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSource } from '@/src/components/ui/Icon';
+import { Icon } from '@/src/components/ui/Icon';
 import { format } from 'date-fns';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -52,7 +46,7 @@ type InfoRowStyles = ReturnType<typeof createInfoRowStyles>;
 
 type InfoRowProps = {
   rowStyles: InfoRowStyles;
-  icon: IconSvgElement;
+  icon: IconSource;
   label: string;
   isFirst?: boolean;
   isLast?: boolean;
@@ -78,7 +72,7 @@ const InfoRow = React.memo(function InfoRow({
       ]}
     >
       <View style={rowStyles.iconWrap}>
-        <HugeiconsIcon icon={icon} size={16} color={colors.textMuted} />
+        <Icon icon={icon} size={16} color={colors.textMuted} />
       </View>
       <Text style={rowStyles.label}>{label}</Text>
       <View style={rowStyles.valueWrap}>{children}</View>
@@ -90,7 +84,7 @@ const InfoRow = React.memo(function InfoRow({
 
 type AccountChipProps = {
   rowStyles: InfoRowStyles;
-  icon: IconSvgElement;
+  icon: IconSource;
   color: string;
   name: string;
 };
@@ -211,39 +205,29 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
   const headerRight = useMemo(
     () => (
       <View style={styles.headerActions}>
-        <BentoPressable style={styles.iconBtn} onPress={handleDelete}>
-          <HugeiconsIcon icon={Delete02Icon} size={18} color={colors.danger} />
-        </BentoPressable>
-        <BentoPressable style={styles.iconBtn} onPress={handleEdit}>
-          <HugeiconsIcon icon={PencilEdit01Icon} size={18} color={colors.text} />
-        </BentoPressable>
+        <IconButton icon={Delete02Icon} variant="danger" onPress={handleDelete} accessibilityLabel={t('common.delete')} />
+        <IconButton icon={PencilEdit01Icon} onPress={handleEdit} accessibilityLabel={t('common.edit')} />
       </View>
     ),
-    [styles, colors, handleDelete, handleEdit],
+    [styles, handleDelete, handleEdit, t],
   );
 
   // ── Loading / not-found ──
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <PageBackground />
-        <Header title={t('transactions.detailTitle')} showBack />
-        <View style={styles.loading}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
-      </SafeAreaView>
+      <Screen header={{ title: t('transactions.detailTitle'), showBack: true }} variant="fixed" edges={['top']}>
+        <SkeletonScreen />
+      </Screen>
     );
   }
 
   if (!tx) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <PageBackground />
-        <Header title={t('transactions.detailTitle')} showBack />
+      <Screen header={{ title: t('transactions.detailTitle'), showBack: true }} variant="fixed" edges={['top']}>
         <View style={styles.loading}>
           <Text style={styles.missingText}>{t('transactions.notFound')}</Text>
         </View>
-      </SafeAreaView>
+      </Screen>
     );
   }
 
@@ -253,9 +237,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
   const lastRowIsPerson = hasPerson;
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <PageBackground />
-      <Header title={t('transactions.detailTitle')} showBack rightAction={headerRight} />
+    <Screen header={{ title: t('transactions.detailTitle'), showBack: true, rightAction: headerRight }} variant="fixed" edges={['top']}>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
@@ -400,7 +382,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
 
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 });
 
@@ -457,7 +439,7 @@ const createInfoRowStyles = ({ colors, typography, spacing, radius }: ThemeConte
     personAvatar: {
       width: 24,
       height: 24,
-      borderRadius: radius('xl'),
+      borderRadius: radius('lg'),
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -490,7 +472,7 @@ const createStyles = (
     iconBtn: {
       width: layout.minTouchTarget,
       height: layout.minTouchTarget,
-      borderRadius: radius('lg'),
+      borderRadius: radius('full'),
       backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
@@ -518,7 +500,6 @@ const createStyles = (
       fontFamily: typography.styles.profileName.fontFamily,
       ...typography.metrics.lg,
       color: colors.text,
-      lineHeight: 22,
     },
     heroBadgeRow: {
       flexDirection: 'row',
@@ -532,8 +513,7 @@ const createStyles = (
       marginTop: spacing('1'),
     },
     heroAmount: {
-      fontSize: 36,
-      lineHeight: 42,
+      ...typography.metrics.display,
       letterSpacing: -0.5,
     },
     typeBadge: {

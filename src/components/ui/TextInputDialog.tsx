@@ -1,18 +1,8 @@
-import { Input } from '@/src/components/ui/Input';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInputProps,
-  View,
-} from 'react-native';
-import { BentoPressable } from './BentoPressable';
+import { Dialog } from './Dialog';
+import { Input } from './Input';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TextInputProps } from 'react-native';
 
 type TextInputDialogProps = {
   visible: boolean;
@@ -28,6 +18,7 @@ type TextInputDialogProps = {
   inputProps?: Omit<TextInputProps, 'value' | 'onChangeText' | 'placeholder' | 'maxLength'>;
 };
 
+/** Edit one short value (rename). Save is disabled until there is something to save. */
 export const TextInputDialog = React.memo(function TextInputDialog({
   visible,
   onClose,
@@ -41,18 +32,17 @@ export const TextInputDialog = React.memo(function TextInputDialog({
   maxLength,
   inputProps,
 }: TextInputDialogProps) {
-  const theme = useTheme();
   const { t } = useTranslation();
-  const styles = useMemo(() => createStyles(theme), [theme]);
-  const { colors, typography } = theme;
-
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
     if (visible) setValue(initialValue);
   }, [visible, initialValue]);
 
+  const canSave = value.trim().length > 0;
+
   const handleSave = useCallback(() => {
+    if (!value.trim()) return;
     onSave(value.trim());
     onClose();
   }, [value, onSave, onClose]);
@@ -60,130 +50,27 @@ export const TextInputDialog = React.memo(function TextInputDialog({
   const charsLeft = maxLength !== undefined ? maxLength - value.length : undefined;
 
   return (
-    <Modal
+    <Dialog
       visible={visible}
-      transparent
-      animationType="fade"
-      presentationStyle="overFullScreen"
-      statusBarTranslucent
-      onRequestClose={onClose}
+      onClose={onClose}
+      title={title}
+      message={subtitle}
+      actions={[
+        { label: cancelLabel ?? t('common.cancel'), variant: 'secondary', onPress: onClose },
+        { label: saveLabel ?? t('common.save'), variant: 'primary', onPress: handleSave, disabled: !canSave },
+      ]}
     >
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <View style={styles.overlay}>
-          <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
-
-          <View style={styles.card}>
-            <View style={styles.body}>
-              <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
-                {title}
-              </Text>
-              {subtitle ? (
-                <Text style={[styles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                  {subtitle}
-                </Text>
-              ) : null}
-
-              <Input
-                value={value}
-                onChangeText={setValue}
-                placeholder={placeholder}
-                autoFocus
-                returnKeyType="done"
-                onSubmitEditing={handleSave}
-                size="md"
-                variant="default"
-                maxLength={maxLength}
-                {...inputProps}
-              />
-
-              {charsLeft !== undefined ? (
-                <Text style={[styles.counter, { fontFamily: typography.fonts.regular, color: charsLeft <= 5 ? colors.danger : colors.textMuted }]}>
-                  {charsLeft} remaining
-                </Text>
-              ) : null}
-            </View>
-
-            <View style={styles.actions}>
-              <BentoPressable style={styles.btnCancel} onPress={onClose}>
-                <Text style={styles.btnCancelText}>
-                  {cancelLabel ?? t('common.cancel')}
-                </Text>
-              </BentoPressable>
-              <BentoPressable style={styles.btnSave} onPress={handleSave}>
-                <Text style={styles.btnSaveText}>
-                  {saveLabel ?? t('common.save')}
-                </Text>
-              </BentoPressable>
-            </View>
-          </View>
-        </View>
-      </KeyboardAvoidingView>
-    </Modal>
+      <Input
+        value={value}
+        onChangeText={setValue}
+        placeholder={placeholder}
+        autoFocus
+        returnKeyType="done"
+        onSubmitEditing={handleSave}
+        maxLength={maxLength}
+        helperText={charsLeft !== undefined && charsLeft <= 10 ? t('ui.charsLeft', { count: charsLeft }) : undefined}
+        {...inputProps}
+      />
+    </Dialog>
   );
 });
-
-const createStyles = ({ colors, overlay, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
-  StyleSheet.create({
-    overlay: {
-      flex: 1,
-      backgroundColor: overlay.dim,
-      justifyContent: 'center',
-      paddingHorizontal: spacing('6'),
-    },
-    card: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
-      overflow: 'hidden',
-      padding: spacing('6'),
-      gap: spacing('4'),
-    },
-    body: {
-      padding: 0,
-      gap: spacing('3'),
-    },
-    title: {
-      ...typography.metrics.xl,
-    },
-    subtitle: {
-      ...typography.metrics.sm,
-      opacity: 0.7,
-    },
-    counter: {
-      ...typography.metrics.xs,
-      textAlign: 'right',
-    },
-    actions: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      gap: spacing('2'),
-      marginTop: spacing('4'),
-    },
-    btnCancel: {
-      height: sizes.button.md.height,
-      paddingHorizontal: spacing('4'),
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: radius('lg'),
-    },
-    btnCancelText: {
-      ...typography.metrics.md,
-      fontFamily: typography.styles.dialogAction.fontFamily,
-      color: colors.textMuted,
-    },
-    btnSave: {
-      height: sizes.button.md.height,
-      paddingHorizontal: spacing('5'),
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: radius('lg'),
-    },
-    btnSaveText: {
-      ...typography.metrics.md,
-      fontFamily: typography.styles.dialogAction.fontFamily,
-      color: colors.primaryForeground,
-    },
-  });

@@ -1,4 +1,4 @@
-import type { AccountType } from '../types';
+import type { AccountType } from '@/src/types';
 
 /**
  * Which account types can send a transfer.

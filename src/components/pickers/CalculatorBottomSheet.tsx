@@ -1,9 +1,11 @@
+import { Button } from '@/src/components/ui/Button';
+import { Text } from '@/src/components/ui/Text';
 import { Delete02Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Icon } from '@/src/components/ui/Icon';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
-import { BentoBottomSheet } from './BottomSheet';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { BentoBottomSheet } from '@/src/components/ui/BottomSheet';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -192,7 +194,7 @@ export const CalculatorBottomSheet = React.memo(function CalculatorBottomSheet({
                       style={({ pressed }) => [styles.key, styles.keyFunction, pressed && styles.keyPressed]}
                       onPress={() => handlePress('⌫')}
                     >
-                      <HugeiconsIcon icon={Delete02Icon} size={20} color={colors.text} />
+                      <Icon icon={Delete02Icon} size={20} color={colors.text} />
                     </Pressable>
                   );
                 }
@@ -229,15 +231,13 @@ export const CalculatorBottomSheet = React.memo(function CalculatorBottomSheet({
         </View>
 
         {/* ── Done ── */}
-        <Pressable style={[styles.doneBtn, { backgroundColor: colors.primary }]} onPress={handleConfirm}>
-          <Text style={[styles.doneBtnText, { color: colors.primaryForeground }]}>{t('common.done')}</Text>
-        </Pressable>
+        <Button title={t('common.done')} onPress={handleConfirm} size="lg" fullWidth />
       </View>
     </BentoBottomSheet>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, shadow, state }: ThemeContextType) =>
   StyleSheet.create({
     root: {
       paddingHorizontal: spacing('4'),
@@ -257,7 +257,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
     },
     expressionText: {
       fontFamily: typography.fonts.regular,
-      fontSize: 13,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       textAlign: 'right',
     },
@@ -269,13 +269,13 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
     },
     displayCurrency: {
       fontFamily: typography.fonts.medium,
-      fontSize: 18,
+      ...typography.metrics.xl,
       color: colors.textMuted,
       paddingBottom: 4,
     },
     displayValue: {
       fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: 40,
+      ...typography.metrics.jumbo,
       color: colors.text,
     },
 
@@ -290,7 +290,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
     key: {
       flex: 1,
       height: 52,
-      borderRadius: radius('xl'),
+      borderRadius: radius('lg'),
       backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
@@ -302,11 +302,11 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
       backgroundColor: alpha(colors.text, 'faint'),
     },
     keyPressed: {
-      opacity: 0.6,
+      opacity: state.pressed,
     },
     keyText: {
       fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: 20,
+      ...typography.metrics.xl,
       color: colors.text,
     },
 
@@ -317,10 +317,9 @@ const createStyles = ({ colors, typography, spacing, radius, shadow }: ThemeCont
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: spacing('1'),
-      ...shadow('sm'),
     },
     doneBtnText: {
       fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: 15,
+      ...typography.metrics.md,
     },
   });

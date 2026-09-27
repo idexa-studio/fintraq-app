@@ -2,6 +2,8 @@ import type { Translation } from './types';
 
 const mr: Translation = {
   common: {
+    edit: 'संपादित करा', delete: 'हटवा',
+    back: 'मागे',
     cancel: 'रद्द करा',
     ok: 'ठीक आहे',
     clear: 'साफ करा',
@@ -18,6 +20,7 @@ const mr: Translation = {
     settings: 'सेटिंग्ज',
   },
   settings: {
+    general: "सामान्य", security: "सुरक्षा", manage: "व्यवस्थापन", about: "माहिती", loans: "कर्जे", loansHint: "तुम्ही दिलेले किंवा घेतलेले पैसे",
     title: 'सेटिंग्ज',
     welcome: 'स्वागत',
     proMember: 'प्रो सदस्य',
@@ -112,12 +115,13 @@ const mr: Translation = {
     cannotDelete: 'वर्ग हटवता येत नाही', deleteFailed: 'वर्ग हटवता आला नाही.',
   },
   dashboard: {
+    streakDays: '{{count}} दिवसांची मालिका',
     accounts: 'खाती', manage: 'व्यवस्थापित करा', topExpenses: 'सर्वाधिक खर्च', people: 'व्यक्ती', loans: 'कर्जे', recent: 'अलीकडील', seeAll: 'सर्व पहा',
     noTransactions: 'अजून कोणतेही व्यवहार नाहीत', transactionHint: 'तुमची दैनंदिन देयके, उत्पन्न किंवा हस्तांतरणे येथे नोंदवायला सुरुवात करा.', addTransaction: 'व्यवहार जोडा',
     balance: 'तुमची शिल्लक', income: 'उत्पन्न', expenses: 'खर्च', noLoans: 'कोणतेही सक्रिय कर्ज नाही', loanHint: 'तुम्ही दिलेले किंवा घेतलेले पैसे नोंदवा. कर्ज जोडण्यासाठी टॅप करा.',
     lentOut: 'उसने दिले', borrowed: 'उसने घेतले', overdue: '{{count}} मुदत उलटलेली', active: '{{count}} सक्रिय', noExpenses: 'अजून कोणताही खर्च नाही', expensesHint: 'तुमचे सर्वाधिक खर्चाचे वर्ग पाहण्यासाठी काही व्यवहार जोडा.',
   },
-  transactions: { amount: 'रक्कम', category: 'वर्ग', netSavings: 'निव्वळ बचत', income: 'उत्पन्न', expenses: 'खर्च', type: 'प्रकार', account: 'खाते', date: 'तारीख', person: 'व्यक्ती', typesCount: '{{count}} प्रकार', oneAccount: '१ खाते', accountsCount: '{{count}} खाती', oneCategory: '१ वर्ग', categoriesCount: '{{count}} वर्ग', onePerson: '१ व्यक्ती', personsCount: '{{count}} व्यक्ती',
+  transactions: { dayCount: '{{count}} नोंदी', allCategories: 'सर्व', searchCategories: 'श्रेणी शोधा', amount: 'रक्कम', category: 'वर्ग', netSavings: 'निव्वळ बचत', income: 'उत्पन्न', expenses: 'खर्च', type: 'प्रकार', account: 'खाते', date: 'तारीख', person: 'व्यक्ती', typesCount: '{{count}} प्रकार', oneAccount: '१ खाते', accountsCount: '{{count}} खाती', oneCategory: '१ वर्ग', categoriesCount: '{{count}} वर्ग', onePerson: '१ व्यक्ती', personsCount: '{{count}} व्यक्ती',
   filteredSummary: 'फिल्टर केलेला सारांश', title: 'व्यवहार', clearAll: 'सर्व साफ करा', noResults: 'निकाल नाहीत', nothingYet: 'येथे अजून काहीही नाही', noMatch: 'सक्रिय फिल्टरशी जुळणारे व्यवहार नाहीत. फिल्टर बदला किंवा साफ करा.', addFirst: 'नोंद ठेवायला सुरुवात करण्यासाठी तुमचा पहिला व्यवहार जोडा.', clearFilters: 'फिल्टर साफ करा', add: 'व्यवहार जोडा',
   deleteTitle: 'व्यवहार हटवा', deleteMessage: 'यामुळे व्यवहार काढला जाईल आणि खात्याच्या शिल्लकीवरील त्याचा परिणाम उलटवला जाईल.', delete: 'हटवा', sortTitle: 'व्यवहार क्रमवारी', newest: 'नवीन आधी', oldest: 'जुने आधी', highest: 'सर्वाधिक रक्कम', lowest: 'सर्वात कमी रक्कम',
   expense: 'खर्च', transfer: 'हस्तांतरण', missingDetails: 'तपशील अपूर्ण', missingDetailsMessage: 'कृपया खाते, वर्ग आणि योग्य रक्कम निवडा.', missingDestination: 'गंतव्य नाही', missingDestinationMessage: 'हस्तांतरणासाठी गंतव्य खाते निवडा.',
@@ -125,6 +129,7 @@ const mr: Translation = {
   editEntry: 'नोंद संपादित करा', newEntry: 'नवीन नोंद', loanRepaymentFor: 'कर्ज परतफेड — कोणासाठी', loading: 'लोड होत आहे...', fromAccount: 'कोणत्या खात्यातून', toAccount: 'कोणत्या खात्यात', noCompatible: 'या हस्तांतरणासाठी योग्य खाती नाहीत.', linkedPerson: 'जोडलेली व्यक्ती', unknown: 'अज्ञात', noPersonLinked: 'कोणतीही व्यक्ती जोडलेली नाही', time: 'वेळ', note: 'टीप', optionalContext: 'पर्यायी तपशील', saveChanges: 'बदल जतन करा', saveTransaction: 'व्यवहार जतन करा', none: 'काहीही नाही',
   detailTitle: 'व्यवहार', notFound: 'व्यवहार सापडला नाही.', detailDeleteTitle: 'व्यवहार हटवा', detailDeleteMessage: 'यामुळे शिल्लकीवरील परिणाम उलटवला जाईल आणि हे पूर्ववत करता येणार नाही.', from: 'कडून', to: 'कडे', created: 'तयार केले', cancel: 'रद्द करा' },
   onboardingFlow: {
+    getStarted: 'सुरू करा', restoreFromBackup: 'बॅकअपमधून पुनर्संचयित करा', welcomeSubtitle: 'खर्च, उत्पन्न आणि कर्जे एका शांत, खाजगी ठिकाणी ट्रॅक करा. सेटअपला एक मिनिटही लागत नाही.',
     steps: {
       welcome: { eyebrow: 'सुरुवात करूया', title: 'तुमचे फायनान्स कॉकपिट तयार करा.', subtitle: 'पूर्ण डिफॉल्ट आणि स्वच्छ खाते-सुरुवातीसह शांत सेटअप.' },
       setup_choice: { eyebrow: 'सेटअप पद्धत', title: 'तुम्हाला कशी सुरुवात करायची आहे?', subtitle: 'नवीन वर्कस्पेसने सुरुवात करा किंवा आधीचा Google Drive बॅकअप रिस्टोअर करा.' },
@@ -165,7 +170,7 @@ const mr: Translation = {
   },
   ui: {
     somethingWrong: 'काहीतरी चूक झाली', proOnly: 'फक्त प्रो', unlockWithPro: 'Fintraq Pro ने अनलॉक करा',
-    chooseIcon: 'आयकॉन निवडा', chooseColor: 'रंग निवडा', colorsCount: '{{count}} रंग', currency: 'चलन', currenciesCount: '{{count}} चलने', searchCurrency: 'नाव किंवा कोडने शोधा', delKey: 'मिटवा',
+    charsLeft: '{{count}} अक्षरे शिल्लक', suggested: 'सुचवलेली', allCurrencies: 'सर्व चलने', noMatch: '“{{query}}” साठी काहीही सापडले नाही', chooseIcon: 'आयकॉन निवडा', chooseColor: 'रंग निवडा', colorsCount: '{{count}} रंग', currency: 'चलन', currenciesCount: '{{count}} चलने', searchCurrency: 'नाव किंवा कोडने शोधा', delKey: 'मिटवा',
   },
   lock: {
     unlockApp: 'अ‍ॅप अनलॉक करा', authFailed: 'प्रमाणीकरण अयशस्वी. पुन्हा प्रयत्न करा.', useButton: 'पुन्हा प्रयत्न करण्यासाठी खालील बटण वापरा.',
@@ -180,6 +185,9 @@ const mr: Translation = {
     defaultMessage: 'सुरू ठेवण्यासाठी कृपया Fintraq अपडेट करा. यास थोडाच वेळ लागतो.', updateNow: 'आता अपडेट करा',
   },
   loans: {
+    outstandingAmount: "थकबाकी: {{amount}}", exceedsOutstanding: "रक्कम थकबाकी {{amount}} पेक्षा जास्त आहे", fullAmount: "पूर्ण रक्कम · {{amount}}",
+    freeLimit: 'मोफत प्लॅनमध्ये {{limit}} सक्रिय कर्जे. अमर्यादसाठी अपग्रेड करा.', upgrade: 'अपग्रेड',
+    lentToName: '{{name}} ला उसने दिले', borrowedFromName: '{{name}} कडून उसने घेतले',
     title: 'कर्जे', loan: 'कर्ज', newLoan: 'नवीन कर्ज', lentOut: 'उसने दिले', borrowed: 'उसने घेतले', lent: 'दिलेले', repaid: 'परतफेड झाली',
     noLent: 'दिलेली कर्जे नाहीत', noBorrowed: 'घेतलेली कर्जे नाहीत', emptyHint: 'तुम्ही इतरांना दिलेले किंवा इतरांकडून घेतलेले पैसे येथे नोंदवा.', addLoan: 'कर्ज जोडा',
     unknown: 'अज्ञात', unnamedSource: 'नाव नसलेला स्रोत', outstandingBalance: 'थकबाकी शिल्लक', principal: 'मूळ रक्कम', outstanding: 'थकबाकी', totalPrincipal: 'एकूण मूळ रक्कम',
@@ -217,10 +225,12 @@ const mr: Translation = {
     linkPerson: 'व्यक्ती जोडा', noPerson: 'व्यक्ती नाही',
   },
   categoryForm: {
+    appliesToHint: 'एक किंवा अधिक निवडा.', moreIcons: 'अधिक',
     edit: 'वर्ग संपादित करा', new: 'नवीन वर्ग', categoryName: 'वर्गाचे नाव', tapToChangeIcon: 'आयकॉन बदलण्यासाठी टॅप करा', appliesTo: 'यांना लागू', namePlaceholder: 'उदा. किराणा, पगार',
     save: 'वर्ग जतन करा', create: 'वर्ग तयार करा', chooseIcon: 'आयकॉन निवडा', expense: 'खर्च', income: 'उत्पन्न', transfer: 'हस्तांतरण',
   },
   accountForm: {
+    lockedHint: 'प्रकार, चलन आणि शिल्लक खाते तयार करताना ठरतात. शिल्लक व्यवहारांमुळे बदलते.',
     edit: 'खाते संपादित करा', new: 'नवीन खाते', accountName: 'खात्याचे नाव', accountType: 'खात्याचा प्रकार', accountDetails: 'खात्याचा तपशील',
     namePlaceholder: 'उदा. मुख्य वॉलेट', holderPlaceholder: 'सुरेश पवार (पर्यायी)', numberPlaceholder: 'IBAN (पर्यायी)', currentBalance: 'सध्याची शिल्लक', initialBalance: 'सुरुवातीची शिल्लक',
     save: 'खाते जतन करा', create: 'खाते तयार करा',
@@ -319,12 +329,13 @@ const mr: Translation = {
     monthGood: 'हा महिना चांगला दिसत आहे', monthTight: 'आतापर्यंत महिना ताणाचा आहे', monthGoodHint: 'जाण्यापेक्षा येणारे जास्त — तुम्ही गती मिळवत आहात.', monthTightHint: 'खर्च उत्पन्नाच्या पुढे आहे. काळजी नको — फक्त एकदा तपासण्याची आठवण.',
   },
   walkthrough: {
+    gotIt: 'समजले',
     step: 'पायरी {{current}} / {{total}}', skip: 'मार्गदर्शक वगळा', getStarted: 'सुरू करा', next: 'सुरू ठेवा',
     welcomeToFintraq: { title: 'Fintraq मध्ये स्वागत!', desc: 'तुमच्या नवीन प्रीमियम आर्थिक डॅशबोर्डची छोटी सफर करूया.' },
     trackNetSavings: { title: 'निव्वळ बचत पाहा', desc: 'वरचे कार्ड तुमची एकूण निव्वळ स्थिती (उत्पन्न वजा खर्च) दाखवते. वेगवेगळी चलने पाहण्यासाठी स्वाइप करा.' },
     accountsWallets: { title: 'खाती आणि वॉलेट', desc: 'तुमची रोख, बँक खाती आणि क्रेडिट कार्ड व्यवस्थापित करा. वैयक्तिक नोंदी पाहण्यासाठी त्यावर टॅप करा.' },
     realTimeInsights: { title: 'रिअल-टाइम इनसाइट्स', desc: 'खाली तुम्हाला खर्चाच्या सवयींचे डायनॅमिक इनसाइट्स, सर्वाधिक खर्चाच्या वर्गांचे चिप्स आणि सलग नोंदी दिसतील.' },
-    logFirstTransaction: { title: 'पहिला व्यवहार नोंदवा', desc: 'तयार झाल्यावर, व्यवहार नोंदवण्यासाठी खाली उजवीकडील हिरव्या \'+\' बटणावर टॅप करा!' },
+    logFirstTransaction: { title: 'पहिला व्यवहार नोंदवा', desc: 'तयार झाल्यावर, व्यवहार नोंदवण्यासाठी खालील हिरव्या + बटणावर टॅप करा.' },
     enterAmount: { title: 'रक्कम टाका', desc: 'अंकांच्या इनपुटने व्यवहाराची रक्कम टाकून सुरुवात करा. दशांश मूल्येही पूर्णपणे समर्थित आहेत.' },
     selectTransactionType: { title: 'व्यवहाराचा प्रकार निवडा', desc: 'खर्च (खर्च केलेले पैसे), उत्पन्न (कमावलेले पैसे) किंवा हस्तांतरण (खात्यांमध्ये पैसे हलवणे) निवडा.' },
     chooseCategory: { title: 'वर्ग निवडा', desc: 'तुमचा व्यवहार नीट लावण्यासाठी वर्ग निवडा. सानुकूल वर्ग सेटिंग्जमध्ये तयार करता येतात.' },

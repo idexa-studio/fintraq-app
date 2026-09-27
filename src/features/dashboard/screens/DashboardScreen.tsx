@@ -1,36 +1,33 @@
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { SectionHeader } from '@/src/components/ui/SectionHeader';
+import { Screen } from '@/src/components/ui/Screen';
+import { EmptyState, ListGroup, SectionHeader, Skeleton, SkeletonRow } from '@/src/components/ui';
+import { ReceiptIcon } from '@/src/components/ui/icons';
 import { DASHBOARD_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
 import { useAppLock } from '@/src/providers/AppLockProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
-import { ArrowRight01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { PageBackground } from '../../../components/ui/PageBackground';
-import { TransactionRow } from '../../../components/ui/TransactionRow';
-import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '../../../constants/currency';
-import { StorageKeys } from '../../../constants/keys';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { useAccounts } from '../../accounts/hooks/accounts';
-import { useTransactions } from '../../transactions/hooks/transactions';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
+import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
+import { StorageKeys } from '@/src/constants/keys';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { useAccounts } from '@/src/features/accounts/hooks/accounts';
+import { useTransactions } from '@/src/features/transactions/hooks/transactions';
 import { BackupPromptModal } from '@/src/features/backup/components/BackupPromptModal';
 import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
-import { AccountsCarousel } from '../components/AccountsCarousel';
-import { DashboardHeader } from '../components/DashboardHeader';
-import { HeroBalanceCard } from '../components/HeroBalanceCard';
-import { InsightsSection } from '../components/InsightsSection';
-import { LoansGlanceCard } from '../components/LoansGlanceCard';
-import { PremiumUpsellModal } from '../components/PremiumUpsellModal';
-import { TopExpenseCategoriesCard } from '../components/TopExpenseCategoriesCard';
-import { TopPersonsCard } from '../components/TopPersonsCard';
-import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '../hooks/dashboard';
-import { alpha } from '@/src/theme/tokens';
+import { AccountsCarousel } from '@/src/features/dashboard/components/AccountsCarousel';
+import { DashboardHeader } from '@/src/features/dashboard/components/DashboardHeader';
+import { HeroBalanceCard } from '@/src/features/dashboard/components/HeroBalanceCard';
+import { InsightsSection } from '@/src/features/dashboard/components/InsightsSection';
+import { LoansGlanceCard } from '@/src/features/dashboard/components/LoansGlanceCard';
+import { PremiumUpsellModal } from '@/src/features/dashboard/components/PremiumUpsellModal';
+import { TopExpenseCategoriesCard } from '@/src/features/dashboard/components/TopExpenseCategoriesCard';
+import { TopPersonsCard } from '@/src/features/dashboard/components/TopPersonsCard';
+import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '@/src/features/dashboard/hooks/dashboard';
 
 const UPSELL_KEY = StorageKeys.UPSELL_DISMISSED_AT;
 const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
@@ -41,7 +38,6 @@ const BACKUP_PROMPT_TTL = 14 * 24 * 60 * 60 * 1000;
 export const DashboardScreen = React.memo(function DashboardScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors } = theme;
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const { isPremium } = usePremium();
@@ -158,16 +154,25 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
 
   if (txLoading || accountsLoading) {
+    // Skeleton mirrors the real layout so nothing jumps when data lands.
     return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
+      <Screen variant="fixed" edges={['top']}>
+        <View style={styles.skeleton}>
+          <Skeleton width="45%" height={20} />
+          <Skeleton height={190} radius="2xl" />
+          <Skeleton width="30%" height={14} />
+          <ListGroup>
+            <SkeletonRow />
+            <SkeletonRow />
+            <SkeletonRow />
+          </ListGroup>
+        </View>
+      </Screen>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <PageBackground />
+    <Screen variant="fixed" edges={['top']}>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
@@ -222,17 +227,14 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
               />
             ))
           ) : (
-            <View style={styles.emptyActivity}>
-              <View style={styles.emptyIconWrapper}>
-                <HugeiconsIcon icon={ReceiptTextIcon} size={20} color={colors.primary} />
-              </View>
-              <Text style={styles.emptyTitle}>{t('dashboard.noTransactions')}</Text>
-              <Text style={styles.emptySubtext}>{t('dashboard.transactionHint')}</Text>
-              <BentoPressable style={styles.emptyAction} onPress={navigateToCreateTx}>
-                <Text style={styles.emptyActionText}>{t('dashboard.addTransaction')}</Text>
-                <HugeiconsIcon icon={ArrowRight01Icon} size={12} color={colors.primaryForeground} />
-              </BentoPressable>
-            </View>
+            <EmptyState
+              icon={ReceiptIcon}
+              title={t('dashboard.noTransactions')}
+              description={t('dashboard.transactionHint')}
+              actionLabel={t('dashboard.addTransaction')}
+              onAction={navigateToCreateTx}
+              style={styles.emptyActivity}
+            />
           )}
         </View>
 
@@ -252,14 +254,12 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         visible={showBackupPrompt && !isBackupConnected && !isLocked}
         onClose={dismissBackupPrompt}
       />
-    </SafeAreaView>
+    </Screen>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClearance }: ThemeContextType, insets: any) =>
+const createStyles = ({ colors, spacing, radius, layout, tabBarClearance }: ThemeContextType, insets: { bottom: number }) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
-    loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
     content: { paddingBottom: tabBarClearance(insets.bottom) },
 
   
@@ -272,47 +272,11 @@ const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClear
     emptyActivity: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
-      paddingVertical: spacing('7'),
-      paddingHorizontal: spacing('4'),
-      alignItems: 'center',
-      gap: spacing('2.5'),
+      paddingVertical: spacing('8'),
     },
-    emptyIconWrapper: {
-      width: 44,
-      height: 44,
-      borderRadius: radius('full'),
-      backgroundColor: alpha(colors.primary, 'subtle'),
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: spacing('1'),
+    skeleton: {
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('6'),
+      gap: spacing('5'),
     },
-    emptyTitle: {
-      fontFamily: typography.styles.emptyTitle.fontFamily,
-      fontSize: 14,
-      color: colors.text,
-    },
-    emptySubtext: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 12,
-      color: colors.textMuted,
-      textAlign: 'center',
-      maxWidth: 240,
-      lineHeight: 16,
-      marginBottom: spacing('1.5'),
-    },
-    emptyAction: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1.5'),
-      height: 36,
-      paddingHorizontal: spacing('4'),
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary,
-    },
-    emptyActionText: {
-      fontFamily: typography.styles.emptyAction.fontFamily,
-      fontSize: 12,
-      color: colors.primaryForeground,
-    },
-
   });

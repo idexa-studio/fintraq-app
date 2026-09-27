@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { NotificationService } from '../services/notification.service';
-import { StorageKeys } from '../constants/keys';
+import { NotificationService } from '@/src/services/notification.service';
+import { StorageKeys } from '@/src/constants/keys';
 import { LoggerService } from '@/src/services/logger.service';
 import type { AppLanguage } from '@/src/i18n';
 

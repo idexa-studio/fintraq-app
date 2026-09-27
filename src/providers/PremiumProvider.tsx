@@ -2,11 +2,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as IAP from 'expo-iap';
 import React, { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
-import { AlertButton, AlertDialog } from '../components/ui/AlertDialog';
-import { ALL_SKUS, SKU_LIFETIME } from '../constants/iap';
-import { IAPProduct, IAPService } from '../services/iap.service';
-import { StorageKeys } from '../constants/keys';
-import { AnalyticsService } from '../services/analytics';
+import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
+import { ALL_SKUS, SKU_LIFETIME } from '@/src/constants/iap';
+import { IAPProduct, IAPService } from '@/src/services/iap.service';
+import { StorageKeys } from '@/src/constants/keys';
+import { AnalyticsService } from '@/src/services/analytics';
 import { LoggerService } from '@/src/services/logger.service';
 import i18n from '@/src/i18n';
 

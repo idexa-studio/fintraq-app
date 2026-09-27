@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
-import { LoggerService } from '../logger.service';
-import { NotificationService } from '../notification.service';
+import { LoggerService } from '@/src/services/logger.service';
+import { NotificationService } from '@/src/services/notification.service';
 import { AUTO_BACKUP_INTERVAL_MINUTES, resolveAutoBackupEnabled, runAutoBackupIfDue } from './auto-backup.service';
-import { StorageKeys } from '../../constants/keys';
+import { StorageKeys } from '@/src/constants/keys';
 
 const AUTO_BACKUP_TASK = 'fintraq-auto-backup-task';
 

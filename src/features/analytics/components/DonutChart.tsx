@@ -1,13 +1,14 @@
+import { Text } from '@/src/components/ui/Text';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { IconAvatar } from '../../../components/ui/IconAvatar';
-import { MoneyText } from '../../../components/ui/MoneyText';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
-import { colorNumberToHex } from '../../../utils/format';
-import { resolveIcon } from '../../../utils/icons';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { MoneyText } from '@/src/components/ui/MoneyText';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex } from '@/src/utils/format';
+import { resolveIcon } from '@/src/utils/icons';
 import { Tag01Icon } from '@hugeicons/core-free-icons';
-import type { CategoryBreakdown } from '../api/analytics';
+import type { CategoryBreakdown } from '@/src/features/analytics/api/analytics';
 import { useTranslation } from 'react-i18next';
 
 type Props = {
@@ -121,16 +122,16 @@ export const DonutChart = React.memo(function DonutChart({ data, currency, size 
   );
 });
 
-const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     empty: { justifyContent: 'center', alignItems: 'center' },
-    emptyTxt: { fontSize: 12, fontFamily: typography.fonts.regular },
+    emptyTxt: { ...typography.metrics.xs, fontFamily: typography.fonts.regular },
     center: {
       position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
       justifyContent: 'center', alignItems: 'center',
     },
-    centerLabel: { fontSize: 8, marginBottom: 4 },
-    centerAmt: { fontSize: 18 },
+    centerLabel: { ...typography.metrics.xxs, marginBottom: 4 },
+    centerAmt: { ...typography.metrics.xl },
     legendRow: {
       flexDirection: 'row', alignItems: 'center',
       gap: spacing('2.5'),
@@ -140,10 +141,10 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     },
     legendRowLast: { borderBottomWidth: 0 },
     legendInfo: { flex: 1, gap: spacing('1') },
-    legendName: { fontFamily: typography.styles.rowLabel.fontFamily, fontSize: 13 },
-    barTrack: { height: 3, borderRadius: 2, overflow: 'hidden' },
-    barFill: { height: 3, borderRadius: 2 },
+    legendName: { fontFamily: typography.styles.rowLabel.fontFamily, ...typography.metrics.sm },
+    barTrack: { height: 3, borderRadius: radius('full'), overflow: 'hidden' },
+    barFill: { height: 3, borderRadius: radius('full') },
     legendRight: { alignItems: 'flex-end', gap: 2 },
-    legendAmt: { fontSize: 13 },
-    legendPct: { fontSize: 10 },
+    legendAmt: { ...typography.metrics.sm },
+    legendPct: { ...typography.metrics.xxs },
   });

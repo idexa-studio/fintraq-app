@@ -1,40 +1,24 @@
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { PageBackground } from '@/src/components/ui/PageBackground';
-import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
-import { Header } from '@/src/components/ui/Header';
-import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { MoneyText } from '@/src/components/ui/MoneyText';
-import { OptionsDialog, OptionsDialogOption } from '@/src/components/ui/OptionsDialog';
+import { Badge, Card, ConfirmDialog, Divider, EmptyState, Icon, IconAvatar, IconButton, MoneyText, OptionsDialog, Screen, Text } from '@/src/components/ui';
+import type { OptionsDialogOption } from '@/src/components/ui';
+import { ArrowDownLeftIcon, ArrowUpRightIcon, DotsThreeVerticalIcon, PencilSimpleIcon, PlusIcon, TrashIcon, WalletIcon } from '@/src/components/ui/icons';
+import { StorageKeys } from '@/src/constants/keys';
+import type { Account } from '@/src/features/accounts/api/accounts';
 import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/accounts';
+import { ACCOUNTS_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
+import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
-import {
-  ArrowDown01Icon,
-  ArrowUp01Icon,
-  Delete01Icon,
-  MoreVerticalCircle01Icon,
-  PencilEdit01Icon,
-  PlusSignIcon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
-import { WalkthroughOverlay, ACCOUNTS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
-import { StorageKeys } from '@/src/constants/keys';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { Account } from '../api/accounts';
-import { alpha } from '@/src/theme/tokens';
+import { StyleSheet, View } from 'react-native';
 
 export const AccountsScreen = React.memo(function AccountsScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
-  const insets = useSafeAreaInsets();
-  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { data: accounts } = useAccounts();
   const deleteAccount = useDeleteAccount();
@@ -91,11 +75,11 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
     if (!selectedAccount) return [];
     const hasTransactions = selectedAccount.income > 0 || selectedAccount.expense > 0;
     return [
-      { key: 'edit', label: t('accounts.edit'), icon: PencilEdit01Icon, onPress: handleEdit },
+      { key: 'edit', label: t('accounts.edit'), icon: PencilSimpleIcon, onPress: handleEdit },
       {
         key: 'delete',
         label: t('accounts.delete'),
-        icon: Delete01Icon,
+        icon: TrashIcon,
         destructive: true,
         disabled: hasTransactions,
         hint: hasTransactions ? t('accounts.removeTransactions') : undefined,
@@ -105,280 +89,105 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   }, [selectedAccount, handleEdit, handleDeletePress, t]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <PageBackground />
+    <Screen
+      header={{
+        title: t('accounts.title'),
+        // Tab screens add from the header — the tab bar's centre + already means "add transaction".
+        rightAction: <IconButton icon={PlusIcon} variant="tonal" onPress={handleAdd} accessibilityLabel={t('accountForm.new')} />,
+      }}
+      tabBar
+      contentContainerStyle={styles.content}
+      overlays={
+        <>
+          <OptionsDialog
+            visible={showOptions}
+            onClose={closeOptions}
+            title={selectedAccount?.name ?? t('accounts.account')}
+            options={accountOptions}
+          />
+          <ConfirmDialog
+            destructive
+            visible={showDeleteConfirm}
+            onClose={closeDelete}
+            title={t('accounts.deleteTitle')}
+            message={selectedAccount ? t('accounts.deleteMessage', { name: selectedAccount.name }) : undefined}
+            confirmLabel={t('accounts.delete')}
+            onConfirm={handleDeleteConfirm}
+            isLoading={deleteAccount.isPending}
+          />
+          <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_ACCOUNTS} steps={ACCOUNTS_WALKTHROUGH_STEPS} />
+        </>
+      }
+    >
+      {accounts && accounts.length === 0 ? (
+        <EmptyState icon={WalletIcon} title={t('accounts.none')} actionLabel={t('accountForm.new')} onAction={handleAdd} />
+      ) : null}
 
-      <Header title={t('accounts.title')} />
-
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {accounts?.map((account) => {
-          const accColor = colorNumberToHex(account.color);
-          const hasAccountNumber = account.accountNumber && account.accountNumber !== 'N/A';
-          return (
-            <BentoPressable
-              key={account.id}
-              style={styles.card}
-              onPress={() => handleCardPress(account.id)}
-            >
-              {/* ── Card top row: avatar + name + currency + menu ── */}
-              <View style={styles.cardTop}>
-                <View style={styles.cardLead}>
-                  <IconAvatar
-                    icon={resolveAccountTypeIcon(account.accountType)}
-                    color={accColor}
-                    variant="subtle"
-                    size={44}
-                    iconSize={20}
-                  />
-                  <View style={styles.cardMeta}>
-                    <Text style={styles.cardName} numberOfLines={1}>
-                      {account.name}
-                    </Text>
-                    {hasAccountNumber ? (
-                      <Text style={styles.cardHint}>
-                        {'•••• ' + account.accountNumber!.slice(-4)}
-                      </Text>
-                    ) : null}
-                  </View>
-                </View>
-
-                <View style={styles.cardTopRight}>
-                  <View style={[styles.currencyBadge, { backgroundColor: colors.background }]}>
-                    <Text style={styles.currencyText}>{account.currency}</Text>
-                  </View>
-                  <BentoPressable
-                    onPress={() => handleMenuOpen(account)}
-                    style={styles.iconBtn}
-                  >
-                    <HugeiconsIcon icon={MoreVerticalCircle01Icon} size={20} color={colors.textMuted} />
-                  </BentoPressable>
-                </View>
+      {accounts?.map((account) => {
+        const accColor = colorNumberToHex(account.color);
+        const hasAccountNumber = account.accountNumber && account.accountNumber !== 'N/A';
+        return (
+          <Card key={account.id} onPress={() => handleCardPress(account.id)} accessibilityLabel={account.name} style={styles.card}>
+            <View style={styles.cardTop}>
+              <IconAvatar icon={resolveAccountTypeIcon(account.accountType)} color={accColor} size={44} />
+              <View style={styles.cardMeta}>
+                <Text variant="bodyStrong" numberOfLines={1}>{account.name}</Text>
+                {hasAccountNumber ? (
+                  <Text variant="caption" tone="muted">{'•••• ' + account.accountNumber!.slice(-4)}</Text>
+                ) : null}
               </View>
+              <Badge label={account.currency} variant="muted" style={styles.centered} />
+              <IconButton
+                icon={DotsThreeVerticalIcon}
+                variant="ghost"
+                size="sm"
+                onPress={() => handleMenuOpen(account)}
+                accessibilityLabel={t('categories.manage')}
+              />
+            </View>
 
-              {/* ── Balance section ── */}
-              <View style={styles.balanceSection}>
-                <Text style={styles.balanceLabel}>{t('accounts.availableBalance')}</Text>
-                <MoneyText
-                  amount={account.balance}
-                  currency={account.currency}
-                  weight="bold"
-                  style={styles.cardBalance}
-                />
-              </View>
+            <View style={styles.balance}>
+              <Text variant="caption" tone="muted">{t('accounts.availableBalance')}</Text>
+              <MoneyText amount={account.balance} currency={account.currency} weight="bold" style={styles.balanceValue} />
+            </View>
 
-              {/* ── Divider ── */}
-              <View style={styles.divider} />
+            <Divider />
 
-              {/* ── Stats row ── */}
-              <View style={styles.statsRow}>
-                <View style={styles.statCell}>
-                  <View style={styles.statLabelRow}>
-                    <HugeiconsIcon icon={ArrowUp01Icon} size={12} color={colors.success} />
-                    <Text style={styles.statLabel}>{t('accounts.totalIn')}</Text>
-                  </View>
-                  <MoneyText
-                    amount={account.income}
-                    currency={account.currency}
-                    type="CR"
-                    compact
-                    style={[styles.statValue, { color: colors.success }]}
-                  />
+            <View style={styles.stats}>
+              <View style={styles.statCell}>
+                <View style={styles.statLabel}>
+                  <Icon icon={ArrowDownLeftIcon} size={14} color={colors.success} weight="bold" />
+                  <Text variant="caption" tone="muted">{t('accounts.totalIn')}</Text>
                 </View>
-
-                <View style={styles.statDivider} />
-
-                <View style={styles.statCell}>
-                  <View style={styles.statLabelRow}>
-                    <HugeiconsIcon icon={ArrowDown01Icon} size={12} color={colors.danger} />
-                    <Text style={styles.statLabel}>{t('accounts.totalOut')}</Text>
-                  </View>
-                  <MoneyText
-                    amount={account.expense}
-                    currency={account.currency}
-                    type="DR"
-                    compact
-                    style={[styles.statValue, { color: colors.danger }]}
-                  />
-                </View>
+                <MoneyText amount={account.income} currency={account.currency} type="CR" compact style={styles.statValue} />
               </View>
-            </BentoPressable>
-          );
-        })}
-
-        {accounts && accounts.length === 0 ? (
-          <View style={styles.empty}>
-            <Text style={styles.emptyText}>{t('accounts.none')}</Text>
-          </View>
-        ) : null}
-      </ScrollView>
-
-      <BentoPressable style={styles.fab} onPress={handleAdd}>
-        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
-      </BentoPressable>
-
-      <OptionsDialog
-        visible={showOptions}
-        onClose={closeOptions}
-        title={selectedAccount?.name ?? t('accounts.account')}
-        options={accountOptions}
-      />
-
-      <ConfirmDialog
-        visible={showDeleteConfirm}
-        onClose={closeDelete}
-        title={t('accounts.deleteTitle')}
-        message={selectedAccount ? t('accounts.deleteMessage', { name: selectedAccount.name }) : undefined}
-        confirmLabel={t('accounts.delete')}
-        onConfirm={handleDeleteConfirm}
-        isLoading={deleteAccount.isPending}
-      />
-      <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_ACCOUNTS} steps={ACCOUNTS_WALKTHROUGH_STEPS} />
-    </SafeAreaView>
+              <Divider vertical />
+              <View style={styles.statCell}>
+                <View style={styles.statLabel}>
+                  <Icon icon={ArrowUpRightIcon} size={14} color={colors.danger} weight="bold" />
+                  <Text variant="caption" tone="muted">{t('accounts.totalOut')}</Text>
+                </View>
+                <MoneyText amount={account.expense} currency={account.currency} type="DR" compact style={styles.statValue} />
+              </View>
+            </View>
+          </Card>
+        );
+      })}
+    </Screen>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: ThemeContextType, insets: { bottom: number }) =>
+const createStyles = ({ spacing, typography }: ThemeContextType) =>
   StyleSheet.create({
-    container: { flex: 1 },
-    scroll: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('2'),
-      paddingBottom: insets.bottom > 0 ? insets.bottom + 80 + 24 : 110,
-    },
-
-    /* ── Account card ── */
-    card: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
-      padding: spacing('5'),
-      marginBottom: spacing('4'),
-    },
-    cardTop: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    cardLead: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-      flex: 1,
-    },
-    cardMeta: {
-      flex: 1,
-      gap: spacing('0.5'),
-    },
-    cardName: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      color: colors.text,
-      ...typography.metrics.md,
-    },
-    cardHint: {
-      fontFamily: typography.fonts.regular,
-      color: colors.textMuted,
-      ...typography.metrics.xs,
-    },
-    cardTopRight: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-      marginLeft: spacing('2'),
-    },
-    iconBtn: {
-      width: 32,
-      height: 32,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginRight: -spacing('1'),
-    },
-    currencyBadge: {
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('1'),
-      borderRadius: radius('full'),
-    },
-    currencyText: {
-      fontFamily: typography.styles.badge.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-    },
-
-    /* ── Balance ── */
-    balanceSection: {
-      marginTop: spacing('4'),
-      gap: spacing('1'),
-    },
-    balanceLabel: {
-      fontFamily: typography.fonts.regular,
-      color: colors.textMuted,
-      ...typography.metrics.xs,
-    },
-    cardBalance: {
-      ...typography.metrics.xxxl,
-      lineHeight: 34,
-    },
-
-    /* ── Divider ── */
-    divider: {
-      height: 1,
-      backgroundColor: alpha(colors.text, 'faint'),
-      marginTop: spacing('4'),
-      marginBottom: spacing('3'),
-    },
-
-    /* ── Stats ── */
-    statsRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    statCell: {
-      flex: 1,
-      gap: spacing('1'),
-    },
-    statDivider: {
-      width: 1,
-      height: 32,
-      backgroundColor: alpha(colors.text, 'faint'),
-      marginHorizontal: spacing('4'),
-    },
-    statLabelRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1'),
-    },
-    statLabel: {
-      fontFamily: typography.fonts.regular,
-      color: colors.textMuted,
-      ...typography.metrics.xs,
-    },
-    statValue: {
-      ...typography.metrics.md,
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-    },
-
-    /* ── FAB ── */
-    fab: {
-      position: 'absolute',
-      bottom: insets.bottom > 0 ? insets.bottom + 8 + 60 + 16 : 16 + 60 + 16,
-      right: 16,
-      width: 56,
-      height: 56,
-      borderRadius: radius('xl'),
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-      ...shadow('lg'),
-    },
-
-    /* ── Empty state ── */
-    empty: {
-      alignItems: 'center',
-      paddingVertical: spacing('9'),
-    },
-    emptyText: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
-      opacity: 0.5,
-    },
+    content: { gap: spacing('3') },
+    card: { gap: spacing('4') },
+    cardTop: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
+    cardMeta: { flex: 1, gap: 2 },
+    centered: { alignSelf: 'center' },
+    balance: { gap: spacing('0.5') },
+    balanceValue: { ...typography.variants.amountLarge },
+    stats: { flexDirection: 'row', alignItems: 'stretch', gap: spacing('4') },
+    statCell: { flex: 1, gap: spacing('1') },
+    statLabel: { flexDirection: 'row', alignItems: 'center', gap: spacing('1') },
+    statValue: { ...typography.variants.amount },
   });

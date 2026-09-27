@@ -1,10 +1,10 @@
+import { Screen } from '@/src/components/ui/Screen';
+import { Text } from '@/src/components/ui/Text';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Animated, Linking, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Animated, Linking, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { FlashIcon, LockPasswordIcon, BarChartIcon } from '@hugeicons/core-free-icons';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { Button } from '@/src/components/ui/Button';
-import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
 
@@ -68,8 +68,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
   }, [androidStoreUrl, iosStoreUrl]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <PageBackground />
+    <Screen variant="fixed" edges={['top', 'bottom']}>
 
       <Animated.View style={[styles.inner, { opacity }]}>
         {/* ── Brand header ─────────────────────────────────────────────────── */}
@@ -77,7 +76,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
           <View style={styles.headerRow}>
             <View style={styles.headerSlot} />
             <Text style={styles.brand}>
-              Fintraq<Text style={{ color: colors.primary }}>.</Text>
+              Fintraq<Text inline color={colors.primary}>.</Text>
             </Text>
             <View style={styles.headerSlot} />
           </View>
@@ -124,16 +123,12 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
           <Button title={t('update.updateNow')} onPress={handleUpdatePress} variant="primary" size="lg" />
         </View>
       </Animated.View>
-    </SafeAreaView>
+    </Screen>
   );
 });
 
 function createStyles({ spacing, radius, typography, colors, layout }: ThemeContextType) {
   return StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
     inner: {
       flex: 1,
     },
@@ -181,15 +176,13 @@ function createStyles({ spacing, radius, typography, colors, layout }: ThemeCont
     },
     stepTitle: {
       fontFamily: typography.fonts.heading,
-      fontSize: 30,
-      lineHeight: 34,
+      ...typography.metrics.xxxl,
       color: colors.text,
     },
     stepSubtitle: {
       marginTop: spacing('2.5'),
       fontFamily: typography.fonts.regular,
-      fontSize: 14,
-      lineHeight: 22,
+      ...typography.metrics.md,
       color: colors.textMuted,
       maxWidth: 320,
     },
@@ -212,13 +205,12 @@ function createStyles({ spacing, radius, typography, colors, layout }: ThemeCont
     },
     cardLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 15,
+      ...typography.metrics.md,
       color: colors.text,
     },
     cardDetail: {
       fontFamily: typography.fonts.regular,
       ...typography.metrics.sm,
-      lineHeight: 20,
       color: colors.textMuted,
     },
 

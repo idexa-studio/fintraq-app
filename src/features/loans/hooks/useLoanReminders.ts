@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { NotificationService } from '../../../services/notification.service';
-import { toErrorMessage } from '../../../utils/errors';
+import { NotificationService } from '@/src/services/notification.service';
+import { toErrorMessage } from '@/src/utils/errors';
 import { useUpdateLoan } from './loans';
-import type { LoanWithStats } from '../api/loans';
+import type { LoanWithStats } from '@/src/features/loans/api/loans';
 import { LoggerService } from '@/src/services/logger.service';
 
 export const useLoanReminders = () => {

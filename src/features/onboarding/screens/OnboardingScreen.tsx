@@ -1,12 +1,13 @@
+import { useKeyboardInset } from '@/src/hooks/useKeyboardInset';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Screen } from '@/src/components/ui/Screen';
 import * as Updates from 'expo-updates';
-import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Button } from '@/src/components/ui/Button';
-import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
-import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
-import { PageBackground } from '@/src/components/ui/PageBackground';
+import { AlertButton, AlertDialog, Button, ConfirmDialog, IconButton, Text } from '@/src/components/ui';
+import { CaretLeftIcon } from '@/src/components/ui/icons';
+import { CurrencyPickerBottomSheet } from '@/src/components/pickers/CurrencyPickerBottomSheet';
 import { getDeviceCurrencyCode } from '@/src/constants/currency';
 import { ACCOUNT_COLORS } from '@/src/constants/picker';
+import { DEFAULT_CATEGORIES } from '@/src/constants/defaultCategories';
 import { useCreateAccount } from '@/src/features/accounts/hooks/accounts';
 import { db } from '@/src/db/client';
 import { accounts, categories } from '@/src/db/schema';
@@ -14,37 +15,32 @@ import { RestoreProgressView } from '@/src/features/onboarding/components/Restor
 import { ProfileStep } from '@/src/features/onboarding/components/ProfileStep';
 import { WelcomeStep } from '@/src/features/onboarding/components/WelcomeStep';
 import { ONBOARDING_STEPS } from '@/src/features/onboarding/constants';
-import { createOnboardingStyles } from '@/src/features/onboarding/styles';
 import { OnboardingFormValues } from '@/src/features/onboarding/types';
 import { useOnboarding } from '@/src/providers/OnboardingProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
-import { useTheme } from '@/src/providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { AnalyticsService } from '@/src/services/analytics';
 import { NotificationService } from '@/src/services/notification.service';
 import { toDbColor } from '@/src/utils/format';
 import { isNoBackupError, isProRequiredError } from '@/src/services/backup/google-drive.errors';
-import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
 import { openAppSettings } from '@/src/services/backup/battery-optimization';
 
 import { CloudBackupChoice, CloudBackupStep } from '@/src/features/onboarding/components/CloudBackupStep';
-import { RestoreStep, SetupOption } from '@/src/features/onboarding/components/RestoreStep';
 import { LoggerService } from '@/src/services/logger.service';
 import { useTranslation } from 'react-i18next';
 
 export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { colors } = theme;
+  const keyboardInset = useKeyboardInset(true, useSafeAreaInsets().bottom);
   const { t } = useTranslation();
-  const styles = React.useMemo(() => createOnboardingStyles(theme), [theme]);
+  const styles = React.useMemo(() => createStyles(theme), [theme]);
   const { completeOnboarding } = useOnboarding();
   const { profile, updateProfile } = useSettings();
   const { mutateAsync: createAccount, isPending: accountPending } = useCreateAccount();
@@ -52,7 +48,6 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
 
   const [stepIndex, setStepIndex] = React.useState(0);
   const currentStep = ONBOARDING_STEPS[stepIndex];
-  const [setupOption, setSetupOption] = React.useState<SetupOption>('fresh');
   const [cloudBackupChoice, setCloudBackupChoice] = React.useState<CloudBackupChoice>('enable');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
@@ -128,72 +123,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   };
 
   const seedCategories = async () => {
-    const defaults: { name: string; icon: string; color: number; type: string; isSystem?: boolean }[] = [
-      // ── Income ──────────────────────────────────────────────────────
-      { name: 'Salary', icon: 'cash', color: toDbColor('#059669'), type: 'CR' },
-      { name: 'Freelance', icon: 'sparkles', color: toDbColor('#65A30D'), type: 'CR' },
-      { name: 'Sales', icon: 'shopping-cart', color: toDbColor('#D97706'), type: 'CR' },
-      { name: 'Dividends', icon: 'chart-up', color: toDbColor('#2563EB'), type: 'CR' },
-      { name: 'Interests', icon: 'chart-bar-increasing', color: toDbColor('#7C3AED'), type: 'CR' },
-      { name: 'Gifts', icon: 'gift', color: toDbColor('#BE185D'), type: 'CR' },
-      { name: 'Refunds', icon: 'refresh', color: toDbColor('#059669'), type: 'CR' },
-      { name: 'Other Income', icon: 'building', color: toDbColor('#334155'), type: 'CR' },
-
-      // ── Housing & Utilities ──────────────────────────────────────────
-      { name: 'Rent', icon: 'building', color: toDbColor('#EA580C'), type: 'DR' },
-      { name: 'Mortgage', icon: 'home', color: toDbColor('#DC2626'), type: 'DR' },
-      { name: 'Electricity', icon: 'flash', color: toDbColor('#D97706'), type: 'DR' },
-      { name: 'Water', icon: 'droplets', color: toDbColor('#0369A1'), type: 'DR' },
-      { name: 'Internet', icon: 'wifi', color: toDbColor('#4338CA'), type: 'DR' },
-      { name: 'Phone', icon: 'smartphone', color: toDbColor('#4F46E5'), type: 'DR' },
-      { name: 'Maintenance', icon: 'wrench', color: toDbColor('#475569'), type: 'DR' },
-
-      // ── Food & Drink ────────────────────────────────────────────────
-      { name: 'Groceries', icon: 'shopping-basket', color: toDbColor('#B45309'), type: 'DR' },
-      { name: 'Dining Out', icon: 'fork', color: toDbColor('#EA580C'), type: 'DR' },
-      { name: 'Delivery', icon: 'bike', color: toDbColor('#DC2626'), type: 'DR' },
-      { name: 'Coffee', icon: 'coffee', color: toDbColor('#B45309'), type: 'DR' },
-      { name: 'Drinks', icon: 'drink', color: toDbColor('#6D28D9'), type: 'DR' },
-
-      // ── Transport ───────────────────────────────────────────────────
-      { name: 'Fuel', icon: 'dashboard-speed', color: toDbColor('#EA580C'), type: 'DR' },
-      { name: 'Car Payment', icon: 'car', color: toDbColor('#2563EB'), type: 'DR' },
-      { name: 'Public Transit', icon: 'bus', color: toDbColor('#0E7490'), type: 'DR' },
-      { name: 'Ride Share', icon: 'car', color: toDbColor('#059669'), type: 'DR' },
-      { name: 'Parking', icon: 'map-pin', color: toDbColor('#334155'), type: 'DR' },
-
-      // ── Health & Wellness ───────────────────────────────────────────
-      { name: 'Health', icon: 'bandage', color: toDbColor('#BE123C'), type: 'DR' },
-      { name: 'Pharmacy', icon: 'bandage', color: toDbColor('#059669'), type: 'DR' },
-      { name: 'Gym', icon: 'dumbbell', color: toDbColor('#059669'), type: 'DR' },
-      { name: 'Personal Care', icon: 'scissor', color: toDbColor('#BE185D'), type: 'DR' },
-
-      // ── Lifestyle & Fun ──────────────────────────────────────────────
-      { name: 'Shopping', icon: 'shopping-bag', color: toDbColor('#BE185D'), type: 'DR' },
-      { name: 'Electronics', icon: 'cpu', color: toDbColor('#4338CA'), type: 'DR' },
-      { name: 'Subscrip.', icon: 'repeat', color: toDbColor('#7C3AED'), type: 'DR' },
-      { name: 'Entertainment', icon: 'film', color: toDbColor('#E11D48'), type: 'DR' },
-      { name: 'Travel', icon: 'airplane', color: toDbColor('#0E7490'), type: 'DR' },
-      { name: 'Games', icon: 'gamepad', color: toDbColor('#7C3AED'), type: 'DR' },
-      { name: 'Books', icon: 'book-open', color: toDbColor('#D97706'), type: 'DR' },
-
-      // ── Family & Education ──────────────────────────────────────────
-      { name: 'Education', icon: 'school', color: toDbColor('#0369A1'), type: 'DR' },
-      { name: 'Kids', icon: 'smile', color: toDbColor('#D97706'), type: 'DR' },
-      { name: 'Pets', icon: 'cat', color: toDbColor('#65A30D'), type: 'DR' },
-      { name: 'Gifts given', icon: 'heart', color: toDbColor('#E11D48'), type: 'DR' },
-
-      // ── Finance & Taxes ─────────────────────────────────────────────
-      { name: 'Loan/EMI', icon: 'credit-card', color: toDbColor('#DC2626'), type: 'CR,DR' },
-      { name: 'Taxes', icon: 'file', color: toDbColor('#475569'), type: 'DR' },
-      { name: 'Insurance', icon: 'shield', color: toDbColor('#334155'), type: 'DR' },
-      { name: 'Fees', icon: 'receipt-text', color: toDbColor('#334155'), type: 'DR' },
-      { name: 'Other', icon: 'more-horizontal', color: toDbColor('#475569'), type: 'DR' },
-
-      // ── Transfers ────────────────────────────────────────────────────
-      { name: 'Transfer', icon: 'repeat', color: toDbColor('#2563EB'), type: 'TR', isSystem: true },
-      { name: 'Uncategorized', icon: 'grid', color: toDbColor('#475569'), type: 'CR,DR,TR', isSystem: true },
-    ];
+    const defaults = DEFAULT_CATEGORIES;
 
     const existing = await db.select({ name: categories.name }).from(categories);
     const existingNames = new Set(existing.map((c) => c.name));
@@ -266,11 +196,6 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
 
     setIsSubmitting(true);
     try {
-      if (currentStep.id === 'setup_choice' && setupOption === 'restore') {
-        await handleOnboardingRestore();
-        return;
-      }
-
       if (currentStep.id === 'backup_setup' && cloudBackupChoice === 'enable') {
         try {
           if (!isConnected) {
@@ -379,7 +304,6 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
             {
               text: t('onboardingFlow.startFresh'),
               onPress: () => {
-                setSetupOption('fresh');
                 setStepIndex(ONBOARDING_STEPS.findIndex((s) => s.id === 'profile'));
               },
             },
@@ -396,7 +320,6 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           type: 'info',
           buttons: [
             { text: t('onboardingFlow.startFresh'), style: 'cancel', onPress: () => {
-              setSetupOption('fresh');
               setStepIndex(ONBOARDING_STEPS.findIndex((s) => s.id === 'profile'));
             } },
             { text: t('onboardingFlow.upgradeToPro'), onPress: () => router.push('/premium') },
@@ -415,12 +338,22 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const openCurrencyPicker = useCallback(() => setShowCurrencyPicker(true), []);
   const closeCurrencyPicker = useCallback(() => setShowCurrencyPicker(false), []);
 
+  const handleRestorePress = useCallback(async () => {
+    if (isSubmitting || isButtonLoading) return;
+    setIsSubmitting(true);
+    try {
+      await handleOnboardingRestore();
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [isSubmitting, isButtonLoading, handleOnboardingRestore]);
+
   const buttonTitle = React.useMemo(() => {
     if (isButtonLoading) {
       if (currentStep.id === 'backup_setup' && cloudBackupChoice === 'enable') {
         return isConnected ? t('onboardingFlow.finalizing') : t('onboardingFlow.connectingSync');
       }
-      if (currentStep.id === 'setup_choice' && setupOption === 'restore') {
+      if (isRestoring) {
         return t('onboardingFlow.restoringBackup');
       }
       if (stepIndex === ONBOARDING_STEPS.length - 1) {
@@ -429,8 +362,8 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       return t('onboardingFlow.processing');
     }
 
-    if (currentStep.id === 'setup_choice' && setupOption === 'restore') {
-      return user ? t('onboardingFlow.restoreCloudBackup') : t('onboardingFlow.connectAndRestore');
+    if (currentStep.id === 'welcome') {
+      return t('onboardingFlow.getStarted');
     }
     if (currentStep.id === 'backup_setup') {
       if (cloudBackupChoice === 'enable') {
@@ -442,34 +375,17 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       return t('onboardingFlow.launch');
     }
     return t('onboardingFlow.next');
-  }, [isButtonLoading, currentStep.id, setupOption, cloudBackupChoice, isConnected, user, stepIndex, t]);
+  }, [isButtonLoading, isRestoring, currentStep.id, cloudBackupChoice, isConnected, user, stepIndex, t]);
 
   const renderStepContent = () => {
+    if (isRestoring) {
+      return <RestoreProgressView progress={progress} progressStage={progressStage} userEmail={user?.email} />;
+    }
     switch (currentStep.id) {
       case 'welcome':
         return <WelcomeStep />;
-      case 'setup_choice':
-        return isRestoring ? (
-          <RestoreProgressView
-            progress={progress}
-            progressStage={progressStage}
-            userEmail={user?.email}
-          />
-        ) : (
-          <RestoreStep
-            selectedOption={setupOption}
-            onSelectOption={setSetupOption}
-            userEmail={user?.email}
-            isRestoring={isRestoring}
-          />
-        );
       case 'profile':
-        return (
-          <ProfileStep
-            currency={currency}
-            onOpenCurrencyPicker={openCurrencyPicker}
-          />
-        );
+        return <ProfileStep currency={currency} onOpenCurrencyPicker={openCurrencyPicker} />;
       case 'backup_setup':
         return (
           <CloudBackupStep
@@ -484,49 +400,42 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
     }
   };
 
+  const isWelcome = currentStep.id === 'welcome';
+
   return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
+    <Screen variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
 
       <FormProvider {...methods}>
-        <KeyboardAvoidingView style={styles.keyboardWrap} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <View style={styles.header}>
-            <View style={styles.headerTopRow}>
-              {stepIndex > 0 ? (
-                <BentoPressable
-                  style={styles.headerBackButton}
-                  onPress={() => setStepIndex((i) => i - 1)}
-                  disabled={isButtonLoading}
-                >
-                  <HugeiconsIcon icon={ArrowLeft01Icon} size={18} color={colors.text} />
-                </BentoPressable>
-              ) : (
-                <View style={styles.headerBackPlaceholder} />
-              )}
-
-              <Text style={styles.brand}>Fintraq<Text style={{ color: colors.primary }}>.</Text></Text>
-
-              <View style={styles.stepPill}>
-                <Text style={styles.stepPillText}>{stepIndex + 1}/{ONBOARDING_STEPS.length}</Text>
+        <View style={[styles.keyboardWrap, { paddingBottom: keyboardInset }]}>
+          {isWelcome ? null : (
+            <View style={styles.header}>
+              <IconButton
+                icon={CaretLeftIcon}
+                onPress={() => setStepIndex((i) => i - 1)}
+                disabled={isButtonLoading}
+                accessibilityLabel={t('common.back')}
+              />
+              <View style={styles.progressTrack} accessibilityRole="progressbar" accessibilityValue={{ min: 1, max: ONBOARDING_STEPS.length, now: stepIndex + 1 }}>
+                {ONBOARDING_STEPS.slice(1).map((step, index) => (
+                  <View key={step.id} style={[styles.progressSegment, index + 1 <= stepIndex && styles.progressSegmentActive]} />
+                ))}
               </View>
             </View>
-
-            <View style={styles.progressTrack}>
-              {ONBOARDING_STEPS.map((step, index) => (
-                <View key={step.id} style={[styles.progressDot, index <= stepIndex && styles.progressDotActive]} />
-              ))}
-            </View>
-          </View>
+          )}
 
           <ScrollView
-            contentContainerStyle={styles.scrollContent}
+            contentContainerStyle={[styles.scrollContent, isWelcome && styles.scrollContentWelcome]}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
+            {isWelcome ? (
+              <Text style={styles.brand}>Fintraq<Text inline style={styles.brandDot}>.</Text></Text>
+            ) : null}
             <View style={styles.stepMeta}>
-              <Text style={styles.eyebrow}>{t(`onboardingFlow.steps.${currentStep.id}.eyebrow`)}</Text>
-              <Text style={styles.stepTitle}>{t(`onboardingFlow.steps.${currentStep.id}.title`)}</Text>
-              <Text style={styles.stepSubtitle}>{t(`onboardingFlow.steps.${currentStep.id}.subtitle`)}</Text>
+              <Text variant="display">{t(`onboardingFlow.steps.${currentStep.id}.title`)}</Text>
+              <Text variant="body" tone="muted">
+                {isWelcome ? t('onboardingFlow.welcomeSubtitle') : t(`onboardingFlow.steps.${currentStep.id}.subtitle`)}
+              </Text>
             </View>
 
             {renderStepContent()}
@@ -537,11 +446,22 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
               title={buttonTitle}
               onPress={handleContinue}
               size="lg"
-              isLoading={isButtonLoading}
-              style={styles.primaryAction}
+              fullWidth
+              isLoading={isButtonLoading && !isRestoring}
+              disabled={isRestoring}
             />
+            {isWelcome && !isRestoring ? (
+              <Button
+                title={t('onboardingFlow.restoreFromBackup')}
+                onPress={handleRestorePress}
+                variant="ghost"
+                size="lg"
+                fullWidth
+                disabled={isButtonLoading}
+              />
+            ) : null}
           </View>
-        </KeyboardAvoidingView>
+        </View>
       </FormProvider>
 
       <CurrencyPickerBottomSheet
@@ -573,6 +493,43 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         buttons={alertConfig.buttons}
         onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
       />
-    </SafeAreaView>
+    </Screen>
   );
 });
+
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+  StyleSheet.create({
+    keyboardWrap: { flex: 1 },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('4'),
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('2'),
+    },
+    progressTrack: { flex: 1, flexDirection: 'row', gap: spacing('1.5') },
+    progressSegment: { flex: 1, height: 6, borderRadius: radius('full'), backgroundColor: colors.card },
+    progressSegmentActive: { backgroundColor: colors.primary },
+    scrollContent: {
+      flexGrow: 1,
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('7'),
+      paddingBottom: spacing('6'),
+      gap: spacing('7'),
+    },
+    scrollContentWelcome: { paddingTop: spacing('10') },
+    brand: {
+      fontFamily: typography.fonts.heading,
+      ...typography.metrics.jumbo,
+      color: colors.text,
+      marginBottom: -spacing('4'),
+    },
+    brandDot: { color: colors.primary },
+    stepMeta: { gap: spacing('2.5') },
+    footer: {
+      gap: spacing('1'),
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('2'),
+      paddingBottom: Platform.OS === 'ios' ? spacing('2') : spacing('4'),
+    },
+  });

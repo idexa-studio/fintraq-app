@@ -1,9 +1,10 @@
+import { Screen } from '@/src/components/ui/Screen';
+import { SkeletonScreen } from '@/src/components/ui';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Header } from '@/src/components/ui/Header';
+import { Icon } from '@/src/components/ui/Icon';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
-import { PageBackground } from '@/src/components/ui/PageBackground';
-import { PremiumGuard } from '@/src/components/ui/PremiumGuard';
+import { PremiumGuard } from '@/src/features/premium/components/PremiumGuard';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
 import { StorageKeys } from '@/src/constants/keys';
@@ -37,20 +38,13 @@ import {
   Tag01Icon,
   Wallet05Icon,
 } from '@hugeicons/core-free-icons';
-import type { IconSvgElement } from '@hugeicons/react-native';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSource } from '@/src/components/ui/Icon';
 import { format } from 'date-fns';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  useWindowDimensions,
-} from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
@@ -82,7 +76,7 @@ const fmtMonthLabel = (ym: string, t: TFunction): string => {
   return shortMonth(Number(m) - 1, t) ?? ym;
 };
 
-function EmptyState({ icon, title, subtitle }: { icon: IconSvgElement; title: string; subtitle: string }) {
+function EmptyState({ icon, title, subtitle }: { icon: IconSource; title: string; subtitle: string }) {
   const theme = useTheme();
   const { colors, typography, spacing, radius, layout } = theme;
   return (
@@ -101,13 +95,13 @@ function EmptyState({ icon, title, subtitle }: { icon: IconSvgElement; title: st
         backgroundColor: alpha(colors.primary, 'subtle'),
         justifyContent: 'center', alignItems: 'center',
       }}>
-        <HugeiconsIcon icon={icon} size={18} color={colors.primary} />
+        <Icon icon={icon} size={18} color={colors.primary} />
       </View>
       <View style={{ flex: 1, gap: 2 }}>
-        <Text style={{ fontFamily: typography.styles.rowLabel.fontFamily, fontSize: 13, color: colors.text }}>
+        <Text style={{ fontFamily: typography.styles.rowLabel.fontFamily, ...typography.metrics.sm, color: colors.text }}>
           {title}
         </Text>
-        <Text style={{ fontFamily: typography.fonts.regular, fontSize: 11, color: colors.textMuted, lineHeight: 15 }}>
+        <Text style={{ fontFamily: typography.fonts.regular, ...typography.metrics.xs, color: colors.textMuted,}}>
           {subtitle}
         </Text>
       </View>
@@ -131,8 +125,8 @@ function DeltaBadge({ delta, positiveIsGood }: { delta: number | null; positiveI
       paddingVertical: 3,
       alignSelf: 'flex-start',
     }}>
-      <HugeiconsIcon icon={isPositive ? ArrowUp01Icon : ArrowDown01Icon} size={10} color={color} />
-      <Text style={{ fontFamily: typography.styles.badge.fontFamily, fontSize: 10, color }}>
+      <Icon icon={isPositive ? ArrowUp01Icon : ArrowDown01Icon} size={10} color={color} />
+      <Text style={{ fontFamily: typography.styles.badge.fontFamily, ...typography.metrics.xxs, color }}>
         {sign}{Math.abs(delta).toFixed(0)}%
       </Text>
     </View>
@@ -270,14 +264,10 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <PageBackground />
-      <Header title={t('common.analyticsTitle')} />
+    <Screen header={{ title: t('common.analyticsTitle') }} variant="fixed" edges={['top']}>
 
       {isLoading ? (
-        <View style={styles.loading}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
+        <SkeletonScreen />
       ) : (
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
@@ -307,7 +297,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                   onPress={locked ? navigateToPremium : () => handleRangeSelect(r.days)}
                 >
                   <Text style={[styles.pillText, r.days === selectedRange && styles.pillTextActive]}>{r.label}</Text>
-                  {locked && <HugeiconsIcon icon={LockPasswordIcon} size={9} color={colors.textMuted} />}
+                  {locked && <Icon icon={LockPasswordIcon} size={9} color={colors.textMuted} />}
                 </BentoPressable>
               );
             })}
@@ -623,14 +613,12 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
         </ScrollView>
       )}
       <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_ANALYTICS} steps={ANALYTICS_WALKTHROUGH_STEPS} />
-    </SafeAreaView>
+    </Screen>
   );
 });
 
 const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClearance }: ThemeContextType, bottomInset: number) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background, overflow: 'hidden' },
-    loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     content: { paddingBottom: tabBarClearance(bottomInset), paddingTop: spacing('3') },
     guard: { marginHorizontal: layout.screenPadding },
 
@@ -663,7 +651,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClear
     pillTextActive: { color: colors.primary },
     durationText: {
       fontFamily: typography.fonts.medium,
-      fontSize: 12,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       paddingHorizontal: layout.screenPadding,
       marginBottom: spacing('5'),
@@ -700,7 +688,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClear
     // ── Card
     card: {
       backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
+      borderRadius: radius('xl'),
       padding: spacing('4'),
       marginHorizontal: layout.screenPadding,
     },
@@ -743,7 +731,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClear
     chartLegend: { flexDirection: 'row', gap: spacing('4'), marginBottom: spacing('2') },
     legendItem: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
     legendDot: { width: 7, height: 7, borderRadius: radius('full') },
-    legendText: { fontFamily: typography.fonts.regular, color: colors.textMuted, fontSize: 10 },
+    legendText: { fontFamily: typography.fonts.regular, color: colors.textMuted, ...typography.metrics.xxs },
 
     // ── Category tabs
     tabRow: {
@@ -818,7 +806,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClear
     },
     personInitials: {
       fontFamily: typography.styles.profileMono.fontFamily,
-      fontSize: 10,
+      ...typography.metrics.xxs,
     },
 
     // ── DOW
@@ -829,7 +817,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClear
       color: colors.textMuted,
       textAlign: 'center',
       marginTop: spacing('2'),
-      lineHeight: 17,
     },
 
     // ── KPI grid

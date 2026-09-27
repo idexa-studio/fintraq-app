@@ -1,12 +1,14 @@
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { Button } from '@/src/components/ui/Button';
+import { Text } from '@/src/components/ui/Text';
+
+import { Icon } from '@/src/components/ui/Icon';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { ArrowRight01Icon, CloudIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
-import type { IconSvgElement } from '@hugeicons/react-native';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSource } from '@/src/components/ui/Icon';
 import React, { useCallback, useMemo } from 'react';
-import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { useGoogleBackup } from '../hooks/useGoogleBackup';
+import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
 import { useTranslation } from 'react-i18next';
 
 type BackupPromptModalProps = {
@@ -45,7 +47,7 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
 
         <View style={styles.card}>
           <View style={styles.header}>
-            <IconAvatar icon={CloudIcon as IconSvgElement} color={colors.primary} variant="subtle" size={52} iconSize={26} />
+            <IconAvatar icon={CloudIcon as IconSource} color={colors.primary} variant="subtle" size={52} iconSize={26} />
             <Text style={styles.title}>{t('backup.protectTitle')}</Text>
             <Text style={styles.message}>
               {t('backup.protectMessage')}
@@ -54,30 +56,27 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
 
           <View style={styles.features}>
             <View style={styles.featureRow}>
-              <HugeiconsIcon icon={ShieldKeyIcon as IconSvgElement} size={16} color={colors.success} />
+              <Icon icon={ShieldKeyIcon as IconSource} size={16} color={colors.success} />
               <Text style={styles.featureText}>{t('backup.privateStorage')}</Text>
             </View>
             <View style={styles.featureRow}>
-              <HugeiconsIcon icon={CloudIcon as IconSvgElement} size={16} color={colors.primary} />
+              <Icon icon={CloudIcon as IconSource} size={16} color={colors.primary} />
               <Text style={styles.featureText}>{t('backup.dailyBackup')}</Text>
             </View>
           </View>
 
           <View style={styles.actions}>
-            <BentoPressable style={styles.primaryButton} onPress={handleConnect} disabled={isChecking}>
-              {isChecking ? (
-                <ActivityIndicator color={colors.primaryForeground} size="small" />
-              ) : (
-                <>
-                  <Text style={styles.primaryButtonText}>{t('backup.enableSync')}</Text>
-                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} color={colors.primaryForeground} />
-                </>
-              )}
-            </BentoPressable>
+            <Button
+              title={t('backup.enableSync')}
+              icon={ArrowRight01Icon}
+              iconPosition="trailing"
+              onPress={handleConnect}
+              isLoading={isChecking}
+              size="lg"
+              fullWidth
+            />
 
-            <BentoPressable style={styles.secondaryButton} onPress={onClose}>
-              <Text style={styles.secondaryButtonText}>{t('backup.maybeLater')}</Text>
-            </BentoPressable>
+            <Button title={t('backup.maybeLater')} onPress={onClose} variant="ghost" size="lg" fullWidth />
           </View>
         </View>
       </View>
@@ -113,7 +112,6 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       fontFamily: typography.fonts.regular,
       ...typography.metrics.sm,
       color: colors.textMuted,
-      lineHeight: 20,
       textAlign: 'center',
     },
     features: {
@@ -134,29 +132,5 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
     },
     actions: {
       gap: spacing('2.5'),
-    },
-    primaryButton: {
-      height: 48,
-      backgroundColor: colors.primary,
-      borderRadius: radius('xl'),
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing('2'),
-    },
-    primaryButtonText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      ...typography.metrics.md,
-      color: colors.primaryForeground,
-    },
-    secondaryButton: {
-      height: 40,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    secondaryButtonText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
     },
   });

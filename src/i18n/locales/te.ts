@@ -2,6 +2,8 @@ import type { Translation } from './types';
 
 const te: Translation = {
   common: {
+    edit: 'సవరించు', delete: 'తొలగించు',
+    back: 'వెనుకకు',
     cancel: 'రద్దు చేయి',
     ok: 'సరే',
     clear: 'తొలగించు',
@@ -18,6 +20,7 @@ const te: Translation = {
     settings: 'సెట్టింగ్‌లు',
   },
   settings: {
+    general: "సాధారణం", security: "భద్రత", manage: "నిర్వహించు", about: "గురించి", loans: "రుణాలు", loansHint: "మీరు ఇచ్చిన లేదా తీసుకున్న డబ్బు",
     title: 'సెట్టింగ్‌లు',
     welcome: 'స్వాగతం',
     proMember: 'Pro సభ్యుడు',
@@ -112,12 +115,13 @@ const te: Translation = {
     cannotDelete: 'వర్గాన్ని తొలగించలేము', deleteFailed: 'వర్గాన్ని తొలగించడం విఫలమైంది.',
   },
   dashboard: {
+    streakDays: '{{count}} రోజుల వరుస',
     accounts: 'ఖాతాలు', manage: 'నిర్వహించు', topExpenses: 'అగ్ర ఖర్చులు', people: 'వ్యక్తులు', loans: 'రుణాలు', recent: 'ఇటీవలివి', seeAll: 'అన్నీ చూడండి',
     noTransactions: 'ఇంకా లావాదేవీలు లేవు', transactionHint: 'మీ రోజువారీ చెల్లింపులు, ఆదాయం లేదా బదిలీలను ఇక్కడ నమోదు చేయడం ప్రారంభించండి.', addTransaction: 'లావాదేవీ జోడించు',
     balance: 'మీ బ్యాలెన్స్', income: 'ఆదాయం', expenses: 'ఖర్చులు', noLoans: 'క్రియాశీల రుణాలు లేవు', loanHint: 'మీరు ఇచ్చిన లేదా తీసుకున్న డబ్బును ట్రాక్ చేయండి. రుణం జోడించడానికి తాకండి.',
     lentOut: 'అప్పుగా ఇచ్చినది', borrowed: 'అప్పుగా తీసుకున్నది', overdue: '{{count}} గడువు దాటినవి', active: '{{count}} క్రియాశీలం', noExpenses: 'ఇంకా ఖర్చులు లేవు', expensesHint: 'మీ అగ్ర ఖర్చు వర్గాలను చూడటానికి కొన్ని లావాదేవీలు జోడించండి.',
   },
-  transactions: { amount: 'మొత్తం', category: 'వర్గం', netSavings: 'నికర పొదుపు', income: 'ఆదాయం', expenses: 'ఖర్చులు', type: 'రకం', account: 'ఖాతా', date: 'తేదీ', person: 'వ్యక్తి', typesCount: '{{count}} రకాలు', oneAccount: '1 ఖాతా', accountsCount: '{{count}} ఖాతాలు', oneCategory: '1 వర్గం', categoriesCount: '{{count}} వర్గాలు', onePerson: '1 వ్యక్తి', personsCount: '{{count}} వ్యక్తులు',
+  transactions: { dayCount: '{{count}} ఎంట్రీలు', allCategories: 'అన్నీ', searchCategories: 'వర్గాలను వెతకండి', amount: 'మొత్తం', category: 'వర్గం', netSavings: 'నికర పొదుపు', income: 'ఆదాయం', expenses: 'ఖర్చులు', type: 'రకం', account: 'ఖాతా', date: 'తేదీ', person: 'వ్యక్తి', typesCount: '{{count}} రకాలు', oneAccount: '1 ఖాతా', accountsCount: '{{count}} ఖాతాలు', oneCategory: '1 వర్గం', categoriesCount: '{{count}} వర్గాలు', onePerson: '1 వ్యక్తి', personsCount: '{{count}} వ్యక్తులు',
   filteredSummary: 'ఫిల్టర్ చేసిన సారాంశం', title: 'లావాదేవీలు', clearAll: 'అన్నీ తొలగించు', noResults: 'ఫలితాలు లేవు', nothingYet: 'ఇక్కడ ఇంకా ఏమీ లేదు', noMatch: 'క్రియాశీల ఫిల్టర్‌లకు సరిపోలే లావాదేవీలు లేవు. వాటిని సర్దుబాటు చేయండి లేదా తొలగించండి.', addFirst: 'ట్రాకింగ్ ప్రారంభించడానికి మీ మొదటి లావాదేవీని జోడించండి.', clearFilters: 'ఫిల్టర్‌లను తొలగించు', add: 'లావాదేవీ జోడించు',
   deleteTitle: 'లావాదేవీని తొలగించు', deleteMessage: 'ఇది లావాదేవీని తొలగించి, ఖాతా బ్యాలెన్స్‌పై దాని ప్రభావాన్ని వెనక్కి మారుస్తుంది.', delete: 'తొలగించు', sortTitle: 'లావాదేవీలను క్రమబద్ధీకరించు', newest: 'కొత్తవి మొదట', oldest: 'పాతవి మొదట', highest: 'అత్యధిక మొత్తం', lowest: 'అత్యల్ప మొత్తం',
   expense: 'ఖర్చు', transfer: 'బదిలీ', missingDetails: 'వివరాలు లేవు', missingDetailsMessage: 'దయచేసి ఖాతా, వర్గం, సరైన మొత్తాన్ని ఎంచుకోండి.', missingDestination: 'గమ్యం లేదు', missingDestinationMessage: 'బదిలీకి గమ్యం ఖాతాను ఎంచుకోండి.',
@@ -125,6 +129,7 @@ const te: Translation = {
   editEntry: 'నమోదును సవరించు', newEntry: 'కొత్త నమోదు', loanRepaymentFor: 'రుణ చెల్లింపు — ఎవరికి', loading: 'లోడ్ అవుతోంది...', fromAccount: 'ఏ ఖాతా నుండి', toAccount: 'ఏ ఖాతాకు', noCompatible: 'ఈ బదిలీకి అనుకూలమైన ఖాతాలు లేవు.', linkedPerson: 'లింక్ అయిన వ్యక్తి', unknown: 'తెలియనిది', noPersonLinked: 'వ్యక్తి లింక్ కాలేదు', time: 'సమయం', note: 'గమనిక', optionalContext: 'ఐచ్ఛిక వివరణ', saveChanges: 'మార్పులను సేవ్ చేయి', saveTransaction: 'లావాదేవీని సేవ్ చేయి', none: 'ఏదీ కాదు',
   detailTitle: 'లావాదేవీ', notFound: 'లావాదేవీ కనుగొనబడలేదు.', detailDeleteTitle: 'లావాదేవీని తొలగించు', detailDeleteMessage: 'ఇది బ్యాలెన్స్‌పై ప్రభావాన్ని వెనక్కి మారుస్తుంది; దీన్ని రద్దు చేయలేరు.', from: 'నుండి', to: 'కు', created: 'సృష్టించినది', cancel: 'రద్దు చేయి' },
   onboardingFlow: {
+    getStarted: 'ప్రారంభించండి', restoreFromBackup: 'బ్యాకప్ నుండి పునరుద్ధరించండి', welcomeSubtitle: 'ఖర్చులు, ఆదాయం, అప్పులను ఒకే ప్రశాంతమైన, ప్రైవేట్ చోట ట్రాక్ చేయండి. సెటప్‌కు ఒక నిమిషం కూడా పట్టదు.',
     steps: {
       welcome: { eyebrow: 'ప్రారంభిద్దాం', title: 'మీ ఫైనాన్స్ కాక్‌పిట్‌ను నిర్మించుకోండి.', subtitle: 'పూర్తి డిఫాల్ట్‌లు, శుభ్రమైన ఖాతా ప్రారంభంతో ప్రశాంతమైన సెటప్.' },
       setup_choice: { eyebrow: 'సెటప్ విధానం', title: 'మీరు ఎలా ప్రారంభించాలనుకుంటున్నారు?', subtitle: 'కొత్త వర్క్‌స్పేస్‌తో ప్రారంభించండి లేదా ఇప్పటికే ఉన్న Google Drive బ్యాకప్‌ను రీస్టోర్ చేయండి.' },
@@ -165,7 +170,7 @@ const te: Translation = {
   },
   ui: {
     somethingWrong: 'ఏదో తప్పు జరిగింది', proOnly: 'Pro మాత్రమే', unlockWithPro: 'Fintraq Pro తో అన్‌లాక్ చేయండి',
-    chooseIcon: 'ఐకాన్‌ను ఎంచుకోండి', chooseColor: 'రంగును ఎంచుకోండి', colorsCount: '{{count}} రంగులు', currency: 'కరెన్సీ', currenciesCount: '{{count}} కరెన్సీలు', searchCurrency: 'పేరు లేదా కోడ్‌తో వెతకండి', delKey: 'తొలగించు',
+    charsLeft: '{{count}} అక్షరాలు మిగిలి ఉన్నాయి', suggested: 'సూచించినవి', allCurrencies: 'అన్ని కరెన్సీలు', noMatch: '“{{query}}” కి సరిపోలేవీ లేవు', chooseIcon: 'ఐకాన్‌ను ఎంచుకోండి', chooseColor: 'రంగును ఎంచుకోండి', colorsCount: '{{count}} రంగులు', currency: 'కరెన్సీ', currenciesCount: '{{count}} కరెన్సీలు', searchCurrency: 'పేరు లేదా కోడ్‌తో వెతకండి', delKey: 'తొలగించు',
   },
   lock: {
     unlockApp: 'యాప్‌ను అన్‌లాక్ చేయండి', authFailed: 'ప్రమాణీకరణ విఫలమైంది. మళ్లీ ప్రయత్నించండి.', useButton: 'మళ్లీ ప్రయత్నించడానికి కింది బటన్‌ను ఉపయోగించండి.',
@@ -180,6 +185,9 @@ const te: Translation = {
     defaultMessage: 'కొనసాగడానికి దయచేసి Fintraq ను అప్‌డేట్ చేయండి. ఇది కొద్ది క్షణాలే పడుతుంది.', updateNow: 'ఇప్పుడే అప్‌డేట్ చేయండి',
   },
   loans: {
+    outstandingAmount: "బాకీ: {{amount}}", exceedsOutstanding: "మొత్తం బాకీ {{amount}} కంటే ఎక్కువ", fullAmount: "పూర్తి మొత్తం · {{amount}}",
+    freeLimit: 'ఉచిత ప్లాన్\u200cలో {{limit}} యాక్టివ్ రుణాలు. అపరిమితం కోసం అప్\u200cగ్రేడ్ చేయండి.', upgrade: 'అప్\u200cగ్రేడ్',
+    lentToName: '{{name}} కి అప్పు ఇచ్చారు', borrowedFromName: '{{name}} నుండి అప్పు తీసుకున్నారు',
     title: 'రుణాలు', loan: 'రుణం', newLoan: 'కొత్త రుణం', lentOut: 'అప్పుగా ఇచ్చినది', borrowed: 'అప్పుగా తీసుకున్నది', lent: 'ఇచ్చినది', repaid: 'తిరిగి చెల్లించబడింది',
     noLent: 'ఇచ్చిన రుణాలు లేవు', noBorrowed: 'తీసుకున్న రుణాలు లేవు', emptyHint: 'మీరు ఇతరులకు ఇచ్చిన లేదా ఇతరుల నుండి తీసుకున్న డబ్బును ఇక్కడ ట్రాక్ చేయండి.', addLoan: 'రుణం జోడించు',
     unknown: 'తెలియనిది', unnamedSource: 'పేరులేని మూలం', outstandingBalance: 'బకాయి బ్యాలెన్స్', principal: 'అసలు', outstanding: 'బకాయి', totalPrincipal: 'మొత్తం అసలు',
@@ -217,10 +225,12 @@ const te: Translation = {
     linkPerson: 'వ్యక్తిని లింక్ చేయి', noPerson: 'వ్యక్తి లేరు',
   },
   categoryForm: {
+    appliesToHint: 'ఒకటి లేదా అంతకంటే ఎక్కువ ఎంచుకోండి.', moreIcons: 'మరిన్ని',
     edit: 'వర్గాన్ని సవరించు', new: 'కొత్త వర్గం', categoryName: 'వర్గం పేరు', tapToChangeIcon: 'ఐకాన్‌ను మార్చడానికి తాకండి', appliesTo: 'వర్తించేది', namePlaceholder: 'ఉదా. కిరాణా, జీతం',
     save: 'వర్గాన్ని సేవ్ చేయి', create: 'వర్గాన్ని సృష్టించు', chooseIcon: 'ఐకాన్‌ను ఎంచుకోండి', expense: 'ఖర్చు', income: 'ఆదాయం', transfer: 'బదిలీ',
   },
   accountForm: {
+    lockedHint: 'రకం, కరెన్సీ, బ్యాలెన్స్ ఖాతా సృష్టించినప్పుడే నిర్ణయమవుతాయి. బ్యాలెన్స్ లావాదేవీల ద్వారా మారుతుంది.',
     edit: 'ఖాతాను సవరించు', new: 'కొత్త ఖాతా', accountName: 'ఖాతా పేరు', accountType: 'ఖాతా రకం', accountDetails: 'ఖాతా వివరాలు',
     namePlaceholder: 'ఉదా. ప్రధాన వాలెట్', holderPlaceholder: 'రాజు (ఐచ్ఛికం)', numberPlaceholder: 'IBAN (ఐచ్ఛికం)', currentBalance: 'ప్రస్తుత బ్యాలెన్స్', initialBalance: 'ప్రారంభ బ్యాలెన్స్',
     save: 'ఖాతాను సేవ్ చేయి', create: 'ఖాతాను సృష్టించు',
@@ -319,12 +329,13 @@ const te: Translation = {
     monthGood: 'ఈ నెల బాగా సాగుతోంది', monthTight: 'ఇప్పటివరకు ఇబ్బందికరమైన నెల', monthGoodHint: 'పోయేదాని కంటే వచ్చేది ఎక్కువ — మీరు వేగం పుంజుకుంటున్నారు.', monthTightHint: 'ఖర్చు ఆదాయాన్ని మించింది. ఒత్తిడి వద్దు — ఒకసారి పరిశీలించడానికి చిన్న సూచన మాత్రమే.',
   },
   walkthrough: {
+    gotIt: 'అర్థమైంది',
     step: '{{total}} లో {{current}} వ దశ', skip: 'గైడ్‌ను దాటవేయి', getStarted: 'ప్రారంభించు', next: 'కొనసాగించు',
     welcomeToFintraq: { title: 'Fintraq కు స్వాగతం!', desc: 'మీ కొత్త ప్రీమియం ఆర్థిక డ్యాష్‌బోర్డ్‌ను ఒక చిన్న పర్యటనలో చూద్దాం.' },
     trackNetSavings: { title: 'నికర పొదుపును ట్రాక్ చేయండి', desc: 'పైన ఉన్న కార్డ్ మీ మొత్తం నికర స్థితిని (ఆదాయం మైనస్ ఖర్చులు) చూపిస్తుంది. వేర్వేరు కరెన్సీలను చూడటానికి స్వైప్ చేయండి.' },
     accountsWallets: { title: 'ఖాతాలు & వాలెట్లు', desc: 'మీ నగదు, బ్యాంక్ ఖాతాలు, క్రెడిట్ కార్డ్‌లను నిర్వహించండి. వ్యక్తిగత లాగ్‌లను చూడటానికి వాటిని తాకండి.' },
     realTimeInsights: { title: 'రియల్-టైమ్ అంతర్దృష్టులు', desc: 'కింద మీకు డైనమిక్ ఖర్చు నమూనా అంతర్దృష్టులు, అగ్ర ఖర్చు వర్గాల చిప్‌లు, స్ట్రీక్‌లు కనిపిస్తాయి.' },
-    logFirstTransaction: { title: 'మొదటి లావాదేవీని నమోదు చేయండి', desc: 'సిద్ధమైనప్పుడు, లావాదేవీని నమోదు చేయడానికి కింద కుడివైపున ఉన్న ఆకుపచ్చ \'+\' బటన్‌ను తాకండి!' },
+    logFirstTransaction: { title: 'మొదటి లావాదేవీని నమోదు చేయండి', desc: 'సిద్ధమైనప్పుడు, లావాదేవీని నమోదు చేయడానికి కింద ఉన్న ఆకుపచ్చ + బటన్‌ను నొక్కండి.' },
     enterAmount: { title: 'మొత్తాన్ని నమోదు చేయండి', desc: 'సంఖ్యా ఇన్‌పుట్‌తో లావాదేవీ మొత్తాన్ని టైప్ చేయడం ద్వారా ప్రారంభించండి. దశాంశ విలువలు పూర్తిగా మద్దతు పొందుతాయి.' },
     selectTransactionType: { title: 'లావాదేవీ రకాన్ని ఎంచుకోండి', desc: 'ఖర్చు (ఖర్చు చేసిన డబ్బు), ఆదాయం (సంపాదించిన డబ్బు) లేదా బదిలీ (ఖాతాల మధ్య నిధులను తరలించడం) ఎంచుకోండి.' },
     chooseCategory: { title: 'వర్గాన్ని ఎంచుకోండి', desc: 'మీ లావాదేవీని క్రమబద్ధీకరించడానికి ఒక వర్గాన్ని ఎంచుకోండి. అనుకూల వర్గాలను సెట్టింగ్‌లలో కాన్ఫిగర్ చేయవచ్చు.' },

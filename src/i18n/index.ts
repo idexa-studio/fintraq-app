@@ -1,19 +1,19 @@
 import { createInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { getSystemLanguage } from './config';
-import bn from './locales/bn';
-import de from './locales/de';
-import en from './locales/en';
-import es from './locales/es';
-import fr from './locales/fr';
-import hi from './locales/hi';
-import id from './locales/id';
-import ja from './locales/ja';
-import kn from './locales/kn';
-import mr from './locales/mr';
-import pt from './locales/pt';
-import ta from './locales/ta';
-import te from './locales/te';
+import bn from '@/src/i18n/locales/bn';
+import de from '@/src/i18n/locales/de';
+import en from '@/src/i18n/locales/en';
+import es from '@/src/i18n/locales/es';
+import fr from '@/src/i18n/locales/fr';
+import hi from '@/src/i18n/locales/hi';
+import id from '@/src/i18n/locales/id';
+import ja from '@/src/i18n/locales/ja';
+import kn from '@/src/i18n/locales/kn';
+import mr from '@/src/i18n/locales/mr';
+import pt from '@/src/i18n/locales/pt';
+import ta from '@/src/i18n/locales/ta';
+import te from '@/src/i18n/locales/te';
 
 export * from './config';
 

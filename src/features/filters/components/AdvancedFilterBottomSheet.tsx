@@ -1,3 +1,5 @@
+import { Button } from '@/src/components/ui/Button';
+import { Text } from '@/src/components/ui/Text';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
@@ -10,12 +12,12 @@ import type { TransactionType } from '@/src/types';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 import { ArrowRight01Icon, Calendar03Icon, CancelCircleIcon, Tag01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Icon } from '@/src/components/ui/Icon';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../api/advanced-filters.service';
+import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '@/src/features/filters/api/advanced-filters.service';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -269,7 +271,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             {local.dateRange ? (
               <>
                 <BentoPressable style={styles.groupRow} onPress={() => setShowStart(true)}>
-                  <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
+                  <Icon icon={Calendar03Icon} size={16} color={colors.primary} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     {t('filters.from')}
                   </Text>
@@ -279,7 +281,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 </BentoPressable>
                 <View style={[styles.groupSep, { backgroundColor: alpha(colors.text, 'faint') }]} />
                 <BentoPressable style={styles.groupRow} onPress={() => setShowEnd(true)}>
-                  <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
+                  <Icon icon={Calendar03Icon} size={16} color={colors.primary} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     {t('filters.to')}
                   </Text>
@@ -287,17 +289,17 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                     {fmt(local.dateRange.endDate)}
                   </Text>
                   <BentoPressable onPress={clearDateRange} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                    <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
+                    <Icon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
                   </BentoPressable>
                 </BentoPressable>
               </>
             ) : (
               <BentoPressable style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)}>
-                <HugeiconsIcon icon={Calendar03Icon} size={16} color={colors.primary} />
+                <Icon icon={Calendar03Icon} size={16} color={colors.primary} />
                 <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                   {t('filters.setDateRange')}
                 </Text>
-                <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} style={styles.groupChevron} />
+                <View style={styles.groupChevron}><Icon icon={ArrowRight01Icon} size={14} color={colors.textMuted} /></View>
               </BentoPressable>
             )}
           </View>
@@ -359,7 +361,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                       style={[styles.pill, { backgroundColor: sel ? alpha(ac, 'subtle') : colors.card }]}
                       onPress={() => toggleAccount(a.id)}
                     >
-                      <HugeiconsIcon icon={resolveAccountTypeIcon(a.accountType as AccountType | null)} size={16} color={ac} />
+                      <Icon icon={resolveAccountTypeIcon(a.accountType as AccountType | null)} size={16} color={ac} />
                       <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
                         {a.name}
                       </Text>
@@ -385,7 +387,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                       style={[styles.pill, { backgroundColor: sel ? alpha(cc, 'subtle') : colors.card }]}
                       onPress={() => toggleCategory(c.id)}
                     >
-                      <HugeiconsIcon icon={resolveIcon(c.icon, Tag01Icon)} size={16} color={cc} />
+                      <Icon icon={resolveIcon(c.icon, Tag01Icon)} size={16} color={cc} />
                       <Text style={[styles.pillLabel, { color: sel ? cc : colors.text }]}>
                         {c.name}
                       </Text>
@@ -427,15 +429,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
 
         {/* ── Footer ── */}
         <View style={[styles.footer, { backgroundColor: colors.surface }]}>
-          <BentoPressable
-            style={[styles.applyBtn, { backgroundColor: colors.text }, !!amountError && { opacity: 0.4 }]}
-            onPress={handleApply}
-            disabled={!!amountError}
-          >
-            <Text style={[styles.applyLabel, { fontFamily: typography.styles.buttonLabel.fontFamily, color: colors.background }]}>
-              {t('filters.apply')}
-            </Text>
-          </BentoPressable>
+          <Button title={t('filters.apply')} onPress={handleApply} disabled={!!amountError} size="lg" style={styles.applyAction} />
         </View>
 
         {showStart && (
@@ -473,7 +467,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     headerLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
     headerRight: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
-    title: { fontSize: 22 },
+    title: { ...typography.metrics.xxl },
     badge: {
       minWidth: 20,
       height: 20,
@@ -482,14 +476,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       justifyContent: 'center',
       paddingHorizontal: spacing('1'),
     },
-    badgeText: { fontSize: 10 },
+    badgeText: { ...typography.metrics.xxs },
     resetText: { ...typography.metrics.sm },
     scroll: {
       paddingTop: spacing('3'),
     },
     sectionTitle: {
-      fontSize: 12,
-      opacity: 0.7,
+      ...typography.metrics.xs,
+      color: colors.textMuted,
       marginBottom: spacing('2'),
       marginTop: spacing('5'),
       paddingLeft: spacing('0.5'),
@@ -509,7 +503,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       justifyContent: 'center',
     },
-    presetPillLabel: { fontSize: 12 },
+    presetPillLabel: { ...typography.metrics.xs },
     fieldError: {
       ...typography.metrics.xs,
       marginTop: spacing('1.5'),
@@ -527,7 +521,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       justifyContent: 'center',
     },
-    typePillLabel: { fontSize: 13 },
+    typePillLabel: { ...typography.metrics.sm },
     group: {
       borderRadius: radius('xl'),
       overflow: 'hidden',
@@ -569,21 +563,16 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     pillLabel: {
       fontFamily: typography.fonts.medium,
-      fontSize: 13,
+      ...typography.metrics.sm,
     },
-    inlineToggles: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
-    toggleSep: { ...typography.metrics.xs, opacity: 0.4 },
-    toggleOption: { ...typography.metrics.sm },
     footer: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
       paddingBottom: spacing('3'),
     },
-    applyBtn: {
+    applyAction: {
       height: 52,
-      borderRadius: radius('lg'),
       alignItems: 'center',
       justifyContent: 'center',
     },
-    applyLabel: { ...typography.metrics.md },
   });

@@ -14,11 +14,21 @@ export type ThemePalette = {
   primaryLight: string;
   /** Darker shade of primary — pressed states, depth circles */
   primaryDark: string;
+  /** Accessible brand green for TEXT and ICONS on background/surface
+   *  (links, active chip labels, tonal buttons). The lime `primary` is a fill
+   *  colour — as text it drops to ~2:1 on paper. */
+  primaryInk: string;
   /** Text/icon color for elements rendered ON a primary-colored surface.
    *  Always dark (#0A0A0A) because the lime green primary is always vivid/bright. */
   primaryForeground: string;
   /** Ambient inverse color — used for background blur/glow circles */
   secondary: string;
+
+  /** Text/icons on the ink surface (tabBarBackground): profile card, tips, dev badge. */
+  onInk: string;
+  onInkMuted: string;
+  /** Glyphs on a user-chosen colour fill (category tile, swatch). */
+  onColor: string;
 
   /** Primary text color */
   text: string;
@@ -40,50 +50,64 @@ export type ThemePalette = {
   info: string;
 };
 
+// Polished around the original identity: lime brand, warm paper, ink.
+// Neutrals share one warm hue so layers read as the same material at
+// different depths; each dark layer steps ~4% lightness for even separation.
+
 export const DARK_THEME: ThemePalette = {
-  background: '#141412',
-  card: '#302F2A',
-  surface: '#211F1D',
-  tabBarBackground: '#2B2A26',
+  background: '#131311',
+  card: '#2C2B27',
+  surface: '#1E1D1A',
+  tabBarBackground: '#262521',
 
   primary: '#00CC6A',
-  primaryLight: '#00331A',
-  primaryDark: '#009950',
-  primaryForeground: '#0A0A0A',
-  secondary: '#E8E7E1',
+  primaryLight: '#0B2E1D',
+  primaryDark: '#00A857',
+  primaryInk: '#2EDB85',
+  primaryForeground: '#0A0A08',
+  secondary: '#EDEBE4',
 
-  text: '#E8E7E1',
-  textMuted: '#9A9993',
+  onInk: '#FFFFFF',
+  onInkMuted: 'rgba(255, 255, 255, 0.62)',
+  onColor: '#FFFFFF',
 
-  border: '#3A3A35',
+  text: '#EDEBE4',
+  textMuted: '#9C9A92',
+
+  border: '#34332E',
 
   success: '#34C97A',
-  danger: '#FF5449',
+  danger: '#FF6159',
   warning: '#F2C66D',
-  info: '#5BA8EE',
+  info: '#6AB0F0',
 };
 
 export const LIGHT_THEME: ThemePalette = {
   background: '#F5F4EE',
-  card: '#EEEDE7',
+  card: '#ECEBE4',
   surface: '#FFFFFF',
-  tabBarBackground: '#0A0A0A',
+  tabBarBackground: '#161612',
 
   primary: '#00CC6A',
-  primaryLight: '#CCFFE8',
-  primaryDark: '#009950',
-  primaryForeground: '#0A0A0A',
-  secondary: '#0A0A0A',
+  primaryLight: '#D3F6E3',
+  primaryDark: '#00A857',
+  primaryInk: '#00824A',
+  primaryForeground: '#0A0A08',
+  secondary: '#161612',
 
-  text: '#0A0A0A',
-  textMuted: '#6B6A65',
+  onInk: '#FFFFFF',
+  onInkMuted: 'rgba(255, 255, 255, 0.62)',
+  onColor: '#FFFFFF',
 
-  border: '#D4D3CC',
+  text: '#161612',
+  textMuted: '#6B6962',
 
-  success: '#22A45D',
-  danger: '#E53935',
-  warning: '#B87D00',
-  info: '#1268AE',
+  border: '#E2E0D8',
+
+  success: '#16945A',
+  danger: '#D93D34',
+  warning: '#A86F00',
+  info: '#1765AB',
 };
 
 export type ThemeColors = ThemePalette;

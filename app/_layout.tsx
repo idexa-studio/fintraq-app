@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColorScheme } from '@/src/hooks/use-color-scheme';
 import { AppConfigProvider } from '@/src/providers/AppConfigProvider';
 import { AppLockProvider } from '@/src/providers/AppLockProvider';
 import { DatabaseProvider } from '@/src/providers/DatabaseProvider';

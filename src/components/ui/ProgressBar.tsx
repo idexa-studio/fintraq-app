@@ -6,16 +6,24 @@ type ProgressBarProps = {
   /** 0-100. Values outside that range are clamped. */
   progress: number;
   height?: number;
+  /** Fill colour. Defaults to theme primary — pass danger/warning for budgets over limit. */
+  color?: string;
+  accessibilityLabel?: string;
 };
 
-export const ProgressBar = React.memo(function ProgressBar({ progress, height = 8 }: ProgressBarProps) {
+export const ProgressBar = React.memo(function ProgressBar({ progress, height = 8, color, accessibilityLabel }: ProgressBarProps) {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const clamped = Math.min(100, Math.max(0, Math.round(progress)));
 
   return (
-    <View style={[styles.track, { height, borderRadius: height / 2 }]}>
-      <View style={[styles.fill, { width: `${clamped}%`, borderRadius: height / 2 }]} />
+    <View
+      accessibilityRole="progressbar"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityValue={{ min: 0, max: 100, now: clamped }}
+      style={[styles.track, { height, borderRadius: height / 2 }]}
+    >
+      <View style={[styles.fill, { width: `${clamped}%`, borderRadius: height / 2 }, color ? { backgroundColor: color } : null]} />
     </View>
   );
 });

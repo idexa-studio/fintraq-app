@@ -1,9 +1,10 @@
-import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { CaretLeftIcon } from './icons';
+import { Icon } from './Icon';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
 
 export type HeaderProps = {
@@ -20,6 +21,7 @@ export const Header = React.memo(function Header({
   onBack,
 }: HeaderProps) {
   const router = useRouter();
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -35,9 +37,11 @@ export const Header = React.memo(function Header({
         {showBack && (
           <BentoPressable
             onPress={handleBack}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.back')}
             style={styles.backButton}
           >
-            <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color={colors.text} />
+            <Icon icon={CaretLeftIcon} size={20} color={colors.text} weight="bold" />
           </BentoPressable>
         )}
         <View style={styles.titleBlock}>
@@ -88,7 +92,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
   backButton: {
     width: layout.minTouchTarget,
     height: layout.minTouchTarget,
-    borderRadius: radius('lg'),
+    borderRadius: radius('full'),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.surface,

@@ -1,8 +1,11 @@
+import { Text } from '@/src/components/ui/Text';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
-import { recordFirebaseError } from '../../services/firebase';
-import { BentoPressable } from './BentoPressable';
+import { StyleSheet, View } from 'react-native';
+import { useTheme } from '@/src/providers/ThemeProvider';
+import { TYPOGRAPHY } from '@/src/theme/typography';
+import { RADIUS } from '@/src/theme/tokens';
+import { recordFirebaseError } from '@/src/services/firebase';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
 
 type Props = {
@@ -71,22 +74,21 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   title: {
-    fontSize: 18,
+    ...TYPOGRAPHY.metrics.xl,
   },
   message: {
-    fontSize: 13,
+    ...TYPOGRAPHY.metrics.sm,
     textAlign: 'center',
-    lineHeight: 18,
   },
   button: {
     marginTop: 8,
     height: 44,
     paddingHorizontal: 20,
-    borderRadius: 12,
+    borderRadius: RADIUS.md,
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 14,
+    ...TYPOGRAPHY.metrics.md,
   },
 });

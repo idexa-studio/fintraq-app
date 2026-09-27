@@ -1,46 +1,29 @@
-import { Calendar03Icon, Clock01Icon, PencilEdit01Icon, UnfoldMoreIcon, UserCircleIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { BentoPressable } from '../../../components/ui/BentoPressable';
-import { IconAvatar } from '../../../components/ui/IconAvatar';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { PageBackground } from '../../../components/ui/PageBackground';
-import { Header } from '../../../components/ui/Header';
-import { useSettings } from '../../../providers/SettingsProvider';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { useAccounts } from '../../accounts/hooks/accounts';
-import { useCategories } from '../../categories/hooks/categories';
-import { TransactionAccountPicker } from '../components/TransactionAccountPicker';
-import { TransactionAmountInput } from '../components/TransactionAmountInput';
-import { TransactionCategoryPicker } from '../components/TransactionCategoryPicker';
-import { PersonPickerBottomSheet } from '../../persons/components/PersonPickerBottomSheet';
-import { TransactionTypePicker } from '../components/TransactionTypePicker';
-import { usePersons } from '../../persons/hooks/persons';
-import { useCreateTransaction, useTransactionById, useUpdateTransaction } from '../hooks/transactions';
-import { PersonAvatar } from '../../../components/ui/PersonAvatar';
-import { useLoanWithStats } from '../../loans/hooks/loans';
-import { colorNumberToHex } from '../../../utils/format';
+import { Alert, Platform, StyleSheet, View } from 'react-native';
+import { Button, FormField, ListGroup, ListItem, PersonAvatar, Screen, Skeleton, SkeletonRow, Text } from '@/src/components/ui';
+import { CalendarBlankIcon, ClockIcon, UserCircleIcon } from '@/src/components/ui/icons';
+import { useSettings } from '@/src/providers/SettingsProvider';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { useAccounts } from '@/src/features/accounts/hooks/accounts';
+import { useCategories } from '@/src/features/categories/hooks/categories';
+import { TransactionAccountPicker } from '@/src/features/transactions/components/TransactionAccountPicker';
+import { TransactionAmountInput } from '@/src/features/transactions/components/TransactionAmountInput';
+import { TransactionCategoryPicker } from '@/src/features/transactions/components/TransactionCategoryPicker';
+import { PersonPickerBottomSheet } from '@/src/features/persons/components/PersonPickerBottomSheet';
+import { TransactionTypePicker } from '@/src/features/transactions/components/TransactionTypePicker';
+import { usePersons } from '@/src/features/persons/hooks/persons';
+import { useCreateTransaction, useTransactionById, useUpdateTransaction } from '@/src/features/transactions/hooks/transactions';
+import { useLoanWithStats } from '@/src/features/loans/hooks/loans';
+import { colorNumberToHex } from '@/src/utils/format';
 import { format } from 'date-fns';
-import { TransactionType } from '../../../types';
+import { TransactionType } from '@/src/types';
 import { WalkthroughOverlay, TRANSACTION_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { AnalyticsService } from '@/src/services/analytics';
-import { StorageKeys } from '../../../constants/keys';
-import { isTransferCompatible } from '../../../utils/accounts';
-import type { AccountType } from '../../../types';
+import { StorageKeys } from '@/src/constants/keys';
+import { isTransferCompatible } from '@/src/utils/accounts';
+import type { AccountType } from '@/src/types';
 import { useTranslation } from 'react-i18next';
 
 type Props = {
@@ -143,7 +126,8 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       selectedCategoryId === null ||
       !filteredCategories.some((c) => c.id === selectedCategoryId)
     ) {
-      setSelectedCategoryId(filteredCategories[0].id);
+      // First real category, not the system "Others" catch-all.
+      setSelectedCategoryId((filteredCategories.find((c) => !c.isSystem) ?? filteredCategories[0]).id);
     }
   }, [filteredCategories, selectedCategoryId]);
 
@@ -276,329 +260,159 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
     isEditMode
   ) {
     return (
-      <View style={styles.loadingWrap}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
+      <Screen header={{ title: t('transactions.editEntry'), showBack: true }}>
+        <Skeleton height={44} radius="md" />
+        <Skeleton height={110} radius="xl" />
+        <ListGroup>
+          <SkeletonRow />
+          <SkeletonRow />
+        </ListGroup>
+      </Screen>
     );
   }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
-      <Header title={isEditMode ? t('transactions.editEntry') : t('transactions.newEntry')} showBack />
+  const personName = selectedPersonId
+    ? (persons.find((p) => p.id === selectedPersonId)?.name ?? t('transactions.unknown'))
+    : t('transactions.none');
 
-      <KeyboardAvoidingView
-        style={styles.body}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
+  return (
+    <Screen
+      header={{ title: isEditMode ? t('transactions.editEntry') : t('transactions.newEntry'), showBack: true }}
+      edgeToEdge
+      keyboardAvoiding
+      footer={
+        <Button
+          title={isEditMode ? t('transactions.saveChanges') : t('transactions.saveTransaction')}
+          onPress={handleSave}
+          disabled={!canSubmit}
+          isLoading={isSubmitting}
+          size="lg"
+          fullWidth
+        />
+      }
+      overlays={
+        <>
+          <PersonPickerBottomSheet
+            visible={showPersonPicker}
+            onClose={() => setShowPersonPicker(false)}
+            persons={persons}
+            selectedId={selectedPersonId}
+            onSelect={setSelectedPersonId}
+          />
+          {mode === 'create' && (
+            <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_TRANSACTION_CREATE} steps={TRANSACTION_WALKTHROUGH_STEPS} />
+          )}
+        </>
+      }
+    >
+      <View style={styles.top}>
         {!isRepayment && (
           <TransactionTypePicker value={type} onChange={handleTypeChange} disabled={isEditMode} />
         )}
-
         <TransactionAmountInput
           value={amountInput}
           onChange={setAmountInput}
           currency={selectedAccount?.currency ?? profile.defaultCurrency}
         />
-
-        <View style={styles.formBody}>
-          {isRepayment && (
-            <View style={[styles.section, { opacity: 0.8 }]}>
-              <View style={[styles.personBtn, { backgroundColor: colors.surface }]}>
-                {loan?.personName ? (
-                  <PersonAvatar
-                    name={loan.personName}
-                    color={colorNumberToHex(loan.personColor ?? 0)}
-                    size={36}
-                  />
-                ) : null}
-                <View style={styles.textContainer}>
-                  <Text style={styles.triggerLabel}>{t('transactions.loanRepaymentFor')}</Text>
-                  <Text style={styles.dateTimeText} numberOfLines={1}>
-                    {loan == null ? t('transactions.loading') : (loan.personName ?? loan.accountName)}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          )}
-
-          <TransactionAccountPicker
-            label={t('transactions.fromAccount')}
-            accounts={accounts}
-            selectedId={selectedAccountId}
-            onSelect={setSelectedAccountId}
-          />
-
-          {type === 'TR' && (
-            <>
-              {toAccountOptions.length > 0 ? (
-                <TransactionAccountPicker
-                  label={t('transactions.toAccount')}
-                  accounts={toAccountOptions}
-                  selectedId={toAccountId}
-                  onSelect={setToAccountId}
-                />
-              ) : (
-                <View style={styles.section}>
-                  <Text style={styles.sectionLabel}>{t('transactions.toAccount')}</Text>
-                  <Text style={styles.transferHint}>
-                    {t('transactions.noCompatible')}
-                  </Text>
-                </View>
-              )}
-            </>
-          )}
-
-          {!isRepayment && (
-            <TransactionCategoryPicker
-              categories={filteredCategories}
-              selectedId={selectedCategoryId}
-              onSelect={setSelectedCategoryId}
-            />
-          )}
-
-          {!isRepayment && persons.length > 0 && type !== 'TR' && (
-            <View style={styles.section}>
-              <BentoPressable
-                style={styles.personBtn}
-                onPress={() => setShowPersonPicker(true)}
-              >
-                <IconAvatar icon={UserCircleIcon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
-                <View style={styles.textContainer}>
-                  <Text style={styles.triggerLabel}>{t('transactions.linkedPerson')}</Text>
-                  <Text
-                    style={[
-                      styles.dateTimeText,
-                      !selectedPersonId && { color: colors.textMuted },
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {selectedPersonId
-                      ? (persons.find((p) => p.id === selectedPersonId)?.name ?? t('transactions.unknown'))
-                      : t('transactions.noPersonLinked')}
-                  </Text>
-                </View>
-                <HugeiconsIcon icon={UnfoldMoreIcon} size={16} color={colors.textMuted} />
-              </BentoPressable>
-            </View>
-          )}
-
-          <View style={styles.section}>
-            <View style={styles.dateTimeRow}>
-              <BentoPressable
-                style={styles.dateTimeBtn}
-                onPress={() => setShowDatePicker(true)}
-              >
-                <IconAvatar icon={Calendar03Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
-                <View style={styles.textContainer}>
-                  <Text style={styles.triggerLabel}>{t('transactions.date')}</Text>
-                  <Text style={styles.dateTimeText} numberOfLines={1}>{formattedDate}</Text>
-                </View>
-              </BentoPressable>
-
-              <BentoPressable
-                style={styles.dateTimeBtn}
-                onPress={() => setShowTimePicker(true)}
-              >
-                <IconAvatar icon={Clock01Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
-                <View style={styles.textContainer}>
-                  <Text style={styles.triggerLabel}>{t('transactions.time')}</Text>
-                  <Text style={styles.dateTimeText} numberOfLines={1}>{formattedTime}</Text>
-                </View>
-              </BentoPressable>
-            </View>
-          </View>
-
-          {showDatePicker && (
-            <DateTimePicker
-              value={transactionDateTime}
-              mode="date"
-              display="default"
-              onChange={onDatePicked}
-            />
-          )}
-          {showTimePicker && (
-            <DateTimePicker
-              value={transactionDateTime}
-              mode="time"
-              display="default"
-              onChange={onTimePicked}
-            />
-          )}
-
-          <View style={styles.section}>
-            <View style={styles.noteContainer}>
-              <View style={styles.noteHeader}>
-                <IconAvatar icon={PencilEdit01Icon} color={colors.primary} variant="subtle" size={32} iconSize={16} />
-                <Text style={styles.noteLabel}>{t('transactions.note')}</Text>
-              </View>
-              <TextInput
-                style={styles.noteInput}
-                value={note}
-                onChangeText={setNote}
-                placeholder={t('transactions.optionalContext')}
-                placeholderTextColor={colors.textMuted + '80'}
-                multiline
-              />
-            </View>
-          </View>
-        </View>
-      </ScrollView>
-
-      <View style={styles.footer}>
-        <Pressable
-          style={[styles.saveBtn, !canSubmit && styles.saveBtnDisabled]}
-          onPress={handleSave}
-          disabled={!canSubmit}
-        >
-          {isSubmitting ? (
-            <ActivityIndicator size="small" color={colors.background} />
-          ) : (
-            <Text style={styles.saveBtnText}>
-              {isEditMode ? t('transactions.saveChanges') : t('transactions.saveTransaction')}
-            </Text>
-          )}
-        </Pressable>
       </View>
-      </KeyboardAvoidingView>
 
-      <PersonPickerBottomSheet
-        visible={showPersonPicker}
-        onClose={() => setShowPersonPicker(false)}
-        persons={persons}
-        selectedId={selectedPersonId}
-        onSelect={setSelectedPersonId}
+      {isRepayment ? (
+        <View style={styles.padded}>
+          <ListGroup>
+            <ListItem
+              leading={loan?.personName ? <PersonAvatar name={loan.personName} color={colorNumberToHex(loan.personColor ?? 0)} size={36} /> : undefined}
+              title={loan == null ? t('transactions.loading') : (loan.personName ?? loan.accountName)}
+              subtitle={t('transactions.loanRepaymentFor')}
+            />
+          </ListGroup>
+        </View>
+      ) : null}
+
+      <TransactionAccountPicker
+        label={type === 'TR' ? t('transactions.fromAccount') : t('transactions.account')}
+        accounts={accounts}
+        selectedId={selectedAccountId}
+        onSelect={setSelectedAccountId}
       />
 
-      {mode === 'create' && (
-        <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_TRANSACTION_CREATE} steps={TRANSACTION_WALKTHROUGH_STEPS} />
-      )}
-    </SafeAreaView>
+      {type === 'TR' ? (
+        toAccountOptions.length > 0 ? (
+          <TransactionAccountPicker
+            label={t('transactions.toAccount')}
+            accounts={toAccountOptions}
+            selectedId={toAccountId}
+            onSelect={setToAccountId}
+          />
+        ) : (
+          <View style={styles.padded}>
+            <Text variant="label" tone="muted" style={styles.label}>{t('transactions.toAccount')}</Text>
+            <Text variant="callout" tone="warning" style={styles.label}>{t('transactions.noCompatible')}</Text>
+          </View>
+        )
+      ) : null}
+
+      {!isRepayment ? (
+        <TransactionCategoryPicker
+          categories={filteredCategories}
+          selectedId={selectedCategoryId}
+          onSelect={setSelectedCategoryId}
+        />
+      ) : null}
+
+      <View style={styles.padded}>
+        <ListGroup>
+          {!isRepayment && persons.length > 0 && type !== 'TR' ? (
+            <ListItem
+              icon={UserCircleIcon}
+              iconColor={colors.info}
+              title={t('transactions.linkedPerson')}
+              value={personName}
+              onPress={() => setShowPersonPicker(true)}
+            />
+          ) : null}
+          <ListItem
+            icon={CalendarBlankIcon}
+            iconColor={colors.primaryInk}
+            title={t('transactions.date')}
+            value={formattedDate}
+            onPress={() => setShowDatePicker(true)}
+          />
+          <ListItem
+            icon={ClockIcon}
+            iconColor={colors.primaryInk}
+            title={t('transactions.time')}
+            value={formattedTime}
+            onPress={() => setShowTimePicker(true)}
+          />
+        </ListGroup>
+      </View>
+
+      <View style={styles.padded}>
+        <ListGroup insetDividers={false}>
+          <FormField
+            label={t('transactions.note')}
+            value={note}
+            onChangeText={setNote}
+            placeholder={t('transactions.optionalContext')}
+            multiline
+            maxLength={200}
+          />
+        </ListGroup>
+      </View>
+
+      {showDatePicker ? (
+        <DateTimePicker value={transactionDateTime} mode="date" display="default" onChange={onDatePicked} />
+      ) : null}
+      {showTimePicker ? (
+        <DateTimePicker value={transactionDateTime} mode="time" display="default" onChange={onTimePicked} />
+      ) : null}
+    </Screen>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
+const createStyles = ({ spacing, layout }: ThemeContextType) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    body: {
-      flex: 1,
-    },
-    loadingWrap: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: colors.background,
-    },
-    content: {
-      paddingTop: spacing('2'),
-      paddingBottom: spacing('6'),
-    },
-    formBody: {
-      gap: spacing('4'),
-    },
-    section: {
-      paddingHorizontal: layout.screenPadding,
-      gap: spacing('3'),
-    },
-    sectionLabel: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      opacity: 0.6,
-    },
-    transferHint: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      color: colors.textMuted,
-    },
-    dateTimeRow: {
-      flexDirection: 'row',
-      gap: spacing('3'),
-    },
-    dateTimeBtn: {
-      flex: 1,
-      height: sizes.input.md.height,
-      borderRadius: sizes.input.md.borderRadius,
-      backgroundColor: colors.surface,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing('3'),
-      gap: spacing('2.5'),
-    },
-    dateTimeText: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 13,
-      color: colors.text,
-    },
-    personBtn: {
-      height: sizes.input.md.height,
-      borderRadius: sizes.input.md.borderRadius,
-      backgroundColor: colors.surface,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing('3'),
-      gap: spacing('2.5'),
-    },
-    textContainer: {
-      flex: 1,
-      justifyContent: 'center',
-    },
-    triggerLabel: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 10,
-      color: colors.textMuted,
-      marginBottom: Platform.OS === 'ios' ? 1 : 0,
-    },
-    noteContainer: {
-      borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
-      padding: sizes.card.md.padding,
-    },
-    noteHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2.5'),
-      marginBottom: spacing('2'),
-    },
-    noteLabel: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 13,
-      color: colors.text,
-    },
-    noteInput: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 14,
-      color: colors.text,
-      textAlignVertical: 'top',
-      minHeight: 80,
-      padding: 0,
-    },
-    footer: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('0'),
-    },
-    saveBtn: {
-      height: 52,
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    saveBtnDisabled: {
-      opacity: 0.5,
-    },
-    saveBtnText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: 16,
-      color: colors.primaryForeground,
-    },
+    top: { gap: spacing('1') },
+    padded: { paddingHorizontal: layout.screenPadding, gap: spacing('2') },
+    label: { marginLeft: spacing('1') },
   });

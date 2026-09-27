@@ -1,7 +1,7 @@
 import { desc, sql } from 'drizzle-orm';
-import { db } from '../../../db/client';
-import { payments } from '../../../db/schema';
-import { getDaysAgoLocal, getLocalISOString } from '../../../utils/date';
+import { db } from '@/src/db/client';
+import { payments } from '@/src/db/schema';
+import { getDaysAgoLocal, getLocalISOString } from '@/src/utils/date';
 
 /**
  * getCurrentStreak: Calculates the current usage streak based on days with transactions.

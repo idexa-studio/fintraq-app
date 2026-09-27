@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from '../../../lib/query-keys';
-import { invalidateAll } from '../../../utils/query';
-import * as api from '../api/accounts';
+import { QUERY_KEYS } from '@/src/lib/query-keys';
+import { invalidateAll } from '@/src/utils/query';
+import * as api from '@/src/features/accounts/api/accounts';
 
 export const useAccounts = () => {
   return useQuery({

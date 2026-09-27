@@ -1,36 +1,20 @@
-
+import { Button, Card, FormField, ListGroup, PersonAvatar, Text } from '@/src/components/ui';
+import { Screen } from '@/src/components/ui/Screen';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Header } from '@/src/components/ui/Header';
-import { PageBackground } from '@/src/components/ui/PageBackground';
-import { ColorPickerRow } from '@/src/components/ui/ColorPickerRow';
+import { Alert, StyleSheet, TextInput, View } from 'react-native';
+import { ColorPickerRow } from '@/src/components/pickers/ColorPickerRow';
 import { PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
 import type { InsertPerson, UpdatePersonData } from '@/src/features/persons/api/persons';
-import {
-  useCreatePerson,
-  usePersons,
-  useUpdatePerson,
-} from '@/src/features/persons/hooks/persons';
+import { useCreatePerson, usePersons, useUpdatePerson } from '@/src/features/persons/hooks/persons';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, toDbColor } from '@/src/utils/format';
 import { LoggerService } from '@/src/services/logger.service';
 import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
 import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
+
 
 const PALETTE_COLORS = PALETTE_COLOR_OPTIONS.map((c) => c.hex);
 
@@ -51,7 +35,6 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { t } = useTranslation();
-  const { colors, layout } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { isPremium } = usePremium();
 
@@ -85,16 +68,6 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
 
   const nameValue = watch('name');
 
-  const initials = useMemo(
-    () =>
-      nameValue
-        .trim()
-        .split(' ')
-        .map((w) => w[0]?.toUpperCase() ?? '')
-        .slice(0, 2)
-        .join('') || '?',
-    [nameValue],
-  );
 
   useEffect(() => {
     if (person) {
@@ -147,332 +120,136 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
-      <Header title={isEditing ? t('persons.edit') : t('persons.new')} showBack />
-
-      <KeyboardAvoidingView
-        style={styles.body}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={styles.content}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
-
-          {/* ── Hero card ── */}
-          <View style={[styles.heroCard, { marginHorizontal: layout.screenPadding }]}>
-            <View style={styles.heroTop}>
-              <View style={[styles.initialsWrap, { backgroundColor: alpha(colorHex, 'subtle') }]}>
-                <Text style={[styles.initialsText, { color: colorHex }]}>{initials}</Text>
-              </View>
-              <View style={styles.heroMeta}>
-                <Text style={styles.heroName} numberOfLines={1}>
-                  {nameValue.trim() || t('persons.personName')}
-                </Text>
-                <Text style={styles.heroSub}>{t('persons.chooseColor')}</Text>
-              </View>
-            </View>
-
-            <View style={styles.heroDivider} />
-
-            <ColorPickerRow colors={PALETTE_COLORS} value={colorHex} onChange={setColorHex} />
+    <Screen
+      header={{ title: isEditing ? t('persons.edit') : t('persons.new'), showBack: true }}
+      keyboardAvoiding
+      footer={
+        <Button title={isEditing ? t('persons.save') : t('persons.add')} onPress={handleSave} disabled={!isValid} size="lg" fullWidth />
+      }
+    >
+      {/* Preview */}
+      <Card style={styles.preview}>
+        <View style={styles.previewTop}>
+          <PersonAvatar name={nameValue.trim() || '?'} color={colorHex} size={64} />
+          <View style={styles.previewMeta}>
+            <Text variant="subheading" numberOfLines={1}>{nameValue.trim() || t('persons.personName')}</Text>
+            <Text variant="callout" tone="muted" numberOfLines={1}>{t('persons.chooseColor')}</Text>
           </View>
-
-          {/* ── Contact details card ── */}
-          <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
-            <Text style={styles.sectionLabel}>{t('persons.contactDetails')}</Text>
-            <View style={styles.fieldCard}>
-
-              {/* Name */}
-              <Controller
-                control={control}
-                name="name"
-                rules={{
-                  required: t('forms.required'),
-                  minLength: { value: 2, message: t('forms.minChars', { count: 2 }) },
-                  maxLength: { value: 60, message: t('forms.maxChars', { count: 60 }) },
-                }}
-                render={({ field }) => (
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>{t('forms.name')}</Text>
-                    <TextInput
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      placeholder={t('persons.namePlaceholder')}
-                      placeholderTextColor={colors.textMuted + '60'}
-                      style={[styles.fieldInput, errors.name && styles.fieldInputError]}
-                      autoCapitalize="words"
-                      autoCorrect={false}
-                      returnKeyType="next"
-                      onSubmitEditing={() => emailRef.current?.focus()}
-                    />
-                  </View>
-                )}
-              />
-
-              <View style={styles.fieldDivider} />
-
-              {/* Email */}
-              <Controller
-                control={control}
-                name="email"
-                rules={{
-                  pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t('forms.invalidEmail') },
-                }}
-                render={({ field }) => (
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>{t('forms.email')}</Text>
-                    <TextInput
-                      ref={emailRef}
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      placeholder={t('persons.emailPlaceholder')}
-                      placeholderTextColor={colors.textMuted + '60'}
-                      style={[styles.fieldInput, errors.email && styles.fieldInputError]}
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      returnKeyType="next"
-                      onSubmitEditing={() => phoneRef.current?.focus()}
-                    />
-                  </View>
-                )}
-              />
-
-              <View style={styles.fieldDivider} />
-
-              {/* Phone */}
-              <Controller
-                control={control}
-                name="phone"
-                render={({ field }) => (
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>{t('forms.phone')}</Text>
-                    <TextInput
-                      ref={phoneRef}
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      placeholder="+1 234 567 8900"
-                      placeholderTextColor={colors.textMuted + '60'}
-                      style={styles.fieldInput}
-                      keyboardType="phone-pad"
-                      returnKeyType="next"
-                      onSubmitEditing={() => designationRef.current?.focus()}
-                    />
-                  </View>
-                )}
-              />
-            </View>
-            {(errors.name || errors.email) && (
-              <Text style={styles.errorText}>
-                {errors.name?.message ?? errors.email?.message}
-              </Text>
-            )}
-          </View>
-
-          {/* ── Work details card ── */}
-          <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
-            <Text style={styles.sectionLabel}>{t('persons.work')}</Text>
-            <View style={styles.fieldCard}>
-
-              {/* Designation */}
-              <Controller
-                control={control}
-                name="designation"
-                render={({ field }) => (
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>{t('forms.role')}</Text>
-                    <TextInput
-                      ref={designationRef}
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      placeholder={t('persons.rolePlaceholder')}
-                      placeholderTextColor={colors.textMuted + '60'}
-                      style={styles.fieldInput}
-                      autoCapitalize="words"
-                      returnKeyType="next"
-                      onSubmitEditing={() => companyRef.current?.focus()}
-                    />
-                  </View>
-                )}
-              />
-
-              <View style={styles.fieldDivider} />
-
-              {/* Company */}
-              <Controller
-                control={control}
-                name="company"
-                render={({ field }) => (
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>{t('forms.company')}</Text>
-                    <TextInput
-                      ref={companyRef}
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      placeholder={t('persons.companyPlaceholder')}
-                      placeholderTextColor={colors.textMuted + '60'}
-                      style={styles.fieldInput}
-                      autoCapitalize="words"
-                      returnKeyType="done"
-                    />
-                  </View>
-                )}
-              />
-            </View>
-          </View>
-
-        </ScrollView>
-
-        <View style={styles.footer}>
-          <Pressable
-            style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
-            onPress={handleSave}
-            disabled={!isValid}
-          >
-            <Text style={styles.primaryBtnText}>
-              {isEditing ? t('persons.save') : t('persons.add')}
-            </Text>
-          </Pressable>
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        <View style={styles.previewColors}>
+          <ColorPickerRow colors={PALETTE_COLORS} value={colorHex} onChange={setColorHex} />
+        </View>
+      </Card>
+
+      <ListGroup title={t('persons.contactDetails')} insetDividers={false}>
+        <Controller
+          control={control}
+          name="name"
+          rules={{
+            required: t('forms.required'),
+            minLength: { value: 2, message: t('forms.minChars', { count: 2 }) },
+            maxLength: { value: 60, message: t('forms.maxChars', { count: 60 }) },
+          }}
+          render={({ field, fieldState }) => (
+            <FormField
+              label={t('forms.name')}
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              placeholder={t('persons.namePlaceholder')}
+              error={fieldState.isTouched ? errors.name?.message : undefined}
+              autoCapitalize="words"
+              autoCorrect={false}
+              returnKeyType="next"
+              onSubmitEditing={() => emailRef.current?.focus()}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="email"
+          rules={{
+            pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t('forms.invalidEmail') },
+          }}
+          render={({ field, fieldState }) => (
+            <FormField
+              ref={emailRef}
+              label={t('forms.email')}
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              placeholder={t('persons.emailPlaceholder')}
+              error={fieldState.isTouched ? errors.email?.message : undefined}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              returnKeyType="next"
+              onSubmitEditing={() => phoneRef.current?.focus()}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="phone"
+          render={({ field, fieldState }) => (
+            <FormField
+              ref={phoneRef}
+              label={t('forms.phone')}
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              placeholder={'+1 234 567 8900'}
+              keyboardType="phone-pad"
+              returnKeyType="next"
+              onSubmitEditing={() => designationRef.current?.focus()}
+            />
+          )}
+        />
+      </ListGroup>
+
+      <ListGroup title={t('persons.work')} insetDividers={false}>
+        <Controller
+          control={control}
+          name="designation"
+          render={({ field, fieldState }) => (
+            <FormField
+              ref={designationRef}
+              label={t('forms.role')}
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              placeholder={t('persons.rolePlaceholder')}
+              autoCapitalize="words"
+              returnKeyType="next"
+              onSubmitEditing={() => companyRef.current?.focus()}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="company"
+          render={({ field, fieldState }) => (
+            <FormField
+              ref={companyRef}
+              label={t('forms.company')}
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              placeholder={t('persons.companyPlaceholder')}
+              autoCapitalize="words"
+              returnKeyType="done"
+            />
+          )}
+        />
+      </ListGroup>
+    </Screen>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: ThemeContextType) =>
+const createStyles = ({ colors, spacing }: ThemeContextType) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-      overflow: 'hidden',
-    },
-    body: { flex: 1 },
-    scroll: { flex: 1 },
-    content: {
-      paddingTop: spacing('4'),
-      paddingBottom: spacing('6'),
-    },
-
-    // ── Hero card
-    heroCard: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
-      ...shadow('sm'),
-    },
-    heroTop: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3.5'),
-      padding: spacing('4'),
-    },
-    initialsWrap: {
-      width: 72,
-      height: 72,
-      borderRadius: radius('xl'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    initialsText: {
-      fontFamily: typography.styles.profileMono.fontFamily,
-      fontSize: 28,
-    },
-    heroMeta: {
-      flex: 1,
-      gap: spacing('1'),
-    },
-    heroName: {
-      fontFamily: typography.styles.profileName.fontFamily,
-      fontSize: 18,
-      color: colors.text,
-    },
-    heroSub: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      color: colors.textMuted,
-    },
-    heroDivider: {
-      height: StyleSheet.hairlineWidth,
-      backgroundColor: colors.border,
-      marginHorizontal: spacing('4'),
-    },
-    // ── Section
-    sectionGap: {
-      marginTop: spacing('5'),
-      gap: spacing('2.5'),
-    },
-    sectionLabel: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      opacity: 0.6,
-    },
-
-    // ── Field card
-    fieldCard: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      overflow: 'hidden',
-    },
-    fieldRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing('4'),
-      minHeight: 52,
-      gap: spacing('3'),
-    },
-    fieldLabel: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 14,
-      color: colors.textMuted,
-      width: 64,
-    },
-    fieldInput: {
-      flex: 1,
-      fontFamily: typography.fonts.regular,
-      fontSize: 15,
-      color: colors.text,
-      paddingVertical: spacing('3'),
-    },
-    fieldInputError: {
-      color: colors.danger,
-    },
-    fieldDivider: {
-      height: StyleSheet.hairlineWidth,
-      backgroundColor: colors.border,
-      marginLeft: spacing('4') + 64 + spacing('3'),
-    },
-    errorText: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 12,
-      color: colors.danger,
-    },
-
-    // ── Footer
-    footer: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('8'),
-    },
-    primaryBtn: {
-      height: 52,
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    primaryBtnDisabled: { opacity: 0.45 },
-    primaryBtnText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: 15,
-      color: colors.primaryForeground,
-    },
+    preview: { padding: 0 },
+    previewTop: { flexDirection: 'row', alignItems: 'center', gap: spacing('4'), padding: spacing('4') },
+    previewMeta: { flex: 1, gap: spacing('0.5') },
+    previewColors: { marginTop: -spacing('3') },
   });

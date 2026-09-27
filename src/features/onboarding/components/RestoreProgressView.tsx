@@ -1,10 +1,11 @@
+import { Text } from '@/src/components/ui/Text';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { ProgressBar } from '@/src/components/ui/ProgressBar';
 import { CloudIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
-import type { IconSvgElement } from '@hugeicons/react-native';
+import type { IconSource } from '@/src/components/ui/Icon';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
+import { StyleSheet, View } from 'react-native';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
 
 type RestoreProgressViewProps = {
@@ -31,7 +32,7 @@ export const RestoreProgressView = React.memo(function RestoreProgressView({
       <View style={styles.card}>
         <View style={styles.topRow}>
           <IconAvatar
-            icon={CloudIcon as IconSvgElement}
+            icon={CloudIcon as IconSource}
             color={colors.primary}
             variant="subtle"
             size={52}
@@ -58,7 +59,7 @@ export const RestoreProgressView = React.memo(function RestoreProgressView({
       {/* Reassurance Info Card */}
       <View style={styles.infoCard}>
         <IconAvatar
-          icon={ShieldKeyIcon as IconSvgElement}
+          icon={ShieldKeyIcon as IconSource}
           color={colors.success}
           variant="subtle"
           size={40}
@@ -98,18 +99,17 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     title: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 16,
+      ...typography.metrics.lg,
       color: colors.text,
     },
     stageText: {
       fontFamily: typography.fonts.regular,
       ...typography.metrics.sm,
       color: colors.primary,
-      lineHeight: 18,
     },
     percentText: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 20,
+      ...typography.metrics.xl,
       color: colors.primary,
     },
     emailText: {
@@ -131,13 +131,12 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     infoTitle: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 14,
+      ...typography.metrics.md,
       color: colors.text,
     },
     infoDetail: {
       fontFamily: typography.fonts.regular,
       ...typography.metrics.xs,
       color: colors.textMuted,
-      lineHeight: 17,
     },
   });

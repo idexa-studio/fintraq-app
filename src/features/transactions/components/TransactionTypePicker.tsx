@@ -1,10 +1,11 @@
-import { AddCircleIcon, ArrowDataTransferHorizontalIcon, MinusSignCircleIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Text } from '@/src/components/ui/Text';
+import { ArrowDownLeftIcon as AddCircleIcon, ArrowsLeftRightIcon as ArrowDataTransferHorizontalIcon, ArrowUpRightIcon as MinusSignCircleIcon } from '@/src/components/ui/icons';
+import { Icon } from '@/src/components/ui/Icon';
 import React, { useMemo, useCallback } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
-import type { TransactionType } from '../../../types';
-import { BentoPressable } from '../../../components/ui/BentoPressable';
+import { StyleSheet, View } from 'react-native';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
+import type { TransactionType } from '@/src/types';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -41,7 +42,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           disabled={disabled}
         >
           <View style={styles.contentRow}>
-            <HugeiconsIcon
+            <Icon
               icon={MinusSignCircleIcon}
               size={15}
               color={value === 'DR' ? colors.danger : colors.textMuted}
@@ -62,7 +63,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           disabled={disabled}
         >
           <View style={styles.contentRow}>
-            <HugeiconsIcon
+            <Icon
               icon={AddCircleIcon}
               size={15}
               color={value === 'CR' ? colors.success : colors.textMuted}
@@ -76,19 +77,19 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
         <BentoPressable
           style={[
             styles.segmentButton,
-            value === 'TR' && { backgroundColor: alpha(colors.primary, 'subtle') },
+            value === 'TR' && { backgroundColor: alpha(colors.info, 'subtle') },
             disabled && value !== 'TR' && styles.pillHidden,
           ]}
           onPress={handleTR}
           disabled={disabled}
         >
           <View style={styles.contentRow}>
-            <HugeiconsIcon
+            <Icon
               icon={ArrowDataTransferHorizontalIcon}
               size={15}
-              color={value === 'TR' ? colors.primary : colors.textMuted}
+              color={value === 'TR' ? colors.info : colors.textMuted}
             />
-            <Text style={[styles.pillText, { color: value === 'TR' ? colors.primary : colors.textMuted }]}>
+            <Text style={[styles.pillText, { color: value === 'TR' ? colors.info : colors.textMuted }]}>
               {t('transactions.transfer')}
             </Text>
           </View>
@@ -98,7 +99,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, sizes, state }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       paddingHorizontal: layout.screenPadding,
@@ -106,12 +107,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       paddingBottom: spacing('2'),
     },
     containerDisabled: {
-      opacity: 0.75,
+      opacity: state.disabled,
     },
     segmentContainer: {
       flexDirection: 'row',
       backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
+      borderRadius: radius('full'),
       padding: spacing('1'),
       gap: spacing('1'),
       height: sizes.button.md.height,
@@ -120,7 +121,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
     segmentButton: {
       flex: 1,
       height: '100%',
-      borderRadius: radius('lg'),
+      borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
     },

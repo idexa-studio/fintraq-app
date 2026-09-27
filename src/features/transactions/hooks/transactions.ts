@@ -1,9 +1,9 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from '../../../lib/query-keys';
-import { useSettings } from '../../../providers/SettingsProvider';
-import { NotificationService } from '../../../services/notification.service';
-import { invalidateAll } from '../../../utils/query';
-import * as api from '../api/transactions';
+import { QUERY_KEYS } from '@/src/lib/query-keys';
+import { useSettings } from '@/src/providers/SettingsProvider';
+import { NotificationService } from '@/src/services/notification.service';
+import { invalidateAll } from '@/src/utils/query';
+import * as api from '@/src/features/transactions/api/transactions';
 
 export const useTransactions = (limit: number = 20, filters: api.TransactionFilters = {}) => {
   return useQuery({

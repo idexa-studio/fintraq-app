@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 export type TypographyScale = {
   xxs: number;
   xs: number;
@@ -17,6 +19,8 @@ export type TypographyWeight = {
 };
 
 export type TypographyFonts = {
+  /** Monospace — logs and raw data only. */
+  mono: string;
   heading: 'MuseoModerno_Bold';
   headingRegular: 'MuseoModerno_Regular';
   regular: 'MuseoModerno_Regular';
@@ -40,6 +44,7 @@ export type TypographyFonts = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const F = {
+  mono:          Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   heading:       'MuseoModerno_Bold'     as const,
   bold:          'MuseoModerno_Bold'     as const,
   semibold:      'MuseoModerno_SemiBold' as const,
@@ -51,7 +56,7 @@ const F = {
 };
 
 const S = {
-  xxs: 9.5, xs: 11, sm: 13, md: 14, lg: 16, xl: 18, xxl: 22, xxxl: 28,
+  xxs: 10, xs: 11, sm: 13, md: 14, lg: 16, xl: 18, xxl: 22, xxxl: 28,
 };
 
 // ─── Optical text metrics ───────────────────────────────────────────────────
@@ -67,14 +72,18 @@ const S = {
 //     what otherwise makes text sit off-centre inside rows, chips and badges.
 // ─────────────────────────────────────────────────────────────────────────────
 export const TEXT_METRICS = {
-  xxs:  { fontSize: S.xxs,  lineHeight: 13, letterSpacing:  0.3, includeFontPadding: false },
-  xs:   { fontSize: S.xs,   lineHeight: 15, letterSpacing:  0.2, includeFontPadding: false },
-  sm:   { fontSize: S.sm,   lineHeight: 19, letterSpacing:  0,   includeFontPadding: false },
-  md:   { fontSize: S.md,   lineHeight: 20, letterSpacing:  0,   includeFontPadding: false },
-  lg:   { fontSize: S.lg,   lineHeight: 21, letterSpacing: -0.1, includeFontPadding: false },
-  xl:   { fontSize: S.xl,   lineHeight: 23, letterSpacing: -0.2, includeFontPadding: false },
-  xxl:  { fontSize: S.xxl,  lineHeight: 27, letterSpacing: -0.4, includeFontPadding: false },
-  xxxl: { fontSize: S.xxxl, lineHeight: 33, letterSpacing: -0.6, includeFontPadding: false },
+  xxs:  { fontSize: S.xxs,  lineHeight: 14, letterSpacing:  0.3,  includeFontPadding: false },
+  xs:   { fontSize: S.xs,   lineHeight: 16, letterSpacing:  0.2,  includeFontPadding: false },
+  sm:   { fontSize: S.sm,   lineHeight: 19, letterSpacing:  0,    includeFontPadding: false },
+  md:   { fontSize: S.md,   lineHeight: 21, letterSpacing: -0.1,  includeFontPadding: false },
+  lg:   { fontSize: S.lg,   lineHeight: 23, letterSpacing: -0.2,  includeFontPadding: false },
+  xl:   { fontSize: S.xl,   lineHeight: 25, letterSpacing: -0.3,  includeFontPadding: false },
+  xxl:  { fontSize: S.xxl,  lineHeight: 29, letterSpacing: -0.5,  includeFontPadding: false },
+  xxxl: { fontSize: S.xxxl, lineHeight: 36, letterSpacing: -0.8,  includeFontPadding: false },
+  /** 34 — large amounts in inputs and heroes. */
+  display: { fontSize: 34, lineHeight: 42, letterSpacing: -1,  includeFontPadding: false },
+  /** 40 — the single biggest number on a screen (amount entry, PIN). */
+  jumbo: { fontSize: 40, lineHeight: 48, letterSpacing: -1.2, includeFontPadding: false },
 } as const;
 
 export type TextMetricToken = keyof typeof TEXT_METRICS;
@@ -129,6 +138,29 @@ export const TEXT_STYLES = {
 
 export type TextStyleKey = keyof typeof TEXT_STYLES;
 
+// ─── Text variants ──────────────────────────────────────────────────────────
+// The type ramp consumed by <Text variant="…">: family + size + line height +
+// tracking as one unit, built on the brand face. Prefer these in new code.
+// ─────────────────────────────────────────────────────────────────────────────
+export const TEXT_VARIANTS = {
+  display:       { fontFamily: F.heading,       ...TEXT_METRICS.xxxl },
+  title:         { fontFamily: F.heading,       ...TEXT_METRICS.xxl },
+  headline:      { fontFamily: F.heading,       ...TEXT_METRICS.xl },
+  subheading:    { fontFamily: F.semibold,      ...TEXT_METRICS.lg },
+  body:          { fontFamily: F.regular,       ...TEXT_METRICS.md },
+  bodyStrong:    { fontFamily: F.medium,        ...TEXT_METRICS.md },
+  callout:       { fontFamily: F.regular,       ...TEXT_METRICS.sm },
+  calloutStrong: { fontFamily: F.medium,        ...TEXT_METRICS.sm },
+  caption:       { fontFamily: F.regular,       ...TEXT_METRICS.xs },
+  label:         { fontFamily: F.semibold,      ...TEXT_METRICS.xs },
+  micro:         { fontFamily: F.medium,        ...TEXT_METRICS.xxs },
+  amountHero:    { fontFamily: F.amountBold,    ...TEXT_METRICS.xxxl },
+  amountLarge:   { fontFamily: F.amountBold,    ...TEXT_METRICS.xxl },
+  amount:        { fontFamily: F.amountRegular, ...TEXT_METRICS.md },
+} as const;
+
+export type TextVariant = keyof typeof TEXT_VARIANTS;
+
 export type TypographyTheme = {
   sizes: TypographyScale;
   weights: TypographyWeight;
@@ -136,11 +168,13 @@ export type TypographyTheme = {
   styles: typeof TEXT_STYLES;
   /** Size + line height + tracking as one unit. Spread it: `...typography.metrics.md` */
   metrics: typeof TEXT_METRICS;
+  /** Complete type ramp used by <Text variant> */
+  variants: typeof TEXT_VARIANTS;
 };
 
 export const TYPOGRAPHY: TypographyTheme = {
   sizes: {
-    xxs: 9.5,
+    xxs: 10,
     xs: 11,
     sm: 13,
     md: 14,
@@ -156,6 +190,7 @@ export const TYPOGRAPHY: TypographyTheme = {
     bold: '700',
   },
   fonts: {
+    mono: F.mono,
     heading: 'MuseoModerno_Bold',
     headingRegular: 'MuseoModerno_Regular',
     regular: 'MuseoModerno_Regular',
@@ -168,4 +203,5 @@ export const TYPOGRAPHY: TypographyTheme = {
   },
   styles: TEXT_STYLES,
   metrics: TEXT_METRICS,
+  variants: TEXT_VARIANTS,
 };

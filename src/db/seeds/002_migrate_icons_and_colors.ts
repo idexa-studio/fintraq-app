@@ -1,9 +1,9 @@
 import { eq } from 'drizzle-orm';
-import { db } from '../client';
-import { categories, accounts, persons } from '../schema';
-import { LEGACY_ICON_MAP } from '../../utils/icons';
-import { colorNumberToHex, toDbColor } from '../../utils/format';
-import { PALETTE_COLOR_OPTIONS } from '../../constants/picker';
+import { db } from '@/src/db/client';
+import { categories, accounts, persons } from '@/src/db/schema';
+import { LEGACY_ICON_MAP } from '@/src/utils/icons';
+import { colorNumberToHex, toDbColor } from '@/src/utils/format';
+import { PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
 
 export const name = 'migrate_icons_and_colors' as const;
 

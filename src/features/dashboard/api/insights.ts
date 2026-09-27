@@ -1,10 +1,10 @@
 import { and, desc, eq, sql } from 'drizzle-orm';
-import { db } from '../../../db/client';
-import { accounts, categories, payments } from '../../../db/schema';
-import { getDaysAgoLocal, getStartOfMonthLocal } from '../../../utils/date';
-import { formatCurrency } from '../../../utils/format';
-import { InsightStatus, InsightTrend, TransactionType } from '../../../types';
-import { MaterialIconName } from '../../../utils/icons';
+import { db } from '@/src/db/client';
+import { accounts, categories, payments } from '@/src/db/schema';
+import { getDaysAgoLocal, getStartOfMonthLocal } from '@/src/utils/date';
+import { formatCurrency } from '@/src/utils/format';
+import { InsightStatus, InsightTrend, TransactionType } from '@/src/types';
+import { MaterialIconName } from '@/src/utils/icons';
 import { LoggerService } from '@/src/services/logger.service';
 import i18n from '@/src/i18n';
 

@@ -1,81 +1,35 @@
-import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { BarChartIcon, FlashIcon, LockPasswordIcon } from '@hugeicons/core-free-icons';
-import type { IconSvgElement } from '@hugeicons/react-native';
+import { Card, IconAvatar, Text } from '@/src/components/ui';
+import { ChartBarIcon, LightningIcon, LockKeyIcon } from '@/src/components/ui/icons';
+import type { IconSource } from '@/src/components/ui';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
-type ColorKey = 'primary' | 'info' | 'success';
+type ColorKey = 'primaryInk' | 'info' | 'success';
 
-const FEATURES: { icon: IconSvgElement; label: 'fastCapture' | 'analytics' | 'privacy'; colorKey: ColorKey }[] = [
-  {
-    icon: FlashIcon,
-    label: 'fastCapture',
-    colorKey: 'primary',
-  },
-  {
-    icon: BarChartIcon,
-    label: 'analytics',
-    colorKey: 'info',
-  },
-  {
-    icon: LockPasswordIcon,
-    label: 'privacy',
-    colorKey: 'success',
-  },
+const FEATURES: { icon: IconSource; label: 'fastCapture' | 'analytics' | 'privacy'; colorKey: ColorKey }[] = [
+  { icon: LightningIcon, label: 'fastCapture', colorKey: 'primaryInk' },
+  { icon: ChartBarIcon, label: 'analytics', colorKey: 'info' },
+  { icon: LockKeyIcon, label: 'privacy', colorKey: 'success' },
 ];
 
+/** Three reasons to use Fintraq, grouped in one calm card instead of three competing ones. */
 export const WelcomeStep = React.memo(function WelcomeStep() {
   const { t } = useTranslation();
-  const theme = useTheme();
-  const { colors, typography } = theme;
-  const styles = React.useMemo(() => createStyles(theme), [theme]);
+  const { colors, spacing } = useTheme();
 
   return (
-    <View style={styles.wrapper}>
-      {FEATURES.map((f) => {
-        const accent = colors[f.colorKey];
-        return (
-          <View key={f.label} style={styles.card}>
-            <IconAvatar icon={f.icon} color={accent} variant="subtle" size={48} iconSize={22} />
-            <View style={styles.text}>
-              <Text style={[styles.label, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
-                {t(`onboardingFlow.features.${f.label}`)}
-              </Text>
-              <Text style={[styles.detail, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                {t(`onboardingFlow.features.${f.label}Detail`)}
-              </Text>
-            </View>
+    <Card style={{ gap: spacing('5') }}>
+      {FEATURES.map((f) => (
+        <View key={f.label} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing('3.5') }}>
+          <IconAvatar icon={f.icon} color={colors[f.colorKey]} size={44} weight="duotone" />
+          <View style={{ flex: 1, gap: 2 }}>
+            <Text variant="bodyStrong">{t(`onboardingFlow.features.${f.label}`)}</Text>
+            <Text variant="callout" tone="muted">{t(`onboardingFlow.features.${f.label}Detail`)}</Text>
           </View>
-        );
-      })}
-    </View>
+        </View>
+      ))}
+    </Card>
   );
 });
-
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
-  StyleSheet.create({
-    wrapper: {
-      gap: spacing('3'),
-    },
-    card: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('4'),
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('4'),
-    },
-    text: {
-      flex: 1,
-      gap: spacing('1'),
-    },
-    label: {
-      fontSize: 15,
-    },
-    detail: {
-      ...typography.metrics.sm,
-      lineHeight: 20,
-    },
-  });

@@ -1,8 +1,9 @@
+import { OTHERS_CATEGORY } from '@/src/constants/defaultCategories';
 import { and, desc, eq, sql } from 'drizzle-orm';
-import { db } from '../../../db/client';
-import { accounts, categories, loans, payments, persons } from '../../../db/schema';
-import { TransactionType } from '../../../types';
-import { applyBalanceDelta } from '../../transactions/api/transactions';
+import { db } from '@/src/db/client';
+import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
+import { TransactionType } from '@/src/types';
+import { applyBalanceDelta } from '@/src/features/transactions/api/transactions';
 
 export type Loan = typeof loans.$inferSelect;
 export type InsertLoan = typeof loans.$inferInsert;
@@ -250,28 +251,22 @@ export const resolveLoanCategory = async (): Promise<number> => {
 
   if (loanEmi) return loanEmi.id;
 
-  // Try to find 'Uncategorized' (case-insensitive)
-  const [uncategorized] = await db
+  // Fall back to the system catch-all
+  const [others] = await db
     .select({ id: categories.id })
     .from(categories)
-    .where(sql`LOWER(${categories.name}) = 'uncategorized'`)
+    .where(sql`LOWER(${categories.name}) = 'others'`)
     .limit(1);
 
-  if (uncategorized) return uncategorized.id;
+  if (others) return others.id;
 
-  // Fallback: create Uncategorized if it somehow doesn't exist
-  const [newUncategorized] = await db
+  // Seeds always create it; recreate defensively if it's somehow gone
+  const [created] = await db
     .insert(categories)
-    .values({
-      name: 'Uncategorized',
-      icon: 'grid',
-      color: 4672089, // #475569
-      type: 'DR',
-      isSystem: true,
-    })
+    .values({ ...OTHERS_CATEGORY })
     .returning({ id: categories.id });
 
-  return newUncategorized.id;
+  return created.id;
 };
 
 export const createLoan = async (

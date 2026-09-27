@@ -2,6 +2,8 @@ import type { Translation } from './types';
 
 const fr: Translation = {
   common: {
+    edit: 'Modifier', delete: 'Supprimer',
+    back: 'Retour',
     cancel: 'Annuler',
     ok: 'OK',
     clear: 'Effacer',
@@ -18,6 +20,7 @@ const fr: Translation = {
     settings: 'Réglages',
   },
   settings: {
+    general: "Général", security: "Sécurité", manage: "Gérer", about: "À propos", loans: "Prêts", loansHint: "Argent prêté ou emprunté",
     title: 'Réglages',
     welcome: 'Bienvenue',
     proMember: 'Membre Pro',
@@ -112,12 +115,13 @@ const fr: Translation = {
     cannotDelete: 'Impossible de supprimer la catégorie', deleteFailed: 'Échec de la suppression de la catégorie.',
   },
   dashboard: {
+    streakDays: 'Série de {{count}} j',
     accounts: 'Comptes', manage: 'Gérer', topExpenses: 'Principales dépenses', people: 'Personnes', loans: 'Prêts', recent: 'Récents', seeAll: 'Tout voir',
     noTransactions: 'Aucune transaction pour le moment', transactionHint: 'Commencez à enregistrer ici vos paiements, revenus ou virements du quotidien.', addTransaction: 'Ajouter une transaction',
     balance: 'Votre solde', income: 'Revenus', expenses: 'Dépenses', noLoans: 'Aucun prêt en cours', loanHint: "Suivez l'argent que vous prêtez ou empruntez. Touchez pour ajouter un prêt.",
     lentOut: 'Prêté', borrowed: 'Emprunté', overdue: '{{count}} en retard', active: '{{count}} en cours', noExpenses: 'Aucune dépense pour le moment', expensesHint: 'Ajoutez des transactions pour voir vos principales catégories de dépenses.',
   },
-  transactions: { amount: 'Montant', category: 'Catégorie', netSavings: 'Épargne nette', income: 'Revenus', expenses: 'Dépenses', type: 'Type', account: 'Compte', date: 'Date', person: 'Personne', typesCount: '{{count}} types', oneAccount: '1 compte', accountsCount: '{{count}} comptes', oneCategory: '1 catégorie', categoriesCount: '{{count}} catégories', onePerson: '1 personne', personsCount: '{{count}} personnes',
+  transactions: { dayCount: '{{count}} opérations', allCategories: 'Toutes', searchCategories: 'Rechercher des catégories', amount: 'Montant', category: 'Catégorie', netSavings: 'Épargne nette', income: 'Revenus', expenses: 'Dépenses', type: 'Type', account: 'Compte', date: 'Date', person: 'Personne', typesCount: '{{count}} types', oneAccount: '1 compte', accountsCount: '{{count}} comptes', oneCategory: '1 catégorie', categoriesCount: '{{count}} catégories', onePerson: '1 personne', personsCount: '{{count}} personnes',
   filteredSummary: 'Résumé filtré', title: 'Transactions', clearAll: 'Tout effacer', noResults: 'Aucun résultat', nothingYet: 'Rien ici pour le moment', noMatch: "Aucune transaction ne correspond aux filtres actifs. Essayez de les ajuster ou de les effacer.", addFirst: 'Ajoutez votre première transaction pour commencer le suivi.', clearFilters: 'Effacer les filtres', add: 'Ajouter une transaction',
   deleteTitle: 'Supprimer la transaction', deleteMessage: "Cela supprimera la transaction et annulera son effet sur le solde du compte.", delete: 'Supprimer', sortTitle: 'Trier les transactions', newest: "Plus récentes d'abord", oldest: "Plus anciennes d'abord", highest: 'Montant le plus élevé', lowest: 'Montant le plus bas',
   expense: 'Dépense', transfer: 'Virement', missingDetails: 'Informations manquantes', missingDetailsMessage: 'Veuillez sélectionner un compte, une catégorie et un montant valide.', missingDestination: 'Destination manquante', missingDestinationMessage: 'Veuillez sélectionner un compte de destination pour le virement.',
@@ -125,6 +129,7 @@ const fr: Translation = {
   editEntry: "Modifier l'entrée", newEntry: 'Nouvelle entrée', loanRepaymentFor: 'Remboursement de prêt pour', loading: 'Chargement...', fromAccount: 'Compte source', toAccount: 'Compte de destination', noCompatible: 'Aucun compte compatible pour ce virement.', linkedPerson: 'Personne liée', unknown: 'Inconnu', noPersonLinked: 'Aucune personne liée', time: 'Heure', note: 'Note', optionalContext: 'Contexte facultatif', saveChanges: 'Enregistrer les modifications', saveTransaction: 'Enregistrer la transaction', none: 'Aucune',
   detailTitle: 'Transaction', notFound: 'Transaction introuvable.', detailDeleteTitle: 'Supprimer la transaction', detailDeleteMessage: "Cela annulera l'effet sur le solde et est irréversible.", from: 'De', to: 'Vers', created: 'Créée', cancel: 'Annuler' },
   onboardingFlow: {
+    getStarted: 'Commencer', restoreFromBackup: 'Restaurer une sauvegarde', welcomeSubtitle: 'Suivez dépenses, revenus et prêts dans un espace calme et privé. La configuration prend moins d’une minute.',
     steps: {
       welcome: { eyebrow: 'Premiers pas', title: 'Construisez votre cockpit financier.', subtitle: 'Une configuration sereine avec des réglages complets et un compte initial propre.' },
       setup_choice: { eyebrow: 'Mode de configuration', title: 'Comment souhaitez-vous commencer ?', subtitle: 'Commencez avec un espace neuf ou restaurez une sauvegarde Google Drive existante.' },
@@ -165,7 +170,7 @@ const fr: Translation = {
   },
   ui: {
     somethingWrong: "Une erreur s'est produite", proOnly: 'Pro uniquement', unlockWithPro: 'Débloquez avec Fintraq Pro',
-    chooseIcon: 'Choisir une icône', chooseColor: 'Choisir une couleur', colorsCount: '{{count}} couleurs', currency: 'Devise', currenciesCount: '{{count}} devises', searchCurrency: 'Rechercher par nom ou code', delKey: 'Suppr',
+    charsLeft: '{{count}} caractères restants', suggested: 'Suggestions', allCurrencies: 'Toutes les devises', noMatch: 'Aucun résultat pour « {{query}} »', chooseIcon: 'Choisir une icône', chooseColor: 'Choisir une couleur', colorsCount: '{{count}} couleurs', currency: 'Devise', currenciesCount: '{{count}} devises', searchCurrency: 'Rechercher par nom ou code', delKey: 'Suppr',
   },
   lock: {
     unlockApp: "Déverrouiller l'app", authFailed: "Échec de l'authentification. Réessayez.", useButton: 'Utilisez le bouton ci-dessous pour réessayer.',
@@ -180,6 +185,9 @@ const fr: Translation = {
     defaultMessage: 'Veuillez mettre à jour Fintraq pour continuer. Cela ne prend qu\'un instant.', updateNow: 'Mettre à jour',
   },
   loans: {
+    outstandingAmount: "Restant : {{amount}}", exceedsOutstanding: "Le montant dépasse le restant ({{amount}})", fullAmount: "Montant total · {{amount}}",
+    freeLimit: "Le forfait gratuit permet {{limit}} prêts actifs. Passez à Pro pour l'illimité.", upgrade: 'Passer à Pro',
+    lentToName: 'Prêté à {{name}}', borrowedFromName: 'Emprunté à {{name}}',
     title: 'Prêts', loan: 'Prêt', newLoan: 'Nouveau prêt', lentOut: 'Prêté', borrowed: 'Emprunté', lent: 'Prêté', repaid: 'Remboursé',
     noLent: 'Aucun prêt accordé', noBorrowed: 'Aucun emprunt', emptyHint: "Suivez ici l'argent que vous prêtez ou empruntez.", addLoan: 'Ajouter un prêt',
     unknown: 'Inconnu', unnamedSource: 'Source sans nom', outstandingBalance: 'Solde restant dû', principal: 'Capital', outstanding: 'Restant dû', totalPrincipal: 'Capital total',
@@ -217,10 +225,12 @@ const fr: Translation = {
     linkPerson: 'Lier une personne', noPerson: 'Aucune personne',
   },
   categoryForm: {
+    appliesToHint: 'Choisissez-en un ou plusieurs.', moreIcons: 'Plus',
     edit: 'Modifier la catégorie', new: 'Nouvelle catégorie', categoryName: 'Nom de la catégorie', tapToChangeIcon: "Touchez pour changer l'icône", appliesTo: "S'applique à", namePlaceholder: 'p. ex. Courses, Salaire',
     save: 'Enregistrer la catégorie', create: 'Créer la catégorie', chooseIcon: 'Choisir une icône', expense: 'Dépense', income: 'Revenu', transfer: 'Virement',
   },
   accountForm: {
+    lockedHint: 'Le type, la devise et le solde sont définis à la création. Le solde évolue avec les transactions.',
     edit: 'Modifier le compte', new: 'Nouveau compte', accountName: 'Nom du compte', accountType: 'Type de compte', accountDetails: 'Détails du compte',
     namePlaceholder: 'p. ex. Portefeuille principal', holderPlaceholder: 'Jean Martin (facultatif)', numberPlaceholder: 'IBAN (facultatif)', currentBalance: 'Solde actuel', initialBalance: 'Solde initial',
     save: 'Enregistrer le compte', create: 'Créer le compte',
@@ -319,12 +329,13 @@ const fr: Translation = {
     monthGood: 'Ce mois se présente bien', monthTight: 'Un mois serré jusqu\'ici', monthGoodHint: "Plus d'entrées que de sorties — vous prenez de l'élan.", monthTightHint: "Les dépenses dépassent les revenus. Pas de stress — juste un rappel pour faire le point.",
   },
   walkthrough: {
+    gotIt: 'Compris',
     step: 'Étape {{current}} sur {{total}}', skip: 'Passer le guide', getStarted: 'Commencer', next: 'Continuer',
     welcomeToFintraq: { title: 'Bienvenue sur Fintraq !', desc: 'Faisons un rapide tour de votre nouveau tableau de bord financier premium.' },
     trackNetSavings: { title: "Suivez l'épargne nette", desc: 'La carte du haut affiche votre position nette totale (revenus moins dépenses). Balayez pour voir les autres devises.' },
     accountsWallets: { title: 'Comptes et portefeuilles', desc: 'Gérez vos espèces, comptes bancaires et cartes de crédit. Touchez-les pour voir chaque historique.' },
     realTimeInsights: { title: 'Analyses en temps réel', desc: 'Plus bas, vous trouverez des analyses dynamiques de vos habitudes de dépenses, des pastilles des principales catégories et vos séries.' },
-    logFirstTransaction: { title: 'Saisissez votre première transaction', desc: "Quand vous êtes prêt, touchez le bouton vert « + » en bas à droite pour enregistrer une transaction !" },
+    logFirstTransaction: { title: 'Saisissez votre première transaction', desc: 'Quand vous êtes prêt, touchez le bouton vert + en bas pour enregistrer une transaction.' },
     enterAmount: { title: 'Saisissez le montant', desc: 'Commencez par saisir le montant avec le pavé numérique. Les décimales sont prises en charge.' },
     selectTransactionType: { title: 'Choisissez le type de transaction', desc: "Choisissez Dépense (argent dépensé), Revenu (argent gagné) ou Virement (déplacement de fonds entre comptes)." },
     chooseCategory: { title: 'Choisissez la catégorie', desc: 'Sélectionnez une catégorie pour structurer votre transaction. Vous pouvez créer vos catégories dans les Réglages.' },

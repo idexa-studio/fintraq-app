@@ -2,6 +2,8 @@ import type { Translation } from './types';
 
 const id: Translation = {
   common: {
+    edit: 'Ubah', delete: 'Hapus',
+    back: 'Kembali',
     cancel: 'Batal',
     ok: 'OK',
     clear: 'Hapus',
@@ -18,6 +20,7 @@ const id: Translation = {
     settings: 'Pengaturan',
   },
   settings: {
+    general: "Umum", security: "Keamanan", manage: "Kelola", about: "Tentang", loans: "Pinjaman", loansHint: "Uang yang Anda pinjamkan atau pinjam",
     title: 'Pengaturan',
     welcome: 'Selamat datang',
     proMember: 'Anggota Pro',
@@ -112,12 +115,13 @@ const id: Translation = {
     cannotDelete: 'Tidak dapat menghapus kategori', deleteFailed: 'Gagal menghapus kategori.',
   },
   dashboard: {
+    streakDays: '{{count}} hari beruntun',
     accounts: 'Akun', manage: 'Kelola', topExpenses: 'Pengeluaran terbesar', people: 'Orang', loans: 'Pinjaman', recent: 'Terbaru', seeAll: 'Lihat semua',
     noTransactions: 'Belum ada transaksi', transactionHint: 'Mulai catat pembayaran, pemasukan, atau transfer harian Anda di sini.', addTransaction: 'Tambah transaksi',
     balance: 'Saldo Anda', income: 'Pemasukan', expenses: 'Pengeluaran', noLoans: 'Tidak ada pinjaman aktif', loanHint: 'Lacak uang yang Anda pinjamkan atau pinjam. Ketuk untuk menambah pinjaman.',
     lentOut: 'Dipinjamkan', borrowed: 'Dipinjam', overdue: '{{count}} jatuh tempo', active: '{{count}} aktif', noExpenses: 'Belum ada pengeluaran', expensesHint: 'Tambahkan beberapa transaksi untuk melihat kategori pengeluaran teratas Anda.',
   },
-  transactions: { amount: 'Jumlah', category: 'Kategori', netSavings: 'Tabungan bersih', income: 'Pemasukan', expenses: 'Pengeluaran', type: 'Jenis', account: 'Akun', date: 'Tanggal', person: 'Orang', typesCount: '{{count}} jenis', oneAccount: '1 akun', accountsCount: '{{count}} akun', oneCategory: '1 kategori', categoriesCount: '{{count}} kategori', onePerson: '1 orang', personsCount: '{{count}} orang',
+  transactions: { dayCount: '{{count}} entri', allCategories: 'Semua', searchCategories: 'Cari kategori', amount: 'Jumlah', category: 'Kategori', netSavings: 'Tabungan bersih', income: 'Pemasukan', expenses: 'Pengeluaran', type: 'Jenis', account: 'Akun', date: 'Tanggal', person: 'Orang', typesCount: '{{count}} jenis', oneAccount: '1 akun', accountsCount: '{{count}} akun', oneCategory: '1 kategori', categoriesCount: '{{count}} kategori', onePerson: '1 orang', personsCount: '{{count}} orang',
   filteredSummary: 'Ringkasan terfilter', title: 'Transaksi', clearAll: 'Hapus semua', noResults: 'Tidak ada hasil', nothingYet: 'Belum ada apa-apa di sini', noMatch: 'Tidak ada transaksi yang cocok dengan filter aktif. Coba ubah atau hapus filter.', addFirst: 'Tambahkan transaksi pertama Anda untuk mulai melacak.', clearFilters: 'Hapus filter', add: 'Tambah Transaksi',
   deleteTitle: 'Hapus Transaksi', deleteMessage: 'Ini akan menghapus transaksi dan membalikkan dampaknya pada saldo akun.', delete: 'Hapus', sortTitle: 'Urutkan transaksi', newest: 'Terbaru dulu', oldest: 'Terlama dulu', highest: 'Jumlah tertinggi', lowest: 'Jumlah terendah',
   expense: 'Pengeluaran', transfer: 'Transfer', missingDetails: 'Detail belum lengkap', missingDetailsMessage: 'Pilih akun, kategori, dan jumlah yang valid.', missingDestination: 'Tujuan belum dipilih', missingDestinationMessage: 'Pilih akun tujuan untuk transfer.',
@@ -125,6 +129,7 @@ const id: Translation = {
   editEntry: 'Ubah catatan', newEntry: 'Catatan baru', loanRepaymentFor: 'Pembayaran pinjaman untuk', loading: 'Memuat...', fromAccount: 'Dari akun', toAccount: 'Ke akun', noCompatible: 'Tidak ada akun yang kompatibel untuk transfer ini.', linkedPerson: 'Orang terkait', unknown: 'Tidak diketahui', noPersonLinked: 'Tidak ada orang terkait', time: 'Waktu', note: 'Catatan', optionalContext: 'Konteks opsional', saveChanges: 'Simpan perubahan', saveTransaction: 'Simpan transaksi', none: 'Tidak ada',
   detailTitle: 'Transaksi', notFound: 'Transaksi tidak ditemukan.', detailDeleteTitle: 'Hapus transaksi', detailDeleteMessage: 'Ini akan membalikkan dampak pada saldo dan tidak dapat dibatalkan.', from: 'Dari', to: 'Ke', created: 'Dibuat', cancel: 'Batal' },
   onboardingFlow: {
+    getStarted: 'Mulai', restoreFromBackup: 'Pulihkan dari cadangan', welcomeSubtitle: 'Lacak pengeluaran, pemasukan, dan pinjaman di satu tempat yang tenang dan pribadi. Penyiapan kurang dari semenit.',
     steps: {
       welcome: { eyebrow: 'Memulai', title: 'Bangun pusat kendali keuangan Anda.', subtitle: 'Alur pengaturan yang tenang dengan default lengkap dan akun awal yang rapi.' },
       setup_choice: { eyebrow: 'Mode pengaturan', title: 'Bagaimana Anda ingin memulai?', subtitle: 'Mulai dengan ruang kerja baru atau pulihkan cadangan Google Drive yang ada.' },
@@ -165,7 +170,7 @@ const id: Translation = {
   },
   ui: {
     somethingWrong: 'Terjadi kesalahan', proOnly: 'Khusus Pro', unlockWithPro: 'Buka dengan Fintraq Pro',
-    chooseIcon: 'Pilih ikon', chooseColor: 'Pilih warna', colorsCount: '{{count}} warna', currency: 'Mata uang', currenciesCount: '{{count}} mata uang', searchCurrency: 'Cari berdasarkan nama atau kode', delKey: 'Hapus',
+    charsLeft: 'Sisa {{count}} karakter', suggested: 'Disarankan', allCurrencies: 'Semua mata uang', noMatch: 'Tidak ada hasil untuk “{{query}}”', chooseIcon: 'Pilih ikon', chooseColor: 'Pilih warna', colorsCount: '{{count}} warna', currency: 'Mata uang', currenciesCount: '{{count}} mata uang', searchCurrency: 'Cari berdasarkan nama atau kode', delKey: 'Hapus',
   },
   lock: {
     unlockApp: 'Buka kunci aplikasi', authFailed: 'Autentikasi gagal. Coba lagi.', useButton: 'Gunakan tombol di bawah untuk mencoba lagi.',
@@ -180,6 +185,9 @@ const id: Translation = {
     defaultMessage: 'Silakan perbarui Fintraq untuk melanjutkan. Hanya butuh sebentar.', updateNow: 'Perbarui sekarang',
   },
   loans: {
+    outstandingAmount: "Sisa: {{amount}}", exceedsOutstanding: "Jumlah melebihi sisa {{amount}}", fullAmount: "Jumlah penuh · {{amount}}",
+    freeLimit: 'Paket gratis mengizinkan {{limit}} pinjaman aktif. Upgrade untuk tanpa batas.', upgrade: 'Upgrade',
+    lentToName: 'Dipinjamkan ke {{name}}', borrowedFromName: 'Dipinjam dari {{name}}',
     title: 'Pinjaman', loan: 'Pinjaman', newLoan: 'Pinjaman baru', lentOut: 'Dipinjamkan', borrowed: 'Dipinjam', lent: 'Dipinjamkan', repaid: 'Lunas',
     noLent: 'Tidak ada pinjaman yang diberikan', noBorrowed: 'Tidak ada pinjaman yang diambil', emptyHint: 'Lacak uang yang Anda pinjamkan atau pinjam dari orang lain di sini.', addLoan: 'Tambah pinjaman',
     unknown: 'Tidak diketahui', unnamedSource: 'Sumber tanpa nama', outstandingBalance: 'Sisa pinjaman', principal: 'Pokok', outstanding: 'Sisa', totalPrincipal: 'Total pokok',
@@ -217,10 +225,12 @@ const id: Translation = {
     linkPerson: 'Kaitkan orang', noPerson: 'Tanpa orang',
   },
   categoryForm: {
+    appliesToHint: 'Pilih satu atau lebih.', moreIcons: 'Lainnya',
     edit: 'Ubah kategori', new: 'Kategori baru', categoryName: 'Nama kategori', tapToChangeIcon: 'Ketuk untuk mengubah ikon', appliesTo: 'Berlaku untuk', namePlaceholder: 'mis. Belanja, Gaji',
     save: 'Simpan kategori', create: 'Buat kategori', chooseIcon: 'Pilih ikon', expense: 'Pengeluaran', income: 'Pemasukan', transfer: 'Transfer',
   },
   accountForm: {
+    lockedHint: 'Jenis, mata uang, dan saldo ditetapkan saat akun dibuat. Saldo berubah melalui transaksi.',
     edit: 'Ubah akun', new: 'Akun baru', accountName: 'Nama akun', accountType: 'Jenis akun', accountDetails: 'Detail akun',
     namePlaceholder: 'mis. Dompet Utama', holderPlaceholder: 'Budi Santoso (opsional)', numberPlaceholder: 'IBAN (opsional)', currentBalance: 'Saldo saat ini', initialBalance: 'Saldo awal',
     save: 'Simpan akun', create: 'Buat akun',
@@ -319,12 +329,13 @@ const id: Translation = {
     monthGood: 'Bulan ini terlihat baik', monthTight: 'Bulan yang ketat sejauh ini', monthGoodHint: 'Lebih banyak masuk daripada keluar — Anda sedang membangun momentum.', monthTightHint: 'Pengeluaran mendahului pemasukan. Tenang saja — hanya pengingat untuk memeriksa.',
   },
   walkthrough: {
+    gotIt: 'Mengerti',
     step: 'Langkah {{current}} dari {{total}}', skip: 'Lewati panduan', getStarted: 'Mulai', next: 'Lanjutkan',
     welcomeToFintraq: { title: 'Selamat datang di Fintraq!', desc: 'Mari berkeliling sebentar di dasbor keuangan premium baru Anda.' },
     trackNetSavings: { title: 'Lacak Tabungan Bersih', desc: 'Kartu teratas menampilkan posisi bersih total Anda (Pemasukan dikurangi Pengeluaran). Geser untuk melihat mata uang lain.' },
     accountsWallets: { title: 'Akun & Dompet', desc: 'Kelola uang tunai, rekening bank, dan kartu kredit Anda. Ketuk untuk melihat catatan masing-masing.' },
     realTimeInsights: { title: 'Wawasan Real-time', desc: 'Di bawah ini Anda akan menemukan wawasan pola pengeluaran dinamis, chip kategori pengeluaran teratas, dan rangkaian hari.' },
-    logFirstTransaction: { title: 'Catat Transaksi Pertama', desc: 'Jika sudah siap, ketuk tombol aksi \'+\' hijau di kanan bawah untuk mencatat transaksi!' },
+    logFirstTransaction: { title: 'Catat Transaksi Pertama', desc: 'Jika sudah siap, ketuk tombol hijau + di bawah untuk mencatat transaksi.' },
     enterAmount: { title: 'Masukkan Jumlah', desc: 'Mulai dengan mengetik jumlah transaksi memakai input angka. Nilai desimal didukung penuh.' },
     selectTransactionType: { title: 'Pilih Jenis Transaksi', desc: 'Pilih Pengeluaran (uang keluar), Pemasukan (uang masuk), atau Transfer (memindahkan dana antar akun).' },
     chooseCategory: { title: 'Pilih Kategori', desc: 'Pilih kategori untuk menata transaksi Anda. Kategori khusus dapat diatur di Pengaturan.' },

@@ -1,11 +1,12 @@
+import { Text } from '@/src/components/ui/Text';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { BentoPressable } from '../../../components/ui/BentoPressable';
-import { MoneyText } from '../../../components/ui/MoneyText';
-import { PersonAvatar } from '../../../components/ui/PersonAvatar';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { colorNumberToHex } from '../../../utils/format';
-import type { LoanWithStats } from '../api/loans';
+import { StyleSheet, View } from 'react-native';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { MoneyText } from '@/src/components/ui/MoneyText';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex } from '@/src/utils/format';
+import type { LoanWithStats } from '@/src/features/loans/api/loans';
 import { LoanStatusBadge } from './LoanStatusBadge';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -25,8 +26,8 @@ export const LoanCard = React.memo(function LoanCard({ loan, onPress, compact = 
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const personColor = useMemo(
-    () => loan.personColor != null ? colorNumberToHex(loan.personColor) : '#8B8B8B',
-    [loan.personColor],
+    () => loan.personColor != null ? colorNumberToHex(loan.personColor) : colors.textMuted,
+    [loan.personColor, colors.textMuted],
   );
   const personName = loan.personName ?? (loan.type === 'lend' ? t('loans.unknown') : t('loans.unnamedSource'));
   const handlePress = useCallback(() => onPress(loan), [onPress, loan]);
@@ -121,7 +122,7 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
     // Full card
     card: {
       backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
+      borderRadius: radius('xl'),
       padding: spacing('4'),
       marginBottom: spacing('3'),
       gap: spacing('3'),
@@ -183,7 +184,7 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
     },
     typeDotText: {
       fontFamily: typography.fonts.semibold,
-      fontSize: 13,
+      ...typography.metrics.sm,
     },
     compactMeta: { flex: 1, gap: spacing('0.5') },
     compactLabel: {

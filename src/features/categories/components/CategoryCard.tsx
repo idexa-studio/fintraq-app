@@ -1,145 +1,50 @@
-import { GridIcon, LockPasswordIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { ListItem } from '@/src/components/ui/ListItem';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { Icon } from '@/src/components/ui/Icon';
+import { LockKeyIcon, TagIcon } from '@/src/components/ui/icons';
+import { Category } from '@/src/features/categories/api/categories';
+import { useTheme } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex } from '@/src/utils/format';
+import { resolveIcon } from '@/src/utils/icons';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
-import { colorNumberToHex } from '../../../utils/format';
-import { resolveIcon } from '../../../utils/icons';
-import { Category } from '../api/categories';
 import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
+import { View } from 'react-native';
 
 interface CategoryCardProps {
   item: Category;
-  index: number;
-  isFirst?: boolean;
-  isLast?: boolean;
   onPress: (item: Category) => void;
   onLongPress: (item: Category) => void;
 }
 
-const TYPE_META: Record<string, { label: 'income' | 'expense' | 'transfer'; colorKey: 'success' | 'danger' | 'primary' | 'textMuted' }> = {
-  CR: { label: 'income',   colorKey: 'success' },
-  DR: { label: 'expense',  colorKey: 'danger'  },
-  TR: { label: 'transfer', colorKey: 'primary' },
-};
+const TYPE_LABEL = { CR: 'income', DR: 'expense', TR: 'transfer' } as const;
 
-export const CategoryCard = React.memo(function CategoryCard({
-  item,
-  isFirst,
-  isLast,
-  onPress,
-  onLongPress,
-}: CategoryCardProps) {
-  const theme = useTheme();
+/**
+ * One category row. Tap edits; long-press opens more options. The type list is
+ * only shown when a category spans several types — the tab already says the rest.
+ */
+export const CategoryCard = React.memo(function CategoryCard({ item, onPress, onLongPress }: CategoryCardProps) {
+  const { colors } = useTheme();
   const { t } = useTranslation();
-  const { colors, radius, spacing } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const catColor = useMemo(
-    () => (item.color ? colorNumberToHex(item.color) : colors.primary),
-    [item.color, colors.primary],
-  );
-
-  const typeParts = useMemo(
-    () => item.type.split(',').filter(Boolean) as ('CR' | 'DR' | 'TR')[],
-    [item.type],
-  );
-
-  const containerStyle = useMemo(
-    () => ({
-      backgroundColor: colors.surface,
-      borderTopLeftRadius: isFirst ? radius('xl') : 0,
-      borderTopRightRadius: isFirst ? radius('xl') : 0,
-      borderBottomLeftRadius: isLast ? radius('xl') : 0,
-      borderBottomRightRadius: isLast ? radius('xl') : 0,
-      marginBottom: isLast ? 0 : spacing('0.5'),
-    }),
-    [isFirst, isLast, colors.surface, radius, spacing],
-  );
+  const hex = useMemo(() => (item.color ? colorNumberToHex(item.color) : colors.primary), [item.color, colors.primary]);
+  const types = useMemo(() => item.type.split(',').filter(Boolean) as (keyof typeof TYPE_LABEL)[], [item.type]);
+  const subtitle = types.length > 1 ? types.map((ty) => t(`categoryForm.${TYPE_LABEL[ty]}`)).join(' · ') : undefined;
 
   const handlePress = useCallback(() => onPress(item), [onPress, item]);
   const handleLongPress = useCallback(() => onLongPress(item), [onLongPress, item]);
 
   return (
-    <BentoPressable
-      style={[styles.row, containerStyle]}
+    <ListItem
+      leading={<IconAvatar icon={resolveIcon(item.icon, TagIcon)} color={hex} size={40} />}
+      title={item.name}
+      subtitle={subtitle}
       onPress={handlePress}
       onLongPress={handleLongPress}
-      delayLongPress={280}
-      scaleOnPress={false}
-    >
-      <IconAvatar
-        icon={resolveIcon(item.icon, GridIcon)}
-        color={catColor}
-        variant="subtle"
-        size={40}
-        iconSize={16}
-      />
-
-      <View style={styles.body}>
-        <View style={styles.nameRow}>
-          <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
-          {item.isSystem && (
-            <HugeiconsIcon icon={LockPasswordIcon} size={11} color={colors.textMuted} />
-          )}
+      trailing={item.isSystem ? (
+        <View accessibilityLabel={t('categories.systemCategory')}>
+          <Icon icon={LockKeyIcon} size={16} color={colors.textMuted} />
         </View>
-        <View style={styles.badges}>
-          {typeParts.map(type => {
-            const meta = TYPE_META[type];
-            const badgeColor = colors[meta?.colorKey ?? 'textMuted'];
-            return (
-              <View key={type} style={[styles.badge, { backgroundColor: alpha(badgeColor, 'subtle') }]}>
-                <Text style={[styles.badgeText, { color: badgeColor }]}>{meta ? t(`categoryForm.${meta.label}`) : type}</Text>
-              </View>
-            );
-          })}
-        </View>
-      </View>
-    </BentoPressable>
+      ) : undefined}
+    />
   );
 });
-
-const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
-  StyleSheet.create({
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingVertical: spacing('3'),
-      paddingHorizontal: spacing('3.5'),
-      gap: spacing('2.5'),
-    },
-    body: {
-      flex: 1,
-      minWidth: 0,
-      gap: spacing('1'),
-    },
-    nameRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1.5'),
-    },
-    name: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.sm,
-      color: colors.text,
-      lineHeight: 18,
-      flex: 1,
-    },
-    badges: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: spacing('1'),
-    },
-    badge: {
-      borderRadius: 99,
-      paddingHorizontal: spacing('1.5'),
-      paddingVertical: 2,
-    },
-    badgeText: {
-      fontFamily: typography.styles.chipLabel.fontFamily,
-      fontSize: 10,
-    },
-  });

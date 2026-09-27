@@ -1,14 +1,15 @@
-import { CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Text } from '@/src/components/ui/Text';
+import { CheckCircleIcon } from '@/src/components/ui/icons';
+import { Icon } from '@/src/components/ui/Icon';
 import React, { useMemo, useCallback } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { IconAvatar } from '../../../components/ui/IconAvatar';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
-import { colorNumberToHex } from '../../../utils/format';
-import { resolveAccountTypeIcon } from '../../../utils/icons';
-import type { AccountType } from '../../../types';
-import type { Account } from '../../accounts/api/accounts';
-import { BentoPressable } from '../../../components/ui/BentoPressable';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex } from '@/src/utils/format';
+import { resolveAccountTypeIcon } from '@/src/utils/icons';
+import type { AccountType } from '@/src/types';
+import type { Account } from '@/src/features/accounts/api/accounts';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -60,11 +61,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
                 <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>{acc.name}</Text>
                 <Text style={[styles.currency, { color: colors.textMuted }]}>{acc.currency}</Text>
               </View>
-              {selected && (
-                <View style={[styles.check, { backgroundColor: accColor, borderColor: colors.background }]}>
-                  <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.background} />
-                </View>
-              )}
+              {selected ? <Icon icon={CheckCircleIcon} size={20} color={accColor} weight="fill" /> : null}
             </BentoPressable>
           );
         })}
@@ -80,9 +77,8 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
   label: {
     fontFamily: typography.styles.sectionLabel.fontFamily,
     ...typography.metrics.xs,
-    marginBottom: spacing('3'),
-    paddingHorizontal: layout.screenPadding,
-    opacity: 0.6,
+    marginBottom: spacing('2'),
+    paddingHorizontal: layout.screenPadding + spacing('1'),
   },
   scrollContent: {
     paddingHorizontal: layout.screenPadding,
@@ -115,7 +111,7 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
     right: -6,
     width: 18,
     height: 18,
-    borderRadius: 9,
+    borderRadius: radius('full'),
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,

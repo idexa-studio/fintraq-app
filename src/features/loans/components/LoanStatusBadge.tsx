@@ -1,7 +1,8 @@
+import { Text } from '@/src/components/ui/Text';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import type { LoanStatus } from '../api/loans';
+import { StyleSheet, View } from 'react-native';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import type { LoanStatus } from '@/src/features/loans/api/loans';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 

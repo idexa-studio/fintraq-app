@@ -1,14 +1,13 @@
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Header } from '@/src/components/ui/Header';
-import { PageBackground } from '@/src/components/ui/PageBackground';
+import { Button } from '@/src/components/ui/Button';
+import { Screen } from '@/src/components/ui/Screen';
+import { Text } from '@/src/components/ui/Text';
+import { Icon } from '@/src/components/ui/Icon';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES } from '@/src/constants/iap';
 import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -20,9 +19,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
   const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
-      <Header title={t('premium.title')} showBack />
+    <Screen header={{ title: t('premium.title'), showBack: true }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Hero Card — edge-to-edge, dashboard style */}
@@ -56,7 +53,7 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
             return (
               <View key={f.key} style={[styles.featureItem, isLast && styles.noMargin]}>
                 <View style={styles.iconWrapperActive}>
-                  <HugeiconsIcon icon={f.icon} size={20} color={colors.success} />
+                  <Icon icon={f.icon} size={20} color={colors.success} />
                 </View>
                 <View style={styles.featureContent}>
                   <Text style={styles.featureTitle}>{t(`premium.features.${f.key}.title`)}</Text>
@@ -71,25 +68,14 @@ export const ProSuccessScreen = React.memo(function ProSuccessScreen() {
 
       {/* Pinned Bottom CTA */}
       <View style={styles.footer}>
-        <BentoPressable
-          style={styles.cta}
-          onPress={() => router.replace('/(main)/(tabs)')}
-        >
-          <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
-            {t('premium.openDashboard')}
-          </Text>
-        </BentoPressable>
+        <Button title={t('premium.openDashboard')} onPress={() => router.replace('/(main)/(tabs)')} size="lg" fullWidth />
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 });
 
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
     scroll: {
       paddingTop: 0,
     },
@@ -105,22 +91,20 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     heroBadge: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: 10,
+      ...typography.metrics.xxs,
       letterSpacing: 0.5,
       color: heroCard.textMuted,
       textTransform: 'uppercase',
     },
     heroTitle: {
       fontFamily: typography.fonts.heading,
-      fontSize: 26,
-      lineHeight: 32,
+      ...typography.metrics.xxxl,
       color: heroCard.textPrimary,
       marginTop: spacing('1'),
     },
     heroDesc: {
       fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      lineHeight: 18,
+      ...typography.metrics.sm,
       color: heroCard.textMuted,
       marginTop: spacing('1'),
     },
@@ -142,12 +126,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     priceLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 16,
+      ...typography.metrics.lg,
       color: colors.text,
     },
     priceSubText: {
       fontFamily: typography.fonts.regular,
-      fontSize: 12,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     pill: {
@@ -193,13 +177,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     featureTitle: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 15,
+      ...typography.metrics.md,
       color: colors.text,
     },
     featureDesc: {
       fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      lineHeight: 18,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
     // ── Pinned Footer
@@ -208,17 +191,5 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingTop: spacing('4'),
       paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
       backgroundColor: colors.background,
-    },
-    cta: {
-      height: 52,
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: spacing('3'),
-    },
-    ctaText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: 16,
     },
   });

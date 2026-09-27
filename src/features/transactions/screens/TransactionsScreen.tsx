@@ -1,37 +1,35 @@
+import { Chip } from '@/src/components/ui/Chip';
+import { XIcon } from '@/src/components/ui/icons';
+import { IconButton } from '@/src/components/ui/IconButton';
+import { Text } from '@/src/components/ui/Text';
+import { Spinner, Screen, SkeletonScreen } from '@/src/components/ui';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { Icon } from '@/src/components/ui/Icon';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { TRANSACTIONS_LIST_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
-import { ArrowRight01Icon, CancelCircleIcon, Delete01Icon, FilterIcon, PencilEdit01Icon, PlusSignIcon, ReceiptTextIcon, SortingDownIcon } from '@hugeicons/core-free-icons';
-import type { IconSvgElement } from '@hugeicons/react-native';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { ArrowRight01Icon, Delete01Icon, FilterIcon, PencilEdit01Icon, PlusSignIcon, ReceiptTextIcon, SortingDownIcon } from '@hugeicons/core-free-icons';
+import type { IconSource } from '@/src/components/ui/Icon';
 import * as Haptics from 'expo-haptics';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { EdgeInsets, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
-import { Header } from '../../../components/ui/Header';
-import { MoneyText } from '../../../components/ui/MoneyText';
-import { PageBackground } from '../../../components/ui/PageBackground';
-import { TransactionRow } from '../../../components/ui/TransactionRow';
-import { sortCurrenciesWithDefault } from '../../../constants/currency';
-import { StorageKeys } from '../../../constants/keys';
-import { useSettings } from '../../../providers/SettingsProvider';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { useAccounts } from '../../accounts/hooks/accounts';
-import { useCategories } from '../../categories/hooks/categories';
-import { AdvancedFilterService, AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '../../filters/api/advanced-filters.service';
-import { AdvancedFilterBottomSheet } from '../../filters/components/AdvancedFilterBottomSheet';
-import { usePersons } from '../../persons/hooks/persons';
-import type { TransactionListItem } from '../api/transactions';
-import { TransactionSummaryCard } from '../components/TransactionSummaryCard';
-import {
-  useDeleteTransaction,
-  useInfiniteTransactions,
-  useTransactionTotals,
-} from '../hooks/transactions';
-
+import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
+import { MoneyText } from '@/src/components/ui/MoneyText';
+import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
+import { sortCurrenciesWithDefault } from '@/src/constants/currency';
+import { StorageKeys } from '@/src/constants/keys';
+import { useSettings } from '@/src/providers/SettingsProvider';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { useAccounts } from '@/src/features/accounts/hooks/accounts';
+import { useCategories } from '@/src/features/categories/hooks/categories';
+import { AdvancedFilterService, AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '@/src/features/filters/api/advanced-filters.service';
+import { AdvancedFilterBottomSheet } from '@/src/features/filters/components/AdvancedFilterBottomSheet';
+import { usePersons } from '@/src/features/persons/hooks/persons';
+import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
+import { TransactionSummaryCard } from '@/src/features/transactions/components/TransactionSummaryCard';
+import { useDeleteTransaction, useInfiniteTransactions, useTransactionTotals } from '@/src/features/transactions/hooks/transactions';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
@@ -76,7 +74,7 @@ const SwipeActionButton = React.memo(function SwipeActionButton({
   backgroundColor,
 }: {
   onPress: () => void;
-  icon: IconSvgElement;
+  icon: IconSource;
   color: string;
   backgroundColor: string;
 }) {
@@ -85,7 +83,7 @@ const SwipeActionButton = React.memo(function SwipeActionButton({
       onPress={onPress}
       style={[swipeActionStyles.actionBase, { backgroundColor }]}
     >
-      <HugeiconsIcon icon={icon} size={18} color={color} />
+      <Icon icon={icon} size={18} color={color} />
     </BentoPressable>
   );
 });
@@ -216,12 +214,13 @@ const SwipeableRow = React.memo(function SwipeableRow({
 
 interface FilterChipProps {
   label: string;
-  icon?: IconSvgElement;
+  icon?: IconSource;
   onPress: () => void;
   onClear?: () => void;
   isClearAll?: boolean;
 }
 
+/** Active-filter chip: tap to edit, ✕ to clear. The "clear all" variant stays neutral. */
 const FilterChip = React.memo(function FilterChip({
   label,
   icon,
@@ -229,43 +228,9 @@ const FilterChip = React.memo(function FilterChip({
   onClear,
   isClearAll = false,
 }: FilterChipProps) {
-  const theme = useTheme();
-  const { colors, spacing } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
-
-  if (isClearAll) {
-    return (
-      <BentoPressable onPress={onPress} style={styles.clearAllChip} scaleOnPress={false}>
-        <HugeiconsIcon icon={CancelCircleIcon} size={12} color={colors.textMuted} />
-        <Text style={styles.clearAllText}>{label}</Text>
-      </BentoPressable>
-    );
-  }
-
-  return (
-    <View style={styles.chip}>
-      <BentoPressable
-        onPress={onPress}
-        style={[styles.chipButton, { paddingLeft: spacing('2.5'), paddingRight: onClear ? spacing('1') : spacing('2.5') }]}
-        scaleOnPress={false}
-      >
-        {icon && (
-          <HugeiconsIcon icon={icon} size={12} color={colors.primary} style={{ marginRight: spacing('1') }} />
-        )}
-        <Text style={styles.chipText}>{label}</Text>
-      </BentoPressable>
-      {onClear && (
-        <BentoPressable
-          onPress={onClear}
-          style={styles.chipCloseBtn}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          scaleOnPress={false}
-        >
-          <HugeiconsIcon icon={CancelCircleIcon} size={13} color={colors.primary} />
-        </BentoPressable>
-      )}
-    </View>
-  );
+  return isClearAll
+    ? <Chip label={label} icon={XIcon} onPress={onPress} />
+    : <Chip label={label} icon={icon} isActive onPress={onPress} onClear={onClear} />;
 });
 
 
@@ -622,7 +587,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
 
       return (
         <View style={styles.dayHeaderRow}>
-          <Text style={styles.dayTitle}>{title}</Text>
+          <Text style={styles.dayTitle} numberOfLines={1}>{title}</Text>
           <View style={styles.dayTotals}>
             {isSingleCurrency ? (
               <>
@@ -634,48 +599,44 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
                 )}
               </>
             ) : (
-              <Text style={styles.dayTotalCount}>{data.length} txns</Text>
+              <Text style={styles.dayTotalCount}>{t('transactions.dayCount', { count: data.length })}</Text>
             )}
           </View>
         </View>
       );
     },
-    [styles]);
+    [styles, t]);
 
 
   const renderSectionFooter = React.useCallback(() => <View style={{ height: 24 }} />, []);
 
   if (txQuery.isLoading) {
     return (
-      <View style={styles.loadingWrap}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
+      <Screen header={{ title: t('transactions.title'), showBack: true }} variant="fixed">
+        <SkeletonScreen />
+      </Screen>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
-
-      <Header
-        title={t('transactions.title')}
-        showBack
-        rightAction={(
+    <Screen header={{ title: t('transactions.title'), showBack: true, rightAction: (
           <View style={styles.headerActions}>
-            <BentoPressable onPress={handleOpenFilter} style={[styles.iconBtn, activeFilterCount > 0 && styles.iconBtnActive]}>
-              <HugeiconsIcon icon={FilterIcon} size={22} color={activeFilterCount > 0 ? colors.primary : colors.text} />
-              {activeFilterCount > 0 && (
-                <View style={[styles.filterBadge, { backgroundColor: colors.primary }]}>
-                  <Text style={[styles.filterBadgeText, { color: colors.primaryForeground }]}>{activeFilterCount}</Text>
-                </View>
-              )}
-            </BentoPressable>
-            <BentoPressable onPress={handleOpenSort} style={[styles.iconBtn, isSortActive && styles.iconBtnActive]}>
-              <HugeiconsIcon icon={SortingDownIcon} size={22} color={isSortActive ? colors.primary : colors.text} />
-            </BentoPressable>
+            <IconButton
+              icon={FilterIcon}
+              onPress={handleOpenFilter}
+              variant={activeFilterCount > 0 ? 'tonal' : 'surface'}
+              badge={activeFilterCount}
+              accessibilityLabel={t('filters.title')}
+            />
+            <IconButton
+              icon={SortingDownIcon}
+              onPress={handleOpenSort}
+              variant={isSortActive ? 'tonal' : 'surface'}
+              accessibilityLabel={t('transactions.sortTitle')}
+            />
           </View>
-        )}
-      />
+        ) }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
+
 
       <SectionList
         sections={groupedByDate}
@@ -782,7 +743,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         ListEmptyComponent={(
           <View style={styles.emptyWrap}>
             <View style={styles.emptyIconBox}>
-              <HugeiconsIcon icon={ReceiptTextIcon} size={32} color={colors.textMuted} />
+              <Icon icon={ReceiptTextIcon} size={32} color={colors.textMuted} />
             </View>
             <Text style={styles.emptyTitle}>
               {activeFilterCount > 0 ? t('transactions.noResults') : t('transactions.nothingYet')}
@@ -799,14 +760,14 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
             ) : (
               <BentoPressable style={styles.emptyAction} onPress={handleAddTransaction}>
                 <Text style={styles.emptyActionText}>{t('transactions.add')}</Text>
-                <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primaryForeground} />
+                <Icon icon={ArrowRight01Icon} size={14} color={colors.primaryForeground} />
               </BentoPressable>
             )}
           </View>
         )}
         ListFooterComponent={txQuery.isFetchingNextPage ? (
           <View style={styles.loadMoreWrap}>
-            <ActivityIndicator size="small" color={colors.primary} />
+            <Spinner size="sm" />
           </View>
         ) : null}
       />
@@ -814,6 +775,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
 
 
       <ConfirmDialog
+        destructive
         visible={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
         title={t('transactions.deleteTitle')}
@@ -869,58 +831,21 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         ]}
       />
       <BentoPressable style={styles.fab} onPress={handleAddTransaction}>
-        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
+        <Icon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
       </BentoPressable>
 
       <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_TRANSACTIONS} steps={TRANSACTIONS_LIST_WALKTHROUGH_STEPS} />
-    </SafeAreaView>
+    </Screen>
   );
 });
 
 const ZERO_INSETS: EdgeInsets = { top: 0, bottom: 0, left: 0, right: 0 };
 const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isDark, tabBarClearance }: ThemeContextType, insets: EdgeInsets = ZERO_INSETS) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    loadingWrap: {
-      flex: 1,
-      backgroundColor: colors.background,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2'),
-    },
-    iconBtn: {
-      width: layout.minTouchTarget,
-      height: layout.minTouchTarget,
-      borderRadius: radius('lg'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.surface,
-    },
-    iconBtnActive: {
-      backgroundColor: alpha(colors.primary, 'subtle'),
-    },
-    filterBadge: {
-      position: 'absolute',
-      top: 4,
-      right: 4,
-      minWidth: 15,
-      height: 15,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: 3,
-    },
-    filterBadgeText: {
-      fontSize: 9,
-      fontFamily: typography.styles.badge.fontFamily,
-      lineHeight: 12,
     },
     content: {
       paddingHorizontal: layout.screenPadding,
@@ -931,7 +856,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       gap: spacing('5'),
       marginBottom: spacing('6'),
     },
-    daySection: { gap: spacing('3') },
     dayHeaderRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -944,13 +868,17 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       fontFamily: typography.fonts.medium,
       ...typography.metrics.xs,
     },
+    // Date never wraps; totals shrink first.
     dayTotals: {
+      flex: 1,
       flexDirection: 'row',
+      justifyContent: 'flex-end',
       gap: spacing('3'),
+      marginLeft: spacing('3'),
     },
     dayTotalValue: {
       fontFamily: typography.fonts.medium,
-      fontSize: 12,
+      ...typography.metrics.sm,
     },
     dayTotalCount: {
       fontFamily: typography.fonts.regular,
@@ -965,7 +893,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
     emptyIconBox: {
       width: 80,
       height: 80,
-      borderRadius: radius('2xl'),
+      borderRadius: radius('lg'),
       backgroundColor: colors.surface,
       alignItems: 'center',
       justifyContent: 'center',
@@ -973,15 +901,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
     emptyTitle: {
       fontFamily: typography.styles.emptyTitle.fontFamily,
       color: colors.text,
-      fontSize: 18,
+      ...typography.metrics.xl,
     },
     emptySubtitle: {
       fontFamily: typography.fonts.regular,
       color: colors.textMuted,
-      fontSize: 14,
+      ...typography.metrics.md,
       textAlign: 'center',
       maxWidth: 240,
-      lineHeight: 20,
     },
     emptyAction: {
       flexDirection: 'row',
@@ -989,14 +916,14 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       gap: spacing('2.5'),
       paddingHorizontal: layout.screenPadding,
       height: 48,
-      borderRadius: radius('lg'),
+      borderRadius: radius('full'),
       backgroundColor: colors.primary,
       marginTop: spacing('2'),
     },
     emptyActionText: {
       fontFamily: typography.styles.buttonLabel.fontFamily,
       color: colors.primaryForeground,
-      fontSize: 15,
+      ...typography.metrics.md,
     },
     loadMoreWrap: {
       paddingVertical: spacing('7'),
@@ -1008,11 +935,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       right: layout.screenPadding,
       width: 56,
       height: 56,
-      borderRadius: radius('xl'),
+      borderRadius: radius('full'),
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
-      ...shadow('md'),
     },
     chipsScrollContainer: {
       marginTop: spacing('2'),
@@ -1022,45 +948,5 @@ const createStyles = ({ colors, typography, spacing, radius, layout, shadow, isD
       gap: spacing('1.5'),
       // paddingHorizontal: layout.screenPadding,
       paddingBottom: spacing('1'),
-    },
-    chip: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderRadius: radius('full'),
-      height: 30,
-      backgroundColor: alpha(colors.primary, 'subtle'),
-      overflow: 'hidden',
-    },
-    chipButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: '100%',
-    },
-    chipCloseBtn: {
-      paddingRight: spacing('2.5'),
-      paddingLeft: spacing('1'),
-      height: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    chipText: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 11.5,
-      color: colors.primary,
-    },
-    clearAllChip: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 30,
-      paddingHorizontal: spacing('2.5'),
-      borderRadius: radius('full'),
-      backgroundColor: colors.surface,
-      gap: spacing('1'),
-      overflow: 'hidden',
-    },
-    clearAllText: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 11.5,
-      color: colors.textMuted,
     },
   });

@@ -1,7 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
-import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
-import { BentoPressable } from './BentoPressable';
+import { Dialog } from './Dialog';
+import { TrashIcon } from './icons';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type ConfirmDialogProps = {
@@ -9,13 +8,16 @@ type ConfirmDialogProps = {
   onClose: () => void;
   title: string;
   message?: string;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   confirmLabel?: string;
   cancelLabel?: string;
+  /** Red confirm button + warning icon. Only for irreversible actions (delete, erase). */
   destructive?: boolean;
+  /** Shows a spinner and blocks repeat taps while a previous confirm is still running. */
   isLoading?: boolean;
 };
 
+/** Asks before doing something. Title is the question; the confirm label repeats the verb. */
 export const ConfirmDialog = React.memo(function ConfirmDialog({
   visible,
   onClose,
@@ -24,119 +26,31 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   onConfirm,
   confirmLabel,
   cancelLabel,
-  destructive = true,
+  destructive = false,
   isLoading = false,
 }: ConfirmDialogProps) {
-  const theme = useTheme();
   const { t } = useTranslation();
-  const { colors } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
 
+  // Close first, then run — callers rely on the dialog dismissing itself.
   const handleConfirm = useCallback(() => {
+    if (isLoading) return;
     onClose();
-    onConfirm();
-  }, [onClose, onConfirm]);
+    void onConfirm();
+  }, [isLoading, onClose, onConfirm]);
 
   return (
-    <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
-      <View style={styles.overlay}>
-        <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
-
-        <View style={styles.card}>
-          <View style={styles.body}>
-            <Text style={styles.title}>{title}</Text>
-            {message ? <Text style={styles.message}>{message}</Text> : null}
-          </View>
-
-          <View style={styles.actions}>
-            <BentoPressable style={styles.btnCancel} onPress={onClose}>
-              <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85} style={styles.btnCancelText}>
-                {cancelLabel ?? t('common.cancel')}
-              </Text>
-            </BentoPressable>
-
-            <BentoPressable
-              style={[styles.btnConfirm, destructive && styles.btnDanger]}
-              onPress={handleConfirm}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color={colors.background} size="small" />
-              ) : (
-                <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85} style={styles.btnConfirmText}>
-                  {confirmLabel ?? t('common.confirm')}
-                </Text>
-              )}
-            </BentoPressable>
-          </View>
-        </View>
-      </View>
-    </Modal>
+    <Dialog
+      visible={visible}
+      onClose={onClose}
+      title={title}
+      message={message}
+      icon={destructive ? TrashIcon : undefined}
+      tone={destructive ? 'danger' : 'neutral'}
+      dismissible={!isLoading}
+      actions={[
+        { label: cancelLabel ?? t('common.cancel'), variant: 'secondary', onPress: onClose, disabled: isLoading },
+        { label: confirmLabel ?? t('common.confirm'), variant: destructive ? 'danger' : 'primary', onPress: handleConfirm, loading: isLoading },
+      ]}
+    />
   );
 });
-
-const createStyles = ({ colors, overlay, typography, spacing, radius, layout, sizes }: ThemeContextType) =>
-  StyleSheet.create({
-    overlay: {
-      flex: 1,
-      backgroundColor: overlay.dim,
-      justifyContent: 'center',
-      padding: spacing('7'),
-    },
-    card: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
-      overflow: 'hidden',
-      padding: spacing('6'),
-      gap: spacing('4'),
-    },
-    body: {
-      padding: 0,
-    },
-    title: {
-      fontFamily: typography.fonts.heading,
-      ...typography.metrics.xl,
-      color: colors.text,
-      marginBottom: spacing('2'),
-    },
-    message: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.md,
-      color: colors.textMuted,
-      lineHeight: 20,
-    },
-    actions: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      gap: spacing('2'),
-      marginTop: spacing('4'),
-    },
-    btnCancel: {
-      height: sizes.button.md.height,
-      paddingHorizontal: spacing('4'),
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: radius('lg'),
-    },
-    btnCancelText: {
-      fontFamily: typography.styles.dialogAction.fontFamily,
-      ...typography.metrics.md,
-      color: colors.textMuted,
-    },
-    btnConfirm: {
-      height: sizes.button.md.height,
-      paddingHorizontal: spacing('5'),
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: radius('lg'),
-    },
-    btnDanger: {
-      backgroundColor: colors.danger,
-    },
-    btnConfirmText: {
-      fontFamily: typography.styles.dialogAction.fontFamily,
-      ...typography.metrics.md,
-      color: colors.primaryForeground,
-    },
-  });

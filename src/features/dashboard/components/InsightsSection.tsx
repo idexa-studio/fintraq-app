@@ -1,10 +1,10 @@
+import { EmptyState, Skeleton } from '@/src/components/ui';
 import { ChartLineData01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
-import { ScrollView, StyleSheet, Text, View, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { PremiumGuard } from '../../../components/ui/PremiumGuard';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { useDashboardInsights } from '../hooks/dashboard';
+import { ScrollView, StyleSheet, View, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
+import { PremiumGuard } from '@/src/features/premium/components/PremiumGuard';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { useDashboardInsights } from '@/src/features/dashboard/hooks/dashboard';
 import { InsightCard } from './InsightCard';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ const INTERVAL = 4000;
 export const InsightsSection = React.memo(function InsightsSection({ currency }: InsightsSectionProps) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { colors, typography } = theme;
+  const { spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { data: insights, isLoading } = useDashboardInsights(currency);
   const { width: screenWidth } = useWindowDimensions();
@@ -30,7 +30,8 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const total = insights?.length ?? 0;
-  const cardWidth = screenWidth - theme.layout.screenPadding * 2 - 20;
+  // Full width minus a peek of the next card.
+  const cardWidth = screenWidth - theme.layout.screenPadding * 2 - spacing('6');
   const snapInterval = cardWidth + GAP;
 
   const scrollTo = useCallback((i: number) => {
@@ -68,140 +69,75 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
 
   const hasInsights = (insights?.length ?? 0) > 0;
 
-  if (!hasInsights && !isLoading) {
-    return (
-      <View style={styles.container}>
-        <SectionHeader title={t('premium.insightsTitle')} />
-        <PremiumGuard label={t('premium.upgradeForInsights')} size="large" containerStyle={styles.guard}>
-          <View style={styles.empty}>
-            <View style={styles.emptyIconWrapper}>
-              <HugeiconsIcon icon={ChartLineData01Icon} size={18} color={colors.primary} />
+  let body: React.ReactNode;
+  if (isLoading) {
+    body = <Skeleton height={88} radius="xl" style={styles.padded} />;
+  } else if (!hasInsights) {
+    body = (
+      <EmptyState variant="inline" icon={ChartLineData01Icon} title={t('premium.noInsights')} description={t('premium.noInsightsHint')} style={styles.padded} />
+    );
+  } else {
+    body = (
+      <>
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scroll}
+          decelerationRate="fast"
+          snapToInterval={snapInterval}
+          snapToAlignment="start"
+          onMomentumScrollEnd={onScrollEnd}
+          onTouchStart={clearTimer}
+          onTouchEnd={startTimer}
+          scrollEventThrottle={16}
+        >
+          {insights?.map((insight) => (
+            <View key={insight.id} style={{ width: cardWidth }}>
+              <InsightCard insight={insight} />
             </View>
-            <View style={styles.emptyContent}>
-              <Text style={styles.emptyTitle}>{t('premium.noInsights')}</Text>
-              <Text style={styles.emptyText}>{t('premium.noInsightsHint')}</Text>
-            </View>
+          ))}
+        </ScrollView>
+
+        {total > 1 ? (
+          <View style={styles.dots}>
+            {insights?.map((insight, i) => (
+              <View key={insight.id} style={[styles.dot, i === index && styles.dotActive]} />
+            ))}
           </View>
-        </PremiumGuard>
-      </View>
+        ) : null}
+      </>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View>
       <SectionHeader title={t('premium.insightsTitle')} />
-      <PremiumGuard
-        label={t('premium.upgradeForInsights')}
-        size="large"
-        containerStyle={styles.guard}
-      >
-        {isLoading ? (
-          <View style={styles.placeholder}>
-            <Text style={[styles.placeholderText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              {t('premium.analysing')}
-            </Text>
-          </View>
-        ) : (
-          <>
-            <ScrollView
-              ref={scrollRef}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.scroll}
-              decelerationRate="fast"
-              snapToInterval={snapInterval}
-              snapToAlignment="start"
-              onMomentumScrollEnd={onScrollEnd}
-              onTouchStart={clearTimer}
-              onTouchEnd={startTimer}
-              scrollEventThrottle={16}
-            >
-              <View style={{ width: theme.layout.screenPadding - GAP / 2 }} />
-              {insights?.map((insight) => (
-                <View key={insight.id} style={{ width: cardWidth }}>
-                  <InsightCard insight={insight} />
-                </View>
-              ))}
-              <View style={{ width: theme.layout.screenPadding - GAP / 2 }} />
-            </ScrollView>
-
-            {total > 1 && (
-              <View style={styles.dots}>
-                {insights?.map((_, i) => (
-                  <View
-                    key={i}
-                    style={[
-                      styles.dot,
-                      { backgroundColor: i === index ? colors.primary : alpha(colors.text, 'subtle') },
-                    ]}
-                  />
-                ))}
-              </View>
-            )}
-          </>
-        )}
+      <PremiumGuard label={t('premium.upgradeForInsights')} size="large" containerStyle={styles.padded}>
+        {body}
       </PremiumGuard>
     </View>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    container: {},
-    guard: {
-      marginHorizontal: layout.screenPadding,
-    },
-    scroll: { gap: GAP },
-    placeholder: {
-      height: 80,
-      marginHorizontal: layout.screenPadding,
-      borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    placeholderText: { ...typography.metrics.xs, opacity: 0.6 },
-    empty: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('4'),
-      marginHorizontal: layout.screenPadding,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-    },
-    emptyIconWrapper: {
-      width: 38,
-      height: 38,
-      borderRadius: 19,
-      backgroundColor: alpha(colors.primary, 'subtle'),
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    emptyContent: {
-      flex: 1,
-      gap: 2,
-    },
-    emptyTitle: {
-      fontFamily: typography.styles.cardTitle.fontFamily,
-      fontSize: 13,
-      color: colors.text,
-    },
-    emptyText: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 11,
-      color: colors.textMuted,
-      lineHeight: 15,
-    },
+    padded: { marginHorizontal: layout.screenPadding },
+    // Cards start on the page edge and snap back to it.
+    scroll: { paddingHorizontal: layout.screenPadding, gap: GAP },
     dots: {
       flexDirection: 'row',
       justifyContent: 'center',
-      gap: spacing('2'),
-      marginTop: spacing('2'),
+      alignItems: 'center',
+      gap: spacing('1.5'),
+      marginTop: spacing('2.5'),
     },
     dot: {
       width: 6,
       height: 6,
       borderRadius: radius('full'),
+      backgroundColor: alpha(colors.text, 'subtle'),
     },
+    // The active dot stretches instead of changing colour alone.
+    dotActive: { width: 16, backgroundColor: colors.primaryInk },
   });

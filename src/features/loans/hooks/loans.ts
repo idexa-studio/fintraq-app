@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from '../../../lib/query-keys';
-import { invalidateAll } from '../../../utils/query';
-import * as api from '../api/loans';
+import { QUERY_KEYS } from '@/src/lib/query-keys';
+import { invalidateAll } from '@/src/utils/query';
+import * as api from '@/src/features/loans/api/loans';
 
 export const useLoans = (type?: api.LoanType) =>
   useQuery({
@@ -19,15 +19,16 @@ export const useLoansByPerson = (personId: number | null) =>
 export const useLoanWithStats = (id: number | null) =>
   useQuery({
     queryKey: QUERY_KEYS.loans.detail(id ?? 0),
-    queryFn: () => api.getLoanWithStats(id!),
-    enabled: id !== null,
+    // A deleted or unknown loan resolves to null; React Query rejects undefined.
+    queryFn: async () => (await api.getLoanWithStats(id!)) ?? null,
+    enabled: id !== null && Number.isFinite(id),
   });
 
 export const useLoanRepayments = (loanId: number | null) =>
   useQuery({
     queryKey: [...QUERY_KEYS.loans.detail(loanId ?? 0), 'repayments'],
     queryFn: () => api.getLoanRepayments(loanId!),
-    enabled: loanId !== null,
+    enabled: loanId !== null && Number.isFinite(loanId),
   });
 
 export const useLoansSummary = (currency: string) =>

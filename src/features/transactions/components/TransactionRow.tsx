@@ -1,5 +1,6 @@
+import { Text } from '@/src/components/ui/Text';
 import { Tag01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Icon } from '@/src/components/ui/Icon';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -8,9 +9,10 @@ import { colorNumberToHex } from '@/src/utils/format';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 import { format, isToday, isYesterday } from 'date-fns';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { BentoPressable } from './BentoPressable';
+import { StyleSheet, View } from 'react-native';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
+import { Divider } from '@/src/components/ui/Divider';
 
 type TransactionData = {
   id: number;
@@ -94,14 +96,14 @@ export const TransactionRow = React.memo(function TransactionRow({
       borderTopRightRadius: isFirst ? radius('xl') : 0,
       borderBottomLeftRadius: isLast ? radius('xl') : 0,
       borderBottomRightRadius: isLast ? radius('xl') : 0,
-      marginBottom: isLast ? 0 : spacing('0.5'),
     }),
-    [isFirst, isLast, colors.surface, radius, spacing],
+    [isFirst, isLast, colors.surface, radius],
   );
 
   const handlePress = useCallback(() => onPress?.(tx), [onPress, tx]);
 
   return (
+    <>
     <BentoPressable style={[styles.row, containerStyle]} onPress={handlePress} scaleOnPress={false}>
       <IconAvatar
         icon={categoryIcon}
@@ -117,15 +119,15 @@ export const TransactionRow = React.memo(function TransactionRow({
 
         {tx.type === 'TR' ? (
           <View style={styles.metaRow}>
-            <HugeiconsIcon icon={accountIcon} size={10} color={accountColor} />
+            <Icon icon={accountIcon} size={10} color={accountColor} />
             <Text style={styles.metaText} numberOfLines={1}>{tx.account.name}</Text>
             <Text style={styles.metaSep}>→</Text>
-            <HugeiconsIcon icon={toAccountIcon} size={10} color={toAccountColor} />
+            <Icon icon={toAccountIcon} size={10} color={toAccountColor} />
             <Text style={styles.metaText} numberOfLines={1}>{tx.toAccount?.name ?? '—'}</Text>
           </View>
         ) : (
           <View style={styles.metaRow}>
-            <HugeiconsIcon icon={accountIcon} size={10} color={accountColor} />
+            <Icon icon={accountIcon} size={10} color={accountColor} />
             <Text style={styles.metaText} numberOfLines={1}>{tx.account.name}</Text>
           </View>
         )}
@@ -143,6 +145,13 @@ export const TransactionRow = React.memo(function TransactionRow({
         <Text style={styles.time} numberOfLines={1}>{dateTimeText}</Text>
       </View>
     </BentoPressable>
+    {/* Hairline inset under the text column — same rhythm as ListGroup rows. */}
+    {isLast === false ? (
+      <View style={{ backgroundColor: colors.surface }}>
+        <Divider inset={spacing('4') + 40 + spacing('3')} />
+      </View>
+    ) : null}
+    </>
   );
 });
 
@@ -154,8 +163,8 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
       flexDirection: 'row',
       alignItems: 'center',
       paddingVertical: spacing('3'),
-      paddingHorizontal: spacing('3.5'),
-      gap: spacing('2.5'),
+      paddingHorizontal: spacing('4'),
+      gap: spacing('3'),
     },
     body: {
       flex: 1,
@@ -164,9 +173,8 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     },
     title: {
       fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
+      ...typography.metrics.md,
       color: colors.text,
-      lineHeight: 18,
     },
     metaRow: {
       flexDirection: 'row',
@@ -179,7 +187,6 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
       fontFamily: typography.fonts.regular,
       ...typography.metrics.xs,
       color: colors.textMuted,
-      lineHeight: 14,
       flexShrink: 1,
       minWidth: 0,
     },
@@ -187,20 +194,17 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
       fontFamily: typography.fonts.regular,
       ...typography.metrics.xs,
       color: colors.textMuted,
-      opacity: 0.5,
     },
     right: {
       alignItems: 'flex-end',
       gap: spacing('0.5'),
     },
     amount: {
-      ...typography.metrics.sm,
-      lineHeight: 18,
+      ...typography.metrics.md,
     },
     time: {
       fontFamily: typography.fonts.regular,
       ...typography.metrics.xs,
       color: colors.textMuted,
-      lineHeight: 14,
     },
   });

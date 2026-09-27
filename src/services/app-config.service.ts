@@ -1,6 +1,6 @@
-import { api, type ApiError } from '@/src/services/api';
+import { api, type ApiError } from './api';
 import { getAppBuildNumber } from '@/src/utils/version';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from './logger.service';
 
 export interface StoreLinks {
   androidStore: string;

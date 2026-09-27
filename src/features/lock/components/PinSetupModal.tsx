@@ -1,7 +1,9 @@
+import { Button } from '@/src/components/ui/Button';
+import { Screen } from '@/src/components/ui/Screen';
+import { Text } from '@/src/components/ui/Text';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Modal, StyleSheet, View } from 'react-native';
 import { PinPad } from './PinPad';
 import { useTranslation } from 'react-i18next';
 
@@ -15,7 +17,7 @@ type Props = {
 
 export const PinSetupModal = React.memo(function PinSetupModal({ visible, onCancel, onComplete }: Props) {
   const { colors, typography, spacing } = useTheme();
-  const styles = useMemo(() => createStyles({ colors, spacing }), [colors, spacing]);
+  const styles = useMemo(() => createStyles({ colors, spacing, typography }), [colors, spacing, typography]);
 
   const [step, setStep] = useState<Step>('enter');
   const [firstPin, setFirstPin] = useState('');
@@ -60,12 +62,8 @@ export const PinSetupModal = React.memo(function PinSetupModal({ visible, onCanc
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={handleCancel}>
-      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-        <TouchableOpacity onPress={handleCancel} style={styles.cancelBtn}>
-          <Text style={[styles.cancelText, { fontFamily: typography.fonts.medium, color: colors.textMuted }]}>
-            {t('common.cancel')}
-          </Text>
-        </TouchableOpacity>
+      <Screen variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
+        <Button title={t('common.cancel')} onPress={handleCancel} variant="ghost" style={styles.cancelAction} />
 
         <View style={styles.content}>
           <Text style={[styles.title, { fontFamily: typography.styles.dialogTitle.fontFamily, color: colors.text }]}>
@@ -85,24 +83,18 @@ export const PinSetupModal = React.memo(function PinSetupModal({ visible, onCanc
 
           <PinPad value={currentPin} onChange={handlePinChange} maxLength={6} />
         </View>
-      </SafeAreaView>
+      </Screen>
     </Modal>
   );
 });
 
-type StyleDeps = Pick<ReturnType<typeof useTheme>, 'colors' | 'spacing'>;
+type StyleDeps = Pick<ReturnType<typeof useTheme>, 'colors' | 'spacing' | 'typography'>;
 
-function createStyles({ colors, spacing }: StyleDeps) {
+function createStyles({ colors, spacing, typography }: StyleDeps) {
   return StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    cancelBtn: {
+    cancelAction: {
       alignSelf: 'flex-end',
       padding: spacing('4'),
-    },
-    cancelText: {
-      fontSize: 16,
     },
     content: {
       flex: 1,
@@ -112,15 +104,15 @@ function createStyles({ colors, spacing }: StyleDeps) {
       paddingBottom: spacing('12'),
     },
     title: {
-      fontSize: 28,
+      ...typography.metrics.xxxl,
     },
     subtitle: {
-      fontSize: 14,
-      opacity: 0.7,
+      ...typography.metrics.md,
+      color: colors.textMuted,
       textAlign: 'center',
     },
     error: {
-      fontSize: 13,
+      ...typography.metrics.sm,
     },
   });
 }

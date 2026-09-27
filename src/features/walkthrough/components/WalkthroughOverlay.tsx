@@ -1,14 +1,16 @@
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { BentoPressable, Button, Icon, IconAvatar, Text } from '@/src/components/ui';
+import { XIcon } from '@/src/components/ui/icons';
+import { WalkthroughStep } from '@/src/features/walkthrough/constants/steps';
+import { useWalkthrough } from '@/src/features/walkthrough/hooks/useWalkthrough';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { ArrowRight01Icon, CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
-import { Modal, StyleSheet, Text, View } from 'react-native';
-import { WalkthroughStep } from '../constants/steps';
-import { useWalkthrough } from '../hooks/useWalkthrough';
 import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
+import { StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+// The tip sits on the ink surface (same as the tab bar) so it separates from
+// content without a shadow.
 type WalkthroughOverlayProps = {
   storageKey: string;
   steps: WalkthroughStep[];
@@ -16,6 +18,11 @@ type WalkthroughOverlayProps = {
   enabled?: boolean;
 };
 
+/**
+ * A small, non-blocking tip card that floats above the tab bar the first time
+ * a screen is opened. The screen stays fully usable underneath; the tip goes
+ * away for good on "Got it" or ✕. Keep each screen to one or two tips.
+ */
 export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
   storageKey,
   steps,
@@ -24,173 +31,71 @@ export const WalkthroughOverlay = React.memo(function WalkthroughOverlay({
 }: WalkthroughOverlayProps) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { colors } = theme;
+  const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const { visible, index, handleNext, handleSkip } = useWalkthrough(
-    storageKey,
-    steps.length,
-    onFinish,
-    enabled
-  );
+  const { visible, index, handleNext, handleSkip } = useWalkthrough(storageKey, steps.length, onFinish, enabled);
 
   if (!visible || steps.length === 0) return null;
 
-  const currentStep = steps[index];
+  const step = steps[index];
+  const isLast = index === steps.length - 1;
+  // Sits above both the floating tab bar and screen FABs (56pt + margin).
+  const bottom = insets.bottom + 56 + theme.spacing('4') + theme.spacing('4');
 
   return (
-    <Modal transparent visible={visible} animationType="fade" onRequestClose={() => {}}>
-      <View style={styles.overlay}>
-        <View style={styles.card}>
-          {/* Header Row */}
-          <View style={styles.header}>
-            <View style={styles.iconWrapper}>
-              <HugeiconsIcon icon={currentStep.icon} size={20} color={colors.primary} />
-            </View>
-            <View style={styles.stepsBadge}>
-              <Text style={styles.stepsBadgeText}>
+    <Animated.View
+      key={step.id}
+      entering={FadeInDown.duration(220)}
+      exiting={FadeOutDown.duration(160)}
+      style={[styles.wrap, { bottom }]}
+      pointerEvents="box-none"
+    >
+      <View style={styles.card} accessibilityRole="alert">
+        <IconAvatar icon={step.icon} color={theme.colors.primary} size={40} weight="duotone" />
+        <View style={styles.body}>
+          <Text variant="bodyStrong" color={theme.colors.onInk}>{t(`walkthrough.${step.id}.title`)}</Text>
+          <Text variant="callout" color={theme.colors.onInkMuted}>{t(`walkthrough.${step.id}.desc`)}</Text>
+          <View style={styles.footer}>
+            {steps.length > 1 ? (
+              <Text variant="caption" color={theme.colors.onInkMuted} style={styles.counter}>
                 {t('walkthrough.step', { current: index + 1, total: steps.length })}
               </Text>
-            </View>
-          </View>
-
-          {/* Content */}
-          <Text style={styles.title}>{t(`walkthrough.${currentStep.id}.title`)}</Text>
-          <Text style={styles.desc}>{t(`walkthrough.${currentStep.id}.desc`)}</Text>
-
-          {/* Slide Dots Indicator */}
-          <View style={styles.dotsRow}>
-            {steps.map((_, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.dot,
-                  i === index ? styles.dotActive : { backgroundColor: alpha(colors.text, 'subtle') },
-                ]}
-              />
-            ))}
-          </View>
-
-          {/* Footer Actions */}
-          <View style={styles.footer}>
-            <BentoPressable onPress={handleSkip} style={styles.skipBtn}>
-              <Text style={styles.skipText}>{t('walkthrough.skip')}</Text>
-            </BentoPressable>
-
-            <BentoPressable onPress={handleNext} style={styles.nextBtn}>
-              <Text style={styles.nextText}>
-                {index === steps.length - 1 ? t('walkthrough.getStarted') : t('walkthrough.next')}
-              </Text>
-              <HugeiconsIcon
-                icon={index === steps.length - 1 ? CheckmarkCircle01Icon : ArrowRight01Icon}
-                size={14}
-                color={colors.primaryForeground}
-              />
-            </BentoPressable>
+            ) : <View style={styles.counter} />}
+            <Button
+              title={isLast ? t('walkthrough.gotIt') : t('walkthrough.next')}
+              onPress={handleNext}
+              size="sm"
+            />
           </View>
         </View>
+        <BentoPressable
+          onPress={handleSkip}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel={t('walkthrough.skip')}
+          style={styles.close}
+        >
+          <Icon icon={XIcon} size={16} color={theme.colors.onInkMuted} weight="bold" />
+        </BentoPressable>
       </View>
-    </Modal>
+    </Animated.View>
   );
 });
 
-const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    overlay: {
-      flex: 1,
-      backgroundColor: overlay.dim,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingHorizontal: spacing('6'),
-    },
+    wrap: { position: 'absolute', left: layout.screenPadding, right: layout.screenPadding },
     card: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
-      width: '100%',
-      maxWidth: 320,
-      padding: spacing('5'),
-      gap: spacing('4'),
-      elevation: 8,
-    },
-    header: {
       flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      gap: spacing('3'),
+      padding: spacing('4'),
+      borderRadius: radius('xl'),
+      backgroundColor: colors.tabBarBackground,
     },
-    iconWrapper: {
-      width: 38,
-      height: 38,
-      borderRadius: 19,
-      backgroundColor: alpha(colors.primary, 'subtle'),
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    stepsBadge: {
-      paddingHorizontal: spacing('2.5'),
-      height: 22,
-      borderRadius: radius('full'),
-      backgroundColor: colors.background,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    stepsBadgeText: {
-      fontFamily: typography.styles.badge.fontFamily,
-      fontSize: 10,
-      color: colors.textMuted,
-    },
-    title: {
-      fontFamily: typography.fonts.heading,
-      fontSize: 18,
-      color: colors.text,
-    },
-    desc: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      color: colors.textMuted,
-      lineHeight: 18,
-    },
-    dotsRow: {
-      flexDirection: 'row',
-      gap: spacing('1.5'),
-      marginVertical: spacing('1'),
-    },
-    dot: {
-      width: 6,
-      height: 6,
-      borderRadius: 3,
-    },
-    dotActive: {
-      width: 16,
-      backgroundColor: colors.primary,
-    },
-    footer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginTop: spacing('2'),
-    },
-    skipBtn: {
-      paddingVertical: spacing('2'),
-      paddingHorizontal: spacing('1'),
-    },
-    skipText: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      color: colors.textMuted,
-    },
-    nextBtn: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1.5'),
-      backgroundColor: colors.primary,
-      height: 36,
-      paddingHorizontal: spacing('4'),
-      borderRadius: radius('full'),
-      justifyContent: 'center',
-    },
-    nextText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: 13,
-      color: colors.primaryForeground,
-    },
+    body: { flex: 1, gap: spacing('1') },
+    footer: { flexDirection: 'row', alignItems: 'center', marginTop: spacing('2') },
+    counter: { flex: 1 },
+    close: { width: 24, height: 24, borderRadius: radius('full'), alignItems: 'center', justifyContent: 'center' },
   });

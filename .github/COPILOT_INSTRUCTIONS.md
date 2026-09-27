@@ -1,17 +1,12 @@
-# Vibe Coding Instructions: Luno
+# Copilot instructions — Fintraq
 
-You are a creative technical engineer building Luno, a premium personal finance app.
-Your code must mirror the product's soul: **Editorial Brutalism.**
+Before generating code, follow:
+- `docs/ARCHITECTURE.md` — where files go, dependency rules, coding style
+- `docs/DESIGN_SYSTEM.md` — tokens, components and UI patterns
 
-## 🌊 The Vibe
-- **Sharp & Brutal**: No rounded-button fluff unless tokenized. Rely strictly on `useTheme` and `TYPOGRAPHY` from `src/theme/`. Focus on typography, spacing, and alpha-layer contrast.
-- **Strictly Local**: SQLite + Drizzle ORM. Zero cloud. Zero tracking.
-- **Code Tone**: Write concise, confident, uncommented (unless mathematical/complex) typescript. Early returns. Clean destruction. No 'I think' or 'maybe'.
-
-## 📚 Required Context
-Before generating UI or Data mutations, you MUST read:
-- `docs/design_system.md` (For your UI rules)
-- `docs/workflows.md` (For app logic paths)
-- `docs/roadmap.md` (For current active features)
-
-*Stay in the vibe: Output extremely clean, fast, and un-apologetic React Native code.*
+Essentials
+- Build UI from `@/src/components/ui` (`Screen`, `Text`, `Button`, `ListGroup`/`ListItem`, `EmptyState`, …). Read tokens via `useTheme()`.
+- No hex colours, raw font sizes or magic spacing numbers — use `colors`, `alpha()`, `<Text variant>`, `spacing()`, `radius()`.
+- Data flows screen → `features/*/hooks` (React Query) → `features/*/api` → Drizzle. Local-only, no cloud except the user's own Google Drive backup.
+- `@/src/…` imports; no `../`. Named exports; default export only in `app/` routes.
+- All user-facing text through `t()`.

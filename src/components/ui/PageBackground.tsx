@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
+import { useTheme } from '@/src/providers/ThemeProvider';
 
 export const PageBackground = React.memo(function PageBackground() {
   const { colors } = useTheme();

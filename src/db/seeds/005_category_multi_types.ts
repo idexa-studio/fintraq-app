@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
-import { db } from '../client';
-import { categories } from '../schema';
+import { db } from '@/src/db/client';
+import { categories } from '@/src/db/schema';
 
 export const name = '006_category_multi_types';
 

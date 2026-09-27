@@ -1,8 +1,9 @@
-import type { IconSvgElement } from '@hugeicons/react-native';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconSource } from './Icon';
+import { Icon } from './Icon';
+import { XIcon } from './icons';
 import React, { useMemo, useCallback } from 'react';
-import { StyleSheet, Text, ViewStyle } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
+import { StyleProp, StyleSheet, Text, ViewStyle } from 'react-native';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
 import { alpha } from '@/src/theme/tokens';
 
@@ -11,9 +12,11 @@ type ChipProps = {
   isActive?: boolean;
   /** Accent color for active bg tint + text. Defaults to theme primary. */
   color?: string;
-  icon?: IconSvgElement;
+  icon?: IconSource;
   onPress: () => void;
-  style?: ViewStyle;
+  /** Shows a ✕ that removes the chip (active filters). */
+  onClear?: () => void;
+  style?: StyleProp<ViewStyle>;
 };
 
 export const Chip = React.memo(function Chip({
@@ -22,11 +25,14 @@ export const Chip = React.memo(function Chip({
   color,
   icon,
   onPress,
+  onClear,
   style,
 }: ChipProps) {
   const { colors, typography, spacing } = useTheme();
 
   const accent = color ?? colors.primary;
+  // Lime tint behind, deeper ink green for the label so it stays readable.
+  const ink = color ?? colors.primaryInk;
 
   const bg = useMemo(
     () => (isActive ? alpha(accent, 'subtle') : colors.surface),
@@ -34,8 +40,8 @@ export const Chip = React.memo(function Chip({
   );
 
   const textColor = useMemo(
-    () => (isActive ? accent : colors.textMuted),
-    [isActive, accent, colors.textMuted],
+    () => (isActive ? ink : colors.textMuted),
+    [isActive, ink, colors.textMuted],
   );
 
   const fontFamily = useMemo(
@@ -61,11 +67,18 @@ export const Chip = React.memo(function Chip({
     <BentoPressable
       style={containerStyle}
       onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityState={{ selected: isActive }}
     >
       {icon && (
-        <HugeiconsIcon icon={icon} size={14} color={isActive ? accent : colors.textMuted} />
+        <Icon icon={icon} size={14} color={isActive ? ink : colors.textMuted} />
       )}
       <Text style={textStyle} numberOfLines={1}>{label}</Text>
+      {onClear ? (
+        <BentoPressable onPress={onClear} hitSlop={10} accessibilityRole="button" accessibilityLabel={`${label} ✕`} style={styles.clear}>
+          <Icon icon={XIcon} size={12} color={isActive ? ink : colors.textMuted} weight="bold" />
+        </BentoPressable>
+      ) : null}
     </BentoPressable>
   );
 });
@@ -75,7 +88,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 36,
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     borderRadius: 999,
   },
+  clear: { marginLeft: 6, marginRight: -4, padding: 2, borderRadius: 999 },
 });

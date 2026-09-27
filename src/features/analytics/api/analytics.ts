@@ -1,6 +1,6 @@
 import { and, eq, sql } from 'drizzle-orm';
-import { db } from '../../../db/client';
-import { accounts, categories, payments } from '../../../db/schema';
+import { db } from '@/src/db/client';
+import { accounts, categories, payments } from '@/src/db/schema';
 
 export type DayBucket = {
   day: string; // YYYY-MM-DD

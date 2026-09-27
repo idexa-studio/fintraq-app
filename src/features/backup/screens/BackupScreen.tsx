@@ -1,6 +1,6 @@
-import { Header } from '@/src/components/ui/Header';
+import { Screen } from '@/src/components/ui/Screen';
+import { Text } from '@/src/components/ui/Text';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import {
   LockPasswordIcon,
@@ -8,9 +8,8 @@ import {
   ShieldKeyIcon,
 } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { GoogleBackupCard } from '../components/GoogleBackupCard';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { GoogleBackupCard } from '@/src/features/backup/components/GoogleBackupCard';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -27,9 +26,7 @@ export const BackupScreen = React.memo(function BackupScreen() {
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
-      <Header title={t('backup.title')} showBack />
+    <Screen header={{ title: t('backup.title'), showBack: true }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
 
       <ScrollView
         style={styles.scrollView}
@@ -59,16 +56,12 @@ export const BackupScreen = React.memo(function BackupScreen() {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 });
 
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
     scrollView: {
       flex: 1,
     },
@@ -88,7 +81,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     groupContainer: {
       backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
+      borderRadius: radius('xl'),
       overflow: 'hidden',
       marginBottom: spacing('5'),
     },
@@ -112,7 +105,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       fontFamily: typography.fonts.regular,
       ...typography.metrics.xs,
       color: colors.textMuted,
-      lineHeight: 16,
     },
     separator: {
       height: StyleSheet.hairlineWidth,

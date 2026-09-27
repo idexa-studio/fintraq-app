@@ -2,6 +2,8 @@ import type { Translation } from './types';
 
 const ta: Translation = {
   common: {
+    edit: 'திருத்து', delete: 'நீக்கு',
+    back: 'பின்செல்',
     cancel: 'ரத்துசெய்',
     ok: 'சரி',
     clear: 'அழி',
@@ -18,6 +20,7 @@ const ta: Translation = {
     settings: 'அமைப்புகள்',
   },
   settings: {
+    general: "பொது", security: "பாதுகாப்பு", manage: "நிர்வகி", about: "பற்றி", loans: "கடன்கள்", loansHint: "நீங்கள் கொடுத்த அல்லது வாங்கிய பணம்",
     title: 'அமைப்புகள்',
     welcome: 'வரவேற்கிறோம்',
     proMember: 'Pro உறுப்பினர்',
@@ -112,12 +115,13 @@ const ta: Translation = {
     cannotDelete: 'வகையை நீக்க இயலாது', deleteFailed: 'வகையை நீக்க முடியவில்லை.',
   },
   dashboard: {
+    streakDays: '{{count}} நாள் தொடர்',
     accounts: 'கணக்குகள்', manage: 'நிர்வகி', topExpenses: 'முக்கியச் செலவுகள்', people: 'நபர்கள்', loans: 'கடன்கள்', recent: 'சமீபத்தியவை', seeAll: 'அனைத்தையும் காண்',
     noTransactions: 'இன்னும் பரிவர்த்தனைகள் இல்லை', transactionHint: 'உங்கள் தினசரிப் பணம் செலுத்துதல், வருமானம் அல்லது பரிமாற்றங்களை இங்கே பதிவிடத் தொடங்குங்கள்.', addTransaction: 'பரிவர்த்தனையைச் சேர்',
     balance: 'உங்கள் இருப்பு', income: 'வருமானம்', expenses: 'செலவுகள்', noLoans: 'செயலில் உள்ள கடன்கள் இல்லை', loanHint: 'நீங்கள் கொடுத்த அல்லது வாங்கிய பணத்தைக் கண்காணியுங்கள். கடனைச் சேர்க்கத் தட்டவும்.',
     lentOut: 'கொடுத்தது', borrowed: 'வாங்கியது', overdue: '{{count}} காலம் கடந்தவை', active: '{{count}} செயலில்', noExpenses: 'இன்னும் செலவுகள் இல்லை', expensesHint: 'அதிகச் செலவு வகைகளைக் காண சில பரிவர்த்தனைகளைச் சேர்க்கவும்.',
   },
-  transactions: { amount: 'தொகை', category: 'வகை', netSavings: 'நிகரச் சேமிப்பு', income: 'வருமானம்', expenses: 'செலவுகள்', type: 'வகை', account: 'கணக்கு', date: 'தேதி', person: 'நபர்', typesCount: '{{count}} வகைகள்', oneAccount: '1 கணக்கு', accountsCount: '{{count}} கணக்குகள்', oneCategory: '1 வகை', categoriesCount: '{{count}} வகைகள்', onePerson: '1 நபர்', personsCount: '{{count}} நபர்கள்',
+  transactions: { dayCount: '{{count}} பதிவுகள்', allCategories: 'அனைத்தும்', searchCategories: 'வகைகளைத் தேடு', amount: 'தொகை', category: 'வகை', netSavings: 'நிகரச் சேமிப்பு', income: 'வருமானம்', expenses: 'செலவுகள்', type: 'வகை', account: 'கணக்கு', date: 'தேதி', person: 'நபர்', typesCount: '{{count}} வகைகள்', oneAccount: '1 கணக்கு', accountsCount: '{{count}} கணக்குகள்', oneCategory: '1 வகை', categoriesCount: '{{count}} வகைகள்', onePerson: '1 நபர்', personsCount: '{{count}} நபர்கள்',
   filteredSummary: 'வடிகட்டிய சுருக்கம்', title: 'பரிவர்த்தனைகள்', clearAll: 'அனைத்தையும் அழி', noResults: 'முடிவுகள் இல்லை', nothingYet: 'இங்கே இன்னும் எதுவும் இல்லை', noMatch: 'செயலில் உள்ள வடிகட்டிகளுக்குப் பொருந்தும் பரிவர்த்தனைகள் இல்லை. அவற்றை மாற்றவும் அல்லது அழிக்கவும்.', addFirst: 'கண்காணிப்பைத் தொடங்க உங்கள் முதல் பரிவர்த்தனையைச் சேர்க்கவும்.', clearFilters: 'வடிகட்டிகளை அழி', add: 'பரிவர்த்தனையைச் சேர்',
   deleteTitle: 'பரிவர்த்தனையை நீக்கு', deleteMessage: 'இது பரிவர்த்தனையை நீக்கி, கணக்கு இருப்பில் அதன் தாக்கத்தைத் திருப்பிவிடும்.', delete: 'நீக்கு', sortTitle: 'பரிவர்த்தனைகளை வரிசைப்படுத்து', newest: 'புதியவை முதலில்', oldest: 'பழையவை முதலில்', highest: 'அதிகத் தொகை', lowest: 'குறைந்த தொகை',
   expense: 'செலவு', transfer: 'பரிமாற்றம்', missingDetails: 'விவரங்கள் இல்லை', missingDetailsMessage: 'கணக்கு, வகை மற்றும் சரியான தொகையைத் தேர்ந்தெடுக்கவும்.', missingDestination: 'சேருமிடம் இல்லை', missingDestinationMessage: 'பரிமாற்றத்திற்கான சேருமிடக் கணக்கைத் தேர்ந்தெடுக்கவும்.',
@@ -125,6 +129,7 @@ const ta: Translation = {
   editEntry: 'பதிவைத் திருத்து', newEntry: 'புதிய பதிவு', loanRepaymentFor: 'கடன் திருப்பிச் செலுத்துதல் — யாருக்கு', loading: 'ஏற்றுகிறது...', fromAccount: 'எந்தக் கணக்கிலிருந்து', toAccount: 'எந்தக் கணக்கிற்கு', noCompatible: 'இந்தப் பரிமாற்றத்திற்குப் பொருத்தமான கணக்குகள் இல்லை.', linkedPerson: 'இணைக்கப்பட்ட நபர்', unknown: 'தெரியாதது', noPersonLinked: 'நபர் இணைக்கப்படவில்லை', time: 'நேரம்', note: 'குறிப்பு', optionalContext: 'விருப்பப் பின்னணி', saveChanges: 'மாற்றங்களைச் சேமி', saveTransaction: 'பரிவர்த்தனையைச் சேமி', none: 'எதுவுமில்லை',
   detailTitle: 'பரிவர்த்தனை', notFound: 'பரிவர்த்தனை கிடைக்கவில்லை.', detailDeleteTitle: 'பரிவர்த்தனையை நீக்கு', detailDeleteMessage: 'இது இருப்பில் ஏற்பட்ட தாக்கத்தைத் திருப்பிவிடும்; இதைத் திரும்பப் பெற முடியாது.', from: 'இருந்து', to: 'க்கு', created: 'உருவாக்கியது', cancel: 'ரத்துசெய்' },
   onboardingFlow: {
+    getStarted: 'தொடங்கு', restoreFromBackup: 'காப்புப்பிரதியிலிருந்து மீட்டமை', welcomeSubtitle: 'செலவு, வருமானம், கடன்களை அமைதியான, தனிப்பட்ட ஒரே இடத்தில் கண்காணியுங்கள். அமைப்புக்கு ஒரு நிமிடம் கூட ஆகாது.',
     steps: {
       welcome: { eyebrow: 'தொடங்குதல்', title: 'உங்கள் நிதிக் கட்டுப்பாட்டு மையத்தை உருவாக்குங்கள்.', subtitle: 'முழுமையான இயல்புநிலைகளுடனும் தூய்மையான கணக்குத் தொடக்கத்துடனும் எளிய அமைவு.' },
       setup_choice: { eyebrow: 'அமைவு முறை', title: 'எப்படித் தொடங்க விரும்புகிறீர்கள்?', subtitle: 'புதிய பணியிடத்துடன் தொடங்கவும் அல்லது ஏற்கனவே உள்ள Google Drive காப்புப்பிரதியை மீட்டமைக்கவும்.' },
@@ -165,7 +170,7 @@ const ta: Translation = {
   },
   ui: {
     somethingWrong: 'ஏதோ தவறு நடந்தது', proOnly: 'Pro மட்டும்', unlockWithPro: 'Fintraq Pro மூலம் திற',
-    chooseIcon: 'ஐகானைத் தேர்ந்தெடு', chooseColor: 'நிறத்தைத் தேர்ந்தெடு', colorsCount: '{{count}} நிறங்கள்', currency: 'நாணயம்', currenciesCount: '{{count}} நாணயங்கள்', searchCurrency: 'பெயர் அல்லது குறியீட்டால் தேடு', delKey: 'அழி',
+    charsLeft: '{{count}} எழுத்துகள் மீதம்', suggested: 'பரிந்துரைகள்', allCurrencies: 'அனைத்து நாணயங்கள்', noMatch: '“{{query}}” க்கு பொருத்தம் இல்லை', chooseIcon: 'ஐகானைத் தேர்ந்தெடு', chooseColor: 'நிறத்தைத் தேர்ந்தெடு', colorsCount: '{{count}} நிறங்கள்', currency: 'நாணயம்', currenciesCount: '{{count}} நாணயங்கள்', searchCurrency: 'பெயர் அல்லது குறியீட்டால் தேடு', delKey: 'அழி',
   },
   lock: {
     unlockApp: 'ஆப்பைத் திற', authFailed: 'அங்கீகாரம் தோல்வி. மீண்டும் முயலவும்.', useButton: 'மீண்டும் முயல கீழுள்ள பொத்தானைப் பயன்படுத்தவும்.',
@@ -180,6 +185,9 @@ const ta: Translation = {
     defaultMessage: 'தொடர Fintraq-ஐப் புதுப்பிக்கவும். ஒரு நிமிடம் மட்டுமே ஆகும்.', updateNow: 'இப்போதே புதுப்பி',
   },
   loans: {
+    outstandingAmount: "நிலுவை: {{amount}}", exceedsOutstanding: "தொகை நிலுவை {{amount}}-ஐ மீறுகிறது", fullAmount: "முழு தொகை · {{amount}}",
+    freeLimit: 'இலவச திட்டத்தில் {{limit}} செயலில் உள்ள கடன்கள். வரம்பற்றதற்கு மேம்படுத்தவும்.', upgrade: 'மேம்படுத்து',
+    lentToName: '{{name}} க்கு கடன் கொடுத்தது', borrowedFromName: '{{name}} இடம் கடன் வாங்கியது',
     title: 'கடன்கள்', loan: 'கடன்', newLoan: 'புதிய கடன்', lentOut: 'கொடுத்தது', borrowed: 'வாங்கியது', lent: 'கொடுத்தது', repaid: 'திருப்பிச் செலுத்தப்பட்டது',
     noLent: 'கொடுத்த கடன்கள் இல்லை', noBorrowed: 'வாங்கிய கடன்கள் இல்லை', emptyHint: 'நீங்கள் பிறருக்குக் கொடுத்த அல்லது பிறரிடம் வாங்கிய பணத்தை இங்கே கண்காணியுங்கள்.', addLoan: 'கடனைச் சேர்',
     unknown: 'தெரியாதது', unnamedSource: 'பெயரற்ற மூலம்', outstandingBalance: 'நிலுவை இருப்பு', principal: 'அசல்', outstanding: 'நிலுவை', totalPrincipal: 'மொத்த அசல்',
@@ -217,10 +225,12 @@ const ta: Translation = {
     linkPerson: 'நபரை இணை', noPerson: 'நபர் இல்லை',
   },
   categoryForm: {
+    appliesToHint: 'ஒன்று அல்லது அதற்கு மேற்பட்டவற்றைத் தேர்ந்தெடுக்கவும்.', moreIcons: 'மேலும்',
     edit: 'வகையைத் திருத்து', new: 'புதிய வகை', categoryName: 'வகையின் பெயர்', tapToChangeIcon: 'ஐகானை மாற்றத் தட்டவும்', appliesTo: 'பொருந்துவது', namePlaceholder: 'எ.கா. மளிகை, சம்பளம்',
     save: 'வகையைச் சேமி', create: 'வகையை உருவாக்கு', chooseIcon: 'ஐகானைத் தேர்ந்தெடு', expense: 'செலவு', income: 'வருமானம்', transfer: 'பரிமாற்றம்',
   },
   accountForm: {
+    lockedHint: 'வகை, நாணயம், இருப்பு கணக்கு உருவாக்கும்போதே அமைகின்றன. இருப்பு பரிவர்த்தனைகளால் மாறும்.',
     edit: 'கணக்கைத் திருத்து', new: 'புதிய கணக்கு', accountName: 'கணக்கின் பெயர்', accountType: 'கணக்கின் வகை', accountDetails: 'கணக்கு விவரங்கள்',
     namePlaceholder: 'எ.கா. முதன்மைப் பணப்பை', holderPlaceholder: 'குமார் (விருப்பம்)', numberPlaceholder: 'IBAN (விருப்பம்)', currentBalance: 'தற்போதைய இருப்பு', initialBalance: 'தொடக்க இருப்பு',
     save: 'கணக்கைச் சேமி', create: 'கணக்கை உருவாக்கு',
@@ -319,12 +329,13 @@ const ta: Translation = {
     monthGood: 'இந்த மாதம் நன்றாகப் போகிறது', monthTight: 'இதுவரை இறுக்கமான மாதம்', monthGoodHint: 'செலவைவிட வரவு அதிகம் — நீங்கள் வேகம் பிடிக்கிறீர்கள்.', monthTightHint: 'செலவு வருமானத்தைவிட முன்னால் உள்ளது. கவலை வேண்டாம் — ஒருமுறை சரிபார்க்கச் சிறு நினைவூட்டல்.',
   },
   walkthrough: {
+    gotIt: 'புரிந்தது',
     step: 'படி {{current}} / {{total}}', skip: 'வழிகாட்டியைத் தவிர்', getStarted: 'தொடங்கு', next: 'தொடர்',
     welcomeToFintraq: { title: 'Fintraq-க்கு வரவேற்கிறோம்!', desc: 'உங்கள் புதிய பிரீமியம் நிதி டாஷ்போர்டைச் சுருக்கமாகச் சுற்றிப் பார்ப்போம்.' },
     trackNetSavings: { title: 'நிகரச் சேமிப்பைக் கண்காணி', desc: 'மேலுள்ள கார்டு உங்கள் மொத்த நிகர நிலையைக் (வருமானம் – செலவுகள்) காட்டும். வெவ்வேறு நாணயங்களைக் காண ஸ்வைப் செய்யுங்கள்.' },
     accountsWallets: { title: 'கணக்குகள் & பணப்பைகள்', desc: 'உங்கள் பணம், வங்கிக் கணக்குகள், கிரெடிட் கார்டுகளை நிர்வகியுங்கள். தனித்தனிப் பதிவுகளைக் காண அவற்றைத் தட்டவும்.' },
     realTimeInsights: { title: 'நிகழ்நேர நுண்ணறிவுகள்', desc: 'கீழே செலவு முறை நுண்ணறிவுகள், அதிகச் செலவு வகைச் சிப்கள், தொடர்ச்சிகளைக் காணலாம்.' },
-    logFirstTransaction: { title: 'முதல் பரிவர்த்தனையைப் பதிவிடு', desc: 'தயாரானதும், பரிவர்த்தனையைப் பதிவிட கீழ் வலப்புறமுள்ள பச்சை \'+\' பொத்தானைத் தட்டவும்!' },
+    logFirstTransaction: { title: 'முதல் பரிவர்த்தனையைப் பதிவிடு', desc: 'தயாரானதும், பரிவர்த்தனையைப் பதிவு செய்ய கீழே உள்ள பச்சை + பொத்தானைத் தட்டவும்.' },
     enterAmount: { title: 'தொகையை உள்ளிடு', desc: 'எண் உள்ளீட்டால் பரிவர்த்தனைத் தொகையை உள்ளிட்டுத் தொடங்குங்கள். தசம மதிப்புகளும் ஆதரிக்கப்படும்.' },
     selectTransactionType: { title: 'பரிவர்த்தனை வகையைத் தேர்ந்தெடு', desc: 'செலவு (செலவழித்த பணம்), வருமானம் (ஈட்டிய பணம்) அல்லது பரிமாற்றம் (கணக்குகளுக்கிடையே பணம் நகர்த்துதல்) என்பதைத் தேர்ந்தெடுங்கள்.' },
     chooseCategory: { title: 'வகையைத் தேர்ந்தெடு', desc: 'பரிவர்த்தனையை ஒழுங்குபடுத்த ஒரு வகையைத் தேர்ந்தெடுங்கள். தனிப்பயன் வகைகளை அமைப்புகளில் உருவாக்கலாம்.' },

@@ -1,7 +1,8 @@
+import { Screen } from '@/src/components/ui/Screen';
+import { Text } from '@/src/components/ui/Text';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Header } from '@/src/components/ui/Header';
+import { Icon } from '@/src/components/ui/Icon';
 import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
-import { PageBackground } from '@/src/components/ui/PageBackground';
 import { usePersons } from '@/src/features/persons/hooks/persons';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -9,11 +10,10 @@ import { colorNumberToHex } from '@/src/utils/format';
 import { WalkthroughOverlay, PERSONS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { StorageKeys } from '@/src/constants/keys';
 import { AlertCircleIcon, CancelCircleIcon, LockPasswordIcon, PlusSignIcon, Search01Icon, UserGroupIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
@@ -58,14 +58,12 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   }, [router]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <PageBackground />
-      <Header title={t('persons.title')} showBack />
+    <Screen header={{ title: t('persons.title'), showBack: true }} variant="fixed" edges={['top']}>
 
       {persons.length > 0 && (
         <View style={styles.searchRow}>
           <View style={styles.searchWrap}>
-            <HugeiconsIcon icon={Search01Icon} size={18} color={colors.textMuted} />
+            <Icon icon={Search01Icon} size={18} color={colors.textMuted} />
             <TextInput
               style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
               value={query}
@@ -78,7 +76,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
             />
             {query.length > 0 && (
               <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <HugeiconsIcon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
+                <Icon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
               </BentoPressable>
             )}
           </View>
@@ -88,7 +86,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {atLimit && (
           <Pressable style={styles.limitBanner} onPress={() => router.push('/premium')}>
-            <HugeiconsIcon icon={AlertCircleIcon} size={16} color={colors.warning} />
+            <Icon icon={AlertCircleIcon} size={16} color={colors.warning} />
             <Text style={[styles.limitText, { fontFamily: typography.fonts.medium, color: colors.warning }]}>
               Free plan: {FREE_PERSON_LIMIT} persons max — upgrade for unlimited
             </Text>
@@ -137,7 +135,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
         {persons.length === 0 && (
           <View style={styles.empty}>
-            <HugeiconsIcon icon={UserGroupIcon} size={32} color={colors.textMuted} />
+            <Icon icon={UserGroupIcon} size={32} color={colors.textMuted} />
             <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               {t('persons.none')}
             </Text>
@@ -158,18 +156,17 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
       <BentoPressable style={[styles.fab, { backgroundColor: atLimit ? colors.textMuted : colors.primary }]} onPress={handleAdd}>
         {atLimit
-          ? <HugeiconsIcon icon={LockPasswordIcon} size={20} color={colors.primaryForeground} />
-          : <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
+          ? <Icon icon={LockPasswordIcon} size={20} color={colors.primaryForeground} />
+          : <Icon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
         }
       </BentoPressable>
       <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_PERSONS} steps={PERSONS_WALKTHROUGH_STEPS} />
-    </SafeAreaView>
+    </Screen>
   );
 });
 
 const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: ThemeContextType, insets: any) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
@@ -184,7 +181,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: T
       flexDirection: 'row',
       alignItems: 'center',
       height: 48,
-      borderRadius: radius('lg'),
+      borderRadius: radius('full'),
       backgroundColor: colors.surface,
       paddingHorizontal: spacing('4'),
       gap: spacing('2'),
@@ -229,7 +226,6 @@ const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: T
       fontFamily: typography.fonts.regular,
       color: colors.textMuted,
       marginTop: 2,
-      opacity: 0.65,
     },
 
     empty: { alignItems: 'center', paddingVertical: spacing('11'), gap: spacing('2') },
@@ -242,10 +238,9 @@ const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: T
       right: 16,
       width: 56,
       height: 56,
-      borderRadius: radius('xl'),
+      borderRadius: radius('full'),
       justifyContent: 'center',
       alignItems: 'center',
-      ...shadow('lg'),
     },
   });
 

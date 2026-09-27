@@ -1,13 +1,14 @@
+import { Text } from '@/src/components/ui/Text';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { Icon } from '@/src/components/ui/Icon';
 import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { CancelCircleIcon, CheckmarkCircle01Icon, Search01Icon, UserCircleIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useCallback, useMemo, useState } from 'react';
 import * as Haptics from 'expo-haptics';
-import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
-import type { Person } from '../api/persons';
+import { FlatList, StyleSheet, TextInput, View } from 'react-native';
+import type { Person } from '@/src/features/persons/api/persons';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 import { useTranslation } from 'react-i18next';
 
@@ -88,7 +89,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
         </View>
         {selected && (
           <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-            <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.primaryForeground} />
+            <Icon icon={CheckmarkCircle01Icon} size={12} color={colors.primaryForeground} />
           </View>
         )}
       </BentoPressable>
@@ -112,7 +113,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
         </View>
 
         <View style={styles.searchWrap}>
-          <HugeiconsIcon icon={Search01Icon} size={18} color={colors.textMuted} />
+          <Icon icon={Search01Icon} size={18} color={colors.textMuted} />
           <TextInput
             style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
             value={query}
@@ -125,7 +126,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           />
           {query.length > 0 && (
             <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <HugeiconsIcon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
+              <Icon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
             </BentoPressable>
           )}
         </View>
@@ -136,7 +137,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           onPress={() => handleSelect(null)}
         >
           <View style={styles.noneAvatar}>
-            <HugeiconsIcon icon={UserCircleIcon} size={18} color={colors.textMuted} />
+            <Icon icon={UserCircleIcon} size={18} color={colors.textMuted} />
           </View>
           <View style={styles.rowMeta}>
             <Text style={[styles.rowName, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.textMuted }]}>
@@ -145,7 +146,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           </View>
           {selectedId === null && (
             <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} color={colors.primaryForeground} />
+              <Icon icon={CheckmarkCircle01Icon} size={12} color={colors.primaryForeground} />
             </View>
           )}
         </BentoPressable>
@@ -187,7 +188,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
       marginHorizontal: layout.screenPadding,
       marginBottom: spacing('2'),
       height: sizes.input.md.height,
-      borderRadius: radius('lg'),
+      borderRadius: radius('full'),
       backgroundColor: colors.card,
       paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
@@ -215,7 +216,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, isDark, siz
     noneAvatar: {
       width: 36,
       height: 36,
-      borderRadius: Math.round(36 * 0.25),
+      borderRadius: Math.round(36 * 0.3),
       backgroundColor: colors.background,
       alignItems: 'center',
       justifyContent: 'center',

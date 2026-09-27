@@ -1,11 +1,12 @@
+import { Text } from '@/src/components/ui/Text';
 import { usePremium } from '@/src/providers/PremiumProvider';
+import { Icon } from '@/src/components/ui/Icon';
 import { LockPasswordIcon, SparklesIcon, ArrowRight01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { ThemeContextType, useTheme } from '../../providers/ThemeProvider';
-import { BentoPressable } from './BentoPressable';
+import { StyleSheet, View, ViewStyle } from 'react-native';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
 
 interface PremiumGuardProps {
@@ -82,7 +83,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
       <View style={styles.content}>
         <View style={styles.headerRow}>
           <View style={iconBoxStyles}>
-            <HugeiconsIcon icon={LockPasswordIcon} size={iconSize} color={colors.primary} />
+            <Icon icon={LockPasswordIcon} size={iconSize} color={colors.primary} />
           </View>
 
           <View style={styles.textDetails}>
@@ -94,13 +95,13 @@ export const PremiumGuard = React.memo(function PremiumGuard({
                 <Text style={styles.subtitle}>
                   {t('ui.unlockWithPro')}
                 </Text>
-                <HugeiconsIcon icon={SparklesIcon} size={10} color={colors.warning} />
+                <Icon icon={SparklesIcon} size={10} color={colors.warning} />
               </View>
             )}
           </View>
 
           {!isSmall && (
-            <HugeiconsIcon icon={ArrowRight01Icon} size={16} color={colors.textMuted} />
+            <Icon icon={ArrowRight01Icon} size={16} color={colors.textMuted} />
           )}
         </View>
       </View>
@@ -137,7 +138,6 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   title: {
     fontFamily: typography.styles.cardTitle.fontFamily,
     ...typography.metrics.md,
-    lineHeight: 18,
     color: colors.text,
   },
   titleSmall: {
@@ -153,7 +153,6 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   subtitle: {
     fontFamily: typography.styles.badge.fontFamily,
     ...typography.metrics.xs,
-    lineHeight: 14,
     color: colors.primary,
   },
 });

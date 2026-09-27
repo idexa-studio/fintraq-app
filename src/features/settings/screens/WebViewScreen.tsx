@@ -1,10 +1,9 @@
-import { Header } from '@/src/components/ui/Header';
-import { PageBackground } from '@/src/components/ui/PageBackground';
+import { Screen } from '@/src/components/ui/Screen';
+import { Spinner } from '@/src/components/ui';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
 import WebView from 'react-native-webview';
 
 export function WebViewScreen() {
@@ -17,9 +16,7 @@ export function WebViewScreen() {
   const onLoadStart = useCallback(() => setLoading(true), []);
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]} edges={['top']}>
-      <PageBackground />
-      <Header title={title ?? ''} showBack />
+    <Screen header={{ title: title ?? '', showBack: true }} variant="fixed" edges={['top']}>
       <View style={styles.webViewContainer}>
         <WebView
           ref={webViewRef}
@@ -34,11 +31,11 @@ export function WebViewScreen() {
         />
         {loading && (
           <View style={[styles.loadingOverlay, { backgroundColor: colors.background }]}>
-            <ActivityIndicator color={colors.primary} size="large" />
+            <Spinner size="lg" />
           </View>
         )}
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
