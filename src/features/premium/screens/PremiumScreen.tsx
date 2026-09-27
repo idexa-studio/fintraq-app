@@ -1,24 +1,17 @@
+import { Button } from '@/src/components/ui/Button';
+import { Screen } from '@/src/components/ui/Screen';
+import { Spinner } from '@/src/components/ui';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Header } from '@/src/components/ui/Header';
-import { PageBackground } from '@/src/components/ui/PageBackground';
+import { Icon } from '@/src/components/ui/Icon';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { AnalyticsService } from '@/src/services/analytics';
 import { ReloadIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Alert, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -52,9 +45,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
 
 
   return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
-      <Header title={t('premium.title')} showBack />
+    <Screen header={{ title: t('premium.title'), showBack: true }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Hero Card — edge-to-edge, dashboard style */}
@@ -66,11 +57,11 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           </Text>
           <View style={styles.heroPerkRow}>
             <View style={styles.heroPerk}>
-              <HugeiconsIcon icon={ShieldKeyIcon} size={14} color={heroCard.textPrimary} />
+              <Icon icon={ShieldKeyIcon} size={14} color={heroCard.textPrimary} />
               <Text style={styles.heroPerkText}>{t('premium.oneTime')}</Text>
             </View>
             <View style={styles.heroPerk}>
-              <HugeiconsIcon icon={ReloadIcon} size={14} color={heroCard.textPrimary} />
+              <Icon icon={ReloadIcon} size={14} color={heroCard.textPrimary} />
               <Text style={styles.heroPerkText}>{t('premium.storeLinked')}</Text>
             </View>
           </View>
@@ -92,7 +83,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
               </View>
             </View>
           ) : isLoading ? (
-            <ActivityIndicator color={colors.primary} style={{ paddingVertical: 12 }} />
+            <Spinner size="sm" style={{ paddingVertical: 12 }} />
           ) : (
             <Text style={styles.priceError}>{t('premium.pricingUnavailable')}</Text>
           )}
@@ -107,7 +98,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             return (
               <View key={f.key} style={[styles.featureItem, isLast && styles.noMargin]}>
                 <View style={styles.iconWrapperInactive}>
-                  <HugeiconsIcon icon={f.icon} size={20} color={colors.primary} />
+                  <Icon icon={f.icon} size={20} color={colors.primary} />
                 </View>
                 <View style={styles.featureContent}>
                   <Text style={styles.featureTitle}>{t(`premium.features.${f.key}.title`)}</Text>
@@ -123,19 +114,14 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
 
       {/* Pinned Bottom CTA */}
       <View style={styles.footer}>
-        <BentoPressable
-          style={[styles.cta, (!lifetimeProduct || isProcessing) && styles.disabledCta]}
+        <Button
+          title={t('premium.upgradeFor', { price: lifetimeProduct?.displayPrice || t('premium.pro') })}
           onPress={handlePurchase}
-          disabled={isProcessing || !lifetimeProduct}
-        >
-          {isProcessing ? (
-            <ActivityIndicator color={colors.primaryForeground} />
-          ) : (
-            <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
-              {t('premium.upgradeFor', { price: lifetimeProduct?.displayPrice || t('premium.pro') })}
-            </Text>
-          )}
-        </BentoPressable>
+          disabled={!lifetimeProduct}
+          isLoading={isProcessing}
+          size="lg"
+          fullWidth
+        />
         <View style={styles.legal}>
           <BentoPressable onPress={handleRestore} disabled={isProcessing}>
             <Text style={styles.legalText}>{t('premium.restorePurchase')}</Text>
@@ -146,16 +132,12 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
           </BentoPressable>
         </View>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, heroCard: HeroCardPalette) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, state }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
     scroll: {
       paddingTop: 0,
     },
@@ -171,22 +153,20 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     heroBadge: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: 10,
+      ...typography.metrics.xxs,
       letterSpacing: 0.5,
       color: heroCard.textMuted,
       textTransform: 'uppercase',
     },
     heroTitle: {
       fontFamily: typography.fonts.heading,
-      fontSize: 26,
-      lineHeight: 32,
+      ...typography.metrics.xxxl,
       color: heroCard.textPrimary,
       marginTop: spacing('1'),
     },
     heroDesc: {
       fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      lineHeight: 18,
+      ...typography.metrics.sm,
       color: heroCard.textMuted,
       marginTop: spacing('1'),
     },
@@ -208,7 +188,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     heroPerkText: {
       fontFamily: typography.fonts.medium,
-      fontSize: 11,
+      ...typography.metrics.xs,
       color: heroCard.textPrimary,
       flex: 1,
     },
@@ -225,28 +205,17 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       alignItems: 'center',
       justifyContent: 'space-between',
     },
-    pill: {
-      backgroundColor: alpha(colors.success, 'subtle'),
-      paddingHorizontal: spacing('2.5'),
-      paddingVertical: spacing('0.5'),
-      borderRadius: radius('full'),
-    },
-    pillText: {
-      ...typography.metrics.xs,
-      color: colors.success,
-      fontFamily: typography.styles.chipLabel.fontFamily,
-    },
     priceLeft: {
       gap: spacing('0.5'),
     },
     priceLabel: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 16,
+      ...typography.metrics.lg,
       color: colors.text,
     },
     priceSubText: {
       fontFamily: typography.fonts.regular,
-      fontSize: 12,
+      ...typography.metrics.xs,
       color: colors.textMuted,
     },
     priceRight: {
@@ -254,19 +223,19 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     originalPriceText: {
       fontFamily: typography.fonts.regular,
-      fontSize: 14,
+      ...typography.metrics.md,
       color: colors.textMuted,
       textDecorationLine: 'line-through',
       marginBottom: 2,
     },
     priceValue: {
       fontFamily: typography.fonts.amountBold,
-      fontSize: 28,
+      ...typography.metrics.xxxl,
       color: colors.text,
     },
     priceError: {
       fontFamily: typography.fonts.regular,
-      fontSize: 14,
+      ...typography.metrics.md,
       color: colors.danger,
       textAlign: 'center',
       width: '100%',
@@ -289,14 +258,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     noMargin: {
       marginBottom: 0,
     },
-    iconWrapperActive: {
-      width: 40,
-      height: 40,
-      borderRadius: radius('xl'),
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: alpha(colors.success, 'subtle'),
-    },
     iconWrapperInactive: {
       width: 40,
       height: 40,
@@ -311,13 +272,12 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     featureTitle: {
       fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 15,
+      ...typography.metrics.md,
       color: colors.text,
     },
     featureDesc: {
       fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      lineHeight: 18,
+      ...typography.metrics.sm,
       color: colors.textMuted,
     },
     // ── Pinned Footer
@@ -327,21 +287,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
       backgroundColor: colors.background,
     },
-    cta: {
-      height: 52,
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: spacing('3'),
-    },
-    disabledCta: {
-      opacity: 0.65,
-    },
-    ctaText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: 16,
-    },
     legal: {
       flexDirection: 'row',
       justifyContent: 'center',
@@ -350,15 +295,13 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     legalText: {
       fontFamily: typography.fonts.regular,
-      fontSize: 12,
+      ...typography.metrics.xs,
       color: colors.textMuted,
-      opacity: 0.8,
     },
     legalDot: {
       width: 4,
       height: 4,
-      borderRadius: 2,
+      borderRadius: radius('full'),
       backgroundColor: colors.textMuted,
-      opacity: 0.5,
     },
   });

@@ -1,11 +1,12 @@
+import { Text } from '@/src/components/ui/Text';
 import { MoneyText } from '@/src/components/ui/MoneyText';
+import { Icon } from '@/src/components/ui/Icon';
 import { CurrencyPickerTab } from '@/src/features/dashboard/components/CurrencyPickerTab';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 type Props = {
   income: number;
@@ -48,7 +49,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
       <View style={styles.stats}>
         <View style={[styles.statTile, { backgroundColor: heroCard.separator }]}>
           <View style={styles.statHeader}>
-            <HugeiconsIcon icon={ArrowUp01Icon} size={13} color={heroCard.income} />
+            <Icon icon={ArrowUp01Icon} size={13} color={heroCard.income} />
             <Text style={[styles.statLabel, { color: heroCard.textMuted }]}>{t('transactions.income')}</Text>
           </View>
           <MoneyText
@@ -62,7 +63,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
 
         <View style={[styles.statTile, { backgroundColor: heroCard.separator }]}>
           <View style={styles.statHeader}>
-            <HugeiconsIcon icon={ArrowDown01Icon} size={13} color={heroCard.expense} />
+            <Icon icon={ArrowDown01Icon} size={13} color={heroCard.expense} />
             <Text style={[styles.statLabel, { color: heroCard.textMuted }]}>{t('transactions.expenses')}</Text>
           </View>
           <MoneyText
@@ -98,8 +99,7 @@ const createStyles = ({ spacing, radius, typography }: ThemeContextType) =>
       marginBottom: spacing('1'),
     },
     netAmount: {
-      fontSize: 36,
-      lineHeight: 42,
+      ...typography.metrics.display,
       marginBottom: spacing('4'),
     },
     stats: {
@@ -108,7 +108,7 @@ const createStyles = ({ spacing, radius, typography }: ThemeContextType) =>
     },
     statTile: {
       flex: 1,
-      borderRadius: radius('lg'),
+      borderRadius: radius('md'),
       paddingVertical: spacing('2.5'),
       paddingHorizontal: spacing('3'),
       gap: spacing('0.5'),
@@ -124,6 +124,5 @@ const createStyles = ({ spacing, radius, typography }: ThemeContextType) =>
     },
     statValue: {
       ...typography.metrics.lg,
-      lineHeight: 20,
     },
   });

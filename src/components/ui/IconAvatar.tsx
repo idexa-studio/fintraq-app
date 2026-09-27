@@ -1,18 +1,19 @@
-import type { IconSvgElement } from '@hugeicons/react-native';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import type { IconProps, IconSource } from './Icon';
+import { Icon } from './Icon';
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
 import { alpha } from '@/src/theme/tokens';
 
 type IconAvatarVariant = 'solid' | 'subtle' | 'outline';
 
 type IconAvatarProps = {
-  icon: IconSvgElement;
+  icon: IconSource;
   color: string;
   variant?: IconAvatarVariant;
   size?: number;
   iconSize?: number;
+  /** Stroke weight for the glyph. */
+  weight?: IconProps['weight'];
   style?: ViewStyle;
 };
 
@@ -22,9 +23,9 @@ export const IconAvatar = React.memo(function IconAvatar({
   variant = 'subtle',
   size = 40,
   iconSize,
+  weight = 'regular',
   style,
 }: IconAvatarProps) {
-  const { colors } = useTheme();
 
   const { bg, iconColor, border, resolvedIconSize, borderRadius } = React.useMemo(() => {
     let bg: string;
@@ -34,7 +35,7 @@ export const IconAvatar = React.memo(function IconAvatar({
     switch (variant) {
       case 'solid':
         bg = color;
-        iconColor = colors.background;
+        iconColor = '#FFFFFF';
         border = undefined;
         break;
       case 'outline':
@@ -55,9 +56,10 @@ export const IconAvatar = React.memo(function IconAvatar({
       iconColor,
       border,
       resolvedIconSize: iconSize ?? Math.round(size * 0.45),
-      borderRadius: Math.round(size * 0.25),
+      // Squircle: 30% of size keeps the curve proportional at every size.
+      borderRadius: Math.round(size * 0.3),
     };
-  }, [variant, color, colors.background, iconSize, size]);
+  }, [variant, color, iconSize, size]);
 
   const containerStyle = React.useMemo(
     () => [styles.base, { width: size, height: size, borderRadius, backgroundColor: bg }, border, style],
@@ -66,7 +68,7 @@ export const IconAvatar = React.memo(function IconAvatar({
 
   return (
     <View style={containerStyle}>
-      <HugeiconsIcon icon={icon} size={resolvedIconSize} color={iconColor} />
+      <Icon icon={icon} size={resolvedIconSize} color={iconColor} weight={weight} />
     </View>
   );
 });

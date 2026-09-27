@@ -1,7 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import notifee, { AndroidImportance as NotifeeAndroidImportance } from 'react-native-notify-kit';
 import { Platform } from 'react-native';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from './logger.service';
 import i18n from '@/src/i18n';
 
 const REMINDER_KEYS = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8'] as const;
@@ -41,7 +41,7 @@ export const NotificationService = {
           name: i18n.t('notifications.channelReminders'),
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
-          lightColor: '#FF231F7C',
+          lightColor: '#FF231F7C', // design-system-ignore: native Android LED colour
         });
 
         await notifee.createChannel({

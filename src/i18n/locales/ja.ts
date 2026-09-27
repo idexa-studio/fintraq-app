@@ -2,6 +2,8 @@ import type { Translation } from './types';
 
 const ja: Translation = {
   common: {
+    edit: '編集', delete: '削除',
+    back: '戻る',
     cancel: 'キャンセル',
     ok: 'OK',
     clear: 'クリア',
@@ -18,6 +20,7 @@ const ja: Translation = {
     settings: '設定',
   },
   settings: {
+    general: "一般", security: "セキュリティ", manage: "管理", about: "アプリについて", loans: "ローン", loansHint: "貸したお金・借りたお金",
     title: '設定',
     welcome: 'ようこそ',
     proMember: 'Pro会員',
@@ -112,12 +115,13 @@ const ja: Translation = {
     cannotDelete: 'カテゴリを削除できません', deleteFailed: 'カテゴリを削除できませんでした。',
   },
   dashboard: {
+    streakDays: '{{count}}日連続',
     accounts: '口座', manage: '管理', topExpenses: '支出上位', people: '人物', loans: '貸し借り', recent: '最近', seeAll: 'すべて見る',
     noTransactions: '取引はまだありません', transactionHint: '日々の支払い、収入、振替をここに記録しましょう。', addTransaction: '取引を追加',
     balance: '残高', income: '収入', expenses: '支出', noLoans: '有効な貸し借りはありません', loanHint: '貸したお金・借りたお金を記録します。タップして追加。',
     lentOut: '貸した', borrowed: '借りた', overdue: '期限超過 {{count}}件', active: '進行中 {{count}}件', noExpenses: '支出はまだありません', expensesHint: '取引を追加すると、支出の多いカテゴリが表示されます。',
   },
-  transactions: { amount: '金額', category: 'カテゴリ', netSavings: '純貯蓄', income: '収入', expenses: '支出', type: '種類', account: '口座', date: '日付', person: '人物', typesCount: '{{count}}種類', oneAccount: '1口座', accountsCount: '{{count}}口座', oneCategory: '1カテゴリ', categoriesCount: '{{count}}カテゴリ', onePerson: '1人', personsCount: '{{count}}人',
+  transactions: { dayCount: '{{count}}件', allCategories: 'すべて', searchCategories: 'カテゴリを検索', amount: '金額', category: 'カテゴリ', netSavings: '純貯蓄', income: '収入', expenses: '支出', type: '種類', account: '口座', date: '日付', person: '人物', typesCount: '{{count}}種類', oneAccount: '1口座', accountsCount: '{{count}}口座', oneCategory: '1カテゴリ', categoriesCount: '{{count}}カテゴリ', onePerson: '1人', personsCount: '{{count}}人',
   filteredSummary: '絞り込み結果の集計', title: '取引', clearAll: 'すべてクリア', noResults: '結果なし', nothingYet: 'まだ何もありません', noMatch: '現在のフィルターに一致する取引がありません。条件を調整するかクリアしてください。', addFirst: '最初の取引を追加して記録を始めましょう。', clearFilters: 'フィルターをクリア', add: '取引を追加',
   deleteTitle: '取引を削除', deleteMessage: '取引を削除し、口座残高への反映を元に戻します。', delete: '削除', sortTitle: '取引を並べ替え', newest: '新しい順', oldest: '古い順', highest: '金額の大きい順', lowest: '金額の小さい順',
   expense: '支出', transfer: '振替', missingDetails: '入力が不足しています', missingDetailsMessage: '口座、カテゴリ、有効な金額を選択してください。', missingDestination: '振替先がありません', missingDestinationMessage: '振替先の口座を選択してください。',
@@ -125,6 +129,7 @@ const ja: Translation = {
   editEntry: '記録を編集', newEntry: '新しい記録', loanRepaymentFor: '返済の相手', loading: '読み込み中...', fromAccount: '出金元口座', toAccount: '入金先口座', noCompatible: 'この振替に使える口座がありません。', linkedPerson: '紐づく人物', unknown: '不明', noPersonLinked: '人物が紐づいていません', time: '時刻', note: 'メモ', optionalContext: '補足（任意）', saveChanges: '変更を保存', saveTransaction: '取引を保存', none: 'なし',
   detailTitle: '取引', notFound: '取引が見つかりません。', detailDeleteTitle: '取引を削除', detailDeleteMessage: '残高への反映が元に戻り、この操作は取り消せません。', from: '出金元', to: '入金先', created: '作成日', cancel: 'キャンセル' },
   onboardingFlow: {
+    getStarted: 'はじめる', restoreFromBackup: 'バックアップから復元', welcomeSubtitle: '支出・収入・貸し借りを、落ち着いたプライベートな場所でまとめて管理。設定は1分以内で完了します。',
     steps: {
       welcome: { eyebrow: 'はじめに', title: 'あなたの家計コックピットを作ろう。', subtitle: '落ち着いた設定フローで、標準設定と最初の口座がそろいます。' },
       setup_choice: { eyebrow: 'セットアップ方法', title: 'どのように始めますか？', subtitle: '新しいワークスペースで始めるか、既存のGoogle Driveバックアップを復元します。' },
@@ -165,7 +170,7 @@ const ja: Translation = {
   },
   ui: {
     somethingWrong: '問題が発生しました', proOnly: 'Pro限定', unlockWithPro: 'Fintraq Proで解放',
-    chooseIcon: 'アイコンを選択', chooseColor: '色を選択', colorsCount: '{{count}}色', currency: '通貨', currenciesCount: '{{count}}通貨', searchCurrency: '名前またはコードで検索', delKey: '削除',
+    charsLeft: '残り{{count}}文字', suggested: 'おすすめ', allCurrencies: 'すべての通貨', noMatch: '「{{query}}」に一致する項目はありません', chooseIcon: 'アイコンを選択', chooseColor: '色を選択', colorsCount: '{{count}}色', currency: '通貨', currenciesCount: '{{count}}通貨', searchCurrency: '名前またはコードで検索', delKey: '削除',
   },
   lock: {
     unlockApp: 'アプリのロックを解除', authFailed: '認証に失敗しました。もう一度お試しください。', useButton: '下のボタンでもう一度お試しください。',
@@ -180,6 +185,9 @@ const ja: Translation = {
     defaultMessage: '続けるにはFintraqを更新してください。すぐに完了します。', updateNow: '今すぐ更新',
   },
   loans: {
+    outstandingAmount: "残高: {{amount}}", exceedsOutstanding: "金額が残高 {{amount}} を超えています", fullAmount: "全額 · {{amount}}",
+    freeLimit: '無料プランでは有効なローンは{{limit}}件までです。無制限にするにはアップグレード。', upgrade: 'アップグレード',
+    lentToName: '{{name}}に貸した', borrowedFromName: '{{name}}から借りた',
     title: '貸し借り', loan: '貸し借り', newLoan: '新規の貸し借り', lentOut: '貸した', borrowed: '借りた', lent: '貸した', repaid: '返済済み',
     noLent: '貸した記録はありません', noBorrowed: '借りた記録はありません', emptyHint: '人に貸したお金・借りたお金をここで管理します。', addLoan: '貸し借りを追加',
     unknown: '不明', unnamedSource: '名称未設定', outstandingBalance: '未返済残高', principal: '元本', outstanding: '未返済', totalPrincipal: '元本合計',
@@ -217,10 +225,12 @@ const ja: Translation = {
     linkPerson: '人物を紐づける', noPerson: '人物なし',
   },
   categoryForm: {
+    appliesToHint: '1つ以上選択してください。', moreIcons: 'その他',
     edit: 'カテゴリを編集', new: '新しいカテゴリ', categoryName: 'カテゴリ名', tapToChangeIcon: 'タップしてアイコンを変更', appliesTo: '対象', namePlaceholder: '例：食料品、給与',
     save: 'カテゴリを保存', create: 'カテゴリを作成', chooseIcon: 'アイコンを選択', expense: '支出', income: '収入', transfer: '振替',
   },
   accountForm: {
+    lockedHint: '種類・通貨・残高は口座作成時に決まります。残高は取引によって変わります。',
     edit: '口座を編集', new: '新しい口座', accountName: '口座名', accountType: '口座の種類', accountDetails: '口座の詳細',
     namePlaceholder: '例：メインの財布', holderPlaceholder: '山田 太郎（任意）', numberPlaceholder: 'IBAN（任意）', currentBalance: '現在の残高', initialBalance: '初期残高',
     save: '口座を保存', create: '口座を作成',
@@ -319,12 +329,13 @@ const ja: Translation = {
     monthGood: '今月は順調です', monthTight: '今月はここまで厳しめです', monthGoodHint: '収入が支出を上回っています。いい流れです。', monthTightHint: '支出が収入を上回っています。心配はいりません。確認のきっかけにしましょう。',
   },
   walkthrough: {
+    gotIt: 'OK',
     step: 'ステップ {{current}} / {{total}}', skip: 'ガイドをスキップ', getStarted: '始める', next: '続ける',
     welcomeToFintraq: { title: 'Fintraqへようこそ！', desc: '新しいプレミアム家計ダッシュボードを、さっと見て回りましょう。' },
     trackNetSavings: { title: '純貯蓄を確認', desc: '上部のカードには、収入から支出を引いた全体の収支が表示されます。スワイプで他の通貨に切り替えられます。' },
     accountsWallets: { title: '口座と財布', desc: '現金、銀行口座、クレジットカードを管理します。タップすると個別の履歴を確認できます。' },
     realTimeInsights: { title: 'リアルタイムのインサイト', desc: '下には、支出パターンのインサイト、支出上位カテゴリのチップ、連続記録が表示されます。' },
-    logFirstTransaction: { title: '最初の取引を記録', desc: '準備ができたら、右下の緑の「+」ボタンをタップして取引を記録しましょう！' },
+    logFirstTransaction: { title: '最初の取引を記録', desc: '準備ができたら、下の緑の＋ボタンをタップして取引を記録しましょう。' },
     enterAmount: { title: '金額を入力', desc: '数字キーで取引金額を入力します。小数にも対応しています。' },
     selectTransactionType: { title: '取引の種類を選択', desc: '支出（使ったお金）、収入（得たお金）、振替（口座間の資金移動）から選びます。' },
     chooseCategory: { title: 'カテゴリを選択', desc: '取引を整理するカテゴリを選びます。オリジナルのカテゴリは設定で作成できます。' },

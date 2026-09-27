@@ -1,13 +1,12 @@
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import type { IconSvgElement } from '@hugeicons/react-native';
+import { Icon } from './Icon';
+import type { IconSource } from './Icon';
 import React, { useMemo, useCallback } from 'react';
-import { ActivityIndicator, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native';
-import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { ActivityIndicator, StyleProp, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { BentoPressable } from './BentoPressable';
-import { alpha } from '@/src/theme/tokens';
 
-type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'success' | 'ghost';
-type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonVariant = 'primary' | 'tonal' | 'secondary' | 'outline' | 'danger' | 'success' | 'ghost';
+export type ButtonSize = 'sm' | 'md' | 'lg';
 
 type ButtonProps = {
   title: string;
@@ -16,10 +15,18 @@ type ButtonProps = {
   size?: ButtonSize;
   isLoading?: boolean;
   disabled?: boolean;
-  style?: ViewStyle;
+  /** Stretch to the parent's width — form submits, sheet actions. */
+  fullWidth?: boolean;
+  icon?: IconSource;
+  iconPosition?: 'leading' | 'trailing';
+  /** Defaults to the title; set it when the title alone is ambiguous (e.g. a currency code). */
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  style?: StyleProp<ViewStyle>;
   textStyle?: TextStyle;
-  icon?: IconSvgElement;
 };
+
+const ICON_SIZE: Record<ButtonSize, number> = { sm: 16, md: 19, lg: 20 };
 
 export const Button = React.memo(function Button({
   title,
@@ -28,48 +35,48 @@ export const Button = React.memo(function Button({
   size = 'md',
   isLoading = false,
   disabled = false,
+  fullWidth = false,
+  icon,
+  iconPosition = 'leading',
+  accessibilityLabel,
+  accessibilityHint,
   style,
   textStyle,
-  icon,
 }: ButtonProps) {
   const theme = useTheme();
-  const { colors, sizes } = theme;
+  const { colors, sizes, alpha } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const sizeConfig = sizes.button[size];
 
-  const textColor = useMemo(() => {
-    if (disabled) return colors.textMuted;
-    if (variant === 'secondary' || variant === 'outline' || variant === 'ghost') return colors.text;
-    if (variant === 'primary') return colors.primaryForeground;
-    return colors.background;
-  }, [variant, disabled, colors.text, colors.textMuted, colors.background, colors.primaryForeground]);
-
-  const backgroundColor = useMemo(() => {
-    if (disabled) return colors.surface;
+  const { textColor, backgroundColor, borderColor } = useMemo(() => {
     switch (variant) {
-      case 'primary': return colors.primary;
-      case 'danger': return colors.danger;
-      case 'success': return colors.success;
+      case 'primary':
+        return { textColor: colors.primaryForeground, backgroundColor: colors.primary, borderColor: 'transparent' };
+      case 'tonal':
+        return { textColor: colors.primaryInk, backgroundColor: alpha(colors.primary, 'subtle'), borderColor: 'transparent' };
+      case 'danger':
+        return { textColor: '#FFFFFF', backgroundColor: colors.danger, borderColor: 'transparent' };
+      case 'success':
+        // Success is mid-green in light mode, bright mint in dark: flip the label for contrast.
+        return { textColor: theme.isDark ? colors.primaryForeground : '#FFFFFF', backgroundColor: colors.success, borderColor: 'transparent' };
       case 'secondary':
+        return { textColor: colors.text, backgroundColor: colors.surface, borderColor: 'transparent' };
       case 'outline':
-        return colors.surface;
+        return { textColor: colors.text, backgroundColor: 'transparent', borderColor: alpha(colors.text, 'subtle') };
       case 'ghost':
       default:
-        return 'transparent';
+        return { textColor: colors.text, backgroundColor: 'transparent', borderColor: 'transparent' };
     }
-  }, [variant, disabled, colors.primary, colors.danger, colors.success, colors.surface]);
-
-  const borderColor = useMemo(() => {
-    if (variant === 'outline') return alpha(colors.text, 'subtle');
-    return 'transparent';
-  }, [variant, colors.text]);
+  }, [variant, colors, alpha, theme.isDark]);
 
   const handlePress = useCallback(() => {
-    if (!disabled && !isLoading) {
-      onPress();
-    }
+    if (!disabled && !isLoading) onPress();
   }, [disabled, isLoading, onPress]);
+
+  const iconNode = icon && !isLoading
+    ? <Icon icon={icon} size={ICON_SIZE[size]} color={textColor} weight="bold" />
+    : null;
 
   return (
     <BentoPressable
@@ -82,37 +89,32 @@ export const Button = React.memo(function Button({
           backgroundColor,
           borderWidth: variant === 'outline' ? 1 : 0,
           borderColor,
-          opacity: disabled ? 0.5 : 1,
+          opacity: disabled ? 0.45 : 1,
         },
+        fullWidth && styles.fullWidth,
         style,
       ]}
       onPress={handlePress}
       disabled={disabled || isLoading}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? title}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled: disabled || isLoading, busy: isLoading }}
     >
-      {icon && !isLoading && (
-        <HugeiconsIcon
-          icon={icon}
-          size={size === 'sm' ? 16 : size === 'lg' ? 24 : 20}
-          color={textColor}
-        />
-      )}
+      {iconPosition === 'leading' ? iconNode : null}
 
       {isLoading ? (
         <ActivityIndicator color={textColor} size="small" />
       ) : (
         <Text
-          style={[
-            styles.text,
-            {
-              color: textColor,
-              fontSize: sizeConfig.fontSize,
-            },
-            textStyle,
-          ]}
+          numberOfLines={1}
+          style={[styles.text, { color: textColor, fontSize: sizeConfig.fontSize }, textStyle]}
         >
           {title}
         </Text>
       )}
+
+      {iconPosition === 'trailing' ? iconNode : null}
     </BentoPressable>
   );
 });
@@ -123,8 +125,10 @@ const createStyles = ({ typography, spacing }: ThemeContextType) => StyleSheet.c
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    overflow: 'hidden',
     gap: spacing('2'),
+  },
+  fullWidth: {
+    alignSelf: 'stretch',
   },
   text: {
     fontFamily: typography.styles.buttonLabel.fontFamily,

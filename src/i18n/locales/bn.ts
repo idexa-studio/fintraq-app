@@ -2,6 +2,8 @@ import type { Translation } from './types';
 
 const bn: Translation = {
   common: {
+    edit: 'সম্পাদনা', delete: 'মুছুন',
+    back: 'পিছনে',
     cancel: 'বাতিল',
     ok: 'ঠিক আছে',
     clear: 'মুছুন',
@@ -18,6 +20,7 @@ const bn: Translation = {
     settings: 'সেটিংস',
   },
   settings: {
+    general: "সাধারণ", security: "নিরাপত্তা", manage: "পরিচালনা", about: "সম্পর্কে", loans: "ঋণ", loansHint: "আপনার দেওয়া বা নেওয়া টাকা",
     title: 'সেটিংস',
     welcome: 'স্বাগতম',
     proMember: 'প্রো সদস্য',
@@ -112,12 +115,13 @@ const bn: Translation = {
     cannotDelete: 'বিভাগ মোছা যাচ্ছে না', deleteFailed: 'বিভাগ মুছতে ব্যর্থ হয়েছে।',
   },
   dashboard: {
+    streakDays: '{{count}} দিনের ধারা',
     accounts: 'অ্যাকাউন্ট', manage: 'পরিচালনা', topExpenses: 'শীর্ষ ব্যয়', people: 'ব্যক্তি', loans: 'ঋণ', recent: 'সাম্প্রতিক', seeAll: 'সব দেখুন',
     noTransactions: 'এখনও কোনো লেনদেন নেই', transactionHint: 'এখানে আপনার দৈনন্দিন পেমেন্ট, আয় বা ট্রান্সফার লিখতে শুরু করুন।', addTransaction: 'লেনদেন যোগ করুন',
     balance: 'আপনার ব্যালেন্স', income: 'আয়', expenses: 'ব্যয়', noLoans: 'কোনো সক্রিয় ঋণ নেই', loanHint: 'আপনি যে টাকা ধার দিয়েছেন বা নিয়েছেন তা ট্র্যাক করুন। ঋণ যোগ করতে ট্যাপ করুন।',
     lentOut: 'ধার দেওয়া', borrowed: 'ধার নেওয়া', overdue: '{{count}}টি মেয়াদোত্তীর্ণ', active: '{{count}}টি সক্রিয়', noExpenses: 'এখনও কোনো ব্যয় নেই', expensesHint: 'আপনার শীর্ষ ব্যয়ের বিভাগ দেখতে কিছু লেনদেন যোগ করুন।',
   },
-  transactions: { amount: 'পরিমাণ', category: 'বিভাগ', netSavings: 'নিট সঞ্চয়', income: 'আয়', expenses: 'ব্যয়', type: 'ধরন', account: 'অ্যাকাউন্ট', date: 'তারিখ', person: 'ব্যক্তি', typesCount: '{{count}}টি ধরন', oneAccount: '১টি অ্যাকাউন্ট', accountsCount: '{{count}}টি অ্যাকাউন্ট', oneCategory: '১টি বিভাগ', categoriesCount: '{{count}}টি বিভাগ', onePerson: '১ জন ব্যক্তি', personsCount: '{{count}} জন ব্যক্তি',
+  transactions: { dayCount: '{{count}}টি এন্ট্রি', allCategories: 'সব', searchCategories: 'ক্যাটাগরি খুঁজুন', amount: 'পরিমাণ', category: 'বিভাগ', netSavings: 'নিট সঞ্চয়', income: 'আয়', expenses: 'ব্যয়', type: 'ধরন', account: 'অ্যাকাউন্ট', date: 'তারিখ', person: 'ব্যক্তি', typesCount: '{{count}}টি ধরন', oneAccount: '১টি অ্যাকাউন্ট', accountsCount: '{{count}}টি অ্যাকাউন্ট', oneCategory: '১টি বিভাগ', categoriesCount: '{{count}}টি বিভাগ', onePerson: '১ জন ব্যক্তি', personsCount: '{{count}} জন ব্যক্তি',
   filteredSummary: 'ফিল্টার করা সারসংক্ষেপ', title: 'লেনদেন', clearAll: 'সব মুছুন', noResults: 'কোনো ফলাফল নেই', nothingYet: 'এখানে এখনও কিছু নেই', noMatch: 'সক্রিয় ফিল্টারের সঙ্গে কোনো লেনদেন মেলেনি। ফিল্টার বদলান বা মুছে দিন।', addFirst: 'ট্র্যাকিং শুরু করতে আপনার প্রথম লেনদেন যোগ করুন।', clearFilters: 'ফিল্টার মুছুন', add: 'লেনদেন যোগ করুন',
   deleteTitle: 'লেনদেন মুছুন', deleteMessage: 'এটি লেনদেন সরিয়ে দেবে এবং অ্যাকাউন্ট ব্যালেন্সে এর প্রভাব ফিরিয়ে আনবে।', delete: 'মুছুন', sortTitle: 'লেনদেন সাজান', newest: 'নতুন আগে', oldest: 'পুরনো আগে', highest: 'সর্বোচ্চ পরিমাণ', lowest: 'সর্বনিম্ন পরিমাণ',
   expense: 'ব্যয়', transfer: 'ট্রান্সফার', missingDetails: 'তথ্য অসম্পূর্ণ', missingDetailsMessage: 'অনুগ্রহ করে অ্যাকাউন্ট, বিভাগ ও সঠিক পরিমাণ নির্বাচন করুন।', missingDestination: 'গন্তব্য নেই', missingDestinationMessage: 'ট্রান্সফারের জন্য একটি গন্তব্য অ্যাকাউন্ট নির্বাচন করুন।',
@@ -125,6 +129,7 @@ const bn: Translation = {
   editEntry: 'এন্ট্রি সম্পাদনা', newEntry: 'নতুন এন্ট্রি', loanRepaymentFor: 'ঋণ পরিশোধ — যার জন্য', loading: 'লোড হচ্ছে...', fromAccount: 'যে অ্যাকাউন্ট থেকে', toAccount: 'যে অ্যাকাউন্টে', noCompatible: 'এই ট্রান্সফারের জন্য কোনো উপযুক্ত অ্যাকাউন্ট নেই।', linkedPerson: 'যুক্ত ব্যক্তি', unknown: 'অজানা', noPersonLinked: 'কোনো ব্যক্তি যুক্ত নেই', time: 'সময়', note: 'নোট', optionalContext: 'ঐচ্ছিক বিবরণ', saveChanges: 'পরিবর্তন সংরক্ষণ', saveTransaction: 'লেনদেন সংরক্ষণ', none: 'কিছু নয়',
   detailTitle: 'লেনদেন', notFound: 'লেনদেন পাওয়া যায়নি।', detailDeleteTitle: 'লেনদেন মুছুন', detailDeleteMessage: 'এটি ব্যালেন্সের প্রভাব ফিরিয়ে আনবে এবং পূর্বাবস্থায় ফেরানো যাবে না।', from: 'থেকে', to: 'প্রতি', created: 'তৈরির সময়', cancel: 'বাতিল' },
   onboardingFlow: {
+    getStarted: 'শুরু করুন', restoreFromBackup: 'ব্যাকআপ থেকে ফেরত আনুন', welcomeSubtitle: 'খরচ, আয় ও ঋণ এক শান্ত, ব্যক্তিগত জায়গায় ট্র্যাক করুন। সেটআপে এক মিনিটও লাগে না।',
     steps: {
       welcome: { eyebrow: 'শুরু করা যাক', title: 'আপনার ফিন্যান্স ককপিট তৈরি করুন।', subtitle: 'সম্পূর্ণ ডিফল্ট ও পরিচ্ছন্ন অ্যাকাউন্ট সহ একটি সহজ সেটআপ।' },
       setup_choice: { eyebrow: 'সেটআপ মোড', title: 'আপনি কীভাবে শুরু করতে চান?', subtitle: 'নতুন ওয়ার্কস্পেস দিয়ে শুরু করুন অথবা বিদ্যমান Google Drive ব্যাকআপ রিস্টোর করুন।' },
@@ -165,7 +170,7 @@ const bn: Translation = {
   },
   ui: {
     somethingWrong: 'কিছু ভুল হয়েছে', proOnly: 'শুধু প্রো', unlockWithPro: 'Fintraq Pro দিয়ে আনলক করুন',
-    chooseIcon: 'আইকন বেছে নিন', chooseColor: 'রং বেছে নিন', colorsCount: '{{count}}টি রং', currency: 'মুদ্রা', currenciesCount: '{{count}}টি মুদ্রা', searchCurrency: 'নাম বা কোড দিয়ে খুঁজুন', delKey: 'মুছুন',
+    charsLeft: 'আর {{count}}টি অক্ষর বাকি', suggested: 'প্রস্তাবিত', allCurrencies: 'সব মুদ্রা', noMatch: '“{{query}}” এর সাথে কিছু মেলেনি', chooseIcon: 'আইকন বেছে নিন', chooseColor: 'রং বেছে নিন', colorsCount: '{{count}}টি রং', currency: 'মুদ্রা', currenciesCount: '{{count}}টি মুদ্রা', searchCurrency: 'নাম বা কোড দিয়ে খুঁজুন', delKey: 'মুছুন',
   },
   lock: {
     unlockApp: 'অ্যাপ আনলক করুন', authFailed: 'প্রমাণীকরণ ব্যর্থ। আবার চেষ্টা করুন।', useButton: 'আবার চেষ্টা করতে নিচের বোতামটি ব্যবহার করুন।',
@@ -180,6 +185,9 @@ const bn: Translation = {
     defaultMessage: 'চালিয়ে যেতে অনুগ্রহ করে Fintraq আপডেট করুন। মাত্র একটু সময় লাগবে।', updateNow: 'এখনই আপডেট করুন',
   },
   loans: {
+    outstandingAmount: "বাকি: {{amount}}", exceedsOutstanding: "পরিমাণ বাকি {{amount}}-এর বেশি", fullAmount: "পুরো পরিমাণ · {{amount}}",
+    freeLimit: 'ফ্রি প্ল্যানে সর্বোচ্চ {{limit}}টি সক্রিয় ঋণ। সীমাহীনের জন্য আপগ্রেড করুন।', upgrade: 'আপগ্রেড',
+    lentToName: '{{name}}-কে ধার দেওয়া', borrowedFromName: '{{name}}-এর কাছ থেকে ধার',
     title: 'ঋণ', loan: 'ঋণ', newLoan: 'নতুন ঋণ', lentOut: 'ধার দেওয়া', borrowed: 'ধার নেওয়া', lent: 'ধার দেওয়া', repaid: 'পরিশোধিত',
     noLent: 'ধার দেওয়ার কোনো ঋণ নেই', noBorrowed: 'ধার নেওয়ার কোনো ঋণ নেই', emptyHint: 'অন্যকে ধার দেওয়া বা অন্যের কাছ থেকে ধার নেওয়া টাকার হিসাব এখানে রাখুন।', addLoan: 'ঋণ যোগ করুন',
     unknown: 'অজানা', unnamedSource: 'নামহীন উৎস', outstandingBalance: 'বকেয়া ব্যালেন্স', principal: 'মূলধন', outstanding: 'বকেয়া', totalPrincipal: 'মোট মূলধন',
@@ -217,10 +225,12 @@ const bn: Translation = {
     linkPerson: 'ব্যক্তি যুক্ত করুন', noPerson: 'কোনো ব্যক্তি নেই',
   },
   categoryForm: {
+    appliesToHint: 'এক বা একাধিক বেছে নিন।', moreIcons: 'আরও',
     edit: 'বিভাগ সম্পাদনা', new: 'নতুন বিভাগ', categoryName: 'বিভাগের নাম', tapToChangeIcon: 'আইকন বদলাতে ট্যাপ করুন', appliesTo: 'প্রযোজ্য', namePlaceholder: 'যেমন মুদি, বেতন',
     save: 'বিভাগ সংরক্ষণ', create: 'বিভাগ তৈরি করুন', chooseIcon: 'আইকন বেছে নিন', expense: 'ব্যয়', income: 'আয়', transfer: 'ট্রান্সফার',
   },
   accountForm: {
+    lockedHint: 'ধরন, মুদ্রা ও ব্যালেন্স অ্যাকাউন্ট তৈরির সময় ঠিক হয়। ব্যালেন্স লেনদেনের মাধ্যমে বদলায়।',
     edit: 'অ্যাকাউন্ট সম্পাদনা', new: 'নতুন অ্যাকাউন্ট', accountName: 'অ্যাকাউন্টের নাম', accountType: 'অ্যাকাউন্টের ধরন', accountDetails: 'অ্যাকাউন্টের বিবরণ',
     namePlaceholder: 'যেমন প্রধান ওয়ালেট', holderPlaceholder: 'করিম হোসেন (ঐচ্ছিক)', numberPlaceholder: 'IBAN (ঐচ্ছিক)', currentBalance: 'বর্তমান ব্যালেন্স', initialBalance: 'প্রারম্ভিক ব্যালেন্স',
     save: 'অ্যাকাউন্ট সংরক্ষণ', create: 'অ্যাকাউন্ট তৈরি করুন',
@@ -319,12 +329,13 @@ const bn: Translation = {
     monthGood: 'এই মাস ভালো যাচ্ছে', monthTight: 'এ পর্যন্ত মাসটি টানাটানির', monthGoodHint: 'যা যাচ্ছে তার চেয়ে বেশি আসছে — আপনি গতি পাচ্ছেন।', monthTightHint: 'ব্যয় আয়ের চেয়ে এগিয়ে। চিন্তা নেই — শুধু একবার দেখে নেওয়ার ইঙ্গিত।',
   },
   walkthrough: {
+    gotIt: 'বুঝেছি',
     step: 'ধাপ {{current}} / {{total}}', skip: 'গাইড এড়িয়ে যান', getStarted: 'শুরু করুন', next: 'চালিয়ে যান',
     welcomeToFintraq: { title: 'Fintraq-এ স্বাগতম!', desc: 'আপনার নতুন প্রিমিয়াম আর্থিক ড্যাশবোর্ডের একটি দ্রুত ট্যুর নেওয়া যাক।' },
     trackNetSavings: { title: 'নিট সঞ্চয় ট্র্যাক করুন', desc: 'উপরের কার্ডে আপনার মোট নিট অবস্থান (আয় বিয়োগ ব্যয়) দেখা যায়। অন্য মুদ্রা দেখতে সোয়াইপ করুন।' },
     accountsWallets: { title: 'অ্যাকাউন্ট ও ওয়ালেট', desc: 'আপনার নগদ, ব্যাংক অ্যাকাউন্ট ও ক্রেডিট কার্ড পরিচালনা করুন। আলাদা লগ দেখতে ট্যাপ করুন।' },
     realTimeInsights: { title: 'রিয়েল-টাইম ইনসাইট', desc: 'নিচে ব্যয়ের ধরনের ইনসাইট, শীর্ষ ব্যয়ের বিভাগের চিপ ও ধারাবাহিকতা পাবেন।' },
-    logFirstTransaction: { title: 'প্রথম লেনদেন লিখুন', desc: 'প্রস্তুত হলে লেনদেন লিখতে নিচে ডানদিকের সবুজ \'+\' বোতামে ট্যাপ করুন!' },
+    logFirstTransaction: { title: 'প্রথম লেনদেন লিখুন', desc: 'প্রস্তুত হলে, লেনদেন যোগ করতে নিচের সবুজ + বোতামে ট্যাপ করুন।' },
     enterAmount: { title: 'পরিমাণ লিখুন', desc: 'সংখ্যার ইনপুট দিয়ে লেনদেনের পরিমাণ লিখে শুরু করুন। দশমিক মান পুরোপুরি সমর্থিত।' },
     selectTransactionType: { title: 'লেনদেনের ধরন বেছে নিন', desc: 'ব্যয় (খরচ করা টাকা), আয় (উপার্জন) বা ট্রান্সফার (অ্যাকাউন্টের মধ্যে টাকা সরানো) বেছে নিন।' },
     chooseCategory: { title: 'বিভাগ বেছে নিন', desc: 'লেনদেন গুছিয়ে রাখতে একটি বিভাগ নির্বাচন করুন। কাস্টম বিভাগ সেটিংসে তৈরি করা যায়।' },

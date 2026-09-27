@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { TransactionListItem } from '@/src/features/transactions/api/transactions';
 import { useInfiniteTransactions } from '@/src/features/transactions/hooks/transactions';
-import { AdvancedFilters } from '../api/advanced-filters.service';
+import { AdvancedFilters } from '@/src/features/filters/api/advanced-filters.service';
 
 interface UseAdvancedFiltersResult {
   transactions: TransactionListItem[];

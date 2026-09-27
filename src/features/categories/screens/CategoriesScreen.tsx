@@ -1,45 +1,24 @@
-import {
-  CancelCircleIcon,
-  Delete01Icon,
-  FolderOpenIcon,
-  PencilEdit01Icon,
-  PlusSignIcon,
-  Search01Icon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { ConfirmDialog, EmptyState, Fab, ListGroup, OptionsDialog, Screen, SearchField, SegmentedControl, SkeletonRow } from '@/src/components/ui';
+import { FolderOpenIcon, MagnifyingGlassIcon, PencilSimpleIcon, TrashIcon } from '@/src/components/ui/icons';
+import { StorageKeys } from '@/src/constants/keys';
+import { Category } from '@/src/features/categories/api/categories';
+import { CategoryCard } from '@/src/features/categories/components/CategoryCard';
+import { useCategories, useDeleteCategory } from '@/src/features/categories/hooks/categories';
+import { CATEGORIES_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
+import { usePremium } from '@/src/providers/PremiumProvider';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  FlatList,
-  ListRenderItemInfo,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { PageBackground } from '../../../components/ui/PageBackground';
-import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
-import { Header } from '../../../components/ui/Header';
-import { OptionsDialog } from '../../../components/ui/OptionsDialog';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { Category } from '../api/categories';
-import { CategoryCard } from '../components/CategoryCard';
-import { useCategories, useDeleteCategory } from '../hooks/categories';
-import { WalkthroughOverlay, CATEGORIES_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
-import { StorageKeys } from '../../../constants/keys';
-import { usePremium } from '@/src/providers/PremiumProvider';
+import { StyleSheet, View } from 'react-native';
+
+type TypeFilter = 'DR' | 'CR' | 'TR';
 
 export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
-  const insets = useSafeAreaInsets();
-  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
   const { showAlert } = usePremium();
 
@@ -47,18 +26,26 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
   const { mutateAsync: deleteCategory } = useDeleteCategory();
 
   const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('DR');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [showManageDialog, setShowManageDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
+  const counts = useMemo(() => {
+    const out = { DR: 0, CR: 0, TR: 0 };
+    categories?.forEach((c) => c.type.split(',').forEach((ty) => { if (ty in out) out[ty as TypeFilter] += 1; }));
+    return out;
+  }, [categories]);
+
+  // Searching looks across all types; otherwise show the selected tab.
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return (
       categories
-        ?.filter((c) => !q || c.name.toLowerCase().includes(q))
-        .sort((a, b) => a.name.localeCompare(b.name)) ?? []
+        ?.filter((c) => (q ? c.name.toLowerCase().includes(q) : c.type.split(',').includes(typeFilter)))
+        .sort((a, b) => Number(a.isSystem) - Number(b.isSystem) || a.name.localeCompare(b.name)) ?? []
     );
-  }, [categories, search]);
+  }, [categories, search, typeFilter]);
 
   const handleCreate = useCallback(() => {
     router.push('/(main)/categories/form');
@@ -101,7 +88,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'edit-category',
         label: t('categories.edit'),
-        icon: PencilEdit01Icon,
+        icon: PencilSimpleIcon,
         onPress: () => {
           setShowManageDialog(false);
           handleEdit(selectedCategory);
@@ -110,233 +97,96 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'delete-category',
         label: t('categories.delete'),
-        icon: Delete01Icon,
+        icon: TrashIcon,
         destructive: true,
         onPress: () => setShowDeleteDialog(true),
       },
     ];
   }, [selectedCategory, handleEdit, t]);
 
-  const keyExtractor = useCallback((item: Category) => item.id.toString(), []);
-
-  const renderItem = useCallback(
-    ({ item, index }: ListRenderItemInfo<Category>) => (
-      <CategoryCard
-        item={item}
-        index={index}
-        isFirst={index === 0}
-        isLast={index === filtered.length - 1}
-        onPress={handleEdit}
-        onLongPress={handleLongPress}
-      />
-    ),
-    [handleEdit, handleLongPress, filtered.length],
-  );
-
-  const ListHeader = useMemo(
-    () => (
-      <View style={styles.listHeader}>
-        <View style={styles.searchBar}>
-          <HugeiconsIcon icon={Search01Icon} size={16} color={colors.textMuted} />
-          <TextInput
-            value={search}
-            onChangeText={setSearch}
-            placeholder={t('categories.search')}
-            placeholderTextColor={colors.textMuted + '60'}
-            style={styles.searchInput}
-            autoCapitalize="none"
-            autoCorrect={false}
-            returnKeyType="search"
-            clearButtonMode="never"
-          />
-          {search.length > 0 && (
-            <Pressable onPress={() => setSearch('')} hitSlop={8}>
-              <HugeiconsIcon icon={CancelCircleIcon} size={16} color={colors.textMuted} />
-            </Pressable>
-          )}
-        </View>
-      </View>
-    ),
-    [search, colors, styles, t],
-  );
-
-  const ListEmpty = useMemo(
-    () => (
-      <View style={styles.empty}>
-        <View style={styles.emptyIcon}>
-          <HugeiconsIcon icon={FolderOpenIcon} size={32} color={colors.textMuted} />
-        </View>
-        <Text style={styles.emptyTitle}>{t('categories.none')}</Text>
-        <Text style={styles.emptyText}>
-          {search.trim() ? t('categories.noResults', { query: search.trim() }) : t('categories.noneYet')}
-        </Text>
-        {!search.trim() && (
-          <BentoPressable style={styles.emptyBtn} onPress={handleCreate}>
-            <HugeiconsIcon icon={PlusSignIcon} size={15} color={colors.primaryForeground} />
-            <Text style={styles.emptyBtnText}>{t('categories.create')}</Text>
-          </BentoPressable>
-        )}
-      </View>
-    ),
-    [search, colors, handleCreate, styles, t],
-  );
+  const typeOptions = [
+    { value: 'DR' as const, label: `${t('categoryForm.expense')} ${counts.DR}` },
+    { value: 'CR' as const, label: `${t('categoryForm.income')} ${counts.CR}` },
+    { value: 'TR' as const, label: `${t('categoryForm.transfer')} ${counts.TR}` },
+  ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
-      <Header title={t('categories.title')} showBack />
+    <Screen
+      header={{ title: t('categories.title'), showBack: true }}
+      hasFab
+      overlays={
+        <>
+          <Fab onPress={handleCreate} accessibilityLabel={t('categoryForm.new')} />
+          <OptionsDialog
+            visible={showManageDialog}
+            onClose={() => setShowManageDialog(false)}
+            title={t('categories.manage')}
+            subtitle={selectedCategory?.name}
+            options={manageOptions}
+          />
+          <ConfirmDialog
+            destructive
+            visible={showDeleteDialog}
+            onClose={() => setShowDeleteDialog(false)}
+            title={t('categories.delete')}
+            message={t('categories.deleteMessage')}
+            confirmLabel={t('categories.delete')}
+            onConfirm={async () => {
+              if (!selectedCategory) return;
+              setShowDeleteDialog(false);
+              try {
+                await deleteCategory(selectedCategory.id);
+                setSelectedCategory(null);
+              } catch (e: any) {
+                showAlert({
+                  title: t('categories.cannotDelete'),
+                  message: e.message || t('categories.deleteFailed'),
+                  type: 'error',
+                });
+              }
+            }}
+          />
+          <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_CATEGORIES} steps={CATEGORIES_WALKTHROUGH_STEPS} />
+        </>
+      }
+    >
+      <View style={styles.controls}>
+        <SearchField value={search} onChangeText={setSearch} placeholder={t('categories.search')} on="page" />
+        {!search.trim() ? (
+          <SegmentedControl<TypeFilter> value={typeFilter} onChange={setTypeFilter} options={typeOptions} size="sm" />
+        ) : null}
+      </View>
 
       {isLoading ? (
-        <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
+        <ListGroup>
+          <SkeletonRow />
+          <SkeletonRow />
+          <SkeletonRow />
+        </ListGroup>
+      ) : filtered.length === 0 ? (
+        search.trim() ? (
+          <EmptyState icon={MagnifyingGlassIcon} title={t('categories.noResults', { query: search.trim() })} color={colors.textMuted} />
+        ) : (
+          <EmptyState
+            icon={FolderOpenIcon}
+            title={t('categories.none')}
+            description={t('categories.noneYet')}
+            actionLabel={t('categories.create')}
+            onAction={handleCreate}
+          />
+        )
       ) : (
-        <FlatList
-          data={filtered}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
-          ListHeaderComponent={ListHeader}
-          ListEmptyComponent={ListEmpty}
-          contentContainerStyle={styles.list}
-          showsVerticalScrollIndicator={false}
-          initialNumToRender={16}
-          maxToRenderPerBatch={12}
-          windowSize={5}
-          removeClippedSubviews={true}
-          keyboardShouldPersistTaps="handled"
-        />
+        <ListGroup>
+          {filtered.map((item) => (
+            <CategoryCard key={item.id} item={item} onPress={handleEdit} onLongPress={handleLongPress} />
+          ))}
+        </ListGroup>
       )}
-
-      <BentoPressable style={styles.fab} onPress={handleCreate}>
-        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
-      </BentoPressable>
-
-      <OptionsDialog
-        visible={showManageDialog}
-        onClose={() => setShowManageDialog(false)}
-        title={t('categories.manage')}
-        subtitle={selectedCategory?.name}
-        options={manageOptions}
-      />
-
-      <ConfirmDialog
-        visible={showDeleteDialog}
-        onClose={() => setShowDeleteDialog(false)}
-        title={t('categories.delete')}
-        message={t('categories.deleteMessage')}
-        confirmLabel={t('categories.delete')}
-        onConfirm={async () => {
-          if (!selectedCategory) return;
-          setShowDeleteDialog(false);
-          try {
-            await deleteCategory(selectedCategory.id);
-            setSelectedCategory(null);
-          } catch (e: any) {
-            showAlert({
-              title: t('categories.cannotDelete'),
-              message: e.message || t('categories.deleteFailed'),
-              type: 'error',
-            });
-          }
-        }}
-      />
-      <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_CATEGORIES} steps={CATEGORIES_WALKTHROUGH_STEPS} />
-    </SafeAreaView>
+    </Screen>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, shadow }: ThemeContextType, insets: any) =>
+const createStyles = ({ spacing }: ThemeContextType) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-      overflow: 'hidden',
-    },
-    loader: {
-      marginTop: 60,
-    },
-
-    /* ── List ── */
-    list: {
-      paddingHorizontal: layout.screenPadding,
-      paddingBottom: insets.bottom > 0 ? insets.bottom + 90 : 100,
-    },
-
-    /* ── List header (search) ── */
-    listHeader: {
-      paddingBottom: spacing('3'),
-      paddingTop: spacing('1'),
-    },
-    searchBar: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      paddingHorizontal: spacing('3.5'),
-      gap: spacing('2'),
-      height: 44,
-    },
-    searchInput: {
-      flex: 1,
-      fontFamily: typography.fonts.regular,
-      fontSize: 14,
-      color: colors.text,
-      paddingVertical: 0,
-    },
-
-    /* ── Empty ── */
-    empty: {
-      paddingTop: 60,
-      alignItems: 'center',
-      gap: spacing('2'),
-    },
-    emptyIcon: {
-      width: 64,
-      height: 64,
-      borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: spacing('1'),
-    },
-    emptyTitle: {
-      fontFamily: typography.styles.emptyTitle.fontFamily,
-      ...typography.metrics.xl,
-      color: colors.text,
-    },
-    emptyText: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
-      textAlign: 'center',
-      maxWidth: 220,
-      lineHeight: 20,
-    },
-    emptyBtn: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1.5'),
-      height: 38,
-      paddingHorizontal: spacing('4'),
-      borderRadius: radius('lg'),
-      backgroundColor: colors.primary,
-      marginTop: spacing('2'),
-    },
-    emptyBtnText: {
-      fontFamily: typography.styles.emptyAction.fontFamily,
-      ...typography.metrics.sm,
-      color: colors.primaryForeground,
-    },
-
-    /* ── FAB ── */
-    fab: {
-      position: 'absolute',
-      bottom: insets.bottom > 0 ? insets.bottom + 16 : 16,
-      right: 16,
-      width: 56,
-      height: 56,
-      borderRadius: radius('lg'),
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-      ...shadow('lg'),
-    },
+    controls: { gap: spacing('3') },
   });

@@ -1,6 +1,6 @@
 import { eq, sql } from 'drizzle-orm';
-import { db } from '../client';
-import { categories, loans, payments } from '../schema';
+import { db } from '@/src/db/client';
+import { categories, loans, payments } from '@/src/db/schema';
 
 export const name = '007_dedupe_categories';
 

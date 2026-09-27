@@ -1,11 +1,12 @@
 import { eq } from 'drizzle-orm';
-import { db } from '../client';
-import { seederState } from '../schema';
+import { db } from '@/src/db/client';
+import { seederState } from '@/src/db/schema';
 import * as transferCategorySeed from './001_add_transfer_category';
 import * as migrateIconsAndColorsSeed from './002_migrate_icons_and_colors';
 import * as addUncategorizedCategorySeed from './004_add_uncategorized_category';
 import * as categoryMultiTypesSeed from './005_category_multi_types';
 import * as dedupeCategoriesSeed from './007_dedupe_categories';
+import * as mergeUncategorizedIntoOthersSeed from './008_merge_uncategorized_into_others';
 
 type SeedModule = {
   name: string;
@@ -18,6 +19,7 @@ const seeds: readonly SeedModule[] = [
   addUncategorizedCategorySeed,
   categoryMultiTypesSeed,
   dedupeCategoriesSeed,
+  mergeUncategorizedIntoOthersSeed,
 ] as const;
 
 export async function runSeeds(): Promise<void> {

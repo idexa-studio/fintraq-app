@@ -1,12 +1,14 @@
+import { Text } from '@/src/components/ui/Text';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Platform, StyleSheet, Switch, Text, View } from 'react-native';
-import { BentoPressable } from '../../../components/ui/BentoPressable';
-import { OptionsBottomSheet } from '../../../components/ui/OptionsBottomSheet';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { usePremium } from '../../../providers/PremiumProvider';
-import type { LoanWithStats } from '../api/loans';
-import { useLoanReminders } from '../hooks/useLoanReminders';
+import { Platform, StyleSheet, View } from 'react-native';
+import { Switch } from '@/src/components/ui/Switch';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { usePremium } from '@/src/providers/PremiumProvider';
+import type { LoanWithStats } from '@/src/features/loans/api/loans';
+import { useLoanReminders } from '@/src/features/loans/hooks/useLoanReminders';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -22,7 +24,6 @@ type Props = { loan: LoanWithStats };
 export const LoanReminderSection = React.memo(function LoanReminderSection({ loan }: Props) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { scheduleEmiReminder, cancelEmiReminder, scheduleDueReminder, cancelDueReminder } = useLoanReminders();
   const { showAlert } = usePremium();
@@ -162,8 +163,6 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
           <Switch
             value={emiEnabled}
             onValueChange={handleEmiToggle}
-            trackColor={{ true: colors.primary }}
-            thumbColor={colors.background}
           />
         </View>
 
@@ -198,8 +197,6 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
             <Switch
               value={dueEnabled}
               onValueChange={handleDueToggle}
-              trackColor={{ true: colors.primary }}
-              thumbColor={colors.background}
             />
           </View>
 

@@ -1,34 +1,23 @@
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Header } from '@/src/components/ui/Header';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
+import { IconButton } from '@/src/components/ui/IconButton';
+import { Screen, SkeletonScreen } from '@/src/components/ui';
+import { Icon } from '@/src/components/ui/Icon';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
-import { PageBackground } from '@/src/components/ui/PageBackground';
-import { TransactionRow } from '@/src/components/ui/TransactionRow';
+import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useAccount } from '@/src/features/accounts/hooks/accounts';
 import { useTransactions } from '@/src/features/transactions/hooks/transactions';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { AccountType } from '@/src/types';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
-import {
-  ArrowDown01Icon,
-  ArrowRight01Icon,
-  ArrowUp01Icon,
-  PencilEdit01Icon,
-  ReceiptTextIcon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { ArrowDown01Icon, ArrowUp01Icon, PencilEdit01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { alpha } from '@/src/theme/tokens';
 
 const ACCOUNT_TYPE_KEYS: Record<AccountType, 'cash' | 'bank' | 'savings' | 'creditCard' | 'investment' | 'loan' | 'ewallet'> = {
@@ -71,34 +60,29 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
   }, [router]);
 
   const headerRight = useMemo(() => (
-    <BentoPressable onPress={handleEdit} style={styles.editBtn}>
-      <HugeiconsIcon icon={PencilEdit01Icon} size={20} color={colors.text} />
-    </BentoPressable>
-  ), [handleEdit, styles.editBtn, colors.text]);
+    <IconButton icon={PencilEdit01Icon} onPress={handleEdit} accessibilityLabel={t('common.edit')} />
+  ), [handleEdit, t]);
 
   if (isLoading) {
     return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
+      <Screen header={{ title: '', showBack: true }} variant="fixed">
+        <SkeletonScreen />
+      </Screen>
     );
   }
 
   if (!account) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <Header title={t('accounts.account')} showBack />
+      <Screen header={{ title: t('accounts.account'), showBack: true }} variant="fixed" edges={['top']}>
         <View style={styles.loading}>
           <Text style={styles.missingText}>{t('accounts.notFound')}</Text>
         </View>
-      </SafeAreaView>
+      </Screen>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <PageBackground />
-      <Header title={account.name} showBack rightAction={headerRight} />
+    <Screen header={{ title: account.name, showBack: true, rightAction: headerRight }} variant="fixed" edges={['top']}>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* ── Hero card ── */}
@@ -132,7 +116,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
           <View style={styles.statsRow}>
             <View style={[styles.statTile, { backgroundColor: alpha(colors.success, 'subtle') }]}>
               <View style={styles.statHeader}>
-                <HugeiconsIcon icon={ArrowUp01Icon} size={12} color={colors.success} />
+                <Icon icon={ArrowUp01Icon} size={12} color={colors.success} />
                 <Text style={styles.statLabel}>{t('accounts.totalIn')}</Text>
               </View>
               <MoneyText
@@ -145,7 +129,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
             </View>
             <View style={[styles.statTile, { backgroundColor: alpha(colors.danger, 'subtle') }]}>
               <View style={styles.statHeader}>
-                <HugeiconsIcon icon={ArrowDown01Icon} size={12} color={colors.danger} />
+                <Icon icon={ArrowDown01Icon} size={12} color={colors.danger} />
                 <Text style={styles.statLabel}>{t('accounts.totalOut')}</Text>
               </View>
               <MoneyText
@@ -167,13 +151,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
         </View>
 
         {/* ── Recent transactions ── */}
-        <View style={styles.sectionRow}>
-          <Text style={styles.sectionTitle}>{t('accounts.recentTransactions')}</Text>
-          <BentoPressable style={styles.seeAllBtn} onPress={handleSeeAll}>
-            <Text style={styles.seeAllText}>{t('accounts.seeAll')}</Text>
-            <HugeiconsIcon icon={ArrowRight01Icon} size={13} color={colors.primary} />
-          </BentoPressable>
-        </View>
+        <SectionHeader title={t('accounts.recentTransactions')} rightText={t('accounts.seeAll')} onPressRight={handleSeeAll} noPadding />
 
         {transactions && transactions.length > 0 ? (
           <View style={styles.txCard}>
@@ -191,33 +169,24 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
         ) : (
           <View style={styles.emptyCard}>
             <View style={[styles.emptyIcon, { backgroundColor: alpha(colors.primary, 'subtle') }]}>
-              <HugeiconsIcon icon={ReceiptTextIcon} size={20} color={colors.primary} />
+              <Icon icon={ReceiptTextIcon} size={20} color={colors.primary} />
             </View>
             <Text style={styles.emptyTitle}>{t('accounts.noTransactions')}</Text>
             <Text style={styles.emptySubtext}>{t('accounts.transactionsHint')}</Text>
           </View>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 });
 
 const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType, insets: { bottom: number }) =>
   StyleSheet.create({
-    container: { flex: 1 },
     loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
     missingText: {
       fontFamily: typography.fonts.regular,
       ...typography.metrics.sm,
       color: colors.textMuted,
-    },
-    editBtn: {
-      width: layout.minTouchTarget,
-      height: layout.minTouchTarget,
-      borderRadius: radius('lg'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.surface,
     },
     scroll: {
       paddingHorizontal: layout.screenPadding,
@@ -266,8 +235,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       marginBottom: spacing('1'),
     },
     balance: {
-      fontSize: 36,
-      lineHeight: 42,
+      ...typography.metrics.display,
       marginBottom: spacing('4'),
     },
 
@@ -320,27 +288,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
 
     /* ── Section header ── */
-    sectionRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: spacing('2'),
-    },
-    sectionTitle: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      ...typography.metrics.sm,
-      color: colors.text,
-    },
-    seeAllBtn: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1'),
-    },
-    seeAllText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: colors.primary,
-    },
 
     /* ── Transaction list ── */
     txCard: {
@@ -360,22 +307,21 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     emptyIcon: {
       width: 44,
       height: 44,
-      borderRadius: radius('full'),
+      borderRadius: radius('md'),
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: spacing('1'),
     },
     emptyTitle: {
       fontFamily: typography.styles.emptyTitle.fontFamily,
-      fontSize: 14,
+      ...typography.metrics.md,
       color: colors.text,
     },
     emptySubtext: {
       fontFamily: typography.fonts.regular,
-      fontSize: 12,
+      ...typography.metrics.xs,
       color: colors.textMuted,
       textAlign: 'center',
       maxWidth: 220,
-      lineHeight: 16,
     },
   });

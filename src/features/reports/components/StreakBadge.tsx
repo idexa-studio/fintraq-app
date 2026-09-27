@@ -1,9 +1,11 @@
+import { Text } from '@/src/components/ui/Text';
 import { Flame } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Icon } from '@/src/components/ui/Icon';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useUsageStreak } from '@/src/features/reports/hooks/useStreak';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   heroCard: HeroCardPalette;
@@ -11,6 +13,7 @@ type Props = {
 
 export const StreakBadge = React.memo(function StreakBadge({ heroCard }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { isDark } = theme;
   const styles = useMemo(() => createStyles(theme, heroCard, isDark), [theme, heroCard, isDark]);
   const { data: streak, isLoading } = useUsageStreak();
@@ -19,17 +22,17 @@ export const StreakBadge = React.memo(function StreakBadge({ heroCard }: Props) 
 
   return (
     <View style={styles.container}>
-      <HugeiconsIcon
+      <Icon
         icon={Flame}
         size={13}
-        color={isDark ? '#FF9F0A' : '#E65100'}
+        color={theme.colors.warning}
       />
-      <Text style={styles.text}>{streak}d streak</Text>
+      <Text style={styles.text}>{t('dashboard.streakDays', { count: streak })}</Text>
     </View>
   );
 });
 
-const createStyles = ({ typography, spacing, radius }: ThemeContextType, heroCard: HeroCardPalette, isDark: boolean) =>
+const createStyles = ({ colors, typography, spacing, radius, alpha }: ThemeContextType, heroCard: HeroCardPalette, isDark: boolean) =>
   StyleSheet.create({
     container: {
       flexDirection: 'row',
@@ -38,7 +41,7 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType, heroCar
       paddingHorizontal: spacing('2'),
       paddingVertical: spacing('1'),
       borderRadius: radius('full'),
-      backgroundColor: isDark ? 'rgba(255, 159, 10, 0.15)' : 'rgba(230, 81, 0, 0.12)',
+      backgroundColor: alpha(colors.warning, 'subtle'),
       alignSelf: 'flex-start',
     },
     text: {

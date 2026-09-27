@@ -1,6 +1,6 @@
 import { and, desc, eq, sql, sum } from 'drizzle-orm';
-import { db } from '../../../db/client';
-import { accounts, categories, payments, persons } from '../../../db/schema';
+import { db } from '@/src/db/client';
+import { accounts, categories, payments, persons } from '@/src/db/schema';
 
 export type PersonNetRow = {
   id: number;

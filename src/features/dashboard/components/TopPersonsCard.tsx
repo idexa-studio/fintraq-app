@@ -1,11 +1,12 @@
+import { Text } from '@/src/components/ui/Text';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import type { PersonNetRow } from '../api/dashboard';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
+import type { PersonNetRow } from '@/src/features/dashboard/api/dashboard';
 
 type Props = {
   currency: string;
@@ -17,23 +18,23 @@ type Props = {
 export const TopPersonsCard = React.memo(function TopPersonsCard({ currency, persons, onPressPerson }: Props) {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const { width: screenWidth } = useWindowDimensions();
+  // Two per row: an odd last tile keeps its size instead of stretching.
+  const tileWidth = (screenWidth - theme.layout.screenPadding * 2 - theme.spacing('2.5')) / 2;
 
   const handlePress = useCallback((id: number) => () => onPressPerson(id), [onPressPerson]);
 
   return (
     <View style={styles.grid}>
-      {persons.map((person, idx) => {
+      {persons.map((person) => {
         const hex = colorNumberToHex(person.color);
-        const marginRight = idx % 2 === 0 ? theme.spacing('1.5') : 0;
-        const marginLeft = idx % 2 === 1 ? theme.spacing('1.5') : 0;
         const isPositive = person.net >= 0;
 
         return (
-          <View key={person.id} style={styles.itemWrap}>
-            <BentoPressable style={[styles.cell, { marginRight, marginLeft }]} onPress={handlePress(person.id)}>
-              <PersonAvatar name={person.name} color={hex} size={32} />
+          <BentoPressable key={person.id} style={[styles.cell, { width: tileWidth }]} onPress={handlePress(person.id)} accessibilityRole="button" accessibilityLabel={person.name}>
+              <PersonAvatar name={person.name} color={hex} size={36} />
               <View style={styles.cellContent}>
-                <Text style={styles.cellName} numberOfLines={1}>
+                <Text variant="calloutStrong" numberOfLines={1}>
                   {person.name.split(' ')[0]}
                 </Text>
                 <MoneyText
@@ -45,8 +46,7 @@ export const TopPersonsCard = React.memo(function TopPersonsCard({ currency, per
                   style={styles.cellAmount}
                 />
               </View>
-            </BentoPressable>
-          </View>
+          </BentoPressable>
         );
       })}
     </View>
@@ -58,31 +58,17 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     grid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      paddingHorizontal: layout.screenPadding,
-    },
-    itemWrap: {
-      width: '50%',
-      marginBottom: spacing('2'),
+      gap: spacing('2.5'),
+      marginHorizontal: layout.screenPadding,
     },
     cell: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('3'),
-      gap: spacing('3'),
       flexDirection: 'row',
       alignItems: 'center',
-      flex: 1,
+      gap: spacing('3'),
+      padding: spacing('3'),
+      borderRadius: radius('xl'),
+      backgroundColor: colors.surface,
     },
-    cellContent: {
-      flex: 1,
-      gap: spacing('0.5'),
-    },
-    cellName: {
-      ...typography.metrics.sm,
-      fontFamily: typography.fonts.medium,
-      color: colors.text,
-    },
-    cellAmount: {
-      ...typography.metrics.xs,
-    },
+    cellContent: { flex: 1, gap: spacing('0.5') },
+    cellAmount: { ...typography.metrics.xs },
   });

@@ -2,6 +2,8 @@ import type { Translation } from './types';
 
 const kn: Translation = {
   common: {
+    edit: 'ಸಂಪಾದಿಸಿ', delete: 'ಅಳಿಸಿ',
+    back: 'ಹಿಂದೆ',
     cancel: 'ರದ್ದುಮಾಡಿ',
     ok: 'ಸರಿ',
     clear: 'ಅಳಿಸಿ',
@@ -18,6 +20,7 @@ const kn: Translation = {
     settings: 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',
   },
   settings: {
+    general: "ಸಾಮಾನ್ಯ", security: "ಭದ್ರತೆ", manage: "ನಿರ್ವಹಿಸಿ", about: "ಬಗ್ಗೆ", loans: "ಸಾಲಗಳು", loansHint: "ನೀವು ಕೊಟ್ಟ ಅಥವಾ ಪಡೆದ ಹಣ",
     title: 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',
     welcome: 'ಸ್ವಾಗತ',
     proMember: 'Pro ಸದಸ್ಯ',
@@ -112,12 +115,13 @@ const kn: Translation = {
     cannotDelete: 'ವರ್ಗವನ್ನು ಅಳಿಸಲಾಗದು', deleteFailed: 'ವರ್ಗವನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ.',
   },
   dashboard: {
+    streakDays: '{{count}} ದಿನಗಳ ಸರಣಿ',
     accounts: 'ಖಾತೆಗಳು', manage: 'ನಿರ್ವಹಿಸಿ', topExpenses: 'ಪ್ರಮುಖ ವೆಚ್ಚಗಳು', people: 'ವ್ಯಕ್ತಿಗಳು', loans: 'ಸಾಲಗಳು', recent: 'ಇತ್ತೀಚಿನವು', seeAll: 'ಎಲ್ಲವನ್ನೂ ನೋಡಿ',
     noTransactions: 'ಇನ್ನೂ ವಹಿವಾಟುಗಳಿಲ್ಲ', transactionHint: 'ನಿಮ್ಮ ದೈನಂದಿನ ಪಾವತಿಗಳು, ಆದಾಯ ಅಥವಾ ವರ್ಗಾವಣೆಗಳನ್ನು ಇಲ್ಲಿ ದಾಖಲಿಸಲು ಪ್ರಾರಂಭಿಸಿ.', addTransaction: 'ವಹಿವಾಟು ಸೇರಿಸಿ',
     balance: 'ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್', income: 'ಆದಾಯ', expenses: 'ವೆಚ್ಚಗಳು', noLoans: 'ಸಕ್ರಿಯ ಸಾಲಗಳಿಲ್ಲ', loanHint: 'ನೀವು ಕೊಟ್ಟ ಅಥವಾ ಪಡೆದ ಹಣವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ. ಸಾಲ ಸೇರಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ.',
     lentOut: 'ಸಾಲ ಕೊಟ್ಟದ್ದು', borrowed: 'ಸಾಲ ಪಡೆದದ್ದು', overdue: '{{count}} ಗಡುವು ಮೀರಿದೆ', active: '{{count}} ಸಕ್ರಿಯ', noExpenses: 'ಇನ್ನೂ ವೆಚ್ಚಗಳಿಲ್ಲ', expensesHint: 'ನಿಮ್ಮ ಪ್ರಮುಖ ವೆಚ್ಚದ ವರ್ಗಗಳನ್ನು ನೋಡಲು ಕೆಲವು ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ.',
   },
-  transactions: { amount: 'ಮೊತ್ತ', category: 'ವರ್ಗ', netSavings: 'ನಿವ್ವಳ ಉಳಿತಾಯ', income: 'ಆದಾಯ', expenses: 'ವೆಚ್ಚಗಳು', type: 'ಪ್ರಕಾರ', account: 'ಖಾತೆ', date: 'ದಿನಾಂಕ', person: 'ವ್ಯಕ್ತಿ', typesCount: '{{count}} ಪ್ರಕಾರಗಳು', oneAccount: '1 ಖಾತೆ', accountsCount: '{{count}} ಖಾತೆಗಳು', oneCategory: '1 ವರ್ಗ', categoriesCount: '{{count}} ವರ್ಗಗಳು', onePerson: '1 ವ್ಯಕ್ತಿ', personsCount: '{{count}} ವ್ಯಕ್ತಿಗಳು',
+  transactions: { dayCount: '{{count}} ನಮೂದುಗಳು', allCategories: 'ಎಲ್ಲಾ', searchCategories: 'ವರ್ಗಗಳನ್ನು ಹುಡುಕಿ', amount: 'ಮೊತ್ತ', category: 'ವರ್ಗ', netSavings: 'ನಿವ್ವಳ ಉಳಿತಾಯ', income: 'ಆದಾಯ', expenses: 'ವೆಚ್ಚಗಳು', type: 'ಪ್ರಕಾರ', account: 'ಖಾತೆ', date: 'ದಿನಾಂಕ', person: 'ವ್ಯಕ್ತಿ', typesCount: '{{count}} ಪ್ರಕಾರಗಳು', oneAccount: '1 ಖಾತೆ', accountsCount: '{{count}} ಖಾತೆಗಳು', oneCategory: '1 ವರ್ಗ', categoriesCount: '{{count}} ವರ್ಗಗಳು', onePerson: '1 ವ್ಯಕ್ತಿ', personsCount: '{{count}} ವ್ಯಕ್ತಿಗಳು',
   filteredSummary: 'ಫಿಲ್ಟರ್ ಮಾಡಿದ ಸಾರಾಂಶ', title: 'ವಹಿವಾಟುಗಳು', clearAll: 'ಎಲ್ಲವನ್ನೂ ಅಳಿಸಿ', noResults: 'ಫಲಿತಾಂಶಗಳಿಲ್ಲ', nothingYet: 'ಇಲ್ಲಿ ಇನ್ನೂ ಏನೂ ಇಲ್ಲ', noMatch: 'ಸಕ್ರಿಯ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಹೊಂದುವ ವಹಿವಾಟುಗಳಿಲ್ಲ. ಅವುಗಳನ್ನು ಹೊಂದಿಸಿ ಅಥವಾ ಅಳಿಸಿ.', addFirst: 'ಟ್ರ್ಯಾಕಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು ನಿಮ್ಮ ಮೊದಲ ವಹಿವಾಟನ್ನು ಸೇರಿಸಿ.', clearFilters: 'ಫಿಲ್ಟರ್‌ಗಳನ್ನು ಅಳಿಸಿ', add: 'ವಹಿವಾಟು ಸೇರಿಸಿ',
   deleteTitle: 'ವಹಿವಾಟು ಅಳಿಸಿ', deleteMessage: 'ಇದು ವಹಿವಾಟನ್ನು ತೆಗೆದುಹಾಕಿ ಖಾತೆ ಬ್ಯಾಲೆನ್ಸ್ ಮೇಲಿನ ಅದರ ಪರಿಣಾಮವನ್ನು ಹಿಂತಿರುಗಿಸುತ್ತದೆ.', delete: 'ಅಳಿಸಿ', sortTitle: 'ವಹಿವಾಟುಗಳನ್ನು ವಿಂಗಡಿಸಿ', newest: 'ಹೊಸದು ಮೊದಲು', oldest: 'ಹಳೆಯದು ಮೊದಲು', highest: 'ಅತಿ ಹೆಚ್ಚು ಮೊತ್ತ', lowest: 'ಅತಿ ಕಡಿಮೆ ಮೊತ್ತ',
   expense: 'ವೆಚ್ಚ', transfer: 'ವರ್ಗಾವಣೆ', missingDetails: 'ವಿವರಗಳು ಕಾಣೆಯಾಗಿವೆ', missingDetailsMessage: 'ದಯವಿಟ್ಟು ಖಾತೆ, ವರ್ಗ ಮತ್ತು ಮಾನ್ಯ ಮೊತ್ತವನ್ನು ಆಯ್ಕೆಮಾಡಿ.', missingDestination: 'ಗಮ್ಯಸ್ಥಾನ ಕಾಣೆಯಾಗಿದೆ', missingDestinationMessage: 'ವರ್ಗಾವಣೆಗೆ ಗಮ್ಯಸ್ಥಾನ ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
@@ -125,6 +129,7 @@ const kn: Translation = {
   editEntry: 'ನಮೂದನ್ನು ಸಂಪಾದಿಸಿ', newEntry: 'ಹೊಸ ನಮೂದು', loanRepaymentFor: 'ಸಾಲ ಮರುಪಾವತಿ — ಯಾರಿಗೆ', loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ...', fromAccount: 'ಯಾವ ಖಾತೆಯಿಂದ', toAccount: 'ಯಾವ ಖಾತೆಗೆ', noCompatible: 'ಈ ವರ್ಗಾವಣೆಗೆ ಹೊಂದುವ ಖಾತೆಗಳಿಲ್ಲ.', linkedPerson: 'ಲಿಂಕ್ ಆದ ವ್ಯಕ್ತಿ', unknown: 'ಅಪರಿಚಿತ', noPersonLinked: 'ಯಾವುದೇ ವ್ಯಕ್ತಿ ಲಿಂಕ್ ಆಗಿಲ್ಲ', time: 'ಸಮಯ', note: 'ಟಿಪ್ಪಣಿ', optionalContext: 'ಐಚ್ಛಿಕ ವಿವರ', saveChanges: 'ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ', saveTransaction: 'ವಹಿವಾಟು ಉಳಿಸಿ', none: 'ಯಾವುದೂ ಇಲ್ಲ',
   detailTitle: 'ವಹಿವಾಟು', notFound: 'ವಹಿವಾಟು ಕಂಡುಬಂದಿಲ್ಲ.', detailDeleteTitle: 'ವಹಿವಾಟು ಅಳಿಸಿ', detailDeleteMessage: 'ಇದು ಬ್ಯಾಲೆನ್ಸ್ ಮೇಲಿನ ಪರಿಣಾಮವನ್ನು ಹಿಂತಿರುಗಿಸುತ್ತದೆ ಮತ್ತು ರದ್ದುಮಾಡಲಾಗದು.', from: 'ಇಂದ', to: 'ಗೆ', created: 'ರಚಿಸಿದ್ದು', cancel: 'ರದ್ದುಮಾಡಿ' },
   onboardingFlow: {
+    getStarted: 'ಪ್ರಾರಂಭಿಸಿ', restoreFromBackup: 'ಬ್ಯಾಕಪ್‌ನಿಂದ ಮರುಸ್ಥಾಪಿಸಿ', welcomeSubtitle: 'ಖರ್ಚು, ಆದಾಯ ಮತ್ತು ಸಾಲಗಳನ್ನು ಒಂದು ಶಾಂತ, ಖಾಸಗಿ ಸ್ಥಳದಲ್ಲಿ ಟ್ರ್ಯಾಕ್ ಮಾಡಿ. ಸೆಟಪ್‌ಗೆ ಒಂದು ನಿಮಿಷಕ್ಕಿಂತ ಕಡಿಮೆ ಸಾಕು.',
     steps: {
       welcome: { eyebrow: 'ಪ್ರಾರಂಭಿಸೋಣ', title: 'ನಿಮ್ಮ ಫೈನಾನ್ಸ್ ಕಾಕ್‌ಪಿಟ್ ಅನ್ನು ನಿರ್ಮಿಸಿ.', subtitle: 'ಸಂಪೂರ್ಣ ಡೀಫಾಲ್ಟ್‌ಗಳು ಮತ್ತು ಸ್ವಚ್ಛ ಖಾತೆ ಆರಂಭದೊಂದಿಗೆ ಶಾಂತ ಸೆಟಪ್.' },
       setup_choice: { eyebrow: 'ಸೆಟಪ್ ವಿಧಾನ', title: 'ನೀವು ಹೇಗೆ ಪ್ರಾರಂಭಿಸಲು ಬಯಸುತ್ತೀರಿ?', subtitle: 'ಹೊಸ ವರ್ಕ್‌ಸ್ಪೇಸ್‌ನೊಂದಿಗೆ ಪ್ರಾರಂಭಿಸಿ ಅಥವಾ ಈಗಾಗಲೇ ಇರುವ Google Drive ಬ್ಯಾಕಪ್ ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಿ.' },
@@ -165,7 +170,7 @@ const kn: Translation = {
   },
   ui: {
     somethingWrong: 'ಏನೋ ತಪ್ಪಾಗಿದೆ', proOnly: 'Pro ಮಾತ್ರ', unlockWithPro: 'Fintraq Pro ನೊಂದಿಗೆ ಅನ್‌ಲಾಕ್ ಮಾಡಿ',
-    chooseIcon: 'ಐಕಾನ್ ಆಯ್ಕೆಮಾಡಿ', chooseColor: 'ಬಣ್ಣ ಆಯ್ಕೆಮಾಡಿ', colorsCount: '{{count}} ಬಣ್ಣಗಳು', currency: 'ಕರೆನ್ಸಿ', currenciesCount: '{{count}} ಕರೆನ್ಸಿಗಳು', searchCurrency: 'ಹೆಸರು ಅಥವಾ ಕೋಡ್‌ನಿಂದ ಹುಡುಕಿ', delKey: 'ಅಳಿಸಿ',
+    charsLeft: '{{count}} ಅಕ್ಷರಗಳು ಉಳಿದಿವೆ', suggested: 'ಸೂಚಿಸಲಾದವು', allCurrencies: 'ಎಲ್ಲಾ ಕರೆನ್ಸಿಗಳು', noMatch: '“{{query}}” ಗೆ ಹೊಂದಾಣಿಕೆ ಇಲ್ಲ', chooseIcon: 'ಐಕಾನ್ ಆಯ್ಕೆಮಾಡಿ', chooseColor: 'ಬಣ್ಣ ಆಯ್ಕೆಮಾಡಿ', colorsCount: '{{count}} ಬಣ್ಣಗಳು', currency: 'ಕರೆನ್ಸಿ', currenciesCount: '{{count}} ಕರೆನ್ಸಿಗಳು', searchCurrency: 'ಹೆಸರು ಅಥವಾ ಕೋಡ್‌ನಿಂದ ಹುಡುಕಿ', delKey: 'ಅಳಿಸಿ',
   },
   lock: {
     unlockApp: 'ಆ್ಯಪ್ ಅನ್‌ಲಾಕ್ ಮಾಡಿ', authFailed: 'ದೃಢೀಕರಣ ವಿಫಲವಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.', useButton: 'ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಲು ಕೆಳಗಿನ ಬಟನ್ ಬಳಸಿ.',
@@ -180,6 +185,9 @@ const kn: Translation = {
     defaultMessage: 'ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು Fintraq ಅನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಿ. ಇದಕ್ಕೆ ಕ್ಷಣ ಮಾತ್ರ ಸಾಕು.', updateNow: 'ಈಗಲೇ ಅಪ್‌ಡೇಟ್ ಮಾಡಿ',
   },
   loans: {
+    outstandingAmount: "ಬಾಕಿ: {{amount}}", exceedsOutstanding: "ಮೊತ್ತ ಬಾಕಿ {{amount}} ಮೀರಿದೆ", fullAmount: "ಪೂರ್ಣ ಮೊತ್ತ · {{amount}}",
+    freeLimit: 'ಉಚಿತ ಯೋಜನೆಯಲ್ಲಿ {{limit}} ಸಕ್ರಿಯ ಸಾಲಗಳು. ಅನಿಯಮಿತಕ್ಕಾಗಿ ಅಪ್\u200cಗ್ರೇಡ್ ಮಾಡಿ.', upgrade: 'ಅಪ್\u200cಗ್ರೇಡ್',
+    lentToName: '{{name}} ಗೆ ಸಾಲ ನೀಡಲಾಗಿದೆ', borrowedFromName: '{{name}} ರಿಂದ ಸಾಲ ಪಡೆಯಲಾಗಿದೆ',
     title: 'ಸಾಲಗಳು', loan: 'ಸಾಲ', newLoan: 'ಹೊಸ ಸಾಲ', lentOut: 'ಸಾಲ ಕೊಟ್ಟದ್ದು', borrowed: 'ಸಾಲ ಪಡೆದದ್ದು', lent: 'ಕೊಟ್ಟದ್ದು', repaid: 'ಮರುಪಾವತಿಯಾಗಿದೆ',
     noLent: 'ಕೊಟ್ಟ ಸಾಲಗಳಿಲ್ಲ', noBorrowed: 'ಪಡೆದ ಸಾಲಗಳಿಲ್ಲ', emptyHint: 'ನೀವು ಇತರರಿಗೆ ಕೊಟ್ಟ ಅಥವಾ ಇತರರಿಂದ ಪಡೆದ ಹಣವನ್ನು ಇಲ್ಲಿ ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.', addLoan: 'ಸಾಲ ಸೇರಿಸಿ',
     unknown: 'ಅಪರಿಚಿತ', unnamedSource: 'ಹೆಸರಿಲ್ಲದ ಮೂಲ', outstandingBalance: 'ಬಾಕಿ ಬ್ಯಾಲೆನ್ಸ್', principal: 'ಅಸಲು', outstanding: 'ಬಾಕಿ', totalPrincipal: 'ಒಟ್ಟು ಅಸಲು',
@@ -217,10 +225,12 @@ const kn: Translation = {
     linkPerson: 'ವ್ಯಕ್ತಿಯನ್ನು ಲಿಂಕ್ ಮಾಡಿ', noPerson: 'ವ್ಯಕ್ತಿ ಇಲ್ಲ',
   },
   categoryForm: {
+    appliesToHint: 'ಒಂದು ಅಥವಾ ಹೆಚ್ಚನ್ನು ಆಯ್ಕೆಮಾಡಿ.', moreIcons: 'ಇನ್ನಷ್ಟು',
     edit: 'ವರ್ಗ ಸಂಪಾದಿಸಿ', new: 'ಹೊಸ ವರ್ಗ', categoryName: 'ವರ್ಗದ ಹೆಸರು', tapToChangeIcon: 'ಐಕಾನ್ ಬದಲಾಯಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ', appliesTo: 'ಅನ್ವಯಿಸುವುದು', namePlaceholder: 'ಉದಾ. ದಿನಸಿ, ಸಂಬಳ',
     save: 'ವರ್ಗ ಉಳಿಸಿ', create: 'ವರ್ಗ ರಚಿಸಿ', chooseIcon: 'ಐಕಾನ್ ಆಯ್ಕೆಮಾಡಿ', expense: 'ವೆಚ್ಚ', income: 'ಆದಾಯ', transfer: 'ವರ್ಗಾವಣೆ',
   },
   accountForm: {
+    lockedHint: 'ಪ್ರಕಾರ, ಕರೆನ್ಸಿ ಮತ್ತು ಬ್ಯಾಲೆನ್ಸ್ ಖಾತೆ ರಚಿಸುವಾಗ ನಿಗದಿಯಾಗುತ್ತವೆ. ಬ್ಯಾಲೆನ್ಸ್ ವಹಿವಾಟುಗಳಿಂದ ಬದಲಾಗುತ್ತದೆ.',
     edit: 'ಖಾತೆ ಸಂಪಾದಿಸಿ', new: 'ಹೊಸ ಖಾತೆ', accountName: 'ಖಾತೆಯ ಹೆಸರು', accountType: 'ಖಾತೆಯ ಪ್ರಕಾರ', accountDetails: 'ಖಾತೆಯ ವಿವರಗಳು',
     namePlaceholder: 'ಉದಾ. ಮುಖ್ಯ ವಾಲೆಟ್', holderPlaceholder: 'ಸುರೇಶ್ (ಐಚ್ಛಿಕ)', numberPlaceholder: 'IBAN (ಐಚ್ಛಿಕ)', currentBalance: 'ಪ್ರಸ್ತುತ ಬ್ಯಾಲೆನ್ಸ್', initialBalance: 'ಆರಂಭಿಕ ಬ್ಯಾಲೆನ್ಸ್',
     save: 'ಖಾತೆ ಉಳಿಸಿ', create: 'ಖಾತೆ ರಚಿಸಿ',
@@ -319,12 +329,13 @@ const kn: Translation = {
     monthGood: 'ಈ ತಿಂಗಳು ಚೆನ್ನಾಗಿ ಕಾಣುತ್ತಿದೆ', monthTight: 'ಇಲ್ಲಿಯವರೆಗೆ ಬಿಗಿಯಾದ ತಿಂಗಳು', monthGoodHint: 'ಹೋಗುವುದಕ್ಕಿಂತ ಬರುವುದು ಹೆಚ್ಚು — ನೀವು ವೇಗ ಪಡೆಯುತ್ತಿದ್ದೀರಿ.', monthTightHint: 'ವೆಚ್ಚ ಆದಾಯಕ್ಕಿಂತ ಮುಂದಿದೆ. ಒತ್ತಡ ಬೇಡ — ಒಮ್ಮೆ ಪರಿಶೀಲಿಸಲು ಸಣ್ಣ ಸೂಚನೆ ಅಷ್ಟೇ.',
   },
   walkthrough: {
+    gotIt: 'ಅರ್ಥವಾಯಿತು',
     step: '{{total}} ರಲ್ಲಿ {{current}} ನೇ ಹಂತ', skip: 'ಮಾರ್ಗದರ್ಶಿ ಬಿಟ್ಟುಬಿಡಿ', getStarted: 'ಪ್ರಾರಂಭಿಸಿ', next: 'ಮುಂದುವರಿಸಿ',
     welcomeToFintraq: { title: 'Fintraq ಗೆ ಸ್ವಾಗತ!', desc: 'ನಿಮ್ಮ ಹೊಸ ಪ್ರೀಮಿಯಂ ಹಣಕಾಸು ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನ ಸಣ್ಣ ಪ್ರವಾಸ ಮಾಡೋಣ.' },
     trackNetSavings: { title: 'ನಿವ್ವಳ ಉಳಿತಾಯ ಟ್ರ್ಯಾಕ್ ಮಾಡಿ', desc: 'ಮೇಲಿನ ಕಾರ್ಡ್ ನಿಮ್ಮ ಒಟ್ಟು ನಿವ್ವಳ ಸ್ಥಿತಿಯನ್ನು (ಆದಾಯ ಕಳೆದು ವೆಚ್ಚ) ತೋರಿಸುತ್ತದೆ. ಬೇರೆ ಕರೆನ್ಸಿಗಳನ್ನು ನೋಡಲು ಸ್ವೈಪ್ ಮಾಡಿ.' },
     accountsWallets: { title: 'ಖಾತೆಗಳು ಮತ್ತು ವಾಲೆಟ್‌ಗಳು', desc: 'ನಿಮ್ಮ ನಗದು, ಬ್ಯಾಂಕ್ ಖಾತೆಗಳು ಮತ್ತು ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಿ. ಪ್ರತ್ಯೇಕ ಲಾಗ್‌ಗಳನ್ನು ನೋಡಲು ಅವುಗಳನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.' },
     realTimeInsights: { title: 'ನೈಜ-ಸಮಯದ ಒಳನೋಟಗಳು', desc: 'ಕೆಳಗೆ ನೀವು ವೆಚ್ಚದ ಮಾದರಿಗಳ ಡೈನಾಮಿಕ್ ಒಳನೋಟಗಳು, ಪ್ರಮುಖ ವೆಚ್ಚ ವರ್ಗಗಳ ಚಿಪ್‌ಗಳು ಮತ್ತು ಸ್ಟ್ರೀಕ್‌ಗಳನ್ನು ಕಾಣುವಿರಿ.' },
-    logFirstTransaction: { title: 'ಮೊದಲ ವಹಿವಾಟು ದಾಖಲಿಸಿ', desc: 'ಸಿದ್ಧವಾದಾಗ, ವಹಿವಾಟು ದಾಖಲಿಸಲು ಕೆಳಗಿನ ಬಲಭಾಗದ ಹಸಿರು \'+\' ಬಟನ್ ಟ್ಯಾಪ್ ಮಾಡಿ!' },
+    logFirstTransaction: { title: 'ಮೊದಲ ವಹಿವಾಟು ದಾಖಲಿಸಿ', desc: 'ಸಿದ್ಧವಾದಾಗ, ವಹಿವಾಟು ದಾಖಲಿಸಲು ಕೆಳಗಿನ ಹಸಿರು + ಬಟನ್ ಟ್ಯಾಪ್ ಮಾಡಿ.' },
     enterAmount: { title: 'ಮೊತ್ತ ನಮೂದಿಸಿ', desc: 'ಸಂಖ್ಯೆ ಇನ್‌ಪುಟ್ ಬಳಸಿ ವಹಿವಾಟಿನ ಮೊತ್ತವನ್ನು ಟೈಪ್ ಮಾಡುವ ಮೂಲಕ ಪ್ರಾರಂಭಿಸಿ. ದಶಮಾಂಶ ಮೌಲ್ಯಗಳು ಸಂಪೂರ್ಣ ಬೆಂಬಲಿತ.' },
     selectTransactionType: { title: 'ವಹಿವಾಟಿನ ಪ್ರಕಾರ ಆಯ್ಕೆಮಾಡಿ', desc: 'ವೆಚ್ಚ (ಖರ್ಚಾದ ಹಣ), ಆದಾಯ (ಗಳಿಸಿದ ಹಣ) ಅಥವಾ ವರ್ಗಾವಣೆ (ಖಾತೆಗಳ ನಡುವೆ ಹಣ ಸರಿಸುವುದು) ಆಯ್ಕೆಮಾಡಿ.' },
     chooseCategory: { title: 'ವರ್ಗ ಆಯ್ಕೆಮಾಡಿ', desc: 'ನಿಮ್ಮ ವಹಿವಾಟನ್ನು ಕ್ರಮಬದ್ಧಗೊಳಿಸಲು ವರ್ಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ. ಕಸ್ಟಮ್ ವರ್ಗಗಳನ್ನು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಹೊಂದಿಸಬಹುದು.' },

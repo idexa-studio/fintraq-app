@@ -1,49 +1,30 @@
+import { IconButton } from '@/src/components/ui/IconButton';
+import { Screen } from '@/src/components/ui/Screen';
+import { Button, Chip, FormField, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, SkeletonScreen } from '@/src/components/ui';
+import { CalendarBlankIcon } from '@/src/components/ui/icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import {
-  Calendar03Icon,
-  CheckmarkCircle01Icon,
-  Delete01Icon,
-  Coins02Icon,
-  PencilEdit01Icon,
-  UnfoldMoreIcon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { CheckmarkCircle01Icon, Delete01Icon, Coins02Icon } from '@hugeicons/core-free-icons';
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Pressable,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { BentoPressable } from '../../../components/ui/BentoPressable';
-import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
-import { Header } from '../../../components/ui/Header';
-import { MoneyText } from '../../../components/ui/MoneyText';
-import { PageBackground } from '../../../components/ui/PageBackground';
-import { PersonAvatar } from '../../../components/ui/PersonAvatar';
-import { IconAvatar } from '../../../components/ui/IconAvatar';
-import { useAccounts } from '../../accounts/hooks/accounts';
-import { useCategories } from '../../categories/hooks/categories';
-import { TransactionAccountPicker } from '../../transactions/components/TransactionAccountPicker';
-import { TransactionAmountInput } from '../../transactions/components/TransactionAmountInput';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { usePremium } from '../../../providers/PremiumProvider';
-import { colorNumberToHex } from '../../../utils/format';
-import { toErrorMessage } from '../../../utils/errors';
-import { LoanReminderSection } from '../components/LoanReminderSection';
-import { LoanStatusBadge } from '../components/LoanStatusBadge';
-import { RepaymentRow } from '../components/RepaymentRow';
-import { useAddRepayment, useDeleteLoan, useLoanRepayments, useLoanWithStats, useMarkLoanRepaid } from '../hooks/loans';
-import { useLoanReminders } from '../hooks/useLoanReminders';
+import { Modal, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
+import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
+import { MoneyText } from '@/src/components/ui/MoneyText';
+import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
+import { useAccounts } from '@/src/features/accounts/hooks/accounts';
+import { useCategories } from '@/src/features/categories/hooks/categories';
+import { TransactionAccountPicker } from '@/src/features/transactions/components/TransactionAccountPicker';
+import { TransactionAmountInput } from '@/src/features/transactions/components/TransactionAmountInput';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { usePremium } from '@/src/providers/PremiumProvider';
+import { colorNumberToHex } from '@/src/utils/format';
+import { toErrorMessage } from '@/src/utils/errors';
+import { LoanReminderSection } from '@/src/features/loans/components/LoanReminderSection';
+import { LoanStatusBadge } from '@/src/features/loans/components/LoanStatusBadge';
+import { RepaymentRow } from '@/src/features/loans/components/RepaymentRow';
+import { useAddRepayment, useDeleteLoan, useLoanRepayments, useLoanWithStats, useMarkLoanRepaid } from '@/src/features/loans/hooks/loans';
+import { useLoanReminders } from '@/src/features/loans/hooks/useLoanReminders';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -200,32 +181,22 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
 
   if (isLoading || !loan) {
     return (
-      <SafeAreaView style={styles.container}>
-        <PageBackground />
-        <Header title={t('loans.loan')} showBack />
-        <View style={styles.loading}><ActivityIndicator size="large" color={colors.primary} /></View>
-      </SafeAreaView>
+      <Screen header={{ title: t('loans.loan'), showBack: true }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
+        <SkeletonScreen />
+      </Screen>
     );
   }
 
-  const personColor = loan.personColor != null ? colorNumberToHex(loan.personColor) : '#8B8B8B';
+  const personColor = loan.personColor != null ? colorNumberToHex(loan.personColor) : colors.textMuted;
   const personName = loan.personName ?? (loan.type === 'lend' ? t('loans.unknown') : t('loans.unnamedSource'));
   const pct = loan.principal > 0 ? Math.round((loan.repaid / loan.principal) * 100) : 0;
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <PageBackground />
-      <Header
-        title={loan.type === 'lend' ? 'Lent to ' + personName : 'Borrowed from ' + personName}
-        showBack
-        rightAction={
+    <Screen header={{ title: loan.type === 'lend' ? t('loans.lentToName', { name: personName }) : t('loans.borrowedFromName', { name: personName }), showBack: true, rightAction:
           <View style={styles.headerActions}>
-            <BentoPressable style={styles.iconBtn} onPress={() => setShowDeleteConfirm(true)}>
-              <HugeiconsIcon icon={Delete01Icon} size={20} color={colors.danger} />
-            </BentoPressable>
+            <IconButton icon={Delete01Icon} variant="danger" onPress={() => setShowDeleteConfirm(true)} accessibilityLabel={t('common.delete')} />
           </View>
-        }
-      />
+         }} variant="fixed" edges={['top']}>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
@@ -285,18 +256,8 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
         {/* Actions */}
         {loan.computedStatus !== 'repaid' && (
           <View style={styles.actionsRow}>
-            <BentoPressable style={[styles.actionBtn, { backgroundColor: colors.primary }]} onPress={handleRepayOpen}>
-              <HugeiconsIcon icon={Coins02Icon} size={16} color={colors.primaryForeground} />
-              <Text style={[styles.actionText, { color: colors.primaryForeground }]}>
-                {t('loans.repay')}
-              </Text>
-            </BentoPressable>
-            <BentoPressable style={[styles.actionBtn, { backgroundColor: alpha(colors.success, 'subtle') }]} onPress={handleMarkRepaid}>
-              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
-              <Text style={[styles.actionText, { color: colors.success }]}>
-                {t('loans.markRepaid')}
-              </Text>
-            </BentoPressable>
+            <Button title={t('loans.repay')} icon={Coins02Icon} onPress={handleRepayOpen} style={styles.action} />
+            <Button title={t('loans.markRepaid')} icon={CheckmarkCircle01Icon} variant="tonal" onPress={handleMarkRepaid} style={styles.action} />
           </View>
         )}
 
@@ -342,121 +303,101 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
 
       {/* Repayment modal */}
       <Modal visible={showRepayModal} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setShowRepayModal(false)}>
-        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
-          <Header
-            title={t('loans.recordRepayment')}
-            showBack
-            onBack={() => setShowRepayModal(false)}
-          />
-          <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-            <ScrollView contentContainerStyle={styles.modalScroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-
-              {/* Person (locked) — only shown when a person is linked */}
-              {loan.personId != null && (
-                <View style={styles.lockedPerson}>
-                  <PersonAvatar name={personName} color={personColor} size={36} />
-                  <View>
-                    <Text style={styles.lockedPersonName}>{personName}</Text>
-                    <Text style={styles.lockedPersonSub}>
-                      Outstanding: {loan.outstanding.toFixed(2)} {loan.currency}
-                    </Text>
-                  </View>
-                </View>
-              )}
-
-              {/* Amount */}
-              <TransactionAmountInput
-                value={repayAmount}
-                onChange={setRepayAmount}
-                currency={loan.currency}
-              />
-              {parsedAmountVal > loan.outstanding && (
-                <Text style={styles.errorText}>Amount exceeds outstanding balance ({loan.outstanding.toFixed(2)} {loan.currency})</Text>
-              )}
-              {loan.outstanding > 0 && (
-                <BentoPressable onPress={() => setRepayAmount(loan.outstanding.toFixed(2))} style={styles.fullAmountBtn}>
-                  <Text style={styles.fullAmountText}>
-                    Full amount ({loan.outstanding.toFixed(2)} {loan.currency})
-                  </Text>
-                </BentoPressable>
-              )}
-
-              {/* Account */}
-              <TransactionAccountPicker
-                accounts={sameCurrencyAccounts}
-                selectedId={effectiveRepayAccountId}
-                onSelect={setRepayAccountId}
-                label={loan.type === 'lend' ? t('loans.receivedInto') : t('loans.sentFrom')}
-              />
-
-              {/* Date button styled like transaction date triggering */}
-              <View style={styles.fieldSection}>
-                <Text style={styles.fieldLabel}>
-                  {t('loans.date')}
-                </Text>
-                <BentoPressable style={styles.datePickerBtn} onPress={() => setShowDatePicker(true)}>
-                  <IconAvatar icon={Calendar03Icon} color={colors.primary} variant="subtle" size={36} iconSize={18} />
-                  <View style={styles.textContainer}>
-                    <Text style={styles.dateLabel}>{t('loans.date')}</Text>
-                    <Text style={styles.dateValueText}>
-                      {format(repayDate, 'MMM d, yyyy')}
-                    </Text>
-                  </View>
-                  <HugeiconsIcon icon={UnfoldMoreIcon} size={16} color={colors.textMuted} />
-                </BentoPressable>
-              </View>
-
-              {/* Note wrapper styled like transaction notes */}
-              <View style={styles.fieldSection}>
-                <View style={styles.noteContainer}>
-                  <View style={styles.noteHeader}>
-                    <IconAvatar icon={PencilEdit01Icon} color={colors.primary} variant="subtle" size={32} iconSize={16} />
-                    <Text style={styles.noteLabel}>{t('loans.note')}</Text>
-                  </View>
-                  <TextInput
-                    style={styles.noteInput}
-                    value={repayNote}
-                    onChangeText={setRepayNote}
-                    placeholder={t('loans.optionalNote')}
-                    placeholderTextColor={colors.textMuted + '60'}
-                    multiline={true}
-                    returnKeyType="done"
-                  />
-                </View>
-              </View>
-
-            </ScrollView>
-          </KeyboardAvoidingView>
-
-          <View style={styles.footer}>
-            <Pressable
-              style={[styles.saveBtn, !canSubmitRepay && styles.saveBtnDisabled]}
+        <Screen
+          header={{ title: t('loans.recordRepayment'), showBack: true, onBack: () => setShowRepayModal(false) }}
+          edgeToEdge
+          keyboardAvoiding
+          footer={
+            <Button
+              title={t('loans.recordRepayment')}
               onPress={handleRepaySubmit}
               disabled={!canSubmitRepay}
-            >
-              {isSubmitting ? (
-                <ActivityIndicator size="small" color={colors.primaryForeground} />
-              ) : (
-                <Text style={styles.saveBtnText}>
-                  {t('loans.recordRepayment')}
+              isLoading={isSubmitting}
+              size="lg"
+              fullWidth
+            />
+          }
+        >
+          {/* Person (locked) — only shown when a person is linked */}
+          {loan.personId != null ? (
+            <View style={styles.padded}>
+              <ListGroup>
+                <ListItem
+                  leading={<PersonAvatar name={personName} color={personColor} size={LIST_ITEM_LEADING_SIZE} />}
+                  title={personName}
+                  subtitle={t('loans.outstandingAmount', { amount: `${loan.outstanding.toFixed(2)} ${loan.currency}` })}
+                />
+              </ListGroup>
+            </View>
+          ) : null}
+
+          <View style={styles.top}>
+            <TransactionAmountInput
+              value={repayAmount}
+              onChange={setRepayAmount}
+              currency={loan.currency}
+            />
+            <View style={[styles.padded, styles.amountMeta]}>
+              {parsedAmountVal > loan.outstanding ? (
+                <Text variant="caption" tone="danger">
+                  {t('loans.exceedsOutstanding', { amount: `${loan.outstanding.toFixed(2)} ${loan.currency}` })}
                 </Text>
-              )}
-            </Pressable>
+              ) : null}
+              {loan.outstanding > 0 ? (
+                <Chip
+                  label={t('loans.fullAmount', { amount: `${loan.outstanding.toFixed(2)} ${loan.currency}` })}
+                  onPress={() => setRepayAmount(loan.outstanding.toFixed(2))}
+                />
+              ) : null}
+            </View>
           </View>
 
-          {showDatePicker && (
+          <TransactionAccountPicker
+            accounts={sameCurrencyAccounts}
+            selectedId={effectiveRepayAccountId}
+            onSelect={setRepayAccountId}
+            label={loan.type === 'lend' ? t('loans.receivedInto') : t('loans.sentFrom')}
+          />
+
+          <View style={styles.padded}>
+            <ListGroup>
+              <ListItem
+                icon={CalendarBlankIcon}
+                iconColor={colors.primaryInk}
+                title={t('loans.date')}
+                value={format(repayDate, 'MMM d, yyyy')}
+                onPress={() => setShowDatePicker(true)}
+              />
+            </ListGroup>
+          </View>
+
+          <View style={styles.padded}>
+            <ListGroup insetDividers={false}>
+              <FormField
+                label={t('loans.note')}
+                value={repayNote}
+                onChangeText={setRepayNote}
+                placeholder={t('loans.optionalNote')}
+                multiline
+                maxLength={200}
+              />
+            </ListGroup>
+          </View>
+
+          {showDatePicker ? (
             <DateTimePicker
               value={repayDate}
               mode="date"
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
               onChange={handleDateChange}
             />
-          )}
-        </SafeAreaView>
+          ) : null}
+        </Screen>
       </Modal>
 
       {/* Prebuilt Dialog alerts */}
       <ConfirmDialog
+        destructive
         visible={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
         title={t('loans.deleteTitle')}
@@ -475,28 +416,18 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
         onConfirm={handleMarkRepaidConfirm}
         isLoading={markRepaid.isPending}
       />
-    </SafeAreaView>
+    </Screen>
   );
 });
 
 const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: ThemeContextType) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background },
-    loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
       paddingBottom: spacing('12'),
     },
     headerActions: { flexDirection: 'row', gap: spacing('2') },
-    iconBtn: {
-      width: layout.minTouchTarget,
-      height: layout.minTouchTarget,
-      borderRadius: radius('lg'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.surface,
-    },
     heroCard: {
       borderRadius: radius('2xl'),
       padding: spacing('5'),
@@ -537,8 +468,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
       marginBottom: spacing('1'),
     },
     balance: {
-      fontSize: 36,
-      lineHeight: 42,
+      ...typography.metrics.display,
       marginBottom: spacing('4'),
     },
     statsRow: {
@@ -580,19 +510,10 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
       color: colors.textMuted,
     },
     actionsRow: { flexDirection: 'row', gap: spacing('3'), marginBottom: spacing('4') },
-    actionBtn: {
-      flex: 1,
-      height: sizes.button.md.height,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing('1.5'),
-      borderRadius: radius('lg'),
-    },
-    actionText: {
-      ...typography.metrics.md,
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-    },
+    action: { flex: 1 },
+    padded: { paddingHorizontal: layout.screenPadding },
+    top: { gap: spacing('1') },
+    amountMeta: { gap: spacing('2'), alignItems: 'flex-start' },
     timelineSection: { marginBottom: spacing('2') },
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
@@ -610,123 +531,8 @@ const createStyles = ({ colors, spacing, radius, layout, typography, sizes }: Th
     },
     noteText: {
       ...typography.metrics.md,
-      lineHeight: 20,
       fontFamily: typography.styles.cardBody.fontFamily,
       color: colors.text,
     },
     // Modal styles
-    modalScroll: { paddingTop: spacing('3'), paddingBottom: spacing('12') },
-    footer: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('8'),
-    },
-    saveBtn: {
-      height: 52,
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    saveBtnDisabled: { opacity: 0.5 },
-    saveBtnText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: 16,
-      color: colors.primaryForeground,
-    },
-    lockedPerson: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-      marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('4'),
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('3'),
-    },
-    lockedPersonName: {
-      ...typography.metrics.lg,
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      color: colors.text,
-    },
-    lockedPersonSub: {
-      ...typography.metrics.xs,
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      color: colors.textMuted,
-      marginTop: 2,
-    },
-    errorText: {
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: 12,
-      color: colors.danger,
-      marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('3'),
-    },
-    fieldLabel: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      textTransform: 'uppercase',
-      marginBottom: spacing('2'),
-    },
-    fullAmountBtn: {
-      marginHorizontal: layout.screenPadding,
-      marginTop: spacing('1'),
-      marginBottom: spacing('4'),
-      alignSelf: 'flex-start',
-    },
-    fullAmountText: {
-      ...typography.metrics.sm,
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      color: colors.primary,
-    },
-    fieldSection: { marginHorizontal: layout.screenPadding, marginBottom: spacing('4') },
-    datePickerBtn: {
-      height: sizes.input.md.height,
-      borderRadius: sizes.input.md.borderRadius,
-      backgroundColor: colors.surface,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing('3'),
-      gap: spacing('2.5'),
-    },
-    textContainer: {
-      flex: 1,
-      justifyContent: 'center',
-    },
-    dateLabel: {
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      fontSize: 10,
-      color: colors.textMuted,
-      marginBottom: Platform.OS === 'ios' ? 1 : 0,
-    },
-    dateValueText: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 13,
-      color: colors.text,
-    },
-    noteContainer: {
-      borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
-      padding: sizes.card.md.padding,
-    },
-    noteHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2.5'),
-      marginBottom: spacing('2'),
-    },
-    noteLabel: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 13,
-      color: colors.text,
-    },
-    noteInput: {
-      fontFamily: typography.styles.inputValue.fontFamily,
-      fontSize: 14,
-      color: colors.text,
-      textAlignVertical: 'top',
-      minHeight: 80,
-      padding: 0,
-    },
   });

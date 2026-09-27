@@ -1,12 +1,12 @@
 import { usePathname } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { usePremium } from './PremiumProvider';
+import { useSettings } from './SettingsProvider';
 import {
   configureFirebaseTelemetry,
   logFirebaseScreenView,
   setFirebaseUserTraits,
-} from '../services/firebase';
+} from '@/src/services/firebase';
 import { LoggerService } from '@/src/services/logger.service';
 
 export const FirebaseProvider = React.memo(function FirebaseProvider({ children }: { children: React.ReactNode }) {

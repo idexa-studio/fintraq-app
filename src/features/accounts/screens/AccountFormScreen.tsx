@@ -1,8 +1,7 @@
-import { ColorPickerRow } from '@/src/components/ui/ColorPickerRow';
-import { CurrencyPickerBottomSheet } from '@/src/components/ui/CurrencyPickerBottomSheet';
-import { Header } from '@/src/components/ui/Header';
-import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { PageBackground } from '@/src/components/ui/PageBackground';
+import { ColorPickerRow } from '@/src/components/pickers/ColorPickerRow';
+import { CurrencyPickerBottomSheet } from '@/src/components/pickers/CurrencyPickerBottomSheet';
+import { Button, Card, Chip, FormField, Icon, IconAvatar, ListGroup, Screen, Text } from '@/src/components/ui';
+import { CaretDownIcon, LockKeyIcon } from '@/src/components/ui/icons';
 import { ACCOUNT_COLORS } from '@/src/constants/picker';
 import type { InsertAccount, UpdateAccountData } from '@/src/features/accounts/api/accounts';
 import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
@@ -12,23 +11,10 @@ import { AnalyticsService } from '@/src/services/analytics';
 import type { AccountType } from '@/src/types';
 import { colorNumberToHex, parseAmount, toDbColor } from '@/src/utils/format';
 import { ACCOUNT_TYPE_ICON_MAP, resolveAccountTypeIcon } from '@/src/utils/icons';
-import { UnfoldMoreIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { LoggerService } from '@/src/services/logger.service';
 import { useTranslation } from 'react-i18next';
 
@@ -59,7 +45,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { t } = useTranslation();
-  const { colors, layout } = theme;
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { data: accounts } = useAccounts();
@@ -161,415 +147,180 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
-      <Header title={isEditing ? t('accountForm.edit') : t('accountForm.new')} showBack />
-
-      <KeyboardAvoidingView
-        style={styles.body}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={styles.content}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
-
-          {/* ── Hero preview card ── */}
-          <View style={[styles.heroCard, { marginHorizontal: layout.screenPadding }]}>
-            <View style={styles.heroTop}>
-              <IconAvatar icon={resolvedIcon} color={colorHex} variant="subtle" size={64} iconSize={28} />
-              <View style={styles.heroMeta}>
-                <Text style={styles.heroName} numberOfLines={1}>
-                  {accountName.trim() || t('accountForm.accountName')}
-                </Text>
-                <Text style={styles.heroSub}>{selectedTypeLabel} · {currency}</Text>
-              </View>
-            </View>
-
-            <View style={styles.heroDivider} />
-
-            <ColorPickerRow colors={ACCOUNT_COLORS} value={colorHex} onChange={setColorHex} />
+    <Screen
+      header={{ title: isEditing ? t('accountForm.edit') : t('accountForm.new'), showBack: true }}
+      keyboardAvoiding
+      footer={
+        <Button
+          title={isEditing ? t('accountForm.save') : t('accountForm.create')}
+          onPress={handleSave}
+          disabled={!isValid}
+          size="lg"
+          fullWidth
+        />
+      }
+      overlays={
+        <CurrencyPickerBottomSheet
+          visible={showCurrencyPicker}
+          onClose={closeCurrencyPicker}
+          value={currency}
+          onChange={setCurrency}
+        />
+      }
+    >
+      {/* Live preview — updates as you type, pick a type or a colour */}
+      <Card style={styles.preview}>
+        <View style={styles.previewTop}>
+          <IconAvatar icon={resolvedIcon} color={colorHex} size={56} />
+          <View style={styles.previewMeta}>
+            <Text variant="subheading" numberOfLines={1}>{accountName.trim() || t('accountForm.accountName')}</Text>
+            <Text variant="callout" tone="muted">{selectedTypeLabel} · {currency}</Text>
           </View>
-
-          {/* ── Account type ── */}
-          <View style={styles.sectionGap}>
-            <Text style={[styles.sectionLabel, { paddingHorizontal: layout.screenPadding }]}>
-              {t('accountForm.accountType')}
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={[styles.typeRow, { paddingHorizontal: layout.screenPadding }]}
-            >
-              {ACCOUNT_TYPE_OPTIONS.map((opt) => {
-                const isSelected = accountType === opt.value;
-                return (
-                  <Pressable
-                    key={opt.value}
-                    onPress={isEditing ? undefined : () => setAccountType(opt.value)}
-                    style={[
-                      styles.typeChip,
-                      isSelected && { backgroundColor: colors.primary },
-                      isEditing && !isSelected && styles.balanceInputDisabled,
-                    ]}
-                  >
-                    <HugeiconsIcon
-                      icon={ACCOUNT_TYPE_ICON_MAP[opt.value]}
-                      size={15}
-                      color={isSelected ? '#111' : colors.textMuted}
-                    />
-                    <Text style={[styles.typeChipLabel, isSelected && styles.typeChipLabelActive]}>
-                      {t(`accounts.${opt.label}`)}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-          </View>
-
-          {/* ── Details card ── */}
-          <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
-            <Text style={styles.sectionLabel}>{t('accountForm.accountDetails')}</Text>
-            <View style={styles.fieldCard}>
-
-              {/* Account name */}
-              <Controller
-                control={control}
-                name="name"
-                rules={{
-                  required: t('forms.required'),
-                  minLength: { value: 2, message: t('forms.minChars', { count: 2 }) },
-                  maxLength: { value: 50, message: t('forms.maxChars', { count: 50 }) },
-                }}
-                render={({ field }) => (
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>{t('forms.name')}</Text>
-                    <TextInput
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      placeholder={t('accountForm.namePlaceholder')}
-                      placeholderTextColor={colors.textMuted + '60'}
-                      style={[styles.fieldInput, errors.name && styles.fieldInputError]}
-                      autoCapitalize="words"
-                      autoCorrect={false}
-                      returnKeyType="next"
-                      onSubmitEditing={() => holderRef.current?.focus()}
-                    />
-                  </View>
-                )}
-              />
-
-              <View style={styles.fieldDivider} />
-
-              {/* Holder name */}
-              <Controller
-                control={control}
-                name="holderName"
-                rules={{
-                  maxLength: { value: 50, message: t('forms.maxChars', { count: 50 }) },
-                }}
-                render={({ field }) => (
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>{t('forms.holder')}</Text>
-                    <TextInput
-                      ref={holderRef}
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      placeholder={t('accountForm.holderPlaceholder')}
-                      placeholderTextColor={colors.textMuted + '60'}
-                      style={styles.fieldInput}
-                      autoCapitalize="words"
-                      autoCorrect={false}
-                      returnKeyType="next"
-                      onSubmitEditing={() => accountNumberRef.current?.focus()}
-                    />
-                  </View>
-                )}
-              />
-
-              <View style={styles.fieldDivider} />
-
-              {/* Account number */}
-              <Controller
-                control={control}
-                name="accountNumber"
-                rules={{
-                  maxLength: { value: 100, message: t('forms.maxChars', { count: 100 }) },
-                }}
-                render={({ field }) => (
-                  <View style={styles.fieldRow}>
-                    <Text style={styles.fieldLabel}>{t('forms.number')}</Text>
-                    <TextInput
-                      ref={accountNumberRef}
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      placeholder={t('accountForm.numberPlaceholder')}
-                      placeholderTextColor={colors.textMuted + '60'}
-                      style={styles.fieldInput}
-                      autoCorrect={false}
-                      autoCapitalize="none"
-                      returnKeyType="next"
-                      onSubmitEditing={() => balanceRef.current?.focus()}
-                    />
-                  </View>
-                )}
-              />
-            </View>
-            {errors.name && (
-              <Text style={styles.errorText}>{errors.name.message}</Text>
-            )}
-          </View>
-
-          {/* ── Balance + Currency ── */}
-          <View style={[styles.sectionGap, { paddingHorizontal: layout.screenPadding }]}>
-            <Text style={styles.sectionLabel}>
-              {isEditing ? t('accountForm.currentBalance') : t('accountForm.initialBalance')}
-            </Text>
-            <View style={styles.fieldCard}>
-              <View style={styles.balanceRow}>
-                <Controller
-                  control={control}
-                  name="balance"
-                  rules={{
-                    validate: (v) =>
-                      !v.trim() ||
-                      (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) ||
-                      t('forms.invalidAmount'),
-                  }}
-                  render={({ field }) => (
-                    <TextInput
-                      ref={balanceRef}
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      placeholder="0.00"
-                      placeholderTextColor={colors.textMuted + '50'}
-                      keyboardType="decimal-pad"
-                      style={[
-                        styles.balanceInput,
-                        errors.balance && styles.fieldInputError,
-                        isEditing && styles.balanceInputDisabled,
-                      ]}
-                      returnKeyType="done"
-                      editable={!isEditing}
-                      selectTextOnFocus={!isEditing}
-                    />
-                  )}
-                />
-                <View style={styles.fieldDivider} />
-                <TouchableOpacity
-                  style={[styles.currencyBtn, isEditing && styles.balanceInputDisabled]}
-                  onPress={isEditing ? undefined : openCurrencyPicker}
-                  activeOpacity={isEditing ? 1 : 0.7}
-                >
-                  <Text style={styles.currencyValue}>{currency}</Text>
-                  {!isEditing && <HugeiconsIcon icon={UnfoldMoreIcon} size={13} color={colors.textMuted} />}
-                </TouchableOpacity>
-              </View>
-            </View>
-            {errors.balance && (
-              <Text style={styles.errorText}>{errors.balance.message}</Text>
-            )}
-          </View>
-
-        </ScrollView>
-
-        <View style={styles.footer}>
-          <Pressable
-            style={[styles.primaryBtn, !isValid && styles.primaryBtnDisabled]}
-            onPress={handleSave}
-            disabled={!isValid}
-          >
-            <Text style={styles.primaryBtnText}>
-              {isEditing ? t('accountForm.save') : t('accountForm.create')}
-            </Text>
-          </Pressable>
         </View>
-      </KeyboardAvoidingView>
+        <View style={styles.previewColors}>
+          <ColorPickerRow colors={ACCOUNT_COLORS} value={colorHex} onChange={setColorHex} />
+        </View>
+      </Card>
 
-      <CurrencyPickerBottomSheet
-        visible={showCurrencyPicker}
-        onClose={closeCurrencyPicker}
-        value={currency}
-        onChange={setCurrency}
-      />
-    </SafeAreaView>
+      <View style={styles.section}>
+        <Text variant="label" tone="muted" style={styles.sectionLabel}>{t('accountForm.accountType')}</Text>
+        {/* Every type visible at once — no hidden options in a sideways scroll */}
+        <View style={styles.typeGrid}>
+          {ACCOUNT_TYPE_OPTIONS.filter((opt) => !isEditing || opt.value === accountType).map((opt) => (
+            <Chip
+              key={opt.value}
+              label={t(`accounts.${opt.label}`)}
+              icon={ACCOUNT_TYPE_ICON_MAP[opt.value]}
+              isActive={accountType === opt.value}
+              onPress={() => { if (!isEditing) setAccountType(opt.value); }}
+            />
+          ))}
+        </View>
+      </View>
+
+      <ListGroup title={t('accountForm.accountDetails')} insetDividers={false}>
+        <Controller
+          control={control}
+          name="name"
+          rules={{
+            required: t('forms.required'),
+            minLength: { value: 2, message: t('forms.minChars', { count: 2 }) },
+            maxLength: { value: 50, message: t('forms.maxChars', { count: 50 }) },
+          }}
+          render={({ field, fieldState }) => (
+            <FormField
+              label={t('forms.name')}
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              error={fieldState.isTouched ? errors.name?.message : undefined}
+              placeholder={t('accountForm.namePlaceholder')}
+              autoCapitalize="words"
+              autoCorrect={false}
+              returnKeyType="next"
+              onSubmitEditing={() => holderRef.current?.focus()}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="holderName"
+          rules={{ maxLength: { value: 50, message: t('forms.maxChars', { count: 50 }) } }}
+          render={({ field }) => (
+            <FormField
+              ref={holderRef}
+              label={t('forms.holder')}
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              error={errors.holderName?.message}
+              placeholder={t('accountForm.holderPlaceholder')}
+              autoCapitalize="words"
+              autoCorrect={false}
+              returnKeyType="next"
+              onSubmitEditing={() => accountNumberRef.current?.focus()}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="accountNumber"
+          rules={{ maxLength: { value: 100, message: t('forms.maxChars', { count: 100 }) } }}
+          render={({ field }) => (
+            <FormField
+              ref={accountNumberRef}
+              label={t('forms.number')}
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              error={errors.accountNumber?.message}
+              placeholder={t('accountForm.numberPlaceholder')}
+              autoCapitalize="none"
+              autoCorrect={false}
+              returnKeyType={isEditing ? 'done' : 'next'}
+              onSubmitEditing={() => { if (!isEditing) balanceRef.current?.focus(); }}
+            />
+          )}
+        />
+      </ListGroup>
+
+      <ListGroup insetDividers={false}>
+        <Controller
+          control={control}
+          name="balance"
+          rules={{
+            validate: (v) =>
+              !v.trim() || (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) || t('forms.invalidAmount'),
+          }}
+          render={({ field }) => (
+            <FormField
+              ref={balanceRef}
+              large
+              label={isEditing ? t('accountForm.currentBalance') : t('accountForm.initialBalance')}
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              error={errors.balance?.message}
+              placeholder="0.00"
+              keyboardType="decimal-pad"
+              returnKeyType="done"
+              editable={!isEditing}
+              selectTextOnFocus={!isEditing}
+              trailing={
+                isEditing ? (
+                  <Icon icon={LockKeyIcon} size={18} color={colors.textMuted} />
+                ) : (
+                  <Button
+                    title={currency}
+                    icon={CaretDownIcon}
+                    iconPosition="trailing"
+                    variant="tonal"
+                    size="sm"
+                    onPress={openCurrencyPicker}
+                    accessibilityLabel={t('ui.currency')}
+                  />
+                )
+              }
+            />
+          )}
+        />
+      </ListGroup>
+
+      {isEditing ? (
+        <Text variant="caption" tone="muted" style={styles.lockedHint}>{t('accountForm.lockedHint')}</Text>
+      ) : null}
+    </Screen>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, shadow, layout }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-      overflow: 'hidden',
-    },
-    body: { flex: 1 },
-    scroll: { flex: 1 },
-    content: {
-      paddingTop: spacing('4'),
-      paddingBottom: spacing('6'),
-      gap: 0,
-    },
-
-    // ── Hero card
-    heroCard: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
-      ...shadow('sm'),
-    },
-    heroTop: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3.5'),
-      padding: spacing('4'),
-    },
-    heroMeta: {
-      flex: 1,
-      gap: spacing('1'),
-    },
-    heroName: {
-      fontFamily: typography.styles.profileName.fontFamily,
-      fontSize: 18,
-      color: colors.text,
-    },
-    heroSub: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 13,
-      color: colors.textMuted,
-    },
-    heroDivider: {
-      height: StyleSheet.hairlineWidth,
-      backgroundColor: colors.border,
-      marginHorizontal: spacing('4'),
-    },
-    // ── Section
-    sectionGap: {
-      marginTop: spacing('5'),
-      gap: spacing('2.5'),
-    },
-    sectionLabel: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      opacity: 0.6,
-    },
-
-    // ── Type chips
-    typeRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-    },
-    typeChip: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1.5'),
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('2'),
-      borderRadius: radius('full'),
-      backgroundColor: colors.surface,
-    },
-    typeChipLabel: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 13,
-      color: colors.textMuted,
-    },
-    typeChipLabelActive: {
-      color: '#111',
-    },
-
-    // ── Field card (grouped inputs)
-    fieldCard: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      overflow: 'hidden',
-    },
-    fieldRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing('4'),
-      minHeight: 52,
-      gap: spacing('3'),
-    },
-    fieldLabel: {
-      fontFamily: typography.fonts.medium,
-      fontSize: 14,
-      color: colors.textMuted,
-      width: 56,
-    },
-    fieldInput: {
-      flex: 1,
-      fontFamily: typography.fonts.regular,
-      fontSize: 15,
-      color: colors.text,
-      paddingVertical: spacing('3'),
-    },
-    fieldInputError: {
-      color: colors.danger,
-    },
-    fieldDivider: {
-      height: StyleSheet.hairlineWidth,
-      backgroundColor: colors.border,
-      marginLeft: spacing('4') + 56 + spacing('3'),
-    },
-    errorText: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 12,
-      color: colors.danger,
-    },
-
-    // ── Balance row
-    balanceRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    balanceInput: {
-      flex: 1,
-      fontFamily: typography.fonts.amountBold,
-      fontSize: 20,
-      color: colors.text,
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-    },
-    balanceInputDisabled: {
-      color: colors.textMuted,
-      opacity: 0.6,
-    },
-    currencyBtn: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1.5'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-    },
-    currencyValue: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      fontSize: 15,
-      color: colors.text,
-    },
-
-    // ── Footer
-    footer: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('8'),
-    },
-    primaryBtn: {
-      height: 52,
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    primaryBtnDisabled: { opacity: 0.45 },
-    primaryBtnText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: 15,
-      color: colors.primaryForeground,
-    },
+    preview: { padding: 0 },
+    previewTop: { flexDirection: 'row', alignItems: 'center', gap: spacing('3.5'), padding: spacing('4') },
+    previewMeta: { flex: 1, gap: spacing('0.5') },
+    previewColors: { marginTop: -spacing('3') },
+    section: { gap: spacing('2') },
+    sectionLabel: { marginLeft: spacing('1') },
+    typeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
+    lockedHint: { marginHorizontal: spacing('1'), marginTop: -spacing('2') },
   });

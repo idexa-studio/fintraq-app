@@ -1,8 +1,9 @@
+import { Spinner } from '@/src/components/ui';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ActivityIndicator, View } from 'react-native';
-import { DARK_THEME } from '../theme/colors';
-import { StorageKeys } from '../constants/keys';
+import { View } from 'react-native';
+import { DARK_THEME } from '@/src/theme/colors';
+import { StorageKeys } from '@/src/constants/keys';
 import { LoggerService } from '@/src/services/logger.service';
 
 type OnboardingContextType = {
@@ -53,7 +54,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: DARK_THEME.background }}>
-        <ActivityIndicator size="large" color={DARK_THEME.primary} />
+        <Spinner size="lg" color={DARK_THEME.primary} />
       </View>
     );
   }

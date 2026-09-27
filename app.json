@@ -11,7 +11,7 @@
     "newArchEnabled": true,
     "notification": {
       "icon": "./assets/images/android-icon-monochrome.png",
-      "color": "#205FA8",
+      "color": "#00824A",
       "iosDisplayInForeground": true
     },
     "ios": {
@@ -27,7 +27,7 @@
         "foregroundImage": "./assets/images/adaptive-icon/foreground.png",
         "backgroundImage": "./assets/images/adaptive-icon/background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#F3F5EF"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -48,9 +48,9 @@
           "image": "./assets/images/splash.png",
           "imageWidth": 224,
           "resizeMode": "contain",
-          "backgroundColor": "#141412",
+          "backgroundColor": "#F3F5EF",
           "dark": {
-            "backgroundColor": "#141412"
+            "backgroundColor": "#F3F5EF"
           }
         }
       ],

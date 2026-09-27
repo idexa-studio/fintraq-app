@@ -2,6 +2,8 @@ import type { Translation } from './types';
 
 const hi: Translation = {
   common: {
+    edit: 'संपादित करें', delete: 'हटाएँ',
+    back: 'वापस',
     cancel: 'रद्द करें',
     ok: 'ठीक है',
     clear: 'हटाएँ',
@@ -18,6 +20,7 @@ const hi: Translation = {
     settings: 'सेटिंग्स',
   },
   settings: {
+    general: "सामान्य", security: "सुरक्षा", manage: "प्रबंधन", about: "परिचय", loans: "लोन", loansHint: "आपने दिया या लिया पैसा",
     title: 'सेटिंग्स',
     welcome: 'स्वागत है',
     proMember: 'प्रो सदस्य',
@@ -112,12 +115,13 @@ const hi: Translation = {
     cannotDelete: 'श्रेणी हटाई नहीं जा सकती', deleteFailed: 'श्रेणी हटाई नहीं जा सकी।',
   },
   dashboard: {
+    streakDays: '{{count}} दिन की लय',
     accounts: 'खाते', manage: 'प्रबंधित करें', topExpenses: 'मुख्य खर्च', people: 'लोग', loans: 'ऋण', recent: 'हाल के', seeAll: 'सभी देखें',
     noTransactions: 'अभी कोई लेन-देन नहीं', transactionHint: 'अपने दैनिक भुगतान, आय या ट्रांसफर यहाँ दर्ज करना शुरू करें।', addTransaction: 'लेन-देन जोड़ें',
     balance: 'आपका बैलेंस', income: 'आय', expenses: 'खर्च', noLoans: 'कोई सक्रिय ऋण नहीं', loanHint: 'उधार दिया या लिया धन ट्रैक करें। ऋण जोड़ने के लिए टैप करें।',
     lentOut: 'दिया गया', borrowed: 'लिया गया', overdue: '{{count}} बकाया', active: '{{count}} सक्रिय', noExpenses: 'अभी कोई खर्च नहीं', expensesHint: 'मुख्य खर्च श्रेणियाँ देखने के लिए कुछ लेन-देन जोड़ें।',
   },
-  transactions: { amount: 'राशि', category: 'श्रेणी', netSavings: 'शुद्ध बचत', income: 'आय', expenses: 'खर्च', type: 'प्रकार', account: 'खाता', date: 'तारीख', person: 'व्यक्ति', typesCount: '{{count}} प्रकार', oneAccount: '1 खाता', accountsCount: '{{count}} खाते', oneCategory: '1 श्रेणी', categoriesCount: '{{count}} श्रेणियाँ', onePerson: '1 व्यक्ति', personsCount: '{{count}} लोग',
+  transactions: { dayCount: '{{count}} एंट्री', allCategories: 'सभी', searchCategories: 'श्रेणियाँ खोजें', amount: 'राशि', category: 'श्रेणी', netSavings: 'शुद्ध बचत', income: 'आय', expenses: 'खर्च', type: 'प्रकार', account: 'खाता', date: 'तारीख', person: 'व्यक्ति', typesCount: '{{count}} प्रकार', oneAccount: '1 खाता', accountsCount: '{{count}} खाते', oneCategory: '1 श्रेणी', categoriesCount: '{{count}} श्रेणियाँ', onePerson: '1 व्यक्ति', personsCount: '{{count}} लोग',
   filteredSummary: 'फ़िल्टर किया सारांश', title: 'लेन-देन', clearAll: 'सब हटाएँ', noResults: 'कोई परिणाम नहीं', nothingYet: 'यहाँ अभी कुछ नहीं', noMatch: 'सक्रिय फ़िल्टर से कोई लेन-देन मेल नहीं खाता। फ़िल्टर बदलें या हटाएँ।', addFirst: 'ट्रैकिंग शुरू करने के लिए अपना पहला लेन-देन जोड़ें।', clearFilters: 'फ़िल्टर हटाएँ', add: 'लेन-देन जोड़ें',
   deleteTitle: 'लेन-देन हटाएँ', deleteMessage: 'इससे लेन-देन हट जाएगा और खाते के बैलेंस पर उसका असर पलट जाएगा।', delete: 'हटाएँ', sortTitle: 'लेन-देन क्रमबद्ध करें', newest: 'सबसे नया पहले', oldest: 'सबसे पुराना पहले', highest: 'सबसे ज़्यादा राशि', lowest: 'सबसे कम राशि',
   expense: 'खर्च', transfer: 'ट्रांसफ़र', missingDetails: 'विवरण अधूरा', missingDetailsMessage: 'कृपया खाता, श्रेणी और सही राशि चुनें।', missingDestination: 'गंतव्य नहीं चुना', missingDestinationMessage: 'ट्रांसफ़र के लिए गंतव्य खाता चुनें।',
@@ -125,6 +129,7 @@ const hi: Translation = {
   editEntry: 'एंट्री संपादित करें', newEntry: 'नई एंट्री', loanRepaymentFor: 'ऋण भुगतान किसके लिए', loading: 'लोड हो रहा है...', fromAccount: 'किस खाते से', toAccount: 'किस खाते में', noCompatible: 'इस ट्रांसफ़र के लिए कोई उपयुक्त खाता नहीं।', linkedPerson: 'जुड़ा व्यक्ति', unknown: 'अज्ञात', noPersonLinked: 'कोई व्यक्ति नहीं जुड़ा', time: 'समय', note: 'नोट', optionalContext: 'वैकल्पिक जानकारी', saveChanges: 'बदलाव सहेजें', saveTransaction: 'लेन-देन सहेजें', none: 'कोई नहीं',
   detailTitle: 'लेन-देन', notFound: 'लेन-देन नहीं मिला।', detailDeleteTitle: 'लेन-देन हटाएँ', detailDeleteMessage: 'इससे बैलेंस पर असर पलट जाएगा और यह वापस नहीं हो सकता।', from: 'से', to: 'को', created: 'बनाया गया', cancel: 'रद्द करें' },
   onboardingFlow: {
+    getStarted: 'शुरू करें', restoreFromBackup: 'बैकअप से बहाल करें', welcomeSubtitle: 'खर्च, आय और लोन एक शांत, निजी जगह पर ट्रैक करें। सेटअप में एक मिनट से भी कम लगता है।',
     steps: {
       welcome: { eyebrow: 'शुरुआत', title: 'अपना फ़ाइनेंस कॉकपिट बनाएँ।', subtitle: 'सरल सेटअप, पूरे डिफ़ॉल्ट और साफ़ खाता शुरुआत के साथ।' },
       setup_choice: { eyebrow: 'सेटअप मोड', title: 'आप कैसे शुरू करना चाहेंगे?', subtitle: 'नया वर्कस्पेस शुरू करें या मौजूदा Google Drive बैकअप रिस्टोर करें।' },
@@ -165,7 +170,7 @@ const hi: Translation = {
   },
   ui: {
     somethingWrong: 'कुछ गलत हो गया', proOnly: 'केवल प्रो', unlockWithPro: 'Fintraq Pro से अनलॉक करें',
-    chooseIcon: 'आइकन चुनें', chooseColor: 'रंग चुनें', colorsCount: '{{count}} रंग', currency: 'मुद्रा', currenciesCount: '{{count}} मुद्राएँ', searchCurrency: 'नाम या कोड से खोजें', delKey: 'मिटाएँ',
+    charsLeft: '{{count}} अक्षर बाकी', suggested: 'सुझाई गई', allCurrencies: 'सभी मुद्राएँ', noMatch: '“{{query}}” के लिए कुछ नहीं मिला', chooseIcon: 'आइकन चुनें', chooseColor: 'रंग चुनें', colorsCount: '{{count}} रंग', currency: 'मुद्रा', currenciesCount: '{{count}} मुद्राएँ', searchCurrency: 'नाम या कोड से खोजें', delKey: 'मिटाएँ',
   },
   lock: {
     unlockApp: 'ऐप अनलॉक करें', authFailed: 'प्रमाणीकरण विफल। फिर कोशिश करें।', useButton: 'फिर कोशिश करने के लिए नीचे दिया बटन इस्तेमाल करें।',
@@ -180,6 +185,9 @@ const hi: Translation = {
     defaultMessage: 'जारी रखने के लिए कृपया Fintraq अपडेट करें। बस एक पल लगेगा।', updateNow: 'अभी अपडेट करें',
   },
   loans: {
+    outstandingAmount: "बकाया: {{amount}}", exceedsOutstanding: "राशि बकाया {{amount}} से अधिक है", fullAmount: "पूरी राशि · {{amount}}",
+    freeLimit: 'फ़्री प्लान में {{limit}} सक्रिय लोन तक। असीमित के लिए अपग्रेड करें।', upgrade: 'अपग्रेड',
+    lentToName: '{{name}} को उधार दिया', borrowedFromName: '{{name}} से उधार लिया',
     title: 'ऋण', loan: 'ऋण', newLoan: 'नया ऋण', lentOut: 'उधार दिया', borrowed: 'उधार लिया', lent: 'दिया', repaid: 'चुकाया गया',
     noLent: 'कोई दिया हुआ ऋण नहीं', noBorrowed: 'कोई लिया हुआ ऋण नहीं', emptyHint: 'जो पैसा आपने उधार दिया या लिया है, उसका हिसाब यहाँ रखें।', addLoan: 'ऋण जोड़ें',
     unknown: 'अज्ञात', unnamedSource: 'बिना नाम का स्रोत', outstandingBalance: 'बकाया राशि', principal: 'मूलधन', outstanding: 'बकाया', totalPrincipal: 'कुल मूलधन',
@@ -217,10 +225,12 @@ const hi: Translation = {
     linkPerson: 'व्यक्ति जोड़ें', noPerson: 'कोई व्यक्ति नहीं',
   },
   categoryForm: {
+    appliesToHint: 'एक या अधिक चुनें।', moreIcons: 'और',
     edit: 'श्रेणी संपादित करें', new: 'नई श्रेणी', categoryName: 'श्रेणी का नाम', tapToChangeIcon: 'आइकन बदलने के लिए टैप करें', appliesTo: 'लागू होता है', namePlaceholder: 'जैसे किराना, वेतन',
     save: 'श्रेणी सहेजें', create: 'श्रेणी बनाएँ', chooseIcon: 'आइकन चुनें', expense: 'खर्च', income: 'आय', transfer: 'ट्रांसफ़र',
   },
   accountForm: {
+    lockedHint: 'प्रकार, मुद्रा और बैलेंस खाता बनाते समय तय होते हैं। बैलेंस लेन-देन से बदलता है।',
     edit: 'खाता संपादित करें', new: 'नया खाता', accountName: 'खाते का नाम', accountType: 'खाते का प्रकार', accountDetails: 'खाते का विवरण',
     namePlaceholder: 'जैसे मुख्य वॉलेट', holderPlaceholder: 'राम शर्मा (वैकल्पिक)', numberPlaceholder: 'IBAN (वैकल्पिक)', currentBalance: 'वर्तमान बैलेंस', initialBalance: 'शुरुआती बैलेंस',
     save: 'खाता सहेजें', create: 'खाता बनाएँ',
@@ -319,12 +329,13 @@ const hi: Translation = {
     monthGood: 'यह महीना अच्छा चल रहा है', monthTight: 'अब तक महीना तंग रहा', monthGoodHint: 'आय खर्च से ज़्यादा है — आप गति बना रहे हैं।', monthTightHint: 'खर्च आय से आगे है। चिंता नहीं — बस एक नज़र डालने का इशारा।',
   },
   walkthrough: {
+    gotIt: 'समझ गया',
     step: '{{total}} में से चरण {{current}}', skip: 'गाइड छोड़ें', getStarted: 'शुरू करें', next: 'जारी रखें',
     welcomeToFintraq: { title: 'Fintraq में आपका स्वागत है!', desc: 'आइए अपने नए प्रीमियम वित्तीय डैशबोर्ड का एक छोटा टूर लें।' },
     trackNetSavings: { title: 'शुद्ध बचत ट्रैक करें', desc: 'ऊपर का कार्ड आपकी कुल शुद्ध स्थिति (आय घटा खर्च) दिखाता है। अलग-अलग मुद्राएँ देखने के लिए इसे स्वाइप करें।' },
     accountsWallets: { title: 'खाते और वॉलेट', desc: 'अपना नकद, बैंक खाते और क्रेडिट कार्ड प्रबंधित करें। अलग-अलग लॉग देखने के लिए उन पर टैप करें।' },
     realTimeInsights: { title: 'रीयल-टाइम इनसाइट्स', desc: 'नीचे आपको खर्च के पैटर्न की इनसाइट्स, शीर्ष खर्च श्रेणी चिप्स और स्ट्रीक मिलेंगी।' },
-    logFirstTransaction: { title: 'पहला लेन-देन दर्ज करें', desc: 'जब आप तैयार हों, लेन-देन दर्ज करने के लिए नीचे दाईं ओर हरे \'+\' बटन पर टैप करें!' },
+    logFirstTransaction: { title: 'पहला लेन-देन दर्ज करें', desc: 'जब तैयार हों, लेन-देन दर्ज करने के लिए नीचे हरे + बटन पर टैप करें।' },
     enterAmount: { title: 'राशि दर्ज करें', desc: 'संख्या इनपुट से लेन-देन की राशि लिखकर शुरू करें। दशमलव मान पूरी तरह समर्थित हैं।' },
     selectTransactionType: { title: 'लेन-देन का प्रकार चुनें', desc: 'खर्च (खर्च किया पैसा), आय (कमाया पैसा) या ट्रांसफ़र (खातों के बीच पैसा भेजना) चुनें।' },
     chooseCategory: { title: 'श्रेणी चुनें', desc: 'अपने लेन-देन को व्यवस्थित करने के लिए श्रेणी चुनें। कस्टम श्रेणियाँ सेटिंग्स में बनाई जा सकती हैं।' },

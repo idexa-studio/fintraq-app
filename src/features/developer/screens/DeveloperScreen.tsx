@@ -1,167 +1,61 @@
-import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
-import { Header } from '@/src/components/ui/Header';
-import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { Input } from '@/src/components/ui/Input';
-import { PageBackground } from '@/src/components/ui/PageBackground';
+import type { IconSource } from '@/src/components/ui';
+import {
+  AlertButton,
+  AlertDialog,
+  Badge,
+  ConfirmDialog,
+  IconAvatar,
+  Input,
+  ListGroup,
+  ListItem,
+  Screen,
+  Text,
+} from '@/src/components/ui';
+import {
+  AndroidLogoIcon,
+  AppleLogoIcon,
+  ArrowsClockwiseIcon,
+  BellIcon,
+  BellRingingIcon,
+  BellSlashIcon,
+  CloudIcon,
+  FileTextIcon,
+  FlaskIcon,
+  GearIcon,
+  LockKeyIcon,
+  PaletteIcon,
+  SealCheckIcon,
+  TrashIcon,
+  XCircleIcon,
+} from '@/src/components/ui/icons';
+import { StorageKeys } from '@/src/constants/keys';
+import { useKeyboardInset } from '@/src/hooks/useKeyboardInset';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
+import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
+import { LoggerService } from '@/src/services/logger.service';
 import { NotificationService } from '@/src/services/notification.service';
 import { toErrorMessage } from '@/src/utils/errors';
 import { seedDummyData } from '@/src/utils/seed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
-import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
-import { StorageKeys } from '@/src/constants/keys';
-import { LoggerService } from '@/src/services/logger.service';
-import {
-  AndroidIcon,
-  Apple01Icon,
-  ArrowRight01Icon,
-  BellIcon,
-  BellOffIcon,
-  BellRingIcon,
-  CancelCircleIcon,
-  CheckmarkBadge01Icon,
-  CheckmarkCircle01Icon,
-  CloudIcon,
-  Delete02Icon,
-  File01Icon,
-  FlaskConicalIcon,
-  LockPasswordIcon,
-  RefreshIcon,
-  Settings01Icon,
-} from '@hugeicons/core-free-icons';
-import type { IconSvgElement } from '@hugeicons/react-native';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Notifications from 'expo-notifications';
-import React, { useCallback, useMemo } from 'react';
-import {
-  DevSettings,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Updates from 'expo-updates';
-import { alpha } from '@/src/theme/tokens';
+import React, { useCallback, useMemo } from 'react';
+import { DevSettings, Platform, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const DEV_PIN = '32159';
-
-/* ── Row separator ──────────────────────────────────────────── */
-
-const RowSeparator = React.memo(function RowSeparator({ theme }: { theme: ThemeContextType }) {
-  return (
-    <View
-      style={{
-        height: StyleSheet.hairlineWidth,
-        backgroundColor: alpha(theme.colors.text, 'subtle'),
-        marginLeft: theme.layout.screenPadding + 36 + theme.spacing('3.5'),
-      }}
-    />
-  );
-});
-
-/* ── NavRow ─────────────────────────────────────────────────── */
-
-type NavRowProps = {
-  icon: IconSvgElement;
-  label: string;
-  subtitle?: string;
-  value?: string;
-  onPress: () => void;
-  iconColor?: string;
-  showArrow?: boolean;
-  theme: ThemeContextType;
-};
-
-const NavRow = React.memo(function NavRow({
-  icon, label, subtitle, value, onPress, iconColor, showArrow = true, theme,
-}: NavRowProps) {
-  const styles = useMemo(() => createRowStyles(theme), [theme]);
-  const { colors } = theme;
-  return (
-    <BentoPressable onPress={onPress} style={styles.row}>
-      <IconAvatar icon={icon} color={iconColor ?? colors.text} variant="subtle" size={36} />
-      <View style={styles.rowInfo}>
-        <Text style={styles.rowLabel}>{label}</Text>
-        {subtitle ? <Text style={styles.rowSubtitle}>{subtitle}</Text> : null}
-      </View>
-      {(value || showArrow) ? (
-        <View style={styles.rowRight}>
-          {value ? <Text style={styles.rowValue}>{value}</Text> : null}
-          {showArrow ? (
-            <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
-          ) : null}
-        </View>
-      ) : null}
-    </BentoPressable>
-  );
-});
-
-/* ── InfoRow (non-pressable) ────────────────────────────────── */
-
-const InfoRow = React.memo(function InfoRow({
-  icon, label, value, theme,
-}: { icon: IconSvgElement; label: string; value: string; theme: ThemeContextType }) {
-  const styles = useMemo(() => createRowStyles(theme), [theme]);
-  return (
-    <View style={styles.row}>
-      <IconAvatar icon={icon} color={theme.colors.textMuted} variant="subtle" size={36} />
-      <View style={styles.rowInfo}>
-        <Text style={styles.rowLabel}>{label}</Text>
-      </View>
-      <Text style={styles.rowValue}>{value}</Text>
-    </View>
-  );
-});
-
-const createRowStyles = ({ colors, typography, spacing }: ThemeContextType) =>
-  StyleSheet.create({
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3.5'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-      backgroundColor: colors.surface,
-    },
-    rowInfo: { flex: 1, gap: 2 },
-    rowLabel: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.md,
-      color: colors.text,
-    },
-    rowSubtitle: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      marginTop: 1,
-    },
-    rowRight: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-    },
-    rowValue: {
-      fontFamily: typography.styles.rowValue.fontFamily,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
-    },
-  });
 
 /* ── DeveloperScreen ────────────────────────────────────────── */
 
 export const DeveloperScreen = React.memo(function DeveloperScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { colors, isDark } = theme;
-  const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
+  const keyboardInset = useKeyboardInset(true, useSafeAreaInsets().bottom);
+  const { colors } = theme;
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const { devOverride, setDevOverride } = usePremium();
 
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
@@ -333,471 +227,194 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
 
   if (!isAuthenticated) {
     return (
-      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <PageBackground />
-        <Header title="Developer" showBack />
-
-        <KeyboardAvoidingView
-          style={styles.lockShell}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 24}
-        >
-          {/* Art section — stays in upper half */}
+      <Screen header={{ title: 'Developer', showBack: true }} variant="fixed" edges={['top', 'bottom']}>
+        {/* Keyboard pushes the whole column up so the hint never hides behind the field. */}
+        <View style={[styles.lockShell, { paddingBottom: keyboardInset }]}>
           <View style={styles.lockArt}>
-            <View style={styles.lockIconRing}>
-              <IconAvatar
-                icon={LockPasswordIcon}
-                color={colors.primary}
-                variant="subtle"
-                size={72}
-                iconSize={28}
-              />
-            </View>
-            <Text style={styles.lockBadge}>Secure gateway</Text>
-            <Text style={styles.lockTitle}>Developer tools</Text>
-            <Text style={styles.lockSub}>
-              Internal utilities for testing and debugging.{'\n'}Enter access token to continue.
+            <IconAvatar icon={LockKeyIcon} color={colors.primaryInk} size={72} iconSize={30} weight="duotone" />
+            <Text variant="label" tone="primary">SECURE GATEWAY</Text>
+            <Text variant="title" align="center">Developer tools</Text>
+            <Text variant="callout" tone="muted" align="center">
+              Internal utilities for testing and debugging. Enter the access token to continue.
             </Text>
           </View>
-
-          {/* Input section — keyboard pushes this up */}
-          <View style={styles.lockInputSection}>
-            <Input
-              placeholder="Access token"
-              value={pin}
-              onChangeText={handlePinChange}
-              keyboardType="numeric"
-              maxLength={DEV_PIN.length}
-              secureTextEntry
-              textAlign="center"
-              autoFocus
-              error={error}
-            />
-          </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+          <Input
+            placeholder="Access token"
+            value={pin}
+            onChangeText={handlePinChange}
+            keyboardType="numeric"
+            maxLength={DEV_PIN.length}
+            secureTextEntry
+            textAlign="center"
+            autoFocus
+            error={error}
+            variant="filled"
+          />
+        </View>
+      </Screen>
     );
   }
 
   /* ── Main screen ── */
 
-  const overrideOptions: { mode: 'DEFAULT' | 'FORCED_ON' | 'FORCED_OFF'; label: string; subtitle: string; icon: IconSvgElement; color: string }[] = [
-    { mode: 'DEFAULT', label: 'Default', subtitle: 'Sync with App Store / Play Store', icon: RefreshIcon as IconSvgElement, color: colors.textMuted },
-    { mode: 'FORCED_ON', label: 'Force enabled', subtitle: 'Treat as active Pro subscription', icon: CheckmarkBadge01Icon as IconSvgElement, color: colors.success },
-    { mode: 'FORCED_OFF', label: 'Force disabled', subtitle: 'Treat as free tier regardless', icon: CancelCircleIcon as IconSvgElement, color: colors.danger },
+  const overrideOptions: { mode: 'DEFAULT' | 'FORCED_ON' | 'FORCED_OFF'; label: string; subtitle: string; icon: IconSource; color: string }[] = [
+    { mode: 'DEFAULT', label: 'Default', subtitle: 'Sync with App Store / Play Store', icon: ArrowsClockwiseIcon, color: colors.textMuted },
+    { mode: 'FORCED_ON', label: 'Force enabled', subtitle: 'Treat as active Pro subscription', icon: SealCheckIcon, color: colors.success },
+    { mode: 'FORCED_OFF', label: 'Force disabled', subtitle: 'Treat as free tier regardless', icon: XCircleIcon, color: colors.danger },
   ];
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <PageBackground />
-      <Header title="Developer" showBack />
-
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-
-        {/* ── Dev badge card ── */}
-        <View style={styles.badgeCard}>
-          <View style={styles.badgeDot} />
-          <View style={styles.badgeInfo}>
-            <Text style={styles.badgeTitle}>Dev tools active</Text>
-            <Text style={styles.badgeSub}>Changes here affect app behaviour globally</Text>
-          </View>
-          <View style={styles.badgePill}>
-            <Text style={styles.badgePillText}>{__DEV__ ? 'DEV' : 'PROD'}</Text>
-          </View>
+    <Screen
+      header={{ title: 'Developer', showBack: true }}
+      overlays={
+        <>
+          <ConfirmDialog
+            visible={showSeedConfirm}
+            onClose={() => setShowSeedConfirm(false)}
+            title="Seed test data"
+            message="This will add 12 months of transactions to your default account. Proceed?"
+            confirmLabel="Generate"
+            destructive={false}
+            isLoading={isSeeding}
+            onConfirm={handleRunSeed}
+          />
+          <ConfirmDialog
+            visible={showDeleteBackupConfirm}
+            onClose={() => setShowDeleteBackupConfirm(false)}
+            title="Delete Cloud Backup"
+            message="This will permanently delete your database backup file from Google Drive. This action cannot be undone. Proceed?"
+            confirmLabel="Delete"
+            destructive
+            isLoading={isDeletingBackup}
+            onConfirm={handleDeleteBackup}
+          />
+          <ConfirmDialog
+            visible={showClearLogsConfirm}
+            onClose={() => setShowClearLogsConfirm(false)}
+            title="Clear System Logs"
+            message="This will permanently erase all system log records from device storage. Proceed?"
+            confirmLabel="Clear Logs"
+            destructive
+            onConfirm={handleClearAllLogs}
+          />
+          <AlertDialog
+            visible={alertConfig.visible}
+            title={alertConfig.title}
+            message={alertConfig.message}
+            type={alertConfig.type}
+            buttons={alertConfig.buttons}
+            onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
+          />
+        </>
+      }
+    >
+      <View style={styles.badgeCard}>
+        <View style={styles.badgeDot} />
+        <View style={styles.badgeInfo}>
+          <Text variant="bodyStrong" color={colors.onInk}>Dev tools active</Text>
+          <Text variant="caption" color={colors.onInkMuted}>Changes here affect app behaviour globally</Text>
         </View>
+        <Badge label={__DEV__ ? 'DEV' : 'PROD'} color={colors.primary} />
+      </View>
 
-        {/* ── Premium override ── */}
-        <Text style={styles.sectionLabel}>Premium override</Text>
-        <View style={styles.group}>
-          {overrideOptions.map((item, idx) => {
-            const isActive = devOverride === item.mode;
-            const isLast = idx === overrideOptions.length - 1;
-            return (
-              <React.Fragment key={item.mode}>
-                <BentoPressable
-                  style={[styles.optionRow, isActive && { backgroundColor: alpha(item.color, 'faint') }]}
-                  onPress={() => setDevOverride(item.mode)}
-                >
-                  <IconAvatar
-                    icon={item.icon}
-                    color={isActive ? item.color : colors.textMuted}
-                    variant="subtle"
-                    size={36}
-                  />
-                  <View style={styles.optionInfo}>
-                    <Text style={[styles.optionLabel, isActive && { color: item.color }]}>
-                      {item.label}
-                    </Text>
-                    <Text style={styles.optionSub}>{item.subtitle}</Text>
-                  </View>
-                  {isActive && (
-                    <HugeiconsIcon icon={CheckmarkCircle01Icon} size={18} color={item.color} />
-                  )}
-                </BentoPressable>
-                {!isLast && <RowSeparator theme={theme} />}
-              </React.Fragment>
-            );
-          })}
-        </View>
+      <ListGroup title="Design system">
+        <ListItem
+          icon={PaletteIcon}
+          iconColor={colors.primaryInk}
+          title="Design gallery"
+          subtitle="Every UI component, variant and state — light & dark"
+          onPress={() => router.push('/design-gallery')}
+        />
+      </ListGroup>
 
-        {/* ── Data ── */}
-        <Text style={styles.sectionLabel}>Data & Cloud</Text>
-        <View style={styles.group}>
-          <NavRow
-            theme={theme}
-            icon={FlaskConicalIcon as IconSvgElement}
-            iconColor={colors.primary}
-            label="Seed dummy data"
-            subtitle="Generate 12 months of transactions, persons & loans"
-            onPress={() => setShowSeedConfirm(true)}
+      <ListGroup title="Premium override">
+        {overrideOptions.map((item) => (
+          <ListItem
+            key={item.mode}
+            icon={item.icon}
+            iconColor={devOverride === item.mode ? item.color : colors.textMuted}
+            title={item.label}
+            subtitle={item.subtitle}
+            selected={devOverride === item.mode}
+            onPress={() => setDevOverride(item.mode)}
           />
+        ))}
+      </ListGroup>
 
-          <RowSeparator theme={theme} />
-          <NavRow
-            theme={theme}
-            icon={CloudIcon as IconSvgElement}
-            iconColor={colors.primary}
-            label="Run Auto-Backup Task Now"
-            subtitle="Trigger headless auto-backup check executor"
-            onPress={handleRunAutoBackupTask}
-          />
-          <RowSeparator theme={theme} />
-          <NavRow
-            theme={theme}
-            icon={Delete02Icon as IconSvgElement}
-            iconColor={colors.danger}
-            label="Delete Cloud Backup"
-            subtitle="Permanently remove backup file from Google Drive"
-            onPress={() => setShowDeleteBackupConfirm(true)}
-          />
-        </View>
+      <ListGroup title="Data & Cloud">
+        <ListItem icon={FlaskIcon} iconColor={colors.primaryInk} title="Seed dummy data" subtitle="Generate 12 months of transactions, persons & loans" onPress={() => setShowSeedConfirm(true)} />
+        <ListItem icon={CloudIcon} iconColor={colors.primaryInk} title="Run Auto-Backup Task Now" subtitle="Trigger headless auto-backup check executor" onPress={handleRunAutoBackupTask} />
+        <ListItem icon={TrashIcon} title="Delete Cloud Backup" subtitle="Permanently remove backup file from Google Drive" destructive onPress={() => setShowDeleteBackupConfirm(true)} />
+      </ListGroup>
 
-        {/* ── System Logs Console ── */}
-        <Text style={styles.sectionLabel}>System Logs Console</Text>
-        <View style={styles.group}>
-          <NavRow
-            theme={theme}
-            icon={File01Icon as IconSvgElement}
-            iconColor={colors.primary}
-            label="Open Full-Screen App Logs"
-            subtitle="View & export complete raw log stream (.txt)"
-            value={`${logCount} entries`}
-            onPress={() => router.push('/(main)/app-logs')}
-          />
-          <RowSeparator theme={theme} />
-          <NavRow
-            theme={theme}
-            icon={Delete02Icon as IconSvgElement}
-            iconColor={colors.danger}
-            label="Clear System Logs"
-            subtitle="Permanently erase all log records from device storage"
-            onPress={() => setShowClearLogsConfirm(true)}
-          />
-        </View>
+      <ListGroup title="System logs">
+        <ListItem
+          icon={FileTextIcon}
+          iconColor={colors.primaryInk}
+          title="Open full-screen app logs"
+          subtitle="View & export the raw log stream (.txt)"
+          value={`${logCount}`}
+          onPress={() => router.push('/(main)/app-logs')}
+        />
+        <ListItem icon={TrashIcon} title="Clear system logs" subtitle="Permanently erase all log records from device storage" destructive onPress={() => setShowClearLogsConfirm(true)} />
+      </ListGroup>
 
-        {/* ── Notifications ── */}
-        <Text style={styles.sectionLabel}>Notifications</Text>
-        <View style={styles.group}>
-          {scheduledNotifs.length === 0 ? (
-            <InfoRow
-              theme={theme}
-              icon={BellOffIcon as IconSvgElement}
-              label="No active schedules"
-              value="None"
+      <ListGroup title="Notifications">
+        {scheduledNotifs.length === 0 ? (
+          <ListItem icon={BellSlashIcon} iconColor={colors.textMuted} title="No active schedules" value="None" />
+        ) : (
+          scheduledNotifs.map((n) => (
+            <ListItem
+              key={n.identifier}
+              icon={BellIcon}
+              iconColor={colors.primaryInk}
+              title={n.content.title || 'Scheduled reminder'}
+              subtitle={n.content.body || 'Daily check-in alert'}
+              trailing={<Badge label="Active" color={colors.success} />}
             />
-          ) : (
-            scheduledNotifs.map((n, idx) => (
-              <React.Fragment key={n.identifier}>
-                {idx > 0 && <RowSeparator theme={theme} />}
-                <View style={styles.notifRow}>
-                  <IconAvatar icon={BellIcon as IconSvgElement} color={colors.primary} variant="subtle" size={36} />
-                  <View style={styles.optionInfo}>
-                    <Text style={styles.optionLabel} numberOfLines={1}>
-                      {n.content.title || 'Scheduled reminder'}
-                    </Text>
-                    <Text style={styles.optionSub} numberOfLines={1}>
-                      {n.content.body || 'Daily check-in alert'}
-                    </Text>
-                  </View>
-                  <View style={[styles.activePill, { backgroundColor: alpha(colors.success, 'subtle') }]}>
-                    <Text style={[styles.activePillText, { color: colors.success }]}>Active</Text>
-                  </View>
-                </View>
-              </React.Fragment>
-            ))
-          )}
-          <RowSeparator theme={theme} />
-          <NavRow
-            theme={theme}
-            icon={BellRingIcon as IconSvgElement}
-            iconColor={colors.primary}
-            label="Trigger sample notification"
-            subtitle="Queue an instant check-in alert"
-            onPress={() => {
-              NotificationService.triggerInstantNotification();
-              showAlert({
-                title: 'Test Notification',
-                message: 'Instant check-in alert queued.',
-                type: 'info',
-              });
-            }}
-          />
-          <RowSeparator theme={theme} />
-          <NavRow
-            theme={theme}
-            icon={RefreshIcon as IconSvgElement}
-            iconColor={colors.textMuted}
-            label="Refresh schedules"
-            subtitle="Reload notification schedule list"
-            onPress={fetchScheduled}
-          />
-        </View>
+          ))
+        )}
+        <ListItem
+          icon={BellRingingIcon}
+          iconColor={colors.primaryInk}
+          title="Trigger sample notification"
+          subtitle="Queue an instant check-in alert"
+          onPress={() => {
+            NotificationService.triggerInstantNotification();
+            showAlert({ title: 'Test Notification', message: 'Instant check-in alert queued.', type: 'info' });
+          }}
+        />
+        <ListItem icon={ArrowsClockwiseIcon} iconColor={colors.textMuted} title="Refresh schedules" subtitle="Reload notification schedule list" onPress={fetchScheduled} />
+      </ListGroup>
 
-        {/* ── System ── */}
-        <Text style={styles.sectionLabel}>System</Text>
-        <View style={styles.group}>
-          <InfoRow
-            theme={theme}
-            icon={Settings01Icon as IconSvgElement}
-            label="Environment"
-            value={__DEV__ ? 'Development' : 'Production'}
-          />
-          <RowSeparator theme={theme} />
-          <InfoRow
-            theme={theme}
-            icon={(Platform.OS === 'ios' ? Apple01Icon : AndroidIcon) as IconSvgElement}
-            label="Platform"
-            value={Platform.OS === 'ios' ? 'iOS' : 'Android'}
-          />
-        </View>
+      <ListGroup title="System">
+        <ListItem icon={GearIcon} iconColor={colors.textMuted} title="Environment" value={__DEV__ ? 'Development' : 'Production'} />
+        <ListItem icon={Platform.OS === 'ios' ? AppleLogoIcon : AndroidLogoIcon} iconColor={colors.textMuted} title="Platform" value={Platform.OS === 'ios' ? 'iOS' : 'Android'} />
+      </ListGroup>
 
-        {/* ── Footer ── */}
-        <View style={styles.footer}>
-          <Text style={styles.footerBrand}>Fintraq / Dev tools</Text>
-          <Text style={styles.footerCopy}>Internal debugging and testing utilities.</Text>
-        </View>
-
-      </ScrollView>
-
-      <ConfirmDialog
-        visible={showSeedConfirm}
-        onClose={() => setShowSeedConfirm(false)}
-        title="Seed test data"
-        message="This will add 12 months of transactions to your default account. Proceed?"
-        confirmLabel="Generate"
-        isLoading={isSeeding}
-        onConfirm={handleRunSeed}
-      />
-
-      <ConfirmDialog
-        visible={showDeleteBackupConfirm}
-        onClose={() => setShowDeleteBackupConfirm(false)}
-        title="Delete Cloud Backup"
-        message="This will permanently delete your database backup file from Google Drive. This action cannot be undone. Proceed?"
-        confirmLabel="Delete"
-        destructive
-        isLoading={isDeletingBackup}
-        onConfirm={handleDeleteBackup}
-      />
-
-      <ConfirmDialog
-        visible={showClearLogsConfirm}
-        onClose={() => setShowClearLogsConfirm(false)}
-        title="Clear System Logs"
-        message="This will permanently erase all system log records from device storage. Proceed?"
-        confirmLabel="Clear Logs"
-        destructive
-        onConfirm={handleClearAllLogs}
-      />
-
-      <AlertDialog
-        visible={alertConfig.visible}
-        title={alertConfig.title}
-        message={alertConfig.message}
-        type={alertConfig.type}
-        buttons={alertConfig.buttons}
-        onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
-      />
-    </SafeAreaView>
+      <View style={styles.footer}>
+        <Text variant="label" tone="muted">Fintraq / Dev tools</Text>
+        <Text variant="caption" tone="muted">Internal debugging and testing utilities.</Text>
+      </View>
+    </Screen>
   );
 });
 
 /* ── Styles ─────────────────────────────────────────────────── */
 
-const createStyles = (
-  { colors, spacing, radius, typography, layout }: ThemeContextType,
-  isDark: boolean,
-) => {
-  const badgeBg = isDark ? '#1C1C1E' : '#111111';
-
-  return StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background },
-
-    /* Lock screen */
-    lockShell: {
-      flex: 1,
-      justifyContent: 'space-between',
-    },
-    lockArt: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingHorizontal: spacing('8'),
-      gap: spacing('3'),
-    },
-    lockIconRing: {
-      marginBottom: spacing('2'),
-    },
-    lockBadge: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: 11,
-      color: colors.primary,
-      letterSpacing: 0.6,
-      textTransform: 'uppercase',
-    },
-    lockTitle: {
-      fontFamily: typography.fonts.heading,
-      fontSize: 26,
-      color: colors.text,
-      textAlign: 'center',
-    },
-    lockSub: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
-      textAlign: 'center',
-      lineHeight: 20,
-      opacity: 0.7,
-      maxWidth: 260,
-    },
-    lockInputSection: {
-      paddingHorizontal: layout.screenPadding,
-      paddingBottom: spacing('8'),
-    },
-
-    /* Main screen */
-    scroll: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('2'),
-      paddingBottom: spacing('12'),
-    },
-
-    /* Badge card */
+const createStyles = ({ colors, spacing, radius, layout }: ThemeContextType) =>
+  StyleSheet.create({
+    lockShell: { flex: 1, paddingHorizontal: layout.screenPadding, paddingBottom: spacing('4') },
+    lockArt: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing('3'), paddingHorizontal: spacing('4') },
     badgeCard: {
-      backgroundColor: badgeBg,
-      borderRadius: radius('2xl'),
-      paddingHorizontal: spacing('5'),
-      paddingVertical: spacing('4'),
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('3'),
-      marginBottom: spacing('5'),
-    },
-    badgeDot: {
-      width: 8,
-      height: 8,
-      borderRadius: 4,
-      backgroundColor: colors.success,
-    },
-    badgeInfo: { flex: 1, gap: 2 },
-    badgeTitle: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.md,
-      color: '#FFFFFF',
-    },
-    badgeSub: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: 'rgba(255,255,255,0.45)',
-    },
-    badgePill: {
-      backgroundColor: colors.primary + '28',
-      paddingHorizontal: spacing('2.5'),
-      paddingVertical: spacing('1'),
-      borderRadius: radius('full'),
-    },
-    badgePillText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: 10,
-      color: colors.primary,
-      letterSpacing: 0.8,
-    },
-
-    /* Group */
-    group: {
+      padding: spacing('4'),
       borderRadius: radius('xl'),
-      overflow: 'hidden',
-      marginBottom: spacing('4'),
+      backgroundColor: colors.tabBarBackground,
     },
-
-    /* Section label */
-    sectionLabel: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      marginBottom: spacing('2'),
-      marginLeft: spacing('1'),
-    },
-
-    /* Option rows (premium toggle) */
-    optionRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3.5'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-      backgroundColor: colors.surface,
-    },
-    optionInfo: { flex: 1, gap: 2 },
-    optionLabel: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.md,
-      color: colors.text,
-    },
-    optionSub: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      marginTop: 1,
-    },
-
-    /* Notification rows */
-    notifRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3.5'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-      backgroundColor: colors.surface,
-    },
-    activePill: {
-      paddingHorizontal: spacing('2.5'),
-      paddingVertical: spacing('1'),
-      borderRadius: radius('full'),
-    },
-    activePillText: {
-      fontFamily: typography.styles.badge.fontFamily,
-      fontSize: 10,
-    },
-
-    /* Footer */
-    footer: {
-      alignItems: 'center',
-      gap: spacing('1.5'),
-      marginTop: spacing('2'),
-      paddingVertical: spacing('4'),
-    },
-    footerBrand: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      fontSize: 10,
-      color: colors.text,
-      opacity: 0.25,
-    },
-    footerCopy: {
-      fontFamily: typography.fonts.regular,
-      fontSize: 10,
-      color: colors.textMuted,
-      opacity: 0.35,
-    },
+    badgeDot: { width: 8, height: 8, borderRadius: radius('full'), backgroundColor: colors.success },
+    badgeInfo: { flex: 1, gap: 2 },
+    footer: { alignItems: 'center', gap: spacing('1'), paddingVertical: spacing('4') },
   });
-};

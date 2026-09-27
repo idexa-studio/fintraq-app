@@ -1,7 +1,8 @@
-import { BentoPressable } from "@/src/components/ui/BentoPressable";
-import { HeroCardPalette, ThemeContextType, useTheme } from "@/src/providers/ThemeProvider";
-import React, { useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { Text } from '@/src/components/ui/Text';
+import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import React, { useMemo } from 'react';
+import { ScrollView, StyleSheet } from 'react-native';
 
 type Props = {
   currencies: string[];
@@ -10,6 +11,7 @@ type Props = {
   heroCard: HeroCardPalette;
 };
 
+/** Currency switch on the lime hero: a tonal track with an ink thumb. Scrolls when there are many. */
 export const CurrencyPickerTab = React.memo(function CurrencyPickerTab({
   currencies,
   selectedCurrency,
@@ -17,56 +19,58 @@ export const CurrencyPickerTab = React.memo(function CurrencyPickerTab({
   heroCard,
 }: Props) {
   const theme = useTheme();
-  const { isDark } = theme;
-  const styles = useMemo(() => createStyles(theme, heroCard, isDark), [theme, heroCard, isDark]);
+  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
+
+  // The thumb is the hero's text colour, so its label takes the hero fill in dark mode.
+  const activeInk = theme.isDark ? heroCard.background : theme.colors.onInk;
 
   if (currencies.length <= 1) return null;
 
   return (
-    <View style={styles.track}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={styles.scroll}
+      contentContainerStyle={styles.track}
+      accessibilityRole="tablist"
+    >
       {currencies.map((c) => {
         const isSelected = c === selectedCurrency;
         return (
           <BentoPressable
             key={c}
-            style={[styles.pill, isSelected && styles.pillActive]}
+            style={[styles.option, isSelected && styles.optionActive]}
             onPress={() => onCurrencySelect?.(c)}
+            scaleOnPress={false}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: isSelected }}
           >
-            <Text style={[styles.label, isSelected && styles.labelActive]}>
+            <Text variant={isSelected ? 'label' : 'caption'} color={isSelected ? activeInk : heroCard.textMuted}>
               {c}
             </Text>
           </BentoPressable>
         );
       })}
-    </View>
+    </ScrollView>
   );
 });
 
-const createStyles = ({ spacing, radius, typography }: ThemeContextType, heroCard: HeroCardPalette, isDark: boolean) =>
+const createStyles = ({ spacing, radius }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
-     track: {
-      flexDirection: "row",
+    scroll: { flexGrow: 0, alignSelf: 'center', maxWidth: '100%' },
+    track: {
       backgroundColor: heroCard.separator,
-      borderRadius: radius("full"),
-      padding: spacing("0.5"),
-      alignSelf: "center",
-      marginTop: spacing("2.5"),
+      borderRadius: radius('full'),
+      padding: spacing('1'),
+      gap: spacing('0.5'),
     },
-    pill: {
-      paddingHorizontal: spacing("3.5"),
-      paddingVertical: spacing("1"),
-      borderRadius: radius("full"),
+    option: {
+      minWidth: 48,
+      height: 28,
+      paddingHorizontal: spacing('3'),
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
     },
-    pillActive: {
-      backgroundColor: heroCard.textPrimary,
-    },
-    label: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: heroCard.textMuted,
-    },
-    labelActive: {
-      color: isDark ? '#008040' : '#FFFFFF',
-      fontFamily: typography.styles.chipLabelActive.fontFamily,
-    },
+    optionActive: { backgroundColor: heroCard.textPrimary },
   });

@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TextProps } from 'react-native';
-import { formatCurrency } from '../../utils/format';
-import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
-import { TransactionType } from '../../types';
+import { formatCurrency } from '@/src/utils/format';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
+import { TransactionType } from '@/src/types';
 
 interface MoneyTextProps extends TextProps {
   amount: number;

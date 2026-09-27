@@ -1,9 +1,9 @@
 import { InferSelectModel, eq, sql } from 'drizzle-orm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { db } from '../db/client';
-import { accounts, categories, payments, persons, loans } from '../db/schema';
+import { db } from '@/src/db/client';
+import { accounts, categories, payments, persons, loans } from '@/src/db/schema';
 import { toDbColor } from './format';
-import { StorageKeys } from '../constants/keys';
+import { StorageKeys } from '@/src/constants/keys';
 import { LoggerService } from '@/src/services/logger.service';
 
 // ─── Seed accounts — 2 per target currency for transfer coverage ──────────────
@@ -296,7 +296,7 @@ export async function seedDummyData() {
     if (insertedPersons.length >= 3) {
       const loanCategory =
         allCategories.find(c => c.name.toLowerCase() === 'loan/emi') ??
-        allCategories.find(c => c.name.toLowerCase() === 'uncategorized') ??
+        allCategories.find(c => c.name.toLowerCase() === 'others') ??
         allCategories[0];
 
       const daysAgo     = (d: number) => new Date(now.getFullYear(), now.getMonth(), now.getDate() - d).toISOString();

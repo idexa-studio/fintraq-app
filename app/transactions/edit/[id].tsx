@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
-import { TransactionFormPage } from '../../../src/features/transactions/screens/TransactionFormPage';
+import { TransactionFormPage } from '@/src/features/transactions/screens/TransactionFormPage';
 
 const parseParamNumber = (value: string | string[] | undefined): number | null => {
   const raw = Array.isArray(value) ? value[0] : value;

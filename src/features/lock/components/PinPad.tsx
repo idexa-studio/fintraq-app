@@ -1,7 +1,8 @@
+import { Text } from '@/src/components/ui/Text';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 type Props = {
@@ -21,7 +22,7 @@ export const PinPad = React.memo(function PinPad({
 }: Props) {
   const { colors, typography, spacing, radius } = useTheme();
   const { t } = useTranslation();
-  const styles = useMemo(() => createStyles({ colors, spacing, radius }), [colors, spacing, radius]);
+  const styles = useMemo(() => createStyles({ colors, spacing, radius, typography }), [colors, spacing, radius, typography]);
 
   const handleKey = useCallback((key: string) => {
     if (disabled) return;
@@ -81,9 +82,9 @@ export const PinPad = React.memo(function PinPad({
   );
 });
 
-type StyleDeps = Pick<ReturnType<typeof useTheme>, 'colors' | 'spacing' | 'radius'>;
+type StyleDeps = Pick<ReturnType<typeof useTheme>, 'colors' | 'spacing' | 'radius' | 'typography'>;
 
-function createStyles({ colors, spacing, radius }: StyleDeps) {
+function createStyles({ colors, spacing, radius, typography }: StyleDeps) {
   return StyleSheet.create({
     container: {
       alignItems: 'center',
@@ -117,10 +118,10 @@ function createStyles({ colors, spacing, radius }: StyleDeps) {
       height: 80,
     },
     keyText: {
-      fontSize: 32,
+      ...typography.metrics.display,
     },
     delText: {
-      fontSize: 20,
+      ...typography.metrics.xl,
     },
   });
 }

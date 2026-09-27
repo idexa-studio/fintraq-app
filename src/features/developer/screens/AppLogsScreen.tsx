@@ -1,24 +1,16 @@
+import { Screen } from '@/src/components/ui/Screen';
 import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
-import { Header } from '@/src/components/ui/Header';
 import { Input } from '@/src/components/ui/Input';
-import { PageBackground } from '@/src/components/ui/PageBackground';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { LoggerService } from '@/src/services/logger.service';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
 
 export const AppLogsScreen = React.memo(function AppLogsScreen() {
   const theme = useTheme();
-  const { spacing } = theme;
+  const { spacing, colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [rawLogText, setRawLogText] = useState<string>('');
@@ -99,9 +91,7 @@ export const AppLogsScreen = React.memo(function AppLogsScreen() {
   }, [rawLogText, logSearch]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <PageBackground />
-      <Header title="App Log Console" showBack />
+    <Screen header={{ title: "App Log Console", showBack: true }} variant="fixed" edges={['top', 'bottom']}>
 
       <View style={styles.content}>
         {/* Actions bar */}
@@ -133,9 +123,9 @@ export const AppLogsScreen = React.memo(function AppLogsScreen() {
         <View style={styles.terminalContainer}>
           <View style={styles.terminalHeader}>
             <View style={styles.terminalDots}>
-              <View style={[styles.dot, { backgroundColor: '#FF5F56' }]} />
-              <View style={[styles.dot, { backgroundColor: '#FFBD2E' }]} />
-              <View style={[styles.dot, { backgroundColor: '#27C93F' }]} />
+              <View style={[styles.dot, { backgroundColor: colors.danger }]} />
+              <View style={[styles.dot, { backgroundColor: colors.warning }]} />
+              <View style={[styles.dot, { backgroundColor: colors.success }]} />
               <Text style={styles.terminalTitle}>fintraq.log</Text>
             </View>
             <Text style={styles.terminalCounter}>Raw Plain Text</Text>
@@ -174,13 +164,12 @@ export const AppLogsScreen = React.memo(function AppLogsScreen() {
         buttons={alertConfig.buttons}
         onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
       />
-    </SafeAreaView>
+    </Screen>
   );
 });
 
 const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeContextType) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background },
     content: {
       flex: 1,
       paddingHorizontal: layout.screenPadding,
@@ -215,19 +204,17 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     },
     terminalContainer: {
       flex: 1,
-      backgroundColor: '#0D1117',
-      borderRadius: radius('2xl'),
+      backgroundColor: colors.tabBarBackground,
+      borderRadius: radius('xl'),
       padding: spacing('4'),
-      borderWidth: 1,
-      borderColor: '#30363D',
     },
     terminalHeader: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
       paddingBottom: spacing('2.5'),
-      borderBottomWidth: 1,
-      borderBottomColor: '#21262D',
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors.onInkMuted,
       marginBottom: spacing('2.5'),
     },
     terminalDots: {
@@ -238,26 +225,25 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     dot: {
       width: 10,
       height: 10,
-      borderRadius: 5,
+      borderRadius: radius('full'),
     },
     terminalTitle: {
-      fontSize: 11,
-      fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-      color: '#8B949E',
+      ...typography.metrics.xs,
+      fontFamily: typography.fonts.mono,
+      color: colors.onInkMuted,
       marginLeft: 6,
     },
     terminalCounter: {
-      fontSize: 10,
-      fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-      color: '#8B949E',
+      ...typography.metrics.xxs,
+      fontFamily: typography.fonts.mono,
+      color: colors.onInkMuted,
     },
     terminalBody: {
       flex: 1,
     },
     rawLogText: {
-      fontSize: 11,
-      fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-      lineHeight: 18,
-      color: '#C9D1D9',
+      ...typography.metrics.xs,
+      fontFamily: typography.fonts.mono,
+      color: colors.onInk,
     },
   });

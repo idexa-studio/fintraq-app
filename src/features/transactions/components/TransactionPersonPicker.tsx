@@ -1,10 +1,11 @@
+import { Text } from '@/src/components/ui/Text';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import React, { useCallback, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import type { Person } from '../../persons/api/persons';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import type { Person } from '@/src/features/persons/api/persons';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -114,7 +115,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       right: -4,
       width: 10,
       height: 10,
-      borderRadius: 5,
+      borderRadius: radius('full'),
       borderWidth: 2,
       borderColor: colors.background,
     },

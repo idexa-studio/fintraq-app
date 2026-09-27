@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import { alpha } from '@/src/theme/tokens';
 
 type BadgeVariant =
@@ -32,14 +32,15 @@ export const Badge = React.memo(function Badge({
   const { bg, textColor } = useMemo(() => {
     switch (variant) {
       case 'count':
-        return { bg: accent, textColor: '#FFFFFF' };
+        // Lime primary needs dark text; every other accent is dark enough for white.
+        return { bg: accent, textColor: accent === colors.primary ? colors.primaryForeground : '#FFFFFF' };
       case 'muted':
-        return { bg: colors.surface, textColor: colors.textMuted };
+        return { bg: alpha(colors.text, 'faint'), textColor: colors.textMuted };
       case 'label':
       default:
-        return { bg: alpha(accent, 'subtle'), textColor: accent };
+        return { bg: alpha(accent, 'subtle'), textColor: color ?? colors.primaryInk };
     }
-  }, [variant, accent, colors.surface, colors.textMuted]);
+  }, [variant, accent, color, colors.primary, colors.primaryInk, colors.primaryForeground, colors.text, colors.textMuted]);
 
   const textStyle = useMemo(
     () => ({

@@ -1,5 +1,6 @@
+import { Text } from '@/src/components/ui/Text';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Svg, {
   Defs,
   Line as SvgLine,
@@ -85,7 +86,7 @@ export const LinearAreaChart = React.memo(function LinearAreaChart({
   if (!chart) {
     return (
       <View style={[styles.empty, { height }]}>
-        <Text style={{ color: colors.textMuted, fontFamily: typography.fonts.regular, fontSize: 12 }}>
+        <Text style={{ color: colors.textMuted, fontFamily: typography.fonts.regular, ...typography.metrics.xs }}>
           {t('analytics.noDataPeriod')}
         </Text>
       </View>

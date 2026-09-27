@@ -3,7 +3,7 @@ import { db, getExpoDb, resetDbConnections } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons, seederState } from '@/src/db/schema';
 import { runSeeds } from '@/src/db/seeds/runner';
 import type { UserProfile } from '@/src/providers/SettingsProvider';
-import { BackupLock } from '@/src/services/backup/backup-lock';
+import { BackupLock } from './backup-lock';
 import { LoggerService } from '@/src/services/logger.service';
 import { getFormattedAppVersion } from '@/src/utils/version';
 import AsyncStorage from '@react-native-async-storage/async-storage';

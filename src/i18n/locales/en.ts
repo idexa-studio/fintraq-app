@@ -1,5 +1,7 @@
 const en = {
   common: {
+    edit: 'Edit', delete: 'Delete',
+    back: 'Back',
     cancel: 'Cancel',
     ok: 'OK',
     clear: 'Clear',
@@ -16,6 +18,7 @@ const en = {
     settings: 'Settings',
   },
   settings: {
+    general: "General", security: "Security", manage: "Manage", about: "About", loans: "Loans", loansHint: "Money you lent or borrowed",
     title: 'Settings',
     welcome: 'Welcome',
     proMember: 'Pro member',
@@ -110,12 +113,13 @@ const en = {
     cannotDelete: 'Cannot delete category', deleteFailed: 'Failed to delete category.',
   },
   dashboard: {
+    streakDays: '{{count}}d streak',
     accounts: 'Accounts', manage: 'Manage', topExpenses: 'Top expenses', people: 'Persons', loans: 'Loans', recent: 'Recent', seeAll: 'See all',
     noTransactions: 'No transactions yet', transactionHint: 'Start recording your daily payments, income, or transfers here.', addTransaction: 'Add transaction',
     balance: 'Your balance', income: 'Income', expenses: 'Expenses', noLoans: 'No active loans', loanHint: 'Track money you lend or borrow. Tap to add a loan.',
     lentOut: 'Lent out', borrowed: 'Borrowed', overdue: '{{count}} overdue', active: '{{count}} active', noExpenses: 'No expenses yet', expensesHint: 'Add some transactions to see your top spending categories.',
   },
-  transactions: { amount: 'Amount', category: 'Category', netSavings: 'Net savings', income: 'Income', expenses: 'Expenses', type: 'Type', account: 'Account', date: 'Date', person: 'Person', typesCount: '{{count}} types', oneAccount: '1 account', accountsCount: '{{count}} accounts', oneCategory: '1 category', categoriesCount: '{{count}} categories', onePerson: '1 person', personsCount: '{{count}} persons',
+  transactions: { dayCount: '{{count}} entries', allCategories: 'All', searchCategories: 'Search categories', amount: 'Amount', category: 'Category', netSavings: 'Net savings', income: 'Income', expenses: 'Expenses', type: 'Type', account: 'Account', date: 'Date', person: 'Person', typesCount: '{{count}} types', oneAccount: '1 account', accountsCount: '{{count}} accounts', oneCategory: '1 category', categoriesCount: '{{count}} categories', onePerson: '1 person', personsCount: '{{count}} persons',
   filteredSummary: 'Filtered summary', title: 'Transactions', clearAll: 'Clear all', noResults: 'No results', nothingYet: 'Nothing here yet', noMatch: 'No transactions match the active filters. Try adjusting or clearing them.', addFirst: 'Add your first transaction to start tracking.', clearFilters: 'Clear filters', add: 'Add Transaction',
   deleteTitle: 'Delete Transaction', deleteMessage: 'This will remove the transaction and reverse its account balance impact.', delete: 'Delete', sortTitle: 'Sort transactions', newest: 'Newest first', oldest: 'Oldest first', highest: 'Highest amount', lowest: 'Lowest amount',
   expense: 'Expense', transfer: 'Transfer', missingDetails: 'Missing details', missingDetailsMessage: 'Please select account, category, and a valid amount.', missingDestination: 'Missing destination', missingDestinationMessage: 'Please select a destination account for the transfer.',
@@ -123,6 +127,7 @@ const en = {
   editEntry: 'Edit entry', newEntry: 'New entry', loanRepaymentFor: 'Loan Repayment for', loading: 'Loading...', fromAccount: 'From account', toAccount: 'To account', noCompatible: 'No compatible accounts for this transfer.', linkedPerson: 'Linked person', unknown: 'Unknown', noPersonLinked: 'No person linked', time: 'Time', note: 'Note', optionalContext: 'Optional context', saveChanges: 'Save changes', saveTransaction: 'Save transaction', none: 'None',
   detailTitle: 'Transaction', notFound: 'Transaction not found.', detailDeleteTitle: 'Delete transaction', detailDeleteMessage: 'This will reverse the balance impact and cannot be undone.', from: 'From', to: 'To', created: 'Created', cancel: 'Cancel' },
   onboardingFlow: {
+    getStarted: 'Get started', restoreFromBackup: 'Restore from backup', welcomeSubtitle: 'Track spending, income and loans in one calm, private place. Setup takes under a minute.',
     steps: {
       welcome: { eyebrow: 'Getting started', title: 'Build your finance cockpit.', subtitle: 'A calm setup flow with complete defaults and clean account bootstrap.' },
       setup_choice: { eyebrow: 'Setup mode', title: 'How would you like to start?', subtitle: 'Start with a fresh workspace or restore an existing Google Drive backup.' },
@@ -163,7 +168,7 @@ const en = {
   },
   ui: {
     somethingWrong: 'Something went wrong', proOnly: 'Pro only', unlockWithPro: 'Unlock with Fintraq Pro',
-    chooseIcon: 'Choose icon', chooseColor: 'Choose color', colorsCount: '{{count}} colors', currency: 'Currency', currenciesCount: '{{count}} currencies', searchCurrency: 'Search by name or code', delKey: 'Del',
+    charsLeft: '{{count}} characters left', suggested: 'Suggested', allCurrencies: 'All currencies', noMatch: 'No match for “{{query}}”', chooseIcon: 'Choose icon', chooseColor: 'Choose color', colorsCount: '{{count}} colors', currency: 'Currency', currenciesCount: '{{count}} currencies', searchCurrency: 'Search by name or code', delKey: 'Del',
   },
   lock: {
     unlockApp: 'Unlock app', authFailed: 'Authentication failed. Try again.', useButton: 'Use the button below to try again.',
@@ -178,6 +183,9 @@ const en = {
     defaultMessage: 'Please update Fintraq to continue. It only takes a moment.', updateNow: 'Update now',
   },
   loans: {
+    outstandingAmount: "Outstanding: {{amount}}", exceedsOutstanding: "Amount exceeds the outstanding {{amount}}", fullAmount: "Full amount · {{amount}}",
+    freeLimit: 'Free plan allows {{limit}} active loans. Upgrade for unlimited.', upgrade: 'Upgrade',
+    lentToName: 'Lent to {{name}}', borrowedFromName: 'Borrowed from {{name}}',
     title: 'Loans', loan: 'Loan', newLoan: 'New loan', lentOut: 'Lent out', borrowed: 'Borrowed', lent: 'Lent', repaid: 'Repaid',
     noLent: 'No lent loans', noBorrowed: 'No borrowed loans', emptyHint: 'Keep track of money you lend to or borrow from others here.', addLoan: 'Add a loan',
     unknown: 'Unknown', unnamedSource: 'Unnamed source', outstandingBalance: 'Outstanding balance', principal: 'Principal', outstanding: 'Outstanding', totalPrincipal: 'Total principal',
@@ -215,10 +223,12 @@ const en = {
     linkPerson: 'Link person', noPerson: 'No person',
   },
   categoryForm: {
+    appliesToHint: 'Pick one or more.', moreIcons: 'More',
     edit: 'Edit category', new: 'New category', categoryName: 'Category name', tapToChangeIcon: 'Tap to change icon', appliesTo: 'Applies to', namePlaceholder: 'e.g. Groceries, Salary',
     save: 'Save category', create: 'Create category', chooseIcon: 'Choose icon', expense: 'Expense', income: 'Income', transfer: 'Transfer',
   },
   accountForm: {
+    lockedHint: 'Type, currency and balance are set when the account is created. Balance changes come from transactions.',
     edit: 'Edit account', new: 'New account', accountName: 'Account name', accountType: 'Account type', accountDetails: 'Account details',
     namePlaceholder: 'e.g. Main Wallet', holderPlaceholder: 'John Doe (optional)', numberPlaceholder: 'IBAN (optional)', currentBalance: 'Current balance', initialBalance: 'Initial balance',
     save: 'Save account', create: 'Create account',
@@ -317,12 +327,13 @@ const en = {
     monthGood: 'This month is looking good', monthTight: 'A tight month so far', monthGoodHint: "More in than out — you're building momentum.", monthTightHint: 'Spending ahead of income. No stress — just a nudge to check in.',
   },
   walkthrough: {
+    gotIt: 'Got it',
     step: 'Step {{current}} of {{total}}', skip: 'Skip guide', getStarted: 'Get started', next: 'Continue',
     welcomeToFintraq: { title: 'Welcome to Fintraq!', desc: 'Let\'s take a quick tour of your new premium financial dashboard.' },
     trackNetSavings: { title: 'Track Net Savings', desc: 'The top card displays your total net position (Income minus Expenses). Swipe it to view different currencies.' },
     accountsWallets: { title: 'Accounts & Wallets', desc: 'Manage your cash, bank accounts, and credit cards. Tap them to view individual logs.' },
     realTimeInsights: { title: 'Real-time Insights', desc: 'Below you will find dynamic spending pattern insights, top expense category chips, and streaks.' },
-    logFirstTransaction: { title: 'Log First Transaction', desc: 'When you are ready, tap the green \'+\' action button at the bottom right to record a transaction!' },
+    logFirstTransaction: { title: 'Log First Transaction', desc: 'When you\'re ready, tap the green + button at the bottom to record a transaction.' },
     enterAmount: { title: 'Enter Amount', desc: 'Start by typing the transaction amount using the numeric input. Decimal values are fully supported.' },
     selectTransactionType: { title: 'Select Transaction Type', desc: 'Choose Expense (money spent), Income (money earned), or Transfer (moving funds between accounts).' },
     chooseCategory: { title: 'Choose Category', desc: 'Select a category to structure your transaction. Custom categories can be configured in Settings.' },

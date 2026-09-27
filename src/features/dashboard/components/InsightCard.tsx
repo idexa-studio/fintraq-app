@@ -1,10 +1,11 @@
+import { Text } from '@/src/components/ui/Text';
 import { ChartLineData01Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { IconAvatar } from '../../../components/ui/IconAvatar';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { resolveIcon } from '../../../utils/icons';
-import { DashboardInsight } from '../api/insights';
+import { StyleSheet, View } from 'react-native';
+import { IconAvatar } from '@/src/components/ui/IconAvatar';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { resolveIcon } from '@/src/utils/icons';
+import { DashboardInsight } from '@/src/features/dashboard/api/insights';
 
 interface InsightCardProps {
   insight: DashboardInsight;
@@ -46,7 +47,7 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
   );
 });
 
-const createStyles = ({ typography, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ typography, spacing, radius, colors }: ThemeContextType) =>
   StyleSheet.create({
     card: {
       flexDirection: 'row',
@@ -62,11 +63,9 @@ const createStyles = ({ typography, spacing, radius }: ThemeContextType) =>
     },
     title: {
       ...typography.metrics.sm,
-      lineHeight: 18,
     },
     sub: {
       ...typography.metrics.xs,
-      lineHeight: 16,
-      opacity: 0.65,
+      color: colors.textMuted,
     },
   });

@@ -37,15 +37,23 @@ export type SpacingToken = keyof typeof SPACING;
 // BORDER RADIUS SCALE
 // MD3-friendly: rounded, soft, touch-first
 // ============================================
+// Concentric rule: an element inside a container uses (container radius −
+// container padding). Cards 20 with 16 padding → inner tiles/inputs 10–12.
+// Shape language — two families, never mixed on one element:
+//   PILL (full): where it reads best — buttons, chips, badges, segmented
+//         controls, search, tab indicator, toggles; icon buttons are circles.
+//   SOFT: everything else. Cards/list groups xl, hero/sheets/dialogs 2xl,
+//         tiles inside cards lg, text inputs lg, icon tiles and avatars are
+//         squircles (30% of size). Nested shapes are concentric.
 export const RADIUS = {
   'none': 0,
-  'xs': 4,
-  'sm': 8,
-  'md': 12,
-  'lg': 16,
-  'xl': 20,
-  '2xl': 24,
-  'full': 999, // Use sparingly - only for micro-badges
+  'xs': 6,    // tiny inline marks
+  'sm': 10,   // nested blocks inside cards
+  'md': 12,   // inner blocks, keypad keys
+  'lg': 16,   // tiles inside a card, text inputs
+  'xl': 24,   // cards, list groups
+  '2xl': 28,  // hero card, sheets, dialogs
+  'full': 999, // pills and circles — every control
 } as const;
 
 export type RadiusToken = keyof typeof RADIUS;
@@ -86,20 +94,20 @@ export const COMPONENT_SIZES = {
   button: {
     sm: {
       height: 36,
-      paddingHorizontal: SPACING['3'],
-      borderRadius: RADIUS.lg,
+      paddingHorizontal: SPACING['4'],
+      borderRadius: RADIUS.full,
       fontSize: 13,
     },
     md: {
       height: 44,
-      paddingHorizontal: SPACING['4'],
-      borderRadius: RADIUS.xl,
+      paddingHorizontal: SPACING['5'],
+      borderRadius: RADIUS.full,
       fontSize: 14,
     },
     lg: {
       height: 52,
-      paddingHorizontal: SPACING['5'],
-      borderRadius: RADIUS.xl,
+      paddingHorizontal: SPACING['6'],
+      borderRadius: RADIUS.full,
       fontSize: 15,
     },
   },
@@ -111,14 +119,14 @@ export const COMPONENT_SIZES = {
       borderRadius: RADIUS.lg,
     },
     md: {
-      height: 50,
+      height: 48,
       paddingHorizontal: SPACING['4'],
       borderRadius: RADIUS.lg,
     },
     lg: {
-      height: 58,
+      height: 56,
       paddingHorizontal: SPACING['4'],
-      borderRadius: RADIUS.xl,
+      borderRadius: RADIUS.lg,
     },
   },
 
@@ -137,10 +145,11 @@ export const COMPONENT_SIZES = {
     },
   },
 
+  // Same 36 / 44 / 52 scale as buttons, so a row of mixed controls lines up.
   iconButton: {
-    sm: 32,
-    md: 40,
-    lg: 48,
+    sm: 36,
+    md: 44,
+    lg: 52,
   },
 } as const;
 
@@ -219,6 +228,15 @@ export const SHADOWS = {
 } as const;
 
 export type ShadowToken = keyof typeof SHADOWS;
+
+// ============================================
+// INTERACTION STATES
+// One value per state so every disabled / pressed control looks the same.
+// ============================================
+export const STATE = {
+  disabled: 0.45,
+  pressed: 0.6,
+} as const;
 
 // ============================================
 // TRANSITIONS / ANIMATION

@@ -1,11 +1,12 @@
+import { Text } from '@/src/components/ui/Text';
 import { MoneyText } from '@/src/components/ui/MoneyText';
+import { Icon } from '@/src/components/ui/Icon';
 import { StreakBadge } from '@/src/features/reports/components/StreakBadge';
 import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { CurrencyPickerTab } from './CurrencyPickerTab';
 
 type Props = {
@@ -26,45 +27,43 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Text style={styles.label}>{t('dashboard.balance')}</Text>
+        <Text variant="caption" color={heroCard.textMuted}>{t('dashboard.balance')}</Text>
         <StreakBadge heroCard={heroCard} />
       </View>
 
+      {/* Shrinks rather than wraps or clips when the balance runs long. */}
       <MoneyText
         amount={balance}
         currency={currency}
         style={styles.balance}
         weight="bold"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.6}
       />
 
       <View style={styles.stats}>
-        <View style={styles.statContainer}>
-          <View style={styles.statHeader}>
-            <HugeiconsIcon icon={ArrowUp01Icon} size={14} color={heroCard.income} />
-            <Text style={styles.statLabel}>{t('dashboard.income')}</Text>
+        {([
+          { key: 'income', icon: ArrowUp01Icon, color: heroCard.income, amount: income, type: 'CR' },
+          { key: 'expenses', icon: ArrowDown01Icon, color: heroCard.expense, amount: expense, type: 'DR' },
+        ] as const).map((stat) => (
+          <View key={stat.key} style={styles.stat}>
+            <View style={styles.statHeader}>
+              <Icon icon={stat.icon} size={14} color={stat.color} weight="bold" />
+              <Text variant="caption" color={heroCard.textMuted}>{t(`dashboard.${stat.key}`)}</Text>
+            </View>
+            <MoneyText
+              amount={stat.amount}
+              currency={currency}
+              type={stat.type}
+              weight="semibold"
+              style={styles.statValue}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.7}
+            />
           </View>
-          <MoneyText
-            amount={income}
-            currency={currency}
-            type="CR"
-            weight="semibold"
-            style={styles.statValue}
-          />
-        </View>
-
-        <View style={styles.statContainer}>
-          <View style={styles.statHeader}>
-            <HugeiconsIcon icon={ArrowDown01Icon} size={14} color={heroCard.expense} />
-            <Text style={styles.statLabel}>{t('dashboard.expenses')}</Text>
-          </View>
-          <MoneyText
-            amount={expense}
-            currency={currency}
-            type="DR"
-            weight="semibold"
-            style={styles.statValue}
-          />
-        </View>
+        ))}
       </View>
 
       <CurrencyPickerTab
@@ -84,52 +83,38 @@ const createStyles = ({ spacing, radius, layout, typography }: ThemeContextType,
       marginHorizontal: layout.screenPadding,
       borderRadius: radius('2xl'),
       padding: spacing('5'),
-      paddingBottom: spacing('5'),
+      gap: spacing('4'),
     },
     header: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginBottom: spacing('1'),
-    },
-    label: {
-      ...typography.metrics.xs,
-      fontFamily: typography.fonts.medium,
-      color: heroCard.textMuted,
+      minHeight: 24,
+      marginBottom: -spacing('3'),
     },
     balance: {
-      fontSize: 37,
-      lineHeight: 42,
+      ...typography.metrics.display,
       color: heroCard.textPrimary,
     },
     stats: {
       flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-      marginTop: spacing('4'),
-      marginBottom: spacing('1'),
+      gap: spacing('2.5'),
     },
-    statContainer: {
+    stat: {
       flex: 1,
       backgroundColor: heroCard.separator,
-      paddingVertical: spacing('2'),
+      paddingVertical: spacing('2.5'),
       paddingHorizontal: spacing('3'),
       borderRadius: radius('lg'),
-      gap: spacing('0.5'),
+      gap: spacing('1'),
     },
     statHeader: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('1'),
     },
-    statLabel: {
-      ...typography.metrics.xs,
-      fontFamily: typography.fonts.regular,
-      color: heroCard.textMuted,
-    },
     statValue: {
       ...typography.metrics.md,
-      lineHeight: 18,
       color: heroCard.textPrimary,
     },
   });

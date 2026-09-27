@@ -1,21 +1,23 @@
+import { SegmentedControl } from '@/src/components/ui/SegmentedControl';
+import { Button } from '@/src/components/ui/Button';
+import { Screen } from '@/src/components/ui/Screen';
+import { Text } from '@/src/components/ui/Text';
 import { AlertCircleIcon, ArrowDown01Icon, ArrowUp01Icon, HandshakeIcon, PlusSignIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Icon } from '@/src/components/ui/Icon';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BentoPressable } from '../../../components/ui/BentoPressable';
-import { Header } from '../../../components/ui/Header';
-import { MoneyText } from '../../../components/ui/MoneyText';
-import { PageBackground } from '../../../components/ui/PageBackground';
-import { useAccounts } from '../../accounts/hooks/accounts';
-import { usePremium } from '../../../providers/PremiumProvider';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import { DEFAULT_CURRENCY } from '../../../constants/currency';
-import type { LoanWithStats } from '../api/loans';
-import { LoanCard } from '../components/LoanCard';
-import { useLoans, useLoansCount } from '../hooks/loans';
-import { FREE_LOAN_LIMIT } from '../../../constants/iap';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { MoneyText } from '@/src/components/ui/MoneyText';
+import { useAccounts } from '@/src/features/accounts/hooks/accounts';
+import { usePremium } from '@/src/providers/PremiumProvider';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { DEFAULT_CURRENCY } from '@/src/constants/currency';
+import type { LoanWithStats } from '@/src/features/loans/api/loans';
+import { LoanCard } from '@/src/features/loans/components/LoanCard';
+import { useLoans, useLoansCount } from '@/src/features/loans/hooks/loans';
+import { FREE_LOAN_LIMIT } from '@/src/constants/iap';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -85,15 +87,13 @@ export const LoansScreen = React.memo(function LoansScreen() {
   }, [router, activeTab, atFreeLimit]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <PageBackground />
-      <Header title={t('loans.title')} showBack />
+    <Screen header={{ title: t('loans.title'), showBack: true }} variant="fixed" edges={['top']}>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Limit banner */}
         {atFreeLimit && (
           <Pressable style={styles.limitBanner} onPress={() => router.push('/premium')}>
-            <HugeiconsIcon icon={AlertCircleIcon} size={16} color={colors.warning} />
+            <Icon icon={AlertCircleIcon} size={16} color={colors.warning} />
             <Text style={[styles.limitBannerText, { color: colors.warning }]}>
               Free plan: {FREE_LOAN_LIMIT} active loans max — upgrade for unlimited
             </Text>
@@ -134,39 +134,22 @@ export const LoansScreen = React.memo(function LoansScreen() {
         </View>
 
         {/* Tabs */}
-        <View style={styles.tabSegment}>
-          {(['lend', 'borrow'] as Tab[]).map(tab => {
-            const isActive = activeTab === tab;
-            const isLend = tab === 'lend';
-            const activeColor = isLend ? colors.success : colors.danger;
-            const count = isLend ? activeLent.length : activeBorow.length;
-            return (
-              <BentoPressable
-                key={tab}
-                style={[styles.tabSegmentBtn, isActive && { backgroundColor: alpha(activeColor, 'subtle') }]}
-                onPress={() => setActiveTab(tab)}
-              >
-                <View style={styles.tabSegmentContent}>
-                  <HugeiconsIcon
-                    icon={isLend ? ArrowUp01Icon : ArrowDown01Icon}
-                    size={15}
-                    color={isActive ? activeColor : colors.textMuted}
-                  />
-                  <Text style={[styles.tabSegmentText, { color: isActive ? activeColor : colors.textMuted }]}>
-                    {isLend ? t('loans.lent') : t('loans.borrowed')} ({count})
-                  </Text>
-                </View>
-              </BentoPressable>
-            );
-          })}
-        </View>
+        <SegmentedControl
+          options={[
+            { value: 'lend', label: `${t('loans.lent')} (${activeLent.length})`, icon: ArrowUp01Icon },
+            { value: 'borrow', label: `${t('loans.borrowed')} (${activeBorow.length})`, icon: ArrowDown01Icon },
+          ]}
+          value={activeTab}
+          onChange={setActiveTab}
+          style={styles.tabs}
+        />
 
         {/* Active list */}
         {displayList.length === 0 ? (
           repaidList.length === 0 ? (
             <View style={styles.empty}>
               <View style={styles.emptyIcon}>
-                <HugeiconsIcon icon={HandshakeIcon} size={32} color={colors.textMuted} />
+                <Icon icon={HandshakeIcon} size={32} color={colors.textMuted} />
               </View>
               <Text style={styles.emptyTitle}>
                 {activeTab === 'lend' ? t('loans.noLent') : t('loans.noBorrowed')}
@@ -174,14 +157,11 @@ export const LoansScreen = React.memo(function LoansScreen() {
               <Text style={styles.emptyText}>
                 {t('loans.emptyHint')}
               </Text>
-              <BentoPressable style={styles.emptyBtn} onPress={handleAdd}>
-                <HugeiconsIcon icon={PlusSignIcon} size={15} color={colors.primaryForeground} />
-                <Text style={styles.emptyBtnText}>{t('loans.addLoan')}</Text>
-              </BentoPressable>
+              <Button title={t('loans.addLoan')} icon={PlusSignIcon} onPress={handleAdd} />
             </View>
           ) : (
             <View style={styles.inlineEmpty}>
-              <HugeiconsIcon icon={HandshakeIcon} size={16} color={colors.textMuted} />
+              <Icon icon={HandshakeIcon} size={16} color={colors.textMuted} />
               <Text style={[styles.inlineEmptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                 All {activeTab === 'lend' ? 'lent' : 'borrowed'} loans are fully repaid
               </Text>
@@ -215,15 +195,15 @@ export const LoansScreen = React.memo(function LoansScreen() {
       </ScrollView>
 
       <BentoPressable style={styles.fab} onPress={handleAdd}>
-        <HugeiconsIcon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
+        <Icon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
       </BentoPressable>
-    </SafeAreaView>
+    </Screen>
   );
 });
 
 const createStyles = ({ colors, spacing, radius, shadow, layout, typography, sizes }: ThemeContextType, insets: { bottom: number }) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background },
+    tabs: { marginBottom: spacing('3') },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
@@ -273,32 +253,6 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
     summaryAmount: {
       ...typography.metrics.xxl,
     },
-    tabSegment: {
-      flexDirection: 'row',
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('1'),
-      gap: spacing('1'),
-      height: sizes.button.md.height,
-      alignItems: 'center',
-      marginBottom: spacing('3'),
-    },
-    tabSegmentBtn: {
-      flex: 1,
-      height: '100%',
-      borderRadius: radius('lg'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    tabSegmentContent: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1.5'),
-    },
-    tabSegmentText: {
-      fontFamily: typography.styles.chipLabel.fontFamily,
-      ...typography.metrics.sm,
-    },
     empty: {
       paddingTop: 60,
       alignItems: 'center',
@@ -324,22 +278,6 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
       color: colors.textMuted,
       textAlign: 'center',
       maxWidth: 220,
-      lineHeight: 20,
-    },
-    emptyBtn: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1.5'),
-      height: 40,
-      paddingHorizontal: spacing('5'),
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary,
-      marginTop: spacing('2'),
-    },
-    emptyBtnText: {
-      fontFamily: typography.styles.emptyAction.fontFamily,
-      ...typography.metrics.sm,
-      color: colors.primaryForeground,
     },
     inlineEmpty: {
       backgroundColor: colors.surface,
@@ -351,7 +289,7 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
       justifyContent: 'center',
     },
     inlineEmptyText: {
-      fontSize: 12,
+      ...typography.metrics.xs,
     },
     sectionLabel: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
@@ -367,10 +305,9 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
       right: 16,
       width: 56,
       height: 56,
-      borderRadius: radius('xl'),
+      borderRadius: radius('full'),
       backgroundColor: colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
-      ...shadow('lg'),
     },
   });

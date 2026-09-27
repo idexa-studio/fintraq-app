@@ -1,12 +1,13 @@
+import { Text } from '@/src/components/ui/Text';
 import { Chip } from '@/src/components/ui/Chip';
 import { Tag01Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
-import { colorNumberToHex } from '../../../utils/format';
-import { resolveIcon } from '../../../utils/icons';
-import type { Category } from '../../categories/api/categories';
+import { StyleSheet, View } from 'react-native';
+import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex } from '@/src/utils/format';
+import { resolveIcon } from '@/src/utils/icons';
+import type { Category } from '@/src/features/categories/api/categories';
 
 type Props = {
   categories: Category[];
@@ -54,7 +55,6 @@ const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType)
     fontFamily: typography.styles.sectionLabel.fontFamily,
     ...typography.metrics.xs,
     marginBottom: spacing('3'),
-    opacity: 0.6,
   },
   grid: {
     flexDirection: 'row',

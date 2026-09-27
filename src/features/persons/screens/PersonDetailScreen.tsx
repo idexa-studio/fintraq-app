@@ -1,10 +1,13 @@
+import { IconButton } from '@/src/components/ui/IconButton';
+import { Screen } from '@/src/components/ui/Screen';
+import { Text } from '@/src/components/ui/Text';
+import { SkeletonScreen } from '@/src/components/ui';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { Icon } from '@/src/components/ui/Icon';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
-import { Header } from '@/src/components/ui/Header';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
-import { PageBackground } from '@/src/components/ui/PageBackground';
-import { TransactionRow } from '@/src/components/ui/TransactionRow';
+import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { usePersonWithStats, useTransactionsByPerson, useDeletePerson } from '@/src/features/persons/hooks/persons';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
@@ -15,12 +18,10 @@ import type { LoanWithStats } from '@/src/features/loans/api/loans';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { ArrowDown01Icon, ArrowUp01Icon, Call02Icon, Delete01Icon, Mail01Icon, PencilEdit01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import { format } from 'date-fns';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -109,41 +110,21 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
 
   if (isLoading || !person) {
     return (
-      <SafeAreaView style={styles.container}>
-        <PageBackground />
-        <Header title={t('persons.person')} showBack />
-        <View style={styles.loading}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
-      </SafeAreaView>
+      <Screen header={{ title: t('persons.person'), showBack: true }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
+        <SkeletonScreen />
+      </Screen>
     );
   }
 
   const hex = colorNumberToHex(person.color);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
-      <Header
-        title={person.name}
-        showBack
-        rightAction={
+    <Screen header={{ title: person.name, showBack: true, rightAction:
           <View style={styles.headerActions}>
-            <BentoPressable
-              onPress={() => setShowDeleteConfirm(true)}
-              style={styles.iconBtn}
-            >
-              <HugeiconsIcon icon={Delete01Icon} size={20} color={colors.danger} />
-            </BentoPressable>
-            <BentoPressable
-              onPress={handleEdit}
-              style={styles.iconBtn}
-            >
-              <HugeiconsIcon icon={PencilEdit01Icon} size={20} color={colors.text} />
-            </BentoPressable>
+            <IconButton icon={Delete01Icon} variant="danger" onPress={() => setShowDeleteConfirm(true)} accessibilityLabel={t('common.delete')} />
+            <IconButton icon={PencilEdit01Icon} onPress={handleEdit} accessibilityLabel={t('common.edit')} />
           </View>
-        }
-      />
+         }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
@@ -167,7 +148,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
             <View style={styles.contactRow}>
               {person.email ? (
                 <View style={styles.contactChip}>
-                  <HugeiconsIcon icon={Mail01Icon} size={14} color={colors.textMuted} />
+                  <Icon icon={Mail01Icon} size={14} color={colors.textMuted} />
                   <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
                     {person.email}
                   </Text>
@@ -175,7 +156,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
               ) : null}
               {person.phone ? (
                 <View style={styles.contactChip}>
-                  <HugeiconsIcon icon={Call02Icon} size={14} color={colors.textMuted} />
+                  <Icon icon={Call02Icon} size={14} color={colors.textMuted} />
                   <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     {person.phone}
                   </Text>
@@ -293,7 +274,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
           </View>
         ) : (
           <View style={styles.emptyTx}>
-            <HugeiconsIcon icon={ReceiptTextIcon} size={28} color={colors.textMuted} />
+            <Icon icon={ReceiptTextIcon} size={28} color={colors.textMuted} />
             <Text style={[styles.emptyTxText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
               No transactions in {currency}
             </Text>
@@ -302,6 +283,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
       </ScrollView>
 
       <ConfirmDialog
+        destructive
         visible={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
         title={t('persons.deleteTitle')}
@@ -310,27 +292,17 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         onConfirm={handleDeleteConfirm}
         isLoading={deletePerson.isPending}
       />
-    </SafeAreaView>
+    </Screen>
   );
 });
 
 const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeContextType) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background },
-    loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     scroll: { paddingTop: spacing('3'), paddingBottom: spacing('10') },
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2'),
-    },
-    iconBtn: {
-      width: layout.minTouchTarget,
-      height: layout.minTouchTarget,
-      borderRadius: radius('lg'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.surface,
     },
 
     heroCard: {
@@ -343,11 +315,11 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     },
     heroTop: { flexDirection: 'row', alignItems: 'center', gap: spacing('4') },
     heroInfo: { flex: 1, gap: spacing('1') },
-    heroName: { fontSize: 20 },
-    heroRole: { fontSize: 13, opacity: 0.7 },
+    heroName: { ...typography.metrics.xl },
+    heroRole: { ...typography.metrics.sm, opacity: 0.7 },
     contactRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('3') },
     contactChip: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
-    contactText: { fontSize: 12 },
+    contactText: { ...typography.metrics.xs },
 
     currencyRow: {
       flexDirection: 'row',
@@ -362,7 +334,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       backgroundColor: colors.surface,
     },
     currencyPillActive: { backgroundColor: alpha(colors.primary, 'subtle') },
-    currencyPillText: { fontFamily: typography.styles.badge.fontFamily, color: colors.textMuted, fontSize: 11 },
+    currencyPillText: { fontFamily: typography.styles.badge.fontFamily, color: colors.textMuted, ...typography.metrics.xs },
     currencyPillTextActive: { color: colors.primary },
 
     statsRow: {
@@ -382,8 +354,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       ...typography.metrics.xs,
       fontFamily: typography.styles.sectionLabel.fontFamily,
     },
-    statValue: { fontSize: 14 },
-    statPlain: { fontSize: 18 },
+    statValue: { ...typography.metrics.md },
 
     sectionHeader: {
       flexDirection: 'row',
@@ -402,7 +373,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     },
     loansCard: {
       backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
+      borderRadius: radius('xl'),
       overflow: 'hidden',
     },
     loanRow: {

@@ -1,5 +1,5 @@
-import { db } from '../../../db/client';
-import { accounts, categories, loans, payments, persons } from '../../../db/schema';
+import { db } from '@/src/db/client';
+import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import * as Sharing from 'expo-sharing';
 import { File, Paths } from 'expo-file-system';
 import { StorageAccessFramework } from 'expo-file-system/legacy';

@@ -1,8 +1,9 @@
+import { Text } from '@/src/components/ui/Text';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { MoneyText } from '../../../components/ui/MoneyText';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
-import type { LoanRepaymentRow, LoanType } from '../api/loans';
+import { StyleSheet, View } from 'react-native';
+import { MoneyText } from '@/src/components/ui/MoneyText';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import type { LoanRepaymentRow, LoanType } from '@/src/features/loans/api/loans';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -63,7 +64,7 @@ export const RepaymentRow = React.memo(function RepaymentRow({ row, loanType, is
   );
 });
 
-const createStyles = ({ colors, spacing, typography }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, typography, radius }: ThemeContextType) =>
   StyleSheet.create({
     row: {
       flexDirection: 'row',
@@ -75,7 +76,7 @@ const createStyles = ({ colors, spacing, typography }: ThemeContextType) =>
       gap: spacing('3'),
     },
     dot: { width: 20, alignItems: 'center', justifyContent: 'center' },
-    dotInner: { width: 8, height: 8, borderRadius: 4 },
+    dotInner: { width: 8, height: 8, borderRadius: radius('full') },
     content: { flex: 1 },
     label: {
       ...typography.metrics.md,

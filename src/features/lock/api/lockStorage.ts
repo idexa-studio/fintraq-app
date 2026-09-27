@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
-import { SecureStoreKeys } from '../../../constants/keys';
+import { SecureStoreKeys } from '@/src/constants/keys';
 
 const KEY_PIN_HASH = SecureStoreKeys.PIN_HASH;
 const KEY_LOCK_MODE = SecureStoreKeys.LOCK_MODE; // 'biometric' | 'pin' | null

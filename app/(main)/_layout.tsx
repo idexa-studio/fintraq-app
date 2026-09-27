@@ -1,7 +1,7 @@
 import { Redirect, Stack } from 'expo-router'; // Refreshing layout resolution
 import React from 'react';
-import { ErrorBoundary } from '../../src/components/ui/ErrorBoundary';
-import { useOnboarding } from '../../src/providers/OnboardingProvider';
+import { ErrorBoundary } from '@/src/components/ErrorBoundary';
+import { useOnboarding } from '@/src/providers/OnboardingProvider';
 
 export default function StackLayout() {
   const { hasOnboarded } = useOnboarding();

@@ -1,7 +1,8 @@
+import { Text } from '@/src/components/ui/Text';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
-import type { DowSpend } from '../api/analytics';
+import type { DowSpend } from '@/src/features/analytics/api/analytics';
 import { useTranslation } from 'react-i18next';
 
 type Props = { data: DowSpend[] };
@@ -48,7 +49,7 @@ export const DowChart = React.memo(function DowChart({ data }: Props) {
   );
 });
 
-const createStyles = ({ colors, spacing, typography }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ colors, spacing, typography, radius }: ThemeContextType) => StyleSheet.create({
   row: {
     flexDirection: 'row',
     height: 120,
@@ -65,13 +66,13 @@ const createStyles = ({ colors, spacing, typography }: ThemeContextType) => Styl
     flex: 1,
     width: '100%',
     backgroundColor: colors.background + '80',
-    borderRadius: 4,
+    borderRadius: radius('xs'),
     justifyContent: 'flex-end',
     overflow: 'hidden',
   },
   fill: {
     width: '100%',
-    borderRadius: 4,
+    borderRadius: radius('xs'),
   },
   lbl: { ...typography.metrics.xxs, letterSpacing: 0.5 },
 });

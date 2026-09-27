@@ -1,13 +1,11 @@
-import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Input, ListGroup, ListItem, Text } from '@/src/components/ui';
+import { CURRENCIES } from '@/src/constants/currency';
+import { OnboardingFormValues } from '@/src/features/onboarding/types';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Controller, useFormContext } from 'react-hook-form';
-import { StyleSheet, Text, View } from 'react-native';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Input } from '../../../components/ui/Input';
-import { useTheme, ThemeContextType } from '../../../providers/ThemeProvider';
-import { OnboardingFormValues } from '../types';
+import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
 type Props = {
   currency: string;
@@ -16,13 +14,12 @@ type Props = {
 
 export const ProfileStep = React.memo(function ProfileStep({ currency, onOpenCurrencyPicker }: Props) {
   const { t } = useTranslation();
-  const theme = useTheme();
-  const { colors, typography } = theme;
-  const styles = React.useMemo(() => createStyles(theme), [theme]);
+  const { colors, spacing, radius, alpha } = useTheme();
   const { control, formState: { errors } } = useFormContext<OnboardingFormValues>();
+  const selected = CURRENCIES.find((c) => c.code === currency);
 
   return (
-    <View style={styles.wrapper}>
+    <View style={{ gap: spacing('6') }}>
       <Controller
         control={control}
         name="name"
@@ -39,50 +36,31 @@ export const ProfileStep = React.memo(function ProfileStep({ currency, onOpenCur
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             error={errors.name?.message}
-            size="md"
+            helperText={t('onboarding.greetingHint')}
             variant="filled"
             autoCapitalize="words"
             autoCorrect={false}
+            autoFocus
             returnKeyType="done"
+            maxLength={30}
           />
         )}
       />
 
-      {!errors.name && (
-        <Text style={[styles.hint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-          {t('onboarding.greetingHint')}
-        </Text>
-      )}
-
-      <View style={styles.field}>
-        <Text style={[styles.label, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-          {t('onboarding.defaultCurrency')}
-        </Text>
-        <BentoPressable style={styles.currencyRow} onPress={onOpenCurrencyPicker}>
-          <Text style={[styles.currencyCode, { fontFamily: typography.styles.badge.fontFamily, color: colors.primary }]}>{currency}</Text>
-          <Text style={[styles.currencyHint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>{t('onboarding.tapToChange')}</Text>
-          <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
-        </BentoPressable>
-      </View>
+      <ListGroup title={t('onboarding.defaultCurrency')}>
+        <ListItem
+          leading={
+            <View style={{ width: 36, height: 36, borderRadius: radius('md'), backgroundColor: alpha(colors.primary, 'subtle'), alignItems: 'center', justifyContent: 'center' }}>
+              <Text variant="bodyStrong" tone="primary" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
+                {selected?.symbol ?? currency}
+              </Text>
+            </View>
+          }
+          title={selected?.name ?? currency}
+          subtitle={currency}
+          onPress={onOpenCurrencyPicker}
+        />
+      </ListGroup>
     </View>
   );
 });
-
-const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
-  StyleSheet.create({
-    wrapper: { gap: spacing('5') },
-    hint: { ...typography.metrics.xs, opacity: 0.6, paddingLeft: spacing('1') },
-    field: { gap: spacing('2') },
-    label: { ...typography.metrics.xs, opacity: 0.6 },
-    currencyRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-      height: 52,
-      backgroundColor: colors.surface,
-      borderRadius: radius('lg'),
-      paddingHorizontal: spacing('4'),
-    },
-    currencyCode: { ...typography.metrics.sm },
-    currencyHint: { flex: 1, ...typography.metrics.xs },
-  });

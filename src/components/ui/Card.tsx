@@ -1,60 +1,57 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, View, ViewStyle } from 'react-native';
-import { useTheme, ThemeContextType } from '../../providers/ThemeProvider';
+import { StyleProp, View, ViewStyle } from 'react-native';
+import { useTheme } from '@/src/providers/ThemeProvider';
+import { BentoPressable } from './BentoPressable';
 
 type CardSize = 'sm' | 'md' | 'lg';
-type CardVariant = 'default' | 'filled' | 'outlined';
+/**
+ * surface  — standard container on the page background (default)
+ * inset    — nested block inside a surface card (uses the `card` fill)
+ * outlined — low-emphasis container, border only
+ */
+type CardVariant = 'surface' | 'inset' | 'outlined';
 
 type CardProps = {
   children: React.ReactNode;
-  style?: ViewStyle;
   size?: CardSize;
   variant?: CardVariant;
+  /** Makes the whole card a single tap target. */
+  onPress?: () => void;
+  accessibilityLabel?: string;
+  style?: StyleProp<ViewStyle>;
 };
 
 export const Card = React.memo(function Card({
   children,
-  style,
   size = 'md',
-  variant = 'default',
+  variant = 'surface',
+  onPress,
+  accessibilityLabel,
+  style,
 }: CardProps) {
-  const theme = useTheme();
-  const { colors, sizes } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
-
+  const { colors, sizes, alpha } = useTheme();
   const sizeConfig = sizes.card[size];
 
-  const backgroundStyle = useMemo(() => {
+  const cardStyle = useMemo<ViewStyle>(() => {
+    const base: ViewStyle = { padding: sizeConfig.padding, borderRadius: sizeConfig.borderRadius, overflow: 'hidden' };
     switch (variant) {
-      case 'filled':
-        return { backgroundColor: colors.surface };
+      case 'inset':
+        return { ...base, backgroundColor: colors.card };
       case 'outlined':
-        return { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.border };
-      case 'default':
+        return { ...base, backgroundColor: 'transparent', borderWidth: 1, borderColor: alpha(colors.text, 'subtle') };
+      case 'surface':
       default:
-        return { backgroundColor: colors.card };
+        return { ...base, overflow: 'visible', backgroundColor: colors.surface };
     }
-  }, [variant, colors.surface, colors.card, colors.border]);
+  }, [variant, sizeConfig, colors, alpha]);
 
-  return (
-    <View
-      style={[
-        styles.card,
-        {
-          padding: sizeConfig.padding,
-          borderRadius: sizeConfig.borderRadius,
-        },
-        backgroundStyle,
-        style,
-      ]}
-    >
-      {children}
-    </View>
-  );
-});
+  if (onPress) {
+    return (
+      <BentoPressable onPress={onPress} style={[cardStyle, style]} accessibilityRole="button" accessibilityLabel={accessibilityLabel}>
+        {children}
+      </BentoPressable>
+    );
+  }
 
-const createStyles = (_theme: ThemeContextType) => StyleSheet.create({
-  card: {
-    overflow: 'hidden',
-  },
+  return <View style={[cardStyle, style]}>{children}</View>;
 });

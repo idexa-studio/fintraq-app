@@ -1,10 +1,12 @@
+import { Text } from '@/src/components/ui/Text';
+import { Spinner } from '@/src/components/ui';
 import React, { useEffect } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
-import { db, unlockDatabaseIfLocked } from '../db/client';
-import migrations from '../../drizzle/migrations';
-import { runSeeds } from '../db/seeds/runner';
-import { LoggerService } from '../services/logger.service';
+import { db, unlockDatabaseIfLocked } from '@/src/db/client';
+import migrations from '@/drizzle/migrations';
+import { runSeeds } from '@/src/db/seeds/runner';
+import { LoggerService } from '@/src/services/logger.service';
 import { useTranslation } from 'react-i18next';
 
 export function DatabaseProvider({ children }: { children: React.ReactNode }) {
@@ -17,7 +19,7 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
     unlockDatabaseIfLocked();
     // Must resolve before children (incl. onboarding's own category seeding) render —
     // otherwise both can race to insert the same default categories (e.g. duplicate
-    // 'Uncategorized' rows, since seedCategories() checked for it before this committed).
+    // 'Others' rows, since seedCategories() checked for it before this committed).
     runSeeds()
       .catch((err) => LoggerService.warn('DATABASE', 'Seed run failed', err))
       .finally(() => setSeedsReady(true));
@@ -35,7 +37,7 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
   if (!success || !seedsReady) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
+        <Spinner size="lg" />
         <Text>{t('system.initializingDatabase')}</Text>
       </View>
     );

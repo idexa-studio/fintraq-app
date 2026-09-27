@@ -1,5 +1,5 @@
-export { WalkthroughOverlay } from './components/WalkthroughOverlay';
-export { useWalkthrough } from './hooks/useWalkthrough';
+export { WalkthroughOverlay } from '@/src/features/walkthrough/components/WalkthroughOverlay';
+export { useWalkthrough } from '@/src/features/walkthrough/hooks/useWalkthrough';
 export {
   DASHBOARD_WALKTHROUGH_STEPS,
   TRANSACTION_WALKTHROUGH_STEPS,
@@ -10,4 +10,4 @@ export {
   ACCOUNTS_WALKTHROUGH_STEPS,
   TRANSACTIONS_LIST_WALKTHROUGH_STEPS,
   type WalkthroughStep,
-} from './constants/steps';
+} from '@/src/features/walkthrough/constants/steps';

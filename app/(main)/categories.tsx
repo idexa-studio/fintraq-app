@@ -1,3 +1,3 @@
-import { CategoriesScreen } from '../../src/features/categories/screens/CategoriesScreen';
+import { CategoriesScreen } from '@/src/features/categories/screens/CategoriesScreen';
 
 export default CategoriesScreen;

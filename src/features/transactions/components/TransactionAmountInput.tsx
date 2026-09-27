@@ -1,10 +1,12 @@
-import { Calculator01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Text } from '@/src/components/ui/Text';
+import { CalculatorIcon } from '@/src/components/ui/icons';
+import { CURRENCIES } from '@/src/constants/currency';
+import { Icon } from '@/src/components/ui/Icon';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { CalculatorBottomSheet } from '../../../components/ui/CalculatorBottomSheet';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
+import { Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { CalculatorBottomSheet } from '@/src/components/pickers/CalculatorBottomSheet';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Props = {
   value: string;
@@ -23,6 +25,8 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [showCalc, setShowCalc] = useState(false);
+  // Show the symbol people recognise (₹, $, €); fall back to the code.
+  const symbol = useMemo(() => CURRENCIES.find((c) => c.code === currency)?.symbol ?? currency, [currency]);
 
   const handleChange = useCallback((v: string) => onChange(v), [onChange]);
   const handleCalcConfirm = useCallback((v: string) => onChange(v), [onChange]);
@@ -31,22 +35,24 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
     <View style={styles.container}>
       <Text style={styles.label}>{t('transactions.amount')}</Text>
       <View style={styles.inputRow}>
-        <Text style={styles.currency}>{currency}</Text>
+        <Text style={styles.currency}>{symbol}</Text>
         <TextInput
           style={styles.input}
           value={value}
           onChangeText={handleChange}
           keyboardType="decimal-pad"
           placeholder="0.00"
-          placeholderTextColor={colors.textMuted + '40'}
+          placeholderTextColor={colors.textMuted + '55'}
           autoFocus
         />
         <Pressable
           style={({ pressed }) => [styles.calcBtn, pressed && { opacity: 0.5 }]}
           onPress={() => { Keyboard.dismiss(); setShowCalc(true); }}
           hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={currency}
         >
-          <HugeiconsIcon icon={Calculator01Icon} size={22} color={colors.textMuted} />
+          <Icon icon={CalculatorIcon} size={22} color={colors.text} />
         </Pressable>
       </View>
 
@@ -65,7 +71,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
   StyleSheet.create({
     container: {
       backgroundColor: colors.surface,
-      borderRadius: sizes.card.lg.borderRadius,
+      borderRadius: radius('xl'),
       padding: sizes.card.lg.padding,
       marginHorizontal: layout.screenPadding,
       marginVertical: spacing('2'),
@@ -74,7 +80,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       fontFamily: typography.styles.sectionLabel.fontFamily,
       ...typography.metrics.xs,
       color: colors.textMuted,
-      opacity: 0.6,
       marginBottom: spacing('1.5'),
     },
     inputRow: {
@@ -82,20 +87,25 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       alignItems: 'center',
     },
     currency: {
-      fontSize: 22,
-      fontFamily: typography.styles.rowLabel.fontFamily,
+      ...typography.metrics.display,
+      fontFamily: typography.fonts.amountRegular,
       color: colors.textMuted,
-      marginRight: spacing('2.5'),
+      marginRight: spacing('2'),
     },
     input: {
       flex: 1,
-      fontSize: 40,
-      fontFamily: typography.styles.buttonLabel.fontFamily,
+      ...typography.metrics.jumbo,
+      fontFamily: typography.fonts.amountBold,
       color: colors.text,
       paddingVertical: 0,
     },
     calcBtn: {
-      padding: spacing('1'),
+      width: 44,
+      height: 44,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.background,
       marginLeft: spacing('2'),
     },
   });

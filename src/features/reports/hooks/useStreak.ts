@@ -1,6 +1,6 @@
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
-import { QUERY_KEYS } from '../../../lib/query-keys';
-import * as api from '../api/streak.service';
+import { QUERY_KEYS } from '@/src/lib/query-keys';
+import * as api from '@/src/features/reports/api/streak.service';
 
 export function useUsageStreak(): UseQueryResult<number, Error> {
   return useQuery({

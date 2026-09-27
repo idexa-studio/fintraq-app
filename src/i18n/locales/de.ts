@@ -2,6 +2,8 @@ import type { Translation } from './types';
 
 const de: Translation = {
   common: {
+    edit: 'Bearbeiten', delete: 'Löschen',
+    back: 'Zurück',
     cancel: 'Abbrechen',
     ok: 'OK',
     clear: 'Löschen',
@@ -18,6 +20,7 @@ const de: Translation = {
     settings: 'Einstellungen',
   },
   settings: {
+    general: "Allgemein", security: "Sicherheit", manage: "Verwalten", about: "Über", loans: "Darlehen", loansHint: "Verliehenes oder geliehenes Geld",
     title: 'Einstellungen',
     welcome: 'Willkommen',
     proMember: 'Pro-Mitglied',
@@ -112,12 +115,13 @@ const de: Translation = {
     cannotDelete: 'Kategorie kann nicht gelöscht werden', deleteFailed: 'Kategorie konnte nicht gelöscht werden.',
   },
   dashboard: {
+    streakDays: '{{count}} Tage in Folge',
     accounts: 'Konten', manage: 'Verwalten', topExpenses: 'Größte Ausgaben', people: 'Personen', loans: 'Darlehen', recent: 'Zuletzt', seeAll: 'Alle anzeigen',
     noTransactions: 'Noch keine Transaktionen', transactionHint: 'Erfasse hier deine täglichen Zahlungen, Einnahmen oder Überweisungen.', addTransaction: 'Transaktion hinzufügen',
     balance: 'Dein Guthaben', income: 'Einnahmen', expenses: 'Ausgaben', noLoans: 'Keine aktiven Darlehen', loanHint: 'Behalte im Blick, was du verleihst oder dir leihst. Tippe, um ein Darlehen hinzuzufügen.',
     lentOut: 'Verliehen', borrowed: 'Geliehen', overdue: '{{count}} überfällig', active: '{{count}} aktiv', noExpenses: 'Noch keine Ausgaben', expensesHint: 'Füge Transaktionen hinzu, um deine größten Ausgabenkategorien zu sehen.',
   },
-  transactions: { amount: 'Betrag', category: 'Kategorie', netSavings: 'Nettoersparnis', income: 'Einnahmen', expenses: 'Ausgaben', type: 'Typ', account: 'Konto', date: 'Datum', person: 'Person', typesCount: '{{count}} Typen', oneAccount: '1 Konto', accountsCount: '{{count}} Konten', oneCategory: '1 Kategorie', categoriesCount: '{{count}} Kategorien', onePerson: '1 Person', personsCount: '{{count}} Personen',
+  transactions: { dayCount: '{{count}} Einträge', allCategories: 'Alle', searchCategories: 'Kategorien suchen', amount: 'Betrag', category: 'Kategorie', netSavings: 'Nettoersparnis', income: 'Einnahmen', expenses: 'Ausgaben', type: 'Typ', account: 'Konto', date: 'Datum', person: 'Person', typesCount: '{{count}} Typen', oneAccount: '1 Konto', accountsCount: '{{count}} Konten', oneCategory: '1 Kategorie', categoriesCount: '{{count}} Kategorien', onePerson: '1 Person', personsCount: '{{count}} Personen',
   filteredSummary: 'Gefilterte Übersicht', title: 'Transaktionen', clearAll: 'Alle löschen', noResults: 'Keine Ergebnisse', nothingYet: 'Hier ist noch nichts', noMatch: 'Keine Transaktionen passen zu den aktiven Filtern. Passe sie an oder lösche sie.', addFirst: 'Füge deine erste Transaktion hinzu, um mit dem Tracking zu beginnen.', clearFilters: 'Filter löschen', add: 'Transaktion hinzufügen',
   deleteTitle: 'Transaktion löschen', deleteMessage: 'Die Transaktion wird entfernt und ihre Auswirkung auf den Kontostand rückgängig gemacht.', delete: 'Löschen', sortTitle: 'Transaktionen sortieren', newest: 'Neueste zuerst', oldest: 'Älteste zuerst', highest: 'Höchster Betrag', lowest: 'Niedrigster Betrag',
   expense: 'Ausgabe', transfer: 'Überweisung', missingDetails: 'Angaben fehlen', missingDetailsMessage: 'Bitte wähle Konto, Kategorie und einen gültigen Betrag aus.', missingDestination: 'Ziel fehlt', missingDestinationMessage: 'Bitte wähle ein Zielkonto für die Überweisung aus.',
@@ -125,6 +129,7 @@ const de: Translation = {
   editEntry: 'Eintrag bearbeiten', newEntry: 'Neuer Eintrag', loanRepaymentFor: 'Darlehensrückzahlung für', loading: 'Wird geladen...', fromAccount: 'Von Konto', toAccount: 'Auf Konto', noCompatible: 'Keine kompatiblen Konten für diese Überweisung.', linkedPerson: 'Verknüpfte Person', unknown: 'Unbekannt', noPersonLinked: 'Keine Person verknüpft', time: 'Uhrzeit', note: 'Notiz', optionalContext: 'Optionaler Kontext', saveChanges: 'Änderungen speichern', saveTransaction: 'Transaktion speichern', none: 'Keine',
   detailTitle: 'Transaktion', notFound: 'Transaktion nicht gefunden.', detailDeleteTitle: 'Transaktion löschen', detailDeleteMessage: 'Die Auswirkung auf den Kontostand wird rückgängig gemacht. Das kann nicht widerrufen werden.', from: 'Von', to: 'An', created: 'Erstellt', cancel: 'Abbrechen' },
   onboardingFlow: {
+    getStarted: 'Los geht’s', restoreFromBackup: 'Aus Backup wiederherstellen', welcomeSubtitle: 'Ausgaben, Einnahmen und Kredite an einem ruhigen, privaten Ort verfolgen. Die Einrichtung dauert keine Minute.',
     steps: {
       welcome: { eyebrow: 'Erste Schritte', title: 'Baue dein Finanz-Cockpit.', subtitle: 'Eine ruhige Einrichtung mit vollständigen Voreinstellungen und sauberem Startkonto.' },
       setup_choice: { eyebrow: 'Einrichtungsmodus', title: 'Wie möchtest du starten?', subtitle: 'Starte mit einem neuen Arbeitsbereich oder stelle ein bestehendes Google-Drive-Backup wieder her.' },
@@ -165,7 +170,7 @@ const de: Translation = {
   },
   ui: {
     somethingWrong: 'Etwas ist schiefgelaufen', proOnly: 'Nur Pro', unlockWithPro: 'Mit Fintraq Pro freischalten',
-    chooseIcon: 'Symbol wählen', chooseColor: 'Farbe wählen', colorsCount: '{{count}} Farben', currency: 'Währung', currenciesCount: '{{count}} Währungen', searchCurrency: 'Nach Name oder Code suchen', delKey: 'Entf',
+    charsLeft: 'Noch {{count}} Zeichen', suggested: 'Vorschläge', allCurrencies: 'Alle Währungen', noMatch: 'Kein Treffer für „{{query}}“', chooseIcon: 'Symbol wählen', chooseColor: 'Farbe wählen', colorsCount: '{{count}} Farben', currency: 'Währung', currenciesCount: '{{count}} Währungen', searchCurrency: 'Nach Name oder Code suchen', delKey: 'Entf',
   },
   lock: {
     unlockApp: 'App entsperren', authFailed: 'Authentifizierung fehlgeschlagen. Versuche es erneut.', useButton: 'Verwende die Schaltfläche unten, um es erneut zu versuchen.',
@@ -180,6 +185,9 @@ const de: Translation = {
     defaultMessage: 'Bitte aktualisiere Fintraq, um fortzufahren. Das dauert nur einen Moment.', updateNow: 'Jetzt aktualisieren',
   },
   loans: {
+    outstandingAmount: "Offen: {{amount}}", exceedsOutstanding: "Betrag übersteigt den offenen Betrag von {{amount}}", fullAmount: "Gesamtbetrag · {{amount}}",
+    freeLimit: 'Der Gratis-Plan erlaubt {{limit}} aktive Darlehen. Für unbegrenzt upgraden.', upgrade: 'Upgraden',
+    lentToName: 'Verliehen an {{name}}', borrowedFromName: 'Geliehen von {{name}}',
     title: 'Darlehen', loan: 'Darlehen', newLoan: 'Neues Darlehen', lentOut: 'Verliehen', borrowed: 'Geliehen', lent: 'Verliehen', repaid: 'Zurückgezahlt',
     noLent: 'Keine verliehenen Darlehen', noBorrowed: 'Keine geliehenen Darlehen', emptyHint: 'Behalte hier im Blick, was du verleihst oder dir leihst.', addLoan: 'Darlehen hinzufügen',
     unknown: 'Unbekannt', unnamedSource: 'Unbenannte Quelle', outstandingBalance: 'Offener Betrag', principal: 'Kapital', outstanding: 'Offen', totalPrincipal: 'Gesamtkapital',
@@ -217,10 +225,12 @@ const de: Translation = {
     linkPerson: 'Person verknüpfen', noPerson: 'Keine Person',
   },
   categoryForm: {
+    appliesToHint: 'Wähle eins oder mehrere.', moreIcons: 'Mehr',
     edit: 'Kategorie bearbeiten', new: 'Neue Kategorie', categoryName: 'Kategoriename', tapToChangeIcon: 'Tippe, um das Symbol zu ändern', appliesTo: 'Gilt für', namePlaceholder: 'z. B. Lebensmittel, Gehalt',
     save: 'Kategorie speichern', create: 'Kategorie erstellen', chooseIcon: 'Symbol wählen', expense: 'Ausgabe', income: 'Einnahme', transfer: 'Überweisung',
   },
   accountForm: {
+    lockedHint: 'Typ, Währung und Saldo werden beim Anlegen festgelegt. Der Saldo ändert sich durch Buchungen.',
     edit: 'Konto bearbeiten', new: 'Neues Konto', accountName: 'Kontoname', accountType: 'Kontotyp', accountDetails: 'Kontodetails',
     namePlaceholder: 'z. B. Haupt-Wallet', holderPlaceholder: 'Max Mustermann (optional)', numberPlaceholder: 'IBAN (optional)', currentBalance: 'Aktueller Kontostand', initialBalance: 'Anfangsbestand',
     save: 'Konto speichern', create: 'Konto erstellen',
@@ -319,12 +329,13 @@ const de: Translation = {
     monthGood: 'Dieser Monat sieht gut aus', monthTight: 'Bisher ein knapper Monat', monthGoodHint: 'Mehr rein als raus – du gewinnst an Schwung.', monthTightHint: 'Die Ausgaben liegen vor den Einnahmen. Kein Stress – nur ein Anstoß, kurz nachzuschauen.',
   },
   walkthrough: {
+    gotIt: 'Verstanden',
     step: 'Schritt {{current}} von {{total}}', skip: 'Anleitung überspringen', getStarted: 'Loslegen', next: 'Weiter',
     welcomeToFintraq: { title: 'Willkommen bei Fintraq!', desc: 'Machen wir eine kurze Tour durch dein neues Premium-Finanz-Dashboard.' },
     trackNetSavings: { title: 'Nettoersparnis im Blick', desc: 'Die obere Karte zeigt deine gesamte Nettoposition (Einnahmen minus Ausgaben). Wische, um andere Währungen zu sehen.' },
     accountsWallets: { title: 'Konten & Wallets', desc: 'Verwalte dein Bargeld, deine Bankkonten und Kreditkarten. Tippe darauf, um die einzelnen Verläufe zu sehen.' },
     realTimeInsights: { title: 'Einblicke in Echtzeit', desc: 'Weiter unten findest du dynamische Einblicke zu deinen Ausgabenmustern, Chips der größten Ausgabenkategorien und Serien.' },
-    logFirstTransaction: { title: 'Erste Transaktion erfassen', desc: 'Wenn du bereit bist, tippe unten rechts auf die grüne „+“-Schaltfläche, um eine Transaktion zu erfassen!' },
+    logFirstTransaction: { title: 'Erste Transaktion erfassen', desc: 'Wenn du bereit bist, tippe unten auf den grünen +-Button, um eine Buchung zu erfassen.' },
     enterAmount: { title: 'Betrag eingeben', desc: 'Beginne mit dem Betrag über die Zifferneingabe. Dezimalwerte werden vollständig unterstützt.' },
     selectTransactionType: { title: 'Transaktionstyp wählen', desc: 'Wähle Ausgabe (ausgegebenes Geld), Einnahme (verdientes Geld) oder Überweisung (Geld zwischen Konten verschieben).' },
     chooseCategory: { title: 'Kategorie wählen', desc: 'Wähle eine Kategorie, um deine Transaktion zu ordnen. Eigene Kategorien kannst du in den Einstellungen anlegen.' },

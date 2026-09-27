@@ -1,31 +1,21 @@
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Header } from '@/src/components/ui/Header';
+import { Banner, Button, Card, Divider, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, SegmentedControl, SelectField, Text } from '@/src/components/ui';
+import { CalendarBlankIcon } from '@/src/components/ui/icons';
+import { Screen } from '@/src/components/ui/Screen';
+
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
-import { PageBackground } from '@/src/components/ui/PageBackground';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
 import type { AccountType } from '@/src/types';
-import { CheckmarkCircle01Icon, Download01Icon, Folder01Icon, InformationCircleIcon, Share01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Download01Icon, Folder01Icon, Share01Icon } from '@hugeicons/core-free-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { CsvExportService, ExportDateRange } from '../api/csv-export.service';
+import { Alert, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { CsvExportService, ExportDateRange } from '@/src/features/export/api/csv-export.service';
 import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
+
 
 const DATE_PRESETS = [
   { key: '7d', label: 'last7', days: 7 },
@@ -44,7 +34,6 @@ const TYPE_OPTIONS = [
 export const ExportScreen = React.memo(function ExportScreen() {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const accountsQuery = useAccounts();
@@ -146,136 +135,85 @@ export const ExportScreen = React.memo(function ExportScreen() {
   }, [exportedData, t]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
-      <Header title={t('export.title')} showBack />
+    <Screen header={{ title: t('export.title'), showBack: true }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
         {/* ── Date range ── */}
-        <Text style={styles.sectionLabel}>{t('export.dateRange')}</Text>
-        <View style={styles.card}>
-          {DATE_PRESETS.map((p, i) => (
-            <React.Fragment key={p.key}>
-              <BentoPressable style={styles.cardRow} onPress={() => handlePresetSelect(p.key)} scaleOnPress={false}>
-                <Text style={styles.cardRowText}>{t(`export.${p.label}`)}</Text>
-                {selectedPreset === p.key && !customRange
-                  ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} />
-                  : null}
-              </BentoPressable>
-              {i < DATE_PRESETS.length - 1 ? <View style={styles.sep} /> : null}
-            </React.Fragment>
+        <ListGroup title={t('export.dateRange')} insetDividers={false} style={styles.group}>
+          {DATE_PRESETS.map(p => (
+            <ListItem
+              key={p.key}
+              title={t(`export.${p.label}`)}
+              selected={selectedPreset === p.key && !customRange}
+              onPress={() => handlePresetSelect(p.key)}
+            />
           ))}
-          <View style={styles.sep} />
-          <BentoPressable style={styles.cardRow} onPress={() => setShowStartPicker(true)} scaleOnPress={false}>
-            <Text style={styles.cardRowText}>{t('export.customRange')}</Text>
-            {customRange ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}
-          </BentoPressable>
-          {customRange ? (
-            <View style={styles.dateRow}>
-              <BentoPressable style={styles.dateBtn} onPress={() => setShowStartPicker(true)}>
-                <Text style={styles.dateLbl}>{t('export.from')}</Text>
-                <Text style={styles.dateVal}>{formatDate(customRange.startDate)}</Text>
-              </BentoPressable>
-              <View style={styles.dateSep} />
-              <BentoPressable style={styles.dateBtn} onPress={() => setShowEndPicker(true)}>
-                <Text style={styles.dateLbl}>{t('export.to')}</Text>
-                <Text style={styles.dateVal}>{formatDate(customRange.endDate)}</Text>
-              </BentoPressable>
-            </View>
-          ) : null}
-        </View>
+          <ListItem title={t('export.customRange')} selected={!!customRange} onPress={() => setShowStartPicker(true)} />
+        </ListGroup>
+        {customRange ? (
+          <ListGroup insetDividers={false} style={styles.group}>
+            <SelectField label={t('export.from')} value={formatDate(customRange.startDate)} trailingIcon={CalendarBlankIcon} onPress={() => setShowStartPicker(true)} />
+            <SelectField label={t('export.to')} value={formatDate(customRange.endDate)} trailingIcon={CalendarBlankIcon} onPress={() => setShowEndPicker(true)} />
+          </ListGroup>
+        ) : null}
 
         {/* ── Type ── */}
-        <Text style={styles.sectionLabel}>{t('export.type')}</Text>
-        <View style={styles.pillRow}>
-          {TYPE_OPTIONS.map(opt => {
-            const active = selectedType === opt.key;
-            return (
-              <BentoPressable key={opt.key} style={[styles.pill, active && styles.pillActive]} onPress={() => setSelectedType(opt.key)}>
-                <Text style={[styles.pillText, active && styles.pillTextActive]}>{t(`export.${opt.label}`)}</Text>
-              </BentoPressable>
-            );
-          })}
-        </View>
+        <Text variant="label" tone="muted" style={styles.sectionLabel}>{t('export.type')}</Text>
+        <SegmentedControl
+          options={TYPE_OPTIONS.map(opt => ({ value: opt.key, label: t(`export.${opt.label}`) }))}
+          value={selectedType}
+          onChange={setSelectedType}
+          style={styles.group}
+        />
 
         {/* ── Account ── */}
-        <Text style={styles.sectionLabel}>{t('export.account')}</Text>
-        <View style={styles.card}>
-          <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(null)} scaleOnPress={false}>
-            <Text style={styles.cardRowText}>{t('export.allAccounts')}</Text>
-            {selectedAccountId === null ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}
-          </BentoPressable>
-          {accountsQuery.data?.map(acc => {
-            const c = colorNumberToHex(acc.color);
-            const selected = selectedAccountId === acc.id;
-            return (
-              <React.Fragment key={acc.id}>
-                <View style={styles.sep} />
-                <BentoPressable style={styles.cardRow} onPress={() => setSelectedAccountId(acc.id)} scaleOnPress={false}>
-                  <View style={styles.accRow}>
-                    <IconAvatar icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)} color={c} variant="subtle" size={24} iconSize={11} />
-                    <Text style={styles.cardRowText}>{acc.name}</Text>
-                  </View>
-                  {selected ? <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.primary} /> : null}
-                </BentoPressable>
-              </React.Fragment>
-            );
-          })}
-        </View>
+        <ListGroup title={t('export.account')} style={styles.group}>
+          <ListItem title={t('export.allAccounts')} selected={selectedAccountId === null} onPress={() => setSelectedAccountId(null)} />
+          {accountsQuery.data?.map(acc => (
+            <ListItem
+              key={acc.id}
+              title={acc.name}
+              leading={<IconAvatar icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)} color={colorNumberToHex(acc.color)} variant="subtle" size={LIST_ITEM_LEADING_SIZE} />}
+              selected={selectedAccountId === acc.id}
+              onPress={() => setSelectedAccountId(acc.id)}
+            />
+          ))}
+        </ListGroup>
 
         {/* ── Options ── */}
-        <Text style={styles.sectionLabel}>{t('export.options')}</Text>
-        <View style={styles.card}>
-          <View style={styles.cardRow}>
-            <Text style={styles.cardRowText}>{t('export.includeLoans')}</Text>
-            <Switch
-              value={includeLoans}
-              onValueChange={setIncludeLoans}
-              trackColor={{ false: colors.border, true: colors.primary + '60' }}
-              thumbColor={includeLoans ? colors.primary : colors.textMuted}
-            />
-          </View>
-        </View>
+        <ListGroup title={t('export.options')} style={styles.group}>
+          <ListItem title={t('export.includeLoans')} switchValue={includeLoans} onSwitchChange={setIncludeLoans} />
+        </ListGroup>
 
         {/* ── Summary ── */}
-        <View style={styles.summary}>
+        <Card style={styles.summary}>
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>{t('export.transactions')}</Text>
-            <Text style={styles.summaryValue}>
-              {previewCount !== null ? previewCount.toLocaleString() : '—'}
-            </Text>
+            <Text variant="callout" tone="muted">{t('export.transactions')}</Text>
+            <Text variant="title">{previewCount !== null ? previewCount.toLocaleString() : '—'}</Text>
           </View>
-          <View style={styles.summaryDivider} />
+          <Divider />
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>{t('export.period')}</Text>
-            <Text style={styles.summaryPeriod}>
+            <Text variant="callout" tone="muted">{t('export.period')}</Text>
+            <Text variant="caption" tone="muted">
               {formatDate(effectiveDateRange.startDate)} — {formatDate(effectiveDateRange.endDate)}
             </Text>
           </View>
-        </View>
+        </Card>
 
         {/* ── Export button ── */}
-        <BentoPressable
-          style={[styles.exportBtn, (isExporting || previewCount === 0) && styles.exportBtnDisabled]}
+        <Button
+          title={t('export.title')}
+          icon={Download01Icon}
           onPress={handleExport}
-          disabled={isExporting || previewCount === 0}
-        >
-          {isExporting
-            ? <ActivityIndicator size="small" color={colors.primaryForeground} />
-            : (
-              <>
-                <HugeiconsIcon icon={Download01Icon} size={18} color={colors.primaryForeground} />
-                <Text style={styles.exportBtnText}>{t('export.title')}</Text>
-              </>
-            )}
-        </BentoPressable>
+          disabled={previewCount === 0}
+          isLoading={isExporting}
+          size="lg"
+          fullWidth
+        />
 
         {previewCount === 0 ? (
-          <View style={styles.warning}>
-            <HugeiconsIcon icon={InformationCircleIcon} size={15} color={colors.warning} />
-            <Text style={styles.warningText}>{t('export.noMatch')}</Text>
-          </View>
+          <Banner tone="warning" title={t('export.noMatch')} style={styles.warning} />
         ) : null}
 
       </ScrollView>
@@ -297,185 +235,25 @@ export const ExportScreen = React.memo(function ExportScreen() {
           { key: 'share', label: t('export.shareToApps'), icon: Share01Icon, selected: false, onPress: handleShare },
         ]}
       />
-    </SafeAreaView>
+    </Screen>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, sizes, layout }: ThemeContextType) =>
+const createStyles = ({ spacing, layout }: ThemeContextType) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background },
     scroll: {
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('2'),
       paddingBottom: spacing('10'),
     },
-
-    sectionLabel: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      ...typography.metrics.xxs,
-      color: colors.textMuted,
-      marginBottom: spacing('2'),
-      marginLeft: spacing('1'),
-    },
-
-    // ── List card ──
-    card: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      overflow: 'hidden',
-      marginBottom: spacing('5'),
-    },
-    cardRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-    },
-    cardRowText: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.text,
-    },
-    sep: {
-      height: 1,
-      backgroundColor: alpha(colors.text, 'faint'),
-      marginHorizontal: spacing('4'),
-    },
-
-    // ── Custom date range ──
-    dateRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing('4'),
-      paddingBottom: spacing('3'),
-      gap: spacing('2'),
-    },
-    dateBtn: {
-      flex: 1,
-      backgroundColor: colors.background,
-      borderRadius: radius('lg'),
-      paddingVertical: spacing('2.5'),
-      paddingHorizontal: spacing('3'),
-    },
-    dateSep: {
-      width: 1,
-      height: 32,
-      backgroundColor: alpha(colors.text, 'subtle'),
-    },
-    dateLbl: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xxs,
-      color: colors.textMuted,
-      marginBottom: spacing('0.5'),
-    },
-    dateVal: {
-      fontFamily: typography.styles.rowValue.fontFamily,
-      ...typography.metrics.sm,
-      color: colors.text,
-    },
-
-    // ── Type pills ──
-    pillRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      marginBottom: spacing('5'),
-    },
-    pill: {
-      flex: 1,
-      height: sizes.button.sm.height,
-      borderRadius: radius('full'),
-      backgroundColor: colors.surface,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    pillActive: {
-      backgroundColor: alpha(colors.primary, 'subtle'),
-    },
-    pillText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-    },
-    pillTextActive: {
-      fontFamily: typography.styles.chipLabelActive.fontFamily,
-      color: colors.primary,
-    },
-
-    // ── Account row ──
-    accRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-    },
-
-    // ── Summary card ──
-    summary: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('4'),
-      marginBottom: spacing('4'),
-      gap: spacing('3'),
-    },
+    group: { marginBottom: spacing('5') },
+    sectionLabel: { marginBottom: spacing('2'), marginLeft: spacing('1') },
+    summary: { marginBottom: spacing('4'), gap: spacing('3') },
     summaryRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
+      gap: spacing('3'),
     },
-    summaryDivider: {
-      height: 1,
-      backgroundColor: alpha(colors.text, 'faint'),
-    },
-    summaryLabel: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
-    },
-    summaryValue: {
-      fontFamily: typography.fonts.heading,
-      ...typography.metrics.xxl,
-      color: colors.text,
-    },
-    summaryPeriod: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-    },
-
-    // ── Export button ──
-    exportBtn: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing('2'),
-      height: sizes.button.lg.height,
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary,
-      marginBottom: spacing('3'),
-    },
-    exportBtnDisabled: {
-      opacity: 0.5,
-    },
-    exportBtnText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      fontSize: sizes.button.lg.fontSize,
-      color: colors.primaryForeground,
-    },
-
-    // ── Warning ──
-    warning: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-      backgroundColor: alpha(colors.warning, 'faint'),
-      borderRadius: radius('lg'),
-      padding: spacing('3'),
-    },
-    warningText: {
-      flex: 1,
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.warning,
-      lineHeight: 18,
-    },
+    warning: { marginTop: spacing('3') },
   });

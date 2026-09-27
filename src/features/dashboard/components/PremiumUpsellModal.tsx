@@ -1,20 +1,13 @@
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { IconButton } from '@/src/components/ui/IconButton';
+import { Button } from '@/src/components/ui/Button';
+import { Text } from '@/src/components/ui/Text';
+import { Icon } from '@/src/components/ui/Icon';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import {
-  CancelCircleIcon,
-  ChartLineData01Icon,
-  CheckmarkCircle01Icon,
-  CrownIcon,
-  Download01Icon,
-  Search01Icon,
-  SparklesIcon,
-  TrendingUpDownIcon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import type { IconSvgElement } from '@hugeicons/react-native';
+import { CancelCircleIcon, ChartLineData01Icon, CheckmarkCircle01Icon, CrownIcon, Download01Icon, Search01Icon, SparklesIcon, TrendingUpDownIcon } from '@hugeicons/core-free-icons';
+import type { IconSource } from '@/src/components/ui/Icon';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
-import { Modal, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Modal, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
@@ -25,7 +18,7 @@ type PremiumUpsellModalProps = {
 
 const BLOCK = 5;
 
-const PRO_FEATURES: { icon: IconSvgElement; label: 'upsellTrends' | 'upsellHighlights' | 'upsellSearch' | 'upsellCsv' | 'upsellExtended' }[] = [
+const PRO_FEATURES: { icon: IconSource; label: 'upsellTrends' | 'upsellHighlights' | 'upsellSearch' | 'upsellCsv' | 'upsellExtended' }[] = [
   { icon: ChartLineData01Icon, label: 'upsellTrends' },
   { icon: SparklesIcon,        label: 'upsellHighlights' },
   { icon: Search01Icon,        label: 'upsellSearch' },
@@ -83,7 +76,7 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
           {/* ── Header ── */}
           <View style={styles.header}>
             <View style={[styles.crownBadge, { backgroundColor: alpha(colors.warning, 'subtle') }]}>
-              <HugeiconsIcon icon={CrownIcon} size={26} color={colors.warning} />
+              <Icon icon={CrownIcon} size={26} color={colors.warning} />
             </View>
 
             <View style={styles.headerText}>
@@ -94,12 +87,7 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
             </View>
 
             {canDismiss && (
-              <BentoPressable
-                onPress={onClose}
-                style={[styles.closeBtn, { backgroundColor: alpha(colors.text, 'faint') }]}
-              >
-                <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
-              </BentoPressable>
+              <IconButton icon={CancelCircleIcon} variant="ghost" size="sm" onPress={onClose} accessibilityLabel={t('common.close')} />
             )}
           </View>
 
@@ -114,30 +102,26 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
                 ]}
               >
                 <View style={[styles.featureIcon, { backgroundColor: colors.surface }]}>
-                  <HugeiconsIcon icon={item.icon} size={16} color={colors.primary} />
+                  <Icon icon={item.icon} size={16} color={colors.primary} />
                 </View>
                 <Text style={styles.featureLabel}>{t(`premium.${item.label}`)}</Text>
-                <HugeiconsIcon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
+                <Icon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
               </View>
             ))}
           </View>
 
           {/* ── CTA ── */}
           <View style={styles.footer}>
-            <BentoPressable
-              style={[styles.cta, { backgroundColor: colors.primary }, !canDismiss && styles.ctaDimmed]}
+            <Button
+              title={canDismiss ? t('premium.unlockPro') : t('premium.unlockIn', { seconds: left })}
               onPress={handleUpgrade}
               disabled={!canDismiss}
-            >
-              <Text style={[styles.ctaText, { color: colors.primaryForeground }]}>
-                {canDismiss ? t('premium.unlockPro') : t('premium.unlockIn', { seconds: left })}
-              </Text>
-            </BentoPressable>
+              size="lg"
+              fullWidth
+            />
 
             {canDismiss && (
-              <BentoPressable onPress={onClose} style={styles.skipBtn}>
-                <Text style={styles.skipText}>{t('premium.maybeLater')}</Text>
-              </BentoPressable>
+              <Button title={t('premium.maybeLater')} onPress={onClose} variant="ghost" fullWidth />
             )}
           </View>
         </View>
@@ -146,7 +130,7 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, shadow, overlay }: ThemeContextType, screenWidth: number) =>
+const createStyles = ({ colors, typography, spacing, radius, shadow, overlay, state }: ThemeContextType, screenWidth: number) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
@@ -161,7 +145,6 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, overlay }: 
       borderRadius: radius('2xl'),
       padding: spacing('5'),
       gap: spacing('4'),
-      ...shadow('lg'),
     },
     // Header
     header: {
@@ -182,7 +165,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, overlay }: 
     },
     title: {
       fontFamily: typography.fonts.heading,
-      fontSize: 22,
+      ...typography.metrics.xxl,
       letterSpacing: -0.3,
       color: colors.text,
     },
@@ -194,14 +177,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, overlay }: 
     },
     lifetimeLabel: {
       fontFamily: typography.fonts.medium,
-      fontSize: 11,
-    },
-    closeBtn: {
-      width: 32,
-      height: 32,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
+      ...typography.metrics.xs,
     },
     // Features
     featureCard: {
@@ -224,35 +200,12 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, overlay }: 
     },
     featureLabel: {
       fontFamily: typography.fonts.regular,
-      fontSize: 13.5,
+      ...typography.metrics.sm,
       flex: 1,
       color: colors.text,
     },
     // Footer
     footer: {
       gap: spacing('2'),
-    },
-    cta: {
-      height: 52,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...shadow('lg'),
-    },
-    ctaDimmed: {
-      opacity: 0.55,
-    },
-    ctaText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      ...typography.metrics.md,
-    },
-    skipBtn: {
-      alignItems: 'center',
-      paddingVertical: spacing('1'),
-    },
-    skipText: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
     },
   });

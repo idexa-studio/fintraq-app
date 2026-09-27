@@ -9,7 +9,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { useTheme } from '../../providers/ThemeProvider';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import { alpha } from '@/src/theme/tokens';
 
 export type BentoPressableProps = Omit<PressableProps, 'style' | 'children'> & {

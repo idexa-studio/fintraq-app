@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
-import { DARK_THEME, getHeroColors, HeroCardPalette, LIGHT_THEME, PICKER_CONTRAST_COLOR, ThemeColors } from '../theme/colors';
+import { DARK_THEME, getHeroColors, HeroCardPalette, LIGHT_THEME, PICKER_CONTRAST_COLOR, ThemeColors } from '@/src/theme/colors';
 import {
   alpha,
   AlphaToken,
+  ANIMATION,
+  STATE,
   COMPONENT_SIZES,
   LAYOUT,
   OVERLAY,
@@ -14,8 +16,8 @@ import {
   spacing,
   SpacingToken,
   tabBarClearance,
-} from '../theme/tokens';
-import { TYPOGRAPHY } from '../theme/typography';
+} from '@/src/theme/tokens';
+import { TYPOGRAPHY } from '@/src/theme/typography';
 import { useSettings } from './SettingsProvider';
 
 export type { ThemeColors, HeroCardPalette };
@@ -46,6 +48,10 @@ export type ThemeContextType = {
   tabBarClearance: (bottomInset: number) => number;
   /** Tint helper: alpha(colors.primary, 'subtle') → '#00CC6A1A' */
   alpha: (hexColor: string, level: AlphaToken) => string;
+  /** Motion durations in ms — fast / normal / exit / slow */
+  animation: typeof ANIMATION;
+  /** Opacity for disabled / pressed controls */
+  state: typeof STATE;
 };
 
 const defaultContext: ThemeContextType = {
@@ -62,19 +68,29 @@ const defaultContext: ThemeContextType = {
   shadow,
   tabBarClearance,
   alpha,
+  animation: ANIMATION,
+  state: STATE,
 };
 
 const ThemeContext = createContext<ThemeContextType>(defaultContext);
 
 export const useTheme = () => useContext(ThemeContext);
 
-export const ThemeProvider = React.memo(function ThemeProvider({ children }: { children: React.ReactNode }) {
+type ThemeProviderProps = {
+  children: React.ReactNode;
+  /** Force a scheme for this subtree (design gallery previews). Omit to follow the user setting. */
+  scheme?: 'light' | 'dark';
+};
+
+export const ThemeProvider = React.memo(function ThemeProvider({ children, scheme }: ThemeProviderProps) {
   const { profile } = useSettings();
   const systemColorScheme = useColorScheme();
 
-  const isDark = profile.theme === 'system'
-    ? systemColorScheme === 'dark'
-    : profile.theme === 'dark';
+  const isDark = scheme
+    ? scheme === 'dark'
+    : profile.theme === 'system'
+      ? systemColorScheme === 'dark'
+      : profile.theme === 'dark';
 
   const colors = useMemo(() => isDark ? DARK_THEME : LIGHT_THEME, [isDark]);
 
@@ -99,6 +115,8 @@ export const ThemeProvider = React.memo(function ThemeProvider({ children }: { c
     shadow,
     tabBarClearance,
     alpha,
+    animation: ANIMATION,
+    state: STATE,
   }), [colors, isDark, heroCard, overlay]);
 
   return (

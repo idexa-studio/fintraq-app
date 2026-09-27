@@ -1,4 +1,9 @@
+import { IconButton } from '@/src/components/ui/IconButton';
+import { Button } from '@/src/components/ui/Button';
+import { Spinner } from '@/src/components/ui';
 import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
+import { Icon } from '@/src/components/ui/Icon';
+import { Switch } from '@/src/components/ui/Switch';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
@@ -16,22 +21,14 @@ import {
   SparklesIcon,
   Upload01Icon,
 } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import { formatBackupTimestamp } from '@/src/utils/date';
 import React, { useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  DevSettings,
-  Platform,
-  StyleSheet,
-  Switch,
-  Text,
-  View,
-} from 'react-native';
+import { DevSettings, Platform, StyleSheet, View } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
 import { isNoBackupError } from '@/src/services/backup/google-drive.errors';
 import { toErrorMessage } from '@/src/utils/errors';
 import { useRouter } from 'expo-router';
-import { useGoogleBackup } from '../hooks/useGoogleBackup';
+import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
 import { LoggerService } from '@/src/services/logger.service';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { openAppSettings, openBatteryOptimizationSettings } from '@/src/services/backup/battery-optimization';
@@ -289,7 +286,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
             <View style={styles.titleRow}>
               <Text style={styles.rowLabel}>{t('backup.cloudBackup')}</Text>
               <View style={styles.proBadge}>
-                <HugeiconsIcon icon={SparklesIcon} size={10} color={colors.warning} />
+                <Icon icon={SparklesIcon} size={10} color={colors.warning} />
                 <Text style={styles.proBadgeText}>{t('backup.pro')}</Text>
               </View>
             </View>
@@ -299,7 +296,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           </View>
           <View style={styles.connectBadge}>
             <Text style={styles.connectBadgeText}>{t('backup.upgrade')}</Text>
-            <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primary} />
+            <Icon icon={ArrowRight01Icon} size={14} color={colors.primary} />
           </View>
         </BentoPressable>
       </View>
@@ -310,7 +307,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     return (
       <View style={styles.groupContainer}>
         <View style={styles.loadingRow}>
-          <ActivityIndicator color={colors.primary} size="small" />
+          <Spinner size="sm" />
           <Text style={styles.loadingText}>{t('backup.checking')}</Text>
         </View>
       </View>
@@ -333,7 +330,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           </View>
           <View style={styles.connectBadge}>
             <Text style={styles.connectBadgeText}>{t('backup.connect')}</Text>
-            <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.primary} />
+            <Icon icon={ArrowRight01Icon} size={14} color={colors.primary} />
           </View>
         </BentoPressable>
 
@@ -366,12 +363,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
             {user?.email}
           </Text>
         </View>
-        <BentoPressable
-          style={styles.disconnectIconButton}
-          onPress={() => setShowDisconnectConfirm(true)}
-        >
-          <HugeiconsIcon icon={Logout01Icon} size={18} color={colors.textMuted} />
-        </BentoPressable>
+        <IconButton icon={Logout01Icon} variant="ghost" onPress={() => setShowDisconnectConfirm(true)} accessibilityLabel={t('backup.disconnect')} />
       </View>
 
       <View style={styles.separator} />
@@ -379,7 +371,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       {/* Backup Status Row */}
       {isBackupOverdue ? (
         <BentoPressable style={styles.statusBoxWarning} onPress={handleReliabilityHintPress}>
-          <HugeiconsIcon icon={Alert02Icon} size={16} color={colors.warning} />
+          <Icon icon={Alert02Icon} size={16} color={colors.warning} />
           <Text style={styles.statusWarningText}>{t('backup.overdue')}</Text>
         </BentoPressable>
       ) : (
@@ -409,20 +401,14 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
 
       {/* Action Buttons Row */}
       <View style={styles.actionsRow}>
-        <BentoPressable
-          style={[styles.primaryActionButton, (isBackingUp || isRestoring) && styles.disabledButton]}
+        <Button
+          title={t('backup.backupNow')}
+          icon={Upload01Icon}
           onPress={handleBackup}
-          disabled={isBackingUp || isRestoring}
-        >
-          {isBackingUp ? (
-            <ActivityIndicator color={colors.primaryForeground} size="small" />
-          ) : (
-            <>
-              <HugeiconsIcon icon={Upload01Icon} size={16} color={colors.primaryForeground} />
-              <Text style={styles.primaryActionButtonText}>{t('backup.backupNow')}</Text>
-            </>
-          )}
-        </BentoPressable>
+          disabled={isRestoring}
+          isLoading={isBackingUp}
+          style={styles.primaryAction}
+        />
 
         <BentoPressable
           style={[
@@ -433,10 +419,10 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           disabled={isBackingUp || isRestoring || !lastBackup}
         >
           {isRestoring ? (
-            <ActivityIndicator color={colors.primary} size="small" />
+            <Spinner size="sm" />
           ) : (
             <>
-              <HugeiconsIcon icon={Download01Icon} size={16} color={colors.primary} />
+              <Icon icon={Download01Icon} size={16} color={colors.primary} />
               <Text style={styles.secondaryActionButtonText}>{t('backup.restore')}</Text>
             </>
           )}
@@ -459,17 +445,14 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           <Switch
             value={autoBackupEnabled}
             onValueChange={(value) => { void handleToggleAutoBackup(value); }}
-            trackColor={{ false: alpha(colors.text, 'subtle'), true: colors.primary }}
-            thumbColor={'#FFFFFF'}
-            ios_backgroundColor={alpha(colors.text, 'subtle')}
           />
         </View>
 
         {Platform.OS === 'android' && autoBackupEnabled && (
           <BentoPressable style={styles.reliabilityHintRow} onPress={handleReliabilityHintPress}>
-            <HugeiconsIcon icon={BatteryCharging01Icon} size={12} color={colors.textMuted} />
+            <Icon icon={BatteryCharging01Icon} size={12} color={colors.textMuted} />
             <Text style={styles.reliabilityHintText}>{t('backup.reliabilityHint')}</Text>
-            <HugeiconsIcon icon={ArrowRight01Icon} size={12} color={colors.textMuted} />
+            <Icon icon={ArrowRight01Icon} size={12} color={colors.textMuted} />
           </BentoPressable>
         )}
       </View>
@@ -507,11 +490,11 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout, state }: ThemeContextType) =>
   StyleSheet.create({
     groupContainer: {
       backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
+      borderRadius: radius('xl'),
       overflow: 'hidden',
       marginBottom: spacing('5'),
     },
@@ -555,7 +538,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       height: 6,
       borderRadius: radius('full'),
       backgroundColor: colors.textMuted,
-      opacity: 0.5,
     },
     activeBadge: {
       flexDirection: 'row',
@@ -574,23 +556,18 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     activeBadgeText: {
       fontFamily: typography.fonts.bold,
-      fontSize: 10,
+      ...typography.metrics.xxs,
       color: colors.success,
     },
     rowSubtitle: {
       fontFamily: typography.fonts.regular,
       ...typography.metrics.xs,
       color: colors.textMuted,
-      lineHeight: 16,
     },
     userEmailText: {
       fontFamily: typography.fonts.medium,
       ...typography.metrics.xs,
       color: colors.primary,
-    },
-    disconnectIconButton: {
-      padding: spacing('2'),
-      borderRadius: radius('md'),
     },
     connectBadge: {
       flexDirection: 'row',
@@ -624,7 +601,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     statusLabel: {
       fontFamily: typography.fonts.bold,
-      fontSize: 10,
+      ...typography.metrics.xxs,
       color: colors.textMuted,
       letterSpacing: 0.5,
     },
@@ -662,7 +639,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: alpha(colors.primary, 'subtle'),
       paddingHorizontal: spacing('2.5'),
       paddingVertical: spacing('1'),
-      borderRadius: radius('md'),
+      borderRadius: radius('full'),
     },
     sizeBadgeText: {
       fontFamily: typography.fonts.bold,
@@ -696,7 +673,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingHorizontal: spacing('4'),
       paddingVertical: spacing('3'),
     },
-    primaryActionButton: {
+    primaryAction: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
@@ -704,12 +681,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('2'),
       height: 40,
       backgroundColor: colors.primary,
-      borderRadius: radius('xl'),
-    },
-    primaryActionButtonText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-      color: colors.primaryForeground,
     },
     secondaryActionButton: {
       flex: 1,
@@ -721,7 +692,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.card,
       borderWidth: 1,
       borderColor: colors.primary + '30',
-      borderRadius: radius('xl'),
+      borderRadius: radius('full'),
     },
     secondaryActionButtonText: {
       fontFamily: typography.fonts.medium,
@@ -729,7 +700,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.primary,
     },
     disabledButton: {
-      opacity: 0.5,
+      opacity: state.disabled,
     },
     autoBackupSection: {
       gap: spacing('3'),
@@ -753,7 +724,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     proBadgeText: {
       fontFamily: typography.fonts.bold,
-      fontSize: 10,
+      ...typography.metrics.xxs,
       color: colors.primary,
     },
   });

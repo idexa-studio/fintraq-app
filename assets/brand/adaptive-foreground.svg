@@ -1,18 +1,1 @@
-<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="mint" x1="404" y1="302" x2="620" y2="594" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#8DBDFF"/>
-      <stop offset="1" stop-color="#4F8FFF"/>
-    </linearGradient>
-    <linearGradient id="deep" x1="404" y1="554" x2="620" y2="720" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#234777"/>
-      <stop offset="1" stop-color="#163054"/>
-    </linearGradient>
-  </defs>
-
-  <circle cx="512" cy="336" r="72" fill="url(#mint)"/>
-  <circle cx="512" cy="336" r="52" stroke="#EEF5FF" stroke-width="10"/>
-
-  <rect x="332" y="438" width="360" height="124" rx="62" fill="url(#mint)"/>
-  <rect x="332" y="592" width="360" height="124" rx="62" fill="url(#deep)"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><g transform="translate(345.4238056680162,302.08000000000004) scale(0.8498785425101214)"><path fill-rule="evenodd" fill="#00CC6A" d="M116 80 a80 80 0 1 0 160 0 a80 80 0 1 0 -160 0 Z M138 80 a58 58 0 1 0 116 0 a58 58 0 1 0 -116 0 Z M150 80 a46 46 0 1 0 92 0 a46 46 0 1 0 -92 0 Z"/><rect x="0" y="190" width="392" height="136" rx="68" fill="#00CC6A"/><rect x="0" y="358" width="392" height="136" rx="68" fill="#14231B"/></g></svg>

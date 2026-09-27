@@ -1,11 +1,11 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { Icon } from '@/src/components/ui/Icon';
+import { Text } from '@/src/components/ui/Text';
 import { CrownIcon, Search } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { ThemeContextType, useTheme } from '../../../providers/ThemeProvider';
+import { StyleSheet, View } from 'react-native';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
 
 type Props = {
   name?: string;
@@ -33,25 +33,29 @@ export const DashboardHeader = React.memo(function DashboardHeader({ name, isPre
 
   return (
     <View style={styles.container}>
-      {/* Greeting row */}
       <View style={styles.greetingRow}>
-        <View>
-          <Text style={styles.greeting}>{greeting}{displayName ? ',' : ''}</Text>
-          {displayName ? <Text style={styles.name}>{displayName}</Text> : null}
+        <View style={styles.greetingText}>
+          <Text variant="callout" tone="muted">{greeting}{displayName ? ',' : ''}</Text>
+          {displayName ? <Text variant="headline" numberOfLines={1}>{displayName}</Text> : null}
         </View>
 
-        {/* Search + avatar */}
-        <BentoPressable style={styles.searchBtn} onPress={onSearch}>
-          <HugeiconsIcon icon={Search} size={18} color={colors.textMuted} />
-          <View style={styles.avatarWrap}>
+        {/* Search + avatar in one widget: the whole thing opens search. */}
+        <BentoPressable
+          style={styles.searchWidget}
+          onPress={onSearch}
+          accessibilityRole="button"
+          accessibilityLabel={t('search.placeholder')}
+        >
+          <Icon icon={Search} size={18} color={colors.textMuted} />
+          <View>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{monogram}</Text>
+              <Text variant="label" color={colors.primaryInk}>{monogram}</Text>
             </View>
-            {isPremium && (
+            {isPremium ? (
               <View style={styles.crownBadge}>
-                <HugeiconsIcon icon={CrownIcon} size={8} color="#FFFFFF" />
+                <Icon icon={CrownIcon} size={8} color={colors.onColor} />
               </View>
-            )}
+            ) : null}
           </View>
         </BentoPressable>
       </View>
@@ -59,7 +63,9 @@ export const DashboardHeader = React.memo(function DashboardHeader({ name, isPre
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+const AVATAR = 32;
+
+const createStyles = ({ colors, spacing, radius, layout, alpha }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       paddingHorizontal: layout.screenPadding,
@@ -70,19 +76,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
+      gap: spacing('3'),
     },
-    greeting: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
-    },
-    name: {
-      fontFamily: typography.styles.profileName.fontFamily,
-      ...typography.metrics.xl,
-      color: colors.text,
-      marginTop: 1,
-    },
-    searchBtn: {
+    greetingText: { flexShrink: 1 },
+    searchWidget: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2'),
@@ -92,31 +89,26 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingVertical: spacing('1.5'),
       borderRadius: radius('xl'),
     },
-    avatarWrap: { position: 'relative' },
     avatar: {
-      width: 32,
-      height: 32,
-      borderRadius: 8,
+      width: AVATAR,
+      height: AVATAR,
+      borderRadius: Math.round(AVATAR * 0.3),
       backgroundColor: alpha(colors.primary, 'subtle'),
       alignItems: 'center',
       justifyContent: 'center',
     },
-    avatarText: {
-      fontFamily: typography.styles.profileMono.fontFamily,
-      color: colors.primary,
-      fontSize: 13,
-    },
+    // Cut-out ring in the widget colour so the crown reads as sitting on the corner.
     crownBadge: {
       position: 'absolute',
       right: -3,
       top: -3,
-      backgroundColor: colors.warning,
       width: 14,
       height: 14,
       borderRadius: radius('full'),
+      backgroundColor: colors.warning,
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 1.5,
-      borderColor: colors.background,
+      borderColor: colors.surface,
     },
   });

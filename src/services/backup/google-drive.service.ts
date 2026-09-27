@@ -1,6 +1,6 @@
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut as firebaseSignOut, User as FirebaseUser } from '@react-native-firebase/auth';
 import { GoogleSignin, isSuccessResponse, statusCodes } from '@react-native-google-signin/google-signin';
-import googleServicesConfig from '../../../google-services.json';
+import googleServicesConfig from '@/google-services.json';
 import { GoogleDriveAuthError, GoogleDriveHttpError } from './google-drive.errors';
 import { DriveProgressCallback, driveFetch, driveXhrRequest } from './google-drive.http';
 import { LoggerService } from '@/src/services/logger.service';

@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { QUERY_KEYS } from '../../../lib/query-keys';
-import { getDaysAgoLocal } from '../../../utils/date';
-import * as api from '../api/analytics';
-import { getPersonBreakdown } from '../../persons/api/persons';
+import { QUERY_KEYS } from '@/src/lib/query-keys';
+import { getDaysAgoLocal } from '@/src/utils/date';
+import * as api from '@/src/features/analytics/api/analytics';
+import { getPersonBreakdown } from '@/src/features/persons/api/persons';
 
 export const useAnalyticsDailyData = (currency: string, rangeDays: number) =>
   useQuery({

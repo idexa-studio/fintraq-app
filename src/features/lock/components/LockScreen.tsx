@@ -1,12 +1,14 @@
+import { Screen } from '@/src/components/ui/Screen';
+import { Text } from '@/src/components/ui/Text';
+import { Spinner } from '@/src/components/ui';
 import { Button } from '@/src/components/ui/Button';
+import { Icon } from '@/src/components/ui/Icon';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
 import { LockPasswordIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import { LockStorage } from '../api/lockStorage';
-import { authenticateWithBiometrics, getBiometricCapability } from '../hooks/useLocalAuth';
+import { LockStorage } from '@/src/features/lock/api/lockStorage';
+import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
 import { PinPad } from './PinPad';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
@@ -93,19 +95,19 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
   if (mode === 'loading') {
     return (
       <View style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ActivityIndicator color={colors.primary} />
+        <Spinner size="sm" />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'bottom']}>
+    <Screen variant="fixed" edges={['top', 'bottom']}>
       <View style={styles.content}>
         {/* Glowing Pulse Ring Graphic */}
         <View style={styles.graphicContainer}>
           <View style={styles.pulseOuter}>
             <View style={styles.pulseInner}>
-              <HugeiconsIcon icon={LockPasswordIcon} size={32} color={colors.primary} />
+              <Icon icon={LockPasswordIcon} size={32} color={colors.primary} />
             </View>
           </View>
         </View>
@@ -139,7 +141,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
           )}
         </View>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 });
 
@@ -149,9 +151,6 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-    },
-    container: {
-      flex: 1,
     },
     content: {
       flex: 1,
@@ -169,7 +168,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
     pulseOuter: {
       width: 96,
       height: 96,
-      borderRadius: 48,
+      borderRadius: radius('full'),
       backgroundColor: alpha(colors.primary, 'faint'),
       justifyContent: 'center',
       alignItems: 'center',
@@ -177,7 +176,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
     pulseInner: {
       width: 68,
       height: 68,
-      borderRadius: 34,
+      borderRadius: radius('full'),
       backgroundColor: alpha(colors.primary, 'subtle'),
       justifyContent: 'center',
       alignItems: 'center',
@@ -191,17 +190,15 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
     },
     title: {
       fontFamily: typography.styles.emptyTitle.fontFamily,
-      fontSize: 20,
+      ...typography.metrics.xl,
       color: colors.text,
       textAlign: 'center',
     },
     subtitle: {
       fontFamily: typography.fonts.regular,
-      fontSize: 13,
+      ...typography.metrics.sm,
       color: colors.textMuted,
       textAlign: 'center',
-      lineHeight: 19,
-      opacity: 0.85,
     },
     // PinPad/Biometrics Container
     padContainer: {
@@ -212,7 +209,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       width: '100%',
     },
     error: {
-      fontSize: 13,
+      ...typography.metrics.sm,
       textAlign: 'center',
       paddingHorizontal: spacing('6'),
     },

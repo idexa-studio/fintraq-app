@@ -1,8 +1,12 @@
-import { PageBackground } from '@/src/components/ui/PageBackground';
+import { CaretLeftIcon, XIcon } from '@/src/components/ui/icons';
+import { IconButton } from '@/src/components/ui/IconButton';
+import { Screen } from '@/src/components/ui/Screen';
+import { Spinner } from '@/src/components/ui';
+import { Icon } from '@/src/components/ui/Icon';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
-import { TransactionRow } from '@/src/components/ui/TransactionRow';
+import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import type { Category } from '@/src/features/categories/api/categories';
 import type { Person } from '@/src/features/persons/api/persons';
@@ -10,24 +14,13 @@ import type { TransactionListItem } from '@/src/features/transactions/api/transa
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
-import { ArrowLeft01Icon, ArrowRight01Icon, CancelCircleIcon, Clock01Icon, InboxIcon, Search01Icon, SparklesIcon, Tag01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import { ArrowRight01Icon, CancelCircleIcon, Clock01Icon, InboxIcon, Search01Icon, SparklesIcon, Tag01Icon } from '@hugeicons/core-free-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import {
-  ActivityIndicator,
-  SectionList,
-  SectionListData,
-  SectionListRenderItemInfo,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  ScrollView,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useGlobalSearch } from '../hooks/useGlobalSearch';
-import { useRecentSearches } from '../hooks/useRecentSearches';
+import { SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, TextInput, View, ScrollView } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
+import { useGlobalSearch } from '@/src/features/search/hooks/useGlobalSearch';
+import { useRecentSearches } from '@/src/features/search/hooks/useRecentSearches';
 import { WalkthroughOverlay, SEARCH_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { AnalyticsService } from '@/src/services/analytics';
 import { StorageKeys } from '@/src/constants/keys';
@@ -74,7 +67,7 @@ const AccountRow = React.memo(function AccountRow({
         </Text>
       </View>
       <MoneyText amount={account.balance} currency={account.currency} weight="bold" style={styles.balance} />
-      <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
+      <Icon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
     </BentoPressable>
   );
 });
@@ -140,7 +133,7 @@ const CategoryRow = React.memo(function CategoryRow({
           {category.type === 'CR' ? 'Income' : category.type === 'TR' ? 'Transfer' : category.type === 'DR' ? 'Expense' : 'All'}
         </Text>
       </View>
-      <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
+      <Icon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
     </BentoPressable>
   );
 });
@@ -172,7 +165,7 @@ const createCategoryRowStyles = (
     badge: {
       paddingHorizontal: spacing('2'),
       height: 22,
-      borderRadius: radius('sm'),
+      borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -212,7 +205,7 @@ const PersonRow = React.memo(function PersonRow({
           <Text style={styles.meta}>{person.email}</Text>
         ) : null}
       </View>
-      <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
+      <Icon icon={ArrowRight01Icon} size={14} color={colors.textMuted} />
     </BentoPressable>
   );
 });
@@ -410,16 +403,13 @@ export const SearchScreen = React.memo(function SearchScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <PageBackground />
+    <Screen variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
 
       <View style={styles.header}>
-        <BentoPressable onPress={() => router.back()} style={styles.backButton}>
-          <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color={colors.text} />
-        </BentoPressable>
+        <IconButton icon={CaretLeftIcon} variant="surface" onPress={() => router.back()} accessibilityLabel={t('common.back')} />
 
         <View style={styles.searchWrap}>
-          <HugeiconsIcon icon={Search01Icon} size={16} color={colors.textMuted} />
+          <Icon icon={Search01Icon} size={16} color={colors.textMuted} />
           <TextInput
             ref={inputRef}
             style={styles.searchInput}
@@ -432,14 +422,12 @@ export const SearchScreen = React.memo(function SearchScreen() {
             autoCapitalize="none"
           />
           {isFetching && isEnabled ? (
-            <ActivityIndicator size="small" color={colors.primary} />
+            <Spinner size="sm" />
           ) : query.length > 0 ? (
-            <BentoPressable onPress={handleClear} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <HugeiconsIcon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
-            </BentoPressable>
+            <IconButton icon={XIcon} size="sm" variant="ghost" onPress={handleClear} accessibilityLabel={t('common.clear')} />
           ) : (
             <View style={styles.premiumHeaderBadge}>
-              <HugeiconsIcon icon={SparklesIcon} size={12} color={colors.warning} />
+              <Icon icon={SparklesIcon} size={12} color={colors.warning} />
             </View>
           )}
         </View>
@@ -497,13 +485,13 @@ export const SearchScreen = React.memo(function SearchScreen() {
                 style={styles.recentChip}
                 onPress={() => setQuery(item)}
               >
-                <HugeiconsIcon icon={Clock01Icon} size={14} color={colors.textMuted} />
+                <Icon icon={Clock01Icon} size={14} color={colors.textMuted} />
                 <Text style={styles.recentChipText}>{item}</Text>
                 <BentoPressable
                   onPress={() => removeRecent(item)}
                   hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
-                  <HugeiconsIcon icon={CancelCircleIcon} size={12} color={colors.textMuted} />
+                  <Icon icon={CancelCircleIcon} size={12} color={colors.textMuted} />
                 </BentoPressable>
               </BentoPressable>
             ))}
@@ -514,10 +502,10 @@ export const SearchScreen = React.memo(function SearchScreen() {
       {!isEnabled ? (
         <View style={styles.prompt}>
           <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
-            <HugeiconsIcon icon={Search01Icon} size={32} color={colors.textMuted} />
+            <Icon icon={Search01Icon} size={32} color={colors.textMuted} />
           </View>
           <View style={styles.proTitleWrap}>
-            <HugeiconsIcon icon={SparklesIcon} size={14} color={colors.warning} />
+            <Icon icon={SparklesIcon} size={14} color={colors.warning} />
             <Text style={styles.proTitleText}>{t('search.premium')}</Text>
           </View>
           <Text style={styles.promptSub}>
@@ -527,7 +515,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
       ) : noResults ? (
         <View style={styles.prompt}>
           <View style={[styles.promptIcon, { backgroundColor: colors.surface }]}>
-            <HugeiconsIcon icon={InboxIcon} size={32} color={colors.textMuted} />
+            <Icon icon={InboxIcon} size={32} color={colors.textMuted} />
           </View>
           <Text style={styles.promptTitle}>{t('search.noResults')}</Text>
           <Text style={styles.promptSub}>
@@ -554,7 +542,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
         />
       )}
       <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_SEARCH} steps={SEARCH_WALKTHROUGH_STEPS} />
-    </SafeAreaView>
+    </Screen>
   );
 });
 
@@ -573,7 +561,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     backButton: {
       width: layout.minTouchTarget,
       height: layout.minTouchTarget,
-      borderRadius: radius('lg'),
+      borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.surface,
@@ -584,7 +572,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       flexDirection: 'row',
       alignItems: 'center',
       height: 50,
-      borderRadius: radius('xl'),
+      borderRadius: radius('full'),
       backgroundColor: colors.surface,
       paddingHorizontal: spacing('3.5'),
       gap: spacing('2'),
@@ -638,7 +626,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     tabBadge: {
       height: 18,
       minWidth: 18,
-      borderRadius: 9,
+      borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
       paddingHorizontal: 4,
@@ -707,7 +695,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     promptIcon: {
       width: 64,
       height: 64,
-      borderRadius: radius('xl'),
+      borderRadius: radius('md'),
       backgroundColor: colors.surface,
       justifyContent: 'center',
       alignItems: 'center',
@@ -737,7 +725,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       ...typography.metrics.sm,
       color: colors.textMuted,
       textAlign: 'center',
-      lineHeight: 20,
       maxWidth: '80%',
     },
 
@@ -785,7 +772,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     typeBadge: {
       paddingHorizontal: spacing('2'),
       height: 22,
-      borderRadius: radius('sm'),
+      borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
     },
