@@ -1,6 +1,6 @@
-import { and, desc, eq, sql, sum } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { db } from '@/src/db/client';
-import { accounts, categories, payments, persons } from '@/src/db/schema';
+import { accounts, payments, persons } from '@/src/db/schema';
 import type { MonthTotals } from '@/src/features/dashboard/utils/widgets';
 import { format, startOfMonth, subMonths } from 'date-fns';
 
@@ -48,36 +48,6 @@ export const getDailySpend = async (currency: string, since: string): Promise<Ma
     .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`${day} >= ${since}`))
     .groupBy(day);
   return new Map(rows.map((r) => [r.date, r.amount ?? 0]));
-};
-
-export type CategorySpend = {
-  id: number;
-  name: string;
-  icon: string;
-  color: number;
-  amount: number;
-};
-
-/** Biggest expense categories this month. */
-export const getTopExpenseCategories = async (currency: string, limit: number = 4, now: Date = new Date()): Promise<CategorySpend[]> => {
-  const monthStart = format(startOfMonth(now), 'yyyy-MM-dd');
-  const result = await db
-    .select({
-      id: categories.id,
-      name: categories.name,
-      icon: categories.icon,
-      color: categories.color,
-      amount: sum(payments.amount).mapWith(Number),
-    })
-    .from(payments)
-    .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .innerJoin(categories, eq(payments.categoryId, categories.id))
-    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`date(${payments.datetime}) >= ${monthStart}`))
-    .groupBy(categories.id)
-    .orderBy(desc(sql`amount`))
-    .limit(limit);
-
-  return result as CategorySpend[];
 };
 
 export const getDashboardPersons = async (currency: string, limit = 6): Promise<PersonNetRow[]> => {

@@ -141,6 +141,15 @@ Explain *why*, not *what*: constraints, platform quirks, non-obvious maths. Dele
 - **Free caps** — `FREE_LOAN_LIMIT` and `FREE_PERSON_LIMIT` in `src/constants/iap.ts`; hitting one opens the paywall on `unlimited`.
 - **Background work** (auto-backup) can't use hooks; it reads the persisted entitlement through `BackupPreferences.isProEntitled()`.
 
+### Home vs Analytics
+
+Each tab has one job, so a widget belongs to exactly one of them:
+
+- **Home — where you stand, what to do next.** Balance and this month's net, quick actions, this month's spend against last month, accounts, recent transactions, people and loans to settle. No Pro locks.
+- **Analytics — why.** Period summary and trend, top categories, spending rhythm (free); highlights and month-end forecast, insights, full category breakdown, weekly pattern, people and balances (Pro). Free users see these as one `ProPreviewCard`.
+
+A new chart, breakdown or forecast goes in Analytics; Home links to it from the "This month" header.
+
 ## Cloud backup
 
 Offline-first: SQLite is the source of truth; Google Drive `appDataFolder` holds one JSON snapshot

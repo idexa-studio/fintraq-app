@@ -11,15 +11,12 @@ import { BackupPromptModal } from '@/src/features/backup/components/BackupPrompt
 import { AccountsCarousel } from '@/src/features/dashboard/components/AccountsCarousel';
 import { DashboardHeader } from '@/src/features/dashboard/components/DashboardHeader';
 import { HeroBalanceCard } from '@/src/features/dashboard/components/HeroBalanceCard';
-import { InsightsSection } from '@/src/features/dashboard/components/InsightsSection';
 import { LoansGlanceCard } from '@/src/features/dashboard/components/LoansGlanceCard';
 import { MonthPulseCard } from '@/src/features/dashboard/components/MonthPulseCard';
 import { PremiumUpsellModal } from '@/src/features/dashboard/components/PremiumUpsellModal';
 import { QuickActions } from '@/src/features/dashboard/components/QuickActions';
-import { SpendingHeatmap } from '@/src/features/dashboard/components/SpendingHeatmap';
-import { TopExpenseCategoriesCard } from '@/src/features/dashboard/components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '@/src/features/dashboard/components/TopPersonsCard';
-import { useDashboardPersons, useMonthTotals, useTopExpenseCategories } from '@/src/features/dashboard/hooks/dashboard';
+import { useDashboardPersons, useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
 import { useDashboardPrompt } from '@/src/features/dashboard/hooks/useDashboardPrompt';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTransactions } from '@/src/features/transactions/hooks/transactions';
@@ -30,8 +27,10 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 const RECENT_COUNT = 5;
 
 /**
- * Home, ordered by how often each part is needed: balance and quick entry first, then this month,
- * then the longer view. Sections with nothing to show (people, loans) stay out of the way.
+ * Home answers "where do I stand, and what do I do next": balance, quick entry, this month's facts,
+ * accounts, recent activity, and who or what needs settling. Anything that explains *why* — trends,
+ * rhythm, breakdowns, insights, forecasts — lives in Analytics, so each tab has its own job.
+ * Sections with nothing to show (people, loans) stay out of the way.
  */
 export const DashboardScreen = React.memo(function DashboardScreen() {
   const { t } = useTranslation();
@@ -65,7 +64,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const currency = chosenCurrency && currencyKeys.includes(chosenCurrency) ? chosenCurrency : currencyKeys[0]!;
 
   const { data: month } = useMonthTotals(currency);
-  const { data: topCategories = [] } = useTopExpenseCategories(currency);
   const { data: topPersons = [] } = useDashboardPersons(currency);
 
   const openSearch = useCallback(() => {
@@ -74,7 +72,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const openAccount = useCallback((id: number) => router.push(`/(main)/accounts/${id}`), [router]);
   const openAccountForm = useCallback(() => router.push('/(main)/accounts/form'), [router]);
   const openAccounts = useCallback(() => router.push('/accounts'), [router]);
-  const openCategory = useCallback((id: number) => router.push(`/transactions?categoryId=${id}`), [router]);
+  const openAnalytics = useCallback(() => router.push('/analytics'), [router]);
   const openTransactions = useCallback(() => router.push('/transactions'), [router]);
   const openTransaction = useCallback((id: number) => router.push(`/transactions/${id}`), [router]);
   const createTransaction = useCallback(() => router.push('/transactions/create'), [router]);
@@ -119,7 +117,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           <QuickActions canTransfer={(accounts?.length ?? 0) > 1} />
         </View>
 
-        <SectionHeader title={t('dashboard.thisMonth')} />
+        <SectionHeader title={t('dashboard.thisMonth')} rightText={t('common.analyticsTitle')} onPressRight={openAnalytics} />
         <MonthPulseCard currency={currency} />
 
         <SectionHeader title={t('dashboard.accounts')} rightText={t('dashboard.manage')} onPressRight={openAccounts} />
@@ -149,14 +147,6 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
             />
           )}
         </View>
-
-        <SectionHeader title={t('dashboard.rhythmTitle')} rightText={t('dashboard.rhythmHint')} />
-        <SpendingHeatmap currency={currency} />
-
-        <InsightsSection currency={currency} />
-
-        <SectionHeader title={t('dashboard.topExpenses')} rightText={t('dashboard.thisMonth')} />
-        <TopExpenseCategoriesCard currency={currency} categories={topCategories} monthExpense={month?.expense ?? 0} onPressCategory={openCategory} />
 
         {topPersons.length > 0 && (
           <>
