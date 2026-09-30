@@ -18,7 +18,7 @@ type EmptyStateProps = {
    * `inline` — compact row inside a card or section.
    */
   variant?: 'block' | 'inline';
-  /** Icon tint. Defaults to theme primary. */
+  /** Icon tint. Defaults to `primaryInk` (readable on light layers). */
   color?: string;
   style?: StyleProp<ViewStyle>;
 };

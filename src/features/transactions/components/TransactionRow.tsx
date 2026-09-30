@@ -9,7 +9,7 @@ import { colorNumberToHex } from '@/src/utils/format';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 import { format, isToday, isYesterday } from 'date-fns';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { AccessibilityActionEvent, AccessibilityActionInfo, StyleSheet, View } from 'react-native';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
 import { Divider } from '@/src/components/ui/Divider';
@@ -46,6 +46,9 @@ type Props = {
   isFirst?: boolean;
   isLast?: boolean;
   showDate?: boolean;
+  /** Screen-reader equivalents of gestures (e.g. swipe actions), which assistive tech can't perform. */
+  accessibilityActions?: AccessibilityActionInfo[];
+  onAccessibilityAction?: (event: AccessibilityActionEvent) => void;
 };
 
 export const TransactionRow = React.memo(function TransactionRow({
@@ -54,6 +57,8 @@ export const TransactionRow = React.memo(function TransactionRow({
   isFirst,
   isLast,
   showDate,
+  accessibilityActions,
+  onAccessibilityAction,
 }: Props) {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -104,7 +109,14 @@ export const TransactionRow = React.memo(function TransactionRow({
 
   return (
     <>
-    <BentoPressable style={[styles.row, containerStyle]} onPress={handlePress} scaleOnPress={false}>
+    <BentoPressable
+      style={[styles.row, containerStyle]}
+      onPress={handlePress}
+      scaleOnPress={false}
+      accessibilityRole="button"
+      accessibilityActions={accessibilityActions}
+      onAccessibilityAction={onAccessibilityAction}
+    >
       <IconAvatar
         icon={categoryIcon}
         color={categoryColor}
