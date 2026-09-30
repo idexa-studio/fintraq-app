@@ -1,16 +1,26 @@
 #!/bin/sh
+# Renders every icon and splash PNG from the SVG sources in assets/brand (needs rsvg-convert).
 set -eu
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BRAND_DIR="$ROOT/assets/brand"
 IMAGE_DIR="$ROOT/assets/images"
 
-rsvg-convert "$BRAND_DIR/icon.svg" -w 1024 -h 1024 > "$IMAGE_DIR/icon.png"
-rsvg-convert "$BRAND_DIR/adaptive-foreground.svg" -w 1024 -h 1024 > "$IMAGE_DIR/adaptive-icon/foreground.png"
-rsvg-convert "$BRAND_DIR/adaptive-background.svg" -w 1024 -h 1024 > "$IMAGE_DIR/adaptive-icon/background.png"
-rsvg-convert "$BRAND_DIR/android-monochrome.svg" -w 1024 -h 1024 > "$IMAGE_DIR/android-icon-monochrome.png"
-rsvg-convert "$BRAND_DIR/favicon.svg" -w 48 -h 48 > "$IMAGE_DIR/favicon.png"
-rsvg-convert "$BRAND_DIR/favicon.svg" -w 144 -h 144 > "$IMAGE_DIR/pwa/chrome-icon/chrome-icon-144.png"
-rsvg-convert "$BRAND_DIR/favicon.svg" -w 192 -h 192 > "$IMAGE_DIR/pwa/chrome-icon/chrome-icon-192.png"
-rsvg-convert "$BRAND_DIR/icon.svg" -w 512 -h 512 > "$IMAGE_DIR/pwa/chrome-icon/chrome-icon-512.png"
-rsvg-convert "$BRAND_DIR/splash-mark.svg" -w 2048 -h 2048 > "$IMAGE_DIR/splash.png"
+render() { rsvg-convert "$BRAND_DIR/$1" -w "$3" -h "$3" > "$IMAGE_DIR/$2"; }
+
+# iOS: ink tile (light), plus the iOS 18 dark (transparent) and tinted (grayscale) variants.
+render icon.svg icon.png 1024
+render icon-dark.svg icon-dark.png 1024
+render icon-tinted.svg icon-tinted.png 1024
+# Android adaptive icon: mark within the 66% safe zone, same ink tile behind it.
+render adaptive-foreground.svg adaptive-icon/foreground.png 1024
+render adaptive-background.svg adaptive-icon/background.png 1024
+render android-monochrome.svg android-icon-monochrome.png 1024
+# Web.
+render favicon.svg favicon.png 48
+render favicon.svg pwa/chrome-icon/chrome-icon-144.png 144
+render favicon.svg pwa/chrome-icon/chrome-icon-192.png 192
+render icon.svg pwa/chrome-icon/chrome-icon-512.png 512
+# Splash: mark only, on the app's own first-frame background (set in app.json).
+render splash-mark.svg splash.png 1024
+render splash-mark-dark.svg splash-dark.png 1024
