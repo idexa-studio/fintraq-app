@@ -1,5 +1,5 @@
 import { ForceUpdateScreen } from '@/src/features/update/components/ForceUpdateScreen';
-import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
+import { startAutoBackupTriggers } from '@/src/services/backup/auto-backup.service';
 import { LoggerService } from '@/src/services/logger.service';
 import {
   fetchRemoteAppConfig,
@@ -120,10 +120,6 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
     const handleAppStateChange = (nextState: AppStateStatus) => {
       if (appState.current.match(/inactive|background/) && nextState === 'active') {
         checkStatus();
-      } else if (nextState === 'background') {
-        // Reliable primary path — WorkManager/BGTaskScheduler is best-effort only.
-        // runAutoBackupIfDue() no-ops on its own if not due yet.
-        runAutoBackupIfDue().catch(() => {});
       }
       appState.current = nextState;
     };
@@ -131,6 +127,10 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
     const sub = AppState.addEventListener('change', handleAppStateChange);
     return () => sub.remove();
   }, [checkStatus]);
+
+  // Primary auto-backup path — WorkManager/BGTaskScheduler is best-effort only.
+  // Each check no-ops on its own when not due, not Pro, or signed out.
+  useEffect(() => startAutoBackupTriggers(), []);
 
   const contextValue = useMemo(
     () => ({ isChecking, checkStatus, privacyUrl, termsUrl }),

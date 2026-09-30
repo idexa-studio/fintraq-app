@@ -5,7 +5,7 @@ const DEFAULT_RETRIES = 1;
 const RETRY_DELAY_MS = 500;
 
 export type DriveRequestOptions = {
-  method: 'GET' | 'POST' | 'PATCH' | "DELETE";
+  method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
   headers: Record<string, string>;
   body?: string;
   timeoutMs?: number;
@@ -19,6 +19,24 @@ function sleep(ms: number): Promise<void> {
 
 function isRetryableStatus(status: number): boolean {
   return status === 429 || status >= 500;
+}
+
+/** True for failures a later attempt can plausibly fix (flaky network, timeout, 429/5xx) — never auth or 4xx. */
+export function isTransientDriveError(error: unknown): boolean {
+  if (error instanceof GoogleDriveTimeoutError || error instanceof GoogleDriveNetworkError) return true;
+  return error instanceof GoogleDriveHttpError && isRetryableStatus(error.status);
+}
+
+// Floor covers TLS + token round-trips; the per-byte budget assumes a poor ~20 KB/s mobile link
+// so large histories on slow networks don't hit a fixed ceiling mid-transfer.
+const MIN_TRANSFER_TIMEOUT_MS = 60_000;
+const MAX_TRANSFER_TIMEOUT_MS = 10 * 60_000;
+const SLOW_LINK_BYTES_PER_MS = 20;
+
+/** Timeout for an upload/download of `bytes`, scaled to payload size. */
+export function transferTimeoutMs(bytes: number): number {
+  const scaled = MIN_TRANSFER_TIMEOUT_MS + Math.ceil(Math.max(0, bytes) / SLOW_LINK_BYTES_PER_MS);
+  return Math.min(MAX_TRANSFER_TIMEOUT_MS, scaled);
 }
 
 /** Fetch wrapper with timeout attribution + bounded retry; distinguishes timeout/network/HTTP errors. */
@@ -85,7 +103,7 @@ export type DriveXhrRequestOptions = {
   onProgress?: DriveProgressCallback;
 };
 
-const DEFAULT_XHR_TIMEOUT_MS = 30_000;
+const DEFAULT_XHR_TIMEOUT_MS = MIN_TRANSFER_TIMEOUT_MS;
 
 /** XHR-based request for real byte-level progress — RN's `fetch` doesn't expose upload progress. */
 export function driveXhrRequest(url: string, options: DriveXhrRequestOptions): Promise<string> {

@@ -124,7 +124,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
       const res = await runAutoBackupIfDue(true);
       showAlert({
         title: 'Dev Auto-Backup Task',
-        message: `Execution outcome: ${res.outcome.toUpperCase()}`,
+        message: `Execution outcome: ${res.outcome.toUpperCase()}${res.outcome === 'skipped' ? ` (${res.reason})` : ''}${res.outcome === 'failed' && res.error instanceof Error ? `\n${res.error.message}` : ''}`,
         type: res.outcome === 'ran' ? 'success' : 'info',
       });
     } catch (err: any) {

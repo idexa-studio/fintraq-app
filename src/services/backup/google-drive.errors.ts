@@ -57,3 +57,15 @@ export function isProRequiredError(error: unknown): boolean {
   return error instanceof CloudBackupProRequiredError || (error as any)?.code === 'CLOUD_BACKUP_PRO_REQUIRED';
 }
 
+
+export class BackupInProgressError extends Error {
+  public readonly code = 'BACKUP_IN_PROGRESS';
+  constructor(message = 'A backup or restore is already in progress.') {
+    super(message);
+    this.name = 'BackupInProgressError';
+  }
+}
+
+export function isAuthError(error: unknown): boolean {
+  return error instanceof GoogleDriveAuthError || (error as { name?: unknown } | null)?.name === 'GoogleDriveAuthError';
+}
