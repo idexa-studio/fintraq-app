@@ -3,19 +3,15 @@ import { Flame } from '@hugeicons/core-free-icons';
 import { Icon } from '@/src/components/ui/Icon';
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useUsageStreak } from '@/src/features/reports/hooks/useStreak';
 import { useTranslation } from 'react-i18next';
 
-type Props = {
-  heroCard: HeroCardPalette;
-};
-
-export const StreakBadge = React.memo(function StreakBadge({ heroCard }: Props) {
+/** Days-in-a-row badge for the ink hero card. */
+export const StreakBadge = React.memo(function StreakBadge() {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { isDark } = theme;
-  const styles = useMemo(() => createStyles(theme, heroCard, isDark), [theme, heroCard, isDark]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const { data: streak, isLoading } = useUsageStreak();
 
   if (isLoading || !streak || streak === 0) return null;
@@ -27,12 +23,12 @@ export const StreakBadge = React.memo(function StreakBadge({ heroCard }: Props) 
         size={13}
         color={theme.colors.warning}
       />
-      <Text variant="micro" color={heroCard.textPrimary}>{t('dashboard.streakDays', { count: streak })}</Text>
+      <Text variant="micro" color={theme.colors.onInk}>{t('dashboard.streakDays', { count: streak })}</Text>
     </View>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, alpha }: ThemeContextType, heroCard: HeroCardPalette, isDark: boolean) =>
+const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flexDirection: 'row',

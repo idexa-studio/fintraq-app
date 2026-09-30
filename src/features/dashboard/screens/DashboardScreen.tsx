@@ -115,6 +115,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           currency={currency}
           monthNet={month ? month.income - month.expense : null}
           currencies={currencyKeys}
+          balances={balancesByCurrency}
           onCurrencySelect={setChosenCurrency}
         >
           <QuickActions canTransfer={(accounts?.length ?? 0) > 1} />

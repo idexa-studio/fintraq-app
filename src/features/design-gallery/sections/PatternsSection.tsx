@@ -1,5 +1,5 @@
 import { GalleryGroup, Specimen } from '@/src/features/design-gallery/components/Specimen';
-import { EmptyState, IconButton, ListGroup, ListItem, PersonAvatar, SectionHeader, StatColumns, StatTile, Text } from '@/src/components/ui';
+import { EmptyState, HeroSurface, IconButton, ListGroup, MoneyText, ListItem, PersonAvatar, SectionHeader, StatColumns, StatTile, Text } from '@/src/components/ui';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { toDbColor } from '@/src/utils/format';
@@ -32,7 +32,7 @@ const SAMPLE_TXS: TxData[] = [
 const noop = () => {};
 
 export function PatternsSection() {
-  const { spacing, colors, radius } = useTheme();
+  const { spacing, colors, radius, typography } = useTheme();
 
   return (
     <View style={{ gap: spacing('9') }}>
@@ -51,6 +51,18 @@ export function PatternsSection() {
       </GalleryGroup>
 
       <GalleryGroup title="Compositions">
+        <Specimen
+          title="HeroSurface"
+          description="Ink card for a screen's headline figure (Home balance, Transactions net). Content uses onInk / onInkMuted; onInkAccent is the lime for text and icons here."
+          bare
+        >
+          <HeroSurface>
+            <Text variant="caption" color={colors.onInkMuted}>Your balance</Text>
+            <MoneyText amount={20612.57} currency="USD" weight="bold" style={{ ...typography.metrics.display, color: colors.onInk }} />
+            <Text variant="label" color={colors.onInkAccent}>+$3,282.90 this month</Text>
+          </HeroSurface>
+        </Specimen>
+
         <Specimen
           title="Screen header with actions"
           description="Title left, up to two IconButtons right. Anything more goes in a 'more' menu."

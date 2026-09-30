@@ -27,5 +27,10 @@ export function useTransactionSummary(
   const currency = chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : (currencies[0] ?? null);
   const totals = currency ? (totalsByCurrency[currency] ?? EMPTY_TOTALS) : EMPTY_TOTALS;
 
-  return { totals, currency, currencies, setCurrency };
+  const netByCurrency = useMemo(
+    () => Object.fromEntries(Object.entries(totalsByCurrency).map(([code, t]) => [code, t.income - t.expense])),
+    [totalsByCurrency],
+  );
+
+  return { totals, currency, currencies, setCurrency, netByCurrency };
 }

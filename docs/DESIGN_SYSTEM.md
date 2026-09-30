@@ -49,7 +49,7 @@ Always read tokens through `const theme = useTheme()`.
 | `text` / `textMuted` | Primary / secondary content. |
 | `success` · `danger` | Income · expense, destructive, errors. |
 | `warning` · `info` | Attention needed · transfers, informational. |
-| `heroCard.*` | Dashboard balance card only. |
+| `heroCard.*` | Lime showcase surfaces (Pro screens). Balance and totals heroes use `HeroSurface`. |
 
 User-chosen colours (accounts, categories, people) come from data. Pass them via a component's `color` prop.
 
@@ -109,6 +109,7 @@ All components are exported from `@/src/components/ui`.
 | Component | Use | Replaces |
 |---|---|---|
 | `Card` | `surface` · `inset` · `outlined`, optional `onPress`. | Ad-hoc `View` cards |
+| `HeroSurface` | Ink card for a screen's headline figure (Home balance, Transactions net). Content uses `onInk`, `onInkMuted`, `onInkAccent`; currency switching is one chip (`CurrencySwitcher`) that opens a sheet. | Lime-filled hero cards, rows of currency tabs |
 | `ListGroup` + `ListItem` | Settings-style lists: nav rows (`onPress` → chevron), toggles (`switchValue`), single choice (`selected`), info (`value`), `destructive`. | `NavRow`, `SwitchRow`, `InfoRow` in Settings, Developer, Search, TransactionDetail |
 | `MoneyText` | Every amount. `type` CR/DR adds sign + colour. `compact` for tiles. | — |
 | `StatTile` | One KPI with label, amount/value, optional `caption` and trend. Lay out in rows of two. | KPI blocks in Analytics/Dashboard |

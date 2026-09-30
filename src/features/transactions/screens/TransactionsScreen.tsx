@@ -182,6 +182,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
               currency={summary.currency}
               currencies={summary.currencies}
               onCurrencySelect={summary.setCurrency}
+              netByCurrency={summary.netByCurrency}
               label={isFiltered ? t('transactions.filteredSummary') : t('transactions.netSavings')}
             />
             <ActiveFilterChips

@@ -6,7 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { BentoPressable, Icon, Text } from '@/src/components/ui';
 import type { IconSource } from '@/src/components/ui';
 import { ArrowDownLeftIcon, ArrowsLeftRightIcon, ArrowUpRightIcon, HandCoinsIcon } from '@/src/components/ui/icons';
-import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Action = { key: string; label: string; icon: IconSource; href: Href };
 
@@ -17,14 +17,14 @@ type Props = {
 
 /**
  * One-tap entry points for the most common writes, each opening its form already set up. Drawn as
- * tiles a shade deeper than the hero card, with white icons and labels.
+ * soft tiles on the ink hero: lime icons, white labels.
  */
 export const QuickActions = React.memo(function QuickActions({ canTransfer }: Props) {
   const theme = useTheme();
-  const { heroCard } = theme;
+  const { colors } = theme;
   const { t } = useTranslation();
   const router = useRouter();
-  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const actions = useMemo((): Action[] => {
     const all: (Action | null)[] = [
@@ -49,8 +49,8 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
           accessibilityRole="button"
           accessibilityLabel={action.label}
         >
-          <Icon icon={action.icon} size={20} color={heroCard.actionInk} weight="bold" />
-          <Text variant="label" color={heroCard.actionInk} numberOfLines={1}>
+          <Icon icon={action.icon} size={20} color={colors.onInkAccent} weight="bold" />
+          <Text variant="label" color={colors.onInk} numberOfLines={1}>
             {action.label}
           </Text>
         </BentoPressable>
@@ -59,9 +59,9 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
   );
 });
 
-const createStyles = ({ spacing, radius }: ThemeContextType, heroCard: HeroCardPalette) =>
+const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
   StyleSheet.create({
-    row: { flexDirection: 'row', gap: spacing('2'), marginTop: spacing('1') },
+    row: { flexDirection: 'row', gap: spacing('2') },
     action: {
       flex: 1,
       alignItems: 'center',
@@ -69,6 +69,6 @@ const createStyles = ({ spacing, radius }: ThemeContextType, heroCard: HeroCardP
       paddingVertical: spacing('3'),
       paddingHorizontal: spacing('1'),
       borderRadius: radius('lg'),
-      backgroundColor: heroCard.actionFill,
+      backgroundColor: alpha(colors.onInk, 'faint'),
     },
   });

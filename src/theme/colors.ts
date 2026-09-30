@@ -27,6 +27,8 @@ export type ThemePalette = {
   /** Text/icons on the ink surface (tabBarBackground): profile card, tips, dev badge. */
   onInk: string;
   onInkMuted: string;
+  /** Lime accent for text/icons on the ink surface — full contrast there, unlike on paper. */
+  onInkAccent: string;
   /** Glyphs on a user-chosen colour fill (category tile, swatch). */
   onColor: string;
 
@@ -69,6 +71,7 @@ export const DARK_THEME: ThemePalette = {
 
   onInk: '#FFFFFF',
   onInkMuted: 'rgba(255, 255, 255, 0.62)',
+  onInkAccent: '#00CC6A',
   onColor: '#FFFFFF',
 
   text: '#EDEBE4',
@@ -97,6 +100,7 @@ export const LIGHT_THEME: ThemePalette = {
 
   onInk: '#FFFFFF',
   onInkMuted: 'rgba(255, 255, 255, 0.62)',
+  onInkAccent: '#00CC6A',
   onColor: '#FFFFFF',
 
   text: '#161612',
@@ -126,9 +130,6 @@ export type HeroCardPalette = {
   expense: string;
   decoOverlay: string;
   glowLight: string;
-  /** Fill and ink for controls sitting on the card (quick actions): a shade deeper than the card, white ink. */
-  actionFill: string;
-  actionInk: string;
 };
 
 export function getHeroColors(
@@ -149,8 +150,6 @@ export function getHeroColors(
       expense: '#FF8F8F', // Bright coral/red indicator
       decoOverlay: 'rgba(255, 255, 255, 0.08)',
       glowLight: 'rgba(255, 255, 255, 0.03)',
-      actionFill: 'rgba(255, 255, 255, 0.14)',
-      actionInk: '#FFFFFF',
     };
   } else {
     return {
@@ -163,8 +162,6 @@ export function getHeroColors(
       expense: '#9E0000', // Dark red indicator
       decoOverlay: 'rgba(0, 0, 0, 0.06)',
       glowLight: 'rgba(255, 255, 255, 0.04)',
-      actionFill: primaryDark,
-      actionInk: '#FFFFFF',
     };
   }
 }
