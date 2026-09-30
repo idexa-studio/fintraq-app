@@ -34,7 +34,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
   const handleSelect = useCallback((id: number) => onSelect(id), [onSelect]);
 
   return (
-    <View style={styles.container}>
+    <View>
       <Text variant="label" tone="muted" style={styles.label}>{label ?? t('transactions.account')}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {accounts.map((acc) => {
@@ -71,9 +71,6 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
 });
 
 const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeContextType) => StyleSheet.create({
-  container: {
-    paddingVertical: spacing('3'),
-  },
   label: {
     marginBottom: spacing('2'),
     paddingHorizontal: layout.screenPadding + spacing('1'),

@@ -118,7 +118,7 @@ const ja: Translation = {
     balance: '残高', income: '収入', expenses: '支出',
     lentOut: '貸した', borrowed: '借りた', overdue: '期限超過 {{count}}件', active: '進行中 {{count}}件',
   },
-  transactions: { dayCount: '{{count}}件', allCategories: 'すべて', searchCategories: 'カテゴリを検索', amount: '金額', category: 'カテゴリ', netSavings: '純貯蓄', income: '収入', expenses: '支出', type: '種類', account: '口座', date: '日付', person: '人物', typesCount: '{{count}}種類', oneAccount: '1口座', accountsCount: '{{count}}口座', oneCategory: '1カテゴリ', categoriesCount: '{{count}}カテゴリ', onePerson: '1人', personsCount: '{{count}}人',
+  transactions: { dayCount: '{{count}}件', allCategories: 'すべて', searchCategories: 'カテゴリを検索', amount: '金額', calculator: '電卓', category: 'カテゴリ', netSavings: '純貯蓄', income: '収入', expenses: '支出', type: '種類', account: '口座', date: '日付', person: '人物', typesCount: '{{count}}種類', oneAccount: '1口座', accountsCount: '{{count}}口座', oneCategory: '1カテゴリ', categoriesCount: '{{count}}カテゴリ', onePerson: '1人', personsCount: '{{count}}人',
   filteredSummary: '絞り込み結果の集計', title: '取引', clearAll: 'すべてクリア', noResults: '結果なし', nothingYet: 'まだ何もありません', noMatch: '現在のフィルターに一致する取引がありません。条件を調整するかクリアしてください。', addFirst: '最初の取引を追加して記録を始めましょう。', clearFilters: 'フィルターをクリア', add: '取引を追加',
   deleteTitle: '取引を削除', deleteMessage: '取引を削除し、口座残高への反映を元に戻します。', delete: '削除', sortTitle: '取引を並べ替え', newest: '新しい順', oldest: '古い順', highest: '金額の大きい順', lowest: '金額の小さい順',
   expense: '支出', transfer: '振替', missingDetails: '入力が不足しています', missingDetailsMessage: '口座、カテゴリ、有効な金額を選択してください。', missingDestination: '振替先がありません', missingDestinationMessage: '振替先の口座を選択してください。',
