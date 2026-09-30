@@ -253,10 +253,10 @@ const id: Translation = {
   },
   analytics: {
     income: 'Pemasukan', expenses: 'Pengeluaran', expense: 'Pengeluaran', netPosition: 'Posisi bersih', dailyAvg: 'Rata-rata pengeluaran harian', highlights: 'Sorotan', topCategory: 'Kategori pengeluaran teratas', biggestExpense: 'Pengeluaran terbesar',
-    trend: 'Tren pengeluaran', noTrend: 'Belum ada data tren', noTrendHint: 'Tambahkan transaksi pemasukan atau pengeluaran untuk melihat tren pengeluaran Anda.',
+    trend: 'Tren pengeluaran', trendAverage: 'Rata-rata {{amount}}', noTrend: 'Belum ada data tren', noTrendHint: 'Tambahkan transaksi pemasukan atau pengeluaran untuk melihat tren pengeluaran Anda.',
     categoryBreakdown: 'Rincian kategori', groupsCount: '{{count}} grup', personBreakdown: 'Rincian per orang', personsCount: '{{count}} orang', balanceDistribution: 'Distribusi saldo', accountsCount: '{{count}} akun',
     noCurrencyAccounts: 'Tidak ada akun {{currency}}', noCurrencyAccountsHint: 'Tambahkan akun dalam mata uang ini untuk melihat distribusi saldo.', weeklyPattern: 'Pola mingguan', averageByDay: 'Rata-rata per hari', noWeekly: 'Belum ada pola mingguan', noWeeklyHint: 'Lebih banyak transaksi akan menunjukkan ritme pengeluaran Anda per hari.',
-    low: 'Rendah', mid: 'Sedang', high: 'Tinggi', monthEndForecast: 'Perkiraan akhir bulan', dowInsight: 'Paling boros pada hari {{peak}}, paling hemat pada hari {{lowest}}.', noDataPeriod: 'Tidak ada data untuk periode ini', noCategoryData: 'Tidak ada data untuk periode ini', noCategoryDataHint: 'Tambahkan transaksi jenis ini untuk melihat ke mana uang Anda pergi.',
+    monthEndForecast: 'Perkiraan akhir bulan', dowInsight: 'Paling boros pada hari {{peak}}, paling hemat pada hari {{lowest}}.', noDataPeriod: 'Tidak ada data untuk periode ini', noCategoryData: 'Tidak ada data untuk periode ini', noCategoryDataHint: 'Tambahkan transaksi jenis ini untuk melihat ke mana uang Anda pergi.',
   },
   export: {
     title: 'Ekspor CSV', last7: '7 hari terakhir', last30: '30 hari terakhir', last90: '90 hari terakhir', last12m: '12 bulan terakhir', all: 'Semua', income: 'Pemasukan', expense: 'Pengeluaran', transfer: 'Transfer',
@@ -307,7 +307,7 @@ const id: Translation = {
     connectToRestore: 'Silakan terhubung ke internet untuk memulihkan akses.', accessRestored: 'Akses Dipulihkan', accessRestoredMessage: 'Fintraq Pro berhasil diaktifkan kembali.',
     noPurchase: 'Pembelian Tidak Ditemukan', noPurchaseMessage: 'Kami tidak menemukan lisensi Pro aktif untuk akun ini.', restorationFailed: 'Pemulihan Gagal', tryLater: 'Silakan coba lagi dalam beberapa menit.',
     features: {
-      insights: { title: 'Wawasan dasbor', description: 'Peringatan pengeluaran real-time, tren tabungan, dan ringkasan mingguan langsung di layar beranda Anda.' },
+      insights: { title: 'Wawasan cerdas', description: 'Peringatan pengeluaran, tren tabungan, dan pola penting, dalam bahasa sederhana.' },
       analytics: { title: 'Analitik diperluas', description: 'Buka tampilan 30 hari, 90 hari, dan 12 bulan dengan lencana perubahan dibandingkan periode sebelumnya.' },
       highlights: { title: 'Sorotan', description: 'Langsung lihat kategori pengeluaran teratas dan pengeluaran tunggal terbesar Anda. Ketuk untuk melihat transaksinya.' },
       categories: { title: 'Rincian kategori', description: 'Tab pengeluaran dan pemasukan dengan bilah proporsi serta jumlah dan persentase per kategori.' },
@@ -321,7 +321,7 @@ const id: Translation = {
     },
     groups: { analytics: 'Analitik & wawasan', tools: 'Alat canggih', more: 'Tenang' },
     gate: { upgrade: 'Tingkatkan ke Pro', notNow: 'Nanti saja', youTried: 'Anda baru mencoba ini', alsoIncluded: 'Juga di Pro', previewTitle: 'Lebih banyak dengan Pro', previewHint: 'Buka analisis lebih dalam untuk periode ini:', seeAll: 'Lihat semua di Pro' },
-    insightsTitle: 'Wawasan Pro', noInsights: 'Belum ada wawasan', noInsightsHint: 'Terus mencatat untuk membuka tren pengeluaran yang dipersonalisasi.', analysing: 'Menganalisis pola Anda...',
+    insightsTitle: 'Wawasan', noInsights: 'Belum ada wawasan', noInsightsHint: 'Terus mencatat untuk membuka tren pengeluaran yang dipersonalisasi.', analysing: 'Menganalisis pola Anda...',
   },
   insights: {
     spendingUp: 'Pengeluaran naik {{pct}}%', spendingDown: 'Pengeluaran turun {{pct}}%', spendingUpHint: 'dibanding minggu lalu. Periksa apakah ada yang terlewat — audit singkat tidak pernah salah.', spendingDownHint: 'dibanding minggu lalu. Anda lebih hemat dari biasanya — kerja bagus!',

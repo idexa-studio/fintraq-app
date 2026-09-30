@@ -1,48 +1,58 @@
-import { alpha } from '@/src/theme/tokens';
-import { Text } from '@/src/components/ui/Text';
 import React, { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
-import type { DowSpend } from '@/src/features/analytics/api/analytics';
 import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
+import { Text } from '@/src/components/ui';
 import { DOW_KEYS } from '@/src/constants/calendar';
+import type { DowSpend } from '@/src/features/analytics/api/analytics';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { formatCurrency } from '@/src/utils/format';
 
-type Props = { data: DowSpend[] };
+type Props = { data: DowSpend[]; currency: string };
 
+/** Monday-first, matching the spending rhythm calendar above it. */
+const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0] as const;
+const HEIGHT = 120;
 
-export const DowChart = React.memo(function DowChart({ data }: Props) {
+/**
+ * Average spend per weekday. Shaded on the same single-hue scale as the spending rhythm calendar,
+ * with the peak day solid and labelled, so the two charts read as one story.
+ */
+export const DowChart = React.memo(function DowChart({ data, currency }: Props) {
   const theme = useTheme();
+  const { colors, alpha } = theme;
   const { t } = useTranslation();
-  const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const filled = useMemo(() => {
-    const maxVal = Math.max(1, ...data.map(d => d.total));
-    return Array.from({ length: 7 }, (_, dow) => {
-      const entry = data.find(d => d.dow === dow);
-      const total = entry?.total ?? 0;
-      const ratio = total / maxVal;
-      const color = ratio > 0.7 ? colors.danger : ratio > 0.35 ? colors.warning : colors.success;
-      return { dow, label: t(`calendar.daysShort.${DOW_KEYS[dow]}`), total, ratio, color };
+  const days = useMemo(() => {
+    const max = Math.max(1, ...data.map((d) => d.total));
+    return WEEK_ORDER.map((dow) => {
+      const total = data.find((d) => d.dow === dow)?.total ?? 0;
+      return { dow, total, ratio: total / max, isPeak: total > 0 && total === max };
     });
-  }, [data, colors, t]);
+  }, [data]);
+
+  const shade = (ratio: number, isPeak: boolean) =>
+    isPeak ? colors.danger : ratio > 0.66 ? alpha(colors.danger, 'strong') : ratio > 0.33 ? alpha(colors.danger, 'medium') : alpha(colors.danger, 'soft');
 
   return (
     <View style={styles.row}>
-      {filled.map(d => (
-        <View key={d.dow} style={styles.col}>
+      {days.map((d) => (
+        <View
+          key={d.dow}
+          style={styles.col}
+          accessible
+          accessibilityLabel={`${t(`calendar.days.${DOW_KEYS[d.dow]!}`)}, ${formatCurrency(d.total, currency)}`}
+        >
           <View style={styles.track}>
-            <View style={[
-              styles.fill,
-              {
-                height: `${Math.max(4, Math.round(d.ratio * 100))}%`,
-                backgroundColor: d.color,
-                opacity: d.ratio > 0 ? 0.75 + d.ratio * 0.25 : 0.2,
-              },
-            ]} />
+            {d.isPeak ? (
+              <Text variant="label" color={colors.danger} numberOfLines={1} style={styles.peakLabel}>
+                {formatCurrency(d.total, currency, true)}
+              </Text>
+            ) : null}
+            <View style={[styles.fill, { height: Math.max(4, d.ratio * HEIGHT), backgroundColor: shade(d.ratio, d.isPeak) }]} />
           </View>
-          <Text style={[styles.lbl, { color: colors.textMuted, fontFamily: typography.styles.sectionLabel.fontFamily }]}>
-            {d.label}
+          <Text variant={d.isPeak ? 'label' : 'micro'} tone={d.isPeak ? 'default' : 'muted'}>
+            {t(`calendar.daysShort.${DOW_KEYS[d.dow]!}`)}
           </Text>
         </View>
       ))}
@@ -50,30 +60,12 @@ export const DowChart = React.memo(function DowChart({ data }: Props) {
   );
 });
 
-const createStyles = ({ colors, spacing, typography, radius }: ThemeContextType) => StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    height: 120,
-    alignItems: 'flex-end',
-    gap: spacing('1.5'),
-  },
-  col: {
-    flex: 1,
-    alignItems: 'center',
-    gap: spacing('1'),
-    height: '100%',
-  },
-  track: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: alpha(colors.background, 'strong'),
-    borderRadius: radius('xs'),
-    justifyContent: 'flex-end',
-    overflow: 'hidden',
-  },
-  fill: {
-    width: '100%',
-    borderRadius: radius('xs'),
-  },
-  lbl: { ...typography.metrics.xxs, letterSpacing: 0.5 },
-});
+const createStyles = ({ spacing, radius }: ThemeContextType) =>
+  StyleSheet.create({
+    // Headroom above the tallest bar for the peak's amount, plus the weekday row.
+    row: { flexDirection: 'row', height: HEIGHT + 52, alignItems: 'flex-end', gap: spacing('2') },
+    col: { flex: 1, alignItems: 'center', gap: spacing('1.5'), height: '100%' },
+    track: { flex: 1, width: '100%', justifyContent: 'flex-end', alignItems: 'center' },
+    fill: { width: '100%', borderRadius: radius('sm') },
+    peakLabel: { marginBottom: spacing('1') },
+  });

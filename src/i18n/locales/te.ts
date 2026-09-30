@@ -253,10 +253,10 @@ const te: Translation = {
   },
   analytics: {
     income: 'ఆదాయం', expenses: 'ఖర్చులు', expense: 'ఖర్చు', netPosition: 'నికర స్థితి', dailyAvg: 'సగటు రోజువారీ ఖర్చు', highlights: 'ముఖ్యాంశాలు', topCategory: 'అత్యధిక ఖర్చు వర్గం', biggestExpense: 'అతిపెద్ద ఖర్చు',
-    trend: 'ఖర్చు ధోరణి', noTrend: 'ఇంకా ధోరణి డేటా లేదు', noTrendHint: 'మీ ఖర్చు ధోరణిని చూడటానికి ఆదాయం లేదా ఖర్చు లావాదేవీలను జోడించండి.',
+    trend: 'ఖర్చు ధోరణి', trendAverage: 'సగటు {{amount}}', noTrend: 'ఇంకా ధోరణి డేటా లేదు', noTrendHint: 'మీ ఖర్చు ధోరణిని చూడటానికి ఆదాయం లేదా ఖర్చు లావాదేవీలను జోడించండి.',
     categoryBreakdown: 'వర్గాల వారీ విభజన', groupsCount: '{{count}} సమూహాలు', personBreakdown: 'వ్యక్తుల వారీ విభజన', personsCount: '{{count}} వ్యక్తులు', balanceDistribution: 'బ్యాలెన్స్ పంపిణీ', accountsCount: '{{count}} ఖాతాలు',
     noCurrencyAccounts: '{{currency}} ఖాతాలు లేవు', noCurrencyAccountsHint: 'బ్యాలెన్స్ పంపిణీని చూడటానికి ఈ కరెన్సీలో ఖాతాను జోడించండి.', weeklyPattern: 'వారపు నమూనా', averageByDay: 'రోజు వారీ సగటు', noWeekly: 'ఇంకా వారపు నమూనా లేదు', noWeeklyHint: 'మరిన్ని లావాదేవీలు ఉంటే రోజు వారీ మీ ఖర్చు లయ కనిపిస్తుంది.',
-    low: 'తక్కువ', mid: 'మధ్యస్థం', high: 'ఎక్కువ', monthEndForecast: 'నెలాఖరు అంచనా', dowInsight: 'ఎక్కువ ఖర్చు {{peak}}, తక్కువ {{lowest}}.', noDataPeriod: 'ఈ కాలానికి డేటా లేదు', noCategoryData: 'ఈ వ్యవధిలో ఏమీ లేదు', noCategoryDataHint: 'డబ్బు ఎక్కడికి వెళ్తుందో చూడటానికి ఈ రకమైన లావాదేవీలను జోడించండి.',
+    monthEndForecast: 'నెలాఖరు అంచనా', dowInsight: 'ఎక్కువ ఖర్చు {{peak}}, తక్కువ {{lowest}}.', noDataPeriod: 'ఈ కాలానికి డేటా లేదు', noCategoryData: 'ఈ వ్యవధిలో ఏమీ లేదు', noCategoryDataHint: 'డబ్బు ఎక్కడికి వెళ్తుందో చూడటానికి ఈ రకమైన లావాదేవీలను జోడించండి.',
   },
   export: {
     title: 'CSV ఎగుమతి', last7: 'గత 7 రోజులు', last30: 'గత 30 రోజులు', last90: 'గత 90 రోజులు', last12m: 'గత 12 నెలలు', all: 'అన్నీ', income: 'ఆదాయం', expense: 'ఖర్చు', transfer: 'బదిలీ',
@@ -307,7 +307,7 @@ const te: Translation = {
     connectToRestore: 'యాక్సెస్‌ను రీస్టోర్ చేయడానికి దయచేసి ఇంటర్నెట్‌కు కనెక్ట్ అవ్వండి.', accessRestored: 'యాక్సెస్ పునరుద్ధరించబడింది', accessRestoredMessage: 'Fintraq Pro విజయవంతంగా మళ్లీ ప్రారంభించబడింది.',
     noPurchase: 'కొనుగోలు కనుగొనబడలేదు', noPurchaseMessage: 'ఈ ఖాతాకు క్రియాశీల Pro లైసెన్స్ కనుగొనబడలేదు.', restorationFailed: 'రీస్టోర్ విఫలమైంది', tryLater: 'దయచేసి కొన్ని నిమిషాల తర్వాత మళ్లీ ప్రయత్నించండి.',
     features: {
-      insights: { title: 'డ్యాష్‌బోర్డ్ అంతర్దృష్టులు', description: 'రియల్-టైమ్ ఖర్చు హెచ్చరికలు, పొదుపు ధోరణులు, వారపు సారాంశాలు నేరుగా మీ హోమ్ స్క్రీన్‌పై.' },
+      insights: { title: 'స్మార్ట్ అంతర్దృష్టులు', description: 'ఖర్చు హెచ్చరికలు, పొదుపు ధోరణులు మరియు ఉపయోగకరమైన నమూనాలు, సులభమైన మాటల్లో.' },
       analytics: { title: 'విస్తరించిన విశ్లేషణ', description: 'మునుపటి కాలంతో పోల్చే బ్యాడ్జ్‌లతో 30-రోజుల, 90-రోజుల, 12-నెలల వీక్షణలను అన్‌లాక్ చేయండి.' },
       highlights: { title: 'ముఖ్యాంశాలు', description: 'మీ అత్యధిక ఖర్చు వర్గం, అతిపెద్ద ఒక్క ఖర్చును తక్షణమే చూడండి. లావాదేవీల్లోకి వెళ్లడానికి తాకండి.' },
       categories: { title: 'వర్గాల వారీ విభజన', description: 'నిష్పత్తి బార్, వర్గాల వారీ మొత్తాలు, శాతాలతో ఖర్చు, ఆదాయ ట్యాబ్‌లు.' },
@@ -321,7 +321,7 @@ const te: Translation = {
     },
     groups: { analytics: 'విశ్లేషణ & అంతర్దృష్టులు', tools: 'శక్తివంతమైన సాధనాలు', more: 'నిశ్చింత' },
     gate: { upgrade: 'Pro కు అప్‌గ్రేడ్ చేయండి', notNow: 'ఇప్పుడు కాదు', youTried: 'మీరు ప్రయత్నించింది', alsoIncluded: 'Pro లో ఇంకా', previewTitle: 'Pro తో మరిన్ని', previewHint: 'ఈ కాలానికి లోతైన విశ్లేషణను అన్‌లాక్ చేయండి:', seeAll: 'Pro లో అన్నీ చూడండి' },
-    insightsTitle: 'Pro అంతర్దృష్టులు', noInsights: 'ఇంకా అంతర్దృష్టులు లేవు', noInsightsHint: 'వ్యక్తిగతీకరించిన ఖర్చు ధోరణులను అన్‌లాక్ చేయడానికి నమోదు చేస్తూ ఉండండి.', analysing: 'మీ నమూనాలను విశ్లేషిస్తోంది...',
+    insightsTitle: 'అంతర్దృష్టులు', noInsights: 'ఇంకా అంతర్దృష్టులు లేవు', noInsightsHint: 'వ్యక్తిగతీకరించిన ఖర్చు ధోరణులను అన్‌లాక్ చేయడానికి నమోదు చేస్తూ ఉండండి.', analysing: 'మీ నమూనాలను విశ్లేషిస్తోంది...',
   },
   insights: {
     spendingUp: 'ఖర్చు {{pct}}% పెరిగింది', spendingDown: 'ఖర్చు {{pct}}% తగ్గింది', spendingUpHint: 'గత వారంతో పోలిస్తే. ఏదైనా అనుకోనిది చేరిందేమో చూడండి — చిన్న ఆడిట్ ఎప్పుడూ మేలే.', spendingDownHint: 'గత వారంతో పోలిస్తే. మీరు మామూలు కంటే బాగా నియంత్రించారు — అభినందనలు!',

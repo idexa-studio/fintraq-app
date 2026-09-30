@@ -86,7 +86,7 @@ All components are exported from `@/src/components/ui`.
 | `Screen` | Scaffold: safe area, background, header, padded scroll, tab-bar clearance, footer and overlays slots. Start every screen here. | Hand-rolled `SafeAreaView + PageBackground + ScrollView` |
 | `Text` | All text. `variant` + `tone`. | RN `Text` + manual fontFamily/fontSize |
 | `Header` | Screen title, back button, right action. | — |
-| `SectionHeader` | Section title with "See all". | — |
+| `SectionHeader` | Section title with an optional quiet ink link ("See all") or muted note. No filled pill: a screen has several. | — |
 | `Divider` | Hairline, optional `inset`. | `RowSeparator` copies |
 
 ### Actions

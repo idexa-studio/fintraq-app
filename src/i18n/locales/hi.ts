@@ -253,10 +253,10 @@ const hi: Translation = {
   },
   analytics: {
     income: 'आय', expenses: 'खर्च', expense: 'खर्च', netPosition: 'शुद्ध स्थिति', dailyAvg: 'औसत दैनिक खर्च', highlights: 'मुख्य बातें', topCategory: 'सबसे ज़्यादा खर्च की श्रेणी', biggestExpense: 'सबसे बड़ा खर्च',
-    trend: 'खर्च का रुझान', noTrend: 'अभी रुझान का डेटा नहीं', noTrendHint: 'खर्च का रुझान देखने के लिए आय या खर्च के लेन-देन जोड़ें।',
+    trend: 'खर्च का रुझान', trendAverage: 'औसत {{amount}}', noTrend: 'अभी रुझान का डेटा नहीं', noTrendHint: 'खर्च का रुझान देखने के लिए आय या खर्च के लेन-देन जोड़ें।',
     categoryBreakdown: 'श्रेणी विभाजन', groupsCount: '{{count}} समूह', personBreakdown: 'व्यक्ति विभाजन', personsCount: '{{count}} लोग', balanceDistribution: 'बैलेंस वितरण', accountsCount: '{{count}} खाते',
     noCurrencyAccounts: 'कोई {{currency}} खाता नहीं', noCurrencyAccountsHint: 'बैलेंस वितरण देखने के लिए इस मुद्रा में खाता जोड़ें।', weeklyPattern: 'साप्ताहिक पैटर्न', averageByDay: 'दिन के अनुसार औसत', noWeekly: 'अभी साप्ताहिक पैटर्न नहीं', noWeeklyHint: 'ज़्यादा लेन-देन से दिन के अनुसार आपके खर्च का ढर्रा दिखेगा।',
-    low: 'कम', mid: 'मध्यम', high: 'ज़्यादा', monthEndForecast: 'महीने के अंत का अनुमान', dowInsight: 'सबसे ज़्यादा खर्च {{peak}} को, सबसे कम {{lowest}} को।', noDataPeriod: 'इस अवधि का डेटा नहीं', noCategoryData: 'इस अवधि में कुछ नहीं', noCategoryDataHint: 'यह देखने के लिए कि पैसा कहाँ जाता है, इस प्रकार के लेन-देन जोड़ें।',
+    monthEndForecast: 'महीने के अंत का अनुमान', dowInsight: 'सबसे ज़्यादा खर्च {{peak}} को, सबसे कम {{lowest}} को।', noDataPeriod: 'इस अवधि का डेटा नहीं', noCategoryData: 'इस अवधि में कुछ नहीं', noCategoryDataHint: 'यह देखने के लिए कि पैसा कहाँ जाता है, इस प्रकार के लेन-देन जोड़ें।',
   },
   export: {
     title: 'CSV एक्सपोर्ट', last7: 'पिछले 7 दिन', last30: 'पिछले 30 दिन', last90: 'पिछले 90 दिन', last12m: 'पिछले 12 महीने', all: 'सभी', income: 'आय', expense: 'खर्च', transfer: 'ट्रांसफ़र',
@@ -307,7 +307,7 @@ const hi: Translation = {
     connectToRestore: 'पहुँच रिस्टोर करने के लिए कृपया इंटरनेट से जुड़ें।', accessRestored: 'पहुँच बहाल', accessRestoredMessage: 'Fintraq Pro सफलतापूर्वक फिर से चालू हो गया है।',
     noPurchase: 'कोई खरीदारी नहीं मिली', noPurchaseMessage: 'इस खाते के लिए कोई सक्रिय प्रो लाइसेंस नहीं मिला।', restorationFailed: 'रिस्टोर विफल', tryLater: 'कृपया कुछ मिनट बाद फिर कोशिश करें।',
     features: {
-      insights: { title: 'डैशबोर्ड इनसाइट्स', description: 'रीयल-टाइम खर्च अलर्ट, बचत के रुझान और साप्ताहिक सारांश सीधे आपकी होम स्क्रीन पर।' },
+      insights: { title: 'स्मार्ट इनसाइट्स', description: 'खर्च अलर्ट, बचत के रुझान और काम के पैटर्न, आसान शब्दों में।' },
       analytics: { title: 'विस्तृत एनालिटिक्स', description: 'पिछली अवधि से तुलना करने वाले बैज के साथ 30-दिन, 90-दिन और 12-महीने के व्यू अनलॉक करें।' },
       highlights: { title: 'मुख्य बातें', description: 'अपनी सबसे बड़ी खर्च श्रेणी और सबसे बड़ा एकल खर्च तुरंत देखें। लेन-देन में जाने के लिए टैप करें।' },
       categories: { title: 'श्रेणी विभाजन', description: 'अनुपात बार और प्रति श्रेणी राशि व प्रतिशत के साथ खर्च और आय के टैब।' },
@@ -321,7 +321,7 @@ const hi: Translation = {
     },
     groups: { analytics: 'विश्लेषण और इनसाइट्स', tools: 'उन्नत टूल', more: 'निश्चिंतता' },
     gate: { upgrade: 'Pro में अपग्रेड करें', notNow: 'अभी नहीं', youTried: 'आपने इसे आज़माया', alsoIncluded: 'Pro में यह भी', previewTitle: 'Pro के साथ और', previewHint: 'इस अवधि का गहरा विश्लेषण अनलॉक करें:', seeAll: 'Pro में सब देखें' },
-    insightsTitle: 'प्रो इनसाइट्स', noInsights: 'अभी कोई इनसाइट नहीं', noInsightsHint: 'व्यक्तिगत खर्च रुझान अनलॉक करने के लिए ट्रैकिंग जारी रखें।', analysing: 'आपके पैटर्न का विश्लेषण हो रहा है...',
+    insightsTitle: 'इनसाइट्स', noInsights: 'अभी कोई इनसाइट नहीं', noInsightsHint: 'व्यक्तिगत खर्च रुझान अनलॉक करने के लिए ट्रैकिंग जारी रखें।', analysing: 'आपके पैटर्न का विश्लेषण हो रहा है...',
   },
   insights: {
     spendingUp: 'खर्च {{pct}}% बढ़ा', spendingDown: 'खर्च {{pct}}% घटा', spendingUpHint: 'पिछले हफ़्ते की तुलना में। देखें कहीं कुछ अनचाहा तो नहीं हुआ — एक छोटा ऑडिट हमेशा काम आता है।', spendingDownHint: 'पिछले हफ़्ते की तुलना में। आपने हमेशा से ज़्यादा संयम रखा — बहुत बढ़िया।',

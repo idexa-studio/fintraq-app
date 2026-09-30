@@ -3,44 +3,47 @@ import { Href, useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { BentoPressable, IconAvatar, Text } from '@/src/components/ui';
+import { BentoPressable, Icon, Text } from '@/src/components/ui';
 import type { IconSource } from '@/src/components/ui';
 import { ArrowDownLeftIcon, ArrowsLeftRightIcon, ArrowUpRightIcon, HandCoinsIcon } from '@/src/components/ui/icons';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
-type Action = { key: string; label: string; icon: IconSource; color: string; href: Href };
+type Action = { key: string; label: string; icon: IconSource; href: Href };
 
 type Props = {
-  /** Transfers need two accounts; the tile is hidden until there are. */
+  /** Transfers need two accounts; the button is hidden until there are. */
   canTransfer: boolean;
 };
 
-/** One-tap entry points for the most common writes, each opening its form already set up. */
+const BUTTON = 48;
+
+/**
+ * One-tap entry points for the most common writes, each opening its form already set up. Drawn for
+ * the hero card: ink-filled circles on the brand fill, so they read as the card's own controls.
+ */
 export const QuickActions = React.memo(function QuickActions({ canTransfer }: Props) {
   const theme = useTheme();
-  const { colors } = theme;
+  const { heroCard } = theme;
   const { t } = useTranslation();
   const router = useRouter();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
 
   const actions = useMemo((): Action[] => {
     const all: (Action | null)[] = [
-      { key: 'expense', label: t('dashboard.quickExpense'), icon: ArrowUpRightIcon, color: colors.danger, href: '/transactions/create?type=DR' },
-      { key: 'income', label: t('dashboard.quickIncome'), icon: ArrowDownLeftIcon, color: colors.success, href: '/transactions/create?type=CR' },
-      canTransfer
-        ? { key: 'transfer', label: t('dashboard.quickTransfer'), icon: ArrowsLeftRightIcon, color: colors.info, href: '/transactions/create?type=TR' }
-        : null,
-      { key: 'loan', label: t('dashboard.quickLoan'), icon: HandCoinsIcon, color: colors.warning, href: '/(main)/loans/form' },
+      { key: 'expense', label: t('dashboard.quickExpense'), icon: ArrowUpRightIcon, href: '/transactions/create?type=DR' },
+      { key: 'income', label: t('dashboard.quickIncome'), icon: ArrowDownLeftIcon, href: '/transactions/create?type=CR' },
+      canTransfer ? { key: 'transfer', label: t('dashboard.quickTransfer'), icon: ArrowsLeftRightIcon, href: '/transactions/create?type=TR' } : null,
+      { key: 'loan', label: t('dashboard.quickLoan'), icon: HandCoinsIcon, href: '/(main)/loans/form' },
     ];
     return all.filter((a): a is Action => a !== null);
-  }, [t, colors, canTransfer]);
+  }, [t, canTransfer]);
 
   return (
     <View style={styles.row} accessibilityRole="toolbar" accessibilityLabel={t('dashboard.quickActions')}>
       {actions.map((action) => (
         <BentoPressable
           key={action.key}
-          style={styles.tile}
+          style={styles.action}
           onPress={() => {
             Haptics.selectionAsync().catch(() => {});
             router.push(action.href);
@@ -48,8 +51,10 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
           accessibilityRole="button"
           accessibilityLabel={action.label}
         >
-          <IconAvatar icon={action.icon} color={action.color} size={36} iconSize={17} weight="bold" />
-          <Text variant="label" numberOfLines={1}>
+          <View style={styles.circle}>
+            <Icon icon={action.icon} size={20} color={heroCard.background} weight="bold" />
+          </View>
+          <Text variant="label" color={heroCard.textPrimary} numberOfLines={1}>
             {action.label}
           </Text>
         </BentoPressable>
@@ -58,20 +63,23 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
   );
 });
 
-const createStyles = ({ colors, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ spacing, radius }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
     row: {
       flexDirection: 'row',
-      gap: spacing('2'),
-      marginHorizontal: layout.screenPadding,
+      justifyContent: 'space-around',
+      paddingTop: spacing('4'),
+      marginTop: spacing('1'),
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: heroCard.separator,
     },
-    tile: {
-      flex: 1,
+    action: { flex: 1, alignItems: 'center', gap: spacing('1.5') },
+    circle: {
+      width: BUTTON,
+      height: BUTTON,
+      borderRadius: radius('full'),
+      backgroundColor: heroCard.textPrimary,
       alignItems: 'center',
-      gap: spacing('2'),
-      paddingVertical: spacing('3'),
-      paddingHorizontal: spacing('1'),
-      borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
+      justifyContent: 'center',
     },
   });

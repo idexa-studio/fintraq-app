@@ -41,3 +41,23 @@ export function withShares<T extends { amount: number }>(items: readonly T[]): (
   const total = items.reduce((sum, item) => sum + Math.max(item.amount, 0), 0);
   return items.map((item) => ({ ...item, share: total > 0 ? Math.max(item.amount, 0) / total : 0 }));
 }
+
+export type TrendBar = { label: string; amount: number };
+
+/**
+ * Collapses a series into at most `maxBars` bars by summing consecutive runs, so a 90-day range
+ * draws weekly bars instead of slivers. A merged bar is labelled with its first and last bucket.
+ */
+export function toTrendBars(buckets: readonly { label: string; expense: number }[], maxBars: number = 31): TrendBar[] {
+  if (buckets.length <= maxBars) return buckets.map((b) => ({ label: b.label, amount: b.expense }));
+  const size = buckets.length <= maxBars * 7 ? 7 : Math.ceil(buckets.length / maxBars);
+  const bars: TrendBar[] = [];
+  // Group from the end so the last bar is always the most recent full run.
+  for (let end = buckets.length; end > 0; end -= size) {
+    const run = buckets.slice(Math.max(0, end - size), end);
+    const first = run[0]!.label;
+    const last = run[run.length - 1]!.label;
+    bars.unshift({ label: first === last ? first : `${first} – ${last}`, amount: run.reduce((sum, b) => sum + b.expense, 0) });
+  }
+  return bars;
+}

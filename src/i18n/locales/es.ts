@@ -253,10 +253,10 @@ const es: Translation = {
   },
   analytics: {
     income: 'Ingresos', expenses: 'Gastos', expense: 'Gasto', netPosition: 'Posición neta', dailyAvg: 'Gasto medio diario', highlights: 'Destacados', topCategory: 'Categoría con más gasto', biggestExpense: 'Mayor gasto',
-    trend: 'Tendencia de gasto', noTrend: 'Aún no hay datos de tendencia', noTrendHint: 'Añade ingresos o gastos para ver tu tendencia de gasto.',
+    trend: 'Tendencia de gasto', trendAverage: 'Media {{amount}}', noTrend: 'Aún no hay datos de tendencia', noTrendHint: 'Añade ingresos o gastos para ver tu tendencia de gasto.',
     categoryBreakdown: 'Desglose por categoría', groupsCount: '{{count}} grupos', personBreakdown: 'Desglose por persona', personsCount: '{{count}} personas', balanceDistribution: 'Distribución del saldo', accountsCount: '{{count}} cuentas',
     noCurrencyAccounts: 'No hay cuentas en {{currency}}', noCurrencyAccountsHint: 'Añade una cuenta en esta moneda para ver la distribución del saldo.', weeklyPattern: 'Patrón semanal', averageByDay: 'Media por día', noWeekly: 'Aún no hay patrón semanal', noWeeklyHint: 'Con más transacciones verás tu ritmo de gasto por día.',
-    low: 'Bajo', mid: 'Medio', high: 'Alto', monthEndForecast: 'Previsión a fin de mes', dowInsight: 'Gastas más el {{peak}} y menos el {{lowest}}.', noDataPeriod: 'Sin datos en el periodo', noCategoryData: 'No hay nada en este periodo', noCategoryDataHint: 'Añade transacciones de este tipo para ver a dónde va tu dinero.',
+    monthEndForecast: 'Previsión a fin de mes', dowInsight: 'Gastas más el {{peak}} y menos el {{lowest}}.', noDataPeriod: 'Sin datos en el periodo', noCategoryData: 'No hay nada en este periodo', noCategoryDataHint: 'Añade transacciones de este tipo para ver a dónde va tu dinero.',
   },
   export: {
     title: 'Exportar CSV', last7: 'Últimos 7 días', last30: 'Últimos 30 días', last90: 'Últimos 90 días', last12m: 'Últimos 12 meses', all: 'Todo', income: 'Ingreso', expense: 'Gasto', transfer: 'Transferencia',
@@ -307,7 +307,7 @@ const es: Translation = {
     connectToRestore: 'Conéctate a internet para restaurar el acceso.', accessRestored: 'Acceso restaurado', accessRestoredMessage: 'Fintraq Pro se ha reactivado correctamente.',
     noPurchase: 'No se encontró ninguna compra', noPurchaseMessage: 'No encontramos una licencia Pro activa para esta cuenta.', restorationFailed: 'Error al restaurar', tryLater: 'Inténtalo de nuevo en unos minutos.',
     features: {
-      insights: { title: 'Análisis en el panel', description: 'Alertas de gasto en tiempo real, tendencias de ahorro y resúmenes semanales en tu pantalla de inicio.' },
+      insights: { title: 'Ideas inteligentes', description: 'Alertas de gasto, tendencias de ahorro y patrones útiles, en palabras sencillas.' },
       analytics: { title: 'Analítica ampliada', description: 'Desbloquea vistas de 30 días, 90 días y 12 meses con insignias de variación frente al periodo anterior.' },
       highlights: { title: 'Destacados', description: 'Consulta al instante tu categoría con más gasto y tu mayor gasto individual. Toca para ver las transacciones.' },
       categories: { title: 'Desglose por categoría', description: 'Pestañas de gastos e ingresos con barra de proporción e importes y porcentajes por categoría.' },
@@ -321,7 +321,7 @@ const es: Translation = {
     },
     groups: { analytics: 'Análisis y perspectivas', tools: 'Herramientas avanzadas', more: 'Tranquilidad' },
     gate: { upgrade: 'Mejorar a Pro', notNow: 'Ahora no', youTried: 'Lo acabas de probar', alsoIncluded: 'También en Pro', previewTitle: 'Más con Pro', previewHint: 'Desbloquea un análisis más profundo de este periodo:', seeAll: 'Ver todo lo de Pro' },
-    insightsTitle: 'Análisis Pro', noInsights: 'Aún no hay análisis', noInsightsHint: 'Sigue registrando para desbloquear tendencias de gasto personalizadas.', analysing: 'Analizando tus patrones...',
+    insightsTitle: 'Ideas clave', noInsights: 'Aún no hay análisis', noInsightsHint: 'Sigue registrando para desbloquear tendencias de gasto personalizadas.', analysing: 'Analizando tus patrones...',
   },
   insights: {
     spendingUp: 'El gasto sube un {{pct}} %', spendingDown: 'El gasto baja un {{pct}} %', spendingUpHint: 'frente a la semana pasada. Revisa si se coló algo: una auditoría rápida nunca está de más.', spendingDownHint: 'frente a la semana pasada. Has sido más ajustado de lo habitual: ¡bien hecho!',

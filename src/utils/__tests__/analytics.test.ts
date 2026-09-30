@@ -1,4 +1,4 @@
-import { monthEndForecast, percentChange, sumBuckets, weekdayExtremes, withShares } from '@/src/utils/analytics';
+import { monthEndForecast, percentChange, sumBuckets, toTrendBars, weekdayExtremes, withShares } from '@/src/utils/analytics';
 
 describe('sumBuckets', () => {
   it('totals income and expense and derives net', () => {
@@ -43,5 +43,21 @@ describe('withShares', () => {
   });
   it('is all zero when nothing is positive', () => {
     expect(withShares([{ amount: 0 }, { amount: -5 }]).map((i) => i.share)).toEqual([0, 0]);
+  });
+});
+
+describe('toTrendBars', () => {
+  const series = (n: number) => Array.from({ length: n }, (_, i) => ({ label: `d${i + 1}`, expense: 1 }));
+
+  it('keeps short series as one bar per bucket', () => {
+    expect(toTrendBars(series(7))).toEqual(series(7).map((b) => ({ label: b.label, amount: 1 })));
+  });
+
+  it('sums long series into weekly bars ending on the latest day', () => {
+    const bars = toTrendBars(series(90));
+    expect(bars).toHaveLength(13);
+    expect(bars[bars.length - 1]).toEqual({ label: 'd84 – d90', amount: 7 });
+    expect(bars[0]).toEqual({ label: 'd1 – d6', amount: 6 });
+    expect(bars.reduce((s, b) => s + b.amount, 0)).toBe(90);
   });
 });
