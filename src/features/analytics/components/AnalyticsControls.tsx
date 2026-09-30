@@ -4,6 +4,7 @@ import { Chip, SegmentedControl, Text } from '@/src/components/ui';
 import { LockKeyIcon } from '@/src/components/ui/icons';
 import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/analytics/constants';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import type { AnalyticsWindow } from '@/src/utils/analytics';
 import { formatDate } from '@/src/utils/format';
 
 type AnalyticsControlsProps = {
@@ -12,20 +13,21 @@ type AnalyticsControlsProps = {
   onCurrencyChange: (currency: string) => void;
   range: RangeDays;
   onRangeChange: (range: RangeDays) => void;
+  /** The period the figures below cover. */
+  window: AnalyticsWindow;
   isPremium: boolean;
   /** Tapped a Pro-only range while on the free plan. */
   onLockedRange: () => void;
 };
 
-function rangeCaption(range: RangeDays, now: Date): string {
-  const start = new Date(now);
-  if (range === 365) {
-    start.setDate(1);
-    start.setMonth(start.getMonth() - 11);
-    return `${formatDate(start, { month: 'short', year: 'numeric' })} – ${formatDate(now, { month: 'short', year: 'numeric' })}`;
-  }
-  start.setDate(start.getDate() - range + 1);
-  return `${formatDate(start, { day: 'numeric', month: 'short', year: 'numeric' })} – ${formatDate(now, { day: 'numeric', month: 'short', year: 'numeric' })}`;
+/** The window's own dates, so the caption always names exactly the days the figures cover. */
+function windowCaption(window: AnalyticsWindow): string {
+  const parse = (key: string) => {
+    const [y, m, d] = key.split('-').map(Number) as [number, number, number];
+    return new Date(y, m - 1, d);
+  };
+  const options: Intl.DateTimeFormatOptions = window.byMonth ? { month: 'short', year: 'numeric' } : { day: 'numeric', month: 'short', year: 'numeric' };
+  return `${formatDate(parse(window.start), options)} – ${formatDate(parse(window.end), options)}`;
 }
 
 /** Currency (only when there's more than one) and period, with the dates the period covers. */
@@ -35,6 +37,7 @@ export const AnalyticsControls = React.memo(function AnalyticsControls({
   onCurrencyChange,
   range,
   onRangeChange,
+  window,
   isPremium,
   onLockedRange,
 }: AnalyticsControlsProps) {
@@ -71,7 +74,7 @@ export const AnalyticsControls = React.memo(function AnalyticsControls({
       )}
       <SegmentedControl options={rangeOptions} value={String(range) as `${RangeDays}`} onChange={handleRange} size="sm" />
       <Text variant="caption" tone="muted">
-        {rangeCaption(range, new Date())}
+        {windowCaption(window)}
       </Text>
     </View>
   );

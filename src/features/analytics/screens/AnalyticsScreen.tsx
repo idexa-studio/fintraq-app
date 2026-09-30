@@ -74,7 +74,8 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const categoryItems = useMemo((): ShareItem[] => {
     const type = activeTab === 'expense' ? 'DR' : 'CR';
     const source = activeTab === 'expense' ? overview.expenseCategories : overview.incomeCategories;
-    const shared = withShares(source);
+    // Shares of the period's whole spending (or income), so they match the summary card.
+    const shared = withShares(source, activeTab === 'expense' ? overview.totals.expense : overview.totals.income);
     return (isPremium ? shared : shared.slice(0, FREE_CATEGORY_COUNT)).map((c) => {
       const color = colorNumberToHex(c.color);
       return {
@@ -89,7 +90,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
         onPress: () => openCategory(c.id),
       };
     });
-  }, [activeTab, isPremium, overview.expenseCategories, overview.incomeCategories, currency, openCategory]);
+  }, [activeTab, isPremium, overview.expenseCategories, overview.incomeCategories, overview.totals, currency, openCategory]);
 
   const personItems = useMemo(
     (): ShareItem[] =>
@@ -158,6 +159,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           onCurrencyChange={setCurrency}
           range={range}
           onRangeChange={setRange}
+          window={overview.window}
           isPremium={isPremium}
           onLockedRange={openLockedRange}
         />

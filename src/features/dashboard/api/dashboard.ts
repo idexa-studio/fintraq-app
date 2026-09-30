@@ -3,6 +3,7 @@ import { db } from '@/src/db/client';
 import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
 import { accounts, payments, persons } from '@/src/db/schema';
 import type { MonthTotals } from '@/src/features/dashboard/utils/widgets';
+import { getPersonsNetByCurrency } from '@/src/features/persons/api/persons';
 import { format, startOfMonth, subMonths } from 'date-fns';
 
 export type PersonNetRow = {
@@ -18,6 +19,8 @@ export const getMonthTotals = async (currency: string, now: Date = new Date()): 
   const lastMonthStart = format(startOfMonth(subMonths(now, 1)), 'yyyy-MM-dd');
   // Same day last month, clamped to its length (31 March compares with 28/29 February).
   const lastMonthSameDay = format(subMonths(now, 1), 'yyyy-MM-dd');
+  // Up to today: an entry dated later this month hasn't happened yet.
+  const today = format(now, 'yyyy-MM-dd');
   const day = PAYMENT_LOCAL_DAY;
 
   const [row] = await db
@@ -29,7 +32,7 @@ export const getMonthTotals = async (currency: string, now: Date = new Date()): 
     })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(and(eq(accounts.currency, currency), sql`${day} >= ${lastMonthStart}`));
+    .where(and(eq(accounts.currency, currency), sql`${day} BETWEEN ${lastMonthStart} AND ${today}`));
 
   return {
     income: row?.income ?? 0,
@@ -52,11 +55,11 @@ export const getDailySpend = async (currency: string, since: string): Promise<Ma
 };
 
 export const getDashboardPersons = async (currency: string, limit = 6): Promise<PersonNetRow[]> => {
-  // Use the proven inner-join pattern (same as analytics) to get net per person.
+  // Net per person comes from the persons API, so Home and the people screens use one formula.
   // Persons with no transactions in this currency default to net = 0.
   const [allPersons, netMap] = await Promise.all([
     db.select({ id: persons.id, name: persons.name, color: persons.color }).from(persons),
-    getPersonsNetMap(currency),
+    getPersonsNetByCurrency(currency),
   ]);
 
   return allPersons
@@ -65,18 +68,3 @@ export const getDashboardPersons = async (currency: string, limit = 6): Promise<
     .sort((a, b) => a.net - b.net)
     .slice(0, limit);
 };
-
-async function getPersonsNetMap(currency: string): Promise<Map<number, number>> {
-  const rows = await db
-    .select({
-      id: persons.id,
-      net: sql<number>`SUM(CASE WHEN ${payments.type} = 'CR' THEN ${payments.amount} WHEN ${payments.type} = 'DR' THEN -${payments.amount} ELSE 0 END)`,
-    })
-    .from(payments)
-    .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .innerJoin(persons, eq(payments.personId, persons.id))
-    .where(eq(accounts.currency, currency))
-    .groupBy(persons.id);
-
-  return new Map(rows.map(r => [r.id, r.net ?? 0]));
-}

@@ -2,7 +2,7 @@ import { desc, sql } from 'drizzle-orm';
 import { db } from '@/src/db/client';
 import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
 import { payments } from '@/src/db/schema';
-import { getDaysAgoLocal, getLocalISOString } from '@/src/utils/date';
+import { getDaysAgoLocal, getLocalISOString, parseDateKey } from '@/src/utils/date';
 
 /**
  * getCurrentStreak: Calculates the current usage streak based on days with transactions.
@@ -39,8 +39,9 @@ export async function getCurrentStreak(): Promise<number> {
   }
 
   let streak = 0;
-  // We use a date object for backtracking correctly across month/year boundaries
-  let currentDate = new Date(latestDate);
+  // Walk back day by day from the latest local day (parsed as local midnight — new Date('YYYY-MM-DD')
+  // is UTC, which starts on the wrong day west of UTC and broke every streak there).
+  const currentDate = parseDateKey(latestDate);
 
   for (const dateStr of dates) {
     const expectedStr = getLocalISOString(currentDate);

@@ -4,7 +4,7 @@ import { db } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import { TransactionType } from '@/src/types';
 import { recordPaymentIn } from '@/src/features/transactions/api/transactions';
-import { repaymentType } from '@/src/features/transactions/utils/ledger';
+import { loanOutstanding, loanStatus, repaymentType } from '@/src/features/transactions/utils/ledger';
 
 export type Loan = typeof loans.$inferSelect;
 export type InsertLoan = typeof loans.$inferInsert;
@@ -45,10 +45,17 @@ export type LoanRepaymentRow = {
   accountCurrency: string;
 };
 
-function computeStatus(loan: Loan, outstanding: number): LoanStatus {
-  if (loan.status === 'repaid' || outstanding <= 0) return 'repaid';
-  if (loan.dueDate && new Date() > new Date(loan.dueDate)) return 'overdue';
-  return 'active';
+/** Sum of a loan's repayments: money back for a loan you gave, money out for one you took. */
+const REPAID = sql<number>`COALESCE((
+  SELECT SUM(p2.amount) FROM payments p2
+  WHERE p2.loan_id = ${loans.id}
+  AND p2.type = CASE WHEN ${loans.type} = 'lend' THEN 'CR' ELSE 'DR' END
+), 0)`;
+
+/** Live status for display: a loan marked repaid by hand stays repaid; otherwise the ledger rule. */
+function computeStatus(loan: Loan, repaid: number): LoanStatus {
+  if (loan.status === 'repaid') return 'repaid';
+  return loanStatus(loan.principal, repaid, loan.dueDate, new Date());
 }
 
 export const getLoans = async (type?: LoanType): Promise<LoanWithStats[]> => {
@@ -59,11 +66,7 @@ export const getLoans = async (type?: LoanType): Promise<LoanWithStats[]> => {
       personColor: persons.color,
       accountName: accounts.name,
       categoryName: categories.name,
-      repaid: sql<number>`COALESCE((
-        SELECT SUM(p2.amount) FROM payments p2
-        WHERE p2.loan_id = ${loans.id}
-        AND p2.type = CASE WHEN ${loans.type} = 'lend' THEN 'CR' ELSE 'DR' END
-      ), 0)`,
+      repaid: REPAID,
     })
     .from(loans)
     .leftJoin(persons, eq(loans.personId, persons.id))
@@ -77,7 +80,7 @@ export const getLoans = async (type?: LoanType): Promise<LoanWithStats[]> => {
 
   return rows.map(r => {
     const repaid = r.repaid ?? 0;
-    const outstanding = Math.max(0, r.loan.principal - repaid);
+    const outstanding = loanOutstanding(r.loan.principal, repaid);
     return {
       ...r.loan,
       personName: r.personName ?? null,
@@ -86,7 +89,7 @@ export const getLoans = async (type?: LoanType): Promise<LoanWithStats[]> => {
       categoryName: r.categoryName,
       repaid,
       outstanding,
-      computedStatus: computeStatus(r.loan, outstanding),
+      computedStatus: computeStatus(r.loan, repaid),
     };
   });
 };
@@ -99,11 +102,7 @@ export const getLoansByPerson = async (personId: number): Promise<LoanWithStats[
       personColor: persons.color,
       accountName: accounts.name,
       categoryName: categories.name,
-      repaid: sql<number>`COALESCE((
-        SELECT SUM(p2.amount) FROM payments p2
-        WHERE p2.loan_id = ${loans.id}
-        AND p2.type = CASE WHEN ${loans.type} = 'lend' THEN 'CR' ELSE 'DR' END
-      ), 0)`,
+      repaid: REPAID,
     })
     .from(loans)
     .leftJoin(persons, eq(loans.personId, persons.id))
@@ -114,7 +113,7 @@ export const getLoansByPerson = async (personId: number): Promise<LoanWithStats[
 
   return rows.map(r => {
     const repaid = r.repaid ?? 0;
-    const outstanding = Math.max(0, r.loan.principal - repaid);
+    const outstanding = loanOutstanding(r.loan.principal, repaid);
     return {
       ...r.loan,
       personName: r.personName ?? null,
@@ -123,7 +122,7 @@ export const getLoansByPerson = async (personId: number): Promise<LoanWithStats[
       categoryName: r.categoryName,
       repaid,
       outstanding,
-      computedStatus: computeStatus(r.loan, outstanding),
+      computedStatus: computeStatus(r.loan, repaid),
     };
   });
 };
@@ -141,11 +140,7 @@ export const getLoanWithStats = async (id: number): Promise<LoanWithStats | unde
       personColor: persons.color,
       accountName: accounts.name,
       categoryName: categories.name,
-      repaid: sql<number>`COALESCE((
-        SELECT SUM(p2.amount) FROM payments p2
-        WHERE p2.loan_id = ${loans.id}
-        AND p2.type = CASE WHEN ${loans.type} = 'lend' THEN 'CR' ELSE 'DR' END
-      ), 0)`,
+      repaid: REPAID,
     })
     .from(loans)
     .leftJoin(persons, eq(loans.personId, persons.id))
@@ -155,7 +150,7 @@ export const getLoanWithStats = async (id: number): Promise<LoanWithStats | unde
 
   if (!row) return undefined;
   const repaid = row.repaid ?? 0;
-  const outstanding = Math.max(0, row.loan.principal - repaid);
+  const outstanding = loanOutstanding(row.loan.principal, repaid);
   return {
     ...row.loan,
     personName: row.personName ?? null,
@@ -164,7 +159,7 @@ export const getLoanWithStats = async (id: number): Promise<LoanWithStats | unde
     categoryName: row.categoryName,
     repaid,
     outstanding,
-    computedStatus: computeStatus(row.loan, outstanding),
+    computedStatus: computeStatus(row.loan, repaid),
   };
 };
 
@@ -191,11 +186,7 @@ export const getLoansSummary = async (currency: string): Promise<LoanSummary> =>
   const rows = await db
     .select({
       loan: loans,
-      repaid: sql<number>`COALESCE((
-        SELECT SUM(p2.amount) FROM payments p2
-        WHERE p2.loan_id = ${loans.id}
-        AND p2.type = CASE WHEN ${loans.type} = 'lend' THEN 'CR' ELSE 'DR' END
-      ), 0)`,
+      repaid: REPAID,
     })
     .from(loans)
     .where(eq(loans.currency, currency));
@@ -210,8 +201,8 @@ export const getLoansSummary = async (currency: string): Promise<LoanSummary> =>
 
   for (const r of rows) {
     const repaid = r.repaid ?? 0;
-    const outstanding = Math.max(0, r.loan.principal - repaid);
-    const status = computeStatus(r.loan, outstanding);
+    const outstanding = loanOutstanding(r.loan.principal, repaid);
+    const status = computeStatus(r.loan, repaid);
     if (status === 'repaid') continue;
 
     if (r.loan.type === 'lend') {

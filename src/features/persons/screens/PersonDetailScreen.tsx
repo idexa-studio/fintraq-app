@@ -28,6 +28,7 @@ import { useTransactions } from '@/src/features/transactions/hooks/transactions'
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, formatDate } from '@/src/utils/format';
+import { parseDateKey } from '@/src/utils/date';
 
 const RECENT_LIMIT = 50;
 
@@ -130,7 +131,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
             {openLoans.map((loan) => {
               const isLend = loan.type === 'lend';
               const subtitle = loan.dueDate
-                ? t('loans.due', { date: formatDate(new Date(loan.dueDate), { day: 'numeric', month: 'short', year: 'numeric' }) })
+                ? t('loans.due', { date: formatDate(parseDateKey(loan.dueDate), { day: 'numeric', month: 'short', year: 'numeric' }) })
                 : `${isLend ? t('loans.lent') : t('loans.borrowed')} · ${loan.accountName}`;
               return (
                 <ListItem

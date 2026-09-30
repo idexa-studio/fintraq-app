@@ -1,57 +1,63 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { TrendBucket } from '@/src/features/analytics/components/SpendingTrendChart';
 import { DOW_KEYS, MONTH_KEYS } from '@/src/constants/calendar';
+import type { TrendBucket } from '@/src/features/analytics/components/SpendingTrendChart';
 import { RangeDays } from '@/src/features/analytics/constants';
 import {
   useAnalyticsBiggestExpense,
   useAnalyticsCategoryBreakdown,
-  useAnalyticsDailyData,
   useAnalyticsDow,
   useAnalyticsIncomeCategoryBreakdown,
-  useAnalyticsMonthlyData,
   useAnalyticsPersonBreakdown,
   useAnalyticsPreviousPeriod,
+  useAnalyticsSeries,
 } from '@/src/features/analytics/hooks/useAnalyticsData';
-import { percentChange, sumBuckets, weekdayExtremes } from '@/src/utils/analytics';
+import { analyticsWindow, averageByWeekday, percentChange, sumBuckets, weekdayExtremes, windowSlots } from '@/src/utils/analytics';
+import { getLocalISOString } from '@/src/utils/date';
 
-/** Everything the Analytics screen shows for one currency and period, derived in one place. */
+/**
+ * Everything the Analytics screen shows for one currency and range, derived from one window: the
+ * caption, every query, the chart, the averages and the comparison all cover the same days.
+ */
 export function useAnalyticsOverview(currency: string, range: RangeDays) {
   const { t } = useTranslation();
-  const daily = useAnalyticsDailyData(currency, range);
-  const monthly = useAnalyticsMonthlyData(currency);
-  const expenseCategories = useAnalyticsCategoryBreakdown(currency, range);
-  const { data: incomeCategories = [] } = useAnalyticsIncomeCategoryBreakdown(currency, range);
-  const { data: weekdays = [] } = useAnalyticsDow(currency, range);
-  const { data: people = [] } = useAnalyticsPersonBreakdown(currency, range);
-  const { data: previous } = useAnalyticsPreviousPeriod(currency, range);
-  const { data: biggestExpense = null } = useAnalyticsBiggestExpense(currency, range);
+  // Keyed by today's date, so the window moves on at midnight.
+  const todayKey = getLocalISOString();
+  const window = useMemo(() => analyticsWindow(range, new Date()), [range, todayKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isYear = range === 365;
-  const buckets = useMemo(() => (isYear ? monthly.data : daily.data) ?? [], [isYear, monthly.data, daily.data]);
+  const series = useAnalyticsSeries(currency, window);
+  const expenseCategories = useAnalyticsCategoryBreakdown(currency, window);
+  const { data: incomeCategories = [] } = useAnalyticsIncomeCategoryBreakdown(currency, window);
+  const { data: weekdayTotals = [] } = useAnalyticsDow(currency, window);
+  const { data: people = [] } = useAnalyticsPersonBreakdown(currency, window);
+  const { data: previous } = useAnalyticsPreviousPeriod(currency, window);
+  const { data: biggestExpense = null } = useAnalyticsBiggestExpense(currency, window);
 
   return useMemo(() => {
-    const month = (index: number) => {
+    const monthName = (index: number) => {
       const key = MONTH_KEYS[index];
       return key ? t(`calendar.months.${key}`) : '';
     };
-    const totals = sumBuckets(buckets);
-    const dailyAverage = totals.expense / range;
+    // Every day (or month) of the window, zero where nothing happened, so the chart's gaps and
+    // average are real.
+    const bySlot = new Map((series.data ?? []).map((b) => [b.slot, b]));
+    const chart: TrendBucket[] = windowSlots(window).map((slot) => {
+      const [, mm, dd] = slot.split('-');
+      const label = window.byMonth ? monthName(Number(mm) - 1) : `${Number(dd)} ${monthName(Number(mm) - 1)}`;
+      const bucket = bySlot.get(slot);
+      return { label, income: bucket?.income ?? 0, expense: bucket?.expense ?? 0 };
+    });
+
+    const totals = sumBuckets(chart);
+    const weekdays = averageByWeekday(weekdayTotals, window);
     const extremes = weekdayExtremes(weekdays);
 
-    const chart: TrendBucket[] = isYear
-      ? (monthly.data ?? []).map((m) => ({ label: month(Number(m.month.split('-')[1]) - 1), income: m.income, expense: m.expense }))
-      : (daily.data ?? []).map((d) => {
-          const [, mm, dd] = d.day.split('-');
-          const label = `${Number(dd)} ${month(Number(mm) - 1)}`;
-          return { label, income: d.income, expense: d.expense };
-        });
-
     return {
-      isLoading: daily.isLoading || monthly.isLoading || expenseCategories.isLoading,
+      window,
+      isLoading: series.isLoading || expenseCategories.isLoading,
       totals,
       deltas: { income: percentChange(totals.income, previous?.income), expense: percentChange(totals.expense, previous?.expense) },
-      dailyAverage,
+      dailyAverage: totals.expense / window.days,
       chart,
       expenseCategories: expenseCategories.data ?? [],
       incomeCategories,
@@ -63,5 +69,5 @@ export function useAnalyticsOverview(currency: string, range: RangeDays) {
         ? t('analytics.dowInsight', { peak: t(`calendar.days.${DOW_KEYS[extremes.peak]}`), lowest: t(`calendar.days.${DOW_KEYS[extremes.lowest]}`) })
         : null,
     };
-  }, [buckets, range, isYear, weekdays, monthly.data, monthly.isLoading, daily.data, daily.isLoading, expenseCategories.data, expenseCategories.isLoading, incomeCategories, people, previous, biggestExpense, t]);
+  }, [window, series.data, series.isLoading, expenseCategories.data, expenseCategories.isLoading, incomeCategories, weekdayTotals, people, previous, biggestExpense, t]);
 }

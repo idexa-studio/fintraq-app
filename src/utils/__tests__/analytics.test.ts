@@ -1,4 +1,4 @@
-import { monthEndForecast, percentChange, sumBuckets, toTrendBars, weekdayExtremes, withShares } from '@/src/utils/analytics';
+import { analyticsWindow, averageByWeekday, monthEndForecast, percentChange, sumBuckets, toTrendBars, weekdayExtremes, weekdayOccurrences, windowSlots, withShares } from '@/src/utils/analytics';
 
 describe('sumBuckets', () => {
   it('totals income and expense and derives net', () => {
@@ -59,5 +59,46 @@ describe('toTrendBars', () => {
     expect(bars[bars.length - 1]).toEqual({ label: 'd84 – d90', amount: 7 });
     expect(bars[0]).toEqual({ label: 'd1 – d6', amount: 6 });
     expect(bars.reduce((s, b) => s + b.amount, 0)).toBe(90);
+  });
+});
+
+describe('analyticsWindow', () => {
+  const now = new Date(2026, 8, 30, 15, 0); // Wed 30 Sep 2026
+
+  it('covers exactly N days ending today', () => {
+    const w = analyticsWindow(7, now);
+    expect(w).toMatchObject({ start: '2026-09-24', end: '2026-09-30', days: 7, byMonth: false });
+    expect(windowSlots(w)).toHaveLength(7);
+  });
+
+  it('compares with the same number of days just before', () => {
+    const w = analyticsWindow(30, now);
+    expect(w).toMatchObject({ start: '2026-09-01', end: '2026-09-30', days: 30, previousStart: '2026-08-02', previousEnd: '2026-08-31' });
+  });
+
+  it('runs 12 calendar months for the year view, current month included', () => {
+    const w = analyticsWindow(365, now);
+    expect(w).toMatchObject({ start: '2025-10-01', end: '2026-09-30', byMonth: true });
+    expect(windowSlots(w)).toEqual(['2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09']);
+    expect(w.previousEnd).toBe('2025-09-30');
+  });
+});
+
+describe('weekday averages', () => {
+  it('counts each weekday in the window', () => {
+    // 1-30 Sep 2026: starts Tuesday, so Tue and Wed occur 5 times, the rest 4.
+    const counts = weekdayOccurrences(analyticsWindow(30, new Date(2026, 8, 30)));
+    expect(counts).toEqual([4, 4, 5, 5, 4, 4, 4]);
+  });
+
+  it('divides by occurrences, so a weekday seen five times is not inflated', () => {
+    const w = analyticsWindow(30, new Date(2026, 8, 30));
+    expect(averageByWeekday([{ dow: 2, total: 100 }, { dow: 1, total: 80 }], w)).toEqual([{ dow: 2, total: 20 }, { dow: 1, total: 20 }]);
+  });
+});
+
+describe('withShares against a whole', () => {
+  it('uses the given total so shares match the period, not just the listed items', () => {
+    expect(withShares([{ amount: 25 }, { amount: 25 }], 100).map((i) => i.share)).toEqual([0.25, 0.25]);
   });
 });

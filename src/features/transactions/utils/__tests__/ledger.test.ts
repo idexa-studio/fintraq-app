@@ -1,4 +1,4 @@
-import { accountDeltas, isLoanPrincipal, LedgerError, loanStatus, repaymentType, validateEntry } from '@/src/features/transactions/utils/ledger';
+import { accountDeltas, isLoanPrincipal, LedgerError, loanOutstanding, loanStatus, repaymentType, validateEntry } from '@/src/features/transactions/utils/ledger';
 
 describe('validateEntry', () => {
   it('accepts a normal expense, income and transfer', () => {
@@ -78,5 +78,19 @@ describe('loan payment roles', () => {
     expect(isLoanPrincipal('CR', 'lend')).toBe(false);
     expect(isLoanPrincipal('CR', 'borrow')).toBe(true);
     expect(isLoanPrincipal('DR', 'borrow')).toBe(false);
+  });
+});
+
+describe('loanOutstanding and due days', () => {
+  it('rounds to the cent and never goes negative', () => {
+    expect(loanOutstanding(100, 33.33 + 33.33 + 33.34)).toBe(0);
+    expect(loanOutstanding(100, 99.99)).toBe(0.01);
+    expect(loanOutstanding(100, 150)).toBe(0);
+  });
+
+  it('is not overdue on the due date itself, only from the next local day', () => {
+    const dueDay = new Date(2026, 9, 5, 23, 30);
+    expect(loanStatus(100, 0, '2026-10-05', dueDay)).toBe('active');
+    expect(loanStatus(100, 0, '2026-10-05', new Date(2026, 9, 6, 0, 5))).toBe('overdue');
   });
 });

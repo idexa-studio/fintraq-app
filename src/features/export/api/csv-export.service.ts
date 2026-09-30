@@ -1,9 +1,12 @@
 import { db } from '@/src/db/client';
+import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
+import { getLocalISOString } from '@/src/utils/date';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import * as Sharing from 'expo-sharing';
 import { File, Paths } from 'expo-file-system';
 import { StorageAccessFramework } from 'expo-file-system/legacy';
-import { and, count, desc, eq, gte, lte, or, sql } from 'drizzle-orm';
+import { format } from 'date-fns';
+import { and, count, desc, eq, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import { Platform, Alert } from 'react-native';
 import { LoggerService } from '@/src/services/logger.service';
@@ -132,10 +135,10 @@ export class CsvExportService {
     const conditions = [];
 
     if (options.dateRange) {
-      const startIso = options.dateRange.startDate.toISOString().split('T')[0];
-      const endIso = options.dateRange.endDate.toISOString().split('T')[0];
-      conditions.push(gte(payments.datetime, startIso));
-      conditions.push(lte(payments.datetime, endIso));
+      // Local calendar days, both inclusive — the same days the app shows.
+      const start = getLocalISOString(options.dateRange.startDate);
+      const end = getLocalISOString(options.dateRange.endDate);
+      conditions.push(sql`${PAYMENT_LOCAL_DAY} BETWEEN ${start} AND ${end}`);
     }
 
     if (options.accountId !== undefined) {
@@ -182,7 +185,7 @@ export class CsvExportService {
 
     return rows.map(row => ({
       id: row.id,
-      createdDate: row.createdAt.split('T')[0],
+      createdDate: getLocalISOString(new Date(row.createdAt)),
       type: row.type === 'lend' ? 'Lend' : 'Borrow',
       principal: row.principal.toFixed(2),
       currency: row.currency,
@@ -224,9 +227,10 @@ export class CsvExportService {
       .orderBy(desc(payments.datetime));
 
     const exportRows: TransactionExportRow[] = rows.map(row => {
+      // Date and time both in local time, so a row reads as the moment the user recorded.
       const dateObj = new Date(row.datetime);
-      const date = dateObj.toISOString().split('T')[0];
-      const time = dateObj.toTimeString().split(' ')[0].slice(0, 5);
+      const date = getLocalISOString(dateObj);
+      const time = format(dateObj, 'HH:mm');
       return {
         id: row.id,
         date,
@@ -263,11 +267,11 @@ export class CsvExportService {
 
     let filename: string;
     if (options.dateRange) {
-      const start = options.dateRange.startDate.toISOString().split('T')[0];
-      const end = options.dateRange.endDate.toISOString().split('T')[0];
+      const start = getLocalISOString(options.dateRange.startDate);
+      const end = getLocalISOString(options.dateRange.endDate);
       filename = `fintraq_export_${start}_to_${end}.csv`;
     } else {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getLocalISOString();
       filename = `fintraq_export_all_${today}.csv`;
     }
 

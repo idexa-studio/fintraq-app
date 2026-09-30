@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/src/components/ui';
 import { DOW_KEYS } from '@/src/constants/calendar';
-import type { DowSpend } from '@/src/features/analytics/api/analytics';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { formatCurrency } from '@/src/utils/format';
 
-type Props = { data: DowSpend[]; currency: string };
+/** Average spend per weekday (0 = Sunday). */
+type Props = { data: readonly { dow: number; total: number }[]; currency: string };
 
 /** Monday-first, matching the spending rhythm calendar above it. */
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0] as const;

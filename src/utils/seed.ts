@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { InferSelectModel, eq, sql } from 'drizzle-orm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from '@/src/db/client';
@@ -300,8 +301,8 @@ export async function seedDummyData() {
         allCategories[0];
 
       const daysAgo     = (d: number) => new Date(now.getFullYear(), now.getMonth(), now.getDate() - d).toISOString();
-      const daysFromNow = (d: number) => new Date(now.getFullYear(), now.getMonth(), now.getDate() + d).toISOString().slice(0, 10);
-      const daysAgoDate = (d: number) => new Date(now.getFullYear(), now.getMonth(), now.getDate() - d).toISOString().slice(0, 10);
+      const daysFromNow = (d: number) => format(new Date(now.getFullYear(), now.getMonth(), now.getDate() + d), 'yyyy-MM-dd');
+      const daysAgoDate = (d: number) => format(new Date(now.getFullYear(), now.getMonth(), now.getDate() - d), 'yyyy-MM-dd');
 
       const p = insertedPersons;
 

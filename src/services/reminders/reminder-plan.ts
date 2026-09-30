@@ -1,3 +1,5 @@
+import { parseDateKey } from '@/src/utils/date';
+
 /**
  * Which reminders should exist, and when — pure, so it's testable and the sync can simply make the
  * OS match it. Nothing here touches the notification APIs.
@@ -52,11 +54,9 @@ export function localDateKey(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-/** A "YYYY-MM-DD" date as local midnight. `new Date('2026-10-05')` is UTC midnight — a day early west of UTC. */
+/** A "YYYY-MM-DD" date as local midnight, or null when malformed. */
 export function parseLocalDate(value: string): Date | null {
-  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
-  if (!match) return null;
-  return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  return /^\d{4}-\d{2}-\d{2}/.test(value) ? parseDateKey(value) : null;
 }
 
 const daysInMonth = (year: number, month: number): number => new Date(year, month + 1, 0).getDate();
