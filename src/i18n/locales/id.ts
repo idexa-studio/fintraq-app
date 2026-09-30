@@ -182,6 +182,7 @@ const id: Translation = {
     defaultMessage: 'Silakan perbarui Fintraq untuk melanjutkan. Hanya butuh sebentar.', updateNow: 'Perbarui sekarang',
   },
   loans: {
+    allRepaid: 'Semua di sini sudah lunas.',
     outstandingAmount: "Sisa: {{amount}}", exceedsOutstanding: "Jumlah melebihi sisa {{amount}}", fullAmount: "Jumlah penuh · {{amount}}",
     freeLimit: 'Paket gratis mengizinkan {{limit}} pinjaman aktif. Upgrade untuk tanpa batas.', upgrade: 'Upgrade',
     lentToName: 'Dipinjamkan ke {{name}}', borrowedFromName: 'Dipinjam dari {{name}}',

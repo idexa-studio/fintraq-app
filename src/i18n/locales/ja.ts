@@ -182,6 +182,7 @@ const ja: Translation = {
     defaultMessage: '続けるにはFintraqを更新してください。すぐに完了します。', updateNow: '今すぐ更新',
   },
   loans: {
+    allRepaid: 'すべて返済済みです。',
     outstandingAmount: "残高: {{amount}}", exceedsOutstanding: "金額が残高 {{amount}} を超えています", fullAmount: "全額 · {{amount}}",
     freeLimit: '無料プランでは有効なローンは{{limit}}件までです。無制限にするにはアップグレード。', upgrade: 'アップグレード',
     lentToName: '{{name}}に貸した', borrowedFromName: '{{name}}から借りた',

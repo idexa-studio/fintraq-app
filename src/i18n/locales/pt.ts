@@ -182,6 +182,7 @@ const pt: Translation = {
     defaultMessage: 'Atualize o Fintraq para continuar. Leva só um instante.', updateNow: 'Atualizar agora',
   },
   loans: {
+    allRepaid: 'Tudo aqui está quitado.',
     outstandingAmount: "Pendente: {{amount}}", exceedsOutstanding: "O valor excede o pendente ({{amount}})", fullAmount: "Valor total · {{amount}}",
     freeLimit: 'O plano gratuito permite {{limit}} empréstimos ativos. Faça upgrade para ilimitado.', upgrade: 'Fazer upgrade',
     lentToName: 'Emprestado a {{name}}', borrowedFromName: 'Emprestado por {{name}}',

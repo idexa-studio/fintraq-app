@@ -1,45 +1,17 @@
-import { Text } from '@/src/components/ui/Text';
-import React, { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { LoanStatus } from '@/src/features/loans/api/loans';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
+import { Badge } from '@/src/components/ui';
+import type { LoanStatus } from '@/src/features/loans/api/loans';
+import { useTheme } from '@/src/providers/ThemeProvider';
 
 type Props = { status: LoanStatus };
 
+/** Repaid / overdue / active, as the standard tinted Badge. */
 export const LoanStatusBadge = React.memo(function LoanStatusBadge({ status }: Props) {
-  const theme = useTheme();
   const { t } = useTranslation();
-  const styles = useMemo(() => createStyles(theme), [theme]);
-  const { colors } = theme;
-
-  const config = useMemo(() => {
-    switch (status) {
-      case 'repaid': return { label: t('loans.statusRepaid'), bg: alpha(colors.success, 'subtle'), text: colors.success };
-      case 'overdue': return { label: t('loans.statusOverdue'), bg: alpha(colors.danger, 'subtle'), text: colors.danger };
-      default:        return { label: t('loans.statusActive'),  bg: alpha(colors.primary, 'subtle'), text: colors.primary };
-    }
-  }, [status, colors, t]);
-
-  return (
-    <View style={[styles.badge, { backgroundColor: config.bg }]}>
-      <Text style={[styles.label, { color: config.text }]}>
-        {config.label}
-      </Text>
-    </View>
-  );
+  const { colors } = useTheme();
+  if (status === 'repaid') return <Badge label={t('loans.statusRepaid')} color={colors.success} />;
+  if (status === 'overdue') return <Badge label={t('loans.statusOverdue')} color={colors.danger} />;
+  // No colour: the badge's default brand tint uses the readable ink for its text.
+  return <Badge label={t('loans.statusActive')} />;
 });
-
-const createStyles = ({ spacing, radius, typography }: ThemeContextType) =>
-  StyleSheet.create({
-    badge: {
-      paddingHorizontal: spacing('2'),
-      paddingVertical: spacing('0.5'),
-      borderRadius: radius('full'),
-    },
-    label: {
-      ...typography.metrics.xs,
-      fontFamily: typography.styles.chipLabelActive.fontFamily,
-    },
-  });

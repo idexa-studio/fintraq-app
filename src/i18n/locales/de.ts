@@ -182,6 +182,7 @@ const de: Translation = {
     defaultMessage: 'Bitte aktualisiere Fintraq, um fortzufahren. Das dauert nur einen Moment.', updateNow: 'Jetzt aktualisieren',
   },
   loans: {
+    allRepaid: 'Hier ist alles zurückgezahlt.',
     outstandingAmount: "Offen: {{amount}}", exceedsOutstanding: "Betrag übersteigt den offenen Betrag von {{amount}}", fullAmount: "Gesamtbetrag · {{amount}}",
     freeLimit: 'Der Gratis-Plan erlaubt {{limit}} aktive Darlehen. Für unbegrenzt upgraden.', upgrade: 'Upgraden',
     lentToName: 'Verliehen an {{name}}', borrowedFromName: 'Geliehen von {{name}}',

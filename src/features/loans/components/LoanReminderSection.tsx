@@ -1,16 +1,14 @@
-import { Text } from '@/src/components/ui/Text';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
-import { Switch } from '@/src/components/ui/Switch';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { Platform, View } from 'react-native';
+import { ListGroup, ListItem } from '@/src/components/ui';
+import { AlarmIcon, BellIcon, BellRingingIcon, CalendarBlankIcon } from '@/src/components/ui/icons';
 import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import type { LoanWithStats } from '@/src/features/loans/api/loans';
 import { useLoanReminders } from '@/src/features/loans/hooks/useLoanReminders';
 import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
 
 const DUE_DAYS_OPTIONS = [
   { label: 'onDueDate', value: 0 },
@@ -24,7 +22,7 @@ type Props = { loan: LoanWithStats };
 export const LoanReminderSection = React.memo(function LoanReminderSection({ loan }: Props) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { colors } = theme;
   const { scheduleEmiReminder, cancelEmiReminder, scheduleDueReminder, cancelDueReminder } = useLoanReminders();
   const { showAlert } = usePremium();
 
@@ -143,79 +141,43 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
     if (dueEnabled && loan.dueDate) scheduleDueReminder(loan, dueDaysBefore, str);
   }, [dueEnabled, dueDaysBefore, loan, scheduleDueReminder]);
 
+  const dueLabel = t(`loans.${DUE_DAYS_OPTIONS.find((o) => o.value === dueDaysBefore)?.label ?? 'onDueDate'}`);
+
   return (
-    <View style={styles.section}>
-      <Text style={styles.title}>
-        {t('loans.reminders')}
-      </Text>
-
-      {/* EMI Reminder */}
-      <View style={styles.card}>
-        <View style={styles.toggleRow}>
-          <View style={styles.toggleInfo}>
-            <Text style={styles.rowLabel}>
-              {t('loans.emiReminder')}
-            </Text>
-            <Text style={styles.rowSub}>
-              {t('loans.emiFires', { day: emiDay })}
-            </Text>
-          </View>
-          <Switch
-            value={emiEnabled}
-            onValueChange={handleEmiToggle}
+    <View>
+      {/* Same rows as Settings → Notifications: a switch, then its options once it's on. */}
+      <ListGroup title={t('loans.reminders')}>
+        <ListItem
+          icon={BellIcon}
+          iconColor={colors.warning}
+          title={t('loans.emiReminder')}
+          subtitle={t('loans.emiFires', { day: emiDay })}
+          switchValue={emiEnabled}
+          onSwitchChange={handleEmiToggle}
+        />
+        {emiEnabled ? (
+          <ListItem icon={CalendarBlankIcon} iconColor={colors.warning} title={t('loans.emiDayTitle')} value={t('loans.dayN', { day: emiDay })} onPress={() => setShowEmiDayPicker(true)} />
+        ) : null}
+        {emiEnabled ? (
+          <ListItem icon={AlarmIcon} iconColor={colors.warning} title={t('settings.reminderTime')} value={formatTime(emiTime)} onPress={() => setShowEmiTimePicker(true)} />
+        ) : null}
+        {loan.dueDate ? (
+          <ListItem
+            icon={BellRingingIcon}
+            iconColor={colors.danger}
+            title={t('loans.dueReminder')}
+            subtitle={dueLabel}
+            switchValue={dueEnabled}
+            onSwitchChange={handleDueToggle}
           />
-        </View>
-
-        {emiEnabled && (
-          <View style={styles.subControls}>
-            <BentoPressable style={styles.chip} onPress={() => setShowEmiDayPicker(true)}>
-              <Text style={styles.chipText}>
-                {t('loans.dayN', { day: emiDay })}
-              </Text>
-            </BentoPressable>
-            <BentoPressable style={styles.chip} onPress={() => setShowEmiTimePicker(true)}>
-              <Text style={styles.chipText}>
-                {formatTime(emiTime)}
-              </Text>
-            </BentoPressable>
-          </View>
-        )}
-      </View>
-
-      {/* Due Date Reminder */}
-      {loan.dueDate && (
-        <View style={[styles.card, { marginTop: theme.spacing('2') }]}>
-          <View style={styles.toggleRow}>
-            <View style={styles.toggleInfo}>
-              <Text style={styles.rowLabel}>
-                {t('loans.dueReminder')}
-              </Text>
-              <Text style={styles.rowSub}>
-                {t(`loans.${DUE_DAYS_OPTIONS.find(o => o.value === dueDaysBefore)?.label ?? 'onDueDate'}`)}
-              </Text>
-            </View>
-            <Switch
-              value={dueEnabled}
-              onValueChange={handleDueToggle}
-            />
-          </View>
-
-          {dueEnabled && (
-            <View style={styles.subControls}>
-              <BentoPressable style={styles.chip} onPress={() => setShowDueDaysPicker(true)}>
-                <Text style={styles.chipText}>
-                  {t(`loans.${DUE_DAYS_OPTIONS.find(o => o.value === dueDaysBefore)?.label ?? 'onDueDate'}`)}
-                </Text>
-              </BentoPressable>
-              <BentoPressable style={styles.chip} onPress={() => setShowDueTimePicker(true)}>
-                <Text style={styles.chipText}>
-                  {formatTime(dueTime)}
-                </Text>
-              </BentoPressable>
-            </View>
-          )}
-        </View>
-      )}
+        ) : null}
+        {loan.dueDate && dueEnabled ? (
+          <ListItem icon={CalendarBlankIcon} iconColor={colors.danger} title={t('loans.dueReminder')} value={dueLabel} onPress={() => setShowDueDaysPicker(true)} />
+        ) : null}
+        {loan.dueDate && dueEnabled ? (
+          <ListItem icon={AlarmIcon} iconColor={colors.danger} title={t('settings.reminderTime')} value={formatTime(dueTime)} onPress={() => setShowDueTimePicker(true)} />
+        ) : null}
+      </ListGroup>
 
       {showEmiTimePicker && (
         <DateTimePicker
@@ -254,47 +216,3 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
     </View>
   );
 });
-
-const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
-  StyleSheet.create({
-    section: { marginTop: spacing('6') },
-    title: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-      marginBottom: spacing('2'),
-    },
-    card: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3'),
-    },
-    toggleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-    toggleInfo: { flex: 1, paddingRight: spacing('3') },
-    rowLabel: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.md,
-      color: colors.text,
-    },
-    rowSub: {
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      marginTop: spacing('0.5'),
-    },
-    subControls: { flexDirection: 'row', gap: spacing('2'), marginTop: spacing('3') },
-    chip: {
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('1.5'),
-      backgroundColor: alpha(colors.primary, 'subtle'),
-      borderRadius: radius('full'),
-    },
-    chipText: {
-      fontFamily: typography.styles.chipLabel.fontFamily,
-      ...typography.metrics.sm,
-      color: colors.primaryInk,
-    },
-  });

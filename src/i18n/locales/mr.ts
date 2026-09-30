@@ -182,6 +182,7 @@ const mr: Translation = {
     defaultMessage: 'सुरू ठेवण्यासाठी कृपया Fintraq अपडेट करा. यास थोडाच वेळ लागतो.', updateNow: 'आता अपडेट करा',
   },
   loans: {
+    allRepaid: 'येथील सर्व परतफेड झाली आहे.',
     outstandingAmount: "थकबाकी: {{amount}}", exceedsOutstanding: "रक्कम थकबाकी {{amount}} पेक्षा जास्त आहे", fullAmount: "पूर्ण रक्कम · {{amount}}",
     freeLimit: 'मोफत प्लॅनमध्ये {{limit}} सक्रिय कर्जे. अमर्यादसाठी अपग्रेड करा.', upgrade: 'अपग्रेड',
     lentToName: '{{name}} ला उसने दिले', borrowedFromName: '{{name}} कडून उसने घेतले',

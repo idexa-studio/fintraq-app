@@ -182,6 +182,7 @@ const kn: Translation = {
     defaultMessage: 'ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು Fintraq ಅನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಿ. ಇದಕ್ಕೆ ಕ್ಷಣ ಮಾತ್ರ ಸಾಕು.', updateNow: 'ಈಗಲೇ ಅಪ್‌ಡೇಟ್ ಮಾಡಿ',
   },
   loans: {
+    allRepaid: 'ಇಲ್ಲಿರುವುದೆಲ್ಲ ಮರುಪಾವತಿಯಾಗಿದೆ.',
     outstandingAmount: "ಬಾಕಿ: {{amount}}", exceedsOutstanding: "ಮೊತ್ತ ಬಾಕಿ {{amount}} ಮೀರಿದೆ", fullAmount: "ಪೂರ್ಣ ಮೊತ್ತ · {{amount}}",
     freeLimit: 'ಉಚಿತ ಯೋಜನೆಯಲ್ಲಿ {{limit}} ಸಕ್ರಿಯ ಸಾಲಗಳು. ಅನಿಯಮಿತಕ್ಕಾಗಿ ಅಪ್\u200cಗ್ರೇಡ್ ಮಾಡಿ.', upgrade: 'ಅಪ್\u200cಗ್ರೇಡ್',
     lentToName: '{{name}} ಗೆ ಸಾಲ ನೀಡಲಾಗಿದೆ', borrowedFromName: '{{name}} ರಿಂದ ಸಾಲ ಪಡೆಯಲಾಗಿದೆ',

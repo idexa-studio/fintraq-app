@@ -182,6 +182,7 @@ const hi: Translation = {
     defaultMessage: 'जारी रखने के लिए कृपया Fintraq अपडेट करें। बस एक पल लगेगा।', updateNow: 'अभी अपडेट करें',
   },
   loans: {
+    allRepaid: 'यहाँ सब चुका दिया गया है।',
     outstandingAmount: "बकाया: {{amount}}", exceedsOutstanding: "राशि बकाया {{amount}} से अधिक है", fullAmount: "पूरी राशि · {{amount}}",
     freeLimit: 'फ़्री प्लान में {{limit}} सक्रिय लोन तक। असीमित के लिए अपग्रेड करें।', upgrade: 'अपग्रेड',
     lentToName: '{{name}} को उधार दिया', borrowedFromName: '{{name}} से उधार लिया',

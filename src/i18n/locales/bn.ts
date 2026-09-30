@@ -182,6 +182,7 @@ const bn: Translation = {
     defaultMessage: 'চালিয়ে যেতে অনুগ্রহ করে Fintraq আপডেট করুন। মাত্র একটু সময় লাগবে।', updateNow: 'এখনই আপডেট করুন',
   },
   loans: {
+    allRepaid: 'এখানে সব পরিশোধ হয়ে গেছে।',
     outstandingAmount: "বাকি: {{amount}}", exceedsOutstanding: "পরিমাণ বাকি {{amount}}-এর বেশি", fullAmount: "পুরো পরিমাণ · {{amount}}",
     freeLimit: 'ফ্রি প্ল্যানে সর্বোচ্চ {{limit}}টি সক্রিয় ঋণ। সীমাহীনের জন্য আপগ্রেড করুন।', upgrade: 'আপগ্রেড',
     lentToName: '{{name}}-কে ধার দেওয়া', borrowedFromName: '{{name}}-এর কাছ থেকে ধার',
