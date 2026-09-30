@@ -7,7 +7,6 @@ import { MoneyText } from '@/src/components/ui/MoneyText';
 import { PremiumGuard } from '@/src/features/premium/components/PremiumGuard';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
-import { StorageKeys } from '@/src/constants/keys';
 import { AccountType } from '@/src/types';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { DowChart } from '@/src/features/analytics/components/DowChart';
@@ -22,7 +21,6 @@ import {
   useAnalyticsPersonBreakdown,
   useAnalyticsPreviousPeriod,
 } from '@/src/features/analytics/hooks/useAnalyticsData';
-import { ANALYTICS_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -612,7 +610,6 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
         </ScrollView>
       )}
-      <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_ANALYTICS} steps={ANALYTICS_WALKTHROUGH_STEPS} />
     </Screen>
   );
 });

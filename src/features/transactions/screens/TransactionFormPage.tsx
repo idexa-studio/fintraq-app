@@ -19,9 +19,7 @@ import { useLoanWithStats } from '@/src/features/loans/hooks/loans';
 import { colorNumberToHex } from '@/src/utils/format';
 import { format } from 'date-fns';
 import { TransactionType } from '@/src/types';
-import { WalkthroughOverlay, TRANSACTION_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { AnalyticsService } from '@/src/services/analytics';
-import { StorageKeys } from '@/src/constants/keys';
 import { isTransferCompatible } from '@/src/utils/accounts';
 import type { AccountType } from '@/src/types';
 import { useTranslation } from 'react-i18next';
@@ -299,9 +297,6 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
             selectedId={selectedPersonId}
             onSelect={setSelectedPersonId}
           />
-          {mode === 'create' && (
-            <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_TRANSACTION_CREATE} steps={TRANSACTION_WALKTHROUGH_STEPS} />
-          )}
         </>
       }
     >
