@@ -47,7 +47,7 @@ import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { languages, supportedLanguages } from '@/src/i18n';
 import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { useAppLanguage } from '@/src/providers/I18nProvider';
-import { usePremium } from '@/src/providers/PremiumProvider';
+import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
@@ -72,7 +72,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
 
-  const { isPremium } = usePremium();
+  const { isPremium, requirePro, openPaywall } = useProAccess();
   const { profile, updateProfile } = useSettings();
   const { language, setLanguage } = useAppLanguage();
   const { isConnected: isBackupConnected } = useBackupAccount();
@@ -234,7 +234,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         name={profile.name}
         isPremium={isPremium}
         onEditName={() => setSheet('name')}
-        onOpenPremium={() => router.push('/premium')}
+        onOpenPremium={() => openPaywall()}
       />
 
       <ListGroup title={t('settings.manage')}>
@@ -327,7 +327,9 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           iconColor={colors.primaryInk}
           title={t('settings.exportCsv')}
           subtitle={t('settings.exportHint')}
-          onPress={() => router.push(isPremium ? '/export' : '/premium')}
+          onPress={() => {
+            if (requirePro('csv')) router.push('/export');
+          }}
         />
       </ListGroup>
 

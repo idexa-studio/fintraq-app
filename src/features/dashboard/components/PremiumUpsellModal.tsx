@@ -3,8 +3,8 @@ import { Button } from '@/src/components/ui/Button';
 import { Text } from '@/src/components/ui/Text';
 import { Icon } from '@/src/components/ui/Icon';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { CancelCircleIcon, ChartLineData01Icon, CheckmarkCircle01Icon, CrownIcon, Download01Icon, Search01Icon, SparklesIcon, TrendingUpDownIcon } from '@hugeicons/core-free-icons';
-import type { IconSource } from '@/src/components/ui/Icon';
+import { CancelCircleIcon, CheckmarkCircle01Icon, CrownIcon } from '@hugeicons/core-free-icons';
+import { HEADLINE_FEATURES, PRO_FEATURES } from '@/src/features/premium/pro-features';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { Modal, StyleSheet, View, useWindowDimensions } from 'react-native';
@@ -18,13 +18,6 @@ type PremiumUpsellModalProps = {
 
 const BLOCK = 5;
 
-const PRO_FEATURES: { icon: IconSource; label: 'upsellTrends' | 'upsellHighlights' | 'upsellSearch' | 'upsellCsv' | 'upsellExtended' }[] = [
-  { icon: ChartLineData01Icon, label: 'upsellTrends' },
-  { icon: SparklesIcon,        label: 'upsellHighlights' },
-  { icon: Search01Icon,        label: 'upsellSearch' },
-  { icon: Download01Icon,      label: 'upsellCsv' },
-  { icon: TrendingUpDownIcon,       label: 'upsellExtended' },
-];
 
 export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
   visible,
@@ -93,18 +86,18 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
 
           {/* ── Feature list ── */}
           <View style={[styles.featureCard, { backgroundColor: colors.background }]}>
-            {PRO_FEATURES.map((item, i) => (
+            {HEADLINE_FEATURES.map((id, i) => (
               <View
-                key={i}
+                key={id}
                 style={[
                   styles.featureRow,
-                  i < PRO_FEATURES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+                  i < HEADLINE_FEATURES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
                 ]}
               >
                 <View style={[styles.featureIcon, { backgroundColor: colors.surface }]}>
-                  <Icon icon={item.icon} size={16} color={colors.primaryInk} />
+                  <Icon icon={PRO_FEATURES[id].icon} size={16} color={colors.primaryInk} />
                 </View>
-                <Text style={styles.featureLabel}>{t(`premium.${item.label}`)}</Text>
+                <Text style={styles.featureLabel}>{t(`premium.features.${id}.title`)}</Text>
                 <Icon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
               </View>
             ))}

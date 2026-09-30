@@ -85,11 +85,6 @@ const en = {
     resetFailedMessage: 'Could not complete factory reset. Please try again.',
     eraseEverything: 'Erase everything', displayName: 'Display name', displayNameHint: 'How you are greeted on the dashboard', yourName: 'Your name', privacyTitle: 'Privacy Policy', termsTitle: 'Terms of Use',
   },
-  searchGate: {
-    pro: 'Pro', title: 'Global Search', subtitle: 'Find anything across your entire financial history in one place.',
-    transactions: 'Full-text search across all transactions', accounts: 'Find accounts by name instantly',
-    categories: 'Locate categories across your history', upgrade: 'Upgrade to Pro', notNow: 'Not now',
-  },
   onboarding: {
     name: 'Your name', nameRequired: 'Please enter your name', nameMin: 'At least 2 characters', nameMax: 'Under 30 characters',
     greetingHint: "This is how we'll greet you in the app", defaultCurrency: 'Default currency', tapToChange: 'Tap to change',
@@ -169,7 +164,7 @@ const en = {
     connectToRestore: 'Connect your cloud account to restore existing accounts & transactions.',
   },
   ui: {
-    somethingWrong: 'Something went wrong', proOnly: 'Pro only', unlockWithPro: 'Unlock with Fintraq Pro',
+    somethingWrong: 'Something went wrong',
     charsLeft: '{{count}} characters left', suggested: 'Suggested', allCurrencies: 'All currencies', noMatch: 'No match for “{{query}}”', chooseIcon: 'Choose icon', chooseColor: 'Choose color', colorsCount: '{{count}} colors', currency: 'Currency', currenciesCount: '{{count}} currencies', searchCurrency: 'Search by name or code', delKey: 'Del',
   },
   lock: {
@@ -217,7 +212,7 @@ const en = {
   },
   persons: {
     title: 'People', person: 'Person', edit: 'Edit person', new: 'New person', searchPlaceholder: 'Search persons...', none: 'No persons yet', noneHint: 'Add people to link with transactions',
-    upgradeTitle: 'Upgrade to Pro', limitMessage: 'Free plan allows up to {{limit}} persons. Upgrade for unlimited.',
+    limitMessage: 'Free plan allows up to {{limit}} persons. Upgrade for unlimited.',
     personName: 'Person name', chooseColor: 'Choose accent color below', contactDetails: 'Contact details', work: 'Work (optional)',
     namePlaceholder: 'Jane Smith', emailPlaceholder: 'jane@example.com', rolePlaceholder: 'Manager', companyPlaceholder: 'Acme Inc.', save: 'Save person', add: 'Add person',
     spent: 'Spent', received: 'Received', activeLoans: 'Active loans', transactions: 'Transactions', deleteTitle: 'Delete person',
@@ -252,10 +247,10 @@ const en = {
   },
   analytics: {
     income: 'Income', expenses: 'Expenses', expense: 'Expense', netPosition: 'Net position', dailyAvg: 'Daily avg spend', highlights: 'Highlights', topCategory: 'Top expense category', biggestExpense: 'Biggest expense',
-    noHighlights: 'No highlights yet', noHighlightsHint: 'Add expense transactions to surface key spending insights.', trend: 'Spending trend', noTrend: 'No trend data yet', noTrendHint: 'Add income or expense transactions to see your spending trend.',
+    trend: 'Spending trend', noTrend: 'No trend data yet', noTrendHint: 'Add income or expense transactions to see your spending trend.',
     categoryBreakdown: 'Category breakdown', groupsCount: '{{count}} groups', personBreakdown: 'Person breakdown', personsCount: '{{count}} persons', balanceDistribution: 'Balance distribution', accountsCount: '{{count}} accounts',
     noCurrencyAccounts: 'No {{currency}} accounts', noCurrencyAccountsHint: 'Add an account in this currency to see the balance distribution.', weeklyPattern: 'Weekly pattern', averageByDay: 'Average by day', noWeekly: 'No weekly pattern yet', noWeeklyHint: 'More transactions will reveal your spending rhythm by day.',
-    low: 'Low', mid: 'Mid', high: 'High', spendingPatterns: 'Spending patterns', monthEndForecast: 'Month-end forecast', dowInsight: 'Spend most on {{peak}}, least on {{lowest}}.', noDataPeriod: 'No data for period', noCategoryData: 'Nothing here for this period', noCategoryDataHint: 'Add transactions of this type to see where your money goes.',
+    low: 'Low', mid: 'Mid', high: 'High', monthEndForecast: 'Month-end forecast', dowInsight: 'Spend most on {{peak}}, least on {{lowest}}.', noDataPeriod: 'No data for period', noCategoryData: 'Nothing here for this period', noCategoryDataHint: 'Add transactions of this type to see where your money goes.',
   },
   export: {
     title: 'Export CSV', last7: 'Last 7 days', last30: 'Last 30 days', last90: 'Last 90 days', last12m: 'Last 12 months', all: 'All', income: 'Income', expense: 'Expense', transfer: 'Transfer',
@@ -300,7 +295,6 @@ const en = {
     termsMessage: 'This purchase binds to your Play Store / App Store account and restores automatically on login.',
     proActive: 'Pro active', allSet: "You're all set.", allSetDesc: 'Every professional tool, every future update — yours forever. No subscriptions, no limits.', linkedStore: 'Linked to your Google Play / App Store',
     active: 'Active', unlockedFeatures: 'Unlocked features', openDashboard: 'Open dashboard',
-    upsellTrends: 'Spending trends & period deltas', upsellHighlights: 'Highlights & spending forecast', upsellSearch: 'Global search across all data', upsellCsv: 'CSV export with loans data', upsellExtended: 'Extended 30 / 90 / 365-day analytics',
     oneTimeLifetime: 'One-time · Lifetime access', unlockPro: 'Unlock Fintraq Pro', unlockIn: 'Unlock in {{seconds}}s', maybeLater: 'Maybe later',
     accessRevoked: 'Access Revoked', accessRevokedMessage: 'Your Pro access has been revoked or was refunded. You can repurchase at any time.', billingUnavailable: 'Billing interface currently unavailable.',
     networkRequired: 'Network Required', checkConnection: 'Please check your connection to proceed.', purchaseError: 'Purchase Error', purchaseErrorMessage: 'We could not process your request at this time.',
@@ -315,8 +309,13 @@ const en = {
       search: { title: 'Global search', description: 'Find any transaction, account, or category instantly across your entire history.' },
       weekly: { title: 'Weekly pattern', description: 'Bar chart showing which days you spend most, with an auto-generated spending insight.' },
       csv: { title: 'CSV export', description: 'Export transactions and loan records as a spreadsheet. Save to device or share to any app.' },
+      people: { title: 'People & balances', description: 'See who you spend with and how your money is spread across accounts.' },
+      backup: { title: 'Automatic cloud backup', description: 'Back up to your own Google Drive every 12 hours and restore on any device.' },
+      unlimited: { title: 'No limits', description: 'Track more than {{loans}} active loans and {{persons}} people.' },
     },
-    insightsTitle: 'Pro Insights', upgradeForInsights: 'Upgrade to Pro for insights', noInsights: 'No insights yet', noInsightsHint: 'Keep tracking to unlock personalized spending trends.', analysing: 'Analysing your patterns...',
+    groups: { analytics: 'Analytics & insights', tools: 'Power tools', more: 'Peace of mind' },
+    gate: { upgrade: 'Upgrade to Pro', notNow: 'Not now', youTried: 'You tried this', alsoIncluded: 'Also in Pro', previewTitle: 'More with Pro', previewHint: 'Unlock deeper analysis for this period:', seeAll: 'See everything in Pro' },
+    insightsTitle: 'Pro Insights', noInsights: 'No insights yet', noInsightsHint: 'Keep tracking to unlock personalized spending trends.', analysing: 'Analysing your patterns...',
   },
   insights: {
     spendingUp: 'Spending up {{pct}}%', spendingDown: 'Spending down {{pct}}%', spendingUpHint: 'vs last week. Check if anything snuck in — a quick audit never hurts.', spendingDownHint: 'vs last week. You kept things tighter than usual — well done.',

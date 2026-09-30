@@ -2,7 +2,7 @@ import { EmptyState, Skeleton } from '@/src/components/ui';
 import { ChartLineData01Icon } from '@hugeicons/core-free-icons';
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { PremiumGuard } from '@/src/features/premium/components/PremiumGuard';
+import { ProGate } from '@/src/features/premium/components/ProGate';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useDashboardInsights } from '@/src/features/dashboard/hooks/dashboard';
 import { InsightCard } from './InsightCard';
@@ -113,9 +113,9 @@ export const InsightsSection = React.memo(function InsightsSection({ currency }:
   return (
     <View>
       <SectionHeader title={t('premium.insightsTitle')} />
-      <PremiumGuard label={t('premium.upgradeForInsights')} size="large" containerStyle={styles.padded}>
+      <ProGate feature="insights" style={styles.padded}>
         {body}
-      </PremiumGuard>
+      </ProGate>
     </View>
   );
 });

@@ -87,11 +87,6 @@ const bn: Translation = {
     resetFailedMessage: 'ফ্যাক্টরি রিসেট সম্পূর্ণ করা যায়নি। আবার চেষ্টা করুন।',
     eraseEverything: 'সব মুছে ফেলুন', displayName: 'প্রদর্শিত নাম', displayNameHint: 'ড্যাশবোর্ডে আপনাকে কীভাবে সম্বোধন করা হবে', yourName: 'আপনার নাম', privacyTitle: 'গোপনীয়তা নীতি', termsTitle: 'ব্যবহারের শর্তাবলী',
   },
-  searchGate: {
-    pro: 'প্রো', title: 'গ্লোবাল সার্চ', subtitle: 'আপনার পুরো আর্থিক ইতিহাস থেকে সবকিছু এক জায়গায় খুঁজে নিন।',
-    transactions: 'সব লেনদেনে সম্পূর্ণ টেক্সট সার্চ', accounts: 'নাম দিয়ে তাৎক্ষণিক অ্যাকাউন্ট খুঁজুন',
-    categories: 'পুরো ইতিহাস জুড়ে বিভাগ খুঁজে নিন', upgrade: 'প্রো-তে আপগ্রেড করুন', notNow: 'এখন নয়',
-  },
   onboarding: {
     name: 'আপনার নাম', nameRequired: 'অনুগ্রহ করে আপনার নাম লিখুন', nameMin: 'অন্তত ২টি অক্ষর', nameMax: '৩০টির কম অক্ষর',
     greetingHint: 'অ্যাপে আমরা আপনাকে এভাবেই সম্বোধন করব', defaultCurrency: 'ডিফল্ট মুদ্রা', tapToChange: 'বদলাতে ট্যাপ করুন',
@@ -171,7 +166,7 @@ const bn: Translation = {
     connectToRestore: 'বিদ্যমান অ্যাকাউন্ট ও লেনদেন রিস্টোর করতে আপনার ক্লাউড অ্যাকাউন্ট সংযুক্ত করুন।',
   },
   ui: {
-    somethingWrong: 'কিছু ভুল হয়েছে', proOnly: 'শুধু প্রো', unlockWithPro: 'Fintraq Pro দিয়ে আনলক করুন',
+    somethingWrong: 'কিছু ভুল হয়েছে',
     charsLeft: 'আর {{count}}টি অক্ষর বাকি', suggested: 'প্রস্তাবিত', allCurrencies: 'সব মুদ্রা', noMatch: '“{{query}}” এর সাথে কিছু মেলেনি', chooseIcon: 'আইকন বেছে নিন', chooseColor: 'রং বেছে নিন', colorsCount: '{{count}}টি রং', currency: 'মুদ্রা', currenciesCount: '{{count}}টি মুদ্রা', searchCurrency: 'নাম বা কোড দিয়ে খুঁজুন', delKey: 'মুছুন',
   },
   lock: {
@@ -219,7 +214,7 @@ const bn: Translation = {
   },
   persons: {
     title: 'ব্যক্তি', person: 'ব্যক্তি', edit: 'ব্যক্তি সম্পাদনা', new: 'নতুন ব্যক্তি', searchPlaceholder: 'ব্যক্তি খুঁজুন...', none: 'এখনও কোনো ব্যক্তি নেই', noneHint: 'লেনদেনের সঙ্গে যুক্ত করতে ব্যক্তি যোগ করুন',
-    upgradeTitle: 'প্রো-তে আপগ্রেড করুন', limitMessage: 'ফ্রি প্ল্যানে সর্বোচ্চ {{limit}} জন ব্যক্তি রাখা যায়। সীমাহীন করতে আপগ্রেড করুন।',
+    limitMessage: 'ফ্রি প্ল্যানে সর্বোচ্চ {{limit}} জন ব্যক্তি রাখা যায়। সীমাহীন করতে আপগ্রেড করুন।',
     personName: 'ব্যক্তির নাম', chooseColor: 'নিচে থেকে একটি অ্যাকসেন্ট রং বেছে নিন', contactDetails: 'যোগাযোগের তথ্য', work: 'কাজ (ঐচ্ছিক)',
     namePlaceholder: 'রহিম উদ্দিন', emailPlaceholder: 'rahim@example.com', rolePlaceholder: 'ম্যানেজার', companyPlaceholder: 'অ্যাকমি লিমিটেড', save: 'ব্যক্তি সংরক্ষণ', add: 'ব্যক্তি যোগ করুন',
     spent: 'খরচ', received: 'প্রাপ্ত', activeLoans: 'সক্রিয় ঋণ', transactions: 'লেনদেন', deleteTitle: 'ব্যক্তি মুছুন',
@@ -254,10 +249,10 @@ const bn: Translation = {
   },
   analytics: {
     income: 'আয়', expenses: 'ব্যয়', expense: 'ব্যয়', netPosition: 'নিট অবস্থান', dailyAvg: 'গড় দৈনিক ব্যয়', highlights: 'হাইলাইট', topCategory: 'সর্বাধিক ব্যয়ের বিভাগ', biggestExpense: 'সবচেয়ে বড় ব্যয়',
-    noHighlights: 'এখনও কোনো হাইলাইট নেই', noHighlightsHint: 'ব্যয়ের মূল তথ্য দেখতে ব্যয়ের লেনদেন যোগ করুন।', trend: 'ব্যয়ের প্রবণতা', noTrend: 'এখনও প্রবণতার ডেটা নেই', noTrendHint: 'আপনার ব্যয়ের প্রবণতা দেখতে আয় বা ব্যয়ের লেনদেন যোগ করুন।',
+    trend: 'ব্যয়ের প্রবণতা', noTrend: 'এখনও প্রবণতার ডেটা নেই', noTrendHint: 'আপনার ব্যয়ের প্রবণতা দেখতে আয় বা ব্যয়ের লেনদেন যোগ করুন।',
     categoryBreakdown: 'বিভাগ অনুযায়ী বিভাজন', groupsCount: '{{count}}টি গ্রুপ', personBreakdown: 'ব্যক্তি অনুযায়ী বিভাজন', personsCount: '{{count}} জন ব্যক্তি', balanceDistribution: 'ব্যালেন্স বণ্টন', accountsCount: '{{count}}টি অ্যাকাউন্ট',
     noCurrencyAccounts: 'কোনো {{currency}} অ্যাকাউন্ট নেই', noCurrencyAccountsHint: 'ব্যালেন্স বণ্টন দেখতে এই মুদ্রার একটি অ্যাকাউন্ট যোগ করুন।', weeklyPattern: 'সাপ্তাহিক ধরন', averageByDay: 'দিন অনুযায়ী গড়', noWeekly: 'এখনও সাপ্তাহিক ধরন নেই', noWeeklyHint: 'আরও লেনদেন হলে দিন অনুযায়ী আপনার ব্যয়ের ছন্দ দেখা যাবে।',
-    low: 'কম', mid: 'মাঝারি', high: 'বেশি', spendingPatterns: 'ব্যয়ের ধরন', monthEndForecast: 'মাসের শেষের পূর্বাভাস', dowInsight: 'সবচেয়ে বেশি খরচ {{peak}}, সবচেয়ে কম {{lowest}}।', noDataPeriod: 'এই সময়কালের ডেটা নেই', noCategoryData: 'এই সময়ে কিছু নেই', noCategoryDataHint: 'টাকা কোথায় যাচ্ছে দেখতে এই ধরনের লেনদেন যোগ করুন।',
+    low: 'কম', mid: 'মাঝারি', high: 'বেশি', monthEndForecast: 'মাসের শেষের পূর্বাভাস', dowInsight: 'সবচেয়ে বেশি খরচ {{peak}}, সবচেয়ে কম {{lowest}}।', noDataPeriod: 'এই সময়কালের ডেটা নেই', noCategoryData: 'এই সময়ে কিছু নেই', noCategoryDataHint: 'টাকা কোথায় যাচ্ছে দেখতে এই ধরনের লেনদেন যোগ করুন।',
   },
   export: {
     title: 'CSV এক্সপোর্ট', last7: 'গত ৭ দিন', last30: 'গত ৩০ দিন', last90: 'গত ৯০ দিন', last12m: 'গত ১২ মাস', all: 'সব', income: 'আয়', expense: 'ব্যয়', transfer: 'ট্রান্সফার',
@@ -302,7 +297,6 @@ const bn: Translation = {
     termsMessage: 'এই ক্রয় আপনার Play Store / App Store অ্যাকাউন্টের সঙ্গে যুক্ত এবং লগইনের সময় স্বয়ংক্রিয়ভাবে রিস্টোর হয়।',
     proActive: 'প্রো সক্রিয়', allSet: 'সব প্রস্তুত।', allSetDesc: 'প্রতিটি পেশাদার টুল, প্রতিটি ভবিষ্যৎ আপডেট — চিরকাল আপনার। কোনো সাবস্ক্রিপশন নেই, কোনো সীমা নেই।', linkedStore: 'আপনার Google Play / App Store-এর সঙ্গে যুক্ত',
     active: 'সক্রিয়', unlockedFeatures: 'আনলক হওয়া ফিচার', openDashboard: 'ড্যাশবোর্ড খুলুন',
-    upsellTrends: 'ব্যয়ের প্রবণতা ও সময়কালের তুলনা', upsellHighlights: 'হাইলাইট ও ব্যয়ের পূর্বাভাস', upsellSearch: 'সব ডেটা জুড়ে গ্লোবাল সার্চ', upsellCsv: 'ঋণের ডেটা সহ CSV এক্সপোর্ট', upsellExtended: 'বর্ধিত ৩০ / ৯০ / ৩৬৫ দিনের বিশ্লেষণ',
     oneTimeLifetime: 'এককালীন · আজীবন অ্যাক্সেস', unlockPro: 'Fintraq Pro আনলক করুন', unlockIn: '{{seconds}} সেকেন্ডে আনলক', maybeLater: 'পরে দেখব',
     accessRevoked: 'অ্যাক্সেস প্রত্যাহার', accessRevokedMessage: 'আপনার প্রো অ্যাক্সেস প্রত্যাহার বা ফেরত করা হয়েছে। আপনি যেকোনো সময় আবার কিনতে পারবেন।', billingUnavailable: 'বিলিং ইন্টারফেস এখন পাওয়া যাচ্ছে না।',
     networkRequired: 'নেটওয়ার্ক প্রয়োজন', checkConnection: 'এগিয়ে যেতে অনুগ্রহ করে আপনার সংযোগ যাচাই করুন।', purchaseError: 'ক্রয়ে ত্রুটি', purchaseErrorMessage: 'আমরা এখন আপনার অনুরোধ প্রক্রিয়া করতে পারিনি।',
@@ -317,8 +311,13 @@ const bn: Translation = {
       search: { title: 'গ্লোবাল সার্চ', description: 'আপনার পুরো ইতিহাস জুড়ে যেকোনো লেনদেন, অ্যাকাউন্ট বা বিভাগ তাৎক্ষণিক খুঁজুন।' },
       weekly: { title: 'সাপ্তাহিক ধরন', description: 'কোন দিনগুলোতে আপনি সবচেয়ে বেশি খরচ করেন তা দেখানো বার চার্ট, সঙ্গে স্বয়ংক্রিয় ব্যয়ের ইনসাইট।' },
       csv: { title: 'CSV এক্সপোর্ট', description: 'লেনদেন ও ঋণের রেকর্ড স্প্রেডশিট হিসেবে এক্সপোর্ট করুন। ডিভাইসে সংরক্ষণ করুন বা যেকোনো অ্যাপে শেয়ার করুন।' },
+      people: { title: 'মানুষ ও ব্যালান্স', description: 'কার সাথে খরচ করেন এবং আপনার টাকা অ্যাকাউন্টগুলোতে কীভাবে ছড়ানো তা দেখুন।' },
+      backup: { title: 'স্বয়ংক্রিয় ক্লাউড ব্যাকআপ', description: 'প্রতি ১২ ঘণ্টায় নিজের Google Drive-এ ব্যাকআপ নিন এবং যেকোনো ডিভাইসে রিস্টোর করুন।' },
+      unlimited: { title: 'কোনো সীমা নেই', description: '{{loans}}টির বেশি সক্রিয় ঋণ এবং {{persons}} জনের বেশি মানুষ ট্র্যাক করুন।' },
     },
-    insightsTitle: 'প্রো ইনসাইট', upgradeForInsights: 'ইনসাইটের জন্য প্রো-তে আপগ্রেড করুন', noInsights: 'এখনও কোনো ইনসাইট নেই', noInsightsHint: 'ব্যক্তিগতকৃত ব্যয়ের প্রবণতা আনলক করতে লিখতে থাকুন।', analysing: 'আপনার ধরন বিশ্লেষণ করা হচ্ছে...',
+    groups: { analytics: 'বিশ্লেষণ ও অন্তর্দৃষ্টি', tools: 'শক্তিশালী টুল', more: 'নিশ্চিন্ত থাকুন' },
+    gate: { upgrade: 'Pro-তে আপগ্রেড করুন', notNow: 'এখন নয়', youTried: 'আপনি এটি চেষ্টা করেছেন', alsoIncluded: 'Pro-তে আরও আছে', previewTitle: 'Pro-তে আরও বেশি', previewHint: 'এই সময়ের গভীর বিশ্লেষণ আনলক করুন:', seeAll: 'Pro-র সবকিছু দেখুন' },
+    insightsTitle: 'প্রো ইনসাইট', noInsights: 'এখনও কোনো ইনসাইট নেই', noInsightsHint: 'ব্যক্তিগতকৃত ব্যয়ের প্রবণতা আনলক করতে লিখতে থাকুন।', analysing: 'আপনার ধরন বিশ্লেষণ করা হচ্ছে...',
   },
   insights: {
     spendingUp: 'ব্যয় {{pct}}% বেড়েছে', spendingDown: 'ব্যয় {{pct}}% কমেছে', spendingUpHint: 'গত সপ্তাহের তুলনায়। অপ্রত্যাশিত কিছু ঢুকে পড়েছে কি না দেখে নিন — একটি ছোট যাচাই কখনো ক্ষতি করে না।', spendingDownHint: 'গত সপ্তাহের তুলনায়। আপনি আগের চেয়ে বেশি সংযত ছিলেন — চমৎকার!',

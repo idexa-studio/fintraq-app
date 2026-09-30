@@ -87,11 +87,6 @@ const id: Translation = {
     resetFailedMessage: 'Tidak dapat menyelesaikan pengaturan ulang pabrik. Silakan coba lagi.',
     eraseEverything: 'Hapus semuanya', displayName: 'Nama tampilan', displayNameHint: 'Cara Anda disapa di dasbor', yourName: 'Nama Anda', privacyTitle: 'Kebijakan Privasi', termsTitle: 'Ketentuan Penggunaan',
   },
-  searchGate: {
-    pro: 'Pro', title: 'Pencarian Global', subtitle: 'Temukan apa pun di seluruh riwayat keuangan Anda di satu tempat.',
-    transactions: 'Pencarian teks lengkap di semua transaksi', accounts: 'Temukan akun berdasarkan nama secara instan',
-    categories: 'Cari kategori di seluruh riwayat Anda', upgrade: 'Upgrade ke Pro', notNow: 'Nanti saja',
-  },
   onboarding: {
     name: 'Nama Anda', nameRequired: 'Silakan masukkan nama Anda', nameMin: 'Minimal 2 karakter', nameMax: 'Kurang dari 30 karakter',
     greetingHint: 'Beginilah kami akan menyapa Anda di aplikasi', defaultCurrency: 'Mata uang default', tapToChange: 'Ketuk untuk mengubah',
@@ -171,7 +166,7 @@ const id: Translation = {
     connectToRestore: 'Hubungkan akun cloud Anda untuk memulihkan akun dan transaksi yang ada.',
   },
   ui: {
-    somethingWrong: 'Terjadi kesalahan', proOnly: 'Khusus Pro', unlockWithPro: 'Buka dengan Fintraq Pro',
+    somethingWrong: 'Terjadi kesalahan',
     charsLeft: 'Sisa {{count}} karakter', suggested: 'Disarankan', allCurrencies: 'Semua mata uang', noMatch: 'Tidak ada hasil untuk “{{query}}”', chooseIcon: 'Pilih ikon', chooseColor: 'Pilih warna', colorsCount: '{{count}} warna', currency: 'Mata uang', currenciesCount: '{{count}} mata uang', searchCurrency: 'Cari berdasarkan nama atau kode', delKey: 'Hapus',
   },
   lock: {
@@ -219,7 +214,7 @@ const id: Translation = {
   },
   persons: {
     title: 'Orang', person: 'Orang', edit: 'Ubah orang', new: 'Orang baru', searchPlaceholder: 'Cari orang...', none: 'Belum ada orang', noneHint: 'Tambahkan orang untuk dikaitkan dengan transaksi',
-    upgradeTitle: 'Upgrade ke Pro', limitMessage: 'Paket gratis memungkinkan hingga {{limit}} orang. Upgrade untuk tanpa batas.',
+    limitMessage: 'Paket gratis memungkinkan hingga {{limit}} orang. Upgrade untuk tanpa batas.',
     personName: 'Nama orang', chooseColor: 'Pilih warna aksen di bawah', contactDetails: 'Detail kontak', work: 'Pekerjaan (opsional)',
     namePlaceholder: 'Budi Santoso', emailPlaceholder: 'budi@contoh.com', rolePlaceholder: 'Manajer', companyPlaceholder: 'PT Acme', save: 'Simpan orang', add: 'Tambah orang',
     spent: 'Dikeluarkan', received: 'Diterima', activeLoans: 'Pinjaman aktif', transactions: 'Transaksi', deleteTitle: 'Hapus orang',
@@ -254,10 +249,10 @@ const id: Translation = {
   },
   analytics: {
     income: 'Pemasukan', expenses: 'Pengeluaran', expense: 'Pengeluaran', netPosition: 'Posisi bersih', dailyAvg: 'Rata-rata pengeluaran harian', highlights: 'Sorotan', topCategory: 'Kategori pengeluaran teratas', biggestExpense: 'Pengeluaran terbesar',
-    noHighlights: 'Belum ada sorotan', noHighlightsHint: 'Tambahkan transaksi pengeluaran untuk melihat wawasan utama.', trend: 'Tren pengeluaran', noTrend: 'Belum ada data tren', noTrendHint: 'Tambahkan transaksi pemasukan atau pengeluaran untuk melihat tren pengeluaran Anda.',
+    trend: 'Tren pengeluaran', noTrend: 'Belum ada data tren', noTrendHint: 'Tambahkan transaksi pemasukan atau pengeluaran untuk melihat tren pengeluaran Anda.',
     categoryBreakdown: 'Rincian kategori', groupsCount: '{{count}} grup', personBreakdown: 'Rincian per orang', personsCount: '{{count}} orang', balanceDistribution: 'Distribusi saldo', accountsCount: '{{count}} akun',
     noCurrencyAccounts: 'Tidak ada akun {{currency}}', noCurrencyAccountsHint: 'Tambahkan akun dalam mata uang ini untuk melihat distribusi saldo.', weeklyPattern: 'Pola mingguan', averageByDay: 'Rata-rata per hari', noWeekly: 'Belum ada pola mingguan', noWeeklyHint: 'Lebih banyak transaksi akan menunjukkan ritme pengeluaran Anda per hari.',
-    low: 'Rendah', mid: 'Sedang', high: 'Tinggi', spendingPatterns: 'Pola pengeluaran', monthEndForecast: 'Perkiraan akhir bulan', dowInsight: 'Paling boros pada hari {{peak}}, paling hemat pada hari {{lowest}}.', noDataPeriod: 'Tidak ada data untuk periode ini', noCategoryData: 'Tidak ada data untuk periode ini', noCategoryDataHint: 'Tambahkan transaksi jenis ini untuk melihat ke mana uang Anda pergi.',
+    low: 'Rendah', mid: 'Sedang', high: 'Tinggi', monthEndForecast: 'Perkiraan akhir bulan', dowInsight: 'Paling boros pada hari {{peak}}, paling hemat pada hari {{lowest}}.', noDataPeriod: 'Tidak ada data untuk periode ini', noCategoryData: 'Tidak ada data untuk periode ini', noCategoryDataHint: 'Tambahkan transaksi jenis ini untuk melihat ke mana uang Anda pergi.',
   },
   export: {
     title: 'Ekspor CSV', last7: '7 hari terakhir', last30: '30 hari terakhir', last90: '90 hari terakhir', last12m: '12 bulan terakhir', all: 'Semua', income: 'Pemasukan', expense: 'Pengeluaran', transfer: 'Transfer',
@@ -302,7 +297,6 @@ const id: Translation = {
     termsMessage: 'Pembelian ini terikat pada akun Play Store / App Store Anda dan dipulihkan otomatis saat masuk.',
     proActive: 'Pro aktif', allSet: 'Semua siap.', allSetDesc: 'Setiap alat profesional, setiap pembaruan mendatang — milik Anda selamanya. Tanpa langganan, tanpa batas.', linkedStore: 'Terhubung ke Google Play / App Store Anda',
     active: 'Aktif', unlockedFeatures: 'Fitur yang terbuka', openDashboard: 'Buka dasbor',
-    upsellTrends: 'Tren pengeluaran & perubahan antarperiode', upsellHighlights: 'Sorotan & prakiraan pengeluaran', upsellSearch: 'Pencarian global di semua data', upsellCsv: 'Ekspor CSV dengan data pinjaman', upsellExtended: 'Analitik diperluas 30 / 90 / 365 hari',
     oneTimeLifetime: 'Sekali bayar · Akses seumur hidup', unlockPro: 'Buka Fintraq Pro', unlockIn: 'Buka dalam {{seconds}} dtk', maybeLater: 'Mungkin nanti',
     accessRevoked: 'Akses Dicabut', accessRevokedMessage: 'Akses Pro Anda dicabut atau dikembalikan dananya. Anda dapat membelinya lagi kapan saja.', billingUnavailable: 'Antarmuka penagihan saat ini tidak tersedia.',
     networkRequired: 'Koneksi Diperlukan', checkConnection: 'Silakan periksa koneksi Anda untuk melanjutkan.', purchaseError: 'Kesalahan Pembelian', purchaseErrorMessage: 'Kami tidak dapat memproses permintaan Anda saat ini.',
@@ -317,8 +311,13 @@ const id: Translation = {
       search: { title: 'Pencarian global', description: 'Temukan transaksi, akun, atau kategori apa pun secara instan di seluruh riwayat Anda.' },
       weekly: { title: 'Pola mingguan', description: 'Diagram batang yang menunjukkan hari-hari Anda paling banyak berbelanja, dengan wawasan pengeluaran otomatis.' },
       csv: { title: 'Ekspor CSV', description: 'Ekspor transaksi dan catatan pinjaman sebagai spreadsheet. Simpan ke perangkat atau bagikan ke aplikasi apa pun.' },
+      people: { title: 'Orang & saldo', description: 'Lihat dengan siapa Anda berbelanja dan bagaimana uang Anda tersebar di antara akun.' },
+      backup: { title: 'Cadangan cloud otomatis', description: 'Cadangkan ke Google Drive Anda sendiri setiap 12 jam dan pulihkan di perangkat mana pun.' },
+      unlimited: { title: 'Tanpa batas', description: 'Kelola lebih dari {{loans}} pinjaman aktif dan {{persons}} orang.' },
     },
-    insightsTitle: 'Wawasan Pro', upgradeForInsights: 'Upgrade ke Pro untuk wawasan', noInsights: 'Belum ada wawasan', noInsightsHint: 'Terus mencatat untuk membuka tren pengeluaran yang dipersonalisasi.', analysing: 'Menganalisis pola Anda...',
+    groups: { analytics: 'Analitik & wawasan', tools: 'Alat canggih', more: 'Tenang' },
+    gate: { upgrade: 'Tingkatkan ke Pro', notNow: 'Nanti saja', youTried: 'Anda baru mencoba ini', alsoIncluded: 'Juga di Pro', previewTitle: 'Lebih banyak dengan Pro', previewHint: 'Buka analisis lebih dalam untuk periode ini:', seeAll: 'Lihat semua di Pro' },
+    insightsTitle: 'Wawasan Pro', noInsights: 'Belum ada wawasan', noInsightsHint: 'Terus mencatat untuk membuka tren pengeluaran yang dipersonalisasi.', analysing: 'Menganalisis pola Anda...',
   },
   insights: {
     spendingUp: 'Pengeluaran naik {{pct}}%', spendingDown: 'Pengeluaran turun {{pct}}%', spendingUpHint: 'dibanding minggu lalu. Periksa apakah ada yang terlewat — audit singkat tidak pernah salah.', spendingDownHint: 'dibanding minggu lalu. Anda lebih hemat dari biasanya — kerja bagus!',

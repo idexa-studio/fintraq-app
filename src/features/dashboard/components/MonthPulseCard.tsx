@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { MoneyText, Skeleton, Text, TrendBadge } from '@/src/components/ui';
+import { BentoPressable, Icon, MoneyText, Skeleton, Text, TrendBadge } from '@/src/components/ui';
+import { LockKeyIcon } from '@/src/components/ui/icons';
 import { useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
 import { buildMonthPulse } from '@/src/features/dashboard/utils/widgets';
+import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Props = { currency: string };
@@ -18,6 +20,7 @@ export const MonthPulseCard = React.memo(function MonthPulseCard({ currency }: P
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { data: totals, isLoading } = useMonthTotals(currency);
+  const { isPremium, openPaywall } = useProAccess();
 
   const pulse = useMemo(() => (totals ? buildMonthPulse(totals, new Date()) : null), [totals]);
 
@@ -28,10 +31,11 @@ export const MonthPulseCard = React.memo(function MonthPulseCard({ currency }: P
   const barColor = share !== null && share >= 1 ? colors.danger : share !== null && share > pulse.monthProgress ? colors.warning : colors.primary;
   const fill = Math.min(1, share ?? 0);
 
+  // Per-day pace and the month-end projection are the Pro "Spending forecast".
   const stats = [
-    { key: 'income', label: t('dashboard.income'), amount: pulse.income, type: 'CR' as const },
-    { key: 'perDay', label: t('dashboard.pulsePerDay'), amount: pulse.dailyAverage, type: 'NONE' as const },
-    { key: 'projected', label: t('dashboard.pulseProjected'), amount: pulse.projected, type: 'NONE' as const },
+    { key: 'income', label: t('dashboard.income'), amount: pulse.income, type: 'CR' as const, pro: false },
+    { key: 'perDay', label: t('dashboard.pulsePerDay'), amount: pulse.dailyAverage, type: 'NONE' as const, pro: true },
+    { key: 'projected', label: t('dashboard.pulseProjected'), amount: pulse.projected, type: 'NONE' as const, pro: true },
   ];
 
   return (
@@ -72,14 +76,34 @@ export const MonthPulseCard = React.memo(function MonthPulseCard({ currency }: P
       ) : null}
 
       <View style={styles.stats}>
-        {stats.map((stat, i) => (
-          <View key={stat.key} style={[styles.stat, i > 0 && styles.statDivider]}>
-            <Text variant="micro" tone="muted" numberOfLines={1}>
-              {stat.label}
-            </Text>
-            <MoneyText amount={stat.amount} currency={currency} type={stat.type} weight="semibold" compact style={styles.statValue} numberOfLines={1} />
-          </View>
-        ))}
+        {stats.map((stat, i) =>
+          stat.pro && !isPremium ? (
+            <BentoPressable
+              key={stat.key}
+              style={[styles.stat, i > 0 && styles.statDivider]}
+              onPress={() => openPaywall('forecast')}
+              accessibilityRole="button"
+              accessibilityLabel={`${stat.label}, ${t('premium.gate.upgrade')}`}
+            >
+              <Text variant="micro" tone="muted" numberOfLines={1}>
+                {stat.label}
+              </Text>
+              <View style={styles.locked}>
+                <Icon icon={LockKeyIcon} size={13} color={colors.primaryInk} />
+                <Text variant="label" color={colors.primaryInk}>
+                  {t('premium.pro')}
+                </Text>
+              </View>
+            </BentoPressable>
+          ) : (
+            <View key={stat.key} style={[styles.stat, i > 0 && styles.statDivider]}>
+              <Text variant="micro" tone="muted" numberOfLines={1}>
+                {stat.label}
+              </Text>
+              <MoneyText amount={stat.amount} currency={currency} type={stat.type} weight="semibold" compact style={styles.statValue} numberOfLines={1} />
+            </View>
+          ),
+        )}
       </View>
     </View>
   );
@@ -130,4 +154,5 @@ const createStyles = ({ colors, spacing, radius, layout, typography, alpha }: Th
       borderLeftColor: alpha(colors.text, 'subtle'),
     },
     statValue: typography.metrics.sm,
+    locked: { flexDirection: 'row', alignItems: 'center', gap: spacing('1'), minHeight: 19 },
   });

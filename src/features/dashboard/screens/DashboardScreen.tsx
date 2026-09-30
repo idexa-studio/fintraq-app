@@ -23,7 +23,7 @@ import { useDashboardPersons, useMonthTotals, useTopExpenseCategories } from '@/
 import { useDashboardPrompt } from '@/src/features/dashboard/hooks/useDashboardPrompt';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTransactions } from '@/src/features/transactions/hooks/transactions';
-import { usePremium } from '@/src/providers/PremiumProvider';
+import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
@@ -38,7 +38,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
-  const { isPremium } = usePremium();
+  const { isPremium, requirePro } = useProAccess();
   const { profile } = useSettings();
   const router = useRouter();
 
@@ -68,7 +68,9 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const { data: topCategories = [] } = useTopExpenseCategories(currency);
   const { data: topPersons = [] } = useDashboardPersons(currency);
 
-  const openSearch = useCallback(() => router.push(isPremium ? '/search' : '/premium'), [router, isPremium]);
+  const openSearch = useCallback(() => {
+    if (requirePro('search')) router.push('/search');
+  }, [router, requirePro]);
   const openAccount = useCallback((id: number) => router.push(`/(main)/accounts/${id}`), [router]);
   const openAccountForm = useCallback(() => router.push('/(main)/accounts/form'), [router]);
   const openAccounts = useCallback(() => router.push('/accounts'), [router]);
