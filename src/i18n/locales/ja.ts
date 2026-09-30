@@ -360,6 +360,7 @@ const ja: Translation = {
     groups: { walletsCards: '財布とカード', savingsInvestments: '貯蓄と投資', businessWork: '仕事とビジネス', goals: '目標', other: 'その他', finance: '金融', foodDrink: '飲食', transport: '交通', homeUtilities: '住まいと光熱費', healthFitness: '健康とフィットネス', tech: 'テクノロジー', shopping: 'ショッピング', entertainment: 'エンタメ', education: '教育', personal: '個人', misc: '雑貨' },
     colors: { forest: 'フォレスト', emerald: 'エメラルド', teal: 'ティール', sky: 'スカイ', ocean: 'オーシャン', blue: 'ブルー', cobalt: 'コバルト', iris: 'アイリス', indigo: 'インディゴ', purple: 'パープル', violet: 'バイオレット', fuchsia: 'フューシャ', pink: 'ピンク', deepPink: 'ディープピンク', rose: 'ローズ', red: 'レッド', crimson: 'クリムゾン', orange: 'オレンジ', amber: 'アンバー', gold: 'ゴールド', lime: 'ライム', olive: 'オリーブ', slate: 'スレート', coolGray: 'クールグレー' },
   },
+  shortcuts: { expense: '支出を追加', income: '収入を追加', transfer: '新しい振替', loan: '新しい貸し借り' },
 };
 
 export default ja;

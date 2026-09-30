@@ -360,6 +360,7 @@ const te: Translation = {
     groups: { walletsCards: 'వాలెట్లు & కార్డ్‌లు', savingsInvestments: 'పొదుపు & పెట్టుబడులు', businessWork: 'వ్యాపారం & పని', goals: 'లక్ష్యాలు', other: 'ఇతర', finance: 'ఫైనాన్స్', foodDrink: 'ఆహారం & పానీయాలు', transport: 'రవాణా', homeUtilities: 'ఇల్లు & యుటిలిటీలు', healthFitness: 'ఆరోగ్యం & ఫిట్‌నెస్', tech: 'టెక్', shopping: 'షాపింగ్', entertainment: 'వినోదం', education: 'విద్య', personal: 'వ్యక్తిగతం', misc: 'ఇతరాలు' },
     colors: { forest: 'అడవి ఆకుపచ్చ', emerald: 'పచ్చ', teal: 'టీల్', sky: 'ఆకాశనీలం', ocean: 'సముద్రనీలం', blue: 'నీలం', cobalt: 'కోబాల్ట్', iris: 'ఐరిస్', indigo: 'నీలిరంగు', purple: 'ఊదా', violet: 'వైలెట్', fuchsia: 'ఫ్యూషియా', pink: 'గులాబీ', deepPink: 'ముదురు గులాబీ', rose: 'రోజ్', red: 'ఎరుపు', crimson: 'క్రిమ్సన్', orange: 'నారింజ', amber: 'అంబర్', gold: 'బంగారు', lime: 'నిమ్మ', olive: 'ఆలివ్', slate: 'స్లేట్', coolGray: 'చల్లని బూడిద' },
   },
+  shortcuts: { expense: 'ఖర్చు జోడించండి', income: 'ఆదాయం జోడించండి', transfer: 'కొత్త బదిలీ', loan: 'కొత్త అప్పు' },
 };
 
 export default te;

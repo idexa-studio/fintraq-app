@@ -360,6 +360,7 @@ const ta: Translation = {
     groups: { walletsCards: 'பணப்பைகள் & கார்டுகள்', savingsInvestments: 'சேமிப்பு & முதலீடுகள்', businessWork: 'வணிகம் & பணி', goals: 'இலக்குகள்', other: 'மற்றவை', finance: 'நிதி', foodDrink: 'உணவு & பானம்', transport: 'போக்குவரத்து', homeUtilities: 'வீடு & பயன்பாடுகள்', healthFitness: 'உடல்நலம் & உடற்தகுதி', tech: 'தொழில்நுட்பம்', shopping: 'ஷாப்பிங்', entertainment: 'பொழுதுபோக்கு', education: 'கல்வி', personal: 'தனிப்பட்டவை', misc: 'இதர' },
     colors: { forest: 'காட்டுப் பச்சை', emerald: 'மரகதம்', teal: 'நீலப்பச்சை', sky: 'வான்நீலம்', ocean: 'கடல்நீலம்', blue: 'நீலம்', cobalt: 'கோபால்ட்', iris: 'ஐரிஸ்', indigo: 'அவுரி', purple: 'ஊதா', violet: 'வயலட்', fuchsia: 'ஃபுஷியா', pink: 'இளஞ்சிவப்பு', deepPink: 'அடர் இளஞ்சிவப்பு', rose: 'ரோஜா', red: 'சிவப்பு', crimson: 'செம்மஞ்சள் சிவப்பு', orange: 'ஆரஞ்சு', amber: 'அம்பர்', gold: 'பொன்', lime: 'எலுமிச்சைப் பச்சை', olive: 'ஆலிவ்', slate: 'ஸ்லேட்', coolGray: 'குளிர் சாம்பல்' },
   },
+  shortcuts: { expense: 'செலவைச் சேர்', income: 'வருமானத்தைச் சேர்', transfer: 'புதிய பரிமாற்றம்', loan: 'புதிய கடன்' },
 };
 
 export default ta;

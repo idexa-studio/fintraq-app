@@ -360,6 +360,7 @@ const mr: Translation = {
     groups: { walletsCards: 'वॉलेट आणि कार्ड', savingsInvestments: 'बचत आणि गुंतवणूक', businessWork: 'व्यवसाय आणि काम', goals: 'उद्दिष्टे', other: 'इतर', finance: 'वित्त', foodDrink: 'खाणे-पिणे', transport: 'वाहतूक', homeUtilities: 'घर आणि सुविधा', healthFitness: 'आरोग्य आणि फिटनेस', tech: 'तंत्रज्ञान', shopping: 'खरेदी', entertainment: 'मनोरंजन', education: 'शिक्षण', personal: 'वैयक्तिक', misc: 'विविध' },
     colors: { forest: 'वनहिरवा', emerald: 'पाचू', teal: 'टील', sky: 'आकाशी', ocean: 'सागरी', blue: 'निळा', cobalt: 'कोबाल्ट', iris: 'आयरिस', indigo: 'नीळ', purple: 'जांभळा', violet: 'व्हायोलेट', fuchsia: 'फ्युशिया', pink: 'गुलाबी', deepPink: 'गडद गुलाबी', rose: 'रोझ', red: 'लाल', crimson: 'किरमिजी', orange: 'केशरी', amber: 'अंबर', gold: 'सोनेरी', lime: 'लिंबू हिरवा', olive: 'ऑलिव्ह', slate: 'स्लेट', coolGray: 'थंड राखाडी' },
   },
+  shortcuts: { expense: 'खर्च जोडा', income: 'उत्पन्न जोडा', transfer: 'नवीन हस्तांतरण', loan: 'नवीन कर्ज' },
 };
 
 export default mr;

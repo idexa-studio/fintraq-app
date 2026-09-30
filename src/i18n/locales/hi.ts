@@ -360,6 +360,7 @@ const hi: Translation = {
     groups: { walletsCards: 'वॉलेट और कार्ड', savingsInvestments: 'बचत और निवेश', businessWork: 'बिज़नेस और काम', goals: 'लक्ष्य', other: 'अन्य', finance: 'वित्त', foodDrink: 'खान-पान', transport: 'यातायात', homeUtilities: 'घर और उपयोगिताएँ', healthFitness: 'स्वास्थ्य और फ़िटनेस', tech: 'तकनीक', shopping: 'खरीदारी', entertainment: 'मनोरंजन', education: 'शिक्षा', personal: 'निजी', misc: 'विविध' },
     colors: { forest: 'जंगल', emerald: 'पन्ना', teal: 'टील', sky: 'आसमानी', ocean: 'समुद्री', blue: 'नीला', cobalt: 'कोबाल्ट', iris: 'आइरिस', indigo: 'नील', purple: 'बैंगनी', violet: 'वायलेट', fuchsia: 'फ़ुशिया', pink: 'गुलाबी', deepPink: 'गहरा गुलाबी', rose: 'रोज़', red: 'लाल', crimson: 'क्रिमसन', orange: 'नारंगी', amber: 'एम्बर', gold: 'सुनहरा', lime: 'लाइम', olive: 'जैतूनी', slate: 'स्लेट', coolGray: 'ठंडा स्लेटी' },
   },
+  shortcuts: { expense: 'खर्च जोड़ें', income: 'आय जोड़ें', transfer: 'नया ट्रांसफ़र', loan: 'नया उधार' },
 };
 
 export default hi;

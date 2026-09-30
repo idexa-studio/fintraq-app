@@ -360,6 +360,7 @@ const pt: Translation = {
     groups: { walletsCards: 'Carteiras e cartões', savingsInvestments: 'Poupança e investimentos', businessWork: 'Negócios e trabalho', goals: 'Metas', other: 'Outros', finance: 'Finanças', foodDrink: 'Alimentação', transport: 'Transporte', homeUtilities: 'Casa e contas', healthFitness: 'Saúde e fitness', tech: 'Tecnologia', shopping: 'Compras', entertainment: 'Lazer', education: 'Educação', personal: 'Pessoal', misc: 'Diversos' },
     colors: { forest: 'Floresta', emerald: 'Esmeralda', teal: 'Verde-azulado', sky: 'Céu', ocean: 'Oceano', blue: 'Azul', cobalt: 'Cobalto', iris: 'Íris', indigo: 'Índigo', purple: 'Roxo', violet: 'Violeta', fuchsia: 'Fúcsia', pink: 'Rosa', deepPink: 'Rosa escuro', rose: 'Rosê', red: 'Vermelho', crimson: 'Carmesim', orange: 'Laranja', amber: 'Âmbar', gold: 'Dourado', lime: 'Lima', olive: 'Oliva', slate: 'Ardósia', coolGray: 'Cinza frio' },
   },
+  shortcuts: { expense: 'Adicionar despesa', income: 'Adicionar receita', transfer: 'Nova transferência', loan: 'Novo empréstimo' },
 };
 
 export default pt;
