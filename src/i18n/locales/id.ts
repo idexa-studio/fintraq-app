@@ -2,7 +2,7 @@ import type { Translation } from './types';
 
 const id: Translation = {
   common: {
-    edit: 'Ubah', delete: 'Hapus',
+    edit: 'Ubah', delete: 'Hapus', trendUp: 'Naik {{value}} persen', trendDown: 'Turun {{value}} persen',
     back: 'Kembali',
     cancel: 'Batal',
     ok: 'OK',
@@ -254,8 +254,7 @@ const id: Translation = {
     noHighlights: 'Belum ada sorotan', noHighlightsHint: 'Tambahkan transaksi pengeluaran untuk melihat wawasan utama.', trend: 'Tren pengeluaran', noTrend: 'Belum ada data tren', noTrendHint: 'Tambahkan transaksi pemasukan atau pengeluaran untuk melihat tren pengeluaran Anda.',
     categoryBreakdown: 'Rincian kategori', groupsCount: '{{count}} grup', personBreakdown: 'Rincian per orang', personsCount: '{{count}} orang', balanceDistribution: 'Distribusi saldo', accountsCount: '{{count}} akun',
     noCurrencyAccounts: 'Tidak ada akun {{currency}}', noCurrencyAccountsHint: 'Tambahkan akun dalam mata uang ini untuk melihat distribusi saldo.', weeklyPattern: 'Pola mingguan', averageByDay: 'Rata-rata per hari', noWeekly: 'Belum ada pola mingguan', noWeeklyHint: 'Lebih banyak transaksi akan menunjukkan ritme pengeluaran Anda per hari.',
-    low: 'Rendah', mid: 'Sedang', high: 'Tinggi', spendingPatterns: 'Pola pengeluaran', monthEndForecast: 'Perkiraan akhir bulan', dowInsight: 'Paling boros pada hari {{peak}}, paling hemat pada hari {{lowest}}.',
-    noExpenseData: 'Tidak ada data pengeluaran', total: 'Total', noDataPeriod: 'Tidak ada data untuk periode ini',
+    low: 'Rendah', mid: 'Sedang', high: 'Tinggi', spendingPatterns: 'Pola pengeluaran', monthEndForecast: 'Perkiraan akhir bulan', dowInsight: 'Paling boros pada hari {{peak}}, paling hemat pada hari {{lowest}}.', noDataPeriod: 'Tidak ada data untuk periode ini', noCategoryData: 'Tidak ada data untuk periode ini', noCategoryDataHint: 'Tambahkan transaksi jenis ini untuk melihat ke mana uang Anda pergi.',
   },
   export: {
     title: 'Ekspor CSV', last7: '7 hari terakhir', last30: '30 hari terakhir', last90: '90 hari terakhir', last12m: '12 bulan terakhir', all: 'Semua', income: 'Pemasukan', expense: 'Pengeluaran', transfer: 'Transfer',

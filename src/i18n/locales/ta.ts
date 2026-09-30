@@ -2,7 +2,7 @@ import type { Translation } from './types';
 
 const ta: Translation = {
   common: {
-    edit: 'திருத்து', delete: 'நீக்கு',
+    edit: 'திருத்து', delete: 'நீக்கு', trendUp: '{{value}} சதவீதம் அதிகரிப்பு', trendDown: '{{value}} சதவீதம் குறைவு',
     back: 'பின்செல்',
     cancel: 'ரத்துசெய்',
     ok: 'சரி',
@@ -254,8 +254,7 @@ const ta: Translation = {
     noHighlights: 'இன்னும் முக்கிய அம்சங்கள் இல்லை', noHighlightsHint: 'செலவுகளின் முக்கியத் தகவல்களைக் காண செலவுப் பரிவர்த்தனைகளைச் சேர்க்கவும்.', trend: 'செலவுப் போக்கு', noTrend: 'இன்னும் போக்குத் தரவு இல்லை', noTrendHint: 'உங்கள் செலவுப் போக்கைக் காண வருமானம் அல்லது செலவுப் பரிவர்த்தனைகளைச் சேர்க்கவும்.',
     categoryBreakdown: 'வகைவாரிப் பிரிப்பு', groupsCount: '{{count}} குழுக்கள்', personBreakdown: 'நபர்வாரிப் பிரிப்பு', personsCount: '{{count}} நபர்கள்', balanceDistribution: 'இருப்புப் பகிர்வு', accountsCount: '{{count}} கணக்குகள்',
     noCurrencyAccounts: '{{currency}} கணக்குகள் இல்லை', noCurrencyAccountsHint: 'இருப்புப் பகிர்வைக் காண இந்த நாணயத்தில் ஒரு கணக்கைச் சேர்க்கவும்.', weeklyPattern: 'வாராந்திர முறை', averageByDay: 'நாள்வாரிச் சராசரி', noWeekly: 'இன்னும் வாராந்திர முறை இல்லை', noWeeklyHint: 'மேலும் பரிவர்த்தனைகள் இருந்தால் நாள்வாரிச் செலவு ஒழுங்கு தெரியும்.',
-    low: 'குறைவு', mid: 'நடுத்தரம்', high: 'அதிகம்', spendingPatterns: 'செலவு முறைகள்', monthEndForecast: 'மாத இறுதிக் கணிப்பு', dowInsight: 'அதிகம் செலவு {{peak}}, குறைவு {{lowest}}.',
-    noExpenseData: 'செலவுத் தரவு இல்லை', total: 'மொத்தம்', noDataPeriod: 'இந்தக் காலத்திற்குத் தரவு இல்லை',
+    low: 'குறைவு', mid: 'நடுத்தரம்', high: 'அதிகம்', spendingPatterns: 'செலவு முறைகள்', monthEndForecast: 'மாத இறுதிக் கணிப்பு', dowInsight: 'அதிகம் செலவு {{peak}}, குறைவு {{lowest}}.', noDataPeriod: 'இந்தக் காலத்திற்குத் தரவு இல்லை', noCategoryData: 'இந்தக் காலத்தில் எதுவும் இல்லை', noCategoryDataHint: 'பணம் எங்கே செல்கிறது என்பதைப் பார்க்க இந்த வகைப் பரிவர்த்தனைகளைச் சேர்க்கவும்.',
   },
   export: {
     title: 'CSV ஏற்றுமதி', last7: 'கடந்த 7 நாட்கள்', last30: 'கடந்த 30 நாட்கள்', last90: 'கடந்த 90 நாட்கள்', last12m: 'கடந்த 12 மாதங்கள்', all: 'அனைத்தும்', income: 'வருமானம்', expense: 'செலவு', transfer: 'பரிமாற்றம்',

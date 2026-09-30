@@ -2,7 +2,7 @@ import type { Translation } from './types';
 
 const kn: Translation = {
   common: {
-    edit: 'ಸಂಪಾದಿಸಿ', delete: 'ಅಳಿಸಿ',
+    edit: 'ಸಂಪಾದಿಸಿ', delete: 'ಅಳಿಸಿ', trendUp: '{{value}} ಶೇಕಡಾ ಏರಿಕೆ', trendDown: '{{value}} ಶೇಕಡಾ ಇಳಿಕೆ',
     back: 'ಹಿಂದೆ',
     cancel: 'ರದ್ದುಮಾಡಿ',
     ok: 'ಸರಿ',
@@ -254,8 +254,7 @@ const kn: Translation = {
     noHighlights: 'ಇನ್ನೂ ಪ್ರಮುಖಾಂಶಗಳಿಲ್ಲ', noHighlightsHint: 'ಪ್ರಮುಖ ವೆಚ್ಚ ಒಳನೋಟಗಳನ್ನು ನೋಡಲು ವೆಚ್ಚದ ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ.', trend: 'ವೆಚ್ಚದ ಪ್ರವೃತ್ತಿ', noTrend: 'ಇನ್ನೂ ಪ್ರವೃತ್ತಿ ಡೇಟಾ ಇಲ್ಲ', noTrendHint: 'ನಿಮ್ಮ ವೆಚ್ಚದ ಪ್ರವೃತ್ತಿಯನ್ನು ನೋಡಲು ಆದಾಯ ಅಥವಾ ವೆಚ್ಚದ ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ.',
     categoryBreakdown: 'ವರ್ಗವಾರು ವಿಭಜನೆ', groupsCount: '{{count}} ಗುಂಪುಗಳು', personBreakdown: 'ವ್ಯಕ್ತಿವಾರು ವಿಭಜನೆ', personsCount: '{{count}} ವ್ಯಕ್ತಿಗಳು', balanceDistribution: 'ಬ್ಯಾಲೆನ್ಸ್ ಹಂಚಿಕೆ', accountsCount: '{{count}} ಖಾತೆಗಳು',
     noCurrencyAccounts: '{{currency}} ಖಾತೆಗಳಿಲ್ಲ', noCurrencyAccountsHint: 'ಬ್ಯಾಲೆನ್ಸ್ ಹಂಚಿಕೆಯನ್ನು ನೋಡಲು ಈ ಕರೆನ್ಸಿಯಲ್ಲಿ ಖಾತೆಯನ್ನು ಸೇರಿಸಿ.', weeklyPattern: 'ವಾರದ ಮಾದರಿ', averageByDay: 'ದಿನದ ಪ್ರಕಾರ ಸರಾಸರಿ', noWeekly: 'ಇನ್ನೂ ವಾರದ ಮಾದರಿ ಇಲ್ಲ', noWeeklyHint: 'ಹೆಚ್ಚಿನ ವಹಿವಾಟುಗಳಿದ್ದರೆ ದಿನದ ಪ್ರಕಾರ ನಿಮ್ಮ ವೆಚ್ಚದ ಲಯ ಕಾಣುತ್ತದೆ.',
-    low: 'ಕಡಿಮೆ', mid: 'ಮಧ್ಯಮ', high: 'ಹೆಚ್ಚು', spendingPatterns: 'ವೆಚ್ಚದ ಮಾದರಿಗಳು', monthEndForecast: 'ತಿಂಗಳ ಕೊನೆಯ ಅಂದಾಜು', dowInsight: 'ಹೆಚ್ಚು ವೆಚ್ಚ {{peak}}, ಕಡಿಮೆ {{lowest}}.',
-    noExpenseData: 'ವೆಚ್ಚದ ಡೇಟಾ ಇಲ್ಲ', total: 'ಒಟ್ಟು', noDataPeriod: 'ಈ ಅವಧಿಗೆ ಡೇಟಾ ಇಲ್ಲ',
+    low: 'ಕಡಿಮೆ', mid: 'ಮಧ್ಯಮ', high: 'ಹೆಚ್ಚು', spendingPatterns: 'ವೆಚ್ಚದ ಮಾದರಿಗಳು', monthEndForecast: 'ತಿಂಗಳ ಕೊನೆಯ ಅಂದಾಜು', dowInsight: 'ಹೆಚ್ಚು ವೆಚ್ಚ {{peak}}, ಕಡಿಮೆ {{lowest}}.', noDataPeriod: 'ಈ ಅವಧಿಗೆ ಡೇಟಾ ಇಲ್ಲ', noCategoryData: 'ಈ ಅವಧಿಯಲ್ಲಿ ಏನೂ ಇಲ್ಲ', noCategoryDataHint: 'ಹಣ ಎಲ್ಲಿಗೆ ಹೋಗುತ್ತದೆ ಎಂದು ನೋಡಲು ಈ ರೀತಿಯ ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ.',
   },
   export: {
     title: 'CSV ರಫ್ತು', last7: 'ಕಳೆದ 7 ದಿನಗಳು', last30: 'ಕಳೆದ 30 ದಿನಗಳು', last90: 'ಕಳೆದ 90 ದಿನಗಳು', last12m: 'ಕಳೆದ 12 ತಿಂಗಳು', all: 'ಎಲ್ಲಾ', income: 'ಆದಾಯ', expense: 'ವೆಚ್ಚ', transfer: 'ವರ್ಗಾವಣೆ',

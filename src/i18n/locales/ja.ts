@@ -2,7 +2,7 @@ import type { Translation } from './types';
 
 const ja: Translation = {
   common: {
-    edit: '編集', delete: '削除',
+    edit: '編集', delete: '削除', trendUp: '{{value}}% 増加', trendDown: '{{value}}% 減少',
     back: '戻る',
     cancel: 'キャンセル',
     ok: 'OK',
@@ -254,8 +254,7 @@ const ja: Translation = {
     noHighlights: 'ハイライトはまだありません', noHighlightsHint: '支出の取引を追加すると、主な傾向が表示されます。', trend: '支出の推移', noTrend: '推移データはまだありません', noTrendHint: '収入または支出の取引を追加すると、支出の推移が表示されます。',
     categoryBreakdown: 'カテゴリ別内訳', groupsCount: '{{count}}グループ', personBreakdown: '人物別内訳', personsCount: '{{count}}人', balanceDistribution: '残高の分布', accountsCount: '{{count}}口座',
     noCurrencyAccounts: '{{currency}}の口座はありません', noCurrencyAccountsHint: 'この通貨の口座を追加すると、残高の分布が表示されます。', weeklyPattern: '曜日別パターン', averageByDay: '曜日ごとの平均', noWeekly: '曜日別パターンはまだありません', noWeeklyHint: '取引が増えると、曜日ごとの支出のリズムが見えてきます。',
-    low: '低', mid: '中', high: '高', spendingPatterns: '支出パターン', monthEndForecast: '月末予測', dowInsight: '最も使うのは{{peak}}、最も少ないのは{{lowest}}です。',
-    noExpenseData: '支出データなし', total: '合計', noDataPeriod: 'この期間のデータはありません',
+    low: '低', mid: '中', high: '高', spendingPatterns: '支出パターン', monthEndForecast: '月末予測', dowInsight: '最も使うのは{{peak}}、最も少ないのは{{lowest}}です。', noDataPeriod: 'この期間のデータはありません', noCategoryData: 'この期間のデータはありません', noCategoryDataHint: 'お金の行き先を確認するには、この種類の取引を追加してください。',
   },
   export: {
     title: 'CSVをエクスポート', last7: '過去7日間', last30: '過去30日間', last90: '過去90日間', last12m: '過去12か月', all: 'すべて', income: '収入', expense: '支出', transfer: '振替',

@@ -2,6 +2,7 @@ import { Text } from './Text';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { TrendDownIcon, TrendUpIcon } from './icons';
 import { Icon } from './Icon';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 
@@ -15,6 +16,7 @@ type TrendBadgeProps = {
 
 export const TrendBadge = React.memo(function TrendBadge({ delta, positiveIsGood = true, style }: TrendBadgeProps) {
   const { colors, alpha, radius, spacing } = useTheme();
+  const { t } = useTranslation();
   if (delta === null || !Number.isFinite(delta)) return null;
 
   const isUp = delta >= 0;
@@ -23,7 +25,7 @@ export const TrendBadge = React.memo(function TrendBadge({ delta, positiveIsGood
 
   return (
     <View
-      accessibilityLabel={`${isUp ? 'Up' : 'Down'} ${Math.abs(delta).toFixed(0)} percent`}
+      accessibilityLabel={t(isUp ? 'common.trendUp' : 'common.trendDown', { value: Math.abs(delta).toFixed(0) })}
       style={[
         {
           flexDirection: 'row',

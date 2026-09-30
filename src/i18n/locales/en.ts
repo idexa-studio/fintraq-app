@@ -1,6 +1,6 @@
 const en = {
   common: {
-    edit: 'Edit', delete: 'Delete',
+    edit: 'Edit', delete: 'Delete', trendUp: 'Up {{value}} percent', trendDown: 'Down {{value}} percent',
     back: 'Back',
     cancel: 'Cancel',
     ok: 'OK',
@@ -252,8 +252,7 @@ const en = {
     noHighlights: 'No highlights yet', noHighlightsHint: 'Add expense transactions to surface key spending insights.', trend: 'Spending trend', noTrend: 'No trend data yet', noTrendHint: 'Add income or expense transactions to see your spending trend.',
     categoryBreakdown: 'Category breakdown', groupsCount: '{{count}} groups', personBreakdown: 'Person breakdown', personsCount: '{{count}} persons', balanceDistribution: 'Balance distribution', accountsCount: '{{count}} accounts',
     noCurrencyAccounts: 'No {{currency}} accounts', noCurrencyAccountsHint: 'Add an account in this currency to see the balance distribution.', weeklyPattern: 'Weekly pattern', averageByDay: 'Average by day', noWeekly: 'No weekly pattern yet', noWeeklyHint: 'More transactions will reveal your spending rhythm by day.',
-    low: 'Low', mid: 'Mid', high: 'High', spendingPatterns: 'Spending patterns', monthEndForecast: 'Month-end forecast', dowInsight: 'Spend most on {{peak}}, least on {{lowest}}.',
-    noExpenseData: 'No expense data', total: 'Total', noDataPeriod: 'No data for period',
+    low: 'Low', mid: 'Mid', high: 'High', spendingPatterns: 'Spending patterns', monthEndForecast: 'Month-end forecast', dowInsight: 'Spend most on {{peak}}, least on {{lowest}}.', noDataPeriod: 'No data for period', noCategoryData: 'Nothing here for this period', noCategoryDataHint: 'Add transactions of this type to see where your money goes.',
   },
   export: {
     title: 'Export CSV', last7: 'Last 7 days', last30: 'Last 30 days', last90: 'Last 90 days', last12m: 'Last 12 months', all: 'All', income: 'Income', expense: 'Expense', transfer: 'Transfer',
