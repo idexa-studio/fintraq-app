@@ -1,10 +1,14 @@
-import { BackupPreferences } from '@/src/services/backup/backup-preferences';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import * as Updates from 'expo-updates';
+import { useRouter } from 'expo-router';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Platform, StyleSheet, View } from 'react-native';
+import { CurrencyPickerBottomSheet } from '@/src/components/pickers/CurrencyPickerBottomSheet';
 import {
-  AlertButton,
   AlertDialog,
-  BentoPressable,
   ConfirmDialog,
-  Icon,
+  LIST_ITEM_LEADING_SIZE,
   ListGroup,
   ListItem,
   OptionsBottomSheet,
@@ -12,9 +16,7 @@ import {
   Screen,
   Text,
   TextInputDialog,
-  LIST_ITEM_LEADING_SIZE,
 } from '@/src/components/ui';
-import { getCurrencySymbol } from '@/src/constants/currency';
 import type { IconSource } from '@/src/components/ui';
 import {
   AlarmIcon,
@@ -22,221 +24,91 @@ import {
   CircleHalfIcon,
   CloudIcon,
   DownloadSimpleIcon,
-  HandCoinsIcon,
   FileTextIcon,
+  HandCoinsIcon,
   LockKeyIcon,
   MoonIcon,
   PasswordIcon,
-  PencilSimpleIcon,
   ShieldCheckIcon,
-  SparkleIcon,
   SquaresFourIcon,
   SunIcon,
   TranslateIcon,
   TrashIcon,
   UsersIcon,
 } from '@/src/components/ui/icons';
-import { CurrencyPickerBottomSheet } from '@/src/components/pickers/CurrencyPickerBottomSheet';
-import { db } from '@/src/db/client';
-import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
-import { StorageKeys } from '@/src/constants/keys';
-import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
-import * as Updates from 'expo-updates';
-
+import { DEFAULT_CURRENCY, getCurrencySymbol } from '@/src/constants/currency';
 import { useBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
-import { LockStorage } from '@/src/features/lock/api/lockStorage';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
-import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
-import { useAppLock } from '@/src/providers/AppLockProvider';
+import { useLockSetting } from '@/src/features/lock/hooks/useLockSetting';
+import { ProfileCard } from '@/src/features/settings/components/ProfileCard';
+import { SettingsFooter } from '@/src/features/settings/components/SettingsFooter';
+import { useFactoryReset } from '@/src/features/settings/hooks/useFactoryReset';
+import { useAlertDialog } from '@/src/hooks/useAlertDialog';
+import { languages, supportedLanguages } from '@/src/i18n';
 import { useAppConfig } from '@/src/providers/AppConfigProvider';
+import { useAppLanguage } from '@/src/providers/I18nProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
-import { languages, supportedLanguages } from '@/src/i18n';
-import { useAppLanguage } from '@/src/providers/I18nProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/src/services/notification.service';
-import { getFormattedAppVersion } from '@/src/utils/version';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { useRouter } from 'expo-router';
-import { useQueryClient } from '@tanstack/react-query';
-import React, { useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 
-/* ─────────────────────────────────────────────────────────────
-   Theme options
-───────────────────────────────────────────────────────────── */
+type ThemeValue = 'light' | 'dark' | 'system';
 
-const THEME_OPTIONS: { label: 'light' | 'dark' | 'followSystem'; value: 'light' | 'dark' | 'system'; icon: IconSource }[] = [
+const THEME_OPTIONS: { label: 'light' | 'dark' | 'followSystem'; value: ThemeValue; icon: IconSource }[] = [
   { label: 'light', value: 'light', icon: SunIcon },
   { label: 'dark', value: 'dark', icon: MoonIcon },
   { label: 'followSystem', value: 'system', icon: CircleHalfIcon },
 ];
 
-/* ─────────────────────────────────────────────────────────────
-   SettingsScreen
-───────────────────────────────────────────────────────────── */
+type Sheet = 'currency' | 'theme' | 'language' | 'name' | 'reset' | 'time' | null;
 
+const LANGUAGE_SNAP_POINTS = ['70%'];
+
+/** Ordered by how often people come here: data they manage → everyday preferences → one-off setup → about. */
 export const SettingsScreen = React.memo(function SettingsScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors, alpha } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const router = useRouter();
 
   const { isPremium } = usePremium();
   const { profile, updateProfile } = useSettings();
   const { language, setLanguage } = useAppLanguage();
   const { isConnected: isBackupConnected } = useBackupAccount();
-  const router = useRouter();
-  const queryClient = useQueryClient();
-
-  const { lockEnabled, lockMode, enableLock, disableLock } = useAppLock();
   const { privacyUrl, termsUrl } = useAppConfig();
-  const [showPinSetup, setShowPinSetup] = useState(false);
-  const [showThemeDialog, setShowThemeDialog] = useState(false);
-  const [showLanguageDialog, setShowLanguageDialog] = useState(false);
-  const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
-  const [showResetDialog, setShowResetDialog] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
-  const [showNameModal, setShowNameModal] = useState(false);
-  const [devTaps, setDevTaps] = useState(0);
+  const lock = useLockSetting();
+  const factoryReset = useFactoryReset();
+  const { showAlert, alertProps } = useAlertDialog();
 
-  const [alertConfig, setAlertConfig] = useState<{
-    visible: boolean;
-    title: string;
-    message?: string;
-    type?: 'info' | 'success' | 'error' | 'warning';
-    buttons?: AlertButton[];
-  }>({
-    visible: false,
-    title: '',
-  });
+  const [sheet, setSheet] = useState<Sheet>(null);
+  const closeSheet = useCallback(() => setSheet(null), []);
+  const currency = profile.defaultCurrency || DEFAULT_CURRENCY;
+  const themeValue: ThemeValue = profile.theme || 'system';
 
-  const showAlert = useCallback(
-    (config: {
-      title: string;
-      message?: string;
-      type?: 'info' | 'success' | 'error' | 'warning';
-      buttons?: AlertButton[];
-    }) => {
-      setAlertConfig({
-        visible: true,
-        title: config.title,
-        message: config.message,
-        type: config.type || 'info',
-        buttons: config.buttons || [{ text: t('common.ok') }],
-      });
-    },
-    [t],
-  );
-
-  /* ── App lock ── */
-  const handleToggleLock = useCallback(async () => {
-    if (lockEnabled) {
-      const cap = await getBiometricCapability();
-      let confirmed = false;
-      if (lockMode === 'biometric' && cap.available) {
-        confirmed = await authenticateWithBiometrics(t('settings.confirmDisableLock'));
-      } else {
-        confirmed = await new Promise<boolean>(resolve => {
-          Alert.alert(
-            t('settings.disableLock'),
-            t('settings.disableLockMessage'),
-            [
-              { text: t('common.cancel'), style: 'cancel', onPress: () => resolve(false) },
-              { text: t('settings.disable'), style: 'destructive', onPress: () => resolve(true) },
-            ],
-          );
-        });
-      }
-      if (confirmed) await disableLock();
-    } else {
-      const cap = await getBiometricCapability();
-      if (cap.available) {
-        const confirmed = await authenticateWithBiometrics(t('settings.confirmEnableLock'));
-        if (confirmed) await enableLock('biometric');
-      } else {
-        setShowPinSetup(true);
-      }
-    }
-  }, [lockEnabled, lockMode, enableLock, disableLock, t]);
-
-  const handlePinSetupComplete = useCallback(async (pin: string) => {
-    setShowPinSetup(false);
-    await LockStorage.setPin(pin);
-    await enableLock('pin');
-  }, [enableLock]);
-
-  const handleChangePinPress = useCallback(() => setShowPinSetup(true), []);
-  const handlePinSetupCancel = useCallback(() => setShowPinSetup(false), []);
-
-  /* ── Reminders ── */
-  const handleToggleReminders = useCallback(async () => {
+  const toggleReminders = useCallback(async () => {
     const next = !profile.reminderEnabled;
-    if (next) {
-      const granted = await NotificationService.requestPermissions();
-      if (!granted) {
-        Alert.alert(t('settings.permissionRequired'), t('settings.enableNotifications'));
-        return;
-      }
+    if (next && !(await NotificationService.requestPermissions())) {
+      showAlert({ title: t('settings.permissionRequired'), message: t('settings.enableNotifications'), type: 'warning' });
+      return;
     }
     await updateProfile({ reminderEnabled: next });
-  }, [profile.reminderEnabled, updateProfile, t]);
+  }, [profile.reminderEnabled, updateProfile, showAlert, t]);
 
-  /* ── Name ── */
-  const openNameModal = useCallback(() => setShowNameModal(true), []);
-  const closeNameModal = useCallback(() => setShowNameModal(false), []);
-  const saveName = useCallback(async (name: string) => {
-    await updateProfile({ name });
-  }, [updateProfile]);
-
-  /* ── Time picker ── */
-  const onTimeChange = useCallback(async (event: DateTimePickerEvent, date?: Date) => {
-    setShowTimePicker(false);
-    if (date && event.type === 'set') {
+  const onTimeChange = useCallback(
+    async (event: DateTimePickerEvent, date?: Date) => {
+      setSheet(null);
+      if (!date || event.type !== 'set') return;
       const hh = date.getHours().toString().padStart(2, '0');
       const mm = date.getMinutes().toString().padStart(2, '0');
       await updateProfile({ reminderTime: `${hh}:${mm}` });
-    }
-  }, [updateProfile]);
+    },
+    [updateProfile],
+  );
 
-  /* ── Reset ── */
   const runReset = useCallback(async () => {
     try {
-      // 1. Sign out of Google Drive Cloud Backup
-      await GoogleDriveService.signOut().catch(() => {});
-
-      // 2. Clear query cache
-      queryClient.clear();
-
-      // 3. Delete user data tables
-      await db.delete(payments);
-      await db.delete(loans);
-      await db.delete(persons);
-      await db.delete(categories);
-      await db.delete(accounts);
-
-      // 4. Clear user-facing AsyncStorage keys only — do NOT use
-      // AsyncStorage.clear(), which would also wipe any infra keys (feature
-      // flags, review-prompt state, etc.) added elsewhere in the future.
-      await AsyncStorage.multiRemove([
-        StorageKeys.PROFILE,
-        StorageKeys.ONBOARDED,
-        StorageKeys.SEED_EXECUTED,
-        StorageKeys.RECENT_SEARCHES,
-        StorageKeys.UPSELL_DISMISSED_AT,
-        StorageKeys.WALKTHROUGH_DASHBOARD,
-        StorageKeys.WALKTHROUGH_CATEGORIES,
-        StorageKeys.WALKTHROUGH_ANALYTICS,
-        StorageKeys.WALKTHROUGH_ACCOUNTS,
-        StorageKeys.WALKTHROUGH_TRANSACTIONS,
-        StorageKeys.WALKTHROUGH_SEARCH,
-        StorageKeys.WALKTHROUGH_TRANSACTION_CREATE,
-        StorageKeys.WALKTHROUGH_PERSONS,
-        ...BackupPreferences.allKeys(),
-      ]);
-
+      await factoryReset();
       showAlert({
         title: t('settings.resetComplete'),
         message: t('settings.resetCompleteMessage'),
@@ -255,88 +127,55 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         ],
       });
     } catch {
-      showAlert({
-        title: t('settings.resetFailed'),
-        message: t('settings.resetFailedMessage'),
-        type: 'error',
-      });
+      showAlert({ title: t('settings.resetFailed'), message: t('settings.resetFailedMessage'), type: 'error' });
     }
-  }, [router, queryClient, showAlert, t]);
+  }, [factoryReset, router, showAlert, t]);
 
-  /* ── Easter egg ── */
-  const handleFooterTap = useCallback(() => {
-    const next = devTaps + 1;
-    if (next >= 10) {
-      router.push('/developer');
-      setDevTaps(0);
-    } else {
-      setDevTaps(next);
-    }
-  }, [devTaps, router]);
+  const openWebPage = useCallback(
+    (url: string | undefined, title: string) => {
+      if (url) router.push({ pathname: '/webview', params: { url, title } });
+    },
+    [router],
+  );
 
-  /* ── Links ── */
-  const openPrivacy = useCallback(() => {
-    if (!privacyUrl) return;
-    router.push({ pathname: '/webview', params: { url: privacyUrl, title: t('settings.privacyTitle') } });
-  }, [router, privacyUrl, t]);
+  const themeOptions = useMemo(
+    () =>
+      THEME_OPTIONS.map((o) => ({
+        key: o.value,
+        label: t(`settings.${o.label}`),
+        icon: o.icon,
+        selected: themeValue === o.value,
+        onPress: async () => {
+          await updateProfile({ theme: o.value });
+        },
+      })),
+    [themeValue, updateProfile, t],
+  );
 
-  const openTerms = useCallback(() => {
-    if (!termsUrl) return;
-    router.push({ pathname: '/webview', params: { url: termsUrl, title: t('settings.termsTitle') } });
-  }, [router, termsUrl, t]);
-
-  const openExport = useCallback(() => {
-    router.push(isPremium ? '/export' : '/premium');
-  }, [isPremium, router]);
-
-  /* ── Memos ── */
-  const themeLabel = useMemo(() => {
-    const match = THEME_OPTIONS.find(o => o.value === (profile.theme || 'system'));
-    return t(`settings.${match?.label ?? 'followSystem'}`);
-  }, [profile.theme, t]);
+  const languageOptions = useMemo(
+    () => [
+      { key: 'system', label: t('settings.systemDefault'), selected: language === 'system', onPress: () => setLanguage('system') },
+      ...supportedLanguages.map((code) => ({
+        key: code,
+        label: languages[code].nativeName,
+        selected: language === code,
+        onPress: () => setLanguage(code),
+      })),
+    ],
+    [language, setLanguage, t],
+  );
 
   const reminderTimeDate = useMemo(() => {
-    const [h, m] = profile.reminderTime.split(':').map(Number);
+    const [h = 20, m = 0] = profile.reminderTime.split(':').map(Number);
     const d = new Date();
     d.setHours(h, m, 0, 0);
     return d;
   }, [profile.reminderTime]);
 
-  const themeDialogOptions = useMemo(() =>
-    THEME_OPTIONS.map(o => ({
-      key: o.value,
-      label: t(`settings.${o.label}`),
-      icon: o.icon,
-      selected: (profile.theme || 'system') === o.value,
-      onPress: async () => { await updateProfile({ theme: o.value }); },
-    })),
-    [profile.theme, updateProfile, t],
-  );
-
-  const languageLabel = useMemo(() => {
-    return language === 'system' ? t('settings.systemDefault') : languages[language].nativeName;
-  }, [language, t]);
-
-  const languageSheetSnapPoints = useMemo(() => ['70%'], []);
-
-  const languageDialogOptions = useMemo(() => [
-    { key: 'system', label: t('settings.systemDefault'), selected: language === 'system', onPress: () => setLanguage('system') },
-    ...supportedLanguages.map(code => ({
-      key: code,
-      label: languages[code].nativeName,
-      selected: language === code,
-      onPress: () => setLanguage(code),
-    })),
-  ], [language, setLanguage, t]);
-
-  const appVersion = getFormattedAppVersion();
-  const monogram = (profile.name || 'W').charAt(0).toUpperCase();
-
-  const lockSubtitle = lockMode === 'biometric'
-    ? t('settings.lockBiometric')
-    : lockMode === 'pin'
-    ? t('settings.lockPin')
-    : t('settings.lockOff');
+  const themeLabel = t(`settings.${THEME_OPTIONS.find((o) => o.value === themeValue)?.label ?? 'followSystem'}`);
+  const languageLabel = language === 'system' ? t('settings.systemDefault') : languages[language].nativeName;
+  const lockSubtitle =
+    lock.lockMode === 'biometric' ? t('settings.lockBiometric') : lock.lockMode === 'pin' ? t('settings.lockPin') : t('settings.lockOff');
 
   return (
     <Screen
@@ -345,37 +184,23 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       overlays={
         <>
           <CurrencyPickerBottomSheet
-            visible={showCurrencyPicker}
-            onClose={() => setShowCurrencyPicker(false)}
-            value={profile.defaultCurrency || 'USD'}
-            onChange={(code) => { updateProfile({ defaultCurrency: code }); }}
+            visible={sheet === 'currency'}
+            onClose={closeSheet}
+            value={currency}
+            onChange={(code) => void updateProfile({ defaultCurrency: code })}
           />
-          <OptionsDialog
-            visible={showThemeDialog}
-            onClose={() => setShowThemeDialog(false)}
-            title={t('settings.appTheme')}
-            options={themeDialogOptions}
-          />
+          <OptionsDialog visible={sheet === 'theme'} onClose={closeSheet} title={t('settings.appTheme')} options={themeOptions} />
           <OptionsBottomSheet
-            visible={showLanguageDialog}
-            onClose={() => setShowLanguageDialog(false)}
+            visible={sheet === 'language'}
+            onClose={closeSheet}
             title={t('settings.appLanguage')}
-            options={languageDialogOptions}
-            snapPoints={languageSheetSnapPoints}
-          />
-          <ConfirmDialog
-            visible={showResetDialog}
-            onClose={() => setShowResetDialog(false)}
-            title={t('settings.factoryReset')}
-            message={t('settings.resetMessage')}
-            confirmLabel={t('settings.eraseEverything')}
-            destructive
-            onConfirm={runReset}
+            options={languageOptions}
+            snapPoints={LANGUAGE_SNAP_POINTS}
           />
           <TextInputDialog
-            visible={showNameModal}
-            onClose={closeNameModal}
-            onSave={saveName}
+            visible={sheet === 'name'}
+            onClose={closeSheet}
+            onSave={(name) => updateProfile({ name })}
             title={t('settings.displayName')}
             subtitle={t('settings.displayNameHint')}
             initialValue={profile.name || ''}
@@ -384,58 +209,34 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             saveLabel={t('common.save')}
             inputProps={{ autoCapitalize: 'words' }}
           />
-          <PinSetupModal visible={showPinSetup} onCancel={handlePinSetupCancel} onComplete={handlePinSetupComplete} />
-          <AlertDialog
-            visible={alertConfig.visible}
-            title={alertConfig.title}
-            message={alertConfig.message}
-            type={alertConfig.type}
-            buttons={alertConfig.buttons}
-            onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
+          <ConfirmDialog
+            visible={sheet === 'reset'}
+            onClose={closeSheet}
+            title={t('settings.factoryReset')}
+            message={t('settings.resetMessage')}
+            confirmLabel={t('settings.eraseEverything')}
+            destructive
+            onConfirm={runReset}
           />
+          <ConfirmDialog
+            {...lock.disableConfirm}
+            title={t('settings.disableLock')}
+            message={t('settings.disableLockMessage')}
+            confirmLabel={t('settings.disable')}
+            destructive
+          />
+          <PinSetupModal {...lock.pinSetup} />
+          <AlertDialog {...alertProps} />
         </>
       }
     >
-      {/* Profile: the one ink card on the page — tap to rename */}
-      <BentoPressable style={styles.profileCard} onPress={openNameModal} accessibilityRole="button" accessibilityLabel={t('settings.displayName')}>
-        <View style={styles.profileAvatar}>
-          <Text variant="headline" tone="onPrimary">{monogram}</Text>
-        </View>
-        <View style={styles.profileInfo}>
-          <Text variant="subheading" color={colors.onInk} numberOfLines={1}>{profile.name || t('settings.welcome')}</Text>
-          <Text variant="caption" color={colors.onInkMuted}>{isPremium ? t('settings.proMember') : t('settings.freeTier')}</Text>
-        </View>
-        <Icon icon={PencilSimpleIcon} size={18} color={colors.onInkMuted} />
-      </BentoPressable>
+      <ProfileCard
+        name={profile.name}
+        isPremium={isPremium}
+        onEditName={() => setSheet('name')}
+        onOpenPremium={() => router.push('/premium')}
+      />
 
-      <ListGroup>
-        {isPremium ? (
-          <ListItem
-            icon={SparkleIcon}
-            iconColor={colors.warning}
-            title={t('settings.proLifetime')}
-            subtitle={t('settings.permanentAccess')}
-            value={t('settings.active')}
-            showChevron={false}
-            onPress={() => router.push('/premium')}
-          />
-        ) : (
-          <ListItem
-            icon={SparkleIcon}
-            iconColor={colors.warning}
-            title={t('settings.upgradeToPro')}
-            subtitle={t('settings.unlockAllFeatures')}
-            onPress={() => router.push('/premium')}
-            trailing={
-              <View style={styles.upgradePill}>
-                <Text variant="calloutStrong" tone="onPrimary">{t('settings.upgrade')}</Text>
-              </View>
-            }
-          />
-        )}
-      </ListGroup>
-
-      {/* Ordered by how often people come here: manage data → everyday prefs → one-off setup → about. */}
       <ListGroup title={t('settings.manage')}>
         <ListItem
           icon={SquaresFourIcon}
@@ -444,13 +245,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           subtitle={t('settings.categoriesHint')}
           onPress={() => router.push('/categories')}
         />
-        <ListItem
-          icon={UsersIcon}
-          iconColor={colors.info}
-          title={t('settings.people')}
-          subtitle={t('settings.peopleHint')}
-          onPress={() => router.push('/persons')}
-        />
+        <ListItem icon={UsersIcon} iconColor={colors.info} title={t('settings.people')} subtitle={t('settings.peopleHint')} onPress={() => router.push('/persons')} />
         <ListItem
           icon={HandCoinsIcon}
           iconColor={colors.warning}
@@ -466,28 +261,16 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             // The currency's own symbol reads better than a generic coin glyph.
             <View style={[styles.symbolTile, { backgroundColor: alpha(colors.success, 'subtle') }]}>
               <Text variant="bodyStrong" color={colors.success} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
-                {getCurrencySymbol(profile.defaultCurrency || 'USD')}
+                {getCurrencySymbol(currency)}
               </Text>
             </View>
           }
           title={t('settings.defaultCurrency')}
-          value={profile.defaultCurrency || 'USD'}
-          onPress={() => setShowCurrencyPicker(true)}
+          value={currency}
+          onPress={() => setSheet('currency')}
         />
-        <ListItem
-          icon={TranslateIcon}
-          iconColor={colors.info}
-          title={t('settings.language')}
-          value={languageLabel}
-          onPress={() => setShowLanguageDialog(true)}
-        />
-        <ListItem
-          icon={CircleHalfIcon}
-          iconColor={colors.info}
-          title={t('settings.appearance')}
-          value={themeLabel}
-          onPress={() => setShowThemeDialog(true)}
-        />
+        <ListItem icon={TranslateIcon} iconColor={colors.info} title={t('settings.language')} value={languageLabel} onPress={() => setSheet('language')} />
+        <ListItem icon={CircleHalfIcon} iconColor={colors.info} title={t('settings.appearance')} value={themeLabel} onPress={() => setSheet('theme')} />
       </ListGroup>
 
       <ListGroup title={t('settings.notifications')}>
@@ -497,7 +280,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           title={t('settings.dailyReminder')}
           subtitle={profile.reminderEnabled ? t('settings.reminderOn', { time: profile.reminderTime }) : t('settings.reminderOff')}
           switchValue={profile.reminderEnabled}
-          onSwitchChange={handleToggleReminders}
+          onSwitchChange={toggleReminders}
         />
         {profile.reminderEnabled ? (
           <ListItem
@@ -505,7 +288,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             iconColor={colors.warning}
             title={t('settings.reminderTime')}
             value={profile.reminderTime}
-            onPress={() => setShowTimePicker(true)}
+            onPress={() => setSheet('time')}
           />
         ) : null}
       </ListGroup>
@@ -516,16 +299,16 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           iconColor={colors.primaryInk}
           title={t('settings.appLock')}
           subtitle={lockSubtitle}
-          switchValue={lockEnabled}
-          onSwitchChange={handleToggleLock}
+          switchValue={lock.lockEnabled}
+          onSwitchChange={lock.toggle}
         />
-        {lockMode === 'pin' && lockEnabled ? (
+        {lock.lockMode === 'pin' && lock.lockEnabled ? (
           <ListItem
             icon={PasswordIcon}
             iconColor={colors.primaryInk}
             title={t('settings.changePin')}
             subtitle={t('settings.updatePin')}
-            onPress={handleChangePinPress}
+            onPress={lock.changePin}
           />
         ) : null}
       </ListGroup>
@@ -544,77 +327,30 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           iconColor={colors.primaryInk}
           title={t('settings.exportCsv')}
           subtitle={t('settings.exportHint')}
-          onPress={openExport}
+          onPress={() => router.push(isPremium ? '/export' : '/premium')}
         />
       </ListGroup>
 
       <ListGroup title={t('settings.about')}>
-        <ListItem
-          icon={ShieldCheckIcon}
-          iconColor={colors.textMuted}
-          title={t('settings.privacy')}
-          onPress={openPrivacy}
-        />
-        <ListItem
-          icon={FileTextIcon}
-          iconColor={colors.textMuted}
-          title={t('settings.terms')}
-          onPress={openTerms}
-        />
+        <ListItem icon={ShieldCheckIcon} iconColor={colors.textMuted} title={t('settings.privacy')} onPress={() => openWebPage(privacyUrl, t('settings.privacyTitle'))} />
+        <ListItem icon={FileTextIcon} iconColor={colors.textMuted} title={t('settings.terms')} onPress={() => openWebPage(termsUrl, t('settings.termsTitle'))} />
       </ListGroup>
 
       <ListGroup title={t('settings.dangerZone')}>
-        <ListItem
-          icon={TrashIcon}
-          title={t('settings.factoryReset')}
-          subtitle={t('settings.factoryResetHint')}
-          onPress={() => setShowResetDialog(true)}
-          destructive
-        />
+        <ListItem icon={TrashIcon} title={t('settings.factoryReset')} subtitle={t('settings.factoryResetHint')} onPress={() => setSheet('reset')} destructive />
       </ListGroup>
 
-      {showTimePicker ? (
-        <DateTimePicker
-          value={reminderTimeDate}
-          mode="time"
-          is24Hour
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={onTimeChange}
-        />
+      {sheet === 'time' ? (
+        <DateTimePicker value={reminderTimeDate} mode="time" is24Hour display={Platform.OS === 'ios' ? 'spinner' : 'default'} onChange={onTimeChange} />
       ) : null}
 
-      {/* Footer — tapping it 10× opens developer tools */}
-      <Pressable onPress={handleFooterTap} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }} style={styles.footer}>
-        <Text variant="label" tone="muted">Fintraq / Core</Text>
-        <Text variant="caption" tone="muted">{t('settings.footer', { version: appVersion })}</Text>
-      </Pressable>
+      <SettingsFooter />
     </Screen>
   );
 });
 
-/* ─────────────────────────────────────────────────────────────
-   Screen-level styles
-───────────────────────────────────────────────────────────── */
-
-const createStyles = ({ colors, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ radius }: ThemeContextType) =>
   StyleSheet.create({
-    profileCard: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('4'),
-      padding: spacing('5'),
-      borderRadius: radius('2xl'),
-      backgroundColor: colors.tabBarBackground,
-    },
-    profileAvatar: {
-      width: 48,
-      height: 48,
-      borderRadius: Math.round(48 * 0.3),
-      backgroundColor: colors.primary,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    profileInfo: { flex: 1, gap: spacing('0.5') },
     symbolTile: {
       width: LIST_ITEM_LEADING_SIZE,
       height: LIST_ITEM_LEADING_SIZE,
@@ -623,12 +359,4 @@ const createStyles = ({ colors, spacing, radius }: ThemeContextType) =>
       justifyContent: 'center',
       paddingHorizontal: 4,
     },
-    upgradePill: {
-      paddingHorizontal: spacing('3.5'),
-      height: 32,
-      justifyContent: 'center',
-      borderRadius: radius('full'),
-      backgroundColor: colors.primary,
-    },
-    footer: { alignItems: 'center', gap: spacing('1'), paddingVertical: spacing('4') },
   });
