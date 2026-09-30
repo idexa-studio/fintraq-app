@@ -13,4 +13,4 @@ Key rules
 - User-facing strings go through i18n (`src/i18n/locales/en.ts` is the typed source).
 - Never edit `drizzle/` migrations by hand — `npm run db:generate`.
 
-Checks: `npx tsc --noEmit` and `npx expo lint` must both be clean.
+Checks: `npx tsc --noEmit`, `npx expo lint` and `npm test` must all be clean.
