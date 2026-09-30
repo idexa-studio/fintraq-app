@@ -375,7 +375,7 @@ const id: Translation = {
     channelReminders: 'Pengingat & Peringatan', channelBackup: 'Progres Cadangan Cloud',
     backupSyncing: '☁️ Menyinkronkan Cadangan Cloud', syncingStage: 'Menyinkronkan data ruang kerja ke Google Drive...', startingBackup: 'Memulai pencadangan latar belakang...',
     backupComplete: '✅ Cadangan Cloud Selesai', backupCompleteBody: 'Riwayat ruang kerja Anda telah dicadangkan dengan aman ke penyimpanan cloud.',
-    backupFailed: '⚠️ Cadangan Cloud Gagal', backupFailedBody: 'Tidak dapat menyelesaikan cadangan cloud. Periksa koneksi internet Anda.',
+    backupFailed: '⚠️ Cadangan Cloud Gagal', backupFailedBody: 'Tidak dapat menyelesaikan cadangan cloud. Periksa koneksi internet Anda.', backupReconnect: '⚠️ Cadangan Cloud Dijeda', backupReconnectBody: 'Koneksi Google Drive Anda kedaluwarsa. Buka Fintraq dan hubungkan kembali untuk melanjutkan pencadangan.',
     paymentIncoming: 'Ada pembayaran masuk?', emiDue: 'Cicilan jatuh tempo hari ini', lendEmiBody: '{{name}} seharusnya mengirim pembayaran kepada Anda hari ini.', borrowEmiBody: 'Jangan lupa — kirim pembayaran kepada {{name}} hari ini.',
     loanDueSoon: 'Pinjaman segera jatuh tempo', repaymentDueSoon: 'Pembayaran segera jatuh tempo', lendDueBody: 'Pinjaman {{name}} jatuh tempo {{when}}.', borrowDueBody: 'Pembayaran pinjaman Anda kepada {{name}} jatuh tempo {{when}}.',
     today: 'hari ini', tomorrow: 'besok', inDays: '{{count}} hari lagi',

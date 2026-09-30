@@ -1,8 +1,20 @@
-import { GoogleDriveHttpError, GoogleDriveNetworkError, GoogleDriveTimeoutError } from './google-drive.errors';
+import { GoogleDriveHttpError, GoogleDriveNetworkError, GoogleDriveTimeoutError, isTransientDriveError } from './google-drive.errors';
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_RETRIES = 1;
 const RETRY_DELAY_MS = 500;
+
+// Floor covers TLS + token round-trips; the per-byte budget assumes a poor ~20 KB/s mobile link
+// so large histories on slow networks don't hit a fixed ceiling mid-transfer.
+const MIN_TRANSFER_TIMEOUT_MS = 60_000;
+const MAX_TRANSFER_TIMEOUT_MS = 10 * 60_000;
+const SLOW_LINK_BYTES_PER_MS = 20;
+
+/** Timeout for an upload/download of `bytes`, scaled to payload size. */
+export function transferTimeoutMs(bytes: number): number {
+  const scaled = MIN_TRANSFER_TIMEOUT_MS + Math.ceil(Math.max(0, bytes) / SLOW_LINK_BYTES_PER_MS);
+  return Math.min(MAX_TRANSFER_TIMEOUT_MS, scaled);
+}
 
 export type DriveRequestOptions = {
   method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
@@ -17,78 +29,30 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function isRetryableStatus(status: number): boolean {
-  return status === 429 || status >= 500;
-}
-
-/** True for failures a later attempt can plausibly fix (flaky network, timeout, 429/5xx) — never auth or 4xx. */
-export function isTransientDriveError(error: unknown): boolean {
-  if (error instanceof GoogleDriveTimeoutError || error instanceof GoogleDriveNetworkError) return true;
-  return error instanceof GoogleDriveHttpError && isRetryableStatus(error.status);
-}
-
-// Floor covers TLS + token round-trips; the per-byte budget assumes a poor ~20 KB/s mobile link
-// so large histories on slow networks don't hit a fixed ceiling mid-transfer.
-const MIN_TRANSFER_TIMEOUT_MS = 60_000;
-const MAX_TRANSFER_TIMEOUT_MS = 10 * 60_000;
-const SLOW_LINK_BYTES_PER_MS = 20;
-
-/** Timeout for an upload/download of `bytes`, scaled to payload size. */
-export function transferTimeoutMs(bytes: number): number {
-  const scaled = MIN_TRANSFER_TIMEOUT_MS + Math.ceil(Math.max(0, bytes) / SLOW_LINK_BYTES_PER_MS);
-  return Math.min(MAX_TRANSFER_TIMEOUT_MS, scaled);
-}
-
-/** Fetch wrapper with timeout attribution + bounded retry; distinguishes timeout/network/HTTP errors. */
+/** Fetch wrapper for small JSON calls: timeout attribution + bounded retry of transient failures. */
 export async function driveFetch(url: string, options: DriveRequestOptions): Promise<Response> {
   const { method, headers, body, operation, timeoutMs = DEFAULT_TIMEOUT_MS, retries = DEFAULT_RETRIES } = options;
 
-  let lastError: Error = new GoogleDriveNetworkError(operation, 'unknown failure');
-
-  for (let attempt = 0; attempt <= retries; attempt++) {
+  for (let attempt = 0; ; attempt++) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     const startedAt = Date.now();
 
+    let error: Error;
     try {
       const response = await fetch(url, { method, headers, body, signal: controller.signal });
+      if (response.ok) return response;
+      error = new GoogleDriveHttpError(response.status, operation, await response.text());
+    } catch (e) {
+      const isAbort = e instanceof Error && e.name === 'AbortError';
+      error = isAbort ? new GoogleDriveTimeoutError(operation, Date.now() - startedAt) : new GoogleDriveNetworkError(operation, e);
+    } finally {
       clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        if (isRetryableStatus(response.status) && attempt < retries) {
-          lastError = new GoogleDriveHttpError(response.status, operation, errorText);
-          await sleep(RETRY_DELAY_MS * (attempt + 1));
-          continue;
-        }
-        throw new GoogleDriveHttpError(response.status, operation, errorText);
-      }
-
-      return response;
-    } catch (error) {
-      clearTimeout(timeoutId);
-
-      if (error instanceof GoogleDriveHttpError) {
-        throw error;
-      }
-
-      const isAbort = error instanceof Error && error.name === 'AbortError';
-      const elapsedMs = Date.now() - startedAt;
-
-      if (isAbort) {
-        lastError = new GoogleDriveTimeoutError(operation, elapsedMs);
-      } else {
-        lastError = new GoogleDriveNetworkError(operation, error);
-      }
-
-      if (attempt < retries) {
-        await sleep(RETRY_DELAY_MS * (attempt + 1));
-        continue;
-      }
     }
-  }
 
-  throw lastError;
+    if (attempt >= retries || !isTransientDriveError(error)) throw error;
+    await sleep(RETRY_DELAY_MS * (attempt + 1));
+  }
 }
 
 export type DriveProgressCallback = (fraction: number) => void;
@@ -103,11 +67,12 @@ export type DriveXhrRequestOptions = {
   onProgress?: DriveProgressCallback;
 };
 
-const DEFAULT_XHR_TIMEOUT_MS = MIN_TRANSFER_TIMEOUT_MS;
-
-/** XHR-based request for real byte-level progress — RN's `fetch` doesn't expose upload progress. */
+/**
+ * XHR-based request for real byte-level progress — RN's `fetch` doesn't expose upload progress.
+ * No built-in retry: callers retry whole transfers (see cloud-backup.service).
+ */
 export function driveXhrRequest(url: string, options: DriveXhrRequestOptions): Promise<string> {
-  const { method, headers, body, operation, timeoutMs = DEFAULT_XHR_TIMEOUT_MS, onProgress } = options;
+  const { method, headers, body, operation, timeoutMs = MIN_TRANSFER_TIMEOUT_MS, onProgress } = options;
 
   return new Promise<string>((resolve, reject) => {
     const xhr = new XMLHttpRequest();

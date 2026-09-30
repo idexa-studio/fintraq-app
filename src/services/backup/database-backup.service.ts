@@ -1,192 +1,50 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Crypto from 'expo-crypto';
 import { StorageKeys } from '@/src/constants/keys';
-import i18n from '@/src/i18n';
 import { db, getExpoDb, resetDbConnections } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons, seederState } from '@/src/db/schema';
 import { runSeeds } from '@/src/db/seeds/runner';
 import type { UserProfile } from '@/src/providers/SettingsProvider';
-import { BackupLock } from './backup-lock';
 import { LoggerService } from '@/src/services/logger.service';
 import { getFormattedAppVersion } from '@/src/utils/version';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { QueryClient } from '@tanstack/react-query';
-import * as Crypto from 'expo-crypto';
+import {
+  BackupData,
+  BackupMetadata,
+  BackupPackagePayload,
+  BackupValidationError,
+  buildRestorePlan,
+  insertSql,
+  parseBackupPackage,
+  RESTORE_DELETE_ORDER,
+} from './backup-snapshot';
 
-export type BackupMetadata = {
-  version: number;
-  appVersion: string;
-  timestamp: string;
-  checksum: string;
-  counts: {
-    accounts: number;
-    categories: number;
-    persons: number;
-    loans: number;
-    payments: number;
-  };
-};
+const BACKUP_FORMAT_VERSION = 1;
+// Lets in-flight reads on the old connection settle before the tables are replaced.
+const CONNECTION_DRAIN_MS = 150;
 
-export type PersonBackupRow = {
-  id: number;
-  name: string;
-  email?: string | null;
-  phone?: string | null;
-  designation?: string | null;
-  company?: string | null;
-  color?: number | null;
-  createdAt?: string;
-  created_at?: string;
-  updatedAt?: string;
-  updated_at?: string;
-};
+function sha256(value: string): Promise<string> {
+  return Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, value);
+}
 
-export type AccountBackupRow = {
-  id: number;
-  name: string;
-  holderName?: string | null;
-  holder_name?: string | null;
-  accountNumber?: string | null;
-  account_number?: string | null;
-  icon?: string | null;
-  accountType?: string | null;
-  account_type?: string | null;
-  color?: number | null;
-  isDefault?: boolean | number | null;
-  is_default?: boolean | number | null;
-  currency?: string | null;
-  balance?: number | null;
-  income?: number | null;
-  expense?: number | null;
-  createdAt?: string;
-  created_at?: string;
-  updatedAt?: string;
-  updated_at?: string;
-};
-
-export type CategoryBackupRow = {
-  id: number;
-  name: string;
-  icon?: string | null;
-  color?: number | null;
-  type?: string | null;
-  isSystem?: boolean | number | null;
-  is_system?: boolean | number | null;
-  createdAt?: string;
-  created_at?: string;
-  updatedAt?: string;
-  updated_at?: string;
-};
-
-export type LoanBackupRow = {
-  id: number;
-  personId?: number | null;
-  person_id?: number | null;
-  type?: string | null;
-  principal?: number | null;
-  currency?: string | null;
-  accountId?: number | null;
-  account_id?: number | null;
-  categoryId?: number | null;
-  category_id?: number | null;
-  dueDate?: string | null;
-  due_date?: string | null;
-  note?: string | null;
-  status?: string | null;
-  emiReminderEnabled?: boolean | number | null;
-  emi_reminder_enabled?: boolean | number | null;
-  emiReminderDay?: number | null;
-  emi_reminder_day?: number | null;
-  emiReminderTime?: string | null;
-  emi_reminder_time?: string | null;
-  emiNotificationIds?: string | null;
-  emi_notification_ids?: string | null;
-  dueReminderEnabled?: boolean | number | null;
-  due_reminder_enabled?: boolean | number | null;
-  dueReminderDaysBefore?: number | null;
-  due_reminder_days_before?: number | null;
-  dueReminderTime?: string | null;
-  due_reminder_time?: string | null;
-  dueNotificationId?: string | null;
-  due_notification_id?: string | null;
-  dueNotificationIds?: string | null;
-  due_notification_ids?: string | null;
-  createdAt?: string;
-  created_at?: string;
-  updatedAt?: string;
-  updated_at?: string;
-};
-
-export type PaymentBackupRow = {
-  id: number;
-  accountId?: number | null;
-  account_id?: number | null;
-  categoryId?: number | null;
-  category_id?: number | null;
-  toAccountId?: number | null;
-  to_account_id?: number | null;
-  personId?: number | null;
-  person_id?: number | null;
-  loanId?: number | null;
-  loan_id?: number | null;
-  amount?: number | null;
-  type?: string | null;
-  datetime?: string | null;
-  note?: string | null;
-  createdAt?: string;
-  created_at?: string;
-  updatedAt?: string;
-  updated_at?: string;
-};
-
-export type SeederBackupRow = {
-  id: number;
-  name: string;
-  executedAt?: string;
-  executed_at?: string;
-};
-
-export type BackupPackagePayload = {
-  metadata: BackupMetadata;
-  profile?: UserProfile | null;
-  data: {
-    accounts: AccountBackupRow[];
-    categories: CategoryBackupRow[];
-    persons: PersonBackupRow[];
-    loans: LoanBackupRow[];
-    payments: PaymentBackupRow[];
-    seederState: SeederBackupRow[];
-  };
-};
-
-/** Singular/snake_case table keys written by older app versions — still accepted on restore. */
-type LegacyBackupData = Partial<BackupPackagePayload['data']> & {
-  person?: PersonBackupRow[];
-  account?: AccountBackupRow[];
-  category?: CategoryBackupRow[];
-  loan?: LoanBackupRow[];
-  payment?: PaymentBackupRow[];
-  seeder_state?: SeederBackupRow[];
-  seeder?: SeederBackupRow[];
-};
-
-type DriveErrorPayload = { error?: { message?: string } };
-
-type SqlValue = string | number | null;
-
-class DatabaseBackupServiceClass {
-  /** True while a restore transaction is in flight. */
-  public isRestoring(): boolean {
-    return BackupLock.isRestoring();
+async function readProfile(): Promise<UserProfile | null> {
+  try {
+    const raw = await AsyncStorage.getItem(StorageKeys.PROFILE);
+    return raw ? (JSON.parse(raw) as UserProfile) : null;
+  } catch (e) {
+    LoggerService.warn('DB_BACKUP', 'Could not read user profile for backup', e);
+    return null;
   }
+}
 
-  public async exportBackupData(): Promise<string> {
-    // 1. Checkpoint WAL log natively
+/** Snapshot export and atomic import of the local database (the file format lives in backup-snapshot). */
+export const DatabaseBackupService = {
+  async exportBackupData(): Promise<string> {
     try {
       getExpoDb().execSync('PRAGMA wal_checkpoint(PASSIVE);');
     } catch {
-      // Ignore passive checkpoint warnings
+      // Passive checkpoint is opportunistic.
     }
 
-    // 2. Query all tables
     const [allAccounts, allCategories, allPersons, allLoans, allPayments, allSeederState] = await Promise.all([
       db.select().from(accounts),
       db.select().from(categories),
@@ -196,7 +54,7 @@ class DatabaseBackupServiceClass {
       db.select().from(seederState),
     ]);
 
-    const dataPart = {
+    const data: BackupData = {
       accounts: allAccounts,
       categories: allCategories,
       persons: allPersons,
@@ -205,17 +63,12 @@ class DatabaseBackupServiceClass {
       seederState: allSeederState,
     };
 
-    const rawDataStr = JSON.stringify(dataPart);
-    const checksum = await Crypto.digestStringAsync(
-      Crypto.CryptoDigestAlgorithm.SHA256,
-      rawDataStr,
-    );
-
     const metadata: BackupMetadata = {
-      version: 1,
+      version: BACKUP_FORMAT_VERSION,
       appVersion: getFormattedAppVersion(),
       timestamp: new Date().toISOString(),
-      checksum,
+      // Restore re-stringifies the parsed `data` and compares, so hash exactly that serialisation.
+      checksum: await sha256(JSON.stringify(data)),
       counts: {
         accounts: allAccounts.length,
         categories: allCategories.length,
@@ -225,311 +78,70 @@ class DatabaseBackupServiceClass {
       },
     };
 
-    // Query profile settings to include in backup payload
-    let userProfile: UserProfile | null = null;
+    const pkg: BackupPackagePayload<UserProfile> = { metadata, profile: await readProfile(), data };
+    return JSON.stringify(pkg);
+  },
+
+  /**
+   * Replaces all local data with the backup, atomically. Validation (structure, checksum,
+   * non-empty) happens before anything is touched; the profile is applied only after the data
+   * transaction commits, so a bad backup leaves the device exactly as it was.
+   * The caller owns the operation lock and any cache invalidation.
+   */
+  async importBackupData(backupJson: string): Promise<BackupMetadata> {
+    const pkg = parseBackupPackage(backupJson);
+
+    if (pkg.metadata.checksum && pkg.metadata.checksum !== (await sha256(JSON.stringify(pkg.data)))) {
+      throw new BackupValidationError('corrupted', 'Checksum mismatch');
+    }
+
+    const plan = buildRestorePlan(pkg.data, new Date().toISOString());
+
+    // Fresh connection: drops cached statements and cursors held against the old tables.
+    resetDbConnections();
+    const expoDb = getExpoDb();
     try {
-      const storedProfileStr = await AsyncStorage.getItem(StorageKeys.PROFILE);
-      if (storedProfileStr) {
-        userProfile = JSON.parse(storedProfileStr);
-      }
+      expoDb.execSync('PRAGMA busy_timeout = 30000;');
+      expoDb.execSync('PRAGMA wal_checkpoint(PASSIVE);');
     } catch (e) {
-      LoggerService.warn('DB_BACKUP', 'Could not read user profile for backup', e);
+      LoggerService.warn('DB_BACKUP', 'Connection PRAGMA warning', e);
     }
+    await new Promise((resolve) => setTimeout(resolve, CONNECTION_DRAIN_MS));
 
-    const fullPackage: BackupPackagePayload = {
-      metadata,
-      profile: userProfile,
-      data: dataPart,
-    };
-
-    return JSON.stringify(fullPackage);
-  }
-
-  public async restoreBackupData(backupJsonStr: string, queryClient?: QueryClient): Promise<BackupMetadata> {
-    BackupLock.setRestoring(true);
+    // Must be set outside the transaction — SQLite ignores PRAGMA foreign_keys inside one.
+    expoDb.execSync('PRAGMA foreign_keys = OFF;');
     try {
-      let pkg: BackupPackagePayload;
-      try {
-        pkg = JSON.parse(backupJsonStr);
-      } catch {
-        throw new Error(i18n.t('backup.errRestoreIntegrity'));
-      }
-
-      const driveError = (pkg as DriveErrorPayload | null)?.error;
-      if (driveError) {
-        throw new Error(`Google Drive download error: ${driveError.message || 'Failed to fetch backup file'}`);
-      }
-
-      if (!pkg?.metadata || !pkg.data) {
-        throw new Error(i18n.t('backup.errRestoreIntegrity'));
-      }
-
-      // Verify SHA-256 checksum integrity
-      const rawDataStr = JSON.stringify(pkg.data);
-      const computedChecksum = await Crypto.digestStringAsync(
-        Crypto.CryptoDigestAlgorithm.SHA256,
-        rawDataStr,
-      );
-
-      if (pkg.metadata.checksum && pkg.metadata.checksum !== computedChecksum) {
-        LoggerService.error('DB_BACKUP', 'Checksum mismatch — backup file is corrupted or incomplete, aborting restore');
-        throw new Error(i18n.t('backup.errRestoreIntegrity'));
-      }
-
-      // Extract table rows with multi-key fallbacks
-      const data: LegacyBackupData = pkg.data;
-      const personsList: PersonBackupRow[] = data.persons || data.person || [];
-      const accountsList: AccountBackupRow[] = data.accounts || data.account || [];
-      const categoriesList: CategoryBackupRow[] = data.categories || data.category || [];
-      const loansList: LoanBackupRow[] = data.loans || data.loan || [];
-      const paymentsList: PaymentBackupRow[] = data.payments || data.payment || [];
-      const seederList: SeederBackupRow[] = data.seederState || data.seeder_state || data.seeder || [];
-
-      // Refuse to wipe local data for a backup with nothing to restore
-      const totalRestoreRows =
-        personsList.length + accountsList.length + categoriesList.length + loansList.length + paymentsList.length;
-      if (totalRestoreRows === 0) {
-        throw new Error(i18n.t('backup.errRestoreEmpty'));
-      }
-
-      // Reset native SQLite connection to release all cached statement handles and open cursors
-      resetDbConnections();
-      const expoDb = getExpoDb();
-
-      // Configure SQLite native connection parameters
-      try {
-        expoDb.execSync('PRAGMA busy_timeout = 30000;');
-        expoDb.execSync('PRAGMA wal_checkpoint(PASSIVE);');
-      } catch (e) {
-        LoggerService.warn('DB_BACKUP', 'Connection PRAGMA warning', e);
-      }
-
-      // Drain any in-flight background read queries
-      await new Promise(resolve => setTimeout(resolve, 150));
-
-      // Build entity ID sets for schema-compliant { onDelete: 'set null' } fallback
-      const validPersonIds = new Set(personsList.map(p => p.id));
-      const validAccountIds = new Set(accountsList.map(a => a.id));
-      const validLoanIds = new Set(loansList.map(l => l.id));
-
-      // Perform atomic synchronous native transaction replacement.
-      // Disabling foreign keys MUST occur before the transaction begins;
-      // SQLite ignores PRAGMA foreign_keys once a transaction is open.
-      expoDb.execSync('PRAGMA foreign_keys = OFF;');
-      try {
-        expoDb.withTransactionSync(() => {
-          expoDb.execSync('DELETE FROM payments;');
-          expoDb.execSync('DELETE FROM loans;');
-          expoDb.execSync('DELETE FROM persons;');
-          expoDb.execSync('DELETE FROM categories;');
-          expoDb.execSync('DELETE FROM accounts;');
-          expoDb.execSync('DELETE FROM seeder_state;');
-
-          const clean = <T extends SqlValue>(val: T | undefined): T | null => (val === undefined ? null : val);
-          const toBooleanInt = (val: unknown, defaultVal = 0): number => {
-            if (val === true || val === 1 || val === '1' || val === 'true' || val === 'TRUE') return 1;
-            if (val === false || val === 0 || val === '0' || val === 'false' || val === 'FALSE') return 0;
-            return defaultVal;
-          };
-
-          // 1. Insert Persons
-          if (personsList.length > 0) {
-            const stmt = expoDb.prepareSync(
-              'INSERT INTO persons (id, name, email, phone, designation, company, color, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            );
-            try {
-              for (const r of personsList) {
-                stmt.executeSync([
-                  clean(r.id),
-                  clean(r.name ?? ''),
-                  clean(r.email),
-                  clean(r.phone),
-                  clean(r.designation),
-                  clean(r.company),
-                  clean(r.color ?? 0),
-                  clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
-                  clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
-                ]);
-              }
-            } finally {
-              stmt.finalizeSync();
-            }
+      expoDb.withTransactionSync(() => {
+        RESTORE_DELETE_ORDER.forEach((table) => expoDb.execSync(`DELETE FROM ${table};`));
+        for (const insert of plan) {
+          const stmt = expoDb.prepareSync(insertSql(insert));
+          try {
+            insert.rows.forEach((row) => stmt.executeSync(row));
+          } finally {
+            stmt.finalizeSync();
           }
-
-          // 2. Insert Accounts
-          if (accountsList.length > 0) {
-            const stmt = expoDb.prepareSync(
-              'INSERT INTO accounts (id, name, holderName, accountNumber, icon, account_type, color, isDefault, currency, balance, income, expense, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            );
-            try {
-              for (const r of accountsList) {
-                stmt.executeSync([
-                  clean(r.id),
-                  clean(r.name ?? ''),
-                  clean(r.holderName ?? r.holder_name ?? r.name ?? ''),
-                  clean(r.accountNumber ?? r.account_number ?? ''),
-                  clean(r.icon ?? 'building'),
-                  clean(r.accountType ?? r.account_type ?? 'bank'),
-                  clean(r.color ?? 0),
-                  toBooleanInt(r.isDefault ?? r.is_default, 0),
-                  clean(r.currency ?? 'USD'),
-                  clean(r.balance ?? 0),
-                  clean(r.income ?? 0),
-                  clean(r.expense ?? 0),
-                  clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
-                  clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
-                ]);
-              }
-            } finally {
-              stmt.finalizeSync();
-            }
-          }
-
-          // 3. Insert Categories
-          if (categoriesList.length > 0) {
-            const stmt = expoDb.prepareSync(
-              'INSERT INTO categories (id, name, icon, color, type, is_system, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-            );
-            try {
-              for (const r of categoriesList) {
-                stmt.executeSync([
-                  clean(r.id),
-                  clean(r.name ?? ''),
-                  clean(r.icon ?? 'grid'),
-                  clean(r.color ?? 0),
-                  clean(r.type ?? 'DR'),
-                  toBooleanInt(r.isSystem ?? r.is_system, 0),
-                  clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
-                  clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
-                ]);
-              }
-            } finally {
-              stmt.finalizeSync();
-            }
-          }
-
-          // 4. Insert Loans
-          if (loansList.length > 0) {
-            const stmt = expoDb.prepareSync(
-              'INSERT INTO loans (id, person_id, type, principal, currency, account_id, category_id, due_date, note, status, emi_reminder_enabled, emi_reminder_day, emi_reminder_time, emi_notification_ids, due_reminder_enabled, due_reminder_days_before, due_notification_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            );
-            try {
-              for (const r of loansList) {
-                const personId = clean(r.personId ?? r.person_id);
-                stmt.executeSync([
-                  clean(r.id),
-                  personId && validPersonIds.has(personId) ? personId : null,
-                  clean(r.type ?? 'lend'),
-                  clean(r.principal ?? 0),
-                  clean(r.currency ?? 'USD'),
-                  clean(r.accountId ?? r.account_id),
-                  clean(r.categoryId ?? r.category_id),
-                  clean(r.dueDate ?? r.due_date),
-                  clean(r.note ?? ''),
-                  clean(r.status ?? 'active'),
-                  toBooleanInt(r.emiReminderEnabled ?? r.emi_reminder_enabled, 0),
-                  clean(r.emiReminderDay ?? r.emi_reminder_day),
-                  clean(r.emiReminderTime ?? r.emi_reminder_time),
-                  clean(r.emiNotificationIds ?? r.emi_notification_ids),
-                  toBooleanInt(r.dueReminderEnabled ?? r.due_reminder_enabled, 0),
-                  clean(r.dueReminderDaysBefore ?? r.due_reminder_days_before),
-                  clean(r.dueNotificationId ?? r.due_notification_id ?? r.dueNotificationIds ?? r.due_notification_ids),
-                  clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
-                  clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
-                ]);
-              }
-            } finally {
-              stmt.finalizeSync();
-            }
-          }
-
-          // 5. Insert Payments
-          if (paymentsList.length > 0) {
-            const stmt = expoDb.prepareSync(
-              'INSERT INTO payments (id, account_id, category_id, to_account_id, person_id, loan_id, amount, type, datetime, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            );
-            try {
-              for (const r of paymentsList) {
-                const toAccountId = clean(r.toAccountId ?? r.to_account_id);
-                const personId = clean(r.personId ?? r.person_id);
-                const loanId = clean(r.loanId ?? r.loan_id);
-
-                stmt.executeSync([
-                  clean(r.id),
-                  clean(r.accountId ?? r.account_id),
-                  clean(r.categoryId ?? r.category_id),
-                  toAccountId && validAccountIds.has(toAccountId) ? toAccountId : null,
-                  personId && validPersonIds.has(personId) ? personId : null,
-                  loanId && validLoanIds.has(loanId) ? loanId : null,
-                  clean(r.amount ?? 0),
-                  clean(r.type ?? 'DR'),
-                  clean(r.datetime ?? new Date().toISOString()),
-                  clean(r.note ?? ''),
-                  clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
-                  clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
-                ]);
-              }
-            } finally {
-              stmt.finalizeSync();
-            }
-          }
-
-          // 6. Insert Seeder State
-          if (seederList.length > 0) {
-            const stmt = expoDb.prepareSync(
-              'INSERT INTO seeder_state (id, name, executed_at) VALUES (?, ?, ?)'
-            );
-            try {
-              for (const r of seederList) {
-                stmt.executeSync([
-                  clean(r.id),
-                  clean(r.name),
-                  clean(r.executedAt ?? r.executed_at ?? new Date().toISOString()),
-                ]);
-              }
-            } finally {
-              stmt.finalizeSync();
-            }
-          }
-        });
-      } catch (error) {
-        LoggerService.error('DB_BACKUP', 'Synchronous restore transaction failed', error);
-        throw new Error(`Database restore transaction failed: ${error instanceof Error ? error.message : String(error)}`);
-      } finally {
-        expoDb.execSync('PRAGMA foreign_keys = ON;');
-      }
-
-      // Restore the user profile (name, currency, theme, reminders) only after the data restore
-      // committed — a corrupt or empty backup must not leave settings half-replaced.
-      if (pkg.profile) {
-        try {
-          const currentProfileStr = await AsyncStorage.getItem(StorageKeys.PROFILE);
-          const currentProfile = currentProfileStr ? JSON.parse(currentProfileStr) : {};
-          const mergedProfile = { ...currentProfile, ...pkg.profile };
-          await AsyncStorage.setItem(StorageKeys.PROFILE, JSON.stringify(mergedProfile));
-          LoggerService.info('DB_BACKUP', 'Restored user profile & default currency', pkg.profile.defaultCurrency);
-        } catch (e) {
-          LoggerService.warn('DB_BACKUP', 'Profile restore warning', e);
         }
-      }
-
-      // Re-run seeds to guarantee mandatory system categories/records exist
-      try {
-        await runSeeds();
-      } catch (e) {
-        LoggerService.warn('DB_BACKUP', 'Re-seed warning', e);
-      }
-
-      // Invalidate React Query cache for instant UI refresh
-      if (queryClient) {
-        queryClient.clear();
-      }
-
-      return pkg.metadata;
+      });
     } finally {
-      BackupLock.setRestoring(false);
+      expoDb.execSync('PRAGMA foreign_keys = ON;');
     }
-  }
-}
 
-export const DatabaseBackupService = new DatabaseBackupServiceClass();
+    if (pkg.profile && typeof pkg.profile === 'object') {
+      try {
+        const current = await readProfile();
+        await AsyncStorage.setItem(StorageKeys.PROFILE, JSON.stringify({ ...current, ...pkg.profile }));
+      } catch (e) {
+        LoggerService.warn('DB_BACKUP', 'Profile restore warning', e);
+      }
+    }
+
+    // Guarantees mandatory system rows exist even if the backup predates them.
+    try {
+      await runSeeds();
+    } catch (e) {
+      LoggerService.warn('DB_BACKUP', 'Re-seed warning', e);
+    }
+
+    return pkg.metadata;
+  },
+};

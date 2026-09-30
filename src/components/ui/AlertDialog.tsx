@@ -9,7 +9,7 @@ export type AlertButton = {
   style?: 'default' | 'cancel' | 'destructive';
 };
 
-type AlertDialogProps = {
+export type AlertDialogProps = {
   visible: boolean;
   title: string;
   message?: string;

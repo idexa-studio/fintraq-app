@@ -18,7 +18,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useTransactions } from '@/src/features/transactions/hooks/transactions';
 import { BackupPromptModal } from '@/src/features/backup/components/BackupPromptModal';
-import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
+import { useBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
 import { AccountsCarousel } from '@/src/features/dashboard/components/AccountsCarousel';
 import { DashboardHeader } from '@/src/features/dashboard/components/DashboardHeader';
 import { HeroBalanceCard } from '@/src/features/dashboard/components/HeroBalanceCard';
@@ -46,7 +46,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   const { data: transactions, isLoading: txLoading } = useTransactions(6);
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
-  const { isConnected: isBackupConnected, isChecking: isBackupChecking } = useGoogleBackup();
+  const { isConnected: isBackupConnected, isLoading: isBackupChecking } = useBackupAccount();
 
   const { isLocked } = useAppLock();
 

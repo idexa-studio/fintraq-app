@@ -375,7 +375,7 @@ const te: Translation = {
     channelReminders: 'రిమైండర్లు & హెచ్చరికలు', channelBackup: 'క్లౌడ్ బ్యాకప్ పురోగతి',
     backupSyncing: '☁️ క్లౌడ్ బ్యాకప్ సింక్ అవుతోంది', syncingStage: 'వర్క్‌స్పేస్ డేటా Google Drive కు సింక్ అవుతోంది...', startingBackup: 'బ్యాక్‌గ్రౌండ్ బ్యాకప్ ప్రారంభమవుతోంది...',
     backupComplete: '✅ క్లౌడ్ బ్యాకప్ పూర్తయింది', backupCompleteBody: 'మీ వర్క్‌స్పేస్ చరిత్ర క్లౌడ్ స్టోరేజ్‌కు సురక్షితంగా బ్యాకప్ చేయబడింది.',
-    backupFailed: '⚠️ క్లౌడ్ బ్యాకప్ విఫలమైంది', backupFailedBody: 'క్లౌడ్ బ్యాకప్‌ను పూర్తి చేయలేకపోయాము. దయచేసి మీ ఇంటర్నెట్ కనెక్షన్‌ను తనిఖీ చేయండి.',
+    backupFailed: '⚠️ క్లౌడ్ బ్యాకప్ విఫలమైంది', backupFailedBody: 'క్లౌడ్ బ్యాకప్‌ను పూర్తి చేయలేకపోయాము. దయచేసి మీ ఇంటర్నెట్ కనెక్షన్‌ను తనిఖీ చేయండి.', backupReconnect: '⚠️ క్లౌడ్ బ్యాకప్ నిలిపివేయబడింది', backupReconnectBody: 'మీ Google Drive కనెక్షన్ గడువు ముగిసింది. బ్యాకప్‌లు కొనసాగించడానికి Fintraq తెరిచి మళ్లీ కనెక్ట్ చేయండి.',
     paymentIncoming: 'చెల్లింపు రాబోతోందా?', emiDue: 'ఈరోజు EMI గడువు', lendEmiBody: '{{name}} ఈరోజు మీకు తిరిగి చెల్లింపు పంపాలి.', borrowEmiBody: 'మర్చిపోకండి — ఈరోజు {{name}} కు తిరిగి చెల్లింపు పంపండి.',
     loanDueSoon: 'రుణం గడువు దగ్గరలో', repaymentDueSoon: 'తిరిగి చెల్లింపు గడువు దగ్గరలో', lendDueBody: '{{name}} రుణం గడువు {{when}}.', borrowDueBody: '{{name}} కు మీ రుణ చెల్లింపు గడువు {{when}}.',
     today: 'ఈరోజు', tomorrow: 'రేపు', inDays: '{{count}} రోజుల్లో',

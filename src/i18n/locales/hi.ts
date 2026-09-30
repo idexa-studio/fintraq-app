@@ -375,7 +375,7 @@ const hi: Translation = {
     channelReminders: 'रिमाइंडर और अलर्ट', channelBackup: 'क्लाउड बैकअप प्रगति',
     backupSyncing: '☁️ क्लाउड बैकअप सिंक हो रहा है', syncingStage: 'वर्कस्पेस डेटा Google Drive पर सिंक हो रहा है...', startingBackup: 'बैकग्राउंड बैकअप शुरू हो रहा है...',
     backupComplete: '✅ क्लाउड बैकअप पूरा', backupCompleteBody: 'आपके वर्कस्पेस का इतिहास क्लाउड स्टोरेज में सुरक्षित बैकअप हो गया।',
-    backupFailed: '⚠️ क्लाउड बैकअप विफल', backupFailedBody: 'क्लाउड बैकअप पूरा नहीं हो सका। कृपया अपना इंटरनेट कनेक्शन जाँचें।',
+    backupFailed: '⚠️ क्लाउड बैकअप विफल', backupFailedBody: 'क्लाउड बैकअप पूरा नहीं हो सका। कृपया अपना इंटरनेट कनेक्शन जाँचें।', backupReconnect: '⚠️ क्लाउड बैकअप रुका', backupReconnectBody: 'आपका Google Drive कनेक्शन समाप्त हो गया। बैकअप फिर शुरू करने के लिए Fintraq खोलें और दोबारा कनेक्ट करें।',
     paymentIncoming: 'भुगतान आने वाला है?', emiDue: 'आज EMI देय है', lendEmiBody: '{{name}} को आज आपको भुगतान भेजना चाहिए।', borrowEmiBody: 'न भूलें — आज {{name}} को उनका भुगतान भेजें।',
     loanDueSoon: 'ऋण जल्द देय', repaymentDueSoon: 'भुगतान जल्द देय', lendDueBody: '{{name}} का ऋण {{when}} देय है।', borrowDueBody: '{{name}} को आपका ऋण भुगतान {{when}} देय है।',
     today: 'आज', tomorrow: 'कल', inDays: '{{count}} दिन में',

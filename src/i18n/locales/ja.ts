@@ -375,7 +375,7 @@ const ja: Translation = {
     channelReminders: 'リマインダーとアラート', channelBackup: 'クラウドバックアップの進行状況',
     backupSyncing: '☁️ クラウドバックアップを同期中', syncingStage: 'ワークスペースのデータをGoogle Driveに同期中...', startingBackup: 'バックグラウンドバックアップを開始中...',
     backupComplete: '✅ クラウドバックアップ完了', backupCompleteBody: 'ワークスペースの履歴をクラウドに安全にバックアップしました。',
-    backupFailed: '⚠️ クラウドバックアップに失敗', backupFailedBody: 'クラウドバックアップを完了できませんでした。インターネット接続を確認してください。',
+    backupFailed: '⚠️ クラウドバックアップに失敗', backupFailedBody: 'クラウドバックアップを完了できませんでした。インターネット接続を確認してください。', backupReconnect: '⚠️ クラウドバックアップを一時停止中', backupReconnectBody: 'Google ドライブとの接続が期限切れになりました。Fintraq を開いて再接続すると、バックアップが再開されます。',
     paymentIncoming: '入金の予定は？', emiDue: '今日は分割返済日です', lendEmiBody: '{{name}}さんから今日返済があるはずです。', borrowEmiBody: 'お忘れなく — 今日は{{name}}さんへ返済を送りましょう。',
     loanDueSoon: '貸し借りの期限が近づいています', repaymentDueSoon: '返済の期限が近づいています', lendDueBody: '{{name}}さんへの貸付の期限は{{when}}です。', borrowDueBody: '{{name}}さんへの返済期限は{{when}}です。',
     today: '今日', tomorrow: '明日', inDays: '{{count}}日後',
