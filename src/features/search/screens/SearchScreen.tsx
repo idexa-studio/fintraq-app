@@ -618,7 +618,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       ...typography.metrics.xxs,
     },
     filterTabTextActive: {
-      color: colors.primary,
+      color: colors.primaryInk,
     },
     tabBadge: {
       height: 18,
@@ -637,7 +637,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.textMuted,
     },
     tabBadgeTextActive: {
-      color: colors.primary,
+      color: colors.primaryInk,
     },
 
     /* ── Search History / Recents ── */

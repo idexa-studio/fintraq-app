@@ -44,6 +44,6 @@ export const createBackupRowStyles = ({ colors, typography, spacing, radius }: T
     trailingBadgeText: {
       fontFamily: typography.fonts.medium,
       ...typography.metrics.xs,
-      color: colors.primary,
+      color: colors.primaryInk,
     },
   });

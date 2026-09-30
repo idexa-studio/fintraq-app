@@ -185,6 +185,31 @@ export function alpha(hexColor: string, level: AlphaToken): string {
   return `${hexColor}${ALPHA[level]}`;
 }
 
+const FOREGROUND_DARK = '#0A0A08';
+const FOREGROUND_LIGHT = '#FFFFFF';
+
+function relativeLuminance(hexColor: string): number {
+  const hex = hexColor.replace('#', '').slice(0, 6);
+  const channels = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+  const [r, g, b] = channels.map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/** WCAG contrast ratio between two 6-digit hex colours (1–21). */
+export function contrastRatio(a: string, b: string): number {
+  const [hi, lo] = [relativeLuminance(a), relativeLuminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+/**
+ * Readable glyph/text colour for content drawn ON a solid fill — including user-picked colours,
+ * where a fixed white fails on yellows, limes and pastels. Picks whichever of near-black or white
+ * contrasts more.
+ */
+export function foregroundOn(fillHex: string): string {
+  return contrastRatio(fillHex, FOREGROUND_DARK) >= contrastRatio(fillHex, FOREGROUND_LIGHT) ? FOREGROUND_DARK : FOREGROUND_LIGHT;
+}
+
 // ============================================
 // ELEVATION / SHADOWS
 // MD3: low, soft elevation

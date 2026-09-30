@@ -50,8 +50,7 @@ export const FeatureTip = React.memo(function FeatureTip({ tip, enabled = true }
           accessibilityRole="button"
           accessibilityLabel={t('walkthrough.gotIt')}
         >
-          {/* Lime reads well on the dark ink surface; it's only low-contrast on light layers. */}
-          <Text variant="calloutStrong" color={theme.colors.primary}>
+          <Text variant="calloutStrong" color={theme.colors.primary}>{/* design-system-ignore: lime on the dark ink surface is high-contrast */}
             {t('walkthrough.gotIt')}
           </Text>
         </BentoPressable>

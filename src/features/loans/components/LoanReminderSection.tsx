@@ -295,6 +295,6 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
     chipText: {
       fontFamily: typography.styles.chipLabel.fontFamily,
       ...typography.metrics.sm,
-      color: colors.primary,
+      color: colors.primaryInk,
     },
   });

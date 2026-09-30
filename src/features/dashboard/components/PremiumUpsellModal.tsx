@@ -102,7 +102,7 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
                 ]}
               >
                 <View style={[styles.featureIcon, { backgroundColor: colors.surface }]}>
-                  <Icon icon={item.icon} size={16} color={colors.primary} />
+                  <Icon icon={item.icon} size={16} color={colors.primaryInk} />
                 </View>
                 <Text style={styles.featureLabel}>{t(`premium.${item.label}`)}</Text>
                 <Icon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />

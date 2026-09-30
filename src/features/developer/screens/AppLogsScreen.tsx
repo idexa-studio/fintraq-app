@@ -194,7 +194,7 @@ const createStyles = ({ colors, spacing, radius, typography, layout }: ThemeCont
     },
     actionPrimary: {
       ...typography.metrics.xs,
-      color: colors.primary,
+      color: colors.primaryInk,
       fontFamily: typography.fonts.medium,
     },
     actionDanger: {

@@ -52,7 +52,7 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
 
         <View style={styles.card}>
           <View style={styles.header}>
-            <IconAvatar icon={CloudIcon} color={colors.primary} variant="subtle" size={52} iconSize={26} />
+            <IconAvatar icon={CloudIcon} color={colors.primaryInk} variant="subtle" size={52} iconSize={26} />
             <Text style={styles.title}>{t('backup.protectTitle')}</Text>
             <Text style={styles.message}>
               {t('backup.protectMessage')}
@@ -65,7 +65,7 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
               <Text style={styles.featureText}>{t('backup.privateStorage')}</Text>
             </View>
             <View style={styles.featureRow}>
-              <Icon icon={CloudIcon} size={16} color={colors.primary} />
+              <Icon icon={CloudIcon} size={16} color={colors.primaryInk} />
               <Text style={styles.featureText}>{t('backup.dailyBackup')}</Text>
             </View>
           </View>

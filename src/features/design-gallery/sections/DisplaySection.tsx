@@ -139,13 +139,24 @@ export function DisplaySection() {
           </SpecimenRow>
         </Specimen>
 
-        <Specimen title="IconAvatar & PersonAvatar" description="Leading visuals for accounts, categories and people.">
+        <Specimen
+          title="IconAvatar & PersonAvatar"
+          description="Leading visuals for accounts, categories and people. For brand-coloured avatars pass colors.primaryInk — lime glyphs on a lime tint are ~2:1. Solid fills choose their own readable glyph colour, so user colours are safe."
+        >
           <SpecimenRow label="IconAvatar · subtle / solid / outline">
             <IconAvatar icon={CoffeeIcon} color="#E8A33D" />
             <IconAvatar icon={CoffeeIcon} color="#E8A33D" variant="solid" />
             <IconAvatar icon={CoffeeIcon} color="#E8A33D" variant="outline" />
             <IconAvatar icon={BankIcon} color={colors.info} size={48} />
-            <IconAvatar icon={WalletIcon} color={colors.primary} size={32} />
+            <IconAvatar icon={WalletIcon} color={colors.primaryInk} size={32} />
+          </SpecimenRow>
+          <SpecimenRow label="Solid on any fill · glyph picks dark or white for contrast (foregroundOn)">
+            <IconAvatar icon={CoffeeIcon} color="#FACC15" variant="solid" />
+            <IconAvatar icon={WalletIcon} color={colors.primary} variant="solid" />
+            <IconAvatar icon={BankIcon} color="#1D4ED8" variant="solid" />
+            <PersonAvatar name="Yuki" color="#A7F3D0" variant="solid" />
+            <PersonAvatar name="Dev" color="#7C3AED" variant="solid" />
+            <Badge label={7} variant="count" color="#FACC15" />
           </SpecimenRow>
           <SpecimenRow label="PersonAvatar">
             <PersonAvatar name="Priya Sharma" color="#8B5CF6" />

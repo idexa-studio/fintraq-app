@@ -93,7 +93,7 @@ function EmptyState({ icon, title, subtitle }: { icon: IconSource; title: string
         backgroundColor: alpha(colors.primary, 'subtle'),
         justifyContent: 'center', alignItems: 'center',
       }}>
-        <Icon icon={icon} size={18} color={colors.primary} />
+        <Icon icon={icon} size={18} color={colors.primaryInk} />
       </View>
       <View style={{ flex: 1, gap: 2 }}>
         <Text style={{ fontFamily: typography.styles.rowLabel.fontFamily, ...typography.metrics.sm, color: colors.text }}>
@@ -645,7 +645,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClear
     pillActive: { backgroundColor: alpha(colors.primary, 'subtle') },
     pillLocked: { opacity: 0.55 },
     pillText: { fontFamily: typography.styles.chipLabel.fontFamily, color: colors.textMuted, ...typography.metrics.xs },
-    pillTextActive: { color: colors.primary },
+    pillTextActive: { color: colors.primaryInk },
     durationText: {
       fontFamily: typography.fonts.medium,
       ...typography.metrics.xs,
@@ -751,7 +751,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClear
       ...typography.metrics.xs,
       color: colors.textMuted,
     },
-    tabTextActive: { color: colors.primary },
+    tabTextActive: { color: colors.primaryInk },
 
     // ── Category / person breakdown
     catSection: { gap: spacing('3') },

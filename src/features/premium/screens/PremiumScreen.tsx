@@ -98,7 +98,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
             return (
               <View key={f.key} style={[styles.featureItem, isLast && styles.noMargin]}>
                 <View style={styles.iconWrapperInactive}>
-                  <Icon icon={f.icon} size={20} color={colors.primary} />
+                  <Icon icon={f.icon} size={20} color={colors.primaryInk} />
                 </View>
                 <View style={styles.featureContent}>
                   <Text style={styles.featureTitle}>{t(`premium.features.${f.key}.title`)}</Text>

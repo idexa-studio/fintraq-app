@@ -28,6 +28,7 @@ Always read tokens through `const theme = useTheme()`.
 |---|---|---|
 | Colour | `colors.primary` | Semantic roles below. Never hex in features. |
 | Tint | `alpha(colors.danger, 'subtle')` | `faint 6% · subtle 10% · soft 17% · medium 30% · strong 50%` |
+| Content on a fill | `foregroundOn(fill)` | Near-black or white, whichever contrasts more. Use for anything drawn on a solid user/brand colour. |
 | Type | `<Text variant="body">` / `typography.variants.body` | Family + size + line height + tracking in one. |
 | Spacing | `spacing('4')` → 16 | 4px grid. Screen padding 16, section gap 20. |
 | Radius | `radius('xl')` → 24 | Shape follows the element — pick what reads best in place, never mixed on one element. **Pill** (`full`) where it looks right: buttons, chips, badges, segmented controls, search fields, the tab-bar indicator, switches, progress; icon buttons are circles. **Soft**: everything else — cards & list groups `xl` 24 · hero, sheets, dialogs `2xl` 28 · tiles inside cards & text inputs `lg` 16 · keypad keys & inner blocks `md` 12 · icon & avatar tiles squircle 30% of size. Nested shapes stay concentric. |
@@ -44,7 +45,7 @@ Always read tokens through `const theme = useTheme()`.
 | `surface` | Cards, list groups, sheets, inputs on the page. |
 | `card` | Inset fill *inside* a surface: tracks, chips, nested blocks. (The name is historic: it is not the card background.) |
 | `primary` / `primaryForeground` | Brand lime **fill**: main action, active state, hero / content on top of it. |
-| `primaryInk` | Brand green for **text and icons** on light layers (links, active chip labels, tonal buttons, checks). Lime as text is ~2:1 — never use `primary` for text. |
+| `primaryInk` | Brand green for **text and icons** on light layers (links, active chip labels, tonal buttons, checks). Lime as text is ~2:1 — never use `primary` for text (enforced by the `lime-text` audit rule; lime on the dark ink surface is fine). |
 | `text` / `textMuted` | Primary / secondary content. |
 | `success` · `danger` | Income · expense, destructive, errors. |
 | `warning` · `info` | Attention needed · transfers, informational. |

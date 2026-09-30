@@ -46,7 +46,7 @@ export const BackupScreen = React.memo(function BackupScreen() {
             <React.Fragment key={item.key}>
               {index > 0 && <View style={styles.separator} />}
               <View style={styles.highlightRow}>
-                <IconAvatar icon={item.icon} color={colors.primary} variant="subtle" size={36} />
+                <IconAvatar icon={item.icon} color={colors.primaryInk} variant="subtle" size={36} />
                 <View style={styles.highlightInfo}>
                   <Text style={styles.highlightTitle}>{t(`backup.${item.key}`)}</Text>
                   <Text style={styles.highlightSubtitle}>{t(`backup.${item.key}Detail`)}</Text>

@@ -313,7 +313,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           <Text variant="bodyStrong" color={colors.onInk}>Dev tools active</Text>
           <Text variant="caption" color={colors.onInkMuted}>Changes here affect app behaviour globally</Text>
         </View>
-        <Badge label={__DEV__ ? 'DEV' : 'PROD'} color={colors.primary} />
+        <Badge label={__DEV__ ? 'DEV' : 'PROD'} color={colors.primaryInk} />
       </View>
 
       <ListGroup title="Design system">

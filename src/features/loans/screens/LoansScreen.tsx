@@ -241,7 +241,7 @@ const createStyles = ({ colors, spacing, radius, shadow, layout, typography, siz
     },
     currencyTextActive: {
       fontFamily: typography.styles.chipLabelActive.fontFamily,
-      color: colors.primary,
+      color: colors.primaryInk,
     },
     summaryRow: { flexDirection: 'row', gap: spacing('3'), marginBottom: spacing('4') },
     summaryTile: { flex: 1, borderRadius: radius('xl'), padding: spacing('3'), gap: spacing('1') },

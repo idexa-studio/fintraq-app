@@ -18,7 +18,7 @@ export const BackupUpsellRow = React.memo(function BackupUpsellRow({ onPress }: 
 
   return (
     <BentoPressable style={rows.mainRow} onPress={onPress} accessibilityRole="button" accessibilityLabel={t('backup.upgrade')}>
-      <IconAvatar icon={LockPasswordIcon} color={theme.colors.primary} variant="subtle" size={40} />
+      <IconAvatar icon={LockPasswordIcon} color={theme.colors.primaryInk} variant="subtle" size={40} />
       <View style={rows.rowInfo}>
         <View style={rows.titleRow}>
           <Text style={rows.rowLabel}>{t('backup.cloudBackup')}</Text>
@@ -31,7 +31,7 @@ export const BackupUpsellRow = React.memo(function BackupUpsellRow({ onPress }: 
       </View>
       <View style={rows.trailingBadge}>
         <Text style={rows.trailingBadgeText}>{t('backup.upgrade')}</Text>
-        <Icon icon={ArrowRight01Icon} size={14} color={theme.colors.primary} />
+        <Icon icon={ArrowRight01Icon} size={14} color={theme.colors.primaryInk} />
       </View>
     </BentoPressable>
   );
@@ -51,6 +51,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     proBadgeText: {
       fontFamily: typography.fonts.bold,
       ...typography.metrics.xxs,
-      color: colors.primary,
+      color: colors.primaryInk,
     },
   });
