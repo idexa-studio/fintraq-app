@@ -1,10 +1,9 @@
 import { ConfirmDialog, EmptyState, Fab, ListGroup, OptionsDialog, Screen, SearchField, SegmentedControl, SkeletonRow } from '@/src/components/ui';
 import { FolderOpenIcon, MagnifyingGlassIcon, PencilSimpleIcon, TrashIcon } from '@/src/components/ui/icons';
-import { StorageKeys } from '@/src/constants/keys';
 import { Category } from '@/src/features/categories/api/categories';
 import { CategoryCard } from '@/src/features/categories/components/CategoryCard';
 import { useCategories, useDeleteCategory } from '@/src/features/categories/hooks/categories';
-import { CATEGORIES_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
+import { FeatureTip } from '@/src/features/walkthrough';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useRouter } from 'expo-router';
@@ -147,7 +146,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
               }
             }}
           />
-          <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_CATEGORIES} steps={CATEGORIES_WALKTHROUGH_STEPS} />
+          <FeatureTip tip="categoryOptions" />
         </>
       }
     >

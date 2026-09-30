@@ -1,11 +1,8 @@
 import { Screen } from '@/src/components/ui/Screen';
 import { EmptyState, ListGroup, SectionHeader, Skeleton, SkeletonRow } from '@/src/components/ui';
 import { ReceiptIcon } from '@/src/components/ui/icons';
-import { DASHBOARD_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
-import { useAppLock } from '@/src/providers/AppLockProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,12 +10,10 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
-import { StorageKeys } from '@/src/constants/keys';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useTransactions } from '@/src/features/transactions/hooks/transactions';
 import { BackupPromptModal } from '@/src/features/backup/components/BackupPromptModal';
-import { useBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
 import { AccountsCarousel } from '@/src/features/dashboard/components/AccountsCarousel';
 import { DashboardHeader } from '@/src/features/dashboard/components/DashboardHeader';
 import { HeroBalanceCard } from '@/src/features/dashboard/components/HeroBalanceCard';
@@ -28,12 +23,7 @@ import { PremiumUpsellModal } from '@/src/features/dashboard/components/PremiumU
 import { TopExpenseCategoriesCard } from '@/src/features/dashboard/components/TopExpenseCategoriesCard';
 import { TopPersonsCard } from '@/src/features/dashboard/components/TopPersonsCard';
 import { useDashboardPersons, useDashboardStats, useTopExpenseCategories } from '@/src/features/dashboard/hooks/dashboard';
-
-const UPSELL_KEY = StorageKeys.UPSELL_DISMISSED_AT;
-const UPSELL_TTL = 3 * 24 * 60 * 60 * 1000;
-
-const BACKUP_PROMPT_KEY = StorageKeys.BACKUP_PROMPT_DISMISSED_AT;
-const BACKUP_PROMPT_TTL = 14 * 24 * 60 * 60 * 1000;
+import { useDashboardPrompt } from '@/src/features/dashboard/hooks/useDashboardPrompt';
 
 export const DashboardScreen = React.memo(function DashboardScreen() {
   const { t } = useTranslation();
@@ -46,73 +36,9 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
   const { data: transactions, isLoading: txLoading } = useTransactions(6);
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
-  const { isConnected: isBackupConnected, isLoading: isBackupChecking } = useBackupAccount();
 
-  const { isLocked } = useAppLock();
 
-  const [showUpsell, setShowUpsell] = React.useState(false);
-  const [showBackupPrompt, setShowBackupPrompt] = React.useState(false);
-
-  React.useEffect(() => {
-    if (isBackupChecking || isBackupConnected || isLocked) {
-      setShowBackupPrompt(false);
-      return;
-    }
-    if (!transactions || transactions.length < 3) return;
-
-    let timer: ReturnType<typeof setTimeout>;
-    (async () => {
-      const val = await AsyncStorage.getItem(BACKUP_PROMPT_KEY);
-      if (!val || Date.now() - parseInt(val, 10) > BACKUP_PROMPT_TTL) {
-        timer = setTimeout(() => {
-          if (!isBackupConnected && !isLocked) {
-            setShowBackupPrompt(true);
-          }
-        }, 2500);
-      }
-    })();
-
-    return () => clearTimeout(timer);
-  }, [isBackupChecking, isBackupConnected, isLocked, transactions]);
-
-  const dismissBackupPrompt = useCallback(() => {
-    setShowBackupPrompt(false);
-    AsyncStorage.setItem(BACKUP_PROMPT_KEY, String(Date.now()));
-  }, []);
-
-  React.useEffect(() => {
-    if (isPremium || isLocked) return;
-
-    let timer: ReturnType<typeof setTimeout>;
-
-    const checkUpsell = async () => {
-      const walkthroughCompleted = await AsyncStorage.getItem(StorageKeys.WALKTHROUGH_DASHBOARD);
-      if (walkthroughCompleted !== 'true') return;
-
-      const val = await AsyncStorage.getItem(UPSELL_KEY);
-      if (!val || Date.now() - parseInt(val, 10) > UPSELL_TTL) {
-        // Delay so user can process the dashboard before the dialog appears
-        timer = setTimeout(() => setShowUpsell(true), 3500);
-      }
-    };
-
-    checkUpsell();
-    return () => clearTimeout(timer);
-  }, [isPremium, isLocked]);
-
-  const dismissUpsell = useCallback(() => {
-    setShowUpsell(false);
-    AsyncStorage.setItem(UPSELL_KEY, String(Date.now()));
-  }, []);
-
-  const handleWalkthroughFinish = useCallback(() => {
-    if (isPremium || isLocked) return;
-    AsyncStorage.getItem(UPSELL_KEY).then(val => {
-      if (!val || Date.now() - parseInt(val, 10) > UPSELL_TTL) {
-        setTimeout(() => setShowUpsell(true), 1000);
-      }
-    });
-  }, [isPremium, isLocked]);
+  const { prompt, dismiss: dismissPrompt } = useDashboardPrompt(transactions?.length);
 
   const balancesByCurrency = useMemo(() =>
     accounts?.reduce((acc, a) => {
@@ -240,20 +166,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
 
       </ScrollView>
 
-      <WalkthroughOverlay
-        storageKey={StorageKeys.WALKTHROUGH_DASHBOARD}
-        steps={DASHBOARD_WALKTHROUGH_STEPS}
-        onFinish={handleWalkthroughFinish}
-        enabled={!isLocked}
-      />
-      <PremiumUpsellModal
-        visible={showUpsell && !isPremium && !isLocked}
-        onClose={dismissUpsell}
-      />
-      <BackupPromptModal
-        visible={showBackupPrompt && !isBackupConnected && !isLocked}
-        onClose={dismissBackupPrompt}
-      />
+      <PremiumUpsellModal visible={prompt === 'upsell'} onClose={dismissPrompt} />
+      <BackupPromptModal visible={prompt === 'backup'} onClose={dismissPrompt} />
     </Screen>
   );
 });

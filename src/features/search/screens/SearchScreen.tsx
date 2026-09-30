@@ -21,9 +21,7 @@ import { SectionList, SectionListData, SectionListRenderItemInfo, StyleSheet, Te
 import { Text } from '@/src/components/ui/Text';
 import { useGlobalSearch } from '@/src/features/search/hooks/useGlobalSearch';
 import { useRecentSearches } from '@/src/features/search/hooks/useRecentSearches';
-import { WalkthroughOverlay, SEARCH_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
 import { AnalyticsService } from '@/src/services/analytics';
-import { StorageKeys } from '@/src/constants/keys';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
@@ -541,7 +539,6 @@ export const SearchScreen = React.memo(function SearchScreen() {
           updateCellsBatchingPeriod={50}
         />
       )}
-      <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_SEARCH} steps={SEARCH_WALKTHROUGH_STEPS} />
     </Screen>
   );
 });

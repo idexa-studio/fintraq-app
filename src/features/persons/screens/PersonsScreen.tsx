@@ -7,8 +7,6 @@ import { usePersons } from '@/src/features/persons/hooks/persons';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { WalkthroughOverlay, PERSONS_WALKTHROUGH_STEPS } from '@/src/features/walkthrough';
-import { StorageKeys } from '@/src/constants/keys';
 import { AlertCircleIcon, CancelCircleIcon, LockPasswordIcon, PlusSignIcon, Search01Icon, UserGroupIcon } from '@hugeicons/core-free-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -160,7 +158,6 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
           : <Icon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
         }
       </BentoPressable>
-      <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_PERSONS} steps={PERSONS_WALKTHROUGH_STEPS} />
     </Screen>
   );
 });

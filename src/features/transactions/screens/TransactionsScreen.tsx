@@ -6,7 +6,7 @@ import { Spinner, Screen, SkeletonScreen } from '@/src/components/ui';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Icon } from '@/src/components/ui/Icon';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
-import { TRANSACTIONS_LIST_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
+import { FeatureTip } from '@/src/features/walkthrough';
 import { ArrowRight01Icon, Delete01Icon, FilterIcon, PencilEdit01Icon, PlusSignIcon, ReceiptTextIcon, SortingDownIcon } from '@hugeicons/core-free-icons';
 import type { IconSource } from '@/src/components/ui/Icon';
 import * as Haptics from 'expo-haptics';
@@ -19,7 +19,6 @@ import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { sortCurrenciesWithDefault } from '@/src/constants/currency';
-import { StorageKeys } from '@/src/constants/keys';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
@@ -834,7 +833,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         <Icon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
       </BentoPressable>
 
-      <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_TRANSACTIONS} steps={TRANSACTIONS_LIST_WALKTHROUGH_STEPS} />
+      <FeatureTip tip="swipeActions" enabled={groupedByDate.length > 0} />
     </Screen>
   );
 });

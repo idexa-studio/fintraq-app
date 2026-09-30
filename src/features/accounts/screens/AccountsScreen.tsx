@@ -1,10 +1,8 @@
 import { Badge, Card, ConfirmDialog, Divider, EmptyState, Icon, IconAvatar, IconButton, MoneyText, OptionsDialog, Screen, Text } from '@/src/components/ui';
 import type { OptionsDialogOption } from '@/src/components/ui';
 import { ArrowDownLeftIcon, ArrowUpRightIcon, DotsThreeVerticalIcon, PencilSimpleIcon, PlusIcon, TrashIcon, WalletIcon } from '@/src/components/ui/icons';
-import { StorageKeys } from '@/src/constants/keys';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/accounts';
-import { ACCOUNTS_WALKTHROUGH_STEPS, WalkthroughOverlay } from '@/src/features/walkthrough';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
@@ -116,7 +114,6 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
             onConfirm={handleDeleteConfirm}
             isLoading={deleteAccount.isPending}
           />
-          <WalkthroughOverlay storageKey={StorageKeys.WALKTHROUGH_ACCOUNTS} steps={ACCOUNTS_WALKTHROUGH_STEPS} />
         </>
       }
     >
