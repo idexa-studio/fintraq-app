@@ -253,10 +253,10 @@ const mr: Translation = {
   },
   analytics: {
     income: 'उत्पन्न', expenses: 'खर्च', expense: 'खर्च', netPosition: 'निव्वळ स्थिती', dailyAvg: 'सरासरी दैनिक खर्च', highlights: 'ठळक बाबी', topCategory: 'सर्वाधिक खर्चाचा वर्ग', biggestExpense: 'सर्वात मोठा खर्च',
-    trend: 'खर्चाचा कल', noTrend: 'अजून कलाचा डेटा नाही', noTrendHint: 'तुमचा खर्चाचा कल पाहण्यासाठी उत्पन्न किंवा खर्चाचे व्यवहार जोडा.',
+    trend: 'खर्चाचा कल', trendAverage: 'सरासरी {{amount}}', noTrend: 'अजून कलाचा डेटा नाही', noTrendHint: 'तुमचा खर्चाचा कल पाहण्यासाठी उत्पन्न किंवा खर्चाचे व्यवहार जोडा.',
     categoryBreakdown: 'वर्गनिहाय विभागणी', groupsCount: '{{count}} गट', personBreakdown: 'व्यक्तीनिहाय विभागणी', personsCount: '{{count}} व्यक्ती', balanceDistribution: 'शिल्लक वितरण', accountsCount: '{{count}} खाती',
     noCurrencyAccounts: 'कोणतेही {{currency}} खाते नाही', noCurrencyAccountsHint: 'शिल्लक वितरण पाहण्यासाठी या चलनातील खाते जोडा.', weeklyPattern: 'साप्ताहिक नमुना', averageByDay: 'दिवसानुसार सरासरी', noWeekly: 'अजून साप्ताहिक नमुना नाही', noWeeklyHint: 'अधिक व्यवहार झाल्यावर दिवसानुसार तुमच्या खर्चाची लय दिसेल.',
-    low: 'कमी', mid: 'मध्यम', high: 'जास्त', monthEndForecast: 'महिनाअखेरचा अंदाज', dowInsight: 'सर्वाधिक खर्च {{peak}}, सर्वात कमी {{lowest}}.', noDataPeriod: 'या कालावधीसाठी डेटा नाही', noCategoryData: 'या कालावधीत काहीही नाही', noCategoryDataHint: 'पैसे कुठे जातात हे पाहण्यासाठी या प्रकारचे व्यवहार जोडा.',
+    monthEndForecast: 'महिनाअखेरचा अंदाज', dowInsight: 'सर्वाधिक खर्च {{peak}}, सर्वात कमी {{lowest}}.', noDataPeriod: 'या कालावधीसाठी डेटा नाही', noCategoryData: 'या कालावधीत काहीही नाही', noCategoryDataHint: 'पैसे कुठे जातात हे पाहण्यासाठी या प्रकारचे व्यवहार जोडा.',
   },
   export: {
     title: 'CSV एक्स्पोर्ट', last7: 'मागील ७ दिवस', last30: 'मागील ३० दिवस', last90: 'मागील ९० दिवस', last12m: 'मागील १२ महिने', all: 'सर्व', income: 'उत्पन्न', expense: 'खर्च', transfer: 'हस्तांतरण',
@@ -307,7 +307,7 @@ const mr: Translation = {
     connectToRestore: 'प्रवेश रिस्टोअर करण्यासाठी कृपया इंटरनेटशी जोडा.', accessRestored: 'प्रवेश पुनर्संचयित', accessRestoredMessage: 'Fintraq Pro यशस्वीरीत्या पुन्हा सुरू झाले.',
     noPurchase: 'खरेदी सापडली नाही', noPurchaseMessage: 'या खात्यासाठी सक्रिय प्रो परवाना सापडला नाही.', restorationFailed: 'रिस्टोअर अयशस्वी', tryLater: 'कृपया काही मिनिटांनी पुन्हा प्रयत्न करा.',
     features: {
-      insights: { title: 'डॅशबोर्ड इनसाइट्स', description: 'रिअल-टाइम खर्च सूचना, बचतीचे कल आणि साप्ताहिक सारांश थेट तुमच्या होम स्क्रीनवर.' },
+      insights: { title: 'स्मार्ट अंतर्दृष्टी', description: 'खर्चाच्या सूचना, बचतीचे कल आणि उपयुक्त पॅटर्न, सोप्या शब्दांत.' },
       analytics: { title: 'विस्तारित विश्लेषण', description: 'मागील कालावधीशी तुलना करणाऱ्या बॅजसह ३०-दिवस, ९०-दिवस आणि १२-महिन्यांचे दृश्य अनलॉक करा.' },
       highlights: { title: 'ठळक बाबी', description: 'तुमचा सर्वाधिक खर्चाचा वर्ग आणि सर्वात मोठा एकल खर्च त्वरित पाहा. व्यवहारांमध्ये जाण्यासाठी टॅप करा.' },
       categories: { title: 'वर्गनिहाय विभागणी', description: 'प्रमाण पट्टी आणि वर्गनिहाय रक्कम व टक्केवारीसह खर्च आणि उत्पन्नाचे टॅब.' },
@@ -321,7 +321,7 @@ const mr: Translation = {
     },
     groups: { analytics: 'विश्लेषण आणि अंतर्दृष्टी', tools: 'प्रगत साधने', more: 'निश्चिंतता' },
     gate: { upgrade: 'Pro वर अपग्रेड करा', notNow: 'आता नाही', youTried: 'तुम्ही हे वापरून पाहिले', alsoIncluded: 'Pro मध्ये हेही', previewTitle: 'Pro सोबत अधिक', previewHint: 'या कालावधीचे सखोल विश्लेषण अनलॉक करा:', seeAll: 'Pro मधील सर्व पाहा' },
-    insightsTitle: 'प्रो इनसाइट्स', noInsights: 'अजून इनसाइट्स नाहीत', noInsightsHint: 'वैयक्तिकृत खर्चाचे कल अनलॉक करण्यासाठी नोंदी करत राहा.', analysing: 'तुमच्या सवयींचे विश्लेषण होत आहे...',
+    insightsTitle: 'अंतर्दृष्टी', noInsights: 'अजून इनसाइट्स नाहीत', noInsightsHint: 'वैयक्तिकृत खर्चाचे कल अनलॉक करण्यासाठी नोंदी करत राहा.', analysing: 'तुमच्या सवयींचे विश्लेषण होत आहे...',
   },
   insights: {
     spendingUp: 'खर्च {{pct}}% वाढला', spendingDown: 'खर्च {{pct}}% कमी झाला', spendingUpHint: 'मागील आठवड्याच्या तुलनेत. काही अनपेक्षित शिरले आहे का ते पाहा — छोटी तपासणी कधीही उपयोगी असते.', spendingDownHint: 'मागील आठवड्याच्या तुलनेत. तुम्ही नेहमीपेक्षा काटकसर केली — छान!',

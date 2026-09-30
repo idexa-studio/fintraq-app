@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { BarBucket } from '@/src/features/analytics/components/LinearAreaChart';
+import type { TrendBucket } from '@/src/features/analytics/components/SpendingTrendChart';
 import { DOW_KEYS, MONTH_KEYS } from '@/src/constants/calendar';
 import { RangeDays } from '@/src/features/analytics/constants';
 import {
@@ -39,11 +39,11 @@ export function useAnalyticsOverview(currency: string, range: RangeDays) {
     const dailyAverage = totals.expense / range;
     const extremes = weekdayExtremes(weekdays);
 
-    const chart: BarBucket[] = isYear
+    const chart: TrendBucket[] = isYear
       ? (monthly.data ?? []).map((m) => ({ label: month(Number(m.month.split('-')[1]) - 1), income: m.income, expense: m.expense }))
       : (daily.data ?? []).map((d) => {
           const [, mm, dd] = d.day.split('-');
-          const label = range <= 30 ? `${dd}/${month(Number(mm) - 1)}` : month(Number(mm) - 1);
+          const label = `${Number(dd)} ${month(Number(mm) - 1)}`;
           return { label, income: d.income, expense: d.expense };
         });
 

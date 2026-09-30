@@ -2,20 +2,19 @@ import { Calendar01Icon, ChartLineData01Icon, Tag01Icon, Wallet05Icon } from '@h
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState, IconAvatar, PersonAvatar, Screen, SectionHeader, SegmentedControl, SkeletonScreen, Text } from '@/src/components/ui';
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { AnalyticsControls } from '@/src/features/analytics/components/AnalyticsControls';
 import { AnalyticsGlance } from '@/src/features/analytics/components/AnalyticsGlance';
-import { ChartLegend } from '@/src/features/analytics/components/ChartLegend';
 import { DowChart } from '@/src/features/analytics/components/DowChart';
 import { InsightsCarousel } from '@/src/features/analytics/components/InsightsCarousel';
-import { LinearAreaChart } from '@/src/features/analytics/components/LinearAreaChart';
 import { PeriodSummaryCard } from '@/src/features/analytics/components/PeriodSummaryCard';
 import { ShareBreakdown, ShareItem } from '@/src/features/analytics/components/ShareBreakdown';
 import { SpendingHeatmap } from '@/src/features/analytics/components/SpendingHeatmap';
+import { SpendingTrendChart } from '@/src/features/analytics/components/SpendingTrendChart';
 import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/analytics/constants';
 import { useAnalyticsOverview } from '@/src/features/analytics/hooks/useAnalyticsOverview';
 import { useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
@@ -41,10 +40,8 @@ const FREE_CATEGORY_COUNT = 3;
  */
 export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
-  const { colors, layout, spacing } = theme;
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width: windowWidth } = useWindowDimensions();
   const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
   const router = useRouter();
   const { isPremium, openPaywall } = useProAccess();
@@ -142,7 +139,6 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   );
 
   const rangeLabel = ANALYTICS_RANGES.find((r) => r.days === range)?.label ?? '';
-  const chartWidth = windowWidth - layout.screenPadding * 2 - spacing('4') * 2;
   const header = { title: t('common.analyticsTitle') };
 
   if (overview.isLoading) {
@@ -174,13 +170,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             <EmptyState variant="inline" icon={ChartLineData01Icon} title={t('analytics.noTrend')} description={t('analytics.noTrendHint')} />
           ) : (
             <View style={styles.card}>
-              <ChartLegend
-                items={[
-                  { label: t('analytics.expense'), color: colors.danger },
-                  { label: t('analytics.income'), color: colors.success },
-                ]}
-              />
-              <LinearAreaChart data={overview.chart} width={chartWidth} height={190} />
+              <SpendingTrendChart data={overview.chart} currency={currency} />
             </View>
           )}
         </View>
@@ -238,15 +228,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
                 <EmptyState variant="inline" icon={Calendar01Icon} title={t('analytics.noWeekly')} description={t('analytics.noWeeklyHint')} />
               ) : (
                 <View style={styles.card}>
-                  <DowChart data={overview.weekdays} />
-                  <ChartLegend
-                    align="center"
-                    items={[
-                      { label: t('analytics.low'), color: colors.success },
-                      { label: t('analytics.mid'), color: colors.warning },
-                      { label: t('analytics.high'), color: colors.danger },
-                    ]}
-                  />
+                  <DowChart data={overview.weekdays} currency={currency} />
                   {overview.weekdayInsight ? (
                     <Text variant="caption" tone="muted" align="center">
                       {overview.weekdayInsight}

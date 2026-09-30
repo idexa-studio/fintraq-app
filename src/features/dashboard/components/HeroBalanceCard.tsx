@@ -1,5 +1,5 @@
 import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
-import React, { useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Icon, MoneyText, Text } from '@/src/components/ui';
@@ -15,13 +15,15 @@ type Props = {
   monthNet: number | null;
   currencies?: string[];
   onCurrencySelect?: (currency: string) => void;
+  /** Rendered under the balance, above the currency tabs — the quick actions. */
+  children?: ReactNode;
 };
 
 /**
- * The one number that matters, with this month's direction beneath it. Month detail lives in the
- * pulse widget below, so the hero stays uncluttered.
+ * The one number that matters, with this month's direction beneath it and the everyday actions
+ * right under it. Month detail lives in the pulse widget below, so the hero stays uncluttered.
  */
-export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, monthNet, currencies, onCurrencySelect }: Props) {
+export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, monthNet, currencies, onCurrencySelect, children }: Props) {
   const { t } = useTranslation();
   const theme = useTheme();
   const { heroCard } = theme;
@@ -63,6 +65,8 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
           </Text>
         </View>
       ) : null}
+
+      {children}
 
       <CurrencyPickerTab currencies={currencies ?? []} selectedCurrency={currency} onCurrencySelect={onCurrencySelect} heroCard={heroCard} />
     </View>

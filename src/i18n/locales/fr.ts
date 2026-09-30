@@ -253,10 +253,10 @@ const fr: Translation = {
   },
   analytics: {
     income: 'Revenus', expenses: 'Dépenses', expense: 'Dépense', netPosition: 'Position nette', dailyAvg: 'Dépense moyenne par jour', highlights: 'Faits marquants', topCategory: 'Première catégorie de dépenses', biggestExpense: 'Plus grosse dépense',
-    trend: 'Tendance des dépenses', noTrend: 'Aucune donnée de tendance pour le moment', noTrendHint: 'Ajoutez des revenus ou des dépenses pour voir votre tendance.',
+    trend: 'Tendance des dépenses', trendAverage: 'Moy. {{amount}}', noTrend: 'Aucune donnée de tendance pour le moment', noTrendHint: 'Ajoutez des revenus ou des dépenses pour voir votre tendance.',
     categoryBreakdown: 'Répartition par catégorie', groupsCount: '{{count}} groupes', personBreakdown: 'Répartition par personne', personsCount: '{{count}} personnes', balanceDistribution: 'Répartition du solde', accountsCount: '{{count}} comptes',
     noCurrencyAccounts: 'Aucun compte en {{currency}}', noCurrencyAccountsHint: 'Ajoutez un compte dans cette devise pour voir la répartition du solde.', weeklyPattern: 'Rythme hebdomadaire', averageByDay: 'Moyenne par jour', noWeekly: 'Aucun rythme hebdomadaire pour le moment', noWeeklyHint: 'Avec plus de transactions, votre rythme de dépenses par jour apparaîtra.',
-    low: 'Faible', mid: 'Moyen', high: 'Élevé', monthEndForecast: 'Prévision de fin de mois', dowInsight: 'Vous dépensez le plus le {{peak}} et le moins le {{lowest}}.', noDataPeriod: 'Aucune donnée pour la période', noCategoryData: 'Rien pour cette période', noCategoryDataHint: 'Ajoutez des transactions de ce type pour voir où va votre argent.',
+    monthEndForecast: 'Prévision de fin de mois', dowInsight: 'Vous dépensez le plus le {{peak}} et le moins le {{lowest}}.', noDataPeriod: 'Aucune donnée pour la période', noCategoryData: 'Rien pour cette période', noCategoryDataHint: 'Ajoutez des transactions de ce type pour voir où va votre argent.',
   },
   export: {
     title: 'Exporter en CSV', last7: '7 derniers jours', last30: '30 derniers jours', last90: '90 derniers jours', last12m: '12 derniers mois', all: 'Tout', income: 'Revenu', expense: 'Dépense', transfer: 'Virement',
@@ -307,7 +307,7 @@ const fr: Translation = {
     connectToRestore: "Veuillez vous connecter à internet pour restaurer l'accès.", accessRestored: 'Accès restauré', accessRestoredMessage: 'Fintraq Pro a été réactivé avec succès.',
     noPurchase: 'Aucun achat trouvé', noPurchaseMessage: "Nous n'avons trouvé aucune licence Pro active pour ce compte.", restorationFailed: 'Échec de la restauration', tryLater: 'Veuillez réessayer dans quelques minutes.',
     features: {
-      insights: { title: 'Analyses du tableau de bord', description: "Alertes de dépenses en temps réel, tendances d'épargne et résumés hebdomadaires directement sur votre écran d'accueil." },
+      insights: { title: 'Aperçus intelligents', description: 'Alertes de dépenses, tendances d\'épargne et habitudes utiles, en termes simples.' },
       analytics: { title: 'Analyses étendues', description: 'Débloquez les vues sur 30 jours, 90 jours et 12 mois avec des badges de variation par rapport à la période précédente.' },
       highlights: { title: 'Faits marquants', description: "Visualisez instantanément votre première catégorie de dépenses et votre plus grosse dépense. Touchez pour explorer les transactions." },
       categories: { title: 'Répartition par catégorie', description: 'Onglets dépenses et revenus avec barre de proportion, montants et pourcentages par catégorie.' },
@@ -321,7 +321,7 @@ const fr: Translation = {
     },
     groups: { analytics: 'Analyses et tendances', tools: 'Outils avancés', more: 'Tranquillité d’esprit' },
     gate: { upgrade: 'Passer à Pro', notNow: 'Pas maintenant', youTried: 'Vous venez d’essayer', alsoIncluded: 'Aussi dans Pro', previewTitle: 'Plus avec Pro', previewHint: 'Débloquez une analyse plus poussée pour cette période :', seeAll: 'Tout voir dans Pro' },
-    insightsTitle: 'Analyses Pro', noInsights: 'Aucune analyse pour le moment', noInsightsHint: 'Continuez à saisir pour débloquer des tendances de dépenses personnalisées.', analysing: 'Analyse de vos habitudes...',
+    insightsTitle: 'Aperçus', noInsights: 'Aucune analyse pour le moment', noInsightsHint: 'Continuez à saisir pour débloquer des tendances de dépenses personnalisées.', analysing: 'Analyse de vos habitudes...',
   },
   insights: {
     spendingUp: 'Dépenses en hausse de {{pct}} %', spendingDown: 'Dépenses en baisse de {{pct}} %', spendingUpHint: "par rapport à la semaine dernière. Vérifiez si quelque chose s'est glissé — un petit audit ne fait jamais de mal.", spendingDownHint: "par rapport à la semaine dernière. Vous avez été plus économe que d'habitude — bravo !",

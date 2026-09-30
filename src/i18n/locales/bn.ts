@@ -253,10 +253,10 @@ const bn: Translation = {
   },
   analytics: {
     income: 'আয়', expenses: 'ব্যয়', expense: 'ব্যয়', netPosition: 'নিট অবস্থান', dailyAvg: 'গড় দৈনিক ব্যয়', highlights: 'হাইলাইট', topCategory: 'সর্বাধিক ব্যয়ের বিভাগ', biggestExpense: 'সবচেয়ে বড় ব্যয়',
-    trend: 'ব্যয়ের প্রবণতা', noTrend: 'এখনও প্রবণতার ডেটা নেই', noTrendHint: 'আপনার ব্যয়ের প্রবণতা দেখতে আয় বা ব্যয়ের লেনদেন যোগ করুন।',
+    trend: 'ব্যয়ের প্রবণতা', trendAverage: 'গড় {{amount}}', noTrend: 'এখনও প্রবণতার ডেটা নেই', noTrendHint: 'আপনার ব্যয়ের প্রবণতা দেখতে আয় বা ব্যয়ের লেনদেন যোগ করুন।',
     categoryBreakdown: 'বিভাগ অনুযায়ী বিভাজন', groupsCount: '{{count}}টি গ্রুপ', personBreakdown: 'ব্যক্তি অনুযায়ী বিভাজন', personsCount: '{{count}} জন ব্যক্তি', balanceDistribution: 'ব্যালেন্স বণ্টন', accountsCount: '{{count}}টি অ্যাকাউন্ট',
     noCurrencyAccounts: 'কোনো {{currency}} অ্যাকাউন্ট নেই', noCurrencyAccountsHint: 'ব্যালেন্স বণ্টন দেখতে এই মুদ্রার একটি অ্যাকাউন্ট যোগ করুন।', weeklyPattern: 'সাপ্তাহিক ধরন', averageByDay: 'দিন অনুযায়ী গড়', noWeekly: 'এখনও সাপ্তাহিক ধরন নেই', noWeeklyHint: 'আরও লেনদেন হলে দিন অনুযায়ী আপনার ব্যয়ের ছন্দ দেখা যাবে।',
-    low: 'কম', mid: 'মাঝারি', high: 'বেশি', monthEndForecast: 'মাসের শেষের পূর্বাভাস', dowInsight: 'সবচেয়ে বেশি খরচ {{peak}}, সবচেয়ে কম {{lowest}}।', noDataPeriod: 'এই সময়কালের ডেটা নেই', noCategoryData: 'এই সময়ে কিছু নেই', noCategoryDataHint: 'টাকা কোথায় যাচ্ছে দেখতে এই ধরনের লেনদেন যোগ করুন।',
+    monthEndForecast: 'মাসের শেষের পূর্বাভাস', dowInsight: 'সবচেয়ে বেশি খরচ {{peak}}, সবচেয়ে কম {{lowest}}।', noDataPeriod: 'এই সময়কালের ডেটা নেই', noCategoryData: 'এই সময়ে কিছু নেই', noCategoryDataHint: 'টাকা কোথায় যাচ্ছে দেখতে এই ধরনের লেনদেন যোগ করুন।',
   },
   export: {
     title: 'CSV এক্সপোর্ট', last7: 'গত ৭ দিন', last30: 'গত ৩০ দিন', last90: 'গত ৯০ দিন', last12m: 'গত ১২ মাস', all: 'সব', income: 'আয়', expense: 'ব্যয়', transfer: 'ট্রান্সফার',
@@ -307,7 +307,7 @@ const bn: Translation = {
     connectToRestore: 'অ্যাক্সেস রিস্টোর করতে অনুগ্রহ করে ইন্টারনেটে সংযুক্ত হন।', accessRestored: 'অ্যাক্সেস ফিরে এসেছে', accessRestoredMessage: 'Fintraq Pro সফলভাবে আবার চালু হয়েছে।',
     noPurchase: 'কোনো ক্রয় পাওয়া যায়নি', noPurchaseMessage: 'এই অ্যাকাউন্টের জন্য কোনো সক্রিয় প্রো লাইসেন্স পাওয়া যায়নি।', restorationFailed: 'রিস্টোর ব্যর্থ', tryLater: 'অনুগ্রহ করে কয়েক মিনিট পরে আবার চেষ্টা করুন।',
     features: {
-      insights: { title: 'ড্যাশবোর্ড ইনসাইট', description: 'রিয়েল-টাইম ব্যয়ের সতর্কতা, সঞ্চয়ের প্রবণতা ও সাপ্তাহিক সারসংক্ষেপ সরাসরি আপনার হোম স্ক্রিনে।' },
+      insights: { title: 'স্মার্ট ইনসাইট', description: 'খরচের সতর্কতা, সঞ্চয়ের প্রবণতা ও জানার মতো প্যাটার্ন, সহজ ভাষায়।' },
       analytics: { title: 'বর্ধিত বিশ্লেষণ', description: 'আগের সময়কালের সঙ্গে তুলনার ব্যাজ সহ ৩০ দিন, ৯০ দিন ও ১২ মাসের ভিউ আনলক করুন।' },
       highlights: { title: 'হাইলাইট', description: 'আপনার সর্বাধিক ব্যয়ের বিভাগ ও সবচেয়ে বড় একক ব্যয় তাৎক্ষণিক দেখুন। লেনদেনে যেতে ট্যাপ করুন।' },
       categories: { title: 'বিভাগ অনুযায়ী বিভাজন', description: 'অনুপাত বার এবং প্রতি বিভাগের পরিমাণ ও শতাংশ সহ ব্যয় ও আয়ের ট্যাব।' },
@@ -321,7 +321,7 @@ const bn: Translation = {
     },
     groups: { analytics: 'বিশ্লেষণ ও অন্তর্দৃষ্টি', tools: 'শক্তিশালী টুল', more: 'নিশ্চিন্ত থাকুন' },
     gate: { upgrade: 'Pro-তে আপগ্রেড করুন', notNow: 'এখন নয়', youTried: 'আপনি এটি চেষ্টা করেছেন', alsoIncluded: 'Pro-তে আরও আছে', previewTitle: 'Pro-তে আরও বেশি', previewHint: 'এই সময়ের গভীর বিশ্লেষণ আনলক করুন:', seeAll: 'Pro-র সবকিছু দেখুন' },
-    insightsTitle: 'প্রো ইনসাইট', noInsights: 'এখনও কোনো ইনসাইট নেই', noInsightsHint: 'ব্যক্তিগতকৃত ব্যয়ের প্রবণতা আনলক করতে লিখতে থাকুন।', analysing: 'আপনার ধরন বিশ্লেষণ করা হচ্ছে...',
+    insightsTitle: 'ইনসাইট', noInsights: 'এখনও কোনো ইনসাইট নেই', noInsightsHint: 'ব্যক্তিগতকৃত ব্যয়ের প্রবণতা আনলক করতে লিখতে থাকুন।', analysing: 'আপনার ধরন বিশ্লেষণ করা হচ্ছে...',
   },
   insights: {
     spendingUp: 'ব্যয় {{pct}}% বেড়েছে', spendingDown: 'ব্যয় {{pct}}% কমেছে', spendingUpHint: 'গত সপ্তাহের তুলনায়। অপ্রত্যাশিত কিছু ঢুকে পড়েছে কি না দেখে নিন — একটি ছোট যাচাই কখনো ক্ষতি করে না।', spendingDownHint: 'গত সপ্তাহের তুলনায়। আপনি আগের চেয়ে বেশি সংযত ছিলেন — চমৎকার!',

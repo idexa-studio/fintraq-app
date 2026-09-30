@@ -86,8 +86,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       <Screen variant="fixed" edges={['top']}>
         <View style={styles.skeleton}>
           <Skeleton width="45%" height={20} />
-          <Skeleton height={168} radius="2xl" />
-          <Skeleton height={76} radius="xl" />
+          <Skeleton height={248} radius="2xl" />
           <Skeleton height={176} radius="xl" />
           <ListGroup>
             <SkeletonRow />
@@ -111,11 +110,9 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           monthNet={month ? month.income - month.expense : null}
           currencies={currencyKeys}
           onCurrencySelect={setChosenCurrency}
-        />
-
-        <View style={styles.quickActions}>
+        >
           <QuickActions canTransfer={(accounts?.length ?? 0) > 1} />
-        </View>
+        </HeroBalanceCard>
 
         <SectionHeader title={t('dashboard.thisMonth')} rightText={t('common.analyticsTitle')} onPressRight={openAnalytics} />
         <MonthPulseCard currency={currency} />
@@ -168,7 +165,6 @@ const createStyles = ({ colors, spacing, radius, layout, tabBarClearance }: Them
   StyleSheet.create({
     content: { paddingBottom: tabBarClearance(insets.bottom) },
     padded: { marginHorizontal: layout.screenPadding },
-    quickActions: { marginTop: spacing('3') },
     emptyActivity: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),

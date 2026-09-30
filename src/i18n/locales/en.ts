@@ -111,7 +111,7 @@ const en = {
   dashboard: {
     netThisMonth: '{{amount}} this month', thisMonth: 'This month', quickActions: 'Quick actions', quickExpense: 'Expense', quickIncome: 'Income', quickTransfer: 'Transfer', quickLoan: 'Loan', pulseSpent: 'Spent so far', pulseOfLast: '{{pct}}% of last month', pulseLastMonth: 'Last month', pulseDay: 'Day {{day}} of {{total}}', pulseEmpty: 'Nothing spent yet this month', rhythmTitle: 'Spending rhythm', rhythmHint: 'Last 5 weeks', rhythmLess: 'Less', rhythmMore: 'More', rhythmNone: 'No spending', rhythmSpent: '{{amount}} spent',
     streakDays: '{{count}}d streak',
-    accounts: 'Accounts', manage: 'Manage', topExpenses: 'Top expenses', people: 'Persons', loans: 'Loans', recent: 'Recent', seeAll: 'See all',
+    accounts: 'Accounts', manage: 'Manage', topExpenses: 'Top expenses', people: 'People', loans: 'Loans', recent: 'Recent', seeAll: 'See all',
     noTransactions: 'No transactions yet', transactionHint: 'Start recording your daily payments, income, or transfers here.', addTransaction: 'Add transaction',
     balance: 'Your balance', income: 'Income', expenses: 'Expenses',
     lentOut: 'Lent out', borrowed: 'Borrowed', overdue: '{{count}} overdue', active: '{{count}} active',
@@ -250,11 +250,11 @@ const en = {
     daysShort: { sun: 'Su', mon: 'Mo', tue: 'Tu', wed: 'We', thu: 'Th', fri: 'Fr', sat: 'Sa' },
   },
   analytics: {
-    income: 'Income', expenses: 'Expenses', expense: 'Expense', netPosition: 'Net position', dailyAvg: 'Daily avg spend', highlights: 'Highlights', topCategory: 'Top expense category', biggestExpense: 'Biggest expense',
-    trend: 'Spending trend', noTrend: 'No trend data yet', noTrendHint: 'Add income or expense transactions to see your spending trend.',
+    income: 'Income', expenses: 'Expenses', expense: 'Expense', netPosition: 'Net position', dailyAvg: 'Daily avg spend', highlights: 'Highlights', topCategory: 'Top category', biggestExpense: 'Biggest expense',
+    trend: 'Spending trend', trendAverage: 'Avg {{amount}}', noTrend: 'No trend data yet', noTrendHint: 'Add income or expense transactions to see your spending trend.',
     categoryBreakdown: 'Category breakdown', groupsCount: '{{count}} groups', personBreakdown: 'Person breakdown', personsCount: '{{count}} persons', balanceDistribution: 'Balance distribution', accountsCount: '{{count}} accounts',
     noCurrencyAccounts: 'No {{currency}} accounts', noCurrencyAccountsHint: 'Add an account in this currency to see the balance distribution.', weeklyPattern: 'Weekly pattern', averageByDay: 'Average by day', noWeekly: 'No weekly pattern yet', noWeeklyHint: 'More transactions will reveal your spending rhythm by day.',
-    low: 'Low', mid: 'Mid', high: 'High', monthEndForecast: 'Month-end forecast', dowInsight: 'Spend most on {{peak}}, least on {{lowest}}.', noDataPeriod: 'No data for period', noCategoryData: 'Nothing here for this period', noCategoryDataHint: 'Add transactions of this type to see where your money goes.',
+    monthEndForecast: 'Month-end forecast', dowInsight: 'Spend most on {{peak}}, least on {{lowest}}.', noDataPeriod: 'No data for period', noCategoryData: 'Nothing here for this period', noCategoryDataHint: 'Add transactions of this type to see where your money goes.',
   },
   export: {
     title: 'Export CSV', last7: 'Last 7 days', last30: 'Last 30 days', last90: 'Last 90 days', last12m: 'Last 12 months', all: 'All', income: 'Income', expense: 'Expense', transfer: 'Transfer',
@@ -305,7 +305,7 @@ const en = {
     connectToRestore: 'Please connect to the internet to restore access.', accessRestored: 'Access Restored', accessRestoredMessage: 'Fintraq Pro has been successfully re-enabled.',
     noPurchase: 'No Purchase Found', noPurchaseMessage: "We couldn't find an active Pro license for this account.", restorationFailed: 'Restoration Failed', tryLater: 'Please try again in a few minutes.',
     features: {
-      insights: { title: 'Dashboard insights', description: 'Real-time spending alerts, saving trends, and weekly summaries right on your home screen.' },
+      insights: { title: 'Smart insights', description: 'Spending alerts, saving trends and patterns worth knowing, in plain words.' },
       analytics: { title: 'Extended analytics', description: 'Unlock 30-day, 90-day, and 12-month views with delta badges comparing against the previous period.' },
       highlights: { title: 'Highlights', description: 'Instantly see your top expense category and single biggest expense. Tap to drill into transactions.' },
       categories: { title: 'Category breakdown', description: 'Expense and income tabs with a proportion bar and per-category amounts and percentages.' },
@@ -319,7 +319,7 @@ const en = {
     },
     groups: { analytics: 'Analytics & insights', tools: 'Power tools', more: 'Peace of mind' },
     gate: { upgrade: 'Upgrade to Pro', notNow: 'Not now', youTried: 'You tried this', alsoIncluded: 'Also in Pro', previewTitle: 'More with Pro', previewHint: 'Unlock deeper analysis for this period:', seeAll: 'See everything in Pro' },
-    insightsTitle: 'Pro Insights', noInsights: 'No insights yet', noInsightsHint: 'Keep tracking to unlock personalized spending trends.', analysing: 'Analysing your patterns...',
+    insightsTitle: 'Insights', noInsights: 'No insights yet', noInsightsHint: 'Keep tracking to unlock personalized spending trends.', analysing: 'Analysing your patterns...',
   },
   insights: {
     spendingUp: 'Spending up {{pct}}%', spendingDown: 'Spending down {{pct}}%', spendingUpHint: 'vs last week. Check if anything snuck in — a quick audit never hurts.', spendingDownHint: 'vs last week. You kept things tighter than usual — well done.',

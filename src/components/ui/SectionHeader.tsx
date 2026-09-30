@@ -14,8 +14,8 @@ type Props = {
 };
 
 /**
- * Section title with an optional link. The link is a small tonal pill so it
- * reads as tappable at a glance and matches every other control.
+ * Section title with an optional link. The link is plain ink text with a caret — a screen has
+ * several of these, and a filled pill on each one competed with the content below.
  */
 export const SectionHeader = React.memo(function SectionHeader({
   title,
@@ -32,7 +32,7 @@ export const SectionHeader = React.memo(function SectionHeader({
       <Text variant="subheading" numberOfLines={1} style={styles.title} accessibilityRole="header">{title}</Text>
       {rightText ? (
         onPressRight ? (
-          <BentoPressable onPress={onPressRight} style={styles.link} accessibilityRole="button" accessibilityLabel={`${rightText}, ${title}`}>
+          <BentoPressable onPress={onPressRight} style={styles.link} hitSlop={8} accessibilityRole="button" accessibilityLabel={`${rightText}, ${title}`}>
             <Text variant="label" color={colors.primaryInk}>{rightText}</Text>
             <Icon icon={CaretRightIcon} size={12} color={colors.primaryInk} weight="bold" />
           </BentoPressable>
@@ -44,7 +44,7 @@ export const SectionHeader = React.memo(function SectionHeader({
   );
 });
 
-const createStyles = ({ colors, spacing, radius, layout, alpha }: ThemeContextType) =>
+const createStyles = ({ spacing, layout }: ThemeContextType) =>
   StyleSheet.create({
     wrap: {
       flexDirection: 'row',
@@ -58,14 +58,5 @@ const createStyles = ({ colors, spacing, radius, layout, alpha }: ThemeContextTy
     },
     noPadding: { paddingHorizontal: 0 },
     title: { flexShrink: 1 },
-    link: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('0.5'),
-      height: 28,
-      paddingLeft: spacing('3'),
-      paddingRight: spacing('2'),
-      borderRadius: radius('full'),
-      backgroundColor: alpha(colors.primary, 'subtle'),
-    },
+    link: { flexDirection: 'row', alignItems: 'center', gap: spacing('0.5'), height: 28 },
   });
