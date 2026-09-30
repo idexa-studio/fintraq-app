@@ -12,7 +12,7 @@ type Period = '7d' | '30d' | '90d' | '12m';
 type ThemeMode = 'light' | 'dark' | 'system';
 
 export function InputsSection() {
-  const { spacing, colors } = useTheme();
+  const { spacing, colors, radius } = useTheme();
   const [query, setQuery] = useState('');
   const [name, setName] = useState('');
   const [type, setType] = useState<TxType>('DR');
@@ -110,7 +110,7 @@ export function InputsSection() {
         <Specimen
           title="Chip"
           description="Filters and multi-select tags. Scroll horizontally when they overflow."
-          guidelines={['Pass color for category-coloured chips; defaults to primary.']}
+          guidelines={['Pass color for category-coloured chips; defaults to primary.', 'Inside a sheet or card, pass on="surface" so resting chips stay visible.']}
         >
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: spacing('2') }}>
             <Chip label="Food" icon={CoffeeIcon} isActive={chips.includes('food')} onPress={() => toggleChip('food')} />
@@ -118,6 +118,10 @@ export function InputsSection() {
             <Chip label="Transport" icon={CarIcon} color={colors.info} isActive={chips.includes('car')} onPress={() => toggleChip('car')} />
             <Chip label="This month" isActive={chips.includes('month')} onPress={() => toggleChip('month')} />
           </ScrollView>
+          <View style={{ flexDirection: 'row', gap: spacing('2'), backgroundColor: colors.surface, padding: spacing('3'), borderRadius: radius('xl') }}>
+            <Chip label="On a sheet" on="surface" onPress={() => toggleChip('sheet')} isActive={chips.includes('sheet')} />
+            <Chip label="Resting" on="surface" onPress={() => toggleChip('rest')} isActive={chips.includes('rest')} />
+          </View>
         </Specimen>
 
         <Specimen

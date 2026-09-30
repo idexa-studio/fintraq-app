@@ -241,6 +241,8 @@ const kn: Translation = {
     noResults: 'ಫಲಿತಾಂಶಗಳಿಲ್ಲ', noMatch: '“{{query}}” ಗೆ ಯಾವುದೂ ಹೊಂದಿಕೆಯಾಗಲಿಲ್ಲ. ಬೇರೆ ಪದ ಪ್ರಯತ್ನಿಸಿ.',
   },
   filters: {
+    activeCount: '{{count}} ಸಕ್ರಿಯ',
+    today: 'ಇಂದು', thisWeek: 'ಈ ವಾರ', thisMonth: 'ಈ ತಿಂಗಳು', last30: 'ಕಳೆದ 30 ದಿನಗಳು', categories: 'ವರ್ಗಗಳು', categoriesByType: 'ವರ್ಗಗಳು · ಪ್ರಕಾರಕ್ಕೆ ಹೊಂದಿಕೆ',
     title: 'ಫಿಲ್ಟರ್‌ಗಳು', reset: 'ರೀಸೆಟ್', type: 'ಪ್ರಕಾರ', dateRange: 'ದಿನಾಂಕ ಶ್ರೇಣಿ', from: 'ಇಂದ', to: 'ವರೆಗೆ', setDateRange: 'ದಿನಾಂಕ ಶ್ರೇಣಿ ಹೊಂದಿಸಿ', amount: 'ಮೊತ್ತ', min: 'ಕನಿಷ್ಠ', max: 'ಗರಿಷ್ಠ', any: 'ಯಾವುದೇ',
     accounts: 'ಖಾತೆಗಳು', persons: 'ವ್ಯಕ್ತಿಗಳು', apply: 'ಫಿಲ್ಟರ್‌ಗಳನ್ನು ಅನ್ವಯಿಸಿ', minLessThanMax: 'ಕನಿಷ್ಠ ಮೌಲ್ಯ ಗರಿಷ್ಠಕ್ಕಿಂತ ಕಡಿಮೆ ಇರಬೇಕು',
   },

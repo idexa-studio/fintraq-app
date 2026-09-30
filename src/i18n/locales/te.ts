@@ -241,6 +241,8 @@ const te: Translation = {
     noResults: 'ఫలితాలు లేవు', noMatch: '“{{query}}” కు ఏదీ సరిపోలలేదు. వేరే పదాన్ని ప్రయత్నించండి.',
   },
   filters: {
+    activeCount: '{{count}} సక్రియం',
+    today: 'ఈ రోజు', thisWeek: 'ఈ వారం', thisMonth: 'ఈ నెల', last30: 'గత 30 రోజులు', categories: 'వర్గాలు', categoriesByType: 'వర్గాలు · రకానికి అనుగుణంగా',
     title: 'ఫిల్టర్‌లు', reset: 'రీసెట్', type: 'రకం', dateRange: 'తేదీ పరిధి', from: 'నుండి', to: 'వరకు', setDateRange: 'తేదీ పరిధిని సెట్ చేయి', amount: 'మొత్తం', min: 'కనిష్ఠ', max: 'గరిష్ఠ', any: 'ఏదైనా',
     accounts: 'ఖాతాలు', persons: 'వ్యక్తులు', apply: 'ఫిల్టర్‌లను వర్తింపజేయి', minLessThanMax: 'కనిష్ఠం గరిష్ఠం కంటే తక్కువగా ఉండాలి',
   },

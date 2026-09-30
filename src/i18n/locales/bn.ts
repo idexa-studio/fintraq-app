@@ -241,6 +241,8 @@ const bn: Translation = {
     noResults: 'কোনো ফলাফল নেই', noMatch: '“{{query}}”-এর সঙ্গে কিছু মেলেনি। অন্য কোনো শব্দ চেষ্টা করুন।',
   },
   filters: {
+    activeCount: '{{count}}টি সক্রিয়',
+    today: 'আজ', thisWeek: 'এই সপ্তাহ', thisMonth: 'এই মাস', last30: 'গত ৩০ দিন', categories: 'বিভাগ', categoriesByType: 'বিভাগ · ধরন অনুযায়ী',
     title: 'ফিল্টার', reset: 'রিসেট', type: 'ধরন', dateRange: 'তারিখের সীমা', from: 'থেকে', to: 'পর্যন্ত', setDateRange: 'তারিখের সীমা ঠিক করুন', amount: 'পরিমাণ', min: 'সর্বনিম্ন', max: 'সর্বোচ্চ', any: 'যেকোনো',
     accounts: 'অ্যাকাউন্ট', persons: 'ব্যক্তি', apply: 'ফিল্টার প্রয়োগ করুন', minLessThanMax: 'সর্বনিম্ন মান সর্বোচ্চের চেয়ে কম হতে হবে',
   },

@@ -16,6 +16,8 @@ type ChipProps = {
   onPress: () => void;
   /** Shows a ✕ that removes the chip (active filters). */
   onClear?: () => void;
+  /** What the chip sits on: `page` (default) or a `surface` card/sheet, where it uses the inset fill to stay visible. */
+  on?: 'page' | 'surface';
   style?: StyleProp<ViewStyle>;
 };
 
@@ -26,6 +28,7 @@ export const Chip = React.memo(function Chip({
   icon,
   onPress,
   onClear,
+  on = 'page',
   style,
 }: ChipProps) {
   const { colors, typography, spacing } = useTheme();
@@ -35,8 +38,8 @@ export const Chip = React.memo(function Chip({
   const ink = color ?? colors.primaryInk;
 
   const bg = useMemo(
-    () => (isActive ? alpha(accent, 'subtle') : colors.surface),
-    [isActive, accent, colors.surface],
+    () => (isActive ? alpha(accent, 'subtle') : on === 'surface' ? colors.card : colors.surface),
+    [isActive, accent, on, colors.surface, colors.card],
   );
 
   const textColor = useMemo(

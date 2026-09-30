@@ -241,6 +241,8 @@ const hi: Translation = {
     noResults: 'कोई परिणाम नहीं', noMatch: '“{{query}}” से कुछ मेल नहीं खाया। कोई और शब्द आज़माएँ।',
   },
   filters: {
+    activeCount: '{{count}} सक्रिय',
+    today: 'आज', thisWeek: 'इस सप्ताह', thisMonth: 'इस महीने', last30: 'पिछले 30 दिन', categories: 'श्रेणियाँ', categoriesByType: 'श्रेणियाँ · प्रकार के अनुसार',
     title: 'फ़िल्टर', reset: 'रीसेट', type: 'प्रकार', dateRange: 'तारीख सीमा', from: 'से', to: 'तक', setDateRange: 'तारीख सीमा सेट करें', amount: 'राशि', min: 'न्यूनतम', max: 'अधिकतम', any: 'कोई भी',
     accounts: 'खाते', persons: 'लोग', apply: 'फ़िल्टर लागू करें', minLessThanMax: 'न्यूनतम, अधिकतम से कम होना चाहिए',
   },

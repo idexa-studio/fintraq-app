@@ -241,6 +241,8 @@ const mr: Translation = {
     noResults: 'निकाल नाहीत', noMatch: '“{{query}}” शी काहीही जुळले नाही. वेगळा शब्द वापरून पहा.',
   },
   filters: {
+    activeCount: '{{count}} सक्रिय',
+    today: 'आज', thisWeek: 'हा आठवडा', thisMonth: 'हा महिना', last30: 'मागील 30 दिवस', categories: 'श्रेणी', categoriesByType: 'श्रेणी · प्रकारानुसार',
     title: 'फिल्टर', reset: 'रीसेट', type: 'प्रकार', dateRange: 'तारखेची मर्यादा', from: 'पासून', to: 'पर्यंत', setDateRange: 'तारखेची मर्यादा ठरवा', amount: 'रक्कम', min: 'किमान', max: 'कमाल', any: 'कोणतेही',
     accounts: 'खाती', persons: 'व्यक्ती', apply: 'फिल्टर लागू करा', minLessThanMax: 'किमान मूल्य कमाल मूल्यापेक्षा कमी असावे',
   },

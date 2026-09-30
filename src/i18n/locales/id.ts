@@ -241,6 +241,8 @@ const id: Translation = {
     noResults: 'Tidak ada hasil', noMatch: 'Tidak ada yang cocok dengan “{{query}}”. Coba kata lain.',
   },
   filters: {
+    activeCount: '{{count}} aktif',
+    today: 'Hari ini', thisWeek: 'Minggu ini', thisMonth: 'Bulan ini', last30: '30 hari terakhir', categories: 'Kategori', categoriesByType: 'Kategori · sesuai jenis',
     title: 'Filter', reset: 'Atur ulang', type: 'Jenis', dateRange: 'Rentang tanggal', from: 'Dari', to: 'Sampai', setDateRange: 'Atur rentang tanggal', amount: 'Jumlah', min: 'Min', max: 'Maks', any: 'Semua',
     accounts: 'Akun', persons: 'Orang', apply: 'Terapkan filter', minLessThanMax: 'Nilai min harus lebih kecil dari maks',
   },
