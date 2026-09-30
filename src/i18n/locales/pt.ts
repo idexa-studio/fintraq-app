@@ -115,10 +115,11 @@ const pt: Translation = {
     cannotDelete: 'Não é possível excluir a categoria', deleteFailed: 'Falha ao excluir a categoria.',
   },
   dashboard: {
+    other: 'Outros', netThisMonth: '{{amount}} este mês', thisMonth: 'Este mês', quickActions: 'Ações rápidas', quickExpense: 'Despesa', quickIncome: 'Receita', quickTransfer: 'Transferir', quickLoan: 'Empréstimo', pulseSpent: 'Gasto até agora', pulseOfLast: '{{pct}}% do mês passado', pulseDay: 'Dia {{day}} de {{total}}', pulsePerDay: 'Por dia', pulseProjected: 'Previsto', pulseEmpty: 'Nenhum gasto este mês ainda', pulseToday: 'Hoje', rhythmTitle: 'Ritmo de gastos', rhythmHint: 'Últimas 5 semanas', rhythmLess: 'Menos', rhythmMore: 'Mais', rhythmNone: 'Sem gastos', rhythmSpent: '{{amount}} gastos',
     streakDays: '{{count}} dias seguidos',
     accounts: 'Contas', manage: 'Gerenciar', topExpenses: 'Maiores despesas', people: 'Pessoas', loans: 'Empréstimos', recent: 'Recentes', seeAll: 'Ver tudo',
     noTransactions: 'Ainda não há transações', transactionHint: 'Comece a registrar aqui seus pagamentos, receitas ou transferências do dia a dia.', addTransaction: 'Adicionar transação',
-    balance: 'Seu saldo', income: 'Receitas', expenses: 'Despesas', noLoans: 'Nenhum empréstimo ativo', loanHint: 'Acompanhe o dinheiro que você empresta ou pega emprestado. Toque para adicionar um empréstimo.',
+    balance: 'Seu saldo', income: 'Receitas', expenses: 'Despesas',
     lentOut: 'Emprestado', borrowed: 'Tomado emprestado', overdue: '{{count}} vencidos', active: '{{count}} ativos', noExpenses: 'Ainda não há despesas', expensesHint: 'Adicione algumas transações para ver suas categorias com mais gastos.',
   },
   transactions: { dayCount: '{{count}} lançamentos', allCategories: 'Todas', searchCategories: 'Pesquisar categorias', amount: 'Valor', category: 'Categoria', netSavings: 'Economia líquida', income: 'Receitas', expenses: 'Despesas', type: 'Tipo', account: 'Conta', date: 'Data', person: 'Pessoa', typesCount: '{{count}} tipos', oneAccount: '1 conta', accountsCount: '{{count}} contas', oneCategory: '1 categoria', categoriesCount: '{{count}} categorias', onePerson: '1 pessoa', personsCount: '{{count}} pessoas',

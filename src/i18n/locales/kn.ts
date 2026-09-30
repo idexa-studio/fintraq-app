@@ -115,10 +115,11 @@ const kn: Translation = {
     cannotDelete: 'ವರ್ಗವನ್ನು ಅಳಿಸಲಾಗದು', deleteFailed: 'ವರ್ಗವನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ.',
   },
   dashboard: {
+    other: 'ಇತರೆ', netThisMonth: 'ಈ ತಿಂಗಳು {{amount}}', thisMonth: 'ಈ ತಿಂಗಳು', quickActions: 'ತ್ವರಿತ ಕ್ರಿಯೆಗಳು', quickExpense: 'ಖರ್ಚು', quickIncome: 'ಆದಾಯ', quickTransfer: 'ವರ್ಗಾವಣೆ', quickLoan: 'ಸಾಲ', pulseSpent: 'ಇಲ್ಲಿಯವರೆಗೆ ಖರ್ಚು', pulseOfLast: 'ಕಳೆದ ತಿಂಗಳ {{pct}}%', pulseDay: '{{total}} ರಲ್ಲಿ ದಿನ {{day}}', pulsePerDay: 'ದಿನಕ್ಕೆ', pulseProjected: 'ಅಂದಾಜು', pulseEmpty: 'ಈ ತಿಂಗಳು ಇನ್ನೂ ಖರ್ಚು ಇಲ್ಲ', pulseToday: 'ಇಂದು', rhythmTitle: 'ಖರ್ಚಿನ ಲಯ', rhythmHint: 'ಕಳೆದ 5 ವಾರಗಳು', rhythmLess: 'ಕಡಿಮೆ', rhythmMore: 'ಹೆಚ್ಚು', rhythmNone: 'ಖರ್ಚು ಇಲ್ಲ', rhythmSpent: '{{amount}} ಖರ್ಚು',
     streakDays: '{{count}} ದಿನಗಳ ಸರಣಿ',
     accounts: 'ಖಾತೆಗಳು', manage: 'ನಿರ್ವಹಿಸಿ', topExpenses: 'ಪ್ರಮುಖ ವೆಚ್ಚಗಳು', people: 'ವ್ಯಕ್ತಿಗಳು', loans: 'ಸಾಲಗಳು', recent: 'ಇತ್ತೀಚಿನವು', seeAll: 'ಎಲ್ಲವನ್ನೂ ನೋಡಿ',
     noTransactions: 'ಇನ್ನೂ ವಹಿವಾಟುಗಳಿಲ್ಲ', transactionHint: 'ನಿಮ್ಮ ದೈನಂದಿನ ಪಾವತಿಗಳು, ಆದಾಯ ಅಥವಾ ವರ್ಗಾವಣೆಗಳನ್ನು ಇಲ್ಲಿ ದಾಖಲಿಸಲು ಪ್ರಾರಂಭಿಸಿ.', addTransaction: 'ವಹಿವಾಟು ಸೇರಿಸಿ',
-    balance: 'ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್', income: 'ಆದಾಯ', expenses: 'ವೆಚ್ಚಗಳು', noLoans: 'ಸಕ್ರಿಯ ಸಾಲಗಳಿಲ್ಲ', loanHint: 'ನೀವು ಕೊಟ್ಟ ಅಥವಾ ಪಡೆದ ಹಣವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ. ಸಾಲ ಸೇರಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ.',
+    balance: 'ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್', income: 'ಆದಾಯ', expenses: 'ವೆಚ್ಚಗಳು',
     lentOut: 'ಸಾಲ ಕೊಟ್ಟದ್ದು', borrowed: 'ಸಾಲ ಪಡೆದದ್ದು', overdue: '{{count}} ಗಡುವು ಮೀರಿದೆ', active: '{{count}} ಸಕ್ರಿಯ', noExpenses: 'ಇನ್ನೂ ವೆಚ್ಚಗಳಿಲ್ಲ', expensesHint: 'ನಿಮ್ಮ ಪ್ರಮುಖ ವೆಚ್ಚದ ವರ್ಗಗಳನ್ನು ನೋಡಲು ಕೆಲವು ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ.',
   },
   transactions: { dayCount: '{{count}} ನಮೂದುಗಳು', allCategories: 'ಎಲ್ಲಾ', searchCategories: 'ವರ್ಗಗಳನ್ನು ಹುಡುಕಿ', amount: 'ಮೊತ್ತ', category: 'ವರ್ಗ', netSavings: 'ನಿವ್ವಳ ಉಳಿತಾಯ', income: 'ಆದಾಯ', expenses: 'ವೆಚ್ಚಗಳು', type: 'ಪ್ರಕಾರ', account: 'ಖಾತೆ', date: 'ದಿನಾಂಕ', person: 'ವ್ಯಕ್ತಿ', typesCount: '{{count}} ಪ್ರಕಾರಗಳು', oneAccount: '1 ಖಾತೆ', accountsCount: '{{count}} ಖಾತೆಗಳು', oneCategory: '1 ವರ್ಗ', categoriesCount: '{{count}} ವರ್ಗಗಳು', onePerson: '1 ವ್ಯಕ್ತಿ', personsCount: '{{count}} ವ್ಯಕ್ತಿಗಳು',

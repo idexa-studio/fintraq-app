@@ -115,10 +115,11 @@ const id: Translation = {
     cannotDelete: 'Tidak dapat menghapus kategori', deleteFailed: 'Gagal menghapus kategori.',
   },
   dashboard: {
+    other: 'Lainnya', netThisMonth: '{{amount}} bulan ini', thisMonth: 'Bulan ini', quickActions: 'Aksi cepat', quickExpense: 'Pengeluaran', quickIncome: 'Pemasukan', quickTransfer: 'Transfer', quickLoan: 'Pinjaman', pulseSpent: 'Terpakai sejauh ini', pulseOfLast: '{{pct}}% dari bulan lalu', pulseDay: 'Hari {{day}} dari {{total}}', pulsePerDay: 'Per hari', pulseProjected: 'Proyeksi', pulseEmpty: 'Belum ada pengeluaran bulan ini', pulseToday: 'Hari ini', rhythmTitle: 'Ritme pengeluaran', rhythmHint: '5 minggu terakhir', rhythmLess: 'Sedikit', rhythmMore: 'Banyak', rhythmNone: 'Tidak ada pengeluaran', rhythmSpent: '{{amount}} terpakai',
     streakDays: '{{count}} hari beruntun',
     accounts: 'Akun', manage: 'Kelola', topExpenses: 'Pengeluaran terbesar', people: 'Orang', loans: 'Pinjaman', recent: 'Terbaru', seeAll: 'Lihat semua',
     noTransactions: 'Belum ada transaksi', transactionHint: 'Mulai catat pembayaran, pemasukan, atau transfer harian Anda di sini.', addTransaction: 'Tambah transaksi',
-    balance: 'Saldo Anda', income: 'Pemasukan', expenses: 'Pengeluaran', noLoans: 'Tidak ada pinjaman aktif', loanHint: 'Lacak uang yang Anda pinjamkan atau pinjam. Ketuk untuk menambah pinjaman.',
+    balance: 'Saldo Anda', income: 'Pemasukan', expenses: 'Pengeluaran',
     lentOut: 'Dipinjamkan', borrowed: 'Dipinjam', overdue: '{{count}} jatuh tempo', active: '{{count}} aktif', noExpenses: 'Belum ada pengeluaran', expensesHint: 'Tambahkan beberapa transaksi untuk melihat kategori pengeluaran teratas Anda.',
   },
   transactions: { dayCount: '{{count}} entri', allCategories: 'Semua', searchCategories: 'Cari kategori', amount: 'Jumlah', category: 'Kategori', netSavings: 'Tabungan bersih', income: 'Pemasukan', expenses: 'Pengeluaran', type: 'Jenis', account: 'Akun', date: 'Tanggal', person: 'Orang', typesCount: '{{count}} jenis', oneAccount: '1 akun', accountsCount: '{{count}} akun', oneCategory: '1 kategori', categoriesCount: '{{count}} kategori', onePerson: '1 orang', personsCount: '{{count}} orang',

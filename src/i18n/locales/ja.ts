@@ -115,10 +115,11 @@ const ja: Translation = {
     cannotDelete: 'カテゴリを削除できません', deleteFailed: 'カテゴリを削除できませんでした。',
   },
   dashboard: {
+    other: 'その他', netThisMonth: '今月 {{amount}}', thisMonth: '今月', quickActions: 'クイック操作', quickExpense: '支出', quickIncome: '収入', quickTransfer: '振替', quickLoan: '貸し借り', pulseSpent: '今月の支出', pulseOfLast: '先月の{{pct}}%', pulseDay: '{{total}}日中{{day}}日目', pulsePerDay: '1日あたり', pulseProjected: '月末予測', pulseEmpty: '今月はまだ支出がありません', pulseToday: '今日', rhythmTitle: '支出のリズム', rhythmHint: '過去5週間', rhythmLess: '少', rhythmMore: '多', rhythmNone: '支出なし', rhythmSpent: '{{amount}} 支出',
     streakDays: '{{count}}日連続',
     accounts: '口座', manage: '管理', topExpenses: '支出上位', people: '人物', loans: '貸し借り', recent: '最近', seeAll: 'すべて見る',
     noTransactions: '取引はまだありません', transactionHint: '日々の支払い、収入、振替をここに記録しましょう。', addTransaction: '取引を追加',
-    balance: '残高', income: '収入', expenses: '支出', noLoans: '有効な貸し借りはありません', loanHint: '貸したお金・借りたお金を記録します。タップして追加。',
+    balance: '残高', income: '収入', expenses: '支出',
     lentOut: '貸した', borrowed: '借りた', overdue: '期限超過 {{count}}件', active: '進行中 {{count}}件', noExpenses: '支出はまだありません', expensesHint: '取引を追加すると、支出の多いカテゴリが表示されます。',
   },
   transactions: { dayCount: '{{count}}件', allCategories: 'すべて', searchCategories: 'カテゴリを検索', amount: '金額', category: 'カテゴリ', netSavings: '純貯蓄', income: '収入', expenses: '支出', type: '種類', account: '口座', date: '日付', person: '人物', typesCount: '{{count}}種類', oneAccount: '1口座', accountsCount: '{{count}}口座', oneCategory: '1カテゴリ', categoriesCount: '{{count}}カテゴリ', onePerson: '1人', personsCount: '{{count}}人',

@@ -4,10 +4,10 @@ import { StyleSheet, View } from 'react-native';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import type { DowSpend } from '@/src/features/analytics/api/analytics';
 import { useTranslation } from 'react-i18next';
+import { DOW_KEYS } from '@/src/constants/calendar';
 
 type Props = { data: DowSpend[] };
 
-const DOW_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'] as const;
 
 export const DowChart = React.memo(function DowChart({ data }: Props) {
   const theme = useTheme();

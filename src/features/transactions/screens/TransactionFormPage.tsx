@@ -27,6 +27,8 @@ import { useTranslation } from 'react-i18next';
 type Props = {
   mode: 'create' | 'edit';
   transactionId?: number | null;
+  /** Starting type for a new entry (quick actions open the form pre-set). Ignored when editing. */
+  initialType?: TransactionType;
 };
 
 const parseAmount = (raw: string): number => {
@@ -35,7 +37,7 @@ const parseAmount = (raw: string): number => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
-export const TransactionFormPage = React.memo(function TransactionFormPage({ mode, transactionId }: Props) {
+export const TransactionFormPage = React.memo(function TransactionFormPage({ mode, transactionId, initialType = 'DR' }: Props) {
   const router = useRouter();
   const isEditMode = mode === 'edit';
 
@@ -63,7 +65,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
   const isRepayment = isEditMode && !!editingTransaction && editingTransaction.loanId !== null;
   const { data: loan } = useLoanWithStats(isRepayment && editingTransaction ? editingTransaction.loanId : null);
 
-  const [type, setType] = React.useState<TransactionType>('DR');
+  const [type, setType] = React.useState<TransactionType>(initialType);
   const [selectedAccountId, setSelectedAccountId] = React.useState<number | null>(null);
   const [toAccountId, setToAccountId] = React.useState<number | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<number | null>(null);

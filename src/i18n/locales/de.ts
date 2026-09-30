@@ -115,10 +115,11 @@ const de: Translation = {
     cannotDelete: 'Kategorie kann nicht gelöscht werden', deleteFailed: 'Kategorie konnte nicht gelöscht werden.',
   },
   dashboard: {
+    other: 'Sonstiges', netThisMonth: '{{amount}} diesen Monat', thisMonth: 'Dieser Monat', quickActions: 'Schnellaktionen', quickExpense: 'Ausgabe', quickIncome: 'Einnahme', quickTransfer: 'Umbuchung', quickLoan: 'Darlehen', pulseSpent: 'Bisher ausgegeben', pulseOfLast: '{{pct}} % des Vormonats', pulseDay: 'Tag {{day}} von {{total}}', pulsePerDay: 'Pro Tag', pulseProjected: 'Prognose', pulseEmpty: 'Diesen Monat noch nichts ausgegeben', pulseToday: 'Heute', rhythmTitle: 'Ausgabenrhythmus', rhythmHint: 'Letzte 5 Wochen', rhythmLess: 'Weniger', rhythmMore: 'Mehr', rhythmNone: 'Keine Ausgaben', rhythmSpent: '{{amount}} ausgegeben',
     streakDays: '{{count}} Tage in Folge',
     accounts: 'Konten', manage: 'Verwalten', topExpenses: 'Größte Ausgaben', people: 'Personen', loans: 'Darlehen', recent: 'Zuletzt', seeAll: 'Alle anzeigen',
     noTransactions: 'Noch keine Transaktionen', transactionHint: 'Erfasse hier deine täglichen Zahlungen, Einnahmen oder Überweisungen.', addTransaction: 'Transaktion hinzufügen',
-    balance: 'Dein Guthaben', income: 'Einnahmen', expenses: 'Ausgaben', noLoans: 'Keine aktiven Darlehen', loanHint: 'Behalte im Blick, was du verleihst oder dir leihst. Tippe, um ein Darlehen hinzuzufügen.',
+    balance: 'Dein Guthaben', income: 'Einnahmen', expenses: 'Ausgaben',
     lentOut: 'Verliehen', borrowed: 'Geliehen', overdue: '{{count}} überfällig', active: '{{count}} aktiv', noExpenses: 'Noch keine Ausgaben', expensesHint: 'Füge Transaktionen hinzu, um deine größten Ausgabenkategorien zu sehen.',
   },
   transactions: { dayCount: '{{count}} Einträge', allCategories: 'Alle', searchCategories: 'Kategorien suchen', amount: 'Betrag', category: 'Kategorie', netSavings: 'Nettoersparnis', income: 'Einnahmen', expenses: 'Ausgaben', type: 'Typ', account: 'Konto', date: 'Datum', person: 'Person', typesCount: '{{count}} Typen', oneAccount: '1 Konto', accountsCount: '{{count}} Konten', oneCategory: '1 Kategorie', categoriesCount: '{{count}} Kategorien', onePerson: '1 Person', personsCount: '{{count}} Personen',
