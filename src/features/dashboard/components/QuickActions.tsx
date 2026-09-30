@@ -15,11 +15,9 @@ type Props = {
   canTransfer: boolean;
 };
 
-const BUTTON = 48;
-
 /**
- * One-tap entry points for the most common writes, each opening its form already set up. Drawn for
- * the hero card: ink-filled circles on the brand fill, so they read as the card's own controls.
+ * One-tap entry points for the most common writes, each opening its form already set up. Drawn as
+ * a dark dock inside the hero card, echoing the tab bar's dark islands, so it reads as one control.
  */
 export const QuickActions = React.memo(function QuickActions({ canTransfer }: Props) {
   const theme = useTheme();
@@ -40,10 +38,10 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
 
   return (
     <View style={styles.row} accessibilityRole="toolbar" accessibilityLabel={t('dashboard.quickActions')}>
-      {actions.map((action) => (
+      {actions.map((action, index) => (
         <BentoPressable
           key={action.key}
-          style={styles.action}
+          style={[styles.action, index > 0 && styles.divided]}
           onPress={() => {
             Haptics.selectionAsync().catch(() => {});
             router.push(action.href);
@@ -51,10 +49,8 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
           accessibilityRole="button"
           accessibilityLabel={action.label}
         >
-          <View style={styles.circle}>
-            <Icon icon={action.icon} size={20} color={heroCard.background} weight="bold" />
-          </View>
-          <Text variant="label" color={heroCard.textPrimary} numberOfLines={1}>
+          <Icon icon={action.icon} size={20} color={heroCard.background} weight="bold" />
+          <Text variant="label" color={heroCard.background} numberOfLines={1}>
             {action.label}
           </Text>
         </BentoPressable>
@@ -63,23 +59,15 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
   );
 });
 
-const createStyles = ({ spacing, radius }: ThemeContextType, heroCard: HeroCardPalette) =>
+const createStyles = ({ spacing, radius, alpha }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
     row: {
       flexDirection: 'row',
-      justifyContent: 'space-around',
-      paddingTop: spacing('4'),
       marginTop: spacing('1'),
-      borderTopWidth: StyleSheet.hairlineWidth,
-      borderTopColor: heroCard.separator,
-    },
-    action: { flex: 1, alignItems: 'center', gap: spacing('1.5') },
-    circle: {
-      width: BUTTON,
-      height: BUTTON,
-      borderRadius: radius('full'),
+      paddingVertical: spacing('3'),
+      borderRadius: radius('xl'),
       backgroundColor: heroCard.textPrimary,
-      alignItems: 'center',
-      justifyContent: 'center',
     },
+    action: { flex: 1, alignItems: 'center', gap: spacing('1.5'), paddingHorizontal: spacing('1') },
+    divided: { borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: alpha(heroCard.background, 'medium') },
   });
