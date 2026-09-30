@@ -1,8 +1,8 @@
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Alert, Platform, StyleSheet, View } from 'react-native';
-import { Button, FormField, ListGroup, ListItem, PersonAvatar, Screen, Skeleton, SkeletonRow, Text } from '@/src/components/ui';
+import { Platform, StyleSheet, View } from 'react-native';
+import { AlertDialog, Button, FormField, ListGroup, ListItem, PersonAvatar, Screen, Skeleton, SkeletonRow, Text } from '@/src/components/ui';
 import { CalendarBlankIcon, ClockIcon, UserCircleIcon } from '@/src/components/ui/icons';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -16,13 +16,14 @@ import { TransactionTypePicker } from '@/src/features/transactions/components/Tr
 import { usePersons } from '@/src/features/persons/hooks/persons';
 import { useCreateTransaction, useTransactionById, useUpdateTransaction } from '@/src/features/transactions/hooks/transactions';
 import { useLoanWithStats } from '@/src/features/loans/hooks/loans';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex, formatDate } from '@/src/utils/format';
 import { format } from 'date-fns';
 import { TransactionType } from '@/src/types';
 import { AnalyticsService } from '@/src/services/analytics';
 import { isTransferCompatible } from '@/src/utils/accounts';
 import type { AccountType } from '@/src/types';
 import { useTranslation } from 'react-i18next';
+import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 
 type Props = {
   mode: 'create' | 'edit';
@@ -48,6 +49,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
   const { colors } = theme;
   const { profile } = useSettings();
   const styles = React.useMemo(() => createStyles(theme), [theme]);
+  const { showAlert, alertProps } = useAlertDialog();
 
   const accountsQuery = useAccounts();
   const categoriesQuery = useCategories();
@@ -166,7 +168,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
   }, [type, toAccountOptions, toAccountId]);
 
   const formattedDate = React.useMemo(
-    () => format(transactionDateTime, 'EEE, d MMM yyyy'),
+    () => formatDate(transactionDateTime, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
     [transactionDateTime],
   );
 
@@ -207,21 +209,18 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
 
   const handleSave = async () => {
     if (!selectedAccountId || !selectedCategoryId || amountValue <= 0) {
-      Alert.alert(t('transactions.missingDetails'), t('transactions.missingDetailsMessage'));
+      showAlert({ title: t('transactions.missingDetails'), message: t('transactions.missingDetailsMessage'), type: 'warning' });
       return;
     }
     if (type === 'TR' && !toAccountId) {
-      Alert.alert(t('transactions.missingDestination'), t('transactions.missingDestinationMessage'));
+      showAlert({ title: t('transactions.missingDestination'), message: t('transactions.missingDestinationMessage'), type: 'warning' });
       return;
     }
 
     if (isRepayment && loan && editingTransaction) {
       const maxAllowed = loan.outstanding + editingTransaction.amount;
       if (amountValue > maxAllowed) {
-        Alert.alert(
-          t('transactions.repaymentExceeds'),
-          t('transactions.repaymentExceedsMessage', { currency: loan.currency, max: maxAllowed.toFixed(2), outstanding: loan.outstanding.toFixed(2), current: editingTransaction.amount.toFixed(2) })
-        );
+        showAlert({ title: t('transactions.repaymentExceeds'), message: t('transactions.repaymentExceedsMessage', { currency: loan.currency, max: maxAllowed.toFixed(2), outstanding: loan.outstanding.toFixed(2), current: editingTransaction.amount.toFixed(2) }), type: 'warning' });
         return;
       }
     }
@@ -253,7 +252,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       );
       router.back();
     } catch {
-      Alert.alert(t('transactions.unableToSave'), t('transactions.unableToSaveMessage'));
+      showAlert({ title: t('transactions.unableToSave'), message: t('transactions.unableToSaveMessage'), type: 'error' });
     }
   };
 
@@ -301,6 +300,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
             selectedId={selectedPersonId}
             onSelect={setSelectedPersonId}
           />
+          <AlertDialog {...alertProps} />
         </>
       }
     >

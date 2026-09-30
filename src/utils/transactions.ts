@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import { formatDate } from '@/src/utils/format';
 
 type Totalable = { type: string; amount: number; account: { currency: string } };
 
@@ -20,9 +21,16 @@ export function sumByCurrency(items: readonly Totalable[]): CurrencyTotals {
  * Keyed by calendar date — not the display label, which has no year and would merge
  * different days (e.g. "Wed, 1 Oct" in 2025 and 2031).
  */
+export type DayTitleFormatter = (date: Date, withYear: boolean) => string;
+
+/** "Wed, 30 Sep" in the app language; the year is added when asked. */
+export const formatDayTitle: DayTitleFormatter = (date, withYear) =>
+  formatDate(date, { weekday: 'short', day: 'numeric', month: 'short', ...(withYear ? { year: 'numeric' } : {}) });
+
 export function groupByDay<T extends { datetime: string }>(
   items: readonly T[],
   now: Date = new Date(),
+  formatTitle: DayTitleFormatter = formatDayTitle,
 ): { key: string; title: string; data: T[] }[] {
   const currentYear = now.getFullYear();
   const sections = new Map<string, { key: string; title: string; data: T[] }>();
@@ -32,7 +40,7 @@ export function groupByDay<T extends { datetime: string }>(
     let section = sections.get(key);
     if (!section) {
       // The year only appears when it isn't this year, so older entries aren't ambiguous.
-      const title = format(date, date.getFullYear() === currentYear ? 'EEE, d MMM' : 'EEE, d MMM yyyy');
+      const title = formatTitle(date, date.getFullYear() !== currentYear);
       section = { key, title, data: [] };
       sections.set(key, section);
     }

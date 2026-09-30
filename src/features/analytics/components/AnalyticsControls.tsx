@@ -1,10 +1,10 @@
-import { format } from 'date-fns';
 import React, { useCallback, useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Chip, SegmentedControl, Text } from '@/src/components/ui';
 import { LockKeyIcon } from '@/src/components/ui/icons';
 import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/analytics/constants';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { formatDate } from '@/src/utils/format';
 
 type AnalyticsControlsProps = {
   currencies: readonly string[];
@@ -22,10 +22,10 @@ function rangeCaption(range: RangeDays, now: Date): string {
   if (range === 365) {
     start.setDate(1);
     start.setMonth(start.getMonth() - 11);
-    return `${format(start, 'MMM yyyy')} – ${format(now, 'MMM yyyy')}`;
+    return `${formatDate(start, { month: 'short', year: 'numeric' })} – ${formatDate(now, { month: 'short', year: 'numeric' })}`;
   }
   start.setDate(start.getDate() - range + 1);
-  return `${format(start, 'd MMM yyyy')} – ${format(now, 'd MMM yyyy')}`;
+  return `${formatDate(start, { day: 'numeric', month: 'short', year: 'numeric' })} – ${formatDate(now, { day: 'numeric', month: 'short', year: 'numeric' })}`;
 }
 
 /** Currency (only when there's more than one) and period, with the dates the period covers. */

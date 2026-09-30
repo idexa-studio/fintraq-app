@@ -3,7 +3,6 @@ import { Screen } from '@/src/components/ui/Screen';
 import { Banner, Button, FormField, IconButton, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, SegmentedControl } from '@/src/components/ui';
 import { CalendarBlankIcon, XIcon } from '@/src/components/ui/icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { format } from 'date-fns';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
@@ -17,7 +16,7 @@ import { TransactionAmountInput } from '@/src/features/transactions/components/T
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { FREE_LOAN_LIMIT } from '@/src/constants/iap';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex, formatDate } from '@/src/utils/format';
 import { toErrorMessage } from '@/src/utils/errors';
 import { useCreateLoan, useLoansCount } from '@/src/features/loans/hooks/loans';
 import { Coins02Icon, HandshakeIcon, Money01Icon } from '@hugeicons/core-free-icons';
@@ -199,7 +198,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
             icon={CalendarBlankIcon}
             iconColor={colors.primaryInk}
             title={t('loans.optionalDueDate')}
-            value={dueDate ? format(dueDate, 'MMM d, yyyy') : t('loans.noDueDate')}
+            value={dueDate ? formatDate(dueDate, { day: 'numeric', month: 'short', year: 'numeric' }) : t('loans.noDueDate')}
             onPress={() => setShowDueDatePicker(true)}
             trailing={dueDate ? clearButton(() => setDueDate(null)) : undefined}
           />
