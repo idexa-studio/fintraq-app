@@ -101,6 +101,7 @@ const bn: Translation = {
   },
   system: { migrationError: 'ডেটাবেস মাইগ্রেশন লোড করতে ত্রুটি হয়েছে', initializingDatabase: 'ডেটাবেস প্রস্তুত হচ্ছে...' },
   accounts: {
+    netWorth: 'নিট সম্পদ', assets: 'সম্পদ', debts: 'দেনা',
     title: 'অ্যাকাউন্ট', account: 'অ্যাকাউন্ট', edit: 'সম্পাদনা', delete: 'মুছুন', removeTransactions: 'আগে সব লেনদেন সরিয়ে ফেলুন',
     cannotDelete: 'অ্যাকাউন্ট মোছা যাচ্ছে না', deleteFailed: 'অ্যাকাউন্ট মুছতে ব্যর্থ হয়েছে।', availableBalance: 'উপলব্ধ ব্যালেন্স', totalIn: 'মোট জমা', totalOut: 'মোট খরচ',
     none: 'এখনও কোনো অ্যাকাউন্ট নেই', deleteTitle: 'অ্যাকাউন্ট মুছুন', deleteMessage: '"{{name}}" মুছবেন? এটি ফেরানো যাবে না।',

@@ -101,6 +101,7 @@ const ta: Translation = {
   },
   system: { migrationError: 'தரவுத்தள இடமாற்றங்களை ஏற்றுவதில் பிழை', initializingDatabase: 'தரவுத்தளம் தயாராகிறது...' },
   accounts: {
+    netWorth: 'நிகர மதிப்பு', assets: 'சொத்துகள்', debts: 'கடன்கள்',
     title: 'கணக்குகள்', account: 'கணக்கு', edit: 'திருத்து', delete: 'நீக்கு', removeTransactions: 'முதலில் அனைத்துப் பரிவர்த்தனைகளையும் நீக்கவும்',
     cannotDelete: 'கணக்கை நீக்க இயலாது', deleteFailed: 'கணக்கை நீக்க முடியவில்லை.', availableBalance: 'கிடைக்கும் இருப்பு', totalIn: 'மொத்த வரவு', totalOut: 'மொத்தச் செலவு',
     none: 'இன்னும் கணக்குகள் இல்லை', deleteTitle: 'கணக்கை நீக்கு', deleteMessage: '"{{name}}" கணக்கை நீக்கவா? இதைத் திரும்பப் பெற முடியாது.',

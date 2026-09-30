@@ -1,9 +1,12 @@
 import { Badge, Card, ConfirmDialog, Divider, EmptyState, Icon, IconAvatar, IconButton, MoneyText, OptionsDialog, Screen, Text } from '@/src/components/ui';
 import type { OptionsDialogOption } from '@/src/components/ui';
-import { ArrowDownLeftIcon, ArrowUpRightIcon, DotsThreeVerticalIcon, PencilSimpleIcon, PlusIcon, TrashIcon, WalletIcon } from '@/src/components/ui/icons';
+import { ArrowDownLeftIcon, ArrowUpRightIcon, DotsThreeVerticalIcon, PencilSimpleIcon, TrashIcon, WalletIcon } from '@/src/components/ui/icons';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/accounts';
+import { NetWorthCard } from '@/src/features/accounts/components/NetWorthCard';
+import { netWorthByCurrency } from '@/src/features/accounts/utils/net-worth';
 import { usePremium } from '@/src/providers/PremiumProvider';
+import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
@@ -23,6 +26,8 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   const deleteAccount = useDeleteAccount();
   const router = useRouter();
   const { showAlert } = usePremium();
+  const { profile } = useSettings();
+  const netWorth = useMemo(() => netWorthByCurrency(accounts ?? [], profile.defaultCurrency), [accounts, profile.defaultCurrency]);
 
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [showOptions, setShowOptions] = useState(false);
@@ -91,8 +96,6 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
     <Screen
       header={{
         title: t('accounts.title'),
-        // Tab screens add from the header — the tab bar's centre + already means "add transaction".
-        rightAction: <IconButton icon={PlusIcon} variant="tonal" onPress={handleAdd} accessibilityLabel={t('accountForm.new')} />,
       }}
       tabBar
       contentContainerStyle={styles.content}
@@ -117,9 +120,12 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
         </>
       }
     >
+      {/* Adding lives on the tab bar's centre button, which means "new account" on this tab. */}
       {accounts && accounts.length === 0 ? (
         <EmptyState icon={WalletIcon} title={t('accounts.none')} actionLabel={t('accountForm.new')} onAction={handleAdd} />
       ) : null}
+
+      {netWorth.length > 0 ? <NetWorthCard groups={netWorth} /> : null}
 
       {accounts?.map((account) => {
         const accColor = colorNumberToHex(account.color);

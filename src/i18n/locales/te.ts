@@ -101,6 +101,7 @@ const te: Translation = {
   },
   system: { migrationError: 'డేటాబేస్ మైగ్రేషన్‌లను లోడ్ చేయడంలో లోపం', initializingDatabase: 'డేటాబేస్ సిద్ధమవుతోంది...' },
   accounts: {
+    netWorth: 'నికర విలువ', assets: 'ఆస్తులు', debts: 'అప్పులు',
     title: 'ఖాతాలు', account: 'ఖాతా', edit: 'సవరించు', delete: 'తొలగించు', removeTransactions: 'ముందుగా అన్ని లావాదేవీలను తొలగించండి',
     cannotDelete: 'ఖాతాను తొలగించలేము', deleteFailed: 'ఖాతాను తొలగించడం విఫలమైంది.', availableBalance: 'అందుబాటులో ఉన్న బ్యాలెన్స్', totalIn: 'మొత్తం జమ', totalOut: 'మొత్తం ఖర్చు',
     none: 'ఇంకా ఖాతాలు లేవు', deleteTitle: 'ఖాతాను తొలగించు', deleteMessage: '"{{name}}" ను తొలగించాలా? ఈ చర్యను రద్దు చేయలేరు.',
