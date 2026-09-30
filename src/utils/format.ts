@@ -77,9 +77,23 @@ const formatCompactCurrency = (amount: number, locale: string, currencyCode: str
  * Formats a numeric amount into a currency string using the Intl library.
  * If no currency code is provided, it formats the number as a localized decimal.
  */
-export const formatCurrency = (amount: number, currencyCode?: string, compact?: boolean): string => {
+/** The Intl locale for the app's language, falling back to the device's. */
+const appLocale = (): string => {
   const deviceLocale = Localization.getLocales()?.[0]?.languageTag ?? 'en-US';
-  const locale = getIntlLocale(i18n.resolvedLanguage ?? i18n.language, deviceLocale);
+  return getIntlLocale(i18n.resolvedLanguage ?? i18n.language, deviceLocale);
+};
+
+/** Formats a date in the app's language, e.g. `formatDate(d, { dateStyle: 'full' })`. */
+export const formatDate = (date: Date, options: Intl.DateTimeFormatOptions): string => {
+  try {
+    return new Intl.DateTimeFormat(appLocale(), options).format(date);
+  } catch {
+    return date.toDateString();
+  }
+};
+
+export const formatCurrency = (amount: number, currencyCode?: string, compact?: boolean): string => {
+  const locale = appLocale();
 
   if (!currencyCode) {
     return new Intl.NumberFormat(locale, {

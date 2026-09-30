@@ -129,7 +129,7 @@ const ja: Translation = {
   expense: '支出', transfer: '振替', missingDetails: '入力が不足しています', missingDetailsMessage: '口座、カテゴリ、有効な金額を選択してください。', missingDestination: '振替先がありません', missingDestinationMessage: '振替先の口座を選択してください。',
   repaymentExceeds: '返済額が残額を超えています', repaymentExceedsMessage: '返済できる上限は{{currency}} {{max}}です（残額: {{outstanding}} + 現在の返済額: {{current}}）。', unableToSave: '保存できません', unableToSaveMessage: '取引を保存できませんでした。もう一度お試しください。', defaultNote: '取引',
   editEntry: '記録を編集', newEntry: '新しい記録', loanRepaymentFor: '返済の相手', loading: '読み込み中...', fromAccount: '出金元口座', toAccount: '入金先口座', noCompatible: 'この振替に使える口座がありません。', linkedPerson: '紐づく人物', unknown: '不明', noPersonLinked: '人物が紐づいていません', time: '時刻', note: 'メモ', optionalContext: '補足（任意）', saveChanges: '変更を保存', saveTransaction: '取引を保存', none: 'なし',
-  detailTitle: '取引', notFound: '取引が見つかりません。', detailDeleteTitle: '取引を削除', detailDeleteMessage: '残高への反映が元に戻り、この操作は取り消せません。', from: '出金元', to: '入金先', created: '作成日', cancel: 'キャンセル' },
+  addedOn: '{{date}} に追加', detailTitle: '取引', notFound: '取引が見つかりません。', detailDeleteTitle: '取引を削除', detailDeleteMessage: '残高への反映が元に戻り、この操作は取り消せません。', from: '出金元', to: '入金先', created: '作成日', cancel: 'キャンセル' },
   onboardingFlow: {
     getStarted: 'はじめる', restoreFromBackup: 'バックアップから復元', welcomeSubtitle: '支出・収入・貸し借りを、落ち着いたプライベートな場所でまとめて管理。設定は1分以内で完了します。',
     steps: {

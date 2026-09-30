@@ -1,38 +1,30 @@
-import { IconButton } from '@/src/components/ui/IconButton';
-import { Screen } from '@/src/components/ui/Screen';
-import { SkeletonScreen } from '@/src/components/ui';
-import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { MoneyText } from '@/src/components/ui/MoneyText';
+import { Calendar03Icon, Delete02Icon, NoteIcon, PencilEdit01Icon, Tag01Icon } from '@hugeicons/core-free-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
-  useDeleteTransaction,
-  useTransactionDetail,
-} from '@/src/features/transactions/hooks/transactions';
+  Badge,
+  Card,
+  ConfirmDialog,
+  EmptyState,
+  IconAvatar,
+  IconButton,
+  ListGroup,
+  ListItem,
+  MoneyText,
+  PersonAvatar,
+  Screen,
+  SkeletonScreen,
+  Text,
+} from '@/src/components/ui';
+import { ReceiptIcon } from '@/src/components/ui/icons';
+import { useDeleteTransaction, useTransactionDetail } from '@/src/features/transactions/hooks/transactions';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { AccountType, TransactionType } from '@/src/types';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex, formatDate } from '@/src/utils/format';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
-import {
-  ArrowRight01Icon,
-  Calendar03Icon,
-  Delete02Icon,
-  NoteIcon,
-  PencilEdit01Icon,
-  Tag01Icon,
-  UserIcon,
-  Wallet01Icon,
-} from '@hugeicons/core-free-icons';
-import type { IconSource } from '@/src/components/ui/Icon';
-import { Icon } from '@/src/components/ui/Icon';
-import { format } from 'date-fns';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useMemo } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
-import { Text } from '@/src/components/ui/Text';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
-
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 const TYPE_LABEL_KEYS = {
   CR: 'transactions.income',
@@ -40,66 +32,10 @@ const TYPE_LABEL_KEYS = {
   TR: 'transactions.transfer',
 } as const satisfies Record<TransactionType, string>;
 
-// ─── InfoRow ─────────────────────────────────────────────────────────────────
-
-type InfoRowStyles = ReturnType<typeof createInfoRowStyles>;
-
-type InfoRowProps = {
-  rowStyles: InfoRowStyles;
-  icon: IconSource;
-  label: string;
-  isFirst?: boolean;
-  isLast?: boolean;
-  children: React.ReactNode;
-};
-
-const InfoRow = React.memo(function InfoRow({
-  rowStyles,
-  icon,
-  label,
-  isFirst,
-  isLast,
-  children,
-}: InfoRowProps) {
-  const { colors } = useTheme();
-  return (
-    <View
-      style={[
-        rowStyles.row,
-        isFirst && rowStyles.rowFirst,
-        isLast && rowStyles.rowLast,
-        !isLast && rowStyles.rowDivider,
-      ]}
-    >
-      <View style={rowStyles.iconWrap}>
-        <Icon icon={icon} size={16} color={colors.textMuted} />
-      </View>
-      <Text style={rowStyles.label}>{label}</Text>
-      <View style={rowStyles.valueWrap}>{children}</View>
-    </View>
-  );
-});
-
-// ─── AccountChip ─────────────────────────────────────────────────────────────
-
-type AccountChipProps = {
-  rowStyles: InfoRowStyles;
-  icon: IconSource;
-  color: string;
-  name: string;
-};
-
-const AccountChip = React.memo(function AccountChip({ rowStyles, icon, color, name }: AccountChipProps) {
-  return (
-    <View style={rowStyles.chip}>
-      <IconAvatar icon={icon} color={color} variant="subtle" size={20} iconSize={10} />
-      <Text style={rowStyles.chipText}>{name}</Text>
-    </View>
-  );
-});
-
-// ─── Screen ───────────────────────────────────────────────────────────────────
-
+/**
+ * A receipt: the amount up top, then everything it touches as rows you can follow — the account,
+ * the category's other transactions, the person.
+ */
 export const TransactionDetailScreen = React.memo(function TransactionDetailScreen() {
   const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -108,114 +44,23 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
   const theme = useTheme();
   const { colors } = theme;
   const insets = useSafeAreaInsets();
-
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
-  const rowStyles = useMemo(() => createInfoRowStyles(theme), [theme]);
 
   const { data: tx, isLoading } = useTransactionDetail(txId);
-  const { mutateAsync: deleteTx } = useDeleteTransaction();
+  const deleteTx = useDeleteTransaction();
+  const [isDeleteVisible, setDeleteVisible] = useState(false);
 
-  // ── Derived values ──
-  const categoryColor = useMemo(
-    () => (tx ? colorNumberToHex(tx.category.color) : colors.primary),
-    [tx, colors.primary],
-  );
-  const categoryIcon = useMemo(
-    () => (tx ? resolveIcon(tx.category.icon, Tag01Icon) : Tag01Icon),
-    [tx],
-  );
-  const accountIcon = useMemo(
-    () => resolveAccountTypeIcon(tx?.account.accountType as AccountType | null),
-    [tx?.account.accountType],
-  );
-  const accountColor = useMemo(
-    () => (tx ? colorNumberToHex(tx.account.color) : colors.textMuted),
-    [tx, colors.textMuted],
-  );
-  const toAccountIcon = useMemo(
-    () => resolveAccountTypeIcon(tx?.toAccount?.accountType as AccountType | null),
-    [tx?.toAccount?.accountType],
-  );
-  const toAccountColor = useMemo(
-    () => (tx?.toAccount?.color != null ? colorNumberToHex(tx.toAccount.color) : colors.textMuted),
-    [tx?.toAccount?.color, colors.textMuted],
-  );
-  const personColor = useMemo(
-    () => (tx?.person?.color != null ? colorNumberToHex(tx.person.color) : colors.primary),
-    [tx?.person?.color, colors.primary],
-  );
+  const edit = useCallback(() => router.push(`/transactions/edit/${txId}`), [router, txId]);
+  const confirmDelete = useCallback(async () => {
+    await deleteTx.mutateAsync(txId);
+    router.back();
+  }, [deleteTx, txId, router]);
 
-  const typeColor = useMemo(() => {
-    if (!tx) return colors.primary;
-    return tx.type === 'CR' ? colors.success : tx.type === 'DR' ? colors.danger : colors.info;
-  }, [tx, colors]);
+  const title = t('transactions.detailTitle');
 
-  const displayTitle = useMemo(
-    () => (tx ? (tx.note?.trim() || tx.category.name) : ''),
-    [tx],
-  );
-
-  const dateStr = useMemo(
-    () => (tx ? format(new Date(tx.datetime), 'EEEE, d MMMM yyyy') : ''),
-    [tx],
-  );
-  const timeStr = useMemo(
-    () => (tx ? format(new Date(tx.datetime), 'h:mm a') : ''),
-    [tx],
-  );
-
-  const personInitials = useMemo(() => {
-    if (!tx?.person?.name) return '';
-    return tx.person.name
-      .trim()
-      .split(' ')
-      .map(w => w[0]?.toUpperCase() ?? '')
-      .slice(0, 2)
-      .join('');
-  }, [tx?.person?.name]);
-
-  const hasNote = useMemo(() => Boolean(tx?.note?.trim()), [tx?.note]);
-  const hasPerson = useMemo(() => tx?.person?.name != null, [tx?.person?.name]);
-  const isTransfer = tx?.type === 'TR';
-  const hasToAccount = isTransfer && tx?.toAccount?.name != null;
-
-  // ── Handlers ──
-  const handleEdit = useCallback(() => {
-    router.push(`/transactions/edit/${txId}`);
-  }, [router, txId]);
-
-  const handleDelete = useCallback(() => {
-    Alert.alert(
-      t('transactions.detailDeleteTitle'),
-      t('transactions.detailDeleteMessage'),
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('transactions.delete'),
-          style: 'destructive',
-          onPress: async () => {
-            await deleteTx(txId);
-            router.back();
-          },
-        },
-      ],
-    );
-  }, [txId, deleteTx, router, t]);
-
-  const headerRight = useMemo(
-    () => (
-      <View style={styles.headerActions}>
-        <IconButton icon={Delete02Icon} variant="danger" onPress={handleDelete} accessibilityLabel={t('common.delete')} />
-        <IconButton icon={PencilEdit01Icon} onPress={handleEdit} accessibilityLabel={t('common.edit')} />
-      </View>
-    ),
-    [styles, handleDelete, handleEdit, t],
-  );
-
-  // ── Loading / not-found ──
   if (isLoading) {
     return (
-      <Screen header={{ title: t('transactions.detailTitle'), showBack: true }} variant="fixed" edges={['top']}>
+      <Screen header={{ title, showBack: true }} variant="fixed" edges={['top']}>
         <SkeletonScreen />
       </Screen>
     );
@@ -223,309 +68,140 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
 
   if (!tx) {
     return (
-      <Screen header={{ title: t('transactions.detailTitle'), showBack: true }} variant="fixed" edges={['top']}>
-        <View style={styles.loading}>
-          <Text style={styles.missingText}>{t('transactions.notFound')}</Text>
-        </View>
+      <Screen header={{ title, showBack: true }} variant="fixed" edges={['top']}>
+        <EmptyState icon={ReceiptIcon} title={t('transactions.notFound')} />
       </Screen>
     );
   }
 
-  // ── Determine last row index for bottom-radius ──
-  // rows: Date → Account → (To Account?) → Category → (Note?) → (Person | Created)
-  const lastRowIsNote = !hasPerson && hasNote;
-  const lastRowIsPerson = hasPerson;
+  const categoryColor = colorNumberToHex(tx.category.color);
+  const categoryIcon = resolveIcon(tx.category.icon, Tag01Icon);
+  const typeColor = tx.type === 'CR' ? colors.success : tx.type === 'DR' ? colors.danger : colors.info;
+  const note = tx.note?.trim();
+  const when = new Date(tx.datetime);
+  const isTransfer = tx.type === 'TR';
+  const toAccount = isTransfer && tx.toAccount?.id != null && tx.toAccount.name ? tx.toAccount : null;
+  const person = tx.person.id != null && tx.person.name ? { ...tx.person, id: tx.person.id, name: tx.person.name } : null;
+
+  const headerActions = (
+    <View style={styles.headerActions}>
+      <IconButton icon={Delete02Icon} variant="danger" onPress={() => setDeleteVisible(true)} accessibilityLabel={t('common.delete')} />
+      <IconButton icon={PencilEdit01Icon} onPress={edit} accessibilityLabel={t('common.edit')} />
+    </View>
+  );
 
   return (
-    <Screen header={{ title: t('transactions.detailTitle'), showBack: true, rightAction: headerRight }} variant="fixed" edges={['top']}>
-
+    <Screen header={{ title, showBack: true, rightAction: headerActions }} variant="fixed" edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-
-        {/* ── Hero card ── */}
-        <View style={[styles.heroCard, { backgroundColor: colors.surface }]}>
-          <View style={styles.heroTop}>
-            <IconAvatar icon={categoryIcon} color={categoryColor} variant="subtle" size={56} iconSize={26} />
-            <View style={styles.heroMeta}>
-              <Text style={styles.heroName} numberOfLines={2}>{displayTitle}</Text>
-              <View style={styles.heroBadgeRow}>
-                <View style={[styles.typeBadge, { backgroundColor: alpha(typeColor, 'subtle') }]}>
-                  <Text style={[styles.typeBadgeText, { color: typeColor }]}>
-                    {t(TYPE_LABEL_KEYS[tx.type])}
-                  </Text>
-                </View>
-                <View style={[styles.typeBadge, { backgroundColor: alpha(colors.text, 'faint') }]}>
-                  <Text style={[styles.typeBadgeText, { color: colors.textMuted }]}>
-                    {tx.account.currency}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-
-          <Text style={styles.amountLabel}>{t('transactions.amount')}</Text>
+        <View style={styles.hero}>
+          <IconAvatar icon={categoryIcon} color={categoryColor} size={64} iconSize={28} />
+          <Text variant="subheading" align="center" numberOfLines={2}>
+            {note || tx.category.name}
+          </Text>
           <MoneyText
             amount={tx.amount}
             currency={tx.account.currency}
             type={tx.type}
             weight="bold"
-            style={styles.heroAmount}
+            style={styles.amount}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.6}
           />
+          <View style={styles.badges}>
+            <Badge label={t(TYPE_LABEL_KEYS[tx.type])} color={typeColor} />
+            <Badge label={tx.account.currency} variant="muted" />
+          </View>
         </View>
 
-        {/* ── Detail rows ── */}
-        <View style={styles.section}>
-
-          {/* Date */}
-          <InfoRow
-            rowStyles={rowStyles}
+        <ListGroup>
+          <ListItem
             icon={Calendar03Icon}
-            label={t('transactions.date')}
-            isFirst
-            isLast={false}
-          >
-            <Text style={rowStyles.valueText}>{dateStr}</Text>
-            <Text style={rowStyles.valueSub}>{timeStr}</Text>
-          </InfoRow>
-
-          {/* Account / From */}
-          <InfoRow
-            rowStyles={rowStyles}
-            icon={Wallet01Icon}
-            label={isTransfer ? t('transactions.from') : t('transactions.account')}
-          >
-            <AccountChip
-              rowStyles={rowStyles}
-              icon={accountIcon}
-              color={accountColor}
-              name={tx.account.name}
+            iconColor={colors.textMuted}
+            title={formatDate(when, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+            subtitle={formatDate(when, { hour: 'numeric', minute: '2-digit' })}
+          />
+          <ListItem
+            leading={<IconAvatar icon={resolveAccountTypeIcon(tx.account.accountType as AccountType | null)} color={colorNumberToHex(tx.account.color)} size={40} />}
+            title={tx.account.name}
+            subtitle={isTransfer ? t('transactions.from') : t('transactions.account')}
+            onPress={() => router.push(`/(main)/accounts/${tx.account.id}`)}
+          />
+          {toAccount ? (
+            <ListItem
+              leading={
+                <IconAvatar
+                  icon={resolveAccountTypeIcon(toAccount.accountType as AccountType | null)}
+                  color={toAccount.color != null ? colorNumberToHex(toAccount.color) : colors.textMuted}
+                  size={40}
+                />
+              }
+              title={toAccount.name!}
+              subtitle={t('transactions.to')}
+              onPress={() => router.push(`/(main)/accounts/${toAccount.id}`)}
             />
-          </InfoRow>
-
-          {/* To account (transfer only) */}
-          {hasToAccount && (
-            <InfoRow rowStyles={rowStyles} icon={ArrowRight01Icon} label={t('transactions.to')}>
-              <AccountChip
-                rowStyles={rowStyles}
-                icon={toAccountIcon}
-                color={toAccountColor}
-                name={tx.toAccount!.name!}
-              />
-            </InfoRow>
-          )}
-
-          {/* Category */}
-          <InfoRow
-            rowStyles={rowStyles}
-            icon={Tag01Icon}
-            label={t('transactions.category')}
-            isLast={!hasNote && !hasPerson}
-          >
-            <AccountChip
-              rowStyles={rowStyles}
-              icon={categoryIcon}
-              color={categoryColor}
-              name={tx.category.name}
+          ) : null}
+          <ListItem
+            leading={<IconAvatar icon={categoryIcon} color={categoryColor} size={40} />}
+            title={tx.category.name}
+            subtitle={t('transactions.category')}
+            onPress={() => router.push(`/transactions?categoryId=${tx.category.id}`)}
+          />
+          {person ? (
+            <ListItem
+              leading={<PersonAvatar name={person.name} color={person.color != null ? colorNumberToHex(person.color) : colors.primary} size={40} />}
+              title={person.name}
+              subtitle={[person.designation, person.company].filter(Boolean).join(' · ') || t('transactions.person')}
+              onPress={() => router.push(`/persons/${person.id}`)}
             />
-          </InfoRow>
+          ) : null}
+        </ListGroup>
 
-          {/* Note */}
-          {hasNote && (
-            <InfoRow
-              rowStyles={rowStyles}
-              icon={NoteIcon}
-              label={t('transactions.note')}
-              isLast={lastRowIsNote}
-            >
-              <Text style={rowStyles.valueText}>{tx.note!.trim()}</Text>
-            </InfoRow>
-          )}
-
-          {/* Person */}
-          {hasPerson && (
-            <InfoRow
-              rowStyles={rowStyles}
-              icon={UserIcon}
-              label={t('transactions.person')}
-              isLast={lastRowIsPerson}
-            >
-              <View style={rowStyles.chip}>
-                <View style={[rowStyles.personAvatar, { backgroundColor: alpha(personColor, 'subtle') }]}>
-                  <Text style={[rowStyles.personInitials, { color: personColor }]}>
-                    {personInitials}
-                  </Text>
-                </View>
-                <View>
-                  <Text style={rowStyles.chipText}>{tx.person!.name}</Text>
-                  {(tx.person!.designation || tx.person!.company) ? (
-                    <Text style={rowStyles.valueSub}>
-                      {[tx.person!.designation, tx.person!.company].filter(Boolean).join(' · ')}
-                    </Text>
-                  ) : null}
-                </View>
-              </View>
-            </InfoRow>
-          )}
-
-          {/* Created fallback when no person */}
-          {!hasPerson && (
-            <InfoRow
-              rowStyles={rowStyles}
-              icon={Calendar03Icon}
-              label={t('transactions.created')}
-              isLast
-            >
-              <Text style={rowStyles.valueSub}>
-                {format(new Date(tx.createdAt), 'd MMM yyyy')}
+        {note ? (
+          <Card style={styles.note}>
+            <View style={styles.noteLabel}>
+              <IconAvatar icon={NoteIcon} color={colors.textMuted} size={24} iconSize={12} />
+              <Text variant="label" tone="muted">
+                {t('transactions.note')}
               </Text>
-            </InfoRow>
-          )}
+            </View>
+            <Text variant="body" selectable>
+              {note}
+            </Text>
+          </Card>
+        ) : null}
 
-        </View>
+        <Text variant="caption" tone="muted" align="center">
+          {t('transactions.addedOn', { date: formatDate(new Date(tx.createdAt), { day: 'numeric', month: 'short', year: 'numeric' }) })}
+        </Text>
       </ScrollView>
+
+      <ConfirmDialog
+        destructive
+        visible={isDeleteVisible}
+        onClose={() => setDeleteVisible(false)}
+        title={t('transactions.detailDeleteTitle')}
+        message={t('transactions.detailDeleteMessage')}
+        confirmLabel={t('transactions.delete')}
+        onConfirm={confirmDelete}
+        isLoading={deleteTx.isPending}
+      />
     </Screen>
   );
 });
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
-
-const createInfoRowStyles = ({ colors, typography, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ spacing, layout, typography }: ThemeContextType, insets: EdgeInsets) =>
   StyleSheet.create({
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-      gap: spacing('3'),
-    },
-    rowFirst: {
-      borderTopLeftRadius: radius('xl'),
-      borderTopRightRadius: radius('xl'),
-    },
-    rowLast: {
-      borderBottomLeftRadius: radius('xl'),
-      borderBottomRightRadius: radius('xl'),
-    },
-    rowDivider: { marginBottom: 1 },
-    iconWrap: { width: 20, alignItems: 'center' },
-    label: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
-      width: 72,
-    },
-    valueWrap: { flex: 1 },
-    valueText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-      color: colors.text,
-    },
-    valueSub: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      marginTop: 1,
-    },
-    chip: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-    },
-    chipText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-      color: colors.text,
-    },
-    personAvatar: {
-      width: 24,
-      height: 24,
-      borderRadius: radius('lg'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    personInitials: {
-      fontFamily: typography.styles.profileMono.fontFamily,
-      ...typography.metrics.xxs,
-    },
-  });
-
-const createStyles = (
-  { colors, typography, spacing, radius, layout }: ThemeContextType,
-  insets: { bottom: number },
-) =>
-  StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.background },
-    loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    missingText: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
-    },
-    content: {
-      paddingBottom: insets.bottom > 0 ? insets.bottom + 24 : 40,
-      gap: spacing('3'),
-      paddingTop: spacing('2'),
-    },
-
-    // Header actions
     headerActions: { flexDirection: 'row', gap: spacing('2') },
-    iconBtn: {
-      width: layout.minTouchTarget,
-      height: layout.minTouchTarget,
-      borderRadius: radius('full'),
-      backgroundColor: colors.surface,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-
-    // Hero card
-    heroCard: {
-      marginHorizontal: layout.screenPadding,
-      borderRadius: radius('2xl'),
-      paddingHorizontal: spacing('5'),
-      paddingTop: spacing('5'),
-      paddingBottom: spacing('5'),
-      gap: spacing('3'),
-    },
-    heroTop: {
-      flexDirection: 'row',
-      alignItems: 'center',
+    content: {
+      paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('2'),
+      paddingBottom: insets.bottom + spacing('8'),
       gap: spacing('4'),
     },
-    heroMeta: {
-      flex: 1,
-      gap: spacing('2'),
-    },
-    heroName: {
-      fontFamily: typography.styles.profileName.fontFamily,
-      ...typography.metrics.lg,
-      color: colors.text,
-    },
-    heroBadgeRow: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: spacing('1.5'),
-    },
-    amountLabel: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      marginTop: spacing('1'),
-    },
-    heroAmount: {
-      ...typography.metrics.display,
-      letterSpacing: -0.5,
-    },
-    typeBadge: {
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('1'),
-      borderRadius: radius('full'),
-    },
-    typeBadgeText: {
-      fontFamily: typography.styles.badge.fontFamily,
-      ...typography.metrics.xs,
-    },
-
-    // Section
-    section: { marginHorizontal: layout.screenPadding },
+    hero: { alignItems: 'center', gap: spacing('2'), paddingVertical: spacing('4') },
+    amount: { ...typography.metrics.jumbo, marginTop: spacing('1') },
+    badges: { flexDirection: 'row', gap: spacing('1.5') },
+    note: { gap: spacing('2') },
+    noteLabel: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
   });
