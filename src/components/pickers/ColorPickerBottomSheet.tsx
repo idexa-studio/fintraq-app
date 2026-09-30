@@ -80,7 +80,6 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
                 key={c.hex}
                 onPress={() => handleSelect(c.hex)}
                 scaleOnPress
-                disableRipple
                 accessibilityRole="button"
                 accessibilityLabel={t(`picker.colors.${c.name}`)}
                 accessibilityState={{ selected: isSelected }}

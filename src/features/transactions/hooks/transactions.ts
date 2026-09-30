@@ -2,7 +2,7 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 import { QUERY_KEYS } from '@/src/lib/query-keys';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { NotificationService } from '@/src/services/notification.service';
-import { invalidateAll } from '@/src/utils/query';
+import { invalidateLedger } from '@/src/utils/query';
 import * as api from '@/src/features/transactions/api/transactions';
 
 export const useTransactions = (limit: number = 20, filters: api.TransactionFilters = {}) => {
@@ -64,11 +64,7 @@ export const useCreateTransaction = () => {
       if (profile.reminderEnabled) {
         NotificationService.dismissToday(profile.reminderTime);
       }
-      invalidateAll(queryClient,
-        QUERY_KEYS.transactions.all,
-        QUERY_KEYS.accounts.all,
-        QUERY_KEYS.dashboard.all,
-      );
+      invalidateLedger(queryClient);
     },
   });
 };
@@ -77,11 +73,7 @@ export const useDeleteTransaction = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.deleteTransaction,
-    onSuccess: () => invalidateAll(queryClient,
-      QUERY_KEYS.transactions.all,
-      QUERY_KEYS.accounts.all,
-      QUERY_KEYS.dashboard.all,
-    ),
+    onSuccess: () => invalidateLedger(queryClient),
   });
 };
 
@@ -90,11 +82,6 @@ export const useUpdateTransaction = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: api.UpdatePayment }) =>
       api.updateTransaction(id, data),
-    onSuccess: (_, { id }) => invalidateAll(queryClient,
-      QUERY_KEYS.transactions.all,
-      QUERY_KEYS.transactions.detail(id),
-      QUERY_KEYS.accounts.all,
-      QUERY_KEYS.dashboard.all,
-    ),
+    onSuccess: (_, { id }) => invalidateLedger(queryClient),
   });
 };

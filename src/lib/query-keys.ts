@@ -52,7 +52,14 @@ const search = {
 
 const analytics = {
   all: ['analytics'] as const,
+  daily: (currency: string, days: number) => [...analytics.all, 'daily', currency, days] as const,
+  monthly: (currency: string) => [...analytics.all, 'monthly', currency] as const,
+  categories: (currency: string, days: number | null) => [...analytics.all, 'categories', currency, days] as const,
+  incomeCategories: (currency: string, days: number | null) => [...analytics.all, 'income-categories', currency, days] as const,
+  dow: (currency: string, days: number | null) => [...analytics.all, 'dow', currency, days] as const,
   personBreakdown: (currency: string, days: number) => [...analytics.all, 'person-breakdown', currency, days] as const,
+  previousPeriod: (currency: string, days: number) => [...analytics.all, 'prev-period', currency, days] as const,
+  biggestExpense: (currency: string, days: number | null) => [...analytics.all, 'biggest-expense', currency, days] as const,
 };
 
 const loans = {
@@ -74,3 +81,21 @@ const backup = {
 };
 
 export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics, loans, backup } as const;
+
+/**
+ * Every query family read from the financial tables. Payments, accounts, categories, persons and
+ * loans all feed each other's screens (a renamed account shows in Analytics, a repayment moves a
+ * loan and a person's balance), so any write to them invalidates all of these — listing a subset
+ * per mutation is how stale screens crept in. Only mounted queries refetch; the rest go stale.
+ */
+export const LEDGER_QUERY_ROOTS = [
+  transactions.all,
+  accounts.all,
+  categories.all,
+  persons.all,
+  loans.all,
+  dashboard.all,
+  analytics.all,
+  reports.all,
+  search.all,
+] as const;

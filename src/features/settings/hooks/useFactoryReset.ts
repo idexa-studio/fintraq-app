@@ -38,13 +38,14 @@ export function useFactoryReset() {
     await GoogleDriveService.signOut().catch(() => {});
     queryClient.clear();
 
-    // Children before parents, in one transaction so a failure can't leave orphans behind.
-    await db.transaction(async (tx) => {
-      await tx.delete(payments);
-      await tx.delete(loans);
-      await tx.delete(persons);
-      await tx.delete(categories);
-      await tx.delete(accounts);
+    // Children before parents, in one transaction so a failure can't leave orphans behind. The
+    // callback is sync: the expo-sqlite driver commits an async callback at its first await.
+    db.transaction((tx) => {
+      tx.delete(payments).run();
+      tx.delete(loans).run();
+      tx.delete(persons).run();
+      tx.delete(categories).run();
+      tx.delete(accounts).run();
     });
 
     await AsyncStorage.multiRemove([...RESET_KEYS, ...BackupPreferences.allKeys()]);

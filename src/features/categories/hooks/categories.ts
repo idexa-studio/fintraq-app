@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/src/lib/query-keys';
-import { invalidateAll } from '@/src/utils/query';
+import { invalidateLedger } from '@/src/utils/query';
 import * as api from '@/src/features/categories/api/categories';
 
 export const useCategories = () => {
@@ -14,11 +14,7 @@ export const useCreateCategory = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.createCategory,
-    onSuccess: () => invalidateAll(queryClient,
-      QUERY_KEYS.categories.all,
-      QUERY_KEYS.transactions.all,
-      QUERY_KEYS.dashboard.all,
-    ),
+    onSuccess: () => invalidateLedger(queryClient),
   });
 };
 
@@ -27,12 +23,7 @@ export const useUpdateCategory = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<api.InsertCategory> }) =>
       api.updateCategory(id, data),
-    onSuccess: (_, { id }) => invalidateAll(queryClient,
-      QUERY_KEYS.categories.all,
-      QUERY_KEYS.categories.detail(id),
-      QUERY_KEYS.transactions.all,
-      QUERY_KEYS.dashboard.all,
-    ),
+    onSuccess: (_, { id }) => invalidateLedger(queryClient),
   });
 };
 
@@ -40,10 +31,6 @@ export const useDeleteCategory = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.deleteCategory,
-    onSuccess: () => invalidateAll(queryClient,
-      QUERY_KEYS.categories.all,
-      QUERY_KEYS.transactions.all,
-      QUERY_KEYS.dashboard.all,
-    ),
+    onSuccess: () => invalidateLedger(queryClient),
   });
 };
