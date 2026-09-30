@@ -7,7 +7,7 @@ import { db } from '@/src/db/client';
 import { loans, persons } from '@/src/db/schema';
 import i18n from '@/src/i18n';
 import { LoggerService } from '@/src/services/logger.service';
-import { REMINDERS_CHANNEL_ID } from '@/src/services/notification.service';
+import { REMINDER_SOUND, REMINDERS_CHANNEL_ID } from '@/src/services/notification.service';
 import {
   capReminders,
   IOS_PENDING_LIMIT,
@@ -37,12 +37,12 @@ const contentFor = (reminder: PlannedReminder): Notifications.NotificationConten
     case 'daily': {
       // A different nudge each day; the date picks it so a resync doesn't reshuffle the text.
       const key = REMINDER_MESSAGE_KEYS[reminder.date.getDate() % REMINDER_MESSAGE_KEYS.length]!;
-      return { title: i18n.t(`notifications.${key}.title`), body: i18n.t(`notifications.${key}.body`), sound: true };
+      return { title: i18n.t(`notifications.${key}.title`), body: i18n.t(`notifications.${key}.body`), sound: REMINDER_SOUND };
     }
     case 'emi':
       return reminder.loanType === 'lend'
-        ? { title: i18n.t('notifications.paymentIncoming'), body: i18n.t('notifications.lendEmiBody', { name: reminder.personName }), sound: true }
-        : { title: i18n.t('notifications.emiDue'), body: i18n.t('notifications.borrowEmiBody', { name: reminder.personName }), sound: true };
+        ? { title: i18n.t('notifications.paymentIncoming'), body: i18n.t('notifications.lendEmiBody', { name: reminder.personName }), sound: REMINDER_SOUND }
+        : { title: i18n.t('notifications.emiDue'), body: i18n.t('notifications.borrowEmiBody', { name: reminder.personName }), sound: REMINDER_SOUND };
     case 'due': {
       const when =
         reminder.daysBefore === 0
@@ -51,8 +51,8 @@ const contentFor = (reminder: PlannedReminder): Notifications.NotificationConten
             ? i18n.t('notifications.tomorrow')
             : i18n.t('notifications.inDays', { count: reminder.daysBefore });
       return reminder.loanType === 'lend'
-        ? { title: i18n.t('notifications.loanDueSoon'), body: i18n.t('notifications.lendDueBody', { name: reminder.personName, when }), sound: true }
-        : { title: i18n.t('notifications.repaymentDueSoon'), body: i18n.t('notifications.borrowDueBody', { name: reminder.personName, when }), sound: true };
+        ? { title: i18n.t('notifications.loanDueSoon'), body: i18n.t('notifications.lendDueBody', { name: reminder.personName, when }), sound: REMINDER_SOUND }
+        : { title: i18n.t('notifications.repaymentDueSoon'), body: i18n.t('notifications.borrowDueBody', { name: reminder.personName, when }), sound: REMINDER_SOUND };
     }
   }
 };
