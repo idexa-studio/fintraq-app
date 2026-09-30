@@ -58,9 +58,9 @@ export const useCreateLoan = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ data, txPayload }: {
-      data: Omit<api.InsertLoan, 'categoryId'> & { categoryId?: number };
+      data: api.CreateLoanData;
       txPayload: { categoryId?: number; note: string; datetime: string };
-    }) => api.createLoan(data as any, txPayload),
+    }) => api.createLoan(data, txPayload),
     onSuccess: () => LOAN_INVALIDATION_KEYS(queryClient),
   });
 };

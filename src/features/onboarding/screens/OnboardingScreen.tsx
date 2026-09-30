@@ -34,6 +34,7 @@ import { openAppSettings } from '@/src/services/backup/battery-optimization';
 import { CloudBackupChoice, CloudBackupStep } from '@/src/features/onboarding/components/CloudBackupStep';
 import { LoggerService } from '@/src/services/logger.service';
 import { useTranslation } from 'react-i18next';
+import { toErrorMessage } from '@/src/utils/errors';
 
 export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const router = useRouter();
@@ -179,11 +180,11 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       await completeOnboarding();
       await AnalyticsService.onboardingCompleted(currency);
       setShowReminderDialog(true);
-    } catch (e: any) {
+    } catch (e) {
       LoggerService.error('ONBOARDING', 'Setup finalization failed', e);
       showAlert({
         title: t('onboardingFlow.setupFailed'),
-        message: e?.message || t('onboardingFlow.setupFailedMessage'),
+        message: toErrorMessage(e, t('onboardingFlow.setupFailedMessage')),
         type: 'error',
       });
     }
@@ -218,7 +219,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
             });
             return;
           }
-        } catch (err: any) {
+        } catch (err) {
           // Don't block onboarding on a failed/cancelled Google sign-in, but
           // never silently proceed as if Cloud Backup were enabled — the
           // button the user tapped promised to enable it. Finalize only
@@ -282,8 +283,8 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           router.replace('/(main)/(tabs)');
         }
       }
-    } catch (e: any) {
-      const errorMsg = e?.message || '';
+    } catch (e) {
+      const errorMsg = toErrorMessage(e, '');
       const isNoBackup = isNoBackupError(e);
 
       if (isNoBackup) {

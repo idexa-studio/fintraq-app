@@ -82,7 +82,7 @@ export const AppConfigProvider = React.memo(function AppConfigProvider({
       if (config.termsUrl) setTermsUrl(config.termsUrl);
 
       lastCheckedTime.current = Date.now();
-    } catch (error: any) {
+    } catch (error) {
       if (__DEV__) {
         LoggerService.warn('APP_CONFIG', 'Failed to fetch remote app config', error);
       }

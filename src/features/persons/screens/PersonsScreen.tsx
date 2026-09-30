@@ -13,7 +13,7 @@ import { AlertCircleIcon, CancelCircleIcon, LockPasswordIcon, PlusSignIcon, Sear
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
@@ -165,7 +165,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   );
 });
 
-const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: ThemeContextType, insets: any) =>
+const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: ThemeContextType, insets: EdgeInsets) =>
   StyleSheet.create({
     scroll: {
       paddingHorizontal: layout.screenPadding,

@@ -1,4 +1,5 @@
 import { StorageKeys } from '@/src/constants/keys';
+import i18n from '@/src/i18n';
 import { db, getExpoDb, resetDbConnections } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons, seederState } from '@/src/db/schema';
 import { runSeeds } from '@/src/db/seeds/runner';
@@ -251,7 +252,7 @@ class DatabaseBackupServiceClass {
       try {
         pkg = JSON.parse(backupJsonStr);
       } catch {
-        throw new Error('Invalid backup format: Corrupted JSON data.');
+        throw new Error(i18n.t('backup.errRestoreIntegrity'));
       }
 
       const driveError = (pkg as DriveErrorPayload | null)?.error;
@@ -260,7 +261,7 @@ class DatabaseBackupServiceClass {
       }
 
       if (!pkg?.metadata || !pkg.data) {
-        throw new Error('Invalid backup structure: Missing metadata or payload.');
+        throw new Error(i18n.t('backup.errRestoreIntegrity'));
       }
 
       // Verify SHA-256 checksum integrity
@@ -272,7 +273,7 @@ class DatabaseBackupServiceClass {
 
       if (pkg.metadata.checksum && pkg.metadata.checksum !== computedChecksum) {
         LoggerService.error('DB_BACKUP', 'Checksum mismatch — backup file is corrupted or incomplete, aborting restore');
-        throw new Error('This backup file appears to be corrupted or incomplete. Restore aborted to protect your existing data.');
+        throw new Error(i18n.t('backup.errRestoreIntegrity'));
       }
 
       // Extract table rows with multi-key fallbacks
@@ -288,7 +289,7 @@ class DatabaseBackupServiceClass {
       const totalRestoreRows =
         personsList.length + accountsList.length + categoriesList.length + loansList.length + paymentsList.length;
       if (totalRestoreRows === 0) {
-        throw new Error('This backup appears to be empty. Restore aborted to protect your existing data.');
+        throw new Error(i18n.t('backup.errRestoreEmpty'));
       }
 
       // Reset native SQLite connection to release all cached statement handles and open cursors

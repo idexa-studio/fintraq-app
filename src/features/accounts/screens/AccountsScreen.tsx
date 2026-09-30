@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import { toErrorMessage } from '@/src/utils/errors';
 
 export const AccountsScreen = React.memo(function AccountsScreen() {
   const { t } = useTranslation();
@@ -53,11 +54,11 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
       await deleteAccount.mutateAsync(selectedAccount.id);
       setSelectedAccount(null);
       setShowDeleteConfirm(false);
-    } catch (e: any) {
+    } catch (e) {
       setShowDeleteConfirm(false);
       showAlert({
         title: t('accounts.cannotDelete'),
-        message: e.message || t('accounts.deleteFailed'),
+        message: toErrorMessage(e, t('accounts.deleteFailed')),
         type: 'error',
       });
     }
