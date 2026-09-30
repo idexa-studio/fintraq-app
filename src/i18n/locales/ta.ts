@@ -241,6 +241,8 @@ const ta: Translation = {
     noResults: 'முடிவுகள் இல்லை', noMatch: '“{{query}}”-க்குப் பொருந்துவது எதுவும் இல்லை. வேறு சொல்லை முயலவும்.',
   },
   filters: {
+    activeCount: '{{count}} செயலில்',
+    today: 'இன்று', thisWeek: 'இந்த வாரம்', thisMonth: 'இந்த மாதம்', last30: 'கடந்த 30 நாட்கள்', categories: 'வகைகள்', categoriesByType: 'வகைகள் · வகைக்கு ஏற்ப',
     title: 'வடிகட்டிகள்', reset: 'மீட்டமை', type: 'வகை', dateRange: 'தேதி வரம்பு', from: 'முதல்', to: 'வரை', setDateRange: 'தேதி வரம்பை அமை', amount: 'தொகை', min: 'குறைந்தபட்சம்', max: 'அதிகபட்சம்', any: 'ஏதேனும்',
     accounts: 'கணக்குகள்', persons: 'நபர்கள்', apply: 'வடிகட்டிகளைப் பயன்படுத்து', minLessThanMax: 'குறைந்தபட்சம் அதிகபட்சத்தை விடக் குறைவாக இருக்க வேண்டும்',
   },

@@ -241,6 +241,8 @@ const ja: Translation = {
     noResults: '結果なし', noMatch: '「{{query}}」に一致するものはありません。別の言葉をお試しください。',
   },
   filters: {
+    activeCount: '{{count}} 件適用中',
+    today: '今日', thisWeek: '今週', thisMonth: '今月', last30: '過去30日', categories: 'カテゴリ', categoriesByType: 'カテゴリ · 種類に一致',
     title: 'フィルター', reset: 'リセット', type: '種類', dateRange: '期間', from: '開始', to: '終了', setDateRange: '期間を設定', amount: '金額', min: '最小', max: '最大', any: '指定なし',
     accounts: '口座', persons: '人物', apply: 'フィルターを適用', minLessThanMax: '最小値は最大値より小さくしてください',
   },

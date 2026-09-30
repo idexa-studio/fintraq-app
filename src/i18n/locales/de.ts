@@ -241,6 +241,8 @@ const de: Translation = {
     noResults: 'Keine Ergebnisse', noMatch: 'Nichts passt zu „{{query}}“. Versuche einen anderen Begriff.',
   },
   filters: {
+    activeCount: '{{count}} aktiv',
+    today: 'Heute', thisWeek: 'Diese Woche', thisMonth: 'Dieser Monat', last30: 'Letzte 30 Tage', categories: 'Kategorien', categoriesByType: 'Kategorien · passend zum Typ',
     title: 'Filter', reset: 'Zurücksetzen', type: 'Typ', dateRange: 'Zeitraum', from: 'Von', to: 'Bis', setDateRange: 'Zeitraum festlegen', amount: 'Betrag', min: 'Min.', max: 'Max.', any: 'Beliebig',
     accounts: 'Konten', persons: 'Personen', apply: 'Filter anwenden', minLessThanMax: 'Das Minimum muss kleiner als das Maximum sein',
   },

@@ -1,25 +1,19 @@
-import { Button } from '@/src/components/ui/Button';
-import { Text } from '@/src/components/ui/Text';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
-import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
-import { Account } from '@/src/features/accounts/api/accounts';
-import { AccountType } from '@/src/types';
-import { Category } from '@/src/features/categories/api/categories';
-import { Person } from '@/src/features/persons/api/persons';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { TransactionType } from '@/src/types';
-import { colorNumberToHex } from '@/src/utils/format';
-import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
-import { ArrowRight01Icon, Calendar03Icon, CancelCircleIcon, Tag01Icon } from '@hugeicons/core-free-icons';
-import { Icon } from '@/src/components/ui/Icon';
+import { Calendar03Icon, CancelCircleIcon, Tag01Icon } from '@hugeicons/core-free-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '@/src/features/filters/api/advanced-filters.service';
 import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Button, Chip, FormField, IconButton, ListGroup, ListItem, SheetHeader, Text } from '@/src/components/ui';
+import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
+import { Account } from '@/src/features/accounts/api/accounts';
+import { Category } from '@/src/features/categories/api/categories';
+import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '@/src/features/filters/api/advanced-filters.service';
+import { Person } from '@/src/features/persons/api/persons';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import type { AccountType, TransactionType } from '@/src/types';
+import { colorNumberToHex, formatDate } from '@/src/utils/format';
+import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 
 interface AdvancedFilterBottomSheetProps {
   visible: boolean;
@@ -33,9 +27,9 @@ interface AdvancedFilterBottomSheetProps {
 }
 
 const TYPE_OPTS = [
-  { key: 'CR' as const, label: 'income', icon: 'arrow-down-circle-outline' as const, colorKey: 'success' as const },
-  { key: 'DR' as const, label: 'expense', icon: 'arrow-up-circle-outline' as const, colorKey: 'danger' as const },
-  { key: 'TR' as const, label: 'transfer', icon: 'swap-horizontal' as const, colorKey: 'info' as const },
+  { key: 'CR', label: 'income', colorKey: 'success' },
+  { key: 'DR', label: 'expense', colorKey: 'danger' },
+  { key: 'TR', label: 'transfer', colorKey: 'info' },
 ] as const;
 
 export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBottomSheet({
@@ -43,7 +37,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
 }: AdvancedFilterBottomSheetProps) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { colors, typography } = theme;
+  const { colors } = theme;
 
   const [local, setLocal] = useState<AdvancedFilters>(filters);
   const [showStart, setShowStart] = useState(false);
@@ -177,42 +171,23 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
     [local, minAmt, maxAmt]
   );
 
-  const fmt = useCallback((d: Date) =>
-    d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), []);
-
+  const fmt = (d: Date) => formatDate(d, { day: 'numeric', month: 'short', year: 'numeric' });
   const snapPoints = useMemo(() => ['90%'], []);
+  const presets = [
+    { key: 'today', label: t('filters.today') },
+    { key: 'week', label: t('filters.thisWeek') },
+    { key: 'month', label: t('filters.thisMonth') },
+    { key: 'last30', label: t('filters.last30') },
+  ] as const;
 
   return (
-    <BentoBottomSheet
-      visible={visible}
-      onClose={onClose}
-      snapPoints={snapPoints}
-      keyboardBehavior="interactive"
-    >
-      <View style={{ flex: 1 }}>
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
-              {t('filters.title')}
-            </Text>
-            {activeCount > 0 && (
-              <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-                <Text style={[styles.badgeText, { fontFamily: typography.styles.badge.fontFamily, color: colors.background }]}>
-                  {activeCount}
-                </Text>
-              </View>
-            )}
-          </View>
-          <View style={styles.headerRight}>
-            {activeCount > 0 && (
-              <BentoPressable onPress={handleReset}>
-                <Text style={[styles.resetText, { fontFamily: typography.styles.buttonLabel.fontFamily, color: colors.danger }]}>
-                  {t('filters.reset')}
-                </Text>
-              </BentoPressable>
-            )}
-          </View>
-        </View>
+    <BentoBottomSheet visible={visible} onClose={onClose} snapPoints={snapPoints} keyboardBehavior="interactive">
+      <View style={styles.fill}>
+        <SheetHeader
+          title={t('filters.title')}
+          subtitle={activeCount > 0 ? t('filters.activeCount', { count: activeCount }) : undefined}
+          trailing={activeCount > 0 ? <Button title={t('filters.reset')} variant="ghost" size="sm" onPress={handleReset} /> : undefined}
+        />
 
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -221,358 +196,140 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           onScroll={bottomSheet?.onScroll}
           scrollEventThrottle={16}
         >
+          <FilterSection title={t('filters.type')}>
+            {TYPE_OPTS.map((opt) => (
+              <Chip
+                key={opt.key}
+                label={t(`transactions.${opt.label}`)}
+                color={colors[opt.colorKey]}
+                isActive={local.types?.includes(opt.key) ?? false}
+                onPress={() => toggleType(opt.key)}
+                on="surface"
+              />
+            ))}
+          </FilterSection>
 
-          <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-            {t('filters.type')}
-          </Text>
-          <View style={styles.typeRow}>
-            {TYPE_OPTS.map(opt => {
-              const sel = local.types?.includes(opt.key) || false;
-              const c = colors[opt.colorKey];
-              return (
-                <BentoPressable
-                  key={opt.key}
-                  style={[
-                    styles.typePill,
-                    {
-                      backgroundColor: sel ? c + '18' : colors.card
-                    }
-                  ]}
-                  onPress={() => toggleType(opt.key)}
-                >
-                  <Text style={[styles.typePillLabel, { fontFamily: typography.styles.chipLabel.fontFamily, color: sel ? c : colors.textMuted }]}>
-                    {t(`transactions.${opt.label}`)}
-                  </Text>
-                </BentoPressable>
-              );
-            })}
-          </View>
-
-          <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-            {t('filters.dateRange')}
-          </Text>
-          <View style={styles.presetRow}>
-            {(['today', 'week', 'month', 'last30'] as const).map(preset => {
-              const label = preset === 'today' ? 'Today' : preset === 'week' ? 'This week' : preset === 'month' ? 'This month' : 'Last 30 days';
-              return (
-                <BentoPressable
-                  key={preset}
-                  style={[styles.presetPill, { backgroundColor: colors.card }]}
-                  onPress={() => applyPreset(preset)}
-                >
-                  <Text style={[styles.presetPillLabel, { fontFamily: typography.styles.chipLabel.fontFamily, color: colors.textMuted }]}>
-                    {label}
-                  </Text>
-                </BentoPressable>
-              );
-            })}
-          </View>
-          <View style={[styles.group, { backgroundColor: colors.card }]}>
+          <FilterSection title={t('filters.dateRange')}>
+            {presets.map((preset) => (
+              <Chip key={preset.key} label={preset.label} onPress={() => applyPreset(preset.key)} on="surface" />
+            ))}
+          </FilterSection>
+          <ListGroup style={styles.group}>
             {local.dateRange ? (
-              <>
-                <BentoPressable style={styles.groupRow} onPress={() => setShowStart(true)}>
-                  <Icon icon={Calendar03Icon} size={16} color={colors.primaryInk} />
-                  <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                    {t('filters.from')}
-                  </Text>
-                  <Text style={[styles.groupRowValue, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
-                    {fmt(local.dateRange.startDate)}
-                  </Text>
-                </BentoPressable>
-                <View style={[styles.groupSep, { backgroundColor: alpha(colors.text, 'faint') }]} />
-                <BentoPressable style={styles.groupRow} onPress={() => setShowEnd(true)}>
-                  <Icon icon={Calendar03Icon} size={16} color={colors.primaryInk} />
-                  <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                    {t('filters.to')}
-                  </Text>
-                  <Text style={[styles.groupRowValue, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
-                    {fmt(local.dateRange.endDate)}
-                  </Text>
-                  <BentoPressable onPress={clearDateRange} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                    <Icon icon={CancelCircleIcon} size={18} color={colors.textMuted} />
-                  </BentoPressable>
-                </BentoPressable>
-              </>
+              <ListItem icon={Calendar03Icon} iconColor={colors.primaryInk} title={t('filters.from')} value={fmt(local.dateRange.startDate)} onPress={() => setShowStart(true)} />
+            ) : null}
+            {local.dateRange ? (
+              <ListItem
+                icon={Calendar03Icon}
+                iconColor={colors.primaryInk}
+                title={t('filters.to')}
+                value={fmt(local.dateRange.endDate)}
+                onPress={() => setShowEnd(true)}
+                trailing={<IconButton icon={CancelCircleIcon} variant="ghost" size="sm" onPress={clearDateRange} accessibilityLabel={t('filters.reset')} />}
+              />
             ) : (
-              <BentoPressable style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)}>
-                <Icon icon={Calendar03Icon} size={16} color={colors.primaryInk} />
-                <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                  {t('filters.setDateRange')}
-                </Text>
-                <View style={styles.groupChevron}><Icon icon={ArrowRight01Icon} size={14} color={colors.textMuted} /></View>
-              </BentoPressable>
+              <ListItem icon={Calendar03Icon} iconColor={colors.primaryInk} title={t('filters.setDateRange')} onPress={() => setShowStart(true)} />
             )}
-          </View>
+          </ListGroup>
 
-          <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
+          <Text variant="label" tone="muted" style={styles.sectionTitle}>
             {t('filters.amount')}
           </Text>
-          <View style={[styles.group, { backgroundColor: colors.card }]}>
-            <View style={styles.groupRow}>
-              <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                {t('filters.min')}
-              </Text>
-              <TextInput
-                style={[styles.amountInput, { fontFamily: typography.styles.inputValue.fontFamily, color: colors.text }]}
-                value={minAmt}
-                onChangeText={setMinAmt}
-                keyboardType="decimal-pad"
-                placeholder="0.00"
-                placeholderTextColor={colors.textMuted + '50'}
-                returnKeyType="done"
-                textAlign="right"
-              />
-            </View>
-            <View style={[styles.groupSep, { backgroundColor: alpha(colors.text, 'faint') }]} />
-            <View style={styles.groupRow}>
-              <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                {t('filters.max')}
-              </Text>
-              <TextInput
-                style={[styles.amountInput, { fontFamily: typography.styles.inputValue.fontFamily, color: colors.text }]}
-                value={maxAmt}
-                onChangeText={setMaxAmt}
-                keyboardType="decimal-pad"
-                placeholder={t('filters.any')}
-                placeholderTextColor={colors.textMuted + '50'}
-                returnKeyType="done"
-                textAlign="right"
-              />
-            </View>
-          </View>
-          {amountError ? (
-            <Text style={[styles.fieldError, { fontFamily: typography.fonts.regular, color: colors.danger }]}>
-              {amountError}
-            </Text>
+          <ListGroup insetDividers={false} style={styles.group}>
+            <FormField label={t('filters.min')} value={minAmt} onChangeText={setMinAmt} keyboardType="decimal-pad" placeholder="0.00" returnKeyType="done" />
+            <FormField
+              label={t('filters.max')}
+              value={maxAmt}
+              onChangeText={setMaxAmt}
+              keyboardType="decimal-pad"
+              placeholder={t('filters.any')}
+              returnKeyType="done"
+              error={amountError ?? undefined}
+            />
+          </ListGroup>
+
+          {accounts.length > 0 ? (
+            <FilterSection title={t('filters.accounts')}>
+              {accounts.map((a) => (
+                <Chip
+                  key={a.id}
+                  label={a.name}
+                  icon={resolveAccountTypeIcon(a.accountType as AccountType | null)}
+                  color={colorNumberToHex(a.color)}
+                  isActive={local.accountIds?.includes(a.id) ?? false}
+                  onPress={() => toggleAccount(a.id)}
+                  on="surface"
+                />
+              ))}
+            </FilterSection>
           ) : null}
 
-          {accounts.length > 0 && (
-            <>
-              <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-                {t('filters.accounts')}
-              </Text>
-              <View style={styles.pillGrid}>
-                {accounts.map(a => {
-                  const sel = local.accountIds?.includes(a.id) || false;
-                  const ac = colorNumberToHex(a.color);
-                  return (
-                    <BentoPressable
-                      key={a.id}
-                      style={[styles.pill, { backgroundColor: sel ? alpha(ac, 'subtle') : colors.card }]}
-                      onPress={() => toggleAccount(a.id)}
-                    >
-                      <Icon icon={resolveAccountTypeIcon(a.accountType as AccountType | null)} size={16} color={ac} />
-                      <Text style={[styles.pillLabel, { color: sel ? ac : colors.text }]}>
-                        {a.name}
-                      </Text>
-                    </BentoPressable>
-                  );
-                })}
-              </View>
-            </>
-          )}
+          {scopedCategories.length > 0 ? (
+            <FilterSection title={local.types && local.types.length > 0 ? t('filters.categoriesByType') : t('filters.categories')}>
+              {scopedCategories.map((c) => (
+                <Chip
+                  key={c.id}
+                  label={c.name}
+                  icon={resolveIcon(c.icon, Tag01Icon)}
+                  color={colorNumberToHex(c.color)}
+                  isActive={local.categoryIds?.includes(c.id) ?? false}
+                  onPress={() => toggleCategory(c.id)}
+                  on="surface"
+                />
+              ))}
+            </FilterSection>
+          ) : null}
 
-          {scopedCategories.length > 0 && (
-            <>
-              <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-                Categories{local.types && local.types.length > 0 ? ' (filtered by type)' : ''}
-              </Text>
-              <View style={styles.pillGrid}>
-                {scopedCategories.map(c => {
-                  const sel = local.categoryIds?.includes(c.id) || false;
-                  const cc = colorNumberToHex(c.color);
-                  return (
-                    <BentoPressable
-                      key={c.id}
-                      style={[styles.pill, { backgroundColor: sel ? alpha(cc, 'subtle') : colors.card }]}
-                      onPress={() => toggleCategory(c.id)}
-                    >
-                      <Icon icon={resolveIcon(c.icon, Tag01Icon)} size={16} color={cc} />
-                      <Text style={[styles.pillLabel, { color: sel ? cc : colors.text }]}>
-                        {c.name}
-                      </Text>
-                    </BentoPressable>
-                  );
-                })}
-              </View>
-            </>
-          )}
-
-          {persons.length > 0 && (
-            <>
-              <Text style={[styles.sectionTitle, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.textMuted }]}>
-                {t('filters.persons')}
-              </Text>
-              <View style={styles.pillGrid}>
-                {persons.map(p => {
-                  const sel = local.personIds?.includes(p.id) || false;
-                  const pc = colorNumberToHex(p.color);
-                  return (
-                    <BentoPressable
-                      key={p.id}
-                      style={[styles.pill, { backgroundColor: sel ? alpha(pc, 'subtle') : colors.card }]}
-                      onPress={() => togglePerson(p.id)}
-                    >
-                      <PersonAvatar name={p.name} color={pc} size={16} variant="subtle" />
-                      <Text style={[styles.pillLabel, { color: sel ? pc : colors.text }]}>
-                        {p.name.split(' ')[0]}
-                      </Text>
-                    </BentoPressable>
-                  );
-                })}
-              </View>
-            </>
-          )}
-
-          <View style={{ height: 100 }} />
+          {persons.length > 0 ? (
+            <FilterSection title={t('filters.persons')}>
+              {persons.map((p) => (
+                <Chip
+                  key={p.id}
+                  label={p.name}
+                  color={colorNumberToHex(p.color)}
+                  isActive={local.personIds?.includes(p.id) ?? false}
+                  onPress={() => togglePerson(p.id)}
+                  on="surface"
+                />
+              ))}
+            </FilterSection>
+          ) : null}
         </ScrollView>
 
-        {/* ── Footer ── */}
-        <View style={[styles.footer, { backgroundColor: colors.surface }]}>
-          <Button title={t('filters.apply')} onPress={handleApply} disabled={!!amountError} size="lg" style={styles.applyAction} />
+        <View style={styles.footer}>
+          <Button title={t('filters.apply')} onPress={handleApply} disabled={!!amountError} size="lg" fullWidth />
         </View>
 
-        {showStart && (
-          <DateTimePicker
-            value={local.dateRange?.startDate || new Date()}
-            mode="date"
-            display="default"
-            onChange={onStartDate}
-            maximumDate={new Date()}
-          />
-        )}
-        {showEnd && (
-          <DateTimePicker
-            value={local.dateRange?.endDate || new Date()}
-            mode="date"
-            display="default"
-            onChange={onEndDate}
-            maximumDate={new Date()}
-          />
-        )}
+        {showStart ? (
+          <DateTimePicker value={local.dateRange?.startDate ?? new Date()} mode="date" display="default" onChange={onStartDate} maximumDate={new Date()} />
+        ) : null}
+        {showEnd ? (
+          <DateTimePicker value={local.dateRange?.endDate ?? new Date()} mode="date" display="default" onChange={onEndDate} maximumDate={new Date()} />
+        ) : null}
       </View>
     </BentoBottomSheet>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
+/** A labelled, wrapping row of chips. */
+function FilterSection({ title, children }: { title: string; children: React.ReactNode }) {
+  const { spacing } = useTheme();
+  return (
+    <View>
+      <Text variant="label" tone="muted" style={{ marginTop: spacing('5'), marginBottom: spacing('2'), marginLeft: spacing('1') }}>
+        {title}
+      </Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') }}>{children}</View>
+    </View>
+  );
+}
+
+const createStyles = ({ colors, spacing, radius, layout, alpha }: ThemeContextType) =>
   StyleSheet.create({
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('4'),
-      paddingBottom: spacing('2'),
-    },
-    headerLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
-    headerRight: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
-    title: { ...typography.metrics.xxl },
-    badge: {
-      minWidth: 20,
-      height: 20,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: spacing('1'),
-    },
-    badgeText: { ...typography.metrics.xxs },
-    resetText: { ...typography.metrics.sm },
-    scroll: {
-      paddingTop: spacing('3'),
-    },
-    sectionTitle: {
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      marginBottom: spacing('2'),
-      marginTop: spacing('5'),
-      paddingLeft: spacing('0.5'),
-      marginHorizontal: layout.screenPadding,
-    },
-    presetRow: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: spacing('2'),
-      marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('3'),
-    },
-    presetPill: {
-      height: 30,
-      paddingHorizontal: spacing('3'),
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    presetPillLabel: { ...typography.metrics.xs },
-    fieldError: {
-      ...typography.metrics.xs,
-      marginTop: spacing('1.5'),
-      marginHorizontal: layout.screenPadding,
-    },
-    typeRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      marginHorizontal: layout.screenPadding,
-    },
-    typePill: {
-      flex: 1,
-      height: 36,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    typePillLabel: { ...typography.metrics.sm },
-    group: {
-      borderRadius: radius('xl'),
-      overflow: 'hidden',
-      marginHorizontal: layout.screenPadding,
-    },
-    groupRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing('4'),
-      height: 52,
-      gap: spacing('3'),
-    },
-    groupRowPrompt: {
-      height: 52,
-    },
-    groupRowLabel: { ...typography.metrics.sm },
-    groupRowValue: { flex: 1, ...typography.metrics.sm, textAlign: 'right' },
-    groupChevron: { marginLeft: 'auto' },
-    groupSep: { height: 1, marginHorizontal: spacing('4') },
-    amountInput: {
-      flex: 1,
-      ...typography.metrics.md,
-      padding: 0,
-      textAlign: 'right',
-    },
-    pillGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: spacing('2'),
-      marginHorizontal: layout.screenPadding,
-    },
-    pill: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-      paddingHorizontal: spacing('3'),
-      height: 36,
-      borderRadius: radius('full'),
-    },
-    pillLabel: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-    },
-    footer: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('3'),
-    },
-    applyAction: {
-      height: 52,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
+    fill: { flex: 1 },
+    scroll: { paddingHorizontal: layout.screenPadding, paddingBottom: spacing('8') },
+    // Rows share the sheet's surface colour, so an outline marks the group's edge.
+    group: { marginTop: spacing('3'), borderRadius: radius('xl'), borderWidth: StyleSheet.hairlineWidth, borderColor: alpha(colors.text, 'soft') },
+    sectionTitle: { marginTop: spacing('5'), marginLeft: spacing('1') },
+    footer: { paddingHorizontal: layout.screenPadding, paddingVertical: spacing('3'), backgroundColor: colors.surface },
   });
