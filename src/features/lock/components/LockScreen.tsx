@@ -107,7 +107,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
         <View style={styles.graphicContainer}>
           <View style={styles.pulseOuter}>
             <View style={styles.pulseInner}>
-              <Icon icon={LockPasswordIcon} size={32} color={colors.primary} />
+              <Icon icon={LockPasswordIcon} size={32} color={colors.primaryInk} />
             </View>
           </View>
         </View>

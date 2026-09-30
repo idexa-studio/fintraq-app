@@ -217,7 +217,7 @@ export const CalculatorBottomSheet = React.memo(function CalculatorBottomSheet({
                   >
                     <Text style={[
                       styles.keyText,
-                      isOp && { color: colors.primary },
+                      isOp && { color: colors.primaryInk },
                       isEq && { color: colors.primaryForeground },
                       isFunc && { color: colors.textMuted },
                     ]}>

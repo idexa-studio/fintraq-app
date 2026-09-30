@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { alpha } from '@/src/theme/tokens';
+import { alpha, foregroundOn } from '@/src/theme/tokens';
 
 type PersonAvatarVariant = 'subtle' | 'solid';
 
@@ -28,7 +28,7 @@ export const PersonAvatar = React.memo(function PersonAvatar({
     return {
       initials: computed,
       bg: variant === 'solid' ? color : alpha(color, 'subtle'),
-      textColor: variant === 'solid' ? '#FFFFFF' : color,
+      textColor: variant === 'solid' ? foregroundOn(color) : color,
       borderRadius: Math.round(size * 0.3),
       fontSize: Math.round(size * 0.38),
     };

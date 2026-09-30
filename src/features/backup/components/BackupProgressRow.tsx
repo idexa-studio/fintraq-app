@@ -44,6 +44,6 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     percent: {
       fontFamily: typography.fonts.bold,
       ...typography.metrics.xs,
-      color: colors.primary,
+      color: colors.primaryInk,
     },
   });

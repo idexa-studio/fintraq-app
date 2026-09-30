@@ -1,5 +1,6 @@
 import { BentoPressable } from './BentoPressable';
 import { useTheme } from '@/src/providers/ThemeProvider';
+import { foregroundOn } from '@/src/theme/tokens';
 import type { IconSource } from './Icon';
 import { Icon } from './Icon';
 import React, { useMemo } from 'react';
@@ -47,7 +48,7 @@ export const IconButton = React.memo(function IconButton({
     switch (variant) {
       case 'ghost': return { bg: 'transparent', fg: colors.text };
       case 'tonal': return { bg: alpha(accent, 'subtle'), fg: color ?? colors.primaryInk };
-      case 'filled': return { bg: accent, fg: colors.primaryForeground };
+      case 'filled': return { bg: accent, fg: foregroundOn(accent) };
       case 'danger': return { bg: alpha(colors.danger, 'subtle'), fg: colors.danger };
       case 'surface':
       default:

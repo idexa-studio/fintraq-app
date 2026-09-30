@@ -48,7 +48,7 @@ export const BackupActionsRow = React.memo(function BackupActionsRow({
           <Spinner size="sm" />
         ) : (
           <>
-            <Icon icon={Download01Icon} size={16} color={theme.colors.primary} />
+            <Icon icon={Download01Icon} size={16} color={theme.colors.primaryInk} />
             <Text style={styles.secondaryText}>{t('backup.restore')}</Text>
           </>
         )}
@@ -89,7 +89,7 @@ const createStyles = ({ colors, typography, spacing, radius, state }: ThemeConte
     secondaryText: {
       fontFamily: typography.fonts.medium,
       ...typography.metrics.sm,
-      color: colors.primary,
+      color: colors.primaryInk,
     },
     disabled: {
       opacity: state.disabled,

@@ -271,7 +271,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             {local.dateRange ? (
               <>
                 <BentoPressable style={styles.groupRow} onPress={() => setShowStart(true)}>
-                  <Icon icon={Calendar03Icon} size={16} color={colors.primary} />
+                  <Icon icon={Calendar03Icon} size={16} color={colors.primaryInk} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     {t('filters.from')}
                   </Text>
@@ -281,7 +281,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 </BentoPressable>
                 <View style={[styles.groupSep, { backgroundColor: alpha(colors.text, 'faint') }]} />
                 <BentoPressable style={styles.groupRow} onPress={() => setShowEnd(true)}>
-                  <Icon icon={Calendar03Icon} size={16} color={colors.primary} />
+                  <Icon icon={Calendar03Icon} size={16} color={colors.primaryInk} />
                   <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                     {t('filters.to')}
                   </Text>
@@ -295,7 +295,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
               </>
             ) : (
               <BentoPressable style={[styles.groupRow, styles.groupRowPrompt]} onPress={() => setShowStart(true)}>
-                <Icon icon={Calendar03Icon} size={16} color={colors.primary} />
+                <Icon icon={Calendar03Icon} size={16} color={colors.primaryInk} />
                 <Text style={[styles.groupRowLabel, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
                   {t('filters.setDateRange')}
                 </Text>

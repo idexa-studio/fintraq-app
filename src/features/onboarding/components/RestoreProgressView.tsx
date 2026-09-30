@@ -33,7 +33,7 @@ export const RestoreProgressView = React.memo(function RestoreProgressView({
         <View style={styles.topRow}>
           <IconAvatar
             icon={CloudIcon as IconSource}
-            color={colors.primary}
+            color={colors.primaryInk}
             variant="subtle"
             size={52}
             iconSize={26}
@@ -105,12 +105,12 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     stageText: {
       fontFamily: typography.fonts.regular,
       ...typography.metrics.sm,
-      color: colors.primary,
+      color: colors.primaryInk,
     },
     percentText: {
       fontFamily: typography.styles.rowLabel.fontFamily,
       ...typography.metrics.xl,
-      color: colors.primary,
+      color: colors.primaryInk,
     },
     emailText: {
       fontFamily: typography.fonts.regular,

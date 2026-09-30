@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { alpha } from '@/src/theme/tokens';
+import { alpha, foregroundOn } from '@/src/theme/tokens';
 
 type BadgeVariant =
   /** Tinted pill — type labels, status labels, currency codes */
@@ -32,15 +32,14 @@ export const Badge = React.memo(function Badge({
   const { bg, textColor } = useMemo(() => {
     switch (variant) {
       case 'count':
-        // Lime primary needs dark text; every other accent is dark enough for white.
-        return { bg: accent, textColor: accent === colors.primary ? colors.primaryForeground : '#FFFFFF' };
+        return { bg: accent, textColor: foregroundOn(accent) };
       case 'muted':
         return { bg: alpha(colors.text, 'faint'), textColor: colors.textMuted };
       case 'label':
       default:
         return { bg: alpha(accent, 'subtle'), textColor: color ?? colors.primaryInk };
     }
-  }, [variant, accent, color, colors.primary, colors.primaryInk, colors.primaryForeground, colors.text, colors.textMuted]);
+  }, [variant, accent, color, colors.primaryInk, colors.text, colors.textMuted]);
 
   const textStyle = useMemo(
     () => ({

@@ -535,7 +535,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       color: colors.text,
       marginBottom: -spacing('4'),
     },
-    brandDot: { color: colors.primary },
+    brandDot: { color: colors.primary }, // design-system-ignore: logotype mark, exempt from contrast
     stepMeta: { gap: spacing('2.5') },
     footer: {
       gap: spacing('1'),

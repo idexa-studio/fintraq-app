@@ -2,7 +2,7 @@ import type { IconProps, IconSource } from './Icon';
 import { Icon } from './Icon';
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
-import { alpha } from '@/src/theme/tokens';
+import { alpha, foregroundOn } from '@/src/theme/tokens';
 
 type IconAvatarVariant = 'solid' | 'subtle' | 'outline';
 
@@ -35,7 +35,7 @@ export const IconAvatar = React.memo(function IconAvatar({
     switch (variant) {
       case 'solid':
         bg = color;
-        iconColor = '#FFFFFF';
+        iconColor = foregroundOn(color);
         border = undefined;
         break;
       case 'outline':

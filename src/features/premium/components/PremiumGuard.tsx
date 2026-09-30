@@ -83,7 +83,7 @@ export const PremiumGuard = React.memo(function PremiumGuard({
       <View style={styles.content}>
         <View style={styles.headerRow}>
           <View style={iconBoxStyles}>
-            <Icon icon={LockPasswordIcon} size={iconSize} color={colors.primary} />
+            <Icon icon={LockPasswordIcon} size={iconSize} color={colors.primaryInk} />
           </View>
 
           <View style={styles.textDetails}>
@@ -153,6 +153,6 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) => Styl
   subtitle: {
     fontFamily: typography.styles.badge.fontFamily,
     ...typography.metrics.xs,
-    color: colors.primary,
+    color: colors.primaryInk,
   },
 });

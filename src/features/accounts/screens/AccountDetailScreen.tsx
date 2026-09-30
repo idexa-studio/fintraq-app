@@ -169,7 +169,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
         ) : (
           <View style={styles.emptyCard}>
             <View style={[styles.emptyIcon, { backgroundColor: alpha(colors.primary, 'subtle') }]}>
-              <Icon icon={ReceiptTextIcon} size={20} color={colors.primary} />
+              <Icon icon={ReceiptTextIcon} size={20} color={colors.primaryInk} />
             </View>
             <Text style={styles.emptyTitle}>{t('accounts.noTransactions')}</Text>
             <Text style={styles.emptySubtext}>{t('accounts.transactionsHint')}</Text>

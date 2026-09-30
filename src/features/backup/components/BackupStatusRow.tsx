@@ -94,6 +94,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     sizeBadgeText: {
       fontFamily: typography.fonts.bold,
       ...typography.metrics.xs,
-      color: colors.primary,
+      color: colors.primaryInk,
     },
   });

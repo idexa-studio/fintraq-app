@@ -60,6 +60,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     email: {
       fontFamily: typography.fonts.medium,
       ...typography.metrics.xs,
-      color: colors.primary,
+      color: colors.primaryInk,
     },
   });

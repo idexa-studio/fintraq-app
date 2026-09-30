@@ -201,7 +201,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
             <View style={styles.sectionHeader}>
               <Text style={styles.txTitle}>{t('persons.activeLoans')}</Text>
               <View style={[styles.countBadge, { backgroundColor: alpha(colors.primary, 'subtle') }]}>
-                <Text style={[styles.countBadgeText, { color: colors.primary }]}>{activeLoans.length}</Text>
+                <Text style={[styles.countBadgeText, { color: colors.primaryInk }]}>{activeLoans.length}</Text>
               </View>
             </View>
             <View style={styles.loansCard}>
@@ -335,7 +335,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
     },
     currencyPillActive: { backgroundColor: alpha(colors.primary, 'subtle') },
     currencyPillText: { fontFamily: typography.styles.badge.fontFamily, color: colors.textMuted, ...typography.metrics.xs },
-    currencyPillTextActive: { color: colors.primary },
+    currencyPillTextActive: { color: colors.primaryInk },
 
     statsRow: {
       flexDirection: 'row',

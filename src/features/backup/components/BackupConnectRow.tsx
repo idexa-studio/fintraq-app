@@ -24,7 +24,7 @@ export const BackupConnectRow = React.memo(function BackupConnectRow({ onPress, 
       accessibilityLabel={t('backup.connect')}
       accessibilityState={{ busy: isConnecting }}
     >
-      <IconAvatar icon={CloudIcon} color={theme.colors.primary} variant="subtle" size={40} />
+      <IconAvatar icon={CloudIcon} color={theme.colors.primaryInk} variant="subtle" size={40} />
       <View style={rows.rowInfo}>
         <View style={rows.titleRow}>
           <Text style={rows.rowLabel}>{t('backup.cloudBackup')}</Text>
@@ -38,7 +38,7 @@ export const BackupConnectRow = React.memo(function BackupConnectRow({ onPress, 
         ) : (
           <>
             <Text style={rows.trailingBadgeText}>{t('backup.connect')}</Text>
-            <Icon icon={ArrowRight01Icon} size={14} color={theme.colors.primary} />
+            <Icon icon={ArrowRight01Icon} size={14} color={theme.colors.primaryInk} />
           </>
         )}
       </View>

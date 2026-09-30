@@ -76,7 +76,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
           <View style={styles.headerRow}>
             <View style={styles.headerSlot} />
             <Text style={styles.brand}>
-              Fintraq<Text inline color={colors.primary}>.</Text>
+              Fintraq<Text inline color={colors.primary}>.</Text>{/* design-system-ignore: logotype mark */}
             </Text>
             <View style={styles.headerSlot} />
           </View>
@@ -169,7 +169,7 @@ function createStyles({ spacing, radius, typography, colors, layout }: ThemeCont
     eyebrow: {
       fontFamily: typography.styles.sectionLabel.fontFamily,
       ...typography.metrics.xs,
-      color: colors.primary,
+      color: colors.primaryInk,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
       marginBottom: spacing('3'),
