@@ -4,7 +4,7 @@ import { db } from '@/src/db/client';
 import { accounts, categories, payments, persons, loans } from '@/src/db/schema';
 import type { TransactionType } from '@/src/types';
 import { LoggerService } from '@/src/services/logger.service';
-import { accountDeltas, AccountDelta, LedgerEntry, LedgerError, loanStatus, repaymentType, validateEntry } from '@/src/features/transactions/utils/ledger';
+import { accountDeltas, AccountDelta, isLoanPrincipal, LedgerEntry, LedgerError, loanStatus, repaymentType, validateEntry } from '@/src/features/transactions/utils/ledger';
 
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = typeof payments.$inferInsert;
@@ -29,6 +29,18 @@ const toAccounts = alias(accounts, 'to_accounts');
 
 type AccountTypeValue = 'cash' | 'bank' | 'savings' | 'credit_card' | 'investment' | 'loan' | 'ewallet' | null;
 
+type AccountRef = {
+  id: number;
+  name: string;
+  currency: string;
+  color: number;
+  icon: string;
+  accountType: AccountTypeValue;
+};
+
+// Left-joined relations come back as `null` when nothing is linked — Drizzle collapses a nested
+// object whose columns are all NULL — never as an object of nulls. Typed that way so every reader
+// has to handle "not linked".
 export type TransactionListItem = {
   id: number;
   accountId: number;
@@ -41,38 +53,30 @@ export type TransactionListItem = {
   note: string;
   createdAt: string;
   updatedAt: string;
-  account: {
-    id: number;
-    name: string;
-    currency: string;
-    color: number;
-    icon: string;
-    accountType: AccountTypeValue;
-  };
+  account: AccountRef;
   category: {
     id: number;
     name: string;
     icon: string;
     color: number;
   };
-  toAccount: {
-    id: number | null;
-    name: string | null;
-    currency: string | null;
-    color: number | null;
-    icon: string | null;
-    accountType: AccountTypeValue;
-  };
+  /** Transfers only; null otherwise, or when the destination account is gone. */
+  toAccount: AccountRef | null;
 };
 
 export type TransactionDetail = TransactionListItem & {
   person: {
-    id: number | null;
-    name: string | null;
-    color: number | null;
+    id: number;
+    name: string;
+    color: number;
     designation: string | null;
     company: string | null;
-  };
+  } | null;
+  /** The loan this payment belongs to (its principal or a repayment). */
+  loan: {
+    id: number;
+    type: 'lend' | 'borrow';
+  } | null;
 };
 
 export const TRANSACTION_LIST_SELECT = {
@@ -155,7 +159,7 @@ export const getTransactionsPaged = async (
       .limit(PAGE_SIZE)
       .offset(page * PAGE_SIZE);
     if (__DEV__) LoggerService.info('TRANSACTIONS', `Returned ${rows.length} rows for page ${page}`);
-    return rows as TransactionListItem[];
+    return rows;
   } catch (err) {
     LoggerService.error('TRANSACTIONS', `Failed to fetch page ${page}`, filters, err);
     throw err;
@@ -202,7 +206,7 @@ export const getTransactions = async (
     .orderBy(desc(payments.datetime))
     .limit(limit);
 
-  return result as TransactionListItem[];
+  return result;
 };
 
 export const getTransactionById = async (id: number): Promise<Payment | null> => {
@@ -226,16 +230,21 @@ export const getTransactionDetailById = async (id: number): Promise<TransactionD
         designation: persons.designation,
         company: persons.company,
       },
+      loan: {
+        id: loans.id,
+        type: loans.type,
+      },
     })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
     .innerJoin(categories, eq(payments.categoryId, categories.id))
     .leftJoin(toAccounts, eq(payments.toAccountId, toAccounts.id))
     .leftJoin(persons, eq(payments.personId, persons.id))
+    .leftJoin(loans, eq(payments.loanId, loans.id))
     .where(eq(payments.id, id))
     .limit(1);
 
-  return (row as TransactionDetail) ?? null;
+  return row ?? null;
 };
 
 // ─── Ledger writes ───────────────────────────────────────────────────────────
@@ -342,7 +351,14 @@ export const updateTransaction = async (id: number, data: UpdatePayment): Promis
       const row = tx.update(payments).set(data).where(eq(payments.id, id)).returning().get();
       if (!row) throw new LedgerError('Transaction not found');
       applyDeltas(tx, accountDeltas(row, 1));
-      if (row.loanId != null) syncLoanStatusIn(tx, row.loanId);
+      if (row.loanId != null) {
+        // The loan's own principal payment carries its principal: keep the two equal.
+        const loan = tx.select({ type: loans.type, principal: loans.principal }).from(loans).where(eq(loans.id, row.loanId)).get();
+        if (loan && isLoanPrincipal(row.type, loan.type) && loan.principal !== row.amount) {
+          tx.update(loans).set({ principal: row.amount, updatedAt: new Date().toISOString() }).where(eq(loans.id, row.loanId)).run();
+        }
+        syncLoanStatusIn(tx, row.loanId);
+      }
       if (old.loanId != null && old.loanId !== row.loanId) syncLoanStatusIn(tx, old.loanId);
       return row;
     });

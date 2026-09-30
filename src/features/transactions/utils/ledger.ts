@@ -68,3 +68,9 @@ export function loanStatus(principal: number, repaid: number, dueDate: string | 
 
 /** The payment type that counts as repaying a loan: money coming back for a loan you gave, going out for one you took. */
 export const repaymentType = (loanType: 'lend' | 'borrow'): TransactionType => (loanType === 'lend' ? 'CR' : 'DR');
+
+/**
+ * A loan has one principal payment (the money lent or borrowed) and any number of repayments; they
+ * are told apart by direction. Editing the principal payment changes the loan's principal.
+ */
+export const isLoanPrincipal = (paymentType: TransactionType, loanType: 'lend' | 'borrow'): boolean => paymentType !== repaymentType(loanType);
