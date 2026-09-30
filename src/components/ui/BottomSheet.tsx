@@ -27,7 +27,7 @@ import {
 } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Reanimated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -79,7 +79,12 @@ const BottomSheetContent = forwardRef<BottomSheetContentHandle, {
   colors,
   enablePanDownToClose,
 }, ref) {
-  const { radius } = useTheme();
+  const { radius, spacing } = useTheme();
+  // Insets come from the app's root provider through context. A native SafeAreaView inside a
+  // Modal measures its own window, which on Android edge-to-edge reports 0 — content then sat
+  // under the navigation bar. Never less than a small gutter on devices with no inset.
+  const insets = useSafeAreaInsets();
+  const bottomPad = Math.max(insets.bottom, spacing('3'));
 
   // Reanimated shared values — run on UI thread, no bridge round-trip
   const translateY = useSharedValue(SCREEN_HEIGHT);
@@ -193,9 +198,9 @@ const BottomSheetContent = forwardRef<BottomSheetContentHandle, {
 
           {/* Children */}
           <BottomSheetContext.Provider value={contextValue}>
-            <SafeAreaView edges={['bottom']} style={styles.safeContent}>
+            <View style={[styles.safeContent, { paddingBottom: bottomPad }]}>
               <View style={styles.content}>{children}</View>
-            </SafeAreaView>
+            </View>
           </BottomSheetContext.Provider>
         </Reanimated.View>
       </KeyboardAvoidingView>

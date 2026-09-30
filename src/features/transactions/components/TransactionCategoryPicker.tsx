@@ -22,14 +22,13 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
 }: Props) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handleSelect = useCallback((id: number) => onSelect(id), [onSelect]);
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>{t('transactions.category')}</Text>
+      <Text variant="label" tone="muted" style={styles.label}>{t('transactions.category')}</Text>
       <View style={styles.grid}>
         {categories.map((cat) => (
           <Chip
@@ -46,16 +45,10 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
   );
 });
 
-const createStyles = ({ colors, typography, spacing, layout }: ThemeContextType) => StyleSheet.create({
-  container: {
-    paddingVertical: spacing('3'),
-    paddingHorizontal: layout.screenPadding,
-  },
-  label: {
-    fontFamily: typography.styles.sectionLabel.fontFamily,
-    ...typography.metrics.xs,
-    marginBottom: spacing('3'),
-  },
+const createStyles = ({ spacing, layout }: ThemeContextType) => StyleSheet.create({
+  container: { paddingHorizontal: layout.screenPadding },
+  // Same label treatment and inset as the account picker above it.
+  label: { marginBottom: spacing('2'), paddingHorizontal: spacing('1') },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',

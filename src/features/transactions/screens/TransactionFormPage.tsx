@@ -9,10 +9,9 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';
 import { TransactionAccountPicker } from '@/src/features/transactions/components/TransactionAccountPicker';
-import { TransactionAmountInput } from '@/src/features/transactions/components/TransactionAmountInput';
 import { TransactionCategoryPicker } from '@/src/features/transactions/components/TransactionCategoryPicker';
+import { TransactionEntryHero } from '@/src/features/transactions/components/TransactionEntryHero';
 import { PersonPickerBottomSheet } from '@/src/features/persons/components/PersonPickerBottomSheet';
-import { TransactionTypePicker } from '@/src/features/transactions/components/TransactionTypePicker';
 import { usePersons } from '@/src/features/persons/hooks/persons';
 import { useCreateTransaction, useTransactionById, useUpdateTransaction } from '@/src/features/transactions/hooks/transactions';
 import { useLoanWithStats } from '@/src/features/loans/hooks/loans';
@@ -304,16 +303,15 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
         </>
       }
     >
-      <View style={styles.top}>
-        {!isRepayment && (
-          <TransactionTypePicker value={type} onChange={handleTypeChange} disabled={isEditMode} />
-        )}
-        <TransactionAmountInput
-          value={amountInput}
-          onChange={setAmountInput}
-          currency={selectedAccount?.currency ?? profile.defaultCurrency}
-        />
-      </View>
+      <TransactionEntryHero
+        type={type}
+        onTypeChange={handleTypeChange}
+        typeLocked={isEditMode}
+        hideType={isRepayment}
+        amount={amountInput}
+        onAmountChange={setAmountInput}
+        currency={selectedAccount?.currency ?? profile.defaultCurrency}
+      />
 
       {isRepayment ? (
         <View style={styles.padded}>
@@ -350,7 +348,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
         )
       ) : null}
 
-      {!isRepayment ? (
+      {!isRepayment && filteredCategories.length > 0 ? (
         <TransactionCategoryPicker
           categories={filteredCategories}
           selectedId={selectedCategoryId}
@@ -411,7 +409,6 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
 
 const createStyles = ({ spacing, layout }: ThemeContextType) =>
   StyleSheet.create({
-    top: { gap: spacing('1') },
     padded: { paddingHorizontal: layout.screenPadding, gap: spacing('2') },
     label: { marginLeft: spacing('1') },
   });

@@ -1,6 +1,6 @@
 import { Button } from '@/src/components/ui/Button';
 import { Text } from '@/src/components/ui/Text';
-import { Delete02Icon } from '@hugeicons/core-free-icons';
+import { BackspaceIcon } from '@/src/components/ui/icons';
 import { Icon } from '@/src/components/ui/Icon';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -165,7 +165,7 @@ export const CalculatorBottomSheet = React.memo(function CalculatorBottomSheet({
     <BentoBottomSheet
       visible={visible}
       onClose={onClose}
-      snapPoints={['83%']}
+      enableDynamicSizing
       enablePanDownToClose={true}
       enableBackdropDismiss={true}
     >
@@ -193,8 +193,10 @@ export const CalculatorBottomSheet = React.memo(function CalculatorBottomSheet({
                       key={`${ri}-${ci}-bsp`}
                       style={({ pressed }) => [styles.key, styles.keyFunction, pressed && styles.keyPressed]}
                       onPress={() => handlePress('⌫')}
+                      accessibilityRole="button"
+                      accessibilityLabel={t('common.delete')}
                     >
-                      <Icon icon={Delete02Icon} size={20} color={colors.text} />
+                      <Icon icon={BackspaceIcon} size={22} color={colors.text} />
                     </Pressable>
                   );
                 }
@@ -241,13 +243,13 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, state }: Th
   StyleSheet.create({
     root: {
       paddingHorizontal: spacing('4'),
-      paddingBottom: spacing('2'),
+      paddingBottom: spacing('1'),
       gap: spacing('3'),
     },
 
     // Display
+    // No fill: the keys carry the paper tone, so the readout stays open and reads as the result.
     display: {
-      backgroundColor: colors.background,
       borderRadius: radius('xl'),
       paddingHorizontal: spacing('4'),
       paddingVertical: spacing('3'),
@@ -287,11 +289,12 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, state }: Th
       flexDirection: 'row',
       gap: spacing('2'),
     },
+    // Digits sit on the paper tone so every key reads as a key on the white sheet.
     key: {
       flex: 1,
-      height: 52,
+      height: 54,
       borderRadius: radius('lg'),
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -310,16 +313,4 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, state }: Th
       color: colors.text,
     },
 
-    // Done
-    doneBtn: {
-      height: 48,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: spacing('1'),
-    },
-    doneBtnText: {
-      fontFamily: typography.styles.buttonLabel.fontFamily,
-      ...typography.metrics.md,
-    },
   });

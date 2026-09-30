@@ -51,7 +51,7 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
           onPress={() => { Keyboard.dismiss(); setShowCalc(true); }}
           hitSlop={8}
           accessibilityRole="button"
-          accessibilityLabel={currency}
+          accessibilityLabel={t('transactions.calculator')}
         >
           <Icon icon={CalculatorIcon} size={22} color={colors.text} />
         </Pressable>
@@ -93,8 +93,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       color: colors.textMuted,
       marginRight: spacing('2'),
     },
+    // minWidth 0 lets the field shrink inside the row instead of widening it to fit the text.
     input: {
       flex: 1,
+      minWidth: 0,
       ...typography.metrics.jumbo,
       fontFamily: typography.fonts.amountBold,
       color: colors.text,
