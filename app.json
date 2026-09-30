@@ -60,6 +60,7 @@
       "expo-localization",
       "expo-iap",
       "expo-notifications",
+      "expo-background-task",
       "react-native-notify-kit",
       "expo-system-ui",
       "expo-secure-store",

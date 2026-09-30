@@ -1,7 +1,8 @@
 import { resolveAutoBackupEnabled } from '@/src/services/backup/auto-backup.service';
 import { getBackupState, SharedBackupState, subscribeToBackupState, updateBackupState } from '@/src/services/backup/backup-state';
 import { DatabaseBackupService } from '@/src/services/backup/database-backup.service';
-import { CloudBackupProRequiredError, GoogleDriveAuthError, isNoBackupError, NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
+import { BackupInProgressError, CloudBackupProRequiredError, isAuthError, isNoBackupError, NoBackupFoundError } from '@/src/services/backup/google-drive.errors';
+import { isCloudBackupRunning, runCloudBackup } from '@/src/services/backup/cloud-backup.service';
 import { CloudBackupFileMeta, GoogleDriveService, GoogleUserAccount } from '@/src/services/backup/google-drive.service';
 import { NotificationService } from '@/src/services/notification.service';
 import { ReviewPromptService } from '@/src/services/review-prompt.service';
@@ -17,7 +18,6 @@ import i18n from '@/src/i18n';
 
 const STORAGE_KEY_AUTO_BACKUP = StorageKeys.AUTO_BACKUP_ENABLED;
 const STORAGE_KEY_LAST_BACKUP_META = StorageKeys.AUTO_BACKUP_LAST_BACKUP_META;
-const STORAGE_KEY_LAST_AUTO_BACKUP_TIME = StorageKeys.AUTO_BACKUP_LAST_AUTO_TIME;
 const STORAGE_KEY_BATTERY_PROMPT_SHOWN = StorageKeys.AUTO_BACKUP_BATTERY_PROMPT_SHOWN;
 
 export type SetAutoBackupResult = {
@@ -57,7 +57,20 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
 
   // Subscribe component to shared backup state updates
   useEffect(() => {
-    return subscribeToBackupState(() => setBackupSyncState(getBackupState()));
+    let wasBackingUp = getBackupState().isBackingUp;
+    return subscribeToBackupState(() => {
+      const next = getBackupState();
+      setBackupSyncState(next);
+      // An auto-backup (not started from this hook) just finished — pick up its metadata.
+      if (wasBackingUp && !next.isBackingUp) {
+        AsyncStorage.getItem(STORAGE_KEY_LAST_BACKUP_META)
+          .then((raw) => {
+            if (raw) setLastBackup(JSON.parse(raw) as CloudBackupFileMeta);
+          })
+          .catch(() => {});
+      }
+      wasBackingUp = next.isBackingUp;
+    });
   }, []);
 
   // Load active user, auto-backup setting, and cached backup metadata on mount
@@ -96,8 +109,8 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
               setLastBackup(backupMeta);
               await AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(backupMeta));
             }
-          } catch (e: any) {
-            if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
+          } catch (e) {
+            if (isAuthError(e)) {
               LoggerService.info('GOOGLE_BACKUP', 'Google Drive session expired. Re-authentication required.');
               if (isMounted) {
                 setUser(null);
@@ -129,8 +142,8 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         setLastBackup(backupMeta);
         await AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(backupMeta));
       }
-    } catch (e: any) {
-      if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
+    } catch (e) {
+      if (isAuthError(e)) {
         LoggerService.info('GOOGLE_BACKUP', 'Refresh check: Google Drive session expired.');
         setUser(null);
         setLastBackup(null);
@@ -200,9 +213,9 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
         }
       }
       return signedInUser;
-    } catch (e: any) {
+    } catch (e) {
       LoggerService.warn('GOOGLE_BACKUP', 'Failed to connect Google account', e);
-      throw new Error(e?.message || i18n.t('backup.errConnect'));
+      throw new Error(e instanceof Error && e.message ? e.message : i18n.t('backup.errConnect'));
     } finally {
       setIsChecking(false);
     }
@@ -215,108 +228,71 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
       setLastBackup(null);
       await AsyncStorage.removeItem(STORAGE_KEY_LAST_BACKUP_META);
       LoggerService.info('GOOGLE_BACKUP', 'Disconnected Google Account and cleared local backup cache');
-    } catch (e: any) {
+    } catch (e) {
       LoggerService.warn('GOOGLE_BACKUP', 'Failed to disconnect Google account', e);
-      throw new Error(e?.message || i18n.t('backup.errDisconnect'));
+      throw new Error(e instanceof Error && e.message ? e.message : i18n.t('backup.errDisconnect'));
     }
   }, []);
 
   const performBackup = useCallback(async (options?: { silent?: boolean }): Promise<boolean> => {
+    const silent = options?.silent ?? false;
     if (!isPremium) {
-      if (!options?.silent) throw new CloudBackupProRequiredError();
+      if (!silent) throw new CloudBackupProRequiredError();
       return false;
     }
 
-    if (getBackupState().isBackingUp || getBackupState().isRestoring) {
-      if (!options?.silent) {
-        throw new Error(i18n.t('backup.errInProgress'));
-      }
+    if (isCloudBackupRunning() || getBackupState().isBackingUp || getBackupState().isRestoring) {
+      if (!silent) throw new Error(i18n.t('backup.errInProgress'));
       return false;
     }
 
     const activeUser = user || (await GoogleDriveService.getCurrentUser());
     if (!activeUser) {
-      if (!options?.silent) {
-        throw new Error(i18n.t('backup.errSignInBackup'));
-      }
+      if (!silent) throw new Error(i18n.t('backup.errSignInBackup'));
       return false;
     }
 
-    const isBackground = AppState.currentState !== 'active' || options?.silent;
-    if (isBackground) {
-      NotificationService.presentBackupStartNotification();
-    }
-
+    const isForeground = AppState.currentState === 'active';
     try {
-      updateBackupState({ isBackingUp: true, progress: 5, progressStage: i18n.t('backup.stagePreparing') });
-      NotificationService.presentBackupProgressNotification(5, i18n.t('backup.stagePreparing'));
-
-      const payloadStr = await DatabaseBackupService.exportBackupData();
-
-      updateBackupState({ progress: 25, progressStage: i18n.t('backup.stageUploading') });
-      NotificationService.presentBackupProgressNotification(25, i18n.t('backup.stageUploadingDrive'));
-
-      const uploadedFile = await GoogleDriveService.uploadBackup(payloadStr, lastBackup?.id, (fraction: number) => {
-        const p = 25 + Math.round(fraction * 65);
-        const stage = i18n.t('backup.stageUploadingPct', { pct: Math.round(fraction * 100) });
-        updateBackupState({
-          progress: p,
-          progressStage: stage,
-        });
-        NotificationService.presentBackupProgressNotification(p, stage);
+      const uploadedFile = await runCloudBackup({
+        trigger: 'manual',
+        knownFileId: lastBackup?.id,
+        // A foreground, non-silent backup surfaces its own in-app error alert.
+        notifyOnFailure: silent || !isForeground,
       });
-
-      updateBackupState({ progress: 95, progressStage: i18n.t('backup.stageFinalizing') });
-
       setLastBackup(uploadedFile);
-      await Promise.all([
-        AsyncStorage.setItem(STORAGE_KEY_LAST_BACKUP_META, JSON.stringify(uploadedFile)),
-        AsyncStorage.setItem(STORAGE_KEY_LAST_AUTO_BACKUP_TIME, String(Date.now())),
-      ]);
-
-      updateBackupState({ progress: 100, progressStage: i18n.t('backup.stageComplete') });
-
-      NotificationService.presentBackupCompleteNotification();
-      setTimeout(() => NotificationService.dismissBackupNotification(), 3000);
 
       // A successful cloud backup is a real trust moment — ask for a review
       // here rather than on a random screen mount. No-ops after 1st ever ask
       // or before day 2 since install (see ReviewPromptService).
-      ReviewPromptService.maybeRequestReview();
+      void ReviewPromptService.maybeRequestReview();
       return true;
-    } catch (e: any) {
+    } catch (e) {
       LoggerService.warn('GOOGLE_BACKUP', 'Backup failed', e);
-      // Don't auto-dismiss — a failure the user never saw isn't a handled failure.
-      NotificationService.presentBackupFailedNotification();
-      if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
-        setUser(null);
-      }
-      if (!options?.silent) {
-        if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
-          throw new Error(i18n.t('backup.errSessionExpired'));
-        }
-        throw new Error(i18n.t('backup.errSaveDrive'));
-      }
-      return false;
-    } finally {
-      updateBackupState({ isBackingUp: false, progress: 0, progressStage: null });
+      if (isAuthError(e)) setUser(null);
+      if (silent) return false;
+      if (e instanceof BackupInProgressError) throw new Error(i18n.t('backup.errInProgress'));
+      if (isAuthError(e)) throw new Error(i18n.t('backup.errSessionExpired'));
+      throw new Error(i18n.t('backup.errSaveDrive'));
     }
   }, [user, lastBackup?.id, isPremium]);
 
   const performRestore = useCallback(async (): Promise<boolean> => {
     if (!isPremium) throw new CloudBackupProRequiredError();
 
-    if (getBackupState().isBackingUp || getBackupState().isRestoring) {
+    if (isCloudBackupRunning() || getBackupState().isBackingUp || getBackupState().isRestoring) {
       throw new Error(i18n.t('backup.errInProgress'));
     }
 
-    const activeUser = user || (await GoogleDriveService.getCurrentUser());
-    if (!activeUser) {
-      throw new Error(i18n.t('backup.errSignInRestore'));
-    }
+    // Claim the restore flag before the first await so an auto-backup can't start mid-restore
+    // and upload a half-replaced database.
+    updateBackupState({ isRestoring: true, progress: 5, progressStage: i18n.t('backup.stageLocating') });
 
     try {
-      updateBackupState({ isRestoring: true, progress: 5, progressStage: i18n.t('backup.stageLocating') });
+      const activeUser = user || (await GoogleDriveService.getCurrentUser());
+      if (!activeUser) {
+        throw new Error(i18n.t('backup.errSignInRestore'));
+      }
 
       // Always query Google Drive directly for the latest remote backup file
       const targetBackup = await GoogleDriveService.findLatestBackup();
@@ -327,12 +303,16 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
 
       updateBackupState({ progress: 15, progressStage: i18n.t('backup.stageDownloading') });
 
-      const backupJsonStr = await GoogleDriveService.downloadBackup(targetBackup.id, (fraction) => {
-        updateBackupState({
-          progress: 15 + Math.round(fraction * 60),
-          progressStage: i18n.t('backup.stageDownloadingPct', { pct: Math.round(fraction * 100) }),
-        });
-      });
+      const backupJsonStr = await GoogleDriveService.downloadBackup(
+        targetBackup.id,
+        (fraction) => {
+          updateBackupState({
+            progress: 15 + Math.round(fraction * 60),
+            progressStage: i18n.t('backup.stageDownloadingPct', { pct: Math.round(fraction * 100) }),
+          });
+        },
+        targetBackup.size,
+      );
 
       if (!backupJsonStr || backupJsonStr.trim().length === 0) {
         throw new Error(i18n.t('backup.errCorrupted'));
@@ -348,12 +328,12 @@ export function useGoogleBackup(): UseGoogleBackupReturn {
 
       updateBackupState({ progress: 100, progressStage: i18n.t('backup.stageRestoreComplete') });
       return true;
-    } catch (e: any) {
+    } catch (e) {
       if (isNoBackupError(e)) {
         LoggerService.info('GOOGLE_BACKUP', 'No backup file found on Google Drive');
         throw e;
       }
-      if (e instanceof GoogleDriveAuthError || e?.name === 'GoogleDriveAuthError') {
+      if (isAuthError(e)) {
         setUser(null);
         throw new Error(i18n.t('backup.errSessionExpired'));
       }

@@ -12,6 +12,31 @@ const pickReminder = () => {
 };
 
 export const CLOUD_BACKUP_NOTIFICATION_ID = 'cloud_backup_status';
+const BACKUP_CHANNEL_ID = 'backup_status';
+
+let backupChannelPromise: Promise<unknown> | null = null;
+
+/**
+ * The headless background task can post before init() has ever run in this process
+ * (or before the app was first opened after an update), so create the channel on demand.
+ * createChannel is idempotent; memoised so progress updates don't re-issue it.
+ */
+function ensureBackupChannel(): Promise<unknown> {
+  if (Platform.OS !== 'android') return Promise.resolve();
+  if (!backupChannelPromise) {
+    backupChannelPromise = notifee
+      .createChannel({
+        id: BACKUP_CHANNEL_ID,
+        name: i18n.t('notifications.channelBackup'),
+        importance: NotifeeAndroidImportance.LOW,
+      })
+      .catch((e) => {
+        backupChannelPromise = null;
+        LoggerService.warn('NOTIFICATION', 'Failed to create backup channel', e);
+      });
+  }
+  return backupChannelPromise;
+}
 
 /**
  * NotificationService: Centralized infrastructure for local device reminders.
@@ -44,11 +69,7 @@ export const NotificationService = {
           lightColor: '#FF231F7C', // design-system-ignore: native Android LED colour
         });
 
-        await notifee.createChannel({
-          id: 'backup_status',
-          name: i18n.t('notifications.channelBackup'),
-          importance: NotifeeAndroidImportance.LOW,
-        });
+        await ensureBackupChannel();
       } catch (e) {
         LoggerService.warn('NOTIFICATION', 'Failed to set up notification channel', e);
       }
@@ -182,7 +203,10 @@ export const NotificationService = {
    * presentBackupProgressNotification: Shows a sticky OS notification with native Android progress bar & text progress via react-native-notify-kit.
    */
   async presentBackupProgressNotification(progress: number, stageText: string) {
+    // iOS has no ongoing/progress notification style — each update would post a fresh banner.
+    if (Platform.OS !== 'android') return;
     try {
+      await ensureBackupChannel();
       const clampedProgress = Math.min(100, Math.max(0, Math.round(progress)));
       const cleanStage = stageText || i18n.t('notifications.syncingStage');
 
@@ -191,7 +215,7 @@ export const NotificationService = {
         title: i18n.t('notifications.backupSyncing'),
         body: cleanStage,
         android: {
-          channelId: 'backup_status',
+          channelId: BACKUP_CHANNEL_ID,
           ongoing: true,
           onlyAlertOnce: true,
           pressAction: { id: 'default' },
@@ -219,12 +243,13 @@ export const NotificationService = {
    */
   async presentBackupCompleteNotification() {
     try {
+      await ensureBackupChannel();
       await notifee.displayNotification({
         id: CLOUD_BACKUP_NOTIFICATION_ID,
         title: i18n.t('notifications.backupComplete'),
         body: i18n.t('notifications.backupCompleteBody'),
         android: {
-          channelId: 'backup_status',
+          channelId: BACKUP_CHANNEL_ID,
           autoCancel: true,
           pressAction: { id: 'default' },
         },
@@ -239,12 +264,13 @@ export const NotificationService = {
    */
   async presentBackupFailedNotification() {
     try {
+      await ensureBackupChannel();
       await notifee.displayNotification({
         id: CLOUD_BACKUP_NOTIFICATION_ID,
         title: i18n.t('notifications.backupFailed'),
         body: i18n.t('notifications.backupFailedBody'),
         android: {
-          channelId: 'backup_status',
+          channelId: BACKUP_CHANNEL_ID,
           autoCancel: true,
           pressAction: { id: 'default' },
         },

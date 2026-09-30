@@ -156,6 +156,21 @@ export type BackupPackagePayload = {
   };
 };
 
+/** Singular/snake_case table keys written by older app versions — still accepted on restore. */
+type LegacyBackupData = Partial<BackupPackagePayload['data']> & {
+  person?: PersonBackupRow[];
+  account?: AccountBackupRow[];
+  category?: CategoryBackupRow[];
+  loan?: LoanBackupRow[];
+  payment?: PaymentBackupRow[];
+  seeder_state?: SeederBackupRow[];
+  seeder?: SeederBackupRow[];
+};
+
+type DriveErrorPayload = { error?: { message?: string } };
+
+type SqlValue = string | number | null;
+
 class DatabaseBackupServiceClass {
   /** True while a restore transaction is in flight. */
   public isRestoring(): boolean {
@@ -239,25 +254,13 @@ class DatabaseBackupServiceClass {
         throw new Error('Invalid backup format: Corrupted JSON data.');
       }
 
-      if ((pkg as any)?.error) {
-        throw new Error(`Google Drive download error: ${(pkg as any).error?.message || 'Failed to fetch backup file'}`);
+      const driveError = (pkg as DriveErrorPayload | null)?.error;
+      if (driveError) {
+        throw new Error(`Google Drive download error: ${driveError.message || 'Failed to fetch backup file'}`);
       }
 
-      if (!pkg.metadata || !pkg.data) {
+      if (!pkg?.metadata || !pkg.data) {
         throw new Error('Invalid backup structure: Missing metadata or payload.');
-      }
-
-      // Restore user profile (including name, currency, theme, reminder settings) if present in package
-      if (pkg.profile) {
-        try {
-          const currentProfileStr = await AsyncStorage.getItem(StorageKeys.PROFILE);
-          const currentProfile = currentProfileStr ? JSON.parse(currentProfileStr) : {};
-          const mergedProfile = { ...currentProfile, ...pkg.profile };
-          await AsyncStorage.setItem(StorageKeys.PROFILE, JSON.stringify(mergedProfile));
-          LoggerService.info('DB_BACKUP', 'Restored user profile & default currency', pkg.profile.defaultCurrency);
-        } catch (e) {
-          LoggerService.warn('DB_BACKUP', 'Profile restore warning', e);
-        }
       }
 
       // Verify SHA-256 checksum integrity
@@ -273,12 +276,13 @@ class DatabaseBackupServiceClass {
       }
 
       // Extract table rows with multi-key fallbacks
-      const personsList: PersonBackupRow[] = pkg.data?.persons || (pkg.data as any)?.person || [];
-      const accountsList: AccountBackupRow[] = pkg.data?.accounts || (pkg.data as any)?.account || [];
-      const categoriesList: CategoryBackupRow[] = pkg.data?.categories || (pkg.data as any)?.category || [];
-      const loansList: LoanBackupRow[] = pkg.data?.loans || (pkg.data as any)?.loan || [];
-      const paymentsList: PaymentBackupRow[] = pkg.data?.payments || (pkg.data as any)?.payment || [];
-      const seederList: SeederBackupRow[] = pkg.data?.seederState || (pkg.data as any)?.seeder_state || (pkg.data as any)?.seeder || [];
+      const data: LegacyBackupData = pkg.data;
+      const personsList: PersonBackupRow[] = data.persons || data.person || [];
+      const accountsList: AccountBackupRow[] = data.accounts || data.account || [];
+      const categoriesList: CategoryBackupRow[] = data.categories || data.category || [];
+      const loansList: LoanBackupRow[] = data.loans || data.loan || [];
+      const paymentsList: PaymentBackupRow[] = data.payments || data.payment || [];
+      const seederList: SeederBackupRow[] = data.seederState || data.seeder_state || data.seeder || [];
 
       // Refuse to wipe local data for a backup with nothing to restore
       const totalRestoreRows =
@@ -320,8 +324,8 @@ class DatabaseBackupServiceClass {
           expoDb.execSync('DELETE FROM accounts;');
           expoDb.execSync('DELETE FROM seeder_state;');
 
-          const clean = (val: any) => (val === undefined ? null : val);
-          const toBooleanInt = (val: any, defaultVal = 0): number => {
+          const clean = <T extends SqlValue>(val: T | undefined): T | null => (val === undefined ? null : val);
+          const toBooleanInt = (val: unknown, defaultVal = 0): number => {
             if (val === true || val === 1 || val === '1' || val === 'true' || val === 'TRUE') return 1;
             if (val === false || val === 0 || val === '0' || val === 'false' || val === 'FALSE') return 0;
             return defaultVal;
@@ -428,7 +432,7 @@ class DatabaseBackupServiceClass {
                   clean(r.emiNotificationIds ?? r.emi_notification_ids),
                   toBooleanInt(r.dueReminderEnabled ?? r.due_reminder_enabled, 0),
                   clean(r.dueReminderDaysBefore ?? r.due_reminder_days_before),
-                  clean(r.dueNotificationId ?? r.dueNotificationIds ?? r.due_notification_ids),
+                  clean(r.dueNotificationId ?? r.due_notification_id ?? r.dueNotificationIds ?? r.due_notification_ids),
                   clean(r.createdAt ?? r.created_at ?? new Date().toISOString()),
                   clean(r.updatedAt ?? r.updated_at ?? new Date().toISOString()),
                 ]);
@@ -487,11 +491,25 @@ class DatabaseBackupServiceClass {
             }
           }
         });
-      } catch (error: any) {
+      } catch (error) {
         LoggerService.error('DB_BACKUP', 'Synchronous restore transaction failed', error);
-        throw new Error(`Database restore transaction failed: ${error?.message || error}`);
+        throw new Error(`Database restore transaction failed: ${error instanceof Error ? error.message : String(error)}`);
       } finally {
         expoDb.execSync('PRAGMA foreign_keys = ON;');
+      }
+
+      // Restore the user profile (name, currency, theme, reminders) only after the data restore
+      // committed — a corrupt or empty backup must not leave settings half-replaced.
+      if (pkg.profile) {
+        try {
+          const currentProfileStr = await AsyncStorage.getItem(StorageKeys.PROFILE);
+          const currentProfile = currentProfileStr ? JSON.parse(currentProfileStr) : {};
+          const mergedProfile = { ...currentProfile, ...pkg.profile };
+          await AsyncStorage.setItem(StorageKeys.PROFILE, JSON.stringify(mergedProfile));
+          LoggerService.info('DB_BACKUP', 'Restored user profile & default currency', pkg.profile.defaultCurrency);
+        } catch (e) {
+          LoggerService.warn('DB_BACKUP', 'Profile restore warning', e);
+        }
       }
 
       // Re-run seeds to guarantee mandatory system categories/records exist

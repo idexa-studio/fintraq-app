@@ -1,12 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
+import { StorageKeys } from '@/src/constants/keys';
 import { LoggerService } from '@/src/services/logger.service';
 import { NotificationService } from '@/src/services/notification.service';
-import { AUTO_BACKUP_INTERVAL_MINUTES, resolveAutoBackupEnabled, runAutoBackupIfDue } from './auto-backup.service';
-import { StorageKeys } from '@/src/constants/keys';
+import { resolveAutoBackupEnabled, runAutoBackupIfDue } from './auto-backup.service';
 
 const AUTO_BACKUP_TASK = 'fintraq-auto-backup-task';
+
+// How often the OS may wake us to *check* — deliberately shorter than the 12h backup interval.
+// On Android, expo-background-task re-enqueues its worker with a full fresh delay every time the
+// app process cold-starts, so a 12h delay is pushed back by every app open and rarely fires.
+// A 4h wake keeps a real chance of running between opens; runAutoBackupIfDue() still only
+// uploads once the 12h interval has elapsed, so extra wakes are a cheap AsyncStorage read.
+export const BACKGROUND_CHECK_INTERVAL_MINUTES = 4 * 60;
 
 // expo-task-manager only reschedules WorkManager on a task's first-ever registration.
 // Re-registering an existing task just updates stored options, no reschedule (verified
@@ -20,47 +27,65 @@ TaskManager.defineTask(AUTO_BACKUP_TASK, async () => {
   try {
     const result = await runAutoBackupIfDue(false);
     LoggerService.info('TASK_MANAGER', `Background auto-backup outcome: ${result.outcome.toUpperCase()}`);
-    if (result.outcome === 'skipped') {
-      await NotificationService.dismissBackupNotification();
-    }
     return result.outcome === 'failed' ? BackgroundTask.BackgroundTaskResult.Failed : BackgroundTask.BackgroundTaskResult.Success;
   } catch (error) {
-    LoggerService.error('TASK_MANAGER', 'Failed to execute background auto-backup task', error);
-    await NotificationService.presentBackupFailedNotification();
+    // runAutoBackupIfDue reports its own failures; this only catches unexpected throws.
+    LoggerService.error('TASK_MANAGER', 'Unexpected error in background auto-backup task', error);
     return BackgroundTask.BackgroundTaskResult.Failed;
   }
 });
 
-/** Registers (or unregisters) the WorkManager/BGTaskScheduler-backed auto-backup schedule. */
-export async function registerBackgroundBackupTaskAsync(): Promise<void> {
-  try {
-    const enabled = await resolveAutoBackupEnabled();
-    const isRegistered = await TaskManager.isTaskRegisteredAsync(AUTO_BACKUP_TASK);
+let registrationInFlight: Promise<void> | null = null;
 
-    if (!enabled) {
-      if (isRegistered) {
-        await BackgroundTask.unregisterTaskAsync(AUTO_BACKUP_TASK);
-        await AsyncStorage.removeItem(LAST_REGISTERED_INTERVAL_KEY);
-        await NotificationService.dismissBackupNotification();
-        LoggerService.info('TASK_MANAGER', 'Unregistered background backup task (disabled).');
-      }
-      return;
-    }
-
-    const lastIntervalStr = await AsyncStorage.getItem(LAST_REGISTERED_INTERVAL_KEY);
-    const lastInterval = lastIntervalStr ? parseInt(lastIntervalStr, 10) : null;
-
-    if (isRegistered && lastInterval === AUTO_BACKUP_INTERVAL_MINUTES) return;
-
-    if (isRegistered) {
-      // Interval changed — force unregister so the next register actually reschedules.
-      await BackgroundTask.unregisterTaskAsync(AUTO_BACKUP_TASK);
-    }
-
-    await BackgroundTask.registerTaskAsync(AUTO_BACKUP_TASK, { minimumInterval: AUTO_BACKUP_INTERVAL_MINUTES });
-    await AsyncStorage.setItem(LAST_REGISTERED_INTERVAL_KEY, String(AUTO_BACKUP_INTERVAL_MINUTES));
-    LoggerService.info('TASK_MANAGER', `Registered background backup task (minimumInterval: ${AUTO_BACKUP_INTERVAL_MINUTES}min)`);
-  } catch (error) {
-    LoggerService.warn('TASK_MANAGER', 'Failed to register background backup task', error);
+async function syncRegistration(): Promise<void> {
+  const status = await BackgroundTask.getStatusAsync();
+  if (status === BackgroundTask.BackgroundTaskStatus.Restricted) {
+    // iOS Background App Refresh off / Low Power Mode — registering would throw.
+    LoggerService.warn('TASK_MANAGER', 'Background tasks are restricted on this device; relying on foreground checks.');
+    return;
   }
+
+  const enabled = await resolveAutoBackupEnabled();
+  const isRegistered = await TaskManager.isTaskRegisteredAsync(AUTO_BACKUP_TASK);
+
+  if (!enabled) {
+    if (isRegistered) {
+      await BackgroundTask.unregisterTaskAsync(AUTO_BACKUP_TASK);
+      await AsyncStorage.removeItem(LAST_REGISTERED_INTERVAL_KEY);
+      await NotificationService.dismissBackupNotification();
+      LoggerService.info('TASK_MANAGER', 'Unregistered background backup task (disabled).');
+    }
+    return;
+  }
+
+  const lastIntervalStr = await AsyncStorage.getItem(LAST_REGISTERED_INTERVAL_KEY);
+  const lastInterval = lastIntervalStr ? parseInt(lastIntervalStr, 10) : null;
+
+  if (isRegistered && lastInterval === BACKGROUND_CHECK_INTERVAL_MINUTES) return;
+
+  if (isRegistered) {
+    // Interval changed (e.g. app update) — force unregister so the next register actually reschedules.
+    await BackgroundTask.unregisterTaskAsync(AUTO_BACKUP_TASK);
+  }
+
+  await BackgroundTask.registerTaskAsync(AUTO_BACKUP_TASK, { minimumInterval: BACKGROUND_CHECK_INTERVAL_MINUTES });
+  await AsyncStorage.setItem(LAST_REGISTERED_INTERVAL_KEY, String(BACKGROUND_CHECK_INTERVAL_MINUTES));
+  LoggerService.info('TASK_MANAGER', `Registered background backup task (minimumInterval: ${BACKGROUND_CHECK_INTERVAL_MINUTES}min)`);
+}
+
+/**
+ * Registers (or unregisters) the WorkManager/BGTaskScheduler-backed auto-backup schedule.
+ * Serialised: the root layout and the auto-backup toggle can call this concurrently, and two
+ * interleaved unregister/register sequences can leave the task unregistered.
+ */
+export function registerBackgroundBackupTaskAsync(): Promise<void> {
+  const previous = registrationInFlight ?? Promise.resolve();
+  const next = previous
+    .then(syncRegistration)
+    .catch((error) => LoggerService.warn('TASK_MANAGER', 'Failed to sync background backup task registration', error));
+  registrationInFlight = next;
+  void next.finally(() => {
+    if (registrationInFlight === next) registrationInFlight = null;
+  });
+  return next;
 }
