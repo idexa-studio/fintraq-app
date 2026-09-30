@@ -35,7 +35,7 @@ const bn: Translation = {
     dailyReminder: 'দৈনিক রিমাইন্ডার',
     reminderOff: 'লেনদেন লিখতে মনে করিয়ে দেওয়া হবে',
     reminderOn: 'চালু · {{time}}',
-    reminderTime: 'রিমাইন্ডারের সময়',
+    reminderTime: 'রিমাইন্ডারের সময়', exactAlarmTitle: 'রিমাইন্ডার দেরিতে আসতে পারে', exactAlarmMessage: 'ঠিক সময়ে পেতে “অ্যালার্ম ও রিমাইন্ডার” অনুমতি দিন।', exactAlarmAction: 'অনুমতি দিন',
     preferences: 'পছন্দসমূহ',
     defaultCurrency: 'ডিফল্ট মুদ্রা',
     language: 'ভাষা',

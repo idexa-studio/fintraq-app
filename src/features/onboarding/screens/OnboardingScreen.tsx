@@ -115,13 +115,11 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         type: 'warning',
       });
     } else {
+      // Saving the profile triggers SettingsProvider's reminder sync.
       await updateProfile({ reminderEnabled: true });
-      // Explicitly schedule here to avoid race condition with SettingsProvider useEffect.
-      // reminderTime defaults to '20:00' and the user hasn't changed it during onboarding.
-      await NotificationService.scheduleDailyReminder(profile.reminderTime);
     }
     router.replace('/(main)/(tabs)');
-  }, [updateProfile, profile.reminderTime, router, showAlert, t]);
+  }, [updateProfile, router, showAlert, t]);
 
   const handleSkipReminders = useCallback(() => {
     setShowReminderDialog(false);

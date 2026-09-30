@@ -20,12 +20,11 @@ type Props = {
   visible: boolean;
   onClose: () => void;
   /** Called after a repayment that settles the loan, so reminders can be cancelled. */
-  onSettled: () => Promise<void>;
   showAlert: (options: AlertOptions) => void;
 };
 
 /** Records one repayment. Owns its form; it resets each time it opens. */
-export const RepaymentSheet = React.memo(function RepaymentSheet({ loan, personName, visible, onClose, onSettled, showAlert }: Props) {
+export const RepaymentSheet = React.memo(function RepaymentSheet({ loan, personName, visible, onClose, showAlert }: Props) {
   const theme = useTheme();
   const { colors } = theme;
   const { t } = useTranslation();
@@ -68,14 +67,14 @@ export const RepaymentSheet = React.memo(function RepaymentSheet({ loan, personN
       });
       onClose();
       reset();
+      // Reminders for a settled loan are dropped by the sync that follows every ledger write.
       if (result.isFullyRepaid) {
-        await onSettled();
         showAlert({ title: t('loans.fullyRepaid'), message: t('loans.settledMessage', { name: loan.personName ?? t('loans.thisLoan') }), type: 'success' });
       }
     } catch (e) {
       showAlert({ title: t('loans.error'), message: toErrorMessage(e, t('loans.repayFailed')), type: 'error' });
     }
-  }, [canSubmit, effectiveAccountId, addRepayment, loan, amount, date, note, onClose, reset, onSettled, showAlert, t]);
+  }, [canSubmit, effectiveAccountId, addRepayment, loan, amount, date, note, onClose, reset, showAlert, t]);
 
   const onDateChange = useCallback((_: DateTimePickerEvent, next?: Date) => {
     setDatePickerVisible(false);

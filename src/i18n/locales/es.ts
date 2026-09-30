@@ -35,7 +35,7 @@ const es: Translation = {
     dailyReminder: 'Recordatorio diario',
     reminderOff: 'Recibe un aviso para registrar transacciones',
     reminderOn: 'Activo · {{time}}',
-    reminderTime: 'Hora del recordatorio',
+    reminderTime: 'Hora del recordatorio', exactAlarmTitle: 'Los recordatorios pueden llegar tarde', exactAlarmMessage: 'Permite «Alarmas y recordatorios» para que lleguen a tiempo.', exactAlarmAction: 'Permitir',
     preferences: 'Preferencias',
     defaultCurrency: 'Moneda predeterminada',
     language: 'Idioma',

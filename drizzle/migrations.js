@@ -9,6 +9,7 @@ import m0004 from './0004_performance_indexes.sql';
 import m0005 from './0005_brave_the_leader.sql';
 import m0006 from './0006_little_wind_dancer.sql';
 import m0007 from './0007_worried_paladin.sql';
+import m0008 from './0008_quick_lila_cheney.sql';
 
   export default {
     journal,
@@ -20,7 +21,8 @@ m0003,
 m0004,
 m0005,
 m0006,
-m0007
+m0007,
+m0008
     }
   }
   

@@ -1,0 +1,1 @@
+ALTER TABLE `loans` ADD `due_reminder_time` text;

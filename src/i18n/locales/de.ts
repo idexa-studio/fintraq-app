@@ -35,7 +35,7 @@ const de: Translation = {
     dailyReminder: 'Tägliche Erinnerung',
     reminderOff: 'Lass dich ans Erfassen von Transaktionen erinnern',
     reminderOn: 'An · {{time}}',
-    reminderTime: 'Uhrzeit der Erinnerung',
+    reminderTime: 'Uhrzeit der Erinnerung', exactAlarmTitle: 'Erinnerungen können sich verspäten', exactAlarmMessage: 'Erlaube „Wecker und Erinnerungen“, damit sie pünktlich kommen.', exactAlarmAction: 'Erlauben',
     preferences: 'Voreinstellungen',
     defaultCurrency: 'Standardwährung',
     language: 'Sprache',

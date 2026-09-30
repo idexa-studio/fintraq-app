@@ -12,6 +12,8 @@ export enum StorageKeys {
   RECENT_SEARCHES = '@fintraq_recent_searches',
   NAMESPACE_MIGRATED = '@fintraq_namespace_migrated_v2',
   BACKUP_PROMPT_DISMISSED_AT = '@fintraq_backup_prompt_dismissed_at',
+  /** Local date (YYYY-MM-DD) whose daily reminder is skipped because the user already logged. */
+  REMINDER_SKIPPED_DATE = '@fintraq_reminder_skipped_date',
 
   // Walkthrough Keys
   WALKTHROUGH_DASHBOARD = '@fintraq_walkthrough_dashboard',

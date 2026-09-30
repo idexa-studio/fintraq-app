@@ -62,6 +62,8 @@ export const loans = sqliteTable('loans', {
   emiNotificationIds: text('emi_notification_ids'),
   dueReminderEnabled: integer('due_reminder_enabled', { mode: 'boolean' }).notNull().default(false),
   dueReminderDaysBefore: integer('due_reminder_days_before'),
+  /** "HH:mm"; null falls back to the EMI time, then 09:00. */
+  dueReminderTime: text('due_reminder_time'),
   dueNotificationId: text('due_notification_id'),
   createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),

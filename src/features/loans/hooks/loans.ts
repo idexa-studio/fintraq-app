@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/src/lib/query-keys';
-import { invalidateLedger } from '@/src/utils/query';
+import { afterLedgerWrite } from '@/src/lib/after-ledger-write';
 import * as api from '@/src/features/loans/api/loans';
 
 export const useLoans = (type?: api.LoanType) =>
@@ -51,7 +51,7 @@ export const useCreateLoan = () => {
       data: api.CreateLoanData;
       txPayload: { categoryId?: number; note: string; datetime: string };
     }) => api.createLoan(data, txPayload),
-    onSuccess: () => invalidateLedger(queryClient),
+    onSuccess: () => afterLedgerWrite(queryClient),
   });
 };
 
@@ -61,7 +61,7 @@ export const useUpdateLoan = () => {
     mutationFn: ({ id, data }: { id: number; data: api.UpdateLoanData }) =>
       api.updateLoan(id, data),
     onSuccess: (_, { id }) =>
-      invalidateLedger(queryClient),
+      afterLedgerWrite(queryClient),
   });
 };
 
@@ -69,7 +69,7 @@ export const useMarkLoanRepaid = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => api.markLoanRepaid(id),
-    onSuccess: () => invalidateLedger(queryClient),
+    onSuccess: () => afterLedgerWrite(queryClient),
   });
 };
 
@@ -77,7 +77,7 @@ export const useDeleteLoan = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.deleteLoan,
-    onSuccess: () => invalidateLedger(queryClient),
+    onSuccess: () => afterLedgerWrite(queryClient),
   });
 };
 
@@ -94,6 +94,6 @@ export const useAddRepayment = () => {
       datetime: string;
       note: string;
     }) => api.addRepayment(payload),
-    onSuccess: () => invalidateLedger(queryClient),
+    onSuccess: () => afterLedgerWrite(queryClient),
   });
 };

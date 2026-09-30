@@ -35,7 +35,7 @@ const te: Translation = {
     dailyReminder: 'రోజువారీ రిమైండర్',
     reminderOff: 'లావాదేవీలు నమోదు చేయమని గుర్తు చేయబడుతుంది',
     reminderOn: 'ఆన్ · {{time}}',
-    reminderTime: 'రిమైండర్ సమయం',
+    reminderTime: 'రిమైండర్ సమయం', exactAlarmTitle: 'రిమైండర్‌లు ఆలస్యంగా రావచ్చు', exactAlarmMessage: 'సమయానికి రావడానికి “అలారాలు & రిమైండర్‌లు” అనుమతించండి.', exactAlarmAction: 'అనుమతించు',
     preferences: 'ప్రాధాన్యతలు',
     defaultCurrency: 'డిఫాల్ట్ కరెన్సీ',
     language: 'భాష',

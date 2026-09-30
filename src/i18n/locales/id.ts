@@ -35,7 +35,7 @@ const id: Translation = {
     dailyReminder: 'Pengingat harian',
     reminderOff: 'Dapatkan pengingat untuk mencatat transaksi',
     reminderOn: 'Aktif · {{time}}',
-    reminderTime: 'Waktu pengingat',
+    reminderTime: 'Waktu pengingat', exactAlarmTitle: 'Pengingat bisa datang terlambat', exactAlarmMessage: 'Izinkan “Alarm & pengingat” agar datang tepat waktu.', exactAlarmAction: 'Izinkan',
     preferences: 'Preferensi',
     defaultCurrency: 'Mata uang default',
     language: 'Bahasa',

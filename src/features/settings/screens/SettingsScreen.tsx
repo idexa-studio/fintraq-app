@@ -7,6 +7,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { CurrencyPickerBottomSheet } from '@/src/components/pickers/CurrencyPickerBottomSheet';
 import {
   AlertDialog,
+  Banner,
   ConfirmDialog,
   LIST_ITEM_LEADING_SIZE,
   ListGroup,
@@ -42,6 +43,7 @@ import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
 import { useLockSetting } from '@/src/features/lock/hooks/useLockSetting';
 import { ProfileCard } from '@/src/features/settings/components/ProfileCard';
 import { SettingsFooter } from '@/src/features/settings/components/SettingsFooter';
+import { useExactAlarmAccess } from '@/src/features/settings/hooks/useExactAlarmAccess';
 import { useFactoryReset } from '@/src/features/settings/hooks/useFactoryReset';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { languages, supportedLanguages } from '@/src/i18n';
@@ -79,6 +81,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const { privacyUrl, termsUrl } = useAppConfig();
   const lock = useLockSetting();
   const factoryReset = useFactoryReset();
+  const exactAlarm = useExactAlarmAccess();
   const { showAlert, alertProps } = useAlertDialog();
 
   const [sheet, setSheet] = useState<Sheet>(null);
@@ -292,6 +295,15 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           />
         ) : null}
       </ListGroup>
+      {profile.reminderEnabled && !exactAlarm.hasAccess ? (
+        <Banner
+          tone="warning"
+          title={t('settings.exactAlarmTitle')}
+          message={t('settings.exactAlarmMessage')}
+          actionLabel={t('settings.exactAlarmAction')}
+          onAction={exactAlarm.openSettings}
+        />
+      ) : null}
 
       <ListGroup title={t('settings.security')}>
         <ListItem

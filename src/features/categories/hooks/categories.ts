@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/src/lib/query-keys';
-import { invalidateLedger } from '@/src/utils/query';
+import { afterLedgerWrite } from '@/src/lib/after-ledger-write';
 import * as api from '@/src/features/categories/api/categories';
 
 export const useCategories = () => {
@@ -14,7 +14,7 @@ export const useCreateCategory = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.createCategory,
-    onSuccess: () => invalidateLedger(queryClient),
+    onSuccess: () => afterLedgerWrite(queryClient),
   });
 };
 
@@ -23,7 +23,7 @@ export const useUpdateCategory = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<api.InsertCategory> }) =>
       api.updateCategory(id, data),
-    onSuccess: (_, { id }) => invalidateLedger(queryClient),
+    onSuccess: (_, { id }) => afterLedgerWrite(queryClient),
   });
 };
 
@@ -31,6 +31,6 @@ export const useDeleteCategory = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.deleteCategory,
-    onSuccess: () => invalidateLedger(queryClient),
+    onSuccess: () => afterLedgerWrite(queryClient),
   });
 };

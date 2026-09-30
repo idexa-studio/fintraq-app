@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/src/lib/query-keys';
-import { invalidateLedger } from '@/src/utils/query';
+import { afterLedgerWrite } from '@/src/lib/after-ledger-write';
 import * as api from '@/src/features/accounts/api/accounts';
 
 export const useAccounts = () => {
@@ -22,7 +22,7 @@ export const useCreateAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.createAccount,
-    onSuccess: () => invalidateLedger(queryClient),
+    onSuccess: () => afterLedgerWrite(queryClient),
   });
 };
 
@@ -31,7 +31,7 @@ export const useUpdateAccount = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: api.UpdateAccountData }) =>
       api.updateAccount(id, data),
-    onSuccess: (_, { id }) => invalidateLedger(queryClient),
+    onSuccess: (_, { id }) => afterLedgerWrite(queryClient),
   });
 };
 
@@ -39,6 +39,6 @@ export const useDeleteAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.deleteAccount,
-    onSuccess: () => invalidateLedger(queryClient),
+    onSuccess: () => afterLedgerWrite(queryClient),
   });
 };

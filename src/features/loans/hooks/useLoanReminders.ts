@@ -1,130 +1,80 @@
 import { useCallback } from 'react';
-import { NotificationService } from '@/src/services/notification.service';
-import { toErrorMessage } from '@/src/utils/errors';
-import { useUpdateLoan } from './loans';
 import type { LoanWithStats } from '@/src/features/loans/api/loans';
+import { useUpdateLoan } from '@/src/features/loans/hooks/loans';
 import { LoggerService } from '@/src/services/logger.service';
+import { NotificationService } from '@/src/services/notification.service';
+import { syncReminders } from '@/src/services/reminders/reminder-sync';
+import { toErrorMessage } from '@/src/utils/errors';
 
+/**
+ * Loan reminder settings. Each action saves the setting on the loan, then syncs: the scheduled OS
+ * reminders are always rebuilt from the loans table, so they can't drift from what's saved.
+ */
 export const useLoanReminders = () => {
   const { mutateAsync: updateLoan } = useUpdateLoan();
 
-  const scheduleEmiReminder = useCallback(async (loan: LoanWithStats, day: number, timeStr: string) => {
-    try {
-      const hasPermission = await NotificationService.checkPermissions();
-      if (!hasPermission) {
-        const granted = await NotificationService.requestPermissions();
-        if (!granted) return false;
-      }
-
-      if (loan.emiNotificationIds) {
-        const existing: string[] = JSON.parse(loan.emiNotificationIds);
-        await NotificationService.cancelByIdentifiers(existing);
-      }
-
-      const ids = await NotificationService.scheduleLoanEmiReminder(
-        loan.id,
-        day,
-        timeStr,
-        loan.personName ?? '',
-        loan.type as 'lend' | 'borrow',
-      );
-
-      await updateLoan({
-        id: loan.id,
-        data: {
-          emiReminderEnabled: true,
-          emiReminderDay: day,
-          emiReminderTime: timeStr,
-          emiNotificationIds: JSON.stringify(ids),
-        },
-      });
-
-      return true;
-    } catch (e) {
-      LoggerService.error('LOAN_REMINDERS', 'EMI schedule failed', toErrorMessage(e));
-      return false;
-    }
-  }, [updateLoan]);
-
-  const cancelEmiReminder = useCallback(async (loan: LoanWithStats) => {
-    try {
-      if (loan.emiNotificationIds) {
-        const ids: string[] = JSON.parse(loan.emiNotificationIds);
-        await NotificationService.cancelByIdentifiers(ids);
-      }
-      await updateLoan({
-        id: loan.id,
-        data: { emiReminderEnabled: false, emiNotificationIds: null },
-      });
-    } catch (e) {
-      LoggerService.error('LOAN_REMINDERS', 'EMI cancel failed', toErrorMessage(e));
-    }
-  }, [updateLoan]);
-
-  const scheduleDueReminder = useCallback(async (loan: LoanWithStats, daysBefore: number, timeStr: string) => {
-    if (!loan.dueDate) return false;
-    try {
-      const hasPermission = await NotificationService.checkPermissions();
-      if (!hasPermission) {
-        const granted = await NotificationService.requestPermissions();
-        if (!granted) return false;
-      }
-
-      if (loan.dueNotificationId) {
-        await NotificationService.cancelByIdentifiers([loan.dueNotificationId]);
-      }
-
-      const id = await NotificationService.scheduleLoanDueReminder(
-        loan.id,
-        loan.dueDate,
-        daysBefore,
-        timeStr,
-        loan.personName ?? '',
-        loan.type as 'lend' | 'borrow',
-      );
-
-      await updateLoan({
-        id: loan.id,
-        data: {
-          dueReminderEnabled: true,
-          dueReminderDaysBefore: daysBefore,
-          dueNotificationId: id,
-        },
-      });
-
-      return true;
-    } catch (e) {
-      LoggerService.error('LOAN_REMINDERS', 'Due reminder schedule failed', toErrorMessage(e));
-      return false;
-    }
-  }, [updateLoan]);
-
-  const cancelDueReminder = useCallback(async (loan: LoanWithStats) => {
-    try {
-      if (loan.dueNotificationId) {
-        await NotificationService.cancelByIdentifiers([loan.dueNotificationId]);
-      }
-      await updateLoan({
-        id: loan.id,
-        data: { dueReminderEnabled: false, dueNotificationId: null },
-      });
-    } catch (e) {
-      LoggerService.error('LOAN_REMINDERS', 'Due reminder cancel failed', toErrorMessage(e));
-    }
-  }, [updateLoan]);
-
-  const cancelAllLoanReminders = useCallback(async (loan: LoanWithStats) => {
-    const ids: string[] = [];
-    if (loan.emiNotificationIds) ids.push(...JSON.parse(loan.emiNotificationIds));
-    if (loan.dueNotificationId) ids.push(loan.dueNotificationId);
-    if (ids.length > 0) await NotificationService.cancelByIdentifiers(ids);
+  const ensurePermission = useCallback(async () => {
+    if (await NotificationService.checkPermissions()) return true;
+    return NotificationService.requestPermissions();
   }, []);
 
-  return {
-    scheduleEmiReminder,
-    cancelEmiReminder,
-    scheduleDueReminder,
-    cancelDueReminder,
-    cancelAllLoanReminders,
-  };
+  const scheduleEmiReminder = useCallback(
+    async (loan: LoanWithStats, day: number, timeStr: string) => {
+      try {
+        if (!(await ensurePermission())) return false;
+        await updateLoan({ id: loan.id, data: { emiReminderEnabled: true, emiReminderDay: day, emiReminderTime: timeStr, emiNotificationIds: null } });
+        await syncReminders();
+        return true;
+      } catch (e) {
+        LoggerService.error('LOAN_REMINDERS', 'EMI schedule failed', toErrorMessage(e));
+        return false;
+      }
+    },
+    [updateLoan, ensurePermission],
+  );
+
+  const cancelEmiReminder = useCallback(
+    async (loan: LoanWithStats) => {
+      try {
+        await updateLoan({ id: loan.id, data: { emiReminderEnabled: false, emiNotificationIds: null } });
+        await syncReminders();
+      } catch (e) {
+        LoggerService.error('LOAN_REMINDERS', 'EMI cancel failed', toErrorMessage(e));
+      }
+    },
+    [updateLoan],
+  );
+
+  const scheduleDueReminder = useCallback(
+    async (loan: LoanWithStats, daysBefore: number, timeStr: string) => {
+      if (!loan.dueDate) return false;
+      try {
+        if (!(await ensurePermission())) return false;
+        await updateLoan({
+          id: loan.id,
+          data: { dueReminderEnabled: true, dueReminderDaysBefore: daysBefore, dueReminderTime: timeStr, dueNotificationId: null },
+        });
+        await syncReminders();
+        return true;
+      } catch (e) {
+        LoggerService.error('LOAN_REMINDERS', 'Due reminder schedule failed', toErrorMessage(e));
+        return false;
+      }
+    },
+    [updateLoan, ensurePermission],
+  );
+
+  const cancelDueReminder = useCallback(
+    async (loan: LoanWithStats) => {
+      try {
+        await updateLoan({ id: loan.id, data: { dueReminderEnabled: false, dueNotificationId: null } });
+        await syncReminders();
+      } catch (e) {
+        LoggerService.error('LOAN_REMINDERS', 'Due reminder cancel failed', toErrorMessage(e));
+      }
+    },
+    [updateLoan],
+  );
+
+  return { scheduleEmiReminder, cancelEmiReminder, scheduleDueReminder, cancelDueReminder };
 };

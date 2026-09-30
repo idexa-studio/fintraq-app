@@ -35,7 +35,7 @@ const kn: Translation = {
     dailyReminder: 'ದೈನಂದಿನ ಜ್ಞಾಪನೆ',
     reminderOff: 'ವಹಿವಾಟುಗಳನ್ನು ದಾಖಲಿಸಲು ನೆನಪಿಸಲಾಗುತ್ತದೆ',
     reminderOn: 'ಆನ್ · {{time}}',
-    reminderTime: 'ಜ್ಞಾಪನೆಯ ಸಮಯ',
+    reminderTime: 'ಜ್ಞಾಪನೆಯ ಸಮಯ', exactAlarmTitle: 'ಜ್ಞಾಪನೆಗಳು ತಡವಾಗಿ ಬರಬಹುದು', exactAlarmMessage: 'ಸರಿಯಾದ ಸಮಯಕ್ಕೆ ಬರಲು “ಅಲಾರಾಂಗಳು ಮತ್ತು ಜ್ಞಾಪನೆಗಳು” ಅನುಮತಿಸಿ.', exactAlarmAction: 'ಅನುಮತಿಸಿ',
     preferences: 'ಆದ್ಯತೆಗಳು',
     defaultCurrency: 'ಡೀಫಾಲ್ಟ್ ಕರೆನ್ಸಿ',
     language: 'ಭಾಷೆ',

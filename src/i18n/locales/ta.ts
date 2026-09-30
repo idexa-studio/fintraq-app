@@ -35,7 +35,7 @@ const ta: Translation = {
     dailyReminder: 'தினசரி நினைவூட்டல்',
     reminderOff: 'பரிவர்த்தனைகளைப் பதிவிட நினைவூட்டல் பெறுங்கள்',
     reminderOn: 'இயக்கத்தில் · {{time}}',
-    reminderTime: 'நினைவூட்டல் நேரம்',
+    reminderTime: 'நினைவூட்டல் நேரம்', exactAlarmTitle: 'நினைவூட்டல்கள் தாமதமாக வரலாம்', exactAlarmMessage: 'சரியான நேரத்தில் வர “அலாரங்கள் & நினைவூட்டல்கள்” அனுமதியை வழங்கவும்.', exactAlarmAction: 'அனுமதி',
     preferences: 'விருப்பத்தேர்வுகள்',
     defaultCurrency: 'இயல்புநிலை நாணயம்',
     language: 'மொழி',

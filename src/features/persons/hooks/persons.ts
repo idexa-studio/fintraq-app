@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/src/lib/query-keys';
-import { invalidateLedger } from '@/src/utils/query';
+import { afterLedgerWrite } from '@/src/lib/after-ledger-write';
 import * as api from '@/src/features/persons/api/persons';
 
 export const usePersons = () =>
@@ -34,7 +34,7 @@ export const useCreatePerson = () => {
   return useMutation({
     mutationFn: api.createPerson,
     onSuccess: () =>
-      invalidateLedger(queryClient),
+      afterLedgerWrite(queryClient),
   });
 };
 
@@ -44,7 +44,7 @@ export const useUpdatePerson = () => {
     mutationFn: ({ id, data }: { id: number; data: api.UpdatePersonData }) =>
       api.updatePerson(id, data),
     onSuccess: (_, { id }) =>
-      invalidateLedger(queryClient),
+      afterLedgerWrite(queryClient),
   });
 };
 
@@ -53,6 +53,6 @@ export const useDeletePerson = () => {
   return useMutation({
     mutationFn: api.deletePerson,
     onSuccess: () =>
-      invalidateLedger(queryClient),
+      afterLedgerWrite(queryClient),
   });
 };

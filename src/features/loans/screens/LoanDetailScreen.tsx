@@ -9,7 +9,6 @@ import { LoanSummaryCard } from '@/src/features/loans/components/LoanSummaryCard
 import { RepaymentRow } from '@/src/features/loans/components/RepaymentRow';
 import { RepaymentSheet } from '@/src/features/loans/components/RepaymentSheet';
 import { useDeleteLoan, useLoanRepayments, useLoanWithStats, useMarkLoanRepaid } from '@/src/features/loans/hooks/loans';
-import { useLoanReminders } from '@/src/features/loans/hooks/useLoanReminders';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
@@ -29,27 +28,20 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
   const { data: history = [] } = useLoanRepayments(loanId);
   const markRepaid = useMarkLoanRepaid();
   const deleteLoan = useDeleteLoan();
-  const { cancelAllLoanReminders } = useLoanReminders();
   const { showAlert, alertProps } = useAlertDialog();
   const [dialog, setDialog] = useState<Dialog>(null);
   const close = useCallback(() => setDialog(null), []);
 
-  const cancelReminders = useCallback(async () => {
-    if (loan) await cancelAllLoanReminders(loan);
-  }, [loan, cancelAllLoanReminders]);
-
   const confirmMarkRepaid = useCallback(async () => {
     if (!loan) return;
-    await cancelAllLoanReminders(loan);
     await markRepaid.mutateAsync(loan.id);
-  }, [loan, markRepaid, cancelAllLoanReminders]);
+  }, [loan, markRepaid]);
 
   const confirmDelete = useCallback(async () => {
     if (!loan) return;
-    await cancelAllLoanReminders(loan);
     await deleteLoan.mutateAsync(loan.id);
     router.back();
-  }, [loan, deleteLoan, cancelAllLoanReminders, router]);
+  }, [loan, deleteLoan, router]);
 
   if (isLoading || !loan) {
     return (
@@ -109,7 +101,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
         ) : null}
       </ScrollView>
 
-      <RepaymentSheet loan={loan} personName={personName} visible={dialog === 'repay'} onClose={close} onSettled={cancelReminders} showAlert={showAlert} />
+      <RepaymentSheet loan={loan} personName={personName} visible={dialog === 'repay'} onClose={close} showAlert={showAlert} />
       <ConfirmDialog
         destructive
         visible={dialog === 'delete'}

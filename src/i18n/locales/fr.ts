@@ -35,7 +35,7 @@ const fr: Translation = {
     dailyReminder: 'Rappel quotidien',
     reminderOff: 'Recevez un rappel pour saisir vos transactions',
     reminderOn: 'Activé · {{time}}',
-    reminderTime: 'Heure du rappel',
+    reminderTime: 'Heure du rappel', exactAlarmTitle: 'Les rappels peuvent arriver en retard', exactAlarmMessage: 'Autorisez « Alarmes et rappels » pour qu’ils arrivent à l’heure.', exactAlarmAction: 'Autoriser',
     preferences: 'Préférences',
     defaultCurrency: 'Devise par défaut',
     language: 'Langue',

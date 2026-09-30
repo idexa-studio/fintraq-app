@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Notifications from 'expo-notifications';
+import { AppState } from 'react-native';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { NotificationService } from '@/src/services/notification.service';
+import { syncReminders } from '@/src/services/reminders/reminder-sync';
 import { StorageKeys } from '@/src/constants/keys';
 import { LoggerService } from '@/src/services/logger.service';
 import type { AppLanguage } from '@/src/i18n';
@@ -64,23 +65,21 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   /**
-   * Sync logic: Automatically handles hardware scheduling when JS state changes.
+   * Keeps OS reminders in step with the saved settings: on load, whenever reminder settings change,
+   * and every time the app comes back to the foreground — which tops up the rolling window and
+   * re-arms alarms as exact once the user allows it.
    */
   useEffect(() => {
     if (isLoading) return;
-
-    const syncNotifications = async () => {
-      if (profile.reminderEnabled) {
-        const granted = await NotificationService.requestPermissions();
-        if (granted) {
-          await NotificationService.scheduleDailyReminder(profile.reminderTime);
-        }
-      } else {
-        await Notifications.cancelScheduledNotificationAsync('daily_reminder').catch(() => {});
-      }
+    const sync = async () => {
+      if (profile.reminderEnabled) await NotificationService.requestPermissions();
+      await syncReminders();
     };
-
-    syncNotifications();
+    void sync();
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') void syncReminders();
+    });
+    return () => subscription.remove();
   }, [profile.reminderEnabled, profile.reminderTime, isLoading]);
 
   const updateProfile = useCallback(async (updates: Partial<UserProfile>) => {
