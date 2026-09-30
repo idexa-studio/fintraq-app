@@ -1,203 +1,86 @@
-import { Text } from '@/src/components/ui/Text';
-import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { MoneyText } from '@/src/components/ui/MoneyText';
-import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
-import type { LoanWithStats } from '@/src/features/loans/api/loans';
-import { LoanStatusBadge } from './LoanStatusBadge';
-import { format } from 'date-fns';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
+import { StyleSheet, View } from 'react-native';
+import { BentoPressable, MoneyText, PersonAvatar, ProgressBar, Text } from '@/src/components/ui';
+import type { LoanWithStats } from '@/src/features/loans/api/loans';
+import { LoanStatusBadge } from '@/src/features/loans/components/LoanStatusBadge';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex, formatDate } from '@/src/utils/format';
 
 type Props = {
   loan: LoanWithStats;
   onPress: (loan: LoanWithStats) => void;
-  compact?: boolean;
-  isLast?: boolean;
 };
 
-export const LoanCard = React.memo(function LoanCard({ loan, onPress, compact = false, isLast = false }: Props) {
+/** Who, how much is left, and how far along repayment is. */
+export const LoanCard = React.memo(function LoanCard({ loan, onPress }: Props) {
   const theme = useTheme();
-  const { t } = useTranslation();
   const { colors } = theme;
+  const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const personColor = useMemo(
-    () => loan.personColor != null ? colorNumberToHex(loan.personColor) : colors.textMuted,
-    [loan.personColor, colors.textMuted],
-  );
-  const personName = loan.personName ?? (loan.type === 'lend' ? t('loans.unknown') : t('loans.unnamedSource'));
-  const handlePress = useCallback(() => onPress(loan), [onPress, loan]);
-
-  const pct = loan.principal > 0 ? Math.min(100, Math.round((loan.repaid / loan.principal) * 100)) : 0;
+  const isLend = loan.type === 'lend';
   const isRepaid = loan.computedStatus === 'repaid';
   const isOverdue = loan.computedStatus === 'overdue';
-
-  if (compact) {
-    return (
-      <BentoPressable onPress={handlePress} style={[styles.compactRow, { borderBottomColor: colors.border }, isLast && { borderBottomWidth: 0 }]}>
-        <View style={[styles.typeDot, { backgroundColor: loan.type === 'lend' ? colors.success + '30' : colors.danger + '30' }]}>
-          <Text style={[styles.typeDotText, { color: loan.type === 'lend' ? colors.success : colors.danger }]}>
-            {loan.type === 'lend' ? 'L' : 'B'}
-          </Text>
-        </View>
-        <View style={styles.compactMeta}>
-          <Text style={[styles.compactLabel, { color: colors.text }]} numberOfLines={1}>
-            {loan.type === 'lend' ? t('loans.lent') : t('loans.borrowed')} · {loan.accountName}
-          </Text>
-          {loan.dueDate && !isRepaid && (
-            <Text style={[styles.compactHint, { color: isOverdue ? colors.danger : colors.textMuted }]} numberOfLines={1}>
-              {t('loans.due', { date: format(new Date(loan.dueDate), 'MMM d, yyyy') })}
-            </Text>
-          )}
-          {isRepaid && (
-            <Text style={[styles.compactHint, { color: colors.success }]}>{t('loans.fullyRepaid')}</Text>
-          )}
-        </View>
-        <View style={styles.compactRight}>
-          <MoneyText
-            amount={isRepaid ? loan.principal : loan.outstanding}
-            currency={loan.currency}
-            type={isRepaid ? 'NONE' : (loan.type === 'lend' ? 'CR' : 'DR')}
-            weight="semibold"
-            compact
-            style={[styles.compactAmount, isRepaid && { color: colors.textMuted }]}
-          />
-          <LoanStatusBadge status={loan.computedStatus} />
-        </View>
-      </BentoPressable>
-    );
-  }
+  const personName = loan.personName ?? (isLend ? t('loans.unknown') : t('loans.unnamedSource'));
+  const pct = loan.principal > 0 ? Math.min(100, Math.round((loan.repaid / loan.principal) * 100)) : 0;
+  const accent = isLend ? colors.success : colors.danger;
 
   return (
-    <BentoPressable onPress={handlePress} style={[styles.card, isRepaid && { opacity: 0.65 }]}>
-      {/* Top row */}
+    <BentoPressable style={styles.card} onPress={() => onPress(loan)} accessibilityRole="button" accessibilityLabel={personName}>
       <View style={styles.top}>
-        <PersonAvatar name={personName} color={personColor} size={40} />
+        <PersonAvatar name={personName} color={loan.personColor != null ? colorNumberToHex(loan.personColor) : colors.textMuted} size={40} />
         <View style={styles.meta}>
-          <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>{personName}</Text>
-          <Text style={[styles.hint, { color: colors.textMuted }]} numberOfLines={1}>
-            {loan.type === 'lend' ? t('loans.lentOut') : t('loans.borrowed')} · {loan.accountName}
+          <Text variant="bodyStrong" numberOfLines={1}>
+            {personName}
+          </Text>
+          <Text variant="caption" tone="muted" numberOfLines={1}>
+            {isLend ? t('loans.lentOut') : t('loans.borrowed')} · {loan.accountName}
           </Text>
         </View>
         <LoanStatusBadge status={loan.computedStatus} />
       </View>
 
-      {/* Amount */}
       <View style={styles.amountRow}>
-        <View>
-          <Text style={[styles.amountLabel, { color: colors.textMuted }]}>
+        <View style={styles.amountBlock}>
+          <Text variant="micro" tone="muted">
             {isRepaid ? t('loans.totalPrincipal') : t('loans.outstanding')}
           </Text>
           <MoneyText
             amount={isRepaid ? loan.principal : loan.outstanding}
             currency={loan.currency}
-            type={isRepaid ? 'NONE' : (loan.type === 'lend' ? 'CR' : 'DR')}
+            type={isRepaid ? 'NONE' : isLend ? 'CR' : 'DR'}
             weight="bold"
             style={styles.amount}
+            numberOfLines={1}
           />
         </View>
-        {!isRepaid && loan.principal > 0 && (
-          <View style={styles.pctBadge}>
-            <Text style={[styles.pctText, { color: colors.textMuted }]}>{pct}% paid</Text>
-          </View>
-        )}
+        {loan.dueDate && !isRepaid ? (
+          <Text variant="caption" tone={isOverdue ? 'danger' : 'muted'}>
+            {t('loans.due', { date: formatDate(new Date(loan.dueDate), { day: 'numeric', month: 'short', year: 'numeric' }) })}
+          </Text>
+        ) : null}
       </View>
 
-      {/* Footer */}
-      {loan.dueDate && !isRepaid && (
-        <Text style={[styles.footer, { color: isOverdue ? colors.danger : colors.textMuted }]}>
-          {t('loans.due', { date: format(new Date(loan.dueDate), 'MMM d, yyyy') })}
-        </Text>
-      )}
+      {!isRepaid && loan.principal > 0 ? (
+        <View style={styles.progress}>
+          <ProgressBar progress={pct} height={6} color={accent} accessibilityLabel={t('loans.repaidPct', { pct })} />
+          <Text variant="micro" tone="muted">
+            {t('loans.repaidPct', { pct })}
+          </Text>
+        </View>
+      ) : null}
     </BentoPressable>
   );
 });
 
 const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({
-    // Full card
-    card: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('4'),
-      marginBottom: spacing('3'),
-      gap: spacing('3'),
-    },
-    top: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-    },
+    card: { backgroundColor: colors.surface, borderRadius: radius('xl'), padding: spacing('4'), gap: spacing('3') },
+    top: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
     meta: { flex: 1, gap: spacing('0.5') },
-    name: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.md,
-    },
-    hint: {
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      ...typography.metrics.xs,
-    },
-    amountRow: {
-      flexDirection: 'row',
-      alignItems: 'flex-end',
-      justifyContent: 'space-between',
-    },
-    amountLabel: {
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      ...typography.metrics.xs,
-      marginBottom: spacing('0.5'),
-    },
-    amount: { ...typography.metrics.xl },
-    pctBadge: {
-      paddingHorizontal: spacing('2'),
-      paddingVertical: spacing('0.5'),
-      borderRadius: radius('full'),
-      backgroundColor: alpha(colors.text, 'faint'),
-    },
-    pctText: {
-      fontFamily: typography.styles.chipLabel.fontFamily,
-      ...typography.metrics.xs,
-    },
-    footer: {
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      ...typography.metrics.xs,
-    },
-
-    // Compact row (used in PersonDetailScreen)
-    compactRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-      paddingVertical: spacing('3'),
-      borderBottomWidth: StyleSheet.hairlineWidth,
-    },
-    typeDot: {
-      width: 32,
-      height: 32,
-      borderRadius: radius('lg'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    typeDotText: {
-      fontFamily: typography.fonts.semibold,
-      ...typography.metrics.sm,
-    },
-    compactMeta: { flex: 1, gap: spacing('0.5') },
-    compactLabel: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.sm,
-    },
-    compactHint: {
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      ...typography.metrics.xs,
-    },
-    compactRight: {
-      alignItems: 'flex-end',
-      gap: spacing('1'),
-    },
-    compactAmount: { ...typography.metrics.md },
+    amountRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: spacing('3') },
+    amountBlock: { flexShrink: 1, gap: spacing('0.5') },
+    amount: typography.metrics.xl,
+    progress: { gap: spacing('1.5') },
   });

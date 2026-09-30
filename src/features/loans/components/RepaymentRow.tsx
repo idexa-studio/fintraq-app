@@ -1,95 +1,36 @@
-import { Text } from '@/src/components/ui/Text';
-import React, { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { MoneyText } from '@/src/components/ui/MoneyText';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { LoanRepaymentRow, LoanType } from '@/src/features/loans/api/loans';
-import { format } from 'date-fns';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { IconAvatar, ListItem, MoneyText } from '@/src/components/ui';
+import { ArrowDownLeftIcon, ArrowUpRightIcon } from '@/src/components/ui/icons';
+import type { LoanRepaymentRow, LoanType } from '@/src/features/loans/api/loans';
+import { useTheme } from '@/src/providers/ThemeProvider';
+import { formatDate } from '@/src/utils/format';
 
 type Props = {
   row: LoanRepaymentRow;
   loanType: LoanType;
-  isFirst?: boolean;
-  isLast?: boolean;
+  /** The transaction that opened the loan, rather than a repayment. */
   isCreation?: boolean;
 };
 
-export const RepaymentRow = React.memo(function RepaymentRow({ row, loanType, isFirst, isLast, isCreation }: Props) {
-  const theme = useTheme();
+/** One money movement on a loan, as a standard list row inside the history ListGroup. */
+export const RepaymentRow = React.memo(function RepaymentRow({ row, loanType, isCreation = false }: Props) {
   const { t } = useTranslation();
-  const { colors } = theme;
-  const styles = useMemo(() => createStyles(theme), [theme]);
-
-  const borderRadius = useMemo(() => ({
-    borderTopLeftRadius: isFirst ? theme.radius('xl') : theme.radius('xs'),
-    borderTopRightRadius: isFirst ? theme.radius('xl') : theme.radius('xs'),
-    borderBottomLeftRadius: isLast ? theme.radius('xl') : theme.radius('xs'),
-    borderBottomRightRadius: isLast ? theme.radius('xl') : theme.radius('xs'),
-  }), [isFirst, isLast, theme]);
-
-  const label = useMemo(() => {
-    if (isCreation) return loanType === 'lend' ? t('loans.loanGiven') : t('loans.loanReceived');
-    return loanType === 'lend' ? t('loans.repaymentReceived') : t('loans.repaymentSent');
-  }, [isCreation, loanType, t]);
-
-  const dateLabel = useMemo(() => {
-    try { return format(new Date(row.datetime), 'MMM d, yyyy'); } catch { return row.datetime; }
-  }, [row.datetime]);
+  const { colors } = useTheme();
+  const isLend = loanType === 'lend';
+  // Money coming to you is CR: repayments of what you lent, or the loan you received.
+  const incoming = isCreation ? !isLend : isLend;
+  const label = isCreation ? (isLend ? t('loans.loanGiven') : t('loans.loanReceived')) : isLend ? t('loans.repaymentReceived') : t('loans.repaymentSent');
 
   return (
-    <View style={[styles.row, borderRadius]}>
-      <View style={styles.dot}>
-        <View style={[styles.dotInner, {
-          backgroundColor: isCreation ? colors.textMuted : (loanType === 'lend' ? colors.success : colors.danger),
-        }]} />
-      </View>
-      <View style={styles.content}>
-        <Text style={styles.label}>
-          {row.note || label}
-        </Text>
-        <Text style={styles.sub}>
-          {dateLabel} · {row.accountName}
-        </Text>
-      </View>
-      <MoneyText
-        amount={row.amount}
-        currency={row.accountCurrency}
-        type={isCreation ? (loanType === 'lend' ? 'DR' : 'CR') : (loanType === 'lend' ? 'CR' : 'DR')}
-        weight="semibold"
-        compact
-        style={styles.amount}
-      />
-    </View>
+    <ListItem
+      leading={
+        <IconAvatar icon={incoming ? ArrowDownLeftIcon : ArrowUpRightIcon} color={isCreation ? colors.textMuted : incoming ? colors.success : colors.danger} size={40} />
+      }
+      title={row.note || label}
+      subtitle={`${formatDate(new Date(row.datetime), { day: 'numeric', month: 'short', year: 'numeric' })} · ${row.accountName}`}
+      trailing={<MoneyText amount={row.amount} currency={row.accountCurrency} type={incoming ? 'CR' : 'DR'} weight="semibold" compact />}
+      showChevron={false}
+    />
   );
 });
-
-const createStyles = ({ colors, spacing, typography, radius }: ThemeContextType) =>
-  StyleSheet.create({
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3'),
-      marginBottom: spacing('1'),
-      gap: spacing('3'),
-    },
-    dot: { width: 20, alignItems: 'center', justifyContent: 'center' },
-    dotInner: { width: 8, height: 8, borderRadius: radius('full') },
-    content: { flex: 1 },
-    label: {
-      ...typography.metrics.md,
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      color: colors.text,
-    },
-    sub: {
-      ...typography.metrics.xs,
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      color: colors.textMuted,
-      marginTop: spacing('0.5'),
-    },
-    amount: {
-      ...typography.metrics.md,
-    },
-  });

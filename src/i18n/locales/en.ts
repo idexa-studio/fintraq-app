@@ -180,6 +180,7 @@ const en = {
     defaultMessage: 'Please update Fintraq to continue. It only takes a moment.', updateNow: 'Update now',
   },
   loans: {
+    allRepaid: 'Everything here is repaid.',
     outstandingAmount: "Outstanding: {{amount}}", exceedsOutstanding: "Amount exceeds the outstanding {{amount}}", fullAmount: "Full amount · {{amount}}",
     freeLimit: 'Free plan allows {{limit}} active loans. Upgrade for unlimited.', upgrade: 'Upgrade',
     lentToName: 'Lent to {{name}}', borrowedFromName: 'Borrowed from {{name}}',

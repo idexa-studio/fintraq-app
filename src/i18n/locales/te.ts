@@ -182,6 +182,7 @@ const te: Translation = {
     defaultMessage: 'కొనసాగడానికి దయచేసి Fintraq ను అప్‌డేట్ చేయండి. ఇది కొద్ది క్షణాలే పడుతుంది.', updateNow: 'ఇప్పుడే అప్‌డేట్ చేయండి',
   },
   loans: {
+    allRepaid: 'ఇక్కడ అన్నీ తిరిగి చెల్లించబడ్డాయి.',
     outstandingAmount: "బాకీ: {{amount}}", exceedsOutstanding: "మొత్తం బాకీ {{amount}} కంటే ఎక్కువ", fullAmount: "పూర్తి మొత్తం · {{amount}}",
     freeLimit: 'ఉచిత ప్లాన్\u200cలో {{limit}} యాక్టివ్ రుణాలు. అపరిమితం కోసం అప్\u200cగ్రేడ్ చేయండి.', upgrade: 'అప్\u200cగ్రేడ్',
     lentToName: '{{name}} కి అప్పు ఇచ్చారు', borrowedFromName: '{{name}} నుండి అప్పు తీసుకున్నారు',

@@ -182,6 +182,7 @@ const ta: Translation = {
     defaultMessage: 'தொடர Fintraq-ஐப் புதுப்பிக்கவும். ஒரு நிமிடம் மட்டுமே ஆகும்.', updateNow: 'இப்போதே புதுப்பி',
   },
   loans: {
+    allRepaid: 'இங்குள்ள அனைத்தும் திருப்பிச் செலுத்தப்பட்டன.',
     outstandingAmount: "நிலுவை: {{amount}}", exceedsOutstanding: "தொகை நிலுவை {{amount}}-ஐ மீறுகிறது", fullAmount: "முழு தொகை · {{amount}}",
     freeLimit: 'இலவச திட்டத்தில் {{limit}} செயலில் உள்ள கடன்கள். வரம்பற்றதற்கு மேம்படுத்தவும்.', upgrade: 'மேம்படுத்து',
     lentToName: '{{name}} க்கு கடன் கொடுத்தது', borrowedFromName: '{{name}} இடம் கடன் வாங்கியது',
