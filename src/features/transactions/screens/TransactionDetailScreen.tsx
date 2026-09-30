@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
+  AlertDialog,
   Badge,
   Card,
   ConfirmDialog,
@@ -19,10 +20,13 @@ import {
   SkeletonScreen,
   Text,
 } from '@/src/components/ui';
-import { ReceiptIcon } from '@/src/components/ui/icons';
+import { HandCoinsIcon, ReceiptIcon } from '@/src/components/ui/icons';
+import { useAlertDialog } from '@/src/hooks/useAlertDialog';
+import type { TransactionDetail } from '@/src/features/transactions/api/transactions';
+import { isLoanPrincipal } from '@/src/features/transactions/utils/ledger';
 import { useDeleteTransaction, useTransactionDetail } from '@/src/features/transactions/hooks/transactions';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { AccountType, TransactionType } from '@/src/types';
+import type { TransactionType } from '@/src/types';
 import { colorNumberToHex, formatDate } from '@/src/utils/format';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 
@@ -46,15 +50,29 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
 
-  const { data: tx, isLoading } = useTransactionDetail(txId);
+  const { data, isLoading } = useTransactionDetail(txId);
   const deleteTx = useDeleteTransaction();
   const [isDeleteVisible, setDeleteVisible] = useState(false);
+  const { showAlert, alertProps } = useAlertDialog();
+
+  // While closing after a delete, the refetch returns nothing; keep showing the receipt instead of
+  // flashing "not found" for a frame before the screen goes.
+  const [leavingSnapshot, setLeavingSnapshot] = useState<TransactionDetail | null>(null);
+  const tx = data ?? leavingSnapshot;
 
   const edit = useCallback(() => router.push(`/transactions/edit/${txId}`), [router, txId]);
   const confirmDelete = useCallback(async () => {
-    await deleteTx.mutateAsync(txId);
-    router.back();
-  }, [deleteTx, txId, router]);
+    try {
+      setLeavingSnapshot(data ?? null);
+      await deleteTx.mutateAsync(txId);
+      setDeleteVisible(false);
+      router.back();
+    } catch {
+      setLeavingSnapshot(null);
+      setDeleteVisible(false);
+      showAlert({ title: t('transactions.unableToDelete'), message: t('transactions.unableToDeleteMessage'), type: 'error' });
+    }
+  }, [data, deleteTx, txId, router, showAlert, t]);
 
   const title = t('transactions.detailTitle');
 
@@ -80,8 +98,13 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
   const note = tx.note?.trim();
   const when = new Date(tx.datetime);
   const isTransfer = tx.type === 'TR';
-  const toAccount = isTransfer && tx.toAccount?.id != null && tx.toAccount.name ? tx.toAccount : null;
-  const person = tx.person.id != null && tx.person.name ? { ...tx.person, id: tx.person.id, name: tx.person.name } : null;
+  const toAccount = isTransfer ? tx.toAccount : null;
+  const { person, loan } = tx;
+  const loanTitle = loan
+    ? person
+      ? t(loan.type === 'lend' ? 'loans.lentToName' : 'loans.borrowedFromName', { name: person.name })
+      : t('loans.loan')
+    : '';
 
   const headerActions = (
     <View style={styles.headerActions}>
@@ -122,7 +145,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
             subtitle={formatDate(when, { hour: 'numeric', minute: '2-digit' })}
           />
           <ListItem
-            leading={<IconAvatar icon={resolveAccountTypeIcon(tx.account.accountType as AccountType | null)} color={colorNumberToHex(tx.account.color)} size={40} />}
+            leading={<IconAvatar icon={resolveAccountTypeIcon(tx.account.accountType)} color={colorNumberToHex(tx.account.color)} size={40} />}
             title={tx.account.name}
             subtitle={isTransfer ? t('transactions.from') : t('transactions.account')}
             onPress={() => router.push(`/(main)/accounts/${tx.account.id}`)}
@@ -131,12 +154,12 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
             <ListItem
               leading={
                 <IconAvatar
-                  icon={resolveAccountTypeIcon(toAccount.accountType as AccountType | null)}
-                  color={toAccount.color != null ? colorNumberToHex(toAccount.color) : colors.textMuted}
+                  icon={resolveAccountTypeIcon(toAccount.accountType)}
+                  color={colorNumberToHex(toAccount.color)}
                   size={40}
                 />
               }
-              title={toAccount.name!}
+              title={toAccount.name}
               subtitle={t('transactions.to')}
               onPress={() => router.push(`/(main)/accounts/${toAccount.id}`)}
             />
@@ -149,10 +172,18 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
           />
           {person ? (
             <ListItem
-              leading={<PersonAvatar name={person.name} color={person.color != null ? colorNumberToHex(person.color) : colors.textMuted} size={40} />}
+              leading={<PersonAvatar name={person.name} color={colorNumberToHex(person.color)} size={40} />}
               title={person.name}
               subtitle={[person.designation, person.company].filter(Boolean).join(' · ') || t('transactions.person')}
               onPress={() => router.push(`/persons/${person.id}`)}
+            />
+          ) : null}
+          {loan ? (
+            <ListItem
+              leading={<IconAvatar icon={HandCoinsIcon} color={colors.warning} size={40} />}
+              title={loanTitle}
+              subtitle={isLoanPrincipal(tx.type, loan.type) ? t('loans.loan') : t('transactions.loanRepayment')}
+              onPress={() => router.push(`/(main)/loans/${loan.id}`)}
             />
           ) : null}
         </ListGroup>
@@ -186,6 +217,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
         onConfirm={confirmDelete}
         isLoading={deleteTx.isPending}
       />
+      <AlertDialog {...alertProps} />
     </Screen>
   );
 });

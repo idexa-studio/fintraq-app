@@ -20,6 +20,7 @@ import { format } from 'date-fns';
 import { TransactionType } from '@/src/types';
 import { AnalyticsService } from '@/src/services/analytics';
 import { isTransferCompatible } from '@/src/utils/accounts';
+import { repaymentType } from '@/src/features/transactions/utils/ledger';
 import type { AccountType } from '@/src/types';
 import { useTranslation } from 'react-i18next';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
@@ -65,8 +66,12 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
     return transactionByIdQuery.data ?? null;
   }, [transactionByIdQuery.data, isEditMode]);
 
-  const isRepayment = isEditMode && !!editingTransaction && editingTransaction.loanId !== null;
-  const { data: loan } = useLoanWithStats(isRepayment && editingTransaction ? editingTransaction.loanId : null);
+  // A loan-linked payment is either the loan's principal or one of its repayments. Both keep their
+  // type and category (the loan owns them); only repayments are capped by what is outstanding.
+  const { data: loan } = useLoanWithStats(isEditMode ? (editingTransaction?.loanId ?? null) : null);
+  // Known from the payment itself, before the loan loads, so nothing loan-owned is ever editable.
+  const isLoanLinked = editingTransaction?.loanId != null;
+  const isRepayment = !!loan && !!editingTransaction && editingTransaction.type === repaymentType(loan.type);
 
   const [type, setType] = React.useState<TransactionType>(initialType);
   const [selectedAccountId, setSelectedAccountId] = React.useState<number | null>(null);
@@ -92,8 +97,9 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
     setNote(editingTransaction.note ?? '');
   }, [isEditMode, editingTransaction]);
 
+  // The user's own categories first; system catch-alls ("Others") last, where a fallback belongs.
   const filteredCategories = React.useMemo(
-    () => categories.filter((c) => c.type.split(',').includes(type)),
+    () => categories.filter((c) => c.type.split(',').includes(type)).sort((a, b) => Number(a.isSystem) - Number(b.isSystem)),
     [categories, type],
   );
 
@@ -121,6 +127,8 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
   }, [accounts, selectedAccountId, initialAccountId]);
 
   React.useEffect(() => {
+    // A loan payment keeps the loan's category, whatever this type's list contains.
+    if (isLoanLinked) return;
     if (filteredCategories.length === 0) {
       setSelectedCategoryId(null);
       return;
@@ -132,7 +140,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       // First real category, not the system "Others" catch-all.
       setSelectedCategoryId((filteredCategories.find((c) => !c.isSystem) ?? filteredCategories[0]).id);
     }
-  }, [filteredCategories, selectedCategoryId]);
+  }, [filteredCategories, selectedCategoryId, isLoanLinked]);
 
   const amountValue = React.useMemo(() => parseAmount(amountInput), [amountInput]);
 
@@ -307,19 +315,19 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
         type={type}
         onTypeChange={handleTypeChange}
         typeLocked={isEditMode}
-        hideType={isRepayment}
+        hideType={isLoanLinked}
         amount={amountInput}
         onAmountChange={setAmountInput}
         currency={selectedAccount?.currency ?? profile.defaultCurrency}
       />
 
-      {isRepayment ? (
+      {isLoanLinked && loan ? (
         <View style={styles.padded}>
           <ListGroup>
             <ListItem
-              leading={loan?.personName ? <PersonAvatar name={loan.personName} color={colorNumberToHex(loan.personColor ?? 0)} size={36} /> : undefined}
-              title={loan == null ? t('transactions.loading') : (loan.personName ?? loan.accountName)}
-              subtitle={t('transactions.loanRepaymentFor')}
+              leading={loan.personName ? <PersonAvatar name={loan.personName} color={colorNumberToHex(loan.personColor ?? 0)} size={36} /> : undefined}
+              title={loan.personName ?? loan.accountName}
+              subtitle={isRepayment ? t('transactions.loanRepayment') : t('loans.loan')}
             />
           </ListGroup>
         </View>
@@ -348,7 +356,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
         )
       ) : null}
 
-      {!isRepayment && filteredCategories.length > 0 ? (
+      {!isLoanLinked && filteredCategories.length > 0 ? (
         <TransactionCategoryPicker
           categories={filteredCategories}
           selectedId={selectedCategoryId}
@@ -358,7 +366,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
 
       <View style={styles.padded}>
         <ListGroup>
-          {!isRepayment && persons.length > 0 && type !== 'TR' ? (
+          {!isLoanLinked && persons.length > 0 && type !== 'TR' ? (
             <ListItem
               icon={UserCircleIcon}
               iconColor={colors.info}

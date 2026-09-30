@@ -1,4 +1,4 @@
-import { accountDeltas, LedgerError, loanStatus, validateEntry } from '@/src/features/transactions/utils/ledger';
+import { accountDeltas, isLoanPrincipal, LedgerError, loanStatus, repaymentType, validateEntry } from '@/src/features/transactions/utils/ledger';
 
 describe('validateEntry', () => {
   it('accepts a normal expense, income and transfer', () => {
@@ -67,5 +67,16 @@ describe('loanStatus', () => {
 
   it('goes back to active when a repayment is removed', () => {
     expect(loanStatus(100, 60, null, now)).toBe('active');
+  });
+});
+
+describe('loan payment roles', () => {
+  it('money back is a repayment, the opposite direction is the principal', () => {
+    expect(repaymentType('lend')).toBe('CR');
+    expect(repaymentType('borrow')).toBe('DR');
+    expect(isLoanPrincipal('DR', 'lend')).toBe(true);
+    expect(isLoanPrincipal('CR', 'lend')).toBe(false);
+    expect(isLoanPrincipal('CR', 'borrow')).toBe(true);
+    expect(isLoanPrincipal('DR', 'borrow')).toBe(false);
   });
 });
