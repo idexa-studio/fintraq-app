@@ -360,6 +360,7 @@ const kn: Translation = {
     groups: { walletsCards: 'ವಾಲೆಟ್‌ಗಳು ಮತ್ತು ಕಾರ್ಡ್‌ಗಳು', savingsInvestments: 'ಉಳಿತಾಯ ಮತ್ತು ಹೂಡಿಕೆಗಳು', businessWork: 'ವ್ಯಾಪಾರ ಮತ್ತು ಕೆಲಸ', goals: 'ಗುರಿಗಳು', other: 'ಇತರೆ', finance: 'ಹಣಕಾಸು', foodDrink: 'ಆಹಾರ ಮತ್ತು ಪಾನೀಯ', transport: 'ಸಾರಿಗೆ', homeUtilities: 'ಮನೆ ಮತ್ತು ಸೌಲಭ್ಯಗಳು', healthFitness: 'ಆರೋಗ್ಯ ಮತ್ತು ಫಿಟ್‌ನೆಸ್', tech: 'ತಂತ್ರಜ್ಞಾನ', shopping: 'ಶಾಪಿಂಗ್', entertainment: 'ಮನರಂಜನೆ', education: 'ಶಿಕ್ಷಣ', personal: 'ವೈಯಕ್ತಿಕ', misc: 'ಇತರೆ ವಿಧ' },
     colors: { forest: 'ಕಾಡು ಹಸಿರು', emerald: 'ಪಚ್ಚೆ', teal: 'ಟೀಲ್', sky: 'ಆಕಾಶ ನೀಲಿ', ocean: 'ಸಾಗರ ನೀಲಿ', blue: 'ನೀಲಿ', cobalt: 'ಕೋಬಾಲ್ಟ್', iris: 'ಐರಿಸ್', indigo: 'ಇಂಡಿಗೋ', purple: 'ನೇರಳೆ', violet: 'ವೈಲೆಟ್', fuchsia: 'ಫ್ಯೂಶಿಯಾ', pink: 'ಗುಲಾಬಿ', deepPink: 'ಗಾಢ ಗುಲಾಬಿ', rose: 'ರೋಸ್', red: 'ಕೆಂಪು', crimson: 'ಕಡುಗೆಂಪು', orange: 'ಕಿತ್ತಳೆ', amber: 'ಅಂಬರ್', gold: 'ಚಿನ್ನ', lime: 'ನಿಂಬೆ', olive: 'ಆಲಿವ್', slate: 'ಸ್ಲೇಟ್', coolGray: 'ತಂಪು ಬೂದು' },
   },
+  shortcuts: { expense: 'ಖರ್ಚು ಸೇರಿಸಿ', income: 'ಆದಾಯ ಸೇರಿಸಿ', transfer: 'ಹೊಸ ವರ್ಗಾವಣೆ', loan: 'ಹೊಸ ಸಾಲ' },
 };
 
 export default kn;

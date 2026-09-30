@@ -1,6 +1,7 @@
 import { Redirect, Stack } from 'expo-router'; // Refreshing layout resolution
 import React from 'react';
 import { ErrorBoundary } from '@/src/components/ErrorBoundary';
+import { useLauncherShortcuts } from '@/src/hooks/useLauncherShortcuts';
 import { useOnboarding } from '@/src/providers/OnboardingProvider';
 
 export default function StackLayout() {
@@ -12,6 +13,7 @@ export default function StackLayout() {
 
   return (
     <ErrorBoundary>
+      <LauncherShortcuts />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="categories" />
@@ -28,4 +30,10 @@ export default function StackLayout() {
       </Stack>
     </ErrorBoundary>
   );
+}
+
+/** Registers and routes the launcher's long-press shortcuts; only mounted once onboarded. */
+function LauncherShortcuts() {
+  useLauncherShortcuts();
+  return null;
 }

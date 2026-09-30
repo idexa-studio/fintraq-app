@@ -360,6 +360,7 @@ const bn: Translation = {
     groups: { walletsCards: 'ওয়ালেট ও কার্ড', savingsInvestments: 'সঞ্চয় ও বিনিয়োগ', businessWork: 'ব্যবসা ও কাজ', goals: 'লক্ষ্য', other: 'অন্যান্য', finance: 'অর্থ', foodDrink: 'খাবার ও পানীয়', transport: 'যাতায়াত', homeUtilities: 'ঘর ও ইউটিলিটি', healthFitness: 'স্বাস্থ্য ও ফিটনেস', tech: 'প্রযুক্তি', shopping: 'কেনাকাটা', entertainment: 'বিনোদন', education: 'শিক্ষা', personal: 'ব্যক্তিগত', misc: 'বিবিধ' },
     colors: { forest: 'বনসবুজ', emerald: 'পান্না', teal: 'টিল', sky: 'আকাশি', ocean: 'সাগরনীল', blue: 'নীল', cobalt: 'কোবাল্ট', iris: 'আইরিস', indigo: 'নীলচে বেগুনি', purple: 'বেগুনি', violet: 'ভায়োলেট', fuchsia: 'ফুশিয়া', pink: 'গোলাপি', deepPink: 'গাঢ় গোলাপি', rose: 'রোজ', red: 'লাল', crimson: 'টকটকে লাল', orange: 'কমলা', amber: 'অ্যাম্বার', gold: 'সোনালি', lime: 'লেবু সবুজ', olive: 'জলপাই', slate: 'স্লেট', coolGray: 'ঠান্ডা ধূসর' },
   },
+  shortcuts: { expense: 'খরচ যোগ করুন', income: 'আয় যোগ করুন', transfer: 'নতুন ট্রান্সফার', loan: 'নতুন ঋণ' },
 };
 
 export default bn;

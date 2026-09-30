@@ -360,6 +360,7 @@ const id: Translation = {
     groups: { walletsCards: 'Dompet & Kartu', savingsInvestments: 'Tabungan & Investasi', businessWork: 'Bisnis & Pekerjaan', goals: 'Tujuan', other: 'Lainnya', finance: 'Keuangan', foodDrink: 'Makanan & Minuman', transport: 'Transportasi', homeUtilities: 'Rumah & Utilitas', healthFitness: 'Kesehatan & Kebugaran', tech: 'Teknologi', shopping: 'Belanja', entertainment: 'Hiburan', education: 'Pendidikan', personal: 'Pribadi', misc: 'Lain-lain' },
     colors: { forest: 'Hutan', emerald: 'Zamrud', teal: 'Teal', sky: 'Langit', ocean: 'Samudra', blue: 'Biru', cobalt: 'Kobalt', iris: 'Iris', indigo: 'Nila', purple: 'Ungu', violet: 'Violet', fuchsia: 'Fuksia', pink: 'Merah Muda', deepPink: 'Merah Muda Tua', rose: 'Mawar', red: 'Merah', crimson: 'Merah Tua', orange: 'Oranye', amber: 'Ambar', gold: 'Emas', lime: 'Limau', olive: 'Zaitun', slate: 'Batu Tulis', coolGray: 'Abu-abu Dingin' },
   },
+  shortcuts: { expense: 'Tambah pengeluaran', income: 'Tambah pemasukan', transfer: 'Transfer baru', loan: 'Pinjaman baru' },
 };
 
 export default id;

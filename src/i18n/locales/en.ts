@@ -358,6 +358,7 @@ const en = {
     groups: { walletsCards: 'Wallets & Cards', savingsInvestments: 'Savings & Investments', businessWork: 'Business & Work', goals: 'Goals', other: 'Other', finance: 'Finance', foodDrink: 'Food & Drink', transport: 'Transport', homeUtilities: 'Home & Utilities', healthFitness: 'Health & Fitness', tech: 'Tech', shopping: 'Shopping', entertainment: 'Entertainment', education: 'Education', personal: 'Personal', misc: 'Misc' },
     colors: { forest: 'Forest', emerald: 'Emerald', teal: 'Teal', sky: 'Sky', ocean: 'Ocean', blue: 'Blue', cobalt: 'Cobalt', iris: 'Iris', indigo: 'Indigo', purple: 'Purple', violet: 'Violet', fuchsia: 'Fuchsia', pink: 'Pink', deepPink: 'Deep Pink', rose: 'Rose', red: 'Red', crimson: 'Crimson', orange: 'Orange', amber: 'Amber', gold: 'Gold', lime: 'Lime', olive: 'Olive', slate: 'Slate', coolGray: 'Cool Gray' },
   },
+  shortcuts: { expense: 'Add expense', income: 'Add income', transfer: 'New transfer', loan: 'New loan' },
 } as const;
 
 export default en;

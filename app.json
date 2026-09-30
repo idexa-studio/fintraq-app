@@ -75,6 +75,29 @@
       ],
       "expo-background-task",
       "react-native-notify-kit",
+      [
+        "expo-quick-actions",
+        {
+          "androidIcons": {
+            "shortcut_expense": {
+              "foregroundImage": "./assets/images/shortcuts/shortcut-expense.png",
+              "backgroundColor": "#161612"
+            },
+            "shortcut_income": {
+              "foregroundImage": "./assets/images/shortcuts/shortcut-income.png",
+              "backgroundColor": "#161612"
+            },
+            "shortcut_transfer": {
+              "foregroundImage": "./assets/images/shortcuts/shortcut-transfer.png",
+              "backgroundColor": "#161612"
+            },
+            "shortcut_loan": {
+              "foregroundImage": "./assets/images/shortcuts/shortcut-loan.png",
+              "backgroundColor": "#161612"
+            }
+          }
+        }
+      ],
       "expo-system-ui",
       "expo-secure-store",
       "./plugins/with-fingerprint-not-required"
