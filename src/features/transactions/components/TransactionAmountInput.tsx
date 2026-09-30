@@ -1,3 +1,4 @@
+import { alpha } from '@/src/theme/tokens';
 import { Text } from '@/src/components/ui/Text';
 import { CalculatorIcon } from '@/src/components/ui/icons';
 import { CURRENCIES } from '@/src/constants/currency';
@@ -42,7 +43,7 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
           onChangeText={handleChange}
           keyboardType="decimal-pad"
           placeholder="0.00"
-          placeholderTextColor={colors.textMuted + '55'}
+          placeholderTextColor={alpha(colors.textMuted, 'medium')}
           autoFocus
         />
         <Pressable

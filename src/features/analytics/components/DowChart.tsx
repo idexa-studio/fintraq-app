@@ -1,3 +1,4 @@
+import { alpha } from '@/src/theme/tokens';
 import { Text } from '@/src/components/ui/Text';
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -65,7 +66,7 @@ const createStyles = ({ colors, spacing, typography, radius }: ThemeContextType)
   track: {
     flex: 1,
     width: '100%',
-    backgroundColor: colors.background + '80',
+    backgroundColor: alpha(colors.background, 'strong'),
     borderRadius: radius('xs'),
     justifyContent: 'flex-end',
     overflow: 'hidden',

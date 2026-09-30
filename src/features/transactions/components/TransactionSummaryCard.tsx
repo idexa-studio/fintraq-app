@@ -36,7 +36,11 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
 
   return (
     <View style={[styles.card, { backgroundColor: heroCard.background }]}>
-      <Text style={[styles.label, { color: heroCard.textMuted }]}>{label ?? t('transactions.netSavings')}</Text>
+      {/* Same decorative ring as the dashboard hero, so the two lime cards read as one family. */}
+      <View style={[styles.ring, { borderColor: heroCard.decoOverlay }]} pointerEvents="none" />
+      <Text variant="caption" color={heroCard.textMuted} style={styles.label}>
+        {label ?? t('transactions.netSavings')}
+      </Text>
 
       <MoneyText
         amount={Math.abs(net)}
@@ -50,7 +54,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
         <View style={[styles.statTile, { backgroundColor: heroCard.separator }]}>
           <View style={styles.statHeader}>
             <Icon icon={ArrowUp01Icon} size={13} color={heroCard.income} />
-            <Text style={[styles.statLabel, { color: heroCard.textMuted }]}>{t('transactions.income')}</Text>
+            <Text variant="caption" color={heroCard.textMuted}>{t('transactions.income')}</Text>
           </View>
           <MoneyText
             amount={income}
@@ -64,7 +68,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
         <View style={[styles.statTile, { backgroundColor: heroCard.separator }]}>
           <View style={styles.statHeader}>
             <Icon icon={ArrowDown01Icon} size={13} color={heroCard.expense} />
-            <Text style={[styles.statLabel, { color: heroCard.textMuted }]}>{t('transactions.expenses')}</Text>
+            <Text variant="caption" color={heroCard.textMuted}>{t('transactions.expenses')}</Text>
           </View>
           <MoneyText
             amount={expense}
@@ -86,18 +90,18 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
   );
 });
 
+const RING = 200;
+
 const createStyles = ({ spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({
     card: {
       borderRadius: radius('2xl'),
       padding: spacing('4'),
       paddingBottom: spacing('3'),
+      overflow: 'hidden',
     },
-    label: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      marginBottom: spacing('1'),
-    },
+    ring: { position: 'absolute', width: RING, height: RING, borderRadius: radius('full'), borderWidth: 26, top: -RING * 0.5, right: -RING * 0.3 },
+    label: { marginBottom: spacing('1') },
     netAmount: {
       ...typography.metrics.display,
       marginBottom: spacing('4'),
@@ -117,10 +121,6 @@ const createStyles = ({ spacing, radius, typography }: ThemeContextType) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('1'),
-    },
-    statLabel: {
-      ...typography.metrics.xs,
-      fontFamily: typography.fonts.regular,
     },
     statValue: {
       ...typography.metrics.lg,

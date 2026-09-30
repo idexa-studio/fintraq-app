@@ -130,6 +130,17 @@ const createStyles = ({ colors, spacing, radius }: ThemeContextType) =>
 ### Comments
 Explain *why*, not *what*: constraints, platform quirks, non-obvious maths. Delete commented-out code.
 
+## Free vs Pro
+
+`src/features/premium/pro-features.ts` is the one list of Pro capabilities (id, icon, paywall group). Ids are also the i18n keys under `premium.features.*`, and a test checks every feature has copy and a group.
+
+- **Sections** — `<ProGate feature="…">` renders children for Pro, a locked card otherwise. `ProPreviewCard` lists several locked sections behind one button.
+- **Actions** — `useProAccess()` gives `isPremium`, `requirePro(feature)` (opens the paywall and returns false on the free plan) and `openPaywall(feature?)`.
+- **Routes** — Pro-only screens (`/search`, `/export`) render `ProGateScreen` for free users, so deep links can't bypass the gate.
+- **Paywall** — `/premium?feature=<id>` leads with that feature. The paywall, the Pro screen and the dashboard upsell all render from the registry.
+- **Free caps** — `FREE_LOAN_LIMIT` and `FREE_PERSON_LIMIT` in `src/constants/iap.ts`; hitting one opens the paywall on `unlimited`.
+- **Background work** (auto-backup) can't use hooks; it reads the persisted entitlement through `BackupPreferences.isProEntitled()`.
+
 ## Cloud backup
 
 Offline-first: SQLite is the source of truth; Google Drive `appDataFolder` holds one JSON snapshot

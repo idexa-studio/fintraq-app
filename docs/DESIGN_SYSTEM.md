@@ -101,7 +101,7 @@ All components are exported from `@/src/components/ui`.
 |---|---|
 | `Input` | Text field with `label`, `helperText`, `error`, `leadingIcon`, `trailing`. `filled` on page, `default` in a card. |
 | `SegmentedControl` | 2–4 exclusive options (type, period, theme). Animated. |
-| `Chip` | Filters, multi-select tags, horizontal scroll. |
+| `Chip` | Filters, multi-select tags, horizontal scroll. Pass `on="surface"` inside sheets and cards so resting chips stay visible. |
 | `Switch` | Instant on/off (with haptic). In lists use `ListItem switchValue`. |
 | Pickers | `CurrencyPickerBottomSheet`, `ColorPickerBottomSheet`, `ColorPickerRow`, `IconPickerBottomSheet`, `CalculatorBottomSheet` from `@/src/components/pickers`. |
 
@@ -111,7 +111,8 @@ All components are exported from `@/src/components/ui`.
 | `Card` | `surface` · `inset` · `outlined`, optional `onPress`. | Ad-hoc `View` cards |
 | `ListGroup` + `ListItem` | Settings-style lists: nav rows (`onPress` → chevron), toggles (`switchValue`), single choice (`selected`), info (`value`), `destructive`. | `NavRow`, `SwitchRow`, `InfoRow` in Settings, Developer, Search, TransactionDetail |
 | `MoneyText` | Every amount. `type` CR/DR adds sign + colour. `compact` for tiles. | — |
-| `StatTile` | One KPI with label, amount/value and trend. | KPI blocks in Analytics/Dashboard |
+| `StatTile` | One KPI with label, amount/value, optional `caption` and trend. Lay out in rows of two. | KPI blocks in Analytics/Dashboard |
+| `StatColumns` | Secondary figures under a card's headline number, split by hairlines (income · expense, principal · repaid). Optional delta, press, or custom `content` such as a Pro lock. | Hand-built stat rows in summary cards |
 | `Badge` | Status labels, counts. | `LoanStatusBadge` internals |
 | `TrendBadge` | ▲/▼ % vs previous period. | `DeltaBadge` in Analytics |
 | `IconAvatar` / `PersonAvatar` | Leading visuals for categories, accounts and people. | — |
@@ -144,7 +145,9 @@ All components are exported from `@/src/components/ui`.
 - **Lists:** group rows in `ListGroup` (settings, details) or rounded `TransactionRow` stacks (`isFirst`/`isLast`). Don't separate rows with cards.
 - **Forms:** labelled `Input`s in a column with a 16 gap. Put a single `Button fullWidth size="lg"` in `Screen footer`. Validate on blur/submit. Error text says how to fix it.
 - **Tab bar:** the original split islands — dark island (Home · Accounts), lime + tile, dark island (Analytics · Settings). All three are 60 tall on one centre line; active tab = lime tile; tabs expose their label to screen readers. Tab screens pad with `tabBarClearance()`.
-- **Add actions:** list screens reached from navigation use a `Fab`. Tab screens never do — the tab bar's centre + is "add transaction" — they put add in the header as a tonal `IconButton`.
+- **Summary cards:** one shape everywhere a screen leads with a number (month pulse, period summary, account, loan): `surface` card, `label` caption, the headline `MoneyText`, then `StatColumns`. Identity (avatar, name, `Badge`s) goes on the first row when the card is about one thing.
+- **Add actions:** list screens reached from navigation use a `Fab`. Tab screens never do — the tab bar's centre + adds (a transaction, or an account on the Accounts tab); don't repeat it in the header.
+- **Pro features:** gate with `<ProGate feature>` (a section) or `useProAccess().requirePro(feature)` (an action). A screen with several locked sections shows one `ProPreviewCard` instead of a lock card per section. Every id comes from `src/features/premium/pro-features.ts`.
 - **Destructive actions:** use a `danger` button or a `destructive` ListItem, always behind a `ConfirmDialog`, and in its own group at the bottom.
 - **Copy:** sentence case, verbs on buttons ("Add account"), no trailing periods in titles.
 
