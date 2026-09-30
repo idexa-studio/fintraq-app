@@ -11,9 +11,11 @@ import { AnalyticsControls } from '@/src/features/analytics/components/Analytics
 import { AnalyticsGlance } from '@/src/features/analytics/components/AnalyticsGlance';
 import { ChartLegend } from '@/src/features/analytics/components/ChartLegend';
 import { DowChart } from '@/src/features/analytics/components/DowChart';
+import { InsightsCarousel } from '@/src/features/analytics/components/InsightsCarousel';
 import { LinearAreaChart } from '@/src/features/analytics/components/LinearAreaChart';
 import { PeriodSummaryCard } from '@/src/features/analytics/components/PeriodSummaryCard';
 import { ShareBreakdown, ShareItem } from '@/src/features/analytics/components/ShareBreakdown';
+import { SpendingHeatmap } from '@/src/features/analytics/components/SpendingHeatmap';
 import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/analytics/constants';
 import { useAnalyticsOverview } from '@/src/features/analytics/hooks/useAnalyticsOverview';
 import { useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
@@ -29,9 +31,13 @@ import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 
 type CategoryTab = 'expense' | 'income';
 
+/** Free users see this many top expense categories; the full breakdown is Pro. */
+const FREE_CATEGORY_COUNT = 3;
+
 /**
- * Free: the period summary and trend — complete on their own — then one card naming what Pro adds.
- * Pro: the same two, then highlights and pace, where the money went, when, and with whom.
+ * The "why" tab — Home shows where you stand, this explains it: how much, where it went, when, and with whom.
+ * Free: summary, trend, top expense categories and spending rhythm, then one card naming what Pro adds.
+ * Pro: adds highlights and forecast, insights, the full category breakdown, weekly pattern, people and balances.
  */
 export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
@@ -63,12 +69,16 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const monthProjection = month ? buildMonthPulse(month, new Date()).projected : null;
 
   const openLockedRange = useCallback(() => openPaywall('analytics'), [openPaywall]);
+  const openLockedCategories = useCallback(() => openPaywall('categories'), [openPaywall]);
   const openCategory = useCallback((categoryId: number) => router.push(`/transactions?categoryId=${categoryId}`), [router]);
 
+  // Free users get the top few expense categories only, so the tab is pinned to expenses.
+  const activeTab: CategoryTab = isPremium ? categoryTab : 'expense';
   const categoryItems = useMemo((): ShareItem[] => {
-    const type = categoryTab === 'expense' ? 'DR' : 'CR';
-    const source = categoryTab === 'expense' ? overview.expenseCategories : overview.incomeCategories;
-    return withShares(source).map((c) => {
+    const type = activeTab === 'expense' ? 'DR' : 'CR';
+    const source = activeTab === 'expense' ? overview.expenseCategories : overview.incomeCategories;
+    const shared = withShares(source);
+    return (isPremium ? shared : shared.slice(0, FREE_CATEGORY_COUNT)).map((c) => {
       const color = colorNumberToHex(c.color);
       return {
         key: String(c.id),
@@ -82,7 +92,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
         onPress: () => openCategory(c.id),
       };
     });
-  }, [categoryTab, overview.expenseCategories, overview.incomeCategories, currency, openCategory]);
+  }, [activeTab, isPremium, overview.expenseCategories, overview.incomeCategories, currency, openCategory]);
 
   const personItems = useMemo(
     (): ShareItem[] =>
@@ -175,9 +185,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           )}
         </View>
 
-        {!isPremium ? (
-          <ProPreviewCard features={['highlights', 'forecast', 'categories', 'weekly', 'people']} />
-        ) : (
+        {isPremium ? (
           <>
             <View>
               <SectionHeader title={t('analytics.highlights')} noPadding />
@@ -193,17 +201,37 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             </View>
 
             <View>
-              <SectionHeader title={t('analytics.categoryBreakdown')} rightText={t('analytics.groupsCount', { count: categoryItems.length })} noPadding />
-              <View style={styles.stack}>
-                <SegmentedControl options={categoryTabs} value={categoryTab} onChange={setCategoryTab} size="sm" />
-                {categoryItems.length > 0 ? (
-                  <ShareBreakdown items={categoryItems} />
-                ) : (
-                  <EmptyState variant="inline" icon={Tag01Icon} title={t('analytics.noCategoryData')} description={t('analytics.noCategoryDataHint')} />
-                )}
-              </View>
+              <SectionHeader title={t('premium.insightsTitle')} rightText={t('dashboard.thisMonth')} noPadding />
+              <InsightsCarousel currency={currency} />
             </View>
+          </>
+        ) : null}
 
+        <View>
+          {isPremium ? (
+            <SectionHeader title={t('analytics.categoryBreakdown')} rightText={t('analytics.groupsCount', { count: categoryItems.length })} noPadding />
+          ) : (
+            <SectionHeader title={t('dashboard.topExpenses')} rightText={t('dashboard.seeAll')} onPressRight={openLockedCategories} noPadding />
+          )}
+          <View style={styles.stack}>
+            {isPremium ? <SegmentedControl options={categoryTabs} value={categoryTab} onChange={setCategoryTab} size="sm" /> : null}
+            {categoryItems.length > 0 ? (
+              <ShareBreakdown items={categoryItems} />
+            ) : (
+              <EmptyState variant="inline" icon={Tag01Icon} title={t('analytics.noCategoryData')} description={t('analytics.noCategoryDataHint')} />
+            )}
+          </View>
+        </View>
+
+        <View>
+          <SectionHeader title={t('dashboard.rhythmTitle')} rightText={t('dashboard.rhythmHint')} noPadding />
+          <SpendingHeatmap currency={currency} />
+        </View>
+
+        {!isPremium ? (
+          <ProPreviewCard features={['highlights', 'forecast', 'insights', 'categories', 'weekly', 'people']} />
+        ) : (
+          <>
             <View>
               <SectionHeader title={t('analytics.weeklyPattern')} rightText={t('analytics.averageByDay')} noPadding />
               {overview.weekdays.length === 0 ? (

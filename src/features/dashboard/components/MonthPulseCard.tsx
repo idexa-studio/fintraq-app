@@ -1,11 +1,9 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Icon, MoneyText, Skeleton, StatColumn, StatColumns, Text, TrendBadge } from '@/src/components/ui';
-import { LockKeyIcon } from '@/src/components/ui/icons';
+import { MoneyText, Skeleton, StatColumn, StatColumns, Text, TrendBadge } from '@/src/components/ui';
 import { useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
 import { buildMonthPulse } from '@/src/features/dashboard/utils/widgets';
-import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Props = { currency: string };
@@ -20,7 +18,6 @@ export const MonthPulseCard = React.memo(function MonthPulseCard({ currency }: P
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { data: totals, isLoading } = useMonthTotals(currency);
-  const { isPremium, openPaywall } = useProAccess();
 
   const pulse = useMemo(() => (totals ? buildMonthPulse(totals, new Date()) : null), [totals]);
 
@@ -31,26 +28,11 @@ export const MonthPulseCard = React.memo(function MonthPulseCard({ currency }: P
   const barColor = share !== null && share >= 1 ? colors.danger : share !== null && share > pulse.monthProgress ? colors.warning : colors.primary;
   const fill = Math.min(1, share ?? 0);
 
-  // Per-day pace and the month-end projection are the Pro "Spending forecast".
-  const lockedValue = (
-    <View style={styles.locked}>
-      <Icon icon={LockKeyIcon} size={13} color={colors.primaryInk} />
-      <Text variant="label" color={colors.primaryInk}>
-        {t('premium.pro')}
-      </Text>
-    </View>
-  );
-  const proColumn = (key: string, label: string, amount: number): StatColumn =>
-    isPremium
-      ? { key, label, amount, currency }
-      : { key, label, content: lockedValue, onPress: () => openPaywall('forecast'), accessibilityLabel: `${label}, ${t('premium.gate.upgrade')}` };
+  // Pace and the month-end forecast live in Analytics; home keeps the facts.
   const stats: StatColumn[] = [
     { key: 'income', label: t('dashboard.income'), amount: pulse.income, currency, type: 'CR' },
-    proColumn('perDay', t('dashboard.pulsePerDay'), pulse.dailyAverage),
-    proColumn('projected', t('dashboard.pulseProjected'), pulse.projected),
+    { key: 'lastMonth', label: t('dashboard.pulseLastMonth'), amount: pulse.lastMonthTotal, currency },
   ];
-
-
   return (
     <View style={[styles.card, styles.margin]}>
       <View style={styles.header}>
@@ -125,5 +107,4 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       marginLeft: -1,
       backgroundColor: colors.text,
     },
-    locked: { flexDirection: 'row', alignItems: 'center', gap: spacing('1'), minHeight: 19 },
   });

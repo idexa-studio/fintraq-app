@@ -58,12 +58,12 @@ export const SpendingHeatmap = React.memo(function SpendingHeatmap({ currency }:
     return { name, amount };
   };
 
-  if (isLoading) return <Skeleton height={236} radius="xl" style={styles.margin} />;
+  if (isLoading) return <Skeleton height={236} radius="xl" />;
 
   const summary = selected ? describe(selected) : null;
 
   return (
-    <View style={[styles.card, styles.margin]}>
+    <View style={styles.card}>
       <View style={styles.header}>
         <View style={styles.headerText}>
           <Text variant="calloutStrong" numberOfLines={1}>
@@ -129,9 +129,8 @@ export const SpendingHeatmap = React.memo(function SpendingHeatmap({ currency }:
   );
 });
 
-const createStyles = ({ colors, spacing, radius, layout, alpha }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
   StyleSheet.create({
-    margin: { marginHorizontal: layout.screenPadding },
     card: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),

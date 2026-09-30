@@ -20,14 +20,6 @@ export const useDailySpend = (currency: string, since: string) => {
   });
 };
 
-export const useTopExpenseCategories = (currency: string) => {
-  return useQuery({
-    queryKey: QUERY_KEYS.dashboard.topCategories(currency),
-    queryFn: () => api.getTopExpenseCategories(currency),
-    enabled: !!currency,
-  });
-};
-
 export const useDashboardPersons = (currency: string) => {
   return useQuery({
     queryKey: QUERY_KEYS.dashboard.topPersons(currency),
