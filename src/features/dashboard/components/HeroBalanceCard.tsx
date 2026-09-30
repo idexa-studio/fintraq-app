@@ -30,8 +30,9 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
 
   const isUp = (monthNet ?? 0) >= 0;
-  const netLabel =
-    monthNet === null ? null : t('dashboard.netThisMonth', { amount: `${isUp ? '+' : '−'}${formatCurrency(Math.abs(monthNet), currency)}` });
+  // A flat month reads "$0.00 this month", not "+$0.00".
+  const sign = !monthNet || Math.round(Math.abs(monthNet) * 100) === 0 ? '' : isUp ? '+' : '−';
+  const netLabel = monthNet === null ? null : t('dashboard.netThisMonth', { amount: `${sign}${formatCurrency(Math.abs(monthNet), currency)}` });
 
   return (
     <View style={styles.card}>

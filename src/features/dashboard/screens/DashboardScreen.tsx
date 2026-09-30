@@ -63,6 +63,12 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   // Falls back when the choice disappears (e.g. its last account was deleted).
   const currency = chosenCurrency && currencyKeys.includes(chosenCurrency) ? chosenCurrency : currencyKeys[0]!;
 
+  // The selected currency's accounts lead the row, so switching the hero also brings them into view.
+  const orderedAccounts = useMemo(
+    () => [...(accounts ?? [])].sort((a, b) => Number(b.currency === currency) - Number(a.currency === currency)),
+    [accounts, currency],
+  );
+
   const { data: month } = useMonthTotals(currency);
   const { data: topPersons = [] } = useDashboardPersons(currency);
 
@@ -118,7 +124,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         <MonthPulseCard currency={currency} />
 
         <SectionHeader title={t('dashboard.accounts')} rightText={t('dashboard.manage')} onPressRight={openAccounts} />
-        <AccountsCarousel accounts={accounts ?? []} onPressAccount={openAccount} onPressAdd={openAccountForm} />
+        <AccountsCarousel accounts={orderedAccounts} onPressAccount={openAccount} onPressAdd={openAccountForm} />
 
         <SectionHeader title={t('dashboard.recent')} rightText={t('dashboard.seeAll')} onPressRight={openTransactions} />
         <View style={styles.padded}>
