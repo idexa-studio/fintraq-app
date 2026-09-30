@@ -17,7 +17,7 @@ type Props = {
 
 /**
  * One-tap entry points for the most common writes, each opening its form already set up. Drawn as
- * a dark dock inside the hero card, echoing the tab bar's dark islands, so it reads as one control.
+ * frosted white tiles inside the hero card, with the card's own ink for icons and labels.
  */
 export const QuickActions = React.memo(function QuickActions({ canTransfer }: Props) {
   const theme = useTheme();
@@ -38,10 +38,10 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
 
   return (
     <View style={styles.row} accessibilityRole="toolbar" accessibilityLabel={t('dashboard.quickActions')}>
-      {actions.map((action, index) => (
+      {actions.map((action) => (
         <BentoPressable
           key={action.key}
-          style={[styles.action, index > 0 && styles.divided]}
+          style={styles.action}
           onPress={() => {
             Haptics.selectionAsync().catch(() => {});
             router.push(action.href);
@@ -49,8 +49,8 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
           accessibilityRole="button"
           accessibilityLabel={action.label}
         >
-          <Icon icon={action.icon} size={20} color={heroCard.background} weight="bold" />
-          <Text variant="label" color={heroCard.background} numberOfLines={1}>
+          <Icon icon={action.icon} size={20} color={heroCard.textPrimary} weight="bold" />
+          <Text variant="label" color={heroCard.textPrimary} numberOfLines={1}>
             {action.label}
           </Text>
         </BentoPressable>
@@ -59,15 +59,16 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
   );
 });
 
-const createStyles = ({ spacing, radius, alpha }: ThemeContextType, heroCard: HeroCardPalette) =>
+const createStyles = ({ spacing, radius }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
-    row: {
-      flexDirection: 'row',
-      marginTop: spacing('1'),
+    row: { flexDirection: 'row', gap: spacing('2'), marginTop: spacing('1') },
+    action: {
+      flex: 1,
+      alignItems: 'center',
+      gap: spacing('1.5'),
       paddingVertical: spacing('3'),
-      borderRadius: radius('xl'),
-      backgroundColor: heroCard.textPrimary,
+      paddingHorizontal: spacing('1'),
+      borderRadius: radius('lg'),
+      backgroundColor: heroCard.actionFill,
     },
-    action: { flex: 1, alignItems: 'center', gap: spacing('1.5'), paddingHorizontal: spacing('1') },
-    divided: { borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: alpha(heroCard.background, 'medium') },
   });

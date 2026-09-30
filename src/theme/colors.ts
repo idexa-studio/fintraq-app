@@ -126,6 +126,8 @@ export type HeroCardPalette = {
   expense: string;
   decoOverlay: string;
   glowLight: string;
+  /** Frosted white fill for controls sitting on the card (quick actions). */
+  actionFill: string;
 };
 
 export function getHeroColors(
@@ -146,6 +148,7 @@ export function getHeroColors(
       expense: '#FF8F8F', // Bright coral/red indicator
       decoOverlay: 'rgba(255, 255, 255, 0.08)',
       glowLight: 'rgba(255, 255, 255, 0.03)',
+      actionFill: 'rgba(255, 255, 255, 0.14)',
     };
   } else {
     return {
@@ -158,6 +161,7 @@ export function getHeroColors(
       expense: '#9E0000', // Dark red indicator
       decoOverlay: 'rgba(0, 0, 0, 0.06)',
       glowLight: 'rgba(255, 255, 255, 0.04)',
+      actionFill: 'rgba(255, 255, 255, 0.4)',
     };
   }
 }
