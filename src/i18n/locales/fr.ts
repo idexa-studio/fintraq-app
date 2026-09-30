@@ -2,7 +2,7 @@ import type { Translation } from './types';
 
 const fr: Translation = {
   common: {
-    edit: 'Modifier', delete: 'Supprimer',
+    edit: 'Modifier', delete: 'Supprimer', trendUp: 'En hausse de {{value}} pour cent', trendDown: 'En baisse de {{value}} pour cent',
     back: 'Retour',
     cancel: 'Annuler',
     ok: 'OK',
@@ -254,8 +254,7 @@ const fr: Translation = {
     noHighlights: 'Aucun fait marquant pour le moment', noHighlightsHint: 'Ajoutez des dépenses pour faire apparaître les principaux enseignements.', trend: 'Tendance des dépenses', noTrend: 'Aucune donnée de tendance pour le moment', noTrendHint: 'Ajoutez des revenus ou des dépenses pour voir votre tendance.',
     categoryBreakdown: 'Répartition par catégorie', groupsCount: '{{count}} groupes', personBreakdown: 'Répartition par personne', personsCount: '{{count}} personnes', balanceDistribution: 'Répartition du solde', accountsCount: '{{count}} comptes',
     noCurrencyAccounts: 'Aucun compte en {{currency}}', noCurrencyAccountsHint: 'Ajoutez un compte dans cette devise pour voir la répartition du solde.', weeklyPattern: 'Rythme hebdomadaire', averageByDay: 'Moyenne par jour', noWeekly: 'Aucun rythme hebdomadaire pour le moment', noWeeklyHint: 'Avec plus de transactions, votre rythme de dépenses par jour apparaîtra.',
-    low: 'Faible', mid: 'Moyen', high: 'Élevé', spendingPatterns: 'Habitudes de dépenses', monthEndForecast: 'Prévision de fin de mois', dowInsight: 'Vous dépensez le plus le {{peak}} et le moins le {{lowest}}.',
-    noExpenseData: 'Aucune donnée de dépenses', total: 'Total', noDataPeriod: 'Aucune donnée pour la période',
+    low: 'Faible', mid: 'Moyen', high: 'Élevé', spendingPatterns: 'Habitudes de dépenses', monthEndForecast: 'Prévision de fin de mois', dowInsight: 'Vous dépensez le plus le {{peak}} et le moins le {{lowest}}.', noDataPeriod: 'Aucune donnée pour la période', noCategoryData: 'Rien pour cette période', noCategoryDataHint: 'Ajoutez des transactions de ce type pour voir où va votre argent.',
   },
   export: {
     title: 'Exporter en CSV', last7: '7 derniers jours', last30: '30 derniers jours', last90: '90 derniers jours', last12m: '12 derniers mois', all: 'Tout', income: 'Revenu', expense: 'Dépense', transfer: 'Virement',

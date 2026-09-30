@@ -2,7 +2,7 @@ import type { Translation } from './types';
 
 const hi: Translation = {
   common: {
-    edit: 'संपादित करें', delete: 'हटाएँ',
+    edit: 'संपादित करें', delete: 'हटाएँ', trendUp: '{{value}} प्रतिशत बढ़ा', trendDown: '{{value}} प्रतिशत घटा',
     back: 'वापस',
     cancel: 'रद्द करें',
     ok: 'ठीक है',
@@ -254,8 +254,7 @@ const hi: Translation = {
     noHighlights: 'अभी कोई मुख्य बात नहीं', noHighlightsHint: 'खर्च के मुख्य रुझान देखने के लिए खर्च के लेन-देन जोड़ें।', trend: 'खर्च का रुझान', noTrend: 'अभी रुझान का डेटा नहीं', noTrendHint: 'खर्च का रुझान देखने के लिए आय या खर्च के लेन-देन जोड़ें।',
     categoryBreakdown: 'श्रेणी विभाजन', groupsCount: '{{count}} समूह', personBreakdown: 'व्यक्ति विभाजन', personsCount: '{{count}} लोग', balanceDistribution: 'बैलेंस वितरण', accountsCount: '{{count}} खाते',
     noCurrencyAccounts: 'कोई {{currency}} खाता नहीं', noCurrencyAccountsHint: 'बैलेंस वितरण देखने के लिए इस मुद्रा में खाता जोड़ें।', weeklyPattern: 'साप्ताहिक पैटर्न', averageByDay: 'दिन के अनुसार औसत', noWeekly: 'अभी साप्ताहिक पैटर्न नहीं', noWeeklyHint: 'ज़्यादा लेन-देन से दिन के अनुसार आपके खर्च का ढर्रा दिखेगा।',
-    low: 'कम', mid: 'मध्यम', high: 'ज़्यादा', spendingPatterns: 'खर्च के पैटर्न', monthEndForecast: 'महीने के अंत का अनुमान', dowInsight: 'सबसे ज़्यादा खर्च {{peak}} को, सबसे कम {{lowest}} को।',
-    noExpenseData: 'खर्च का डेटा नहीं', total: 'कुल', noDataPeriod: 'इस अवधि का डेटा नहीं',
+    low: 'कम', mid: 'मध्यम', high: 'ज़्यादा', spendingPatterns: 'खर्च के पैटर्न', monthEndForecast: 'महीने के अंत का अनुमान', dowInsight: 'सबसे ज़्यादा खर्च {{peak}} को, सबसे कम {{lowest}} को।', noDataPeriod: 'इस अवधि का डेटा नहीं', noCategoryData: 'इस अवधि में कुछ नहीं', noCategoryDataHint: 'यह देखने के लिए कि पैसा कहाँ जाता है, इस प्रकार के लेन-देन जोड़ें।',
   },
   export: {
     title: 'CSV एक्सपोर्ट', last7: 'पिछले 7 दिन', last30: 'पिछले 30 दिन', last90: 'पिछले 90 दिन', last12m: 'पिछले 12 महीने', all: 'सभी', income: 'आय', expense: 'खर्च', transfer: 'ट्रांसफ़र',

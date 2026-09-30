@@ -2,7 +2,7 @@ import type { Translation } from './types';
 
 const pt: Translation = {
   common: {
-    edit: 'Editar', delete: 'Eliminar',
+    edit: 'Editar', delete: 'Eliminar', trendUp: 'Alta de {{value}} por cento', trendDown: 'Queda de {{value}} por cento',
     back: 'Voltar',
     cancel: 'Cancelar',
     ok: 'OK',
@@ -254,8 +254,7 @@ const pt: Translation = {
     noHighlights: 'Ainda não há destaques', noHighlightsHint: 'Adicione despesas para ver os principais dados sobre seus gastos.', trend: 'Tendência de gastos', noTrend: 'Ainda não há dados de tendência', noTrendHint: 'Adicione receitas ou despesas para ver sua tendência de gastos.',
     categoryBreakdown: 'Divisão por categoria', groupsCount: '{{count}} grupos', personBreakdown: 'Divisão por pessoa', personsCount: '{{count}} pessoas', balanceDistribution: 'Distribuição do saldo', accountsCount: '{{count}} contas',
     noCurrencyAccounts: 'Nenhuma conta em {{currency}}', noCurrencyAccountsHint: 'Adicione uma conta nesta moeda para ver a distribuição do saldo.', weeklyPattern: 'Padrão semanal', averageByDay: 'Média por dia', noWeekly: 'Ainda não há padrão semanal', noWeeklyHint: 'Com mais transações, o ritmo dos seus gastos por dia aparecerá.',
-    low: 'Baixo', mid: 'Médio', high: 'Alto', spendingPatterns: 'Padrões de gastos', monthEndForecast: 'Previsão de fim de mês', dowInsight: 'Dia de maior gasto: {{peak}}. Dia de menor gasto: {{lowest}}.',
-    noExpenseData: 'Sem dados de despesas', total: 'Total', noDataPeriod: 'Sem dados no período',
+    low: 'Baixo', mid: 'Médio', high: 'Alto', spendingPatterns: 'Padrões de gastos', monthEndForecast: 'Previsão de fim de mês', dowInsight: 'Dia de maior gasto: {{peak}}. Dia de menor gasto: {{lowest}}.', noDataPeriod: 'Sem dados no período', noCategoryData: 'Nada neste período', noCategoryDataHint: 'Adicione transações deste tipo para ver para onde vai seu dinheiro.',
   },
   export: {
     title: 'Exportar CSV', last7: 'Últimos 7 dias', last30: 'Últimos 30 dias', last90: 'Últimos 90 dias', last12m: 'Últimos 12 meses', all: 'Todos', income: 'Receita', expense: 'Despesa', transfer: 'Transferência',

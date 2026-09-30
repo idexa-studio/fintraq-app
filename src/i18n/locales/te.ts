@@ -2,7 +2,7 @@ import type { Translation } from './types';
 
 const te: Translation = {
   common: {
-    edit: 'సవరించు', delete: 'తొలగించు',
+    edit: 'సవరించు', delete: 'తొలగించు', trendUp: '{{value}} శాతం పెరిగింది', trendDown: '{{value}} శాతం తగ్గింది',
     back: 'వెనుకకు',
     cancel: 'రద్దు చేయి',
     ok: 'సరే',
@@ -254,8 +254,7 @@ const te: Translation = {
     noHighlights: 'ఇంకా ముఖ్యాంశాలు లేవు', noHighlightsHint: 'ముఖ్య ఖర్చు అంతర్దృష్టులను చూడటానికి ఖర్చు లావాదేవీలను జోడించండి.', trend: 'ఖర్చు ధోరణి', noTrend: 'ఇంకా ధోరణి డేటా లేదు', noTrendHint: 'మీ ఖర్చు ధోరణిని చూడటానికి ఆదాయం లేదా ఖర్చు లావాదేవీలను జోడించండి.',
     categoryBreakdown: 'వర్గాల వారీ విభజన', groupsCount: '{{count}} సమూహాలు', personBreakdown: 'వ్యక్తుల వారీ విభజన', personsCount: '{{count}} వ్యక్తులు', balanceDistribution: 'బ్యాలెన్స్ పంపిణీ', accountsCount: '{{count}} ఖాతాలు',
     noCurrencyAccounts: '{{currency}} ఖాతాలు లేవు', noCurrencyAccountsHint: 'బ్యాలెన్స్ పంపిణీని చూడటానికి ఈ కరెన్సీలో ఖాతాను జోడించండి.', weeklyPattern: 'వారపు నమూనా', averageByDay: 'రోజు వారీ సగటు', noWeekly: 'ఇంకా వారపు నమూనా లేదు', noWeeklyHint: 'మరిన్ని లావాదేవీలు ఉంటే రోజు వారీ మీ ఖర్చు లయ కనిపిస్తుంది.',
-    low: 'తక్కువ', mid: 'మధ్యస్థం', high: 'ఎక్కువ', spendingPatterns: 'ఖర్చు నమూనాలు', monthEndForecast: 'నెలాఖరు అంచనా', dowInsight: 'ఎక్కువ ఖర్చు {{peak}}, తక్కువ {{lowest}}.',
-    noExpenseData: 'ఖర్చు డేటా లేదు', total: 'మొత్తం', noDataPeriod: 'ఈ కాలానికి డేటా లేదు',
+    low: 'తక్కువ', mid: 'మధ్యస్థం', high: 'ఎక్కువ', spendingPatterns: 'ఖర్చు నమూనాలు', monthEndForecast: 'నెలాఖరు అంచనా', dowInsight: 'ఎక్కువ ఖర్చు {{peak}}, తక్కువ {{lowest}}.', noDataPeriod: 'ఈ కాలానికి డేటా లేదు', noCategoryData: 'ఈ వ్యవధిలో ఏమీ లేదు', noCategoryDataHint: 'డబ్బు ఎక్కడికి వెళ్తుందో చూడటానికి ఈ రకమైన లావాదేవీలను జోడించండి.',
   },
   export: {
     title: 'CSV ఎగుమతి', last7: 'గత 7 రోజులు', last30: 'గత 30 రోజులు', last90: 'గత 90 రోజులు', last12m: 'గత 12 నెలలు', all: 'అన్నీ', income: 'ఆదాయం', expense: 'ఖర్చు', transfer: 'బదిలీ',

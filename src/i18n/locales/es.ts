@@ -2,7 +2,7 @@ import type { Translation } from './types';
 
 const es: Translation = {
   common: {
-    edit: 'Editar', delete: 'Eliminar',
+    edit: 'Editar', delete: 'Eliminar', trendUp: 'Sube un {{value}} por ciento', trendDown: 'Baja un {{value}} por ciento',
     back: 'Atrás',
     cancel: 'Cancelar',
     ok: 'Aceptar',
@@ -254,8 +254,7 @@ const es: Translation = {
     noHighlights: 'Aún no hay destacados', noHighlightsHint: 'Añade gastos para ver los datos clave de tu gasto.', trend: 'Tendencia de gasto', noTrend: 'Aún no hay datos de tendencia', noTrendHint: 'Añade ingresos o gastos para ver tu tendencia de gasto.',
     categoryBreakdown: 'Desglose por categoría', groupsCount: '{{count}} grupos', personBreakdown: 'Desglose por persona', personsCount: '{{count}} personas', balanceDistribution: 'Distribución del saldo', accountsCount: '{{count}} cuentas',
     noCurrencyAccounts: 'No hay cuentas en {{currency}}', noCurrencyAccountsHint: 'Añade una cuenta en esta moneda para ver la distribución del saldo.', weeklyPattern: 'Patrón semanal', averageByDay: 'Media por día', noWeekly: 'Aún no hay patrón semanal', noWeeklyHint: 'Con más transacciones verás tu ritmo de gasto por día.',
-    low: 'Bajo', mid: 'Medio', high: 'Alto', spendingPatterns: 'Patrones de gasto', monthEndForecast: 'Previsión a fin de mes', dowInsight: 'Gastas más el {{peak}} y menos el {{lowest}}.',
-    noExpenseData: 'Sin datos de gastos', total: 'Total', noDataPeriod: 'Sin datos en el periodo',
+    low: 'Bajo', mid: 'Medio', high: 'Alto', spendingPatterns: 'Patrones de gasto', monthEndForecast: 'Previsión a fin de mes', dowInsight: 'Gastas más el {{peak}} y menos el {{lowest}}.', noDataPeriod: 'Sin datos en el periodo', noCategoryData: 'No hay nada en este periodo', noCategoryDataHint: 'Añade transacciones de este tipo para ver a dónde va tu dinero.',
   },
   export: {
     title: 'Exportar CSV', last7: 'Últimos 7 días', last30: 'Últimos 30 días', last90: 'Últimos 90 días', last12m: 'Últimos 12 meses', all: 'Todo', income: 'Ingreso', expense: 'Gasto', transfer: 'Transferencia',

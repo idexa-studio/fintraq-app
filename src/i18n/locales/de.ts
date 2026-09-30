@@ -2,7 +2,7 @@ import type { Translation } from './types';
 
 const de: Translation = {
   common: {
-    edit: 'Bearbeiten', delete: 'Löschen',
+    edit: 'Bearbeiten', delete: 'Löschen', trendUp: '{{value}} Prozent mehr', trendDown: '{{value}} Prozent weniger',
     back: 'Zurück',
     cancel: 'Abbrechen',
     ok: 'OK',
@@ -254,8 +254,7 @@ const de: Translation = {
     noHighlights: 'Noch keine Highlights', noHighlightsHint: 'Füge Ausgaben hinzu, um wichtige Erkenntnisse zu deinen Ausgaben zu sehen.', trend: 'Ausgabentrend', noTrend: 'Noch keine Trenddaten', noTrendHint: 'Füge Einnahmen oder Ausgaben hinzu, um deinen Ausgabentrend zu sehen.',
     categoryBreakdown: 'Kategorieaufschlüsselung', groupsCount: '{{count}} Gruppen', personBreakdown: 'Aufschlüsselung nach Personen', personsCount: '{{count}} Personen', balanceDistribution: 'Guthabenverteilung', accountsCount: '{{count}} Konten',
     noCurrencyAccounts: 'Keine {{currency}}-Konten', noCurrencyAccountsHint: 'Füge ein Konto in dieser Währung hinzu, um die Guthabenverteilung zu sehen.', weeklyPattern: 'Wochenmuster', averageByDay: 'Durchschnitt pro Tag', noWeekly: 'Noch kein Wochenmuster', noWeeklyHint: 'Mit mehr Transaktionen wird dein Ausgabenrhythmus pro Tag sichtbar.',
-    low: 'Niedrig', mid: 'Mittel', high: 'Hoch', spendingPatterns: 'Ausgabenmuster', monthEndForecast: 'Prognose zum Monatsende', dowInsight: 'Am meisten gibst du am {{peak}} aus, am wenigsten am {{lowest}}.',
-    noExpenseData: 'Keine Ausgabendaten', total: 'Gesamt', noDataPeriod: 'Keine Daten für den Zeitraum',
+    low: 'Niedrig', mid: 'Mittel', high: 'Hoch', spendingPatterns: 'Ausgabenmuster', monthEndForecast: 'Prognose zum Monatsende', dowInsight: 'Am meisten gibst du am {{peak}} aus, am wenigsten am {{lowest}}.', noDataPeriod: 'Keine Daten für den Zeitraum', noCategoryData: 'Nichts in diesem Zeitraum', noCategoryDataHint: 'Füge Transaktionen dieser Art hinzu, um zu sehen, wohin dein Geld fließt.',
   },
   export: {
     title: 'CSV exportieren', last7: 'Letzte 7 Tage', last30: 'Letzte 30 Tage', last90: 'Letzte 90 Tage', last12m: 'Letzte 12 Monate', all: 'Alle', income: 'Einnahme', expense: 'Ausgabe', transfer: 'Überweisung',

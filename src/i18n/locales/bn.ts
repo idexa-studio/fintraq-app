@@ -2,7 +2,7 @@ import type { Translation } from './types';
 
 const bn: Translation = {
   common: {
-    edit: 'সম্পাদনা', delete: 'মুছুন',
+    edit: 'সম্পাদনা', delete: 'মুছুন', trendUp: '{{value}} শতাংশ বেড়েছে', trendDown: '{{value}} শতাংশ কমেছে',
     back: 'পিছনে',
     cancel: 'বাতিল',
     ok: 'ঠিক আছে',
@@ -254,8 +254,7 @@ const bn: Translation = {
     noHighlights: 'এখনও কোনো হাইলাইট নেই', noHighlightsHint: 'ব্যয়ের মূল তথ্য দেখতে ব্যয়ের লেনদেন যোগ করুন।', trend: 'ব্যয়ের প্রবণতা', noTrend: 'এখনও প্রবণতার ডেটা নেই', noTrendHint: 'আপনার ব্যয়ের প্রবণতা দেখতে আয় বা ব্যয়ের লেনদেন যোগ করুন।',
     categoryBreakdown: 'বিভাগ অনুযায়ী বিভাজন', groupsCount: '{{count}}টি গ্রুপ', personBreakdown: 'ব্যক্তি অনুযায়ী বিভাজন', personsCount: '{{count}} জন ব্যক্তি', balanceDistribution: 'ব্যালেন্স বণ্টন', accountsCount: '{{count}}টি অ্যাকাউন্ট',
     noCurrencyAccounts: 'কোনো {{currency}} অ্যাকাউন্ট নেই', noCurrencyAccountsHint: 'ব্যালেন্স বণ্টন দেখতে এই মুদ্রার একটি অ্যাকাউন্ট যোগ করুন।', weeklyPattern: 'সাপ্তাহিক ধরন', averageByDay: 'দিন অনুযায়ী গড়', noWeekly: 'এখনও সাপ্তাহিক ধরন নেই', noWeeklyHint: 'আরও লেনদেন হলে দিন অনুযায়ী আপনার ব্যয়ের ছন্দ দেখা যাবে।',
-    low: 'কম', mid: 'মাঝারি', high: 'বেশি', spendingPatterns: 'ব্যয়ের ধরন', monthEndForecast: 'মাসের শেষের পূর্বাভাস', dowInsight: 'সবচেয়ে বেশি খরচ {{peak}}, সবচেয়ে কম {{lowest}}।',
-    noExpenseData: 'ব্যয়ের ডেটা নেই', total: 'মোট', noDataPeriod: 'এই সময়কালের ডেটা নেই',
+    low: 'কম', mid: 'মাঝারি', high: 'বেশি', spendingPatterns: 'ব্যয়ের ধরন', monthEndForecast: 'মাসের শেষের পূর্বাভাস', dowInsight: 'সবচেয়ে বেশি খরচ {{peak}}, সবচেয়ে কম {{lowest}}।', noDataPeriod: 'এই সময়কালের ডেটা নেই', noCategoryData: 'এই সময়ে কিছু নেই', noCategoryDataHint: 'টাকা কোথায় যাচ্ছে দেখতে এই ধরনের লেনদেন যোগ করুন।',
   },
   export: {
     title: 'CSV এক্সপোর্ট', last7: 'গত ৭ দিন', last30: 'গত ৩০ দিন', last90: 'গত ৯০ দিন', last12m: 'গত ১২ মাস', all: 'সব', income: 'আয়', expense: 'ব্যয়', transfer: 'ট্রান্সফার',

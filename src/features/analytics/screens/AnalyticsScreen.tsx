@@ -1,835 +1,284 @@
-import { Screen } from '@/src/components/ui/Screen';
-import { SkeletonScreen } from '@/src/components/ui';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Icon } from '@/src/components/ui/Icon';
-import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { MoneyText } from '@/src/components/ui/MoneyText';
-import { PremiumGuard } from '@/src/features/premium/components/PremiumGuard';
-import { SectionHeader } from '@/src/components/ui/SectionHeader';
+import { Calendar01Icon, ChartLineData01Icon, Tag01Icon, Wallet05Icon } from '@hugeicons/core-free-icons';
+import { useRouter } from 'expo-router';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { EmptyState, IconAvatar, PersonAvatar, Screen, SectionHeader, SegmentedControl, SkeletonScreen, StatTile, Text } from '@/src/components/ui';
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
-import { AccountType } from '@/src/types';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
+import { AnalyticsControls } from '@/src/features/analytics/components/AnalyticsControls';
+import { AnalyticsHighlights } from '@/src/features/analytics/components/AnalyticsHighlights';
+import { ChartLegend } from '@/src/features/analytics/components/ChartLegend';
 import { DowChart } from '@/src/features/analytics/components/DowChart';
-import { LinearAreaChart, type BarBucket } from '@/src/features/analytics/components/LinearAreaChart';
-import {
-  useAnalyticsBiggestExpense,
-  useAnalyticsCategoryBreakdown,
-  useAnalyticsDailyData,
-  useAnalyticsDow,
-  useAnalyticsIncomeCategoryBreakdown,
-  useAnalyticsMonthlyData,
-  useAnalyticsPersonBreakdown,
-  useAnalyticsPreviousPeriod,
-} from '@/src/features/analytics/hooks/useAnalyticsData';
+import { LinearAreaChart } from '@/src/features/analytics/components/LinearAreaChart';
+import { ShareBreakdown, ShareItem } from '@/src/features/analytics/components/ShareBreakdown';
+import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/analytics/constants';
+import { useAnalyticsOverview } from '@/src/features/analytics/hooks/useAnalyticsOverview';
+import { PremiumGuard } from '@/src/features/premium/components/PremiumGuard';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import type { AccountType } from '@/src/types';
+import { withShares } from '@/src/utils/analytics';
 import { colorNumberToHex } from '@/src/utils/format';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
-import {
-  ArrowDown01Icon,
-  ArrowUp01Icon,
-  Calendar01Icon,
-  ChartLineData01Icon,
-  LockPasswordIcon,
-  SparklesIcon,
-  Tag01Icon,
-  Wallet05Icon,
-} from '@hugeicons/core-free-icons';
-import type { IconSource } from '@/src/components/ui/Icon';
-import { format } from 'date-fns';
-import { useRouter } from 'expo-router';
-import React, { useCallback, useMemo } from 'react';
-import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
-import { Text } from '@/src/components/ui/Text';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { TFunction } from 'i18next';
-import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
 
-const RANGES = [
-  { label: '7D', days: 7 },
-  { label: '30D', days: 30 },
-  { label: '90D', days: 90 },
-  { label: '12M', days: 365 },
-] as const;
-
-type RangeDays = (typeof RANGES)[number]['days'];
-
-const MONTH_KEYS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] as const;
-const DOW_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'] as const;
-const shortMonth = (index: number, t: TFunction): string | undefined => {
-  const key = MONTH_KEYS[index];
-  return key ? t(`calendar.months.${key}`) : undefined;
-};
-
-const fmtDayLabel = (iso: string, rangeDays: number, t: TFunction): string => {
-  const parts = iso.split('-');
-  if (rangeDays <= 30) return `${parts[2]}/${shortMonth(Number(parts[1]) - 1, t)}`;
-  return shortMonth(Number(parts[1]) - 1, t) ?? '';
-};
-
-const fmtMonthLabel = (ym: string, t: TFunction): string => {
-  const [, m] = ym.split('-');
-  return shortMonth(Number(m) - 1, t) ?? ym;
-};
-
-function EmptyState({ icon, title, subtitle }: { icon: IconSource; title: string; subtitle: string }) {
-  const theme = useTheme();
-  const { colors, typography, spacing, radius, layout } = theme;
-  return (
-    <View style={{
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('4'),
-      marginHorizontal: layout.screenPadding,
-    }}>
-      <View style={{
-        width: 40, height: 40,
-        borderRadius: radius('xl'),
-        backgroundColor: alpha(colors.primary, 'subtle'),
-        justifyContent: 'center', alignItems: 'center',
-      }}>
-        <Icon icon={icon} size={18} color={colors.primaryInk} />
-      </View>
-      <View style={{ flex: 1, gap: 2 }}>
-        <Text style={{ fontFamily: typography.styles.rowLabel.fontFamily, ...typography.metrics.sm, color: colors.text }}>
-          {title}
-        </Text>
-        <Text style={{ fontFamily: typography.fonts.regular, ...typography.metrics.xs, color: colors.textMuted,}}>
-          {subtitle}
-        </Text>
-      </View>
-    </View>
-  );
-}
-
-function DeltaBadge({ delta, positiveIsGood }: { delta: number | null; positiveIsGood: boolean }) {
-  const { colors, typography, spacing, radius } = useTheme();
-  if (delta === null) return null;
-  const isPositive = delta >= 0;
-  const isGood = positiveIsGood ? isPositive : !isPositive;
-  const color = isGood ? colors.success : colors.danger;
-  const sign = isPositive ? '+' : '';
-  return (
-    <View style={{
-      flexDirection: 'row', alignItems: 'center', gap: 2,
-      backgroundColor: alpha(color, 'subtle'),
-      borderRadius: radius('full'),
-      paddingHorizontal: spacing('2'),
-      paddingVertical: 3,
-      alignSelf: 'flex-start',
-    }}>
-      <Icon icon={isPositive ? ArrowUp01Icon : ArrowDown01Icon} size={10} color={color} />
-      <Text style={{ fontFamily: typography.styles.badge.fontFamily, ...typography.metrics.xxs, color }}>
-        {sign}{Math.abs(delta).toFixed(0)}%
-      </Text>
-    </View>
-  );
-}
+type CategoryTab = 'expense' | 'income';
 
 export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
-  const { t } = useTranslation();
   const { colors, layout, spacing } = theme;
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const { width: windowWidth } = useWindowDimensions();
   const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
-  const { width: screenWidth } = useWindowDimensions();
-
-  const gridCellWidth = useMemo(
-    () => (screenWidth - layout.screenPadding * 2 - spacing('2')) / 2,
-    [screenWidth, layout, spacing],
-  );
-  const cardCellWidth = useMemo(
-    () => (screenWidth - layout.screenPadding * 2 - spacing('4') * 2 - spacing('2')) / 2,
-    [screenWidth, layout, spacing],
-  );
-  const chartWidth = screenWidth - layout.screenPadding * 2 - spacing('3.5') * 2;
-
   const router = useRouter();
   const { isPremium } = usePremium();
   const { profile } = useSettings();
+  const { data: accounts = [] } = useAccounts();
 
-  const { data: accounts } = useAccounts();
-  const currencyKeys = useMemo(() => {
-    const keys = Array.from(new Set((accounts ?? []).map(a => a.currency)));
-    const list = keys.length > 0 ? keys : [DEFAULT_CURRENCY];
-    return sortCurrenciesWithDefault(list, profile.defaultCurrency);
+  const currencies = useMemo(() => {
+    const unique = Array.from(new Set(accounts.map((a) => a.currency)));
+    return sortCurrenciesWithDefault(unique.length > 0 ? unique : [DEFAULT_CURRENCY], profile.defaultCurrency);
   }, [accounts, profile.defaultCurrency]);
 
-  const [selectedCurrency, setSelectedCurrency] = React.useState<string>(currencyKeys[0]);
-  const [selectedRange, setSelectedRange] = React.useState<RangeDays>(7);
-  const [catTab, setCatTab] = React.useState<'expense' | 'income'>('expense');
+  const [chosenCurrency, setCurrency] = useState<string | null>(null);
+  // Falls back when the choice disappears (e.g. its last account was deleted).
+  const currency = chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : currencies[0];
+  const [range, setRange] = useState<RangeDays>(FREE_RANGE_DAYS);
+  const [categoryTab, setCategoryTab] = useState<CategoryTab>('expense');
 
-  React.useEffect(() => {
-    if (!currencyKeys.includes(selectedCurrency)) setSelectedCurrency(currencyKeys[0]);
-  }, [currencyKeys, selectedCurrency]);
+  const overview = useAnalyticsOverview(currency, range);
 
-  const { data: dailyData, isLoading: dailyLoading } = useAnalyticsDailyData(selectedCurrency, selectedRange);
-  const { data: monthlyData, isLoading: monthlyLoading } = useAnalyticsMonthlyData(selectedCurrency);
-  const { data: categoryData, isLoading: catLoading } = useAnalyticsCategoryBreakdown(selectedCurrency, selectedRange);
-  const { data: incomeCategoryData } = useAnalyticsIncomeCategoryBreakdown(selectedCurrency, selectedRange);
-  const { data: dowData } = useAnalyticsDow(selectedCurrency, selectedRange);
-  const { data: personBreakdown } = useAnalyticsPersonBreakdown(selectedCurrency, selectedRange);
-  const { data: prevPeriod } = useAnalyticsPreviousPeriod(selectedCurrency, selectedRange);
-  const { data: biggestExpense } = useAnalyticsBiggestExpense(selectedCurrency, selectedRange);
+  const openPremium = useCallback(() => router.push('/premium'), [router]);
+  const openCategory = useCallback((categoryId: number) => router.push(`/transactions?categoryId=${categoryId}`), [router]);
 
-  const isLoading = dailyLoading || monthlyLoading || catLoading;
+  const categoryItems = useMemo((): ShareItem[] => {
+    const type = categoryTab === 'expense' ? 'DR' : 'CR';
+    const source = categoryTab === 'expense' ? overview.expenseCategories : overview.incomeCategories;
+    return withShares(source).map((c) => {
+      const color = colorNumberToHex(c.color);
+      return {
+        key: String(c.id),
+        name: c.name,
+        amount: c.amount,
+        currency,
+        share: c.share,
+        color,
+        type,
+        leading: <IconAvatar icon={resolveIcon(c.icon, Tag01Icon)} color={color} size={28} iconSize={13} />,
+        onPress: () => openCategory(c.id),
+      };
+    });
+  }, [categoryTab, overview.expenseCategories, overview.incomeCategories, currency, openCategory]);
 
-  const summary = useMemo(() => {
-    const src = selectedRange === 365 ? monthlyData : dailyData;
-    if (!src || src.length === 0) return { income: 0, expense: 0, net: 0 };
-    const income = src.reduce((s, d) => s + d.income, 0);
-    const expense = src.reduce((s, d) => s + d.expense, 0);
-    return { income, expense, net: income - expense };
-  }, [dailyData, monthlyData, selectedRange]);
-
-  const deltas = useMemo(() => {
-    if (!prevPeriod) return { income: null, expense: null };
-    return {
-      income: prevPeriod.income > 0 ? ((summary.income - prevPeriod.income) / prevPeriod.income) * 100 : null,
-      expense: prevPeriod.expense > 0 ? ((summary.expense - prevPeriod.expense) / prevPeriod.expense) * 100 : null,
-    };
-  }, [prevPeriod, summary]);
-
-  const dailyAvg = useMemo(() => summary.expense / selectedRange, [summary.expense, selectedRange]);
-
-  const forecast = useMemo(() => {
-    const now = new Date();
-    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    const daysLeft = daysInMonth - now.getDate();
-    return dailyAvg * daysLeft;
-  }, [dailyAvg]);
-
-  const areaData = useMemo((): BarBucket[] => {
-    if (selectedRange === 365) {
-      return (monthlyData ?? []).map(m => ({ label: fmtMonthLabel(m.month, t), income: m.income, expense: m.expense }));
-    }
-    return (dailyData ?? []).map(d => ({ label: fmtDayLabel(d.day, selectedRange, t), income: d.income, expense: d.expense }));
-  }, [dailyData, monthlyData, selectedRange, t]);
-
-  const rangeSubtitle = useMemo(() => {
-    const now = new Date();
-    if (selectedRange === 365) {
-      const start = new Date();
-      start.setDate(1);
-      start.setMonth(start.getMonth() - 11);
-      return `${format(start, 'MMM yyyy')} – ${format(now, 'MMM yyyy')}`;
-    }
-    const start = new Date();
-    start.setDate(start.getDate() - selectedRange + 1);
-    return `${format(start, 'd MMM yyyy')} – ${format(now, 'd MMM yyyy')}`;
-  }, [selectedRange]);
-
-  const currencyAccounts = useMemo(
-    () => (accounts ?? []).filter(a => a.currency === selectedCurrency),
-    [accounts, selectedCurrency],
+  const personItems = useMemo(
+    (): ShareItem[] =>
+      withShares(overview.people).map((p) => {
+        const color = colorNumberToHex(p.color);
+        return {
+          key: String(p.id),
+          name: p.name,
+          amount: p.amount,
+          currency,
+          share: p.share,
+          color,
+          type: 'DR',
+          leading: <PersonAvatar name={p.name} color={color} size={28} />,
+        };
+      }),
+    [overview.people, currency],
   );
 
-  const accountDistribution = useMemo(() => {
-    const totalBalance = currencyAccounts.reduce((s, a) => s + Math.max(a.balance, 0), 0);
-    return currencyAccounts
-      .map(a => ({
-        ...a,
-        hex: colorNumberToHex(a.color),
-        share: totalBalance > 0 ? Math.max(a.balance, 0) / totalBalance : 0,
-      }))
-      .sort((a, b) => b.balance - a.balance);
-  }, [currencyAccounts]);
-
-  const dowInsight = useMemo(() => {
-    if (!dowData || dowData.length < 2) return null;
-    const withData = dowData.filter(d => d.total > 0);
-    if (withData.length < 2) return null;
-    const peak = withData.reduce((a, b) => a.total > b.total ? a : b);
-    const lowest = withData.reduce((a, b) => a.total < b.total ? a : b);
-    if (peak.dow === lowest.dow) return null;
-    return t('analytics.dowInsight', { peak: t(`calendar.days.${DOW_KEYS[peak.dow]}`), lowest: t(`calendar.days.${DOW_KEYS[lowest.dow]}`) });
-  }, [dowData, t]);
-
-  const activeCategoryData = catTab === 'expense' ? (categoryData ?? []) : (incomeCategoryData ?? []);
-  const topCategory = (categoryData ?? [])[0] ?? null;
-
-  const handleCurrencySelect = useCallback((c: string) => setSelectedCurrency(c), []);
-  const handleRangeSelect = useCallback((d: RangeDays) => setSelectedRange(d), []);
-  const navigateToPremium = useCallback(() => router.push('/premium'), [router]);
-  const navigateToCategoryTransactions = useCallback(
-    (categoryId: number) => router.push(`/transactions?categoryId=${categoryId}`),
-    [router],
+  const accountItems = useMemo(
+    (): ShareItem[] =>
+      withShares(accounts.filter((a) => a.currency === currency).map((a) => ({ ...a, amount: a.balance })))
+        .sort((a, b) => b.amount - a.amount)
+        .map((a) => {
+          const color = colorNumberToHex(a.color);
+          return {
+            key: String(a.id),
+            name: a.name,
+            amount: a.amount,
+            currency: a.currency,
+            share: a.share,
+            color,
+            leading: <IconAvatar icon={resolveAccountTypeIcon(a.accountType as AccountType | null)} color={color} size={28} iconSize={13} />,
+          };
+        }),
+    [accounts, currency],
   );
+
+  const categoryTabs = useMemo(
+    () => [
+      { value: 'expense' as const, label: t('analytics.expenses') },
+      { value: 'income' as const, label: t('analytics.income') },
+    ],
+    [t],
+  );
+
+  const rangeLabel = ANALYTICS_RANGES.find((r) => r.days === range)?.label;
+  const chartWidth = windowWidth - layout.screenPadding * 2 - spacing('4') * 2;
+
+  if (overview.isLoading) {
+    return (
+      <Screen header={{ title: t('common.analyticsTitle') }} variant="fixed" edges={['top']}>
+        <SkeletonScreen />
+      </Screen>
+    );
+  }
 
   return (
     <Screen header={{ title: t('common.analyticsTitle') }} variant="fixed" edges={['top']}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <AnalyticsControls
+          currencies={currencies}
+          currency={currency}
+          onCurrencyChange={setCurrency}
+          range={range}
+          onRangeChange={setRange}
+          isPremium={isPremium}
+          onLockedRange={openPremium}
+        />
 
-      {isLoading ? (
-        <SkeletonScreen />
-      ) : (
-        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-
-          {/* Currency picker */}
-          {currencyKeys.length > 1 && (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollPillRow}>
-              {currencyKeys.map(c => (
-                <BentoPressable
-                  key={c}
-                  style={[styles.pill, c === selectedCurrency && styles.pillActive]}
-                  onPress={() => handleCurrencySelect(c)}
-                >
-                  <Text style={[styles.pillText, c === selectedCurrency && styles.pillTextActive]}>{c}</Text>
-                </BentoPressable>
-              ))}
-            </ScrollView>
-          )}
-
-          {/* Range picker */}
-          <View style={styles.pillRow}>
-            {RANGES.map(r => {
-              const locked = !isPremium && r.days !== 7;
-              return (
-                <BentoPressable
-                  key={r.label}
-                  style={[styles.pill, r.days === selectedRange && styles.pillActive, locked && styles.pillLocked]}
-                  onPress={locked ? navigateToPremium : () => handleRangeSelect(r.days)}
-                >
-                  <Text style={[styles.pillText, r.days === selectedRange && styles.pillTextActive]}>{r.label}</Text>
-                  {locked && <Icon icon={LockPasswordIcon} size={9} color={colors.textMuted} />}
-                </BentoPressable>
-              );
-            })}
-          </View>
-
-          <Text style={styles.durationText}>{rangeSubtitle}</Text>
-
-          {/* ── Summary: 4 equal tiles ── */}
-          <View style={styles.metricsGrid}>
-            <View style={[styles.metricTile, { backgroundColor: alpha(colors.success, 'subtle') }]}>
-              <View style={styles.metricTopRow}>
-                <Text style={[styles.metricLabel, { color: colors.success }]}>{t('analytics.income')}</Text>
-                <DeltaBadge delta={deltas.income} positiveIsGood={true} />
-              </View>
-              <MoneyText amount={summary.income} currency={selectedCurrency} type="CR" weight="bold" compact style={styles.metricSmall} />
-            </View>
-            <View style={[styles.metricTile, { backgroundColor: alpha(colors.danger, 'subtle') }]}>
-              <View style={styles.metricTopRow}>
-                <Text style={[styles.metricLabel, { color: colors.danger }]}>{t('analytics.expenses')}</Text>
-                <DeltaBadge delta={deltas.expense} positiveIsGood={false} />
-              </View>
-              <MoneyText amount={summary.expense} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.metricSmall} />
-            </View>
-          </View>
-          <View style={[styles.metricsGrid, styles.metricsGridLast]}>
-            <View style={styles.metricTile}>
-              <Text style={styles.metricLabel}>{t('analytics.netPosition')}</Text>
-              <MoneyText
-                amount={Math.abs(summary.net)}
-                currency={selectedCurrency}
-                type={summary.net >= 0 ? 'CR' : 'DR'}
-                weight="bold"
-                compact
-                style={styles.metricSmall}
-              />
-            </View>
-            <View style={styles.metricTile}>
-              <Text style={styles.metricLabel}>{t('analytics.dailyAvg')}</Text>
-              <MoneyText amount={dailyAvg} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.metricSmall} />
-            </View>
-          </View>
-
-          {/* ── Highlights ── */}
-          <SectionHeader title={t('analytics.highlights')} />
-          <PremiumGuard label={t('analytics.highlights')} size="medium" containerStyle={styles.guard}>
-            {(topCategory || biggestExpense) ? (
-              <View style={styles.highlightGroup}>
-                {topCategory && (
-                  <BentoPressable
-                    style={[styles.highlightCard, styles.highlightCardFirst, !biggestExpense && styles.highlightCardLast]}
-                    onPress={() => navigateToCategoryTransactions(topCategory.id)}
-                  >
-                    <IconAvatar
-                      icon={resolveIcon(topCategory.icon, Tag01Icon)}
-                      color={colorNumberToHex(topCategory.color)}
-                      variant="subtle"
-                      size={40}
-                      iconSize={18}
-                    />
-                    <View style={styles.highlightContent}>
-                      <Text style={styles.highlightMeta}>{t('analytics.topCategory')}</Text>
-                      <Text style={styles.highlightName} numberOfLines={1}>{topCategory.name}</Text>
-                    </View>
-                    <MoneyText amount={topCategory.amount} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.highlightAmount} />
-                  </BentoPressable>
-                )}
-
-                {biggestExpense && (
-                  <BentoPressable
-                    style={[styles.highlightCard, styles.highlightCardLast, !topCategory && styles.highlightCardFirst]}
-                    onPress={() => navigateToCategoryTransactions(biggestExpense.categoryId)}
-                  >
-                    <IconAvatar
-                      icon={resolveIcon(biggestExpense.categoryIcon, SparklesIcon)}
-                      color={colorNumberToHex(biggestExpense.categoryColor)}
-                      variant="subtle"
-                      size={40}
-                      iconSize={18}
-                    />
-                    <View style={styles.highlightContent}>
-                      <Text style={styles.highlightMeta}>{t('analytics.biggestExpense')}</Text>
-                      <Text style={styles.highlightName} numberOfLines={1}>
-                        {biggestExpense.note || biggestExpense.category}
-                      </Text>
-                    </View>
-                    <MoneyText amount={biggestExpense.amount} currency={selectedCurrency} type="DR" weight="bold" compact style={styles.highlightAmount} />
-                  </BentoPressable>
-                )}
-              </View>
-            ) : (
-              <EmptyState
-                icon={SparklesIcon}
-                title={t('analytics.noHighlights')}
-                subtitle={t('analytics.noHighlightsHint')}
-              />
-            )}
-          </PremiumGuard>
-
-          {/* ── Spending trend ── */}
-          <SectionHeader
-            title={t('analytics.trend')}
-            rightText={`${RANGES.find(r => r.days === selectedRange)?.label} · ${selectedCurrency}`}
-          />
-          {areaData.length === 0 ? (
-            <EmptyState
-              icon={ChartLineData01Icon}
-              title={t('analytics.noTrend')}
-              subtitle={t('analytics.noTrendHint')}
+        <View style={styles.tiles}>
+          <View style={styles.tileRow}>
+            <StatTile label={t('analytics.income')} amount={overview.totals.income} currency={currency} type="CR" delta={overview.deltas.income} compact style={styles.tile} />
+            <StatTile
+              label={t('analytics.expenses')}
+              amount={overview.totals.expense}
+              currency={currency}
+              type="DR"
+              delta={overview.deltas.expense}
+              positiveIsGood={false}
+              compact
+              style={styles.tile}
             />
+          </View>
+          <View style={styles.tileRow}>
+            <StatTile
+              label={t('analytics.netPosition')}
+              amount={Math.abs(overview.totals.net)}
+              currency={currency}
+              type={overview.totals.net >= 0 ? 'CR' : 'DR'}
+              compact
+              style={styles.tile}
+            />
+            <StatTile label={t('analytics.dailyAvg')} amount={overview.dailyAverage} currency={currency} type="DR" compact style={styles.tile} />
+          </View>
+        </View>
+
+        <SectionHeader title={t('analytics.highlights')} noPadding />
+        <PremiumGuard label={t('analytics.highlights')} size="medium">
+          <AnalyticsHighlights
+            topCategory={overview.topCategory}
+            biggestExpense={overview.biggestExpense}
+            currency={currency}
+            onOpenCategory={openCategory}
+          />
+        </PremiumGuard>
+
+        <SectionHeader title={t('analytics.trend')} rightText={`${rangeLabel} · ${currency}`} noPadding />
+        {overview.chart.length === 0 ? (
+          <EmptyState variant="inline" icon={ChartLineData01Icon} title={t('analytics.noTrend')} description={t('analytics.noTrendHint')} />
+        ) : (
+          <View style={[styles.card, styles.stack]}>
+            <ChartLegend
+              items={[
+                { label: t('analytics.expense'), color: colors.danger },
+                { label: t('analytics.income'), color: colors.success },
+              ]}
+            />
+            <LinearAreaChart data={overview.chart} width={chartWidth} height={190} />
+          </View>
+        )}
+
+        <SectionHeader title={t('analytics.categoryBreakdown')} rightText={t('analytics.groupsCount', { count: categoryItems.length })} noPadding />
+        <PremiumGuard label={t('analytics.categoryBreakdown')} size="medium">
+          <View style={styles.stack}>
+            <SegmentedControl options={categoryTabs} value={categoryTab} onChange={setCategoryTab} size="sm" />
+            {categoryItems.length > 0 ? (
+              <ShareBreakdown items={categoryItems} />
+            ) : (
+              <EmptyState variant="inline" icon={Tag01Icon} title={t('analytics.noCategoryData')} description={t('analytics.noCategoryDataHint')} />
+            )}
+          </View>
+        </PremiumGuard>
+
+        {personItems.length > 0 && (
+          <>
+            <SectionHeader title={t('analytics.personBreakdown')} rightText={t('analytics.personsCount', { count: personItems.length })} noPadding />
+            <PremiumGuard label={t('analytics.personBreakdown')} size="medium">
+              <ShareBreakdown items={personItems} />
+            </PremiumGuard>
+          </>
+        )}
+
+        <SectionHeader title={t('analytics.balanceDistribution')} rightText={t('analytics.accountsCount', { count: accountItems.length })} noPadding />
+        <PremiumGuard label={t('analytics.balanceDistribution')} size="medium">
+          {accountItems.length > 0 ? (
+            <ShareBreakdown items={accountItems} />
           ) : (
-            <View style={styles.card}>
-              <View style={styles.chartLegend}>
-                <View style={styles.legendItem}>
-                  <View style={[styles.legendDot, { backgroundColor: colors.danger }]} />
-                  <Text style={styles.legendText}>{t('analytics.expense')}</Text>
-                </View>
-                <View style={styles.legendItem}>
-                  <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
-                  <Text style={styles.legendText}>{t('analytics.income')}</Text>
-                </View>
-              </View>
-              <LinearAreaChart data={areaData} width={chartWidth} height={190} />
+            <EmptyState
+              variant="inline"
+              icon={Wallet05Icon}
+              title={t('analytics.noCurrencyAccounts', { currency })}
+              description={t('analytics.noCurrencyAccountsHint')}
+            />
+          )}
+        </PremiumGuard>
+
+        <SectionHeader title={t('analytics.weeklyPattern')} rightText={t('analytics.averageByDay')} noPadding />
+        <PremiumGuard label={t('analytics.weeklyPattern')} size="medium">
+          {overview.weekdays.length === 0 ? (
+            <EmptyState variant="inline" icon={Calendar01Icon} title={t('analytics.noWeekly')} description={t('analytics.noWeeklyHint')} />
+          ) : (
+            <View style={[styles.card, styles.stack]}>
+              <DowChart data={overview.weekdays} />
+              <ChartLegend
+                align="center"
+                items={[
+                  { label: t('analytics.low'), color: colors.success },
+                  { label: t('analytics.mid'), color: colors.warning },
+                  { label: t('analytics.high'), color: colors.danger },
+                ]}
+              />
+              {overview.weekdayInsight && (
+                <Text variant="caption" tone="muted" align="center">
+                  {overview.weekdayInsight}
+                </Text>
+              )}
             </View>
           )}
+        </PremiumGuard>
 
-          {/* ── Category breakdown (with expense/income tabs) ── */}
-          <SectionHeader title={t('analytics.categoryBreakdown')} rightText={t('analytics.groupsCount', { count: activeCategoryData.length })} />
-          <PremiumGuard label={t('analytics.categoryBreakdown')} size="medium" containerStyle={styles.guard}>
-            {/* Tab toggle */}
-            <View style={styles.tabRow}>
-              <BentoPressable
-                style={[styles.tab, catTab === 'expense' && styles.tabActive]}
-                onPress={() => setCatTab('expense')}
-              >
-                <Text style={[styles.tabText, catTab === 'expense' && styles.tabTextActive]}>{t('analytics.expenses')}</Text>
-              </BentoPressable>
-              <BentoPressable
-                style={[styles.tab, catTab === 'income' && styles.tabActive]}
-                onPress={() => setCatTab('income')}
-              >
-                <Text style={[styles.tabText, catTab === 'income' && styles.tabTextActive]}>{t('analytics.income')}</Text>
-              </BentoPressable>
-            </View>
-
-            {activeCategoryData.length > 0 ? (
-              <View style={styles.catSection}>
-                <View style={styles.stackedBar}>
-                  {activeCategoryData.map((cat, idx) => (
-                    <View
-                      key={`seg-${idx}`}
-                      style={[styles.stackedSeg, { flex: cat.amount, backgroundColor: colorNumberToHex(cat.color) }]}
-                    />
-                  ))}
-                </View>
-                <View style={styles.categoryGrid}>
-                  {activeCategoryData.map((cat, idx) => {
-                    const accent = colorNumberToHex(cat.color);
-                    const total = activeCategoryData.reduce((s, c) => s + c.amount, 0);
-                    const pct = total > 0 ? (cat.amount / total) * 100 : 0;
-                    return (
-                      <BentoPressable
-                        key={`${cat.name}-${idx}`}
-                        style={[styles.categoryCell, { width: gridCellWidth }]}
-                        onPress={() => navigateToCategoryTransactions(cat.id)}
-                      >
-                        <IconAvatar icon={resolveIcon(cat.icon, Tag01Icon)} color={accent} variant="subtle" size={28} iconSize={13} />
-                        <View style={styles.catContent}>
-                          <Text style={styles.catName} numberOfLines={1}>{cat.name}</Text>
-                          <MoneyText
-                            amount={cat.amount}
-                            currency={selectedCurrency}
-                            type={catTab === 'expense' ? 'DR' : 'CR'}
-                            compact
-                            style={styles.catAmount}
-                          />
-                        </View>
-                        <Text style={[styles.catPercent, { color: colors.textMuted }]}>{pct.toFixed(0)}%</Text>
-                      </BentoPressable>
-                    );
-                  })}
-                </View>
-              </View>
-            ) : (
-              <EmptyState
-                icon={Tag01Icon}
-                title={`No ${catTab === 'expense' ? 'expense' : 'income'} categories yet`}
-                subtitle={`Add ${catTab === 'expense' ? 'expense' : 'income'} transactions to see a category breakdown.`}
-              />
-            )}
-          </PremiumGuard>
-
-          {/* ── Person breakdown ── */}
-          {(personBreakdown ?? []).length > 0 && (
-            <>
-              <SectionHeader title={t('analytics.personBreakdown')} rightText={t('analytics.personsCount', { count: (personBreakdown ?? []).length })} />
-              <PremiumGuard label={t('analytics.personBreakdown')} size="medium" containerStyle={styles.guard}>
-                <View style={styles.catSection}>
-                  <View style={styles.stackedBar}>
-                    {(personBreakdown ?? []).map((p, idx) => (
-                      <View
-                        key={`ps-${idx}`}
-                        style={[styles.stackedSeg, { flex: p.amount, backgroundColor: colorNumberToHex(p.color) }]}
-                      />
-                    ))}
-                  </View>
-                  <View style={styles.categoryGrid}>
-                    {(personBreakdown ?? []).map((p, idx) => {
-                      const hex = colorNumberToHex(p.color);
-                      const total = (personBreakdown ?? []).reduce((s, x) => s + x.amount, 0);
-                      const pct = total > 0 ? (p.amount / total) * 100 : 0;
-                      const initials = p.name.trim().split(' ').map((w: string) => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
-                      return (
-                        <View key={`pp-${p.id}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
-                          <View style={[styles.personAvatar, { backgroundColor: alpha(hex, 'subtle') }]}>
-                            <Text style={[styles.personInitials, { color: hex }]}>{initials}</Text>
-                          </View>
-                          <View style={styles.catContent}>
-                            <Text style={styles.catName} numberOfLines={1}>{p.name}</Text>
-                            <MoneyText amount={p.amount} currency={selectedCurrency} type="DR" compact style={styles.catAmount} />
-                          </View>
-                          <Text style={[styles.catPercent, { color: colors.textMuted }]}>{pct.toFixed(0)}%</Text>
-                        </View>
-                      );
-                    })}
-                  </View>
-                </View>
-              </PremiumGuard>
-            </>
-          )}
-
-          {/* ── Balance distribution ── */}
-          <SectionHeader title={t('analytics.balanceDistribution')} rightText={t('analytics.accountsCount', { count: accountDistribution.length })} />
-          <PremiumGuard label={t('analytics.balanceDistribution')} size="medium" containerStyle={styles.guard}>
-            {accountDistribution.length > 0 ? (
-              <View style={styles.catSection}>
-                <View style={styles.stackedBar}>
-                  {accountDistribution.map((acc, idx) => (
-                    <View
-                      key={`acc-seg-${idx}`}
-                      style={[styles.stackedSeg, { flex: acc.share, backgroundColor: acc.hex }]}
-                    />
-                  ))}
-                </View>
-                <View style={styles.categoryGrid}>
-                  {accountDistribution.map((acc, idx) => (
-                    <View key={`${acc.id}-${idx}`} style={[styles.categoryCell, { width: gridCellWidth }]}>
-                      <IconAvatar
-                        icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)}
-                        color={acc.hex}
-                        variant="subtle"
-                        size={28}
-                        iconSize={13}
-                      />
-                      <View style={styles.catContent}>
-                        <Text style={styles.catName} numberOfLines={1}>{acc.name}</Text>
-                        <MoneyText amount={acc.balance} currency={acc.currency} weight="bold" compact style={styles.catAmount} />
-                      </View>
-                      <Text style={[styles.catPercent, { color: colors.textMuted }]}>{Math.round(acc.share * 100)}%</Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            ) : (
-              <EmptyState
-                icon={Wallet05Icon}
-                title={t('analytics.noCurrencyAccounts', { currency: selectedCurrency })}
-                subtitle={t('analytics.noCurrencyAccountsHint')}
-              />
-            )}
-          </PremiumGuard>
-
-          {/* ── Weekly pattern ── */}
-          <SectionHeader title={t('analytics.weeklyPattern')} rightText={t('analytics.averageByDay')} />
-          <PremiumGuard label={t('analytics.weeklyPattern')} size="medium" containerStyle={styles.guard}>
-            {(dowData ?? []).length === 0 ? (
-              <EmptyState
-                icon={Calendar01Icon}
-                title={t('analytics.noWeekly')}
-                subtitle={t('analytics.noWeeklyHint')}
-              />
-            ) : (
-              <View style={styles.card}>
-                <DowChart data={dowData ?? []} />
-                <View style={styles.dowLegend}>
-                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.success }]} /><Text style={styles.legendText}>{t('analytics.low')}</Text></View>
-                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.warning }]} /><Text style={styles.legendText}>{t('analytics.mid')}</Text></View>
-                  <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.danger }]} /><Text style={styles.legendText}>{t('analytics.high')}</Text></View>
-                </View>
-                {dowInsight && (
-                  <Text style={styles.dowInsight}>{dowInsight}</Text>
-                )}
-              </View>
-            )}
-          </PremiumGuard>
-
-          {/* ── Spending patterns ── */}
-          <SectionHeader title={t('analytics.spendingPatterns')} />
-          <PremiumGuard label={t('analytics.spendingPatterns')} size="medium" containerStyle={styles.guard}>
-            <View style={styles.card}>
-              <View style={styles.kpiGrid}>
-                <View style={[styles.kpiCell, { width: cardCellWidth }]}>
-                  <Text style={styles.kpiLabel}>{t('analytics.dailyAvg')}</Text>
-                  <MoneyText amount={dailyAvg} currency={selectedCurrency} type="DR" weight="bold" style={styles.kpiValue} />
-                </View>
-                <View style={[styles.kpiCell, { width: cardCellWidth }]}>
-                  <Text style={styles.kpiLabel}>{t('analytics.monthEndForecast')}</Text>
-                  <MoneyText amount={forecast} currency={selectedCurrency} type="DR" weight="bold" style={styles.kpiValue} />
-                </View>
-              </View>
-            </View>
-          </PremiumGuard>
-
-        </ScrollView>
-      )}
+        <SectionHeader title={t('analytics.spendingPatterns')} noPadding />
+        <PremiumGuard label={t('analytics.spendingPatterns')} size="medium">
+          <View style={styles.tileRow}>
+            <StatTile label={t('analytics.dailyAvg')} amount={overview.dailyAverage} currency={currency} type="DR" style={styles.tile} />
+            <StatTile label={t('analytics.monthEndForecast')} amount={overview.forecast} currency={currency} type="DR" style={styles.tile} />
+          </View>
+        </PremiumGuard>
+      </ScrollView>
     </Screen>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, tabBarClearance }: ThemeContextType, bottomInset: number) =>
+const createStyles = ({ colors, spacing, radius, layout, tabBarClearance }: ThemeContextType, bottomInset: number) =>
   StyleSheet.create({
-    content: { paddingBottom: tabBarClearance(bottomInset), paddingTop: spacing('3') },
-    guard: { marginHorizontal: layout.screenPadding },
-
-    // ── Pill selectors
-    pillRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      marginBottom: spacing('3'),
-      flexWrap: 'wrap',
+    content: {
       paddingHorizontal: layout.screenPadding,
+      paddingTop: spacing('3'),
+      paddingBottom: tabBarClearance(bottomInset),
     },
-    scrollPillRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      marginBottom: spacing('3'),
-      paddingHorizontal: layout.screenPadding,
-    },
-    pill: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1'),
-      height: 32,
-      paddingHorizontal: spacing('3'),
-      borderRadius: radius('full'),
-      backgroundColor: colors.surface,
-    },
-    pillActive: { backgroundColor: alpha(colors.primary, 'subtle') },
-    pillLocked: { opacity: 0.55 },
-    pillText: { fontFamily: typography.styles.chipLabel.fontFamily, color: colors.textMuted, ...typography.metrics.xs },
-    pillTextActive: { color: colors.primaryInk },
-    durationText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      paddingHorizontal: layout.screenPadding,
-      marginBottom: spacing('5'),
-    },
-
-    // ── Metric tiles
-    metricsGrid: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      marginBottom: spacing('2'),
-      paddingHorizontal: layout.screenPadding,
-    },
-    metricsGridLast: { marginBottom: spacing('1') },
-    metricTile: {
-      flex: 1,
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('4'),
-      gap: spacing('2'),
-    },
-    metricTopRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    metricLabel: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      color: colors.textMuted,
-      ...typography.metrics.xs,
-      letterSpacing: 0.3,
-    },
-    metricSmall: { ...typography.metrics.xl },
-
-    // ── Card
+    tiles: { gap: spacing('2'), marginTop: spacing('5') },
+    tileRow: { flexDirection: 'row', gap: spacing('2') },
+    tile: { flex: 1 },
+    stack: { gap: spacing('3') },
     card: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
       padding: spacing('4'),
-      marginHorizontal: layout.screenPadding,
     },
-
-    // ── Highlights
-    highlightGroup: {
-      gap: 2,
-      marginHorizontal: layout.screenPadding,
-    },
-    highlightCard: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-      backgroundColor: colors.surface,
-      padding: spacing('3.5'),
-    },
-    highlightCardFirst: {
-      borderTopLeftRadius: radius('xl'),
-      borderTopRightRadius: radius('xl'),
-    },
-    highlightCardLast: {
-      borderBottomLeftRadius: radius('xl'),
-      borderBottomRightRadius: radius('xl'),
-    },
-    highlightContent: { flex: 1, gap: 3 },
-    highlightMeta: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xxs,
-      color: colors.textMuted,
-      letterSpacing: 0.2,
-    },
-    highlightName: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.sm,
-      color: colors.text,
-    },
-    highlightAmount: { ...typography.metrics.sm },
-
-    // ── Chart legend
-    chartLegend: { flexDirection: 'row', gap: spacing('4'), marginBottom: spacing('2') },
-    legendItem: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
-    legendDot: { width: 7, height: 7, borderRadius: radius('full') },
-    legendText: { fontFamily: typography.fonts.regular, color: colors.textMuted, ...typography.metrics.xxs },
-
-    // ── Category tabs
-    tabRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('3'),
-    },
-    tab: {
-      flex: 1,
-      height: 32,
-      borderRadius: radius('full'),
-      backgroundColor: colors.surface,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    tabActive: { backgroundColor: alpha(colors.primary, 'subtle') },
-    tabText: {
-      fontFamily: typography.styles.chipLabel.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-    },
-    tabTextActive: { color: colors.primaryInk },
-
-    // ── Category / person breakdown
-    catSection: { gap: spacing('3') },
-    stackedBar: {
-      flexDirection: 'row',
-      height: 10,
-      borderRadius: radius('full'),
-      overflow: 'hidden',
-      gap: 2,
-      marginHorizontal: layout.screenPadding,
-    },
-    stackedSeg: { borderRadius: radius('full') },
-    categoryGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: spacing('2'),
-      paddingHorizontal: layout.screenPadding,
-    },
-    categoryCell: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('3'),
-      gap: spacing('2'),
-      position: 'relative',
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    catContent: { flex: 1, flexDirection: 'column' },
-    catName: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.text,
-    },
-    catAmount: { ...typography.metrics.xs },
-    catPercent: {
-      fontFamily: typography.styles.badge.fontFamily,
-      ...typography.metrics.xxs,
-      position: 'absolute',
-      right: spacing('3'),
-      top: spacing('3'),
-    },
-
-    // ── Person avatar
-    personAvatar: {
-      width: 28, height: 28,
-      borderRadius: radius('xl'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    personInitials: {
-      fontFamily: typography.styles.profileMono.fontFamily,
-      ...typography.metrics.xxs,
-    },
-
-    // ── DOW
-    dowLegend: { flexDirection: 'row', gap: spacing('3'), marginTop: spacing('2'), justifyContent: 'center' },
-    dowInsight: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      textAlign: 'center',
-      marginTop: spacing('2'),
-    },
-
-    // ── KPI grid
-    kpiGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
-    kpiCell: {
-      minHeight: 84,
-      borderRadius: radius('xl'),
-      backgroundColor: colors.card,
-      padding: spacing('3.5'),
-      justifyContent: 'space-between',
-    },
-    kpiLabel: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      color: colors.textMuted,
-      ...typography.metrics.xs,
-      letterSpacing: 0.3,
-    },
-    kpiValue: { ...typography.metrics.lg },
   });
