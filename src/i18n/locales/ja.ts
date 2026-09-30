@@ -236,6 +236,7 @@ const ja: Translation = {
     save: '口座を保存', create: '口座を作成',
   },
   search: {
+    all: 'すべて',
     transactions: '取引', accounts: '口座', categories: 'カテゴリ', persons: '人物', placeholder: '取引、口座を検索...',
     recent: '最近の検索', clearHistory: '履歴を消去', premium: 'プレミアム検索', hint: '取引、口座、カテゴリを検索できます。2文字以上入力してください。',
     noResults: '結果なし', noMatch: '「{{query}}」に一致するものはありません。別の言葉をお試しください。',

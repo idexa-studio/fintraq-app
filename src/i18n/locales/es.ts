@@ -236,6 +236,7 @@ const es: Translation = {
     save: 'Guardar cuenta', create: 'Crear cuenta',
   },
   search: {
+    all: 'Todo',
     transactions: 'Transacciones', accounts: 'Cuentas', categories: 'Categorías', persons: 'Personas', placeholder: 'Buscar transacciones, cuentas...',
     recent: 'Búsquedas recientes', clearHistory: 'Borrar historial', premium: 'Búsqueda premium', hint: 'Transacciones, cuentas y categorías. Escribe al menos 2 caracteres para empezar.',
     noResults: 'Sin resultados', noMatch: 'Nada coincide con “{{query}}”. Prueba con otro término.',

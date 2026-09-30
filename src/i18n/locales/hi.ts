@@ -236,6 +236,7 @@ const hi: Translation = {
     save: 'खाता सहेजें', create: 'खाता बनाएँ',
   },
   search: {
+    all: 'सभी',
     transactions: 'लेन-देन', accounts: 'खाते', categories: 'श्रेणियाँ', persons: 'लोग', placeholder: 'लेन-देन, खाते खोजें...',
     recent: 'हाल की खोजें', clearHistory: 'इतिहास हटाएँ', premium: 'प्रीमियम खोज', hint: 'लेन-देन, खाते और श्रेणियाँ। शुरू करने के लिए कम से कम 2 अक्षर लिखें।',
     noResults: 'कोई परिणाम नहीं', noMatch: '“{{query}}” से कुछ मेल नहीं खाया। कोई और शब्द आज़माएँ।',

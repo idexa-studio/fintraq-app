@@ -236,6 +236,7 @@ const id: Translation = {
     save: 'Simpan akun', create: 'Buat akun',
   },
   search: {
+    all: 'Semua',
     transactions: 'Transaksi', accounts: 'Akun', categories: 'Kategori', persons: 'Orang', placeholder: 'Cari transaksi, akun...',
     recent: 'Pencarian terbaru', clearHistory: 'Hapus riwayat', premium: 'Pencarian premium', hint: 'Transaksi, akun, dan kategori. Ketik minimal 2 karakter untuk memulai.',
     noResults: 'Tidak ada hasil', noMatch: 'Tidak ada yang cocok dengan “{{query}}”. Coba kata lain.',

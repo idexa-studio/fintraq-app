@@ -234,6 +234,7 @@ const en = {
     save: 'Save account', create: 'Create account',
   },
   search: {
+    all: 'All',
     transactions: 'Transactions', accounts: 'Accounts', categories: 'Categories', persons: 'Persons', placeholder: 'Search transactions, accounts...',
     recent: 'Recent searches', clearHistory: 'Clear history', premium: 'Premium search', hint: 'Transactions, accounts, and categories. Type at least 2 characters to start.',
     noResults: 'No results', noMatch: 'Nothing matched “{{query}}”. Try a different term.',

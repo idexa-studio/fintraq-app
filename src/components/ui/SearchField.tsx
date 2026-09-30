@@ -2,6 +2,7 @@ import { BentoPressable } from './BentoPressable';
 import { Icon } from './Icon';
 import { MagnifyingGlassIcon, XIcon } from './icons';
 import { useTheme } from '@/src/providers/ThemeProvider';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { StyleProp, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
 
@@ -25,6 +26,7 @@ export const SearchField = React.memo(function SearchField({
   ...inputProps
 }: SearchFieldProps) {
   const { colors, typography, spacing, radius, sizes, alpha } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View
@@ -60,7 +62,7 @@ export const SearchField = React.memo(function SearchField({
           onPress={() => onChangeText('')}
           hitSlop={10}
           accessibilityRole="button"
-          accessibilityLabel="Clear search"
+          accessibilityLabel={t('common.clear')}
           style={{ width: 22, height: 22, borderRadius: radius('full'), backgroundColor: alpha(colors.textMuted, 'medium'), alignItems: 'center', justifyContent: 'center' }}
         >
           <Icon icon={XIcon} size={12} color={colors.surface} weight="bold" />

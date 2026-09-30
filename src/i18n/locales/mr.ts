@@ -236,6 +236,7 @@ const mr: Translation = {
     save: 'खाते जतन करा', create: 'खाते तयार करा',
   },
   search: {
+    all: 'सर्व',
     transactions: 'व्यवहार', accounts: 'खाती', categories: 'वर्ग', persons: 'व्यक्ती', placeholder: 'व्यवहार, खाती शोधा...',
     recent: 'अलीकडील शोध', clearHistory: 'इतिहास साफ करा', premium: 'प्रीमियम शोध', hint: 'व्यवहार, खाती आणि वर्ग. सुरू करण्यासाठी किमान २ अक्षरे टाइप करा.',
     noResults: 'निकाल नाहीत', noMatch: '“{{query}}” शी काहीही जुळले नाही. वेगळा शब्द वापरून पहा.',
