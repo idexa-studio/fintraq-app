@@ -373,7 +373,7 @@ const en = {
     channelReminders: 'Reminders & Alerts', channelBackup: 'Cloud Backup Progress',
     backupSyncing: '☁️ Cloud Backup Syncing', syncingStage: 'Syncing workspace data to Google Drive...', startingBackup: 'Starting background backup...',
     backupComplete: '✅ Cloud Backup Complete', backupCompleteBody: 'Your workspace history was safely backed up to cloud storage.',
-    backupFailed: '⚠️ Cloud Backup Failed', backupFailedBody: 'Could not complete cloud backup. Please check your internet connection.',
+    backupFailed: '⚠️ Cloud Backup Failed', backupFailedBody: 'Could not complete cloud backup. Please check your internet connection.', backupReconnect: '⚠️ Cloud Backup Paused', backupReconnectBody: 'Your Google Drive connection expired. Open Fintraq and reconnect to resume backups.',
     paymentIncoming: 'Payment incoming?', emiDue: 'EMI due today', lendEmiBody: '{{name}} should send you a repayment today.', borrowEmiBody: "Don't forget — send {{name}} their repayment today.",
     loanDueSoon: 'Loan due soon', repaymentDueSoon: 'Repayment due soon', lendDueBody: "{{name}}'s loan is due {{when}}.", borrowDueBody: 'Your loan repayment to {{name}} is due {{when}}.',
     today: 'today', tomorrow: 'tomorrow', inDays: 'in {{count}} days',

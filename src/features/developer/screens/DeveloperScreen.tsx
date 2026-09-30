@@ -1,3 +1,4 @@
+import { BackupPreferences } from '@/src/services/backup/backup-preferences';
 import type { IconSource } from '@/src/components/ui';
 import {
   AlertButton,
@@ -28,7 +29,6 @@ import {
   TrashIcon,
   XCircleIcon,
 } from '@/src/components/ui/icons';
-import { StorageKeys } from '@/src/constants/keys';
 import { useKeyboardInset } from '@/src/hooks/useKeyboardInset';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -38,7 +38,6 @@ import { LoggerService } from '@/src/services/logger.service';
 import { NotificationService } from '@/src/services/notification.service';
 import { toErrorMessage } from '@/src/utils/errors';
 import { seedDummyData } from '@/src/utils/seed';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import * as Updates from 'expo-updates';
@@ -140,7 +139,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
     try {
       setIsDeletingBackup(true);
       const deleted = await GoogleDriveService.deleteBackup();
-      await AsyncStorage.multiRemove([StorageKeys.AUTO_BACKUP_LAST_BACKUP_META, StorageKeys.AUTO_BACKUP_LAST_AUTO_TIME]);
+      await BackupPreferences.clearBackupCache();
       setShowDeleteBackupConfirm(false);
       if (deleted) {
         showAlert({

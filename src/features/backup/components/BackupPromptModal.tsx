@@ -4,11 +4,12 @@ import { Text } from '@/src/components/ui/Text';
 import { Icon } from '@/src/components/ui/Icon';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { ArrowRight01Icon, CloudIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
-import type { IconSource } from '@/src/components/ui/Icon';
 import React, { useCallback, useMemo } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
+import { useBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
+import { useEnableCloudBackup } from '@/src/features/backup/hooks/useEnableCloudBackup';
+import { LoggerService } from '@/src/services/logger.service';
 import { useTranslation } from 'react-i18next';
 
 type BackupPromptModalProps = {
@@ -26,17 +27,21 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
   const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const { connectAccount, isConnected, isChecking } = useGoogleBackup();
+  const { isConnected } = useBackupAccount();
+  const { enableCloudBackup, isEnabling } = useEnableCloudBackup();
 
+  // "Enable Cloud Sync" promises automatic backups, not just a connected account.
   const handleConnect = useCallback(async () => {
     try {
-      await connectAccount();
+      const result = await enableCloudBackup();
+      if (result.status === 'cancelled') return;
       onClose();
-      if (onConnectSuccess) onConnectSuccess();
-    } catch {
-      // Connect error handled inside hook
+      onConnectSuccess?.();
+    } catch (e) {
+      // Sign-in failed or was declined; keep the prompt open so the user can retry or dismiss.
+      LoggerService.warn('BACKUP_PROMPT', 'Enabling cloud backup failed', e);
     }
-  }, [connectAccount, onClose, onConnectSuccess]);
+  }, [enableCloudBackup, onClose, onConnectSuccess]);
 
   if (isConnected || !visible) return null;
 
@@ -47,7 +52,7 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
 
         <View style={styles.card}>
           <View style={styles.header}>
-            <IconAvatar icon={CloudIcon as IconSource} color={colors.primary} variant="subtle" size={52} iconSize={26} />
+            <IconAvatar icon={CloudIcon} color={colors.primary} variant="subtle" size={52} iconSize={26} />
             <Text style={styles.title}>{t('backup.protectTitle')}</Text>
             <Text style={styles.message}>
               {t('backup.protectMessage')}
@@ -56,11 +61,11 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
 
           <View style={styles.features}>
             <View style={styles.featureRow}>
-              <Icon icon={ShieldKeyIcon as IconSource} size={16} color={colors.success} />
+              <Icon icon={ShieldKeyIcon} size={16} color={colors.success} />
               <Text style={styles.featureText}>{t('backup.privateStorage')}</Text>
             </View>
             <View style={styles.featureRow}>
-              <Icon icon={CloudIcon as IconSource} size={16} color={colors.primary} />
+              <Icon icon={CloudIcon} size={16} color={colors.primary} />
               <Text style={styles.featureText}>{t('backup.dailyBackup')}</Text>
             </View>
           </View>
@@ -71,7 +76,7 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
               icon={ArrowRight01Icon}
               iconPosition="trailing"
               onPress={handleConnect}
-              isLoading={isChecking}
+              isLoading={isEnabling}
               size="lg"
               fullWidth
             />

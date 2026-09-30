@@ -375,7 +375,7 @@ const kn: Translation = {
     channelReminders: 'ಜ್ಞಾಪನೆಗಳು ಮತ್ತು ಎಚ್ಚರಿಕೆಗಳು', channelBackup: 'ಕ್ಲೌಡ್ ಬ್ಯಾಕಪ್ ಪ್ರಗತಿ',
     backupSyncing: '☁️ ಕ್ಲೌಡ್ ಬ್ಯಾಕಪ್ ಸಿಂಕ್ ಆಗುತ್ತಿದೆ', syncingStage: 'ವರ್ಕ್‌ಸ್ಪೇಸ್ ಡೇಟಾ Google Drive ಗೆ ಸಿಂಕ್ ಆಗುತ್ತಿದೆ...', startingBackup: 'ಹಿನ್ನೆಲೆ ಬ್ಯಾಕಪ್ ಪ್ರಾರಂಭವಾಗುತ್ತಿದೆ...',
     backupComplete: '✅ ಕ್ಲೌಡ್ ಬ್ಯಾಕಪ್ ಪೂರ್ಣಗೊಂಡಿದೆ', backupCompleteBody: 'ನಿಮ್ಮ ವರ್ಕ್‌ಸ್ಪೇಸ್ ಇತಿಹಾಸವನ್ನು ಕ್ಲೌಡ್ ಸಂಗ್ರಹಣೆಗೆ ಸುರಕ್ಷಿತವಾಗಿ ಬ್ಯಾಕಪ್ ಮಾಡಲಾಗಿದೆ.',
-    backupFailed: '⚠️ ಕ್ಲೌಡ್ ಬ್ಯಾಕಪ್ ವಿಫಲವಾಗಿದೆ', backupFailedBody: 'ಕ್ಲೌಡ್ ಬ್ಯಾಕಪ್ ಪೂರ್ಣಗೊಳಿಸಲಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ.',
+    backupFailed: '⚠️ ಕ್ಲೌಡ್ ಬ್ಯಾಕಪ್ ವಿಫಲವಾಗಿದೆ', backupFailedBody: 'ಕ್ಲೌಡ್ ಬ್ಯಾಕಪ್ ಪೂರ್ಣಗೊಳಿಸಲಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ.', backupReconnect: '⚠️ ಕ್ಲೌಡ್ ಬ್ಯಾಕಪ್ ವಿರಾಮದಲ್ಲಿದೆ', backupReconnectBody: 'ನಿಮ್ಮ Google Drive ಸಂಪರ್ಕದ ಅವಧಿ ಮುಗಿದಿದೆ. ಬ್ಯಾಕಪ್ ಮುಂದುವರಿಸಲು Fintraq ತೆರೆದು ಮತ್ತೆ ಸಂಪರ್ಕಿಸಿ.',
     paymentIncoming: 'ಪಾವತಿ ಬರಲಿದೆಯೇ?', emiDue: 'ಇಂದು EMI ಗಡುವು', lendEmiBody: '{{name}} ಇಂದು ನಿಮಗೆ ಮರುಪಾವತಿ ಕಳುಹಿಸಬೇಕು.', borrowEmiBody: 'ಮರೆಯಬೇಡಿ — ಇಂದು {{name}} ಗೆ ಮರುಪಾವತಿ ಕಳುಹಿಸಿ.',
     loanDueSoon: 'ಸಾಲದ ಗಡುವು ಹತ್ತಿರ', repaymentDueSoon: 'ಮರುಪಾವತಿ ಗಡುವು ಹತ್ತಿರ', lendDueBody: '{{name}} ಅವರ ಸಾಲದ ಗಡುವು {{when}}.', borrowDueBody: '{{name}} ಗೆ ನಿಮ್ಮ ಸಾಲ ಮರುಪಾವತಿಯ ಗಡುವು {{when}}.',
     today: 'ಇಂದು', tomorrow: 'ನಾಳೆ', inDays: '{{count}} ದಿನಗಳಲ್ಲಿ',

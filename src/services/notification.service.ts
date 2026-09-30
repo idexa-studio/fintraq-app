@@ -281,6 +281,28 @@ export const NotificationService = {
   },
 
   /**
+   * presentBackupReconnectNotification: Backup stopped because the Google session ended —
+   * retrying can't fix it, so tell the user the one action that will.
+   */
+  async presentBackupReconnectNotification() {
+    try {
+      await ensureBackupChannel();
+      await notifee.displayNotification({
+        id: CLOUD_BACKUP_NOTIFICATION_ID,
+        title: i18n.t('notifications.backupReconnect'),
+        body: i18n.t('notifications.backupReconnectBody'),
+        android: {
+          channelId: BACKUP_CHANNEL_ID,
+          autoCancel: true,
+          pressAction: { id: 'default' },
+        },
+      });
+    } catch (e) {
+      LoggerService.warn('NOTIFICATION', 'Failed to present backup reconnect notification', e);
+    }
+  },
+
+  /**
    * dismissBackupNotification: Clears the cloud backup status notification.
    */
   async dismissBackupNotification() {

@@ -28,7 +28,11 @@ import React, { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
-import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
+import { useAutoBackupSetting } from '@/src/features/backup/hooks/useAutoBackupSetting';
+import { useBackupAccount, useConnectBackupAccount, useDisconnectBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
+import { useBackupProgress } from '@/src/features/backup/hooks/useBackupProgress';
+import { useCloudBackupActions } from '@/src/features/backup/hooks/useCloudBackupActions';
+import { useEnableCloudBackup } from '@/src/features/backup/hooks/useEnableCloudBackup';
 import { openAppSettings } from '@/src/services/backup/battery-optimization';
 
 import { CloudBackupChoice, CloudBackupStep } from '@/src/features/onboarding/components/CloudBackupStep';
@@ -45,7 +49,13 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const { completeOnboarding } = useOnboarding();
   const { profile, updateProfile } = useSettings();
   const { mutateAsync: createAccount, isPending: accountPending } = useCreateAccount();
-  const { user, isConnected, isChecking, isRestoring, progress, progressStage, connectAccount, disconnectAccount, performRestore, setAutoBackupEnabled } = useGoogleBackup();
+  const { account: user, isConnected } = useBackupAccount();
+  const { mutateAsync: connectAccount, isPending: isConnectingAccount } = useConnectBackupAccount();
+  const { mutateAsync: disconnectAccount } = useDisconnectBackupAccount();
+  const { isRestoring, progress, stage: progressStage } = useBackupProgress();
+  const { restoreLatest } = useCloudBackupActions();
+  const { enableCloudBackup, isEnabling } = useEnableCloudBackup();
+  const { setAutoBackupEnabled } = useAutoBackupSetting();
 
   const [stepIndex, setStepIndex] = React.useState(0);
   const currentStep = ONBOARDING_STEPS[stepIndex];
@@ -199,15 +209,14 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
     try {
       if (currentStep.id === 'backup_setup' && cloudBackupChoice === 'enable') {
         try {
-          if (!isConnected) {
-            await connectAccount();
+          // The user explicitly picked "Automated Cloud Sync": connect and turn scheduling on.
+          // Enabling applies its own notification-permission gate.
+          const result = await enableCloudBackup();
+          if (result.status === 'cancelled') {
+            // A dismissed sign-in must not look like Cloud Backup was enabled.
+            throw new Error('Google sign-in cancelled');
           }
-
-          // This is the one place onboarding is allowed to turn scheduling on
-          // automatically — the user just explicitly picked "Automated Cloud Sync".
-          // setAutoBackupEnabled applies its own notification-permission gate.
-          const { blockedByNotifications } = await setAutoBackupEnabled(true);
-          if (blockedByNotifications) {
+          if (result.blockedByNotifications) {
             showAlert({
               title: t('onboardingFlow.notificationsRequired'),
               message: t('onboardingFlow.notificationsRequiredMessage'),
@@ -270,18 +279,19 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       }
       signedInEmail = signedInUser.email;
       LoggerService.info('ONBOARDING', `Restoring backup for ${signedInUser.email}`);
-      const success = await performRestore();
-      LoggerService.info('ONBOARDING', `Restore finished, success: ${success}`);
-      if (success) {
-        await completeOnboarding();
-        // Restored data was written straight to storage/DB, bypassing providers
-        // (SettingsProvider, PremiumProvider, etc.) — reload so their in-memory
-        // state isn't stale for the rest of this session.
-        try {
-          await Updates.reloadAsync();
-        } catch {
-          router.replace('/(main)/(tabs)');
-        }
+      await restoreLatest();
+      LoggerService.info('ONBOARDING', 'Restore finished');
+      // Someone restoring onto a new device is a backup user: keep them protected here too.
+      // Best-effort — a denied notification permission must not undo a successful restore.
+      await setAutoBackupEnabled(true).catch((err) => LoggerService.warn('ONBOARDING', 'Could not enable auto-backup after restore', err));
+      await completeOnboarding();
+      // Restored data was written straight to storage/DB, bypassing providers
+      // (SettingsProvider, PremiumProvider, etc.) — reload so their in-memory
+      // state isn't stale for the rest of this session.
+      try {
+        await Updates.reloadAsync();
+      } catch {
+        router.replace('/(main)/(tabs)');
       }
     } catch (e) {
       const errorMsg = toErrorMessage(e, '');
@@ -334,7 +344,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         });
       }
     }
-  }, [user, connectAccount, disconnectAccount, performRestore, completeOnboarding, router, showAlert, t]);
+  }, [user, connectAccount, disconnectAccount, restoreLatest, setAutoBackupEnabled, completeOnboarding, router, showAlert, t]);
 
   const openCurrencyPicker = useCallback(() => setShowCurrencyPicker(true), []);
   const closeCurrencyPicker = useCallback(() => setShowCurrencyPicker(false), []);
@@ -393,7 +403,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
             selectedChoice={cloudBackupChoice}
             onSelectChoice={setCloudBackupChoice}
             userEmail={user?.email}
-            isConnecting={isChecking}
+            isConnecting={isEnabling || isConnectingAccount}
           />
         );
       default:

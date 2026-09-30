@@ -375,7 +375,7 @@ const bn: Translation = {
     channelReminders: 'রিমাইন্ডার ও সতর্কতা', channelBackup: 'ক্লাউড ব্যাকআপের অগ্রগতি',
     backupSyncing: '☁️ ক্লাউড ব্যাকআপ সিঙ্ক হচ্ছে', syncingStage: 'ওয়ার্কস্পেসের ডেটা Google Drive-এ সিঙ্ক হচ্ছে...', startingBackup: 'ব্যাকগ্রাউন্ড ব্যাকআপ শুরু হচ্ছে...',
     backupComplete: '✅ ক্লাউড ব্যাকআপ সম্পন্ন', backupCompleteBody: 'আপনার ওয়ার্কস্পেসের ইতিহাস ক্লাউড স্টোরেজে নিরাপদে ব্যাকআপ হয়েছে।',
-    backupFailed: '⚠️ ক্লাউড ব্যাকআপ ব্যর্থ', backupFailedBody: 'ক্লাউড ব্যাকআপ সম্পূর্ণ করা যায়নি। আপনার ইন্টারনেট সংযোগ যাচাই করুন।',
+    backupFailed: '⚠️ ক্লাউড ব্যাকআপ ব্যর্থ', backupFailedBody: 'ক্লাউড ব্যাকআপ সম্পূর্ণ করা যায়নি। আপনার ইন্টারনেট সংযোগ যাচাই করুন।', backupReconnect: '⚠️ ক্লাউড ব্যাকআপ বিরতিতে', backupReconnectBody: 'আপনার Google Drive সংযোগের মেয়াদ শেষ। ব্যাকআপ চালু করতে Fintraq খুলে আবার সংযোগ করুন।',
     paymentIncoming: 'পেমেন্ট আসছে?', emiDue: 'আজ কিস্তির তারিখ', lendEmiBody: '{{name}}-এর আজ আপনাকে পরিশোধ পাঠানোর কথা।', borrowEmiBody: 'ভুলবেন না — আজ {{name}}-কে পরিশোধ পাঠান।',
     loanDueSoon: 'ঋণের মেয়াদ শীঘ্রই শেষ', repaymentDueSoon: 'পরিশোধের মেয়াদ শীঘ্রই শেষ', lendDueBody: '{{name}}-এর ঋণের মেয়াদ {{when}}।', borrowDueBody: '{{name}}-কে আপনার ঋণ পরিশোধের মেয়াদ {{when}}।',
     today: 'আজ', tomorrow: 'আগামীকাল', inDays: '{{count}} দিনে',

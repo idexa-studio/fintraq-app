@@ -1,3 +1,4 @@
+import { BackupPreferences } from '@/src/services/backup/backup-preferences';
 import {
   AlertButton,
   AlertDialog,
@@ -38,11 +39,11 @@ import {
 import { CurrencyPickerBottomSheet } from '@/src/components/pickers/CurrencyPickerBottomSheet';
 import { db } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
-import { RETIRED_AUTO_BACKUP_FREQUENCY_KEY, StorageKeys } from '@/src/constants/keys';
+import { StorageKeys } from '@/src/constants/keys';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
 import * as Updates from 'expo-updates';
 
-import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
+import { useBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
 import { LockStorage } from '@/src/features/lock/api/lockStorage';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
 import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
@@ -86,7 +87,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
   const { isPremium } = usePremium();
   const { profile, updateProfile } = useSettings();
   const { language, setLanguage } = useAppLanguage();
-  const { isConnected: isBackupConnected } = useGoogleBackup();
+  const { isConnected: isBackupConnected } = useBackupAccount();
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -233,11 +234,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         StorageKeys.WALKTHROUGH_SEARCH,
         StorageKeys.WALKTHROUGH_TRANSACTION_CREATE,
         StorageKeys.WALKTHROUGH_PERSONS,
-        // Cloud backup settings, owned by useGoogleBackup.ts
-        StorageKeys.AUTO_BACKUP_ENABLED,
-        StorageKeys.AUTO_BACKUP_LAST_BACKUP_META,
-        StorageKeys.AUTO_BACKUP_LAST_AUTO_TIME,
-        RETIRED_AUTO_BACKUP_FREQUENCY_KEY,
+        ...BackupPreferences.allKeys(),
       ]);
 
       showAlert({

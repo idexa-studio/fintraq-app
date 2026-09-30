@@ -375,7 +375,7 @@ const de: Translation = {
     channelReminders: 'Erinnerungen & Hinweise', channelBackup: 'Fortschritt des Cloud-Backups',
     backupSyncing: '☁️ Cloud-Backup wird synchronisiert', syncingStage: 'Arbeitsbereichsdaten werden mit Google Drive synchronisiert...', startingBackup: 'Hintergrund-Backup wird gestartet...',
     backupComplete: '✅ Cloud-Backup abgeschlossen', backupCompleteBody: 'Der Verlauf deines Arbeitsbereichs wurde sicher im Cloud-Speicher gesichert.',
-    backupFailed: '⚠️ Cloud-Backup fehlgeschlagen', backupFailedBody: 'Das Cloud-Backup konnte nicht abgeschlossen werden. Prüfe deine Internetverbindung.',
+    backupFailed: '⚠️ Cloud-Backup fehlgeschlagen', backupFailedBody: 'Das Cloud-Backup konnte nicht abgeschlossen werden. Prüfe deine Internetverbindung.', backupReconnect: '⚠️ Cloud-Backup pausiert', backupReconnectBody: 'Deine Google-Drive-Verbindung ist abgelaufen. Öffne Fintraq und verbinde dich erneut, um Backups fortzusetzen.',
     paymentIncoming: 'Kommt eine Zahlung?', emiDue: 'Rate heute fällig', lendEmiBody: '{{name}} sollte dir heute eine Rückzahlung senden.', borrowEmiBody: 'Nicht vergessen – sende {{name}} heute die Rückzahlung.',
     loanDueSoon: 'Darlehen bald fällig', repaymentDueSoon: 'Rückzahlung bald fällig', lendDueBody: 'Das Darlehen von {{name}} ist {{when}} fällig.', borrowDueBody: 'Deine Darlehensrückzahlung an {{name}} ist {{when}} fällig.',
     today: 'heute', tomorrow: 'morgen', inDays: 'in {{count}} Tagen',

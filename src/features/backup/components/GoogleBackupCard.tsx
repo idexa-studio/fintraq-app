@@ -1,112 +1,61 @@
-import { IconButton } from '@/src/components/ui/IconButton';
-import { Button } from '@/src/components/ui/Button';
-import { Spinner } from '@/src/components/ui';
-import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
-import { Icon } from '@/src/components/ui/Icon';
-import { Switch } from '@/src/components/ui/Switch';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
-import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { ProgressBar } from '@/src/components/ui/ProgressBar';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import * as Updates from 'expo-updates';
-import {
-  Alert02Icon,
-  ArrowRight01Icon,
-  BatteryCharging01Icon,
-  CloudIcon,
-  Download01Icon,
-  LockPasswordIcon,
-  Logout01Icon,
-  SparklesIcon,
-  Upload01Icon,
-} from '@hugeicons/core-free-icons';
-import { formatBackupTimestamp } from '@/src/utils/date';
-import React, { useMemo, useState } from 'react';
-import { DevSettings, Platform, StyleSheet, View } from 'react-native';
-import { Text } from '@/src/components/ui/Text';
-import { isNoBackupError } from '@/src/services/backup/google-drive.errors';
-import { toErrorMessage } from '@/src/utils/errors';
 import { useRouter } from 'expo-router';
-import { useGoogleBackup } from '@/src/features/backup/hooks/useGoogleBackup';
-import { LoggerService } from '@/src/services/logger.service';
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { openAppSettings, openBatteryOptimizationSettings } from '@/src/services/backup/battery-optimization';
-
-import { AUTO_BACKUP_INTERVAL_MS } from '@/src/services/backup/auto-backup.service';
+import * as Updates from 'expo-updates';
+import React, { useCallback, useMemo, useState } from 'react';
+import { DevSettings, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { AlertDialog, ConfirmDialog, Spinner, Text } from '@/src/components/ui';
+import { useAutoBackupSetting, type SetAutoBackupResult } from '@/src/features/backup/hooks/useAutoBackupSetting';
+import { useBackupAccount, useDisconnectBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
+import { useBackupProgress } from '@/src/features/backup/hooks/useBackupProgress';
+import { useCloudBackupActions } from '@/src/features/backup/hooks/useCloudBackupActions';
+import { useEnableCloudBackup } from '@/src/features/backup/hooks/useEnableCloudBackup';
+import { useLatestBackup } from '@/src/features/backup/hooks/useLatestBackup';
+import { useAlertDialog } from '@/src/hooks/useAlertDialog';
+import { usePremium } from '@/src/providers/PremiumProvider';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { openAppSettings, openBatteryOptimizationSettings } from '@/src/services/backup/battery-optimization';
+import { isBackupOverdue } from '@/src/services/backup/backup-schedule';
+import { isNoBackupError } from '@/src/services/backup/google-drive.errors';
+import { LoggerService } from '@/src/services/logger.service';
 import { alpha } from '@/src/theme/tokens';
+import { toErrorMessage } from '@/src/utils/errors';
+import { AutoBackupRow } from './AutoBackupRow';
+import { BackupAccountRow } from './BackupAccountRow';
+import { BackupActionsRow } from './BackupActionsRow';
+import { BackupConnectRow } from './BackupConnectRow';
+import { BackupProgressRow } from './BackupProgressRow';
+import { BackupStatusRow } from './BackupStatusRow';
+import { BackupUpsellRow } from './BackupUpsellRow';
 
+/** The Backup screen's control surface: account, status, manual backup/restore, auto-backup. */
 export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
   const { isPremium } = usePremium();
 
-  const {
-    user,
-    isConnected,
-    isChecking,
-    isBackingUp,
-    isRestoring,
-    progress,
-    progressStage,
-    lastBackup,
-    autoBackupEnabled,
-    connectAccount,
-    disconnectAccount,
-    performBackup,
-    performRestore,
-    toggleAutoBackup,
-  } = useGoogleBackup();
+  const { account, isLoading: isAccountLoading } = useBackupAccount();
+  const { latestBackup } = useLatestBackup();
+  const { isBackingUp, isRestoring, progress, stage } = useBackupProgress();
+  const { autoBackupEnabled, setAutoBackupEnabled } = useAutoBackupSetting();
+  const { enableCloudBackup, isEnabling } = useEnableCloudBackup();
+  const { mutateAsync: disconnect } = useDisconnectBackupAccount();
+  const { backupNow, restoreLatest } = useCloudBackupActions();
 
+  const { showAlert, alertProps } = useAlertDialog();
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false);
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
 
-  const [alertConfig, setAlertConfig] = useState<{
-    visible: boolean;
-    title: string;
-    message?: string;
-    type?: 'info' | 'success' | 'error' | 'warning';
-    buttons?: AlertButton[];
-  }>({
-    visible: false,
-    title: '',
-  });
-
-  const showAlert = React.useCallback(
-    (config: {
-      title: string;
-      message?: string;
-      type?: 'info' | 'success' | 'error' | 'warning';
-      buttons?: AlertButton[];
-    }) => {
-      setAlertConfig({
-        visible: true,
-        title: config.title,
-        message: config.message,
-        type: config.type || 'info',
-        buttons: config.buttons || [{ text: t('backup.ok') }],
-      });
-    },
-    [t],
-  );
-
-  const handleReliabilityHintPress = React.useCallback(() => {
-    openBatteryOptimizationSettings(() => showAlert({
-      title: t('backup.batterySettings'),
-      message: t('backup.batteryMessage'),
-      type: 'info',
-    }));
+  const openBatterySettings = useCallback(() => {
+    void openBatteryOptimizationSettings(() =>
+      showAlert({ title: t('backup.batterySettings'), message: t('backup.batteryMessage'), type: 'info' }),
+    );
   }, [showAlert, t]);
 
-  /** Returns true if it showed a prompt (notification/battery), so callers can skip a competing alert. */
-  const handleToggleAutoBackup = React.useCallback(
-    async (value: boolean): Promise<boolean> => {
-      const { blockedByNotifications, showBatteryPrompt } = await toggleAutoBackup(value);
-
+  /** Shows the follow-up an enable needs, if any. Returns true when it showed one. */
+  const showEnablePrompts = useCallback(
+    ({ blockedByNotifications, showBatteryPrompt }: SetAutoBackupResult): boolean => {
       if (blockedByNotifications) {
         showAlert({
           title: t('backup.notificationsRequired'),
@@ -114,12 +63,11 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           type: 'warning',
           buttons: [
             { text: t('backup.ok'), style: 'cancel' },
-            { text: t('backup.openSettings'), onPress: () => openAppSettings() },
+            { text: t('backup.openSettings'), onPress: () => void openAppSettings() },
           ],
         });
         return true;
       }
-
       if (showBatteryPrompt) {
         showAlert({
           title: t('backup.improveReliability'),
@@ -127,372 +75,165 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           type: 'info',
           buttons: [
             { text: t('backup.notNow'), style: 'cancel' },
-            {
-              text: t('backup.openSettings'),
-              onPress: handleReliabilityHintPress,
-            },
+            { text: t('backup.openSettings'), onPress: openBatterySettings },
           ],
         });
         return true;
       }
-
       return false;
     },
-    [toggleAutoBackup, showAlert, handleReliabilityHintPress, t],
+    [showAlert, openBatterySettings, t],
   );
 
-  const handleConnect = React.useCallback(async () => {
+  const handleToggleAutoBackup = useCallback(
+    async (value: boolean) => {
+      try {
+        showEnablePrompts(await setAutoBackupEnabled(value));
+      } catch (e) {
+        LoggerService.warn('BACKUP_UI', 'Failed to update auto-backup', e);
+      }
+    },
+    [setAutoBackupEnabled, showEnablePrompts],
+  );
+
+  const handleConnect = useCallback(async () => {
     try {
-      await connectAccount();
-      // Connecting an account is the whole "set up backup" action from the
-      // user's POV — auto-backup turns on immediately, no separate step.
-      const promptShown = await handleToggleAutoBackup(true);
-      if (!promptShown) {
-        showAlert({
-          title: t('backup.connectedTitle'),
-          message: t('backup.connectedMessage'),
-          type: 'success',
-        });
+      const result = await enableCloudBackup();
+      if (result.status === 'cancelled') return;
+      if (!showEnablePrompts(result)) {
+        showAlert({ title: t('backup.connectedTitle'), message: t('backup.connectedMessage'), type: 'success' });
       }
     } catch (e) {
-      showAlert({
-        title: t('backup.connectFailed'),
-        message: toErrorMessage(e, t('backup.connectFailedMessage')),
-        type: 'error',
-      });
+      showAlert({ title: t('backup.connectFailed'), message: toErrorMessage(e, t('backup.connectFailedMessage')), type: 'error' });
     }
-  }, [connectAccount, handleToggleAutoBackup, showAlert, t]);
+  }, [enableCloudBackup, showEnablePrompts, showAlert, t]);
 
-  const handleDisconnect = React.useCallback(async () => {
+  const handleDisconnect = useCallback(async () => {
     setShowDisconnectConfirm(false);
     try {
-      await disconnectAccount();
-      showAlert({
-        title: t('backup.disconnected'),
-        message: t('backup.disconnectedMessage'),
-        type: 'info',
-      });
+      await disconnect();
+      showAlert({ title: t('backup.disconnected'), message: t('backup.disconnectedMessage'), type: 'info' });
     } catch (e) {
-      showAlert({
-        title: t('backup.disconnectFailed'),
-        message: toErrorMessage(e, t('backup.disconnectFailedMessage')),
-        type: 'error',
-      });
+      showAlert({ title: t('backup.disconnectFailed'), message: toErrorMessage(e, t('backup.disconnectFailedMessage')), type: 'error' });
     }
-  }, [disconnectAccount, showAlert, t]);
+  }, [disconnect, showAlert, t]);
 
-  const handleBackup = React.useCallback(async () => {
+  const handleBackup = useCallback(async () => {
     try {
-      const success = await performBackup();
-      if (success) {
-        showAlert({
-          title: t('backup.backupSuccess'),
-          message: t('backup.backupSuccessMessage'),
-          type: 'success',
-        });
-      }
+      await backupNow();
+      showAlert({ title: t('backup.backupSuccess'), message: t('backup.backupSuccessMessage'), type: 'success' });
     } catch (e) {
-      showAlert({
-        title: t('backup.backupFailed'),
-        message: toErrorMessage(e, t('backup.backupFailedMessage')),
-        type: 'error',
-      });
+      showAlert({ title: t('backup.backupFailed'), message: toErrorMessage(e, t('backup.backupFailedMessage')), type: 'error' });
     }
-  }, [performBackup, showAlert, t]);
+  }, [backupNow, showAlert, t]);
 
-  const handleRestore = React.useCallback(async () => {
+  // The database was replaced underneath the running app; providers hold stale state until reload.
+  const reloadAfterRestore = useCallback(async () => {
+    try {
+      await Updates.reloadAsync();
+    } catch (reloadErr) {
+      LoggerService.warn('BACKUP_UI', 'Updates.reloadAsync failed', reloadErr);
+      if (__DEV__ && DevSettings?.reload) {
+        DevSettings.reload();
+        return;
+      }
+      // Remount every screen so it re-reads the restored database, and say plainly that an
+      // automatic restart didn't happen.
+      router.replace('/(main)/(tabs)');
+      showAlert({ title: t('backup.restoreApplied'), message: t('backup.restoreAppliedMessage'), type: 'warning' });
+    }
+  }, [router, showAlert, t]);
+
+  const handleRestore = useCallback(async () => {
     setShowRestoreConfirm(false);
     try {
-      const success = await performRestore();
-      if (success) {
-        showAlert({
-          title: t('backup.restoreComplete'),
-          message: t('backup.restoreCompleteMessage'),
-          type: 'success',
-          buttons: [
-            {
-              text: t('backup.ok'),
-              onPress: async () => {
-                try {
-                  await Updates.reloadAsync();
-                } catch (reloadErr) {
-                  LoggerService.warn('BACKUP_UI', 'Updates.reloadAsync failed', reloadErr);
-                  if (__DEV__ && DevSettings?.reload) {
-                    DevSettings.reload();
-                    return;
-                  }
-                  // The local DB has already been replaced underneath the
-                  // running app — leaving the user on this screen with stale
-                  // in-memory state would be worse than an imperfect restart.
-                  // Reset navigation to the app root so every screen remounts
-                  // and re-fetches from the now-restored database, and tell
-                  // the user plainly that an automatic restart didn't happen.
-                  router.replace('/(main)/(tabs)');
-                  showAlert({
-                    title: t('backup.restoreApplied'),
-                    message: t('backup.restoreAppliedMessage'),
-                    type: 'warning',
-                  });
-                }
-              },
-            },
-          ],
-        });
-      }
+      await restoreLatest();
+      showAlert({
+        title: t('backup.restoreComplete'),
+        message: t('backup.restoreCompleteMessage'),
+        type: 'success',
+        buttons: [{ text: t('backup.ok'), onPress: () => void reloadAfterRestore() }],
+      });
     } catch (e) {
       if (isNoBackupError(e)) {
-        LoggerService.info('BACKUP_UI', 'No backup file found on Google Drive');
         showAlert({
           title: t('backup.noBackupFound'),
-          message: t('backup.noBackupMessage', { email: user?.email || t('backup.yourCloudAccount') }),
+          message: t('backup.noBackupMessage', { email: account?.email || t('backup.yourCloudAccount') }),
           type: 'warning',
         });
-      } else {
-        LoggerService.warn('BACKUP_UI', 'Restore failed', e);
-        showAlert({
-          title: t('backup.restoreFailed'),
-          message: toErrorMessage(e, t('backup.restoreFailedMessage')),
-          type: 'error',
-        });
+        return;
       }
+      showAlert({ title: t('backup.restoreFailed'), message: toErrorMessage(e, t('backup.restoreFailedMessage')), type: 'error' });
     }
-  }, [performRestore, showAlert, user?.email, router, t]);
+  }, [restoreLatest, reloadAfterRestore, showAlert, account?.email, t]);
 
-  const formattedLastBackupTime = useMemo(() => {
-    if (!lastBackup?.modifiedTime) return t('backup.noBackupYet');
-    return formatBackupTimestamp(lastBackup.modifiedTime);
-  }, [lastBackup?.modifiedTime, t]);
+  // Background jobs can silently stop firing (OEM battery killers) — surface it instead of
+  // letting the user assume they're still protected.
+  const isOverdue = autoBackupEnabled && isBackupOverdue(latestBackup?.modifiedTime, Date.now());
 
-  const formattedSize = useMemo(() => {
-    if (!lastBackup?.size) return null;
-    const kb = lastBackup.size / 1024;
-    if (kb < 1024) return `${kb.toFixed(1)} KB`;
-    return `${(kb / 1024).toFixed(1)} MB`;
-  }, [lastBackup?.size]);
+  const renderBody = () => {
+    if (!isPremium) return <BackupUpsellRow onPress={() => router.push('/premium')} />;
 
-  // Background jobs can silently stop firing (OEM battery killers) — surface it
-  // instead of letting the user assume it's still working.
-  const isBackupOverdue = useMemo(() => {
-    if (!autoBackupEnabled || !lastBackup?.modifiedTime) return false;
-    return Date.now() - new Date(lastBackup.modifiedTime).getTime() > AUTO_BACKUP_INTERVAL_MS * 2;
-  }, [autoBackupEnabled, lastBackup?.modifiedTime]);
-
-  if (!isPremium) {
-    return (
-      <View style={styles.groupContainer}>
-        <BentoPressable style={styles.mainRow} onPress={() => router.push('/premium')}>
-          <IconAvatar icon={LockPasswordIcon} color={colors.primary} variant="subtle" size={40} />
-          <View style={styles.rowInfo}>
-            <View style={styles.titleRow}>
-              <Text style={styles.rowLabel}>{t('backup.cloudBackup')}</Text>
-              <View style={styles.proBadge}>
-                <Icon icon={SparklesIcon} size={10} color={colors.warning} />
-                <Text style={styles.proBadgeText}>{t('backup.pro')}</Text>
-              </View>
-            </View>
-            <Text style={styles.rowSubtitle}>
-              {t('backup.proFeatures')}
-            </Text>
-          </View>
-          <View style={styles.connectBadge}>
-            <Text style={styles.connectBadgeText}>{t('backup.upgrade')}</Text>
-            <Icon icon={ArrowRight01Icon} size={14} color={colors.primary} />
-          </View>
-        </BentoPressable>
-      </View>
-    );
-  }
-
-  if (isChecking) {
-    return (
-      <View style={styles.groupContainer}>
+    if (isAccountLoading) {
+      return (
         <View style={styles.loadingRow}>
           <Spinner size="sm" />
           <Text style={styles.loadingText}>{t('backup.checking')}</Text>
         </View>
-      </View>
-    );
-  }
+      );
+    }
 
-  if (!isConnected) {
+    if (!account) return <BackupConnectRow onPress={handleConnect} isConnecting={isEnabling} />;
+
     return (
-      <View style={styles.groupContainer}>
-        <BentoPressable style={styles.mainRow} onPress={handleConnect}>
-          <IconAvatar icon={CloudIcon} color={colors.primary} variant="subtle" size={40} />
-          <View style={styles.rowInfo}>
-            <View style={styles.titleRow}>
-              <Text style={styles.rowLabel}>{t('backup.cloudBackup')}</Text>
-              <View style={styles.statusDotOffline} />
-            </View>
-            <Text style={styles.rowSubtitle}>
-              {t('backup.connectStorage')}
-            </Text>
-          </View>
-          <View style={styles.connectBadge}>
-            <Text style={styles.connectBadgeText}>{t('backup.connect')}</Text>
-            <Icon icon={ArrowRight01Icon} size={14} color={colors.primary} />
-          </View>
-        </BentoPressable>
-
-        <AlertDialog
-          visible={alertConfig.visible}
-          title={alertConfig.title}
-          message={alertConfig.message}
-          type={alertConfig.type}
-          buttons={alertConfig.buttons}
-          onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
+      <>
+        <BackupAccountRow email={account.email} onDisconnect={() => setShowDisconnectConfirm(true)} />
+        <View style={styles.separator} />
+        <BackupStatusRow latestBackup={latestBackup} isOverdue={isOverdue} onOverduePress={openBatterySettings} />
+        {(isBackingUp || isRestoring) && <BackupProgressRow progress={progress} stage={stage} />}
+        <BackupActionsRow
+          isBackingUp={isBackingUp}
+          isRestoring={isRestoring}
+          canRestore={latestBackup !== null}
+          onBackup={handleBackup}
+          onRestore={() => setShowRestoreConfirm(true)}
         />
-      </View>
+        <View style={styles.separator} />
+        <AutoBackupRow enabled={autoBackupEnabled} onToggle={handleToggleAutoBackup} onReliabilityHintPress={openBatterySettings} />
+
+        <ConfirmDialog
+          visible={showRestoreConfirm}
+          onClose={() => setShowRestoreConfirm(false)}
+          title={t('backup.restoreConfirmTitle')}
+          message={t('backup.restoreConfirmMessage')}
+          confirmLabel={t('backup.restoreData')}
+          onConfirm={handleRestore}
+          destructive
+        />
+        <ConfirmDialog
+          visible={showDisconnectConfirm}
+          onClose={() => setShowDisconnectConfirm(false)}
+          title={t('backup.disconnectTitle')}
+          message={t('backup.disconnectMessage')}
+          confirmLabel={t('backup.disconnect')}
+          onConfirm={handleDisconnect}
+          destructive
+        />
+      </>
     );
-  }
+  };
 
   return (
-    <View style={styles.groupContainer}>
-      {/* Account Info Row */}
-      <View style={styles.mainRow}>
-        <IconAvatar icon={CloudIcon} color={colors.success} variant="subtle" size={40} />
-        <View style={styles.rowInfo}>
-          <View style={styles.titleRow}>
-            <Text style={styles.rowLabel}>{t('backup.cloudAccount')}</Text>
-            <View style={styles.activeBadge}>
-              <View style={styles.statusDotActive} />
-              <Text style={styles.activeBadgeText}>{t('backup.connected')}</Text>
-            </View>
-          </View>
-          <Text style={styles.userEmailText} numberOfLines={1}>
-            {user?.email}
-          </Text>
-        </View>
-        <IconButton icon={Logout01Icon} variant="ghost" onPress={() => setShowDisconnectConfirm(true)} accessibilityLabel={t('backup.disconnect')} />
-      </View>
-
-      <View style={styles.separator} />
-
-      {/* Backup Status Row */}
-      {isBackupOverdue ? (
-        <BentoPressable style={styles.statusBoxWarning} onPress={handleReliabilityHintPress}>
-          <Icon icon={Alert02Icon} size={16} color={colors.warning} />
-          <Text style={styles.statusWarningText}>{t('backup.overdue')}</Text>
-        </BentoPressable>
-      ) : (
-        <View style={styles.statusBox}>
-          <View style={styles.statusTextCol}>
-            <Text style={styles.statusLabel}>{t('backup.lastBackup')}</Text>
-            <Text style={styles.statusValue}>{formattedLastBackupTime}</Text>
-          </View>
-          {formattedSize && (
-            <View style={styles.sizeBadge}>
-              <Text style={styles.sizeBadgeText}>{formattedSize}</Text>
-            </View>
-          )}
-        </View>
-      )}
-
-      {/* Progress Bar during Backup or Restore */}
-      {(isBackingUp || isRestoring) && (
-        <View style={styles.progressContainer}>
-          <View style={styles.progressHeaderRow}>
-            <Text style={styles.progressStageText}>{progressStage || t('backup.processing')}</Text>
-            <Text style={styles.progressPercentText}>{progress}%</Text>
-          </View>
-          <ProgressBar progress={progress} height={6} />
-        </View>
-      )}
-
-      {/* Action Buttons Row */}
-      <View style={styles.actionsRow}>
-        <Button
-          title={t('backup.backupNow')}
-          icon={Upload01Icon}
-          onPress={handleBackup}
-          disabled={isRestoring}
-          isLoading={isBackingUp}
-          style={styles.primaryAction}
-        />
-
-        <BentoPressable
-          style={[
-            styles.secondaryActionButton,
-            (isBackingUp || isRestoring || !lastBackup) && styles.disabledButton,
-          ]}
-          onPress={() => setShowRestoreConfirm(true)}
-          disabled={isBackingUp || isRestoring || !lastBackup}
-        >
-          {isRestoring ? (
-            <Spinner size="sm" />
-          ) : (
-            <>
-              <Icon icon={Download01Icon} size={16} color={colors.primary} />
-              <Text style={styles.secondaryActionButtonText}>{t('backup.restore')}</Text>
-            </>
-          )}
-        </BentoPressable>
-      </View>
-
-      <View style={styles.separator} />
-
-      {/* Auto Backup Toggle Row */}
-      <View style={styles.autoBackupSection}>
-        <View style={styles.autoBackupRow}>
-          <View style={styles.rowInfo}>
-            <Text style={styles.rowLabel}>{t('backup.autoBackup')}</Text>
-            <Text style={styles.rowSubtitle}>
-              {autoBackupEnabled
-                ? t('backup.autoOn')
-                : t('backup.autoOff')}
-            </Text>
-          </View>
-          <Switch
-            value={autoBackupEnabled}
-            onValueChange={(value) => { void handleToggleAutoBackup(value); }}
-          />
-        </View>
-
-        {Platform.OS === 'android' && autoBackupEnabled && (
-          <BentoPressable style={styles.reliabilityHintRow} onPress={handleReliabilityHintPress}>
-            <Icon icon={BatteryCharging01Icon} size={12} color={colors.textMuted} />
-            <Text style={styles.reliabilityHintText}>{t('backup.reliabilityHint')}</Text>
-            <Icon icon={ArrowRight01Icon} size={12} color={colors.textMuted} />
-          </BentoPressable>
-        )}
-      </View>
-
-      {/* Confirm Dialogs */}
-      <ConfirmDialog
-        visible={showRestoreConfirm}
-        onClose={() => setShowRestoreConfirm(false)}
-        title={t('backup.restoreConfirmTitle')}
-        message={t('backup.restoreConfirmMessage')}
-        confirmLabel={t('backup.restoreData')}
-        onConfirm={handleRestore}
-        destructive
-      />
-
-      <ConfirmDialog
-        visible={showDisconnectConfirm}
-        onClose={() => setShowDisconnectConfirm(false)}
-        title={t('backup.disconnectTitle')}
-        message={t('backup.disconnectMessage')}
-        confirmLabel={t('backup.disconnect')}
-        onConfirm={handleDisconnect}
-        destructive
-      />
-
-      <AlertDialog
-        visible={alertConfig.visible}
-        title={alertConfig.title}
-        message={alertConfig.message}
-        type={alertConfig.type}
-        buttons={alertConfig.buttons}
-        onClose={() => setAlertConfig((prev) => ({ ...prev, visible: false }))}
-      />
+    <View style={styles.container}>
+      {renderBody()}
+      <AlertDialog {...alertProps} />
     </View>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, state }: ThemeContextType) =>
+const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeContextType) =>
   StyleSheet.create({
-    groupContainer: {
+    container: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
       overflow: 'hidden',
@@ -511,220 +252,10 @@ const createStyles = ({ colors, typography, spacing, radius, layout, state }: Th
       ...typography.metrics.sm,
       color: colors.textMuted,
     },
-    mainRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3.5'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-      backgroundColor: colors.surface,
-    },
-    rowInfo: {
-      flex: 1,
-      gap: 2,
-    },
-    titleRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-    },
-    rowLabel: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.md,
-      color: colors.text,
-    },
-    statusDotOffline: {
-      width: 6,
-      height: 6,
-      borderRadius: radius('full'),
-      backgroundColor: colors.textMuted,
-    },
-    activeBadge: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 4,
-      backgroundColor: alpha(colors.success, 'subtle'),
-      paddingHorizontal: spacing('2'),
-      paddingVertical: 2,
-      borderRadius: radius('full'),
-    },
-    statusDotActive: {
-      width: 6,
-      height: 6,
-      borderRadius: radius('full'),
-      backgroundColor: colors.success,
-    },
-    activeBadgeText: {
-      fontFamily: typography.fonts.bold,
-      ...typography.metrics.xxs,
-      color: colors.success,
-    },
-    rowSubtitle: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-    },
-    userEmailText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: colors.primary,
-    },
-    connectBadge: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1'),
-      backgroundColor: alpha(colors.primary, 'subtle'),
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('1.5'),
-      borderRadius: radius('full'),
-    },
-    connectBadgeText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: colors.primary,
-    },
     separator: {
       height: StyleSheet.hairlineWidth,
       backgroundColor: alpha(colors.text, 'subtle'),
+      // Aligns with the text column: screen padding + avatar (36) + row gap.
       marginLeft: layout.screenPadding + 36 + spacing('3.5'),
-    },
-    statusBox: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3'),
-      backgroundColor: colors.card,
-    },
-    statusTextCol: {
-      gap: 2,
-    },
-    statusLabel: {
-      fontFamily: typography.fonts.bold,
-      ...typography.metrics.xxs,
-      color: colors.textMuted,
-      letterSpacing: 0.5,
-    },
-    statusValue: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-      color: colors.text,
-    },
-    statusBoxWarning: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3'),
-      backgroundColor: alpha(colors.warning, 'subtle'),
-    },
-    statusWarningText: {
-      flex: 1,
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-      color: colors.warning,
-    },
-    reliabilityHintRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('1.5'),
-      alignSelf: 'flex-start',
-    },
-    reliabilityHintText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-    },
-    sizeBadge: {
-      backgroundColor: alpha(colors.primary, 'subtle'),
-      paddingHorizontal: spacing('2.5'),
-      paddingVertical: spacing('1'),
-      borderRadius: radius('full'),
-    },
-    sizeBadgeText: {
-      fontFamily: typography.fonts.bold,
-      ...typography.metrics.xs,
-      color: colors.primary,
-    },
-    progressContainer: {
-      paddingHorizontal: spacing('4'),
-      paddingTop: spacing('3'),
-      paddingBottom: spacing('1'),
-      gap: spacing('2'),
-    },
-    progressHeaderRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    progressStageText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-    },
-    progressPercentText: {
-      fontFamily: typography.fonts.bold,
-      ...typography.metrics.xs,
-      color: colors.primary,
-    },
-    actionsRow: {
-      flexDirection: 'row',
-      gap: spacing('3'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3'),
-    },
-    primaryAction: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing('2'),
-      height: 40,
-      backgroundColor: colors.primary,
-    },
-    secondaryActionButton: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing('2'),
-      height: 40,
-      backgroundColor: colors.card,
-      borderWidth: 1,
-      borderColor: colors.primary + '30',
-      borderRadius: radius('full'),
-    },
-    secondaryActionButtonText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-      color: colors.primary,
-    },
-    disabledButton: {
-      opacity: state.disabled,
-    },
-    autoBackupSection: {
-      gap: spacing('3'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-      backgroundColor: colors.surface,
-    },
-    autoBackupRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-    },
-    proBadge: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 3,
-      paddingHorizontal: spacing('2'),
-      paddingVertical: 2,
-      borderRadius: radius('full'),
-      backgroundColor: alpha(colors.primary, 'subtle'),
-    },
-    proBadgeText: {
-      fontFamily: typography.fonts.bold,
-      ...typography.metrics.xxs,
-      color: colors.primary,
     },
   });

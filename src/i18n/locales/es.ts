@@ -375,7 +375,7 @@ const es: Translation = {
     channelReminders: 'Recordatorios y alertas', channelBackup: 'Progreso de la copia en la nube',
     backupSyncing: '☁️ Sincronizando copia en la nube', syncingStage: 'Sincronizando datos del espacio con Google Drive...', startingBackup: 'Iniciando copia en segundo plano...',
     backupComplete: '✅ Copia en la nube completada', backupCompleteBody: 'El historial de tu espacio se guardó de forma segura en la nube.',
-    backupFailed: '⚠️ Error en la copia en la nube', backupFailedBody: 'No se pudo completar la copia en la nube. Comprueba tu conexión a internet.',
+    backupFailed: '⚠️ Error en la copia en la nube', backupFailedBody: 'No se pudo completar la copia en la nube. Comprueba tu conexión a internet.', backupReconnect: '⚠️ Copia en la nube en pausa', backupReconnectBody: 'Tu conexión con Google Drive caducó. Abre Fintraq y vuelve a conectarla para reanudar las copias.',
     paymentIncoming: '¿Llega un pago?', emiDue: 'Cuota a pagar hoy', lendEmiBody: '{{name}} debería enviarte hoy un pago.', borrowEmiBody: 'No lo olvides: envía hoy su pago a {{name}}.',
     loanDueSoon: 'Préstamo por vencer', repaymentDueSoon: 'Pago por vencer', lendDueBody: 'El préstamo de {{name}} vence {{when}}.', borrowDueBody: 'Tu pago del préstamo a {{name}} vence {{when}}.',
     today: 'hoy', tomorrow: 'mañana', inDays: 'en {{count}} días',

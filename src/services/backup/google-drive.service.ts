@@ -1,33 +1,24 @@
-import { getAuth, GoogleAuthProvider, signInWithCredential, signOut as firebaseSignOut, User as FirebaseUser } from '@react-native-firebase/auth';
-import { GoogleSignin, isErrorWithCode, isSuccessResponse, statusCodes } from '@react-native-google-signin/google-signin';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithCredential,
+  signOut as firebaseSignOut,
+  User as FirebaseUser,
+} from '@react-native-firebase/auth';
+import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
 import googleServicesConfig from '@/google-services.json';
-import { GoogleDriveAuthError, GoogleDriveHttpError } from './google-drive.errors';
-import { DriveProgressCallback, driveFetch, driveXhrRequest, transferTimeoutMs } from './google-drive.http';
 import i18n from '@/src/i18n';
 import { LoggerService } from '@/src/services/logger.service';
-
-function mapFirebaseUser(user: FirebaseUser): GoogleUserAccount {
-  return {
-    id: user.uid,
-    email: user.email ?? '',
-    name: user.displayName,
-    photo: user.photoURL,
-  };
-}
-
-export type GoogleUserAccount = {
-  id: string;
-  email: string;
-  name: string | null;
-  photo: string | null;
-};
-
-export type CloudBackupFileMeta = {
-  id: string;
-  name: string;
-  modifiedTime: string;
-  size: number;
-};
+import type { CloudBackupFileMeta, GoogleUserAccount } from './backup.types';
+import {
+  GoogleDriveAuthError,
+  GoogleDriveHttpError,
+  GoogleDriveNetworkError,
+  isScopeDeniedError,
+  isTokenGrantError,
+} from './google-drive.errors';
+import { DriveProgressCallback, driveFetch, driveXhrRequest, transferTimeoutMs } from './google-drive.http';
 
 type DriveFileResource = {
   id?: string;
@@ -50,13 +41,20 @@ const FILE_FIELDS = 'id,name,modifiedTime,size';
 // Firebase restores the persisted session natively; on a cold headless start the JS side can
 // briefly report no user. Bounded so a broken auth module can't stall a background task.
 const AUTH_RESTORE_TIMEOUT_MS = 5_000;
+// Token fetches right after the radio wakes from Doze can fail transiently; a couple of spaced
+// attempts ride that out. Definitive answers (no saved credential, revoked grant) end it early.
+const TOKEN_ATTEMPTS = 3;
+const TOKEN_RETRY_BASE_MS = 1_000;
 // OAuth client type 3 = web client, required to mint the idToken Firebase needs.
 const WEB_CLIENT_TYPE = 3;
 
 function getWebClientId(): string | undefined {
   const config = googleServicesConfig as GoogleServicesConfig;
-  const oauthClients = config.client?.[0]?.oauth_client ?? [];
-  return oauthClients.find((c) => c.client_type === WEB_CLIENT_TYPE)?.client_id;
+  return config.client?.[0]?.oauth_client?.find((c) => c.client_type === WEB_CLIENT_TYPE)?.client_id;
+}
+
+function mapFirebaseUser(user: FirebaseUser): GoogleUserAccount {
+  return { id: user.uid, email: user.email ?? '', name: user.displayName, photo: user.photoURL };
 }
 
 function toFileMeta(file: DriveFileResource, fallback: { id: string; size?: number }): CloudBackupFileMeta {
@@ -68,21 +66,29 @@ function toFileMeta(file: DriveFileResource, fallback: { id: string; size?: numb
   };
 }
 
-function utf8ByteLength(value: string): number {
-  // Close-enough upper bound without allocating an encoded copy of a potentially large payload.
-  return value.length * 2;
-}
+// Upper bound (UTF-16 code units × 2) — only sizes a timeout, so no need to encode the payload.
+const approxByteLength = (value: string) => value.length * 2;
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | undefined> {
-  return Promise.race([promise, new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), ms))]);
+  return Promise.race([promise, sleep(ms).then(() => undefined)]);
 }
 
+/**
+ * Google Drive appDataFolder access plus the account session behind it.
+ *
+ * "Connected" means a Firebase user exists — Firebase persists it natively, so it resolves in
+ * headless runs too. Drive calls need a Google OAuth token on top; when that grant is
+ * definitively gone the session is ended on both sides, so every screen and the background task
+ * agree the user must reconnect instead of retrying forever.
+ */
 class GoogleDriveServiceClass {
   private isInitialized = false;
   private activeTokenPromise: Promise<string> | null = null;
   private activeFindBackupPromise: Promise<CloudBackupFileMeta | null> | null = null;
 
-  public initialize(force = false) {
+  private initialize(force = false) {
     if (this.isInitialized && !force) return;
     try {
       const webClientId = getWebClientId();
@@ -97,17 +103,16 @@ class GoogleDriveServiceClass {
     }
   }
 
+  // ── Session ────────────────────────────────────────────────────────────────
+
   public async signIn(): Promise<GoogleUserAccount | null> {
     this.initialize(true);
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
     const response = await GoogleSignin.signIn();
-
     if (!isSuccessResponse(response)) return null;
 
     const idToken = response.data.idToken;
-    if (!idToken) {
-      throw new GoogleDriveAuthError();
-    }
+    if (!idToken) throw new GoogleDriveAuthError();
 
     // Google's granular consent screen lets people untick the Drive permission while still
     // signing in. Without it every backup 403s later, so ask again up front instead.
@@ -120,226 +125,193 @@ class GoogleDriveServiceClass {
       }
     }
 
-    const credential = GoogleAuthProvider.credential(idToken);
-    const { user } = await signInWithCredential(getAuth(), credential);
+    const { user } = await signInWithCredential(getAuth(), GoogleAuthProvider.credential(idToken));
     const account = mapFirebaseUser(user);
-    LoggerService.info('GOOGLE_DRIVE', `Signed in to Firebase Auth: ${account.email}`);
+    LoggerService.info('GOOGLE_DRIVE', `Signed in: ${account.email}`);
     return account;
   }
 
-  /** Firebase Auth persists the session natively (Keychain/SharedPreferences) and resolves
-   * without needing UI, which is what headless background execution actually requires. */
   public async getCurrentUser(): Promise<GoogleUserAccount | null> {
     const auth = getAuth();
     if (!auth.currentUser) {
       await withTimeout(auth.authStateReady(), AUTH_RESTORE_TIMEOUT_MS);
     }
+    return auth.currentUser ? mapFirebaseUser(auth.currentUser) : null;
+  }
 
-    const currentUser = auth.currentUser;
-    if (currentUser) {
-      return mapFirebaseUser(currentUser);
-    }
-
-    LoggerService.info('GOOGLE_DRIVE', 'No signed-in Firebase user resolved');
-    return null;
+  /** Fires with the current account now and on every sign-in / sign-out / session loss. */
+  public subscribeToAccount(listener: (account: GoogleUserAccount | null) => void): () => void {
+    return onAuthStateChanged(getAuth(), (user) => listener(user ? mapFirebaseUser(user) : null));
   }
 
   public async signOut(): Promise<void> {
     this.initialize();
-    try {
-      await Promise.all([firebaseSignOut(getAuth()), GoogleSignin.signOut()]);
-    } catch (e) {
-      LoggerService.warn('GOOGLE_DRIVE', 'Sign out error', e);
-    }
+    const results = await Promise.allSettled([firebaseSignOut(getAuth()), GoogleSignin.signOut()]);
+    results.forEach((r) => {
+      if (r.status === 'rejected') LoggerService.warn('GOOGLE_DRIVE', 'Sign out error', r.reason);
+    });
   }
 
-  private async getAccessToken(): Promise<string> {
-    if (this.activeTokenPromise) {
-      LoggerService.info('GOOGLE_DRIVE', 'Single-flight: sharing active getAccessToken request across callers');
-      return this.activeTokenPromise;
+  /** The grant is unusable: end the session everywhere so state stays consistent, then report it. */
+  private async endSession(reason: string): Promise<never> {
+    LoggerService.warn('GOOGLE_DRIVE', `Drive session lost (${reason}); signing out so the user can reconnect`);
+    await this.signOut();
+    throw new GoogleDriveAuthError();
+  }
+
+  // ── Tokens ─────────────────────────────────────────────────────────────────
+
+  private getAccessToken(): Promise<string> {
+    if (!this.activeTokenPromise) {
+      this.activeTokenPromise = this.fetchAccessToken().finally(() => {
+        this.activeTokenPromise = null;
+      });
     }
+    return this.activeTokenPromise;
+  }
 
-    this.activeTokenPromise = (async () => {
-      this.initialize();
+  private async fetchAccessToken(): Promise<string> {
+    this.initialize();
+    let lastError: unknown = null;
 
-      // After long device sleep (headless background task woken from hours of Doze), the
-      // first signInSilently() attempt can hit a transient network/timeout blip before the
-      // radio is fully back up. Retry a couple times, but never retry SIGN_IN_REQUIRED —
-      // that means there's genuinely no session, and retrying can't fix that.
-      const maxAttempts = 3;
-      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-        try {
-          const tokens = await GoogleSignin.getTokens();
-          if (tokens.accessToken) return tokens.accessToken;
-        } catch (e) {
-          LoggerService.info('GOOGLE_DRIVE', `getTokens attempt ${attempt} note`, e);
-        }
-
-        try {
+    for (let attempt = 1; attempt <= TOKEN_ATTEMPTS; attempt++) {
+      try {
+        // getTokens() needs google-signin's in-memory user, which a fresh process (headless
+        // included) doesn't have until signInSilently() restores it from the saved credential.
+        if (!GoogleSignin.getCurrentUser()) {
           const silent = await GoogleSignin.signInSilently();
-          if (silent.type === 'success') {
-            const tokens = await GoogleSignin.getTokens();
-            if (tokens.accessToken) return tokens.accessToken;
+          if (silent.type === 'noSavedCredentialFound') {
+            return this.endSession('no saved Google credential');
           }
-        } catch (e) {
-          LoggerService.info('GOOGLE_DRIVE', `signInSilently attempt ${attempt} note`, e);
-          if (isErrorWithCode(e) && e.code === statusCodes.SIGN_IN_REQUIRED) break;
         }
-
-        if (attempt < maxAttempts) {
-          await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
-        }
+        const { accessToken } = await GoogleSignin.getTokens();
+        if (accessToken) return accessToken;
+        lastError = new Error('Empty access token');
+      } catch (e) {
+        if (e instanceof GoogleDriveAuthError) throw e;
+        if (isTokenGrantError(e)) return this.endSession('token grant rejected');
+        lastError = e;
+        LoggerService.info('GOOGLE_DRIVE', `Token attempt ${attempt}/${TOKEN_ATTEMPTS} failed`, e);
       }
-
-      LoggerService.warn('GOOGLE_DRIVE', 'Could not retrieve active OAuth access token for Google Drive API');
-      throw new GoogleDriveAuthError();
-    })();
-
-    try {
-      return await this.activeTokenPromise;
-    } finally {
-      this.activeTokenPromise = null;
+      if (attempt < TOKEN_ATTEMPTS) await sleep(TOKEN_RETRY_BASE_MS * attempt);
     }
+
+    // Still connected — most likely offline. Transient, so callers retry later without signing out.
+    throw new GoogleDriveNetworkError('getAccessToken', lastError);
   }
 
   /**
-   * Runs `fn` with a fresh access token. Android's getTokens() can hand back a cached token
-   * that has already expired; on a 401 we evict it and retry once before declaring the
-   * session dead.
+   * Runs `fn` with an access token. Android's getTokens() can return a cached token that has
+   * already expired, so a 401 evicts it and retries once; a second 401, or a 403 for a missing
+   * Drive scope, means the grant itself is gone.
    */
   private async withAccessToken<T>(fn: (token: string) => Promise<T>): Promise<T> {
     const token = await this.getAccessToken();
     try {
       return await fn(token);
     } catch (e) {
+      if (isScopeDeniedError(e)) return this.endSession('Drive scope denied');
       if (!(e instanceof GoogleDriveHttpError) || e.status !== 401) throw e;
 
       LoggerService.info('GOOGLE_DRIVE', 'Access token rejected (401), refreshing and retrying once');
       await GoogleSignin.clearCachedAccessToken(token).catch(() => {});
-      const freshToken = await this.getAccessToken();
       try {
-        return await fn(freshToken);
+        return await fn(await this.getAccessToken());
       } catch (retryError) {
         if (retryError instanceof GoogleDriveHttpError && retryError.status === 401) {
-          throw new GoogleDriveAuthError();
+          return this.endSession('token rejected after refresh');
         }
+        if (isScopeDeniedError(retryError)) return this.endSession('Drive scope denied');
         throw retryError;
       }
     }
   }
 
-  /** Returns null only if no signed-in user or no backup exists; network/HTTP errors are rethrown, not swallowed. */
-  public async findLatestBackup(): Promise<CloudBackupFileMeta | null> {
-    if (this.activeFindBackupPromise) {
-      LoggerService.info('GOOGLE_DRIVE', 'Single-flight: sharing active findLatestBackup request across callers');
-      return this.activeFindBackupPromise;
-    }
+  // ── Files ──────────────────────────────────────────────────────────────────
 
-    this.activeFindBackupPromise = (async () => {
-      const user = await this.getCurrentUser();
-      if (!user) return null;
-
-      return this.withAccessToken(async (token) => {
-        const query = encodeURIComponent(`name = '${BACKUP_FILENAME}' and 'appDataFolder' in parents and trashed = false`);
-        const url = `${DRIVE_FILES_URL}?spaces=appDataFolder&q=${query}&fields=files(${FILE_FIELDS})&orderBy=modifiedTime%20desc`;
-
-        const response = await driveFetch(url, {
-          method: 'GET',
-          headers: { Authorization: `Bearer ${token}` },
-          operation: 'findLatestBackup',
-        });
-
-        const data = (await response.json()) as DriveFileList;
-        const latest = data.files?.[0];
-        if (!latest?.id) return null;
-        return toFileMeta(latest, { id: latest.id });
+  /** Null when signed out or no backup exists; network/HTTP errors are rethrown, never swallowed. */
+  public findLatestBackup(): Promise<CloudBackupFileMeta | null> {
+    if (!this.activeFindBackupPromise) {
+      this.activeFindBackupPromise = this.queryLatestBackup().finally(() => {
+        this.activeFindBackupPromise = null;
       });
-    })();
-
-    try {
-      return await this.activeFindBackupPromise;
-    } finally {
-      this.activeFindBackupPromise = null;
     }
+    return this.activeFindBackupPromise;
+  }
+
+  private async queryLatestBackup(): Promise<CloudBackupFileMeta | null> {
+    if (!(await this.getCurrentUser())) return null;
+
+    return this.withAccessToken(async (token) => {
+      const query = encodeURIComponent(`name = '${BACKUP_FILENAME}' and 'appDataFolder' in parents and trashed = false`);
+      const url = `${DRIVE_FILES_URL}?spaces=appDataFolder&q=${query}&fields=files(${FILE_FIELDS})&orderBy=modifiedTime%20desc`;
+      const response = await driveFetch(url, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+        operation: 'findLatestBackup',
+      });
+      const latest = ((await response.json()) as DriveFileList).files?.[0];
+      return latest?.id ? toFileMeta(latest, { id: latest.id }) : null;
+    });
   }
 
   private async createBackupFileEntry(token: string): Promise<string> {
     const response = await driveFetch(`${DRIVE_FILES_URL}?fields=id`, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: BACKUP_FILENAME,
-        parents: ['appDataFolder'],
-        mimeType: 'application/json',
-      }),
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: BACKUP_FILENAME, parents: ['appDataFolder'], mimeType: 'application/json' }),
       operation: 'createBackupFileEntry',
     });
-
-    const data = (await response.json()) as DriveFileResource;
-    if (!data.id) {
-      throw new Error('Failed to resolve Google Drive file ID for backup.');
-    }
-    return data.id;
+    const { id } = (await response.json()) as DriveFileResource;
+    if (!id) throw new Error('Failed to resolve Google Drive file ID for backup.');
+    return id;
   }
 
-  private uploadContent(
-    token: string,
-    fileId: string,
-    content: string,
-    onProgress?: DriveProgressCallback,
-  ): Promise<string> {
+  private async resolveBackupFileId(token: string): Promise<string> {
+    return (await this.findLatestBackup())?.id ?? (await this.createBackupFileEntry(token));
+  }
+
+  private uploadContent(token: string, fileId: string, content: string, onProgress?: DriveProgressCallback): Promise<string> {
     return driveXhrRequest(`${DRIVE_UPLOAD_URL}/${fileId}?uploadType=media&fields=${FILE_FIELDS}`, {
       method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json; charset=UTF-8' },
       body: content,
       operation: 'uploadBackupContent',
-      timeoutMs: transferTimeoutMs(utf8ByteLength(content)),
+      timeoutMs: transferTimeoutMs(approxByteLength(content)),
       onProgress,
     });
   }
 
-  /** Pass `knownFileId` to skip the extra `findLatestBackup` lookup. */
-  public async uploadBackup(
-    contentJsonString: string,
-    knownFileId?: string,
-    onProgress?: DriveProgressCallback,
-  ): Promise<CloudBackupFileMeta> {
+  /**
+   * Overwrites the single backup file. `knownFileId` (cached) skips a lookup; if that file has
+   * since been deleted (user wiped app data from Drive settings) the 404 re-resolves it instead
+   * of failing every backup until the cache happens to refresh.
+   */
+  public uploadBackup(content: string, knownFileId?: string, onProgress?: DriveProgressCallback): Promise<CloudBackupFileMeta> {
     return this.withAccessToken(async (token) => {
-      let fileId = knownFileId ?? (await this.findLatestBackup())?.id ?? (await this.createBackupFileEntry(token));
-
+      let fileId = knownFileId ?? (await this.resolveBackupFileId(token));
       let responseText: string;
       try {
-        responseText = await this.uploadContent(token, fileId, contentJsonString, onProgress);
+        responseText = await this.uploadContent(token, fileId, content, onProgress);
       } catch (e) {
-        // A cached file id goes stale when the user wipes app data from Drive settings;
-        // without this every future backup would 404 until the cache happened to refresh.
         if (!(e instanceof GoogleDriveHttpError) || e.status !== 404 || !knownFileId) throw e;
         LoggerService.info('GOOGLE_DRIVE', 'Cached backup file id no longer exists, re-resolving');
-        fileId = (await this.findLatestBackup())?.id ?? (await this.createBackupFileEntry(token));
-        responseText = await this.uploadContent(token, fileId, contentJsonString, onProgress);
+        fileId = await this.resolveBackupFileId(token);
+        responseText = await this.uploadContent(token, fileId, content, onProgress);
       }
 
       let parsed: DriveFileResource = {};
       try {
         parsed = JSON.parse(responseText) as DriveFileResource;
       } catch {
-        // Upload succeeded (2xx); metadata is best-effort.
+        // Upload succeeded (2xx); response metadata is best-effort.
       }
-      return toFileMeta(parsed, { id: fileId, size: contentJsonString.length });
+      return toFileMeta(parsed, { id: fileId, size: content.length });
     });
   }
 
-  /**
-   * Download content string of fileId from Google Drive.
-   * `expectedBytes` (from the file listing) scales the timeout for large backups.
-   */
-  public async downloadBackup(fileId: string, onProgress?: DriveProgressCallback, expectedBytes = 0): Promise<string> {
+  /** `expectedBytes` (from the file listing) scales the timeout for large backups. */
+  public downloadBackup(fileId: string, onProgress?: DriveProgressCallback, expectedBytes = 0): Promise<string> {
     return this.withAccessToken((token) =>
       driveXhrRequest(`${DRIVE_FILES_URL}/${fileId}?alt=media`, {
         method: 'GET',
@@ -351,19 +323,11 @@ class GoogleDriveServiceClass {
     );
   }
 
-  /**
-   * Permanently delete existing backup file from Google Drive AppData folder
-   */
+  /** Permanently deletes the backup file. Returns false when there was none. */
   public async deleteBackup(): Promise<boolean> {
-    const user = await this.getCurrentUser();
-    if (!user) {
-      throw new Error('Please sign in to Google Drive first.');
-    }
-
+    if (!(await this.getCurrentUser())) throw new GoogleDriveAuthError();
     const file = await this.findLatestBackup();
-    if (!file?.id) {
-      return false;
-    }
+    if (!file) return false;
 
     await this.withAccessToken((token) =>
       driveFetch(`${DRIVE_FILES_URL}/${file.id}`, {
@@ -372,7 +336,6 @@ class GoogleDriveServiceClass {
         operation: 'deleteBackup',
       }),
     );
-
     return true;
   }
 }

@@ -65,4 +65,12 @@ const loans = {
   summary: (currency: string) => [...loans.all, 'summary', currency] as const,
 };
 
-export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics, loans } as const;
+const backup = {
+  all: ['backup'] as const,
+  account: () => [...backup.all, 'account'] as const,
+  latests: () => [...backup.all, 'latest'] as const,
+  latest: (accountId: string) => [...backup.latests(), accountId] as const,
+  autoBackupSwitch: () => [...backup.all, 'auto-backup-switch'] as const,
+};
+
+export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics, loans, backup } as const;

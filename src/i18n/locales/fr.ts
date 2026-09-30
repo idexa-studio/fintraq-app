@@ -375,7 +375,7 @@ const fr: Translation = {
     channelReminders: 'Rappels et alertes', channelBackup: 'Progression de la sauvegarde cloud',
     backupSyncing: '☁️ Synchronisation de la sauvegarde cloud', syncingStage: "Synchronisation des données de l'espace avec Google Drive...", startingBackup: 'Démarrage de la sauvegarde en arrière-plan...',
     backupComplete: '✅ Sauvegarde cloud terminée', backupCompleteBody: "L'historique de votre espace a été sauvegardé en toute sécurité dans le cloud.",
-    backupFailed: '⚠️ Échec de la sauvegarde cloud', backupFailedBody: 'Impossible de terminer la sauvegarde cloud. Vérifiez votre connexion internet.',
+    backupFailed: '⚠️ Échec de la sauvegarde cloud', backupFailedBody: 'Impossible de terminer la sauvegarde cloud. Vérifiez votre connexion internet.', backupReconnect: '⚠️ Sauvegarde cloud en pause', backupReconnectBody: 'Votre connexion Google Drive a expiré. Ouvrez Fintraq et reconnectez-vous pour reprendre les sauvegardes.',
     paymentIncoming: 'Un paiement arrive ?', emiDue: "Échéance à payer aujourd'hui", lendEmiBody: "{{name}} devrait vous envoyer un remboursement aujourd'hui.", borrowEmiBody: "N'oubliez pas : envoyez aujourd'hui son remboursement à {{name}}.",
     loanDueSoon: 'Prêt bientôt échu', repaymentDueSoon: 'Remboursement bientôt dû', lendDueBody: "Le prêt de {{name}} arrive à échéance {{when}}.", borrowDueBody: 'Votre remboursement à {{name}} arrive à échéance {{when}}.',
     today: "aujourd'hui", tomorrow: 'demain', inDays: 'dans {{count}} jours',
