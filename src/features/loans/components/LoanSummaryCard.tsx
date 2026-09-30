@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Badge, MoneyText, PersonAvatar, ProgressBar, Text } from '@/src/components/ui';
+import { Badge, MoneyText, PersonAvatar, ProgressBar, StatColumns, Text } from '@/src/components/ui';
 import type { LoanWithStats } from '@/src/features/loans/api/loans';
 import { LoanStatusBadge } from '@/src/features/loans/components/LoanStatusBadge';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -66,24 +66,17 @@ export const LoanSummaryCard = React.memo(function LoanSummaryCard({ loan, perso
         </View>
       </View>
 
-      <View style={styles.columns}>
-        {[
-          { key: 'principal', label: t('loans.principal'), amount: loan.principal },
-          { key: 'repaid', label: t('loans.repaid'), amount: loan.repaid },
-        ].map((c, i) => (
-          <View key={c.key} style={[styles.column, i > 0 && styles.columnDivider]}>
-            <Text variant="micro" tone="muted">
-              {c.label}
-            </Text>
-            <MoneyText amount={c.amount} currency={loan.currency} weight="semibold" compact style={styles.columnValue} numberOfLines={1} />
-          </View>
-        ))}
-      </View>
+      <StatColumns
+        columns={[
+          { key: 'principal', label: t('loans.principal'), amount: loan.principal, currency: loan.currency },
+          { key: 'repaid', label: t('loans.repaid'), amount: loan.repaid, currency: loan.currency },
+        ]}
+      />
     </View>
   );
 });
 
-const createStyles = ({ colors, spacing, radius, typography, alpha }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({
     card: { backgroundColor: colors.surface, borderRadius: radius('xl'), padding: spacing('4'), gap: spacing('4') },
     top: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
@@ -92,8 +85,4 @@ const createStyles = ({ colors, spacing, radius, typography, alpha }: ThemeConte
     balance: typography.metrics.xxxl,
     progress: { gap: spacing('1.5') },
     progressMeta: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing('3') },
-    columns: { flexDirection: 'row', paddingTop: spacing('3'), borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: alpha(colors.text, 'subtle') },
-    column: { flex: 1, gap: spacing('0.5') },
-    columnDivider: { paddingLeft: spacing('4'), borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: alpha(colors.text, 'subtle') },
-    columnValue: typography.metrics.md,
   });

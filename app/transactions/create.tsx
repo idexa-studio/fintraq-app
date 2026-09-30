@@ -5,8 +5,10 @@ import type { TransactionType } from '@/src/types';
 
 const TYPES: readonly TransactionType[] = ['DR', 'CR', 'TR'];
 
+/** Optional params pre-set the form: `type` (DR | CR | TR) and `accountId`. */
 export default function CreateTransactionRoute() {
-  const { type } = useLocalSearchParams<{ type?: string }>();
+  const { type, accountId } = useLocalSearchParams<{ type?: string; accountId?: string }>();
   const initialType = TYPES.find((t) => t === type);
-  return <TransactionFormPage mode="create" initialType={initialType} />;
+  const parsedAccountId = Number.parseInt(accountId ?? '', 10);
+  return <TransactionFormPage mode="create" initialType={initialType} initialAccountId={Number.isFinite(parsedAccountId) ? parsedAccountId : undefined} />;
 }

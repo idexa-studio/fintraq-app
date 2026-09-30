@@ -1,5 +1,5 @@
 import { GalleryGroup, Specimen } from '@/src/features/design-gallery/components/Specimen';
-import { EmptyState, IconButton, ListGroup, ListItem, PersonAvatar, SectionHeader, StatTile, Text } from '@/src/components/ui';
+import { EmptyState, IconButton, ListGroup, ListItem, PersonAvatar, SectionHeader, StatColumns, StatTile, Text } from '@/src/components/ui';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { toDbColor } from '@/src/utils/format';
@@ -32,7 +32,7 @@ const SAMPLE_TXS: TxData[] = [
 const noop = () => {};
 
 export function PatternsSection() {
-  const { spacing, colors } = useTheme();
+  const { spacing, colors, radius } = useTheme();
 
   return (
     <View style={{ gap: spacing('9') }}>
@@ -71,6 +71,17 @@ export function PatternsSection() {
           <View style={{ flexDirection: 'row', gap: spacing('2') }}>
             <StatTile label="Income" icon={ArrowUpRightIcon} iconColor={colors.success} amount={84200} currency="INR" type="CR" compact />
             <StatTile label="Spent" icon={ArrowDownLeftIcon} iconColor={colors.danger} amount={5450} currency="INR" type="DR" compact />
+          </View>
+          {/* StatColumns: the secondary figures under a card's headline number. */}
+          <View style={{ backgroundColor: colors.surface, borderRadius: radius('xl'), padding: spacing('4'), gap: spacing('3') }}>
+            <Text variant="label" tone="muted">Net position</Text>
+            <StatColumns
+              columns={[
+                { key: 'in', label: 'Income', amount: 84200, currency: 'INR', type: 'CR', delta: 12 },
+                { key: 'out', label: 'Expenses', amount: 5450, currency: 'INR', type: 'DR', delta: -4, positiveIsGood: false },
+                { key: 'locked', label: 'Projected', content: <Text variant="label" color={colors.primaryInk}>Pro</Text>, onPress: noop },
+              ]}
+            />
           </View>
           {/* `caption` names what the number is about. */}
           <View style={{ flexDirection: 'row', gap: spacing('2') }}>

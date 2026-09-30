@@ -29,6 +29,8 @@ type Props = {
   transactionId?: number | null;
   /** Starting type for a new entry (quick actions open the form pre-set). Ignored when editing. */
   initialType?: TransactionType;
+  /** Starting account for a new entry (e.g. opened from an account's screen). Ignored when editing. */
+  initialAccountId?: number;
 };
 
 const parseAmount = (raw: string): number => {
@@ -37,7 +39,7 @@ const parseAmount = (raw: string): number => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
-export const TransactionFormPage = React.memo(function TransactionFormPage({ mode, transactionId, initialType = 'DR' }: Props) {
+export const TransactionFormPage = React.memo(function TransactionFormPage({ mode, transactionId, initialType = 'DR', initialAccountId }: Props) {
   const router = useRouter();
   const isEditMode = mode === 'edit';
 
@@ -112,10 +114,10 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       selectedAccountId === null ||
       !accounts.some((a) => a.id === selectedAccountId)
     ) {
-      const preferred = accounts.find((a) => a.isDefault) ?? accounts[0];
+      const preferred = accounts.find((a) => a.id === initialAccountId) ?? accounts.find((a) => a.isDefault) ?? accounts[0];
       setSelectedAccountId(preferred.id);
     }
-  }, [accounts, selectedAccountId]);
+  }, [accounts, selectedAccountId, initialAccountId]);
 
   React.useEffect(() => {
     if (filteredCategories.length === 0) {
