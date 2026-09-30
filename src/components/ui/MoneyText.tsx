@@ -33,11 +33,13 @@ export const MoneyText = React.memo(function MoneyText({
 
     let p = '';
     let c = colors.text;
+    // Nothing moved: "+$0" / "-$0" would claim a direction, so zero is always unsigned and neutral.
+    const isZero = Math.round(Math.abs(amount) * 100) === 0;
 
-    if (type === 'CR') {
+    if (!isZero && type === 'CR') {
       p = '+';
       c = colors.success;
-    } else if (type === 'DR') {
+    } else if (!isZero && type === 'DR') {
       p = '-';
       c = colors.danger;
     }

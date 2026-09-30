@@ -45,7 +45,7 @@ export const CurrencyPickerTab = React.memo(function CurrencyPickerTab({
             accessibilityRole="tab"
             accessibilityState={{ selected: isSelected }}
           >
-            <Text variant={isSelected ? 'label' : 'caption'} color={isSelected ? activeInk : heroCard.textMuted}>
+            <Text variant={isSelected ? 'label' : 'caption'} color={isSelected ? activeInk : heroCard.textPrimary}>
               {c}
             </Text>
           </BentoPressable>

@@ -17,7 +17,7 @@ type Props = {
 
 /**
  * One-tap entry points for the most common writes, each opening its form already set up. Drawn as
- * frosted white tiles inside the hero card, with the card's own ink for icons and labels.
+ * tiles a shade deeper than the hero card, with white icons and labels.
  */
 export const QuickActions = React.memo(function QuickActions({ canTransfer }: Props) {
   const theme = useTheme();
@@ -49,8 +49,8 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
           accessibilityRole="button"
           accessibilityLabel={action.label}
         >
-          <Icon icon={action.icon} size={20} color={heroCard.textPrimary} weight="bold" />
-          <Text variant="label" color={heroCard.textPrimary} numberOfLines={1}>
+          <Icon icon={action.icon} size={20} color={heroCard.actionInk} weight="bold" />
+          <Text variant="label" color={heroCard.actionInk} numberOfLines={1}>
             {action.label}
           </Text>
         </BentoPressable>
