@@ -1,72 +1,67 @@
 import { useQuery } from '@tanstack/react-query';
-import { QUERY_KEYS } from '@/src/lib/query-keys';
-import { getDaysAgoLocal } from '@/src/utils/date';
 import * as api from '@/src/features/analytics/api/analytics';
 import { getPersonBreakdown } from '@/src/features/persons/api/persons';
+import { QUERY_KEYS } from '@/src/lib/query-keys';
+import type { AnalyticsWindow } from '@/src/utils/analytics';
 
-export const useAnalyticsDailyData = (currency: string, rangeDays: number) =>
+// Keys carry the window's dates, so a screen left open past midnight refetches for the new day.
+const STALE = 30_000;
+const current = (w: AnalyticsWindow): api.DayRange => ({ start: w.start, end: w.end });
+
+export const useAnalyticsSeries = (currency: string, w: AnalyticsWindow) =>
   useQuery({
-    queryKey: QUERY_KEYS.analytics.daily(currency, rangeDays),
-    queryFn: () => api.getDailyTimeSeries(currency, getDaysAgoLocal(rangeDays)),
+    queryKey: QUERY_KEYS.analytics.series(currency, w.start, w.end, w.byMonth),
+    queryFn: async () => (w.byMonth
+      ? (await api.getMonthlyTimeSeries(currency, current(w))).map((m) => ({ slot: m.month, income: m.income, expense: m.expense }))
+      : (await api.getDailyTimeSeries(currency, current(w))).map((d) => ({ slot: d.day, income: d.income, expense: d.expense }))),
     enabled: !!currency,
-    staleTime: 30_000,
+    staleTime: STALE,
   });
 
-export const useAnalyticsMonthlyData = (currency: string) =>
+export const useAnalyticsCategoryBreakdown = (currency: string, w: AnalyticsWindow) =>
   useQuery({
-    queryKey: QUERY_KEYS.analytics.monthly(currency),
-    queryFn: () => api.getMonthlyTimeSeries(currency, 12),
+    queryKey: QUERY_KEYS.analytics.categories(currency, w.start, w.end),
+    queryFn: () => api.getCategoryBreakdown(currency, current(w)),
     enabled: !!currency,
-    staleTime: 30_000,
+    staleTime: STALE,
   });
 
-export const useAnalyticsCategoryBreakdown = (currency: string, rangeDays: number | null) =>
+export const useAnalyticsIncomeCategoryBreakdown = (currency: string, w: AnalyticsWindow) =>
   useQuery({
-    queryKey: QUERY_KEYS.analytics.categories(currency, rangeDays),
-    queryFn: () => api.getCategoryBreakdown(currency, rangeDays ? getDaysAgoLocal(rangeDays) : null),
+    queryKey: QUERY_KEYS.analytics.incomeCategories(currency, w.start, w.end),
+    queryFn: () => api.getIncomeCategoryBreakdown(currency, current(w)),
     enabled: !!currency,
-    staleTime: 30_000,
+    staleTime: STALE,
   });
 
-export const useAnalyticsIncomeCategoryBreakdown = (currency: string, rangeDays: number | null) =>
+export const useAnalyticsDow = (currency: string, w: AnalyticsWindow) =>
   useQuery({
-    queryKey: QUERY_KEYS.analytics.incomeCategories(currency, rangeDays),
-    queryFn: () => api.getIncomeCategoryBreakdown(currency, rangeDays ? getDaysAgoLocal(rangeDays) : null),
+    queryKey: QUERY_KEYS.analytics.dow(currency, w.start, w.end),
+    queryFn: () => api.getSpendByDayOfWeek(currency, current(w)),
     enabled: !!currency,
-    staleTime: 30_000,
+    staleTime: STALE,
   });
 
-export const useAnalyticsDow = (currency: string, rangeDays: number | null) =>
+export const useAnalyticsPersonBreakdown = (currency: string, w: AnalyticsWindow) =>
   useQuery({
-    queryKey: QUERY_KEYS.analytics.dow(currency, rangeDays),
-    queryFn: () => api.getSpendByDayOfWeek(currency, rangeDays ? getDaysAgoLocal(rangeDays) : null),
+    queryKey: QUERY_KEYS.analytics.personBreakdown(currency, w.start, w.end),
+    queryFn: () => getPersonBreakdown(currency, current(w)),
     enabled: !!currency,
-    staleTime: 30_000,
+    staleTime: STALE,
   });
 
-export const useAnalyticsPersonBreakdown = (currency: string, rangeDays: number) =>
+export const useAnalyticsPreviousPeriod = (currency: string, w: AnalyticsWindow) =>
   useQuery({
-    queryKey: QUERY_KEYS.analytics.personBreakdown(currency, rangeDays),
-    queryFn: () => getPersonBreakdown(currency, rangeDays),
+    queryKey: QUERY_KEYS.analytics.previousPeriod(currency, w.previousStart, w.previousEnd),
+    queryFn: () => api.getPeriodSummary(currency, { start: w.previousStart, end: w.previousEnd }),
     enabled: !!currency,
-    staleTime: 30_000,
+    staleTime: STALE,
   });
 
-export const useAnalyticsPreviousPeriod = (currency: string, rangeDays: number) => {
-  const prevStart = getDaysAgoLocal(rangeDays * 2);
-  const prevEnd = getDaysAgoLocal(rangeDays);
-  return useQuery({
-    queryKey: QUERY_KEYS.analytics.previousPeriod(currency, rangeDays),
-    queryFn: () => api.getPreviousPeriodSummary(currency, prevStart, prevEnd),
-    enabled: !!currency,
-    staleTime: 30_000,
-  });
-};
-
-export const useAnalyticsBiggestExpense = (currency: string, rangeDays: number | null) =>
+export const useAnalyticsBiggestExpense = (currency: string, w: AnalyticsWindow) =>
   useQuery({
-    queryKey: QUERY_KEYS.analytics.biggestExpense(currency, rangeDays),
-    queryFn: () => api.getBiggestExpense(currency, rangeDays ? getDaysAgoLocal(rangeDays) : null),
+    queryKey: QUERY_KEYS.analytics.biggestExpense(currency, w.start, w.end),
+    queryFn: () => api.getBiggestExpense(currency, current(w)),
     enabled: !!currency,
-    staleTime: 30_000,
+    staleTime: STALE,
   });

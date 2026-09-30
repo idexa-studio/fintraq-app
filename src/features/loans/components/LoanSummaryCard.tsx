@@ -6,6 +6,7 @@ import type { LoanWithStats } from '@/src/features/loans/api/loans';
 import { LoanStatusBadge } from '@/src/features/loans/components/LoanStatusBadge';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, formatDate } from '@/src/utils/format';
+import { parseDateKey } from '@/src/utils/date';
 
 type Props = { loan: LoanWithStats; personName: string };
 
@@ -60,7 +61,7 @@ export const LoanSummaryCard = React.memo(function LoanSummaryCard({ loan, perso
           </Text>
           {loan.dueDate ? (
             <Text variant="caption" tone={loan.computedStatus === 'overdue' ? 'danger' : 'muted'}>
-              {t('loans.due', { date: formatDate(new Date(loan.dueDate), { day: 'numeric', month: 'short', year: 'numeric' }) })}
+              {t('loans.due', { date: formatDate(parseDateKey(loan.dueDate), { day: 'numeric', month: 'short', year: 'numeric' }) })}
             </Text>
           ) : null}
         </View>

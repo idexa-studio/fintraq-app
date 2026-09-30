@@ -114,15 +114,9 @@ export const getPersonsNetByCurrency = async (currency: string): Promise<Map<num
   return new Map(rows.map(r => [r.id, r.net ?? 0]));
 };
 
-export const getPersonBreakdown = async (
-  currency: string,
-  days: number,
-): Promise<PersonSpend[]> => {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - days);
-  const cutoffStr = cutoff.toISOString().slice(0, 10);
-
-  const result = await db
+/** Spending with each person in the period (local days, both ends inclusive), largest first. */
+export const getPersonBreakdown = async (currency: string, range: { start: string; end: string }): Promise<PersonSpend[]> =>
+  db
     .select({
       id: persons.id,
       name: persons.name,
@@ -132,16 +126,6 @@ export const getPersonBreakdown = async (
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
     .innerJoin(persons, eq(payments.personId, persons.id))
-    .where(
-      and(
-        eq(accounts.currency, currency),
-        eq(payments.type, 'DR'),
-        sql`${PAYMENT_LOCAL_DAY} >= ${cutoffStr}`,
-      )
-    )
+    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`${PAYMENT_LOCAL_DAY} BETWEEN ${range.start} AND ${range.end}`))
     .groupBy(persons.id)
     .orderBy(desc(sum(payments.amount)));
-
-  return result as PersonSpend[];
-};
-

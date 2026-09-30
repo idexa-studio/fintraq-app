@@ -52,14 +52,13 @@ const search = {
 
 const analytics = {
   all: ['analytics'] as const,
-  daily: (currency: string, days: number) => [...analytics.all, 'daily', currency, days] as const,
-  monthly: (currency: string) => [...analytics.all, 'monthly', currency] as const,
-  categories: (currency: string, days: number | null) => [...analytics.all, 'categories', currency, days] as const,
-  incomeCategories: (currency: string, days: number | null) => [...analytics.all, 'income-categories', currency, days] as const,
-  dow: (currency: string, days: number | null) => [...analytics.all, 'dow', currency, days] as const,
-  personBreakdown: (currency: string, days: number) => [...analytics.all, 'person-breakdown', currency, days] as const,
-  previousPeriod: (currency: string, days: number) => [...analytics.all, 'prev-period', currency, days] as const,
-  biggestExpense: (currency: string, days: number | null) => [...analytics.all, 'biggest-expense', currency, days] as const,
+  series: (currency: string, start: string, end: string, byMonth: boolean) => [...analytics.all, 'series', currency, start, end, byMonth] as const,
+  categories: (currency: string, start: string, end: string) => [...analytics.all, 'categories', currency, start, end] as const,
+  incomeCategories: (currency: string, start: string, end: string) => [...analytics.all, 'income-categories', currency, start, end] as const,
+  dow: (currency: string, start: string, end: string) => [...analytics.all, 'dow', currency, start, end] as const,
+  personBreakdown: (currency: string, start: string, end: string) => [...analytics.all, 'person-breakdown', currency, start, end] as const,
+  previousPeriod: (currency: string, start: string, end: string) => [...analytics.all, 'prev-period', currency, start, end] as const,
+  biggestExpense: (currency: string, start: string, end: string) => [...analytics.all, 'biggest-expense', currency, start, end] as const,
 };
 
 const loans = {

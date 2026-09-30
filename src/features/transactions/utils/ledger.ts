@@ -1,4 +1,5 @@
 import type { TransactionType } from '@/src/types';
+import { getLocalISOString } from '@/src/utils/date';
 
 /** The fields of a payment that decide how it moves account balances. */
 export type LedgerEntry = {
@@ -56,13 +57,18 @@ export function accountDeltas(entry: LedgerEntry, direction: 1 | -1): AccountDel
 
 export type LoanStatus = 'active' | 'overdue' | 'repaid';
 
+/** What is still owed, to the cent, never negative (overpayment settles the loan). */
+export function loanOutstanding(principal: number, repaid: number): number {
+  return Math.max(0, Math.round((principal - repaid) * 100) / 100);
+}
+
 /**
- * A loan's status from what has been paid back. Compared in cents, so three repayments of 33.33,
- * 33.33 and 33.34 settle 100 despite floating-point sums.
+ * A loan's status from what has been paid back. Settled once nothing is outstanding to the cent
+ * (33.33 + 33.33 + 33.34 settles 100); overdue from the day after the due date, in local days.
  */
 export function loanStatus(principal: number, repaid: number, dueDate: string | null, now: Date): LoanStatus {
-  if (Math.round((principal - repaid) * 100) <= 0) return 'repaid';
-  if (dueDate && now > new Date(dueDate)) return 'overdue';
+  if (loanOutstanding(principal, repaid) <= 0) return 'repaid';
+  if (dueDate && getLocalISOString(now) > dueDate.slice(0, 10)) return 'overdue';
   return 'active';
 }
 

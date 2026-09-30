@@ -17,6 +17,7 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { FREE_LOAN_LIMIT } from '@/src/constants/iap';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, formatDate, parseAmount } from '@/src/utils/format';
+import { getLocalISOString } from '@/src/utils/date';
 import { toErrorMessage } from '@/src/utils/errors';
 import { useCreateLoan, useLoansCount } from '@/src/features/loans/hooks/loans';
 import { Coins02Icon, HandshakeIcon, Money01Icon } from '@hugeicons/core-free-icons';
@@ -103,7 +104,8 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
           principal: amount,
           currency: account.currency,
           accountId: selectedAccountId!,
-          dueDate: dueDate ? dueDate.toISOString().slice(0, 10) : undefined,
+          // The picked calendar day, not its UTC date (a day early just after midnight east of UTC).
+          dueDate: dueDate ? getLocalISOString(dueDate) : undefined,
           note: note.trim(),
         },
         txPayload: {

@@ -9,6 +9,15 @@ export const getLocalISOString = (date: Date = new Date()): string => {
 };
 
 /**
+ * A stored "YYYY-MM-DD" as local midnight. `new Date('2026-10-05')` means UTC midnight, which is
+ * the previous day west of UTC — so date-only strings are always read with this.
+ */
+export const parseDateKey = (value: string): Date => {
+  const [y, m, d] = value.slice(0, 10).split('-').map(Number) as [number, number, number];
+  return new Date(y, m - 1, d);
+};
+
+/**
  * getDaysAgoLocal: Returns the YYYY-MM-DD string for N days ago in local time.
  */
 export const getDaysAgoLocal = (days: number): string => {
