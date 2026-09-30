@@ -130,10 +130,47 @@ const createStyles = ({ colors, spacing, radius }: ThemeContextType) =>
 ### Comments
 Explain *why*, not *what*: constraints, platform quirks, non-obvious maths. Delete commented-out code.
 
+## Cloud backup
+
+Offline-first: SQLite is the source of truth; Google Drive `appDataFolder` holds one JSON snapshot
+(`fintraq_backup.json`). The format is versioned in `services/backup/backup-snapshot.ts` and every
+older shape must keep restoring — covered by `__tests__/backup-snapshot.test.ts`.
+
+```
+features/backup/hooks        React Query + useSyncExternalStore; the only thing screens import
+  useBackupAccount           connected account (Firebase auth state is the source of truth)
+  useLatestBackup            newest Drive file, cached offline, updated by completed runs
+  useAutoBackupSetting       the switch: permission gate → pref → OS task → first run
+  useEnableCloudBackup       connect + auto-backup in one step (every "set up backup" entry point)
+  useCloudBackupActions      manual backup / restore
+  useBackupProgress          live progress of any run, including auto-backups
+services/backup
+  cloud-backup.service       the one backup pipeline (export → upload w/ retry → record)
+  cloud-restore.service      the one restore pipeline (locate → download → import)
+  auto-backup.service        policy: entitled? enabled? idle? due? signed in? → run
+  auto-backup.triggers       foreground checks: launch, resume, Android backgrounding
+  background-backup.task     headless OS task (WorkManager / BGTaskScheduler) → same policy
+  backup-state               single operation slot (backup | restore) + progress, shared store
+  backup-preferences         the only reader/writer of backup AsyncStorage keys
+  backup-schedule            pure timing rules (due, overdue, check cadence)
+  database-backup.service    snapshot export and atomic import
+  google-drive.*             Drive API, auth/session, transport, error classification
+```
+
+Rules that keep it reliable:
+- **One operation at a time.** Claim the slot with `tryBeginOperation` *before* the first `await`.
+- **Auth vs transient.** Only a definitively unusable grant is a `GoogleDriveAuthError`; the Drive
+  service then ends the session so every screen and the background task agree. Network failures
+  are transient and never sign the user out.
+- **Foreground checks are the reliable path**; OS background scheduling is best-effort.
+- `patches/expo-background-task+1.0.10.patch` backports expo/expo#44663 and #44667 (Android worker
+  was replaced on every cold start). Drop it when upgrading to an SDK that ships those fixes.
+
 ## Checks before a PR
 
 ```bash
 npx tsc --noEmit     # types
 npx expo lint        # lint (no warnings)
+npm test             # unit tests (Jest)
 ```
 Open **Settings → tap the footer 10× → Developer (PIN) → Design gallery** and check any component you touched in both themes.
