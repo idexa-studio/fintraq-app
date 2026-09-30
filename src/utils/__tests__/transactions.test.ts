@@ -1,4 +1,8 @@
+import { format } from 'date-fns';
 import { groupByDay, sumByCurrency } from '@/src/utils/transactions';
+
+// A fixed English formatter keeps the assertions independent of the device locale.
+const title = (d: Date, withYear: boolean) => format(d, withYear ? 'EEE, d MMM yyyy' : 'EEE, d MMM');
 
 const tx = (type: string, amount: number, currency = 'INR', datetime = '2026-09-30T10:00:00') => ({
   type,
@@ -27,7 +31,7 @@ describe('groupByDay', () => {
       tx('DR', 2, 'INR', '2026-09-30T08:00:00'),
       tx('DR', 3, 'INR', '2026-09-28T12:00:00'),
     ];
-    const sections = groupByDay(items, new Date('2026-10-02T00:00:00'));
+    const sections = groupByDay(items, new Date('2026-10-02T00:00:00'), title);
     expect(sections.map((s) => s.key)).toEqual(['2026-09-30', '2026-09-28']);
     expect(sections[0].data.map((t) => t.amount)).toEqual([1, 2]);
     expect(sections[0].title).toBe('Wed, 30 Sep');
@@ -38,6 +42,7 @@ describe('groupByDay', () => {
     const sections = groupByDay(
       [tx('DR', 1, 'INR', '2031-10-01T10:00:00'), tx('DR', 2, 'INR', '2025-10-01T10:00:00')],
       new Date('2026-10-02T00:00:00'),
+      title,
     );
     expect(sections).toHaveLength(2);
     expect(sections.map((s) => s.title)).toEqual(['Wed, 1 Oct 2031', 'Wed, 1 Oct 2025']);

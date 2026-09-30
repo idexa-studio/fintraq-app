@@ -1,4 +1,4 @@
-import { Banner, Button, Card, Divider, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, SegmentedControl, SelectField, Text } from '@/src/components/ui';
+import { AlertDialog, Banner, Button, Card, Divider, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, SegmentedControl, SelectField, Text } from '@/src/components/ui';
 import { CalendarBlankIcon } from '@/src/components/ui/icons';
 import { Screen } from '@/src/components/ui/Screen';
 
@@ -6,15 +6,17 @@ import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex, formatDate } from '@/src/utils/format';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
 import type { AccountType } from '@/src/types';
 import { Download01Icon, Folder01Icon, Share01Icon } from '@hugeicons/core-free-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { CsvExportService, ExportDateRange } from '@/src/features/export/api/csv-export.service';
 import { useTranslation } from 'react-i18next';
+import { useAlertDialog } from '@/src/hooks/useAlertDialog';
+import { toErrorMessage } from '@/src/utils/errors';
 
 
 const DATE_PRESETS = [
@@ -34,6 +36,7 @@ const TYPE_OPTIONS = [
 export const ExportScreen = React.memo(function ExportScreen() {
   const theme = useTheme();
   const { t } = useTranslation();
+  const { showAlert, alertProps } = useAlertDialog();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const accountsQuery = useAccounts();
@@ -64,10 +67,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
     return { startDate: new Date(), endDate: new Date() };
   }, [customRange, selectedPreset]);
 
-  const formatDate = useCallback((date: Date) =>
-    date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
-    [],
-  );
+  const shortDate = (date: Date) => formatDate(date, { year: 'numeric', month: 'short', day: 'numeric' });
 
   const handlePresetSelect = useCallback((key: string) => {
     setSelectedPreset(key);
@@ -112,27 +112,27 @@ export const ExportScreen = React.memo(function ExportScreen() {
       setExportedData(result);
       setShowExportOptions(true);
     } catch (error) {
-      Alert.alert(t('export.failed'), error instanceof Error ? error.message : t('export.failedMessage'));
+      showAlert({ title: t('export.failed'), message: toErrorMessage(error, t('export.failedMessage')), type: 'error' });
     } finally {
       setIsExporting(false);
     }
-  }, [effectiveDateRange, selectedAccountId, selectedType, includeLoans, t]);
+  }, [effectiveDateRange, selectedAccountId, selectedType, includeLoans, showAlert, t]);
 
   const handleSave = useCallback(async () => {
     if (!exportedData) return;
     setShowExportOptions(false);
     try { await CsvExportService.saveToFolder(exportedData.content, exportedData.filename); }
-    catch (error) { Alert.alert(t('export.saveFailed'), error instanceof Error ? error.message : t('export.saveFailedMessage')); }
+    catch (error) { showAlert({ title: t('export.saveFailed'), message: toErrorMessage(error, t('export.saveFailedMessage')), type: 'error' }); }
     finally { setExportedData(null); }
-  }, [exportedData, t]);
+  }, [exportedData, showAlert, t]);
 
   const handleShare = useCallback(async () => {
     if (!exportedData) return;
     setShowExportOptions(false);
     try { await CsvExportService.shareFile(exportedData.content, exportedData.filename); }
-    catch (error) { Alert.alert(t('export.shareFailed'), error instanceof Error ? error.message : t('export.shareFailedMessage')); }
+    catch (error) { showAlert({ title: t('export.shareFailed'), message: toErrorMessage(error, t('export.shareFailedMessage')), type: 'error' }); }
     finally { setExportedData(null); }
-  }, [exportedData, t]);
+  }, [exportedData, showAlert, t]);
 
   return (
     <Screen header={{ title: t('export.title'), showBack: true }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
@@ -153,8 +153,8 @@ export const ExportScreen = React.memo(function ExportScreen() {
         </ListGroup>
         {customRange ? (
           <ListGroup insetDividers={false} style={styles.group}>
-            <SelectField label={t('export.from')} value={formatDate(customRange.startDate)} trailingIcon={CalendarBlankIcon} onPress={() => setShowStartPicker(true)} />
-            <SelectField label={t('export.to')} value={formatDate(customRange.endDate)} trailingIcon={CalendarBlankIcon} onPress={() => setShowEndPicker(true)} />
+            <SelectField label={t('export.from')} value={shortDate(customRange.startDate)} trailingIcon={CalendarBlankIcon} onPress={() => setShowStartPicker(true)} />
+            <SelectField label={t('export.to')} value={shortDate(customRange.endDate)} trailingIcon={CalendarBlankIcon} onPress={() => setShowEndPicker(true)} />
           </ListGroup>
         ) : null}
 
@@ -196,7 +196,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
           <View style={styles.summaryRow}>
             <Text variant="callout" tone="muted">{t('export.period')}</Text>
             <Text variant="caption" tone="muted">
-              {formatDate(effectiveDateRange.startDate)} — {formatDate(effectiveDateRange.endDate)}
+              {shortDate(effectiveDateRange.startDate)} — {shortDate(effectiveDateRange.endDate)}
             </Text>
           </View>
         </Card>
@@ -235,6 +235,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
           { key: 'share', label: t('export.shareToApps'), icon: Share01Icon, selected: false, onPress: handleShare },
         ]}
       />
+      <AlertDialog {...alertProps} />
     </Screen>
   );
 });

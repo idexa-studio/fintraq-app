@@ -5,9 +5,9 @@ import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { AccountType, TransactionType } from '@/src/types';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex, formatDate } from '@/src/utils/format';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
-import { format, isToday, isYesterday } from 'date-fns';
+import { isToday, isYesterday } from 'date-fns';
 import React, { useCallback, useMemo } from 'react';
 import { AccessibilityActionEvent, AccessibilityActionInfo, StyleSheet, View } from 'react-native';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
@@ -88,9 +88,9 @@ export const TransactionRow = React.memo(function TransactionRow({
 
   const dateTimeText = useMemo(() => {
     const d = new Date(tx.datetime);
-    const time = format(d, 'h:mm a');
+    const time = formatDate(d, { hour: 'numeric', minute: '2-digit' });
     if (!showDate) return time;
-    const dateLabel = isToday(d) ? t('common.today') : isYesterday(d) ? t('common.yesterday') : format(d, 'MMM d');
+    const dateLabel = isToday(d) ? t('common.today') : isYesterday(d) ? t('common.yesterday') : formatDate(d, { day: 'numeric', month: 'short' });
     return `${time} · ${dateLabel}`;
   }, [tx.datetime, showDate, t]);
 
@@ -127,20 +127,20 @@ export const TransactionRow = React.memo(function TransactionRow({
 
       {/* Centre: title + account meta */}
       <View style={styles.body}>
-        <Text style={styles.title} numberOfLines={1}>{displayTitle}</Text>
+        <Text variant="bodyStrong" numberOfLines={1}>{displayTitle}</Text>
 
         {tx.type === 'TR' ? (
           <View style={styles.metaRow}>
             <Icon icon={accountIcon} size={10} color={accountColor} />
-            <Text style={styles.metaText} numberOfLines={1}>{tx.account.name}</Text>
-            <Text style={styles.metaSep}>→</Text>
+            <Text variant="caption" tone="muted" numberOfLines={1} style={styles.shrink}>{tx.account.name}</Text>
+            <Text variant="caption" tone="muted">→</Text>
             <Icon icon={toAccountIcon} size={10} color={toAccountColor} />
-            <Text style={styles.metaText} numberOfLines={1}>{tx.toAccount?.name ?? '—'}</Text>
+            <Text variant="caption" tone="muted" numberOfLines={1} style={styles.shrink}>{tx.toAccount?.name ?? '—'}</Text>
           </View>
         ) : (
           <View style={styles.metaRow}>
             <Icon icon={accountIcon} size={10} color={accountColor} />
-            <Text style={styles.metaText} numberOfLines={1}>{tx.account.name}</Text>
+            <Text variant="caption" tone="muted" numberOfLines={1} style={styles.shrink}>{tx.account.name}</Text>
           </View>
         )}
       </View>
@@ -154,7 +154,7 @@ export const TransactionRow = React.memo(function TransactionRow({
           weight="semibold"
           style={styles.amount}
         />
-        <Text style={styles.time} numberOfLines={1}>{dateTimeText}</Text>
+        <Text variant="caption" tone="muted" numberOfLines={1}>{dateTimeText}</Text>
       </View>
     </BentoPressable>
     {/* Hairline inset under the text column — same rhythm as ListGroup rows. */}
@@ -169,7 +169,7 @@ export const TransactionRow = React.memo(function TransactionRow({
 
 TransactionRow.displayName = 'TransactionRow';
 
-const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
+const createStyles = ({ typography, spacing }: ThemeContextType) =>
   StyleSheet.create({
     row: {
       flexDirection: 'row',
@@ -183,11 +183,6 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
       minWidth: 0,
       gap: spacing('0.5'),
     },
-    title: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.md,
-      color: colors.text,
-    },
     metaRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -195,28 +190,12 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
       flexShrink: 1,
       minWidth: 0,
     },
-    metaText: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-      flexShrink: 1,
-      minWidth: 0,
-    },
-    metaSep: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-    },
+    shrink: { flexShrink: 1, minWidth: 0 },
     right: {
       alignItems: 'flex-end',
       gap: spacing('0.5'),
     },
     amount: {
       ...typography.metrics.md,
-    },
-    time: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
     },
   });
