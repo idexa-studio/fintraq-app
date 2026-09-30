@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/src/lib/query-keys';
-import { invalidateAll } from '@/src/utils/query';
+import { invalidateLedger } from '@/src/utils/query';
 import * as api from '@/src/features/loans/api/loans';
 
 export const useLoans = (type?: api.LoanType) =>
@@ -44,16 +44,6 @@ export const useLoansCount = () =>
     queryFn: api.getLoansCount,
   });
 
-const LOAN_INVALIDATION_KEYS = (queryClient: ReturnType<typeof useQueryClient>) =>
-  invalidateAll(
-    queryClient,
-    QUERY_KEYS.loans.all,
-    QUERY_KEYS.transactions.all,
-    QUERY_KEYS.accounts.all,
-    QUERY_KEYS.dashboard.all,
-    QUERY_KEYS.persons.all,
-  );
-
 export const useCreateLoan = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -61,7 +51,7 @@ export const useCreateLoan = () => {
       data: api.CreateLoanData;
       txPayload: { categoryId?: number; note: string; datetime: string };
     }) => api.createLoan(data, txPayload),
-    onSuccess: () => LOAN_INVALIDATION_KEYS(queryClient),
+    onSuccess: () => invalidateLedger(queryClient),
   });
 };
 
@@ -71,7 +61,7 @@ export const useUpdateLoan = () => {
     mutationFn: ({ id, data }: { id: number; data: api.UpdateLoanData }) =>
       api.updateLoan(id, data),
     onSuccess: (_, { id }) =>
-      invalidateAll(queryClient, QUERY_KEYS.loans.all, QUERY_KEYS.loans.detail(id), QUERY_KEYS.dashboard.all),
+      invalidateLedger(queryClient),
   });
 };
 
@@ -79,7 +69,7 @@ export const useMarkLoanRepaid = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => api.markLoanRepaid(id),
-    onSuccess: () => LOAN_INVALIDATION_KEYS(queryClient),
+    onSuccess: () => invalidateLedger(queryClient),
   });
 };
 
@@ -87,7 +77,7 @@ export const useDeleteLoan = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.deleteLoan,
-    onSuccess: () => LOAN_INVALIDATION_KEYS(queryClient),
+    onSuccess: () => invalidateLedger(queryClient),
   });
 };
 
@@ -104,6 +94,6 @@ export const useAddRepayment = () => {
       datetime: string;
       note: string;
     }) => api.addRepayment(payload),
-    onSuccess: () => LOAN_INVALIDATION_KEYS(queryClient),
+    onSuccess: () => invalidateLedger(queryClient),
   });
 };

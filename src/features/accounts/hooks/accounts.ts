@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/src/lib/query-keys';
-import { invalidateAll } from '@/src/utils/query';
+import { invalidateLedger } from '@/src/utils/query';
 import * as api from '@/src/features/accounts/api/accounts';
 
 export const useAccounts = () => {
@@ -22,11 +22,7 @@ export const useCreateAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.createAccount,
-    onSuccess: () => invalidateAll(queryClient,
-      QUERY_KEYS.accounts.all,
-      QUERY_KEYS.transactions.all,
-      QUERY_KEYS.dashboard.all,
-    ),
+    onSuccess: () => invalidateLedger(queryClient),
   });
 };
 
@@ -35,12 +31,7 @@ export const useUpdateAccount = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: api.UpdateAccountData }) =>
       api.updateAccount(id, data),
-    onSuccess: (_, { id }) => invalidateAll(queryClient,
-      QUERY_KEYS.accounts.all,
-      QUERY_KEYS.accounts.detail(id),
-      QUERY_KEYS.transactions.all,
-      QUERY_KEYS.dashboard.all,
-    ),
+    onSuccess: (_, { id }) => invalidateLedger(queryClient),
   });
 };
 
@@ -48,10 +39,6 @@ export const useDeleteAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.deleteAccount,
-    onSuccess: () => invalidateAll(queryClient,
-      QUERY_KEYS.accounts.all,
-      QUERY_KEYS.transactions.all,
-      QUERY_KEYS.dashboard.all,
-    ),
+    onSuccess: () => invalidateLedger(queryClient),
   });
 };

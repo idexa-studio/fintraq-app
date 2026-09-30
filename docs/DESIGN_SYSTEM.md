@@ -94,7 +94,7 @@ All components are exported from `@/src/components/ui`.
 |---|---|
 | `Button` | `primary` (one per screen) · `tonal` · `secondary` · `outline` · `ghost` · `danger` · `success`. Sizes `sm/md/lg`, `fullWidth`, `icon` + `iconPosition`, `isLoading`. |
 | `IconButton` | Icon-only. `surface · ghost · tonal · filled · danger`. `accessibilityLabel` required. |
-| `BentoPressable` | Press primitive for custom tappables (ripple on Android, scale on iOS). Never `TouchableOpacity`. |
+| `BentoPressable` | Press primitive for custom tappables: a slight shrink (or a fade with `scaleOnPress={false}`), the same on every platform. No ripple, no ink overlay. Never `TouchableOpacity`. |
 
 ### Inputs & selection
 | Component | Use |

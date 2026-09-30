@@ -3,7 +3,8 @@ import { and, desc, eq, sql } from 'drizzle-orm';
 import { db } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import { TransactionType } from '@/src/types';
-import { applyBalanceDelta } from '@/src/features/transactions/api/transactions';
+import { recordPaymentIn } from '@/src/features/transactions/api/transactions';
+import { repaymentType } from '@/src/features/transactions/utils/ledger';
 
 export type Loan = typeof loans.$inferSelect;
 export type InsertLoan = typeof loans.$inferInsert;
@@ -271,6 +272,10 @@ export const resolveLoanCategory = async (): Promise<number> => {
   return created.id;
 };
 
+/**
+ * Creates the loan and the payment that moved the principal, in one transaction: a loan without
+ * its payment (or a payment without its balance change) can't be left behind.
+ */
 export const createLoan = async (
   data: CreateLoanData,
   txPayload: {
@@ -279,29 +284,24 @@ export const createLoan = async (
     datetime: string;
   },
 ): Promise<Loan> => {
-  const categoryId = txPayload.categoryId ?? data.categoryId ?? await resolveLoanCategory();
+  const categoryId = txPayload.categoryId ?? data.categoryId ?? (await resolveLoanCategory());
+  // Lending sends money out of the account; borrowing brings it in.
+  const principalType: TransactionType = data.type === 'lend' ? 'DR' : 'CR';
 
-  const [loan] = await db.insert(loans).values({
-    ...data,
-    categoryId,
-  }).returning();
-
-  const txType: TransactionType = data.type === 'lend' ? 'DR' : 'CR';
-  await db.insert(payments).values({
-    accountId: data.accountId,
-    categoryId: categoryId,
-    personId: data.personId,
-    loanId: loan.id,
-    amount: data.principal,
-    type: txType,
-    datetime: txPayload.datetime,
-    note: txPayload.note || (data.type === 'lend' ? 'Loan given' : 'Loan received'),
+  return db.transaction((tx) => {
+    const loan = tx.insert(loans).values({ ...data, categoryId }).returning().get();
+    recordPaymentIn(tx, {
+      accountId: data.accountId,
+      categoryId,
+      personId: data.personId,
+      loanId: loan.id,
+      amount: data.principal,
+      type: principalType,
+      datetime: txPayload.datetime,
+      note: txPayload.note || (data.type === 'lend' ? 'Loan given' : 'Loan received'),
+    });
+    return loan;
   });
-
-  // Keep account balance updated
-  await applyBalanceDelta(data.accountId, txType, data.principal, 1);
-
-  return loan;
 };
 
 export const updateLoan = async (id: number, data: UpdateLoanData): Promise<Loan> => {
@@ -321,6 +321,7 @@ export const deleteLoan = async (id: number): Promise<void> => {
   await db.delete(loans).where(eq(loans.id, id));
 };
 
+/** Records a repayment and updates the loan's status in the same transaction. */
 export const addRepayment = async (payload: {
   loanId: number;
   loanType: LoanType;
@@ -331,39 +332,22 @@ export const addRepayment = async (payload: {
   datetime: string;
   note: string;
 }): Promise<{ repaymentId: number; isFullyRepaid: boolean }> => {
-  const categoryId = payload.categoryId ?? await resolveLoanCategory();
-  const txType: TransactionType = payload.loanType === 'lend' ? 'CR' : 'DR';
+  const categoryId = payload.categoryId ?? (await resolveLoanCategory());
 
-  const [tx] = await db.insert(payments).values({
-    accountId: payload.accountId,
-    categoryId: categoryId,
-    personId: payload.personId,
-    loanId: payload.loanId,
-    amount: payload.amount,
-    type: txType,
-    datetime: payload.datetime,
-    note: payload.note || (payload.loanType === 'lend' ? 'Loan repayment received' : 'Loan repayment sent'),
-  }).returning();
-
-  // Keep account balance updated
-  await applyBalanceDelta(payload.accountId, txType, payload.amount, 1);
-
-  const [loanRow] = await db.select().from(loans).where(eq(loans.id, payload.loanId));
-  if (!loanRow) return { repaymentId: tx.id, isFullyRepaid: false };
-
-  const [{ totalRepaid }] = await db
-    .select({ totalRepaid: sql<number>`COALESCE(SUM(${payments.amount}), 0)` })
-    .from(payments)
-    .where(and(eq(payments.loanId, payload.loanId), eq(payments.type, txType)));
-
-  const outstanding = Math.max(0, loanRow.principal - (totalRepaid ?? 0));
-  const isFullyRepaid = outstanding <= 0;
-
-  if (isFullyRepaid && loanRow.status !== 'repaid') {
-    await db.update(loans).set({ status: 'repaid', updatedAt: new Date().toISOString() }).where(eq(loans.id, payload.loanId));
-  }
-
-  return { repaymentId: tx.id, isFullyRepaid };
+  return db.transaction((tx) => {
+    const payment = recordPaymentIn(tx, {
+      accountId: payload.accountId,
+      categoryId,
+      personId: payload.personId,
+      loanId: payload.loanId,
+      amount: payload.amount,
+      type: repaymentType(payload.loanType),
+      datetime: payload.datetime,
+      note: payload.note || (payload.loanType === 'lend' ? 'Loan repayment received' : 'Loan repayment sent'),
+    });
+    const loan = tx.select({ status: loans.status }).from(loans).where(eq(loans.id, payload.loanId)).get();
+    return { repaymentId: payment.id, isFullyRepaid: loan?.status === 'repaid' };
+  });
 };
 
 export const getLoansCount = async (): Promise<number> => {

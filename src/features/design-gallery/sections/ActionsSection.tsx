@@ -85,7 +85,7 @@ export function ActionsSection() {
 
         <Specimen
           title="BentoPressable"
-          description="The press primitive under every tappable element: native ripple on Android, scale + overlay on iOS. Use it for custom tappables instead of TouchableOpacity."
+          description="The press primitive under every tappable element: a slight shrink, or a fade with scaleOnPress off — the same on every platform, no ripple. Use it for custom tappables instead of TouchableOpacity."
         >
           <BentoPressable onPress={noop} style={{ padding: spacing('4'), borderRadius: radius('lg'), backgroundColor: colors.card }}>
             <Text variant="bodyStrong">Press me</Text>

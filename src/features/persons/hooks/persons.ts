@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/src/lib/query-keys';
-import { invalidateAll } from '@/src/utils/query';
+import { invalidateLedger } from '@/src/utils/query';
 import * as api from '@/src/features/persons/api/persons';
 
 export const usePersons = () =>
@@ -34,7 +34,7 @@ export const useCreatePerson = () => {
   return useMutation({
     mutationFn: api.createPerson,
     onSuccess: () =>
-      invalidateAll(queryClient, QUERY_KEYS.persons.all, QUERY_KEYS.dashboard.all),
+      invalidateLedger(queryClient),
   });
 };
 
@@ -44,12 +44,7 @@ export const useUpdatePerson = () => {
     mutationFn: ({ id, data }: { id: number; data: api.UpdatePersonData }) =>
       api.updatePerson(id, data),
     onSuccess: (_, { id }) =>
-      invalidateAll(
-        queryClient,
-        QUERY_KEYS.persons.all,
-        QUERY_KEYS.persons.detail(id),
-        QUERY_KEYS.dashboard.all,
-      ),
+      invalidateLedger(queryClient),
   });
 };
 
@@ -58,11 +53,6 @@ export const useDeletePerson = () => {
   return useMutation({
     mutationFn: api.deletePerson,
     onSuccess: () =>
-      invalidateAll(
-        queryClient,
-        QUERY_KEYS.persons.all,
-        QUERY_KEYS.transactions.all,
-        QUERY_KEYS.dashboard.all,
-      ),
+      invalidateLedger(queryClient),
   });
 };

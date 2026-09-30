@@ -38,9 +38,10 @@ function getClosestPaletteColor(dbColor: number): number {
 }
 
 export async function seed(): Promise<void> {
-  await db.transaction(async (tx) => {
+  // Sync callback: the expo-sqlite driver commits an async callback at its first await.
+  db.transaction((tx) => {
     // 1. Migrate Categories
-    const allCategories = await tx.select().from(categories);
+    const allCategories = tx.select().from(categories).all();
     for (const cat of allCategories) {
       let updatedIcon = cat.icon;
       if (cat.icon in LEGACY_ICON_MAP) {
@@ -50,14 +51,15 @@ export async function seed(): Promise<void> {
       const updatedColor = getClosestPaletteColor(cat.color);
 
       if (updatedIcon !== cat.icon || updatedColor !== cat.color) {
-        await tx.update(categories)
+        tx.update(categories)
           .set({ icon: updatedIcon, color: updatedColor })
-          .where(eq(categories.id, cat.id));
+          .where(eq(categories.id, cat.id))
+          .run();
       }
     }
 
     // 2. Migrate Accounts
-    const allAccounts = await tx.select().from(accounts);
+    const allAccounts = tx.select().from(accounts).all();
     for (const acc of allAccounts) {
       let updatedIcon = acc.icon;
       if (acc.icon in LEGACY_ICON_MAP) {
@@ -67,21 +69,23 @@ export async function seed(): Promise<void> {
       const updatedColor = getClosestPaletteColor(acc.color);
 
       if (updatedIcon !== acc.icon || updatedColor !== acc.color) {
-        await tx.update(accounts)
+        tx.update(accounts)
           .set({ icon: updatedIcon, color: updatedColor })
-          .where(eq(accounts.id, acc.id));
+          .where(eq(accounts.id, acc.id))
+          .run();
       }
     }
 
     // 3. Migrate Persons
-    const allPersons = await tx.select().from(persons);
+    const allPersons = tx.select().from(persons).all();
     for (const per of allPersons) {
       const updatedColor = getClosestPaletteColor(per.color);
 
       if (updatedColor !== per.color) {
-        await tx.update(persons)
+        tx.update(persons)
           .set({ color: updatedColor })
-          .where(eq(persons.id, per.id));
+          .where(eq(persons.id, per.id))
+          .run();
       }
     }
   });

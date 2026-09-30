@@ -4,6 +4,7 @@ import { db } from '@/src/db/client';
 import { accounts, categories, payments, persons, loans } from '@/src/db/schema';
 import type { TransactionType } from '@/src/types';
 import { LoggerService } from '@/src/services/logger.service';
+import { accountDeltas, AccountDelta, LedgerEntry, LedgerError, loanStatus, repaymentType, validateEntry } from '@/src/features/transactions/utils/ledger';
 
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = typeof payments.$inferInsert;
@@ -237,126 +238,89 @@ export const getTransactionDetailById = async (id: number): Promise<TransactionD
   return (row as TransactionDetail) ?? null;
 };
 
-// ─── Account balance helpers ──────────────────────────────────────────────────
+// ─── Ledger writes ───────────────────────────────────────────────────────────
+//
+// Every write that moves money touches several rows: the payment, one or two account balances and,
+// for loan payments, the loan's status. They run in one SQLite transaction so they land together
+// or not at all.
+//
+// The expo-sqlite driver is synchronous: `db.transaction` runs BEGIN, calls the callback, then
+// COMMIT. An async callback would commit at its first `await` and run the rest outside the
+// transaction, so everything below uses the sync query API (`.get()`, `.all()`, `.run()`).
 
-export const applyBalanceDelta = async (
-  accountId: number,
-  type: TransactionType,
-  amount: number,
-  direction: 1 | -1,
-): Promise<void> => {
-  if (type === 'TR') {
-    await db
-      .update(accounts)
-      .set({ balance: sql`${accounts.balance} + ${direction * amount}` })
-      .where(eq(accounts.id, accountId));
-    return;
+/** A handle inside `db.transaction`; the ledger helpers below take one so callers can compose them. */
+export type DbTx = Parameters<Parameters<typeof db.transaction>[0]>[0];
+
+const applyDeltas = (tx: DbTx, deltas: AccountDelta[]): void => {
+  for (const d of deltas) {
+    tx.update(accounts)
+      .set({
+        balance: sql`${accounts.balance} + ${d.balance}`,
+        income: sql`${accounts.income} + ${d.income}`,
+        expense: sql`${accounts.expense} + ${d.expense}`,
+      })
+      .where(eq(accounts.id, d.accountId))
+      .run();
   }
-
-  const sign = type === 'CR' ? 1 : -1;
-  const balanceDelta = sign * direction * amount;
-  const incomeDelta  = type === 'CR' ? direction * amount : 0;
-  const expenseDelta = type === 'DR' ? direction * amount : 0;
-
-  await db
-    .update(accounts)
-    .set({
-      balance: sql`${accounts.balance} + ${balanceDelta}`,
-      income:  sql`${accounts.income}  + ${incomeDelta}`,
-      expense: sql`${accounts.expense} + ${expenseDelta}`,
-    })
-    .where(eq(accounts.id, accountId));
 };
 
-// ─── Loan status syncing ──────────────────────────────────────────────────────
+/** Both sides of a transfer must exist and share a currency; balances can't mix currencies. */
+const assertTransferAccounts = (tx: DbTx, entry: LedgerEntry): void => {
+  if (entry.type !== 'TR' || entry.toAccountId == null) return;
+  const from = tx.select({ currency: accounts.currency }).from(accounts).where(eq(accounts.id, entry.accountId)).get();
+  const to = tx.select({ currency: accounts.currency }).from(accounts).where(eq(accounts.id, entry.toAccountId)).get();
+  if (!from || !to) throw new LedgerError('Transfer account not found');
+  if (from.currency !== to.currency) throw new LedgerError('Transfer accounts must share a currency');
+};
 
-export const syncLoanStatus = async (loanId: number): Promise<void> => {
-  const [loanRow] = await db.select().from(loans).where(eq(loans.id, loanId)).limit(1);
-  if (!loanRow) return;
-
-  const txType: TransactionType = loanRow.type === 'lend' ? 'CR' : 'DR';
-  const [{ totalRepaid }] = await db
-    .select({ totalRepaid: sql<number>`COALESCE(SUM(${payments.amount}), 0)` })
+/** Recomputes a loan's status from its repayments. Call after any payment linked to it changes. */
+export const syncLoanStatusIn = (tx: DbTx, loanId: number): void => {
+  const loan = tx.select().from(loans).where(eq(loans.id, loanId)).get();
+  if (!loan) return;
+  const row = tx
+    .select({ repaid: sql<number>`COALESCE(SUM(${payments.amount}), 0)` })
     .from(payments)
-    .where(and(eq(payments.loanId, loanId), eq(payments.type, txType)));
-
-  const repaidAmount = totalRepaid ?? 0;
-  const outstanding = Math.max(0, loanRow.principal - repaidAmount);
-
-  let status: 'repaid' | 'active' | 'overdue' = 'active';
-  if (outstanding <= 0) {
-    status = 'repaid';
-  } else if (loanRow.dueDate && new Date() > new Date(loanRow.dueDate)) {
-    status = 'overdue';
+    .where(and(eq(payments.loanId, loanId), eq(payments.type, repaymentType(loan.type))))
+    .get();
+  const status = loanStatus(loan.principal, row?.repaid ?? 0, loan.dueDate, new Date());
+  if (status !== loan.status) {
+    tx.update(loans).set({ status, updatedAt: new Date().toISOString() }).where(eq(loans.id, loanId)).run();
   }
+};
 
-  await db
-    .update(loans)
-    .set({ status, updatedAt: new Date().toISOString() })
-    .where(eq(loans.id, loanId));
+/** Inserts a payment and applies it to balances (and its loan). The one way money enters the ledger. */
+export const recordPaymentIn = (tx: DbTx, data: InsertPayment): Payment => {
+  const entry: LedgerEntry = { type: data.type, amount: data.amount, accountId: data.accountId, toAccountId: data.toAccountId ?? null };
+  validateEntry(entry);
+  assertTransferAccounts(tx, entry);
+  const payment = tx.insert(payments).values(data).returning().get();
+  applyDeltas(tx, accountDeltas(payment, 1));
+  if (payment.loanId != null) syncLoanStatusIn(tx, payment.loanId);
+  return payment;
 };
 
 // ─── Mutations ────────────────────────────────────────────────────────────────
 
 export const createTransaction = async (data: InsertPayment): Promise<Payment> => {
-  if (__DEV__) {
-    LoggerService.info('TRANSACTIONS', 'Creating transaction', {
-      type: data.type,
-      amount: data.amount,
-      accountId: data.accountId,
-      toAccountId: data.toAccountId,
-      categoryId: data.categoryId,
-    });
-  }
   try {
-    const [payment] = await db.insert(payments).values(data).returning();
-
-    if (data.type === 'TR') {
-      if (data.toAccountId == null) throw new Error('Transfer requires toAccountId');
-      // Debit source, credit destination
-      await applyBalanceDelta(data.accountId, 'TR', data.amount, -1);
-      await applyBalanceDelta(data.toAccountId, 'TR', data.amount, 1);
-    } else {
-      await applyBalanceDelta(data.accountId, data.type, data.amount, 1);
-    }
-
-    if (payment.loanId) {
-      await syncLoanStatus(payment.loanId);
-    }
-
+    const payment = db.transaction((tx) => recordPaymentIn(tx, data));
     if (__DEV__) LoggerService.info('TRANSACTIONS', `Created transaction ${payment.id}`);
     return payment;
   } catch (err) {
-    LoggerService.error('TRANSACTIONS', 'Failed to create transaction', data, err);
+    LoggerService.error('TRANSACTIONS', 'Failed to create transaction', { type: data.type, amount: data.amount }, err);
     throw err;
   }
 };
 
 export const deleteTransaction = async (id: number): Promise<void> => {
-  if (__DEV__) LoggerService.info('TRANSACTIONS', `Deleting transaction ${id}`);
   try {
-    const [payment] = await db.select().from(payments).where(eq(payments.id, id));
-    if (!payment) {
-      if (__DEV__) LoggerService.warn('TRANSACTIONS', `Transaction ${id} not found, nothing to delete`);
-      return;
-    }
-
-    await db.delete(payments).where(eq(payments.id, id));
-
-    if (payment.type === 'TR') {
-      if (payment.toAccountId != null) {
-        // Reverse: credit source back, debit destination back
-        await applyBalanceDelta(payment.accountId, 'TR', payment.amount, 1);
-        await applyBalanceDelta(payment.toAccountId, 'TR', payment.amount, -1);
-      }
-    } else {
-      await applyBalanceDelta(payment.accountId, payment.type, payment.amount, -1);
-    }
-
-    if (payment.loanId) {
-      await syncLoanStatus(payment.loanId);
-    }
-
+    db.transaction((tx) => {
+      const payment = tx.select().from(payments).where(eq(payments.id, id)).get();
+      if (!payment) return;
+      tx.delete(payments).where(eq(payments.id, id)).run();
+      applyDeltas(tx, accountDeltas(payment, -1));
+      if (payment.loanId != null) syncLoanStatusIn(tx, payment.loanId);
+    });
     if (__DEV__) LoggerService.info('TRANSACTIONS', `Deleted transaction ${id}`);
   } catch (err) {
     LoggerService.error('TRANSACTIONS', `Failed to delete transaction ${id}`, err);
@@ -364,51 +328,28 @@ export const deleteTransaction = async (id: number): Promise<void> => {
   }
 };
 
+/** Reverses the old payment's effect and applies the new one, atomically. */
 export const updateTransaction = async (id: number, data: UpdatePayment): Promise<Payment> => {
-  if (__DEV__) {
-    LoggerService.info('TRANSACTIONS', `Updating transaction ${id}`, {
-      newType: data.type,
-      newAmount: data.amount,
-      newAccountId: data.accountId,
-      newToAccountId: data.toAccountId,
-    });
-  }
+  const next: LedgerEntry = { type: data.type, amount: data.amount, accountId: data.accountId, toAccountId: data.toAccountId ?? null };
+  // Before anything is written: a bad edit must not leave the old effect half-reversed.
+  validateEntry(next);
   try {
-    const [old] = await db.select().from(payments).where(eq(payments.id, id));
-    if (!old) throw new Error('Transaction not found');
-
-    // Reverse old impact
-    if (old.type === 'TR') {
-      if (old.toAccountId != null) {
-        await applyBalanceDelta(old.accountId, 'TR', old.amount, 1);
-        await applyBalanceDelta(old.toAccountId, 'TR', old.amount, -1);
-      }
-    } else {
-      await applyBalanceDelta(old.accountId, old.type, old.amount, -1);
-    }
-
-    // Apply new impact
-    if (data.type === 'TR') {
-      if (data.toAccountId == null) throw new Error('Transfer requires toAccountId');
-      await applyBalanceDelta(data.accountId, 'TR', data.amount, -1);
-      await applyBalanceDelta(data.toAccountId, 'TR', data.amount, 1);
-    } else {
-      await applyBalanceDelta(data.accountId, data.type, data.amount, 1);
-    }
-
-    const [updated] = await db.update(payments).set(data).where(eq(payments.id, id)).returning();
-
-    if (updated.loanId) {
-      await syncLoanStatus(updated.loanId);
-    }
-    if (old.loanId && old.loanId !== updated.loanId) {
-      await syncLoanStatus(old.loanId);
-    }
-
+    const updated = db.transaction((tx) => {
+      const old = tx.select().from(payments).where(eq(payments.id, id)).get();
+      if (!old) throw new LedgerError('Transaction not found');
+      assertTransferAccounts(tx, next);
+      applyDeltas(tx, accountDeltas(old, -1));
+      const row = tx.update(payments).set(data).where(eq(payments.id, id)).returning().get();
+      if (!row) throw new LedgerError('Transaction not found');
+      applyDeltas(tx, accountDeltas(row, 1));
+      if (row.loanId != null) syncLoanStatusIn(tx, row.loanId);
+      if (old.loanId != null && old.loanId !== row.loanId) syncLoanStatusIn(tx, old.loanId);
+      return row;
+    });
     if (__DEV__) LoggerService.info('TRANSACTIONS', `Updated transaction ${updated.id}`);
     return updated;
   } catch (err) {
-    LoggerService.error('TRANSACTIONS', `Failed to update transaction ${id}`, data, err);
+    LoggerService.error('TRANSACTIONS', `Failed to update transaction ${id}`, { type: data.type, amount: data.amount }, err);
     throw err;
   }
 };
