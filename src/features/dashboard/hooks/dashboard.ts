@@ -4,10 +4,18 @@ import { QUERY_KEYS } from '@/src/lib/query-keys';
 import * as api from '@/src/features/dashboard/api/dashboard';
 import * as insightsApi from '@/src/features/dashboard/api/insights';
 
-export const useDashboardStats = (currency: string) => {
+export const useMonthTotals = (currency: string) => {
   return useQuery({
-    queryKey: QUERY_KEYS.dashboard.stats(currency),
-    queryFn: () => api.getDashboardStats(currency),
+    queryKey: QUERY_KEYS.dashboard.month(currency),
+    queryFn: () => api.getMonthTotals(currency),
+    enabled: !!currency,
+  });
+};
+
+export const useDailySpend = (currency: string, since: string) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.dashboard.dailySpend(currency, since),
+    queryFn: () => api.getDailySpend(currency, since),
     enabled: !!currency,
   });
 };

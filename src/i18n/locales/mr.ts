@@ -115,10 +115,11 @@ const mr: Translation = {
     cannotDelete: 'वर्ग हटवता येत नाही', deleteFailed: 'वर्ग हटवता आला नाही.',
   },
   dashboard: {
+    other: 'इतर', netThisMonth: 'या महिन्यात {{amount}}', thisMonth: 'हा महिना', quickActions: 'झटपट कृती', quickExpense: 'खर्च', quickIncome: 'उत्पन्न', quickTransfer: 'हस्तांतरण', quickLoan: 'कर्ज', pulseSpent: 'आतापर्यंत खर्च', pulseOfLast: 'मागील महिन्याच्या {{pct}}%', pulseDay: '{{total}} पैकी दिवस {{day}}', pulsePerDay: 'प्रति दिवस', pulseProjected: 'अंदाजित', pulseEmpty: 'या महिन्यात अद्याप खर्च नाही', pulseToday: 'आज', rhythmTitle: 'खर्चाची लय', rhythmHint: 'मागील 5 आठवडे', rhythmLess: 'कमी', rhythmMore: 'जास्त', rhythmNone: 'खर्च नाही', rhythmSpent: '{{amount}} खर्च',
     streakDays: '{{count}} दिवसांची मालिका',
     accounts: 'खाती', manage: 'व्यवस्थापित करा', topExpenses: 'सर्वाधिक खर्च', people: 'व्यक्ती', loans: 'कर्जे', recent: 'अलीकडील', seeAll: 'सर्व पहा',
     noTransactions: 'अजून कोणतेही व्यवहार नाहीत', transactionHint: 'तुमची दैनंदिन देयके, उत्पन्न किंवा हस्तांतरणे येथे नोंदवायला सुरुवात करा.', addTransaction: 'व्यवहार जोडा',
-    balance: 'तुमची शिल्लक', income: 'उत्पन्न', expenses: 'खर्च', noLoans: 'कोणतेही सक्रिय कर्ज नाही', loanHint: 'तुम्ही दिलेले किंवा घेतलेले पैसे नोंदवा. कर्ज जोडण्यासाठी टॅप करा.',
+    balance: 'तुमची शिल्लक', income: 'उत्पन्न', expenses: 'खर्च',
     lentOut: 'उसने दिले', borrowed: 'उसने घेतले', overdue: '{{count}} मुदत उलटलेली', active: '{{count}} सक्रिय', noExpenses: 'अजून कोणताही खर्च नाही', expensesHint: 'तुमचे सर्वाधिक खर्चाचे वर्ग पाहण्यासाठी काही व्यवहार जोडा.',
   },
   transactions: { dayCount: '{{count}} नोंदी', allCategories: 'सर्व', searchCategories: 'श्रेणी शोधा', amount: 'रक्कम', category: 'वर्ग', netSavings: 'निव्वळ बचत', income: 'उत्पन्न', expenses: 'खर्च', type: 'प्रकार', account: 'खाते', date: 'तारीख', person: 'व्यक्ती', typesCount: '{{count}} प्रकार', oneAccount: '१ खाते', accountsCount: '{{count}} खाती', oneCategory: '१ वर्ग', categoriesCount: '{{count}} वर्ग', onePerson: '१ व्यक्ती', personsCount: '{{count}} व्यक्ती',

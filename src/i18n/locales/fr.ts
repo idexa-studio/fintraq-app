@@ -115,10 +115,11 @@ const fr: Translation = {
     cannotDelete: 'Impossible de supprimer la catégorie', deleteFailed: 'Échec de la suppression de la catégorie.',
   },
   dashboard: {
+    other: 'Autres', netThisMonth: '{{amount}} ce mois-ci', thisMonth: 'Ce mois-ci', quickActions: 'Actions rapides', quickExpense: 'Dépense', quickIncome: 'Revenu', quickTransfer: 'Virement', quickLoan: 'Prêt', pulseSpent: 'Dépensé jusqu’ici', pulseOfLast: '{{pct}} % du mois dernier', pulseDay: 'Jour {{day}} sur {{total}}', pulsePerDay: 'Par jour', pulseProjected: 'Prévision', pulseEmpty: 'Aucune dépense ce mois-ci', pulseToday: 'Aujourd’hui', rhythmTitle: 'Rythme des dépenses', rhythmHint: '5 dernières semaines', rhythmLess: 'Moins', rhythmMore: 'Plus', rhythmNone: 'Aucune dépense', rhythmSpent: '{{amount}} dépensés',
     streakDays: 'Série de {{count}} j',
     accounts: 'Comptes', manage: 'Gérer', topExpenses: 'Principales dépenses', people: 'Personnes', loans: 'Prêts', recent: 'Récents', seeAll: 'Tout voir',
     noTransactions: 'Aucune transaction pour le moment', transactionHint: 'Commencez à enregistrer ici vos paiements, revenus ou virements du quotidien.', addTransaction: 'Ajouter une transaction',
-    balance: 'Votre solde', income: 'Revenus', expenses: 'Dépenses', noLoans: 'Aucun prêt en cours', loanHint: "Suivez l'argent que vous prêtez ou empruntez. Touchez pour ajouter un prêt.",
+    balance: 'Votre solde', income: 'Revenus', expenses: 'Dépenses',
     lentOut: 'Prêté', borrowed: 'Emprunté', overdue: '{{count}} en retard', active: '{{count}} en cours', noExpenses: 'Aucune dépense pour le moment', expensesHint: 'Ajoutez des transactions pour voir vos principales catégories de dépenses.',
   },
   transactions: { dayCount: '{{count}} opérations', allCategories: 'Toutes', searchCategories: 'Rechercher des catégories', amount: 'Montant', category: 'Catégorie', netSavings: 'Épargne nette', income: 'Revenus', expenses: 'Dépenses', type: 'Type', account: 'Compte', date: 'Date', person: 'Personne', typesCount: '{{count}} types', oneAccount: '1 compte', accountsCount: '{{count}} comptes', oneCategory: '1 catégorie', categoriesCount: '{{count}} catégories', onePerson: '1 personne', personsCount: '{{count}} personnes',

@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { BarBucket } from '@/src/features/analytics/components/LinearAreaChart';
-import { DOW_KEYS, MONTH_KEYS, RangeDays } from '@/src/features/analytics/constants';
+import { DOW_KEYS, MONTH_KEYS } from '@/src/constants/calendar';
+import { RangeDays } from '@/src/features/analytics/constants';
 import {
   useAnalyticsBiggestExpense,
   useAnalyticsCategoryBreakdown,

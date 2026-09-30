@@ -115,10 +115,11 @@ const hi: Translation = {
     cannotDelete: 'श्रेणी हटाई नहीं जा सकती', deleteFailed: 'श्रेणी हटाई नहीं जा सकी।',
   },
   dashboard: {
+    other: 'अन्य', netThisMonth: 'इस महीने {{amount}}', thisMonth: 'इस महीने', quickActions: 'त्वरित कार्य', quickExpense: 'खर्च', quickIncome: 'आय', quickTransfer: 'ट्रांसफ़र', quickLoan: 'उधार', pulseSpent: 'अब तक खर्च', pulseOfLast: 'पिछले महीने का {{pct}}%', pulseDay: '{{total}} में से दिन {{day}}', pulsePerDay: 'प्रति दिन', pulseProjected: 'अनुमानित', pulseEmpty: 'इस महीने अभी तक कोई खर्च नहीं', pulseToday: 'आज', rhythmTitle: 'खर्च की लय', rhythmHint: 'पिछले 5 सप्ताह', rhythmLess: 'कम', rhythmMore: 'ज़्यादा', rhythmNone: 'कोई खर्च नहीं', rhythmSpent: '{{amount}} खर्च',
     streakDays: '{{count}} दिन की लय',
     accounts: 'खाते', manage: 'प्रबंधित करें', topExpenses: 'मुख्य खर्च', people: 'लोग', loans: 'ऋण', recent: 'हाल के', seeAll: 'सभी देखें',
     noTransactions: 'अभी कोई लेन-देन नहीं', transactionHint: 'अपने दैनिक भुगतान, आय या ट्रांसफर यहाँ दर्ज करना शुरू करें।', addTransaction: 'लेन-देन जोड़ें',
-    balance: 'आपका बैलेंस', income: 'आय', expenses: 'खर्च', noLoans: 'कोई सक्रिय ऋण नहीं', loanHint: 'उधार दिया या लिया धन ट्रैक करें। ऋण जोड़ने के लिए टैप करें।',
+    balance: 'आपका बैलेंस', income: 'आय', expenses: 'खर्च',
     lentOut: 'दिया गया', borrowed: 'लिया गया', overdue: '{{count}} बकाया', active: '{{count}} सक्रिय', noExpenses: 'अभी कोई खर्च नहीं', expensesHint: 'मुख्य खर्च श्रेणियाँ देखने के लिए कुछ लेन-देन जोड़ें।',
   },
   transactions: { dayCount: '{{count}} एंट्री', allCategories: 'सभी', searchCategories: 'श्रेणियाँ खोजें', amount: 'राशि', category: 'श्रेणी', netSavings: 'शुद्ध बचत', income: 'आय', expenses: 'खर्च', type: 'प्रकार', account: 'खाता', date: 'तारीख', person: 'व्यक्ति', typesCount: '{{count}} प्रकार', oneAccount: '1 खाता', accountsCount: '{{count}} खाते', oneCategory: '1 श्रेणी', categoriesCount: '{{count}} श्रेणियाँ', onePerson: '1 व्यक्ति', personsCount: '{{count}} लोग',

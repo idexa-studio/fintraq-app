@@ -115,10 +115,11 @@ const ta: Translation = {
     cannotDelete: 'வகையை நீக்க இயலாது', deleteFailed: 'வகையை நீக்க முடியவில்லை.',
   },
   dashboard: {
+    other: 'மற்றவை', netThisMonth: 'இந்த மாதம் {{amount}}', thisMonth: 'இந்த மாதம்', quickActions: 'விரைவுச் செயல்கள்', quickExpense: 'செலவு', quickIncome: 'வருமானம்', quickTransfer: 'பரிமாற்றம்', quickLoan: 'கடன்', pulseSpent: 'இதுவரை செலவு', pulseOfLast: 'கடந்த மாதத்தின் {{pct}}%', pulseDay: '{{total}} இல் நாள் {{day}}', pulsePerDay: 'நாளுக்கு', pulseProjected: 'கணிப்பு', pulseEmpty: 'இந்த மாதம் இன்னும் செலவு இல்லை', pulseToday: 'இன்று', rhythmTitle: 'செலவு தாளம்', rhythmHint: 'கடந்த 5 வாரங்கள்', rhythmLess: 'குறைவு', rhythmMore: 'அதிகம்', rhythmNone: 'செலவு இல்லை', rhythmSpent: '{{amount}} செலவு',
     streakDays: '{{count}} நாள் தொடர்',
     accounts: 'கணக்குகள்', manage: 'நிர்வகி', topExpenses: 'முக்கியச் செலவுகள்', people: 'நபர்கள்', loans: 'கடன்கள்', recent: 'சமீபத்தியவை', seeAll: 'அனைத்தையும் காண்',
     noTransactions: 'இன்னும் பரிவர்த்தனைகள் இல்லை', transactionHint: 'உங்கள் தினசரிப் பணம் செலுத்துதல், வருமானம் அல்லது பரிமாற்றங்களை இங்கே பதிவிடத் தொடங்குங்கள்.', addTransaction: 'பரிவர்த்தனையைச் சேர்',
-    balance: 'உங்கள் இருப்பு', income: 'வருமானம்', expenses: 'செலவுகள்', noLoans: 'செயலில் உள்ள கடன்கள் இல்லை', loanHint: 'நீங்கள் கொடுத்த அல்லது வாங்கிய பணத்தைக் கண்காணியுங்கள். கடனைச் சேர்க்கத் தட்டவும்.',
+    balance: 'உங்கள் இருப்பு', income: 'வருமானம்', expenses: 'செலவுகள்',
     lentOut: 'கொடுத்தது', borrowed: 'வாங்கியது', overdue: '{{count}} காலம் கடந்தவை', active: '{{count}} செயலில்', noExpenses: 'இன்னும் செலவுகள் இல்லை', expensesHint: 'அதிகச் செலவு வகைகளைக் காண சில பரிவர்த்தனைகளைச் சேர்க்கவும்.',
   },
   transactions: { dayCount: '{{count}} பதிவுகள்', allCategories: 'அனைத்தும்', searchCategories: 'வகைகளைத் தேடு', amount: 'தொகை', category: 'வகை', netSavings: 'நிகரச் சேமிப்பு', income: 'வருமானம்', expenses: 'செலவுகள்', type: 'வகை', account: 'கணக்கு', date: 'தேதி', person: 'நபர்', typesCount: '{{count}} வகைகள்', oneAccount: '1 கணக்கு', accountsCount: '{{count}} கணக்குகள்', oneCategory: '1 வகை', categoriesCount: '{{count}} வகைகள்', onePerson: '1 நபர்', personsCount: '{{count}} நபர்கள்',

@@ -1,6 +1,8 @@
 import { and, desc, eq, sql, sum } from 'drizzle-orm';
 import { db } from '@/src/db/client';
 import { accounts, categories, payments, persons } from '@/src/db/schema';
+import type { MonthTotals } from '@/src/features/dashboard/utils/widgets';
+import { format, startOfMonth, subMonths } from 'date-fns';
 
 export type PersonNetRow = {
   id: number;
@@ -9,25 +11,43 @@ export type PersonNetRow = {
   net: number;
 };
 
-export type DashboardStats = {
-  income: number;
-  expense: number;
-};
+/** This month's totals plus last month's spend, for the hero and the month pulse widget. */
+export const getMonthTotals = async (currency: string, now: Date = new Date()): Promise<MonthTotals> => {
+  const monthStart = format(startOfMonth(now), 'yyyy-MM-dd');
+  const lastMonthStart = format(startOfMonth(subMonths(now, 1)), 'yyyy-MM-dd');
+  // Same day last month, clamped to its length (31 March compares with 28/29 February).
+  const lastMonthSameDay = format(subMonths(now, 1), 'yyyy-MM-dd');
+  const day = sql`date(${payments.datetime})`;
 
-export const getDashboardStats = async (currency: string): Promise<DashboardStats> => {
-  const [result] = await db
+  const [row] = await db
     .select({
-      income: sql<number>`SUM(CASE WHEN ${payments.type} = 'CR' THEN ${payments.amount} ELSE 0 END)`,
-      expense: sql<number>`SUM(CASE WHEN ${payments.type} = 'DR' THEN ${payments.amount} ELSE 0 END)`,
+      income: sql<number>`SUM(CASE WHEN ${payments.type} = 'CR' AND ${day} >= ${monthStart} THEN ${payments.amount} ELSE 0 END)`,
+      expense: sql<number>`SUM(CASE WHEN ${payments.type} = 'DR' AND ${day} >= ${monthStart} THEN ${payments.amount} ELSE 0 END)`,
+      lastMonthToDate: sql<number>`SUM(CASE WHEN ${payments.type} = 'DR' AND ${day} < ${monthStart} AND ${day} <= ${lastMonthSameDay} THEN ${payments.amount} ELSE 0 END)`,
+      lastMonthTotal: sql<number>`SUM(CASE WHEN ${payments.type} = 'DR' AND ${day} < ${monthStart} THEN ${payments.amount} ELSE 0 END)`,
     })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(eq(accounts.currency, currency));
+    .where(and(eq(accounts.currency, currency), sql`${day} >= ${lastMonthStart}`));
 
   return {
-    income: result?.income ?? 0,
-    expense: result?.expense ?? 0,
+    income: row?.income ?? 0,
+    expense: row?.expense ?? 0,
+    lastMonthToDate: row?.lastMonthToDate ?? 0,
+    lastMonthTotal: row?.lastMonthTotal ?? 0,
   };
+};
+
+/** Expense per local day from `since` (yyyy-MM-dd) onwards. */
+export const getDailySpend = async (currency: string, since: string): Promise<Map<string, number>> => {
+  const day = sql<string>`date(${payments.datetime})`;
+  const rows = await db
+    .select({ date: day, amount: sql<number>`SUM(${payments.amount})` })
+    .from(payments)
+    .innerJoin(accounts, eq(payments.accountId, accounts.id))
+    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`${day} >= ${since}`))
+    .groupBy(day);
+  return new Map(rows.map((r) => [r.date, r.amount ?? 0]));
 };
 
 export type CategorySpend = {
@@ -38,7 +58,9 @@ export type CategorySpend = {
   amount: number;
 };
 
-export const getTopExpenseCategories = async (currency: string, limit: number = 4): Promise<CategorySpend[]> => {
+/** Biggest expense categories this month. */
+export const getTopExpenseCategories = async (currency: string, limit: number = 4, now: Date = new Date()): Promise<CategorySpend[]> => {
+  const monthStart = format(startOfMonth(now), 'yyyy-MM-dd');
   const result = await db
     .select({
       id: categories.id,
@@ -50,7 +72,7 @@ export const getTopExpenseCategories = async (currency: string, limit: number = 
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
     .innerJoin(categories, eq(payments.categoryId, categories.id))
-    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR')))
+    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`date(${payments.datetime}) >= ${monthStart}`))
     .groupBy(categories.id)
     .orderBy(desc(sql`amount`))
     .limit(limit);

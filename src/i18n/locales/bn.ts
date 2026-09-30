@@ -115,10 +115,11 @@ const bn: Translation = {
     cannotDelete: 'বিভাগ মোছা যাচ্ছে না', deleteFailed: 'বিভাগ মুছতে ব্যর্থ হয়েছে।',
   },
   dashboard: {
+    other: 'অন্যান্য', netThisMonth: 'এই মাসে {{amount}}', thisMonth: 'এই মাস', quickActions: 'দ্রুত কাজ', quickExpense: 'খরচ', quickIncome: 'আয়', quickTransfer: 'ট্রান্সফার', quickLoan: 'ঋণ', pulseSpent: 'এখন পর্যন্ত খরচ', pulseOfLast: 'গত মাসের {{pct}}%', pulseDay: '{{total}} দিনের {{day}}তম দিন', pulsePerDay: 'প্রতি দিন', pulseProjected: 'আনুমানিক', pulseEmpty: 'এই মাসে এখনও কোনো খরচ নেই', pulseToday: 'আজ', rhythmTitle: 'খরচের ছন্দ', rhythmHint: 'গত ৫ সপ্তাহ', rhythmLess: 'কম', rhythmMore: 'বেশি', rhythmNone: 'কোনো খরচ নেই', rhythmSpent: '{{amount}} খরচ',
     streakDays: '{{count}} দিনের ধারা',
     accounts: 'অ্যাকাউন্ট', manage: 'পরিচালনা', topExpenses: 'শীর্ষ ব্যয়', people: 'ব্যক্তি', loans: 'ঋণ', recent: 'সাম্প্রতিক', seeAll: 'সব দেখুন',
     noTransactions: 'এখনও কোনো লেনদেন নেই', transactionHint: 'এখানে আপনার দৈনন্দিন পেমেন্ট, আয় বা ট্রান্সফার লিখতে শুরু করুন।', addTransaction: 'লেনদেন যোগ করুন',
-    balance: 'আপনার ব্যালেন্স', income: 'আয়', expenses: 'ব্যয়', noLoans: 'কোনো সক্রিয় ঋণ নেই', loanHint: 'আপনি যে টাকা ধার দিয়েছেন বা নিয়েছেন তা ট্র্যাক করুন। ঋণ যোগ করতে ট্যাপ করুন।',
+    balance: 'আপনার ব্যালেন্স', income: 'আয়', expenses: 'ব্যয়',
     lentOut: 'ধার দেওয়া', borrowed: 'ধার নেওয়া', overdue: '{{count}}টি মেয়াদোত্তীর্ণ', active: '{{count}}টি সক্রিয়', noExpenses: 'এখনও কোনো ব্যয় নেই', expensesHint: 'আপনার শীর্ষ ব্যয়ের বিভাগ দেখতে কিছু লেনদেন যোগ করুন।',
   },
   transactions: { dayCount: '{{count}}টি এন্ট্রি', allCategories: 'সব', searchCategories: 'ক্যাটাগরি খুঁজুন', amount: 'পরিমাণ', category: 'বিভাগ', netSavings: 'নিট সঞ্চয়', income: 'আয়', expenses: 'ব্যয়', type: 'ধরন', account: 'অ্যাকাউন্ট', date: 'তারিখ', person: 'ব্যক্তি', typesCount: '{{count}}টি ধরন', oneAccount: '১টি অ্যাকাউন্ট', accountsCount: '{{count}}টি অ্যাকাউন্ট', oneCategory: '১টি বিভাগ', categoriesCount: '{{count}}টি বিভাগ', onePerson: '১ জন ব্যক্তি', personsCount: '{{count}} জন ব্যক্তি',

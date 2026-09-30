@@ -115,10 +115,11 @@ const es: Translation = {
     cannotDelete: 'No se puede eliminar la categoría', deleteFailed: 'No se pudo eliminar la categoría.',
   },
   dashboard: {
+    other: 'Otros', netThisMonth: '{{amount}} este mes', thisMonth: 'Este mes', quickActions: 'Acciones rápidas', quickExpense: 'Gasto', quickIncome: 'Ingreso', quickTransfer: 'Transferir', quickLoan: 'Préstamo', pulseSpent: 'Gastado hasta ahora', pulseOfLast: '{{pct}} % del mes pasado', pulseDay: 'Día {{day}} de {{total}}', pulsePerDay: 'Por día', pulseProjected: 'Previsto', pulseEmpty: 'Aún no has gastado nada este mes', pulseToday: 'Hoy', rhythmTitle: 'Ritmo de gasto', rhythmHint: 'Últimas 5 semanas', rhythmLess: 'Menos', rhythmMore: 'Más', rhythmNone: 'Sin gastos', rhythmSpent: '{{amount}} gastado',
     streakDays: 'Racha de {{count}} d',
     accounts: 'Cuentas', manage: 'Gestionar', topExpenses: 'Mayores gastos', people: 'Personas', loans: 'Préstamos', recent: 'Recientes', seeAll: 'Ver todo',
     noTransactions: 'Aún no hay transacciones', transactionHint: 'Empieza a registrar aquí tus pagos, ingresos o transferencias diarios.', addTransaction: 'Añadir transacción',
-    balance: 'Tu saldo', income: 'Ingresos', expenses: 'Gastos', noLoans: 'Sin préstamos activos', loanHint: 'Controla el dinero que prestas o te prestan. Toca para añadir un préstamo.',
+    balance: 'Tu saldo', income: 'Ingresos', expenses: 'Gastos',
     lentOut: 'Prestado', borrowed: 'Recibido en préstamo', overdue: '{{count}} vencidos', active: '{{count}} activos', noExpenses: 'Aún no hay gastos', expensesHint: 'Añade algunas transacciones para ver tus categorías con más gasto.',
   },
   transactions: { dayCount: '{{count}} movimientos', allCategories: 'Todas', searchCategories: 'Buscar categorías', amount: 'Importe', category: 'Categoría', netSavings: 'Ahorro neto', income: 'Ingresos', expenses: 'Gastos', type: 'Tipo', account: 'Cuenta', date: 'Fecha', person: 'Persona', typesCount: '{{count}} tipos', oneAccount: '1 cuenta', accountsCount: '{{count}} cuentas', oneCategory: '1 categoría', categoriesCount: '{{count}} categorías', onePerson: '1 persona', personsCount: '{{count}} personas',

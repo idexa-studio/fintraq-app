@@ -1,11 +1,10 @@
 import { Text } from '@/src/components/ui/Text';
-import { HandshakeIcon } from '@hugeicons/core-free-icons';
 import { Badge } from '@/src/components/ui/Badge';
-import { EmptyState } from '@/src/components/ui/EmptyState';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useLoansSummary } from '@/src/features/loans/hooks/loans';
@@ -23,32 +22,50 @@ export const LoansGlanceCard = React.memo(function LoansGlanceCard({ currency, o
 
   const { data: summary } = useLoansSummary(currency);
 
-  if (!summary || (summary.activeLentCount === 0 && summary.activeBorrowedCount === 0)) {
-    return (
-      <BentoPressable style={styles.padded} onPress={onPress} accessibilityRole="button" accessibilityLabel={t('dashboard.noLoans')}>
-        <EmptyState variant="inline" icon={HandshakeIcon} title={t('dashboard.noLoans')} description={t('dashboard.loanHint')} />
-      </BentoPressable>
-    );
-  }
+  // Nothing to glance at: the section stays hidden and the Loan quick action is the way in.
+  if (!summary || (summary.activeLentCount === 0 && summary.activeBorrowedCount === 0)) return null;
 
   const tiles = [
-    { key: 'lent', label: t('dashboard.lentOut'), color: colors.success, amount: summary.totalLent, type: 'CR', active: summary.activeLentCount, overdue: summary.overdueLentCount },
-    { key: 'borrowed', label: t('dashboard.borrowed'), color: colors.danger, amount: summary.totalBorrowed, type: 'DR', active: summary.activeBorrowedCount, overdue: summary.overdueBorrowedCount },
+    {
+      key: 'lent',
+      label: t('dashboard.lentOut'),
+      color: colors.success,
+      amount: summary.totalLent,
+      type: 'CR',
+      active: summary.activeLentCount,
+      overdue: summary.overdueLentCount,
+    },
+    {
+      key: 'borrowed',
+      label: t('dashboard.borrowed'),
+      color: colors.danger,
+      amount: summary.totalBorrowed,
+      type: 'DR',
+      active: summary.activeBorrowedCount,
+      overdue: summary.overdueBorrowedCount,
+    },
   ] as const;
 
   return (
-    <View style={[styles.grid, styles.padded]}>
-      {tiles.map((tile) => (
-        <BentoPressable key={tile.key} style={styles.tile} onPress={onPress} accessibilityRole="button" accessibilityLabel={tile.label}>
-          <View style={styles.tileHeader}>
-            <Text variant="label" color={tile.color} numberOfLines={1} style={styles.flex}>{tile.label}</Text>
-            {tile.overdue > 0 ? <Badge label={t('dashboard.overdue', { count: tile.overdue })} color={colors.danger} /> : null}
-          </View>
-          <MoneyText amount={tile.amount} currency={currency} type={tile.type} weight="bold" compact style={styles.tileAmount} />
-          <Text variant="caption" tone="muted">{t('dashboard.active', { count: tile.active })}</Text>
-        </BentoPressable>
-      ))}
-    </View>
+    <>
+      <SectionHeader title={t('dashboard.loans')} rightText={t('dashboard.seeAll')} onPressRight={onPress} />
+      <View style={[styles.grid, styles.padded]}>
+        {tiles.map((tile) => (
+          <BentoPressable key={tile.key} style={styles.tile} onPress={onPress} accessibilityRole="button" accessibilityLabel={tile.label}>
+            <View style={styles.tileHeader}>
+              <Text variant="label" color={tile.color} numberOfLines={1} style={styles.flex}>
+                {tile.label}
+              </Text>
+              {tile.overdue > 0 ? <Badge label={t('dashboard.overdue', { count: tile.overdue })} color={colors.danger} /> : null}
+            </View>
+            <MoneyText amount={tile.amount} currency={currency} type={tile.type} weight="bold" compact style={styles.tileAmount} />
+            <Text variant="caption" tone="muted">
+              {t('dashboard.active', { count: tile.active })}
+            </Text>
+          </BentoPressable>
+        ))}
+      </View>
+    </>
   );
 });
 
