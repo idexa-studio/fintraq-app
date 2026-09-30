@@ -72,6 +72,11 @@ export function PatternsSection() {
             <StatTile label="Income" icon={ArrowUpRightIcon} iconColor={colors.success} amount={84200} currency="INR" type="CR" compact />
             <StatTile label="Spent" icon={ArrowDownLeftIcon} iconColor={colors.danger} amount={5450} currency="INR" type="DR" compact />
           </View>
+          {/* `caption` names what the number is about. */}
+          <View style={{ flexDirection: 'row', gap: spacing('2') }}>
+            <StatTile label="Top category" icon={ArrowDownLeftIcon} iconColor={colors.warning} amount={3200} currency="INR" caption="Groceries" compact />
+            <StatTile label="Biggest expense" icon={ArrowDownLeftIcon} iconColor={colors.danger} amount={1450} currency="INR" caption="Rent top-up" compact />
+          </View>
           <View style={{ marginHorizontal: -spacing('4') }}>
             <SectionHeader title="Top people" rightText="See all" onPressRight={noop} />
           </View>

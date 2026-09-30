@@ -242,7 +242,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
               type: 'info',
               buttons: [
                 { text: t('onboardingFlow.continue'), style: 'cancel', onPress: () => { void finalizeSetup(); } },
-                { text: t('onboardingFlow.upgradeToPro'), onPress: () => router.push('/premium') },
+                { text: t('onboardingFlow.upgradeToPro'), onPress: () => router.push({ pathname: '/premium', params: { feature: 'backup' } }) },
               ],
             });
             return;
@@ -333,7 +333,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
             { text: t('onboardingFlow.startFresh'), style: 'cancel', onPress: () => {
               setStepIndex(ONBOARDING_STEPS.findIndex((s) => s.id === 'profile'));
             } },
-            { text: t('onboardingFlow.upgradeToPro'), onPress: () => router.push('/premium') },
+            { text: t('onboardingFlow.upgradeToPro'), onPress: () => router.push({ pathname: '/premium', params: { feature: 'backup' } }) },
           ],
         });
       } else {

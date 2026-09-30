@@ -87,11 +87,6 @@ const kn: Translation = {
     resetFailedMessage: 'ಫ್ಯಾಕ್ಟರಿ ರೀಸೆಟ್ ಪೂರ್ಣಗೊಳಿಸಲಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.',
     eraseEverything: 'ಎಲ್ಲವನ್ನೂ ಅಳಿಸಿ', displayName: 'ಪ್ರದರ್ಶನ ಹೆಸರು', displayNameHint: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನಲ್ಲಿ ನಿಮ್ಮನ್ನು ಹೇಗೆ ಸಂಬೋಧಿಸಬೇಕು', yourName: 'ನಿಮ್ಮ ಹೆಸರು', privacyTitle: 'ಗೌಪ್ಯತಾ ನೀತಿ', termsTitle: 'ಬಳಕೆಯ ನಿಯಮಗಳು',
   },
-  searchGate: {
-    pro: 'Pro', title: 'ಗ್ಲೋಬಲ್ ಸರ್ಚ್', subtitle: 'ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಹಣಕಾಸಿನ ಇತಿಹಾಸದಲ್ಲಿ ಏನನ್ನಾದರೂ ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ ಹುಡುಕಿ.',
-    transactions: 'ಎಲ್ಲಾ ವಹಿವಾಟುಗಳಲ್ಲಿ ಪೂರ್ಣ-ಪಠ್ಯ ಹುಡುಕಾಟ', accounts: 'ಹೆಸರಿನಿಂದ ಖಾತೆಗಳನ್ನು ತಕ್ಷಣ ಹುಡುಕಿ',
-    categories: 'ನಿಮ್ಮ ಇತಿಹಾಸದಾದ್ಯಂತ ವರ್ಗಗಳನ್ನು ಹುಡುಕಿ', upgrade: 'Pro ಗೆ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ', notNow: 'ಈಗ ಬೇಡ',
-  },
   onboarding: {
     name: 'ನಿಮ್ಮ ಹೆಸರು', nameRequired: 'ದಯವಿಟ್ಟು ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ', nameMin: 'ಕನಿಷ್ಠ 2 ಅಕ್ಷರಗಳು', nameMax: '30 ಅಕ್ಷರಗಳಿಗಿಂತ ಕಡಿಮೆ',
     greetingHint: 'ಆ್ಯಪ್‌ನಲ್ಲಿ ನಾವು ನಿಮ್ಮನ್ನು ಹೀಗೆ ಸಂಬೋಧಿಸುತ್ತೇವೆ', defaultCurrency: 'ಡೀಫಾಲ್ಟ್ ಕರೆನ್ಸಿ', tapToChange: 'ಬದಲಾಯಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ',
@@ -171,7 +166,7 @@ const kn: Translation = {
     connectToRestore: 'ಈಗಾಗಲೇ ಇರುವ ಖಾತೆಗಳು ಮತ್ತು ವಹಿವಾಟುಗಳನ್ನು ಮರುಸ್ಥಾಪಿಸಲು ನಿಮ್ಮ ಕ್ಲೌಡ್ ಖಾತೆಯನ್ನು ಸಂಪರ್ಕಿಸಿ.',
   },
   ui: {
-    somethingWrong: 'ಏನೋ ತಪ್ಪಾಗಿದೆ', proOnly: 'Pro ಮಾತ್ರ', unlockWithPro: 'Fintraq Pro ನೊಂದಿಗೆ ಅನ್‌ಲಾಕ್ ಮಾಡಿ',
+    somethingWrong: 'ಏನೋ ತಪ್ಪಾಗಿದೆ',
     charsLeft: '{{count}} ಅಕ್ಷರಗಳು ಉಳಿದಿವೆ', suggested: 'ಸೂಚಿಸಲಾದವು', allCurrencies: 'ಎಲ್ಲಾ ಕರೆನ್ಸಿಗಳು', noMatch: '“{{query}}” ಗೆ ಹೊಂದಾಣಿಕೆ ಇಲ್ಲ', chooseIcon: 'ಐಕಾನ್ ಆಯ್ಕೆಮಾಡಿ', chooseColor: 'ಬಣ್ಣ ಆಯ್ಕೆಮಾಡಿ', colorsCount: '{{count}} ಬಣ್ಣಗಳು', currency: 'ಕರೆನ್ಸಿ', currenciesCount: '{{count}} ಕರೆನ್ಸಿಗಳು', searchCurrency: 'ಹೆಸರು ಅಥವಾ ಕೋಡ್‌ನಿಂದ ಹುಡುಕಿ', delKey: 'ಅಳಿಸಿ',
   },
   lock: {
@@ -219,7 +214,7 @@ const kn: Translation = {
   },
   persons: {
     title: 'ವ್ಯಕ್ತಿಗಳು', person: 'ವ್ಯಕ್ತಿ', edit: 'ವ್ಯಕ್ತಿಯನ್ನು ಸಂಪಾದಿಸಿ', new: 'ಹೊಸ ವ್ಯಕ್ತಿ', searchPlaceholder: 'ವ್ಯಕ್ತಿಗಳನ್ನು ಹುಡುಕಿ...', none: 'ಇನ್ನೂ ವ್ಯಕ್ತಿಗಳಿಲ್ಲ', noneHint: 'ವಹಿವಾಟುಗಳಿಗೆ ಲಿಂಕ್ ಮಾಡಲು ವ್ಯಕ್ತಿಗಳನ್ನು ಸೇರಿಸಿ',
-    upgradeTitle: 'Pro ಗೆ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ', limitMessage: 'ಉಚಿತ ಯೋಜನೆಯಲ್ಲಿ {{limit}} ವ್ಯಕ್ತಿಗಳವರೆಗೆ ಅನುಮತಿ. ಅಪರಿಮಿತಕ್ಕಾಗಿ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ.',
+    limitMessage: 'ಉಚಿತ ಯೋಜನೆಯಲ್ಲಿ {{limit}} ವ್ಯಕ್ತಿಗಳವರೆಗೆ ಅನುಮತಿ. ಅಪರಿಮಿತಕ್ಕಾಗಿ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ.',
     personName: 'ವ್ಯಕ್ತಿಯ ಹೆಸರು', chooseColor: 'ಕೆಳಗೆ ಒಂದು ಆಕ್ಸೆಂಟ್ ಬಣ್ಣವನ್ನು ಆಯ್ಕೆಮಾಡಿ', contactDetails: 'ಸಂಪರ್ಕ ವಿವರಗಳು', work: 'ಕೆಲಸ (ಐಚ್ಛಿಕ)',
     namePlaceholder: 'ರಾಮು ಗೌಡ', emailPlaceholder: 'ramu@example.com', rolePlaceholder: 'ವ್ಯವಸ್ಥಾಪಕ', companyPlaceholder: 'ಆಕ್ಮೆ ಸಂಸ್ಥೆ', save: 'ವ್ಯಕ್ತಿಯನ್ನು ಉಳಿಸಿ', add: 'ವ್ಯಕ್ತಿಯನ್ನು ಸೇರಿಸಿ',
     spent: 'ಖರ್ಚು ಮಾಡಿದ್ದು', received: 'ಸ್ವೀಕರಿಸಿದ್ದು', activeLoans: 'ಸಕ್ರಿಯ ಸಾಲಗಳು', transactions: 'ವಹಿವಾಟುಗಳು', deleteTitle: 'ವ್ಯಕ್ತಿಯನ್ನು ಅಳಿಸಿ',
@@ -254,10 +249,10 @@ const kn: Translation = {
   },
   analytics: {
     income: 'ಆದಾಯ', expenses: 'ವೆಚ್ಚಗಳು', expense: 'ವೆಚ್ಚ', netPosition: 'ನಿವ್ವಳ ಸ್ಥಿತಿ', dailyAvg: 'ಸರಾಸರಿ ದೈನಂದಿನ ವೆಚ್ಚ', highlights: 'ಪ್ರಮುಖಾಂಶಗಳು', topCategory: 'ಅತಿ ಹೆಚ್ಚು ವೆಚ್ಚದ ವರ್ಗ', biggestExpense: 'ಅತಿ ದೊಡ್ಡ ವೆಚ್ಚ',
-    noHighlights: 'ಇನ್ನೂ ಪ್ರಮುಖಾಂಶಗಳಿಲ್ಲ', noHighlightsHint: 'ಪ್ರಮುಖ ವೆಚ್ಚ ಒಳನೋಟಗಳನ್ನು ನೋಡಲು ವೆಚ್ಚದ ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ.', trend: 'ವೆಚ್ಚದ ಪ್ರವೃತ್ತಿ', noTrend: 'ಇನ್ನೂ ಪ್ರವೃತ್ತಿ ಡೇಟಾ ಇಲ್ಲ', noTrendHint: 'ನಿಮ್ಮ ವೆಚ್ಚದ ಪ್ರವೃತ್ತಿಯನ್ನು ನೋಡಲು ಆದಾಯ ಅಥವಾ ವೆಚ್ಚದ ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ.',
+    trend: 'ವೆಚ್ಚದ ಪ್ರವೃತ್ತಿ', noTrend: 'ಇನ್ನೂ ಪ್ರವೃತ್ತಿ ಡೇಟಾ ಇಲ್ಲ', noTrendHint: 'ನಿಮ್ಮ ವೆಚ್ಚದ ಪ್ರವೃತ್ತಿಯನ್ನು ನೋಡಲು ಆದಾಯ ಅಥವಾ ವೆಚ್ಚದ ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ.',
     categoryBreakdown: 'ವರ್ಗವಾರು ವಿಭಜನೆ', groupsCount: '{{count}} ಗುಂಪುಗಳು', personBreakdown: 'ವ್ಯಕ್ತಿವಾರು ವಿಭಜನೆ', personsCount: '{{count}} ವ್ಯಕ್ತಿಗಳು', balanceDistribution: 'ಬ್ಯಾಲೆನ್ಸ್ ಹಂಚಿಕೆ', accountsCount: '{{count}} ಖಾತೆಗಳು',
     noCurrencyAccounts: '{{currency}} ಖಾತೆಗಳಿಲ್ಲ', noCurrencyAccountsHint: 'ಬ್ಯಾಲೆನ್ಸ್ ಹಂಚಿಕೆಯನ್ನು ನೋಡಲು ಈ ಕರೆನ್ಸಿಯಲ್ಲಿ ಖಾತೆಯನ್ನು ಸೇರಿಸಿ.', weeklyPattern: 'ವಾರದ ಮಾದರಿ', averageByDay: 'ದಿನದ ಪ್ರಕಾರ ಸರಾಸರಿ', noWeekly: 'ಇನ್ನೂ ವಾರದ ಮಾದರಿ ಇಲ್ಲ', noWeeklyHint: 'ಹೆಚ್ಚಿನ ವಹಿವಾಟುಗಳಿದ್ದರೆ ದಿನದ ಪ್ರಕಾರ ನಿಮ್ಮ ವೆಚ್ಚದ ಲಯ ಕಾಣುತ್ತದೆ.',
-    low: 'ಕಡಿಮೆ', mid: 'ಮಧ್ಯಮ', high: 'ಹೆಚ್ಚು', spendingPatterns: 'ವೆಚ್ಚದ ಮಾದರಿಗಳು', monthEndForecast: 'ತಿಂಗಳ ಕೊನೆಯ ಅಂದಾಜು', dowInsight: 'ಹೆಚ್ಚು ವೆಚ್ಚ {{peak}}, ಕಡಿಮೆ {{lowest}}.', noDataPeriod: 'ಈ ಅವಧಿಗೆ ಡೇಟಾ ಇಲ್ಲ', noCategoryData: 'ಈ ಅವಧಿಯಲ್ಲಿ ಏನೂ ಇಲ್ಲ', noCategoryDataHint: 'ಹಣ ಎಲ್ಲಿಗೆ ಹೋಗುತ್ತದೆ ಎಂದು ನೋಡಲು ಈ ರೀತಿಯ ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ.',
+    low: 'ಕಡಿಮೆ', mid: 'ಮಧ್ಯಮ', high: 'ಹೆಚ್ಚು', monthEndForecast: 'ತಿಂಗಳ ಕೊನೆಯ ಅಂದಾಜು', dowInsight: 'ಹೆಚ್ಚು ವೆಚ್ಚ {{peak}}, ಕಡಿಮೆ {{lowest}}.', noDataPeriod: 'ಈ ಅವಧಿಗೆ ಡೇಟಾ ಇಲ್ಲ', noCategoryData: 'ಈ ಅವಧಿಯಲ್ಲಿ ಏನೂ ಇಲ್ಲ', noCategoryDataHint: 'ಹಣ ಎಲ್ಲಿಗೆ ಹೋಗುತ್ತದೆ ಎಂದು ನೋಡಲು ಈ ರೀತಿಯ ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ.',
   },
   export: {
     title: 'CSV ರಫ್ತು', last7: 'ಕಳೆದ 7 ದಿನಗಳು', last30: 'ಕಳೆದ 30 ದಿನಗಳು', last90: 'ಕಳೆದ 90 ದಿನಗಳು', last12m: 'ಕಳೆದ 12 ತಿಂಗಳು', all: 'ಎಲ್ಲಾ', income: 'ಆದಾಯ', expense: 'ವೆಚ್ಚ', transfer: 'ವರ್ಗಾವಣೆ',
@@ -302,7 +297,6 @@ const kn: Translation = {
     termsMessage: 'ಈ ಖರೀದಿಯು ನಿಮ್ಮ Play Store / App Store ಖಾತೆಗೆ ಲಿಂಕ್ ಆಗಿದ್ದು, ಲಾಗಿನ್ ಮಾಡಿದಾಗ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಮರುಸ್ಥಾಪನೆಯಾಗುತ್ತದೆ.',
     proActive: 'Pro ಸಕ್ರಿಯ', allSet: 'ಎಲ್ಲವೂ ಸಿದ್ಧ.', allSetDesc: 'ಪ್ರತಿ ವೃತ್ತಿಪರ ಸಾಧನ, ಪ್ರತಿ ಭವಿಷ್ಯದ ಅಪ್‌ಡೇಟ್ — ಶಾಶ್ವತವಾಗಿ ನಿಮ್ಮದು. ಚಂದಾದಾರಿಕೆಗಳಿಲ್ಲ, ಮಿತಿಗಳಿಲ್ಲ.', linkedStore: 'ನಿಮ್ಮ Google Play / App Store ಗೆ ಲಿಂಕ್ ಆಗಿದೆ',
     active: 'ಸಕ್ರಿಯ', unlockedFeatures: 'ಅನ್‌ಲಾಕ್ ಆದ ವೈಶಿಷ್ಟ್ಯಗಳು', openDashboard: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ತೆರೆಯಿರಿ',
-    upsellTrends: 'ವೆಚ್ಚದ ಪ್ರವೃತ್ತಿಗಳು ಮತ್ತು ಅವಧಿ ಹೋಲಿಕೆಗಳು', upsellHighlights: 'ಪ್ರಮುಖಾಂಶಗಳು ಮತ್ತು ವೆಚ್ಚದ ಮುನ್ಸೂಚನೆ', upsellSearch: 'ಎಲ್ಲಾ ಡೇಟಾದಾದ್ಯಂತ ಗ್ಲೋಬಲ್ ಸರ್ಚ್', upsellCsv: 'ಸಾಲದ ಡೇಟಾದೊಂದಿಗೆ CSV ರಫ್ತು', upsellExtended: 'ವಿಸ್ತೃತ 30 / 90 / 365-ದಿನಗಳ ವಿಶ್ಲೇಷಣೆ',
     oneTimeLifetime: 'ಒಮ್ಮೆಯ ಪಾವತಿ · ಜೀವಿತಾವಧಿ ಪ್ರವೇಶ', unlockPro: 'Fintraq Pro ಅನ್‌ಲಾಕ್ ಮಾಡಿ', unlockIn: '{{seconds}} ಸೆಕೆಂಡ್‌ಗಳಲ್ಲಿ ಅನ್‌ಲಾಕ್', maybeLater: 'ನಂತರ ನೋಡೋಣ',
     accessRevoked: 'ಪ್ರವೇಶ ರದ್ದಾಗಿದೆ', accessRevokedMessage: 'ನಿಮ್ಮ Pro ಪ್ರವೇಶವನ್ನು ರದ್ದುಪಡಿಸಲಾಗಿದೆ ಅಥವಾ ಮರುಪಾವತಿ ಮಾಡಲಾಗಿದೆ. ನೀವು ಯಾವಾಗ ಬೇಕಾದರೂ ಮತ್ತೆ ಖರೀದಿಸಬಹುದು.', billingUnavailable: 'ಬಿಲ್ಲಿಂಗ್ ಇಂಟರ್ಫೇಸ್ ಸದ್ಯ ಲಭ್ಯವಿಲ್ಲ.',
     networkRequired: 'ನೆಟ್‌ವರ್ಕ್ ಅಗತ್ಯ', checkConnection: 'ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು ನಿಮ್ಮ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ.', purchaseError: 'ಖರೀದಿ ದೋಷ', purchaseErrorMessage: 'ಸದ್ಯ ನಿಮ್ಮ ವಿನಂತಿಯನ್ನು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗಲಿಲ್ಲ.',
@@ -317,8 +311,13 @@ const kn: Translation = {
       search: { title: 'ಗ್ಲೋಬಲ್ ಸರ್ಚ್', description: 'ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಇತಿಹಾಸದಲ್ಲಿ ಯಾವುದೇ ವಹಿವಾಟು, ಖಾತೆ ಅಥವಾ ವರ್ಗವನ್ನು ತಕ್ಷಣ ಹುಡುಕಿ.' },
       weekly: { title: 'ವಾರದ ಮಾದರಿ', description: 'ನೀವು ಯಾವ ದಿನಗಳಲ್ಲಿ ಹೆಚ್ಚು ಖರ್ಚು ಮಾಡುತ್ತೀರಿ ಎಂದು ತೋರಿಸುವ ಬಾರ್ ಚಾರ್ಟ್, ಸ್ವಯಂ ರಚಿತ ವೆಚ್ಚ ಒಳನೋಟದೊಂದಿಗೆ.' },
       csv: { title: 'CSV ರಫ್ತು', description: 'ವಹಿವಾಟುಗಳು ಮತ್ತು ಸಾಲದ ದಾಖಲೆಗಳನ್ನು ಸ್ಪ್ರೆಡ್‌ಶೀಟ್ ಆಗಿ ರಫ್ತು ಮಾಡಿ. ಸಾಧನದಲ್ಲಿ ಉಳಿಸಿ ಅಥವಾ ಯಾವುದೇ ಆ್ಯಪ್‌ಗೆ ಹಂಚಿಕೊಳ್ಳಿ.' },
+      people: { title: 'ವ್ಯಕ್ತಿಗಳು & ಬಾಕಿಗಳು', description: 'ನೀವು ಯಾರೊಂದಿಗೆ ಖರ್ಚು ಮಾಡುತ್ತೀರಿ ಮತ್ತು ನಿಮ್ಮ ಹಣ ಖಾತೆಗಳಲ್ಲಿ ಹೇಗೆ ಹಂಚಿಕೆಯಾಗಿದೆ ಎಂದು ನೋಡಿ.' },
+      backup: { title: 'ಸ್ವಯಂಚಾಲಿತ ಕ್ಲೌಡ್ ಬ್ಯಾಕಪ್', description: 'ಪ್ರತಿ 12 ಗಂಟೆಗೆ ನಿಮ್ಮ Google Drive‌ಗೆ ಬ್ಯಾಕಪ್ ಮಾಡಿ ಮತ್ತು ಯಾವುದೇ ಸಾಧನದಲ್ಲಿ ಮರುಸ್ಥಾಪಿಸಿ.' },
+      unlimited: { title: 'ಮಿತಿಗಳಿಲ್ಲ', description: '{{loans}}ಕ್ಕಿಂತ ಹೆಚ್ಚು ಸಕ್ರಿಯ ಸಾಲಗಳು ಮತ್ತು {{persons}}ಕ್ಕಿಂತ ಹೆಚ್ಚು ವ್ಯಕ್ತಿಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.' },
     },
-    insightsTitle: 'Pro ಒಳನೋಟಗಳು', upgradeForInsights: 'ಒಳನೋಟಗಳಿಗಾಗಿ Pro ಗೆ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ', noInsights: 'ಇನ್ನೂ ಒಳನೋಟಗಳಿಲ್ಲ', noInsightsHint: 'ವೈಯಕ್ತೀಕರಿಸಿದ ವೆಚ್ಚದ ಪ್ರವೃತ್ತಿಗಳನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ದಾಖಲಿಸುತ್ತಿರಿ.', analysing: 'ನಿಮ್ಮ ಮಾದರಿಗಳನ್ನು ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...',
+    groups: { analytics: 'ವಿಶ್ಲೇಷಣೆ & ಒಳನೋಟಗಳು', tools: 'ಶಕ್ತಿಶಾಲಿ ಸಾಧನಗಳು', more: 'ನಿಶ್ಚಿಂತೆ' },
+    gate: { upgrade: 'Pro ಗೆ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ', notNow: 'ಈಗ ಬೇಡ', youTried: 'ನೀವು ಪ್ರಯತ್ನಿಸಿದ್ದು', alsoIncluded: 'Pro ನಲ್ಲಿ ಇನ್ನೂ', previewTitle: 'Pro ಜೊತೆ ಇನ್ನಷ್ಟು', previewHint: 'ಈ ಅವಧಿಯ ಆಳವಾದ ವಿಶ್ಲೇಷಣೆಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಿ:', seeAll: 'Pro ನಲ್ಲಿ ಎಲ್ಲವನ್ನೂ ನೋಡಿ' },
+    insightsTitle: 'Pro ಒಳನೋಟಗಳು', noInsights: 'ಇನ್ನೂ ಒಳನೋಟಗಳಿಲ್ಲ', noInsightsHint: 'ವೈಯಕ್ತೀಕರಿಸಿದ ವೆಚ್ಚದ ಪ್ರವೃತ್ತಿಗಳನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ದಾಖಲಿಸುತ್ತಿರಿ.', analysing: 'ನಿಮ್ಮ ಮಾದರಿಗಳನ್ನು ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...',
   },
   insights: {
     spendingUp: 'ವೆಚ್ಚ {{pct}}% ಹೆಚ್ಚಿದೆ', spendingDown: 'ವೆಚ್ಚ {{pct}}% ಕಡಿಮೆಯಾಗಿದೆ', spendingUpHint: 'ಕಳೆದ ವಾರಕ್ಕೆ ಹೋಲಿಸಿದರೆ. ಏನಾದರೂ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಸೇರಿಕೊಂಡಿದೆಯೇ ಎಂದು ನೋಡಿ — ಸಣ್ಣ ಪರಿಶೀಲನೆ ಯಾವಾಗಲೂ ಒಳ್ಳೆಯದು.', spendingDownHint: 'ಕಳೆದ ವಾರಕ್ಕೆ ಹೋಲಿಸಿದರೆ. ನೀವು ಎಂದಿಗಿಂತ ಹೆಚ್ಚು ನಿಯಂತ್ರಣ ಮಾಡಿದ್ದೀರಿ — ಚೆನ್ನಾಗಿದೆ!',

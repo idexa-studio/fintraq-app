@@ -1,16 +1,17 @@
+import { Banner } from '@/src/components/ui';
+import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { Screen } from '@/src/components/ui/Screen';
 import { Text } from '@/src/components/ui/Text';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Icon } from '@/src/components/ui/Icon';
 import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { usePersons } from '@/src/features/persons/hooks/persons';
-import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { AlertCircleIcon, CancelCircleIcon, LockPasswordIcon, PlusSignIcon, Search01Icon, UserGroupIcon } from '@hugeicons/core-free-icons';
+import { CancelCircleIcon, LockPasswordIcon, PlusSignIcon, Search01Icon, UserGroupIcon } from '@hugeicons/core-free-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
 import { useTranslation } from 'react-i18next';
@@ -23,7 +24,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const router = useRouter();
-  const { isPremium } = usePremium();
+  const { isPremium, openPaywall } = useProAccess();
 
   const { data: personList } = usePersons();
   const persons = useMemo(() => personList ?? [], [personList]);
@@ -45,11 +46,11 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
   const handleAdd = useCallback(() => {
     if (atLimit) {
-      router.push('/premium');
+      openPaywall('unlimited');
       return;
     }
     router.push('/(main)/persons/form');
-  }, [atLimit, router]);
+  }, [atLimit, router, openPaywall]);
 
   const handlePersonPress = useCallback((id: number) => {
     router.push(`/(main)/persons/${id}`);
@@ -83,12 +84,7 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {atLimit && (
-          <Pressable style={styles.limitBanner} onPress={() => router.push('/premium')}>
-            <Icon icon={AlertCircleIcon} size={16} color={colors.warning} />
-            <Text style={[styles.limitText, { fontFamily: typography.fonts.medium, color: colors.warning }]}>
-              Free plan: {FREE_PERSON_LIMIT} persons max — upgrade for unlimited
-            </Text>
-          </Pressable>
+          <Banner tone="warning" title={t('persons.limitMessage', { limit: FREE_PERSON_LIMIT })} actionLabel={t('loans.upgrade')} onAction={() => openPaywall('unlimited')} />
         )}
 
         {filtered.length > 0 && (

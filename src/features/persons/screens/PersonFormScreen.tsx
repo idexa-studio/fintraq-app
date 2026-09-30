@@ -3,12 +3,12 @@ import { Screen } from '@/src/components/ui/Screen';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { ColorPickerRow } from '@/src/components/pickers/ColorPickerRow';
 import { PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
 import type { InsertPerson, UpdatePersonData } from '@/src/features/persons/api/persons';
 import { useCreatePerson, usePersons, useUpdatePerson } from '@/src/features/persons/hooks/persons';
-import { usePremium } from '@/src/providers/PremiumProvider';
+import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, toDbColor } from '@/src/utils/format';
 import { LoggerService } from '@/src/services/logger.service';
@@ -36,7 +36,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
   const theme = useTheme();
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const { isPremium } = usePremium();
+  const { isPremium, openPaywall } = useProAccess();
 
   const { data: persons } = usePersons();
   const person = useMemo(
@@ -84,10 +84,7 @@ export const PersonFormScreen = React.memo(function PersonFormScreen() {
 
   const handleSave = handleSubmit(async (data) => {
     if (!isEditing && !isPremium && (persons?.length ?? 0) >= FREE_PERSON_LIMIT) {
-      Alert.alert(
-        t('persons.upgradeTitle'),
-        t('persons.limitMessage', { limit: FREE_PERSON_LIMIT }),
-      );
+      openPaywall('unlimited');
       return;
     }
 

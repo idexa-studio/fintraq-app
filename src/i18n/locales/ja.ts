@@ -87,11 +87,6 @@ const ja: Translation = {
     resetFailedMessage: '初期化を完了できませんでした。もう一度お試しください。',
     eraseEverything: 'すべて消去', displayName: '表示名', displayNameHint: 'ダッシュボードでの呼びかけに使われます', yourName: 'お名前', privacyTitle: 'プライバシーポリシー', termsTitle: '利用規約',
   },
-  searchGate: {
-    pro: 'Pro', title: 'グローバル検索', subtitle: 'すべての家計履歴から、探しものを一か所で見つけられます。',
-    transactions: 'すべての取引を全文検索', accounts: '口座名ですばやく検索',
-    categories: '履歴全体からカテゴリを検索', upgrade: 'Proにアップグレード', notNow: '今はしない',
-  },
   onboarding: {
     name: 'お名前', nameRequired: 'お名前を入力してください', nameMin: '2文字以上', nameMax: '30文字未満',
     greetingHint: 'アプリ内での呼びかけに使われます', defaultCurrency: '標準の通貨', tapToChange: 'タップして変更',
@@ -171,7 +166,7 @@ const ja: Translation = {
     connectToRestore: 'クラウドアカウントに接続して、既存の口座と取引を復元します。',
   },
   ui: {
-    somethingWrong: '問題が発生しました', proOnly: 'Pro限定', unlockWithPro: 'Fintraq Proで解放',
+    somethingWrong: '問題が発生しました',
     charsLeft: '残り{{count}}文字', suggested: 'おすすめ', allCurrencies: 'すべての通貨', noMatch: '「{{query}}」に一致する項目はありません', chooseIcon: 'アイコンを選択', chooseColor: '色を選択', colorsCount: '{{count}}色', currency: '通貨', currenciesCount: '{{count}}通貨', searchCurrency: '名前またはコードで検索', delKey: '削除',
   },
   lock: {
@@ -219,7 +214,7 @@ const ja: Translation = {
   },
   persons: {
     title: '人物', person: '人物', edit: '人物を編集', new: '新しい人物', searchPlaceholder: '人物を検索...', none: '人物はまだいません', noneHint: '取引に紐づける人物を追加しましょう',
-    upgradeTitle: 'Proにアップグレード', limitMessage: '無料プランでは最大{{limit}}人まで登録できます。無制限にするにはアップグレードしてください。',
+    limitMessage: '無料プランでは最大{{limit}}人まで登録できます。無制限にするにはアップグレードしてください。',
     personName: '人物の名前', chooseColor: '下からアクセントカラーを選択', contactDetails: '連絡先', work: '仕事（任意）',
     namePlaceholder: '山田 花子', emailPlaceholder: 'hanako@example.com', rolePlaceholder: 'マネージャー', companyPlaceholder: '株式会社アクメ', save: '人物を保存', add: '人物を追加',
     spent: '支出', received: '受取', activeLoans: '進行中の貸し借り', transactions: '取引', deleteTitle: '人物を削除',
@@ -254,10 +249,10 @@ const ja: Translation = {
   },
   analytics: {
     income: '収入', expenses: '支出', expense: '支出', netPosition: '収支', dailyAvg: '1日の平均支出', highlights: 'ハイライト', topCategory: '支出が最も多いカテゴリ', biggestExpense: '最大の支出',
-    noHighlights: 'ハイライトはまだありません', noHighlightsHint: '支出の取引を追加すると、主な傾向が表示されます。', trend: '支出の推移', noTrend: '推移データはまだありません', noTrendHint: '収入または支出の取引を追加すると、支出の推移が表示されます。',
+    trend: '支出の推移', noTrend: '推移データはまだありません', noTrendHint: '収入または支出の取引を追加すると、支出の推移が表示されます。',
     categoryBreakdown: 'カテゴリ別内訳', groupsCount: '{{count}}グループ', personBreakdown: '人物別内訳', personsCount: '{{count}}人', balanceDistribution: '残高の分布', accountsCount: '{{count}}口座',
     noCurrencyAccounts: '{{currency}}の口座はありません', noCurrencyAccountsHint: 'この通貨の口座を追加すると、残高の分布が表示されます。', weeklyPattern: '曜日別パターン', averageByDay: '曜日ごとの平均', noWeekly: '曜日別パターンはまだありません', noWeeklyHint: '取引が増えると、曜日ごとの支出のリズムが見えてきます。',
-    low: '低', mid: '中', high: '高', spendingPatterns: '支出パターン', monthEndForecast: '月末予測', dowInsight: '最も使うのは{{peak}}、最も少ないのは{{lowest}}です。', noDataPeriod: 'この期間のデータはありません', noCategoryData: 'この期間のデータはありません', noCategoryDataHint: 'お金の行き先を確認するには、この種類の取引を追加してください。',
+    low: '低', mid: '中', high: '高', monthEndForecast: '月末予測', dowInsight: '最も使うのは{{peak}}、最も少ないのは{{lowest}}です。', noDataPeriod: 'この期間のデータはありません', noCategoryData: 'この期間のデータはありません', noCategoryDataHint: 'お金の行き先を確認するには、この種類の取引を追加してください。',
   },
   export: {
     title: 'CSVをエクスポート', last7: '過去7日間', last30: '過去30日間', last90: '過去90日間', last12m: '過去12か月', all: 'すべて', income: '収入', expense: '支出', transfer: '振替',
@@ -302,7 +297,6 @@ const ja: Translation = {
     termsMessage: 'この購入はPlayストア / App Storeのアカウントに紐づき、ログイン時に自動で復元されます。',
     proActive: 'Pro有効', allSet: '準備完了です。', allSetDesc: 'すべてのプロ向けツールと今後のアップデートが、ずっとあなたのものに。サブスクも制限もありません。', linkedStore: 'Google Play / App Storeに紐づいています',
     active: '有効', unlockedFeatures: '解放された機能', openDashboard: 'ダッシュボードを開く',
-    upsellTrends: '支出の推移と期間ごとの増減', upsellHighlights: 'ハイライトと支出予測', upsellSearch: 'すべてのデータを対象としたグローバル検索', upsellCsv: '貸し借りデータ付きCSVエクスポート', upsellExtended: '30 / 90 / 365日の拡張分析',
     oneTimeLifetime: '一回払い · 永久にご利用可能', unlockPro: 'Fintraq Proを解放', unlockIn: '{{seconds}}秒後に解放', maybeLater: '後で',
     accessRevoked: 'アクセスが取り消されました', accessRevokedMessage: 'Proのアクセスが取り消されたか、返金されました。いつでも再購入できます。', billingUnavailable: '課金インターフェースは現在利用できません。',
     networkRequired: 'ネットワークが必要です', checkConnection: '続けるには接続を確認してください。', purchaseError: '購入エラー', purchaseErrorMessage: '現在、リクエストを処理できませんでした。',
@@ -317,8 +311,13 @@ const ja: Translation = {
       search: { title: 'グローバル検索', description: '履歴全体から、取引・口座・カテゴリをすぐに見つけられます。' },
       weekly: { title: '曜日別パターン', description: '支出が多い曜日を棒グラフで表示し、支出のインサイトを自動生成します。' },
       csv: { title: 'CSVエクスポート', description: '取引と貸し借りの記録をスプレッドシートとして出力。端末に保存したり、任意のアプリに共有できます。' },
+      people: { title: '人物と残高', description: '誰との支出が多いか、お金が口座にどう分散しているかを確認できます。' },
+      backup: { title: '自動クラウドバックアップ', description: '12時間ごとにご自身の Google ドライブへバックアップし、どの端末でも復元できます。' },
+      unlimited: { title: '制限なし', description: '{{loans}}件を超える貸し借りと{{persons}}人を超える人物を管理できます。' },
     },
-    insightsTitle: 'Proインサイト', upgradeForInsights: 'インサイトはProで利用できます', noInsights: 'インサイトはまだありません', noInsightsHint: '記録を続けると、あなた専用の支出トレンドが解放されます。', analysing: 'パターンを分析中...',
+    groups: { analytics: '分析とインサイト', tools: '便利なツール', more: '安心' },
+    gate: { upgrade: 'Pro にアップグレード', notNow: '今はしない', youTried: '今お試しの機能', alsoIncluded: 'Pro にはほかにも', previewTitle: 'Pro でもっと', previewHint: 'この期間のより詳しい分析を解放:', seeAll: 'Pro のすべてを見る' },
+    insightsTitle: 'Proインサイト', noInsights: 'インサイトはまだありません', noInsightsHint: '記録を続けると、あなた専用の支出トレンドが解放されます。', analysing: 'パターンを分析中...',
   },
   insights: {
     spendingUp: '支出が{{pct}}%増加', spendingDown: '支出が{{pct}}%減少', spendingUpHint: '先週との比較。紛れ込んだ支出がないか、さっと見直してみましょう。', spendingDownHint: '先週との比較。いつもよりしっかり抑えられています。よくできました！',

@@ -11,7 +11,7 @@ import { useCloudBackupActions } from '@/src/features/backup/hooks/useCloudBacku
 import { useEnableCloudBackup } from '@/src/features/backup/hooks/useEnableCloudBackup';
 import { useLatestBackup } from '@/src/features/backup/hooks/useLatestBackup';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
-import { usePremium } from '@/src/providers/PremiumProvider';
+import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { openAppSettings, openBatteryOptimizationSettings } from '@/src/services/backup/battery-optimization';
 import { isBackupOverdue } from '@/src/services/backup/backup-schedule';
@@ -33,7 +33,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
-  const { isPremium } = usePremium();
+  const { isPremium, openPaywall } = useProAccess();
 
   const { account, isLoading: isAccountLoading } = useBackupAccount();
   const { latestBackup } = useLatestBackup();
@@ -172,7 +172,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const isOverdue = autoBackupEnabled && isBackupOverdue(latestBackup?.modifiedTime, Date.now());
 
   const renderBody = () => {
-    if (!isPremium) return <BackupUpsellRow onPress={() => router.push('/premium')} />;
+    if (!isPremium) return <BackupUpsellRow onPress={() => openPaywall('backup')} />;
 
     if (isAccountLoading) {
       return (

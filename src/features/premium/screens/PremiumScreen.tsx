@@ -1,182 +1,163 @@
-import { Button } from '@/src/components/ui/Button';
-import { Screen } from '@/src/components/ui/Screen';
-import { Spinner } from '@/src/components/ui';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Icon } from '@/src/components/ui/Icon';
-import { SectionHeader } from '@/src/components/ui/SectionHeader';
-import { FEATURES, SKU_LIFETIME } from '@/src/constants/iap';
+import { ReloadIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
+import { AlertDialog, Badge, BentoPressable, Button, Icon, Screen, Spinner, Text } from '@/src/components/ui';
+import { SKU_LIFETIME } from '@/src/constants/iap';
+import { ProFeatureList, ProFeatureRow } from '@/src/features/premium/components/ProFeatureList';
+import { isProFeatureId } from '@/src/features/premium/pro-features';
+import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { AnalyticsService } from '@/src/services/analytics';
-import { ReloadIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
-import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { Text } from '@/src/components/ui/Text';
-import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
 
+/**
+ * The paywall. Opened from a locked feature it leads with that feature ("You tried this"), then
+ * lists everything Pro includes by area, with one pinned purchase button.
+ */
 export const PremiumScreen = React.memo(function PremiumScreen() {
   const theme = useTheme();
+  const { heroCard, colors } = theme;
   const { t } = useTranslation();
-  const { colors, heroCard } = theme;
+  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
   const { products, purchasePremium, restorePurchase, isLoading } = usePremium();
+  const { showAlert, alertProps } = useAlertDialog();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const styles = useMemo(() => createStyles(theme, heroCard), [theme, heroCard]);
+  const params = useLocalSearchParams<{ feature?: string }>();
+  const triedFeature = isProFeatureId(params.feature) ? params.feature : undefined;
+  const product = useMemo(() => products.find((p) => p.id === SKU_LIFETIME), [products]);
 
-  const lifetimeProduct = useMemo(() => products.find(p => p.id === SKU_LIFETIME), [products]);
+  useEffect(() => {
+    AnalyticsService.premiumPaywallViewed(triedFeature ?? 'premium_screen').catch(() => {});
+  }, [triedFeature]);
 
-  React.useEffect(() => {
-    AnalyticsService.premiumPaywallViewed('premium_screen').catch(() => { });
+  const run = useCallback(async (action: () => Promise<unknown>) => {
+    setIsProcessing(true);
+    try {
+      await action();
+    } finally {
+      setIsProcessing(false);
+    }
   }, []);
 
-  const handlePurchase = useCallback(async () => {
-    setIsProcessing(true);
-    await purchasePremium();
-    setIsProcessing(false);
-  }, [purchasePremium]);
-
-  const handleRestore = useCallback(async () => {
-    setIsProcessing(true);
-    await restorePurchase();
-    setIsProcessing(false);
-  }, [restorePurchase]);
-
-
-
   return (
-    <Screen header={{ title: t('premium.title'), showBack: true }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
-
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Hero Card — edge-to-edge, dashboard style */}
-        <View style={[styles.heroCard, { backgroundColor: heroCard.background }]}>
-          <Text style={styles.heroBadge}>{t('premium.lifetimeUpgrade')}</Text>
-          <Text style={styles.heroTitle}>{t('premium.heroTitle')}</Text>
-          <Text style={styles.heroDesc}>
-            {t('premium.heroDesc')}
-          </Text>
-          <View style={styles.heroPerkRow}>
-            <View style={styles.heroPerk}>
-              <Icon icon={ShieldKeyIcon} size={14} color={heroCard.textPrimary} />
-              <Text style={styles.heroPerkText}>{t('premium.oneTime')}</Text>
-            </View>
-            <View style={styles.heroPerk}>
-              <Icon icon={ReloadIcon} size={14} color={heroCard.textPrimary} />
-              <Text style={styles.heroPerkText}>{t('premium.storeLinked')}</Text>
-            </View>
+    <Screen
+      header={{ title: t('premium.title'), showBack: true }}
+      footer={
+        <View style={styles.footer}>
+          <Button
+            title={t('premium.upgradeFor', { price: product?.displayPrice ?? t('premium.pro') })}
+            onPress={() => run(purchasePremium)}
+            disabled={!product}
+            isLoading={isProcessing}
+            size="lg"
+            fullWidth
+          />
+          <View style={styles.legal}>
+            <BentoPressable onPress={() => run(restorePurchase)} disabled={isProcessing} accessibilityRole="button">
+              <Text variant="caption" tone="muted">
+                {t('premium.restorePurchase')}
+              </Text>
+            </BentoPressable>
+            <View style={styles.legalDot} />
+            <BentoPressable onPress={() => showAlert({ title: t('premium.termsTitle'), message: t('premium.termsMessage') })} accessibilityRole="button">
+              <Text variant="caption" tone="muted">
+                {t('premium.terms')}
+              </Text>
+            </BentoPressable>
           </View>
         </View>
-
-        {/* Pricing details */}
-        <View style={styles.priceContainer}>
-          {lifetimeProduct ? (
-            <View style={styles.priceRow}>
-              <View style={styles.priceLeft}>
-                <Text style={styles.priceLabel}>{t('premium.lifetimeLicense')}</Text>
-                <Text style={styles.priceSubText}>{t('premium.allIncluded')}</Text>
-              </View>
-              <View style={styles.priceRight}>
-                {lifetimeProduct.originalPrice && (
-                  <Text style={styles.originalPriceText}>{lifetimeProduct.originalPrice}</Text>
-                )}
-                <Text style={styles.priceValue}>{lifetimeProduct.displayPrice}</Text>
-              </View>
+      }
+      overlays={<AlertDialog {...alertProps} />}
+    >
+      <View style={styles.hero}>
+        <View style={[styles.ring, styles.ringLarge]} pointerEvents="none" />
+        <View style={[styles.ring, styles.ringSmall]} pointerEvents="none" />
+        <Text variant="micro" color={heroCard.textMuted} style={styles.eyebrow}>
+          {t('premium.lifetimeUpgrade')}
+        </Text>
+        <Text variant="title" color={heroCard.textPrimary}>
+          {t('premium.heroTitle')}
+        </Text>
+        <Text variant="callout" color={heroCard.textMuted}>
+          {t('premium.heroDesc')}
+        </Text>
+        <View style={styles.perks}>
+          {[
+            { key: 'oneTime', icon: ShieldKeyIcon },
+            { key: 'storeLinked', icon: ReloadIcon },
+          ].map((perk) => (
+            <View key={perk.key} style={styles.perk}>
+              <Icon icon={perk.icon} size={14} color={heroCard.textPrimary} />
+              <Text variant="label" color={heroCard.textPrimary} numberOfLines={1} style={styles.perkText}>
+                {t(`premium.${perk.key as 'oneTime' | 'storeLinked'}`)}
+              </Text>
             </View>
-          ) : isLoading ? (
-            <Spinner size="sm" style={{ paddingVertical: 12 }} />
-          ) : (
-            <Text style={styles.priceError}>{t('premium.pricingUnavailable')}</Text>
-          )}
-        </View>
-
-        {/* Features list */}
-        <SectionHeader title={t('premium.everythingIncluded')} />
-
-        <View style={styles.featuresCard}>
-          {FEATURES.map((f, index) => {
-            const isLast = index === FEATURES.length - 1;
-            return (
-              <View key={f.key} style={[styles.featureItem, isLast && styles.noMargin]}>
-                <View style={styles.iconWrapperInactive}>
-                  <Icon icon={f.icon} size={20} color={colors.primaryInk} />
-                </View>
-                <View style={styles.featureContent}>
-                  <Text style={styles.featureTitle}>{t(`premium.features.${f.key}.title`)}</Text>
-                  <Text style={styles.featureDesc}>{t(`premium.features.${f.key}.description`)}</Text>
-                </View>
-              </View>
-            );
-          })}
-        </View>
-
-        <View style={{ height: 40 }} />
-      </ScrollView>
-
-      {/* Pinned Bottom CTA */}
-      <View style={styles.footer}>
-        <Button
-          title={t('premium.upgradeFor', { price: lifetimeProduct?.displayPrice || t('premium.pro') })}
-          onPress={handlePurchase}
-          disabled={!lifetimeProduct}
-          isLoading={isProcessing}
-          size="lg"
-          fullWidth
-        />
-        <View style={styles.legal}>
-          <BentoPressable onPress={handleRestore} disabled={isProcessing}>
-            <Text style={styles.legalText}>{t('premium.restorePurchase')}</Text>
-          </BentoPressable>
-          <View style={styles.legalDot} />
-          <BentoPressable onPress={() => Alert.alert(t('premium.termsTitle'), t('premium.termsMessage'))}>
-            <Text style={styles.legalText}>{t('premium.terms')}</Text>
-          </BentoPressable>
+          ))}
         </View>
       </View>
+
+      <View style={styles.price}>
+        <View style={styles.priceText}>
+          <Text variant="bodyStrong">{t('premium.lifetimeLicense')}</Text>
+          <Text variant="caption" tone="muted">
+            {t('premium.allIncluded')}
+          </Text>
+        </View>
+        {product ? (
+          <View style={styles.priceValue}>
+            {product.originalPrice ? (
+              <Text variant="callout" tone="muted" style={styles.strike}>
+                {product.originalPrice}
+              </Text>
+            ) : null}
+            <Text variant="amountLarge">{product.displayPrice}</Text>
+          </View>
+        ) : isLoading ? (
+          <Spinner size="sm" />
+        ) : (
+          <Text variant="caption" tone="danger">
+            {t('premium.pricingUnavailable')}
+          </Text>
+        )}
+      </View>
+
+      {triedFeature ? (
+        <View>
+          <View style={styles.triedLabel}>
+            <Badge label={t('premium.gate.youTried')} color={colors.warning} />
+          </View>
+          <View style={styles.triedCard}>
+            <ProFeatureRow feature={triedFeature} />
+          </View>
+        </View>
+      ) : null}
+
+      <ProFeatureList exclude={triedFeature} />
     </Screen>
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, state }: ThemeContextType, heroCard: HeroCardPalette) =>
+const RING_LARGE = 220;
+const RING_SMALL = 110;
+
+const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType, heroCard: HeroCardPalette) =>
   StyleSheet.create({
-    scroll: {
-      paddingTop: 0,
-    },
-    // ── Hero Card
-    heroCard: {
-      paddingHorizontal: spacing('5'),
-      paddingTop: spacing('5'),
-      paddingBottom: spacing('6'),
+    hero: {
+      backgroundColor: heroCard.background,
       borderRadius: radius('2xl'),
-      marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('4'),
+      padding: spacing('5'),
+      gap: spacing('1.5'),
       overflow: 'hidden',
     },
-    heroBadge: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      ...typography.metrics.xxs,
-      letterSpacing: 0.5,
-      color: heroCard.textMuted,
-      textTransform: 'uppercase',
-    },
-    heroTitle: {
-      fontFamily: typography.fonts.heading,
-      ...typography.metrics.xxxl,
-      color: heroCard.textPrimary,
-      marginTop: spacing('1'),
-    },
-    heroDesc: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: heroCard.textMuted,
-      marginTop: spacing('1'),
-    },
-    // ── Perks inside hero (stat-pill style like HeroBalanceCard)
-    heroPerkRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      marginTop: spacing('4'),
-    },
-    heroPerk: {
+    ring: { position: 'absolute', borderRadius: radius('full'), borderColor: heroCard.decoOverlay },
+    ringLarge: { width: RING_LARGE, height: RING_LARGE, borderWidth: 28, top: -RING_LARGE * 0.45, right: -RING_LARGE * 0.3 },
+    ringSmall: { width: RING_SMALL, height: RING_SMALL, borderWidth: 16, bottom: -RING_SMALL * 0.5, right: RING_SMALL * 0.4 },
+    eyebrow: { textTransform: 'uppercase', letterSpacing: 0.6 },
+    perks: { flexDirection: 'row', gap: spacing('2'), marginTop: spacing('3') },
+    perk: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
@@ -186,122 +167,27 @@ const createStyles = ({ colors, typography, spacing, radius, layout, state }: Th
       paddingHorizontal: spacing('3'),
       borderRadius: radius('lg'),
     },
-    heroPerkText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: heroCard.textPrimary,
-      flex: 1,
-    },
-    // ── Price Card
-    priceContainer: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('5'),
-      marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('4'),
-    },
-    priceRow: {
+    perkText: { flexShrink: 1 },
+    price: {
       flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    priceLeft: {
-      gap: spacing('0.5'),
-    },
-    priceLabel: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.lg,
-      color: colors.text,
-    },
-    priceSubText: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-    },
-    priceRight: {
-      alignItems: 'flex-end',
-    },
-    originalPriceText: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.md,
-      color: colors.textMuted,
-      textDecorationLine: 'line-through',
-      marginBottom: 2,
-    },
-    priceValue: {
-      fontFamily: typography.fonts.amountBold,
-      ...typography.metrics.xxxl,
-      color: colors.text,
-    },
-    priceError: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.md,
-      color: colors.danger,
-      textAlign: 'center',
-      width: '100%',
-    },
-    // ── Features list
-    featuresCard: {
-      borderRadius: radius('xl'),
-      overflow: 'hidden',
-      marginHorizontal: layout.screenPadding,
-    },
-    featureItem: {
-      flexDirection: 'row',
-      gap: spacing('4'),
-      alignItems: 'flex-start',
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-      marginBottom: spacing('0.5'),
-    },
-    noMargin: {
-      marginBottom: 0,
-    },
-    iconWrapperInactive: {
-      width: 40,
-      height: 40,
-      borderRadius: radius('xl'),
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: alpha(colors.primary, 'subtle'),
-    },
-    featureContent: {
-      flex: 1,
-      gap: spacing('0.5'),
-    },
-    featureTitle: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.md,
-      color: colors.text,
-    },
-    featureDesc: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
-    },
-    // ── Pinned Footer
-    footer: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('4'),
-      paddingBottom: Platform.OS === 'ios' ? spacing('8') : spacing('6'),
-      backgroundColor: colors.background,
-    },
-    legal: {
-      flexDirection: 'row',
-      justifyContent: 'center',
       alignItems: 'center',
       gap: spacing('3'),
+      backgroundColor: colors.surface,
+      borderRadius: radius('xl'),
+      padding: spacing('4'),
     },
-    legalText: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
+    priceText: { flex: 1, gap: spacing('0.5') },
+    priceValue: { alignItems: 'flex-end' },
+    strike: { textDecorationLine: 'line-through' },
+    triedLabel: { flexDirection: 'row', marginBottom: spacing('2'), marginLeft: spacing('1') },
+    triedCard: {
+      borderRadius: radius('xl'),
+      backgroundColor: colors.surface,
+      borderWidth: 1.5,
+      borderColor: alpha(colors.warning, 'strong'),
+      overflow: 'hidden',
     },
-    legalDot: {
-      width: 4,
-      height: 4,
-      borderRadius: radius('full'),
-      backgroundColor: colors.textMuted,
-    },
+    footer: { gap: spacing('3') },
+    legal: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: spacing('3') },
+    legalDot: { width: 4, height: 4, borderRadius: radius('full'), backgroundColor: colors.textMuted },
   });

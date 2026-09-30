@@ -87,11 +87,6 @@ const es: Translation = {
     resetFailedMessage: 'No se pudo completar el restablecimiento. Inténtalo de nuevo.',
     eraseEverything: 'Borrar todo', displayName: 'Nombre visible', displayNameHint: 'Cómo te saludamos en el panel', yourName: 'Tu nombre', privacyTitle: 'Política de privacidad', termsTitle: 'Términos de uso',
   },
-  searchGate: {
-    pro: 'Pro', title: 'Búsqueda global', subtitle: 'Encuentra cualquier cosa de todo tu historial financiero en un solo lugar.',
-    transactions: 'Búsqueda de texto completo en todas las transacciones', accounts: 'Encuentra cuentas por nombre al instante',
-    categories: 'Localiza categorías en todo tu historial', upgrade: 'Mejorar a Pro', notNow: 'Ahora no',
-  },
   onboarding: {
     name: 'Tu nombre', nameRequired: 'Introduce tu nombre', nameMin: 'Al menos 2 caracteres', nameMax: 'Menos de 30 caracteres',
     greetingHint: 'Así te saludaremos en la app', defaultCurrency: 'Moneda predeterminada', tapToChange: 'Toca para cambiar',
@@ -171,7 +166,7 @@ const es: Translation = {
     connectToRestore: 'Conecta tu cuenta en la nube para restaurar cuentas y transacciones existentes.',
   },
   ui: {
-    somethingWrong: 'Algo salió mal', proOnly: 'Solo Pro', unlockWithPro: 'Desbloquea con Fintraq Pro',
+    somethingWrong: 'Algo salió mal',
     charsLeft: 'Quedan {{count}} caracteres', suggested: 'Sugeridas', allCurrencies: 'Todas las monedas', noMatch: 'Sin resultados para “{{query}}”', chooseIcon: 'Elegir icono', chooseColor: 'Elegir color', colorsCount: '{{count}} colores', currency: 'Moneda', currenciesCount: '{{count}} monedas', searchCurrency: 'Buscar por nombre o código', delKey: 'Borrar',
   },
   lock: {
@@ -219,7 +214,7 @@ const es: Translation = {
   },
   persons: {
     title: 'Personas', person: 'Persona', edit: 'Editar persona', new: 'Nueva persona', searchPlaceholder: 'Buscar personas...', none: 'Aún no hay personas', noneHint: 'Añade personas para vincularlas a transacciones',
-    upgradeTitle: 'Mejorar a Pro', limitMessage: 'El plan gratuito permite hasta {{limit}} personas. Mejora para tener personas ilimitadas.',
+    limitMessage: 'El plan gratuito permite hasta {{limit}} personas. Mejora para tener personas ilimitadas.',
     personName: 'Nombre de la persona', chooseColor: 'Elige abajo un color de acento', contactDetails: 'Datos de contacto', work: 'Trabajo (opcional)',
     namePlaceholder: 'Ana García', emailPlaceholder: 'ana@ejemplo.com', rolePlaceholder: 'Gerente', companyPlaceholder: 'Acme S.A.', save: 'Guardar persona', add: 'Añadir persona',
     spent: 'Gastado', received: 'Recibido', activeLoans: 'Préstamos activos', transactions: 'Transacciones', deleteTitle: 'Eliminar persona',
@@ -254,10 +249,10 @@ const es: Translation = {
   },
   analytics: {
     income: 'Ingresos', expenses: 'Gastos', expense: 'Gasto', netPosition: 'Posición neta', dailyAvg: 'Gasto medio diario', highlights: 'Destacados', topCategory: 'Categoría con más gasto', biggestExpense: 'Mayor gasto',
-    noHighlights: 'Aún no hay destacados', noHighlightsHint: 'Añade gastos para ver los datos clave de tu gasto.', trend: 'Tendencia de gasto', noTrend: 'Aún no hay datos de tendencia', noTrendHint: 'Añade ingresos o gastos para ver tu tendencia de gasto.',
+    trend: 'Tendencia de gasto', noTrend: 'Aún no hay datos de tendencia', noTrendHint: 'Añade ingresos o gastos para ver tu tendencia de gasto.',
     categoryBreakdown: 'Desglose por categoría', groupsCount: '{{count}} grupos', personBreakdown: 'Desglose por persona', personsCount: '{{count}} personas', balanceDistribution: 'Distribución del saldo', accountsCount: '{{count}} cuentas',
     noCurrencyAccounts: 'No hay cuentas en {{currency}}', noCurrencyAccountsHint: 'Añade una cuenta en esta moneda para ver la distribución del saldo.', weeklyPattern: 'Patrón semanal', averageByDay: 'Media por día', noWeekly: 'Aún no hay patrón semanal', noWeeklyHint: 'Con más transacciones verás tu ritmo de gasto por día.',
-    low: 'Bajo', mid: 'Medio', high: 'Alto', spendingPatterns: 'Patrones de gasto', monthEndForecast: 'Previsión a fin de mes', dowInsight: 'Gastas más el {{peak}} y menos el {{lowest}}.', noDataPeriod: 'Sin datos en el periodo', noCategoryData: 'No hay nada en este periodo', noCategoryDataHint: 'Añade transacciones de este tipo para ver a dónde va tu dinero.',
+    low: 'Bajo', mid: 'Medio', high: 'Alto', monthEndForecast: 'Previsión a fin de mes', dowInsight: 'Gastas más el {{peak}} y menos el {{lowest}}.', noDataPeriod: 'Sin datos en el periodo', noCategoryData: 'No hay nada en este periodo', noCategoryDataHint: 'Añade transacciones de este tipo para ver a dónde va tu dinero.',
   },
   export: {
     title: 'Exportar CSV', last7: 'Últimos 7 días', last30: 'Últimos 30 días', last90: 'Últimos 90 días', last12m: 'Últimos 12 meses', all: 'Todo', income: 'Ingreso', expense: 'Gasto', transfer: 'Transferencia',
@@ -302,7 +297,6 @@ const es: Translation = {
     termsMessage: 'Esta compra queda vinculada a tu cuenta de Play Store / App Store y se restaura automáticamente al iniciar sesión.',
     proActive: 'Pro activo', allSet: 'Todo listo.', allSetDesc: 'Cada herramienta profesional, cada futura actualización: tuyas para siempre. Sin suscripciones, sin límites.', linkedStore: 'Vinculada a tu Google Play / App Store',
     active: 'Activo', unlockedFeatures: 'Funciones desbloqueadas', openDashboard: 'Abrir panel',
-    upsellTrends: 'Tendencias de gasto y variaciones por periodo', upsellHighlights: 'Destacados y previsión de gasto', upsellSearch: 'Búsqueda global en todos los datos', upsellCsv: 'Exportación CSV con datos de préstamos', upsellExtended: 'Analítica ampliada de 30 / 90 / 365 días',
     oneTimeLifetime: 'Pago único · Acceso de por vida', unlockPro: 'Desbloquear Fintraq Pro', unlockIn: 'Desbloquear en {{seconds}} s', maybeLater: 'Quizá más tarde',
     accessRevoked: 'Acceso revocado', accessRevokedMessage: 'Tu acceso Pro fue revocado o reembolsado. Puedes volver a comprarlo cuando quieras.', billingUnavailable: 'La interfaz de facturación no está disponible por ahora.',
     networkRequired: 'Se necesita conexión', checkConnection: 'Comprueba tu conexión para continuar.', purchaseError: 'Error de compra', purchaseErrorMessage: 'No pudimos procesar tu solicitud en este momento.',
@@ -317,8 +311,13 @@ const es: Translation = {
       search: { title: 'Búsqueda global', description: 'Encuentra al instante cualquier transacción, cuenta o categoría de todo tu historial.' },
       weekly: { title: 'Patrón semanal', description: 'Gráfico de barras que muestra qué días gastas más, con un análisis de gasto generado automáticamente.' },
       csv: { title: 'Exportación CSV', description: 'Exporta transacciones y préstamos como hoja de cálculo. Guárdala en el dispositivo o compártela con cualquier app.' },
+      people: { title: 'Personas y saldos', description: 'Mira con quién gastas y cómo se reparte tu dinero entre cuentas.' },
+      backup: { title: 'Copia automática en la nube', description: 'Copia en tu propio Google Drive cada 12 horas y restaura en cualquier dispositivo.' },
+      unlimited: { title: 'Sin límites', description: 'Gestiona más de {{loans}} préstamos activos y {{persons}} personas.' },
     },
-    insightsTitle: 'Análisis Pro', upgradeForInsights: 'Mejora a Pro para ver análisis', noInsights: 'Aún no hay análisis', noInsightsHint: 'Sigue registrando para desbloquear tendencias de gasto personalizadas.', analysing: 'Analizando tus patrones...',
+    groups: { analytics: 'Análisis y perspectivas', tools: 'Herramientas avanzadas', more: 'Tranquilidad' },
+    gate: { upgrade: 'Mejorar a Pro', notNow: 'Ahora no', youTried: 'Lo acabas de probar', alsoIncluded: 'También en Pro', previewTitle: 'Más con Pro', previewHint: 'Desbloquea un análisis más profundo de este periodo:', seeAll: 'Ver todo lo de Pro' },
+    insightsTitle: 'Análisis Pro', noInsights: 'Aún no hay análisis', noInsightsHint: 'Sigue registrando para desbloquear tendencias de gasto personalizadas.', analysing: 'Analizando tus patrones...',
   },
   insights: {
     spendingUp: 'El gasto sube un {{pct}} %', spendingDown: 'El gasto baja un {{pct}} %', spendingUpHint: 'frente a la semana pasada. Revisa si se coló algo: una auditoría rápida nunca está de más.', spendingDownHint: 'frente a la semana pasada. Has sido más ajustado de lo habitual: ¡bien hecho!',

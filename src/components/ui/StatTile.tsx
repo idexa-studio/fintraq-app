@@ -17,6 +17,8 @@ type StatTileProps = {
   /** CR = green with +, DR = red with −. */
   type?: TransactionType | 'NONE';
   value?: string;
+  /** Muted line under the value — what the number is about (a category, a date). */
+  caption?: string;
   icon?: IconSource;
   iconColor?: string;
   /** Percentage change vs previous period. */
@@ -34,6 +36,7 @@ export const StatTile = React.memo(function StatTile({
   currency,
   type = 'NONE',
   value,
+  caption,
   icon,
   iconColor,
   delta,
@@ -56,10 +59,11 @@ export const StatTile = React.memo(function StatTile({
         <Text variant="label" tone="muted" numberOfLines={1} style={styles.label}>{label}</Text>
       </View>
       {amount !== undefined ? (
-        <MoneyText amount={amount} currency={currency} type={type} compact={compact} style={styles.value} />
+        <MoneyText amount={amount} currency={currency} type={type} compact={compact} style={styles.value} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} />
       ) : (
         <Text variant="amountLarge" numberOfLines={1}>{value ?? '—'}</Text>
       )}
+      {caption ? <Text variant="caption" tone="muted" numberOfLines={1}>{caption}</Text> : null}
       {delta !== undefined ? <TrendBadge delta={delta} positiveIsGood={positiveIsGood} /> : null}
     </>
   );

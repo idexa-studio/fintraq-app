@@ -1,17 +1,18 @@
+import { Banner } from '@/src/components/ui';
+import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { SegmentedControl } from '@/src/components/ui/SegmentedControl';
 import { Button } from '@/src/components/ui/Button';
 import { Screen } from '@/src/components/ui/Screen';
 import { Text } from '@/src/components/ui/Text';
-import { AlertCircleIcon, ArrowDown01Icon, ArrowUp01Icon, HandshakeIcon, PlusSignIcon } from '@hugeicons/core-free-icons';
+import { ArrowDown01Icon, ArrowUp01Icon, HandshakeIcon, PlusSignIcon } from '@hugeicons/core-free-icons';
 import { Icon } from '@/src/components/ui/Icon';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
-import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { DEFAULT_CURRENCY } from '@/src/constants/currency';
 import type { LoanWithStats } from '@/src/features/loans/api/loans';
@@ -30,7 +31,7 @@ export const LoansScreen = React.memo(function LoansScreen() {
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
   const router = useRouter();
-  const { isPremium } = usePremium();
+  const { isPremium, openPaywall } = useProAccess();
 
   const { data: accounts } = useAccounts();
   const { data: lentLoans } = useLoans('lend');
@@ -77,14 +78,14 @@ export const LoansScreen = React.memo(function LoansScreen() {
 
   const handleAdd = useCallback(() => {
     if (atFreeLimit) {
-      router.push('/premium');
+      openPaywall('unlimited');
       return;
     }
     router.push({
       pathname: '/(main)/loans/form',
       params: { type: activeTab },
     });
-  }, [router, activeTab, atFreeLimit]);
+  }, [router, activeTab, atFreeLimit, openPaywall]);
 
   return (
     <Screen header={{ title: t('loans.title'), showBack: true }} variant="fixed" edges={['top']}>
@@ -92,12 +93,7 @@ export const LoansScreen = React.memo(function LoansScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Limit banner */}
         {atFreeLimit && (
-          <Pressable style={styles.limitBanner} onPress={() => router.push('/premium')}>
-            <Icon icon={AlertCircleIcon} size={16} color={colors.warning} />
-            <Text style={[styles.limitBannerText, { color: colors.warning }]}>
-              Free plan: {FREE_LOAN_LIMIT} active loans max — upgrade for unlimited
-            </Text>
-          </Pressable>
+          <Banner tone="warning" title={t('loans.freeLimit', { limit: FREE_LOAN_LIMIT })} actionLabel={t('loans.upgrade')} onAction={() => openPaywall('unlimited')} />
         )}
 
         {/* Currency tabs */}

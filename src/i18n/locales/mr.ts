@@ -87,11 +87,6 @@ const mr: Translation = {
     resetFailedMessage: 'फॅक्टरी रीसेट पूर्ण करता आला नाही. कृपया पुन्हा प्रयत्न करा.',
     eraseEverything: 'सर्व काही पुसा', displayName: 'प्रदर्शित नाव', displayNameHint: 'डॅशबोर्डवर तुमचे स्वागत कसे केले जाते', yourName: 'तुमचे नाव', privacyTitle: 'गोपनीयता धोरण', termsTitle: 'वापर अटी',
   },
-  searchGate: {
-    pro: 'प्रो', title: 'ग्लोबल सर्च', subtitle: 'तुमच्या संपूर्ण आर्थिक इतिहासातील काहीही एकाच ठिकाणी शोधा.',
-    transactions: 'सर्व व्यवहारांमध्ये संपूर्ण मजकूर शोध', accounts: 'नावाने खाती त्वरित शोधा',
-    categories: 'तुमच्या इतिहासातील वर्ग शोधा', upgrade: 'प्रो वर अपग्रेड करा', notNow: 'आत्ता नको',
-  },
   onboarding: {
     name: 'तुमचे नाव', nameRequired: 'कृपया तुमचे नाव टाका', nameMin: 'किमान २ अक्षरे', nameMax: '३० अक्षरांपेक्षा कमी',
     greetingHint: 'अ‍ॅपमध्ये आम्ही तुमचे असे स्वागत करू', defaultCurrency: 'डिफॉल्ट चलन', tapToChange: 'बदलण्यासाठी टॅप करा',
@@ -171,7 +166,7 @@ const mr: Translation = {
     connectToRestore: 'आधीची खाती आणि व्यवहार रिस्टोअर करण्यासाठी तुमचे क्लाउड खाते जोडा.',
   },
   ui: {
-    somethingWrong: 'काहीतरी चूक झाली', proOnly: 'फक्त प्रो', unlockWithPro: 'Fintraq Pro ने अनलॉक करा',
+    somethingWrong: 'काहीतरी चूक झाली',
     charsLeft: '{{count}} अक्षरे शिल्लक', suggested: 'सुचवलेली', allCurrencies: 'सर्व चलने', noMatch: '“{{query}}” साठी काहीही सापडले नाही', chooseIcon: 'आयकॉन निवडा', chooseColor: 'रंग निवडा', colorsCount: '{{count}} रंग', currency: 'चलन', currenciesCount: '{{count}} चलने', searchCurrency: 'नाव किंवा कोडने शोधा', delKey: 'मिटवा',
   },
   lock: {
@@ -219,7 +214,7 @@ const mr: Translation = {
   },
   persons: {
     title: 'व्यक्ती', person: 'व्यक्ती', edit: 'व्यक्ती संपादित करा', new: 'नवीन व्यक्ती', searchPlaceholder: 'व्यक्ती शोधा...', none: 'अजून कोणतीही व्यक्ती नाही', noneHint: 'व्यवहारांशी जोडण्यासाठी व्यक्ती जोडा',
-    upgradeTitle: 'प्रो वर अपग्रेड करा', limitMessage: 'मोफत योजनेत जास्तीत जास्त {{limit}} व्यक्ती जोडता येतात. अमर्यादित व्यक्तींसाठी अपग्रेड करा.',
+    limitMessage: 'मोफत योजनेत जास्तीत जास्त {{limit}} व्यक्ती जोडता येतात. अमर्यादित व्यक्तींसाठी अपग्रेड करा.',
     personName: 'व्यक्तीचे नाव', chooseColor: 'खाली अ‍ॅक्सेंट रंग निवडा', contactDetails: 'संपर्क तपशील', work: 'कामाचे (पर्यायी)',
     namePlaceholder: 'राहुल पाटील', emailPlaceholder: 'rahul@example.com', rolePlaceholder: 'व्यवस्थापक', companyPlaceholder: 'अ‍ॅक्मे कंपनी', save: 'व्यक्ती जतन करा', add: 'व्यक्ती जोडा',
     spent: 'खर्च केले', received: 'मिळाले', activeLoans: 'सक्रिय कर्जे', transactions: 'व्यवहार', deleteTitle: 'व्यक्ती हटवा',
@@ -254,10 +249,10 @@ const mr: Translation = {
   },
   analytics: {
     income: 'उत्पन्न', expenses: 'खर्च', expense: 'खर्च', netPosition: 'निव्वळ स्थिती', dailyAvg: 'सरासरी दैनिक खर्च', highlights: 'ठळक बाबी', topCategory: 'सर्वाधिक खर्चाचा वर्ग', biggestExpense: 'सर्वात मोठा खर्च',
-    noHighlights: 'अजून ठळक बाबी नाहीत', noHighlightsHint: 'खर्चाची प्रमुख माहिती पाहण्यासाठी खर्चाचे व्यवहार जोडा.', trend: 'खर्चाचा कल', noTrend: 'अजून कलाचा डेटा नाही', noTrendHint: 'तुमचा खर्चाचा कल पाहण्यासाठी उत्पन्न किंवा खर्चाचे व्यवहार जोडा.',
+    trend: 'खर्चाचा कल', noTrend: 'अजून कलाचा डेटा नाही', noTrendHint: 'तुमचा खर्चाचा कल पाहण्यासाठी उत्पन्न किंवा खर्चाचे व्यवहार जोडा.',
     categoryBreakdown: 'वर्गनिहाय विभागणी', groupsCount: '{{count}} गट', personBreakdown: 'व्यक्तीनिहाय विभागणी', personsCount: '{{count}} व्यक्ती', balanceDistribution: 'शिल्लक वितरण', accountsCount: '{{count}} खाती',
     noCurrencyAccounts: 'कोणतेही {{currency}} खाते नाही', noCurrencyAccountsHint: 'शिल्लक वितरण पाहण्यासाठी या चलनातील खाते जोडा.', weeklyPattern: 'साप्ताहिक नमुना', averageByDay: 'दिवसानुसार सरासरी', noWeekly: 'अजून साप्ताहिक नमुना नाही', noWeeklyHint: 'अधिक व्यवहार झाल्यावर दिवसानुसार तुमच्या खर्चाची लय दिसेल.',
-    low: 'कमी', mid: 'मध्यम', high: 'जास्त', spendingPatterns: 'खर्चाचे नमुने', monthEndForecast: 'महिनाअखेरचा अंदाज', dowInsight: 'सर्वाधिक खर्च {{peak}}, सर्वात कमी {{lowest}}.', noDataPeriod: 'या कालावधीसाठी डेटा नाही', noCategoryData: 'या कालावधीत काहीही नाही', noCategoryDataHint: 'पैसे कुठे जातात हे पाहण्यासाठी या प्रकारचे व्यवहार जोडा.',
+    low: 'कमी', mid: 'मध्यम', high: 'जास्त', monthEndForecast: 'महिनाअखेरचा अंदाज', dowInsight: 'सर्वाधिक खर्च {{peak}}, सर्वात कमी {{lowest}}.', noDataPeriod: 'या कालावधीसाठी डेटा नाही', noCategoryData: 'या कालावधीत काहीही नाही', noCategoryDataHint: 'पैसे कुठे जातात हे पाहण्यासाठी या प्रकारचे व्यवहार जोडा.',
   },
   export: {
     title: 'CSV एक्स्पोर्ट', last7: 'मागील ७ दिवस', last30: 'मागील ३० दिवस', last90: 'मागील ९० दिवस', last12m: 'मागील १२ महिने', all: 'सर्व', income: 'उत्पन्न', expense: 'खर्च', transfer: 'हस्तांतरण',
@@ -302,7 +297,6 @@ const mr: Translation = {
     termsMessage: 'ही खरेदी तुमच्या Play Store / App Store खात्याशी जोडलेली असते आणि लॉगिन केल्यावर आपोआप रिस्टोअर होते.',
     proActive: 'प्रो सक्रिय', allSet: 'सर्व तयार.', allSetDesc: 'प्रत्येक व्यावसायिक साधन, प्रत्येक भविष्यातील अपडेट — कायमचे तुमचे. कोणतीही सबस्क्रिप्शन नाही, कोणतीही मर्यादा नाही.', linkedStore: 'तुमच्या Google Play / App Store शी जोडलेले',
     active: 'सक्रिय', unlockedFeatures: 'अनलॉक केलेली वैशिष्ट्ये', openDashboard: 'डॅशबोर्ड उघडा',
-    upsellTrends: 'खर्चाचे कल आणि कालावधीनुसार तुलना', upsellHighlights: 'ठळक बाबी आणि खर्चाचा अंदाज', upsellSearch: 'सर्व डेटामध्ये ग्लोबल सर्च', upsellCsv: 'कर्जाच्या डेटासह CSV एक्स्पोर्ट', upsellExtended: 'विस्तारित ३० / ९० / ३६५ दिवसांचे विश्लेषण',
     oneTimeLifetime: 'एकदाच · आजीवन वापर', unlockPro: 'Fintraq Pro अनलॉक करा', unlockIn: '{{seconds}} सेकंदांत अनलॉक', maybeLater: 'नंतर पाहू',
     accessRevoked: 'प्रवेश रद्द', accessRevokedMessage: 'तुमचा प्रो प्रवेश रद्द झाला किंवा परतावा दिला गेला. तुम्ही कधीही पुन्हा खरेदी करू शकता.', billingUnavailable: 'बिलिंग इंटरफेस सध्या उपलब्ध नाही.',
     networkRequired: 'नेटवर्क आवश्यक', checkConnection: 'पुढे जाण्यासाठी कृपया तुमचे कनेक्शन तपासा.', purchaseError: 'खरेदी त्रुटी', purchaseErrorMessage: 'आम्ही आत्ता तुमची विनंती प्रक्रिया करू शकलो नाही.',
@@ -317,8 +311,13 @@ const mr: Translation = {
       search: { title: 'ग्लोबल सर्च', description: 'तुमच्या संपूर्ण इतिहासातील कोणताही व्यवहार, खाते किंवा वर्ग त्वरित शोधा.' },
       weekly: { title: 'साप्ताहिक नमुना', description: 'तुम्ही कोणत्या दिवशी सर्वाधिक खर्च करता ते दाखवणारा बार चार्ट, आपोआप तयार झालेल्या खर्च इनसाइटसह.' },
       csv: { title: 'CSV एक्स्पोर्ट', description: 'व्यवहार आणि कर्जाच्या नोंदी स्प्रेडशीट म्हणून एक्स्पोर्ट करा. डिव्हाइसवर जतन करा किंवा कोणत्याही अ‍ॅपला शेअर करा.' },
+      people: { title: 'व्यक्ती आणि शिल्लक', description: 'तुम्ही कोणासोबत खर्च करता आणि तुमचे पैसे खात्यांमध्ये कसे विभागले आहेत ते पाहा.' },
+      backup: { title: 'स्वयंचलित क्लाउड बॅकअप', description: 'दर 12 तासांनी तुमच्या Google Drive वर बॅकअप घ्या आणि कोणत्याही डिव्हाइसवर पुनर्संचयित करा.' },
+      unlimited: { title: 'मर्यादा नाही', description: '{{loans}} पेक्षा जास्त सक्रिय कर्जे आणि {{persons}} पेक्षा जास्त व्यक्ती ट्रॅक करा.' },
     },
-    insightsTitle: 'प्रो इनसाइट्स', upgradeForInsights: 'इनसाइट्ससाठी प्रो वर अपग्रेड करा', noInsights: 'अजून इनसाइट्स नाहीत', noInsightsHint: 'वैयक्तिकृत खर्चाचे कल अनलॉक करण्यासाठी नोंदी करत राहा.', analysing: 'तुमच्या सवयींचे विश्लेषण होत आहे...',
+    groups: { analytics: 'विश्लेषण आणि अंतर्दृष्टी', tools: 'प्रगत साधने', more: 'निश्चिंतता' },
+    gate: { upgrade: 'Pro वर अपग्रेड करा', notNow: 'आता नाही', youTried: 'तुम्ही हे वापरून पाहिले', alsoIncluded: 'Pro मध्ये हेही', previewTitle: 'Pro सोबत अधिक', previewHint: 'या कालावधीचे सखोल विश्लेषण अनलॉक करा:', seeAll: 'Pro मधील सर्व पाहा' },
+    insightsTitle: 'प्रो इनसाइट्स', noInsights: 'अजून इनसाइट्स नाहीत', noInsightsHint: 'वैयक्तिकृत खर्चाचे कल अनलॉक करण्यासाठी नोंदी करत राहा.', analysing: 'तुमच्या सवयींचे विश्लेषण होत आहे...',
   },
   insights: {
     spendingUp: 'खर्च {{pct}}% वाढला', spendingDown: 'खर्च {{pct}}% कमी झाला', spendingUpHint: 'मागील आठवड्याच्या तुलनेत. काही अनपेक्षित शिरले आहे का ते पाहा — छोटी तपासणी कधीही उपयोगी असते.', spendingDownHint: 'मागील आठवड्याच्या तुलनेत. तुम्ही नेहमीपेक्षा काटकसर केली — छान!',

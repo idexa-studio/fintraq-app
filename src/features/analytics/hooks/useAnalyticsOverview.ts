@@ -13,7 +13,7 @@ import {
   useAnalyticsPersonBreakdown,
   useAnalyticsPreviousPeriod,
 } from '@/src/features/analytics/hooks/useAnalyticsData';
-import { monthEndForecast, percentChange, sumBuckets, weekdayExtremes } from '@/src/utils/analytics';
+import { percentChange, sumBuckets, weekdayExtremes } from '@/src/utils/analytics';
 
 /** Everything the Analytics screen shows for one currency and period, derived in one place. */
 export function useAnalyticsOverview(currency: string, range: RangeDays) {
@@ -52,7 +52,6 @@ export function useAnalyticsOverview(currency: string, range: RangeDays) {
       totals,
       deltas: { income: percentChange(totals.income, previous?.income), expense: percentChange(totals.expense, previous?.expense) },
       dailyAverage,
-      forecast: monthEndForecast(dailyAverage, new Date()),
       chart,
       expenseCategories: expenseCategories.data ?? [],
       incomeCategories,

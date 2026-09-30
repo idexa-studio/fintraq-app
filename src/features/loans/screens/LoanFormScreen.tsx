@@ -1,3 +1,4 @@
+import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { Screen } from '@/src/components/ui/Screen';
 import { Banner, Button, FormField, IconButton, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, SegmentedControl } from '@/src/components/ui';
 import { CalendarBlankIcon, XIcon } from '@/src/components/ui/icons';
@@ -34,7 +35,8 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
   const { t } = useTranslation();
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const { isPremium, showAlert } = usePremium();
+  const { showAlert } = usePremium();
+  const { isPremium, openPaywall } = useProAccess();
 
   const { data: allAccounts } = useAccounts();
   const { data: allPersons } = usePersons();
@@ -91,7 +93,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
     if (!canSubmit || isSubmitting) return;
 
     if (atFreeLimit) {
-      router.push('/premium');
+      openPaywall('unlimited');
       return;
     }
 
@@ -126,7 +128,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [canSubmit, isSubmitting, atFreeLimit, amountInput, accounts, selectedAccountId, selectedPersonId, loanType, dueDate, note, createLoan, router, showAlert, t]);
+  }, [canSubmit, isSubmitting, atFreeLimit, amountInput, accounts, selectedAccountId, selectedPersonId, loanType, dueDate, note, createLoan, router, showAlert, t, openPaywall]);
 
   const clearButton = (onPress: () => void) => (
     <IconButton icon={XIcon} size="sm" variant="ghost" onPress={onPress} accessibilityLabel={t('loans.clear')} />
@@ -223,7 +225,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
             tone="warning"
             title={t('loans.freeLimit', { limit: FREE_LOAN_LIMIT })}
             actionLabel={t('loans.upgrade')}
-            onAction={() => router.push('/premium')}
+            onAction={() => openPaywall('unlimited')}
           />
         </View>
       ) : null}

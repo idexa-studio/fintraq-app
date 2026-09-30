@@ -87,11 +87,6 @@ const te: Translation = {
     resetFailedMessage: 'ఫ్యాక్టరీ రీసెట్‌ను పూర్తి చేయలేకపోయాము. దయచేసి మళ్లీ ప్రయత్నించండి.',
     eraseEverything: 'అన్నీ తొలగించు', displayName: 'ప్రదర్శన పేరు', displayNameHint: 'డ్యాష్‌బోర్డ్‌లో మిమ్మల్ని ఎలా పలకరించాలి', yourName: 'మీ పేరు', privacyTitle: 'గోప్యతా విధానం', termsTitle: 'వినియోగ నిబంధనలు',
   },
-  searchGate: {
-    pro: 'Pro', title: 'గ్లోబల్ సెర్చ్', subtitle: 'మీ మొత్తం ఆర్థిక చరిత్రలో ఏదైనా ఒకే చోట కనుగొనండి.',
-    transactions: 'అన్ని లావాదేవీలలో పూర్తి-వచన శోధన', accounts: 'పేరుతో ఖాతాలను తక్షణమే కనుగొనండి',
-    categories: 'మీ చరిత్ర అంతటా వర్గాలను కనుగొనండి', upgrade: 'Pro కి అప్‌గ్రేడ్ చేయండి', notNow: 'ఇప్పుడు కాదు',
-  },
   onboarding: {
     name: 'మీ పేరు', nameRequired: 'దయచేసి మీ పేరు నమోదు చేయండి', nameMin: 'కనీసం 2 అక్షరాలు', nameMax: '30 అక్షరాల లోపు',
     greetingHint: 'యాప్‌లో మేము మిమ్మల్ని ఇలా పలకరిస్తాము', defaultCurrency: 'డిఫాల్ట్ కరెన్సీ', tapToChange: 'మార్చడానికి తాకండి',
@@ -171,7 +166,7 @@ const te: Translation = {
     connectToRestore: 'ఇప్పటికే ఉన్న ఖాతాలు, లావాదేవీలను రీస్టోర్ చేయడానికి మీ క్లౌడ్ ఖాతాను కనెక్ట్ చేయండి.',
   },
   ui: {
-    somethingWrong: 'ఏదో తప్పు జరిగింది', proOnly: 'Pro మాత్రమే', unlockWithPro: 'Fintraq Pro తో అన్‌లాక్ చేయండి',
+    somethingWrong: 'ఏదో తప్పు జరిగింది',
     charsLeft: '{{count}} అక్షరాలు మిగిలి ఉన్నాయి', suggested: 'సూచించినవి', allCurrencies: 'అన్ని కరెన్సీలు', noMatch: '“{{query}}” కి సరిపోలేవీ లేవు', chooseIcon: 'ఐకాన్‌ను ఎంచుకోండి', chooseColor: 'రంగును ఎంచుకోండి', colorsCount: '{{count}} రంగులు', currency: 'కరెన్సీ', currenciesCount: '{{count}} కరెన్సీలు', searchCurrency: 'పేరు లేదా కోడ్‌తో వెతకండి', delKey: 'తొలగించు',
   },
   lock: {
@@ -219,7 +214,7 @@ const te: Translation = {
   },
   persons: {
     title: 'వ్యక్తులు', person: 'వ్యక్తి', edit: 'వ్యక్తిని సవరించు', new: 'కొత్త వ్యక్తి', searchPlaceholder: 'వ్యక్తులను వెతకండి...', none: 'ఇంకా వ్యక్తులు లేరు', noneHint: 'లావాదేవీలకు లింక్ చేయడానికి వ్యక్తులను జోడించండి',
-    upgradeTitle: 'Pro కి అప్‌గ్రేడ్ చేయండి', limitMessage: 'ఉచిత ప్లాన్‌లో {{limit}} మంది వ్యక్తుల వరకు అనుమతి. అపరిమితం కోసం అప్‌గ్రేడ్ చేయండి.',
+    limitMessage: 'ఉచిత ప్లాన్‌లో {{limit}} మంది వ్యక్తుల వరకు అనుమతి. అపరిమితం కోసం అప్‌గ్రేడ్ చేయండి.',
     personName: 'వ్యక్తి పేరు', chooseColor: 'కింద ఒక యాక్సెంట్ రంగును ఎంచుకోండి', contactDetails: 'సంప్రదింపు వివరాలు', work: 'పని (ఐచ్ఛికం)',
     namePlaceholder: 'రాము కుమార్', emailPlaceholder: 'ramu@example.com', rolePlaceholder: 'మేనేజర్', companyPlaceholder: 'అక్మే ఇంక్.', save: 'వ్యక్తిని సేవ్ చేయి', add: 'వ్యక్తిని జోడించు',
     spent: 'ఖర్చు చేసినది', received: 'అందుకున్నది', activeLoans: 'క్రియాశీల రుణాలు', transactions: 'లావాదేవీలు', deleteTitle: 'వ్యక్తిని తొలగించు',
@@ -254,10 +249,10 @@ const te: Translation = {
   },
   analytics: {
     income: 'ఆదాయం', expenses: 'ఖర్చులు', expense: 'ఖర్చు', netPosition: 'నికర స్థితి', dailyAvg: 'సగటు రోజువారీ ఖర్చు', highlights: 'ముఖ్యాంశాలు', topCategory: 'అత్యధిక ఖర్చు వర్గం', biggestExpense: 'అతిపెద్ద ఖర్చు',
-    noHighlights: 'ఇంకా ముఖ్యాంశాలు లేవు', noHighlightsHint: 'ముఖ్య ఖర్చు అంతర్దృష్టులను చూడటానికి ఖర్చు లావాదేవీలను జోడించండి.', trend: 'ఖర్చు ధోరణి', noTrend: 'ఇంకా ధోరణి డేటా లేదు', noTrendHint: 'మీ ఖర్చు ధోరణిని చూడటానికి ఆదాయం లేదా ఖర్చు లావాదేవీలను జోడించండి.',
+    trend: 'ఖర్చు ధోరణి', noTrend: 'ఇంకా ధోరణి డేటా లేదు', noTrendHint: 'మీ ఖర్చు ధోరణిని చూడటానికి ఆదాయం లేదా ఖర్చు లావాదేవీలను జోడించండి.',
     categoryBreakdown: 'వర్గాల వారీ విభజన', groupsCount: '{{count}} సమూహాలు', personBreakdown: 'వ్యక్తుల వారీ విభజన', personsCount: '{{count}} వ్యక్తులు', balanceDistribution: 'బ్యాలెన్స్ పంపిణీ', accountsCount: '{{count}} ఖాతాలు',
     noCurrencyAccounts: '{{currency}} ఖాతాలు లేవు', noCurrencyAccountsHint: 'బ్యాలెన్స్ పంపిణీని చూడటానికి ఈ కరెన్సీలో ఖాతాను జోడించండి.', weeklyPattern: 'వారపు నమూనా', averageByDay: 'రోజు వారీ సగటు', noWeekly: 'ఇంకా వారపు నమూనా లేదు', noWeeklyHint: 'మరిన్ని లావాదేవీలు ఉంటే రోజు వారీ మీ ఖర్చు లయ కనిపిస్తుంది.',
-    low: 'తక్కువ', mid: 'మధ్యస్థం', high: 'ఎక్కువ', spendingPatterns: 'ఖర్చు నమూనాలు', monthEndForecast: 'నెలాఖరు అంచనా', dowInsight: 'ఎక్కువ ఖర్చు {{peak}}, తక్కువ {{lowest}}.', noDataPeriod: 'ఈ కాలానికి డేటా లేదు', noCategoryData: 'ఈ వ్యవధిలో ఏమీ లేదు', noCategoryDataHint: 'డబ్బు ఎక్కడికి వెళ్తుందో చూడటానికి ఈ రకమైన లావాదేవీలను జోడించండి.',
+    low: 'తక్కువ', mid: 'మధ్యస్థం', high: 'ఎక్కువ', monthEndForecast: 'నెలాఖరు అంచనా', dowInsight: 'ఎక్కువ ఖర్చు {{peak}}, తక్కువ {{lowest}}.', noDataPeriod: 'ఈ కాలానికి డేటా లేదు', noCategoryData: 'ఈ వ్యవధిలో ఏమీ లేదు', noCategoryDataHint: 'డబ్బు ఎక్కడికి వెళ్తుందో చూడటానికి ఈ రకమైన లావాదేవీలను జోడించండి.',
   },
   export: {
     title: 'CSV ఎగుమతి', last7: 'గత 7 రోజులు', last30: 'గత 30 రోజులు', last90: 'గత 90 రోజులు', last12m: 'గత 12 నెలలు', all: 'అన్నీ', income: 'ఆదాయం', expense: 'ఖర్చు', transfer: 'బదిలీ',
@@ -302,7 +297,6 @@ const te: Translation = {
     termsMessage: 'ఈ కొనుగోలు మీ Play Store / App Store ఖాతాకు లింక్ అయి, లాగిన్ అయినప్పుడు ఆటోమేటిక్‌గా రీస్టోర్ అవుతుంది.',
     proActive: 'Pro క్రియాశీలం', allSet: 'అంతా సిద్ధం.', allSetDesc: 'ప్రతి ప్రొఫెషనల్ సాధనం, ప్రతి భవిష్యత్ అప్‌డేట్ — ఎప్పటికీ మీవే. సబ్‌స్క్రిప్షన్‌లు లేవు, పరిమితులు లేవు.', linkedStore: 'మీ Google Play / App Store కు లింక్ చేయబడింది',
     active: 'క్రియాశీలం', unlockedFeatures: 'అన్‌లాక్ అయిన ఫీచర్లు', openDashboard: 'డ్యాష్‌బోర్డ్ తెరువు',
-    upsellTrends: 'ఖర్చు ధోరణులు & కాలవ్యవధి పోలికలు', upsellHighlights: 'ముఖ్యాంశాలు & ఖర్చు అంచనా', upsellSearch: 'మొత్తం డేటాలో గ్లోబల్ సెర్చ్', upsellCsv: 'రుణ డేటాతో CSV ఎగుమతి', upsellExtended: 'విస్తరించిన 30 / 90 / 365-రోజుల విశ్లేషణ',
     oneTimeLifetime: 'ఒక్కసారి · జీవితకాల యాక్సెస్', unlockPro: 'Fintraq Pro ను అన్‌లాక్ చేయండి', unlockIn: '{{seconds}} సెకన్లలో అన్‌లాక్', maybeLater: 'తర్వాత చూద్దాం',
     accessRevoked: 'యాక్సెస్ రద్దు చేయబడింది', accessRevokedMessage: 'మీ Pro యాక్సెస్ రద్దు చేయబడింది లేదా వాపసు చేయబడింది. మీరు ఎప్పుడైనా మళ్లీ కొనుగోలు చేయవచ్చు.', billingUnavailable: 'బిల్లింగ్ ఇంటర్‌ఫేస్ ప్రస్తుతం అందుబాటులో లేదు.',
     networkRequired: 'నెట్‌వర్క్ అవసరం', checkConnection: 'కొనసాగడానికి దయచేసి మీ కనెక్షన్‌ను తనిఖీ చేయండి.', purchaseError: 'కొనుగోలు లోపం', purchaseErrorMessage: 'ప్రస్తుతం మీ అభ్యర్థనను ప్రాసెస్ చేయలేకపోయాము.',
@@ -317,8 +311,13 @@ const te: Translation = {
       search: { title: 'గ్లోబల్ సెర్చ్', description: 'మీ మొత్తం చరిత్రలో ఏ లావాదేవీ, ఖాతా లేదా వర్గాన్నైనా తక్షణమే కనుగొనండి.' },
       weekly: { title: 'వారపు నమూనా', description: 'మీరు ఏ రోజుల్లో ఎక్కువ ఖర్చు చేస్తారో చూపే బార్ చార్ట్, ఆటోమేటిక్‌గా రూపొందిన ఖర్చు అంతర్దృష్టితో.' },
       csv: { title: 'CSV ఎగుమతి', description: 'లావాదేవీలు, రుణ రికార్డులను స్ప్రెడ్‌షీట్‌గా ఎగుమతి చేయండి. పరికరంలో సేవ్ చేయండి లేదా ఏ యాప్‌కైనా షేర్ చేయండి.' },
+      people: { title: 'వ్యక్తులు & నిల్వలు', description: 'మీరు ఎవరితో ఖర్చు చేస్తారో, మీ డబ్బు ఖాతాల్లో ఎలా విస్తరించి ఉందో చూడండి.' },
+      backup: { title: 'ఆటోమేటిక్ క్లౌడ్ బ్యాకప్', description: 'ప్రతి 12 గంటలకు మీ Google Drive‌కు బ్యాకప్ చేసి ఏ పరికరంలోనైనా పునరుద్ధరించండి.' },
+      unlimited: { title: 'పరిమితులు లేవు', description: '{{loans}} కంటే ఎక్కువ యాక్టివ్ అప్పులు, {{persons}} కంటే ఎక్కువ వ్యక్తులను ట్రాక్ చేయండి.' },
     },
-    insightsTitle: 'Pro అంతర్దృష్టులు', upgradeForInsights: 'అంతర్దృష్టుల కోసం Pro కి అప్‌గ్రేడ్ చేయండి', noInsights: 'ఇంకా అంతర్దృష్టులు లేవు', noInsightsHint: 'వ్యక్తిగతీకరించిన ఖర్చు ధోరణులను అన్‌లాక్ చేయడానికి నమోదు చేస్తూ ఉండండి.', analysing: 'మీ నమూనాలను విశ్లేషిస్తోంది...',
+    groups: { analytics: 'విశ్లేషణ & అంతర్దృష్టులు', tools: 'శక్తివంతమైన సాధనాలు', more: 'నిశ్చింత' },
+    gate: { upgrade: 'Pro కు అప్‌గ్రేడ్ చేయండి', notNow: 'ఇప్పుడు కాదు', youTried: 'మీరు ప్రయత్నించింది', alsoIncluded: 'Pro లో ఇంకా', previewTitle: 'Pro తో మరిన్ని', previewHint: 'ఈ కాలానికి లోతైన విశ్లేషణను అన్‌లాక్ చేయండి:', seeAll: 'Pro లో అన్నీ చూడండి' },
+    insightsTitle: 'Pro అంతర్దృష్టులు', noInsights: 'ఇంకా అంతర్దృష్టులు లేవు', noInsightsHint: 'వ్యక్తిగతీకరించిన ఖర్చు ధోరణులను అన్‌లాక్ చేయడానికి నమోదు చేస్తూ ఉండండి.', analysing: 'మీ నమూనాలను విశ్లేషిస్తోంది...',
   },
   insights: {
     spendingUp: 'ఖర్చు {{pct}}% పెరిగింది', spendingDown: 'ఖర్చు {{pct}}% తగ్గింది', spendingUpHint: 'గత వారంతో పోలిస్తే. ఏదైనా అనుకోనిది చేరిందేమో చూడండి — చిన్న ఆడిట్ ఎప్పుడూ మేలే.', spendingDownHint: 'గత వారంతో పోలిస్తే. మీరు మామూలు కంటే బాగా నియంత్రించారు — అభినందనలు!',

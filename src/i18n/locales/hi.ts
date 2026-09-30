@@ -87,11 +87,6 @@ const hi: Translation = {
     resetFailedMessage: 'फ़ैक्टरी रीसेट पूरा नहीं हुआ। फिर से कोशिश करें।',
     eraseEverything: 'सब कुछ मिटाएँ', displayName: 'प्रदर्शित नाम', displayNameHint: 'डैशबोर्ड पर आपको कैसे संबोधित किया जाए', yourName: 'आपका नाम', privacyTitle: 'गोपनीयता नीति', termsTitle: 'उपयोग की शर्तें',
   },
-  searchGate: {
-    pro: 'प्रो', title: 'सभी जगह खोजें', subtitle: 'अपना पूरा वित्तीय इतिहास एक ही जगह खोजें।',
-    transactions: 'सभी लेन-देन में पूरा टेक्स्ट खोजें', accounts: 'नाम से खाते तुरंत खोजें',
-    categories: 'अपने इतिहास में श्रेणियाँ खोजें', upgrade: 'प्रो पर जाएँ', notNow: 'अभी नहीं',
-  },
   onboarding: {
     name: 'आपका नाम', nameRequired: 'कृपया अपना नाम दर्ज करें', nameMin: 'कम से कम 2 अक्षर', nameMax: '30 अक्षरों से कम',
     greetingHint: 'ऐप में हम आपको इसी नाम से बुलाएँगे', defaultCurrency: 'डिफ़ॉल्ट मुद्रा', tapToChange: 'बदलने के लिए टैप करें',
@@ -171,7 +166,7 @@ const hi: Translation = {
     connectToRestore: 'मौजूदा खाते और लेन-देन रिस्टोर करने के लिए अपना क्लाउड खाता कनेक्ट करें।',
   },
   ui: {
-    somethingWrong: 'कुछ गलत हो गया', proOnly: 'केवल प्रो', unlockWithPro: 'Fintraq Pro से अनलॉक करें',
+    somethingWrong: 'कुछ गलत हो गया',
     charsLeft: '{{count}} अक्षर बाकी', suggested: 'सुझाई गई', allCurrencies: 'सभी मुद्राएँ', noMatch: '“{{query}}” के लिए कुछ नहीं मिला', chooseIcon: 'आइकन चुनें', chooseColor: 'रंग चुनें', colorsCount: '{{count}} रंग', currency: 'मुद्रा', currenciesCount: '{{count}} मुद्राएँ', searchCurrency: 'नाम या कोड से खोजें', delKey: 'मिटाएँ',
   },
   lock: {
@@ -219,7 +214,7 @@ const hi: Translation = {
   },
   persons: {
     title: 'लोग', person: 'व्यक्ति', edit: 'व्यक्ति संपादित करें', new: 'नया व्यक्ति', searchPlaceholder: 'लोग खोजें...', none: 'अभी कोई व्यक्ति नहीं', noneHint: 'लेन-देन से जोड़ने के लिए लोग जोड़ें',
-    upgradeTitle: 'प्रो में अपग्रेड करें', limitMessage: 'फ़्री प्लान में अधिकतम {{limit}} लोग जोड़ सकते हैं। असीमित के लिए अपग्रेड करें।',
+    limitMessage: 'फ़्री प्लान में अधिकतम {{limit}} लोग जोड़ सकते हैं। असीमित के लिए अपग्रेड करें।',
     personName: 'व्यक्ति का नाम', chooseColor: 'नीचे से उच्चारण रंग चुनें', contactDetails: 'संपर्क विवरण', work: 'कार्य (वैकल्पिक)',
     namePlaceholder: 'राहुल शर्मा', emailPlaceholder: 'rahul@example.com', rolePlaceholder: 'मैनेजर', companyPlaceholder: 'एक्मे प्रा. लि.', save: 'व्यक्ति सहेजें', add: 'व्यक्ति जोड़ें',
     spent: 'खर्च', received: 'प्राप्त', activeLoans: 'सक्रिय ऋण', transactions: 'लेन-देन', deleteTitle: 'व्यक्ति हटाएँ',
@@ -254,10 +249,10 @@ const hi: Translation = {
   },
   analytics: {
     income: 'आय', expenses: 'खर्च', expense: 'खर्च', netPosition: 'शुद्ध स्थिति', dailyAvg: 'औसत दैनिक खर्च', highlights: 'मुख्य बातें', topCategory: 'सबसे ज़्यादा खर्च की श्रेणी', biggestExpense: 'सबसे बड़ा खर्च',
-    noHighlights: 'अभी कोई मुख्य बात नहीं', noHighlightsHint: 'खर्च के मुख्य रुझान देखने के लिए खर्च के लेन-देन जोड़ें।', trend: 'खर्च का रुझान', noTrend: 'अभी रुझान का डेटा नहीं', noTrendHint: 'खर्च का रुझान देखने के लिए आय या खर्च के लेन-देन जोड़ें।',
+    trend: 'खर्च का रुझान', noTrend: 'अभी रुझान का डेटा नहीं', noTrendHint: 'खर्च का रुझान देखने के लिए आय या खर्च के लेन-देन जोड़ें।',
     categoryBreakdown: 'श्रेणी विभाजन', groupsCount: '{{count}} समूह', personBreakdown: 'व्यक्ति विभाजन', personsCount: '{{count}} लोग', balanceDistribution: 'बैलेंस वितरण', accountsCount: '{{count}} खाते',
     noCurrencyAccounts: 'कोई {{currency}} खाता नहीं', noCurrencyAccountsHint: 'बैलेंस वितरण देखने के लिए इस मुद्रा में खाता जोड़ें।', weeklyPattern: 'साप्ताहिक पैटर्न', averageByDay: 'दिन के अनुसार औसत', noWeekly: 'अभी साप्ताहिक पैटर्न नहीं', noWeeklyHint: 'ज़्यादा लेन-देन से दिन के अनुसार आपके खर्च का ढर्रा दिखेगा।',
-    low: 'कम', mid: 'मध्यम', high: 'ज़्यादा', spendingPatterns: 'खर्च के पैटर्न', monthEndForecast: 'महीने के अंत का अनुमान', dowInsight: 'सबसे ज़्यादा खर्च {{peak}} को, सबसे कम {{lowest}} को।', noDataPeriod: 'इस अवधि का डेटा नहीं', noCategoryData: 'इस अवधि में कुछ नहीं', noCategoryDataHint: 'यह देखने के लिए कि पैसा कहाँ जाता है, इस प्रकार के लेन-देन जोड़ें।',
+    low: 'कम', mid: 'मध्यम', high: 'ज़्यादा', monthEndForecast: 'महीने के अंत का अनुमान', dowInsight: 'सबसे ज़्यादा खर्च {{peak}} को, सबसे कम {{lowest}} को।', noDataPeriod: 'इस अवधि का डेटा नहीं', noCategoryData: 'इस अवधि में कुछ नहीं', noCategoryDataHint: 'यह देखने के लिए कि पैसा कहाँ जाता है, इस प्रकार के लेन-देन जोड़ें।',
   },
   export: {
     title: 'CSV एक्सपोर्ट', last7: 'पिछले 7 दिन', last30: 'पिछले 30 दिन', last90: 'पिछले 90 दिन', last12m: 'पिछले 12 महीने', all: 'सभी', income: 'आय', expense: 'खर्च', transfer: 'ट्रांसफ़र',
@@ -302,7 +297,6 @@ const hi: Translation = {
     termsMessage: 'यह खरीदारी आपके Play Store / App Store खाते से जुड़ी है और लॉगिन पर अपने-आप रिस्टोर हो जाती है।',
     proActive: 'प्रो सक्रिय', allSet: 'सब तैयार है।', allSetDesc: 'हर पेशेवर टूल, हर भविष्य का अपडेट — हमेशा के लिए आपका। कोई सब्सक्रिप्शन नहीं, कोई सीमा नहीं।', linkedStore: 'आपके Google Play / App Store से जुड़ा',
     active: 'सक्रिय', unlockedFeatures: 'अनलॉक की गई सुविधाएँ', openDashboard: 'डैशबोर्ड खोलें',
-    upsellTrends: 'खर्च के रुझान और अवधि की तुलना', upsellHighlights: 'मुख्य बातें और खर्च का अनुमान', upsellSearch: 'सारे डेटा में ग्लोबल सर्च', upsellCsv: 'ऋण डेटा के साथ CSV एक्सपोर्ट', upsellExtended: 'विस्तृत 30 / 90 / 365-दिन एनालिटिक्स',
     oneTimeLifetime: 'एक बार · आजीवन पहुँच', unlockPro: 'Fintraq Pro अनलॉक करें', unlockIn: '{{seconds}} सेकंड में अनलॉक', maybeLater: 'शायद बाद में',
     accessRevoked: 'पहुँच रद्द', accessRevokedMessage: 'आपकी प्रो पहुँच रद्द कर दी गई या रिफ़ंड हो गई है। आप कभी भी दोबारा खरीद सकते हैं।', billingUnavailable: 'बिलिंग इंटरफ़ेस अभी उपलब्ध नहीं।',
     networkRequired: 'नेटवर्क आवश्यक', checkConnection: 'आगे बढ़ने के लिए कृपया अपना कनेक्शन जाँचें।', purchaseError: 'खरीदारी त्रुटि', purchaseErrorMessage: 'हम अभी आपका अनुरोध प्रोसेस नहीं कर सके।',
@@ -317,8 +311,13 @@ const hi: Translation = {
       search: { title: 'ग्लोबल सर्च', description: 'अपने पूरे इतिहास में कोई भी लेन-देन, खाता या श्रेणी तुरंत खोजें।' },
       weekly: { title: 'साप्ताहिक पैटर्न', description: 'बार चार्ट जो दिखाता है आप किन दिनों सबसे ज़्यादा खर्च करते हैं, साथ में अपने-आप बनी खर्च की जानकारी।' },
       csv: { title: 'CSV एक्सपोर्ट', description: 'लेन-देन और ऋण रिकॉर्ड स्प्रेडशीट के रूप में एक्सपोर्ट करें। डिवाइस में सहेजें या किसी भी ऐप में शेयर करें।' },
+      people: { title: 'लोग और बैलेंस', description: 'देखें कि आप किसके साथ खर्च करते हैं और आपका पैसा खातों में कैसे बंटा है।' },
+      backup: { title: 'स्वचालित क्लाउड बैकअप', description: 'हर 12 घंटे में अपने Google Drive पर बैकअप लें और किसी भी डिवाइस पर रीस्टोर करें।' },
+      unlimited: { title: 'कोई सीमा नहीं', description: '{{loans}} से अधिक सक्रिय उधार और {{persons}} से अधिक लोग ट्रैक करें।' },
     },
-    insightsTitle: 'प्रो इनसाइट्स', upgradeForInsights: 'इनसाइट्स के लिए प्रो में अपग्रेड करें', noInsights: 'अभी कोई इनसाइट नहीं', noInsightsHint: 'व्यक्तिगत खर्च रुझान अनलॉक करने के लिए ट्रैकिंग जारी रखें।', analysing: 'आपके पैटर्न का विश्लेषण हो रहा है...',
+    groups: { analytics: 'विश्लेषण और इनसाइट्स', tools: 'उन्नत टूल', more: 'निश्चिंतता' },
+    gate: { upgrade: 'Pro में अपग्रेड करें', notNow: 'अभी नहीं', youTried: 'आपने इसे आज़माया', alsoIncluded: 'Pro में यह भी', previewTitle: 'Pro के साथ और', previewHint: 'इस अवधि का गहरा विश्लेषण अनलॉक करें:', seeAll: 'Pro में सब देखें' },
+    insightsTitle: 'प्रो इनसाइट्स', noInsights: 'अभी कोई इनसाइट नहीं', noInsightsHint: 'व्यक्तिगत खर्च रुझान अनलॉक करने के लिए ट्रैकिंग जारी रखें।', analysing: 'आपके पैटर्न का विश्लेषण हो रहा है...',
   },
   insights: {
     spendingUp: 'खर्च {{pct}}% बढ़ा', spendingDown: 'खर्च {{pct}}% घटा', spendingUpHint: 'पिछले हफ़्ते की तुलना में। देखें कहीं कुछ अनचाहा तो नहीं हुआ — एक छोटा ऑडिट हमेशा काम आता है।', spendingDownHint: 'पिछले हफ़्ते की तुलना में। आपने हमेशा से ज़्यादा संयम रखा — बहुत बढ़िया।',

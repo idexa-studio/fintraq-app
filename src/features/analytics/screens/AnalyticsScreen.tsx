@@ -4,19 +4,22 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { EmptyState, IconAvatar, PersonAvatar, Screen, SectionHeader, SegmentedControl, SkeletonScreen, StatTile, Text } from '@/src/components/ui';
+import { EmptyState, IconAvatar, PersonAvatar, Screen, SectionHeader, SegmentedControl, SkeletonScreen, Text } from '@/src/components/ui';
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { AnalyticsControls } from '@/src/features/analytics/components/AnalyticsControls';
-import { AnalyticsHighlights } from '@/src/features/analytics/components/AnalyticsHighlights';
+import { AnalyticsGlance } from '@/src/features/analytics/components/AnalyticsGlance';
 import { ChartLegend } from '@/src/features/analytics/components/ChartLegend';
 import { DowChart } from '@/src/features/analytics/components/DowChart';
 import { LinearAreaChart } from '@/src/features/analytics/components/LinearAreaChart';
+import { PeriodSummaryCard } from '@/src/features/analytics/components/PeriodSummaryCard';
 import { ShareBreakdown, ShareItem } from '@/src/features/analytics/components/ShareBreakdown';
 import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/analytics/constants';
 import { useAnalyticsOverview } from '@/src/features/analytics/hooks/useAnalyticsOverview';
-import { PremiumGuard } from '@/src/features/premium/components/PremiumGuard';
-import { usePremium } from '@/src/providers/PremiumProvider';
+import { useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
+import { buildMonthPulse } from '@/src/features/dashboard/utils/widgets';
+import { ProPreviewCard } from '@/src/features/premium/components/ProPreviewCard';
+import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { AccountType } from '@/src/types';
@@ -26,6 +29,10 @@ import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 
 type CategoryTab = 'expense' | 'income';
 
+/**
+ * Free: the period summary and trend — complete on their own — then one card naming what Pro adds.
+ * Pro: the same two, then highlights and pace, where the money went, when, and with whom.
+ */
 export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
   const { colors, layout, spacing } = theme;
@@ -34,7 +41,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const { width: windowWidth } = useWindowDimensions();
   const styles = useMemo(() => createStyles(theme, insets.bottom), [theme, insets.bottom]);
   const router = useRouter();
-  const { isPremium } = usePremium();
+  const { isPremium, openPaywall } = useProAccess();
   const { profile } = useSettings();
   const { data: accounts = [] } = useAccounts();
 
@@ -45,13 +52,17 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
   const [chosenCurrency, setCurrency] = useState<string | null>(null);
   // Falls back when the choice disappears (e.g. its last account was deleted).
-  const currency = chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : currencies[0];
-  const [range, setRange] = useState<RangeDays>(FREE_RANGE_DAYS);
+  const currency = chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : currencies[0]!;
+  const [chosenRange, setRange] = useState<RangeDays>(FREE_RANGE_DAYS);
+  // A longer range picked while Pro stays valid only while Pro is (a refund drops back to free).
+  const range = isPremium ? chosenRange : FREE_RANGE_DAYS;
   const [categoryTab, setCategoryTab] = useState<CategoryTab>('expense');
 
   const overview = useAnalyticsOverview(currency, range);
+  const { data: month } = useMonthTotals(currency);
+  const monthProjection = month ? buildMonthPulse(month, new Date()).projected : null;
 
-  const openPremium = useCallback(() => router.push('/premium'), [router]);
+  const openLockedRange = useCallback(() => openPaywall('analytics'), [openPaywall]);
   const openCategory = useCallback((categoryId: number) => router.push(`/transactions?categoryId=${categoryId}`), [router]);
 
   const categoryItems = useMemo((): ShareItem[] => {
@@ -86,9 +97,10 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           color,
           type: 'DR',
           leading: <PersonAvatar name={p.name} color={color} size={28} />,
+          onPress: () => router.push(`/persons/${p.id}`),
         };
       }),
-    [overview.people, currency],
+    [overview.people, currency, router],
   );
 
   const accountItems = useMemo(
@@ -105,9 +117,10 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             share: a.share,
             color,
             leading: <IconAvatar icon={resolveAccountTypeIcon(a.accountType as AccountType | null)} color={color} size={28} iconSize={13} />,
+            onPress: () => router.push(`/(main)/accounts/${a.id}`),
           };
         }),
-    [accounts, currency],
+    [accounts, currency, router],
   );
 
   const categoryTabs = useMemo(
@@ -118,19 +131,20 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
     [t],
   );
 
-  const rangeLabel = ANALYTICS_RANGES.find((r) => r.days === range)?.label;
+  const rangeLabel = ANALYTICS_RANGES.find((r) => r.days === range)?.label ?? '';
   const chartWidth = windowWidth - layout.screenPadding * 2 - spacing('4') * 2;
+  const header = { title: t('common.analyticsTitle') };
 
   if (overview.isLoading) {
     return (
-      <Screen header={{ title: t('common.analyticsTitle') }} variant="fixed" edges={['top']}>
+      <Screen header={header} variant="fixed" edges={['top']}>
         <SkeletonScreen />
       </Screen>
     );
   }
 
   return (
-    <Screen header={{ title: t('common.analyticsTitle') }} variant="fixed" edges={['top']}>
+    <Screen header={header} variant="fixed" edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <AnalyticsControls
           currencies={currencies}
@@ -139,127 +153,103 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           range={range}
           onRangeChange={setRange}
           isPremium={isPremium}
-          onLockedRange={openPremium}
+          onLockedRange={openLockedRange}
         />
 
-        <View style={styles.tiles}>
-          <View style={styles.tileRow}>
-            <StatTile label={t('analytics.income')} amount={overview.totals.income} currency={currency} type="CR" delta={overview.deltas.income} compact style={styles.tile} />
-            <StatTile
-              label={t('analytics.expenses')}
-              amount={overview.totals.expense}
-              currency={currency}
-              type="DR"
-              delta={overview.deltas.expense}
-              positiveIsGood={false}
-              compact
-              style={styles.tile}
-            />
-          </View>
-          <View style={styles.tileRow}>
-            <StatTile
-              label={t('analytics.netPosition')}
-              amount={Math.abs(overview.totals.net)}
-              currency={currency}
-              type={overview.totals.net >= 0 ? 'CR' : 'DR'}
-              compact
-              style={styles.tile}
-            />
-            <StatTile label={t('analytics.dailyAvg')} amount={overview.dailyAverage} currency={currency} type="DR" compact style={styles.tile} />
-          </View>
-        </View>
+        <PeriodSummaryCard totals={overview.totals} deltas={overview.deltas} currency={currency} />
 
-        <SectionHeader title={t('analytics.highlights')} noPadding />
-        <PremiumGuard label={t('analytics.highlights')} size="medium">
-          <AnalyticsHighlights
-            topCategory={overview.topCategory}
-            biggestExpense={overview.biggestExpense}
-            currency={currency}
-            onOpenCategory={openCategory}
-          />
-        </PremiumGuard>
-
-        <SectionHeader title={t('analytics.trend')} rightText={`${rangeLabel} · ${currency}`} noPadding />
-        {overview.chart.length === 0 ? (
-          <EmptyState variant="inline" icon={ChartLineData01Icon} title={t('analytics.noTrend')} description={t('analytics.noTrendHint')} />
-        ) : (
-          <View style={[styles.card, styles.stack]}>
-            <ChartLegend
-              items={[
-                { label: t('analytics.expense'), color: colors.danger },
-                { label: t('analytics.income'), color: colors.success },
-              ]}
-            />
-            <LinearAreaChart data={overview.chart} width={chartWidth} height={190} />
-          </View>
-        )}
-
-        <SectionHeader title={t('analytics.categoryBreakdown')} rightText={t('analytics.groupsCount', { count: categoryItems.length })} noPadding />
-        <PremiumGuard label={t('analytics.categoryBreakdown')} size="medium">
-          <View style={styles.stack}>
-            <SegmentedControl options={categoryTabs} value={categoryTab} onChange={setCategoryTab} size="sm" />
-            {categoryItems.length > 0 ? (
-              <ShareBreakdown items={categoryItems} />
-            ) : (
-              <EmptyState variant="inline" icon={Tag01Icon} title={t('analytics.noCategoryData')} description={t('analytics.noCategoryDataHint')} />
-            )}
-          </View>
-        </PremiumGuard>
-
-        {personItems.length > 0 && (
-          <>
-            <SectionHeader title={t('analytics.personBreakdown')} rightText={t('analytics.personsCount', { count: personItems.length })} noPadding />
-            <PremiumGuard label={t('analytics.personBreakdown')} size="medium">
-              <ShareBreakdown items={personItems} />
-            </PremiumGuard>
-          </>
-        )}
-
-        <SectionHeader title={t('analytics.balanceDistribution')} rightText={t('analytics.accountsCount', { count: accountItems.length })} noPadding />
-        <PremiumGuard label={t('analytics.balanceDistribution')} size="medium">
-          {accountItems.length > 0 ? (
-            <ShareBreakdown items={accountItems} />
+        <View>
+          <SectionHeader title={t('analytics.trend')} rightText={`${rangeLabel} · ${currency}`} noPadding />
+          {overview.chart.length === 0 ? (
+            <EmptyState variant="inline" icon={ChartLineData01Icon} title={t('analytics.noTrend')} description={t('analytics.noTrendHint')} />
           ) : (
-            <EmptyState
-              variant="inline"
-              icon={Wallet05Icon}
-              title={t('analytics.noCurrencyAccounts', { currency })}
-              description={t('analytics.noCurrencyAccountsHint')}
-            />
-          )}
-        </PremiumGuard>
-
-        <SectionHeader title={t('analytics.weeklyPattern')} rightText={t('analytics.averageByDay')} noPadding />
-        <PremiumGuard label={t('analytics.weeklyPattern')} size="medium">
-          {overview.weekdays.length === 0 ? (
-            <EmptyState variant="inline" icon={Calendar01Icon} title={t('analytics.noWeekly')} description={t('analytics.noWeeklyHint')} />
-          ) : (
-            <View style={[styles.card, styles.stack]}>
-              <DowChart data={overview.weekdays} />
+            <View style={styles.card}>
               <ChartLegend
-                align="center"
                 items={[
-                  { label: t('analytics.low'), color: colors.success },
-                  { label: t('analytics.mid'), color: colors.warning },
-                  { label: t('analytics.high'), color: colors.danger },
+                  { label: t('analytics.expense'), color: colors.danger },
+                  { label: t('analytics.income'), color: colors.success },
                 ]}
               />
-              {overview.weekdayInsight && (
-                <Text variant="caption" tone="muted" align="center">
-                  {overview.weekdayInsight}
-                </Text>
-              )}
+              <LinearAreaChart data={overview.chart} width={chartWidth} height={190} />
             </View>
           )}
-        </PremiumGuard>
+        </View>
 
-        <SectionHeader title={t('analytics.spendingPatterns')} noPadding />
-        <PremiumGuard label={t('analytics.spendingPatterns')} size="medium">
-          <View style={styles.tileRow}>
-            <StatTile label={t('analytics.dailyAvg')} amount={overview.dailyAverage} currency={currency} type="DR" style={styles.tile} />
-            <StatTile label={t('analytics.monthEndForecast')} amount={overview.forecast} currency={currency} type="DR" style={styles.tile} />
-          </View>
-        </PremiumGuard>
+        {!isPremium ? (
+          <ProPreviewCard features={['highlights', 'forecast', 'categories', 'weekly', 'people']} />
+        ) : (
+          <>
+            <View>
+              <SectionHeader title={t('analytics.highlights')} noPadding />
+              <AnalyticsGlance
+                currency={currency}
+                topCategory={overview.topCategory}
+                biggestExpense={overview.biggestExpense}
+                dailyAverage={overview.dailyAverage}
+                periodLabel={rangeLabel}
+                monthProjection={monthProjection}
+                onOpenCategory={openCategory}
+              />
+            </View>
+
+            <View>
+              <SectionHeader title={t('analytics.categoryBreakdown')} rightText={t('analytics.groupsCount', { count: categoryItems.length })} noPadding />
+              <View style={styles.stack}>
+                <SegmentedControl options={categoryTabs} value={categoryTab} onChange={setCategoryTab} size="sm" />
+                {categoryItems.length > 0 ? (
+                  <ShareBreakdown items={categoryItems} />
+                ) : (
+                  <EmptyState variant="inline" icon={Tag01Icon} title={t('analytics.noCategoryData')} description={t('analytics.noCategoryDataHint')} />
+                )}
+              </View>
+            </View>
+
+            <View>
+              <SectionHeader title={t('analytics.weeklyPattern')} rightText={t('analytics.averageByDay')} noPadding />
+              {overview.weekdays.length === 0 ? (
+                <EmptyState variant="inline" icon={Calendar01Icon} title={t('analytics.noWeekly')} description={t('analytics.noWeeklyHint')} />
+              ) : (
+                <View style={styles.card}>
+                  <DowChart data={overview.weekdays} />
+                  <ChartLegend
+                    align="center"
+                    items={[
+                      { label: t('analytics.low'), color: colors.success },
+                      { label: t('analytics.mid'), color: colors.warning },
+                      { label: t('analytics.high'), color: colors.danger },
+                    ]}
+                  />
+                  {overview.weekdayInsight ? (
+                    <Text variant="caption" tone="muted" align="center">
+                      {overview.weekdayInsight}
+                    </Text>
+                  ) : null}
+                </View>
+              )}
+            </View>
+
+            {personItems.length > 0 ? (
+              <View>
+                <SectionHeader title={t('analytics.personBreakdown')} rightText={t('analytics.personsCount', { count: personItems.length })} noPadding />
+                <ShareBreakdown items={personItems} />
+              </View>
+            ) : null}
+
+            <View>
+              <SectionHeader title={t('analytics.balanceDistribution')} rightText={t('analytics.accountsCount', { count: accountItems.length })} noPadding />
+              {accountItems.length > 0 ? (
+                <ShareBreakdown items={accountItems} />
+              ) : (
+                <EmptyState
+                  variant="inline"
+                  icon={Wallet05Icon}
+                  title={t('analytics.noCurrencyAccounts', { currency })}
+                  description={t('analytics.noCurrencyAccountsHint')}
+                />
+              )}
+            </View>
+          </>
+        )}
       </ScrollView>
     </Screen>
   );
@@ -271,14 +261,8 @@ const createStyles = ({ colors, spacing, radius, layout, tabBarClearance }: Them
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
       paddingBottom: tabBarClearance(bottomInset),
+      gap: spacing('5'),
     },
-    tiles: { gap: spacing('2'), marginTop: spacing('5') },
-    tileRow: { flexDirection: 'row', gap: spacing('2') },
-    tile: { flex: 1 },
     stack: { gap: spacing('3') },
-    card: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('4'),
-    },
+    card: { backgroundColor: colors.surface, borderRadius: radius('xl'), padding: spacing('4'), gap: spacing('3') },
   });

@@ -87,11 +87,6 @@ const de: Translation = {
     resetFailedMessage: 'Das Zurücksetzen konnte nicht abgeschlossen werden. Bitte versuche es erneut.',
     eraseEverything: 'Alles löschen', displayName: 'Anzeigename', displayNameHint: 'Wie du im Dashboard begrüßt wirst', yourName: 'Dein Name', privacyTitle: 'Datenschutzerklärung', termsTitle: 'Nutzungsbedingungen',
   },
-  searchGate: {
-    pro: 'Pro', title: 'Globale Suche', subtitle: 'Finde alles in deiner gesamten Finanzhistorie an einem Ort.',
-    transactions: 'Volltextsuche in allen Transaktionen', accounts: 'Konten sofort nach Namen finden',
-    categories: 'Kategorien in deiner gesamten Historie finden', upgrade: 'Auf Pro upgraden', notNow: 'Jetzt nicht',
-  },
   onboarding: {
     name: 'Dein Name', nameRequired: 'Bitte gib deinen Namen ein', nameMin: 'Mindestens 2 Zeichen', nameMax: 'Weniger als 30 Zeichen',
     greetingHint: 'So begrüßen wir dich in der App', defaultCurrency: 'Standardwährung', tapToChange: 'Zum Ändern tippen',
@@ -171,7 +166,7 @@ const de: Translation = {
     connectToRestore: 'Verbinde dein Cloud-Konto, um bestehende Konten und Transaktionen wiederherzustellen.',
   },
   ui: {
-    somethingWrong: 'Etwas ist schiefgelaufen', proOnly: 'Nur Pro', unlockWithPro: 'Mit Fintraq Pro freischalten',
+    somethingWrong: 'Etwas ist schiefgelaufen',
     charsLeft: 'Noch {{count}} Zeichen', suggested: 'Vorschläge', allCurrencies: 'Alle Währungen', noMatch: 'Kein Treffer für „{{query}}“', chooseIcon: 'Symbol wählen', chooseColor: 'Farbe wählen', colorsCount: '{{count}} Farben', currency: 'Währung', currenciesCount: '{{count}} Währungen', searchCurrency: 'Nach Name oder Code suchen', delKey: 'Entf',
   },
   lock: {
@@ -219,7 +214,7 @@ const de: Translation = {
   },
   persons: {
     title: 'Personen', person: 'Person', edit: 'Person bearbeiten', new: 'Neue Person', searchPlaceholder: 'Personen suchen...', none: 'Noch keine Personen', noneHint: 'Füge Personen hinzu, um sie mit Transaktionen zu verknüpfen',
-    upgradeTitle: 'Auf Pro upgraden', limitMessage: 'Der kostenlose Tarif erlaubt bis zu {{limit}} Personen. Upgrade für unbegrenzt viele.',
+    limitMessage: 'Der kostenlose Tarif erlaubt bis zu {{limit}} Personen. Upgrade für unbegrenzt viele.',
     personName: 'Name der Person', chooseColor: 'Wähle unten eine Akzentfarbe', contactDetails: 'Kontaktdaten', work: 'Beruf (optional)',
     namePlaceholder: 'Anna Schmidt', emailPlaceholder: 'anna@beispiel.de', rolePlaceholder: 'Leiterin', companyPlaceholder: 'Muster GmbH', save: 'Person speichern', add: 'Person hinzufügen',
     spent: 'Ausgegeben', received: 'Erhalten', activeLoans: 'Aktive Darlehen', transactions: 'Transaktionen', deleteTitle: 'Person löschen',
@@ -254,10 +249,10 @@ const de: Translation = {
   },
   analytics: {
     income: 'Einnahmen', expenses: 'Ausgaben', expense: 'Ausgabe', netPosition: 'Nettoposition', dailyAvg: 'Ø Tagesausgaben', highlights: 'Highlights', topCategory: 'Größte Ausgabenkategorie', biggestExpense: 'Größte Ausgabe',
-    noHighlights: 'Noch keine Highlights', noHighlightsHint: 'Füge Ausgaben hinzu, um wichtige Erkenntnisse zu deinen Ausgaben zu sehen.', trend: 'Ausgabentrend', noTrend: 'Noch keine Trenddaten', noTrendHint: 'Füge Einnahmen oder Ausgaben hinzu, um deinen Ausgabentrend zu sehen.',
+    trend: 'Ausgabentrend', noTrend: 'Noch keine Trenddaten', noTrendHint: 'Füge Einnahmen oder Ausgaben hinzu, um deinen Ausgabentrend zu sehen.',
     categoryBreakdown: 'Kategorieaufschlüsselung', groupsCount: '{{count}} Gruppen', personBreakdown: 'Aufschlüsselung nach Personen', personsCount: '{{count}} Personen', balanceDistribution: 'Guthabenverteilung', accountsCount: '{{count}} Konten',
     noCurrencyAccounts: 'Keine {{currency}}-Konten', noCurrencyAccountsHint: 'Füge ein Konto in dieser Währung hinzu, um die Guthabenverteilung zu sehen.', weeklyPattern: 'Wochenmuster', averageByDay: 'Durchschnitt pro Tag', noWeekly: 'Noch kein Wochenmuster', noWeeklyHint: 'Mit mehr Transaktionen wird dein Ausgabenrhythmus pro Tag sichtbar.',
-    low: 'Niedrig', mid: 'Mittel', high: 'Hoch', spendingPatterns: 'Ausgabenmuster', monthEndForecast: 'Prognose zum Monatsende', dowInsight: 'Am meisten gibst du am {{peak}} aus, am wenigsten am {{lowest}}.', noDataPeriod: 'Keine Daten für den Zeitraum', noCategoryData: 'Nichts in diesem Zeitraum', noCategoryDataHint: 'Füge Transaktionen dieser Art hinzu, um zu sehen, wohin dein Geld fließt.',
+    low: 'Niedrig', mid: 'Mittel', high: 'Hoch', monthEndForecast: 'Prognose zum Monatsende', dowInsight: 'Am meisten gibst du am {{peak}} aus, am wenigsten am {{lowest}}.', noDataPeriod: 'Keine Daten für den Zeitraum', noCategoryData: 'Nichts in diesem Zeitraum', noCategoryDataHint: 'Füge Transaktionen dieser Art hinzu, um zu sehen, wohin dein Geld fließt.',
   },
   export: {
     title: 'CSV exportieren', last7: 'Letzte 7 Tage', last30: 'Letzte 30 Tage', last90: 'Letzte 90 Tage', last12m: 'Letzte 12 Monate', all: 'Alle', income: 'Einnahme', expense: 'Ausgabe', transfer: 'Überweisung',
@@ -302,7 +297,6 @@ const de: Translation = {
     termsMessage: 'Dieser Kauf ist an dein Play-Store-/App-Store-Konto gebunden und wird beim Anmelden automatisch wiederhergestellt.',
     proActive: 'Pro aktiv', allSet: 'Alles bereit.', allSetDesc: 'Jedes professionelle Werkzeug, jedes zukünftige Update – für immer deins. Keine Abos, keine Limits.', linkedStore: 'Mit deinem Google Play / App Store verknüpft',
     active: 'Aktiv', unlockedFeatures: 'Freigeschaltete Funktionen', openDashboard: 'Dashboard öffnen',
-    upsellTrends: 'Ausgabentrends & Veränderungen je Zeitraum', upsellHighlights: 'Highlights & Ausgabenprognose', upsellSearch: 'Globale Suche in allen Daten', upsellCsv: 'CSV-Export mit Darlehensdaten', upsellExtended: 'Erweiterte Analysen für 30 / 90 / 365 Tage',
     oneTimeLifetime: 'Einmalzahlung · Lebenslanger Zugriff', unlockPro: 'Fintraq Pro freischalten', unlockIn: 'Freischalten in {{seconds}} s', maybeLater: 'Vielleicht später',
     accessRevoked: 'Zugriff widerrufen', accessRevokedMessage: 'Dein Pro-Zugriff wurde widerrufen oder erstattet. Du kannst ihn jederzeit erneut kaufen.', billingUnavailable: 'Die Abrechnungsschnittstelle ist derzeit nicht verfügbar.',
     networkRequired: 'Netzwerk erforderlich', checkConnection: 'Bitte prüfe deine Verbindung, um fortzufahren.', purchaseError: 'Kauffehler', purchaseErrorMessage: 'Wir konnten deine Anfrage momentan nicht verarbeiten.',
@@ -317,8 +311,13 @@ const de: Translation = {
       search: { title: 'Globale Suche', description: 'Finde jede Transaktion, jedes Konto und jede Kategorie in deiner gesamten Historie sofort.' },
       weekly: { title: 'Wochenmuster', description: 'Balkendiagramm, das zeigt, an welchen Tagen du am meisten ausgibst – mit automatisch erstellter Erkenntnis.' },
       csv: { title: 'CSV-Export', description: 'Exportiere Transaktionen und Darlehen als Tabelle. Auf dem Gerät speichern oder mit jeder App teilen.' },
+      people: { title: 'Personen & Guthaben', description: 'Sieh, mit wem du Geld ausgibst und wie dein Geld auf die Konten verteilt ist.' },
+      backup: { title: 'Automatische Cloud-Sicherung', description: 'Sichere alle 12 Stunden in dein eigenes Google Drive und stelle auf jedem Gerät wieder her.' },
+      unlimited: { title: 'Keine Limits', description: 'Verwalte mehr als {{loans}} aktive Darlehen und {{persons}} Personen.' },
     },
-    insightsTitle: 'Pro-Einblicke', upgradeForInsights: 'Für Einblicke auf Pro upgraden', noInsights: 'Noch keine Einblicke', noInsightsHint: 'Erfasse weiter, um persönliche Ausgabentrends freizuschalten.', analysing: 'Deine Muster werden analysiert...',
+    groups: { analytics: 'Analysen & Einblicke', tools: 'Profi-Werkzeuge', more: 'Sorgenfrei' },
+    gate: { upgrade: 'Auf Pro upgraden', notNow: 'Nicht jetzt', youTried: 'Das hast du versucht', alsoIncluded: 'Ebenfalls in Pro', previewTitle: 'Mehr mit Pro', previewHint: 'Schalte tiefere Analysen für diesen Zeitraum frei:', seeAll: 'Alles in Pro ansehen' },
+    insightsTitle: 'Pro-Einblicke', noInsights: 'Noch keine Einblicke', noInsightsHint: 'Erfasse weiter, um persönliche Ausgabentrends freizuschalten.', analysing: 'Deine Muster werden analysiert...',
   },
   insights: {
     spendingUp: 'Ausgaben {{pct}} % höher', spendingDown: 'Ausgaben {{pct}} % niedriger', spendingUpHint: 'gegenüber letzter Woche. Prüfe, ob sich etwas eingeschlichen hat – ein kurzer Check schadet nie.', spendingDownHint: 'gegenüber letzter Woche. Du hast sparsamer gewirtschaftet als sonst – gut gemacht!',
