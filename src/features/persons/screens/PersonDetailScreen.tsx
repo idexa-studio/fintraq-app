@@ -105,7 +105,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
   }, [personId, deletePerson, router]);
 
   const handleTxPress = useCallback((tx: { id: number }) => {
-    router.push(`/transactions/edit/${tx.id}`);
+    router.push(`/transactions/${tx.id}`);
   }, [router]);
 
   if (isLoading || !person) {
