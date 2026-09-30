@@ -12,8 +12,14 @@ const pickReminder = () => {
 };
 
 export const CLOUD_BACKUP_NOTIFICATION_ID = 'cloud_backup_status';
-/** Android channel for daily and loan reminders (kept as 'default' so existing installs keep their settings). */
-export const REMINDERS_CHANNEL_ID = 'default';
+/**
+ * Android channel for daily and loan reminders. A channel's sound is fixed once created, so the
+ * chime needs a channel of its own; the old one ('default', silent-default sound) is removed.
+ */
+export const REMINDERS_CHANNEL_ID = 'reminders_chime';
+const LEGACY_REMINDERS_CHANNEL_ID = 'default';
+/** Bundled by the expo-notifications plugin (app.json `sounds`): res/raw on Android, the app bundle on iOS. */
+export const REMINDER_SOUND = 'fintraq_reminder.wav';
 /**
  * Status-bar icon for notifications posted through notify-kit: the drawable expo-notifications
  * generates from app.json's notification icon. Without it Android shows the launcher icon, which
@@ -73,9 +79,13 @@ export const NotificationService = {
         await Notifications.setNotificationChannelAsync(REMINDERS_CHANNEL_ID, {
           name: i18n.t('notifications.channelReminders'),
           importance: Notifications.AndroidImportance.MAX,
+          sound: REMINDER_SOUND,
           vibrationPattern: [0, 250, 250, 250],
           lightColor: '#FF231F7C', // design-system-ignore: native Android LED colour
         });
+
+        // Reminders are re-armed on the new channel by every sync, so nothing still points here.
+        await Notifications.deleteNotificationChannelAsync(LEGACY_REMINDERS_CHANNEL_ID).catch(() => {});
 
         await ensureBackupChannel();
       } catch (e) {
@@ -139,9 +149,9 @@ export const NotificationService = {
       content: {
         title: `[TEST] ${message.title}`,
         body: message.body,
-        sound: true,
+        sound: REMINDER_SOUND,
       },
-      trigger: null, // null means trigger immediately
+      trigger: { channelId: REMINDERS_CHANNEL_ID }, // no date: fires immediately
     });
   },
 
