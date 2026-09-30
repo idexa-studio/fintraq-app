@@ -440,7 +440,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
             keyboardShouldPersistTaps="handled"
           >
             {isWelcome ? (
-              <Text style={styles.brand}>Fintraq<Text inline style={styles.brandDot}>.</Text></Text>
+              <Text variant="headline" style={styles.brand}>Fintraq<Text inline style={styles.brandDot}>.</Text></Text>
             ) : null}
             <View style={styles.stepMeta}>
               <Text variant="display">{t(`onboardingFlow.steps.${currentStep.id}.title`)}</Text>
@@ -530,9 +530,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
     },
     scrollContentWelcome: { paddingTop: spacing('10') },
     brand: {
-      fontFamily: typography.fonts.heading,
-      ...typography.metrics.jumbo,
-      color: colors.text,
       marginBottom: -spacing('4'),
     },
     brandDot: { color: colors.primary }, // design-system-ignore: logotype mark, exempt from contrast

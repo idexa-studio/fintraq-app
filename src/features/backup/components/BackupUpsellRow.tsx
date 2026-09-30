@@ -12,6 +12,7 @@ type BackupUpsellRowProps = { onPress: () => void };
 /** Shown to non-Pro users in place of the backup controls. */
 export const BackupUpsellRow = React.memo(function BackupUpsellRow({ onPress }: BackupUpsellRowProps) {
   const theme = useTheme();
+  const { colors } = theme;
   const { t } = useTranslation();
   const rows = useMemo(() => createBackupRowStyles(theme), [theme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -24,7 +25,7 @@ export const BackupUpsellRow = React.memo(function BackupUpsellRow({ onPress }: 
           <Text style={rows.rowLabel}>{t('backup.cloudBackup')}</Text>
           <View style={styles.proBadge}>
             <Icon icon={SparklesIcon} size={10} color={theme.colors.warning} />
-            <Text style={styles.proBadgeText}>{t('backup.pro')}</Text>
+            <Text variant="micro" color={colors.primaryInk}>{t('backup.pro')}</Text>
           </View>
         </View>
         <Text style={rows.rowSubtitle}>{t('backup.proFeatures')}</Text>
@@ -47,10 +48,5 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       paddingVertical: 2,
       borderRadius: radius('full'),
       backgroundColor: alpha(colors.primary, 'subtle'),
-    },
-    proBadgeText: {
-      fontFamily: typography.fonts.bold,
-      ...typography.metrics.xxs,
-      color: colors.primaryInk,
     },
   });

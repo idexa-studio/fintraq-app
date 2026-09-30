@@ -35,7 +35,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>{label ?? t('transactions.account')}</Text>
+      <Text variant="label" tone="muted" style={styles.label}>{label ?? t('transactions.account')}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {accounts.map((acc) => {
           const selected = selectedId === acc.id;
@@ -58,8 +58,8 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
                 iconSize={16}
               />
               <View style={styles.textColumn}>
-                <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>{acc.name}</Text>
-                <Text style={[styles.currency, { color: colors.textMuted }]}>{acc.currency}</Text>
+                <Text variant="bodyStrong" numberOfLines={1}>{acc.name}</Text>
+                <Text variant="micro" tone="muted">{acc.currency}</Text>
               </View>
               {selected ? <Icon icon={CheckCircleIcon} size={20} color={accColor} weight="fill" /> : null}
             </BentoPressable>
@@ -75,8 +75,6 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
     paddingVertical: spacing('3'),
   },
   label: {
-    fontFamily: typography.styles.sectionLabel.fontFamily,
-    ...typography.metrics.xs,
     marginBottom: spacing('2'),
     paddingHorizontal: layout.screenPadding + spacing('1'),
   },
@@ -96,14 +94,6 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
   },
   textColumn: {
     flex: 1,
-  },
-  name: {
-    fontFamily: typography.styles.rowLabel.fontFamily,
-    ...typography.metrics.md,
-  },
-  currency: {
-    fontFamily: typography.fonts.medium,
-    ...typography.metrics.xs,
   },
   check: {
     position: 'absolute',

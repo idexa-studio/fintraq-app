@@ -18,6 +18,7 @@ type BackupStatusRowProps = {
 
 export const BackupStatusRow = React.memo(function BackupStatusRow({ latestBackup, isOverdue, onOverduePress }: BackupStatusRowProps) {
   const theme = useTheme();
+  const { colors } = theme;
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -25,7 +26,7 @@ export const BackupStatusRow = React.memo(function BackupStatusRow({ latestBacku
     return (
       <BentoPressable style={styles.warningBox} onPress={onOverduePress} accessibilityRole="button" accessibilityLabel={t('backup.overdue')}>
         <Icon icon={Alert02Icon} size={16} color={theme.colors.warning} />
-        <Text style={styles.warningText}>{t('backup.overdue')}</Text>
+        <Text variant="calloutStrong" color={colors.warning} style={styles.warningText}>{t('backup.overdue')}</Text>
       </BentoPressable>
     );
   }
@@ -33,14 +34,14 @@ export const BackupStatusRow = React.memo(function BackupStatusRow({ latestBacku
   return (
     <View style={styles.box}>
       <View style={styles.textCol}>
-        <Text style={styles.label}>{t('backup.lastBackup')}</Text>
-        <Text style={styles.value}>
+        <Text variant="micro" tone="muted">{t('backup.lastBackup')}</Text>
+        <Text variant="calloutStrong">
           {latestBackup ? formatBackupTimestamp(latestBackup.modifiedTime) : t('backup.noBackupYet')}
         </Text>
       </View>
       {latestBackup && latestBackup.size > 0 && (
         <View style={styles.sizeBadge}>
-          <Text style={styles.sizeBadgeText}>{formatFileSize(latestBackup.size)}</Text>
+          <Text variant="label" color={colors.primaryInk}>{formatFileSize(latestBackup.size)}</Text>
         </View>
       )}
     </View>
@@ -60,17 +61,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     textCol: {
       gap: 2,
     },
-    label: {
-      fontFamily: typography.fonts.bold,
-      ...typography.metrics.xxs,
-      color: colors.textMuted,
-      letterSpacing: 0.5,
-    },
-    value: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-      color: colors.text,
-    },
     warningBox: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -81,19 +71,11 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     },
     warningText: {
       flex: 1,
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-      color: colors.warning,
     },
     sizeBadge: {
       backgroundColor: alpha(colors.primary, 'subtle'),
       paddingHorizontal: spacing('2.5'),
       paddingVertical: spacing('1'),
       borderRadius: radius('full'),
-    },
-    sizeBadgeText: {
-      fontFamily: typography.fonts.bold,
-      ...typography.metrics.xs,
-      color: colors.primaryInk,
     },
   });

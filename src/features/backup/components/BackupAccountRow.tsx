@@ -11,6 +11,7 @@ type BackupAccountRowProps = { email: string; onDisconnect: () => void };
 
 export const BackupAccountRow = React.memo(function BackupAccountRow({ email, onDisconnect }: BackupAccountRowProps) {
   const theme = useTheme();
+  const { colors } = theme;
   const { t } = useTranslation();
   const rows = useMemo(() => createBackupRowStyles(theme), [theme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -23,10 +24,10 @@ export const BackupAccountRow = React.memo(function BackupAccountRow({ email, on
           <Text style={rows.rowLabel}>{t('backup.cloudAccount')}</Text>
           <View style={styles.activeBadge}>
             <View style={styles.activeDot} />
-            <Text style={styles.activeBadgeText}>{t('backup.connected')}</Text>
+            <Text variant="micro" color={colors.success}>{t('backup.connected')}</Text>
           </View>
         </View>
-        <Text style={styles.email} numberOfLines={1}>
+        <Text variant="label" color={colors.primaryInk} numberOfLines={1}>
           {email}
         </Text>
       </View>
@@ -51,15 +52,5 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       height: 6,
       borderRadius: radius('full'),
       backgroundColor: colors.success,
-    },
-    activeBadgeText: {
-      fontFamily: typography.fonts.bold,
-      ...typography.metrics.xxs,
-      color: colors.success,
-    },
-    email: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: colors.primaryInk,
     },
   });

@@ -22,6 +22,7 @@ export const BackupActionsRow = React.memo(function BackupActionsRow({
   onRestore,
 }: BackupActionsRowProps) {
   const theme = useTheme();
+  const { colors } = theme;
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const restoreDisabled = isBackingUp || isRestoring || !canRestore;
@@ -49,7 +50,7 @@ export const BackupActionsRow = React.memo(function BackupActionsRow({
         ) : (
           <>
             <Icon icon={Download01Icon} size={16} color={theme.colors.primaryInk} />
-            <Text style={styles.secondaryText}>{t('backup.restore')}</Text>
+            <Text variant="calloutStrong" color={colors.primaryInk}>{t('backup.restore')}</Text>
           </>
         )}
       </BentoPressable>
@@ -85,11 +86,6 @@ const createStyles = ({ colors, typography, spacing, radius, state }: ThemeConte
       borderWidth: 1,
       borderColor: alpha(colors.primary, 'soft'),
       borderRadius: radius('full'),
-    },
-    secondaryText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-      color: colors.primaryInk,
     },
     disabled: {
       opacity: state.disabled,

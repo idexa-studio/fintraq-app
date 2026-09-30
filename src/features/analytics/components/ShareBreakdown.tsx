@@ -40,7 +40,7 @@ export const ShareBreakdown = React.memo(function ShareBreakdown({ items }: Shar
             <>
               {item.leading}
               <View style={styles.cellBody}>
-                <Text variant="caption" numberOfLines={1} style={styles.name}>
+                <Text variant="label" numberOfLines={1}>
                   {item.name}
                 </Text>
                 <MoneyText amount={item.amount} currency={item.currency} type={item.type ?? 'NONE'} compact style={styles.amount} />
@@ -87,7 +87,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       backgroundColor: colors.surface,
     },
     cellBody: { flex: 1 },
-    name: { fontFamily: typography.styles.rowLabel.fontFamily },
     amount: typography.metrics.xs,
     percent: { position: 'absolute', top: spacing('3'), right: spacing('3') },
   });

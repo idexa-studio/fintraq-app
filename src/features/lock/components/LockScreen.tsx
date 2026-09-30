@@ -114,8 +114,8 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
 
         {/* Text Details block */}
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{t('common.locked')}</Text>
-          <Text style={styles.subtitle}>{t('common.secureData')}</Text>
+          <Text variant="headline" style={styles.title}>{t('common.locked')}</Text>
+          <Text variant="callout" tone="muted" style={styles.subtitle}>{t('common.secureData')}</Text>
         </View>
 
         {/* PinPad or Biometrics block */}
@@ -189,15 +189,9 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       paddingTop: spacing('2'),
     },
     title: {
-      fontFamily: typography.styles.emptyTitle.fontFamily,
-      ...typography.metrics.xl,
-      color: colors.text,
       textAlign: 'center',
     },
     subtitle: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
       textAlign: 'center',
     },
     // PinPad/Biometrics Container

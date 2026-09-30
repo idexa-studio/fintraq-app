@@ -27,7 +27,7 @@ export const StreakBadge = React.memo(function StreakBadge({ heroCard }: Props) 
         size={13}
         color={theme.colors.warning}
       />
-      <Text style={styles.text}>{t('dashboard.streakDays', { count: streak })}</Text>
+      <Text variant="micro" color={heroCard.textPrimary}>{t('dashboard.streakDays', { count: streak })}</Text>
     </View>
   );
 });
@@ -43,10 +43,5 @@ const createStyles = ({ colors, typography, spacing, radius, alpha }: ThemeConte
       borderRadius: radius('full'),
       backgroundColor: alpha(colors.warning, 'subtle'),
       alignSelf: 'flex-start',
-    },
-    text: {
-      fontFamily: typography.styles.badge.fontFamily,
-      ...typography.metrics.xs,
-      color: heroCard.textPrimary,
     },
   });

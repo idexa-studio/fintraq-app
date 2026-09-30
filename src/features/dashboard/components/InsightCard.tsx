@@ -13,7 +13,7 @@ interface InsightCardProps {
 
 export const InsightCard = React.memo(function InsightCard({ insight }: InsightCardProps) {
   const theme = useTheme();
-  const { colors, typography } = theme;
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const accent = useMemo(() => {
@@ -36,10 +36,10 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
         iconSize={16}
       />
       <View style={styles.text}>
-        <Text style={[styles.title, { fontFamily: typography.styles.cardTitle.fontFamily, color: colors.text }]} numberOfLines={1}>
+        <Text variant="calloutStrong" numberOfLines={1}>
           {insight.title}
         </Text>
-        <Text style={[styles.sub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={2}>
+        <Text variant="caption" tone="muted" numberOfLines={2}>
           {insight.subtitle}
         </Text>
       </View>
@@ -47,7 +47,7 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
   );
 });
 
-const createStyles = ({ typography, spacing, radius, colors }: ThemeContextType) =>
+const createStyles = ({ spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     card: {
       flexDirection: 'row',
@@ -60,12 +60,5 @@ const createStyles = ({ typography, spacing, radius, colors }: ThemeContextType)
     text: {
       flex: 1,
       gap: spacing('0.5'),
-    },
-    title: {
-      ...typography.metrics.sm,
-    },
-    sub: {
-      ...typography.metrics.xs,
-      color: colors.textMuted,
     },
   });

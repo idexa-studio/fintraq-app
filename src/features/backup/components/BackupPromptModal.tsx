@@ -53,8 +53,8 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
         <View style={styles.card}>
           <View style={styles.header}>
             <IconAvatar icon={CloudIcon} color={colors.primaryInk} variant="subtle" size={52} iconSize={26} />
-            <Text style={styles.title}>{t('backup.protectTitle')}</Text>
-            <Text style={styles.message}>
+            <Text variant="headline" style={styles.title}>{t('backup.protectTitle')}</Text>
+            <Text variant="callout" tone="muted" style={styles.message}>
               {t('backup.protectMessage')}
             </Text>
           </View>
@@ -62,11 +62,11 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
           <View style={styles.features}>
             <View style={styles.featureRow}>
               <Icon icon={ShieldKeyIcon} size={16} color={colors.success} />
-              <Text style={styles.featureText}>{t('backup.privateStorage')}</Text>
+              <Text variant="label">{t('backup.privateStorage')}</Text>
             </View>
             <View style={styles.featureRow}>
               <Icon icon={CloudIcon} size={16} color={colors.primaryInk} />
-              <Text style={styles.featureText}>{t('backup.dailyBackup')}</Text>
+              <Text variant="label">{t('backup.dailyBackup')}</Text>
             </View>
           </View>
 
@@ -108,15 +108,9 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       gap: spacing('2.5'),
     },
     title: {
-      fontFamily: typography.fonts.heading,
-      ...typography.metrics.xl,
-      color: colors.text,
       textAlign: 'center',
     },
     message: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
       textAlign: 'center',
     },
     features: {
@@ -129,11 +123,6 @@ const createStyles = ({ colors, overlay, typography, spacing, radius }: ThemeCon
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('2.5'),
-    },
-    featureText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: colors.text,
     },
     actions: {
       gap: spacing('2.5'),
