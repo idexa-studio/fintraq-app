@@ -10,7 +10,8 @@
     "lint": "expo lint",
     "lint:design": "node scripts/check-design-system.js",
     "db:generate": "drizzle-kit generate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.3.5",
@@ -78,6 +79,7 @@
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.39.5",
     "eslint-config-expo": "~10.0.0",
+    "patch-package": "^8.0.1",
     "typescript": "~5.9.3"
   },
   "expo": {

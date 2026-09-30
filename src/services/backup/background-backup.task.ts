@@ -8,11 +8,12 @@ import { resolveAutoBackupEnabled, runAutoBackupIfDue } from './auto-backup.serv
 
 const AUTO_BACKUP_TASK = 'fintraq-auto-backup-task';
 
-// How often the OS may wake us to *check* — deliberately shorter than the 12h backup interval.
-// On Android, expo-background-task re-enqueues its worker with a full fresh delay every time the
-// app process cold-starts, so a 12h delay is pushed back by every app open and rarely fires.
-// A 4h wake keeps a real chance of running between opens; runAutoBackupIfDue() still only
-// uploads once the 12h interval has elapsed, so extra wakes are a cheap AsyncStorage read.
+// How often the OS may wake us to *check*, deliberately shorter than the 12h backup interval.
+// The wake timer and the backup clock are independent: a foreground backup resets the backup
+// clock but not the OS timer, so with equal intervals a wake can land just before the backup is
+// due, skip, and leave the next chance a full interval later (worst case ~24h between backups).
+// A 4h check cadence bounds that to ~16h. Wakes that aren't due are a cheap AsyncStorage read.
+// Android cold-start rescheduling is fixed natively (patches/expo-background-task+1.0.10.patch).
 export const BACKGROUND_CHECK_INTERVAL_MINUTES = 4 * 60;
 
 // expo-task-manager only reschedules WorkManager on a task's first-ever registration.
