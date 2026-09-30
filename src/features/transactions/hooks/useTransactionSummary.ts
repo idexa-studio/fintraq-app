@@ -1,21 +1,17 @@
 import { useMemo, useState } from 'react';
 import { sortCurrenciesWithDefault } from '@/src/constants/currency';
-import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
-import { CurrencyTotals, sumByCurrency } from '@/src/utils/transactions';
+import type { TransactionTotals } from '@/src/features/transactions/api/transactions';
 
 const EMPTY_TOTALS = { income: 0, expense: 0 };
+const NO_TOTALS: TransactionTotals = {};
 
 /**
- * Income/expense for the summary card, per currency, with the user's currency choice.
- * Uses the DB aggregate when the filters map 1:1 to SQL (accurate regardless of scroll); when
- * client-side filtering is active it can only sum the rows loaded so far.
+ * Income/expense for the summary card, per currency, with the user's currency choice. The totals
+ * come from SQL with the list's exact filters, so they cover every matching row, not just the
+ * pages scrolled so far.
  */
-export function useTransactionSummary(
-  loaded: readonly TransactionListItem[],
-  dbTotals: CurrencyTotals | undefined,
-  defaultCurrency: string,
-) {
-  const totalsByCurrency = useMemo(() => dbTotals ?? sumByCurrency(loaded), [dbTotals, loaded]);
+export function useTransactionSummary(dbTotals: TransactionTotals | undefined, defaultCurrency: string) {
+  const totalsByCurrency = dbTotals ?? NO_TOTALS;
   const currencies = useMemo(
     () => sortCurrenciesWithDefault(Object.keys(totalsByCurrency), defaultCurrency),
     [totalsByCurrency, defaultCurrency],

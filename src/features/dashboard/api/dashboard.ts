@@ -1,5 +1,6 @@
 import { and, eq, sql } from 'drizzle-orm';
 import { db } from '@/src/db/client';
+import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
 import { accounts, payments, persons } from '@/src/db/schema';
 import type { MonthTotals } from '@/src/features/dashboard/utils/widgets';
 import { format, startOfMonth, subMonths } from 'date-fns';
@@ -17,7 +18,7 @@ export const getMonthTotals = async (currency: string, now: Date = new Date()): 
   const lastMonthStart = format(startOfMonth(subMonths(now, 1)), 'yyyy-MM-dd');
   // Same day last month, clamped to its length (31 March compares with 28/29 February).
   const lastMonthSameDay = format(subMonths(now, 1), 'yyyy-MM-dd');
-  const day = sql`date(${payments.datetime})`;
+  const day = PAYMENT_LOCAL_DAY;
 
   const [row] = await db
     .select({
@@ -40,7 +41,7 @@ export const getMonthTotals = async (currency: string, now: Date = new Date()): 
 
 /** Expense per local day from `since` (yyyy-MM-dd) onwards. */
 export const getDailySpend = async (currency: string, since: string): Promise<Map<string, number>> => {
-  const day = sql<string>`date(${payments.datetime})`;
+  const day = PAYMENT_LOCAL_DAY;
   const rows = await db
     .select({ date: day, amount: sql<number>`SUM(${payments.amount})` })
     .from(payments)

@@ -1,5 +1,6 @@
 import { and, eq, sql } from 'drizzle-orm';
 import { db } from '@/src/db/client';
+import { PAYMENT_LOCAL_DAY, PAYMENT_LOCAL_MONTH, PAYMENT_LOCAL_WEEKDAY } from '@/src/db/sql';
 import { accounts, categories, payments } from '@/src/db/schema';
 
 export type DayBucket = {
@@ -35,15 +36,15 @@ export const getDailyTimeSeries = async (
 ): Promise<DayBucket[]> => {
   return db
     .select({
-      day: sql<string>`date(${payments.datetime})`,
+      day: PAYMENT_LOCAL_DAY,
       income: sql<number>`COALESCE(SUM(CASE WHEN ${payments.type}='CR' THEN ${payments.amount} ELSE 0 END),0)`,
       expense: sql<number>`COALESCE(SUM(CASE WHEN ${payments.type}='DR' THEN ${payments.amount} ELSE 0 END),0)`,
     })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(and(eq(accounts.currency, currency), sql`date(${payments.datetime}) >= ${startIso}`))
-    .groupBy(sql`date(${payments.datetime})`)
-    .orderBy(sql`date(${payments.datetime})`);
+    .where(and(eq(accounts.currency, currency), sql`${PAYMENT_LOCAL_DAY} >= ${startIso}`))
+    .groupBy(PAYMENT_LOCAL_DAY)
+    .orderBy(PAYMENT_LOCAL_DAY);
 };
 
 export const getMonthlyTimeSeries = async (
@@ -56,7 +57,7 @@ export const getMonthlyTimeSeries = async (
   const startStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   return db
     .select({
-      month: sql<string>`strftime('%Y-%m', ${payments.datetime})`,
+      month: PAYMENT_LOCAL_MONTH,
       income: sql<number>`COALESCE(SUM(CASE WHEN ${payments.type}='CR' THEN ${payments.amount} ELSE 0 END),0)`,
       expense: sql<number>`COALESCE(SUM(CASE WHEN ${payments.type}='DR' THEN ${payments.amount} ELSE 0 END),0)`,
     })
@@ -64,10 +65,10 @@ export const getMonthlyTimeSeries = async (
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
     .where(and(
       eq(accounts.currency, currency),
-      sql`strftime('%Y-%m', ${payments.datetime}) >= ${startStr}`,
+      sql`${PAYMENT_LOCAL_MONTH} >= ${startStr}`,
     ))
-    .groupBy(sql`strftime('%Y-%m', ${payments.datetime})`)
-    .orderBy(sql`strftime('%Y-%m', ${payments.datetime})`);
+    .groupBy(PAYMENT_LOCAL_MONTH)
+    .orderBy(PAYMENT_LOCAL_MONTH);
 };
 
 export const getCategoryBreakdown = async (
@@ -75,7 +76,7 @@ export const getCategoryBreakdown = async (
   startIso: string | null,
 ): Promise<CategoryBreakdown[]> => {
   const where = startIso
-    ? and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`date(${payments.datetime}) >= ${startIso}`)
+    ? and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`${PAYMENT_LOCAL_DAY} >= ${startIso}`)
     : and(eq(accounts.currency, currency), eq(payments.type, 'DR'));
   return db
     .select({
@@ -114,8 +115,8 @@ export const getPreviousPeriodSummary = async (
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
     .where(and(
       eq(accounts.currency, currency),
-      sql`date(${payments.datetime}) >= ${startIso}`,
-      sql`date(${payments.datetime}) < ${endIso}`,
+      sql`${PAYMENT_LOCAL_DAY} >= ${startIso}`,
+      sql`${PAYMENT_LOCAL_DAY} < ${endIso}`,
     ));
   return rows[0] ?? { income: 0, expense: 0 };
 };
@@ -135,7 +136,7 @@ export const getBiggestExpense = async (
   startIso: string | null,
 ): Promise<BiggestExpense | null> => {
   const where = startIso
-    ? and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`date(${payments.datetime}) >= ${startIso}`)
+    ? and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`${PAYMENT_LOCAL_DAY} >= ${startIso}`)
     : and(eq(accounts.currency, currency), eq(payments.type, 'DR'));
   const rows = await db
     .select({
@@ -171,7 +172,7 @@ export const getIncomeCategoryBreakdown = async (
   startIso: string | null,
 ): Promise<CategoryBreakdown[]> => {
   const where = startIso
-    ? and(eq(accounts.currency, currency), eq(payments.type, 'CR'), sql`date(${payments.datetime}) >= ${startIso}`)
+    ? and(eq(accounts.currency, currency), eq(payments.type, 'CR'), sql`${PAYMENT_LOCAL_DAY} >= ${startIso}`)
     : and(eq(accounts.currency, currency), eq(payments.type, 'CR'));
   return db
     .select({
@@ -196,16 +197,16 @@ export const getSpendByDayOfWeek = async (
   startIso: string | null,
 ): Promise<DowSpend[]> => {
   const where = startIso
-    ? and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`date(${payments.datetime}) >= ${startIso}`)
+    ? and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`${PAYMENT_LOCAL_DAY} >= ${startIso}`)
     : and(eq(accounts.currency, currency), eq(payments.type, 'DR'));
   return db
     .select({
-      dow: sql<number>`CAST(strftime('%w', ${payments.datetime}) AS INTEGER)`,
+      dow: PAYMENT_LOCAL_WEEKDAY,
       total: sql<number>`SUM(${payments.amount})`,
       count: sql<number>`COUNT(*)`,
     })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
     .where(where)
-    .groupBy(sql`strftime('%w', ${payments.datetime})`);
+    .groupBy(PAYMENT_LOCAL_WEEKDAY);
 };

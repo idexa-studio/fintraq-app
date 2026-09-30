@@ -4,7 +4,7 @@ import * as Haptics from 'expo-haptics';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Chip, FormField, IconButton, ListGroup, ListItem, SheetHeader, Text } from '@/src/components/ui';
+import { Button, Chip, FormField, IconButton, ListGroup, SheetHeader, Text } from '@/src/components/ui';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 import { Account } from '@/src/features/accounts/api/accounts';
 import { Category } from '@/src/features/categories/api/categories';
@@ -12,6 +12,7 @@ import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '@/src/features/filter
 import { Person } from '@/src/features/persons/api/persons';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { AccountType, TransactionType } from '@/src/types';
+import { parseAmountInput } from '@/src/utils/amount';
 import { colorNumberToHex, formatDate } from '@/src/utils/format';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 
@@ -24,6 +25,30 @@ interface AdvancedFilterBottomSheetProps {
   accounts: Account[];
   categories: Category[];
   persons: Person[];
+}
+
+const PRESETS = ['today', 'week', 'month', 'last30'] as const;
+type Preset = (typeof PRESETS)[number];
+
+const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+const endOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+const sameDay = (a: Date, b: Date) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+
+/** Whole local days, weeks starting Monday. */
+function presetRange(preset: Preset, now: Date): { startDate: Date; endDate: Date } {
+  const endDate = endOfDay(now);
+  switch (preset) {
+    case 'today':
+      return { startDate: startOfDay(now), endDate };
+    case 'week': {
+      const sinceMonday = (now.getDay() + 6) % 7;
+      return { startDate: startOfDay(new Date(now.getFullYear(), now.getMonth(), now.getDate() - sinceMonday)), endDate };
+    }
+    case 'month':
+      return { startDate: new Date(now.getFullYear(), now.getMonth(), 1), endDate };
+    case 'last30':
+      return { startDate: startOfDay(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29)), endDate };
+  }
 }
 
 const TYPE_OPTS = [
@@ -47,37 +72,37 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
   const bottomSheet = useBottomSheet();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
+  const minValue = parseAmountInput(minAmt);
+  const maxValue = parseAmountInput(maxAmt);
   const amountError = useMemo(() => {
-    const mn = minAmt ? parseFloat(minAmt) : undefined;
-    const mx = maxAmt ? parseFloat(maxAmt) : undefined;
-    if (mn !== undefined && mx !== undefined && mn > mx) return t('filters.minLessThanMax');
+    if ((minAmt.trim() && minValue === null) || (maxAmt.trim() && maxValue === null)) return t('forms.invalidAmount');
+    if (minValue !== null && maxValue !== null && minValue > maxValue) return t('filters.minLessThanMax');
     return null;
-  }, [minAmt, maxAmt, t]);
+  }, [minAmt, maxAmt, minValue, maxValue, t]);
 
+  // A category can serve several types ("DR,CR" — e.g. Others), so match any of them.
   const scopedCategories = useMemo(() => {
-    if (!local.types || local.types.length === 0) return categories;
-    return categories.filter(c => local.types!.includes(c.type as TransactionType));
+    const types = local.types;
+    const matching = !types || types.length === 0 ? categories : categories.filter((c) => c.type.split(',').some((type) => types.includes(type as TransactionType)));
+    // The user's own categories first, system catch-alls (Others) last — same order as the entry form.
+    return [...matching].sort((a, b) => Number(a.isSystem) - Number(b.isSystem));
   }, [categories, local.types]);
 
-  const applyPreset = useCallback((preset: 'today' | 'week' | 'month' | 'last30') => {
+  const activePreset = useMemo(() => {
+    const range = local.dateRange;
+    if (!range) return null;
+    return PRESETS.find((preset) => {
+      const expected = presetRange(preset, new Date());
+      return sameDay(expected.startDate, range.startDate) && sameDay(expected.endDate, range.endDate);
+    }) ?? null;
+  }, [local.dateRange]);
+
+  // A range the presets don't describe was picked by hand.
+  const customRange = local.dateRange && !activePreset ? local.dateRange : null;
+
+  const applyPreset = useCallback((preset: Preset) => {
     Haptics.selectionAsync().catch(() => {});
-    const now = new Date();
-    const end = new Date(now);
-    end.setHours(23, 59, 59, 999);
-    let start = new Date(now);
-    if (preset === 'today') {
-      start.setHours(0, 0, 0, 0);
-    } else if (preset === 'week') {
-      const day = now.getDay();
-      start.setDate(now.getDate() - (day === 0 ? 6 : day - 1));
-      start.setHours(0, 0, 0, 0);
-    } else if (preset === 'month') {
-      start = new Date(now.getFullYear(), now.getMonth(), 1);
-    } else {
-      start.setDate(now.getDate() - 29);
-      start.setHours(0, 0, 0, 0);
-    }
-    setLocal(p => ({ ...p, dateRange: { startDate: start, endDate: end } }));
+    setLocal((p) => ({ ...p, dateRange: presetRange(preset, new Date()) }));
   }, []);
 
   useEffect(() => {
@@ -114,43 +139,39 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
     setLocal(p => ({ ...p, dateRange: undefined }));
   }, []);
 
-  const onStartDate = useCallback((_e: DateTimePickerEvent, d?: Date) => {
-    setShowStart(false);
-    if (d) {
-      Haptics.selectionAsync().catch(() => {});
-      setLocal(p => {
-        const end = p.dateRange?.endDate ?? new Date();
-        // Auto-swap: if new start is after existing end, swap them
-        const [resolvedStart, resolvedEnd] = d > end ? [end, d] : [d, end];
-        resolvedEnd.setHours(23, 59, 59, 999);
-        return { ...p, dateRange: { startDate: resolvedStart, endDate: resolvedEnd } };
-      });
-    }
+  // Pickers give a moment in time; a range is whole days. Copies only — never mutate state.
+  const setRangeEdge = useCallback((edge: 'start' | 'end', picked: Date) => {
+    Haptics.selectionAsync().catch(() => {});
+    setLocal((p) => {
+      const current = p.dateRange ?? { startDate: startOfDay(picked), endDate: endOfDay(picked) };
+      const start = edge === 'start' ? picked : current.startDate;
+      const end = edge === 'end' ? picked : current.endDate;
+      // Picking an edge past the other one swaps them rather than making an empty range.
+      const [from, to] = start > end ? [end, start] : [start, end];
+      return { ...p, dateRange: { startDate: startOfDay(from), endDate: endOfDay(to) } };
+    });
   }, []);
 
-  const onEndDate = useCallback((_e: DateTimePickerEvent, d?: Date) => {
-    setShowEnd(false);
-    if (d) {
-      Haptics.selectionAsync().catch(() => {});
-      d.setHours(23, 59, 59, 999);
-      setLocal(p => {
-        const start = p.dateRange?.startDate ?? new Date();
-        // Auto-swap: if new end is before existing start, swap them
-        const [resolvedStart, resolvedEnd] = d < start ? [d, start] : [start, d];
-        resolvedEnd.setHours(23, 59, 59, 999);
-        return { ...p, dateRange: { startDate: resolvedStart, endDate: resolvedEnd } };
-      });
+  const onStartDate = useCallback((event: DateTimePickerEvent, picked?: Date) => {
+    setShowStart(false);
+    if (event.type === 'set' && picked) {
+      setRangeEdge('start', picked);
+      setShowEnd(true);
     }
-  }, []);
+  }, [setRangeEdge]);
+
+  const onEndDate = useCallback((event: DateTimePickerEvent, picked?: Date) => {
+    setShowEnd(false);
+    if (event.type === 'set' && picked) setRangeEdge('end', picked);
+  }, [setRangeEdge]);
 
   const handleApply = useCallback(() => {
     if (amountError) return;
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-    const mn = minAmt ? parseFloat(minAmt) : undefined;
-    const mx = maxAmt ? parseFloat(maxAmt) : undefined;
-    onApply({ ...local, amountRange: (mn !== undefined || mx !== undefined) ? { min: mn, max: mx } : undefined });
+    const hasAmount = minValue !== null || maxValue !== null;
+    onApply({ ...local, amountRange: hasAmount ? { min: minValue ?? undefined, max: maxValue ?? undefined } : undefined });
     onClose();
-  }, [local, minAmt, maxAmt, amountError, onApply, onClose]);
+  }, [local, minValue, maxValue, amountError, onApply, onClose]);
 
   const handleReset = useCallback(() => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => { });
@@ -173,12 +194,12 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
 
   const fmt = (d: Date) => formatDate(d, { day: 'numeric', month: 'short', year: 'numeric' });
   const snapPoints = useMemo(() => ['90%'], []);
-  const presets = [
-    { key: 'today', label: t('filters.today') },
-    { key: 'week', label: t('filters.thisWeek') },
-    { key: 'month', label: t('filters.thisMonth') },
-    { key: 'last30', label: t('filters.last30') },
-  ] as const;
+  const presetLabels: Record<Preset, string> = {
+    today: t('filters.today'),
+    week: t('filters.thisWeek'),
+    month: t('filters.thisMonth'),
+    last30: t('filters.last30'),
+  };
 
   return (
     <BentoBottomSheet visible={visible} onClose={onClose} snapPoints={snapPoints} keyboardBehavior="interactive">
@@ -210,43 +231,43 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
           </FilterSection>
 
           <FilterSection title={t('filters.dateRange')}>
-            {presets.map((preset) => (
-              <Chip key={preset.key} label={preset.label} onPress={() => applyPreset(preset.key)} on="surface" />
-            ))}
-          </FilterSection>
-          <ListGroup style={styles.group}>
-            {local.dateRange ? (
-              <ListItem icon={Calendar03Icon} iconColor={colors.primaryInk} title={t('filters.from')} value={fmt(local.dateRange.startDate)} onPress={() => setShowStart(true)} />
-            ) : null}
-            {local.dateRange ? (
-              <ListItem
-                icon={Calendar03Icon}
-                iconColor={colors.primaryInk}
-                title={t('filters.to')}
-                value={fmt(local.dateRange.endDate)}
-                onPress={() => setShowEnd(true)}
-                trailing={<IconButton icon={CancelCircleIcon} variant="ghost" size="sm" onPress={clearDateRange} accessibilityLabel={t('filters.reset')} />}
+            {PRESETS.map((preset) => (
+              <Chip
+                key={preset}
+                label={presetLabels[preset]}
+                isActive={activePreset === preset}
+                // Tapping the active preset again clears the range.
+                onPress={() => (activePreset === preset ? clearDateRange() : applyPreset(preset))}
+                on="surface"
               />
-            ) : (
-              <ListItem icon={Calendar03Icon} iconColor={colors.primaryInk} title={t('filters.setDateRange')} onPress={() => setShowStart(true)} />
-            )}
-          </ListGroup>
-
-          <Text variant="label" tone="muted" style={styles.sectionTitle}>
-            {t('filters.amount')}
-          </Text>
-          <ListGroup insetDividers={false} style={styles.group}>
-            <FormField label={t('filters.min')} value={minAmt} onChangeText={setMinAmt} keyboardType="decimal-pad" placeholder="0.00" returnKeyType="done" />
-            <FormField
-              label={t('filters.max')}
-              value={maxAmt}
-              onChangeText={setMaxAmt}
-              keyboardType="decimal-pad"
-              placeholder={t('filters.any')}
-              returnKeyType="done"
-              error={amountError ?? undefined}
+            ))}
+            <Chip
+              label={customRange ? `${fmt(customRange.startDate)} – ${fmt(customRange.endDate)}` : t('filters.setDateRange')}
+              icon={Calendar03Icon}
+              isActive={!!customRange}
+              onPress={() => setShowStart(true)}
+              on="surface"
             />
-          </ListGroup>
+            {customRange ? (
+              <IconButton icon={CancelCircleIcon} variant="ghost" size="sm" onPress={clearDateRange} accessibilityLabel={t('filters.reset')} />
+            ) : null}
+          </FilterSection>
+
+          <FilterSection title={t('filters.amount')}>
+            <View style={styles.amountRow}>
+              <ListGroup insetDividers={false} style={styles.amountField}>
+                <FormField label={t('filters.min')} value={minAmt} onChangeText={setMinAmt} keyboardType="decimal-pad" placeholder="0" returnKeyType="done" />
+              </ListGroup>
+              <ListGroup insetDividers={false} style={styles.amountField}>
+                <FormField label={t('filters.max')} value={maxAmt} onChangeText={setMaxAmt} keyboardType="decimal-pad" placeholder={t('filters.any')} returnKeyType="done" />
+              </ListGroup>
+            </View>
+            {amountError ? (
+              <Text variant="caption" tone="danger" style={styles.amountError}>
+                {amountError}
+              </Text>
+            ) : null}
+          </FilterSection>
 
           {accounts.length > 0 ? (
             <FilterSection title={t('filters.accounts')}>
@@ -328,8 +349,8 @@ const createStyles = ({ colors, spacing, radius, layout, alpha }: ThemeContextTy
   StyleSheet.create({
     fill: { flex: 1 },
     scroll: { paddingHorizontal: layout.screenPadding, paddingBottom: spacing('8') },
-    // Rows share the sheet's surface colour, so an outline marks the group's edge.
-    group: { marginTop: spacing('3'), borderRadius: radius('xl'), borderWidth: StyleSheet.hairlineWidth, borderColor: alpha(colors.text, 'soft') },
-    sectionTitle: { marginTop: spacing('5'), marginLeft: spacing('1') },
+    amountRow: { flexDirection: 'row', gap: spacing('2'), width: '100%' },
+    amountField: { flex: 1, borderRadius: radius('xl'), borderWidth: StyleSheet.hairlineWidth, borderColor: alpha(colors.text, 'soft') },
+    amountError: { marginTop: spacing('2'), marginLeft: spacing('1'), width: '100%' },
     footer: { paddingHorizontal: layout.screenPadding, paddingVertical: spacing('3'), backgroundColor: colors.surface },
   });

@@ -37,7 +37,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
   const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
 
   const { data: account, isLoading } = useAccount(accountId);
-  const { data: transactions = [] } = useTransactions(RECENT_COUNT, { accountId });
+  const { data: transactions = [] } = useTransactions(RECENT_COUNT, { accountIds: [accountId] });
 
   if (isLoading) {
     return (

@@ -8,7 +8,6 @@ import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ConfirmDialog, EmptyState, Fab, IconButton, Screen, SkeletonScreen, Spinner } from '@/src/components/ui';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';
-import { AdvancedFilterService } from '@/src/features/filters/api/advanced-filters.service';
 import { AdvancedFilterBottomSheet } from '@/src/features/filters/components/AdvancedFilterBottomSheet';
 import { usePersons } from '@/src/features/persons/hooks/persons';
 import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
@@ -52,26 +51,21 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     clearFilter,
     resetFilters,
     basicFilters,
-    needsClientSide,
     activeFilterCount,
     isSortActive,
   } = useTransactionFilters({ accountId: paramToNumber(params.accountId), categoryId: paramToNumber(params.categoryId) });
 
   const txQuery = useInfiniteTransactions(basicFilters);
-  // The DB aggregate ignores client-side criteria (search, multi-select), so it's only valid —
-  // and only fetched — when there are none. Its cache key doesn't include those criteria either.
-  const { data: dbTotals } = useTransactionTotals(basicFilters, !needsClientSide);
+  // Every filter is applied in SQL, so these totals always cover exactly the filtered list.
+  const { data: dbTotals } = useTransactionTotals(basicFilters);
   const { data: accounts = [] } = useAccounts();
   const { data: categories = [] } = useCategories();
   const { data: persons = [] } = usePersons();
   const deleteTransaction = useDeleteTransaction();
 
-  const transactions = useMemo(
-    () => AdvancedFilterService.applyClientSide(txQuery.data?.pages.flat() ?? [], filters),
-    [txQuery.data?.pages, filters],
-  );
+  const transactions = useMemo(() => txQuery.data?.pages.flat() ?? [], [txQuery.data?.pages]);
   const sections = useMemo(() => groupByDay(transactions), [transactions]);
-  const summary = useTransactionSummary(transactions, needsClientSide ? undefined : dbTotals, profile.defaultCurrency);
+  const summary = useTransactionSummary(dbTotals, profile.defaultCurrency);
 
   const [showFilterSheet, setShowFilterSheet] = useState(false);
   const [showSortDialog, setShowSortDialog] = useState(false);

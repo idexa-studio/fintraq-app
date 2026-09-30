@@ -1,5 +1,6 @@
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { db } from '@/src/db/client';
+import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
 import { accounts, categories, payments } from '@/src/db/schema';
 import { getDaysAgoLocal, getStartOfMonthLocal } from '@/src/utils/date';
 import { formatCurrency } from '@/src/utils/format';
@@ -32,7 +33,7 @@ const getRangeSums = async (daysStart: number, daysEnd: number, currency: string
     })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(and(eq(accounts.currency, currency), sql`date(${payments.datetime}) >= ${startStr}`, sql`date(${payments.datetime}) < ${endStr}`));
+    .where(and(eq(accounts.currency, currency), sql`${PAYMENT_LOCAL_DAY} >= ${startStr}`, sql`${PAYMENT_LOCAL_DAY} < ${endStr}`));
   return { income: result?.income ?? 0, expense: result?.expense ?? 0 };
 };
 
@@ -114,16 +115,16 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
       .select({
         categoryId: payments.categoryId,
         name: categories.name,
-        thisWeek: sql<number>`SUM(CASE WHEN date(${payments.datetime}) >= ${getDaysAgoLocal(7)} THEN ${payments.amount} ELSE 0 END)`,
-        avgWeek: sql<number>`SUM(CASE WHEN date(${payments.datetime}) >= ${fourWeeksStart} AND date(${payments.datetime}) < ${getDaysAgoLocal(7)} THEN ${payments.amount} ELSE 0 END) / 3.0`,
+        thisWeek: sql<number>`SUM(CASE WHEN ${PAYMENT_LOCAL_DAY} >= ${getDaysAgoLocal(7)} THEN ${payments.amount} ELSE 0 END)`,
+        avgWeek: sql<number>`SUM(CASE WHEN ${PAYMENT_LOCAL_DAY} >= ${fourWeeksStart} AND ${PAYMENT_LOCAL_DAY} < ${getDaysAgoLocal(7)} THEN ${payments.amount} ELSE 0 END) / 3.0`,
       })
       .from(payments)
       .innerJoin(accounts, eq(payments.accountId, accounts.id))
       .innerJoin(categories, eq(payments.categoryId, categories.id))
-      .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR' as TransactionType), sql`date(${payments.datetime}) >= ${fourWeeksStart}`))
+      .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR' as TransactionType), sql`${PAYMENT_LOCAL_DAY} >= ${fourWeeksStart}`))
       .groupBy(payments.categoryId)
-      .having(sql`SUM(CASE WHEN date(${payments.datetime}) >= ${getDaysAgoLocal(7)} THEN ${payments.amount} ELSE 0 END) > 0`)
-      .orderBy(desc(sql`SUM(CASE WHEN date(${payments.datetime}) >= ${getDaysAgoLocal(7)} THEN ${payments.amount} ELSE 0 END)`))
+      .having(sql`SUM(CASE WHEN ${PAYMENT_LOCAL_DAY} >= ${getDaysAgoLocal(7)} THEN ${payments.amount} ELSE 0 END) > 0`)
+      .orderBy(desc(sql`SUM(CASE WHEN ${PAYMENT_LOCAL_DAY} >= ${getDaysAgoLocal(7)} THEN ${payments.amount} ELSE 0 END)`))
       .limit(5);
 
     for (const r of rows) {
@@ -188,7 +189,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
       })
       .from(payments)
       .innerJoin(accounts, eq(payments.accountId, accounts.id))
-      .where(and(eq(accounts.currency, currency), sql`date(${payments.datetime}) >= ${getStartOfMonthLocal()}`));
+      .where(and(eq(accounts.currency, currency), sql`${PAYMENT_LOCAL_DAY} >= ${getStartOfMonthLocal()}`));
 
     const net = (monthly?.income ?? 0) - (monthly?.expense ?? 0);
     if (net !== 0) {

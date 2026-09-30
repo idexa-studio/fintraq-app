@@ -1,5 +1,6 @@
 import { and, desc, eq, sql, sum } from 'drizzle-orm';
 import { db } from '@/src/db/client';
+import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
 import { accounts, payments, persons } from '@/src/db/schema';
 
 export type Person = typeof persons.$inferSelect;
@@ -135,7 +136,7 @@ export const getPersonBreakdown = async (
       and(
         eq(accounts.currency, currency),
         eq(payments.type, 'DR'),
-        sql`date(${payments.datetime}) >= ${cutoffStr}`,
+        sql`${PAYMENT_LOCAL_DAY} >= ${cutoffStr}`,
       )
     )
     .groupBy(persons.id)

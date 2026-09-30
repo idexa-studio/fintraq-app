@@ -241,8 +241,8 @@ const en = {
   filters: {
     activeCount: '{{count}} active',
     today: 'Today', thisWeek: 'This week', thisMonth: 'This month', last30: 'Last 30 days', categories: 'Categories', categoriesByType: 'Categories · matching type',
-    title: 'Filters', reset: 'Reset', type: 'Type', dateRange: 'Date range', from: 'From', to: 'To', setDateRange: 'Set date range', amount: 'Amount', min: 'Min', max: 'Max', any: 'Any',
-    accounts: 'Accounts', persons: 'Persons', apply: 'Apply filters', minLessThanMax: 'Min must be less than max',
+    title: 'Filters', reset: 'Reset', type: 'Type', dateRange: 'Date range', setDateRange: 'Set date range', amount: 'Amount', min: 'Min', max: 'Max', any: 'Any',
+    accounts: 'Accounts', persons: 'People', apply: 'Apply filters', minLessThanMax: 'Min must be less than max',
   },
   calendar: {
     months: { jan: 'Jan', feb: 'Feb', mar: 'Mar', apr: 'Apr', may: 'May', jun: 'Jun', jul: 'Jul', aug: 'Aug', sep: 'Sep', oct: 'Oct', nov: 'Nov', dec: 'Dec' },

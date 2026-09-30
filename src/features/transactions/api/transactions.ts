@@ -1,6 +1,7 @@
-import { SQL, and, asc, count, desc, eq, sql } from 'drizzle-orm';
+import { SQL, and, asc, count, desc, eq, inArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import { db } from '@/src/db/client';
+import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
 import { accounts, categories, payments, persons, loans } from '@/src/db/schema';
 import type { TransactionType } from '@/src/types';
 import { LoggerService } from '@/src/services/logger.service';
@@ -12,13 +13,21 @@ export type UpdatePayment = Omit<InsertPayment, 'id'>;
 
 export const PAGE_SIZE = 20;
 
+/**
+ * Everything the transaction list can filter by, all applied in SQL — so the list, its totals and
+ * its pagination always agree. Each list matches any of its values; an empty or missing list
+ * doesn't filter.
+ */
 export type TransactionFilters = {
-  type?: TransactionType;
-  accountId?: number;
-  categoryId?: number;
-  personId?: number;
-  startDate?: string; // ISO date YYYY-MM-DD
-  endDate?: string;   // ISO date YYYY-MM-DD
+  types?: TransactionType[];
+  /** Matches either side of a transfer, so an account's list includes money moved into it. */
+  accountIds?: number[];
+  categoryIds?: number[];
+  personIds?: number[];
+  /** Case-insensitive match on the note, category name or account name. */
+  search?: string;
+  startDate?: string; // local YYYY-MM-DD, inclusive
+  endDate?: string;   // local YYYY-MM-DD, inclusive
   minAmount?: number;
   maxAmount?: number;
   sortBy?: 'date' | 'amount';
@@ -115,18 +124,30 @@ export const TRANSACTION_LIST_SELECT = {
   updatedAt: payments.updatedAt,
 } as const;
 
+/** LIKE pattern for a literal substring: escapes the wildcards so "50%" matches "50%". */
+const containsPattern = (text: string): string => `%${text.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+
 const buildWhere = (filters: TransactionFilters): SQL | undefined => {
   const conditions: SQL[] = [];
-  if (filters.type) conditions.push(eq(payments.type, filters.type));
-  if (filters.accountId != null) {
-    conditions.push(
-      sql`(${eq(payments.accountId, filters.accountId)} OR ${payments.toAccountId} = ${filters.accountId})`,
-    );
+  if (filters.types?.length) conditions.push(inArray(payments.type, filters.types));
+  if (filters.accountIds?.length) {
+    const ids = filters.accountIds;
+    conditions.push(or(inArray(payments.accountId, ids), inArray(payments.toAccountId, ids))!);
   }
-  if (filters.categoryId != null) conditions.push(eq(payments.categoryId, filters.categoryId));
-  if (filters.personId != null) conditions.push(eq(payments.personId, filters.personId));
-  if (filters.startDate) conditions.push(sql`date(${payments.datetime}) >= ${filters.startDate}`);
-  if (filters.endDate) conditions.push(sql`date(${payments.datetime}) <= ${filters.endDate}`);
+  if (filters.categoryIds?.length) conditions.push(inArray(payments.categoryId, filters.categoryIds));
+  if (filters.personIds?.length) conditions.push(inArray(payments.personId, filters.personIds));
+  const search = filters.search?.trim();
+  if (search) {
+    const pattern = containsPattern(search);
+    // Subqueries rather than joins, so the same condition works for list, count and totals.
+    conditions.push(sql`(
+      ${payments.note} LIKE ${pattern} ESCAPE '\\'
+      OR ${payments.categoryId} IN (SELECT id FROM categories WHERE name LIKE ${pattern} ESCAPE '\\')
+      OR ${payments.accountId} IN (SELECT id FROM accounts WHERE name LIKE ${pattern} ESCAPE '\\')
+    )`);
+  }
+  if (filters.startDate) conditions.push(sql`${PAYMENT_LOCAL_DAY} >= ${filters.startDate}`);
+  if (filters.endDate) conditions.push(sql`${PAYMENT_LOCAL_DAY} <= ${filters.endDate}`);
   if (filters.minAmount != null) conditions.push(sql`${payments.amount} >= ${filters.minAmount}`);
   if (filters.maxAmount != null) conditions.push(sql`${payments.amount} <= ${filters.maxAmount}`);
   return conditions.length > 0 ? and(...conditions) : undefined;
