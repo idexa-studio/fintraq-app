@@ -14,6 +14,12 @@ const pickReminder = () => {
 export const CLOUD_BACKUP_NOTIFICATION_ID = 'cloud_backup_status';
 /** Android channel for daily and loan reminders (kept as 'default' so existing installs keep their settings). */
 export const REMINDERS_CHANNEL_ID = 'default';
+/**
+ * Status-bar icon for notifications posted through notify-kit: the drawable expo-notifications
+ * generates from app.json's notification icon. Without it Android shows the launcher icon, which
+ * renders as a solid blob in the status bar.
+ */
+const SMALL_ICON = 'notification_icon';
 const BACKUP_CHANNEL_ID = 'backup_status';
 
 let backupChannelPromise: Promise<unknown> | null = null;
@@ -156,6 +162,7 @@ export const NotificationService = {
         body: cleanStage,
         android: {
           channelId: BACKUP_CHANNEL_ID,
+          smallIcon: SMALL_ICON,
           ongoing: true,
           onlyAlertOnce: true,
           pressAction: { id: 'default' },
@@ -190,6 +197,7 @@ export const NotificationService = {
         body: i18n.t('notifications.backupCompleteBody'),
         android: {
           channelId: BACKUP_CHANNEL_ID,
+          smallIcon: SMALL_ICON,
           autoCancel: true,
           pressAction: { id: 'default' },
         },
@@ -211,6 +219,7 @@ export const NotificationService = {
         body: i18n.t('notifications.backupFailedBody'),
         android: {
           channelId: BACKUP_CHANNEL_ID,
+          smallIcon: SMALL_ICON,
           autoCancel: true,
           pressAction: { id: 'default' },
         },
@@ -233,6 +242,7 @@ export const NotificationService = {
         body: i18n.t('notifications.backupReconnectBody'),
         android: {
           channelId: BACKUP_CHANNEL_ID,
+          smallIcon: SMALL_ICON,
           autoCancel: true,
           pressAction: { id: 'default' },
         },

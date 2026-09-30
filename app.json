@@ -10,13 +10,18 @@
     "jsEngine": "hermes",
     "newArchEnabled": true,
     "notification": {
-      "icon": "./assets/images/android-icon-monochrome.png",
+      "icon": "./assets/images/notification-icon.png",
       "color": "#00824A",
       "iosDisplayInForeground": true
     },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "me.nafish.luno",
+      "icon": {
+        "light": "./assets/images/icon.png",
+        "dark": "./assets/images/icon-dark.png",
+        "tinted": "./assets/images/icon-tinted.png"
+      },
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "UIBackgroundModes": ["fetch", "processing"]
@@ -50,7 +55,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#F3F5EF",
           "dark": {
-            "backgroundColor": "#F3F5EF"
+            "image": "./assets/images/splash-dark.png",
+            "backgroundColor": "#131311"
           }
         }
       ],
@@ -59,7 +65,13 @@
       "expo-font",
       "expo-localization",
       "expo-iap",
-      "expo-notifications",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#00824A"
+        }
+      ],
       "expo-background-task",
       "react-native-notify-kit",
       "expo-system-ui",
