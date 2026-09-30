@@ -113,6 +113,12 @@ describe('buildRestorePlan', () => {
     expect(rowOf(plan, 'loans').due_notification_id).toBe('old-ids');
   });
 
+  it('restores the due reminder time, and leaves it null for backups made before it existed', () => {
+    expect(rowOf(buildRestorePlan(currentExport, NOW), 'loans').due_reminder_time).toBeNull();
+    const withTime = buildRestorePlan({ ...currentExport, loans: [{ ...currentExport.loans[0], dueReminderTime: '18:30' }] }, NOW);
+    expect(rowOf(withTime, 'loans').due_reminder_time).toBe('18:30');
+  });
+
   it('nulls references to rows missing from the backup (schema: on delete set null)', () => {
     const plan = buildRestorePlan(
       { ...currentExport, payments: [{ ...currentExport.payments[0], toAccountId: 99, personId: 98, loanId: 97 }], loans: [{ ...currentExport.loans[0], personId: 96 }] },

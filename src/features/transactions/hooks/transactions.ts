@@ -1,8 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/src/lib/query-keys';
-import { useSettings } from '@/src/providers/SettingsProvider';
-import { NotificationService } from '@/src/services/notification.service';
-import { invalidateLedger } from '@/src/utils/query';
+import { markLoggedToday } from '@/src/services/reminders/reminder-sync';
+import { afterLedgerWrite } from '@/src/lib/after-ledger-write';
 import * as api from '@/src/features/transactions/api/transactions';
 
 export const useTransactions = (limit: number = 20, filters: api.TransactionFilters = {}) => {
@@ -56,15 +55,13 @@ export const useTransactionDetail = (id?: number | null) => {
 
 export const useCreateTransaction = () => {
   const queryClient = useQueryClient();
-  const { profile } = useSettings();
 
   return useMutation({
     mutationFn: api.createTransaction,
-    onSuccess: () => {
-      if (profile.reminderEnabled) {
-        NotificationService.dismissToday(profile.reminderTime);
-      }
-      invalidateLedger(queryClient);
+    onSuccess: async () => {
+      // Logged today, so today's reminder is no longer needed; the sync below drops it.
+      await markLoggedToday();
+      afterLedgerWrite(queryClient);
     },
   });
 };
@@ -73,7 +70,7 @@ export const useDeleteTransaction = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.deleteTransaction,
-    onSuccess: () => invalidateLedger(queryClient),
+    onSuccess: () => afterLedgerWrite(queryClient),
   });
 };
 
@@ -82,6 +79,6 @@ export const useUpdateTransaction = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: api.UpdatePayment }) =>
       api.updateTransaction(id, data),
-    onSuccess: (_, { id }) => invalidateLedger(queryClient),
+    onSuccess: (_, { id }) => afterLedgerWrite(queryClient),
   });
 };

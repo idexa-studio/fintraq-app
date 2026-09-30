@@ -33,7 +33,7 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
   // Pre-activate due reminder whenever loan has a due date
   const [dueEnabled, setDueEnabled] = useState(!!loan.dueDate);
   const [dueDaysBefore, setDueDaysBefore] = useState(loan.dueReminderDaysBefore ?? 1);
-  const [dueTime, setDueTime] = useState(loan.emiReminderTime ?? '09:00');
+  const [dueTime, setDueTime] = useState(loan.dueReminderTime ?? loan.emiReminderTime ?? '09:00');
 
   // Auto-schedule due reminder on first open when loan has dueDate but reminder not yet persisted
   useEffect(() => {

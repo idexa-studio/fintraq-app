@@ -35,7 +35,7 @@ const mr: Translation = {
     dailyReminder: 'दैनिक स्मरणपत्र',
     reminderOff: 'व्यवहार नोंदवण्याची आठवण मिळवा',
     reminderOn: 'सुरू · {{time}}',
-    reminderTime: 'स्मरणपत्राची वेळ',
+    reminderTime: 'स्मरणपत्राची वेळ', exactAlarmTitle: 'स्मरणपत्रे उशिरा येऊ शकतात', exactAlarmMessage: 'वेळेवर मिळण्यासाठी “अलार्म आणि स्मरणपत्रे” यांना परवानगी द्या.', exactAlarmAction: 'परवानगी द्या',
     preferences: 'प्राधान्ये',
     defaultCurrency: 'डिफॉल्ट चलन',
     language: 'भाषा',

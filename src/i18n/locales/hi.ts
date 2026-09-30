@@ -35,7 +35,7 @@ const hi: Translation = {
     dailyReminder: 'रोज़ का रिमाइंडर',
     reminderOff: 'लेन-देन दर्ज करने का रिमाइंडर पाएँ',
     reminderOn: 'चालू · {{time}}',
-    reminderTime: 'रिमाइंडर समय',
+    reminderTime: 'रिमाइंडर समय', exactAlarmTitle: 'रिमाइंडर देर से आ सकते हैं', exactAlarmMessage: 'समय पर पाने के लिए “अलार्म और रिमाइंडर” की अनुमति दें।', exactAlarmAction: 'अनुमति दें',
     preferences: 'पसंद',
     defaultCurrency: 'डिफ़ॉल्ट मुद्रा',
     language: 'भाषा',

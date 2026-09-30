@@ -1,5 +1,5 @@
 import * as Notifications from 'expo-notifications';
-import notifee, { AndroidImportance as NotifeeAndroidImportance } from 'react-native-notify-kit';
+import notifee, { AndroidImportance as NotifeeAndroidImportance, AndroidNotificationSetting } from 'react-native-notify-kit';
 import { Platform } from 'react-native';
 import { LoggerService } from './logger.service';
 import i18n from '@/src/i18n';
@@ -12,6 +12,8 @@ const pickReminder = () => {
 };
 
 export const CLOUD_BACKUP_NOTIFICATION_ID = 'cloud_backup_status';
+/** Android channel for daily and loan reminders (kept as 'default' so existing installs keep their settings). */
+export const REMINDERS_CHANNEL_ID = 'default';
 const BACKUP_CHANNEL_ID = 'backup_status';
 
 let backupChannelPromise: Promise<unknown> | null = null;
@@ -62,7 +64,7 @@ export const NotificationService = {
 
     if (Platform.OS === 'android') {
       try {
-        await Notifications.setNotificationChannelAsync('default', {
+        await Notifications.setNotificationChannelAsync(REMINDERS_CHANNEL_ID, {
           name: i18n.t('notifications.channelReminders'),
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
@@ -101,85 +103,23 @@ export const NotificationService = {
   },
 
   /**
-   * scheduleDailyReminder: Schedules a repeating daily notification at the specified time.
-   * @param timeStr "HH:mm" format (e.g., "20:00")
+   * Whether Android lets the app fire reminders at the exact minute. Android 14+ turns this off
+   * for new installs; without it the OS may deliver reminders late to save battery.
    */
-  async scheduleDailyReminder(timeStr: string) {
-    const [hours, minutes] = timeStr.split(':').map(Number);
-
-    if (isNaN(hours) || isNaN(minutes)) {
-      LoggerService.warn('NOTIFICATION', 'Invalid reminder time format', timeStr);
-      return;
+  async hasExactAlarmAccess(): Promise<boolean> {
+    if (Platform.OS !== 'android') return true;
+    try {
+      const settings = await notifee.getNotificationSettings();
+      return settings.android.alarm !== AndroidNotificationSetting.DISABLED;
+    } catch {
+      return true;
     }
-
-    // Check if the exact same schedule is already in place — avoid cancel+reschedule race
-    const existing = await Notifications.getAllScheduledNotificationsAsync();
-    const alreadyScheduled = existing.some((n) => {
-      if (n.identifier !== 'daily_reminder') return false;
-      const t = n.trigger as { hour?: number; minute?: number; value?: { hour?: number; minute?: number } };
-      const h = t?.hour ?? t?.value?.hour;
-      const m = t?.minute ?? t?.value?.minute;
-      return h === hours && m === minutes;
-    });
-
-    if (alreadyScheduled) {
-      LoggerService.info('NOTIFICATION', `Daily reminder already scheduled for ${timeStr}, skipping`);
-      return;
-    }
-
-    // Cancel previous daily reminder trigger specifically without wiping other notifications
-    await Notifications.cancelScheduledNotificationAsync('daily_reminder').catch(() => {});
-
-    // Pick a random message from the pool
-    const message = pickReminder();
-
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: message.title,
-        body: message.body,
-        sound: true,
-        priority: Notifications.AndroidNotificationPriority.HIGH,
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.DAILY,
-        hour: hours,
-        minute: minutes,
-      },
-      identifier: 'daily_reminder',
-    });
-
-    LoggerService.info('NOTIFICATION', `Daily reminder scheduled for ${timeStr}`);
   },
 
-  /**
-   * dismissToday: Skips any pending reminders for today and resumes the cycle tomorrow.
-   * Useful when the user has already recorded their transactions for the day.
-   */
-  async dismissToday(timeStr: string) {
-    // Cancel the current daily reminder trigger specifically without wiping other notifications
-    await Notifications.cancelScheduledNotificationAsync('daily_reminder').catch(() => {});
-
-    const [hours, minutes] = timeStr.split(':').map(Number);
-
-    // Re-schedule using DAILY — the OS will fire it at the same time tomorrow
-    // (a DAILY trigger that was just cancelled and rescheduled won't fire again
-    // until the next 24-hour cycle.)
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: i18n.t('notifications.stayConsistent'),
-        body: i18n.t('notifications.stayConsistentBody'),
-        sound: true,
-        priority: Notifications.AndroidNotificationPriority.HIGH,
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.DAILY,
-        hour: hours,
-        minute: minutes,
-      },
-      identifier: 'daily_reminder',
-    });
-
-    LoggerService.info('NOTIFICATION', `Reminder dismissed for today, resuming tomorrow at ${timeStr}`);
+  /** Opens Android's "Alarms & reminders" access screen for the app (no-op below Android 12). */
+  async openExactAlarmSettings(): Promise<void> {
+    if (Platform.OS !== 'android') return;
+    await notifee.openAlarmPermissionSettings().catch(() => {});
   },
 
   /**
@@ -318,159 +258,5 @@ export const NotificationService = {
    */
   async cancelAllReminders() {
     await Notifications.cancelAllScheduledNotificationsAsync();
-  },
-
-  /**
-   * cancelByIdentifiers: Cancels specific notifications by ID without touching others.
-   */
-  async cancelByIdentifiers(ids: string[]) {
-    await Promise.all(ids.map(id => Notifications.cancelScheduledNotificationAsync(id)));
-  },
-
-  /**
-   * scheduleLoanEmiReminder: Schedules monthly EMI reminder for a loan.
-   * iOS: single repeating calendar trigger. Android: 6 individual monthly triggers.
-   * Returns array of scheduled notification identifiers (store on the loan record).
-   */
-  async scheduleLoanEmiReminder(
-    loanId: number,
-    day: number,
-    timeStr: string,
-    personName: string,
-    loanType: 'lend' | 'borrow',
-  ): Promise<string[]> {
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    if (isNaN(hours) || isNaN(minutes)) return [];
-
-    const title = loanType === 'lend' ? i18n.t('notifications.paymentIncoming') : i18n.t('notifications.emiDue');
-    const body = loanType === 'lend'
-      ? i18n.t('notifications.lendEmiBody', { name: personName })
-      : i18n.t('notifications.borrowEmiBody', { name: personName });
-
-    const ids: string[] = [];
-
-    if (Platform.OS === 'ios') {
-      const identifier = `loan_emi_${loanId}`;
-      await Notifications.scheduleNotificationAsync({
-        identifier,
-        content: { title, body, sound: true },
-        trigger: {
-          type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
-          day,
-          hour: hours,
-          minute: minutes,
-          repeats: true,
-        },
-      });
-      ids.push(identifier);
-    } else {
-      // Android: schedule next 6 months individually
-      const now = new Date();
-      for (let i = 0; i < 6; i++) {
-        const target = new Date(now.getFullYear(), now.getMonth() + i, day, hours, minutes, 0);
-        if (target <= now) continue;
-        const identifier = `loan_emi_${loanId}_${target.getFullYear()}_${target.getMonth()}`;
-        await Notifications.scheduleNotificationAsync({
-          identifier,
-          content: { title, body, sound: true },
-          trigger: {
-            type: Notifications.SchedulableTriggerInputTypes.DATE,
-            date: target,
-          },
-        });
-        ids.push(identifier);
-      }
-    }
-
-    return ids;
-  },
-
-  /**
-   * extendAndroidEmiReminders: On app launch (Android only), fills gaps in next 6-month
-   * notification window for loans with active EMI reminders.
-   */
-  async extendAndroidEmiReminders(
-    configs: {
-      loanId: number;
-      day: number;
-      timeStr: string;
-      personName: string;
-      loanType: 'lend' | 'borrow';
-      existingIds: string[];
-    }[],
-  ): Promise<Map<number, string[]>> {
-    if (Platform.OS !== 'android') return new Map();
-    const result = new Map<number, string[]>();
-
-    for (const cfg of configs) {
-      const [hours, minutes] = cfg.timeStr.split(':').map(Number);
-      if (isNaN(hours) || isNaN(minutes)) continue;
-
-      const title = cfg.loanType === 'lend' ? i18n.t('notifications.paymentIncoming') : i18n.t('notifications.emiDue');
-      const body = cfg.loanType === 'lend'
-        ? i18n.t('notifications.lendEmiBody', { name: cfg.personName })
-        : i18n.t('notifications.borrowEmiBody', { name: cfg.personName });
-
-      const now = new Date();
-      const newIds = [...cfg.existingIds];
-
-      for (let i = 0; i < 6; i++) {
-        const target = new Date(now.getFullYear(), now.getMonth() + i, cfg.day, hours, minutes, 0);
-        if (target <= now) continue;
-        const identifier = `loan_emi_${cfg.loanId}_${target.getFullYear()}_${target.getMonth()}`;
-        if (cfg.existingIds.includes(identifier)) continue;
-        await Notifications.scheduleNotificationAsync({
-          identifier,
-          content: { title, body, sound: true },
-          trigger: {
-            type: Notifications.SchedulableTriggerInputTypes.DATE,
-            date: target,
-          },
-        });
-        newIds.push(identifier);
-      }
-
-      result.set(cfg.loanId, newIds);
-    }
-
-    return result;
-  },
-
-  /**
-   * scheduleLoanDueReminder: Schedules a one-time reminder before loan due date.
-   * Returns the notification identifier.
-   */
-  async scheduleLoanDueReminder(
-    loanId: number,
-    dueDate: string,
-    daysBefore: number,
-    timeStr: string,
-    personName: string,
-    loanType: 'lend' | 'borrow',
-  ): Promise<string | null> {
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    if (isNaN(hours) || isNaN(minutes)) return null;
-
-    const due = new Date(dueDate);
-    const target = new Date(due.getFullYear(), due.getMonth(), due.getDate() - daysBefore, hours, minutes, 0);
-    if (target <= new Date()) return null;
-
-    const identifier = `loan_due_${loanId}`;
-    const dayLabel = daysBefore === 0 ? i18n.t('notifications.today') : daysBefore === 1 ? i18n.t('notifications.tomorrow') : i18n.t('notifications.inDays', { count: daysBefore });
-    const title = loanType === 'lend' ? i18n.t('notifications.loanDueSoon') : i18n.t('notifications.repaymentDueSoon');
-    const body = loanType === 'lend'
-      ? i18n.t('notifications.lendDueBody', { name: personName, when: dayLabel })
-      : i18n.t('notifications.borrowDueBody', { name: personName, when: dayLabel });
-
-    await Notifications.scheduleNotificationAsync({
-      identifier,
-      content: { title, body, sound: true },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.DATE,
-        date: target,
-      },
-    });
-
-    return identifier;
   },
 };

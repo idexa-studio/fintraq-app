@@ -95,6 +95,9 @@ export type LoanBackupRow = {
   due_reminder_enabled?: boolean | number | null;
   dueReminderDaysBefore?: number | null;
   due_reminder_days_before?: number | null;
+  /** Added with migration 0008; absent from older backups. */
+  dueReminderTime?: string | null;
+  due_reminder_time?: string | null;
   dueNotificationId?: string | null;
   due_notification_id?: string | null;
   dueNotificationIds?: string | null;
@@ -293,7 +296,7 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
       columns: [
         'id', 'person_id', 'type', 'principal', 'currency', 'account_id', 'category_id', 'due_date', 'note', 'status',
         'emi_reminder_enabled', 'emi_reminder_day', 'emi_reminder_time', 'emi_notification_ids',
-        'due_reminder_enabled', 'due_reminder_days_before', 'due_notification_id', 'created_at', 'updated_at',
+        'due_reminder_enabled', 'due_reminder_days_before', 'due_reminder_time', 'due_notification_id', 'created_at', 'updated_at',
       ],
       rows: loans.map((r) => [
         r.id,
@@ -312,6 +315,7 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
         orNull(r.emiNotificationIds ?? r.emi_notification_ids),
         toBooleanInt(r.dueReminderEnabled ?? r.due_reminder_enabled),
         orNull(r.dueReminderDaysBefore ?? r.due_reminder_days_before),
+        orNull(r.dueReminderTime ?? r.due_reminder_time),
         orNull(r.dueNotificationId ?? r.due_notification_id ?? r.dueNotificationIds ?? r.due_notification_ids),
         created(r),
         updated(r),

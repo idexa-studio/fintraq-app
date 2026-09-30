@@ -35,7 +35,7 @@ const pt: Translation = {
     dailyReminder: 'Lembrete diário',
     reminderOff: 'Receba um lembrete para registrar transações',
     reminderOn: 'Ativo · {{time}}',
-    reminderTime: 'Horário do lembrete',
+    reminderTime: 'Horário do lembrete', exactAlarmTitle: 'Os lembretes podem chegar atrasados', exactAlarmMessage: 'Permita “Alarmes e lembretes” para que cheguem na hora.', exactAlarmAction: 'Permitir',
     preferences: 'Preferências',
     defaultCurrency: 'Moeda padrão',
     language: 'Idioma',

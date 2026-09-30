@@ -35,7 +35,7 @@ const ja: Translation = {
     dailyReminder: '毎日のリマインダー',
     reminderOff: '取引の記録をお知らせします',
     reminderOn: 'オン · {{time}}',
-    reminderTime: 'リマインダーの時刻',
+    reminderTime: 'リマインダーの時刻', exactAlarmTitle: 'リマインダーが遅れて届く場合があります', exactAlarmMessage: '時間どおりに届くよう「アラームとリマインダー」を許可してください。', exactAlarmAction: '許可する',
     preferences: '環境設定',
     defaultCurrency: '標準の通貨',
     language: '言語',

@@ -33,7 +33,7 @@ const en = {
     dailyReminder: 'Daily reminder',
     reminderOff: 'Get a nudge to log transactions',
     reminderOn: 'On · {{time}}',
-    reminderTime: 'Reminder time',
+    reminderTime: 'Reminder time', exactAlarmTitle: 'Reminders may arrive late', exactAlarmMessage: 'Allow “Alarms & reminders” so they arrive right on time.', exactAlarmAction: 'Allow',
     preferences: 'Preferences',
     defaultCurrency: 'Default currency',
     language: 'Language',

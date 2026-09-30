@@ -5,6 +5,7 @@ import { StorageKeys } from '@/src/constants/keys';
 import { db } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import { useAppLock } from '@/src/providers/AppLockProvider';
+import { syncReminders } from '@/src/services/reminders/reminder-sync';
 import { BackupPreferences } from '@/src/services/backup/backup-preferences';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
 
@@ -19,6 +20,7 @@ const RESET_KEYS: readonly string[] = [
   StorageKeys.RECENT_SEARCHES,
   StorageKeys.UPSELL_DISMISSED_AT,
   StorageKeys.BACKUP_PROMPT_DISMISSED_AT,
+  StorageKeys.REMINDER_SKIPPED_DATE,
   StorageKeys.WALKTHROUGH_DASHBOARD,
   StorageKeys.WALKTHROUGH_CATEGORIES,
   StorageKeys.WALKTHROUGH_ANALYTICS,
@@ -51,5 +53,7 @@ export function useFactoryReset() {
     await AsyncStorage.multiRemove([...RESET_KEYS, ...BackupPreferences.allKeys()]);
     // A fresh install has no lock; keeping the old PIN would lock the user out of an empty app.
     await disableLock();
+    // With no loans and no profile left, the sync cancels every scheduled reminder.
+    await syncReminders();
   }, [queryClient, disableLock]);
 }
