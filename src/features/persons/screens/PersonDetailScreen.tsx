@@ -42,7 +42,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { profile } = useSettings();
 
-  const { data: transactions = [] } = useTransactions(RECENT_LIMIT, { personId });
+  const { data: transactions = [] } = useTransactions(RECENT_LIMIT, { personIds: [personId] });
   const { data: loans = [] } = useLoansByPerson(personId);
   const deletePerson = useDeletePerson();
   const [isDeleteVisible, setDeleteVisible] = useState(false);

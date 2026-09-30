@@ -24,6 +24,7 @@ import { repaymentType } from '@/src/features/transactions/utils/ledger';
 import type { AccountType } from '@/src/types';
 import { useTranslation } from 'react-i18next';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
+import { parseAmountInput } from '@/src/utils/amount';
 
 type Props = {
   mode: 'create' | 'edit';
@@ -32,12 +33,6 @@ type Props = {
   initialType?: TransactionType;
   /** Starting account for a new entry (e.g. opened from an account's screen). Ignored when editing. */
   initialAccountId?: number;
-};
-
-const parseAmount = (raw: string): number => {
-  const normalized = raw.replace(',', '.').replace(/[^0-9.]/g, '');
-  const parsed = Number.parseFloat(normalized);
-  return Number.isFinite(parsed) ? parsed : 0;
 };
 
 export const TransactionFormPage = React.memo(function TransactionFormPage({ mode, transactionId, initialType = 'DR', initialAccountId }: Props) {
@@ -142,7 +137,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
     }
   }, [filteredCategories, selectedCategoryId, isLoanLinked]);
 
-  const amountValue = React.useMemo(() => parseAmount(amountInput), [amountInput]);
+  const amountValue = React.useMemo(() => parseAmountInput(amountInput) ?? 0, [amountInput]);
 
   const selectedAccount = React.useMemo(
     () => accounts.find((a) => a.id === selectedAccountId) ?? null,

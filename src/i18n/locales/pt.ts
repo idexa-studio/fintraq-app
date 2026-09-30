@@ -243,7 +243,7 @@ const pt: Translation = {
   filters: {
     activeCount: '{{count}} ativos',
     today: 'Hoje', thisWeek: 'Esta semana', thisMonth: 'Este mês', last30: 'Últimos 30 dias', categories: 'Categorias', categoriesByType: 'Categorias · do tipo escolhido',
-    title: 'Filtros', reset: 'Redefinir', type: 'Tipo', dateRange: 'Período', from: 'De', to: 'Até', setDateRange: 'Definir período', amount: 'Valor', min: 'Mín.', max: 'Máx.', any: 'Qualquer',
+    title: 'Filtros', reset: 'Redefinir', type: 'Tipo', dateRange: 'Período', setDateRange: 'Definir período', amount: 'Valor', min: 'Mín.', max: 'Máx.', any: 'Qualquer',
     accounts: 'Contas', persons: 'Pessoas', apply: 'Aplicar filtros', minLessThanMax: 'O mínimo deve ser menor que o máximo',
   },
   calendar: {

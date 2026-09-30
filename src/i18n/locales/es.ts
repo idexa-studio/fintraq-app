@@ -243,7 +243,7 @@ const es: Translation = {
   filters: {
     activeCount: '{{count}} activos',
     today: 'Hoy', thisWeek: 'Esta semana', thisMonth: 'Este mes', last30: 'Últimos 30 días', categories: 'Categorías', categoriesByType: 'Categorías · según el tipo',
-    title: 'Filtros', reset: 'Restablecer', type: 'Tipo', dateRange: 'Rango de fechas', from: 'Desde', to: 'Hasta', setDateRange: 'Definir rango de fechas', amount: 'Importe', min: 'Mín.', max: 'Máx.', any: 'Cualquiera',
+    title: 'Filtros', reset: 'Restablecer', type: 'Tipo', dateRange: 'Rango de fechas', setDateRange: 'Definir rango de fechas', amount: 'Importe', min: 'Mín.', max: 'Máx.', any: 'Cualquiera',
     accounts: 'Cuentas', persons: 'Personas', apply: 'Aplicar filtros', minLessThanMax: 'El mínimo debe ser menor que el máximo',
   },
   calendar: {

@@ -1,5 +1,6 @@
 import type { TransactionType } from '@/src/types';
-import { TransactionFilters } from '@/src/features/transactions/api/transactions';
+import type { TransactionFilters } from '@/src/features/transactions/api/transactions';
+import { getLocalISOString } from '@/src/utils/date';
 
 export interface AdvancedFilters {
   // Date range
@@ -39,88 +40,32 @@ export const DEFAULT_ADVANCED_FILTERS: AdvancedFilters = {
   sortOrder: 'desc',
 };
 
-/** The fields client-side filtering reads — satisfied by TransactionListItem. */
-export type ClientFilterable = {
-  type: TransactionType;
-  accountId: number;
-  categoryId: number;
-  personId: number | null;
-  note: string;
-  category: { name: string };
-  account: { name: string };
-};
-
 export class AdvancedFilterService {
   /**
-   * Convert advanced filters to basic TransactionFilters for API
+   * The sheet's selections as SQL filters. Everything is expressed in the query, so the list, its
+   * totals and pagination always cover the same rows. Dates are local calendar days — the same
+   * days the list groups by.
    */
   static toBasicFilters(advanced: AdvancedFilters): TransactionFilters {
-    const basic: TransactionFilters = {};
-
-    // Type filter (use first if single, API only supports single)
-    if (advanced.types && advanced.types.length === 1) {
-      basic.type = advanced.types[0];
-    }
-
-    // Account filter (use first if single, API only supports single)
-    if (advanced.accountIds && advanced.accountIds.length === 1) {
-      basic.accountId = advanced.accountIds[0];
-    }
-
-    // Category filter (use first if single, API only supports single)
-    if (advanced.categoryIds && advanced.categoryIds.length === 1) {
-      basic.categoryId = advanced.categoryIds[0];
-    }
-
-    // Person filter (use first if single, API only supports single)
-    if (advanced.personIds && advanced.personIds.length === 1) {
-      basic.personId = advanced.personIds[0];
-    }
-
-    // Date range — always handled by DB (avoids client-side filtering for this common case)
-    if (advanced.dateRange) {
-      basic.startDate = advanced.dateRange.startDate.toISOString().split('T')[0];
-      basic.endDate = advanced.dateRange.endDate.toISOString().split('T')[0];
-    }
-
-    // Amount range — always handled by DB
-    if (advanced.amountRange) {
-      basic.minAmount = advanced.amountRange.min;
-      basic.maxAmount = advanced.amountRange.max;
-    }
-
-    // Always pass sort to DB — never sort 500+ items on the JS thread
-    basic.sortBy = advanced.sortBy;
-    basic.sortOrder = advanced.sortOrder;
-
-    return basic;
+    const nonEmpty = <T,>(values: T[] | undefined): T[] | undefined => (values && values.length > 0 ? values : undefined);
+    return {
+      types: nonEmpty(advanced.types),
+      accountIds: nonEmpty(advanced.accountIds),
+      categoryIds: nonEmpty(advanced.categoryIds),
+      personIds: nonEmpty(advanced.personIds),
+      search: advanced.searchQuery?.trim() || undefined,
+      startDate: advanced.dateRange ? getLocalISOString(advanced.dateRange.startDate) : undefined,
+      endDate: advanced.dateRange ? getLocalISOString(advanced.dateRange.endDate) : undefined,
+      minAmount: advanced.amountRange?.min,
+      maxAmount: advanced.amountRange?.max,
+      sortBy: advanced.sortBy,
+      sortOrder: advanced.sortOrder,
+    };
   }
-  
-  /**
-   * Check if advanced filters have multi-select that requires client-side filtering
-   */
-  static requiresClientSideFiltering(advanced: AdvancedFilters): boolean {
-    // Only multi-select beyond what DB supports requires client-side work.
-    // Date range, amount range, single-select fields all go to DB now.
-    const hasMultipleTypes = (advanced.types?.length || 0) > 1;
-    const hasMultipleAccounts = (advanced.accountIds?.length || 0) > 1;
-    const hasMultipleCategories = (advanced.categoryIds?.length || 0) > 1;
-    const hasMultiplePersons = (advanced.personIds?.length || 0) > 1;
-    const hasSearchQuery = !!advanced.searchQuery?.trim();
 
-    return hasMultipleTypes ||
-           hasMultipleAccounts ||
-           hasMultipleCategories ||
-           hasMultiplePersons ||
-           hasSearchQuery;
-  }
-  
-  /**
-   * Count active filters
-   */
+  /** How many filter groups are in use (a group with several values counts once). */
   static countActiveFilters(advanced: AdvancedFilters): number {
     let count = 0;
-    
     if (advanced.dateRange) count++;
     if (advanced.accountIds && advanced.accountIds.length > 0) count++;
     if (advanced.categoryIds && advanced.categoryIds.length > 0) count++;
@@ -128,35 +73,11 @@ export class AdvancedFilterService {
     if (advanced.types && advanced.types.length > 0) count++;
     if (advanced.amountRange && (advanced.amountRange.min !== undefined || advanced.amountRange.max !== undefined)) count++;
     if (advanced.searchQuery?.trim()) count++;
-    
     return count;
   }
-  
+
   /** Anything other than the default newest-first order. */
   static isSortActive(advanced: AdvancedFilters): boolean {
     return advanced.sortBy !== DEFAULT_ADVANCED_FILTERS.sortBy || advanced.sortOrder !== DEFAULT_ADVANCED_FILTERS.sortOrder;
-  }
-
-  /**
-   * Applies the criteria the DB query can't express (multi-select, text search) to rows that
-   * are already sorted and paginated. Never sorts — order comes from the DB.
-   */
-  static applyClientSide<T extends ClientFilterable>(items: readonly T[], advanced: AdvancedFilters): T[] {
-    if (!this.requiresClientSideFiltering(advanced)) return [...items];
-
-    const { types, accountIds, categoryIds, personIds } = advanced;
-    const query = advanced.searchQuery?.trim().toLowerCase();
-
-    return items.filter((tx) => {
-      if (types?.length && !types.includes(tx.type)) return false;
-      if (accountIds?.length && !accountIds.includes(tx.accountId)) return false;
-      if (categoryIds?.length && !categoryIds.includes(tx.categoryId)) return false;
-      if (personIds?.length && (!tx.personId || !personIds.includes(tx.personId))) return false;
-      if (query) {
-        const haystack = [tx.note, tx.category.name, tx.account.name];
-        if (!haystack.some((field) => field.toLowerCase().includes(query))) return false;
-      }
-      return true;
-    });
   }
 }

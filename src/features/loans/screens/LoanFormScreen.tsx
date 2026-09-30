@@ -16,17 +16,11 @@ import { TransactionAmountInput } from '@/src/features/transactions/components/T
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { FREE_LOAN_LIMIT } from '@/src/constants/iap';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex, formatDate } from '@/src/utils/format';
+import { colorNumberToHex, formatDate, parseAmount } from '@/src/utils/format';
 import { toErrorMessage } from '@/src/utils/errors';
 import { useCreateLoan, useLoansCount } from '@/src/features/loans/hooks/loans';
 import { Coins02Icon, HandshakeIcon, Money01Icon } from '@hugeicons/core-free-icons';
 import { useTranslation } from 'react-i18next';
-
-
-const parseAmount = (raw: string) => {
-  const n = parseFloat(raw.replace(',', '.').replace(/[^0-9.]/g, ''));
-  return isFinite(n) ? n : 0;
-};
 
 export const LoanFormScreen = React.memo(function LoanFormScreen() {
   const router = useRouter();

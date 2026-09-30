@@ -29,7 +29,6 @@ export function useTransactionFilters(initial: { accountId: number | null; categ
   const derived = useMemo(
     () => ({
       basicFilters: AdvancedFilterService.toBasicFilters(filters),
-      needsClientSide: AdvancedFilterService.requiresClientSideFiltering(filters),
       activeFilterCount: AdvancedFilterService.countActiveFilters(filters),
       isSortActive: AdvancedFilterService.isSortActive(filters),
     }),

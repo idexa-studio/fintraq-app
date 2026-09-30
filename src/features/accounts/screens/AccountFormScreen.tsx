@@ -9,6 +9,7 @@ import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { AnalyticsService } from '@/src/services/analytics';
 import type { AccountType } from '@/src/types';
+import { parseAmountInput } from '@/src/utils/amount';
 import { colorNumberToHex, parseAmount, toDbColor } from '@/src/utils/format';
 import { ACCOUNT_TYPE_ICON_MAP, resolveAccountTypeIcon } from '@/src/utils/icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -270,7 +271,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
           name="balance"
           rules={{
             validate: (v) =>
-              !v.trim() || (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) || t('forms.invalidAmount'),
+              !v.trim() || (!v.trim().startsWith('-') && parseAmountInput(v) !== null) || t('forms.invalidAmount'),
           }}
           render={({ field }) => (
             <FormField

@@ -1,5 +1,6 @@
 import { desc, sql } from 'drizzle-orm';
 import { db } from '@/src/db/client';
+import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
 import { payments } from '@/src/db/schema';
 import { getDaysAgoLocal, getLocalISOString } from '@/src/utils/date';
 
@@ -17,12 +18,12 @@ export async function getCurrentStreak(): Promise<number> {
   // Get unique local dates where payments occurred
   const allDates = await db
     .select({
-      date: sql<string>`date(${payments.datetime})`
+      date: PAYMENT_LOCAL_DAY
     })
     .from(payments)
-    .where(sql`date(${payments.datetime}) >= ${ninetyDaysAgo}`)
-    .groupBy(sql`date(${payments.datetime})`)
-    .orderBy(desc(sql`date(${payments.datetime})`));
+    .where(sql`${PAYMENT_LOCAL_DAY} >= ${ninetyDaysAgo}`)
+    .groupBy(PAYMENT_LOCAL_DAY)
+    .orderBy(desc(PAYMENT_LOCAL_DAY));
 
   if (allDates.length === 0) return 0;
 
