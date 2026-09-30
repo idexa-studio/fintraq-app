@@ -174,7 +174,7 @@ export async function seedDummyData() {
     }
 
     // If user's default currency isn't one of the targets, also seed 2 accounts for it
-    if (!TARGET_CURRENCIES.includes(userDefaultCurrency as any)) {
+    if (!(TARGET_CURRENCIES as readonly string[]).includes(userDefaultCurrency)) {
       const existing = existingCountByCurrency[userDefaultCurrency] ?? 0;
       if (existing < 2) {
         // Seed a generic second account for their currency
@@ -207,7 +207,7 @@ export async function seedDummyData() {
         now,
       };
 
-      const txs: any[] = [];
+      const txs: (typeof payments.$inferInsert)[] = [];
       for (let m = 0; m < 12; m++) {
         const isCurrentMonth = m === 0;
         const monthDate = new Date(now.getFullYear(), now.getMonth() - m, 1);
@@ -233,7 +233,7 @@ export async function seedDummyData() {
 
     if (transferCats.length > 0) {
       const transferCat = transferCats[0];
-      const transferTxs: any[] = [];
+      const transferTxs: (typeof payments.$inferInsert & { toAccountId: number })[] = [];
 
       // Group by currency, build consecutive pairs [0→1, 1→2, ...]
       const byCurrency: Record<string, typeof allAccounts> = {};

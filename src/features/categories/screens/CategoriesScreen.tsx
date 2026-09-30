@@ -11,6 +11,7 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import { toErrorMessage } from '@/src/utils/errors';
 
 type TypeFilter = 'DR' | 'CR' | 'TR';
 
@@ -137,10 +138,10 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
               try {
                 await deleteCategory(selectedCategory.id);
                 setSelectedCategory(null);
-              } catch (e: any) {
+              } catch (e) {
                 showAlert({
                   title: t('categories.cannotDelete'),
-                  message: e.message || t('categories.deleteFailed'),
+                  message: toErrorMessage(e, t('categories.deleteFailed')),
                   type: 'error',
                 });
               }

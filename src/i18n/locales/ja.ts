@@ -290,7 +290,7 @@ const ja: Translation = {
     stagePreparing: 'ワークスペースのスナップショットを準備中...', stageUploading: 'バックアップをアップロード中...', stageUploadingDrive: 'Google Driveにアップロード中...', stageUploadingPct: 'Google Driveにアップロード中... {{pct}}%', stageFinalizing: 'バックアップを仕上げ中...', stageComplete: 'バックアップ完了！',
     stageLocating: 'バックアップを検索中...', stageDownloading: 'バックアップをダウンロード中...', stageDownloadingPct: 'バックアップをダウンロード中... {{pct}}%', stageRestoring: 'データを復元中...', stageRestoreComplete: '復元完了！',
     errConnect: 'Googleアカウントに接続できませんでした。', errDisconnect: 'Googleアカウントの接続を解除できませんでした。', errInProgress: 'バックアップまたは復元がすでに実行中です。', errSignInBackup: 'バックアップを行うにはGoogleアカウントにサインインしてください。',
-    errSessionExpired: 'Google Driveのセッションが期限切れです。もう一度サインインしてください。', errSaveDrive: 'Google Driveにバックアップを保存できませんでした。インターネット接続を確認してください。', errSignInRestore: 'データを復元するにはGoogleアカウントにサインインしてください。', errCorrupted: 'ダウンロードしたバックアップファイルが空か破損しています。',
+    errSessionExpired: 'Google Driveのセッションが期限切れです。もう一度サインインしてください。', errSaveDrive: 'Google Driveにバックアップを保存できませんでした。インターネット接続を確認してください。', errSignInRestore: 'データを復元するにはGoogleアカウントにサインインしてください。', errCorrupted: 'ダウンロードしたバックアップファイルが空か破損しています。', errRestoreIntegrity: 'このバックアップファイルは破損しているか不完全です。現在のデータを保護するため、復元を中止しました。', errRestoreEmpty: 'このバックアップは空です。現在のデータを保護するため、復元を中止しました。', errDrivePermission: 'クラウドバックアップには Google ドライブへのアクセス許可が必要です。許可してからもう一度お試しください。',
   },
   premium: {
     title: 'Fintraq Pro', lifetimeUpgrade: '買い切りアップグレード', heroTitle: '一度の支払いで、すべて。ずっと。',

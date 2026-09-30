@@ -127,10 +127,10 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         message: `Execution outcome: ${res.outcome.toUpperCase()}${res.outcome === 'skipped' ? ` (${res.reason})` : ''}${res.outcome === 'failed' && res.error instanceof Error ? `\n${res.error.message}` : ''}`,
         type: res.outcome === 'ran' ? 'success' : 'info',
       });
-    } catch (err: any) {
+    } catch (err) {
       showAlert({
         title: 'Dev Auto-Backup Error',
-        message: err?.message || 'Failed to execute auto-backup task',
+        message: toErrorMessage(err, 'Failed to execute auto-backup task'),
         type: 'error',
       });
     }

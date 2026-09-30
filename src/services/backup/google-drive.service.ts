@@ -3,6 +3,7 @@ import { GoogleSignin, isErrorWithCode, isSuccessResponse, statusCodes } from '@
 import googleServicesConfig from '@/google-services.json';
 import { GoogleDriveAuthError, GoogleDriveHttpError } from './google-drive.errors';
 import { DriveProgressCallback, driveFetch, driveXhrRequest, transferTimeoutMs } from './google-drive.http';
+import i18n from '@/src/i18n';
 import { LoggerService } from '@/src/services/logger.service';
 
 function mapFirebaseUser(user: FirebaseUser): GoogleUserAccount {
@@ -115,7 +116,7 @@ class GoogleDriveServiceClass {
       const scoped = await GoogleSignin.addScopes({ scopes: [DRIVE_APPDATA_SCOPE] });
       if (!scoped || !isSuccessResponse(scoped) || !scoped.data.scopes.includes(DRIVE_APPDATA_SCOPE)) {
         await GoogleSignin.signOut().catch(() => {});
-        throw new GoogleDriveAuthError('Google Drive permission is required for cloud backup.');
+        throw new GoogleDriveAuthError(i18n.t('backup.errDrivePermission'));
       }
     }
 

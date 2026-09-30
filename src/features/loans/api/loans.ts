@@ -7,6 +7,8 @@ import { applyBalanceDelta } from '@/src/features/transactions/api/transactions'
 
 export type Loan = typeof loans.$inferSelect;
 export type InsertLoan = typeof loans.$inferInsert;
+/** Create payload — the category may be resolved from the transaction or the loan default. */
+export type CreateLoanData = Omit<InsertLoan, 'categoryId'> & { categoryId?: number };
 export type UpdateLoanData = Partial<Omit<InsertLoan, 'id' | 'createdAt' | 'updatedAt'>>;
 
 export type LoanStatus = 'active' | 'repaid' | 'overdue';
@@ -270,7 +272,7 @@ export const resolveLoanCategory = async (): Promise<number> => {
 };
 
 export const createLoan = async (
-  data: InsertLoan,
+  data: CreateLoanData,
   txPayload: {
     categoryId?: number;
     note: string;

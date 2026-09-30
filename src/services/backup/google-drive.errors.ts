@@ -1,3 +1,5 @@
+import { getErrorCode } from '@/src/utils/errors';
+
 export class GoogleDriveTimeoutError extends Error {
   constructor(operation: string, timeoutMs: number) {
     super(`Google Drive request timed out after ${timeoutMs}ms during "${operation}". Check network connectivity to googleapis.com.`);
@@ -49,12 +51,12 @@ export class CloudBackupProRequiredError extends Error {
 
 /** Single source of truth for "does this error mean no backup exists". */
 export function isNoBackupError(error: unknown): boolean {
-  return error instanceof NoBackupFoundError || (error as any)?.code === 'NO_BACKUP_FOUND';
+  return error instanceof NoBackupFoundError || getErrorCode(error) === 'NO_BACKUP_FOUND';
 }
 
 /** Single source of truth for "does this error mean the caller isn't Pro". */
 export function isProRequiredError(error: unknown): boolean {
-  return error instanceof CloudBackupProRequiredError || (error as any)?.code === 'CLOUD_BACKUP_PRO_REQUIRED';
+  return error instanceof CloudBackupProRequiredError || getErrorCode(error) === 'CLOUD_BACKUP_PRO_REQUIRED';
 }
 
 
@@ -67,5 +69,5 @@ export class BackupInProgressError extends Error {
 }
 
 export function isAuthError(error: unknown): boolean {
-  return error instanceof GoogleDriveAuthError || (error as { name?: unknown } | null)?.name === 'GoogleDriveAuthError';
+  return error instanceof GoogleDriveAuthError || (error instanceof Error && error.name === 'GoogleDriveAuthError');
 }
