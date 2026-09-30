@@ -212,6 +212,7 @@ const en = {
     name: 'Name', email: 'Email', phone: 'Phone', role: 'Role', company: 'Company', holder: 'Holder', number: 'Number',
   },
   persons: {
+    noTransactionsIn: 'No transactions in {{currency}}', email: 'Email', phone: 'Phone',
     title: 'People', person: 'Person', edit: 'Edit person', new: 'New person', searchPlaceholder: 'Search persons...', none: 'No persons yet', noneHint: 'Add people to link with transactions',
     limitMessage: 'Free plan allows up to {{limit}} persons. Upgrade for unlimited.',
     personName: 'Person name', chooseColor: 'Choose accent color below', contactDetails: 'Contact details', work: 'Work (optional)',

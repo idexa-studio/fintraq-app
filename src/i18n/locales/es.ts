@@ -214,6 +214,7 @@ const es: Translation = {
     name: 'Nombre', email: 'Correo', phone: 'Teléfono', role: 'Cargo', company: 'Empresa', holder: 'Titular', number: 'Número',
   },
   persons: {
+    noTransactionsIn: 'No hay transacciones en {{currency}}', email: 'Correo', phone: 'Teléfono',
     title: 'Personas', person: 'Persona', edit: 'Editar persona', new: 'Nueva persona', searchPlaceholder: 'Buscar personas...', none: 'Aún no hay personas', noneHint: 'Añade personas para vincularlas a transacciones',
     limitMessage: 'El plan gratuito permite hasta {{limit}} personas. Mejora para tener personas ilimitadas.',
     personName: 'Nombre de la persona', chooseColor: 'Elige abajo un color de acento', contactDetails: 'Datos de contacto', work: 'Trabajo (opcional)',

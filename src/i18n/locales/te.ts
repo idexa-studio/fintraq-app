@@ -214,6 +214,7 @@ const te: Translation = {
     name: 'పేరు', email: 'ఇమెయిల్', phone: 'ఫోన్', role: 'హోదా', company: 'సంస్థ', holder: 'హోల్డర్', number: 'సంఖ్య',
   },
   persons: {
+    noTransactionsIn: '{{currency}} లో లావాదేవీలు లేవు', email: 'ఇమెయిల్', phone: 'ఫోన్',
     title: 'వ్యక్తులు', person: 'వ్యక్తి', edit: 'వ్యక్తిని సవరించు', new: 'కొత్త వ్యక్తి', searchPlaceholder: 'వ్యక్తులను వెతకండి...', none: 'ఇంకా వ్యక్తులు లేరు', noneHint: 'లావాదేవీలకు లింక్ చేయడానికి వ్యక్తులను జోడించండి',
     limitMessage: 'ఉచిత ప్లాన్‌లో {{limit}} మంది వ్యక్తుల వరకు అనుమతి. అపరిమితం కోసం అప్‌గ్రేడ్ చేయండి.',
     personName: 'వ్యక్తి పేరు', chooseColor: 'కింద ఒక యాక్సెంట్ రంగును ఎంచుకోండి', contactDetails: 'సంప్రదింపు వివరాలు', work: 'పని (ఐచ్ఛికం)',
