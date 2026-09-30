@@ -39,6 +39,17 @@ export const DEFAULT_ADVANCED_FILTERS: AdvancedFilters = {
   sortOrder: 'desc',
 };
 
+/** The fields client-side filtering reads — satisfied by TransactionListItem. */
+export type ClientFilterable = {
+  type: TransactionType;
+  accountId: number;
+  categoryId: number;
+  personId: number | null;
+  note: string;
+  category: { name: string };
+  account: { name: string };
+};
+
 export class AdvancedFilterService {
   /**
    * Convert advanced filters to basic TransactionFilters for API
@@ -121,44 +132,31 @@ export class AdvancedFilterService {
     return count;
   }
   
-  /**
-   * Check if any filters are active
-   */
-  static hasActiveFilters(advanced: AdvancedFilters): boolean {
-    return this.countActiveFilters(advanced) > 0;
+  /** Anything other than the default newest-first order. */
+  static isSortActive(advanced: AdvancedFilters): boolean {
+    return advanced.sortBy !== DEFAULT_ADVANCED_FILTERS.sortBy || advanced.sortOrder !== DEFAULT_ADVANCED_FILTERS.sortOrder;
   }
-  
+
   /**
-   * Get a summary string of active filters
+   * Applies the criteria the DB query can't express (multi-select, text search) to rows that
+   * are already sorted and paginated. Never sorts — order comes from the DB.
    */
-  static getFilterSummary(advanced: AdvancedFilters): string {
-    const parts: string[] = [];
-    
-    if (advanced.dateRange) {
-      parts.push('Date range');
-    }
-    
-    if (advanced.accountIds && advanced.accountIds.length > 0) {
-      parts.push(`${advanced.accountIds.length} account${advanced.accountIds.length > 1 ? 's' : ''}`);
-    }
-    
-    if (advanced.categoryIds && advanced.categoryIds.length > 0) {
-      parts.push(`${advanced.categoryIds.length} categor${advanced.categoryIds.length > 1 ? 'ies' : 'y'}`);
-    }
+  static applyClientSide<T extends ClientFilterable>(items: readonly T[], advanced: AdvancedFilters): T[] {
+    if (!this.requiresClientSideFiltering(advanced)) return [...items];
 
-    if (advanced.personIds && advanced.personIds.length > 0) {
-      parts.push(`${advanced.personIds.length} person${advanced.personIds.length > 1 ? 's' : ''}`);
-    }
+    const { types, accountIds, categoryIds, personIds } = advanced;
+    const query = advanced.searchQuery?.trim().toLowerCase();
 
-    if (advanced.types && advanced.types.length > 0) {
-      const typeLabels = advanced.types.map(t => t === 'CR' ? 'Income' : t === 'DR' ? 'Expense' : 'Transfer');
-      parts.push(typeLabels.join(' & '));
-    }
-    
-    if (advanced.searchQuery?.trim()) {
-      parts.push('Search');
-    }
-    
-    return parts.join(', ') || 'No filters';
+    return items.filter((tx) => {
+      if (types?.length && !types.includes(tx.type)) return false;
+      if (accountIds?.length && !accountIds.includes(tx.accountId)) return false;
+      if (categoryIds?.length && !categoryIds.includes(tx.categoryId)) return false;
+      if (personIds?.length && (!tx.personId || !personIds.includes(tx.personId))) return false;
+      if (query) {
+        const haystack = [tx.note, tx.category.name, tx.account.name];
+        if (!haystack.some((field) => field.toLowerCase().includes(query))) return false;
+      }
+      return true;
+    });
   }
 }
