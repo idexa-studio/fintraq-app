@@ -101,6 +101,7 @@ const id: Translation = {
   },
   system: { migrationError: 'Gagal memuat migrasi basis data', initializingDatabase: 'Menginisialisasi basis data...' },
   accounts: {
+    netWorth: 'Kekayaan bersih', assets: 'Aset', debts: 'Utang',
     title: 'Akun', account: 'Akun', edit: 'Ubah', delete: 'Hapus', removeTransactions: 'Hapus semua transaksi terlebih dahulu',
     cannotDelete: 'Tidak dapat menghapus akun', deleteFailed: 'Gagal menghapus akun.', availableBalance: 'Saldo tersedia', totalIn: 'Total masuk', totalOut: 'Total keluar',
     none: 'Belum ada akun', deleteTitle: 'Hapus akun', deleteMessage: 'Hapus "{{name}}"? Tindakan ini tidak dapat dibatalkan.',

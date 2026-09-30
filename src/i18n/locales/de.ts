@@ -101,6 +101,7 @@ const de: Translation = {
   },
   system: { migrationError: 'Fehler beim Laden der Datenbankmigrationen', initializingDatabase: 'Datenbank wird initialisiert...' },
   accounts: {
+    netWorth: 'Nettovermögen', assets: 'Guthaben', debts: 'Schulden',
     title: 'Konten', account: 'Konto', edit: 'Bearbeiten', delete: 'Löschen', removeTransactions: 'Entferne zuerst alle Transaktionen',
     cannotDelete: 'Konto kann nicht gelöscht werden', deleteFailed: 'Konto konnte nicht gelöscht werden.', availableBalance: 'Verfügbares Guthaben', totalIn: 'Einnahmen gesamt', totalOut: 'Ausgaben gesamt',
     none: 'Noch keine Konten', deleteTitle: 'Konto löschen', deleteMessage: '„{{name}}“ löschen? Das kann nicht rückgängig gemacht werden.',

@@ -101,6 +101,7 @@ const pt: Translation = {
   },
   system: { migrationError: 'Erro ao carregar as migrações do banco de dados', initializingDatabase: 'Inicializando o banco de dados...' },
   accounts: {
+    netWorth: 'Patrimônio líquido', assets: 'Ativos', debts: 'Dívidas',
     title: 'Contas', account: 'Conta', edit: 'Editar', delete: 'Excluir', removeTransactions: 'Remova todas as transações primeiro',
     cannotDelete: 'Não é possível excluir a conta', deleteFailed: 'Falha ao excluir a conta.', availableBalance: 'Saldo disponível', totalIn: 'Total de entradas', totalOut: 'Total de saídas',
     none: 'Ainda não há contas', deleteTitle: 'Excluir conta', deleteMessage: 'Excluir "{{name}}"? Essa ação não pode ser desfeita.',

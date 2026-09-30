@@ -99,6 +99,7 @@ const en = {
   },
   system: { migrationError: 'Error loading database migrations', initializingDatabase: 'Initializing database...' },
   accounts: {
+    netWorth: 'Net worth', assets: 'Assets', debts: 'Debts',
     title: 'Accounts', account: 'Account', edit: 'Edit', delete: 'Delete', removeTransactions: 'Remove all transactions first',
     cannotDelete: 'Cannot delete account', deleteFailed: 'Failed to delete account.', availableBalance: 'Available balance', totalIn: 'Total in', totalOut: 'Total out',
     none: 'No accounts yet', deleteTitle: 'Delete account', deleteMessage: 'Delete "{{name}}"? This action cannot be undone.',

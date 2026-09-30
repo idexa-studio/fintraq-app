@@ -101,6 +101,7 @@ const ja: Translation = {
   },
   system: { migrationError: 'データベースの移行の読み込みでエラーが発生しました', initializingDatabase: 'データベースを初期化中...' },
   accounts: {
+    netWorth: '純資産', assets: '資産', debts: '負債',
     title: '口座', account: '口座', edit: '編集', delete: '削除', removeTransactions: '先にすべての取引を削除してください',
     cannotDelete: '口座を削除できません', deleteFailed: '口座を削除できませんでした。', availableBalance: '利用可能残高', totalIn: '入金合計', totalOut: '出金合計',
     none: '口座はまだありません', deleteTitle: '口座を削除', deleteMessage: '「{{name}}」を削除しますか？この操作は元に戻せません。',

@@ -101,6 +101,7 @@ const fr: Translation = {
   },
   system: { migrationError: 'Erreur de chargement des migrations de la base de données', initializingDatabase: 'Initialisation de la base de données...' },
   accounts: {
+    netWorth: 'Valeur nette', assets: 'Actifs', debts: 'Dettes',
     title: 'Comptes', account: 'Compte', edit: 'Modifier', delete: 'Supprimer', removeTransactions: "Supprimez d'abord toutes les transactions",
     cannotDelete: 'Impossible de supprimer le compte', deleteFailed: 'Échec de la suppression du compte.', availableBalance: 'Solde disponible', totalIn: 'Total des entrées', totalOut: 'Total des sorties',
     none: 'Aucun compte pour le moment', deleteTitle: 'Supprimer le compte', deleteMessage: 'Supprimer « {{name}} » ? Cette action est irréversible.',
