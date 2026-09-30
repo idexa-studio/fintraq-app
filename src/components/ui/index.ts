@@ -36,6 +36,7 @@ export * from './ListItem';
 export * from './Badge';
 export * from './TrendBadge';
 export * from './StatTile';
+export * from './StatColumns';
 export * from './MoneyText';
 export * from './IconAvatar';
 export * from './PersonAvatar';

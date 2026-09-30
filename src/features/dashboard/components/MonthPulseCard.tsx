@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { BentoPressable, Icon, MoneyText, Skeleton, Text, TrendBadge } from '@/src/components/ui';
+import { Icon, MoneyText, Skeleton, StatColumn, StatColumns, Text, TrendBadge } from '@/src/components/ui';
 import { LockKeyIcon } from '@/src/components/ui/icons';
 import { useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
 import { buildMonthPulse } from '@/src/features/dashboard/utils/widgets';
@@ -32,11 +32,24 @@ export const MonthPulseCard = React.memo(function MonthPulseCard({ currency }: P
   const fill = Math.min(1, share ?? 0);
 
   // Per-day pace and the month-end projection are the Pro "Spending forecast".
-  const stats = [
-    { key: 'income', label: t('dashboard.income'), amount: pulse.income, type: 'CR' as const, pro: false },
-    { key: 'perDay', label: t('dashboard.pulsePerDay'), amount: pulse.dailyAverage, type: 'NONE' as const, pro: true },
-    { key: 'projected', label: t('dashboard.pulseProjected'), amount: pulse.projected, type: 'NONE' as const, pro: true },
+  const lockedValue = (
+    <View style={styles.locked}>
+      <Icon icon={LockKeyIcon} size={13} color={colors.primaryInk} />
+      <Text variant="label" color={colors.primaryInk}>
+        {t('premium.pro')}
+      </Text>
+    </View>
+  );
+  const proColumn = (key: string, label: string, amount: number): StatColumn =>
+    isPremium
+      ? { key, label, amount, currency }
+      : { key, label, content: lockedValue, onPress: () => openPaywall('forecast'), accessibilityLabel: `${label}, ${t('premium.gate.upgrade')}` };
+  const stats: StatColumn[] = [
+    { key: 'income', label: t('dashboard.income'), amount: pulse.income, currency, type: 'CR' },
+    proColumn('perDay', t('dashboard.pulsePerDay'), pulse.dailyAverage),
+    proColumn('projected', t('dashboard.pulseProjected'), pulse.projected),
   ];
+
 
   return (
     <View style={[styles.card, styles.margin]}>
@@ -75,43 +88,14 @@ export const MonthPulseCard = React.memo(function MonthPulseCard({ currency }: P
         </Text>
       ) : null}
 
-      <View style={styles.stats}>
-        {stats.map((stat, i) =>
-          stat.pro && !isPremium ? (
-            <BentoPressable
-              key={stat.key}
-              style={[styles.stat, i > 0 && styles.statDivider]}
-              onPress={() => openPaywall('forecast')}
-              accessibilityRole="button"
-              accessibilityLabel={`${stat.label}, ${t('premium.gate.upgrade')}`}
-            >
-              <Text variant="micro" tone="muted" numberOfLines={1}>
-                {stat.label}
-              </Text>
-              <View style={styles.locked}>
-                <Icon icon={LockKeyIcon} size={13} color={colors.primaryInk} />
-                <Text variant="label" color={colors.primaryInk}>
-                  {t('premium.pro')}
-                </Text>
-              </View>
-            </BentoPressable>
-          ) : (
-            <View key={stat.key} style={[styles.stat, i > 0 && styles.statDivider]}>
-              <Text variant="micro" tone="muted" numberOfLines={1}>
-                {stat.label}
-              </Text>
-              <MoneyText amount={stat.amount} currency={currency} type={stat.type} weight="semibold" compact style={styles.statValue} numberOfLines={1} />
-            </View>
-          ),
-        )}
-      </View>
+      <StatColumns columns={stats} />
     </View>
   );
 });
 
 const TRACK = 10;
 
-const createStyles = ({ colors, spacing, radius, layout, typography, alpha }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeContextType) =>
   StyleSheet.create({
     margin: { marginHorizontal: layout.screenPadding },
     card: {
@@ -141,18 +125,5 @@ const createStyles = ({ colors, spacing, radius, layout, typography, alpha }: Th
       marginLeft: -1,
       backgroundColor: colors.text,
     },
-    stats: {
-      flexDirection: 'row',
-      paddingTop: spacing('3'),
-      borderTopWidth: StyleSheet.hairlineWidth,
-      borderTopColor: alpha(colors.text, 'subtle'),
-    },
-    stat: { flex: 1, gap: spacing('0.5') },
-    statDivider: {
-      paddingLeft: spacing('3'),
-      borderLeftWidth: StyleSheet.hairlineWidth,
-      borderLeftColor: alpha(colors.text, 'subtle'),
-    },
-    statValue: typography.metrics.sm,
     locked: { flexDirection: 'row', alignItems: 'center', gap: spacing('1'), minHeight: 19 },
   });

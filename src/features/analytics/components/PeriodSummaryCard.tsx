@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { MoneyText, Text, TrendBadge } from '@/src/components/ui';
+import { MoneyText, StatColumn, StatColumns, Text } from '@/src/components/ui';
 import type { Totals } from '@/src/utils/analytics';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
@@ -17,9 +17,9 @@ export const PeriodSummaryCard = React.memo(function PeriodSummaryCard({ totals,
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const columns = [
-    { key: 'income', label: t('analytics.income'), amount: totals.income, type: 'CR' as const, delta: deltas.income, positiveIsGood: true },
-    { key: 'expense', label: t('analytics.expenses'), amount: totals.expense, type: 'DR' as const, delta: deltas.expense, positiveIsGood: false },
+  const columns: StatColumn[] = [
+    { key: 'income', label: t('analytics.income'), amount: totals.income, currency, type: 'CR', delta: deltas.income, positiveIsGood: true },
+    { key: 'expense', label: t('analytics.expenses'), amount: totals.expense, currency, type: 'DR', delta: deltas.expense, positiveIsGood: false },
   ];
 
   return (
@@ -38,32 +38,15 @@ export const PeriodSummaryCard = React.memo(function PeriodSummaryCard({ totals,
         minimumFontScale={0.6}
       />
       <View style={styles.columns}>
-        {columns.map((c, i) => (
-          <View key={c.key} style={[styles.column, i > 0 && styles.columnDivider]}>
-            <Text variant="micro" tone="muted">
-              {c.label}
-            </Text>
-            <MoneyText amount={c.amount} currency={currency} type={c.type} weight="semibold" compact style={styles.columnValue} numberOfLines={1} />
-            <TrendBadge delta={c.delta} positiveIsGood={c.positiveIsGood} />
-          </View>
-        ))}
+        <StatColumns columns={columns} />
       </View>
     </View>
   );
 });
 
-const createStyles = ({ colors, spacing, radius, typography, alpha }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({
     card: { backgroundColor: colors.surface, borderRadius: radius('xl'), padding: spacing('4'), gap: spacing('1') },
     net: { ...typography.metrics.xxxl },
-    columns: {
-      flexDirection: 'row',
-      marginTop: spacing('3'),
-      paddingTop: spacing('3'),
-      borderTopWidth: StyleSheet.hairlineWidth,
-      borderTopColor: alpha(colors.text, 'subtle'),
-    },
-    column: { flex: 1, gap: spacing('1') },
-    columnDivider: { paddingLeft: spacing('4'), borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: alpha(colors.text, 'subtle') },
-    columnValue: typography.metrics.lg,
+    columns: { marginTop: spacing('3') },
   });
