@@ -214,6 +214,7 @@ const bn: Translation = {
     name: 'নাম', email: 'ইমেইল', phone: 'ফোন', role: 'পদবি', company: 'প্রতিষ্ঠান', holder: 'ধারক', number: 'নম্বর',
   },
   persons: {
+    noTransactionsIn: '{{currency}}-এ কোনো লেনদেন নেই', email: 'ইমেল', phone: 'ফোন',
     title: 'ব্যক্তি', person: 'ব্যক্তি', edit: 'ব্যক্তি সম্পাদনা', new: 'নতুন ব্যক্তি', searchPlaceholder: 'ব্যক্তি খুঁজুন...', none: 'এখনও কোনো ব্যক্তি নেই', noneHint: 'লেনদেনের সঙ্গে যুক্ত করতে ব্যক্তি যোগ করুন',
     limitMessage: 'ফ্রি প্ল্যানে সর্বোচ্চ {{limit}} জন ব্যক্তি রাখা যায়। সীমাহীন করতে আপগ্রেড করুন।',
     personName: 'ব্যক্তির নাম', chooseColor: 'নিচে থেকে একটি অ্যাকসেন্ট রং বেছে নিন', contactDetails: 'যোগাযোগের তথ্য', work: 'কাজ (ঐচ্ছিক)',

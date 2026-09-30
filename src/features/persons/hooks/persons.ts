@@ -29,13 +29,6 @@ export const usePersonsCount = () =>
     queryFn: api.getPersonsCount,
   });
 
-export const useTransactionsByPerson = (personId: number | null) =>
-  useQuery({
-    queryKey: QUERY_KEYS.persons.txByPerson(personId ?? 0),
-    queryFn: () => api.getTransactionsByPerson(personId!),
-    enabled: personId !== null,
-  });
-
 export const useCreatePerson = () => {
   const queryClient = useQueryClient();
   return useMutation({

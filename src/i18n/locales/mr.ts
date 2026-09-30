@@ -214,6 +214,7 @@ const mr: Translation = {
     name: 'नाव', email: 'ईमेल', phone: 'फोन', role: 'पद', company: 'कंपनी', holder: 'धारक', number: 'क्रमांक',
   },
   persons: {
+    noTransactionsIn: '{{currency}} मध्ये व्यवहार नाहीत', email: 'ईमेल', phone: 'फोन',
     title: 'व्यक्ती', person: 'व्यक्ती', edit: 'व्यक्ती संपादित करा', new: 'नवीन व्यक्ती', searchPlaceholder: 'व्यक्ती शोधा...', none: 'अजून कोणतीही व्यक्ती नाही', noneHint: 'व्यवहारांशी जोडण्यासाठी व्यक्ती जोडा',
     limitMessage: 'मोफत योजनेत जास्तीत जास्त {{limit}} व्यक्ती जोडता येतात. अमर्यादित व्यक्तींसाठी अपग्रेड करा.',
     personName: 'व्यक्तीचे नाव', chooseColor: 'खाली अ‍ॅक्सेंट रंग निवडा', contactDetails: 'संपर्क तपशील', work: 'कामाचे (पर्यायी)',

@@ -1,412 +1,190 @@
-import { IconButton } from '@/src/components/ui/IconButton';
-import { Screen } from '@/src/components/ui/Screen';
-import { Text } from '@/src/components/ui/Text';
-import { SkeletonScreen } from '@/src/components/ui';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Icon } from '@/src/components/ui/Icon';
-import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
-import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { MoneyText } from '@/src/components/ui/MoneyText';
-import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
-import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
-import { usePersonWithStats, useTransactionsByPerson, useDeletePerson } from '@/src/features/persons/hooks/persons';
-import { useAccounts } from '@/src/features/accounts/hooks/accounts';
-import { useCategories } from '@/src/features/categories/hooks/categories';
-import { useLoansByPerson } from '@/src/features/loans/hooks/loans';
-import { LoanStatusBadge } from '@/src/features/loans/components/LoanStatusBadge';
-import type { LoanWithStats } from '@/src/features/loans/api/loans';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
 import { ArrowDown01Icon, ArrowUp01Icon, Call02Icon, Delete01Icon, Mail01Icon, PencilEdit01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
-import { format } from 'date-fns';
+import * as Linking from 'expo-linking';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Chip,
+  ConfirmDialog,
+  EmptyState,
+  IconAvatar,
+  IconButton,
+  ListGroup,
+  ListItem,
+  MoneyText,
+  PersonAvatar,
+  Screen,
+  SectionHeader,
+  SkeletonScreen,
+  StatTile,
+  Text,
+} from '@/src/components/ui';
+import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
+import { useLoansByPerson } from '@/src/features/loans/hooks/loans';
+import { useDeletePerson, usePersonWithStats } from '@/src/features/persons/hooks/persons';
+import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
+import { useTransactions } from '@/src/features/transactions/hooks/transactions';
+import { useSettings } from '@/src/providers/SettingsProvider';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex, formatDate } from '@/src/utils/format';
 
+const RECENT_LIMIT = 50;
 
+/** A person: who they are and how to reach them, money each way, open loans, then shared transactions. */
 export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const personId = Number(id);
   const router = useRouter();
   const theme = useTheme();
+  const { colors } = theme;
   const { t } = useTranslation();
-  const { colors, typography, spacing } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const { profile } = useSettings();
 
+  const { data: transactions = [] } = useTransactions(RECENT_LIMIT, { personId });
+  const { data: loans = [] } = useLoansByPerson(personId);
   const deletePerson = useDeletePerson();
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleteVisible, setDeleteVisible] = useState(false);
 
-  const { data: personLoans } = useLoansByPerson(personId);
-  const activeLoans = useMemo(() => (personLoans ?? []).filter(l => l.computedStatus !== 'repaid'), [personLoans]);
-
-  const handleLoanPress = useCallback((loan: LoanWithStats) => {
-    router.push(`/(main)/loans/${loan.id}`);
-  }, [router]);
-
-  const { data: txList } = useTransactionsByPerson(personId);
-  const { data: accounts } = useAccounts();
-  const { data: categories } = useCategories();
-
-  const availableCurrencies = useMemo(() => {
-    if (!txList || !accounts) return ['USD'];
-    const currencies = Array.from(new Set(
-      txList.map(tx => accounts.find(a => a.id === tx.accountId)?.currency).filter((c): c is string => !!c)
-    ));
-    return currencies.length > 0 ? currencies : ['USD'];
-  }, [txList, accounts]);
-
-  const [selectedCurrency, setSelectedCurrency] = useState<string>('');
-  const currency = selectedCurrency || (availableCurrencies[0] ?? 'USD');
+  const currencies = useMemo(() => {
+    const unique = Array.from(new Set(transactions.map((tx) => tx.account.currency)));
+    return sortCurrenciesWithDefault(unique.length > 0 ? unique : [profile.defaultCurrency || DEFAULT_CURRENCY], profile.defaultCurrency);
+  }, [transactions, profile.defaultCurrency]);
+  const [chosenCurrency, setCurrency] = useState<string | null>(null);
+  const currency = chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : currencies[0]!;
 
   const { data: person, isLoading } = usePersonWithStats(personId, currency);
+  const inCurrency = useMemo(() => transactions.filter((tx) => tx.account.currency === currency), [transactions, currency]);
+  const openLoans = useMemo(() => loans.filter((l) => l.computedStatus !== 'repaid'), [loans]);
 
-  const enrichedTx = useMemo(() => {
-    if (!txList || !accounts || !categories) return [];
-    return txList
-      .filter(tx => {
-        const account = accounts.find(a => a.id === tx.accountId);
-        return account?.currency === currency;
-      })
-      .map(tx => {
-        const account = accounts.find(a => a.id === tx.accountId);
-        const category = categories.find(c => c.id === tx.categoryId);
-        return {
-          id: tx.id,
-          amount: tx.amount,
-          type: tx.type,
-          datetime: tx.datetime,
-          note: tx.note,
-          account: {
-            name: account?.name ?? '',
-            currency: account?.currency ?? currency,
-            icon: account?.icon ?? 'building',
-            color: account?.color ?? 0,
-          },
-          category: {
-            name: category?.name ?? '',
-            icon: category?.icon ?? 'grid',
-            color: category?.color ?? 0,
-          },
-          toAccount: null,
-        };
-      });
-  }, [txList, accounts, categories, currency]);
-
-  const handleEdit = useCallback(() => {
-    router.push(`/(main)/persons/form?id=${personId}`);
-  }, [personId, router]);
-
-  const handleDeleteConfirm = useCallback(() => {
-    deletePerson.mutate(personId);
-    setShowDeleteConfirm(false);
+  const confirmDelete = useCallback(async () => {
+    await deletePerson.mutateAsync(personId);
     router.back();
-  }, [personId, deletePerson, router]);
-
-  const handleTxPress = useCallback((tx: { id: number }) => {
-    router.push(`/transactions/${tx.id}`);
-  }, [router]);
+  }, [deletePerson, personId, router]);
 
   if (isLoading || !person) {
     return (
-      <Screen header={{ title: t('persons.person'), showBack: true }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
+      <Screen header={{ title: t('persons.person'), showBack: true }} variant="fixed" edges={['top']}>
         <SkeletonScreen />
       </Screen>
     );
   }
 
-  const hex = colorNumberToHex(person.color);
+  const role = [person.designation, person.company].filter(Boolean).join(' · ');
 
   return (
-    <Screen header={{ title: person.name, showBack: true, rightAction:
+    <Screen
+      header={{
+        title: person.name,
+        showBack: true,
+        rightAction: (
           <View style={styles.headerActions}>
-            <IconButton icon={Delete01Icon} variant="danger" onPress={() => setShowDeleteConfirm(true)} accessibilityLabel={t('common.delete')} />
-            <IconButton icon={PencilEdit01Icon} onPress={handleEdit} accessibilityLabel={t('common.edit')} />
+            <IconButton icon={Delete01Icon} variant="danger" onPress={() => setDeleteVisible(true)} accessibilityLabel={t('common.delete')} />
+            <IconButton icon={PencilEdit01Icon} onPress={() => router.push(`/(main)/persons/form?id=${personId}`)} accessibilityLabel={t('common.edit')} />
           </View>
-         }} variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
-
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-
-        {/* Hero card */}
-        <View style={styles.heroCard}>
-          <View style={styles.heroTop}>
-            <PersonAvatar name={person.name} color={hex} size={60} variant="subtle" />
-            <View style={styles.heroInfo}>
-              <Text style={[styles.heroName, { fontFamily: typography.styles.profileName.fontFamily, color: colors.text }]}>
-                {person.name}
-              </Text>
-              {(person.designation || person.company) ? (
-                <Text style={[styles.heroRole, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                  {[person.designation, person.company].filter(Boolean).join(' · ')}
-                </Text>
-              ) : null}
-            </View>
-          </View>
-
-          {(person.email || person.phone) ? (
-            <View style={styles.contactRow}>
-              {person.email ? (
-                <View style={styles.contactChip}>
-                  <Icon icon={Mail01Icon} size={14} color={colors.textMuted} />
-                  <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
-                    {person.email}
-                  </Text>
-                </View>
-              ) : null}
-              {person.phone ? (
-                <View style={styles.contactChip}>
-                  <Icon icon={Call02Icon} size={14} color={colors.textMuted} />
-                  <Text style={[styles.contactText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-                    {person.phone}
-                  </Text>
-                </View>
-              ) : null}
-            </View>
+        ),
+      }}
+      variant="fixed"
+      edges={['top']}
+    >
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.hero}>
+          <PersonAvatar name={person.name} color={colorNumberToHex(person.color)} size={72} />
+          <Text variant="headline" align="center" numberOfLines={2}>
+            {person.name}
+          </Text>
+          {role ? (
+            <Text variant="callout" tone="muted" align="center">
+              {role}
+            </Text>
           ) : null}
         </View>
 
-        {/* Currency switcher — only when multiple currencies */}
-        {availableCurrencies.length > 1 && (
-          <View style={styles.currencyRow}>
-            {availableCurrencies.map(c => (
-              <BentoPressable
-                key={c}
-                style={[styles.currencyPill, c === currency && styles.currencyPillActive]}
-                onPress={() => setSelectedCurrency(c)}
-              >
-                <Text style={[styles.currencyPillText, c === currency && styles.currencyPillTextActive]}>
-                  {c}
-                </Text>
-              </BentoPressable>
-            ))}
-          </View>
-        )}
+        {person.email || person.phone ? (
+          <ListGroup>
+            {person.email ? (
+              <ListItem icon={Mail01Icon} iconColor={colors.info} title={person.email} subtitle={t('persons.email')} onPress={() => Linking.openURL(`mailto:${person.email}`)} />
+            ) : null}
+            {person.phone ? (
+              <ListItem icon={Call02Icon} iconColor={colors.success} title={person.phone} subtitle={t('persons.phone')} onPress={() => Linking.openURL(`tel:${person.phone}`)} />
+            ) : null}
+          </ListGroup>
+        ) : null}
 
-        {/* Stats */}
-        <View style={styles.statsRow}>
-          <View style={[styles.statTile, { backgroundColor: alpha(colors.danger, 'subtle') }]}>
-            <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.danger }]}>{t('persons.spent')}</Text>
-            <MoneyText amount={person.totalSpent} currency={currency} type="DR" weight="bold" compact style={styles.statValue} />
-          </View>
-          <View style={[styles.statTile, { backgroundColor: alpha(colors.success, 'subtle') }]}>
-            <Text style={[styles.statLabel, { fontFamily: typography.styles.sectionLabel.fontFamily, color: colors.success }]}>{t('persons.received')}</Text>
-            <MoneyText amount={person.totalReceived} currency={currency} type="CR" weight="bold" compact style={styles.statValue} />
-          </View>
+        {currencies.length > 1 ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.bleed} contentContainerStyle={styles.chips}>
+            {currencies.map((c) => (
+              <Chip key={c} label={c} isActive={c === currency} onPress={() => setCurrency(c)} />
+            ))}
+          </ScrollView>
+        ) : null}
+
+        <View style={styles.tiles}>
+          <StatTile label={t('persons.spent')} icon={ArrowUp01Icon} iconColor={colors.danger} amount={person.totalSpent} currency={currency} type="DR" compact />
+          <StatTile label={t('persons.received')} icon={ArrowDown01Icon} iconColor={colors.success} amount={person.totalReceived} currency={currency} type="CR" compact />
         </View>
 
-        {/* Loans */}
-        {activeLoans.length > 0 && (
-          <View style={[styles.txSection, { marginBottom: spacing('4') }]}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.txTitle}>{t('persons.activeLoans')}</Text>
-              <View style={[styles.countBadge, { backgroundColor: alpha(colors.primary, 'subtle') }]}>
-                <Text style={[styles.countBadgeText, { color: colors.primaryInk }]}>{activeLoans.length}</Text>
-              </View>
-            </View>
-            <View style={styles.loansCard}>
-              {activeLoans.map((loan, i) => {
-                const isLend = loan.type === 'lend';
-                const isOverdue = loan.computedStatus === 'overdue';
-                const typeColor = isLend ? colors.success : colors.danger;
-                return (
-                  <React.Fragment key={loan.id}>
-                    <BentoPressable style={styles.loanRow} onPress={() => handleLoanPress(loan)}>
-                      <IconAvatar
-                        icon={isLend ? ArrowUp01Icon : ArrowDown01Icon}
-                        color={typeColor}
-                        variant="subtle"
-                        size={40}
-                        iconSize={18}
-                      />
-                      <View style={styles.loanMeta}>
-                        <Text style={[styles.loanLabel, { color: colors.text }]} numberOfLines={1}>
-                          {isLend ? t('loans.lent') : t('loans.borrowed')} · {loan.accountName}
-                        </Text>
-                        {loan.dueDate ? (
-                          <Text style={[styles.loanHint, { color: isOverdue ? colors.danger : colors.textMuted }]} numberOfLines={1}>
-                            {t('loans.due', { date: format(new Date(loan.dueDate), 'MMM d, yyyy') })}
-                          </Text>
-                        ) : loan.note ? (
-                          <Text style={[styles.loanHint, { color: colors.textMuted }]} numberOfLines={1}>
-                            {loan.note}
-                          </Text>
-                        ) : null}
-                      </View>
-                      <View style={styles.loanRight}>
-                        <MoneyText
-                          amount={loan.outstanding}
-                          currency={loan.currency}
-                          type={isLend ? 'CR' : 'DR'}
-                          weight="semibold"
-                          compact
-                          style={styles.loanAmount}
-                        />
-                        <LoanStatusBadge status={loan.computedStatus} />
-                      </View>
-                    </BentoPressable>
-                    {i < activeLoans.length - 1 && (
-                      <View style={[styles.rowDivider, { backgroundColor: colors.border }]} />
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </View>
-          </View>
-        )}
+        {openLoans.length > 0 ? (
+          <ListGroup title={`${t('persons.activeLoans')} · ${openLoans.length}`}>
+            {openLoans.map((loan) => {
+              const isLend = loan.type === 'lend';
+              const subtitle = loan.dueDate
+                ? t('loans.due', { date: formatDate(new Date(loan.dueDate), { day: 'numeric', month: 'short', year: 'numeric' }) })
+                : `${isLend ? t('loans.lent') : t('loans.borrowed')} · ${loan.accountName}`;
+              return (
+                <ListItem
+                  key={loan.id}
+                  leading={<IconAvatar icon={isLend ? ArrowUp01Icon : ArrowDown01Icon} color={isLend ? colors.success : colors.danger} size={40} />}
+                  title={isLend ? t('loans.lentOut') : t('loans.borrowed')}
+                  subtitle={subtitle}
+                  trailing={<MoneyText amount={loan.outstanding} currency={loan.currency} type={isLend ? 'CR' : 'DR'} weight="semibold" compact />}
+                  onPress={() => router.push(`/(main)/loans/${loan.id}`)}
+                />
+              );
+            })}
+          </ListGroup>
+        ) : null}
 
-        {/* Transactions */}
-        {enrichedTx.length > 0 ? (
-          <View style={styles.txSection}>
-            <Text style={styles.txTitle}>
-              {t('persons.transactions')}
-            </Text>
-            {enrichedTx.map((tx, idx) => (
+        <View>
+          <SectionHeader title={t('persons.transactions')} noPadding />
+          {inCurrency.length > 0 ? (
+            inCurrency.map((tx, idx) => (
               <TransactionRow
                 key={tx.id}
                 tx={tx}
                 isFirst={idx === 0}
-                isLast={idx === enrichedTx.length - 1}
+                isLast={idx === inCurrency.length - 1}
                 showDate
-                onPress={handleTxPress}
+                onPress={() => router.push(`/transactions/${tx.id}`)}
               />
-            ))}
-          </View>
-        ) : (
-          <View style={styles.emptyTx}>
-            <Icon icon={ReceiptTextIcon} size={28} color={colors.textMuted} />
-            <Text style={[styles.emptyTxText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              No transactions in {currency}
-            </Text>
-          </View>
-        )}
+            ))
+          ) : (
+            <EmptyState variant="inline" icon={ReceiptTextIcon} title={t('persons.noTransactionsIn', { currency })} />
+          )}
+        </View>
       </ScrollView>
 
       <ConfirmDialog
         destructive
-        visible={showDeleteConfirm}
-        onClose={() => setShowDeleteConfirm(false)}
+        visible={isDeleteVisible}
+        onClose={() => setDeleteVisible(false)}
         title={t('persons.deleteTitle')}
         message={t('persons.deleteMessage', { name: person.name })}
         confirmLabel={t('persons.delete')}
-        onConfirm={handleDeleteConfirm}
+        onConfirm={confirmDelete}
         isLoading={deletePerson.isPending}
       />
     </Screen>
   );
 });
 
-const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeContextType) =>
+const createStyles = ({ spacing, layout }: ThemeContextType) =>
   StyleSheet.create({
-    scroll: { paddingTop: spacing('3'), paddingBottom: spacing('10') },
-    headerActions: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-    },
-
-    heroCard: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('2xl'),
-      marginHorizontal: layout.screenPadding,
-      padding: spacing('5'),
-      marginBottom: spacing('3'),
-      gap: spacing('3'),
-    },
-    heroTop: { flexDirection: 'row', alignItems: 'center', gap: spacing('4') },
-    heroInfo: { flex: 1, gap: spacing('1') },
-    heroName: { ...typography.metrics.xl },
-    heroRole: { ...typography.metrics.sm, opacity: 0.7 },
-    contactRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('3') },
-    contactChip: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
-    contactText: { ...typography.metrics.xs },
-
-    currencyRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      paddingHorizontal: layout.screenPadding,
-      marginBottom: spacing('3'),
-    },
-    currencyPill: {
-      paddingHorizontal: spacing('3'),
-      paddingVertical: spacing('1.5'),
-      borderRadius: radius('full'),
-      backgroundColor: colors.surface,
-    },
-    currencyPillActive: { backgroundColor: alpha(colors.primary, 'subtle') },
-    currencyPillText: { fontFamily: typography.styles.badge.fontFamily, color: colors.textMuted, ...typography.metrics.xs },
-    currencyPillTextActive: { color: colors.primaryInk },
-
-    statsRow: {
-      flexDirection: 'row',
-      gap: spacing('2'),
-      paddingHorizontal: layout.screenPadding,
-      marginBottom: spacing('4'),
-    },
-    statTile: {
-      flex: 1,
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      padding: spacing('3'),
-      gap: spacing('1'),
-    },
-    statLabel: {
-      ...typography.metrics.xs,
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-    },
-    statValue: { ...typography.metrics.md },
-
-    sectionHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-      marginBottom: spacing('2'),
-    },
-    countBadge: {
-      borderRadius: radius('full'),
-      paddingHorizontal: spacing('2'),
-      paddingVertical: 2,
-    },
-    countBadgeText: {
-      fontFamily: typography.styles.chipLabel.fontFamily,
-      ...typography.metrics.xs,
-    },
-    loansCard: {
-      backgroundColor: colors.surface,
-      borderRadius: radius('xl'),
-      overflow: 'hidden',
-    },
-    loanRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3'),
-    },
-    loanMeta: { flex: 1, gap: spacing('0.5') },
-    loanLabel: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.sm,
-    },
-    loanHint: {
-      fontFamily: typography.styles.rowMeta.fontFamily,
-      ...typography.metrics.xs,
-    },
-    loanRight: {
-      alignItems: 'flex-end',
-      gap: spacing('1'),
-    },
-    loanAmount: { ...typography.metrics.md },
-    rowDivider: {
-      height: StyleSheet.hairlineWidth,
-      marginLeft: spacing('4') + 40 + spacing('3'),
-    },
-    txSection: { paddingHorizontal: layout.screenPadding },
-    txTitle: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      color: colors.textMuted,
-      ...typography.metrics.xs,
-    },
-    emptyTx: { alignItems: 'center', paddingVertical: spacing('9'), gap: spacing('2') },
-    emptyTxText: { ...typography.metrics.sm },
+    headerActions: { flexDirection: 'row', gap: spacing('2') },
+    content: { paddingHorizontal: layout.screenPadding, paddingTop: spacing('2'), paddingBottom: spacing('12'), gap: spacing('5') },
+    hero: { alignItems: 'center', gap: spacing('1.5'), paddingVertical: spacing('2') },
+    bleed: { marginHorizontal: -layout.screenPadding, flexGrow: 0 },
+    chips: { gap: spacing('2'), paddingHorizontal: layout.screenPadding },
+    tiles: { flexDirection: 'row', gap: spacing('2') },
   });

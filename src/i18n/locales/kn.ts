@@ -214,6 +214,7 @@ const kn: Translation = {
     name: 'ಹೆಸರು', email: 'ಇಮೇಲ್', phone: 'ಫೋನ್', role: 'ಹುದ್ದೆ', company: 'ಸಂಸ್ಥೆ', holder: 'ಹೊಂದಿರುವವರು', number: 'ಸಂಖ್ಯೆ',
   },
   persons: {
+    noTransactionsIn: '{{currency}} ನಲ್ಲಿ ವಹಿವಾಟುಗಳಿಲ್ಲ', email: 'ಇಮೇಲ್', phone: 'ಫೋನ್',
     title: 'ವ್ಯಕ್ತಿಗಳು', person: 'ವ್ಯಕ್ತಿ', edit: 'ವ್ಯಕ್ತಿಯನ್ನು ಸಂಪಾದಿಸಿ', new: 'ಹೊಸ ವ್ಯಕ್ತಿ', searchPlaceholder: 'ವ್ಯಕ್ತಿಗಳನ್ನು ಹುಡುಕಿ...', none: 'ಇನ್ನೂ ವ್ಯಕ್ತಿಗಳಿಲ್ಲ', noneHint: 'ವಹಿವಾಟುಗಳಿಗೆ ಲಿಂಕ್ ಮಾಡಲು ವ್ಯಕ್ತಿಗಳನ್ನು ಸೇರಿಸಿ',
     limitMessage: 'ಉಚಿತ ಯೋಜನೆಯಲ್ಲಿ {{limit}} ವ್ಯಕ್ತಿಗಳವರೆಗೆ ಅನುಮತಿ. ಅಪರಿಮಿತಕ್ಕಾಗಿ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ.',
     personName: 'ವ್ಯಕ್ತಿಯ ಹೆಸರು', chooseColor: 'ಕೆಳಗೆ ಒಂದು ಆಕ್ಸೆಂಟ್ ಬಣ್ಣವನ್ನು ಆಯ್ಕೆಮಾಡಿ', contactDetails: 'ಸಂಪರ್ಕ ವಿವರಗಳು', work: 'ಕೆಲಸ (ಐಚ್ಛಿಕ)',

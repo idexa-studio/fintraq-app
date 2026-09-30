@@ -214,6 +214,7 @@ const fr: Translation = {
     name: 'Nom', email: 'E-mail', phone: 'Téléphone', role: 'Fonction', company: 'Société', holder: 'Titulaire', number: 'Numéro',
   },
   persons: {
+    noTransactionsIn: 'Aucune transaction en {{currency}}', email: 'E-mail', phone: 'Téléphone',
     title: 'Personnes', person: 'Personne', edit: 'Modifier la personne', new: 'Nouvelle personne', searchPlaceholder: 'Rechercher des personnes...', none: 'Aucune personne pour le moment', noneHint: 'Ajoutez des personnes pour les lier aux transactions',
     limitMessage: "L'offre gratuite permet jusqu'à {{limit}} personnes. Passez à Pro pour un nombre illimité.",
     personName: 'Nom de la personne', chooseColor: "Choisissez ci-dessous une couleur d'accent", contactDetails: 'Coordonnées', work: 'Travail (facultatif)',

@@ -214,6 +214,7 @@ const ja: Translation = {
     name: '名前', email: 'メール', phone: '電話', role: '役職', company: '会社', holder: '名義人', number: '番号',
   },
   persons: {
+    noTransactionsIn: '{{currency}} の取引はありません', email: 'メール', phone: '電話',
     title: '人物', person: '人物', edit: '人物を編集', new: '新しい人物', searchPlaceholder: '人物を検索...', none: '人物はまだいません', noneHint: '取引に紐づける人物を追加しましょう',
     limitMessage: '無料プランでは最大{{limit}}人まで登録できます。無制限にするにはアップグレードしてください。',
     personName: '人物の名前', chooseColor: '下からアクセントカラーを選択', contactDetails: '連絡先', work: '仕事（任意）',

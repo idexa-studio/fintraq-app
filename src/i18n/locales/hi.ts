@@ -214,6 +214,7 @@ const hi: Translation = {
     name: 'नाम', email: 'ईमेल', phone: 'फ़ोन', role: 'भूमिका', company: 'कंपनी', holder: 'धारक', number: 'नंबर',
   },
   persons: {
+    noTransactionsIn: '{{currency}} में कोई लेनदेन नहीं', email: 'ईमेल', phone: 'फ़ोन',
     title: 'लोग', person: 'व्यक्ति', edit: 'व्यक्ति संपादित करें', new: 'नया व्यक्ति', searchPlaceholder: 'लोग खोजें...', none: 'अभी कोई व्यक्ति नहीं', noneHint: 'लेन-देन से जोड़ने के लिए लोग जोड़ें',
     limitMessage: 'फ़्री प्लान में अधिकतम {{limit}} लोग जोड़ सकते हैं। असीमित के लिए अपग्रेड करें।',
     personName: 'व्यक्ति का नाम', chooseColor: 'नीचे से उच्चारण रंग चुनें', contactDetails: 'संपर्क विवरण', work: 'कार्य (वैकल्पिक)',

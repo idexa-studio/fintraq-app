@@ -144,31 +144,3 @@ export const getPersonBreakdown = async (
   return result as PersonSpend[];
 };
 
-export type PersonTransaction = {
-  id: number;
-  amount: number;
-  type: 'CR' | 'DR' | 'TR';
-  datetime: string;
-  note: string;
-  categoryId: number;
-  accountId: number;
-};
-
-export const getTransactionsByPerson = async (personId: number): Promise<PersonTransaction[]> => {
-  const result = await db
-    .select({
-      id: payments.id,
-      amount: payments.amount,
-      type: payments.type,
-      datetime: payments.datetime,
-      note: payments.note,
-      categoryId: payments.categoryId,
-      accountId: payments.accountId,
-    })
-    .from(payments)
-    .where(eq(payments.personId, personId))
-    .orderBy(desc(payments.datetime))
-    .limit(50);
-
-  return result as PersonTransaction[];
-};

@@ -1,239 +1,72 @@
-import { Banner } from '@/src/components/ui';
-import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
-import { Screen } from '@/src/components/ui/Screen';
-import { Text } from '@/src/components/ui/Text';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Icon } from '@/src/components/ui/Icon';
-import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
-import { usePersons } from '@/src/features/persons/hooks/persons';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
-import { CancelCircleIcon, LockPasswordIcon, PlusSignIcon, Search01Icon, UserGroupIcon } from '@hugeicons/core-free-icons';
+import { InboxIcon, UserGroupIcon } from '@hugeicons/core-free-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
 import { useTranslation } from 'react-i18next';
-import { alpha } from '@/src/theme/tokens';
+import { ScrollView, StyleSheet } from 'react-native';
+import { Banner, EmptyState, Fab, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, PersonAvatar, Screen, SearchField } from '@/src/components/ui';
+import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
+import { usePersons } from '@/src/features/persons/hooks/persons';
+import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { colorNumberToHex } from '@/src/utils/format';
 
+/** Everyone you track, searchable by name, contact or work details. */
 export const PersonsScreen = React.memo(function PersonsScreen() {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { colors, typography } = theme;
-  const insets = useSafeAreaInsets();
-  const styles = useMemo(() => createStyles(theme, insets), [theme, insets]);
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const router = useRouter();
   const { isPremium, openPaywall } = useProAccess();
 
-  const { data: personList } = usePersons();
-  const persons = useMemo(() => personList ?? [], [personList]);
+  const { data: persons = [] } = usePersons();
   const atLimit = !isPremium && persons.length >= FREE_PERSON_LIMIT;
-
   const [query, setQuery] = useState('');
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return persons;
-    return persons.filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.email?.toLowerCase().includes(q) ||
-      p.phone?.toLowerCase().includes(q) ||
-      p.company?.toLowerCase().includes(q) ||
-      p.designation?.toLowerCase().includes(q),
-    );
+    return persons.filter((p) => [p.name, p.email, p.phone, p.company, p.designation].some((field) => field?.toLowerCase().includes(q)));
   }, [persons, query]);
 
-  const handleAdd = useCallback(() => {
-    if (atLimit) {
-      openPaywall('unlimited');
-      return;
-    }
-    router.push('/(main)/persons/form');
-  }, [atLimit, router, openPaywall]);
-
-  const handlePersonPress = useCallback((id: number) => {
-    router.push(`/(main)/persons/${id}`);
-  }, [router]);
+  const add = useCallback(() => {
+    if (atLimit) openPaywall('unlimited');
+    else router.push('/(main)/persons/form');
+  }, [atLimit, openPaywall, router]);
 
   return (
     <Screen header={{ title: t('persons.title'), showBack: true }} variant="fixed" edges={['top']}>
-
-      {persons.length > 0 && (
-        <View style={styles.searchRow}>
-          <View style={styles.searchWrap}>
-            <Icon icon={Search01Icon} size={18} color={colors.textMuted} />
-            <TextInput
-              style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
-              value={query}
-              onChangeText={setQuery}
-              placeholder={t('persons.searchPlaceholder')}
-              placeholderTextColor={colors.textMuted + '80'}
-              autoCorrect={false}
-              autoCapitalize="none"
-              returnKeyType="search"
-            />
-            {query.length > 0 && (
-              <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <Icon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
-              </BentoPressable>
-            )}
-          </View>
-        </View>
-      )}
-
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {atLimit && (
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+        {atLimit ? (
           <Banner tone="warning" title={t('persons.limitMessage', { limit: FREE_PERSON_LIMIT })} actionLabel={t('loans.upgrade')} onAction={() => openPaywall('unlimited')} />
-        )}
+        ) : null}
 
-        {filtered.length > 0 && (
-          <View style={styles.group}>
-            {filtered.map((person, idx) => {
-              const hex = colorNumberToHex(person.color);
-              const isFirst = idx === 0;
-              const isLast = idx === filtered.length - 1;
-              return (
-                <BentoPressable
-                  key={person.id}
-                  style={[
-                    styles.row,
-                    isFirst && { borderTopLeftRadius: theme.radius('xl'), borderTopRightRadius: theme.radius('xl') },
-                    isLast && { borderBottomLeftRadius: theme.radius('xl'), borderBottomRightRadius: theme.radius('xl') },
-                    !isLast && { marginBottom: theme.spacing('0.5') },
-                  ]}
-                  onPress={() => handlePersonPress(person.id)}
-                >
-                  <PersonAvatar name={person.name} color={hex} size={40} />
+        {persons.length > 0 ? <SearchField value={query} onChangeText={setQuery} placeholder={t('persons.searchPlaceholder')} on="page" /> : null}
 
-                  <View style={styles.rowMeta}>
-                    <Text style={styles.rowName} numberOfLines={1}>
-                      {person.name}
-                    </Text>
-                    {(person.designation || person.company) ? (
-                      <Text style={styles.rowSub} numberOfLines={1}>
-                        {[person.designation, person.company].filter(Boolean).join(' · ')}
-                      </Text>
-                    ) : person.phone ? (
-                      <Text style={styles.rowSub} numberOfLines={1}>
-                        {person.phone}
-                      </Text>
-                    ) : null}
-                  </View>
-
-                </BentoPressable>
-              );
-            })}
-          </View>
-        )}
-
-        {persons.length === 0 && (
-          <View style={styles.empty}>
-            <Icon icon={UserGroupIcon} size={32} color={colors.textMuted} />
-            <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              {t('persons.none')}
-            </Text>
-            <Text style={[styles.emptyHint, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              {t('persons.noneHint')}
-            </Text>
-          </View>
-        )}
-
-        {persons.length > 0 && filtered.length === 0 && (
-          <View style={styles.empty}>
-            <Text style={[styles.emptyText, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-              No results for &quot;{query}&quot;
-            </Text>
-          </View>
+        {persons.length === 0 ? (
+          <EmptyState icon={UserGroupIcon} title={t('persons.none')} description={t('persons.noneHint')} actionLabel={t('persons.add')} onAction={add} />
+        ) : filtered.length === 0 ? (
+          <EmptyState variant="inline" icon={InboxIcon} title={t('search.noResults')} description={t('search.noMatch', { query })} />
+        ) : (
+          <ListGroup>
+            {filtered.map((person) => (
+              <ListItem
+                key={person.id}
+                leading={<PersonAvatar name={person.name} color={colorNumberToHex(person.color)} size={LIST_ITEM_LEADING_SIZE} />}
+                title={person.name}
+                subtitle={[person.designation, person.company].filter(Boolean).join(' · ') || person.phone || undefined}
+                onPress={() => router.push(`/(main)/persons/${person.id}`)}
+              />
+            ))}
+          </ListGroup>
         )}
       </ScrollView>
 
-      <BentoPressable style={[styles.fab, { backgroundColor: atLimit ? colors.textMuted : colors.primary }]} onPress={handleAdd}>
-        {atLimit
-          ? <Icon icon={LockPasswordIcon} size={20} color={colors.primaryForeground} />
-          : <Icon icon={PlusSignIcon} size={24} color={colors.primaryForeground} />
-        }
-      </BentoPressable>
+      <Fab onPress={add} accessibilityLabel={t('persons.add')} />
     </Screen>
   );
 });
 
-const createStyles = ({ colors, spacing, radius, layout, typography, shadow }: ThemeContextType, insets: EdgeInsets) =>
+const createStyles = ({ spacing, layout }: ThemeContextType) =>
   StyleSheet.create({
-    scroll: {
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('2'),
-      paddingBottom: insets.bottom > 0 ? insets.bottom + 56 + 24 : 96,
-    },
-
-    searchRow: {
-      paddingHorizontal: layout.screenPadding,
-      paddingBottom: spacing('3'),
-    },
-    searchWrap: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 48,
-      borderRadius: radius('full'),
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing('4'),
-      gap: spacing('2'),
-    },
-    searchInput: {
-      flex: 1,
-      ...typography.metrics.md,
-      padding: 0,
-    },
- 
-    limitBanner: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('2'),
-      backgroundColor: alpha(colors.warning, 'subtle'),
-      borderRadius: radius('xl'),
-      paddingHorizontal: spacing('3.5'),
-      paddingVertical: spacing('2.5'),
-      marginBottom: spacing('3'),
-    },
-    limitText: { flex: 1, ...typography.metrics.xs },
- 
-    group: {
-      marginBottom: spacing('4'),
-    },
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3.5'),
-    },
-    rowMeta: { flex: 1 },
-    rowName: {
-      ...typography.metrics.md,
-      fontFamily: typography.fonts.medium,
-      color: colors.text,
-    },
-    rowSub: {
-      ...typography.metrics.xs,
-      fontFamily: typography.fonts.regular,
-      color: colors.textMuted,
-      marginTop: 2,
-    },
-
-    empty: { alignItems: 'center', paddingVertical: spacing('11'), gap: spacing('2') },
-    emptyText: { ...typography.metrics.lg },
-    emptyHint: { ...typography.metrics.sm, opacity: 0.5, textAlign: 'center' },
-
-    fab: {
-      position: 'absolute',
-      bottom: insets.bottom > 0 ? insets.bottom + 16 : 24,
-      right: 16,
-      width: 56,
-      height: 56,
-      borderRadius: radius('full'),
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
+    content: { paddingHorizontal: layout.screenPadding, paddingTop: spacing('2'), paddingBottom: 56 + spacing('12'), gap: spacing('4') },
   });
-

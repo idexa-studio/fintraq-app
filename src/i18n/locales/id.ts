@@ -214,6 +214,7 @@ const id: Translation = {
     name: 'Nama', email: 'Email', phone: 'Telepon', role: 'Jabatan', company: 'Perusahaan', holder: 'Pemilik', number: 'Nomor',
   },
   persons: {
+    noTransactionsIn: 'Tidak ada transaksi dalam {{currency}}', email: 'Email', phone: 'Telepon',
     title: 'Orang', person: 'Orang', edit: 'Ubah orang', new: 'Orang baru', searchPlaceholder: 'Cari orang...', none: 'Belum ada orang', noneHint: 'Tambahkan orang untuk dikaitkan dengan transaksi',
     limitMessage: 'Paket gratis memungkinkan hingga {{limit}} orang. Upgrade untuk tanpa batas.',
     personName: 'Nama orang', chooseColor: 'Pilih warna aksen di bawah', contactDetails: 'Detail kontak', work: 'Pekerjaan (opsional)',

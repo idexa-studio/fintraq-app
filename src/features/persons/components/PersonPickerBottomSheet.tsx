@@ -1,16 +1,13 @@
-import { Text } from '@/src/components/ui/Text';
-import { BentoPressable } from '@/src/components/ui/BentoPressable';
-import { Icon } from '@/src/components/ui/Icon';
-import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
+import * as Haptics from 'expo-haptics';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { LIST_ITEM_LEADING_SIZE, ListItem, PersonAvatar, SearchField, SheetHeader } from '@/src/components/ui';
+import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
+import { UserCircleIcon } from '@/src/components/ui/icons';
+import type { Person } from '@/src/features/persons/api/persons';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
-import { CancelCircleIcon, CheckmarkCircle01Icon, Search01Icon, UserCircleIcon } from '@hugeicons/core-free-icons';
-import React, { useCallback, useMemo, useState } from 'react';
-import * as Haptics from 'expo-haptics';
-import { FlatList, StyleSheet, TextInput, View } from 'react-native';
-import type { Person } from '@/src/features/persons/api/persons';
-import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
-import { useTranslation } from 'react-i18next';
 
 type PersonPickerBottomSheetProps = {
   visible: boolean;
@@ -19,9 +16,6 @@ type PersonPickerBottomSheetProps = {
   selectedId: number | null;
   onSelect: (id: number | null) => void;
 };
-
-const ITEM_HEIGHT = 60;
-
 
 export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomSheet({
   visible,
@@ -32,7 +26,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
 }: PersonPickerBottomSheetProps) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { colors, typography } = theme;
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [query, setQuery] = useState('');
   const bottomSheet = useBottomSheet();
@@ -60,102 +54,39 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
 
   const keyExtractor = useCallback((item: Person) => String(item.id), []);
 
-  const getItemLayout = useCallback((_: unknown, index: number) => ({
-    length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index,
-  }), []);
-
-  const renderItem = useCallback(({ item }: { item: Person }) => {
-    const selected = item.id === selectedId;
-    const hex = colorNumberToHex(item.color);
-    return (
-      <BentoPressable
-        style={[styles.row, selected && styles.rowSelected]}
+  const renderItem = useCallback(
+    ({ item }: { item: Person }) => (
+      <ListItem
+        leading={<PersonAvatar name={item.name} color={colorNumberToHex(item.color)} size={LIST_ITEM_LEADING_SIZE} />}
+        title={item.name}
+        subtitle={[item.designation, item.company].filter(Boolean).join(' · ') || item.phone || undefined}
+        selected={item.id === selectedId}
         onPress={() => handleSelect(item.id)}
-      >
-        <PersonAvatar name={item.name} color={hex} size={36} />
-        <View style={styles.rowMeta}>
-          <Text style={[styles.rowName, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]} numberOfLines={1}>
-            {item.name}
-          </Text>
-          {(item.designation || item.company) ? (
-            <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
-              {[item.designation, item.company].filter(Boolean).join(' · ')}
-            </Text>
-          ) : item.phone ? (
-            <Text style={[styles.rowSub, { fontFamily: typography.fonts.regular, color: colors.textMuted }]} numberOfLines={1}>
-              {item.phone}
-            </Text>
-          ) : null}
-        </View>
-        {selected && (
-          <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-            <Icon icon={CheckmarkCircle01Icon} size={12} color={colors.primaryForeground} />
-          </View>
-        )}
-      </BentoPressable>
-    );
-  }, [selectedId, handleSelect, styles, colors, typography]);
+      />
+    ),
+    [selectedId, handleSelect],
+  );
 
   const snapPoints = useMemo(() => ['75%'], []);
 
   return (
-    <BentoBottomSheet
-      visible={visible}
-      onClose={handleClose}
-      snapPoints={snapPoints}
-      keyboardBehavior="interactive"
-    >
-      <View style={{ flex: 1 }}>
-        <View style={styles.header}>
-          <Text style={[styles.title, { fontFamily: typography.fonts.heading, color: colors.text }]}>
-            {t('persons.linkPerson')}
-          </Text>
+    <BentoBottomSheet visible={visible} onClose={handleClose} snapPoints={snapPoints} keyboardBehavior="interactive">
+      <View style={styles.fill}>
+        <SheetHeader title={t('persons.linkPerson')} />
+        <View style={styles.search}>
+          <SearchField value={query} onChangeText={setQuery} placeholder={t('persons.searchPlaceholder')} on="surface" />
         </View>
-
-        <View style={styles.searchWrap}>
-          <Icon icon={Search01Icon} size={18} color={colors.textMuted} />
-          <TextInput
-            style={[styles.searchInput, { fontFamily: typography.fonts.regular, color: colors.text }]}
-            value={query}
-            onChangeText={setQuery}
-            placeholder={t('persons.searchPlaceholder')}
-            placeholderTextColor={colors.textMuted + '80'}
-            autoCorrect={false}
-            autoCapitalize="none"
-            returnKeyType="search"
-          />
-          {query.length > 0 && (
-            <BentoPressable onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Icon icon={CancelCircleIcon} size={17} color={colors.textMuted} />
-            </BentoPressable>
-          )}
-        </View>
-
-        {/* None option */}
-        <BentoPressable
-          style={[styles.row, styles.noneRow, selectedId === null && styles.rowSelected]}
+        <ListItem
+          icon={UserCircleIcon}
+          iconColor={colors.textMuted}
+          title={t('persons.noPerson')}
+          selected={selectedId === null}
           onPress={() => handleSelect(null)}
-        >
-          <View style={styles.noneAvatar}>
-            <Icon icon={UserCircleIcon} size={18} color={colors.textMuted} />
-          </View>
-          <View style={styles.rowMeta}>
-            <Text style={[styles.rowName, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.textMuted }]}>
-              {t('persons.noPerson')}
-            </Text>
-          </View>
-          {selectedId === null && (
-            <View style={[styles.checkCircle, { backgroundColor: colors.primary }]}>
-              <Icon icon={CheckmarkCircle01Icon} size={12} color={colors.primaryForeground} />
-            </View>
-          )}
-        </BentoPressable>
-
+        />
         <FlatList
           data={filtered}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
-          getItemLayout={getItemLayout}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
@@ -171,61 +102,9 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
   );
 });
 
-const createStyles = ({ colors, typography, spacing, radius, layout, isDark, sizes }: ThemeContextType) =>
+const createStyles = ({ spacing, layout }: ThemeContextType) =>
   StyleSheet.create({
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('4'),
-      paddingBottom: spacing('2'),
-    },
-    title: { ...typography.metrics.xl },
-    searchWrap: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginHorizontal: layout.screenPadding,
-      marginBottom: spacing('2'),
-      height: sizes.input.md.height,
-      borderRadius: radius('full'),
-      backgroundColor: colors.card,
-      paddingHorizontal: spacing('3.5'),
-      gap: spacing('2'),
-    },
-    searchInput: { flex: 1, fontFamily: typography.fonts.regular, ...typography.metrics.sm, paddingVertical: 0 },
-    listContent: {
-      paddingBottom: spacing('3'),
-    },
-    row: {
-      height: ITEM_HEIGHT,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing('3'),
-      paddingHorizontal: layout.screenPadding,
-      marginVertical: spacing('0.5'),
-    },
-    noneRow: {
-      marginTop: spacing('2'),
-      marginBottom: spacing('1'),
-    },
-    rowSelected: { backgroundColor: colors.primaryLight },
-    rowMeta: { flex: 1 },
-    rowName: { ...typography.metrics.md },
-    rowSub: { ...typography.metrics.xs, opacity: 0.65, marginTop: 2 },
-    noneAvatar: {
-      width: 36,
-      height: 36,
-      borderRadius: Math.round(36 * 0.3),
-      backgroundColor: colors.background,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    checkCircle: {
-      width: 20,
-      height: 20,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
+    fill: { flex: 1 },
+    search: { paddingHorizontal: layout.screenPadding, paddingBottom: spacing('2') },
+    listContent: { paddingBottom: spacing('3') },
   });
