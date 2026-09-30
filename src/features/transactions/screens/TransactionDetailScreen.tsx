@@ -149,7 +149,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
           />
           {person ? (
             <ListItem
-              leading={<PersonAvatar name={person.name} color={person.color != null ? colorNumberToHex(person.color) : colors.primary} size={40} />}
+              leading={<PersonAvatar name={person.name} color={person.color != null ? colorNumberToHex(person.color) : colors.textMuted} size={40} />}
               title={person.name}
               subtitle={[person.designation, person.company].filter(Boolean).join(' · ') || t('transactions.person')}
               onPress={() => router.push(`/persons/${person.id}`)}

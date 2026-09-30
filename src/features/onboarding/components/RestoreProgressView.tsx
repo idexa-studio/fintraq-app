@@ -39,18 +39,18 @@ export const RestoreProgressView = React.memo(function RestoreProgressView({
             iconSize={26}
           />
           <View style={styles.headerText}>
-            <Text style={styles.title}>{t('onboardingFlow.restoringWorkspace')}</Text>
-            <Text style={styles.stageText} numberOfLines={2}>
+            <Text variant="subheading">{t('onboardingFlow.restoringWorkspace')}</Text>
+            <Text variant="callout" color={colors.primaryInk} numberOfLines={2}>
               {progressStage || t('onboardingFlow.downloadingBackup')}
             </Text>
           </View>
-          <Text style={styles.percentText}>{clampedProgress}%</Text>
+          <Text variant="headline" color={colors.primaryInk}>{clampedProgress}%</Text>
         </View>
 
         <ProgressBar progress={clampedProgress} height={8} />
 
         {userEmail ? (
-          <Text style={styles.emailText} numberOfLines={1}>
+          <Text variant="caption" tone="muted" numberOfLines={1}>
             {t('onboardingFlow.connectedAsShort', { email: userEmail })}
           </Text>
         ) : null}
@@ -66,8 +66,8 @@ export const RestoreProgressView = React.memo(function RestoreProgressView({
           iconSize={20}
         />
         <View style={styles.infoText}>
-          <Text style={styles.infoTitle}>{t('onboardingFlow.secureRestore')}</Text>
-          <Text style={styles.infoDetail}>
+          <Text variant="bodyStrong">{t('onboardingFlow.secureRestore')}</Text>
+          <Text variant="caption" tone="muted">
             {t('onboardingFlow.restoreWarning')}
           </Text>
         </View>
@@ -97,26 +97,6 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
       flex: 1,
       gap: spacing('1'),
     },
-    title: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.lg,
-      color: colors.text,
-    },
-    stageText: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.primaryInk,
-    },
-    percentText: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.xl,
-      color: colors.primaryInk,
-    },
-    emailText: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-    },
     infoCard: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -128,15 +108,5 @@ const createStyles = ({ colors, typography, spacing, radius }: ThemeContextType)
     infoText: {
       flex: 1,
       gap: spacing('0.5'),
-    },
-    infoTitle: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.md,
-      color: colors.text,
-    },
-    infoDetail: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
     },
   });

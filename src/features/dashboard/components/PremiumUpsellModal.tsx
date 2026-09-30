@@ -73,7 +73,7 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
             </View>
 
             <View style={styles.headerText}>
-              <Text style={styles.title}>{t('premium.title')}</Text>
+              <Text variant="title">{t('premium.title')}</Text>
               <View style={[styles.lifetimePill, { backgroundColor: alpha(colors.warning, 'subtle') }]}>
                 <Text style={[styles.lifetimeLabel, { color: colors.warning }]}>{t('premium.oneTimeLifetime')}</Text>
               </View>
@@ -97,7 +97,7 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
                 <View style={[styles.featureIcon, { backgroundColor: colors.surface }]}>
                   <Icon icon={PRO_FEATURES[id].icon} size={16} color={colors.primaryInk} />
                 </View>
-                <Text style={styles.featureLabel}>{t(`premium.features.${id}.title`)}</Text>
+                <Text variant="callout" style={styles.featureLabel}>{t(`premium.features.${id}.title`)}</Text>
                 <Icon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
               </View>
             ))}
@@ -156,12 +156,6 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, overlay, st
       flex: 1,
       gap: spacing('1'),
     },
-    title: {
-      fontFamily: typography.fonts.heading,
-      ...typography.metrics.xxl,
-      letterSpacing: -0.3,
-      color: colors.text,
-    },
     lifetimePill: {
       alignSelf: 'flex-start',
       paddingHorizontal: spacing('2.5'),
@@ -192,10 +186,7 @@ const createStyles = ({ colors, typography, spacing, radius, shadow, overlay, st
       justifyContent: 'center',
     },
     featureLabel: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
       flex: 1,
-      color: colors.text,
     },
     // Footer
     footer: {

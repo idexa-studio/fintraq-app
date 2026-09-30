@@ -178,7 +178,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       return (
         <View style={styles.loadingRow}>
           <Spinner size="sm" />
-          <Text style={styles.loadingText}>{t('backup.checking')}</Text>
+          <Text variant="calloutStrong" tone="muted">{t('backup.checking')}</Text>
         </View>
       );
     }
@@ -237,7 +237,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),
       overflow: 'hidden',
-      marginBottom: spacing('5'),
     },
     loadingRow: {
       flexDirection: 'row',
@@ -246,11 +245,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       gap: spacing('3'),
       paddingVertical: spacing('4'),
       paddingHorizontal: spacing('4'),
-    },
-    loadingText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
     },
     separator: {
       height: StyleSheet.hairlineWidth,

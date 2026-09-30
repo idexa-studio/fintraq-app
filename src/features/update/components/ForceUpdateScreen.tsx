@@ -75,7 +75,7 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <View style={styles.headerSlot} />
-            <Text style={styles.brand}>
+            <Text variant="title" style={styles.brand}>
               Fintraq<Text inline color={colors.primary}>.</Text>{/* design-system-ignore: logotype mark */}
             </Text>
             <View style={styles.headerSlot} />
@@ -89,11 +89,11 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
         >
           {/* Step meta */}
           <View style={styles.stepMeta}>
-            <Text style={styles.eyebrow}>{t('update.required')}</Text>
-            <Text style={styles.stepTitle}>
+            <Text variant="label" color={colors.primaryInk} style={styles.eyebrow}>{t('update.required')}</Text>
+            <Text variant="display">
               {t('update.versionAvailable', { version: latestVersion })}
             </Text>
-            <Text style={styles.stepSubtitle}>
+            <Text variant="body" tone="muted" style={styles.stepSubtitle}>
               {message || t('update.defaultMessage')}
             </Text>
           </View>
@@ -110,8 +110,8 @@ export const ForceUpdateScreen = React.memo(function ForceUpdateScreen({
                   iconSize={22}
                 />
                 <View style={styles.cardText}>
-                  <Text style={styles.cardLabel}>{t(`update.${card.label}`)}</Text>
-                  <Text style={styles.cardDetail}>{t(`update.${card.label}Detail`)}</Text>
+                  <Text variant="bodyStrong">{t(`update.${card.label}`)}</Text>
+                  <Text variant="callout" tone="muted">{t(`update.${card.label}Detail`)}</Text>
                 </View>
               </View>
             ))}
@@ -148,9 +148,6 @@ function createStyles({ spacing, radius, typography, colors, layout }: ThemeCont
       height: 42,
     },
     brand: {
-      fontFamily: typography.fonts.heading,
-      ...typography.metrics.xxl,
-      color: colors.text,
       textAlign: 'center',
     },
 
@@ -167,23 +164,11 @@ function createStyles({ spacing, radius, typography, colors, layout }: ThemeCont
       marginBottom: spacing('5'),
     },
     eyebrow: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.primaryInk,
       textTransform: 'uppercase',
-      letterSpacing: 0.5,
       marginBottom: spacing('3'),
-    },
-    stepTitle: {
-      fontFamily: typography.fonts.heading,
-      ...typography.metrics.xxxl,
-      color: colors.text,
     },
     stepSubtitle: {
       marginTop: spacing('2.5'),
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.md,
-      color: colors.textMuted,
       maxWidth: 320,
     },
 
@@ -202,16 +187,6 @@ function createStyles({ spacing, radius, typography, colors, layout }: ThemeCont
     cardText: {
       flex: 1,
       gap: spacing('1'),
-    },
-    cardLabel: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.md,
-      color: colors.text,
-    },
-    cardDetail: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.sm,
-      color: colors.textMuted,
     },
 
     // ── Footer

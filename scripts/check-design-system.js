@@ -36,7 +36,7 @@ const RULES = [
   { id: 'rn-primitive', msg: 'Off-system primitive — use ui Switch / BentoPressable / Button', re: /\b(TouchableOpacity|TouchableHighlight)\b|import \{[^}]*\bSwitch\b[^}]*\} from 'react-native'/ },
   { id: 'spinner', msg: 'ActivityIndicator — use Skeleton for loading, Button isLoading for actions', re: /\bActivityIndicator\b/ },
   { id: 'opacity-text', msg: 'Opacity-faded style — use tone="muted" / alpha() instead', re: /^\s*opacity\s*:\s*0\.[1-8]\d*\s*,?\s*$/ },
-  { id: 'lime-text', msg: 'colors.primary as text/icon colour (~2:1 on light layers) — use colors.primaryInk, or primaryForeground on a primary fill', re: /(?<![A-Za-z])color(?:\s*:\s*|=\{)(?:theme\.)?colors\.primary(?![A-Za-z])/ },
+  { id: 'lime-text', msg: 'colors.primary as text/icon colour (~2:1 on light layers) — use colors.primaryInk, or primaryForeground on a primary fill', re: /(?<![A-Za-z])color(?:\s*:\s*|=\{)[^,}]*\bcolors\.primary(?![A-Za-z])/ },
   { id: 'relative-import', msg: "'../' import — use the @/src alias", re: /from '\.\.\// },
   // Component-level rules: screens are built from the system, not rebuilt by hand.
   { id: 'screen-scaffold', msg: 'Hand-rolled SafeAreaView scaffold — use <Screen>', re: /<SafeAreaView\b/ },

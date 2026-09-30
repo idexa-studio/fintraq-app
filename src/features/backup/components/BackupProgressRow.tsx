@@ -8,14 +8,15 @@ type BackupProgressRowProps = { progress: number; stage: string | null };
 
 export const BackupProgressRow = React.memo(function BackupProgressRow({ progress, stage }: BackupProgressRowProps) {
   const theme = useTheme();
+  const { colors } = theme;
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
     <View style={styles.container} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: progress }}>
       <View style={styles.header}>
-        <Text style={styles.stage}>{stage || t('backup.processing')}</Text>
-        <Text style={styles.percent}>{progress}%</Text>
+        <Text variant="label" tone="muted" style={styles.stage}>{stage || t('backup.processing')}</Text>
+        <Text variant="label" color={colors.primaryInk}>{progress}%</Text>
       </View>
       <ProgressBar progress={progress} height={6} />
     </View>
@@ -37,13 +38,5 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
     },
     stage: {
       flex: 1,
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
-    },
-    percent: {
-      fontFamily: typography.fonts.bold,
-      ...typography.metrics.xs,
-      color: colors.primaryInk,
     },
   });

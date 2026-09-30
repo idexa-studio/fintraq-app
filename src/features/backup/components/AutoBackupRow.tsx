@@ -32,7 +32,7 @@ export const AutoBackupRow = React.memo(function AutoBackupRow({ enabled, onTogg
       {Platform.OS === 'android' && enabled && (
         <BentoPressable style={styles.hintRow} onPress={onReliabilityHintPress} accessibilityRole="button" accessibilityLabel={t('backup.reliabilityHint')}>
           <Icon icon={BatteryCharging01Icon} size={12} color={theme.colors.textMuted} />
-          <Text style={styles.hintText}>{t('backup.reliabilityHint')}</Text>
+          <Text variant="label" tone="muted">{t('backup.reliabilityHint')}</Text>
           <Icon icon={ArrowRight01Icon} size={12} color={theme.colors.textMuted} />
         </BentoPressable>
       )}
@@ -58,10 +58,5 @@ const createStyles = ({ colors, typography, spacing }: ThemeContextType) =>
       alignItems: 'center',
       gap: spacing('1.5'),
       alignSelf: 'flex-start',
-    },
-    hintText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
     },
   });
