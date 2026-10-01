@@ -38,7 +38,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
     return (
       <View style={[styles.side, !isIn && styles.sideEnd]}>
         <View style={styles.sideLabel}>
-          <View style={[styles.dot, { backgroundColor: isIn ? colors.onInkAccent : colors.danger }]} />
+          <View style={[styles.dot, { backgroundColor: isIn ? colors.onHeroPositive : colors.onHeroNegative }]} />
           <Text variant="caption" color={colors.onInkMuted} numberOfLines={1}>
             {isIn ? t('transactions.income') : t('transactions.expenses')}
           </Text>
@@ -78,8 +78,8 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
 
       <View style={styles.flow}>
         <View style={styles.bar} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-          <View style={[styles.segment, { flex: inShare, backgroundColor: colors.onInkAccent }]} />
-          <View style={[styles.segment, { flex: 1 - inShare, backgroundColor: colors.danger }]} />
+          <View style={[styles.segment, { flex: inShare, backgroundColor: colors.onHeroPositive }]} />
+          <View style={[styles.segment, { flex: 1 - inShare, backgroundColor: colors.onHeroNegative }]} />
         </View>
         <View style={styles.sides}>
           {side('in')}

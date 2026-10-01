@@ -60,7 +60,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
         />
         {monthNet !== null ? (
           <View style={styles.net}>
-            <Icon icon={isUp ? ArrowUp01Icon : ArrowDown01Icon} size={14} color={isUp ? colors.onInkAccent : colors.danger} weight="bold" />
+            <Icon icon={isUp ? ArrowUp01Icon : ArrowDown01Icon} size={14} color={isUp ? colors.onHeroPositive : colors.onHeroNegative} weight="bold" />
             <Text variant="label" color={colors.onInkMuted} numberOfLines={1} style={styles.netText}>
               {t('dashboard.netThisMonth', { amount: `${sign}${formatCurrency(Math.abs(monthNet), currency)}` })}
             </Text>

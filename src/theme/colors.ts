@@ -7,9 +7,14 @@ export type ThemePalette = {
   surface: string;
   /** Bottom navigation bar background with proper contrast */
   tabBarBackground: string;
-  /** Hero card fill. In dark mode a deep evergreen, so the headline card stands apart from the
-   *  charcoal cards around it; in light mode, ink. */
+  /** Hero card fill: a mid evergreen in both themes, lighter than the ink surfaces, so the
+   *  headline card is the one green moment on a screen. Text on it uses onInk / onInkMuted. */
   heroSurface: string;
+  /** Accents on the hero. Plain primary/danger/info lose contrast on its mid-green, so the hero has
+   *  its own lighter set: income / up (mint), expense / down (rose), transfer (sky). */
+  onHeroPositive: string;
+  onHeroNegative: string;
+  onHeroInfo: string;
 
   /** Brand accent — buttons, active states, highlights */
   primary: string;
@@ -64,7 +69,10 @@ export const DARK_THEME: ThemePalette = {
   card: '#262B28',
   surface: '#191D1B',
   tabBarBackground: '#202422',
-  heroSurface: '#173226',
+  heroSurface: '#234A3B',
+  onHeroPositive: '#8EE3B5',
+  onHeroNegative: '#FFA49C',
+  onHeroInfo: '#A9CBF2',
 
   primary: '#39C684',
   primaryLight: '#193427',
@@ -94,7 +102,10 @@ export const LIGHT_THEME: ThemePalette = {
   card: '#E9EBE6',
   surface: '#FFFFFF',
   tabBarBackground: '#151917',
-  heroSurface: '#151917',
+  heroSurface: '#265040',
+  onHeroPositive: '#8EE3B5',
+  onHeroNegative: '#FFA49C',
+  onHeroInfo: '#A9CBF2',
 
   primary: '#1FB270',
   primaryLight: '#DBF0E5',
