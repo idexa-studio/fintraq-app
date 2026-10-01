@@ -48,9 +48,9 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
 
   const options = useMemo(
     (): TypeOption[] => [
-      { value: 'DR', label: t('transactions.expense'), icon: ArrowUpRightIcon, color: colors.danger },
-      { value: 'CR', label: t('transactions.income'), icon: ArrowDownLeftIcon, color: colors.onInkAccent },
-      { value: 'TR', label: t('transactions.transfer'), icon: ArrowsLeftRightIcon, color: colors.info },
+      { value: 'DR', label: t('transactions.expense'), icon: ArrowUpRightIcon, color: colors.onHeroNegative },
+      { value: 'CR', label: t('transactions.income'), icon: ArrowDownLeftIcon, color: colors.onHeroPositive },
+      { value: 'TR', label: t('transactions.transfer'), icon: ArrowsLeftRightIcon, color: colors.onHeroInfo },
     ],
     [t, colors],
   );
@@ -101,7 +101,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
             keyboardType="decimal-pad"
             placeholder="0.00"
             placeholderTextColor={alpha(colors.onInk, 'medium')}
-            selectionColor={colors.onInkAccent}
+            selectionColor={colors.onHeroPositive}
             accessibilityLabel={t('transactions.amount')}
             autoFocus
           />

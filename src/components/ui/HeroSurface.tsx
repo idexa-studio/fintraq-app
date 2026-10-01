@@ -10,11 +10,11 @@ type Props = {
 const GLOW = 240;
 
 /**
- * The card that carries a screen's headline figure (Home balance, Transactions net): ink in light
- * mode, deep evergreen in dark mode so it stands apart from the charcoal cards around it. Lime is
- * only an accent, so it reads as premium in both themes and
+ * The card that carries a screen's headline figure (Home balance, Transactions net): a mid
+ * evergreen in both themes, the one green moment on a screen. Accents on it use the onHero* set
+ * (mint / rose / sky), so it reads as premium in both themes and
  * whatever sits inside it — amounts, currency switch, actions — keeps full contrast.
- * Children use `colors.onInk` / `onInkMuted`; lime (`colors.primary`) is safe as text here.
+ * Children use `colors.onInk` / `onInkMuted` for text and the `onHero*` accents for signal colours.
  */
 export const HeroSurface = React.memo(function HeroSurface({ children, style }: Props) {
   const theme = useTheme();

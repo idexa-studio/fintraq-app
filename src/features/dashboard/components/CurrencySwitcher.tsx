@@ -50,7 +50,7 @@ export const CurrencySwitcher = React.memo(function CurrencySwitcher({ currencie
         <Text variant="label" color={colors.onInk}>
           {selected}
         </Text>
-        <Icon icon={CaretDownIcon} size={14} color={colors.onInkAccent} weight="bold" />
+        <Icon icon={CaretDownIcon} size={14} color={colors.onHeroPositive} weight="bold" />
       </BentoPressable>
       <OptionsBottomSheet visible={open} onClose={() => setOpen(false)} title={t('ui.currency')} options={options} />
     </>

@@ -49,7 +49,7 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
           accessibilityRole="button"
           accessibilityLabel={action.label}
         >
-          <Icon icon={action.icon} size={20} color={colors.onInkAccent} weight="bold" />
+          <Icon icon={action.icon} size={20} color={colors.onHeroPositive} weight="bold" />
           <Text variant="label" color={colors.onInk} numberOfLines={1}>
             {action.label}
           </Text>
