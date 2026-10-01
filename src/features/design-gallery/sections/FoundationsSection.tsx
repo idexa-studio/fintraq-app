@@ -13,6 +13,8 @@ const COLOR_ROLES: { key: keyof ThemePalette; role: string }[] = [
   { key: 'surface', role: 'Cards, list groups, sheets' },
   { key: 'card', role: 'Inset fill inside a surface — tracks, chips' },
   { key: 'tabBarBackground', role: 'Floating tab bar' },
+  { key: 'heroFrom', role: 'Hero card gradient — start (evergreen in dark)' },
+  { key: 'heroTo', role: 'Hero card gradient — end' },
   { key: 'primary', role: 'Brand — main action, active state' },
   { key: 'primaryLight', role: 'Primary tint wash' },
   { key: 'primaryDark', role: 'Primary pressed / depth' },
