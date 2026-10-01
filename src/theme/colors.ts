@@ -52,72 +52,72 @@ export type ThemePalette = {
   info: string;
 };
 
-// Polished around the original identity: lime brand, warm paper, ink.
-// Neutrals share one warm hue so layers read as the same material at
-// different depths; each dark layer steps ~4% lightness for even separation.
+// Evergreen: one calm emerald on sage-tinted neutrals. Every neutral shares a faint green hue so
+// paper, ink and charcoal read as the same material, and the accent never has to shout. Accents
+// are de-saturated from pure neon; each text colour clears WCAG AA on the layers it sits on.
 
 export const DARK_THEME: ThemePalette = {
-  background: '#131311',
-  card: '#2C2B27',
-  surface: '#1E1D1A',
-  tabBarBackground: '#262521',
+  background: '#111412',
+  card: '#262B28',
+  surface: '#191D1B',
+  tabBarBackground: '#202422',
 
-  primary: '#00CC6A',
-  primaryLight: '#0B2E1D',
-  primaryDark: '#00A857',
-  primaryInk: '#2EDB85',
-  primaryForeground: '#0A0A08',
-  secondary: '#EDEBE4',
+  primary: '#39C684',
+  primaryLight: '#193427',
+  primaryDark: '#2BA16E',
+  primaryInk: '#66CC99',
+  primaryForeground: '#0A0D0B',
+  secondary: '#E8EAE6',
 
   onInk: '#FFFFFF',
   onInkMuted: 'rgba(255, 255, 255, 0.62)',
-  onInkAccent: '#00CC6A',
+  onInkAccent: '#39C684',
   onColor: '#FFFFFF',
 
-  text: '#EDEBE4',
-  textMuted: '#9C9A92',
+  text: '#E8EAE6',
+  textMuted: '#9AA19C',
 
-  border: '#34332E',
+  border: '#303532',
 
-  success: '#34C97A',
-  danger: '#FF6159',
-  warning: '#F2C66D',
-  info: '#6AB0F0',
+  success: '#59C08C',
+  danger: '#E87C73',
+  warning: '#E0BB7B',
+  info: '#85AFE0',
 };
 
 export const LIGHT_THEME: ThemePalette = {
-  background: '#F5F4EE',
-  card: '#ECEBE4',
+  background: '#F3F4F0',
+  card: '#E9EBE6',
   surface: '#FFFFFF',
-  tabBarBackground: '#161612',
+  tabBarBackground: '#151917',
 
-  primary: '#00CC6A',
-  primaryLight: '#D3F6E3',
-  primaryDark: '#00A857',
-  primaryInk: '#00824A',
-  primaryForeground: '#0A0A08',
-  secondary: '#161612',
+  primary: '#1FB270',
+  primaryLight: '#DBF0E5',
+  primaryDark: '#18915E',
+  primaryInk: '#146B4A',
+  primaryForeground: '#0A0D0B',
+  secondary: '#151917',
 
   onInk: '#FFFFFF',
   onInkMuted: 'rgba(255, 255, 255, 0.62)',
-  onInkAccent: '#00CC6A',
+  onInkAccent: '#39C684',
   onColor: '#FFFFFF',
 
-  text: '#161612',
-  textMuted: '#6B6962',
+  text: '#171A18',
+  textMuted: '#686D68',
 
-  border: '#E2E0D8',
+  border: '#DFE2DC',
 
-  success: '#16945A',
-  danger: '#D93D34',
-  warning: '#A86F00',
-  info: '#1765AB',
+  success: '#1D7C50',
+  danger: '#BA4136',
+  warning: '#8F5C0F',
+  info: '#2E669E',
 };
 
 export type ThemeColors = ThemePalette;
 
 // kLimeBlack — fixed contrast color for text/icons rendered on top of the lime
-// primary (#00CC6A). Lime is always vivid/bright so this stays dark regardless of theme.
+// primary emerald. The accent is always bright enough that this stays dark regardless of theme.
 export const PICKER_CONTRAST_COLOR = '#0A0A0A';
 
 export type HeroCardPalette = {
