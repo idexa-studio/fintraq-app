@@ -7,10 +7,9 @@ export type ThemePalette = {
   surface: string;
   /** Bottom navigation bar background with proper contrast */
   tabBarBackground: string;
-  /** Hero card gradient (top-left → bottom-right). In dark mode it is a deep evergreen, so the
-   *  headline card stands apart from the charcoal cards around it; in light mode, ink. */
-  heroFrom: string;
-  heroTo: string;
+  /** Hero card fill. In dark mode a deep evergreen, so the headline card stands apart from the
+   *  charcoal cards around it; in light mode, ink. */
+  heroSurface: string;
 
   /** Brand accent — buttons, active states, highlights */
   primary: string;
@@ -65,8 +64,7 @@ export const DARK_THEME: ThemePalette = {
   card: '#262B28',
   surface: '#191D1B',
   tabBarBackground: '#202422',
-  heroFrom: '#1B3A2B',
-  heroTo: '#0F1A15',
+  heroSurface: '#173226',
 
   primary: '#39C684',
   primaryLight: '#193427',
@@ -96,8 +94,7 @@ export const LIGHT_THEME: ThemePalette = {
   card: '#E9EBE6',
   surface: '#FFFFFF',
   tabBarBackground: '#151917',
-  heroFrom: '#1E2421',
-  heroTo: '#121614',
+  heroSurface: '#151917',
 
   primary: '#1FB270',
   primaryLight: '#DBF0E5',

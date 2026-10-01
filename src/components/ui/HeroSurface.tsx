@@ -1,6 +1,5 @@
-import React, { ReactNode, useId, useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Props = {
@@ -11,28 +10,18 @@ type Props = {
 const GLOW = 240;
 
 /**
- * The ink card that carries a screen's headline figure (Home balance, Transactions net). A diagonal
- * gradient (heroFrom → heroTo): ink in light mode, deep evergreen in dark mode so it stands apart
- * from the charcoal cards around it. Lime is only an accent, so it reads as premium in both themes and
+ * The card that carries a screen's headline figure (Home balance, Transactions net): ink in light
+ * mode, deep evergreen in dark mode so it stands apart from the charcoal cards around it. Lime is
+ * only an accent, so it reads as premium in both themes and
  * whatever sits inside it — amounts, currency switch, actions — keeps full contrast.
  * Children use `colors.onInk` / `onInkMuted`; lime (`colors.primary`) is safe as text here.
  */
 export const HeroSurface = React.memo(function HeroSurface({ children, style }: Props) {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const gradientId = `hero-${useId().replace(/:/g, '')}`;
 
   return (
     <View style={[styles.card, style]}>
-      <Svg style={StyleSheet.absoluteFill} pointerEvents="none">
-        <Defs>
-          <LinearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor={theme.colors.heroFrom} />
-            <Stop offset="1" stopColor={theme.colors.heroTo} />
-          </LinearGradient>
-        </Defs>
-        <Rect width="100%" height="100%" fill={`url(#${gradientId})`} />
-      </Svg>
       {/* A soft lime halo in the corner: the brand, without painting the whole card. */}
       <View style={styles.glow} pointerEvents="none" />
       <View style={styles.ring} pointerEvents="none" />
@@ -44,7 +33,7 @@ export const HeroSurface = React.memo(function HeroSurface({ children, style }: 
 const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
   StyleSheet.create({
     card: {
-      backgroundColor: colors.heroTo,
+      backgroundColor: colors.heroSurface,
       borderRadius: radius('2xl'),
       padding: spacing('5'),
       gap: spacing('4'),
