@@ -1,35 +1,15 @@
 import { usePathname } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
-import { usePremium } from './PremiumProvider';
-import { useSettings } from './SettingsProvider';
-import {
-  configureFirebaseTelemetry,
-  logFirebaseScreenView,
-  setFirebaseUserTraits,
-} from '@/src/services/firebase';
+import { configureFirebaseTelemetry, logFirebaseScreenView } from '@/src/services/firebase';
 import { LoggerService } from '@/src/services/logger.service';
 
 export const FirebaseProvider = React.memo(function FirebaseProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const lastTrackedPath = useRef<string | null>(null);
-  const { profile, isLoading } = useSettings();
-  const { isPremium } = usePremium();
-
   useEffect(() => {
     const enabled = !__DEV__;
     configureFirebaseTelemetry(enabled).catch((e) => { if (__DEV__) LoggerService.warn('FIREBASE', 'Failed to configure telemetry', e); });
   }, []);
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    setFirebaseUserTraits({
-      isPremium,
-      theme: profile.theme,
-      defaultCurrency: profile.defaultCurrency,
-      hasProfileName: Boolean(profile.name.trim()),
-    }).catch((e) => { if (__DEV__) LoggerService.warn('FIREBASE', 'Failed to set user traits', e); });
-  }, [isLoading, isPremium, profile.defaultCurrency, profile.name, profile.theme]);
 
   useEffect(() => {
     if (!pathname || lastTrackedPath.current === pathname) return;

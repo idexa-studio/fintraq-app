@@ -49,11 +49,10 @@ export function useSearchResults(query: string) {
   const lastTracked = useRef('');
   useEffect(() => {
     if (!isSettled) return;
-    const topKind = sections[0]?.kind ?? 'none';
-    const signature = `${debouncedQuery}|${total}|${topKind}`;
+    const signature = `${debouncedQuery}|${total}`;
     if (lastTracked.current === signature) return;
     lastTracked.current = signature;
-    AnalyticsService.searchPerformed(debouncedQuery.length, total, topKind).catch(() => {});
+    AnalyticsService.searchPerformed().catch(() => {});
   }, [isSettled, debouncedQuery, total, sections]);
 
   return {
