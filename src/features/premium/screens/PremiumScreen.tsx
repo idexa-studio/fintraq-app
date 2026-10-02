@@ -30,7 +30,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
   const product = useMemo(() => products.find((p) => p.id === SKU_LIFETIME), [products]);
 
   useEffect(() => {
-    AnalyticsService.premiumPaywallViewed(triedFeature ?? 'premium_screen').catch(() => {});
+    AnalyticsService.premiumPaywallViewed().catch(() => {});
   }, [triedFeature]);
 
   const run = useCallback(async (action: () => Promise<unknown>) => {

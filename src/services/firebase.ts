@@ -1,19 +1,6 @@
 import { Platform } from 'react-native';
 
-type FirebaseUserTraits = {
-  isPremium?: boolean;
-  theme?: 'system' | 'light' | 'dark';
-  defaultCurrency?: string;
-  hasProfileName?: boolean;
-};
-
 type FirebaseEventParams = Record<string, string | number | boolean | string[] | number[] | null | undefined>;
-
-function toFirebaseValue(value: string | number | boolean | null | undefined) {
-  if (value == null) return '';
-  if (typeof value === 'boolean') return value ? 'true' : 'false';
-  return String(value);
-}
 
 async function getFirebaseModules() {
   if (Platform.OS === 'web') return null;
@@ -37,30 +24,6 @@ export async function configureFirebaseTelemetry(enabled: boolean) {
     modules.analyticsModule.setAnalyticsCollectionEnabled(analytics, enabled),
     modules.crashlyticsModule.setCrashlyticsCollectionEnabled(crashlytics, enabled),
   ]);
-}
-
-export async function setFirebaseUserTraits(traits: FirebaseUserTraits) {
-  const modules = await getFirebaseModules();
-  if (!modules) return;
-
-  const analytics = modules.analyticsModule.getAnalytics();
-  const crashlytics = modules.crashlyticsModule.getCrashlytics();
-
-  const entries = Object.entries(traits).filter(([, value]) => value != null);
-
-  await Promise.all(
-    entries.map(([key, value]) =>
-      modules.analyticsModule.setUserProperty(analytics, key, toFirebaseValue(value))
-    )
-  );
-
-  await modules.crashlyticsModule.setAttributes(
-    crashlytics,
-    entries.reduce<Record<string, string>>((acc, [key, value]) => {
-      acc[key] = toFirebaseValue(value);
-      return acc;
-    }, {})
-  );
 }
 
 export async function logFirebaseScreenView(pathname: string) {

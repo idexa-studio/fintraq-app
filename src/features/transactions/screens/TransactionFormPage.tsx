@@ -244,14 +244,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       } else {
         await createTransaction.mutateAsync(payload);
       }
-      await AnalyticsService.transactionSaved(
-        isEditMode ? 'edit' : 'create',
-        type,
-        amountValue,
-        selectedAccount?.currency ?? profile.defaultCurrency,
-        Boolean(note.trim()),
-        selectedPersonId != null
-      );
+      await AnalyticsService.transactionSaved();
       router.back();
     } catch {
       showAlert({ title: t('transactions.unableToSave'), message: t('transactions.unableToSaveMessage'), type: 'error' });

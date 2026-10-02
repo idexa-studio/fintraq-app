@@ -268,14 +268,14 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
 
       if (hasLifetime) {
         await savePremiumState({ isPremium: true });
-        await AnalyticsService.premiumPurchaseRestore('restored');
+        await AnalyticsService.premiumPurchaseRestore();
         showAlert({ title: i18n.t('premium.accessRestored'), message: i18n.t('premium.accessRestoredMessage'), type: 'success' });
       } else {
-        await AnalyticsService.premiumPurchaseRestore('not_found');
+        await AnalyticsService.premiumPurchaseRestore();
         showAlert({ title: i18n.t('premium.noPurchase'), message: i18n.t('premium.noPurchaseMessage'), type: 'info' });
       }
     } catch {
-      await AnalyticsService.premiumPurchaseRestore('failed');
+      await AnalyticsService.premiumPurchaseRestore();
       showAlert({ title: i18n.t('premium.restorationFailed'), message: i18n.t('premium.tryLater'), type: 'error' });
     }
   }, [isIapInitialized, savePremiumState, showAlert]);

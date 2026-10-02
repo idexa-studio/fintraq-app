@@ -186,7 +186,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       await seedCategories();
 
       await completeOnboarding();
-      await AnalyticsService.onboardingCompleted(currency);
+      await AnalyticsService.onboardingCompleted();
       setShowReminderDialog(true);
     } catch (e) {
       LoggerService.error('ONBOARDING', 'Setup finalization failed', e);

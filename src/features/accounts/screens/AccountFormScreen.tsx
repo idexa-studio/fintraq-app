@@ -135,12 +135,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         };
         await createAccount(createData);
       }
-      await AnalyticsService.accountSaved(
-        isEditing ? 'edit' : 'create',
-        currency,
-        !isEditing && parseAmount(data.balance) > 0,
-        accountType,
-      );
+      await AnalyticsService.accountSaved();
       router.back();
     } catch (error) {
       LoggerService.error('ACCOUNT_FORM', 'Failed to save account', error);
