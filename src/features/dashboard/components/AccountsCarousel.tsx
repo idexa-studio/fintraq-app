@@ -71,9 +71,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
                 currency={acc.currency}
                 style={styles.balance}
                 weight="bold"
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                minimumFontScale={0.7}
+                maxChars={13}
               />
             </View>
           </BentoPressable>

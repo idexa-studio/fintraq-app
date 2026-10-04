@@ -11,6 +11,11 @@ interface MoneyTextProps extends TextProps {
   weight?: 'regular' | 'medium' | 'semibold' | 'bold';
   /** Abbreviate large amounts: $1.2K, $3.4M */
   compact?: boolean;
+  /**
+   * Room in characters (sign and symbol included). A longer full amount switches to the compact
+   * form instead of being shrunk or cut off; screen readers still hear the exact figure.
+   */
+  maxChars?: number;
 }
 
 export const MoneyText = React.memo(function MoneyText({
@@ -19,6 +24,7 @@ export const MoneyText = React.memo(function MoneyText({
   type = 'NONE',
   weight = 'bold',
   compact = false,
+  maxChars,
   style,
   ...props
 }: MoneyTextProps) {
@@ -26,10 +32,13 @@ export const MoneyText = React.memo(function MoneyText({
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const { prefix, color, formattedAmount, fontFamily } = useMemo(() => {
+  const { prefix, color, formattedAmount, fullAmount, fontFamily } = useMemo(() => {
     const isCustomSign = type === 'CR' || type === 'DR';
     const valToFormat = isCustomSign ? Math.abs(amount) : amount;
-    const formatted = formatCurrency(valToFormat, currency, compact);
+    const full = formatCurrency(valToFormat, currency, false);
+    const signChars = isCustomSign ? 1 : 0;
+    const tooLong = maxChars !== undefined && full.length + signChars > maxChars;
+    const formatted = compact || tooLong ? formatCurrency(valToFormat, currency, true) : full;
 
     let p = '';
     let c = colors.text;
@@ -50,8 +59,8 @@ export const MoneyText = React.memo(function MoneyText({
     else if (weight === 'semibold') ff = typography.fonts.amountRegular;
     else ff = typography.fonts.amountBold;
 
-    return { prefix: p, color: c, formattedAmount: formatted, fontFamily: ff };
-  }, [amount, currency, type, weight, compact, colors.text, colors.success, colors.danger, typography.fonts]);
+    return { prefix: p, color: c, formattedAmount: formatted, fullAmount: full, fontFamily: ff };
+  }, [amount, currency, type, weight, compact, maxChars, colors.text, colors.success, colors.danger, typography.fonts]);
 
   return (
     <Text
@@ -62,6 +71,7 @@ export const MoneyText = React.memo(function MoneyText({
       ]}
       numberOfLines={1}
       ellipsizeMode="tail"
+      accessibilityLabel={`${prefix}${fullAmount}`}
       {...props}
     >
       {prefix}{formattedAmount}

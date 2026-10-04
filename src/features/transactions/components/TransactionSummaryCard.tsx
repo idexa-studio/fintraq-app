@@ -43,7 +43,8 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
         style={styles.net}
         numberOfLines={1}
         adjustsFontSizeToFit
-        minimumFontScale={0.55}
+        minimumFontScale={0.8}
+        maxChars={16}
       />
 
       <HeroSplit

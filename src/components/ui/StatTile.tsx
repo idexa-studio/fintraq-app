@@ -59,7 +59,7 @@ export const StatTile = React.memo(function StatTile({
         <Text variant="label" tone="muted" numberOfLines={2} style={styles.label}>{label}</Text>
       </View>
       {amount !== undefined ? (
-        <MoneyText amount={amount} currency={currency} type={type} compact={compact} style={styles.value} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} />
+        <MoneyText amount={amount} currency={currency} type={type} compact={compact} style={styles.value} maxChars={11} />
       ) : (
         <Text variant="amountLarge" numberOfLines={1}>{value ?? '—'}</Text>
       )}
