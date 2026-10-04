@@ -127,8 +127,12 @@ const id: Translation = {
   editEntry: 'Ubah catatan', newEntry: 'Catatan baru', fromAccount: 'Dari akun', toAccount: 'Ke akun', noCompatible: 'Tidak ada akun yang kompatibel untuk transfer ini.', linkedPerson: 'Orang terkait', unknown: 'Tidak diketahui', noPersonLinked: 'Tidak ada orang terkait', time: 'Waktu', note: 'Catatan', optionalContext: 'Konteks opsional', saveChanges: 'Simpan perubahan', saveTransaction: 'Simpan transaksi', none: 'Tidak ada',
   addedOn: 'Ditambahkan {{date}}', detailTitle: 'Transaksi', notFound: 'Transaksi tidak ditemukan.', detailDeleteTitle: 'Hapus transaksi', detailDeleteMessage: 'Ini akan membalikkan dampak pada saldo dan tidak dapat dibatalkan.', from: 'Dari', to: 'Ke', created: 'Dibuat', cancel: 'Batal' },
   onboardingFlow: {
+    balanceHint: 'Isi saat ini. Selanjutnya, transaksi yang memperbaruinya.', entryNote: 'Catatan (opsional)', entryNotePlaceholder: 'mis. Makan siang dengan tim', balanceAfter: '{{account}} setelahnya',
+    accountNameRequired: 'Beri nama akunnya', invalidAmount: 'Jumlah itu sepertinya tidak benar', entryAmountRequired: 'Masukkan jumlah, atau lewati dulu', addEntry: 'Tambah transaksi', skipForNow: 'Lewati dulu',
     getStarted: 'Mulai', restoreFromBackup: 'Pulihkan dari cadangan', welcomeSubtitle: 'Lacak pengeluaran, pemasukan, dan pinjaman di satu tempat yang tenang dan pribadi. Penyiapan kurang dari semenit.',
     steps: {
+      account: { eyebrow: 'Akun pertamamu', title: 'Di mana uangmu disimpan?', subtitle: 'Mulai dengan satu akun — tunai, bank, atau kartu. Kamu bisa menambah lagi kapan saja.' },
+      first_entry: { eyebrow: 'Coba', title: 'Catat transaksi pertamamu.', subtitle: 'Apa pengeluaran atau pemasukan terakhirmu? Tambahkan sekarang dan lihat cara aplikasi mencatatnya.' },
       welcome: { eyebrow: 'Memulai', title: 'Bangun pusat kendali keuangan Anda.', subtitle: 'Alur pengaturan yang tenang dengan default lengkap dan akun awal yang rapi.' },
       setup_choice: { eyebrow: 'Mode pengaturan', title: 'Bagaimana Anda ingin memulai?', subtitle: 'Mulai dengan ruang kerja baru atau pulihkan cadangan Google Drive yang ada.' },
       profile: { eyebrow: 'Profil Anda', title: 'Ceritakan tentang Anda.', subtitle: 'Atur nama dan mata uang default untuk mempersonalisasi ruang kerja Anda.' },

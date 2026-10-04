@@ -127,8 +127,12 @@ const bn: Translation = {
   editEntry: 'এন্ট্রি সম্পাদনা', newEntry: 'নতুন এন্ট্রি', fromAccount: 'যে অ্যাকাউন্ট থেকে', toAccount: 'যে অ্যাকাউন্টে', noCompatible: 'এই ট্রান্সফারের জন্য কোনো উপযুক্ত অ্যাকাউন্ট নেই।', linkedPerson: 'যুক্ত ব্যক্তি', unknown: 'অজানা', noPersonLinked: 'কোনো ব্যক্তি যুক্ত নেই', time: 'সময়', note: 'নোট', optionalContext: 'ঐচ্ছিক বিবরণ', saveChanges: 'পরিবর্তন সংরক্ষণ', saveTransaction: 'লেনদেন সংরক্ষণ', none: 'কিছু নয়',
   addedOn: '{{date}} তারিখে যোগ করা হয়েছে', detailTitle: 'লেনদেন', notFound: 'লেনদেন পাওয়া যায়নি।', detailDeleteTitle: 'লেনদেন মুছুন', detailDeleteMessage: 'এটি ব্যালেন্সের প্রভাব ফিরিয়ে আনবে এবং পূর্বাবস্থায় ফেরানো যাবে না।', from: 'থেকে', to: 'প্রতি', created: 'তৈরির সময়', cancel: 'বাতিল' },
   onboardingFlow: {
+    balanceHint: 'এখন এতে কত আছে। এরপর থেকে লেনদেনই এটি হালনাগাদ রাখবে।', entryNote: 'নোট (ঐচ্ছিক)', entryNotePlaceholder: 'যেমন দলের সাথে দুপুরের খাবার', balanceAfter: 'এরপর {{account}}',
+    accountNameRequired: 'অ্যাকাউন্টের একটি নাম দিন', invalidAmount: 'এই পরিমাণটি ঠিক মনে হচ্ছে না', entryAmountRequired: 'পরিমাণ লিখুন, অথবা এখন বাদ দিন', addEntry: 'এন্ট্রি যোগ করুন', skipForNow: 'এখন বাদ দিন',
     getStarted: 'শুরু করুন', restoreFromBackup: 'ব্যাকআপ থেকে ফেরত আনুন', welcomeSubtitle: 'খরচ, আয় ও ঋণ এক শান্ত, ব্যক্তিগত জায়গায় ট্র্যাক করুন। সেটআপে এক মিনিটও লাগে না।',
     steps: {
+      account: { eyebrow: 'আপনার প্রথম অ্যাকাউন্ট', title: 'আপনার টাকা কোথায় থাকে?', subtitle: 'একটি অ্যাকাউন্ট দিয়ে শুরু করুন — নগদ, ব্যাংক বা কার্ড। পরে যেকোনো সময় আরও যোগ করুন।' },
+      first_entry: { eyebrow: 'চেষ্টা করুন', title: 'আপনার প্রথম এন্ট্রি যোগ করুন।', subtitle: 'শেষবার কী খরচ বা আয় করেছেন? এখনই যোগ করুন, দেখুন অ্যাপ কীভাবে হিসাব রাখে।' },
       welcome: { eyebrow: 'শুরু করা যাক', title: 'আপনার ফিন্যান্স ককপিট তৈরি করুন।', subtitle: 'সম্পূর্ণ ডিফল্ট ও পরিচ্ছন্ন অ্যাকাউন্ট সহ একটি সহজ সেটআপ।' },
       setup_choice: { eyebrow: 'সেটআপ মোড', title: 'আপনি কীভাবে শুরু করতে চান?', subtitle: 'নতুন ওয়ার্কস্পেস দিয়ে শুরু করুন অথবা বিদ্যমান Google Drive ব্যাকআপ রিস্টোর করুন।' },
       profile: { eyebrow: 'আপনার প্রোফাইল', title: 'আপনার সম্পর্কে বলুন।', subtitle: 'ওয়ার্কস্পেস নিজের মতো করতে নাম ও ডিফল্ট মুদ্রা ঠিক করুন।' },

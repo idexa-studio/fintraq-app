@@ -127,8 +127,12 @@ const mr: Translation = {
   editEntry: 'नोंद संपादित करा', newEntry: 'नवीन नोंद', fromAccount: 'कोणत्या खात्यातून', toAccount: 'कोणत्या खात्यात', noCompatible: 'या हस्तांतरणासाठी योग्य खाती नाहीत.', linkedPerson: 'जोडलेली व्यक्ती', unknown: 'अज्ञात', noPersonLinked: 'कोणतीही व्यक्ती जोडलेली नाही', time: 'वेळ', note: 'टीप', optionalContext: 'पर्यायी तपशील', saveChanges: 'बदल जतन करा', saveTransaction: 'व्यवहार जतन करा', none: 'काहीही नाही',
   addedOn: '{{date}} रोजी जोडले', detailTitle: 'व्यवहार', notFound: 'व्यवहार सापडला नाही.', detailDeleteTitle: 'व्यवहार हटवा', detailDeleteMessage: 'यामुळे शिल्लकीवरील परिणाम उलटवला जाईल आणि हे पूर्ववत करता येणार नाही.', from: 'कडून', to: 'कडे', created: 'तयार केले', cancel: 'रद्द करा' },
   onboardingFlow: {
+    balanceHint: 'यात सध्या किती आहे. यापुढे व्यवहार ते अद्ययावत ठेवतील.', entryNote: 'टीप (पर्यायी)', entryNotePlaceholder: 'उदा. टीमसोबत जेवण', balanceAfter: 'यानंतर {{account}}',
+    accountNameRequired: 'खात्याला नाव द्या', invalidAmount: 'ही रक्कम बरोबर वाटत नाही', entryAmountRequired: 'रक्कम टाका, किंवा आत्ता वगळा', addEntry: 'नोंद जोडा', skipForNow: 'आत्ता वगळा',
     getStarted: 'सुरू करा', restoreFromBackup: 'बॅकअपमधून पुनर्संचयित करा', welcomeSubtitle: 'खर्च, उत्पन्न आणि कर्जे एका शांत, खाजगी ठिकाणी ट्रॅक करा. सेटअपला एक मिनिटही लागत नाही.',
     steps: {
+      account: { eyebrow: 'तुमचे पहिले खाते', title: 'तुमचे पैसे कुठे असतात?', subtitle: 'एका खात्याने सुरुवात करा — रोख, बँक किंवा कार्ड. नंतर कधीही आणखी जोडा.' },
+      first_entry: { eyebrow: 'करून पहा', title: 'तुमची पहिली नोंद करा.', subtitle: 'शेवटचा खर्च किंवा उत्पन्न कोणते होते? आताच जोडा आणि ॲप हिशोब कसा ठेवते ते पहा.' },
       welcome: { eyebrow: 'सुरुवात करूया', title: 'तुमचे फायनान्स कॉकपिट तयार करा.', subtitle: 'पूर्ण डिफॉल्ट आणि स्वच्छ खाते-सुरुवातीसह शांत सेटअप.' },
       setup_choice: { eyebrow: 'सेटअप पद्धत', title: 'तुम्हाला कशी सुरुवात करायची आहे?', subtitle: 'नवीन वर्कस्पेसने सुरुवात करा किंवा आधीचा Google Drive बॅकअप रिस्टोअर करा.' },
       profile: { eyebrow: 'तुमचे प्रोफाइल', title: 'आम्हाला तुमच्याबद्दल सांगा.', subtitle: 'वर्कस्पेस तुमच्यानुसार बनवण्यासाठी नाव आणि डिफॉल्ट चलन ठरवा.' },

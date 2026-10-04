@@ -127,8 +127,12 @@ const es: Translation = {
   editEntry: 'Editar registro', newEntry: 'Nuevo registro', fromAccount: 'Cuenta de origen', toAccount: 'Cuenta de destino', noCompatible: 'No hay cuentas compatibles para esta transferencia.', linkedPerson: 'Persona vinculada', unknown: 'Desconocido', noPersonLinked: 'Sin persona vinculada', time: 'Hora', note: 'Nota', optionalContext: 'Contexto opcional', saveChanges: 'Guardar cambios', saveTransaction: 'Guardar transacción', none: 'Ninguna',
   addedOn: 'Añadido el {{date}}', detailTitle: 'Transacción', notFound: 'Transacción no encontrada.', detailDeleteTitle: 'Eliminar transacción', detailDeleteMessage: 'Se revertirá el efecto en el saldo y no se puede deshacer.', from: 'De', to: 'A', created: 'Creada', cancel: 'Cancelar' },
   onboardingFlow: {
+    balanceHint: 'Lo que tiene ahora mismo. A partir de aquí, los movimientos lo mantienen al día.', entryNote: 'Nota (opcional)', entryNotePlaceholder: 'p. ej. Comida con el equipo', balanceAfter: '{{account}} después',
+    accountNameRequired: 'Ponle un nombre a la cuenta', invalidAmount: 'Ese importe no parece correcto', entryAmountRequired: 'Introduce un importe u omítelo por ahora', addEntry: 'Añadir movimiento', skipForNow: 'Omitir por ahora',
     getStarted: 'Empezar', restoreFromBackup: 'Restaurar copia de seguridad', welcomeSubtitle: 'Controla gastos, ingresos y préstamos en un lugar tranquilo y privado. La configuración lleva menos de un minuto.',
     steps: {
+      account: { eyebrow: 'Tu primera cuenta', title: '¿Dónde está tu dinero?', subtitle: 'Empieza con una cuenta: efectivo, banco o tarjeta. Puedes añadir más cuando quieras.' },
+      first_entry: { eyebrow: 'Pruébalo', title: 'Registra tu primer movimiento.', subtitle: '¿Qué fue lo último que gastaste o ganaste? Añádelo ahora y mira cómo la app lleva la cuenta.' },
       welcome: { eyebrow: 'Primeros pasos', title: 'Construye tu centro de control financiero.', subtitle: 'Una configuración tranquila con valores completos y una cuenta inicial limpia.' },
       setup_choice: { eyebrow: 'Modo de configuración', title: '¿Cómo quieres empezar?', subtitle: 'Empieza con un espacio nuevo o restaura una copia existente de Google Drive.' },
       profile: { eyebrow: 'Tu perfil', title: 'Cuéntanos sobre ti.', subtitle: 'Indica tu nombre y moneda predeterminada para personalizar tu espacio.' },

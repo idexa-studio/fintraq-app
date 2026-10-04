@@ -127,8 +127,12 @@ const ja: Translation = {
   editEntry: '記録を編集', newEntry: '新しい記録', fromAccount: '出金元口座', toAccount: '入金先口座', noCompatible: 'この振替に使える口座がありません。', linkedPerson: '紐づく人物', unknown: '不明', noPersonLinked: '人物が紐づいていません', time: '時刻', note: 'メモ', optionalContext: '補足（任意）', saveChanges: '変更を保存', saveTransaction: '取引を保存', none: 'なし',
   addedOn: '{{date}} に追加', detailTitle: '取引', notFound: '取引が見つかりません。', detailDeleteTitle: '取引を削除', detailDeleteMessage: '残高への反映が元に戻り、この操作は取り消せません。', from: '出金元', to: '入金先', created: '作成日', cancel: 'キャンセル' },
   onboardingFlow: {
+    balanceHint: '今の残高です。これからは取引で自動的に更新されます。', entryNote: 'メモ（任意）', entryNotePlaceholder: '例：チームでランチ', balanceAfter: '記録後の{{account}}',
+    accountNameRequired: '口座に名前を付けてください', invalidAmount: '金額が正しくないようです', entryAmountRequired: '金額を入力するか、今はスキップしてください', addEntry: '記録する', skipForNow: '今はスキップ',
     getStarted: 'はじめる', restoreFromBackup: 'バックアップから復元', welcomeSubtitle: '支出・収入・貸し借りを、落ち着いたプライベートな場所でまとめて管理。設定は1分以内で完了します。',
     steps: {
+      account: { eyebrow: '最初の口座', title: 'お金はどこにありますか？', subtitle: '現金・銀行・カードから1つ始めましょう。あとでいつでも追加できます。' },
+      first_entry: { eyebrow: '試してみる', title: '最初の記録をつけましょう。', subtitle: '最後に使った・受け取ったお金は？今すぐ追加して、アプリの記録の仕方を見てみましょう。' },
       welcome: { eyebrow: 'はじめに', title: 'あなたの家計コックピットを作ろう。', subtitle: '落ち着いた設定フローで、標準設定と最初の口座がそろいます。' },
       setup_choice: { eyebrow: 'セットアップ方法', title: 'どのように始めますか？', subtitle: '新しいワークスペースで始めるか、既存のGoogle Driveバックアップを復元します。' },
       profile: { eyebrow: 'プロフィール', title: 'あなたについて教えてください。', subtitle: 'お名前と標準の通貨を設定して、ワークスペースをカスタマイズします。' },

@@ -127,8 +127,12 @@ const de: Translation = {
   editEntry: 'Eintrag bearbeiten', newEntry: 'Neuer Eintrag', fromAccount: 'Von Konto', toAccount: 'Auf Konto', noCompatible: 'Keine kompatiblen Konten für diese Überweisung.', linkedPerson: 'Verknüpfte Person', unknown: 'Unbekannt', noPersonLinked: 'Keine Person verknüpft', time: 'Uhrzeit', note: 'Notiz', optionalContext: 'Optionaler Kontext', saveChanges: 'Änderungen speichern', saveTransaction: 'Transaktion speichern', none: 'Keine',
   addedOn: 'Hinzugefügt am {{date}}', detailTitle: 'Transaktion', notFound: 'Transaktion nicht gefunden.', detailDeleteTitle: 'Transaktion löschen', detailDeleteMessage: 'Die Auswirkung auf den Kontostand wird rückgängig gemacht. Das kann nicht widerrufen werden.', from: 'Von', to: 'An', created: 'Erstellt', cancel: 'Abbrechen' },
   onboardingFlow: {
+    balanceHint: 'Was gerade drauf ist. Ab jetzt halten Transaktionen den Stand aktuell.', entryNote: 'Notiz (optional)', entryNotePlaceholder: 'z. B. Mittagessen mit dem Team', balanceAfter: '{{account}} danach',
+    accountNameRequired: 'Gib dem Konto einen Namen', invalidAmount: 'Dieser Betrag sieht nicht richtig aus', entryAmountRequired: 'Gib einen Betrag ein oder überspringe es', addEntry: 'Eintrag hinzufügen', skipForNow: 'Jetzt überspringen',
     getStarted: 'Los geht’s', restoreFromBackup: 'Aus Backup wiederherstellen', welcomeSubtitle: 'Ausgaben, Einnahmen und Kredite an einem ruhigen, privaten Ort verfolgen. Die Einrichtung dauert keine Minute.',
     steps: {
+      account: { eyebrow: 'Dein erstes Konto', title: 'Wo liegt dein Geld?', subtitle: 'Starte mit einem Konto – Bargeld, Bank oder Karte. Weitere kannst du jederzeit hinzufügen.' },
+      first_entry: { eyebrow: 'Ausprobieren', title: 'Erfasse deinen ersten Eintrag.', subtitle: 'Was hast du zuletzt ausgegeben oder eingenommen? Trag es jetzt ein und sieh, wie die App Buch führt.' },
       welcome: { eyebrow: 'Erste Schritte', title: 'Baue dein Finanz-Cockpit.', subtitle: 'Eine ruhige Einrichtung mit vollständigen Voreinstellungen und sauberem Startkonto.' },
       setup_choice: { eyebrow: 'Einrichtungsmodus', title: 'Wie möchtest du starten?', subtitle: 'Starte mit einem neuen Arbeitsbereich oder stelle ein bestehendes Google-Drive-Backup wieder her.' },
       profile: { eyebrow: 'Dein Profil', title: 'Erzähl uns von dir.', subtitle: 'Lege Name und Standardwährung fest, um deinen Arbeitsbereich zu personalisieren.' },
