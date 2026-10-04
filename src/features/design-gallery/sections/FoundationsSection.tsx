@@ -90,13 +90,17 @@ export function FoundationsSection() {
           ))}
         </Specimen>
 
-        <Specimen title="Hero palette" description="Fixed colours for the dashboard balance card. Read via useTheme().heroCard.">
+        <Specimen title="Hero palette" description="Monochrome hero colours, read via useTheme().heroCard: text, ink discs with onInk glyphs, frosted tiles.">
           <View style={{ backgroundColor: heroCard.background, borderRadius: radius('2xl'), padding: spacing('5'), gap: spacing('2') }}>
             <Text variant="label" color={heroCard.textMuted}>BALANCE</Text>
             <Text variant="amountHero" color={heroCard.textPrimary}>$12,480.00</Text>
-            <View style={{ flexDirection: 'row', gap: spacing('5') }}>
-              <Text variant="calloutStrong" color={heroCard.income}>+ $4,200</Text>
-              <Text variant="calloutStrong" color={heroCard.expense}>− $1,730</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing('2') }}>
+              <View style={{ width: 40, height: 40, borderRadius: radius('full'), backgroundColor: heroCard.ink, alignItems: 'center', justifyContent: 'center' }}>
+                <Icon name="arrow-up-right" size={18} color={heroCard.onInk} weight="bold" />
+              </View>
+              <View style={{ paddingHorizontal: spacing('3'), height: 28, justifyContent: 'center', borderRadius: radius('full'), backgroundColor: heroCard.tile }}>
+                <Text variant="label" color={heroCard.textPrimary}>+ $4,200 this month</Text>
+              </View>
             </View>
           </View>
         </Specimen>

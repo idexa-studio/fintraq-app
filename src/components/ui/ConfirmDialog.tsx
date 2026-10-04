@@ -1,4 +1,5 @@
 import { Dialog } from './Dialog';
+import type { IconSource } from './Icon';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +15,8 @@ type ConfirmDialogProps = {
   destructive?: boolean;
   /** Shows a spinner and blocks repeat taps while a previous confirm is still running. */
   isLoading?: boolean;
+  /** Badge above the title. Defaults to a bin for destructive asks, a question mark otherwise. */
+  icon?: IconSource;
 };
 
 /** Asks before doing something. Title is the question; the confirm label repeats the verb. */
@@ -27,6 +30,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
   cancelLabel,
   destructive = false,
   isLoading = false,
+  icon,
 }: ConfirmDialogProps) {
   const { t } = useTranslation();
 
@@ -43,7 +47,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
       onClose={onClose}
       title={title}
       message={message}
-      icon={destructive ? 'trash' : undefined}
+      icon={icon ?? (destructive ? 'trash' : 'question')}
       tone={destructive ? 'danger' : 'neutral'}
       dismissible={!isLoading}
       actions={[

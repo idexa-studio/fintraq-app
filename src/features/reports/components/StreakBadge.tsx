@@ -20,14 +20,14 @@ export const StreakBadge = React.memo(function StreakBadge() {
       <Icon
         name="streak"
         size={13}
-        color={theme.colors.warning}
+        color={theme.heroCard.textPrimary}
       />
       <Text variant="micro" color={theme.heroCard.textPrimary}>{t('dashboard.streakDays', { count: streak })}</Text>
     </View>
   );
 });
 
-const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
+const createStyles = ({ heroCard, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
     container: {
       flexDirection: 'row',
@@ -36,7 +36,7 @@ const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
       paddingHorizontal: spacing('2'),
       paddingVertical: spacing('1'),
       borderRadius: radius('full'),
-      backgroundColor: alpha(colors.warning, 'subtle'),
+      backgroundColor: heroCard.tile,
       alignSelf: 'flex-start',
     },
   });

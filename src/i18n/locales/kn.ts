@@ -113,6 +113,7 @@ const kn: Translation = {
     cannotDelete: 'ವರ್ಗವನ್ನು ಅಳಿಸಲಾಗದು', deleteFailed: 'ವರ್ಗವನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ.',
   },
   dashboard: {
+    pulseIncome: 'ಆದಾಯ', pulseKept: '{{pct}}% ಉಳಿತಾಯ', pulseOverIncome: 'ಆದಾಯಕ್ಕಿಂತ ಹೆಚ್ಚು ಖರ್ಚು', pulseNoIncome: 'ಇನ್ನೂ ಆದಾಯ ಇಲ್ಲ',
     netThisMonth: 'ಈ ತಿಂಗಳು {{amount}}', thisMonth: 'ಈ ತಿಂಗಳು', quickActions: 'ತ್ವರಿತ ಕ್ರಿಯೆಗಳು', quickExpense: 'ಖರ್ಚು', quickIncome: 'ಆದಾಯ', quickTransfer: 'ವರ್ಗಾವಣೆ', quickLoan: 'ಸಾಲ', pulseSpent: 'ಇಲ್ಲಿಯವರೆಗೆ ಖರ್ಚು', pulseOfLast: 'ಕಳೆದ ತಿಂಗಳ {{pct}}%', pulseLastMonth: 'ಕಳೆದ ತಿಂಗಳು', pulseDay: '{{total}} ರಲ್ಲಿ ದಿನ {{day}}', pulseEmpty: 'ಈ ತಿಂಗಳು ಇನ್ನೂ ಖರ್ಚು ಇಲ್ಲ', rhythmTitle: 'ಖರ್ಚಿನ ಲಯ', rhythmHint: 'ಕಳೆದ 5 ವಾರಗಳು', rhythmLess: 'ಕಡಿಮೆ', rhythmMore: 'ಹೆಚ್ಚು', rhythmNone: 'ಖರ್ಚು ಇಲ್ಲ', rhythmSpent: '{{amount}} ಖರ್ಚು',
     streakDays: '{{count}} ದಿನಗಳ ಸರಣಿ',
     accounts: 'ಖಾತೆಗಳು', manage: 'ನಿರ್ವಹಿಸಿ', topExpenses: 'ಪ್ರಮುಖ ವೆಚ್ಚಗಳು', people: 'ವ್ಯಕ್ತಿಗಳು', loans: 'ಸಾಲಗಳು', recent: 'ಇತ್ತೀಚಿನವು', seeAll: 'ಎಲ್ಲವನ್ನೂ ನೋಡಿ',
@@ -128,6 +129,11 @@ const kn: Translation = {
   editEntry: 'ನಮೂದನ್ನು ಸಂಪಾದಿಸಿ', newEntry: 'ಹೊಸ ನಮೂದು', fromAccount: 'ಯಾವ ಖಾತೆಯಿಂದ', toAccount: 'ಯಾವ ಖಾತೆಗೆ', noCompatible: 'ಈ ವರ್ಗಾವಣೆಗೆ ಹೊಂದುವ ಖಾತೆಗಳಿಲ್ಲ.', linkedPerson: 'ಲಿಂಕ್ ಆದ ವ್ಯಕ್ತಿ', unknown: 'ಅಪರಿಚಿತ', noPersonLinked: 'ಯಾವುದೇ ವ್ಯಕ್ತಿ ಲಿಂಕ್ ಆಗಿಲ್ಲ', time: 'ಸಮಯ', note: 'ಟಿಪ್ಪಣಿ', optionalContext: 'ಐಚ್ಛಿಕ ವಿವರ', saveChanges: 'ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ', saveTransaction: 'ವಹಿವಾಟು ಉಳಿಸಿ', none: 'ಯಾವುದೂ ಇಲ್ಲ',
   addedOn: '{{date}} ರಂದು ಸೇರಿಸಲಾಗಿದೆ', detailTitle: 'ವಹಿವಾಟು', notFound: 'ವಹಿವಾಟು ಕಂಡುಬಂದಿಲ್ಲ.', detailDeleteTitle: 'ವಹಿವಾಟು ಅಳಿಸಿ', detailDeleteMessage: 'ಇದು ಬ್ಯಾಲೆನ್ಸ್ ಮೇಲಿನ ಪರಿಣಾಮವನ್ನು ಹಿಂತಿರುಗಿಸುತ್ತದೆ ಮತ್ತು ರದ್ದುಮಾಡಲಾಗದು.', from: 'ಇಂದ', to: 'ಗೆ', created: 'ರಚಿಸಿದ್ದು', cancel: 'ರದ್ದುಮಾಡಿ' },
   onboardingFlow: {
+    stepCount: '{{current}}/{{total}}', yourName: 'ನಿಮ್ಮ ಹೆಸರು', moreCurrencies: 'ಇನ್ನಷ್ಟು', previewLabel: 'ಹೀಗೆ ಕಾಣುತ್ತದೆ', profileSubtitle: 'ಶುಭಾಶಯಕ್ಕೆ ನಿಮ್ಮ ಹೆಸರು, ಮತ್ತು ನೀವು ಲೆಕ್ಕ ಹಾಕುವ ಕರೆನ್ಸಿ.',
+    hello: { title: 'ಹಣ, ನಿರಾಳವಾಗಿ.', subtitle: 'ಖರ್ಚು, ಆದಾಯ ಮತ್ತು ಸಾಲ ಒಂದೇ ಖಾಸಗಿ ಜಾಗದಲ್ಲಿ. ಒಂದು ನಿಮಿಷದಲ್ಲಿ ಸಿದ್ಧ.' },
+    perks: { offline: 'ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಕೆಲಸ', private: 'ಸಾಧನದಲ್ಲೇ ಉಳಿಯುತ್ತದೆ', fast: 'ಸೆಕೆಂಡುಗಳಲ್ಲಿ ದಾಖಲು' },
+    mock: { salary: 'ಸಂಬಳ', coffee: 'ಕಾಫಿ' },
+    typeHints: { cash: 'ನೋಟು & ನಾಣ್ಯ', bank: 'ಉಳಿತಾಯ ಅಥವಾ ಚಾಲ್ತಿ', ewallet: 'ಫೋನ್ & ಆನ್‌ಲೈನ್ ವಾಲೆಟ್', credit_card: 'ಈಗ ಖರ್ಚು, ನಂತರ ಪಾವತಿ' },
     balanceHint: 'ಈಗ ಇದರಲ್ಲಿ ಎಷ್ಟು ಇದೆ. ಮುಂದೆ ವಹಿವಾಟುಗಳು ಇದನ್ನು ನವೀಕರಿಸುತ್ತವೆ.', entryNote: 'ಟಿಪ್ಪಣಿ (ಐಚ್ಛಿಕ)', entryNotePlaceholder: 'ಉದಾ. ತಂಡದೊಂದಿಗೆ ಊಟ', balanceAfter: 'ಇದರ ನಂತರ {{account}}',
     accountNameRequired: 'ಖಾತೆಗೆ ಒಂದು ಹೆಸರು ನೀಡಿ', invalidAmount: 'ಈ ಮೊತ್ತ ಸರಿಯಾಗಿ ಕಾಣುತ್ತಿಲ್ಲ', entryAmountRequired: 'ಮೊತ್ತ ನಮೂದಿಸಿ, ಅಥವಾ ಈಗ ಬಿಟ್ಟುಬಿಡಿ', addEntry: 'ನಮೂದು ಸೇರಿಸಿ', skipForNow: 'ಈಗ ಬಿಟ್ಟುಬಿಡಿ',
     getStarted: 'ಪ್ರಾರಂಭಿಸಿ', restoreFromBackup: 'ಬ್ಯಾಕಪ್‌ನಿಂದ ಮರುಸ್ಥಾಪಿಸಿ', welcomeSubtitle: 'ಖರ್ಚು, ಆದಾಯ ಮತ್ತು ಸಾಲಗಳನ್ನು ಒಂದು ಶಾಂತ, ಖಾಸಗಿ ಸ್ಥಳದಲ್ಲಿ ಟ್ರ್ಯಾಕ್ ಮಾಡಿ. ಸೆಟಪ್‌ಗೆ ಒಂದು ನಿಮಿಷಕ್ಕಿಂತ ಕಡಿಮೆ ಸಾಕು.',
@@ -258,6 +264,7 @@ const kn: Translation = {
     daysShort: { sun: 'ಭಾನು', mon: 'ಸೋಮ', tue: 'ಮಂಗಳ', wed: 'ಬುಧ', thu: 'ಗುರು', fri: 'ಶುಕ್ರ', sat: 'ಶನಿ' },
   },
   analytics: {
+    savedShare: 'ಆದಾಯದ {{pct}}% ಉಳಿತಾಯ', overspentShare: 'ಆದಾಯಕ್ಕಿಂತ {{pct}}% ಹೆಚ್ಚು ಖರ್ಚು',
     emptyTitle: 'ನಿಮ್ಮ ಒಳನೋಟಗಳು ಇಲ್ಲಿಂದ ಆರಂಭ', emptyHint: 'ಕೆಲವು ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ, ಈ ಟ್ಯಾಬ್ ನಿಮ್ಮ ಹಣದ ಚಲನೆ ತೋರಿಸುತ್ತದೆ.',
     emptyFeatures: { trend: { title: 'ಖರ್ಚಿನ ಪ್ರವೃತ್ತಿ', hint: 'ದಿನದಿಂದ ದಿನ ಅಥವಾ ತಿಂಗಳಿಂದ ತಿಂಗಳು, ನಿಮ್ಮ ಸರಾಸರಿಗೆ ಹೋಲಿಸಿ' }, categories: { title: 'ಹಣ ಎಲ್ಲಿಗೆ ಹೋಗುತ್ತದೆ', hint: 'ಖರ್ಚು ಮತ್ತು ಆದಾಯದಲ್ಲಿ ಪ್ರತಿ ವರ್ಗದ ಪಾಲು' }, forecast: { title: 'ತಿಂಗಳ ಕೊನೆಯ ಅಂದಾಜು', hint: 'ಇದುವರೆಗಿನ ವೇಗದಲ್ಲಿ ಈ ತಿಂಗಳು ಎಲ್ಲಿಗೆ' } },
     income: 'ಆದಾಯ', expenses: 'ವೆಚ್ಚಗಳು', expense: 'ವೆಚ್ಚ', netPosition: 'ನಿವ್ವಳ ಸ್ಥಿತಿ', dailyAvg: 'ಸರಾಸರಿ ದೈನಂದಿನ ವೆಚ್ಚ', highlights: 'ಪ್ರಮುಖಾಂಶಗಳು', topCategory: 'ಅತಿ ಹೆಚ್ಚು ವೆಚ್ಚದ ವರ್ಗ', biggestExpense: 'ಅತಿ ದೊಡ್ಡ ವೆಚ್ಚ',

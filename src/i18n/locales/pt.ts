@@ -113,6 +113,7 @@ const pt: Translation = {
     cannotDelete: 'Não é possível excluir a categoria', deleteFailed: 'Falha ao excluir a categoria.',
   },
   dashboard: {
+    pulseIncome: 'Recebido', pulseKept: 'Guardou {{pct}}%', pulseOverIncome: 'Gastou mais do que ganhou', pulseNoIncome: 'Ainda sem receitas',
     netThisMonth: '{{amount}} este mês', thisMonth: 'Este mês', quickActions: 'Ações rápidas', quickExpense: 'Despesa', quickIncome: 'Receita', quickTransfer: 'Transferir', quickLoan: 'Empréstimo', pulseSpent: 'Gasto até agora', pulseOfLast: '{{pct}}% do mês passado', pulseLastMonth: 'Mês passado', pulseDay: 'Dia {{day}} de {{total}}', pulseEmpty: 'Nenhum gasto este mês ainda', rhythmTitle: 'Ritmo de gastos', rhythmHint: 'Últimas 5 semanas', rhythmLess: 'Menos', rhythmMore: 'Mais', rhythmNone: 'Sem gastos', rhythmSpent: '{{amount}} gastos',
     streakDays: '{{count}} dias seguidos',
     accounts: 'Contas', manage: 'Gerenciar', topExpenses: 'Maiores despesas', people: 'Pessoas', loans: 'Empréstimos', recent: 'Recentes', seeAll: 'Ver tudo',
@@ -128,6 +129,11 @@ const pt: Translation = {
   editEntry: 'Editar lançamento', newEntry: 'Novo lançamento', fromAccount: 'Conta de origem', toAccount: 'Conta de destino', noCompatible: 'Não há contas compatíveis para esta transferência.', linkedPerson: 'Pessoa vinculada', unknown: 'Desconhecido', noPersonLinked: 'Nenhuma pessoa vinculada', time: 'Hora', note: 'Nota', optionalContext: 'Contexto opcional', saveChanges: 'Salvar alterações', saveTransaction: 'Salvar transação', none: 'Nenhuma',
   addedOn: 'Adicionado em {{date}}', detailTitle: 'Transação', notFound: 'Transação não encontrada.', detailDeleteTitle: 'Excluir transação', detailDeleteMessage: 'Isso reverterá o efeito no saldo e não pode ser desfeito.', from: 'De', to: 'Para', created: 'Criada', cancel: 'Cancelar' },
   onboardingFlow: {
+    stepCount: '{{current}}/{{total}}', yourName: 'Seu nome', moreCurrencies: 'Mais', previewLabel: 'Como vai aparecer', profileSubtitle: 'Seu nome para a saudação e a moeda em que você pensa.',
+    hello: { title: 'Dinheiro, com calma.', subtitle: 'Gastos, receitas e empréstimos num lugar privado. Pronto em menos de um minuto.' },
+    perks: { offline: 'Funciona offline', private: 'Fica no aparelho', fast: 'Registre em segundos' },
+    mock: { salary: 'Salário', coffee: 'Café' },
+    typeHints: { cash: 'Notas e moedas', bank: 'Poupança ou corrente', ewallet: 'Carteiras digitais', credit_card: 'Compre agora, pague depois' },
     balanceHint: 'O que ela tem agora. Daqui em diante, os lançamentos a mantêm atualizada.', entryNote: 'Nota (opcional)', entryNotePlaceholder: 'ex.: Almoço com a equipe', balanceAfter: '{{account}} depois disso',
     accountNameRequired: 'Dê um nome à conta', invalidAmount: 'Esse valor não parece certo', entryAmountRequired: 'Insira um valor ou pule por enquanto', addEntry: 'Adicionar', skipForNow: 'Pular por enquanto',
     getStarted: 'Começar', restoreFromBackup: 'Restaurar backup', welcomeSubtitle: 'Acompanhe gastos, receitas e empréstimos num lugar calmo e privado. A configuração leva menos de um minuto.',
@@ -258,6 +264,7 @@ const pt: Translation = {
     daysShort: { sun: 'Do', mon: 'Se', tue: 'Te', wed: 'Qu', thu: 'Qu', fri: 'Se', sat: 'Sá' },
   },
   analytics: {
+    savedShare: 'Poupou {{pct}}% da receita', overspentShare: 'Gastou {{pct}}% a mais do que ganhou',
     emptyTitle: 'Seus insights começam aqui', emptyHint: 'Adicione alguns lançamentos e esta aba mostrará como seu dinheiro se move.',
     emptyFeatures: { trend: { title: 'Tendências de gastos', hint: 'Dia a dia ou mês a mês, comparado à sua média' }, categories: { title: 'Para onde vai', hint: 'A parte de cada categoria no que você gasta e ganha' }, forecast: { title: 'Previsão de fim de mês', hint: 'Para onde este mês caminha no seu ritmo' } },
     income: 'Receitas', expenses: 'Despesas', expense: 'Despesa', netPosition: 'Posição líquida', dailyAvg: 'Gasto médio diário', highlights: 'Destaques', topCategory: 'Categoria com mais gastos', biggestExpense: 'Maior despesa',

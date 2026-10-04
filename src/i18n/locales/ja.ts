@@ -113,6 +113,7 @@ const ja: Translation = {
     cannotDelete: 'カテゴリを削除できません', deleteFailed: 'カテゴリを削除できませんでした。',
   },
   dashboard: {
+    pulseIncome: '収入', pulseKept: '{{pct}}%を貯蓄', pulseOverIncome: '収入を上回る支出', pulseNoIncome: 'まだ収入がありません',
     netThisMonth: '今月 {{amount}}', thisMonth: '今月', quickActions: 'クイック操作', quickExpense: '支出', quickIncome: '収入', quickTransfer: '振替', quickLoan: '貸し借り', pulseSpent: '今月の支出', pulseOfLast: '先月の{{pct}}%', pulseLastMonth: '先月', pulseDay: '{{total}}日中{{day}}日目', pulseEmpty: '今月はまだ支出がありません', rhythmTitle: '支出のリズム', rhythmHint: '過去5週間', rhythmLess: '少', rhythmMore: '多', rhythmNone: '支出なし', rhythmSpent: '{{amount}} 支出',
     streakDays: '{{count}}日連続',
     accounts: '口座', manage: '管理', topExpenses: '支出上位', people: '人物', loans: '貸し借り', recent: '最近', seeAll: 'すべて見る',
@@ -128,6 +129,11 @@ const ja: Translation = {
   editEntry: '記録を編集', newEntry: '新しい記録', fromAccount: '出金元口座', toAccount: '入金先口座', noCompatible: 'この振替に使える口座がありません。', linkedPerson: '紐づく人物', unknown: '不明', noPersonLinked: '人物が紐づいていません', time: '時刻', note: 'メモ', optionalContext: '補足（任意）', saveChanges: '変更を保存', saveTransaction: '取引を保存', none: 'なし',
   addedOn: '{{date}} に追加', detailTitle: '取引', notFound: '取引が見つかりません。', detailDeleteTitle: '取引を削除', detailDeleteMessage: '残高への反映が元に戻り、この操作は取り消せません。', from: '出金元', to: '入金先', created: '作成日', cancel: 'キャンセル' },
   onboardingFlow: {
+    stepCount: '{{current}}/{{total}}', yourName: 'お名前', moreCurrencies: 'その他', previewLabel: '表示イメージ', profileSubtitle: 'あいさつに使うお名前と、普段使う通貨を設定します。',
+    hello: { title: 'お金を、穏やかに。', subtitle: '支出・収入・貸し借りをひとつのプライベートな場所に。1分以内で準備完了。' },
+    perks: { offline: 'オフラインで動作', private: '端末内に保存', fast: '数秒で記録' },
+    mock: { salary: '給与', coffee: 'コーヒー' },
+    typeHints: { cash: '紙幣と硬貨', bank: '普通・当座預金', ewallet: 'スマホ・オンライン決済', credit_card: '後払い' },
     balanceHint: '今の残高です。これからは取引で自動的に更新されます。', entryNote: 'メモ（任意）', entryNotePlaceholder: '例：チームでランチ', balanceAfter: '記録後の{{account}}',
     accountNameRequired: '口座に名前を付けてください', invalidAmount: '金額が正しくないようです', entryAmountRequired: '金額を入力するか、今はスキップしてください', addEntry: '記録する', skipForNow: '今はスキップ',
     getStarted: 'はじめる', restoreFromBackup: 'バックアップから復元', welcomeSubtitle: '支出・収入・貸し借りを、落ち着いたプライベートな場所でまとめて管理。設定は1分以内で完了します。',
@@ -258,6 +264,7 @@ const ja: Translation = {
     daysShort: { sun: '日', mon: '月', tue: '火', wed: '水', thu: '木', fri: '金', sat: '土' },
   },
   analytics: {
+    savedShare: '収入の{{pct}}%を貯蓄', overspentShare: '収入より{{pct}}%多く支出',
     emptyTitle: 'ここから分析が始まります', emptyHint: '取引をいくつか追加すると、お金の動きがここに表示されます。',
     emptyFeatures: { trend: { title: '支出の推移', hint: '日ごと・月ごとに、平均と比べて' }, categories: { title: 'お金の行き先', hint: '支出と収入に占める各カテゴリの割合' }, forecast: { title: '月末の予測', hint: 'これまでのペースで今月がどうなるか' } },
     income: '収入', expenses: '支出', expense: '支出', netPosition: '収支', dailyAvg: '1日の平均支出', highlights: 'ハイライト', topCategory: '支出が最も多いカテゴリ', biggestExpense: '最大の支出',

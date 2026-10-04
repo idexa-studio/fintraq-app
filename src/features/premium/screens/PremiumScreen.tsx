@@ -161,7 +161,7 @@ const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType, hero
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing('1.5'),
-      backgroundColor: heroCard.separator,
+      backgroundColor: heroCard.tile,
       paddingVertical: spacing('2'),
       paddingHorizontal: spacing('3'),
       borderRadius: radius('lg'),

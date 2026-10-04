@@ -16,7 +16,7 @@ type Props = {
 
 /**
  * One-tap entry points for the most common writes, each opening its form already set up. Drawn as
- * soft tiles on the ink hero: lime icons, white labels.
+ * compact ink discs with the label beneath, like a phone's dock — the balance stays the hero.
  */
 export const QuickActions = React.memo(function QuickActions({ canTransfer }: Props) {
   const theme = useTheme();
@@ -48,7 +48,9 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
           accessibilityRole="button"
           accessibilityLabel={action.label}
         >
-          <Icon name={action.icon} size={20} color={hero.income} weight="bold" />
+          <View style={styles.disc}>
+            <Icon name={action.icon} size={20} color={hero.onInk} weight="bold" />
+          </View>
           <Text variant="label" color={hero.textPrimary} numberOfLines={1}>
             {action.label}
           </Text>
@@ -58,16 +60,18 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
   );
 });
 
-const createStyles = ({ heroCard: hero, spacing, radius, alpha }: ThemeContextType) =>
+const DISC = 48;
+
+const createStyles = ({ heroCard: hero, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
-    row: { flexDirection: 'row', gap: spacing('2') },
-    action: {
-      flex: 1,
+    row: { flexDirection: 'row', justifyContent: 'space-around', paddingTop: spacing('1') },
+    action: { flex: 1, maxWidth: 88, alignItems: 'center', gap: spacing('1.5') },
+    disc: {
+      width: DISC,
+      height: DISC,
+      borderRadius: radius('full'),
+      backgroundColor: hero.ink,
       alignItems: 'center',
-      gap: spacing('1.5'),
-      paddingVertical: spacing('3'),
-      paddingHorizontal: spacing('1'),
-      borderRadius: radius('lg'),
-      backgroundColor: hero.separator,
+      justifyContent: 'center',
     },
   });

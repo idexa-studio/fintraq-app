@@ -113,6 +113,7 @@ const mr: Translation = {
     cannotDelete: 'वर्ग हटवता येत नाही', deleteFailed: 'वर्ग हटवता आला नाही.',
   },
   dashboard: {
+    pulseIncome: 'कमाई', pulseKept: '{{pct}}% वाचवले', pulseOverIncome: 'कमाईपेक्षा जास्त खर्च', pulseNoIncome: 'अद्याप उत्पन्न नाही',
     netThisMonth: 'या महिन्यात {{amount}}', thisMonth: 'हा महिना', quickActions: 'झटपट कृती', quickExpense: 'खर्च', quickIncome: 'उत्पन्न', quickTransfer: 'हस्तांतरण', quickLoan: 'कर्ज', pulseSpent: 'आतापर्यंत खर्च', pulseOfLast: 'मागील महिन्याच्या {{pct}}%', pulseLastMonth: 'मागील महिना', pulseDay: '{{total}} पैकी दिवस {{day}}', pulseEmpty: 'या महिन्यात अद्याप खर्च नाही', rhythmTitle: 'खर्चाची लय', rhythmHint: 'मागील 5 आठवडे', rhythmLess: 'कमी', rhythmMore: 'जास्त', rhythmNone: 'खर्च नाही', rhythmSpent: '{{amount}} खर्च',
     streakDays: '{{count}} दिवसांची मालिका',
     accounts: 'खाती', manage: 'व्यवस्थापित करा', topExpenses: 'सर्वाधिक खर्च', people: 'व्यक्ती', loans: 'कर्जे', recent: 'अलीकडील', seeAll: 'सर्व पहा',
@@ -128,6 +129,11 @@ const mr: Translation = {
   editEntry: 'नोंद संपादित करा', newEntry: 'नवीन नोंद', fromAccount: 'कोणत्या खात्यातून', toAccount: 'कोणत्या खात्यात', noCompatible: 'या हस्तांतरणासाठी योग्य खाती नाहीत.', linkedPerson: 'जोडलेली व्यक्ती', unknown: 'अज्ञात', noPersonLinked: 'कोणतीही व्यक्ती जोडलेली नाही', time: 'वेळ', note: 'टीप', optionalContext: 'पर्यायी तपशील', saveChanges: 'बदल जतन करा', saveTransaction: 'व्यवहार जतन करा', none: 'काहीही नाही',
   addedOn: '{{date}} रोजी जोडले', detailTitle: 'व्यवहार', notFound: 'व्यवहार सापडला नाही.', detailDeleteTitle: 'व्यवहार हटवा', detailDeleteMessage: 'यामुळे शिल्लकीवरील परिणाम उलटवला जाईल आणि हे पूर्ववत करता येणार नाही.', from: 'कडून', to: 'कडे', created: 'तयार केले', cancel: 'रद्द करा' },
   onboardingFlow: {
+    stepCount: '{{current}}/{{total}}', yourName: 'तुमचे नाव', moreCurrencies: 'आणखी', previewLabel: 'असे दिसेल', profileSubtitle: 'अभिवादनासाठी तुमचे नाव, आणि तुम्ही वापरता ते चलन.',
+    hello: { title: 'पैसा, निवांतपणे.', subtitle: 'खर्च, उत्पन्न आणि कर्ज एका खाजगी ठिकाणी. एका मिनिटात तयार.' },
+    perks: { offline: 'ऑफलाइन चालते', private: 'डिव्हाइसवरच राहते', fast: 'सेकंदात नोंद' },
+    mock: { salary: 'पगार', coffee: 'कॉफी' },
+    typeHints: { cash: 'नोटा आणि नाणी', bank: 'बचत किंवा चालू', ewallet: 'फोन व ऑनलाइन वॉलेट', credit_card: 'आता खर्च, नंतर भरणा' },
     balanceHint: 'यात सध्या किती आहे. यापुढे व्यवहार ते अद्ययावत ठेवतील.', entryNote: 'टीप (पर्यायी)', entryNotePlaceholder: 'उदा. टीमसोबत जेवण', balanceAfter: 'यानंतर {{account}}',
     accountNameRequired: 'खात्याला नाव द्या', invalidAmount: 'ही रक्कम बरोबर वाटत नाही', entryAmountRequired: 'रक्कम टाका, किंवा आत्ता वगळा', addEntry: 'नोंद जोडा', skipForNow: 'आत्ता वगळा',
     getStarted: 'सुरू करा', restoreFromBackup: 'बॅकअपमधून पुनर्संचयित करा', welcomeSubtitle: 'खर्च, उत्पन्न आणि कर्जे एका शांत, खाजगी ठिकाणी ट्रॅक करा. सेटअपला एक मिनिटही लागत नाही.',
@@ -258,6 +264,7 @@ const mr: Translation = {
     daysShort: { sun: 'रवि', mon: 'सोम', tue: 'मंग', wed: 'बुध', thu: 'गुरु', fri: 'शुक्र', sat: 'शनि' },
   },
   analytics: {
+    savedShare: 'उत्पन्नाच्या {{pct}}% बचत', overspentShare: 'कमाईपेक्षा {{pct}}% जास्त खर्च',
     emptyTitle: 'तुमचे इनसाइट्स इथून सुरू', emptyHint: 'काही व्यवहार जोडा, हा टॅब तुमचे पैसे कसे फिरतात ते दाखवेल.',
     emptyFeatures: { trend: { title: 'खर्चाचे कल', hint: 'दिवसागणिक किंवा महिन्यागणिक, तुमच्या सरासरीशी तुलना' }, categories: { title: 'पैसे कुठे जातात', hint: 'खर्च व उत्पन्नात प्रत्येक श्रेणीचा वाटा' }, forecast: { title: 'महिनाअखेरचा अंदाज', hint: 'आतापर्यंतच्या वेगाने हा महिना कुठे पोहोचेल' } },
     income: 'उत्पन्न', expenses: 'खर्च', expense: 'खर्च', netPosition: 'निव्वळ स्थिती', dailyAvg: 'सरासरी दैनिक खर्च', highlights: 'ठळक बाबी', topCategory: 'सर्वाधिक खर्चाचा वर्ग', biggestExpense: 'सर्वात मोठा खर्च',

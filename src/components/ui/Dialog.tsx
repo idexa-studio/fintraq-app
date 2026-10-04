@@ -1,6 +1,6 @@
 import { Button } from './Button';
 import type { IconSource } from './Icon';
-import { IconAvatar } from './IconAvatar';
+import { Icon } from './Icon';
 import { Text } from './Text';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import React, { useMemo } from 'react';
@@ -23,7 +23,7 @@ type DialogProps = {
   onClose: () => void;
   title: string;
   message?: string;
-  /** Adds a tone-coloured icon tile above the title. */
+  /** Adds a tone-coloured icon badge above the title; the dialog's text then centres under it. */
   icon?: IconSource;
   tone?: DialogTone;
   /** Actions render in order; put the recommended one last so it sits under the thumb. */
@@ -63,6 +63,8 @@ export function Dialog({
   const toneColor = tone === 'neutral' ? theme.colors.primaryInk : theme.colors[tone];
   // Two short labels sit side by side; long labels or 3+ actions stack.
   const stacked = actions.length > 2 || actions.some((a) => a.label.length > 14);
+  // An icon makes it an announcement: badge, title and message centre on one axis.
+  const centered = Boolean(icon);
 
   return (
     <Modal transparent visible={visible} animationType="fade" statusBarTranslucent onRequestClose={onClose}>
@@ -75,11 +77,23 @@ export function Dialog({
         />
         {visible ? (
           <Animated.View entering={enter} style={styles.card} accessibilityViewIsModal>
-            {icon ? <IconAvatar icon={icon} color={toneColor} size={48} weight="duotone" /> : null}
+            {icon ? (
+              <View style={[styles.halo, { backgroundColor: theme.alpha(toneColor, 'subtle') }]}>
+                <View style={[styles.badge, { backgroundColor: theme.alpha(toneColor, 'soft') }]}>
+                  <Icon name={icon} size={24} color={toneColor} weight="bold" />
+                </View>
+              </View>
+            ) : null}
 
-            <View style={styles.text}>
-              <Text variant="headline" accessibilityRole="header">{title}</Text>
-              {message ? <Text variant="body" tone="muted">{message}</Text> : null}
+            <View style={[styles.text, centered && styles.textCentered]}>
+              <Text variant="headline" align={centered ? 'center' : undefined} accessibilityRole="header">
+                {title}
+              </Text>
+              {message ? (
+                <Text variant="callout" tone="muted" align={centered ? 'center' : undefined}>
+                  {message}
+                </Text>
+              ) : null}
             </View>
 
             {children}
@@ -104,6 +118,9 @@ export function Dialog({
   );
 }
 
+const HALO = 72;
+const BADGE = 52;
+
 const createStyles = ({ colors, overlay, spacing, radius }: ThemeContextType, width: number) =>
   StyleSheet.create({
     overlay: {
@@ -114,17 +131,35 @@ const createStyles = ({ colors, overlay, spacing, radius }: ThemeContextType, wi
       padding: spacing('6'),
     },
     card: {
-      width: Math.min(width - spacing('6') * 2, 360),
+      width: Math.min(width - spacing('6') * 2, 340),
       backgroundColor: colors.surface,
       borderRadius: radius('2xl'),
-      padding: spacing('6'),
-      gap: spacing('5'),
+      paddingHorizontal: spacing('5'),
+      paddingTop: spacing('6'),
+      paddingBottom: spacing('5'),
+      gap: spacing('4'),
     },
-    text: { gap: spacing('2') },
-    actions: { flexDirection: 'row', gap: spacing('2.5'), marginTop: spacing('1') },
+    halo: {
+      width: HALO,
+      height: HALO,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'center',
+    },
+    badge: {
+      width: BADGE,
+      height: BADGE,
+      borderRadius: radius('full'),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    text: { gap: spacing('1.5') },
+    textCentered: { alignItems: 'center', paddingHorizontal: spacing('1') },
+    actions: { flexDirection: 'row', gap: spacing('2'), marginTop: spacing('2') },
     actionsStacked: { flexDirection: 'column-reverse' },
     buttonRow: { flex: 1, minWidth: 0 },
     buttonStacked: { alignSelf: 'stretch' },
     // Paper-tone fill so Cancel stays visible on the white card.
-    secondary: { backgroundColor: colors.background },
+    secondary: { backgroundColor: colors.card },
   });
