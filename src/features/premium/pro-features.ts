@@ -1,16 +1,3 @@
-import {
-  BarChartIcon,
-  ChartLineData01Icon,
-  CloudUploadIcon,
-  Download01Icon,
-  InfinityCircleIcon,
-  PieChart01Icon,
-  Search01Icon,
-  SparklesIcon,
-  TrendingUpDownIcon,
-  UserGroupIcon,
-  ZapIcon,
-} from '@hugeicons/core-free-icons';
 import type { IconSource } from '@/src/components/ui';
 import { FREE_LOAN_LIMIT, FREE_PERSON_LIMIT } from '@/src/constants/iap';
 
@@ -20,17 +7,17 @@ import { FREE_LOAN_LIMIT, FREE_PERSON_LIMIT } from '@/src/constants/iap';
  * advertised without being locked. Ids double as i18n keys under `premium.features.*`.
  */
 export const PRO_FEATURES = {
-  analytics: { icon: ChartLineData01Icon, group: 'analytics' },
-  highlights: { icon: ZapIcon, group: 'analytics' },
-  categories: { icon: PieChart01Icon, group: 'analytics' },
-  people: { icon: UserGroupIcon, group: 'analytics' },
-  forecast: { icon: TrendingUpDownIcon, group: 'analytics' },
-  weekly: { icon: BarChartIcon, group: 'analytics' },
-  insights: { icon: SparklesIcon, group: 'analytics' },
-  search: { icon: Search01Icon, group: 'tools' },
-  csv: { icon: Download01Icon, group: 'tools' },
-  backup: { icon: CloudUploadIcon, group: 'more' },
-  unlimited: { icon: InfinityCircleIcon, group: 'more' },
+  analytics: { icon: 'chart-line-data', group: 'analytics' },
+  highlights: { icon: 'zap', group: 'analytics' },
+  categories: { icon: 'chart-pie', group: 'analytics' },
+  people: { icon: 'users', group: 'analytics' },
+  forecast: { icon: 'trending-up-down', group: 'analytics' },
+  weekly: { icon: 'chart-bar', group: 'analytics' },
+  insights: { icon: 'sparkle', group: 'analytics' },
+  search: { icon: 'search', group: 'tools' },
+  csv: { icon: 'download-simple', group: 'tools' },
+  backup: { icon: 'cloud-arrow-up', group: 'more' },
+  unlimited: { icon: 'infinity-circle', group: 'more' },
 } as const satisfies Record<string, { icon: IconSource; group: ProFeatureGroup }>;
 
 export type ProFeatureGroup = 'analytics' | 'tools' | 'more';

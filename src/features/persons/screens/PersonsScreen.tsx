@@ -1,4 +1,3 @@
-import { InboxIcon, UserGroupIcon } from '@hugeicons/core-free-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -43,9 +42,9 @@ export const PersonsScreen = React.memo(function PersonsScreen() {
         {persons.length > 0 ? <SearchField value={query} onChangeText={setQuery} placeholder={t('persons.searchPlaceholder')} on="page" /> : null}
 
         {persons.length === 0 ? (
-          <EmptyState icon={UserGroupIcon} title={t('persons.none')} description={t('persons.noneHint')} actionLabel={t('persons.add')} onAction={add} />
+          <EmptyState icon="users" title={t('persons.none')} description={t('persons.noneHint')} actionLabel={t('persons.add')} onAction={add} />
         ) : filtered.length === 0 ? (
-          <EmptyState variant="inline" icon={InboxIcon} title={t('search.noResults')} description={t('search.noMatch', { query })} />
+          <EmptyState variant="inline" icon="inbox" title={t('search.noResults')} description={t('search.noMatch', { query })} />
         ) : (
           <ListGroup>
             {filtered.map((person) => (

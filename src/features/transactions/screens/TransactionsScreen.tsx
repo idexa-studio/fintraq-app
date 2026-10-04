@@ -1,4 +1,3 @@
-import { FilterIcon, ReceiptTextIcon, SortingDownIcon } from '@hugeicons/core-free-icons';
 import * as Haptics from 'expo-haptics';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -125,14 +124,14 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
     rightAction: (
       <View style={styles.headerActions}>
         <IconButton
-          icon={FilterIcon}
+          icon="filter"
           onPress={openFilters}
           variant={activeFilterCount > 0 ? 'tonal' : 'surface'}
           badge={activeFilterCount}
           accessibilityLabel={t('filters.title')}
         />
         <IconButton
-          icon={SortingDownIcon}
+          icon="sorting-down"
           onPress={openSort}
           variant={isSortActive ? 'tonal' : 'surface'}
           accessibilityLabel={t('transactions.sortTitle')}
@@ -196,7 +195,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
         }
         ListEmptyComponent={
           <EmptyState
-            icon={ReceiptTextIcon}
+            icon="receipt-text"
             title={isFiltered ? t('transactions.noResults') : t('transactions.nothingYet')}
             description={isFiltered ? t('transactions.noMatch') : t('transactions.addFirst')}
             actionLabel={isFiltered ? t('transactions.clearFilters') : t('transactions.add')}

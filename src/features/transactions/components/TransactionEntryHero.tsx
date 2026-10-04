@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 import { BentoPressable, HeroSurface, Icon, Text } from '@/src/components/ui';
 import type { IconSource } from '@/src/components/ui';
-import { ArrowDownLeftIcon, ArrowsLeftRightIcon, ArrowUpRightIcon, CalculatorIcon } from '@/src/components/ui/icons';
 import { CalculatorBottomSheet } from '@/src/components/pickers/CalculatorBottomSheet';
 import { getCurrencySymbol } from '@/src/constants/currency';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -47,9 +46,9 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
 
   const options = useMemo(
     (): TypeOption[] => [
-      { value: 'DR', label: t('transactions.expense'), icon: ArrowUpRightIcon, color: hero.expense },
-      { value: 'CR', label: t('transactions.income'), icon: ArrowDownLeftIcon, color: hero.income },
-      { value: 'TR', label: t('transactions.transfer'), icon: ArrowsLeftRightIcon, color: hero.transfer },
+      { value: 'DR', label: t('transactions.expense'), icon: 'arrow-up-right', color: hero.expense },
+      { value: 'CR', label: t('transactions.income'), icon: 'arrow-down-left', color: hero.income },
+      { value: 'TR', label: t('transactions.transfer'), icon: 'arrows-left-right', color: hero.transfer },
     ],
     [t, hero],
   );
@@ -75,7 +74,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
                 accessibilityRole="tab"
                 accessibilityState={{ selected: isActive, disabled: typeLocked }}
               >
-                <Icon icon={option.icon} size={15} color={isActive ? option.color : hero.textMuted} weight="bold" />
+                <Icon name={option.icon} size={15} color={isActive ? option.color : hero.textMuted} weight="bold" />
                 <Text variant="label" color={isActive ? hero.textPrimary : hero.textMuted} numberOfLines={1}>
                   {option.label}
                 </Text>
@@ -114,7 +113,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
             accessibilityRole="button"
             accessibilityLabel={t('transactions.calculator')}
           >
-            <Icon icon={CalculatorIcon} size={20} color={hero.textPrimary} />
+            <Icon name="calculator" size={20} color={hero.textPrimary} />
           </BentoPressable>
         </View>
       </View>

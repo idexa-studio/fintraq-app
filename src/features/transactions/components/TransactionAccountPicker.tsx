@@ -1,5 +1,4 @@
 import { Text } from '@/src/components/ui/Text';
-import { CheckCircleIcon } from '@/src/components/ui/icons';
 import { Icon } from '@/src/components/ui/Icon';
 import React, { useMemo, useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -61,7 +60,7 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
                 <Text variant="bodyStrong" numberOfLines={1}>{acc.name}</Text>
                 <Text variant="micro" tone="muted">{acc.currency}</Text>
               </View>
-              {selected ? <Icon icon={CheckCircleIcon} size={20} color={accColor} weight="fill" /> : null}
+              {selected ? <Icon name="check-circle" size={20} color={accColor} weight="fill" /> : null}
             </BentoPressable>
           );
         })}

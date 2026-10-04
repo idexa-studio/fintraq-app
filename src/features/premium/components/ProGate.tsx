@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Badge, BentoPressable, Icon, IconAvatar, Text } from '@/src/components/ui';
-import { CaretRightIcon } from '@/src/components/ui/icons';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { FEATURE_COPY_PARAMS, PRO_FEATURES, ProFeatureId } from '@/src/features/premium/pro-features';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -46,7 +45,7 @@ export const ProLockedCard = React.memo(function ProLockedCard({ feature, onPres
           {t(`premium.features.${feature}.description`, FEATURE_COPY_PARAMS)}
         </Text>
       </View>
-      <Icon icon={CaretRightIcon} size={16} color={colors.textMuted} />
+      <Icon name="chevron-right" size={16} color={colors.textMuted} />
     </BentoPressable>
   );
 });

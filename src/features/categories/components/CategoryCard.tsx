@@ -1,7 +1,6 @@
 import { ListItem } from '@/src/components/ui/ListItem';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { Icon } from '@/src/components/ui/Icon';
-import { LockKeyIcon, TagIcon } from '@/src/components/ui/icons';
 import { Category } from '@/src/features/categories/api/categories';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
@@ -35,14 +34,14 @@ export const CategoryCard = React.memo(function CategoryCard({ item, onPress, on
 
   return (
     <ListItem
-      leading={<IconAvatar icon={resolveIcon(item.icon, TagIcon)} color={hex} size={40} />}
+      leading={<IconAvatar icon={resolveIcon(item.icon, 'tag')} color={hex} size={40} />}
       title={item.name}
       subtitle={subtitle}
       onPress={handlePress}
       onLongPress={handleLongPress}
       trailing={item.isSystem ? (
         <View accessibilityLabel={t('categories.systemCategory')}>
-          <Icon icon={LockKeyIcon} size={16} color={colors.textMuted} />
+          <Icon name="lock-key" size={16} color={colors.textMuted} />
         </View>
       ) : undefined}
     />

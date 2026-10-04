@@ -1,6 +1,5 @@
 import { ConfirmDialog, EmptyState, IconAvatar, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, MoneyText, OptionsDialog, Screen, Text } from '@/src/components/ui';
 import type { OptionsDialogOption } from '@/src/components/ui';
-import { PencilSimpleIcon, TrashIcon, WalletIcon } from '@/src/components/ui/icons';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/accounts';
 import { NetWorthCard } from '@/src/features/accounts/components/NetWorthCard';
@@ -85,11 +84,11 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
     if (!selectedAccount) return [];
     const hasTransactions = selectedAccount.income > 0 || selectedAccount.expense > 0;
     return [
-      { key: 'edit', label: t('accounts.edit'), icon: PencilSimpleIcon, onPress: handleEdit },
+      { key: 'edit', label: t('accounts.edit'), icon: 'pencil-simple', onPress: handleEdit },
       {
         key: 'delete',
         label: t('accounts.delete'),
-        icon: TrashIcon,
+        icon: 'trash',
         destructive: true,
         disabled: hasTransactions,
         hint: hasTransactions ? t('accounts.removeTransactions') : undefined,
@@ -128,7 +127,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
     >
       {/* Adding lives on the tab bar's centre button, which means "new account" on this tab. */}
       {accounts && accounts.length === 0 ? (
-        <EmptyState icon={WalletIcon} title={t('accounts.none')} actionLabel={t('accountForm.new')} onAction={handleAdd} />
+        <EmptyState icon="wallet" title={t('accounts.none')} actionLabel={t('accountForm.new')} onAction={handleAdd} />
       ) : null}
 
       {hero ? (

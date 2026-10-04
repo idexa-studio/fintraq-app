@@ -1,4 +1,3 @@
-import { Tag01Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
@@ -83,7 +82,7 @@ export const SearchResultGroups = React.memo(function SearchResultGroups({
                     key={category.id}
                     title={category.name}
                     value={typeLabel[category.type as keyof typeof typeLabel] ?? t('search.all')}
-                    leading={<IconAvatar icon={resolveIcon(category.icon, Tag01Icon)} color={colorNumberToHex(category.color)} size={LIST_ITEM_LEADING_SIZE} />}
+                    leading={<IconAvatar icon={resolveIcon(category.icon, 'tag')} color={colorNumberToHex(category.color)} size={LIST_ITEM_LEADING_SIZE} />}
                     onPress={() => onOpenCategory(category.id)}
                   />
                 ))}

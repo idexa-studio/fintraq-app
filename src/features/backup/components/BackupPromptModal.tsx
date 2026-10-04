@@ -3,7 +3,6 @@ import { Text } from '@/src/components/ui/Text';
 
 import { Icon } from '@/src/components/ui/Icon';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { ArrowRight01Icon, CloudIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
 import React, { useCallback, useMemo } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -52,7 +51,7 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
 
         <View style={styles.card}>
           <View style={styles.header}>
-            <IconAvatar icon={CloudIcon} color={colors.primaryInk} variant="subtle" size={52} iconSize={26} />
+            <IconAvatar icon="cloud" color={colors.primaryInk} variant="subtle" size={52} iconSize={26} />
             <Text variant="headline" style={styles.title}>{t('backup.protectTitle')}</Text>
             <Text variant="callout" tone="muted" style={styles.message}>
               {t('backup.protectMessage')}
@@ -61,11 +60,11 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
 
           <View style={styles.features}>
             <View style={styles.featureRow}>
-              <Icon icon={ShieldKeyIcon} size={16} color={colors.success} />
+              <Icon name="shield-check" size={16} color={colors.success} />
               <Text variant="label">{t('backup.privateStorage')}</Text>
             </View>
             <View style={styles.featureRow}>
-              <Icon icon={CloudIcon} size={16} color={colors.primaryInk} />
+              <Icon name="cloud" size={16} color={colors.primaryInk} />
               <Text variant="label">{t('backup.dailyBackup')}</Text>
             </View>
           </View>
@@ -73,7 +72,7 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
           <View style={styles.actions}>
             <Button
               title={t('backup.enableSync')}
-              icon={ArrowRight01Icon}
+              icon="chevron-right"
               iconPosition="trailing"
               onPress={handleConnect}
               isLoading={isEnabling}

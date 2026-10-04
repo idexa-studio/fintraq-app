@@ -1,4 +1,3 @@
-import { CaretRightIcon } from './icons';
 import { Icon } from './Icon';
 import { Text } from './Text';
 import React, { useMemo } from 'react';
@@ -34,7 +33,7 @@ export const SectionHeader = React.memo(function SectionHeader({
         onPressRight ? (
           <BentoPressable onPress={onPressRight} style={styles.link} hitSlop={8} accessibilityRole="button" accessibilityLabel={`${rightText}, ${title}`}>
             <Text variant="label" color={colors.primaryInk}>{rightText}</Text>
-            <Icon icon={CaretRightIcon} size={12} color={colors.primaryInk} weight="bold" />
+            <Icon name="chevron-right" size={12} color={colors.primaryInk} weight="bold" />
           </BentoPressable>
         ) : (
           <Text variant="caption" tone="muted">{rightText}</Text>

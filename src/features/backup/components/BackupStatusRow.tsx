@@ -1,4 +1,3 @@
-import { Alert02Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +24,7 @@ export const BackupStatusRow = React.memo(function BackupStatusRow({ latestBacku
   if (isOverdue) {
     return (
       <BentoPressable style={styles.warningBox} onPress={onOverduePress} accessibilityRole="button" accessibilityLabel={t('backup.overdue')}>
-        <Icon icon={Alert02Icon} size={16} color={theme.colors.warning} />
+        <Icon name="warning" size={16} color={theme.colors.warning} />
         <Text variant="calloutStrong" color={colors.warning} style={styles.warningText}>{t('backup.overdue')}</Text>
       </BentoPressable>
     );

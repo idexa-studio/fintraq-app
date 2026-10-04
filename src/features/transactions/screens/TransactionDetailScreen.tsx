@@ -1,4 +1,3 @@
-import { Calendar03Icon, Delete02Icon, NoteIcon, PencilEdit01Icon, Tag01Icon } from '@hugeicons/core-free-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +19,6 @@ import {
   SkeletonScreen,
   Text,
 } from '@/src/components/ui';
-import { HandCoinsIcon, ReceiptIcon } from '@/src/components/ui/icons';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import type { TransactionDetail } from '@/src/features/transactions/api/transactions';
 import { isLoanPrincipal } from '@/src/features/transactions/utils/ledger';
@@ -87,13 +85,13 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
   if (!tx) {
     return (
       <Screen header={{ title, showBack: true }} variant="fixed" edges={['top']}>
-        <EmptyState icon={ReceiptIcon} title={t('transactions.notFound')} />
+        <EmptyState icon="receipt" title={t('transactions.notFound')} />
       </Screen>
     );
   }
 
   const categoryColor = colorNumberToHex(tx.category.color);
-  const categoryIcon = resolveIcon(tx.category.icon, Tag01Icon);
+  const categoryIcon = resolveIcon(tx.category.icon, 'tag');
   const typeColor = tx.type === 'CR' ? colors.success : tx.type === 'DR' ? colors.danger : colors.info;
   const note = tx.note?.trim();
   const when = new Date(tx.datetime);
@@ -108,8 +106,8 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
 
   const headerActions = (
     <View style={styles.headerActions}>
-      <IconButton icon={Delete02Icon} variant="danger" onPress={() => setDeleteVisible(true)} accessibilityLabel={t('common.delete')} />
-      <IconButton icon={PencilEdit01Icon} onPress={edit} accessibilityLabel={t('common.edit')} />
+      <IconButton icon="trash" variant="danger" onPress={() => setDeleteVisible(true)} accessibilityLabel={t('common.delete')} />
+      <IconButton icon="pencil-simple" onPress={edit} accessibilityLabel={t('common.edit')} />
     </View>
   );
 
@@ -139,7 +137,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
 
         <ListGroup>
           <ListItem
-            icon={Calendar03Icon}
+            icon="calendar-blank"
             iconColor={colors.textMuted}
             title={formatDate(when, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             subtitle={formatDate(when, { hour: 'numeric', minute: '2-digit' })}
@@ -180,7 +178,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
           ) : null}
           {loan ? (
             <ListItem
-              leading={<IconAvatar icon={HandCoinsIcon} color={colors.warning} size={40} />}
+              leading={<IconAvatar icon="hand-coins" color={colors.warning} size={40} />}
               title={loanTitle}
               subtitle={isLoanPrincipal(tx.type, loan.type) ? t('loans.loan') : t('transactions.loanRepayment')}
               onPress={() => router.push(`/(main)/loans/${loan.id}`)}
@@ -191,7 +189,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
         {note ? (
           <Card style={styles.note}>
             <View style={styles.noteLabel}>
-              <IconAvatar icon={NoteIcon} color={colors.textMuted} size={24} iconSize={12} />
+              <IconAvatar icon="note" color={colors.textMuted} size={24} iconSize={12} />
               <Text variant="label" tone="muted">
                 {t('transactions.note')}
               </Text>

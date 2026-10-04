@@ -72,7 +72,7 @@ function SegmentedControlBase<T extends string>({
             accessibilityLabel={opt.label}
           >
             {opt.icon ? (
-              <Icon icon={opt.icon} size={size === 'sm' ? 14 : 16} color={active ? colors.text : colors.textMuted} />
+              <Icon name={opt.icon} size={size === 'sm' ? 14 : 16} color={active ? colors.text : colors.textMuted} />
             ) : null}
             <Text
               variant={size === 'sm' ? 'caption' : 'calloutStrong'}

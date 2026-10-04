@@ -1,4 +1,3 @@
-import { ArrowDown01Icon, ArrowUp01Icon, CheckmarkCircle02Icon, HandshakeIcon } from '@hugeicons/core-free-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -61,8 +60,8 @@ export const LoansScreen = React.memo(function LoansScreen() {
 
   const tabs = useMemo(
     () => [
-      { value: 'lend' as const, label: `${t('loans.lent')} · ${lent.active.length}`, icon: ArrowUp01Icon },
-      { value: 'borrow' as const, label: `${t('loans.borrowed')} · ${borrowed.active.length}`, icon: ArrowDown01Icon },
+      { value: 'lend' as const, label: `${t('loans.lent')} · ${lent.active.length}`, icon: 'trend-up' as const },
+      { value: 'borrow' as const, label: `${t('loans.borrowed')} · ${borrowed.active.length}`, icon: 'chevron-down' as const },
     ],
     [t, lent.active.length, borrowed.active.length],
   );
@@ -83,8 +82,8 @@ export const LoansScreen = React.memo(function LoansScreen() {
         ) : null}
 
         <View style={styles.tiles}>
-          <StatTile label={t('loans.lentOut')} icon={ArrowUp01Icon} iconColor={colors.success} amount={outstanding(lent.active)} currency={currency} type="CR" compact />
-          <StatTile label={t('loans.borrowed')} icon={ArrowDown01Icon} iconColor={colors.danger} amount={outstanding(borrowed.active)} currency={currency} type="DR" compact />
+          <StatTile label={t('loans.lentOut')} icon="trend-up" iconColor={colors.success} amount={outstanding(lent.active)} currency={currency} type="CR" compact />
+          <StatTile label={t('loans.borrowed')} icon="chevron-down" iconColor={colors.danger} amount={outstanding(borrowed.active)} currency={currency} type="DR" compact />
         </View>
 
         <SegmentedControl options={tabs} value={tab} onChange={setTab} />
@@ -96,10 +95,10 @@ export const LoansScreen = React.memo(function LoansScreen() {
             ))}
           </View>
         ) : current.repaid.length > 0 ? (
-          <EmptyState variant="inline" icon={CheckmarkCircle02Icon} title={t('loans.allRepaid')} />
+          <EmptyState variant="inline" icon="check-circle" title={t('loans.allRepaid')} />
         ) : (
           <EmptyState
-            icon={HandshakeIcon}
+            icon="handshake"
             title={tab === 'lend' ? t('loans.noLent') : t('loans.noBorrowed')}
             description={t('loans.emptyHint')}
             actionLabel={t('loans.addLoan')}

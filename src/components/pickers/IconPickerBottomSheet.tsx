@@ -1,4 +1,3 @@
-import { GridIcon } from '@hugeicons/core-free-icons';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo } from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
@@ -63,7 +62,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
         <SheetHeader
           title={title ?? t('ui.chooseIcon')}
           subtitle={selectedGroup ? t(`picker.groups.${selectedGroup.label}` as 'picker.groups.other') : undefined}
-          trailing={value ? <IconAvatar icon={resolveIcon(value, GridIcon)} color={accent} variant="solid" size={44} /> : null}
+          trailing={value ? <IconAvatar icon={resolveIcon(value, 'grid')} color={accent} variant="solid" size={44} /> : null}
         />
 
         <ScrollView
@@ -92,7 +91,7 @@ export const IconPickerBottomSheet = React.memo(function IconPickerBottomSheet({
                         { width: cell, height: cell, backgroundColor: selected ? accent : colors.background },
                       ]}
                     >
-                      <Icon icon={resolveIcon(icon, GridIcon)} size={20} color={selected ? colors.onColor : colors.text} />
+                      <Icon name={resolveIcon(icon, 'grid')} size={20} color={selected ? colors.onColor : colors.text} />
                     </BentoPressable>
                   );
                 })}

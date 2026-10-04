@@ -3,7 +3,6 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { AlertDialog, Button, FormField, ListGroup, ListItem, PersonAvatar, Screen, Skeleton, SkeletonRow, Text } from '@/src/components/ui';
-import { CalendarBlankIcon, ClockIcon, UserCircleIcon } from '@/src/components/ui/icons';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
@@ -356,7 +355,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
         <ListGroup>
           {!isLoanLinked && persons.length > 0 && type !== 'TR' ? (
             <ListItem
-              icon={UserCircleIcon}
+              icon="user-circle"
               iconColor={colors.info}
               title={t('transactions.linkedPerson')}
               value={personName}
@@ -364,14 +363,14 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
             />
           ) : null}
           <ListItem
-            icon={CalendarBlankIcon}
+            icon="calendar-blank"
             iconColor={colors.primaryInk}
             title={t('transactions.date')}
             value={formattedDate}
             onPress={() => setShowDatePicker(true)}
           />
           <ListItem
-            icon={ClockIcon}
+            icon="clock"
             iconColor={colors.primaryInk}
             title={t('transactions.time')}
             value={formattedTime}

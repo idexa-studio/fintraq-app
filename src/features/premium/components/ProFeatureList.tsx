@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Divider, Icon, IconAvatar, LIST_ITEM_LEADING_SIZE, Text } from '@/src/components/ui';
-import { CheckCircleIcon } from '@/src/components/ui/icons';
 import {
   FEATURE_COPY_PARAMS,
   featuresInGroup,
@@ -68,7 +67,7 @@ export const ProFeatureRow = React.memo(function ProFeatureRow({ feature, unlock
           {t(`premium.features.${feature}.description`, FEATURE_COPY_PARAMS)}
         </Text>
       </View>
-      {unlocked ? <Icon icon={CheckCircleIcon} size={18} color={colors.success} /> : null}
+      {unlocked ? <Icon name="check-circle" size={18} color={colors.success} /> : null}
     </View>
   );
 });

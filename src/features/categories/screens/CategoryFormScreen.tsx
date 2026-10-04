@@ -1,4 +1,3 @@
-import { GridIcon } from '@hugeicons/core-free-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -7,7 +6,6 @@ import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { ColorPickerRow } from '@/src/components/pickers/ColorPickerRow';
 import { IconPickerBottomSheet } from '@/src/components/pickers/IconPickerBottomSheet';
 import { BentoPressable, Button, Card, Chip, FormField, Icon, IconAvatar, ListGroup, Screen, Text } from '@/src/components/ui';
-import { DotsThreeIcon, PencilSimpleIcon } from '@/src/components/ui/icons';
 import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS } from '@/src/constants/picker';
 import { useCategories, useCreateCategory, useUpdateCategory } from '@/src/features/categories/hooks/categories';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -80,7 +78,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
     }
   }, [category, reset]);
 
-  const resolvedIcon = useMemo(() => resolveIcon(icon, GridIcon), [icon]);
+  const resolvedIcon = useMemo(() => resolveIcon(icon, 'grid'), [icon]);
 
   const toggleType = useCallback((t: TxType) => {
     setSelectedTypes(prev => {
@@ -169,7 +167,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
           >
             <IconAvatar icon={resolvedIcon} color={colorHex} size={64} iconSize={30} />
             <View style={[styles.editBadge, { backgroundColor: colors.text }]}>
-              <Icon icon={PencilSimpleIcon} size={12} color={colors.surface} weight="bold" />
+              <Icon name="pencil-simple" size={12} color={colors.surface} weight="bold" />
             </View>
           </BentoPressable>
           <View style={styles.previewMeta}>
@@ -222,7 +220,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
                 accessibilityState={{ selected }}
                 style={[styles.iconCell, { width: cell, height: cell, backgroundColor: selected ? colorHex : colors.surface }]}
               >
-                <Icon icon={resolveIcon(key, GridIcon)} size={20} color={selected ? colors.onColor : colors.text} />
+                <Icon name={resolveIcon(key, 'grid')} size={20} color={selected ? colors.onColor : colors.text} />
               </BentoPressable>
             );
           })}
@@ -232,7 +230,7 @@ export const CategoryFormScreen = React.memo(function CategoryFormScreen() {
             accessibilityLabel={t('categoryForm.moreIcons')}
             style={[styles.iconCell, { width: cell, height: cell, backgroundColor: colors.surface }]}
           >
-            <Icon icon={DotsThreeIcon} size={20} color={colors.textMuted} weight="bold" />
+            <Icon name="dots-three" size={20} color={colors.textMuted} weight="bold" />
           </BentoPressable>
         </View>
       </View>

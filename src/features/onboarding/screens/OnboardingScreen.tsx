@@ -3,7 +3,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Screen } from '@/src/components/ui/Screen';
 import * as Updates from 'expo-updates';
 import { AlertButton, AlertDialog, Button, ConfirmDialog, IconButton, Text } from '@/src/components/ui';
-import { CaretLeftIcon } from '@/src/components/ui/icons';
 import { CurrencyPickerBottomSheet } from '@/src/components/pickers/CurrencyPickerBottomSheet';
 import { getDeviceCurrencyCode } from '@/src/constants/currency';
 import { ACCOUNT_COLORS } from '@/src/constants/picker';
@@ -419,7 +418,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           {isWelcome ? null : (
             <View style={styles.header}>
               <IconButton
-                icon={CaretLeftIcon}
+                icon="chevron-left"
                 onPress={() => setStepIndex((i) => i - 1)}
                 disabled={isButtonLoading}
                 accessibilityLabel={t('common.back')}

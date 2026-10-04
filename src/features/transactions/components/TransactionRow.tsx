@@ -1,5 +1,4 @@
 import { Text } from '@/src/components/ui/Text';
-import { Tag01Icon } from '@hugeicons/core-free-icons';
 import { Icon } from '@/src/components/ui/Icon';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { MoneyText } from '@/src/components/ui/MoneyText';
@@ -66,7 +65,7 @@ export const TransactionRow = React.memo(function TransactionRow({
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const categoryColor = useMemo(() => colorNumberToHex(tx.category.color), [tx.category.color]);
-  const categoryIcon = useMemo(() => resolveIcon(tx.category.icon, Tag01Icon), [tx.category.icon]);
+  const categoryIcon = useMemo(() => resolveIcon(tx.category.icon, 'tag'), [tx.category.icon]);
   const accountIcon = useMemo(
     () => resolveAccountTypeIcon(tx.account.accountType),
     [tx.account.accountType],
@@ -131,15 +130,15 @@ export const TransactionRow = React.memo(function TransactionRow({
 
         {tx.type === 'TR' ? (
           <View style={styles.metaRow}>
-            <Icon icon={accountIcon} size={10} color={accountColor} />
+            <Icon name={accountIcon} size={10} color={accountColor} />
             <Text variant="caption" tone="muted" numberOfLines={1} style={styles.shrink}>{tx.account.name}</Text>
             <Text variant="caption" tone="muted">→</Text>
-            <Icon icon={toAccountIcon} size={10} color={toAccountColor} />
+            <Icon name={toAccountIcon} size={10} color={toAccountColor} />
             <Text variant="caption" tone="muted" numberOfLines={1} style={styles.shrink}>{tx.toAccount?.name ?? '—'}</Text>
           </View>
         ) : (
           <View style={styles.metaRow}>
-            <Icon icon={accountIcon} size={10} color={accountColor} />
+            <Icon name={accountIcon} size={10} color={accountColor} />
             <Text variant="caption" tone="muted" numberOfLines={1} style={styles.shrink}>{tx.account.name}</Text>
           </View>
         )}

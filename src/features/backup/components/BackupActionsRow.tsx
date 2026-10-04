@@ -1,4 +1,3 @@
-import { Download01Icon, Upload01Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +30,7 @@ export const BackupActionsRow = React.memo(function BackupActionsRow({
     <View style={styles.row}>
       <Button
         title={t('backup.backupNow')}
-        icon={Upload01Icon}
+        icon="upload"
         onPress={onBackup}
         disabled={isRestoring}
         isLoading={isBackingUp}
@@ -49,7 +48,7 @@ export const BackupActionsRow = React.memo(function BackupActionsRow({
           <Spinner size="sm" />
         ) : (
           <>
-            <Icon icon={Download01Icon} size={16} color={theme.colors.primaryInk} />
+            <Icon name="download-simple" size={16} color={theme.colors.primaryInk} />
             <Text variant="calloutStrong" color={colors.primaryInk}>{t('backup.restore')}</Text>
           </>
         )}

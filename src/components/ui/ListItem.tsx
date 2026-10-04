@@ -3,7 +3,6 @@ import { IconAvatar } from './IconAvatar';
 import { Switch } from './Switch';
 import { Text } from './Text';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { CaretRightIcon, CheckCircleIcon } from './icons';
 import type { IconSource } from './Icon';
 import { Icon } from './Icon';
 import React, { useMemo } from 'react';
@@ -82,9 +81,9 @@ export const ListItem = React.memo(function ListItem({
           hasSwitch ? (
             <Switch value={switchValue} onValueChange={onSwitchChange} disabled={disabled} accessibilityLabel={title} />
           ) : selected ? (
-            <Icon icon={CheckCircleIcon} size={22} color={colors.primaryInk} weight="fill" />
+            <Icon name="check-circle" size={22} color={colors.primaryInk} weight="fill" />
           ) : chevron ? (
-            <Icon icon={CaretRightIcon} size={14} color={alpha(colors.textMuted, 'strong')} weight="bold" />
+            <Icon name="chevron-right" size={14} color={alpha(colors.textMuted, 'strong')} weight="bold" />
           ) : null
         )}
       </View>

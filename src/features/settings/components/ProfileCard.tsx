@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BentoPressable, Icon, Text } from '@/src/components/ui';
-import { CaretRightIcon, PencilSimpleIcon, SparkleIcon } from '@/src/components/ui/icons';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Props = {
@@ -42,7 +41,7 @@ export const ProfileCard = React.memo(function ProfileCard({ name, isPremium, on
           </Text>
         </View>
         <View style={styles.editChip}>
-          <Icon icon={PencilSimpleIcon} size={16} color={colors.onInk} />
+          <Icon name="pencil-simple" size={16} color={colors.onInk} />
         </View>
       </BentoPressable>
 
@@ -52,7 +51,7 @@ export const ProfileCard = React.memo(function ProfileCard({ name, isPremium, on
         accessibilityRole="button"
         accessibilityLabel={isPremium ? t('settings.proLifetime') : t('settings.upgradeToPro')}
       >
-        <Icon icon={SparkleIcon} size={18} color={colors.warning} weight="bold" />
+        <Icon name="sparkle" size={18} color={colors.warning} weight="bold" />
         <View style={styles.planText}>
           <Text variant="calloutStrong" color={colors.onInk} numberOfLines={1}>
             {isPremium ? t('settings.proLifetime') : t('settings.upgradeToPro')}
@@ -62,7 +61,7 @@ export const ProfileCard = React.memo(function ProfileCard({ name, isPremium, on
           </Text>
         </View>
         {isPremium ? (
-          <Icon icon={CaretRightIcon} size={16} color={colors.onInkMuted} />
+          <Icon name="chevron-right" size={16} color={colors.onInkMuted} />
         ) : (
           <View style={styles.upgradePill}>
             <Text variant="label" tone="onPrimary">

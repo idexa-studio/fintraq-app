@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Button, Icon, IconAvatar, Text } from '@/src/components/ui';
-import { LockKeyIcon, SparkleIcon } from '@/src/components/ui/icons';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { PRO_FEATURES, ProFeatureId } from '@/src/features/premium/pro-features';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -26,7 +25,7 @@ export const ProPreviewCard = React.memo(function ProPreviewCard({ features }: P
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <IconAvatar icon={SparkleIcon} color={colors.warning} size={40} iconSize={18} />
+        <IconAvatar icon="sparkle" color={colors.warning} size={40} iconSize={18} />
         <View style={styles.headerText}>
           <Text variant="subheading">{t('premium.gate.previewTitle')}</Text>
           <Text variant="caption" tone="muted">
@@ -42,12 +41,12 @@ export const ProPreviewCard = React.memo(function ProPreviewCard({ features }: P
             <Text variant="calloutStrong" numberOfLines={1} style={styles.rowText}>
               {t(`premium.features.${id}.title`)}
             </Text>
-            <Icon icon={LockKeyIcon} size={14} color={colors.textMuted} />
+            <Icon name="lock-key" size={14} color={colors.textMuted} />
           </View>
         ))}
       </View>
 
-      <Button title={t('premium.gate.seeAll')} icon={SparkleIcon} onPress={() => openPaywall(features[0])} fullWidth />
+      <Button title={t('premium.gate.seeAll')} icon="sparkle" onPress={() => openPaywall(features[0])} fullWidth />
     </View>
   );
 });

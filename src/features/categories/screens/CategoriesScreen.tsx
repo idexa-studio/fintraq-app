@@ -1,5 +1,4 @@
 import { ConfirmDialog, EmptyState, Fab, ListGroup, OptionsDialog, Screen, SearchField, SegmentedControl, SkeletonRow } from '@/src/components/ui';
-import { FolderOpenIcon, MagnifyingGlassIcon, PencilSimpleIcon, TrashIcon } from '@/src/components/ui/icons';
 import { Category } from '@/src/features/categories/api/categories';
 import { CategoryCard } from '@/src/features/categories/components/CategoryCard';
 import { useCategories, useDeleteCategory } from '@/src/features/categories/hooks/categories';
@@ -88,7 +87,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'edit-category',
         label: t('categories.edit'),
-        icon: PencilSimpleIcon,
+        icon: 'pencil-simple' as const,
         onPress: () => {
           setShowManageDialog(false);
           handleEdit(selectedCategory);
@@ -97,7 +96,7 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
       {
         key: 'delete-category',
         label: t('categories.delete'),
-        icon: TrashIcon,
+        icon: 'trash' as const,
         destructive: true,
         onPress: () => setShowDeleteDialog(true),
       },
@@ -165,10 +164,10 @@ export const CategoriesScreen = React.memo(function CategoriesScreen() {
         </ListGroup>
       ) : filtered.length === 0 ? (
         search.trim() ? (
-          <EmptyState icon={MagnifyingGlassIcon} title={t('categories.noResults', { query: search.trim() })} color={colors.textMuted} />
+          <EmptyState icon="search" title={t('categories.noResults', { query: search.trim() })} color={colors.textMuted} />
         ) : (
           <EmptyState
-            icon={FolderOpenIcon}
+            icon="folder-open"
             title={t('categories.none')}
             description={t('categories.noneYet')}
             actionLabel={t('categories.create')}

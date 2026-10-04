@@ -1,6 +1,5 @@
 import { Text } from '@/src/components/ui/Text';
 import { Chip } from '@/src/components/ui/Chip';
-import { Tag01Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
@@ -36,7 +35,7 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
             label={cat.name}
             isActive={selectedId === cat.id}
             color={colorNumberToHex(cat.color)}
-            icon={resolveIcon(cat.icon, Tag01Icon)}
+            icon={resolveIcon(cat.icon, 'tag')}
             onPress={() => handleSelect(cat.id)}
           />
         ))}

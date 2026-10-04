@@ -3,7 +3,6 @@ import { EmptyState, HeroSurface, IconButton, ListGroup, MoneyText, ListItem, Pe
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { toDbColor } from '@/src/utils/format';
-import { ArrowDownLeftIcon, ArrowUpRightIcon, MagnifyingGlassIcon, SlidersHorizontalIcon, UserIcon } from '@/src/components/ui/icons';
 import React from 'react';
 import { View } from 'react-native';
 
@@ -70,8 +69,8 @@ export function PatternsSection() {
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing('2') }}>
             <Text variant="title" style={{ flex: 1 }}>Transactions</Text>
-            <IconButton icon={MagnifyingGlassIcon} onPress={noop} accessibilityLabel="Search" />
-            <IconButton icon={SlidersHorizontalIcon} onPress={noop} accessibilityLabel="Filter" />
+            <IconButton icon="search" onPress={noop} accessibilityLabel="Search" />
+            <IconButton icon="sliders-horizontal" onPress={noop} accessibilityLabel="Filter" />
           </View>
         </Specimen>
 
@@ -81,8 +80,8 @@ export function PatternsSection() {
           bare
         >
           <View style={{ flexDirection: 'row', gap: spacing('2') }}>
-            <StatTile label="Income" icon={ArrowUpRightIcon} iconColor={colors.success} amount={84200} currency="INR" type="CR" compact />
-            <StatTile label="Spent" icon={ArrowDownLeftIcon} iconColor={colors.danger} amount={5450} currency="INR" type="DR" compact />
+            <StatTile label="Income" icon="arrow-up-right" iconColor={colors.success} amount={84200} currency="INR" type="CR" compact />
+            <StatTile label="Spent" icon="arrow-down-left" iconColor={colors.danger} amount={5450} currency="INR" type="DR" compact />
           </View>
           {/* StatColumns: the secondary figures under a card's headline number. */}
           <View style={{ backgroundColor: colors.surface, borderRadius: radius('xl'), padding: spacing('4'), gap: spacing('3') }}>
@@ -97,8 +96,8 @@ export function PatternsSection() {
           </View>
           {/* `caption` names what the number is about. */}
           <View style={{ flexDirection: 'row', gap: spacing('2') }}>
-            <StatTile label="Top category" icon={ArrowDownLeftIcon} iconColor={colors.warning} amount={3200} currency="INR" caption="Groceries" compact />
-            <StatTile label="Biggest expense" icon={ArrowDownLeftIcon} iconColor={colors.danger} amount={1450} currency="INR" caption="Rent top-up" compact />
+            <StatTile label="Top category" icon="arrow-down-left" iconColor={colors.warning} amount={3200} currency="INR" caption="Groceries" compact />
+            <StatTile label="Biggest expense" icon="arrow-down-left" iconColor={colors.danger} amount={1450} currency="INR" caption="Rent top-up" compact />
           </View>
           <View style={{ marginHorizontal: -spacing('4') }}>
             <SectionHeader title="Top people" rightText="See all" onPressRight={noop} />
@@ -107,7 +106,7 @@ export function PatternsSection() {
             <ListItem leading={<PersonAvatar name="Priya Sharma" color="#8B5CF6" size={36} />} title="Priya Sharma" subtitle="Owes you" value="₹1,200" onPress={noop} />
             <ListItem leading={<PersonAvatar name="Rahul" color="#0EA5E9" size={36} />} title="Rahul" subtitle="You owe" value="₹450" onPress={noop} />
           </ListGroup>
-          <EmptyState variant="inline" icon={UserIcon} title="No loans" description="Lend or borrow money to track it here." />
+          <EmptyState variant="inline" icon="user" title="No loans" description="Lend or borrow money to track it here." />
         </Specimen>
       </GalleryGroup>
     </View>

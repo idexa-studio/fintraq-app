@@ -7,7 +7,6 @@ import { colorNumberToHex } from '@/src/utils/format';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
 import type { AccountType } from '@/src/types';
 import { Badge } from '@/src/components/ui/Badge';
-import { PlusIcon } from '@/src/components/ui/icons';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import type { Account } from '@/src/features/accounts/api/accounts';
@@ -87,7 +86,7 @@ export const AccountsCarousel = React.memo(function AccountsCarousel({ accounts,
         accessibilityRole="button"
         accessibilityLabel={t('common.addAccount')}
       >
-        <IconAvatar icon={PlusIcon} color={colors.primaryInk} size={36} />
+        <IconAvatar icon="plus" color={colors.primaryInk} size={36} />
         <Text variant="label" align="center">{t('common.addAccount')}</Text>
       </BentoPressable>
     </ScrollView>

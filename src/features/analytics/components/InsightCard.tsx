@@ -1,5 +1,4 @@
 import { Text } from '@/src/components/ui/Text';
-import { ChartLineData01Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
@@ -29,7 +28,7 @@ export const InsightCard = React.memo(function InsightCard({ insight }: InsightC
   return (
     <View style={[styles.card, { backgroundColor: colors.surface }]}>
       <IconAvatar
-        icon={resolveIcon(insight.icon, ChartLineData01Icon)}
+        icon={resolveIcon(insight.icon, 'chart-line-data')}
         color={accent}
         variant="subtle"
         size={34}

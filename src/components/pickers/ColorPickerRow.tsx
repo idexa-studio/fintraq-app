@@ -3,7 +3,6 @@ import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Icon } from '@/src/components/ui/Icon';
-import { CheckIcon } from '@/src/components/ui/icons';
 import { Text } from '@/src/components/ui/Text';
 import { PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -60,7 +59,7 @@ export const ColorPickerRow = React.memo(function ColorPickerRow({ colors, value
               accessibilityLabel={name ? t(`picker.colors.${name}`) : hex}
               style={[styles.swatch, { width: size, height: size, borderRadius: Math.round(size * 0.3), backgroundColor: hex }]}
             >
-              {isSelected ? <Icon icon={CheckIcon} size={Math.round(size * 0.5)} color={theme.colors.onColor} weight="bold" /> : null}
+              {isSelected ? <Icon name="tick" size={Math.round(size * 0.5)} color={theme.colors.onColor} weight="bold" /> : null}
             </BentoPressable>
           );
         })}

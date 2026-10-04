@@ -4,9 +4,12 @@ import { useTheme } from '@/src/providers/ThemeProvider';
 import type { ThemePalette } from '@/src/theme/colors';
 import { ALPHA, AlphaToken, RADIUS, RadiusToken, SPACING, SpacingToken } from '@/src/theme/tokens';
 import { TEXT_VARIANTS, TextVariant } from '@/src/theme/typography';
-import { HouseIcon } from '@/src/components/ui/icons';
+import { HUGEICONS } from '@/src/components/ui/icon-registry';
+import type { IconName } from '@/src/components/ui/icon-registry';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+
+const ICON_NAMES = Object.keys(HUGEICONS) as IconName[];
 
 const COLOR_ROLES: { key: keyof ThemePalette; role: string }[] = [
   { key: 'background', role: 'Page background — lowest layer' },
@@ -179,11 +182,25 @@ export function FoundationsSection() {
           <SpecimenRow>
             {[layout.iconSm, layout.iconMd, layout.iconLg, layout.iconXl].map((s) => (
               <View key={s} style={{ alignItems: 'center', gap: spacing('1'), width: 56 }}>
-                <Icon icon={HouseIcon} size={s} color={colors.text} />
+                <Icon name="house" size={s} color={colors.text} />
                 <Text variant="caption" tone="muted">{s}</Text>
               </View>
             ))}
           </SpecimenRow>
+        </Specimen>
+
+        <Specimen
+          title="Icon registry"
+          description={'Every icon by name: <Icon name="…" family="hugeicons" />. Swap a glyph app-wide by editing its entry in components/ui/icon-registry.ts. Stored names (category and account icons) live in user data: never rename them.'}
+        >
+          <View style={styles.iconGrid}>
+            {ICON_NAMES.map((name) => (
+              <View key={name} style={[styles.iconCell, { gap: spacing('1') }]}>
+                <Icon name={name} size={layout.iconMd} color={colors.text} />
+                <Text variant="micro" tone="muted" numberOfLines={1}>{name}</Text>
+              </View>
+            ))}
+          </View>
         </Specimen>
       </GalleryGroup>
     </View>
@@ -193,4 +210,6 @@ export function FoundationsSection() {
 const styles = StyleSheet.create({
   swatchRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   swatch: { width: 40, height: 40, borderWidth: StyleSheet.hairlineWidth },
+  iconGrid: { flexDirection: 'row', flexWrap: 'wrap' },
+  iconCell: { width: '25%', alignItems: 'center', paddingVertical: 8 },
 });

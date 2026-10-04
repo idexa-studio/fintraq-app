@@ -12,23 +12,6 @@ import {
   Screen,
   Text,
 } from '@/src/components/ui';
-import {
-  AndroidLogoIcon,
-  AppleLogoIcon,
-  ArrowsClockwiseIcon,
-  BellIcon,
-  BellRingingIcon,
-  BellSlashIcon,
-  CloudIcon,
-  FileTextIcon,
-  FlaskIcon,
-  GearIcon,
-  LockKeyIcon,
-  PaletteIcon,
-  SealCheckIcon,
-  TrashIcon,
-  XCircleIcon,
-} from '@/src/components/ui/icons';
 import { useKeyboardInset } from '@/src/hooks/useKeyboardInset';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -230,7 +213,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         {/* Keyboard pushes the whole column up so the hint never hides behind the field. */}
         <View style={[styles.lockShell, { paddingBottom: keyboardInset }]}>
           <View style={styles.lockArt}>
-            <IconAvatar icon={LockKeyIcon} color={colors.primaryInk} size={72} iconSize={30} weight="duotone" />
+            <IconAvatar icon="lock-key" color={colors.primaryInk} size={72} iconSize={30} weight="duotone" />
             <Text variant="label" tone="primary">SECURE GATEWAY</Text>
             <Text variant="title" align="center">Developer tools</Text>
             <Text variant="callout" tone="muted" align="center">
@@ -257,9 +240,9 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
   /* ── Main screen ── */
 
   const overrideOptions: { mode: 'DEFAULT' | 'FORCED_ON' | 'FORCED_OFF'; label: string; subtitle: string; icon: IconSource; color: string }[] = [
-    { mode: 'DEFAULT', label: 'Default', subtitle: 'Sync with App Store / Play Store', icon: ArrowsClockwiseIcon, color: colors.textMuted },
-    { mode: 'FORCED_ON', label: 'Force enabled', subtitle: 'Treat as active Pro subscription', icon: SealCheckIcon, color: colors.success },
-    { mode: 'FORCED_OFF', label: 'Force disabled', subtitle: 'Treat as free tier regardless', icon: XCircleIcon, color: colors.danger },
+    { mode: 'DEFAULT', label: 'Default', subtitle: 'Sync with App Store / Play Store', icon: 'arrows-clockwise', color: colors.textMuted },
+    { mode: 'FORCED_ON', label: 'Force enabled', subtitle: 'Treat as active Pro subscription', icon: 'seal-check', color: colors.success },
+    { mode: 'FORCED_OFF', label: 'Force disabled', subtitle: 'Treat as free tier regardless', icon: 'x-circle', color: colors.danger },
   ];
 
   return (
@@ -318,7 +301,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
 
       <ListGroup title="Design system">
         <ListItem
-          icon={PaletteIcon}
+          icon="palette"
           iconColor={colors.primaryInk}
           title="Design gallery"
           subtitle="Every UI component, variant and state — light & dark"
@@ -341,31 +324,31 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
       </ListGroup>
 
       <ListGroup title="Data & Cloud">
-        <ListItem icon={FlaskIcon} iconColor={colors.primaryInk} title="Seed dummy data" subtitle="Generate 12 months of transactions, persons & loans" onPress={() => setShowSeedConfirm(true)} />
-        <ListItem icon={CloudIcon} iconColor={colors.primaryInk} title="Run Auto-Backup Task Now" subtitle="Trigger headless auto-backup check executor" onPress={handleRunAutoBackupTask} />
-        <ListItem icon={TrashIcon} title="Delete Cloud Backup" subtitle="Permanently remove backup file from Google Drive" destructive onPress={() => setShowDeleteBackupConfirm(true)} />
+        <ListItem icon="flask" iconColor={colors.primaryInk} title="Seed dummy data" subtitle="Generate 12 months of transactions, persons & loans" onPress={() => setShowSeedConfirm(true)} />
+        <ListItem icon="cloud" iconColor={colors.primaryInk} title="Run Auto-Backup Task Now" subtitle="Trigger headless auto-backup check executor" onPress={handleRunAutoBackupTask} />
+        <ListItem icon="trash" title="Delete Cloud Backup" subtitle="Permanently remove backup file from Google Drive" destructive onPress={() => setShowDeleteBackupConfirm(true)} />
       </ListGroup>
 
       <ListGroup title="System logs">
         <ListItem
-          icon={FileTextIcon}
+          icon="file-text"
           iconColor={colors.primaryInk}
           title="Open full-screen app logs"
           subtitle="View & export the raw log stream (.txt)"
           value={`${logCount}`}
           onPress={() => router.push('/(main)/app-logs')}
         />
-        <ListItem icon={TrashIcon} title="Clear system logs" subtitle="Permanently erase all log records from device storage" destructive onPress={() => setShowClearLogsConfirm(true)} />
+        <ListItem icon="trash" title="Clear system logs" subtitle="Permanently erase all log records from device storage" destructive onPress={() => setShowClearLogsConfirm(true)} />
       </ListGroup>
 
       <ListGroup title="Notifications">
         {scheduledNotifs.length === 0 ? (
-          <ListItem icon={BellSlashIcon} iconColor={colors.textMuted} title="No active schedules" value="None" />
+          <ListItem icon="bell-slash" iconColor={colors.textMuted} title="No active schedules" value="None" />
         ) : (
           scheduledNotifs.map((n) => (
             <ListItem
               key={n.identifier}
-              icon={BellIcon}
+              icon="bell"
               iconColor={colors.primaryInk}
               title={n.content.title || 'Scheduled reminder'}
               subtitle={n.content.body || 'Daily check-in alert'}
@@ -374,7 +357,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
           ))
         )}
         <ListItem
-          icon={BellRingingIcon}
+          icon="bell-ringing"
           iconColor={colors.primaryInk}
           title="Trigger sample notification"
           subtitle="Queue an instant check-in alert"
@@ -383,12 +366,12 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
             showAlert({ title: 'Test Notification', message: 'Instant check-in alert queued.', type: 'info' });
           }}
         />
-        <ListItem icon={ArrowsClockwiseIcon} iconColor={colors.textMuted} title="Refresh schedules" subtitle="Reload notification schedule list" onPress={fetchScheduled} />
+        <ListItem icon="arrows-clockwise" iconColor={colors.textMuted} title="Refresh schedules" subtitle="Reload notification schedule list" onPress={fetchScheduled} />
       </ListGroup>
 
       <ListGroup title="System">
-        <ListItem icon={GearIcon} iconColor={colors.textMuted} title="Environment" value={__DEV__ ? 'Development' : 'Production'} />
-        <ListItem icon={Platform.OS === 'ios' ? AppleLogoIcon : AndroidLogoIcon} iconColor={colors.textMuted} title="Platform" value={Platform.OS === 'ios' ? 'iOS' : 'Android'} />
+        <ListItem icon="gear" iconColor={colors.textMuted} title="Environment" value={__DEV__ ? 'Development' : 'Production'} />
+        <ListItem icon={Platform.OS === 'ios' ? 'apple-logo' : 'android-logo'} iconColor={colors.textMuted} title="Platform" value={Platform.OS === 'ios' ? 'iOS' : 'Android'} />
       </ListGroup>
 
       <View style={styles.footer}>

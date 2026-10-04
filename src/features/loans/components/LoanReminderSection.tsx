@@ -2,7 +2,6 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, View } from 'react-native';
 import { ListGroup, ListItem } from '@/src/components/ui';
-import { AlarmIcon, BellIcon, BellRingingIcon, CalendarBlankIcon } from '@/src/components/ui/icons';
 import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
@@ -148,7 +147,7 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
       {/* Same rows as Settings → Notifications: a switch, then its options once it's on. */}
       <ListGroup title={t('loans.reminders')}>
         <ListItem
-          icon={BellIcon}
+          icon="bell"
           iconColor={colors.warning}
           title={t('loans.emiReminder')}
           subtitle={t('loans.emiFires', { day: emiDay })}
@@ -156,14 +155,14 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
           onSwitchChange={handleEmiToggle}
         />
         {emiEnabled ? (
-          <ListItem icon={CalendarBlankIcon} iconColor={colors.warning} title={t('loans.emiDayTitle')} value={t('loans.dayN', { day: emiDay })} onPress={() => setShowEmiDayPicker(true)} />
+          <ListItem icon="calendar-blank" iconColor={colors.warning} title={t('loans.emiDayTitle')} value={t('loans.dayN', { day: emiDay })} onPress={() => setShowEmiDayPicker(true)} />
         ) : null}
         {emiEnabled ? (
-          <ListItem icon={AlarmIcon} iconColor={colors.warning} title={t('settings.reminderTime')} value={formatTime(emiTime)} onPress={() => setShowEmiTimePicker(true)} />
+          <ListItem icon="alarm" iconColor={colors.warning} title={t('settings.reminderTime')} value={formatTime(emiTime)} onPress={() => setShowEmiTimePicker(true)} />
         ) : null}
         {loan.dueDate ? (
           <ListItem
-            icon={BellRingingIcon}
+            icon="bell-ringing"
             iconColor={colors.danger}
             title={t('loans.dueReminder')}
             subtitle={dueLabel}
@@ -172,10 +171,10 @@ export const LoanReminderSection = React.memo(function LoanReminderSection({ loa
           />
         ) : null}
         {loan.dueDate && dueEnabled ? (
-          <ListItem icon={CalendarBlankIcon} iconColor={colors.danger} title={t('loans.dueReminder')} value={dueLabel} onPress={() => setShowDueDaysPicker(true)} />
+          <ListItem icon="calendar-blank" iconColor={colors.danger} title={t('loans.dueReminder')} value={dueLabel} onPress={() => setShowDueDaysPicker(true)} />
         ) : null}
         {loan.dueDate && dueEnabled ? (
-          <ListItem icon={AlarmIcon} iconColor={colors.danger} title={t('settings.reminderTime')} value={formatTime(dueTime)} onPress={() => setShowDueTimePicker(true)} />
+          <ListItem icon="alarm" iconColor={colors.danger} title={t('settings.reminderTime')} value={formatTime(dueTime)} onPress={() => setShowDueTimePicker(true)} />
         ) : null}
       </ListGroup>
 

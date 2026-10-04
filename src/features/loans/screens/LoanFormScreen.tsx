@@ -1,7 +1,6 @@
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { Screen } from '@/src/components/ui/Screen';
 import { Banner, Button, FormField, IconButton, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, SegmentedControl } from '@/src/components/ui';
-import { CalendarBlankIcon, XIcon } from '@/src/components/ui/icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -20,7 +19,6 @@ import { colorNumberToHex, formatDate, parseAmount } from '@/src/utils/format';
 import { getLocalISOString } from '@/src/utils/date';
 import { toErrorMessage } from '@/src/utils/errors';
 import { useCreateLoan, useLoansCount } from '@/src/features/loans/hooks/loans';
-import { Coins02Icon, HandshakeIcon, Money01Icon } from '@hugeicons/core-free-icons';
 import { useTranslation } from 'react-i18next';
 
 export const LoanFormScreen = React.memo(function LoanFormScreen() {
@@ -126,7 +124,7 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
   }, [canSubmit, isSubmitting, atFreeLimit, amountInput, accounts, selectedAccountId, selectedPersonId, loanType, dueDate, note, createLoan, router, showAlert, t, openPaywall]);
 
   const clearButton = (onPress: () => void) => (
-    <IconButton icon={XIcon} size="sm" variant="ghost" onPress={onPress} accessibilityLabel={t('loans.clear')} />
+    <IconButton icon="x" size="sm" variant="ghost" onPress={onPress} accessibilityLabel={t('loans.clear')} />
   );
 
   return (
@@ -158,8 +156,8 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
         <View style={styles.padded}>
           <SegmentedControl
             options={[
-              { value: 'lend', label: t('loans.iLent'), icon: Money01Icon },
-              { value: 'borrow', label: t('loans.iBorrowed'), icon: Coins02Icon },
+              { value: 'lend', label: t('loans.iLent'), icon: 'money' },
+              { value: 'borrow', label: t('loans.iBorrowed'), icon: 'coins-stack' },
             ]}
             value={loanType}
             onChange={setLoanType}
@@ -184,14 +182,14 @@ export const LoanFormScreen = React.memo(function LoanFormScreen() {
           <ListItem
             leading={selectedPerson
               ? <PersonAvatar name={selectedPerson.name} color={colorNumberToHex(selectedPerson.color)} size={LIST_ITEM_LEADING_SIZE} />
-              : <IconAvatar icon={HandshakeIcon} color={colors.primaryInk} variant="subtle" size={LIST_ITEM_LEADING_SIZE} />}
+              : <IconAvatar icon="handshake" color={colors.primaryInk} variant="subtle" size={LIST_ITEM_LEADING_SIZE} />}
             title={loanType === 'lend' ? t('loans.lentTo') : t('loans.borrowedFrom')}
             value={selectedPerson?.name ?? (loanType === 'lend' ? t('loans.selectContact') : t('loans.selectContactOptional'))}
             onPress={() => setShowPersonPicker(true)}
             trailing={selectedPerson ? clearButton(() => setSelectedPersonId(null)) : undefined}
           />
           <ListItem
-            icon={CalendarBlankIcon}
+            icon="calendar-blank"
             iconColor={colors.primaryInk}
             title={t('loans.optionalDueDate')}
             value={dueDate ? formatDate(dueDate, { day: 'numeric', month: 'short', year: 'numeric' }) : t('loans.noDueDate')}

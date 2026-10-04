@@ -1,5 +1,4 @@
 import { AlertDialog, Banner, Button, Card, Divider, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, SegmentedControl, SelectField, Text } from '@/src/components/ui';
-import { CalendarBlankIcon } from '@/src/components/ui/icons';
 import { Screen } from '@/src/components/ui/Screen';
 
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
@@ -9,7 +8,6 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, formatDate } from '@/src/utils/format';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
 import type { AccountType } from '@/src/types';
-import { Download01Icon, Folder01Icon, Share01Icon } from '@hugeicons/core-free-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
@@ -153,8 +151,8 @@ export const ExportScreen = React.memo(function ExportScreen() {
         </ListGroup>
         {customRange ? (
           <ListGroup insetDividers={false} style={styles.group}>
-            <SelectField label={t('export.from')} value={shortDate(customRange.startDate)} trailingIcon={CalendarBlankIcon} onPress={() => setShowStartPicker(true)} />
-            <SelectField label={t('export.to')} value={shortDate(customRange.endDate)} trailingIcon={CalendarBlankIcon} onPress={() => setShowEndPicker(true)} />
+            <SelectField label={t('export.from')} value={shortDate(customRange.startDate)} trailingIcon="calendar-blank" onPress={() => setShowStartPicker(true)} />
+            <SelectField label={t('export.to')} value={shortDate(customRange.endDate)} trailingIcon="calendar-blank" onPress={() => setShowEndPicker(true)} />
           </ListGroup>
         ) : null}
 
@@ -204,7 +202,7 @@ export const ExportScreen = React.memo(function ExportScreen() {
         {/* ── Export button ── */}
         <Button
           title={t('export.title')}
-          icon={Download01Icon}
+          icon="download-simple"
           onPress={handleExport}
           disabled={previewCount === 0}
           isLoading={isExporting}
@@ -231,8 +229,8 @@ export const ExportScreen = React.memo(function ExportScreen() {
         title={t('export.ready')}
         subtitle={exportedData ? t('export.readyCount', { count: previewCount ?? 0 }) : t('export.chooseSave')}
         options={[
-          { key: 'save', label: Platform.OS === 'ios' ? t('export.saveToFiles') : t('export.saveToFolder'), icon: Folder01Icon, selected: false, onPress: handleSave },
-          { key: 'share', label: t('export.shareToApps'), icon: Share01Icon, selected: false, onPress: handleShare },
+          { key: 'save', label: Platform.OS === 'ios' ? t('export.saveToFiles') : t('export.saveToFolder'), icon: 'folder', selected: false, onPress: handleSave },
+          { key: 'share', label: t('export.shareToApps'), icon: 'export', selected: false, onPress: handleShare },
         ]}
       />
       <AlertDialog {...alertProps} />

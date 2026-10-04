@@ -1,4 +1,3 @@
-import { Calendar03Icon, CancelCircleIcon, Tag01Icon } from '@hugeicons/core-free-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -243,13 +242,13 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
             ))}
             <Chip
               label={customRange ? `${fmt(customRange.startDate)} – ${fmt(customRange.endDate)}` : t('filters.setDateRange')}
-              icon={Calendar03Icon}
+              icon="calendar-blank"
               isActive={!!customRange}
               onPress={() => setShowStart(true)}
               on="surface"
             />
             {customRange ? (
-              <IconButton icon={CancelCircleIcon} variant="ghost" size="sm" onPress={clearDateRange} accessibilityLabel={t('filters.reset')} />
+              <IconButton icon="x-circle" variant="ghost" size="sm" onPress={clearDateRange} accessibilityLabel={t('filters.reset')} />
             ) : null}
           </FilterSection>
 
@@ -291,7 +290,7 @@ export const AdvancedFilterBottomSheet = React.memo(function AdvancedFilterBotto
                 <Chip
                   key={c.id}
                   label={c.name}
-                  icon={resolveIcon(c.icon, Tag01Icon)}
+                  icon={resolveIcon(c.icon, 'tag')}
                   color={colorNumberToHex(c.color)}
                   isActive={local.categoryIds?.includes(c.id) ?? false}
                   onPress={() => toggleCategory(c.id)}

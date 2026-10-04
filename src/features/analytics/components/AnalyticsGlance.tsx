@@ -1,9 +1,7 @@
-import { SparklesIcon, Tag01Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { StatTile } from '@/src/components/ui';
-import { CalendarBlankIcon, ChartBarIcon } from '@/src/components/ui/icons';
 import type { BiggestExpense, CategoryBreakdown } from '@/src/features/analytics/api/analytics';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
@@ -41,7 +39,7 @@ export const AnalyticsGlance = React.memo(function AnalyticsGlance({
       <View style={styles.row}>
         <StatTile
           label={t('analytics.topCategory')}
-          icon={topCategory ? resolveIcon(topCategory.icon, Tag01Icon) : Tag01Icon}
+          icon={topCategory ? resolveIcon(topCategory.icon, 'tag') : 'tag'}
           iconColor={topCategory ? colorNumberToHex(topCategory.color) : colors.textMuted}
           amount={topCategory?.amount ?? 0}
           currency={currency}
@@ -51,7 +49,7 @@ export const AnalyticsGlance = React.memo(function AnalyticsGlance({
         />
         <StatTile
           label={t('analytics.biggestExpense')}
-          icon={biggestExpense ? resolveIcon(biggestExpense.categoryIcon, SparklesIcon) : SparklesIcon}
+          icon={biggestExpense ? resolveIcon(biggestExpense.categoryIcon, 'sparkle') : 'sparkle'}
           iconColor={biggestExpense ? colorNumberToHex(biggestExpense.categoryColor) : colors.textMuted}
           amount={biggestExpense?.amount ?? 0}
           currency={currency}
@@ -61,10 +59,10 @@ export const AnalyticsGlance = React.memo(function AnalyticsGlance({
         />
       </View>
       <View style={styles.row}>
-        <StatTile label={t('analytics.dailyAvg')} icon={CalendarBlankIcon} iconColor={colors.info} amount={dailyAverage} currency={currency} caption={periodLabel} compact />
+        <StatTile label={t('analytics.dailyAvg')} icon="calendar-blank" iconColor={colors.info} amount={dailyAverage} currency={currency} caption={periodLabel} compact />
         <StatTile
           label={t('analytics.monthEndForecast')}
-          icon={ChartBarIcon}
+          icon="chart-bar"
           iconColor={colors.warning}
           amount={monthProjection ?? 0}
           currency={currency}

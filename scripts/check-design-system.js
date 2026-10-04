@@ -22,7 +22,7 @@ const EXEMPT = [
   'src/db/',
   'src/constants/', // user-colour palettes, product ids — data, not UI
   'src/utils/seed.ts', // demo data
-  'src/utils/icons.ts', // category/account icon map (data → glyph)
+  'src/utils/icons.ts', // stored icon strings → registry names
   'src/providers/ThemeProvider.tsx',
 ];
 
@@ -32,7 +32,7 @@ const RULES = [
   { id: 'raw-font-family', msg: 'Hard-coded fontFamily string — use typography.fonts', re: /fontFamily\s*:\s*['"]/ },
   { id: 'raw-radius', msg: 'Raw borderRadius number — use radius() tokens', re: /borderRadius\s*:\s*\d/ },
   { id: 'shadow', msg: 'Shadow/elevation — the design system is flat', re: /\b(shadowColor|shadowOpacity|shadowRadius|shadowOffset|elevation\s*:|boxShadow|\.\.\.shadow\()/ },
-  { id: 'icon-lib', msg: 'Direct icon renderer — use <Icon> from components/ui', re: /\bHugeiconsIcon\b|from '@hugeicons\/react-native'/ },
+  { id: 'icon-lib', msg: 'Icon pack used directly — add the glyph to components/ui/icon-registry.ts and render <Icon name="…" />', re: /\bHugeiconsIcon\b|from '@hugeicons\// },
   { id: 'rn-primitive', msg: 'Off-system primitive — use ui Switch / BentoPressable / Button', re: /\b(TouchableOpacity|TouchableHighlight)\b|import \{[^}]*\bSwitch\b[^}]*\} from 'react-native'/ },
   { id: 'spinner', msg: 'ActivityIndicator — use Skeleton for loading, Button isLoading for actions', re: /\bActivityIndicator\b/ },
   { id: 'opacity-text', msg: 'Opacity-faded style — use tone="muted" / alpha() instead', re: /^\s*opacity\s*:\s*0\.[1-8]\d*\s*,?\s*$/ },

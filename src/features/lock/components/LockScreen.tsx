@@ -6,7 +6,6 @@ import { Icon } from '@/src/components/ui/Icon';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { LockPasswordIcon } from '@hugeicons/core-free-icons';
 import { LockStorage } from '@/src/features/lock/api/lockStorage';
 import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
 import { PinPad } from './PinPad';
@@ -107,7 +106,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
         <View style={styles.graphicContainer}>
           <View style={styles.pulseOuter}>
             <View style={styles.pulseInner}>
-              <Icon icon={LockPasswordIcon} size={32} color={colors.primaryInk} />
+              <Icon name="lock-key" size={32} color={colors.primaryInk} />
             </View>
           </View>
         </View>

@@ -1,4 +1,3 @@
-import { ArrowRight01Icon, LockPasswordIcon, SparklesIcon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -19,12 +18,12 @@ export const BackupUpsellRow = React.memo(function BackupUpsellRow({ onPress }: 
 
   return (
     <BentoPressable style={rows.mainRow} onPress={onPress} accessibilityRole="button" accessibilityLabel={t('backup.upgrade')}>
-      <IconAvatar icon={LockPasswordIcon} color={theme.colors.primaryInk} variant="subtle" size={40} />
+      <IconAvatar icon="lock-key" color={theme.colors.primaryInk} variant="subtle" size={40} />
       <View style={rows.rowInfo}>
         <View style={rows.titleRow}>
           <Text style={rows.rowLabel}>{t('backup.cloudBackup')}</Text>
           <View style={styles.proBadge}>
-            <Icon icon={SparklesIcon} size={10} color={theme.colors.warning} />
+            <Icon name="sparkle" size={10} color={theme.colors.warning} />
             <Text variant="micro" color={colors.primaryInk}>{t('backup.pro')}</Text>
           </View>
         </View>
@@ -32,7 +31,7 @@ export const BackupUpsellRow = React.memo(function BackupUpsellRow({ onPress }: 
       </View>
       <View style={rows.trailingBadge}>
         <Text style={rows.trailingBadgeText}>{t('backup.upgrade')}</Text>
-        <Icon icon={ArrowRight01Icon} size={14} color={theme.colors.primaryInk} />
+        <Icon name="chevron-right" size={14} color={theme.colors.primaryInk} />
       </View>
     </BentoPressable>
   );

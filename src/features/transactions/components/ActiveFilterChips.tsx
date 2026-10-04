@@ -1,11 +1,9 @@
-import { FilterIcon, SortingDownIcon } from '@hugeicons/core-free-icons';
 import { format } from 'date-fns';
 import * as Haptics from 'expo-haptics';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import { Chip } from '@/src/components/ui';
-import { XIcon } from '@/src/components/ui/icons';
 import type { AdvancedFilters } from '@/src/features/filters/api/advanced-filters.service';
 import type { ClearableFilter } from '@/src/features/transactions/hooks/useTransactionFilters';
 import { useSortLabel } from '@/src/features/transactions/components/TransactionSortDialog';
@@ -97,11 +95,11 @@ export const ActiveFilterChips = React.memo(function ActiveFilterChips({
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
-      {activeFilterCount > 0 && <Chip label={t('transactions.clearAll')} icon={XIcon} onPress={onResetFilters} />}
+      {activeFilterCount > 0 && <Chip label={t('transactions.clearAll')} icon="x" onPress={onResetFilters} />}
       {isSortActive && (
         <Chip
           label={sortLabel}
-          icon={SortingDownIcon}
+          icon="sorting-down"
           isActive
           onPress={onEditSort}
           onClear={() => {
@@ -114,7 +112,7 @@ export const ActiveFilterChips = React.memo(function ActiveFilterChips({
         <Chip
           key={key}
           label={label}
-          icon={FilterIcon}
+          icon="filter"
           isActive
           onPress={onEditFilters}
           onClear={() => {

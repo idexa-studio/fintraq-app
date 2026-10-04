@@ -3,7 +3,6 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Badge, Button, Divider, IconAvatar, LIST_ITEM_LEADING_SIZE, Screen, Text } from '@/src/components/ui';
-import { SparkleIcon } from '@/src/components/ui/icons';
 import { ProFeatureRow } from '@/src/features/premium/components/ProFeatureList';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { FEATURE_COPY_PARAMS, HEADLINE_FEATURES, PRO_FEATURES, ProFeatureId } from '@/src/features/premium/pro-features';
@@ -26,7 +25,7 @@ export const ProGateScreen = React.memo(function ProGateScreen({ feature }: Prop
       header={{ title: '', showBack: true }}
       footer={
         <View style={styles.footer}>
-          <Button title={t('premium.gate.upgrade')} icon={SparkleIcon} onPress={() => openPaywall(feature)} size="lg" fullWidth />
+          <Button title={t('premium.gate.upgrade')} icon="sparkle" onPress={() => openPaywall(feature)} size="lg" fullWidth />
           <Button title={t('premium.gate.notNow')} onPress={() => router.back()} variant="ghost" size="lg" fullWidth />
         </View>
       }
