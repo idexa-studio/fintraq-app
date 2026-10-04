@@ -229,7 +229,7 @@ Rules
   dropped) and never add a param that can only hold one value.
 - **Limits are enforced in code** (`params.ts`): names ≤40 chars, param values ≤100, ≤25 params,
   user property names ≤24 and values ≤36; anything GA4 would silently drop is dropped visibly.
-- **Consent.** Settings → About → *Share usage data* (`profile.shareUsageData`, on by default)
+- **Consent.** Settings → About → Privacy policy → *Share usage data* (`profile.shareUsageData`, on by default)
   controls both Analytics and Crashlytics. Native collection starts off (`firebase.json`) and the
   provider enables it once settings load; events fired earlier wait for that and are dropped if
   the user opted out. Ad storage, ad user data and ad personalisation consent are always denied,
