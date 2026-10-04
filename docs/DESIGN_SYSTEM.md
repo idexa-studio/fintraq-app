@@ -49,7 +49,7 @@ Always read tokens through `const theme = useTheme()`.
 | `text` / `textMuted` | Primary / secondary content. |
 | `success` · `danger` | Income · expense, destructive, errors. |
 | `warning` · `info` | Attention needed · transfers, informational. |
-| `heroCard.*` | The hero palette (lime / emerald). Monochrome: `textPrimary` · `textMuted` for text, `ink` + `onInk` for solid discs (quick actions, symbol badges), `tile` · `tileStrong` for pills and selected wells, `track` · `fillSoft` for bars. No red/green text on the hero. |
+| `heroCard.*` | The hero palette (lime / emerald). `textPrimary` · `textMuted` for text, `tile` for the translucent stat tiles and the currency track, `ink` + `onInk` for the selected currency, `tileStrong` for a selected tab. Figures stay in `textPrimary`: green or red type on the hero fails contrast. |
 
 User-chosen colours (accounts, categories, people) come from data. Pass them via a component's `color` prop.
 
@@ -114,8 +114,8 @@ All components are exported from `@/src/components/ui`.
 | Component | Use | Replaces |
 |---|---|---|
 | `Card` | `surface` · `inset` · `outlined`, optional `onPress`. | Ad-hoc `View` cards |
-| `HeroSurface` | The brand card for a screen's headline figure (Home balance, Transactions net, net worth, entry amount), with two soft rings (`decorated={false}` for dense forms). Content takes colours from `heroCard.*`; currency switching is one frosted pill (`CurrencySwitcher`) that opens a sheet; quick actions are 48pt ink discs with labels beneath. | Rows of currency tabs, coloured tiles or red/green figures on the hero |
-| `HeroSplit` | Two figures on a hero weighed by one bar — solid ink (income, assets) against soft ink (expenses, debts), with matching legend marks. | Green/red bars or dots on the hero |
+| `HeroSurface` | The brand card for a screen's headline figure (Home balance, Transactions net, net worth, entry amount). One layout everywhere: label, figure, `HeroSplit`, then `CurrencySwitcher` (a tonal track with a solid thumb, scrolls when there are many). Quick actions sit in a white strip below the hero, not inside it. | Currency chips in the header, buttons or coloured figures inside the hero |
+| `HeroSplit` | Two figures on a hero as translucent tiles — income/expenses, assets/debts — with an arrow glyph and the figure in hero text colour. | Bars, dots or red/green figures on the hero |
 | `ListGroup` + `ListItem` | Settings-style lists: nav rows (`onPress` → chevron), toggles (`switchValue`), single choice (`selected`), info (`value`), `destructive`. | `NavRow`, `SwitchRow`, `InfoRow` in Settings, Developer, Search, TransactionDetail |
 | `MoneyText` | Every amount. `type` CR/DR adds sign + colour. `compact` for tiles. | — |
 | `StatTile` | One KPI with label, amount/value, optional `caption` and trend. Lay out in rows of two. | KPI blocks in Analytics/Dashboard |

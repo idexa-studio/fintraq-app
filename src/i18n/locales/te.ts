@@ -113,7 +113,7 @@ const te: Translation = {
     cannotDelete: 'వర్గాన్ని తొలగించలేము', deleteFailed: 'వర్గాన్ని తొలగించడం విఫలమైంది.',
   },
   dashboard: {
-    pulseIncome: 'ఆదాయం', pulseKept: '{{pct}}% పొదుపు', pulseOverIncome: 'ఆదాయం కంటే ఎక్కువ ఖర్చు', pulseNoIncome: 'ఇంకా ఆదాయం లేదు',
+    pulseByToday: 'ఈ రోజు వరకు {{amount}}', pulseNoHistory: 'గత నెల ఖర్చు లేదు',
     netThisMonth: 'ఈ నెల {{amount}}', thisMonth: 'ఈ నెల', quickActions: 'త్వరిత చర్యలు', quickExpense: 'ఖర్చు', quickIncome: 'ఆదాయం', quickTransfer: 'బదిలీ', quickLoan: 'అప్పు', pulseSpent: 'ఇప్పటివరకు ఖర్చు', pulseOfLast: 'గత నెలలో {{pct}}%', pulseLastMonth: 'గత నెల', pulseDay: '{{total}} లో {{day}}వ రోజు', pulseEmpty: 'ఈ నెల ఇంకా ఖర్చు లేదు', rhythmTitle: 'ఖర్చు లయ', rhythmHint: 'గత 5 వారాలు', rhythmLess: 'తక్కువ', rhythmMore: 'ఎక్కువ', rhythmNone: 'ఖర్చు లేదు', rhythmSpent: '{{amount}} ఖర్చు',
     streakDays: '{{count}} రోజుల వరుస',
     accounts: 'ఖాతాలు', manage: 'నిర్వహించు', topExpenses: 'అగ్ర ఖర్చులు', people: 'వ్యక్తులు', loans: 'రుణాలు', recent: 'ఇటీవలివి', seeAll: 'అన్నీ చూడండి',
@@ -129,10 +129,6 @@ const te: Translation = {
   editEntry: 'నమోదును సవరించు', newEntry: 'కొత్త నమోదు', fromAccount: 'ఏ ఖాతా నుండి', toAccount: 'ఏ ఖాతాకు', noCompatible: 'ఈ బదిలీకి అనుకూలమైన ఖాతాలు లేవు.', linkedPerson: 'లింక్ అయిన వ్యక్తి', unknown: 'తెలియనిది', noPersonLinked: 'వ్యక్తి లింక్ కాలేదు', time: 'సమయం', note: 'గమనిక', optionalContext: 'ఐచ్ఛిక వివరణ', saveChanges: 'మార్పులను సేవ్ చేయి', saveTransaction: 'లావాదేవీని సేవ్ చేయి', none: 'ఏదీ కాదు',
   addedOn: '{{date}} న జోడించబడింది', detailTitle: 'లావాదేవీ', notFound: 'లావాదేవీ కనుగొనబడలేదు.', detailDeleteTitle: 'లావాదేవీని తొలగించు', detailDeleteMessage: 'ఇది బ్యాలెన్స్‌పై ప్రభావాన్ని వెనక్కి మారుస్తుంది; దీన్ని రద్దు చేయలేరు.', from: 'నుండి', to: 'కు', created: 'సృష్టించినది', cancel: 'రద్దు చేయి' },
   onboardingFlow: {
-    stepCount: '{{current}}/{{total}}', yourName: 'మీ పేరు', moreCurrencies: 'మరిన్ని', previewLabel: 'ఇలా కనిపిస్తుంది', profileSubtitle: 'పలకరింపు కోసం మీ పేరు, మీరు లెక్కించే కరెన్సీ.',
-    hello: { title: 'డబ్బు, ప్రశాంతంగా.', subtitle: 'ఖర్చు, ఆదాయం, అప్పులు ఒకే ప్రైవేట్ చోట. ఒక్క నిమిషంలో సిద్ధం.' },
-    perks: { offline: 'ఆఫ్‌లైన్‌లో పనిచేస్తుంది', private: 'పరికరంలోనే ఉంటుంది', fast: 'సెకన్లలో నమోదు' },
-    mock: { salary: 'జీతం', coffee: 'కాఫీ' },
     typeHints: { cash: 'నోట్లు & నాణేలు', bank: 'పొదుపు లేదా కరెంట్', ewallet: 'ఫోన్ & ఆన్‌లైన్ వాలెట్', credit_card: 'ఇప్పుడు ఖర్చు, తర్వాత చెల్లింపు' },
     balanceHint: 'ఇప్పుడు ఇందులో ఉన్న మొత్తం. ఇకపై లావాదేవీలు దీన్ని తాజాగా ఉంచుతాయి.', entryNote: 'నోట్ (ఐచ్ఛికం)', entryNotePlaceholder: 'ఉదా. టీమ్‌తో లంచ్', balanceAfter: 'దీని తర్వాత {{account}}',
     accountNameRequired: 'ఖాతాకు ఒక పేరు ఇవ్వండి', invalidAmount: 'ఈ మొత్తం సరిగ్గా లేనట్లుంది', entryAmountRequired: 'మొత్తం నమోదు చేయండి, లేదా ఇప్పుడు దాటవేయండి', addEntry: 'ఎంట్రీ జోడించండి', skipForNow: 'ఇప్పుడు దాటవేయండి',

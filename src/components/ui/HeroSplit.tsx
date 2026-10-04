@@ -1,37 +1,35 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import type { IconSource } from './Icon';
+import { Icon } from './Icon';
 import { MoneyText } from './MoneyText';
 import { Text } from './Text';
 
-export type HeroSplitSide = { label: string; amount: number };
+export type HeroSplitSide = { label: string; amount: number; icon?: IconSource };
 
 type Props = {
-  /** Drawn in solid ink: income, assets. */
+  /** Left tile: income, assets. */
   primary: HeroSplitSide;
-  /** Drawn in soft ink: expenses, debts. */
+  /** Right tile: expenses, debts. */
   secondary: HeroSplitSide;
   currency?: string;
 };
 
 /**
- * Two figures and the bar that weighs them, for a HeroSurface. Monochrome on purpose: solid ink
- * against soft ink reads on lime and on emerald, where green/red pairs fail. The legend marks
- * repeat the bar's two strengths so the figures map to it without colour.
+ * Two figures on a HeroSurface as translucent tiles — the hero's original stat row. Figures stay
+ * in hero text colour (green or red type on lime fails contrast); the arrow says which way.
  */
 export const HeroSplit = React.memo(function HeroSplit({ primary, secondary, currency }: Props) {
   const theme = useTheme();
   const { heroCard: hero } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const total = primary.amount + secondary.amount;
-  const share = total > 0 ? primary.amount / total : 0;
-
-  const side = (s: HeroSplitSide, solid: boolean) => (
-    <View style={[styles.side, !solid && styles.sideEnd]}>
+  const tile = (s: HeroSplitSide, fallbackIcon: IconSource) => (
+    <View style={styles.tile}>
       <View style={styles.label}>
-        <View style={[styles.mark, solid ? styles.markSolid : styles.markSoft]} />
-        <Text variant="caption" color={hero.textMuted} numberOfLines={1}>
+        <Icon name={s.icon ?? fallbackIcon} size={14} color={hero.textPrimary} weight="bold" />
+        <Text variant="caption" color={hero.textMuted} numberOfLines={1} style={styles.labelText}>
           {s.label}
         </Text>
       </View>
@@ -42,44 +40,32 @@ export const HeroSplit = React.memo(function HeroSplit({ primary, secondary, cur
         style={styles.value}
         numberOfLines={1}
         adjustsFontSizeToFit
-        minimumFontScale={0.6}
+        minimumFontScale={0.7}
       />
     </View>
   );
 
   return (
-    <View style={styles.root}>
-      <View style={styles.track} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-        {total > 0 ? (
-          <>
-            {share > 0 ? <View style={[styles.fill, styles.fillSolid, { flex: share }]} /> : null}
-            {share < 1 ? <View style={[styles.fill, styles.fillSoft, { flex: 1 - share }]} /> : null}
-          </>
-        ) : null}
-      </View>
-      <View style={styles.sides}>
-        {side(primary, true)}
-        {side(secondary, false)}
-      </View>
+    <View style={styles.row}>
+      {tile(primary, 'trend-up')}
+      {tile(secondary, 'trend-down')}
     </View>
   );
 });
 
-const BAR = 8;
-
 const createStyles = ({ heroCard: hero, spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({
-    root: { gap: spacing('3') },
-    track: { flexDirection: 'row', height: BAR, gap: 3, borderRadius: radius('full'), backgroundColor: hero.track, overflow: 'hidden' },
-    fill: { height: BAR, borderRadius: radius('full') },
-    fillSolid: { backgroundColor: hero.textPrimary },
-    fillSoft: { backgroundColor: hero.fillSoft },
-    sides: { flexDirection: 'row', gap: spacing('4') },
-    side: { flex: 1, gap: spacing('0.5') },
-    sideEnd: { alignItems: 'flex-end' },
-    label: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
-    mark: { width: 10, height: 10, borderRadius: radius('full') },
-    markSolid: { backgroundColor: hero.textPrimary },
-    markSoft: { backgroundColor: hero.fillSoft },
-    value: { ...typography.metrics.lg, color: hero.textPrimary },
+    row: { flexDirection: 'row', gap: spacing('2.5') },
+    tile: {
+      flex: 1,
+      minWidth: 0,
+      backgroundColor: hero.tile,
+      paddingVertical: spacing('2.5'),
+      paddingHorizontal: spacing('3'),
+      borderRadius: radius('lg'),
+      gap: spacing('1'),
+    },
+    label: { flexDirection: 'row', alignItems: 'center', gap: spacing('1') },
+    labelText: { flexShrink: 1 },
+    value: { ...typography.metrics.md, color: hero.textPrimary },
   });

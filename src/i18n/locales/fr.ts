@@ -113,7 +113,7 @@ const fr: Translation = {
     cannotDelete: 'Impossible de supprimer la catégorie', deleteFailed: 'Échec de la suppression de la catégorie.',
   },
   dashboard: {
-    pulseIncome: 'Encaissé', pulseKept: '{{pct}} % mis de côté', pulseOverIncome: 'Plus dépensé que gagné', pulseNoIncome: 'Aucun revenu pour l’instant',
+    pulseByToday: '{{amount}} à cette date', pulseNoHistory: 'Aucune dépense le mois dernier',
     netThisMonth: '{{amount}} ce mois-ci', thisMonth: 'Ce mois-ci', quickActions: 'Actions rapides', quickExpense: 'Dépense', quickIncome: 'Revenu', quickTransfer: 'Virement', quickLoan: 'Prêt', pulseSpent: 'Dépensé jusqu’ici', pulseOfLast: '{{pct}} % du mois dernier', pulseLastMonth: 'Mois dernier', pulseDay: 'Jour {{day}} sur {{total}}', pulseEmpty: 'Aucune dépense ce mois-ci', rhythmTitle: 'Rythme des dépenses', rhythmHint: '5 dernières semaines', rhythmLess: 'Moins', rhythmMore: 'Plus', rhythmNone: 'Aucune dépense', rhythmSpent: '{{amount}} dépensés',
     streakDays: 'Série de {{count}} j',
     accounts: 'Comptes', manage: 'Gérer', topExpenses: 'Principales dépenses', people: 'Personnes', loans: 'Prêts', recent: 'Récents', seeAll: 'Tout voir',
@@ -129,10 +129,6 @@ const fr: Translation = {
   editEntry: "Modifier l'entrée", newEntry: 'Nouvelle entrée', fromAccount: 'Compte source', toAccount: 'Compte de destination', noCompatible: 'Aucun compte compatible pour ce virement.', linkedPerson: 'Personne liée', unknown: 'Inconnu', noPersonLinked: 'Aucune personne liée', time: 'Heure', note: 'Note', optionalContext: 'Contexte facultatif', saveChanges: 'Enregistrer les modifications', saveTransaction: 'Enregistrer la transaction', none: 'Aucune',
   addedOn: 'Ajouté le {{date}}', detailTitle: 'Transaction', notFound: 'Transaction introuvable.', detailDeleteTitle: 'Supprimer la transaction', detailDeleteMessage: "Cela annulera l'effet sur le solde et est irréversible.", from: 'De', to: 'Vers', created: 'Créée', cancel: 'Annuler' },
   onboardingFlow: {
-    stepCount: '{{current}}/{{total}}', yourName: 'Votre prénom', moreCurrencies: 'Plus', previewLabel: 'Aperçu', profileSubtitle: 'Votre prénom pour l’accueil, et la devise dans laquelle vous comptez.',
-    hello: { title: 'L’argent, en toute sérénité.', subtitle: 'Dépenses, revenus et prêts dans un espace privé. Prêt en moins d’une minute.' },
-    perks: { offline: 'Fonctionne hors ligne', private: 'Reste sur l’appareil', fast: 'Saisie en secondes' },
-    mock: { salary: 'Salaire', coffee: 'Café' },
     typeHints: { cash: 'Billets et pièces', bank: 'Épargne ou courant', ewallet: 'Portefeuilles mobiles', credit_card: 'Payez plus tard' },
     balanceHint: 'Ce qu\'il contient maintenant. Ensuite, les opérations le tiennent à jour.', entryNote: 'Note (facultatif)', entryNotePlaceholder: 'ex. Déjeuner avec l\'équipe', balanceAfter: '{{account}} ensuite',
     accountNameRequired: 'Donne un nom au compte', invalidAmount: 'Ce montant ne semble pas correct', entryAmountRequired: 'Saisis un montant ou passe pour l\'instant', addEntry: 'Ajouter', skipForNow: 'Passer pour l\'instant',

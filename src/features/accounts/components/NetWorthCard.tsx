@@ -9,8 +9,6 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 type Props = {
   group: CurrencyNetWorth;
   currencies: string[];
-  /** Net worth per currency, listed in the currency sheet. */
-  netByCurrency: Record<string, number>;
   onCurrencySelect: (currency: string) => void;
 };
 
@@ -18,7 +16,7 @@ type Props = {
  * Net worth for one currency on the hero surface, like Home and Transactions: the figure, then
  * what is owned weighed against what is owed.
  */
-export const NetWorthCard = React.memo(function NetWorthCard({ group, currencies, netByCurrency, onCurrencySelect }: Props) {
+export const NetWorthCard = React.memo(function NetWorthCard({ group, currencies, onCurrencySelect }: Props) {
   const theme = useTheme();
   const { heroCard: hero } = theme;
   const { t } = useTranslation();
@@ -34,7 +32,6 @@ export const NetWorthCard = React.memo(function NetWorthCard({ group, currencies
             {group.accounts.length === 1 ? t('transactions.oneAccount') : t('transactions.accountsCount', { count: group.accounts.length })}
           </Text>
         </View>
-        <CurrencySwitcher currencies={currencies} selected={group.currency} onSelect={onCurrencySelect} amounts={netByCurrency} />
       </View>
 
       <MoneyText
@@ -52,13 +49,15 @@ export const NetWorthCard = React.memo(function NetWorthCard({ group, currencies
         secondary={{ label: t('accounts.debts'), amount: group.debts }}
         currency={group.currency}
       />
+
+      <CurrencySwitcher currencies={currencies} selected={group.currency} onSelect={onCurrencySelect} />
     </HeroSurface>
   );
 });
 
 const createStyles = ({ heroCard: hero, spacing, typography }: ThemeContextType) =>
   StyleSheet.create({
-    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing('3'), minHeight: 32 },
+    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing('3'), minHeight: 24, marginBottom: -spacing('3') },
     headerLeft: { gap: 2, flexShrink: 1 },
-    net: { ...typography.metrics.display, color: hero.textPrimary, marginTop: -spacing('2') },
+    net: { ...typography.metrics.display, color: hero.textPrimary },
   });

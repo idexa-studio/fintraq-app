@@ -128,17 +128,17 @@ export type HeroCardPalette = {
   textMuted: string;
   /** Hairlines and dividers. */
   separator: string;
-  /** Signal accents for the rare spot ink can't carry in/out (design gallery). */
+  /** Signal accents — small arrow glyphs only; figures stay in textPrimary for contrast. */
   income: string;
   expense: string;
   transfer: string;
-  /** Frosted fill for pills and chips sitting on the hero. */
+  /** Translucent fill for stat tiles and tracks sitting on the hero. */
   tile: string;
   /** Selected tab / input well on the hero — one step stronger than `tile`. */
   tileStrong: string;
-  /** Solid contrasting disc: quick-action buttons, symbol badges. */
+  /** Solid contrasting fill: the selected currency tab, active type tab. */
   ink: string;
-  /** Glyph drawn on `ink`. */
+  /** Text drawn on `ink`. */
   onInk: string;
   /** Empty part of a bar on the hero. */
   track: string;
@@ -151,8 +151,8 @@ export type HeroCardPalette = {
   glowLight: string;
 };
 
-// The hero is monochrome: ink on lime (light) and white on emerald (dark). Red and green text on
-// a green card vibrates and fails contrast, so in/out is carried by solid vs soft ink instead.
+// Original hero colours: lime with near-black text (light), emerald with white text (dark).
+// The extra tokens are derived from the same values so every hero child shares one palette.
 export function getHeroColors(
   isDark: boolean,
   primary: string,
@@ -165,19 +165,19 @@ export function getHeroColors(
       background: '#008040',
       backgroundDark: '#006633',
       textPrimary: '#FFFFFF',
-      textMuted: '#E2F6EA',
-      separator: 'rgba(255, 255, 255, 0.16)',
-      income: '#7DF5B6',
-      expense: '#FFC2BD',
-      transfer: '#CFE6FF',
-      tile: 'rgba(0, 24, 12, 0.24)',
+      textMuted: '#D1FADF',
+      separator: 'rgba(255, 255, 255, 0.15)',
+      income: '#00FF88',
+      expense: '#FF8F8F',
+      transfer: '#BFE0FF',
+      tile: 'rgba(255, 255, 255, 0.15)',
       tileStrong: 'rgba(255, 255, 255, 0.22)',
-      ink: '#05301A',
-      onInk: '#6AF5AE',
-      track: 'rgba(0, 24, 12, 0.28)',
+      ink: '#FFFFFF',
+      onInk: '#008040',
+      track: 'rgba(255, 255, 255, 0.15)',
       fillSoft: 'rgba(255, 255, 255, 0.45)',
-      placeholder: 'rgba(255, 255, 255, 0.5)',
-      decoOverlay: 'rgba(255, 255, 255, 0.07)',
+      placeholder: 'rgba(255, 255, 255, 0.45)',
+      decoOverlay: 'rgba(255, 255, 255, 0.08)',
       glowLight: 'rgba(255, 255, 255, 0.03)',
     };
   }
@@ -185,19 +185,19 @@ export function getHeroColors(
     background: primary,
     backgroundDark: primaryDark,
     textPrimary: '#0A0A0A',
-    textMuted: '#0E3A22',
-    separator: 'rgba(10, 10, 10, 0.10)',
-    income: '#003D1E',
-    expense: '#5C0B0B',
-    transfer: '#0B2F5C',
-    tile: 'rgba(255, 255, 255, 0.30)',
-    tileStrong: 'rgba(255, 255, 255, 0.62)',
+    textMuted: '#1E3A2B',
+    separator: 'rgba(0, 0, 0, 0.08)',
+    income: '#00602F',
+    expense: '#9E0000',
+    transfer: '#0B3D7A',
+    tile: 'rgba(0, 0, 0, 0.08)',
+    tileStrong: 'rgba(0, 0, 0, 0.14)',
     ink: '#0A0A0A',
-    onInk: primary,
-    track: 'rgba(10, 10, 10, 0.12)',
+    onInk: '#FFFFFF',
+    track: 'rgba(0, 0, 0, 0.08)',
     fillSoft: 'rgba(10, 10, 10, 0.32)',
-    placeholder: 'rgba(10, 10, 10, 0.4)',
-    decoOverlay: 'rgba(255, 255, 255, 0.18)',
+    placeholder: 'rgba(10, 10, 10, 0.35)',
+    decoOverlay: 'rgba(0, 0, 0, 0.06)',
     glowLight: 'rgba(255, 255, 255, 0.04)',
   };
 }

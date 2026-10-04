@@ -1,4 +1,5 @@
 import { GalleryGroup, Specimen } from '@/src/features/design-gallery/components/Specimen';
+import { CurrencySwitcher } from '@/src/features/dashboard/components/CurrencySwitcher';
 import { EmptyState, HeroSplit, HeroSurface, IconButton, ListGroup, MoneyText, ListItem, PersonAvatar, SectionHeader, StatColumns, StatTile, Text } from '@/src/components/ui';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTheme } from '@/src/providers/ThemeProvider';
@@ -52,13 +53,14 @@ export function PatternsSection() {
       <GalleryGroup title="Compositions">
         <Specimen
           title="HeroSurface + HeroSplit"
-          description="Lime (light) / emerald (dark) card for a screen's headline figure. Monochrome: text from heroCard.textPrimary / textMuted, solid buttons heroCard.ink with onInk glyphs, pills heroCard.tile. HeroSplit weighs two figures as solid vs soft ink — never red/green on the hero."
+          description="Lime (light) / emerald (dark) card for a screen's headline figure. Every hero: label, figure, HeroSplit's two translucent stat tiles, then the currency track. Colours from heroCard; figures stay in textPrimary."
           bare
         >
           <HeroSurface>
             <Text variant="caption" color={heroCard.textMuted}>Net worth</Text>
             <MoneyText amount={20612.57} currency="USD" weight="bold" style={{ ...typography.metrics.display, color: heroCard.textPrimary }} />
             <HeroSplit primary={{ label: 'Assets', amount: 21254.75 }} secondary={{ label: 'Debts', amount: 642.18 }} currency="USD" />
+            <CurrencySwitcher currencies={['USD', 'INR', 'EUR']} selected="USD" onSelect={() => {}} />
           </HeroSurface>
         </Specimen>
 

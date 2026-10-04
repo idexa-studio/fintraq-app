@@ -113,7 +113,7 @@ const ta: Translation = {
     cannotDelete: 'வகையை நீக்க இயலாது', deleteFailed: 'வகையை நீக்க முடியவில்லை.',
   },
   dashboard: {
-    pulseIncome: 'வருமானம்', pulseKept: '{{pct}}% சேமிப்பு', pulseOverIncome: 'வருமானத்தை விட அதிக செலவு', pulseNoIncome: 'இன்னும் வருமானம் இல்லை',
+    pulseByToday: 'இந்த நாள் வரை {{amount}}', pulseNoHistory: 'கடந்த மாதம் செலவு இல்லை',
     netThisMonth: 'இந்த மாதம் {{amount}}', thisMonth: 'இந்த மாதம்', quickActions: 'விரைவுச் செயல்கள்', quickExpense: 'செலவு', quickIncome: 'வருமானம்', quickTransfer: 'பரிமாற்றம்', quickLoan: 'கடன்', pulseSpent: 'இதுவரை செலவு', pulseOfLast: 'கடந்த மாதத்தின் {{pct}}%', pulseLastMonth: 'கடந்த மாதம்', pulseDay: '{{total}} இல் நாள் {{day}}', pulseEmpty: 'இந்த மாதம் இன்னும் செலவு இல்லை', rhythmTitle: 'செலவு தாளம்', rhythmHint: 'கடந்த 5 வாரங்கள்', rhythmLess: 'குறைவு', rhythmMore: 'அதிகம்', rhythmNone: 'செலவு இல்லை', rhythmSpent: '{{amount}} செலவு',
     streakDays: '{{count}} நாள் தொடர்',
     accounts: 'கணக்குகள்', manage: 'நிர்வகி', topExpenses: 'முக்கியச் செலவுகள்', people: 'நபர்கள்', loans: 'கடன்கள்', recent: 'சமீபத்தியவை', seeAll: 'அனைத்தையும் காண்',
@@ -129,10 +129,6 @@ const ta: Translation = {
   editEntry: 'பதிவைத் திருத்து', newEntry: 'புதிய பதிவு', fromAccount: 'எந்தக் கணக்கிலிருந்து', toAccount: 'எந்தக் கணக்கிற்கு', noCompatible: 'இந்தப் பரிமாற்றத்திற்குப் பொருத்தமான கணக்குகள் இல்லை.', linkedPerson: 'இணைக்கப்பட்ட நபர்', unknown: 'தெரியாதது', noPersonLinked: 'நபர் இணைக்கப்படவில்லை', time: 'நேரம்', note: 'குறிப்பு', optionalContext: 'விருப்பப் பின்னணி', saveChanges: 'மாற்றங்களைச் சேமி', saveTransaction: 'பரிவர்த்தனையைச் சேமி', none: 'எதுவுமில்லை',
   addedOn: '{{date}} அன்று சேர்க்கப்பட்டது', detailTitle: 'பரிவர்த்தனை', notFound: 'பரிவர்த்தனை கிடைக்கவில்லை.', detailDeleteTitle: 'பரிவர்த்தனையை நீக்கு', detailDeleteMessage: 'இது இருப்பில் ஏற்பட்ட தாக்கத்தைத் திருப்பிவிடும்; இதைத் திரும்பப் பெற முடியாது.', from: 'இருந்து', to: 'க்கு', created: 'உருவாக்கியது', cancel: 'ரத்துசெய்' },
   onboardingFlow: {
-    stepCount: '{{current}}/{{total}}', yourName: 'உங்கள் பெயர்', moreCurrencies: 'மேலும்', previewLabel: 'இப்படித் தோன்றும்', profileSubtitle: 'வாழ்த்துக்கான உங்கள் பெயர், நீங்கள் கணக்கிடும் நாணயம்.',
-    hello: { title: 'பணம், நிம்மதியாக.', subtitle: 'செலவு, வருமானம், கடன் — ஒரே தனிப்பட்ட இடத்தில். ஒரு நிமிடத்தில் தயார்.' },
-    perks: { offline: 'ஆஃப்லைனில் இயங்கும்', private: 'சாதனத்திலேயே இருக்கும்', fast: 'நொடிகளில் பதிவு' },
-    mock: { salary: 'சம்பளம்', coffee: 'காபி' },
     typeHints: { cash: 'நோட்டுகள் & நாணயங்கள்', bank: 'சேமிப்பு அல்லது நடப்பு', ewallet: 'போன் & ஆன்லைன் வாலட்', credit_card: 'இப்போது செலவு, பின்னர் செலுத்து' },
     balanceHint: 'இப்போது இதில் உள்ளது. இனி பரிவர்த்தனைகள் இதைப் புதுப்பிக்கும்.', entryNote: 'குறிப்பு (விருப்பம்)', entryNotePlaceholder: 'எ.கா. குழுவுடன் மதிய உணவு', balanceAfter: 'இதற்குப் பிறகு {{account}}',
     accountNameRequired: 'கணக்குக்கு ஒரு பெயர் கொடுங்கள்', invalidAmount: 'இந்தத் தொகை சரியாகத் தெரியவில்லை', entryAmountRequired: 'தொகையை உள்ளிடவும், அல்லது இப்போது தவிர்க்கவும்', addEntry: 'பதிவைச் சேர்', skipForNow: 'இப்போது தவிர்',

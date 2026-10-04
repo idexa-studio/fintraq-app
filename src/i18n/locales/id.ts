@@ -113,7 +113,7 @@ const id: Translation = {
     cannotDelete: 'Tidak dapat menghapus kategori', deleteFailed: 'Gagal menghapus kategori.',
   },
   dashboard: {
-    pulseIncome: 'Diterima', pulseKept: 'Disimpan {{pct}}%', pulseOverIncome: 'Pengeluaran melebihi pemasukan', pulseNoIncome: 'Belum ada pemasukan',
+    pulseByToday: '{{amount}} hingga hari ini', pulseNoHistory: 'Tidak ada pengeluaran bulan lalu',
     netThisMonth: '{{amount}} bulan ini', thisMonth: 'Bulan ini', quickActions: 'Aksi cepat', quickExpense: 'Pengeluaran', quickIncome: 'Pemasukan', quickTransfer: 'Transfer', quickLoan: 'Pinjaman', pulseSpent: 'Terpakai sejauh ini', pulseOfLast: '{{pct}}% dari bulan lalu', pulseLastMonth: 'Bulan lalu', pulseDay: 'Hari {{day}} dari {{total}}', pulseEmpty: 'Belum ada pengeluaran bulan ini', rhythmTitle: 'Ritme pengeluaran', rhythmHint: '5 minggu terakhir', rhythmLess: 'Sedikit', rhythmMore: 'Banyak', rhythmNone: 'Tidak ada pengeluaran', rhythmSpent: '{{amount}} terpakai',
     streakDays: '{{count}} hari beruntun',
     accounts: 'Akun', manage: 'Kelola', topExpenses: 'Pengeluaran terbesar', people: 'Orang', loans: 'Pinjaman', recent: 'Terbaru', seeAll: 'Lihat semua',
@@ -129,10 +129,6 @@ const id: Translation = {
   editEntry: 'Ubah catatan', newEntry: 'Catatan baru', fromAccount: 'Dari akun', toAccount: 'Ke akun', noCompatible: 'Tidak ada akun yang kompatibel untuk transfer ini.', linkedPerson: 'Orang terkait', unknown: 'Tidak diketahui', noPersonLinked: 'Tidak ada orang terkait', time: 'Waktu', note: 'Catatan', optionalContext: 'Konteks opsional', saveChanges: 'Simpan perubahan', saveTransaction: 'Simpan transaksi', none: 'Tidak ada',
   addedOn: 'Ditambahkan {{date}}', detailTitle: 'Transaksi', notFound: 'Transaksi tidak ditemukan.', detailDeleteTitle: 'Hapus transaksi', detailDeleteMessage: 'Ini akan membalikkan dampak pada saldo dan tidak dapat dibatalkan.', from: 'Dari', to: 'Ke', created: 'Dibuat', cancel: 'Batal' },
   onboardingFlow: {
-    stepCount: '{{current}}/{{total}}', yourName: 'Nama kamu', moreCurrencies: 'Lainnya', previewLabel: 'Tampilannya nanti', profileSubtitle: 'Nama untuk sapaan, dan mata uang yang kamu pakai.',
-    hello: { title: 'Keuangan, lebih tenang.', subtitle: 'Pengeluaran, pemasukan, dan pinjaman di satu tempat pribadi. Siap dalam semenit.' },
-    perks: { offline: 'Bisa offline', private: 'Tetap di perangkat', fast: 'Catat dalam detik' },
-    mock: { salary: 'Gaji', coffee: 'Kopi' },
     typeHints: { cash: 'Uang kertas & koin', bank: 'Tabungan atau giro', ewallet: 'Dompet digital', credit_card: 'Beli sekarang, bayar nanti' },
     balanceHint: 'Isi saat ini. Selanjutnya, transaksi yang memperbaruinya.', entryNote: 'Catatan (opsional)', entryNotePlaceholder: 'mis. Makan siang dengan tim', balanceAfter: '{{account}} setelahnya',
     accountNameRequired: 'Beri nama akunnya', invalidAmount: 'Jumlah itu sepertinya tidak benar', entryAmountRequired: 'Masukkan jumlah, atau lewati dulu', addEntry: 'Tambah transaksi', skipForNow: 'Lewati dulu',

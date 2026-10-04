@@ -32,7 +32,6 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   const hero = netWorth.find((g) => g.currency === pickedCurrency) ?? netWorth[0];
   const groups = useMemo(() => (hero ? [hero, ...netWorth.filter((g) => g !== hero)] : []), [hero, netWorth]);
   const currencies = useMemo(() => netWorth.map((g) => g.currency), [netWorth]);
-  const netByCurrency = useMemo(() => Object.fromEntries(netWorth.map((g) => [g.currency, g.net])), [netWorth]);
 
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [showOptions, setShowOptions] = useState(false);
@@ -131,7 +130,7 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
       ) : null}
 
       {hero ? (
-        <NetWorthCard group={hero} currencies={currencies} netByCurrency={netByCurrency} onCurrencySelect={setPickedCurrency} />
+        <NetWorthCard group={hero} currencies={currencies} onCurrencySelect={setPickedCurrency} />
       ) : null}
 
       {groups.map((group) => (
