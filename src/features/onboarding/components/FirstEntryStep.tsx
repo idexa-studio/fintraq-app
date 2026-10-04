@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { IconAvatar, Input, MoneyText, SegmentedControl, Text } from '@/src/components/ui';
+import { Card, Chip, IconAvatar, Input, MoneyText, SegmentedControl, Text } from '@/src/components/ui';
+import { getCurrencySymbol } from '@/src/constants/currency';
 import { DEFAULT_CATEGORIES } from '@/src/constants/defaultCategories';
-import { AmountField } from '@/src/features/onboarding/components/AmountField';
-import { ChoiceTile } from '@/src/features/onboarding/components/ChoiceTile';
 import { FIRST_ENTRY_CATEGORIES } from '@/src/features/onboarding/constants';
 import type { OnboardingEntryDraft } from '@/src/features/onboarding/types';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -23,10 +22,9 @@ type Props = {
 };
 
 const categoryOf = (name: string) => DEFAULT_CATEGORIES.find((c) => c.name === name);
-const COLUMNS = 3;
 
 /**
- * The first entry, done for real: type, amount, a one-tap category. The preview is the row as it
+ * The first entry, done for real: type, amount, a one-tap category. The preview shows the row as it
  * will appear in the list and what the account's balance becomes — the app's loop in one screen.
  */
 export const FirstEntryStep = React.memo(function FirstEntryStep({ draft, onChange, currency, accountName, openingBalance, amountError }: Props) {
@@ -36,10 +34,6 @@ export const FirstEntryStep = React.memo(function FirstEntryStep({ draft, onChan
   const amount = parseAmountInput(draft.amount) ?? 0;
   const category = categoryOf(draft.category);
   const after = openingBalance + (draft.type === 'CR' ? amount : -amount);
-
-  const names = FIRST_ENTRY_CATEGORIES[draft.type];
-  const rows: (typeof names[number])[][] = [];
-  for (let i = 0; i < names.length; i += COLUMNS) rows.push(names.slice(i, i + COLUMNS));
 
   return (
     <View style={styles.root}>
@@ -53,41 +47,33 @@ export const FirstEntryStep = React.memo(function FirstEntryStep({ draft, onChan
         onChange={(type) => onChange({ ...draft, type, category: FIRST_ENTRY_CATEGORIES[type][0] })}
       />
 
-      <AmountField
-        label={t('transactions.amount')}
+      <Input
+        label={`${t('transactions.amount')} (${getCurrencySymbol(currency)})`}
+        placeholder="0"
         value={draft.amount}
         onChangeText={(value) => onChange({ ...draft, amount: value })}
-        currency={currency}
         error={amountError}
+        variant="filled"
+        size="lg"
+        keyboardType="decimal-pad"
+        maxLength={16}
       />
 
       <View style={styles.section}>
-        <Text variant="label" tone="muted" style={styles.sectionLabel}>
-          {t('transactions.category')}
-        </Text>
-        <View style={styles.grid} accessibilityRole="radiogroup">
-          {rows.map((row, i) => (
-            <View key={i} style={styles.gridRow}>
-              {row.map((name) => {
-                const c = categoryOf(name);
-                return (
-                  <ChoiceTile
-                    key={name}
-                    layout="stack"
-                    icon={resolveIcon(c?.icon, 'tag')}
-                    color={c ? colorNumberToHex(c.color) : undefined}
-                    title={name}
-                    selected={draft.category === name}
-                    onPress={() => onChange({ ...draft, category: name })}
-                  />
-                );
-              })}
-              {/* Keep a short last row on the grid instead of stretching its tiles. */}
-              {Array.from({ length: COLUMNS - row.length }, (_, k) => (
-                <View key={`pad-${k}`} style={styles.pad} />
-              ))}
-            </View>
-          ))}
+        <Text variant="label" tone="muted">{t('transactions.category')}</Text>
+        <View style={styles.chips}>
+          {FIRST_ENTRY_CATEGORIES[draft.type].map((name) => {
+            const c = categoryOf(name);
+            return (
+              <Chip
+                key={name}
+                label={name}
+                icon={resolveIcon(c?.icon, 'tag')}
+                isActive={draft.category === name}
+                onPress={() => onChange({ ...draft, category: name })}
+              />
+            );
+          })}
         </View>
       </View>
 
@@ -100,55 +86,39 @@ export const FirstEntryStep = React.memo(function FirstEntryStep({ draft, onChan
         maxLength={80}
       />
 
-      <View style={styles.section}>
-        <Text variant="label" tone="muted" style={styles.sectionLabel}>
-          {t('onboardingFlow.previewLabel')}
-        </Text>
-        <View style={styles.preview}>
-          <View style={styles.row}>
-            <IconAvatar icon={resolveIcon(category?.icon, 'tag')} color={category ? colorNumberToHex(category.color) : theme.colors.text} size={40} />
-            <View style={styles.rowMeta}>
-              <Text variant="bodyStrong" numberOfLines={1}>
-                {draft.note.trim() || draft.category}
-              </Text>
-              <Text variant="caption" tone="muted" numberOfLines={1}>
-                {`${draft.category} · ${accountName}`}
-              </Text>
-            </View>
-            <MoneyText amount={amount} currency={currency} type={draft.type} weight="semibold" style={styles.rowAmount} />
+      <Card style={styles.preview}>
+        <View style={styles.row}>
+          <IconAvatar icon={resolveIcon(category?.icon, 'tag')} color={category ? colorNumberToHex(category.color) : theme.colors.text} size={40} />
+          <View style={styles.rowMeta}>
+            <Text variant="bodyStrong" numberOfLines={1}>{draft.note.trim() || draft.category}</Text>
+            <Text variant="caption" tone="muted" numberOfLines={1}>{`${draft.category} · ${accountName}`}</Text>
           </View>
-          <View style={styles.after}>
-            <Text variant="caption" tone="muted" numberOfLines={1} style={styles.afterLabel}>
-              {t('onboardingFlow.balanceAfter', { account: accountName })}
-            </Text>
-            <MoneyText amount={after} currency={currency} weight="bold" style={styles.rowAmount} />
-          </View>
+          <MoneyText amount={amount} currency={currency} type={draft.type} weight="semibold" style={styles.rowAmount} />
         </View>
-      </View>
+        <View style={styles.after}>
+          <Text variant="caption" tone="muted">{t('onboardingFlow.balanceAfter', { account: accountName })}</Text>
+          <MoneyText amount={after} currency={currency} weight="semibold" style={styles.rowAmount} />
+        </View>
+      </Card>
     </View>
   );
 });
 
-const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, typography, alpha }: ThemeContextType) =>
   StyleSheet.create({
     root: { gap: spacing('5') },
-    section: { gap: spacing('2.5') },
-    sectionLabel: { paddingHorizontal: spacing('1') },
-    grid: { gap: spacing('2') },
-    gridRow: { flexDirection: 'row', gap: spacing('2') },
-    pad: { flex: 1 },
-    preview: { backgroundColor: colors.surface, borderRadius: radius('xl'), overflow: 'hidden' },
-    row: { flexDirection: 'row', alignItems: 'center', gap: spacing('3'), padding: spacing('4') },
+    section: { gap: spacing('2') },
+    chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing('2') },
+    preview: { gap: spacing('3') },
+    row: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
     rowMeta: { flex: 1, gap: 2 },
     rowAmount: { ...typography.metrics.md },
     after: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      gap: spacing('3'),
-      paddingHorizontal: spacing('4'),
-      paddingVertical: spacing('3'),
-      backgroundColor: colors.card,
+      paddingTop: spacing('3'),
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: alpha(colors.text, 'subtle'),
     },
-    afterLabel: { flexShrink: 1 },
   });

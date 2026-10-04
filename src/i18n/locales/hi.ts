@@ -113,7 +113,7 @@ const hi: Translation = {
     cannotDelete: 'श्रेणी हटाई नहीं जा सकती', deleteFailed: 'श्रेणी हटाई नहीं जा सकी।',
   },
   dashboard: {
-    pulseIncome: 'कमाई', pulseKept: '{{pct}}% बचाया', pulseOverIncome: 'कमाई से ज़्यादा खर्च', pulseNoIncome: 'अभी कोई आय नहीं',
+    pulseByToday: 'इस दिन तक {{amount}}', pulseNoHistory: 'पिछले महीने कोई खर्च नहीं',
     netThisMonth: 'इस महीने {{amount}}', thisMonth: 'इस महीने', quickActions: 'त्वरित कार्य', quickExpense: 'खर्च', quickIncome: 'आय', quickTransfer: 'ट्रांसफ़र', quickLoan: 'उधार', pulseSpent: 'अब तक खर्च', pulseOfLast: 'पिछले महीने का {{pct}}%', pulseLastMonth: 'पिछला महीना', pulseDay: '{{total}} में से दिन {{day}}', pulseEmpty: 'इस महीने अभी तक कोई खर्च नहीं', rhythmTitle: 'खर्च की लय', rhythmHint: 'पिछले 5 सप्ताह', rhythmLess: 'कम', rhythmMore: 'ज़्यादा', rhythmNone: 'कोई खर्च नहीं', rhythmSpent: '{{amount}} खर्च',
     streakDays: '{{count}} दिन की लय',
     accounts: 'खाते', manage: 'प्रबंधित करें', topExpenses: 'मुख्य खर्च', people: 'लोग', loans: 'ऋण', recent: 'हाल के', seeAll: 'सभी देखें',
@@ -129,10 +129,6 @@ const hi: Translation = {
   editEntry: 'एंट्री संपादित करें', newEntry: 'नई एंट्री', fromAccount: 'किस खाते से', toAccount: 'किस खाते में', noCompatible: 'इस ट्रांसफ़र के लिए कोई उपयुक्त खाता नहीं।', linkedPerson: 'जुड़ा व्यक्ति', unknown: 'अज्ञात', noPersonLinked: 'कोई व्यक्ति नहीं जुड़ा', time: 'समय', note: 'नोट', optionalContext: 'वैकल्पिक जानकारी', saveChanges: 'बदलाव सहेजें', saveTransaction: 'लेन-देन सहेजें', none: 'कोई नहीं',
   addedOn: '{{date}} को जोड़ा गया', detailTitle: 'लेन-देन', notFound: 'लेन-देन नहीं मिला।', detailDeleteTitle: 'लेन-देन हटाएँ', detailDeleteMessage: 'इससे बैलेंस पर असर पलट जाएगा और यह वापस नहीं हो सकता।', from: 'से', to: 'को', created: 'बनाया गया', cancel: 'रद्द करें' },
   onboardingFlow: {
-    stepCount: '{{current}}/{{total}}', yourName: 'आपका नाम', moreCurrencies: 'और', previewLabel: 'ऐसा दिखेगा', profileSubtitle: 'अभिवादन के लिए आपका नाम, और वह मुद्रा जिसमें आप हिसाब रखते हैं।',
-    hello: { title: 'पैसा, सुकून से।', subtitle: 'खर्च, आय और उधार एक निजी जगह पर। एक मिनट से कम में तैयार।' },
-    perks: { offline: 'ऑफ़लाइन चलता है', private: 'डिवाइस पर ही रहता है', fast: 'सेकंडों में दर्ज करें' },
-    mock: { salary: 'वेतन', coffee: 'कॉफ़ी' },
     typeHints: { cash: 'नोट और सिक्के', bank: 'बचत या चालू', ewallet: 'फ़ोन और ऑनलाइन वॉलेट', credit_card: 'अभी खर्च, बाद में भुगतान' },
     balanceHint: 'इसमें अभी कितना है। आगे से लेनदेन इसे अपडेट रखेंगे।', entryNote: 'नोट (वैकल्पिक)', entryNotePlaceholder: 'जैसे टीम के साथ लंच', balanceAfter: 'इसके बाद {{account}}',
     accountNameRequired: 'खाते को एक नाम दें', invalidAmount: 'यह राशि सही नहीं लग रही', entryAmountRequired: 'राशि डालें, या अभी छोड़ें', addEntry: 'एंट्री जोड़ें', skipForNow: 'अभी छोड़ें',

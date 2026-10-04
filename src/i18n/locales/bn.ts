@@ -113,7 +113,7 @@ const bn: Translation = {
     cannotDelete: 'বিভাগ মোছা যাচ্ছে না', deleteFailed: 'বিভাগ মুছতে ব্যর্থ হয়েছে।',
   },
   dashboard: {
-    pulseIncome: 'আয়', pulseKept: '{{pct}}% জমেছে', pulseOverIncome: 'আয়ের চেয়ে বেশি খরচ', pulseNoIncome: 'এখনও কোনো আয় নেই',
+    pulseByToday: 'এই দিন পর্যন্ত {{amount}}', pulseNoHistory: 'গত মাসে কোনো খরচ নেই',
     netThisMonth: 'এই মাসে {{amount}}', thisMonth: 'এই মাস', quickActions: 'দ্রুত কাজ', quickExpense: 'খরচ', quickIncome: 'আয়', quickTransfer: 'ট্রান্সফার', quickLoan: 'ঋণ', pulseSpent: 'এখন পর্যন্ত খরচ', pulseOfLast: 'গত মাসের {{pct}}%', pulseLastMonth: 'গত মাস', pulseDay: '{{total}} দিনের {{day}}তম দিন', pulseEmpty: 'এই মাসে এখনও কোনো খরচ নেই', rhythmTitle: 'খরচের ছন্দ', rhythmHint: 'গত ৫ সপ্তাহ', rhythmLess: 'কম', rhythmMore: 'বেশি', rhythmNone: 'কোনো খরচ নেই', rhythmSpent: '{{amount}} খরচ',
     streakDays: '{{count}} দিনের ধারা',
     accounts: 'অ্যাকাউন্ট', manage: 'পরিচালনা', topExpenses: 'শীর্ষ ব্যয়', people: 'ব্যক্তি', loans: 'ঋণ', recent: 'সাম্প্রতিক', seeAll: 'সব দেখুন',
@@ -129,10 +129,6 @@ const bn: Translation = {
   editEntry: 'এন্ট্রি সম্পাদনা', newEntry: 'নতুন এন্ট্রি', fromAccount: 'যে অ্যাকাউন্ট থেকে', toAccount: 'যে অ্যাকাউন্টে', noCompatible: 'এই ট্রান্সফারের জন্য কোনো উপযুক্ত অ্যাকাউন্ট নেই।', linkedPerson: 'যুক্ত ব্যক্তি', unknown: 'অজানা', noPersonLinked: 'কোনো ব্যক্তি যুক্ত নেই', time: 'সময়', note: 'নোট', optionalContext: 'ঐচ্ছিক বিবরণ', saveChanges: 'পরিবর্তন সংরক্ষণ', saveTransaction: 'লেনদেন সংরক্ষণ', none: 'কিছু নয়',
   addedOn: '{{date}} তারিখে যোগ করা হয়েছে', detailTitle: 'লেনদেন', notFound: 'লেনদেন পাওয়া যায়নি।', detailDeleteTitle: 'লেনদেন মুছুন', detailDeleteMessage: 'এটি ব্যালেন্সের প্রভাব ফিরিয়ে আনবে এবং পূর্বাবস্থায় ফেরানো যাবে না।', from: 'থেকে', to: 'প্রতি', created: 'তৈরির সময়', cancel: 'বাতিল' },
   onboardingFlow: {
-    stepCount: '{{current}}/{{total}}', yourName: 'আপনার নাম', moreCurrencies: 'আরও', previewLabel: 'যেভাবে দেখাবে', profileSubtitle: 'শুভেচ্ছার জন্য আপনার নাম, আর যে মুদ্রায় আপনি হিসাব রাখেন।',
-    hello: { title: 'টাকা, নিশ্চিন্তে।', subtitle: 'খরচ, আয় আর ঋণ এক ব্যক্তিগত জায়গায়। এক মিনিটের কমে প্রস্তুত।' },
-    perks: { offline: 'অফলাইনে চলে', private: 'ডিভাইসেই থাকে', fast: 'সেকেন্ডে লিখুন' },
-    mock: { salary: 'বেতন', coffee: 'কফি' },
     typeHints: { cash: 'নোট ও কয়েন', bank: 'সঞ্চয় বা চলতি', ewallet: 'ফোন ও অনলাইন ওয়ালেট', credit_card: 'এখন খরচ, পরে পরিশোধ' },
     balanceHint: 'এখন এতে কত আছে। এরপর থেকে লেনদেনই এটি হালনাগাদ রাখবে।', entryNote: 'নোট (ঐচ্ছিক)', entryNotePlaceholder: 'যেমন দলের সাথে দুপুরের খাবার', balanceAfter: 'এরপর {{account}}',
     accountNameRequired: 'অ্যাকাউন্টের একটি নাম দিন', invalidAmount: 'এই পরিমাণটি ঠিক মনে হচ্ছে না', entryAmountRequired: 'পরিমাণ লিখুন, অথবা এখন বাদ দিন', addEntry: 'এন্ট্রি যোগ করুন', skipForNow: 'এখন বাদ দিন',

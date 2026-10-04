@@ -129,13 +129,13 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         <HeroBalanceCard
           balance={balancesByCurrency[currency] ?? 0}
           currency={currency}
-          monthNet={month ? month.income - month.expense : null}
+          income={month?.income ?? 0}
+          expense={month?.expense ?? 0}
           currencies={currencyKeys}
-          balances={balancesByCurrency}
           onCurrencySelect={setChosenCurrency}
-        >
-          <QuickActions canTransfer={(accounts?.length ?? 0) > 1} />
-        </HeroBalanceCard>
+        />
+
+        <QuickActions canTransfer={(accounts?.length ?? 0) > 1} />
 
         {gettingStarted.visible ? (
           <View style={styles.gettingStarted}>

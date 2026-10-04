@@ -15,12 +15,12 @@ type Props = {
 };
 
 /**
- * One-tap entry points for the most common writes, each opening its form already set up. Drawn as
- * compact ink discs with the label beneath, like a phone's dock — the balance stays the hero.
+ * One-tap entry points for the most common writes, each opening its form already set up. A white
+ * strip under the hero, like every other card on Home: tinted icon tile, label beneath.
  */
 export const QuickActions = React.memo(function QuickActions({ canTransfer }: Props) {
   const theme = useTheme();
-  const { heroCard: hero } = theme;
+  const { colors } = theme;
   const { t } = useTranslation();
   const router = useRouter();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -48,10 +48,10 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
           accessibilityRole="button"
           accessibilityLabel={action.label}
         >
-          <View style={styles.disc}>
-            <Icon name={action.icon} size={20} color={hero.onInk} weight="bold" />
+          <View style={styles.iconTile}>
+            <Icon name={action.icon} size={18} color={colors.primaryInk} weight="bold" />
           </View>
-          <Text variant="label" color={hero.textPrimary} numberOfLines={1}>
+          <Text variant="label" numberOfLines={1}>
             {action.label}
           </Text>
         </BentoPressable>
@@ -60,17 +60,26 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
   );
 });
 
-const DISC = 48;
+const TILE = 40;
 
-const createStyles = ({ heroCard: hero, spacing, radius }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, layout, alpha }: ThemeContextType) =>
   StyleSheet.create({
-    row: { flexDirection: 'row', justifyContent: 'space-around', paddingTop: spacing('1') },
-    action: { flex: 1, maxWidth: 88, alignItems: 'center', gap: spacing('1.5') },
-    disc: {
-      width: DISC,
-      height: DISC,
-      borderRadius: radius('full'),
-      backgroundColor: hero.ink,
+    row: {
+      flexDirection: 'row',
+      marginHorizontal: layout.screenPadding,
+      marginTop: spacing('3'),
+      paddingVertical: spacing('3'),
+      paddingHorizontal: spacing('1'),
+      borderRadius: radius('xl'),
+      backgroundColor: colors.surface,
+    },
+    action: { flex: 1, alignItems: 'center', gap: spacing('1.5') },
+    // Squircle like every icon tile in the app (IconAvatar's 30% radius).
+    iconTile: {
+      width: TILE,
+      height: TILE,
+      borderRadius: radius('md'),
+      backgroundColor: alpha(colors.primary, 'subtle'),
       alignItems: 'center',
       justifyContent: 'center',
     },

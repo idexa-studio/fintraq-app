@@ -37,7 +37,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
   currency,
 }: Props) {
   const theme = useTheme();
-  const { heroCard: hero, colors } = theme;
+  const { heroCard: hero } = theme;
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [showCalc, setShowCalc] = useState(false);
@@ -55,7 +55,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
   const visible = typeLocked ? options.filter((o) => o.value === type) : options;
 
   return (
-    <HeroSurface style={styles.margin} decorated={false}>
+    <HeroSurface style={styles.margin}>
       {!hideType ? (
         <View style={styles.types} accessibilityRole="tablist">
           {visible.map((option) => {
@@ -74,8 +74,8 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
                 accessibilityRole="tab"
                 accessibilityState={{ selected: isActive, disabled: typeLocked }}
               >
-                <Icon name={option.icon} size={14} color={isActive ? hero.onInk : hero.textMuted} weight="bold" />
-                <Text variant="label" color={isActive ? colors.onInk : hero.textMuted} numberOfLines={1}>
+                <Icon name={option.icon} size={14} color={isActive ? hero.textPrimary : hero.textMuted} weight="bold" />
+                <Text variant="label" color={isActive ? hero.textPrimary : hero.textMuted} numberOfLines={1}>
                   {option.label}
                 </Text>
               </BentoPressable>
@@ -113,7 +113,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
             accessibilityRole="button"
             accessibilityLabel={t('transactions.calculator')}
           >
-            <Icon name="calculator" size={20} color={hero.onInk} />
+            <Icon name="calculator" size={20} color={hero.textPrimary} />
           </BentoPressable>
         </View>
       </View>
@@ -143,7 +143,7 @@ const createStyles = ({ heroCard: hero, spacing, radius, layout, typography }: T
       paddingHorizontal: spacing('2'),
       borderRadius: radius('full'),
     },
-    typeActive: { backgroundColor: hero.ink },
+    typeActive: { backgroundColor: hero.tileStrong },
     amountBlock: { gap: spacing('1') },
     amountRow: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
     symbol: { flexShrink: 0 },
@@ -162,6 +162,6 @@ const createStyles = ({ heroCard: hero, spacing, radius, layout, typography }: T
       borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: hero.ink,
+      backgroundColor: hero.tileStrong,
     },
   });

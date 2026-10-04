@@ -111,7 +111,7 @@ const en = {
     cannotDelete: 'Cannot delete category', deleteFailed: 'Failed to delete category.',
   },
   dashboard: {
-    pulseIncome: 'Earned', pulseKept: 'Kept {{pct}}% of it', pulseOverIncome: 'Spent more than earned', pulseNoIncome: 'No income yet',
+    pulseByToday: '{{amount}} by this day', pulseNoHistory: 'No spending last month',
     netThisMonth: '{{amount}} this month', thisMonth: 'This month', quickActions: 'Quick actions', quickExpense: 'Expense', quickIncome: 'Income', quickTransfer: 'Transfer', quickLoan: 'Loan', pulseSpent: 'Spent so far', pulseOfLast: '{{pct}}% of last month', pulseLastMonth: 'Last month', pulseDay: 'Day {{day}} of {{total}}', pulseEmpty: 'Nothing spent yet this month', rhythmTitle: 'Spending rhythm', rhythmHint: 'Last 5 weeks', rhythmLess: 'Less', rhythmMore: 'More', rhythmNone: 'No spending', rhythmSpent: '{{amount}} spent',
     streakDays: '{{count}}d streak',
     accounts: 'Accounts', manage: 'Manage', topExpenses: 'Top expenses', people: 'People', loans: 'Loans', recent: 'Recent', seeAll: 'See all',
@@ -127,10 +127,6 @@ const en = {
   editEntry: 'Edit entry', newEntry: 'New entry', fromAccount: 'From account', toAccount: 'To account', noCompatible: 'No compatible accounts for this transfer.', linkedPerson: 'Linked person', unknown: 'Unknown', noPersonLinked: 'No person linked', time: 'Time', note: 'Note', optionalContext: 'Optional context', saveChanges: 'Save changes', saveTransaction: 'Save transaction', none: 'None',
   addedOn: 'Added {{date}}', detailTitle: 'Transaction', notFound: 'Transaction not found.', detailDeleteTitle: 'Delete transaction', detailDeleteMessage: 'This will reverse the balance impact and cannot be undone.', from: 'From', to: 'To', created: 'Created', cancel: 'Cancel' },
   onboardingFlow: {
-    stepCount: '{{current}}/{{total}}', yourName: 'Your name', moreCurrencies: 'More', previewLabel: 'How it will appear', profileSubtitle: 'Your name for the greeting, and the currency you think in.',
-    hello: { title: 'Money, made calm.', subtitle: 'Spending, income and loans in one private place. Set up in under a minute.' },
-    perks: { offline: 'Works offline', private: 'Stays on device', fast: 'Log in seconds' },
-    mock: { salary: 'Salary', coffee: 'Coffee' },
     typeHints: { cash: 'Notes & coins', bank: 'Savings or current', ewallet: 'Phone & online wallets', credit_card: 'Spend now, pay later' },
     balanceHint: 'What it holds right now. From here on, transactions keep it up to date.', entryNote: 'Note (optional)', entryNotePlaceholder: 'e.g. Lunch with the team', balanceAfter: '{{account}} after this',
     accountNameRequired: 'Give the account a name', invalidAmount: 'That amount doesn\'t look right', entryAmountRequired: 'Enter an amount, or skip for now', addEntry: 'Add entry', skipForNow: 'Skip for now',

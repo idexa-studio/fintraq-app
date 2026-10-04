@@ -24,10 +24,5 @@ export function useTransactionSummary(dbTotals: TransactionTotals | undefined, d
   const currency = chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : (currencies[0] ?? defaultCurrency);
   const totals = currency ? (totalsByCurrency[currency] ?? EMPTY_TOTALS) : EMPTY_TOTALS;
 
-  const netByCurrency = useMemo(
-    () => Object.fromEntries(Object.entries(totalsByCurrency).map(([code, t]) => [code, t.income - t.expense])),
-    [totalsByCurrency],
-  );
-
-  return { totals, currency, currencies, setCurrency, netByCurrency };
+  return { totals, currency, currencies, setCurrency };
 }

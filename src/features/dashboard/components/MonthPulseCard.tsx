@@ -6,6 +6,7 @@ import type { IconSource } from '@/src/components/ui';
 import { useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
 import { buildMonthPulse } from '@/src/features/dashboard/utils/widgets';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { formatCurrency } from '@/src/utils/format';
 
 type Props = { currency: string };
 
@@ -26,8 +27,9 @@ type TileProps = {
 };
 
 /**
- * This month as two tiles side by side: what went out (against last month, with a "today" notch so
- * the pace reads without maths) and what came in (with how much of it was kept).
+ * This month's spending as two tiles side by side: so far (against last month's total, with a
+ * "today" notch so the pace reads without maths) and last month for comparison (how much of it
+ * had gone by the same day). Income lives in the hero above.
  */
 export const MonthPulseCard = React.memo(function MonthPulseCard({ currency }: Props) {
   const theme = useTheme();
@@ -50,7 +52,8 @@ export const MonthPulseCard = React.memo(function MonthPulseCard({ currency }: P
   const share = pulse.shareOfLastMonth;
   // Over last month's total, or ahead of the calendar with a real baseline, is worth a warning colour.
   const spendColor = share !== null && share >= 1 ? colors.danger : share !== null && share > pulse.monthProgress ? colors.warning : colors.primary;
-  const kept = pulse.income > 0 ? (pulse.income - pulse.expense) / pulse.income : null;
+  // How far into last month's spending the same day of the month had got.
+  const lastByToday = pulse.lastMonthTotal > 0 ? Math.min(1, pulse.lastMonthToDate / pulse.lastMonthTotal) : null;
 
   const spentCaption =
     share !== null
@@ -58,8 +61,8 @@ export const MonthPulseCard = React.memo(function MonthPulseCard({ currency }: P
       : pulse.expense === 0
         ? t('dashboard.pulseEmpty')
         : t('dashboard.pulseDay', { day: pulse.dayOfMonth, total: pulse.daysInMonth });
-  const keptCaption =
-    kept === null ? t('dashboard.pulseNoIncome') : kept < 0 ? t('dashboard.pulseOverIncome') : t('dashboard.pulseKept', { pct: Math.round(kept * 100) });
+  const lastCaption =
+    lastByToday === null ? t('dashboard.pulseNoHistory') : t('dashboard.pulseByToday', { amount: formatCurrency(pulse.lastMonthToDate, currency, true) });
 
   return (
     <View style={[styles.row, styles.margin]}>
@@ -78,14 +81,15 @@ export const MonthPulseCard = React.memo(function MonthPulseCard({ currency }: P
         styles={styles}
       />
       <Tile
-        icon="arrow-down-left"
-        tint={colors.success}
-        label={t('dashboard.pulseIncome')}
-        amount={pulse.income}
+        icon="calendar"
+        tint={colors.info}
+        label={t('dashboard.pulseLastMonth')}
+        amount={pulse.lastMonthTotal}
         currency={currency}
-        fill={kept !== null ? Math.max(0, kept) : null}
-        barColor={kept !== null && kept < 0 ? colors.danger : colors.success}
-        caption={keptCaption}
+        fill={lastByToday}
+        barColor={colors.info}
+        tick={lastByToday !== null ? pulse.monthProgress : undefined}
+        caption={lastCaption}
         styles={styles}
       />
     </View>
