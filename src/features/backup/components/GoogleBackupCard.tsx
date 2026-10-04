@@ -25,6 +25,7 @@ import { BackupActionsRow } from './BackupActionsRow';
 import { BackupConnectRow } from './BackupConnectRow';
 import { BackupProgressRow } from './BackupProgressRow';
 import { BackupStatusRow } from './BackupStatusRow';
+import { Analytics } from '@/src/services/telemetry';
 import { BackupUpsellRow } from './BackupUpsellRow';
 
 /** The Backup screen's control surface: account, status, manual backup/restore, auto-backup. */
@@ -121,6 +122,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const handleBackup = useCallback(async () => {
     try {
       await backupNow();
+      Analytics.track('backup_created', { trigger: 'manual' });
       showAlert({ title: t('backup.backupSuccess'), message: t('backup.backupSuccessMessage'), type: 'success' });
     } catch (e) {
       showAlert({ title: t('backup.backupFailed'), message: toErrorMessage(e, t('backup.backupFailedMessage')), type: 'error' });
@@ -148,6 +150,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
     setShowRestoreConfirm(false);
     try {
       await restoreLatest();
+      Analytics.track('backup_restored');
       showAlert({
         title: t('backup.restoreComplete'),
         message: t('backup.restoreCompleteMessage'),

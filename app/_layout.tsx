@@ -9,7 +9,7 @@ import { useColorScheme } from '@/src/hooks/use-color-scheme';
 import { AppConfigProvider } from '@/src/providers/AppConfigProvider';
 import { AppLockProvider } from '@/src/providers/AppLockProvider';
 import { DatabaseProvider } from '@/src/providers/DatabaseProvider';
-import { FirebaseProvider } from '@/src/providers/FirebaseProvider';
+import { TelemetryProvider } from '@/src/providers/TelemetryProvider';
 import { OnboardingProvider } from '@/src/providers/OnboardingProvider';
 import { PremiumProvider } from '@/src/providers/PremiumProvider';
 import { QueryProvider } from '@/src/providers/QueryProvider';
@@ -85,7 +85,7 @@ export default function RootLayout() {
             <SettingsProvider>
               <I18nProvider>
               <PremiumProvider>
-                <FirebaseProvider>
+                <TelemetryProvider>
                   <OnboardingProvider>
                     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                       <CustomThemeProvider>
@@ -98,7 +98,7 @@ export default function RootLayout() {
                       </CustomThemeProvider>
                     </ThemeProvider>
                   </OnboardingProvider>
-                </FirebaseProvider>
+                </TelemetryProvider>
               </PremiumProvider>
               </I18nProvider>
             </SettingsProvider>

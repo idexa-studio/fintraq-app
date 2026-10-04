@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { TYPOGRAPHY } from '@/src/theme/typography';
 import { RADIUS } from '@/src/theme/tokens';
-import { recordFirebaseError } from '@/src/services/firebase';
+import { Crashlytics } from '@/src/services/telemetry';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
 
@@ -53,7 +53,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
   };
 
   componentDidCatch(error: Error) {
-    recordFirebaseError(error, 'ErrorBoundary').catch(() => {});
+    Crashlytics.recordError(error, 'ErrorBoundary');
   }
 
   render() {

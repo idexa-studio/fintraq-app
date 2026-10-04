@@ -6,7 +6,7 @@ import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
 import { ALL_SKUS, SKU_LIFETIME } from '@/src/constants/iap';
 import { IAPProduct, IAPService } from '@/src/services/iap.service';
 import { StorageKeys } from '@/src/constants/keys';
-import { AnalyticsService } from '@/src/services/analytics';
+import { Analytics } from '@/src/services/telemetry';
 import { LoggerService } from '@/src/services/logger.service';
 import i18n from '@/src/i18n';
 
@@ -108,7 +108,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
   const handlePurchaseSuccess = useCallback(async (purchase: IAP.Purchase) => {
     if (purchase.productId === SKU_LIFETIME) {
       await savePremiumState({ isPremium: true });
-      await AnalyticsService.premiumPurchaseCompleted();
+      Analytics.track('pro_unlocked', { method: 'purchase' });
     }
   }, [savePremiumState]);
 
@@ -243,7 +243,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      await AnalyticsService.premiumPurchaseStarted();
+      Analytics.track('begin_checkout', { item_id: SKU_LIFETIME });
       await IAP.requestPurchase({
         request: { apple: { sku: SKU_LIFETIME }, google: { skus: [SKU_LIFETIME] } },
         type: 'in-app'
@@ -268,14 +268,15 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
 
       if (hasLifetime) {
         await savePremiumState({ isPremium: true });
-        await AnalyticsService.premiumPurchaseRestore();
+        Analytics.track('purchase_restore', { outcome: 'restored' });
+        Analytics.track('pro_unlocked', { method: 'restore' });
         showAlert({ title: i18n.t('premium.accessRestored'), message: i18n.t('premium.accessRestoredMessage'), type: 'success' });
       } else {
-        await AnalyticsService.premiumPurchaseRestore();
+        Analytics.track('purchase_restore', { outcome: 'none' });
         showAlert({ title: i18n.t('premium.noPurchase'), message: i18n.t('premium.noPurchaseMessage'), type: 'info' });
       }
     } catch {
-      await AnalyticsService.premiumPurchaseRestore();
+      Analytics.track('purchase_restore', { outcome: 'failed' });
       showAlert({ title: i18n.t('premium.restorationFailed'), message: i18n.t('premium.tryLater'), type: 'error' });
     }
   }, [isIapInitialized, savePremiumState, showAlert]);

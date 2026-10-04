@@ -6,7 +6,7 @@ For UI rules see [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md).
 ## Stack
 
 Expo SDK 54 · React Native 0.81 · React 19 (React Compiler on) · Expo Router · SQLite + Drizzle ORM ·
-TanStack Query · react-hook-form · i18next · Reanimated 4 · Hugeicons · Firebase (analytics, crashlytics, remote config, auth).
+TanStack Query · react-hook-form · i18next · Reanimated 4 · Hugeicons · Firebase (analytics, crashlytics, remote config, auth — see "Analytics & crash reporting").
 
 ## Folder structure
 
@@ -194,3 +194,41 @@ npx expo lint        # lint (no warnings)
 npm test             # unit tests (Jest)
 ```
 Open **Settings → tap the footer 10× → Developer (PIN) → Design gallery** and check any component you touched in both themes.
+
+## Analytics & crash reporting
+
+Firebase Analytics (GA4) and Crashlytics, behind `src/services/telemetry`. Screens never import
+the Firebase SDK.
+
+```
+services/telemetry
+  events.ts               the event catalogue: every event name + its params, typed
+  analytics.ts            Analytics.track / screen / setUserProperties / setEnabled
+  crashlytics.ts          Crashlytics.recordError / setEnabled
+  params.ts               pure: GA4 name/param limits, result buckets, screen-name templates
+  firebase-modules(.native).ts   SDK on iOS/Android, null on web (preview build, tests)
+providers/TelemetryProvider       applies the user's choice, logs screen_view, sets user properties
+```
+
+Rules
+- **Track through the catalogue.** Add the event to `events.ts` first; `Analytics.track(name, params)`
+  is type-checked against it. Calls are fire-and-forget (return `void`) and never throw, so never
+  `await` them on a save or purchase path.
+- **No personal or financial data.** No amounts, balances, notes, names, search text, IDs or any
+  typed text — only low-cardinality enums and buckets (`resultBucket`). Screen names are route
+  templates (`accounts/[id]`), never concrete paths.
+- **GA4 recommended names** where one fits (`tutorial_begin`, `tutorial_complete`, `search`,
+  `begin_checkout`). Never log `purchase`: Firebase records store purchases as `in_app_purchase`
+  automatically, and logging both doubles revenue.
+- **Consent.** Settings → About → *Share usage data* (`profile.shareUsageData`, on by default)
+  controls both Analytics and Crashlytics. Native collection starts off (`firebase.json`) and the
+  provider enables it once settings load; events fired earlier wait for that and are dropped if
+  the user opted out. Ad storage, ad user data and ad personalisation consent are always denied,
+  advertising-ID collection is off and the Android `AD_ID` permission is removed (`app.json`).
+- **Debug builds send nothing.** To verify events, run a dev build with
+  `EXPO_PUBLIC_ANALYTICS_DEBUG=1`, enable DebugView (`adb shell setprop debug.firebase.analytics.app me.nafish.luno`,
+  or `-FIRDebugEnabled` on iOS) and watch Firebase console → DebugView.
+- **GA4 console.** Register each event param you report on (`transaction_type`, `mode`,
+  `account_type`, `results`, `source`, `method`, `outcome`, `trigger`, `destination`,
+  `first_entry`) as an event-scoped custom dimension, and the user properties in
+  `AnalyticsUserProperties` as user-scoped ones; unregistered params are collected but not reportable.

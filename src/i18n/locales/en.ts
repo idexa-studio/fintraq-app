@@ -18,6 +18,7 @@ const en = {
     settings: 'Settings',
   },
   settings: {
+    shareUsageData: 'Share usage data', shareUsageDataHint: 'Anonymous app usage and crash reports. Never your money or entries.',
     general: "General", security: "Security", manage: "Manage", about: "About", loans: "Loans", loansHint: "Money you lent or borrowed",
     title: 'Settings',
     welcome: 'Welcome',

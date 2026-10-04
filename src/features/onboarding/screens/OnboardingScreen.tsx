@@ -24,12 +24,12 @@ import { useCreateTransaction } from '@/src/features/transactions/hooks/transact
 import { useOnboarding } from '@/src/providers/OnboardingProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { AnalyticsService } from '@/src/services/analytics';
+import { Analytics } from '@/src/services/telemetry';
 import { NotificationService } from '@/src/services/notification.service';
 import { toDbColor } from '@/src/utils/format';
 import { isNoBackupError, isProRequiredError } from '@/src/services/backup/google-drive.errors';
 import { useRouter } from 'expo-router';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -76,6 +76,9 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const [accountDraft, setAccountDraft] = React.useState<OnboardingAccountDraft>(() => ({ type: 'cash', name: t('accounts.cash'), balance: '', nameEdited: false }));
   const [entryDraft, setEntryDraft] = React.useState<OnboardingEntryDraft>({ type: 'DR', amount: '', category: FIRST_ENTRY_CATEGORIES.DR[0], note: '' });
   const [entrySkipped, setEntrySkipped] = React.useState(false);
+  useEffect(() => {
+    Analytics.track('tutorial_begin');
+  }, []);
   const [stepErrors, setStepErrors] = React.useState<{ accountName?: string; balance?: string; amount?: string }>({});
 
   const [alertConfig, setAlertConfig] = React.useState<{
@@ -222,6 +225,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       // The first entry, unless skipped — and never twice if finalize is retried.
       const entryAmount = parseAmountInput(entryDraft.amount);
       const [anyPayment] = await db.select({ id: payments.id }).from(payments).limit(1);
+      let firstEntry: 'added' | 'skipped' = 'skipped';
       if (!entrySkipped && entryAmount && entryAmount > 0 && !anyPayment) {
         const [category] = await db
           .select({ id: categories.id })
@@ -237,11 +241,12 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
             datetime: new Date().toISOString(),
             note: entryDraft.note.trim() || entryDraft.category,
           });
+          firstEntry = 'added';
         }
       }
 
       await completeOnboarding();
-      await AnalyticsService.onboardingCompleted();
+      Analytics.track('tutorial_complete', { first_entry: firstEntry });
       setShowReminderDialog(true);
     } catch (e) {
       LoggerService.error('ONBOARDING', 'Setup finalization failed', e);

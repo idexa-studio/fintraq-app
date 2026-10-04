@@ -18,13 +18,15 @@ import { useLoanWithStats } from '@/src/features/loans/hooks/loans';
 import { colorNumberToHex, formatCurrency, formatDate } from '@/src/utils/format';
 import { format } from 'date-fns';
 import { TransactionType } from '@/src/types';
-import { AnalyticsService } from '@/src/services/analytics';
+import { Analytics, type TransactionKind } from '@/src/services/telemetry';
 import { isTransferCompatible } from '@/src/utils/accounts';
 import { repaymentType } from '@/src/features/transactions/utils/ledger';
 import type { AccountType } from '@/src/types';
 import { useTranslation } from 'react-i18next';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { parseAmountInput } from '@/src/utils/amount';
+
+const TRANSACTION_KIND = { CR: 'income', DR: 'expense', TR: 'transfer' } as const satisfies Record<string, TransactionKind>;
 
 type Props = {
   mode: 'create' | 'edit';
@@ -244,7 +246,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
       } else {
         await createTransaction.mutateAsync(payload);
       }
-      await AnalyticsService.transactionSaved();
+      Analytics.track('transaction_saved', { transaction_type: TRANSACTION_KIND[type], mode: isEditMode ? 'edit' : 'create' });
       router.back();
     } catch {
       showAlert({ title: t('transactions.unableToSave'), message: t('transactions.unableToSaveMessage'), type: 'error' });

@@ -39,6 +39,9 @@
       "package": "me.nafish.luno",
       "permissions": [
         "POST_NOTIFICATIONS"
+      ],
+      "blockedPermissions": [
+        "com.google.android.gms.permission.AD_ID"
       ]
     },
     "web": {

@@ -20,6 +20,7 @@ const mr: Translation = {
     settings: 'सेटिंग्ज',
   },
   settings: {
+    shareUsageData: 'वापर डेटा शेअर करा', shareUsageDataHint: 'निनावी अ‍ॅप वापर आणि क्रॅश अहवाल. तुमचे पैसे किंवा नोंदी कधीही नाहीत.',
     general: "सामान्य", security: "सुरक्षा", manage: "व्यवस्थापन", about: "माहिती", loans: "कर्जे", loansHint: "तुम्ही दिलेले किंवा घेतलेले पैसे",
     title: 'सेटिंग्ज',
     welcome: 'स्वागत',

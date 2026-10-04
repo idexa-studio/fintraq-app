@@ -20,6 +20,7 @@ const pt: Translation = {
     settings: 'Ajustes',
   },
   settings: {
+    shareUsageData: 'Compartilhar dados de uso', shareUsageDataHint: 'Uso anônimo do app e relatórios de falhas. Nunca seu dinheiro ou seus lançamentos.',
     general: "Geral", security: "Segurança", manage: "Gerenciar", about: "Sobre", loans: "Empréstimos", loansHint: "Dinheiro que você emprestou ou pegou",
     title: 'Ajustes',
     welcome: 'Bem-vindo',

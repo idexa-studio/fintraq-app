@@ -20,6 +20,7 @@ const te: Translation = {
     settings: 'సెట్టింగ్‌లు',
   },
   settings: {
+    shareUsageData: 'వినియోగ డేటాను షేర్ చేయండి', shareUsageDataHint: 'అనామక యాప్ వినియోగం మరియు క్రాష్ నివేదికలు. మీ డబ్బు లేదా ఎంట్రీలు ఎప్పటికీ కాదు.',
     general: "సాధారణం", security: "భద్రత", manage: "నిర్వహించు", about: "గురించి", loans: "రుణాలు", loansHint: "మీరు ఇచ్చిన లేదా తీసుకున్న డబ్బు",
     title: 'సెట్టింగ్‌లు',
     welcome: 'స్వాగతం',

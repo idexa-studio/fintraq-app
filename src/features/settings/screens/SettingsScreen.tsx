@@ -328,6 +328,14 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       </ListGroup>
 
       <ListGroup title={t('settings.about')}>
+        <ListItem
+          icon="chart-line-data"
+          iconColor={colors.textMuted}
+          title={t('settings.shareUsageData')}
+          subtitle={t('settings.shareUsageDataHint')}
+          switchValue={profile.shareUsageData}
+          onSwitchChange={(value) => void updateProfile({ shareUsageData: value })}
+        />
         <ListItem icon="shield-check" iconColor={colors.textMuted} title={t('settings.privacy')} onPress={() => openWebPage(privacyUrl, t('settings.privacyTitle'))} />
         <ListItem icon="file-text" iconColor={colors.textMuted} title={t('settings.terms')} onPress={() => openWebPage(termsUrl, t('settings.termsTitle'))} />
       </ListGroup>

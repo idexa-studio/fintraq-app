@@ -20,6 +20,7 @@ const kn: Translation = {
     settings: 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',
   },
   settings: {
+    shareUsageData: 'ಬಳಕೆಯ ಡೇಟಾ ಹಂಚಿಕೊಳ್ಳಿ', shareUsageDataHint: 'ಅನಾಮಧೇಯ ಆ್ಯಪ್ ಬಳಕೆ ಮತ್ತು ಕ್ರ್ಯಾಶ್ ವರದಿಗಳು. ನಿಮ್ಮ ಹಣ ಅಥವಾ ನಮೂದುಗಳು ಎಂದಿಗೂ ಅಲ್ಲ.',
     general: "ಸಾಮಾನ್ಯ", security: "ಭದ್ರತೆ", manage: "ನಿರ್ವಹಿಸಿ", about: "ಬಗ್ಗೆ", loans: "ಸಾಲಗಳು", loansHint: "ನೀವು ಕೊಟ್ಟ ಅಥವಾ ಪಡೆದ ಹಣ",
     title: 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',
     welcome: 'ಸ್ವಾಗತ',

@@ -20,6 +20,7 @@ const fr: Translation = {
     settings: 'Réglages',
   },
   settings: {
+    shareUsageData: 'Partager les données d’utilisation', shareUsageDataHint: 'Utilisation anonyme de l’app et rapports de plantage. Jamais votre argent ni vos saisies.',
     general: "Général", security: "Sécurité", manage: "Gérer", about: "À propos", loans: "Prêts", loansHint: "Argent prêté ou emprunté",
     title: 'Réglages',
     welcome: 'Bienvenue',

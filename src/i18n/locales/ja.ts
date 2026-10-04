@@ -20,6 +20,7 @@ const ja: Translation = {
     settings: '設定',
   },
   settings: {
+    shareUsageData: '利用データを共有', shareUsageDataHint: '匿名のアプリ利用状況とクラッシュレポート。お金や記録の内容は送信しません。',
     general: "一般", security: "セキュリティ", manage: "管理", about: "アプリについて", loans: "ローン", loansHint: "貸したお金・借りたお金",
     title: '設定',
     welcome: 'ようこそ',

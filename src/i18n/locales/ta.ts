@@ -20,6 +20,7 @@ const ta: Translation = {
     settings: 'அமைப்புகள்',
   },
   settings: {
+    shareUsageData: 'பயன்பாட்டுத் தரவைப் பகிர்', shareUsageDataHint: 'அநாமதேய ஆப் பயன்பாடு மற்றும் செயலிழப்பு அறிக்கைகள். உங்கள் பணம் அல்லது பதிவுகள் ஒருபோதும் இல்லை.',
     general: "பொது", security: "பாதுகாப்பு", manage: "நிர்வகி", about: "பற்றி", loans: "கடன்கள்", loansHint: "நீங்கள் கொடுத்த அல்லது வாங்கிய பணம்",
     title: 'அமைப்புகள்',
     welcome: 'வரவேற்கிறோம்',

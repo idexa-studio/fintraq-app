@@ -9,7 +9,7 @@ import { isProFeatureId } from '@/src/features/premium/pro-features';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { AnalyticsService } from '@/src/services/analytics';
+import { Analytics } from '@/src/services/telemetry';
 
 /**
  * The paywall. Opened from a locked feature it leads with that feature ("You tried this"), then
@@ -29,7 +29,7 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
   const product = useMemo(() => products.find((p) => p.id === SKU_LIFETIME), [products]);
 
   useEffect(() => {
-    AnalyticsService.premiumPaywallViewed().catch(() => {});
+    Analytics.track('paywall_view', { source: triedFeature ?? 'direct' });
   }, [triedFeature]);
 
   const run = useCallback(async (action: () => Promise<unknown>) => {
