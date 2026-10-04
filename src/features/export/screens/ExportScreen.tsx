@@ -14,6 +14,7 @@ import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { CsvExportService, ExportDateRange } from '@/src/features/export/api/csv-export.service';
 import { useTranslation } from 'react-i18next';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
+import { Analytics } from '@/src/services/telemetry';
 import { toErrorMessage } from '@/src/utils/errors';
 
 
@@ -119,7 +120,10 @@ export const ExportScreen = React.memo(function ExportScreen() {
   const handleSave = useCallback(async () => {
     if (!exportedData) return;
     setShowExportOptions(false);
-    try { await CsvExportService.saveToFolder(exportedData.content, exportedData.filename); }
+    try {
+      await CsvExportService.saveToFolder(exportedData.content, exportedData.filename);
+      Analytics.track('data_exported', { destination: 'save' });
+    }
     catch (error) { showAlert({ title: t('export.saveFailed'), message: toErrorMessage(error, t('export.saveFailedMessage')), type: 'error' }); }
     finally { setExportedData(null); }
   }, [exportedData, showAlert, t]);
@@ -127,7 +131,10 @@ export const ExportScreen = React.memo(function ExportScreen() {
   const handleShare = useCallback(async () => {
     if (!exportedData) return;
     setShowExportOptions(false);
-    try { await CsvExportService.shareFile(exportedData.content, exportedData.filename); }
+    try {
+      await CsvExportService.shareFile(exportedData.content, exportedData.filename);
+      Analytics.track('data_exported', { destination: 'share' });
+    }
     catch (error) { showAlert({ title: t('export.shareFailed'), message: toErrorMessage(error, t('export.shareFailedMessage')), type: 'error' }); }
     finally { setExportedData(null); }
   }, [exportedData, showAlert, t]);

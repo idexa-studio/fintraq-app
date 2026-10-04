@@ -20,6 +20,7 @@ const hi: Translation = {
     settings: 'सेटिंग्स',
   },
   settings: {
+    shareUsageData: 'उपयोग डेटा साझा करें', shareUsageDataHint: 'गुमनाम ऐप उपयोग और क्रैश रिपोर्ट। आपका पैसा या एंट्री कभी नहीं।',
     general: "सामान्य", security: "सुरक्षा", manage: "प्रबंधन", about: "परिचय", loans: "लोन", loansHint: "आपने दिया या लिया पैसा",
     title: 'सेटिंग्स',
     welcome: 'स्वागत है',

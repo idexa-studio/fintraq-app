@@ -20,6 +20,7 @@ const de: Translation = {
     settings: 'Einstellungen',
   },
   settings: {
+    shareUsageData: 'Nutzungsdaten teilen', shareUsageDataHint: 'Anonyme App-Nutzung und Absturzberichte. Nie dein Geld oder deine Einträge.',
     general: "Allgemein", security: "Sicherheit", manage: "Verwalten", about: "Über", loans: "Darlehen", loansHint: "Verliehenes oder geliehenes Geld",
     title: 'Einstellungen',
     welcome: 'Willkommen',

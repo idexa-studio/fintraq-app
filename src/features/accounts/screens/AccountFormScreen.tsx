@@ -6,7 +6,7 @@ import type { InsertAccount, UpdateAccountData } from '@/src/features/accounts/a
 import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { AnalyticsService } from '@/src/services/analytics';
+import { Analytics } from '@/src/services/telemetry';
 import type { AccountType } from '@/src/types';
 import { parseAmountInput } from '@/src/utils/amount';
 import { colorNumberToHex, parseAmount, toDbColor } from '@/src/utils/format';
@@ -134,7 +134,7 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
         };
         await createAccount(createData);
       }
-      await AnalyticsService.accountSaved();
+      Analytics.track('account_saved', { account_type: accountType, mode: isEditing ? 'edit' : 'create' });
       router.back();
     } catch (error) {
       LoggerService.error('ACCOUNT_FORM', 'Failed to save account', error);

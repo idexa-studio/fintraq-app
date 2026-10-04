@@ -20,6 +20,7 @@ const bn: Translation = {
     settings: 'সেটিংস',
   },
   settings: {
+    shareUsageData: 'ব্যবহারের তথ্য শেয়ার করুন', shareUsageDataHint: 'বেনামী অ্যাপ ব্যবহার ও ক্র্যাশ রিপোর্ট। আপনার টাকা বা এন্ট্রি কখনও নয়।',
     general: "সাধারণ", security: "নিরাপত্তা", manage: "পরিচালনা", about: "সম্পর্কে", loans: "ঋণ", loansHint: "আপনার দেওয়া বা নেওয়া টাকা",
     title: 'সেটিংস',
     welcome: 'স্বাগতম',

@@ -5,7 +5,7 @@ import type { Person } from '@/src/features/persons/api/persons';
 import { useGlobalSearch } from '@/src/features/search/hooks/useGlobalSearch';
 import { useRecentSearches } from '@/src/features/search/hooks/useRecentSearches';
 import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
-import { AnalyticsService } from '@/src/services/analytics';
+import { Analytics, resultBucket } from '@/src/services/telemetry';
 
 export type SearchKind = 'transactions' | 'accounts' | 'categories' | 'persons';
 
@@ -52,7 +52,7 @@ export function useSearchResults(query: string) {
     const signature = `${debouncedQuery}|${total}`;
     if (lastTracked.current === signature) return;
     lastTracked.current = signature;
-    AnalyticsService.searchPerformed().catch(() => {});
+    Analytics.track('search', { results: resultBucket(total) });
   }, [isSettled, debouncedQuery, total, sections]);
 
   return {

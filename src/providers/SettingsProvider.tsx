@@ -16,6 +16,8 @@ export type UserProfile = {
   language: AppLanguage;
   reminderEnabled: boolean;
   reminderTime: string; // e.g. "20:00"
+  /** Anonymous usage analytics and crash reports. On by default; older saved profiles lack it and get the default. */
+  shareUsageData: boolean;
 };
 
 type SettingsContextType = {
@@ -41,6 +43,7 @@ const DEFAULT_PROFILE: UserProfile = {
   language: 'system',
   reminderEnabled: false,
   reminderTime: '20:00',
+  shareUsageData: true,
 };
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {

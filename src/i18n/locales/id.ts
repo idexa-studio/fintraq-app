@@ -20,6 +20,7 @@ const id: Translation = {
     settings: 'Pengaturan',
   },
   settings: {
+    shareUsageData: 'Bagikan data penggunaan', shareUsageDataHint: 'Penggunaan aplikasi anonim dan laporan error. Tidak pernah uang atau catatan Anda.',
     general: "Umum", security: "Keamanan", manage: "Kelola", about: "Tentang", loans: "Pinjaman", loansHint: "Uang yang Anda pinjamkan atau pinjam",
     title: 'Pengaturan',
     welcome: 'Selamat datang',
