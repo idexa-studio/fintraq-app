@@ -113,7 +113,6 @@ const kn: Translation = {
     cannotDelete: 'ವರ್ಗವನ್ನು ಅಳಿಸಲಾಗದು', deleteFailed: 'ವರ್ಗವನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ.',
   },
   dashboard: {
-    pulseByToday: 'ಈ ದಿನದವರೆಗೆ {{amount}}', pulseNoHistory: 'ಕಳೆದ ತಿಂಗಳು ಖರ್ಚು ಇಲ್ಲ',
     netThisMonth: 'ಈ ತಿಂಗಳು {{amount}}', thisMonth: 'ಈ ತಿಂಗಳು', quickActions: 'ತ್ವರಿತ ಕ್ರಿಯೆಗಳು', quickExpense: 'ಖರ್ಚು', quickIncome: 'ಆದಾಯ', quickTransfer: 'ವರ್ಗಾವಣೆ', quickLoan: 'ಸಾಲ', pulseSpent: 'ಇಲ್ಲಿಯವರೆಗೆ ಖರ್ಚು', pulseOfLast: 'ಕಳೆದ ತಿಂಗಳ {{pct}}%', pulseLastMonth: 'ಕಳೆದ ತಿಂಗಳು', pulseDay: '{{total}} ರಲ್ಲಿ ದಿನ {{day}}', pulseEmpty: 'ಈ ತಿಂಗಳು ಇನ್ನೂ ಖರ್ಚು ಇಲ್ಲ', rhythmTitle: 'ಖರ್ಚಿನ ಲಯ', rhythmHint: 'ಕಳೆದ 5 ವಾರಗಳು', rhythmLess: 'ಕಡಿಮೆ', rhythmMore: 'ಹೆಚ್ಚು', rhythmNone: 'ಖರ್ಚು ಇಲ್ಲ', rhythmSpent: '{{amount}} ಖರ್ಚು',
     streakDays: '{{count}} ದಿನಗಳ ಸರಣಿ',
     accounts: 'ಖಾತೆಗಳು', manage: 'ನಿರ್ವಹಿಸಿ', topExpenses: 'ಪ್ರಮುಖ ವೆಚ್ಚಗಳು', people: 'ವ್ಯಕ್ತಿಗಳು', loans: 'ಸಾಲಗಳು', recent: 'ಇತ್ತೀಚಿನವು', seeAll: 'ಎಲ್ಲವನ್ನೂ ನೋಡಿ',

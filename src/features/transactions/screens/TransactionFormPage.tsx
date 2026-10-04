@@ -9,7 +9,8 @@ import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';
 import { TransactionAccountPicker } from '@/src/features/transactions/components/TransactionAccountPicker';
 import { TransactionCategoryPicker } from '@/src/features/transactions/components/TransactionCategoryPicker';
-import { TransactionEntryHero } from '@/src/features/transactions/components/TransactionEntryHero';
+import { TransactionAmountInput } from '@/src/features/transactions/components/TransactionAmountInput';
+import { TransactionTypePicker } from '@/src/features/transactions/components/TransactionTypePicker';
 import { PersonPickerBottomSheet } from '@/src/features/persons/components/PersonPickerBottomSheet';
 import { usePersons } from '@/src/features/persons/hooks/persons';
 import { useCreateTransaction, useTransactionById, useUpdateTransaction } from '@/src/features/transactions/hooks/transactions';
@@ -298,15 +299,14 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
         </>
       }
     >
-      <TransactionEntryHero
-        type={type}
-        onTypeChange={handleTypeChange}
-        typeLocked={isEditMode}
-        hideType={isLoanLinked}
-        amount={amountInput}
-        onAmountChange={setAmountInput}
-        currency={selectedAccount?.currency ?? profile.defaultCurrency}
-      />
+      <View style={styles.top}>
+        {!isLoanLinked && <TransactionTypePicker value={type} onChange={handleTypeChange} disabled={isEditMode} />}
+        <TransactionAmountInput
+          value={amountInput}
+          onChange={setAmountInput}
+          currency={selectedAccount?.currency ?? profile.defaultCurrency}
+        />
+      </View>
 
       {isLoanLinked && loan ? (
         <View style={styles.padded}>
@@ -404,6 +404,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
 
 const createStyles = ({ spacing, layout }: ThemeContextType) =>
   StyleSheet.create({
+    top: { gap: spacing('1') },
     padded: { paddingHorizontal: layout.screenPadding, gap: spacing('2') },
     label: { marginLeft: spacing('1') },
   });

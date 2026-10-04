@@ -113,7 +113,6 @@ const hi: Translation = {
     cannotDelete: 'श्रेणी हटाई नहीं जा सकती', deleteFailed: 'श्रेणी हटाई नहीं जा सकी।',
   },
   dashboard: {
-    pulseByToday: 'इस दिन तक {{amount}}', pulseNoHistory: 'पिछले महीने कोई खर्च नहीं',
     netThisMonth: 'इस महीने {{amount}}', thisMonth: 'इस महीने', quickActions: 'त्वरित कार्य', quickExpense: 'खर्च', quickIncome: 'आय', quickTransfer: 'ट्रांसफ़र', quickLoan: 'उधार', pulseSpent: 'अब तक खर्च', pulseOfLast: 'पिछले महीने का {{pct}}%', pulseLastMonth: 'पिछला महीना', pulseDay: '{{total}} में से दिन {{day}}', pulseEmpty: 'इस महीने अभी तक कोई खर्च नहीं', rhythmTitle: 'खर्च की लय', rhythmHint: 'पिछले 5 सप्ताह', rhythmLess: 'कम', rhythmMore: 'ज़्यादा', rhythmNone: 'कोई खर्च नहीं', rhythmSpent: '{{amount}} खर्च',
     streakDays: '{{count}} दिन की लय',
     accounts: 'खाते', manage: 'प्रबंधित करें', topExpenses: 'मुख्य खर्च', people: 'लोग', loans: 'ऋण', recent: 'हाल के', seeAll: 'सभी देखें',

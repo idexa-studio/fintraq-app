@@ -113,7 +113,6 @@ const de: Translation = {
     cannotDelete: 'Kategorie kann nicht gelöscht werden', deleteFailed: 'Kategorie konnte nicht gelöscht werden.',
   },
   dashboard: {
-    pulseByToday: '{{amount}} bis zu diesem Tag', pulseNoHistory: 'Keine Ausgaben im Vormonat',
     netThisMonth: '{{amount}} diesen Monat', thisMonth: 'Dieser Monat', quickActions: 'Schnellaktionen', quickExpense: 'Ausgabe', quickIncome: 'Einnahme', quickTransfer: 'Umbuchung', quickLoan: 'Darlehen', pulseSpent: 'Bisher ausgegeben', pulseOfLast: '{{pct}} % des Vormonats', pulseLastMonth: 'Letzter Monat', pulseDay: 'Tag {{day}} von {{total}}', pulseEmpty: 'Diesen Monat noch nichts ausgegeben', rhythmTitle: 'Ausgabenrhythmus', rhythmHint: 'Letzte 5 Wochen', rhythmLess: 'Weniger', rhythmMore: 'Mehr', rhythmNone: 'Keine Ausgaben', rhythmSpent: '{{amount}} ausgegeben',
     streakDays: '{{count}} Tage in Folge',
     accounts: 'Konten', manage: 'Verwalten', topExpenses: 'Größte Ausgaben', people: 'Personen', loans: 'Darlehen', recent: 'Zuletzt', seeAll: 'Alle anzeigen',

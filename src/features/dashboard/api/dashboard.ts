@@ -13,7 +13,20 @@ export type PersonNetRow = {
   net: number;
 };
 
-/** This month's totals plus last month's spend, for the hero and the month pulse widget. */
+/** Everything ever recorded in one currency — the Home hero's income and expense tiles. */
+export const getLifetimeTotals = async (currency: string): Promise<{ income: number; expense: number }> => {
+  const [row] = await db
+    .select({
+      income: sql<number>`SUM(CASE WHEN ${payments.type} = 'CR' THEN ${payments.amount} ELSE 0 END)`,
+      expense: sql<number>`SUM(CASE WHEN ${payments.type} = 'DR' THEN ${payments.amount} ELSE 0 END)`,
+    })
+    .from(payments)
+    .innerJoin(accounts, eq(payments.accountId, accounts.id))
+    .where(eq(accounts.currency, currency));
+  return { income: row?.income ?? 0, expense: row?.expense ?? 0 };
+};
+
+/** This month's totals plus last month's spend, for the month widgets. */
 export const getMonthTotals = async (currency: string, now: Date = new Date()): Promise<MonthTotals> => {
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd');
   const lastMonthStart = format(startOfMonth(subMonths(now, 1)), 'yyyy-MM-dd');

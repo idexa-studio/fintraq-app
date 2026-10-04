@@ -32,6 +32,7 @@ export * from './Switch';
 export * from './Card';
 export * from './HeroSurface';
 export * from './HeroSplit';
+export * from './NetFlowGrid';
 export * from './OptionCard';
 export * from './ListGroup';
 export * from './ListItem';

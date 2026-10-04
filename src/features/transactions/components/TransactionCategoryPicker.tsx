@@ -45,9 +45,8 @@ export const TransactionCategoryPicker = React.memo(function TransactionCategory
 });
 
 const createStyles = ({ spacing, layout }: ThemeContextType) => StyleSheet.create({
-  container: { paddingHorizontal: layout.screenPadding },
-  // Same label treatment and inset as the account picker above it.
-  label: { marginBottom: spacing('2'), paddingHorizontal: spacing('1') },
+  container: { paddingVertical: spacing('3'), paddingHorizontal: layout.screenPadding },
+  label: { marginBottom: spacing('3') },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',

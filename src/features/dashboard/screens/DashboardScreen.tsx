@@ -16,7 +16,7 @@ import { MonthPulseCard } from '@/src/features/dashboard/components/MonthPulseCa
 import { PremiumUpsellModal } from '@/src/features/dashboard/components/PremiumUpsellModal';
 import { QuickActions } from '@/src/features/dashboard/components/QuickActions';
 import { TopPersonsCard } from '@/src/features/dashboard/components/TopPersonsCard';
-import { useDashboardPersons, useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
+import { useDashboardPersons, useLifetimeTotals } from '@/src/features/dashboard/hooks/dashboard';
 import { useDashboardPrompt } from '@/src/features/dashboard/hooks/useDashboardPrompt';
 import type { GettingStartedStepId } from '@/src/features/dashboard/hooks/useGettingStarted';
 import { useGettingStarted } from '@/src/features/dashboard/hooks/useGettingStarted';
@@ -72,7 +72,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
     [accounts, currency],
   );
 
-  const { data: month } = useMonthTotals(currency);
+  const { data: lifetime } = useLifetimeTotals(currency);
   const { data: topPersons = [] } = useDashboardPersons(currency);
 
   const openSearch = useCallback(() => {
@@ -126,16 +126,18 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <DashboardHeader name={profile.name} isPremium={isPremium} onSearch={openSearch} />
 
-        <HeroBalanceCard
-          balance={balancesByCurrency[currency] ?? 0}
-          currency={currency}
-          income={month?.income ?? 0}
-          expense={month?.expense ?? 0}
-          currencies={currencyKeys}
-          onCurrencySelect={setChosenCurrency}
-        />
-
-        <QuickActions canTransfer={(accounts?.length ?? 0) > 1} />
+        {/* The hero sits on a white card that carries the quick actions below it: one block. */}
+        <View style={styles.heroBlock}>
+          <HeroBalanceCard
+            balance={balancesByCurrency[currency] ?? 0}
+            currency={currency}
+            income={lifetime?.income ?? 0}
+            expense={lifetime?.expense ?? 0}
+            currencies={currencyKeys}
+            onCurrencySelect={setChosenCurrency}
+          />
+          <QuickActions canTransfer={(accounts?.length ?? 0) > 1} />
+        </View>
 
         {gettingStarted.visible ? (
           <View style={styles.gettingStarted}>
@@ -199,6 +201,7 @@ const createStyles = ({ colors, spacing, radius, layout, tabBarClearance }: Them
   StyleSheet.create({
     content: { paddingBottom: tabBarClearance(insets.bottom) },
     padded: { marginHorizontal: layout.screenPadding },
+    heroBlock: { marginHorizontal: layout.screenPadding, borderRadius: radius('2xl'), backgroundColor: colors.surface, overflow: 'hidden' },
     gettingStarted: { marginTop: spacing('4') },
     emptyActivity: {
       backgroundColor: colors.surface,

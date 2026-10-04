@@ -15,8 +15,8 @@ type Props = {
 };
 
 /**
- * One-tap entry points for the most common writes, each opening its form already set up. A white
- * strip under the hero, like every other card on Home: tinted icon tile, label beneath.
+ * One-tap entry points for the most common writes, each opening its form already set up. Rendered
+ * inside the white card the hero sits on (see DashboardScreen), so hero and actions read as one block.
  */
 export const QuickActions = React.memo(function QuickActions({ canTransfer }: Props) {
   const theme = useTheme();
@@ -60,25 +60,21 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
   );
 });
 
-const TILE = 40;
+const TILE = 44;
 
-const createStyles = ({ colors, spacing, radius, layout, alpha }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
   StyleSheet.create({
     row: {
       flexDirection: 'row',
-      marginHorizontal: layout.screenPadding,
-      marginTop: spacing('3'),
-      paddingVertical: spacing('3'),
-      paddingHorizontal: spacing('1'),
-      borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
+      paddingTop: spacing('3.5'),
+      paddingBottom: spacing('3'),
+      paddingHorizontal: spacing('2'),
     },
-    action: { flex: 1, alignItems: 'center', gap: spacing('1.5') },
-    // Squircle like every icon tile in the app (IconAvatar's 30% radius).
+    action: { flex: 1, alignItems: 'center', gap: spacing('2') },
     iconTile: {
       width: TILE,
       height: TILE,
-      borderRadius: radius('md'),
+      borderRadius: radius('lg'),
       backgroundColor: alpha(colors.primary, 'subtle'),
       alignItems: 'center',
       justifyContent: 'center',
