@@ -96,6 +96,7 @@ const bn: Translation = {
   },
   system: { migrationError: 'ডেটাবেস মাইগ্রেশন লোড করতে ত্রুটি হয়েছে', initializingDatabase: 'ডেটাবেস প্রস্তুত হচ্ছে...' },
   accounts: {
+    addHint: 'ব্যাংক, কার্ড, নগদ বা ই-ওয়ালেট',
     shareOfAssets: 'সম্পদের {{pct}}%', manageHint: 'সম্পাদনা বা মুছতে অ্যাকাউন্টে দীর্ঘক্ষণ চাপুন।',
     netWorth: 'নিট সম্পদ', assets: 'সম্পদ', debts: 'দেনা',
     title: 'অ্যাকাউন্ট', account: 'অ্যাকাউন্ট', edit: 'সম্পাদনা', delete: 'মুছুন', removeTransactions: 'আগে সব লেনদেন সরিয়ে ফেলুন',
@@ -257,6 +258,8 @@ const bn: Translation = {
     daysShort: { sun: 'রবি', mon: 'সোম', tue: 'মঙ্গল', wed: 'বুধ', thu: 'বৃহ', fri: 'শুক্র', sat: 'শনি' },
   },
   analytics: {
+    emptyTitle: 'আপনার ইনসাইট এখান থেকে শুরু', emptyHint: 'কয়েকটি লেনদেন যোগ করুন, এই ট্যাব দেখাবে আপনার টাকা কীভাবে চলে।',
+    emptyFeatures: { trend: { title: 'খরচের ধারা', hint: 'দিনে দিনে বা মাসে মাসে, আপনার গড়ের তুলনায়' }, categories: { title: 'টাকা কোথায় যায়', hint: 'প্রতিটি ক্যাটাগরির খরচ ও আয়ে অংশ' }, forecast: { title: 'মাস শেষের পূর্বাভাস', hint: 'এ পর্যন্ত গতিতে এই মাস কোথায় যাচ্ছে' } },
     income: 'আয়', expenses: 'ব্যয়', expense: 'ব্যয়', netPosition: 'নিট অবস্থান', dailyAvg: 'গড় দৈনিক ব্যয়', highlights: 'হাইলাইট', topCategory: 'সর্বাধিক ব্যয়ের বিভাগ', biggestExpense: 'সবচেয়ে বড় ব্যয়',
     trend: 'ব্যয়ের প্রবণতা', trendAverage: 'গড় {{amount}}', noTrend: 'এখনও প্রবণতার ডেটা নেই', noTrendHint: 'আপনার ব্যয়ের প্রবণতা দেখতে আয় বা ব্যয়ের লেনদেন যোগ করুন।',
     categoryBreakdown: 'বিভাগ অনুযায়ী বিভাজন', groupsCount: '{{count}}টি গ্রুপ', personBreakdown: 'ব্যক্তি অনুযায়ী বিভাজন', personsCount: '{{count}} জন ব্যক্তি', balanceDistribution: 'ব্যালেন্স বণ্টন', accountsCount: '{{count}}টি অ্যাকাউন্ট',
@@ -366,6 +369,10 @@ const bn: Translation = {
     colors: { forest: 'বনসবুজ', emerald: 'পান্না', teal: 'টিল', sky: 'আকাশি', ocean: 'সাগরনীল', blue: 'নীল', cobalt: 'কোবাল্ট', iris: 'আইরিস', indigo: 'নীলচে বেগুনি', purple: 'বেগুনি', violet: 'ভায়োলেট', fuchsia: 'ফুশিয়া', pink: 'গোলাপি', deepPink: 'গাঢ় গোলাপি', rose: 'রোজ', red: 'লাল', crimson: 'টকটকে লাল', orange: 'কমলা', amber: 'অ্যাম্বার', gold: 'সোনালি', lime: 'লেবু সবুজ', olive: 'জলপাই', slate: 'স্লেট', coolGray: 'ঠান্ডা ধূসর' },
   },
   shortcuts: { expense: 'খরচ যোগ করুন', income: 'আয় যোগ করুন', transfer: 'নতুন ট্রান্সফার', loan: 'নতুন ঋণ' },
+  gettingStarted: {
+    title: 'শুরু করুন', progress: '{{total}}টির মধ্যে {{done}}টি সম্পন্ন', dismiss: 'চেকলিস্ট লুকান',
+    steps: { account: { title: 'আপনার প্রথম অ্যাকাউন্ট তৈরি করুন', hint: 'সেটআপে সম্পন্ন' }, transaction: { title: 'একটি লেনদেন যোগ করুন', hint: 'আজকের কোনো খরচ বা আয় লিখে রাখুন' }, reminder: { title: 'দৈনিক রিমাইন্ডার চালু করুন', hint: 'সন্ধ্যার মৃদু স্মরণ অভ্যাস ধরে রাখে' }, secondAccount: { title: 'আপনার ব্যাংক বা কার্ড যোগ করুন', hint: 'সব ব্যালেন্স এক জায়গায় দেখুন' }, backup: { title: 'Google Drive-এ ব্যাকআপ নিন', hint: 'ফোন বদলালেও ডেটা নিরাপদ থাকবে' } },
+  },
 };
 
 export default bn;

@@ -96,6 +96,7 @@ const pt: Translation = {
   },
   system: { migrationError: 'Erro ao carregar as migrações do banco de dados', initializingDatabase: 'Inicializando o banco de dados...' },
   accounts: {
+    addHint: 'Banco, cartão, dinheiro ou carteira digital',
     shareOfAssets: '{{pct}}% dos ativos', manageHint: 'Toque e segure uma conta para editar ou excluir.',
     netWorth: 'Patrimônio líquido', assets: 'Ativos', debts: 'Dívidas',
     title: 'Contas', account: 'Conta', edit: 'Editar', delete: 'Excluir', removeTransactions: 'Remova todas as transações primeiro',
@@ -257,6 +258,8 @@ const pt: Translation = {
     daysShort: { sun: 'Do', mon: 'Se', tue: 'Te', wed: 'Qu', thu: 'Qu', fri: 'Se', sat: 'Sá' },
   },
   analytics: {
+    emptyTitle: 'Seus insights começam aqui', emptyHint: 'Adicione alguns lançamentos e esta aba mostrará como seu dinheiro se move.',
+    emptyFeatures: { trend: { title: 'Tendências de gastos', hint: 'Dia a dia ou mês a mês, comparado à sua média' }, categories: { title: 'Para onde vai', hint: 'A parte de cada categoria no que você gasta e ganha' }, forecast: { title: 'Previsão de fim de mês', hint: 'Para onde este mês caminha no seu ritmo' } },
     income: 'Receitas', expenses: 'Despesas', expense: 'Despesa', netPosition: 'Posição líquida', dailyAvg: 'Gasto médio diário', highlights: 'Destaques', topCategory: 'Categoria com mais gastos', biggestExpense: 'Maior despesa',
     trend: 'Tendência de gastos', trendAverage: 'Média {{amount}}', noTrend: 'Ainda não há dados de tendência', noTrendHint: 'Adicione receitas ou despesas para ver sua tendência de gastos.',
     categoryBreakdown: 'Divisão por categoria', groupsCount: '{{count}} grupos', personBreakdown: 'Divisão por pessoa', personsCount: '{{count}} pessoas', balanceDistribution: 'Distribuição do saldo', accountsCount: '{{count}} contas',
@@ -366,6 +369,10 @@ const pt: Translation = {
     colors: { forest: 'Floresta', emerald: 'Esmeralda', teal: 'Verde-azulado', sky: 'Céu', ocean: 'Oceano', blue: 'Azul', cobalt: 'Cobalto', iris: 'Íris', indigo: 'Índigo', purple: 'Roxo', violet: 'Violeta', fuchsia: 'Fúcsia', pink: 'Rosa', deepPink: 'Rosa escuro', rose: 'Rosê', red: 'Vermelho', crimson: 'Carmesim', orange: 'Laranja', amber: 'Âmbar', gold: 'Dourado', lime: 'Lima', olive: 'Oliva', slate: 'Ardósia', coolGray: 'Cinza frio' },
   },
   shortcuts: { expense: 'Adicionar despesa', income: 'Adicionar receita', transfer: 'Nova transferência', loan: 'Novo empréstimo' },
+  gettingStarted: {
+    title: 'Primeiros passos', progress: '{{done}} de {{total}} concluídos', dismiss: 'Ocultar lista',
+    steps: { account: { title: 'Crie sua primeira conta', hint: 'Feito na configuração' }, transaction: { title: 'Adicione um lançamento', hint: 'Registre algo que você gastou ou ganhou hoje' }, reminder: { title: 'Ative um lembrete diário', hint: 'Um toque leve à noite mantém o hábito' }, secondAccount: { title: 'Adicione seu banco ou cartão', hint: 'Todos os saldos em um só lugar' }, backup: { title: 'Faça backup no Google Drive', hint: 'Seus dados seguros se trocar de celular' } },
+  },
 };
 
 export default pt;

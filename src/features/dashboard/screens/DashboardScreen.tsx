@@ -9,6 +9,7 @@ import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { BackupPromptModal } from '@/src/features/backup/components/BackupPromptModal';
 import { AccountsCarousel } from '@/src/features/dashboard/components/AccountsCarousel';
 import { DashboardHeader } from '@/src/features/dashboard/components/DashboardHeader';
+import { GettingStartedCard } from '@/src/features/dashboard/components/GettingStartedCard';
 import { HeroBalanceCard } from '@/src/features/dashboard/components/HeroBalanceCard';
 import { LoansGlanceCard } from '@/src/features/dashboard/components/LoansGlanceCard';
 import { MonthPulseCard } from '@/src/features/dashboard/components/MonthPulseCard';
@@ -17,6 +18,8 @@ import { QuickActions } from '@/src/features/dashboard/components/QuickActions';
 import { TopPersonsCard } from '@/src/features/dashboard/components/TopPersonsCard';
 import { useDashboardPersons, useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
 import { useDashboardPrompt } from '@/src/features/dashboard/hooks/useDashboardPrompt';
+import type { GettingStartedStepId } from '@/src/features/dashboard/hooks/useGettingStarted';
+import { useGettingStarted } from '@/src/features/dashboard/hooks/useGettingStarted';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTransactions } from '@/src/features/transactions/hooks/transactions';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
@@ -43,6 +46,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const { data: transactions, isLoading: txLoading } = useTransactions(RECENT_COUNT);
   const { data: accounts, isLoading: accountsLoading } = useAccounts();
   const { prompt, dismiss: dismissPrompt } = useDashboardPrompt(transactions?.length);
+  const gettingStarted = useGettingStarted();
 
   const balancesByCurrency = useMemo(
     () =>
@@ -81,6 +85,19 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   const openTransactions = useCallback(() => router.push('/transactions'), [router]);
   const openTransaction = useCallback((id: number) => router.push(`/transactions/${id}`), [router]);
   const createTransaction = useCallback(() => router.push('/transactions/create'), [router]);
+  const openGettingStartedStep = useCallback(
+    (id: GettingStartedStepId) => {
+      const href = {
+        account: '/(main)/accounts/form',
+        secondAccount: '/(main)/accounts/form',
+        transaction: '/transactions/create',
+        reminder: '/settings',
+        backup: '/(main)/backup',
+      } as const;
+      router.push(href[id]);
+    },
+    [router],
+  );
   const openLoans = useCallback(() => router.push('/(main)/loans'), [router]);
   const openPersons = useCallback(() => router.push('/persons'), [router]);
   const openPerson = useCallback((id: number) => router.push(`/persons/${id}`), [router]);
@@ -119,6 +136,17 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
         >
           <QuickActions canTransfer={(accounts?.length ?? 0) > 1} />
         </HeroBalanceCard>
+
+        {gettingStarted.visible ? (
+          <View style={styles.gettingStarted}>
+            <GettingStartedCard
+              steps={gettingStarted.steps}
+              doneCount={gettingStarted.doneCount}
+              onPressStep={openGettingStartedStep}
+              onDismiss={gettingStarted.dismiss}
+            />
+          </View>
+        ) : null}
 
         <SectionHeader title={t('dashboard.thisMonth')} rightText={t('common.analyticsTitle')} onPressRight={openAnalytics} />
         <MonthPulseCard currency={currency} />
@@ -171,6 +199,7 @@ const createStyles = ({ colors, spacing, radius, layout, tabBarClearance }: Them
   StyleSheet.create({
     content: { paddingBottom: tabBarClearance(insets.bottom) },
     padded: { marginHorizontal: layout.screenPadding },
+    gettingStarted: { marginTop: spacing('4') },
     emptyActivity: {
       backgroundColor: colors.surface,
       borderRadius: radius('xl'),

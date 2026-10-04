@@ -96,6 +96,7 @@ const mr: Translation = {
   },
   system: { migrationError: 'डेटाबेस मायग्रेशन लोड करताना त्रुटी', initializingDatabase: 'डेटाबेस सुरू होत आहे...' },
   accounts: {
+    addHint: 'बँक, कार्ड, रोख किंवा ई-वॉलेट',
     shareOfAssets: 'मालमत्तेच्या {{pct}}%', manageHint: 'संपादित किंवा हटवण्यासाठी खात्यावर दीर्घ दाबा.',
     netWorth: 'निव्वळ संपत्ती', assets: 'मालमत्ता', debts: 'देणी',
     title: 'खाती', account: 'खाते', edit: 'संपादित करा', delete: 'हटवा', removeTransactions: 'आधी सर्व व्यवहार काढून टाका',
@@ -257,6 +258,8 @@ const mr: Translation = {
     daysShort: { sun: 'रवि', mon: 'सोम', tue: 'मंग', wed: 'बुध', thu: 'गुरु', fri: 'शुक्र', sat: 'शनि' },
   },
   analytics: {
+    emptyTitle: 'तुमचे इनसाइट्स इथून सुरू', emptyHint: 'काही व्यवहार जोडा, हा टॅब तुमचे पैसे कसे फिरतात ते दाखवेल.',
+    emptyFeatures: { trend: { title: 'खर्चाचे कल', hint: 'दिवसागणिक किंवा महिन्यागणिक, तुमच्या सरासरीशी तुलना' }, categories: { title: 'पैसे कुठे जातात', hint: 'खर्च व उत्पन्नात प्रत्येक श्रेणीचा वाटा' }, forecast: { title: 'महिनाअखेरचा अंदाज', hint: 'आतापर्यंतच्या वेगाने हा महिना कुठे पोहोचेल' } },
     income: 'उत्पन्न', expenses: 'खर्च', expense: 'खर्च', netPosition: 'निव्वळ स्थिती', dailyAvg: 'सरासरी दैनिक खर्च', highlights: 'ठळक बाबी', topCategory: 'सर्वाधिक खर्चाचा वर्ग', biggestExpense: 'सर्वात मोठा खर्च',
     trend: 'खर्चाचा कल', trendAverage: 'सरासरी {{amount}}', noTrend: 'अजून कलाचा डेटा नाही', noTrendHint: 'तुमचा खर्चाचा कल पाहण्यासाठी उत्पन्न किंवा खर्चाचे व्यवहार जोडा.',
     categoryBreakdown: 'वर्गनिहाय विभागणी', groupsCount: '{{count}} गट', personBreakdown: 'व्यक्तीनिहाय विभागणी', personsCount: '{{count}} व्यक्ती', balanceDistribution: 'शिल्लक वितरण', accountsCount: '{{count}} खाती',
@@ -366,6 +369,10 @@ const mr: Translation = {
     colors: { forest: 'वनहिरवा', emerald: 'पाचू', teal: 'टील', sky: 'आकाशी', ocean: 'सागरी', blue: 'निळा', cobalt: 'कोबाल्ट', iris: 'आयरिस', indigo: 'नीळ', purple: 'जांभळा', violet: 'व्हायोलेट', fuchsia: 'फ्युशिया', pink: 'गुलाबी', deepPink: 'गडद गुलाबी', rose: 'रोझ', red: 'लाल', crimson: 'किरमिजी', orange: 'केशरी', amber: 'अंबर', gold: 'सोनेरी', lime: 'लिंबू हिरवा', olive: 'ऑलिव्ह', slate: 'स्लेट', coolGray: 'थंड राखाडी' },
   },
   shortcuts: { expense: 'खर्च जोडा', income: 'उत्पन्न जोडा', transfer: 'नवीन हस्तांतरण', loan: 'नवीन कर्ज' },
+  gettingStarted: {
+    title: 'सुरुवात करा', progress: '{{total}} पैकी {{done}} पूर्ण', dismiss: 'यादी लपवा',
+    steps: { account: { title: 'तुमचे पहिले खाते तयार करा', hint: 'सेटअपमध्ये पूर्ण' }, transaction: { title: 'एक व्यवहार जोडा', hint: 'आजचा एखादा खर्च किंवा उत्पन्न नोंदवा' }, reminder: { title: 'दैनिक स्मरणपत्र सुरू करा', hint: 'संध्याकाळची हलकी आठवण सवय टिकवते' }, secondAccount: { title: 'तुमची बँक किंवा कार्ड जोडा', hint: 'सर्व शिल्लक एकाच ठिकाणी' }, backup: { title: 'Google Drive वर बॅकअप घ्या', hint: 'फोन बदलला तरी डेटा सुरक्षित' } },
+  },
 };
 
 export default mr;

@@ -30,8 +30,8 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
   const cur = currency ?? undefined;
   const net = income - expense;
   const flow = income + expense;
-  // Share of money in; the rest of the bar is money out.
-  const inShare = flow > 0 ? income / flow : 0.5;
+  // Share of money in; the rest of the bar is money out. Nothing moved: an empty track, not a fake 50/50.
+  const inShare = flow > 0 ? income / flow : 0;
 
   const side = (key: 'in' | 'out') => {
     const isIn = key === 'in';
@@ -78,8 +78,14 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
 
       <View style={styles.flow}>
         <View style={styles.bar} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-          <View style={[styles.segment, { flex: inShare, backgroundColor: hero.income }]} />
-          <View style={[styles.segment, { flex: 1 - inShare, backgroundColor: hero.expense }]} />
+          {flow > 0 ? (
+            <>
+              <View style={[styles.segment, { flex: inShare, backgroundColor: hero.income }]} />
+              <View style={[styles.segment, { flex: 1 - inShare, backgroundColor: hero.expense }]} />
+            </>
+          ) : (
+            <View style={[styles.segment, styles.emptyTrack]} />
+          )}
         </View>
         <View style={styles.sides}>
           {side('in')}
@@ -99,6 +105,7 @@ const createStyles = ({ heroCard: hero, spacing, radius, typography }: ThemeCont
     flow: { gap: spacing('3') },
     bar: { flexDirection: 'row', height: 6, gap: 3 },
     segment: { borderRadius: radius('full') },
+    emptyTrack: { flex: 1, backgroundColor: hero.tileStrong },
     sides: { flexDirection: 'row', gap: spacing('4') },
     side: { flex: 1, gap: spacing('0.5') },
     sideEnd: { alignItems: 'flex-end' },

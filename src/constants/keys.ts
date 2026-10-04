@@ -14,6 +14,8 @@ export enum StorageKeys {
   BACKUP_PROMPT_DISMISSED_AT = '@fintraq_backup_prompt_dismissed_at',
   /** Local date (YYYY-MM-DD) whose daily reminder is skipped because the user already logged. */
   REMINDER_SKIPPED_DATE = '@fintraq_reminder_skipped_date',
+  /** Set when the user closes Home's "Get started" checklist. */
+  GETTING_STARTED_DISMISSED = '@fintraq_getting_started_dismissed',
 
   // Walkthrough Keys
   WALKTHROUGH_DASHBOARD = '@fintraq_walkthrough_dashboard',

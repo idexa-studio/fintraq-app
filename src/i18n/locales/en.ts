@@ -94,6 +94,7 @@ const en = {
   },
   system: { migrationError: 'Error loading database migrations', initializingDatabase: 'Initializing database...' },
   accounts: {
+    addHint: 'Bank, card, cash or e-wallet',
     shareOfAssets: '{{pct}}% of assets', manageHint: 'Long-press an account to edit or delete it.',
     netWorth: 'Net worth', assets: 'Assets', debts: 'Debts',
     title: 'Accounts', account: 'Account', edit: 'Edit', delete: 'Delete', removeTransactions: 'Remove all transactions first',
@@ -255,6 +256,8 @@ const en = {
     daysShort: { sun: 'Su', mon: 'Mo', tue: 'Tu', wed: 'We', thu: 'Th', fri: 'Fr', sat: 'Sa' },
   },
   analytics: {
+    emptyTitle: 'Your insights start here', emptyHint: 'Add a few transactions and this tab fills in with how your money moves.',
+    emptyFeatures: { trend: { title: 'Spending trends', hint: 'Day by day or month by month, against your average' }, categories: { title: 'Where it goes', hint: 'Every category\'s share of what you spend and earn' }, forecast: { title: 'Month-end forecast', hint: 'Where this month is heading, from your pace so far' } },
     income: 'Income', expenses: 'Expenses', expense: 'Expense', netPosition: 'Net position', dailyAvg: 'Daily avg spend', highlights: 'Highlights', topCategory: 'Top category', biggestExpense: 'Biggest expense',
     trend: 'Spending trend', trendAverage: 'Avg {{amount}}', noTrend: 'No trend data yet', noTrendHint: 'Add income or expense transactions to see your spending trend.',
     categoryBreakdown: 'Category breakdown', groupsCount: '{{count}} groups', personBreakdown: 'Person breakdown', personsCount: '{{count}} persons', balanceDistribution: 'Balance distribution', accountsCount: '{{count}} accounts',
@@ -364,6 +367,10 @@ const en = {
     colors: { forest: 'Forest', emerald: 'Emerald', teal: 'Teal', sky: 'Sky', ocean: 'Ocean', blue: 'Blue', cobalt: 'Cobalt', iris: 'Iris', indigo: 'Indigo', purple: 'Purple', violet: 'Violet', fuchsia: 'Fuchsia', pink: 'Pink', deepPink: 'Deep Pink', rose: 'Rose', red: 'Red', crimson: 'Crimson', orange: 'Orange', amber: 'Amber', gold: 'Gold', lime: 'Lime', olive: 'Olive', slate: 'Slate', coolGray: 'Cool Gray' },
   },
   shortcuts: { expense: 'Add expense', income: 'Add income', transfer: 'New transfer', loan: 'New loan' },
+  gettingStarted: {
+    title: 'Get started', progress: '{{done}} of {{total}} done', dismiss: 'Hide checklist',
+    steps: { account: { title: 'Create your first account', hint: 'Done during setup' }, transaction: { title: 'Add a transaction', hint: 'Log something you spent or earned today' }, reminder: { title: 'Turn on a daily reminder', hint: 'A gentle nudge in the evening keeps the habit' }, secondAccount: { title: 'Add your bank or card', hint: 'See every balance in one place' }, backup: { title: 'Back up to Google Drive', hint: 'Keep your data safe if you change phones' } },
+  },
 } as const;
 
 export default en;

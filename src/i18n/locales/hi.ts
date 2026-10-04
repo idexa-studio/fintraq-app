@@ -96,6 +96,7 @@ const hi: Translation = {
   },
   system: { migrationError: 'डेटाबेस माइग्रेशन लोड नहीं हुआ', initializingDatabase: 'डेटाबेस शुरू हो रहा है...' },
   accounts: {
+    addHint: 'बैंक, कार्ड, नकद या ई-वॉलेट',
     shareOfAssets: 'संपत्ति का {{pct}}%', manageHint: 'बदलने या हटाने के लिए खाते को देर तक दबाएँ।',
     netWorth: 'कुल संपत्ति', assets: 'संपत्ति', debts: 'देनदारी',
     title: 'खाते', account: 'खाता', edit: 'संपादित करें', delete: 'हटाएँ', removeTransactions: 'पहले सभी लेन-देन हटाएँ',
@@ -257,6 +258,8 @@ const hi: Translation = {
     daysShort: { sun: 'रवि', mon: 'सोम', tue: 'मंग', wed: 'बुध', thu: 'गुरु', fri: 'शुक्र', sat: 'शनि' },
   },
   analytics: {
+    emptyTitle: 'आपकी इनसाइट्स यहाँ से शुरू', emptyHint: 'कुछ लेनदेन जोड़ें और यह टैब दिखाएगा कि आपका पैसा कैसे चलता है।',
+    emptyFeatures: { trend: { title: 'खर्च के रुझान', hint: 'दिन-ब-दिन या महीने-दर-महीने, आपके औसत के मुकाबले' }, categories: { title: 'पैसा कहाँ जाता है', hint: 'हर कैटेगरी का आपके खर्च और कमाई में हिस्सा' }, forecast: { title: 'महीने के अंत का अनुमान', hint: 'अब तक की रफ़्तार से यह महीना कहाँ पहुँचेगा' } },
     income: 'आय', expenses: 'खर्च', expense: 'खर्च', netPosition: 'शुद्ध स्थिति', dailyAvg: 'औसत दैनिक खर्च', highlights: 'मुख्य बातें', topCategory: 'सबसे ज़्यादा खर्च की श्रेणी', biggestExpense: 'सबसे बड़ा खर्च',
     trend: 'खर्च का रुझान', trendAverage: 'औसत {{amount}}', noTrend: 'अभी रुझान का डेटा नहीं', noTrendHint: 'खर्च का रुझान देखने के लिए आय या खर्च के लेन-देन जोड़ें।',
     categoryBreakdown: 'श्रेणी विभाजन', groupsCount: '{{count}} समूह', personBreakdown: 'व्यक्ति विभाजन', personsCount: '{{count}} लोग', balanceDistribution: 'बैलेंस वितरण', accountsCount: '{{count}} खाते',
@@ -366,6 +369,10 @@ const hi: Translation = {
     colors: { forest: 'जंगल', emerald: 'पन्ना', teal: 'टील', sky: 'आसमानी', ocean: 'समुद्री', blue: 'नीला', cobalt: 'कोबाल्ट', iris: 'आइरिस', indigo: 'नील', purple: 'बैंगनी', violet: 'वायलेट', fuchsia: 'फ़ुशिया', pink: 'गुलाबी', deepPink: 'गहरा गुलाबी', rose: 'रोज़', red: 'लाल', crimson: 'क्रिमसन', orange: 'नारंगी', amber: 'एम्बर', gold: 'सुनहरा', lime: 'लाइम', olive: 'जैतूनी', slate: 'स्लेट', coolGray: 'ठंडा स्लेटी' },
   },
   shortcuts: { expense: 'खर्च जोड़ें', income: 'आय जोड़ें', transfer: 'नया ट्रांसफ़र', loan: 'नया उधार' },
+  gettingStarted: {
+    title: 'शुरुआत करें', progress: '{{total}} में से {{done}} पूरे', dismiss: 'चेकलिस्ट छिपाएँ',
+    steps: { account: { title: 'अपना पहला खाता बनाएँ', hint: 'सेटअप में हो गया' }, transaction: { title: 'एक लेनदेन जोड़ें', hint: 'आज का कोई खर्च या कमाई दर्ज करें' }, reminder: { title: 'रोज़ का रिमाइंडर चालू करें', hint: 'शाम की हल्की याद आदत बनाए रखती है' }, secondAccount: { title: 'अपना बैंक या कार्ड जोड़ें', hint: 'सारे बैलेंस एक जगह देखें' }, backup: { title: 'Google Drive पर बैकअप लें', hint: 'फ़ोन बदलने पर भी डेटा सुरक्षित रहे' } },
+  },
 };
 
 export default hi;
