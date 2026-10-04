@@ -1,10 +1,8 @@
-import type { IconSvgElement } from '@hugeicons/react-native';
 import {
   Airplane01Icon,
   AlarmClockIcon,
   Alert02Icon,
   AlertCircleIcon,
-  Analytics01Icon,
   AndroidIcon,
   Apple01Icon,
   ArchiveIcon,
@@ -100,7 +98,6 @@ import {
   HeartPulseIcon,
   HelpCircleIcon,
   Home01Icon,
-  Home05Icon,
   IceCream01Icon,
   InboxIcon,
   InfinityCircleIcon,
@@ -154,7 +151,6 @@ import {
   Search01Icon,
   ServerStack01Icon,
   Settings01Icon,
-  Settings02Icon,
   Share01Icon,
   Shield01Icon,
   ShieldKeyIcon,
@@ -185,12 +181,12 @@ import {
   UserMultipleIcon,
   WalkingIcon,
   Wallet01Icon,
-  Wallet03Icon,
   Wallet05Icon,
   Wifi01Icon,
   Wrench01Icon,
-  ZapIcon,
+  ZapIcon
 } from '@hugeicons/core-free-icons';
+import type { IconSvgElement } from '@hugeicons/react-native';
 import { BackspaceIcon } from './custom-icons';
 
 /**
@@ -200,7 +196,7 @@ import { BackspaceIcon } from './custom-icons';
  * Two kinds of names share the record:
  *  - Stored names (kebab-case nouns like 'shopping-cart') are saved in users' databases as category
  *    and account icons. Never rename or remove one; point it at a different glyph instead.
- *  - Interface names describe a role in the UI ('chevron-right', 'trash', 'tab-home').
+ *  - Interface names describe a role in the UI ('chevron-right', 'trash').
  */
 export const HUGEICONS = {
   // Stored names (category / account icons) — persisted, never rename.
@@ -397,10 +393,6 @@ export const HUGEICONS = {
   'sparkle': SparklesIcon,
   'squares-four': GridViewIcon,
   'streak': Flame,
-  'tab-accounts': Wallet03Icon,
-  'tab-analytics': Analytics01Icon,
-  'tab-home': Home05Icon,
-  'tab-settings': Settings02Icon,
   'theme-dark': Moon02Icon,
   'theme-light': Sun03Icon,
   'tick': Tick02Icon,

@@ -1,9 +1,9 @@
-import { Text } from './Text';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { Icon } from './Icon';
-import { useTranslation } from 'react-i18next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleProp, View, ViewStyle } from 'react-native';
+import { Icon } from './Icon';
+import { Text } from './Text';
 
 type TrendBadgeProps = {
   /** Percentage change, e.g. 12.4 or -8. `null` renders nothing. */

@@ -11,7 +11,7 @@ import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Tab indices matching _layout.tsx order: 0=index, 1=accounts, 2=analytics, 3=settings
-const TAB_ICONS: IconSource[] = ['tab-home', 'tab-accounts', 'tab-analytics', 'tab-settings'];
+const TAB_ICONS: IconSource[] = ['home', 'wallet-stack', 'bar-chart', 'settings'];
 const LEFT_INDICES = [0, 1];
 const RIGHT_INDICES = [2, 3];
 

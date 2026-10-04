@@ -1,12 +1,11 @@
+import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { formatCurrency } from '@/src/utils/format';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { IconSource } from './Icon';
-import { IconAvatar } from './IconAvatar';
+import { Icon, type IconSource } from './Icon';
 import { MoneyText } from './MoneyText';
 import { Text } from './Text';
-import { formatCurrency } from '@/src/utils/format';
 import { TrendBadge } from './TrendBadge';
 
 type Props = {
@@ -38,14 +37,15 @@ export const NetFlowGrid = React.memo(function NetFlowGrid({ income, expense, cu
   const flow = (icon: IconSource, tint: string, label: string, amount: number, delta: number | null, positiveIsGood: boolean) => (
     <View style={styles.flow}>
       <View style={styles.flowHead}>
-        <IconAvatar icon={icon} color={tint} size={24} iconSize={12} weight="bold" />
+        <Icon name={icon} color={tint} size={12} weight="bold" />
         <Text variant="caption" tone="muted" numberOfLines={1} style={styles.shrink}>
           {label}
         </Text>
+        <TrendBadge delta={delta} positiveIsGood={positiveIsGood} style={styles.trendBadge} />
       </View>
       <View style={[styles.flowValue, badgesBelow && styles.flowValueStacked]}>
         <MoneyText amount={amount} currency={currency} weight="semibold" style={styles.flowAmount} maxChars={13} />
-        <TrendBadge delta={delta} positiveIsGood={positiveIsGood} />
+
       </View>
     </View>
   );
@@ -107,4 +107,5 @@ const createStyles = ({ colors, spacing, radius, typography, alpha }: ThemeConte
     shrink: { flex: 1, minWidth: 0 },
     flowAmount: { ...typography.metrics.lg, flexShrink: 0 },
     divider: { height: StyleSheet.hairlineWidth, backgroundColor: alpha(colors.text, 'subtle') },
+    trendBadge: { paddingHorizontal: spacing('0.5')},
   });
