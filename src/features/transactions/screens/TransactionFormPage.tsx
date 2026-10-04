@@ -15,7 +15,7 @@ import { PersonPickerBottomSheet } from '@/src/features/persons/components/Perso
 import { usePersons } from '@/src/features/persons/hooks/persons';
 import { useCreateTransaction, useTransactionById, useUpdateTransaction } from '@/src/features/transactions/hooks/transactions';
 import { useLoanWithStats } from '@/src/features/loans/hooks/loans';
-import { colorNumberToHex, formatDate } from '@/src/utils/format';
+import { colorNumberToHex, formatCurrency, formatDate } from '@/src/utils/format';
 import { format } from 'date-fns';
 import { TransactionType } from '@/src/types';
 import { AnalyticsService } from '@/src/services/analytics';
@@ -24,7 +24,6 @@ import { repaymentType } from '@/src/features/transactions/utils/ledger';
 import type { AccountType } from '@/src/types';
 import { useTranslation } from 'react-i18next';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
-import { formatCurrency } from '@/src/utils/format';
 import { parseAmountInput } from '@/src/utils/amount';
 
 type Props = {
