@@ -19,6 +19,7 @@ import {
   TextInputDialog,
 } from '@/src/components/ui';
 import type { IconSource } from '@/src/components/ui';
+import { PrivacySheet } from '@/src/features/settings/components/PrivacySheet';
 import { DEFAULT_CURRENCY, getCurrencySymbol } from '@/src/constants/currency';
 import { useBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
@@ -44,7 +45,7 @@ const THEME_OPTIONS: { label: 'light' | 'dark' | 'followSystem'; value: ThemeVal
   { label: 'followSystem', value: 'system', icon: 'circle-half' },
 ];
 
-type Sheet = 'currency' | 'theme' | 'language' | 'name' | 'reset' | 'time' | null;
+type Sheet = 'currency' | 'theme' | 'language' | 'name' | 'reset' | 'time' | 'privacy' | null;
 
 const LANGUAGE_SNAP_POINTS = ['70%'];
 
@@ -173,6 +174,16 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
             onClose={closeSheet}
             value={currency}
             onChange={(code) => void updateProfile({ defaultCurrency: code })}
+          />
+          <PrivacySheet
+            visible={sheet === 'privacy'}
+            onClose={closeSheet}
+            onOpenPolicy={() => {
+              closeSheet();
+              openWebPage(privacyUrl, t('settings.privacyTitle'));
+            }}
+            shareUsageData={profile.shareUsageData}
+            onShareUsageDataChange={(value) => void updateProfile({ shareUsageData: value })}
           />
           <OptionsDialog visible={sheet === 'theme'} onClose={closeSheet} title={t('settings.appTheme')} options={themeOptions} />
           <OptionsBottomSheet
@@ -328,15 +339,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       </ListGroup>
 
       <ListGroup title={t('settings.about')}>
-        <ListItem
-          icon="chart-line-data"
-          iconColor={colors.textMuted}
-          title={t('settings.shareUsageData')}
-          subtitle={t('settings.shareUsageDataHint')}
-          switchValue={profile.shareUsageData}
-          onSwitchChange={(value) => void updateProfile({ shareUsageData: value })}
-        />
-        <ListItem icon="shield-check" iconColor={colors.textMuted} title={t('settings.privacy')} onPress={() => openWebPage(privacyUrl, t('settings.privacyTitle'))} />
+        <ListItem icon="shield-check" iconColor={colors.textMuted} title={t('settings.privacy')} onPress={() => setSheet('privacy')} />
         <ListItem icon="file-text" iconColor={colors.textMuted} title={t('settings.terms')} onPress={() => openWebPage(termsUrl, t('settings.termsTitle'))} />
       </ListGroup>
 

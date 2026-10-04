@@ -65,6 +65,11 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
 
   const [stepIndex, setStepIndex] = React.useState(0);
   const currentStep = ONBOARDING_STEPS[stepIndex];
+  // Each step starts at its title, not wherever the previous one was scrolled to.
+  const scrollRef = React.useRef<ScrollView>(null);
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ y: 0, animated: false });
+  }, [stepIndex]);
   const [cloudBackupChoice, setCloudBackupChoice] = React.useState<CloudBackupChoice>('enable');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
@@ -509,6 +514,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
           )}
 
           <ScrollView
+            ref={scrollRef}
             contentContainerStyle={[styles.scrollContent, isWelcome && styles.scrollContentWelcome]}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
