@@ -1,5 +1,6 @@
 import * as Localization from 'expo-localization';
 import i18n, { getIntlLocale } from '@/src/i18n';
+import { getCurrencySymbol } from '@/src/constants/currency';
 import { parseAmountInput } from '@/src/utils/amount';
 
 /** A typed amount as a number, 0 when blank or unreadable. See parseAmountInput for the rules. */
@@ -22,6 +23,14 @@ export const colorNumberToHex = (value: number): string =>
 export const withAlpha = (color: string, hexAlpha: string): string =>
   `${color}${hexAlpha}`;
 
+
+/**
+ * Intl decides the layout (where the sign, symbol, separators and spaces go for the app's
+ * language); the symbol itself always comes from getCurrencySymbol. Left to Intl, the same rupee
+ * reads ₹ in one language, "INR" in another, and "US$" or a bare code on Hermes' reduced Intl.
+ */
+const joinWithAppSymbol = (parts: Intl.NumberFormatPart[], currencyCode: string): string =>
+  parts.map((part) => (part.type === 'currency' ? getCurrencySymbol(currencyCode) : part.value)).join('');
 
 const COMPACT_TIERS: { limit: number; suffix: string }[] = [
   { limit: 1e12, suffix: 'T' },
@@ -51,7 +60,7 @@ const formatCompactCurrency = (amount: number, locale: string, currencyCode: str
     maximumFractionDigits: 1,
   }).formatToParts(scaled);
 
-  if (!tier) return parts.map((part) => part.value).join('');
+  if (!tier) return joinWithAppSymbol(parts, currencyCode);
 
   const NUMERIC = new Set(['integer', 'group', 'decimal', 'fraction']);
   let lastDigit = -1;
@@ -59,9 +68,10 @@ const formatCompactCurrency = (amount: number, locale: string, currencyCode: str
     if (NUMERIC.has(part.type)) lastDigit = i;
   });
 
-  return parts
-    .map((part, i) => (i === lastDigit ? `${part.value}${tier.suffix}` : part.value))
-    .join('');
+  return joinWithAppSymbol(
+    parts.map((part, i) => (i === lastDigit ? { ...part, value: `${part.value}${tier.suffix}` } : part)),
+    currencyCode,
+  );
 };
 
 /**
@@ -98,12 +108,11 @@ export const formatCurrency = (amount: number, currencyCode?: string, compact?: 
     if (compact) {
       return formatCompactCurrency(amount, locale, currencyCode.toUpperCase());
     }
-    return new Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency: currencyCode.toUpperCase(),
-    }).format(amount);
+    const code = currencyCode.toUpperCase();
+    return joinWithAppSymbol(new Intl.NumberFormat(locale, { style: 'currency', currency: code }).formatToParts(amount), code);
   } catch {
-    return `${currencyCode.toUpperCase()} ${amount.toFixed(2)}`;
+    // A code Intl doesn't know: still the app's symbol, with plain two-decimal digits.
+    return `${getCurrencySymbol(currencyCode)} ${amount.toFixed(2)}`;
   }
 };
 

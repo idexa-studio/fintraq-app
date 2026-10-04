@@ -1,7 +1,7 @@
 import { alpha } from '@/src/theme/tokens';
 import { Text } from '@/src/components/ui/Text';
 import { CalculatorIcon } from '@/src/components/ui/icons';
-import { CURRENCIES } from '@/src/constants/currency';
+import { getCurrencySymbol } from '@/src/constants/currency';
 import { Icon } from '@/src/components/ui/Icon';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
 
   const [showCalc, setShowCalc] = useState(false);
   // Show the symbol people recognise (₹, $, €); fall back to the code.
-  const symbol = useMemo(() => CURRENCIES.find((c) => c.code === currency)?.symbol ?? currency, [currency]);
+  const symbol = getCurrencySymbol(currency);
 
   const handleChange = useCallback((v: string) => onChange(v), [onChange]);
   const handleCalcConfirm = useCallback((v: string) => onChange(v), [onChange]);

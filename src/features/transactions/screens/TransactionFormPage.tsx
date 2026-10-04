@@ -24,6 +24,7 @@ import { repaymentType } from '@/src/features/transactions/utils/ledger';
 import type { AccountType } from '@/src/types';
 import { useTranslation } from 'react-i18next';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
+import { formatCurrency } from '@/src/utils/format';
 import { parseAmountInput } from '@/src/utils/amount';
 
 type Props = {
@@ -222,7 +223,7 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
     if (isRepayment && loan && editingTransaction) {
       const maxAllowed = loan.outstanding + editingTransaction.amount;
       if (amountValue > maxAllowed) {
-        showAlert({ title: t('transactions.repaymentExceeds'), message: t('transactions.repaymentExceedsMessage', { currency: loan.currency, max: maxAllowed.toFixed(2), outstanding: loan.outstanding.toFixed(2), current: editingTransaction.amount.toFixed(2) }), type: 'warning' });
+        showAlert({ title: t('transactions.repaymentExceeds'), message: t('transactions.repaymentExceedsMessage', { max: formatCurrency(maxAllowed, loan.currency), outstanding: formatCurrency(loan.outstanding, loan.currency), current: formatCurrency(editingTransaction.amount, loan.currency) }), type: 'warning' });
         return;
       }
     }
