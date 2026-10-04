@@ -30,7 +30,7 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
 
   return (
     <View style={[styles.container, disabled && styles.containerDisabled]}>
-      <View style={styles.segmentContainer}>
+      <View style={styles.segmentContainer} accessibilityRole="tablist">
         <BentoPressable
           style={[
             styles.segmentButton,
@@ -39,6 +39,8 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           ]}
           onPress={handleDR}
           disabled={disabled}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: value === 'DR', disabled }}
         >
           <View style={styles.contentRow}>
             <Icon
@@ -60,6 +62,8 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           ]}
           onPress={handleCR}
           disabled={disabled}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: value === 'CR', disabled }}
         >
           <View style={styles.contentRow}>
             <Icon
@@ -81,6 +85,8 @@ export const TransactionTypePicker = React.memo(function TransactionTypePicker({
           ]}
           onPress={handleTR}
           disabled={disabled}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: value === 'TR', disabled }}
         >
           <View style={styles.contentRow}>
             <Icon

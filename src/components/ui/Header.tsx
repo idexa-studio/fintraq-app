@@ -44,7 +44,7 @@ export const Header = React.memo(function Header({
           </BentoPressable>
         )}
         <View style={styles.titleBlock}>
-          <Text style={styles.title} numberOfLines={1}>
+          <Text style={styles.title} numberOfLines={1} accessibilityRole="header">
             {title}
           </Text>
         </View>

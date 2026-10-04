@@ -24,7 +24,7 @@ const createStyles = ({ heroCard, spacing, radius }: ThemeContextType) =>
     card: {
       backgroundColor: heroCard.background,
       borderRadius: radius('2xl'),
-      padding: spacing('5'),
+      padding: spacing('4'),
       gap: spacing('4'),
       overflow: 'hidden',
     },

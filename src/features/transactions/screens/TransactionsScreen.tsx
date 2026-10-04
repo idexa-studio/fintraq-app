@@ -34,7 +34,7 @@ const paramToNumber = (value: string | string[] | undefined): number | null => {
 };
 
 export const TransactionsScreen = React.memo(function TransactionsScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
@@ -63,7 +63,8 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   const deleteTransaction = useDeleteTransaction();
 
   const transactions = useMemo(() => txQuery.data?.pages.flat() ?? [], [txQuery.data?.pages]);
-  const sections = useMemo(() => groupByDay(transactions), [transactions]);
+  // Titles are formatted in the app language, so a language change re-groups.
+  const sections = useMemo(() => groupByDay(transactions), [transactions, i18n.language]); // eslint-disable-line react-hooks/exhaustive-deps
   const summary = useTransactionSummary(dbTotals, profile.defaultCurrency);
 
   const [showFilterSheet, setShowFilterSheet] = useState(false);

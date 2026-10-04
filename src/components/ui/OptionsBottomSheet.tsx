@@ -76,6 +76,9 @@ export const OptionsBottomSheet = React.memo(function OptionsBottomSheet({
                 style={[styles.opt, selected && styles.optSelected]}
                 onPress={() => handleOptionPress(opt)}
                 scaleOnPress={false}
+                accessibilityRole="button"
+                accessibilityState={{ selected }}
+                accessibilityLabel={opt.label}
               >
                 {opt.icon ? (
                   <Icon

@@ -55,7 +55,8 @@ const createStyles = ({ spacing, layout }: ThemeContextType) =>
       marginTop: spacing('6'),
       marginBottom: spacing('3'),
     },
-    noPadding: { paddingHorizontal: 0 },
+    // Flush headers live in stacked layouts whose own gap spaces the sections; a top margin would double it.
+    noPadding: { paddingHorizontal: 0, marginTop: 0 },
     title: { flexShrink: 1 },
     link: { flexDirection: 'row', alignItems: 'center', gap: spacing('0.5'), height: 28 },
   });

@@ -69,6 +69,7 @@ export const Chip = React.memo(function Chip({
     <BentoPressable
       style={containerStyle}
       onPress={handlePress}
+      hitSlop={4}
       accessibilityRole="button"
       accessibilityState={{ selected: isActive }}
     >

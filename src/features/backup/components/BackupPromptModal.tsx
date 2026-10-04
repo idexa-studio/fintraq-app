@@ -47,7 +47,7 @@ export const BackupPromptModal = React.memo(function BackupPromptModal({
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
+        <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.close')} />
 
         <View style={styles.card}>
           <View style={styles.header}>

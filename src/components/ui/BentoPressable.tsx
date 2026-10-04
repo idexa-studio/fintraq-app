@@ -26,6 +26,8 @@ export const BentoPressable = React.memo(function BentoPressable({
   opacityOnPress = false,
   overflow = 'hidden',
   disabled,
+  accessibilityRole,
+  accessibilityState,
   ...pressableProps
 }: BentoPressableProps) {
   const { state: stateTokens } = useTheme();
@@ -44,7 +46,14 @@ export const BentoPressable = React.memo(function BentoPressable({
   );
 
   return (
-    <Pressable style={getPressableStyle} disabled={disabled} {...pressableProps}>
+    // Tappable means a button to screen readers unless the caller says otherwise (tab, radio, link…).
+    <Pressable
+      style={getPressableStyle}
+      disabled={disabled}
+      accessibilityRole={accessibilityRole ?? (pressableProps.onPress || pressableProps.onLongPress ? 'button' : undefined)}
+      accessibilityState={disabled ? { ...accessibilityState, disabled: true } : accessibilityState}
+      {...pressableProps}
+    >
       {children}
     </Pressable>
   );

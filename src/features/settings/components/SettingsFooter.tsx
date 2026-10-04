@@ -24,7 +24,7 @@ export const SettingsFooter = React.memo(function SettingsFooter() {
   }, [router]);
 
   return (
-    <Pressable onPress={onPress} hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }} style={[styles.footer, { gap: spacing('1'), paddingVertical: spacing('4') }]}>
+    <Pressable onPress={onPress} accessibilityRole="text" hitSlop={{ top: 12, bottom: 12, left: 24, right: 24 }} style={[styles.footer, { gap: spacing('1'), paddingVertical: spacing('4') }]}>
       <Text variant="label" tone="muted">
         Fintraq / Core
       </Text>

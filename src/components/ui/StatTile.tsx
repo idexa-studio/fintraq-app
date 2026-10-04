@@ -56,14 +56,14 @@ export const StatTile = React.memo(function StatTile({
             <Icon name={icon} size={13} color={iconColor ?? theme.colors.textMuted} weight="bold" />
           </View>
         ) : null}
-        <Text variant="label" tone="muted" numberOfLines={1} style={styles.label}>{label}</Text>
+        <Text variant="label" tone="muted" numberOfLines={2} style={styles.label}>{label}</Text>
       </View>
       {amount !== undefined ? (
         <MoneyText amount={amount} currency={currency} type={type} compact={compact} style={styles.value} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} />
       ) : (
         <Text variant="amountLarge" numberOfLines={1}>{value ?? '—'}</Text>
       )}
-      {caption ? <Text variant="caption" tone="muted" numberOfLines={1}>{caption}</Text> : null}
+      {caption ? <Text variant="caption" tone="muted" numberOfLines={2}>{caption}</Text> : null}
       {delta !== undefined ? <TrendBadge delta={delta} positiveIsGood={positiveIsGood} /> : null}
     </>
   );
@@ -86,8 +86,8 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
       borderRadius: radius('xl'),
       backgroundColor: colors.surface,
     },
-    header: { flexDirection: 'row', alignItems: 'center', gap: spacing('2'), marginBottom: spacing('1') },
+    header: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing('2'), marginBottom: spacing('1') },
     iconDot: { width: 24, height: 24, borderRadius: radius('full'), alignItems: 'center', justifyContent: 'center' },
-    label: { flexShrink: 1 },
+    label: { flexShrink: 1, paddingTop: 4 },
     value: { ...typography.variants.amountLarge },
   });

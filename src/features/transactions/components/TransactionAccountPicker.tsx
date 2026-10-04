@@ -47,6 +47,9 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
                 { backgroundColor: selected ? alpha(accColor, 'subtle') : colors.surface },
               ]}
               onPress={() => handleSelect(acc.id)}
+              accessibilityRole="radio"
+              accessibilityState={{ selected }}
+              accessibilityLabel={`${acc.name}, ${acc.currency}`}
               overflow="visible"
             >
               <IconAvatar

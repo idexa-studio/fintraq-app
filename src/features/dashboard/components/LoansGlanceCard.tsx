@@ -53,7 +53,7 @@ export const LoansGlanceCard = React.memo(function LoansGlanceCard({ currency, o
         {tiles.map((tile) => (
           <BentoPressable key={tile.key} style={styles.tile} onPress={onPress} accessibilityRole="button" accessibilityLabel={tile.label}>
             <View style={styles.tileHeader}>
-              <Text variant="label" color={tile.color} numberOfLines={1} style={styles.flex}>
+              <Text variant="label" color={tile.color} numberOfLines={2} style={styles.label}>
                 {tile.label}
               </Text>
               {tile.overdue > 0 ? <Badge label={t('dashboard.overdue', { count: tile.overdue })} color={colors.danger} /> : null}
@@ -80,7 +80,8 @@ const createStyles = ({ colors, spacing, radius, layout, typography }: ThemeCont
       padding: spacing('4'),
       gap: spacing('1.5'),
     },
-    tileHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
-    flex: { flexShrink: 1 },
+    // Wraps so a long label (Tamil, German) pushes the overdue badge to the next line instead of truncating.
+    tileHeader: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: spacing('1.5') },
+    label: { flexShrink: 1 },
     tileAmount: { ...typography.metrics.xl },
   });

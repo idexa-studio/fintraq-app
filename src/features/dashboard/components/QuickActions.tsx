@@ -51,7 +51,7 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
           <View style={styles.iconTile}>
             <Icon name={action.icon} size={18} color={colors.primaryInk} weight="bold" />
           </View>
-          <Text variant="label" numberOfLines={1}>
+          <Text variant="label" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
             {action.label}
           </Text>
         </BentoPressable>
