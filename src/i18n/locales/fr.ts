@@ -127,8 +127,12 @@ const fr: Translation = {
   editEntry: "Modifier l'entrée", newEntry: 'Nouvelle entrée', fromAccount: 'Compte source', toAccount: 'Compte de destination', noCompatible: 'Aucun compte compatible pour ce virement.', linkedPerson: 'Personne liée', unknown: 'Inconnu', noPersonLinked: 'Aucune personne liée', time: 'Heure', note: 'Note', optionalContext: 'Contexte facultatif', saveChanges: 'Enregistrer les modifications', saveTransaction: 'Enregistrer la transaction', none: 'Aucune',
   addedOn: 'Ajouté le {{date}}', detailTitle: 'Transaction', notFound: 'Transaction introuvable.', detailDeleteTitle: 'Supprimer la transaction', detailDeleteMessage: "Cela annulera l'effet sur le solde et est irréversible.", from: 'De', to: 'Vers', created: 'Créée', cancel: 'Annuler' },
   onboardingFlow: {
+    balanceHint: 'Ce qu\'il contient maintenant. Ensuite, les opérations le tiennent à jour.', entryNote: 'Note (facultatif)', entryNotePlaceholder: 'ex. Déjeuner avec l\'équipe', balanceAfter: '{{account}} ensuite',
+    accountNameRequired: 'Donne un nom au compte', invalidAmount: 'Ce montant ne semble pas correct', entryAmountRequired: 'Saisis un montant ou passe pour l\'instant', addEntry: 'Ajouter', skipForNow: 'Passer pour l\'instant',
     getStarted: 'Commencer', restoreFromBackup: 'Restaurer une sauvegarde', welcomeSubtitle: 'Suivez dépenses, revenus et prêts dans un espace calme et privé. La configuration prend moins d’une minute.',
     steps: {
+      account: { eyebrow: 'Ton premier compte', title: 'Où est ton argent ?', subtitle: 'Commence avec un compte : espèces, banque ou carte. Tu pourras en ajouter d\'autres à tout moment.' },
+      first_entry: { eyebrow: 'Essaie', title: 'Saisis ta première opération.', subtitle: 'Quelle est ta dernière dépense ou rentrée ? Ajoute-la maintenant et vois comment l\'appli tient les comptes.' },
       welcome: { eyebrow: 'Premiers pas', title: 'Construisez votre cockpit financier.', subtitle: 'Une configuration sereine avec des réglages complets et un compte initial propre.' },
       setup_choice: { eyebrow: 'Mode de configuration', title: 'Comment souhaitez-vous commencer ?', subtitle: 'Commencez avec un espace neuf ou restaurez une sauvegarde Google Drive existante.' },
       profile: { eyebrow: 'Votre profil', title: 'Parlez-nous de vous.', subtitle: 'Indiquez votre nom et votre devise par défaut pour personnaliser votre espace.' },

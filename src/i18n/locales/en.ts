@@ -125,8 +125,12 @@ const en = {
   editEntry: 'Edit entry', newEntry: 'New entry', fromAccount: 'From account', toAccount: 'To account', noCompatible: 'No compatible accounts for this transfer.', linkedPerson: 'Linked person', unknown: 'Unknown', noPersonLinked: 'No person linked', time: 'Time', note: 'Note', optionalContext: 'Optional context', saveChanges: 'Save changes', saveTransaction: 'Save transaction', none: 'None',
   addedOn: 'Added {{date}}', detailTitle: 'Transaction', notFound: 'Transaction not found.', detailDeleteTitle: 'Delete transaction', detailDeleteMessage: 'This will reverse the balance impact and cannot be undone.', from: 'From', to: 'To', created: 'Created', cancel: 'Cancel' },
   onboardingFlow: {
+    balanceHint: 'What it holds right now. From here on, transactions keep it up to date.', entryNote: 'Note (optional)', entryNotePlaceholder: 'e.g. Lunch with the team', balanceAfter: '{{account}} after this',
+    accountNameRequired: 'Give the account a name', invalidAmount: 'That amount doesn\'t look right', entryAmountRequired: 'Enter an amount, or skip for now', addEntry: 'Add entry', skipForNow: 'Skip for now',
     getStarted: 'Get started', restoreFromBackup: 'Restore from backup', welcomeSubtitle: 'Track spending, income and loans in one calm, private place. Setup takes under a minute.',
     steps: {
+      account: { eyebrow: 'Your first account', title: 'Where does your money live?', subtitle: 'Start with one account — cash, bank or card. You can add more anytime.' },
+      first_entry: { eyebrow: 'Try it', title: 'Log your first entry.', subtitle: 'What did you last spend or earn? Add it now and see how the app keeps score.' },
       welcome: { eyebrow: 'Getting started', title: 'Build your finance cockpit.', subtitle: 'A calm setup flow with complete defaults and clean account bootstrap.' },
       setup_choice: { eyebrow: 'Setup mode', title: 'How would you like to start?', subtitle: 'Start with a fresh workspace or restore an existing Google Drive backup.' },
       profile: { eyebrow: 'Your profile', title: 'Tell us about you.', subtitle: 'Set your name and default currency to personalise your workspace.' },

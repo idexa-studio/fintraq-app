@@ -127,8 +127,12 @@ const hi: Translation = {
   editEntry: 'एंट्री संपादित करें', newEntry: 'नई एंट्री', fromAccount: 'किस खाते से', toAccount: 'किस खाते में', noCompatible: 'इस ट्रांसफ़र के लिए कोई उपयुक्त खाता नहीं।', linkedPerson: 'जुड़ा व्यक्ति', unknown: 'अज्ञात', noPersonLinked: 'कोई व्यक्ति नहीं जुड़ा', time: 'समय', note: 'नोट', optionalContext: 'वैकल्पिक जानकारी', saveChanges: 'बदलाव सहेजें', saveTransaction: 'लेन-देन सहेजें', none: 'कोई नहीं',
   addedOn: '{{date}} को जोड़ा गया', detailTitle: 'लेन-देन', notFound: 'लेन-देन नहीं मिला।', detailDeleteTitle: 'लेन-देन हटाएँ', detailDeleteMessage: 'इससे बैलेंस पर असर पलट जाएगा और यह वापस नहीं हो सकता।', from: 'से', to: 'को', created: 'बनाया गया', cancel: 'रद्द करें' },
   onboardingFlow: {
+    balanceHint: 'इसमें अभी कितना है। आगे से लेनदेन इसे अपडेट रखेंगे।', entryNote: 'नोट (वैकल्पिक)', entryNotePlaceholder: 'जैसे टीम के साथ लंच', balanceAfter: 'इसके बाद {{account}}',
+    accountNameRequired: 'खाते को एक नाम दें', invalidAmount: 'यह राशि सही नहीं लग रही', entryAmountRequired: 'राशि डालें, या अभी छोड़ें', addEntry: 'एंट्री जोड़ें', skipForNow: 'अभी छोड़ें',
     getStarted: 'शुरू करें', restoreFromBackup: 'बैकअप से बहाल करें', welcomeSubtitle: 'खर्च, आय और लोन एक शांत, निजी जगह पर ट्रैक करें। सेटअप में एक मिनट से भी कम लगता है।',
     steps: {
+      account: { eyebrow: 'आपका पहला खाता', title: 'आपका पैसा कहाँ रहता है?', subtitle: 'एक खाते से शुरू करें — नकद, बैंक या कार्ड। आप कभी भी और जोड़ सकते हैं।' },
+      first_entry: { eyebrow: 'आज़माएँ', title: 'अपनी पहली एंट्री जोड़ें।', subtitle: 'आपने आख़िरी बार क्या खर्च किया या कमाया? अभी जोड़ें और देखें ऐप कैसे हिसाब रखता है।' },
       welcome: { eyebrow: 'शुरुआत', title: 'अपना फ़ाइनेंस कॉकपिट बनाएँ।', subtitle: 'सरल सेटअप, पूरे डिफ़ॉल्ट और साफ़ खाता शुरुआत के साथ।' },
       setup_choice: { eyebrow: 'सेटअप मोड', title: 'आप कैसे शुरू करना चाहेंगे?', subtitle: 'नया वर्कस्पेस शुरू करें या मौजूदा Google Drive बैकअप रिस्टोर करें।' },
       profile: { eyebrow: 'आपकी प्रोफ़ाइल', title: 'हमें अपने बारे में बताएँ।', subtitle: 'वर्कस्पेस को अपना बनाने के लिए नाम और डिफ़ॉल्ट मुद्रा चुनें।' },

@@ -9,12 +9,18 @@ import { ACCOUNT_COLORS } from '@/src/constants/picker';
 import { DEFAULT_CATEGORIES } from '@/src/constants/defaultCategories';
 import { useCreateAccount } from '@/src/features/accounts/hooks/accounts';
 import { db } from '@/src/db/client';
-import { accounts, categories } from '@/src/db/schema';
+import { accounts, categories, payments } from '@/src/db/schema';
+import { and, eq } from 'drizzle-orm';
+import { parseAmountInput } from '@/src/utils/amount';
+import { resolveAccountTypeIcon } from '@/src/utils/icons';
 import { RestoreProgressView } from '@/src/features/onboarding/components/RestoreProgressView';
 import { ProfileStep } from '@/src/features/onboarding/components/ProfileStep';
 import { WelcomeStep } from '@/src/features/onboarding/components/WelcomeStep';
-import { ONBOARDING_STEPS } from '@/src/features/onboarding/constants';
-import { OnboardingFormValues } from '@/src/features/onboarding/types';
+import { AccountStep } from '@/src/features/onboarding/components/AccountStep';
+import { FirstEntryStep } from '@/src/features/onboarding/components/FirstEntryStep';
+import { FIRST_ENTRY_CATEGORIES, ONBOARDING_STEPS } from '@/src/features/onboarding/constants';
+import type { OnboardingAccountDraft, OnboardingEntryDraft, OnboardingFormValues } from '@/src/features/onboarding/types';
+import { useCreateTransaction } from '@/src/features/transactions/hooks/transactions';
 import { useOnboarding } from '@/src/providers/OnboardingProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -48,6 +54,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const { completeOnboarding } = useOnboarding();
   const { profile, updateProfile } = useSettings();
   const { mutateAsync: createAccount, isPending: accountPending } = useCreateAccount();
+  const { mutateAsync: createTransaction } = useCreateTransaction();
   const { account: user, isConnected } = useBackupAccount();
   const { mutateAsync: connectAccount, isPending: isConnectingAccount } = useConnectBackupAccount();
   const { mutateAsync: disconnectAccount } = useDisconnectBackupAccount();
@@ -64,6 +71,12 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
   const [currency, setCurrency] = React.useState<string>(() => getDeviceCurrencyCode());
   const [showCurrencyPicker, setShowCurrencyPicker] = React.useState(false);
   const [showReminderDialog, setShowReminderDialog] = React.useState(false);
+
+  // The first account and first entry are drafted across steps and written when setup finishes.
+  const [accountDraft, setAccountDraft] = React.useState<OnboardingAccountDraft>(() => ({ type: 'cash', name: t('accounts.cash'), balance: '', nameEdited: false }));
+  const [entryDraft, setEntryDraft] = React.useState<OnboardingEntryDraft>({ type: 'DR', amount: '', category: FIRST_ENTRY_CATEGORIES.DR[0], note: '' });
+  const [entrySkipped, setEntrySkipped] = React.useState(false);
+  const [stepErrors, setStepErrors] = React.useState<{ accountName?: string; balance?: string; amount?: string }>({});
 
   const [alertConfig, setAlertConfig] = React.useState<{
     visible: boolean;
@@ -127,6 +140,21 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
 
   const validateStep = async () => {
     if (currentStep.id === 'profile') return trigger('name');
+    if (currentStep.id === 'account') {
+      const errors = {
+        accountName: accountDraft.name.trim() ? undefined : t('onboardingFlow.accountNameRequired'),
+        balance: accountDraft.balance.trim() && parseAmountInput(accountDraft.balance) === null ? t('onboardingFlow.invalidAmount') : undefined,
+      };
+      setStepErrors(errors);
+      return !errors.accountName && !errors.balance;
+    }
+    if (currentStep.id === 'first_entry') {
+      const amount = parseAmountInput(entryDraft.amount);
+      const error = amount && amount > 0 ? undefined : t('onboardingFlow.entryAmountRequired');
+      setStepErrors({ amount: error });
+      if (!error) setEntrySkipped(false);
+      return !error;
+    }
     return true;
   };
 
@@ -166,23 +194,51 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       // duplicate the "Cash" account on retry. Real failures below are
       // intentionally NOT swallowed: without a default account or categories
       // the app is unusable, so onboarding must not be marked complete.
-      const existingAccounts = await db.select({ id: accounts.id }).from(accounts).limit(1);
-      if (existingAccounts.length === 0) {
-        await createAccount({
-          name: 'Cash',
-          holderName: name.trim() || 'Personal',
-          accountNumber: '',
-          icon: 'building',
-          color: toDbColor(ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)]),
-          isDefault: true,
-          currency,
-          balance: 0,
-          income: 0,
-          expense: 0,
-        });
-      }
-
+      // Categories first: the first entry needs one. Only create the account if none exists yet
+      // (a retried finalize after a partial failure) — accounts.name has no unique constraint, so
+      // an unguarded create would duplicate it. Real failures are NOT swallowed: without an
+      // account and categories the app is unusable, so onboarding must not be marked complete.
       await seedCategories();
+
+      const [existingAccount] = await db.select({ id: accounts.id }).from(accounts).limit(1);
+      const accountId =
+        existingAccount?.id ??
+        (
+          await createAccount({
+            name: accountDraft.name.trim(),
+            holderName: name.trim() || 'Personal',
+            accountNumber: '',
+            accountType: accountDraft.type,
+            icon: resolveAccountTypeIcon(accountDraft.type),
+            color: toDbColor(ACCOUNT_COLORS[Math.floor(Math.random() * ACCOUNT_COLORS.length)]),
+            isDefault: true,
+            currency,
+            balance: parseAmountInput(accountDraft.balance) ?? 0,
+            income: 0,
+            expense: 0,
+          })
+        ).id;
+
+      // The first entry, unless skipped — and never twice if finalize is retried.
+      const entryAmount = parseAmountInput(entryDraft.amount);
+      const [anyPayment] = await db.select({ id: payments.id }).from(payments).limit(1);
+      if (!entrySkipped && entryAmount && entryAmount > 0 && !anyPayment) {
+        const [category] = await db
+          .select({ id: categories.id })
+          .from(categories)
+          .where(and(eq(categories.name, entryDraft.category), eq(categories.type, entryDraft.type)))
+          .limit(1);
+        if (category) {
+          await createTransaction({
+            accountId,
+            categoryId: category.id,
+            amount: entryAmount,
+            type: entryDraft.type,
+            datetime: new Date().toISOString(),
+            note: entryDraft.note.trim() || entryDraft.category,
+          });
+        }
+      }
 
       await completeOnboarding();
       await AnalyticsService.onboardingCompleted();
@@ -382,6 +438,9 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
     if (stepIndex === ONBOARDING_STEPS.length - 1) {
       return t('onboardingFlow.launch');
     }
+    if (currentStep.id === 'first_entry') {
+      return t('onboardingFlow.addEntry');
+    }
     return t('onboardingFlow.next');
   }, [isButtonLoading, isRestoring, currentStep.id, cloudBackupChoice, isConnected, user, stepIndex, t]);
 
@@ -394,6 +453,19 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         return <WelcomeStep />;
       case 'profile':
         return <ProfileStep currency={currency} onOpenCurrencyPicker={openCurrencyPicker} />;
+      case 'account':
+        return <AccountStep draft={accountDraft} onChange={setAccountDraft} currency={currency} nameError={stepErrors.accountName} balanceError={stepErrors.balance} />;
+      case 'first_entry':
+        return (
+          <FirstEntryStep
+            draft={entryDraft}
+            onChange={setEntryDraft}
+            currency={currency}
+            accountName={accountDraft.name.trim()}
+            openingBalance={parseAmountInput(accountDraft.balance) ?? 0}
+            amountError={stepErrors.amount}
+          />
+        );
       case 'backup_setup':
         return (
           <CloudBackupStep
@@ -458,6 +530,20 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
               isLoading={isButtonLoading && !isRestoring}
               disabled={isRestoring}
             />
+            {currentStep.id === 'first_entry' ? (
+              <Button
+                title={t('onboardingFlow.skipForNow')}
+                onPress={() => {
+                  setEntrySkipped(true);
+                  setStepErrors({});
+                  setStepIndex((i) => i + 1);
+                }}
+                variant="ghost"
+                size="lg"
+                fullWidth
+                disabled={isButtonLoading}
+              />
+            ) : null}
             {isWelcome && !isRestoring ? (
               <Button
                 title={t('onboardingFlow.restoreFromBackup')}
