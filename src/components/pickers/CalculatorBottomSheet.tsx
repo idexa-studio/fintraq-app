@@ -215,6 +215,8 @@ export const CalculatorBottomSheet = React.memo(function CalculatorBottomSheet({
                       pressed && styles.keyPressed,
                     ]}
                     onPress={() => handlePress(key)}
+                    accessibilityRole="keyboardkey"
+                    accessibilityLabel={key}
                   >
                     <Text style={[
                       styles.keyText,

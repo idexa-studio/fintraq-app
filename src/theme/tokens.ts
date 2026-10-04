@@ -63,7 +63,7 @@ export type RadiusToken = keyof typeof RADIUS;
 // ============================================
 export const LAYOUT = {
   // Screen margins
-  screenPadding: 16,
+  screenPadding: 14,
   
   // Content max widths for readability
   maxContentWidth: 400,

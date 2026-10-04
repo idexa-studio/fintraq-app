@@ -35,6 +35,8 @@ export const CurrencySwitcher = React.memo(function CurrencySwitcher({ currencie
               onSelect(code);
             }}
             scaleOnPress={false}
+            // 28pt tall pills; the slop brings the target to the 44pt minimum.
+            hitSlop={{ top: 8, bottom: 8 }}
             accessibilityRole="tab"
             accessibilityState={{ selected: active }}
           >

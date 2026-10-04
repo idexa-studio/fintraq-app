@@ -64,6 +64,8 @@ export const PinPad = React.memo(function PinPad({
               onPress={() => handleKey(key)}
               disabled={disabled}
               scaleOnPress
+              accessibilityRole="keyboardkey"
+              accessibilityLabel={key === 'Del' ? t('ui.delKey') : key}
             >
               {key === 'Del' ? (
                 <Text style={[styles.delText, { fontFamily: typography.fonts.medium, color: colors.text }]}>

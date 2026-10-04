@@ -98,13 +98,13 @@ export const AppLogsScreen = React.memo(function AppLogsScreen() {
         <View style={styles.topActionsBar}>
           <Text style={styles.sectionLabel}>Raw Log Stream ({logCount} lines)</Text>
           <View style={styles.actionsRow}>
-            <Pressable onPress={fetchLogs} style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
+            <Pressable onPress={fetchLogs} accessibilityRole="button" style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
               <Text style={styles.actionPrimary}>Refresh</Text>
             </Pressable>
-            <Pressable onPress={handleShareLogs} style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
+            <Pressable onPress={handleShareLogs} accessibilityRole="button" style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
               <Text style={styles.actionPrimary}>Export (.txt)</Text>
             </Pressable>
-            <Pressable onPress={() => setShowClearConfirm(true)} style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
+            <Pressable onPress={() => setShowClearConfirm(true)} accessibilityRole="button" style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}>
               <Text style={styles.actionDanger}>Clear Logs</Text>
             </Pressable>
           </View>
