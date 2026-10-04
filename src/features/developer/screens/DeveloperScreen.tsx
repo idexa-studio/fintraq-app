@@ -254,7 +254,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
             visible={showSeedConfirm}
             onClose={() => setShowSeedConfirm(false)}
             title="Seed test data"
-            message="This will add 12 months of transactions to your default account. Proceed?"
+            message="This adds a year of demo transactions, six accounts, people and loans. Proceed?"
             confirmLabel="Generate"
             destructive={false}
             isLoading={isSeeding}
@@ -324,7 +324,7 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
       </ListGroup>
 
       <ListGroup title="Data & Cloud">
-        <ListItem icon="flask" iconColor={colors.primaryInk} title="Seed dummy data" subtitle="Generate 12 months of transactions, persons & loans" onPress={() => setShowSeedConfirm(true)} />
+        <ListItem icon="flask" iconColor={colors.primaryInk} title="Seed dummy data" subtitle="A year of realistic data: USD, EUR, TRY & INR accounts, people & loans" onPress={() => setShowSeedConfirm(true)} />
         <ListItem icon="cloud" iconColor={colors.primaryInk} title="Run Auto-Backup Task Now" subtitle="Trigger headless auto-backup check executor" onPress={handleRunAutoBackupTask} />
         <ListItem icon="trash" title="Delete Cloud Backup" subtitle="Permanently remove backup file from Google Drive" destructive onPress={() => setShowDeleteBackupConfirm(true)} />
       </ListGroup>
