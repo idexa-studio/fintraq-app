@@ -38,7 +38,7 @@ October 2026 rebuild (`src/services/telemetry`, see ARCHITECTURE.md → Analytic
 - Users can turn off analytics and crash reports in Settings → About → *Share usage data*; on by default. Disclose this as optional collection.
 - Ad storage, ad user data and ad personalisation consent are always denied; advertising-ID collection is disabled and the Android `com.google.android.gms.permission.AD_ID` permission is removed. Update the Play Console *Advertising ID* declaration to "No" for the build that ships this.
 - Custom events carry only enums and result bands; search text, amounts, IDs and concrete screen paths are never sent. Screen names are route templates.
-- User properties: Pro status, app language, theme and default currency.
+- User properties: Pro status, app language and default currency. `begin_checkout` carries the Pro product id and its store price.
 
 Earlier changes:
 

@@ -15,6 +15,10 @@ export interface IAPProduct {
   id: string;
   /** Fully formatted localized price string including currency symbol (e.g., "$9.99") */
   displayPrice: string;
+  /** Numeric price in `currency`, when the store provides it (used for analytics value). */
+  price?: number;
+  /** ISO 4217 code of the store price, e.g. "INR". */
+  currency?: string;
   /** Optional formatted original price for strike-through display (e.g., "$19.99") */
   originalPrice?: string;
   /** Product title from the native store */
@@ -129,6 +133,8 @@ export class IAPService {
             return {
               id: p.id,
               displayPrice: p.displayPrice || '',
+              price: typeof p.price === 'number' ? p.price : undefined,
+              currency: p.currency || undefined,
               originalPrice,
               title: p.title,
               description: p.description,

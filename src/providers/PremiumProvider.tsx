@@ -108,7 +108,6 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
   const handlePurchaseSuccess = useCallback(async (purchase: IAP.Purchase) => {
     if (purchase.productId === SKU_LIFETIME) {
       await savePremiumState({ isPremium: true });
-      Analytics.track('pro_unlocked', { method: 'purchase' });
     }
   }, [savePremiumState]);
 
@@ -243,7 +242,11 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      Analytics.track('begin_checkout', { item_id: SKU_LIFETIME });
+      const product = products.find((p) => p.id === SKU_LIFETIME);
+      Analytics.track('begin_checkout', {
+        items: [{ item_id: SKU_LIFETIME, item_name: 'Fintraq Pro (lifetime)' }],
+        ...(product?.price != null && product.currency ? { value: product.price, currency: product.currency } : {}),
+      });
       await IAP.requestPurchase({
         request: { apple: { sku: SKU_LIFETIME }, google: { skus: [SKU_LIFETIME] } },
         type: 'in-app'
@@ -254,7 +257,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
         showAlert({ title: i18n.t('premium.purchaseError'), message: i18n.t('premium.purchaseErrorMessage'), type: 'error' });
       }
     }
-  }, [isIapInitialized, showAlert]);
+  }, [isIapInitialized, products, showAlert]);
 
   const restorePurchase = useCallback(async () => {
     if (!isIapInitialized) {
@@ -269,7 +272,6 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
       if (hasLifetime) {
         await savePremiumState({ isPremium: true });
         Analytics.track('purchase_restore', { outcome: 'restored' });
-        Analytics.track('pro_unlocked', { method: 'restore' });
         showAlert({ title: i18n.t('premium.accessRestored'), message: i18n.t('premium.accessRestoredMessage'), type: 'success' });
       } else {
         Analytics.track('purchase_restore', { outcome: 'none' });

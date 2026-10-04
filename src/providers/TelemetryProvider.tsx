@@ -28,10 +28,9 @@ export function TelemetryProvider({ children }: { children: React.ReactNode }) {
     Analytics.setUserProperties({
       is_pro: isPremium ? 'true' : 'false',
       app_language: i18n.language,
-      app_theme: profile.theme,
       default_currency: profile.defaultCurrency,
     });
-  }, [allowed, isPremium, i18n.language, profile.theme, profile.defaultCurrency]);
+  }, [allowed, isPremium, i18n.language, profile.defaultCurrency]);
 
   const screenName = screenNameFromSegments(segments);
   const lastScreen = useRef<string | null>(null);

@@ -1,4 +1,5 @@
-import { isValidAnalyticsName, resultBucket, sanitizeEventParams, screenNameFromSegments } from '@/src/services/telemetry/params';
+import type { AnalyticsEventName } from '@/src/services/telemetry';
+import { isValidAnalyticsName, isValidEventName, resultBucket, sanitizeEventParams, sanitizeUserProperties, screenNameFromSegments } from '@/src/services/telemetry/params';
 
 describe('screenNameFromSegments', () => {
   it('drops route groups and keeps dynamic placeholders instead of record ids', () => {
@@ -46,5 +47,44 @@ describe('isValidAnalyticsName', () => {
 describe('resultBucket', () => {
   it('reports bands, not exact counts', () => {
     expect([0, 1, 5, 6, 20, 21, 500].map(resultBucket)).toEqual(['0', '1-5', '1-5', '6-20', '6-20', '21+', '21+']);
+  });
+});
+
+describe('isValidEventName', () => {
+  it('rejects names the SDK reserves for automatic events', () => {
+    expect(isValidEventName('first_open')).toBe(false);
+    expect(isValidEventName('in_app_purchase')).toBe(false);
+    expect(isValidEventName('session_start')).toBe(false);
+    expect(isValidEventName('transaction_saved')).toBe(true);
+  });
+
+  it('accepts every event in the catalogue', () => {
+    const catalogue: Record<AnalyticsEventName, true> = {
+      tutorial_begin: true, tutorial_complete: true, transaction_saved: true, account_saved: true, search_performed: true,
+      paywall_view: true, begin_checkout: true, purchase_restore: true, backup_created: true, backup_restored: true, data_exported: true,
+    };
+    for (const name of Object.keys(catalogue)) expect(isValidEventName(name)).toBe(true);
+  });
+});
+
+describe('sanitizeEventParams items', () => {
+  it('keeps item arrays only under `items` and cleans each item', () => {
+    expect(sanitizeEventParams({ items: [{ item_id: 'pro', bad: undefined as unknown as string }], other: [{ a: 1 }] })).toEqual({
+      items: [{ item_id: 'pro' }],
+    });
+  });
+});
+
+describe('sanitizeUserProperties', () => {
+  it('drops names over 24 chars, values over 36, empty values and SDK-reserved names', () => {
+    expect(
+      sanitizeUserProperties({
+        is_pro: 'true',
+        this_name_is_far_too_long_x: 'a',
+        app_language: 'x'.repeat(37),
+        default_currency: '',
+        first_open_time: '1',
+      }),
+    ).toEqual({ is_pro: 'true' });
   });
 });
