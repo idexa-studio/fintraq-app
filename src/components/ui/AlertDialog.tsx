@@ -1,5 +1,5 @@
 import { Dialog, DialogAction, DialogTone } from './Dialog';
-import { CheckCircleIcon, InfoIcon, WarningCircleIcon, WarningIcon } from './icons';
+import type { IconName } from './Icon';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,11 +18,11 @@ export type AlertDialogProps = {
   type?: 'info' | 'success' | 'error' | 'warning';
 };
 
-const TONE: Record<NonNullable<AlertDialogProps['type']>, { tone: DialogTone; icon: typeof InfoIcon }> = {
-  info: { tone: 'info', icon: InfoIcon },
-  success: { tone: 'success', icon: CheckCircleIcon },
-  warning: { tone: 'warning', icon: WarningIcon },
-  error: { tone: 'danger', icon: WarningCircleIcon },
+const TONE: Record<NonNullable<AlertDialogProps['type']>, { tone: DialogTone; icon: IconName }> = {
+  info: { tone: 'info', icon: 'info' },
+  success: { tone: 'success', icon: 'check-circle' },
+  warning: { tone: 'warning', icon: 'warning' },
+  error: { tone: 'danger', icon: 'warning-circle' },
 };
 
 /** Tells the user the outcome of something they did. Every button closes the dialog. */

@@ -1,4 +1,3 @@
-import { ReloadIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -86,11 +85,11 @@ export const PremiumScreen = React.memo(function PremiumScreen() {
         </Text>
         <View style={styles.perks}>
           {[
-            { key: 'oneTime', icon: ShieldKeyIcon },
-            { key: 'storeLinked', icon: ReloadIcon },
+            { key: 'oneTime', icon: 'shield-check' as const },
+            { key: 'storeLinked', icon: 'reload' as const },
           ].map((perk) => (
             <View key={perk.key} style={styles.perk}>
-              <Icon icon={perk.icon} size={14} color={heroCard.textPrimary} />
+              <Icon name={perk.icon} size={14} color={heroCard.textPrimary} />
               <Text variant="label" color={heroCard.textPrimary} numberOfLines={1} style={styles.perkText}>
                 {t(`premium.${perk.key as 'oneTime' | 'storeLinked'}`)}
               </Text>

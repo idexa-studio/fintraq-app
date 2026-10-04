@@ -1,11 +1,9 @@
-import { PencilEdit01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Button, EmptyState, IconAvatar, IconButton, MoneyText, Screen, SectionHeader, SkeletonScreen, StatColumns, Text } from '@/src/components/ui';
-import { PlusIcon, WalletIcon } from '@/src/components/ui/icons';
 import { useAccount } from '@/src/features/accounts/hooks/accounts';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTransactions } from '@/src/features/transactions/hooks/transactions';
@@ -50,7 +48,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
   if (!account) {
     return (
       <Screen header={{ title: t('accounts.account'), showBack: true }} variant="fixed" edges={['top']}>
-        <EmptyState icon={WalletIcon} title={t('accounts.notFound')} />
+        <EmptyState icon="wallet" title={t('accounts.notFound')} />
       </Screen>
     );
   }
@@ -65,7 +63,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
       header={{
         title: account.name,
         showBack: true,
-        rightAction: <IconButton icon={PencilEdit01Icon} onPress={() => router.push(`/(main)/accounts/form?id=${accountId}`)} accessibilityLabel={t('common.edit')} />,
+        rightAction: <IconButton icon="pencil-simple" onPress={() => router.push(`/(main)/accounts/form?id=${accountId}`)} accessibilityLabel={t('common.edit')} />,
       }}
       variant="fixed"
       edges={['top']}
@@ -109,7 +107,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
           />
         </View>
 
-        <Button title={t('dashboard.addTransaction')} icon={PlusIcon} variant="tonal" onPress={addTransaction} fullWidth />
+        <Button title={t('dashboard.addTransaction')} icon="plus" variant="tonal" onPress={addTransaction} fullWidth />
 
         <View>
           <SectionHeader
@@ -130,7 +128,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
               />
             ))
           ) : (
-            <EmptyState variant="inline" icon={ReceiptTextIcon} title={t('accounts.noTransactions')} description={t('accounts.transactionsHint')} />
+            <EmptyState variant="inline" icon="receipt-text" title={t('accounts.noTransactions')} description={t('accounts.transactionsHint')} />
           )}
         </View>
       </ScrollView>

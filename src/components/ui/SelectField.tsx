@@ -1,6 +1,5 @@
 import { BentoPressable } from './BentoPressable';
 import { Icon, IconSource } from './Icon';
-import { CaretRightIcon } from './icons';
 import { Text } from './Text';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import React, { useMemo } from 'react';
@@ -30,7 +29,7 @@ export const SelectField = React.memo(function SelectField({
   placeholder,
   onPress,
   leading,
-  trailingIcon = CaretRightIcon,
+  trailingIcon = 'chevron-right',
   error,
   disabled = false,
 }: SelectFieldProps) {
@@ -55,7 +54,7 @@ export const SelectField = React.memo(function SelectField({
         </Text>
         {error ? <Text variant="caption" tone="danger">{error}</Text> : null}
       </View>
-      <Icon icon={trailingIcon} size={18} color={theme.colors.textMuted} />
+      <Icon name={trailingIcon} size={18} color={theme.colors.textMuted} />
     </BentoPressable>
   );
 });

@@ -1,4 +1,3 @@
-import { ArrowRight01Icon, BatteryCharging01Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -31,9 +30,9 @@ export const AutoBackupRow = React.memo(function AutoBackupRow({ enabled, onTogg
       {/* Android OEM battery managers are the main reason scheduled work stops firing. */}
       {Platform.OS === 'android' && enabled && (
         <BentoPressable style={styles.hintRow} onPress={onReliabilityHintPress} accessibilityRole="button" accessibilityLabel={t('backup.reliabilityHint')}>
-          <Icon icon={BatteryCharging01Icon} size={12} color={theme.colors.textMuted} />
+          <Icon name="battery-charging" size={12} color={theme.colors.textMuted} />
           <Text variant="label" tone="muted">{t('backup.reliabilityHint')}</Text>
-          <Icon icon={ArrowRight01Icon} size={12} color={theme.colors.textMuted} />
+          <Icon name="chevron-right" size={12} color={theme.colors.textMuted} />
         </BentoPressable>
       )}
     </View>

@@ -6,7 +6,6 @@ import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 import { EmptyState } from '@/src/components/ui/EmptyState';
 import { Icon } from '@/src/components/ui/Icon';
-import { CheckCircleIcon, MagnifyingGlassIcon } from '@/src/components/ui/icons';
 import { SearchField } from '@/src/components/ui/SearchField';
 import { SheetHeader } from '@/src/components/ui/SheetHeader';
 import { Text } from '@/src/components/ui/Text';
@@ -101,7 +100,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
           <Text variant="bodyStrong" numberOfLines={1}>{item.name}</Text>
           <Text variant="caption" tone="muted">{item.code}</Text>
         </View>
-        {isSelected ? <Icon icon={CheckCircleIcon} size={22} color={colors.primaryInk} weight="fill" /> : null}
+        {isSelected ? <Icon name="check-circle" size={22} color={colors.primaryInk} weight="fill" /> : null}
       </BentoPressable>
     );
   }, [value, handleSelect, styles, colors, alpha]);
@@ -141,7 +140,7 @@ export const CurrencyPickerBottomSheet = React.memo(function CurrencyPickerBotto
           onScroll={bottomSheet?.onScroll}
           scrollEventThrottle={16}
           ListEmptyComponent={
-            <EmptyState icon={MagnifyingGlassIcon} title={t('ui.noMatch', { query: query.trim() })} color={colors.textMuted} />
+            <EmptyState icon="search" title={t('ui.noMatch', { query: query.trim() })} color={colors.textMuted} />
           }
         />
       </View>

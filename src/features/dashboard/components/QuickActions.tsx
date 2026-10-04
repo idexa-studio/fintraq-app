@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BentoPressable, Icon, Text } from '@/src/components/ui';
 import type { IconSource } from '@/src/components/ui';
-import { ArrowDownLeftIcon, ArrowsLeftRightIcon, ArrowUpRightIcon, HandCoinsIcon } from '@/src/components/ui/icons';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Action = { key: string; label: string; icon: IconSource; href: Href };
@@ -28,10 +27,10 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
 
   const actions = useMemo((): Action[] => {
     const all: (Action | null)[] = [
-      { key: 'expense', label: t('dashboard.quickExpense'), icon: ArrowUpRightIcon, href: '/transactions/create?type=DR' },
-      { key: 'income', label: t('dashboard.quickIncome'), icon: ArrowDownLeftIcon, href: '/transactions/create?type=CR' },
-      canTransfer ? { key: 'transfer', label: t('dashboard.quickTransfer'), icon: ArrowsLeftRightIcon, href: '/transactions/create?type=TR' } : null,
-      { key: 'loan', label: t('dashboard.quickLoan'), icon: HandCoinsIcon, href: '/(main)/loans/form' },
+      { key: 'expense', label: t('dashboard.quickExpense'), icon: 'arrow-up-right', href: '/transactions/create?type=DR' },
+      { key: 'income', label: t('dashboard.quickIncome'), icon: 'arrow-down-left', href: '/transactions/create?type=CR' },
+      canTransfer ? { key: 'transfer', label: t('dashboard.quickTransfer'), icon: 'arrows-left-right', href: '/transactions/create?type=TR' } : null,
+      { key: 'loan', label: t('dashboard.quickLoan'), icon: 'hand-coins', href: '/(main)/loans/form' },
     ];
     return all.filter((a): a is Action => a !== null);
   }, [t, canTransfer]);
@@ -49,7 +48,7 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
           accessibilityRole="button"
           accessibilityLabel={action.label}
         >
-          <Icon icon={action.icon} size={20} color={hero.income} weight="bold" />
+          <Icon name={action.icon} size={20} color={hero.income} weight="bold" />
           <Text variant="label" color={hero.textPrimary} numberOfLines={1}>
             {action.label}
           </Text>

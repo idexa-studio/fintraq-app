@@ -53,7 +53,7 @@ export const StatTile = React.memo(function StatTile({
       <View style={styles.header}>
         {icon ? (
           <View style={[styles.iconDot, { backgroundColor: theme.alpha(iconColor ?? theme.colors.textMuted, 'subtle') }]}>
-            <Icon icon={icon} size={13} color={iconColor ?? theme.colors.textMuted} weight="bold" />
+            <Icon name={icon} size={13} color={iconColor ?? theme.colors.textMuted} weight="bold" />
           </View>
         ) : null}
         <Text variant="label" tone="muted" numberOfLines={1} style={styles.label}>{label}</Text>

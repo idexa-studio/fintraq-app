@@ -1,4 +1,3 @@
-import { ArrowDown01Icon, ArrowUp01Icon, Call02Icon, Delete01Icon, Mail01Icon, PencilEdit01Icon, ReceiptTextIcon } from '@hugeicons/core-free-icons';
 import * as Linking from 'expo-linking';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -81,8 +80,8 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         showBack: true,
         rightAction: (
           <View style={styles.headerActions}>
-            <IconButton icon={Delete01Icon} variant="danger" onPress={() => setDeleteVisible(true)} accessibilityLabel={t('common.delete')} />
-            <IconButton icon={PencilEdit01Icon} onPress={() => router.push(`/(main)/persons/form?id=${personId}`)} accessibilityLabel={t('common.edit')} />
+            <IconButton icon="delete" variant="danger" onPress={() => setDeleteVisible(true)} accessibilityLabel={t('common.delete')} />
+            <IconButton icon="pencil-simple" onPress={() => router.push(`/(main)/persons/form?id=${personId}`)} accessibilityLabel={t('common.edit')} />
           </View>
         ),
       }}
@@ -105,10 +104,10 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         {person.email || person.phone ? (
           <ListGroup>
             {person.email ? (
-              <ListItem icon={Mail01Icon} iconColor={colors.info} title={person.email} subtitle={t('persons.email')} onPress={() => Linking.openURL(`mailto:${person.email}`)} />
+              <ListItem icon="mail" iconColor={colors.info} title={person.email} subtitle={t('persons.email')} onPress={() => Linking.openURL(`mailto:${person.email}`)} />
             ) : null}
             {person.phone ? (
-              <ListItem icon={Call02Icon} iconColor={colors.success} title={person.phone} subtitle={t('persons.phone')} onPress={() => Linking.openURL(`tel:${person.phone}`)} />
+              <ListItem icon="call" iconColor={colors.success} title={person.phone} subtitle={t('persons.phone')} onPress={() => Linking.openURL(`tel:${person.phone}`)} />
             ) : null}
           </ListGroup>
         ) : null}
@@ -122,8 +121,8 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
         ) : null}
 
         <View style={styles.tiles}>
-          <StatTile label={t('persons.spent')} icon={ArrowUp01Icon} iconColor={colors.danger} amount={person.totalSpent} currency={currency} type="DR" compact />
-          <StatTile label={t('persons.received')} icon={ArrowDown01Icon} iconColor={colors.success} amount={person.totalReceived} currency={currency} type="CR" compact />
+          <StatTile label={t('persons.spent')} icon="trend-up" iconColor={colors.danger} amount={person.totalSpent} currency={currency} type="DR" compact />
+          <StatTile label={t('persons.received')} icon="chevron-down" iconColor={colors.success} amount={person.totalReceived} currency={currency} type="CR" compact />
         </View>
 
         {openLoans.length > 0 ? (
@@ -136,7 +135,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
               return (
                 <ListItem
                   key={loan.id}
-                  leading={<IconAvatar icon={isLend ? ArrowUp01Icon : ArrowDown01Icon} color={isLend ? colors.success : colors.danger} size={40} />}
+                  leading={<IconAvatar icon={isLend ? 'trend-up' : 'chevron-down'} color={isLend ? colors.success : colors.danger} size={40} />}
                   title={isLend ? t('loans.lentOut') : t('loans.borrowed')}
                   subtitle={subtitle}
                   trailing={<MoneyText amount={loan.outstanding} currency={loan.currency} type={isLend ? 'CR' : 'DR'} weight="semibold" compact />}
@@ -161,7 +160,7 @@ export const PersonDetailScreen = React.memo(function PersonDetailScreen() {
               />
             ))
           ) : (
-            <EmptyState variant="inline" icon={ReceiptTextIcon} title={t('persons.noTransactionsIn', { currency })} />
+            <EmptyState variant="inline" icon="receipt-text" title={t('persons.noTransactionsIn', { currency })} />
           )}
         </View>
       </ScrollView>

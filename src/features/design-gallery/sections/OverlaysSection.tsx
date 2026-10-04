@@ -19,7 +19,6 @@ import {
 } from '@/src/components/ui';
 import { CATEGORY_ICON_GROUPS, PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { CalculatorIcon, CoinsIcon, CopyIcon, ExportIcon, PaletteIcon, PencilSimpleIcon, SquaresFourIcon, TrashIcon } from '@/src/components/ui/icons';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
@@ -78,10 +77,10 @@ export function OverlaysSection() {
       <GalleryGroup title="Pickers">
         <Specimen title="Pickers" description="Domain pickers built on BentoBottomSheet (src/components/pickers)." bare>
           <ListGroup>
-            <ListItem icon={CoinsIcon} title="CurrencyPickerBottomSheet" value={currency} onPress={() => setOpen('currency')} />
-            <ListItem icon={PaletteIcon} iconColor={color} title="ColorPickerBottomSheet" value={color} onPress={() => setOpen('color')} />
-            <ListItem icon={SquaresFourIcon} title="IconPickerBottomSheet" value={icon} onPress={() => setOpen('icon')} />
-            <ListItem icon={CalculatorIcon} title="CalculatorBottomSheet" value={amount} onPress={() => setOpen('calculator')} />
+            <ListItem icon="coins" title="CurrencyPickerBottomSheet" value={currency} onPress={() => setOpen('currency')} />
+            <ListItem icon="palette" iconColor={color} title="ColorPickerBottomSheet" value={color} onPress={() => setOpen('color')} />
+            <ListItem icon="squares-four" title="IconPickerBottomSheet" value={icon} onPress={() => setOpen('icon')} />
+            <ListItem icon="calculator" title="CalculatorBottomSheet" value={amount} onPress={() => setOpen('calculator')} />
           </ListGroup>
         </Specimen>
       </GalleryGroup>
@@ -102,10 +101,10 @@ export function OverlaysSection() {
         title="Transaction"
         subtitle="Groceries · ₹250"
         options={[
-          { key: 'edit', label: 'Edit', icon: PencilSimpleIcon, onPress: close },
-          { key: 'dup', label: 'Duplicate', icon: CopyIcon, onPress: close },
-          { key: 'share', label: 'Share', icon: ExportIcon, onPress: close },
-          { key: 'delete', label: 'Delete', icon: TrashIcon, destructive: true, onPress: close },
+          { key: 'edit', label: 'Edit', icon: 'pencil-simple', onPress: close },
+          { key: 'dup', label: 'Duplicate', icon: 'copy', onPress: close },
+          { key: 'share', label: 'Share', icon: 'export', onPress: close },
+          { key: 'delete', label: 'Delete', icon: 'trash', destructive: true, onPress: close },
         ]}
       />
 

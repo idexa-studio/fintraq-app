@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Chip, SegmentedControl, Text } from '@/src/components/ui';
-import { LockKeyIcon } from '@/src/components/ui/icons';
 import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/analytics/constants';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { AnalyticsWindow } from '@/src/utils/analytics';
@@ -49,7 +48,7 @@ export const AnalyticsControls = React.memo(function AnalyticsControls({
       ANALYTICS_RANGES.map((r) => ({
         value: String(r.days) as `${RangeDays}`,
         label: r.label,
-        icon: !isPremium && r.days !== FREE_RANGE_DAYS ? LockKeyIcon : undefined,
+        icon: !isPremium && r.days !== FREE_RANGE_DAYS ? ('lock-key' as const) : undefined,
       })),
     [isPremium],
   );

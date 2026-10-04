@@ -1,6 +1,5 @@
 import { BentoPressable } from './BentoPressable';
 import { Icon, IconSource } from './Icon';
-import { PlusIcon } from './icons';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,7 +14,7 @@ type FabProps = {
 };
 
 /** The one primary "create" action on list screens. Bottom-right, lime, flat. */
-export const Fab = React.memo(function Fab({ onPress, accessibilityLabel, icon = PlusIcon, aboveTabBar = false }: FabProps) {
+export const Fab = React.memo(function Fab({ onPress, accessibilityLabel, icon = 'plus', aboveTabBar = false }: FabProps) {
   const { colors, radius, spacing, layout } = useTheme();
   const insets = useSafeAreaInsets();
   const bottom = insets.bottom + spacing('4') + (aboveTabBar ? layout.tabBarHeight + layout.tabBarGap : 0);
@@ -37,7 +36,7 @@ export const Fab = React.memo(function Fab({ onPress, accessibilityLabel, icon =
         justifyContent: 'center',
       }}
     >
-      <Icon icon={icon} size={24} color={colors.primaryForeground} weight="bold" />
+      <Icon name={icon} size={24} color={colors.primaryForeground} weight="bold" />
     </BentoPressable>
   );
 });

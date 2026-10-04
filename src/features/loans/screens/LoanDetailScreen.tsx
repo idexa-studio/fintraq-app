@@ -1,4 +1,3 @@
-import { CheckmarkCircle01Icon, Coins02Icon, Delete01Icon, NoteIcon } from '@hugeicons/core-free-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -60,7 +59,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
       header={{
         title: isLend ? t('loans.lentToName', { name: personName }) : t('loans.borrowedFromName', { name: personName }),
         showBack: true,
-        rightAction: <IconButton icon={Delete01Icon} variant="danger" onPress={() => setDialog('delete')} accessibilityLabel={t('common.delete')} />,
+        rightAction: <IconButton icon="delete" variant="danger" onPress={() => setDialog('delete')} accessibilityLabel={t('common.delete')} />,
       }}
       variant="fixed"
       edges={['top']}
@@ -70,8 +69,8 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
 
         {isOpen ? (
           <View style={styles.actions}>
-            <Button title={t('loans.repay')} icon={Coins02Icon} onPress={() => setDialog('repay')} style={styles.action} />
-            <Button title={t('loans.markRepaid')} icon={CheckmarkCircle01Icon} variant="tonal" onPress={() => setDialog('markRepaid')} style={styles.action} />
+            <Button title={t('loans.repay')} icon="coins-stack" onPress={() => setDialog('repay')} style={styles.action} />
+            <Button title={t('loans.markRepaid')} icon="checkmark-circle" variant="tonal" onPress={() => setDialog('markRepaid')} style={styles.action} />
           </View>
         ) : null}
 
@@ -89,7 +88,7 @@ export const LoanDetailScreen = React.memo(function LoanDetailScreen() {
         {loan.note ? (
           <Card style={styles.note}>
             <View style={styles.noteLabel}>
-              <IconAvatar icon={NoteIcon} color={colors.textMuted} size={24} iconSize={12} />
+              <IconAvatar icon="note" color={colors.textMuted} size={24} iconSize={12} />
               <Text variant="label" tone="muted">
                 {t('loans.note')}
               </Text>

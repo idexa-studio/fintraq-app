@@ -3,7 +3,6 @@ import { Button } from '@/src/components/ui/Button';
 import { Text } from '@/src/components/ui/Text';
 import { Icon } from '@/src/components/ui/Icon';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { CancelCircleIcon, CheckmarkCircle01Icon, CrownIcon } from '@hugeicons/core-free-icons';
 import { HEADLINE_FEATURES, PRO_FEATURES } from '@/src/features/premium/pro-features';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
@@ -69,7 +68,7 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
           {/* ── Header ── */}
           <View style={styles.header}>
             <View style={[styles.crownBadge, { backgroundColor: alpha(colors.warning, 'subtle') }]}>
-              <Icon icon={CrownIcon} size={26} color={colors.warning} />
+              <Icon name="crown" size={26} color={colors.warning} />
             </View>
 
             <View style={styles.headerText}>
@@ -80,7 +79,7 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
             </View>
 
             {canDismiss && (
-              <IconButton icon={CancelCircleIcon} variant="ghost" size="sm" onPress={onClose} accessibilityLabel={t('common.close')} />
+              <IconButton icon="x-circle" variant="ghost" size="sm" onPress={onClose} accessibilityLabel={t('common.close')} />
             )}
           </View>
 
@@ -95,10 +94,10 @@ export const PremiumUpsellModal = React.memo(function PremiumUpsellModal({
                 ]}
               >
                 <View style={[styles.featureIcon, { backgroundColor: colors.surface }]}>
-                  <Icon icon={PRO_FEATURES[id].icon} size={16} color={colors.primaryInk} />
+                  <Icon name={PRO_FEATURES[id].icon} size={16} color={colors.primaryInk} />
                 </View>
                 <Text variant="callout" style={styles.featureLabel}>{t(`premium.features.${id}.title`)}</Text>
-                <Icon icon={CheckmarkCircle01Icon} size={16} color={colors.success} />
+                <Icon name="checkmark-circle" size={16} color={colors.success} />
               </View>
             ))}
           </View>

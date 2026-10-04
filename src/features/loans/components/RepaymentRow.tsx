@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconAvatar, ListItem, MoneyText } from '@/src/components/ui';
-import { ArrowDownLeftIcon, ArrowUpRightIcon } from '@/src/components/ui/icons';
 import type { LoanRepaymentRow, LoanType } from '@/src/features/loans/api/loans';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { formatDate } from '@/src/utils/format';
@@ -25,7 +24,7 @@ export const RepaymentRow = React.memo(function RepaymentRow({ row, loanType, is
   return (
     <ListItem
       leading={
-        <IconAvatar icon={incoming ? ArrowDownLeftIcon : ArrowUpRightIcon} color={isCreation ? colors.textMuted : incoming ? colors.success : colors.danger} size={40} />
+        <IconAvatar icon={incoming ? 'arrow-down-left' : 'arrow-up-right'} color={isCreation ? colors.textMuted : incoming ? colors.success : colors.danger} size={40} />
       }
       title={row.note || label}
       subtitle={`${formatDate(new Date(row.datetime), { day: 'numeric', month: 'short', year: 'numeric' })} · ${row.accountName}`}

@@ -15,7 +15,6 @@ import {
   TrendBadge,
 } from '@/src/components/ui';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { ArrowDownLeftIcon, ArrowUpRightIcon, BankIcon, CoffeeIcon, GlobeIcon, LockKeyIcon, MoonIcon, TrashIcon, WalletIcon } from '@/src/components/ui/icons';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
@@ -64,9 +63,9 @@ export function DisplaySection() {
           bare
         >
           <ListGroup title="Preferences" footer="Changes apply immediately.">
-            <ListItem icon={GlobeIcon} title="Language" value={lang === 'en' ? 'English' : 'हिन्दी'} onPress={noop} />
-            <ListItem icon={MoonIcon} title="Theme" subtitle="Follows your device setting" value="System" onPress={noop} />
-            <ListItem icon={LockKeyIcon} iconColor={colors.primary} title="App lock" subtitle="Require biometrics on open" switchValue={lock} onSwitchChange={setLock} />
+            <ListItem icon="globe" title="Language" value={lang === 'en' ? 'English' : 'हिन्दी'} onPress={noop} />
+            <ListItem icon="theme-dark" title="Theme" subtitle="Follows your device setting" value="System" onPress={noop} />
+            <ListItem icon="lock-key" iconColor={colors.primary} title="App lock" subtitle="Require biometrics on open" switchValue={lock} onSwitchChange={setLock} />
           </ListGroup>
 
           <ListGroup title="Single choice" insetDividers={false}>
@@ -75,9 +74,9 @@ export function DisplaySection() {
           </ListGroup>
 
           <ListGroup title="Info & destructive">
-            <ListItem icon={WalletIcon} title="Version" value="1.2.3" />
-            <ListItem icon={TrashIcon} title="Factory reset" subtitle="Erase all data on this device" destructive onPress={noop} />
-            <ListItem icon={BankIcon} title="Disabled row" disabled onPress={noop} />
+            <ListItem icon="wallet" title="Version" value="1.2.3" />
+            <ListItem icon="trash" title="Factory reset" subtitle="Erase all data on this device" destructive onPress={noop} />
+            <ListItem icon="bank" title="Disabled row" disabled onPress={noop} />
           </ListGroup>
         </Specimen>
 
@@ -113,8 +112,8 @@ export function DisplaySection() {
 
         <Specimen title="StatTile" description="A single KPI. Lay out in rows of two." bare>
           <View style={{ flexDirection: 'row', gap: spacing('2') }}>
-            <StatTile label="Income" icon={ArrowUpRightIcon} iconColor={colors.success} amount={84200} currency="INR" type="CR" delta={12.4} compact />
-            <StatTile label="Expenses" icon={ArrowDownLeftIcon} iconColor={colors.danger} amount={51730} currency="INR" type="DR" delta={8} positiveIsGood={false} compact />
+            <StatTile label="Income" icon="arrow-up-right" iconColor={colors.success} amount={84200} currency="INR" type="CR" delta={12.4} compact />
+            <StatTile label="Expenses" icon="arrow-down-left" iconColor={colors.danger} amount={51730} currency="INR" type="DR" delta={8} positiveIsGood={false} compact />
           </View>
           <View style={{ flexDirection: 'row', gap: spacing('2') }}>
             <StatTile label="Transactions" value="142" onPress={noop} />
@@ -144,16 +143,16 @@ export function DisplaySection() {
           description="Leading visuals for accounts, categories and people. For brand-coloured avatars pass colors.primaryInk — lime glyphs on a lime tint are ~2:1. Solid fills choose their own readable glyph colour, so user colours are safe."
         >
           <SpecimenRow label="IconAvatar · subtle / solid / outline">
-            <IconAvatar icon={CoffeeIcon} color="#E8A33D" />
-            <IconAvatar icon={CoffeeIcon} color="#E8A33D" variant="solid" />
-            <IconAvatar icon={CoffeeIcon} color="#E8A33D" variant="outline" />
-            <IconAvatar icon={BankIcon} color={colors.info} size={48} />
-            <IconAvatar icon={WalletIcon} color={colors.primaryInk} size={32} />
+            <IconAvatar icon="coffee" color="#E8A33D" />
+            <IconAvatar icon="coffee" color="#E8A33D" variant="solid" />
+            <IconAvatar icon="coffee" color="#E8A33D" variant="outline" />
+            <IconAvatar icon="bank" color={colors.info} size={48} />
+            <IconAvatar icon="wallet" color={colors.primaryInk} size={32} />
           </SpecimenRow>
           <SpecimenRow label="Solid on any fill · glyph picks dark or white for contrast (foregroundOn)">
-            <IconAvatar icon={CoffeeIcon} color="#FACC15" variant="solid" />
-            <IconAvatar icon={WalletIcon} color={colors.primary} variant="solid" />
-            <IconAvatar icon={BankIcon} color="#1D4ED8" variant="solid" />
+            <IconAvatar icon="coffee" color="#FACC15" variant="solid" />
+            <IconAvatar icon="wallet" color={colors.primary} variant="solid" />
+            <IconAvatar icon="bank" color="#1D4ED8" variant="solid" />
             <PersonAvatar name="Yuki" color="#A7F3D0" variant="solid" />
             <PersonAvatar name="Dev" color="#7C3AED" variant="solid" />
             <Badge label={7} variant="count" color="#FACC15" />

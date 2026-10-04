@@ -68,7 +68,7 @@ export const IconAvatar = React.memo(function IconAvatar({
 
   return (
     <View style={containerStyle}>
-      <Icon icon={icon} size={resolvedIconSize} color={iconColor} weight={weight} />
+      <Icon name={icon} size={resolvedIconSize} color={iconColor} weight={weight} />
     </View>
   );
 });

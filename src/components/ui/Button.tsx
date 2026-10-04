@@ -75,7 +75,7 @@ export const Button = React.memo(function Button({
   }, [disabled, isLoading, onPress]);
 
   const iconNode = icon && !isLoading
-    ? <Icon icon={icon} size={ICON_SIZE[size]} color={textColor} weight="bold" />
+    ? <Icon name={icon} size={ICON_SIZE[size]} color={textColor} weight="bold" />
     : null;
 
   return (

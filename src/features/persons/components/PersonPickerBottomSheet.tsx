@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { LIST_ITEM_LEADING_SIZE, ListItem, PersonAvatar, SearchField, SheetHeader } from '@/src/components/ui';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
-import { UserCircleIcon } from '@/src/components/ui/icons';
 import type { Person } from '@/src/features/persons/api/persons';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/src/utils/format';
@@ -77,7 +76,7 @@ export const PersonPickerBottomSheet = React.memo(function PersonPickerBottomShe
           <SearchField value={query} onChangeText={setQuery} placeholder={t('persons.searchPlaceholder')} on="surface" />
         </View>
         <ListItem
-          icon={UserCircleIcon}
+          icon="user-circle"
           iconColor={colors.textMuted}
           title={t('persons.noPerson')}
           selected={selectedId === null}

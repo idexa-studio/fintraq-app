@@ -39,7 +39,7 @@ export const FeatureTip = React.memo(function FeatureTip({ tip, enabled = true }
       pointerEvents="box-none"
     >
       <View style={styles.card} accessible accessibilityLiveRegion="polite" accessibilityLabel={message}>
-        <Icon icon={FEATURE_TIPS[tip].icon} size={20} color={theme.colors.onInk} />
+        <Icon name={FEATURE_TIPS[tip].icon} size={20} color={theme.colors.onInk} />
         <Text variant="callout" color={theme.colors.onInk} style={styles.message}>
           {message}
         </Text>

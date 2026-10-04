@@ -1,4 +1,3 @@
-import { ChartLineData01Icon } from '@hugeicons/core-free-icons';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
@@ -69,7 +68,7 @@ export const InsightsCarousel = React.memo(function InsightsCarousel({ currency 
 
   if (isLoading) return <Skeleton height={88} radius="xl" />;
   if (!insights || total === 0) {
-    return <EmptyState variant="inline" icon={ChartLineData01Icon} title={t('premium.noInsights')} description={t('premium.noInsightsHint')} />;
+    return <EmptyState variant="inline" icon="chart-line-data" title={t('premium.noInsights')} description={t('premium.noInsightsHint')} />;
   }
 
   return (

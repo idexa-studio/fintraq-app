@@ -1,4 +1,3 @@
-import { Delete01Icon, PencilEdit01Icon } from '@hugeicons/core-free-icons';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccessibilityActionEvent, StyleSheet, View } from 'react-native';
@@ -52,10 +51,10 @@ export const SwipeableTransactionRow = React.memo(function SwipeableTransactionR
     () => (
       <View style={styles.actions}>
         <BentoPressable style={styles.editAction} onPress={handleEdit} accessibilityRole="button" accessibilityLabel={t('common.edit')}>
-          <Icon icon={PencilEdit01Icon} size={18} color={theme.colors.primaryInk} />
+          <Icon name="pencil-simple" size={18} color={theme.colors.primaryInk} />
         </BentoPressable>
         <BentoPressable style={styles.deleteAction} onPress={handleDelete} accessibilityRole="button" accessibilityLabel={t('common.delete')}>
-          <Icon icon={Delete01Icon} size={18} color={theme.colors.danger} />
+          <Icon name="delete" size={18} color={theme.colors.danger} />
         </BentoPressable>
       </View>
     ),

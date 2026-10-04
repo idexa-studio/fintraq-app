@@ -1,6 +1,5 @@
 import { BentoPressable } from './BentoPressable';
 import { Icon } from './Icon';
-import { MagnifyingGlassIcon, XIcon } from './icons';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
@@ -43,7 +42,7 @@ export const SearchField = React.memo(function SearchField({
         style,
       ]}
     >
-      <Icon icon={MagnifyingGlassIcon} size={18} color={colors.textMuted} weight="bold" />
+      <Icon name="search" size={18} color={colors.textMuted} weight="bold" />
       <TextInput
         value={value}
         onChangeText={onChangeText}
@@ -65,7 +64,7 @@ export const SearchField = React.memo(function SearchField({
           accessibilityLabel={t('common.clear')}
           style={{ width: 22, height: 22, borderRadius: radius('full'), backgroundColor: alpha(colors.textMuted, 'medium'), alignItems: 'center', justifyContent: 'center' }}
         >
-          <Icon icon={XIcon} size={12} color={colors.surface} weight="bold" />
+          <Icon name="x" size={12} color={colors.surface} weight="bold" />
         </BentoPressable>
       ) : null}
     </View>

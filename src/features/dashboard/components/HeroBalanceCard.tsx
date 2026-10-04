@@ -1,4 +1,3 @@
-import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons';
 import React, { ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
@@ -60,7 +59,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
         />
         {monthNet !== null ? (
           <View style={styles.net}>
-            <Icon icon={isUp ? ArrowUp01Icon : ArrowDown01Icon} size={14} color={isUp ? hero.income : hero.expense} weight="bold" />
+            <Icon name={isUp ? 'trend-up' : 'chevron-down'} size={14} color={isUp ? hero.income : hero.expense} weight="bold" />
             <Text variant="label" color={hero.textMuted} numberOfLines={1} style={styles.netText}>
               {t('dashboard.netThisMonth', { amount: `${sign}${formatCurrency(Math.abs(monthNet), currency)}` })}
             </Text>

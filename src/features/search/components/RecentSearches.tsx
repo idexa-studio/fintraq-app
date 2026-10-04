@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BentoPressable, Chip, Text } from '@/src/components/ui';
-import { ClockIcon } from '@/src/components/ui/icons';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type RecentSearchesProps = {
@@ -33,7 +32,7 @@ export const RecentSearches = React.memo(function RecentSearches({ recents, onSe
       </View>
       <View style={styles.chips}>
         {recents.map((recent) => (
-          <Chip key={recent} label={recent} icon={ClockIcon} onPress={() => onSelect(recent)} onClear={() => onRemove(recent)} />
+          <Chip key={recent} label={recent} icon="clock" onPress={() => onSelect(recent)} onClear={() => onRemove(recent)} />
         ))}
       </View>
     </View>

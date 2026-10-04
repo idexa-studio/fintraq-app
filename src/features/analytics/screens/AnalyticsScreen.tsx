@@ -1,4 +1,3 @@
-import { Calendar01Icon, ChartLineData01Icon, Tag01Icon, Wallet05Icon } from '@hugeicons/core-free-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -86,7 +85,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
         share: c.share,
         color,
         type,
-        leading: <IconAvatar icon={resolveIcon(c.icon, Tag01Icon)} color={color} size={28} iconSize={13} />,
+        leading: <IconAvatar icon={resolveIcon(c.icon, 'tag')} color={color} size={28} iconSize={13} />,
         onPress: () => openCategory(c.id),
       };
     });
@@ -169,7 +168,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
         <View>
           <SectionHeader title={t('analytics.trend')} rightText={`${rangeLabel} · ${currency}`} noPadding />
           {overview.chart.length === 0 ? (
-            <EmptyState variant="inline" icon={ChartLineData01Icon} title={t('analytics.noTrend')} description={t('analytics.noTrendHint')} />
+            <EmptyState variant="inline" icon="chart-line-data" title={t('analytics.noTrend')} description={t('analytics.noTrendHint')} />
           ) : (
             <View style={styles.card}>
               <SpendingTrendChart data={overview.chart} currency={currency} />
@@ -210,7 +209,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             {categoryItems.length > 0 ? (
               <ShareBreakdown items={categoryItems} />
             ) : (
-              <EmptyState variant="inline" icon={Tag01Icon} title={t('analytics.noCategoryData')} description={t('analytics.noCategoryDataHint')} />
+              <EmptyState variant="inline" icon="tag" title={t('analytics.noCategoryData')} description={t('analytics.noCategoryDataHint')} />
             )}
           </View>
         </View>
@@ -227,7 +226,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             <View>
               <SectionHeader title={t('analytics.weeklyPattern')} rightText={t('analytics.averageByDay')} noPadding />
               {overview.weekdays.length === 0 ? (
-                <EmptyState variant="inline" icon={Calendar01Icon} title={t('analytics.noWeekly')} description={t('analytics.noWeeklyHint')} />
+                <EmptyState variant="inline" icon="calendar" title={t('analytics.noWeekly')} description={t('analytics.noWeeklyHint')} />
               ) : (
                 <View style={styles.card}>
                   <DowChart data={overview.weekdays} currency={currency} />
@@ -254,7 +253,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
               ) : (
                 <EmptyState
                   variant="inline"
-                  icon={Wallet05Icon}
+                  icon="wallet-stack"
                   title={t('analytics.noCurrencyAccounts', { currency })}
                   description={t('analytics.noCurrencyAccountsHint')}
                 />

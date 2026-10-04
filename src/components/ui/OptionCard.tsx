@@ -2,7 +2,6 @@ import { BentoPressable } from './BentoPressable';
 import { Badge } from './Badge';
 import { Icon, IconSource } from './Icon';
 import { IconAvatar } from './IconAvatar';
-import { CheckCircleIcon } from './icons';
 import { Text } from './Text';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import React, { useMemo } from 'react';
@@ -65,7 +64,7 @@ export const OptionCard = React.memo(function OptionCard({
         {busy ? (
           <ActivityIndicator size="small" color={colors.primaryInk} />
         ) : selected ? (
-          <Icon icon={CheckCircleIcon} size={24} color={colors.primaryInk} weight="fill" />
+          <Icon name="check-circle" size={24} color={colors.primaryInk} weight="fill" />
         ) : (
           <View style={styles.radioOff} />
         )}

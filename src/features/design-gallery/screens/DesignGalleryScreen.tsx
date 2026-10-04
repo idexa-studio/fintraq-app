@@ -8,7 +8,6 @@ import { PatternsSection } from '@/src/features/design-gallery/sections/Patterns
 import { ShowcaseSection } from '@/src/features/design-gallery/sections/ShowcaseSection';
 import { Chip, Header, IconButton, PageBackground, Text } from '@/src/components/ui';
 import { ThemeProvider, useTheme } from '@/src/providers/ThemeProvider';
-import { MoonIcon, SunIcon } from '@/src/components/ui/icons';
 import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
@@ -64,7 +63,7 @@ function GalleryContent({ scheme, onToggleScheme }: { scheme: 'light' | 'dark'; 
         showBack
         rightAction={
           <IconButton
-            icon={scheme === 'dark' ? SunIcon : MoonIcon}
+            icon={scheme === 'dark' ? 'theme-light' : 'theme-dark'}
             onPress={onToggleScheme}
             accessibilityLabel={`Preview ${scheme === 'dark' ? 'light' : 'dark'} theme`}
           />

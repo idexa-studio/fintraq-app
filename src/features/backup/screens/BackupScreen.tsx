@@ -1,4 +1,3 @@
-import { LockPasswordIcon, RefreshIcon, ShieldKeyIcon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -7,9 +6,9 @@ import { GoogleBackupCard } from '@/src/features/backup/components/GoogleBackupC
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 const HIGHLIGHTS = [
-  { icon: LockPasswordIcon, key: 'private' },
-  { icon: ShieldKeyIcon, key: 'peace' },
-  { icon: RefreshIcon, key: 'autoSync' },
+  { icon: 'lock-key', key: 'private' },
+  { icon: 'shield-check', key: 'peace' },
+  { icon: 'arrows-clockwise', key: 'autoSync' },
 ] as const;
 
 /** Google Drive backup controls, then what the backup does and doesn't do with your data. */

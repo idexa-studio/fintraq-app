@@ -1,5 +1,4 @@
 import type { IconSource } from '@/src/components/ui';
-import { HandSwipeLeftIcon, HandTapIcon } from '@/src/components/ui/icons';
 import { StorageKeys } from '@/src/constants/keys';
 
 /**
@@ -10,8 +9,8 @@ import { StorageKeys } from '@/src/constants/keys';
  * Storage keys are the ones earlier releases used, so a tip dismissed before stays dismissed.
  */
 export const FEATURE_TIPS = {
-  swipeActions: { icon: HandSwipeLeftIcon, storageKey: StorageKeys.WALKTHROUGH_TRANSACTIONS },
-  categoryOptions: { icon: HandTapIcon, storageKey: StorageKeys.WALKTHROUGH_CATEGORIES },
+  swipeActions: { icon: 'hand-swipe-left', storageKey: StorageKeys.WALKTHROUGH_TRANSACTIONS },
+  categoryOptions: { icon: 'hand-tap', storageKey: StorageKeys.WALKTHROUGH_CATEGORIES },
 } as const satisfies Record<string, { icon: IconSource; storageKey: StorageKeys }>;
 
 export type FeatureTipId = keyof typeof FEATURE_TIPS;

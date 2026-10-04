@@ -74,7 +74,12 @@ Tones: `default · muted · primary · success · danger · warning · info · o
 
 ## Icons
 
-One pack only: **Hugeicons**. Import semantic names from `@/src/components/ui/icons` and render with `<Icon>`; category/account icons come from `resolveIcon()` in `src/utils/icons.ts`. Never add a second icon library.
+Every icon is a **name** in one registry, `src/components/ui/icon-registry.ts` (`HUGEICONS: Record<IconName, glyph>`). Render with `<Icon name="trash" />` (optional `family`, default `hugeicons`); components that take an icon (`IconAvatar`, `ListItem`, `Button`, `EmptyState`…) take the same `IconName` string. Nothing else imports an icon pack — `check-design-system.js` fails the build if it does.
+
+- **Swap an icon app-wide:** change its entry in the registry.
+- **New icon:** add an entry (interface names describe a role: `chevron-right`, `tab-home`); missing glyphs are drawn in `custom-icons.ts`.
+- **Stored names** (category/account icons such as `shopping-cart`) are saved in user data. Never rename or remove one; re-point it instead. `resolveIcon()` / `resolveAccountTypeIcon()` in `src/utils/icons.ts` turn a stored string into a name.
+- **Another family:** add it to `ICON_FAMILIES` as a (partial) name → glyph map; missing names fall back to Hugeicons.
 
 ## 3. Components
 

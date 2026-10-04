@@ -1,7 +1,6 @@
 import { GalleryGroup, Specimen } from '@/src/features/design-gallery/components/Specimen';
 import { Banner, EmptyState, ListGroup, Skeleton, SkeletonRow } from '@/src/components/ui';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { ChartPieSliceIcon, MagnifyingGlassIcon, ReceiptIcon } from '@/src/components/ui/icons';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
@@ -45,15 +44,15 @@ export function FeedbackSection() {
         >
           <View style={{ borderRadius: 20, overflow: 'hidden' }}>
             <EmptyState
-              icon={ReceiptIcon}
+              icon="receipt"
               title="No transactions yet"
               description="Add your first expense or income to start tracking where your money goes."
               actionLabel="Add transaction"
               onAction={noop}
             />
           </View>
-          <EmptyState variant="inline" icon={ChartPieSliceIcon} title="Not enough data" description="Charts appear after a week of transactions." />
-          <EmptyState variant="inline" icon={MagnifyingGlassIcon} title="No matches" description="Try a different search." actionLabel="Clear" onAction={noop} />
+          <EmptyState variant="inline" icon="chart-pie" title="Not enough data" description="Charts appear after a week of transactions." />
+          <EmptyState variant="inline" icon="search" title="No matches" description="Try a different search." actionLabel="Clear" onAction={noop} />
         </Specimen>
       </GalleryGroup>
 

@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 import { Icon } from '@/src/components/ui/Icon';
-import { CheckIcon } from '@/src/components/ui/icons';
 import { SheetHeader } from '@/src/components/ui/SheetHeader';
 import type { ColorOption } from '@/src/constants/picker';
 import { PICKER_CONTRAST_COLOR } from '@/src/theme/colors';
@@ -90,7 +89,7 @@ export const ColorPickerBottomSheet = React.memo(function ColorPickerBottomSheet
               >
                 <View style={{ width: inner, height: inner, borderRadius: inner / 2, backgroundColor: c.hex, alignItems: 'center', justifyContent: 'center' }}>
                   {isSelected ? (
-                    <Icon icon={CheckIcon} size={18} weight="bold" color={brightness(c.hex) > 170 ? PICKER_CONTRAST_COLOR : theme.colors.onColor} />
+                    <Icon name="tick" size={18} weight="bold" color={brightness(c.hex) > 170 ? PICKER_CONTRAST_COLOR : theme.colors.onColor} />
                   ) : null}
                 </View>
               </BentoPressable>

@@ -1,10 +1,8 @@
-import { InboxIcon, Search01Icon } from '@hugeicons/core-free-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Chip, EmptyState, IconButton, Screen, SearchField } from '@/src/components/ui';
-import { CaretLeftIcon } from '@/src/components/ui/icons';
 import { RecentSearches } from '@/src/features/search/components/RecentSearches';
 import { SearchResultGroups } from '@/src/features/search/components/SearchResultGroups';
 import { SearchKind, useSearchResults } from '@/src/features/search/hooks/useSearchResults';
@@ -40,10 +38,10 @@ export const SearchScreen = React.memo(function SearchScreen() {
       if (query.length === 0 && recents.length > 0) {
         return <RecentSearches recents={recents} onSelect={changeQuery} onRemove={removeRecent} onClearAll={clearRecents} />;
       }
-      return <EmptyState icon={Search01Icon} title={t('search.premium')} description={t('search.hint')} />;
+      return <EmptyState icon="search" title={t('search.premium')} description={t('search.hint')} />;
     }
     if (hasNoResults) {
-      return <EmptyState icon={InboxIcon} title={t('search.noResults')} description={t('search.noMatch', { query: debouncedQuery })} />;
+      return <EmptyState icon="inbox" title={t('search.noResults')} description={t('search.noMatch', { query: debouncedQuery })} />;
     }
     return (
       <SearchResultGroups
@@ -59,7 +57,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
   return (
     <Screen variant="fixed" edges={['top', 'right', 'bottom', 'left']}>
       <View style={styles.header}>
-        <IconButton icon={CaretLeftIcon} variant="surface" onPress={() => router.back()} accessibilityLabel={t('common.back')} />
+        <IconButton icon="chevron-left" variant="surface" onPress={() => router.back()} accessibilityLabel={t('common.back')} />
         <SearchField value={query} onChangeText={changeQuery} placeholder={t('search.placeholder')} on="page" autoFocus style={styles.field} />
       </View>
 

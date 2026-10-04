@@ -1,6 +1,5 @@
 import { Button } from '@/src/components/ui/Button';
 import { Text } from '@/src/components/ui/Text';
-import { BackspaceIcon } from '@/src/components/ui/icons';
 import { Icon } from '@/src/components/ui/Icon';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -196,7 +195,7 @@ export const CalculatorBottomSheet = React.memo(function CalculatorBottomSheet({
                       accessibilityRole="button"
                       accessibilityLabel={t('common.delete')}
                     >
-                      <Icon icon={BackspaceIcon} size={22} color={colors.text} />
+                      <Icon name="backspace" size={22} color={colors.text} />
                     </Pressable>
                   );
                 }

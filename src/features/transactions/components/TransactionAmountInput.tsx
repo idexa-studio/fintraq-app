@@ -1,6 +1,5 @@
 import { alpha } from '@/src/theme/tokens';
 import { Text } from '@/src/components/ui/Text';
-import { CalculatorIcon } from '@/src/components/ui/icons';
 import { getCurrencySymbol } from '@/src/constants/currency';
 import { Icon } from '@/src/components/ui/Icon';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -53,7 +52,7 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
           accessibilityRole="button"
           accessibilityLabel={t('transactions.calculator')}
         >
-          <Icon icon={CalculatorIcon} size={22} color={colors.text} />
+          <Icon name="calculator" size={22} color={colors.text} />
         </Pressable>
       </View>
 

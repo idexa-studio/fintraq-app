@@ -83,7 +83,7 @@ export const IconButton = React.memo(function IconButton({
     >
       {isLoading
         ? <ActivityIndicator size="small" color={fg} />
-        : <Icon icon={icon} size={ICON_SIZE[size]} color={fg} />}
+        : <Icon name={icon} size={ICON_SIZE[size]} color={fg} />}
       {badge ? (
         <View style={{ position: 'absolute', top: 4, right: 4, minWidth: 16, height: 16, paddingHorizontal: 4, borderRadius: radius('full'), backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}>
           <Text variant="micro" tone="onPrimary">{badge}</Text>

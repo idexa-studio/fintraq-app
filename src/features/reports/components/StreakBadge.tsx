@@ -1,5 +1,4 @@
 import { Text } from '@/src/components/ui/Text';
-import { Flame } from '@hugeicons/core-free-icons';
 import { Icon } from '@/src/components/ui/Icon';
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -19,7 +18,7 @@ export const StreakBadge = React.memo(function StreakBadge() {
   return (
     <View style={styles.container}>
       <Icon
-        icon={Flame}
+        name="streak"
         size={13}
         color={theme.colors.warning}
       />

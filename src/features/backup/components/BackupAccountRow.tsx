@@ -1,4 +1,3 @@
-import { CloudIcon, Logout01Icon } from '@hugeicons/core-free-icons';
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +17,7 @@ export const BackupAccountRow = React.memo(function BackupAccountRow({ email, on
 
   return (
     <View style={rows.mainRow}>
-      <IconAvatar icon={CloudIcon} color={theme.colors.success} variant="subtle" size={40} />
+      <IconAvatar icon="cloud" color={theme.colors.success} variant="subtle" size={40} />
       <View style={rows.rowInfo}>
         <View style={rows.titleRow}>
           <Text style={rows.rowLabel}>{t('backup.cloudAccount')}</Text>
@@ -31,7 +30,7 @@ export const BackupAccountRow = React.memo(function BackupAccountRow({ email, on
           {email}
         </Text>
       </View>
-      <IconButton icon={Logout01Icon} variant="ghost" onPress={onDisconnect} accessibilityLabel={t('backup.disconnect')} />
+      <IconButton icon="logout" variant="ghost" onPress={onDisconnect} accessibilityLabel={t('backup.disconnect')} />
     </View>
   );
 });

@@ -1,7 +1,6 @@
 import { GalleryGroup, Specimen, SpecimenRow } from '@/src/features/design-gallery/components/Specimen';
 import { BentoPressable, Button, ButtonVariant, IconButton, IconButtonVariant, Text } from '@/src/components/ui';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { ArrowRightIcon, DotsThreeVerticalIcon, MagnifyingGlassIcon, PlusIcon, SlidersHorizontalIcon, TrashIcon } from '@/src/components/ui/icons';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
@@ -44,9 +43,9 @@ export function ActionsSection() {
             <Button title="Large" size="lg" onPress={noop} />
           </SpecimenRow>
           <SpecimenRow label="With icon">
-            <Button title="Add" icon={PlusIcon} onPress={noop} />
-            <Button title="Continue" icon={ArrowRightIcon} iconPosition="trailing" variant="tonal" onPress={noop} />
-            <Button title="Delete" icon={TrashIcon} variant="danger" onPress={noop} />
+            <Button title="Add" icon="plus" onPress={noop} />
+            <Button title="Continue" icon="arrow-forward" iconPosition="trailing" variant="tonal" onPress={noop} />
+            <Button title="Delete" icon="trash" variant="danger" onPress={noop} />
           </SpecimenRow>
           <SpecimenRow label="States">
             <Button title="Disabled" disabled onPress={noop} />
@@ -67,19 +66,19 @@ export function ActionsSection() {
         >
           <SpecimenRow label="Variants">
             {ICON_BUTTON_VARIANTS.map((v) => (
-              <IconButton key={v} icon={v === 'danger' ? TrashIcon : MagnifyingGlassIcon} variant={v} onPress={noop} accessibilityLabel={v} />
+              <IconButton key={v} icon={v === 'danger' ? 'trash' : 'search'} variant={v} onPress={noop} accessibilityLabel={v} />
             ))}
           </SpecimenRow>
           <SpecimenRow label="Sizes · 32 · 40 · 48">
-            <IconButton icon={SlidersHorizontalIcon} size="sm" onPress={noop} accessibilityLabel="Filter" />
-            <IconButton icon={SlidersHorizontalIcon} size="md" onPress={noop} accessibilityLabel="Filter" />
-            <IconButton icon={SlidersHorizontalIcon} size="lg" onPress={noop} accessibilityLabel="Filter" />
-            <IconButton icon={DotsThreeVerticalIcon} variant="ghost" onPress={noop} accessibilityLabel="More" />
-            <IconButton icon={PlusIcon} variant="filled" size="lg" onPress={noop} accessibilityLabel="Add" />
+            <IconButton icon="sliders-horizontal" size="sm" onPress={noop} accessibilityLabel="Filter" />
+            <IconButton icon="sliders-horizontal" size="md" onPress={noop} accessibilityLabel="Filter" />
+            <IconButton icon="sliders-horizontal" size="lg" onPress={noop} accessibilityLabel="Filter" />
+            <IconButton icon="dots-three-vertical" variant="ghost" onPress={noop} accessibilityLabel="More" />
+            <IconButton icon="plus" variant="filled" size="lg" onPress={noop} accessibilityLabel="Add" />
           </SpecimenRow>
           <SpecimenRow label="States">
-            <IconButton icon={MagnifyingGlassIcon} disabled onPress={noop} accessibilityLabel="Disabled" />
-            <IconButton icon={MagnifyingGlassIcon} isLoading onPress={noop} accessibilityLabel="Loading" />
+            <IconButton icon="search" disabled onPress={noop} accessibilityLabel="Disabled" />
+            <IconButton icon="search" isLoading onPress={noop} accessibilityLabel="Loading" />
           </SpecimenRow>
         </Specimen>
 

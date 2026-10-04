@@ -1,7 +1,6 @@
 import { ColorPickerRow } from '@/src/components/pickers/ColorPickerRow';
 import { CurrencyPickerBottomSheet } from '@/src/components/pickers/CurrencyPickerBottomSheet';
 import { Button, Card, Chip, FormField, Icon, IconAvatar, ListGroup, Screen, Text } from '@/src/components/ui';
-import { CaretDownIcon, LockKeyIcon } from '@/src/components/ui/icons';
 import { ACCOUNT_COLORS } from '@/src/constants/picker';
 import type { InsertAccount, UpdateAccountData } from '@/src/features/accounts/api/accounts';
 import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
@@ -284,11 +283,11 @@ export const AccountFormScreen = React.memo(function AccountFormScreen() {
               selectTextOnFocus={!isEditing}
               trailing={
                 isEditing ? (
-                  <Icon icon={LockKeyIcon} size={18} color={colors.textMuted} />
+                  <Icon name="lock-key" size={18} color={colors.textMuted} />
                 ) : (
                   <Button
                     title={currency}
-                    icon={CaretDownIcon}
+                    icon="chevron-down"
                     iconPosition="trailing"
                     variant="tonal"
                     size="sm"

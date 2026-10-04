@@ -3,7 +3,6 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { BentoPressable, Icon, OptionsBottomSheet, Text } from '@/src/components/ui';
-import { CaretDownIcon } from '@/src/components/ui/icons';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { formatCurrency } from '@/src/utils/format';
 
@@ -50,7 +49,7 @@ export const CurrencySwitcher = React.memo(function CurrencySwitcher({ currencie
         <Text variant="label" color={hero.textPrimary}>
           {selected}
         </Text>
-        <Icon icon={CaretDownIcon} size={14} color={hero.income} weight="bold" />
+        <Icon name="chevron-down" size={14} color={hero.income} weight="bold" />
       </BentoPressable>
       <OptionsBottomSheet visible={open} onClose={() => setOpen(false)} title={t('ui.currency')} options={options} />
     </>

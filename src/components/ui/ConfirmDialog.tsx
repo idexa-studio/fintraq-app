@@ -1,5 +1,4 @@
 import { Dialog } from './Dialog';
-import { TrashIcon } from './icons';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -44,7 +43,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
       onClose={onClose}
       title={title}
       message={message}
-      icon={destructive ? TrashIcon : undefined}
+      icon={destructive ? 'trash' : undefined}
       tone={destructive ? 'danger' : 'neutral'}
       dismissible={!isLoading}
       actions={[

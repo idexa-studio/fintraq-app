@@ -3,7 +3,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Platform, StyleSheet, View } from 'react-native';
 import { Button, Chip, FormField, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, PersonAvatar, Screen, Text } from '@/src/components/ui';
-import { CalendarBlankIcon } from '@/src/components/ui/icons';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import type { LoanWithStats } from '@/src/features/loans/api/loans';
 import { useAddRepayment } from '@/src/features/loans/hooks/loans';
@@ -131,7 +130,7 @@ export const RepaymentSheet = React.memo(function RepaymentSheet({ loan, personN
         <View style={styles.padded}>
           <ListGroup>
             <ListItem
-              icon={CalendarBlankIcon}
+              icon="calendar-blank"
               iconColor={colors.primaryInk}
               title={t('loans.date')}
               value={formatDate(date, { day: 'numeric', month: 'short', year: 'numeric' })}

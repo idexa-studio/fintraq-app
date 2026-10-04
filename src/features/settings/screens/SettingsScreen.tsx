@@ -19,24 +19,6 @@ import {
   TextInputDialog,
 } from '@/src/components/ui';
 import type { IconSource } from '@/src/components/ui';
-import {
-  AlarmIcon,
-  BellIcon,
-  CircleHalfIcon,
-  CloudIcon,
-  DownloadSimpleIcon,
-  FileTextIcon,
-  HandCoinsIcon,
-  LockKeyIcon,
-  MoonIcon,
-  PasswordIcon,
-  ShieldCheckIcon,
-  SquaresFourIcon,
-  SunIcon,
-  TranslateIcon,
-  TrashIcon,
-  UsersIcon,
-} from '@/src/components/ui/icons';
 import { DEFAULT_CURRENCY, getCurrencySymbol } from '@/src/constants/currency';
 import { useBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
@@ -57,9 +39,9 @@ import { NotificationService } from '@/src/services/notification.service';
 type ThemeValue = 'light' | 'dark' | 'system';
 
 const THEME_OPTIONS: { label: 'light' | 'dark' | 'followSystem'; value: ThemeValue; icon: IconSource }[] = [
-  { label: 'light', value: 'light', icon: SunIcon },
-  { label: 'dark', value: 'dark', icon: MoonIcon },
-  { label: 'followSystem', value: 'system', icon: CircleHalfIcon },
+  { label: 'light', value: 'light', icon: 'theme-light' },
+  { label: 'dark', value: 'dark', icon: 'theme-dark' },
+  { label: 'followSystem', value: 'system', icon: 'circle-half' },
 ];
 
 type Sheet = 'currency' | 'theme' | 'language' | 'name' | 'reset' | 'time' | null;
@@ -242,15 +224,15 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
       <ListGroup title={t('settings.manage')}>
         <ListItem
-          icon={SquaresFourIcon}
+          icon="squares-four"
           iconColor={colors.success}
           title={t('settings.categories')}
           subtitle={t('settings.categoriesHint')}
           onPress={() => router.push('/categories')}
         />
-        <ListItem icon={UsersIcon} iconColor={colors.info} title={t('settings.people')} subtitle={t('settings.peopleHint')} onPress={() => router.push('/persons')} />
+        <ListItem icon="users" iconColor={colors.info} title={t('settings.people')} subtitle={t('settings.peopleHint')} onPress={() => router.push('/persons')} />
         <ListItem
-          icon={HandCoinsIcon}
+          icon="hand-coins"
           iconColor={colors.warning}
           title={t('settings.loans')}
           subtitle={t('settings.loansHint')}
@@ -272,13 +254,13 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           value={currency}
           onPress={() => setSheet('currency')}
         />
-        <ListItem icon={TranslateIcon} iconColor={colors.info} title={t('settings.language')} value={languageLabel} onPress={() => setSheet('language')} />
-        <ListItem icon={CircleHalfIcon} iconColor={colors.info} title={t('settings.appearance')} value={themeLabel} onPress={() => setSheet('theme')} />
+        <ListItem icon="translate" iconColor={colors.info} title={t('settings.language')} value={languageLabel} onPress={() => setSheet('language')} />
+        <ListItem icon="circle-half" iconColor={colors.info} title={t('settings.appearance')} value={themeLabel} onPress={() => setSheet('theme')} />
       </ListGroup>
 
       <ListGroup title={t('settings.notifications')}>
         <ListItem
-          icon={BellIcon}
+          icon="bell"
           iconColor={colors.warning}
           title={t('settings.dailyReminder')}
           subtitle={profile.reminderEnabled ? t('settings.reminderOn', { time: profile.reminderTime }) : t('settings.reminderOff')}
@@ -287,7 +269,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         />
         {profile.reminderEnabled ? (
           <ListItem
-            icon={AlarmIcon}
+            icon="alarm"
             iconColor={colors.warning}
             title={t('settings.reminderTime')}
             value={profile.reminderTime}
@@ -307,7 +289,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
       <ListGroup title={t('settings.security')}>
         <ListItem
-          icon={LockKeyIcon}
+          icon="lock-key"
           iconColor={colors.primaryInk}
           title={t('settings.appLock')}
           subtitle={lockSubtitle}
@@ -316,7 +298,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
         />
         {lock.lockMode === 'pin' && lock.lockEnabled ? (
           <ListItem
-            icon={PasswordIcon}
+            icon="password"
             iconColor={colors.primaryInk}
             title={t('settings.changePin')}
             subtitle={t('settings.updatePin')}
@@ -327,7 +309,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
 
       <ListGroup title={t('settings.dataBackup')}>
         <ListItem
-          icon={CloudIcon}
+          icon="cloud"
           iconColor={isBackupConnected ? colors.success : colors.primaryInk}
           title={t('settings.cloudBackup')}
           subtitle={isBackupConnected ? t('settings.cloudActive') : t('settings.cloudSetup')}
@@ -335,7 +317,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           onPress={() => router.push('/(main)/backup')}
         />
         <ListItem
-          icon={DownloadSimpleIcon}
+          icon="download-simple"
           iconColor={colors.primaryInk}
           title={t('settings.exportCsv')}
           subtitle={t('settings.exportHint')}
@@ -346,12 +328,12 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       </ListGroup>
 
       <ListGroup title={t('settings.about')}>
-        <ListItem icon={ShieldCheckIcon} iconColor={colors.textMuted} title={t('settings.privacy')} onPress={() => openWebPage(privacyUrl, t('settings.privacyTitle'))} />
-        <ListItem icon={FileTextIcon} iconColor={colors.textMuted} title={t('settings.terms')} onPress={() => openWebPage(termsUrl, t('settings.termsTitle'))} />
+        <ListItem icon="shield-check" iconColor={colors.textMuted} title={t('settings.privacy')} onPress={() => openWebPage(privacyUrl, t('settings.privacyTitle'))} />
+        <ListItem icon="file-text" iconColor={colors.textMuted} title={t('settings.terms')} onPress={() => openWebPage(termsUrl, t('settings.termsTitle'))} />
       </ListGroup>
 
       <ListGroup title={t('settings.dangerZone')}>
-        <ListItem icon={TrashIcon} title={t('settings.factoryReset')} subtitle={t('settings.factoryResetHint')} onPress={() => setSheet('reset')} destructive />
+        <ListItem icon="trash" title={t('settings.factoryReset')} subtitle={t('settings.factoryResetHint')} onPress={() => setSheet('reset')} destructive />
       </ListGroup>
 
       {sheet === 'time' ? (

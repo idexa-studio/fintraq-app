@@ -3,7 +3,6 @@ import { ColorPickerRow } from '@/src/components/pickers';
 import { Card, Chip, IconButton, Input, ListGroup, ListItem, SegmentedControl, Switch, Text } from '@/src/components/ui';
 import { PALETTE_COLORS } from '@/src/constants/picker';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { ArrowDownLeftIcon, ArrowUpRightIcon, ArrowsLeftRightIcon, CarIcon, CircleHalfIcon, CoffeeIcon, MagnifyingGlassIcon, MoonIcon, ShoppingBagIcon, SunIcon, XIcon } from '@/src/components/ui/icons';
 import React, { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
@@ -43,12 +42,12 @@ export function InputsSection() {
           <Input
             label="Search"
             placeholder="Transactions, accounts, people"
-            leadingIcon={MagnifyingGlassIcon}
+            leadingIcon="search"
             value={query}
             onChangeText={setQuery}
             variant="filled"
             trailing={query ? (
-              <IconButton icon={XIcon} size="sm" variant="ghost" onPress={() => setQuery('')} accessibilityLabel="Clear search" />
+              <IconButton icon="x" size="sm" variant="ghost" onPress={() => setQuery('')} accessibilityLabel="Clear search" />
             ) : undefined}
           />
           <Input
@@ -80,9 +79,9 @@ export function InputsSection() {
             value={type}
             onChange={setType}
             options={[
-              { value: 'DR', label: 'Expense', icon: ArrowDownLeftIcon },
-              { value: 'CR', label: 'Income', icon: ArrowUpRightIcon },
-              { value: 'TR', label: 'Transfer', icon: ArrowsLeftRightIcon },
+              { value: 'DR', label: 'Expense', icon: 'arrow-down-left' },
+              { value: 'CR', label: 'Income', icon: 'arrow-up-right' },
+              { value: 'TR', label: 'Transfer', icon: 'arrows-left-right' },
             ]}
           />
           <SegmentedControl<Period>
@@ -100,9 +99,9 @@ export function InputsSection() {
             value={mode}
             onChange={setMode}
             options={[
-              { value: 'light', label: 'Light', icon: SunIcon },
-              { value: 'dark', label: 'Dark', icon: MoonIcon },
-              { value: 'system', label: 'Auto', icon: CircleHalfIcon },
+              { value: 'light', label: 'Light', icon: 'theme-light' },
+              { value: 'dark', label: 'Dark', icon: 'theme-dark' },
+              { value: 'system', label: 'Auto', icon: 'circle-half' },
             ]}
           />
         </Specimen>
@@ -113,9 +112,9 @@ export function InputsSection() {
           guidelines={['Pass color for category-coloured chips; defaults to primary.', 'Inside a sheet or card, pass on="surface" so resting chips stay visible.']}
         >
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: spacing('2') }}>
-            <Chip label="Food" icon={CoffeeIcon} isActive={chips.includes('food')} onPress={() => toggleChip('food')} />
-            <Chip label="Shopping" icon={ShoppingBagIcon} color="#E8618C" isActive={chips.includes('shop')} onPress={() => toggleChip('shop')} />
-            <Chip label="Transport" icon={CarIcon} color={colors.info} isActive={chips.includes('car')} onPress={() => toggleChip('car')} />
+            <Chip label="Food" icon="coffee" isActive={chips.includes('food')} onPress={() => toggleChip('food')} />
+            <Chip label="Shopping" icon="shopping-bag" color="#E8618C" isActive={chips.includes('shop')} onPress={() => toggleChip('shop')} />
+            <Chip label="Transport" icon="car" color={colors.info} isActive={chips.includes('car')} onPress={() => toggleChip('car')} />
             <Chip label="This month" isActive={chips.includes('month')} onPress={() => toggleChip('month')} />
           </ScrollView>
           <View style={{ flexDirection: 'row', gap: spacing('2'), backgroundColor: colors.surface, padding: spacing('3'), borderRadius: radius('xl') }}>
