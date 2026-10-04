@@ -113,7 +113,6 @@ const ja: Translation = {
     cannotDelete: 'カテゴリを削除できません', deleteFailed: 'カテゴリを削除できませんでした。',
   },
   dashboard: {
-    pulseByToday: '同じ日までに{{amount}}', pulseNoHistory: '先月は支出なし',
     netThisMonth: '今月 {{amount}}', thisMonth: '今月', quickActions: 'クイック操作', quickExpense: '支出', quickIncome: '収入', quickTransfer: '振替', quickLoan: '貸し借り', pulseSpent: '今月の支出', pulseOfLast: '先月の{{pct}}%', pulseLastMonth: '先月', pulseDay: '{{total}}日中{{day}}日目', pulseEmpty: '今月はまだ支出がありません', rhythmTitle: '支出のリズム', rhythmHint: '過去5週間', rhythmLess: '少', rhythmMore: '多', rhythmNone: '支出なし', rhythmSpent: '{{amount}} 支出',
     streakDays: '{{count}}日連続',
     accounts: '口座', manage: '管理', topExpenses: '支出上位', people: '人物', loans: '貸し借り', recent: '最近', seeAll: 'すべて見る',

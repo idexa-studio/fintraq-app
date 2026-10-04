@@ -9,14 +9,14 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 type Props = {
   balance: number;
   currency: string;
-  /** This month's income and spending in `currency`. */
+  /** Everything ever earned and spent in `currency`. */
   income: number;
   expense: number;
   currencies: string[];
   onCurrencySelect: (currency: string) => void;
 };
 
-/** The balance, this month's money in and out, and the currency track — the original Home hero. */
+/** The balance, all-time money in and out, and the currency track — the original Home hero. */
 export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, income, expense, currencies, onCurrencySelect }: Props) {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -24,7 +24,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <HeroSurface style={styles.margin}>
+    <HeroSurface>
       <View style={styles.header}>
         <Text variant="caption" color={hero.textMuted}>
           {t('dashboard.balance')}
@@ -46,9 +46,8 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   );
 });
 
-const createStyles = ({ heroCard: hero, spacing, layout, typography }: ThemeContextType) =>
+const createStyles = ({ heroCard: hero, spacing, typography }: ThemeContextType) =>
   StyleSheet.create({
-    margin: { marginHorizontal: layout.screenPadding },
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minHeight: 24, marginBottom: -spacing('3') },
     balance: { ...typography.metrics.display, color: hero.textPrimary },
   });

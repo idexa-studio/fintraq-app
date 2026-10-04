@@ -113,7 +113,6 @@ const pt: Translation = {
     cannotDelete: 'Não é possível excluir a categoria', deleteFailed: 'Falha ao excluir a categoria.',
   },
   dashboard: {
-    pulseByToday: '{{amount}} até este dia', pulseNoHistory: 'Sem gastos no mês passado',
     netThisMonth: '{{amount}} este mês', thisMonth: 'Este mês', quickActions: 'Ações rápidas', quickExpense: 'Despesa', quickIncome: 'Receita', quickTransfer: 'Transferir', quickLoan: 'Empréstimo', pulseSpent: 'Gasto até agora', pulseOfLast: '{{pct}}% do mês passado', pulseLastMonth: 'Mês passado', pulseDay: 'Dia {{day}} de {{total}}', pulseEmpty: 'Nenhum gasto este mês ainda', rhythmTitle: 'Ritmo de gastos', rhythmHint: 'Últimas 5 semanas', rhythmLess: 'Menos', rhythmMore: 'Mais', rhythmNone: 'Sem gastos', rhythmSpent: '{{amount}} gastos',
     streakDays: '{{count}} dias seguidos',
     accounts: 'Contas', manage: 'Gerenciar', topExpenses: 'Maiores despesas', people: 'Pessoas', loans: 'Empréstimos', recent: 'Recentes', seeAll: 'Ver tudo',

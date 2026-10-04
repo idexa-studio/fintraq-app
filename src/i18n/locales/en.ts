@@ -111,7 +111,6 @@ const en = {
     cannotDelete: 'Cannot delete category', deleteFailed: 'Failed to delete category.',
   },
   dashboard: {
-    pulseByToday: '{{amount}} by this day', pulseNoHistory: 'No spending last month',
     netThisMonth: '{{amount}} this month', thisMonth: 'This month', quickActions: 'Quick actions', quickExpense: 'Expense', quickIncome: 'Income', quickTransfer: 'Transfer', quickLoan: 'Loan', pulseSpent: 'Spent so far', pulseOfLast: '{{pct}}% of last month', pulseLastMonth: 'Last month', pulseDay: 'Day {{day}} of {{total}}', pulseEmpty: 'Nothing spent yet this month', rhythmTitle: 'Spending rhythm', rhythmHint: 'Last 5 weeks', rhythmLess: 'Less', rhythmMore: 'More', rhythmNone: 'No spending', rhythmSpent: '{{amount}} spent',
     streakDays: '{{count}}d streak',
     accounts: 'Accounts', manage: 'Manage', topExpenses: 'Top expenses', people: 'People', loans: 'Loans', recent: 'Recent', seeAll: 'See all',

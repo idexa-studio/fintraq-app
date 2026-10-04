@@ -113,7 +113,6 @@ const id: Translation = {
     cannotDelete: 'Tidak dapat menghapus kategori', deleteFailed: 'Gagal menghapus kategori.',
   },
   dashboard: {
-    pulseByToday: '{{amount}} hingga hari ini', pulseNoHistory: 'Tidak ada pengeluaran bulan lalu',
     netThisMonth: '{{amount}} bulan ini', thisMonth: 'Bulan ini', quickActions: 'Aksi cepat', quickExpense: 'Pengeluaran', quickIncome: 'Pemasukan', quickTransfer: 'Transfer', quickLoan: 'Pinjaman', pulseSpent: 'Terpakai sejauh ini', pulseOfLast: '{{pct}}% dari bulan lalu', pulseLastMonth: 'Bulan lalu', pulseDay: 'Hari {{day}} dari {{total}}', pulseEmpty: 'Belum ada pengeluaran bulan ini', rhythmTitle: 'Ritme pengeluaran', rhythmHint: '5 minggu terakhir', rhythmLess: 'Sedikit', rhythmMore: 'Banyak', rhythmNone: 'Tidak ada pengeluaran', rhythmSpent: '{{amount}} terpakai',
     streakDays: '{{count}} hari beruntun',
     accounts: 'Akun', manage: 'Kelola', topExpenses: 'Pengeluaran terbesar', people: 'Orang', loans: 'Pinjaman', recent: 'Terbaru', seeAll: 'Lihat semua',

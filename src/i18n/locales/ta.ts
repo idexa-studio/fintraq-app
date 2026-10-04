@@ -113,7 +113,6 @@ const ta: Translation = {
     cannotDelete: 'வகையை நீக்க இயலாது', deleteFailed: 'வகையை நீக்க முடியவில்லை.',
   },
   dashboard: {
-    pulseByToday: 'இந்த நாள் வரை {{amount}}', pulseNoHistory: 'கடந்த மாதம் செலவு இல்லை',
     netThisMonth: 'இந்த மாதம் {{amount}}', thisMonth: 'இந்த மாதம்', quickActions: 'விரைவுச் செயல்கள்', quickExpense: 'செலவு', quickIncome: 'வருமானம்', quickTransfer: 'பரிமாற்றம்', quickLoan: 'கடன்', pulseSpent: 'இதுவரை செலவு', pulseOfLast: 'கடந்த மாதத்தின் {{pct}}%', pulseLastMonth: 'கடந்த மாதம்', pulseDay: '{{total}} இல் நாள் {{day}}', pulseEmpty: 'இந்த மாதம் இன்னும் செலவு இல்லை', rhythmTitle: 'செலவு தாளம்', rhythmHint: 'கடந்த 5 வாரங்கள்', rhythmLess: 'குறைவு', rhythmMore: 'அதிகம்', rhythmNone: 'செலவு இல்லை', rhythmSpent: '{{amount}} செலவு',
     streakDays: '{{count}} நாள் தொடர்',
     accounts: 'கணக்குகள்', manage: 'நிர்வகி', topExpenses: 'முக்கியச் செலவுகள்', people: 'நபர்கள்', loans: 'கடன்கள்', recent: 'சமீபத்தியவை', seeAll: 'அனைத்தையும் காண்',

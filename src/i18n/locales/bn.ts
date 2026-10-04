@@ -113,7 +113,6 @@ const bn: Translation = {
     cannotDelete: 'বিভাগ মোছা যাচ্ছে না', deleteFailed: 'বিভাগ মুছতে ব্যর্থ হয়েছে।',
   },
   dashboard: {
-    pulseByToday: 'এই দিন পর্যন্ত {{amount}}', pulseNoHistory: 'গত মাসে কোনো খরচ নেই',
     netThisMonth: 'এই মাসে {{amount}}', thisMonth: 'এই মাস', quickActions: 'দ্রুত কাজ', quickExpense: 'খরচ', quickIncome: 'আয়', quickTransfer: 'ট্রান্সফার', quickLoan: 'ঋণ', pulseSpent: 'এখন পর্যন্ত খরচ', pulseOfLast: 'গত মাসের {{pct}}%', pulseLastMonth: 'গত মাস', pulseDay: '{{total}} দিনের {{day}}তম দিন', pulseEmpty: 'এই মাসে এখনও কোনো খরচ নেই', rhythmTitle: 'খরচের ছন্দ', rhythmHint: 'গত ৫ সপ্তাহ', rhythmLess: 'কম', rhythmMore: 'বেশি', rhythmNone: 'কোনো খরচ নেই', rhythmSpent: '{{amount}} খরচ',
     streakDays: '{{count}} দিনের ধারা',
     accounts: 'অ্যাকাউন্ট', manage: 'পরিচালনা', topExpenses: 'শীর্ষ ব্যয়', people: 'ব্যক্তি', loans: 'ঋণ', recent: 'সাম্প্রতিক', seeAll: 'সব দেখুন',

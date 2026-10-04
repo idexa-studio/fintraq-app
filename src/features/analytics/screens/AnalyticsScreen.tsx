@@ -210,6 +210,22 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
 
         <PeriodSummaryCard totals={overview.totals} deltas={overview.deltas} currency={currency} />
 
+        {/* How much and where: the quick figures, the trend, then the categories behind it. */}
+        {isPremium ? (
+          <View>
+            <SectionHeader title={t('analytics.highlights')} noPadding />
+            <AnalyticsGlance
+              currency={currency}
+              topCategory={overview.topCategory}
+              biggestExpense={overview.biggestExpense}
+              dailyAverage={overview.dailyAverage}
+              periodLabel={rangeLabel}
+              monthProjection={monthProjection}
+              onOpenCategory={openCategory}
+            />
+          </View>
+        ) : null}
+
         <View>
           <SectionHeader title={t('analytics.trend')} rightText={`${rangeLabel} · ${currency}`} noPadding />
           {overview.chart.length === 0 ? (
@@ -238,25 +254,29 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
         </View>
 
         {isPremium ? (
-          <>
-            <View>
-              <SectionHeader title={t('analytics.highlights')} noPadding />
-              <AnalyticsGlance
-                currency={currency}
-                topCategory={overview.topCategory}
-                biggestExpense={overview.biggestExpense}
-                dailyAverage={overview.dailyAverage}
-                periodLabel={rangeLabel}
-                monthProjection={monthProjection}
-                onOpenCategory={openCategory}
-              />
-            </View>
+          <View>
+            <SectionHeader title={t('premium.insightsTitle')} rightText={t('dashboard.thisMonth')} noPadding />
+            <InsightsCarousel currency={currency} />
+          </View>
+        ) : null}
 
-            <View>
-              <SectionHeader title={t('premium.insightsTitle')} rightText={t('dashboard.thisMonth')} noPadding />
-              <InsightsCarousel currency={currency} />
-            </View>
-          </>
+        {/* When: the weekly shape, then day by day. */}
+        {isPremium ? (
+          <View>
+            <SectionHeader title={t('analytics.weeklyPattern')} rightText={t('analytics.averageByDay')} noPadding />
+            {overview.weekdays.length === 0 ? (
+              <EmptyState variant="inline" icon="calendar" title={t('analytics.noWeekly')} description={t('analytics.noWeeklyHint')} />
+            ) : (
+              <View style={styles.card}>
+                <DowChart data={overview.weekdays} currency={currency} />
+                {overview.weekdayInsight ? (
+                  <Text variant="caption" tone="muted" align="center">
+                    {overview.weekdayInsight}
+                  </Text>
+                ) : null}
+              </View>
+            )}
+          </View>
         ) : null}
 
         <View>
@@ -264,26 +284,11 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           <SpendingHeatmap currency={currency} />
         </View>
 
+        {/* With whom and where it sits. */}
         {!isPremium ? (
           <ProPreviewCard features={['highlights', 'forecast', 'insights', 'categories', 'weekly', 'people']} />
         ) : (
           <>
-            <View>
-              <SectionHeader title={t('analytics.weeklyPattern')} rightText={t('analytics.averageByDay')} noPadding />
-              {overview.weekdays.length === 0 ? (
-                <EmptyState variant="inline" icon="calendar" title={t('analytics.noWeekly')} description={t('analytics.noWeeklyHint')} />
-              ) : (
-                <View style={styles.card}>
-                  <DowChart data={overview.weekdays} currency={currency} />
-                  {overview.weekdayInsight ? (
-                    <Text variant="caption" tone="muted" align="center">
-                      {overview.weekdayInsight}
-                    </Text>
-                  ) : null}
-                </View>
-              )}
-            </View>
-
             {personItems.length > 0 ? (
               <View>
                 <SectionHeader title={t('analytics.personBreakdown')} rightText={t('analytics.personsCount', { count: personItems.length })} noPadding />

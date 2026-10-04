@@ -10,6 +10,7 @@ import type { AccountType } from '@/src/types';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
+import { alpha } from '@/src/theme/tokens';
 
 type Props = {
   accounts: Account[];
@@ -41,23 +42,25 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
           return (
             <BentoPressable
               key={acc.id}
-              style={[styles.pill, selected && styles.pillActive]}
+              style={[
+                styles.card,
+                { backgroundColor: selected ? alpha(accColor, 'subtle') : colors.surface },
+              ]}
               onPress={() => handleSelect(acc.id)}
-              accessibilityRole="radio"
-              accessibilityState={{ selected }}
+              overflow="visible"
             >
               <IconAvatar
                 icon={resolveAccountTypeIcon(acc.accountType as AccountType | null)}
                 color={accColor}
                 variant="subtle"
-                size={28}
-                iconSize={14}
+                size={32}
+                iconSize={16}
               />
               <View style={styles.textColumn}>
-                <Text variant="calloutStrong" color={selected ? colors.primaryInk : undefined} numberOfLines={1}>{acc.name}</Text>
+                <Text variant="bodyStrong" numberOfLines={1}>{acc.name}</Text>
                 <Text variant="micro" tone="muted">{acc.currency}</Text>
               </View>
-              {selected ? <Icon name="tick" size={14} color={colors.primaryInk} weight="bold" /> : null}
+              {selected ? <Icon name="check-circle" size={20} color={accColor} weight="fill" /> : null}
             </BentoPressable>
           );
         })}
@@ -66,33 +69,37 @@ export const TransactionAccountPicker = React.memo(function TransactionAccountPi
   );
 });
 
-const createStyles = ({ colors, spacing, radius, layout, alpha }: ThemeContextType) => StyleSheet.create({
+const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeContextType) => StyleSheet.create({
   label: {
     marginBottom: spacing('2'),
     paddingHorizontal: layout.screenPadding + spacing('1'),
   },
   scrollContent: {
     paddingHorizontal: layout.screenPadding,
-    gap: spacing('2'),
-    paddingVertical: spacing('0.5'),
+    gap: spacing('3'),
+    paddingVertical: spacing('1.5'),
   },
-  // Compact pill, like the category chips below it: the choice reads at a glance without a card per account.
-  pill: {
+  card: {
+    minWidth: 132,
+    paddingHorizontal: sizes.card.md.padding,
+    paddingVertical: spacing('3.5'),
+    borderRadius: radius('xl'),
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing('2'),
-    height: 48,
-    paddingLeft: 10,
-    paddingRight: spacing('4'),
-    maxWidth: 200,
+    gap: spacing('2.5'),
+  },
+  textColumn: {
+    flex: 1,
+  },
+  check: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    width: 18,
+    height: 18,
     borderRadius: radius('full'),
-    backgroundColor: colors.surface,
-    borderWidth: 1.5,
-    borderColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
   },
-  pillActive: {
-    backgroundColor: alpha(colors.primary, 'subtle'),
-    borderColor: alpha(colors.primary, 'strong'),
-  },
-  textColumn: { flexShrink: 1 },
 });

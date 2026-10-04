@@ -113,7 +113,6 @@ const te: Translation = {
     cannotDelete: 'వర్గాన్ని తొలగించలేము', deleteFailed: 'వర్గాన్ని తొలగించడం విఫలమైంది.',
   },
   dashboard: {
-    pulseByToday: 'ఈ రోజు వరకు {{amount}}', pulseNoHistory: 'గత నెల ఖర్చు లేదు',
     netThisMonth: 'ఈ నెల {{amount}}', thisMonth: 'ఈ నెల', quickActions: 'త్వరిత చర్యలు', quickExpense: 'ఖర్చు', quickIncome: 'ఆదాయం', quickTransfer: 'బదిలీ', quickLoan: 'అప్పు', pulseSpent: 'ఇప్పటివరకు ఖర్చు', pulseOfLast: 'గత నెలలో {{pct}}%', pulseLastMonth: 'గత నెల', pulseDay: '{{total}} లో {{day}}వ రోజు', pulseEmpty: 'ఈ నెల ఇంకా ఖర్చు లేదు', rhythmTitle: 'ఖర్చు లయ', rhythmHint: 'గత 5 వారాలు', rhythmLess: 'తక్కువ', rhythmMore: 'ఎక్కువ', rhythmNone: 'ఖర్చు లేదు', rhythmSpent: '{{amount}} ఖర్చు',
     streakDays: '{{count}} రోజుల వరుస',
     accounts: 'ఖాతాలు', manage: 'నిర్వహించు', topExpenses: 'అగ్ర ఖర్చులు', people: 'వ్యక్తులు', loans: 'రుణాలు', recent: 'ఇటీవలివి', seeAll: 'అన్నీ చూడండి',

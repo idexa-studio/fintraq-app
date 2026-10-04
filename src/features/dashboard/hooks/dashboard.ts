@@ -12,6 +12,14 @@ export const useMonthTotals = (currency: string) => {
   });
 };
 
+export const useLifetimeTotals = (currency: string) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.dashboard.lifetime(currency),
+    queryFn: () => api.getLifetimeTotals(currency),
+    enabled: !!currency,
+  });
+};
+
 export const useDailySpend = (currency: string, since: string) => {
   return useQuery({
     queryKey: QUERY_KEYS.dashboard.dailySpend(currency, since),

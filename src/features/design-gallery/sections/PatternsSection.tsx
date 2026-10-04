@@ -1,6 +1,6 @@
 import { GalleryGroup, Specimen } from '@/src/features/design-gallery/components/Specimen';
 import { CurrencySwitcher } from '@/src/features/dashboard/components/CurrencySwitcher';
-import { EmptyState, HeroSplit, HeroSurface, IconButton, ListGroup, MoneyText, ListItem, PersonAvatar, SectionHeader, StatColumns, StatTile, Text } from '@/src/components/ui';
+import { EmptyState, HeroSplit, HeroSurface, NetFlowGrid, IconButton, ListGroup, MoneyText, ListItem, PersonAvatar, SectionHeader, StatColumns, StatTile, Text } from '@/src/components/ui';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { toDbColor } from '@/src/utils/format';
@@ -62,6 +62,14 @@ export function PatternsSection() {
             <HeroSplit primary={{ label: 'Assets', amount: 21254.75 }} secondary={{ label: 'Debts', amount: 642.18 }} currency="USD" />
             <CurrencySwitcher currencies={['USD', 'INR', 'EUR']} selected="USD" onSelect={() => {}} />
           </HeroSurface>
+        </Specimen>
+
+        <Specimen
+          title="NetFlowGrid"
+          description="A period in two cards: net and share kept on the left, income over expenses stacked on the right. Home's month and Analytics' period."
+          bare
+        >
+          <NetFlowGrid income={5050} expense={1767.1} currency="USD" incomeDelta={-4} expenseDelta={12} />
         </Specimen>
 
         <Specimen
