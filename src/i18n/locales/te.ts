@@ -96,6 +96,7 @@ const te: Translation = {
   },
   system: { migrationError: 'డేటాబేస్ మైగ్రేషన్‌లను లోడ్ చేయడంలో లోపం', initializingDatabase: 'డేటాబేస్ సిద్ధమవుతోంది...' },
   accounts: {
+    addHint: 'బ్యాంక్, కార్డ్, నగదు లేదా ఇ-వాలెట్',
     shareOfAssets: 'ఆస్తుల్లో {{pct}}%', manageHint: 'సవరించడానికి లేదా తొలగించడానికి ఖాతాను ఎక్కువసేపు నొక్కండి.',
     netWorth: 'నికర విలువ', assets: 'ఆస్తులు', debts: 'అప్పులు',
     title: 'ఖాతాలు', account: 'ఖాతా', edit: 'సవరించు', delete: 'తొలగించు', removeTransactions: 'ముందుగా అన్ని లావాదేవీలను తొలగించండి',
@@ -257,6 +258,8 @@ const te: Translation = {
     daysShort: { sun: 'ఆది', mon: 'సోమ', tue: 'మంగ', wed: 'బుధ', thu: 'గురు', fri: 'శుక్ర', sat: 'శని' },
   },
   analytics: {
+    emptyTitle: 'మీ ఇన్‌సైట్స్ ఇక్కడ మొదలవుతాయి', emptyHint: 'కొన్ని లావాదేవీలు జోడించండి, మీ డబ్బు ఎలా కదులుతుందో ఈ ట్యాబ్ చూపిస్తుంది.',
+    emptyFeatures: { trend: { title: 'ఖర్చు ధోరణులు', hint: 'రోజువారీగా లేదా నెలవారీగా, మీ సగటుతో పోల్చి' }, categories: { title: 'డబ్బు ఎక్కడికి వెళ్తుంది', hint: 'ఖర్చు, ఆదాయంలో ప్రతి వర్గం వాటా' }, forecast: { title: 'నెలాఖరు అంచనా', hint: 'ఇప్పటి వేగంతో ఈ నెల ఎటు వెళ్తుంది' } },
     income: 'ఆదాయం', expenses: 'ఖర్చులు', expense: 'ఖర్చు', netPosition: 'నికర స్థితి', dailyAvg: 'సగటు రోజువారీ ఖర్చు', highlights: 'ముఖ్యాంశాలు', topCategory: 'అత్యధిక ఖర్చు వర్గం', biggestExpense: 'అతిపెద్ద ఖర్చు',
     trend: 'ఖర్చు ధోరణి', trendAverage: 'సగటు {{amount}}', noTrend: 'ఇంకా ధోరణి డేటా లేదు', noTrendHint: 'మీ ఖర్చు ధోరణిని చూడటానికి ఆదాయం లేదా ఖర్చు లావాదేవీలను జోడించండి.',
     categoryBreakdown: 'వర్గాల వారీ విభజన', groupsCount: '{{count}} సమూహాలు', personBreakdown: 'వ్యక్తుల వారీ విభజన', personsCount: '{{count}} వ్యక్తులు', balanceDistribution: 'బ్యాలెన్స్ పంపిణీ', accountsCount: '{{count}} ఖాతాలు',
@@ -366,6 +369,10 @@ const te: Translation = {
     colors: { forest: 'అడవి ఆకుపచ్చ', emerald: 'పచ్చ', teal: 'టీల్', sky: 'ఆకాశనీలం', ocean: 'సముద్రనీలం', blue: 'నీలం', cobalt: 'కోబాల్ట్', iris: 'ఐరిస్', indigo: 'నీలిరంగు', purple: 'ఊదా', violet: 'వైలెట్', fuchsia: 'ఫ్యూషియా', pink: 'గులాబీ', deepPink: 'ముదురు గులాబీ', rose: 'రోజ్', red: 'ఎరుపు', crimson: 'క్రిమ్సన్', orange: 'నారింజ', amber: 'అంబర్', gold: 'బంగారు', lime: 'నిమ్మ', olive: 'ఆలివ్', slate: 'స్లేట్', coolGray: 'చల్లని బూడిద' },
   },
   shortcuts: { expense: 'ఖర్చు జోడించండి', income: 'ఆదాయం జోడించండి', transfer: 'కొత్త బదిలీ', loan: 'కొత్త అప్పు' },
+  gettingStarted: {
+    title: 'ప్రారంభించండి', progress: '{{total}}లో {{done}} పూర్తి', dismiss: 'జాబితా దాచండి',
+    steps: { account: { title: 'మీ మొదటి ఖాతా సృష్టించండి', hint: 'సెటప్‌లో పూర్తయింది' }, transaction: { title: 'ఒక లావాదేవీ జోడించండి', hint: 'ఈరోజు ఖర్చు లేదా ఆదాయాన్ని నమోదు చేయండి' }, reminder: { title: 'రోజువారీ రిమైండర్ ఆన్ చేయండి', hint: 'సాయంత్రపు చిన్న గుర్తు అలవాటును నిలుపుతుంది' }, secondAccount: { title: 'మీ బ్యాంక్ లేదా కార్డ్ జోడించండి', hint: 'అన్ని బ్యాలెన్స్‌లు ఒకే చోట' }, backup: { title: 'Google Drive‌కు బ్యాకప్ చేయండి', hint: 'ఫోన్ మార్చినా డేటా సురక్షితం' } },
+  },
 };
 
 export default te;

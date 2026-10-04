@@ -96,6 +96,7 @@ const kn: Translation = {
   },
   system: { migrationError: 'ಡೇಟಾಬೇಸ್ ಮೈಗ್ರೇಷನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ದೋಷ', initializingDatabase: 'ಡೇಟಾಬೇಸ್ ಸಿದ್ಧವಾಗುತ್ತಿದೆ...' },
   accounts: {
+    addHint: 'ಬ್ಯಾಂಕ್, ಕಾರ್ಡ್, ನಗದು ಅಥವಾ ಇ-ವಾಲೆಟ್',
     shareOfAssets: 'ಆಸ್ತಿಯ {{pct}}%', manageHint: 'ಸಂಪಾದಿಸಲು ಅಥವಾ ಅಳಿಸಲು ಖಾತೆಯನ್ನು ದೀರ್ಘವಾಗಿ ಒತ್ತಿ.',
     netWorth: 'ನಿವ್ವಳ ಮೌಲ್ಯ', assets: 'ಆಸ್ತಿಗಳು', debts: 'ಸಾಲಗಳು',
     title: 'ಖಾತೆಗಳು', account: 'ಖಾತೆ', edit: 'ಸಂಪಾದಿಸಿ', delete: 'ಅಳಿಸಿ', removeTransactions: 'ಮೊದಲು ಎಲ್ಲಾ ವಹಿವಾಟುಗಳನ್ನು ತೆಗೆದುಹಾಕಿ',
@@ -257,6 +258,8 @@ const kn: Translation = {
     daysShort: { sun: 'ಭಾನು', mon: 'ಸೋಮ', tue: 'ಮಂಗಳ', wed: 'ಬುಧ', thu: 'ಗುರು', fri: 'ಶುಕ್ರ', sat: 'ಶನಿ' },
   },
   analytics: {
+    emptyTitle: 'ನಿಮ್ಮ ಒಳನೋಟಗಳು ಇಲ್ಲಿಂದ ಆರಂಭ', emptyHint: 'ಕೆಲವು ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ, ಈ ಟ್ಯಾಬ್ ನಿಮ್ಮ ಹಣದ ಚಲನೆ ತೋರಿಸುತ್ತದೆ.',
+    emptyFeatures: { trend: { title: 'ಖರ್ಚಿನ ಪ್ರವೃತ್ತಿ', hint: 'ದಿನದಿಂದ ದಿನ ಅಥವಾ ತಿಂಗಳಿಂದ ತಿಂಗಳು, ನಿಮ್ಮ ಸರಾಸರಿಗೆ ಹೋಲಿಸಿ' }, categories: { title: 'ಹಣ ಎಲ್ಲಿಗೆ ಹೋಗುತ್ತದೆ', hint: 'ಖರ್ಚು ಮತ್ತು ಆದಾಯದಲ್ಲಿ ಪ್ರತಿ ವರ್ಗದ ಪಾಲು' }, forecast: { title: 'ತಿಂಗಳ ಕೊನೆಯ ಅಂದಾಜು', hint: 'ಇದುವರೆಗಿನ ವೇಗದಲ್ಲಿ ಈ ತಿಂಗಳು ಎಲ್ಲಿಗೆ' } },
     income: 'ಆದಾಯ', expenses: 'ವೆಚ್ಚಗಳು', expense: 'ವೆಚ್ಚ', netPosition: 'ನಿವ್ವಳ ಸ್ಥಿತಿ', dailyAvg: 'ಸರಾಸರಿ ದೈನಂದಿನ ವೆಚ್ಚ', highlights: 'ಪ್ರಮುಖಾಂಶಗಳು', topCategory: 'ಅತಿ ಹೆಚ್ಚು ವೆಚ್ಚದ ವರ್ಗ', biggestExpense: 'ಅತಿ ದೊಡ್ಡ ವೆಚ್ಚ',
     trend: 'ವೆಚ್ಚದ ಪ್ರವೃತ್ತಿ', trendAverage: 'ಸರಾಸರಿ {{amount}}', noTrend: 'ಇನ್ನೂ ಪ್ರವೃತ್ತಿ ಡೇಟಾ ಇಲ್ಲ', noTrendHint: 'ನಿಮ್ಮ ವೆಚ್ಚದ ಪ್ರವೃತ್ತಿಯನ್ನು ನೋಡಲು ಆದಾಯ ಅಥವಾ ವೆಚ್ಚದ ವಹಿವಾಟುಗಳನ್ನು ಸೇರಿಸಿ.',
     categoryBreakdown: 'ವರ್ಗವಾರು ವಿಭಜನೆ', groupsCount: '{{count}} ಗುಂಪುಗಳು', personBreakdown: 'ವ್ಯಕ್ತಿವಾರು ವಿಭಜನೆ', personsCount: '{{count}} ವ್ಯಕ್ತಿಗಳು', balanceDistribution: 'ಬ್ಯಾಲೆನ್ಸ್ ಹಂಚಿಕೆ', accountsCount: '{{count}} ಖಾತೆಗಳು',
@@ -366,6 +369,10 @@ const kn: Translation = {
     colors: { forest: 'ಕಾಡು ಹಸಿರು', emerald: 'ಪಚ್ಚೆ', teal: 'ಟೀಲ್', sky: 'ಆಕಾಶ ನೀಲಿ', ocean: 'ಸಾಗರ ನೀಲಿ', blue: 'ನೀಲಿ', cobalt: 'ಕೋಬಾಲ್ಟ್', iris: 'ಐರಿಸ್', indigo: 'ಇಂಡಿಗೋ', purple: 'ನೇರಳೆ', violet: 'ವೈಲೆಟ್', fuchsia: 'ಫ್ಯೂಶಿಯಾ', pink: 'ಗುಲಾಬಿ', deepPink: 'ಗಾಢ ಗುಲಾಬಿ', rose: 'ರೋಸ್', red: 'ಕೆಂಪು', crimson: 'ಕಡುಗೆಂಪು', orange: 'ಕಿತ್ತಳೆ', amber: 'ಅಂಬರ್', gold: 'ಚಿನ್ನ', lime: 'ನಿಂಬೆ', olive: 'ಆಲಿವ್', slate: 'ಸ್ಲೇಟ್', coolGray: 'ತಂಪು ಬೂದು' },
   },
   shortcuts: { expense: 'ಖರ್ಚು ಸೇರಿಸಿ', income: 'ಆದಾಯ ಸೇರಿಸಿ', transfer: 'ಹೊಸ ವರ್ಗಾವಣೆ', loan: 'ಹೊಸ ಸಾಲ' },
+  gettingStarted: {
+    title: 'ಆರಂಭಿಸಿ', progress: '{{total}} ರಲ್ಲಿ {{done}} ಪೂರ್ಣ', dismiss: 'ಪಟ್ಟಿ ಮರೆಮಾಡಿ',
+    steps: { account: { title: 'ನಿಮ್ಮ ಮೊದಲ ಖಾತೆ ರಚಿಸಿ', hint: 'ಸೆಟಪ್‌ನಲ್ಲಿ ಮುಗಿದಿದೆ' }, transaction: { title: 'ವಹಿವಾಟು ಸೇರಿಸಿ', hint: 'ಇಂದಿನ ಖರ್ಚು ಅಥವಾ ಆದಾಯ ದಾಖಲಿಸಿ' }, reminder: { title: 'ದೈನಂದಿನ ಜ್ಞಾಪನೆ ಆನ್ ಮಾಡಿ', hint: 'ಸಂಜೆಯ ಸೌಮ್ಯ ಜ್ಞಾಪನೆ ಅಭ್ಯಾಸ ಉಳಿಸುತ್ತದೆ' }, secondAccount: { title: 'ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಅಥವಾ ಕಾರ್ಡ್ ಸೇರಿಸಿ', hint: 'ಎಲ್ಲಾ ಬ್ಯಾಲೆನ್ಸ್ ಒಂದೇ ಕಡೆ' }, backup: { title: 'Google Drive‌ಗೆ ಬ್ಯಾಕಪ್ ಮಾಡಿ', hint: 'ಫೋನ್ ಬದಲಿಸಿದರೂ ಡೇಟಾ ಸುರಕ್ಷಿತ' } },
+  },
 };
 
 export default kn;

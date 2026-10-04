@@ -169,6 +169,12 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
       ))}
 
       {accounts && accounts.length > 0 ? (
+        <ListGroup>
+          <ListItem icon="plus" iconColor={theme.colors.primaryInk} title={t('accountForm.new')} subtitle={t('accounts.addHint')} onPress={handleAdd} />
+        </ListGroup>
+      ) : null}
+
+      {accounts && accounts.length > 0 ? (
         <Text variant="caption" tone="muted" align="center" style={styles.hint}>
           {t('accounts.manageHint')}
         </Text>

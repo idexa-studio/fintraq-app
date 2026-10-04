@@ -16,6 +16,7 @@ import { SpendingHeatmap } from '@/src/features/analytics/components/SpendingHea
 import { SpendingTrendChart } from '@/src/features/analytics/components/SpendingTrendChart';
 import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/analytics/constants';
 import { useAnalyticsOverview } from '@/src/features/analytics/hooks/useAnalyticsOverview';
+import { useTransactionsCount } from '@/src/features/transactions/hooks/transactions';
 import { useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
 import { buildMonthPulse } from '@/src/features/dashboard/utils/widgets';
 import { ProPreviewCard } from '@/src/features/premium/components/ProPreviewCard';
@@ -37,6 +38,12 @@ const FREE_CATEGORY_COUNT = 3;
  * Free: summary, trend, top expense categories and spending rhythm, then one card naming what Pro adds.
  * Pro: adds highlights and forecast, insights, the full category breakdown, weekly pattern, people and balances.
  */
+const EMPTY_FEATURES = [
+  { key: 'trend', icon: 'chart-bar' },
+  { key: 'categories', icon: 'chart-pie' },
+  { key: 'forecast', icon: 'trending-up-down' },
+] as const;
+
 export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -61,6 +68,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   const [categoryTab, setCategoryTab] = useState<CategoryTab>('expense');
 
   const overview = useAnalyticsOverview(currency, range);
+  const { data: txCount } = useTransactionsCount();
   const { data: month } = useMonthTotals(currency);
   const monthProjection = month ? buildMonthPulse(month, new Date()).projected : null;
 
@@ -145,6 +153,34 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
     return (
       <Screen header={header} variant="fixed" edges={['top']}>
         <SkeletonScreen />
+      </Screen>
+    );
+  }
+
+  // Nothing recorded yet: say what this tab will show instead of a page of zero charts.
+  if (txCount === 0) {
+    return (
+      <Screen header={header} variant="fixed" edges={['top']}>
+        <ScrollView contentContainerStyle={[styles.content, styles.emptyContent]} showsVerticalScrollIndicator={false}>
+          <EmptyState
+            icon="chart-line-data"
+            title={t('analytics.emptyTitle')}
+            description={t('analytics.emptyHint')}
+            actionLabel={t('dashboard.addTransaction')}
+            onAction={() => router.push('/transactions/create')}
+          />
+          <View style={styles.emptyFeatures}>
+            {EMPTY_FEATURES.map((f) => (
+              <View key={f.key} style={styles.emptyFeature}>
+                <IconAvatar icon={f.icon} color={theme.colors.primaryInk} size={40} />
+                <View style={styles.emptyFeatureText}>
+                  <Text variant="bodyStrong">{t(`analytics.emptyFeatures.${f.key}.title`)}</Text>
+                  <Text variant="caption" tone="muted">{t(`analytics.emptyFeatures.${f.key}.hint`)}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
       </Screen>
     );
   }
@@ -274,6 +310,10 @@ const createStyles = ({ colors, spacing, radius, layout, tabBarClearance }: Them
       paddingBottom: tabBarClearance(bottomInset),
       gap: spacing('5'),
     },
+    emptyContent: { paddingTop: spacing('8') },
+    emptyFeatures: { backgroundColor: colors.surface, borderRadius: radius('2xl'), padding: spacing('5'), gap: spacing('4') },
+    emptyFeature: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
+    emptyFeatureText: { flex: 1, gap: 2 },
     stack: { gap: spacing('3') },
     card: { backgroundColor: colors.surface, borderRadius: radius('xl'), padding: spacing('4'), gap: spacing('3') },
   });

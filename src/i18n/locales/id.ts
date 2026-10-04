@@ -96,6 +96,7 @@ const id: Translation = {
   },
   system: { migrationError: 'Gagal memuat migrasi basis data', initializingDatabase: 'Menginisialisasi basis data...' },
   accounts: {
+    addHint: 'Bank, kartu, tunai, atau e-wallet',
     shareOfAssets: '{{pct}}% dari aset', manageHint: 'Tekan lama akun untuk mengedit atau menghapusnya.',
     netWorth: 'Kekayaan bersih', assets: 'Aset', debts: 'Utang',
     title: 'Akun', account: 'Akun', edit: 'Ubah', delete: 'Hapus', removeTransactions: 'Hapus semua transaksi terlebih dahulu',
@@ -257,6 +258,8 @@ const id: Translation = {
     daysShort: { sun: 'Mg', mon: 'Sn', tue: 'Sl', wed: 'Rb', thu: 'Km', fri: 'Jm', sat: 'Sb' },
   },
   analytics: {
+    emptyTitle: 'Wawasanmu dimulai di sini', emptyHint: 'Tambahkan beberapa transaksi dan tab ini akan menunjukkan pergerakan uangmu.',
+    emptyFeatures: { trend: { title: 'Tren pengeluaran', hint: 'Harian atau bulanan, dibanding rata-ratamu' }, categories: { title: 'Ke mana perginya', hint: 'Porsi tiap kategori dalam pengeluaran dan pemasukan' }, forecast: { title: 'Perkiraan akhir bulan', hint: 'Arah bulan ini menurut lajumu sejauh ini' } },
     income: 'Pemasukan', expenses: 'Pengeluaran', expense: 'Pengeluaran', netPosition: 'Posisi bersih', dailyAvg: 'Rata-rata pengeluaran harian', highlights: 'Sorotan', topCategory: 'Kategori pengeluaran teratas', biggestExpense: 'Pengeluaran terbesar',
     trend: 'Tren pengeluaran', trendAverage: 'Rata-rata {{amount}}', noTrend: 'Belum ada data tren', noTrendHint: 'Tambahkan transaksi pemasukan atau pengeluaran untuk melihat tren pengeluaran Anda.',
     categoryBreakdown: 'Rincian kategori', groupsCount: '{{count}} grup', personBreakdown: 'Rincian per orang', personsCount: '{{count}} orang', balanceDistribution: 'Distribusi saldo', accountsCount: '{{count}} akun',
@@ -366,6 +369,10 @@ const id: Translation = {
     colors: { forest: 'Hutan', emerald: 'Zamrud', teal: 'Teal', sky: 'Langit', ocean: 'Samudra', blue: 'Biru', cobalt: 'Kobalt', iris: 'Iris', indigo: 'Nila', purple: 'Ungu', violet: 'Violet', fuchsia: 'Fuksia', pink: 'Merah Muda', deepPink: 'Merah Muda Tua', rose: 'Mawar', red: 'Merah', crimson: 'Merah Tua', orange: 'Oranye', amber: 'Ambar', gold: 'Emas', lime: 'Limau', olive: 'Zaitun', slate: 'Batu Tulis', coolGray: 'Abu-abu Dingin' },
   },
   shortcuts: { expense: 'Tambah pengeluaran', income: 'Tambah pemasukan', transfer: 'Transfer baru', loan: 'Pinjaman baru' },
+  gettingStarted: {
+    title: 'Mulai', progress: '{{done}} dari {{total}} selesai', dismiss: 'Sembunyikan daftar',
+    steps: { account: { title: 'Buat akun pertamamu', hint: 'Selesai saat penyiapan' }, transaction: { title: 'Tambah transaksi', hint: 'Catat pengeluaran atau pemasukan hari ini' }, reminder: { title: 'Aktifkan pengingat harian', hint: 'Pengingat lembut di malam hari menjaga kebiasaan' }, secondAccount: { title: 'Tambah bank atau kartumu', hint: 'Lihat semua saldo di satu tempat' }, backup: { title: 'Cadangkan ke Google Drive', hint: 'Data tetap aman saat ganti ponsel' } },
+  },
 };
 
 export default id;

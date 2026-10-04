@@ -19,8 +19,9 @@ export function useTransactionSummary(dbTotals: TransactionTotals | undefined, d
 
   const [chosenCurrency, setCurrency] = useState<string | null>(null);
   // Fall back to the first available currency when the choice disappears (e.g. after filtering),
-  // derived during render instead of synced through an effect.
-  const currency = chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : (currencies[0] ?? null);
+  // derived during render instead of synced through an effect; with no entries at all, the
+  // default currency, so an empty list still reads "$0.00", not a bare "0.00".
+  const currency = chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : (currencies[0] ?? defaultCurrency);
   const totals = currency ? (totalsByCurrency[currency] ?? EMPTY_TOTALS) : EMPTY_TOTALS;
 
   const netByCurrency = useMemo(

@@ -96,6 +96,7 @@ const ta: Translation = {
   },
   system: { migrationError: 'தரவுத்தள இடமாற்றங்களை ஏற்றுவதில் பிழை', initializingDatabase: 'தரவுத்தளம் தயாராகிறது...' },
   accounts: {
+    addHint: 'வங்கி, கார்டு, ரொக்கம் அல்லது இ-வாலெட்',
     shareOfAssets: 'சொத்துகளில் {{pct}}%', manageHint: 'திருத்த அல்லது நீக்க கணக்கை நீண்ட நேரம் அழுத்தவும்.',
     netWorth: 'நிகர மதிப்பு', assets: 'சொத்துகள்', debts: 'கடன்கள்',
     title: 'கணக்குகள்', account: 'கணக்கு', edit: 'திருத்து', delete: 'நீக்கு', removeTransactions: 'முதலில் அனைத்துப் பரிவர்த்தனைகளையும் நீக்கவும்',
@@ -257,6 +258,8 @@ const ta: Translation = {
     daysShort: { sun: 'ஞா', mon: 'தி', tue: 'செ', wed: 'பு', thu: 'வி', fri: 'வெ', sat: 'ச' },
   },
   analytics: {
+    emptyTitle: 'உங்கள் நுண்ணறிவுகள் இங்கே தொடங்கும்', emptyHint: 'சில பரிவர்த்தனைகளைச் சேர்த்தால், இந்தத் தாவல் உங்கள் பணம் எப்படி நகர்கிறது என்று காட்டும்.',
+    emptyFeatures: { trend: { title: 'செலவுப் போக்குகள்', hint: 'நாள்தோறும் அல்லது மாதந்தோறும், உங்கள் சராசரியுடன்' }, categories: { title: 'பணம் எங்கே போகிறது', hint: 'செலவிலும் வருமானத்திலும் ஒவ்வொரு வகையின் பங்கு' }, forecast: { title: 'மாத இறுதி கணிப்பு', hint: 'இதுவரையான வேகத்தில் இந்த மாதம் எங்கே போகிறது' } },
     income: 'வருமானம்', expenses: 'செலவுகள்', expense: 'செலவு', netPosition: 'நிகர நிலை', dailyAvg: 'சராசரித் தினசரிச் செலவு', highlights: 'முக்கிய அம்சங்கள்', topCategory: 'அதிகச் செலவு வகை', biggestExpense: 'மிகப்பெரிய செலவு',
     trend: 'செலவுப் போக்கு', trendAverage: 'சராசரி {{amount}}', noTrend: 'இன்னும் போக்குத் தரவு இல்லை', noTrendHint: 'உங்கள் செலவுப் போக்கைக் காண வருமானம் அல்லது செலவுப் பரிவர்த்தனைகளைச் சேர்க்கவும்.',
     categoryBreakdown: 'வகைவாரிப் பிரிப்பு', groupsCount: '{{count}} குழுக்கள்', personBreakdown: 'நபர்வாரிப் பிரிப்பு', personsCount: '{{count}} நபர்கள்', balanceDistribution: 'இருப்புப் பகிர்வு', accountsCount: '{{count}} கணக்குகள்',
@@ -366,6 +369,10 @@ const ta: Translation = {
     colors: { forest: 'காட்டுப் பச்சை', emerald: 'மரகதம்', teal: 'நீலப்பச்சை', sky: 'வான்நீலம்', ocean: 'கடல்நீலம்', blue: 'நீலம்', cobalt: 'கோபால்ட்', iris: 'ஐரிஸ்', indigo: 'அவுரி', purple: 'ஊதா', violet: 'வயலட்', fuchsia: 'ஃபுஷியா', pink: 'இளஞ்சிவப்பு', deepPink: 'அடர் இளஞ்சிவப்பு', rose: 'ரோஜா', red: 'சிவப்பு', crimson: 'செம்மஞ்சள் சிவப்பு', orange: 'ஆரஞ்சு', amber: 'அம்பர்', gold: 'பொன்', lime: 'எலுமிச்சைப் பச்சை', olive: 'ஆலிவ்', slate: 'ஸ்லேட்', coolGray: 'குளிர் சாம்பல்' },
   },
   shortcuts: { expense: 'செலவைச் சேர்', income: 'வருமானத்தைச் சேர்', transfer: 'புதிய பரிமாற்றம்', loan: 'புதிய கடன்' },
+  gettingStarted: {
+    title: 'தொடங்குங்கள்', progress: '{{total}} இல் {{done}} முடிந்தது', dismiss: 'பட்டியலை மறை',
+    steps: { account: { title: 'உங்கள் முதல் கணக்கை உருவாக்குங்கள்', hint: 'அமைப்பில் முடிந்தது' }, transaction: { title: 'ஒரு பரிவர்த்தனையைச் சேர்க்கவும்', hint: 'இன்றைய செலவு அல்லது வருமானத்தைப் பதிவு செய்யுங்கள்' }, reminder: { title: 'தினசரி நினைவூட்டலை இயக்கவும்', hint: 'மாலையில் ஒரு மென்மையான நினைவூட்டல் பழக்கத்தைத் தக்கவைக்கும்' }, secondAccount: { title: 'உங்கள் வங்கி அல்லது கார்டைச் சேர்க்கவும்', hint: 'எல்லா இருப்புகளும் ஒரே இடத்தில்' }, backup: { title: 'Google Drive இல் காப்புப்பிரதி எடுக்கவும்', hint: 'போன் மாற்றினாலும் தரவு பாதுகாப்பாக இருக்கும்' } },
+  },
 };
 
 export default ta;

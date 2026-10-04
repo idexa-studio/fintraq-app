@@ -96,6 +96,7 @@ const ja: Translation = {
   },
   system: { migrationError: 'データベースの移行の読み込みでエラーが発生しました', initializingDatabase: 'データベースを初期化中...' },
   accounts: {
+    addHint: '銀行・カード・現金・電子マネー',
     shareOfAssets: '資産の{{pct}}%', manageHint: '口座を長押しすると編集・削除できます。',
     netWorth: '純資産', assets: '資産', debts: '負債',
     title: '口座', account: '口座', edit: '編集', delete: '削除', removeTransactions: '先にすべての取引を削除してください',
@@ -257,6 +258,8 @@ const ja: Translation = {
     daysShort: { sun: '日', mon: '月', tue: '火', wed: '水', thu: '木', fri: '金', sat: '土' },
   },
   analytics: {
+    emptyTitle: 'ここから分析が始まります', emptyHint: '取引をいくつか追加すると、お金の動きがここに表示されます。',
+    emptyFeatures: { trend: { title: '支出の推移', hint: '日ごと・月ごとに、平均と比べて' }, categories: { title: 'お金の行き先', hint: '支出と収入に占める各カテゴリの割合' }, forecast: { title: '月末の予測', hint: 'これまでのペースで今月がどうなるか' } },
     income: '収入', expenses: '支出', expense: '支出', netPosition: '収支', dailyAvg: '1日の平均支出', highlights: 'ハイライト', topCategory: '支出が最も多いカテゴリ', biggestExpense: '最大の支出',
     trend: '支出の推移', trendAverage: '平均 {{amount}}', noTrend: '推移データはまだありません', noTrendHint: '収入または支出の取引を追加すると、支出の推移が表示されます。',
     categoryBreakdown: 'カテゴリ別内訳', groupsCount: '{{count}}グループ', personBreakdown: '人物別内訳', personsCount: '{{count}}人', balanceDistribution: '残高の分布', accountsCount: '{{count}}口座',
@@ -366,6 +369,10 @@ const ja: Translation = {
     colors: { forest: 'フォレスト', emerald: 'エメラルド', teal: 'ティール', sky: 'スカイ', ocean: 'オーシャン', blue: 'ブルー', cobalt: 'コバルト', iris: 'アイリス', indigo: 'インディゴ', purple: 'パープル', violet: 'バイオレット', fuchsia: 'フューシャ', pink: 'ピンク', deepPink: 'ディープピンク', rose: 'ローズ', red: 'レッド', crimson: 'クリムゾン', orange: 'オレンジ', amber: 'アンバー', gold: 'ゴールド', lime: 'ライム', olive: 'オリーブ', slate: 'スレート', coolGray: 'クールグレー' },
   },
   shortcuts: { expense: '支出を追加', income: '収入を追加', transfer: '新しい振替', loan: '新しい貸し借り' },
+  gettingStarted: {
+    title: 'はじめよう', progress: '{{total}}件中{{done}}件完了', dismiss: 'リストを隠す',
+    steps: { account: { title: '最初の口座を作成', hint: 'セットアップで完了' }, transaction: { title: '取引を追加', hint: '今日の支出や収入を記録しましょう' }, reminder: { title: '毎日のリマインダーをオン', hint: '夜のやさしい通知で習慣が続きます' }, secondAccount: { title: '銀行やカードを追加', hint: 'すべての残高をひと目で' }, backup: { title: 'Google ドライブにバックアップ', hint: '機種変更してもデータは安心' } },
+  },
 };
 
 export default ja;
