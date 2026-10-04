@@ -29,7 +29,7 @@ function windowCaption(window: AnalyticsWindow): string {
   return `${formatDate(parse(window.start), options)} – ${formatDate(parse(window.end), options)}`;
 }
 
-/** Currency (only when there's more than one) and period, with the dates the period covers. */
+/** Period, then the dates it covers with the currency picker (only when there's more than one) beside them. */
 export const AnalyticsControls = React.memo(function AnalyticsControls({
   currencies,
   currency,
@@ -64,25 +64,30 @@ export const AnalyticsControls = React.memo(function AnalyticsControls({
 
   return (
     <View style={styles.container}>
-      {currencies.length > 1 && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.bleed} contentContainerStyle={styles.chips}>
-          {currencies.map((c) => (
-            <Chip key={c} label={c} isActive={c === currency} onPress={() => onCurrencyChange(c)} />
-          ))}
-        </ScrollView>
-      )}
       <SegmentedControl options={rangeOptions} value={String(range) as `${RangeDays}`} onChange={handleRange} size="sm" />
-      <Text variant="caption" tone="muted">
-        {windowCaption(window)}
-      </Text>
+      <View style={styles.footer}>
+        <Text variant="caption" tone="muted" numberOfLines={1} style={styles.caption}>
+          {windowCaption(window)}
+        </Text>
+        {currencies.length > 1 && (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll} contentContainerStyle={styles.chips}>
+            {currencies.map((c) => (
+              <Chip key={c} label={c} size="sm" isActive={c === currency} onPress={() => onCurrencyChange(c)} />
+            ))}
+          </ScrollView>
+        )}
+      </View>
     </View>
   );
 });
 
-const createStyles = ({ spacing, layout }: ThemeContextType) =>
+const createStyles = ({ spacing }: ThemeContextType) =>
   StyleSheet.create({
     container: { gap: spacing('3') },
-    // Chips scroll edge to edge while their first chip lines up with the content.
-    bleed: { marginHorizontal: -layout.screenPadding },
-    chips: { gap: spacing('2'), paddingHorizontal: layout.screenPadding },
+    // Dates on the left, the compact currency picker trailing on the same line instead of a row of its own.
+    footer: { flexDirection: 'row', alignItems: 'center', gap: spacing('3'), minHeight: 28 },
+    caption: { flex: 1 },
+    // Sizes to its chips, capped so the dates keep room; many currencies scroll.
+    chipsScroll: { flexGrow: 0, maxWidth: '58%' },
+    chips: { gap: spacing('1.5') },
   });

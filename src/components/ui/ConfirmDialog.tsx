@@ -11,11 +11,11 @@ type ConfirmDialogProps = {
   onConfirm: () => void | Promise<void>;
   confirmLabel?: string;
   cancelLabel?: string;
-  /** Red confirm button + warning icon. Only for irreversible actions (delete, erase). */
+  /** Red confirm button. Only for irreversible actions (delete, erase). */
   destructive?: boolean;
   /** Shows a spinner and blocks repeat taps while a previous confirm is still running. */
   isLoading?: boolean;
-  /** Badge above the title. Defaults to a bin for destructive asks, a question mark otherwise. */
+  /** Optional glyph before the title. None by default: the question and the button colour say enough. */
   icon?: IconSource;
 };
 
@@ -47,7 +47,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
       onClose={onClose}
       title={title}
       message={message}
-      icon={icon ?? (destructive ? 'trash' : 'question')}
+      icon={icon}
       tone={destructive ? 'danger' : 'neutral'}
       dismissible={!isLoading}
       actions={[

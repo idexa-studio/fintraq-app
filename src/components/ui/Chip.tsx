@@ -17,6 +17,8 @@ type ChipProps = {
   onClear?: () => void;
   /** What the chip sits on: `page` (default) or a `surface` card/sheet, where it uses the inset fill to stay visible. */
   on?: 'page' | 'surface';
+  /** `sm` for compact pickers that sit above content (a currency filter); `md` (default) everywhere else. */
+  size?: 'sm' | 'md';
   style?: StyleProp<ViewStyle>;
 };
 
@@ -28,6 +30,7 @@ export const Chip = React.memo(function Chip({
   onPress,
   onClear,
   on = 'page',
+  size = 'md',
   style,
 }: ChipProps) {
   const { colors, typography, spacing } = useTheme();
@@ -54,13 +57,13 @@ export const Chip = React.memo(function Chip({
   );
 
   const containerStyle = useMemo(
-    () => [styles.base, { backgroundColor: bg, gap: icon ? spacing('2') : 0 }, style],
-    [bg, icon, spacing, style],
+    () => [styles.base, size === 'sm' && styles.sm, { backgroundColor: bg, gap: icon ? spacing('2') : 0 }, style],
+    [bg, icon, size, spacing, style],
   );
 
   const textStyle = useMemo(
-    () => ({ fontFamily, ...typography.metrics.sm, color: textColor }),
-    [fontFamily, typography.metrics.sm, textColor],
+    () => ({ fontFamily, ...(size === 'sm' ? typography.metrics.xs : typography.metrics.sm), color: textColor }),
+    [fontFamily, size, typography.metrics, textColor],
   );
 
   const handlePress = useCallback(onPress, [onPress]);
@@ -69,12 +72,12 @@ export const Chip = React.memo(function Chip({
     <BentoPressable
       style={containerStyle}
       onPress={handlePress}
-      hitSlop={4}
+      hitSlop={size === 'sm' ? 8 : 4}
       accessibilityRole="button"
       accessibilityState={{ selected: isActive }}
     >
       {icon && (
-        <Icon name={icon} size={14} color={isActive ? ink : colors.textMuted} />
+        <Icon name={icon} size={size === 'sm' ? 12 : 14} color={isActive ? ink : colors.textMuted} />
       )}
       <Text style={textStyle} numberOfLines={1}>{label}</Text>
       {onClear ? (
@@ -94,5 +97,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 999,
   },
+  sm: { height: 28, paddingHorizontal: 12 },
   clear: { marginLeft: 6, marginRight: -4, padding: 2, borderRadius: 999 },
 });
