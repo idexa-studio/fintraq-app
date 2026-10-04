@@ -96,6 +96,7 @@ const fr: Translation = {
   },
   system: { migrationError: 'Erreur de chargement des migrations de la base de données', initializingDatabase: 'Initialisation de la base de données...' },
   accounts: {
+    shareOfAssets: '{{pct}} % des actifs', manageHint: 'Appuyez longuement sur un compte pour le modifier ou le supprimer.',
     netWorth: 'Valeur nette', assets: 'Actifs', debts: 'Dettes',
     title: 'Comptes', account: 'Compte', edit: 'Modifier', delete: 'Supprimer', removeTransactions: "Supprimez d'abord toutes les transactions",
     cannotDelete: 'Impossible de supprimer le compte', deleteFailed: 'Échec de la suppression du compte.', availableBalance: 'Solde disponible', totalIn: 'Total des entrées', totalOut: 'Total des sorties',

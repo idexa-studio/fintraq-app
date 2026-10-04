@@ -96,6 +96,7 @@ const es: Translation = {
   },
   system: { migrationError: 'Error al cargar las migraciones de la base de datos', initializingDatabase: 'Inicializando la base de datos...' },
   accounts: {
+    shareOfAssets: '{{pct}} % de los activos', manageHint: 'Mantén pulsada una cuenta para editarla o eliminarla.',
     netWorth: 'Patrimonio neto', assets: 'Activos', debts: 'Deudas',
     title: 'Cuentas', account: 'Cuenta', edit: 'Editar', delete: 'Eliminar', removeTransactions: 'Elimina primero todas las transacciones',
     cannotDelete: 'No se puede eliminar la cuenta', deleteFailed: 'No se pudo eliminar la cuenta.', availableBalance: 'Saldo disponible', totalIn: 'Total de entradas', totalOut: 'Total de salidas',

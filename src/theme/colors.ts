@@ -7,14 +7,6 @@ export type ThemePalette = {
   surface: string;
   /** Bottom navigation bar background with proper contrast */
   tabBarBackground: string;
-  /** Hero card fill: a mid evergreen in both themes, lighter than the ink surfaces, so the
-   *  headline card is the one green moment on a screen. Text on it uses onInk / onInkMuted. */
-  heroSurface: string;
-  /** Accents on the hero. Plain primary/danger/info lose contrast on its mid-green, so the hero has
-   *  its own lighter set: income / up (mint), expense / down (rose), transfer (sky). */
-  onHeroPositive: string;
-  onHeroNegative: string;
-  onHeroInfo: string;
 
   /** Brand accent — buttons, active states, highlights */
   primary: string;
@@ -60,80 +52,72 @@ export type ThemePalette = {
   info: string;
 };
 
-// Evergreen: one calm emerald on sage-tinted neutrals. Every neutral shares a faint green hue so
-// paper, ink and charcoal read as the same material, and the accent never has to shout. Accents
-// are de-saturated from pure neon; each text colour clears WCAG AA on the layers it sits on.
+// Polished around the original identity: lime brand, warm paper, ink.
+// Neutrals share one warm hue so layers read as the same material at
+// different depths; each dark layer steps ~4% lightness for even separation.
 
 export const DARK_THEME: ThemePalette = {
-  background: '#111412',
-  card: '#262B28',
-  surface: '#191D1B',
-  tabBarBackground: '#202422',
-  heroSurface: '#234A3B',
-  onHeroPositive: '#8EE3B5',
-  onHeroNegative: '#FFA49C',
-  onHeroInfo: '#A9CBF2',
+  background: '#131311',
+  card: '#2C2B27',
+  surface: '#1E1D1A',
+  tabBarBackground: '#262521',
 
-  primary: '#39C684',
-  primaryLight: '#193427',
-  primaryDark: '#2BA16E',
-  primaryInk: '#66CC99',
-  primaryForeground: '#0A0D0B',
-  secondary: '#E8EAE6',
+  primary: '#00CC6A',
+  primaryLight: '#0B2E1D',
+  primaryDark: '#00A857',
+  primaryInk: '#2EDB85',
+  primaryForeground: '#0A0A08',
+  secondary: '#EDEBE4',
 
   onInk: '#FFFFFF',
   onInkMuted: 'rgba(255, 255, 255, 0.62)',
-  onInkAccent: '#39C684',
+  onInkAccent: '#00CC6A',
   onColor: '#FFFFFF',
 
-  text: '#E8EAE6',
-  textMuted: '#9AA19C',
+  text: '#EDEBE4',
+  textMuted: '#9C9A92',
 
-  border: '#303532',
+  border: '#34332E',
 
-  success: '#59C08C',
-  danger: '#E87C73',
-  warning: '#E0BB7B',
-  info: '#85AFE0',
+  success: '#34C97A',
+  danger: '#FF6159',
+  warning: '#F2C66D',
+  info: '#6AB0F0',
 };
 
 export const LIGHT_THEME: ThemePalette = {
-  background: '#F3F4F0',
-  card: '#E9EBE6',
+  background: '#F5F4EE',
+  card: '#ECEBE4',
   surface: '#FFFFFF',
-  tabBarBackground: '#151917',
-  heroSurface: '#265040',
-  onHeroPositive: '#8EE3B5',
-  onHeroNegative: '#FFA49C',
-  onHeroInfo: '#A9CBF2',
+  tabBarBackground: '#161612',
 
-  primary: '#1FB270',
-  primaryLight: '#DBF0E5',
-  primaryDark: '#18915E',
-  primaryInk: '#146B4A',
-  primaryForeground: '#0A0D0B',
-  secondary: '#151917',
+  primary: '#00CC6A',
+  primaryLight: '#D3F6E3',
+  primaryDark: '#00A857',
+  primaryInk: '#00824A',
+  primaryForeground: '#0A0A08',
+  secondary: '#161612',
 
   onInk: '#FFFFFF',
   onInkMuted: 'rgba(255, 255, 255, 0.62)',
-  onInkAccent: '#39C684',
+  onInkAccent: '#00CC6A',
   onColor: '#FFFFFF',
 
-  text: '#171A18',
-  textMuted: '#686D68',
+  text: '#161612',
+  textMuted: '#6B6962',
 
-  border: '#DFE2DC',
+  border: '#E2E0D8',
 
-  success: '#1D7C50',
-  danger: '#BA4136',
-  warning: '#8F5C0F',
-  info: '#2E669E',
+  success: '#16945A',
+  danger: '#D93D34',
+  warning: '#A86F00',
+  info: '#1765AB',
 };
 
 export type ThemeColors = ThemePalette;
 
 // kLimeBlack — fixed contrast color for text/icons rendered on top of the lime
-// primary emerald. The accent is always bright enough that this stays dark regardless of theme.
+// primary (#00CC6A). Lime is always vivid/bright so this stays dark regardless of theme.
 export const PICKER_CONTRAST_COLOR = '#0A0A0A';
 
 export type HeroCardPalette = {
@@ -144,6 +128,12 @@ export type HeroCardPalette = {
   separator: string;
   income: string;
   expense: string;
+  /** Transfer accent (entry form type switch). */
+  transfer: string;
+  /** Selected tab / input well on the hero — one step stronger than `separator`. */
+  tileStrong: string;
+  /** Placeholder text inside hero inputs. */
+  placeholder: string;
   decoOverlay: string;
   glowLight: string;
 };
@@ -164,6 +154,9 @@ export function getHeroColors(
       separator: 'rgba(255, 255, 255, 0.15)',
       income: '#00FF88', // Bright mint/green indicator
       expense: '#FF8F8F', // Bright coral/red indicator
+      transfer: '#BFE0FF',
+      tileStrong: 'rgba(255, 255, 255, 0.22)',
+      placeholder: 'rgba(255, 255, 255, 0.45)',
       decoOverlay: 'rgba(255, 255, 255, 0.08)',
       glowLight: 'rgba(255, 255, 255, 0.03)',
     };
@@ -176,6 +169,9 @@ export function getHeroColors(
       separator: 'rgba(0, 0, 0, 0.08)',
       income: '#00602F', // Dark green indicator
       expense: '#9E0000', // Dark red indicator
+      transfer: '#0B3D7A',
+      tileStrong: 'rgba(0, 0, 0, 0.14)',
+      placeholder: 'rgba(10, 10, 10, 0.35)',
       decoOverlay: 'rgba(0, 0, 0, 0.06)',
       glowLight: 'rgba(255, 255, 255, 0.04)',
     };

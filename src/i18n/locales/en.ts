@@ -94,6 +94,7 @@ const en = {
   },
   system: { migrationError: 'Error loading database migrations', initializingDatabase: 'Initializing database...' },
   accounts: {
+    shareOfAssets: '{{pct}}% of assets', manageHint: 'Long-press an account to edit or delete it.',
     netWorth: 'Net worth', assets: 'Assets', debts: 'Debts',
     title: 'Accounts', account: 'Account', edit: 'Edit', delete: 'Delete', removeTransactions: 'Remove all transactions first',
     cannotDelete: 'Cannot delete account', deleteFailed: 'Failed to delete account.', availableBalance: 'Available balance', totalIn: 'Total in', totalOut: 'Total out',

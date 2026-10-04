@@ -23,7 +23,7 @@ export const StreakBadge = React.memo(function StreakBadge() {
         size={13}
         color={theme.colors.warning}
       />
-      <Text variant="micro" color={theme.colors.onInk}>{t('dashboard.streakDays', { count: streak })}</Text>
+      <Text variant="micro" color={theme.heroCard.textPrimary}>{t('dashboard.streakDays', { count: streak })}</Text>
     </View>
   );
 });
