@@ -41,11 +41,7 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
       {actions.map((action, index) => (
         <BentoPressable
           key={action.key}
-          style={
-            [styles.action, 
-              index == 0 && styles.actionFirst,
-              index == actions.length - 1 && styles.actionLast
-            ]}
+          style={[styles.action, index === 0 && styles.actionFirst, index === actions.length - 1 && styles.actionLast]}
           onPress={() => {
             Haptics.selectionAsync().catch(() => {});
             router.push(action.href);
