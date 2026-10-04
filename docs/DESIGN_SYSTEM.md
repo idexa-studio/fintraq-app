@@ -33,8 +33,9 @@ Always read tokens through `const theme = useTheme()`.
 | Spacing | `spacing('4')` → 16 | 4px grid. Screen padding 16, section gap 20. |
 | Radius | `radius('xl')` → 24 | Shape follows the element — pick what reads best in place, never mixed on one element. **Pill** (`full`) where it looks right: buttons, chips, badges, segmented controls, search fields, the tab-bar indicator, switches, progress; icon buttons are circles. **Soft**: everything else — cards & list groups `xl` 24 · hero, sheets, dialogs `2xl` 28 · tiles inside cards & text inputs `lg` 16 · keypad keys & inner blocks `md` 12 · icon & avatar tiles squircle 30% of size. Nested shapes stay concentric. |
 | Density | `sizes.button.md.height` → 44 | One control-height scale **36 / 44 / 52** (sm / md / lg) shared by buttons, icon buttons, segmented controls; chips 36, search 44. Card padding 16, tile gap 10, section header 24 above / 12 below. |
-| Elevation | none | Flat: no shadows, glows, gradients or borders. Separate layers with tonal surfaces (`background` → `surface` → `card`). |
-| Motion | `animation.normal` → 200ms | `fast 150 · normal 200 · exit 220 · slow 300` |
+| Elevation | none | Flat: no shadows, glows, gradients or borders. Separate layers with tonal surfaces (`background` → `surface` → `card`). One exception, a scrim rather than decoration: `BottomFade` dissolves scrolling content into the page colour behind the floating tab bar. |
+| Motion | `animation.normal` → 200ms | `fast 150 · normal 200 · exit 220 · slow 300`. A screen's headline figure counts up when it appears or changes (`<MoneyText animate>`, 600ms, skipped under Reduce Motion); nothing else does. |
+| Charts | `magnitudeRamp(colors)` from `src/theme/chart.ts` | Charts that show *how much* (bars by day, heatmap) use a neutral ramp of the text colour, with lime for the selected or peak mark. Red and green stay on figures, where they mean money out and in. Shares (category, person, account) use the item's own colour. |
 | Layout | `layout.screenPadding`, `layout.minTouchTarget` | Plus `tabBarClearance(insets.bottom)` for tab screens. |
 
 ### Colour roles
@@ -114,7 +115,7 @@ All components are exported from `@/src/components/ui`.
 | Component | Use | Replaces |
 |---|---|---|
 | `Card` | `surface` · `inset` · `outlined`, optional `onPress`. | Ad-hoc `View` cards |
-| `HeroSurface` | The brand card for a screen's headline figure (Home balance, Transactions net, net worth, entry amount). One layout everywhere: label, figure, `HeroSplit`, then `CurrencySwitcher` (a tonal track with a solid thumb, scrolls when there are many). Quick actions sit in a white strip below the hero, not inside it. | Currency chips in the header, buttons or coloured figures inside the hero |
+| `HeroSurface` | Carries the ring motif (two concentric rings off the top-right corner, `heroCard.decoOverlay`) shared with the profile card and paywall. The brand card for a screen's headline figure (Home balance, Transactions net, net worth, entry amount). One layout everywhere: label, figure, `HeroSplit`, then `CurrencySwitcher` (a tonal track with a solid thumb, scrolls when there are many). Quick actions are their own group below the hero, not inside it. | Currency chips in the header, buttons or coloured figures inside the hero |
 | `HeroSplit` | Two figures on a hero as translucent tiles — income/expenses, assets/debts — with an arrow glyph and the figure in hero text colour. | Bars, dots or red/green figures on the hero |
 | `ListGroup` + `ListItem` | Settings-style lists: nav rows (`onPress` → chevron), toggles (`switchValue`), single choice (`selected`), info (`value`), `destructive`. | `NavRow`, `SwitchRow`, `InfoRow` in Settings, Developer, Search, TransactionDetail |
 | `MoneyText` | Every amount. `type` CR/DR adds sign + colour. `compact` for tiles. | — |
@@ -122,7 +123,7 @@ All components are exported from `@/src/components/ui`.
 | `StatColumns` | Secondary figures under a card's headline number, split by hairlines (income · expense, principal · repaid). Optional delta, press, or custom `content` such as a Pro lock. | Hand-built stat rows in summary cards |
 | `Badge` | Status labels, counts. | `LoanStatusBadge` internals |
 | `TrendBadge` | ▲/▼ % vs previous period. | `DeltaBadge` in Analytics |
-| `IconAvatar` / `PersonAvatar` | Leading visuals for categories, accounts and people. | — |
+| `IconAvatar` / `PersonAvatar` | Leading visuals for categories, accounts and people. The tinted tile is 10% of the colour on paper and 17% in dark mode, where a weaker wash disappears. | — |
 | `ProgressBar` | Determinate progress, optional `color`. | — |
 
 ### Feedback
@@ -151,8 +152,11 @@ All components are exported from `@/src/components/ui`.
 - **Screen rhythm:** Header → KPIs (`StatTile` ×2) → `SectionHeader` → grouped content → empty/loading states. Sections are separated by `layout.sectionGap`.
 - **Lists:** group rows in `ListGroup` (settings, details) or rounded `TransactionRow` stacks (`isFirst`/`isLast`). Don't separate rows with cards.
 - **Forms:** labelled `Input`s in a column with a 16 gap. Put a single `Button fullWidth size="lg"` in `Screen footer`. Validate on blur/submit. Error text says how to fix it.
+- **System navigation (Android):** `SystemNavBackdrop`, mounted once at the root, paints the page colour behind three-button navigation so scrolling content never ghosts under the buttons. Gesture navigation stays edge to edge.
 - **Tab bar:** the original split islands — dark island (Home · Accounts), lime + tile, dark island (Analytics · Settings). All three are 60 tall on one centre line; active tab = lime tile; tabs expose their label to screen readers. Tab screens pad with `tabBarClearance()`.
 - **Summary cards:** one shape everywhere a screen leads with a number (month pulse, period summary, account, loan): `surface` card, `label` caption, the headline `MoneyText`, then `StatColumns`. Identity (avatar, name, `Badge`s) goes on the first row when the card is about one thing.
+- **Home quick actions:** a two-column grid of small `surface` cards on the page, directly under the hero: the standard icon tile (36), the action, and a one-line hint. Corners on the outside of the group take the card radius (`xl`); corners where cards meet stay at the inner-block radius (`md`), so the group reads as one card cut into pieces. One row (Expense, Income) with a single account, two rows once Transfer is possible.
+- **Home sections are always present.** People and Loans show an inline `EmptyState` with an add action when there is nothing yet, rather than disappearing.
 - **Add actions:** list screens reached from navigation use a `Fab`. Tab screens never do — the tab bar's centre + adds (a transaction, or an account on the Accounts tab); don't repeat it in the header.
 - **Pro features:** gate with `<ProGate feature>` (a section) or `useProAccess().requirePro(feature)` (an action). A screen with several locked sections shows one `ProPreviewCard` instead of a lock card per section. Every id comes from `src/features/premium/pro-features.ts`.
 - **Destructive actions:** use a `danger` button or a `destructive` ListItem, always behind a `ConfirmDialog`, and in its own group at the bottom.

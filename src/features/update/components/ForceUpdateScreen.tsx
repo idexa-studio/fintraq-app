@@ -143,8 +143,8 @@ function createStyles({ spacing, radius, typography, colors, layout }: ThemeCont
       justifyContent: 'space-between',
     },
     headerSlot: {
-      width: 42,
-      height: 42,
+      width: layout.minTouchTarget,
+      height: layout.minTouchTarget,
     },
     brand: {
       textAlign: 'center',

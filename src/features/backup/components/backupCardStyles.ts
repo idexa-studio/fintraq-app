@@ -23,13 +23,11 @@ export const createBackupRowStyles = ({ colors, typography, spacing, radius }: T
       gap: spacing('2'),
     },
     rowLabel: {
-      fontFamily: typography.styles.rowLabel.fontFamily,
-      ...typography.metrics.md,
+      ...typography.variants.bodyStrong,
       color: colors.text,
     },
     rowSubtitle: {
-      fontFamily: typography.fonts.regular,
-      ...typography.metrics.xs,
+      ...typography.variants.caption,
       color: colors.textMuted,
     },
     trailingBadge: {
@@ -42,8 +40,7 @@ export const createBackupRowStyles = ({ colors, typography, spacing, radius }: T
       borderRadius: radius('full'),
     },
     trailingBadgeText: {
-      fontFamily: typography.fonts.medium,
-      ...typography.metrics.xs,
+      ...typography.variants.label,
       color: colors.primaryInk,
     },
   });

@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { IS_PREMIUM_OVERRIDE_ALLOWED } from '@/src/constants/iap';
 import { RETIRED_AUTO_BACKUP_FREQUENCY_KEY, StorageKeys } from '@/src/constants/keys';
 import { resolveLanguage, SupportedLanguage } from '@/src/i18n';
 import { LoggerService } from '@/src/services/logger.service';
@@ -30,13 +31,16 @@ function isFileMeta(value: unknown): value is CloudBackupFileMeta {
 export const BackupPreferences = {
   /**
    * Pro entitlement as last persisted by PremiumProvider. The headless task has no React tree,
-   * so it reads the snapshot directly; the dev override wins, as it does in the provider.
+   * so it reads the snapshot directly; the dev override (development builds only) wins, as it
+   * does in the provider.
    */
   async isProEntitled(): Promise<boolean> {
     try {
       const [premium, devOverride] = await AsyncStorage.multiGet([StorageKeys.PREMIUM, StorageKeys.PREMIUM_DEV_OVERRIDE]);
-      if (devOverride[1] === 'FORCED_ON') return true;
-      if (devOverride[1] === 'FORCED_OFF') return false;
+      if (IS_PREMIUM_OVERRIDE_ALLOWED) {
+        if (devOverride[1] === 'FORCED_ON') return true;
+        if (devOverride[1] === 'FORCED_OFF') return false;
+      }
       return Boolean(parseJson<PremiumSnapshot>(premium[1])?.isPremium);
     } catch (e) {
       LoggerService.error('BACKUP_PREFS', 'Failed to read pro status', e);
@@ -65,6 +69,25 @@ export const BackupPreferences = {
     return Number.isFinite(parsed) ? parsed : 0;
   },
 
+  /**
+   * Whether this install has backed up to, or restored from, the connected Drive account. Until it
+   * has, a backup already in Drive may belong to another install (an old phone, or this one before
+   * a reinstall) and must not be overwritten without the user saying so. See `isOwnBackup`.
+   */
+  async hasSyncedWithDrive(): Promise<boolean> {
+    return (await this.getLastBackupAt()) > 0;
+  },
+
+  /**
+   * Whether the Drive file `fileId` is one this install made or restored. The remembered id
+   * outlives a disconnect, so reconnecting the same Google account carries on backing up; a
+   * different account, or a fresh install, doesn't match and has to be confirmed.
+   */
+  async isOwnBackup(fileId: string): Promise<boolean> {
+    if (await this.hasSyncedWithDrive()) return true;
+    return (await AsyncStorage.getItem(StorageKeys.AUTO_BACKUP_SYNCED_FILE_ID)) === fileId;
+  },
+
   async getCachedBackupMeta(): Promise<CloudBackupFileMeta | null> {
     const parsed = parseJson<unknown>(await AsyncStorage.getItem(StorageKeys.AUTO_BACKUP_LAST_BACKUP_META));
     return isFileMeta(parsed) ? parsed : null;
@@ -79,6 +102,7 @@ export const BackupPreferences = {
     await AsyncStorage.multiSet([
       [StorageKeys.AUTO_BACKUP_LAST_BACKUP_META, JSON.stringify(meta)],
       [StorageKeys.AUTO_BACKUP_LAST_AUTO_TIME, String(startedAt)],
+      [StorageKeys.AUTO_BACKUP_SYNCED_FILE_ID, meta.id],
     ]);
   },
 
@@ -93,6 +117,7 @@ export const BackupPreferences = {
       StorageKeys.AUTO_BACKUP_ENABLED,
       StorageKeys.AUTO_BACKUP_LAST_BACKUP_META,
       StorageKeys.AUTO_BACKUP_LAST_AUTO_TIME,
+      StorageKeys.AUTO_BACKUP_SYNCED_FILE_ID,
       RETIRED_AUTO_BACKUP_FREQUENCY_KEY,
     ];
   },

@@ -1,5 +1,6 @@
 import { db } from '@/src/db/client';
 import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
+import { CSV_BOM, toCsvRow } from '@/src/features/export/utils/csv';
 import { getLocalISOString } from '@/src/utils/date';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import * as Sharing from 'expo-sharing';
@@ -83,15 +84,8 @@ export class CsvExportService {
     'Note',
   ].join(',');
 
-  private static escapeCsvField(field: string): string {
-    if (/[",\n\r]/.test(field)) {
-      return `"${field.replace(/"/g, '""')}"`;
-    }
-    return field;
-  }
-
   private static formatRow(row: TransactionExportRow): string {
-    return [
+    return toCsvRow([
       row.date,
       row.time,
       row.type,
@@ -104,11 +98,11 @@ export class CsvExportService {
       row.linkedPerson,
       row.note,
       row.loanId,
-    ].map(f => this.escapeCsvField(f)).join(',');
+    ]);
   }
 
   private static formatLoanRow(row: LoanExportRow): string {
-    return [
+    return toCsvRow([
       String(row.id),
       row.createdDate,
       row.type,
@@ -119,7 +113,7 @@ export class CsvExportService {
       row.dueDate,
       row.status,
       row.note,
-    ].map(f => this.escapeCsvField(f)).join(',');
+    ]);
   }
 
   static async getTransactionCount(options: CsvExportOptions = {}): Promise<number> {
@@ -263,7 +257,7 @@ export class CsvExportService {
       }
     }
 
-    const csvContent = lines.join('\n');
+    const csvContent = CSV_BOM + lines.join('\n');
 
     let filename: string;
     if (options.dateRange) {

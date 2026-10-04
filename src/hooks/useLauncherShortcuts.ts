@@ -1,9 +1,10 @@
 import * as QuickActions from 'expo-quick-actions';
 import { useQuickActionRouting } from 'expo-quick-actions/router';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
+import { hasPossibleTransfer } from '@/src/utils/accounts';
 import { LoggerService } from '@/src/services/logger.service';
 
 type ShortcutId = 'expense' | 'income' | 'transfer' | 'loan';
@@ -21,13 +22,13 @@ const SHORTCUTS: Shortcut[] = [
 
 /**
  * Long-press shortcuts on the launcher icon. Kept in step with the language and with whether a
- * transfer is possible (two accounts), and routed on tap. Mount once, inside the onboarded stack,
+ * transfer is possible (two compatible accounts in one currency), and routed on tap. Mount once, inside the onboarded stack,
  * so a shortcut can't skip onboarding; the app lock still covers whatever screen it opens.
  */
 export function useLauncherShortcuts() {
   const { t, i18n } = useTranslation();
   const { data: accounts } = useAccounts();
-  const canTransfer = (accounts?.length ?? 0) > 1;
+  const canTransfer = useMemo(() => hasPossibleTransfer(accounts ?? []), [accounts]);
 
   useQuickActionRouting();
 

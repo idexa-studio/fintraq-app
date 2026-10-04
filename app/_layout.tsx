@@ -19,6 +19,7 @@ import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvi
 import { NotificationService } from '@/src/services/notification.service';
 import { ReviewPromptService } from '@/src/services/review-prompt.service';
 import { useFonts } from 'expo-font';
+import { SystemNavBackdrop } from '@/src/components/ui/SystemNavBackdrop';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { LocalMigrationService } from '@/src/services/local-migration.service';
@@ -92,6 +93,7 @@ export default function RootLayout() {
                           <AppLockProvider>
                             <AppConfigProvider>
                               <Stack screenOptions={{ headerShown: false }} />
+                              <SystemNavBackdrop />
                               <StatusBar style="auto" />
                             </AppConfigProvider>
                           </AppLockProvider>

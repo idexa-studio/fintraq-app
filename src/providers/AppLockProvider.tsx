@@ -10,16 +10,42 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { AppState, AppStateStatus, Modal } from 'react-native';
+import { requireOptionalNativeModule } from 'expo';
+import { AppState, AppStateStatus, Modal, Platform } from 'react-native';
+import { LoggerService } from '@/src/services/logger.service';
 
 const GRACE_PERIOD_MS = 3000;
+const SCREEN_CAPTURE_KEY = 'app-lock';
+
+/**
+ * While the lock is on, keep balances out of the recent-apps thumbnail, screenshots and screen
+ * recordings: the lock screen only appears on return, so without this the switcher shows whatever
+ * was last on screen. Android marks the window secure; iOS blurs the switcher snapshot.
+ */
+async function setScreenPrivacy(enabled: boolean): Promise<void> {
+  try {
+    // A JS update can reach an installed build that predates this native module; importing it
+    // there would crash on launch, so check for the module first and load it only when present.
+    if (!requireOptionalNativeModule('ExpoScreenCapture')) return;
+    const ScreenCapture = await import('expo-screen-capture');
+    // Development builds stay capturable: screenshots are how UI work gets reviewed.
+    if (enabled && !__DEV__) {
+      await ScreenCapture.preventScreenCaptureAsync(SCREEN_CAPTURE_KEY);
+      if (Platform.OS === 'ios') await ScreenCapture.enableAppSwitcherProtectionAsync();
+    } else {
+      await ScreenCapture.allowScreenCaptureAsync(SCREEN_CAPTURE_KEY);
+      if (Platform.OS === 'ios') await ScreenCapture.disableAppSwitcherProtectionAsync();
+    }
+  } catch (e) {
+    LoggerService.warn('APP_LOCK', 'Could not update screen privacy', e);
+  }
+}
 
 type AppLockContextType = {
   lockEnabled: boolean;
   lockMode: LockMode | null;
   enableLock: (mode: LockMode) => Promise<void>;
   disableLock: () => Promise<void>;
-  isReady: boolean;
   isLocked: boolean;
 };
 
@@ -32,22 +58,18 @@ export function useAppLock() {
 }
 
 export function AppLockProvider({ children }: { children: React.ReactNode }) {
-  const [lockMode, setLockMode] = useState<LockMode | null>(null);
-  const [isLocked, setIsLocked] = useState(false);
-  const [isReady, setIsReady] = useState(false);
+  // Read synchronously so the very first frame is already locked: an async read lets the screens
+  // underneath render (and show balances) before the lock screen arrives.
+  const [lockMode, setLockMode] = useState<LockMode | null>(() => LockStorage.getLockModeSync());
+  const [isLocked, setIsLocked] = useState(lockMode !== null);
   const backgroundedAt = useRef<number | null>(null);
+  const lockEnabled = lockMode !== null;
 
   useEffect(() => {
-    LockStorage.getLockMode().then(mode => {
-      setLockMode(mode);
-      if (mode) setIsLocked(true);
-      setIsReady(true);
-    });
-  }, []);
+    void setScreenPrivacy(lockEnabled);
+  }, [lockEnabled]);
 
   useEffect(() => {
-    if (!isReady) return;
-
     const sub = AppState.addEventListener('change', (next: AppStateStatus) => {
       if (next === 'background' || next === 'inactive') {
         backgroundedAt.current = Date.now();
@@ -62,7 +84,7 @@ export function AppLockProvider({ children }: { children: React.ReactNode }) {
     });
 
     return () => sub.remove();
-  }, [isReady, lockMode]);
+  }, [lockMode]);
 
   const enableLock = useCallback(async (mode: LockMode) => {
     await LockStorage.setLockMode(mode);
@@ -80,14 +102,14 @@ export function AppLockProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const contextValue = useMemo(
-    () => ({ lockEnabled: lockMode !== null, lockMode, enableLock, disableLock, isReady, isLocked }),
-    [lockMode, enableLock, disableLock, isReady, isLocked],
+    () => ({ lockEnabled, lockMode, enableLock, disableLock, isLocked }),
+    [lockEnabled, lockMode, enableLock, disableLock, isLocked],
   );
 
   return (
     <AppLockContext.Provider value={contextValue}>
       {children}
-      <Modal visible={isLocked} animationType="fade" presentationStyle="fullScreen" statusBarTranslucent>
+      <Modal visible={isLocked} animationType="none" presentationStyle="fullScreen" statusBarTranslucent>
         <LockScreen onUnlock={handleUnlock} />
       </Modal>
     </AppLockContext.Provider>

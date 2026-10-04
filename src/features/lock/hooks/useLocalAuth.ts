@@ -23,6 +23,15 @@ export async function getBiometricCapability(): Promise<BiometricCapability> {
   };
 }
 
+/**
+ * Whether the device can verify its owner at all: biometrics or the screen-lock PIN, pattern or
+ * passcode. `authenticateWithBiometrics` falls back to that credential, so a biometric app lock
+ * stays usable after fingerprints or faces are removed.
+ */
+export async function canAuthenticateOnDevice(): Promise<boolean> {
+  return (await LocalAuthentication.getEnrolledLevelAsync()) !== LocalAuthentication.SecurityLevel.NONE;
+}
+
 export async function authenticateWithBiometrics(reason: string): Promise<boolean> {
   const result = await LocalAuthentication.authenticateAsync({
     promptMessage: reason,

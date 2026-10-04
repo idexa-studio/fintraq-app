@@ -1,4 +1,5 @@
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
+import { BottomFade } from '@/src/components/ui/BottomFade';
 import type { IconSource } from '@/src/components/ui/Icon';
 import { Icon } from '@/src/components/ui/Icon';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -9,6 +10,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { tabBarClearance } from '@/src/theme/tokens';
 
 // Tab indices matching _layout.tsx order: 0=index, 1=accounts, 2=analytics, 3=settings
 const TAB_ICONS: IconSource[] = ['home', 'wallet-stack', 'bar-chart', 'settings'];
@@ -96,6 +98,8 @@ export const SplitIslandTabBar = React.memo(function SplitIslandTabBar({
   );
 
   return (
+    <>
+    <BottomFade height={tabBarClearance(insets.bottom) + theme.spacing('6')} />
     <View style={styles.container} pointerEvents="box-none">
       {/* Left pill: Home + Accounts */}
       <View style={styles.leftWrap}>{renderIsland(LEFT_INDICES)}</View>
@@ -115,6 +119,7 @@ export const SplitIslandTabBar = React.memo(function SplitIslandTabBar({
       {/* Right pill: Analytics + Settings */}
       <View style={styles.rightWrap}>{renderIsland(RIGHT_INDICES)}</View>
     </View>
+    </>
   );
 });
 

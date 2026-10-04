@@ -36,6 +36,7 @@ export const NetWorthCard = React.memo(function NetWorthCard({ group, currencies
 
       <MoneyText
         amount={group.net}
+        animate
         currency={group.currency}
         weight="bold"
         style={styles.net}

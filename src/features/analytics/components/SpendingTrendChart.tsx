@@ -1,10 +1,11 @@
 import * as Haptics from 'expo-haptics';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { MoneyText, Text } from '@/src/components/ui';
+import { StyleSheet, View } from 'react-native';
+import { BentoPressable, MoneyText, Text } from '@/src/components/ui';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { toTrendBars } from '@/src/utils/analytics';
+import { magnitudeRamp } from '@/src/theme/chart';
 import { formatCurrency } from '@/src/utils/format';
 
 export type TrendBucket = { label: string; income: number; expense: number };
@@ -23,7 +24,7 @@ const HEIGHT = 140;
  */
 export const SpendingTrendChart = React.memo(function SpendingTrendChart({ data, currency }: Props) {
   const theme = useTheme();
-  const { colors, alpha } = theme;
+  const ramp = useMemo(() => magnitudeRamp(theme.colors), [theme.colors]);
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -59,8 +60,9 @@ export const SpendingTrendChart = React.memo(function SpendingTrendChart({ data,
         {bars.map((bar, i) => {
           const isSelected = i === selectedIndex;
           return (
-            <Pressable
+            <BentoPressable
               key={`${bar.label}-${i}`}
+              scaleOnPress={false}
               style={styles.slot}
               onPress={() => {
                 Haptics.selectionAsync().catch(() => {});
@@ -75,11 +77,11 @@ export const SpendingTrendChart = React.memo(function SpendingTrendChart({ data,
                   styles.bar,
                   {
                     height: bar.amount > 0 ? Math.max(4, (bar.amount / max) * HEIGHT) : 2,
-                    backgroundColor: isSelected ? colors.danger : bar.amount > average ? alpha(colors.danger, 'medium') : alpha(colors.danger, 'soft'),
+                    backgroundColor: isSelected ? ramp.active : bar.amount > average ? ramp.mid : ramp.low,
                   },
                 ]}
               />
-            </Pressable>
+            </BentoPressable>
           );
         })}
       </View>

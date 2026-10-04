@@ -28,6 +28,13 @@ export interface IAPProduct {
 }
 
 /**
+ * Whether a purchase has actually been paid for. A pending purchase (cash, bank transfer or a
+ * parent's approval still outstanding on Google Play) can still be declined or expire, so it must
+ * not grant the product and must not be acknowledged.
+ */
+export const isSettledPurchase = (purchase: IAP.Purchase): boolean => purchase.purchaseState !== 'pending';
+
+/**
  * IAPService: A clean encapsulation of store interactions with 'Self-Healing' connectivity.
  * 
  * Features:
@@ -150,7 +157,7 @@ export class IAPService {
   }
 
   /**
-   * Retrieves all verified available purchases for the current user.
+   * Retrieves the purchases the current user owns. Pending ones are left out: they aren't paid yet.
    * 
    * @returns Array of confirmed Purchase objects.
    */
@@ -158,7 +165,7 @@ export class IAPService {
     return this.execute(async () => {
       const result = await IAP.getAvailablePurchases();
       // Ensure specific Purchase typing from StoreKit/Play results
-      return (result as unknown as IAP.Purchase[]) || [];
+      return ((result as unknown as IAP.Purchase[]) || []).filter(isSettledPurchase);
     });
   }
 

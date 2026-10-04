@@ -10,7 +10,7 @@ import { runCloudBackup } from './cloud-backup.service';
 import { isBackupInProgressError } from './google-drive.errors';
 import { GoogleDriveService } from './google-drive.service';
 
-export type AutoBackupSkipReason = 'not_pro' | 'disabled' | 'signed_out' | 'busy' | 'not_due';
+export type AutoBackupSkipReason = 'not_pro' | 'disabled' | 'signed_out' | 'busy' | 'not_due' | 'unclaimed_backup';
 
 export type AutoBackupResult =
   | { outcome: 'ran'; meta: CloudBackupFileMeta }
@@ -50,7 +50,18 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
   const account = await GoogleDriveService.getCurrentUser();
   if (!account) return skipped(tag, 'signed_out');
 
-  LoggerService.info('AUTO_BACKUP', `[${tag}] Starting auto-backup for ${account.email}`);
+  // A fresh install that hasn't restored would replace the only copy of the user's history with
+  // an empty ledger. Leave that backup alone until they restore it or back up by hand.
+  if (!force && !(await BackupPreferences.hasSyncedWithDrive())) {
+    try {
+      const remote = await GoogleDriveService.findLatestBackup();
+      if (remote && !(await BackupPreferences.isOwnBackup(remote.id))) return skipped(tag, 'unclaimed_backup');
+    } catch (error) {
+      return { outcome: 'failed', error };
+    }
+  }
+
+  LoggerService.info('AUTO_BACKUP', `[${tag}] Starting auto-backup`);
   try {
     const meta = await runCloudBackup({
       trigger: force ? 'dev_qa' : isBackground ? 'auto_background' : 'auto_foreground',

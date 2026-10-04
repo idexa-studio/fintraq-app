@@ -1,5 +1,5 @@
 import { OTHERS_CATEGORY } from '@/src/constants/defaultCategories';
-import { and, desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, ne, sql } from 'drizzle-orm';
 import { db } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import { TransactionType } from '@/src/types';
@@ -228,13 +228,6 @@ export const getLoansSummary = async (currency: string): Promise<LoanSummary> =>
   };
 };
 
-export const getActiveLoansWithReminders = async (): Promise<Loan[]> => {
-  return db
-    .select()
-    .from(loans)
-    .where(and(eq(loans.status, 'active'), eq(loans.emiReminderEnabled, true)));
-};
-
 export const resolveLoanCategory = async (): Promise<number> => {
   // Try to find 'Loan/EMI' (case-insensitive)
   const [loanEmi] = await db
@@ -341,7 +334,8 @@ export const addRepayment = async (payload: {
   });
 };
 
+/** Open loans, for the free-plan cap. An overdue loan is still open, so only settled ones are left out. */
 export const getLoansCount = async (): Promise<number> => {
-  const [result] = await db.select({ count: sql<number>`COUNT(*)` }).from(loans).where(eq(loans.status, 'active'));
+  const [result] = await db.select({ count: sql<number>`COUNT(*)` }).from(loans).where(ne(loans.status, 'repaid'));
   return result?.count ?? 0;
 };

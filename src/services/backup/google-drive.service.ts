@@ -127,7 +127,7 @@ class GoogleDriveServiceClass {
 
     const { user } = await signInWithCredential(getAuth(), GoogleAuthProvider.credential(idToken));
     const account = mapFirebaseUser(user);
-    LoggerService.info('GOOGLE_DRIVE', `Signed in: ${account.email}`);
+    LoggerService.info('GOOGLE_DRIVE', 'Signed in');
     return account;
   }
 

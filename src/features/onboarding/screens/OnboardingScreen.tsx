@@ -341,7 +341,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         return;
       }
       signedInEmail = signedInUser.email;
-      LoggerService.info('ONBOARDING', `Restoring backup for ${signedInUser.email}`);
+      LoggerService.info('ONBOARDING', 'Restoring backup');
       await restoreLatest();
       LoggerService.info('ONBOARDING', 'Restore finished');
       // Someone restoring onto a new device is a backup user: keep them protected here too.
@@ -361,7 +361,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
       const isNoBackup = isNoBackupError(e);
 
       if (isNoBackup) {
-        LoggerService.info('ONBOARDING', `No backup file found for ${signedInEmail}`);
+        LoggerService.info('ONBOARDING', 'No backup file found for the signed-in account');
       } else {
         LoggerService.warn('ONBOARDING', 'Restore during onboarding failed', e);
       }

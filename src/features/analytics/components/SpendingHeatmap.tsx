@@ -8,6 +8,7 @@ import { useDailySpend } from '@/src/features/dashboard/hooks/dashboard';
 import { buildHeatmap, HeatCell, HeatLevel, heatmapStart } from '@/src/features/dashboard/utils/widgets';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { getLocalISOString } from '@/src/utils/date';
+import { magnitudeRamp } from '@/src/theme/chart';
 import { formatCurrency } from '@/src/utils/format';
 
 type Props = { currency: string };
@@ -40,14 +41,8 @@ export const SpendingHeatmap = React.memo(function SpendingHeatmap({ currency }:
   const selected = grid.flat().find((c) => c.date === selectedDate) ?? todayCell;
 
   const levelColor = useMemo(() => {
-    const { colors, alpha } = theme;
-    return {
-      0: colors.card,
-      1: alpha(colors.danger, 'soft'),
-      2: alpha(colors.danger, 'medium'),
-      3: alpha(colors.danger, 'strong'),
-      4: colors.danger,
-    } satisfies Record<HeatLevel, string>;
+    const ramp = magnitudeRamp(theme.colors);
+    return { 0: ramp.none, 1: ramp.low, 2: ramp.mid, 3: ramp.high, 4: ramp.peak } satisfies Record<HeatLevel, string>;
   }, [theme]);
 
   const describe = (cell: HeatCell) => {
@@ -146,6 +141,6 @@ const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
     cellSlot: { flex: 1 },
     cell: { aspectRatio: 1.35, borderRadius: radius('sm') },
     future: { backgroundColor: 'transparent', borderWidth: 1, borderStyle: 'dashed', borderColor: alpha(colors.text, 'subtle') },
-    today: { borderWidth: 2, borderColor: colors.primaryInk },
-    selected: { borderWidth: 2, borderColor: colors.text },
+    today: { borderWidth: 2, borderColor: colors.textMuted },
+    selected: { borderWidth: 2, borderColor: colors.primary },
   });

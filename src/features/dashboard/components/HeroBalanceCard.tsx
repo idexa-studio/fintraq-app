@@ -33,7 +33,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
       </View>
 
       {/* Shrinks rather than wraps or clips when the balance runs long. */}
-      <MoneyText amount={balance} currency={currency} style={styles.balance} weight="bold" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} maxChars={16} />
+      <MoneyText amount={balance} currency={currency} animate style={styles.balance} weight="bold" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} maxChars={16} />
 
       <HeroSplit
         primary={{ label: t('transactions.income'), amount: income }}

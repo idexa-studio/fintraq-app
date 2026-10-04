@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '@/src/components/ui';
 import { DOW_KEYS } from '@/src/constants/calendar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { magnitudeRamp } from '@/src/theme/chart';
 import { formatCurrency } from '@/src/utils/format';
 
 /** Average spend per weekday (0 = Sunday). */
@@ -19,7 +20,7 @@ const HEIGHT = 120;
  */
 export const DowChart = React.memo(function DowChart({ data, currency }: Props) {
   const theme = useTheme();
-  const { colors, alpha } = theme;
+  const { colors } = theme;
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -31,8 +32,8 @@ export const DowChart = React.memo(function DowChart({ data, currency }: Props) 
     });
   }, [data]);
 
-  const shade = (ratio: number, isPeak: boolean) =>
-    isPeak ? colors.danger : ratio > 0.66 ? alpha(colors.danger, 'strong') : ratio > 0.33 ? alpha(colors.danger, 'medium') : alpha(colors.danger, 'soft');
+  const ramp = useMemo(() => magnitudeRamp(colors), [colors]);
+  const shade = (ratio: number, isPeak: boolean) => (isPeak ? ramp.active : ratio > 0.66 ? ramp.high : ratio > 0.33 ? ramp.mid : ramp.low);
 
   return (
     <View style={styles.row}>
@@ -45,7 +46,7 @@ export const DowChart = React.memo(function DowChart({ data, currency }: Props) 
         >
           <View style={styles.track}>
             {d.isPeak ? (
-              <Text variant="label" color={colors.danger} numberOfLines={1} style={styles.peakLabel}>
+              <Text variant="label" numberOfLines={1} style={styles.peakLabel}>
                 {formatCurrency(d.total, currency, true)}
               </Text>
             ) : null}

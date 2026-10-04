@@ -45,23 +45,17 @@ export const DatabaseBackupService = {
       // Passive checkpoint is opportunistic.
     }
 
-    const [allAccounts, allCategories, allPersons, allLoans, allPayments, allSeederState] = await Promise.all([
-      db.select().from(accounts),
-      db.select().from(categories),
-      db.select().from(persons),
-      db.select().from(loans),
-      db.select().from(payments),
-      db.select().from(seederState),
-    ]);
-
-    const data: BackupData = {
-      accounts: allAccounts,
-      categories: allCategories,
-      persons: allPersons,
-      loans: allLoans,
-      payments: allPayments,
-      seederState: allSeederState,
-    };
+    // One read transaction, so every table is read from the same point in time. Separate queries
+    // could straddle a write and export a payment without its balance change, or a loan without
+    // its payment. Sync API throughout: an `await` inside would end the transaction early.
+    const data: BackupData = db.transaction((tx) => ({
+      accounts: tx.select().from(accounts).all(),
+      categories: tx.select().from(categories).all(),
+      persons: tx.select().from(persons).all(),
+      loans: tx.select().from(loans).all(),
+      payments: tx.select().from(payments).all(),
+      seederState: tx.select().from(seederState).all(),
+    }));
 
     const metadata: BackupMetadata = {
       version: BACKUP_FORMAT_VERSION,
@@ -70,11 +64,11 @@ export const DatabaseBackupService = {
       // Restore re-stringifies the parsed `data` and compares, so hash exactly that serialisation.
       checksum: await sha256(JSON.stringify(data)),
       counts: {
-        accounts: allAccounts.length,
-        categories: allCategories.length,
-        persons: allPersons.length,
-        loans: allLoans.length,
-        payments: allPayments.length,
+        accounts: data.accounts.length,
+        categories: data.categories.length,
+        persons: data.persons.length,
+        loans: data.loans.length,
+        payments: data.payments.length,
       },
     };
 

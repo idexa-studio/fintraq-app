@@ -2,6 +2,7 @@ import type { IconProps, IconSource } from './Icon';
 import { Icon } from './Icon';
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
+import { useTheme } from '@/src/providers/ThemeProvider';
 import { alpha, foregroundOn } from '@/src/theme/tokens';
 
 type IconAvatarVariant = 'solid' | 'subtle' | 'outline';
@@ -26,6 +27,7 @@ export const IconAvatar = React.memo(function IconAvatar({
   weight = 'regular',
   style,
 }: IconAvatarProps) {
+  const { isDark } = useTheme();
 
   const { bg, iconColor, border, resolvedIconSize, borderRadius } = React.useMemo(() => {
     let bg: string;
@@ -45,7 +47,9 @@ export const IconAvatar = React.memo(function IconAvatar({
         break;
       case 'subtle':
       default:
-        bg = alpha(color, 'subtle');
+        // A 10% tint all but disappears on the dark surface; a stronger wash keeps the tile
+        // reading as colour there, the way it does on paper.
+        bg = alpha(color, isDark ? 'soft' : 'subtle');
         iconColor = color;
         border = undefined;
         break;
@@ -59,7 +63,7 @@ export const IconAvatar = React.memo(function IconAvatar({
       // Squircle: 30% of size keeps the curve proportional at every size.
       borderRadius: Math.round(size * 0.3),
     };
-  }, [variant, color, iconSize, size]);
+  }, [variant, color, iconSize, size, isDark]);
 
   const containerStyle = React.useMemo(
     () => [styles.base, { width: size, height: size, borderRadius, backgroundColor: bg }, border, style],

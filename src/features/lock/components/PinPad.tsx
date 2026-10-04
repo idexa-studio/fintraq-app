@@ -5,7 +5,7 @@ import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-type Props = {
+type PinPadProps = {
   value: string;
   onChange: (val: string) => void;
   maxLength?: number;
@@ -19,10 +19,10 @@ export const PinPad = React.memo(function PinPad({
   onChange,
   maxLength = 6,
   disabled = false,
-}: Props) {
-  const { colors, typography, spacing, radius } = useTheme();
+}: PinPadProps) {
+  const { colors, spacing, radius } = useTheme();
   const { t } = useTranslation();
-  const styles = useMemo(() => createStyles({ colors, spacing, radius, typography }), [colors, spacing, radius, typography]);
+  const styles = useMemo(() => createStyles({ spacing, radius }), [spacing, radius]);
 
   const handleKey = useCallback((key: string) => {
     if (disabled) return;
@@ -68,11 +68,11 @@ export const PinPad = React.memo(function PinPad({
               accessibilityLabel={key === 'Del' ? t('ui.delKey') : key}
             >
               {key === 'Del' ? (
-                <Text style={[styles.delText, { fontFamily: typography.fonts.medium, color: colors.text }]}>
+                <Text variant="subheading">
                   {t('ui.delKey')}
                 </Text>
               ) : (
-                <Text style={[styles.keyText, { fontFamily: typography.styles.rowLabel.fontFamily, color: colors.text }]}>
+                <Text variant="display">
                   {key}
                 </Text>
               )}
@@ -84,9 +84,9 @@ export const PinPad = React.memo(function PinPad({
   );
 });
 
-type StyleDeps = Pick<ReturnType<typeof useTheme>, 'colors' | 'spacing' | 'radius' | 'typography'>;
+type StyleDeps = Pick<ReturnType<typeof useTheme>, 'spacing' | 'radius'>;
 
-function createStyles({ colors, spacing, radius, typography }: StyleDeps) {
+function createStyles({ spacing, radius }: StyleDeps) {
   return StyleSheet.create({
     container: {
       alignItems: 'center',
@@ -118,12 +118,6 @@ function createStyles({ colors, spacing, radius, typography }: StyleDeps) {
     keyPlaceholder: {
       width: 80,
       height: 80,
-    },
-    keyText: {
-      ...typography.metrics.display,
-    },
-    delText: {
-      ...typography.metrics.xl,
     },
   });
 }

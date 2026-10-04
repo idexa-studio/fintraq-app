@@ -94,15 +94,4 @@ const createStyles = ({ typography, spacing, radius , layout, sizes }: ThemeCont
   textColumn: {
     flex: 1,
   },
-  check: {
-    position: 'absolute',
-    top: -6,
-    right: -6,
-    width: 18,
-    height: 18,
-    borderRadius: radius('full'),
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-  },
 });

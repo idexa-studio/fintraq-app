@@ -37,3 +37,25 @@ export function isTransferCompatible(
   if (TRANSFER_SOURCE_BLOCKED.has(fromType)) return false;
   return (TRANSFER_COMPATIBLE_DESTINATIONS[fromType] as AccountType[]).includes(toType);
 }
+
+/** The fields of an account that decide where it can send money. */
+type TransferParty = { id: number; currency: string; accountType: string | null };
+
+/**
+ * The accounts `from` can transfer to: same currency (balances never mix currencies), a
+ * compatible type, and not itself. The one rule behind the transfer form's destination list and
+ * every "can the user transfer at all?" check, so they can't disagree.
+ */
+export function transferDestinations<T extends TransferParty>(from: TransferParty, accounts: readonly T[]): T[] {
+  return accounts.filter(
+    (to) =>
+      to.id !== from.id &&
+      to.currency === from.currency &&
+      isTransferCompatible(from.accountType as AccountType | null, to.accountType as AccountType | null),
+  );
+}
+
+/** Whether any transfer can be made: some account has at least one valid destination. */
+export function hasPossibleTransfer(accounts: readonly TransferParty[]): boolean {
+  return accounts.some((from) => transferDestinations(from, accounts).length > 0);
+}
