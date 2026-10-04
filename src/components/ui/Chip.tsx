@@ -12,6 +12,8 @@ type ChipProps = {
   /** Accent color for active bg tint + text. Defaults to theme primary. */
   color?: string;
   icon?: IconSource;
+  /** Glyph after the label, e.g. a chevron on a chip that opens a picker. */
+  trailingIcon?: IconSource;
   onPress: () => void;
   /** Shows a ✕ that removes the chip (active filters). */
   onClear?: () => void;
@@ -19,6 +21,7 @@ type ChipProps = {
   on?: 'page' | 'surface';
   /** `sm` for compact pickers that sit above content (a currency filter); `md` (default) everywhere else. */
   size?: 'sm' | 'md';
+  accessibilityLabel?: string;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -27,10 +30,12 @@ export const Chip = React.memo(function Chip({
   isActive = false,
   color,
   icon,
+  trailingIcon,
   onPress,
   onClear,
   on = 'page',
   size = 'md',
+  accessibilityLabel,
   style,
 }: ChipProps) {
   const { colors, typography, spacing } = useTheme();
@@ -57,8 +62,8 @@ export const Chip = React.memo(function Chip({
   );
 
   const containerStyle = useMemo(
-    () => [styles.base, size === 'sm' && styles.sm, { backgroundColor: bg, gap: icon ? spacing('2') : 0 }, style],
-    [bg, icon, size, spacing, style],
+    () => [styles.base, size === 'sm' && styles.sm, { backgroundColor: bg, gap: icon || trailingIcon ? spacing(size === 'sm' ? '1' : '2') : 0 }, style],
+    [bg, icon, trailingIcon, size, spacing, style],
   );
 
   const textStyle = useMemo(
@@ -75,11 +80,15 @@ export const Chip = React.memo(function Chip({
       hitSlop={size === 'sm' ? 8 : 4}
       accessibilityRole="button"
       accessibilityState={{ selected: isActive }}
+      accessibilityLabel={accessibilityLabel}
     >
       {icon && (
         <Icon name={icon} size={size === 'sm' ? 12 : 14} color={isActive ? ink : colors.textMuted} />
       )}
       <Text style={textStyle} numberOfLines={1}>{label}</Text>
+      {trailingIcon ? (
+        <Icon name={trailingIcon} size={size === 'sm' ? 12 : 14} color={isActive ? ink : colors.textMuted} weight="bold" />
+      ) : null}
       {onClear ? (
         <BentoPressable onPress={onClear} hitSlop={10} accessibilityRole="button" accessibilityLabel={`${label} ✕`} style={styles.clear}>
           <Icon name="x" size={12} color={isActive ? ink : colors.textMuted} weight="bold" />
