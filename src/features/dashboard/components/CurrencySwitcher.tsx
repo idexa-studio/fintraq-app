@@ -21,7 +21,7 @@ type Props = {
  */
 export const CurrencySwitcher = React.memo(function CurrencySwitcher({ currencies, selected, onSelect, amounts }: Props) {
   const theme = useTheme();
-  const { colors } = theme;
+  const { heroCard: hero } = theme;
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [open, setOpen] = useState(false);
@@ -47,17 +47,17 @@ export const CurrencySwitcher = React.memo(function CurrencySwitcher({ currencie
         accessibilityLabel={`${t('ui.currency')}: ${selected}`}
         hitSlop={8}
       >
-        <Text variant="label" color={colors.onInk}>
+        <Text variant="label" color={hero.textPrimary}>
           {selected}
         </Text>
-        <Icon icon={CaretDownIcon} size={14} color={colors.onHeroPositive} weight="bold" />
+        <Icon icon={CaretDownIcon} size={14} color={hero.income} weight="bold" />
       </BentoPressable>
       <OptionsBottomSheet visible={open} onClose={() => setOpen(false)} title={t('ui.currency')} options={options} />
     </>
   );
 });
 
-const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
+const createStyles = ({ heroCard: hero, spacing, radius, alpha }: ThemeContextType) =>
   StyleSheet.create({
     chip: {
       flexDirection: 'row',
@@ -67,6 +67,6 @@ const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
       paddingLeft: spacing('3'),
       paddingRight: spacing('2'),
       borderRadius: radius('full'),
-      backgroundColor: alpha(colors.onInk, 'subtle'),
+      backgroundColor: hero.tileStrong,
     },
   });

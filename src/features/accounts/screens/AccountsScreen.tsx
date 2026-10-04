@@ -1,6 +1,6 @@
-import { Badge, Card, ConfirmDialog, Divider, EmptyState, Icon, IconAvatar, IconButton, MoneyText, OptionsDialog, Screen, Text } from '@/src/components/ui';
+import { ConfirmDialog, EmptyState, IconAvatar, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, MoneyText, OptionsDialog, Screen, Text } from '@/src/components/ui';
 import type { OptionsDialogOption } from '@/src/components/ui';
-import { ArrowDownLeftIcon, ArrowUpRightIcon, DotsThreeVerticalIcon, PencilSimpleIcon, TrashIcon, WalletIcon } from '@/src/components/ui/icons';
+import { PencilSimpleIcon, TrashIcon, WalletIcon } from '@/src/components/ui/icons';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/accounts';
 import { NetWorthCard } from '@/src/features/accounts/components/NetWorthCard';
@@ -13,13 +13,12 @@ import { resolveAccountTypeIcon } from '@/src/utils/icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { toErrorMessage } from '@/src/utils/errors';
 
 export const AccountsScreen = React.memo(function AccountsScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { data: accounts } = useAccounts();
@@ -28,6 +27,13 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
   const { showAlert } = usePremium();
   const { profile } = useSettings();
   const netWorth = useMemo(() => netWorthByCurrency(accounts ?? [], profile.defaultCurrency), [accounts, profile.defaultCurrency]);
+
+  // The hero shows one currency; its accounts lead the list, other currencies follow in order.
+  const [pickedCurrency, setPickedCurrency] = useState<string | null>(null);
+  const hero = netWorth.find((g) => g.currency === pickedCurrency) ?? netWorth[0];
+  const groups = useMemo(() => (hero ? [hero, ...netWorth.filter((g) => g !== hero)] : []), [hero, netWorth]);
+  const currencies = useMemo(() => netWorth.map((g) => g.currency), [netWorth]);
+  const netByCurrency = useMemo(() => Object.fromEntries(netWorth.map((g) => [g.currency, g.net])), [netWorth]);
 
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [showOptions, setShowOptions] = useState(false);
@@ -125,73 +131,56 @@ export const AccountsScreen = React.memo(function AccountsScreen() {
         <EmptyState icon={WalletIcon} title={t('accounts.none')} actionLabel={t('accountForm.new')} onAction={handleAdd} />
       ) : null}
 
-      {netWorth.length > 0 ? <NetWorthCard groups={netWorth} /> : null}
+      {hero ? (
+        <NetWorthCard group={hero} currencies={currencies} netByCurrency={netByCurrency} onCurrencySelect={setPickedCurrency} />
+      ) : null}
 
-      {accounts?.map((account) => {
-        const accColor = colorNumberToHex(account.color);
-        const hasAccountNumber = account.accountNumber && account.accountNumber !== 'N/A';
-        return (
-          <Card key={account.id} onPress={() => handleCardPress(account.id)} accessibilityLabel={account.name} style={styles.card}>
-            <View style={styles.cardTop}>
-              <IconAvatar icon={resolveAccountTypeIcon(account.accountType)} color={accColor} size={44} />
-              <View style={styles.cardMeta}>
-                <Text variant="bodyStrong" numberOfLines={1}>{account.name}</Text>
-                {hasAccountNumber ? (
-                  <Text variant="caption" tone="muted">{'•••• ' + account.accountNumber!.slice(-4)}</Text>
-                ) : null}
-              </View>
-              <Badge label={account.currency} variant="muted" style={styles.centered} />
-              <IconButton
-                icon={DotsThreeVerticalIcon}
-                variant="ghost"
-                size="sm"
-                onPress={() => handleMenuOpen(account)}
-                accessibilityLabel={t('categories.manage')}
+      {groups.map((group) => (
+        <ListGroup
+          key={group.currency}
+          title={`${group.currency} · ${group.accounts.length === 1 ? t('transactions.oneAccount') : t('transactions.accountsCount', { count: group.accounts.length })}`}
+        >
+          {group.accounts.map((account) => {
+            const masked = account.accountNumber && account.accountNumber !== 'N/A' ? `•••• ${account.accountNumber.slice(-4)}` : null;
+            // Share of what is owned in this currency; an overdrawn account or card owes instead.
+            const share = account.balance > 0 && group.assets > 0 ? Math.round((account.balance / group.assets) * 100) : null;
+            const detail = [masked, share !== null ? t('accounts.shareOfAssets', { pct: share }) : null].filter(Boolean).join('  ·  ');
+            return (
+              <ListItem
+                key={account.id}
+                title={account.name}
+                subtitle={detail || undefined}
+                leading={<IconAvatar icon={resolveAccountTypeIcon(account.accountType)} color={colorNumberToHex(account.color)} size={LIST_ITEM_LEADING_SIZE + 4} />}
+                trailing={
+                  <MoneyText
+                    amount={Math.abs(account.balance)}
+                    currency={account.currency}
+                    type={account.balance < 0 ? 'DR' : 'NONE'}
+                    weight="semibold"
+                    style={styles.balance}
+                    numberOfLines={1}
+                  />
+                }
+                onPress={() => handleCardPress(account.id)}
+                onLongPress={() => handleMenuOpen(account)}
               />
-            </View>
+            );
+          })}
+        </ListGroup>
+      ))}
 
-            <View style={styles.balance}>
-              <Text variant="caption" tone="muted">{t('accounts.availableBalance')}</Text>
-              <MoneyText amount={account.balance} currency={account.currency} weight="bold" style={styles.balanceValue} />
-            </View>
-
-            <Divider />
-
-            <View style={styles.stats}>
-              <View style={styles.statCell}>
-                <View style={styles.statLabel}>
-                  <Icon icon={ArrowDownLeftIcon} size={14} color={colors.success} weight="bold" />
-                  <Text variant="caption" tone="muted">{t('accounts.totalIn')}</Text>
-                </View>
-                <MoneyText amount={account.income} currency={account.currency} type="CR" compact style={styles.statValue} />
-              </View>
-              <Divider vertical />
-              <View style={styles.statCell}>
-                <View style={styles.statLabel}>
-                  <Icon icon={ArrowUpRightIcon} size={14} color={colors.danger} weight="bold" />
-                  <Text variant="caption" tone="muted">{t('accounts.totalOut')}</Text>
-                </View>
-                <MoneyText amount={account.expense} currency={account.currency} type="DR" compact style={styles.statValue} />
-              </View>
-            </View>
-          </Card>
-        );
-      })}
+      {accounts && accounts.length > 0 ? (
+        <Text variant="caption" tone="muted" align="center" style={styles.hint}>
+          {t('accounts.manageHint')}
+        </Text>
+      ) : null}
     </Screen>
   );
 });
 
 const createStyles = ({ spacing, typography }: ThemeContextType) =>
   StyleSheet.create({
-    content: { gap: spacing('3') },
-    card: { gap: spacing('4') },
-    cardTop: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
-    cardMeta: { flex: 1, gap: 2 },
-    centered: { alignSelf: 'center' },
-    balance: { gap: spacing('0.5') },
-    balanceValue: { ...typography.variants.amountLarge },
-    stats: { flexDirection: 'row', alignItems: 'stretch', gap: spacing('4') },
-    statCell: { flex: 1, gap: spacing('1') },
-    statLabel: { flexDirection: 'row', alignItems: 'center', gap: spacing('1') },
-    statValue: { ...typography.variants.amount },
+    content: { gap: spacing('5') },
+    balance: { ...typography.metrics.md },
+    hint: { marginTop: -spacing('2') },
   });

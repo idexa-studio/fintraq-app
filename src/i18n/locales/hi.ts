@@ -96,6 +96,7 @@ const hi: Translation = {
   },
   system: { migrationError: 'डेटाबेस माइग्रेशन लोड नहीं हुआ', initializingDatabase: 'डेटाबेस शुरू हो रहा है...' },
   accounts: {
+    shareOfAssets: 'संपत्ति का {{pct}}%', manageHint: 'बदलने या हटाने के लिए खाते को देर तक दबाएँ।',
     netWorth: 'कुल संपत्ति', assets: 'संपत्ति', debts: 'देनदारी',
     title: 'खाते', account: 'खाता', edit: 'संपादित करें', delete: 'हटाएँ', removeTransactions: 'पहले सभी लेन-देन हटाएँ',
     cannotDelete: 'खाता हटाया नहीं जा सकता', deleteFailed: 'खाता हटाया नहीं जा सका।', availableBalance: 'उपलब्ध बैलेंस', totalIn: 'कुल प्राप्त', totalOut: 'कुल खर्च',

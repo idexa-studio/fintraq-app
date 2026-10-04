@@ -21,7 +21,7 @@ type Props = {
  */
 export const QuickActions = React.memo(function QuickActions({ canTransfer }: Props) {
   const theme = useTheme();
-  const { colors } = theme;
+  const { heroCard: hero } = theme;
   const { t } = useTranslation();
   const router = useRouter();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -49,8 +49,8 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
           accessibilityRole="button"
           accessibilityLabel={action.label}
         >
-          <Icon icon={action.icon} size={20} color={colors.onHeroPositive} weight="bold" />
-          <Text variant="label" color={colors.onInk} numberOfLines={1}>
+          <Icon icon={action.icon} size={20} color={hero.income} weight="bold" />
+          <Text variant="label" color={hero.textPrimary} numberOfLines={1}>
             {action.label}
           </Text>
         </BentoPressable>
@@ -59,7 +59,7 @@ export const QuickActions = React.memo(function QuickActions({ canTransfer }: Pr
   );
 });
 
-const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
+const createStyles = ({ heroCard: hero, spacing, radius, alpha }: ThemeContextType) =>
   StyleSheet.create({
     row: { flexDirection: 'row', gap: spacing('2') },
     action: {
@@ -69,6 +69,6 @@ const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
       paddingVertical: spacing('3'),
       paddingHorizontal: spacing('1'),
       borderRadius: radius('lg'),
-      backgroundColor: alpha(colors.onInk, 'faint'),
+      backgroundColor: hero.separator,
     },
   });

@@ -28,7 +28,7 @@ type Props = {
 export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, currency, monthNet, currencies, balances, onCurrencySelect, children }: Props) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors } = theme;
+  const { heroCard: hero } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const isUp = (monthNet ?? 0) >= 0;
@@ -39,7 +39,7 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
     <HeroSurface style={styles.margin}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Text variant="caption" color={colors.onInkMuted}>
+          <Text variant="caption" color={hero.textMuted}>
             {t('dashboard.balance')}
           </Text>
           <StreakBadge />
@@ -60,8 +60,8 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
         />
         {monthNet !== null ? (
           <View style={styles.net}>
-            <Icon icon={isUp ? ArrowUp01Icon : ArrowDown01Icon} size={14} color={isUp ? colors.onHeroPositive : colors.onHeroNegative} weight="bold" />
-            <Text variant="label" color={colors.onInkMuted} numberOfLines={1} style={styles.netText}>
+            <Icon icon={isUp ? ArrowUp01Icon : ArrowDown01Icon} size={14} color={isUp ? hero.income : hero.expense} weight="bold" />
+            <Text variant="label" color={hero.textMuted} numberOfLines={1} style={styles.netText}>
               {t('dashboard.netThisMonth', { amount: `${sign}${formatCurrency(Math.abs(monthNet), currency)}` })}
             </Text>
           </View>
@@ -73,13 +73,13 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   );
 });
 
-const createStyles = ({ colors, spacing, layout, typography }: ThemeContextType) =>
+const createStyles = ({ heroCard: hero, spacing, layout, typography }: ThemeContextType) =>
   StyleSheet.create({
     margin: { marginHorizontal: layout.screenPadding },
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing('3'), minHeight: 30 },
     headerLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing('2'), flexShrink: 1 },
     figure: { gap: spacing('1.5') },
-    balance: { ...typography.metrics.display, color: colors.onInk },
+    balance: { ...typography.metrics.display, color: hero.textPrimary },
     net: { flexDirection: 'row', alignItems: 'center', gap: spacing('1') },
     netText: { flexShrink: 1 },
   });

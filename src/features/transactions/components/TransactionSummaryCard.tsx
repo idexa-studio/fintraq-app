@@ -24,7 +24,7 @@ type Props = {
 export const TransactionSummaryCard = React.memo(function TransactionSummaryCard({ income, expense, currency, currencies, onCurrencySelect, netByCurrency, label }: Props) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors } = theme;
+  const { heroCard: hero } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const cur = currency ?? undefined;
@@ -38,8 +38,8 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
     return (
       <View style={[styles.side, !isIn && styles.sideEnd]}>
         <View style={styles.sideLabel}>
-          <View style={[styles.dot, { backgroundColor: isIn ? colors.onHeroPositive : colors.onHeroNegative }]} />
-          <Text variant="caption" color={colors.onInkMuted} numberOfLines={1}>
+          <View style={[styles.dot, { backgroundColor: isIn ? hero.income : hero.expense }]} />
+          <Text variant="caption" color={hero.textMuted} numberOfLines={1}>
             {isIn ? t('transactions.income') : t('transactions.expenses')}
           </Text>
         </View>
@@ -59,7 +59,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
   return (
     <HeroSurface>
       <View style={styles.header}>
-        <Text variant="caption" color={colors.onInkMuted} numberOfLines={1} style={styles.label}>
+        <Text variant="caption" color={hero.textMuted} numberOfLines={1} style={styles.label}>
           {label ?? t('transactions.netSavings')}
         </Text>
         {currency ? <CurrencySwitcher currencies={currencies} selected={currency} onSelect={onCurrencySelect} amounts={netByCurrency} /> : null}
@@ -78,8 +78,8 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
 
       <View style={styles.flow}>
         <View style={styles.bar} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-          <View style={[styles.segment, { flex: inShare, backgroundColor: colors.onHeroPositive }]} />
-          <View style={[styles.segment, { flex: 1 - inShare, backgroundColor: colors.onHeroNegative }]} />
+          <View style={[styles.segment, { flex: inShare, backgroundColor: hero.income }]} />
+          <View style={[styles.segment, { flex: 1 - inShare, backgroundColor: hero.expense }]} />
         </View>
         <View style={styles.sides}>
           {side('in')}
@@ -90,12 +90,12 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
   );
 });
 
-const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType) =>
+const createStyles = ({ heroCard: hero, spacing, radius, typography }: ThemeContextType) =>
   StyleSheet.create({
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing('3'), minHeight: 30 },
     label: { flexShrink: 1 },
     // The sign carries direction; the figure itself stays white for weight on the ink card.
-    net: { ...typography.metrics.display, color: colors.onInk, marginTop: -spacing('2') },
+    net: { ...typography.metrics.display, color: hero.textPrimary, marginTop: -spacing('2') },
     flow: { gap: spacing('3') },
     bar: { flexDirection: 'row', height: 6, gap: 3 },
     segment: { borderRadius: radius('full') },
@@ -104,5 +104,5 @@ const createStyles = ({ colors, spacing, radius, typography }: ThemeContextType)
     sideEnd: { alignItems: 'flex-end' },
     sideLabel: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
     dot: { width: 8, height: 8, borderRadius: radius('full') },
-    sideValue: { ...typography.metrics.lg, color: colors.onInk },
+    sideValue: { ...typography.metrics.lg, color: hero.textPrimary },
   });

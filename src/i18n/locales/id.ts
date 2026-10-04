@@ -96,6 +96,7 @@ const id: Translation = {
   },
   system: { migrationError: 'Gagal memuat migrasi basis data', initializingDatabase: 'Menginisialisasi basis data...' },
   accounts: {
+    shareOfAssets: '{{pct}}% dari aset', manageHint: 'Tekan lama akun untuk mengedit atau menghapusnya.',
     netWorth: 'Kekayaan bersih', assets: 'Aset', debts: 'Utang',
     title: 'Akun', account: 'Akun', edit: 'Ubah', delete: 'Hapus', removeTransactions: 'Hapus semua transaksi terlebih dahulu',
     cannotDelete: 'Tidak dapat menghapus akun', deleteFailed: 'Gagal menghapus akun.', availableBalance: 'Saldo tersedia', totalIn: 'Total masuk', totalOut: 'Total keluar',

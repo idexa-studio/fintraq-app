@@ -38,7 +38,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
   currency,
 }: Props) {
   const theme = useTheme();
-  const { colors, alpha } = theme;
+  const { heroCard: hero } = theme;
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [showCalc, setShowCalc] = useState(false);
@@ -48,11 +48,11 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
 
   const options = useMemo(
     (): TypeOption[] => [
-      { value: 'DR', label: t('transactions.expense'), icon: ArrowUpRightIcon, color: colors.onHeroNegative },
-      { value: 'CR', label: t('transactions.income'), icon: ArrowDownLeftIcon, color: colors.onHeroPositive },
-      { value: 'TR', label: t('transactions.transfer'), icon: ArrowsLeftRightIcon, color: colors.onHeroInfo },
+      { value: 'DR', label: t('transactions.expense'), icon: ArrowUpRightIcon, color: hero.expense },
+      { value: 'CR', label: t('transactions.income'), icon: ArrowDownLeftIcon, color: hero.income },
+      { value: 'TR', label: t('transactions.transfer'), icon: ArrowsLeftRightIcon, color: hero.transfer },
     ],
-    [t, colors],
+    [t, hero],
   );
   const visible = typeLocked ? options.filter((o) => o.value === type) : options;
 
@@ -65,7 +65,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
             return (
               <BentoPressable
                 key={option.value}
-                style={[styles.type, isActive && { backgroundColor: alpha(option.color, 'soft') }]}
+                style={[styles.type, isActive && styles.typeActive]}
                 onPress={() => {
                   if (typeLocked || isActive) return;
                   Haptics.selectionAsync().catch(() => {});
@@ -76,8 +76,8 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
                 accessibilityRole="tab"
                 accessibilityState={{ selected: isActive, disabled: typeLocked }}
               >
-                <Icon icon={option.icon} size={15} color={isActive ? option.color : colors.onInkMuted} weight="bold" />
-                <Text variant="label" color={isActive ? colors.onInk : colors.onInkMuted} numberOfLines={1}>
+                <Icon icon={option.icon} size={15} color={isActive ? option.color : hero.textMuted} weight="bold" />
+                <Text variant="label" color={isActive ? hero.textPrimary : hero.textMuted} numberOfLines={1}>
                   {option.label}
                 </Text>
               </BentoPressable>
@@ -87,11 +87,11 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
       ) : null}
 
       <View style={styles.amountBlock}>
-        <Text variant="caption" color={colors.onInkMuted}>
+        <Text variant="caption" color={hero.textMuted}>
           {t('transactions.amount')}
         </Text>
         <View style={styles.amountRow}>
-          <Text variant="headline" color={colors.onInkMuted} style={styles.symbol}>
+          <Text variant="headline" color={hero.textMuted} style={styles.symbol}>
             {symbol}
           </Text>
           <TextInput
@@ -100,8 +100,8 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
             onChangeText={onAmountChange}
             keyboardType="decimal-pad"
             placeholder="0.00"
-            placeholderTextColor={alpha(colors.onInk, 'medium')}
-            selectionColor={colors.onHeroPositive}
+            placeholderTextColor={hero.placeholder}
+            selectionColor={hero.income}
             accessibilityLabel={t('transactions.amount')}
             autoFocus
           />
@@ -115,7 +115,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
             accessibilityRole="button"
             accessibilityLabel={t('transactions.calculator')}
           >
-            <Icon icon={CalculatorIcon} size={20} color={colors.onInk} />
+            <Icon icon={CalculatorIcon} size={20} color={hero.textPrimary} />
           </BentoPressable>
         </View>
       </View>
@@ -125,7 +125,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
   );
 });
 
-const createStyles = ({ colors, spacing, radius, layout, typography, alpha }: ThemeContextType) =>
+const createStyles = ({ heroCard: hero, spacing, radius, layout, typography }: ThemeContextType) =>
   StyleSheet.create({
     margin: { marginHorizontal: layout.screenPadding },
     types: {
@@ -133,7 +133,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, alpha }: Th
       gap: spacing('1'),
       padding: spacing('1'),
       borderRadius: radius('full'),
-      backgroundColor: alpha(colors.onInk, 'faint'),
+      backgroundColor: hero.separator,
     },
     type: {
       flex: 1,
@@ -145,6 +145,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, alpha }: Th
       paddingHorizontal: spacing('2'),
       borderRadius: radius('full'),
     },
+    typeActive: { backgroundColor: hero.tileStrong },
     amountBlock: { gap: spacing('1') },
     amountRow: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
     symbol: { flexShrink: 0 },
@@ -154,7 +155,7 @@ const createStyles = ({ colors, spacing, radius, layout, typography, alpha }: Th
       minWidth: 0,
       ...typography.metrics.jumbo,
       fontFamily: typography.fonts.amountBold,
-      color: colors.onInk,
+      color: hero.textPrimary,
       paddingVertical: 0,
     },
     calc: {
@@ -163,6 +164,6 @@ const createStyles = ({ colors, spacing, radius, layout, typography, alpha }: Th
       borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: alpha(colors.onInk, 'subtle'),
+      backgroundColor: hero.tileStrong,
     },
   });

@@ -96,6 +96,7 @@ const mr: Translation = {
   },
   system: { migrationError: 'डेटाबेस मायग्रेशन लोड करताना त्रुटी', initializingDatabase: 'डेटाबेस सुरू होत आहे...' },
   accounts: {
+    shareOfAssets: 'मालमत्तेच्या {{pct}}%', manageHint: 'संपादित किंवा हटवण्यासाठी खात्यावर दीर्घ दाबा.',
     netWorth: 'निव्वळ संपत्ती', assets: 'मालमत्ता', debts: 'देणी',
     title: 'खाती', account: 'खाते', edit: 'संपादित करा', delete: 'हटवा', removeTransactions: 'आधी सर्व व्यवहार काढून टाका',
     cannotDelete: 'खाते हटवता येत नाही', deleteFailed: 'खाते हटवता आले नाही.', availableBalance: 'उपलब्ध शिल्लक', totalIn: 'एकूण जमा', totalOut: 'एकूण खर्च',

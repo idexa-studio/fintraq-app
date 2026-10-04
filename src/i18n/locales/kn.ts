@@ -96,6 +96,7 @@ const kn: Translation = {
   },
   system: { migrationError: 'ಡೇಟಾಬೇಸ್ ಮೈಗ್ರೇಷನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ದೋಷ', initializingDatabase: 'ಡೇಟಾಬೇಸ್ ಸಿದ್ಧವಾಗುತ್ತಿದೆ...' },
   accounts: {
+    shareOfAssets: 'ಆಸ್ತಿಯ {{pct}}%', manageHint: 'ಸಂಪಾದಿಸಲು ಅಥವಾ ಅಳಿಸಲು ಖಾತೆಯನ್ನು ದೀರ್ಘವಾಗಿ ಒತ್ತಿ.',
     netWorth: 'ನಿವ್ವಳ ಮೌಲ್ಯ', assets: 'ಆಸ್ತಿಗಳು', debts: 'ಸಾಲಗಳು',
     title: 'ಖಾತೆಗಳು', account: 'ಖಾತೆ', edit: 'ಸಂಪಾದಿಸಿ', delete: 'ಅಳಿಸಿ', removeTransactions: 'ಮೊದಲು ಎಲ್ಲಾ ವಹಿವಾಟುಗಳನ್ನು ತೆಗೆದುಹಾಕಿ',
     cannotDelete: 'ಖಾತೆಯನ್ನು ಅಳಿಸಲಾಗದು', deleteFailed: 'ಖಾತೆಯನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ.', availableBalance: 'ಲಭ್ಯವಿರುವ ಬ್ಯಾಲೆನ್ಸ್', totalIn: 'ಒಟ್ಟು ಜಮಾ', totalOut: 'ಒಟ್ಟು ವೆಚ್ಚ',

@@ -96,6 +96,7 @@ const de: Translation = {
   },
   system: { migrationError: 'Fehler beim Laden der Datenbankmigrationen', initializingDatabase: 'Datenbank wird initialisiert...' },
   accounts: {
+    shareOfAssets: '{{pct}} % des Vermögens', manageHint: 'Konto lange drücken, um es zu bearbeiten oder zu löschen.',
     netWorth: 'Nettovermögen', assets: 'Guthaben', debts: 'Schulden',
     title: 'Konten', account: 'Konto', edit: 'Bearbeiten', delete: 'Löschen', removeTransactions: 'Entferne zuerst alle Transaktionen',
     cannotDelete: 'Konto kann nicht gelöscht werden', deleteFailed: 'Konto konnte nicht gelöscht werden.', availableBalance: 'Verfügbares Guthaben', totalIn: 'Einnahmen gesamt', totalOut: 'Ausgaben gesamt',
