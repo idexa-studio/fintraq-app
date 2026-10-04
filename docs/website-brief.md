@@ -54,7 +54,7 @@ Fintraq is a personal finance tracker. Users add accounts (bank, cash, wallet), 
 - **Multi-currency** — accounts in different currencies side by side
 - **Dark mode** — light, dark, and system theme
 - **Daily reminders** — notification nudge at a time you pick
-- **Local storage** — all data encrypted on-device, no cloud
+- **Local storage** — all data stored on-device, no cloud server
 
 ---
 

@@ -31,6 +31,8 @@ export enum StorageKeys {
   AUTO_BACKUP_ENABLED = '@fintraq_auto_backup_enabled',
   AUTO_BACKUP_LAST_BACKUP_META = '@fintraq_last_backup_meta',
   AUTO_BACKUP_LAST_AUTO_TIME = '@fintraq_last_auto_backup_time',
+  /** Drive file id this install last backed up to or restored from. Survives disconnect. */
+  AUTO_BACKUP_SYNCED_FILE_ID = '@fintraq_synced_backup_file_id',
   AUTO_BACKUP_LAST_REGISTERED_INTERVAL = '@fintraq_bg_task_last_interval',
   AUTO_BACKUP_BATTERY_PROMPT_SHOWN = '@fintraq_battery_prompt_shown',
 
@@ -45,6 +47,8 @@ export const RETIRED_AUTO_BACKUP_FREQUENCY_KEY = '@fintraq_auto_backup_frequency
 export enum SecureStoreKeys {
   PIN_HASH = 'fintraq_lock_pin_hash',
   LOCK_MODE = 'fintraq_lock_mode',
+  /** JSON `{ count, until }`: consecutive wrong PINs and when the pad unlocks again (epoch ms). */
+  PIN_FAILURES = 'fintraq_lock_pin_failures',
 }
 
 export enum DatabaseKeys {

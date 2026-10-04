@@ -6,6 +6,7 @@ import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState, ListGroup, Screen, SectionHeader, Skeleton, SkeletonRow } from '@/src/components/ui';
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
+import { hasPossibleTransfer } from '@/src/utils/accounts';
 import { BackupPromptModal } from '@/src/features/backup/components/BackupPromptModal';
 import { AccountsCarousel } from '@/src/features/dashboard/components/AccountsCarousel';
 import { DashboardHeader } from '@/src/features/dashboard/components/DashboardHeader';
@@ -73,7 +74,9 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   );
 
   const { data: lifetime } = useLifetimeTotals(currency);
-  const { data: topPersons = [] } = useDashboardPersons(currency);
+  // The same rule the transfer form uses, so the action never opens a form that can't be completed.
+  const canTransfer = useMemo(() => hasPossibleTransfer(accounts ?? []), [accounts]);
+  const { data: topPersons, isPending: isPeoplePending } = useDashboardPersons(currency);
 
   const openSearch = useCallback(() => {
     if (requirePro('search')) router.push('/search');
@@ -100,6 +103,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
   );
   const openLoans = useCallback(() => router.push('/(main)/loans'), [router]);
   const openPersons = useCallback(() => router.push('/persons'), [router]);
+  const openPersonForm = useCallback(() => router.push('/(main)/persons/form'), [router]);
+  const openLoanForm = useCallback(() => router.push('/(main)/loans/form'), [router]);
   const openPerson = useCallback((id: number) => router.push(`/persons/${id}`), [router]);
 
   if (txLoading || accountsLoading) {
@@ -126,8 +131,7 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <DashboardHeader name={profile.name} isPremium={isPremium} onSearch={openSearch} />
 
-        {/* The hero sits on a white card that carries the quick actions below it: one block. */}
-        <View style={styles.heroBlock}>
+        <View style={styles.padded}>
           <HeroBalanceCard
             balance={balancesByCurrency[currency] ?? 0}
             currency={currency}
@@ -136,8 +140,8 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
             currencies={currencyKeys}
             onCurrencySelect={setChosenCurrency}
           />
-          <QuickActions canTransfer={(accounts?.length ?? 0) > 1} />
         </View>
+        <QuickActions canTransfer={canTransfer} />
 
         {gettingStarted.visible ? (
           <View style={styles.gettingStarted}>
@@ -181,14 +185,27 @@ export const DashboardScreen = React.memo(function DashboardScreen() {
           )}
         </View>
 
-        {topPersons.length > 0 && (
-          <>
-            <SectionHeader title={t('dashboard.people')} rightText={t('dashboard.seeAll')} onPressRight={openPersons} />
-            <TopPersonsCard currency={currency} persons={topPersons} onPressPerson={openPerson} />
-          </>
+        {/* People and Loans are always here, so both are discoverable before anything is recorded. */}
+        <SectionHeader title={t('dashboard.people')} rightText={t('dashboard.seeAll')} onPressRight={openPersons} />
+        {isPeoplePending ? (
+          // Not "nobody yet" until the query has answered: an empty state that flashes before the
+          // list arrives reads as data loss.
+          <Skeleton height={72} radius="xl" style={styles.padded} />
+        ) : topPersons && topPersons.length > 0 ? (
+          <TopPersonsCard currency={currency} persons={topPersons} onPressPerson={openPerson} />
+        ) : (
+          <EmptyState
+            variant="inline"
+            icon="users"
+            title={t('persons.none')}
+            description={t('persons.noneHint')}
+            actionLabel={t('persons.add')}
+            onAction={openPersonForm}
+            style={styles.padded}
+          />
         )}
 
-        <LoansGlanceCard currency={currency} onPress={openLoans} />
+        <LoansGlanceCard currency={currency} onPress={openLoans} onAdd={openLoanForm} />
       </ScrollView>
 
       <PremiumUpsellModal visible={prompt === 'upsell'} onClose={dismissPrompt} />
@@ -201,7 +218,6 @@ const createStyles = ({ colors, spacing, radius, layout, tabBarClearance }: Them
   StyleSheet.create({
     content: { paddingBottom: tabBarClearance(insets.bottom) },
     padded: { marginHorizontal: layout.screenPadding },
-    heroBlock: { marginHorizontal: layout.screenPadding, borderRadius: radius('2xl'), backgroundColor: colors.surface, overflow: 'hidden' },
     gettingStarted: { marginTop: spacing('4') },
     emptyActivity: {
       backgroundColor: colors.surface,

@@ -75,9 +75,11 @@ export const getDashboardPersons = async (currency: string, limit = 6): Promise<
     getPersonsNetByCurrency(currency),
   ]);
 
+  // Everyone is listed, including people with nothing recorded yet: someone just added should
+  // appear on Home rather than leave the section saying there is nobody. People with a balance
+  // come first (largest owed first, as before), then the rest by name.
   return allPersons
     .map(p => ({ ...p, net: netMap.get(p.id) ?? 0 }))
-    .filter(p => p.net !== 0)
-    .sort((a, b) => a.net - b.net)
+    .sort((a, b) => Number(a.net === 0) - Number(b.net === 0) || a.net - b.net || a.name.localeCompare(b.name))
     .slice(0, limit);
 };

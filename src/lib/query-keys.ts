@@ -77,6 +77,7 @@ const backup = {
   account: () => [...backup.all, 'account'] as const,
   latests: () => [...backup.all, 'latest'] as const,
   latest: (accountId: string) => [...backup.latests(), accountId] as const,
+  ownership: (accountId: string, fileId: string) => [...backup.latest(accountId), 'ownership', fileId] as const,
   autoBackupSwitch: () => [...backup.all, 'auto-backup-switch'] as const,
 };
 

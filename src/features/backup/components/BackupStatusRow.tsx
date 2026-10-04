@@ -13,13 +13,31 @@ type BackupStatusRowProps = {
   /** Auto-backup has stopped firing — show the warning instead of the timestamp. */
   isOverdue: boolean;
   onOverduePress: () => void;
+  /** The Drive backup was made by another install: say so, since auto-backup won't replace it. */
+  isFromAnotherInstall?: boolean;
 };
 
-export const BackupStatusRow = React.memo(function BackupStatusRow({ latestBackup, isOverdue, onOverduePress }: BackupStatusRowProps) {
+export const BackupStatusRow = React.memo(function BackupStatusRow({
+  latestBackup,
+  isOverdue,
+  onOverduePress,
+  isFromAnotherInstall = false,
+}: BackupStatusRowProps) {
   const theme = useTheme();
   const { colors } = theme;
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
+
+  if (isFromAnotherInstall && latestBackup) {
+    return (
+      <View style={styles.warningBox} accessibilityRole="alert">
+        <Icon name="warning" size={16} color={colors.warning} />
+        <Text variant="calloutStrong" color={colors.warning} style={styles.warningText}>
+          {t('backup.otherInstall', { date: formatBackupTimestamp(latestBackup.modifiedTime) })}
+        </Text>
+      </View>
+    );
+  }
 
   if (isOverdue) {
     return (

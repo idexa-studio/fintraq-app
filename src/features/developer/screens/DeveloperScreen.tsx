@@ -13,6 +13,7 @@ import {
   Text,
 } from '@/src/components/ui';
 import { useKeyboardInset } from '@/src/hooks/useKeyboardInset';
+import { IS_PREMIUM_OVERRIDE_ALLOWED } from '@/src/constants/iap';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
@@ -309,25 +310,31 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         />
       </ListGroup>
 
-      <ListGroup title="Premium override">
-        {overrideOptions.map((item) => (
-          <ListItem
-            key={item.mode}
-            icon={item.icon}
-            iconColor={devOverride === item.mode ? item.color : colors.textMuted}
-            title={item.label}
-            subtitle={item.subtitle}
-            selected={devOverride === item.mode}
-            onPress={() => setDevOverride(item.mode)}
-          />
-        ))}
-      </ListGroup>
+      {IS_PREMIUM_OVERRIDE_ALLOWED && (
+        <ListGroup title="Premium override">
+          {overrideOptions.map((item) => (
+            <ListItem
+              key={item.mode}
+              icon={item.icon}
+              iconColor={devOverride === item.mode ? item.color : colors.textMuted}
+              title={item.label}
+              subtitle={item.subtitle}
+              selected={devOverride === item.mode}
+              onPress={() => setDevOverride(item.mode)}
+            />
+          ))}
+        </ListGroup>
+      )}
 
-      <ListGroup title="Data & Cloud">
-        <ListItem icon="flask" iconColor={colors.primaryInk} title="Seed dummy data" subtitle="A year of realistic data: USD, EUR, TRY & INR accounts, people & loans" onPress={() => setShowSeedConfirm(true)} />
-        <ListItem icon="cloud" iconColor={colors.primaryInk} title="Run Auto-Backup Task Now" subtitle="Trigger headless auto-backup check executor" onPress={handleRunAutoBackupTask} />
-        <ListItem icon="trash" title="Delete Cloud Backup" subtitle="Permanently remove backup file from Google Drive" destructive onPress={() => setShowDeleteBackupConfirm(true)} />
-      </ListGroup>
+      {/* Tools that write or delete a user's records never ship: a release build keeps only the
+          read-only diagnostics below, since the access token is in the bundle. */}
+      {__DEV__ && (
+        <ListGroup title="Data & Cloud">
+          <ListItem icon="flask" iconColor={colors.primaryInk} title="Seed dummy data" subtitle="A year of realistic data: USD, EUR, TRY & INR accounts, people & loans" onPress={() => setShowSeedConfirm(true)} />
+          <ListItem icon="cloud" iconColor={colors.primaryInk} title="Run Auto-Backup Task Now" subtitle="Trigger headless auto-backup check executor" onPress={handleRunAutoBackupTask} />
+          <ListItem icon="trash" title="Delete Cloud Backup" subtitle="Permanently remove backup file from Google Drive" destructive onPress={() => setShowDeleteBackupConfirm(true)} />
+        </ListGroup>
+      )}
 
       <ListGroup title="System logs">
         <ListItem

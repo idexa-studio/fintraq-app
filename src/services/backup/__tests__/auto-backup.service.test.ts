@@ -16,18 +16,21 @@ jest.mock('@/src/services/review-prompt.service', () => ({
 }));
 jest.mock('@/src/services/backup/cloud-backup.service', () => ({ runCloudBackup: jest.fn() }));
 jest.mock('@/src/services/backup/google-drive.service', () => ({
-  GoogleDriveService: { getCurrentUser: jest.fn() },
+  GoogleDriveService: { getCurrentUser: jest.fn(), findLatestBackup: jest.fn() },
 }));
 jest.mock('@/src/services/backup/backup-preferences', () => ({
   BackupPreferences: {
     isProEntitled: jest.fn(),
     isAutoBackupSwitchOn: jest.fn(),
     getLastBackupAt: jest.fn(),
+    hasSyncedWithDrive: jest.fn(),
+    isOwnBackup: jest.fn(),
   },
 }));
 
 const prefs = BackupPreferences as jest.Mocked<typeof BackupPreferences>;
 const getCurrentUser = GoogleDriveService.getCurrentUser as jest.Mock;
+const findLatestBackup = GoogleDriveService.findLatestBackup as jest.Mock;
 const runBackup = runCloudBackup as jest.Mock;
 const META = { id: 'f', name: 'fintraq_backup.json', modifiedTime: '2026-09-30T00:00:00Z', size: 1 };
 const DAY = 24 * 60 * 60 * 1000;
@@ -37,6 +40,8 @@ beforeEach(() => {
   prefs.isProEntitled.mockResolvedValue(true);
   prefs.isAutoBackupSwitchOn.mockResolvedValue(true);
   prefs.getLastBackupAt.mockResolvedValue(Date.now() - DAY);
+  prefs.hasSyncedWithDrive.mockResolvedValue(true);
+  findLatestBackup.mockResolvedValue(META);
   getCurrentUser.mockResolvedValue({ id: 'u', email: 'a@b.c', name: null, photo: null });
   runBackup.mockResolvedValue(META);
 });
@@ -76,6 +81,36 @@ describe('runAutoBackupIfDue', () => {
     const error = new GoogleDriveNetworkError('upload', new Error('offline'));
     runBackup.mockRejectedValue(error);
     await expect(runAutoBackupIfDue()).resolves.toEqual({ outcome: 'failed', error });
+  });
+
+  describe('on an install that has never backed up or restored', () => {
+    beforeEach(() => {
+      prefs.getLastBackupAt.mockResolvedValue(0);
+      prefs.hasSyncedWithDrive.mockResolvedValue(false);
+      prefs.isOwnBackup.mockResolvedValue(false);
+    });
+
+    it('leaves a backup already in Drive alone', async () => {
+      await expect(runAutoBackupIfDue()).resolves.toEqual({ outcome: 'skipped', reason: 'unclaimed_backup' });
+      expect(runBackup).not.toHaveBeenCalled();
+    });
+
+    it('carries on with a backup it made before the account was disconnected', async () => {
+      prefs.isOwnBackup.mockResolvedValue(true);
+      await expect(runAutoBackupIfDue()).resolves.toEqual({ outcome: 'ran', meta: META });
+    });
+
+    it('backs up when Drive is empty', async () => {
+      findLatestBackup.mockResolvedValue(null);
+      await expect(runAutoBackupIfDue()).resolves.toEqual({ outcome: 'ran', meta: META });
+    });
+
+    it('does not back up when Drive cannot be checked', async () => {
+      const error = new GoogleDriveNetworkError('findLatestBackup', new Error('offline'));
+      findLatestBackup.mockRejectedValue(error);
+      await expect(runAutoBackupIfDue()).resolves.toEqual({ outcome: 'failed', error });
+      expect(runBackup).not.toHaveBeenCalled();
+    });
   });
 
   it('bypasses entitlement and schedule gates when forced (QA)', async () => {

@@ -140,6 +140,8 @@ Explain *why*, not *what*: constraints, platform quirks, non-obvious maths. Dele
 - **Paywall** — `/premium?feature=<id>` leads with that feature. The paywall, the Pro screen and the dashboard upsell all render from the registry.
 - **Free caps** — `FREE_LOAN_LIMIT` and `FREE_PERSON_LIMIT` in `src/constants/iap.ts`; hitting one opens the paywall on `unlimited`.
 - **Background work** (auto-backup) can't use hooks; it reads the persisted entitlement through `BackupPreferences.isProEntitled()`.
+- **Developer override** — the Developer screen's "Premium override" is honoured in development builds only (`IS_PREMIUM_OVERRIDE_ALLOWED`). Test Pro on a release build with a store licence-tester account.
+- **Pending purchases** (`isSettledPurchase`) never grant Pro and are never finished; the store sends another update when payment settles.
 
 ### Home vs Analytics
 
@@ -182,6 +184,8 @@ Rules that keep it reliable:
 - **Auth vs transient.** Only a definitively unusable grant is a `GoogleDriveAuthError`; the Drive
   service then ends the session so every screen and the background task agree. Network failures
   are transient and never sign the user out.
+- **Never overwrite a backup this install doesn't own.** Drive holds one file. Auto-backup skips (`unclaimed_backup`) when the file wasn't made or restored by this install (`BackupPreferences.isOwnBackup`); a manual backup confirms first.
+- **Export is one read transaction**, so the snapshot is a single point in time.
 - **Foreground checks are the reliable path**; OS background scheduling is best-effort.
 - `patches/expo-background-task+1.0.10.patch` backports expo/expo#44663 and #44667 (Android worker
   was replaced on every cold start). Drop it when upgrading to an SDK that ships those fixes.

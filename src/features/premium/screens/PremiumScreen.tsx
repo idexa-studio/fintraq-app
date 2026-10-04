@@ -181,9 +181,7 @@ const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType, hero
     triedLabel: { flexDirection: 'row', marginBottom: spacing('2'), marginLeft: spacing('1') },
     triedCard: {
       borderRadius: radius('xl'),
-      backgroundColor: colors.surface,
-      borderWidth: 1.5,
-      borderColor: alpha(colors.warning, 'strong'),
+      backgroundColor: alpha(colors.warning, 'subtle'),
       overflow: 'hidden',
     },
     footer: { gap: spacing('3') },

@@ -1,10 +1,10 @@
 import { alpha } from '@/src/theme/tokens';
 import { Text } from '@/src/components/ui/Text';
 import { getCurrencySymbol } from '@/src/constants/currency';
-import { Icon } from '@/src/components/ui/Icon';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
+import { IconButton } from '@/src/components/ui/IconButton';
 import { CalculatorBottomSheet } from '@/src/components/pickers/CalculatorBottomSheet';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
@@ -33,7 +33,7 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{t('transactions.amount')}</Text>
+      <Text variant="label" tone="muted" style={styles.label}>{t('transactions.amount')}</Text>
       <View style={styles.inputRow}>
         <Text style={styles.currency}>{symbol}</Text>
         <TextInput
@@ -45,15 +45,13 @@ export const TransactionAmountInput = React.memo(function TransactionAmountInput
           placeholderTextColor={alpha(colors.textMuted, 'medium')}
           autoFocus
         />
-        <Pressable
-          style={({ pressed }) => [styles.calcBtn, pressed && { opacity: 0.5 }]}
+        <IconButton
+          icon="calculator"
+          variant="tonal"
           onPress={() => { Keyboard.dismiss(); setShowCalc(true); }}
-          hitSlop={8}
-          accessibilityRole="button"
           accessibilityLabel={t('transactions.calculator')}
-        >
-          <Icon name="calculator" size={22} color={colors.text} />
-        </Pressable>
+          style={styles.calculator}
+        />
       </View>
 
       <CalculatorBottomSheet
@@ -77,9 +75,6 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       marginVertical: spacing('2'),
     },
     label: {
-      fontFamily: typography.styles.sectionLabel.fontFamily,
-      ...typography.metrics.xs,
-      color: colors.textMuted,
       marginBottom: spacing('1.5'),
     },
     inputRow: {
@@ -101,13 +96,7 @@ const createStyles = ({ colors, typography, spacing, radius, layout, sizes }: Th
       color: colors.text,
       paddingVertical: 0,
     },
-    calcBtn: {
-      width: 44,
-      height: 44,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.background,
+    calculator: {
       marginLeft: spacing('2'),
     },
   });

@@ -46,7 +46,7 @@ export function useConnectBackupAccount() {
     },
     onSuccess: (account) => {
       if (!account) return;
-      LoggerService.info('GOOGLE_BACKUP', `Connected Google account: ${account.email}`);
+      LoggerService.info('GOOGLE_BACKUP', 'Connected Google account');
       queryClient.setQueryData(accountKey, account);
     },
   });

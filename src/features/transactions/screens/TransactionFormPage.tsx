@@ -19,9 +19,8 @@ import { colorNumberToHex, formatCurrency, formatDate } from '@/src/utils/format
 import { format } from 'date-fns';
 import { TransactionType } from '@/src/types';
 import { Analytics, type TransactionKind } from '@/src/services/telemetry';
-import { isTransferCompatible } from '@/src/utils/accounts';
+import { transferDestinations } from '@/src/utils/accounts';
 import { repaymentType } from '@/src/features/transactions/utils/ledger';
-import type { AccountType } from '@/src/types';
 import { useTranslation } from 'react-i18next';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { parseAmountInput } from '@/src/utils/amount';
@@ -154,14 +153,8 @@ export const TransactionFormPage = React.memo(function TransactionFormPage({ mod
   // TO account options: same currency + type-compatible transfer, excluding FROM itself
   const toAccountOptions = React.useMemo(() => {
     if (type !== 'TR' || !selectedAccount) return [];
-    const fromType = selectedAccount.accountType as AccountType | null;
-    return accounts.filter(
-      (a) =>
-        a.id !== selectedAccountId &&
-        a.currency === selectedAccount.currency &&
-        isTransferCompatible(fromType, a.accountType as AccountType | null),
-    );
-  }, [type, accounts, selectedAccountId, selectedAccount]);
+    return transferDestinations(selectedAccount, accounts);
+  }, [type, accounts, selectedAccount]);
 
   // Auto-clear toAccountId if it's no longer a valid option
   React.useEffect(() => {

@@ -349,7 +349,7 @@ const createStyles = ({ colors, spacing, radius, layout, alpha }: ThemeContextTy
     fill: { flex: 1 },
     scroll: { paddingHorizontal: layout.screenPadding, paddingBottom: spacing('8') },
     amountRow: { flexDirection: 'row', gap: spacing('2'), width: '100%' },
-    amountField: { flex: 1, borderRadius: radius('xl'), borderWidth: StyleSheet.hairlineWidth, borderColor: alpha(colors.text, 'soft') },
+    amountField: { flex: 1 },
     amountError: { marginTop: spacing('2'), marginLeft: spacing('1'), width: '100%' },
     footer: { paddingHorizontal: layout.screenPadding, paddingVertical: spacing('3'), backgroundColor: colors.surface },
   });

@@ -3,8 +3,8 @@ import * as IAP from 'expo-iap';
 import React, { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
-import { ALL_SKUS, SKU_LIFETIME } from '@/src/constants/iap';
-import { IAPProduct, IAPService } from '@/src/services/iap.service';
+import { ALL_SKUS, IS_PREMIUM_OVERRIDE_ALLOWED, SKU_LIFETIME } from '@/src/constants/iap';
+import { IAPProduct, IAPService, isSettledPurchase } from '@/src/services/iap.service';
 import { StorageKeys } from '@/src/constants/keys';
 import { Analytics } from '@/src/services/telemetry';
 import { LoggerService } from '@/src/services/logger.service';
@@ -143,13 +143,19 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
     }
   }, [premiumState.isPremium, savePremiumState, showAlert]);
 
+  const handlePurchasePending = useCallback(() => {
+    showAlert({ title: i18n.t('premium.purchasePending'), message: i18n.t('premium.purchasePendingMessage'), type: 'info' });
+  }, [showAlert]);
+
   // Keep internal refs updated for use in listener closures
   const syncRef = useRef(syncPremiumStatus);
   const purchaseRef = useRef(handlePurchaseSuccess);
+  const pendingRef = useRef(handlePurchasePending);
   useEffect(() => {
     syncRef.current = syncPremiumStatus;
     purchaseRef.current = handlePurchaseSuccess;
-  }, [syncPremiumStatus, handlePurchaseSuccess]);
+    pendingRef.current = handlePurchasePending;
+  }, [syncPremiumStatus, handlePurchaseSuccess, handlePurchasePending]);
 
   /**
    * Sequenced Initialization: 
@@ -172,7 +178,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
         
         if (!unmounted) {
           if (storedPremium) setPremiumState(JSON.parse(storedPremium));
-          if (storedDev) setDevOverrideState(storedDev as DevOverride);
+          if (storedDev && IS_PREMIUM_OVERRIDE_ALLOWED) setDevOverrideState(storedDev as DevOverride);
         }
       } catch { }
 
@@ -185,10 +191,15 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
         if (connected) {
           // Setup Listeners
           purchaseUpdateSub = IAP.purchaseUpdatedListener(async (purchase) => {
-            if (purchase.productId) {
-              await purchaseRef.current(purchase);
-              await IAP.finishTransaction({ purchase });
+            if (!purchase.productId) return;
+            // Still awaiting payment: the store sends another update once it settles. Finishing it
+            // now would acknowledge a purchase that may never be paid.
+            if (!isSettledPurchase(purchase)) {
+              pendingRef.current();
+              return;
             }
+            await purchaseRef.current(purchase);
+            await IAP.finishTransaction({ purchase });
           });
 
           purchaseErrorSub = IAP.purchaseErrorListener((error) => {
@@ -288,6 +299,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
   }, [savePremiumState]);
 
   const setDevOverride = useCallback(async (val: DevOverride) => {
+    if (!IS_PREMIUM_OVERRIDE_ALLOWED) return;
     try {
       await AsyncStorage.setItem(DEV_OVERRIDE_KEY, val);
       setDevOverrideState(val);
@@ -296,10 +308,7 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
 
   /**
    * isPremium: The final computed state.
-   * Tripartite logic:
-   * 1. FORCED_ON -> true
-   * 2. FORCED_OFF -> false
-   * 3. DEFAULT -> use store state
+   * The developer override (development builds only) wins; otherwise the store entitlement.
    */
   const isPremium = useMemo(() => {
     if (devOverride === 'FORCED_ON') return true;

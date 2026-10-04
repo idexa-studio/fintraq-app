@@ -77,7 +77,7 @@ export const ProfileCard = React.memo(function ProfileCard({ name, isPremium, on
 const AVATAR = 52;
 const RING = 180;
 
-const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius, alpha, sizes }: ThemeContextType) =>
   StyleSheet.create({
     card: {
       borderRadius: radius('2xl'),
@@ -132,7 +132,7 @@ const createStyles = ({ colors, spacing, radius, alpha }: ThemeContextType) =>
     planText: { flex: 1, gap: spacing('0.5') },
     upgradePill: {
       paddingHorizontal: spacing('3.5'),
-      height: 32,
+      height: sizes.button.sm.height,
       justifyContent: 'center',
       borderRadius: radius('full'),
       backgroundColor: colors.primary,

@@ -30,7 +30,8 @@ export const NetFlowGrid = React.memo(function NetFlowGrid({ income, expense, cu
   const net = income - expense;
   const kept = income > 0 ? net / income : null;
   // Size by length instead of shrinking glyphs: a long net steps down one type size and stays whole.
-  const longNet = formatCurrency(Math.abs(net), currency).length > 10;
+  // The figure is drawn with a +/- sign, so that glyph counts towards its length.
+  const longNet = formatCurrency(Math.abs(net), currency).length + 1 > 10;
   // Both rows place their badge the same way: beside the figure when both figures are short, under it otherwise.
   const badgesBelow = Math.max(formatCurrency(income, currency).length, formatCurrency(expense, currency).length) > 9;
 

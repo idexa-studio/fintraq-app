@@ -5,7 +5,7 @@ import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
 import { accounts, categories, payments, persons, loans } from '@/src/db/schema';
 import type { TransactionType } from '@/src/types';
 import { LoggerService } from '@/src/services/logger.service';
-import { accountDeltas, AccountDelta, isLoanPrincipal, LedgerEntry, LedgerError, loanStatus, repaymentType, validateEntry } from '@/src/features/transactions/utils/ledger';
+import { accountDeltas, AccountDelta, isLoanPrincipal, LedgerEntry, LedgerError, loanOutstanding, loanStatus, repaymentType, validateEntry } from '@/src/features/transactions/utils/ledger';
 
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = typeof payments.$inferInsert;
@@ -303,16 +303,38 @@ const assertTransferAccounts = (tx: DbTx, entry: LedgerEntry): void => {
   if (from.currency !== to.currency) throw new LedgerError('Transfer accounts must share a currency');
 };
 
-/** Recomputes a loan's status from its repayments. Call after any payment linked to it changes. */
-export const syncLoanStatusIn = (tx: DbTx, loanId: number): void => {
-  const loan = tx.select().from(loans).where(eq(loans.id, loanId)).get();
-  if (!loan) return;
+/** What has been paid back on a loan so far. */
+const loanRepaidIn = (tx: DbTx, loanId: number, loanType: 'lend' | 'borrow'): number => {
   const row = tx
     .select({ repaid: sql<number>`COALESCE(SUM(${payments.amount}), 0)` })
     .from(payments)
-    .where(and(eq(payments.loanId, loanId), eq(payments.type, repaymentType(loan.type))))
+    .where(and(eq(payments.loanId, loanId), eq(payments.type, repaymentType(loanType))))
     .get();
-  const status = loanStatus(loan.principal, row?.repaid ?? 0, loan.dueDate, new Date());
+  return row?.repaid ?? 0;
+};
+
+/**
+ * True when a loan is marked repaid although its repayments don't cover the principal: the user
+ * settled it by hand (a debt forgiven, or paid outside the app). Read it before a linked payment
+ * changes and pass it to `syncLoanStatusIn`, which otherwise can't tell that from a stale status.
+ */
+const isLoanSettledByHandIn = (tx: DbTx, loanId: number | null | undefined): boolean => {
+  if (loanId == null) return false;
+  const loan = tx.select().from(loans).where(eq(loans.id, loanId)).get();
+  if (!loan || loan.status !== 'repaid') return false;
+  return loanOutstanding(loan.principal, loanRepaidIn(tx, loanId, loan.type)) > 0;
+};
+
+/**
+ * Recomputes a loan's status from its repayments. Call after any payment linked to it changes.
+ * A loan the user settled by hand stays repaid: editing a note on one of its payments must not
+ * reopen it.
+ */
+export const syncLoanStatusIn = (tx: DbTx, loanId: number, settledByHand = false): void => {
+  if (settledByHand) return;
+  const loan = tx.select().from(loans).where(eq(loans.id, loanId)).get();
+  if (!loan) return;
+  const status = loanStatus(loan.principal, loanRepaidIn(tx, loanId, loan.type), loan.dueDate, new Date());
   if (status !== loan.status) {
     tx.update(loans).set({ status, updatedAt: new Date().toISOString() }).where(eq(loans.id, loanId)).run();
   }
@@ -323,9 +345,10 @@ export const recordPaymentIn = (tx: DbTx, data: InsertPayment): Payment => {
   const entry: LedgerEntry = { type: data.type, amount: data.amount, accountId: data.accountId, toAccountId: data.toAccountId ?? null };
   validateEntry(entry);
   assertTransferAccounts(tx, entry);
+  const settledByHand = isLoanSettledByHandIn(tx, data.loanId);
   const payment = tx.insert(payments).values(data).returning().get();
   applyDeltas(tx, accountDeltas(payment, 1));
-  if (payment.loanId != null) syncLoanStatusIn(tx, payment.loanId);
+  if (payment.loanId != null) syncLoanStatusIn(tx, payment.loanId, settledByHand);
   return payment;
 };
 
@@ -347,9 +370,10 @@ export const deleteTransaction = async (id: number): Promise<void> => {
     db.transaction((tx) => {
       const payment = tx.select().from(payments).where(eq(payments.id, id)).get();
       if (!payment) return;
+      const settledByHand = isLoanSettledByHandIn(tx, payment.loanId);
       tx.delete(payments).where(eq(payments.id, id)).run();
       applyDeltas(tx, accountDeltas(payment, -1));
-      if (payment.loanId != null) syncLoanStatusIn(tx, payment.loanId);
+      if (payment.loanId != null) syncLoanStatusIn(tx, payment.loanId, settledByHand);
     });
     if (__DEV__) LoggerService.info('TRANSACTIONS', `Deleted transaction ${id}`);
   } catch (err) {
@@ -368,6 +392,10 @@ export const updateTransaction = async (id: number, data: UpdatePayment): Promis
       const old = tx.select().from(payments).where(eq(payments.id, id)).get();
       if (!old) throw new LedgerError('Transaction not found');
       assertTransferAccounts(tx, next);
+      const oldLoanSettledByHand = isLoanSettledByHandIn(tx, old.loanId);
+      // An omitted `loanId` leaves the link as it was.
+      const nextLoanId = data.loanId === undefined ? old.loanId : data.loanId;
+      const newLoanSettledByHand = nextLoanId === old.loanId ? oldLoanSettledByHand : isLoanSettledByHandIn(tx, nextLoanId);
       applyDeltas(tx, accountDeltas(old, -1));
       const row = tx.update(payments).set(data).where(eq(payments.id, id)).returning().get();
       if (!row) throw new LedgerError('Transaction not found');
@@ -378,9 +406,9 @@ export const updateTransaction = async (id: number, data: UpdatePayment): Promis
         if (loan && isLoanPrincipal(row.type, loan.type) && loan.principal !== row.amount) {
           tx.update(loans).set({ principal: row.amount, updatedAt: new Date().toISOString() }).where(eq(loans.id, row.loanId)).run();
         }
-        syncLoanStatusIn(tx, row.loanId);
+        syncLoanStatusIn(tx, row.loanId, newLoanSettledByHand);
       }
-      if (old.loanId != null && old.loanId !== row.loanId) syncLoanStatusIn(tx, old.loanId);
+      if (old.loanId != null && old.loanId !== row.loanId) syncLoanStatusIn(tx, old.loanId, oldLoanSettledByHand);
       return row;
     });
     if (__DEV__) LoggerService.info('TRANSACTIONS', `Updated transaction ${updated.id}`);

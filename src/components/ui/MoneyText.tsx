@@ -3,6 +3,7 @@ import { StyleSheet, Text, TextProps } from 'react-native';
 import { formatCurrency } from '@/src/utils/format';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { TransactionType } from '@/src/types';
+import { useCountUp } from './useCountUp';
 
 interface MoneyTextProps extends TextProps {
   amount: number;
@@ -16,6 +17,8 @@ interface MoneyTextProps extends TextProps {
    * form instead of being shrunk or cut off; screen readers still hear the exact figure.
    */
   maxChars?: number;
+  /** Count up to the amount when it appears or changes. For a screen's headline figure only. */
+  animate?: boolean;
 }
 
 export const MoneyText = React.memo(function MoneyText({
@@ -25,6 +28,7 @@ export const MoneyText = React.memo(function MoneyText({
   weight = 'bold',
   compact = false,
   maxChars,
+  animate = false,
   style,
   ...props
 }: MoneyTextProps) {
@@ -32,13 +36,17 @@ export const MoneyText = React.memo(function MoneyText({
   const { colors, typography } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
+  const shownAmount = useCountUp(amount, animate);
+
   const { prefix, color, formattedAmount, fullAmount, fontFamily } = useMemo(() => {
     const isCustomSign = type === 'CR' || type === 'DR';
-    const valToFormat = isCustomSign ? Math.abs(amount) : amount;
-    const full = formatCurrency(valToFormat, currency, false);
+    const valToFormat = isCustomSign ? Math.abs(shownAmount) : shownAmount;
+    // Length and the spoken label come from the real amount, so the layout doesn't jump and a
+    // screen reader never announces a figure mid-count.
+    const full = formatCurrency(isCustomSign ? Math.abs(amount) : amount, currency, false);
     const signChars = isCustomSign ? 1 : 0;
     const tooLong = maxChars !== undefined && full.length + signChars > maxChars;
-    const formatted = compact || tooLong ? formatCurrency(valToFormat, currency, true) : full;
+    const formatted = formatCurrency(valToFormat, currency, compact || tooLong);
 
     let p = '';
     let c = colors.text;
@@ -60,7 +68,7 @@ export const MoneyText = React.memo(function MoneyText({
     else ff = typography.fonts.amountBold;
 
     return { prefix: p, color: c, formattedAmount: formatted, fullAmount: full, fontFamily: ff };
-  }, [amount, currency, type, weight, compact, maxChars, colors.text, colors.success, colors.danger, typography.fonts]);
+  }, [amount, shownAmount, currency, type, weight, compact, maxChars, colors.text, colors.success, colors.danger, typography.fonts]);
 
   return (
     <Text

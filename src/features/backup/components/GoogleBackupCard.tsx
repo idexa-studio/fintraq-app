@@ -18,6 +18,7 @@ import { isBackupOverdue } from '@/src/services/backup/backup-schedule';
 import { isNoBackupError } from '@/src/services/backup/google-drive.errors';
 import { LoggerService } from '@/src/services/logger.service';
 import { alpha } from '@/src/theme/tokens';
+import { formatBackupTimestamp } from '@/src/utils/date';
 import { toErrorMessage } from '@/src/utils/errors';
 import { AutoBackupRow } from './AutoBackupRow';
 import { BackupAccountRow } from './BackupAccountRow';
@@ -37,7 +38,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const { isPremium, openPaywall } = useProAccess();
 
   const { account, isLoading: isAccountLoading } = useBackupAccount();
-  const { latestBackup } = useLatestBackup();
+  const { latestBackup, isFromAnotherInstall } = useLatestBackup();
   const { isBackingUp, isRestoring, progress, stage } = useBackupProgress();
   const { autoBackupEnabled, setAutoBackupEnabled } = useAutoBackupSetting();
   const { enableCloudBackup, isEnabling } = useEnableCloudBackup();
@@ -47,6 +48,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const { showAlert, alertProps } = useAlertDialog();
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false);
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
+  const [showReplaceConfirm, setShowReplaceConfirm] = useState(false);
 
   const openBatterySettings = useCallback(() => {
     void openBatteryOptimizationSettings(() =>
@@ -120,6 +122,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   }, [disconnect, showAlert, t]);
 
   const handleBackup = useCallback(async () => {
+    setShowReplaceConfirm(false);
     try {
       await backupNow();
       Analytics.track('backup_created');
@@ -174,6 +177,9 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   // letting the user assume they're still protected.
   const isOverdue = autoBackupEnabled && isBackupOverdue(latestBackup?.modifiedTime, Date.now());
 
+  // Drive has one backup file. Replacing one this install never restored loses whatever only it holds.
+  const requestBackup = isFromAnotherInstall ? () => setShowReplaceConfirm(true) : handleBackup;
+
   const renderBody = () => {
     if (!isPremium) return <BackupUpsellRow onPress={() => openPaywall('backup')} />;
 
@@ -192,13 +198,18 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
       <>
         <BackupAccountRow email={account.email} onDisconnect={() => setShowDisconnectConfirm(true)} />
         <View style={styles.separator} />
-        <BackupStatusRow latestBackup={latestBackup} isOverdue={isOverdue} onOverduePress={openBatterySettings} />
+        <BackupStatusRow
+          latestBackup={latestBackup}
+          isOverdue={isOverdue}
+          onOverduePress={openBatterySettings}
+          isFromAnotherInstall={isFromAnotherInstall}
+        />
         {(isBackingUp || isRestoring) && <BackupProgressRow progress={progress} stage={stage} />}
         <BackupActionsRow
           isBackingUp={isBackingUp}
           isRestoring={isRestoring}
           canRestore={latestBackup !== null}
-          onBackup={handleBackup}
+          onBackup={requestBackup}
           onRestore={() => setShowRestoreConfirm(true)}
         />
         <View style={styles.separator} />
@@ -211,6 +222,17 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
           message={t('backup.restoreConfirmMessage')}
           confirmLabel={t('backup.restoreData')}
           onConfirm={handleRestore}
+          destructive
+        />
+        <ConfirmDialog
+          visible={showReplaceConfirm}
+          onClose={() => setShowReplaceConfirm(false)}
+          title={t('backup.replaceConfirmTitle')}
+          message={t('backup.replaceConfirmMessage', {
+            date: latestBackup ? formatBackupTimestamp(latestBackup.modifiedTime) : '',
+          })}
+          confirmLabel={t('backup.replaceBackup')}
+          onConfirm={handleBackup}
           destructive
         />
         <ConfirmDialog

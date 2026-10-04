@@ -49,6 +49,17 @@ export function useLatestBackup() {
     retry: false,
   });
 
+  const latestBackup = query.data ?? null;
+  const fileId = latestBackup?.id ?? null;
+
+  const ownershipQuery = useQuery({
+    queryKey: QUERY_KEYS.backup.ownership(accountId ?? '', fileId ?? ''),
+    queryFn: () => BackupPreferences.isOwnBackup(fileId ?? ''),
+    enabled: accountId !== null && fileId !== null,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
+
   // Any successful backup or restore — including auto-backups started outside React — carries
   // the new file metadata, so write it straight into the cache.
   useEffect(() => {
@@ -58,10 +69,19 @@ export function useLatestBackup() {
       const { lastCompleted } = getBackupState();
       if (lastCompleted && lastCompleted !== seen) {
         queryClient.setQueryData(QUERY_KEYS.backup.latest(accountId), lastCompleted.meta);
+        queryClient.setQueryData(QUERY_KEYS.backup.ownership(accountId, lastCompleted.meta.id), true);
       }
       seen = lastCompleted;
     });
   }, [accountId, queryClient]);
 
-  return { latestBackup: query.data ?? null, isLoading: accountId !== null && query.isPending };
+  return {
+    latestBackup,
+    /**
+     * Drive holds a backup this install has neither made nor restored. Auto-backup leaves it
+     * alone; a manual backup must confirm before replacing it.
+     */
+    isFromAnotherInstall: latestBackup !== null && ownershipQuery.data === false,
+    isLoading: accountId !== null && query.isPending,
+  };
 }

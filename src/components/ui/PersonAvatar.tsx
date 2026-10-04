@@ -20,19 +20,19 @@ export const PersonAvatar = React.memo(function PersonAvatar({
   size = 40,
   style,
 }: PersonAvatarProps) {
-  const { typography } = useTheme();
+  const { typography, isDark } = useTheme();
 
   const { initials, bg, textColor, borderRadius, fontSize } = React.useMemo(() => {
     const words = name.trim().split(/\s+/);
     const computed = words.map(w => w[0]?.toUpperCase() ?? '').slice(0, 2).join('');
     return {
       initials: computed,
-      bg: variant === 'solid' ? color : alpha(color, 'subtle'),
+      bg: variant === 'solid' ? color : alpha(color, isDark ? 'soft' : 'subtle'),
       textColor: variant === 'solid' ? foregroundOn(color) : color,
       borderRadius: Math.round(size * 0.3),
       fontSize: Math.round(size * 0.38),
     };
-  }, [name, color, variant, size]);
+  }, [name, color, variant, size, isDark]);
 
   const containerStyle = React.useMemo(
     () => [styles.base, { width: size, height: size, borderRadius, backgroundColor: bg }, style],

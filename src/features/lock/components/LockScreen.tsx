@@ -1,31 +1,52 @@
-import { Screen } from '@/src/components/ui/Screen';
-import { Text } from '@/src/components/ui/Text';
-import { Spinner } from '@/src/components/ui';
-import { Button } from '@/src/components/ui/Button';
-import { Icon } from '@/src/components/ui/Icon';
+import { Button, Icon, Screen, Spinner, Text } from '@/src/components/ui';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { LockStorage } from '@/src/features/lock/api/lockStorage';
-import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
+import { authenticateWithBiometrics, canAuthenticateOnDevice, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
+import { formatLockoutRemaining } from '@/src/features/lock/utils/pin-lockout';
+import { LoggerService } from '@/src/services/logger.service';
 import { PinPad } from './PinPad';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
 
-type Props = {
+type LockScreenProps = {
   onUnlock: () => void;
 };
 
-export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
+/** `device`: the system prompt (biometrics, or the screen-lock credential). `pin`: the app's own PIN. */
+type UnlockMethod = 'loading' | 'device' | 'pin';
+
+export const LockScreen = React.memo(function LockScreen({ onUnlock }: LockScreenProps) {
   const theme = useTheme();
-  const { colors, typography } = theme;
+  const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const [mode, setMode] = useState<'loading' | 'biometric' | 'pin'>('loading');
+  const [mode, setMode] = useState<UnlockMethod>('loading');
+  const [hasBiometrics, setHasBiometrics] = useState(false);
   const { t } = useTranslation();
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [authInProgress, setAuthInProgress] = useState(false);
+  // Too many wrong PINs: the pad is disabled until this moment (epoch ms). 0 = not locked out.
+  const [lockoutUntil, setLockoutUntil] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
+  const lockoutRemaining = Math.max(0, lockoutUntil - now);
+
+  useEffect(() => {
+    void LockStorage.getPinLockoutUntil().then(setLockoutUntil);
+  }, []);
+
+  useEffect(() => {
+    if (lockoutUntil === 0) return;
+    setNow(Date.now());
+    const timer = setInterval(() => {
+      const current = Date.now();
+      setNow(current);
+      if (current >= lockoutUntil) setLockoutUntil(0);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [lockoutUntil]);
 
   const tryBiometric = useCallback(async () => {
     if (authInProgress) return;
@@ -48,23 +69,43 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
 
     async function init() {
       const lockMode = await LockStorage.getLockMode();
-
       if (cancelled) return;
 
-      if (lockMode === 'biometric') {
-        const cap = await getBiometricCapability();
-        if (cancelled) return;
-        if (cap.available) {
-          setMode('biometric');
-          const success = await authenticateWithBiometrics(t('lock.unlockApp'));
-          if (!cancelled && success) onUnlock();
-          else if (!cancelled) setError(t('lock.useButton'));
-        } else {
-          setMode('pin');
-        }
-      } else {
+      if (lockMode !== 'biometric') {
         setMode('pin');
+        return;
       }
+
+      // A biometric lock has no app PIN. If fingerprints or faces were removed since it was
+      // turned on, the system prompt still accepts the screen-lock credential, so keep using it
+      // rather than showing a PIN pad nothing can satisfy.
+      const [biometrics, canAuthenticate, hasPin] = await Promise.all([
+        getBiometricCapability(),
+        canAuthenticateOnDevice(),
+        LockStorage.hasPin(),
+      ]);
+      if (cancelled) return;
+
+      if (canAuthenticate) {
+        setHasBiometrics(biometrics.available);
+        setMode('device');
+        const success = await authenticateWithBiometrics(t('lock.unlockApp'));
+        if (cancelled) return;
+        if (success) onUnlock();
+        else setError(t('lock.useButton'));
+        return;
+      }
+
+      if (hasPin) {
+        setMode('pin');
+        return;
+      }
+
+      // The device has no screen lock left and the app has no PIN: nothing can verify the owner.
+      // Removing a screen lock already required the device credential, so let them in instead of
+      // locking them out of their own records for good.
+      LoggerService.warn('APP_LOCK', 'Biometric lock is on but the device has no screen lock; unlocking');
+      onUnlock();
     }
 
     init();
@@ -86,6 +127,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
       } else {
         setError(t('lock.incorrectPin'));
         setPin('');
+        setLockoutUntil(await LockStorage.getPinLockoutUntil());
       }
     },
     [onUnlock, t],
@@ -102,41 +144,43 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
   return (
     <Screen variant="fixed" edges={['top', 'bottom']}>
       <View style={styles.content}>
-        {/* Glowing Pulse Ring Graphic */}
         <View style={styles.graphicContainer}>
-          <View style={styles.pulseOuter}>
-            <View style={styles.pulseInner}>
+          <View style={styles.ringOuter}>
+            <View style={styles.ringInner}>
               <Icon name="lock-key" size={32} color={colors.primaryInk} />
             </View>
           </View>
         </View>
 
-        {/* Text Details block */}
         <View style={styles.infoContainer}>
-          <Text variant="headline" style={styles.title}>{t('common.locked')}</Text>
-          <Text variant="callout" tone="muted" style={styles.subtitle}>{t('common.secureData')}</Text>
+          <Text variant="headline" align="center">{t('common.locked')}</Text>
+          <Text variant="callout" tone="muted" align="center">{t('common.secureData')}</Text>
         </View>
 
-        {/* PinPad or Biometrics block */}
         <View style={styles.padContainer}>
-          {error ? (
-            <Text style={[styles.error, { fontFamily: typography.fonts.medium, color: colors.danger }]}>
+          {lockoutRemaining > 0 ? (
+            <Text variant="callout" tone="danger" align="center" style={styles.error}>
+              {t('lock.tooManyAttempts', { time: formatLockoutRemaining(lockoutRemaining) })}
+            </Text>
+          ) : error ? (
+            <Text variant="callout" tone="danger" align="center" style={styles.error}>
               {error}
             </Text>
           ) : null}
 
-          {mode === 'biometric' ? (
+          {mode === 'device' ? (
             <View style={styles.biometricWrap}>
               <Button
-                title={t('lock.useBiometrics')}
+                title={hasBiometrics ? t('lock.useBiometrics') : t('lock.unlockApp')}
                 variant="primary"
                 size="lg"
+                fullWidth
                 onPress={tryBiometric}
                 isLoading={authInProgress}
               />
             </View>
           ) : (
-            <PinPad value={pin} onChange={handlePinChange} maxLength={6} />
+            <PinPad value={pin} onChange={handlePinChange} maxLength={6} disabled={lockoutRemaining > 0} />
           )}
         </View>
       </View>
@@ -144,7 +188,7 @@ export const LockScreen = React.memo(function LockScreen({ onUnlock }: Props) {
   );
 });
 
-function createStyles({ spacing, radius, typography, colors }: ThemeContextType) {
+function createStyles({ spacing, radius, colors }: ThemeContextType) {
   return StyleSheet.create({
     centered: {
       flex: 1,
@@ -157,14 +201,13 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       paddingHorizontal: spacing('8'),
       paddingVertical: spacing('10'),
     },
-    // Graphic element
     graphicContainer: {
       flex: 1,
       justifyContent: 'flex-end',
       alignItems: 'center',
       paddingBottom: spacing('4'),
     },
-    pulseOuter: {
+    ringOuter: {
       width: 96,
       height: 96,
       borderRadius: radius('full'),
@@ -172,7 +215,7 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       justifyContent: 'center',
       alignItems: 'center',
     },
-    pulseInner: {
+    ringInner: {
       width: 68,
       height: 68,
       borderRadius: radius('full'),
@@ -180,20 +223,12 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       justifyContent: 'center',
       alignItems: 'center',
     },
-    // Text container
     infoContainer: {
       alignItems: 'center',
       gap: spacing('3'),
       paddingHorizontal: spacing('2'),
       paddingTop: spacing('2'),
     },
-    title: {
-      textAlign: 'center',
-    },
-    subtitle: {
-      textAlign: 'center',
-    },
-    // PinPad/Biometrics Container
     padContainer: {
       flex: 1.5,
       justifyContent: 'center',
@@ -202,8 +237,6 @@ function createStyles({ spacing, radius, typography, colors }: ThemeContextType)
       width: '100%',
     },
     error: {
-      ...typography.metrics.sm,
-      textAlign: 'center',
       paddingHorizontal: spacing('6'),
     },
     biometricWrap: {

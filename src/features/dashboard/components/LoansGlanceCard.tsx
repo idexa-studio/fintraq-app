@@ -1,5 +1,6 @@
 import { Text } from '@/src/components/ui/Text';
 import { Badge } from '@/src/components/ui/Badge';
+import { EmptyState } from '@/src/components/ui/EmptyState';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
@@ -7,14 +8,16 @@ import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { SectionHeader } from '@/src/components/ui/SectionHeader';
 import { MoneyText } from '@/src/components/ui/MoneyText';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { useLoansSummary } from '@/src/features/loans/hooks/loans';
+import { useLoansCount, useLoansSummary } from '@/src/features/loans/hooks/loans';
 
-type Props = {
+type LoansGlanceCardProps = {
   currency: string;
   onPress: () => void;
+  /** Opens the new-loan form from the empty state. */
+  onAdd: () => void;
 };
 
-export const LoansGlanceCard = React.memo(function LoansGlanceCard({ currency, onPress }: Props) {
+export const LoansGlanceCard = React.memo(function LoansGlanceCard({ currency, onPress, onAdd }: LoansGlanceCardProps) {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
@@ -22,8 +25,30 @@ export const LoansGlanceCard = React.memo(function LoansGlanceCard({ currency, o
 
   const { data: summary } = useLoansSummary(currency);
 
-  // Nothing to glance at: the section stays hidden and the Loan quick action is the way in.
-  if (!summary || (summary.activeLentCount === 0 && summary.activeBorrowedCount === 0)) return null;
+  // Open loans in any currency. The tiles below are for the selected currency only, so "no loans
+  // yet" has to come from this count: a user whose loans are all in another currency has loans.
+  const { data: openLoans } = useLoansCount();
+
+  if (!summary || openLoans === undefined) return null;
+
+  // The section is always on Home, so lending is discoverable before the first loan exists:
+  // with nothing to glance at, it says what belongs here and offers the way in.
+  if (openLoans === 0) {
+    return (
+      <>
+        <SectionHeader title={t('dashboard.loans')} rightText={t('dashboard.seeAll')} onPressRight={onPress} />
+        <EmptyState
+          variant="inline"
+          icon="hand-coins"
+          title={t('dashboard.noLoans')}
+          description={t('loans.emptyHint')}
+          actionLabel={t('loans.addLoan')}
+          onAction={onAdd}
+          style={styles.padded}
+        />
+      </>
+    );
+  }
 
   const tiles = [
     {

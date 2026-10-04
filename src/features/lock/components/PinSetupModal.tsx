@@ -9,15 +9,15 @@ import { useTranslation } from 'react-i18next';
 
 type Step = 'enter' | 'confirm';
 
-type Props = {
+type PinSetupModalProps = {
   visible: boolean;
   onCancel: () => void;
   onComplete: (pin: string) => void;
 };
 
-export const PinSetupModal = React.memo(function PinSetupModal({ visible, onCancel, onComplete }: Props) {
-  const { colors, typography, spacing } = useTheme();
-  const styles = useMemo(() => createStyles({ colors, spacing, typography }), [colors, spacing, typography]);
+export const PinSetupModal = React.memo(function PinSetupModal({ visible, onCancel, onComplete }: PinSetupModalProps) {
+  const { spacing } = useTheme();
+  const styles = useMemo(() => createStyles({ spacing }), [spacing]);
 
   const [step, setStep] = useState<Step>('enter');
   const [firstPin, setFirstPin] = useState('');
@@ -66,17 +66,15 @@ export const PinSetupModal = React.memo(function PinSetupModal({ visible, onCanc
         <Button title={t('common.cancel')} onPress={handleCancel} variant="ghost" style={styles.cancelAction} />
 
         <View style={styles.content}>
-          <Text style={[styles.title, { fontFamily: typography.styles.dialogTitle.fontFamily, color: colors.text }]}>
+          <Text variant="title" align="center">
             {step === 'enter' ? t('lock.createPin') : t('lock.confirmPin')}
           </Text>
-          <Text style={[styles.subtitle, { fontFamily: typography.fonts.regular, color: colors.textMuted }]}>
-            {step === 'enter'
-              ? t('lock.choosePin')
-              : t('lock.reenterPin')}
+          <Text variant="body" tone="muted" align="center">
+            {step === 'enter' ? t('lock.choosePin') : t('lock.reenterPin')}
           </Text>
 
           {error ? (
-            <Text style={[styles.error, { fontFamily: typography.fonts.medium, color: colors.danger }]}>
+            <Text variant="callout" tone="danger" align="center">
               {error}
             </Text>
           ) : null}
@@ -88,9 +86,9 @@ export const PinSetupModal = React.memo(function PinSetupModal({ visible, onCanc
   );
 });
 
-type StyleDeps = Pick<ReturnType<typeof useTheme>, 'colors' | 'spacing' | 'typography'>;
+type StyleDeps = Pick<ReturnType<typeof useTheme>, 'spacing'>;
 
-function createStyles({ colors, spacing, typography }: StyleDeps) {
+function createStyles({ spacing }: StyleDeps) {
   return StyleSheet.create({
     cancelAction: {
       alignSelf: 'flex-end',
@@ -102,17 +100,6 @@ function createStyles({ colors, spacing, typography }: StyleDeps) {
       justifyContent: 'center',
       gap: spacing('6'),
       paddingBottom: spacing('12'),
-    },
-    title: {
-      ...typography.metrics.xxxl,
-    },
-    subtitle: {
-      ...typography.metrics.md,
-      color: colors.textMuted,
-      textAlign: 'center',
-    },
-    error: {
-      ...typography.metrics.sm,
     },
   });
 }

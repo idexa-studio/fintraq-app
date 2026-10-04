@@ -37,6 +37,7 @@ export const TransactionSummaryCard = React.memo(function TransactionSummaryCard
 
       <MoneyText
         amount={Math.abs(net)}
+        animate
         currency={cur}
         type={net >= 0 ? 'CR' : 'DR'}
         weight="bold"
