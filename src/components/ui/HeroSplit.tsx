@@ -38,9 +38,7 @@ export const HeroSplit = React.memo(function HeroSplit({ primary, secondary, cur
         currency={currency}
         weight="semibold"
         style={styles.value}
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        minimumFontScale={0.7}
+        maxChars={14}
       />
     </View>
   );

@@ -6,6 +6,7 @@ import type { IconSource } from './Icon';
 import { IconAvatar } from './IconAvatar';
 import { MoneyText } from './MoneyText';
 import { Text } from './Text';
+import { formatCurrency } from '@/src/utils/format';
 import { TrendBadge } from './TrendBadge';
 
 type Props = {
@@ -29,6 +30,10 @@ export const NetFlowGrid = React.memo(function NetFlowGrid({ income, expense, cu
 
   const net = income - expense;
   const kept = income > 0 ? net / income : null;
+  // Size by length instead of shrinking glyphs: a long net steps down one type size and stays whole.
+  const longNet = formatCurrency(Math.abs(net), currency).length > 10;
+  // Both rows place their badge the same way: beside the figure when both figures are short, under it otherwise.
+  const badgesBelow = Math.max(formatCurrency(income, currency).length, formatCurrency(expense, currency).length) > 9;
 
   const flow = (icon: IconSource, tint: string, label: string, amount: number, delta: number | null, positiveIsGood: boolean) => (
     <View style={styles.flow}>
@@ -37,9 +42,11 @@ export const NetFlowGrid = React.memo(function NetFlowGrid({ income, expense, cu
         <Text variant="caption" tone="muted" numberOfLines={1} style={styles.shrink}>
           {label}
         </Text>
+      </View>
+      <View style={[styles.flowValue, badgesBelow && styles.flowValueStacked]}>
+        <MoneyText amount={amount} currency={currency} weight="semibold" style={styles.flowAmount} maxChars={13} />
         <TrendBadge delta={delta} positiveIsGood={positiveIsGood} />
       </View>
-      <MoneyText amount={amount} currency={currency} weight="semibold" style={styles.flowAmount} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6} />
     </View>
   );
 
@@ -55,10 +62,8 @@ export const NetFlowGrid = React.memo(function NetFlowGrid({ income, expense, cu
             currency={currency}
             type={net >= 0 ? 'CR' : 'DR'}
             weight="bold"
-            style={styles.net}
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            minimumFontScale={0.55}
+            style={longNet ? styles.netLong : styles.net}
+            maxChars={14}
           />
         </View>
         {kept !== null ? (
@@ -91,12 +96,15 @@ const createStyles = ({ colors, spacing, radius, typography, alpha }: ThemeConte
     netCard: { justifyContent: 'space-between' },
     netTop: { gap: spacing('1') },
     net: { ...typography.metrics.xxl },
+    netLong: { ...typography.metrics.xl },
     keptBlock: { gap: spacing('1.5') },
     track: { height: 6, borderRadius: radius('full'), backgroundColor: colors.card, overflow: 'hidden' },
     fill: { position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: radius('full') },
     flow: { gap: spacing('1.5') },
     flowHead: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
+    flowValue: { flexDirection: 'row', alignItems: 'center', gap: spacing('1.5') },
+    flowValueStacked: { flexDirection: 'column', alignItems: 'flex-start', gap: spacing('1') },
     shrink: { flex: 1, minWidth: 0 },
-    flowAmount: { ...typography.metrics.lg },
+    flowAmount: { ...typography.metrics.lg, flexShrink: 0 },
     divider: { height: StyleSheet.hairlineWidth, backgroundColor: alpha(colors.text, 'subtle') },
   });

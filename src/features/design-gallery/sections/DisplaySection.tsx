@@ -99,7 +99,7 @@ export function DisplaySection() {
         <Specimen
           title="MoneyText"
           description="The only way to render money. Handles currency formatting, compact mode and CR/DR sign + colour."
-          guidelines={['CR = income (green, +). DR = expense (red, −). NONE = neutral balance.', 'Use compact for tight spaces (tiles, charts).']}
+          guidelines={['CR = income (green, +). DR = expense (red, −). NONE = neutral balance.', 'Use compact for tight spaces (tiles, charts).', 'In half-width cards pass maxChars: a longer amount switches to compact instead of being shrunk or cut off. Avoid adjustsFontSizeToFit below 0.8.']}
         >
           <MoneyText amount={1234567.89} currency="INR" style={{ fontSize: 28, lineHeight: 33 }} />
           <SpecimenRow>
@@ -107,6 +107,10 @@ export function DisplaySection() {
             <MoneyText amount={1730.5} currency="USD" type="DR" />
             <MoneyText amount={98000} currency="EUR" weight="regular" />
             <MoneyText amount={1250000} currency="USD" compact />
+          </SpecimenRow>
+          <SpecimenRow>
+            <MoneyText amount={5050} currency="INR" maxChars={11} />
+            <MoneyText amount={2293906.69} currency="INR" maxChars={11} />
           </SpecimenRow>
         </Specimen>
 
