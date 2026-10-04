@@ -23,7 +23,7 @@ type DialogProps = {
   onClose: () => void;
   title: string;
   message?: string;
-  /** Adds a tone-coloured icon badge above the title; the dialog's text then centres under it. */
+  /** Small tone-coloured glyph before the title. Leave it out for plain questions; the title carries the message. */
   icon?: IconSource;
   tone?: DialogTone;
   /** Actions render in order; put the recommended one last so it sits under the thumb. */
@@ -63,8 +63,6 @@ export function Dialog({
   const toneColor = tone === 'neutral' ? theme.colors.primaryInk : theme.colors[tone];
   // Two short labels sit side by side; long labels or 3+ actions stack.
   const stacked = actions.length > 2 || actions.some((a) => a.label.length > 14);
-  // An icon makes it an announcement: badge, title and message centre on one axis.
-  const centered = Boolean(icon);
 
   return (
     <Modal transparent visible={visible} animationType="fade" statusBarTranslucent onRequestClose={onClose}>
@@ -77,20 +75,19 @@ export function Dialog({
         />
         {visible ? (
           <Animated.View entering={enter} style={styles.card} accessibilityViewIsModal>
-            {icon ? (
-              <View style={[styles.halo, { backgroundColor: theme.alpha(toneColor, 'subtle') }]}>
-                <View style={[styles.badge, { backgroundColor: theme.alpha(toneColor, 'soft') }]}>
-                  <Icon name={icon} size={24} color={toneColor} weight="bold" />
-                </View>
+            <View style={styles.text}>
+              <View style={styles.titleRow}>
+                {icon ? (
+                  <View style={styles.titleIcon}>
+                    <Icon name={icon} size={20} color={toneColor} weight="bold" />
+                  </View>
+                ) : null}
+                <Text variant="headline" accessibilityRole="header" style={styles.title}>
+                  {title}
+                </Text>
               </View>
-            ) : null}
-
-            <View style={[styles.text, centered && styles.textCentered]}>
-              <Text variant="headline" align={centered ? 'center' : undefined} accessibilityRole="header">
-                {title}
-              </Text>
               {message ? (
-                <Text variant="callout" tone="muted" align={centered ? 'center' : undefined}>
+                <Text variant="callout" tone="muted">
                   {message}
                 </Text>
               ) : null}
@@ -118,9 +115,6 @@ export function Dialog({
   );
 }
 
-const HALO = 72;
-const BADGE = 52;
-
 const createStyles = ({ colors, overlay, spacing, radius }: ThemeContextType, width: number) =>
   StyleSheet.create({
     overlay: {
@@ -134,29 +128,15 @@ const createStyles = ({ colors, overlay, spacing, radius }: ThemeContextType, wi
       width: Math.min(width - spacing('6') * 2, 340),
       backgroundColor: colors.surface,
       borderRadius: radius('2xl'),
-      paddingHorizontal: spacing('5'),
-      paddingTop: spacing('6'),
-      paddingBottom: spacing('5'),
+      padding: spacing('5'),
       gap: spacing('4'),
     },
-    halo: {
-      width: HALO,
-      height: HALO,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      alignSelf: 'center',
-    },
-    badge: {
-      width: BADGE,
-      height: BADGE,
-      borderRadius: radius('full'),
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    text: { gap: spacing('1.5') },
-    textCentered: { alignItems: 'center', paddingHorizontal: spacing('1') },
-    actions: { flexDirection: 'row', gap: spacing('2'), marginTop: spacing('2') },
+    text: { gap: spacing('2') },
+    titleRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing('2') },
+    // Nudged down so the glyph sits on the title's first line, not above it.
+    titleIcon: { marginTop: 2 },
+    title: { flex: 1 },
+    actions: { flexDirection: 'row', gap: spacing('2'), marginTop: spacing('1') },
     actionsStacked: { flexDirection: 'column-reverse' },
     buttonRow: { flex: 1, minWidth: 0 },
     buttonStacked: { alignSelf: 'stretch' },

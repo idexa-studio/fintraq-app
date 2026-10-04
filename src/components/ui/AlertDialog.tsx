@@ -18,8 +18,9 @@ export type AlertDialogProps = {
   type?: 'info' | 'success' | 'error' | 'warning';
 };
 
-const TONE: Record<NonNullable<AlertDialogProps['type']>, { tone: DialogTone; icon: IconName }> = {
-  info: { tone: 'info', icon: 'info' },
+const TONE: Record<NonNullable<AlertDialogProps['type']>, { tone: DialogTone; icon?: IconName }> = {
+  // Plain info needs no glyph; outcomes get a small one so success and failure read at a glance.
+  info: { tone: 'info' },
   success: { tone: 'success', icon: 'check-circle' },
   warning: { tone: 'warning', icon: 'warning' },
   error: { tone: 'danger', icon: 'warning-circle' },

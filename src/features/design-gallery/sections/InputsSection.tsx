@@ -109,7 +109,7 @@ export function InputsSection() {
         <Specimen
           title="Chip"
           description="Filters and multi-select tags. Scroll horizontally when they overflow."
-          guidelines={['Pass color for category-coloured chips; defaults to primary.', 'Inside a sheet or card, pass on="surface" so resting chips stay visible.']}
+          guidelines={['Pass color for category-coloured chips; defaults to primary.', 'Inside a sheet or card, pass on="surface" so resting chips stay visible.', 'size="sm" for compact pickers above content, like the Analytics currency filter.']}
         >
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: spacing('2') }}>
             <Chip label="Food" icon="coffee" isActive={chips.includes('food')} onPress={() => toggleChip('food')} />
@@ -120,6 +120,10 @@ export function InputsSection() {
           <View style={{ flexDirection: 'row', gap: spacing('2'), backgroundColor: colors.surface, padding: spacing('3'), borderRadius: radius('xl') }}>
             <Chip label="On a sheet" on="surface" onPress={() => toggleChip('sheet')} isActive={chips.includes('sheet')} />
             <Chip label="Resting" on="surface" onPress={() => toggleChip('rest')} isActive={chips.includes('rest')} />
+          </View>
+          <View style={{ flexDirection: 'row', gap: spacing('1.5') }}>
+            <Chip label="USD" size="sm" onPress={() => toggleChip('usd')} isActive={!chips.includes('usd')} />
+            <Chip label="INR" size="sm" onPress={() => toggleChip('usd')} isActive={chips.includes('usd')} />
           </View>
         </Specimen>
 

@@ -572,7 +572,6 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         visible={showReminderDialog}
         onClose={handleSkipReminders}
         title={t('onboardingFlow.reminderTitle')}
-        icon="bell"
         confirmLabel={t('onboardingFlow.reminderConfirm')}
         cancelLabel={t('onboardingFlow.notNow')}
         destructive={false}
