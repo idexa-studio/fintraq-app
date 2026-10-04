@@ -1,5 +1,5 @@
 import { Input, ListGroup, ListItem, Text } from '@/src/components/ui';
-import { CURRENCIES } from '@/src/constants/currency';
+import { CURRENCIES, getCurrencySymbol } from '@/src/constants/currency';
 import { OnboardingFormValues } from '@/src/features/onboarding/types';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import React from 'react';
@@ -52,7 +52,7 @@ export const ProfileStep = React.memo(function ProfileStep({ currency, onOpenCur
           leading={
             <View style={{ width: 36, height: 36, borderRadius: radius('md'), backgroundColor: alpha(colors.primary, 'subtle'), alignItems: 'center', justifyContent: 'center' }}>
               <Text variant="bodyStrong" tone="primary" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
-                {selected?.symbol ?? currency}
+                {getCurrencySymbol(currency)}
               </Text>
             </View>
           }

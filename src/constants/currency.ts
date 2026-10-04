@@ -188,8 +188,13 @@ export const CURRENCY_SYMBOLS: Record<string, string> = CURRENCIES.reduce((acc, 
   return acc;
 }, {} as Record<string, string>);
 
+/**
+ * The one place a currency's symbol comes from (₹, $, €, A$…), so amounts, inputs and pickers all
+ * show the same mark in every language. Falls back to the ISO code for anything not in the table.
+ */
 export const getCurrencySymbol = (currencyCode: string): string => {
-  return CURRENCY_SYMBOLS[currencyCode?.toUpperCase()] || '';
+  const code = currencyCode?.toUpperCase() ?? '';
+  return CURRENCY_SYMBOLS[code] || code;
 };
 
 /** Sort currencies so defaultCurrency is always first; rest preserve original order. */

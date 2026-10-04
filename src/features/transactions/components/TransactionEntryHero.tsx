@@ -6,7 +6,7 @@ import { BentoPressable, HeroSurface, Icon, Text } from '@/src/components/ui';
 import type { IconSource } from '@/src/components/ui';
 import { ArrowDownLeftIcon, ArrowsLeftRightIcon, ArrowUpRightIcon, CalculatorIcon } from '@/src/components/ui/icons';
 import { CalculatorBottomSheet } from '@/src/components/pickers/CalculatorBottomSheet';
-import { CURRENCIES } from '@/src/constants/currency';
+import { getCurrencySymbol } from '@/src/constants/currency';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { TransactionType } from '@/src/types';
 
@@ -43,8 +43,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [showCalc, setShowCalc] = useState(false);
 
-  // The symbol people recognise (₹, $, €); falls back to the code.
-  const symbol = useMemo(() => CURRENCIES.find((c) => c.code === currency)?.symbol ?? currency, [currency]);
+  const symbol = getCurrencySymbol(currency);
 
   const options = useMemo(
     (): TypeOption[] => [
