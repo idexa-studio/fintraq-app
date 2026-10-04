@@ -11,7 +11,8 @@ import { toDbColor } from './format';
 /**
  * Dev-only demo data (Developer → Seed dummy data): a year in the life of one person. The default
  * account becomes their everyday checking; savings, cash and a card are added in the same currency,
- * plus accounts in EUR, TRY and INR. Notes always match their category, bills recur on fixed days,
+ * plus accounts in EUR, TRY and INR. Money comes in the way it really does (two paychecks, side
+ * work, cashback, friends paying back) as well as going out. Notes always match their category, bills recur on fixed days,
  * and every balance is the sum of what was logged — so each screen tells the same story.
  */
 
@@ -81,7 +82,7 @@ function at(year: number, month: number, day: number, hour = 9, minute = 0) {
   return new Date(year, month, day, hour, minute, 0);
 }
 
-function buildRows(now: Date): Row[] {
+export function buildRows(now: Date): Row[] {
   const rows: Row[] = [];
   const y = now.getFullYear();
   const mo = now.getMonth();
@@ -99,9 +100,15 @@ function buildRows(now: Date): Row[] {
       return date > now ? at(yy, mm, d, 8, Math.floor(rand() * 60)) : date;
     };
 
-    // ── Income
-    rows.push({ acct: 'checking', cat: 'Salary', type: 'CR', amount: 5200, date: at(yy, mm, 1, 9, 5), note: 'Monthly salary' });
-    if (m % 2 === 1) rows.push({ acct: 'checking', cat: 'Freelance', type: 'CR', amount: pick([650, 850, 1200]), date: time(Math.min(18, lastDay)), note: pick(['Landing page project', 'Logo design', 'Consulting session']) });
+    // ── Income: money arrives the way it does in a real month — two paychecks, side work most
+    // months, and the small stuff (cashback, a friend paying back, something sold, interest).
+    rows.push({ acct: 'checking', cat: 'Salary', type: 'CR', amount: 2600, date: at(yy, mm, 1, 9, 5), note: 'Paycheck' });
+    if (ok(15)) rows.push({ acct: 'checking', cat: 'Salary', type: 'CR', amount: 2600, date: at(yy, mm, 15, 9, 5), note: 'Paycheck' });
+    if (m % 4 !== 3) rows.push({ acct: 'checking', cat: 'Freelance', type: 'CR', amount: pick([450, 650, 850, 1200]), date: time(Math.min(18, lastDay)), note: pick(['Landing page project', 'Logo design', 'Consulting session', 'Website maintenance']) });
+    if (ok(28)) rows.push({ acct: 'card', cat: 'Refunds', type: 'CR', amount: between(8, 24), date: at(yy, mm, 28, 6, 30), note: 'Card cashback' });
+    if (m % 2 === 0) rows.push({ acct: 'checking', cat: 'Other Income', type: 'CR', amount: between(22, 58), date: time(day()), note: pick(['Sarah paid back brunch', 'Split bill settled']), person: 'Sarah Mitchell' });
+    if (m % 3 === 1) rows.push({ acct: 'checking', cat: 'Other Income', type: 'CR', amount: between(40, 120), date: time(day()), note: pick(['Expense reimbursement', 'Travel reimbursement']), person: 'James Okafor' });
+    if (m % 5 === 3) rows.push({ acct: 'cash', cat: 'Sales', type: 'CR', amount: pick([60, 120, 240]), date: time(day()), note: pick(['Sold old monitor', 'Sold bike rack', 'Sold textbooks']) });
     if (m % 3 === 2 && ok(22)) rows.push({ acct: 'savings', cat: 'Dividends', type: 'CR', amount: between(38, 64), date: at(yy, mm, 22, 10, 0), note: 'Quarterly dividend' });
     if (m > 0) rows.push({ acct: 'savings', cat: 'Interests', type: 'CR', amount: between(28, 36), date: at(yy, mm, lastDay, 7, 0), note: 'Savings interest' });
 
@@ -150,6 +157,13 @@ function buildRows(now: Date): Row[] {
     if (m === 9) rows.push({ acct: 'checking', cat: 'Gifts', type: 'CR', amount: 150, date: at(yy, mm, 24, 18, 0), note: 'Birthday gift' });
     if (m === 1) rows.push({ acct: 'card', cat: 'Gifts given', type: 'DR', amount: 64, date: at(yy, mm, 21, 14, 0), note: 'Anniversary flowers' });
   }
+
+  // The last few days carry money in as well as out, so Home's recent list and "This month"
+  // open on a believable mix rather than a column of expenses.
+  const daysAgo = (d: number, hour: number, minute: number) => at(now.getFullYear(), now.getMonth(), now.getDate() - d, hour, minute);
+  rows.push({ acct: 'checking', cat: 'Freelance', type: 'CR', amount: 780, date: daysAgo(1, 16, 40), note: 'Invoice paid — brand refresh' });
+  rows.push({ acct: 'card', cat: 'Refunds', type: 'CR', amount: 34.99, date: daysAgo(2, 11, 15), note: 'Refund — returned headphones case' });
+  rows.push({ acct: 'checking', to: 'savings', cat: 'Transfer', type: 'TR', amount: 250, date: daysAgo(3, 19, 5), note: 'Extra to savings' });
 
   // A coffee on every recent day without an entry keeps the logging streak unbroken.
   for (let d = 0; d < 26; d++) {
@@ -264,10 +278,17 @@ export async function seedDummyData() {
     // gets whatever opening balance lands it on its closing figure.
     const totals: Record<number, { income: number; expense: number }> = {};
     const bump = (id: number, k: 'income' | 'expense', v: number) => { (totals[id] ??= { income: 0, expense: 0 })[k] += v; };
+    // What each account's balance moved by. Kept apart from the income / expense counters: a
+    // transfer moves balance only (the ledger's rule), so it must not inflate either counter.
+    const moved: Record<number, number> = {};
+    const shift = (id: number, v: number) => { moved[id] = (moved[id] ?? 0) + v; };
     for (const v of values) {
-      if (v.type === 'CR') bump(v.accountId, 'income', v.amount);
-      else bump(v.accountId, 'expense', v.amount);
-      if (v.type === 'TR' && v.toAccountId) bump(v.toAccountId, 'income', v.amount);
+      if (v.type === 'CR') { bump(v.accountId, 'income', v.amount); shift(v.accountId, v.amount); }
+      else if (v.type === 'DR') { bump(v.accountId, 'expense', v.amount); shift(v.accountId, -v.amount); }
+      else {
+        shift(v.accountId, -v.amount);
+        if (v.toAccountId) shift(v.toAccountId, v.amount);
+      }
     }
     const cents = (n: number) => Math.round(n * 100) / 100;
     for (const key of Object.keys(acctId) as Acct[]) {
@@ -275,7 +296,7 @@ export async function seedDummyData() {
       if (id === undefined) continue;
       const t = totals[id] ?? { income: 0, expense: 0 };
       await db.update(accounts).set({
-        balance: key === 'checking' ? sql`${accounts.balance} + ${cents(t.income - t.expense)}` : CLOSING_BALANCE[key],
+        balance: key === 'checking' ? sql`${accounts.balance} + ${cents(moved[id] ?? 0)}` : CLOSING_BALANCE[key],
         income: sql`${accounts.income} + ${cents(t.income)}`,
         expense: sql`${accounts.expense} + ${cents(t.expense)}`,
         updatedAt: now.toISOString(),
