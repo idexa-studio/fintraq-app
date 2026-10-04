@@ -52,7 +52,7 @@ export function useSearchResults(query: string) {
     const signature = `${debouncedQuery}|${total}`;
     if (lastTracked.current === signature) return;
     lastTracked.current = signature;
-    Analytics.track('search', { results: resultBucket(total) });
+    Analytics.track('search_performed', { results: resultBucket(total) });
   }, [isSettled, debouncedQuery, total, sections]);
 
   return {

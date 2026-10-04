@@ -122,7 +122,7 @@ export const GoogleBackupCard = React.memo(function GoogleBackupCard() {
   const handleBackup = useCallback(async () => {
     try {
       await backupNow();
-      Analytics.track('backup_created', { trigger: 'manual' });
+      Analytics.track('backup_created');
       showAlert({ title: t('backup.backupSuccess'), message: t('backup.backupSuccessMessage'), type: 'success' });
     } catch (e) {
       showAlert({ title: t('backup.backupFailed'), message: toErrorMessage(e, t('backup.backupFailedMessage')), type: 'error' });

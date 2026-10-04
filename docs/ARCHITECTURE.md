@@ -217,9 +217,14 @@ Rules
 - **No personal or financial data.** No amounts, balances, notes, names, search text, IDs or any
   typed text — only low-cardinality enums and buckets (`resultBucket`). Screen names are route
   templates (`accounts/[id]`), never concrete paths.
-- **GA4 recommended names** where one fits (`tutorial_begin`, `tutorial_complete`, `search`,
-  `begin_checkout`). Never log `purchase`: Firebase records store purchases as `in_app_purchase`
-  automatically, and logging both doubles revenue.
+- **GA4 recommended names only with their prescribed params** (`tutorial_begin`,
+  `tutorial_complete`, `begin_checkout` with `items`/`value`/`currency`); otherwise a custom name
+  (`search_performed`, since recommended `search` expects the query). Never log `purchase`:
+  Firebase records store purchases as `in_app_purchase` automatically, and logging both doubles
+  revenue. Never use an SDK-reserved name (`RESERVED_EVENT_NAMES` in `params.ts`; such events are
+  dropped) and never add a param that can only hold one value.
+- **Limits are enforced in code** (`params.ts`): names ≤40 chars, param values ≤100, ≤25 params,
+  user property names ≤24 and values ≤36; anything GA4 would silently drop is dropped visibly.
 - **Consent.** Settings → About → *Share usage data* (`profile.shareUsageData`, on by default)
   controls both Analytics and Crashlytics. Native collection starts off (`firebase.json`) and the
   provider enables it once settings load; events fired earlier wait for that and are dropped if
@@ -229,6 +234,5 @@ Rules
   `EXPO_PUBLIC_ANALYTICS_DEBUG=1`, enable DebugView (`adb shell setprop debug.firebase.analytics.app me.nafish.luno`,
   or `-FIRDebugEnabled` on iOS) and watch Firebase console → DebugView.
 - **GA4 console.** Register each event param you report on (`transaction_type`, `mode`,
-  `account_type`, `results`, `source`, `method`, `outcome`, `trigger`, `destination`,
-  `first_entry`) as an event-scoped custom dimension, and the user properties in
+  `account_type`, `results`, `source`, `outcome`, `destination`, `first_entry`) as an event-scoped custom dimension, and the user properties in
   `AnalyticsUserProperties` as user-scoped ones; unregistered params are collected but not reportable.

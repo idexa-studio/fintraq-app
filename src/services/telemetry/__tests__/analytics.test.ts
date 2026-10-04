@@ -88,13 +88,25 @@ describe('Analytics', () => {
     expect(mockLogEvent).toHaveBeenCalledWith(expect.anything(), 'screen_view', { screen_name: 'accounts/[id]', screen_class: 'accounts/[id]' });
   });
 
+  it('sends begin_checkout in the GA4 recommended shape', async () => {
+    const Analytics = load();
+    Analytics.setEnabled(true);
+    Analytics.track('begin_checkout', { items: [{ item_id: 'pro', item_name: 'Pro' }], value: 4.99, currency: 'USD' });
+    await flush();
+    expect(mockLogEvent).toHaveBeenCalledWith(expect.anything(), 'begin_checkout', {
+      items: [{ item_id: 'pro', item_name: 'Pro' }],
+      value: 4.99,
+      currency: 'USD',
+    });
+  });
+
   it('never throws into the caller when the SDK fails', async () => {
     mockLogEvent.mockImplementationOnce(() => {
       throw new Error('native down');
     });
     const Analytics = load();
     Analytics.setEnabled(true);
-    expect(() => Analytics.track('search', { results: '0' })).not.toThrow();
+    expect(() => Analytics.track('search_performed', { results: '0' })).not.toThrow();
     await flush();
   });
 });

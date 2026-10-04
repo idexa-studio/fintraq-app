@@ -6,13 +6,18 @@
  * Privacy rules — Fintraq is offline-first and markets itself as private:
  * - Never send amounts, balances, notes, names, search text, account numbers or anything typed.
  * - Only low-cardinality enums (a type, a mode, a bucket). No IDs, no free text.
- * - GA4 recommended names (`tutorial_begin`, `search`, `begin_checkout`) where one fits, so the
- *   built-in reports pick them up. `purchase` is deliberately NOT sent: Firebase already records
- *   store purchases as `in_app_purchase`, and both count toward revenue, which would double it.
+ * - GA4 recommended names only when we send their prescribed params (`tutorial_begin`,
+ *   `tutorial_complete`, `begin_checkout` with items/value/currency). Search is a custom event
+ *   because the recommended `search` expects `search_term`, which we never send.
+ * - `purchase` is deliberately NOT sent: Firebase already records store purchases as
+ *   `in_app_purchase`, and both count toward revenue, which would double it. For the same reason
+ *   there is no separate "Pro unlocked by purchase" event.
+ * - No single-value params: a param that can only ever hold one value carries no information.
  */
 export type TransactionKind = 'income' | 'expense' | 'transfer';
 export type SaveMode = 'create' | 'edit';
 export type ResultBucket = '0' | '1-5' | '6-20' | '21+';
+export type AnalyticsItem = { item_id: string; item_name?: string };
 
 export type AnalyticsEvents = {
   /** Onboarding opened on a fresh install. */
@@ -22,16 +27,15 @@ export type AnalyticsEvents = {
   transaction_saved: { transaction_type: TransactionKind; mode: SaveMode };
   account_saved: { account_type: string; mode: SaveMode };
   /** A settled global search. The query itself is never sent, only how many results it found. */
-  search: { results: ResultBucket };
+  search_performed: { results: ResultBucket };
   /** Paywall shown; `source` is the Pro feature the user tried, or `direct`. */
   paywall_view: { source: string };
-  /** The store purchase sheet was requested. */
-  begin_checkout: { item_id: string };
-  /** Pro became active on this device. */
-  pro_unlocked: { method: 'purchase' | 'restore' };
+  /** The store purchase sheet was requested. GA4 recommended shape; value/currency when the store returned a price. */
+  begin_checkout: { items: AnalyticsItem[]; value?: number; currency?: string };
   /** Restore tapped; what came back. */
   purchase_restore: { outcome: 'restored' | 'none' | 'failed' };
-  backup_created: { trigger: 'manual' };
+  /** Manual "Back up now" finished. Automatic backups run headless and aren't tracked. */
+  backup_created: undefined;
   backup_restored: undefined;
   data_exported: { destination: 'save' | 'share' };
 };
@@ -42,6 +46,5 @@ export type AnalyticsEventName = keyof AnalyticsEvents;
 export type AnalyticsUserProperties = {
   is_pro: 'true' | 'false';
   app_language: string;
-  app_theme: 'system' | 'light' | 'dark';
   default_currency: string;
 };

@@ -1,7 +1,7 @@
 import { LoggerService } from '@/src/services/logger.service';
 import type { AnalyticsEventName, AnalyticsEvents, AnalyticsUserProperties } from './events';
 import { getFirebaseModules } from './firebase-modules';
-import { isValidAnalyticsName, sanitizeEventParams } from './params';
+import { type EventParamValue, isValidEventName, sanitizeEventParams, sanitizeUserProperties } from './params';
 
 /** Debug builds send nothing unless EXPO_PUBLIC_ANALYTICS_DEBUG=1 (then use GA4 DebugView to watch events). */
 const DEV_ENABLED = process.env.EXPO_PUBLIC_ANALYTICS_DEBUG === '1';
@@ -38,8 +38,8 @@ type FirebaseAnalytics = NonNullable<Awaited<ReturnType<typeof getFirebaseModule
  * requires `search_term`, which we never send) and the call itself returns void. Our catalogue in
  * events.ts is the type check, so call it through its untyped fallback signature.
  */
-function logEvent(analytics: FirebaseAnalytics, name: string, params?: Record<string, string | number>): void {
-  (analytics.logEvent as (instance: ReturnType<FirebaseAnalytics['getAnalytics']>, name: string, params?: Record<string, string | number>) => void)(
+function logEvent(analytics: FirebaseAnalytics, name: string, params?: Record<string, EventParamValue>): void {
+  (analytics.logEvent as (instance: ReturnType<FirebaseAnalytics['getAnalytics']>, name: string, params?: Record<string, EventParamValue>) => void)(
     analytics.getAnalytics(),
     name,
     params,
@@ -79,8 +79,11 @@ export const Analytics = {
   },
 
   track<E extends AnalyticsEventName>(name: E, ...[params]: ParamsArg<E>): void {
-    if (__DEV__ && !isValidAnalyticsName(name)) LoggerService.warn('ANALYTICS', `Invalid event name: ${name}`);
-    run(`track ${name}`, async ({ analytics }) => logEvent(analytics, name, sanitizeEventParams(params as Record<string, string | number> | undefined)));
+    if (!isValidEventName(name)) {
+      if (__DEV__) LoggerService.warn('ANALYTICS', `Invalid or reserved event name: ${name}`);
+      return;
+    }
+    run(`track ${name}`, async ({ analytics }) => logEvent(analytics, name, sanitizeEventParams(params as Record<string, EventParamValue> | undefined)));
   },
 
   /** Screen names are route templates (see screenNameFromSegments); automatic screen reporting is off in firebase.json. */
@@ -90,6 +93,8 @@ export const Analytics = {
   },
 
   setUserProperties(properties: Partial<AnalyticsUserProperties>): void {
-    run('setUserProperties', ({ analytics }) => analytics.setUserProperties(analytics.getAnalytics(), properties));
+    const valid = sanitizeUserProperties(properties);
+    if (Object.keys(valid).length === 0) return;
+    run('setUserProperties', ({ analytics }) => analytics.setUserProperties(analytics.getAnalytics(), valid));
   },
 };
