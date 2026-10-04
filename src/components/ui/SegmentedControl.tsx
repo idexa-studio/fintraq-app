@@ -72,10 +72,10 @@ function SegmentedControlBase<T extends string>({
             accessibilityLabel={opt.label}
           >
             {opt.icon ? (
-              <Icon name={opt.icon} size={size === 'sm' ? 14 : 16} color={active ? colors.text : colors.textMuted} />
+              <Icon name={opt.icon} size={size === 'sm' ? 13 : 15} color={active ? colors.text : colors.textMuted} weight={active ? 'bold' : undefined} />
             ) : null}
             <Text
-              variant={size === 'sm' ? 'caption' : 'calloutStrong'}
+              variant={size === 'sm' ? 'caption' : 'callout'}
               tone={active ? 'default' : 'muted'}
               style={active && styles.activeLabel}
               numberOfLines={1}
@@ -95,7 +95,7 @@ const createStyles = ({ colors, radius, spacing, typography, isDark }: ThemeCont
   StyleSheet.create({
     track: {
       flexDirection: 'row',
-      height: size === 'sm' ? 36 : 44,
+      height: size === 'sm' ? 34 : 40,
       padding: PAD,
       borderRadius: radius('full'),
       backgroundColor: colors.card,
@@ -106,14 +106,14 @@ const createStyles = ({ colors, radius, spacing, typography, isDark }: ThemeCont
       bottom: PAD,
       left: PAD,
       borderRadius: radius('full'),
-      backgroundColor: isDark ? colors.surface : '#FFFFFF',
+      backgroundColor: colors.surface,
     },
     segment: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: spacing('1.5'),
+      gap: spacing('1'),
       paddingHorizontal: spacing('2'),
     },
     activeLabel: {

@@ -21,10 +21,10 @@ type Props = {
   currency: string;
 };
 
-type TypeOption = { value: TransactionType; label: string; icon: IconSource; color: string };
+type TypeOption = { value: TransactionType; label: string; icon: IconSource };
 
 /**
- * The top of the entry form on the same ink card as the Home and Transactions heroes: what kind of
+ * The top of the entry form on the same hero card as the Home and Transactions heroes: what kind of
  * entry, and how much. The amount is the page's headline, so it gets the most weight.
  */
 export const TransactionEntryHero = React.memo(function TransactionEntryHero({
@@ -37,7 +37,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
   currency,
 }: Props) {
   const theme = useTheme();
-  const { heroCard: hero } = theme;
+  const { heroCard: hero, colors } = theme;
   const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [showCalc, setShowCalc] = useState(false);
@@ -46,16 +46,16 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
 
   const options = useMemo(
     (): TypeOption[] => [
-      { value: 'DR', label: t('transactions.expense'), icon: 'arrow-up-right', color: hero.expense },
-      { value: 'CR', label: t('transactions.income'), icon: 'arrow-down-left', color: hero.income },
-      { value: 'TR', label: t('transactions.transfer'), icon: 'arrows-left-right', color: hero.transfer },
+      { value: 'DR', label: t('transactions.expense'), icon: 'arrow-up-right' },
+      { value: 'CR', label: t('transactions.income'), icon: 'arrow-down-left' },
+      { value: 'TR', label: t('transactions.transfer'), icon: 'arrows-left-right' },
     ],
-    [t, hero],
+    [t],
   );
   const visible = typeLocked ? options.filter((o) => o.value === type) : options;
 
   return (
-    <HeroSurface style={styles.margin}>
+    <HeroSurface style={styles.margin} decorated={false}>
       {!hideType ? (
         <View style={styles.types} accessibilityRole="tablist">
           {visible.map((option) => {
@@ -74,8 +74,8 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
                 accessibilityRole="tab"
                 accessibilityState={{ selected: isActive, disabled: typeLocked }}
               >
-                <Icon name={option.icon} size={15} color={isActive ? option.color : hero.textMuted} weight="bold" />
-                <Text variant="label" color={isActive ? hero.textPrimary : hero.textMuted} numberOfLines={1}>
+                <Icon name={option.icon} size={14} color={isActive ? hero.onInk : hero.textMuted} weight="bold" />
+                <Text variant="label" color={isActive ? colors.onInk : hero.textMuted} numberOfLines={1}>
                   {option.label}
                 </Text>
               </BentoPressable>
@@ -99,7 +99,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
             keyboardType="decimal-pad"
             placeholder="0.00"
             placeholderTextColor={hero.placeholder}
-            selectionColor={hero.income}
+            selectionColor={hero.textPrimary}
             accessibilityLabel={t('transactions.amount')}
             autoFocus
           />
@@ -113,7 +113,7 @@ export const TransactionEntryHero = React.memo(function TransactionEntryHero({
             accessibilityRole="button"
             accessibilityLabel={t('transactions.calculator')}
           >
-            <Icon name="calculator" size={20} color={hero.textPrimary} />
+            <Icon name="calculator" size={20} color={hero.onInk} />
           </BentoPressable>
         </View>
       </View>
@@ -129,9 +129,9 @@ const createStyles = ({ heroCard: hero, spacing, radius, layout, typography }: T
     types: {
       flexDirection: 'row',
       gap: spacing('1'),
-      padding: spacing('1'),
+      padding: 3,
       borderRadius: radius('full'),
-      backgroundColor: hero.separator,
+      backgroundColor: hero.track,
     },
     type: {
       flex: 1,
@@ -139,11 +139,11 @@ const createStyles = ({ heroCard: hero, spacing, radius, layout, typography }: T
       alignItems: 'center',
       justifyContent: 'center',
       gap: spacing('1.5'),
-      height: 36,
+      height: 34,
       paddingHorizontal: spacing('2'),
       borderRadius: radius('full'),
     },
-    typeActive: { backgroundColor: hero.tileStrong },
+    typeActive: { backgroundColor: hero.ink },
     amountBlock: { gap: spacing('1') },
     amountRow: { flexDirection: 'row', alignItems: 'center', gap: spacing('2') },
     symbol: { flexShrink: 0 },
@@ -162,6 +162,6 @@ const createStyles = ({ heroCard: hero, spacing, radius, layout, typography }: T
       borderRadius: radius('full'),
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: hero.tileStrong,
+      backgroundColor: hero.ink,
     },
   });

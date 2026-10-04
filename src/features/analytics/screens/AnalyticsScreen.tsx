@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { EmptyState, IconAvatar, PersonAvatar, Screen, SectionHeader, SegmentedControl, SkeletonScreen, Text } from '@/src/components/ui';
+import { EmptyState, IconAvatar, PersonAvatar, Screen, SectionHeader, SegmentedControl, Skeleton, Text } from '@/src/components/ui';
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { AnalyticsControls } from '@/src/features/analytics/components/AnalyticsControls';
@@ -152,7 +152,16 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
   if (overview.isLoading) {
     return (
       <Screen header={header} variant="fixed" edges={['top']}>
-        <SkeletonScreen />
+        {/* Mirrors the real layout so the page doesn't jump from a blank list to cards. */}
+        <View style={styles.content}>
+          <Skeleton height={34} radius="full" />
+          <View style={styles.skeletonRow}>
+            <Skeleton height={112} radius="xl" style={styles.flex} />
+            <Skeleton height={112} radius="xl" style={styles.flex} />
+          </View>
+          <Skeleton height={72} radius="xl" />
+          <Skeleton height={220} radius="xl" />
+        </View>
       </Screen>
     );
   }
@@ -212,6 +221,22 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           )}
         </View>
 
+        <View>
+          {isPremium ? (
+            <SectionHeader title={t('analytics.categoryBreakdown')} rightText={t('analytics.groupsCount', { count: categoryItems.length })} noPadding />
+          ) : (
+            <SectionHeader title={t('dashboard.topExpenses')} rightText={t('dashboard.seeAll')} onPressRight={openLockedCategories} noPadding />
+          )}
+          <View style={styles.stack}>
+            {isPremium ? <SegmentedControl options={categoryTabs} value={categoryTab} onChange={setCategoryTab} size="sm" /> : null}
+            {categoryItems.length > 0 ? (
+              <ShareBreakdown items={categoryItems} />
+            ) : (
+              <EmptyState variant="inline" icon="tag" title={t('analytics.noCategoryData')} description={t('analytics.noCategoryDataHint')} />
+            )}
+          </View>
+        </View>
+
         {isPremium ? (
           <>
             <View>
@@ -233,22 +258,6 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             </View>
           </>
         ) : null}
-
-        <View>
-          {isPremium ? (
-            <SectionHeader title={t('analytics.categoryBreakdown')} rightText={t('analytics.groupsCount', { count: categoryItems.length })} noPadding />
-          ) : (
-            <SectionHeader title={t('dashboard.topExpenses')} rightText={t('dashboard.seeAll')} onPressRight={openLockedCategories} noPadding />
-          )}
-          <View style={styles.stack}>
-            {isPremium ? <SegmentedControl options={categoryTabs} value={categoryTab} onChange={setCategoryTab} size="sm" /> : null}
-            {categoryItems.length > 0 ? (
-              <ShareBreakdown items={categoryItems} />
-            ) : (
-              <EmptyState variant="inline" icon="tag" title={t('analytics.noCategoryData')} description={t('analytics.noCategoryDataHint')} />
-            )}
-          </View>
-        </View>
 
         <View>
           <SectionHeader title={t('dashboard.rhythmTitle')} rightText={t('dashboard.rhythmHint')} noPadding />
@@ -308,12 +317,14 @@ const createStyles = ({ colors, spacing, radius, layout, tabBarClearance }: Them
       paddingHorizontal: layout.screenPadding,
       paddingTop: spacing('3'),
       paddingBottom: tabBarClearance(bottomInset),
-      gap: spacing('5'),
+      gap: spacing('6'),
     },
     emptyContent: { paddingTop: spacing('8') },
     emptyFeatures: { backgroundColor: colors.surface, borderRadius: radius('2xl'), padding: spacing('5'), gap: spacing('4') },
     emptyFeature: { flexDirection: 'row', alignItems: 'center', gap: spacing('3') },
     emptyFeatureText: { flex: 1, gap: 2 },
     stack: { gap: spacing('3') },
+    skeletonRow: { flexDirection: 'row', gap: spacing('3') },
+    flex: { flex: 1 },
     card: { backgroundColor: colors.surface, borderRadius: radius('xl'), padding: spacing('4'), gap: spacing('3') },
   });

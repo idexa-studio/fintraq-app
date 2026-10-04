@@ -113,6 +113,7 @@ const de: Translation = {
     cannotDelete: 'Kategorie kann nicht gelöscht werden', deleteFailed: 'Kategorie konnte nicht gelöscht werden.',
   },
   dashboard: {
+    pulseIncome: 'Eingenommen', pulseKept: '{{pct}} % davon behalten', pulseOverIncome: 'Mehr ausgegeben als eingenommen', pulseNoIncome: 'Noch keine Einnahmen',
     netThisMonth: '{{amount}} diesen Monat', thisMonth: 'Dieser Monat', quickActions: 'Schnellaktionen', quickExpense: 'Ausgabe', quickIncome: 'Einnahme', quickTransfer: 'Umbuchung', quickLoan: 'Darlehen', pulseSpent: 'Bisher ausgegeben', pulseOfLast: '{{pct}} % des Vormonats', pulseLastMonth: 'Letzter Monat', pulseDay: 'Tag {{day}} von {{total}}', pulseEmpty: 'Diesen Monat noch nichts ausgegeben', rhythmTitle: 'Ausgabenrhythmus', rhythmHint: 'Letzte 5 Wochen', rhythmLess: 'Weniger', rhythmMore: 'Mehr', rhythmNone: 'Keine Ausgaben', rhythmSpent: '{{amount}} ausgegeben',
     streakDays: '{{count}} Tage in Folge',
     accounts: 'Konten', manage: 'Verwalten', topExpenses: 'Größte Ausgaben', people: 'Personen', loans: 'Darlehen', recent: 'Zuletzt', seeAll: 'Alle anzeigen',
@@ -128,6 +129,11 @@ const de: Translation = {
   editEntry: 'Eintrag bearbeiten', newEntry: 'Neuer Eintrag', fromAccount: 'Von Konto', toAccount: 'Auf Konto', noCompatible: 'Keine kompatiblen Konten für diese Überweisung.', linkedPerson: 'Verknüpfte Person', unknown: 'Unbekannt', noPersonLinked: 'Keine Person verknüpft', time: 'Uhrzeit', note: 'Notiz', optionalContext: 'Optionaler Kontext', saveChanges: 'Änderungen speichern', saveTransaction: 'Transaktion speichern', none: 'Keine',
   addedOn: 'Hinzugefügt am {{date}}', detailTitle: 'Transaktion', notFound: 'Transaktion nicht gefunden.', detailDeleteTitle: 'Transaktion löschen', detailDeleteMessage: 'Die Auswirkung auf den Kontostand wird rückgängig gemacht. Das kann nicht widerrufen werden.', from: 'Von', to: 'An', created: 'Erstellt', cancel: 'Abbrechen' },
   onboardingFlow: {
+    stepCount: '{{current}}/{{total}}', yourName: 'Dein Name', moreCurrencies: 'Mehr', previewLabel: 'So wird es angezeigt', profileSubtitle: 'Dein Name für die Begrüßung und die Währung, in der du rechnest.',
+    hello: { title: 'Geld, ganz entspannt.', subtitle: 'Ausgaben, Einnahmen und Darlehen an einem privaten Ort. In unter einer Minute eingerichtet.' },
+    perks: { offline: 'Funktioniert offline', private: 'Bleibt auf dem Gerät', fast: 'In Sekunden erfasst' },
+    mock: { salary: 'Gehalt', coffee: 'Kaffee' },
+    typeHints: { cash: 'Scheine & Münzen', bank: 'Spar- oder Girokonto', ewallet: 'Handy- & Online-Wallets', credit_card: 'Jetzt kaufen, später zahlen' },
     balanceHint: 'Was gerade drauf ist. Ab jetzt halten Transaktionen den Stand aktuell.', entryNote: 'Notiz (optional)', entryNotePlaceholder: 'z. B. Mittagessen mit dem Team', balanceAfter: '{{account}} danach',
     accountNameRequired: 'Gib dem Konto einen Namen', invalidAmount: 'Dieser Betrag sieht nicht richtig aus', entryAmountRequired: 'Gib einen Betrag ein oder überspringe es', addEntry: 'Eintrag hinzufügen', skipForNow: 'Jetzt überspringen',
     getStarted: 'Los geht’s', restoreFromBackup: 'Aus Backup wiederherstellen', welcomeSubtitle: 'Ausgaben, Einnahmen und Kredite an einem ruhigen, privaten Ort verfolgen. Die Einrichtung dauert keine Minute.',
@@ -258,6 +264,7 @@ const de: Translation = {
     daysShort: { sun: 'So', mon: 'Mo', tue: 'Di', wed: 'Mi', thu: 'Do', fri: 'Fr', sat: 'Sa' },
   },
   analytics: {
+    savedShare: '{{pct}} % der Einnahmen gespart', overspentShare: '{{pct}} % mehr ausgegeben als eingenommen',
     emptyTitle: 'Hier beginnen deine Einblicke', emptyHint: 'Erfasse ein paar Transaktionen, dann zeigt dieser Tab, wie sich dein Geld bewegt.',
     emptyFeatures: { trend: { title: 'Ausgabentrends', hint: 'Tag für Tag oder Monat für Monat, verglichen mit deinem Schnitt' }, categories: { title: 'Wohin es fließt', hint: 'Der Anteil jeder Kategorie an Ausgaben und Einnahmen' }, forecast: { title: 'Prognose zum Monatsende', hint: 'Wohin der Monat bei deinem bisherigen Tempo läuft' } },
     income: 'Einnahmen', expenses: 'Ausgaben', expense: 'Ausgabe', netPosition: 'Nettoposition', dailyAvg: 'Ø Tagesausgaben', highlights: 'Highlights', topCategory: 'Größte Ausgabenkategorie', biggestExpense: 'Größte Ausgabe',

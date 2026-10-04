@@ -1,5 +1,5 @@
 import { GalleryGroup, Specimen } from '@/src/features/design-gallery/components/Specimen';
-import { EmptyState, HeroSurface, IconButton, ListGroup, MoneyText, ListItem, PersonAvatar, SectionHeader, StatColumns, StatTile, Text } from '@/src/components/ui';
+import { EmptyState, HeroSplit, HeroSurface, IconButton, ListGroup, MoneyText, ListItem, PersonAvatar, SectionHeader, StatColumns, StatTile, Text } from '@/src/components/ui';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { toDbColor } from '@/src/utils/format';
@@ -31,7 +31,7 @@ const SAMPLE_TXS: TxData[] = [
 const noop = () => {};
 
 export function PatternsSection() {
-  const { spacing, colors, radius, typography } = useTheme();
+  const { spacing, colors, radius, typography, heroCard } = useTheme();
 
   return (
     <View style={{ gap: spacing('9') }}>
@@ -51,14 +51,14 @@ export function PatternsSection() {
 
       <GalleryGroup title="Compositions">
         <Specimen
-          title="HeroSurface"
-          description="Ink card for a screen's headline figure (Home balance, Transactions net). Content uses onInk / onInkMuted; onInkAccent is the lime for text and icons here."
+          title="HeroSurface + HeroSplit"
+          description="Lime (light) / emerald (dark) card for a screen's headline figure. Monochrome: text from heroCard.textPrimary / textMuted, solid buttons heroCard.ink with onInk glyphs, pills heroCard.tile. HeroSplit weighs two figures as solid vs soft ink — never red/green on the hero."
           bare
         >
           <HeroSurface>
-            <Text variant="caption" color={colors.onInkMuted}>Your balance</Text>
-            <MoneyText amount={20612.57} currency="USD" weight="bold" style={{ ...typography.metrics.display, color: colors.onInk }} />
-            <Text variant="label" color={colors.onInkAccent}>+$3,282.90 this month</Text>
+            <Text variant="caption" color={heroCard.textMuted}>Net worth</Text>
+            <MoneyText amount={20612.57} currency="USD" weight="bold" style={{ ...typography.metrics.display, color: heroCard.textPrimary }} />
+            <HeroSplit primary={{ label: 'Assets', amount: 21254.75 }} secondary={{ label: 'Debts', amount: 642.18 }} currency="USD" />
           </HeroSurface>
         </Specimen>
 

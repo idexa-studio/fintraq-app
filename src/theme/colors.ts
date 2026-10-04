@@ -124,56 +124,80 @@ export type HeroCardPalette = {
   background: string;
   backgroundDark: string;
   textPrimary: string;
+  /** Labels and secondary figures — ≥4.5:1 on `background`. */
   textMuted: string;
+  /** Hairlines and dividers. */
   separator: string;
+  /** Signal accents for the rare spot ink can't carry in/out (design gallery). */
   income: string;
   expense: string;
-  /** Transfer accent (entry form type switch). */
   transfer: string;
-  /** Selected tab / input well on the hero — one step stronger than `separator`. */
+  /** Frosted fill for pills and chips sitting on the hero. */
+  tile: string;
+  /** Selected tab / input well on the hero — one step stronger than `tile`. */
   tileStrong: string;
+  /** Solid contrasting disc: quick-action buttons, symbol badges. */
+  ink: string;
+  /** Glyph drawn on `ink`. */
+  onInk: string;
+  /** Empty part of a bar on the hero. */
+  track: string;
+  /** Secondary part of a split bar (debts, expenses): ink at reduced strength. */
+  fillSoft: string;
   /** Placeholder text inside hero inputs. */
   placeholder: string;
+  /** Decorative rings. */
   decoOverlay: string;
   glowLight: string;
 };
 
+// The hero is monochrome: ink on lime (light) and white on emerald (dark). Red and green text on
+// a green card vibrates and fails contrast, so in/out is carried by solid vs soft ink instead.
 export function getHeroColors(
   isDark: boolean,
   primary: string,
   primaryDark: string,
-  text: string,
-  textMuted: string
+  _text: string,
+  _textMuted: string
 ): HeroCardPalette {
   if (isDark) {
     return {
-      background: '#008040', // Deep emerald green for dark mode balance backing
-      backgroundDark: '#006633', // Deep forest green
-      textPrimary: '#FFFFFF', // Pure white for perfect contrast
-      textMuted: '#D1FADF', // Soft bright mint-white for highly legible labels
-      separator: 'rgba(255, 255, 255, 0.15)',
-      income: '#00FF88', // Bright mint/green indicator
-      expense: '#FF8F8F', // Bright coral/red indicator
-      transfer: '#BFE0FF',
+      background: '#008040',
+      backgroundDark: '#006633',
+      textPrimary: '#FFFFFF',
+      textMuted: '#E2F6EA',
+      separator: 'rgba(255, 255, 255, 0.16)',
+      income: '#7DF5B6',
+      expense: '#FFC2BD',
+      transfer: '#CFE6FF',
+      tile: 'rgba(0, 24, 12, 0.24)',
       tileStrong: 'rgba(255, 255, 255, 0.22)',
-      placeholder: 'rgba(255, 255, 255, 0.45)',
-      decoOverlay: 'rgba(255, 255, 255, 0.08)',
+      ink: '#05301A',
+      onInk: '#6AF5AE',
+      track: 'rgba(0, 24, 12, 0.28)',
+      fillSoft: 'rgba(255, 255, 255, 0.45)',
+      placeholder: 'rgba(255, 255, 255, 0.5)',
+      decoOverlay: 'rgba(255, 255, 255, 0.07)',
       glowLight: 'rgba(255, 255, 255, 0.03)',
     };
-  } else {
-    return {
-      background: primary, // #00CC6A (bright primary green)
-      backgroundDark: primaryDark, // #009950
-      textPrimary: '#0A0A0A', // Deep black text for readability
-      textMuted: '#1E3A2B', // Dark forest green for label contrast
-      separator: 'rgba(0, 0, 0, 0.08)',
-      income: '#00602F', // Dark green indicator
-      expense: '#9E0000', // Dark red indicator
-      transfer: '#0B3D7A',
-      tileStrong: 'rgba(0, 0, 0, 0.14)',
-      placeholder: 'rgba(10, 10, 10, 0.35)',
-      decoOverlay: 'rgba(0, 0, 0, 0.06)',
-      glowLight: 'rgba(255, 255, 255, 0.04)',
-    };
   }
+  return {
+    background: primary,
+    backgroundDark: primaryDark,
+    textPrimary: '#0A0A0A',
+    textMuted: '#0E3A22',
+    separator: 'rgba(10, 10, 10, 0.10)',
+    income: '#003D1E',
+    expense: '#5C0B0B',
+    transfer: '#0B2F5C',
+    tile: 'rgba(255, 255, 255, 0.30)',
+    tileStrong: 'rgba(255, 255, 255, 0.62)',
+    ink: '#0A0A0A',
+    onInk: primary,
+    track: 'rgba(10, 10, 10, 0.12)',
+    fillSoft: 'rgba(10, 10, 10, 0.32)',
+    placeholder: 'rgba(10, 10, 10, 0.4)',
+    decoOverlay: 'rgba(255, 255, 255, 0.18)',
+    glowLight: 'rgba(255, 255, 255, 0.04)',
+  };
 }

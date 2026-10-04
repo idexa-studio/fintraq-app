@@ -450,9 +450,9 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
     }
     switch (currentStep.id) {
       case 'welcome':
-        return <WelcomeStep />;
+        return <WelcomeStep currency={currency} />;
       case 'profile':
-        return <ProfileStep currency={currency} onOpenCurrencyPicker={openCurrencyPicker} />;
+        return <ProfileStep currency={currency} onCurrencyChange={setCurrency} onOpenCurrencyPicker={openCurrencyPicker} />;
       case 'account':
         return <AccountStep draft={accountDraft} onChange={setAccountDraft} currency={currency} nameError={stepErrors.accountName} balanceError={stepErrors.balance} />;
       case 'first_entry':
@@ -500,6 +500,9 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
                   <View key={step.id} style={[styles.progressSegment, index + 1 <= stepIndex && styles.progressSegmentActive]} />
                 ))}
               </View>
+              <Text variant="label" tone="muted" style={styles.stepCount}>
+                {t('onboardingFlow.stepCount', { current: stepIndex, total: ONBOARDING_STEPS.length - 1 })}
+              </Text>
             </View>
           )}
 
@@ -508,15 +511,15 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            {isWelcome ? (
-              <Text variant="headline" style={styles.brand}>Fintraq<Text inline style={styles.brandDot}>.</Text></Text>
-            ) : null}
-            <View style={styles.stepMeta}>
-              <Text variant="display">{t(`onboardingFlow.steps.${currentStep.id}.title`)}</Text>
-              <Text variant="body" tone="muted">
-                {isWelcome ? t('onboardingFlow.welcomeSubtitle') : t(`onboardingFlow.steps.${currentStep.id}.subtitle`)}
-              </Text>
-            </View>
+            {/* The welcome screen carries its own headline under the illustration. */}
+            {isWelcome || isRestoring ? null : (
+              <View style={styles.stepMeta}>
+                <Text variant="display">{t(`onboardingFlow.steps.${currentStep.id}.title`)}</Text>
+                <Text variant="body" tone="muted">
+                  {currentStep.id === 'profile' ? t('onboardingFlow.profileSubtitle') : t(`onboardingFlow.steps.${currentStep.id}.subtitle`)}
+                </Text>
+              </View>
+            )}
 
             {renderStepContent()}
           </ScrollView>
@@ -572,6 +575,7 @@ export const OnboardingScreen = React.memo(function OnboardingScreen() {
         visible={showReminderDialog}
         onClose={handleSkipReminders}
         title={t('onboardingFlow.reminderTitle')}
+        icon="bell"
         confirmLabel={t('onboardingFlow.reminderConfirm')}
         cancelLabel={t('onboardingFlow.notNow')}
         destructive={false}
@@ -602,21 +606,18 @@ const createStyles = ({ colors, typography, spacing, radius, layout }: ThemeCont
       paddingTop: spacing('2'),
     },
     progressTrack: { flex: 1, flexDirection: 'row', gap: spacing('1.5') },
-    progressSegment: { flex: 1, height: 6, borderRadius: radius('full'), backgroundColor: colors.card },
+    progressSegment: { flex: 1, height: 5, borderRadius: radius('full'), backgroundColor: colors.card },
     progressSegmentActive: { backgroundColor: colors.primary },
+    stepCount: { minWidth: 28, textAlign: 'right' },
     scrollContent: {
       flexGrow: 1,
       paddingHorizontal: layout.screenPadding,
-      paddingTop: spacing('7'),
+      paddingTop: spacing('6'),
       paddingBottom: spacing('6'),
-      gap: spacing('7'),
+      gap: spacing('6'),
     },
-    scrollContentWelcome: { paddingTop: spacing('10') },
-    brand: {
-      marginBottom: -spacing('4'),
-    },
-    brandDot: { color: colors.primary }, // design-system-ignore: logotype mark, exempt from contrast
-    stepMeta: { gap: spacing('2.5') },
+    scrollContentWelcome: { paddingTop: spacing('3') },
+    stepMeta: { gap: spacing('2') },
     footer: {
       gap: spacing('1'),
       paddingHorizontal: layout.screenPadding,

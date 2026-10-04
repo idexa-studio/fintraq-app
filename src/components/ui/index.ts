@@ -31,6 +31,7 @@ export * from './Switch';
 // Display
 export * from './Card';
 export * from './HeroSurface';
+export * from './HeroSplit';
 export * from './OptionCard';
 export * from './ListGroup';
 export * from './ListItem';

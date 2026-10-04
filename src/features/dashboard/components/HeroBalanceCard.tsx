@@ -59,8 +59,8 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
         />
         {monthNet !== null ? (
           <View style={styles.net}>
-            <Icon name={isUp ? 'trend-up' : 'chevron-down'} size={14} color={isUp ? hero.income : hero.expense} weight="bold" />
-            <Text variant="label" color={hero.textMuted} numberOfLines={1} style={styles.netText}>
+            <Icon name={isUp ? 'trend-up' : 'trend-down'} size={14} color={hero.textPrimary} weight="bold" />
+            <Text variant="label" color={hero.textPrimary} numberOfLines={1} style={styles.netText}>
               {t('dashboard.netThisMonth', { amount: `${sign}${formatCurrency(Math.abs(monthNet), currency)}` })}
             </Text>
           </View>
@@ -72,13 +72,24 @@ export const HeroBalanceCard = React.memo(function HeroBalanceCard({ balance, cu
   );
 });
 
-const createStyles = ({ heroCard: hero, spacing, layout, typography }: ThemeContextType) =>
+const createStyles = ({ heroCard: hero, spacing, radius, layout, typography }: ThemeContextType) =>
   StyleSheet.create({
     margin: { marginHorizontal: layout.screenPadding },
-    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing('3'), minHeight: 30 },
+    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing('3'), minHeight: 32 },
     headerLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing('2'), flexShrink: 1 },
-    figure: { gap: spacing('1.5') },
+    figure: { gap: spacing('2') },
     balance: { ...typography.metrics.display, color: hero.textPrimary },
-    net: { flexDirection: 'row', alignItems: 'center', gap: spacing('1') },
+    // A frosted pill, so the month's direction reads as a tag on the balance, not a second figure.
+    net: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing('1'),
+      height: 26,
+      paddingHorizontal: spacing('2.5'),
+      borderRadius: radius('full'),
+      backgroundColor: hero.tile,
+      alignSelf: 'flex-start',
+      maxWidth: '100%',
+    },
     netText: { flexShrink: 1 },
   });

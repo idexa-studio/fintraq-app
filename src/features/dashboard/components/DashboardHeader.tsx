@@ -4,6 +4,7 @@ import { Text } from '@/src/components/ui/Text';
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
+import { getGreetingKey } from '@/src/utils/greeting';
 import { useTranslation } from 'react-i18next';
 
 type Props = {
@@ -11,13 +12,6 @@ type Props = {
   isPremium: boolean;
   onSearch: () => void;
 };
-
-function getGreetingKey() {
-  const h = new Date().getHours();
-  if (h < 12) return 'common.goodMorning';
-  if (h < 17) return 'common.goodAfternoon';
-  return 'common.goodEvening';
-}
 
 export const DashboardHeader = React.memo(function DashboardHeader({ name, isPremium, onSearch }: Props) {
   const theme = useTheme();
