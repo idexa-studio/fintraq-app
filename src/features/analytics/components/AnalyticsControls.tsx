@@ -1,6 +1,8 @@
-import React, { useCallback, useMemo } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Chip, SegmentedControl, Text } from '@/src/components/ui';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
+import { Chip, OptionsBottomSheet, SegmentedControl, Text } from '@/src/components/ui';
+import { CURRENCIES } from '@/src/constants/currency';
 import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/analytics/constants';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { AnalyticsWindow } from '@/src/utils/analytics';
@@ -18,6 +20,11 @@ type AnalyticsControlsProps = {
   /** Tapped a Pro-only range while on the free plan. */
   onLockedRange: () => void;
 };
+
+/** Up to this many currencies show as inline chips; more collapse into one chip that opens a list, so the row never overflows. */
+const INLINE_CURRENCIES = 3;
+
+const currencyName = (code: string) => CURRENCIES.find((c) => c.code === code)?.name ?? code;
 
 /** The window's own dates, so the caption always names exactly the days the figures cover. */
 function windowCaption(window: AnalyticsWindow): string {
@@ -41,7 +48,22 @@ export const AnalyticsControls = React.memo(function AnalyticsControls({
   onLockedRange,
 }: AnalyticsControlsProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const openPicker = useCallback(() => setPickerOpen(true), []);
+  const closePicker = useCallback(() => setPickerOpen(false), []);
+
+  const currencyOptions = useMemo(
+    () =>
+      currencies.map((c) => ({
+        key: c,
+        label: `${c} · ${currencyName(c)}`,
+        selected: c === currency,
+        onPress: () => onCurrencyChange(c),
+      })),
+    [currencies, currency, onCurrencyChange],
+  );
 
   const rangeOptions = useMemo(
     () =>
@@ -69,14 +91,31 @@ export const AnalyticsControls = React.memo(function AnalyticsControls({
         <Text variant="caption" tone="muted" numberOfLines={1} style={styles.caption}>
           {windowCaption(window)}
         </Text>
-        {currencies.length > 1 && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll} contentContainerStyle={styles.chips}>
+        {currencies.length > INLINE_CURRENCIES ? (
+          <Chip
+            label={currency}
+            size="sm"
+            isActive
+            trailingIcon="chevron-down"
+            onPress={openPicker}
+            accessibilityLabel={`${t('ui.currency')}: ${currency}`}
+          />
+        ) : currencies.length > 1 ? (
+          <View style={styles.chips}>
             {currencies.map((c) => (
               <Chip key={c} label={c} size="sm" isActive={c === currency} onPress={() => onCurrencyChange(c)} />
             ))}
-          </ScrollView>
-        )}
+          </View>
+        ) : null}
       </View>
+
+      <OptionsBottomSheet
+        visible={pickerOpen}
+        onClose={closePicker}
+        title={t('ui.currency')}
+        options={currencyOptions}
+        snapPoints={currencies.length > 6 ? ['60%'] : undefined}
+      />
     </View>
   );
 });
@@ -87,7 +126,5 @@ const createStyles = ({ spacing }: ThemeContextType) =>
     // Dates on the left, the compact currency picker trailing on the same line instead of a row of its own.
     footer: { flexDirection: 'row', alignItems: 'center', gap: spacing('3'), minHeight: 28 },
     caption: { flex: 1 },
-    // Sizes to its chips, capped so the dates keep room; many currencies scroll.
-    chipsScroll: { flexGrow: 0, maxWidth: '58%' },
-    chips: { gap: spacing('1.5') },
+    chips: { flexDirection: 'row', gap: spacing('1.5') },
   });
