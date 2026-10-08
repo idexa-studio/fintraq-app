@@ -244,33 +244,40 @@ def play_strip():
     return im.convert('RGB')
 
 
-def lockup(im, left, top, height):
-    """The mark and the name side by side; returns where it ends."""
-    m = mark(round(height * 392 / 474))
-    im.alpha_composite(m, (left, top))
-    f = font('700Bold', round(height * 0.86))
-    d = ImageDraw.Draw(im)
-    box = d.textbbox((0, 0), 'Fintraq', font=f)
-    d.text((left + m.width + round(height * 0.3), top + (m.height - (box[3] + box[1])) // 2), 'Fintraq', font=f, fill=INK)
-    return top + m.height
+def app_icon(size):
+    """The app icon as a launcher shows it: the square icon with its corners rounded."""
+    icon = Image.open(ROOT / 'assets' / 'images' / 'icon.png').convert('RGBA').resize((size, size), Image.LANCZOS)
+    mask = Image.new('L', (size, size), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, size - 1, size - 1), radius=round(size * 0.24), fill=255)
+    icon.putalpha(mask)
+    return icon
 
 
-def feature_graphic():
-    """The name and the line on the left; three phones fanned out on the right, running off the foot."""
+def feature_graphic(side=BRAND_DEEP):
+    """The icon, the name and the line on the left; three phones fanned out on a darker green on the right."""
     W, H = 1024 * SS, 500 * SS
-    im = waves(W, H).convert('RGBA')
-    for name, x, top, width, lean in (('insights-30b', 588, 140, 176, -7), ('loan', 912, 140, 176, 7), ('home', 750, 64, 206, 0)):
+    im = Image.new('RGBA', (W, H), BRAND + (255,))
+    d = ImageDraw.Draw(im)
+    # One wave, the wave card's, stood on end: the phones' side of the picture.
+    p = lambda x, y: (x * W, y * H)
+    d.polygon(cubic(p(0.47, 0), p(0.56, 0.3), p(0.40, 0.66), p(0.50, 1)) + [p(1, 1), p(1, 0)], fill=side)
+    for name, x, top, width, lean in (('insights-30b', 612, 140, 172, -7), ('loan', 922, 140, 172, 7), ('home', 767, 64, 202, 0)):
         body = device(name, width * SS, lean)
         cy = top * SS + body.height / 2
         put(im, body, x * SS, cy)
         if name == 'home':
             lift(im, 'balance', width * SS, lean, x * SS, cy)
-    d = ImageDraw.Draw(im)
-    left = 64 * SS
-    y = lockup(im, left, 132 * SS, 66 * SS) + 40 * SS
+    left, top = 60 * SS, 118 * SS
+    icon = app_icon(60 * SS)
+    im.alpha_composite(icon, (left, top))
+    name_font = font('700Bold', 34 * SS)
+    box = d.textbbox((0, 0), 'Fintraq', font=name_font)
+    d.text((left + icon.width + 16 * SS, top + (icon.height - box[3] - box[1]) // 2), 'Fintraq', font=name_font, fill=INK)
+    y = top + icon.height + 34 * SS
     for line in ('Know where', 'your money goes'):
-        d.text((left, y), line, font=font('700Bold', 44 * SS), fill=INK)
-        y += 56 * SS
+        d.text((left, y), line, font=font('700Bold', 46 * SS), fill=INK)
+        y += 58 * SS
+    d.text((left, y + 14 * SS), 'Free to record. Private by design.', font=font('500Medium', 21 * SS), fill=INK)
     return im.convert('RGB').resize((1024, 500), Image.LANCZOS)
 
 
