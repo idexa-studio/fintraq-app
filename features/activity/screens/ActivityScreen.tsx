@@ -14,7 +14,7 @@ import { TransactionRow, useDeleteTransaction, useInfiniteTransactions, useTrans
 import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { formatCurrency } from '@/shared/format/money';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View } from 'react-native';
 
@@ -67,9 +67,11 @@ export function ActivityScreen() {
   const [filtering, setFiltering] = useState(false);
 
   // Arriving by a link narrows the list to what it asks for, replacing whatever was set.
-  useEffect(() => {
+  const [followed, setFollowed] = useState(linked);
+  if (followed !== linked) {
+    setFollowed(linked);
     if (linked) setFilters(linked);
-  }, [linked]);
+  }
   const [chosenCurrency, setChosenCurrency] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<TransactionListItem | null>(null);
 
@@ -83,11 +85,9 @@ export function ActivityScreen() {
   const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set((accounts ?? []).map((a) => a.currency))], profile.defaultCurrency), [accounts, profile.defaultCurrency]);
   const currency = scopedAccount?.currency ?? (chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : currencies[0]);
 
-  const query = useMemo<TransactionFilters>(() => {
-    // With one currency held there is nothing to narrow; otherwise the list is that currency's accounts.
-    const inCurrency = currencies.length > 1 ? (accounts ?? []).filter((a) => a.currency === currency).map((a) => a.id) : undefined;
-    return toQuery(filters, kind, inCurrency);
-  }, [filters, kind, accounts, currency, currencies.length]);
+  // With one currency held there is nothing to narrow; otherwise the list is that currency's accounts.
+  const currencyAccounts = currencies.length > 1 ? (accounts ?? []).filter((a) => a.currency === currency).map((a) => a.id) : undefined;
+  const query: TransactionFilters = toQuery(filters, kind, currencyAccounts);
 
   const list = useInfiniteTransactions(query);
   const { data: totals } = useTransactionTotals(query);

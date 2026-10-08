@@ -86,7 +86,7 @@ const createStyles = ({ colors, size, border, space }: Theme) =>
   StyleSheet.create({
     card: { overflow: 'hidden' },
     padded: { padding: size.cardPadding },
-    outline: { ...StyleSheet.absoluteFillObject, borderWidth: border.thick, borderColor: colors.selected },
+    outline: { ...StyleSheet.absoluteFill, borderWidth: border.thick, borderColor: colors.selected },
     actions: { flexDirection: 'row' },
     action: { flex: 1, minHeight: size.cardAction, paddingVertical: space.xs, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.sm },
   });

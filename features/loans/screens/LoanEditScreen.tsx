@@ -5,7 +5,7 @@ import { NOTE_MAX } from '@/features/loans/loan-rules';
 import { useLeaveGuard } from '@/features/shell';
 import { formatDate, getLocalISOString, parseDateKey } from '@/shared/date/date';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
@@ -28,12 +28,12 @@ export function LoanEditScreen({ loanId }: { loanId: number }) {
   const [picking, setPicking] = useState(false);
   const [failed, setFailed] = useState(false);
 
-  useEffect(() => {
-    if (!loan || loaded) return;
+  // Start from the saved loan, once, when it has loaded.
+  if (loan && !loaded) {
     setDueDate(loan.dueDate ? parseDateKey(loan.dueDate) : null);
     setNote(loan.note);
     setLoaded(true);
-  }, [loan, loaded]);
+  }
 
   const savedDue = loan?.dueDate ? loan.dueDate.slice(0, 10) : null;
   const due = dueDate ? getLocalISOString(dueDate) : null;

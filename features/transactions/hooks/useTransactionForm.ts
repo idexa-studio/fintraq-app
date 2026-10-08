@@ -11,7 +11,7 @@ import type { Blocker, FormState, Kind } from '@/features/transactions/transacti
 import { transferDestinations } from '@/shared/calc/transfers';
 import { parseAmountInput } from '@/shared/format/amount';
 import type { TransactionType } from '@/shared/types';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export type TransactionFormOptions = {
   /** Editing this transaction; leave out to add a new one. */
@@ -59,8 +59,9 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
   const [touched, setTouched] = useState(false);
 
   // Editing: start from the saved transaction, once it has loaded.
-  useEffect(() => {
-    if (!existing) return;
+  const [readFrom, setReadFrom] = useState<typeof existing>(null);
+  if (existing && readFrom !== existing) {
+    setReadFrom(existing);
     setTypeState(existing.type);
     setAmountText(String(existing.amount));
     setAccountId(existing.accountId);
@@ -69,31 +70,32 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
     setPersonId(existing.personId ?? null);
     setWhen(new Date(existing.datetime));
     setNote(existing.note ?? '');
-  }, [existing]);
+  }
 
   // Keep the account valid: start on the preferred one, and recover if the chosen one disappears.
-  useEffect(() => {
-    if (accounts.length === 0) setAccountId(null);
-    else if (accountId === null || !accounts.some((a) => a.id === accountId)) setAccountId(defaultAccountId(accounts, initialAccountId));
-  }, [accounts, accountId, initialAccountId]);
+  if (accounts.length === 0) {
+    if (accountId !== null) setAccountId(null);
+  } else if (accountId === null || !accounts.some((a) => a.id === accountId)) {
+    setAccountId(defaultAccountId(accounts, initialAccountId));
+  }
 
   const offeredCategories = useMemo(() => categoriesFor(categories, type), [categories, type]);
 
   // Keep the category valid for the type, except on a loan payment, which keeps the loan's own.
-  useEffect(() => {
-    if (loanLinked) return;
-    if (offeredCategories.length === 0) setCategoryId(null);
-    else if (categoryId === null || !offeredCategories.some((c) => c.id === categoryId)) setCategoryId(defaultCategoryId(offeredCategories));
-  }, [offeredCategories, categoryId, loanLinked]);
+  if (!loanLinked) {
+    if (offeredCategories.length === 0) {
+      if (categoryId !== null) setCategoryId(null);
+    } else if (categoryId === null || !offeredCategories.some((c) => c.id === categoryId)) {
+      setCategoryId(defaultCategoryId(offeredCategories));
+    }
+  }
 
   const account = accounts.find((a) => a.id === accountId) ?? null;
   // The same rule Home uses for its Transfer tile: same currency, compatible kinds, never itself.
   const destinations = useMemo(() => (type === 'TR' && account ? transferDestinations(account, accounts) : []), [type, account, accounts]);
 
   // Drop a destination that is no longer possible, e.g. after changing the source account.
-  useEffect(() => {
-    if (type === 'TR' && toAccountId != null && !destinations.some((a) => a.id === toAccountId)) setToAccountId(null);
-  }, [type, destinations, toAccountId]);
+  if (type === 'TR' && toAccountId != null && !destinations.some((a) => a.id === toAccountId)) setToAccountId(null);
 
   const amount = parseAmountInput(amountText) ?? undefined;
   const state: FormState = { type, amount, accountId, toAccountId, categoryId, personId, when, note };

@@ -17,9 +17,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ...(iosGoogleServicesFile ? { googleServicesFile: iosGoogleServicesFile } : {}),
   },
   plugins: [
+    // First in the list, so it runs after expo-notifications has added the entitlement it removes.
+    './plugins/with-no-push-entitlement',
     ...(config.plugins ?? []),
     '@react-native-google-signin/google-signin',
-    '@react-native-firebase/app',
+    // Firebase's iOS SDK comes through CocoaPods (the plugin's own switch). Its Swift packages are where
+    // Firebase is heading, but react-native-firebase 26.4's build step for them looks for
+    // GoogleService-Info.plist in ios/, and Expo keeps it in ios/Fintraq/, so that build fails at the
+    // Crashlytics step (tried 2026-10-08 on Expo 57). Drop this switch, and the static linking below,
+    // once a release fixes that.
+    ['@react-native-firebase/app', { ios: { disableSPM: true } }],
     '@react-native-firebase/auth',
     [
       '@react-native-firebase/analytics',
@@ -34,8 +41,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'expo-build-properties',
       {
         ios: {
+          // Apps built with Xcode 27 must use the scene lifecycle or iOS 27 stops them at launch.
+          // Expo 58 does this by itself; remove then.
+          enableSceneSupport: true,
           useFrameworks: 'static',
-          forceStaticLinking: ['RNFBApp', 'RNFBAnalytics', 'RNFBCrashlytics'],
+          forceStaticLinking: ['RNFBApp', 'RNFBAnalytics', 'RNFBAuth', 'RNFBCrashlytics', 'RNFBRemoteConfig'],
         },
         android: {
           // Play Console flags release builds with no R8 obfuscation/shrinking.

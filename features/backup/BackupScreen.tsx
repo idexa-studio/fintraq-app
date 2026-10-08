@@ -83,6 +83,8 @@ function DriveBackup() {
   const [failed, setFailed] = useState<{ attempt: Attempt; why: BackupFailure } | null>(null);
   // Notifications were refused, so automatic backup stayed off: said beside the switch until it works.
   const [blocked, setBlocked] = useState(false);
+  /** When the screen was opened: what "overdue" is measured from. */
+  const [openedAt] = useState(() => Date.now());
   // The battery settings could not be opened for the user, so the way there is spelled out.
   const [batteryManual, setBatteryManual] = useState(false);
   const [restartFailed, setRestartFailed] = useState(false);
@@ -199,7 +201,7 @@ function DriveBackup() {
   const sizeLabel = latestBackup ? sizeText(latestBackup.size) : '';
   // Background work can be stopped by the phone without a word; say so instead of looking protected.
   const next = nextAutoBackup(latestBackup?.modifiedTime);
-  const overdue = autoBackupEnabled && isBackupOverdue(latestBackup?.modifiedTime, Date.now());
+  const overdue = autoBackupEnabled && isBackupOverdue(latestBackup?.modifiedTime, openedAt);
 
   return (
     <>

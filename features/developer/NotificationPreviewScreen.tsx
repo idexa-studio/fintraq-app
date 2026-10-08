@@ -16,7 +16,7 @@ export function NotificationPreviewScreen() {
   const router = useRouter();
   const toast = useToast();
   const { space } = useTheme();
-  const previews = useMemo(notificationPreviews, []);
+  const previews = useMemo(() => notificationPreviews(), []);
   const back = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
   const send = async (preview: NotificationPreview) => {

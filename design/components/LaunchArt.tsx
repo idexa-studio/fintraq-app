@@ -41,7 +41,7 @@ export function LaunchArt({ named = true }: LaunchArtProps) {
 }
 
 const styles = StyleSheet.create({
-  centre: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center' },
+  centre: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
   // Hung from the middle of the screen, clear of the mark.
   name: { position: 'absolute', left: 0, right: 0, top: '50%', marginTop: MARK_HEIGHT / 2 + NAME.gap, alignItems: 'center' },
   letters: { fontFamily: FONTS.bold, fontSize: NAME.size, lineHeight: NAME.line, color: INK },

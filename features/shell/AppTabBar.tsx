@@ -1,6 +1,6 @@
 import { TabBar } from '@/design';
 import type { SolidIconName, TabItem } from '@/design';
-import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import type { BottomTabBarProps } from 'expo-router/js-tabs';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

@@ -5,7 +5,8 @@ import type { Theme } from '@/design/ThemeProvider';
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 export type SlideToConfirmProps = {
   /** What sliding will do, e.g. "Slide to settle up". */
@@ -32,25 +33,25 @@ export function SlideToConfirm({ label, onConfirm, disabled = false }: SlideToCo
   const confirm = useCallback(() => {
     onConfirm();
     // Return to the start once the result has had a moment to show.
-    setTimeout(() => { x.value = withTiming(0, { duration: motion.normal }); }, motion.slow * 2);
+    setTimeout(() => { x.set(withTiming(0, { duration: motion.normal })); }, motion.slow * 2);
   }, [onConfirm, x, motion.normal, motion.slow]);
 
   const pan = Gesture.Pan()
     .enabled(!disabled)
     .onChange((e) => {
-      x.value = Math.min(travel, Math.max(0, x.value + e.changeX));
+      x.set(Math.min(travel, Math.max(0, x.get() + e.changeX)));
     })
     .onEnd(() => {
-      if (travel > 0 && x.value >= travel * COMMIT) {
-        x.value = withTiming(travel, { duration: motion.fast });
-        runOnJS(confirm)();
+      if (travel > 0 && x.get() >= travel * COMMIT) {
+        x.set(withTiming(travel, { duration: motion.fast }));
+        scheduleOnRN(confirm);
       } else {
-        x.value = withTiming(0, { duration: motion.normal });
+        x.set(withTiming(0, { duration: motion.normal }));
       }
     });
 
-  const thumb = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
-  const fade = useAnimatedStyle(() => ({ opacity: travel > 0 ? interpolate(x.value, [0, travel * 0.6], [1, 0], 'clamp') : 1 }));
+  const thumb = useAnimatedStyle(() => ({ transform: [{ translateX: x.get() }] }));
+  const fade = useAnimatedStyle(() => ({ opacity: travel > 0 ? interpolate(x.get(), [0, travel * 0.6], [1, 0], 'clamp') : 1 }));
 
   return (
     <View
@@ -78,6 +79,6 @@ export function SlideToConfirm({ label, onConfirm, disabled = false }: SlideToCo
 const createStyles = ({ radius, size, space }: Theme) =>
   StyleSheet.create({
     track: { height: size.row, borderRadius: radius.md, padding: space.xs, justifyContent: 'center' },
-    label: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', paddingLeft: size.row },
+    label: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center', paddingLeft: size.row },
     thumb: { width: size.row - space.xs * 2, height: size.row - space.xs * 2, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
   });

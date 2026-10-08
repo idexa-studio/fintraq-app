@@ -30,7 +30,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
-| G | Release 1: the redesign | 25 | 3 | In progress |
+| G | Release 1: the redesign | 29 | 3 | In progress |
 | H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
 
@@ -609,6 +609,10 @@ Done when: the redesign is live to all users with no data loss reported.
 ### G2. Quality
 - [ ] G2.00 Before any upload: the release build (the same profile as the upload) installed fresh on a phone and taken through first run to Home, and installed over 1.2.4 with data. Added 2026-10-08 after build 65 reached internal testing with a blank, flickering first screen that no dev build showed
 - [ ] G2.11 The amount field takes letters: text sent to it from a hardware keyboard, a paste or adb is kept ("$.10Weekly shop" was seen while scripting on 2026-10-08). It must keep digits and one separator only
+- [ ] G2.12 Expo 57 upgrade checked on the Android phone (upgraded from 54 on 2026-10-08, branch `upgrade-expo`): a new development build runs, and the screens whose code changed for the stricter lint rules behave as before: add and edit a transaction (account, category and transfer destination stay valid), the account, category and person forms when editing, loan edit, Activity opened from a link, the PIN wait after wrong tries, Home's prompt, the slide-to-confirm control, a notification tap that starts the app. Seen on the Samsung 2026-10-09 with a new development build: first run, setup, Home, add an expense (account and category chosen by default), Activity, the receipt, and the edit form filled from the saved transaction. The rest of the list is not yet looked at
+- [ ] G2.13 Expo 57 upgrade checked on the iPhone: first run through to Home. Builds, signs with a free Apple account and starts on iOS 27 (2026-10-09); stopped at the update notice because remote config's `iosMinBuild` was 49
+- [ ] G2.14 Remote config `forceUpdateConfig`: `iosMinBuild` and `storeUrlIos` set for iOS before any iOS release (they held Android's 49 and a placeholder)
+- [ ] G2.15 Firebase on iOS through Swift packages, once react-native-firebase finds `GoogleService-Info.plist` in an Expo project (26.4.0 does not: the Crashlytics build step fails). Then drop `disableSPM` and static linking in `app.config.ts`. Its CocoaPods stop getting new versions after October 2026
 - [ ] G2.01 Full pass on a small Android phone (360dp) and a large one
 - [ ] G2.02 Full pass on iOS. The code is written for both platforms (owner, 2026-10-09); nothing has been run on iOS yet
 - [ ] G2.03 Android three-button and gesture navigation

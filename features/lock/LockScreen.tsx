@@ -31,14 +31,18 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
   const [waitUntil, setWaitUntil] = useState(0);
   const [now, setNow] = useState(() => Date.now());
   const waiting = Math.max(0, waitUntil - now);
-
-  useEffect(() => {
-    void LockStorage.getPinLockoutUntil().then(setWaitUntil);
+  /** Starts the wait, counted from this moment. */
+  const waitFor = useCallback((until: number) => {
+    setNow(Date.now());
+    setWaitUntil(until);
   }, []);
 
   useEffect(() => {
+    void LockStorage.getPinLockoutUntil().then(waitFor);
+  }, [waitFor]);
+
+  useEffect(() => {
     if (waitUntil === 0) return;
-    setNow(Date.now());
     const timer = setInterval(() => {
       const current = Date.now();
       setNow(current);
@@ -104,7 +108,7 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
     }
     setPin('');
     setSaid('wrong');
-    setWaitUntil(await LockStorage.getPinLockoutUntil());
+    waitFor(await LockStorage.getPinLockoutUntil());
   };
 
   if (way === 'finding') {

@@ -59,7 +59,8 @@ export function useNotificationLinks(open: (path: string) => void, ready: boolea
     const responses = Notifications.addNotificationResponseReceivedListener(offerResponse);
     const stopForeground = notifee.onForegroundEvent(offerEvent);
     // The tap that started the app, if one did.
-    void Notifications.getLastNotificationResponseAsync().then(offerResponse, () => {});
+    const opening = Notifications.getLastNotificationResponse();
+    if (opening) offerResponse(opening);
     void notifee.getInitialNotification().then((initial) => {
       if (initial) offer(initial.notification.data?.path, `${initial.notification.id}:initial`);
     }, () => {});
