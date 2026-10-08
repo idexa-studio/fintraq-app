@@ -6,7 +6,6 @@ import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/src/hooks/use-color-scheme';
-import { AppConfigProvider } from '@/src/providers/AppConfigProvider';
 import { TelemetryProvider } from '@/src/providers/TelemetryProvider';
 import { PremiumProvider } from '@/src/providers/PremiumProvider';
 import { QueryProvider } from '@/data/QueryProvider';
@@ -29,7 +28,7 @@ import { FONT_ASSETS, SHEET_ROUTE, ToastProvider } from '@/design';
 import { LockProvider } from '@/features/lock';
 import { OnboardingProvider } from '@/features/onboarding';
 import { ProProvider } from '@/features/pro';
-import { AppTheme, DatabaseGate } from '@/features/shell';
+import { AppConfigGate, AppTheme, DatabaseGate } from '@/features/shell';
 import React, { useEffect, useState } from 'react';
 import { LoggerService } from '@/shared/logging/logger';
 
@@ -95,7 +94,7 @@ export default function RootLayout() {
                       <CustomThemeProvider>
                         <AppTheme>
                           <LockProvider>
-                            <AppConfigProvider>
+                            <AppConfigGate>
                               <ToastProvider>
                                 <Stack screenOptions={{ headerShown: false, animation: 'ios_from_right' }}>
                                   {/* Listed first on purpose: the first screen named here is where the app starts when
@@ -109,7 +108,7 @@ export default function RootLayout() {
                               </ToastProvider>
                               <SystemNavBackdrop />
                               <StatusBar style="auto" />
-                            </AppConfigProvider>
+                            </AppConfigGate>
                           </LockProvider>
                         </AppTheme>
                       </CustomThemeProvider>

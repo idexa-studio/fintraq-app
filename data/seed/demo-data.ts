@@ -5,7 +5,7 @@ import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { db } from '@/data/db/client';
 import { accounts, categories, loans, payments, persons } from '@/data/db/schema';
 import { LoggerService } from '@/shared/logging/logger';
-import { resolveAccountTypeIcon } from '@/src/utils/icons';
+import { PALETTE_COLOR_OPTIONS } from '@/shared/contracts/pickers';
 import { toDbColor } from '@/shared/format/color';
 
 /**
@@ -15,6 +15,12 @@ import { toDbColor } from '@/shared/format/color';
  * work, cashback, friends paying back) as well as going out. Notes always match their category, bills recur on fixed days,
  * and every balance is the sum of what was logged — so each screen tells the same story.
  */
+
+/** A colour from the app's own palette, by name, so demo data uses only colours a user could have picked. */
+const shade = (name: string): string => PALETTE_COLOR_OPTIONS.find((color) => color.name === name)?.hex ?? PALETTE_COLOR_OPTIONS[0]!.hex;
+
+// Accounts are drawn by their kind; the column keeps the value every version has written.
+const ACCOUNT_ICON = 'building';
 
 // Deterministic PRNG so every run produces the same data.
 let state = 20261004;
@@ -180,9 +186,9 @@ export function buildRows(now: Date): Row[] {
 const CLOSING_BALANCE: Record<Exclude<Acct, 'checking'>, number> = { savings: 26400, cash: 186.5, card: -412.18, eur: 3480.6, try: 42750, inr: 186400 };
 
 const FOREIGN_ACCOUNTS = [
-  { key: 'eur', currency: 'EUR', name: 'Euro Account', accountNumber: '••••  3306', accountType: 'bank', color: '#0E7490' },
-  { key: 'try', currency: 'TRY', name: 'Lira Wallet', accountNumber: '', accountType: 'ewallet', color: '#DC2626' },
-  { key: 'inr', currency: 'INR', name: 'Rupee Savings', accountNumber: '••••  5527', accountType: 'savings', color: '#EA580C' },
+  { key: 'eur', currency: 'EUR', name: 'Euro Account', accountNumber: '••••  3306', accountType: 'bank', color: shade('teal') },
+  { key: 'try', currency: 'TRY', name: 'Lira Wallet', accountNumber: '', accountType: 'ewallet', color: shade('red') },
+  { key: 'inr', currency: 'INR', name: 'Rupee Savings', accountNumber: '••••  5527', accountType: 'savings', color: shade('orange') },
 ] as const;
 
 export async function seedDummyData() {
@@ -209,20 +215,20 @@ export async function seedDummyData() {
     const base = { holderName: checking.holderName, isDefault: false, balance: 0, income: 0, expense: 0 };
     const foreign = FOREIGN_ACCOUNTS.filter((f) => f.currency !== home);
     const created = await db.insert(accounts).values([
-      { ...base, currency: home, name: 'Savings', accountNumber: '••••  7203', accountType: 'savings' as const, icon: resolveAccountTypeIcon('savings'), color: toDbColor('#2563EB') },
-      { ...base, currency: home, name: 'Cash', accountNumber: '', accountType: 'cash' as const, icon: resolveAccountTypeIcon('cash'), color: toDbColor('#D97706') },
-      { ...base, currency: home, name: 'Credit Card', accountNumber: '••••  9914', accountType: 'credit_card' as const, icon: resolveAccountTypeIcon('credit_card'), color: toDbColor('#7C3AED') },
-      ...foreign.map((f) => ({ ...base, currency: f.currency, name: f.name, accountNumber: f.accountNumber, accountType: f.accountType, icon: resolveAccountTypeIcon(f.accountType), color: toDbColor(f.color) })),
+      { ...base, currency: home, name: 'Savings', accountNumber: '••••  7203', accountType: 'savings' as const, icon: ACCOUNT_ICON, color: toDbColor(shade('blue')) },
+      { ...base, currency: home, name: 'Cash', accountNumber: '', accountType: 'cash' as const, icon: ACCOUNT_ICON, color: toDbColor(shade('amber')) },
+      { ...base, currency: home, name: 'Credit Card', accountNumber: '••••  9914', accountType: 'credit_card' as const, icon: ACCOUNT_ICON, color: toDbColor(shade('purple')) },
+      ...foreign.map((f) => ({ ...base, currency: f.currency, name: f.name, accountNumber: f.accountNumber, accountType: f.accountType, icon: ACCOUNT_ICON, color: toDbColor(f.color) })),
     ]).returning();
     const acctId: Partial<Record<Acct, number>> = { checking: checking.id, savings: created[0].id, cash: created[1].id, card: created[2].id };
     foreign.forEach((f, i) => { acctId[f.key] = created[3 + i].id; });
 
     // ── People
     const people = await db.insert(persons).values([
-      { name: 'Sarah Mitchell', email: 'sarah.m@example.com', phone: '+1 555 0101', designation: 'Product Manager', company: 'Acme Corp', color: toDbColor('#059669') },
-      { name: 'James Okafor', email: 'james.o@example.com', phone: '+1 555 0102', designation: 'Engineer', company: 'TechFlow', color: toDbColor('#2563EB') },
-      { name: 'Priya Nair', email: 'priya.n@example.com', phone: '+1 555 0103', designation: 'Designer', company: 'Pixel Lab', color: toDbColor('#6D28D9') },
-      { name: 'Tom Reyes', email: 'tom.r@example.com', phone: '+1 555 0104', designation: 'Landlord', company: '', color: toDbColor('#EA580C') },
+      { name: 'Sarah Mitchell', email: 'sarah.m@example.com', phone: '+1 555 0101', designation: 'Product Manager', company: 'Acme Corp', color: toDbColor(shade('emerald')) },
+      { name: 'James Okafor', email: 'james.o@example.com', phone: '+1 555 0102', designation: 'Engineer', company: 'TechFlow', color: toDbColor(shade('blue')) },
+      { name: 'Priya Nair', email: 'priya.n@example.com', phone: '+1 555 0103', designation: 'Designer', company: 'Pixel Lab', color: toDbColor(shade('violet')) },
+      { name: 'Tom Reyes', email: 'tom.r@example.com', phone: '+1 555 0104', designation: 'Landlord', company: '', color: toDbColor(shade('orange')) },
     ]).returning();
     const personId = (name?: string) => people.find((p) => p.name === name)?.id ?? null;
 
