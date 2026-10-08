@@ -340,6 +340,8 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
       <ListGroup title={t('settings.about')}>
         <ListItem icon="shield-check" iconColor={colors.textMuted} title={t('settings.privacy')} onPress={() => setSheet('privacy')} />
         <ListItem icon="file-text" iconColor={colors.textMuted} title={t('settings.terms')} onPress={() => openWebPage(termsUrl, t('settings.termsTitle'))} />
+        {/* Development builds only. A release build opens the tools by link alone (`luno://developer`). */}
+        {__DEV__ ? <ListItem icon="flask" iconColor={colors.textMuted} title="Developer options" subtitle="Testing and debugging tools" onPress={() => router.push('/developer')} /> : null}
       </ListGroup>
 
       <ListGroup title={t('settings.dangerZone')}>

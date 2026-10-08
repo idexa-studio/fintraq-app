@@ -437,7 +437,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D13.01 Search field, recent searches (same storage key; a search is remembered when it is submitted or a result is opened, not on every pause in typing)
 - [x] D13.02 Results grouped: transactions, accounts, people, categories (the newest 50 transactions, said on screen when reached; no cap on the rest)
 - [x] D13.03 Nothing matches state
-- [ ] D13.04 Free users reach the paywall, including by link (built as `ProGateScreen`; not seen, as the test phone is Pro and the developer screen is behind its token)
+- [ ] D13.04 Free users reach the paywall, including by link (built as `ProGateScreen`)
 - [x] D13.05 Shared checklist
 
 ### D14. Backup
@@ -467,7 +467,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [ ] D16.07 App lock: off, PIN, biometrics; change PIN
 - [ ] D16.08 About: version, privacy, terms, usage-data switch
 - [ ] D16.09 Delete all data, with confirmation, clearing every key including retired ones
-- [ ] D16.10 Hidden developer entry (same gesture, same PIN)
+- [ ] D16.10 Developer entry: a "Developer options" row in development builds only, no PIN and no hidden gesture; a release build opens `/developer` by link alone (owner, 2026-10-08; already so in the shipped Settings, to be carried into the rebuilt one)
 - [ ] D16.11 In-app web page for privacy and terms
 - [ ] D16.12 Shared checklist
 

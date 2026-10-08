@@ -5,14 +5,11 @@ import {
   AlertDialog,
   Badge,
   ConfirmDialog,
-  IconAvatar,
-  Input,
   ListGroup,
   ListItem,
   Screen,
   Text,
 } from '@/src/components/ui';
-import { useKeyboardInset } from '@/src/hooks/useKeyboardInset';
 import { IS_PREMIUM_OVERRIDE_ALLOWED } from '@/platform/purchases/dev-override';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
@@ -27,23 +24,21 @@ import { useRouter } from 'expo-router';
 import * as Updates from 'expo-updates';
 import React, { useCallback, useMemo } from 'react';
 import { DevSettings, Platform, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-const DEV_PIN = '32159';
 
 /* ── DeveloperScreen ────────────────────────────────────────── */
 
+/**
+ * Tools for testing and debugging. A development build reaches it from Settings; a release build
+ * has no way in from the app and opens it only by link (`adb shell am start -d luno://developer`).
+ * Nothing here that a release build shows can change a user's records or unlock Pro.
+ */
 export const DeveloperScreen = React.memo(function DeveloperScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const keyboardInset = useKeyboardInset(true, useSafeAreaInsets().bottom);
   const { colors } = theme;
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { devOverride, setDevOverride } = usePremium();
 
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [pin, setPin] = React.useState('');
-  const [error, setError] = React.useState('');
   const [showSeedConfirm, setShowSeedConfirm] = React.useState(false);
   const [isSeeding, setIsSeeding] = React.useState(false);
   const [showDeleteBackupConfirm, setShowDeleteBackupConfirm] = React.useState(false);
@@ -97,10 +92,8 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
   }, [fetchLogs, showAlert]);
 
   React.useEffect(() => {
-    if (isAuthenticated) {
-      fetchLogs();
-    }
-  }, [isAuthenticated, fetchLogs]);
+    fetchLogs();
+  }, [fetchLogs]);
 
   const handleRunAutoBackupTask = async () => {
     try {
@@ -156,19 +149,8 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
   }, []);
 
   React.useEffect(() => {
-    if (isAuthenticated) fetchScheduled();
-  }, [isAuthenticated, fetchScheduled]);
-
-  const handlePinChange = (val: string) => {
-    setPin(val);
-    setError('');
-    if (val === DEV_PIN) {
-      setIsAuthenticated(true);
-    } else if (val.length >= DEV_PIN.length) {
-      setError('Invalid access token');
-      setTimeout(() => setPin(''), 800);
-    }
-  };
+    fetchScheduled();
+  }, [fetchScheduled]);
 
   const handleRunSeed = async () => {
     try {
@@ -205,38 +187,6 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
       setIsSeeding(false);
     }
   };
-
-  /* ── Lock screen ── */
-
-  if (!isAuthenticated) {
-    return (
-      <Screen header={{ title: 'Developer', showBack: true }} variant="fixed" edges={['top', 'bottom']}>
-        {/* Keyboard pushes the whole column up so the hint never hides behind the field. */}
-        <View style={[styles.lockShell, { paddingBottom: keyboardInset }]}>
-          <View style={styles.lockArt}>
-            <IconAvatar icon="lock-key" color={colors.primaryInk} size={72} iconSize={30} weight="duotone" />
-            <Text variant="label" tone="primary">SECURE GATEWAY</Text>
-            <Text variant="title" align="center">Developer tools</Text>
-            <Text variant="callout" tone="muted" align="center">
-              Internal utilities for testing and debugging. Enter the access token to continue.
-            </Text>
-          </View>
-          <Input
-            placeholder="Access token"
-            value={pin}
-            onChangeText={handlePinChange}
-            keyboardType="numeric"
-            maxLength={DEV_PIN.length}
-            secureTextEntry
-            textAlign="center"
-            autoFocus
-            error={error}
-            variant="filled"
-          />
-        </View>
-      </Screen>
-    );
-  }
 
   /* ── Main screen ── */
 
@@ -326,8 +276,8 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
         </ListGroup>
       )}
 
-      {/* Tools that write or delete a user's records never ship: a release build keeps only the
-          read-only diagnostics below, since the access token is in the bundle. */}
+      {/* Tools that write or delete a user's records never ship. A release build has no way in
+          from the app, only the `luno://developer` link, and keeps just the diagnostics below. */}
       {__DEV__ && (
         <ListGroup title="Data & Cloud">
           <ListItem icon="flask" iconColor={colors.primaryInk} title="Seed dummy data" subtitle="A year of realistic data: USD, EUR, TRY & INR accounts, people & loans" onPress={() => setShowSeedConfirm(true)} />
@@ -391,10 +341,8 @@ export const DeveloperScreen = React.memo(function DeveloperScreen() {
 
 /* ── Styles ─────────────────────────────────────────────────── */
 
-const createStyles = ({ colors, spacing, radius, layout }: ThemeContextType) =>
+const createStyles = ({ colors, spacing, radius }: ThemeContextType) =>
   StyleSheet.create({
-    lockShell: { flex: 1, paddingHorizontal: layout.screenPadding, paddingBottom: spacing('4') },
-    lockArt: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing('3'), paddingHorizontal: spacing('4') },
     badgeCard: {
       flexDirection: 'row',
       alignItems: 'center',
