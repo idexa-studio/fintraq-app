@@ -168,6 +168,9 @@ use it.
 - **Shortcuts** the user already knows are `FeatureTile compact`: mark and
   label on one line, a few words small beneath. The full tile, with its
   sentence, is for introducing something.
+- **The way in** asks one question at a time under a picture of what is
+  being made: the greeting and the first account as they will look on
+  Home, filling in with each answer. Nothing is saved until the last.
 - **Settings** opens on the wave card (who you are and your plan: its one
   brand moment), then the things recorded against as tiles with their
   counts, then grouped rows. A choice of three (appearance) is a `Select`

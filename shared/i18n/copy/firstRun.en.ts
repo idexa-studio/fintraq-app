@@ -1,0 +1,78 @@
+/** The way in: the welcome, setting up, restoring, and the offer of a daily reminder. */
+export default {
+  welcome: {
+    title: 'Know where your money goes',
+    body: 'Record what you spend and earn, and see where it went. Everything stays on this phone.',
+    points: {
+      free: 'Free to record, with no limit',
+      private: 'No account to make, nothing sent anywhere',
+      quick: 'Set up in under a minute',
+    },
+    start: 'Get started',
+    restore: 'I have a backup',
+  },
+  setup: {
+    back: 'Back',
+    step: '{{step}} of {{total}}',
+    preview: {
+      greeting: 'Hi {{name}}',
+      noName: 'Hi there',
+      label: 'How Fintraq will look once you are in',
+    },
+    name: {
+      title: 'What should Fintraq call you?',
+      hint: 'Only to greet you. It never leaves this phone.',
+      label: 'Name',
+    },
+    currency: {
+      title: 'Which currency do you use most?',
+      hint: 'Totals are shown in it. You can hold accounts in others.',
+      change: 'Choose another currency',
+    },
+    account: {
+      title: 'Where is your money right now?',
+      hint: 'One account is enough to start. Add the rest later.',
+      kind: 'Kind',
+      name: 'Name',
+      balance: 'What is in it now',
+      balanceHint: 'Leave it empty to start from zero',
+    },
+    continue: 'Continue',
+    finish: 'Open Fintraq',
+    blocked: {
+      name: 'Type a name to continue',
+      accountName: 'Give the account a name',
+      balance: 'That balance is not a number',
+    },
+    making: 'Setting things up',
+    failedTitle: 'Setup did not finish',
+    failedBody: 'Nothing is lost. Try again, and it carries on from where it stopped.',
+  },
+  restore: {
+    title: 'Restore from Google Drive',
+    back: 'Back',
+    body: 'Sign in to the Google account you backed up to. Fintraq brings back everything in that backup.',
+    phone: 'This phone',
+    drive: 'Your Drive',
+    connect: 'Sign in and restore',
+    working: 'Restoring · {{percent}}%',
+    fresh: 'Start fresh instead',
+    failed: {
+      title: 'Nothing was restored',
+      noBackup: 'There is no Fintraq backup in the Drive of {{email}}. Try another account, or start fresh.',
+      needsPro: 'Restoring from Google Drive is part of Fintraq Pro. If you bought it, restore your purchase first.',
+      offline: 'Google Drive could not be reached. Check your connection and try again.',
+      other: 'Something went wrong on the way. Nothing on this phone was changed. Try again.',
+      seePro: 'See Fintraq Pro',
+    },
+  },
+  reminder: {
+    title: 'Want a nudge each evening?',
+    body: 'Fintraq can remind you at 8 PM to record the day, before the details fade. You can change the time or turn it off in Settings.',
+    yes: 'Remind me',
+    no: 'Not now',
+    deniedTitle: 'Notifications are off for Fintraq',
+    deniedBody: 'The reminder was not switched on. You can allow notifications and turn it on in Settings.',
+    carryOn: 'Carry on',
+  },
+} as const;

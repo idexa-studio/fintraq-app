@@ -3,7 +3,7 @@ import React from 'react';
 import { SHEET_ROUTE } from '@/design';
 import { ErrorBoundary } from '@/src/components/ErrorBoundary';
 import { useLauncherShortcuts } from '@/src/hooks/useLauncherShortcuts';
-import { useOnboarding } from '@/src/providers/OnboardingProvider';
+import { useOnboarding } from '@/features/onboarding';
 
 export default function StackLayout() {
   const { hasOnboarded } = useOnboarding();
@@ -28,7 +28,6 @@ export default function StackLayout() {
         <Stack.Screen name="settings/pin" options={SHEET_ROUTE} />
         <Stack.Screen name="backup" />
         <Stack.Screen name="export" />
-        <Stack.Screen name="webview" />
       </Stack>
     </ErrorBoundary>
   );
