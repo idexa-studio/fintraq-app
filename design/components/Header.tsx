@@ -17,7 +17,8 @@ export type HeaderProps = {
   /** Leave out the hairline under a task header, because something attached follows it (a TabStrip). */
   flush?: boolean;
   /**
-   * The top of a tab: the title large and at the start of the line, with the
+   * The top of a tab: the title at the start of the line in the reference's
+   * heading size (it sets nothing larger at the top of a page), with the
    * actions at the end. Pushed screens and tasks keep the small centred title.
    */
   large?: boolean;
@@ -41,7 +42,7 @@ export function Header({ title, task = false, flush = false, large = false, eyeb
       <View style={styles.large}>
         <View style={styles.largeText}>
           {eyebrow ? <Text variant="callout" tone="muted" numberOfLines={1}>{eyebrow}</Text> : null}
-          <Text variant="display" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} accessibilityRole="header">{title}</Text>
+          <Text variant="title" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} accessibilityRole="header">{title}</Text>
         </View>
         <View style={styles.actions}>{right}</View>
       </View>

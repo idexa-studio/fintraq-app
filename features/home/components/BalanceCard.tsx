@@ -1,6 +1,7 @@
 import { Card, CardActions, MarkTile, Money, Select, Skeleton, Text, Touchable, pastelOf, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
-import { balanceMakeup } from '@/features/home/home-rules';
+import { balanceMakeup, distinctColors } from '@/features/home/home-rules';
+import { OFFERED_COLORS } from '@/shared/contracts/pickers';
 import { colorNumberToHex } from '@/shared/format/color';
 import type { HomeBalances } from '@/features/home/hooks/useHomeBalances';
 import { currencyName } from '@/shared/currency/currencies';
@@ -30,7 +31,9 @@ export function BalanceCard({ balances, loading, onAddExpense, onAddIncome, onOp
   const styles = useStyles(createStyles);
   const { currency, currencies, setCurrency, balance, accounts } = balances;
   const makeup = balanceMakeup(accounts);
-  const tint = (color: number) => pastelOf(colorNumberToHex(color));
+  // Named in the order of the bar, each in a colour of its own.
+  const tints = distinctColors(makeup.named.map((account) => pastelOf(colorNumberToHex(account.color))), OFFERED_COLORS.map((offered) => pastelOf(offered.hex)));
+  const tint = (id: number) => tints[makeup.named.findIndex((account) => account.id === id)] ?? tints[0];
   return (
     <Card padded={false}>
       <View style={{ padding: size.cardPadding, gap: space.sm }}>
@@ -47,12 +50,12 @@ export function BalanceCard({ balances, loading, onAddExpense, onAddIncome, onOp
         </View>
         {loading ? (
           <>
-            <Skeleton height={type.callout.lineHeight} width="50%" />
             <Skeleton height={type.amountHero.lineHeight} width="70%" />
           </>
         ) : (
           <>
-            <Text variant="callout" tone="muted">{t('balance.summary', { count: accounts.length, currency: currencyName(currency) })}</Text>
+            {/* With more than one currency held, say which one all of Home is showing. */}
+            {currencies.length > 1 ? <Text variant="callout" tone="muted">{t('balance.scope', { currency: currencyName(currency) })}</Text> : null}
             <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: space.md }}>
               <View style={{ flex: 1 }}><Money value={formatCurrency(balance, currency)} variant="amountHero" /></View>
               <MarkTile icon="wallet" onPress={onOpenAccounts} accessibilityLabel={t('balance.openAccounts')} />
@@ -61,13 +64,13 @@ export function BalanceCard({ balances, loading, onAddExpense, onAddIncome, onOp
               <View style={styles.makeup}>
                 {makeup.parts.length > 0 ? (
                   <View style={styles.bar} accessible accessibilityRole="image" accessibilityLabel={t('balance.makeup')}>
-                    {makeup.parts.map((account) => <View key={account.id} style={[styles.part, { flex: account.balance, backgroundColor: tint(account.color) }]} />)}
+                    {makeup.parts.map((account) => <View key={account.id} style={[styles.part, { flex: account.balance, backgroundColor: tint(account.id) }]} />)}
                   </View>
                 ) : null}
                 <View style={styles.names}>
                   {makeup.named.map((account) => (
                     <Touchable key={account.id} onPress={() => onOpenAccount(account.id)} accessibilityLabel={`${account.name}, ${formatCurrency(account.balance, currency)}`} style={styles.name}>
-                      <View style={[styles.dot, { backgroundColor: tint(account.color) }]} />
+                      <View style={[styles.dot, { backgroundColor: tint(account.id) }]} />
                       <View style={styles.nameText}>
                         <Text variant="caption" tone="muted" numberOfLines={1}>{account.name}</Text>
                         <Text variant="calloutStrong" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>{formatCurrency(account.balance, currency)}</Text>

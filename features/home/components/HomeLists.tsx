@@ -77,7 +77,9 @@ export function PeopleStrip({ people, currency, loading, onOpen, onAdd }: People
   const { t } = useTranslation('home');
   const { size, space } = useTheme();
   const styles = useStyles(createStyles);
-  if (loading || !people) return <Card><Skeleton height={size.illustrationTile + space.xxl} /></Card>;
+  // A size up from a row's mark: a face, not a headline.
+  const face = size.iconCircle + space.sm;
+  if (loading || !people) return <Card><Skeleton height={face + space.xxl} /></Card>;
   if (people.length === 0) return <EmptyState compact icon="users" title={t('people.emptyTitle')} body={t('people.emptyBody')} actionLabel={t('people.emptyAction')} onAction={onAdd} />;
   return (
     <Card padded={false}>
@@ -87,8 +89,8 @@ export function PeopleStrip({ people, currency, loading, onOpen, onAdd }: People
           const amount = person.net === 0 ? null : formatCurrency(Math.abs(person.net), currency);
           return (
             <Touchable key={person.id} onPress={() => onOpen(person.id)} accessibilityLabel={[person.name, standing, amount].filter(Boolean).join(', ')} style={styles.person}>
-              <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} size={size.illustrationTile} />
-              <Text variant="calloutStrong" align="center" numberOfLines={1}>{firstName(person.name)}</Text>
+              <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} size={face} />
+              <Text variant="callout" align="center" numberOfLines={1}>{firstName(person.name)}</Text>
               <View style={styles.standing}>
                 <Text variant="caption" tone="muted" align="center" numberOfLines={1}>{standing}</Text>
                 {amount ? <Text variant="calloutStrong" tone={person.net > 0 ? 'positive' : 'default'} align="center" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>{ltr(amount)}</Text> : null}
@@ -97,7 +99,7 @@ export function PeopleStrip({ people, currency, loading, onOpen, onAdd }: People
           );
         })}
         <Touchable onPress={onAdd} accessibilityLabel={t('people.emptyAction')} style={styles.person}>
-          <View style={[styles.add, { width: size.illustrationTile, height: size.illustrationTile, borderRadius: size.illustrationTile / 2 }]}>
+          <View style={[styles.add, { width: face, height: face, borderRadius: face / 2 }]}>
             <Icon name="plus" />
           </View>
           <Text variant="calloutStrong" align="center" numberOfLines={2}>{t('people.add')}</Text>

@@ -144,16 +144,24 @@ export function ActivityScreen() {
           {applied.map((chip) => <Chip key={chip.key} label={chip.label} onRemove={() => change(chip.without)} removeLabel={t('filter.remove', { name: chip.label })} />)}
         </View>
       ) : null}
-      <Card style={styles.summary}>
+      {narrowed ? (
+        <Card style={styles.summary}>
+          <View style={styles.summaryHead}>
+            <Text variant="bodyStrong">{on > 0 ? t(`summary.narrowed.${kind}`) : t(`summary.title.${kind}`)}</Text>
+            {currencies.length > 1 && !scopedAccount ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosenCurrency} accessibilityLabel={t('summary.currency')} /> : null}
+          </View>
+          <View style={styles.stats}>
+            {kind === 'expense' ? null : <Stat label={t('summary.moneyIn')} value={formatCurrency(inCurrency?.income ?? 0, currency)} tone="positive" />}
+            {kind === 'income' ? null : <Stat label={t('summary.moneyOut')} value={formatCurrency(inCurrency?.expense ?? 0, currency)} />}
+          </View>
+        </Card>
+      ) : currencies.length > 1 ? (
+        // Unnarrowed, the totals would be everything ever recorded, which answers nothing; only the currency choice is kept.
         <View style={styles.summaryHead}>
-          <Text variant="bodyStrong">{on > 0 ? t(`summary.narrowed.${kind}`) : t(`summary.title.${kind}`)}</Text>
-          {currencies.length > 1 && !scopedAccount ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosenCurrency} accessibilityLabel={t('summary.currency')} /> : null}
+          <Text variant="bodyStrong">{t('summary.title.all')}</Text>
+          <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosenCurrency} accessibilityLabel={t('summary.currency')} />
         </View>
-        <View style={styles.stats}>
-          {kind === 'expense' ? null : <Stat label={t('summary.moneyIn')} value={formatCurrency(inCurrency?.income ?? 0, currency)} tone="positive" />}
-          {kind === 'income' ? null : <Stat label={t('summary.moneyOut')} value={formatCurrency(inCurrency?.expense ?? 0, currency)} />}
-        </View>
-      </Card>
+      ) : null}
     </View>
   );
 

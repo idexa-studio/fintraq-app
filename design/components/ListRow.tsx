@@ -27,10 +27,12 @@ export type ListRowProps = {
   onPress?: () => void;
   disabled?: boolean;
   destructive?: boolean;
+  /** Title and description are cut at one line each, so every row is the same height: for a long list that is scanned, not read. */
+  oneLine?: boolean;
 };
 
 /** One row of a list: leading mark, title and description, then a value, control or chevron. */
-export function ListRow({ title, subtitle, icon, leading, strong = false, value, valueTone = 'default', trailing, onPress, disabled = false, destructive = false }: ListRowProps) {
+export function ListRow({ title, subtitle, icon, leading, strong = false, value, valueTone = 'default', trailing, onPress, disabled = false, destructive = false, oneLine = false }: ListRowProps) {
   const { colors } = useTheme();
   const styles = useStyles(createStyles);
   const tone: TextTone = disabled ? 'disabled' : destructive ? 'danger' : 'default';
@@ -38,8 +40,8 @@ export function ListRow({ title, subtitle, icon, leading, strong = false, value,
     <>
       {leading ?? (icon ? <Icon name={icon} color={disabled ? colors.onDisabled : destructive ? colors.danger : colors.text} /> : null)}
       <View style={styles.text}>
-        <Text variant={strong ? 'bodyStrong' : 'body'} tone={tone} numberOfLines={2}>{title}</Text>
-        {subtitle ? <Text variant="callout" tone={disabled ? 'disabled' : 'muted'} numberOfLines={2}>{subtitle}</Text> : null}
+        <Text variant={strong ? 'bodyStrong' : 'body'} tone={tone} numberOfLines={oneLine ? 1 : 2}>{title}</Text>
+        {subtitle ? <Text variant="callout" tone={disabled ? 'disabled' : 'muted'} numberOfLines={oneLine ? 1 : 2}>{subtitle}</Text> : null}
       </View>
       {/* A figure is never cut short: it shrinks to fit, and may take up to half the row. */}
       {value ? <Text variant="amount" tone={disabled ? 'disabled' : valueTone} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} style={styles.value}>{ltr(value)}</Text> : null}

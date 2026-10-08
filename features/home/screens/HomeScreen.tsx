@@ -1,4 +1,4 @@
-import { FeatureTile, Header, IconButton, IconCircle, Screen, Section, Text, Touchable, useTheme } from '@/design';
+import { FeatureTile, Header, IconButton, IconCircle, Screen, Section, Touchable, useTheme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { BalanceCard } from '@/features/home/components/BalanceCard';
 import { AccountList, PeopleStrip, RecentList } from '@/features/home/components/HomeLists';
@@ -11,7 +11,6 @@ import { useSettings } from '@/features/settings';
 import { useTransactions } from '@/features/transactions';
 import type { Kind } from '@/features/transactions';
 import { hasPossibleTransfer } from '@/shared/calc/transfers';
-import { currencyName } from '@/shared/currency/currencies';
 import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -53,8 +52,9 @@ export function HomeScreen() {
       header={
         <Header
           large
-          eyebrow={formatDate(now, { weekday: 'long', day: 'numeric', month: 'long' })}
-          title={name ? t(`greeting.${part}`, { name }) : t(`greetingNoName.${part}`)}
+          // The greeting leads into the name; with no name yet, the date leads into the greeting.
+          eyebrow={name ? t(`greeting.${part}`) : formatDate(now, { weekday: 'long', day: 'numeric', month: 'long' })}
+          title={name || t(`greeting.${part}`)}
           right={
             <>
               <IconButton icon="search" onPress={() => router.push('/search')} accessibilityLabel={t('search')} />
@@ -71,11 +71,7 @@ export function HomeScreen() {
         />
       }
     >
-      {/* The greeting is the title of this part; the card says what the figure is. */}
-      <View style={{ gap: size.titleGap }}>
-        <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} onOpenAccount={openAccount} />
-        {balances.currencies.length > 1 ? <Text variant="callout" tone="muted">{t('balance.scope', { currency: currencyName(currency) })}</Text> : null}
-      </View>
+      <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} onOpenAccount={openAccount} />
 
       {/* The balance card names the accounts; this section is only the way to add the first one. */}
       {accounts && accounts.length === 0 ? (
@@ -86,8 +82,8 @@ export function HomeScreen() {
 
       <Section title={t('quick.title')}>
         <View style={{ flexDirection: 'row', gap: size.cardGap }}>
-          {canTransfer ? <FeatureTile icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
-          <FeatureTile icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
+          {canTransfer ? <FeatureTile compact icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
+          <FeatureTile compact icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
         </View>
       </Section>
 

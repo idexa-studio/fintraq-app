@@ -69,7 +69,7 @@ export const SIZE = {
   row: 56,
   /** The action strip at the foot of a card. */
   cardAction: 52,
-  tabBar: 49,
+  tabBar: 56,
   /** Height of the mark above the active tab. */
   tabMark: 2,
   /** A screen's header (reference: 44). */

@@ -1,11 +1,6 @@
 /** The Home tab. */
 export default {
   greeting: {
-    morning: 'Good morning, {{name}}',
-    afternoon: 'Good afternoon, {{name}}',
-    evening: 'Good evening, {{name}}',
-  },
-  greetingNoName: {
     morning: 'Good morning',
     afternoon: 'Good afternoon',
     evening: 'Good evening',
@@ -14,8 +9,6 @@ export default {
   settings: 'Settings',
   balance: {
     allAccounts: 'All accounts',
-    summary_one: '{{count}} account · {{currency}}',
-    summary_other: '{{count}} accounts · {{currency}}',
     currency: 'Currency',
     addExpense: 'Add expense',
     addIncome: 'Add income',
@@ -23,13 +16,13 @@ export default {
     makeup: 'How the balance is shared among your accounts',
     more_one: 'and {{count}} more account',
     more_other: 'and {{count}} more accounts',
-    scope: 'Everything on Home is in {{currency}}. Change it on the card above.',
+    scope: 'Home is showing {{currency}} only',
   },
   quick: {
     title: 'Quick actions',
     transfer: 'Transfer',
     transferDetail: 'Move money between your accounts',
-    lend: 'Lend or borrow',
+    lend: 'New loan',
     lendDetail: 'Track money lent or borrowed',
   },
   month: {

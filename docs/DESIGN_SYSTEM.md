@@ -97,7 +97,7 @@ Three behaviours are built in and must not be worked around:
 - **Radius:** `sm` 6 (dialogs, step rows), `tile` 8, `chip` 9, `md` 10 (cards,
   buttons, sheets), `field` 11, `pill` (badges and switches only).
 - **Borders:** 1 for outlines and hairlines, 2 for the current item.
-- **Controls:** button 48, field 44, chip 32, row at least 56, tab bar 49,
+- **Controls:** button 48, field 44, chip 32, row at least 56, tab bar 56,
   header 44 (56 for a task). These are minimum heights: controls grow with
   their text. Every touch target is at least 44pt.
 - **Motion:** 120, 200 and 320 ms. A screen's sections arrive one after
@@ -155,14 +155,21 @@ use it.
 
 - **A screen** is `Screen` with a `Header`, content in `Section`s, and its
   buttons in the `footer`. Never hand-build the scaffold.
-- **The top of a tab** is `<Header large>`: the title large at the start of
-  the line, the tab's actions at the end. Home's title is a greeting by the
-  time of day under today's date, and the user's initials open Settings.
-  Pushed screens keep the small centred title; tasks keep theirs.
+- **The top of a tab** is `<Header large>`: the title at the start of the
+  line in the `title` size, the tab's actions at the end. Nothing on a page
+  is set larger than the reference sets it: a 26pt tab title was tried and
+  rejected as too big (owner, 2026-10-08). Home's title is the user's first
+  name under a greeting by the time of day, and their initials open
+  Settings. Pushed screens keep the small centred title; tasks keep theirs.
 - **The tab bar** holds four places and, in the middle, the one action: a
   green tile with a plus and no label (`action` on its item), never the
   active tab. The mark above the active tab spans half its width and slides
-  when the tab changes.
+  when the tab changes. The bar is 56 tall (owner, 2026-10-08).
+- **Shortcuts** the user already knows are `FeatureTile compact`: mark and
+  label on one line. The full tile, with its sentence, is for introducing
+  something.
+- **Rows that are scanned** (transactions) set `oneLine`, so a long note
+  cannot make one row taller than its neighbours.
 - **A list** is `ListRow`s in a `ListGroup`. A tappable row ends in a chevron
   unless a value or a control already sits at its edge. A disabled row has no
   chevron and says why underneath.
