@@ -1,0 +1,1810 @@
+{
+  "accounts": {
+    "title": "口座",
+    "add": "口座を追加",
+    "back": "戻る",
+    "close": "閉じる",
+    "default": "既定",
+    "groups": {
+      "bank": "銀行口座",
+      "cash": "現金",
+      "savings": "貯蓄",
+      "credit_card": "クレジットカード",
+      "ewallet": "ウォレット",
+      "investment": "投資",
+      "loan": "貸し借り"
+    },
+    "netWorth": {
+      "title": "純資産",
+      "have": "持っている額",
+      "owe": "借りている額",
+      "currency": "通貨"
+    },
+    "empty": {
+      "title": "口座はまだありません",
+      "body": "口座はお金のある場所です。現金、銀行口座、カードなど。記録を始めるには、まず1つ追加してください。"
+    },
+    "account": {
+      "notFound": "この口座はもうありません",
+      "manage": "口座を管理",
+      "moneyIn": "入金",
+      "moneyOut": "出金",
+      "addTransaction": "取引を追加",
+      "transfer": "振替",
+      "recent": "最近",
+      "seeAll": "すべて見る",
+      "noActivityTitle": "ここにはまだ記録がありません",
+      "noActivityBody": "この口座に追加したものがここに表示されます。",
+      "edit": "詳細を編集",
+      "makeDefault": "既定にする",
+      "makeDefaultHint": "新しい取引はこの口座から始まります",
+      "isDefault": "新しい取引はすでにこの口座から始まります",
+      "madeDefault": "{{name}} が既定の口座になりました",
+      "delete": "口座を削除",
+      "inUse": {
+        "transactions_one": "取引が{{count}}件あるため削除できません",
+        "transactions_other": "取引が{{count}}件あるため削除できません",
+        "loans_one": "{{count}}件の貸し借りで使われているため削除できません",
+        "loans_other": "{{count}}件の貸し借りで使われているため削除できません"
+      },
+      "deleteTitle": "{{name}} を削除しますか？",
+      "deleteBody": "何も記録されていないので、口座だけがなくなります。この操作は取り消せません。",
+      "deleteConfirm": "口座を削除",
+      "deleteCancel": "残す",
+      "deleted": "{{name}} を削除しました",
+      "failed": "実行できませんでした",
+      "failedBody": "何も変更されていません。もう一度お試しください。",
+      "ok": "OK"
+    },
+    "form": {
+      "newTitle": "新しい口座",
+      "editTitle": "口座を編集",
+      "name": "名前",
+      "namePlaceholder": "ふだん使い",
+      "type": "どの種類ですか？",
+      "typeLocked": "{{kind}}。種類は口座を作成すると変更できません。",
+      "currency": "通貨",
+      "currencyLocked": "{{currency}} 建て。取引のある口座では変更できません。",
+      "opening": "現在の残高",
+      "balance": "残高",
+      "balanceHelper": "残高は、この口座に記録した内容に沿って変わります。",
+      "colour": "色",
+      "more": "名義と口座番号を追加",
+      "moreHint": "任意。口座を見分けるために使います",
+      "holder": "名義",
+      "number": "口座番号",
+      "numberHelper": "表示されるのは末尾4文字だけです",
+      "pick": {
+        "currency": "どの通貨ですか？"
+      },
+      "searchCurrency": "通貨を検索",
+      "currencies": {
+        "yours": "お使いの通貨",
+        "all": "すべての通貨"
+      },
+      "noCurrency": "「{{query}}」に一致する通貨はありません",
+      "create": "口座を追加",
+      "save": "変更を保存",
+      "blocked": {
+        "name": "保存するには口座に名前を付けてください",
+        "balance": "開始残高を0以上の数値で入力してください"
+      },
+      "created": "口座を追加しました",
+      "changesSaved": "変更を保存しました",
+      "saveFailed": "保存できませんでした",
+      "saveFailedBody": "何も変更されていません。もう一度お試しください。",
+      "ok": "OK",
+      "discard": {
+        "title": "この口座を破棄しますか？",
+        "titleEdit": "変更を破棄しますか？",
+        "body": "入力した内容は保存されません。",
+        "confirm": "破棄",
+        "cancel": "編集を続ける"
+      }
+    }
+  },
+  "activity": {
+    "title": "履歴",
+    "search": "検索",
+    "kinds": {
+      "all": "すべて",
+      "expense": "支出",
+      "income": "収入",
+      "transfer": "振替"
+    },
+    "kindLabel": "表示",
+    "summary": {
+      "title": {
+        "all": "記録したすべて",
+        "expense": "すべての支出",
+        "income": "すべての収入",
+        "transfer": "すべての振替"
+      },
+      "narrowed": {
+        "all": "この一覧の合計",
+        "expense": "この一覧の支出",
+        "income": "この一覧の収入",
+        "transfer": "この一覧の振替"
+      },
+      "moneyIn": "入金",
+      "moneyOut": "出金",
+      "currency": "通貨"
+    },
+    "filter": {
+      "open": "絞り込み",
+      "openCount_one": "絞り込み、{{count}}件適用中",
+      "openCount_other": "絞り込み、{{count}}件適用中",
+      "title": "絞り込み",
+      "dates": "期間",
+      "account": "口座",
+      "category": "カテゴリ",
+      "person": "相手",
+      "any": "指定なし",
+      "anyTime": "いつでも",
+      "done": "完了",
+      "clear": "すべて解除",
+      "remove": "{{name}} を解除",
+      "from": "開始",
+      "to": "終了",
+      "pickFrom": "いつからですか？",
+      "pickTo": "いつまでですか？",
+      "open_end": "指定なし"
+    },
+    "periods": {
+      "all": "いつでも",
+      "thisMonth": "今月",
+      "lastMonth": "先月",
+      "last30": "過去30日",
+      "thisYear": "今年",
+      "custom": "2つの日付の間"
+    },
+    "customRange": "{{from}}〜{{to}}",
+    "since": "{{from}} 以降",
+    "until": "{{to}} まで",
+    "edit": "編集",
+    "delete": "削除",
+    "emptyTitle": "取引はまだありません",
+    "emptyBody": "使ったお金と入ったお金を追加すると、ここに表示されます。",
+    "emptyAction": "最初の取引を追加",
+    "noMatchTitle": "一致するものがありません",
+    "noMatchBody": "この種類のものはまだありません。",
+    "noMatchAction": "すべて表示"
+  },
+  "backup": {
+    "title": "バックアップ",
+    "back": "戻る",
+    "connect": {
+      "title": "Google ドライブにコピーを保管",
+      "body": "Fintraq は1日2回、あなた自身のドライブの非公開フォルダにバックアップを保存します。新しいスマートフォンでログインすれば、すべて戻ります。",
+      "action": "Google ドライブを接続",
+      "private": "そのフォルダを読めるのは Fintraq だけです。バックアップが他の誰かを経由することはありません。"
+    },
+    "state": {
+      "today": "今日 {{time}} にバックアップ済み",
+      "yesterday": "昨日 {{time}} にバックアップ済み",
+      "earlier": "{{date}} にバックアップ済み",
+      "none": "バックアップはまだありません",
+      "noneBody": "今すぐバックアップするか、下で自動バックアップをオンにしてください。",
+      "where": "{{email}} のドライブ内",
+      "whereSize": "{{email}} のドライブ内 · {{size}}",
+      "checking": "ドライブを確認中"
+    },
+    "phone": "このスマートフォン",
+    "drive": {
+      "label": "あなたのドライブ",
+      "title": "あなたの Google ドライブ内",
+      "hint": "自動で1日2回。覚えておく必要はありません",
+      "badge": "Pro",
+      "lockedTitle": "意識せずにバックアップ",
+      "lockedBody": "Fintraq は1日2回、あなた自身のドライブの非公開フォルダに保存し、新しいスマートフォンですべてを元に戻します。",
+      "seePro": "Fintraq Pro を見る"
+    },
+    "icloud": {
+      "title": "あなたの iCloud 内",
+      "soonTitle": "iCloud バックアップは準備中です",
+      "soonBody": "それまでは、上でバックアップファイルを保存し、iCloud Drive など安全な場所に保管してください。"
+    },
+    "file": {
+      "title": "このスマートフォン内",
+      "hint": "好きなときに自分で保管するファイル",
+      "save": "バックアップファイルを保存",
+      "saveHint": "すべてを1つのファイルに。保管用、または自分宛てに送る用",
+      "restore": "ファイルから復元",
+      "restoreHint": "このスマートフォンの内容をすべて置き換えます",
+      "shareTitle": "Fintraq のバックアップを保存",
+      "confirmTitle": "このスマートフォンの内容をすべて置き換えますか？",
+      "confirmBody": "Fintraq の内容は {{date}} のバックアップとまったく同じになります（口座{{accounts}}件、取引{{transactions}}件）。それ以降に記録した内容は失われます。",
+      "confirm": "復元",
+      "keep": "今の内容を残す",
+      "restoredTitle": "復元しました",
+      "restoredBody": "Fintraq は {{date}} のバックアップの内容になりました。表示するには再起動が必要です。",
+      "restart": "再起動",
+      "manualTitle": "Fintraq を閉じて開き直してください",
+      "manualBody": "データは復元されましたが、Fintraq は自動で再起動できませんでした。完全に閉じてから開き直すと、すべて表示されます。",
+      "failed": {
+        "save": "バックアップファイルは作成されませんでした",
+        "restore": "何も復元されませんでした",
+        "busy": "バックアップまたは復元がすでに実行中です。終わるまで待ってから、もう一度お試しください。",
+        "unreadable": "そのファイルは Fintraq のバックアップではないか、破損しています。このスマートフォンの内容は変更されていません。",
+        "unknown": "問題が発生しました。このスマートフォンの内容は元のままです。少ししてからもう一度お試しください。"
+      }
+    },
+    "stage": {
+      "preparing": "記録を準備中",
+      "uploading": "Google ドライブに送信中",
+      "uploadingPct": "Google ドライブに送信中 · {{pct}}%",
+      "finishing": "仕上げ中",
+      "done": "バックアップ済み",
+      "locating": "バックアップを探しています",
+      "downloading": "バックアップを取得中",
+      "downloadingPct": "バックアップを取得中 · {{pct}}%",
+      "restoring": "記録を戻しています",
+      "restored": "復元しました"
+    },
+    "running": {
+      "backup": "バックアップ中 · {{percent}}%",
+      "restore": "復元中 · {{percent}}%"
+    },
+    "backUp": "今すぐバックアップ",
+    "restore": "復元",
+    "done": {
+      "backup": "ドライブにバックアップしました",
+      "disconnected": "Google ドライブの接続を解除しました",
+      "connected": "Google ドライブを接続しました"
+    },
+    "overdue": {
+      "title": "自動バックアップが止まっています",
+      "body": "スマートフォンがバックグラウンドで Fintraq を終了している可能性があります。制限なしで動作できるようにしてから、今すぐバックアップしてください。",
+      "link": "バッテリー設定を開く"
+    },
+    "other": {
+      "title": "このバックアップは別のスマートフォンのものです",
+      "body": "{{date}} に作成され、ここではまだ復元されていません。復元するか、今すぐバックアップしてこのスマートフォンの内容で置き換えてください。"
+    },
+    "auto": {
+      "title": "自動",
+      "label": "自動でバックアップ",
+      "on": "1日2回、バックグラウンドで",
+      "onNext": "1日2回。次回は {{time}} ごろ。",
+      "off": "オフ。Fintraq は指示したときだけバックアップします。",
+      "battery": "動作を続ける",
+      "batteryHint": "バックアップの合間にスマートフォンが Fintraq を終了しないようにします",
+      "batteryManual": "スマートフォンの「設定」から「アプリ」、Fintraq、「バッテリー」と進み、「制限なし」を選んでください。",
+      "blockedTitle": "自動バックアップには通知が必要です",
+      "blockedBody": "バックアップに失敗したときや、ドライブの再接続が必要なときに、Fintraq は通知でお知らせします。通知を許可してからオンにしてください。",
+      "openSettings": "設定を開く",
+      "promptTitle": "バックアップを動かし続ける",
+      "promptBody": "一部のスマートフォンは、バッテリー節約のためにバックグラウンドのアプリを終了し、自動バックアップが止まります。Fintraq が制限なしで動作できるようにしてください。",
+      "promptYes": "バッテリー設定を開く",
+      "promptNo": "今はしない"
+    },
+    "account": {
+      "title": "Google アカウント",
+      "drive": "バックアップの保存先はこのドライブです",
+      "disconnect": "Google ドライブの接続を解除",
+      "confirmTitle": "Google ドライブの接続を解除しますか？",
+      "confirmBody": "自動バックアップは止まります。ドライブにあるバックアップはそのまま残り、このスマートフォンの内容もすべて残ります。",
+      "confirm": "接続を解除",
+      "keep": "接続したままにする"
+    },
+    "replace": {
+      "title": "別のスマートフォンのバックアップを置き換えますか？",
+      "body": "ドライブには、ここで一度も復元されていない {{date}} のバックアップがあります。今バックアップすると、このスマートフォンの内容で置き換えられ、そのバックアップにしかない内容は失われます。",
+      "confirm": "置き換える",
+      "keep": "そのバックアップを残す"
+    },
+    "restoreConfirm": {
+      "title": "このスマートフォンの内容をすべて置き換えますか？",
+      "body": "Fintraq の内容は {{date}} のバックアップとまったく同じになります。それ以降に記録した内容は失われます。",
+      "confirm": "復元",
+      "keep": "今の内容を残す"
+    },
+    "restored": {
+      "title": "復元しました",
+      "body": "Fintraq は {{date}} のバックアップの内容になりました。表示するには再起動が必要です。",
+      "restart": "再起動",
+      "manualTitle": "Fintraq を閉じて開き直してください",
+      "manualBody": "データは復元されましたが、Fintraq は自動で再起動できませんでした。完全に閉じてから開き直すと、すべて表示されます。"
+    },
+    "failed": {
+      "backup": "バックアップは作成されませんでした",
+      "restore": "何も復元されませんでした",
+      "connect": "Google ドライブは接続されませんでした",
+      "disconnect": "Google ドライブは接続されたままです",
+      "auto": "自動バックアップは変更されませんでした",
+      "reconnect": "再接続",
+      "why": {
+        "busy": "バックアップまたは復元がすでに実行中です。終わるまで待ってから、もう一度お試しください。",
+        "signedOut": "Fintraq は Google アカウントからログアウトされています。再接続してから、もう一度お試しください。",
+        "permission": "Fintraq はドライブ内の専用フォルダへのアクセスを許可されませんでした。再接続して許可してください。",
+        "offline": "Google ドライブに接続できませんでした。通信環境を確認して、もう一度お試しください。",
+        "noBackup": "{{email}} のドライブに Fintraq のバックアップはありません。バックアップに使ったアカウントかどうか確認してください。",
+        "needsPro": "Google ドライブへのバックアップは Fintraq Pro の機能です。",
+        "damaged": "ドライブのバックアップを読み取れなかったため、このスマートフォンの内容は変更されていません。記録が残っているスマートフォンから、もう一度バックアップしてください。",
+        "unknown": "途中で問題が発生しました。このスマートフォンの内容は元のままです。少ししてからもう一度お試しください。"
+      }
+    }
+  },
+  "categories": {
+    "title": "カテゴリ",
+    "back": "戻る",
+    "close": "閉じる",
+    "add": "カテゴリを追加",
+    "kindLabel": "種類",
+    "kinds": {
+      "DR": "支出",
+      "CR": "収入",
+      "TR": "振替"
+    },
+    "search": "カテゴリを検索",
+    "noMatch": "「{{query}}」に一致するカテゴリはありません",
+    "builtIn": {
+      "title": "標準",
+      "hint": "アプリ自体が使用しているため、変更も削除もできません"
+    },
+    "empty": {
+      "DR": {
+        "title": "支出のカテゴリはまだありません",
+        "body": "カテゴリは、お金を何に使ったかを表します。家賃や食料品など。"
+      },
+      "CR": {
+        "title": "収入のカテゴリはまだありません",
+        "body": "カテゴリは、お金がどこから来たかを表します。給与や払い戻しなど。"
+      },
+      "TR": {
+        "title": "振替のカテゴリはまだありません",
+        "body": "振替には必要ありませんが、お金を移す理由に名前を付けられます。"
+      }
+    },
+    "form": {
+      "newTitle": "新しいカテゴリ",
+      "editTitle": "カテゴリを編集",
+      "name": "名前",
+      "namePlaceholder": "食料品",
+      "colour": "色",
+      "usedFor": "使い道：",
+      "icon": "アイコン：",
+      "iconGroups": {
+        "finance": "お金",
+        "foodDrink": "飲食",
+        "transport": "交通",
+        "homeUtilities": "住まい",
+        "healthFitness": "健康",
+        "tech": "機器",
+        "shopping": "買い物",
+        "entertainment": "娯楽",
+        "education": "学び",
+        "personal": "個人",
+        "misc": "その他すべて"
+      },
+      "create": "カテゴリを追加",
+      "save": "変更を保存",
+      "blocked": {
+        "name": "保存するにはカテゴリに名前を付けてください",
+        "kind": "保存するには使い道を選んでください"
+      },
+      "created": "カテゴリを追加しました",
+      "changesSaved": "変更を保存しました",
+      "saveFailed": "保存できませんでした",
+      "saveFailedBody": "何も変更されていません。もう一度お試しください。",
+      "ok": "OK",
+      "notFound": "このカテゴリはもうありません",
+      "delete": "カテゴリを削除",
+      "inUse": {
+        "transactions_one": "{{count}}件の取引で使われているため削除できません",
+        "transactions_other": "{{count}}件の取引で使われているため削除できません",
+        "loans_one": "{{count}}件の貸し借りで使われているため削除できません",
+        "loans_other": "{{count}}件の貸し借りで使われているため削除できません"
+      },
+      "deleteTitle": "{{name}} を削除しますか？",
+      "deleteBody": "どこにも使われていないので、カテゴリだけがなくなります。この操作は取り消せません。",
+      "deleteConfirm": "カテゴリを削除",
+      "deleteCancel": "残す",
+      "deleted": "{{name}} を削除しました",
+      "discard": {
+        "title": "このカテゴリを破棄しますか？",
+        "titleEdit": "変更を破棄しますか？",
+        "body": "入力した内容は保存されません。",
+        "confirm": "破棄",
+        "cancel": "編集を続ける"
+      }
+    }
+  },
+  "common": {
+    "today": "今日",
+    "yesterday": "昨日",
+    "seeAll": "すべて見る",
+    "back": "戻る",
+    "unexpectedError": "問題が発生しました",
+    "charactersLeft_one": "残り{{count}}文字",
+    "charactersLeft_other": "残り{{count}}文字",
+    "pro": {
+      "badge": "Pro",
+      "see": "Fintraq Pro を見る",
+      "also": "Pro にはほかにも"
+    },
+    "colors": {
+      "forest": "緑",
+      "teal": "青緑",
+      "blue": "青",
+      "purple": "紫",
+      "pink": "ピンク",
+      "red": "赤",
+      "orange": "オレンジ",
+      "slate": "グレー",
+      "current": "現在の色"
+    },
+    "accountTypes": {
+      "cash": "現金",
+      "bank": "銀行口座",
+      "savings": "貯蓄",
+      "credit_card": "クレジットカード",
+      "investment": "投資",
+      "loan": "貸し借り",
+      "ewallet": "ウォレット"
+    }
+  },
+  "export": {
+    "dialog": {
+      "share": "スプレッドシートを共有",
+      "save": "スプレッドシートを保存"
+    },
+    "title": "書き出し",
+    "back": "戻る",
+    "file": {
+      "count_one": "取引{{count}}件",
+      "count_other": "取引{{count}}件",
+      "counting": "集計中",
+      "none": "書き出すものがありません",
+      "scope": "{{from}}〜{{to}} · {{account}}",
+      "columns": {
+        "date": "日付",
+        "what": "内容",
+        "amount": "金額"
+      },
+      "more_one": "ほか{{count}}行",
+      "more_other": "ほか{{count}}行",
+      "empty": "この条件に当てはまる行はありません",
+      "loans": "貸し借りは追加の行として入ります",
+      "format": ".csv ファイルです。Excel、Numbers、Google スプレッドシートで開けます。",
+      "label": "スプレッドシートのプレビュー"
+    },
+    "choose": {
+      "title": "含める内容",
+      "hint": "上のプレビューは選択に合わせて変わります",
+      "period": "期間",
+      "periods": {
+        "d7": "7日間",
+        "d30": "30日間",
+        "d90": "90日間",
+        "d365": "12か月",
+        "custom": "指定する"
+      },
+      "from": "開始",
+      "to": "終了",
+      "pickFrom": "開始日",
+      "pickTo": "終了日",
+      "done": "完了",
+      "kind": "種類",
+      "kinds": {
+        "all": "すべて",
+        "expense": "支出",
+        "income": "収入",
+        "transfer": "振替"
+      },
+      "account": "口座",
+      "allAccounts": "すべての口座",
+      "loans": "貸し借りを含める",
+      "loansHint": "貸したお金と借りたお金を、追加の行として"
+    },
+    "save": "このスマートフォンに保存",
+    "saveIos": "ファイルに保存",
+    "share": "共有",
+    "blocked": {
+      "counting": "一致するものを集計中",
+      "nothing": "この条件に一致するものはありません。期間か種類を広げてください。"
+    },
+    "done": {
+      "saved": "{{name}} を保存しました"
+    },
+    "failed": {
+      "title": "ファイルは作成されませんでした",
+      "save": "ファイルは保存されませんでした",
+      "share": "ファイルは共有されませんでした",
+      "body": "何も変更されていません。このスマートフォンの空き容量を確認して、もう一度お試しください。"
+    }
+  },
+  "firstRun": {
+    "welcome": {
+      "title": "お金の行き先を知ろう",
+      "body": "使ったお金と入ったお金を記録して、どこへ行ったかを確かめましょう。すべてこのスマートフォンに残ります。",
+      "points": {
+        "free": "記録は無料、件数の上限なし",
+        "private": "アカウント登録なし、どこにも送信しません",
+        "quick": "1分以内に準備完了"
+      },
+      "picture": "財布の中のカードのように並んだ3つの口座。Fintraq での表示のしかたです",
+      "sample": {
+        "savings": "貯蓄",
+        "bank": "銀行口座",
+        "cash": "現金",
+        "everyday": "ふだんの支出"
+      },
+      "start": "はじめる",
+      "restore": "バックアップがあります"
+    },
+    "setup": {
+      "title": "Fintraq を設定",
+      "back": "戻る",
+      "you": "あなた：",
+      "name": {
+        "label": "名前",
+        "hint": "あいさつに使うだけです。このスマートフォンの外には出ません。"
+      },
+      "currency": {
+        "label": "メインの通貨：",
+        "hint": "合計はこの通貨で表示されます。タップして変更。"
+      },
+      "account": {
+        "label": "最初の口座：",
+        "name": "名前",
+        "balance": "残高",
+        "zero": "0.00",
+        "balanceHint": "現在入っている額。0から始める場合は空欄のままに。"
+      },
+      "finish": "Fintraq を開く",
+      "blocked": {
+        "name": "続けるには名前を入力してください",
+        "accountName": "口座に名前を付けてください",
+        "balance": "その残高は数値ではありません"
+      },
+      "failedTitle": "設定が完了しませんでした",
+      "failedBody": "何も失われていません。もう一度試すと、止まったところから続きます。"
+    },
+    "restore": {
+      "title": "記録を取り戻す",
+      "back": "戻る",
+      "body": "Google ドライブ、または保存したバックアップファイルから。Fintraq が中身をすべて取り戻します。",
+      "bodyFileOnly": "保存したバックアップファイルから。Fintraq が中身をすべて取り戻します。",
+      "file": "バックアップファイルを選ぶ",
+      "phone": "このスマートフォン",
+      "drive": "あなたのドライブ",
+      "connect": "Google ドライブから復元",
+      "working": "復元中 · {{percent}}%",
+      "fresh": "新しく始める",
+      "failed": {
+        "title": "何も復元されませんでした",
+        "noBackup": "{{email}} のドライブに Fintraq のバックアップはありません。別のアカウントを試すか、新しく始めてください。",
+        "needsPro": "Google ドライブからの復元は Fintraq Pro の機能です。購入済みの場合は、先に購入を復元してください。",
+        "unreadable": "そのファイルは Fintraq のバックアップではないか、破損しています。何も変更されていません。",
+        "offline": "Google ドライブに接続できませんでした。通信環境を確認して、もう一度お試しください。",
+        "other": "途中で問題が発生しました。このスマートフォンの内容は変更されていません。もう一度お試しください。",
+        "seePro": "Fintraq Pro を見る"
+      }
+    },
+    "reminder": {
+      "title": "毎晩お知らせしましょうか？",
+      "body": "細かいことを忘れてしまう前に、Fintraq が午後8時にその日の記録をお知らせします。時刻の変更やオフは「設定」でできます。",
+      "sample": {
+        "app": "Fintraq · 午後8:00",
+        "label": "リマインダーの見え方"
+      },
+      "yes": "お知らせする",
+      "no": "今はしない",
+      "deniedTitle": "Fintraq の通知がオフになっています",
+      "deniedBody": "リマインダーはオンになりませんでした。通知を許可してから、「設定」でオンにできます。",
+      "carryOn": "続ける"
+    }
+  },
+  "home": {
+    "greeting": "こんにちは、{{name}}さん",
+    "greetingNoName": "こんにちは",
+    "search": "検索",
+    "settings": "設定",
+    "balance": {
+      "allAccounts": "すべての口座",
+      "currency": "通貨",
+      "addExpense": "支出を追加",
+      "addIncome": "収入を追加",
+      "openAccounts": "口座",
+      "summary_one": "{{count}}口座",
+      "summary_other": "{{count}}口座の合計",
+      "scope_one": "{{currency}} の{{count}}口座",
+      "scope_other": "{{currency}} の{{count}}口座の合計"
+    },
+    "start": {
+      "title": "はじめに",
+      "hint": "{{total}}件中{{done}}件完了。次をタップしてください。",
+      "hide": "隠す",
+      "steps": {
+        "account": "最初の口座を追加する",
+        "transaction": "使ったお金を記録する",
+        "reminder": "毎日のリマインダーをオンにする",
+        "secondAccount": "2つ目の口座を追加する",
+        "backup": "Google ドライブにバックアップする"
+      }
+    },
+    "prompt": {
+      "pro": {
+        "title": "Fintraq Pro にはさらに機能があります",
+        "body": "検索、書き出し、より深い分析、自動バックアップ。買い切り、または月払いで。",
+        "link": "Fintraq Pro を見る",
+        "dismiss": "今はしない"
+      },
+      "backup": {
+        "title": "記録はこのスマートフォンにしかありません",
+        "body": "あなた自身の Google ドライブにコピーを保管し、1日2回更新します。",
+        "link": "バックアップを設定",
+        "dismiss": "今はしない"
+      }
+    },
+    "quick": {
+      "title": "クイック操作",
+      "transfer": "振替",
+      "hint": "よく使う操作への近道",
+      "transferDetail": "口座間でお金を移す",
+      "lend": "貸す・借りる",
+      "lendDetail": "貸したお金、借りたお金を管理"
+    },
+    "month": {
+      "title": "今月",
+      "hint": "入った額、出た額、残った額",
+      "link": "分析",
+      "moneyIn": "入金",
+      "moneyOut": "出金",
+      "kept": "入った額の{{percent}}%が残っています",
+      "keptLabel": "残り",
+      "spentAll": "入った額をすべて使いました",
+      "spentMore": "入った額より多く使いました",
+      "onlySpending": "今月はまだ収入の記録がありません",
+      "nothing": "今月はまだ記録がありません",
+      "progress": "収入のうち使った割合"
+    },
+    "accounts": {
+      "title": "口座",
+      "hint": "カードをタップして開く",
+      "more_one": "ほか{{count}}口座",
+      "more_other": "ほか{{count}}口座",
+      "emptyTitle": "現金、銀行、カードを分けて管理",
+      "emptyBody": "はじめは1つの口座で十分です。",
+      "emptyAction": "口座を追加"
+    },
+    "recent": {
+      "title": "最近",
+      "hint": "最近記録したもの",
+      "emptyTitle": "支出がここに表示されます",
+      "emptyBody": "使ったお金と入ったお金を追加してください。",
+      "emptyAction": "取引を追加"
+    },
+    "people": {
+      "title": "相手と貸し借り",
+      "hint": "未精算の貸し借りから見た、相手との差額",
+      "owesYou": "貸している",
+      "youOwe": "借りている額",
+      "settled": "すべて精算済み",
+      "emptyTitle": "誰にいくらあるかを覚えておく",
+      "emptyBody": "貸したお金、借りたお金、割り勘を管理します。",
+      "emptyAction": "相手を追加",
+      "add": "追加"
+    }
+  },
+  "insights": {
+    "title": "分析",
+    "currency": "通貨",
+    "periodLabel": "期間",
+    "periods": {
+      "d7": "7日間",
+      "d30": "30日間",
+      "d90": "90日間",
+      "d365": "12か月"
+    },
+    "summary": {
+      "spent": {
+        "d7": "過去7日間の支出",
+        "d30": "過去30日間の支出",
+        "d90": "過去90日間の支出",
+        "d365": "過去12か月の支出"
+      },
+      "less": "その前の{{period}}より{{percent}}%少ない",
+      "more": "その前の{{period}}より{{percent}}%多い",
+      "same": "その前の{{period}}と同じ",
+      "before": {
+        "d7": "7日間",
+        "d30": "30日間",
+        "d90": "90日間",
+        "d365": "12か月"
+      },
+      "moneyIn": "入金",
+      "moneyOut": "出金",
+      "chart": "期間中の支出。最も多かったのは{{when}}の {{amount}} です。",
+      "chartEmpty": "この期間は支出がありません。",
+      "week": "{{date}} の週"
+    },
+    "forecast": {
+      "title": "今月の見通し",
+      "hint": "今月の支出ペースのままなら",
+      "onCourse": "このままだと支出は",
+      "perDay": "これまで1日あたり約 {{amount}}。",
+      "start": "{{month}}1日",
+      "end": "先月は {{amount}}",
+      "today": "今日",
+      "chart": "今月の{{gone}}%が過ぎた時点で、先月合計の{{spent}}%を使いました。このままだと{{projected}}%になります。",
+      "noBaseline": "1か月分の記録がそろうと、ここで比較できます。"
+    },
+    "categories": {
+      "title": "お金の行き先",
+      "hint": "カテゴリをタップすると取引が表示されます",
+      "spending": "支出",
+      "income": "収入",
+      "kind": "表示",
+      "spent": "使った額",
+      "received": "受け取った額",
+      "share": "{{percent}}%",
+      "shareLabel": "{{name}}、{{percent}}パーセント",
+      "ring": "カテゴリ別の{{kind}}",
+      "none": "この期間は何もありません"
+    },
+    "rhythm": {
+      "title": "リズム",
+      "hint": "支出が集まる曜日と日",
+      "weekdays": "よくある1週間",
+      "weekdaysChart": "曜日ごとの平均支出。最も多いのは{{peak}}です。",
+      "weekdaysChartEmpty": "曜日ごとの平均支出。",
+      "calendar": "過去5週間",
+      "calendarChart": "過去5週間の日ごとの支出。多い日ほど濃く表示されます。"
+    },
+    "people": {
+      "title": "誰と使っているか",
+      "hint": "支出の相手"
+    },
+    "findings": {
+      "title": "知っておきたいこと",
+      "hint": "記録の中から選びました",
+      "spendingUp": "支出が{{pct}}%増加",
+      "spendingUpHint": "先週との比較。行き先は「履歴」で確認できます。",
+      "spendingDown": "支出が{{pct}}%減少",
+      "spendingDownHint": "先週との比較。",
+      "incomeUp": "収入が{{pct}}%増加",
+      "incomeDown": "収入が{{pct}}%減少",
+      "incomeHint": "先週との比較。",
+      "keeping": "収入の{{rate}}%が残っています",
+      "keepingUp": "先週より大きい割合です。",
+      "keepingDown": "先週より小さい割合です。",
+      "keepingSame": "先週とほぼ同じ割合です。",
+      "categoryUp": "{{name}} が{{pct}}%増加",
+      "categoryUpHint": "ふだんの1週間より多く使っています。",
+      "categoryDown": "{{name}} が{{pct}}%減少",
+      "categoryDownHint": "ふだんの1週間より少なく使っています。",
+      "week": "今週ここまで",
+      "weekKept": "入金 {{income}} · 出金 {{expense}} · 残り {{amount}}",
+      "weekOver": "入金 {{income}} · 出金 {{expense}} · 超過 {{amount}}",
+      "bestWeek": "過去90日間で、1週間に最も多く残した額です。",
+      "monthAhead": "今月は入金が出金を上回っています",
+      "monthAheadHint": "ここまでは収入が支出を上回っています。",
+      "monthBehind": "今月は出金が入金を上回っています",
+      "monthBehindHint": "ここまでは支出が収入を上回っています。"
+    },
+    "locked": {
+      "badge": "Pro",
+      "title": "いくらかだけでなく、なぜかを見る",
+      "body": "より長い期間、変化した点、今月の見通し。",
+      "action": "Fintraq Pro を見る"
+    },
+    "empty": {
+      "title": "記録が増えるほど分析も充実します",
+      "body": "取引をいくつか追加すると、このタブでお金の行き先と時期がわかります。",
+      "action": "取引を追加"
+    }
+  },
+  "loans": {
+    "back": "戻る",
+    "close": "閉じる",
+    "title": {
+      "lend": "{{name}}さんに貸した",
+      "borrow": "{{name}}さんから借りた",
+      "borrowNoName": "借りたお金",
+      "lendNoName": "貸したお金"
+    },
+    "status": {
+      "active": "継続中",
+      "overdue": "期限超過",
+      "repaid": "返済済み"
+    },
+    "edit": {
+      "title": "期日とメモ",
+      "save": "変更を保存",
+      "saved": "貸し借りを更新しました",
+      "unchanged": "まだ何も変更されていません"
+    },
+    "loan": {
+      "notFound": "この貸し借りはもうありません",
+      "manage": "貸し借りを管理",
+      "edit": "期日またはメモを変更",
+      "editHint": "金額と相手は記録したままです",
+      "outstanding": {
+        "lend": "まだ戻ってくる額",
+        "borrow": "まだ返す額"
+      },
+      "settled": "すべて精算済み",
+      "progress": "{{total}} のうち {{repaid}} 返済済み",
+      "progressLabel": "これまでの返済",
+      "repay": "返済を記録",
+      "story": "これまでの経過",
+      "note": "メモ",
+      "markRepaid": "返済済みにする",
+      "markRepaidHint": "別の方法で精算したお金のために",
+      "markRepaidTitle": "この貸し借りを返済済みにしますか？",
+      "markRepaidBody": "支払いを記録せずに貸し借りを終了するので、口座の残高は変わりません。リマインダーは止まります。",
+      "markRepaidConfirm": "返済済みにする",
+      "markedRepaid": "返済済みにしました",
+      "delete": "貸し借りを削除",
+      "deleteTitle": "この貸し借りを削除しますか？",
+      "deleteBody": "貸し借りとそのリマインダーがなくなります。記録済みの支払いは履歴に残るので、残高は変わりません。この操作は取り消せません。",
+      "deleteConfirm": "貸し借りを削除",
+      "cancel": "残す",
+      "deleted": "貸し借りを削除しました",
+      "failed": "実行できませんでした",
+      "failedBody": "何も変更されていません。もう一度お試しください。",
+      "ok": "OK"
+    },
+    "story": {
+      "opened": {
+        "lend": "貸した",
+        "borrow": "借りた"
+      },
+      "repayment": {
+        "lend": "戻ってきた",
+        "borrow": "返した"
+      },
+      "remaining": {
+        "lend": "まだ戻ってくる額",
+        "borrow": "まだ返す額"
+      },
+      "due": "期日 {{date}}",
+      "overdue": "期日は {{date}} でした",
+      "noDue": "期日なし",
+      "settled": "精算済み",
+      "when": "{{date}} · {{account}}"
+    },
+    "reminders": {
+      "title": "リマインダー",
+      "due": "期日の前に",
+      "dueOff": "期日の前にお知らせ",
+      "noDueDate": "この貸し借りには期日がありません",
+      "dueWhen": "いつ",
+      "days": {
+        "d0": "当日",
+        "d1": "前日",
+        "d3": "3日前",
+        "d7": "1週間前"
+      },
+      "monthly": "毎月",
+      "monthlyOff": "分割で返済する貸し借りに",
+      "monthlyDay": "日",
+      "dayOfMonth": "{{day}}日",
+      "time": "時刻",
+      "pick": {
+        "day": "毎月何日ですか？",
+        "time": "何時ですか？"
+      },
+      "done": "完了",
+      "denied": "Fintraq の通知がオフになっています",
+      "deniedBody": "スマートフォンの設定で通知を許可してから、リマインダーをもう一度オンにしてください。",
+      "ok": "OK"
+    },
+    "form": {
+      "title": "新しい貸し借り",
+      "kinds": {
+        "lend": "貸した",
+        "borrow": "借りた"
+      },
+      "kindLabel": "どちら向き",
+      "amount": "金額",
+      "to": "貸す相手：",
+      "from": "借りる相手：",
+      "choosePerson": "相手を選ぶ",
+      "anyone": "特に誰でもない",
+      "outOf": "出金元：",
+      "into": "入金先：",
+      "chooseAccount": "口座を選ぶ",
+      "available": "利用可能 {{amount}}",
+      "details": "詳細：",
+      "due": "期日",
+      "noDue": "期日なし",
+      "clearDue": "期日を解除",
+      "pickDue": "期日はいつですか？",
+      "note": "メモ",
+      "noteOptional": "任意",
+      "create": "貸し借りを記録",
+      "blocked": {
+        "amount": "保存するには金額を入力してください",
+        "person": "貸した相手を選んでください",
+        "account": "保存するには口座を選んでください"
+      },
+      "created": {
+        "lend": "貸し借りを記録しました",
+        "borrow": "貸し借りを記録しました"
+      },
+      "saveFailed": "保存できませんでした",
+      "saveFailedBody": "何も変更されていません。もう一度お試しください。",
+      "ok": "OK",
+      "limit": "無料プランでは、未精算の貸し借りは{{count}}件までです。Pro は無制限です。",
+      "seePro": "Pro を見る",
+      "discard": {
+        "title": "この貸し借りを破棄しますか？",
+        "body": "入力した内容は保存されません。",
+        "confirm": "破棄",
+        "cancel": "編集を続ける"
+      }
+    },
+    "repay": {
+      "title": "返済を記録",
+      "amount": "金額",
+      "all": "全額：{{amount}}",
+      "outstanding": "残り {{amount}}",
+      "into": "入金先：",
+      "outOf": "出金元：",
+      "details": "詳細：",
+      "when": "いつ",
+      "note": "メモ",
+      "noteOptional": "任意",
+      "slide": "スライドして {{amount}} を記録",
+      "slideEmpty": "スライドして記録",
+      "blocked": {
+        "amount": "記録する金額を入力してください",
+        "tooMuch": "残りの {{amount}} を超えています",
+        "account": "記録できる {{currency}} の口座がありません"
+      },
+      "recorded": "返済を記録しました",
+      "settled": "すべて精算済み",
+      "settledWith": "{{name}}さんとはすべて精算済み",
+      "saveFailed": "記録できませんでした",
+      "saveFailedBody": "何も変更されていません。もう一度お試しください。",
+      "ok": "OK",
+      "discard": {
+        "title": "この返済を破棄しますか？",
+        "body": "入力した内容は保存されません。",
+        "confirm": "破棄",
+        "cancel": "編集を続ける"
+      }
+    }
+  },
+  "lock": {
+    "unlock": {
+      "pinTitle": "PIN を入力",
+      "deviceTitle": "Fintraq はロックされています",
+      "deviceBody": "ご本人と確認できるまで、記録は表示されません。",
+      "marks": "{{total}}桁中{{count}}桁入力済み",
+      "wrong": "PIN が正しくありません。もう一度お試しください。",
+      "wait": "間違いが多すぎます。{{time}}後にもう一度お試しください。",
+      "fingerprint": "指紋でロック解除",
+      "face": "顔でロック解除",
+      "either": "指紋または顔でロック解除",
+      "device": "ロック解除",
+      "prompt": "Fintraq のロックを解除",
+      "promptCancel": "キャンセル",
+      "promptPasscode": "パスコードを使う",
+      "failed": "うまくいきませんでした。もう一度お試しください。",
+      "delete": "削除"
+    },
+    "setup": {
+      "title": "アプリのロック",
+      "back": "戻る",
+      "state": {
+        "off": "このスマートフォンを持っている人なら誰でも Fintraq を開けます",
+        "biometric": "Fintraq は指紋または顔で開きます",
+        "pin": "Fintraq は PIN で開きます"
+      },
+      "stateBody": {
+        "off": "記録を自分だけのものにするには、ロックをオンにしてください。",
+        "on": "アプリを離れて数秒後にロックされ、アプリ切り替え画面でもアプリの内容が隠れます。"
+      },
+      "choose": "ロック解除の方法",
+      "chooseHint": "1つ選んでください。いつでも変更できます。",
+      "modes": {
+        "off": "ロックなし",
+        "biometric": "指紋または顔",
+        "pin": "PIN"
+      },
+      "noBiometrics": "このスマートフォンには指紋も顔も登録されていないため、その選択肢は表示されません。",
+      "changePin": "PIN を変更",
+      "changePinHint": "新しい6桁の PIN を決めてください",
+      "confirmOn": "ロックをオンにするには、ご本人であることを確認してください",
+      "confirmOff": "ロックをオフにするには、ご本人であることを確認してください",
+      "offTitle": "ロックをオフにしますか？",
+      "offBody": "このスマートフォンを持っている人なら誰でも Fintraq を開けるようになります。",
+      "offConfirm": "オフにする",
+      "offKeep": "ロックを続ける",
+      "done": {
+        "biometric": "ロックはオンです",
+        "pin": "PIN を設定しました。ロックはオンです",
+        "off": "ロックはオフです"
+      }
+    },
+    "pin": {
+      "title": "PIN を設定",
+      "chooseTitle": "PIN を決めてください",
+      "chooseBody": "覚えておける6桁の数字。忘れた場合に復旧する方法はありません。",
+      "confirmTitle": "もう一度入力",
+      "confirmBody": "意図した PIN であることを確認するためです。",
+      "mismatch": "2回の入力が一致しませんでした。PIN をもう一度決めてください。",
+      "close": "閉じる"
+    }
+  },
+  "notifications": {
+    "channels": {
+      "reminders": {
+        "name": "リマインダー",
+        "description": "毎日のリマインダーと貸し借りの期日"
+      },
+      "backup": {
+        "name": "バックアップ",
+        "description": "バックアップの実行中と、対応が必要なときに表示されます"
+      }
+    },
+    "daily": {
+      "first": {
+        "title": "最初の取引",
+        "body": "最後に支払ったものを追加してください。30秒で終わります。"
+      },
+      "weekday": {
+        "mon": {
+          "title": "月曜日の支出",
+          "body": "小さな支出を覚えているうちに、今追加しましょう。"
+        },
+        "tue": {
+          "title": "今日、追加するものは？",
+          "body": "昼食、交通費、請求書。30秒で今日の分は完了です。"
+        },
+        "wed": {
+          "title": "今週も半分",
+          "body": "今日の分を追加すれば、今週の記録は途切れません。"
+        },
+        "thu": {
+          "title": "木曜日の支出",
+          "body": "小さな支出ほど先に忘れます。その前に追加しましょう。"
+        },
+        "fri": {
+          "title": "週末の前に",
+          "body": "今日の分を追加して、正しい残高で週末を迎えましょう。"
+        },
+        "sat": {
+          "title": "土曜日の支出",
+          "body": "週末は記録が抜けやすい日です。覚えているうちに今日の分を。"
+        },
+        "sun": {
+          "title": "今週最後の日",
+          "body": "今日の分を追加すれば、今週は完了です。"
+        }
+      },
+      "weekEnd": {
+        "title": "今週の記録は{{count}}件",
+        "body": "今日の分を追加すれば、今週は完了です。"
+      },
+      "monthStart": {
+        "title": "今日から{{month}}",
+        "body": "新しい月の始まりです。最初の支出を追加しましょう。"
+      },
+      "monthEnd": {
+        "title": "{{month}}最後の日",
+        "body": "これまでに{{count}}件。抜けている分を追加すれば、今月は完了です。"
+      },
+      "missedYesterday": {
+        "title": "昨日の分がありません",
+        "body": "昨日と今日の分をまとめて追加しましょう。それでも1分かかりません。"
+      },
+      "quietSince": {
+        "title": "{{day}}から記録なし",
+        "body": "数日分ならすぐ追いつけます。覚えているものから始めましょう。"
+      },
+      "quiet": {
+        "title": "しばらくぶりです",
+        "body": "さかのぼる必要はありません。今日からまた始めましょう。"
+      },
+      "loanTomorrow": {
+        "lend": {
+          "title": "{{name}}さんに {{amount}} 貸しています",
+          "body": "明日が期日です。ついでに今日の支出も追加しましょう。"
+        },
+        "borrow": {
+          "title": "{{name}}さんに {{amount}} 借りています",
+          "body": "明日が期日です。ついでに今日の支出も追加しましょう。"
+        }
+      }
+    },
+    "loan": {
+      "when": {
+        "today": "今日が期日",
+        "tomorrow": "明日が期日",
+        "inDays_one": "期日まで{{count}}日",
+        "inDays_other": "期日まで{{count}}日"
+      },
+      "due": {
+        "lend": {
+          "title": "{{name}}さんに {{amount}} 貸しています",
+          "titleNoName": "{{amount}} 貸しています",
+          "body": "{{when}}。返済があったら追加してください。"
+        },
+        "borrow": {
+          "title": "{{name}}さんに {{amount}} 借りています",
+          "titleNoName": "{{amount}} 借りています",
+          "body": "{{when}}。支払ったら返済を追加してください。"
+        }
+      },
+      "instalment": {
+        "lend": {
+          "title": "今日は{{name}}さんからの支払日",
+          "titleNoName": "今日は入金の予定日",
+          "body": "残り {{amount}}。届いたら追加してください。"
+        },
+        "borrow": {
+          "title": "今日は{{name}}さんへの支払日",
+          "titleNoName": "今日は返済の支払日",
+          "body": "返済の残り {{amount}}。支払ったら追加してください。"
+        }
+      }
+    },
+    "backup": {
+      "running": {
+        "title": "バックアップ中"
+      },
+      "failed": {
+        "title": "バックアップが完了しませんでした",
+        "body": "Fintraq が自動でもう一度試します。今すぐ実行するには「バックアップ」を開いてください。"
+      },
+      "reconnect": {
+        "title": "Google ドライブを再接続",
+        "body": "Fintraq が Google アカウントからログアウトされました。再接続するとバックアップが続きます。"
+      }
+    }
+  },
+  "people": {
+    "title": "相手",
+    "back": "戻る",
+    "close": "閉じる",
+    "add": "相手を追加",
+    "currency": "通貨",
+    "standing": {
+      "owesYou": "貸している",
+      "youOwe": "借りている額",
+      "settled": "すべて精算済み"
+    },
+    "summary": {
+      "title": "未精算の貸し借り",
+      "owed": "貸している額",
+      "owe": "借りている額",
+      "settled": "貸し借りはありません"
+    },
+    "empty": {
+      "title": "誰にいくらあるかを覚えておく",
+      "body": "お金を貸す相手、借りる相手、割り勘をする相手を追加すると、Fintraq が差額を管理します。"
+    },
+    "limit": {
+      "reached": "無料プランでは相手は{{count}}人までです。Pro は無制限です。",
+      "seePro": "Pro を見る"
+    },
+    "person": {
+      "notFound": "この相手はもういません",
+      "manage": "管理",
+      "spent": "相手に支払った額",
+      "received": "相手から受け取った額",
+      "call": "電話",
+      "email": "メール",
+      "loans": "未精算の貸し借り",
+      "lent": "貸した",
+      "borrowed": "借りた",
+      "due": "期日 {{date}}",
+      "recent": "一緒の記録",
+      "seeAll": "すべて見る",
+      "noActivityTitle": "一緒の記録はまだありません",
+      "noActivityBody": "取引を追加するときに「相手」で選んでください。",
+      "edit": "詳細を編集",
+      "delete": "相手を削除",
+      "deleteTitle": "{{name}} を削除しますか？",
+      "deleteBody": "この相手と記録した取引と貸し借りは、名前なしで残ります。この操作は取り消せません。",
+      "deleteConfirm": "相手を削除",
+      "deleteCancel": "残す",
+      "deleted": "{{name}} を削除しました",
+      "failed": "実行できませんでした",
+      "failedBody": "何も変更されていません。もう一度お試しください。",
+      "ok": "OK"
+    },
+    "form": {
+      "newTitle": "新しい相手",
+      "editTitle": "相手を編集",
+      "name": "名前",
+      "namePlaceholder": "山田 太郎",
+      "more": "連絡先と仕事の情報を追加",
+      "moreHint": "任意：電話、メール、仕事",
+      "phone": "電話",
+      "email": "メール",
+      "role": "仕事",
+      "rolePlaceholder": "配管工",
+      "company": "会社",
+      "create": "相手を追加",
+      "save": "変更を保存",
+      "blocked": {
+        "name": "保存するには名前を付けてください",
+        "email": "メールアドレスが完全ではありません"
+      },
+      "created": "{{name}}さんを追加しました",
+      "changesSaved": "変更を保存しました",
+      "saveFailed": "保存できませんでした",
+      "saveFailedBody": "何も変更されていません。もう一度お試しください。",
+      "ok": "OK",
+      "discard": {
+        "title": "この相手を破棄しますか？",
+        "titleEdit": "変更を破棄しますか？",
+        "body": "入力した内容は保存されません。",
+        "confirm": "破棄",
+        "cancel": "編集を続ける"
+      }
+    }
+  },
+  "plan": {
+    "title": "予定",
+    "add": "貸す・借りる",
+    "currency": "通貨",
+    "summary": {
+      "title": "未精算の貸し借り",
+      "owed": "貸している額",
+      "owe": "借りている額",
+      "none": "貸し借りはありません",
+      "lend": "貸す・借りる",
+      "people": "相手"
+    },
+    "upcoming": {
+      "title": "今後の予定",
+      "noDate": "期日なし",
+      "lent": "貸している",
+      "borrowed": "借りている額",
+      "someone": "誰か",
+      "unnamed": "借りた",
+      "due": {
+        "overdue_one": "期日を{{count}}日超過",
+        "overdue_other": "期日を{{count}}日超過",
+        "today": "今日が期日",
+        "tomorrow": "明日が期日",
+        "inDays_one": "期日まで{{count}}日",
+        "inDays_other": "期日まで{{count}}日"
+      },
+      "line": "{{standing}} · {{due}}"
+    },
+    "settled": {
+      "show_one": "精算済みの貸し借り{{count}}件",
+      "show_other": "精算済みの貸し借り{{count}}件",
+      "hide": "精算済みの貸し借りを隠す",
+      "row": "精算済み"
+    },
+    "empty": {
+      "title": "貸し借りはありません",
+      "body": "貸したお金や借りたお金を記録すると、Fintraq が残額と期日を管理します。"
+    },
+    "soon": {
+      "badge": "Pro に追加予定",
+      "title": "振り返るだけでなく、先の計画も",
+      "body": "これらは準備中で、Pro をお持ちなら含まれます。",
+      "action": "Fintraq Pro を見る"
+    }
+  },
+  "pro": {
+    "title": "Fintraq Pro",
+    "close": "閉じる",
+    "pillars": {
+      "plan": {
+        "title": "予定",
+        "promise": "これから来るものを、来る前に知る。"
+      },
+      "understand": {
+        "title": "理解する",
+        "promise": "数字がなぜそうなっているのかを見る。"
+      },
+      "find": {
+        "title": "探して共有する",
+        "promise": "何でも取り出せます。ほかの人が使える形で。"
+      },
+      "protect": {
+        "title": "守る",
+        "promise": "失う心配や、容量不足の心配をなくす。"
+      }
+    },
+    "features": {
+      "budgets": {
+        "title": "予算",
+        "description": "カテゴリごとの月の上限。達する前にお知らせします。"
+      },
+      "recurring": {
+        "title": "繰り返しの取引",
+        "description": "家賃、給与、サブスクリプションが自動で記録され、次の30日間が見えます。"
+      },
+      "goals": {
+        "title": "目標",
+        "description": "目標額と期日、そして達成のために毎月取っておく額。"
+      },
+      "safeToSpend": {
+        "title": "使える額",
+        "description": "請求、予算、目標を差し引いたあとの、今日のための1つの数字。"
+      },
+      "periods": {
+        "title": "期間を選んで比較",
+        "description": "30日間、90日間、1年間、または自分で決めた期間を、その前の期間と比べます。"
+      },
+      "forecast": {
+        "title": "予測",
+        "description": "今の支出ペースで今月がどこに着地するか。"
+      },
+      "categories": {
+        "title": "カテゴリ別の内訳",
+        "description": "入った額と出た額に占める、各カテゴリの割合。"
+      },
+      "rhythm": {
+        "title": "リズム",
+        "description": "週と月の中で、どの日に最もお金がかかるか。"
+      },
+      "people": {
+        "title": "相手",
+        "description": "誰と使っているか、差額がどう分かれているか。"
+      },
+      "insights": {
+        "title": "分析",
+        "description": "知っておきたい傾向を、平易な言葉で。"
+      },
+      "netWorthTrend": {
+        "title": "純資産の推移",
+        "description": "持っている額から借りている額を引いた金額を、月ごとに。"
+      },
+      "search": {
+        "title": "検索",
+        "description": "すべての履歴から、どの取引、口座、相手、カテゴリでも。"
+      },
+      "export": {
+        "title": "スプレッドシートへの書き出し",
+        "description": "取引と貸し借りを CSV ファイルにして、保存または共有。"
+      },
+      "statement": {
+        "title": "月次明細",
+        "description": "1か月を1ページの PDF に。そのまま送れます。"
+      },
+      "backup": {
+        "title": "クラウドへの自動バックアップ",
+        "description": "1日2回、あなた自身の Google ドライブに保存。どのスマートフォンでも復元できます。"
+      },
+      "unlimited": {
+        "title": "上限なし",
+        "description": "相手{{people}}人、貸し借り{{loans}}件、予算{{budgets}}件、繰り返しの取引{{recurring}}件を超えて使えます。"
+      }
+    },
+    "paywall": {
+      "title": "お金をもっと活かす",
+      "body": "先の計画を立て、支出を理解し、安全に保管する。",
+      "plans": {
+        "label": "プランを選ぶ",
+        "lifetime": "買い切り",
+        "yearly": "年払い",
+        "monthly": "月払い",
+        "best": "いちばんお得"
+      },
+      "notes": {
+        "lifetime": "支払いは一度だけ。ずっとあなたのものです。",
+        "lifetimeMonths": "支払いは一度だけ。月払い{{count}}か月分と同じです。",
+        "yearly": "毎年。いつでも解約できます。",
+        "yearlySaving": "毎年。月払いより{{percent}}%お得です。",
+        "monthly": "毎月。いつでも解約できます。"
+      },
+      "buy": {
+        "lifetime": "{{price}} で買い切りを購入",
+        "yearly": "年額 {{price}} で登録",
+        "monthly": "月額 {{price}} で登録",
+        "noPrice": "Fintraq Pro を入手"
+      },
+      "terms": {
+        "lifetime": "{{price}} を一度だけ支払います。更新はありません。",
+        "yearly": "今 {{price}}、以後は解約するまで毎年 {{price}}。{{store}}でいつでも解約できます。",
+        "monthly": "今 {{price}}、以後は解約するまで毎月 {{price}}。{{store}}でいつでも解約できます。",
+        "storeAndroid": "Google Play",
+        "storeIos": "Apple アカウント",
+        "termsLink": "利用規約",
+        "privacyLink": "プライバシー"
+      },
+      "restore": "購入を復元",
+      "included": {
+        "title": "含まれるもの",
+        "hint": "現在 Pro にあるすべて"
+      },
+      "upcoming": {
+        "title": "Pro に追加予定",
+        "hint": "追加されたときに購入に含まれます"
+      },
+      "prices": {
+        "loading": "ストアから価格を取得中",
+        "unavailableTitle": "価格を読み込めませんでした",
+        "unavailableBody": "Fintraq はストアに接続できませんでした。通信環境を確認して、もう一度お試しください。",
+        "retry": "もう一度試す",
+        "blocked": "購入にはストアの価格が必要です"
+      },
+      "pending": {
+        "title": "支払い待ち",
+        "body": "ストアが支払いを待っています。確認されると Pro は自動で使えるようになります。"
+      },
+      "failed": {
+        "title": "購入は完了しませんでした",
+        "body": "請求は発生していません。もう一度試すか、ストアで別の支払い方法をお使いください。"
+      },
+      "restored": {
+        "none": "このストアアカウントに購入は見つかりませんでした",
+        "failed": "ストアに接続できませんでした。もう一度お試しください。",
+        "done": "Fintraq Pro を復元しました"
+      }
+    },
+    "owned": {
+      "title": "Fintraq Pro をご利用中です",
+      "lifetime": "買い切り。Pro に追加されるものも含めて、ずっとあなたのものです。",
+      "renews": "{{plan}}プラン。{{date}} に更新されます。",
+      "ends": "{{plan}}プラン（解約済み）。Pro は {{date}} まで使えます。",
+      "override": "開発者設定でオンになっています。購入はされていません。",
+      "manage": "ストアで管理",
+      "done": "完了",
+      "goLifetime": {
+        "title": "買い切りに切り替える",
+        "body": "一度支払えば、{{period}}の支払いはなくなります。",
+        "month": "毎月",
+        "year": "毎年",
+        "action": "{{price}} で買い切りを購入"
+      }
+    },
+    "bought": {
+      "title": "Fintraq Pro をご利用中です",
+      "body": "すべての機能が使えます。Fintraq を応援していただきありがとうございます。",
+      "done": "完了",
+      "cancelOld": {
+        "title": "{{plan}}プランを解約してください",
+        "body": "買い切りが代わりになりますが、ストアで解約するまでサブスクリプションの請求は続きます。",
+        "link": "サブスクリプションを開く"
+      }
+    },
+    "ended": {
+      "title": "Fintraq Pro は終了しました",
+      "body": "このアカウントには、ストアに Pro の購入が表示されなくなりました。記録した内容はすべてそのまま残っています。",
+      "see": "Fintraq Pro を見る",
+      "ok": "OK"
+    }
+  },
+  "search": {
+    "title": "検索",
+    "back": "戻る",
+    "placeholder": "メモ、口座、相手、カテゴリ",
+    "clear": "検索を消去",
+    "start": {
+      "title": "記録したものを何でも探す",
+      "body": "メモの一部、または口座、相手、カテゴリの名前を入力してください。"
+    },
+    "recent": {
+      "title": "最近",
+      "clear": "消去",
+      "again": "{{query}} をもう一度検索",
+      "forget": "{{query}} を履歴から消す"
+    },
+    "kinds": {
+      "all": "すべて {{count}}",
+      "transactions": "取引 {{count}}",
+      "accounts": "口座 {{count}}",
+      "people": "相手 {{count}}",
+      "categories": "カテゴリ {{count}}"
+    },
+    "groups": {
+      "transactions": "取引",
+      "accounts": "口座",
+      "people": "相手",
+      "categories": "カテゴリ"
+    },
+    "kindLabel": "表示",
+    "capped": "新しい順に{{count}}件です。さらに入力して絞り込んでください。",
+    "none": {
+      "title": "「{{query}}」に一致するものはありません",
+      "body": "検索の対象は、メモと、口座、相手、カテゴリの名前です。文字数を減らすか、別の言葉をお試しください。"
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "back": "戻る",
+    "profile": {
+      "hello": "どこにもログインしていません。すべてこのスマートフォンに残ります。",
+      "noName": "名前を追加",
+      "edit": "名前を変更",
+      "pro": "Fintraq Pro",
+      "free": "無料プラン",
+      "seePro": "Pro で増えるものを見る",
+      "managePro": "ご利用のプラン"
+    },
+    "name": {
+      "title": "あなたの名前",
+      "label": "名前",
+      "hint": "ホームでのあいさつに使います。このスマートフォンの外には出ません。",
+      "save": "保存",
+      "saved": "名前を保存しました"
+    },
+    "money": {
+      "title": "あなたのお金",
+      "hint": "記録する先",
+      "accounts": "口座",
+      "accountsCount_one": "{{count}}口座",
+      "accountsCount_other": "{{count}}口座",
+      "categories": "カテゴリ",
+      "categoriesCount_one": "{{count}}カテゴリ",
+      "categoriesCount_other": "{{count}}カテゴリ",
+      "people": "相手",
+      "peopleCount_one": "{{count}}人",
+      "peopleCount_other": "{{count}}人",
+      "export": "書き出し",
+      "exportHint": "スプレッドシートとして"
+    },
+    "prefs": {
+      "title": "環境設定",
+      "hint": "Fintraq の見た目と言語",
+      "currency": "既定の通貨",
+      "currencyHint": "新しい口座と合計に使います",
+      "language": "言語",
+      "systemLanguage": "スマートフォンと同じ",
+      "appearance": "外観",
+      "appearances": {
+        "system": "自動",
+        "light": "ライト",
+        "dark": "ダーク"
+      }
+    },
+    "reminder": {
+      "title": "毎日のリマインダー",
+      "hint": "忘れる前にその日を記録するためのお知らせ",
+      "label": "毎日お知らせする",
+      "on": "毎日 {{time}}",
+      "off": "オフ",
+      "time": "時刻",
+      "pickTime": "お知らせの時刻",
+      "done": "完了",
+      "deniedTitle": "リマインダーには通知が必要です",
+      "deniedBody": "Fintraq の通知を許可してから、リマインダーをオンにしてください。",
+      "openSettings": "設定を開く",
+      "lateTitle": "リマインダーが遅れて届くことがあります",
+      "lateBody": "選んだ時刻ちょうどに届くよう、「アラームとリマインダー」を許可してください。",
+      "lateLink": "許可"
+    },
+    "safety": {
+      "title": "安全",
+      "hint": "誰がアプリを開けるか、スマートフォンをなくしたらどうなるか",
+      "lock": "アプリのロック",
+      "lockState": {
+        "off": "オフ",
+        "biometric": "指紋または顔",
+        "pin": "PIN"
+      },
+      "backup": "バックアップ",
+      "backupOn": "{{email}} のドライブへ",
+      "backupOff": "未設定"
+    },
+    "about": {
+      "row": "Fintraq について",
+      "rowHint": "考え方、作っている人、細かい決まり",
+      "title": "このアプリについて",
+      "name": "Fintraq",
+      "tagline": "お金の行き先を知ろう",
+      "version": "バージョン {{version}}",
+      "idea": {
+        "title": "考え方",
+        "hint": "Fintraq が変えないこと",
+        "free": "お金の記録は無料です。取引にも口座にも上限はありません。",
+        "private": "すべてこのスマートフォンに残ります。アカウント登録はなく、記録を預かるサーバーもありません。",
+        "pro": "Pro が開発を支えます。計画、分析、バックアップを追加するもので、記録に料金がかかることはありません。"
+      },
+      "maker": {
+        "title": "作っている人",
+        "hint": "不具合があるときの連絡先",
+        "name": "Idexa",
+        "line": "Fintraq は Idexa が作っています",
+        "site": "idexa.app を見る"
+      },
+      "print": {
+        "title": "細かい決まり",
+        "hint": "Fintraq が知っている情報の扱い"
+      },
+      "privacy": "プライバシーポリシー",
+      "terms": "利用規約",
+      "usage": "利用状況データを共有",
+      "usageHint": "どの画面が使われたかの匿名の件数と、クラッシュレポート。金額、名前、メモは決して含みません。",
+      "developer": "開発者向けオプション",
+      "developerHint": "テストとデバッグのツール",
+      "stored": "すべてこのスマートフォンに保存されています",
+      "pageFailed": "ページをブラウザで開けませんでした"
+    },
+    "erase": {
+      "title": "最初からやり直す",
+      "row": "すべて消去",
+      "rowHint": "このスマートフォンにあるすべての記録と設定",
+      "confirmTitle": "このスマートフォンの内容をすべて消去しますか？",
+      "confirmBody": "すべての取引、口座、相手、貸し借り、設定が削除され、アプリのロックはオフになります。ドライブにすでにあるバックアップには触れません。この操作は取り消せません。",
+      "confirm": "すべて消去",
+      "keep": "記録を残す",
+      "failedTitle": "何も消去されませんでした",
+      "failedBody": "削除が始まる前に問題が発生しました。少ししてからもう一度お試しください。"
+    }
+  },
+  "shell": {
+    "tabs": {
+      "home": "ホーム",
+      "activity": "履歴",
+      "add": "追加",
+      "plan": "予定",
+      "insights": "分析"
+    },
+    "start": {
+      "preparing": "記録を準備中",
+      "failedTitle": "Fintraq は記録を開けませんでした",
+      "failedBody": "Fintraq を閉じて開き直してください。記録はこのスマートフォンに残っています。アプリをアンインストールすると記録も消えるので、しないでください。"
+    },
+    "shortcuts": {
+      "expense": "支出を追加",
+      "income": "収入を追加",
+      "transfer": "振替",
+      "loan": "貸す・借りる"
+    },
+    "update": {
+      "title": "Fintraq のアップデートが必要です",
+      "titleVersion": "バージョン {{version}} にアップデート",
+      "body": "このバージョンは古く、記録を安全に保てません。アップデートは1分ほどで、記録した内容は何も失われません。",
+      "points": {
+        "data": "記録した内容はすべてこのスマートフォンに残ります",
+        "quick": "同じアプリの新しいバージョンです"
+      },
+      "action": "Fintraq をアップデート"
+    },
+    "error": {
+      "title": "この画面で問題が発生しました",
+      "body": "記録は安全です。もう一度お試しください。繰り返す場合は、Fintraq を閉じて開き直してください。",
+      "retry": "もう一度試す"
+    }
+  },
+  "transactions": {
+    "kinds": {
+      "expense": "支出",
+      "income": "収入",
+      "transfer": "振替"
+    },
+    "addTitle": {
+      "expense": "支出を追加",
+      "income": "収入を追加",
+      "transfer": "振替を追加"
+    },
+    "editTitle": {
+      "expense": "支出を編集",
+      "income": "収入を編集",
+      "transfer": "振替を編集"
+    },
+    "loanPayment": "貸し借りの支払い",
+    "loanRepayment": "貸し借りの返済",
+    "close": "閉じる",
+    "kind": "取引の種類",
+    "transferRoute": "{{from}}〜{{to}}",
+    "amount": "金額",
+    "from": "相手：",
+    "to": "相手：",
+    "details": "詳細：",
+    "when": "いつ",
+    "with": "相手",
+    "pickDate": "日付と時刻を選ぶ",
+    "calculator": {
+      "open": "金額を計算",
+      "title": "計算する",
+      "use": "この金額を使う"
+    },
+    "account": "口座",
+    "fromAccount": "出金元の口座",
+    "toAccount": "入金先の口座",
+    "chooseAccount": "口座を選ぶ",
+    "noDestination": "この通貨で振替を受け取れる口座がほかにありません",
+    "category": "カテゴリ",
+    "date": "日付",
+    "person": "相手",
+    "noPerson": "なし",
+    "note": "メモ",
+    "noteOptional": "任意",
+    "available": "利用可能 {{amount}}",
+    "defaultNote": "取引",
+    "save": {
+      "expense": "支出を保存",
+      "income": "収入を保存",
+      "transfer": "振替を保存"
+    },
+    "saveChanges": "変更を保存",
+    "step": {
+      "amount": "いくらですか？",
+      "account": "どの口座からですか？",
+      "accountIncome": "どの口座へですか？",
+      "toAccount": "どこへですか？",
+      "category": "何に使いましたか？",
+      "searchCategory": "カテゴリを検索",
+      "noCategory": "「{{query}}」に一致するカテゴリはありません",
+      "newCategory": "新しいカテゴリ",
+      "categoryName": "名前",
+      "categoryHint": "アイコンと色が付きます。「カテゴリ」でいつでも変更できます。",
+      "addCategory": "追加して選ぶ",
+      "categoryFailed": "カテゴリは追加されませんでした",
+      "categoryFailedBody": "何も変更されていません。もう一度お試しください。",
+      "categoryIncome": "どこからの入金ですか？",
+      "details": "ほかに追加することは？"
+    },
+    "short": {
+      "amount": "金額",
+      "account": "開始",
+      "accountIncome": "入金先",
+      "toAccount": "終了",
+      "category": "用途",
+      "details": "詳細"
+    },
+    "choose": "選ぶ",
+    "noNote": "メモなし",
+    "blocked": {
+      "amount": "保存するには金額を入力してください",
+      "account": "保存するには口座を選んでください",
+      "destination": "お金の行き先を選んでください",
+      "category": "保存するにはカテゴリを選んでください",
+      "repaymentTooHigh": "返済は最大 {{max}} までです"
+    },
+    "pick": {
+      "account": "どの口座ですか？",
+      "toAccount": "どこへですか？",
+      "category": "何に使いましたか？",
+      "searchCategory": "カテゴリを検索",
+      "noCategory": "「{{query}}」に一致するカテゴリはありません",
+      "newCategory": "新しいカテゴリ",
+      "categoryName": "名前",
+      "categoryHint": "アイコンと色が付きます。「カテゴリ」でいつでも変更できます。",
+      "addCategory": "追加して選ぶ",
+      "categoryFailed": "カテゴリは追加されませんでした",
+      "categoryFailedBody": "何も変更されていません。もう一度お試しください。",
+      "person": "誰と一緒でしたか？",
+      "date": "いつでしたか？",
+      "time": "時刻",
+      "done": "完了"
+    },
+    "saved": {
+      "expense": "支出を保存しました",
+      "income": "収入を保存しました",
+      "transfer": "振替を保存しました"
+    },
+    "changesSaved": "変更を保存しました",
+    "undo": "元に戻す",
+    "saveFailed": "保存できませんでした",
+    "saveFailedBody": "何も変更されていません。もう一度お試しください。",
+    "tryAgain": "OK",
+    "discard": {
+      "title": "この取引を破棄しますか？",
+      "body": "入力した内容は保存されません。",
+      "confirm": "破棄",
+      "cancel": "編集を続ける"
+    },
+    "notFound": "この取引はもうありません",
+    "detail": {
+      "title": {
+        "expense": "支出",
+        "income": "収入",
+        "transfer": "振替"
+      },
+      "account": "口座",
+      "from": "開始",
+      "to": "終了",
+      "category": "カテゴリ",
+      "person": "相手",
+      "loan": "貸し借りの一部",
+      "lentTo": "{{name}}さんに貸した",
+      "borrowedFrom": "{{name}}さんから借りた",
+      "edit": "編集",
+      "delete": "取引を削除",
+      "deleteTitle": "この取引を削除しますか？",
+      "deleteBody": "口座の残高は元に戻ります。この操作は取り消せません。",
+      "deleteConfirm": "取引を削除",
+      "keep": "残す",
+      "deleted": "取引を削除しました",
+      "deleteFailed": "削除できませんでした",
+      "deleteFailedBody": "何も変更されていません。もう一度お試しください。"
+    }
+  }
+}
