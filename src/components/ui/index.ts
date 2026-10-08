@@ -59,5 +59,4 @@ export * from './AlertDialog';
 export * from './ConfirmDialog';
 export * from './OptionsDialog';
 export * from './TextInputDialog';
-export { SystemNavBackdrop } from './SystemNavBackdrop';
 export { BottomFade } from './BottomFade';

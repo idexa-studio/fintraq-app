@@ -26,7 +26,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
-| C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
+| C | Groundwork: shared, data, platform, shell | 87 | 70 | In progress |
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 27 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
@@ -190,7 +190,7 @@ phone upgraded from 1.2.4 with real data opens with everything intact.
 - [x] C2.04 Missing keys in other locales fall back to English, never to a key name
 - [ ] C2.05 Script that lists keys missing per locale; run in CI
 - [ ] C2.06 Register `features/pro/pro-copy.en.ts` as the `pro` namespace
-- [ ] C2.07 Move the language provider (`src/providers/I18nProvider.tsx`) once the settings store it reads has moved (C7.01)
+- [x] C2.07 Move the language provider (`src/providers/I18nProvider.tsx`) once the settings store it reads has moved (C7.01)
 
 ### C3. `data/db`
 - [x] C3.01 Move `src/db/schema.ts`, `client.ts`, `sql.ts` to `data/db/` with no content change
@@ -222,7 +222,7 @@ go to `shared/calc`.
 - [ ] ~~C4.15 Legacy `api/` files become one-line re-exports~~ Dropped: a re-export is a patch. Each move rewrites every importer to the new path in the same change, as C1 did
 - [x] C4.16 Pure calculations to `shared/calc/` with their tests: `analytics.ts`, `month.ts` (month pulse and heat calendar), `transfers.ts` (which accounts can transfer to which), `transactions.ts` (totals by currency, grouping by day)
 - [x] C4.17 Device: transactions, analytics, accounts, people, loans and categories screens all show their data on the moved queries
-- [ ] C4.18 `net-worth.ts` moves with the accounts screens (D7, done), `after-ledger-write.ts` with reminders (C6.04), and the demo-data seeder with the developer tools (D17, done: `data/seed/demo-data.ts`)
+- [x] C4.18 `net-worth.ts` moves with the accounts screens (D7, done), `after-ledger-write.ts` with reminders (C6.04), and the demo-data seeder with the developer tools (D17, done: `data/seed/demo-data.ts`)
 
 ### C5. `data/backup`
 - [x] C5.01 The snapshot format (`backup-snapshot.ts`) to `data/backup/snapshot.ts`. Writing and restoring a backup need device APIs and the app version, so `database-backup` and the backup types live in `platform/backup`
@@ -239,7 +239,7 @@ go to `shared/calc`.
 - [x] C6.07 `platform/lock/`: lock storage, `useLocalAuth`, PIN lockout rules with test
 - [x] C6.08 `platform/config/`: remote config, app config, the API client, review prompt, and `version.ts`
 - [x] C6.09 Logger to `shared/logging/logger.ts`, not `platform/`: every layer logs, including the database layer, which may import only `shared`
-- [ ] C6.10 Launcher shortcuts hook moves with the shell (C8): it depends on the accounts feature's hooks
+- [x] C6.10 Launcher shortcuts hook moves with the shell (C8): it depends on the accounts feature's hooks (done 2026-10-08: `features/shell/useLauncherShortcuts.ts`)
 - [x] C6.11 Check `patches/expo-background-task` still applies
 - [x] C6.12 Store product ids to `shared/contracts/product-ids.ts`, pinned by a test; `features/pro` reads them from there
 - [x] C6.13 Device: Home, backup, add expense and Pro screens open; reminders sync; remote config loads; Pro is still active
@@ -248,8 +248,8 @@ go to `shared/calc`.
 - [x] C7.01 One module for the saved profile, `shared/settings/profile.ts`, reading the same `@fintraq_profile` key, with a test that older saved profiles still load. All five places that read or wrote the key directly now go through it
 - [x] C7.07 Settings and language providers to `features/settings`, used through its index
 - [x] C7.02 `features/shell/AppTheme`: binds `design`'s `ThemeProvider` to the saved appearance setting, the system scheme, and the type ramp for the app's language
-- [ ] C7.03 Onboarding state reading the same `@fintraq_onboarded` key (its legacy provider draws legacy UI; rebuilt with first run, D2)
-- [ ] C7.04 Lock state provider on `platform/lock` (rebuilt with the lock screen, D1)
+- [x] C7.03 Onboarding state reading the same `@fintraq_onboarded` key (its legacy provider draws legacy UI; rebuilt with first run, D2) (done with D2: `features/onboarding`, same key, run on a wiped install)
+- [x] C7.04 Lock state provider on `platform/lock` (rebuilt with the lock screen, D1) (done with D1: `features/lock/LockProvider.tsx`)
 - [ ] C7.05 Telemetry provider: same consent key, same default (depends on the Pro state; rebuilt with E2)
 - [x] C7.06 Query client provider to `data/QueryProvider.tsx`
 - [x] C7.08 `features/shell/DatabaseGate`: migrations and data fixes before anything renders, with its waiting and failure screens on the new design
@@ -261,7 +261,7 @@ go to `shared/calc`.
 - [x] C8.04 Task presentation (a sheet that rises and stops short of the top, as in the reference) and push presentation (slides in from the side) defined once
 - [x] C8.10 Motion: sections arrive in sequence, presses ease, the segmented control slides, progress bars grow, tabs shift
 - [ ] C8.05 Android: system navigation bar colour, predictive back off as today, edge to edge
-- [ ] C8.06 Status bar style follows the scheme
+- [x] C8.06 Status bar style follows the scheme (seen in light and dark)
 - [ ] C8.07 Lock overlay above everything, including tasks
 - [ ] C8.08 Splash, adaptive icon and notification colours updated to the new palette in `app.json`
 - [ ] ~~C8.09 A developer switch between old and new screens~~ Dropped: the `reboot` branch is the switch. 1.2.4 keeps shipping from `develop`, so each legacy screen is simply replaced in place here, with no second navigation tree to maintain
@@ -273,8 +273,8 @@ go to `shared/calc`.
 - [x] C9.04 `/transactions?accountId=|categoryId=` redirects to `/activity` with the filter
 - [x] C9.05 `/persons`, `/persons/[id]` redirect to `/people`, `/people/[id]`
 - [ ] C9.06 `/premium?feature=` redirects to `/pro?feature=` through `resolveProFeature`
-- [ ] C9.07 `/analytics`, `/backup`, `/export` redirect
-- [ ] C9.08 Test: a table of old paths and where each lands
+- [x] C9.07 `/analytics`, `/backup`, `/export` redirect (`/analytics` redirects; `/backup` and `/export` kept their paths, so nothing to redirect)
+- [x] C9.08 Test: a table of old paths and where each lands (`features/shell/__tests__/old-routes.test.ts`: every old path keeps a route file; where each lands is tested in `legacy-paths.test.ts`)
 - [ ] C9.09 Device: tap a launcher shortcut pinned by the shipped app
 
 ### C10. Proof that data carries forward

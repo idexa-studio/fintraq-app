@@ -1,9 +1,9 @@
+import { useTheme } from '@/design';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTheme } from '@/src/providers/ThemeProvider';
 
-/** Button navigation is ~48dp tall; gesture navigation is a thin handle (≤ 24dp). */
+/** Button navigation is about 48dp tall; gesture navigation is a thin handle (24dp at most). */
 const BUTTON_NAV_MIN_INSET = 32;
 
 /**

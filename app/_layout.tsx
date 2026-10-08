@@ -5,7 +5,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { useColorScheme } from '@/src/hooks/use-color-scheme';
 import { TelemetryProvider } from '@/src/providers/TelemetryProvider';
 import { PremiumProvider } from '@/src/providers/PremiumProvider';
 import { QueryProvider } from '@/data/QueryProvider';
@@ -14,7 +13,6 @@ import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvi
 import { NotificationService } from '@/platform/notifications/notifications';
 import { ReviewPromptService } from '@/platform/config/review-prompt';
 import { useFonts } from 'expo-font';
-import { SystemNavBackdrop } from '@/src/components/ui/SystemNavBackdrop';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { LocalMigrationService } from '@/data/db/local-migration';
@@ -23,12 +21,12 @@ import { unlockDatabaseIfLocked } from '@/data/db/client';
 // TaskManager.defineTask is registered before the OS can headlessly relaunch
 // the JS engine to run the background backup task.
 import { syncBackgroundBackupTask } from '@/platform/backup/background-backup.task';
-import { AppState, AppStateStatus } from 'react-native';
+import { AppState, AppStateStatus, useColorScheme } from 'react-native';
 import { FONT_ASSETS, SHEET_ROUTE, ToastProvider } from '@/design';
 import { LockProvider } from '@/features/lock';
 import { OnboardingProvider } from '@/features/onboarding';
 import { ProProvider } from '@/features/pro';
-import { AppConfigGate, AppTheme, DatabaseGate } from '@/features/shell';
+import { AppConfigGate, AppTheme, DatabaseGate, SystemNavBackdrop } from '@/features/shell';
 import React, { useEffect, useState } from 'react';
 import { LoggerService } from '@/shared/logging/logger';
 

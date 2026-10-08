@@ -1,9 +1,8 @@
 import { Redirect, Stack } from 'expo-router'; // Refreshing layout resolution
 import React from 'react';
 import { SHEET_ROUTE } from '@/design';
-import { useLauncherShortcuts } from '@/src/hooks/useLauncherShortcuts';
 import { useOnboarding } from '@/features/onboarding';
-import { ErrorBoundary, useNotificationRouting } from '@/features/shell';
+import { ErrorBoundary, useLauncherShortcuts, useNotificationRouting } from '@/features/shell';
 
 export default function StackLayout() {
   const { hasOnboarded } = useOnboarding();
