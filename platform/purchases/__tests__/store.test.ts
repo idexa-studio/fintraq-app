@@ -24,7 +24,53 @@ describe('toStorePlan', () => {
         ] },
       }],
     });
-    expect(plan).toEqual({ plan: 'yearly', productId: 'luno_yearly', display: '₹999.00', amount: 999, currency: 'INR', offerToken: 'token-1' });
+    expect(plan).toEqual({ plan: 'yearly', productId: 'luno_yearly', display: '₹999.00', amount: 999, currency: 'INR', offerToken: 'token-1', intro: { display: 'Free', amount: 0 } });
+  });
+
+  it('reads a subscription that opens at less than its price, and one that opens free', () => {
+    const phases = (first: [string, string]) => ({ pricingPhaseList: [
+      { formattedPrice: first[0], priceAmountMicros: first[1], priceCurrencyCode: 'INR' },
+      { formattedPrice: '₹280.00', priceAmountMicros: '280000000', priceCurrencyCode: 'INR' },
+    ] });
+    expect(toStorePlan({ id: 'luno_monthly', subscriptionOfferDetailsAndroid: [{ offerToken: 'intro', pricingPhases: phases(['₹99.00', '99000000']) }] })).toMatchObject({
+      display: '₹280.00', amount: 280, intro: { display: '₹99.00', amount: 99 }, offerToken: 'intro',
+    });
+    expect(toStorePlan({ id: 'luno_monthly', subscriptionOfferDetailsAndroid: [{ offerToken: 'trial', pricingPhases: phases(['Free', '0']) }] })).toMatchObject({
+      display: '₹280.00', intro: { display: 'Free', amount: 0 },
+    });
+  });
+
+  it('takes the cheapest offer Google Play returns for a subscription', () => {
+    const plain = { offerToken: 'base', pricingPhases: { pricingPhaseList: [{ formattedPrice: '₹280.00', priceAmountMicros: '280000000', priceCurrencyCode: 'INR' }] } };
+    const cheaper = { offerToken: 'intro', pricingPhases: { pricingPhaseList: [
+      { formattedPrice: '₹99.00', priceAmountMicros: '99000000', priceCurrencyCode: 'INR' },
+      { formattedPrice: '₹280.00', priceAmountMicros: '280000000', priceCurrencyCode: 'INR' },
+    ] } };
+    expect(toStorePlan({ id: 'luno_monthly', subscriptionOfferDetailsAndroid: [plain, cheaper] })).toMatchObject({ offerToken: 'intro', intro: { amount: 99 } });
+    const alone = toStorePlan({ id: 'luno_monthly', subscriptionOfferDetailsAndroid: [plain] });
+    expect(alone?.offerToken).toBe('base');
+    expect(alone?.intro).toBeUndefined();
+  });
+
+  it('reads the one-time plan on offer: the price now, the usual price, and the token to buy at it', () => {
+    const plan = toStorePlan({
+      id: 'luno_lifetime', displayPrice: '₹3,000.00', price: 3000, currency: 'INR',
+      oneTimePurchaseOfferDetailsAndroid: [
+        { offerToken: 'full', formattedPrice: '₹3,000.00', priceAmountMicros: '3000000000', priceCurrencyCode: 'INR' },
+        { offerToken: 'sale', formattedPrice: '₹300.00', priceAmountMicros: '300000000', priceCurrencyCode: 'INR', fullPriceMicros: '3000000000' },
+      ],
+    });
+    expect(plan).toMatchObject({ display: '₹300.00', amount: 300, offerToken: 'sale', regular: { amount: 3000 } });
+    expect(plan?.regular?.display).toContain('3,000');
+  });
+
+  it('shows no usual price when the one-time plan is not on offer', () => {
+    const plan = toStorePlan({
+      id: 'luno_lifetime', displayPrice: '₹300.00', price: 300, currency: 'INR',
+      oneTimePurchaseOfferDetailsAndroid: [{ offerToken: 'full', formattedPrice: '₹300.00', priceAmountMicros: '300000000', priceCurrencyCode: 'INR' }],
+    });
+    expect(plan?.regular).toBeUndefined();
+    expect(plan?.intro).toBeUndefined();
   });
 
   it('leaves out a product that is not ours, or that has no price to show', () => {

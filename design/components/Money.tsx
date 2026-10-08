@@ -9,6 +9,8 @@ export type MoneyProps = {
   value: string;
   variant?: 'amountHero' | 'amountLarge' | 'amount';
   tone?: TextTone;
+  /** Struck through: a price that no longer applies, beside the one that does. */
+  struck?: boolean;
 };
 
 /** Splits "£1,204.50" into "£1,204" and ".50" at the last separator that is followed only by digits. */
@@ -24,12 +26,12 @@ const splitMinor = (value: string): [string, string] => {
  * reference balance. An amount too wide for its place shrinks to fit; it is
  * never cut off with an ellipsis, which would show a wrong figure.
  */
-export function Money({ value, variant = 'amount', tone = 'default' }: MoneyProps) {
+export function Money({ value, variant = 'amount', tone = 'default', struck = false }: MoneyProps) {
   const { type } = useTheme();
   const scale = useFontScale();
   const [major, minor] = variant === 'amount' ? [value, ''] : splitMinor(value);
   return (
-    <Text variant={variant} tone={tone} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.5} accessibilityLabel={value} style={{ fontVariant: ['tabular-nums'] }}>
+    <Text variant={variant} tone={tone} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.5} accessibilityLabel={value} style={{ fontVariant: ['tabular-nums'], textDecorationLine: struck ? 'line-through' : 'none' }}>
       {'\u2066'}
       {major}
       {minor ? <Text variant={variant} tone={tone} style={{ fontSize: Math.round(type[variant].fontSize * MINOR_UNITS_SCALE * scale) }}>{minor}</Text> : null}

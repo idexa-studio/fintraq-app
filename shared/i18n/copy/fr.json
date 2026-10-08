@@ -1397,20 +1397,28 @@
         "lifetime": "À vie",
         "yearly": "Annuelle",
         "monthly": "Mensuelle",
-        "best": "Meilleur prix"
+        "best": "Meilleur prix",
+        "was": "Habituellement {{regular}}"
       },
       "notes": {
         "lifetime": "Payez une fois. À vous pour de bon.",
         "lifetimeMonths": "Payez une fois. Équivaut à {{count}} mois de l’offre mensuelle.",
         "yearly": "Chaque année. Résiliez quand vous voulez.",
         "yearlySaving": "Chaque année. Économisez {{percent}} % par rapport à l’offre mensuelle.",
-        "monthly": "Chaque mois. Résiliez quand vous voulez."
+        "monthly": "Chaque mois. Résiliez quand vous voulez.",
+        "lifetimeOff": "Payez une fois. {{percent}} % de moins que le prix habituel de {{regular}}.",
+        "yearlyIntro": "{{intro}} pour commencer, puis {{price}} chaque année.",
+        "monthlyIntro": "{{intro}} pour commencer, puis {{price}} chaque mois.",
+        "yearlyTrial": "Gratuit pour commencer, puis {{price}} chaque année.",
+        "monthlyTrial": "Gratuit pour commencer, puis {{price}} chaque mois."
       },
       "buy": {
         "lifetime": "Obtenir l’offre à vie pour {{price}}",
         "yearly": "S’abonner pour {{price}} par an",
         "monthly": "S’abonner pour {{price}} par mois",
-        "noPrice": "Obtenir Fintraq Pro"
+        "noPrice": "Obtenir Fintraq Pro",
+        "intro": "Commencer pour {{intro}}",
+        "trial": "Commencer gratuitement"
       },
       "terms": {
         "lifetime": "Un seul paiement de {{price}}. Il ne se renouvelle jamais.",
@@ -1419,7 +1427,11 @@
         "storeAndroid": "Google Play",
         "storeIos": "votre compte Apple",
         "termsLink": "Conditions",
-        "privacyLink": "Confidentialité"
+        "privacyLink": "Confidentialité",
+        "yearlyTrial": "Gratuit maintenant, puis {{price}} chaque année jusqu’à résiliation. Résiliez quand vous voulez dans {{store}}.",
+        "monthlyTrial": "Gratuit maintenant, puis {{price}} chaque mois jusqu’à résiliation. Résiliez quand vous voulez dans {{store}}.",
+        "yearlyIntro": "{{intro}} maintenant, puis {{price}} chaque année jusqu’à résiliation. Résiliez quand vous voulez dans {{store}}.",
+        "monthlyIntro": "{{intro}} maintenant, puis {{price}} chaque mois jusqu’à résiliation. Résiliez quand vous voulez dans {{store}}."
       },
       "restore": "Restaurer les achats",
       "included": {

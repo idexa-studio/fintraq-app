@@ -1,4 +1,4 @@
-import { DEFAULT_PLAN, PLAN_PRODUCT_IDS, PRO_PLANS, isSubscription, lifetimeBreakEvenMonths, yearlySavingPercent } from '@/features/pro/pro-plans';
+import { DEFAULT_PLAN, PLAN_PRODUCT_IDS, PRO_PLANS, discountPercent, isSubscription, lifetimeBreakEvenMonths, yearlySavingPercent } from '@/features/pro/pro-plans';
 
 const price = (amount: number) => ({ amount, display: `$${amount}` });
 
@@ -28,5 +28,13 @@ describe('Pro plans', () => {
     expect(lifetimeBreakEvenMonths(undefined, price(3))).toBeUndefined();
     expect(lifetimeBreakEvenMonths(price(40), price(0))).toBeUndefined();
     expect(yearlySavingPercent(price(20), undefined)).toBeUndefined();
+  });
+
+  it('states a discount only when the store has a lower price on, and never overstates it', () => {
+    expect(discountPercent({ ...price(300), regular: price(3000) })).toBe(90);
+    expect(discountPercent({ ...price(667), regular: price(1000) })).toBe(33);
+    expect(discountPercent({ ...price(300), regular: price(300) })).toBeUndefined();
+    expect(discountPercent(price(300))).toBeUndefined();
+    expect(discountPercent(undefined)).toBeUndefined();
   });
 });

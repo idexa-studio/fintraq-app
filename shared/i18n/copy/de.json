@@ -1382,20 +1382,28 @@
         "lifetime": "Lebenslang",
         "yearly": "Jährlich",
         "monthly": "Monatlich",
-        "best": "Bester Preis"
+        "best": "Bester Preis",
+        "was": "Normalerweise {{regular}}"
       },
       "notes": {
         "lifetime": "Einmal zahlen. Für immer deins.",
         "lifetimeMonths": "Einmal zahlen. So viel wie {{count}} Monate im Monatstarif.",
         "yearly": "Jedes Jahr. Jederzeit kündbar.",
         "yearlySaving": "Jedes Jahr. {{percent}} % günstiger als monatlich.",
-        "monthly": "Jeden Monat. Jederzeit kündbar."
+        "monthly": "Jeden Monat. Jederzeit kündbar.",
+        "lifetimeOff": "Einmal zahlen. {{percent}} % unter dem üblichen Preis von {{regular}}.",
+        "yearlyIntro": "{{intro}} zum Start, danach {{price}} jedes Jahr.",
+        "monthlyIntro": "{{intro}} zum Start, danach {{price}} jeden Monat.",
+        "yearlyTrial": "Kostenlos zum Start, danach {{price}} jedes Jahr.",
+        "monthlyTrial": "Kostenlos zum Start, danach {{price}} jeden Monat."
       },
       "buy": {
         "lifetime": "Lebenslang für {{price}} holen",
         "yearly": "Für {{price}} pro Jahr abonnieren",
         "monthly": "Für {{price}} pro Monat abonnieren",
-        "noPrice": "Fintraq Pro holen"
+        "noPrice": "Fintraq Pro holen",
+        "intro": "Für {{intro}} starten",
+        "trial": "Kostenlos starten"
       },
       "terms": {
         "lifetime": "Eine einmalige Zahlung von {{price}}. Sie verlängert sich nie.",
@@ -1404,7 +1412,11 @@
         "storeAndroid": "Google Play",
         "storeIos": "deinem Apple-Account",
         "termsLink": "Bedingungen",
-        "privacyLink": "Datenschutz"
+        "privacyLink": "Datenschutz",
+        "yearlyTrial": "Jetzt kostenlos, danach {{price}} jedes Jahr, bis du kündigst. Jederzeit kündbar in {{store}}.",
+        "monthlyTrial": "Jetzt kostenlos, danach {{price}} jeden Monat, bis du kündigst. Jederzeit kündbar in {{store}}.",
+        "yearlyIntro": "Jetzt {{intro}}, danach {{price}} jedes Jahr, bis du kündigst. Jederzeit kündbar in {{store}}.",
+        "monthlyIntro": "Jetzt {{intro}}, danach {{price}} jeden Monat, bis du kündigst. Jederzeit kündbar in {{store}}."
       },
       "restore": "Käufe wiederherstellen",
       "included": {

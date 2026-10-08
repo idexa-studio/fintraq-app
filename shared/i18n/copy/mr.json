@@ -1382,20 +1382,28 @@
         "lifetime": "आजीवन",
         "yearly": "वार्षिक",
         "monthly": "मासिक",
-        "best": "सर्वात फायदेशीर"
+        "best": "सर्वात फायदेशीर",
+        "was": "नेहमी {{regular}}"
       },
       "notes": {
         "lifetime": "एकदाच पैसे द्या. कायमचे तुमचे.",
         "lifetimeMonths": "एकदाच पैसे द्या. मासिकच्या {{count}} महिन्यांइतके.",
         "yearly": "दरवर्षी. कधीही रद्द करा.",
         "yearlySaving": "दरवर्षी. मासिकपेक्षा {{percent}}% बचत.",
-        "monthly": "दरमहा. कधीही रद्द करा."
+        "monthly": "दरमहा. कधीही रद्द करा.",
+        "lifetimeOff": "एकदाच पैसे द्या. नेहमीच्या {{regular}} वर {{percent}}% सूट.",
+        "yearlyIntro": "सुरुवातीला {{intro}}, मग दरवर्षी {{price}}.",
+        "monthlyIntro": "सुरुवातीला {{intro}}, मग दरमहा {{price}}.",
+        "yearlyTrial": "सुरुवातीला मोफत, मग दरवर्षी {{price}}.",
+        "monthlyTrial": "सुरुवातीला मोफत, मग दरमहा {{price}}."
       },
       "buy": {
         "lifetime": "{{price}} मध्ये आजीवन घ्या",
         "yearly": "वर्षाला {{price}} ने सदस्य व्हा",
         "monthly": "महिन्याला {{price}} ने सदस्य व्हा",
-        "noPrice": "Fintraq Pro घ्या"
+        "noPrice": "Fintraq Pro घ्या",
+        "intro": "{{intro}} मध्ये सुरू करा",
+        "trial": "मोफत सुरू करा"
       },
       "terms": {
         "lifetime": "{{price}} चे एकदाच पेमेंट. ते कधीही पुन्हा कापले जात नाही.",
@@ -1404,7 +1412,11 @@
         "storeAndroid": "Google Play",
         "storeIos": "तुमचे Apple खाते",
         "termsLink": "अटी",
-        "privacyLink": "गोपनीयता"
+        "privacyLink": "गोपनीयता",
+        "yearlyTrial": "आत्ता मोफत, मग रद्द करेपर्यंत दरवर्षी {{price}}. {{store}} मध्ये कधीही रद्द करा.",
+        "monthlyTrial": "आत्ता मोफत, मग रद्द करेपर्यंत दरमहा {{price}}. {{store}} मध्ये कधीही रद्द करा.",
+        "yearlyIntro": "आत्ता {{intro}}, मग रद्द करेपर्यंत दरवर्षी {{price}}. {{store}} मध्ये कधीही रद्द करा.",
+        "monthlyIntro": "आत्ता {{intro}}, मग रद्द करेपर्यंत दरमहा {{price}}. {{store}} मध्ये कधीही रद्द करा."
       },
       "restore": "खरेदी पुनर्संचयित करा",
       "included": {
