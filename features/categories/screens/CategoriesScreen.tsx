@@ -47,7 +47,7 @@ export function CategoriesScreen() {
   return (
     <Screen header={header} footer={<Button label={t('add')} onPress={add} />}>
       {own.length === 0 ? (
-        <EmptyState compact icon="tag" title={t(`empty.${kind}.title`)} body={t(`empty.${kind}.body`)} actionLabel={t('add')} onAction={add} />
+        <EmptyState compact icon="tag" color="orange" title={t(`empty.${kind}.title`)} body={t(`empty.${kind}.body`)} actionLabel={t('add')} onAction={add} />
       ) : (
         <Card style={styles.grid}>
           <MarkGrid

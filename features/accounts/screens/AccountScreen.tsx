@@ -112,7 +112,7 @@ export function AccountScreen() {
         {!recent ? (
           <Skeleton height={size.row * 2} />
         ) : recent.length === 0 ? (
-          <EmptyState compact icon="receipt" title={t('account.noActivityTitle')} body={t('account.noActivityBody')} actionLabel={t('account.addTransaction')} onAction={() => add('expense')} />
+          <EmptyState compact icon="receipt" color="orange" title={t('account.noActivityTitle')} body={t('account.noActivityBody')} actionLabel={t('account.addTransaction')} onAction={() => add('expense')} />
         ) : (
           <ListGroup>
             {recent.map((transaction) => (

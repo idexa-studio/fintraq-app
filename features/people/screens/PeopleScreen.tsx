@@ -53,7 +53,7 @@ export function PeopleScreen() {
     return (
       <Screen scroll={false} header={header}>
         <View style={styles.centre}>
-          <EmptyState icon="users" title={t('empty.title')} body={t('empty.body')} actionLabel={t('add')} onAction={add} />
+          <EmptyState icon="users" color="teal" title={t('empty.title')} body={t('empty.body')} actionLabel={t('add')} onAction={add} />
         </View>
       </Screen>
     );

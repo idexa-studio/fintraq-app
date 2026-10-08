@@ -30,7 +30,7 @@ export function AboutScreen() {
   return (
     <Screen header={<Header title={t('about.title')} onBack={back} backLabel={t('back')} />}>
       <View style={styles.top}>
-        <Emblem icon="wallet" />
+        <Emblem icon="wallet" color="green" />
         <View style={styles.name}>
           <Text variant="display" align="center" accessibilityRole="header">{t('about.name')}</Text>
           <Text variant="lead" align="center">{t('about.tagline')}</Text>

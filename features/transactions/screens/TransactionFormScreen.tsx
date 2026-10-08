@@ -79,7 +79,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
     return (
       <Screen sheet scroll={false} header={<Header task onClose={close} closeLabel={t('close')} />}>
         <View style={{ flex: 1, justifyContent: 'center' }}>
-          <Message illustration={<Emblem icon="receipt" />} title={t('notFound')} />
+          <Message illustration={<Emblem icon="receipt" color="orange" />} title={t('notFound')} />
         </View>
       </Screen>
     );

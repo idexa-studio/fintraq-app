@@ -27,11 +27,11 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 151 | 98 | In progress |
+| D | Screens at parity with the shipped app | 156 | 98 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
-| H | Release 2: repeating items, budgets, net worth trend | 41 | 0 |  |
+| H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
 
 ---
@@ -460,6 +460,11 @@ Built in `features/backup` on 2026-10-08 and seen on a device only as far as the
 - [ ] D14.06 Backup made by another install: confirm before overwriting
 - [ ] D14.07 Every failure says what happened and what to do
 - [ ] D14.08 Battery optimisation prompt on Android
+- [ ] D14.10 Backup file on the phone: save the full backup as a file through the system share sheet. Free: the owner leaned towards Pro and left the call to me; it stays free because `docs/PRODUCT.md` promises that data is never held hostage, and what Pro sells is the automatic part (Drive, twice a day, nothing to remember). To make it Pro instead, gate these rows with `usePro()` and add a `localBackup` feature to the registry
+- [ ] D14.11 Restore from a chosen file, with the "replace everything" confirmation and the same checks a Drive restore runs
+- [ ] D14.12 The Backup screen shows both: the file (free) above, Google Drive (Pro) below; a free user sees the Drive part as one locked card instead of the whole screen being gated
+- [ ] D14.13 Offered at first run: "I have a backup" lets the user choose a file or Google Drive
+- [ ] D14.14 Test: a file made by one install restores on another, and every older snapshot shape still restores from a file
 - [ ] D14.09 Shared checklist
 
 ### D15. Export (Pro)
@@ -599,10 +604,7 @@ Done when: a free user can make 2 repeating items and 1 budget, Pro removes
 the limits, and older backups still restore.
 
 ### H1. Free backup file
-- [ ] H1.01 Save the full backup to a file through the system share sheet (free)
-- [ ] H1.02 Restore from a chosen file with the "replace everything" confirmation
-- [ ] H1.03 Offered at first run and in Backup
-- [ ] H1.04 Test: file made by one install restores on another
+Moved forward to D14 (owner, 2026-10-08): see D14.10 to D14.14.
 
 ### H2. Repeating items: data
 - [ ] H2.01 `recurring_rules` table in the schema (template, cadence, next due, auto or confirm, end)

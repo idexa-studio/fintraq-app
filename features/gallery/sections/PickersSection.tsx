@@ -139,7 +139,7 @@ export function PickersSection() {
           <Card><SwatchGrid swatches={swatches} selectedKey={swatch} onSelect={setSwatch} /></Card>
         </Specimen>
         <Specimen name="Icon" note="Grouped. The chosen one previews on its colour.">
-          <Card><IconGrid groups={ICONS} selected={icon} onSelect={setIcon} color={swatches.find((s) => s.key === swatch)?.color ?? colors.brandTint} /></Card>
+          <Card><IconGrid groups={ICONS} selected={icon} onSelect={setIcon} color={swatches.find((s) => s.key === swatch)?.color ?? colors.surfaceMuted} /></Card>
         </Specimen>
       </Section>
 

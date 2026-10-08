@@ -73,7 +73,7 @@ export function LoanFormScreen({ initialType = 'lend', initialPersonId }: LoanFo
     return (
       <Screen sheet scroll={false} header={header()} footer={<Button label={t('form.seePro')} onPress={() => openPaywall('unlimited')} />}>
         <View style={styles.centre}>
-          <Message illustration={<Emblem icon="hand-coins" />} title={t('form.limit', { count: FREE_LIMITS.loans })} />
+          <Message illustration={<Emblem icon="hand-coins" color="pink" />} title={t('form.limit', { count: FREE_LIMITS.loans })} />
         </View>
       </Screen>
     );

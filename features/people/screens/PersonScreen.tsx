@@ -67,7 +67,7 @@ export function PersonScreen() {
     return (
       <Screen scroll={false} header={<Header onBack={back} backLabel={t('back')} />}>
         <View style={styles.centre}>
-          <Message illustration={<Emblem icon="user" />} title={t('person.notFound')} />
+          <Message illustration={<Emblem icon="user" color="teal" />} title={t('person.notFound')} />
         </View>
       </Screen>
     );
@@ -140,7 +140,7 @@ export function PersonScreen() {
         {!transactions ? (
           <Skeleton height={size.row * 2} />
         ) : recent.length === 0 ? (
-          <EmptyState compact icon="receipt" title={t('person.noActivityTitle')} body={t('person.noActivityBody')} />
+          <EmptyState compact icon="receipt" color="orange" title={t('person.noActivityTitle')} body={t('person.noActivityBody')} />
         ) : (
           <ListGroup>
             {recent.map((transaction) => (

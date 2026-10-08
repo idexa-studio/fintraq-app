@@ -1,7 +1,7 @@
 import type { Account } from '@/data/repositories/accounts';
 import type { TransactionListItem } from '@/data/repositories/transactions';
 import { Card, EmptyState, Icon, IconCircle, ListGroup, ListRow, Skeleton, Text, Touchable, ltr, useStyles, useTheme } from '@/design';
-import type { IconName, Theme } from '@/design';
+import type { IconName, PastelName, Theme } from '@/design';
 import { firstName } from '@/features/home/home-rules';
 import { accountTypeIcon } from '@/features/accounts';
 import type { PersonBalance } from '@/features/people';
@@ -12,7 +12,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-type Empty = { icon: IconName; title: string; body: string; action: string; onAction: () => void };
+type Empty = { icon: IconName; color: PastelName; title: string; body: string; action: string; onAction: () => void };
 
 /** A list that is still loading, has nothing yet, or has rows: the three states every Home section shares. */
 function HomeList<T>({ items, loading, empty, children }: { items: readonly T[] | undefined; loading: boolean; empty: Empty; children: (item: T) => React.ReactNode }) {
@@ -28,7 +28,7 @@ function HomeList<T>({ items, loading, empty, children }: { items: readonly T[] 
       </Card>
     );
   }
-  if (items.length === 0) return <EmptyState compact icon={empty.icon} title={empty.title} body={empty.body} actionLabel={empty.action} onAction={empty.onAction} />;
+  if (items.length === 0) return <EmptyState compact icon={empty.icon} color={empty.color} title={empty.title} body={empty.body} actionLabel={empty.action} onAction={empty.onAction} />;
   return <ListGroup>{items.map(children)}</ListGroup>;
 }
 
@@ -39,7 +39,7 @@ type AccountListProps = { accounts: readonly Account[] | undefined; loading: boo
 export function AccountList({ accounts, loading, onOpen, onAdd }: AccountListProps) {
   const { t } = useTranslation(['home', 'common']);
   return (
-    <HomeList items={accounts} loading={loading} empty={{ icon: 'wallet', title: t('accounts.emptyTitle'), body: t('accounts.emptyBody'), action: t('accounts.emptyAction'), onAction: onAdd }}>
+    <HomeList items={accounts} loading={loading} empty={{ icon: 'wallet', color: 'lilac', title: t('accounts.emptyTitle'), body: t('accounts.emptyBody'), action: t('accounts.emptyAction'), onAction: onAdd }}>
       {(account) => (
         <ListRow
           key={account.id}
@@ -60,7 +60,7 @@ type RecentListProps = { transactions: readonly TransactionListItem[] | undefine
 export function RecentList({ transactions, loading, onOpen, onAdd }: RecentListProps) {
   const { t } = useTranslation('home');
   return (
-    <HomeList items={transactions} loading={loading} empty={{ icon: 'receipt', title: t('recent.emptyTitle'), body: t('recent.emptyBody'), action: t('recent.emptyAction'), onAction: onAdd }}>
+    <HomeList items={transactions} loading={loading} empty={{ icon: 'receipt', color: 'orange', title: t('recent.emptyTitle'), body: t('recent.emptyBody'), action: t('recent.emptyAction'), onAction: onAdd }}>
       {(tx) => <TransactionRow key={tx.id} transaction={tx} when="day" onPress={() => onOpen(tx.id)} />}
     </HomeList>
   );
@@ -80,7 +80,7 @@ export function PeopleStrip({ people, currency, loading, onOpen, onAdd }: People
   // A size up from a row's mark: a face, not a headline.
   const face = size.iconCircle + space.sm;
   if (loading || !people) return <Card><Skeleton height={face + space.xxl} /></Card>;
-  if (people.length === 0) return <EmptyState compact icon="users" title={t('people.emptyTitle')} body={t('people.emptyBody')} actionLabel={t('people.emptyAction')} onAction={onAdd} />;
+  if (people.length === 0) return <EmptyState compact icon="users" color="teal" title={t('people.emptyTitle')} body={t('people.emptyBody')} actionLabel={t('people.emptyAction')} onAction={onAdd} />;
   return (
     <Card padded={false}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.strip}>

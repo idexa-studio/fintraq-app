@@ -51,7 +51,7 @@ function Failed({ detail }: { detail: string }) {
   return (
     <Screen scroll={false}>
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Message illustration={<Emblem icon="warning" />} title={t('system.migrationError')} body={detail} />
+        <Message illustration={<Emblem icon="warning" color="orange" />} title={t('system.migrationError')} body={detail} />
       </View>
     </Screen>
   );

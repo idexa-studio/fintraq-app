@@ -68,7 +68,7 @@ throughout (Proza Libre, bold for headings), soft 10pt corners, no shadows.
   `npm run icons:generate`. Never import an icon package.
 - **Illustrations:** none. Three hand-drawn attempts were rejected and the
   owner wants nothing bold. Messages and empty states use `Emblem` (a line
-  icon in a pale green circle) until a professional light-line set is chosen.
+  icon in a pastel circle) until a professional light-line set is chosen.
   Do not draw illustrations by hand.
 - **Settled choices:** the currency menu sits on the balance card; the wave
   card is fully green; highlights are white cards; tabs are Home, Activity,

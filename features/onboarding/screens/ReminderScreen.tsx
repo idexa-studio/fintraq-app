@@ -1,4 +1,4 @@
-import { Button, Emblem, Message, Notice, Screen, useStyles } from '@/design';
+import { Button, Card, IconCircle, Message, Notice, Screen, Text, useStyles } from '@/design';
 import type { Theme } from '@/design';
 import { useSettings } from '@/features/settings';
 import { NotificationService } from '@/platform/notifications/notifications';
@@ -46,7 +46,16 @@ export function ReminderScreen() {
       }
     >
       <View style={styles.centre}>
-        <Message illustration={<Emblem icon="bell" />} title={t('reminder.title')} body={t('reminder.body')} />
+        {/* The reminder as it will arrive, rather than a picture of a bell. */}
+        <Card style={styles.sample} accessibilityLabel={t('reminder.sample.label')}>
+          <IconCircle icon="bell" color="green" />
+          <View style={styles.sampleText}>
+            <Text variant="caption" tone="muted">{t('reminder.sample.app')}</Text>
+            <Text variant="bodyStrong">{t('reminder.sample.title')}</Text>
+            <Text variant="callout">{t('reminder.sample.body')}</Text>
+          </View>
+        </Card>
+        <Message title={t('reminder.title')} body={t('reminder.body')} />
         {denied ? <Notice tone="warning" title={t('reminder.deniedTitle')} body={t('reminder.deniedBody')} /> : null}
       </View>
     </Screen>
@@ -55,5 +64,7 @@ export function ReminderScreen() {
 
 const createStyles = ({ space }: Theme) =>
   StyleSheet.create({
-    centre: { flex: 1, justifyContent: 'center', gap: space.xl },
+    centre: { flex: 1, justifyContent: 'center', gap: space.xxl },
+    sample: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
+    sampleText: { flex: 1, gap: space.xxs },
   });

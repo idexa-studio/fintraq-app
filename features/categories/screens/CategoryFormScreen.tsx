@@ -81,7 +81,7 @@ export function CategoryFormScreen({ categoryId, initialKind = 'DR' }: CategoryF
     return (
       <Screen sheet scroll={false} header={header()}>
         <View style={styles.centre}>
-          <Message illustration={<Emblem icon="tag" />} title={category ? t('builtIn.hint') : t('form.notFound')} />
+          <Message illustration={<Emblem icon="tag" color="orange" />} title={category ? t('builtIn.hint') : t('form.notFound')} />
         </View>
       </Screen>
     );

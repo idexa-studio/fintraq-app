@@ -194,7 +194,7 @@ export function ActivityScreen() {
           {narrowed ? (
             <EmptyState icon="search" title={t('noMatchTitle')} body={t('noMatchBody')} actionLabel={t('noMatchAction')} onAction={showEverything} />
           ) : (
-            <EmptyState icon="receipt" title={t('emptyTitle')} body={t('emptyBody')} actionLabel={t('emptyAction')} onAction={() => router.push('/add')} />
+            <EmptyState icon="receipt" color="orange" title={t('emptyTitle')} body={t('emptyBody')} actionLabel={t('emptyAction')} onAction={() => router.push('/add')} />
           )}
         </View>
       ) : (
