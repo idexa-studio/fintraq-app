@@ -150,6 +150,7 @@ export default {
       offline: 'Google Drive could not be reached. Check your connection and try again.',
       noBackup: 'There is no Fintraq backup in the Drive of {{email}}. Check that this is the account you backed up to.',
       needsPro: 'Backing up to Google Drive is part of Fintraq Pro.',
+      damaged: 'The backup in your Drive could not be read, so nothing on this phone was changed. Back up again from the phone that still has your records.',
       unknown: 'Something went wrong on the way. Everything on this phone is as it was. Try again in a moment.',
     },
   },

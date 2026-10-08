@@ -8,7 +8,6 @@ import {
 } from '@react-native-firebase/auth';
 import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
 import googleServicesConfig from '@/google-services.json';
-import i18n from '@/shared/i18n';
 import { LoggerService } from '@/shared/logging/logger';
 import type { CloudBackupFileMeta, GoogleUserAccount } from '@/platform/backup/backup.types';
 import {
@@ -121,7 +120,7 @@ class GoogleDriveServiceClass {
       const scoped = await GoogleSignin.addScopes({ scopes: [DRIVE_APPDATA_SCOPE] });
       if (!scoped || !isSuccessResponse(scoped) || !scoped.data.scopes.includes(DRIVE_APPDATA_SCOPE)) {
         await GoogleSignin.signOut().catch(() => {});
-        throw new GoogleDriveAuthError(i18n.t('backup.errDrivePermission'));
+        throw new GoogleDriveAuthError('Drive access was not granted at sign-in');
       }
     }
 

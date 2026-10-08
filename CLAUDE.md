@@ -125,9 +125,11 @@ never gated, and a lapsed subscriber never loses data.
 
 ## Text
 
-User-facing strings go through i18n; the new English copy is written fresh,
-screen by screen. Thirteen locales ship. Developer tools and the gallery are
-English only.
+User-facing strings go through i18n, from `shared/i18n/copy/<namespace>.en.ts`;
+there is no other source. The voice and vocabulary are in `docs/PRODUCT.md`
+("Words") and a test holds all copy to them. Thirteen languages are offered;
+the other twelve are not translated yet (plan G1.02) and show English.
+Developer tools and the gallery are English only.
 
 ## Checks
 

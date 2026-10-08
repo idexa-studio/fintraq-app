@@ -12,13 +12,6 @@ const PROGRESS = { locating: 5, downloadStart: 15, downloadSpan: 60, importing: 
 
 const stage = i18n.getFixedT(null, 'backup');
 
-/** Maps internal validation failures to the message the user sees. */
-function toUserFacingError(error: unknown): unknown {
-  if (!(error instanceof BackupValidationError)) return error;
-  if (error.code === 'empty') return new Error(i18n.t('backup.errRestoreEmpty'));
-  return new Error(i18n.t('backup.errRestoreIntegrity'));
-}
-
 async function execute(): Promise<CloudBackupFileMeta> {
   let result: CloudBackupFileMeta | undefined;
   try {
@@ -49,7 +42,7 @@ async function execute(): Promise<CloudBackupFileMeta> {
     return target;
   } catch (e) {
     LoggerService.warn('CLOUD_RESTORE', 'Restore failed', e);
-    throw toUserFacingError(e);
+    throw e;
   } finally {
     endOperation(result);
   }

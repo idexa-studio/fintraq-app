@@ -10,7 +10,7 @@ import i18n from '@/shared/i18n';
  */
 export function toErrorMessage(
   err: unknown,
-  fallback: string = i18n.t('common.unexpectedError'),
+  fallback: string = i18n.t('unexpectedError', { ns: 'common' }),
 ): string {
   if (err instanceof Error && err.message) return err.message;
   if (typeof err === 'string' && err) return err;

@@ -1,9 +1,11 @@
-import type en from '@/shared/i18n/locales/en';
 
 // ── Shared ────────────────────────────────────────────────────────────────────
 
+/** The groups icons are offered in. Each is named in the copy of the screen that shows it. */
+export type IconGroupLabel = 'walletsCards' | 'savingsInvestments' | 'businessWork' | 'goals' | 'other' | 'finance' | 'foodDrink' | 'transport' | 'homeUtilities' | 'healthFitness' | 'tech' | 'shopping' | 'entertainment' | 'education' | 'personal' | 'misc';
+
 export type IconGroup = {
-  label: keyof (typeof en)['picker']['groups'];
+  label: IconGroupLabel;
   icons: readonly string[];
 };
 
@@ -56,7 +58,10 @@ export const ACCOUNT_ICON_GROUPS: IconGroup[] = [
   },
 ];
 
-export type ColorOption = { readonly hex: string; readonly name: keyof (typeof en)['picker']['colors'] };
+/** Every colour ever offered, by the name it is described with to a screen reader. */
+export type ColorName = 'forest' | 'emerald' | 'teal' | 'sky' | 'ocean' | 'blue' | 'cobalt' | 'iris' | 'indigo' | 'purple' | 'violet' | 'fuchsia' | 'pink' | 'deepPink' | 'rose' | 'red' | 'crimson' | 'orange' | 'amber' | 'gold' | 'lime' | 'olive' | 'slate' | 'coolGray';
+
+export type ColorOption = { readonly hex: string; readonly name: ColorName };
 
 export const PALETTE_COLOR_OPTIONS: readonly ColorOption[] = [
   // Greens & Teals

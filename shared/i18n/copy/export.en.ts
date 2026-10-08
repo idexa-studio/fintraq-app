@@ -1,5 +1,7 @@
 /** Export: a spreadsheet of what was recorded, to save or share. */
 export default {
+  // The titles of the system's own share and save dialogs.
+  dialog: { share: 'Share the spreadsheet', save: 'Save the spreadsheet' },
   title: 'Export',
   back: 'Back',
   file: {
