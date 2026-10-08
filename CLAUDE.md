@@ -64,7 +64,11 @@ throughout (Proza Libre, bold for headings), soft 10pt corners, no shadows.
   solid for the active tab; from 27pt up a pictogram is drawn from the
   `light` set so its line stays the reference's weight. The weight is fixed per name in
   `design/icons/icon-map.json` (`"x": "x@bold"`), never chosen at a call
-  site. Add an icon by adding a line there and running
+  site. Only icons marked `+solid` there (`"house": "house+solid"`) ship a
+  solid drawing; a tab icon or a `MarkTile` mark must be one of them, and the
+  types enforce it. The generator needs `@phosphor-icons/core`, which is not
+  kept installed (37 MB): `npm install --no-save @phosphor-icons/core`, run it,
+  then remove `node_modules/@phosphor-icons`. Add an icon by adding a line there and running
   `npm run icons:generate`. Never import an icon package.
 - **Illustrations:** none. Three hand-drawn attempts were rejected and the
   owner wants nothing bold. Messages and empty states use `Emblem` (a line

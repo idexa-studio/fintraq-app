@@ -156,6 +156,16 @@ const createStyles = ({ colors, spacing, radius }: ThemeContextType) =>
 ### Comments
 Explain *why*, not *what*: constraints, platform quirks, non-obvious maths. Delete commented-out code.
 
+## What ships
+
+Release builds are tree-shaken: the `preview` and `production` profiles in
+`eas.json` set Expo's two tree-shaking variables, and `metro.config.js` runs the
+bundler in one process when they are set (it fails otherwise here). Code the
+app never reaches is left out of the bundle. A file that is imported only for
+its side effect must be imported by name from somewhere, or it will be dropped;
+the background backup task is, from the root layout. Checked on the device on
+2026-10-08 by loading the tree-shaken bundle and opening every main screen.
+
 ## Free vs Pro
 
 `features/pro/pro-features.ts` is the one list of Pro capabilities (id, pillar, icon, whether it is live). Its words are the `pro` copy namespace, and a test checks every feature has copy.

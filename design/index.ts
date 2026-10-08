@@ -29,6 +29,7 @@ export { Highlight } from './components/Highlight';
 export { Icon } from './components/Icon';
 export type { IconName } from './components/Icon';
 export { isIconName, resolveIcon } from './icons/index';
+export type { SolidIconName } from './icons/index';
 export { MarkGrid } from './components/MarkGrid';
 export type { Mark } from './components/MarkGrid';
 export { IconGrid } from './components/IconGrid';

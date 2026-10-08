@@ -1,5 +1,5 @@
 import { Icon } from '@/design/components/Icon';
-import type { IconName } from '@/design/components/Icon';
+import type { SolidIconName } from '@/design/icons/index';
 import { Touchable } from '@/design/components/Touchable';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
@@ -7,7 +7,8 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 export type MarkTileProps = {
-  icon: IconName;
+  /** Drawn solid, so it must be an icon that has a solid drawing. */
+  icon: SolidIconName;
   /** Makes the tile a shortcut. Needs a label saying where it goes. */
   onPress?: () => void;
   accessibilityLabel?: string;

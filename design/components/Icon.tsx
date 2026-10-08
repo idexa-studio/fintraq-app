@@ -1,4 +1,5 @@
 import { GLYPH_GRID, GLYPHS } from '@/design/icons/glyphs';
+import type { Glyph } from '@/design/icons/glyphs';
 import type { IconName } from '@/design/icons/index';
 import { useTheme } from '@/design/ThemeProvider';
 import React from 'react';
@@ -12,7 +13,10 @@ export type IconProps = {
   name: IconName;
   size?: number;
   color?: string;
-  /** The solid drawing: the active tab, a selected item. Outline otherwise. */
+  /**
+   * The solid drawing: the active tab, the mark in a tile. Only the icons marked `+solid` in the
+   * map have one (`SolidIconName`); any other is drawn in outline.
+   */
   filled?: boolean;
 };
 
@@ -28,6 +32,8 @@ const LIGHT_FROM = 27;
 /** Icons that point along the reading direction, and so face the other way in right-to-left layouts. */
 const DIRECTIONAL = new Set<IconName>(['chevron-left', 'chevron-right', 'arrow-left', 'arrow-right', 'arrow-forward', 'logout']);
 
+const solidOf = (name: IconName): string | undefined => (GLYPHS[name] as Glyph).fill;
+
 /** The one way to draw an icon. */
 export const Icon = React.memo(function Icon({ name, size, color, filled = false }: IconProps) {
   const theme = useTheme();
@@ -37,7 +43,7 @@ export const Icon = React.memo(function Icon({ name, size, color, filled = false
 
   return (
     <Svg width={side} height={side} viewBox={VIEW_BOX} style={flip}>
-      <Path d={filled ? GLYPHS[name].fill : side >= LIGHT_FROM ? GLYPHS[name].light : GLYPHS[name].line} fill={ink} />
+      <Path d={(filled ? solidOf(name) : undefined) ?? (side >= LIGHT_FROM ? GLYPHS[name].light : GLYPHS[name].line)} fill={ink} />
     </Svg>
   );
 });

@@ -1,5 +1,5 @@
 import { TabBar } from '@/design';
-import type { IconName, TabItem } from '@/design';
+import type { SolidIconName, TabItem } from '@/design';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -11,7 +11,7 @@ const PLACES = ['index', 'activity', 'plan', 'insights'] as const;
 type Place = (typeof PLACES)[number];
 type TabKey = Place | 'add';
 
-const ICONS: Record<TabKey, IconName> = { index: 'house', activity: 'receipt', add: 'plus', plan: 'calendar', insights: 'chart-pie' };
+const ICONS: Record<TabKey, SolidIconName> = { index: 'house', activity: 'receipt', add: 'plus', plan: 'calendar', insights: 'chart-pie' };
 const LABELS = { index: 'tabs.home', activity: 'tabs.activity', add: 'tabs.add', plan: 'tabs.plan', insights: 'tabs.insights' } as const;
 
 /**
