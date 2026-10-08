@@ -6,6 +6,7 @@ import type common from '@/shared/i18n/copy/common.en';
 import type home from '@/shared/i18n/copy/home.en';
 import type loans from '@/shared/i18n/copy/loans.en';
 import type people from '@/shared/i18n/copy/people.en';
+import type plan from '@/shared/i18n/copy/plan.en';
 import type shell from '@/shared/i18n/copy/shell.en';
 import type transactions from '@/shared/i18n/copy/transactions.en';
 import type en from '@/shared/i18n/locales/en';
@@ -20,6 +21,7 @@ declare module 'i18next' {
       categories: typeof categories;
       people: typeof people;
       loans: typeof loans;
+      plan: typeof plan;
       common: typeof common;
       shell: typeof shell;
       home: typeof home;

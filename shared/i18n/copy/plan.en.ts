@@ -1,0 +1,47 @@
+/** The Plan tab: what is owed, what is coming up, and what Pro will add. */
+export default {
+  title: 'Plan',
+  add: 'Lend or borrow',
+  currency: 'Currency',
+  summary: {
+    title: 'Open loans',
+    owed: 'Owed to you',
+    owe: 'You owe',
+    none: 'Nothing is owed either way',
+    lend: 'Lend or borrow',
+    people: 'People',
+  },
+  upcoming: {
+    title: 'Coming up',
+    noDate: 'No due date',
+    lent: 'Owes you',
+    borrowed: 'You owe',
+    someone: 'Someone',
+    unnamed: 'Borrowed',
+    due: {
+      overdue_one: 'Overdue by {{count}} day',
+      overdue_other: 'Overdue by {{count}} days',
+      today: 'Due today',
+      tomorrow: 'Due tomorrow',
+      inDays_one: 'Due in {{count}} day',
+      inDays_other: 'Due in {{count}} days',
+    },
+    line: '{{standing}} · {{due}}',
+  },
+  settled: {
+    show_one: '{{count}} settled loan',
+    show_other: '{{count}} settled loans',
+    hide: 'Hide settled loans',
+    row: 'Settled',
+  },
+  empty: {
+    title: 'Nothing lent or borrowed',
+    body: 'Record money you lend or borrow and Fintraq keeps track of what is still owed and when.',
+  },
+  soon: {
+    badge: 'Coming to Pro',
+    title: 'Plan ahead, not just look back',
+    body: 'These are on the way, and included when you have Pro.',
+    action: 'See Fintraq Pro',
+  },
+} as const;

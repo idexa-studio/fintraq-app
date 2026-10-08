@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 144 | 55 | In progress |
+| D | Screens at parity with the shipped app | 144 | 58 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -412,11 +412,11 @@ route template · `tsc`, lint, design audit and tests clean.
 - [ ] D10.10 Change a loan's due date and note after it is made (`/loans/[id]/edit`; the shipped app has no way to)
 
 ### D11. Plan tab (first version)
-- [ ] D11.01 Upcoming: loans due, soonest first
-- [ ] D11.02 People and balances summary with "See all"
-- [ ] D11.03 Placeholders for repeating items, budgets and goals marked "Coming to Pro"
-- [ ] D11.04 Empty state
-- [ ] D11.05 Shared checklist
+- [x] D11.01 Upcoming: loans due, soonest first
+- [x] D11.02 People and balances summary with "See all"
+- [ ] D11.03 Placeholders for repeating items, budgets and goals marked "Coming to Pro" (built from the registry as one card, shown to free users only; not seen, as the test phone is Pro)
+- [ ] D11.04 Empty state (built; not seen, which needs an install with no loans)
+- [x] D11.05 Shared checklist
 
 ### D12. Insights
 - [ ] D12.01 Period control
