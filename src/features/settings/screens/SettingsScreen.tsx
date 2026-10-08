@@ -246,7 +246,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           iconColor={colors.warning}
           title={t('settings.loans')}
           subtitle={t('settings.loansHint')}
-          onPress={() => router.push('/(main)/loans')}
+          onPress={() => router.push('/plan')}
         />
       </ListGroup>
 
