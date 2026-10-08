@@ -21,8 +21,8 @@ export default function StackLayout() {
         <Stack.Screen name="accounts/[id]/edit" options={SHEET_ROUTE} />
         <Stack.Screen name="categories/new" options={SHEET_ROUTE} />
         <Stack.Screen name="categories/[id]/edit" options={SHEET_ROUTE} />
-        <Stack.Screen name="persons/form" />
-        <Stack.Screen name="persons/[id]" />
+        <Stack.Screen name="people/new" options={SHEET_ROUTE} />
+        <Stack.Screen name="people/[id]/edit" options={SHEET_ROUTE} />
         <Stack.Screen name="loans" />
         <Stack.Screen name="loans/form" />
         <Stack.Screen name="loans/[id]" />

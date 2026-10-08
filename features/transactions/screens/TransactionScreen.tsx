@@ -129,7 +129,7 @@ export function TransactionScreen() {
             strong
             title={tx.person.name}
             subtitle={t('detail.person')}
-            onPress={() => router.push({ pathname: '/persons/[id]', params: { id: tx.person?.id ?? 0 } })}
+            onPress={() => router.push({ pathname: '/people/[id]', params: { id: tx.person?.id ?? 0 } })}
           />
         ) : null}
         {tx.loan ? (

@@ -19,3 +19,6 @@ export const addPathFromLegacy = ({ type, accountId }: Params): string => `/add$
 
 /** `/transactions/edit/<id>` */
 export const editPathFromLegacy = (id: string | undefined): string => (id && /^\d+$/.test(id) ? `/transactions/${id}/edit` : '/');
+
+/** `/persons/<id>` */
+export const personPathFromLegacy = (id: string | undefined): string => (id && /^\d+$/.test(id) ? `/people/${id}` : '/people');

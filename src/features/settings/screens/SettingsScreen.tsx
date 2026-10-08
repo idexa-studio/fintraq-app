@@ -240,7 +240,7 @@ export const SettingsScreen = React.memo(function SettingsScreen() {
           subtitle={t('settings.categoriesHint')}
           onPress={() => router.push('/categories')}
         />
-        <ListItem icon="users" iconColor={colors.info} title={t('settings.people')} subtitle={t('settings.peopleHint')} onPress={() => router.push('/persons')} />
+        <ListItem icon="users" iconColor={colors.info} title={t('settings.people')} subtitle={t('settings.peopleHint')} onPress={() => router.push('/people')} />
         <ListItem
           icon="hand-coins"
           iconColor={colors.warning}

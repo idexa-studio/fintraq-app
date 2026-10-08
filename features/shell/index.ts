@@ -3,4 +3,4 @@ export { AppTabBar } from './AppTabBar';
 export { AppTheme } from './AppTheme';
 export { DatabaseGate } from './DatabaseGate';
 export { useLeaveGuard } from './useLeaveGuard';
-export { addPathFromLegacy, editPathFromLegacy } from './legacy-paths';
+export { addPathFromLegacy, editPathFromLegacy, personPathFromLegacy } from './legacy-paths';
