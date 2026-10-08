@@ -5,10 +5,9 @@ const config = getDefaultConfig(__dirname);
 
 config.resolver.sourceExts.push('sql');
 
-// Release builds are tree-shaken (the two EXPO_UNSTABLE_* variables in eas.json): code the app
-// never reaches is left out of the bundle, about 9% of it when this was switched on. With that
-// on, Metro hands each file's syntax tree between processes, and the trees this project produces
-// cannot be copied across ("Symbol() could not be cloned"), so the bundler runs in one process.
-if (process.env.EXPO_UNSTABLE_TREE_SHAKING === '1') config.maxWorkers = 1;
+// Expo's tree shaking (EXPO_UNSTABLE_METRO_OPTIMIZE_GRAPH and EXPO_UNSTABLE_TREE_SHAKING) is off, and
+// must stay off until it is proven on an installed release build. It made the bundle 9% smaller,
+// and a fresh install of that build never got past its first screen: the redirect to first run
+// went round in a loop (found 2026-10-08 on the first store build; docs/ARCHITECTURE.md).
 
 module.exports = config;
