@@ -67,7 +67,7 @@ export function RestoreScreen() {
 
   return (
     <Screen
-      scroll={false}
+      centred
       header={<Header onBack={working ? undefined : back} backLabel={t('restore.back')} />}
       footer={
         <>
@@ -97,7 +97,7 @@ export function RestoreScreen() {
 
 const createStyles = ({ space }: Theme) =>
   StyleSheet.create({
-    centre: { flex: 1, justifyContent: 'center', gap: space.xl },
+    centre: { gap: space.xl },
     // The picture is kept narrow, so the two ends read as a pair.
     picture: { paddingHorizontal: space.xxl },
   });

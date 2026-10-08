@@ -1,7 +1,7 @@
-import { AmountField, Button, Card, Header, MarkGrid, Notice, ProgressBar, Screen, Text, TextField, pastelOf, useStyles } from '@/design';
+import { AmountField, Badge, Button, Card, Chip, Divider, Header, IconCircle, MarkGrid, Notice, ProgressBar, Screen, Text, TextField, pastelOf, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
 import { CurrencyPicker, WalletStack, accountTypeIcon, useCreateAccount } from '@/features/accounts';
-import { FIRST_ACCOUNT_KINDS, NAME_MAX, SETUP_STEPS, newSetupDraft, nextStep, openingBalance, previousStep, setupBlockerOf, withAccountName, withKind } from '@/features/onboarding/first-run-rules';
+import { FIRST_ACCOUNT_KINDS, NAME_MAX, commonCurrencies, SETUP_STEPS, newSetupDraft, nextStep, openingBalance, previousStep, setupBlockerOf, withAccountName, withKind } from '@/features/onboarding/first-run-rules';
 import type { FirstAccountKind, SetupDraft, SetupStep } from '@/features/onboarding/first-run-rules';
 import { useOnboarding } from '@/features/onboarding/FirstRunProvider';
 import { createWorkspace } from '@/features/onboarding/workspace';
@@ -26,13 +26,15 @@ const KIND_COLORS = { cash: 'green', bank: 'lilac', ewallet: 'teal', credit_card
 export function SetupScreen() {
   const { t } = useTranslation(['firstRun', 'common']);
   const styles = useStyles(createStyles);
+  const { size } = useTheme();
   const router = useRouter();
   const { profile, updateProfile } = useSettings();
   const { completeOnboarding } = useOnboarding();
   const { mutateAsync: createAccount } = useCreateAccount();
 
   const kindName = (kind: FirstAccountKind) => t(`common:accountTypes.${kind}`);
-  const [draft, setDraft] = useState<SetupDraft>(() => newSetupDraft(getDeviceCurrencyCode(), kindName('cash')));
+  const [deviceCurrency] = useState(() => getDeviceCurrencyCode());
+  const [draft, setDraft] = useState<SetupDraft>(() => newSetupDraft(deviceCurrency, kindName('cash')));
   const [step, setStep] = useState<SetupStep>('name');
   // The first account's colour is chosen once, so the picture shows the colour that is saved.
   const [colorHex] = useState(() => OFFERED_COLORS[Math.floor(Math.random() * OFFERED_COLORS.length)]!.hex);
@@ -104,15 +106,26 @@ export function SetupScreen() {
 
         {step === 'name' ? (
           <Card>
-            <TextField label={t('setup.name.label')} value={draft.name} onChangeText={(name) => setDraft({ ...draft, name })} maxLength={NAME_MAX} autoCapitalize="words" autoCorrect={false} focusOnArrival returnKeyType="next" onSubmitEditing={() => { if (!blocker) proceed(); }} />
+            <TextField label={t('setup.name.label')} value={draft.name} onChangeText={(name) => setDraft({ ...draft, name })} maxLength={NAME_MAX} autoCapitalize="words" autoCorrect={false} focusOnArrival returnKeyType="next" onSubmitEditing={() => { if (!blocker) proceed(); }} helper={t('setup.name.helper')} />
           </Card>
         ) : null}
 
         {step === 'currency' ? (
-          <Card style={styles.currency}>
+          <Card style={styles.fields}>
+            {/* The currency as the thing chosen: its sign as a mark, its code and its name. */}
+            <View style={styles.identity}>
+              <IconCircle initials={getCurrencySymbol(draft.currency)} color="green" size={size.illustrationTile} />
+              <View style={styles.asked}>
+                <Text variant="amountLarge">{draft.currency}</Text>
+                <Text variant="callout" tone="muted">{currencyName(draft.currency)}</Text>
+              </View>
+            </View>
+            <Divider />
             <View style={styles.asked}>
-              <Text variant="amountHero">{draft.currency}</Text>
-              <Text variant="callout" tone="muted">{currencyName(draft.currency)}</Text>
+              <Text variant="callout" tone="muted">{t('setup.currency.common')}</Text>
+              <View style={styles.chips} accessibilityRole="tablist">
+                {commonCurrencies(draft.currency, deviceCurrency).map((code) => <Chip key={code} label={code} selected={code === draft.currency} onPress={() => setDraft({ ...draft, currency: code })} />)}
+              </View>
             </View>
             <Button label={t('setup.currency.change')} variant="secondary" onPress={() => setChoosingCurrency(true)} />
           </Card>
@@ -129,9 +142,19 @@ export function SetupScreen() {
               />
             </Card>
             <Card style={styles.fields}>
-              <TextField label={t('setup.account.name')} value={draft.accountName} onChangeText={(name) => setDraft(withAccountName(draft, name))} maxLength={NAME_MAX} autoCapitalize="words" />
+              {/* The account's own mark beside its name, as on the account form. */}
+              <View style={styles.identity}>
+                <IconCircle icon={accountTypeIcon(draft.kind)} color={KIND_COLORS[draft.kind]} size={size.illustrationTile} />
+                <View style={styles.grow}>
+                  <TextField label={t('setup.account.name')} value={draft.accountName} onChangeText={(name) => setDraft(withAccountName(draft, name))} maxLength={NAME_MAX} autoCapitalize="words" helper={t('setup.account.nameHint')} />
+                </View>
+              </View>
+              <Divider />
               <View style={styles.asked}>
-                <Text variant="callout" tone="muted">{t('setup.account.balance')}</Text>
+                <View style={styles.balanceHead}>
+                  <Text variant="callout" tone="muted">{t('setup.account.balance')}</Text>
+                  <Badge label={draft.currency} tone="neutral" />
+                </View>
                 <AmountField value={draft.balance} onChangeText={(text) => setDraft({ ...draft, balance: text })} symbol={getCurrencySymbol(draft.currency)} accessibilityLabel={t('setup.account.balance')} />
                 <Text variant="caption" tone="muted">{t('setup.account.balanceHint')}</Text>
               </View>
@@ -152,6 +175,9 @@ const createStyles = ({ size, space }: Theme) =>
     preview: { gap: space.md },
     question: { gap: size.titleGap },
     asked: { gap: space.xs },
-    currency: { gap: space.lg },
+    identity: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
+    grow: { flex: 1 },
+    chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
+    balanceHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
     fields: { gap: space.xl },
   });

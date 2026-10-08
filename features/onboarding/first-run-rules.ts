@@ -52,3 +52,9 @@ export const nextStep = (step: SetupStep): SetupStep | null => SETUP_STEPS[SETUP
 
 /** The step before this one, or null when this is the first. */
 export const previousStep = (step: SetupStep): SetupStep | null => SETUP_STEPS[SETUP_STEPS.indexOf(step) - 1] ?? null;
+
+/** Currencies most people choose between, offered one tap away. */
+const COMMON_CURRENCIES = ['USD', 'EUR', 'GBP', 'INR', 'JPY', 'AUD'] as const;
+
+/** The chosen currency and the phone's own first, then the common ones: six at most, none twice. */
+export const commonCurrencies = (chosen: string, device: string): string[] => [...new Set([chosen, device, ...COMMON_CURRENCIES])].slice(0, 6);

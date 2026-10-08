@@ -170,6 +170,10 @@ use it.
 - **Shortcuts** the user already knows are `FeatureTile compact`: mark and
   label on one line, a few words small beneath. The full tile, with its
   sentence, is for introducing something.
+- **A message screen** (a picture, a headline, a sentence, buttons) is
+  `<Screen centred>`: in the middle when it fits, scrolling when it does
+  not. `scroll={false}` clips on a short phone and is only for content
+  that manages its own height, such as a list.
 - **The way in** asks one question at a time under a picture of what is
   being made: the greeting and the first account as they will look on
   Home, filling in with each answer. Nothing is saved until the last.

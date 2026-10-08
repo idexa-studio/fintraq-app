@@ -1,4 +1,4 @@
-import { SETUP_STEPS, newSetupDraft, nextStep, openingBalance, previousStep, setupBlockerOf, withAccountName, withKind } from '@/features/onboarding/first-run-rules';
+import { SETUP_STEPS, commonCurrencies, newSetupDraft, nextStep, openingBalance, previousStep, setupBlockerOf, withAccountName, withKind } from '@/features/onboarding/first-run-rules';
 
 const draft = () => newSetupDraft('USD', 'Cash');
 
@@ -42,5 +42,10 @@ describe('first-run rules', () => {
     expect(setupBlockerOf('account', { ...draft(), balance: 'abc' })).toBe('balance');
     expect(setupBlockerOf('account', { ...draft(), balance: '500' })).toBeNull();
     expect(setupBlockerOf('account', draft())).toBeNull();
+  });
+
+  it('offers the chosen and the phone currency first, then common ones, none twice', () => {
+    expect(commonCurrencies('INR', 'INR')).toEqual(['INR', 'USD', 'EUR', 'GBP', 'JPY', 'AUD']);
+    expect(commonCurrencies('TRY', 'INR')).toEqual(['TRY', 'INR', 'USD', 'EUR', 'GBP', 'JPY']);
   });
 });

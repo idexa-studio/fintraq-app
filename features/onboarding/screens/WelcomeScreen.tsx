@@ -24,7 +24,7 @@ export function WelcomeScreen() {
 
   return (
     <Screen
-      scroll={false}
+      centred
       footer={
         <>
           <Button label={t('welcome.start')} onPress={() => router.push('/(onboarding)/setup')} />
@@ -52,7 +52,7 @@ export function WelcomeScreen() {
 
 const createStyles = ({ space }: Theme) =>
   StyleSheet.create({
-    centre: { flex: 1, justifyContent: 'center', gap: space.xl },
+    centre: { gap: space.xl },
     // Narrower than the page, so it reads as a picture of the app and not a control.
     picture: { paddingHorizontal: space.xl },
   });

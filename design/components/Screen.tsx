@@ -19,6 +19,11 @@ export type ScreenProps = {
   tabBar?: React.ReactNode;
   /** The screen is one of the app's tabs: the tab bar below it already clears the bottom inset. */
   tabbed?: boolean;
+  /**
+   * The content sits in the middle of the space when it fits, and scrolls when it does not:
+   * for a message with a picture, which must not be cut off on a short screen.
+   */
+  centred?: boolean;
   /** Content scrolls by default. Turn off for a single full-height message. */
   scroll?: boolean;
   /** Page margin around the content. Turn off when a child must reach the edges. */
@@ -48,7 +53,7 @@ function sectionsOf(children: React.ReactNode): React.ReactNode[] {
 }
 
 /** Every screen starts here: page colour, safe areas, header, content, then footer or tab bar. */
-export function Screen({ children, header, footer, tabBar, tabbed = false, sheet = false, scroll = true, padded = true, keyboardAware = false, scrollHidesKeyboard = false }: ScreenProps) {
+export function Screen({ children, header, footer, tabBar, tabbed = false, sheet = false, scroll = true, centred = false, padded = true, keyboardAware = false, scrollHidesKeyboard = false }: ScreenProps) {
   const styles = useStyles(createStyles);
   const { motion } = useTheme();
   const keyboard = useKeyboardOverlap(keyboardAware);
@@ -71,7 +76,7 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, sheet
     <View style={[styles.page, { paddingTop: clearsTop ? insets.top : 0, paddingBottom: (clearsBottom ? insets.bottom : 0) + keyboard }]}>
       {header}
       {scroll ? (
-        <ScrollView style={styles.fill} contentContainerStyle={[styles.scrollContent, content]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode={scrollHidesKeyboard ? 'on-drag' : 'none'}>
+        <ScrollView style={styles.fill} contentContainerStyle={[styles.scrollContent, content, centred ? styles.centred : null]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode={scrollHidesKeyboard ? 'on-drag' : 'none'}>
           {arriving}
         </ScrollView>
       ) : (
@@ -100,5 +105,6 @@ const createStyles = ({ colors, size, space }: Theme) =>
     fill: { flex: 1 },
     padded: { paddingHorizontal: size.screenPadding },
     scrollContent: { paddingTop: space.sm, paddingBottom: space.xxl, gap: size.sectionGap },
+    centred: { flexGrow: 1, justifyContent: 'center' },
     footer: { paddingHorizontal: size.screenPadding, paddingTop: space.lg, paddingBottom: space.lg, gap: space.lg },
   });

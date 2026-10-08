@@ -43,7 +43,7 @@ export function PinSetupScreen() {
 
   const confirming = setup.step === 'confirm';
   return (
-    <Screen sheet scroll={false} header={<Header task title={t('pin.title')} onClose={close} closeLabel={t('pin.close')} />}>
+    <Screen sheet centred header={<Header task title={t('pin.title')} onClose={close} closeLabel={t('pin.close')} />}>
       <View style={styles.centre}>
         <Message title={t(confirming ? 'pin.confirmTitle' : 'pin.chooseTitle')} body={t(confirming ? 'pin.confirmBody' : 'pin.chooseBody')} />
         {/* The line is always there, so the pad does not jump when it has something to say. */}
@@ -56,6 +56,6 @@ export function PinSetupScreen() {
 
 const createStyles = ({ space }: Theme) =>
   StyleSheet.create({
-    centre: { flex: 1, justifyContent: 'center', gap: space.lg },
+    centre: { gap: space.lg },
     said: { minHeight: space.xl },
   });
