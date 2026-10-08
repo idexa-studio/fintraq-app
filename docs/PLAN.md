@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 157 | 102 | In progress |
+| D | Screens at parity with the shipped app | 167 | 102 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -495,6 +495,25 @@ Built in `features/backup` on 2026-10-08 and seen on a device only as far as the
 - [ ] D17.03 Error boundary screen (built in `features/shell`; not seen: it needs a screen to fail)
 - [ ] ~~D17.04 Feature tips at the same first-time moments, same storage keys~~ Dropped: the tips pointed at controls of the old screens, none of which exist now, and the rebuilt screens explain themselves with a line under each section title and an empty state with a first step. Their storage keys stay in the erase list so old installs are still cleaned
 - [ ] D17.05 Shared checklist
+
+### D18. Notifications, rewritten (owner, 2026-10-08: "we need to be creative about notifications")
+
+Every message the app sends outside itself. Today's daily reminders are eight
+rotating lines that shout ("Fintraq OS: Action Required"), lean on emoji and
+talk about a streak and a "runway" the app does not have; the backup and loan
+ones are flat. They are the app's voice when it is closed, so they get the
+same care as a screen.
+
+- [ ] D18.01 Inventory: every notification with when it fires, what tapping it opens, and its channel (daily reminder x8, the "stay consistent" follow-up, loan due and instalment due each way, backup running, done, failed, reconnect; channel names)
+- [ ] D18.02 One voice, written down in `docs/PRODUCT.md`: says what it is about in the title, one useful sentence in the body, no alarm words, no emoji as decoration, never a fact the app does not track
+- [ ] D18.03 Daily reminder: a new rotating set that is specific where it can be. Use what the app knows at the moment it is scheduled (nothing recorded today, the weekday, the first of the month, a loan due tomorrow) so the line is about the user's day, not a slogan; a plain fallback when it knows nothing
+- [ ] D18.04 Tapping a daily reminder opens Add expense; the line after a day that was recorded says so and asks for nothing
+- [ ] D18.05 Loans: who, how much and when in the title ("Priya owes you $300 tomorrow"), with the action in the body; separate wording for lent and borrowed, due and instalment
+- [ ] D18.06 Backup: quiet while it works, silent when it succeeds in the background, and a failure that says what to do ("Connect Google Drive again to keep backing up"); the stage lines shown on the Backup screen rewritten with them
+- [ ] D18.07 Channel names and descriptions as the user sees them in the phone's settings ("Daily reminder", "Loans", "Backup"), kept under the existing channel ids so nobody's choices are reset
+- [ ] D18.08 Keys: the new English in a `notifications` copy namespace; the old keys stay until the 12 translations are redone (G1.02), and a test fails if any notification the code can send has no text
+- [ ] D18.09 A preview list in Developer: every notification, sent on tap, so each can be read on a real lock screen
+- [ ] D18.10 Shared checklist
 
 ---
 

@@ -4,7 +4,6 @@ import { buildRows } from '@/data/seed/demo-data';
 jest.mock('@/data/db/client', () => ({ db: {} }));
 jest.mock('@/shared/logging/logger', () => ({ LoggerService: { error: jest.fn() } }));
 jest.mock('@react-native-async-storage/async-storage', () => ({ getItem: jest.fn(), setItem: jest.fn() }));
-jest.mock('@/src/utils/icons', () => ({ resolveAccountTypeIcon: () => 'building' }));
 
 const NOW = new Date(2026, 9, 5, 12, 0, 0);
 const rows = buildRows(NOW);
