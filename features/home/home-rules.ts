@@ -1,27 +1,29 @@
-/** How many accounts the balance card names before the rest are counted. */
-export const ACCOUNTS_NAMED = 6;
+/** How many accounts Home stacks before the rest are counted. */
+export const ACCOUNTS_STACKED = 5;
 
-type Held = { id: number; name: string; balance: number; color: number };
+type Held = { id: number; balance: number; isDefault?: boolean | null };
 
-export type BalanceMakeup<T extends Held> = {
-  /** The accounts that hold money, largest first: each is a stretch of the bar as wide as its share. */
-  parts: T[];
-  /** The accounts named under the bar: those in the bar first, then the ones that owe or are empty. */
-  named: T[];
-  /** How many more accounts there are than are named. */
+export type AccountStack<T extends Held> = {
+  /** The cards behind, each showing only its top edge, furthest back first. */
+  behind: T[];
+  /** The card in front, shown in full: the default account, or else the one holding most. */
+  front: T | null;
+  /** How many more accounts there are than are stacked. */
   more: number;
 };
 
 /**
- * What a balance is made of. Only money held can be drawn as a share of a
- * bar; an account that owes (a card) or is empty is still named beneath it,
- * so every account is accounted for.
+ * Accounts as a stack of cards, like a wallet. The default account is in
+ * front because it is the one used most; the rest sit behind it with the
+ * largest holding nearest, so what matters most is closest to the eye.
  */
-export function balanceMakeup<T extends Held>(accounts: readonly T[], named: number = ACCOUNTS_NAMED): BalanceMakeup<T> {
-  const parts = accounts.filter((account) => account.balance > 0).sort((a, b) => b.balance - a.balance);
-  const rest = accounts.filter((account) => account.balance <= 0);
-  const all = [...parts, ...rest];
-  return { parts, named: all.slice(0, named), more: Math.max(0, all.length - named) };
+export function accountStack<T extends Held>(accounts: readonly T[], stacked: number = ACCOUNTS_STACKED): AccountStack<T> {
+  if (accounts.length === 0) return { behind: [], front: null, more: 0 };
+  const byHolding = [...accounts].sort((a, b) => b.balance - a.balance);
+  const front = byHolding.find((account) => account.isDefault) ?? byHolding[0]!;
+  const others = byHolding.filter((account) => account !== front).slice(0, stacked - 1);
+  // Drawn top to bottom, so the furthest card comes first and the nearest sits just above the front one.
+  return { behind: others.reverse(), front, more: Math.max(0, accounts.length - stacked) };
 }
 
 /** How far apart two colours must be, across red, green and blue, to be told apart as small dots. */

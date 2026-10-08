@@ -13,9 +13,6 @@ export default {
     addExpense: 'Add expense',
     addIncome: 'Add income',
     openAccounts: 'Accounts',
-    makeup: 'How the balance is shared among your accounts',
-    more_one: 'and {{count}} more account',
-    more_other: 'and {{count}} more accounts',
     scope: 'Home is showing {{currency}} only',
   },
   quick: {
@@ -40,6 +37,8 @@ export default {
   },
   accounts: {
     title: 'Accounts',
+    more_one: 'and {{count}} more account',
+    more_other: 'and {{count}} more accounts',
     emptyTitle: 'Keep cash, bank and cards apart',
     emptyBody: 'One account is enough to start.',
     emptyAction: 'Add an account',
