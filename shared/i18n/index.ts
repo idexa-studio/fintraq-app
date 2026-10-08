@@ -27,13 +27,16 @@ import fr from '@/shared/i18n/copy/fr.json';
 import hi from '@/shared/i18n/copy/hi.json';
 import id from '@/shared/i18n/copy/id.json';
 import ja from '@/shared/i18n/copy/ja.json';
+import kn from '@/shared/i18n/copy/kn.json';
 import mr from '@/shared/i18n/copy/mr.json';
 import pt from '@/shared/i18n/copy/pt.json';
+import ta from '@/shared/i18n/copy/ta.json';
+import te from '@/shared/i18n/copy/te.json';
 
 export * from './config';
 
 /** The languages translated so far. Add each here as its file is built. */
-const TRANSLATED = { hi, bn, es, pt, fr, de, id, ja, mr };
+const TRANSLATED = { hi, bn, es, pt, fr, de, id, ja, mr, ta, te, kn };
 
 const i18n = createInstance();
 i18n

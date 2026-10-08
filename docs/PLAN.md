@@ -30,7 +30,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 27 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
-| G | Release 1: the redesign | 23 | 1 | In progress |
+| G | Release 1: the redesign | 23 | 3 | In progress |
 | H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
 
@@ -602,7 +602,7 @@ Done when: the redesign is live to all users with no data loss reported.
 
 ### G1. Copy and translation
 - [x] G1.01 English copy read through once as a whole for one voice (done 2026-10-08: every string scanned; ten "Please try again" made plain, "entry" made "transaction" everywhere, the vocabulary written into `docs/PRODUCT.md`, and `shared/i18n/__tests__/voice.test.ts` holds all copy to it)
-- [ ] G1.02 Translate the new keys into the other 12 locales (until this is done every language shows the English copy. The shipped translations of the old screens are in git for reference: `git show feabfba:shared/i18n/locales/hi.ts`. Write each as `shared/i18n/copy/<namespace>.<language>.ts` and add the missing-keys script, C2.05, with it) Progress 2026-10-08: Hindi, Bengali, Spanish, Portuguese and French are done (967 strings each, built and checked by `scripts/i18n/build.js`); German, Indonesian, Japanese, Marathi, Tamil, Telugu and Kannada remain. All are machine translations by Claude and want a native reader before release.
+- [x] G1.02 Translate the new keys into the other 12 locales (until this is done every language shows the English copy. The shipped translations of the old screens are in git for reference: `git show feabfba:shared/i18n/locales/hi.ts`. Write each as `shared/i18n/copy/<namespace>.<language>.ts` and add the missing-keys script, C2.05, with it) Progress 2026-10-08: Hindi, Bengali, Spanish, Portuguese and French are done (967 strings each, built and checked by `scripts/i18n/build.js`); German, Indonesian, Japanese, Marathi, Tamil, Telugu and Kannada followed the same day, so all 12 are complete and `node scripts/i18n/build.js --check` passes. Each is one file, `shared/i18n/copy/<language>.json`. All are machine translations by Claude and want a native reader before release; only Hindi has been seen on a phone (G1.03).
 - [ ] G1.03 Device: spot-check one Indic locale, German (long words) and Japanese
 
 ### G2. Quality
@@ -624,7 +624,7 @@ Done when: the redesign is live to all users with no data loss reported.
 - [ ] G3.04 Privacy policy and terms updated for subscriptions
 - [ ] G3.05 Data-safety and privacy labels reviewed
 - [ ] G3.06 Release notes
-- [ ] G3.07 Version number decided (a redesign suggests 2.0.0)
+- [x] G3.07 Version number decided (a redesign suggests 2.0.0) Set to 2.0.0 on 2026-10-08 in `app.json` and `package.json`; the build number is kept by EAS (`appVersionSource: remote`).
 
 ### G4. Rollout
 - [ ] G4.01 Internal track, then closed testers
