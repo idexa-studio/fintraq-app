@@ -6,7 +6,7 @@ import { Categories, Findings, Forecast, PeopleShare, PeriodSummary, Rhythm } fr
 import { useInsights } from '@/features/insights/hooks/useInsights';
 import { DEFAULT_PERIOD, FREE_CATEGORIES, PERIODS, allowedPeriod } from '@/features/insights/insights-rules';
 import type { PeriodDays } from '@/features/insights/insights-rules';
-import { PRO_FEATURES, PRO_FEATURE_COPY, featuresIn, usePro } from '@/features/pro';
+import { PRO_FEATURES, featuresIn, usePro, useProCopy } from '@/features/pro';
 import { useSettings } from '@/features/settings';
 import { useTransactionsCount } from '@/features/transactions';
 import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
@@ -31,6 +31,7 @@ export function InsightsScreen() {
   const router = useRouter();
   const { profile } = useSettings();
   const { isPro, openPaywall } = usePro();
+  const proCopy = useProCopy();
   const { data: accounts } = useAccounts();
   const { data: recorded } = useTransactionsCount();
 
@@ -111,7 +112,7 @@ export function InsightsScreen() {
           badge={t('locked.badge')}
           title={t('locked.title')}
           body={t('locked.body')}
-          items={PRO_HERE.map((id) => ({ icon: PRO_FEATURES[id].icon, title: PRO_FEATURE_COPY[id].title }))}
+          items={PRO_HERE.map((id) => ({ icon: PRO_FEATURES[id].icon, title: proCopy.feature(id).title }))}
           actionLabel={t('locked.action')}
           onAction={() => openPaywall('periods')}
         />

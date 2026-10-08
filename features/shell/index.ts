@@ -6,6 +6,7 @@ export { DatabaseGate } from './DatabaseGate';
 export { ErrorBoundary } from './ErrorBoundary';
 export { ForceUpdateScreen } from './ForceUpdateScreen';
 export { SystemNavBackdrop } from './SystemNavBackdrop';
+export { TelemetryGate } from './TelemetryGate';
 export { useLauncherShortcuts } from './useLauncherShortcuts';
 export { useLeaveGuard } from './useLeaveGuard';
 export { useNotificationRouting } from './useNotificationRouting';

@@ -17,7 +17,7 @@ The work is tracked task by task in **`docs/PLAN.md`**. Always work from it:
 3. Tick it and update the progress table in the same change.
 4. If something new turns up, add it to the plan as a task; do not just do it.
 
-Current phase: **C, groundwork.** The gallery was approved on 2026-10-09
+Current phases: **D, E and the tail of C**, in parallel as the owner unblocks them. The gallery was approved on 2026-10-09
 (task B7.01); new widgets still go through the gallery first.
 
 ## Read before changing anything
@@ -39,14 +39,13 @@ features/<name>/  one product area; used from outside only through its index.ts
 data/             database, repositories, backup format
 platform/         store purchases, Drive, notifications, lock, telemetry, config
 shared/           pure helpers and contracts; depends on nothing
-src/              LEGACY screens, components and providers only. Deleted in phase F
 ```
 
 - Import UI only from `@/design`. Tokens come from its `useTheme()`. No hex
   colours, no bare `fontSize`, in feature code.
 - Imports use the `@/…` alias; `./` only for a file in the same folder; never
   `../`.
-- New code never imports from `@/src`. Lint enforces the import directions and
+- The legacy `src/` tree is gone (deleted 2026-10-08). Lint enforces the import directions and
   `npm run lint:design` fails on reaching into another feature's internals.
 - One component per file, named exports, styles in a `createStyles(theme)`
   factory read with `useStyles`. Match the surrounding code.

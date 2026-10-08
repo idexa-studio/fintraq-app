@@ -5,11 +5,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { TelemetryProvider } from '@/src/providers/TelemetryProvider';
-import { PremiumProvider } from '@/src/providers/PremiumProvider';
 import { QueryProvider } from '@/data/QueryProvider';
 import { SettingsProvider , I18nProvider } from '@/features/settings';
-import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/platform/notifications/notifications';
 import { ReviewPromptService } from '@/platform/config/review-prompt';
 import { useFonts } from 'expo-font';
@@ -25,8 +22,8 @@ import { AppState, AppStateStatus, useColorScheme } from 'react-native';
 import { FONT_ASSETS, SHEET_ROUTE, ToastProvider } from '@/design';
 import { LockProvider } from '@/features/lock';
 import { OnboardingProvider } from '@/features/onboarding';
-import { ProProvider } from '@/features/pro';
-import { AppConfigGate, AppTheme, DatabaseGate, SystemNavBackdrop } from '@/features/shell';
+import { ProEndedNotice, ProProvider } from '@/features/pro';
+import { AppConfigGate, AppTheme, DatabaseGate, SystemNavBackdrop, TelemetryGate } from '@/features/shell';
 import React, { useEffect, useState } from 'react';
 import { LoggerService } from '@/shared/logging/logger';
 
@@ -37,13 +34,7 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [migrationReady, setMigrationReady] = useState(false);
 
-  const [fontsLoaded] = useFonts({
-    MuseoModerno_Bold: require('../assets/fonts/MuseoModerno/MuseoModerno-Bold.ttf'),
-    MuseoModerno_Regular: require('../assets/fonts/MuseoModerno/MuseoModerno-Regular.ttf'),
-    MuseoModerno_Medium: require('../assets/fonts/MuseoModerno/MuseoModerno-Medium.ttf'),
-    MuseoModerno_SemiBold: require('../assets/fonts/MuseoModerno/MuseoModerno-SemiBold.ttf'),
-    ...FONT_ASSETS,
-  });
+  const [fontsLoaded] = useFonts(FONT_ASSETS);
 
   useEffect(() => {
     async function runMigration() {
@@ -84,12 +75,10 @@ export default function RootLayout() {
           <DatabaseGate>
             <SettingsProvider>
               <I18nProvider>
-              <PremiumProvider>
-              <ProProvider>
-                <TelemetryProvider>
-                  <OnboardingProvider>
-                    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                      <CustomThemeProvider>
+                <ProProvider>
+                  <TelemetryGate>
+                    <OnboardingProvider>
+                      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                         <AppTheme>
                           <LockProvider>
                             <AppConfigGate>
@@ -100,21 +89,21 @@ export default function RootLayout() {
                                   <Stack.Screen name="(main)" />
                                   {/* Tasks rise over the screen they were started from. */}
                                   <Stack.Screen name="add" options={SHEET_ROUTE} />
+                                  <Stack.Screen name="pro" options={SHEET_ROUTE} />
                                   <Stack.Screen name="transactions/[id]/edit" options={SHEET_ROUTE} />
                                   <Stack.Screen name="transactions/[id]" options={SHEET_ROUTE} />
                                 </Stack>
+                                <ProEndedNotice />
                               </ToastProvider>
                               <SystemNavBackdrop />
                               <StatusBar style="auto" />
                             </AppConfigGate>
                           </LockProvider>
                         </AppTheme>
-                      </CustomThemeProvider>
-                    </ThemeProvider>
-                  </OnboardingProvider>
-                </TelemetryProvider>
-              </ProProvider>
-              </PremiumProvider>
+                      </ThemeProvider>
+                    </OnboardingProvider>
+                  </TelemetryGate>
+                </ProProvider>
               </I18nProvider>
             </SettingsProvider>
           </DatabaseGate>

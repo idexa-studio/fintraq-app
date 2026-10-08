@@ -39,6 +39,16 @@ export function isPro(entitlement: Entitlement, now: number): boolean {
   return false;
 }
 
+/**
+ * The better of two entitlements, for adding a purchase just made to what is already held:
+ * lifetime beats a subscription, and of two subscriptions the one that runs longer counts.
+ */
+export function strongerOf(a: Entitlement, b: Entitlement): Entitlement {
+  if (a.kind === 'lifetime' || b.kind === 'none') return a;
+  if (b.kind === 'lifetime' || a.kind === 'none') return b;
+  return b.activeUntil > a.activeUntil ? b : a;
+}
+
 /** Which plan a store product id belongs to, on either platform. */
 export function planOfProduct(productId: string): ProductKey | null {
   const keys = Object.keys(PRODUCT_IDS) as ProductKey[];

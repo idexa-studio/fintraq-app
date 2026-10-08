@@ -3,7 +3,8 @@ const { defineConfig } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
 
 const RELATIVE = { group: ['../*'], message: "Use the '@/…' alias for anything outside this folder." };
-const LEGACY = { group: ['@/src/*'], message: 'src/ is legacy: new code does not depend on it.' };
+// The legacy folder is gone (phase F); the rule stays so it cannot come back unnoticed.
+const LEGACY = { group: ['@/src/*'], message: 'src/ was the legacy tree and no longer exists.' };
 
 module.exports = defineConfig([
   expoConfig,
@@ -12,7 +13,7 @@ module.exports = defineConfig([
   },
   {
     // See docs/ARCHITECTURE.md → Imports
-    files: ['src/**/*.{ts,tsx}', 'app/**/*.{ts,tsx}'],
+    files: ['app/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': ['warn', { patterns: [RELATIVE] }],
     },

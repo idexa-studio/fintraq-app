@@ -1,6 +1,6 @@
 import { Card, Checklist, Emblem, Header, ListGroup, ListRow, Screen, Section, Switch, Text, useStyles, useToast } from '@/design';
 import type { Theme } from '@/design';
-import { useLegalLinks } from '@/features/settings/hooks/useLegalLinks';
+import { useLegalLinks } from '@/platform/config/legal-links';
 import { useSettings } from '@/features/settings/SettingsProvider';
 import { getFormattedAppVersion } from '@/platform/config/version';
 import { useRouter } from 'expo-router';

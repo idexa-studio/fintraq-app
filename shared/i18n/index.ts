@@ -17,6 +17,7 @@ import lock from '@/shared/i18n/copy/lock.en';
 import settingsCopy from '@/shared/i18n/copy/settings.en';
 import firstRun from '@/shared/i18n/copy/firstRun.en';
 import notifications from '@/shared/i18n/copy/notifications.en';
+import pro from '@/shared/i18n/copy/pro.en';
 import shell from '@/shared/i18n/copy/shell.en';
 import transactions from '@/shared/i18n/copy/transactions.en';
 import bn from '@/shared/i18n/locales/bn';
@@ -43,7 +44,7 @@ i18n
     resources: {
       // `translation` is the shipped app's copy. The other namespaces are the rebuilt screens' copy,
       // written in English first: a language without one falls back to English, never to a key.
-      en: { translation: en, common, shell, home, transactions, activity, accounts, categories, people, loans, plan, insights, search, backup: backupCopy, export: exportCopy, lock, settings: settingsCopy, firstRun, notifications },
+      en: { translation: en, common, shell, home, transactions, activity, accounts, categories, people, loans, plan, insights, search, backup: backupCopy, export: exportCopy, lock, settings: settingsCopy, firstRun, notifications, pro },
       hi: { translation: hi },
       bn: { translation: bn },
       ta: { translation: ta },
@@ -57,7 +58,7 @@ i18n
       de: { translation: de },
       ja: { translation: ja },
     },
-    ns: ['translation', 'common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans', 'plan', 'insights', 'search', 'backup', 'export', 'lock', 'settings', 'firstRun', 'notifications'],
+    ns: ['translation', 'common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans', 'plan', 'insights', 'search', 'backup', 'export', 'lock', 'settings', 'firstRun', 'notifications', 'pro'],
     defaultNS: 'translation',
     lng: getSystemLanguage(),
     fallbackLng: 'en',

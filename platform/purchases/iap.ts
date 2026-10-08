@@ -84,7 +84,7 @@ export class IAPService {
    * @param action The store operation to execute.
    * @returns The result of the store operation.
    */
-  private static async execute<T>(action: () => Promise<T>): Promise<T> {
+  static async run<T>(action: () => Promise<T>): Promise<T> {
     const ready = await this.init();
     if (!ready) throw new Error('Store interface unavailable');
 
@@ -117,7 +117,7 @@ export class IAPService {
     if (skus.length === 0) return [];
 
     try {
-      return await this.execute(async () => {
+      return await this.run(async () => {
         const products = await IAP.fetchProducts({ skus, type: "all" });
         
         if (products && products.length > 0) {
@@ -162,7 +162,7 @@ export class IAPService {
    * @returns Array of confirmed Purchase objects.
    */
   static async getActivePurchases(): Promise<IAP.Purchase[]> {
-    return this.execute(async () => {
+    return this.run(async () => {
       const result = await IAP.getAvailablePurchases();
       // Ensure specific Purchase typing from StoreKit/Play results
       return ((result as unknown as IAP.Purchase[]) || []).filter(isSettledPurchase);
