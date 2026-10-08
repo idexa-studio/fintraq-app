@@ -1,7 +1,7 @@
 /** The design system. Product code imports UI from here and nowhere else. */
 export { ThemeProvider, useFontScale, useStyles, useTheme } from './ThemeProvider';
 export type { Scheme, Script, Theme } from './ThemeProvider';
-export { FONT_ASSETS, needsSystemFont } from './tokens/typography';
+export { FONT_ASSETS, ltr, needsSystemFont } from './tokens/typography';
 export type { TypeVariant } from './tokens/typography';
 export { BACKDROP, INK, PASTELS, pastelOf } from './tokens/colors';
 export type { ColorRoles, PastelName } from './tokens/colors';

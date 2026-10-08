@@ -13,6 +13,9 @@ export default {
     addExpense: 'Add expense',
     addIncome: 'Add income',
     openAccounts: 'Accounts',
+    makeup: 'How the balance is shared among your accounts',
+    more_one: 'and {{count}} more account',
+    more_other: 'and {{count}} more accounts',
     scope: 'Everything on Home is in {{currency}}. Change it on the card above.',
   },
   quick: {
@@ -28,6 +31,7 @@ export default {
     moneyIn: 'Money in',
     moneyOut: 'Money out',
     kept: 'You’ve kept {{percent}}% of what came in',
+    keptLabel: 'kept',
     spentAll: 'You’ve spent everything that came in',
     spentMore: 'You’ve spent more than came in',
     onlySpending: 'No income recorded yet this month',
@@ -54,5 +58,6 @@ export default {
     emptyTitle: 'Remember who owes what',
     emptyBody: 'Track money lent, borrowed or split.',
     emptyAction: 'Add a person',
+    add: 'Add',
   },
 } as const;

@@ -1,7 +1,7 @@
 import { FeatureTile, Header, IconButton, Screen, Section, Text, useTheme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { BalanceCard } from '@/features/home/components/BalanceCard';
-import { AccountList, PeopleList, RecentList } from '@/features/home/components/HomeLists';
+import { AccountList, PeopleStrip, RecentList } from '@/features/home/components/HomeLists';
 import { MonthCard } from '@/features/home/components/MonthCard';
 import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
 import { peopleByStanding, usePeopleWithBalances } from '@/features/people';
@@ -15,10 +15,9 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-/** How many accounts, transactions and people Home lists before "See all". */
-const ACCOUNTS_SHOWN = 4;
+/** How many transactions and people Home shows before "See all". */
 const RECENT_SHOWN = 5;
-const PEOPLE_SHOWN = 6;
+const PEOPLE_SHOWN = 8;
 
 /** The Home tab: where you stand, and the way to everything done most. */
 export function HomeScreen() {
@@ -36,13 +35,13 @@ export function HomeScreen() {
   // Whoever has something outstanding first, then the rest by name.
   const people = useMemo(() => (everyone ? peopleByStanding(everyone).flatMap((group) => group.people).slice(0, PEOPLE_SHOWN) : undefined), [everyone]);
 
-  const shownAccounts = accounts ? balances.accounts.slice(0, ACCOUNTS_SHOWN) : undefined;
   // The same rule the transfer form uses, so the tile never opens a form that cannot be completed.
   const canTransfer = hasPossibleTransfer(accounts ?? []);
   const name = profile.name.trim().split(/\s+/)[0];
 
   const add = (kind: Kind) => router.push({ pathname: '/add', params: { kind } });
   const lend = () => router.push('/loans/new');
+  const openAccount = (id: number) => router.push({ pathname: '/accounts/[id]', params: { id } });
 
   return (
     <Screen
@@ -56,9 +55,16 @@ export function HomeScreen() {
       }
     >
       <Section title={t('balance.title')}>
-        <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} />
+        <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} onOpenAccount={openAccount} />
         {balances.currencies.length > 1 ? <Text variant="callout" tone="muted">{t('balance.scope', { currency: currencyName(currency) })}</Text> : null}
       </Section>
+
+      {/* The balance card names the accounts; this section is only the way to add the first one. */}
+      {accounts && accounts.length === 0 ? (
+        <Section title={t('accounts.title')}>
+          <AccountList accounts={[]} loading={false} onOpen={openAccount} onAdd={() => router.push('/accounts/new')} />
+        </Section>
+      ) : null}
 
       <Section title={t('quick.title')}>
         <View style={{ flexDirection: 'row', gap: size.cardGap }}>
@@ -71,16 +77,13 @@ export function HomeScreen() {
         <MonthCard currency={currency} />
       </Section>
 
-      <Section title={t('accounts.title')} actionLabel={accounts?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/accounts')}>
-        <AccountList accounts={shownAccounts} loading={accountsPending} onOpen={(id) => router.push({ pathname: '/accounts/[id]', params: { id } })} onAdd={() => router.push('/accounts/new')} />
-      </Section>
 
       <Section title={t('recent.title')} actionLabel={transactions?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/activity')}>
         <RecentList transactions={transactions} loading={transactionsPending} onOpen={(id) => router.push({ pathname: '/transactions/[id]', params: { id } })} onAdd={() => add('expense')} />
       </Section>
 
       <Section title={t('people.title')} actionLabel={people?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/people')}>
-        <PeopleList people={people} currency={currency} loading={peoplePending} onOpen={(id) => router.push({ pathname: '/people/[id]', params: { id } })} onAdd={() => router.push('/people/new')} />
+        <PeopleStrip people={people} currency={currency} loading={peoplePending} onOpen={(id) => router.push({ pathname: '/people/[id]', params: { id } })} onAdd={() => router.push('/people/new')} />
       </Section>
     </Screen>
   );
