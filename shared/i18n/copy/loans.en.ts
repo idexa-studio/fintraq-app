@@ -4,9 +4,17 @@ export default {
   close: 'Close',
   title: { lend: 'Lent to {{name}}', borrow: 'Borrowed from {{name}}', borrowNoName: 'Money borrowed', lendNoName: 'Money lent' },
   status: { active: 'Active', overdue: 'Overdue', repaid: 'Repaid' },
+  edit: {
+    title: 'Due date and note',
+    save: 'Save changes',
+    saved: 'Loan updated',
+    unchanged: 'Nothing changed yet',
+  },
   loan: {
     notFound: 'This loan no longer exists',
     manage: 'Manage loan',
+    edit: 'Change due date or note',
+    editHint: 'The amount and the person stay as recorded',
     outstanding: { lend: 'Still to come back', borrow: 'Still to pay back' },
     settled: 'All settled',
     progress: '{{repaid}} of {{total}} repaid',

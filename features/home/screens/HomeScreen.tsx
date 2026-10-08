@@ -1,10 +1,14 @@
-import { FeatureTile, Header, IconButton, Screen, Section, useTheme } from '@/design';
+import { FeatureTile, Header, IconButton, Notice, Screen, Section, useTheme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { AccountStack } from '@/features/home/components/AccountStack';
 import { BalanceCard } from '@/features/home/components/BalanceCard';
+import { GettingStarted } from '@/features/home/components/GettingStarted';
 import { AccountList, PeopleStrip, RecentList } from '@/features/home/components/HomeLists';
 import { MonthCard } from '@/features/home/components/MonthCard';
+import type { GettingStartedStepId } from '@/features/home/getting-started';
+import { useGettingStarted } from '@/features/home/hooks/useGettingStarted';
 import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
+import { useHomePrompt } from '@/features/home/hooks/useHomePrompt';
 import { peopleByStanding, usePeopleWithBalances } from '@/features/people';
 import { firstName } from '@/features/home/home-rules';
 import { useSettings } from '@/features/settings';
@@ -42,6 +46,14 @@ export function HomeScreen() {
 
   const add = (kind: Kind) => router.push({ pathname: '/add', params: { kind } });
   const lend = () => router.push('/loans/new');
+  const start = useGettingStarted();
+  const { prompt, dismiss: dismissPrompt } = useHomePrompt();
+  const doStep = (id: GettingStartedStepId) => {
+    if (id === 'transaction') add('expense');
+    else if (id === 'reminder') router.push('/settings');
+    else if (id === 'backup') router.push('/backup');
+    else router.push('/accounts/new');
+  };
   const openAccount = (id: number) => router.push({ pathname: '/accounts/[id]', params: { id } });
 
   return (
@@ -56,6 +68,12 @@ export function HomeScreen() {
       }
     >
       <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} />
+
+      {start.visible ? <GettingStarted steps={start.steps} onStep={doStep} onHide={start.dismiss} /> : null}
+      {/* Someone still getting started is not also asked to back up. */}
+      {prompt === 'backup' && !start.visible ? (
+        <Notice title={t('prompt.backup.title')} body={t('prompt.backup.body')} linkLabel={t('prompt.backup.link')} onLink={() => router.push('/backup')} onDismiss={dismissPrompt} dismissLabel={t('prompt.backup.dismiss')} />
+      ) : null}
 
       <Section title={t('quick.title')} hint={t('quick.hint')}>
         <View style={{ flexDirection: 'row', gap: size.cardGap }}>
@@ -75,7 +93,6 @@ export function HomeScreen() {
       <Section title={t('month.title')} hint={t('month.hint')} actionLabel={t('month.link')} onAction={() => router.push('/insights')}>
         <MonthCard currency={currency} />
       </Section>
-
 
       <Section title={t('recent.title')} hint={transactions?.length ? t('recent.hint') : undefined} actionLabel={transactions?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/activity')}>
         <RecentList transactions={transactions} loading={transactionsPending} onOpen={(id) => router.push({ pathname: '/transactions/[id]', params: { id } })} onAdd={() => add('expense')} />

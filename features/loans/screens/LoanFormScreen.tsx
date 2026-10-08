@@ -37,7 +37,7 @@ export type LoanFormOptions = {
  * Saving it also records the payment that moved the money.
  */
 export function LoanFormScreen({ initialType = 'lend', initialPersonId }: LoanFormOptions) {
-  const { t } = useTranslation('loans');
+  const { t } = useTranslation(['loans', 'common']);
   const { size, space } = useTheme();
   const styles = useStyles(createStyles);
   const router = useRouter();
@@ -162,7 +162,7 @@ export function LoanFormScreen({ initialType = 'lend', initialPersonId }: LoanFo
               </View>
               {draft.dueDate ? <IconButton icon="x" onPress={() => set('dueDate', null)} accessibilityLabel={t('form.clearDue')} /> : <IconButton icon="calendar" onPress={() => setPicker('due')} accessibilityLabel={t('form.pickDue')} />}
             </View>
-            <TextField label={t('form.note')} value={draft.note} onChangeText={(text) => set('note', text)} placeholder={t('form.noteOptional')} maxLength={NOTE_MAX} />
+            <TextField label={t('form.note')} value={draft.note} onChangeText={(text) => set('note', text)} placeholder={t('form.noteOptional')} maxLength={NOTE_MAX} remaining={(count) => t('common:charactersLeft', { count })} />
           </View>
         </ListGroup>
       </View>

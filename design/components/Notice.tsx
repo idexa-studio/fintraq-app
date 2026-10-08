@@ -14,6 +14,9 @@ export type NoticeProps = {
   tone?: 'info' | 'positive' | 'warning' | 'danger';
   linkLabel?: string;
   onLink?: () => void;
+  /** For a note the reader may put away: shows a cross in the corner. Give `dismissLabel` with it. */
+  onDismiss?: () => void;
+  dismissLabel?: string;
 };
 
 const TONE_ICON: Record<NonNullable<NoticeProps['tone']>, IconName | null> = {
@@ -24,8 +27,8 @@ const TONE_ICON: Record<NonNullable<NoticeProps['tone']>, IconName | null> = {
 };
 
 /** A note that stays on the page: bold title, a sentence, and at most one link. */
-export function Notice({ title, body, tone = 'info', linkLabel, onLink }: NoticeProps) {
-  const { colors, space } = useTheme();
+export function Notice({ title, body, tone = 'info', linkLabel, onLink, onDismiss, dismissLabel }: NoticeProps) {
+  const { colors, space, size } = useTheme();
   const icon = TONE_ICON[tone];
   const iconColor = tone === 'positive' ? colors.positive : tone === 'warning' ? colors.warning : colors.danger;
   return (
@@ -40,6 +43,11 @@ export function Notice({ title, body, tone = 'info', linkLabel, onLink }: Notice
           </Touchable>
         ) : null}
       </View>
+      {onDismiss ? (
+        <Touchable onPress={onDismiss} accessibilityLabel={dismissLabel} hitSlop={space.md} style={{ alignSelf: 'flex-start' }}>
+          <Icon name="x" size={size.iconSmall} color={colors.text} />
+        </Touchable>
+      ) : null}
     </Card>
   );
 }

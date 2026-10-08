@@ -4,6 +4,8 @@ export default {
   yesterday: 'Yesterday',
   seeAll: 'See all',
   back: 'Back',
+  charactersLeft_one: '{{count}} character left',
+  charactersLeft_other: '{{count}} characters left',
   pro: {
     badge: 'Pro',
     see: 'See Fintraq Pro',

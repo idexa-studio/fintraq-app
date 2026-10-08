@@ -178,7 +178,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
             />
           ) : null}
           <View style={{ padding: size.cardPadding, gap: space.lg }}>
-            <TextField label={t('note')} value={form.note} onChangeText={form.setNote} placeholder={t('noteOptional')} maxLength={120} />
+            <TextField label={t('note')} value={form.note} onChangeText={form.setNote} placeholder={t('noteOptional')} maxLength={120} remaining={(count) => t('common:charactersLeft', { count })} />
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
               <View style={{ flex: 1 }}><TextField label={t('when')} value={when} onPress={() => setPicker('when')} /></View>
               <IconButton icon="calendar" onPress={() => setPicker('when')} accessibilityLabel={t('pickDate')} />
@@ -192,7 +192,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
 
       <AccountPicker title={t('pick.account')} visible={picker === 'account'} onClose={() => setPicker(null)} accounts={form.accounts} selectedId={form.account?.id ?? null} onSelect={form.setAccountId} />
       <AccountPicker title={t('pick.toAccount')} visible={picker === 'toAccount'} onClose={() => setPicker(null)} accounts={form.destinations} selectedId={form.toAccount?.id ?? null} onSelect={form.setToAccountId} />
-      <CategoryPicker visible={picker === 'category'} onClose={() => setPicker(null)} categories={form.offeredCategories} selectedId={form.category?.id ?? null} onSelect={form.setCategoryId} />
+      <CategoryPicker kind={form.type} visible={picker === 'category'} onClose={() => setPicker(null)} categories={form.offeredCategories} selectedId={form.category?.id ?? null} onSelect={form.setCategoryId} />
       <PersonPicker visible={picker === 'person'} onClose={() => setPicker(null)} people={form.people} selectedId={form.person?.id ?? null} onSelect={form.setPersonId} />
       <CalculatorSheet visible={picker === 'calculator'} onClose={() => setPicker(null)} currency={currency} onUse={(amount) => form.setAmountText(String(amount))} />
       <WhenPicker visible={picker === 'when'} onClose={() => setPicker(null)} value={form.when} onChange={form.setWhen} />

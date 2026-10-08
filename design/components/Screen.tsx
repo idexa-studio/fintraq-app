@@ -4,8 +4,8 @@ import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import { BACKDROP } from '@/design/tokens/colors';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Keyboard, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -61,6 +61,12 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, sheet
   // after it is first drawn, so a tab opened for the first time showed its header under the
   // status bar for a moment before dropping into place.
   const insets = useSafeAreaInsets();
+
+  // A keyboard left open by the screen beneath (a search field, say) would sit over a task's
+  // buttons. A field that wants the keyboard asks for it once the task has arrived.
+  useEffect(() => {
+    if (sheet) Keyboard.dismiss();
+  }, [sheet]);
   // A sheet starts below the top edge; a tab's bar already clears the bottom.
   const clearsTop = !sheet;
   const clearsBottom = sheet || !(tabBar || tabbed);

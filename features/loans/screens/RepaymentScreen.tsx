@@ -135,7 +135,7 @@ export function RepaymentScreen({ loanId }: { loanId: number }) {
         <ListGroup>
           <View style={styles.fields}>
             <TextField label={t('repay.when')} value={whenText} onPress={() => setPicker('when')} />
-            <TextField label={t('repay.note')} value={note} onChangeText={setNote} placeholder={t('repay.noteOptional')} maxLength={NOTE_MAX} />
+            <TextField label={t('repay.note')} value={note} onChangeText={setNote} placeholder={t('repay.noteOptional')} maxLength={NOTE_MAX} remaining={(count) => t('common:charactersLeft', { count })} />
           </View>
         </ListGroup>
       </View>

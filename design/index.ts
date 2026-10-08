@@ -69,6 +69,7 @@ export { Spinner } from './components/Spinner';
 export { SplitBar } from './components/SplitBar';
 export { Stat } from './components/Stat';
 export { CheckMark, StepRow } from './components/StepRow';
+export type { StepState } from './components/StepRow';
 export { SwatchGrid } from './components/SwatchGrid';
 export type { Swatch } from './components/SwatchGrid';
 export { SwipeRow } from './components/SwipeRow';
