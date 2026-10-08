@@ -155,7 +155,7 @@ export function DeveloperScreen() {
         <ListGroup>
           {scheduled.length === 0 ? <ListRow icon="bell" title="Nothing scheduled" /> : null}
           {scheduled.map((request) => <ListRow key={request.identifier} icon="bell" title={request.content.title || 'Reminder'} subtitle={request.content.body ?? undefined} />)}
-          <ListRow icon="bell" title="Send a sample now" onPress={() => { NotificationService.triggerInstantNotification(); toast.show({ message: 'Sample notification queued' }); }} />
+          <ListRow icon="bell" title="Read every notification" subtitle="Each one, sent on tap" onPress={() => router.push('/notification-previews')} />
           <ListRow icon="refresh" title="Read the schedule again" onPress={readScheduled} />
         </ListGroup>
       </Section>

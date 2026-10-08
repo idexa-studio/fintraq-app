@@ -108,10 +108,10 @@ export function SystemSection() {
           </ListGroup>
         </Specimen>
         <Specimen name="While it runs" note="The line fills towards the Drive; neither action can be started.">
-          <BackupCard title="Backing up · 62%" detail="Uploading to Google Drive..." hasBackup working={{ operation: 'backup', value: 0.62 }} phoneLabel="This phone" driveLabel="Your Drive" backUpLabel="Back up now" restoreLabel="Restore" />
+          <BackupCard title="Backing up · 62%" detail="Sending to Google Drive · 62%" hasBackup working={{ operation: 'backup', value: 0.62 }} phoneLabel="This phone" driveLabel="Your Drive" backUpLabel="Back up now" restoreLabel="Restore" />
         </Specimen>
         <Specimen name="Restoring" note="The line fills the other way: from the Drive back to the phone.">
-          <BackupCard title="Restoring · 40%" detail="Downloading backup..." hasBackup working={{ operation: 'restore', value: 0.4 }} phoneLabel="This phone" driveLabel="Your Drive" backUpLabel="Back up now" restoreLabel="Restore" />
+          <BackupCard title="Restoring · 40%" detail="Fetching your backup · 40%" hasBackup working={{ operation: 'restore', value: 0.4 }} phoneLabel="This phone" driveLabel="Your Drive" backUpLabel="Back up now" restoreLabel="Restore" />
         </Specimen>
         <Specimen name="Nothing backed up yet" note="Restore waits until there is something to restore.">
           <BackupCard title="No backup yet" detail="Back up now, or switch on automatic backup below." hasBackup={false} phoneLabel="This phone" driveLabel="Your Drive" backUpLabel="Back up now" restoreLabel="Restore" />

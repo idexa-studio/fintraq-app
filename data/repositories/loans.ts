@@ -46,7 +46,7 @@ export type LoanRepaymentRow = {
 };
 
 /** Sum of a loan's repayments: money back for a loan you gave, money out for one you took. */
-const REPAID = sql<number>`COALESCE((
+export const REPAID = sql<number>`COALESCE((
   SELECT SUM(p2.amount) FROM payments p2
   WHERE p2.loan_id = ${loans.id}
   AND p2.type = CASE WHEN ${loans.type} = 'lend' THEN 'CR' ELSE 'DR' END

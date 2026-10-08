@@ -10,6 +10,8 @@ import { GoogleDriveService } from '@/platform/drive/google-drive';
 
 const PROGRESS = { locating: 5, downloadStart: 15, downloadSpan: 60, importing: 80, complete: 100 } as const;
 
+const stage = i18n.getFixedT(null, 'backup');
+
 /** Maps internal validation failures to the message the user sees. */
 function toUserFacingError(error: unknown): unknown {
   if (!(error instanceof BackupValidationError)) return error;
@@ -25,23 +27,23 @@ async function execute(): Promise<CloudBackupFileMeta> {
     const target = await GoogleDriveService.findLatestBackup();
     if (!target) throw new NoBackupFoundError();
 
-    reportProgress(PROGRESS.downloadStart, i18n.t('backup.stageDownloading'));
+    reportProgress(PROGRESS.downloadStart, stage('stage.downloading'));
     const json = await GoogleDriveService.downloadBackup(
       target.id,
       (fraction) => {
         const pct = Math.round(fraction * 100);
-        reportProgress(PROGRESS.downloadStart + fraction * PROGRESS.downloadSpan, i18n.t('backup.stageDownloadingPct', { pct }));
+        reportProgress(PROGRESS.downloadStart + fraction * PROGRESS.downloadSpan, stage('stage.downloadingPct', { pct }));
       },
       target.size,
     );
     if (!json.trim()) throw new BackupValidationError('corrupted', 'Downloaded backup is empty');
 
-    reportProgress(PROGRESS.importing, i18n.t('backup.stageRestoring'));
+    reportProgress(PROGRESS.importing, stage('stage.restoring'));
     await DatabaseBackupService.importBackupData(json);
     // Local data now equals this backup, so it counts as the last backup for scheduling.
     await BackupPreferences.recordSuccessfulBackup(target, Date.parse(target.modifiedTime) || Date.now());
 
-    reportProgress(PROGRESS.complete, i18n.t('backup.stageRestoreComplete'));
+    reportProgress(PROGRESS.complete, stage('stage.restored'));
     LoggerService.info('CLOUD_RESTORE', `Restored backup ${target.id} (${target.size} bytes)`);
     result = target;
     return target;
@@ -59,7 +61,7 @@ async function execute(): Promise<CloudBackupFileMeta> {
  * Callers should reload the app afterwards: providers hold state read before the restore.
  */
 export function runCloudRestore(): Promise<CloudBackupFileMeta> {
-  if (!tryBeginOperation('restore', i18n.t('backup.stageLocating'))) {
+  if (!tryBeginOperation('restore', stage('stage.locating'))) {
     return Promise.reject(new BackupInProgressError());
   }
   return execute();

@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 167 | 102 | In progress |
+| D | Screens at parity with the shipped app | 167 | 111 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -504,15 +504,15 @@ talk about a streak and a "runway" the app does not have; the backup and loan
 ones are flat. They are the app's voice when it is closed, so they get the
 same care as a screen.
 
-- [ ] D18.01 Inventory: every notification with when it fires, what tapping it opens, and its channel (daily reminder x8, the "stay consistent" follow-up, loan due and instalment due each way, backup running, done, failed, reconnect; channel names)
-- [ ] D18.02 One voice, written down in `docs/PRODUCT.md`: says what it is about in the title, one useful sentence in the body, no alarm words, no emoji as decoration, never a fact the app does not track
-- [ ] D18.03 Daily reminder: a new rotating set that is specific where it can be. Use what the app knows at the moment it is scheduled (nothing recorded today, the weekday, the first of the month, a loan due tomorrow) so the line is about the user's day, not a slogan; a plain fallback when it knows nothing
-- [ ] D18.04 Tapping a daily reminder opens Add expense; the line after a day that was recorded says so and asks for nothing
-- [ ] D18.05 Loans: who, how much and when in the title ("Priya owes you $300 tomorrow"), with the action in the body; separate wording for lent and borrowed, due and instalment
-- [ ] D18.06 Backup: quiet while it works, silent when it succeeds in the background, and a failure that says what to do ("Connect Google Drive again to keep backing up"); the stage lines shown on the Backup screen rewritten with them
-- [ ] D18.07 Channel names and descriptions as the user sees them in the phone's settings ("Daily reminder", "Loans", "Backup"), kept under the existing channel ids so nobody's choices are reset
-- [ ] D18.08 Keys: the new English in a `notifications` copy namespace; the old keys stay until the 12 translations are redone (G1.02), and a test fails if any notification the code can send has no text
-- [ ] D18.09 A preview list in Developer: every notification, sent on tap, so each can be read on a real lock screen
+- [x] D18.01 Inventory: every notification with when it fires, what tapping it opens, and its channel (daily reminder x8, the "stay consistent" follow-up, loan due and instalment due each way, backup running, done, failed, reconnect; channel names)
+- [x] D18.02 One voice, written down in `docs/PRODUCT.md`: says what it is about in the title, one useful sentence in the body, no alarm words, no emoji as decoration, never a fact the app does not track
+- [x] D18.03 Daily reminder: a new rotating set that is specific where it can be. Use what the app knows at the moment it is scheduled (nothing recorded today, the weekday, the first of the month, a loan due tomorrow) so the line is about the user's day, not a slogan; a plain fallback when it knows nothing
+- [x] D18.04 Tapping a notification opens what it is about (daily: Add expense; loan: the loan; backup: Backup); a day already recorded gets no reminder at all, which is quieter than a line saying so
+- [x] D18.05 Loans: who and how much in the title ("Priya owes you $300.00"), when and the action in the body ("Due tomorrow. Add the repayment when it arrives."), because the owner's phone cuts a collapsed title at about 24 characters; separate wording for lent and borrowed, due and instalment
+- [x] D18.06 Backup: quiet while it works, silent when it succeeds in the background, and a failure that says what to do ("Connect Google Drive again to keep backing up"); the stage lines shown on the Backup screen rewritten with them
+- [x] D18.07 Channel names and descriptions as the user sees them in the phone's settings ("Reminders", "Backup": the two channels that exist), kept under the existing channel ids so nobody's choices are reset
+- [x] D18.08 Keys: the new English in a `notifications` copy namespace; the old keys stay until the 12 translations are redone (G1.02), and a test fails if any notification the code can send has no text
+- [x] D18.09 A preview list in Developer: every notification, sent on tap, so each can be read on a real lock screen
 - [ ] D18.10 Shared checklist
 
 ---

@@ -66,8 +66,6 @@ export default {
     body: 'Fintraq can remind you at 8 PM to record the day, before the details fade. You can change the time or turn it off in Settings.',
     sample: {
       app: 'Fintraq · 8:00 PM',
-      title: 'How did today go?',
-      body: 'Add what you spent before it fades.',
       label: 'What the reminder looks like',
     },
     yes: 'Remind me',
