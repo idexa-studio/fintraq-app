@@ -108,14 +108,14 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
   };
 
   if (way === 'finding') {
-    return <Screen scroll={false}><View style={styles.centre}><Spinner /></View></Screen>;
+    return <Screen scroll={false}><View style={styles.waiting}><Spinner /></View></Screen>;
   }
 
   const message = waiting > 0 ? t('unlock.wait', { time: formatLockoutRemaining(waiting) }) : said ? t(`unlock.${said}`) : null;
 
   return (
     <Screen
-      scroll={false}
+      centred
       footer={way === 'device' ? <Button label={biometry === 'face' ? t('unlock.face') : biometry === 'fingerprint' ? t('unlock.fingerprint') : t('unlock.device')} loading={asking} onPress={askDevice} /> : undefined}
     >
       <View style={styles.centre}>
@@ -130,6 +130,7 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
 
 const createStyles = ({ space }: Theme) =>
   StyleSheet.create({
-    centre: { flex: 1, justifyContent: 'center', gap: space.lg },
+    centre: { gap: space.lg },
+    waiting: { flex: 1, justifyContent: 'center' },
     said: { minHeight: space.xl },
   });

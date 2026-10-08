@@ -33,7 +33,7 @@ export function ReminderScreen() {
 
   return (
     <Screen
-      scroll={false}
+      centred
       footer={
         denied ? (
           <Button label={t('reminder.carryOn')} onPress={enter} />
@@ -64,7 +64,7 @@ export function ReminderScreen() {
 
 const createStyles = ({ space }: Theme) =>
   StyleSheet.create({
-    centre: { flex: 1, justifyContent: 'center', gap: space.xxl },
+    centre: { gap: space.xxl },
     sample: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
     sampleText: { flex: 1, gap: space.xxs },
   });
