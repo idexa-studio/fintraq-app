@@ -4,7 +4,12 @@ export default {
   search: 'Search',
   kinds: { all: 'All', expense: 'Expenses', income: 'Income', transfer: 'Transfers' },
   kindLabel: 'Show',
-  summary: { title: 'In this list', moneyIn: 'Money in', moneyOut: 'Money out', currency: 'Currency' },
+  summary: {
+    title: { all: 'Everything recorded', expense: 'All expenses', income: 'All income', transfer: 'All transfers' },
+    moneyIn: 'Money in',
+    moneyOut: 'Money out',
+    currency: 'Currency',
+  },
   filteredBy: { account: 'Account: {{name}}', category: 'Category: {{name}}', remove: 'Show everything' },
   edit: 'Edit',
   delete: 'Delete',

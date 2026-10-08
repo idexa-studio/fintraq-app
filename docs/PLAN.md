@@ -27,10 +27,10 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 57 | 57 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 60 | In progress |
-| D | Screens at parity with the shipped app | 144 | 27 | In progress |
+| D | Screens at parity with the shipped app | 144 | 28 | In progress |
 | E | Pro: three plans and gating | 26 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
-| G | Release 1: the redesign | 22 | 0 |  |
+| G | Release 1: the redesign | 23 | 0 |  |
 | H | Release 2: repeating items, budgets, net worth trend | 41 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
 
@@ -337,13 +337,13 @@ route template · `tsc`, lint, design audit and tests clean.
 
 ### D4. Activity
 - [x] D4.01 List grouped by day with day totals
-- [x] D4.02 Kind chips: all, expenses, income, transfers
+- [x] D4.02 Kind as tabs under the header: all, expenses, income, transfers (chips were tried and looked wrong to the owner)
 - [ ] D4.03 Filter sheet and active filter chips (person, dates, amount range). The shipped sheet's logic is in git: `git show 25f92f2:src/features/filters/components/AdvancedFilterBottomSheet.tsx`; its query support is still in `data/repositories/filters.ts`
 - [ ] D4.04 Sort menu (shipped version: `git show 25f92f2:src/features/transactions/hooks/useTransactionFilters.ts`)
-- [x] D4.05 Totals of the list at the top, one currency at a time
+- [x] D4.05 Totals of the list at the top. The currency choice is a lens over the whole screen, as on Home: it filters the list as well as the totals
 - [ ] D4.06 Swipe a row to edit or delete, with confirmation
 - [x] D4.07 Opens filtered from an account or a category
-- [ ] D4.08 Paging through long histories without stutter
+- [x] D4.08 Scrolls without stutter: the list is drawn line by line with memoised rows. Measured on the phone in a development build: janky frames while scrolling fell from 52% to 8%, the slowest from 129ms to 34ms
 - [ ] D4.09 Empty and "nothing matches" states
 - [ ] D4.10 Shared checklist
 
@@ -553,7 +553,7 @@ Done when: the redesign is live to all users with no data loss reported.
 
 ### G2. Quality
 - [ ] G2.01 Full pass on a small Android phone (360dp) and a large one
-- [ ] ~~G2.02 Full pass on iOS~~ Not applicable: Android only for now
+- [ ] G2.02 Full pass on iOS. The code is written for both platforms (owner, 2026-10-09); nothing has been run on iOS yet
 - [ ] G2.03 Android three-button and gesture navigation
 - [ ] G2.04 Dark and light, largest font size, screen reader, on the main flows
 - [ ] G2.05 Cold start time and list scrolling compared with 1.2.4
@@ -575,7 +575,7 @@ Done when: the redesign is live to all users with no data loss reported.
 ### G4. Rollout
 - [ ] G4.01 Internal track, then closed testers
 - [ ] G4.02 Staged rollout on Play: 5%, 20%, 50%, 100%, watching crashes and reviews at each step
-- [ ] ~~G4.03 iOS phased release~~ Not applicable: Android only for now
+- [ ] ~~G4.03 iOS phased release~~ Deferred with the other store-side iOS work: there is no iOS listing yet
 - [ ] G4.04 Owner: go or no-go at each step
 
 ---

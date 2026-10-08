@@ -136,6 +136,12 @@ npm test
 
 ## Owner's standing decisions
 
+- Write every screen and component to work on iOS as well as Android. Only
+  store-side iOS work (products, listing, release) is deferred. Where the
+  platforms differ, use the native behaviour on each (for example sheets:
+  iOS stacks them itself; Android gets `SheetFrame`). Nothing has been run on
+  iOS yet, so say so when reporting.
+
 - Three plans (monthly, yearly, lifetime); lifetime is the one to push, by
   pricing it to look clearly cheaper.
 - Full freedom to restructure the codebase. Still ask before committing,
