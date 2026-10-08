@@ -17,10 +17,16 @@ describe('icon glyphs', () => {
     expect(missing).toEqual([]);
   });
 
-  it('gives every icon both an outline and a solid drawing', () => {
+  it('gives every icon an outline at both line weights', () => {
     for (const [name, glyph] of Object.entries(GLYPHS)) {
-      expect(`${name}:${glyph.line.length > 0 && glyph.fill.length > 0}`).toBe(`${name}:true`);
+      expect(`${name}:${glyph.line.length > 0 && glyph.light.length > 0}`).toBe(`${name}:true`);
     }
+  });
+
+  // A solid drawing is shipped only where one is drawn: the tab icons and the marks in tiles.
+  it('keeps solid drawings to the few icons marked for one', () => {
+    const solid = Object.entries(GLYPHS).filter(([, glyph]) => 'fill' in glyph).map(([name]) => name);
+    expect(solid).toEqual(['bank', 'calculator', 'calendar', 'chart-pie', 'house', 'plus', 'receipt', 'wallet']);
   });
 
   it('resolves a saved name, an older name, and falls back for anything else', () => {

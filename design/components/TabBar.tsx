@@ -1,5 +1,5 @@
 import { Icon } from '@/design/components/Icon';
-import type { IconName } from '@/design/components/Icon';
+import type { SolidIconName } from '@/design/icons/index';
 import { Text } from '@/design/components/Text';
 import { Touchable } from '@/design/components/Touchable';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
@@ -11,7 +11,8 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from '
 export type TabItem<K extends string = string> = {
   key: K;
   label: string;
-  icon: IconName;
+  /** Drawn solid, so it must be an icon that has a solid drawing. */
+  icon: SolidIconName;
   /** Opens something instead of being a place (adding): pressed like the rest, never the active tab. */
   action?: boolean;
 };

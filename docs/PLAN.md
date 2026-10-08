@@ -29,7 +29,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | C | Groundwork: shared, data, platform, shell | 87 | 76 | In progress |
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 27 | 18 | In progress |
-| F | Remove the legacy code | 14 | 12 | In progress |
+| F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 23 | 1 | In progress |
 | H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
@@ -587,12 +587,12 @@ Done when: `src/` no longer exists and the app builds.
 - [ ] ~~F1.08 Remove the developer switch from C8.09; the new screens are the app~~ Not applicable: C8.09 was dropped, so there is no switch
 - [x] F1.09 Delete `src/`; remove `@/src` from lint rules and the audit script
 - [x] F1.10 Remove unused i18n keys from all 13 locales (done 2026-10-08 by removing the shipped app's translation file in all 13 languages once nothing read it; the last strings moved into the new copy)
-- [ ] F1.11 Remove unused dependencies (run a dependency check) (done for JavaScript-only packages: `@hugeicons/*` and `react-hook-form` removed. `expo-haptics` and `expo-image` are native and unused: remove them with the next native build)
+- [x] F1.11 Remove unused dependencies (run a dependency check) (done for JavaScript-only packages: `@hugeicons/*` and `react-hook-form` removed. `expo-haptics` and `expo-image` are native and unused: remove them with the next native build) Finished 2026-10-08: `expo-haptics`, `expo-image` and a direct `@react-navigation/elements` removed too. `react-dom`, `react-native-web`, `react-native-screens` and `react-native-worklets` stay: the router and the animation library require them.
 - [x] F1.12 `scripts/check-design-system.js`: drop legacy exemptions and rules that no longer apply
 - [x] F1.13 Trim `ARCHITECTURE.md` to the new structure only (`DESIGN_SYSTEM.md` was rewritten in B7.02)
 - [x] F1.14 Remove old store screenshots and generators that draw the old look (the three generators that drew the old look, and the old screenshots, are removed; new ones are G3.01)
 - [x] F1.15 Remove old build artefacts from the repository root (a stale `pnpm-lock.yaml` beside the npm lock is removed. The 103 MB `build-*.apk` in the root is the development build on the owner's phone: untracked, kept until the next build replaces it)
-- [ ] F1.16 Bundle size compared with 1.2.4 and recorded
+- [ ] F1.16 Bundle size compared with 1.2.4 and recorded (the rebuilt app's Android bundle: 8.10 MB as written, 7.33 MB after tree shaking and dropping unused solid icon drawings, measured with `npx expo export --platform android` on 2026-10-08. The 1.2.4 figure and the installed size of a release build are still to be measured)
 
 ---
 
