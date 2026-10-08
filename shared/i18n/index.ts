@@ -22,12 +22,14 @@ import shell from '@/shared/i18n/copy/shell.en';
 import transactions from '@/shared/i18n/copy/transactions.en';
 import bn from '@/shared/i18n/copy/bn.json';
 import es from '@/shared/i18n/copy/es.json';
+import fr from '@/shared/i18n/copy/fr.json';
 import hi from '@/shared/i18n/copy/hi.json';
+import pt from '@/shared/i18n/copy/pt.json';
 
 export * from './config';
 
 /** The languages translated so far. Add each here as its file is built. */
-const TRANSLATED = { hi, bn, es };
+const TRANSLATED = { hi, bn, es, pt, fr };
 
 const i18n = createInstance();
 i18n

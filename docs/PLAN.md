@@ -26,7 +26,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
-| C | Groundwork: shared, data, platform, shell | 87 | 75 | In progress |
+| C | Groundwork: shared, data, platform, shell | 87 | 76 | In progress |
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 27 | 18 | In progress |
 | F | Remove the legacy code | 14 | 12 | In progress |
@@ -188,7 +188,7 @@ phone upgraded from 1.2.4 with real data opens with everything intact.
 - [x] C2.02 Namespaces: `common`, `shell`, and one per feature, in `shared/i18n/copy/<name>.en.ts`, with typed keys. The shipped copy stays in `translation` until its screens are gone
 - [ ] C2.03 Write the new English copy namespace by namespace as each screen is built (tracked under D)
 - [x] C2.04 Missing keys in other locales fall back to English, never to a key name
-- [ ] C2.05 Script that lists keys missing per locale; run in CI (to be written with the translations, G1.02: there is nothing to compare until a second language exists)
+- [x] C2.05 Script that lists keys missing per locale; run in CI (to be written with the translations, G1.02: there is nothing to compare until a second language exists) Done as `node scripts/i18n/build.js --check`.
 - [x] C2.06 Register `features/pro/pro-copy.en.ts` as the `pro` namespace
 - [x] C2.07 Move the language provider (`src/providers/I18nProvider.tsx`) once the settings store it reads has moved (C7.01)
 
@@ -602,7 +602,7 @@ Done when: the redesign is live to all users with no data loss reported.
 
 ### G1. Copy and translation
 - [x] G1.01 English copy read through once as a whole for one voice (done 2026-10-08: every string scanned; ten "Please try again" made plain, "entry" made "transaction" everywhere, the vocabulary written into `docs/PRODUCT.md`, and `shared/i18n/__tests__/voice.test.ts` holds all copy to it)
-- [ ] G1.02 Translate the new keys into the other 12 locales (until this is done every language shows the English copy. The shipped translations of the old screens are in git for reference: `git show feabfba:shared/i18n/locales/hi.ts`. Write each as `shared/i18n/copy/<namespace>.<language>.ts` and add the missing-keys script, C2.05, with it)
+- [ ] G1.02 Translate the new keys into the other 12 locales (until this is done every language shows the English copy. The shipped translations of the old screens are in git for reference: `git show feabfba:shared/i18n/locales/hi.ts`. Write each as `shared/i18n/copy/<namespace>.<language>.ts` and add the missing-keys script, C2.05, with it) Progress 2026-10-08: Hindi, Bengali, Spanish, Portuguese and French are done (967 strings each, built and checked by `scripts/i18n/build.js`); German, Indonesian, Japanese, Marathi, Tamil, Telugu and Kannada remain. All are machine translations by Claude and want a native reader before release.
 - [ ] G1.03 Device: spot-check one Indic locale, German (long words) and Japanese
 
 ### G2. Quality
