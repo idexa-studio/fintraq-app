@@ -29,7 +29,7 @@ for (const [, mark, phase] of text.matchAll(/^- \[(.)\] ([A-Z])\d+\.\d+ /gm)) {
 }
 
 let next = true;
-text = text.replace(/^\| ([A-Z]) \| ([^|]+) \| \d+ \| \d+ \| [^|]* \|$/gm, (_, phase, what) => {
+text = text.replace(/^\| ([A-Z]) \| ([^|]+) \| \d+ \| \d+ \|[^|]*\|$/gm, (_, phase, what) => {
   const d = done[phase] ?? 0;
   const state = d === total[phase] ? 'Complete' : d > 0 ? 'In progress' : next ? 'Next' : '';
   if (d !== total[phase]) next = false;
