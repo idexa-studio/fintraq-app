@@ -22,7 +22,7 @@ import {
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import type { TransactionDetail } from '@/data/repositories/transactions';
 import { isLoanPrincipal } from '@/data/repositories/ledger';
-import { useDeleteTransaction, useTransactionDetail } from '@/src/features/transactions/hooks/transactions';
+import { useDeleteTransaction, useTransactionDetail } from '@/features/transactions';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { TransactionType } from '@/shared/types';
 import { formatDate } from '@/shared/date/date';

@@ -118,3 +118,20 @@ export type PastelName = keyof typeof PASTELS;
 
 /** Black, for content drawn on a pastel or on the accent green in either theme. */
 export const INK = '#000000';
+
+/** How much white is mixed into a saved colour to make it a pastel. */
+const PASTEL_WHITE = 0.62;
+
+/**
+ * A user's saved colour as a pastel of the same hue. Saved colours were
+ * picked to sit behind white icons and are too dark for a black glyph; mixed
+ * with white they join the pastel family and the glyph stays readable.
+ */
+export function pastelOf(hex: string): string {
+  const match = /^#?([0-9a-f]{6})$/i.exec(hex);
+  if (!match) return hex;
+  const value = Number.parseInt(match[1], 16);
+  const mix = (channel: number) => Math.round(channel + (255 - channel) * PASTEL_WHITE);
+  const [r, g, b] = [mix((value >> 16) & 255), mix((value >> 8) & 255), mix(value & 255)];
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+}

@@ -20,10 +20,10 @@ import {
   Text,
 } from '@/src/components/ui';
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
-import { useLoansByPerson } from '@/src/features/loans/hooks/loans';
-import { useDeletePerson, usePersonWithStats } from '@/src/features/persons/hooks/persons';
+import { useLoansByPerson } from '@/features/loans';
+import { useDeletePerson, usePersonWithStats } from '@/features/people';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
-import { useTransactions } from '@/src/features/transactions/hooks/transactions';
+import { useTransactions } from '@/features/transactions';
 import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { formatDate , parseDateKey } from '@/shared/date/date';

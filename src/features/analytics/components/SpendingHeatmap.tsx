@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BentoPressable, Skeleton, Text } from '@/src/components/ui';
 import { DOW_KEYS, MONTH_KEYS } from '@/shared/date/calendar';
-import { useDailySpend } from '@/src/features/dashboard/hooks/dashboard';
+import { useDailySpend } from '@/features/home';
 import { buildHeatmap, HeatCell, HeatLevel, heatmapStart } from '@/shared/calc/month';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { getLocalISOString } from '@/shared/date/date';

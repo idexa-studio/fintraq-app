@@ -3,7 +3,7 @@ import { Screen } from '@/src/components/ui/Screen';
 
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
-import { useAccounts } from '@/src/features/accounts/hooks/accounts';
+import { useAccounts } from '@/features/accounts';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { formatDate } from '@/shared/date/date';
 import { colorNumberToHex } from '@/shared/format/color';

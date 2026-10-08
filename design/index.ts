@@ -29,6 +29,7 @@ export { HeatGrid } from './components/HeatGrid';
 export { Highlight } from './components/Highlight';
 export { Icon } from './components/Icon';
 export type { IconName } from './components/Icon';
+export { resolveIcon } from './icons/index';
 export { IconGrid } from './components/IconGrid';
 export type { IconGroup } from './components/IconGrid';
 export { IconButton } from './components/IconButton';

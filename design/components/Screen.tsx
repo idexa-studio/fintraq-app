@@ -12,6 +12,8 @@ export type ScreenProps = {
   footer?: React.ReactNode;
   /** A TabBar. It handles its own bottom inset. */
   tabBar?: React.ReactNode;
+  /** The screen is one of the app's tabs: the tab bar below it already clears the bottom inset. */
+  tabbed?: boolean;
   /** Content scrolls by default. Turn off for a single full-height message. */
   scroll?: boolean;
   /** Page margin around the content. Turn off when a child must reach the edges. */
@@ -19,11 +21,11 @@ export type ScreenProps = {
 };
 
 /** Every screen starts here: page colour, safe areas, header, content, then footer or tab bar. */
-export function Screen({ children, header, footer, tabBar, scroll = true, padded = true }: ScreenProps) {
+export function Screen({ children, header, footer, tabBar, tabbed = false, scroll = true, padded = true }: ScreenProps) {
   const styles = useStyles(createStyles);
   const content = padded ? styles.padded : null;
   return (
-    <SafeAreaView style={styles.page} edges={tabBar ? ['top'] : ['top', 'bottom']}>
+    <SafeAreaView style={styles.page} edges={tabBar || tabbed ? ['top'] : ['top', 'bottom']}>
       {header}
       {scroll ? (
         <ScrollView style={styles.fill} contentContainerStyle={[styles.scrollContent, content]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">

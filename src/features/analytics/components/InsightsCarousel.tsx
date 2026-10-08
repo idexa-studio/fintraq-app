@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { EmptyState, Skeleton } from '@/src/components/ui';
 import { InsightCard } from '@/src/features/analytics/components/InsightCard';
-import { useDashboardInsights } from '@/src/features/dashboard/hooks/dashboard';
+import { useDashboardInsights } from '@/features/home';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Props = { currency: string };

@@ -7,7 +7,7 @@ import { LoanReminderSection } from '@/src/features/loans/components/LoanReminde
 import { LoanSummaryCard } from '@/src/features/loans/components/LoanSummaryCard';
 import { RepaymentRow } from '@/src/features/loans/components/RepaymentRow';
 import { RepaymentSheet } from '@/src/features/loans/components/RepaymentSheet';
-import { useDeleteLoan, useLoanRepayments, useLoanWithStats, useMarkLoanRepaid } from '@/src/features/loans/hooks/loans';
+import { useDeleteLoan, useLoanRepayments, useLoanWithStats, useMarkLoanRepaid } from '@/features/loans';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
