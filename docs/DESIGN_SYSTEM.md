@@ -174,9 +174,13 @@ use it.
   `<Screen centred>`: in the middle when it fits, scrolling when it does
   not. `scroll={false}` clips on a short phone and is only for content
   that manages its own height, such as a list.
-- **The way in** asks one question at a time under a picture of what is
-  being made: the greeting and the first account as they will look on
-  Home, filling in with each answer. Nothing is saved until the last.
+- **The way in** asks one question at a time, each step headed as the
+  reference heads its own: an `Emblem`, the question, one line (`Message`),
+  then the reference's form: a bold label ending in a colon over a white
+  card, a chooser row with a chevron, outlined fields with the label
+  inside. A live preview card, a mark beside a field and a card of
+  shortcut chips were all tried here and rejected (owner, 2026-10-08):
+  pictures belong on overview screens, not inside forms.
 - **Settings** opens on the wave card (who you are and your plan: its one
   brand moment), then the things recorded against as tiles with their
   counts, then grouped rows. A choice of three (appearance) is a `Select`
