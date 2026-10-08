@@ -1,7 +1,7 @@
 import { Icon } from '@/design/components/Icon';
 import { Text } from '@/design/components/Text';
 import { Touchable } from '@/design/components/Touchable';
-import { useStyles } from '@/design/ThemeProvider';
+import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -16,6 +16,8 @@ export type KeypadProps = {
   /** Adds a column of plus, minus, times and divide, for working out an amount in place. */
   operators?: boolean;
   operatorLabels?: Record<'+' | '−' | '×' | '÷', string>;
+  /** Keys cannot be pressed for now, e.g. while a PIN pad waits out wrong attempts. Say why beside it. */
+  disabled?: boolean;
 };
 
 const ROWS: KeypadKey[][] = [
@@ -28,8 +30,9 @@ const ROWS: KeypadKey[][] = [
 const OPERATOR_LABELS = { '+': 'Plus', '−': 'Minus', '×': 'Times', '÷': 'Divided by' } as const;
 
 /** Number keys for an amount or a PIN. */
-export function Keypad({ onKey, decimal = true, deleteLabel = 'Delete', operators = false, operatorLabels = OPERATOR_LABELS }: KeypadProps) {
+export function Keypad({ onKey, decimal = true, deleteLabel = 'Delete', operators = false, operatorLabels = OPERATOR_LABELS, disabled = false }: KeypadProps) {
   const styles = useStyles(createStyles);
+  const { colors } = useTheme();
   return (
     <View style={styles.pad}>
       {ROWS.map((row) => (
@@ -40,8 +43,8 @@ export function Keypad({ onKey, decimal = true, deleteLabel = 'Delete', operator
             if (key === '.' && !decimal) return <View key="blank" style={styles.blank} />;
             const label = key === 'delete' ? deleteLabel : operator ? operatorLabels[key as keyof typeof operatorLabels] : key;
             return (
-              <Touchable key={key} onPress={() => onKey?.(key)} accessibilityLabel={label} style={[styles.key, key === 'delete' ? styles.bare : null, operator ? styles.operator : null]}>
-                {key === 'delete' ? <Icon name="backspace" /> : <Text variant="amountLarge">{key}</Text>}
+              <Touchable key={key} onPress={() => onKey?.(key)} disabled={disabled} accessibilityLabel={label} accessibilityState={{ disabled }} style={[styles.key, key === 'delete' ? styles.bare : null, operator ? styles.operator : null]}>
+                {key === 'delete' ? <Icon name="backspace" color={disabled ? colors.onDisabled : undefined} /> : <Text variant="amountLarge" tone={disabled ? 'disabled' : 'default'}>{key}</Text>}
               </Touchable>
             );
           })}

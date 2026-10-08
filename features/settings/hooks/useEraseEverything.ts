@@ -1,19 +1,20 @@
+import { db } from '@/data/db/client';
+import { accounts, categories, loans, payments, persons } from '@/data/db/schema';
+import { useAppLock } from '@/features/lock';
+import { BackupPreferences } from '@/platform/backup/backup-preferences';
+import { GoogleDriveService } from '@/platform/drive/google-drive';
+import { syncReminders } from '@/platform/notifications/reminder-sync';
+import { StorageKeys } from '@/shared/contracts/storage-keys';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
-import { StorageKeys } from '@/shared/contracts/storage-keys';
-import { db } from '@/data/db/client';
-import { accounts, categories, loans, payments, persons } from '@/data/db/schema';
-import { useAppLock } from '@/src/providers/AppLockProvider';
-import { syncReminders } from '@/platform/notifications/reminder-sync';
-import { BackupPreferences } from '@/platform/backup/backup-preferences';
-import { GoogleDriveService } from '@/platform/drive/google-drive';
 
 /**
- * User-facing state a reset clears. Infra keys (purchases, review-prompt timing, migrations) stay,
- * which is why this is an explicit list rather than AsyncStorage.clear().
+ * What the user made, and what the app remembers about them. Keys the app needs to keep working
+ * (purchases, review timing, migrations) stay, which is why this is a list and not a clear-all.
+ * Keys the app no longer writes are here too, so they are cleared off older installs.
  */
-const RESET_KEYS: readonly string[] = [
+export const ERASED_KEYS: readonly string[] = [
   StorageKeys.PROFILE,
   StorageKeys.ONBOARDED,
   StorageKeys.SEED_EXECUTED,
@@ -32,17 +33,17 @@ const RESET_KEYS: readonly string[] = [
   StorageKeys.WALKTHROUGH_PERSONS,
 ];
 
-/** Erases every user record and preference, leaving the app as freshly installed. Throws on failure. */
-export function useFactoryReset() {
+/** Erases every record and preference, leaving the app as freshly installed. Throws if it could not. */
+export function useEraseEverything() {
   const queryClient = useQueryClient();
   const { disableLock } = useAppLock();
 
   return useCallback(async () => {
-    await GoogleDriveService.signOut().catch(() => {});
+    await GoogleDriveService.signOut().catch(() => undefined);
     queryClient.clear();
 
-    // Children before parents, in one transaction so a failure can't leave orphans behind. The
-    // callback is sync: the expo-sqlite driver commits an async callback at its first await.
+    // Children before parents, in one transaction, so a failure cannot leave orphans behind. The
+    // callback is not async: the expo-sqlite driver commits an async callback at its first await.
     db.transaction((tx) => {
       tx.delete(payments).run();
       tx.delete(loans).run();
@@ -51,10 +52,10 @@ export function useFactoryReset() {
       tx.delete(accounts).run();
     });
 
-    await AsyncStorage.multiRemove([...RESET_KEYS, ...BackupPreferences.allKeys()]);
+    await AsyncStorage.multiRemove([...ERASED_KEYS, ...BackupPreferences.allKeys()]);
     // A fresh install has no lock; keeping the old PIN would lock the user out of an empty app.
     await disableLock();
-    // With no loans and no profile left, the sync cancels every scheduled reminder.
+    // With no loans and no profile left, this cancels every scheduled reminder.
     await syncReminders();
   }, [queryClient, disableLock]);
 }

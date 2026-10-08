@@ -134,6 +134,7 @@
   "lightning": "lightning",
   "lock": "lock",
   "lock-key": "lock-key",
+  "lock-open": "lock-open",
   "logout": "sign-out",
   "mail": "envelope-simple",
   "map-pin": "map-pin",
