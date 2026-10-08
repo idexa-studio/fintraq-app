@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 152 | 93 | In progress |
+| D | Screens at parity with the shipped app | 152 | 94 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -476,7 +476,7 @@ Built in `features/backup` on 2026-10-08 and seen on a device only as far as the
 - [ ] D16.05 Daily reminder: on, time, exact-alarm permission on Android (built and seen in its on state with the late-arrival notice; switch and time not changed on the owner's phone)
 - [x] D16.06 Links: categories, backup, export, app lock, Fintraq Pro
 - [ ] D16.07 App lock: off, PIN, biometrics; change PIN (PIN set, mismatch, unlock, wrong PIN and turning off all run on the device and left off; biometrics not run)
-- [ ] D16.08 About: version, privacy, terms, usage-data switch (built, inline at the foot of Settings rather than a screen of its own; links not opened)
+- [x] D16.08 About, a page of its own at `/settings/about` (owner, 2026-10-08): the idea as three promises, who makes it (Idexa, with a link to idexa.app), then version, privacy, terms and the usage-data switch; the developer row lives here in development builds
 - [ ] D16.09 Delete all data, with confirmation, clearing every key including retired ones (built; never to be run on the owner's phone without his word)
 - [x] D16.10 Developer entry: a "Developer options" row in development builds only, no PIN and no hidden gesture; a release build opens `/developer` by link alone (owner, 2026-10-08; already so in the shipped Settings, to be carried into the rebuilt one)
 - [ ] D16.11 In-app web page for privacy and terms

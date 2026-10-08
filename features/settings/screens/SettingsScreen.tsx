@@ -8,13 +8,11 @@ import { usePersons } from '@/features/people';
 import { usePro } from '@/features/pro';
 import { useEraseEverything } from '@/features/settings/hooks/useEraseEverything';
 import { useExactAlarmAccess } from '@/features/settings/hooks/useExactAlarmAccess';
-import { useLegalLinks } from '@/features/settings/hooks/useLegalLinks';
 import { useAppLanguage } from '@/features/settings/LanguageProvider';
 import { APPEARANCES, NAME_MAX, cleanName, reminderDate, reminderTimeOf, reminderTimeText } from '@/features/settings/settings-rules';
 import { useSettings } from '@/features/settings/SettingsProvider';
 import { openAppSettings } from '@/platform/backup/battery-optimization';
 import { restartApp } from '@/platform/config/restart';
-import { getFormattedAppVersion } from '@/platform/config/version';
 import { NotificationService } from '@/platform/notifications/notifications';
 import { DEFAULT_CURRENCY } from '@/shared/currency/currencies';
 import { formatDate } from '@/shared/date/date';
@@ -46,7 +44,6 @@ export function SettingsScreen() {
   const { data: accounts } = useAccounts();
   const { data: categories } = useCategories();
   const { data: people } = usePersons();
-  const { privacyUrl, termsUrl } = useLegalLinks();
   const exactAlarm = useExactAlarmAccess();
   const erase = useEraseEverything();
 
@@ -93,8 +90,6 @@ export function SettingsScreen() {
     // Everything in memory describes what was just deleted, so the app starts again.
     if (!(await restartApp())) router.replace('/(onboarding)');
   };
-
-  const openPage = (url: string, title: string) => router.push({ pathname: '/webview', params: { url, title } });
 
   return (
     <Screen header={<Header title={t('title')} onBack={back} backLabel={t('back')} />}>
@@ -158,17 +153,9 @@ export function SettingsScreen() {
           <ListRow icon={lockMode ? 'lock-key' : 'lock-open'} title={t('safety.lock')} subtitle={t(`safety.lockState.${lockMode ?? 'off'}`)} onPress={() => router.push('/settings/security')} />
           <ListRow icon="cloud-arrow-up" title={t('safety.backup')} subtitle={backupAccount ? t('safety.backupOn', { email: backupAccount.email }) : t('safety.backupOff')} onPress={() => router.push('/backup')} />
         </ListGroup>
-      </Section>
-
-      <Section title={t('about.title')} hint={t('about.hint')}>
         <ListGroup>
-          <ListRow icon="chart-bar" title={t('about.usage')} subtitle={t('about.usageHint')} trailing={<Switch value={profile.shareUsageData} onValueChange={(shareUsageData) => void updateProfile({ shareUsageData })} accessibilityLabel={t('about.usage')} />} />
-          <ListRow icon="shield-check" title={t('about.privacy')} disabled={!privacyUrl} onPress={() => openPage(privacyUrl, t('about.privacy'))} />
-          <ListRow icon="file-text" title={t('about.terms')} disabled={!termsUrl} onPress={() => openPage(termsUrl, t('about.terms'))} />
-          {/* Development builds only. A release build opens the tools by link alone (`luno://developer`). */}
-          {__DEV__ ? <ListRow icon="flask" title={t('about.developer')} subtitle={t('about.developerHint')} onPress={() => router.push('/developer')} /> : null}
+          <ListRow icon="info" title={t('about.row')} subtitle={t('about.rowHint')} onPress={() => router.push('/settings/about')} />
         </ListGroup>
-        <Text variant="callout" tone="muted" align="center">{t('about.version', { version: getFormattedAppVersion() })}</Text>
       </Section>
 
       <Section title={t('erase.title')}>
