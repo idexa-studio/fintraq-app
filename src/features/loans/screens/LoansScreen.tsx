@@ -52,10 +52,10 @@ export const LoansScreen = React.memo(function LoansScreen() {
   const current = tab === 'lend' ? lent : borrowed;
   const outstanding = (list: LoanWithStats[]) => list.reduce((sum, l) => sum + l.outstanding, 0);
 
-  const openLoan = useCallback((loan: LoanWithStats) => router.push(`/(main)/loans/${loan.id}`), [router]);
+  const openLoan = useCallback((loan: LoanWithStats) => router.push({ pathname: '/loans/[id]', params: { id: loan.id } }), [router]);
   const addLoan = useCallback(() => {
     if (atFreeLimit) openPaywall('unlimited');
-    else router.push({ pathname: '/(main)/loans/form', params: { type: tab } });
+    else router.push({ pathname: '/loans/new', params: { type: tab } });
   }, [router, tab, atFreeLimit, openPaywall]);
 
   const tabs = useMemo(

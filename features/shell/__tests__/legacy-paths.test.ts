@@ -1,4 +1,4 @@
-import { addPathFromLegacy, editPathFromLegacy, personPathFromLegacy } from '@/features/shell/legacy-paths';
+import { addPathFromLegacy, editPathFromLegacy, loanFormPathFromLegacy, personPathFromLegacy } from '@/features/shell/legacy-paths';
 
 describe('paths of the shipped app', () => {
   // The three launcher shortcuts 1.2.4 registers.
@@ -30,5 +30,11 @@ describe('paths of the shipped app', () => {
     expect(personPathFromLegacy('12')).toBe('/people/12');
     expect(personPathFromLegacy('abc')).toBe('/people');
     expect(personPathFromLegacy(undefined)).toBe('/people');
+  });
+
+  it('opens the new loan form from the launcher shortcut, keeping which way and with whom', () => {
+    expect(loanFormPathFromLegacy({})).toBe('/loans/new');
+    expect(loanFormPathFromLegacy({ type: 'borrow', personId: '4' })).toBe('/loans/new?type=borrow&personId=4');
+    expect(loanFormPathFromLegacy({ type: 'other', personId: 'x' })).toBe('/loans/new');
   });
 });

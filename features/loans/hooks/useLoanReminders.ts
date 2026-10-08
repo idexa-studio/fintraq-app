@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import type { LoanWithStats } from '@/data/repositories/loans';
-import { useUpdateLoan } from '@/features/loans';
+import { useUpdateLoan } from '@/features/loans/hooks/loans';
 import { LoggerService } from '@/shared/logging/logger';
 import { NotificationService } from '@/platform/notifications/notifications';
 import { syncReminders } from '@/platform/notifications/reminder-sync';
@@ -64,6 +64,26 @@ export const useLoanReminders = () => {
     [updateLoan, ensurePermission],
   );
 
+  /**
+   * Switches the due reminder on only where notifications are already allowed. For a loan just
+   * made: it gets its reminder without a permission prompt appearing in the middle of saving.
+   */
+  const scheduleDueReminderIfAllowed = useCallback(
+    async (loan: Pick<LoanWithStats, 'id' | 'dueDate'>, daysBefore: number, timeStr: string) => {
+      if (!loan.dueDate) return false;
+      try {
+        if (!(await NotificationService.checkPermissions())) return false;
+        await updateLoan({ id: loan.id, data: { dueReminderEnabled: true, dueReminderDaysBefore: daysBefore, dueReminderTime: timeStr, dueNotificationId: null } });
+        await syncReminders();
+        return true;
+      } catch (e) {
+        LoggerService.error('LOAN_REMINDERS', 'Due reminder schedule failed', toErrorMessage(e));
+        return false;
+      }
+    },
+    [updateLoan],
+  );
+
   const cancelDueReminder = useCallback(
     async (loan: LoanWithStats) => {
       try {
@@ -76,5 +96,5 @@ export const useLoanReminders = () => {
     [updateLoan],
   );
 
-  return { scheduleEmiReminder, cancelEmiReminder, scheduleDueReminder, cancelDueReminder };
+  return { scheduleEmiReminder, cancelEmiReminder, scheduleDueReminder, scheduleDueReminderIfAllowed, cancelDueReminder };
 };
