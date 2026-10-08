@@ -19,7 +19,7 @@ type BalanceCardProps = {
 export function BalanceCard({ balances, loading, onAddExpense, onAddIncome, onOpenAccounts }: BalanceCardProps) {
   const { t } = useTranslation('home');
   const { size, space, type } = useTheme();
-  const { currency, currencies, setCurrency, balance } = balances;
+  const { currency, currencies, setCurrency, balance, accounts } = balances;
   return (
     <Card padded={false}>
       <View style={{ padding: size.cardPadding, gap: space.sm }}>
@@ -40,8 +40,10 @@ export function BalanceCard({ balances, loading, onAddExpense, onAddIncome, onOp
           </>
         ) : (
           <>
-            {/* With more than one currency held, say which one all of Home is showing. */}
-            {currencies.length > 1 ? <Text variant="callout" tone="muted">{t('balance.scope', { currency: currencyName(currency) })}</Text> : null}
+            {/* How many accounts the figure adds up; with more than one currency held, which one all of Home is showing. */}
+            <Text variant="callout" tone="muted">
+              {currencies.length > 1 ? t('balance.scope', { count: accounts.length, currency: currencyName(currency) }) : t('balance.summary', { count: accounts.length })}
+            </Text>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: space.md }}>
               <View style={{ flex: 1 }}><Money value={formatCurrency(balance, currency)} variant="amountHero" /></View>
               <MarkTile icon="wallet" onPress={onOpenAccounts} accessibilityLabel={t('balance.openAccounts')} />

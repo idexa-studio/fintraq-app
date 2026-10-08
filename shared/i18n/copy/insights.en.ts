@@ -18,6 +18,7 @@ export default {
   },
   forecast: {
     title: 'Where the month is heading',
+    hint: 'At the pace you are spending this month',
     onCourse: 'On course to spend',
     perDay: 'About {{amount}} a day so far.',
     start: '1 {{month}}',
@@ -28,6 +29,7 @@ export default {
   },
   categories: {
     title: 'Where it went',
+    hint: 'Tap a category to see its transactions',
     spending: 'Spending',
     income: 'Income',
     kind: 'Show',
@@ -40,6 +42,7 @@ export default {
   },
   rhythm: {
     title: 'Rhythm',
+    hint: 'The days your spending falls on',
     weekdays: 'A typical week',
     weekdaysChart: 'Average spending by weekday. {{peak}} costs most.',
     weekdaysChartEmpty: 'Average spending by weekday.',
@@ -48,9 +51,11 @@ export default {
   },
   people: {
     title: 'Who you spend with',
+    hint: 'Who your spending goes to',
   },
   findings: {
     title: 'Worth knowing',
+    hint: 'Picked out from what you recorded',
   },
   locked: {
     badge: 'Pro',

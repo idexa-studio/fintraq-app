@@ -98,6 +98,9 @@ export default function RootLayout() {
                             <AppConfigProvider>
                               <ToastProvider>
                                 <Stack screenOptions={{ headerShown: false, animation: 'ios_from_right' }}>
+                                  {/* Listed first on purpose: the first screen named here is where the app starts when
+                                      no link says otherwise. With a task first, a reload opened Add expense over Home. */}
+                                  <Stack.Screen name="(main)" />
                                   {/* Tasks rise over the screen they were started from. */}
                                   <Stack.Screen name="add" options={SHEET_ROUTE} />
                                   <Stack.Screen name="transactions/[id]/edit" options={SHEET_ROUTE} />

@@ -81,27 +81,27 @@ export function InsightsScreen() {
       <PeriodSummary insights={insights} currency={currency} period={period} compare={isPro} />
 
       {isPro ? (
-        <Section title={t('forecast.title')}>
+        <Section title={t('forecast.title')} hint={t('forecast.hint')}>
           <Forecast insights={insights} currency={currency} />
         </Section>
       ) : null}
 
-      <Section title={t('categories.title')}>
+      <Section title={t('categories.title')} hint={t('categories.hint')}>
         <Categories insights={insights} currency={currency} full={isPro} limit={FREE_CATEGORIES} onOpen={openCategory} />
       </Section>
 
       {isPro ? (
         <>
-          <Section title={t('rhythm.title')}>
+          <Section title={t('rhythm.title')} hint={t('rhythm.hint')}>
             <View style={styles.stack}><Rhythm insights={insights} /></View>
           </Section>
           {insights.people.length > 0 ? (
-            <Section title={t('people.title')}>
+            <Section title={t('people.title')} hint={t('people.hint')}>
               <PeopleShare insights={insights} currency={currency} onOpen={(id) => router.push({ pathname: '/people/[id]', params: { id } })} />
             </Section>
           ) : null}
           {findings && findings.length > 0 ? (
-            <Section title={t('findings.title')}>
+            <Section title={t('findings.title')} hint={t('findings.hint')}>
               <Findings findings={findings} />
             </Section>
           ) : null}

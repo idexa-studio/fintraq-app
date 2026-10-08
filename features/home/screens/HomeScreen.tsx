@@ -1,11 +1,11 @@
-import { FeatureTile, Header, IconButton, IconCircle, Screen, Section, Touchable, useTheme } from '@/design';
+import { FeatureTile, Header, IconButton, Screen, Section, useTheme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { AccountStack } from '@/features/home/components/AccountStack';
 import { BalanceCard } from '@/features/home/components/BalanceCard';
 import { AccountList, PeopleStrip, RecentList } from '@/features/home/components/HomeLists';
 import { MonthCard } from '@/features/home/components/MonthCard';
 import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
-import { initialsOf, peopleByStanding, usePeopleWithBalances } from '@/features/people';
+import { peopleByStanding, usePeopleWithBalances } from '@/features/people';
 import { dayPart, firstName } from '@/features/home/home-rules';
 import { formatDate } from '@/shared/date/date';
 import { useSettings } from '@/features/settings';
@@ -24,7 +24,7 @@ const PEOPLE_SHOWN = 8;
 /** The Home tab: where you stand, and the way to everything done most. */
 export function HomeScreen() {
   const { t } = useTranslation(['home', 'common']);
-  const { size, space } = useTheme();
+  const { size } = useTheme();
   const router = useRouter();
   const { profile } = useSettings();
 
@@ -59,14 +59,7 @@ export function HomeScreen() {
           right={
             <>
               <IconButton icon="search" onPress={() => router.push('/search')} accessibilityLabel={t('search')} />
-              {/* The way to Settings is the user's own mark once they have a name. */}
-              {name ? (
-                <Touchable onPress={() => router.push('/settings')} accessibilityLabel={t('settings')} style={{ width: size.minTouch, height: size.minTouch, alignItems: 'center', justifyContent: 'center' }}>
-                  <IconCircle initials={initialsOf(profile.name)} color="green" size={size.iconCircle - space.xs} />
-                </Touchable>
-              ) : (
-                <IconButton icon="user-circle" onPress={() => router.push('/settings')} accessibilityLabel={t('settings')} />
-              )}
+              <IconButton icon="user-circle" onPress={() => router.push('/settings')} accessibilityLabel={t('settings')} />
             </>
           }
         />
@@ -74,14 +67,14 @@ export function HomeScreen() {
     >
       <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} />
 
-      <Section title={t('quick.title')}>
+      <Section title={t('quick.title')} hint={t('quick.hint')}>
         <View style={{ flexDirection: 'row', gap: size.cardGap }}>
           {canTransfer ? <FeatureTile compact icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
           <FeatureTile compact icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
         </View>
       </Section>
 
-      <Section title={t('accounts.title')} actionLabel={balances.accounts.length ? t('common:seeAll') : undefined} onAction={() => router.push('/accounts')}>
+      <Section title={t('accounts.title')} hint={balances.accounts.length > 1 ? t('accounts.hint') : undefined} actionLabel={balances.accounts.length ? t('common:seeAll') : undefined} onAction={() => router.push('/accounts')}>
         {balances.accounts.length > 0 ? (
           <AccountStack accounts={balances.accounts} onOpen={openAccount} onOpenAll={() => router.push('/accounts')} />
         ) : (
@@ -89,16 +82,16 @@ export function HomeScreen() {
         )}
       </Section>
 
-      <Section title={t('month.title')} actionLabel={t('month.link')} onAction={() => router.push('/insights')}>
+      <Section title={t('month.title')} hint={t('month.hint')} actionLabel={t('month.link')} onAction={() => router.push('/insights')}>
         <MonthCard currency={currency} />
       </Section>
 
 
-      <Section title={t('recent.title')} actionLabel={transactions?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/activity')}>
+      <Section title={t('recent.title')} hint={transactions?.length ? t('recent.hint') : undefined} actionLabel={transactions?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/activity')}>
         <RecentList transactions={transactions} loading={transactionsPending} onOpen={(id) => router.push({ pathname: '/transactions/[id]', params: { id } })} onAdd={() => add('expense')} />
       </Section>
 
-      <Section title={t('people.title')} actionLabel={people?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/people')}>
+      <Section title={t('people.title')} hint={people?.length ? t('people.hint') : undefined} actionLabel={people?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/people')}>
         <PeopleStrip people={people} currency={currency} loading={peoplePending} onOpen={(id) => router.push({ pathname: '/people/[id]', params: { id } })} onAdd={() => router.push('/people/new')} />
       </Section>
     </Screen>
