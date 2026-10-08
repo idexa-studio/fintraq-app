@@ -1,15 +1,14 @@
 import type { Account } from '@/data/repositories/accounts';
 import type { Category } from '@/data/repositories/categories';
 import type { Person } from '@/data/repositories/people';
-import { Button, Calendar, Card, Chip, IconCircle, OptionList, Sheet, Text, TimePicker, Touchable, resolveIcon, useStyles, useTheme } from '@/design';
-import type { Theme } from '@/design';
+import { Button, Calendar, Chip, IconCircle, MarkGrid, OptionList, Sheet, Text, TimePicker, resolveIcon, useTheme } from '@/design';
 import type { OptionGroup } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 type PickerProps<T> = { visible: boolean; onClose: () => void; selectedId: number | null; onSelect: (id: T) => void };
 
@@ -38,25 +37,22 @@ export function AccountPicker({ title, accounts, ...picker }: PickerProps<number
   return <PickerSheet title={title} visible={picker.visible} onClose={picker.onClose} groups={groups} selectedKey={picker.selectedId == null ? undefined : String(picker.selectedId)} onSelect={(key) => picker.onSelect(Number(key))} />;
 }
 
-/** Categories as a grid of marks, three across: quicker to scan than a list of the same length. */
+/** How many categories it takes before the picker offers a search. */
+const SEARCH_FROM = 12;
+
+/** Categories as a grid of marks: quicker to scan than a list of the same length. */
 export function CategoryPicker({ categories, ...picker }: PickerProps<number> & { categories: readonly Category[] }) {
   const { t } = useTranslation('transactions');
-  const styles = useStyles(createStyles);
   return (
     <Sheet visible={picker.visible} onClose={picker.onClose} title={t('pick.category')}>
-      <Card padded={false} style={styles.gridCard}>
-        <View style={styles.grid} accessibilityRole="radiogroup">
-          {categories.map((category) => {
-            const selected = category.id === picker.selectedId;
-            return (
-              <Touchable key={category.id} onPress={() => { picker.onSelect(category.id); picker.onClose(); }} accessibilityRole="radio" accessibilityLabel={category.name} accessibilityState={{ selected }} style={[styles.tile, selected ? styles.tileSelected : null]}>
-                <IconCircle icon={resolveIcon(category.icon, 'tag')} color={colorNumberToHex(category.color)} />
-                <Text variant={selected ? 'captionStrong' : 'caption'} align="center" numberOfLines={2}>{category.name}</Text>
-              </Touchable>
-            );
-          })}
-        </View>
-      </Card>
+      <MarkGrid
+        marks={categories.map((category) => ({ key: String(category.id), label: category.name, icon: resolveIcon(category.icon, 'tag'), color: colorNumberToHex(category.color) }))}
+        selectedKey={picker.selectedId == null ? undefined : String(picker.selectedId)}
+        onSelect={(key) => { picker.onSelect(Number(key)); picker.onClose(); }}
+        // A handful is taken in at a glance; past a few rows, typing is quicker than looking.
+        searchPlaceholder={categories.length > SEARCH_FROM ? t('pick.searchCategory') : undefined}
+        noMatch={(query) => t('pick.noCategory', { query })}
+      />
     </Sheet>
   );
 }
@@ -92,22 +88,13 @@ export function WhenPicker({ visible, onClose, value, onChange }: WhenPickerProp
         <Chip label={t('common:yesterday')} selected={sameDay(value, yesterday)} onPress={() => setDay(yesterday)} />
       </View>
       {/* Keyed by the day so a shortcut also turns the calendar to that month. */}
-      <Card><Calendar key={value.toDateString()} value={value} onChange={setDay} /></Card>
+      <Calendar key={value.toDateString()} value={value} onChange={setDay} />
       <View style={{ gap: space.sm }}>
         <Text variant="bodyStrong">{t('pick.time')}</Text>
-        <Card style={{ alignItems: 'center' }}>
+        <View style={{ alignItems: 'center' }}>
           <TimePicker value={{ hour: value.getHours(), minute: value.getMinutes() }} onChange={(time) => setTime(time.hour, time.minute)} minuteStep={1} />
-        </Card>
+        </View>
       </View>
     </Sheet>
   );
 }
-
-const createStyles = ({ colors, radius, space, border }: Theme) =>
-  StyleSheet.create({
-    gridCard: { padding: space.sm },
-    grid: { flexDirection: 'row', flexWrap: 'wrap' },
-    // The outline is always there, transparent, so choosing a tile never moves the others.
-    tile: { width: '33.333%', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.xs, borderRadius: radius.md, borderWidth: border.thick, borderColor: 'transparent' },
-    tileSelected: { borderColor: colors.selected },
-  });

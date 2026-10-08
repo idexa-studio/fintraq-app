@@ -109,12 +109,23 @@ Three behaviours are built in and must not be worked around:
 
 ## Icons (`design/icons/`)
 
-Remix Icon, outline by default and solid for the active tab or a selected
+Phosphor, outline by default and solid for the active tab or a selected
 item: `<Icon name="wallet" />`, `<Icon name="house" filled />`.
 
-- To add one, add a line to `icon-map.json` (our name to the Remix name) and
-  run `npm run icons:generate`. Only mapped icons ship.
-- Six icons the set lacks are drawn by hand in `custom-glyphs.ts`.
+The reference draws its icons in two line weights, measured from its screens,
+and so do we:
+
+| Weight | Line at 24pt | Used for |
+| --- | --- | --- |
+| `regular` | 1.5pt | Every pictogram, chevrons and arrows, plus and minus |
+| `bold` | 2.25pt | Bare marks that are controls or verdicts: close, tick, more |
+
+The weight belongs to the icon, not to where it is used: it is written in
+`icon-map.json` (`"x": "x@bold"`) and `Icon` has no weight prop, so one icon
+can never appear in two weights. A bold mark has no solid drawing.
+
+- To add one, add a line to `icon-map.json` (our name to the Phosphor name)
+  and run `npm run icons:generate`. Only mapped icons ship.
 - Icons that point along the reading direction flip in right-to-left layouts.
 - Icon names saved on categories and accounts are a contract: a test fails if
   any of them stops drawing.
@@ -132,7 +143,7 @@ use it.
 | Structure | `Screen`, `Header`, `TabBar`, `Section`, `Card`, `CardActions`, `Divider` |
 | Text and figures | `Text`, `Money`, `Stat`, `Badge` |
 | Actions | `Button`, `IconButton`, `TabStrip`, `Chip`, `ChipRow`, `Touchable`, `SlideToConfirm` |
-| Input | `TextField`, `Select`, `Keypad`, `Radio`, `Checkbox`, `Switch`, `Calendar`, `TimePicker`, `OptionList`, `SwatchGrid`, `IconGrid`, `AmountField` |
+| Input | `TextField`, `Select`, `Keypad`, `Radio`, `Checkbox`, `Switch`, `Calendar`, `TimePicker`, `OptionList`, `SwatchGrid`, `IconGrid`, `MarkGrid`, `AmountField` |
 | Lists | `ListRow`, `ListGroup`, `DetailRow`, `DayHeader`, `SwipeRow`, `StepRow`, `Checklist`, `Timeline` |
 | Marks | `Icon`, `IconCircle`, `MarkTile`, `IllustrationTile`, `Emblem`, `CheckMark` |
 | Charts | `BarChart`, `LineChart`, `Ring`, `Gauge`, `HeatGrid`, `SplitBar`, `RankBars`, `PairedBars`, `PaceBar`, `Delta`, `ProgressBar`, `DayStreak`, `PeriodStepper` |
@@ -145,8 +156,15 @@ use it.
 - **A screen** is `Screen` with a `Header`, content in `Section`s, and its
   buttons in the `footer`. Never hand-build the scaffold.
 - **A list** is `ListRow`s in a `ListGroup`. A tappable row ends in a chevron
-  unless a value or a control already sits at its edge.
-- **A form field** has its label inside the outline, before the value.
+  unless a value or a control already sits at its edge. A disabled row has no
+  chevron and says why underneath.
+- **A form field** has its label inside the outline, before the value. The
+  first field of a task opens the keyboard with `focusOnArrival`, never
+  `autoFocus`: focusing while the sheet is still rising scrolls the field out
+  of view.
+- **A colour** is chosen from the eight in `OFFERED_COLORS`, shown as the
+  pastels they are drawn in. The saved palette is wider; a colour saved
+  before stays on offer for that item.
 - **Buttons:** one primary per screen, full width, at the bottom. Secondary is
   the alternative; text is a quiet way out; link goes elsewhere; danger
   destroys and is always confirmed in a dialog whose first button repeats the
@@ -158,6 +176,17 @@ use it.
   presented with `SHEET_ROUTE`. On iOS the system presents it stacked over the
   screen behind, whose edge shows above it. On Android it is a sheet under a
   black top edge, with no imitation of the iOS stack (owner, 2026-10-09). Pickers opened from a task (`Sheet`) follow the same rule.
+- **A sheet is white, with its content directly on it.** A `Sheet` is small
+  and holds one thing (a list, a grid, a calendar), so that thing is not put
+  in a card: a white card on a grey sheet is a box in a box (owner,
+  2026-10-08). Full task screens (`<Screen sheet>`) keep the grey page and
+  white cards.
+- **A form is the thing being made, not a list of inputs.** The account form
+  is the account's own card filled in where it stands: its mark beside the
+  name, the balance as the large figure with the currency chip, its colours
+  underneath. A choice among a few marked things is a `MarkGrid`, picked in
+  one tap, not a field that opens a list. Optional details stay folded
+  behind one row. Build the next forms (category, person, loan) the same way.
 - **Adding a transaction** is the reference's form inside that sheet: kind
   as a `TabStrip` under the header, the amount as the one large thing
   (`AmountField`), then labelled cards ("From:", "Details:") and outlined

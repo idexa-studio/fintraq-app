@@ -23,7 +23,7 @@ export type ListRowProps = {
   valueTone?: TextTone;
   /** Replaces the chevron, e.g. a Switch or a Badge. */
   trailing?: React.ReactNode;
-  /** Tappable rows show a chevron, unless a `value` or `trailing` already sits at the edge. */
+  /** Tappable rows show a chevron, unless a `value` or `trailing` already sits at the edge, or the row is disabled: nothing to go to. */
   onPress?: () => void;
   disabled?: boolean;
   destructive?: boolean;
@@ -44,7 +44,7 @@ export function ListRow({ title, subtitle, icon, leading, strong = false, value,
       {/* A figure is never cut short: it shrinks to fit, and may take up to half the row. */}
       {value ? <Text variant="amount" tone={disabled ? 'disabled' : valueTone} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} style={styles.value}>{ltr(value)}</Text> : null}
       {/* Wrapped so a trailing control that hugs its own top, such as a Badge, still sits mid-row. */}
-      {trailing ? <View style={styles.trailing}>{trailing}</View> : onPress && !value ? <Icon name="chevron-right" color={disabled ? colors.onDisabled : colors.text} /> : null}
+      {trailing ? <View style={styles.trailing}>{trailing}</View> : onPress && !value && !disabled ? <Icon name="chevron-right" color={colors.text} /> : null}
     </>
   );
   if (!onPress) return <View style={styles.row}>{body}</View>;

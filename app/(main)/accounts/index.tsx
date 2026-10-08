@@ -1,2 +1,4 @@
-import { AccountsScreen } from '@/src/features/accounts/screens/AccountsScreen';
+import { AccountsScreen } from '@/features/accounts';
+
+/** `/accounts` */
 export default AccountsScreen;

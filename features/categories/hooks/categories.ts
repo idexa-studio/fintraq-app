@@ -34,3 +34,12 @@ export const useDeleteCategory = () => {
     onSuccess: () => afterLedgerWrite(queryClient),
   });
 };
+
+/** How many transactions and loans use the category. */
+export const useCategoryUsage = (id: number | undefined) => {
+  return useQuery({
+    queryKey: id != null ? [...QUERY_KEYS.categories.detail(id), 'usage'] : [...QUERY_KEYS.categories.details(), 'usage', 'disabled'],
+    queryFn: () => api.getCategoryUsage(id as number),
+    enabled: id != null,
+  });
+};

@@ -1,5 +1,6 @@
 import { Header } from '@/design/components/Header';
 import { SheetFrame } from '@/design/components/SheetFrame';
+import { useKeyboardOverlap } from '@/design/components/useKeyboardOverlap';
 import { useStyles } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React from 'react';
@@ -14,7 +15,11 @@ export type SheetPanelProps = {
   footer?: React.ReactNode;
 };
 
-/** The sheet itself: white task header over a grey page. Use Sheet to present it. */
+/**
+ * The sheet itself, white throughout. A sheet is small and holds one thing, so
+ * its list or grid sits directly on it: a card inside would be a box in a box.
+ * Use Sheet to present it.
+ */
 export function SheetPanel({ title, onClose, children, footer }: SheetPanelProps) {
   const styles = useStyles(createStyles);
   return (
@@ -37,12 +42,14 @@ export type SheetProps = SheetPanelProps & {
 export function Sheet({ visible, onClose, ...panel }: SheetProps) {
   const styles = useStyles(createStyles);
   const insets = useSafeAreaInsets();
+  // A sheet with a search field rises with the keyboard; otherwise the keyboard would cover it.
+  const keyboard = useKeyboardOverlap(visible);
 
   // iOS stacks a page sheet over whatever is open by itself.
   if (Platform.OS === 'ios') {
     return (
       <Modal visible={visible} presentationStyle="pageSheet" animationType="slide" onRequestClose={onClose}>
-        <View style={[styles.native, { paddingBottom: insets.bottom }]}>
+        <View style={[styles.native, { paddingBottom: insets.bottom + keyboard }]}>
           <SheetPanel onClose={onClose} {...panel} />
         </View>
       </Modal>
@@ -51,7 +58,7 @@ export function Sheet({ visible, onClose, ...panel }: SheetProps) {
 
   return (
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
-      <View style={styles.scrim}>
+      <View style={[styles.scrim, { paddingBottom: keyboard }]}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Close" accessibilityRole="button" />
         <SheetFrame hug>
           <View style={{ paddingBottom: insets.bottom, flexShrink: 1 }}>
@@ -66,8 +73,8 @@ export function Sheet({ visible, onClose, ...panel }: SheetProps) {
 const createStyles = ({ colors, size, space }: Theme) =>
   StyleSheet.create({
     scrim: { flex: 1, backgroundColor: colors.scrim },
-    native: { flex: 1, backgroundColor: colors.background },
-    panel: { flexShrink: 1, backgroundColor: colors.background },
+    native: { flex: 1, backgroundColor: colors.surface },
+    panel: { flexShrink: 1, backgroundColor: colors.surface },
     scroll: { flexGrow: 0 },
     content: { padding: size.screenPadding, paddingTop: space.xl, gap: space.xl },
     footer: { paddingHorizontal: size.screenPadding, paddingTop: space.sm, paddingBottom: space.lg, gap: space.lg },

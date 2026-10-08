@@ -1,6 +1,6 @@
 import { db } from '@/data/db/client';
 import { categories, payments, loans } from '@/data/db/schema';
-import { eq } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 
 export type Category = typeof categories.$inferSelect;
 export type InsertCategory = typeof categories.$inferInsert;
@@ -67,4 +67,13 @@ export const deleteCategory = async (id: number) => {
   }
 
   return await db.delete(categories).where(eq(categories.id, id));
+};
+
+/** What uses a category. Anything here stops it being deleted. */
+export type CategoryUsage = { transactions: number; loans: number };
+
+export const getCategoryUsage = async (id: number): Promise<CategoryUsage> => {
+  const [paid] = await db.select({ n: count() }).from(payments).where(eq(payments.categoryId, id));
+  const [lent] = await db.select({ n: count() }).from(loans).where(eq(loans.categoryId, id));
+  return { transactions: paid?.n ?? 0, loans: lent?.n ?? 0 };
 };

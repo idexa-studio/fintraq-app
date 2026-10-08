@@ -60,9 +60,12 @@ throughout (Proza Libre, bold for headings), soft 10pt corners, no shadows.
 - **Gallery first.** Every widget is built in `design/`, shown in the Design
   Gallery (`features/gallery/`) and approved by the owner before a screen uses
   it. Sections show Fintraq's own screens, not copies of the reference.
-- **Icons:** Remix Icon, outline and solid. Add one by adding a line to
-  `design/icons/icon-map.json` and running `npm run icons:generate`. Never
-  import an icon package.
+- **Icons:** Phosphor, in the reference's two line weights plus solid:
+  pictograms `regular`, the bare control marks (close, tick, more) `bold`,
+  solid for the active tab. The weight is fixed per name in
+  `design/icons/icon-map.json` (`"x": "x@bold"`), never chosen at a call
+  site. Add an icon by adding a line there and running
+  `npm run icons:generate`. Never import an icon package.
 - **Illustrations:** none. Three hand-drawn attempts were rejected and the
   owner wants nothing bold. Messages and empty states use `Emblem` (a line
   icon in a pale green circle) until a professional light-line set is chosen.

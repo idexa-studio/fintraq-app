@@ -1,4 +1,4 @@
-import { eq, or } from 'drizzle-orm';
+import { count, eq, or } from 'drizzle-orm';
 import { db } from '@/data/db/client';
 import { accounts, payments, loans } from '@/data/db/schema';
 
@@ -64,4 +64,21 @@ export const deleteAccount = async (id: number) => {
   }
 
   return await db.delete(accounts).where(eq(accounts.id, id));
+};
+
+/** What hangs on an account. Anything here stops it being deleted, and fixes its currency. */
+export type AccountUsage = { transactions: number; loans: number };
+
+export const getAccountUsage = async (id: number): Promise<AccountUsage> => {
+  const [paid] = await db.select({ n: count() }).from(payments).where(or(eq(payments.accountId, id), eq(payments.toAccountId, id)));
+  const [lent] = await db.select({ n: count() }).from(loans).where(eq(loans.accountId, id));
+  return { transactions: paid?.n ?? 0, loans: lent?.n ?? 0 };
+};
+
+/** Makes one account the default, the one a new entry starts on. There is only ever one. */
+export const setDefaultAccount = async (id: number): Promise<void> => {
+  db.transaction((tx) => {
+    tx.update(accounts).set({ isDefault: false }).where(eq(accounts.isDefault, true)).run();
+    tx.update(accounts).set({ isDefault: true }).where(eq(accounts.id, id)).run();
+  });
 };

@@ -94,6 +94,16 @@ export const PALETTE_COLOR_OPTIONS: readonly ColorOption[] = [
 
 export const PALETTE_COLORS: readonly string[] = PALETTE_COLOR_OPTIONS.map((c) => c.hex);
 
+/**
+ * The colours offered for a new account, category or person. Marks are drawn
+ * as a pastel of the saved colour, where neighbouring shades of the full
+ * palette look the same, so one clear shade of each is offered. Every colour
+ * already saved keeps drawing; only the choice is shorter.
+ */
+export const OFFERED_COLOR_NAMES = ['forest', 'teal', 'blue', 'purple', 'pink', 'red', 'orange', 'slate'] as const satisfies readonly ColorOption['name'][];
+export type OfferedColorName = (typeof OFFERED_COLOR_NAMES)[number];
+export const OFFERED_COLORS: readonly { hex: string; name: OfferedColorName }[] = OFFERED_COLOR_NAMES.map((name) => ({ name, hex: PALETTE_COLOR_OPTIONS.find((c) => c.name === name)!.hex }));
+
 export const ACCOUNT_COLORS = PALETTE_COLORS;
 
 // ── Category ─────────────────────────────────────────────────────────────────

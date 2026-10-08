@@ -1,5 +1,6 @@
 import { Redirect, Stack } from 'expo-router'; // Refreshing layout resolution
 import React from 'react';
+import { SHEET_ROUTE } from '@/design';
 import { ErrorBoundary } from '@/src/components/ErrorBoundary';
 import { useLauncherShortcuts } from '@/src/hooks/useLauncherShortcuts';
 import { useOnboarding } from '@/src/providers/OnboardingProvider';
@@ -16,9 +17,10 @@ export default function StackLayout() {
       <LauncherShortcuts />
       <Stack screenOptions={{ headerShown: false, animation: 'ios_from_right' }}>
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="categories" />
-        <Stack.Screen name="accounts/form" />
-        <Stack.Screen name="categories/form" />
+        <Stack.Screen name="accounts/new" options={SHEET_ROUTE} />
+        <Stack.Screen name="accounts/[id]/edit" options={SHEET_ROUTE} />
+        <Stack.Screen name="categories/new" options={SHEET_ROUTE} />
+        <Stack.Screen name="categories/[id]/edit" options={SHEET_ROUTE} />
         <Stack.Screen name="persons/form" />
         <Stack.Screen name="persons/[id]" />
         <Stack.Screen name="loans" />
