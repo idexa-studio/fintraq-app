@@ -116,7 +116,7 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
   return (
     <Screen
       centred
-      footer={way === 'device' ? <Button label={biometry === 'face' ? t('unlock.face') : biometry === 'fingerprint' ? t('unlock.fingerprint') : t('unlock.device')} loading={asking} onPress={askDevice} /> : undefined}
+      footer={way === 'device' ? <Button label={biometry === 'none' ? t('unlock.device') : t(`unlock.${biometry}`)} loading={asking} onPress={askDevice} /> : undefined}
     >
       <View style={styles.centre}>
         <Message illustration={<Emblem icon="lock-key" />} title={way === 'pin' ? t('unlock.pinTitle') : t('unlock.deviceTitle')} body={way === 'device' ? t('unlock.deviceBody') : undefined} />

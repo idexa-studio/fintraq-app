@@ -9,6 +9,7 @@ export default {
     wait: 'Too many wrong tries. Try again in {{time}}.',
     fingerprint: 'Unlock with fingerprint',
     face: 'Unlock with face',
+    either: 'Unlock with fingerprint or face',
     device: 'Unlock',
     prompt: 'Unlock Fintraq',
     failed: 'That did not work. Try again.',
