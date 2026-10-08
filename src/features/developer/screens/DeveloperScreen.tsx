@@ -20,7 +20,7 @@ import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
 import { LoggerService } from '@/src/services/logger.service';
 import { NotificationService } from '@/src/services/notification.service';
-import { toErrorMessage } from '@/src/utils/errors';
+import { toErrorMessage } from '@/shared/errors';
 import { seedDummyData } from '@/src/utils/seed';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';

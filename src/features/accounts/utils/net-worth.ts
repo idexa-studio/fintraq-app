@@ -1,5 +1,5 @@
 import type { Account } from '@/src/features/accounts/api/accounts';
-import { sortCurrenciesWithDefault } from '@/src/constants/currency';
+import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 
 export type CurrencyNetWorth = {
   currency: string;

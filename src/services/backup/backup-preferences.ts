@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IS_PREMIUM_OVERRIDE_ALLOWED } from '@/src/constants/iap';
-import { RETIRED_AUTO_BACKUP_FREQUENCY_KEY, StorageKeys } from '@/src/constants/keys';
-import { resolveLanguage, SupportedLanguage } from '@/src/i18n';
+import { RETIRED_AUTO_BACKUP_FREQUENCY_KEY, StorageKeys } from '@/shared/contracts/storage-keys';
+import { resolveLanguage, SupportedLanguage } from '@/shared/i18n';
 import { LoggerService } from '@/src/services/logger.service';
 import type { CloudBackupFileMeta } from './backup.types';
 

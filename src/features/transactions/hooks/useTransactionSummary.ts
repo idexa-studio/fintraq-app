@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { sortCurrenciesWithDefault } from '@/src/constants/currency';
+import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import type { TransactionTotals } from '@/src/features/transactions/api/transactions';
 
 const EMPTY_TOTALS = { income: 0, expense: 0 };

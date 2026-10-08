@@ -1,4 +1,4 @@
-import { toDbColor } from '@/src/utils/format';
+import { toDbColor } from '@/shared/format/color';
 
 export type DefaultCategory = { name: string; icon: string; color: number; type: string; isSystem?: boolean };
 

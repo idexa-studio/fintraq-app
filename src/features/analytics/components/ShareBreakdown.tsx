@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { BentoPressable, MoneyText, Text } from '@/src/components/ui';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { TransactionType } from '@/src/types';
+import type { TransactionType } from '@/shared/types';
 
 export type ShareItem = {
   key: string;

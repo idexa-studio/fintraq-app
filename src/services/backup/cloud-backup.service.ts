@@ -1,4 +1,4 @@
-import i18n from '@/src/i18n';
+import i18n from '@/shared/i18n';
 import { LoggerService } from '@/src/services/logger.service';
 import { NotificationService } from '@/src/services/notification.service';
 import type { CloudBackupFileMeta, CloudBackupTrigger } from './backup.types';

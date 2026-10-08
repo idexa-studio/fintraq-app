@@ -1,7 +1,7 @@
 import { db } from '@/src/db/client';
 import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
 import { CSV_BOM, toCsvRow } from '@/src/features/export/utils/csv';
-import { getLocalISOString } from '@/src/utils/date';
+import { getLocalISOString } from '@/shared/date/date';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import * as Sharing from 'expo-sharing';
 import { File, Paths } from 'expo-file-system';
@@ -11,7 +11,7 @@ import { and, count, desc, eq, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import { Platform, Alert } from 'react-native';
 import { LoggerService } from '@/src/services/logger.service';
-import i18n from '@/src/i18n';
+import i18n from '@/shared/i18n';
 
 export interface ExportDateRange {
   startDate: Date;

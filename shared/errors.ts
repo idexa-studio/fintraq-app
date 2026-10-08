@@ -1,4 +1,4 @@
-import i18n from '@/src/i18n';
+import i18n from '@/shared/i18n';
 
 /**
  * Extract a human-readable message from an unknown caught value.

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { Icon } from '@/src/components/ui/Icon';
 import { Text } from '@/src/components/ui/Text';
-import { PALETTE_COLOR_OPTIONS } from '@/src/constants/picker';
+import { PALETTE_COLOR_OPTIONS } from '@/shared/contracts/pickers';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Props = {

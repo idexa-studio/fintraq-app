@@ -2,11 +2,11 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Chip, OptionsBottomSheet, SegmentedControl, Text } from '@/src/components/ui';
-import { CURRENCIES } from '@/src/constants/currency';
+import { CURRENCIES } from '@/shared/currency/currencies';
 import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/analytics/constants';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { AnalyticsWindow } from '@/src/utils/analytics';
-import { formatDate } from '@/src/utils/format';
+import { formatDate } from '@/shared/date/date';
 
 type AnalyticsControlsProps = {
   currencies: readonly string[];

@@ -1,6 +1,6 @@
 import { alpha } from '@/src/theme/tokens';
 import { Text } from '@/src/components/ui/Text';
-import { getCurrencySymbol } from '@/src/constants/currency';
+import { getCurrencySymbol } from '@/shared/currency/currencies';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Keyboard, StyleSheet, TextInput, View } from 'react-native';

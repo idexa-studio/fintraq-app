@@ -9,7 +9,7 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { toErrorMessage } from '@/src/utils/errors';
+import { toErrorMessage } from '@/shared/errors';
 
 type TypeFilter = 'DR' | 'CR' | 'TR';
 

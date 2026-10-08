@@ -5,8 +5,8 @@ import { BentoPressable, Icon, Text } from '@/src/components/ui';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { CloudBackupFileMeta } from '@/src/services/backup/backup.types';
 import { alpha } from '@/src/theme/tokens';
-import { formatBackupTimestamp } from '@/src/utils/date';
-import { formatFileSize } from '@/src/utils/format';
+import { formatBackupTimestamp } from '@/shared/date/date';
+import { formatFileSize } from '@/shared/format/file-size';
 
 type BackupStatusRowProps = {
   latestBackup: CloudBackupFileMeta | null;

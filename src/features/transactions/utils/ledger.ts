@@ -1,5 +1,5 @@
-import type { TransactionType } from '@/src/types';
-import { getLocalISOString } from '@/src/utils/date';
+import type { TransactionType } from '@/shared/types';
+import { getLocalISOString } from '@/shared/date/date';
 
 /** The fields of a payment that decide how it moves account balances. */
 export type LedgerEntry = {

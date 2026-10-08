@@ -1,5 +1,5 @@
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { formatCurrency } from '@/src/utils/format';
+import { formatCurrency } from '@/shared/format/money';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';

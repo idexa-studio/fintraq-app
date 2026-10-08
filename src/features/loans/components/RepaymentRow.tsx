@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { IconAvatar, ListItem, MoneyText } from '@/src/components/ui';
 import type { LoanRepaymentRow, LoanType } from '@/src/features/loans/api/loans';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { formatDate } from '@/src/utils/format';
+import { formatDate } from '@/shared/date/date';
 
 type Props = {
   row: LoanRepaymentRow;

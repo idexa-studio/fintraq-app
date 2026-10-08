@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { TransactionType } from '@/src/types';
+import type { TransactionType } from '@/shared/types';
 import { BentoPressable } from './BentoPressable';
 import { MoneyText } from './MoneyText';
 import { Text } from './Text';

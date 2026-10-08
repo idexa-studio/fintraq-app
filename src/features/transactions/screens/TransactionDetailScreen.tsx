@@ -24,8 +24,9 @@ import type { TransactionDetail } from '@/src/features/transactions/api/transact
 import { isLoanPrincipal } from '@/src/features/transactions/utils/ledger';
 import { useDeleteTransaction, useTransactionDetail } from '@/src/features/transactions/hooks/transactions';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { TransactionType } from '@/src/types';
-import { colorNumberToHex, formatDate } from '@/src/utils/format';
+import type { TransactionType } from '@/shared/types';
+import { formatDate } from '@/shared/date/date';
+import { colorNumberToHex } from '@/shared/format/color';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 
 const TYPE_LABEL_KEYS = {

@@ -1,5 +1,5 @@
 import { Input, ListGroup, ListItem, Text } from '@/src/components/ui';
-import { CURRENCIES, getCurrencySymbol } from '@/src/constants/currency';
+import { CURRENCIES, getCurrencySymbol } from '@/shared/currency/currencies';
 import { OnboardingFormValues } from '@/src/features/onboarding/types';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import React from 'react';

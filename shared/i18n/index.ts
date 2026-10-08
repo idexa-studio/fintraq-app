@@ -1,19 +1,19 @@
 import { createInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { getSystemLanguage } from './config';
-import bn from '@/src/i18n/locales/bn';
-import de from '@/src/i18n/locales/de';
-import en from '@/src/i18n/locales/en';
-import es from '@/src/i18n/locales/es';
-import fr from '@/src/i18n/locales/fr';
-import hi from '@/src/i18n/locales/hi';
-import id from '@/src/i18n/locales/id';
-import ja from '@/src/i18n/locales/ja';
-import kn from '@/src/i18n/locales/kn';
-import mr from '@/src/i18n/locales/mr';
-import pt from '@/src/i18n/locales/pt';
-import ta from '@/src/i18n/locales/ta';
-import te from '@/src/i18n/locales/te';
+import bn from '@/shared/i18n/locales/bn';
+import de from '@/shared/i18n/locales/de';
+import en from '@/shared/i18n/locales/en';
+import es from '@/shared/i18n/locales/es';
+import fr from '@/shared/i18n/locales/fr';
+import hi from '@/shared/i18n/locales/hi';
+import id from '@/shared/i18n/locales/id';
+import ja from '@/shared/i18n/locales/ja';
+import kn from '@/shared/i18n/locales/kn';
+import mr from '@/shared/i18n/locales/mr';
+import pt from '@/shared/i18n/locales/pt';
+import ta from '@/shared/i18n/locales/ta';
+import te from '@/shared/i18n/locales/te';
 
 export * from './config';
 

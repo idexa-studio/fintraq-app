@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Banner, Chip, EmptyState, Fab, Screen, SectionHeader, SegmentedControl, StatTile } from '@/src/components/ui';
-import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
+import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { FREE_LOAN_LIMIT } from '@/src/constants/iap';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import type { LoanWithStats } from '@/src/features/loans/api/loans';

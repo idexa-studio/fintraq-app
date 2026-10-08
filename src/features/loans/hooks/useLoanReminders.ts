@@ -4,7 +4,7 @@ import { useUpdateLoan } from '@/src/features/loans/hooks/loans';
 import { LoggerService } from '@/src/services/logger.service';
 import { NotificationService } from '@/src/services/notification.service';
 import { syncReminders } from '@/src/services/reminders/reminder-sync';
-import { toErrorMessage } from '@/src/utils/errors';
+import { toErrorMessage } from '@/shared/errors';
 
 /**
  * Loan reminder settings. Each action saves the setting on the loan, then syncs: the scheduled OS

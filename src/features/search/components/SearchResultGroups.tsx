@@ -6,7 +6,7 @@ import { LIST_ITEM_LEADING_SIZE } from '@/src/components/ui/ListItem';
 import type { SearchSection } from '@/src/features/search/hooks/useSearchResults';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex } from '@/shared/format/color';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 
 type SearchResultGroupsProps = {

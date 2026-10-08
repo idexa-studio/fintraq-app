@@ -7,7 +7,7 @@ import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
 import { usePersons } from '@/src/features/persons/hooks/persons';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex } from '@/shared/format/color';
 
 /** Everyone you track, searchable by name, contact or work details. */
 export const PersonsScreen = React.memo(function PersonsScreen() {

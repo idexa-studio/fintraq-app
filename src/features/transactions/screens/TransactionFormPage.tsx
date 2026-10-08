@@ -15,15 +15,17 @@ import { PersonPickerBottomSheet } from '@/src/features/persons/components/Perso
 import { usePersons } from '@/src/features/persons/hooks/persons';
 import { useCreateTransaction, useTransactionById, useUpdateTransaction } from '@/src/features/transactions/hooks/transactions';
 import { useLoanWithStats } from '@/src/features/loans/hooks/loans';
-import { colorNumberToHex, formatCurrency, formatDate } from '@/src/utils/format';
+import { formatDate } from '@/shared/date/date';
+import { colorNumberToHex } from '@/shared/format/color';
+import { formatCurrency } from '@/shared/format/money';
 import { format } from 'date-fns';
-import { TransactionType } from '@/src/types';
+import { TransactionType } from '@/shared/types';
 import { Analytics, type TransactionKind } from '@/src/services/telemetry';
 import { transferDestinations } from '@/src/utils/accounts';
 import { repaymentType } from '@/src/features/transactions/utils/ledger';
 import { useTranslation } from 'react-i18next';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
-import { parseAmountInput } from '@/src/utils/amount';
+import { parseAmountInput } from '@/shared/format/amount';
 
 const TRANSACTION_KIND = { CR: 'income', DR: 'expense', TR: 'transfer' } as const satisfies Record<string, TransactionKind>;
 

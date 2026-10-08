@@ -8,8 +8,8 @@ import { useAccount } from '@/src/features/accounts/hooks/accounts';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTransactions } from '@/src/features/transactions/hooks/transactions';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { AccountType } from '@/src/types';
-import { colorNumberToHex } from '@/src/utils/format';
+import type { AccountType } from '@/shared/types';
+import { colorNumberToHex } from '@/shared/format/color';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
 
 const ACCOUNT_TYPE_KEYS = {

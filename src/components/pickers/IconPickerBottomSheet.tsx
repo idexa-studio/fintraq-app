@@ -8,7 +8,7 @@ import { Icon } from '@/src/components/ui/Icon';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { SheetHeader } from '@/src/components/ui/SheetHeader';
 import { Text } from '@/src/components/ui/Text';
-import type { IconGroup } from '@/src/constants/picker';
+import type { IconGroup } from '@/shared/contracts/pickers';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { resolveIcon } from '@/src/utils/icons';
 

@@ -5,8 +5,8 @@ import { Badge, MoneyText, PersonAvatar, ProgressBar, StatColumns, Text } from '
 import type { LoanWithStats } from '@/src/features/loans/api/loans';
 import { LoanStatusBadge } from '@/src/features/loans/components/LoanStatusBadge';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex, formatDate } from '@/src/utils/format';
-import { parseDateKey } from '@/src/utils/date';
+import { formatDate , parseDateKey } from '@/shared/date/date';
+import { colorNumberToHex } from '@/shared/format/color';
 
 type Props = { loan: LoanWithStats; personName: string };
 

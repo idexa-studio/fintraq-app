@@ -3,7 +3,7 @@ import { MoneyText } from './MoneyText';
 import { Text } from './Text';
 import { TrendBadge } from './TrendBadge';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { TransactionType } from '@/src/types';
+import type { TransactionType } from '@/shared/types';
 import type { IconSource } from './Icon';
 import { Icon } from './Icon';
 import React, { useMemo } from 'react';

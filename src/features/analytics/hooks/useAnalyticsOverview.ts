@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DOW_KEYS, MONTH_KEYS } from '@/src/constants/calendar';
+import { DOW_KEYS, MONTH_KEYS } from '@/shared/date/calendar';
 import type { TrendBucket } from '@/src/features/analytics/components/SpendingTrendChart';
 import { RangeDays } from '@/src/features/analytics/constants';
 import {
@@ -13,7 +13,7 @@ import {
   useAnalyticsSeries,
 } from '@/src/features/analytics/hooks/useAnalyticsData';
 import { analyticsWindow, averageByWeekday, percentChange, sumBuckets, weekdayExtremes, windowSlots } from '@/src/utils/analytics';
-import { getLocalISOString } from '@/src/utils/date';
+import { getLocalISOString } from '@/shared/date/date';
 
 /**
  * Everything the Analytics screen shows for one currency and range, derived from one window: the

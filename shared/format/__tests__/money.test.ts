@@ -1,7 +1,7 @@
-import { getCurrencySymbol } from '@/src/constants/currency';
-import { formatCurrency } from '@/src/utils/format';
+import { getCurrencySymbol } from '@/shared/currency/currencies';
+import { formatCurrency } from '@/shared/format/money';
 
-jest.mock('@/src/i18n', () => ({
+jest.mock('@/shared/i18n', () => ({
   __esModule: true,
   default: { language: 'en', resolvedLanguage: 'en' },
   getIntlLocale: () => 'en-US',

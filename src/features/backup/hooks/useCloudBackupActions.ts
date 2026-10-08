@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AppState } from 'react-native';
-import i18n from '@/src/i18n';
+import i18n from '@/shared/i18n';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import type { CloudBackupFileMeta } from '@/src/services/backup/backup.types';
 import { runCloudBackup } from '@/src/services/backup/cloud-backup.service';

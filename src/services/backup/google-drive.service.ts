@@ -8,7 +8,7 @@ import {
 } from '@react-native-firebase/auth';
 import { GoogleSignin, isSuccessResponse } from '@react-native-google-signin/google-signin';
 import googleServicesConfig from '@/google-services.json';
-import i18n from '@/src/i18n';
+import i18n from '@/shared/i18n';
 import { LoggerService } from '@/src/services/logger.service';
 import type { CloudBackupFileMeta, GoogleUserAccount } from './backup.types';
 import {

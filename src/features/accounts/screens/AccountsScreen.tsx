@@ -7,13 +7,13 @@ import { netWorthByCurrency } from '@/src/features/accounts/utils/net-worth';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex } from '@/shared/format/color';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
-import { toErrorMessage } from '@/src/utils/errors';
+import { toErrorMessage } from '@/shared/errors';
 
 export const AccountsScreen = React.memo(function AccountsScreen() {
   const { t } = useTranslation();

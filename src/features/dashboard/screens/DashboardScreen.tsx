@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState, ListGroup, Screen, SectionHeader, Skeleton, SkeletonRow } from '@/src/components/ui';
-import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
+import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { hasPossibleTransfer } from '@/src/utils/accounts';
 import { BackupPromptModal } from '@/src/features/backup/components/BackupPromptModal';

@@ -5,10 +5,10 @@ import { AppState, AppStateStatus } from 'react-native';
 import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
 import { ALL_SKUS, IS_PREMIUM_OVERRIDE_ALLOWED, SKU_LIFETIME } from '@/src/constants/iap';
 import { IAPProduct, IAPService, isSettledPurchase } from '@/src/services/iap.service';
-import { StorageKeys } from '@/src/constants/keys';
+import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { Analytics } from '@/src/services/telemetry';
 import { LoggerService } from '@/src/services/logger.service';
-import i18n from '@/src/i18n';
+import i18n from '@/shared/i18n';
 
 /**
  * PremiumState: The persistent representation of user access.

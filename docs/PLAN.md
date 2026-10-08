@@ -171,23 +171,24 @@ when: the shipped screens still run on the moved code, all tests pass, and a
 phone upgraded from 1.2.4 with real data opens with everything intact.
 
 ### C1. `shared/`
-- [ ] C1.01 Move `src/utils/format.ts` and its test to `shared/format/money.ts`
-- [ ] C1.02 Move `src/utils/amount.ts` and its test to `shared/format/amount.ts`
-- [ ] C1.03 Move `src/utils/date.ts` and `src/constants/calendar.ts` to `shared/date/`
-- [ ] C1.04 Move `src/constants/currency.ts` to `shared/currency/`
-- [ ] C1.05 Move `src/constants/keys.ts` to `shared/contracts/storage-keys.ts`; add a test that pins every key string
-- [ ] C1.06 Move `src/constants/defaultCategories.ts` and `picker.ts` (stored colour palette) to `shared/contracts/`; pin the palette with a test
-- [ ] C1.07 Move `src/utils/errors.ts`, `version.ts`, `greeting.ts` to `shared/`
-- [ ] C1.08 Move `src/types/index.ts` to `shared/types.ts`, splitting out anything feature-specific
-- [ ] C1.09 Update every import; `tsc`, lint and tests clean
+- [x] C1.01 Split `src/utils/format.ts` by what it does: money to `shared/format/money.ts` (with its test), colour conversion to `shared/format/color.ts`, file size to `shared/format/file-size.ts`
+- [x] C1.02 Move `src/utils/amount.ts` and its test to `shared/format/amount.ts`
+- [x] C1.03 Move `src/utils/date.ts` and `src/constants/calendar.ts` to `shared/date/`; language-aware `formatDate` joins them
+- [x] C1.04 Move `src/constants/currency.ts` to `shared/currency/currencies.ts`
+- [x] C1.05 Move `src/constants/keys.ts` to `shared/contracts/storage-keys.ts`; add a test that pins every key string
+- [x] C1.06 Move `src/constants/defaultCategories.ts` and `picker.ts` to `shared/contracts/`. ~~Pin the palette with a test~~: not a contract. A stored colour is the number itself, so removing a swatch from the palette cannot break saved data
+- [x] C1.07 Move `src/utils/errors.ts` to `shared/errors.ts`. `version.ts` needs device APIs and moves to `platform/` in C6.08; `greeting.ts` belongs to Home and moves in D3
+- [x] C1.08 Move `src/types/index.ts` to `shared/types.ts`; the insight types go to their only user, and the unused `TrendMode` is deleted
+- [x] C1.09 Every import rewritten to the new path, with no re-export left behind; `tsc`, lint, audit and tests clean; shipped Home opens on the phone
 
 ### C2. `shared/i18n` and new copy
-- [ ] C2.01 Move i18n config and provider wiring to `shared/i18n/`
+- [x] C2.01 Move `src/i18n` to `shared/i18n`; the app's Intl locale lives in `shared/i18n/locale.ts`
 - [ ] C2.02 Decide namespaces: one per feature plus `common`
 - [ ] C2.03 Write the new English copy namespace by namespace as each screen is built (tracked under D)
 - [ ] C2.04 Missing keys in other locales fall back to English, never to a key name
 - [ ] C2.05 Script that lists keys missing per locale; run in CI
 - [ ] C2.06 Register `features/pro/pro-copy.en.ts` as the `pro` namespace
+- [ ] C2.07 Move the language provider (`src/providers/I18nProvider.tsx`) once the settings store it reads has moved (C7.01)
 
 ### C3. `data/db`
 - [ ] C3.01 Move `src/db/schema.ts`, `client.ts`, `sql.ts` to `data/db/` with no content change
@@ -214,7 +215,7 @@ One module per entity holding every read and write, taken from the legacy
 - [ ] C4.12 `streak.ts` from `reports/api/streak.service.ts`
 - [ ] C4.13 `export.ts` (CSV) from `export/api` and `export/utils` with its test
 - [ ] C4.14 `query-keys.ts` and `after-ledger-write.ts` from `src/lib/`
-- [ ] C4.15 Legacy `api/` files become one-line re-exports so legacy screens keep running
+- [ ] ~~C4.15 Legacy `api/` files become one-line re-exports~~ Dropped: a re-export is a patch. Each move rewrites every importer to the new path in the same change, as C1 did
 
 ### C5. `data/backup`
 - [ ] C5.01 Move `backup-snapshot.ts`, `backup.types.ts`, `database-backup.service.ts` to `data/backup/`
@@ -229,7 +230,7 @@ One module per entity holding every read and write, taken from the legacy
 - [ ] C6.05 `platform/purchases/`: `iap.service.ts`
 - [ ] C6.06 `platform/telemetry/`: all of `telemetry/` with tests
 - [ ] C6.07 `platform/lock/`: `lockStorage.ts`, `useLocalAuth`, PIN lockout rules with test
-- [ ] C6.08 `platform/config/`: remote config, app config, force update, review prompt
+- [ ] C6.08 `platform/config/`: remote config, app config, force update, review prompt, and `src/utils/version.ts`
 - [ ] C6.09 `platform/logging/`: `logger.service.ts`
 - [ ] C6.10 `platform/shortcuts/`: launcher shortcuts
 - [ ] C6.11 Check `patches/expo-background-task` still applies

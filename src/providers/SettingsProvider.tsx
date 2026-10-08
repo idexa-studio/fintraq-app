@@ -3,9 +3,9 @@ import { AppState } from 'react-native';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { NotificationService } from '@/src/services/notification.service';
 import { syncReminders } from '@/src/services/reminders/reminder-sync';
-import { StorageKeys } from '@/src/constants/keys';
+import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { LoggerService } from '@/src/services/logger.service';
-import type { AppLanguage } from '@/src/i18n';
+import type { AppLanguage } from '@/shared/i18n';
 
 export type UserProfile = {
   name: string;

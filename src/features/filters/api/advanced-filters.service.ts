@@ -1,6 +1,6 @@
-import type { TransactionType } from '@/src/types';
+import type { TransactionType } from '@/shared/types';
 import type { TransactionFilters } from '@/src/features/transactions/api/transactions';
-import { getLocalISOString } from '@/src/utils/date';
+import { getLocalISOString } from '@/shared/date/date';
 
 export interface AdvancedFilters {
   // Date range

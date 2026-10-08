@@ -3,13 +3,13 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BentoPressable, Skeleton, Text } from '@/src/components/ui';
-import { DOW_KEYS, MONTH_KEYS } from '@/src/constants/calendar';
+import { DOW_KEYS, MONTH_KEYS } from '@/shared/date/calendar';
 import { useDailySpend } from '@/src/features/dashboard/hooks/dashboard';
 import { buildHeatmap, HeatCell, HeatLevel, heatmapStart } from '@/src/features/dashboard/utils/widgets';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { getLocalISOString } from '@/src/utils/date';
+import { getLocalISOString } from '@/shared/date/date';
 import { magnitudeRamp } from '@/src/theme/chart';
-import { formatCurrency } from '@/src/utils/format';
+import { formatCurrency } from '@/shared/format/money';
 
 type Props = { currency: string };
 

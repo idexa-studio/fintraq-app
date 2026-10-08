@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState, IconAvatar, PersonAvatar, Screen, SectionHeader, SegmentedControl, Skeleton, Text } from '@/src/components/ui';
-import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/src/constants/currency';
+import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { AnalyticsControls } from '@/src/features/analytics/components/AnalyticsControls';
 import { AnalyticsGlance } from '@/src/features/analytics/components/AnalyticsGlance';
@@ -23,9 +23,9 @@ import { ProPreviewCard } from '@/src/features/premium/components/ProPreviewCard
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { AccountType } from '@/src/types';
+import type { AccountType } from '@/shared/types';
 import { withShares } from '@/src/utils/analytics';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex } from '@/shared/format/color';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 
 type CategoryTab = 'expense' | 'income';
