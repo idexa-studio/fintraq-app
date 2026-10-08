@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import type { LoanWithStats } from '@/data/repositories/loans';
-import { useUpdateLoan } from '@/src/features/loans/hooks/loans';
+import { useUpdateLoan } from '@/features/loans';
 import { LoggerService } from '@/shared/logging/logger';
 import { NotificationService } from '@/platform/notifications/notifications';
 import { syncReminders } from '@/platform/notifications/reminder-sync';

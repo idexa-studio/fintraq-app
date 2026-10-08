@@ -1,5 +1,5 @@
 import { GLYPHS } from '@/design/icons/glyphs';
-import { isIconName } from '@/design/icons/index';
+import { isIconName, resolveIcon } from '@/design/icons/index';
 import { LEGACY_ICON_MAP } from '@/shared/contracts/legacy-icon-names';
 import { STORED_ICON_NAMES } from '@/shared/contracts/stored-icon-names';
 
@@ -21,5 +21,12 @@ describe('icon glyphs', () => {
     for (const [name, glyph] of Object.entries(GLYPHS)) {
       expect(`${name}:${glyph.line.length > 0 && glyph.fill.length > 0}`).toBe(`${name}:true`);
     }
+  });
+
+  it('resolves a saved name, an older name, and falls back for anything else', () => {
+    expect(resolveIcon('wallet', 'grid')).toBe('wallet');
+    expect(resolveIcon('barbell-outline', 'grid')).toBe('dumbbell');
+    expect(resolveIcon('no-such-icon', 'grid')).toBe('grid');
+    expect(resolveIcon(null, 'grid')).toBe('grid');
   });
 });

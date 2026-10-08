@@ -26,8 +26,8 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 56 | 56 | Complete |
-| C | Groundwork: shared, data, platform, shell | 86 | 51 | In progress |
-| D | Screens at parity with the shipped app | 142 | 0 |  |
+| C | Groundwork: shared, data, platform, shell | 86 | 55 | In progress |
+| D | Screens at parity with the shipped app | 143 | 11 | In progress |
 | E | Pro: three plans and gating | 26 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 22 | 0 |  |
@@ -183,9 +183,9 @@ phone upgraded from 1.2.4 with real data opens with everything intact.
 
 ### C2. `shared/i18n` and new copy
 - [x] C2.01 Move `src/i18n` to `shared/i18n`; the app's Intl locale lives in `shared/i18n/locale.ts`
-- [ ] C2.02 Decide namespaces: one per feature plus `common`
+- [x] C2.02 Namespaces: `common`, `shell`, and one per feature, in `shared/i18n/copy/<name>.en.ts`, with typed keys. The shipped copy stays in `translation` until its screens are gone
 - [ ] C2.03 Write the new English copy namespace by namespace as each screen is built (tracked under D)
-- [ ] C2.04 Missing keys in other locales fall back to English, never to a key name
+- [x] C2.04 Missing keys in other locales fall back to English, never to a key name
 - [ ] C2.05 Script that lists keys missing per locale; run in CI
 - [ ] C2.06 Register `features/pro/pro-copy.en.ts` as the `pro` namespace
 - [ ] C2.07 Move the language provider (`src/providers/I18nProvider.tsx`) once the settings store it reads has moved (C7.01)
@@ -254,8 +254,8 @@ go to `shared/calc`.
 
 ### C8. Shell and navigation
 - [ ] C8.01 Root layout moves into `features/shell` once the last legacy provider it mounts is rebuilt; until then `app/_layout.tsx` composes old and new
-- [ ] C8.02 Tab layout using `TabBar`: Home, Activity, Add, Plan, Insights
-- [ ] C8.03 Centre Add opens the entry task, not a tab
+- [x] C8.02 Tab layout using `TabBar`: Home, Activity, Add, Plan, Insights. Until D4, D11 and D12 the Activity, Plan and Insights tabs show the shipped transactions, loans and analytics screens; Accounts and Settings are ordinary screens
+- [x] C8.03 Centre Add opens the entry task, not a tab
 - [ ] C8.04 Task presentation (rises, serif header, close) and push presentation defined once
 - [ ] C8.05 Android: system navigation bar colour, predictive back off as today, edge to edge
 - [ ] C8.06 Status bar style follows the scheme
@@ -317,18 +317,19 @@ route template · `tsc`, lint, design audit and tests clean.
 - [ ] D2.10 Shared checklist
 
 ### D3. Home
-- [ ] D3.01 Header: greeting, search, reminders, profile
-- [ ] D3.02 Balance card with currency menu (hidden with one currency)
-- [ ] D3.03 Card actions: add expense, add income
-- [ ] D3.04 "Transfer or lend" row (hidden with one account)
-- [ ] D3.05 This month: in, out, kept
-- [ ] D3.06 Accounts section and "See all"
-- [ ] D3.07 Recent transactions and "See all"
-- [ ] D3.08 People and loans section
-- [ ] D3.09 Getting-started steps for a new user (same dismissal key)
-- [ ] D3.10 Empty versions of every section
-- [ ] D3.11 Backup prompt and review prompt at the same moments as today
-- [ ] D3.12 Hooks on `data/repositories/summaries`
+- [x] D3.01 Header: greeting, search, and the profile icon that opens Settings (no reminders button: there is no reminders screen for it to open)
+- [x] D3.02 Balance card with currency menu (hidden with one currency)
+- [x] D3.03 Card actions: add expense, add income
+- [x] D3.04 Quick actions as tiles: Transfer (hidden unless two accounts can transfer) and Lend or borrow
+- [x] D3.05 This month: in, out, kept
+- [x] D3.06 Accounts section and "See all"
+- [x] D3.07 Recent transactions and "See all"
+- [x] D3.08 People and loans section
+- [ ] D3.09 Getting-started steps for a new user (same dismissal key). The shipped rules are in git: `git show 406fcb5:src/features/dashboard/hooks/useGettingStarted.ts`
+- [x] D3.10 Empty versions of every section
+- [ ] D3.11 Backup prompt and review prompt at the same moments as today. Needs the Pro and lock state (E2, D1). The shipped rules and their test are in git: `git show 406fcb5:src/features/dashboard/hooks/useDashboardPrompt.ts`
+- [x] D3.12 Hooks on the repositories: `features/home` for summaries, and the accounts, transactions, people, loans and categories hooks in their own features, each used through its index
+- [x] D3.14 Saved colours are drawn as pastels of the same hue, so the black glyph on top stays readable; stored icon names resolve through `resolveIcon`
 - [ ] D3.13 Shared checklist
 
 ### D4. Activity

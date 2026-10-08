@@ -2,7 +2,7 @@ import { Icon } from '@/design/components/Icon';
 import type { IconName } from '@/design/components/Icon';
 import { Text } from '@/design/components/Text';
 import { useTheme } from '@/design/ThemeProvider';
-import { INK, PASTELS } from '@/design/tokens/colors';
+import { INK, PASTELS, pastelOf } from '@/design/tokens/colors';
 import type { PastelName } from '@/design/tokens/colors';
 import React from 'react';
 import { View } from 'react-native';
@@ -11,7 +11,7 @@ export type IconCircleProps = {
   /** An icon, or up to two initials for a person. */
   icon?: IconName;
   initials?: string;
-  /** A pastel from the palette, or any stored colour (categories, accounts, people). */
+  /** A pastel from the palette, or a saved colour as hex (a category's, an account's, a person's), which is drawn as its pastel. */
   color?: PastelName | (string & {});
   size?: number;
 };
@@ -28,7 +28,7 @@ export function IconCircle({ icon, initials, color = 'lilac', size }: IconCircle
         width: diameter,
         height: diameter,
         borderRadius: diameter / 2,
-        backgroundColor: isPastel(color) ? PASTELS[color] : color,
+        backgroundColor: isPastel(color) ? PASTELS[color] : pastelOf(color),
         alignItems: 'center',
         justifyContent: 'center',
       }}

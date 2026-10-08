@@ -1,7 +1,7 @@
 import { ConfirmDialog, EmptyState, IconAvatar, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, MoneyText, OptionsDialog, Screen, Text } from '@/src/components/ui';
 import type { OptionsDialogOption } from '@/src/components/ui';
 import type { Account } from '@/data/repositories/accounts';
-import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/accounts';
+import { useAccounts, useDeleteAccount } from '@/features/accounts';
 import { NetWorthCard } from '@/src/features/accounts/components/NetWorthCard';
 import { netWorthByCurrency } from '@/src/features/accounts/utils/net-worth';
 import { usePremium } from '@/src/providers/PremiumProvider';

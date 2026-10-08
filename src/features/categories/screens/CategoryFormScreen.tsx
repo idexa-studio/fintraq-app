@@ -7,7 +7,7 @@ import { ColorPickerRow } from '@/src/components/pickers/ColorPickerRow';
 import { IconPickerBottomSheet } from '@/src/components/pickers/IconPickerBottomSheet';
 import { BentoPressable, Button, Card, Chip, FormField, Icon, IconAvatar, ListGroup, Screen, Text } from '@/src/components/ui';
 import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS } from '@/shared/contracts/pickers';
-import { useCategories, useCreateCategory, useUpdateCategory } from '@/src/features/categories/hooks/categories';
+import { useCategories, useCreateCategory, useUpdateCategory } from '@/features/categories';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { LoggerService } from '@/shared/logging/logger';
 import { colorNumberToHex, toDbColor } from '@/shared/format/color';

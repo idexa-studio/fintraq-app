@@ -3,7 +3,7 @@ import { CurrencyPickerBottomSheet } from '@/src/components/pickers/CurrencyPick
 import { Button, Card, Chip, FormField, Icon, IconAvatar, ListGroup, Screen, Text } from '@/src/components/ui';
 import { ACCOUNT_COLORS } from '@/shared/contracts/pickers';
 import type { InsertAccount, UpdateAccountData } from '@/data/repositories/accounts';
-import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
+import { useAccounts, useCreateAccount, useUpdateAccount } from '@/features/accounts';
 import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { Analytics } from '@/platform/telemetry';

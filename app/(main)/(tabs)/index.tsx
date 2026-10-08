@@ -1,2 +1,1 @@
-import { DashboardScreen } from '@/src/features/dashboard/screens/DashboardScreen';
-export default DashboardScreen;
+export { HomeScreen as default } from '@/features/home';

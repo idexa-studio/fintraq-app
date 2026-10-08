@@ -7,7 +7,7 @@ import { CurrencyPickerBottomSheet } from '@/src/components/pickers/CurrencyPick
 import { getDeviceCurrencyCode } from '@/shared/currency/currencies';
 import { ACCOUNT_COLORS } from '@/shared/contracts/pickers';
 import { DEFAULT_CATEGORIES } from '@/shared/contracts/default-categories';
-import { useCreateAccount } from '@/src/features/accounts/hooks/accounts';
+import { useCreateAccount } from '@/features/accounts';
 import { db } from '@/data/db/client';
 import { accounts, categories, payments } from '@/data/db/schema';
 import { and, eq } from 'drizzle-orm';
@@ -20,7 +20,7 @@ import { AccountStep } from '@/src/features/onboarding/components/AccountStep';
 import { FirstEntryStep } from '@/src/features/onboarding/components/FirstEntryStep';
 import { FIRST_ENTRY_CATEGORIES, ONBOARDING_STEPS } from '@/src/features/onboarding/constants';
 import type { OnboardingAccountDraft, OnboardingEntryDraft, OnboardingFormValues } from '@/src/features/onboarding/types';
-import { useCreateTransaction } from '@/src/features/transactions/hooks/transactions';
+import { useCreateTransaction } from '@/features/transactions';
 import { useOnboarding } from '@/src/providers/OnboardingProvider';
 import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';

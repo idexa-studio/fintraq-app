@@ -7,9 +7,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { PersonAvatar } from '@/src/components/ui/PersonAvatar';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
-import { useAccounts } from '@/src/features/accounts/hooks/accounts';
+import { useAccounts } from '@/features/accounts';
 import { PersonPickerBottomSheet } from '@/src/features/persons/components/PersonPickerBottomSheet';
-import { usePersons } from '@/src/features/persons/hooks/persons';
+import { usePersons } from '@/features/people';
 import { TransactionAccountPicker } from '@/src/features/transactions/components/TransactionAccountPicker';
 import { TransactionAmountInput } from '@/src/features/transactions/components/TransactionAmountInput';
 import { usePremium } from '@/src/providers/PremiumProvider';
@@ -19,7 +19,7 @@ import { formatDate , getLocalISOString } from '@/shared/date/date';
 import { colorNumberToHex } from '@/shared/format/color';
 import { parseAmount } from '@/shared/format/money';
 import { toErrorMessage } from '@/shared/errors';
-import { useCreateLoan, useLoansCount } from '@/src/features/loans/hooks/loans';
+import { useCreateLoan, useLoansCount } from '@/features/loans';
 import { useTranslation } from 'react-i18next';
 
 export const LoanFormScreen = React.memo(function LoanFormScreen() {

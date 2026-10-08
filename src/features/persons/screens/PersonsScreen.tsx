@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import { Banner, EmptyState, Fab, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, PersonAvatar, Screen, SearchField } from '@/src/components/ui';
 import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
-import { usePersons } from '@/src/features/persons/hooks/persons';
+import { usePersons } from '@/features/people';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/shared/format/color';
