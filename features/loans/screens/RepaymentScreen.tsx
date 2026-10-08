@@ -1,5 +1,5 @@
 import type { LoanType } from '@/data/repositories/loans';
-import { AmountField, Button, Card, Chip, Dialog, Emblem, Header, IconCircle, ListGroup, ListRow, Message, Screen, Skeleton, SlideToConfirm, Text, TextField, useStyles, useTheme, useToast } from '@/design';
+import { FormBlock, FieldStack, AmountField, Button, Card, Chip, Dialog, Emblem, Header, IconCircle, ListGroup, ListRow, Message, Screen, Skeleton, SlideToConfirm, Text, TextField, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { accountTypeIcon, useAccounts } from '@/features/accounts';
 import { useAddRepayment, useLoanWithStats } from '@/features/loans/hooks/loans';
@@ -113,8 +113,7 @@ export function RepaymentScreen({ loanId }: { loanId: number }) {
         </View>
       </Card>
 
-      <View style={styles.block}>
-        <Text variant="bodyStrong">{type === 'lend' ? t('repay.into') : t('repay.outOf')}</Text>
+      <FormBlock label={type === 'lend' ? t('repay.into') : t('repay.outOf')}>
         <Card padded={false}>
           {account ? (
             <ListRow
@@ -128,17 +127,16 @@ export function RepaymentScreen({ loanId }: { loanId: number }) {
             <ListRow icon="warning" title={t('repay.blocked.account', { currency: loan.currency })} disabled />
           )}
         </Card>
-      </View>
+      </FormBlock>
 
-      <View style={styles.block}>
-        <Text variant="bodyStrong">{t('repay.details')}</Text>
+      <FormBlock label={t('repay.details')}>
         <ListGroup>
-          <View style={styles.fields}>
+          <FieldStack padded>
             <TextField label={t('repay.when')} value={whenText} onPress={() => setPicker('when')} />
             <TextField label={t('repay.note')} value={note} onChangeText={setNote} placeholder={t('repay.noteOptional')} maxLength={NOTE_MAX} remaining={(count) => t('common:charactersLeft', { count })} />
-          </View>
+          </FieldStack>
         </ListGroup>
-      </View>
+      </FormBlock>
 
       <AccountPicker title={type === 'lend' ? t('repay.into') : t('repay.outOf')} visible={picker === 'account'} onClose={() => setPicker(null)} accounts={accounts} selectedId={account?.id ?? null} onSelect={setChosenAccount} />
       <WhenPicker visible={picker === 'when'} onClose={() => setPicker(null)} value={when} onChange={setWhen} />
@@ -157,8 +155,6 @@ export function RepaymentScreen({ loanId }: { loanId: number }) {
 const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     centre: { flex: 1, justifyContent: 'center' },
-    block: { gap: space.md },
-    fields: { padding: size.cardPadding, gap: space.lg },
     amountHead: { flexDirection: 'row', justifyContent: 'space-between' },
     all: { flexDirection: 'row' },
   });

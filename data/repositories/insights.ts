@@ -8,6 +8,8 @@ import { TransactionType } from '@/shared/types';
 import { LoggerService } from '@/shared/logging/logger';
 import i18n from '@/shared/i18n';
 
+const t = i18n.getFixedT(null, 'insights');
+
 /** How an insight card is styled. */
 export type InsightStatus = 'success' | 'danger' | 'info' | 'warning';
 
@@ -66,12 +68,12 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
       insights.push({
         id: 'weekly-spend',
         type: (isUp ? 'danger' : 'success') as InsightStatus,
-        title: isUp ? i18n.t('insights.spendingUp', { pct: absChange.toFixed(0) }) : i18n.t('insights.spendingDown', { pct: absChange.toFixed(0) }),
+        title: isUp ? t('findings.spendingUp', { pct: absChange.toFixed(0) }) : t('findings.spendingDown', { pct: absChange.toFixed(0) }),
         valueType: 'text',
         text: `${isUp ? '+' : ''}${absChange.toFixed(0)}%`,
         subtitle: isUp
-          ? i18n.t('insights.spendingUpHint')
-          : i18n.t('insights.spendingDownHint'),
+          ? t('findings.spendingUpHint')
+          : t('findings.spendingDownHint'),
         icon: isUp ? 'trending-up' : 'trending-down',
         trend: (isUp ? 'up' : 'down') as InsightTrend,
       });
@@ -88,12 +90,12 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
           insights.push({
             id: 'income-change',
             type: (isUp ? 'success' : 'warning') as InsightStatus,
-            title: isUp ? i18n.t('insights.incomeUp', { pct: absChange.toFixed(0) }) : i18n.t('insights.incomeDown', { pct: absChange.toFixed(0) }),
+            title: isUp ? t('findings.incomeUp', { pct: absChange.toFixed(0) }) : t('findings.incomeDown', { pct: absChange.toFixed(0) }),
             valueType: 'text',
             text: `${isUp ? '+' : ''}${absChange.toFixed(0)}%`,
             subtitle: isUp
-              ? i18n.t('insights.incomeUpHint')
-              : i18n.t('insights.incomeDownHint'),
+              ? t('findings.incomeHint')
+              : t('findings.incomeHint'),
             icon: isUp ? 'cash' : 'trending-down',
             trend: (isUp ? 'up' : 'down') as InsightTrend,
           });
@@ -108,16 +110,15 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
         const prevRate = lastWeek.income > 0 ? ((lastWeek.income - lastWeek.expense) / lastWeek.income) * 100 : 0;
         const diff = rate - prevRate;
         const dir = diff > 3 ? 'up' : diff < -3 ? 'down' : '';
-        const adj = rate > 60 ? 'strong' : rate > 30 ? 'healthy' : 'steady';
         insights.push({
           id: 'savings-rate',
           type: 'success' as InsightStatus,
-          title: i18n.t('insights.savingAt', { rate: rate.toFixed(0), adj: i18n.t(`insights.${adj}`) }),
+          title: t('findings.keeping', { rate: rate.toFixed(0) }),
           valueType: 'text',
           text: `${rate.toFixed(0)}%`,
           subtitle: dir
-            ? i18n.t(dir === 'up' ? 'insights.savingsUp' : 'insights.savingsDown', { tail: rate > 50 ? i18n.t('insights.cushion') : i18n.t('insights.keepAtIt') })
-            : i18n.t('insights.savingsSame', { tail: rate > 50 ? i18n.t('insights.futureSelf') : i18n.t('insights.steadyWins') }),
+            ? t(dir === 'up' ? 'findings.keepingUp' : 'findings.keepingDown')
+            : t('findings.keepingSame'),
           icon: 'building',
         });
       }
@@ -150,12 +151,12 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
           insights.push({
             id: `cat-${r.categoryId}`,
             type: (isUp ? 'danger' : 'success') as InsightStatus,
-            title: isUp ? i18n.t('insights.spike', { name: r.name }) : i18n.t('insights.cutBack', { name: r.name }),
+            title: isUp ? t('findings.categoryUp', { name: r.name, pct: pct.toFixed(0) }) : t('findings.categoryDown', { name: r.name, pct: Math.abs(pct).toFixed(0) }),
             valueType: 'text',
             text: r.name as string,
             subtitle: isUp
-              ? i18n.t('insights.spikeHint', { pct: pct.toFixed(0), name: r.name })
-              : i18n.t('insights.cutHint', { pct: Math.abs(pct).toFixed(0), name: r.name }),
+              ? t('findings.categoryUpHint')
+              : t('findings.categoryDownHint'),
             icon: isUp ? 'fire' : 'leaf',
             trend: (isUp ? 'up' : 'down') as InsightTrend,
           });
@@ -180,16 +181,16 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
           lastWeek.income - lastWeek.expense,
           saved,
         ];
-        if (saved >= Math.max(...allSaved)) best = i18n.t('insights.bestWeek');
+        if (saved >= Math.max(...allSaved)) best = ` ${t('findings.bestWeek')}`;
       }
 
       insights.push({
         id: 'weekly-summary',
         type: saved > 0 ? 'success' : 'warning' as InsightStatus,
-        title: i18n.t('insights.weekReview'),
+        title: t('findings.week'),
         valueType: 'text',
         text: '',
-        subtitle: `${i18n.t('insights.weekSummary', { income: formatCurrency(thisWeek.income, currency), expense: formatCurrency(thisWeek.expense, currency), amount: formatCurrency(Math.abs(saved), currency), verb: saved >= 0 ? i18n.t('insights.saved') : i18n.t('insights.overspent') })}${best}`,
+        subtitle: `${t(saved >= 0 ? 'findings.weekKept' : 'findings.weekOver', { income: formatCurrency(thisWeek.income, currency), expense: formatCurrency(thisWeek.expense, currency), amount: formatCurrency(Math.abs(saved), currency) })}${best}`,
         icon: 'receipt-text',
       });
     }
@@ -209,13 +210,13 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
       insights.push({
         id: 'monthly-net',
         type: (net > 0 ? 'success' : 'warning') as InsightStatus,
-        title: net > 0 ? i18n.t('insights.monthGood') : i18n.t('insights.monthTight'),
+        title: net > 0 ? t('findings.monthAhead') : t('findings.monthBehind'),
         valueType: 'amount',
         amount: Math.abs(net),
         currency,
         subtitle: net > 0
-          ? i18n.t('insights.monthGoodHint')
-          : i18n.t('insights.monthTightHint'),
+          ? t('findings.monthAheadHint')
+          : t('findings.monthBehindHint'),
         icon: 'calendar-outline',
       });
     }

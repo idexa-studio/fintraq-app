@@ -5,7 +5,6 @@ import { runAutoBackupIfDue } from '@/platform/backup/auto-backup';
 import { BackupPreferences } from '@/platform/backup/backup-preferences';
 import { restartApp } from '@/platform/config/restart';
 import { GoogleDriveService } from '@/platform/drive/google-drive';
-import { NotificationService } from '@/platform/notifications/notifications';
 import { IS_PREMIUM_OVERRIDE_ALLOWED } from '@/platform/purchases/dev-override';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { toErrorMessage } from '@/shared/errors';

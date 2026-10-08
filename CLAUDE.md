@@ -93,6 +93,9 @@ adb exec-out screencap -p > shot.png
 
 Sections: `home`, `entry`, `money`, `insights`, `system`, `ideas`,
 `foundations`, `actions`, `inputs`, `display`, `feedback`, `navigation`.
+To compare screens in numbers, not by eye: `python3 scripts/measure-screen.py shot.png 3`
+(card margins, heights and the gaps around each section title, in points).
+
 Swipe slowly when scripting (a long duration), or the list flings to the end.
 The app does not run in a browser.
 
@@ -133,7 +136,7 @@ All must be clean before a task is ticked:
 
 ```bash
 npx tsc --noEmit
-npx expo lint
+npm run lint:code      # not `npx expo lint`: off a terminal it prints nothing, warnings included
 npm run lint:design
 npm test
 ```

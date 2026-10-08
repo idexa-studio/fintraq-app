@@ -78,7 +78,7 @@ export function PeopleStrip({ people, currency, loading, onOpen, onAdd }: People
   const { size, space } = useTheme();
   const styles = useStyles(createStyles);
   // A size up from a row's mark: a face, not a headline.
-  const face = size.iconCircle + space.sm;
+  const face = size.iconCircleLarge;
   if (loading || !people) return <Card><Skeleton height={face + space.xxl} /></Card>;
   if (people.length === 0) return <EmptyState compact icon="users" color="teal" title={t('people.emptyTitle')} body={t('people.emptyBody')} actionLabel={t('people.emptyAction')} onAction={onAdd} />;
   return (

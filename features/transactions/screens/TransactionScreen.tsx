@@ -134,7 +134,7 @@ export function TransactionScreen() {
         ) : null}
         {tx.loan ? (
           <ListRow
-            icon="hand-coins"
+            leading={<IconCircle icon="hand-coins" color="pink" />}
             strong
             title={tx.person ? t(tx.loan.type === 'lend' ? 'detail.lentTo' : 'detail.borrowedFrom', { name: tx.person.name }) : t('detail.loan')}
             subtitle={t('detail.loan')}

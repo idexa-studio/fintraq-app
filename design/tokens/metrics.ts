@@ -61,6 +61,10 @@ export const SIZE = {
   sectionGap: 32,
   /** Between sibling cards. */
   cardGap: 16,
+  /** Between a form block's label and its card. */
+  labelGap: 12,
+  /** Between fields stacked in one card. */
+  fieldGap: 16,
   button: 48,
   buttonSmall: 36,
   field: 44,
@@ -82,6 +86,14 @@ export const SIZE = {
   /** Tab bar icons: about 23pt of ink, as measured in the reference. */
   iconTab: 30,
   iconCircle: 40,
+  /** A mark beside a line of a finding or a ranked list, where a full circle would crowd the text. */
+  iconCircleSmall: 32,
+  /** A face in a strip, or one end of a picture: a size up from a row's mark. */
+  iconCircleLarge: 48,
+  /** A ring beside figures (Home's month). */
+  ringSmall: 96,
+  /** A ring that is the subject of its card (Insights' categories). */
+  ring: 192,
   illustrationTile: 64,
   /** The small outlined mark at the corner of a card (reference: 32). */
   markTile: 32,

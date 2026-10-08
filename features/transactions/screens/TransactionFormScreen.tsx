@@ -1,5 +1,5 @@
 import {
-  AmountField, Button, Card, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, MarkTile, Message, Screen, Skeleton, TabStrip, Text, TextField, resolveIcon,
+  FormBlock, AmountField, Button, Card, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, MarkTile, Message, Screen, Skeleton, TabStrip, Text, TextField, resolveIcon,
   useTheme, useToast,
 } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
@@ -16,7 +16,6 @@ import { formatDate } from '@/shared/date/date';
 import { getCurrencySymbol } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
-import { differenceInCalendarDays } from 'date-fns';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -123,8 +122,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
         </View>
       </Card>
 
-      <View style={{ gap: space.md }}>
-        <Text variant="bodyStrong">{t('from')}</Text>
+      <FormBlock label={t('from')}>
         <Card padded={false}>
           <ListRow
             leading={form.account ? <IconCircle icon={accountTypeIcon(form.account.accountType)} color={colorNumberToHex(form.account.color)} /> : undefined}
@@ -135,11 +133,10 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
             onPress={() => setPicker('account')}
           />
         </Card>
-      </View>
+      </FormBlock>
 
       {form.type === 'TR' ? (
-        <View style={{ gap: space.md }}>
-          <Text variant="bodyStrong">{t('to')}</Text>
+        <FormBlock label={t('to')}>
           <Card padded={false}>
             {form.destinations.length > 0 ? (
               <ListRow
@@ -154,11 +151,10 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
               <ListRow icon="warning" title={t('noDestination')} disabled />
             )}
           </Card>
-        </View>
+        </FormBlock>
       ) : null}
 
-      <View style={{ gap: space.md }}>
-        <Text variant="bodyStrong">{t('details')}</Text>
+      <FormBlock label={t('details')}>
         <ListGroup>
           {form.loanLinked && form.loan ? (
             <ListRow
@@ -188,7 +184,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
             ) : null}
           </View>
         </ListGroup>
-      </View>
+      </FormBlock>
 
       <AccountPicker title={t('pick.account')} visible={picker === 'account'} onClose={() => setPicker(null)} accounts={form.accounts} selectedId={form.account?.id ?? null} onSelect={form.setAccountId} />
       <AccountPicker title={t('pick.toAccount')} visible={picker === 'toAccount'} onClose={() => setPicker(null)} accounts={form.destinations} selectedId={form.toAccount?.id ?? null} onSelect={form.setToAccountId} />

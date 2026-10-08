@@ -1,4 +1,4 @@
-import { Button, Card, Divider, Header, IconCircle, ListRow, MarkGrid, Notice, Screen, Text, TextField, useStyles } from '@/design';
+import { FieldStack, FormBlock, Button, Card, Divider, Header, IconCircle, ListRow, MarkGrid, Notice, Screen, Text, TextField, useStyles } from '@/design';
 import type { Theme } from '@/design';
 import { CurrencyPicker, accountTypeIcon, useCreateAccount } from '@/features/accounts';
 import { FIRST_ACCOUNT_KINDS, NAME_MAX, newSetupDraft, setupBlockerOf, withAccountName, withKind } from '@/features/onboarding/first-run-rules';
@@ -71,22 +71,19 @@ export function SetupScreen() {
     >
       {failed ? <Notice tone="danger" title={t('setup.failedTitle')} body={t('setup.failedBody')} /> : null}
 
-      <View style={styles.group}>
-        <Text variant="bodyStrong">{t('setup.you')}</Text>
+      <FormBlock label={t('setup.you')}>
         <Card>
           <TextField label={t('setup.name.label')} value={draft.name} onChangeText={(name) => setDraft({ ...draft, name })} maxLength={NAME_MAX} autoCapitalize="words" autoCorrect={false} focusOnArrival returnKeyType="done" helper={t('setup.name.hint')} />
         </Card>
-      </View>
+      </FormBlock>
 
-      <View style={styles.group}>
-        <Text variant="bodyStrong">{t('setup.currency.label')}</Text>
+      <FormBlock label={t('setup.currency.label')}>
         <Card padded={false}>
           <ListRow leading={<IconCircle initials={getCurrencySymbol(draft.currency)} color="green" />} strong title={currencyName(draft.currency)} subtitle={t('setup.currency.hint')} onPress={() => setChoosingCurrency(true)} />
         </Card>
-      </View>
+      </FormBlock>
 
-      <View style={styles.group}>
-        <Text variant="bodyStrong">{t('setup.account.label')}</Text>
+      <FormBlock label={t('setup.account.label')}>
         <Card padded={false}>
           <View style={styles.inCard}>
             <MarkGrid
@@ -97,12 +94,12 @@ export function SetupScreen() {
             />
           </View>
           <Divider />
-          <View style={[styles.inCard, styles.fields]}>
+          <FieldStack padded>
             <TextField label={t('setup.account.name')} value={draft.accountName} onChangeText={(name) => setDraft(withAccountName(draft, name))} maxLength={NAME_MAX} autoCapitalize="words" />
             <TextField label={t('setup.account.balance')} prefix={getCurrencySymbol(draft.currency)} value={draft.balance} onChangeText={(text) => setDraft({ ...draft, balance: text })} placeholder={t('setup.account.zero')} keyboardType="decimal-pad" helper={t('setup.account.balanceHint')} />
-          </View>
+          </FieldStack>
         </Card>
-      </View>
+      </FormBlock>
 
       <CurrencyPicker visible={choosingCurrency} onClose={() => setChoosingCurrency(false)} value={draft.currency} onChange={(currency) => setDraft({ ...draft, currency })} />
     </Screen>
@@ -111,7 +108,5 @@ export function SetupScreen() {
 
 const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
-    group: { gap: space.md },
     inCard: { padding: size.cardPadding },
-    fields: { gap: space.lg },
   });

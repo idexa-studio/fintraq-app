@@ -27,9 +27,9 @@ export type BackupLinkProps = {
  * the Drive for a backup, back towards the phone for a restore.
  */
 export function BackupLink({ state, value = 0, phoneLabel, driveLabel, accessibilityLabel }: BackupLinkProps) {
-  const { colors, size, space } = useTheme();
+  const { colors, size } = useTheme();
   const styles = useStyles(createStyles);
-  const mark = size.iconCircle + space.sm;
+  const mark = size.iconCircleLarge;
   const there = state !== 'apart';
   return (
     <View accessible accessibilityRole="image" accessibilityLabel={accessibilityLabel} style={styles.link}>

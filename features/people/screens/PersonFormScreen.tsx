@@ -1,4 +1,4 @@
-import { Button, Card, Dialog, Divider, Emblem, Header, IconCircle, ListRow, Message, Screen, Skeleton, SwatchGrid, Text, TextField, pastelOf, useStyles, useTheme, useToast } from '@/design';
+import { FieldStack, Button, Card, Dialog, Divider, Emblem, Header, IconCircle, ListRow, Message, Screen, Skeleton, SwatchGrid, Text, TextField, pastelOf, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { useCreatePerson, usePersonById, usePersonsCount, useUpdatePerson } from '@/features/people/hooks/people';
 import { DETAIL_MAX, NAME_MAX, blockerOf, draftOf, hasDetails, initialsOf, isChanged, newDraft, payloadOf } from '@/features/people/person-form';
@@ -134,12 +134,12 @@ export function PersonFormScreen({ personId }: PersonFormOptions) {
       </Card>
 
       {showMore ? (
-        <Card style={styles.fields}>
+        <Card><FieldStack>
           <TextField label={t('form.phone')} value={draft.phone} onChangeText={(text) => set('phone', text)} maxLength={DETAIL_MAX} keyboardType="phone-pad" />
           <TextField label={t('form.email')} value={draft.email} onChangeText={(text) => set('email', text)} maxLength={DETAIL_MAX} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} error={blocker === 'email' ? t('form.blocked.email') : undefined} />
           <TextField label={t('form.role')} value={draft.role} onChangeText={(text) => set('role', text)} placeholder={t('form.rolePlaceholder')} maxLength={DETAIL_MAX} autoCapitalize="words" />
           <TextField label={t('form.company')} value={draft.company} onChangeText={(text) => set('company', text)} maxLength={DETAIL_MAX} autoCapitalize="words" />
-        </Card>
+        </FieldStack></Card>
       ) : (
         <Card padded={false}>
           <ListRow icon="plus" title={t('form.more')} subtitle={t('form.moreHint')} onPress={() => setMore(true)} />
@@ -161,7 +161,6 @@ const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     centre: { flex: 1, justifyContent: 'center' },
     fill: { flex: 1 },
-    fields: { gap: space.lg },
     identity: { flexDirection: 'row', alignItems: 'center', gap: space.md, padding: size.cardPadding },
     colours: { padding: size.cardPadding },
   });
