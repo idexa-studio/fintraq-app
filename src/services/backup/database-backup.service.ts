@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
-import { db, getExpoDb, resetDbConnections } from '@/src/db/client';
-import { accounts, categories, loans, payments, persons, seederState } from '@/src/db/schema';
-import { runSeeds } from '@/src/db/seeds/runner';
+import { db, getExpoDb, resetDbConnections } from '@/data/db/client';
+import { accounts, categories, loans, payments, persons, seederState } from '@/data/db/schema';
+import { runSeeds } from '@/data/db/seeds/runner';
 import type { UserProfile } from '@/src/providers/SettingsProvider';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { getFormattedAppVersion } from '@/src/utils/version';
 import {
   BackupData,

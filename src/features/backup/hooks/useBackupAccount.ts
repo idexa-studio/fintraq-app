@@ -6,7 +6,7 @@ import type { GoogleUserAccount } from '@/src/services/backup/backup.types';
 import { BackupPreferences } from '@/src/services/backup/backup-preferences';
 import { CloudBackupProRequiredError } from '@/src/services/backup/google-drive.errors';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 
 const accountKey = QUERY_KEYS.backup.account();
 

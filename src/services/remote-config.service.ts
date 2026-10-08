@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import { getAppBuildNumber } from '@/src/utils/version';
-import { LoggerService } from './logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 
 // ─── Schema Types ─────────────────────────────────────────────────────────────
 

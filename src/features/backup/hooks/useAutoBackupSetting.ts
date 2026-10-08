@@ -5,7 +5,7 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
 import { syncBackgroundBackupTask } from '@/src/services/backup/background-backup.task';
 import { BackupPreferences } from '@/src/services/backup/backup-preferences';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { NotificationService } from '@/src/services/notification.service';
 
 export type SetAutoBackupResult = {

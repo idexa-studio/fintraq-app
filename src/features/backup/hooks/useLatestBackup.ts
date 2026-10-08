@@ -6,7 +6,7 @@ import { BackupPreferences } from '@/src/services/backup/backup-preferences';
 import { getBackupState, subscribeToBackupState } from '@/src/services/backup/backup-state';
 import { isTransientDriveError } from '@/src/services/backup/google-drive.errors';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { useBackupAccount } from './useBackupAccount';
 
 const STALE_MS = 5 * 60 * 1000;

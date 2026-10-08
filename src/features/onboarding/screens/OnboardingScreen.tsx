@@ -8,8 +8,8 @@ import { getDeviceCurrencyCode } from '@/shared/currency/currencies';
 import { ACCOUNT_COLORS } from '@/shared/contracts/pickers';
 import { DEFAULT_CATEGORIES } from '@/shared/contracts/default-categories';
 import { useCreateAccount } from '@/src/features/accounts/hooks/accounts';
-import { db } from '@/src/db/client';
-import { accounts, categories, payments } from '@/src/db/schema';
+import { db } from '@/data/db/client';
+import { accounts, categories, payments } from '@/data/db/schema';
 import { and, eq } from 'drizzle-orm';
 import { parseAmountInput } from '@/shared/format/amount';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
@@ -41,7 +41,7 @@ import { useEnableCloudBackup } from '@/src/features/backup/hooks/useEnableCloud
 import { openAppSettings } from '@/src/services/backup/battery-optimization';
 
 import { CloudBackupChoice, CloudBackupStep } from '@/src/features/onboarding/components/CloudBackupStep';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { useTranslation } from 'react-i18next';
 import { toErrorMessage } from '@/shared/errors';
 

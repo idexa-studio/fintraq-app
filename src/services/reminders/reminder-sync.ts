@@ -3,10 +3,10 @@ import { eq, ne } from 'drizzle-orm';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
-import { db } from '@/src/db/client';
-import { loans, persons } from '@/src/db/schema';
+import { db } from '@/data/db/client';
+import { loans, persons } from '@/data/db/schema';
 import i18n from '@/shared/i18n';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { REMINDER_SOUND, REMINDERS_CHANNEL_ID } from '@/src/services/notification.service';
 import {
   capReminders,

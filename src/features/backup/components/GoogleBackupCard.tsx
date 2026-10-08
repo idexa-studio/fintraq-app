@@ -16,7 +16,7 @@ import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { openAppSettings, openBatteryOptimizationSettings } from '@/src/services/backup/battery-optimization';
 import { isBackupOverdue } from '@/src/services/backup/backup-schedule';
 import { isNoBackupError } from '@/src/services/backup/google-drive.errors';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { alpha } from '@/src/theme/tokens';
 import { formatBackupTimestamp } from '@/shared/date/date';
 import { toErrorMessage } from '@/shared/errors';

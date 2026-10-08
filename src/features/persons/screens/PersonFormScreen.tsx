@@ -11,7 +11,7 @@ import { useCreatePerson, usePersons, useUpdatePerson } from '@/src/features/per
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex, toDbColor } from '@/shared/format/color';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { FREE_PERSON_LIMIT } from '@/src/constants/iap';
 import { useTranslation } from 'react-i18next';
 

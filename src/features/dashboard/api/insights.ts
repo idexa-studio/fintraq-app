@@ -1,12 +1,12 @@
 import { and, desc, eq, sql } from 'drizzle-orm';
-import { db } from '@/src/db/client';
-import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
-import { accounts, categories, payments } from '@/src/db/schema';
+import { db } from '@/data/db/client';
+import { PAYMENT_LOCAL_DAY } from '@/data/db/sql';
+import { accounts, categories, payments } from '@/data/db/schema';
 import { getDaysAgoLocal, getLocalISOString, getStartOfMonthLocal } from '@/shared/date/date';
 import { formatCurrency } from '@/shared/format/money';
 import { TransactionType } from '@/shared/types';
 import { MaterialIconName } from '@/src/utils/icons';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import i18n from '@/shared/i18n';
 
 /** How an insight card is styled. */

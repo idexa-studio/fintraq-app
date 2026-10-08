@@ -7,7 +7,7 @@ import { ALL_SKUS, IS_PREMIUM_OVERRIDE_ALLOWED, SKU_LIFETIME } from '@/src/const
 import { IAPProduct, IAPService, isSettledPurchase } from '@/src/services/iap.service';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { Analytics } from '@/src/services/telemetry';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import i18n from '@/shared/i18n';
 
 /**

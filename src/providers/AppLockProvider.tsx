@@ -12,7 +12,7 @@ import React, {
 } from 'react';
 import { requireOptionalNativeModule } from 'expo';
 import { AppState, AppStateStatus, Modal, Platform } from 'react-native';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 
 const GRACE_PERIOD_MS = 3000;
 const SCREEN_CAPTURE_KEY = 'app-lock';

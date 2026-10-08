@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import { db } from '@/src/db/client';
-import { categories, accounts, persons } from '@/src/db/schema';
-import { LEGACY_ICON_MAP } from '@/src/utils/icons';
+import { db } from '@/data/db/client';
+import { categories, accounts, persons } from '@/data/db/schema';
+import { LEGACY_ICON_MAP } from '@/shared/contracts/legacy-icon-names';
 import { colorNumberToHex, toDbColor } from '@/shared/format/color';
 import { PALETTE_COLOR_OPTIONS } from '@/shared/contracts/pickers';
 

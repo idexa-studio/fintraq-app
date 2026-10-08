@@ -4,7 +4,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { NotificationService } from '@/src/services/notification.service';
 import { syncReminders } from '@/src/services/reminders/reminder-sync';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import type { AppLanguage } from '@/shared/i18n';
 
 export type UserProfile = {

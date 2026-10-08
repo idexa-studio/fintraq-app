@@ -1,7 +1,7 @@
 import { and, eq, sql, SQL } from 'drizzle-orm';
-import { db } from '@/src/db/client';
-import { PAYMENT_LOCAL_DAY, PAYMENT_LOCAL_MONTH, PAYMENT_LOCAL_WEEKDAY } from '@/src/db/sql';
-import { accounts, categories, payments } from '@/src/db/schema';
+import { db } from '@/data/db/client';
+import { PAYMENT_LOCAL_DAY, PAYMENT_LOCAL_MONTH, PAYMENT_LOCAL_WEEKDAY } from '@/data/db/sql';
+import { accounts, categories, payments } from '@/data/db/schema';
 
 export type DayBucket = {
   day: string; // YYYY-MM-DD

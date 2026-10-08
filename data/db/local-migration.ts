@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { File, Directory, Paths } from 'expo-file-system';
 import * as SecureStore from 'expo-secure-store';
-import { LoggerService } from './logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { StorageKeys, SecureStoreKeys } from '@/shared/contracts/storage-keys';
 
 const FINTRAQ_MIGRATION_MARKER = StorageKeys.NAMESPACE_MIGRATED;

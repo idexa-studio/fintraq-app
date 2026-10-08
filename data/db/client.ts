@@ -2,7 +2,7 @@ import { drizzle, ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 import { openDatabaseSync } from 'expo-sqlite';
 import * as schema from './schema';
 import { DatabaseKeys } from '@/shared/contracts/storage-keys';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 
 let expoDbInstance: ReturnType<typeof openDatabaseSync> | null = null;
 let drizzleDbInstance: ExpoSQLiteDatabase<typeof schema> | null = null;

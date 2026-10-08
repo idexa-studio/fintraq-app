@@ -1,7 +1,7 @@
 import { desc, eq, like, or } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
-import { db } from '@/src/db/client';
-import { accounts, categories, payments, persons } from '@/src/db/schema';
+import { db } from '@/data/db/client';
+import { accounts, categories, payments, persons } from '@/data/db/schema';
 import type { Account } from '@/src/features/accounts/api/accounts';
 import type { Category } from '@/src/features/categories/api/categories';
 import type { Person } from '@/src/features/persons/api/persons';

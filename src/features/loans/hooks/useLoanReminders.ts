@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import type { LoanWithStats } from '@/src/features/loans/api/loans';
 import { useUpdateLoan } from '@/src/features/loans/hooks/loans';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { NotificationService } from '@/src/services/notification.service';
 import { syncReminders } from '@/src/services/reminders/reminder-sync';
 import { toErrorMessage } from '@/shared/errors';

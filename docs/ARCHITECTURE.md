@@ -27,8 +27,9 @@ data/                   What is stored and how it is read and written
   backup/               The backup snapshot format and its version history
 platform/               The phone and outside services: store purchases, Google Drive,
                         notifications, biometrics, analytics, crash reports
-shared/                 Pure helpers and constants with no dependencies of their own:
-                        money and date formatting, contracts (values saved in user data), i18n
+shared/                 Helpers and constants that depend on nothing else in the app:
+                        money and date formatting, contracts (values saved in user data),
+                        i18n, the logger
 drizzle/                Generated SQL migrations. Never edited by hand
 docs/                   PRODUCT.md (free and Pro), SCREENS.md (screens and flows), this file
 src/                    Legacy. Shrinks as screens are rebuilt; nothing new goes in
@@ -78,9 +79,10 @@ contracts; each has a test that fails if it is broken.
 
 | Contract | Where | Guard |
 | --- | --- | --- |
-| Database file name, tables and columns | `src/db` today, `data/db` when moved | Drizzle migrations only ever add |
+| Database file name, tables and columns | `data/db` | Drizzle migrations only ever add; `npm run db:generate` must report no changes after a move |
 | Storage keys (AsyncStorage, secure store) | `shared/contracts/storage-keys.ts` | `shared/contracts/__tests__/storage-keys.test.ts` pins every key as shipped |
 | Icon names saved on categories and accounts | `shared/contracts/stored-icon-names.ts` | `design/icons/__tests__/glyphs.test.ts` |
+| Icon names written by older versions | `shared/contracts/legacy-icon-names.ts` | same test: every name they map to still draws |
 | Backup snapshot format | `src/services/backup/backup-snapshot.ts` | `__tests__/backup-snapshot.test.ts`: every older shape still restores |
 | Lifetime product ids | `features/pro/pro-plans.ts` | `features/pro/__tests__/pro-plans.test.ts` |
 | Pro feature ids used by old links | `features/pro/pro-features.ts` (`LEGACY_FEATURE_IDS`) | `features/pro/__tests__/pro-features.test.ts` |

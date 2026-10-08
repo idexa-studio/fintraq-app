@@ -9,7 +9,7 @@ import { BentoPressable, Button, Card, Chip, FormField, Icon, IconAvatar, ListGr
 import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS } from '@/shared/contracts/pickers';
 import { useCategories, useCreateCategory, useUpdateCategory } from '@/src/features/categories/hooks/categories';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { colorNumberToHex, toDbColor } from '@/shared/format/color';
 import { resolveIcon } from '@/src/utils/icons';
 

@@ -8,7 +8,7 @@ import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
 import { useEnableCloudBackup } from '@/src/features/backup/hooks/useEnableCloudBackup';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { useTranslation } from 'react-i18next';
 
 type BackupPromptModalProps = {

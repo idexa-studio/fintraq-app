@@ -5,7 +5,7 @@ import { runCloudBackup } from '@/src/services/backup/cloud-backup.service';
 import { BackupInProgressError, GoogleDriveNetworkError } from '@/src/services/backup/google-drive.errors';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
 
-jest.mock('@/src/services/logger.service', () => ({
+jest.mock('@/shared/logging/logger', () => ({
   LoggerService: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
 jest.mock('@/src/services/notification.service', () => ({

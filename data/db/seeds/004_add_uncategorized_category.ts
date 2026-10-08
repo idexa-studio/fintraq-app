@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
-import { db } from '@/src/db/client';
-import { categories } from '@/src/db/schema';
+import { db } from '@/data/db/client';
+import { categories } from '@/data/db/schema';
 
 export const name = '004_add_uncategorized_category';
 

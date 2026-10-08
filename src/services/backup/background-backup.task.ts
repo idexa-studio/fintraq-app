@@ -3,7 +3,7 @@ import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
 import i18n from '@/shared/i18n';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { NotificationService } from '@/src/services/notification.service';
 import { runAutoBackupIfDue } from './auto-backup.service';
 import { BackupPreferences } from './backup-preferences';

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { hasPossibleTransfer } from '@/src/utils/accounts';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 
 type ShortcutId = 'expense' | 'income' | 'transfer' | 'loan';
 type Shortcut = { id: ShortcutId; href: string; iosIcon: string; androidIcon: string };

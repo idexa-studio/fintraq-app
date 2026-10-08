@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { payments } from '@/src/db/schema';
+import { payments } from '@/data/db/schema';
 
 /**
  * Timestamps are stored as UTC ISO strings (`toISOString()`), and SQLite's date() of those is the
