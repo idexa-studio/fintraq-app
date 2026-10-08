@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/data/query-keys';
 import { afterLedgerWrite } from '@/platform/notifications/after-ledger-write';
 import * as api from '@/data/repositories/people';
+import { getDashboardPersons } from '@/data/repositories/summaries';
 
 export const usePersons = () =>
   useQuery({
@@ -12,14 +13,15 @@ export const usePersons = () =>
 export const usePersonById = (id: number | null) =>
   useQuery({
     queryKey: QUERY_KEYS.persons.detail(id ?? 0),
-    queryFn: () => api.getPersonById(id!),
+    // Someone who is gone reads as null: a query may not answer undefined.
+    queryFn: async () => (await api.getPersonById(id!)) ?? null,
     enabled: id !== null,
   });
 
 export const usePersonWithStats = (id: number | null, currency?: string) =>
   useQuery({
     queryKey: [...QUERY_KEYS.persons.detail(id ?? 0), 'stats', currency],
-    queryFn: () => api.getPersonWithStats(id!, currency),
+    queryFn: async () => (await api.getPersonWithStats(id!, currency)) ?? null,
     enabled: id !== null,
   });
 
@@ -56,3 +58,10 @@ export const useDeletePerson = () => {
       afterLedgerWrite(queryClient),
   });
 };
+
+/** Everyone, each with what stands between you in one currency: those with a balance first. */
+export const usePeopleWithBalances = (currency: string) =>
+  useQuery({
+    queryKey: [...QUERY_KEYS.dashboard.topPersons(currency), 'everyone'],
+    queryFn: () => getDashboardPersons(currency, Number.POSITIVE_INFINITY),
+  });

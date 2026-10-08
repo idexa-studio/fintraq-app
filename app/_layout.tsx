@@ -28,6 +28,7 @@ import { unlockDatabaseIfLocked } from '@/data/db/client';
 import { syncBackgroundBackupTask } from '@/platform/backup/background-backup.task';
 import { AppState, AppStateStatus } from 'react-native';
 import { FONT_ASSETS, SHEET_ROUTE, ToastProvider } from '@/design';
+import { ProProvider } from '@/features/pro';
 import { AppTheme, DatabaseGate } from '@/features/shell';
 import React, { useEffect, useState } from 'react';
 import { LoggerService } from '@/shared/logging/logger';
@@ -87,6 +88,7 @@ export default function RootLayout() {
             <SettingsProvider>
               <I18nProvider>
               <PremiumProvider>
+              <ProProvider>
                 <TelemetryProvider>
                   <OnboardingProvider>
                     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -111,6 +113,7 @@ export default function RootLayout() {
                     </ThemeProvider>
                   </OnboardingProvider>
                 </TelemetryProvider>
+              </ProProvider>
               </PremiumProvider>
               </I18nProvider>
             </SettingsProvider>

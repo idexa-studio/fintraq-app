@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { IS_PREMIUM_OVERRIDE_ALLOWED } from '@/platform/purchases/dev-override';
-import { isPro, parseSaved } from '@/platform/purchases/entitlement';
+import { readSavedPro } from '@/platform/purchases/saved-pro';
 import { RETIRED_AUTO_BACKUP_FREQUENCY_KEY, StorageKeys } from '@/shared/contracts/storage-keys';
 import { resolveLanguage, SupportedLanguage } from '@/shared/i18n';
 import { LoggerService } from '@/shared/logging/logger';
@@ -30,18 +29,11 @@ function isFileMeta(value: unknown): value is CloudBackupFileMeta {
 export const BackupPreferences = {
   /**
    * Pro entitlement as last saved by the app. The headless task has no React tree,
-   * so it reads the snapshot directly; the dev override (development builds only) wins, as it
-   * does in the provider.
+   * so it reads what is saved directly.
    */
   async isProEntitled(): Promise<boolean> {
     try {
-      const [premium, devOverride] = await AsyncStorage.multiGet([StorageKeys.PREMIUM, StorageKeys.PREMIUM_DEV_OVERRIDE]);
-      if (IS_PREMIUM_OVERRIDE_ALLOWED) {
-        if (devOverride[1] === 'FORCED_ON') return true;
-        if (devOverride[1] === 'FORCED_OFF') return false;
-      }
-      // Read with its date: a subscription that has ended stops backing up even if the app was never reopened.
-      return isPro(parseSaved(premium[1]), Date.now());
+      return await readSavedPro();
     } catch (e) {
       LoggerService.error('BACKUP_PREFS', 'Failed to read pro status', e);
       return false;

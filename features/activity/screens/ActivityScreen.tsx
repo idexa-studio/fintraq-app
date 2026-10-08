@@ -62,18 +62,19 @@ export function ActivityScreen() {
   const router = useRouter();
   const toast = useToast();
   const { profile } = useSettings();
-  const params = useLocalSearchParams<{ accountId?: string; categoryId?: string }>();
+  const params = useLocalSearchParams<{ accountId?: string; categoryId?: string; personId?: string }>();
   const linkedAccount = numberParam(params.accountId);
   const linkedCategory = numberParam(params.categoryId);
+  const linkedPerson = numberParam(params.personId);
 
   const [kind, setKind] = useState<KindFilter>('all');
-  const [filters, setFilters] = useState<ActivityFilters>({ ...NO_FILTERS, accountId: linkedAccount, categoryId: linkedCategory });
+  const [filters, setFilters] = useState<ActivityFilters>({ ...NO_FILTERS, accountId: linkedAccount, categoryId: linkedCategory, personId: linkedPerson });
   const [filtering, setFiltering] = useState(false);
 
-  // Arriving from an account's or a category's screen narrows the list to it, replacing whatever was set.
+  // Arriving from an account's, a category's or a person's screen narrows the list to it, replacing whatever was set.
   useEffect(() => {
-    if (linkedAccount !== undefined || linkedCategory !== undefined) setFilters({ ...NO_FILTERS, accountId: linkedAccount, categoryId: linkedCategory });
-  }, [linkedAccount, linkedCategory]);
+    if (linkedAccount !== undefined || linkedCategory !== undefined || linkedPerson !== undefined) setFilters({ ...NO_FILTERS, accountId: linkedAccount, categoryId: linkedCategory, personId: linkedPerson });
+  }, [linkedAccount, linkedCategory, linkedPerson]);
   const [chosenCurrency, setChosenCurrency] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<TransactionListItem | null>(null);
 
@@ -106,7 +107,7 @@ export function ActivityScreen() {
   const change = useCallback((next: ActivityFilters) => {
     setFilters(next);
     // The link that brought the user here no longer describes the list once they change it.
-    router.setParams({ accountId: undefined, categoryId: undefined });
+    router.setParams({ accountId: undefined, categoryId: undefined, personId: undefined });
   }, [router]);
   const showEverything = useCallback(() => {
     setKind('all');

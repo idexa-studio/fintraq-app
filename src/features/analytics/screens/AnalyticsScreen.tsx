@@ -112,7 +112,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
           color,
           type: 'DR',
           leading: <PersonAvatar name={p.name} color={color} size={28} />,
-          onPress: () => router.push(`/persons/${p.id}`),
+          onPress: () => router.push({ pathname: '/people/[id]', params: { id: p.id } }),
         };
       }),
     [overview.people, currency, router],

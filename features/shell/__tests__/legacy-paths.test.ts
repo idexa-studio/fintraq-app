@@ -1,4 +1,4 @@
-import { addPathFromLegacy, editPathFromLegacy } from '@/features/shell/legacy-paths';
+import { addPathFromLegacy, editPathFromLegacy, personPathFromLegacy } from '@/features/shell/legacy-paths';
 
 describe('paths of the shipped app', () => {
   // The three launcher shortcuts 1.2.4 registers.
@@ -24,5 +24,11 @@ describe('paths of the shipped app', () => {
     expect(editPathFromLegacy('42')).toBe('/transactions/42/edit');
     expect(editPathFromLegacy('abc')).toBe('/');
     expect(editPathFromLegacy(undefined)).toBe('/');
+  });
+
+  it('sends a person\'s old path to the same person, and anything unreadable to the list', () => {
+    expect(personPathFromLegacy('12')).toBe('/people/12');
+    expect(personPathFromLegacy('abc')).toBe('/people');
+    expect(personPathFromLegacy(undefined)).toBe('/people');
   });
 });

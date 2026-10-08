@@ -76,8 +76,8 @@ export function HomeScreen() {
         <RecentList transactions={transactions} loading={transactionsPending} onOpen={(id) => router.push({ pathname: '/transactions/[id]', params: { id } })} onAdd={() => add('expense')} />
       </Section>
 
-      <Section title={t('people.title')} actionLabel={people?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/persons')}>
-        <PeopleList people={people} currency={currency} loading={peoplePending} onOpen={(id) => router.push({ pathname: '/persons/[id]', params: { id } })} onAdd={() => router.push('/persons/form')} />
+      <Section title={t('people.title')} actionLabel={people?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/people')}>
+        <PeopleList people={people} currency={currency} loading={peoplePending} onOpen={(id) => router.push({ pathname: '/people/[id]', params: { id } })} onAdd={() => router.push('/people/new')} />
       </Section>
     </Screen>
   );

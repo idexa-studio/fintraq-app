@@ -31,7 +31,7 @@ export const SearchScreen = React.memo(function SearchScreen() {
   const openTransaction = useCallback((id: number) => router.push(`/transactions/${id}`), [router]);
   const openAccount = useCallback((id: number) => router.push(`/transactions?accountId=${id}`), [router]);
   const openCategory = useCallback((id: number) => router.push(`/transactions?categoryId=${id}`), [router]);
-  const openPerson = useCallback((id: number) => router.push(`/(main)/persons/${id}`), [router]);
+  const openPerson = useCallback((id: number) => router.push({ pathname: '/people/[id]', params: { id } }), [router]);
 
   const renderBody = () => {
     if (!isEnabled) {

@@ -397,7 +397,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [ ] D9.04 Free limit of 10 leads to the paywall
 - [ ] D9.05 Delete with confirmation
 - [ ] D9.06 Empty state
-- [ ] D9.07 Shared checklist
+- [ ] D9.07 Shared checklist (D9 is built and passes the checks; not ticked because the phone was locked, so nothing has been seen or tried on it)
 
 ### D10. Loans
 - [ ] D10.01 Loan screen as a timeline: lent or borrowed, repayments, due, settled
