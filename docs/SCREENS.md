@@ -123,8 +123,7 @@ in and finish).
 | `/backup` | Backup: file (free), automatic cloud (Pro) | `backup` | push | Mixed |
 | `/export` | Spreadsheet export | `export` | push | Pro |
 | `/settings/about` | Version, privacy, terms, usage-data switch | `settings` | push | Free |
-| `/pro` | Paywall: pillars, three plans, lifetime first | `pro` | task | n/a |
-| `/pro/welcome` | Purchase complete | `pro` | task | n/a |
+| `/pro` | Fintraq Pro, in the state that applies: the plans (lifetime first), what is held, or the thank-you after buying | `pro` | task | n/a |
 
 ### Developer
 

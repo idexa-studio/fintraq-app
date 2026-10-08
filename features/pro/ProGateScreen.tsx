@@ -1,6 +1,6 @@
 import { Badge, Button, Emblem, Header, ListGroup, ListRow, Message, Screen, Section, useStyles } from '@/design';
 import type { Theme } from '@/design';
-import { PRO_FEATURE_COPY } from '@/features/pro/pro-copy.en';
+import { useProCopy } from '@/features/pro/pro-copy.en';
 import { LIVE_FEATURES, PRO_FEATURES, featuresIn } from '@/features/pro/pro-features';
 import type { ProFeatureId } from '@/features/pro/pro-features';
 import { usePro } from '@/features/pro/ProProvider';
@@ -27,6 +27,7 @@ export function ProGateScreen({ feature }: ProGateScreenProps) {
   const styles = useStyles(createStyles);
   const router = useRouter();
   const { openPaywall } = usePro();
+  const copy = useProCopy();
   // Its neighbours in the same pillar first, then the rest of what is live.
   const others = [...new Set([...featuresIn(PRO_FEATURES[feature].pillar, 'live'), ...LIVE_FEATURES])].filter((id) => id !== feature).slice(0, ALSO);
   const back = () => (router.canGoBack() ? router.back() : router.replace('/'));
@@ -41,13 +42,13 @@ export function ProGateScreen({ feature }: ProGateScreenProps) {
               <View style={styles.badge}><Badge label={t('pro.badge')} /></View>
             </View>
           }
-          title={PRO_FEATURE_COPY[feature].title}
-          body={PRO_FEATURE_COPY[feature].description}
+          title={copy.feature(feature).title}
+          body={copy.feature(feature).description}
         />
       </View>
       <Section title={t('pro.also')}>
         <ListGroup>
-          {others.map((id) => <ListRow key={id} icon={PRO_FEATURES[id].icon} title={PRO_FEATURE_COPY[id].title} subtitle={PRO_FEATURE_COPY[id].description} />)}
+          {others.map((id) => <ListRow key={id} icon={PRO_FEATURES[id].icon} title={copy.feature(id).title} subtitle={copy.feature(id).description} />)}
         </ListGroup>
       </Section>
     </Screen>

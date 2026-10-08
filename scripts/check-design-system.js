@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
  * Design-system compliance audit. Flags feature/app code that bypasses the
- * system in docs/DESIGN_SYSTEM.md. Design-system internals (design/, and the legacy src/components/ui,
- * src/theme) are exempt — they are where raw values are allowed to live.
+ * system in docs/DESIGN_SYSTEM.md. Design-system internals (design/) are exempt: they are where raw values are allowed to live.
  *
  *   node scripts/check-design-system.js           # summary + every violation
  *   node scripts/check-design-system.js --summary # counts per rule and file
@@ -13,17 +12,11 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const SCAN = ['src', 'app', 'design', 'features', 'data', 'platform', 'shared'];
+const SCAN = ['app', 'design', 'features', 'data', 'platform', 'shared'];
 const EXEMPT = [
-  'src/components/ui/',
-  'src/theme/',
   'design/', // the new design system: the one place raw values live
   'shared/i18n/',
-  'src/db/',
   'shared/contracts/', // the colours offered to users and seeded on first run: data, not UI
-  'src/utils/seed.ts', // demo data
-  'src/utils/icons.ts', // stored icon strings → registry names
-  'src/providers/ThemeProvider.tsx',
 ];
 
 const RULES = [
@@ -37,7 +30,7 @@ const RULES = [
   { id: 'spinner', msg: 'ActivityIndicator — use Skeleton for loading, Button isLoading for actions', re: /\bActivityIndicator\b/ },
   { id: 'opacity-text', msg: 'Opacity-faded style — use tone="muted" / alpha() instead', re: /^\s*opacity\s*:\s*0\.[1-8]\d*\s*,?\s*$/ },
   { id: 'lime-text', msg: 'colors.primary as text/icon colour (~2:1 on light layers) — use colors.primaryInk, or primaryForeground on a primary fill', re: /(?<![A-Za-z])color(?:\s*:\s*|=\{)[^,}]*\bcolors\.primary(?![A-Za-z])/ },
-  { id: 'relative-import', msg: "'../' import — use the @/src alias", re: /from '\.\.\// },
+  { id: 'relative-import', msg: "'../' import — use the @/ alias", re: /from '\.\.\// },
   // Component-level rules: screens are built from the system, not rebuilt by hand.
   { id: 'screen-scaffold', msg: 'Hand-rolled SafeAreaView scaffold — use <Screen>', re: /<SafeAreaView\b/ },
   { id: 'rn-text', msg: "RN Text with manual styles — use <Text variant> from components/ui", re: /import \{[^}]*\bText\b[^}]*\} from 'react-native'/ },

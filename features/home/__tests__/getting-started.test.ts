@@ -44,8 +44,9 @@ describe('chooseHomePrompt', () => {
     expect(chooseHomePrompt({ ...base, backupConnected: true })).toBeNull();
   });
 
-  it('never offers what cannot be finished, or anything before it knows', () => {
-    expect(chooseHomePrompt({ ...base, isPro: false })).toBeNull();
+  it('offers Pro to a free user, never a backup they cannot finish, and nothing before it knows', () => {
+    expect(chooseHomePrompt({ ...base, isPro: false })).toBe('pro');
+    expect(chooseHomePrompt({ ...base, isPro: false, transactionCount: 2 })).toBeNull();
     expect(chooseHomePrompt({ ...base, resolved: false })).toBeNull();
   });
 });

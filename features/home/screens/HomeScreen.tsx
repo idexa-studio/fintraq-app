@@ -70,9 +70,9 @@ export function HomeScreen() {
       <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} />
 
       {start.visible ? <GettingStarted steps={start.steps} onStep={doStep} onHide={start.dismiss} /> : null}
-      {/* Someone still getting started is not also asked to back up. */}
-      {prompt === 'backup' && !start.visible ? (
-        <Notice title={t('prompt.backup.title')} body={t('prompt.backup.body')} linkLabel={t('prompt.backup.link')} onLink={() => router.push('/backup')} onDismiss={dismissPrompt} dismissLabel={t('prompt.backup.dismiss')} />
+      {/* Someone still getting started is not also asked for anything else. */}
+      {prompt && !start.visible ? (
+        <Notice title={t(`prompt.${prompt}.title`)} body={t(`prompt.${prompt}.body`)} linkLabel={t(`prompt.${prompt}.link`)} onLink={() => router.push(prompt === 'pro' ? '/pro' : '/backup')} onDismiss={dismissPrompt} dismissLabel={t(`prompt.${prompt}.dismiss`)} />
       ) : null}
 
       <Section title={t('quick.title')} hint={t('quick.hint')}>

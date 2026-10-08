@@ -3,7 +3,7 @@ import { EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, LockedC
 import { useLoans } from '@/features/loans';
 import { initialsOf } from '@/features/people';
 import { dueWording, loanTotals, planLoans } from '@/features/plan/plan-rules';
-import { PRO_FEATURES, PRO_FEATURE_COPY, featuresIn, usePro } from '@/features/pro';
+import { PRO_FEATURES, featuresIn, usePro, useProCopy } from '@/features/pro';
 import { useSettings } from '@/features/settings';
 import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
@@ -27,6 +27,7 @@ export function PlanScreen() {
   const router = useRouter();
   const { profile } = useSettings();
   const { isPro, openPaywall } = usePro();
+  const proCopy = useProCopy();
   const { data: loans, isPending } = useLoans();
   const [showSettled, setShowSettled] = useState(false);
 
@@ -65,7 +66,7 @@ export function PlanScreen() {
       badge={t('soon.badge')}
       title={t('soon.title')}
       body={t('soon.body')}
-      items={SOON.map((id) => ({ icon: PRO_FEATURES[id].icon, title: PRO_FEATURE_COPY[id].title }))}
+      items={SOON.map((id) => ({ icon: PRO_FEATURES[id].icon, title: proCopy.feature(id).title }))}
       actionLabel={t('soon.action')}
       onAction={() => openPaywall()}
     />

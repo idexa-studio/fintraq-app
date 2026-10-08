@@ -38,7 +38,7 @@ export function showsGettingStarted(steps: readonly GettingStartedStep[], transa
   return !dismissed && transactionCount < ESTABLISHED_TRANSACTIONS && steps.some((step) => step.state !== 'done');
 }
 
-export type HomePrompt = 'backup';
+export type HomePrompt = 'backup' | 'pro';
 
 export type HomePromptInput = {
   /** Pro and the backup account have both been read. */
@@ -50,16 +50,20 @@ export type HomePromptInput = {
 
 /** Only after someone has used the app: a prompt on an empty Home has nothing to protect. */
 export const PROMPT_FROM_TRANSACTIONS = 3;
-/** How long a dismissed backup prompt stays away. */
-export const BACKUP_PROMPT_COOLDOWN_MS = 14 * 24 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+/** How long each prompt stays away once dismissed, as in the shipped app. */
+export const PROMPT_COOLDOWN_MS: Record<HomePrompt, number> = { backup: 14 * DAY_MS, pro: 3 * DAY_MS };
+export const BACKUP_PROMPT_COOLDOWN_MS = PROMPT_COOLDOWN_MS.backup;
 
 /**
- * The one prompt Home may show, ignoring cooldowns. Connecting Drive needs Pro, so a free user is
- * never offered something they cannot finish.
+ * The one prompt Home may show, ignoring cooldowns: Pro for a free user, backup for a Pro user
+ * with no Drive connected. Connecting Drive needs Pro, so a free user is never offered something
+ * they cannot finish.
  */
 export function chooseHomePrompt(input: HomePromptInput): HomePrompt | null {
   if (!input.resolved || input.transactionCount < PROMPT_FROM_TRANSACTIONS) return null;
-  return input.isPro && !input.backupConnected ? 'backup' : null;
+  if (!input.isPro) return 'pro';
+  return input.backupConnected ? null : 'backup';
 }
 
 export const isCoolingDown = (dismissedAt: string | null, now: number, cooldownMs: number): boolean => {

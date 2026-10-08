@@ -26,10 +26,10 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
-| C | Groundwork: shared, data, platform, shell | 87 | 70 | In progress |
+| C | Groundwork: shared, data, platform, shell | 87 | 73 | In progress |
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
-| E | Pro: three plans and gating | 27 | 5 | In progress |
-| F | Remove the legacy code | 16 | 0 |  |
+| E | Pro: three plans and gating | 27 | 18 | In progress |
+| F | Remove the legacy code | 16 | 9 | In progress |
 | G | Release 1: the redesign | 23 | 0 |  |
 | H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
@@ -189,7 +189,7 @@ phone upgraded from 1.2.4 with real data opens with everything intact.
 - [ ] C2.03 Write the new English copy namespace by namespace as each screen is built (tracked under D)
 - [x] C2.04 Missing keys in other locales fall back to English, never to a key name
 - [ ] C2.05 Script that lists keys missing per locale; run in CI
-- [ ] C2.06 Register `features/pro/pro-copy.en.ts` as the `pro` namespace
+- [x] C2.06 Register `features/pro/pro-copy.en.ts` as the `pro` namespace
 - [x] C2.07 Move the language provider (`src/providers/I18nProvider.tsx`) once the settings store it reads has moved (C7.01)
 
 ### C3. `data/db`
@@ -250,7 +250,7 @@ go to `shared/calc`.
 - [x] C7.02 `features/shell/AppTheme`: binds `design`'s `ThemeProvider` to the saved appearance setting, the system scheme, and the type ramp for the app's language
 - [x] C7.03 Onboarding state reading the same `@fintraq_onboarded` key (its legacy provider draws legacy UI; rebuilt with first run, D2) (done with D2: `features/onboarding`, same key, run on a wiped install)
 - [x] C7.04 Lock state provider on `platform/lock` (rebuilt with the lock screen, D1) (done with D1: `features/lock/LockProvider.tsx`)
-- [ ] C7.05 Telemetry provider: same consent key, same default (depends on the Pro state; rebuilt with E2)
+- [x] C7.05 Telemetry provider: same consent key, same default (depends on the Pro state; rebuilt with E2)
 - [x] C7.06 Query client provider to `data/QueryProvider.tsx`
 - [x] C7.08 `features/shell/DatabaseGate`: migrations and data fixes before anything renders, with its waiting and failure screens on the new design
 
@@ -272,7 +272,7 @@ go to `shared/calc`.
 - [x] C9.03 `/transactions/edit/[id]` redirects to `/transactions/[id]/edit`, with a test
 - [x] C9.04 `/transactions?accountId=|categoryId=` redirects to `/activity` with the filter
 - [x] C9.05 `/persons`, `/persons/[id]` redirect to `/people`, `/people/[id]`
-- [ ] C9.06 `/premium?feature=` redirects to `/pro?feature=` through `resolveProFeature`
+- [x] C9.06 `/premium?feature=` redirects to `/pro?feature=` through `resolveProFeature`
 - [x] C9.07 `/analytics`, `/backup`, `/export` redirect (`/analytics` redirects; `/backup` and `/export` kept their paths, so nothing to redirect)
 - [x] C9.08 Test: a table of old paths and where each lands (`features/shell/__tests__/old-routes.test.ts`: every old path keeps a route file; where each lands is tested in `legacy-paths.test.ts`)
 - [ ] C9.09 Device: tap a launcher shortcut pinned by the shipped app
@@ -539,57 +539,57 @@ both stores' test accounts, and every gate reads from `features/pro`.
 ### E1. Store side (owner)
 - [x] E1.01 Owner: enable `luno_monthly` and `luno_yearly` in Play Console
 - [ ] ~~E1.02 Confirm and enable the iOS products~~ Not applicable: the app is Android only for now (owner, 2026-10-09). The iOS ids in the contract are reserved for when an iOS app exists
-- [ ] E1.03 Owner: set the three prices so lifetime is the obvious deal
+- [ ] E1.03 Owner: set the three prices so lifetime is the obvious deal (the store returned ₹300 lifetime, ₹1,400 yearly, ₹280 monthly on 2026-10-08, so lifetime costs about one month of monthly: the owner to confirm that is intended)
 - [ ] E1.04 Owner: licence-testing and sandbox accounts available for testing
 
 ### E2. Entitlement
 - [x] E2.01 Entitlement model: lifetime owned, or a subscription active until a date, with its plan
 - [x] E2.02 Read the saved state of the shipped app (`@fintraq_premium_v7`) so current buyers are Pro on first launch offline
-- [ ] E2.03 Fetch the three products and prices from the store
-- [ ] E2.04 Buy lifetime (one-time) and finish the purchase
-- [ ] E2.05 Buy monthly or yearly (subscription) and acknowledge
-- [ ] E2.06 Pending payment never grants Pro and is never finished
-- [ ] E2.07 Restore finds a lifetime licence or an active subscription
-- [ ] E2.08 Renewal, expiry, grace period and refund each move the state correctly
+- [x] E2.03 Fetch the three products and prices from the store
+- [ ] E2.04 Buy lifetime (one-time) and finish the purchase (built in `features/pro/ProProvider.tsx` and `platform/purchases/store.ts`; not bought: it costs money and needs the tester account)
+- [ ] E2.05 Buy monthly or yearly (subscription) and acknowledge (built, with Google Play's offer token; not bought)
+- [ ] E2.06 Pending payment never grants Pro and is never finished (built: a pending purchase resolves as pending, grants nothing and is not finished; the rule is tested, the store case was not provoked)
+- [x] E2.07 Restore finds a lifetime licence or an active subscription
+- [ ] E2.08 Renewal, expiry, grace period and refund each move the state correctly (the rules are tested; none was observed on a real subscription)
 - [x] E2.09 Background auto-backup reads the entitlement including its expiry
-- [ ] E2.10 Developer override still honoured in development builds only
+- [x] E2.10 Developer override still honoured in development builds only
 - [x] E2.11 Tests for every transition in E2.06 to E2.09
 
 ### E3. Paywall
-- [ ] E3.01 Paywall opens on the feature that led to it
-- [ ] E3.02 Three plans, lifetime first and preselected, with the computed lines
-- [ ] E3.03 Renewal terms, price and period beside the button; links to terms and privacy
-- [ ] E3.04 Upcoming features listed as "Coming to Pro, included in your purchase"
-- [ ] E3.05 Prices unavailable and no-network states
-- [ ] E3.06 Purchase complete screen, returning to where the user was
-- [ ] E3.07 Already Pro: shows the plan held and how to manage a subscription in the store
-- [ ] E3.08 Subscriber buying lifetime is told to cancel the subscription, with the store link
-- [ ] E3.09 Home's Pro prompt for a free user after three entries, as a card with a cross, three-day cooldown under the shipped key (`UPSELL_DISMISSED_AT`); the rule joins `chooseHomePrompt` in `features/home/getting-started.ts`
+- [x] E3.01 Paywall opens on the feature that led to it
+- [x] E3.02 Three plans, lifetime first and preselected, with the computed lines
+- [x] E3.03 Renewal terms, price and period beside the button; links to terms and privacy
+- [x] E3.04 Upcoming features listed as "Coming to Pro, included in your purchase"
+- [ ] E3.05 Prices unavailable and no-network states (built: a notice with Try again, and the button waits with the reason; not seen, as the store answered)
+- [ ] E3.06 Purchase complete screen, returning to where the user was (built as the screen's third state; not seen without a purchase)
+- [x] E3.07 Already Pro: shows the plan held and how to manage a subscription in the store
+- [ ] E3.08 Subscriber buying lifetime is told to cancel the subscription, with the store link (built: the owned screen offers lifetime to a subscriber and the thank-you says to cancel, with the store link; not seen)
+- [x] E3.09 Home's Pro prompt for a free user after three entries, as a card with a cross, three-day cooldown under the shipped key (`UPSELL_DISMISSED_AT`); the rule joins `chooseHomePrompt` in `features/home/getting-started.ts`
 
 ### E4. Gates
-- [ ] E4.01 `useProAccess` on the new registry: `isPro`, `requirePro(feature)`, `openPaywall(feature)`
-- [ ] E4.02 Locked section and locked row components wired to it
-- [ ] E4.03 Limit checks use `isOverFreeLimit`
-- [ ] E4.04 A lapsed subscriber keeps their data; adding beyond the allowance asks for Pro
+- [x] E4.01 `useProAccess` on the new registry: `isPro`, `requirePro(feature)`, `openPaywall(feature)`
+- [x] E4.02 Locked section and locked row components wired to it
+- [x] E4.03 Limit checks use `isOverFreeLimit`
+- [x] E4.04 A lapsed subscriber keeps their data; adding beyond the allowance asks for Pro
 
 ---
 
 ## F. Remove the legacy code
 
 Done when: `src/` no longer exists and the app builds.
-- [ ] F1.01 Delete each legacy feature folder as its screen ships behind the switch and is verified
-- [ ] F1.02 Delete `src/components/ui`, `src/components/pickers`, `src/theme`
-- [ ] F1.03 Delete the legacy `ThemeProvider` and `PremiumProvider`
-- [ ] F1.04 Delete `src/features/premium` and its test; remove `FREE_*` from the old constants
-- [ ] F1.05 Remove MuseoModerno from `assets/fonts` and the root layout
-- [ ] F1.06 Remove `@hugeicons/*` from `package.json`
+- [x] F1.01 Delete each legacy feature folder as its screen ships behind the switch and is verified
+- [x] F1.02 Delete `src/components/ui`, `src/components/pickers`, `src/theme`
+- [x] F1.03 Delete the legacy `ThemeProvider` and `PremiumProvider`
+- [x] F1.04 Delete `src/features/premium` and its test; remove `FREE_*` from the old constants
+- [x] F1.05 Remove MuseoModerno from `assets/fonts` and the root layout
+- [x] F1.06 Remove `@hugeicons/*` from `package.json`
 - [ ] F1.07 Remove every legacy `api/` re-export left by C4.15
 - [ ] F1.08 Remove the developer switch from C8.09; the new screens are the app
-- [ ] F1.09 Delete `src/`; remove `@/src` from lint rules and the audit script
+- [x] F1.09 Delete `src/`; remove `@/src` from lint rules and the audit script
 - [ ] F1.10 Remove unused i18n keys from all 13 locales
-- [ ] F1.11 Remove unused dependencies (run a dependency check)
-- [ ] F1.12 `scripts/check-design-system.js`: drop legacy exemptions and rules that no longer apply
-- [ ] F1.13 Trim `ARCHITECTURE.md` to the new structure only (`DESIGN_SYSTEM.md` was rewritten in B7.02)
+- [ ] F1.11 Remove unused dependencies (run a dependency check) (done for JavaScript-only packages: `@hugeicons/*` and `react-hook-form` removed. `expo-haptics` and `expo-image` are native and unused: remove them with the next native build)
+- [x] F1.12 `scripts/check-design-system.js`: drop legacy exemptions and rules that no longer apply
+- [x] F1.13 Trim `ARCHITECTURE.md` to the new structure only (`DESIGN_SYSTEM.md` was rewritten in B7.02)
 - [ ] F1.14 Remove old store screenshots and generators that draw the old look
 - [ ] F1.15 Remove old build artefacts from the repository root
 - [ ] F1.16 Bundle size compared with 1.2.4 and recorded

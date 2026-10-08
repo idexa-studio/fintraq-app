@@ -1,9 +1,7 @@
 # Architecture & Coding Style
 
-> **Reboot in progress.** Data, services and helpers already live in their
-> final folders (`data/`, `platform/`, `shared/`). `src/` now holds only the
-> legacy screens, components and providers, which are replaced screen by screen
-> and then deleted. Its own conventions are in this file's git history.
+> The legacy `src/` tree was deleted on 2026-10-08. Everything lives in the
+> folders below. The old tree's conventions are in this file's git history.
 
 ## Target structure (all new code)
 
@@ -32,7 +30,6 @@ shared/                 Helpers and constants that depend on nothing else in the
                         i18n, the logger
 drizzle/                Generated SQL migrations. Never edited by hand
 docs/                   PRODUCT.md (free and Pro), SCREENS.md (screens and flows), this file
-src/                    Legacy. Shrinks as screens are rebuilt; nothing new goes in
 ```
 
 ### Who may import whom
@@ -46,7 +43,6 @@ design   →  shared
 shared   →  nothing
 ```
 
-- Nothing new imports from `src/`. Legacy code may import the new folders.
 - A screen never touches the database: screen → hook → repository.
 - `design/` never imports a feature, the data layer or the platform. If a
   component needs to know what a loan is, it belongs in a feature.
@@ -162,25 +158,15 @@ Explain *why*, not *what*: constraints, platform quirks, non-obvious maths. Dele
 
 ## Free vs Pro
 
-`src/features/premium/pro-features.ts` is the one list of Pro capabilities (id, icon, paywall group). Ids are also the i18n keys under `premium.features.*`, and a test checks every feature has copy and a group.
+`features/pro/pro-features.ts` is the one list of Pro capabilities (id, pillar, icon, whether it is live). Its words are the `pro` copy namespace, and a test checks every feature has copy.
 
-- **Sections** — `<ProGate feature="…">` renders children for Pro, a locked card otherwise. `ProPreviewCard` lists several locked sections behind one button.
-- **Actions** — `useProAccess()` gives `isPremium`, `requirePro(feature)` (opens the paywall and returns false on the free plan) and `openPaywall(feature?)`.
-- **Routes** — Pro-only screens (`/search`, `/export`) render `ProGateScreen` for free users, so deep links can't bypass the gate.
-- **Paywall** — `/premium?feature=<id>` leads with that feature. The paywall, the Pro screen and the dashboard upsell all render from the registry.
-- **Free caps** — `FREE_LIMITS` in `features/pro/pro-features.ts` (the shipped screens still read the same numbers from `src/constants/iap.ts` until they are rebuilt); hitting one opens the paywall on `unlimited`.
-- **Background work** (auto-backup) can't use hooks; it reads the persisted entitlement through `BackupPreferences.isProEntitled()`.
-- **Developer override** — the Developer screen's "Premium override" is honoured in development builds only (`IS_PREMIUM_OVERRIDE_ALLOWED`). Test Pro on a release build with a store licence-tester account.
-- **Pending purchases** (`isSettledPurchase`) never grant Pro and are never finished; the store sends another update when payment settles.
-
-### Home vs Analytics
-
-Each tab has one job, so a widget belongs to exactly one of them:
-
-- **Home — where you stand, what to do next.** Balance and this month's net, quick actions, this month's spend against last month, accounts, recent transactions, people and loans to settle. No Pro locks.
-- **Analytics — why.** Period summary and trend, top categories, spending rhythm (free); highlights and month-end forecast, insights, full category breakdown, weekly pattern, people and balances (Pro). Free users see these as one `ProPreviewCard`.
-
-A new chart, breakdown or forecast goes in Analytics; Home links to it from the "This month" header.
+- **Who is Pro:** `ProProvider` reads the saved entitlement at once (right offline), then asks the store what the account owns and brings the two in line. The rules (`platform/purchases/entitlement.ts`) never see the store SDK; the SDK calls are in `platform/purchases/store.ts`.
+- **Screens:** `usePro()` gives `isPro`, `ready`, `openPaywall(feature?)` and `requirePro(feature)` (opens the paywall and answers false on the free plan). A locked section is a `LockedCard`.
+- **Routes:** screens that are Pro as a whole (`/search`, `/export`) render `ProGateScreen` for free users, so a link cannot pass the gate.
+- **Paywall:** `/pro?feature=<id>` opens on that feature; `/premium?feature=<old id>` redirects to it. It shows the plans, what is held, or the thank-you, and takes every price from the store.
+- **Free caps:** `FREE_LIMITS`; reaching one opens the paywall on `unlimited`.
+- **Background work** (automatic backup) cannot use hooks; it reads the saved entitlement, with its expiry, through `readSavedPro()`.
+- **Developer override:** honoured in development builds only (`IS_PREMIUM_OVERRIDE_ALLOWED`). Test buying on a release build with a store licence-tester account.
 
 ## Cloud backup
 

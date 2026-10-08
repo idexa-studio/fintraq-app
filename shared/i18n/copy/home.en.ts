@@ -28,6 +28,12 @@ export default {
     },
   },
   prompt: {
+    pro: {
+      title: 'There is more in Fintraq Pro',
+      body: 'Search, export, deeper insights and automatic backup. Pay once, or by the month.',
+      link: 'See Fintraq Pro',
+      dismiss: 'Not now',
+    },
     backup: {
       title: 'Your records live only on this phone',
       body: 'Keep a copy in your own Google Drive, updated twice a day.',
