@@ -158,6 +158,16 @@ use it.
 
 - **A screen** is `Screen` with a `Header`, content in `Section`s, and its
   buttons in the `footer`. Never hand-build the scaffold.
+- **A task clears the keyboard it inherits.** `Screen sheet` dismisses a
+  keyboard left open by the screen beneath, so it never sits over the task's
+  buttons; a field that wants the keyboard asks with `focusOnArrival`.
+- **A length limit counts down inside the field.** `TextField` with
+  `maxLength` and `remaining` shows the number left for the last 20
+  characters, at the field's right edge, where it stays above the keyboard.
+- **A note that may be put away** is a `Notice` with `onDismiss`: a cross in
+  its corner. Home's prompts are these, on the page, never laid over it.
+- **First steps are a journey**: `StepRow`s, done ones ticked, the next one
+  outlined and tappable, later ones pale (Home's getting started).
 - **The top of a tab** is the reference's header: the title small and
   centred, icon actions either side. Home's title is "Hi" and the first
   name, with search on the left and the profile icon on the right. A large

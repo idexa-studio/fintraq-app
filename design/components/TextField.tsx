@@ -26,10 +26,19 @@ export type TextFieldProps = Omit<TextInputProps, 'style' | 'autoFocus'> & {
   /** Shows a cross that empties the field while it holds something. For search. */
   onClear?: () => void;
   clearLabel?: string;
+  /**
+   * With `maxLength`: counts down inside the field once the end is near, where it stays in view
+   * above the keyboard. Receives the count and returns how to say it aloud, so the wording stays
+   * with the screen's language.
+   */
+  remaining?: (left: number) => string;
 };
 
+/** How close to `maxLength` a value gets before the field starts counting down. */
+const COUNT_DOWN_FROM = 20;
+
 /** An outlined field with its label inside. */
-export function TextField({ label, icon, error, helper, trailing, prefix, onPress, focusOnArrival = false, onClear, clearLabel = 'Clear', editable = true, onFocus, onBlur, ...rest }: TextFieldProps) {
+export function TextField({ label, icon, error, helper, trailing, prefix, onPress, focusOnArrival = false, onClear, clearLabel = 'Clear', remaining, editable = true, onFocus, onBlur, ...rest }: TextFieldProps) {
   const { colors, type, border, space } = useTheme();
   const styles = useStyles(createStyles);
   const [focused, setFocused] = useState(false);
@@ -37,6 +46,9 @@ export function TextField({ label, icon, error, helper, trailing, prefix, onPres
   const input = useFocusOnArrival(focusOnArrival);
   const outline = error ? colors.danger : !editable ? colors.disabled : colors.border;
   const thick = focused || !!error;
+  const left = rest.maxLength == null ? null : rest.maxLength - (rest.value?.length ?? 0);
+  // Nothing to say while there is plenty of room.
+  const counting = !!remaining && left != null && left <= COUNT_DOWN_FROM;
 
   const field = (
       <View style={[styles.field, { borderColor: outline, borderWidth: thick ? border.thick : border.thin, paddingHorizontal: styles.field.paddingHorizontal - (thick ? border.thick : border.thin) }]}>
@@ -61,6 +73,7 @@ export function TextField({ label, icon, error, helper, trailing, prefix, onPres
             <Icon name="x" size={styles.icon.width} color={colors.text} />
           </Touchable>
         ) : null}
+        {counting ? <Text variant="caption" tone="muted" accessibilityLabel={remaining(left)}>{String(left)}</Text> : null}
         {trailing}
       </View>
   );

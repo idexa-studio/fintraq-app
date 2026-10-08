@@ -27,8 +27,8 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 167 | 111 | In progress |
-| E | Pro: three plans and gating | 26 | 5 | In progress |
+| D | Screens at parity with the shipped app | 167 | 122 | In progress |
+| E | Pro: three plans and gating | 27 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
 | H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
@@ -329,9 +329,9 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D3.06 Accounts section and "See all"
 - [x] D3.07 Recent transactions and "See all"
 - [x] D3.08 People and loans section
-- [ ] D3.09 Getting-started steps for a new user (same dismissal key). The shipped rules are in git: `git show 406fcb5:src/features/dashboard/hooks/useGettingStarted.ts`
+- [x] D3.09 Getting-started steps for a new user (same dismissal key). The shipped rules are in git: `git show 406fcb5:src/features/dashboard/hooks/useGettingStarted.ts` (rebuilt as a journey of step rows under the balance: done ticked, the next one ready, the rest waiting; a free user is not given the Drive step. Seen in the gallery with the real component; a new install was not run)
 - [x] D3.10 Empty versions of every section
-- [ ] D3.11 Backup prompt and review prompt at the same moments as today. Needs the Pro and lock state (E2, D1). The shipped rules and their test are in git: `git show 406fcb5:src/features/dashboard/hooks/useDashboardPrompt.ts`
+- [x] D3.11 Backup prompt and review prompt at the same moments as today. Needs the Pro and lock state (E2, D1). The shipped rules and their test are in git: `git show 406fcb5:src/features/dashboard/hooks/useDashboardPrompt.ts` (the backup prompt is a card on Home with a cross, same threshold and two-week cooldown, same key; the review prompt already fires after a backup as before. Seen in the gallery; the owner's Home does not qualify for it. The Pro upsell prompt waits for the paywall: E3.09)
 - [x] D3.12 Hooks on the repositories: `features/home` for summaries, and the accounts, transactions, people, loans and categories hooks in their own features, each used through its index
 - [x] D3.14 Saved colours are drawn as pastels of the same hue, so the black glyph on top stays readable; stored icon names resolve through `resolveIcon`
 - [x] D3.15 The currency switch is a lens over the whole of Home: balance, this month, accounts, recent and people all show the chosen currency only, and a line under the card says so when more than one currency is held
@@ -342,7 +342,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D3.22 Small guiding lines (owner, 2026-10-08: "looking naked"): `Section` takes a `hint` under its title, used on Home and Insights; shortcut tiles carry their few words again; the balance card says how many accounts it adds up. Header icons are drawn at 24pt, where the line matches the reference's weight; Home's initial-in-a-circle is the plain profile icon again, as there is no photo for it to stand for
 - [x] D3.23 Sections grouped under one condition had no space between them (Insights: Rhythm, People, Worth knowing): `Screen` now opens up fragments. A tab opened for the first time showed its header under the status bar for a moment: `Screen` applies the insets as padding from the first frame
 - [x] D3.24 Back to the reference, at the owner's word (2026-10-08, "exact same to same"): the tab bar (uniform items, full-width mark, Add as an item), Home's header ("Hi John" centred between search and profile), Home's quick actions (full tiles with their sentence), and icons kept at the reference's line weight at every size by drawing large ones from the light set. Chips have the reference's smooth corners. This withdraws the large tab titles, the greeting by time of day, the green Add tile and the compact tiles on Home from D3.19 and D3.20
-- [ ] D3.17 The gallery's Home specimen still shows the earlier Home (accounts as rows, month as a bar, people as rows); bring it in line with D3.16
+- [x] D3.17 The gallery's Home specimen still shows the earlier Home (accounts as rows, month as a bar, people as rows); bring it in line with D3.16
 - [x] D3.18 A full reload of the running app landed on Add expense over Home. Cause: the root stack named the Add task as its first screen, and with no link to follow the app starts at the first screen named. `(main)` is now named first; three forced reloads land on Home
 - [ ] D3.13 Shared checklist
 
@@ -352,10 +352,10 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D4.03 Filter: one button, a sheet with dates (presets or two dates), account, category and person, each a picker; applied filters as removable chips; totals follow. Amount range is dropped: rarely used, and search covers it (owner left the call to Claude, 2026-10-09)
 - [ ] ~~D4.04 Sort menu~~ Dropped: Activity is a record in date order, and Insights already lists the largest expenses
 - [x] D4.05 Totals of the list at the top. The currency choice is a lens over the whole screen, as on Home: it filters the list as well as the totals
-- [ ] D4.06 Swipe a row to edit or delete, with confirmation
+- [x] D4.06 Swipe a row to edit or delete, with confirmation
 - [x] D4.07 Opens filtered from an account or a category
 - [x] D4.08 Scrolls without stutter: the list is drawn line by line with memoised rows. Measured on the phone in a development build: janky frames while scrolling fell from 52% to 8%, the slowest from 129ms to 34ms
-- [ ] D4.09 Empty and "nothing matches" states
+- [ ] D4.09 Empty and "nothing matches" states (built; the empty list needs an install with nothing recorded, and "nothing matches" was not provoked)
 - [ ] D4.10 Shared checklist
 
 ### D5. Add and edit a transaction
@@ -363,22 +363,22 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D5.02 Amount as the one large thing on the sheet, typed on the phone's number keyboard, with a calculator sheet beside it
 - [x] D5.03 Account picker; default account preselected
 - [x] D5.04 Destination account for transfers; same account not offered
-- [ ] D5.05 Category picker filtered by kind, with "add category"
+- [x] D5.05 Category picker filtered by kind, with "add category" (a category that is missing is made in the picker from its name, with a free colour, and chosen)
 - [x] D5.06 Date and time
-- [ ] D5.07 Note with remaining characters
+- [x] D5.07 Note with remaining characters (the count appears inside the field for the last 20 characters; the same on loan notes)
 - [x] D5.08 Person, optional (hidden for transfers and when no people exist)
 - [x] D5.09 Save disabled with the reason until valid
 - [x] D5.10 Save writes through the ledger rules; balances update
-- [ ] D5.11 Edit loads an existing transaction; changing account or kind rebalances correctly
-- [ ] D5.12 Delete with confirmation
+- [x] D5.11 Edit loads an existing transaction; changing account or kind rebalances correctly
+- [x] D5.12 Delete with confirmation
 - [x] D5.13 Leaving with unsaved input asks first
-- [ ] D5.14 Toast after saving, with undo for a new entry; it sits above the tab bar
-- [ ] D5.15 Daily-reminder skip is recorded after a save, as today
+- [x] D5.14 Toast after saving, with undo for a new entry; it sits above the tab bar
+- [x] D5.15 Daily-reminder skip is recorded after a save, as today (today's reminder is absent from the schedule after a save; the count before the save could not be compared, as today was already skipped)
 - [ ] D5.16 Shared checklist
 
 ### D6. Transaction
 - [x] D6.01 A receipt in a stacked sheet: mark, what it was, amount, date and time on the slip; account, destination, category, person and loan as rows below
-- [ ] D6.02 Edit and delete
+- [x] D6.02 Edit and delete
 - [x] D6.03 Links to its account, category, person and loan
 - [ ] D6.04 Shared checklist
 
@@ -419,7 +419,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D10.07 Free limit of 3 active loans leads to the paywall
 - [x] D10.08 Delete with confirmation
 - [x] D10.09 Shared checklist
-- [ ] D10.10 Change a loan's due date and note after it is made (`/loans/[id]/edit`; the shipped app has no way to)
+- [ ] D10.10 Change a loan's due date and note after it is made (`/loans/[id]/edit`; the shipped app has no way to) (built and seen with a real loan loaded; a change was not saved on the owner's loan)
 
 ### D11. Plan tab (first version)
 - [x] D11.01 Upcoming: loans due, soonest first
@@ -550,6 +550,7 @@ both stores' test accounts, and every gate reads from `features/pro`.
 - [ ] E3.06 Purchase complete screen, returning to where the user was
 - [ ] E3.07 Already Pro: shows the plan held and how to manage a subscription in the store
 - [ ] E3.08 Subscriber buying lifetime is told to cancel the subscription, with the store link
+- [ ] E3.09 Home's Pro prompt for a free user after three entries, as a card with a cross, three-day cooldown under the shipped key (`UPSELL_DISMISSED_AT`); the rule joins `chooseHomePrompt` in `features/home/getting-started.ts`
 
 ### E4. Gates
 - [ ] E4.01 `useProAccess` on the new registry: `isPro`, `requirePro(feature)`, `openPaywall(feature)`

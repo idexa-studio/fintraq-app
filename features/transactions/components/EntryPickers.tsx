@@ -1,12 +1,14 @@
 import type { Account } from '@/data/repositories/accounts';
 import type { Category } from '@/data/repositories/categories';
 import type { Person } from '@/data/repositories/people';
-import { Button, Calendar, Chip, IconCircle, MarkGrid, OptionList, Sheet, Text, TimePicker, resolveIcon, useTheme } from '@/design';
+import { Button, Calendar, Chip, IconCircle, MarkGrid, Notice, OptionList, Sheet, Text, TextField, TimePicker, resolveIcon, useTheme } from '@/design';
 import type { OptionGroup } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
+import { useQuickCategory } from '@/features/categories';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
-import React from 'react';
+import type { TransactionType } from '@/shared/types';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -40,15 +42,48 @@ export function AccountPicker({ title, accounts, ...picker }: PickerProps<number
 /** How many categories it takes before the picker offers a search. */
 const SEARCH_FROM = 12;
 
-/** Categories as a grid of marks: quicker to scan than a list of the same length. */
-export function CategoryPicker({ categories, ...picker }: PickerProps<number> & { categories: readonly Category[] }) {
+/**
+ * Categories as a grid of marks: quicker to scan than a list of the same length. A category that
+ * is missing is made here from its name, without leaving what is being recorded.
+ */
+export function CategoryPicker({ categories, kind, ...picker }: PickerProps<number> & { categories: readonly Category[]; kind: TransactionType }) {
   const { t } = useTranslation('transactions');
+  const { space } = useTheme();
+  const quick = useQuickCategory();
+  const [naming, setNaming] = useState(false);
+  const [name, setName] = useState('');
+  const [failed, setFailed] = useState(false);
+
+  const backToGrid = () => { setNaming(false); setName(''); setFailed(false); };
+  const close = () => { backToGrid(); picker.onClose(); };
+  const add = async () => {
+    try {
+      setFailed(false);
+      picker.onSelect(await quick.add(name, kind));
+      close();
+    } catch {
+      setFailed(true);
+    }
+  };
+
+  if (naming) {
+    return (
+      // Closing the name goes back to the choices, not out of them.
+      <Sheet visible={picker.visible} onClose={backToGrid} title={t('pick.newCategory')} footer={<Button label={t('pick.addCategory')} onPress={add} disabled={!quick.isNameOk(name)} loading={quick.adding} />}>
+        <View style={{ gap: space.lg }}>
+          <TextField label={t('pick.categoryName')} value={name} onChangeText={setName} maxLength={quick.nameMax} helper={t('pick.categoryHint')} focusOnArrival autoCapitalize="sentences" returnKeyType="done" onSubmitEditing={() => { if (quick.isNameOk(name)) void add(); }} />
+          {failed ? <Notice tone="danger" title={t('pick.categoryFailed')} body={t('pick.categoryFailedBody')} /> : null}
+        </View>
+      </Sheet>
+    );
+  }
+
   return (
-    <Sheet visible={picker.visible} onClose={picker.onClose} title={t('pick.category')}>
+    <Sheet visible={picker.visible} onClose={close} title={t('pick.category')} footer={<Button label={t('pick.newCategory')} variant="secondary" onPress={() => setNaming(true)} />}>
       <MarkGrid
         marks={categories.map((category) => ({ key: String(category.id), label: category.name, icon: resolveIcon(category.icon, 'tag'), color: colorNumberToHex(category.color) }))}
         selectedKey={picker.selectedId == null ? undefined : String(picker.selectedId)}
-        onSelect={(key) => { picker.onSelect(Number(key)); picker.onClose(); }}
+        onSelect={(key) => { picker.onSelect(Number(key)); close(); }}
         // A handful is taken in at a glance; past a few rows, typing is quicker than looking.
         searchPlaceholder={categories.length > SEARCH_FROM ? t('pick.searchCategory') : undefined}
         noMatch={(query) => t('pick.noCategory', { query })}

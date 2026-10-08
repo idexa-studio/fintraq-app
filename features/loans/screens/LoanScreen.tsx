@@ -146,6 +146,7 @@ export function LoanScreen() {
       <Sheet visible={managing} onClose={() => setManaging(false)} title={t('loan.manage')}>
         <ListGroup>
           {open ? <ListRow icon="check-circle" title={t('loan.markRepaid')} subtitle={t('loan.markRepaidHint')} onPress={() => { setManaging(false); setAsking('repaid'); }} trailing={<View />} /> : null}
+          <ListRow icon="pencil-simple" title={t('loan.edit')} subtitle={t('loan.editHint')} onPress={() => { setManaging(false); router.push({ pathname: '/loans/[id]/edit', params: { id: loan.id } }); }} />
           <ListRow icon="trash" title={t('loan.delete')} destructive onPress={() => { setManaging(false); setAsking('delete'); }} trailing={<View />} />
         </ListGroup>
       </Sheet>

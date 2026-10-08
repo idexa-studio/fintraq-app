@@ -3,3 +3,4 @@ export * from './hooks/loans';
 export { LoanScreen } from './screens/LoanScreen';
 export { LoanFormScreen } from './screens/LoanFormScreen';
 export { RepaymentScreen } from './screens/RepaymentScreen';
+export { LoanEditScreen } from './screens/LoanEditScreen';

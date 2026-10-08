@@ -21,7 +21,13 @@ export function MonthCard({ currency }: { currency: string }) {
     );
   }
 
-  const { income, expense } = data;
+  return <MonthCardView income={data.income} expense={data.expense} currency={currency} />;
+}
+
+/** The month card itself, given its two totals. */
+export function MonthCardView({ income, expense, currency }: { income: number; expense: number; currency: string }) {
+  const { t } = useTranslation('home');
+  const { colors, size, space } = useTheme();
   const shape = monthShape(income, expense);
   const line = shape.reading === 'kept' ? t('month.kept', { percent: shape.keptPercent }) : t(`month.${shape.reading}`);
 

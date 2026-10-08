@@ -15,6 +15,26 @@ export default {
     scope_one: 'In {{count}} account in {{currency}}',
     scope_other: 'Across {{count}} accounts in {{currency}}',
   },
+  start: {
+    title: 'Getting started',
+    hint: '{{done}} of {{total}} done. Tap the next one.',
+    hide: 'Hide',
+    steps: {
+      account: 'Add your first account',
+      transaction: 'Record something you spent',
+      reminder: 'Turn on the daily reminder',
+      secondAccount: 'Add a second account',
+      backup: 'Back up to Google Drive',
+    },
+  },
+  prompt: {
+    backup: {
+      title: 'Your records live only on this phone',
+      body: 'Keep a copy in your own Google Drive, updated twice a day.',
+      link: 'Set up backup',
+      dismiss: 'Not now',
+    },
+  },
   quick: {
     title: 'Quick actions',
     transfer: 'Transfer',
