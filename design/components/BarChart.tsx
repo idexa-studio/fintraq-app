@@ -18,6 +18,9 @@ export type BarChartProps = {
   accessibilityLabel: string;
 };
 
+// Worked out here, not inside the style: the animation library's checker takes any `.value` read in an inline style for an animated one.
+const heightOf = (bar: { value: number }, max: number): `${number}%` => `${(bar.value / max) * 100}%`;
+
 /** How much, across time or groups. Black bars, with one picked out in green. */
 export function BarChart({ bars, highlight, height = 120, accessibilityLabel }: BarChartProps) {
   const { colors } = useTheme();
@@ -28,7 +31,7 @@ export function BarChart({ bars, highlight, height = 120, accessibilityLabel }: 
       {bars.map((bar, i) => (
         <View key={`${bar.label}-${i}`} style={styles.column}>
           <View style={[styles.track, { height }]}>
-            <View style={[styles.bar, { height: `${(bar.value / max) * 100}%`, backgroundColor: i === highlight ? colors.accent : colors.text, borderColor: colors.text }]} />
+            <View style={[styles.bar, { height: heightOf(bar, max), backgroundColor: i === highlight ? colors.accent : colors.text, borderColor: colors.text }]} />
           </View>
           <Text variant={i === highlight ? 'tabActive' : 'tab'} tone={i === highlight ? 'default' : 'muted'} numberOfLines={1}>{bar.label}</Text>
         </View>

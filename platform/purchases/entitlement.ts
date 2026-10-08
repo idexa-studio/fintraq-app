@@ -49,6 +49,17 @@ export function strongerOf(a: Entitlement, b: Entitlement): Entitlement {
   return b.activeUntil > a.activeUntil ? b : a;
 }
 
+/**
+ * Whether a plan may be bought on top of what is held. Lifetime owns everything for good, so
+ * nothing is sold to its owner; a subscriber may move to lifetime, but is not sold a second
+ * subscription while one is running. The store has no such rule of its own, so the app keeps it.
+ */
+export function canBuy(plan: ProductKey, held: Entitlement, now: number): boolean {
+  if (held.kind === 'lifetime') return false;
+  if (held.kind === 'subscription' && isPro(held, now)) return plan === 'lifetime';
+  return true;
+}
+
 /** Which plan a store product id belongs to, on either platform. */
 export function planOfProduct(productId: string): ProductKey | null {
   const keys = Object.keys(PRODUCT_IDS) as ProductKey[];

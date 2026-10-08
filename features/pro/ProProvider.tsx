@@ -1,7 +1,7 @@
 import type { ProFeatureId } from '@/features/pro/pro-features';
 import type { PlanPrice, ProPlan } from '@/features/pro/pro-plans';
 import { IS_PREMIUM_OVERRIDE_ALLOWED } from '@/platform/purchases/dev-override';
-import { NO_ENTITLEMENT, entitlementFrom, isPro as isProAt, parseSaved, reconcile, strongerOf, toSaved } from '@/platform/purchases/entitlement';
+import { NO_ENTITLEMENT, canBuy, entitlementFrom, isPro as isProAt, parseSaved, reconcile, strongerOf, toSaved } from '@/platform/purchases/entitlement';
 import type { Entitlement } from '@/platform/purchases/entitlement';
 import { connectStore, fetchOwnedPurchases, fetchStorePlans, requestStorePlan, watchPurchases } from '@/platform/purchases/store';
 import type { StorePlan } from '@/platform/purchases/store';
@@ -138,7 +138,8 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
 
   const buy = useCallback((plan: ProPlan): Promise<BuyOutcome> => {
     const onSale = plans.find((candidate) => candidate.plan === plan);
-    if (!onSale) return Promise.resolve('unavailable');
+    // The plans are never shown to someone who may not buy them; this holds even if a screen asked by mistake.
+    if (!onSale || !canBuy(plan, held.current, Date.now())) return Promise.resolve('unavailable');
     Analytics.track('begin_checkout', { items: [{ item_id: onSale.productId, item_name: `Fintraq Pro (${plan})` }], value: onSale.amount, ...(onSale.currency ? { currency: onSale.currency } : {}) });
     return new Promise((resolve) => {
       waiting.current = resolve;

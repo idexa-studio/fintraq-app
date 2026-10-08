@@ -17,6 +17,9 @@ export type SplitBarProps = {
   segments: SplitSegment[];
 };
 
+// Worked out here, not inside the style: the animation library's checker takes any `.value` read in an inline style for an animated one.
+const shareOf = (segment: { value: number }): number => segment.value;
+
 /** One bar cut into parts of a whole, with a legend under it. */
 export function SplitBar({ segments }: SplitBarProps) {
   const styles = useStyles(createStyles);
@@ -24,7 +27,7 @@ export function SplitBar({ segments }: SplitBarProps) {
   return (
     <View style={styles.wrap} accessible accessibilityLabel={segments.map((s) => `${s.label} ${s.display}`).join(', ')}>
       <View style={styles.bar}>
-        {shown.map((segment) => <View key={segment.label} style={[styles.segment, { flex: segment.value, backgroundColor: segment.color }]} />)}
+        {shown.map((segment) => <View key={segment.label} style={[styles.segment, { flex: shareOf(segment), backgroundColor: segment.color }]} />)}
       </View>
       <View style={styles.legend}>
         {segments.map((segment) => (

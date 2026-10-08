@@ -26,11 +26,11 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
-| C | Groundwork: shared, data, platform, shell | 87 | 73 | In progress |
+| C | Groundwork: shared, data, platform, shell | 87 | 75 | In progress |
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 27 | 18 | In progress |
-| F | Remove the legacy code | 16 | 9 | In progress |
-| G | Release 1: the redesign | 23 | 0 |  |
+| F | Remove the legacy code | 14 | 11 | In progress |
+| G | Release 1: the redesign | 23 | 1 | In progress |
 | H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
 
@@ -255,14 +255,14 @@ go to `shared/calc`.
 - [x] C7.08 `features/shell/DatabaseGate`: migrations and data fixes before anything renders, with its waiting and failure screens on the new design
 
 ### C8. Shell and navigation
-- [ ] C8.01 Root layout moves into `features/shell` once the last legacy provider it mounts is rebuilt; until then `app/_layout.tsx` composes old and new
+- [x] C8.01 Root layout moves into `features/shell` once the last legacy provider it mounts is rebuilt; until then `app/_layout.tsx` composes old and new (done 2026-10-08: `features/shell/RootLayout.tsx`; `app/_layout.tsx` re-exports it)
 - [x] C8.02 Tab layout using `TabBar`: Home, Activity, Add, Plan, Insights. Until D4, D11 and D12 the Activity, Plan and Insights tabs show the shipped transactions, loans and analytics screens; Accounts and Settings are ordinary screens
 - [x] C8.03 Centre Add opens the entry task, not a tab
 - [x] C8.04 Task presentation (a sheet that rises and stops short of the top, as in the reference) and push presentation (slides in from the side) defined once
 - [x] C8.10 Motion: sections arrive in sequence, presses ease, the segmented control slides, progress bars grow, tabs shift
 - [ ] C8.05 Android: system navigation bar colour, predictive back off as today, edge to edge
 - [x] C8.06 Status bar style follows the scheme (seen in light and dark)
-- [ ] C8.07 Lock overlay above everything, including tasks
+- [x] C8.07 Lock overlay above everything, including tasks (the lock is a full-screen modal opened after anything already open, so it sits above tasks and sheets; unlocked by the owner on 2026-10-08, not tried with a sheet open)
 - [ ] C8.08 Splash, adaptive icon and notification colours updated to the new palette in `app.json`
 - [ ] ~~C8.09 A developer switch between old and new screens~~ Dropped: the `reboot` branch is the switch. 1.2.4 keeps shipping from `develop`, so each legacy screen is simply replaced in place here, with no second navigation tree to maintain
 
@@ -583,15 +583,15 @@ Done when: `src/` no longer exists and the app builds.
 - [x] F1.04 Delete `src/features/premium` and its test; remove `FREE_*` from the old constants
 - [x] F1.05 Remove MuseoModerno from `assets/fonts` and the root layout
 - [x] F1.06 Remove `@hugeicons/*` from `package.json`
-- [ ] F1.07 Remove every legacy `api/` re-export left by C4.15
-- [ ] F1.08 Remove the developer switch from C8.09; the new screens are the app
+- [ ] ~~F1.07 Remove every legacy `api/` re-export left by C4.15~~ Not applicable: C4.15 was dropped, so no re-exports were ever left
+- [ ] ~~F1.08 Remove the developer switch from C8.09; the new screens are the app~~ Not applicable: C8.09 was dropped, so there is no switch
 - [x] F1.09 Delete `src/`; remove `@/src` from lint rules and the audit script
 - [ ] F1.10 Remove unused i18n keys from all 13 locales
 - [ ] F1.11 Remove unused dependencies (run a dependency check) (done for JavaScript-only packages: `@hugeicons/*` and `react-hook-form` removed. `expo-haptics` and `expo-image` are native and unused: remove them with the next native build)
 - [x] F1.12 `scripts/check-design-system.js`: drop legacy exemptions and rules that no longer apply
 - [x] F1.13 Trim `ARCHITECTURE.md` to the new structure only (`DESIGN_SYSTEM.md` was rewritten in B7.02)
-- [ ] F1.14 Remove old store screenshots and generators that draw the old look
-- [ ] F1.15 Remove old build artefacts from the repository root
+- [x] F1.14 Remove old store screenshots and generators that draw the old look (the three generators that drew the old look, and the old screenshots, are removed; new ones are G3.01)
+- [x] F1.15 Remove old build artefacts from the repository root (a stale `pnpm-lock.yaml` beside the npm lock is removed. The 103 MB `build-*.apk` in the root is the development build on the owner's phone: untracked, kept until the next build replaces it)
 - [ ] F1.16 Bundle size compared with 1.2.4 and recorded
 
 ---
@@ -601,7 +601,7 @@ Done when: `src/` no longer exists and the app builds.
 Done when: the redesign is live to all users with no data loss reported.
 
 ### G1. Copy and translation
-- [ ] G1.01 English copy read through once as a whole for one voice
+- [x] G1.01 English copy read through once as a whole for one voice (done 2026-10-08: every string scanned; ten "Please try again" made plain, "entry" made "transaction" everywhere, the vocabulary written into `docs/PRODUCT.md`, and `shared/i18n/__tests__/voice.test.ts` holds all copy to it)
 - [ ] G1.02 Translate the new keys into the other 12 locales
 - [ ] G1.03 Device: spot-check one Indic locale, German (long words) and Japanese
 

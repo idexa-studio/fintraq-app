@@ -43,7 +43,7 @@ export default {
     deleteCancel: 'Keep them',
     deleted: '{{name}} deleted',
     failed: 'Couldn’t do that',
-    failedBody: 'Nothing was changed. Please try again.',
+    failedBody: 'Nothing was changed. Try again.',
     ok: 'OK',
   },
   form: {
@@ -67,7 +67,7 @@ export default {
     created: '{{name}} added',
     changesSaved: 'Changes saved',
     saveFailed: 'Couldn’t save',
-    saveFailedBody: 'Nothing was changed. Please try again.',
+    saveFailedBody: 'Nothing was changed. Try again.',
     ok: 'OK',
     discard: {
       title: 'Discard this person?',

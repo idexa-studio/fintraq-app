@@ -39,12 +39,12 @@ describe('the words', () => {
     expect(loanDueText({ ...loan, personName: null }, 0).title).toBe('You are owed $300.00');
   });
 
-  it('counts in the singular and the plural', () => {
-    expect(dailyText({ kind: 'weekEnd', count: 1 }).title).toBe('1 entry this week');
-    expect(dailyText({ kind: 'weekEnd', count: 12 }).title).toBe('12 entries this week');
+  it('counts what was recorded without naming it twice', () => {
+    expect(dailyText({ kind: 'weekEnd', count: 1 }).title).toBe('1 recorded this week');
+    expect(dailyText({ kind: 'weekEnd', count: 12 }).title).toBe('12 recorded this week');
     expect(dailyText({ kind: 'monthEnd', month: new Date(2026, 9, 1), count: 42 })).toEqual({
       title: 'Last day of October',
-      body: '42 entries so far. Add anything missing and the month is complete.',
+      body: '42 recorded so far. Add anything missing and the month is complete.',
     });
   });
 });
