@@ -42,8 +42,6 @@ export default {
   },
   recent: {
     title: 'Recent',
-    transfer: 'Transfer',
-    transferRoute: '{{from}} to {{to}}',
     emptyTitle: 'Your spending shows up here',
     emptyBody: 'Add what you spend and earn.',
     emptyAction: 'Add a transaction',

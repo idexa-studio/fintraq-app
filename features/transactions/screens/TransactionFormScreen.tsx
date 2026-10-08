@@ -4,6 +4,7 @@ import {
 } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
 import { CalculatorSheet } from '@/features/transactions/components/CalculatorSheet';
+import { dayLabel } from '@/features/transactions/components/TransactionRow';
 import { AccountPicker, CategoryPicker, PersonPicker, WhenPicker } from '@/features/transactions/components/EntryPickers';
 import { useTransactionForm } from '@/features/transactions/hooks/useTransactionForm';
 import type { TransactionFormOptions } from '@/features/transactions/hooks/useTransactionForm';
@@ -22,14 +23,6 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 type Picker = 'account' | 'toAccount' | 'category' | 'person' | 'when' | 'calculator' | null;
-
-/** "Today", "Yesterday", or the date, with the year only when it is not this one. */
-const dayLabel = (date: Date, today: string, yesterday: string): string => {
-  const ago = differenceInCalendarDays(new Date(), date);
-  if (ago === 0) return today;
-  if (ago === 1) return yesterday;
-  return formatDate(date, date.getFullYear() === new Date().getFullYear() ? { weekday: 'short', day: 'numeric', month: 'short' } : { day: 'numeric', month: 'short', year: 'numeric' });
-};
 
 const initialsOf = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((word) => word[0]).join('');
 

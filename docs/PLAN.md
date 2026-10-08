@@ -26,8 +26,8 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 57 | 57 | Complete |
-| C | Groundwork: shared, data, platform, shell | 87 | 59 | In progress |
-| D | Screens at parity with the shipped app | 144 | 21 | In progress |
+| C | Groundwork: shared, data, platform, shell | 87 | 60 | In progress |
+| D | Screens at parity with the shipped app | 144 | 27 | In progress |
 | E | Pro: three plans and gating | 26 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 22 | 0 |  |
@@ -269,7 +269,7 @@ go to `shared/calc`.
 - [x] C9.01 `/transactions/create?type=DR|CR|TR&accountId=` redirects to `/add?kind=…`, with a test; every caller in the app uses the new path
 - [ ] C9.02 `/(main)/loans/form` redirects to `/loans/new`
 - [x] C9.03 `/transactions/edit/[id]` redirects to `/transactions/[id]/edit`, with a test
-- [ ] C9.04 `/transactions?accountId=|categoryId=` redirects to `/activity` with the filter
+- [x] C9.04 `/transactions?accountId=|categoryId=` redirects to `/activity` with the filter
 - [ ] C9.05 `/persons`, `/persons/[id]` redirect to `/people`, `/people/[id]`
 - [ ] C9.06 `/premium?feature=` redirects to `/pro?feature=` through `resolveProFeature`
 - [ ] C9.07 `/analytics`, `/backup`, `/export` redirect
@@ -336,13 +336,13 @@ route template · `tsc`, lint, design audit and tests clean.
 - [ ] D3.13 Shared checklist
 
 ### D4. Activity
-- [ ] D4.01 List grouped by day with day totals
-- [ ] D4.02 Kind chips: all, expenses, income, transfers
-- [ ] D4.03 Filter sheet and active filter chips
-- [ ] D4.04 Sort menu
-- [ ] D4.05 Period summary at the top
+- [x] D4.01 List grouped by day with day totals
+- [x] D4.02 Kind chips: all, expenses, income, transfers
+- [ ] D4.03 Filter sheet and active filter chips (person, dates, amount range). The shipped sheet's logic is in git: `git show 25f92f2:src/features/filters/components/AdvancedFilterBottomSheet.tsx`; its query support is still in `data/repositories/filters.ts`
+- [ ] D4.04 Sort menu (shipped version: `git show 25f92f2:src/features/transactions/hooks/useTransactionFilters.ts`)
+- [x] D4.05 Totals of the list at the top, one currency at a time
 - [ ] D4.06 Swipe a row to edit or delete, with confirmation
-- [ ] D4.07 Opens filtered from an account or a category
+- [x] D4.07 Opens filtered from an account or a category
 - [ ] D4.08 Paging through long histories without stutter
 - [ ] D4.09 Empty and "nothing matches" states
 - [ ] D4.10 Shared checklist
@@ -366,9 +366,9 @@ route template · `tsc`, lint, design audit and tests clean.
 - [ ] D5.16 Shared checklist
 
 ### D6. Transaction
-- [ ] D6.01 Receipt layout: category, amount, account, date, note, person, loan
+- [x] D6.01 A receipt in a stacked sheet: mark, what it was, amount, date and time on the slip; account, destination, category, person and loan as rows below
 - [ ] D6.02 Edit and delete
-- [ ] D6.03 Links to its account, category, person and loan
+- [x] D6.03 Links to its account, category, person and loan
 - [ ] D6.04 Shared checklist
 
 ### D7. Accounts

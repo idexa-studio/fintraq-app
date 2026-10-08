@@ -1,6 +1,7 @@
 import { createInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { getSystemLanguage } from './config';
+import activity from '@/shared/i18n/copy/activity.en';
 import common from '@/shared/i18n/copy/common.en';
 import home from '@/shared/i18n/copy/home.en';
 import shell from '@/shared/i18n/copy/shell.en';
@@ -29,7 +30,7 @@ i18n
     resources: {
       // `translation` is the shipped app's copy. The other namespaces are the rebuilt screens' copy,
       // written in English first: a language without one falls back to English, never to a key.
-      en: { translation: en, common, shell, home, transactions },
+      en: { translation: en, common, shell, home, transactions, activity },
       hi: { translation: hi },
       bn: { translation: bn },
       ta: { translation: ta },
@@ -43,7 +44,7 @@ i18n
       de: { translation: de },
       ja: { translation: ja },
     },
-    ns: ['translation', 'common', 'shell', 'home', 'transactions'],
+    ns: ['translation', 'common', 'shell', 'home', 'transactions', 'activity'],
     defaultNS: 'translation',
     lng: getSystemLanguage(),
     fallbackLng: 'en',
