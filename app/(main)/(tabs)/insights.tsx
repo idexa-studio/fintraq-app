@@ -1,2 +1,1 @@
-import { AnalyticsScreen } from '@/src/features/analytics/screens/AnalyticsScreen';
-export default AnalyticsScreen;
+export { InsightsScreen as default } from '@/features/insights';

@@ -1,4 +1,4 @@
-import { NO_FILTERS, activeCount, periodRange, toQuery } from '@/features/activity/activity-filters';
+import { filtersFromLink, NO_FILTERS, activeCount, periodRange, toQuery } from '@/features/activity/activity-filters';
 
 const NOW = new Date(2026, 9, 8, 15, 0); // 8 October 2026
 const day = (d?: Date) => (d ? `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}` : undefined);
@@ -35,5 +35,24 @@ describe('activity filters', () => {
     expect(toQuery({ period: 'thisMonth', accountId: 7, categoryId: 3, personId: 4 }, 'all', [1, 2], NOW)).toEqual({
       accountIds: [7], categoryIds: [3], personIds: [4], startDate: '2026-10-01', endDate: '2026-10-31',
     });
+  });
+});
+
+describe('a link to Activity', () => {
+  it('narrows to an account, a category or a person', () => {
+    expect(filtersFromLink({ categoryId: '7' })).toEqual({ period: 'all', from: undefined, to: undefined, accountId: undefined, categoryId: 7, personId: undefined });
+    expect(filtersFromLink({ accountId: '2', personId: '9' })).toMatchObject({ accountId: 2, personId: 9 });
+  });
+
+  it('can carry the days being looked at, as local days', () => {
+    const filters = filtersFromLink({ categoryId: '7', from: '2026-07-11', to: '2026-10-08' });
+    expect(filters).toMatchObject({ period: 'custom', categoryId: 7 });
+    expect(filters!.from).toEqual(new Date(2026, 6, 11));
+    expect(filters!.to).toEqual(new Date(2026, 9, 8));
+  });
+
+  it('asks for nothing when the link carries nothing readable', () => {
+    expect(filtersFromLink({})).toBeNull();
+    expect(filtersFromLink({ categoryId: 'abc', from: 'yesterday' })).toBeNull();
   });
 });

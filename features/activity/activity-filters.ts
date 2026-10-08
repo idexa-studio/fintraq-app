@@ -1,5 +1,5 @@
 import type { TransactionFilters } from '@/data/repositories/transactions';
-import { getLocalISOString } from '@/shared/date/date';
+import { getLocalISOString, parseDateKey } from '@/shared/date/date';
 import type { TransactionType } from '@/shared/types';
 
 /** The stretches of time Activity can be narrowed to. */
@@ -58,4 +58,29 @@ export function toQuery(filters: ActivityFilters, kind: KindFilter, currencyAcco
     ...(start ? { startDate: getLocalISOString(start) } : {}),
     ...(end ? { endDate: getLocalISOString(end) } : {}),
   };
+}
+
+/** What a link to Activity may carry, as it arrives in the address. */
+export type ActivityLink = { accountId?: string; categoryId?: string; personId?: string; from?: string; to?: string };
+
+const idOf = (value: string | undefined): number | undefined => (value && /^\d+$/.test(value) ? Number(value) : undefined);
+const dayOf = (value: string | undefined): Date | undefined => (value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? parseDateKey(value) : undefined);
+
+/**
+ * The filters a link asks for: an account's, a category's or a person's
+ * transactions, optionally between two days (as Insights does for the period
+ * it is showing). Null when the link asks for nothing, or nothing readable.
+ */
+export function filtersFromLink(link: ActivityLink): ActivityFilters | null {
+  const from = dayOf(link.from);
+  const to = dayOf(link.to);
+  const filters: ActivityFilters = {
+    period: from || to ? 'custom' : 'all',
+    from,
+    to,
+    accountId: idOf(link.accountId),
+    categoryId: idOf(link.categoryId),
+    personId: idOf(link.personId),
+  };
+  return activeCount(filters) > 0 ? filters : null;
 }
