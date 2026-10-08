@@ -31,9 +31,8 @@ import { useFactoryReset } from '@/src/features/settings/hooks/useFactoryReset';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { languages, supportedLanguages } from '@/shared/i18n';
 import { useAppConfig } from '@/src/providers/AppConfigProvider';
-import { useAppLanguage } from '@/src/providers/I18nProvider';
+import { useAppLanguage , useSettings } from '@/features/settings';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
-import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/platform/notifications/notifications';
 

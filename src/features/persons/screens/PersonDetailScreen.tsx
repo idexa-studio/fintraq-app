@@ -24,7 +24,7 @@ import { useLoansByPerson } from '@/src/features/loans/hooks/loans';
 import { useDeletePerson, usePersonWithStats } from '@/src/features/persons/hooks/persons';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTransactions } from '@/src/features/transactions/hooks/transactions';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { formatDate , parseDateKey } from '@/shared/date/date';
 import { colorNumberToHex } from '@/shared/format/color';

@@ -2,7 +2,7 @@ import { useSegments } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 import { Analytics, Crashlytics, screenNameFromSegments } from '@/platform/telemetry';
 
 /**

@@ -4,7 +4,7 @@ import { Button, Card, Chip, FormField, Icon, IconAvatar, ListGroup, Screen, Tex
 import { ACCOUNT_COLORS } from '@/shared/contracts/pickers';
 import type { InsertAccount, UpdateAccountData } from '@/data/repositories/accounts';
 import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { Analytics } from '@/platform/telemetry';
 import type { AccountType } from '@/shared/types';

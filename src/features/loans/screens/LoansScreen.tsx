@@ -10,7 +10,7 @@ import type { LoanWithStats } from '@/data/repositories/loans';
 import { LoanCard } from '@/src/features/loans/components/LoanCard';
 import { useLoans, useLoansCount } from '@/src/features/loans/hooks/loans';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Tab = 'lend' | 'borrow';

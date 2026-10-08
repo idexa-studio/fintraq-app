@@ -5,7 +5,7 @@ import { useAccounts, useDeleteAccount } from '@/src/features/accounts/hooks/acc
 import { NetWorthCard } from '@/src/features/accounts/components/NetWorthCard';
 import { netWorthByCurrency } from '@/src/features/accounts/utils/net-worth';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/shared/format/color';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';

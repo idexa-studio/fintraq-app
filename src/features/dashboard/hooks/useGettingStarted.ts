@@ -5,7 +5,7 @@ import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useAutoBackupSetting } from '@/src/features/backup/hooks/useAutoBackupSetting';
 import { useTransactionsCount } from '@/src/features/transactions/hooks/transactions';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 
 export type GettingStartedStepId = 'account' | 'transaction' | 'reminder' | 'secondAccount' | 'backup';
 export type GettingStartedStep = { id: GettingStartedStepId; done: boolean };

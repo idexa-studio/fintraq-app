@@ -21,7 +21,7 @@ import { useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
 import { buildMonthPulse } from '@/shared/calc/month';
 import { ProPreviewCard } from '@/src/features/premium/components/ProPreviewCard';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { AccountType } from '@/shared/types';
 import { withShares } from '@/shared/calc/analytics';

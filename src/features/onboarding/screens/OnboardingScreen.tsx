@@ -22,7 +22,7 @@ import { FIRST_ENTRY_CATEGORIES, ONBOARDING_STEPS } from '@/src/features/onboard
 import type { OnboardingAccountDraft, OnboardingEntryDraft, OnboardingFormValues } from '@/src/features/onboarding/types';
 import { useCreateTransaction } from '@/src/features/transactions/hooks/transactions';
 import { useOnboarding } from '@/src/providers/OnboardingProvider';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { Analytics } from '@/platform/telemetry';
 import { NotificationService } from '@/platform/notifications/notifications';

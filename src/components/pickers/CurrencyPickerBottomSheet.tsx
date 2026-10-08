@@ -10,7 +10,7 @@ import { SearchField } from '@/src/components/ui/SearchField';
 import { SheetHeader } from '@/src/components/ui/SheetHeader';
 import { Text } from '@/src/components/ui/Text';
 import { CURRENCIES, type Currency } from '@/shared/currency/currencies';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 export type CurrencyPickerBottomSheetProps = {
