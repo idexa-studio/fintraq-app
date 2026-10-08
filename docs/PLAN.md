@@ -26,13 +26,13 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 56 | 56 | Complete |
-| C | Groundwork: shared, data, platform, shell | 79 | 0 | |
-| D | Screens at parity with the shipped app | 142 | 0 | |
-| E | Pro: three plans and gating | 27 | 0 | |
-| F | Remove the legacy code | 16 | 0 | |
-| G | Release 1: the redesign | 24 | 0 | |
-| H | Release 2: repeating items, budgets, net worth trend | 41 | 0 | |
-| I | Release 3: goals, safe to spend, statement | 27 | 0 | |
+| C | Groundwork: shared, data, platform, shell | 79 | 10 | In progress |
+| D | Screens at parity with the shipped app | 142 | 0 |  |
+| E | Pro: three plans and gating | 27 | 0 |  |
+| F | Remove the legacy code | 16 | 0 |  |
+| G | Release 1: the redesign | 24 | 0 |  |
+| H | Release 2: repeating items, budgets, net worth trend | 41 | 0 |  |
+| I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
 
 ---
 
