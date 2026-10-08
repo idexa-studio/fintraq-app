@@ -5,7 +5,7 @@ import {
 import type { Theme } from '@/design';
 import { useLoansByPerson } from '@/features/loans';
 import { useDeletePerson, usePersonWithStats } from '@/features/people/hooks/people';
-import { initialsOf, standingOf } from '@/features/people/person-form';
+import { balancesOf, initialsOf, standingOf } from '@/features/people/person-form';
 import { useSettings } from '@/features/settings';
 import { TransactionRow, useTransactions } from '@/features/transactions';
 import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
@@ -40,9 +40,9 @@ export function PersonScreen() {
 
   // The currencies that have passed between you, the default first; with none yet, the default alone.
   const currencies = useMemo(() => {
-    const used = [...new Set((transactions ?? []).map((tx) => tx.account.currency))];
+    const used = [...new Set([...(transactions ?? []).map((tx) => tx.account.currency), ...(loans ?? []).map((loan) => loan.currency)])];
     return sortCurrenciesWithDefault(used.length > 0 ? used : [profile.defaultCurrency], profile.defaultCurrency);
-  }, [transactions, profile.defaultCurrency]);
+  }, [transactions, loans, profile.defaultCurrency]);
   const [chosen, setChosen] = useState<string | null>(null);
   const currency = chosen && currencies.includes(chosen) ? chosen : currencies[0]!;
 
@@ -73,11 +73,12 @@ export function PersonScreen() {
     );
   }
 
-  const net = person.totalReceived - person.totalSpent;
+  const openLoans = (loans ?? []).filter((loan) => loan.computedStatus !== 'repaid');
+  // What is owed either way comes from open loans alone; what was paid and received is shown beside it, not counted as debt.
+  const net = balancesOf([person], openLoans, currency)[0]!.net;
   const standing = standingOf(net);
   const about = [person.designation, person.company].filter(Boolean).join(' · ');
   const recent = (transactions ?? []).filter((tx) => tx.account.currency === currency).slice(0, RECENT_COUNT);
-  const openLoans = (loans ?? []).filter((loan) => loan.computedStatus !== 'repaid');
   const reach = [
     person.phone ? { label: t('person.call'), onPress: () => void Linking.openURL(`tel:${person.phone}`) } : null,
     person.email ? { label: t('person.email'), onPress: () => void Linking.openURL(`mailto:${person.email}`) } : null,
@@ -107,7 +108,7 @@ export function PersonScreen() {
             </View>
             {currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
           </View>
-          <Money value={formatCurrency(Math.abs(net), currency)} variant="amountHero" tone={standing === 'owesYou' ? 'positive' : 'default'} />
+          {standing === 'settled' ? null : <Money value={formatCurrency(Math.abs(net), currency)} variant="amountHero" tone={standing === 'owesYou' ? 'positive' : 'default'} />}
           <View style={styles.stats}>
             <Stat label={t('person.spent')} value={formatCurrency(person.totalSpent, currency)} />
             <Stat label={t('person.received')} value={formatCurrency(person.totalReceived, currency)} tone="positive" />

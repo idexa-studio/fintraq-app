@@ -99,21 +99,6 @@ export const getTopPersonsBySpend = async (currency: string, limit = 5): Promise
   return result as PersonSpend[];
 };
 
-export const getPersonsNetByCurrency = async (currency: string): Promise<Map<number, number>> => {
-  const rows = await db
-    .select({
-      id: persons.id,
-      net: sql<number>`SUM(CASE WHEN ${payments.type} = 'CR' THEN ${payments.amount} WHEN ${payments.type} = 'DR' THEN -${payments.amount} ELSE 0 END)`,
-    })
-    .from(payments)
-    .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .innerJoin(persons, eq(payments.personId, persons.id))
-    .where(eq(accounts.currency, currency))
-    .groupBy(persons.id);
-
-  return new Map(rows.map(r => [r.id, r.net ?? 0]));
-};
-
 /** Spending with each person in the period (local days, both ends inclusive), largest first. */
 export const getPersonBreakdown = async (currency: string, range: { start: string; end: string }): Promise<PersonSpend[]> =>
   db

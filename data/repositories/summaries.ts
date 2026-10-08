@@ -1,17 +1,9 @@
 import { and, eq, sql } from 'drizzle-orm';
 import { db } from '@/data/db/client';
 import { PAYMENT_LOCAL_DAY } from '@/data/db/sql';
-import { accounts, payments, persons } from '@/data/db/schema';
+import { accounts, payments } from '@/data/db/schema';
 import type { MonthTotals } from '@/shared/calc/month';
-import { getPersonsNetByCurrency } from '@/data/repositories/people';
 import { format, startOfMonth, subMonths } from 'date-fns';
-
-export type PersonNetRow = {
-  id: number;
-  name: string;
-  color: number;
-  net: number;
-};
 
 /** Everything ever recorded in one currency — the Home hero's income and expense tiles. */
 export const getLifetimeTotals = async (currency: string): Promise<{ income: number; expense: number }> => {
@@ -65,21 +57,4 @@ export const getDailySpend = async (currency: string, since: string): Promise<Ma
     .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`${day} >= ${since}`))
     .groupBy(day);
   return new Map(rows.map((r) => [r.date, r.amount ?? 0]));
-};
-
-export const getDashboardPersons = async (currency: string, limit = 6): Promise<PersonNetRow[]> => {
-  // Net per person comes from the persons API, so Home and the people screens use one formula.
-  // Persons with no transactions in this currency default to net = 0.
-  const [allPersons, netMap] = await Promise.all([
-    db.select({ id: persons.id, name: persons.name, color: persons.color }).from(persons),
-    getPersonsNetByCurrency(currency),
-  ]);
-
-  // Everyone is listed, including people with nothing recorded yet: someone just added should
-  // appear on Home rather than leave the section saying there is nobody. People with a balance
-  // come first (largest owed first, as before), then the rest by name.
-  return allPersons
-    .map(p => ({ ...p, net: netMap.get(p.id) ?? 0 }))
-    .sort((a, b) => Number(a.net === 0) - Number(b.net === 0) || a.net - b.net || a.name.localeCompare(b.name))
-    .slice(0, limit);
 };

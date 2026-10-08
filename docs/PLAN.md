@@ -26,8 +26,8 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
-| C | Groundwork: shared, data, platform, shell | 87 | 60 | In progress |
-| D | Screens at parity with the shipped app | 143 | 42 | In progress |
+| C | Groundwork: shared, data, platform, shell | 87 | 61 | In progress |
+| D | Screens at parity with the shipped app | 143 | 47 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -271,7 +271,7 @@ go to `shared/calc`.
 - [ ] C9.02 `/(main)/loans/form` redirects to `/loans/new`
 - [x] C9.03 `/transactions/edit/[id]` redirects to `/transactions/[id]/edit`, with a test
 - [x] C9.04 `/transactions?accountId=|categoryId=` redirects to `/activity` with the filter
-- [ ] C9.05 `/persons`, `/persons/[id]` redirect to `/people`, `/people/[id]`
+- [x] C9.05 `/persons`, `/persons/[id]` redirect to `/people`, `/people/[id]`
 - [ ] C9.06 `/premium?feature=` redirects to `/pro?feature=` through `resolveProFeature`
 - [ ] C9.07 `/analytics`, `/backup`, `/export` redirect
 - [ ] C9.08 Test: a table of old paths and where each lands
@@ -391,13 +391,13 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D8.05 Shared checklist
 
 ### D9. People
-- [ ] D9.01 List with balances: owes you, you owe, settled
-- [ ] D9.02 Person screen: balance, loans, shared activity
-- [ ] D9.03 Form: name, phone, email, role, company, colour
-- [ ] D9.04 Free limit of 10 leads to the paywall
-- [ ] D9.05 Delete with confirmation
-- [ ] D9.06 Empty state
-- [ ] D9.07 Shared checklist (D9 is built and passes the checks; not ticked because the phone was locked, so nothing has been seen or tried on it)
+- [x] D9.01 List with balances: owes you, you owe, settled. The balance is open loans only; ordinary payments are not debts (paying rent is not owing the landlord)
+- [x] D9.02 Person screen: balance, loans, shared activity
+- [x] D9.03 Form: name, phone, email, role, company, colour
+- [ ] D9.04 Free limit of 10 leads to the paywall (built; not seen, which needs ten people and a non-Pro state)
+- [x] D9.05 Delete with confirmation
+- [ ] D9.06 Empty state (built; not seen, which needs an install with no people)
+- [x] D9.07 Shared checklist
 
 ### D10. Loans
 - [ ] D10.01 Loan screen as a timeline: lent or borrowed, repayments, due, settled
