@@ -1,10 +1,7 @@
 /** The Home tab. */
 export default {
-  greeting: {
-    morning: 'Good morning',
-    afternoon: 'Good afternoon',
-    evening: 'Good evening',
-  },
+  greeting: 'Hi {{name}}',
+  greetingNoName: 'Hello',
   search: 'Search',
   settings: 'Settings',
   balance: {
@@ -22,9 +19,9 @@ export default {
     title: 'Quick actions',
     transfer: 'Transfer',
     hint: 'Shortcuts to what you do often',
-    transferDetail: 'Between accounts',
-    lend: 'New loan',
-    lendDetail: 'Lent or borrowed',
+    transferDetail: 'Move money between your accounts',
+    lend: 'Lend or borrow',
+    lendDetail: 'Track money lent or borrowed',
   },
   month: {
     title: 'This month',

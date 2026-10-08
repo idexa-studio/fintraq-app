@@ -21,19 +21,14 @@ export function NavigationSection() {
   return (
     <>
       <Section title="Header">
-        <Specimen name="Home" note="The top of a tab: the title at the start of the line. Home sets the first name under a greeting by the time of day; the profile icon opens Settings.">
+        <Specimen name="Home" note="As the reference: a greeting in the middle between icon actions.">
           <View style={bleed}>
-            <Header
-              large
-              eyebrow="Good afternoon"
-              title="John"
-              right={<><IconButton icon="search" accessibilityLabel="Search" /><IconButton icon="user-circle" accessibilityLabel="Settings" /></>}
-            />
+            <Header title="Hi John" left={<IconButton icon="search" accessibilityLabel="Search" />} right={<IconButton icon="user-circle" accessibilityLabel="Settings" />} />
           </View>
         </Specimen>
-        <Specimen name="Another tab" note="The same title, with the tab's own actions at the end.">
+        <Specimen name="Another tab" note="The tab's name in the middle, its actions at the end.">
           <View style={bleed}>
-            <Header large title="Activity" right={<><IconButton icon="filter" accessibilityLabel="Filter" /><IconButton icon="search" accessibilityLabel="Search" /></>} />
+            <Header title="Activity" right={<><IconButton icon="filter" accessibilityLabel="Filter" /><IconButton icon="search" accessibilityLabel="Search" /></>} />
           </View>
         </Specimen>
         <Specimen name="Pushed screen" note="Back on the left, the screen’s name in the middle.">
@@ -49,7 +44,7 @@ export function NavigationSection() {
       </Section>
 
       <Section title="Tab bar">
-        <Specimen name="Tab bar" note="Four places and, in the middle, the one action: a green tile that adds. The mark slides to the tab you choose.">
+        <Specimen name="Tab bar" note="As the reference: every item an icon over its label, a green mark the width of the tab above the active one. Add opens the entry task and is never the active tab.">
           <View style={bleed}>
             <TabBar items={TABS} activeKey={tab} onSelect={(key) => { if (key !== 'add') setTab(key); }} />
           </View>

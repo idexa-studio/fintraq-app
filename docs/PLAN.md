@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 157 | 100 | In progress |
+| D | Screens at parity with the shipped app | 158 | 101 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -312,7 +312,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D2.02 Setup, one question at a time under a picture of what is being made (the greeting and the first account as they will look on Home), not a sheet over a sheet: name
 - [x] D2.03 Setup: default currency (currency picker)
 - [x] D2.04 Setup: first account and opening balance
-- [x] D2.11 Polish (owner, 2026-10-08): the welcome leads with the wallet stack and scrolls on a short screen instead of being cut off (checked at 640dp tall); each setup step is headed by a mark, the question and one line, over the reference's form (labelled card, chooser row, outlined fields). The live preview, the mark beside the name field and the common-currency chips were tried and removed at his word
+- [x] D2.11 Setup is one form in the reference's pattern (owner, 2026-10-08: single fields on a screen "feel naked"): You, Your main currency, Your first account, each a bold label over a white card. A step per question, a live preview, a mark beside the name field and common-currency chips were all tried and removed at his word. The welcome leads with the wallet stack and scrolls on a short screen (checked at 640dp tall)
 - [ ] D2.05 Creating the workspace (please wait) and failure with retry (built; not run: finishing setup on the owner's phone would overwrite his name and currency and re-add default categories)
 - [ ] D2.06 Restore: choose file or Google Drive (Drive built and seen, not run; the file is H1)
 - [ ] D2.07 Restore progress, "no backup found", try another account
@@ -341,6 +341,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D3.21 Accounts on Home as a stack of cards, like a wallet (owner asked for a stacked card, 2026-10-08): each account in its own colour, the ones behind showing the edge with name and balance, the default account in front in full; five at most, then a count. It replaces the bar and legend the balance card carried in D3.16, so the balance card is the figure and its two actions again
 - [x] D3.22 Small guiding lines (owner, 2026-10-08: "looking naked"): `Section` takes a `hint` under its title, used on Home and Insights; shortcut tiles carry their few words again; the balance card says how many accounts it adds up. Header icons are drawn at 24pt, where the line matches the reference's weight; Home's initial-in-a-circle is the plain profile icon again, as there is no photo for it to stand for
 - [x] D3.23 Sections grouped under one condition had no space between them (Insights: Rhythm, People, Worth knowing): `Screen` now opens up fragments. A tab opened for the first time showed its header under the status bar for a moment: `Screen` applies the insets as padding from the first frame
+- [x] D3.24 Back to the reference, at the owner's word (2026-10-08, "exact same to same"): the tab bar (uniform items, full-width mark, Add as an item), Home's header ("Hi John" centred between search and profile), Home's quick actions (full tiles with their sentence), and icons kept at the reference's line weight at every size by drawing large ones from the light set. Chips have the reference's smooth corners. This withdraws the large tab titles, the greeting by time of day, the green Add tile and the compact tiles on Home from D3.19 and D3.20
 - [ ] D3.17 The gallery's Home specimen still shows the earlier Home (accounts as rows, month as a bar, people as rows); bring it in line with D3.16
 - [x] D3.18 A full reload of the running app landed on Add expense over Home. Cause: the root stack named the Add task as its first screen, and with no link to follow the app starts at the first screen named. `(main)` is now named first; three forced reloads land on Home
 - [ ] D3.13 Shared checklist

@@ -8,17 +8,11 @@ import React, { useEffect, useState } from 'react';
 import { I18nManager, StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-/** How much of a tab's width the mark above it spans. */
-const MARK_SHARE = 0.5;
-
 export type TabItem<K extends string = string> = {
   key: K;
   label: string;
   icon: IconName;
-  /**
-   * Not a place but the bar's one action (adding): drawn as a green tile
-   * with no label under it, and never the active tab.
-   */
+  /** Opens something instead of being a place (adding): pressed like the rest, never the active tab. */
   action?: boolean;
 };
 
@@ -31,11 +25,13 @@ export type TabBarProps<K extends string = string> = {
 };
 
 /**
- * The bottom bar: white, edge to edge. A green mark sits above the active
- * tab, whose icon is solid, and slides across when the tab changes.
+ * The bottom bar, as the reference draws it: white, edge to edge, every item
+ * an icon over its label. A green mark as wide as the tab sits on the bar's
+ * top edge above the active tab, whose icon is solid and whose label is bold.
+ * The mark slides across when the tab changes.
  */
 export function TabBar<K extends string>({ items, activeKey, onSelect, bottomInset = 0 }: TabBarProps<K>) {
-  const { colors, motion } = useTheme();
+  const { motion, size } = useTheme();
   const styles = useStyles(createStyles);
   const [width, setWidth] = useState(0);
   const tabWidth = items.length ? width / items.length : 0;
@@ -47,40 +43,29 @@ export function TabBar<K extends string>({ items, activeKey, onSelect, bottomIns
   }, [index, position, motion.normal, motion.fast]);
 
   const direction = I18nManager.isRTL ? -1 : 1;
-  const sliding = useAnimatedStyle(() => ({ transform: [{ translateX: (position.value + (1 - MARK_SHARE) / 2) * tabWidth * direction }] }));
+  const sliding = useAnimatedStyle(() => ({ transform: [{ translateX: position.value * tabWidth * direction }] }));
 
   return (
     <View accessibilityRole="tablist" onLayout={(e) => setWidth(e.nativeEvent.layout.width)} style={[styles.bar, { paddingBottom: bottomInset }]}>
       {items.map((item) => {
         const active = item.key === activeKey;
-        if (item.action) {
-          return (
-            <Touchable key={item.key} onPress={() => onSelect?.(item.key)} accessibilityRole="button" accessibilityLabel={item.label} style={styles.tab}>
-              <View style={styles.action}>
-                <Icon name={item.icon} color={colors.onAccent} />
-              </View>
-            </Touchable>
-          );
-        }
         return (
-          <Touchable key={item.key} onPress={() => onSelect?.(item.key)} accessibilityRole="tab" accessibilityLabel={item.label} accessibilityState={{ selected: active }} style={styles.tab}>
-            <Icon name={item.icon} filled={active} />
+          <Touchable key={item.key} onPress={() => onSelect?.(item.key)} accessibilityRole={item.action ? 'button' : 'tab'} accessibilityLabel={item.label} accessibilityState={item.action ? undefined : { selected: active }} style={styles.tab}>
+            <Icon name={item.icon} size={size.iconTab} filled={active} />
             <Text variant={active ? 'tabActive' : 'tab'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} style={styles.label}>{item.label}</Text>
           </Touchable>
         );
       })}
-      {width > 0 ? <Animated.View pointerEvents="none" style={[styles.mark, { width: tabWidth * MARK_SHARE }, sliding]} /> : null}
+      {width > 0 ? <Animated.View pointerEvents="none" style={[styles.mark, { width: tabWidth }, sliding]} /> : null}
     </View>
   );
 }
 
-const createStyles = ({ colors, size, space, border, radius }: Theme) =>
+const createStyles = ({ colors, size, space, border }: Theme) =>
   StyleSheet.create({
     bar: { flexDirection: 'row', backgroundColor: colors.surface, borderTopWidth: border.thin, borderTopColor: colors.divider },
     tab: { flex: 1, minHeight: size.tabBar, paddingVertical: space.xs, alignItems: 'center', justifyContent: 'center', gap: space.xs },
     label: { alignSelf: 'stretch', textAlign: 'center', paddingHorizontal: space.xxs },
-    // Hangs from the bar's top hairline, its lower corners rounded.
-    mark: { position: 'absolute', top: -border.thin, left: 0, height: size.tabMark + border.thin, backgroundColor: colors.accent, borderBottomLeftRadius: size.tabMark, borderBottomRightRadius: size.tabMark },
-    // Green carries an outline on a light surface, as the switch does.
-    action: { width: size.minTouch, height: size.chip + space.xs, borderRadius: radius.md, backgroundColor: colors.accent, borderWidth: border.thin, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
+    // Sits on the bar's top hairline, the full width of its tab.
+    mark: { position: 'absolute', top: -border.thin, left: 0, height: size.tabMark, backgroundColor: colors.accent },
   });

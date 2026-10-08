@@ -6,8 +6,7 @@ import { AccountList, PeopleStrip, RecentList } from '@/features/home/components
 import { MonthCard } from '@/features/home/components/MonthCard';
 import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
 import { peopleByStanding, usePeopleWithBalances } from '@/features/people';
-import { dayPart, firstName } from '@/features/home/home-rules';
-import { formatDate } from '@/shared/date/date';
+import { firstName } from '@/features/home/home-rules';
 import { useSettings } from '@/features/settings';
 import { useTransactions } from '@/features/transactions';
 import type { Kind } from '@/features/transactions';
@@ -40,8 +39,6 @@ export function HomeScreen() {
   // The same rule the transfer form uses, so the tile never opens a form that cannot be completed.
   const canTransfer = hasPossibleTransfer(accounts ?? []);
   const name = firstName(profile.name);
-  const now = new Date();
-  const part = dayPart(now.getHours());
 
   const add = (kind: Kind) => router.push({ pathname: '/add', params: { kind } });
   const lend = () => router.push('/loans/new');
@@ -52,16 +49,9 @@ export function HomeScreen() {
       tabbed
       header={
         <Header
-          large
-          // The greeting leads into the name; with no name yet, the date leads into the greeting.
-          eyebrow={name ? t(`greeting.${part}`) : formatDate(now, { weekday: 'long', day: 'numeric', month: 'long' })}
-          title={name || t(`greeting.${part}`)}
-          right={
-            <>
-              <IconButton icon="search" onPress={() => router.push('/search')} accessibilityLabel={t('search')} />
-              <IconButton icon="user-circle" onPress={() => router.push('/settings')} accessibilityLabel={t('settings')} />
-            </>
-          }
+          title={name ? t('greeting', { name }) : t('greetingNoName')}
+          left={<IconButton icon="search" onPress={() => router.push('/search')} accessibilityLabel={t('search')} />}
+          right={<IconButton icon="user-circle" onPress={() => router.push('/settings')} accessibilityLabel={t('settings')} />}
         />
       }
     >
@@ -69,8 +59,8 @@ export function HomeScreen() {
 
       <Section title={t('quick.title')} hint={t('quick.hint')}>
         <View style={{ flexDirection: 'row', gap: size.cardGap }}>
-          {canTransfer ? <FeatureTile compact icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
-          <FeatureTile compact icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
+          {canTransfer ? <FeatureTile icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
+          <FeatureTile icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
         </View>
       </Section>
 

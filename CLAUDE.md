@@ -62,7 +62,8 @@ throughout (Proza Libre, bold for headings), soft 10pt corners, no shadows.
   it. Sections show Fintraq's own screens, not copies of the reference.
 - **Icons:** Phosphor, in the reference's two line weights plus solid:
   pictograms `regular`, the bare control marks (close, tick, more) `bold`,
-  solid for the active tab. The weight is fixed per name in
+  solid for the active tab; from 27pt up a pictogram is drawn from the
+  `light` set so its line stays the reference's weight. The weight is fixed per name in
   `design/icons/icon-map.json` (`"x": "x@bold"`), never chosen at a call
   site. Add an icon by adding a line there and running
   `npm run icons:generate`. Never import an icon package.

@@ -42,7 +42,7 @@ export function PlanScreen() {
 
   const lend = () => router.push('/loans/new');
   const open = (loan: LoanWithStats) => router.push({ pathname: '/loans/[id]', params: { id: loan.id } });
-  const header = <Header large title={t('title')} right={<IconButton icon="plus" onPress={lend} accessibilityLabel={t('add')} />} />;
+  const header = <Header title={t('title')} right={<IconButton icon="plus" onPress={lend} accessibilityLabel={t('add')} />} />;
 
   const row = (loan: LoanWithStats, line: string) => (
     <ListRow
