@@ -1,10 +1,10 @@
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import React from 'react';
-import { DEFAULT_ICON_FAMILY, HUGEICONS, ICON_FAMILIES } from './icon-registry';
-import type { IconFamily, IconName } from './icon-registry';
+import { DEFAULT_ICON_FAMILY, HUGEICONS, ICON_FAMILIES } from '@/src/components/ui/icon-registry';
+import type { IconFamily, IconName } from '@/src/components/ui/icon-registry';
 
-export type { IconFamily, IconName } from './icon-registry';
+export type { IconFamily, IconName } from '@/src/components/ui/icon-registry';
 /** What components accept wherever they take an icon: a name from the registry. */
 export type IconSource = IconName;
 

@@ -12,7 +12,9 @@
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
     "postinstall": "patch-package",
-    "test": "jest"
+    "test": "jest",
+    "icons:generate": "node scripts/generate-icons.js",
+    "plan:progress": "node scripts/plan-progress.js"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.3.5",
@@ -87,6 +89,7 @@
     "jest": "~29.7.0",
     "jest-expo": "~54.0.18",
     "patch-package": "^8.0.1",
+    "remixicon": "^4.9.1",
     "typescript": "~5.9.3"
   },
   "expo": {

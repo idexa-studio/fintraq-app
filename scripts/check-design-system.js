@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Design-system compliance audit. Flags feature/app code that bypasses the
- * system in docs/DESIGN_SYSTEM.md. Design-system internals (src/components/ui,
+ * system in docs/DESIGN_SYSTEM.md. Design-system internals (design/, and the legacy src/components/ui,
  * src/theme) are exempt — they are where raw values are allowed to live.
  *
  *   node scripts/check-design-system.js           # summary + every violation
@@ -13,11 +13,11 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const SCAN = ['src', 'app'];
+const SCAN = ['src', 'app', 'design', 'features', 'data', 'platform', 'shared'];
 const EXEMPT = [
   'src/components/ui/',
   'src/theme/',
-  'src/features/design-gallery/', // specimens intentionally show raw values
+  'design/', // the new design system: the one place raw values live
   'src/i18n/',
   'src/db/',
   'src/constants/', // user-colour palettes, product ids — data, not UI
@@ -32,7 +32,7 @@ const RULES = [
   { id: 'raw-font-family', msg: 'Hard-coded fontFamily string — use typography.fonts', re: /fontFamily\s*:\s*['"]/ },
   { id: 'raw-radius', msg: 'Raw borderRadius number — use radius() tokens', re: /borderRadius\s*:\s*\d/ },
   { id: 'shadow', msg: 'Shadow/elevation — the design system is flat', re: /\b(shadowColor|shadowOpacity|shadowRadius|shadowOffset|elevation\s*:|boxShadow|\.\.\.shadow\()/ },
-  { id: 'icon-lib', msg: 'Icon pack used directly — add the glyph to components/ui/icon-registry.ts and render <Icon name="…" />', re: /\bHugeiconsIcon\b|from '@hugeicons\// },
+  { id: 'icon-lib', msg: 'Icon pack used directly — map the name in design/icons/icon-map.json (legacy: src/components/ui/icon-registry.ts) and render <Icon name="…" />', re: /\bHugeiconsIcon\b|from '@hugeicons\// },
   { id: 'rn-primitive', msg: 'Off-system primitive — use ui Switch / BentoPressable / Button', re: /\b(TouchableOpacity|TouchableHighlight)\b|import \{[^}]*\bSwitch\b[^}]*\} from 'react-native'/ },
   { id: 'spinner', msg: 'ActivityIndicator — use Skeleton for loading, Button isLoading for actions', re: /\bActivityIndicator\b/ },
   { id: 'opacity-text', msg: 'Opacity-faded style — use tone="muted" / alpha() instead', re: /^\s*opacity\s*:\s*0\.[1-8]\d*\s*,?\s*$/ },
@@ -52,7 +52,8 @@ const walk = (dir) => {
     else if (/\.(tsx?|jsx?)$/.test(e.name)) files.push(path.relative(ROOT, p));
   }
 };
-SCAN.forEach((d) => walk(path.join(ROOT, d)));
+// Folders of the rebooted tree appear as they are first needed.
+SCAN.map((d) => path.join(ROOT, d)).filter((d) => fs.existsSync(d)).forEach(walk);
 
 const hits = [];
 for (const file of files) {
@@ -68,6 +69,12 @@ for (const file of files) {
       if (/\}/.test(part)) break;
     }
   }
+  // A feature is used from outside only through its index.ts (docs/ARCHITECTURE.md).
+  const own = /^features\/([^/]+)\//.exec(file)?.[1];
+  lines.forEach((line, i) => {
+    const reach = /from '@\/features\/([^/']+)\/[^']+'/.exec(line);
+    if (reach && reach[1] !== own) hits.push({ file, line: i + 1, rule: 'feature-internals', text: line.trim().slice(0, 110) });
+  });
   lines.forEach((line, i) => {
     if (/design-system-ignore/.test(line) || /^\s*(\/\/|\*)/.test(line)) return;
     for (const r of RULES) if (r.re.test(line)) hits.push({ file, line: i + 1, rule: r.id, text: line.trim().slice(0, 110) });
@@ -82,7 +89,7 @@ hits.forEach((h) => {
 });
 
 console.log(`Design-system audit: ${hits.length} violation(s) in ${Object.keys(byFile).length} file(s)\n`);
-for (const r of RULES) if (byRule[r.id]) console.log(`  ${String(byRule[r.id]).padStart(4)}  ${r.id.padEnd(16)} ${r.msg}`);
+for (const r of [...RULES, { id: 'feature-internals', msg: "Reaching into another feature — import from its index ('@/features/<name>')" }]) if (byRule[r.id]) console.log(`  ${String(byRule[r.id]).padStart(4)}  ${r.id.padEnd(16)} ${r.msg}`);
 console.log('');
 if (process.argv.includes('--summary')) {
   Object.entries(byFile).sort((a, b) => b[1] - a[1]).forEach(([f, n]) => console.log(`  ${String(n).padStart(4)}  ${f}`));

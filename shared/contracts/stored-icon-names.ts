@@ -1,0 +1,8 @@
+/**
+ * Every icon name the app has ever let a user choose for a category or an
+ * account. These strings are saved in user data and in backups, so a name is
+ * never removed or renamed: each one must keep drawing something for ever.
+ */
+export const STORED_ICON_NAMES = ['airplane', 'alarm-clock', 'alert-circle', 'apple', 'archive', 'arrow-down', 'arrow-left', 'arrow-right', 'arrow-up', 'award', 'bandage', 'bar-chart', 'bed', 'beer', 'bike', 'boat', 'book-open', 'briefcase', 'building', 'bulb', 'bus', 'calendar', 'camera', 'cancel-circle', 'car', 'cash', 'cat', 'chart-bar-increasing', 'chart-line-data', 'chart-up', 'check', 'checkmark-circle', 'clock', 'cloud', 'coffee', 'computer', 'compass', 'cpu', 'credit-card', 'dashboard-speed', 'delete', 'diamond', 'drink', 'droplets', 'dumbbell', 'earth', 'egg', 'file', 'film', 'fire', 'flag', 'flame', 'flash', 'folder', 'football', 'fork', 'gamepad', 'gift', 'grid', 'golf-ball', 'hamburger', 'hammer', 'headset', 'heart', 'heart-pulse', 'home', 'ice-cream', 'information-circle', 'key', 'laptop', 'layers', 'leaf', 'library', 'lock', 'map-pin', 'maps', 'metro', 'moon', 'more-horizontal', 'music-note', 'paint-brush', 'pencil', 'pie-chart', 'pizza', 'printer', 'pulse', 'receipt-text', 'refresh', 'repeat', 'ribbon', 'rocket', 'sailboat-coastal', 'scissor', 'school', 'search', 'server-stack', 'settings', 'share', 'shield', 'shopping-bag', 'shopping-basket', 'shopping-cart', 'smartphone', 'smile', 'sparkles', 'star', 'sun', 'tablet', 'tag', 'thermometer', 'train', 't-shirt', 'umbrella', 'user-group', 'user', 'user-multiple', 'walking', 'wifi', 'wrench', 'chat', 'wallet', 'piggy-bank'] as const;
+
+export type StoredIconName = (typeof STORED_ICON_NAMES)[number];

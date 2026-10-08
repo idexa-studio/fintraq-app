@@ -29,6 +29,7 @@ import { unlockDatabaseIfLocked } from '@/src/db/client';
 // the JS engine to run the background backup task.
 import { syncBackgroundBackupTask } from '@/src/services/backup/background-backup.task';
 import { AppState, AppStateStatus } from 'react-native';
+import { FONT_ASSETS } from '@/design';
 import React, { useEffect, useState } from 'react';
 import { LoggerService } from '@/src/services/logger.service';
 
@@ -44,6 +45,7 @@ export default function RootLayout() {
     MuseoModerno_Regular: require('../assets/fonts/MuseoModerno/MuseoModerno-Regular.ttf'),
     MuseoModerno_Medium: require('../assets/fonts/MuseoModerno/MuseoModerno-Medium.ttf'),
     MuseoModerno_SemiBold: require('../assets/fonts/MuseoModerno/MuseoModerno-SemiBold.ttf'),
+    ...FONT_ASSETS,
   });
 
   useEffect(() => {
