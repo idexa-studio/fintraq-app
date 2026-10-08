@@ -157,11 +157,12 @@ use it.
 - **A task** (adding, editing) is a sheet: `<Screen sheet>` on a route
   presented as a transparent modal. It rises over the screen it was started
   from and stops short of the top, with rounded corners.
-- **Adding a transaction** is a single-page form in the reference's pattern:
-  labelled cards ("From:", "Details:"), outlined fields with the label
-  inside, the phone's own keyboard. No page-filling custom keypad; the
-  `Keypad` is for the calculator sheet and the PIN. `CardStack` (one question
-  per card) is for first-run setup and other guided, once-only flows.
+- **Entering something** is a deck of cards (`CardStack`) inside the sheet:
+  the card in front asks one thing, answered cards tuck above it, and the
+  ones still to come peek out below showing the answer each will use. Any
+  strip brings its card forward. Because defaults are visible, the entry can
+  be saved from the first card. This is the owner's chosen input pattern;
+  do not replace it with a flat form.
 - **Empty:** a whole empty screen gets `EmptyState` (emblem, bold title, a
   sentence, the first step). One empty section among others gets the
   `compact` version so the screen keeps its shape.

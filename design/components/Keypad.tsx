@@ -56,8 +56,9 @@ const createStyles = ({ colors, size, space, radius, border }: Theme) =>
     // A keypad keeps its layout in right-to-left languages: 1 2 3 never becomes 3 2 1.
     pad: { gap: space.sm, direction: 'ltr' },
     row: { flexDirection: 'row', gap: space.sm },
-    key: { flex: 1, height: size.row, borderRadius: radius.md, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
-    bare: { backgroundColor: 'transparent' },
+    // Outlined as well as filled, so the keys read as keys on the grey page and on a white card alike.
+    key: { flex: 1, height: size.row, borderRadius: radius.md, backgroundColor: colors.surface, borderWidth: border.thin, borderColor: colors.divider, alignItems: 'center', justifyContent: 'center' },
+    bare: { backgroundColor: 'transparent', borderColor: 'transparent' },
     operator: { backgroundColor: 'transparent', borderWidth: border.thin, borderColor: colors.border },
     blank: { flex: 1 },
   });
