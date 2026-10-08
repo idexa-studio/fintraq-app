@@ -1,4 +1,5 @@
 import { ActionsSection } from '@/features/gallery/sections/ActionsSection';
+import { BrandSection } from '@/features/gallery/sections/BrandSection';
 import { EntrySection } from '@/features/gallery/sections/EntrySection';
 import { DisplaySection } from '@/features/gallery/sections/DisplaySection';
 import { FeedbackSection } from '@/features/gallery/sections/FeedbackSection';
@@ -40,6 +41,7 @@ const SECTIONS = [
 
 /** Reachable by link only: tools for tuning the system, not specimens. */
 const HIDDEN = [
+  { key: 'brand', label: 'Brand', Component: BrandSection },
   { key: 'match', label: 'Match', Component: MatchSection },
   { key: 'scripts', label: 'Scripts', Component: ScriptsSection },
   { key: 'stress', label: 'Stress', Component: StressSection },

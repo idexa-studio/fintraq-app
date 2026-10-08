@@ -3,7 +3,7 @@ export { ThemeProvider, useFontScale, useStyles, useTheme } from './ThemeProvide
 export type { Scheme, Script, Theme } from './ThemeProvider';
 export { FONT_ASSETS, ltr, needsSystemFont } from './tokens/typography';
 export type { TypeVariant } from './tokens/typography';
-export { BACKDROP, INK, PASTELS, pastelOf } from './tokens/colors';
+export { BACKDROP, INK, LIGHT_COLORS, PASTELS, pastelOf } from './tokens/colors';
 export type { ColorRoles, PastelName } from './tokens/colors';
 
 export { AmountField } from './components/AmountField';
