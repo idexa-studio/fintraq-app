@@ -1,6 +1,6 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
 import {
-  Badge, Card, Checklist, DayHeader, DetailRow, SwipeRow, FeatureTile, Icon, IconCircle, IllustrationTile, ListGroup, ListRow,
+  Badge, Card, MarkTile, Checklist, DayHeader, DetailRow, SwipeRow, FeatureTile, Icon, IconCircle, IllustrationTile, ListGroup, ListRow,
   Money, ProgressBar, Section, Skeleton, Stat, StepRow, Text, useTheme,
 } from '@/design';
 import React from 'react';
@@ -99,6 +99,8 @@ export function DisplaySection() {
           </View>
         </Specimen>
         <Specimen name="Icon circles and badges" row>
+          <MarkTile icon="wallet" />
+          <MarkTile icon="bank" />
           <IconCircle icon="flag" color="orange" />
           <IconCircle icon="leaf" color="teal" />
           <IconCircle initials="NA" color="lilac" />

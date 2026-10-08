@@ -40,6 +40,7 @@ export type { KeypadKey } from './components/Keypad';
 export { LineChart } from './components/LineChart';
 export { LockedCard } from './components/LockedCard';
 export { DetailRow, ListGroup, ListRow } from './components/ListRow';
+export { MarkTile } from './components/MarkTile';
 export { Message } from './components/Message';
 export { Money } from './components/Money';
 export { Notice } from './components/Notice';

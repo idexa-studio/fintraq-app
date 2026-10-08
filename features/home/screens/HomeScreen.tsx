@@ -51,7 +51,7 @@ export function HomeScreen() {
       }
     >
       <Section title={t('balance.title')}>
-        <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('DR')} onAddIncome={() => add('CR')} />
+        <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('DR')} onAddIncome={() => add('CR')} onOpenAccounts={() => router.push('/accounts')} />
       </Section>
 
       <Section title={t('quick.title')}>
