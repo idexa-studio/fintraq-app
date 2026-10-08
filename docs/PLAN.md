@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 60 | In progress |
-| D | Screens at parity with the shipped app | 143 | 37 | In progress |
+| D | Screens at parity with the shipped app | 143 | 42 | In progress |
 | E | Pro: three plans and gating | 26 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -384,11 +384,11 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D7.09 Shared checklist
 
 ### D8. Categories
-- [ ] D8.01 List by kind
-- [ ] D8.02 Form: name, kind, icon, colour
-- [ ] D8.03 System categories cannot be deleted; say why
-- [ ] D8.04 Delete as today: only a category nothing uses can go; one in use says how many transactions hold it
-- [ ] D8.05 Shared checklist (D8 is built and passes the checks; not ticked because it has not been seen on the phone, which was locked)
+- [x] D8.01 List by kind
+- [x] D8.02 Form: name, kind, icon, colour
+- [x] D8.03 System categories cannot be deleted; say why
+- [x] D8.04 Delete as today: only a category nothing uses can go; one in use says how many transactions hold it
+- [x] D8.05 Shared checklist
 
 ### D9. People
 - [ ] D9.01 List with balances: owes you, you owe, settled
