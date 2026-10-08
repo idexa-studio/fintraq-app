@@ -105,12 +105,6 @@ Pro is sold three ways from the redesign onwards (owner's decision,
 **How lifetime is pushed.** By the arithmetic, shown plainly, never by
 pressure:
 
-**Discounts.** Only ones the store itself has on, never one made up in the app. A
-one-time plan on offer shows its usual price struck through beside the price
-now and the percentage off, rounded down. A subscription the store opens
-cheaper or free says what it costs to start and what it costs after. No
-countdowns and no "limited time".
-
 - Under Lifetime: "Pay once. Same as N months of monthly." N is computed
   from the store's live prices (`lifetimeBreakEvenMonths`).
 - Under Yearly: "Save P% on monthly" (`yearlySavingPercent`).
@@ -120,6 +114,12 @@ countdowns and no "limited time".
   monthly and exactly two years of yearly.
 - No countdown timers, no invented "was" prices, no pre-ticked trials. The old
   paywall's "Unlock in N seconds" delay goes.
+
+**Discounts.** Only ones the store itself has on, never one made up in the app. A
+one-time plan on offer shows its usual price struck through beside the price
+now and the percentage off, rounded down. A subscription the store opens
+cheaper or free says what it costs to start and what it costs after. No
+countdowns and no "limited time".
 
 **Rules that keep it fair**
 
