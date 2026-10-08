@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 157 | 99 | In progress |
+| D | Screens at parity with the shipped app | 157 | 100 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -461,11 +461,11 @@ Built in `features/backup` on 2026-10-08 and seen on a device only as far as the
 - [ ] D14.06 Backup made by another install: confirm before overwriting
 - [ ] D14.07 Every failure says what happened and what to do
 - [ ] D14.08 Battery optimisation prompt on Android
-- [ ] D14.10 Backup file on the phone: save the full backup as a file through the system share sheet. Free: the owner leaned towards Pro and left the call to me; it stays free because `docs/PRODUCT.md` promises that data is never held hostage, and what Pro sells is the automatic part (Drive, twice a day, nothing to remember). To make it Pro instead, gate these rows with `usePro()` and add a `localBackup` feature to the registry
-- [ ] D14.11 Restore from a chosen file, with the "replace everything" confirmation and the same checks a Drive restore runs
-- [ ] D14.12 The Backup screen shows both: the file (free) above, Google Drive (Pro) below; a free user sees the Drive part as one locked card instead of the whole screen being gated
-- [ ] D14.13 Offered at first run: "I have a backup" lets the user choose a file or Google Drive
-- [ ] D14.14 Test: a file made by one install restores on another, and every older snapshot shape still restores from a file
+- [x] D14.10 Backup file on the phone: save the full backup as a file through the system share sheet. Free: the owner leaned towards Pro and left the call to me; it stays free because `docs/PRODUCT.md` promises that data is never held hostage, and what Pro sells is the automatic part (Drive, twice a day, nothing to remember). To make it Pro instead, gate these rows with `usePro()` and add a `localBackup` feature to the registry
+- [ ] D14.11 Restore from a chosen file, with the "replace everything" confirmation and the same checks a Drive restore runs (built; the chooser opens on the owner's phone and backing out changes nothing; a restore itself was not run there)
+- [ ] D14.12 The Backup screen shows both: the file (free) above, Google Drive (Pro) below; a free user sees the Drive part as one locked card instead of the whole screen being gated (built and seen as Pro; the locked card not seen)
+- [ ] D14.13 Offered at first run: "I have a backup" lets the user choose a file or Google Drive (built and seen; not run)
+- [ ] D14.14 Test: a file made by one install restores on another, and every older snapshot shape still restores from a file (the file path runs the same parser the snapshot tests cover, and has tests for naming, a dismissed chooser, a file that is not a backup, and freeing the operation slot; the two-install round trip needs a second install)
 - [ ] D14.09 Shared checklist
 
 ### D15. Export (Pro)

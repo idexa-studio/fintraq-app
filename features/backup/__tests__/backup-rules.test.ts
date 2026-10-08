@@ -1,4 +1,5 @@
-import { backupDay, failureOf, nextAutoBackup, remedyOf, sizeText } from '@/features/backup/backup-rules';
+import { BackupValidationError } from '@/data/backup/snapshot';
+import { backupDay, failureOf, fileFailureOf, nextAutoBackup, remedyOf, sizeText } from '@/features/backup/backup-rules';
 import { BackupInProgressError, CloudBackupProRequiredError, GoogleDriveAuthError, GoogleDriveNetworkError, NoBackupFoundError } from '@/platform/drive/google-drive.errors';
 
 describe('backup rules', () => {
@@ -48,5 +49,11 @@ describe('backup rules', () => {
     expect(nextAutoBackup(null)).toBeNull();
     expect(nextAutoBackup('nonsense')).toBeNull();
     expect(nextAutoBackup('2026-10-07T02:00:00.000Z', Date.parse('2026-10-08T05:00:00.000Z'))).toBeNull();
+  });
+
+  it('tells a file that is not a backup from other failures', () => {
+    expect(fileFailureOf(new BackupValidationError('corrupted', 'bad'))).toBe('unreadable');
+    expect(fileFailureOf(new BackupInProgressError())).toBe('busy');
+    expect(fileFailureOf(new Error('disk full'))).toBe('unknown');
   });
 });

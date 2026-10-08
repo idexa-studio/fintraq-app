@@ -257,6 +257,9 @@ use it.
   `compact` version so the screen keeps its shape.
 - **Loading:** `Skeleton` in the shape of what is coming. `Spinner` only for
   work that blocks.
+- **Backup** has two parts on one screen: the file the user keeps
+  themselves (free) above, Google Drive (Pro) below. A free user sees the
+  Drive part as one `LockedCard`, never a locked screen.
 - **Pro:** everything a plan adds to a screen is one `LockedCard`; a single
   Pro row inside a free list carries a badge. Never one lock per item.
 - **Home's hero** is the reference's account card: a white card with the
