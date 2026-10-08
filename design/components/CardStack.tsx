@@ -1,81 +1,91 @@
+import { Icon } from '@/design/components/Icon';
 import { Text } from '@/design/components/Text';
 import { Touchable } from '@/design/components/Touchable';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { FadeInDown, LinearTransition } from 'react-native-reanimated';
+import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 export type StackCard = {
   key: string;
-  /** What this step asks for, e.g. "Amount". */
+  /** The question the card asks when it is in front, e.g. "How much?". */
   label: string;
-  /** The answer given, shown once the step is behind the current one. */
+  /** The word for it on its strip when it is not in front, e.g. "Amount". */
+  short: string;
+  /** The answer so far, shown on its strip: given already, or a default still to be confirmed. */
   value?: string;
   content: React.ReactNode;
 };
 
 export type CardStackProps = {
   cards: StackCard[];
-  /** Index of the card in front. Earlier cards are tucked behind it; later ones are not shown yet. */
+  /** Index of the card in front. */
   active: number;
-  /** Tapping a tucked card brings it back to the front. */
+  /** Tapping a strip brings that card to the front. */
   onSelect?: (index: number) => void;
 };
 
-/** How many tucked cards step inwards before they share one width. */
+/** How many strips step inwards before they share one width. */
 const MAX_DEPTH = 3;
 
 /**
- * A step-by-step input as a deck: the current step is the white card in
- * front, and each answered step stays visible as a strip tucked behind it,
- * narrower the further back it is.
+ * An input as a deck of cards. The card in front asks one thing. The cards
+ * already answered are tucked behind it above, the ones still to come peek
+ * out below with the answer each will use unless changed, and every strip
+ * brings its card forward when tapped. Nothing is hidden, so the whole entry
+ * can be read at a glance and finished from any card.
  */
 export function CardStack({ cards, active, onSelect }: CardStackProps) {
-  const { space, motion } = useTheme();
+  const { space, motion, colors, size } = useTheme();
   const styles = useStyles(createStyles);
-  const current = cards[active];
+  const move = LinearTransition.duration(motion.slow);
+
   return (
     <View>
-      {cards.slice(0, active).map((card, i) => {
-        const depth = Math.min(active - i, MAX_DEPTH);
+      {cards.map((card, i) => {
+        if (i === active) {
+          return (
+            <Animated.View key={card.key} layout={move} style={styles.front}>
+              <Animated.View key={`${card.key}-content`} entering={FadeIn.duration(motion.slow)} style={styles.frontContent}>
+                <Text variant="title" accessibilityRole="header">{card.label}</Text>
+                {card.content}
+              </Animated.View>
+            </Animated.View>
+          );
+        }
+        const before = i < active;
+        const depth = Math.min(Math.abs(active - i), MAX_DEPTH);
         return (
-          <Animated.View key={card.key} layout={LinearTransition.duration(motion.normal)} style={{ marginHorizontal: depth * space.sm }}>
-            <Touchable onPress={() => onSelect?.(i)} accessibilityLabel={`${card.label}: ${card.value ?? ''}. Change`} style={styles.strip}>
-              <Text variant="callout">{card.label}</Text>
-              <Text variant="calloutStrong" numberOfLines={1} style={styles.value}>{card.value}</Text>
+          <Animated.View key={card.key} layout={move} style={[{ marginHorizontal: depth * space.sm }, before ? styles.tuckedAbove : styles.tuckedBelow]}>
+            <Touchable
+              onPress={() => onSelect?.(i)}
+              accessibilityLabel={`${card.short}: ${card.value ?? ''}`}
+              accessibilityHint="Change"
+              style={[styles.strip, before ? styles.stripAbove : styles.stripBelow]}
+            >
+              <Text variant="callout" tone={before ? 'default' : 'muted'}>{card.short}</Text>
+              <Text variant="calloutStrong" numberOfLines={1} ellipsizeMode="tail" style={styles.value}>{card.value}</Text>
+              <Icon name={before ? 'chevron-down' : 'chevron-up'} size={size.iconSmall} color={colors.textMuted} />
             </Touchable>
           </Animated.View>
         );
       })}
-      {current ? (
-        <Animated.View key={current.key} entering={FadeInDown.duration(motion.normal)} layout={LinearTransition.duration(motion.normal)} style={styles.front}>
-          <Text variant="title" accessibilityRole="header">{current.label}</Text>
-          {current.content}
-        </Animated.View>
-      ) : null}
     </View>
   );
 }
 
 const createStyles = ({ colors, radius, size, space, border }: Theme) =>
   StyleSheet.create({
-    // Each strip runs under the card in front of it by one corner radius, so the stack reads as overlapping sheets.
-    strip: {
-      height: size.field + radius.md,
-      marginBottom: -radius.md,
-      paddingHorizontal: size.cardPadding,
-      paddingBottom: radius.md,
-      borderTopLeftRadius: radius.md,
-      borderTopRightRadius: radius.md,
-      borderWidth: border.thin,
-      borderColor: colors.background,
-      backgroundColor: colors.divider,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: space.lg,
-    },
-    value: { flexShrink: 1 },
-    front: { backgroundColor: colors.surface, borderRadius: radius.md, padding: size.cardPadding, gap: space.lg },
+    // The front card sits over the strips on both sides of it.
+    front: { zIndex: 1, backgroundColor: colors.surface, borderRadius: radius.md, borderWidth: border.thin, borderColor: colors.border },
+    frontContent: { padding: size.cardPadding, gap: space.lg },
+    // Each strip runs under its neighbour by one corner radius, so the deck reads as overlapping cards.
+    tuckedAbove: { marginBottom: -radius.md },
+    tuckedBelow: { marginTop: -radius.md },
+    strip: { height: size.field + radius.md, paddingHorizontal: size.cardPadding, borderWidth: border.thin, flexDirection: 'row', alignItems: 'center', gap: space.md },
+    stripAbove: { paddingBottom: radius.md, borderTopLeftRadius: radius.md, borderTopRightRadius: radius.md, backgroundColor: colors.divider, borderColor: colors.background },
+    stripBelow: { paddingTop: radius.md, borderBottomLeftRadius: radius.md, borderBottomRightRadius: radius.md, backgroundColor: colors.surface, borderColor: colors.divider },
+    // Takes what is left of the strip and no more, so a long answer is cut at its end, not its start.
+    value: { flex: 1, flexShrink: 1, minWidth: 0, textAlign: 'right' },
   });

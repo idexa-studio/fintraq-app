@@ -30,6 +30,18 @@ export default {
   defaultNote: 'Transaction',
   save: { expense: 'Save expense', income: 'Save income', transfer: 'Save transfer' },
   saveChanges: 'Save changes',
+  step: {
+    amount: 'How much?',
+    account: 'From which account?',
+    accountIncome: 'Into which account?',
+    toAccount: 'Where to?',
+    category: 'What was it for?',
+    categoryIncome: 'What was it from?',
+    details: 'Anything to add?',
+  },
+  short: { amount: 'Amount', account: 'From', accountIncome: 'Into', toAccount: 'To', category: 'For', details: 'Details' },
+  choose: 'Choose',
+  noNote: 'No note',
   blocked: {
     amount: 'Enter an amount to save',
     account: 'Choose an account to save',

@@ -1,27 +1,27 @@
 import {
-  Button, Card, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Screen, SegmentedControl, Skeleton, Text, TextField, resolveIcon,
-  useTheme, useToast,
+  Button, Card, CardStack, Dialog, Emblem, Header, IconButton, IconCircle, ListRow, Message, Screen, SegmentedControl, Skeleton, Text, TextField, useTheme,
+  useToast,
 } from '@/design';
-import { accountTypeIcon } from '@/features/accounts';
 import { CalculatorSheet } from '@/features/transactions/components/CalculatorSheet';
-import { AccountPicker, CategoryPicker, PersonPicker, WhenPicker } from '@/features/transactions/components/EntryPickers';
+import { PersonPicker, WhenPicker } from '@/features/transactions/components/EntryPickers';
+import { AccountStep, AmountStep, CategoryStep } from '@/features/transactions/components/EntrySteps';
 import { useTransactionForm } from '@/features/transactions/hooks/useTransactionForm';
 import type { TransactionFormOptions } from '@/features/transactions/hooks/useTransactionForm';
 import { KINDS, kindOfType, typeOfKind } from '@/features/transactions/transaction-form';
 import { useSettings } from '@/features/settings';
 import { Analytics } from '@/platform/telemetry';
 import { formatDate } from '@/shared/date/date';
-import { getCurrencySymbol } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import { differenceInCalendarDays } from 'date-fns';
 import { usePreventRemove } from '@react-navigation/native';
 import { useNavigation, useRouter } from 'expo-router';
+import type { StackCard } from '@/design';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-type Picker = 'account' | 'toAccount' | 'category' | 'person' | 'when' | 'calculator' | null;
+type Picker = 'person' | 'when' | 'calculator' | null;
 
 /** "Today", "Yesterday", or the date, with the year only when it is not this one. */
 const dayLabel = (date: Date, today: string, yesterday: string): string => {
@@ -34,9 +34,10 @@ const dayLabel = (date: Date, today: string, yesterday: string): string => {
 const initialsOf = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((word) => word[0]).join('');
 
 /**
- * Adding or changing a transaction, on one page: what kind, how much, which
- * account, what for, when, with whom. Save stays grey, with the reason
- * above it, until the entry can be saved.
+ * Adding or changing a transaction, as a deck of cards: how much, which
+ * account, what for, anything to add. Every card shows the answer it will
+ * use, so the entry can be saved from the first card or any other; Save
+ * stays grey, with the reason above it, until the entry can be saved.
  */
 export function TransactionFormScreen(options: TransactionFormOptions) {
   const { t } = useTranslation(['transactions', 'common']);
@@ -48,6 +49,8 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
   const form = useTransactionForm(options);
 
   const [picker, setPicker] = useState<Picker>(null);
+  /** Which card of the deck is in front. Every entry starts on the amount. */
+  const [step, setStep] = useState(0);
   const [failed, setFailed] = useState(false);
   /** Set once the entry is saved or the user has agreed to discard it, so leaving no longer asks. */
   const [mayLeave, setMayLeave] = useState(false);
@@ -106,6 +109,62 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
       : t(`blocked.${form.blocker}`)
     : null;
 
+  const income = form.type === 'CR';
+  const next = () => setStep((current) => current + 1);
+  const cards: StackCard[] = [
+    {
+      key: 'amount',
+      label: t('step.amount'),
+      short: t('short.amount'),
+      value: formatCurrency(form.amount ?? 0, currency),
+      content: <AmountStep text={form.amountText} amount={form.amount} currency={currency} onChange={form.setAmountText} onCalculator={() => setPicker('calculator')} />,
+    },
+    {
+      key: 'account',
+      label: income ? t('step.accountIncome') : t('step.account'),
+      short: income ? t('short.accountIncome') : t('short.account'),
+      value: form.account?.name ?? t('choose'),
+      content: <AccountStep accounts={form.accounts} selectedId={form.account?.id ?? null} onSelect={(id) => { form.setAccountId(id); next(); }} />,
+    },
+    ...(form.type === 'TR'
+      ? [{
+          key: 'toAccount',
+          label: t('step.toAccount'),
+          short: t('short.toAccount'),
+          value: form.toAccount?.name ?? t('choose'),
+          content: <AccountStep accounts={form.destinations} selectedId={form.toAccount?.id ?? null} onSelect={(id) => { form.setToAccountId(id); next(); }} empty={t('noDestination')} />,
+        }]
+      : []),
+    // A loan payment keeps the loan's own category.
+    ...(form.loanLinked
+      ? []
+      : [{
+          key: 'category',
+          label: income ? t('step.categoryIncome') : t('step.category'),
+          short: t('short.category'),
+          value: form.category?.name ?? t('choose'),
+          content: <CategoryStep categories={form.offeredCategories} selectedId={form.category?.id ?? null} onSelect={(id) => { form.setCategoryId(id); next(); }} />,
+        }]),
+    {
+      key: 'details',
+      label: t('step.details'),
+      short: t('short.details'),
+      value: `${when} · ${form.note.trim() || t('noNote')}`,
+      content: (
+        <View style={{ gap: space.lg }}>
+          <TextField label={t('note')} value={form.note} onChangeText={form.setNote} placeholder={t('noteOptional')} maxLength={120} />
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
+            <View style={{ flex: 1 }}><TextField label={t('when')} value={when} onPress={() => setPicker('when')} /></View>
+            <IconButton icon="calendar" onPress={() => setPicker('when')} accessibilityLabel={t('pickDate')} />
+          </View>
+          {!form.loanLinked && form.people.length > 0 && form.type !== 'TR' ? (
+            <TextField label={t('with')} value={form.person?.name ?? t('noPerson')} onPress={() => setPicker('person')} />
+          ) : null}
+        </View>
+      ),
+    },
+  ];
+
   return (
     <Screen
       sheet
@@ -123,90 +182,19 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
         <SegmentedControl segments={KINDS.map((option) => ({ key: option, label: t(`kinds.${option}`) }))} value={kind} onChange={(option) => form.setType(typeOfKind(option))} accessibilityLabel={t('kind')} />
       )}
 
-      <View style={{ gap: space.md }}>
-        <Text variant="bodyStrong">{t('from')}</Text>
+      {form.loanLinked && form.loan ? (
         <Card padded={false}>
           <ListRow
-            leading={form.account ? <IconCircle icon={accountTypeIcon(form.account.accountType)} color={colorNumberToHex(form.account.color)} /> : undefined}
-            icon={form.account ? undefined : 'wallet'}
+            leading={form.loan.personName ? <IconCircle initials={initialsOf(form.loan.personName)} color={colorNumberToHex(form.loan.personColor ?? 0)} /> : undefined}
             strong
-            title={form.account?.name ?? t('chooseAccount')}
-            subtitle={form.account ? t('available', { amount: formatCurrency(form.account.balance, form.account.currency) }) : undefined}
-            onPress={() => setPicker('account')}
+            title={form.loan.personName ?? form.loan.accountName}
+            subtitle={form.isRepayment ? t('loanRepayment') : t('loanPayment')}
           />
         </Card>
-      </View>
-
-      {form.type === 'TR' ? (
-        <View style={{ gap: space.md }}>
-          <Text variant="bodyStrong">{t('to')}</Text>
-          <Card padded={false}>
-            {form.destinations.length > 0 ? (
-              <ListRow
-                leading={form.toAccount ? <IconCircle icon={accountTypeIcon(form.toAccount.accountType)} color={colorNumberToHex(form.toAccount.color)} /> : undefined}
-                icon={form.toAccount ? undefined : 'wallet'}
-                strong
-                title={form.toAccount?.name ?? t('chooseAccount')}
-                subtitle={form.toAccount ? formatCurrency(form.toAccount.balance, form.toAccount.currency) : undefined}
-                onPress={() => setPicker('toAccount')}
-              />
-            ) : (
-              <ListRow icon="warning" title={t('noDestination')} disabled />
-            )}
-          </Card>
-        </View>
       ) : null}
 
-      <View style={{ gap: space.md }}>
-        <Text variant="bodyStrong">{t('details')}</Text>
-        <ListGroup>
-          {form.loanLinked && form.loan ? (
-            <ListRow
-              leading={form.loan.personName ? <IconCircle initials={initialsOf(form.loan.personName)} color={colorNumberToHex(form.loan.personColor ?? 0)} /> : undefined}
-              strong
-              title={form.loan.personName ?? form.loan.accountName}
-              subtitle={form.isRepayment ? t('loanRepayment') : t('loanPayment')}
-            />
-          ) : null}
-          {!form.loanLinked && form.category ? (
-            <ListRow
-              leading={<IconCircle icon={resolveIcon(form.category.icon, 'tag')} color={colorNumberToHex(form.category.color)} />}
-              strong
-              title={form.category.name}
-              subtitle={t('category')}
-              onPress={() => setPicker('category')}
-            />
-          ) : null}
-          <View style={{ padding: size.cardPadding, gap: space.lg }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
-              <View style={{ flex: 1 }}>
-                <TextField
-                  label={t('amount')}
-                  prefix={getCurrencySymbol(currency)}
-                  value={form.amountText}
-                  onChangeText={form.setAmountText}
-                  placeholder="0.00"
-                  keyboardType="decimal-pad"
-                  maxLength={16}
-                />
-              </View>
-              <IconButton icon="calculator" onPress={() => setPicker('calculator')} accessibilityLabel={t('calculator.open')} />
-            </View>
-            <TextField label={t('note')} value={form.note} onChangeText={form.setNote} placeholder={t('noteOptional')} maxLength={120} />
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
-              <View style={{ flex: 1 }}><TextField label={t('when')} value={when} onPress={() => setPicker('when')} /></View>
-              <IconButton icon="calendar" onPress={() => setPicker('when')} accessibilityLabel={t('pickDate')} />
-            </View>
-            {!form.loanLinked && form.people.length > 0 && form.type !== 'TR' ? (
-              <TextField label={t('with')} value={form.person?.name ?? t('noPerson')} onPress={() => setPicker('person')} />
-            ) : null}
-          </View>
-        </ListGroup>
-      </View>
+      <CardStack cards={cards} active={Math.min(step, cards.length - 1)} onSelect={setStep} />
 
-      <AccountPicker title={t('pick.account')} visible={picker === 'account'} onClose={() => setPicker(null)} accounts={form.accounts} selectedId={form.account?.id ?? null} onSelect={form.setAccountId} />
-      <AccountPicker title={t('pick.toAccount')} visible={picker === 'toAccount'} onClose={() => setPicker(null)} accounts={form.destinations} selectedId={form.toAccount?.id ?? null} onSelect={form.setToAccountId} />
-      <CategoryPicker visible={picker === 'category'} onClose={() => setPicker(null)} categories={form.offeredCategories} selectedId={form.category?.id ?? null} onSelect={form.setCategoryId} />
       <PersonPicker visible={picker === 'person'} onClose={() => setPicker(null)} people={form.people} selectedId={form.person?.id ?? null} onSelect={form.setPersonId} />
       <CalculatorSheet visible={picker === 'calculator'} onClose={() => setPicker(null)} currency={currency} onUse={(amount) => form.setAmountText(String(amount))} />
       <WhenPicker visible={picker === 'when'} onClose={() => setPicker(null)} value={form.when} onChange={form.setWhen} />

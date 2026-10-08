@@ -95,7 +95,7 @@ The owner handed these to Claude on 2026-10-09 ("you decide"). Each is recorded 
 - [x] B1.01 Tab bar: **Home · Activity · Add · Plan · Insights**, Settings behind the profile icon, Accounts as a Home section. Reason: Activity and Plan are used daily; Settings is not, and a tab for it wastes the bar
 - [x] B1.02 Expressive widgets kept, each for a named screen: wave card (net worth), highlight (insights), ring and split bar (category breakdown), gauge (safe to spend), heat grid (rhythm), day streak (logging habit), receipt (transaction), timeline (loan), slide to confirm (repayment), quick amounts (entry). **Dropped: card deck** (unwieldy beyond four accounts and duplicates the accounts list) **and sparkline** (needs per-account history the app does not keep; the line chart covers trends)
 - [x] B1.03 Illustrations: **none**. `Emblem` is the standard. Revisit only with a professionally drawn light-line set
-- [x] B1.04 Adding a transaction: **single-page form** is the default, because it is done many times a day and one page with one Save is fastest. Stacked cards are for first-run setup and other guided, once-only flows
+- [x] B1.04 Adding a transaction is a **stacked deck of cards** (owner, 2026-10-09: he had asked for stacked cards as part of the look, and rejected both a keypad page and a plain form). To keep it fast, every card shows the answer it will use, so an entry can be saved from the first card
 - [x] B1.05 Text weight: **Regular for running text, Bold for actions and titles**, as measured from the reference
 - [x] B1.06 Remove from `design/` and the gallery every widget dropped in B1.02
 - [x] B1.07 Home hero follows the reference's account card: white card, balance, two split actions, with quick actions as tiles below. A green hero with round shortcut buttons was tried on 2026-10-09 and rejected by the owner as off-aesthetic; do not reintroduce round black action buttons
@@ -349,7 +349,7 @@ route template · `tsc`, lint, design audit and tests clean.
 
 ### D5. Add and edit a transaction
 - [x] D5.01 Kind: expense, income, transfer; preselected from the entry point
-- [x] D5.02 Amount as an outlined field with the currency symbol, on the phone's number keyboard, with a calculator sheet beside it. (A page-filling custom keypad was tried and rejected by the owner, 2026-10-09: the entry page follows the reference's form pattern)
+- [x] D5.02 Amount on the first card of the deck, with a keypad and a calculator sheet. (A flat keypad page and then a plain form were both rejected by the owner, 2026-10-09)
 - [x] D5.03 Account picker; default account preselected
 - [x] D5.04 Destination account for transfers; same account not offered
 - [ ] D5.05 Category picker filtered by kind, with "add category"

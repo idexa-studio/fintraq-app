@@ -1,11 +1,7 @@
-import type { Account } from '@/data/repositories/accounts';
-import type { Category } from '@/data/repositories/categories';
 import type { Person } from '@/data/repositories/people';
-import { Button, Calendar, Card, Chip, IconCircle, OptionList, Sheet, Text, TimePicker, resolveIcon, useTheme } from '@/design';
+import { Button, Calendar, Card, Chip, IconCircle, OptionList, Sheet, Text, TimePicker, useTheme } from '@/design';
 import type { OptionGroup } from '@/design';
-import { accountTypeIcon } from '@/features/accounts';
 import { colorNumberToHex } from '@/shared/format/color';
-import { formatCurrency } from '@/shared/format/money';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
@@ -21,32 +17,6 @@ function PickerSheet({ title, visible, onClose, groups, selectedKey, onSelect }:
       <OptionList groups={groups} selectedKey={selectedKey} onSelect={(key) => { onSelect(key); onClose(); }} />
     </Sheet>
   );
-}
-
-export function AccountPicker({ title, accounts, ...picker }: PickerProps<number> & { title: string; accounts: readonly Account[] }) {
-  const { t } = useTranslation('common');
-  const groups: OptionGroup[] = [{
-    options: accounts.map((account) => ({
-      key: String(account.id),
-      title: account.name,
-      subtitle: t(`accountTypes.${account.accountType ?? 'bank'}`),
-      value: formatCurrency(account.balance, account.currency),
-      leading: <IconCircle icon={accountTypeIcon(account.accountType)} color={colorNumberToHex(account.color)} />,
-    })),
-  }];
-  return <PickerSheet title={title} visible={picker.visible} onClose={picker.onClose} groups={groups} selectedKey={picker.selectedId == null ? undefined : String(picker.selectedId)} onSelect={(key) => picker.onSelect(Number(key))} />;
-}
-
-export function CategoryPicker({ categories, ...picker }: PickerProps<number> & { categories: readonly Category[] }) {
-  const { t } = useTranslation('transactions');
-  const groups: OptionGroup[] = [{
-    options: categories.map((category) => ({
-      key: String(category.id),
-      title: category.name,
-      leading: <IconCircle icon={resolveIcon(category.icon, 'tag')} color={colorNumberToHex(category.color)} />,
-    })),
-  }];
-  return <PickerSheet title={t('pick.category')} visible={picker.visible} onClose={picker.onClose} groups={groups} selectedKey={picker.selectedId == null ? undefined : String(picker.selectedId)} onSelect={(key) => picker.onSelect(Number(key))} />;
 }
 
 const NO_ONE = 'none';

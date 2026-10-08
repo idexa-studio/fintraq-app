@@ -69,8 +69,8 @@ throughout (Proza Libre, bold for headings), soft 10pt corners, no shadows.
   Do not draw illustrations by hand.
 - **Settled choices:** the currency menu sits on the balance card; the wave
   card is fully green; highlights are white cards; tabs are Home, Activity,
-  Add, Plan, Insights; adding a transaction is a single-page form, and
-  stacked cards are for first-run and other guided flows. The full list with
+  Add, Plan, Insights; input is a stacked deck of cards (`CardStack`) in a
+  sheet that rises over the previous screen, never a flat form. The full list with
   reasons is in `docs/PLAN.md` under B1.
 
 ## Looking at the result

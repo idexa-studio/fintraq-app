@@ -29,7 +29,7 @@ const CATEGORIES = [
 /** One question per card; answered cards tuck behind and can be tapped to change. */
 function StackedEntry() {
   const { space } = useTheme();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [amount, setAmount] = useState('42.10');
   const [account, setAccount] = useState('Everyday');
   const [category, setCategory] = useState('');
@@ -38,18 +38,19 @@ function StackedEntry() {
   const cards: StackCard[] = [
     {
       key: 'amount',
+      short: 'Amount',
       label: 'How much?',
       value: `$${amount}`,
       content: (
         <View style={{ gap: space.lg }}>
           <View style={{ alignItems: 'center' }}><Money value={`$${amount || '0'}`} variant="amountHero" tone={amount ? 'default' : 'muted'} /></View>
           <Keypad onKey={(key) => setAmount((current) => press(current, key))} />
-          <Button label="Next" disabled={!amount} onPress={() => setStep(1)} />
         </View>
       ),
     },
     {
       key: 'account',
+      short: 'From',
       label: 'From which account?',
       value: account,
       content: (
@@ -65,8 +66,9 @@ function StackedEntry() {
     },
     {
       key: 'category',
+      short: 'For',
       label: 'What was it for?',
-      value: category,
+      value: category || 'Choose',
       content: (
         <View style={{ marginHorizontal: -space.lg }}>
           {CATEGORIES.map((item, i) => (
@@ -80,12 +82,12 @@ function StackedEntry() {
     },
     {
       key: 'details',
+      short: 'Details',
       label: 'Anything to add?',
       content: (
         <View style={{ gap: space.lg }}>
           <TextField label="Note" value={note} onChangeText={setNote} placeholder="Optional" />
           <TextField label="When" value="Today" editable={false} />
-          <Button label="Save expense" onPress={() => setStep(0)} />
         </View>
       ),
     },
@@ -121,44 +123,7 @@ export function EntrySection() {
 
   return (
     <>
-      <Specimen name="Add a transaction (the default)" note="The reference's form: From and Details as labelled cards, outlined fields with the label inside, the phone's number keyboard. Save is grey, with the reason above it, until there is an amount.">
-        <View style={frame}>
-          <Header task title={`Add ${kind.toLowerCase()}`} onClose={() => {}} />
-          <View style={{ padding: size.screenPadding, gap: size.sectionGap }}>
-            <SegmentedControl segments={KINDS.map((label) => ({ key: label, label }))} value={kind} onChange={setKind} accessibilityLabel="Kind of transaction" />
-            <View style={{ gap: space.md }}>
-              <Text variant="bodyStrong">From:</Text>
-              <Card padded={false}>
-                <ListRow leading={<IconCircle icon="bank" color="lilac" />} strong title="Everyday" subtitle="$12,480.10 available" onPress={() => {}} />
-              </Card>
-            </View>
-            <View style={{ gap: space.md }}>
-              <Text variant="bodyStrong">Details:</Text>
-              <ListGroup>
-                <ListRow leading={<IconCircle icon="shopping-cart" color="teal" />} strong title="Groceries" subtitle="Category" onPress={() => {}} />
-                <View style={{ padding: size.cardPadding, gap: space.lg }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
-                    <View style={{ flex: 1 }}><TextField label="Amount" prefix="$" value={amount} onChangeText={setAmount} placeholder="0.00" keyboardType="decimal-pad" /></View>
-                    <IconButton icon="calculator" accessibilityLabel="Work out the amount" />
-                  </View>
-                  <TextField label="Note" value={note} onChangeText={setNote} placeholder="Optional" />
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
-                    <View style={{ flex: 1 }}><TextField label="When" value="Today · 11:04 AM" onPress={() => {}} /></View>
-                    <IconButton icon="calendar" accessibilityLabel="Choose the date and time" />
-                  </View>
-                  <TextField label="With" value="No one" onPress={() => {}} />
-                </View>
-              </ListGroup>
-            </View>
-            <View style={{ gap: space.lg }}>
-              {amount ? null : <Text variant="callout" tone="muted" align="center">Enter an amount to save</Text>}
-              <Button label={`Save ${kind.toLowerCase()}`} disabled={!amount} />
-            </View>
-          </View>
-        </View>
-      </Specimen>
-
-      <Specimen name="Guided, in stacked cards" note="For first-run setup and anyone who wants to be walked through: one question per card, each answer tucked behind the next.">
+      <Specimen name="Add a transaction (the default)" note="A deck of cards. The card in front asks one thing; answered cards tuck above, the rest peek out below with the answer each will use. Tap any strip to bring its card forward.">
         <StackedEntry />
       </Specimen>
 
