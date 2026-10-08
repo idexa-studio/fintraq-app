@@ -22,8 +22,8 @@ import { useFonts } from 'expo-font';
 import { SystemNavBackdrop } from '@/src/components/ui/SystemNavBackdrop';
 import * as SplashScreen from 'expo-splash-screen';
 
-import { LocalMigrationService } from '@/src/services/local-migration.service';
-import { unlockDatabaseIfLocked } from '@/src/db/client';
+import { LocalMigrationService } from '@/data/db/local-migration';
+import { unlockDatabaseIfLocked } from '@/data/db/client';
 // Side-effect import: must run unconditionally at module load so
 // TaskManager.defineTask is registered before the OS can headlessly relaunch
 // the JS engine to run the background backup task.
@@ -31,7 +31,7 @@ import { syncBackgroundBackupTask } from '@/src/services/backup/background-backu
 import { AppState, AppStateStatus } from 'react-native';
 import { FONT_ASSETS } from '@/design';
 import React, { useEffect, useState } from 'react';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 
 // Prevent the splash screen from auto-hiding before version check completes
 SplashScreen.preventAutoHideAsync().catch(() => {});

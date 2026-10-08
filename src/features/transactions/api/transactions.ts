@@ -1,10 +1,10 @@
 import { SQL, and, asc, count, desc, eq, inArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
-import { db } from '@/src/db/client';
-import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
-import { accounts, categories, payments, persons, loans } from '@/src/db/schema';
+import { db } from '@/data/db/client';
+import { PAYMENT_LOCAL_DAY } from '@/data/db/sql';
+import { accounts, categories, payments, persons, loans } from '@/data/db/schema';
 import type { TransactionType } from '@/shared/types';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { accountDeltas, AccountDelta, isLoanPrincipal, LedgerEntry, LedgerError, loanOutstanding, loanStatus, repaymentType, validateEntry } from '@/src/features/transactions/utils/ledger';
 
 export type Payment = typeof payments.$inferSelect;

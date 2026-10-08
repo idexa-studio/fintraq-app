@@ -18,7 +18,7 @@ import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { NotificationService } from '@/src/services/notification.service';
 import { toErrorMessage } from '@/shared/errors';
 import { seedDummyData } from '@/src/utils/seed';

@@ -1,5 +1,5 @@
 import { AppState } from 'react-native';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { NotificationService } from '@/src/services/notification.service';
 import { ReviewPromptService } from '@/src/services/review-prompt.service';
 import type { CloudBackupFileMeta } from './backup.types';

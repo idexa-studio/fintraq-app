@@ -3,7 +3,7 @@ import type { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axio
 import { Platform } from 'react-native';
 import * as Localization from 'expo-localization';
 import { getAppVersion, getAppBuildNumber } from '@/src/utils/version';
-import { LoggerService } from './logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 
 const BASE_URL = 'https://fintraq.idexa.app';
 

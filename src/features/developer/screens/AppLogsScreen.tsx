@@ -3,7 +3,7 @@ import { AlertButton, AlertDialog } from '@/src/components/ui/AlertDialog';
 import { ConfirmDialog } from '@/src/components/ui/ConfirmDialog';
 import { Input } from '@/src/components/ui/Input';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/src/components/ui/Text';

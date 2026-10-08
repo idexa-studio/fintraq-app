@@ -3,10 +3,10 @@ import { Spinner } from '@/src/components/ui';
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
-import { db, unlockDatabaseIfLocked } from '@/src/db/client';
+import { db, unlockDatabaseIfLocked } from '@/data/db/client';
 import migrations from '@/drizzle/migrations';
-import { runSeeds } from '@/src/db/seeds/runner';
-import { LoggerService } from '@/src/services/logger.service';
+import { runSeeds } from '@/data/db/seeds/runner';
+import { LoggerService } from '@/shared/logging/logger';
 import { useTranslation } from 'react-i18next';
 
 export function DatabaseProvider({ children }: { children: React.ReactNode }) {

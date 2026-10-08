@@ -1,4 +1,4 @@
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import type { AnalyticsEventName, AnalyticsEvents, AnalyticsUserProperties } from './events';
 import { getFirebaseModules } from './firebase-modules';
 import { type EventParamValue, isValidEventName, sanitizeEventParams, sanitizeUserProperties } from './params';

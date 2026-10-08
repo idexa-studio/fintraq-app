@@ -11,7 +11,7 @@ import {
 import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
 import { NotificationService } from '@/src/services/notification.service';
 
-jest.mock('@/src/services/logger.service', () => ({
+jest.mock('@/shared/logging/logger', () => ({
   LoggerService: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
 jest.mock('@/src/services/notification.service', () => ({

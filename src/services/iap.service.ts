@@ -1,4 +1,4 @@
-import { LoggerService } from './logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import * as IAP from 'expo-iap';
 import { Linking, Platform } from 'react-native';
 

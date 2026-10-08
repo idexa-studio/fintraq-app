@@ -1,5 +1,5 @@
-import { db } from '@/src/db/client';
-import { categories, payments, loans } from '@/src/db/schema';
+import { db } from '@/data/db/client';
+import { categories, payments, loans } from '@/data/db/schema';
 import { eq } from 'drizzle-orm';
 
 export type Category = typeof categories.$inferSelect;

@@ -26,7 +26,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 56 | 56 | Complete |
-| C | Groundwork: shared, data, platform, shell | 79 | 10 | In progress |
+| C | Groundwork: shared, data, platform, shell | 80 | 18 | In progress |
 | D | Screens at parity with the shipped app | 142 | 0 |  |
 | E | Pro: three plans and gating | 27 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
@@ -191,12 +191,13 @@ phone upgraded from 1.2.4 with real data opens with everything intact.
 - [ ] C2.07 Move the language provider (`src/providers/I18nProvider.tsx`) once the settings store it reads has moved (C7.01)
 
 ### C3. `data/db`
-- [ ] C3.01 Move `src/db/schema.ts`, `client.ts`, `sql.ts` to `data/db/` with no content change
-- [ ] C3.02 Move `src/db/seeds/` to `data/db/seeds/`; seed names in `seeder_state` unchanged
-- [ ] C3.03 Point `drizzle.config.ts` at the new schema path; `npm run db:generate` produces no migration
-- [ ] C3.04 Confirm `drizzle/` and `migrations.js` are untouched (diff is empty)
-- [ ] C3.05 Move `src/services/local-migration.service.ts` (old Luno/Keep database rename) to `data/db/`
-- [ ] C3.06 Update every import; tests clean
+- [x] C3.01 Move `src/db/schema.ts`, `client.ts`, `sql.ts` to `data/db/` with no content change
+- [x] C3.02 Move `src/db/seeds/` to `data/db/seeds/`; seed names in `seeder_state` unchanged
+- [x] C3.03 Point `drizzle.config.ts` at the new schema path; `npm run db:generate` produces no migration
+- [x] C3.04 Confirm `drizzle/` and `migrations.js` are untouched (diff is empty)
+- [x] C3.05 Move `src/services/local-migration.service.ts` (old Luno/Keep database rename) to `data/db/`
+- [x] C3.06 Update every import; tests clean; shipped Home shows the same balances on the phone
+- [x] C3.07 Extract the map of icon names written by older versions to `shared/contracts/legacy-icon-names.ts`, with a test that every name it maps to can still be drawn
 
 ### C4. `data/repositories`
 One module per entity holding every read and write, taken from the legacy
@@ -231,7 +232,7 @@ One module per entity holding every read and write, taken from the legacy
 - [ ] C6.06 `platform/telemetry/`: all of `telemetry/` with tests
 - [ ] C6.07 `platform/lock/`: `lockStorage.ts`, `useLocalAuth`, PIN lockout rules with test
 - [ ] C6.08 `platform/config/`: remote config, app config, force update, review prompt, and `src/utils/version.ts`
-- [ ] C6.09 `platform/logging/`: `logger.service.ts`
+- [x] C6.09 Logger to `shared/logging/logger.ts`, not `platform/`: every layer logs, including the database layer, which may import only `shared`
 - [ ] C6.10 `platform/shortcuts/`: launcher shortcuts
 - [ ] C6.11 Check `patches/expo-background-task` still applies
 

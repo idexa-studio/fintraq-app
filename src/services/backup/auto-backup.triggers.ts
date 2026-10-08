@@ -1,5 +1,5 @@
 import { AppState, AppStateStatus, Platform } from 'react-native';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { runAutoBackupIfDue } from './auto-backup.service';
 
 // Let launch/resume work (queries, splash, remote config) settle before touching the network.

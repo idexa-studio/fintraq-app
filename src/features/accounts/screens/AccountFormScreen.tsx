@@ -16,7 +16,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { useTranslation } from 'react-i18next';
 
 type AccountFormValues = {

@@ -1,7 +1,7 @@
 import { and, desc, eq, sql, sum } from 'drizzle-orm';
-import { db } from '@/src/db/client';
-import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
-import { accounts, payments, persons } from '@/src/db/schema';
+import { db } from '@/data/db/client';
+import { PAYMENT_LOCAL_DAY } from '@/data/db/sql';
+import { accounts, payments, persons } from '@/data/db/schema';
 
 export type Person = typeof persons.$inferSelect;
 export type InsertPerson = typeof persons.$inferInsert;

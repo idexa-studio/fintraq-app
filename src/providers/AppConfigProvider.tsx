@@ -1,6 +1,6 @@
 import { ForceUpdateScreen } from '@/src/features/update/components/ForceUpdateScreen';
 import { startAutoBackupTriggers } from '@/src/services/backup/auto-backup.triggers';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import {
   fetchRemoteAppConfig,
   initRemoteConfig,

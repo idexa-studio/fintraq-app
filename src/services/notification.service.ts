@@ -1,7 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import notifee, { AndroidImportance as NotifeeAndroidImportance, AndroidNotificationSetting } from 'react-native-notify-kit';
 import { Platform } from 'react-native';
-import { LoggerService } from './logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import i18n from '@/shared/i18n';
 
 const REMINDER_KEYS = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8'] as const;

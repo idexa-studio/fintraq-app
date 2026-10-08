@@ -1,6 +1,6 @@
 import { Linking, Platform } from 'react-native';
 import { applicationId } from 'expo-application';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 
 /**
  * Opens OS battery-optimization settings so the user can whitelist the app.

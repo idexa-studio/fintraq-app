@@ -1,8 +1,8 @@
 import { format } from 'date-fns';
 import { buildRows } from '@/src/utils/seed';
 
-jest.mock('@/src/db/client', () => ({ db: {} }));
-jest.mock('@/src/services/logger.service', () => ({ LoggerService: { error: jest.fn() } }));
+jest.mock('@/data/db/client', () => ({ db: {} }));
+jest.mock('@/shared/logging/logger', () => ({ LoggerService: { error: jest.fn() } }));
 jest.mock('@react-native-async-storage/async-storage', () => ({ getItem: jest.fn(), setItem: jest.fn() }));
 jest.mock('@/src/utils/icons', () => ({ resolveAccountTypeIcon: () => 'building' }));
 

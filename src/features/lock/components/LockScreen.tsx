@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { LockStorage } from '@/src/features/lock/api/lockStorage';
 import { authenticateWithBiometrics, canAuthenticateOnDevice, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
 import { formatLockoutRemaining } from '@/src/features/lock/utils/pin-lockout';
-import { LoggerService } from '@/src/services/logger.service';
+import { LoggerService } from '@/shared/logging/logger';
 import { PinPad } from './PinPad';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';
