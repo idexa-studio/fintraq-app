@@ -1,5 +1,5 @@
 import {
-  Button, Card, Chip, ChipRow, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Screen, Skeleton, Text, TextField, resolveIcon,
+  Button, Card, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Screen, SegmentedControl, Skeleton, Text, TextField, resolveIcon,
   useTheme, useToast,
 } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
@@ -80,7 +80,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
 
   if (form.loading) {
     return (
-      <Screen header={<Header task onClose={close} closeLabel={t('close')} />}>
+      <Screen sheet header={<Header task onClose={close} closeLabel={t('close')} />}>
         <Skeleton height={size.chip} width="70%" />
         <Skeleton height={size.row * 2} />
         <Skeleton height={size.row * 3} />
@@ -90,7 +90,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
 
   if (form.missing) {
     return (
-      <Screen scroll={false} header={<Header task onClose={close} closeLabel={t('close')} />}>
+      <Screen sheet scroll={false} header={<Header task onClose={close} closeLabel={t('close')} />}>
         <View style={{ flex: 1, justifyContent: 'center' }}>
           <Message illustration={<Emblem icon="receipt" />} title={t('notFound')} />
         </View>
@@ -108,6 +108,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
 
   return (
     <Screen
+      sheet
       keyboardAware
       header={<Header task title={title} onClose={close} closeLabel={t('close')} />}
       footer={
@@ -119,9 +120,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
     >
       {/* The kind is fixed once saved: changing it would be a different transaction. */}
       {form.editing ? null : (
-        <ChipRow inset>
-          {KINDS.map((option) => <Chip key={option} label={t(`kinds.${option}`)} selected={option === kind} onPress={() => form.setType(typeOfKind(option))} />)}
-        </ChipRow>
+        <SegmentedControl segments={KINDS.map((option) => ({ key: option, label: t(`kinds.${option}`) }))} value={kind} onChange={(option) => form.setType(typeOfKind(option))} accessibilityLabel={t('kind')} />
       )}
 
       <View style={{ gap: space.md }}>
@@ -188,7 +187,6 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
                   onChangeText={form.setAmountText}
                   placeholder="0.00"
                   keyboardType="decimal-pad"
-                  autoFocus={!form.editing}
                   maxLength={16}
                 />
               </View>

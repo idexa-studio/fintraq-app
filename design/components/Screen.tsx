@@ -1,7 +1,8 @@
-import { useStyles } from '@/design/ThemeProvider';
+import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React, { useEffect, useState } from 'react';
 import { Keyboard, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export type ScreenProps = {
@@ -18,6 +19,12 @@ export type ScreenProps = {
   scroll?: boolean;
   /** Page margin around the content. Turn off when a child must reach the edges. */
   padded?: boolean;
+  /**
+   * The screen is a task that rises over the one it was started from: it
+   * stops short of the top, with rounded corners, and the screen behind shows
+   * dimmed above it. Its route must be presented transparently.
+   */
+  sheet?: boolean;
   /** The screen has text fields: content and footer move up to stay above the keyboard. */
   keyboardAware?: boolean;
 };
@@ -44,16 +51,25 @@ function useKeyboardOverlap(enabled: boolean): number {
 }
 
 /** Every screen starts here: page colour, safe areas, header, content, then footer or tab bar. */
-export function Screen({ children, header, footer, tabBar, tabbed = false, scroll = true, padded = true, keyboardAware = false }: ScreenProps) {
+export function Screen({ children, header, footer, tabBar, tabbed = false, sheet = false, scroll = true, padded = true, keyboardAware = false }: ScreenProps) {
   const styles = useStyles(createStyles);
+  const { motion } = useTheme();
+  const insets = useSafeAreaInsets();
   const keyboard = useKeyboardOverlap(keyboardAware);
   const content = padded ? styles.padded : null;
-  return (
-    <SafeAreaView style={[styles.page, keyboard ? { paddingBottom: keyboard } : null]} edges={tabBar || tabbed ? ['top'] : ['top', 'bottom']}>
+  // Each section arrives a moment after the one above it, rising a little as it fades in.
+  const arriving = React.Children.toArray(children).map((child, i) => (
+    <Animated.View key={i} entering={FadeInDown.duration(motion.enter).delay(Math.min(i, 8) * motion.stagger)}>
+      {child}
+    </Animated.View>
+  ));
+
+  const page = (
+    <SafeAreaView style={[styles.page, sheet ? styles.sheet : null, keyboard ? { paddingBottom: keyboard } : null]} edges={sheet ? ['bottom'] : tabBar || tabbed ? ['top'] : ['top', 'bottom']}>
       {header}
       {scroll ? (
         <ScrollView style={styles.fill} contentContainerStyle={[styles.scrollContent, content]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-          {children}
+          {arriving}
         </ScrollView>
       ) : (
         <View style={[styles.fill, content]}>{children}</View>
@@ -62,11 +78,18 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, scrol
       {tabBar}
     </SafeAreaView>
   );
+
+  if (!sheet) return page;
+  return <View style={[styles.behind, { paddingTop: insets.top + styles.gap.height }]}>{page}</View>;
 }
 
-const createStyles = ({ colors, size, space }: Theme) =>
+const createStyles = ({ colors, size, space, radius }: Theme) =>
   StyleSheet.create({
     page: { flex: 1, backgroundColor: colors.background },
+    // Sheet presentation: the dimmed strip above, then the sheet with rounded top corners.
+    behind: { flex: 1, backgroundColor: colors.scrim },
+    gap: { height: space.sm },
+    sheet: { borderTopLeftRadius: radius.md, borderTopRightRadius: radius.md, overflow: 'hidden' },
     fill: { flex: 1 },
     padded: { paddingHorizontal: size.screenPadding },
     scrollContent: { paddingTop: space.sm, paddingBottom: space.xxl, gap: size.sectionGap },

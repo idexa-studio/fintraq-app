@@ -56,6 +56,8 @@ export type { RankItem } from './components/RankBars';
 export { Receipt, ReceiptRule } from './components/Receipt';
 export { Ring } from './components/Ring';
 export { Screen } from './components/Screen';
+export { SegmentedControl } from './components/SegmentedControl';
+export type { Segment } from './components/SegmentedControl';
 export { Section } from './components/Section';
 export { Select } from './components/Select';
 export type { SelectOption } from './components/Select';

@@ -100,7 +100,10 @@ Three behaviours are built in and must not be worked around:
 - **Controls:** button 48, field 44, chip 32, row at least 56, tab bar 49,
   header 44 (56 for a task). These are minimum heights: controls grow with
   their text. Every touch target is at least 44pt.
-- **Motion:** 120, 200 and 320 ms. Under Reduce Motion everything is still
+- **Motion:** 120, 200 and 320 ms. A screen's sections arrive one after
+  another, rising as they fade in; a press dims and eases back; the segmented
+  control's block slides; progress bars grow to their value; pushed screens
+  slide in from the side and tasks rise from the bottom. Under Reduce Motion everything is still
   except the spinner and a progress bar of unknown length, which keep moving
   so the app never looks hung.
 
@@ -128,7 +131,7 @@ use it.
 | --- | --- |
 | Structure | `Screen`, `Header`, `TabBar`, `Section`, `Card`, `CardActions`, `Divider` |
 | Text and figures | `Text`, `Money`, `Stat`, `Badge` |
-| Actions | `Button`, `IconButton`, `Chip`, `ChipRow`, `Touchable`, `SlideToConfirm` |
+| Actions | `Button`, `IconButton`, `SegmentedControl`, `Chip`, `ChipRow`, `Touchable`, `SlideToConfirm` |
 | Input | `TextField`, `Select`, `Keypad`, `Radio`, `Checkbox`, `Switch`, `Calendar`, `TimePicker`, `OptionList`, `SwatchGrid`, `IconGrid`, `CardStack` |
 | Lists | `ListRow`, `ListGroup`, `DetailRow`, `DayHeader`, `SwipeRow`, `StepRow`, `Checklist`, `Timeline` |
 | Marks | `Icon`, `IconCircle`, `MarkTile`, `IllustrationTile`, `Emblem`, `CheckMark` |
@@ -151,6 +154,9 @@ use it.
 - **Design the state, not the error.** A control that cannot work yet is
   disabled and the reason is visible. Work in progress keeps the button's
   colour and shows a spinner.
+- **A task** (adding, editing) is a sheet: `<Screen sheet>` on a route
+  presented as a transparent modal. It rises over the screen it was started
+  from and stops short of the top, with rounded corners.
 - **Adding a transaction** is a single-page form in the reference's pattern:
   labelled cards ("From:", "Details:"), outlined fields with the label
   inside, the phone's own keyboard. No page-filling custom keypad; the

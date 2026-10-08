@@ -1,5 +1,5 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
-import { Button, Card, CardStack, Chip, ChipRow, Divider, Header, IconButton, IconCircle, Keypad, ListGroup, ListRow, Money, Text, TextField, useTheme } from '@/design';
+import { Button, Card, CardStack, Divider, Header, IconButton, IconCircle, Keypad, ListGroup, ListRow, Money, SegmentedControl, Text, TextField, useTheme } from '@/design';
 import type { KeypadKey, StackCard } from '@/design';
 import { calculate, isExpression } from '@/shared/format/calculate';
 import React, { useState } from 'react';
@@ -125,9 +125,7 @@ export function EntrySection() {
         <View style={frame}>
           <Header task title={`Add ${kind.toLowerCase()}`} onClose={() => {}} />
           <View style={{ padding: size.screenPadding, gap: size.sectionGap }}>
-            <ChipRow inset>
-              {KINDS.map((label) => <Chip key={label} label={label} selected={label === kind} onPress={() => setKind(label)} />)}
-            </ChipRow>
+            <SegmentedControl segments={KINDS.map((label) => ({ key: label, label }))} value={kind} onChange={setKind} accessibilityLabel="Kind of transaction" />
             <View style={{ gap: space.md }}>
               <Text variant="bodyStrong">From:</Text>
               <Card padded={false}>

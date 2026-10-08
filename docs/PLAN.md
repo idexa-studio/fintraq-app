@@ -26,7 +26,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 57 | 57 | Complete |
-| C | Groundwork: shared, data, platform, shell | 86 | 57 | In progress |
+| C | Groundwork: shared, data, platform, shell | 87 | 59 | In progress |
 | D | Screens at parity with the shipped app | 144 | 21 | In progress |
 | E | Pro: three plans and gating | 26 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
@@ -257,7 +257,8 @@ go to `shared/calc`.
 - [ ] C8.01 Root layout moves into `features/shell` once the last legacy provider it mounts is rebuilt; until then `app/_layout.tsx` composes old and new
 - [x] C8.02 Tab layout using `TabBar`: Home, Activity, Add, Plan, Insights. Until D4, D11 and D12 the Activity, Plan and Insights tabs show the shipped transactions, loans and analytics screens; Accounts and Settings are ordinary screens
 - [x] C8.03 Centre Add opens the entry task, not a tab
-- [ ] C8.04 Task presentation (rises, serif header, close) and push presentation defined once
+- [x] C8.04 Task presentation (a sheet that rises and stops short of the top, as in the reference) and push presentation (slides in from the side) defined once
+- [x] C8.10 Motion: sections arrive in sequence, presses ease, the segmented control slides, progress bars grow, tabs shift
 - [ ] C8.05 Android: system navigation bar colour, predictive back off as today, edge to edge
 - [ ] C8.06 Status bar style follows the scheme
 - [ ] C8.07 Lock overlay above everything, including tasks

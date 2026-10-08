@@ -20,6 +20,12 @@ export function ProgressBar({ value, over = false, accessibilityLabel }: Progres
   const [width, setWidth] = useState(0);
   const unknown = value === undefined;
   const share = Math.min(1, Math.max(0, value ?? 0));
+  // The fill grows to its value instead of appearing at it.
+  const filled = useSharedValue(0);
+  useEffect(() => {
+    filled.value = withTiming(share, { duration: motion.slow * 2, easing: Easing.out(Easing.cubic) });
+  }, [share, filled, motion.slow]);
+  const growing = useAnimatedStyle(() => ({ width: `${filled.value * 100}%` }));
   const travel = useSharedValue(0);
 
   // Keeps travelling even with Reduce Motion on, so unfinished work never looks stuck.
@@ -44,7 +50,7 @@ export function ProgressBar({ value, over = false, accessibilityLabel }: Progres
       {unknown ? (
         <Animated.View style={[fill, { width: `${TRAVELLER * 100}%`, borderLeftWidth: border.thin }, moving]} />
       ) : share > 0 ? (
-        <View style={[fill, { width: `${share * 100}%` }, share >= 1 ? { borderRightWidth: 0 } : null]} />
+        <Animated.View style={[fill, growing, share >= 1 ? { borderRightWidth: 0 } : null]} />
       ) : null}
     </View>
   );

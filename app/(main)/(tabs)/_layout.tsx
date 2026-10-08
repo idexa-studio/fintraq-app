@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function TabsLayout() {
   return (
-    <Tabs tabBar={(props) => <AppTabBar {...props} />} screenOptions={{ headerShown: false }}>
+    <Tabs tabBar={(props) => <AppTabBar {...props} />} screenOptions={{ headerShown: false, animation: 'shift' }}>
       <Tabs.Screen name="index" />
       <Tabs.Screen name="activity" />
       <Tabs.Screen name="plan" />

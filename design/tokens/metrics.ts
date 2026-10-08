@@ -98,6 +98,9 @@ export const MOTION = {
   fast: 120,
   normal: 200,
   slow: 320,
+  /** A screen's sections arriving: how long each takes, and how far apart they start. */
+  enter: 280,
+  stagger: 45,
   /** One turn of the spinner. */
   spin: 1100,
 } as const;

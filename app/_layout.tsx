@@ -32,6 +32,9 @@ import { AppTheme, DatabaseGate } from '@/features/shell';
 import React, { useEffect, useState } from 'react';
 import { LoggerService } from '@/shared/logging/logger';
 
+/** A task rises over the screen it was started from, which stays visible, dimmed, above it. */
+const TASK = { presentation: 'transparentModal', animation: 'slide_from_bottom' } as const;
+
 // Prevent the splash screen from auto-hiding before version check completes
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -95,10 +98,10 @@ export default function RootLayout() {
                           <AppLockProvider>
                             <AppConfigProvider>
                               <ToastProvider>
-                                <Stack screenOptions={{ headerShown: false }}>
+                                <Stack screenOptions={{ headerShown: false, animation: 'ios_from_right' }}>
                                   {/* Tasks rise over the screen they were started from. */}
-                                  <Stack.Screen name="add" options={{ animation: 'slide_from_bottom' }} />
-                                  <Stack.Screen name="transactions/[id]/edit" options={{ animation: 'slide_from_bottom' }} />
+                                  <Stack.Screen name="add" options={TASK} />
+                                  <Stack.Screen name="transactions/[id]/edit" options={TASK} />
                                 </Stack>
                               </ToastProvider>
                               <SystemNavBackdrop />
