@@ -1,4 +1,5 @@
 import 'i18next';
+import type activity from '@/shared/i18n/copy/activity.en';
 import type common from '@/shared/i18n/copy/common.en';
 import type home from '@/shared/i18n/copy/home.en';
 import type shell from '@/shared/i18n/copy/shell.en';
@@ -10,6 +11,7 @@ declare module 'i18next' {
     defaultNS: 'translation';
     resources: {
       translation: typeof en;
+      activity: typeof activity;
       common: typeof common;
       shell: typeof shell;
       home: typeof home;

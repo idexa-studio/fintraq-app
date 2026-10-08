@@ -1,13 +1,12 @@
 import type { Account } from '@/data/repositories/accounts';
 import type { PersonNetRow } from '@/data/repositories/summaries';
 import type { TransactionListItem } from '@/data/repositories/transactions';
-import { Card, EmptyState, IconCircle, ListGroup, ListRow, Skeleton, resolveIcon, useTheme } from '@/design';
+import { Card, EmptyState, IconCircle, ListGroup, ListRow, Skeleton, useTheme } from '@/design';
 import type { IconName } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
-import { formatDate, parseDateKey } from '@/shared/date/date';
+import { TransactionRow } from '@/features/transactions';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
-import { differenceInCalendarDays } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
@@ -58,37 +57,10 @@ export function AccountList({ accounts, loading, onOpen, onAdd }: AccountListPro
 type RecentListProps = { transactions: readonly TransactionListItem[] | undefined; loading: boolean; onOpen: (id: number) => void; onAdd: () => void };
 
 export function RecentList({ transactions, loading, onOpen, onAdd }: RecentListProps) {
-  const { t } = useTranslation(['home', 'common']);
-  const today = new Date();
-
-  const dayOf = (datetime: string) => {
-    const day = parseDateKey(datetime);
-    const ago = differenceInCalendarDays(today, day);
-    if (ago === 0) return t('common:today');
-    if (ago === 1) return t('common:yesterday');
-    return formatDate(day, day.getFullYear() === today.getFullYear() ? { day: 'numeric', month: 'short' } : { day: 'numeric', month: 'short', year: 'numeric' });
-  };
-
+  const { t } = useTranslation('home');
   return (
     <HomeList items={transactions} loading={loading} empty={{ icon: 'receipt', title: t('recent.emptyTitle'), body: t('recent.emptyBody'), action: t('recent.emptyAction'), onAction: onAdd }}>
-      {(tx) => {
-        const transfer = tx.type === 'TR';
-        // Money out carries the minus sign the app's language uses; money in is marked with a plus.
-        const amount = formatCurrency(tx.type === 'DR' ? -tx.amount : tx.amount, tx.account.currency);
-        const where = transfer && tx.toAccount ? t('recent.transferRoute', { from: tx.account.name, to: tx.toAccount.name }) : tx.account.name;
-        return (
-          <ListRow
-            key={tx.id}
-            leading={<IconCircle icon={transfer ? 'arrows-left-right' : resolveIcon(tx.category.icon, 'tag')} color={colorNumberToHex(tx.category.color)} />}
-            strong
-            title={tx.note.trim() || (transfer ? t('recent.transfer') : tx.category.name)}
-            subtitle={`${dayOf(tx.datetime)} · ${where}`}
-            value={tx.type === 'CR' ? `+${amount}` : amount}
-            valueTone={tx.type === 'CR' ? 'positive' : 'default'}
-            onPress={() => onOpen(tx.id)}
-          />
-        );
-      }}
+      {(tx) => <TransactionRow key={tx.id} transaction={tx} when="day" onPress={() => onOpen(tx.id)} />}
     </HomeList>
   );
 }

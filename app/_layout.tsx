@@ -102,6 +102,7 @@ export default function RootLayout() {
                                   {/* Tasks rise over the screen they were started from. */}
                                   <Stack.Screen name="add" options={TASK} />
                                   <Stack.Screen name="transactions/[id]/edit" options={TASK} />
+                                  <Stack.Screen name="transactions/[id]" options={TASK} />
                                 </Stack>
                               </ToastProvider>
                               <SystemNavBackdrop />
