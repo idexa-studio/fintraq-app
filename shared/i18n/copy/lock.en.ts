@@ -12,6 +12,8 @@ export default {
     either: 'Unlock with fingerprint or face',
     device: 'Unlock',
     prompt: 'Unlock Fintraq',
+    promptCancel: 'Cancel',
+    promptPasscode: 'Use passcode',
     failed: 'That did not work. Try again.',
     delete: 'Delete',
   },

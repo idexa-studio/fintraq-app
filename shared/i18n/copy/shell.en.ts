@@ -7,6 +7,13 @@ export default {
     plan: 'Plan',
     insights: 'Insights',
   },
+  start: {
+    preparing: 'Getting your records ready',
+    failedTitle: 'Fintraq could not open your records',
+    failedBody: 'Close Fintraq and open it again. Your records are still on this phone: do not uninstall the app, or they go with it.',
+  },
+  // The app icon's long-press menu on the home screen.
+  shortcuts: { expense: 'Add expense', income: 'Add income', transfer: 'Transfer', loan: 'Lend or borrow' },
   update: {
     title: 'Fintraq needs an update',
     titleVersion: 'Update to version {{version}}',

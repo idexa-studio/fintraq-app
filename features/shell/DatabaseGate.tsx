@@ -28,30 +28,31 @@ export function DatabaseGate({ children }: { children: React.ReactNode }) {
       .finally(() => setSeedsReady(true));
   }, [success]);
 
-  if (error) return <ThemeProvider scheme={scheme}><Failed detail={error.message} /></ThemeProvider>;
+  if (error) return <ThemeProvider scheme={scheme}><Failed /></ThemeProvider>;
   if (!success || !seedsReady) return <ThemeProvider scheme={scheme}><Preparing /></ThemeProvider>;
   return <>{children}</>;
 }
 
 function Preparing() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('shell');
   const { space } = useTheme();
   return (
     <Screen scroll={false}>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.lg }}>
-        <Spinner accessibilityLabel={t('system.initializingDatabase')} />
-        <Text variant="callout" tone="muted">{t('system.initializingDatabase')}</Text>
+        <Spinner accessibilityLabel={t('start.preparing')} />
+        <Text variant="callout" tone="muted">{t('start.preparing')}</Text>
       </View>
     </Screen>
   );
 }
 
-function Failed({ detail }: { detail: string }) {
-  const { t } = useTranslation();
+/** What went wrong is in the log; the screen says what it means for the user and what to do. */
+function Failed() {
+  const { t } = useTranslation('shell');
   return (
     <Screen scroll={false}>
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Message illustration={<Emblem icon="warning" color="orange" />} title={t('system.migrationError')} body={detail} />
+        <Message illustration={<Emblem icon="warning" color="orange" />} title={t('start.failedTitle')} body={t('start.failedBody')} />
       </View>
     </Screen>
   );

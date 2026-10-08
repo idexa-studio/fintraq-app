@@ -26,7 +26,7 @@ const SHORTCUTS: Shortcut[] = [
  * so a shortcut can't skip onboarding; the app lock still covers whatever screen it opens.
  */
 export function useLauncherShortcuts() {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation('shell');
   const { data: accounts } = useAccounts();
   const canTransfer = useMemo(() => hasPossibleTransfer(accounts ?? []), [accounts]);
 

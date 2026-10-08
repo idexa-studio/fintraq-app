@@ -43,9 +43,9 @@ export async function canAuthenticateOnDevice(): Promise<boolean> {
 export async function authenticateWithBiometrics(reason: string): Promise<boolean> {
   const result = await LocalAuthentication.authenticateAsync({
     promptMessage: reason,
-    cancelLabel: i18n.t('common.cancel'),
+    cancelLabel: i18n.t('unlock.promptCancel', { ns: 'lock' }),
     disableDeviceFallback: false, // allows device PIN/passcode as fallback
-    fallbackLabel: i18n.t('common.usePasscode'),
+    fallbackLabel: i18n.t('unlock.promptPasscode', { ns: 'lock' }),
   });
   return result.success;
 }

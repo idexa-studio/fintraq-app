@@ -18,13 +18,11 @@ import type notifications from '@/shared/i18n/copy/notifications.en';
 import type pro from '@/shared/i18n/copy/pro.en';
 import type shell from '@/shared/i18n/copy/shell.en';
 import type transactions from '@/shared/i18n/copy/transactions.en';
-import type en from '@/shared/i18n/locales/en';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
-    defaultNS: 'translation';
+    defaultNS: 'common';
     resources: {
-      translation: typeof en;
       activity: typeof activity;
       accounts: typeof accounts;
       categories: typeof categories;

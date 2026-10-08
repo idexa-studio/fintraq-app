@@ -20,19 +20,6 @@ import notifications from '@/shared/i18n/copy/notifications.en';
 import pro from '@/shared/i18n/copy/pro.en';
 import shell from '@/shared/i18n/copy/shell.en';
 import transactions from '@/shared/i18n/copy/transactions.en';
-import bn from '@/shared/i18n/locales/bn';
-import de from '@/shared/i18n/locales/de';
-import en from '@/shared/i18n/locales/en';
-import es from '@/shared/i18n/locales/es';
-import fr from '@/shared/i18n/locales/fr';
-import hi from '@/shared/i18n/locales/hi';
-import id from '@/shared/i18n/locales/id';
-import ja from '@/shared/i18n/locales/ja';
-import kn from '@/shared/i18n/locales/kn';
-import mr from '@/shared/i18n/locales/mr';
-import pt from '@/shared/i18n/locales/pt';
-import ta from '@/shared/i18n/locales/ta';
-import te from '@/shared/i18n/locales/te';
 
 export * from './config';
 
@@ -42,24 +29,12 @@ i18n
   .init({
     compatibilityJSON: 'v4',
     resources: {
-      // `translation` is the shipped app's copy. The other namespaces are the rebuilt screens' copy,
-      // written in English first: a language without one falls back to English, never to a key.
-      en: { translation: en, common, shell, home, transactions, activity, accounts, categories, people, loans, plan, insights, search, backup: backupCopy, export: exportCopy, lock, settings: settingsCopy, firstRun, notifications, pro },
-      hi: { translation: hi },
-      bn: { translation: bn },
-      ta: { translation: ta },
-      te: { translation: te },
-      mr: { translation: mr },
-      kn: { translation: kn },
-      id: { translation: id },
-      es: { translation: es },
-      pt: { translation: pt },
-      fr: { translation: fr },
-      de: { translation: de },
-      ja: { translation: ja },
+      // The copy is written in English first, namespace by namespace. A language without its own
+      // falls back to English, never to a key. The other twelve are translated in plan task G1.02.
+      en: { common, shell, home, transactions, activity, accounts, categories, people, loans, plan, insights, search, backup: backupCopy, export: exportCopy, lock, settings: settingsCopy, firstRun, notifications, pro },
     },
-    ns: ['translation', 'common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans', 'plan', 'insights', 'search', 'backup', 'export', 'lock', 'settings', 'firstRun', 'notifications', 'pro'],
-    defaultNS: 'translation',
+    ns: ['common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans', 'plan', 'insights', 'search', 'backup', 'export', 'lock', 'settings', 'firstRun', 'notifications', 'pro'],
+    defaultNS: 'common',
     lng: getSystemLanguage(),
     fallbackLng: 'en',
     interpolation: { escapeValue: false },

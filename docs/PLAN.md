@@ -29,7 +29,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | C | Groundwork: shared, data, platform, shell | 87 | 75 | In progress |
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 27 | 18 | In progress |
-| F | Remove the legacy code | 14 | 11 | In progress |
+| F | Remove the legacy code | 14 | 12 | In progress |
 | G | Release 1: the redesign | 23 | 1 | In progress |
 | H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
@@ -188,7 +188,7 @@ phone upgraded from 1.2.4 with real data opens with everything intact.
 - [x] C2.02 Namespaces: `common`, `shell`, and one per feature, in `shared/i18n/copy/<name>.en.ts`, with typed keys. The shipped copy stays in `translation` until its screens are gone
 - [ ] C2.03 Write the new English copy namespace by namespace as each screen is built (tracked under D)
 - [x] C2.04 Missing keys in other locales fall back to English, never to a key name
-- [ ] C2.05 Script that lists keys missing per locale; run in CI
+- [ ] C2.05 Script that lists keys missing per locale; run in CI (to be written with the translations, G1.02: there is nothing to compare until a second language exists)
 - [x] C2.06 Register `features/pro/pro-copy.en.ts` as the `pro` namespace
 - [x] C2.07 Move the language provider (`src/providers/I18nProvider.tsx`) once the settings store it reads has moved (C7.01)
 
@@ -586,7 +586,7 @@ Done when: `src/` no longer exists and the app builds.
 - [ ] ~~F1.07 Remove every legacy `api/` re-export left by C4.15~~ Not applicable: C4.15 was dropped, so no re-exports were ever left
 - [ ] ~~F1.08 Remove the developer switch from C8.09; the new screens are the app~~ Not applicable: C8.09 was dropped, so there is no switch
 - [x] F1.09 Delete `src/`; remove `@/src` from lint rules and the audit script
-- [ ] F1.10 Remove unused i18n keys from all 13 locales
+- [x] F1.10 Remove unused i18n keys from all 13 locales (done 2026-10-08 by removing the shipped app's translation file in all 13 languages once nothing read it; the last strings moved into the new copy)
 - [ ] F1.11 Remove unused dependencies (run a dependency check) (done for JavaScript-only packages: `@hugeicons/*` and `react-hook-form` removed. `expo-haptics` and `expo-image` are native and unused: remove them with the next native build)
 - [x] F1.12 `scripts/check-design-system.js`: drop legacy exemptions and rules that no longer apply
 - [x] F1.13 Trim `ARCHITECTURE.md` to the new structure only (`DESIGN_SYSTEM.md` was rewritten in B7.02)
@@ -602,7 +602,7 @@ Done when: the redesign is live to all users with no data loss reported.
 
 ### G1. Copy and translation
 - [x] G1.01 English copy read through once as a whole for one voice (done 2026-10-08: every string scanned; ten "Please try again" made plain, "entry" made "transaction" everywhere, the vocabulary written into `docs/PRODUCT.md`, and `shared/i18n/__tests__/voice.test.ts` holds all copy to it)
-- [ ] G1.02 Translate the new keys into the other 12 locales
+- [ ] G1.02 Translate the new keys into the other 12 locales (until this is done every language shows the English copy. The shipped translations of the old screens are in git for reference: `git show feabfba:shared/i18n/locales/hi.ts`. Write each as `shared/i18n/copy/<namespace>.<language>.ts` and add the missing-keys script, C2.05, with it)
 - [ ] G1.03 Device: spot-check one Indic locale, German (long words) and Japanese
 
 ### G2. Quality

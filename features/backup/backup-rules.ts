@@ -7,7 +7,7 @@ import { differenceInCalendarDays } from 'date-fns';
  * Why a backup, a restore or a connection did not happen, as the thing to do
  * about it. Each has its own words on screen; `unknown` is everything else.
  */
-export type BackupFailure = 'busy' | 'signedOut' | 'permission' | 'offline' | 'noBackup' | 'needsPro' | 'unknown';
+export type BackupFailure = 'busy' | 'signedOut' | 'permission' | 'offline' | 'noBackup' | 'needsPro' | 'damaged' | 'unknown';
 
 function known(error: unknown): BackupFailure | null {
   if (isBackupInProgressError(error)) return 'busy';
@@ -16,6 +16,8 @@ function known(error: unknown): BackupFailure | null {
   if (isScopeDeniedError(error)) return 'permission';
   if (isAuthError(error)) return 'signedOut';
   if (isTransientDriveError(error)) return 'offline';
+  // The backup arrived but is empty or fails its checks: nothing was restored from it.
+  if (error instanceof BackupValidationError) return 'damaged';
   return null;
 }
 

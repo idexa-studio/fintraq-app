@@ -289,7 +289,7 @@ export class CsvExportService {
     await Sharing.shareAsync(tempFile.uri, {
       mimeType: 'text/csv',
       UTI: 'public.comma-separated-values-text',
-      dialogTitle: i18n.t('export.shareDialog'),
+      dialogTitle: i18n.t('dialog.share', { ns: 'export' }),
     });
   }
 
@@ -313,7 +313,7 @@ export class CsvExportService {
     await Sharing.shareAsync(tempFile.uri, {
       mimeType: 'text/csv',
       UTI: 'public.comma-separated-values-text',
-      dialogTitle: i18n.t('export.saveDialog'),
+      dialogTitle: i18n.t('dialog.save', { ns: 'export' }),
     });
   }
 
