@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 178 | 145 | In progress |
+| D | Screens at parity with the shipped app | 178 | 146 | In progress |
 | E | Pro: three plans and gating | 27 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -527,7 +527,7 @@ same care as a screen.
 - [x] D19.06 Insights' findings were still in the shipped voice (emoji, praise, dashes): rewritten in the plain voice, in the `insights` copy
 - [x] D19.07 The lint command hid warnings off a terminal; 23 unused imports and variables removed, and `npm run lint:code` now fails on any warning
 - [x] D19.08 The same pass in dark mode: Home, Plan, Insights, the entry form, Settings, the notification list and Backup hold the same structure, nothing illegible
-- [ ] D19.09 The same pass at the largest font size
+- [x] D19.09 The same pass at the largest font size the app allows (1.4): Home, Activity, Plan and the entry form hold. Two faults fixed: tab labels were cut ("Expens…") and now shrink to fit; a row's second line lost its due date and may now take a third
 
 ---
 

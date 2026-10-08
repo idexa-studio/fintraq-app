@@ -45,7 +45,7 @@ export function TabStrip<K extends string>({ tabs, value, onChange, accessibilit
         const selected = tab.key === value;
         return (
           <Pressable key={tab.key} onPress={() => onChange?.(tab.key)} accessibilityRole="tab" accessibilityLabel={tab.label} accessibilityState={{ selected }} style={styles.tab}>
-            <Text variant={selected ? 'bodyStrong' : 'body'} tone={selected ? 'default' : 'muted'} numberOfLines={1}>{tab.label}</Text>
+            <Text variant={selected ? 'bodyStrong' : 'body'} tone={selected ? 'default' : 'muted'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>{tab.label}</Text>
           </Pressable>
         );
       })}
