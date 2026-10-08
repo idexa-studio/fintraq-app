@@ -74,6 +74,9 @@ throughout (Proza Libre, bold for headings), soft 10pt corners, no shadows.
   owner wants nothing bold. Messages and empty states use `Emblem` (a line
   icon in a pastel circle) until a professional light-line set is chosen.
   Do not draw illustrations by hand.
+- **App icon and splash:** the mark (a coin over two bars) flat in accent green
+  and white on black; the light splash is the grey page. All drawn by
+  `npm run brand:generate`, never edited by hand (`docs/DESIGN_SYSTEM.md`).
 - **Settled choices:** the currency menu sits on the balance card; the wave
   card is fully green; highlights are white cards; tabs are Home, Activity,
   Add, Plan, Insights; a task is a sheet holding the reference's form. The
@@ -133,8 +136,8 @@ User-facing strings go through i18n, from `shared/i18n/copy/<namespace>.en.ts`;
 there is no other source. The voice and vocabulary are in `docs/PRODUCT.md`
 ("Words") and a test holds all copy to them. Thirteen languages are offered;
 each other one is `shared/i18n/copy/<language>.json`, built and checked by
-`scripts/i18n/build.js` (see its header). Five are done; the rest show English
-until they are (plan G1.02).
+`scripts/i18n/build.js` (see its header). All twelve are complete, as machine
+translations that still want a native reader; its `--check` fails if one falls behind.
 Developer tools and the gallery are English only.
 
 ## Checks

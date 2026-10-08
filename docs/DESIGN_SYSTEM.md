@@ -107,6 +107,23 @@ Three behaviours are built in and must not be worked around:
   except the spinner and a progress bar of unknown length, which keep moving
   so the app never looks hung.
 
+## The app icon and splash (`assets/brand/`, `assets/images/`)
+
+The mark is a coin over two bars. It is drawn flat in the system's own colours:
+the coin and the upper bar in `accent`, the lower bar white on black and black
+on the light page. No gradient, no glow.
+
+| Where | Ground | Mark |
+| --- | --- | --- |
+| App icon, adaptive icon, dark splash, shortcuts | Black | Accent and white |
+| Light splash | `background` (#F1F1F1) | Accent and black |
+| Themed icon, notification icon | The system's | One colour |
+
+Every file is drawn by `scripts/generate-brand.js` from one description of the
+mark; change it there and run `npm run brand:generate` (its header says how).
+Never edit the PNGs by hand. The launcher shortcut icons are glyphs from
+`design/icons/`, drawn by the same script.
+
 ## Icons (`design/icons/`)
 
 Phosphor, outline by default and solid for the active tab or a selected

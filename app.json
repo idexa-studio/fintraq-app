@@ -11,7 +11,7 @@
     "newArchEnabled": true,
     "notification": {
       "icon": "./assets/images/notification-icon.png",
-      "color": "#00824A",
+      "color": "#0B7A53",
       "iosDisplayInForeground": true
     },
     "ios": {
@@ -30,9 +30,8 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon/foreground.png",
-        "backgroundImage": "./assets/images/adaptive-icon/background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png",
-        "backgroundColor": "#131311"
+        "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -56,10 +55,10 @@
           "image": "./assets/images/splash.png",
           "imageWidth": 150,
           "resizeMode": "contain",
-          "backgroundColor": "#F5F4EE",
+          "backgroundColor": "#F1F1F1",
           "dark": {
             "image": "./assets/images/splash-dark.png",
-            "backgroundColor": "#131311"
+            "backgroundColor": "#000000"
           }
         }
       ],
@@ -72,7 +71,7 @@
         "expo-notifications",
         {
           "icon": "./assets/images/notification-icon.png",
-          "color": "#00824A",
+          "color": "#0B7A53",
           "sounds": ["./assets/sounds/fintraq_reminder.wav"]
         }
       ],
@@ -84,19 +83,19 @@
           "androidIcons": {
             "shortcut_expense": {
               "foregroundImage": "./assets/images/shortcuts/shortcut-expense.png",
-              "backgroundColor": "#161612"
+              "backgroundColor": "#000000"
             },
             "shortcut_income": {
               "foregroundImage": "./assets/images/shortcuts/shortcut-income.png",
-              "backgroundColor": "#161612"
+              "backgroundColor": "#000000"
             },
             "shortcut_transfer": {
               "foregroundImage": "./assets/images/shortcuts/shortcut-transfer.png",
-              "backgroundColor": "#161612"
+              "backgroundColor": "#000000"
             },
             "shortcut_loan": {
               "foregroundImage": "./assets/images/shortcuts/shortcut-loan.png",
-              "backgroundColor": "#161612"
+              "backgroundColor": "#000000"
             }
           }
         }
