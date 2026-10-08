@@ -1,5 +1,6 @@
 import { FeatureTile, Header, IconButton, IconCircle, Screen, Section, Touchable, useTheme } from '@/design';
 import { useAccounts } from '@/features/accounts';
+import { AccountStack } from '@/features/home/components/AccountStack';
 import { BalanceCard } from '@/features/home/components/BalanceCard';
 import { AccountList, PeopleStrip, RecentList } from '@/features/home/components/HomeLists';
 import { MonthCard } from '@/features/home/components/MonthCard';
@@ -71,20 +72,21 @@ export function HomeScreen() {
         />
       }
     >
-      <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} onOpenAccount={openAccount} />
-
-      {/* The balance card names the accounts; this section is only the way to add the first one. */}
-      {accounts && accounts.length === 0 ? (
-        <Section title={t('accounts.title')}>
-          <AccountList accounts={[]} loading={false} onOpen={openAccount} onAdd={() => router.push('/accounts/new')} />
-        </Section>
-      ) : null}
+      <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} />
 
       <Section title={t('quick.title')}>
         <View style={{ flexDirection: 'row', gap: size.cardGap }}>
           {canTransfer ? <FeatureTile compact icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
           <FeatureTile compact icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
         </View>
+      </Section>
+
+      <Section title={t('accounts.title')} actionLabel={balances.accounts.length ? t('common:seeAll') : undefined} onAction={() => router.push('/accounts')}>
+        {balances.accounts.length > 0 ? (
+          <AccountStack accounts={balances.accounts} onOpen={openAccount} onOpenAll={() => router.push('/accounts')} />
+        ) : (
+          <AccountList accounts={accounts ? [] : undefined} loading={accountsPending} onOpen={openAccount} onAdd={() => router.push('/accounts/new')} />
+        )}
       </Section>
 
       <Section title={t('month.title')} actionLabel={t('month.link')} onAction={() => router.push('/insights')}>

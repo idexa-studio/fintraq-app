@@ -1,20 +1,29 @@
 import { OFFERED_COLORS } from '@/shared/contracts/pickers';
-import { balanceMakeup, dayPart, distinctColors, firstName, looksSame, monthShape } from '@/features/home/home-rules';
+import { accountStack, dayPart, distinctColors, firstName, looksSame, monthShape } from '@/features/home/home-rules';
 
-const account = (id: number, balance: number) => ({ id, name: `Account ${id}`, balance, color: 0 });
+const account = (id: number, balance: number) => ({ id, balance });
 
 describe('home rules', () => {
-  it('draws only money held, largest first, and still names what owes', () => {
-    const makeup = balanceMakeup([account(1, 100), account(2, -40), account(3, 900), account(4, 0)]);
-    expect(makeup.parts.map((a) => a.id)).toEqual([3, 1]);
-    expect(makeup.named.map((a) => a.id)).toEqual([3, 1, 2, 4]);
-    expect(makeup.more).toBe(0);
+  it('puts the default account in front and the largest holding nearest behind it', () => {
+    const stack = accountStack([account(1, 100), { ...account(2, 50), isDefault: true }, account(3, 900), account(4, -40)]);
+    expect(stack.front?.id).toBe(2);
+    expect(stack.behind.map((a) => a.id)).toEqual([4, 1, 3]);
+    expect(stack.more).toBe(0);
   });
 
-  it('counts the accounts it has no room to name', () => {
-    const makeup = balanceMakeup([1, 2, 3, 4, 5].map((id) => account(id, id * 10)), 3);
-    expect(makeup.named.map((a) => a.id)).toEqual([5, 4, 3]);
-    expect(makeup.more).toBe(2);
+  it('puts the largest holding in front when no account is the default', () => {
+    expect(accountStack([account(1, 100), account(3, 900)]).front?.id).toBe(3);
+  });
+
+  it('counts the accounts it has no room to stack', () => {
+    const stack = accountStack([1, 2, 3, 4, 5, 6, 7].map((id) => account(id, id * 10)), 5);
+    expect(stack.front?.id).toBe(7);
+    expect(stack.behind.map((a) => a.id)).toEqual([3, 4, 5, 6]);
+    expect(stack.more).toBe(2);
+  });
+
+  it('stacks nothing when there are no accounts', () => {
+    expect(accountStack([])).toEqual({ behind: [], front: null, more: 0 });
   });
 
   it('reads a month with something kept', () => {
