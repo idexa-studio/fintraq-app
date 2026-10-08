@@ -2,22 +2,21 @@ import type { TransactionFilters, TransactionListItem } from '@/data/repositorie
 import { Button, Card, Chip, DayHeader, Dialog, Divider, EmptyState, Header, IconButton, Screen, Select, Skeleton, Stat, SwipeRow, TabStrip, Text, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
+import { KINDS, NO_FILTERS, activeCount, toQuery } from '@/features/activity/activity-filters';
+import type { ActivityFilters, KindFilter } from '@/features/activity/activity-filters';
 import { activityItems } from '@/features/activity/activity-list';
 import type { ActivityItem } from '@/features/activity/activity-list';
 import { useCategories } from '@/features/categories';
+import { ActivityFilterSheet, periodLabel } from '@/features/activity/components/ActivityFilterSheet';
+import { usePersons } from '@/features/people';
 import { useSettings } from '@/features/settings';
 import { TransactionRow, useDeleteTransaction, useInfiniteTransactions, useTransactionTotals } from '@/features/transactions';
 import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { formatCurrency } from '@/shared/format/money';
-import type { TransactionType } from '@/shared/types';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View } from 'react-native';
-
-const KINDS = ['all', 'expense', 'income', 'transfer'] as const;
-type KindFilter = (typeof KINDS)[number];
-const TYPE_OF: Record<Exclude<KindFilter, 'all'>, TransactionType> = { expense: 'DR', income: 'CR', transfer: 'TR' };
 
 const numberParam = (value: string | string[] | undefined): number | undefined => {
   const parsed = Number.parseInt(Array.isArray(value) ? value[0] : (value ?? ''), 10);
@@ -64,46 +63,63 @@ export function ActivityScreen() {
   const toast = useToast();
   const { profile } = useSettings();
   const params = useLocalSearchParams<{ accountId?: string; categoryId?: string }>();
-  const accountId = numberParam(params.accountId);
-  const categoryId = numberParam(params.categoryId);
+  const linkedAccount = numberParam(params.accountId);
+  const linkedCategory = numberParam(params.categoryId);
 
   const [kind, setKind] = useState<KindFilter>('all');
+  const [filters, setFilters] = useState<ActivityFilters>({ ...NO_FILTERS, accountId: linkedAccount, categoryId: linkedCategory });
+  const [filtering, setFiltering] = useState(false);
+
+  // Arriving from an account's or a category's screen narrows the list to it, replacing whatever was set.
+  useEffect(() => {
+    if (linkedAccount !== undefined || linkedCategory !== undefined) setFilters({ ...NO_FILTERS, accountId: linkedAccount, categoryId: linkedCategory });
+  }, [linkedAccount, linkedCategory]);
   const [chosenCurrency, setChosenCurrency] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<TransactionListItem | null>(null);
 
   const { data: accounts } = useAccounts();
   const { data: categories } = useCategories();
+  const { data: people } = usePersons();
   const remove = useDeleteTransaction();
 
   // The currencies held, the default first. Scoped to one account, the screen is in that account's currency.
-  const scopedAccount = accountId === undefined ? undefined : accounts?.find((a) => a.id === accountId);
+  const scopedAccount = filters.accountId === undefined ? undefined : accounts?.find((a) => a.id === filters.accountId);
   const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set((accounts ?? []).map((a) => a.currency))], profile.defaultCurrency), [accounts, profile.defaultCurrency]);
   const currency = scopedAccount?.currency ?? (chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : currencies[0]);
 
-  const filters = useMemo<TransactionFilters>(() => {
-    const inCurrency = (accounts ?? []).filter((a) => a.currency === currency).map((a) => a.id);
-    return {
-      ...(kind === 'all' ? {} : { types: [TYPE_OF[kind]] }),
-      // With one currency held there is nothing to narrow; otherwise the list is that currency's accounts.
-      ...(accountId !== undefined ? { accountIds: [accountId] } : currencies.length > 1 ? { accountIds: inCurrency } : {}),
-      ...(categoryId === undefined ? {} : { categoryIds: [categoryId] }),
-    };
-  }, [kind, accountId, categoryId, accounts, currency, currencies.length]);
+  const query = useMemo<TransactionFilters>(() => {
+    // With one currency held there is nothing to narrow; otherwise the list is that currency's accounts.
+    const inCurrency = currencies.length > 1 ? (accounts ?? []).filter((a) => a.currency === currency).map((a) => a.id) : undefined;
+    return toQuery(filters, kind, inCurrency);
+  }, [filters, kind, accounts, currency, currencies.length]);
 
-  const list = useInfiniteTransactions(filters);
-  const { data: totals } = useTransactionTotals(filters);
+  const list = useInfiniteTransactions(query);
+  const { data: totals } = useTransactionTotals(query);
 
   const transactions = useMemo(() => list.data?.pages.flat() ?? [], [list.data?.pages]);
   // Day titles are written in the app's language, so a language change builds the lines again.
   const items = useMemo(() => activityItems(transactions), [transactions, i18n.language]); // eslint-disable-line react-hooks/exhaustive-deps
   const inCurrency = currency ? totals?.[currency] : undefined;
 
-  const scopedTo = accountId !== undefined ? t('filteredBy.account', { name: scopedAccount?.name ?? '' }) : categoryId !== undefined ? t('filteredBy.category', { name: categories?.find((c) => c.id === categoryId)?.name ?? '' }) : null;
-  const narrowed = kind !== 'all' || scopedTo !== null;
-  const showEverything = useCallback(() => {
-    setKind('all');
+  const on = activeCount(filters);
+  const narrowed = kind !== 'all' || on > 0;
+  const change = useCallback((next: ActivityFilters) => {
+    setFilters(next);
+    // The link that brought the user here no longer describes the list once they change it.
     router.setParams({ accountId: undefined, categoryId: undefined });
   }, [router]);
+  const showEverything = useCallback(() => {
+    setKind('all');
+    change(NO_FILTERS);
+  }, [change]);
+
+  // What is narrowing the list, each removable on its own.
+  const applied = [
+    filters.period !== 'all' ? { key: 'period', label: periodLabel(filters, t), without: { ...filters, period: 'all' as const, from: undefined, to: undefined } } : null,
+    scopedAccount ? { key: 'account', label: scopedAccount.name, without: { ...filters, accountId: undefined } } : null,
+    filters.categoryId !== undefined ? { key: 'category', label: categories?.find((c) => c.id === filters.categoryId)?.name ?? '', without: { ...filters, categoryId: undefined } } : null,
+    filters.personId !== undefined ? { key: 'person', label: people?.find((p) => p.id === filters.personId)?.name ?? '', without: { ...filters, personId: undefined } } : null,
+  ].filter((chip): chip is NonNullable<typeof chip> => chip !== null);
 
   const open = useCallback((tx: TransactionListItem) => router.push({ pathname: '/transactions/[id]', params: { id: tx.id } }), [router]);
   const edit = useCallback((tx: TransactionListItem) => router.push({ pathname: '/transactions/[id]/edit', params: { id: tx.id } }), [router]);
@@ -127,12 +143,14 @@ export function ActivityScreen() {
 
   const top = (
     <View style={styles.top}>
-      {scopedTo ? (
-        <View style={styles.scope}><Chip label={scopedTo} onRemove={showEverything} removeLabel={t('filteredBy.remove')} /></View>
+      {applied.length > 0 ? (
+        <View style={styles.applied}>
+          {applied.map((chip) => <Chip key={chip.key} label={chip.label} onRemove={() => change(chip.without)} removeLabel={t('filter.remove', { name: chip.label })} />)}
+        </View>
       ) : null}
       <Card style={styles.summary}>
         <View style={styles.summaryHead}>
-          <Text variant="bodyStrong">{t(`summary.title.${kind}`)}</Text>
+          <Text variant="bodyStrong">{on > 0 ? t(`summary.narrowed.${kind}`) : t(`summary.title.${kind}`)}</Text>
           {currencies.length > 1 && !scopedAccount ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosenCurrency} accessibilityLabel={t('summary.currency')} /> : null}
         </View>
         <View style={styles.stats}>
@@ -150,7 +168,13 @@ export function ActivityScreen() {
       padded={false}
       header={
         <View>
-          <Header title={t('title')} right={<IconButton icon="search" onPress={() => router.push('/search')} accessibilityLabel={t('search')} />} />
+          <Header title={t('title')} right={
+              <>
+                <IconButton icon="filter" onPress={() => setFiltering(true)} accessibilityLabel={on > 0 ? t('filter.openCount', { count: on }) : t('filter.open')} />
+                <IconButton icon="search" onPress={() => router.push('/search')} accessibilityLabel={t('search')} />
+              </>
+            }
+          />
           <TabStrip tabs={KINDS.map((option) => ({ key: option, label: t(`kinds.${option}`) }))} value={kind} onChange={setKind} accessibilityLabel={t('kindLabel')} />
         </View>
       }
@@ -188,6 +212,8 @@ export function ActivityScreen() {
         />
       )}
 
+      <ActivityFilterSheet visible={filtering} onClose={() => setFiltering(false)} filters={filters} onChange={change} accounts={accounts ?? []} categories={categories ?? []} people={people ?? []} />
+
       <Dialog visible={!!deleting} onRequestClose={() => setDeleting(null)} title={t('transactions:detail.deleteTitle')} body={t('transactions:detail.deleteBody')}>
         <Button label={t('transactions:detail.deleteConfirm')} variant="danger" loading={remove.isPending} onPress={confirmDelete} />
         <Button label={t('transactions:detail.keep')} variant="secondary" onPress={() => setDeleting(null)} />
@@ -199,7 +225,7 @@ export function ActivityScreen() {
 const createStyles = ({ colors, radius, size, space }: Theme) =>
   StyleSheet.create({
     top: { gap: space.lg, paddingTop: space.lg },
-    scope: { flexDirection: 'row' },
+    applied: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
     summary: { gap: space.lg },
     summaryHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: size.chip },
     stats: { flexDirection: 'row', gap: space.lg },

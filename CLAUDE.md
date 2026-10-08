@@ -69,9 +69,9 @@ throughout (Proza Libre, bold for headings), soft 10pt corners, no shadows.
   Do not draw illustrations by hand.
 - **Settled choices:** the currency menu sits on the balance card; the wave
   card is fully green; highlights are white cards; tabs are Home, Activity,
-  Add, Plan, Insights; a task is a stacked sheet (black backdrop, the screen
-  behind peeking above it) holding the reference's form. "Stacked" means
-  sheets over screens, not step cards inside a form. The full list with
+  Add, Plan, Insights; a task is a sheet holding the reference's form. The
+  stacked look (the screen behind peeking above the sheet) is iOS's own
+  behaviour and is left to iOS; on Android a sheet is a plain bottom sheet. The full list with
   reasons is in `docs/PLAN.md` under B1.
 
 ## Looking at the result
@@ -139,7 +139,7 @@ npm test
 - Write every screen and component to work on iOS as well as Android. Only
   store-side iOS work (products, listing, release) is deferred. Where the
   platforms differ, use the native behaviour on each (for example sheets:
-  iOS stacks them itself; Android gets `SheetFrame`). Nothing has been run on
+  iOS stacks them itself; Android gets a plain bottom sheet). Nothing has been run on
   iOS yet, so say so when reporting.
 
 - Three plans (monthly, yearly, lifetime); lifetime is the one to push, by
