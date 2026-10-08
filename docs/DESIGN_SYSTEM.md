@@ -218,7 +218,9 @@ use it.
   and the picture carries the state. Backup is the phone and the Drive with
   the line between them: dotted with nothing there, solid once backed up,
   filling towards the Drive during a backup and back towards the phone
-  during a restore (`BackupLink`). A stack of rows is what is left when no
+  during a restore (`BackupLink`). Export is a small ruled spreadsheet
+  holding the first rows the file will have, which follows every choice
+  made under it (`ExportPreview`). A stack of rows is what is left when no
   such picture exists (owner, 2026-10-08: "be more creative everywhere").
   Home does the same three times: accounts as a stack of cards like a
   wallet (each in its own colour with black text in both schemes, the ones

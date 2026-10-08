@@ -9,7 +9,7 @@ import { StorageAccessFramework } from 'expo-file-system/legacy';
 import { format } from 'date-fns';
 import { and, count, desc, eq, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
-import { Platform, Alert } from 'react-native';
+import { Platform } from 'react-native';
 import { LoggerService } from '@/shared/logging/logger';
 import i18n from '@/shared/i18n';
 
@@ -272,12 +272,14 @@ export class CsvExportService {
     return { content: csvContent, filename };
   }
 
-  static async saveToFolder(content: string, filename: string): Promise<void> {
-    if (Platform.OS === 'android') {
-      await this.saveAndroid(content, filename);
-    } else {
-      await this.saveIOS(content, filename);
-    }
+  /**
+   * Writes the file where the user chooses. Resolves `cancelled` when they back out of
+   * choosing; throws when the file could not be written. Says nothing itself: the screen does.
+   */
+  static async saveToFolder(content: string, filename: string): Promise<'saved' | 'cancelled'> {
+    if (Platform.OS === 'android') return this.saveAndroid(content, filename);
+    await this.saveIOS(content, filename);
+    return 'saved';
   }
 
   static async shareFile(content: string, filename: string): Promise<void> {
@@ -291,23 +293,16 @@ export class CsvExportService {
     });
   }
 
-  private static async saveAndroid(content: string, filename: string): Promise<void> {
+  private static async saveAndroid(content: string, filename: string): Promise<'saved' | 'cancelled'> {
+    const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
+    if (!permissions.granted) return 'cancelled';
     try {
-      const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
-      if (!permissions.granted) {
-        Alert.alert(i18n.t('export.permissionDenied'), i18n.t('export.permissionDeniedMessage'));
-        return;
-      }
-      const fileUri = await StorageAccessFramework.createFileAsync(
-        permissions.directoryUri,
-        filename,
-        'text/csv',
-      );
+      const fileUri = await StorageAccessFramework.createFileAsync(permissions.directoryUri, filename, 'text/csv');
       await StorageAccessFramework.writeAsStringAsync(fileUri, content, { encoding: 'utf8' });
-      Alert.alert(i18n.t('export.saved'), i18n.t('export.savedMessage', { filename }));
+      return 'saved';
     } catch (error) {
       LoggerService.error('CSV_EXPORT', 'Failed to save CSV to Android folder', error);
-      Alert.alert(i18n.t('export.saveCsvFailed'), error instanceof Error ? error.message : i18n.t('export.saveCsvFailedMessage'));
+      throw error;
     }
   }
 

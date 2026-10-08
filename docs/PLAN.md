@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 152 | 84 | In progress |
+| D | Screens at parity with the shipped app | 152 | 85 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -463,9 +463,9 @@ Built in `features/backup` on 2026-10-08 and seen on a device only as far as the
 - [ ] D14.09 Shared checklist
 
 ### D15. Export (Pro)
-- [ ] D15.01 Choose what and which period
-- [ ] D15.02 Save to the device or share
-- [ ] D15.03 Free users reach the paywall, including by link
+- [x] D15.01 Choose what and which period
+- [ ] D15.02 Save to the device or share (built; neither was pressed on the owner's phone, as both open system dialogs and write a file)
+- [ ] D15.03 Free users reach the paywall, including by link (the same `ProGateScreen` seen for Search; not opened for Export)
 - [ ] D15.04 Shared checklist
 
 ### D16. Settings
