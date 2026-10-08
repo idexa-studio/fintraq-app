@@ -1,5 +1,7 @@
 import 'i18next';
+import type accounts from '@/shared/i18n/copy/accounts.en';
 import type activity from '@/shared/i18n/copy/activity.en';
+import type categories from '@/shared/i18n/copy/categories.en';
 import type common from '@/shared/i18n/copy/common.en';
 import type home from '@/shared/i18n/copy/home.en';
 import type shell from '@/shared/i18n/copy/shell.en';
@@ -12,6 +14,8 @@ declare module 'i18next' {
     resources: {
       translation: typeof en;
       activity: typeof activity;
+      accounts: typeof accounts;
+      categories: typeof categories;
       common: typeof common;
       shell: typeof shell;
       home: typeof home;

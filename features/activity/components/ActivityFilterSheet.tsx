@@ -1,7 +1,7 @@
 import type { Account } from '@/data/repositories/accounts';
 import type { Category } from '@/data/repositories/categories';
 import type { Person } from '@/data/repositories/people';
-import { Button, Calendar, Card, IconCircle, ListGroup, ListRow, OptionList, Sheet, TextField, resolveIcon, useTheme } from '@/design';
+import { Button, Calendar, IconCircle, ListGroup, ListRow, OptionList, Sheet, TextField, resolveIcon, useTheme } from '@/design';
 import type { OptionGroup } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
 import { NO_FILTERS, PERIODS, activeCount } from '@/features/activity/activity-filters';
@@ -79,10 +79,10 @@ export function ActivityFilterSheet({ visible, onClose, filters, onChange, accou
           {people.length > 0 ? <ListRow icon="user" title={t('filter.person')} value={people.find((p) => p.id === filters.personId)?.name ?? t('filter.any')} onPress={() => setPicker('person')} /> : null}
         </ListGroup>
         {filters.period === 'custom' ? (
-          <Card style={{ gap: space.lg }}>
+          <View style={{ gap: space.lg }}>
             <TextField label={t('filter.from')} value={filters.from ? shortDay(filters.from) : t('filter.open_end')} onPress={() => setPicker('from')} />
             <TextField label={t('filter.to')} value={filters.to ? shortDay(filters.to) : t('filter.open_end')} onPress={() => setPicker('to')} />
-          </Card>
+          </View>
         ) : null}
       </Sheet>
 
@@ -99,7 +99,6 @@ export function ActivityFilterSheet({ visible, onClose, filters, onChange, accou
         <OptionList groups={personGroups} selectedKey={keyOf(filters.personId)} onSelect={(key) => { onChange({ ...filters, personId: idOf(key) }); back(); }} />
       </Sheet>
       <Sheet visible={visible && (picker === 'from' || picker === 'to')} onClose={back} title={picker === 'to' ? t('filter.pickTo') : t('filter.pickFrom')}>
-        <Card>
           <View>
             <Calendar
               value={(picker === 'to' ? filters.to : filters.from) ?? new Date()}
@@ -107,7 +106,6 @@ export function ActivityFilterSheet({ visible, onClose, filters, onChange, accou
               onChange={(day) => { onChange(picker === 'to' ? { ...filters, to: day } : { ...filters, from: day }); back(); }}
             />
           </View>
-        </Card>
       </Sheet>
     </>
   );

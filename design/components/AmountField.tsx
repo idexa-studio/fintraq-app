@@ -1,7 +1,8 @@
 import { Text } from '@/design/components/Text';
 import { useFontScale, useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
-import React, { useEffect, useRef } from 'react';
+import { useFocusOnArrival } from '@/design/components/useFocusOnArrival';
+import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 export type AmountFieldProps = {
@@ -15,21 +16,12 @@ export type AmountFieldProps = {
   focusOnArrival?: boolean;
 };
 
-/** How long a sheet takes to settle before the keyboard may follow it up. */
-const ARRIVAL = 450;
-
 /** The figure being entered, at the size of a headline: the one large thing on an entry screen. */
 export function AmountField({ value, onChangeText, symbol, accessibilityLabel, focusOnArrival = false }: AmountFieldProps) {
   const { colors, type } = useTheme();
   const styles = useStyles(createStyles);
   const scale = useFontScale();
-  const input = useRef<TextInput>(null);
-
-  useEffect(() => {
-    if (!focusOnArrival) return;
-    const timer = setTimeout(() => input.current?.focus(), ARRIVAL);
-    return () => clearTimeout(timer);
-  }, [focusOnArrival]);
+  const input = useFocusOnArrival(focusOnArrival);
 
   const figure = { fontFamily: type.amountHero.fontFamily, fontWeight: type.amountHero.fontWeight, fontSize: type.amountHero.fontSize * scale };
   return (

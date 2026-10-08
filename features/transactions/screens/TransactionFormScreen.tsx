@@ -10,14 +10,14 @@ import { useTransactionForm } from '@/features/transactions/hooks/useTransaction
 import type { TransactionFormOptions } from '@/features/transactions/hooks/useTransactionForm';
 import { KINDS, kindOfType, typeOfKind } from '@/features/transactions/transaction-form';
 import { useSettings } from '@/features/settings';
+import { useLeaveGuard } from '@/features/shell';
 import { Analytics } from '@/platform/telemetry';
 import { formatDate } from '@/shared/date/date';
 import { getCurrencySymbol } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import { differenceInCalendarDays } from 'date-fns';
-import { usePreventRemove } from '@react-navigation/native';
-import { useNavigation, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
@@ -35,19 +35,13 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
   const { t } = useTranslation(['transactions', 'common']);
   const { size, space } = useTheme();
   const router = useRouter();
-  const navigation = useNavigation();
   const toast = useToast();
   const { profile } = useSettings();
   const form = useTransactionForm(options);
 
   const [picker, setPicker] = useState<Picker>(null);
   const [failed, setFailed] = useState(false);
-  /** Set once the entry is saved or the user has agreed to discard it, so leaving no longer asks. */
-  const [mayLeave, setMayLeave] = useState(false);
-  /** The navigation the user asked for while there was unsaved input; carried out if they confirm. */
-  const [leaving, setLeaving] = useState<Parameters<typeof navigation.dispatch>[0] | null>(null);
-
-  usePreventRemove(form.touched && !mayLeave, ({ data }) => setLeaving(data.action));
+  const guard = useLeaveGuard(form.touched);
 
   const kind = kindOfType(form.type);
   const currency = form.account?.currency ?? profile.defaultCurrency;
@@ -58,13 +52,13 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
     try {
       const createdId = await form.save(t('defaultNote'));
       Analytics.track('transaction_saved', { transaction_type: kind, mode: form.editing ? 'edit' : 'create' });
-      setMayLeave(true);
+      guard.release();
       toast.show(
         createdId == null
           ? { message: t('changesSaved') }
           : { message: t(`saved.${kind}`), actionLabel: t('undo'), onAction: () => void form.undo(createdId) },
       );
-      // Leaves on the next tick, once `mayLeave` has switched the unsaved-input guard off.
+      // Leaves on the next tick, once the unsaved-input guard is off.
       setTimeout(close, 0);
     } catch {
       setFailed(true);
@@ -203,9 +197,9 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
       <CalculatorSheet visible={picker === 'calculator'} onClose={() => setPicker(null)} currency={currency} onUse={(amount) => form.setAmountText(String(amount))} />
       <WhenPicker visible={picker === 'when'} onClose={() => setPicker(null)} value={form.when} onChange={form.setWhen} />
 
-      <Dialog visible={!!leaving} onRequestClose={() => setLeaving(null)} title={t('discard.title')} body={t('discard.body')}>
-        <Button label={t('discard.confirm')} variant="danger" onPress={() => { const action = leaving; setLeaving(null); setMayLeave(true); if (action) setTimeout(() => navigation.dispatch(action), 0); }} />
-        <Button label={t('discard.cancel')} variant="secondary" onPress={() => setLeaving(null)} />
+      <Dialog visible={guard.asking} onRequestClose={guard.stay} title={t('discard.title')} body={t('discard.body')}>
+        <Button label={t('discard.confirm')} variant="danger" onPress={guard.leave} />
+        <Button label={t('discard.cancel')} variant="secondary" onPress={guard.stay} />
       </Dialog>
       <Dialog visible={failed} onRequestClose={() => setFailed(false)} title={t('saveFailed')} body={t('saveFailedBody')}>
         <Button label={t('tryAgain')} onPress={() => setFailed(false)} />

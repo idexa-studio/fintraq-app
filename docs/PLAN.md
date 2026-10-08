@@ -25,9 +25,9 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | Phase | What | Tasks | Done | State |
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
-| B | Design sign-off | 57 | 57 | Complete |
+| B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 60 | In progress |
-| D | Screens at parity with the shipped app | 143 | 29 | In progress |
+| D | Screens at parity with the shipped app | 143 | 37 | In progress |
 | E | Pro: three plans and gating | 26 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -135,6 +135,7 @@ The owner handed these to Claude on 2026-10-09 ("you decide"). Each is recorded 
 - [x] B3.20 Force-update screen and "what's new" note
 - [x] B3.21 Feature tip (first-time hint attached to a control)
 - [x] B3.22 Draw the six icons Remix lacks in the same style: pizza, hamburger, egg, ice cream, cat, dumbbell
+- [x] B3.23 Replace Remix with Phosphor: the reference draws pictograms at about 1.4pt and control marks at about 2.2pt, which one-weight Remix cannot do; hand-drawn six no longer needed
 
 ### B4. Every state of every widget
 - [x] B4.01 Pressed, disabled, loading and error states shown for every control
@@ -372,22 +373,22 @@ route template · `tsc`, lint, design audit and tests clean.
 - [ ] D6.04 Shared checklist
 
 ### D7. Accounts
-- [ ] D7.01 List by type with balances
-- [ ] D7.02 Net worth: have, owe, difference, per currency
-- [ ] D7.03 Account screen: balance, in and out, its activity
-- [ ] D7.04 Card actions: add transaction, transfer
-- [ ] D7.05 Form: name, type, currency, holder, number, icon, colour, opening balance
-- [ ] D7.06 Set as default
-- [ ] D7.07 Delete with confirmation that states what goes with it
-- [ ] D7.08 Empty state
-- [ ] D7.09 Shared checklist
+- [x] D7.01 List by type with balances
+- [x] D7.02 Net worth: have, owe, difference, per currency
+- [x] D7.03 Account screen: balance, in and out, its activity
+- [x] D7.04 Card actions: add transaction, transfer
+- [x] D7.05 Form: name, type, currency, holder, number, icon, colour, opening balance
+- [x] D7.06 Set as default
+- [x] D7.07 Delete with confirmation that states what goes with it (only an unused account can go, as in 1.2.4; one in use says how many transactions hold it)
+- [ ] D7.08 Empty state (built; not yet seen on a phone, which needs an install with no accounts)
+- [x] D7.09 Shared checklist
 
 ### D8. Categories
 - [ ] D8.01 List by kind
 - [ ] D8.02 Form: name, kind, icon, colour
 - [ ] D8.03 System categories cannot be deleted; say why
-- [ ] D8.04 Delete moves its transactions as today
-- [ ] D8.05 Shared checklist
+- [ ] D8.04 Delete as today: only a category nothing uses can go; one in use says how many transactions hold it
+- [ ] D8.05 Shared checklist (D8 is built and passes the checks; not ticked because it has not been seen on the phone, which was locked)
 
 ### D9. People
 - [ ] D9.01 List with balances: owes you, you owe, settled

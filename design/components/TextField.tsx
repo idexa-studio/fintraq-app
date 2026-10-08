@@ -2,13 +2,14 @@ import { Icon } from '@/design/components/Icon';
 import type { IconName } from '@/design/components/Icon';
 import { Text } from '@/design/components/Text';
 import { Touchable } from '@/design/components/Touchable';
+import { useFocusOnArrival } from '@/design/components/useFocusOnArrival';
 import { useFontScale, useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import type { TextInputProps } from 'react-native';
 
-export type TextFieldProps = Omit<TextInputProps, 'style'> & {
+export type TextFieldProps = Omit<TextInputProps, 'style' | 'autoFocus'> & {
   /** Sits inside the field before the value, as in "Amount: £5.00". Omit only for search. */
   label?: string;
   icon?: IconName;
@@ -20,14 +21,17 @@ export type TextFieldProps = Omit<TextInputProps, 'style'> & {
   prefix?: string;
   /** The field opens a picker instead of the keyboard: it shows a value and is pressed like a button. */
   onPress?: () => void;
+  /** Opens the keyboard once the screen has arrived. Use this, never `autoFocus`, which fires mid-arrival. */
+  focusOnArrival?: boolean;
 };
 
 /** An outlined field with its label inside. */
-export function TextField({ label, icon, error, helper, trailing, prefix, onPress, editable = true, onFocus, onBlur, ...rest }: TextFieldProps) {
+export function TextField({ label, icon, error, helper, trailing, prefix, onPress, focusOnArrival = false, editable = true, onFocus, onBlur, ...rest }: TextFieldProps) {
   const { colors, type, border } = useTheme();
   const styles = useStyles(createStyles);
   const [focused, setFocused] = useState(false);
   const scale = useFontScale();
+  const input = useFocusOnArrival(focusOnArrival);
   const outline = error ? colors.danger : !editable ? colors.disabled : colors.border;
   const thick = focused || !!error;
 
@@ -38,6 +42,7 @@ export function TextField({ label, icon, error, helper, trailing, prefix, onPres
         {prefix ? <Text variant="body" tone={editable ? 'default' : 'disabled'} style={styles.prefix}>{prefix}</Text> : null}
         <TextInput
           {...rest}
+          ref={input}
           editable={editable && !onPress}
           pointerEvents={onPress ? 'none' : undefined}
           allowFontScaling={false}

@@ -69,7 +69,7 @@ export function HomeScreen() {
       </Section>
 
       <Section title={t('accounts.title')} actionLabel={accounts?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/accounts')}>
-        <AccountList accounts={shownAccounts} loading={accountsPending} onOpen={(id) => router.push({ pathname: '/accounts/[id]', params: { id } })} onAdd={() => router.push('/accounts/form')} />
+        <AccountList accounts={shownAccounts} loading={accountsPending} onOpen={(id) => router.push({ pathname: '/accounts/[id]', params: { id } })} onAdd={() => router.push('/accounts/new')} />
       </Section>
 
       <Section title={t('recent.title')} actionLabel={transactions?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/activity')}>

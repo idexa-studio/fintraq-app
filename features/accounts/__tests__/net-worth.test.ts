@@ -1,5 +1,5 @@
 import type { Account } from '@/data/repositories/accounts';
-import { netWorthByCurrency } from '@/src/features/accounts/utils/net-worth';
+import { netWorthByCurrency } from '@/features/accounts/net-worth';
 
 const account = (id: number, currency: string, balance: number) => ({ id, currency, balance }) as Account;
 

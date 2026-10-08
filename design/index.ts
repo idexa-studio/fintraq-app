@@ -3,7 +3,7 @@ export { ThemeProvider, useFontScale, useStyles, useTheme } from './ThemeProvide
 export type { Scheme, Script, Theme } from './ThemeProvider';
 export { FONT_ASSETS, needsSystemFont } from './tokens/typography';
 export type { TypeVariant } from './tokens/typography';
-export { BACKDROP, INK, PASTELS } from './tokens/colors';
+export { BACKDROP, INK, PASTELS, pastelOf } from './tokens/colors';
 export type { ColorRoles, PastelName } from './tokens/colors';
 
 export { AmountField } from './components/AmountField';
@@ -28,7 +28,9 @@ export { HeatGrid } from './components/HeatGrid';
 export { Highlight } from './components/Highlight';
 export { Icon } from './components/Icon';
 export type { IconName } from './components/Icon';
-export { resolveIcon } from './icons/index';
+export { isIconName, resolveIcon } from './icons/index';
+export { MarkGrid } from './components/MarkGrid';
+export type { Mark } from './components/MarkGrid';
 export { IconGrid } from './components/IconGrid';
 export type { IconGroup } from './components/IconGrid';
 export { IconButton } from './components/IconButton';

@@ -13,7 +13,8 @@ export const useAccounts = () => {
 export const useAccount = (id: number | undefined) => {
   return useQuery({
     queryKey: id != null ? QUERY_KEYS.accounts.detail(id) : [...QUERY_KEYS.accounts.details(), 'disabled'],
-    queryFn: () => api.getAccountById(id as number),
+    // An account that is gone reads as null: a query may not answer undefined, and one just deleted is asked for once more.
+    queryFn: async () => (await api.getAccountById(id as number)) ?? null,
     enabled: id != null,
   });
 };
@@ -39,6 +40,23 @@ export const useDeleteAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.deleteAccount,
+    onSuccess: () => afterLedgerWrite(queryClient),
+  });
+};
+
+/** How many transactions and loans use the account. */
+export const useAccountUsage = (id: number | undefined) => {
+  return useQuery({
+    queryKey: id != null ? [...QUERY_KEYS.accounts.detail(id), 'usage'] : [...QUERY_KEYS.accounts.details(), 'usage', 'disabled'],
+    queryFn: () => api.getAccountUsage(id as number),
+    enabled: id != null,
+  });
+};
+
+export const useSetDefaultAccount = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: api.setDefaultAccount,
     onSuccess: () => afterLedgerWrite(queryClient),
   });
 };

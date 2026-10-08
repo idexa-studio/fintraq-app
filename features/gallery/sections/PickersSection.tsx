@@ -1,6 +1,6 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
 import {
-  Button, Calendar, Card, Chip, IconCircle, IconGrid, ListGroup, ListRow, OptionList, PASTELS, Section, SheetPanel, SwatchGrid, Text, TextField, TimePicker,
+  Button, Calendar, Card, Chip, IconCircle, IconGrid, ListGroup, MarkGrid, ListRow, OptionList, PASTELS, Section, SheetPanel, SwatchGrid, Text, TextField, TimePicker,
   IconButton, useTheme,
 } from '@/design';
 import type { IconName, OptionGroup, TimeValue } from '@/design';
@@ -64,6 +64,7 @@ export function PickersSection() {
   const [time, setTime] = useState<TimeValue>({ hour: 20, minute: 0 });
   const [currency, setCurrency] = useState('USD');
   const [account, setAccount] = useState('everyday');
+  const [mark, setMark] = useState('bank');
   const [category, setCategory] = useState('groceries');
   const [person, setPerson] = useState('rk');
   const [sort, setSort] = useState('newest');
@@ -113,6 +114,23 @@ export function PickersSection() {
         </Specimen>
         <Specimen name="Sort" note="A short list of orders; the current one ticked.">
           <OptionList groups={SORTS} selectedKey={sort} onSelect={setSort} />
+        </Specimen>
+      </Section>
+
+      <Section title="Marks">
+        <Specimen name="Mark grid" note="A choice among things that each have a mark: categories, kinds of account. One tap, no list to read.">
+          <Card style={{ padding: space.sm }}>
+            <MarkGrid
+              columns={4}
+              marks={[
+                { key: 'bank', label: 'Bank account', icon: 'bank', color: 'teal' }, { key: 'cash', label: 'Cash', icon: 'cash', color: 'teal' },
+                { key: 'savings', label: 'Savings', icon: 'piggy-bank', color: 'teal' }, { key: 'card', label: 'Credit card', icon: 'credit-card', color: 'teal' },
+                { key: 'wallet', label: 'Wallet', icon: 'wallet', color: 'teal' }, { key: 'invest', label: 'Investment', icon: 'chart-line-data', color: 'teal' },
+              ]}
+              selectedKey={mark}
+              onSelect={setMark}
+            />
+          </Card>
         </Specimen>
       </Section>
 
