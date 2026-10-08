@@ -128,7 +128,9 @@ never gated, and a lapsed subscriber never loses data.
 User-facing strings go through i18n, from `shared/i18n/copy/<namespace>.en.ts`;
 there is no other source. The voice and vocabulary are in `docs/PRODUCT.md`
 ("Words") and a test holds all copy to them. Thirteen languages are offered;
-the other twelve are not translated yet (plan G1.02) and show English.
+each other one is `shared/i18n/copy/<language>.json`, built and checked by
+`scripts/i18n/build.js` (see its header). Five are done; the rest show English
+until they are (plan G1.02).
 Developer tools and the gallery are English only.
 
 ## Checks
