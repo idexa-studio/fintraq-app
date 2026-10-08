@@ -82,6 +82,7 @@ export { Text } from './components/Text';
 export { TimePicker } from './components/TimePicker';
 export type { TimeValue } from './components/TimePicker';
 export { Timeline } from './components/Timeline';
+export type { TimelineItem } from './components/Timeline';
 export { Tip } from './components/Tip';
 export { Toast, ToastProvider, useToast } from './components/Toast';
 export { TextField } from './components/TextField';

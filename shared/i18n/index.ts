@@ -6,6 +6,7 @@ import activity from '@/shared/i18n/copy/activity.en';
 import categories from '@/shared/i18n/copy/categories.en';
 import common from '@/shared/i18n/copy/common.en';
 import home from '@/shared/i18n/copy/home.en';
+import loans from '@/shared/i18n/copy/loans.en';
 import people from '@/shared/i18n/copy/people.en';
 import shell from '@/shared/i18n/copy/shell.en';
 import transactions from '@/shared/i18n/copy/transactions.en';
@@ -33,7 +34,7 @@ i18n
     resources: {
       // `translation` is the shipped app's copy. The other namespaces are the rebuilt screens' copy,
       // written in English first: a language without one falls back to English, never to a key.
-      en: { translation: en, common, shell, home, transactions, activity, accounts, categories, people },
+      en: { translation: en, common, shell, home, transactions, activity, accounts, categories, people, loans },
       hi: { translation: hi },
       bn: { translation: bn },
       ta: { translation: ta },
@@ -47,7 +48,7 @@ i18n
       de: { translation: de },
       ja: { translation: ja },
     },
-    ns: ['translation', 'common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people'],
+    ns: ['translation', 'common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans'],
     defaultNS: 'translation',
     lng: getSystemLanguage(),
     fallbackLng: 'en',

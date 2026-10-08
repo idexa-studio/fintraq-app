@@ -1,2 +1,4 @@
-import { LoanDetailScreen } from '@/src/features/loans/screens/LoanDetailScreen';
-export default LoanDetailScreen;
+import { LoanScreen } from '@/features/loans';
+
+/** `/loans/<id>` */
+export default LoanScreen;

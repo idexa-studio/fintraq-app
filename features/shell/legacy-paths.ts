@@ -22,3 +22,7 @@ export const editPathFromLegacy = (id: string | undefined): string => (id && /^\
 
 /** `/persons/<id>` */
 export const personPathFromLegacy = (id: string | undefined): string => (id && /^\d+$/.test(id) ? `/people/${id}` : '/people');
+
+/** `/(main)/loans/form?type=lend|borrow&personId=`, which the shipped app's launcher shortcut opens. */
+export const loanFormPathFromLegacy = ({ type, personId }: Params): string =>
+  `/loans/new${query({ type: type === 'lend' || type === 'borrow' ? type : undefined, personId: personId && /^\d+$/.test(personId) ? personId : undefined })}`;

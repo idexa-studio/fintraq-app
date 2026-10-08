@@ -42,7 +42,7 @@ export function HomeScreen() {
   const name = profile.name.trim().split(/\s+/)[0];
 
   const add = (kind: Kind) => router.push({ pathname: '/add', params: { kind } });
-  const lend = () => router.push('/(main)/loans/form');
+  const lend = () => router.push('/loans/new');
 
   return (
     <Screen

@@ -26,8 +26,8 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
-| C | Groundwork: shared, data, platform, shell | 87 | 61 | In progress |
-| D | Screens at parity with the shipped app | 143 | 47 | In progress |
+| C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
+| D | Screens at parity with the shipped app | 144 | 55 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -268,7 +268,7 @@ go to `shared/calc`.
 
 ### C9. Old paths keep working
 - [x] C9.01 `/transactions/create?type=DR|CR|TR&accountId=` redirects to `/add?kind=…`, with a test; every caller in the app uses the new path
-- [ ] C9.02 `/(main)/loans/form` redirects to `/loans/new`
+- [x] C9.02 `/(main)/loans/form` redirects to `/loans/new`
 - [x] C9.03 `/transactions/edit/[id]` redirects to `/transactions/[id]/edit`, with a test
 - [x] C9.04 `/transactions?accountId=|categoryId=` redirects to `/activity` with the filter
 - [x] C9.05 `/persons`, `/persons/[id]` redirect to `/people`, `/people/[id]`
@@ -400,15 +400,16 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D9.07 Shared checklist
 
 ### D10. Loans
-- [ ] D10.01 Loan screen as a timeline: lent or borrowed, repayments, due, settled
-- [ ] D10.02 Status badge: active, overdue, repaid
-- [ ] D10.03 Form: person, direction, amount, account, category, due date, note
-- [ ] D10.04 Record a repayment with slide to confirm
-- [ ] D10.05 Due reminder and instalment reminder settings
-- [ ] D10.06 Reminders rescheduled and cancelled exactly as today
-- [ ] D10.07 Free limit of 3 active loans leads to the paywall
-- [ ] D10.08 Delete with confirmation
-- [ ] D10.09 Shared checklist
+- [x] D10.01 Loan screen as a timeline: lent or borrowed, repayments, due, settled
+- [x] D10.02 Status badge: active, overdue, repaid
+- [x] D10.03 Form: person, direction, amount, account, category, due date, note
+- [x] D10.04 Record a repayment with slide to confirm
+- [x] D10.05 Due reminder and instalment reminder settings
+- [x] D10.06 Reminders rescheduled and cancelled as today, rebuilt from what is saved on the loan. One change: the due reminder is switched on once, when a loan with a due date is made; the shipped app switched it back on every time the loan was opened, undoing the user's choice
+- [ ] D10.07 Free limit of 3 active loans leads to the paywall (built; not seen, which needs a non-Pro state)
+- [x] D10.08 Delete with confirmation
+- [x] D10.09 Shared checklist
+- [ ] D10.10 Change a loan's due date and note after it is made (`/loans/[id]/edit`; the shipped app has no way to)
 
 ### D11. Plan tab (first version)
 - [ ] D11.01 Upcoming: loans due, soonest first

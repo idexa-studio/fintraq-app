@@ -1,2 +1,5 @@
-/** Public surface of loans and repayments. */
+/** Public surface of loans and repayments, and their screens. */
 export * from './hooks/loans';
+export { LoanScreen } from './screens/LoanScreen';
+export { LoanFormScreen } from './screens/LoanFormScreen';
+export { RepaymentScreen } from './screens/RepaymentScreen';

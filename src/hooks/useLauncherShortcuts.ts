@@ -17,7 +17,7 @@ const SHORTCUTS: Shortcut[] = [
   { id: 'expense', href: '/add?kind=expense', iosIcon: 'symbol:arrow.up.right', androidIcon: 'shortcut_expense' },
   { id: 'income', href: '/add?kind=income', iosIcon: 'symbol:arrow.down.left', androidIcon: 'shortcut_income' },
   { id: 'transfer', href: '/add?kind=transfer', iosIcon: 'symbol:arrow.left.arrow.right', androidIcon: 'shortcut_transfer' },
-  { id: 'loan', href: '/(main)/loans/form', iosIcon: 'symbol:banknote', androidIcon: 'shortcut_loan' },
+  { id: 'loan', href: '/loans/new', iosIcon: 'symbol:banknote', androidIcon: 'shortcut_loan' },
 ];
 
 /**
