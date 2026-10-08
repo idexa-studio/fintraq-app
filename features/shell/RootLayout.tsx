@@ -26,12 +26,13 @@ import { ProEndedNotice, ProProvider } from '@/features/pro';
 import { AppConfigGate } from '@/features/shell/AppConfigGate';
 import { AppTheme } from '@/features/shell/AppTheme';
 import { DatabaseGate } from '@/features/shell/DatabaseGate';
+import { LaunchScreen } from '@/features/shell/LaunchScreen';
 import { SystemNavBackdrop } from '@/features/shell/SystemNavBackdrop';
 import { TelemetryGate } from '@/features/shell/TelemetryGate';
 import React, { useEffect, useState } from 'react';
 import { LoggerService } from '@/shared/logging/logger';
 
-// Prevent the splash screen from auto-hiding before version check completes
+// The phone's own splash stays until the launch screen is drawn, which then takes it down.
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 /**
@@ -41,6 +42,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 export function RootLayout() {
   const colorScheme = useColorScheme();
   const [migrationReady, setMigrationReady] = useState(false);
+  const [launched, setLaunched] = useState(false);
 
   const [fontsLoaded] = useFonts(FONT_ASSETS);
 
@@ -74,49 +76,51 @@ export function RootLayout() {
     ReviewPromptService.ensureFirstLaunchRecorded();
   }, []);
 
-  if (!fontsLoaded || !migrationReady) return null;
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <QueryProvider>
-          <DatabaseGate>
-            <SettingsProvider>
-              <I18nProvider>
-                <ProProvider>
-                  <TelemetryGate>
-                    <OnboardingProvider>
-                      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                        <AppTheme>
-                          <LockProvider>
-                            <AppConfigGate>
-                              <ToastProvider>
-                                <Stack screenOptions={{ headerShown: false, animation: 'ios_from_right' }}>
-                                  {/* Listed first on purpose: the first screen named here is where the app starts when
-                                      no link says otherwise. With a task first, a reload opened Add expense over Home. */}
-                                  <Stack.Screen name="(main)" />
-                                  {/* Tasks rise over the screen they were started from. */}
-                                  <Stack.Screen name="add" options={SHEET_ROUTE} />
-                                  <Stack.Screen name="pro" options={SHEET_ROUTE} />
-                                  <Stack.Screen name="transactions/[id]/edit" options={SHEET_ROUTE} />
-                                  <Stack.Screen name="transactions/[id]" options={SHEET_ROUTE} />
-                                </Stack>
-                                <ProEndedNotice />
-                              </ToastProvider>
-                              <SystemNavBackdrop />
-                              <StatusBar style="auto" />
-                            </AppConfigGate>
-                          </LockProvider>
-                        </AppTheme>
-                      </ThemeProvider>
-                    </OnboardingProvider>
-                  </TelemetryGate>
-                </ProProvider>
-              </I18nProvider>
-            </SettingsProvider>
-          </DatabaseGate>
-        </QueryProvider>
-      </SafeAreaProvider>
+      {fontsLoaded && migrationReady ? (
+        <SafeAreaProvider>
+          <QueryProvider>
+            <DatabaseGate>
+              <SettingsProvider>
+                <I18nProvider>
+                  <ProProvider>
+                    <TelemetryGate>
+                      <OnboardingProvider>
+                        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+                          <AppTheme>
+                            <LockProvider>
+                              <AppConfigGate onReady={() => setLaunched(true)}>
+                                <ToastProvider>
+                                  <Stack screenOptions={{ headerShown: false, animation: 'ios_from_right' }}>
+                                    {/* Listed first on purpose: the first screen named here is where the app starts when
+                                        no link says otherwise. With a task first, a reload opened Add expense over Home. */}
+                                    <Stack.Screen name="(main)" />
+                                    {/* Tasks rise over the screen they were started from. */}
+                                    <Stack.Screen name="add" options={SHEET_ROUTE} />
+                                    <Stack.Screen name="pro" options={SHEET_ROUTE} />
+                                    <Stack.Screen name="transactions/[id]/edit" options={SHEET_ROUTE} />
+                                    <Stack.Screen name="transactions/[id]" options={SHEET_ROUTE} />
+                                  </Stack>
+                                  <ProEndedNotice />
+                                </ToastProvider>
+                                <SystemNavBackdrop />
+                                <StatusBar style="auto" />
+                              </AppConfigGate>
+                            </LockProvider>
+                          </AppTheme>
+                        </ThemeProvider>
+                      </OnboardingProvider>
+                    </TelemetryGate>
+                  </ProProvider>
+                </I18nProvider>
+              </SettingsProvider>
+            </DatabaseGate>
+          </QueryProvider>
+        </SafeAreaProvider>
+      ) : null}
+      {/* Over everything until the app behind it is ready. */}
+      <LaunchScreen named={fontsLoaded} ready={launched} />
     </GestureHandlerRootView>
   );
 }

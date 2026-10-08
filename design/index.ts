@@ -92,3 +92,6 @@ export { Toast, ToastProvider, useToast } from './components/Toast';
 export { TextField } from './components/TextField';
 export { Touchable } from './components/Touchable';
 export { WaveCard } from './components/WaveCard';
+export { WaveField } from './components/WaveField';
+export { BRAND_MARK, BrandMark } from './components/BrandMark';
+export { LaunchArt } from './components/LaunchArt';

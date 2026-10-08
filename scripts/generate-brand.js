@@ -10,10 +10,9 @@
  *   npm run brand:generate -- --sheet out.png   # also one sheet of everything, to look at
  *
  * The mark is a stack of coins on a 392 by 474 grid: a white coin resting on a
- * black one, both seen from the edge, and a green one falling onto them. Its
- * shapes and its colours are set here and nowhere else; the Design Gallery's
- * brand section (features/gallery/sections/BrandSection.tsx) draws the same
- * numbers so the mark can be looked at on a phone.
+ * black one, both seen from the edge, and a green one falling onto them. The
+ * app draws the same mark from the same numbers in design/components/BrandMark.tsx
+ * (the launch screen, and the gallery's brand section); change them in both.
  */
 const fs = require('fs');
 const path = require('path');
@@ -28,6 +27,7 @@ const INK = '#000000';
 const WHITE = '#FFFFFF';
 const PAGE = '#F1F1F1'; // light background
 const DARK_SURFACE = '#1A1A1A'; // dark surface
+const BRAND_GREEN = '#11B67A'; // brand: the splash's ground
 const PASTEL_GREEN = '#6CF579'; // the pastel green of the icon circles
 // The falling coin. Brand green (#11B67A) was tried beside it and goes dark against its black edge at launcher size.
 const COIN = PASTEL_GREEN;
@@ -70,9 +70,9 @@ function mark({ line, paper, coin, solid = false }) {
   ].join('');
 }
 
-function placed(colors, scale) {
+function placed(colors, scale, lift = LIFT) {
   const x = CANVAS / 2 - (MARK.width / 2) * scale;
-  const y = CANVAS / 2 - (MARK.height / 2 + LIFT) * scale;
+  const y = CANVAS / 2 - (MARK.height / 2 + lift) * scale;
   return `<g transform="translate(${x.toFixed(2)},${y.toFixed(2)}) scale(${scale})">${mark(colors)}</g>`;
 }
 
@@ -90,6 +90,7 @@ const SILHOUETTE = (c) => ({ line: c, solid: true });
  *   is shown and well inside the 66dp safe circle, with air on every side.
  * - A full-square icon (iOS, the stores) shows all of the canvas, so the same 54% is 1.17.
  * - Android cuts its splash icon to a circle two thirds of the canvas wide; 1.17 stays inside it.
+ *   LaunchArt.tsx repeats this number to draw the mark the same size; change them together.
  * - A notification icon is 24dp with 2dp of padding: 80 of its 96 pixels.
  */
 const SCALE = { adaptive: 0.78, square: 1.17, splash: 1.17, notification: (CANVAS * 80) / 96 / MARK.height };
@@ -129,8 +130,9 @@ const ASSETS = [
   ['icon-tinted.svg', 'icon-tinted.png', 1024, svg(placed({ line: WHITE, paper: 'none', coin: '#9A9A9A' }, SCALE.square))],
   ['adaptive-foreground.svg', 'adaptive-icon/foreground.png', 1024, svg(placed(ON_LIGHT, SCALE.adaptive))],
   ['android-monochrome.svg', 'android-icon-monochrome.png', 1024, svg(placed(SILHOUETTE(INK), SCALE.adaptive))],
-  ['splash-mark.svg', 'splash.png', 1024, svg(placed(ON_LIGHT, SCALE.splash))],
-  ['splash-mark-dark.svg', 'splash-dark.png', 1024, svg(placed(ON_DARK, SCALE.splash))],
+  // The splash is the brand green in both themes (app.json), with the mark in the exact middle:
+  // the launch screen (design/components/LaunchArt.tsx) draws it there again and adds the waves.
+  ['splash-mark.svg', 'splash.png', 1024, svg(placed(ON_LIGHT, SCALE.splash, 0))],
   ['notification.svg', 'notification-icon.png', 96, notification()],
   ['favicon.svg', 'favicon.png', 48, svg(ground(PAGE, 224) + placed(ON_LIGHT, SCALE.square))],
   // The store listing's icon: the full square, 512 pixels, no transparency.
@@ -144,8 +146,8 @@ async function sheet(file) {
   const tile = 256;
   const gap = 24;
   const shown = [
-    ['icon.png', PAGE], ['adaptive-icon/foreground.png', PAGE], ['android-icon-monochrome.png', '#C9D7E8'], ['splash.png', PAGE],
-    ['splash-dark.png', INK], ['icon-dark.png', '#1C1C1E'], ['icon-tinted.png', '#3A3A3A'], ['notification-icon.png', '#3A3A3A'],
+    ['icon.png', PAGE], ['adaptive-icon/foreground.png', PAGE], ['android-icon-monochrome.png', '#C9D7E8'], ['splash.png', BRAND_GREEN],
+    ['icon-dark.png', '#1C1C1E'], ['icon-tinted.png', '#3A3A3A'], ['notification-icon.png', '#3A3A3A'],
     ...Object.keys(SHORTCUTS).map((id) => [`shortcuts/shortcut-${id}.png`, PASTEL_GREEN]),
   ];
   const columns = 4;

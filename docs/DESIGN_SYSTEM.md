@@ -117,10 +117,20 @@ coin in the pastel green of the icon circles. No gradient, no glow.
 
 | Where | Ground | Mark |
 | --- | --- | --- |
-| App icon, adaptive icon, light splash | `background` (#F1F1F1) | Black line, white coin, pastel green coin |
-| Dark splash, iOS dark icon | Black | The same with the line in white and the white coin in the dark `surface` |
+| App icon, adaptive icon | `background` (#F1F1F1) | Black line, white coin, pastel green coin |
+| Splash and launch screen | `brand` green, both schemes | The same |
+| iOS dark icon | The system's | The same with the line in white and the white coin in the dark `surface` |
 | Themed icon, notification icon | The system's | One colour: the white coin is an outline |
 | Launcher shortcuts | Pastel green | A black glyph from `design/icons/`, as an icon circle |
+
+**The launch screen** is the reference's: three greens in waves, the mark in
+the middle, the name under it in black. A phone's own splash can hold only a
+colour and an image, so it shows the brand green and the mark; as soon as the
+app can draw, `LaunchScreen` (`features/shell/`) takes over with `LaunchArt`
+(`WaveField`, `BrandMark`, the name), the mark in the same place at the same
+size, and fades when the app behind it is ready. The mark's size there is tied
+to `imageWidth` in `app.json` and the splash scale in the script; change the
+three together.
 
 Sizes follow each platform's rule, and are written with their reasons in the
 script: the mark is 54% of the icon a launcher shows and inside the adaptive
@@ -129,8 +139,9 @@ notification icon keeps 2dp of padding; a shortcut glyph is 24dp in 48dp.
 
 Every file is drawn by `scripts/generate-brand.js` from one description of the
 mark; change it there and run `npm run brand:generate` (its header says how).
-Never edit the PNGs by hand. The gallery's hidden `brand` section draws the
-same mark at launcher size, to look at on a phone before building.
+Never edit the PNGs by hand. In the app the mark is `BrandMark`, drawn from the
+same numbers; the gallery's hidden `brand` section shows it at launcher size
+and shows the launch screen, to look at on a phone before building.
 
 ## Icons (`design/icons/`)
 
