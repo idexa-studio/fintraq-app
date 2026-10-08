@@ -30,7 +30,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
-| G | Release 1: the redesign | 24 | 3 | In progress |
+| G | Release 1: the redesign | 25 | 3 | In progress |
 | H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
 
@@ -608,6 +608,7 @@ Done when: the redesign is live to all users with no data loss reported.
 
 ### G2. Quality
 - [ ] G2.00 Before any upload: the release build (the same profile as the upload) installed fresh on a phone and taken through first run to Home, and installed over 1.2.4 with data. Added 2026-10-08 after build 65 reached internal testing with a blank, flickering first screen that no dev build showed
+- [ ] G2.11 The amount field takes letters: text sent to it from a hardware keyboard, a paste or adb is kept ("$.10Weekly shop" was seen while scripting on 2026-10-08). It must keep digits and one separator only
 - [ ] G2.01 Full pass on a small Android phone (360dp) and a large one
 - [ ] G2.02 Full pass on iOS. The code is written for both platforms (owner, 2026-10-09); nothing has been run on iOS yet
 - [ ] G2.03 Android three-button and gesture navigation
@@ -620,7 +621,7 @@ Done when: the redesign is live to all users with no data loss reported.
 - [ ] G2.10 Crash-free on the internal track for a week
 
 ### G3. Store
-- [ ] G3.01 New screenshots and feature graphic
+- [ ] G3.01 New screenshots and feature graphic Made 2026-10-08 in `store/` by `scripts/generate-store-assets.py` from Samsung captures with demo data (dollar main, euro, lira and rupee accounts), light mode: seven Play screenshots (1080 x 1920), the feature graphic (1024 x 500) and phone mockups. Not ticked: the owner has not chosen among them, they are English only, and there are no videos (owner: later).
 - [ ] G3.02 New app icon and splash, if the brand changes with the look (owner) Polished to the new look with C8.08; waits for the owner's eye on a build.
 - [ ] G3.03 Listing text: remove "No subscriptions"; describe the three plans
 - [ ] G3.04 Privacy policy and terms updated for subscriptions
