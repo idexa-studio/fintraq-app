@@ -119,6 +119,7 @@ and so do we:
 | --- | --- | --- |
 | `regular` | 1.5pt | Every pictogram, chevrons and arrows, plus and minus |
 | `bold` | 2.25pt | Bare marks that are controls or verdicts: close, tick, more |
+| `light` | 1.3pt at 28pt | The same pictograms drawn at 27pt and over, chosen by `Icon`, never at a call site |
 
 The weight belongs to the icon, not to where it is used: it is written in
 `icon-map.json` (`"x": "x@bold"`) and `Icon` has no weight prop, so one icon
@@ -157,30 +158,33 @@ use it.
 
 - **A screen** is `Screen` with a `Header`, content in `Section`s, and its
   buttons in the `footer`. Never hand-build the scaffold.
-- **The top of a tab** is `<Header large>`: the title at the start of the
-  line in the `title` size, the tab's actions at the end. Nothing on a page
-  is set larger than the reference sets it: a 26pt tab title was tried and
-  rejected as too big (owner, 2026-10-08). Home's title is the user's first
-  name under a greeting by the time of day; the profile icon opens
-  Settings (no initial in a circle: there is no photo for it to stand for). Pushed screens keep the small centred title; tasks keep theirs.
-- **The tab bar** holds four places and, in the middle, the one action: a
-  green tile with a plus and no label (`action` on its item), never the
-  active tab. The mark above the active tab spans half its width and slides
-  when the tab changes. The bar is 56 tall (owner, 2026-10-08).
-- **Shortcuts** the user already knows are `FeatureTile compact`: mark and
-  label on one line, a few words small beneath. The full tile, with its
-  sentence, is for introducing something.
+- **The top of a tab** is the reference's header: the title small and
+  centred, icon actions either side. Home's title is "Hi" and the first
+  name, with search on the left and the profile icon on the right. A large
+  left-aligned title and a greeting by time of day were tried and withdrawn
+  (owner, 2026-10-08: "exact same as the aesthetic").
+- **The tab bar** is the reference's: every item an icon over its label,
+  a green mark the full width of the tab on the bar's top edge above the
+  active one, whose icon is solid and label bold. Add sits in the middle as
+  one more item (`action`: it opens the entry task and is never active). A
+  green tile for Add and a half-width mark were tried and withdrawn. Icons
+  are 30pt (`size.iconTab`); the bar is 56 tall.
+- **Home's quick actions** are the reference's tiles: `FeatureTile` with
+  its mark, a sentence, and the action in bold. The `compact` tile is for
+  rows of settings shortcuts, not for Home.
+- **Chips** have smooth ("squircle") corners, as the reference's do. They
+  are drawn (`Squircle`), since a border radius only makes an arc; use it
+  for any other shape that must match.
 - **A message screen** (a picture, a headline, a sentence, buttons) is
   `<Screen centred>`: in the middle when it fits, scrolling when it does
   not. `scroll={false}` clips on a short phone and is only for content
   that manages its own height, such as a list.
-- **The way in** asks one question at a time, each step headed as the
-  reference heads its own: an `Emblem`, the question, one line (`Message`),
-  then the reference's form: a bold label ending in a colon over a white
-  card, a chooser row with a chevron, outlined fields with the label
-  inside. A live preview card, a mark beside a field and a card of
-  shortcut chips were all tried here and rejected (owner, 2026-10-08):
-  pictures belong on overview screens, not inside forms.
+- **The way in** is a welcome, then one form in the reference's form
+  pattern: a bold label ending in a colon over each white card, a chooser
+  row with a chevron, a choice and its fields together in one card. One
+  field alone on a screen reads as bare; so did a step per question. A
+  live preview card, a mark beside a field and shortcut chips were also
+  tried and rejected (owner, 2026-10-08).
 - **Settings** opens on the wave card (who you are and your plan: its one
   brand moment), then the things recorded against as tiles with their
   counts, then grouped rows. A choice of three (appearance) is a `Select`
@@ -191,8 +195,11 @@ use it.
 - **A section** may carry one small `hint` under its title: what it shows
   or how to use it. Cutting every such line leaves a screen looking bare
   (owner, 2026-10-08); keep them to one line.
-- **Header icons** are 24pt, like every other icon. Larger, the line
-  thickens with the box and the icon reads as too big.
+- **Icons keep one line weight at every size**, about 1.4pt, as measured
+  in the reference's header, tab bar and rows. `Icon` draws from the
+  regular set up to 26pt and from the light set from 27pt up, so a header
+  icon (28pt box, about 22pt of ink) and a tab icon (30pt) are the
+  reference's size without a heavier line.
 - **Rows that are scanned** (transactions) set `oneLine`, so a long note
   cannot make one row taller than its neighbours.
 - **A list** is `ListRow`s in a `ListGroup`. A tappable row ends in a chevron

@@ -18,6 +18,13 @@ export type IconProps = {
 
 const VIEW_BOX = `0 0 ${GLYPH_GRID} ${GLYPH_GRID}`;
 
+/**
+ * From this size up a pictogram is drawn from its light version. The reference's line is about
+ * 1.4pt whatever the icon's size (measured in its header, tab bar and rows). The regular drawing
+ * gives 1.5pt at 24 but 1.75pt at 28, which reads as heavy; the light one gives 1.3pt at 28.
+ */
+const LIGHT_FROM = 27;
+
 /** Icons that point along the reading direction, and so face the other way in right-to-left layouts. */
 const DIRECTIONAL = new Set<IconName>(['chevron-left', 'chevron-right', 'arrow-left', 'arrow-right', 'arrow-forward', 'logout']);
 
@@ -30,7 +37,7 @@ export const Icon = React.memo(function Icon({ name, size, color, filled = false
 
   return (
     <Svg width={side} height={side} viewBox={VIEW_BOX} style={flip}>
-      <Path d={filled ? GLYPHS[name].fill : GLYPHS[name].line} fill={ink} />
+      <Path d={filled ? GLYPHS[name].fill : side >= LIGHT_FROM ? GLYPHS[name].light : GLYPHS[name].line} fill={ink} />
     </Svg>
   );
 });

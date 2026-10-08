@@ -1,4 +1,5 @@
 import { Icon } from '@/design/components/Icon';
+import { Squircle } from '@/design/components/Squircle';
 import { Text } from '@/design/components/Text';
 import { Touchable } from '@/design/components/Touchable';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
@@ -23,15 +24,17 @@ export type ChipProps = {
 
 /** One of a row of views or filters: outlined at rest, solid when chosen. */
 export function Chip({ label, selected = false, menu = false, onBrand = false, accessibilityLabel, onRemove, removeLabel, onPress }: ChipProps) {
-  const { colors, size } = useTheme();
+  const { colors, size, radius, border } = useTheme();
   // A chip is 32 tall; the slop brings its touch target up to the 44pt minimum.
   const hitSlop = { top: (size.minTouch - size.chip) / 2, bottom: (size.minTouch - size.chip) / 2 };
   const styles = useStyles(createStyles);
   if (onRemove) {
     return (
-      <Touchable onPress={onRemove} hitSlop={hitSlop} accessibilityLabel={removeLabel ?? `Remove ${label}`} style={[styles.chip, styles.menu, { backgroundColor: colors.action }]}>
-        <Text variant="captionStrong" tone="onAction" numberOfLines={1}>{label}</Text>
-        <Icon name="x" size={size.iconSmall} color={colors.onAction} />
+      <Touchable onPress={onRemove} hitSlop={hitSlop} accessibilityLabel={removeLabel ?? `Remove ${label}`}>
+        <Squircle radius={radius.chip} fill={colors.action} stroke={colors.action} strokeWidth={border.thin} style={[styles.chip, styles.menu]}>
+          <Text variant="captionStrong" tone="onAction" numberOfLines={1}>{label}</Text>
+          <Icon name="x" size={size.iconSmall} color={colors.onAction} />
+        </Squircle>
       </Touchable>
     );
   }
@@ -42,10 +45,12 @@ export function Chip({ label, selected = false, menu = false, onBrand = false, a
       accessibilityRole={menu ? 'button' : 'tab'}
       accessibilityLabel={accessibilityLabel}
       accessibilityState={menu ? undefined : { selected }}
-      style={[styles.chip, menu ? styles.menu : null, selected ? { backgroundColor: colors.action } : null, onBrand ? { borderColor: INK } : null]}
     >
-      <Text variant={menu ? 'captionStrong' : 'caption'} tone={selected ? 'onAction' : 'default'} numberOfLines={1} style={onBrand ? { color: INK } : null}>{label}</Text>
-      {menu ? <Icon name="chevron-down" size={size.iconSmall} color={onBrand ? INK : selected ? colors.onAction : colors.text} /> : null}
+      {/* Smooth corners, as the reference's chips have: drawn, since a border radius cannot make them. */}
+      <Squircle radius={radius.chip} fill={selected ? colors.action : undefined} stroke={onBrand ? INK : selected ? colors.action : colors.border} strokeWidth={border.thin} style={[styles.chip, menu ? styles.menu : null]}>
+        <Text variant={menu ? 'captionStrong' : 'caption'} tone={selected ? 'onAction' : 'default'} numberOfLines={1} style={onBrand ? { color: INK } : null}>{label}</Text>
+        {menu ? <Icon name="chevron-down" size={size.iconSmall} color={onBrand ? INK : selected ? colors.onAction : colors.text} /> : null}
+      </Squircle>
     </Touchable>
   );
 }
@@ -74,15 +79,12 @@ export function ChipRow({ children, inset = false }: ChipRowProps) {
   );
 }
 
-const createStyles = ({ colors, radius, size, space, border }: Theme) =>
+const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     chip: {
       minHeight: size.chip,
       minWidth: 88,
       paddingHorizontal: space.lg,
-      borderRadius: radius.chip,
-      borderWidth: border.thin,
-      borderColor: colors.border,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',

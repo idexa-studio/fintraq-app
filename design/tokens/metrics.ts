@@ -79,6 +79,8 @@ export const SIZE = {
   icon: 24,
   iconSmall: 20,
   iconLarge: 28,
+  /** Tab bar icons: about 23pt of ink, as measured in the reference. */
+  iconTab: 30,
   iconCircle: 40,
   illustrationTile: 64,
   /** The small outlined mark at the corner of a card (reference: 32). */

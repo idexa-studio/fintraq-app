@@ -1,5 +1,5 @@
 import { OFFERED_COLORS } from '@/shared/contracts/pickers';
-import { accountStack, dayPart, distinctColors, firstName, looksSame, monthShape } from '@/features/home/home-rules';
+import { accountStack, distinctColors, firstName, looksSame, monthShape } from '@/features/home/home-rules';
 
 const account = (id: number, balance: number) => ({ id, balance });
 
@@ -40,15 +40,6 @@ describe('home rules', () => {
   it('takes the first word of a name', () => {
     expect(firstName('  Sarah Mitchell ')).toBe('Sarah');
     expect(firstName('')).toBe('');
-  });
-
-  it('greets by the part of the day', () => {
-    expect(dayPart(5)).toBe('morning');
-    expect(dayPart(11)).toBe('morning');
-    expect(dayPart(12)).toBe('afternoon');
-    expect(dayPart(16)).toBe('afternoon');
-    expect(dayPart(17)).toBe('evening');
-    expect(dayPart(2)).toBe('evening');
   });
 
   // Offered colours stand in for saved ones; a near match is the same colour nudged a little on every channel.

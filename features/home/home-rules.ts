@@ -82,9 +82,3 @@ export function monthShape(income: number, expense: number): MonthShape {
 
 /** The name a person is greeted or labelled by when there is room for one word. */
 export const firstName = (name: string): string => name.trim().split(/\s+/)[0] ?? '';
-
-/** The part of the day a greeting names. */
-export type DayPart = 'morning' | 'afternoon' | 'evening';
-
-/** Morning until noon, afternoon until five, evening after that and through the night. */
-export const dayPart = (hour: number): DayPart => (hour >= 5 && hour < 12 ? 'morning' : hour >= 12 && hour < 17 ? 'afternoon' : 'evening');
