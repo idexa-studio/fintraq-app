@@ -41,7 +41,8 @@ export function ListRow({ title, subtitle, icon, leading, strong = false, value,
       {leading ?? (icon ? <Icon name={icon} color={disabled ? colors.onDisabled : destructive ? colors.danger : colors.text} /> : null)}
       <View style={styles.text}>
         <Text variant={strong ? 'bodyStrong' : 'body'} tone={tone} numberOfLines={oneLine ? 1 : 2}>{title}</Text>
-        {subtitle ? <Text variant="callout" tone={disabled ? 'disabled' : 'muted'} numberOfLines={oneLine ? 1 : 2}>{subtitle}</Text> : null}
+        {/* A third line is only ever reached at a large font size, where two would cut a due date short. */}
+        {subtitle ? <Text variant="callout" tone={disabled ? 'disabled' : 'muted'} numberOfLines={oneLine ? 1 : 3}>{subtitle}</Text> : null}
       </View>
       {/* A figure is never cut short: it shrinks to fit, and may take up to half the row. */}
       {value ? <Text variant="amount" tone={disabled ? 'disabled' : valueTone} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} style={styles.value}>{ltr(value)}</Text> : null}
