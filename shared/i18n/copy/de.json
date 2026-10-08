@@ -1,0 +1,1810 @@
+{
+  "accounts": {
+    "title": "Konten",
+    "add": "Konto hinzufügen",
+    "back": "Zurück",
+    "close": "Schließen",
+    "default": "Standard",
+    "groups": {
+      "bank": "Bankkonten",
+      "cash": "Bargeld",
+      "savings": "Ersparnisse",
+      "credit_card": "Kreditkarten",
+      "ewallet": "Wallets",
+      "investment": "Geldanlagen",
+      "loan": "Darlehen"
+    },
+    "netWorth": {
+      "title": "Nettovermögen",
+      "have": "Du hast",
+      "owe": "Du schuldest",
+      "currency": "Währung"
+    },
+    "empty": {
+      "title": "Noch keine Konten",
+      "body": "Ein Konto ist dort, wo Geld liegt: Bargeld, ein Bankkonto, eine Karte. Füge eines hinzu, um mit dem Erfassen zu beginnen."
+    },
+    "account": {
+      "notFound": "Dieses Konto gibt es nicht mehr",
+      "manage": "Konto verwalten",
+      "moneyIn": "Eingänge",
+      "moneyOut": "Ausgänge",
+      "addTransaction": "Buchung hinzufügen",
+      "transfer": "Umbuchung",
+      "recent": "Zuletzt",
+      "seeAll": "Alle ansehen",
+      "noActivityTitle": "Hier ist noch nichts erfasst",
+      "noActivityBody": "Was du diesem Konto hinzufügst, erscheint hier.",
+      "edit": "Details bearbeiten",
+      "makeDefault": "Als Standard verwenden",
+      "makeDefaultHint": "Neue Buchungen starten auf diesem Konto",
+      "isDefault": "Neue Buchungen starten bereits auf diesem Konto",
+      "madeDefault": "{{name}} ist jetzt dein Standardkonto",
+      "delete": "Konto löschen",
+      "inUse": {
+        "transactions_one": "Enthält {{count}} Buchung und kann deshalb nicht gelöscht werden",
+        "transactions_other": "Enthält {{count}} Buchungen und kann deshalb nicht gelöscht werden",
+        "loans_one": "Wird von {{count}} Darlehen verwendet und kann deshalb nicht gelöscht werden",
+        "loans_other": "Wird von {{count}} Darlehen verwendet und kann deshalb nicht gelöscht werden"
+      },
+      "deleteTitle": "{{name}} löschen?",
+      "deleteBody": "Darauf ist nichts erfasst, es verschwindet also nur das Konto. Das lässt sich nicht rückgängig machen.",
+      "deleteConfirm": "Konto löschen",
+      "deleteCancel": "Behalten",
+      "deleted": "{{name}} gelöscht",
+      "failed": "Das hat nicht geklappt",
+      "failedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
+      "ok": "OK"
+    },
+    "form": {
+      "newTitle": "Neues Konto",
+      "editTitle": "Konto bearbeiten",
+      "name": "Name",
+      "namePlaceholder": "Alltag",
+      "type": "Was für ein Konto ist es?",
+      "typeLocked": "{{kind}}. Die Art steht fest, sobald das Konto angelegt ist.",
+      "currency": "Währung",
+      "currencyLocked": "In {{currency}}. Das lässt sich nicht mehr ändern, sobald das Konto Buchungen hat.",
+      "opening": "Heute darauf",
+      "balance": "Kontostand",
+      "balanceHelper": "Der Kontostand folgt dem, was du auf dem Konto erfasst.",
+      "colour": "Farbe",
+      "more": "Inhaber und Kontonummer hinzufügen",
+      "moreHint": "Optional, um Konten auseinanderzuhalten",
+      "holder": "Inhaber",
+      "number": "Kontonummer",
+      "numberHelper": "Es werden immer nur die letzten vier Zeichen angezeigt",
+      "pick": {
+        "currency": "Welche Währung?"
+      },
+      "searchCurrency": "Währungen suchen",
+      "currencies": {
+        "yours": "Deine",
+        "all": "Alle Währungen"
+      },
+      "noCurrency": "Keine Währung passt zu „{{query}}“",
+      "create": "Konto hinzufügen",
+      "save": "Änderungen speichern",
+      "blocked": {
+        "name": "Gib dem Konto einen Namen, um zu speichern",
+        "balance": "Gib den Anfangsstand als Zahl ein, null oder mehr"
+      },
+      "created": "Konto hinzugefügt",
+      "changesSaved": "Änderungen gespeichert",
+      "saveFailed": "Speichern nicht möglich",
+      "saveFailedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
+      "ok": "OK",
+      "discard": {
+        "title": "Dieses Konto verwerfen?",
+        "titleEdit": "Deine Änderungen verwerfen?",
+        "body": "Was du eingegeben hast, wird nicht gespeichert.",
+        "confirm": "Verwerfen",
+        "cancel": "Weiter bearbeiten"
+      }
+    }
+  },
+  "activity": {
+    "title": "Aktivität",
+    "search": "Suche",
+    "kinds": {
+      "all": "Alle",
+      "expense": "Ausgaben",
+      "income": "Einnahmen",
+      "transfer": "Umbuchungen"
+    },
+    "kindLabel": "Anzeigen",
+    "summary": {
+      "title": {
+        "all": "Alles Erfasste",
+        "expense": "Alle Ausgaben",
+        "income": "Alle Einnahmen",
+        "transfer": "Alle Umbuchungen"
+      },
+      "narrowed": {
+        "all": "In dieser Liste",
+        "expense": "Ausgaben in dieser Liste",
+        "income": "Einnahmen in dieser Liste",
+        "transfer": "Umbuchungen in dieser Liste"
+      },
+      "moneyIn": "Eingänge",
+      "moneyOut": "Ausgänge",
+      "currency": "Währung"
+    },
+    "filter": {
+      "open": "Filtern",
+      "openCount_one": "Filtern, {{count}} aktiv",
+      "openCount_other": "Filtern, {{count}} aktiv",
+      "title": "Filtern",
+      "dates": "Zeitraum",
+      "account": "Konto",
+      "category": "Kategorie",
+      "person": "Person",
+      "any": "Beliebig",
+      "anyTime": "Jederzeit",
+      "done": "Fertig",
+      "clear": "Alle entfernen",
+      "remove": "{{name}} entfernen",
+      "from": "Von",
+      "to": "Bis",
+      "pickFrom": "Ab welchem Tag?",
+      "pickTo": "Bis zu welchem Tag?",
+      "open_end": "Beliebig"
+    },
+    "periods": {
+      "all": "Jederzeit",
+      "thisMonth": "Dieser Monat",
+      "lastMonth": "Letzter Monat",
+      "last30": "Letzte 30 Tage",
+      "thisYear": "Dieses Jahr",
+      "custom": "Zwischen zwei Daten"
+    },
+    "customRange": "{{from}} bis {{to}}",
+    "since": "Seit {{from}}",
+    "until": "Bis {{to}}",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "emptyTitle": "Noch keine Buchungen",
+    "emptyBody": "Füge hinzu, was du ausgibst und einnimmst, dann erscheint es hier.",
+    "emptyAction": "Füge deine erste Buchung hinzu",
+    "noMatchTitle": "Keine Treffer",
+    "noMatchBody": "Davon gibt es hier noch nichts.",
+    "noMatchAction": "Alles anzeigen"
+  },
+  "backup": {
+    "title": "Backup",
+    "back": "Zurück",
+    "connect": {
+      "title": "Bewahre eine Kopie in deinem Google Drive auf",
+      "body": "Fintraq speichert zweimal täglich ein Backup in einem privaten Ordner deines eigenen Drive. Melde dich auf einem neuen Handy an und alles ist wieder da.",
+      "action": "Google Drive verbinden",
+      "private": "Nur Fintraq kann diesen Ordner lesen. Das Backup läuft nie über jemand anderen."
+    },
+    "state": {
+      "today": "Heute um {{time}} gesichert",
+      "yesterday": "Gestern um {{time}} gesichert",
+      "earlier": "Am {{date}} gesichert",
+      "none": "Noch kein Backup",
+      "noneBody": "Sichere jetzt, oder schalte unten das automatische Backup ein.",
+      "where": "Im Drive von {{email}}",
+      "whereSize": "Im Drive von {{email}} · {{size}}",
+      "checking": "Dein Drive wird geprüft"
+    },
+    "phone": "Dieses Handy",
+    "drive": {
+      "label": "Dein Drive",
+      "title": "In deinem Google Drive",
+      "hint": "Automatisch, zweimal täglich, ohne daran denken zu müssen",
+      "badge": "Pro",
+      "lockedTitle": "Sichern, ohne daran zu denken",
+      "lockedBody": "Fintraq speichert zweimal täglich in einem privaten Ordner deines eigenen Drive und holt auf einem neuen Handy alles zurück.",
+      "seePro": "Fintraq Pro ansehen"
+    },
+    "icloud": {
+      "title": "In deiner iCloud",
+      "soonTitle": "Das iCloud-Backup ist unterwegs",
+      "soonBody": "Bis dahin speichere oben eine Backup-Datei und bewahre sie sicher auf, zum Beispiel in iCloud Drive."
+    },
+    "file": {
+      "title": "Auf diesem Handy",
+      "hint": "Eine Datei, die du selbst aufbewahrst, wann immer du willst",
+      "save": "Backup-Datei speichern",
+      "saveHint": "Alles in einer Datei, zum Aufbewahren oder An-dich-selbst-Senden",
+      "restore": "Aus einer Datei wiederherstellen",
+      "restoreHint": "Ersetzt alles auf diesem Handy",
+      "shareTitle": "Speichere dein Fintraq-Backup",
+      "confirmTitle": "Alles auf diesem Handy ersetzen?",
+      "confirmBody": "Fintraq enthält dann genau das, was das Backup vom {{date}} enthält: {{accounts}} Konten und {{transactions}} Buchungen. Alles danach Erfasste geht verloren.",
+      "confirm": "Wiederherstellen",
+      "keep": "Behalten, was ich habe",
+      "restoredTitle": "Wiederhergestellt",
+      "restoredBody": "Fintraq enthält jetzt das Backup vom {{date}}. Die App muss neu starten, um es anzuzeigen.",
+      "restart": "Neu starten",
+      "manualTitle": "Schließe Fintraq und öffne es wieder",
+      "manualBody": "Deine Daten wurden wiederhergestellt, aber Fintraq konnte nicht selbst neu starten. Schließe die App ganz und öffne sie wieder, um alles zu sehen.",
+      "failed": {
+        "save": "Die Backup-Datei wurde nicht erstellt",
+        "restore": "Es wurde nichts wiederhergestellt",
+        "busy": "Ein Backup oder eine Wiederherstellung läuft bereits. Warte, bis es fertig ist, und versuch es dann noch einmal.",
+        "unreadable": "Diese Datei ist kein Fintraq-Backup oder sie ist beschädigt. Auf diesem Handy wurde nichts geändert.",
+        "unknown": "Etwas ist schiefgegangen. Auf diesem Handy ist alles wie zuvor. Versuch es gleich noch einmal."
+      }
+    },
+    "stage": {
+      "preparing": "Deine Daten werden vorbereitet",
+      "uploading": "Wird an Google Drive gesendet",
+      "uploadingPct": "Wird an Google Drive gesendet · {{pct}} %",
+      "finishing": "Wird abgeschlossen",
+      "done": "Gesichert",
+      "locating": "Dein Backup wird gesucht",
+      "downloading": "Dein Backup wird geladen",
+      "downloadingPct": "Dein Backup wird geladen · {{pct}} %",
+      "restoring": "Deine Daten werden zurückgelegt",
+      "restored": "Wiederhergestellt"
+    },
+    "running": {
+      "backup": "Backup läuft · {{percent}} %",
+      "restore": "Wiederherstellung läuft · {{percent}} %"
+    },
+    "backUp": "Jetzt sichern",
+    "restore": "Wiederherstellen",
+    "done": {
+      "backup": "In deinem Drive gesichert",
+      "disconnected": "Google Drive getrennt",
+      "connected": "Google Drive verbunden"
+    },
+    "overdue": {
+      "title": "Das automatische Backup läuft nicht mehr",
+      "body": "Vielleicht schließt dein Handy Fintraq im Hintergrund. Erlaube der App, uneingeschränkt zu laufen, und sichere dann jetzt.",
+      "link": "Akku-Einstellungen öffnen"
+    },
+    "other": {
+      "title": "Dieses Backup stammt von einem anderen Handy",
+      "body": "Es wurde am {{date}} erstellt und hier nicht wiederhergestellt. Stelle es wieder her, oder sichere jetzt, um es durch den Stand dieses Handys zu ersetzen."
+    },
+    "auto": {
+      "title": "Automatisch",
+      "label": "Automatisch sichern",
+      "on": "Zweimal täglich, im Hintergrund",
+      "onNext": "Zweimal täglich. Das nächste gegen {{time}}.",
+      "off": "Aus. Fintraq sichert nur, wenn du es verlangst.",
+      "battery": "Am Laufen halten",
+      "batteryHint": "Verhindere, dass dein Handy Fintraq zwischen Backups schließt",
+      "batteryManual": "Öffne die Einstellungen deines Handys, dann Apps, Fintraq, Akku, und wähle „Nicht eingeschränkt“.",
+      "blockedTitle": "Das automatische Backup braucht Mitteilungen",
+      "blockedBody": "So sagt dir Fintraq, wenn ein Backup scheitert oder Drive neu verbunden werden muss. Erlaube Mitteilungen und schalte es dann ein.",
+      "openSettings": "Einstellungen öffnen",
+      "promptTitle": "Backups am Laufen halten",
+      "promptBody": "Manche Handys schließen Apps im Hintergrund, um Akku zu sparen. Das stoppt das automatische Backup. Erlaube Fintraq, uneingeschränkt zu laufen.",
+      "promptYes": "Akku-Einstellungen öffnen",
+      "promptNo": "Nicht jetzt"
+    },
+    "account": {
+      "title": "Google-Konto",
+      "drive": "Backups gehen in dieses Drive",
+      "disconnect": "Google Drive trennen",
+      "confirmTitle": "Google Drive trennen?",
+      "confirmBody": "Das automatische Backup stoppt. Das Backup, das schon in deinem Drive liegt, bleibt dort, und alles auf diesem Handy ebenso.",
+      "confirm": "Trennen",
+      "keep": "Verbunden bleiben"
+    },
+    "replace": {
+      "title": "Das Backup eines anderen Handys ersetzen?",
+      "body": "In deinem Drive liegt ein Backup vom {{date}}, das hier nie wiederhergestellt wurde. Wenn du jetzt sicherst, wird es durch den Stand dieses Handys ersetzt, und was nur in jenem Backup steht, geht verloren.",
+      "confirm": "Ersetzen",
+      "keep": "Dieses Backup behalten"
+    },
+    "restoreConfirm": {
+      "title": "Alles auf diesem Handy ersetzen?",
+      "body": "Fintraq enthält dann genau das, was das Backup vom {{date}} enthält. Alles danach Erfasste geht verloren.",
+      "confirm": "Wiederherstellen",
+      "keep": "Behalten, was ich habe"
+    },
+    "restored": {
+      "title": "Wiederhergestellt",
+      "body": "Fintraq enthält jetzt das Backup vom {{date}}. Die App muss neu starten, um es anzuzeigen.",
+      "restart": "Neu starten",
+      "manualTitle": "Schließe Fintraq und öffne es wieder",
+      "manualBody": "Deine Daten wurden wiederhergestellt, aber Fintraq konnte nicht selbst neu starten. Schließe die App ganz und öffne sie wieder, um alles zu sehen."
+    },
+    "failed": {
+      "backup": "Das Backup wurde nicht erstellt",
+      "restore": "Es wurde nichts wiederhergestellt",
+      "connect": "Google Drive wurde nicht verbunden",
+      "disconnect": "Google Drive ist noch verbunden",
+      "auto": "Das automatische Backup wurde nicht geändert",
+      "reconnect": "Neu verbinden",
+      "why": {
+        "busy": "Ein Backup oder eine Wiederherstellung läuft bereits. Warte, bis es fertig ist, und versuch es dann noch einmal.",
+        "signedOut": "Fintraq ist nicht mehr bei deinem Google-Konto angemeldet. Verbinde neu und versuch es dann noch einmal.",
+        "permission": "Fintraq hat keinen Zugriff auf seinen Ordner in deinem Drive bekommen. Verbinde neu und erlaube den Zugriff.",
+        "offline": "Google Drive war nicht erreichbar. Prüfe deine Verbindung und versuch es noch einmal.",
+        "noBackup": "Im Drive von {{email}} gibt es kein Fintraq-Backup. Prüfe, ob das das Konto ist, in dem du gesichert hast.",
+        "needsPro": "Das Backup in Google Drive gehört zu Fintraq Pro.",
+        "damaged": "Das Backup in deinem Drive ließ sich nicht lesen, deshalb wurde auf diesem Handy nichts geändert. Sichere erneut von dem Handy, das deine Daten noch hat.",
+        "unknown": "Unterwegs ist etwas schiefgegangen. Auf diesem Handy ist alles wie zuvor. Versuch es gleich noch einmal."
+      }
+    }
+  },
+  "categories": {
+    "title": "Kategorien",
+    "back": "Zurück",
+    "close": "Schließen",
+    "add": "Kategorie hinzufügen",
+    "kindLabel": "Art",
+    "kinds": {
+      "DR": "Ausgaben",
+      "CR": "Einnahmen",
+      "TR": "Umbuchungen"
+    },
+    "search": "Kategorien suchen",
+    "noMatch": "Keine Kategorie passt zu „{{query}}“",
+    "builtIn": {
+      "title": "Eingebaut",
+      "hint": "Wird von der App selbst verwendet und kann deshalb weder geändert noch gelöscht werden"
+    },
+    "empty": {
+      "DR": {
+        "title": "Noch keine Ausgabenkategorien",
+        "body": "Eine Kategorie sagt, wofür Geld ausgegeben wurde, etwa Miete oder Lebensmittel."
+      },
+      "CR": {
+        "title": "Noch keine Einnahmenkategorien",
+        "body": "Eine Kategorie sagt, woher Geld kam, etwa Gehalt oder eine Erstattung."
+      },
+      "TR": {
+        "title": "Noch keine Umbuchungskategorien",
+        "body": "Umbuchungen brauchen keine, aber du kannst die Gründe benennen, aus denen du Geld verschiebst."
+      }
+    },
+    "form": {
+      "newTitle": "Neue Kategorie",
+      "editTitle": "Kategorie bearbeiten",
+      "name": "Name",
+      "namePlaceholder": "Lebensmittel",
+      "colour": "Farbe",
+      "usedFor": "Verwendet für:",
+      "icon": "Symbol:",
+      "iconGroups": {
+        "finance": "Geld",
+        "foodDrink": "Essen und Trinken",
+        "transport": "Unterwegs",
+        "homeUtilities": "Zuhause",
+        "healthFitness": "Gesundheit",
+        "tech": "Geräte",
+        "shopping": "Einkaufen",
+        "entertainment": "Freizeit",
+        "education": "Lernen",
+        "personal": "Persönliches",
+        "misc": "Alles andere"
+      },
+      "create": "Kategorie hinzufügen",
+      "save": "Änderungen speichern",
+      "blocked": {
+        "name": "Gib der Kategorie einen Namen, um zu speichern",
+        "kind": "Wähle, wofür sie verwendet wird, um zu speichern"
+      },
+      "created": "Kategorie hinzugefügt",
+      "changesSaved": "Änderungen gespeichert",
+      "saveFailed": "Speichern nicht möglich",
+      "saveFailedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
+      "ok": "OK",
+      "notFound": "Diese Kategorie gibt es nicht mehr",
+      "delete": "Kategorie löschen",
+      "inUse": {
+        "transactions_one": "Wird von {{count}} Buchung verwendet und kann deshalb nicht gelöscht werden",
+        "transactions_other": "Wird von {{count}} Buchungen verwendet und kann deshalb nicht gelöscht werden",
+        "loans_one": "Wird von {{count}} Darlehen verwendet und kann deshalb nicht gelöscht werden",
+        "loans_other": "Wird von {{count}} Darlehen verwendet und kann deshalb nicht gelöscht werden"
+      },
+      "deleteTitle": "{{name}} löschen?",
+      "deleteBody": "Nichts verwendet sie, es verschwindet also nur die Kategorie. Das lässt sich nicht rückgängig machen.",
+      "deleteConfirm": "Kategorie löschen",
+      "deleteCancel": "Behalten",
+      "deleted": "{{name}} gelöscht",
+      "discard": {
+        "title": "Diese Kategorie verwerfen?",
+        "titleEdit": "Deine Änderungen verwerfen?",
+        "body": "Was du eingegeben hast, wird nicht gespeichert.",
+        "confirm": "Verwerfen",
+        "cancel": "Weiter bearbeiten"
+      }
+    }
+  },
+  "common": {
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "seeAll": "Alle ansehen",
+    "back": "Zurück",
+    "unexpectedError": "Etwas ist schiefgegangen",
+    "charactersLeft_one": "Noch {{count}} Zeichen",
+    "charactersLeft_other": "Noch {{count}} Zeichen",
+    "pro": {
+      "badge": "Pro",
+      "see": "Fintraq Pro ansehen",
+      "also": "Auch in Pro"
+    },
+    "colors": {
+      "forest": "Grün",
+      "teal": "Türkis",
+      "blue": "Blau",
+      "purple": "Lila",
+      "pink": "Rosa",
+      "red": "Rot",
+      "orange": "Orange",
+      "slate": "Grau",
+      "current": "Aktuelle Farbe"
+    },
+    "accountTypes": {
+      "cash": "Bargeld",
+      "bank": "Bankkonto",
+      "savings": "Ersparnisse",
+      "credit_card": "Kreditkarte",
+      "investment": "Geldanlage",
+      "loan": "Darlehen",
+      "ewallet": "Wallet"
+    }
+  },
+  "export": {
+    "dialog": {
+      "share": "Tabelle teilen",
+      "save": "Tabelle speichern"
+    },
+    "title": "Export",
+    "back": "Zurück",
+    "file": {
+      "count_one": "{{count}} Buchung",
+      "count_other": "{{count}} Buchungen",
+      "counting": "Wird gezählt",
+      "none": "Nichts zu exportieren",
+      "scope": "{{from}} bis {{to}} · {{account}}",
+      "columns": {
+        "date": "Datum",
+        "what": "Was",
+        "amount": "Betrag"
+      },
+      "more_one": "und {{count}} weitere Zeile",
+      "more_other": "und {{count}} weitere Zeilen",
+      "empty": "Keine Zeilen für diese Auswahl",
+      "loans": "Deine Darlehen werden als zusätzliche Zeilen angefügt",
+      "format": "Eine .csv-Datei. Sie lässt sich in Excel, Numbers und Google Sheets öffnen.",
+      "label": "Eine Vorschau der Tabelle"
+    },
+    "choose": {
+      "title": "Was hineinkommt",
+      "hint": "Die Vorschau oben folgt deiner Auswahl",
+      "period": "Zeitraum",
+      "periods": {
+        "d7": "7 Tage",
+        "d30": "30 Tage",
+        "d90": "90 Tage",
+        "d365": "12 Monate",
+        "custom": "Eigener"
+      },
+      "from": "Von",
+      "to": "Bis",
+      "pickFrom": "Erster Tag",
+      "pickTo": "Letzter Tag",
+      "done": "Fertig",
+      "kind": "Art",
+      "kinds": {
+        "all": "Alles",
+        "expense": "Ausgaben",
+        "income": "Einnahmen",
+        "transfer": "Umbuchungen"
+      },
+      "account": "Konto",
+      "allAccounts": "Alle Konten",
+      "loans": "Darlehen einschließen",
+      "loansHint": "Was du verliehen und geliehen hast, als zusätzliche Zeilen"
+    },
+    "save": "Auf diesem Handy speichern",
+    "saveIos": "In Dateien speichern",
+    "share": "Teilen",
+    "blocked": {
+      "counting": "Passendes wird gezählt",
+      "nothing": "Nichts passt zu dieser Auswahl. Erweitere den Zeitraum oder die Art."
+    },
+    "done": {
+      "saved": "{{name}} gespeichert"
+    },
+    "failed": {
+      "title": "Die Datei wurde nicht erstellt",
+      "save": "Die Datei wurde nicht gespeichert",
+      "share": "Die Datei wurde nicht geteilt",
+      "body": "Es wurde nichts geändert. Prüfe, ob auf diesem Handy Platz frei ist, und versuch es noch einmal."
+    }
+  },
+  "firstRun": {
+    "welcome": {
+      "title": "Wisse, wohin dein Geld geht",
+      "body": "Erfasse, was du ausgibst und einnimmst, und sieh, wohin es ging. Alles bleibt auf diesem Handy.",
+      "points": {
+        "free": "Erfassen ist kostenlos, ohne Limit",
+        "private": "Kein Konto nötig, nichts wird irgendwohin gesendet",
+        "quick": "In unter einer Minute eingerichtet"
+      },
+      "picture": "Drei Konten als Karten in einem Portemonnaie, so wie Fintraq sie zeigt",
+      "sample": {
+        "savings": "Ersparnisse",
+        "bank": "Bankkonto",
+        "cash": "Bargeld",
+        "everyday": "Tägliche Ausgaben"
+      },
+      "start": "Los geht’s",
+      "restore": "Ich habe ein Backup"
+    },
+    "setup": {
+      "title": "Fintraq einrichten",
+      "back": "Zurück",
+      "you": "Du:",
+      "name": {
+        "label": "Name",
+        "hint": "Nur um dich zu begrüßen. Er verlässt dieses Handy nie."
+      },
+      "currency": {
+        "label": "Deine Hauptwährung:",
+        "hint": "Summen werden darin angezeigt. Tippe zum Ändern."
+      },
+      "account": {
+        "label": "Dein erstes Konto:",
+        "name": "Name",
+        "balance": "Kontostand",
+        "zero": "0,00",
+        "balanceHint": "Was jetzt darauf ist. Leer lassen, um bei null zu beginnen."
+      },
+      "finish": "Fintraq öffnen",
+      "blocked": {
+        "name": "Gib deinen Namen ein, um fortzufahren",
+        "accountName": "Gib dem Konto einen Namen",
+        "balance": "Dieser Kontostand ist keine Zahl"
+      },
+      "failedTitle": "Die Einrichtung wurde nicht abgeschlossen",
+      "failedBody": "Nichts ist verloren. Versuch es noch einmal, es geht dort weiter, wo es stehen blieb."
+    },
+    "restore": {
+      "title": "Hol deine Daten zurück",
+      "back": "Zurück",
+      "body": "Aus deinem Google Drive oder aus einer Backup-Datei, die du gespeichert hast. Fintraq holt alles zurück, was darin ist.",
+      "bodyFileOnly": "Aus einer Backup-Datei, die du gespeichert hast. Fintraq holt alles zurück, was darin ist.",
+      "file": "Backup-Datei auswählen",
+      "phone": "Dieses Handy",
+      "drive": "Dein Drive",
+      "connect": "Aus Google Drive wiederherstellen",
+      "working": "Wiederherstellung läuft · {{percent}} %",
+      "fresh": "Lieber neu beginnen",
+      "failed": {
+        "title": "Es wurde nichts wiederhergestellt",
+        "noBackup": "Im Drive von {{email}} gibt es kein Fintraq-Backup. Versuch ein anderes Konto, oder beginne neu.",
+        "needsPro": "Das Wiederherstellen aus Google Drive gehört zu Fintraq Pro. Wenn du es gekauft hast, stelle zuerst deinen Kauf wieder her.",
+        "unreadable": "Diese Datei ist kein Fintraq-Backup oder sie ist beschädigt. Es wurde nichts geändert.",
+        "offline": "Google Drive war nicht erreichbar. Prüfe deine Verbindung und versuch es noch einmal.",
+        "other": "Unterwegs ist etwas schiefgegangen. Auf diesem Handy wurde nichts geändert. Versuch es noch einmal.",
+        "seePro": "Fintraq Pro ansehen"
+      }
+    },
+    "reminder": {
+      "title": "Jeden Abend eine kleine Erinnerung?",
+      "body": "Fintraq kann dich um 20 Uhr daran erinnern, den Tag zu erfassen, bevor die Details verblassen. Du kannst die Uhrzeit in den Einstellungen ändern oder die Erinnerung ausschalten.",
+      "sample": {
+        "app": "Fintraq · 20:00",
+        "label": "So sieht die Erinnerung aus"
+      },
+      "yes": "Erinnere mich",
+      "no": "Nicht jetzt",
+      "deniedTitle": "Mitteilungen sind für Fintraq ausgeschaltet",
+      "deniedBody": "Die Erinnerung wurde nicht eingeschaltet. Du kannst Mitteilungen erlauben und sie in den Einstellungen einschalten.",
+      "carryOn": "Weiter"
+    }
+  },
+  "home": {
+    "greeting": "Hallo {{name}}",
+    "greetingNoName": "Hallo",
+    "search": "Suche",
+    "settings": "Einstellungen",
+    "balance": {
+      "allAccounts": "Alle Konten",
+      "currency": "Währung",
+      "addExpense": "Ausgabe hinzufügen",
+      "addIncome": "Einnahme hinzufügen",
+      "openAccounts": "Konten",
+      "summary_one": "Auf {{count}} Konto",
+      "summary_other": "Auf {{count}} Konten",
+      "scope_one": "Auf {{count}} Konto in {{currency}}",
+      "scope_other": "Auf {{count}} Konten in {{currency}}"
+    },
+    "start": {
+      "title": "Erste Schritte",
+      "hint": "{{done}} von {{total}} erledigt. Tippe auf den nächsten.",
+      "hide": "Ausblenden",
+      "steps": {
+        "account": "Füge dein erstes Konto hinzu",
+        "transaction": "Erfasse eine Ausgabe",
+        "reminder": "Schalte die tägliche Erinnerung ein",
+        "secondAccount": "Füge ein zweites Konto hinzu",
+        "backup": "Sichere in Google Drive"
+      }
+    },
+    "prompt": {
+      "pro": {
+        "title": "In Fintraq Pro steckt mehr",
+        "body": "Suche, Export, tiefere Einblicke und automatisches Backup. Einmal zahlen oder monatlich.",
+        "link": "Fintraq Pro ansehen",
+        "dismiss": "Nicht jetzt"
+      },
+      "backup": {
+        "title": "Deine Daten liegen nur auf diesem Handy",
+        "body": "Bewahre eine Kopie in deinem eigenen Google Drive auf, zweimal täglich aktualisiert.",
+        "link": "Backup einrichten",
+        "dismiss": "Nicht jetzt"
+      }
+    },
+    "quick": {
+      "title": "Schnellaktionen",
+      "transfer": "Umbuchung",
+      "hint": "Abkürzungen zu dem, was du oft machst",
+      "transferDetail": "Verschiebe Geld zwischen deinen Konten",
+      "lend": "Verleihen oder leihen",
+      "lendDetail": "Behalte verliehenes und geliehenes Geld im Blick"
+    },
+    "month": {
+      "title": "Dieser Monat",
+      "hint": "Was hereinkam, was hinausging und was übrig ist",
+      "link": "Einblicke",
+      "moneyIn": "Eingänge",
+      "moneyOut": "Ausgänge",
+      "kept": "Du hast {{percent}} % von dem behalten, was hereinkam",
+      "keptLabel": "behalten",
+      "spentAll": "Du hast alles ausgegeben, was hereinkam",
+      "spentMore": "Du hast mehr ausgegeben, als hereinkam",
+      "onlySpending": "Diesen Monat sind noch keine Einnahmen erfasst",
+      "nothing": "Diesen Monat ist noch nichts erfasst",
+      "progress": "Ausgegebener Anteil der Einnahmen"
+    },
+    "accounts": {
+      "title": "Konten",
+      "hint": "Tippe auf eine Karte, um sie zu öffnen",
+      "more_one": "und {{count}} weiteres Konto",
+      "more_other": "und {{count}} weitere Konten",
+      "emptyTitle": "Halte Bargeld, Bank und Karten getrennt",
+      "emptyBody": "Ein Konto reicht für den Anfang.",
+      "emptyAction": "Konto hinzufügen"
+    },
+    "recent": {
+      "title": "Zuletzt",
+      "hint": "Was du zuletzt erfasst hast",
+      "emptyTitle": "Deine Ausgaben erscheinen hier",
+      "emptyBody": "Füge hinzu, was du ausgibst und einnimmst.",
+      "emptyAction": "Buchung hinzufügen"
+    },
+    "people": {
+      "title": "Personen und Darlehen",
+      "hint": "Was zwischen euch offen ist, aus laufenden Darlehen",
+      "owesYou": "Schuldet dir",
+      "youOwe": "Du schuldest",
+      "settled": "Alles beglichen",
+      "emptyTitle": "Behalte im Blick, wer wem was schuldet",
+      "emptyBody": "Behalte verliehenes, geliehenes oder geteiltes Geld im Blick.",
+      "emptyAction": "Person hinzufügen",
+      "add": "Hinzufügen"
+    }
+  },
+  "insights": {
+    "title": "Einblicke",
+    "currency": "Währung",
+    "periodLabel": "Zeitraum",
+    "periods": {
+      "d7": "7 Tage",
+      "d30": "30 Tage",
+      "d90": "90 Tage",
+      "d365": "12 Monate"
+    },
+    "summary": {
+      "spent": {
+        "d7": "Ausgegeben in den letzten 7 Tagen",
+        "d30": "Ausgegeben in den letzten 30 Tagen",
+        "d90": "Ausgegeben in den letzten 90 Tagen",
+        "d365": "Ausgegeben in den letzten 12 Monaten"
+      },
+      "less": "{{percent}} % weniger als in den {{period}} davor",
+      "more": "{{percent}} % mehr als in den {{period}} davor",
+      "same": "Genauso viel wie in den {{period}} davor",
+      "before": {
+        "d7": "7 Tage",
+        "d30": "30 Tage",
+        "d90": "90 Tage",
+        "d365": "12 Monate"
+      },
+      "moneyIn": "Eingänge",
+      "moneyOut": "Ausgänge",
+      "chart": "Ausgaben im Zeitraum. Der höchste Wert war {{amount}}, {{when}}.",
+      "chartEmpty": "In diesem Zeitraum wurde nichts ausgegeben.",
+      "week": "in der Woche vom {{date}}"
+    },
+    "forecast": {
+      "title": "Wohin der Monat läuft",
+      "hint": "Bei dem Tempo, in dem du diesen Monat ausgibst",
+      "onCourse": "Auf Kurs zu Ausgaben von",
+      "perDay": "Bisher etwa {{amount}} pro Tag.",
+      "start": "1. {{month}}",
+      "end": "{{amount}} im letzten Monat",
+      "today": "Heute",
+      "chart": "{{spent}} % der Summe des letzten Monats ausgegeben, bei {{gone}} % dieses Monats vorbei; auf Kurs zu {{projected}} %.",
+      "noBaseline": "Sobald ein voller Monat erfasst ist, siehst du hier den Vergleich."
+    },
+    "categories": {
+      "title": "Wohin es ging",
+      "hint": "Tippe auf eine Kategorie, um ihre Buchungen zu sehen",
+      "spending": "Ausgaben",
+      "income": "Einnahmen",
+      "kind": "Anzeigen",
+      "spent": "Ausgegeben",
+      "received": "Erhalten",
+      "share": "{{percent}} %",
+      "shareLabel": "{{name}}, {{percent}} Prozent",
+      "ring": "{{kind}} nach Kategorie",
+      "none": "In diesem Zeitraum nichts"
+    },
+    "rhythm": {
+      "title": "Rhythmus",
+      "hint": "An welchen Tagen deine Ausgaben anfallen",
+      "weekdays": "Eine typische Woche",
+      "weekdaysChart": "Durchschnittliche Ausgaben nach Wochentag. Am meisten kostet der {{peak}}.",
+      "weekdaysChartEmpty": "Durchschnittliche Ausgaben nach Wochentag.",
+      "calendar": "Die letzten fünf Wochen",
+      "calendarChart": "Ausgaben pro Tag in den letzten fünf Wochen; dunkler, wo mehr ausgegeben wurde."
+    },
+    "people": {
+      "title": "Mit wem du Geld ausgibst",
+      "hint": "An wen deine Ausgaben gehen"
+    },
+    "findings": {
+      "title": "Gut zu wissen",
+      "hint": "Aus dem herausgesucht, was du erfasst hast",
+      "spendingUp": "Ausgaben {{pct}} % höher",
+      "spendingUpHint": "Im Vergleich zur letzten Woche. Aktivität zeigt, wohin es ging.",
+      "spendingDown": "Ausgaben {{pct}} % niedriger",
+      "spendingDownHint": "Im Vergleich zur letzten Woche.",
+      "incomeUp": "Einnahmen {{pct}} % höher",
+      "incomeDown": "Einnahmen {{pct}} % niedriger",
+      "incomeHint": "Im Vergleich zur letzten Woche.",
+      "keeping": "{{rate}} % der Einnahmen behalten",
+      "keepingUp": "Ein größerer Anteil als letzte Woche.",
+      "keepingDown": "Ein kleinerer Anteil als letzte Woche.",
+      "keepingSame": "Etwa der gleiche Anteil wie letzte Woche.",
+      "categoryUp": "{{name}} {{pct}} % höher",
+      "categoryUpHint": "Mehr, als du dafür sonst in einer Woche ausgibst.",
+      "categoryDown": "{{name}} {{pct}} % niedriger",
+      "categoryDownHint": "Weniger, als du dafür sonst in einer Woche ausgibst.",
+      "week": "Diese Woche bisher",
+      "weekKept": "{{income}} herein · {{expense}} hinaus · {{amount}} behalten",
+      "weekOver": "{{income}} herein · {{expense}} hinaus · {{amount}} zu viel",
+      "bestWeek": "Der höchste Wochenbetrag, den du in den letzten 90 Tagen behalten hast.",
+      "monthAhead": "Diesen Monat mehr herein als hinaus",
+      "monthAheadHint": "Die Einnahmen liegen bisher vor den Ausgaben.",
+      "monthBehind": "Diesen Monat mehr hinaus als herein",
+      "monthBehindHint": "Die Ausgaben liegen bisher vor den Einnahmen."
+    },
+    "locked": {
+      "badge": "Pro",
+      "title": "Sieh warum, nicht nur wie viel",
+      "body": "Längere Zeiträume, was sich geändert hat und wohin der Monat läuft.",
+      "action": "Fintraq Pro ansehen"
+    },
+    "empty": {
+      "title": "Einblicke wachsen mit dem, was du erfasst",
+      "body": "Füge ein paar Buchungen hinzu, dann zeigt dieser Tab, wohin dein Geld geht und wann.",
+      "action": "Buchung hinzufügen"
+    }
+  },
+  "loans": {
+    "back": "Zurück",
+    "close": "Schließen",
+    "title": {
+      "lend": "An {{name}} verliehen",
+      "borrow": "Von {{name}} geliehen",
+      "borrowNoName": "Geliehenes Geld",
+      "lendNoName": "Verliehenes Geld"
+    },
+    "status": {
+      "active": "Aktiv",
+      "overdue": "Überfällig",
+      "repaid": "Zurückgezahlt"
+    },
+    "edit": {
+      "title": "Fälligkeit und Notiz",
+      "save": "Änderungen speichern",
+      "saved": "Darlehen aktualisiert",
+      "unchanged": "Noch nichts geändert"
+    },
+    "loan": {
+      "notFound": "Dieses Darlehen gibt es nicht mehr",
+      "manage": "Darlehen verwalten",
+      "edit": "Fälligkeit oder Notiz ändern",
+      "editHint": "Betrag und Person bleiben wie erfasst",
+      "outstanding": {
+        "lend": "Noch zurückzubekommen",
+        "borrow": "Noch zurückzuzahlen"
+      },
+      "settled": "Alles beglichen",
+      "progress": "{{repaid}} von {{total}} zurückgezahlt",
+      "progressLabel": "Bisher zurückgezahlt",
+      "repay": "Rückzahlung erfassen",
+      "story": "Was bisher geschah",
+      "note": "Notiz",
+      "markRepaid": "Als zurückgezahlt markieren",
+      "markRepaidHint": "Für Geld, das auf anderem Weg beglichen wurde",
+      "markRepaidTitle": "Dieses Darlehen als zurückgezahlt markieren?",
+      "markRepaidBody": "Das schließt das Darlehen, ohne eine Zahlung zu erfassen, es ändert sich also kein Kontostand. Seine Erinnerungen enden.",
+      "markRepaidConfirm": "Als zurückgezahlt markieren",
+      "markedRepaid": "Darlehen als zurückgezahlt markiert",
+      "delete": "Darlehen löschen",
+      "deleteTitle": "Dieses Darlehen löschen?",
+      "deleteBody": "Das Darlehen und seine Erinnerungen verschwinden. Die dafür erfassten Zahlungen bleiben in deinem Verlauf, die Kontostände ändern sich also nicht. Das lässt sich nicht rückgängig machen.",
+      "deleteConfirm": "Darlehen löschen",
+      "cancel": "Behalten",
+      "deleted": "Darlehen gelöscht",
+      "failed": "Das hat nicht geklappt",
+      "failedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
+      "ok": "OK"
+    },
+    "story": {
+      "opened": {
+        "lend": "Du hast verliehen",
+        "borrow": "Du hast geliehen"
+      },
+      "repayment": {
+        "lend": "Zurückgekommen",
+        "borrow": "Du hast zurückgezahlt"
+      },
+      "remaining": {
+        "lend": "Noch zurückzubekommen",
+        "borrow": "Noch zurückzuzahlen"
+      },
+      "due": "Fällig am {{date}}",
+      "overdue": "War fällig am {{date}}",
+      "noDue": "Keine Fälligkeit",
+      "settled": "Beglichen",
+      "when": "{{date}} · {{account}}"
+    },
+    "reminders": {
+      "title": "Erinnerungen",
+      "due": "Vor der Fälligkeit",
+      "dueOff": "Ein Hinweis vor dem Fälligkeitstag",
+      "noDueDate": "Dieses Darlehen hat keine Fälligkeit",
+      "dueWhen": "Wann",
+      "days": {
+        "d0": "Am selben Tag",
+        "d1": "Am Tag davor",
+        "d3": "3 Tage vorher",
+        "d7": "Eine Woche vorher"
+      },
+      "monthly": "Jeden Monat",
+      "monthlyOff": "Für ein Darlehen, das in Raten zurückgezahlt wird",
+      "monthlyDay": "Am Tag",
+      "dayOfMonth": "Tag {{day}}",
+      "time": "Um",
+      "pick": {
+        "day": "An welchem Tag des Monats?",
+        "time": "Um wie viel Uhr?"
+      },
+      "done": "Fertig",
+      "denied": "Mitteilungen sind für Fintraq ausgeschaltet",
+      "deniedBody": "Erlaube Mitteilungen in den Einstellungen deines Handys und schalte die Erinnerung dann wieder ein.",
+      "ok": "OK"
+    },
+    "form": {
+      "title": "Neues Darlehen",
+      "kinds": {
+        "lend": "Ich habe verliehen",
+        "borrow": "Ich habe geliehen"
+      },
+      "kindLabel": "In welche Richtung",
+      "amount": "Betrag",
+      "to": "An:",
+      "from": "Von:",
+      "choosePerson": "Person auswählen",
+      "anyone": "Niemand Bestimmtes",
+      "outOf": "Aus:",
+      "into": "Auf:",
+      "chooseAccount": "Konto auswählen",
+      "available": "{{amount}} verfügbar",
+      "details": "Details:",
+      "due": "Fällig",
+      "noDue": "Keine Fälligkeit",
+      "clearDue": "Fälligkeit entfernen",
+      "pickDue": "Wann ist es fällig?",
+      "note": "Notiz",
+      "noteOptional": "Optional",
+      "create": "Darlehen erfassen",
+      "blocked": {
+        "amount": "Gib einen Betrag ein, um zu speichern",
+        "person": "Wähle, an wen du verliehen hast",
+        "account": "Wähle ein Konto, um zu speichern"
+      },
+      "created": {
+        "lend": "Darlehen erfasst",
+        "borrow": "Darlehen erfasst"
+      },
+      "saveFailed": "Speichern nicht möglich",
+      "saveFailedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
+      "ok": "OK",
+      "limit": "Im kostenlosen Tarif sind {{count}} offene Darlehen möglich. Pro hat kein Limit.",
+      "seePro": "Pro ansehen",
+      "discard": {
+        "title": "Dieses Darlehen verwerfen?",
+        "body": "Was du eingegeben hast, wird nicht gespeichert.",
+        "confirm": "Verwerfen",
+        "cancel": "Weiter bearbeiten"
+      }
+    },
+    "repay": {
+      "title": "Rückzahlung erfassen",
+      "amount": "Betrag",
+      "all": "Alles: {{amount}}",
+      "outstanding": "{{amount}} offen",
+      "into": "Auf:",
+      "outOf": "Aus:",
+      "details": "Details:",
+      "when": "Wann",
+      "note": "Notiz",
+      "noteOptional": "Optional",
+      "slide": "Schieben, um {{amount}} zu erfassen",
+      "slideEmpty": "Schieben zum Erfassen",
+      "blocked": {
+        "amount": "Gib einen Betrag zum Erfassen ein",
+        "tooMuch": "Das ist mehr als die offenen {{amount}}",
+        "account": "Kein Konto in {{currency}}, auf dem es erfasst werden kann"
+      },
+      "recorded": "Rückzahlung erfasst",
+      "settled": "Alles beglichen",
+      "settledWith": "Alles beglichen mit {{name}}",
+      "saveFailed": "Das ließ sich nicht erfassen",
+      "saveFailedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
+      "ok": "OK",
+      "discard": {
+        "title": "Diese Rückzahlung verwerfen?",
+        "body": "Was du eingegeben hast, wird nicht gespeichert.",
+        "confirm": "Verwerfen",
+        "cancel": "Weiter bearbeiten"
+      }
+    }
+  },
+  "lock": {
+    "unlock": {
+      "pinTitle": "Gib deine PIN ein",
+      "deviceTitle": "Fintraq ist gesperrt",
+      "deviceBody": "Deine Daten bleiben verborgen, bis du es bist.",
+      "marks": "{{count}} von {{total}} Ziffern eingegeben",
+      "wrong": "Diese PIN stimmt nicht. Versuch es noch einmal.",
+      "wait": "Zu viele falsche Versuche. Versuch es in {{time}} noch einmal.",
+      "fingerprint": "Mit Fingerabdruck entsperren",
+      "face": "Mit Gesicht entsperren",
+      "either": "Mit Fingerabdruck oder Gesicht entsperren",
+      "device": "Entsperren",
+      "prompt": "Fintraq entsperren",
+      "promptCancel": "Abbrechen",
+      "promptPasscode": "Code verwenden",
+      "failed": "Das hat nicht geklappt. Versuch es noch einmal.",
+      "delete": "Löschen"
+    },
+    "setup": {
+      "title": "App-Sperre",
+      "back": "Zurück",
+      "state": {
+        "off": "Jeder, der dieses Handy in der Hand hat, kann Fintraq öffnen",
+        "biometric": "Fintraq öffnet sich mit deinem Fingerabdruck oder Gesicht",
+        "pin": "Fintraq öffnet sich mit deiner PIN"
+      },
+      "stateBody": {
+        "off": "Schalte die Sperre ein, damit deine Daten bei dir bleiben.",
+        "on": "Sie sperrt ein paar Sekunden, nachdem du die App verlässt, und verbirgt die App in der App-Übersicht."
+      },
+      "choose": "Wie entsperrt wird",
+      "chooseHint": "Wähle eine Art. Du kannst sie jederzeit ändern.",
+      "modes": {
+        "off": "Keine Sperre",
+        "biometric": "Fingerabdruck oder Gesicht",
+        "pin": "Eine PIN"
+      },
+      "noBiometrics": "Auf diesem Handy ist weder Fingerabdruck noch Gesicht eingerichtet, deshalb wird diese Wahl nicht angeboten.",
+      "changePin": "PIN ändern",
+      "changePinHint": "Wähle eine neue sechsstellige PIN",
+      "confirmOn": "Bestätige, dass du es bist, um die Sperre einzuschalten",
+      "confirmOff": "Bestätige, dass du es bist, um die Sperre auszuschalten",
+      "offTitle": "Sperre ausschalten?",
+      "offBody": "Fintraq öffnet sich dann für jeden, der dieses Handy in der Hand hat.",
+      "offConfirm": "Ausschalten",
+      "offKeep": "Sperre behalten",
+      "done": {
+        "biometric": "Die Sperre ist an",
+        "pin": "PIN festgelegt. Die Sperre ist an",
+        "off": "Die Sperre ist aus"
+      }
+    },
+    "pin": {
+      "title": "PIN festlegen",
+      "chooseTitle": "Wähle eine PIN",
+      "chooseBody": "Sechs Ziffern, die du dir merkst. Sie lässt sich nicht wiederherstellen.",
+      "confirmTitle": "Gib sie noch einmal ein",
+      "confirmBody": "Damit es sicher die PIN ist, die du meintest.",
+      "mismatch": "Die beiden stimmten nicht überein. Wähle deine PIN noch einmal.",
+      "close": "Schließen"
+    }
+  },
+  "notifications": {
+    "channels": {
+      "reminders": {
+        "name": "Erinnerungen",
+        "description": "Deine tägliche Erinnerung und Fälligkeiten von Darlehen"
+      },
+      "backup": {
+        "name": "Backup",
+        "description": "Wird gezeigt, während ein Backup läuft, und wenn eines dich braucht"
+      }
+    },
+    "daily": {
+      "first": {
+        "title": "Deine erste Buchung",
+        "body": "Füge das Letzte hinzu, wofür du bezahlt hast. Das dauert eine halbe Minute."
+      },
+      "weekday": {
+        "mon": {
+          "title": "Die Ausgaben vom Montag",
+          "body": "Füge sie jetzt hinzu, solange du die kleinen noch weißt."
+        },
+        "tue": {
+          "title": "Heute etwas hinzuzufügen?",
+          "body": "Mittagessen, eine Fahrt, eine Rechnung. Eine halbe Minute und heute ist erledigt."
+        },
+        "wed": {
+          "title": "Die halbe Woche ist geschafft",
+          "body": "Füge heute hinzu und die Woche bleibt vollständig."
+        },
+        "thu": {
+          "title": "Die Ausgaben vom Donnerstag",
+          "body": "Die kleinen entwischen zuerst. Füge sie vorher hinzu."
+        },
+        "fri": {
+          "title": "Vor dem Wochenende",
+          "body": "Füge heute hinzu, damit das Wochenende mit dem richtigen Stand beginnt."
+        },
+        "sat": {
+          "title": "Die Ausgaben vom Samstag",
+          "body": "Wochenenden verliert man am leichtesten aus dem Blick. Füge heute hinzu, solange es frisch ist."
+        },
+        "sun": {
+          "title": "Letzter Tag der Woche",
+          "body": "Füge heute hinzu und die Woche ist vollständig."
+        }
+      },
+      "weekEnd": {
+        "title": "{{count}} diese Woche erfasst",
+        "body": "Füge heute hinzu und die Woche ist vollständig."
+      },
+      "monthStart": {
+        "title": "Der {{month}} beginnt heute",
+        "body": "Ein neuer Monat zum Füllen. Füge deine erste Ausgabe hinzu."
+      },
+      "monthEnd": {
+        "title": "Letzter Tag im {{month}}",
+        "body": "Bisher {{count}} erfasst. Füge Fehlendes hinzu und der Monat ist vollständig."
+      },
+      "missedYesterday": {
+        "title": "Gestern fehlt",
+        "body": "Füge gestern und heute zusammen hinzu. Es dauert immer noch unter einer Minute."
+      },
+      "quietSince": {
+        "title": "Nichts seit {{day}}",
+        "body": "Ein paar Tage lassen sich leicht nachholen. Fang mit dem an, was du noch weißt."
+      },
+      "quiet": {
+        "title": "Es ist eine Weile her",
+        "body": "Nachholen ist nicht nötig. Fang mit heute wieder an."
+      },
+      "loanTomorrow": {
+        "lend": {
+          "title": "{{name}} schuldet dir {{amount}}",
+          "body": "Morgen fällig. Füge bei der Gelegenheit die Ausgaben von heute hinzu."
+        },
+        "borrow": {
+          "title": "Du schuldest {{name}} {{amount}}",
+          "body": "Morgen fällig. Füge bei der Gelegenheit die Ausgaben von heute hinzu."
+        }
+      }
+    },
+    "loan": {
+      "when": {
+        "today": "Heute fällig",
+        "tomorrow": "Morgen fällig",
+        "inDays_one": "In {{count}} Tag fällig",
+        "inDays_other": "In {{count}} Tagen fällig"
+      },
+      "due": {
+        "lend": {
+          "title": "{{name}} schuldet dir {{amount}}",
+          "titleNoName": "Dir werden {{amount}} geschuldet",
+          "body": "{{when}}. Füge die Rückzahlung hinzu, wenn sie ankommt."
+        },
+        "borrow": {
+          "title": "Du schuldest {{name}} {{amount}}",
+          "titleNoName": "Du schuldest {{amount}}",
+          "body": "{{when}}. Füge die Rückzahlung hinzu, sobald du gezahlt hast."
+        }
+      },
+      "instalment": {
+        "lend": {
+          "title": "{{name}} zahlt dir heute",
+          "titleNoName": "Heute kommt eine Zahlung",
+          "body": "{{amount}} stehen noch aus. Füge es hinzu, wenn es ankommt."
+        },
+        "borrow": {
+          "title": "Zahle heute an {{name}}",
+          "titleNoName": "Darlehensrate heute fällig",
+          "body": "{{amount}} noch zurückzuzahlen. Füge es hinzu, sobald du gezahlt hast."
+        }
+      }
+    },
+    "backup": {
+      "running": {
+        "title": "Backup läuft"
+      },
+      "failed": {
+        "title": "Das Backup wurde nicht fertig",
+        "body": "Fintraq versucht es von selbst noch einmal. Öffne Backup, um es jetzt zu starten."
+      },
+      "reconnect": {
+        "title": "Google Drive neu verbinden",
+        "body": "Fintraq wurde von deinem Google-Konto abgemeldet. Verbinde es wieder, dann laufen die Backups weiter."
+      }
+    }
+  },
+  "people": {
+    "title": "Personen",
+    "back": "Zurück",
+    "close": "Schließen",
+    "add": "Person hinzufügen",
+    "currency": "Währung",
+    "standing": {
+      "owesYou": "Schuldet dir",
+      "youOwe": "Du schuldest",
+      "settled": "Alles beglichen"
+    },
+    "summary": {
+      "title": "Offene Darlehen",
+      "owed": "Dir geschuldet",
+      "owe": "Du schuldest",
+      "settled": "Niemand schuldet etwas"
+    },
+    "empty": {
+      "title": "Behalte im Blick, wer wem was schuldet",
+      "body": "Füge die Personen hinzu, denen du leihst, von denen du leihst oder mit denen du Kosten teilst, und Fintraq führt Buch."
+    },
+    "limit": {
+      "reached": "Im kostenlosen Tarif sind {{count}} Personen möglich. Pro hat kein Limit.",
+      "seePro": "Pro ansehen"
+    },
+    "person": {
+      "notFound": "Diese Person gibt es nicht mehr",
+      "manage": "Verwalten",
+      "spent": "An sie gezahlt",
+      "received": "Von ihr erhalten",
+      "call": "Anrufen",
+      "email": "E-Mail",
+      "loans": "Offene Darlehen",
+      "lent": "Du hast verliehen",
+      "borrowed": "Du hast geliehen",
+      "due": "Fällig am {{date}}",
+      "recent": "Gemeinsam",
+      "seeAll": "Alle ansehen",
+      "noActivityTitle": "Noch nichts gemeinsam erfasst",
+      "noActivityBody": "Wähle sie unter „Mit“, wenn du eine Buchung hinzufügst.",
+      "edit": "Details bearbeiten",
+      "delete": "Person löschen",
+      "deleteTitle": "{{name}} löschen?",
+      "deleteBody": "Die mit ihr erfassten Buchungen und Darlehen bleiben, ohne Namen. Das lässt sich nicht rückgängig machen.",
+      "deleteConfirm": "Person löschen",
+      "deleteCancel": "Behalten",
+      "deleted": "{{name}} gelöscht",
+      "failed": "Das hat nicht geklappt",
+      "failedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
+      "ok": "OK"
+    },
+    "form": {
+      "newTitle": "Neue Person",
+      "editTitle": "Person bearbeiten",
+      "name": "Name",
+      "namePlaceholder": "Lena Maier",
+      "more": "Kontakt und Beruf hinzufügen",
+      "moreHint": "Optional: Telefon, E-Mail, was sie macht",
+      "phone": "Telefon",
+      "email": "E-Mail",
+      "role": "Beruf",
+      "rolePlaceholder": "Klempner",
+      "company": "Firma",
+      "create": "Person hinzufügen",
+      "save": "Änderungen speichern",
+      "blocked": {
+        "name": "Gib ihr einen Namen, um zu speichern",
+        "email": "Diese E-Mail-Adresse ist unvollständig"
+      },
+      "created": "{{name}} hinzugefügt",
+      "changesSaved": "Änderungen gespeichert",
+      "saveFailed": "Speichern nicht möglich",
+      "saveFailedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
+      "ok": "OK",
+      "discard": {
+        "title": "Diese Person verwerfen?",
+        "titleEdit": "Deine Änderungen verwerfen?",
+        "body": "Was du eingegeben hast, wird nicht gespeichert.",
+        "confirm": "Verwerfen",
+        "cancel": "Weiter bearbeiten"
+      }
+    }
+  },
+  "plan": {
+    "title": "Planen",
+    "add": "Verleihen oder leihen",
+    "currency": "Währung",
+    "summary": {
+      "title": "Offene Darlehen",
+      "owed": "Dir geschuldet",
+      "owe": "Du schuldest",
+      "none": "Niemand schuldet etwas",
+      "lend": "Verleihen oder leihen",
+      "people": "Personen"
+    },
+    "upcoming": {
+      "title": "Demnächst",
+      "noDate": "Keine Fälligkeit",
+      "lent": "Schuldet dir",
+      "borrowed": "Du schuldest",
+      "someone": "Jemand",
+      "unnamed": "Geliehen",
+      "due": {
+        "overdue_one": "Seit {{count}} Tag überfällig",
+        "overdue_other": "Seit {{count}} Tagen überfällig",
+        "today": "Heute fällig",
+        "tomorrow": "Morgen fällig",
+        "inDays_one": "In {{count}} Tag fällig",
+        "inDays_other": "In {{count}} Tagen fällig"
+      },
+      "line": "{{standing}} · {{due}}"
+    },
+    "settled": {
+      "show_one": "{{count}} beglichenes Darlehen",
+      "show_other": "{{count}} beglichene Darlehen",
+      "hide": "Beglichene Darlehen ausblenden",
+      "row": "Beglichen"
+    },
+    "empty": {
+      "title": "Nichts verliehen oder geliehen",
+      "body": "Erfasse Geld, das du verleihst oder leihst, und Fintraq behält im Blick, was noch offen ist und bis wann."
+    },
+    "soon": {
+      "badge": "Kommt in Pro",
+      "title": "Plane voraus, statt nur zurückzublicken",
+      "body": "Diese sind unterwegs und enthalten, wenn du Pro hast.",
+      "action": "Fintraq Pro ansehen"
+    }
+  },
+  "pro": {
+    "title": "Fintraq Pro",
+    "close": "Schließen",
+    "pillars": {
+      "plan": {
+        "title": "Planen",
+        "promise": "Wisse, was kommt, bevor es da ist."
+      },
+      "understand": {
+        "title": "Verstehen",
+        "promise": "Sieh, warum die Zahlen so sind, wie sie sind."
+      },
+      "find": {
+        "title": "Finden und teilen",
+        "promise": "Hol alles heraus, in einer Form, die andere nutzen können."
+      },
+      "protect": {
+        "title": "Schützen",
+        "promise": "Mach dir keine Sorgen mehr, etwas zu verlieren oder keinen Platz mehr zu haben."
+      }
+    },
+    "features": {
+      "budgets": {
+        "title": "Budgets",
+        "description": "Ein Monatslimit für jede Kategorie, mit einer Warnung, bevor du es erreichst."
+      },
+      "recurring": {
+        "title": "Wiederkehrende Buchungen",
+        "description": "Miete, Gehalt und Abos tragen sich selbst ein, und du siehst die nächsten 30 Tage."
+      },
+      "goals": {
+        "title": "Ziele",
+        "description": "Ein Betrag und ein Datum, und was du jeden Monat zurücklegen musst, um es zu schaffen."
+      },
+      "safeToSpend": {
+        "title": "Frei verfügbar",
+        "description": "Eine Zahl für heute, nachdem Rechnungen, Budgets und Ziele gedeckt sind."
+      },
+      "periods": {
+        "title": "Jeder Zeitraum, im Vergleich",
+        "description": "30 Tage, 90 Tage, ein Jahr oder dein eigener Zeitraum, jeweils gegen den davor."
+      },
+      "forecast": {
+        "title": "Prognose",
+        "description": "Wo dieser Monat bei deinem Ausgabetempo enden wird."
+      },
+      "categories": {
+        "title": "Aufteilung nach Kategorie",
+        "description": "Der Anteil jeder Kategorie an dem, was hereinkam und hinausging."
+      },
+      "rhythm": {
+        "title": "Rhythmus",
+        "description": "Welche Tage dich am meisten kosten, über die Woche und den Monat."
+      },
+      "people": {
+        "title": "Personen",
+        "description": "Mit wem du Geld ausgibst und wie sich die Salden verteilen."
+      },
+      "insights": {
+        "title": "Einblicke",
+        "description": "Muster, die man kennen sollte, in einfachen Worten."
+      },
+      "netWorthTrend": {
+        "title": "Nettovermögen im Zeitverlauf",
+        "description": "Was du hast minus was du schuldest, Monat für Monat."
+      },
+      "search": {
+        "title": "Suche",
+        "description": "Jede Buchung, jedes Konto, jede Person oder Kategorie, in deinem ganzen Verlauf."
+      },
+      "export": {
+        "title": "Tabellenexport",
+        "description": "Buchungen und Darlehen als CSV-Datei zum Speichern oder Teilen."
+      },
+      "statement": {
+        "title": "Monatsauszug",
+        "description": "Der Monat auf einer Seite als PDF, bereit zum Versenden."
+      },
+      "backup": {
+        "title": "Automatisches Cloud-Backup",
+        "description": "Zweimal täglich in deinem eigenen Google Drive gespeichert, auf jedem Handy wiederherstellbar."
+      },
+      "unlimited": {
+        "title": "Keine Limits",
+        "description": "Mehr als {{people}} Personen, {{loans}} Darlehen, {{budgets}} Budget und {{recurring}} wiederkehrende Buchungen."
+      }
+    },
+    "paywall": {
+      "title": "Hol mehr aus deinem Geld",
+      "body": "Plane voraus, verstehe deine Ausgaben und halte alles sicher.",
+      "plans": {
+        "label": "Wähle einen Tarif",
+        "lifetime": "Lebenslang",
+        "yearly": "Jährlich",
+        "monthly": "Monatlich",
+        "best": "Bester Preis"
+      },
+      "notes": {
+        "lifetime": "Einmal zahlen. Für immer deins.",
+        "lifetimeMonths": "Einmal zahlen. So viel wie {{count}} Monate im Monatstarif.",
+        "yearly": "Jedes Jahr. Jederzeit kündbar.",
+        "yearlySaving": "Jedes Jahr. {{percent}} % günstiger als monatlich.",
+        "monthly": "Jeden Monat. Jederzeit kündbar."
+      },
+      "buy": {
+        "lifetime": "Lebenslang für {{price}} holen",
+        "yearly": "Für {{price}} pro Jahr abonnieren",
+        "monthly": "Für {{price}} pro Monat abonnieren",
+        "noPrice": "Fintraq Pro holen"
+      },
+      "terms": {
+        "lifetime": "Eine einmalige Zahlung von {{price}}. Sie verlängert sich nie.",
+        "yearly": "Jetzt {{price}}, danach {{price}} jedes Jahr, bis du kündigst. Jederzeit kündbar in {{store}}.",
+        "monthly": "Jetzt {{price}}, danach {{price}} jeden Monat, bis du kündigst. Jederzeit kündbar in {{store}}.",
+        "storeAndroid": "Google Play",
+        "storeIos": "deinem Apple-Account",
+        "termsLink": "Bedingungen",
+        "privacyLink": "Datenschutz"
+      },
+      "restore": "Käufe wiederherstellen",
+      "included": {
+        "title": "Was du bekommst",
+        "hint": "Alles, was heute in Pro ist"
+      },
+      "upcoming": {
+        "title": "Kommt in Pro",
+        "hint": "In deinem Kauf enthalten, sobald es da ist"
+      },
+      "prices": {
+        "loading": "Preise werden aus dem Store geladen",
+        "unavailableTitle": "Die Preise konnten nicht geladen werden",
+        "unavailableBody": "Fintraq konnte den Store nicht erreichen. Prüfe deine Verbindung und versuch es noch einmal.",
+        "retry": "Noch einmal versuchen",
+        "blocked": "Der Kauf wartet auf die Preise des Stores"
+      },
+      "pending": {
+        "title": "Zahlung ausstehend",
+        "body": "Der Store wartet auf deine Zahlung. Pro wird von selbst freigeschaltet, sobald sie bestätigt ist."
+      },
+      "failed": {
+        "title": "Der Kauf ist nicht zustande gekommen",
+        "body": "Es wurde nichts abgebucht. Versuch es noch einmal, oder nutze im Store eine andere Zahlungsart."
+      },
+      "restored": {
+        "none": "Kein Kauf in diesem Store-Konto gefunden",
+        "failed": "Der Store war nicht erreichbar. Versuch es noch einmal.",
+        "done": "Fintraq Pro wiederhergestellt"
+      }
+    },
+    "owned": {
+      "title": "Du hast Fintraq Pro",
+      "lifetime": "Lebenslang. Für immer deins, mit allem, was in Pro dazukommt.",
+      "renews": "Tarif {{plan}}. Verlängert sich am {{date}}.",
+      "ends": "Tarif {{plan}}, gekündigt. Pro bleibt bis {{date}} aktiv.",
+      "override": "Durch die Entwickler-Übersteuerung eingeschaltet. Es wurde nichts gekauft.",
+      "manage": "Im Store verwalten",
+      "done": "Fertig",
+      "goLifetime": {
+        "title": "Zu Lebenslang wechseln",
+        "body": "Zahle einmal und hör auf, jeden {{period}} zu zahlen.",
+        "month": "Monat",
+        "year": "Jahr",
+        "action": "Lebenslang für {{price}} holen"
+      }
+    },
+    "bought": {
+      "title": "Du hast Fintraq Pro",
+      "body": "Alles ist freigeschaltet. Danke, dass du Fintraq unterstützt.",
+      "done": "Fertig",
+      "cancelOld": {
+        "title": "Kündige deinen Tarif {{plan}}",
+        "body": "Lebenslang ersetzt ihn, aber der Store bucht das Abo weiter ab, bis du es dort kündigst.",
+        "link": "Abos öffnen"
+      }
+    },
+    "ended": {
+      "title": "Fintraq Pro ist beendet",
+      "body": "Der Store zeigt in diesem Konto keinen Pro-Kauf mehr. Alles, was du erfasst hast, ist noch da.",
+      "see": "Fintraq Pro ansehen",
+      "ok": "OK"
+    }
+  },
+  "search": {
+    "title": "Suche",
+    "back": "Zurück",
+    "placeholder": "Eine Notiz, ein Konto, eine Person oder Kategorie",
+    "clear": "Suche leeren",
+    "start": {
+      "title": "Finde alles, was du erfasst hast",
+      "body": "Gib einen Teil einer Notiz ein, oder den Namen eines Kontos, einer Person oder einer Kategorie."
+    },
+    "recent": {
+      "title": "Zuletzt",
+      "clear": "Leeren",
+      "again": "Noch einmal nach {{query}} suchen",
+      "forget": "{{query}} vergessen"
+    },
+    "kinds": {
+      "all": "Alle {{count}}",
+      "transactions": "Buchungen {{count}}",
+      "accounts": "Konten {{count}}",
+      "people": "Personen {{count}}",
+      "categories": "Kategorien {{count}}"
+    },
+    "groups": {
+      "transactions": "Buchungen",
+      "accounts": "Konten",
+      "people": "Personen",
+      "categories": "Kategorien"
+    },
+    "kindLabel": "Anzeigen",
+    "capped": "Das sind die {{count}} neuesten. Gib mehr ein, um einzugrenzen.",
+    "none": {
+      "title": "Nichts passt zu „{{query}}“",
+      "body": "Die Suche schaut in Notizen und in die Namen von Konten, Personen und Kategorien. Versuch es mit weniger Buchstaben oder einem anderen Wort."
+    }
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "back": "Zurück",
+    "profile": {
+      "hello": "Nirgends angemeldet. Alles bleibt auf diesem Handy.",
+      "noName": "Füge deinen Namen hinzu",
+      "edit": "Ändere deinen Namen",
+      "pro": "Fintraq Pro",
+      "free": "Kostenloser Tarif",
+      "seePro": "Sieh, was Pro dazugibt",
+      "managePro": "Dein Tarif"
+    },
+    "name": {
+      "title": "Dein Name",
+      "label": "Name",
+      "hint": "Um dich auf der Startseite zu begrüßen. Er verlässt dieses Handy nie.",
+      "save": "Speichern",
+      "saved": "Name gespeichert"
+    },
+    "money": {
+      "title": "Dein Geld",
+      "hint": "Worauf du erfasst",
+      "accounts": "Konten",
+      "accountsCount_one": "{{count}} Konto",
+      "accountsCount_other": "{{count}} Konten",
+      "categories": "Kategorien",
+      "categoriesCount_one": "{{count}} Kategorie",
+      "categoriesCount_other": "{{count}} Kategorien",
+      "people": "Personen",
+      "peopleCount_one": "{{count}} Person",
+      "peopleCount_other": "{{count}} Personen",
+      "export": "Export",
+      "exportHint": "Als Tabelle"
+    },
+    "prefs": {
+      "title": "Einstellungen",
+      "hint": "Wie Fintraq aussieht und spricht",
+      "currency": "Standardwährung",
+      "currencyHint": "Für neue Konten und Summen",
+      "language": "Sprache",
+      "systemLanguage": "Wie das Handy",
+      "appearance": "Darstellung",
+      "appearances": {
+        "system": "Automatisch",
+        "light": "Hell",
+        "dark": "Dunkel"
+      }
+    },
+    "reminder": {
+      "title": "Tägliche Erinnerung",
+      "hint": "Ein Hinweis, den Tag zu erfassen, bevor er verblasst",
+      "label": "Erinnere mich jeden Tag",
+      "on": "Jeden Tag um {{time}}",
+      "off": "Aus",
+      "time": "Uhrzeit",
+      "pickTime": "Erinnere mich um",
+      "done": "Fertig",
+      "deniedTitle": "Erinnerungen brauchen Mitteilungen",
+      "deniedBody": "Erlaube Mitteilungen für Fintraq und schalte dann die Erinnerung ein.",
+      "openSettings": "Einstellungen öffnen",
+      "lateTitle": "Erinnerungen können zu spät kommen",
+      "lateBody": "Erlaube „Wecker und Erinnerungen“, damit sie zur gewählten Minute kommen.",
+      "lateLink": "Erlauben"
+    },
+    "safety": {
+      "title": "Sicherheit",
+      "hint": "Wer die App öffnen kann, und was passiert, wenn das Handy verloren geht",
+      "lock": "App-Sperre",
+      "lockState": {
+        "off": "Aus",
+        "biometric": "Fingerabdruck oder Gesicht",
+        "pin": "PIN"
+      },
+      "backup": "Backup",
+      "backupOn": "In das Drive von {{email}}",
+      "backupOff": "Nicht eingerichtet"
+    },
+    "about": {
+      "row": "Über Fintraq",
+      "rowHint": "Die Idee, wer es macht, und das Kleingedruckte",
+      "title": "Über",
+      "name": "Fintraq",
+      "tagline": "Wisse, wohin dein Geld geht",
+      "version": "Version {{version}}",
+      "idea": {
+        "title": "Die Idee",
+        "hint": "Was Fintraq immer sein wird",
+        "free": "Dein Geld zu erfassen ist kostenlos, ohne Limit bei Buchungen oder Konten.",
+        "private": "Alles bleibt auf diesem Handy. Es gibt kein Konto anzulegen und keinen Server, der deine Daten hält.",
+        "pro": "Pro bezahlt die Arbeit. Es bringt Planung, Einblicke und Backup dazu, nie eine Gebühr fürs Erfassen."
+      },
+      "maker": {
+        "title": "Wer es macht",
+        "hint": "Wem du es sagst, wenn etwas nicht stimmt",
+        "name": "Idexa",
+        "line": "Fintraq wird von Idexa gemacht",
+        "site": "idexa.app besuchen"
+      },
+      "print": {
+        "title": "Das Kleingedruckte",
+        "hint": "Was Fintraq mit dem macht, was es weiß"
+      },
+      "privacy": "Datenschutzerklärung",
+      "terms": "Nutzungsbedingungen",
+      "usage": "Nutzungsdaten teilen",
+      "usageHint": "Anonyme Zählungen, welche Bildschirme genutzt werden, und Absturzberichte. Nie Beträge, Namen oder Notizen.",
+      "developer": "Entwickleroptionen",
+      "developerHint": "Werkzeuge zum Testen und zur Fehlersuche",
+      "stored": "Alles ist auf diesem Handy gespeichert",
+      "pageFailed": "Die Seite ließ sich in deinem Browser nicht öffnen"
+    },
+    "erase": {
+      "title": "Neu anfangen",
+      "row": "Alles löschen",
+      "rowHint": "Alle Daten und Einstellungen auf diesem Handy",
+      "confirmTitle": "Alles auf diesem Handy löschen?",
+      "confirmBody": "Jede Buchung, jedes Konto, jede Person, jedes Darlehen und jede Einstellung wird gelöscht, und die App-Sperre wird ausgeschaltet. Ein Backup, das schon in deinem Drive liegt, wird nicht angerührt. Das lässt sich nicht rückgängig machen.",
+      "confirm": "Alles löschen",
+      "keep": "Meine Daten behalten",
+      "failedTitle": "Es wurde nichts gelöscht",
+      "failedBody": "Etwas ist schiefgegangen, bevor etwas gelöscht wurde. Versuch es gleich noch einmal."
+    }
+  },
+  "shell": {
+    "tabs": {
+      "home": "Start",
+      "activity": "Aktivität",
+      "add": "Hinzufügen",
+      "plan": "Planen",
+      "insights": "Einblicke"
+    },
+    "start": {
+      "preparing": "Deine Daten werden vorbereitet",
+      "failedTitle": "Fintraq konnte deine Daten nicht öffnen",
+      "failedBody": "Schließe Fintraq und öffne es wieder. Deine Daten sind noch auf diesem Handy: Deinstalliere die App nicht, sonst gehen sie mit."
+    },
+    "shortcuts": {
+      "expense": "Ausgabe hinzufügen",
+      "income": "Einnahme hinzufügen",
+      "transfer": "Umbuchung",
+      "loan": "Verleihen oder leihen"
+    },
+    "update": {
+      "title": "Fintraq braucht ein Update",
+      "titleVersion": "Auf Version {{version}} aktualisieren",
+      "body": "Diese Version ist zu alt, um deine Daten sicher zu halten. Das Update dauert eine Minute und nichts von dem, was du erfasst hast, geht verloren.",
+      "points": {
+        "data": "Alles, was du erfasst hast, bleibt auf diesem Handy",
+        "quick": "Es ist dieselbe App, in einer neueren Version"
+      },
+      "action": "Fintraq aktualisieren"
+    },
+    "error": {
+      "title": "Auf diesem Bildschirm ist etwas schiefgegangen",
+      "body": "Deine Daten sind sicher. Versuch es noch einmal; wenn es weiter passiert, schließe Fintraq und öffne es wieder.",
+      "retry": "Noch einmal versuchen"
+    }
+  },
+  "transactions": {
+    "kinds": {
+      "expense": "Ausgabe",
+      "income": "Einnahmen",
+      "transfer": "Umbuchung"
+    },
+    "addTitle": {
+      "expense": "Ausgabe hinzufügen",
+      "income": "Einnahme hinzufügen",
+      "transfer": "Umbuchung hinzufügen"
+    },
+    "editTitle": {
+      "expense": "Ausgabe bearbeiten",
+      "income": "Einnahme bearbeiten",
+      "transfer": "Umbuchung bearbeiten"
+    },
+    "loanPayment": "Darlehenszahlung",
+    "loanRepayment": "Darlehensrückzahlung",
+    "close": "Schließen",
+    "kind": "Art der Buchung",
+    "transferRoute": "{{from}} bis {{to}}",
+    "amount": "Betrag",
+    "from": "Von:",
+    "to": "An:",
+    "details": "Details:",
+    "when": "Wann",
+    "with": "Mit",
+    "pickDate": "Datum und Uhrzeit wählen",
+    "calculator": {
+      "open": "Betrag ausrechnen",
+      "title": "Ausrechnen",
+      "use": "Diesen Betrag verwenden"
+    },
+    "account": "Konto",
+    "fromAccount": "Von Konto",
+    "toAccount": "Auf Konto",
+    "chooseAccount": "Konto auswählen",
+    "noDestination": "Kein anderes Konto in dieser Währung kann eine Umbuchung empfangen",
+    "category": "Kategorie",
+    "date": "Datum",
+    "person": "Person",
+    "noPerson": "Niemand",
+    "note": "Notiz",
+    "noteOptional": "Optional",
+    "available": "{{amount}} verfügbar",
+    "defaultNote": "Buchung",
+    "save": {
+      "expense": "Ausgabe speichern",
+      "income": "Einnahme speichern",
+      "transfer": "Umbuchung speichern"
+    },
+    "saveChanges": "Änderungen speichern",
+    "step": {
+      "amount": "Wie viel?",
+      "account": "Von welchem Konto?",
+      "accountIncome": "Auf welches Konto?",
+      "toAccount": "Wohin?",
+      "category": "Wofür war es?",
+      "searchCategory": "Kategorien suchen",
+      "noCategory": "Keine Kategorie passt zu „{{query}}“",
+      "newCategory": "Neue Kategorie",
+      "categoryName": "Name",
+      "categoryHint": "Sie bekommt ein Symbol und eine Farbe. Ändere beides jederzeit unter Kategorien.",
+      "addCategory": "Hinzufügen und wählen",
+      "categoryFailed": "Die Kategorie wurde nicht hinzugefügt",
+      "categoryFailedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
+      "categoryIncome": "Woher kam es?",
+      "details": "Noch etwas hinzuzufügen?"
+    },
+    "short": {
+      "amount": "Betrag",
+      "account": "Von",
+      "accountIncome": "Auf",
+      "toAccount": "Bis",
+      "category": "Für",
+      "details": "Details"
+    },
+    "choose": "Wählen",
+    "noNote": "Keine Notiz",
+    "blocked": {
+      "amount": "Gib einen Betrag ein, um zu speichern",
+      "account": "Wähle ein Konto, um zu speichern",
+      "destination": "Wähle, wohin das Geld geht",
+      "category": "Wähle eine Kategorie, um zu speichern",
+      "repaymentTooHigh": "Eine Rückzahlung kann höchstens {{max}} betragen"
+    },
+    "pick": {
+      "account": "Welches Konto?",
+      "toAccount": "Wohin?",
+      "category": "Wofür war es?",
+      "searchCategory": "Kategorien suchen",
+      "noCategory": "Keine Kategorie passt zu „{{query}}“",
+      "newCategory": "Neue Kategorie",
+      "categoryName": "Name",
+      "categoryHint": "Sie bekommt ein Symbol und eine Farbe. Ändere beides jederzeit unter Kategorien.",
+      "addCategory": "Hinzufügen und wählen",
+      "categoryFailed": "Die Kategorie wurde nicht hinzugefügt",
+      "categoryFailedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
+      "person": "Mit wem war es?",
+      "date": "Wann war es?",
+      "time": "Uhrzeit",
+      "done": "Fertig"
+    },
+    "saved": {
+      "expense": "Ausgabe gespeichert",
+      "income": "Einnahme gespeichert",
+      "transfer": "Umbuchung gespeichert"
+    },
+    "changesSaved": "Änderungen gespeichert",
+    "undo": "Rückgängig",
+    "saveFailed": "Speichern nicht möglich",
+    "saveFailedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
+    "tryAgain": "OK",
+    "discard": {
+      "title": "Diese Buchung verwerfen?",
+      "body": "Was du eingegeben hast, wird nicht gespeichert.",
+      "confirm": "Verwerfen",
+      "cancel": "Weiter bearbeiten"
+    },
+    "notFound": "Diese Buchung gibt es nicht mehr",
+    "detail": {
+      "title": {
+        "expense": "Ausgabe",
+        "income": "Einnahmen",
+        "transfer": "Umbuchung"
+      },
+      "account": "Konto",
+      "from": "Von",
+      "to": "Bis",
+      "category": "Kategorie",
+      "person": "Mit",
+      "loan": "Teil eines Darlehens",
+      "lentTo": "An {{name}} verliehen",
+      "borrowedFrom": "Von {{name}} geliehen",
+      "edit": "Bearbeiten",
+      "delete": "Buchung löschen",
+      "deleteTitle": "Diese Buchung löschen?",
+      "deleteBody": "Der Kontostand wird wieder so, wie er war. Das lässt sich nicht rückgängig machen.",
+      "deleteConfirm": "Buchung löschen",
+      "keep": "Behalten",
+      "deleted": "Buchung gelöscht",
+      "deleteFailed": "Löschen nicht möglich",
+      "deleteFailedBody": "Es wurde nichts geändert. Versuch es noch einmal."
+    }
+  }
+}

@@ -1,0 +1,1810 @@
+{
+  "accounts": {
+    "title": "Akun",
+    "add": "Tambah akun",
+    "back": "Kembali",
+    "close": "Tutup",
+    "default": "Utama",
+    "groups": {
+      "bank": "Rekening bank",
+      "cash": "Tunai",
+      "savings": "Tabungan",
+      "credit_card": "Kartu kredit",
+      "ewallet": "Dompet",
+      "investment": "Investasi",
+      "loan": "Pinjaman"
+    },
+    "netWorth": {
+      "title": "Kekayaan bersih",
+      "have": "Anda punya",
+      "owe": "Anda berutang",
+      "currency": "Mata uang"
+    },
+    "empty": {
+      "title": "Belum ada akun",
+      "body": "Akun adalah tempat uang berada: tunai, rekening bank, kartu. Tambahkan satu untuk mulai mencatat."
+    },
+    "account": {
+      "notFound": "Akun ini sudah tidak ada",
+      "manage": "Kelola akun",
+      "moneyIn": "Uang masuk",
+      "moneyOut": "Uang keluar",
+      "addTransaction": "Tambah transaksi",
+      "transfer": "Transfer",
+      "recent": "Terbaru",
+      "seeAll": "Lihat semua",
+      "noActivityTitle": "Belum ada yang dicatat di sini",
+      "noActivityBody": "Yang Anda tambahkan ke akun ini muncul di sini.",
+      "edit": "Ubah detail",
+      "makeDefault": "Jadikan utama",
+      "makeDefaultHint": "Transaksi baru dimulai dari akun ini",
+      "isDefault": "Transaksi baru sudah dimulai dari akun ini",
+      "madeDefault": "{{name}} sekarang akun utama Anda",
+      "delete": "Hapus akun",
+      "inUse": {
+        "transactions_one": "Berisi {{count}} transaksi, jadi tidak bisa dihapus",
+        "transactions_other": "Berisi {{count}} transaksi, jadi tidak bisa dihapus",
+        "loans_one": "Dipakai oleh {{count}} pinjaman, jadi tidak bisa dihapus",
+        "loans_other": "Dipakai oleh {{count}} pinjaman, jadi tidak bisa dihapus"
+      },
+      "deleteTitle": "Hapus {{name}}?",
+      "deleteBody": "Tidak ada yang dicatat di dalamnya, jadi hanya akunnya yang hilang. Ini tidak bisa dibatalkan.",
+      "deleteConfirm": "Hapus akun",
+      "deleteCancel": "Simpan saja",
+      "deleted": "{{name}} dihapus",
+      "failed": "Tidak bisa dilakukan",
+      "failedBody": "Tidak ada yang berubah. Coba lagi.",
+      "ok": "OK"
+    },
+    "form": {
+      "newTitle": "Akun baru",
+      "editTitle": "Ubah akun",
+      "name": "Nama",
+      "namePlaceholder": "Harian",
+      "type": "Jenisnya apa?",
+      "typeLocked": "{{kind}}. Jenis tidak bisa diubah setelah akun dibuat.",
+      "currency": "Mata uang",
+      "currencyLocked": "Dalam {{currency}}, yang tidak bisa diubah setelah akun punya transaksi.",
+      "opening": "Isinya hari ini",
+      "balance": "Saldo",
+      "balanceHelper": "Saldo mengikuti apa yang Anda catat di akun ini.",
+      "colour": "Warna",
+      "more": "Tambah pemilik dan nomor rekening",
+      "moreHint": "Opsional, untuk membedakan akun",
+      "holder": "Pemilik",
+      "number": "Nomor rekening",
+      "numberHelper": "Hanya empat karakter terakhir yang ditampilkan",
+      "pick": {
+        "currency": "Mata uang apa?"
+      },
+      "searchCurrency": "Cari mata uang",
+      "currencies": {
+        "yours": "Milik Anda",
+        "all": "Semua mata uang"
+      },
+      "noCurrency": "Tidak ada mata uang yang cocok dengan “{{query}}”",
+      "create": "Tambah akun",
+      "save": "Simpan perubahan",
+      "blocked": {
+        "name": "Beri nama akun untuk menyimpan",
+        "balance": "Masukkan saldo awal berupa angka, nol atau lebih"
+      },
+      "created": "Akun ditambahkan",
+      "changesSaved": "Perubahan disimpan",
+      "saveFailed": "Tidak bisa menyimpan",
+      "saveFailedBody": "Tidak ada yang berubah. Coba lagi.",
+      "ok": "OK",
+      "discard": {
+        "title": "Buang akun ini?",
+        "titleEdit": "Buang perubahan Anda?",
+        "body": "Yang Anda ketik tidak akan disimpan.",
+        "confirm": "Buang",
+        "cancel": "Lanjut mengubah"
+      }
+    }
+  },
+  "activity": {
+    "title": "Aktivitas",
+    "search": "Cari",
+    "kinds": {
+      "all": "Semua",
+      "expense": "Pengeluaran",
+      "income": "Pemasukan",
+      "transfer": "Transfer"
+    },
+    "kindLabel": "Tampilkan",
+    "summary": {
+      "title": {
+        "all": "Semua yang dicatat",
+        "expense": "Semua pengeluaran",
+        "income": "Semua pemasukan",
+        "transfer": "Semua transfer"
+      },
+      "narrowed": {
+        "all": "Di daftar ini",
+        "expense": "Pengeluaran di daftar ini",
+        "income": "Pemasukan di daftar ini",
+        "transfer": "Transfer di daftar ini"
+      },
+      "moneyIn": "Uang masuk",
+      "moneyOut": "Uang keluar",
+      "currency": "Mata uang"
+    },
+    "filter": {
+      "open": "Filter",
+      "openCount_one": "Filter, {{count}} aktif",
+      "openCount_other": "Filter, {{count}} aktif",
+      "title": "Filter",
+      "dates": "Tanggal",
+      "account": "Akun",
+      "category": "Kategori",
+      "person": "Orang",
+      "any": "Apa saja",
+      "anyTime": "Kapan saja",
+      "done": "Selesai",
+      "clear": "Hapus semua",
+      "remove": "Hapus {{name}}",
+      "from": "Dari",
+      "to": "Sampai",
+      "pickFrom": "Mulai hari apa?",
+      "pickTo": "Sampai hari apa?",
+      "open_end": "Apa saja"
+    },
+    "periods": {
+      "all": "Kapan saja",
+      "thisMonth": "Bulan ini",
+      "lastMonth": "Bulan lalu",
+      "last30": "30 hari terakhir",
+      "thisYear": "Tahun ini",
+      "custom": "Di antara dua tanggal"
+    },
+    "customRange": "{{from}} sampai {{to}}",
+    "since": "Sejak {{from}}",
+    "until": "Sampai {{to}}",
+    "edit": "Ubah",
+    "delete": "Hapus",
+    "emptyTitle": "Belum ada transaksi",
+    "emptyBody": "Tambahkan yang Anda belanjakan dan dapatkan, nanti muncul di sini.",
+    "emptyAction": "Tambahkan transaksi pertama Anda",
+    "noMatchTitle": "Tidak ada yang cocok",
+    "noMatchBody": "Belum ada yang sejenis ini di sini.",
+    "noMatchAction": "Tampilkan semua"
+  },
+  "backup": {
+    "title": "Cadangan",
+    "back": "Kembali",
+    "connect": {
+      "title": "Simpan salinan di Google Drive Anda",
+      "body": "Fintraq menyimpan cadangan ke folder pribadi di Drive Anda sendiri, dua kali sehari. Masuk di ponsel baru dan semuanya kembali.",
+      "action": "Hubungkan Google Drive",
+      "private": "Hanya Fintraq yang bisa membaca folder itu. Cadangan tidak pernah lewat pihak lain."
+    },
+    "state": {
+      "today": "Dicadangkan hari ini pukul {{time}}",
+      "yesterday": "Dicadangkan kemarin pukul {{time}}",
+      "earlier": "Dicadangkan pada {{date}}",
+      "none": "Belum ada cadangan",
+      "noneBody": "Cadangkan sekarang, atau nyalakan pencadangan otomatis di bawah.",
+      "where": "Di Drive {{email}}",
+      "whereSize": "Di Drive {{email}} · {{size}}",
+      "checking": "Memeriksa Drive Anda"
+    },
+    "phone": "Ponsel ini",
+    "drive": {
+      "label": "Drive Anda",
+      "title": "Di Google Drive Anda",
+      "hint": "Otomatis, dua kali sehari, tanpa perlu diingat",
+      "badge": "Pro",
+      "lockedTitle": "Cadangkan tanpa memikirkannya",
+      "lockedBody": "Fintraq menyimpan ke folder pribadi di Drive Anda sendiri dua kali sehari, dan mengembalikan semuanya di ponsel baru.",
+      "seePro": "Lihat Fintraq Pro"
+    },
+    "icloud": {
+      "title": "Di iCloud Anda",
+      "soonTitle": "Pencadangan iCloud sedang disiapkan",
+      "soonBody": "Sampai itu tersedia, simpan berkas cadangan di atas dan taruh di tempat aman, misalnya iCloud Drive."
+    },
+    "file": {
+      "title": "Di ponsel ini",
+      "hint": "Berkas yang Anda simpan sendiri, kapan pun Anda mau",
+      "save": "Simpan berkas cadangan",
+      "saveHint": "Semuanya dalam satu berkas, untuk disimpan atau dikirim ke diri sendiri",
+      "restore": "Pulihkan dari berkas",
+      "restoreHint": "Mengganti semua yang ada di ponsel ini",
+      "shareTitle": "Simpan cadangan Fintraq Anda",
+      "confirmTitle": "Ganti semua yang ada di ponsel ini?",
+      "confirmBody": "Fintraq akan berisi persis seperti cadangan tanggal {{date}}: {{accounts}} akun dan {{transactions}} transaksi. Yang dicatat setelah itu hilang.",
+      "confirm": "Pulihkan",
+      "keep": "Pertahankan yang ada",
+      "restoredTitle": "Dipulihkan",
+      "restoredBody": "Fintraq sekarang berisi cadangan tanggal {{date}}. Aplikasi perlu dimulai ulang untuk menampilkannya.",
+      "restart": "Mulai ulang",
+      "manualTitle": "Tutup Fintraq lalu buka lagi",
+      "manualBody": "Data Anda sudah dipulihkan, tetapi Fintraq tidak bisa memulai ulang sendiri. Tutup sepenuhnya lalu buka lagi untuk melihat semuanya.",
+      "failed": {
+        "save": "Berkas cadangan tidak dibuat",
+        "restore": "Tidak ada yang dipulihkan",
+        "busy": "Pencadangan atau pemulihan sedang berjalan. Tunggu sampai selesai, lalu coba lagi.",
+        "unreadable": "Berkas itu bukan cadangan Fintraq, atau rusak. Tidak ada yang berubah di ponsel ini.",
+        "unknown": "Ada yang tidak beres. Semua di ponsel ini tetap seperti semula. Coba lagi sebentar lagi."
+      }
+    },
+    "stage": {
+      "preparing": "Menyiapkan catatan Anda",
+      "uploading": "Mengirim ke Google Drive",
+      "uploadingPct": "Mengirim ke Google Drive · {{pct}}%",
+      "finishing": "Menyelesaikan",
+      "done": "Sudah dicadangkan",
+      "locating": "Mencari cadangan Anda",
+      "downloading": "Mengambil cadangan Anda",
+      "downloadingPct": "Mengambil cadangan Anda · {{pct}}%",
+      "restoring": "Mengembalikan catatan Anda",
+      "restored": "Dipulihkan"
+    },
+    "running": {
+      "backup": "Mencadangkan · {{percent}}%",
+      "restore": "Memulihkan · {{percent}}%"
+    },
+    "backUp": "Cadangkan sekarang",
+    "restore": "Pulihkan",
+    "done": {
+      "backup": "Dicadangkan ke Drive Anda",
+      "disconnected": "Google Drive diputuskan",
+      "connected": "Google Drive terhubung"
+    },
+    "overdue": {
+      "title": "Pencadangan otomatis berhenti berjalan",
+      "body": "Ponsel Anda mungkin menutup Fintraq di latar belakang. Izinkan berjalan tanpa batasan, lalu cadangkan sekarang.",
+      "link": "Buka pengaturan baterai"
+    },
+    "other": {
+      "title": "Cadangan ini dari ponsel lain",
+      "body": "Dibuat pada {{date}} dan belum dipulihkan di sini. Pulihkan, atau cadangkan sekarang untuk menggantinya dengan isi ponsel ini."
+    },
+    "auto": {
+      "title": "Otomatis",
+      "label": "Cadangkan otomatis",
+      "on": "Dua kali sehari, di latar belakang",
+      "onNext": "Dua kali sehari. Berikutnya sekitar pukul {{time}}.",
+      "off": "Mati. Fintraq hanya mencadangkan saat Anda minta.",
+      "battery": "Biarkan tetap berjalan",
+      "batteryHint": "Cegah ponsel menutup Fintraq di antara pencadangan",
+      "batteryManual": "Buka Pengaturan ponsel, lalu Aplikasi, Fintraq, Baterai, dan pilih Tidak dibatasi.",
+      "blockedTitle": "Pencadangan otomatis butuh notifikasi",
+      "blockedBody": "Begitulah Fintraq memberi tahu saat pencadangan gagal atau Drive perlu dihubungkan lagi. Izinkan notifikasi, lalu nyalakan.",
+      "openSettings": "Buka pengaturan",
+      "promptTitle": "Biarkan pencadangan tetap berjalan",
+      "promptBody": "Beberapa ponsel menutup aplikasi di latar belakang untuk menghemat baterai, sehingga pencadangan otomatis berhenti. Izinkan Fintraq berjalan tanpa batasan.",
+      "promptYes": "Buka pengaturan baterai",
+      "promptNo": "Nanti saja"
+    },
+    "account": {
+      "title": "Akun Google",
+      "drive": "Cadangan masuk ke Drive ini",
+      "disconnect": "Putuskan Google Drive",
+      "confirmTitle": "Putuskan Google Drive?",
+      "confirmBody": "Pencadangan otomatis berhenti. Cadangan yang sudah ada di Drive Anda tetap di sana, begitu juga semua yang ada di ponsel ini.",
+      "confirm": "Putuskan",
+      "keep": "Tetap terhubung"
+    },
+    "replace": {
+      "title": "Ganti cadangan dari ponsel lain?",
+      "body": "Drive Anda berisi cadangan tanggal {{date}} yang belum pernah dipulihkan di sini. Mencadangkan sekarang menggantinya dengan isi ponsel ini, dan yang hanya ada di cadangan itu hilang.",
+      "confirm": "Ganti",
+      "keep": "Pertahankan cadangan itu"
+    },
+    "restoreConfirm": {
+      "title": "Ganti semua yang ada di ponsel ini?",
+      "body": "Fintraq akan berisi persis seperti cadangan tanggal {{date}}. Yang dicatat setelah itu hilang.",
+      "confirm": "Pulihkan",
+      "keep": "Pertahankan yang ada"
+    },
+    "restored": {
+      "title": "Dipulihkan",
+      "body": "Fintraq sekarang berisi cadangan tanggal {{date}}. Aplikasi perlu dimulai ulang untuk menampilkannya.",
+      "restart": "Mulai ulang",
+      "manualTitle": "Tutup Fintraq lalu buka lagi",
+      "manualBody": "Data Anda sudah dipulihkan, tetapi Fintraq tidak bisa memulai ulang sendiri. Tutup sepenuhnya lalu buka lagi untuk melihat semuanya."
+    },
+    "failed": {
+      "backup": "Cadangan tidak dibuat",
+      "restore": "Tidak ada yang dipulihkan",
+      "connect": "Google Drive tidak terhubung",
+      "disconnect": "Google Drive masih terhubung",
+      "auto": "Pencadangan otomatis tidak diubah",
+      "reconnect": "Hubungkan lagi",
+      "why": {
+        "busy": "Pencadangan atau pemulihan sedang berjalan. Tunggu sampai selesai, lalu coba lagi.",
+        "signedOut": "Fintraq sudah tidak masuk ke akun Google Anda. Hubungkan lagi, lalu coba ulang.",
+        "permission": "Fintraq tidak diberi akses ke foldernya di Drive Anda. Hubungkan lagi dan izinkan.",
+        "offline": "Google Drive tidak bisa dijangkau. Periksa koneksi Anda dan coba lagi.",
+        "noBackup": "Tidak ada cadangan Fintraq di Drive {{email}}. Pastikan ini akun tempat Anda mencadangkan.",
+        "needsPro": "Mencadangkan ke Google Drive adalah bagian dari Fintraq Pro.",
+        "damaged": "Cadangan di Drive Anda tidak bisa dibaca, jadi tidak ada yang berubah di ponsel ini. Cadangkan lagi dari ponsel yang masih menyimpan catatan Anda.",
+        "unknown": "Ada yang tidak beres di tengah jalan. Semua di ponsel ini tetap seperti semula. Coba lagi sebentar lagi."
+      }
+    }
+  },
+  "categories": {
+    "title": "Kategori",
+    "back": "Kembali",
+    "close": "Tutup",
+    "add": "Tambah kategori",
+    "kindLabel": "Jenis",
+    "kinds": {
+      "DR": "Pengeluaran",
+      "CR": "Pemasukan",
+      "TR": "Transfer"
+    },
+    "search": "Cari kategori",
+    "noMatch": "Tidak ada kategori yang cocok dengan “{{query}}”",
+    "builtIn": {
+      "title": "Bawaan",
+      "hint": "Dipakai oleh aplikasi sendiri, jadi tidak bisa diubah atau dihapus"
+    },
+    "empty": {
+      "DR": {
+        "title": "Belum ada kategori pengeluaran",
+        "body": "Kategori menjelaskan uang dipakai untuk apa, seperti Sewa atau Belanja dapur."
+      },
+      "CR": {
+        "title": "Belum ada kategori pemasukan",
+        "body": "Kategori menjelaskan uang datang dari mana, seperti Gaji atau Pengembalian dana."
+      },
+      "TR": {
+        "title": "Belum ada kategori transfer",
+        "body": "Transfer tidak membutuhkannya, tetapi Anda bisa menamai alasan memindahkan uang."
+      }
+    },
+    "form": {
+      "newTitle": "Kategori baru",
+      "editTitle": "Ubah kategori",
+      "name": "Nama",
+      "namePlaceholder": "Belanja dapur",
+      "colour": "Warna",
+      "usedFor": "Dipakai untuk:",
+      "icon": "Ikon:",
+      "iconGroups": {
+        "finance": "Uang",
+        "foodDrink": "Makanan dan minuman",
+        "transport": "Transportasi",
+        "homeUtilities": "Rumah",
+        "healthFitness": "Kesehatan",
+        "tech": "Perangkat",
+        "shopping": "Belanja",
+        "entertainment": "Hiburan",
+        "education": "Belajar",
+        "personal": "Pribadi",
+        "misc": "Lain-lain"
+      },
+      "create": "Tambah kategori",
+      "save": "Simpan perubahan",
+      "blocked": {
+        "name": "Beri nama kategori untuk menyimpan",
+        "kind": "Pilih dipakai untuk apa untuk menyimpan"
+      },
+      "created": "Kategori ditambahkan",
+      "changesSaved": "Perubahan disimpan",
+      "saveFailed": "Tidak bisa menyimpan",
+      "saveFailedBody": "Tidak ada yang berubah. Coba lagi.",
+      "ok": "OK",
+      "notFound": "Kategori ini sudah tidak ada",
+      "delete": "Hapus kategori",
+      "inUse": {
+        "transactions_one": "Dipakai oleh {{count}} transaksi, jadi tidak bisa dihapus",
+        "transactions_other": "Dipakai oleh {{count}} transaksi, jadi tidak bisa dihapus",
+        "loans_one": "Dipakai oleh {{count}} pinjaman, jadi tidak bisa dihapus",
+        "loans_other": "Dipakai oleh {{count}} pinjaman, jadi tidak bisa dihapus"
+      },
+      "deleteTitle": "Hapus {{name}}?",
+      "deleteBody": "Tidak ada yang memakainya, jadi hanya kategorinya yang hilang. Ini tidak bisa dibatalkan.",
+      "deleteConfirm": "Hapus kategori",
+      "deleteCancel": "Simpan saja",
+      "deleted": "{{name}} dihapus",
+      "discard": {
+        "title": "Buang kategori ini?",
+        "titleEdit": "Buang perubahan Anda?",
+        "body": "Yang Anda ketik tidak akan disimpan.",
+        "confirm": "Buang",
+        "cancel": "Lanjut mengubah"
+      }
+    }
+  },
+  "common": {
+    "today": "Hari ini",
+    "yesterday": "Kemarin",
+    "seeAll": "Lihat semua",
+    "back": "Kembali",
+    "unexpectedError": "Ada yang tidak beres",
+    "charactersLeft_one": "Sisa {{count}} karakter",
+    "charactersLeft_other": "Sisa {{count}} karakter",
+    "pro": {
+      "badge": "Pro",
+      "see": "Lihat Fintraq Pro",
+      "also": "Juga ada di Pro"
+    },
+    "colors": {
+      "forest": "Hijau",
+      "teal": "Hijau kebiruan",
+      "blue": "Biru",
+      "purple": "Ungu",
+      "pink": "Merah muda",
+      "red": "Merah",
+      "orange": "Jingga",
+      "slate": "Abu-abu",
+      "current": "Warna saat ini"
+    },
+    "accountTypes": {
+      "cash": "Tunai",
+      "bank": "Rekening bank",
+      "savings": "Tabungan",
+      "credit_card": "Kartu kredit",
+      "investment": "Investasi",
+      "loan": "Pinjaman",
+      "ewallet": "Dompet"
+    }
+  },
+  "export": {
+    "dialog": {
+      "share": "Bagikan lembar kerja",
+      "save": "Simpan lembar kerja"
+    },
+    "title": "Ekspor",
+    "back": "Kembali",
+    "file": {
+      "count_one": "{{count}} transaksi",
+      "count_other": "{{count}} transaksi",
+      "counting": "Menghitung",
+      "none": "Tidak ada yang diekspor",
+      "scope": "{{from}} sampai {{to}} · {{account}}",
+      "columns": {
+        "date": "Tanggal",
+        "what": "Apa",
+        "amount": "Jumlah"
+      },
+      "more_one": "dan {{count}} baris lagi",
+      "more_other": "dan {{count}} baris lagi",
+      "empty": "Tidak ada baris untuk pilihan ini",
+      "loans": "Pinjaman Anda ditambahkan sebagai baris tambahan",
+      "format": "Berkas .csv. Bisa dibuka di Excel, Numbers, dan Google Sheets.",
+      "label": "Pratinjau lembar kerja"
+    },
+    "choose": {
+      "title": "Apa saja isinya",
+      "hint": "Pratinjau di atas mengikuti pilihan Anda",
+      "period": "Periode",
+      "periods": {
+        "d7": "7 hari",
+        "d30": "30 hari",
+        "d90": "90 hari",
+        "d365": "12 bulan",
+        "custom": "Atur sendiri"
+      },
+      "from": "Dari",
+      "to": "Sampai",
+      "pickFrom": "Hari pertama",
+      "pickTo": "Hari terakhir",
+      "done": "Selesai",
+      "kind": "Jenis",
+      "kinds": {
+        "all": "Semuanya",
+        "expense": "Pengeluaran",
+        "income": "Pemasukan",
+        "transfer": "Transfer"
+      },
+      "account": "Akun",
+      "allAccounts": "Semua akun",
+      "loans": "Sertakan pinjaman",
+      "loansHint": "Yang Anda pinjamkan dan pinjam, sebagai baris tambahan"
+    },
+    "save": "Simpan ke ponsel ini",
+    "saveIos": "Simpan ke File",
+    "share": "Bagikan",
+    "blocked": {
+      "counting": "Menghitung yang cocok",
+      "nothing": "Tidak ada yang cocok dengan pilihan ini. Perluas periode atau jenisnya."
+    },
+    "done": {
+      "saved": "{{name}} disimpan"
+    },
+    "failed": {
+      "title": "Berkas tidak dibuat",
+      "save": "Berkas tidak disimpan",
+      "share": "Berkas tidak dibagikan",
+      "body": "Tidak ada yang berubah. Pastikan ada ruang kosong di ponsel ini dan coba lagi."
+    }
+  },
+  "firstRun": {
+    "welcome": {
+      "title": "Ketahui ke mana uang Anda pergi",
+      "body": "Catat yang Anda belanjakan dan dapatkan, lalu lihat ke mana perginya. Semuanya tetap di ponsel ini.",
+      "points": {
+        "free": "Mencatat itu gratis, tanpa batas",
+        "private": "Tidak perlu membuat akun, tidak ada yang dikirim ke mana pun",
+        "quick": "Siap dalam kurang dari semenit"
+      },
+      "picture": "Tiga akun sebagai kartu di dalam dompet, seperti yang ditampilkan Fintraq",
+      "sample": {
+        "savings": "Tabungan",
+        "bank": "Rekening bank",
+        "cash": "Tunai",
+        "everyday": "Belanja harian"
+      },
+      "start": "Mulai",
+      "restore": "Saya punya cadangan"
+    },
+    "setup": {
+      "title": "Siapkan Fintraq",
+      "back": "Kembali",
+      "you": "Anda:",
+      "name": {
+        "label": "Nama",
+        "hint": "Hanya untuk menyapa Anda. Tidak pernah keluar dari ponsel ini."
+      },
+      "currency": {
+        "label": "Mata uang utama Anda:",
+        "hint": "Total ditampilkan dalam mata uang ini. Ketuk untuk mengubah."
+      },
+      "account": {
+        "label": "Akun pertama Anda:",
+        "name": "Nama",
+        "balance": "Saldo",
+        "zero": "0,00",
+        "balanceHint": "Isinya sekarang. Kosongkan untuk mulai dari nol."
+      },
+      "finish": "Buka Fintraq",
+      "blocked": {
+        "name": "Ketik nama Anda untuk melanjutkan",
+        "accountName": "Beri nama akun",
+        "balance": "Saldo itu bukan angka"
+      },
+      "failedTitle": "Penyiapan belum selesai",
+      "failedBody": "Tidak ada yang hilang. Coba lagi, dan penyiapan lanjut dari tempat terhenti."
+    },
+    "restore": {
+      "title": "Kembalikan catatan Anda",
+      "back": "Kembali",
+      "body": "Dari Google Drive Anda, atau dari berkas cadangan yang Anda simpan. Fintraq mengembalikan semua isinya.",
+      "bodyFileOnly": "Dari berkas cadangan yang Anda simpan. Fintraq mengembalikan semua isinya.",
+      "file": "Pilih berkas cadangan",
+      "phone": "Ponsel ini",
+      "drive": "Drive Anda",
+      "connect": "Pulihkan dari Google Drive",
+      "working": "Memulihkan · {{percent}}%",
+      "fresh": "Mulai dari awal saja",
+      "failed": {
+        "title": "Tidak ada yang dipulihkan",
+        "noBackup": "Tidak ada cadangan Fintraq di Drive {{email}}. Coba akun lain, atau mulai dari awal.",
+        "needsPro": "Memulihkan dari Google Drive adalah bagian dari Fintraq Pro. Jika sudah membelinya, pulihkan pembelian Anda dulu.",
+        "unreadable": "Berkas itu bukan cadangan Fintraq, atau rusak. Tidak ada yang berubah.",
+        "offline": "Google Drive tidak bisa dijangkau. Periksa koneksi Anda dan coba lagi.",
+        "other": "Ada yang tidak beres di tengah jalan. Tidak ada yang berubah di ponsel ini. Coba lagi.",
+        "seePro": "Lihat Fintraq Pro"
+      }
+    },
+    "reminder": {
+      "title": "Mau diingatkan setiap malam?",
+      "body": "Fintraq bisa mengingatkan Anda pukul 20.00 untuk mencatat hari ini, sebelum detailnya terlupa. Anda bisa mengubah waktunya atau mematikannya di Pengaturan.",
+      "sample": {
+        "app": "Fintraq · 20.00",
+        "label": "Seperti apa pengingatnya"
+      },
+      "yes": "Ingatkan saya",
+      "no": "Nanti saja",
+      "deniedTitle": "Notifikasi Fintraq dimatikan",
+      "deniedBody": "Pengingat tidak dinyalakan. Anda bisa mengizinkan notifikasi dan menyalakannya di Pengaturan.",
+      "carryOn": "Lanjut"
+    }
+  },
+  "home": {
+    "greeting": "Hai {{name}}",
+    "greetingNoName": "Halo",
+    "search": "Cari",
+    "settings": "Pengaturan",
+    "balance": {
+      "allAccounts": "Semua akun",
+      "currency": "Mata uang",
+      "addExpense": "Tambah pengeluaran",
+      "addIncome": "Tambah pemasukan",
+      "openAccounts": "Akun",
+      "summary_one": "Di {{count}} akun",
+      "summary_other": "Di {{count}} akun",
+      "scope_one": "Di {{count}} akun dalam {{currency}}",
+      "scope_other": "Di {{count}} akun dalam {{currency}}"
+    },
+    "start": {
+      "title": "Langkah awal",
+      "hint": "{{done}} dari {{total}} selesai. Ketuk yang berikutnya.",
+      "hide": "Sembunyikan",
+      "steps": {
+        "account": "Tambahkan akun pertama Anda",
+        "transaction": "Catat sesuatu yang Anda belanjakan",
+        "reminder": "Nyalakan pengingat harian",
+        "secondAccount": "Tambahkan akun kedua",
+        "backup": "Cadangkan ke Google Drive"
+      }
+    },
+    "prompt": {
+      "pro": {
+        "title": "Ada lebih banyak di Fintraq Pro",
+        "body": "Pencarian, ekspor, wawasan lebih dalam, dan pencadangan otomatis. Bayar sekali, atau per bulan.",
+        "link": "Lihat Fintraq Pro",
+        "dismiss": "Nanti saja"
+      },
+      "backup": {
+        "title": "Catatan Anda hanya ada di ponsel ini",
+        "body": "Simpan salinan di Google Drive Anda sendiri, diperbarui dua kali sehari.",
+        "link": "Siapkan pencadangan",
+        "dismiss": "Nanti saja"
+      }
+    },
+    "quick": {
+      "title": "Aksi cepat",
+      "transfer": "Transfer",
+      "hint": "Jalan pintas ke hal yang sering Anda lakukan",
+      "transferDetail": "Pindahkan uang antar akun Anda",
+      "lend": "Meminjamkan atau meminjam",
+      "lendDetail": "Pantau uang yang dipinjamkan atau dipinjam"
+    },
+    "month": {
+      "title": "Bulan ini",
+      "hint": "Yang masuk, yang keluar, dan yang tersisa",
+      "link": "Wawasan",
+      "moneyIn": "Uang masuk",
+      "moneyOut": "Uang keluar",
+      "kept": "Anda menyimpan {{percent}}% dari yang masuk",
+      "keptLabel": "tersimpan",
+      "spentAll": "Anda membelanjakan semua yang masuk",
+      "spentMore": "Anda membelanjakan lebih dari yang masuk",
+      "onlySpending": "Belum ada pemasukan yang dicatat bulan ini",
+      "nothing": "Belum ada yang dicatat bulan ini",
+      "progress": "Bagian pemasukan yang dibelanjakan"
+    },
+    "accounts": {
+      "title": "Akun",
+      "hint": "Ketuk kartu untuk membukanya",
+      "more_one": "dan {{count}} akun lagi",
+      "more_other": "dan {{count}} akun lagi",
+      "emptyTitle": "Pisahkan tunai, bank, dan kartu",
+      "emptyBody": "Satu akun sudah cukup untuk mulai.",
+      "emptyAction": "Tambah akun"
+    },
+    "recent": {
+      "title": "Terbaru",
+      "hint": "Hal terakhir yang Anda catat",
+      "emptyTitle": "Pengeluaran Anda muncul di sini",
+      "emptyBody": "Tambahkan yang Anda belanjakan dan dapatkan.",
+      "emptyAction": "Tambah transaksi"
+    },
+    "people": {
+      "title": "Orang dan pinjaman",
+      "hint": "Yang masih tersisa di antara kalian, dari pinjaman yang berjalan",
+      "owesYou": "Berutang kepada Anda",
+      "youOwe": "Anda berutang",
+      "settled": "Semua lunas",
+      "emptyTitle": "Ingat siapa berutang apa",
+      "emptyBody": "Pantau uang yang dipinjamkan, dipinjam, atau dibagi.",
+      "emptyAction": "Tambah orang",
+      "add": "Tambah"
+    }
+  },
+  "insights": {
+    "title": "Wawasan",
+    "currency": "Mata uang",
+    "periodLabel": "Periode",
+    "periods": {
+      "d7": "7 hari",
+      "d30": "30 hari",
+      "d90": "90 hari",
+      "d365": "12 bulan"
+    },
+    "summary": {
+      "spent": {
+        "d7": "Dibelanjakan dalam 7 hari terakhir",
+        "d30": "Dibelanjakan dalam 30 hari terakhir",
+        "d90": "Dibelanjakan dalam 90 hari terakhir",
+        "d365": "Dibelanjakan dalam 12 bulan terakhir"
+      },
+      "less": "{{percent}}% lebih sedikit dari {{period}} sebelumnya",
+      "more": "{{percent}}% lebih banyak dari {{period}} sebelumnya",
+      "same": "Sama dengan {{period}} sebelumnya",
+      "before": {
+        "d7": "7 hari",
+        "d30": "30 hari",
+        "d90": "90 hari",
+        "d365": "12 bulan"
+      },
+      "moneyIn": "Uang masuk",
+      "moneyOut": "Uang keluar",
+      "chart": "Pengeluaran sepanjang periode. Tertinggi {{amount}}, {{when}}.",
+      "chartEmpty": "Tidak ada pengeluaran di periode ini.",
+      "week": "pekan tanggal {{date}}"
+    },
+    "forecast": {
+      "title": "Ke mana arah bulan ini",
+      "hint": "Dengan laju belanja Anda bulan ini",
+      "onCourse": "Menuju pengeluaran sebesar",
+      "perDay": "Sekitar {{amount}} per hari sejauh ini.",
+      "start": "1 {{month}}",
+      "end": "{{amount}} bulan lalu",
+      "today": "Hari ini",
+      "chart": "Sudah membelanjakan {{spent}}% dari total bulan lalu saat {{gone}}% bulan ini berlalu; menuju {{projected}}%.",
+      "noBaseline": "Setelah satu bulan penuh dicatat, di sini terlihat perbandingannya."
+    },
+    "categories": {
+      "title": "Ke mana perginya",
+      "hint": "Ketuk kategori untuk melihat transaksinya",
+      "spending": "Pengeluaran",
+      "income": "Pemasukan",
+      "kind": "Tampilkan",
+      "spent": "Dibelanjakan",
+      "received": "Diterima",
+      "share": "{{percent}}%",
+      "shareLabel": "{{name}}, {{percent}} persen",
+      "ring": "{{kind}} per kategori",
+      "none": "Tidak ada apa-apa di periode ini"
+    },
+    "rhythm": {
+      "title": "Ritme",
+      "hint": "Hari-hari jatuhnya pengeluaran Anda",
+      "weekdays": "Pekan pada umumnya",
+      "weekdaysChart": "Rata-rata pengeluaran per hari dalam sepekan. {{peak}} paling mahal.",
+      "weekdaysChartEmpty": "Rata-rata pengeluaran per hari dalam sepekan.",
+      "calendar": "Lima pekan terakhir",
+      "calendarChart": "Pengeluaran per hari selama lima pekan terakhir; lebih gelap di hari yang lebih banyak belanja."
+    },
+    "people": {
+      "title": "Dengan siapa Anda berbelanja",
+      "hint": "Ke siapa pengeluaran Anda pergi"
+    },
+    "findings": {
+      "title": "Layak diketahui",
+      "hint": "Dipilih dari yang Anda catat",
+      "spendingUp": "Pengeluaran naik {{pct}}%",
+      "spendingUpHint": "Dibanding pekan lalu. Aktivitas menunjukkan ke mana perginya.",
+      "spendingDown": "Pengeluaran turun {{pct}}%",
+      "spendingDownHint": "Dibanding pekan lalu.",
+      "incomeUp": "Pemasukan naik {{pct}}%",
+      "incomeDown": "Pemasukan turun {{pct}}%",
+      "incomeHint": "Dibanding pekan lalu.",
+      "keeping": "Menyimpan {{rate}}% dari pemasukan",
+      "keepingUp": "Bagian yang lebih besar dari pekan lalu.",
+      "keepingDown": "Bagian yang lebih kecil dari pekan lalu.",
+      "keepingSame": "Kurang lebih sama dengan pekan lalu.",
+      "categoryUp": "{{name}} naik {{pct}}%",
+      "categoryUpHint": "Lebih dari yang biasa Anda belanjakan untuk ini dalam sepekan.",
+      "categoryDown": "{{name}} turun {{pct}}%",
+      "categoryDownHint": "Kurang dari yang biasa Anda belanjakan untuk ini dalam sepekan.",
+      "week": "Pekan ini sejauh ini",
+      "weekKept": "{{income}} masuk · {{expense}} keluar · {{amount}} tersimpan",
+      "weekOver": "{{income}} masuk · {{expense}} keluar · {{amount}} berlebih",
+      "bestWeek": "Simpanan terbanyak dalam sepekan selama 90 hari terakhir.",
+      "monthAhead": "Bulan ini lebih banyak masuk daripada keluar",
+      "monthAheadHint": "Pemasukan masih di atas pengeluaran sejauh ini.",
+      "monthBehind": "Bulan ini lebih banyak keluar daripada masuk",
+      "monthBehindHint": "Pengeluaran masih di atas pemasukan sejauh ini."
+    },
+    "locked": {
+      "badge": "Pro",
+      "title": "Lihat alasannya, bukan hanya jumlahnya",
+      "body": "Periode lebih panjang, apa yang berubah, dan ke mana arah bulan ini.",
+      "action": "Lihat Fintraq Pro"
+    },
+    "empty": {
+      "title": "Wawasan bertambah seiring yang Anda catat",
+      "body": "Tambahkan beberapa transaksi dan tab ini menunjukkan ke mana uang Anda pergi dan kapan.",
+      "action": "Tambah transaksi"
+    }
+  },
+  "loans": {
+    "back": "Kembali",
+    "close": "Tutup",
+    "title": {
+      "lend": "Dipinjamkan ke {{name}}",
+      "borrow": "Dipinjam dari {{name}}",
+      "borrowNoName": "Uang yang dipinjam",
+      "lendNoName": "Uang yang dipinjamkan"
+    },
+    "status": {
+      "active": "Berjalan",
+      "overdue": "Lewat jatuh tempo",
+      "repaid": "Lunas"
+    },
+    "edit": {
+      "title": "Jatuh tempo dan catatan",
+      "save": "Simpan perubahan",
+      "saved": "Pinjaman diperbarui",
+      "unchanged": "Belum ada yang berubah"
+    },
+    "loan": {
+      "notFound": "Pinjaman ini sudah tidak ada",
+      "manage": "Kelola pinjaman",
+      "edit": "Ubah jatuh tempo atau catatan",
+      "editHint": "Jumlah dan orangnya tetap seperti yang dicatat",
+      "outstanding": {
+        "lend": "Masih harus kembali",
+        "borrow": "Masih harus dibayar"
+      },
+      "settled": "Semua lunas",
+      "progress": "{{repaid}} dari {{total}} sudah dibayar",
+      "progressLabel": "Sudah dibayar sejauh ini",
+      "repay": "Catat pembayaran",
+      "story": "Ceritanya sejauh ini",
+      "note": "Catatan",
+      "markRepaid": "Tandai lunas",
+      "markRepaidHint": "Untuk uang yang diselesaikan dengan cara lain",
+      "markRepaidTitle": "Tandai pinjaman ini lunas?",
+      "markRepaidBody": "Ini menutup pinjaman tanpa mencatat pembayaran, jadi saldo akun tidak berubah. Pengingatnya berhenti.",
+      "markRepaidConfirm": "Tandai lunas",
+      "markedRepaid": "Pinjaman ditandai lunas",
+      "delete": "Hapus pinjaman",
+      "deleteTitle": "Hapus pinjaman ini?",
+      "deleteBody": "Pinjaman dan pengingatnya hilang. Pembayaran yang dicatat untuknya tetap ada di riwayat Anda, jadi saldo tidak berubah. Ini tidak bisa dibatalkan.",
+      "deleteConfirm": "Hapus pinjaman",
+      "cancel": "Simpan saja",
+      "deleted": "Pinjaman dihapus",
+      "failed": "Tidak bisa dilakukan",
+      "failedBody": "Tidak ada yang berubah. Coba lagi.",
+      "ok": "OK"
+    },
+    "story": {
+      "opened": {
+        "lend": "Anda meminjamkan",
+        "borrow": "Anda meminjam"
+      },
+      "repayment": {
+        "lend": "Kembali",
+        "borrow": "Anda membayar"
+      },
+      "remaining": {
+        "lend": "Masih harus kembali",
+        "borrow": "Masih harus dibayar"
+      },
+      "due": "Jatuh tempo {{date}}",
+      "overdue": "Jatuh tempo pada {{date}}",
+      "noDue": "Tanpa jatuh tempo",
+      "settled": "Lunas",
+      "when": "{{date}} · {{account}}"
+    },
+    "reminders": {
+      "title": "Pengingat",
+      "due": "Sebelum jatuh tempo",
+      "dueOff": "Pengingat menjelang tanggal jatuh tempo",
+      "noDueDate": "Pinjaman ini tidak punya jatuh tempo",
+      "dueWhen": "Kapan",
+      "days": {
+        "d0": "Pada harinya",
+        "d1": "Sehari sebelumnya",
+        "d3": "3 hari sebelumnya",
+        "d7": "Sepekan sebelumnya"
+      },
+      "monthly": "Setiap bulan",
+      "monthlyOff": "Untuk pinjaman yang dibayar dengan cicilan",
+      "monthlyDay": "Pada tanggal",
+      "dayOfMonth": "Tanggal {{day}}",
+      "time": "Pukul",
+      "pick": {
+        "day": "Tanggal berapa setiap bulan?",
+        "time": "Pukul berapa?"
+      },
+      "done": "Selesai",
+      "denied": "Notifikasi Fintraq dimatikan",
+      "deniedBody": "Izinkan notifikasi di pengaturan ponsel, lalu nyalakan lagi pengingatnya.",
+      "ok": "OK"
+    },
+    "form": {
+      "title": "Pinjaman baru",
+      "kinds": {
+        "lend": "Saya meminjamkan",
+        "borrow": "Saya meminjam"
+      },
+      "kindLabel": "Arahnya",
+      "amount": "Jumlah",
+      "to": "Kepada:",
+      "from": "Dari:",
+      "choosePerson": "Pilih orang",
+      "anyone": "Tidak ada orang tertentu",
+      "outOf": "Keluar dari:",
+      "into": "Masuk ke:",
+      "chooseAccount": "Pilih akun",
+      "available": "{{amount}} tersedia",
+      "details": "Detail:",
+      "due": "Jatuh tempo",
+      "noDue": "Tanpa jatuh tempo",
+      "clearDue": "Hapus jatuh tempo",
+      "pickDue": "Kapan jatuh temponya?",
+      "note": "Catatan",
+      "noteOptional": "Opsional",
+      "create": "Catat pinjaman",
+      "blocked": {
+        "amount": "Masukkan jumlah untuk menyimpan",
+        "person": "Pilih kepada siapa Anda meminjamkan",
+        "account": "Pilih akun untuk menyimpan"
+      },
+      "created": {
+        "lend": "Pinjaman dicatat",
+        "borrow": "Pinjaman dicatat"
+      },
+      "saveFailed": "Tidak bisa menyimpan",
+      "saveFailedBody": "Tidak ada yang berubah. Coba lagi.",
+      "ok": "OK",
+      "limit": "Paket gratis menampung {{count}} pinjaman berjalan. Pro tanpa batas.",
+      "seePro": "Lihat Pro",
+      "discard": {
+        "title": "Buang pinjaman ini?",
+        "body": "Yang Anda ketik tidak akan disimpan.",
+        "confirm": "Buang",
+        "cancel": "Lanjut mengubah"
+      }
+    },
+    "repay": {
+      "title": "Catat pembayaran",
+      "amount": "Jumlah",
+      "all": "Semuanya: {{amount}}",
+      "outstanding": "{{amount}} belum dibayar",
+      "into": "Masuk ke:",
+      "outOf": "Keluar dari:",
+      "details": "Detail:",
+      "when": "Kapan",
+      "note": "Catatan",
+      "noteOptional": "Opsional",
+      "slide": "Geser untuk mencatat {{amount}}",
+      "slideEmpty": "Geser untuk mencatat",
+      "blocked": {
+        "amount": "Masukkan jumlah untuk dicatat",
+        "tooMuch": "Itu lebih dari {{amount}} yang belum dibayar",
+        "account": "Tidak ada akun dalam {{currency}} untuk mencatatnya"
+      },
+      "recorded": "Pembayaran dicatat",
+      "settled": "Semua lunas",
+      "settledWith": "Semua lunas dengan {{name}}",
+      "saveFailed": "Tidak bisa mencatat itu",
+      "saveFailedBody": "Tidak ada yang berubah. Coba lagi.",
+      "ok": "OK",
+      "discard": {
+        "title": "Buang pembayaran ini?",
+        "body": "Yang Anda ketik tidak akan disimpan.",
+        "confirm": "Buang",
+        "cancel": "Lanjut mengubah"
+      }
+    }
+  },
+  "lock": {
+    "unlock": {
+      "pinTitle": "Masukkan PIN Anda",
+      "deviceTitle": "Fintraq terkunci",
+      "deviceBody": "Catatan Anda tetap tersembunyi sampai itu memang Anda.",
+      "marks": "{{count}} dari {{total}} angka dimasukkan",
+      "wrong": "PIN itu salah. Coba lagi.",
+      "wait": "Terlalu banyak percobaan salah. Coba lagi dalam {{time}}.",
+      "fingerprint": "Buka dengan sidik jari",
+      "face": "Buka dengan wajah",
+      "either": "Buka dengan sidik jari atau wajah",
+      "device": "Buka kunci",
+      "prompt": "Buka kunci Fintraq",
+      "promptCancel": "Batal",
+      "promptPasscode": "Pakai kode sandi",
+      "failed": "Itu tidak berhasil. Coba lagi.",
+      "delete": "Hapus"
+    },
+    "setup": {
+      "title": "Kunci aplikasi",
+      "back": "Kembali",
+      "state": {
+        "off": "Siapa pun yang memegang ponsel ini bisa membuka Fintraq",
+        "biometric": "Fintraq dibuka dengan sidik jari atau wajah Anda",
+        "pin": "Fintraq dibuka dengan PIN Anda"
+      },
+      "stateBody": {
+        "off": "Nyalakan kunci agar catatan Anda tetap milik Anda sendiri.",
+        "on": "Terkunci beberapa detik setelah Anda keluar dari aplikasi, dan menyembunyikan aplikasi di daftar aplikasi terbaru."
+      },
+      "choose": "Cara membuka kunci",
+      "chooseHint": "Pilih satu. Anda bisa menggantinya kapan saja.",
+      "modes": {
+        "off": "Tanpa kunci",
+        "biometric": "Sidik jari atau wajah",
+        "pin": "PIN"
+      },
+      "noBiometrics": "Ponsel ini belum punya sidik jari atau wajah yang disetel, jadi pilihan itu tidak ditawarkan.",
+      "changePin": "Ganti PIN",
+      "changePinHint": "Pilih PIN baru enam angka",
+      "confirmOn": "Pastikan ini Anda untuk menyalakan kunci",
+      "confirmOff": "Pastikan ini Anda untuk mematikan kunci",
+      "offTitle": "Matikan kunci?",
+      "offBody": "Fintraq akan terbuka bagi siapa pun yang memegang ponsel ini.",
+      "offConfirm": "Matikan",
+      "offKeep": "Tetap dikunci",
+      "done": {
+        "biometric": "Kunci menyala",
+        "pin": "PIN disetel. Kunci menyala",
+        "off": "Kunci mati"
+      }
+    },
+    "pin": {
+      "title": "Setel PIN",
+      "chooseTitle": "Pilih PIN",
+      "chooseBody": "Enam angka yang akan Anda ingat. Tidak ada cara untuk memulihkannya.",
+      "confirmTitle": "Masukkan lagi",
+      "confirmBody": "Untuk memastikan itu PIN yang Anda maksud.",
+      "mismatch": "Keduanya tidak sama. Pilih PIN Anda lagi.",
+      "close": "Tutup"
+    }
+  },
+  "notifications": {
+    "channels": {
+      "reminders": {
+        "name": "Pengingat",
+        "description": "Pengingat harian dan jatuh tempo pinjaman Anda"
+      },
+      "backup": {
+        "name": "Cadangan",
+        "description": "Ditampilkan saat pencadangan berjalan, dan saat pencadangan membutuhkan Anda"
+      }
+    },
+    "daily": {
+      "first": {
+        "title": "Transaksi pertama Anda",
+        "body": "Tambahkan hal terakhir yang Anda bayar. Hanya setengah menit."
+      },
+      "weekday": {
+        "mon": {
+          "title": "Pengeluaran hari Senin",
+          "body": "Tambahkan sekarang, selagi masih ingat yang kecil-kecil."
+        },
+        "tue": {
+          "title": "Ada yang perlu ditambahkan hari ini?",
+          "body": "Makan siang, ongkos, tagihan. Setengah menit dan hari ini beres."
+        },
+        "wed": {
+          "title": "Setengah pekan selesai",
+          "body": "Tambahkan hari ini dan pekan ini tetap lengkap."
+        },
+        "thu": {
+          "title": "Pengeluaran hari Kamis",
+          "body": "Yang kecil paling dulu terlupa. Tambahkan sebelum itu terjadi."
+        },
+        "fri": {
+          "title": "Sebelum akhir pekan",
+          "body": "Tambahkan hari ini agar akhir pekan dimulai dari saldo yang benar."
+        },
+        "sat": {
+          "title": "Pengeluaran hari Sabtu",
+          "body": "Akhir pekan paling mudah terlewat. Tambahkan hari ini selagi masih segar."
+        },
+        "sun": {
+          "title": "Hari terakhir pekan ini",
+          "body": "Tambahkan hari ini dan pekan ini lengkap."
+        }
+      },
+      "weekEnd": {
+        "title": "{{count}} dicatat pekan ini",
+        "body": "Tambahkan hari ini dan pekan ini lengkap."
+      },
+      "monthStart": {
+        "title": "{{month}} dimulai hari ini",
+        "body": "Bulan baru untuk diisi. Tambahkan pengeluaran pertama Anda."
+      },
+      "monthEnd": {
+        "title": "Hari terakhir {{month}}",
+        "body": "{{count}} dicatat sejauh ini. Tambahkan yang terlewat dan bulan ini lengkap."
+      },
+      "missedYesterday": {
+        "title": "Kemarin belum dicatat",
+        "body": "Tambahkan kemarin dan hari ini sekaligus. Masih kurang dari semenit."
+      },
+      "quietSince": {
+        "title": "Sepi sejak {{day}}",
+        "body": "Beberapa hari mudah dikejar. Mulai dari yang Anda ingat."
+      },
+      "quiet": {
+        "title": "Sudah cukup lama",
+        "body": "Tidak perlu mengejar. Mulai lagi dari hari ini."
+      },
+      "loanTomorrow": {
+        "lend": {
+          "title": "{{name}} berutang {{amount}} kepada Anda",
+          "body": "Jatuh tempo besok. Sekalian tambahkan pengeluaran hari ini."
+        },
+        "borrow": {
+          "title": "Anda berutang {{amount}} kepada {{name}}",
+          "body": "Jatuh tempo besok. Sekalian tambahkan pengeluaran hari ini."
+        }
+      }
+    },
+    "loan": {
+      "when": {
+        "today": "Jatuh tempo hari ini",
+        "tomorrow": "Jatuh tempo besok",
+        "inDays_one": "Jatuh tempo dalam {{count}} hari",
+        "inDays_other": "Jatuh tempo dalam {{count}} hari"
+      },
+      "due": {
+        "lend": {
+          "title": "{{name}} berutang {{amount}} kepada Anda",
+          "titleNoName": "Anda akan menerima {{amount}}",
+          "body": "{{when}}. Tambahkan pembayarannya saat tiba."
+        },
+        "borrow": {
+          "title": "Anda berutang {{amount}} kepada {{name}}",
+          "titleNoName": "Anda berutang {{amount}}",
+          "body": "{{when}}. Tambahkan pembayarannya setelah Anda membayar."
+        }
+      },
+      "instalment": {
+        "lend": {
+          "title": "{{name}} membayar Anda hari ini",
+          "titleNoName": "Ada pembayaran masuk hari ini",
+          "body": "{{amount}} masih akan datang. Tambahkan saat tiba."
+        },
+        "borrow": {
+          "title": "Bayar {{name}} hari ini",
+          "titleNoName": "Cicilan pinjaman jatuh tempo hari ini",
+          "body": "{{amount}} masih harus dibayar. Tambahkan setelah Anda membayar."
+        }
+      }
+    },
+    "backup": {
+      "running": {
+        "title": "Mencadangkan"
+      },
+      "failed": {
+        "title": "Pencadangan tidak selesai",
+        "body": "Fintraq akan mencoba lagi sendiri. Buka Cadangan untuk menjalankannya sekarang."
+      },
+      "reconnect": {
+        "title": "Hubungkan lagi Google Drive",
+        "body": "Fintraq keluar dari akun Google Anda. Hubungkan lagi dan pencadangan berlanjut."
+      }
+    }
+  },
+  "people": {
+    "title": "Orang",
+    "back": "Kembali",
+    "close": "Tutup",
+    "add": "Tambah orang",
+    "currency": "Mata uang",
+    "standing": {
+      "owesYou": "Berutang kepada Anda",
+      "youOwe": "Anda berutang",
+      "settled": "Semua lunas"
+    },
+    "summary": {
+      "title": "Pinjaman berjalan",
+      "owed": "Piutang Anda",
+      "owe": "Anda berutang",
+      "settled": "Tidak ada utang di kedua pihak"
+    },
+    "empty": {
+      "title": "Ingat siapa berutang apa",
+      "body": "Tambahkan orang yang Anda pinjami, yang meminjami Anda, atau yang berbagi biaya dengan Anda, dan Fintraq yang menghitung."
+    },
+    "limit": {
+      "reached": "Paket gratis menampung {{count}} orang. Pro tanpa batas.",
+      "seePro": "Lihat Pro"
+    },
+    "person": {
+      "notFound": "Orang ini sudah tidak ada",
+      "manage": "Kelola",
+      "spent": "Dibayarkan kepadanya",
+      "received": "Diterima darinya",
+      "call": "Telepon",
+      "email": "Email",
+      "loans": "Pinjaman berjalan",
+      "lent": "Anda meminjamkan",
+      "borrowed": "Anda meminjam",
+      "due": "Jatuh tempo {{date}}",
+      "recent": "Bersama",
+      "seeAll": "Lihat semua",
+      "noActivityTitle": "Belum ada yang dicatat bersama",
+      "noActivityBody": "Pilih orangnya di “Dengan” saat menambah transaksi.",
+      "edit": "Ubah detail",
+      "delete": "Hapus orang",
+      "deleteTitle": "Hapus {{name}}?",
+      "deleteBody": "Transaksi dan pinjaman yang dicatat dengannya tetap ada, tanpa nama. Ini tidak bisa dibatalkan.",
+      "deleteConfirm": "Hapus orang",
+      "deleteCancel": "Simpan saja",
+      "deleted": "{{name}} dihapus",
+      "failed": "Tidak bisa dilakukan",
+      "failedBody": "Tidak ada yang berubah. Coba lagi.",
+      "ok": "OK"
+    },
+    "form": {
+      "newTitle": "Orang baru",
+      "editTitle": "Ubah orang",
+      "name": "Nama",
+      "namePlaceholder": "Budi Santoso",
+      "more": "Tambah kontak dan detail pekerjaan",
+      "moreHint": "Opsional: telepon, email, pekerjaannya",
+      "phone": "Telepon",
+      "email": "Email",
+      "role": "Pekerjaan",
+      "rolePlaceholder": "Tukang ledeng",
+      "company": "Perusahaan",
+      "create": "Tambah orang",
+      "save": "Simpan perubahan",
+      "blocked": {
+        "name": "Beri nama untuk menyimpan",
+        "email": "Alamat email itu belum lengkap"
+      },
+      "created": "{{name}} ditambahkan",
+      "changesSaved": "Perubahan disimpan",
+      "saveFailed": "Tidak bisa menyimpan",
+      "saveFailedBody": "Tidak ada yang berubah. Coba lagi.",
+      "ok": "OK",
+      "discard": {
+        "title": "Buang orang ini?",
+        "titleEdit": "Buang perubahan Anda?",
+        "body": "Yang Anda ketik tidak akan disimpan.",
+        "confirm": "Buang",
+        "cancel": "Lanjut mengubah"
+      }
+    }
+  },
+  "plan": {
+    "title": "Rencana",
+    "add": "Meminjamkan atau meminjam",
+    "currency": "Mata uang",
+    "summary": {
+      "title": "Pinjaman berjalan",
+      "owed": "Piutang Anda",
+      "owe": "Anda berutang",
+      "none": "Tidak ada utang di kedua pihak",
+      "lend": "Meminjamkan atau meminjam",
+      "people": "Orang"
+    },
+    "upcoming": {
+      "title": "Akan datang",
+      "noDate": "Tanpa jatuh tempo",
+      "lent": "Berutang kepada Anda",
+      "borrowed": "Anda berutang",
+      "someone": "Seseorang",
+      "unnamed": "Dipinjam",
+      "due": {
+        "overdue_one": "Lewat jatuh tempo {{count}} hari",
+        "overdue_other": "Lewat jatuh tempo {{count}} hari",
+        "today": "Jatuh tempo hari ini",
+        "tomorrow": "Jatuh tempo besok",
+        "inDays_one": "Jatuh tempo dalam {{count}} hari",
+        "inDays_other": "Jatuh tempo dalam {{count}} hari"
+      },
+      "line": "{{standing}} · {{due}}"
+    },
+    "settled": {
+      "show_one": "{{count}} pinjaman lunas",
+      "show_other": "{{count}} pinjaman lunas",
+      "hide": "Sembunyikan pinjaman lunas",
+      "row": "Lunas"
+    },
+    "empty": {
+      "title": "Tidak ada yang dipinjamkan atau dipinjam",
+      "body": "Catat uang yang Anda pinjamkan atau pinjam, dan Fintraq memantau berapa yang masih terutang dan sampai kapan."
+    },
+    "soon": {
+      "badge": "Segera hadir di Pro",
+      "title": "Rencanakan ke depan, bukan hanya melihat ke belakang",
+      "body": "Ini sedang disiapkan, dan termasuk saat Anda punya Pro.",
+      "action": "Lihat Fintraq Pro"
+    }
+  },
+  "pro": {
+    "title": "Fintraq Pro",
+    "close": "Tutup",
+    "pillars": {
+      "plan": {
+        "title": "Rencana",
+        "promise": "Ketahui apa yang akan datang sebelum tiba."
+      },
+      "understand": {
+        "title": "Pahami",
+        "promise": "Lihat mengapa angkanya seperti itu."
+      },
+      "find": {
+        "title": "Temukan dan bagikan",
+        "promise": "Keluarkan apa saja, dalam bentuk yang bisa dipakai orang lain."
+      },
+      "protect": {
+        "title": "Lindungi",
+        "promise": "Tidak perlu khawatir kehilangan data atau kehabisan ruang."
+      }
+    },
+    "features": {
+      "budgets": {
+        "title": "Anggaran",
+        "description": "Batas bulanan untuk kategori apa pun, dengan peringatan sebelum Anda mencapainya."
+      },
+      "recurring": {
+        "title": "Transaksi berulang",
+        "description": "Sewa, gaji, dan langganan tercatat sendiri, dan Anda melihat 30 hari ke depan."
+      },
+      "goals": {
+        "title": "Target",
+        "description": "Sebuah target dan tanggal, serta berapa yang perlu disisihkan tiap bulan untuk mencapainya."
+      },
+      "safeToSpend": {
+        "title": "Aman dibelanjakan",
+        "description": "Satu angka untuk hari ini, setelah tagihan, anggaran, dan target terpenuhi."
+      },
+      "periods": {
+        "title": "Periode apa pun, dibandingkan",
+        "description": "30 hari, 90 hari, setahun, atau rentang Anda sendiri, masing-masing dibanding periode sebelumnya."
+      },
+      "forecast": {
+        "title": "Perkiraan",
+        "description": "Di mana bulan ini akan berakhir dengan laju belanja Anda."
+      },
+      "categories": {
+        "title": "Rincian per kategori",
+        "description": "Bagian tiap kategori dari yang masuk dan yang keluar."
+      },
+      "rhythm": {
+        "title": "Ritme",
+        "description": "Hari mana yang paling banyak menguras, sepanjang pekan dan bulan."
+      },
+      "people": {
+        "title": "Orang",
+        "description": "Dengan siapa Anda berbelanja, dan bagaimana saldo tersebar."
+      },
+      "insights": {
+        "title": "Wawasan",
+        "description": "Pola yang layak diketahui, dengan kata-kata sederhana."
+      },
+      "netWorthTrend": {
+        "title": "Kekayaan bersih dari waktu ke waktu",
+        "description": "Yang Anda punya dikurangi yang Anda utang, bulan demi bulan."
+      },
+      "search": {
+        "title": "Cari",
+        "description": "Transaksi, akun, orang, atau kategori apa pun, di seluruh riwayat Anda."
+      },
+      "export": {
+        "title": "Ekspor lembar kerja",
+        "description": "Transaksi dan pinjaman sebagai berkas CSV untuk disimpan atau dibagikan."
+      },
+      "statement": {
+        "title": "Laporan bulanan",
+        "description": "Satu bulan dalam satu halaman PDF, siap dikirim."
+      },
+      "backup": {
+        "title": "Pencadangan cloud otomatis",
+        "description": "Disimpan ke Google Drive Anda sendiri dua kali sehari, bisa dipulihkan di ponsel mana pun."
+      },
+      "unlimited": {
+        "title": "Tanpa batas",
+        "description": "Lebih dari {{people}} orang, {{loans}} pinjaman, {{budgets}} anggaran, dan {{recurring}} transaksi berulang."
+      }
+    },
+    "paywall": {
+      "title": "Dapatkan lebih dari uang Anda",
+      "body": "Rencanakan ke depan, pahami pengeluaran Anda, dan jaga tetap aman.",
+      "plans": {
+        "label": "Pilih paket",
+        "lifetime": "Seumur hidup",
+        "yearly": "Tahunan",
+        "monthly": "Bulanan",
+        "best": "Paling hemat"
+      },
+      "notes": {
+        "lifetime": "Bayar sekali. Milik Anda selamanya.",
+        "lifetimeMonths": "Bayar sekali. Setara {{count}} bulan paket bulanan.",
+        "yearly": "Setiap tahun. Batalkan kapan saja.",
+        "yearlySaving": "Setiap tahun. Hemat {{percent}}% dibanding bulanan.",
+        "monthly": "Setiap bulan. Batalkan kapan saja."
+      },
+      "buy": {
+        "lifetime": "Dapatkan seumur hidup seharga {{price}}",
+        "yearly": "Berlangganan {{price}} per tahun",
+        "monthly": "Berlangganan {{price}} per bulan",
+        "noPrice": "Dapatkan Fintraq Pro"
+      },
+      "terms": {
+        "lifetime": "Satu kali pembayaran {{price}}. Tidak pernah diperpanjang.",
+        "yearly": "{{price}} sekarang, lalu {{price}} setiap tahun sampai Anda membatalkan. Batalkan kapan saja di {{store}}.",
+        "monthly": "{{price}} sekarang, lalu {{price}} setiap bulan sampai Anda membatalkan. Batalkan kapan saja di {{store}}.",
+        "storeAndroid": "Google Play",
+        "storeIos": "akun Apple Anda",
+        "termsLink": "Ketentuan",
+        "privacyLink": "Privasi"
+      },
+      "restore": "Pulihkan pembelian",
+      "included": {
+        "title": "Yang Anda dapatkan",
+        "hint": "Semua yang ada di Pro hari ini"
+      },
+      "upcoming": {
+        "title": "Segera hadir di Pro",
+        "hint": "Termasuk dalam pembelian Anda saat tersedia"
+      },
+      "prices": {
+        "loading": "Mengambil harga dari toko",
+        "unavailableTitle": "Harga tidak bisa dimuat",
+        "unavailableBody": "Fintraq tidak bisa menjangkau toko. Periksa koneksi Anda, lalu coba lagi.",
+        "retry": "Coba lagi",
+        "blocked": "Pembelian menunggu harga dari toko"
+      },
+      "pending": {
+        "title": "Pembayaran tertunda",
+        "body": "Toko sedang menunggu pembayaran Anda. Pro terbuka sendiri setelah dikonfirmasi."
+      },
+      "failed": {
+        "title": "Pembelian tidak berhasil",
+        "body": "Tidak ada yang ditagih. Coba lagi, atau gunakan cara bayar lain di toko."
+      },
+      "restored": {
+        "none": "Tidak ditemukan pembelian di akun toko ini",
+        "failed": "Toko tidak bisa dijangkau. Coba lagi.",
+        "done": "Fintraq Pro dipulihkan"
+      }
+    },
+    "owned": {
+      "title": "Anda punya Fintraq Pro",
+      "lifetime": "Seumur hidup. Milik Anda selamanya, dengan semua yang hadir di Pro.",
+      "renews": "Paket {{plan}}. Diperpanjang pada {{date}}.",
+      "ends": "Paket {{plan}}, dibatalkan. Pro tetap aktif sampai {{date}}.",
+      "override": "Dinyalakan oleh penggantian pengembang. Tidak ada yang dibeli.",
+      "manage": "Kelola di toko",
+      "done": "Selesai",
+      "goLifetime": {
+        "title": "Beralih ke seumur hidup",
+        "body": "Bayar sekali dan berhenti membayar setiap {{period}}.",
+        "month": "bulan",
+        "year": "tahun",
+        "action": "Dapatkan seumur hidup seharga {{price}}"
+      }
+    },
+    "bought": {
+      "title": "Anda punya Fintraq Pro",
+      "body": "Semuanya terbuka. Terima kasih sudah mendukung Fintraq.",
+      "done": "Selesai",
+      "cancelOld": {
+        "title": "Batalkan paket {{plan}} Anda",
+        "body": "Paket seumur hidup menggantikannya, tetapi toko terus menagih langganan itu sampai Anda membatalkannya di sana.",
+        "link": "Buka langganan"
+      }
+    },
+    "ended": {
+      "title": "Fintraq Pro telah berakhir",
+      "body": "Toko tidak lagi menampilkan pembelian Pro di akun ini. Semua yang Anda catat masih ada di sini.",
+      "see": "Lihat Fintraq Pro",
+      "ok": "OK"
+    }
+  },
+  "search": {
+    "title": "Cari",
+    "back": "Kembali",
+    "placeholder": "Catatan, akun, orang, atau kategori",
+    "clear": "Hapus pencarian",
+    "start": {
+      "title": "Temukan apa pun yang Anda catat",
+      "body": "Ketik sebagian catatan, atau nama akun, orang, atau kategori."
+    },
+    "recent": {
+      "title": "Terbaru",
+      "clear": "Hapus",
+      "again": "Cari {{query}} lagi",
+      "forget": "Lupakan {{query}}"
+    },
+    "kinds": {
+      "all": "Semua {{count}}",
+      "transactions": "Transaksi {{count}}",
+      "accounts": "Akun {{count}}",
+      "people": "Orang {{count}}",
+      "categories": "Kategori {{count}}"
+    },
+    "groups": {
+      "transactions": "Transaksi",
+      "accounts": "Akun",
+      "people": "Orang",
+      "categories": "Kategori"
+    },
+    "kindLabel": "Tampilkan",
+    "capped": "Ini {{count}} yang terbaru. Ketik lebih banyak untuk mempersempit.",
+    "none": {
+      "title": "Tidak ada yang cocok dengan “{{query}}”",
+      "body": "Pencarian melihat catatan serta nama akun, orang, dan kategori. Coba lebih sedikit huruf atau kata lain."
+    }
+  },
+  "settings": {
+    "title": "Pengaturan",
+    "back": "Kembali",
+    "profile": {
+      "hello": "Tidak masuk ke mana pun. Semuanya tetap di ponsel ini.",
+      "noName": "Tambahkan nama Anda",
+      "edit": "Ganti nama Anda",
+      "pro": "Fintraq Pro",
+      "free": "Paket gratis",
+      "seePro": "Lihat apa yang ditambahkan Pro",
+      "managePro": "Paket Anda"
+    },
+    "name": {
+      "title": "Nama Anda",
+      "label": "Nama",
+      "hint": "Dipakai untuk menyapa Anda di Beranda. Tidak pernah keluar dari ponsel ini.",
+      "save": "Simpan",
+      "saved": "Nama disimpan"
+    },
+    "money": {
+      "title": "Uang Anda",
+      "hint": "Tempat Anda mencatat",
+      "accounts": "Akun",
+      "accountsCount_one": "{{count}} akun",
+      "accountsCount_other": "{{count}} akun",
+      "categories": "Kategori",
+      "categoriesCount_one": "{{count}} kategori",
+      "categoriesCount_other": "{{count}} kategori",
+      "people": "Orang",
+      "peopleCount_one": "{{count}} orang",
+      "peopleCount_other": "{{count}} orang",
+      "export": "Ekspor",
+      "exportHint": "Sebagai lembar kerja"
+    },
+    "prefs": {
+      "title": "Preferensi",
+      "hint": "Tampilan dan bahasa Fintraq",
+      "currency": "Mata uang utama",
+      "currencyHint": "Untuk akun baru dan total",
+      "language": "Bahasa",
+      "systemLanguage": "Sama dengan ponsel",
+      "appearance": "Tampilan",
+      "appearances": {
+        "system": "Otomatis",
+        "light": "Terang",
+        "dark": "Gelap"
+      }
+    },
+    "reminder": {
+      "title": "Pengingat harian",
+      "hint": "Pengingat untuk mencatat hari ini sebelum terlupa",
+      "label": "Ingatkan saya setiap hari",
+      "on": "Setiap hari pukul {{time}}",
+      "off": "Mati",
+      "time": "Waktu",
+      "pickTime": "Ingatkan saya pukul",
+      "done": "Selesai",
+      "deniedTitle": "Pengingat butuh notifikasi",
+      "deniedBody": "Izinkan notifikasi untuk Fintraq, lalu nyalakan pengingat.",
+      "openSettings": "Buka pengaturan",
+      "lateTitle": "Pengingat mungkin datang terlambat",
+      "lateBody": "Izinkan “Alarm dan pengingat” agar datang tepat di menit yang Anda pilih.",
+      "lateLink": "Izinkan"
+    },
+    "safety": {
+      "title": "Keamanan",
+      "hint": "Siapa yang bisa membuka aplikasi, dan apa yang terjadi jika ponsel hilang",
+      "lock": "Kunci aplikasi",
+      "lockState": {
+        "off": "Mati",
+        "biometric": "Sidik jari atau wajah",
+        "pin": "PIN"
+      },
+      "backup": "Cadangan",
+      "backupOn": "Ke Drive {{email}}",
+      "backupOff": "Belum disetel"
+    },
+    "about": {
+      "row": "Tentang Fintraq",
+      "rowHint": "Gagasannya, siapa pembuatnya, dan ketentuan kecilnya",
+      "title": "Tentang",
+      "name": "Fintraq",
+      "tagline": "Ketahui ke mana uang Anda pergi",
+      "version": "Versi {{version}}",
+      "idea": {
+        "title": "Gagasannya",
+        "hint": "Fintraq akan selalu seperti ini",
+        "free": "Mencatat uang Anda gratis, tanpa batas transaksi atau akun.",
+        "private": "Semuanya tetap di ponsel ini. Tidak ada akun yang perlu dibuat dan tidak ada server yang menyimpan catatan Anda.",
+        "pro": "Pro membiayai pengerjaannya. Pro menambah perencanaan, wawasan, dan pencadangan, tidak pernah memungut biaya untuk mencatat."
+      },
+      "maker": {
+        "title": "Siapa pembuatnya",
+        "hint": "Orang yang perlu diberi tahu saat ada yang salah",
+        "name": "Idexa",
+        "line": "Fintraq dibuat oleh Idexa",
+        "site": "Kunjungi idexa.app"
+      },
+      "print": {
+        "title": "Ketentuan kecilnya",
+        "hint": "Apa yang dilakukan Fintraq dengan yang diketahuinya"
+      },
+      "privacy": "Kebijakan privasi",
+      "terms": "Ketentuan layanan",
+      "usage": "Bagikan data penggunaan",
+      "usageHint": "Hitungan anonim layar mana yang dipakai, dan laporan kerusakan. Tidak pernah jumlah, nama, atau catatan.",
+      "developer": "Opsi pengembang",
+      "developerHint": "Alat pengujian dan debug",
+      "stored": "Semuanya disimpan di ponsel ini",
+      "pageFailed": "Halaman tidak bisa dibuka di peramban Anda"
+    },
+    "erase": {
+      "title": "Mulai dari awal",
+      "row": "Hapus semuanya",
+      "rowHint": "Semua catatan dan preferensi di ponsel ini",
+      "confirmTitle": "Hapus semua yang ada di ponsel ini?",
+      "confirmBody": "Semua transaksi, akun, orang, pinjaman, dan preferensi dihapus, dan kunci aplikasi dimatikan. Cadangan yang sudah ada di Drive Anda tidak disentuh. Ini tidak bisa dibatalkan.",
+      "confirm": "Hapus semuanya",
+      "keep": "Pertahankan catatan saya",
+      "failedTitle": "Tidak ada yang dihapus",
+      "failedBody": "Ada yang tidak beres sebelum apa pun dihapus. Coba lagi sebentar lagi."
+    }
+  },
+  "shell": {
+    "tabs": {
+      "home": "Beranda",
+      "activity": "Aktivitas",
+      "add": "Tambah",
+      "plan": "Rencana",
+      "insights": "Wawasan"
+    },
+    "start": {
+      "preparing": "Menyiapkan catatan Anda",
+      "failedTitle": "Fintraq tidak bisa membuka catatan Anda",
+      "failedBody": "Tutup Fintraq lalu buka lagi. Catatan Anda masih ada di ponsel ini: jangan copot aplikasinya, atau catatan ikut hilang."
+    },
+    "shortcuts": {
+      "expense": "Tambah pengeluaran",
+      "income": "Tambah pemasukan",
+      "transfer": "Transfer",
+      "loan": "Meminjamkan atau meminjam"
+    },
+    "update": {
+      "title": "Fintraq perlu diperbarui",
+      "titleVersion": "Perbarui ke versi {{version}}",
+      "body": "Versi ini terlalu lama untuk menjaga catatan Anda tetap aman. Memperbarui hanya semenit dan tidak ada catatan Anda yang hilang.",
+      "points": {
+        "data": "Semua yang Anda catat tetap di ponsel ini",
+        "quick": "Ini aplikasi yang sama, versi yang lebih baru"
+      },
+      "action": "Perbarui Fintraq"
+    },
+    "error": {
+      "title": "Ada yang tidak beres di layar ini",
+      "body": "Catatan Anda aman. Coba lagi; jika terus terjadi, tutup Fintraq lalu buka lagi.",
+      "retry": "Coba lagi"
+    }
+  },
+  "transactions": {
+    "kinds": {
+      "expense": "Pengeluaran",
+      "income": "Pemasukan",
+      "transfer": "Transfer"
+    },
+    "addTitle": {
+      "expense": "Tambah pengeluaran",
+      "income": "Tambah pemasukan",
+      "transfer": "Tambah transfer"
+    },
+    "editTitle": {
+      "expense": "Ubah pengeluaran",
+      "income": "Ubah pemasukan",
+      "transfer": "Ubah transfer"
+    },
+    "loanPayment": "Pembayaran pinjaman",
+    "loanRepayment": "Pelunasan pinjaman",
+    "close": "Tutup",
+    "kind": "Jenis transaksi",
+    "transferRoute": "{{from}} sampai {{to}}",
+    "amount": "Jumlah",
+    "from": "Dari:",
+    "to": "Kepada:",
+    "details": "Detail:",
+    "when": "Kapan",
+    "with": "Dengan",
+    "pickDate": "Pilih tanggal dan waktu",
+    "calculator": {
+      "open": "Hitung jumlahnya",
+      "title": "Hitung",
+      "use": "Pakai jumlah ini"
+    },
+    "account": "Akun",
+    "fromAccount": "Dari akun",
+    "toAccount": "Ke akun",
+    "chooseAccount": "Pilih akun",
+    "noDestination": "Tidak ada akun lain dalam mata uang ini yang bisa menerima transfer",
+    "category": "Kategori",
+    "date": "Tanggal",
+    "person": "Orang",
+    "noPerson": "Tidak ada",
+    "note": "Catatan",
+    "noteOptional": "Opsional",
+    "available": "{{amount}} tersedia",
+    "defaultNote": "Transaksi",
+    "save": {
+      "expense": "Simpan pengeluaran",
+      "income": "Simpan pemasukan",
+      "transfer": "Simpan transfer"
+    },
+    "saveChanges": "Simpan perubahan",
+    "step": {
+      "amount": "Berapa?",
+      "account": "Dari akun mana?",
+      "accountIncome": "Ke akun mana?",
+      "toAccount": "Ke mana?",
+      "category": "Untuk apa?",
+      "searchCategory": "Cari kategori",
+      "noCategory": "Tidak ada kategori yang cocok dengan “{{query}}”",
+      "newCategory": "Kategori baru",
+      "categoryName": "Nama",
+      "categoryHint": "Kategori ini mendapat ikon dan warna. Ubah kapan saja di Kategori.",
+      "addCategory": "Tambah dan pilih",
+      "categoryFailed": "Kategori tidak ditambahkan",
+      "categoryFailedBody": "Tidak ada yang berubah. Coba lagi.",
+      "categoryIncome": "Dari mana?",
+      "details": "Ada yang mau ditambahkan?"
+    },
+    "short": {
+      "amount": "Jumlah",
+      "account": "Dari",
+      "accountIncome": "Ke",
+      "toAccount": "Sampai",
+      "category": "Untuk",
+      "details": "Detail"
+    },
+    "choose": "Pilih",
+    "noNote": "Tanpa catatan",
+    "blocked": {
+      "amount": "Masukkan jumlah untuk menyimpan",
+      "account": "Pilih akun untuk menyimpan",
+      "destination": "Pilih ke mana uangnya pergi",
+      "category": "Pilih kategori untuk menyimpan",
+      "repaymentTooHigh": "Pembayaran paling banyak {{max}}"
+    },
+    "pick": {
+      "account": "Akun yang mana?",
+      "toAccount": "Ke mana?",
+      "category": "Untuk apa?",
+      "searchCategory": "Cari kategori",
+      "noCategory": "Tidak ada kategori yang cocok dengan “{{query}}”",
+      "newCategory": "Kategori baru",
+      "categoryName": "Nama",
+      "categoryHint": "Kategori ini mendapat ikon dan warna. Ubah kapan saja di Kategori.",
+      "addCategory": "Tambah dan pilih",
+      "categoryFailed": "Kategori tidak ditambahkan",
+      "categoryFailedBody": "Tidak ada yang berubah. Coba lagi.",
+      "person": "Dengan siapa?",
+      "date": "Kapan?",
+      "time": "Waktu",
+      "done": "Selesai"
+    },
+    "saved": {
+      "expense": "Pengeluaran disimpan",
+      "income": "Pemasukan disimpan",
+      "transfer": "Transfer disimpan"
+    },
+    "changesSaved": "Perubahan disimpan",
+    "undo": "Urungkan",
+    "saveFailed": "Tidak bisa menyimpan",
+    "saveFailedBody": "Tidak ada yang berubah. Coba lagi.",
+    "tryAgain": "OK",
+    "discard": {
+      "title": "Buang transaksi ini?",
+      "body": "Yang Anda ketik tidak akan disimpan.",
+      "confirm": "Buang",
+      "cancel": "Lanjut mengubah"
+    },
+    "notFound": "Transaksi ini sudah tidak ada",
+    "detail": {
+      "title": {
+        "expense": "Pengeluaran",
+        "income": "Pemasukan",
+        "transfer": "Transfer"
+      },
+      "account": "Akun",
+      "from": "Dari",
+      "to": "Sampai",
+      "category": "Kategori",
+      "person": "Dengan",
+      "loan": "Bagian dari pinjaman",
+      "lentTo": "Dipinjamkan ke {{name}}",
+      "borrowedFrom": "Dipinjam dari {{name}}",
+      "edit": "Ubah",
+      "delete": "Hapus transaksi",
+      "deleteTitle": "Hapus transaksi ini?",
+      "deleteBody": "Saldo akun akan kembali seperti semula. Ini tidak bisa dibatalkan.",
+      "deleteConfirm": "Hapus transaksi",
+      "keep": "Simpan saja",
+      "deleted": "Transaksi dihapus",
+      "deleteFailed": "Tidak bisa menghapus",
+      "deleteFailedBody": "Tidak ada yang berubah. Coba lagi."
+    }
+  }
+}
