@@ -1,0 +1,59 @@
+import { Icon } from '@/design/components/Icon';
+import type { IconName } from '@/design/components/Icon';
+import { Text } from '@/design/components/Text';
+import { useFontScale, useStyles, useTheme } from '@/design/ThemeProvider';
+import type { Theme } from '@/design/ThemeProvider';
+import React, { useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
+import type { TextInputProps } from 'react-native';
+
+export type TextFieldProps = Omit<TextInputProps, 'style'> & {
+  /** Sits inside the field before the value, as in "Amount: £5.00". Omit only for search. */
+  label?: string;
+  icon?: IconName;
+  /** How to fix it. Turns the outline red. */
+  error?: string;
+  helper?: string;
+  trailing?: React.ReactNode;
+};
+
+/** An outlined field with its label inside. */
+export function TextField({ label, icon, error, helper, trailing, editable = true, onFocus, onBlur, ...rest }: TextFieldProps) {
+  const { colors, type, border } = useTheme();
+  const styles = useStyles(createStyles);
+  const [focused, setFocused] = useState(false);
+  const scale = useFontScale();
+  const outline = error ? colors.danger : !editable ? colors.disabled : colors.border;
+  const thick = focused || !!error;
+
+  return (
+    <View style={styles.wrap}>
+      {/* The outline thickens inside a fixed box so the content never shifts. */}
+      <View style={[styles.field, { borderColor: outline, borderWidth: thick ? border.thick : border.thin, paddingHorizontal: styles.field.paddingHorizontal - (thick ? border.thick : border.thin) }]}>
+        {icon ? <Icon name={icon} size={styles.icon.width} color={editable ? colors.text : colors.onDisabled} /> : null}
+        {label ? <Text variant="body" tone={editable ? 'default' : 'disabled'}>{`${label}:`}</Text> : null}
+        <TextInput
+          {...rest}
+          editable={editable}
+          allowFontScaling={false}
+          accessibilityLabel={rest.accessibilityLabel ?? label}
+          placeholderTextColor={colors.textMuted}
+          selectionColor={colors.selected}
+          onFocus={(e) => { setFocused(true); onFocus?.(e); }}
+          onBlur={(e) => { setFocused(false); onBlur?.(e); }}
+          style={[styles.input, { fontFamily: type.body.fontFamily, fontWeight: type.body.fontWeight, fontSize: type.body.fontSize * scale, color: editable ? colors.text : colors.onDisabled }]}
+        />
+        {trailing}
+      </View>
+      {error ? <Text variant="caption" tone="danger">{error}</Text> : helper ? <Text variant="caption" tone="muted">{helper}</Text> : null}
+    </View>
+  );
+}
+
+const createStyles = ({ radius, size, space }: Theme) =>
+  StyleSheet.create({
+    wrap: { gap: space.xs + space.xxs, alignSelf: 'stretch' },
+    field: { minHeight: size.field, borderRadius: radius.field, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg },
+    input: { flex: 1, alignSelf: 'stretch', padding: 0, minWidth: 0 },
+    icon: { width: size.iconSmall },
+  });

@@ -1,188 +1,192 @@
-# Fintraq Design System
+# Design system
 
-The single source of truth for how Fintraq looks and behaves.
-- **Tokens:** `src/theme/`
-- **Components:** `src/components/ui/`
-- **Live catalogue:** the Design Gallery (`app/design-gallery.tsx`). Reach it via Settings → tap the footer 10× → Developer → **Design gallery**. Toggle light and dark in its header.
+How Fintraq looks and how its interface is built. The system lives in
+`design/` and is shown, live, in the Design Gallery (`/design-gallery`). The
+gallery is the reference; this page explains the rules behind it.
 
-If a screen needs something the gallery doesn't have, add it to the system first, then use it.
+The previous system (`src/components/ui`, `src/theme`) is frozen: the shipped
+screens still run on it until they are rebuilt, and nothing new uses it. Its
+documentation is in this file's git history.
 
----
+## The look in one paragraph
 
-## 1. Principles
+A light grey page carries white cards with soft corners and no shadows. Black
+does the work: text, the one main button, outlines. A vivid green marks what
+is new, current or switched on, and is never used for text. Headings are a
+bold serif; everything else is a plain sans. One thing is asked at a time,
+buttons fill the width, and the button that cannot be used yet is grey and
+says why. Every value was measured from the owner's reference screens.
 
-1. **Calm money.** Finance is stressful. Use generous spacing, few colours, and one clear primary action per screen.
-2. **Tone before lines.** Separate layers with surface tone (`background → surface → card`), not borders or shadows.
-3. **Meaning is reserved.** Green means money in and red means money out or destructive. Never use them decoratively.
-4. **Numbers are the hero.** Amounts use `MoneyText` and the amount type ramp: tabular, signed and consistent.
-5. **Every state is designed.** Each list and card defines its loading (Skeleton), empty (EmptyState) and error (Banner) states.
-6. **Reachable and legible.** 44pt targets, labelled icon buttons, and dynamic type–friendly line heights.
+## Using it
 
----
+```tsx
+import { Button, Card, ListRow, Screen, Section, Text, useStyles, useTheme } from '@/design';
+import type { Theme } from '@/design';
+```
 
-## 2. Tokens
+- Import only from `@/design`. Never from a file inside it, and never from
+  `@/src/components/ui`.
+- Read tokens from `useTheme()`. Feature code contains no colour values, no
+  font sizes, no radii and no shadows; `npm run lint:design` fails on them.
+- Styles go in a `createStyles(theme)` function at the bottom of the file,
+  read with `useStyles(createStyles)`.
+- `design/` knows nothing about money, accounts or Pro. A component that needs
+  to know what a loan is belongs in a feature.
 
-Always read tokens through `const theme = useTheme()`.
+## Tokens (`design/tokens/`)
 
-| Token | Access | Notes |
-|---|---|---|
-| Colour | `colors.primary` | Semantic roles below. Never hex in features. |
-| Tint | `alpha(colors.danger, 'subtle')` | `faint 6% · subtle 10% · soft 17% · medium 30% · strong 50%` |
-| Content on a fill | `foregroundOn(fill)` | Near-black or white, whichever contrasts more. Use for anything drawn on a solid user/brand colour. |
-| Type | `<Text variant="body">` / `typography.variants.body` | Family + size + line height + tracking in one. |
-| Spacing | `spacing('4')` → 16 | 4px grid. Screen padding 16, section gap 20. |
-| Radius | `radius('xl')` → 24 | Shape follows the element — pick what reads best in place, never mixed on one element. **Pill** (`full`) where it looks right: buttons, chips, badges, segmented controls, search fields, the tab-bar indicator, switches, progress; icon buttons are circles. **Soft**: everything else — cards & list groups `xl` 24 · hero, sheets, dialogs `2xl` 28 · tiles inside cards & text inputs `lg` 16 · keypad keys & inner blocks `md` 12 · icon & avatar tiles squircle 30% of size. Nested shapes stay concentric. |
-| Density | `sizes.button.md.height` → 44 | One control-height scale **36 / 44 / 52** (sm / md / lg) shared by buttons, icon buttons, segmented controls; chips 36, search 44. Card padding 16, tile gap 10, section header 24 above / 12 below. |
-| Elevation | none | Flat: no shadows, glows, gradients or borders. Separate layers with tonal surfaces (`background` → `surface` → `card`). One exception, a scrim rather than decoration: `BottomFade` dissolves scrolling content into the page colour behind the floating tab bar. |
-| Motion | `animation.normal` → 200ms | `fast 150 · normal 200 · exit 220 · slow 300`. A screen's headline figure counts up when it appears or changes (`<MoneyText animate>`, 600ms, skipped under Reduce Motion); nothing else does. |
-| Charts | `magnitudeRamp(colors)` from `src/theme/chart.ts` | Charts that show *how much* (bars by day, heatmap) use a neutral ramp of the text colour, with lime for the selected or peak mark. Red and green stay on figures, where they mean money out and in. Shares (category, person, account) use the item's own colour. |
-| Layout | `layout.screenPadding`, `layout.minTouchTarget` | Plus `tabBarClearance(insets.bottom)` for tab screens. |
+### Colour (`colors.ts`)
 
-### Colour roles
+Components use roles, never raw colours. Light values are sampled from the
+reference; dark is derived from them and contrast-checked.
 
-| Role | Use for |
-|---|---|
-| `background` | Page. Lowest layer. |
-| `surface` | Cards, list groups, sheets, inputs on the page. |
-| `card` | Inset fill *inside* a surface: tracks, chips, nested blocks. (The name is historic: it is not the card background.) |
-| `primary` / `primaryForeground` | Brand lime **fill**: main action, active state, hero / content on top of it. |
-| `primaryInk` | Brand green for **text and icons** on light layers (links, active chip labels, tonal buttons, checks). Lime as text is ~2:1 — never use `primary` for text (enforced by the `lime-text` audit rule; lime on the dark ink surface is fine). |
-| `text` / `textMuted` | Primary / secondary content. |
-| `success` · `danger` | Income · expense, destructive, errors. |
-| `warning` · `info` | Attention needed · transfers, informational. |
-| `heroCard.*` | The hero palette (lime / emerald). `textPrimary` · `textMuted` for text, `tile` for the translucent stat tiles and the currency track, `ink` + `onInk` for the selected currency, `tileStrong` for a selected tab. Figures stay in `textPrimary`: green or red type on the hero fails contrast. |
+| Role | Used for |
+| --- | --- |
+| `background`, `surface`, `surfaceMuted` | Page; cards, sheets and fields; a resting or unavailable surface |
+| `text`, `textMuted` | Primary content; descriptions and field labels |
+| `border`, `divider` | Outlines of fields, chips and secondary buttons; hairlines between rows |
+| `action`, `onAction` | The main button and selected chips, and what sits on them |
+| `disabled`, `onDisabled` | A control that cannot be used yet |
+| `accent`, `onAccent` | Badges, the active tab mark, a switch that is on. **Never text**: it fails contrast on white, so anything drawn in it on a light surface also carries an outline |
+| `selected` | Outline of the current item, and green that is safe as text |
+| `brandDeep`, `brand`, `brandBright`, `brandTint` | Brand moments (the wave card) and the pale green behind an emblem |
+| `positive`, `danger`, `warning` | Money in; destructive actions and errors; things to check. Money out is plain `text` with a minus sign |
+| `scrim` | Behind dialogs and sheets |
 
-User-chosen colours (accounts, categories, people) come from data. Pass them via a component's `color` prop.
+`PASTELS` (lilac, pink, orange, teal, green) fill icon circles; the glyph on
+top is always black (`INK`).
 
-### Type ramp (`<Text variant>`)
+### Type (`typography.ts`)
 
-| Variant | Size/LH | Use |
-|---|---|---|
-| `display` | 28/33 bold | Hero numbers, onboarding |
-| `title` | 22/27 bold | Screen titles (one per screen) |
-| `headline` | 18/23 bold | Dialog & sheet titles |
-| `subheading` | 16/21 semibold | Card titles |
-| `body` / `bodyStrong` | 14/20 | Reading text / row labels |
-| `callout` / `calloutStrong` | 13/19 | Descriptions / compact labels |
-| `caption` | 11/15 | Metadata, helper text |
-| `label` | 11/15 semibold | Section labels |
-| `micro` | 9.5/13 | Badges, counters |
-| `amountHero` · `amountLarge` · `amount` | 28 · 22 · 14 | Money |
+Lora Bold for headings, Hanken Grotesk for everything else. A variant fixes
+family, size, line height and tracking together; use `<Text variant>` and
+never set a size by hand.
 
-Tones: `default · muted · primary · success · danger · warning · info · onPrimary`.
+| Variant | For |
+| --- | --- |
+| `display` | The one headline of a full-screen message |
+| `title` | Section, question, sheet and dialog titles |
+| `action` | Button labels and card actions |
+| `lead`, `leadStrong` | Intro copy, choice labels; the header title |
+| `body`, `bodyStrong` | Running text; the name of the thing in a row |
+| `callout`, `calloutStrong` | Descriptions and field labels; small links |
+| `caption`, `captionStrong` | Chips and notes |
+| `tab`, `tabActive`, `badge` | Tab labels; badge text |
+| `amountHero`, `amountLarge`, `amount` | Figures. Use `<Money>`, which sets minor units smaller |
 
----
+Three behaviours are built in and must not be worked around:
 
-## Icons
+- **Text size setting.** `Text` scales size and line height together with the
+  phone's setting, up to 1.4 times. Platform scaling is off because Android
+  scales letters but not line heights, which clips text.
+- **Other scripts.** For Hindi, Marathi, Bengali, Tamil, Telugu, Kannada and
+  Japanese the whole ramp switches to the phone's own font with looser lines
+  (`needsSystemFont(language)` chooses `script="system"` on the
+  `ThemeProvider`). Headings lose the serif there and stay bold.
+- **Figures read left to right** in every language (`ltr()`, used by `Money`
+  and row values), so a minus sign never jumps to the other end.
 
-Every icon is a **name** in one registry, `src/components/ui/icon-registry.ts` (`HUGEICONS: Record<IconName, glyph>`). Render with `<Icon name="trash" />` (optional `family`, default `hugeicons`); components that take an icon (`IconAvatar`, `ListItem`, `Button`, `EmptyState`…) take the same `IconName` string. Nothing else imports an icon pack — `check-design-system.js` fails the build if it does.
+### Shape, space and size (`metrics.ts`)
 
-- **Swap an icon app-wide:** change its entry in the registry.
-- **New icon:** add an entry (interface names describe a role: `chevron-right`); missing glyphs are drawn in `custom-icons.ts`.
-- **Stored names** (category/account icons such as `shopping-cart`) are saved in user data. Never rename or remove one; re-point it instead. `resolveIcon()` / `resolveAccountTypeIcon()` in `src/utils/icons.ts` turn a stored string into a name.
-- **Another family:** add it to `ICON_FAMILIES` as a (partial) name → glyph map; missing names fall back to Hugeicons.
+- **Space:** a 4pt grid, `xxs` 2 to `xxxl` 48. Page margin and card padding
+  are both 16; sections sit 32 apart, sibling cards 16.
+- **Radius:** `sm` 6 (dialogs, step rows), `tile` 8, `chip` 9, `md` 10 (cards,
+  buttons, sheets), `field` 11, `pill` (badges and switches only).
+- **Borders:** 1 for outlines and hairlines, 2 for the current item.
+- **Controls:** button 48, field 44, chip 32, row at least 56, tab bar 49,
+  header 44 (56 for a task). These are minimum heights: controls grow with
+  their text. Every touch target is at least 44pt.
+- **Motion:** 120, 200 and 320 ms. Under Reduce Motion everything is still
+  except the spinner and a progress bar of unknown length, which keep moving
+  so the app never looks hung.
 
-## 3. Components
+## Icons (`design/icons/`)
 
-All components are exported from `@/src/components/ui`.
+Remix Icon, outline by default and solid for the active tab or a selected
+item: `<Icon name="wallet" />`, `<Icon name="house" filled />`.
 
-### Foundations
-| Component | Use | Replaces |
-|---|---|---|
-| `Screen` | Scaffold: safe area, background, header, padded scroll, tab-bar clearance, footer and overlays slots. Start every screen here. | Hand-rolled `SafeAreaView + PageBackground + ScrollView` |
-| `Text` | All text. `variant` + `tone`. | RN `Text` + manual fontFamily/fontSize |
-| `Header` | Screen title, back button, right action. | — |
-| `SectionHeader` | Section title with an optional quiet ink link ("See all") or muted note. No filled pill: a screen has several. | — |
-| `Divider` | Hairline, optional `inset`. | `RowSeparator` copies |
+- To add one, add a line to `icon-map.json` (our name to the Remix name) and
+  run `npm run icons:generate`. Only mapped icons ship.
+- Six icons the set lacks are drawn by hand in `custom-glyphs.ts`.
+- Icons that point along the reading direction flip in right-to-left layouts.
+- Icon names saved on categories and accounts are a contract: a test fails if
+  any of them stops drawing.
 
-### Actions
-| Component | Use |
-|---|---|
-| `Button` | `primary` (one per screen) · `tonal` · `secondary` · `outline` · `ghost` · `danger` · `success`. Sizes `sm/md/lg`, `fullWidth`, `icon` + `iconPosition`, `isLoading`. |
-| `IconButton` | Icon-only. `surface · ghost · tonal · filled · danger`. `accessibilityLabel` required. |
-| `BentoPressable` | Press primitive for custom tappables: a slight shrink (or a fade with `scaleOnPress={false}`), the same on every platform. No ripple, no ink overlay. Never `TouchableOpacity`. |
+There are no illustrations. A message or empty state carries an `Emblem`: one
+line icon in a pale green circle.
 
-### Inputs & selection
-| Component | Use |
-|---|---|
-| `Input` | Text field with `label`, `helperText`, `error`, `leadingIcon`, `trailing`. `filled` on page, `default` in a card. |
-| `SegmentedControl` | 2–4 exclusive options (type, period, theme). Animated. |
-| `Chip` | Filters, multi-select tags, horizontal scroll. Pass `on="surface"` inside sheets and cards so resting chips stay visible. |
-| `Switch` | Instant on/off (with haptic). In lists use `ListItem switchValue`. |
-| Pickers | `CurrencyPickerBottomSheet`, `ColorPickerBottomSheet`, `ColorPickerRow`, `IconPickerBottomSheet`, `CalculatorBottomSheet` from `@/src/components/pickers`. |
+## Components (`design/components/`)
 
-### Display
-| Component | Use | Replaces |
-|---|---|---|
-| `Card` | `surface` · `inset` · `outlined`, optional `onPress`. | Ad-hoc `View` cards |
-| `HeroSurface` | Carries the ring motif (two concentric rings off the top-right corner, `heroCard.decoOverlay`) shared with the profile card and paywall. The brand card for a screen's headline figure (Home balance, Transactions net, net worth, entry amount). One layout everywhere: label, figure, `HeroSplit`, then `CurrencySwitcher` (a tonal track with a solid thumb, scrolls when there are many). Quick actions are their own group below the hero, not inside it. | Currency chips in the header, buttons or coloured figures inside the hero |
-| `HeroSplit` | Two figures on a hero as translucent tiles — income/expenses, assets/debts — with an arrow glyph and the figure in hero text colour. | Bars, dots or red/green figures on the hero |
-| `ListGroup` + `ListItem` | Settings-style lists: nav rows (`onPress` → chevron), toggles (`switchValue`), single choice (`selected`), info (`value`), `destructive`. | `NavRow`, `SwitchRow`, `InfoRow` in Settings, Developer, Search, TransactionDetail |
-| `MoneyText` | Every amount. `type` CR/DR adds sign + colour. `compact` for tiles. | — |
-| `StatTile` | One KPI with label, amount/value, optional `caption` and trend. Lay out in rows of two. | KPI blocks in Analytics/Dashboard |
-| `StatColumns` | Secondary figures under a card's headline number, split by hairlines (income · expense, principal · repaid). Optional delta, press, or custom `content` such as a Pro lock. | Hand-built stat rows in summary cards |
-| `Badge` | Status labels, counts. | `LoanStatusBadge` internals |
-| `TrendBadge` | ▲/▼ % vs previous period. | `DeltaBadge` in Analytics |
-| `IconAvatar` / `PersonAvatar` | Leading visuals for categories, accounts and people. The tinted tile is 10% of the colour on paper and 17% in dark mode, where a weaker wash disappears. | — |
-| `ProgressBar` | Determinate progress, optional `color`. | — |
+One per file. The gallery shows each with its states and a line on when to
+use it.
 
-### Feedback
-| Component | Use | Replaces |
-|---|---|---|
-| `Banner` | Inline persistent message: `info · success · warning · danger`, optional action/dismiss. | Custom notice cards |
-| `EmptyState` | `block` (whole list) or `inline` (one section). Always explain + offer next step. | `EmptyState` in Analytics, per-screen empties |
-| `Skeleton` / `SkeletonRow` | Loading placeholders matching real layout. | Bare `ActivityIndicator` in lists |
+| Group | Components |
+| --- | --- |
+| Structure | `Screen`, `Header`, `TabBar`, `Section`, `Card`, `CardActions`, `Divider` |
+| Text and figures | `Text`, `Money`, `Stat`, `Badge` |
+| Actions | `Button`, `IconButton`, `Chip`, `ChipRow`, `Touchable`, `SlideToConfirm` |
+| Input | `TextField`, `Select`, `Keypad`, `Radio`, `Checkbox`, `Switch`, `Calendar`, `TimePicker`, `OptionList`, `SwatchGrid`, `IconGrid`, `CardStack` |
+| Lists | `ListRow`, `ListGroup`, `DetailRow`, `DayHeader`, `SwipeRow`, `StepRow`, `Checklist`, `Timeline` |
+| Marks | `Icon`, `IconCircle`, `IllustrationTile`, `Emblem`, `CheckMark` |
+| Charts | `BarChart`, `LineChart`, `Ring`, `Gauge`, `HeatGrid`, `SplitBar`, `RankBars`, `PairedBars`, `PaceBar`, `Delta`, `ProgressBar`, `DayStreak`, `PeriodStepper` |
+| Messages | `Message`, `EmptyState`, `Notice`, `Highlight`, `Tip`, `Toast` (`ToastProvider`, `useToast`), `LockedCard` |
+| Overlays and waiting | `Dialog`, `LoadingDialog`, `Sheet`, `Spinner`, `Skeleton`, `ProgressRow` |
+| Moments | `WaveCard`, `Receipt`, `FeatureTile` |
 
-### Overlays
-| Component | Use |
-|---|---|
-| `BentoBottomSheet` | Base sheet: choose, compose, filter. |
-| `OptionsBottomSheet` | Action menu / single choice from bottom. |
-| `ConfirmDialog` | Destructive or irreversible. Title is the question, confirm label repeats the verb. |
-| `AlertDialog` | Result of an action (success/error). |
-| `OptionsDialog` | 2–5 choices, lighter than a sheet. |
-| `TextInputDialog` | Rename a single value. |
+## Patterns
 
-**Sheet or dialog?** Choosing or composing → sheet. Confirming or informing → dialog.
+- **A screen** is `Screen` with a `Header`, content in `Section`s, and its
+  buttons in the `footer`. Never hand-build the scaffold.
+- **A list** is `ListRow`s in a `ListGroup`. A tappable row ends in a chevron
+  unless a value or a control already sits at its edge.
+- **A form field** has its label inside the outline, before the value.
+- **Buttons:** one primary per screen, full width, at the bottom. Secondary is
+  the alternative; text is a quiet way out; link goes elsewhere; danger
+  destroys and is always confirmed in a dialog whose first button repeats the
+  verb.
+- **Design the state, not the error.** A control that cannot work yet is
+  disabled and the reason is visible. Work in progress keeps the button's
+  colour and shows a spinner.
+- **Adding a transaction** is a single-page form. `CardStack` (one question
+  per card) is for first-run setup and other guided, once-only flows.
+- **Empty:** a whole empty screen gets `EmptyState` (emblem, serif title, a
+  sentence, the first step). One empty section among others gets the
+  `compact` version so the screen keeps its shape.
+- **Loading:** `Skeleton` in the shape of what is coming. `Spinner` only for
+  work that blocks.
+- **Pro:** everything a plan adds to a screen is one `LockedCard`; a single
+  Pro row inside a free list carries a badge. Never one lock per item.
+- **Home's hero** is the reference's account card: a white card with the
+  balance and two split actions, quick actions as `FeatureTile`s below. No
+  round black action buttons.
+- **A short choice** (currency, period) is a `Select`: a chip that opens a
+  list under itself. Long lists go in a `Sheet` with an `OptionList`.
+- **The wave card** is the one brand moment, for the single most important
+  figure, at most once per screen.
+- **Charts** always carry a sentence for screen readers saying what they show.
 
----
+## Adding or changing a component
 
-## 4. Patterns
+1. Check the gallery: an existing component with one more prop usually does.
+2. Write it in `design/components/`, from tokens only, with a comment on each
+   prop that is not obvious, an accessibility role and label, and no fixed
+   height that text could outgrow.
+3. Export it from `design/index.ts`.
+4. Add a specimen to the fitting section in `features/gallery/sections/`,
+   showing every state, with a line on when to use it.
+5. Look at it on a phone in light and dark, at the largest text size, and
+   with long text.
+6. `npx tsc --noEmit`, `npx expo lint`, `npm run lint:design`, `npm test`.
 
-- **Screen rhythm:** Header → KPIs (`StatTile` ×2) → `SectionHeader` → grouped content → empty/loading states. Sections are separated by `layout.sectionGap`.
-- **Lists:** group rows in `ListGroup` (settings, details) or rounded `TransactionRow` stacks (`isFirst`/`isLast`). Don't separate rows with cards.
-- **Forms:** labelled `Input`s in a column with a 16 gap. Put a single `Button fullWidth size="lg"` in `Screen footer`. Validate on blur/submit. Error text says how to fix it.
-- **System navigation (Android):** `SystemNavBackdrop`, mounted once at the root, paints the page colour behind three-button navigation so scrolling content never ghosts under the buttons. Gesture navigation stays edge to edge.
-- **Tab bar:** the original split islands — dark island (Home · Accounts), lime + tile, dark island (Analytics · Settings). All three are 60 tall on one centre line; active tab = lime tile; tabs expose their label to screen readers. Tab screens pad with `tabBarClearance()`.
-- **Summary cards:** one shape everywhere a screen leads with a number (month pulse, period summary, account, loan): `surface` card, `label` caption, the headline `MoneyText`, then `StatColumns`. Identity (avatar, name, `Badge`s) goes on the first row when the card is about one thing.
-- **Home quick actions:** a two-column grid of small `surface` cards on the page, directly under the hero: the standard icon tile (36), the action, and a one-line hint. Corners on the outside of the group take the card radius (`xl`); corners where cards meet stay at the inner-block radius (`md`), so the group reads as one card cut into pieces. One row (Expense, Income) with a single account, two rows once Transfer is possible.
-- **Home sections are always present.** People and Loans show an inline `EmptyState` with an add action when there is nothing yet, rather than disappearing.
-- **Add actions:** list screens reached from navigation use a `Fab`. Tab screens never do — the tab bar's centre + adds (a transaction, or an account on the Accounts tab); don't repeat it in the header.
-- **Pro features:** gate with `<ProGate feature>` (a section) or `useProAccess().requirePro(feature)` (an action). A screen with several locked sections shows one `ProPreviewCard` instead of a lock card per section. Every id comes from `src/features/premium/pro-features.ts`.
-- **Destructive actions:** use a `danger` button or a `destructive` ListItem, always behind a `ConfirmDialog`, and in its own group at the bottom.
-- **Copy:** sentence case, verbs on buttons ("Add account"), no trailing periods in titles.
+## Checking by hand
 
----
+```bash
+adb shell settings put system font_scale 1.5          # largest text; restore with 1.0
+adb shell settings put global debug.force_rtl 1       # right to left; restart the app; restore with 0
+adb shell settings put global transition_animation_scale 0   # Reduce Motion; restore with 1.0
+```
 
-## 5. Contributing to the system
-
-1. Check the Design Gallery. Extend an existing component (new prop or variant) before creating a new one.
-2. Build it in `src/components/ui/`: tokens only, a typed `<Name>Props`, accessibility props, and no feature imports.
-3. Export it from `src/components/ui/index.ts`.
-4. Add a specimen to the right section in `src/features/design-gallery/sections/` covering every variant, size and state, plus 2–3 usage guidelines.
-5. Check it in light **and** dark before merging.
-
----
-
-## 6. Migration plan — refactoring screens onto the system
-
-Work one screen per PR. For each screen:
-
-- [ ] Wrap in `Screen` (drop the manual SafeAreaView/PageBackground/ScrollView padding).
-- [ ] Replace local `NavRow`/`SwitchRow`/`InfoRow`/`RowSeparator` with `ListGroup` + `ListItem`.
-- [ ] Replace RN `Text` + manual font styles with `<Text variant tone>`.
-- [ ] Replace local empty/loading UIs with `EmptyState` / `Skeleton`.
-- [ ] Replace hex literals and raw numbers with tokens (`alpha`, `spacing`, `radius`).
-- [ ] Verify in the gallery's theme toggle and on a small device (iPhone SE / 360dp).
-
-Suggested order (highest reuse first): Settings → Developer → Search → Transaction detail → Analytics → Accounts/Persons/Loans detail → forms → Dashboard → Onboarding.
+Changing the text size while the app is open restarts its screen, and a
+development build then logs "configured linking in multiple places". That
+message comes from the restart, not from a fault, and does not appear in
+release builds.

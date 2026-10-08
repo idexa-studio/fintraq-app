@@ -188,6 +188,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import type { IconSvgElement } from '@hugeicons/react-native';
 import { BackspaceIcon } from './custom-icons';
+import { STORED_ICON_NAMES as STORED_NAMES } from '@/shared/contracts/stored-icon-names';
 
 /**
  * Every icon the app draws, by name — the only place a glyph is chosen. Swap an icon app-wide by
@@ -424,6 +425,6 @@ export type IconFamily = keyof typeof ICON_FAMILIES;
 export const DEFAULT_ICON_FAMILY: IconFamily = 'hugeicons';
 
 /** The stored names, in the order the icon picker offers them. */
-export const STORED_ICON_NAMES = ['airplane', 'alarm-clock', 'alert-circle', 'apple', 'archive', 'arrow-down', 'arrow-left', 'arrow-right', 'arrow-up', 'award', 'bandage', 'bar-chart', 'bed', 'beer', 'bike', 'boat', 'book-open', 'briefcase', 'building', 'bulb', 'bus', 'calendar', 'camera', 'cancel-circle', 'car', 'cash', 'cat', 'chart-bar-increasing', 'chart-line-data', 'chart-up', 'check', 'checkmark-circle', 'clock', 'cloud', 'coffee', 'computer', 'compass', 'cpu', 'credit-card', 'dashboard-speed', 'delete', 'diamond', 'drink', 'droplets', 'dumbbell', 'earth', 'egg', 'file', 'film', 'fire', 'flag', 'flame', 'flash', 'folder', 'football', 'fork', 'gamepad', 'gift', 'grid', 'golf-ball', 'hamburger', 'hammer', 'headset', 'heart', 'heart-pulse', 'home', 'ice-cream', 'information-circle', 'key', 'laptop', 'layers', 'leaf', 'library', 'lock', 'map-pin', 'maps', 'metro', 'moon', 'more-horizontal', 'music-note', 'paint-brush', 'pencil', 'pie-chart', 'pizza', 'printer', 'pulse', 'receipt-text', 'refresh', 'repeat', 'ribbon', 'rocket', 'sailboat-coastal', 'scissor', 'school', 'search', 'server-stack', 'settings', 'share', 'shield', 'shopping-bag', 'shopping-basket', 'shopping-cart', 'smartphone', 'smile', 'sparkles', 'star', 'sun', 'tablet', 'tag', 'thermometer', 'train', 't-shirt', 'umbrella', 'user-group', 'user', 'user-multiple', 'walking', 'wifi', 'wrench', 'chat', 'wallet', 'piggy-bank'] as const satisfies readonly IconName[];
+export const STORED_ICON_NAMES = STORED_NAMES satisfies readonly IconName[];
 
 export const isIconName = (value: unknown): value is IconName => typeof value === 'string' && value in HUGEICONS;

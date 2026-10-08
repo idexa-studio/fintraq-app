@@ -1,7 +1,94 @@
 # Architecture & Coding Style
 
-How the Fintraq app is organised and the conventions every change follows.
-For UI rules see [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md).
+> **Reboot in progress.** The first section below is the structure all new
+> code follows. Everything from "Stack" onwards describes the legacy `src/`
+> tree until it is emptied; its data, backup and telemetry sections remain
+> accurate.
+
+## Target structure (all new code)
+
+```
+app/                    Routes only. Each file re-exports a screen. No logic, no styles.
+design/                 The design system. Knows nothing about money or Fintraq.
+  tokens/               Colour, type, space, shape, motion
+  icons/                icon-map.json and the generated glyphs
+  components/           One component per file
+  index.ts              The only door: import UI from '@/design'
+features/<name>/        One product area (home, activity, transactions, accounts, people,
+                        loans, plan, insights, pro, backup, lock, onboarding, settings, gallery…)
+  screens/              One component per route
+  components/           UI used only by this feature, built from '@/design'
+  hooks/                State and queries for this feature
+  <name>.ts             Pure rules of the feature (e.g. pro-features.ts), with tests beside them
+  index.ts              What other features may use. Nothing else is importable from outside
+data/                   What is stored and how it is read and written
+  db/                   Drizzle client and schema (carried forward unchanged)
+  repositories/         One module per entity: every query and write, as plain async functions
+  backup/               The backup snapshot format and its version history
+platform/               The phone and outside services: store purchases, Google Drive,
+                        notifications, biometrics, analytics, crash reports
+shared/                 Pure helpers and constants with no dependencies of their own:
+                        money and date formatting, contracts (values saved in user data), i18n
+drizzle/                Generated SQL migrations. Never edited by hand
+docs/                   PRODUCT.md (free and Pro), SCREENS.md (screens and flows), this file
+src/                    Legacy. Shrinks as screens are rebuilt; nothing new goes in
+```
+
+### Who may import whom
+
+```
+app      →  features
+features →  design · data · platform · shared · other features' index.ts
+platform →  data · shared
+data     →  shared
+design   →  shared
+shared   →  nothing
+```
+
+- Nothing new imports from `src/`. Legacy code may import the new folders.
+- A screen never touches the database: screen → hook → repository.
+- `design/` never imports a feature, the data layer or the platform. If a
+  component needs to know what a loan is, it belongs in a feature.
+- One feature uses another only through its `index.ts`.
+
+These are enforced, not just written down: `eslint.config.js` blocks the
+forbidden directions and `npm run lint:design` fails on a reach into another
+feature's internals.
+
+### Where does new code go?
+
+| You are adding | Put it in |
+| --- | --- |
+| A route | `app/…` re-exporting `features/<f>/screens/<Name>Screen` |
+| A screen | `features/<f>/screens/` |
+| UI for one feature | `features/<f>/components/` |
+| UI any feature could use | `design/components/`, exported from `design/index.ts`, with a specimen in the gallery |
+| A colour, size, radius, duration | `design/tokens/` |
+| An icon | a line in `design/icons/icon-map.json`, then `npm run icons:generate` |
+| A query or a write | `data/repositories/<entity>.ts` |
+| A table or column | `data/db/schema.ts`, then `npm run db:generate`; additive only, with a backup-format test |
+| A rule of the product (limits, what Pro includes) | `features/<f>/<name>.ts` with a test |
+| A wrapper round a device or third-party API | `platform/` |
+| A value that is saved in user data and must never change | `shared/contracts/` with a test |
+
+### Carrying data forward
+
+The redesign replaces every screen and none of the data. These are the
+contracts; each has a test that fails if it is broken.
+
+| Contract | Where | Guard |
+| --- | --- | --- |
+| Database file name, tables and columns | `src/db` today, `data/db` when moved | Drizzle migrations only ever add |
+| Storage keys (AsyncStorage, secure store) | `src/constants/keys.ts` | Keys are never renamed; retired ones are still cleared on reset |
+| Icon names saved on categories and accounts | `shared/contracts/stored-icon-names.ts` | `design/icons/__tests__/glyphs.test.ts` |
+| Backup snapshot format | `src/services/backup/backup-snapshot.ts` | `__tests__/backup-snapshot.test.ts`: every older shape still restores |
+| Lifetime product ids | `features/pro/pro-plans.ts` | `features/pro/__tests__/pro-plans.test.ts` |
+| Pro feature ids used by old links | `features/pro/pro-features.ts` (`LEGACY_FEATURE_IDS`) | `features/pro/__tests__/pro-features.test.ts` |
+| Paths in launcher shortcuts and notifications | redirect routes, see `SCREENS.md` | To be covered when the routes are rebuilt |
+
+The data layer moves from `src/` into `data/` and `platform/` in one step of
+its own, when the first rebuilt screen needs it, and is verified by upgrading
+a phone that holds real data from the shipped version.
 
 ## Stack
 
