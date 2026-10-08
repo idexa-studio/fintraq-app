@@ -37,8 +37,8 @@ export default {
     noActivityBody: 'What you add to this account shows up here.',
     edit: 'Edit details',
     makeDefault: 'Use as default',
-    makeDefaultHint: 'New entries start on this account',
-    isDefault: 'New entries already start on this account',
+    makeDefaultHint: 'New transactions start on this account',
+    isDefault: 'New transactions already start on this account',
     madeDefault: '{{name}} is now your default',
     delete: 'Delete account',
     inUse: {
@@ -53,7 +53,7 @@ export default {
     deleteCancel: 'Keep it',
     deleted: '{{name}} deleted',
     failed: 'Couldn’t do that',
-    failedBody: 'Nothing was changed. Please try again.',
+    failedBody: 'Nothing was changed. Try again.',
     ok: 'OK',
   },
   form: {
@@ -87,7 +87,7 @@ export default {
     created: 'Account added',
     changesSaved: 'Changes saved',
     saveFailed: 'Couldn’t save',
-    saveFailedBody: 'Nothing was changed. Please try again.',
+    saveFailedBody: 'Nothing was changed. Try again.',
     ok: 'OK',
     discard: {
       title: 'Discard this account?',

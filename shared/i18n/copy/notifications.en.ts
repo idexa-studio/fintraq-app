@@ -12,7 +12,7 @@ export default {
     backup: { name: 'Backup', description: 'Shown while a backup runs, and when one needs you' },
   },
   daily: {
-    first: { title: 'Your first entry', body: 'Add the last thing you paid for. It takes half a minute.' },
+    first: { title: 'Your first transaction', body: 'Add the last thing you paid for. It takes half a minute.' },
     weekday: {
       mon: { title: 'Monday’s spending', body: 'Add it now, while you still remember the small ones.' },
       tue: { title: 'Anything to add today?', body: 'Lunch, a ride, a bill. Half a minute and today is done.' },
@@ -23,15 +23,13 @@ export default {
       sun: { title: 'Last day of the week', body: 'Add today and the week is complete.' },
     },
     weekEnd: {
-      title_one: '{{count}} entry this week',
-      title_other: '{{count}} entries this week',
+      title: '{{count}} recorded this week',
       body: 'Add today and the week is complete.',
     },
     monthStart: { title: '{{month}} starts today', body: 'A new month to fill in. Add the first thing you spend.' },
     monthEnd: {
       title: 'Last day of {{month}}',
-      body_one: '{{count}} entry so far. Add anything missing and the month is complete.',
-      body_other: '{{count}} entries so far. Add anything missing and the month is complete.',
+      body: '{{count}} recorded so far. Add anything missing and the month is complete.',
     },
     missedYesterday: { title: 'Yesterday is missing', body: 'Add yesterday and today together. It still takes under a minute.' },
     quietSince: { title: 'Quiet since {{day}}', body: 'A few days are easy to catch up on. Start with what you remember.' },

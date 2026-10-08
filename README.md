@@ -16,7 +16,7 @@ npx expo start         # after the dev client is installed
 |---|---|
 | `npx tsc --noEmit` | Type-check |
 | `npm run lint` | ESLint |
-| `npm run db:generate` | Generate a Drizzle migration from `src/db/schema.ts` |
+| `npm run db:generate` | Generate a Drizzle migration from `data/db/schema.ts` |
 | `npm run db:studio` | Inspect the local database |
 
 ## Docs

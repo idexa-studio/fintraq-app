@@ -175,7 +175,7 @@ of the day (`platform/notifications/daily-line.ts`):
 
 | Line | When |
 | --- | --- |
-| Your first entry | Nothing has ever been recorded |
+| Your first transaction | Nothing has ever been recorded |
 | "Priya owes you $300.00" | A loan with a person is due tomorrow and has no reminder of its own |
 | It has been a while | A week without an entry, then once a week while it stays quiet |
 | Last day of the month, with the month's count | The month ends today |

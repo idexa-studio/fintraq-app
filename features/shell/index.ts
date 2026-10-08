@@ -5,6 +5,7 @@ export { AppTheme } from './AppTheme';
 export { DatabaseGate } from './DatabaseGate';
 export { ErrorBoundary } from './ErrorBoundary';
 export { ForceUpdateScreen } from './ForceUpdateScreen';
+export { RootLayout } from './RootLayout';
 export { SystemNavBackdrop } from './SystemNavBackdrop';
 export { TelemetryGate } from './TelemetryGate';
 export { useLauncherShortcuts } from './useLauncherShortcuts';

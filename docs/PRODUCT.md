@@ -142,6 +142,24 @@ The monthly and yearly products were created before the app's public release
 and disabled before anyone could buy them, so there are no existing
 subscribers to carry over.
 
+## Words
+
+One voice across every screen and notification; a test
+(`shared/i18n/__tests__/voice.test.ts`) holds the English copy to it.
+
+- **Plain sentences.** No exclamation marks, no emoji, no dashes used as
+  punctuation, no "please", "sorry", "simply" or "just".
+- **One noun per thing.** A *transaction* is what is recorded (never an
+  "entry"); it is an *expense*, *income* or a *transfer*. *Account*,
+  *category*, *person*, *loan*, *backup*, *Fintraq Pro*.
+- **One verb per act.** *Add* makes something new; *Save* keeps a change;
+  *Delete* removes one thing for good; *Erase* is only for everything at
+  once; *Discard* drops what was typed and not saved; *Keep* is the way out
+  of a question that would lose something.
+- **A failure says what happened and what to do**, and what did not change:
+  "Nothing was changed. Try again."
+- **British spelling** ("colour").
+
 ## Where the automatic backup lives
 
 Google Drive on Android, iCloud on iPhone (owner, 2026-10-08): each in the
@@ -165,7 +183,7 @@ when it is sent and what a tap opens, is in `docs/SCREENS.md`.
   emoji, no "action required".
 - **Nothing is claimed that the records do not back.** No streaks, no
   "runway", no praise. A reminder may say "Yesterday is missing" or "12
-  entries this week" because the app counted; a test holds every line to this
+  recorded this week" because the app counted; a test holds every line to this
   voice.
 - **Quiet is a choice.** A day already recorded gets no reminder. A backup
   that worked says nothing. After a week without an entry the reminder stops

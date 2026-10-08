@@ -26,6 +26,9 @@ export type RankBarsProps = {
   items: RankItem[];
 };
 
+// Worked out here, not inside the style: the animation library's checker takes any `.value` read in an inline style for an animated one.
+const widthOf = (item: { value: number }, max: number): `${number}%` => `${Math.max(2, (item.value / max) * 100)}%`;
+
 /** A ranking: each item's bar is drawn against the biggest, so the eye compares lengths. For categories, people, accounts. */
 export function RankBars({ items }: RankBarsProps) {
   const { colors } = useTheme();
@@ -45,7 +48,7 @@ export function RankBars({ items }: RankBarsProps) {
                 <Text variant="amount">{ltr(item.display)}</Text>
               </View>
               <View style={styles.track}>
-                <View style={[styles.bar, { width: `${Math.max(2, (item.value / max) * 100)}%`, backgroundColor: colors.text }]} />
+                <View style={[styles.bar, { width: widthOf(item, max), backgroundColor: colors.text }]} />
               </View>
             </View>
           </>

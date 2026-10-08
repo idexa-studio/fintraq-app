@@ -47,7 +47,7 @@ export default {
     created: 'Category added',
     changesSaved: 'Changes saved',
     saveFailed: 'Couldn’t save',
-    saveFailedBody: 'Nothing was changed. Please try again.',
+    saveFailedBody: 'Nothing was changed. Try again.',
     ok: 'OK',
     notFound: 'This category no longer exists',
     delete: 'Delete category',

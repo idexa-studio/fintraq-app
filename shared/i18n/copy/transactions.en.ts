@@ -79,10 +79,10 @@ export default {
   changesSaved: 'Changes saved',
   undo: 'Undo',
   saveFailed: 'Couldn’t save',
-  saveFailedBody: 'Nothing was changed. Please try again.',
+  saveFailedBody: 'Nothing was changed. Try again.',
   tryAgain: 'OK',
   discard: {
-    title: 'Discard this entry?',
+    title: 'Discard this transaction?',
     body: 'What you’ve entered won’t be saved.',
     confirm: 'Discard',
     cancel: 'Keep editing',
@@ -106,6 +106,6 @@ export default {
     keep: 'Keep it',
     deleted: 'Transaction deleted',
     deleteFailed: 'Couldn’t delete',
-    deleteFailedBody: 'Nothing was changed. Please try again.',
+    deleteFailedBody: 'Nothing was changed. Try again.',
   },
 } as const;

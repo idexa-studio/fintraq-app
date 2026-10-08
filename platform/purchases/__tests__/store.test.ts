@@ -1,4 +1,4 @@
-import { NO_ENTITLEMENT, strongerOf } from '@/platform/purchases/entitlement';
+import { NO_ENTITLEMENT, canBuy, strongerOf } from '@/platform/purchases/entitlement';
 import type { Entitlement } from '@/platform/purchases/entitlement';
 import { toStorePlan, toStorePurchase } from '@/platform/purchases/store';
 
@@ -59,5 +59,27 @@ describe('strongerOf', () => {
     expect(strongerOf(monthly, yearly)).toBe(yearly);
     expect(strongerOf(NO_ENTITLEMENT, monthly)).toBe(monthly);
     expect(strongerOf(monthly, NO_ENTITLEMENT)).toBe(monthly);
+  });
+});
+
+describe('canBuy', () => {
+  const now = 1_000_000;
+  const running: Entitlement = { kind: 'subscription', plan: 'monthly', activeUntil: now + 5000, renews: true };
+  const over: Entitlement = { kind: 'subscription', plan: 'monthly', activeUntil: now - 10 * 24 * 60 * 60 * 1000, renews: false };
+
+  it('sells nothing to a lifetime owner', () => {
+    expect(canBuy('monthly', { kind: 'lifetime' }, now)).toBe(false);
+    expect(canBuy('yearly', { kind: 'lifetime' }, now)).toBe(false);
+    expect(canBuy('lifetime', { kind: 'lifetime' }, now)).toBe(false);
+  });
+
+  it('lets a subscriber move to lifetime, but not take a second subscription', () => {
+    expect(canBuy('lifetime', running, now)).toBe(true);
+    expect(canBuy('yearly', running, now)).toBe(false);
+  });
+
+  it('sells any plan to someone with nothing, or whose subscription has ended', () => {
+    expect(canBuy('monthly', NO_ENTITLEMENT, now)).toBe(true);
+    expect(canBuy('yearly', over, now)).toBe(true);
   });
 });
