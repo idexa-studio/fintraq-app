@@ -1,6 +1,6 @@
 import { Card, CardActions, MarkTile, Money, Select, Skeleton, Text, useTheme } from '@/design';
 import type { HomeBalances } from '@/features/home/hooks/useHomeBalances';
-import { CURRENCIES } from '@/shared/currency/currencies';
+import { currencyName } from '@/shared/currency/currencies';
 import { formatCurrency } from '@/shared/format/money';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,13 +14,12 @@ type BalanceCardProps = {
   onOpenAccounts: () => void;
 };
 
-const currencyName = (code: string) => CURRENCIES.find((c) => c.code === code)?.name ?? code;
 
 /** What the accounts in one currency add up to, with the two things done most. */
 export function BalanceCard({ balances, loading, onAddExpense, onAddIncome, onOpenAccounts }: BalanceCardProps) {
   const { t } = useTranslation('home');
   const { size, space, type } = useTheme();
-  const { currency, currencies, setCurrency, balance, count } = balances;
+  const { currency, currencies, setCurrency, balance, accounts } = balances;
   return (
     <Card padded={false}>
       <View style={{ padding: size.cardPadding, gap: space.sm }}>
@@ -42,7 +41,7 @@ export function BalanceCard({ balances, loading, onAddExpense, onAddIncome, onOp
           </>
         ) : (
           <>
-            <Text variant="callout" tone="muted">{t('balance.summary', { count, currency: currencyName(currency) })}</Text>
+            <Text variant="callout" tone="muted">{t('balance.summary', { count: accounts.length, currency: currencyName(currency) })}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: space.md }}>
               <View style={{ flex: 1 }}><Money value={formatCurrency(balance, currency)} variant="amountHero" /></View>
               <MarkTile icon="wallet" onPress={onOpenAccounts} accessibilityLabel={t('balance.openAccounts')} />

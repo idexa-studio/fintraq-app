@@ -202,3 +202,6 @@ export const sortCurrenciesWithDefault = (currencies: string[], defaultCurrency:
   if (!defaultCurrency || !currencies.includes(defaultCurrency)) return currencies;
   return [defaultCurrency, ...currencies.filter(c => c !== defaultCurrency)];
 };
+
+/** A currency's name for people, e.g. "Turkish Lira"; the code itself when it is not one we list. */
+export const currencyName = (code: string): string => CURRENCIES.find((c) => c.code === code)?.name ?? code;

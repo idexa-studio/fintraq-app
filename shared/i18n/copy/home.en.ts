@@ -13,6 +13,7 @@ export default {
     addExpense: 'Add expense',
     addIncome: 'Add income',
     openAccounts: 'Accounts',
+    scope: 'Everything on Home is in {{currency}}. Change it on the card above.',
   },
   quick: {
     title: 'Quick actions',
