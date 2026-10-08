@@ -1,6 +1,6 @@
 import type { LoanType } from '@/data/repositories/loans';
 import {
-  AmountField, Button, Calendar, Card, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Screen, Sheet, Skeleton, TabStrip, Text, TextField,
+  FormBlock, FieldStack, AmountField, Button, Calendar, Card, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Screen, Sheet, Skeleton, TabStrip, Text, TextField,
   useStyles, useTheme, useToast,
 } from '@/design';
 import type { Theme } from '@/design';
@@ -125,8 +125,7 @@ export function LoanFormScreen({ initialType = 'lend', initialPersonId }: LoanFo
         <AmountField value={draft.amountText} onChangeText={(text) => set('amountText', text)} symbol={getCurrencySymbol(account?.currency ?? '')} accessibilityLabel={t('form.amount')} focusOnArrival />
       </Card>
 
-      <View style={styles.block}>
-        <Text variant="bodyStrong">{lending ? t('form.to') : t('form.from')}</Text>
+      <FormBlock label={lending ? t('form.to') : t('form.from')}>
         <Card padded={false}>
           <ListRow
             leading={person ? <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} /> : undefined}
@@ -136,10 +135,9 @@ export function LoanFormScreen({ initialType = 'lend', initialPersonId }: LoanFo
             onPress={() => setPicker('person')}
           />
         </Card>
-      </View>
+      </FormBlock>
 
-      <View style={styles.block}>
-        <Text variant="bodyStrong">{lending ? t('form.outOf') : t('form.into')}</Text>
+      <FormBlock label={lending ? t('form.outOf') : t('form.into')}>
         <Card padded={false}>
           <ListRow
             leading={account ? <IconCircle icon={accountTypeIcon(account.accountType)} color={colorNumberToHex(account.color)} /> : undefined}
@@ -150,12 +148,11 @@ export function LoanFormScreen({ initialType = 'lend', initialPersonId }: LoanFo
             onPress={() => setPicker('account')}
           />
         </Card>
-      </View>
+      </FormBlock>
 
-      <View style={styles.block}>
-        <Text variant="bodyStrong">{t('form.details')}</Text>
+      <FormBlock label={t('form.details')}>
         <ListGroup>
-          <View style={styles.fields}>
+          <FieldStack padded>
             <View style={styles.due}>
               <View style={styles.fill}>
                 <TextField label={t('form.due')} value={draft.dueDate ? formatDate(draft.dueDate, { day: 'numeric', month: 'short', year: 'numeric' }) : t('form.noDue')} onPress={() => setPicker('due')} />
@@ -163,9 +160,9 @@ export function LoanFormScreen({ initialType = 'lend', initialPersonId }: LoanFo
               {draft.dueDate ? <IconButton icon="x" onPress={() => set('dueDate', null)} accessibilityLabel={t('form.clearDue')} /> : <IconButton icon="calendar" onPress={() => setPicker('due')} accessibilityLabel={t('form.pickDue')} />}
             </View>
             <TextField label={t('form.note')} value={draft.note} onChangeText={(text) => set('note', text)} placeholder={t('form.noteOptional')} maxLength={NOTE_MAX} remaining={(count) => t('common:charactersLeft', { count })} />
-          </View>
+          </FieldStack>
         </ListGroup>
-      </View>
+      </FormBlock>
 
       <PersonPicker visible={picker === 'person'} onClose={() => setPicker(null)} people={people} selectedId={person?.id ?? null} onSelect={(id) => set('personId', id)} />
       <AccountPicker title={lending ? t('form.outOf') : t('form.into')} visible={picker === 'account'} onClose={() => setPicker(null)} accounts={accounts} selectedId={account?.id ?? null} onSelect={(id) => set('accountId', id)} />
@@ -189,7 +186,5 @@ const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     centre: { flex: 1, justifyContent: 'center' },
     fill: { flex: 1 },
-    block: { gap: space.md },
-    fields: { padding: size.cardPadding, gap: space.lg },
     due: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   });

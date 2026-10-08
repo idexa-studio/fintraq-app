@@ -1,4 +1,4 @@
-import { Button, Card, EmptyState, Header, IconCircle, ListGroup, ListRow, Screen, Section, Select, Skeleton, SplitBar, Text, useStyles, useTheme } from '@/design';
+import { Button, EmptyState, Header, IconCircle, ListGroup, ListRow, Screen, Section, Select, Skeleton, SplitBar, SummaryCard, Text, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { usePeopleWithBalances } from '@/features/people/hooks/people';
@@ -74,11 +74,7 @@ export function PeopleScreen() {
         )
       }
     >
-      <Card style={styles.summary}>
-        <View style={styles.summaryHead}>
-          <Text variant="bodyStrong">{t('summary.title')}</Text>
-          {currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
-        </View>
+      <SummaryCard title={t('summary.title')} trailing={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}>
         {owed > 0 || owe > 0 ? (
           <SplitBar
             segments={[
@@ -89,7 +85,7 @@ export function PeopleScreen() {
         ) : (
           <Text variant="callout" tone="muted">{t('summary.settled')}</Text>
         )}
-      </Card>
+      </SummaryCard>
 
       {groups.map((group) => (
         <Section key={group.standing} title={t(`standing.${group.standing}`)}>
@@ -115,6 +111,4 @@ export function PeopleScreen() {
 const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     centre: { flex: 1, justifyContent: 'center' },
-    summary: { gap: space.md },
-    summaryHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: size.chip },
   });

@@ -153,11 +153,29 @@ use it.
 | Messages | `Message`, `EmptyState`, `Notice`, `Highlight`, `Tip`, `Toast` (`ToastProvider`, `useToast`), `LockedCard` |
 | Overlays and waiting | `Dialog`, `LoadingDialog`, `Sheet`, `Spinner`, `Skeleton`, `ProgressRow` |
 | Moments | `WaveCard`, `Receipt`, `FeatureTile` |
+| Structure | `Section`, `SummaryCard`, `FormBlock`, `FieldStack` |
 
 ## Patterns
 
 - **A screen** is `Screen` with a `Header`, content in `Section`s, and its
   buttons in the `footer`. Never hand-build the scaffold.
+- **An overview opens with a `SummaryCard`**: its title with the currency
+  menu opposite, the figure or bar, and optionally two actions (Home,
+  Accounts, People, Plan). Never rebuilt per screen.
+- **A form is a run of `FormBlock`s**: the bold label ending in a colon over
+  the card that answers it, with stacked fields in a `FieldStack`. The label
+  gap and the field gap are tokens (`size.labelGap`, `size.fieldGap`).
+- **A record gets a coloured circle, a setting gets a plain icon.** A row
+  that stands for something recorded (transaction, account, person, loan)
+  leads with an `IconCircle`; a row that changes a setting or starts an
+  action leads with a line icon.
+- **Sizes have names.** A size used in two places is a token
+  (`iconCircleSmall`, `iconCircleLarge`, `ringSmall`, `ring`), not a sum of
+  two others at the call site.
+- **Consistency is measured.** `scripts/measure-screen.py` reads a
+  screenshot and reports each card's margins and the gaps around each
+  section title; the audit of 2026-10-08 found every main screen on 16pt
+  margins, the first card at the same height, and the same title gaps.
 - **A task clears the keyboard it inherits.** `Screen sheet` dismisses a
   keyboard left open by the screen beneath, so it never sits over the task's
   buttons; a field that wants the keyboard asks with `focusOnArrival`.

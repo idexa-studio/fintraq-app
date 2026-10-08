@@ -1,6 +1,5 @@
 import type { LoanWithStats } from '@/data/repositories/loans';
-import { Card, CardActions, EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, Text, useStyles, useTheme } from '@/design';
-import type { Theme } from '@/design';
+import { EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, SummaryCard, Text, useTheme } from '@/design';
 import { useLoans } from '@/features/loans';
 import { initialsOf } from '@/features/people';
 import { dueWording, loanTotals, planLoans } from '@/features/plan/plan-rules';
@@ -12,7 +11,7 @@ import { formatCurrency } from '@/shared/format/money';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 /** What Pro will add to this tab: the Plan features not out yet, named from the registry. */
 const SOON = featuresIn('plan').filter((id) => PRO_FEATURES[id].status !== 'live');
@@ -25,7 +24,6 @@ const SOON = featuresIn('plan').filter((id) => PRO_FEATURES[id].status !== 'live
 export function PlanScreen() {
   const { t } = useTranslation('plan');
   const { colors, size } = useTheme();
-  const styles = useStyles(createStyles);
   const router = useRouter();
   const { profile } = useSettings();
   const { isPro, openPaywall } = usePro();
@@ -86,12 +84,11 @@ export function PlanScreen() {
 
   return (
     <Screen tabbed header={header}>
-      <Card padded={false}>
-        <View style={styles.summary}>
-          <View style={styles.summaryHead}>
-            <Text variant="bodyStrong">{t('summary.title')}</Text>
-            {currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
-          </View>
+      <SummaryCard
+        title={t('summary.title')}
+        trailing={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
+        actions={[{ label: t('summary.lend'), onPress: lend }, { label: t('summary.people'), onPress: () => router.push('/people') }]}
+      >
           {totals.owed > 0 || totals.owe > 0 ? (
             <SplitBar
               segments={[
@@ -102,9 +99,7 @@ export function PlanScreen() {
           ) : (
             <Text variant="callout" tone="muted">{t('summary.none')}</Text>
           )}
-        </View>
-        <CardActions actions={[{ label: t('summary.lend'), onPress: lend }, { label: t('summary.people'), onPress: () => router.push('/people') }]} />
-      </Card>
+      </SummaryCard>
 
       {hasOpen ? (
         <>
@@ -134,9 +129,3 @@ export function PlanScreen() {
     </Screen>
   );
 }
-
-const createStyles = ({ size, space }: Theme) =>
-  StyleSheet.create({
-    summary: { padding: size.cardPadding, gap: space.md },
-    summaryHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: size.chip },
-  });

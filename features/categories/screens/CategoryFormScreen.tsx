@@ -1,5 +1,5 @@
 import {
-  Button, Card, Chip, Dialog, Divider, Emblem, Header, IconCircle, IconGrid, ListRow, Message, Screen, Skeleton, SwatchGrid, Text, TextField, isIconName, pastelOf, resolveIcon,
+  FormBlock, Button, Card, Chip, Dialog, Divider, Emblem, Header, IconCircle, IconGrid, ListRow, Message, Screen, Skeleton, SwatchGrid, Text, TextField, isIconName, pastelOf, resolveIcon,
   useStyles, useTheme, useToast,
 } from '@/design';
 import type { Theme } from '@/design';
@@ -158,21 +158,19 @@ export function CategoryFormScreen({ categoryId, initialKind = 'DR' }: CategoryF
         </View>
       </Card>
 
-      <View style={styles.block}>
-        <Text variant="bodyStrong">{t('form.usedFor')}</Text>
+      <FormBlock label={t('form.usedFor')}>
         <View style={styles.kinds}>
           {CATEGORY_KINDS.map((kind) => (
             <Chip key={kind} label={t(`kinds.${kind}`)} selected={draft.kinds.includes(kind)} onPress={() => set('kinds', toggleKind(draft.kinds, kind))} />
           ))}
         </View>
-      </View>
+      </FormBlock>
 
-      <View style={styles.block}>
-        <Text variant="bodyStrong">{t('form.icon')}</Text>
+      <FormBlock label={t('form.icon')}>
         <Card>
           <IconGrid groups={iconGroups} selected={resolveIcon(draft.icon, 'tag')} onSelect={(icon) => set('icon', icon)} color={pastelOf(draft.color)} />
         </Card>
-      </View>
+      </FormBlock>
 
       {editing ? (
         <Card padded={false}>
@@ -199,7 +197,6 @@ const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     centre: { flex: 1, justifyContent: 'center' },
     fill: { flex: 1 },
-    block: { gap: space.md },
     identity: { flexDirection: 'row', alignItems: 'center', gap: space.md, padding: size.cardPadding },
     colours: { padding: size.cardPadding },
     kinds: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },

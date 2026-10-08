@@ -7,7 +7,7 @@ const QUICK = ['+5', '+10', '+20', '+50', '+100'];
 
 /** The expressive widgets, each kept for a named screen (see docs/PLAN.md, B1.02). */
 export function IdeasSection() {
-  const { colors, space, size } = useTheme();
+  const { space } = useTheme();
   const [settled, setSettled] = useState(false);
 
   return (

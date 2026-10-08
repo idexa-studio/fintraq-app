@@ -8,6 +8,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
+    "lint:code": "eslint app design features data platform shared --max-warnings 0",
     "lint:design": "node scripts/check-design-system.js",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",

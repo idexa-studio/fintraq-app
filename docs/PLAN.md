@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 169 | 137 | In progress |
+| D | Screens at parity with the shipped app | 178 | 145 | In progress |
 | E | Pro: three plans and gating | 27 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -516,6 +516,18 @@ same care as a screen.
 - [x] D18.08 Keys: the new English in a `notifications` copy namespace; the old keys stay until the 12 translations are redone (G1.02), and a test fails if any notification the code can send has no text
 - [x] D18.09 A preview list in Developer: every notification, sent on tap, so each can be read on a real lock screen
 - [ ] D18.10 Shared checklist
+
+### D19. Consistency audit (owner, 2026-10-08: "audit everything properly so it feels consistent")
+
+- [x] D19.01 Measured, not eyeballed: `scripts/measure-screen.py` over Home, Activity, Plan, Insights, Accounts, People, Categories, Settings and its screens, Backup, Export, and the account, person and loan screens. Margins 16pt everywhere, first card at the same height under every header, the same gaps above and below every section title, 16pt between sibling cards
+- [x] D19.02 The overview's summary card was hand-built four times with 8, 12 and 12pt inner spacing: now one `SummaryCard`, at the reference's spacing
+- [x] D19.03 The form block (label over a card) and the stack of fields were hand-built in eight forms: now `FormBlock` and `FieldStack`, with their gaps as tokens
+- [x] D19.04 Sizes made by adding tokens at the call site (32 and 48pt circles, 96 and 192pt rings) are tokens
+- [x] D19.05 A loan shown as a row had a bare icon on the person and receipt screens while every other record has a coloured circle: now a circle
+- [x] D19.06 Insights' findings were still in the shipped voice (emoji, praise, dashes): rewritten in the plain voice, in the `insights` copy
+- [x] D19.07 The lint command hid warnings off a terminal; 23 unused imports and variables removed, and `npm run lint:code` now fails on any warning
+- [x] D19.08 The same pass in dark mode: Home, Plan, Insights, the entry form, Settings, the notification list and Backup hold the same structure, nothing illegible
+- [ ] D19.09 The same pass at the largest font size
 
 ---
 

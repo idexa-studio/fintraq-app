@@ -1,4 +1,4 @@
-import { Button, Card, EmptyState, Header, IconCircle, ListGroup, ListRow, Money, Screen, Section, Select, Skeleton, SplitBar, Text, useStyles, useTheme } from '@/design';
+import { Button, EmptyState, Header, IconCircle, ListGroup, ListRow, Money, Screen, Section, Select, Skeleton, SplitBar, SummaryCard, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
 import { accountTypeIcon } from '@/features/accounts/account-icons';
 import { maskedNumber } from '@/features/accounts/account-form';
@@ -58,12 +58,8 @@ export function AccountsScreen() {
   return (
     <Screen header={header} footer={<Button label={t('add')} onPress={add} />}>
       {shown ? (
-        <Card style={styles.worth}>
-          <View style={styles.worthHead}>
-            <Text variant="bodyStrong">{t('netWorth.title')}</Text>
-            {/* Currencies are never added together, so with several held the card shows one at a time. */}
-            {worth.length > 1 ? <Select options={worth.map((group) => ({ key: group.currency, label: group.currency, detail: currencyName(group.currency) }))} value={shown.currency} onChange={setCurrency} accessibilityLabel={t('netWorth.currency')} /> : null}
-          </View>
+        <SummaryCard title={t('netWorth.title')} trailing={worth.length > 1 ? <Select options={worth.map((group) => ({ key: group.currency, label: group.currency, detail: currencyName(group.currency) }))} value={shown.currency} onChange={setCurrency} accessibilityLabel={t('netWorth.currency')} /> : null}>
+          {/* Currencies are never added together, so with several held the card shows one at a time. */}
           <Money value={formatCurrency(shown.net, shown.currency)} variant="amountHero" />
           {shown.debts > 0 ? (
             <SplitBar
@@ -73,7 +69,7 @@ export function AccountsScreen() {
               ]}
             />
           ) : null}
-        </Card>
+        </SummaryCard>
       ) : null}
 
       {groups.map((group) => (
@@ -100,6 +96,4 @@ export function AccountsScreen() {
 const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     empty: { flex: 1, justifyContent: 'center' },
-    worth: { gap: space.md },
-    worthHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: size.chip },
   });

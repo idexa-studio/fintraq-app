@@ -1,5 +1,5 @@
 import {
-  AmountField, Button, Card, Chip, Dialog, Divider, Emblem, Header, IconCircle, ListRow, MarkGrid, Message, Money, Screen, Skeleton, SwatchGrid, Text, TextField, pastelOf,
+  FormBlock, FieldStack, AmountField, Button, Card, Chip, Dialog, Divider, Emblem, Header, IconCircle, ListRow, MarkGrid, Message, Money, Screen, Skeleton, SwatchGrid, Text, TextField, pastelOf,
   useStyles, useTheme, useToast,
 } from '@/design';
 import type { Theme } from '@/design';
@@ -157,19 +157,18 @@ export function AccountFormScreen({ accountId }: AccountFormOptions) {
       </Card>
 
       {editing ? null : (
-        <View style={styles.block}>
-          <Text variant="bodyStrong">{t('form.type')}</Text>
+        <FormBlock label={t('form.type')}>
           <Card style={styles.kinds}>
             <MarkGrid columns={4} marks={ACCOUNT_TYPES.map((type) => ({ key: type, label: t(`common:accountTypes.${type}`), icon: accountTypeIcon(type), color: draft.color }))} selectedKey={draft.type} onSelect={(type) => set('type', type)} />
           </Card>
-        </View>
+        </FormBlock>
       )}
 
       {showMore ? (
-        <Card style={styles.fields}>
+        <Card><FieldStack>
           <TextField label={t('form.holder')} value={draft.holderName} onChangeText={(text) => set('holderName', text)} maxLength={HOLDER_MAX} autoCapitalize="words" autoCorrect={false} />
           <TextField label={t('form.number')} value={draft.accountNumber} onChangeText={(text) => set('accountNumber', text)} maxLength={NUMBER_MAX} autoCapitalize="none" autoCorrect={false} helper={t('form.numberHelper')} />
-        </Card>
+        </FieldStack></Card>
       ) : (
         <Card padded={false}>
           <ListRow icon="plus" title={t('form.more')} subtitle={t('form.moreHint')} onPress={() => setMore(true)} />
@@ -193,8 +192,6 @@ const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     centre: { flex: 1, justifyContent: 'center' },
     fill: { flex: 1 },
-    block: { gap: space.md },
-    fields: { gap: space.lg },
     identity: { flexDirection: 'row', alignItems: 'center', gap: space.md, padding: size.cardPadding },
     balance: { paddingHorizontal: size.cardPadding, paddingBottom: space.lg, gap: space.sm },
     balanceHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: size.chip },

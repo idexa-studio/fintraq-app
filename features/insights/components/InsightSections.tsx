@@ -117,13 +117,13 @@ const SHADES = [PASTELS.teal, PASTELS.orange, PASTELS.pink, PASTELS.lilac, PASTE
  */
 export function Categories({ insights, currency, full, limit, onOpen }: Common & { full: boolean; limit: number; onOpen: (categoryId: number) => void }) {
   const { t } = useTranslation('insights');
-  const { size, space } = useTheme();
+  const { size } = useTheme();
   const styles = useStyles(createStyles);
   const [kind, setKind] = useState<'spending' | 'income'>('spending');
   const shown = full && kind === 'income' ? insights.income : insights.spending;
   const total = full && kind === 'income' ? insights.totals.income : insights.totals.expense;
   const money = (amount: number) => formatCurrency(amount, currency);
-  const mark = size.icon + space.sm;
+  const mark = size.iconCircleSmall;
   const percentOf = (share: number) => Math.round(share * 100);
 
   if (!full) {
@@ -161,7 +161,7 @@ export function Categories({ insights, currency, full, limit, onOpen }: Common &
       ) : (
         <>
           <View style={styles.centre}>
-            <Ring segments={segments} size={size.illustrationTile * 3} accessibilityLabel={t('categories.ring', { kind: t(`categories.${kind}`) })}>
+            <Ring segments={segments} size={size.ring} accessibilityLabel={t('categories.ring', { kind: t(`categories.${kind}`) })}>
               <Text variant="callout" tone="muted">{kind === 'income' ? t('categories.received') : t('categories.spent')}</Text>
               <Money value={money(total)} variant="amountLarge" />
             </Ring>
@@ -210,7 +210,7 @@ export function Rhythm({ insights }: Pick<Common, 'insights'>) {
 
 /** Who the spending was with, largest first. Each one opens that person. */
 export function PeopleShare({ insights, currency, onOpen }: Common & { onOpen: (personId: number) => void }) {
-  const { size, space } = useTheme();
+  const { size } = useTheme();
   if (insights.people.length === 0) return null;
   return (
     <Card>
@@ -220,7 +220,7 @@ export function PeopleShare({ insights, currency, onOpen }: Common & { onOpen: (
           label: person.name,
           value: person.amount,
           display: formatCurrency(person.amount, currency),
-          leading: <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} size={size.icon + space.sm} />,
+          leading: <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} size={size.iconCircleSmall} />,
           onPress: () => onOpen(person.id),
         }))}
       />

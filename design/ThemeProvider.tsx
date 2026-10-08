@@ -1,9 +1,8 @@
 import { DARK_COLORS, LIGHT_COLORS } from '@/design/tokens/colors';
 import type { ColorRoles } from '@/design/tokens/colors';
 import { BORDER, MOTION, RADIUS, SIZE, SPACE } from '@/design/tokens/metrics';
-import { FONTS, TYPE, TYPE_SYSTEM } from '@/design/tokens/typography';
+import { FONTS, MAX_FONT_SCALE, TYPE, TYPE_SYSTEM } from '@/design/tokens/typography';
 import type { TypeRamp } from '@/design/tokens/typography';
-import { MAX_FONT_SCALE } from '@/design/tokens/typography';
 import React, { createContext, useContext, useMemo } from 'react';
 import { useWindowDimensions } from 'react-native';
 

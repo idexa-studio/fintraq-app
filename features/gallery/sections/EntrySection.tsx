@@ -1,18 +1,10 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
 import { AmountField, BACKDROP, Button, Card, Header, IconButton, IconCircle, Keypad, ListGroup, ListRow, MarkTile, Money, TabStrip, Text, TextField, useTheme } from '@/design';
-import type { KeypadKey } from '@/design';
 import { calculate, isExpression } from '@/shared/format/calculate';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
 const KINDS = ['Expense', 'Income', 'Transfer'];
-
-const press = (amount: string, key: KeypadKey): string => {
-  if (key === 'delete') return amount.slice(0, -1);
-  if (key === '.' && amount.includes('.')) return amount;
-  if (amount.includes('.') && amount.split('.')[1].length >= 2) return amount;
-  return amount + key;
-};
 
 function Calculator() {
   const { space } = useTheme();
@@ -35,7 +27,6 @@ export function EntrySection() {
   const { colors, space, size, border, radius } = useTheme();
   const [kind, setKind] = useState('Expense');
   const [amount, setAmount] = useState('42.10');
-  const [repeat, setRepeat] = useState(false);
   const [note, setNote] = useState('');
   const frame = { marginHorizontal: -space.lg, backgroundColor: colors.background, borderTopWidth: border.thin, borderBottomWidth: border.thin, borderColor: colors.divider };
 

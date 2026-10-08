@@ -8,8 +8,7 @@ import { View } from 'react-native';
 
 /** This month in one currency, as a ring: what came in, what went out, and how much of it is left. */
 export function MonthCard({ currency }: { currency: string }) {
-  const { t } = useTranslation('home');
-  const { colors, size, space, type } = useTheme();
+  const { space, type } = useTheme();
   const { data, isPending } = useMonthTotals(currency);
 
   if (isPending || !data) {
@@ -36,7 +35,7 @@ export function MonthCardView({ income, expense, currency }: { income: number; e
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xl }}>
         {/* The month as one ring: what went out in ink, what is left of what came in in green. */}
         <Ring
-          size={size.illustrationTile * 1.5}
+          size={size.ringSmall}
           thickness={space.sm}
           total={shape.whole}
           segments={[{ value: shape.spent, color: shape.reading === 'spentMore' ? colors.danger : colors.text }, { value: shape.kept, color: colors.brand }]}

@@ -1,4 +1,4 @@
-import { Button, Calendar, Dialog, Emblem, Header, IconButton, ListGroup, Message, Screen, Sheet, Skeleton, Text, TextField, useStyles, useTheme, useToast } from '@/design';
+import { FormBlock, FieldStack, Button, Calendar, Dialog, Emblem, Header, IconButton, ListGroup, Message, Screen, Sheet, Skeleton, Text, TextField, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { useLoanWithStats, useUpdateLoan } from '@/features/loans/hooks/loans';
 import { NOTE_MAX } from '@/features/loans/loan-rules';
@@ -84,10 +84,9 @@ export function LoanEditScreen({ loanId }: { loanId: number }) {
         </>
       }
     >
-      <View style={styles.block}>
-        <Text variant="bodyStrong">{t('form.details')}</Text>
+      <FormBlock label={t('form.details')}>
         <ListGroup>
-          <View style={styles.fields}>
+          <FieldStack padded>
             <View style={styles.due}>
               <View style={styles.fill}>
                 <TextField label={t('form.due')} value={dueDate ? formatDate(dueDate, { day: 'numeric', month: 'short', year: 'numeric' }) : t('form.noDue')} onPress={() => setPicking(true)} />
@@ -95,9 +94,9 @@ export function LoanEditScreen({ loanId }: { loanId: number }) {
               {dueDate ? <IconButton icon="x" onPress={() => setDueDate(null)} accessibilityLabel={t('form.clearDue')} /> : <IconButton icon="calendar" onPress={() => setPicking(true)} accessibilityLabel={t('form.pickDue')} />}
             </View>
             <TextField label={t('form.note')} value={note} onChangeText={setNote} placeholder={t('form.noteOptional')} maxLength={NOTE_MAX} remaining={(count) => t('common:charactersLeft', { count })} />
-          </View>
+          </FieldStack>
         </ListGroup>
-      </View>
+      </FormBlock>
 
       <Sheet visible={picking} onClose={() => setPicking(false)} title={t('form.pickDue')}>
         {/* A due date is ahead of today; the day chosen closes the sheet. */}
@@ -119,7 +118,5 @@ const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     centre: { flex: 1, justifyContent: 'center' },
     fill: { flex: 1 },
-    block: { gap: space.md },
-    fields: { padding: size.cardPadding, gap: space.lg },
     due: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   });

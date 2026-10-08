@@ -123,7 +123,7 @@ export function PersonScreen() {
             {openLoans.map((loan) => (
               <ListRow
                 key={loan.id}
-                icon="hand-coins"
+                leading={<IconCircle icon="hand-coins" color="pink" />}
                 strong
                 title={loan.type === 'lend' ? t('person.lent') : t('person.borrowed')}
                 subtitle={loan.dueDate ? t('person.due', { date: formatDate(parseDateKey(loan.dueDate), { day: 'numeric', month: 'short', year: 'numeric' }) }) : loan.accountName}
