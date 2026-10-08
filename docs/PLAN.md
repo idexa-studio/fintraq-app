@@ -26,7 +26,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 56 | 56 | Complete |
-| C | Groundwork: shared, data, platform, shell | 86 | 46 | In progress |
+| C | Groundwork: shared, data, platform, shell | 86 | 47 | In progress |
 | D | Screens at parity with the shipped app | 142 | 0 |  |
 | E | Pro: three plans and gating | 27 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
@@ -236,7 +236,7 @@ go to `shared/calc`.
 - [x] C6.06 `platform/telemetry/`: all of `telemetry/` with tests
 - [x] C6.07 `platform/lock/`: lock storage, `useLocalAuth`, PIN lockout rules with test
 - [x] C6.08 `platform/config/`: remote config, app config, the API client, review prompt, and `version.ts`
-- [ ] C6.09 Logger to `shared/logging/logger.ts`, not `platform/`: every layer logs, including the database layer, which may import only `shared`
+- [x] C6.09 Logger to `shared/logging/logger.ts`, not `platform/`: every layer logs, including the database layer, which may import only `shared`
 - [ ] C6.10 Launcher shortcuts hook moves with the shell (C8): it depends on the accounts feature's hooks
 - [x] C6.11 Check `patches/expo-background-task` still applies
 - [x] C6.12 Store product ids to `shared/contracts/product-ids.ts`, pinned by a test; `features/pro` reads them from there
