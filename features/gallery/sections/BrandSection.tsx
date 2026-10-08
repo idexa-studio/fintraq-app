@@ -39,7 +39,7 @@ export function BrandSection() {
           <IconTile size={LAUNCHER * 0.6} shape="circle" />
         </View>
       </Specimen>
-      <Specimen name="Launch screen" note="What covers the app while it starts: the reference's three greens, the mark in the middle, the name under it. Shown at six tenths of this phone's size.">
+      <Specimen name="Launch screen" note="What covers the app while it starts: the three greens in the wave card's own waves, the mark in the middle, the name under it. Shown at six tenths of this phone's size.">
         <View style={{ alignSelf: 'center', width: screen.width * shrink, height: screen.height * shrink, borderRadius: radius.md, overflow: 'hidden' }}>
           <View style={{ width: screen.width, height: screen.height, transformOrigin: 'top left', transform: [{ scale: shrink }] }}>
             <LaunchArt />

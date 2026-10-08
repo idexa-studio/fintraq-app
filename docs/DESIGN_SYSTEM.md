@@ -123,8 +123,10 @@ coin in the pastel green of the icon circles. No gradient, no glow.
 | Themed icon, notification icon | The system's | One colour: the white coin is an outline |
 | Launcher shortcuts | Pastel green | A black glyph from `design/icons/`, as an icon circle |
 
-**The launch screen** is the reference's: three greens in waves, the mark in
-the middle, the name under it in black. A phone's own splash can hold only a
+**The launch screen** follows the reference's: three greens in waves, the mark
+in the middle, the name under it in black. The greens are the reference's; the
+wave shapes are Fintraq's own, the wave card's two waves set for a tall screen
+(owner, 2026-10-08: it must not be the bank's picture). A phone's own splash can hold only a
 colour and an image, so it shows the brand green and the mark; as soon as the
 app can draw, `LaunchScreen` (`features/shell/`) takes over with `LaunchArt`
 (`WaveField`, `BrandMark`, the name), the mark in the same place at the same

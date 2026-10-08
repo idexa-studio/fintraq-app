@@ -21,8 +21,8 @@ export type LaunchArtProps = {
 };
 
 /**
- * The launch screen, as the reference's: the waves, the mark in the very middle, the name under
- * it in black. It fills whatever holds it.
+ * The launch screen, laid out as the reference's: the waves, the mark in the very middle, the name
+ * under it in black. It fills whatever holds it.
  */
 export function LaunchArt({ named = true }: LaunchArtProps) {
   return (
