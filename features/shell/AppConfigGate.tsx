@@ -2,7 +2,6 @@ import { ForceUpdateScreen } from '@/features/shell/ForceUpdateScreen';
 import { startAutoBackupTriggers } from '@/platform/backup/auto-backup.triggers';
 import { fetchRemoteAppConfig, initRemoteConfig } from '@/platform/config/remote-config';
 import { LoggerService } from '@/shared/logging/logger';
-import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
@@ -15,11 +14,11 @@ const withDeadline = <T,>(promise: Promise<T>, ms: number): Promise<T | undefine
   Promise.race([promise, new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), ms))]);
 
 /**
- * Reads the app's remote settings at launch and on return, takes the launch screen down once
+ * Reads the app's remote settings at launch and on return, says the app is ready to be seen once
  * they are in (or the deadline passes), and replaces the app with the update screen when this
  * version is too old. It also starts the checks that run automatic backup while the app is open.
  */
-export function AppConfigGate({ children }: { children: React.ReactNode }) {
+export function AppConfigGate({ children, onReady }: { children: React.ReactNode; onReady: () => void }) {
   const [update, setUpdate] = useState<{ storeUrl: string; version: string } | null>(null);
   const lastChecked = useRef(0);
 
@@ -35,19 +34,18 @@ export function AppConfigGate({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const hideSplash = () => void SplashScreen.hideAsync().catch(() => undefined);
     void withDeadline(initRemoteConfig().then(() => check(true)), INIT_DEADLINE_MS)
       .catch((e) => { if (__DEV__) LoggerService.warn('APP_CONFIG', 'Remote settings did not start', e); })
       .finally(() => {
         if (AppState.currentState === 'active') {
-          hideSplash();
+          onReady();
           return;
         }
         // Launched in the background: the launch screen comes down when the app is first seen.
         const waiting = AppState.addEventListener('change', (state) => {
           if (state !== 'active') return;
           waiting.remove();
-          hideSplash();
+          onReady();
         });
       });
     // Once, at launch.
