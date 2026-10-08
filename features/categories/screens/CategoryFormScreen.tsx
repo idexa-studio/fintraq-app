@@ -10,7 +10,7 @@ import { useLeaveGuard } from '@/features/shell';
 import { CATEGORY_ICON_GROUPS, OFFERED_COLORS } from '@/shared/contracts/pickers';
 import type { TransactionType } from '@/shared/types';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
@@ -50,12 +50,14 @@ export function CategoryFormScreen({ categoryId, initialKind = 'DR' }: CategoryF
   const [confirming, setConfirming] = useState(false);
   const [failed, setFailed] = useState(false);
 
-  useEffect(() => {
-    if (!category) return;
+  // Editing: start from the saved record, once it has loaded (and again if it changes underneath).
+  const [readFrom, setReadFrom] = useState<typeof category | null>(null);
+  if (category && readFrom !== category) {
+    setReadFrom(category);
     const read = draftOf(category);
     setDraft(read);
     setInitial(read);
-  }, [category]);
+  }
 
   const guard = useLeaveGuard(isChanged(draft, initial));
   const set = <K extends keyof CategoryDraft>(key: K, value: CategoryDraft[K]) => setDraft((current) => ({ ...current, [key]: value }));

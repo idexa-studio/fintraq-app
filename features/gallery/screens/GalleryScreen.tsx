@@ -19,7 +19,7 @@ import { Chip, ChipRow, Header, IconButton, Screen, ThemeProvider, ToastProvider
 import type { Scheme } from '@/design';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
 
 const SECTIONS = [
@@ -63,10 +63,13 @@ export function GalleryScreen() {
 
   // A link that arrives while the gallery is already open moves it to that section.
   // `at` is any changing value, so the same link can be sent twice.
-  useEffect(() => {
+  const link = `${params.section}|${params.scheme}|${params.at}`;
+  const [followed, setFollowed] = useState(link);
+  if (followed !== link) {
+    setFollowed(link);
     if (isSectionKey(params.section)) setActive(params.section);
     if (params.scheme === 'dark' || params.scheme === 'light') setScheme(params.scheme);
-  }, [params.section, params.scheme, params.at]);
+  }
 
   return (
     <ThemeProvider scheme={scheme}>

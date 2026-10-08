@@ -7,13 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "luno",
     "userInterfaceStyle": "automatic",
-    "jsEngine": "hermes",
-    "newArchEnabled": true,
-    "notification": {
-      "icon": "./assets/images/notification-icon.png",
-      "color": "#0B7A53",
-      "iosDisplayInForeground": true
-    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "me.nafish.luno",
@@ -33,7 +26,6 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png",
         "backgroundColor": "#F1F1F1"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "me.nafish.luno",
       "permissions": [
@@ -42,10 +34,6 @@
       "blockedPermissions": [
         "com.google.android.gms.permission.AD_ID"
       ]
-    },
-    "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
@@ -59,7 +47,6 @@
         }
       ],
       "expo-sqlite",
-      "@react-native-community/datetimepicker",
       "expo-font",
       "expo-localization",
       "expo-iap",

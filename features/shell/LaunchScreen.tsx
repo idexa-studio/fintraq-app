@@ -1,6 +1,6 @@
 import { LaunchArt } from '@/design';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Animated, StyleSheet } from 'react-native';
 
 /** The least the launch screen is seen for, so it never flickers past. */
@@ -22,7 +22,7 @@ type LaunchScreenProps = {
 export function LaunchScreen({ named, ready }: LaunchScreenProps) {
   const [gone, setGone] = useState(false);
   const [shownAt, setShownAt] = useState<number | null>(null);
-  const opacity = useRef(new Animated.Value(1)).current;
+  const [opacity] = useState(() => new Animated.Value(1));
 
   useEffect(() => {
     if (!ready || shownAt === null) return;

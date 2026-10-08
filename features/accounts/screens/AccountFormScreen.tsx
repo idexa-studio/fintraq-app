@@ -15,7 +15,7 @@ import { OFFERED_COLORS } from '@/shared/contracts/pickers';
 import { currencyName, getCurrencySymbol, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { formatCurrency } from '@/shared/format/money';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
@@ -55,12 +55,14 @@ export function AccountFormScreen({ accountId }: AccountFormOptions) {
   const [more, setMore] = useState(false);
   const [failed, setFailed] = useState(false);
 
-  useEffect(() => {
-    if (!account) return;
+  // Editing: start from the saved record, once it has loaded (and again if it changes underneath).
+  const [readFrom, setReadFrom] = useState<typeof account | null>(null);
+  if (account && readFrom !== account) {
+    setReadFrom(account);
     const read = draftOf(account);
     setDraft(read);
     setInitial(read);
-  }, [account]);
+  }
 
   const guard = useLeaveGuard(isChanged(draft, initial));
   const set = <K extends keyof AccountDraft>(key: K, value: AccountDraft[K]) => setDraft((current) => ({ ...current, [key]: value }));

@@ -92,8 +92,23 @@ shipped version (plan task C10).
 
 ## Stack
 
-Expo SDK 54 · React Native 0.81 · React 19 (React Compiler on) · Expo Router · SQLite + Drizzle ORM ·
-TanStack Query · react-hook-form · i18next · Reanimated 4 · Hugeicons · Firebase (analytics, crashlytics, remote config, auth — see "Analytics & crash reporting").
+Expo SDK 57 · React Native 0.86 · React 19.2 (React Compiler on) · Expo Router · SQLite + Drizzle ORM ·
+TanStack Query · i18next · Reanimated 4 · Firebase (analytics, crashlytics, remote config, auth — see "Analytics & crash reporting").
+
+Upgraded from Expo 54 on 2026-10-08, so that iOS builds with Xcode 27. What that settled:
+
+- **No patches.** There is no `patches/` folder and no patch tool. A library bug is fixed by upgrading
+  or by the library's own setting, never by editing `node_modules`.
+- **React Navigation comes from Expo Router** (`expo-router/react-navigation`, `expo-router/js-tabs`);
+  the separate `@react-navigation/*` packages are not installed.
+- **iOS native settings** are all in `app.config.ts`, each with its reason beside it: Firebase through
+  CocoaPods with static linking (its Swift-package route fails at the Crashlytics step in an Expo
+  project), and the scene lifecycle Xcode 27 demands (`enableSceneSupport`, not needed from Expo 58).
+- **The push entitlement is removed** (`plugins/with-no-push-entitlement.js`): reminders are local
+  notifications, and without it a free Apple account can sign the app for a phone.
+- **TypeScript 6** no longer picks up `@types/*` by itself; `tsconfig.json` names `jest` and `node`.
+- **Not installed because nothing uses them:** web (`react-dom`, `react-native-web`), the native date
+  picker, `expo-atlas`.
 
 ## Coding style
 
@@ -216,8 +231,8 @@ Rules that keep it reliable:
 - **Never overwrite a backup this install doesn't own.** Drive holds one file. Auto-backup skips (`unclaimed_backup`) when the file wasn't made or restored by this install (`BackupPreferences.isOwnBackup`); a manual backup confirms first.
 - **Export is one read transaction**, so the snapshot is a single point in time.
 - **Foreground checks are the reliable path**; OS background scheduling is best-effort.
-- `patches/expo-background-task+1.0.10.patch` backports expo/expo#44663 and #44667 (Android worker
-  was replaced on every cold start). Drop it when upgrading to an SDK that ships those fixes.
+- The Android worker used to be replaced on every cold start (expo/expo#44663, #44667). Expo 57's
+  `expo-background-task` carries both fixes; the patch that backported them is gone.
 
 ## Checks before a PR
 

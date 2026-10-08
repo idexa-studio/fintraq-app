@@ -20,25 +20,25 @@ export function useHomePrompt() {
   const { isPro, ready } = usePro();
   const { isConnected, isLoading } = useBackupAccount();
   const { data: transactionCount } = useTransactionsCount();
-  const [prompt, setPrompt] = useState<HomePrompt | null>(null);
+  /** The prompt found to be past its cooldown; shown only while it is still the one to show. */
+  const [allowed, setAllowed] = useState<HomePrompt | null>(null);
 
   const candidate = chooseHomePrompt({ resolved: ready && !isLoading, isPro, backupConnected: isConnected || !IS_CLOUD_BACKUP_BUILT, transactionCount: transactionCount ?? 0 });
 
   useEffect(() => {
-    if (!candidate) {
-      setPrompt(null);
-      return;
-    }
+    if (!candidate) return;
     let cancelled = false;
     void AsyncStorage.getItem(DISMISSED_KEY[candidate]).catch(() => null).then((dismissedAt) => {
-      if (!cancelled && !isCoolingDown(dismissedAt, Date.now(), PROMPT_COOLDOWN_MS[candidate])) setPrompt(candidate);
+      if (!cancelled && !isCoolingDown(dismissedAt, Date.now(), PROMPT_COOLDOWN_MS[candidate])) setAllowed(candidate);
     });
     return () => { cancelled = true; };
   }, [candidate]);
 
+  const prompt = candidate && allowed === candidate ? candidate : null;
+
   const dismiss = () => {
     if (prompt) void AsyncStorage.setItem(DISMISSED_KEY[prompt], String(Date.now())).catch(() => {});
-    setPrompt(null);
+    setAllowed(null);
   };
 
   return { prompt, dismiss };

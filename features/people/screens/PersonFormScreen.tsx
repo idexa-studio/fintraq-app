@@ -7,7 +7,7 @@ import { FREE_LIMITS, isOverFreeLimit, usePro } from '@/features/pro';
 import { useLeaveGuard } from '@/features/shell';
 import { OFFERED_COLORS } from '@/shared/contracts/pickers';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
@@ -43,12 +43,14 @@ export function PersonFormScreen({ personId }: PersonFormOptions) {
   const [more, setMore] = useState(false);
   const [failed, setFailed] = useState(false);
 
-  useEffect(() => {
-    if (!person) return;
+  // Editing: start from the saved record, once it has loaded (and again if it changes underneath).
+  const [readFrom, setReadFrom] = useState<typeof person | null>(null);
+  if (person && readFrom !== person) {
+    setReadFrom(person);
     const read = draftOf(person);
     setDraft(read);
     setInitial(read);
-  }, [person]);
+  }
 
   const guard = useLeaveGuard(isChanged(draft, initial));
   const set = <K extends keyof PersonDraft>(key: K, value: PersonDraft[K]) => setDraft((current) => ({ ...current, [key]: value }));
