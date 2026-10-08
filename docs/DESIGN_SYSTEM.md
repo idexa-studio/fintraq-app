@@ -49,7 +49,7 @@ reference; dark is derived from them and contrast-checked.
 | `disabled`, `onDisabled` | A control that cannot be used yet |
 | `accent`, `onAccent` | Badges, the active tab mark, a switch that is on. **Never text**: it fails contrast on white, so anything drawn in it on a light surface also carries an outline |
 | `selected` | Outline of the current item, and green that is safe as text |
-| `brandDeep`, `brand`, `brandBright`, `brandTint` | Brand moments (the wave card) and the pale green behind an emblem |
+| `brandDeep`, `brand`, `brandBright` | Brand moments (the wave card) |
 | `positive`, `danger`, `warning` | Money in; destructive actions and errors; things to check. Money out is plain `text` with a minus sign |
 | `scrim` | Behind dialogs and sheets |
 
@@ -131,7 +131,9 @@ can never appear in two weights. A bold mark has no solid drawing.
   any of them stops drawing.
 
 There are no illustrations. A message or empty state carries an `Emblem`: one
-line icon in a pale green circle.
+line icon, in black, in a pastel circle (`color`, lilac unless the subject
+has a colour of its own elsewhere). The pale green it first had was
+rejected as washed out (owner, 2026-10-08).
 
 ## Components (`design/components/`)
 

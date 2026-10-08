@@ -18,7 +18,6 @@ const ROLES: [keyof ColorRoles, string][] = [
   ['brandDeep', 'Brand, deep'],
   ['brand', 'Brand'],
   ['brandBright', 'Brand, bright'],
-  ['brandTint', 'Behind illustration'],
   ['positive', 'Money in'],
   ['danger', 'Destructive, error'],
   ['warning', 'Needs checking'],

@@ -5,6 +5,8 @@ export { maskedNumber } from './account-form';
 export { netWorthByCurrency } from './net-worth';
 export type { CurrencyNetWorth } from './net-worth';
 export { CurrencyPicker } from './components/CurrencyPicker';
+export { WalletStack } from './components/WalletStack';
+export type { WalletCard } from './components/WalletStack';
 export { AccountsScreen } from './screens/AccountsScreen';
 export { AccountScreen } from './screens/AccountScreen';
 export { AccountFormScreen } from './screens/AccountFormScreen';

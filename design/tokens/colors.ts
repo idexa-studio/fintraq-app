@@ -38,7 +38,6 @@ export type ColorRoles = {
   brand: string;
   brandBright: string;
   /** Pale green behind an illustration. */
-  brandTint: string;
   /** Money in. Money out stays in `text`, with a minus sign. */
   positive: string;
   danger: string;
@@ -67,7 +66,6 @@ export const LIGHT_COLORS: ColorRoles = {
   brandDeep: '#016A4D',
   brand: '#11B67A',
   brandBright: '#6CF579',
-  brandTint: '#C9FEC5',
   positive: '#0B7A53',
   // Dark enough to read as text on the grey page (4.6:1) as well as on white.
   danger: '#D02B1B',
@@ -94,7 +92,6 @@ export const DARK_COLORS: ColorRoles = {
   brandDeep: '#016A4D',
   brand: '#11B67A',
   brandBright: '#6CF579',
-  brandTint: '#123D2A',
   positive: '#4FDB9A',
   danger: '#FF6B5C',
   onDanger: '#000000',

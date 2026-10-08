@@ -8,12 +8,15 @@ export default {
       private: 'No account to make, nothing sent anywhere',
       quick: 'Set up in under a minute',
     },
+    picture: 'Three accounts as cards in a wallet, the way Fintraq shows them',
+    sample: { savings: 'Savings', bank: 'Bank account', cash: 'Cash', everyday: 'Everyday spending' },
     start: 'Get started',
     restore: 'I have a backup',
   },
   setup: {
     back: 'Back',
     step: '{{step}} of {{total}}',
+    progress: 'How far through setup you are',
     preview: {
       greeting: 'Hi {{name}}',
       noName: 'Hi there',
@@ -69,6 +72,12 @@ export default {
   reminder: {
     title: 'Want a nudge each evening?',
     body: 'Fintraq can remind you at 8 PM to record the day, before the details fade. You can change the time or turn it off in Settings.',
+    sample: {
+      app: 'Fintraq · 8:00 PM',
+      title: 'How did today go?',
+      body: 'Add what you spent before it fades.',
+      label: 'What the reminder looks like',
+    },
     yes: 'Remind me',
     no: 'Not now',
     deniedTitle: 'Notifications are off for Fintraq',

@@ -1,6 +1,6 @@
-import { AmountField, Button, Card, Header, Icon, INK, MarkGrid, Notice, Screen, Text, TextField, ltr, pastelOf, useStyles } from '@/design';
+import { AmountField, Button, Card, Header, MarkGrid, Notice, ProgressBar, Screen, Text, TextField, pastelOf, useStyles } from '@/design';
 import type { Theme } from '@/design';
-import { CurrencyPicker, accountTypeIcon, useCreateAccount } from '@/features/accounts';
+import { CurrencyPicker, WalletStack, accountTypeIcon, useCreateAccount } from '@/features/accounts';
 import { FIRST_ACCOUNT_KINDS, NAME_MAX, SETUP_STEPS, newSetupDraft, nextStep, openingBalance, previousStep, setupBlockerOf, withAccountName, withKind } from '@/features/onboarding/first-run-rules';
 import type { FirstAccountKind, SetupDraft, SetupStep } from '@/features/onboarding/first-run-rules';
 import { useOnboarding } from '@/features/onboarding/FirstRunProvider';
@@ -76,7 +76,12 @@ export function SetupScreen() {
   return (
     <Screen
       keyboardAware
-      header={<Header onBack={making ? undefined : back} backLabel={t('setup.back')} right={<Text variant="callout" tone="muted" style={styles.count}>{t('setup.step', { step: SETUP_STEPS.indexOf(step) + 1, total: SETUP_STEPS.length })}</Text>} />}
+      header={
+        <View>
+          <Header onBack={making ? undefined : back} backLabel={t('setup.back')} right={<Text variant="callout" tone="muted" style={styles.count}>{t('setup.step', { step: SETUP_STEPS.indexOf(step) + 1, total: SETUP_STEPS.length })}</Text>} />
+          <View style={styles.progress}><ProgressBar value={(SETUP_STEPS.indexOf(step) + 1) / SETUP_STEPS.length} accessibilityLabel={t('setup.progress')} /></View>
+        </View>
+      }
       footer={
         <>
           {blocker ? <Text variant="callout" tone="muted" align="center">{t(`setup.blocked.${blocker}`)}</Text> : null}
@@ -88,16 +93,7 @@ export function SetupScreen() {
 
       <View style={styles.preview} accessible accessibilityRole="image" accessibilityLabel={t('setup.preview.label')}>
         <Text variant="title">{draft.name.trim() ? t('setup.preview.greeting', { name: draft.name.trim().split(/\s+/)[0] }) : t('setup.preview.noName')}</Text>
-        <View style={[styles.card, { backgroundColor: pastelOf(colorHex) }]}>
-          <View style={styles.cardHead}>
-            <View style={styles.cardText}>
-              <Text variant="bodyStrong" numberOfLines={1} style={styles.ink}>{draft.accountName.trim() || kindName(draft.kind)}</Text>
-              <Text variant="callout" numberOfLines={1} style={styles.ink}>{`${kindName(draft.kind)} · ${currencyName(draft.currency)}`}</Text>
-            </View>
-            <Icon name={accountTypeIcon(draft.kind)} color={INK} />
-          </View>
-          <Text variant="amountLarge" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} style={styles.ink}>{ltr(formatCurrency(balance, draft.currency))}</Text>
-        </View>
+        <WalletStack cards={[{ key: 'first', name: draft.accountName.trim() || kindName(draft.kind), detail: `${kindName(draft.kind)} · ${currencyName(draft.currency)}`, amount: formatCurrency(balance, draft.currency), color: pastelOf(colorHex), icon: accountTypeIcon(draft.kind) }]} />
       </View>
 
       <View style={styles.question}>
@@ -149,15 +145,11 @@ export function SetupScreen() {
   );
 }
 
-const createStyles = ({ border, radius, size, space }: Theme) =>
+const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     count: { paddingHorizontal: space.sm },
+    progress: { paddingHorizontal: size.screenPadding, paddingBottom: space.md },
     preview: { gap: space.md },
-    // The first account as it will sit on Home: its own colour, black text in both schemes.
-    card: { borderRadius: radius.md, borderWidth: border.thin, borderColor: INK, padding: size.cardPadding, gap: space.lg },
-    cardHead: { flexDirection: 'row', alignItems: 'flex-start', gap: space.md },
-    cardText: { flex: 1, gap: space.xxs },
-    ink: { color: INK },
     question: { gap: size.titleGap },
     asked: { gap: space.xs },
     currency: { gap: space.lg },

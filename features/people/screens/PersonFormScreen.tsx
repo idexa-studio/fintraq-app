@@ -67,7 +67,7 @@ export function PersonFormScreen({ personId }: PersonFormOptions) {
     return (
       <Screen sheet scroll={false} header={header()}>
         <View style={styles.centre}>
-          <Message illustration={<Emblem icon="user" />} title={t('person.notFound')} />
+          <Message illustration={<Emblem icon="user" color="teal" />} title={t('person.notFound')} />
         </View>
       </Screen>
     );
@@ -78,7 +78,7 @@ export function PersonFormScreen({ personId }: PersonFormOptions) {
     return (
       <Screen sheet scroll={false} header={header(t('form.newTitle'))} footer={<Button label={t('limit.seePro')} onPress={() => openPaywall('unlimited')} />}>
         <View style={styles.centre}>
-          <Message illustration={<Emblem icon="users" />} title={t('limit.reached', { count: FREE_LIMITS.people })} />
+          <Message illustration={<Emblem icon="users" color="teal" />} title={t('limit.reached', { count: FREE_LIMITS.people })} />
         </View>
       </Screen>
     );

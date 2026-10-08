@@ -7,12 +7,16 @@ import { IllustrationTile } from '@/design/components/IllustrationTile';
 import { Text } from '@/design/components/Text';
 import { Touchable } from '@/design/components/Touchable';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
+import { INK } from '@/design/tokens/colors';
+import type { PastelName } from '@/design/tokens/colors';
 import type { Theme } from '@/design/ThemeProvider';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 export type EmptyStateProps = {
   icon: IconName;
+  /** The pastel behind the icon. Use the colour the subject has elsewhere in the app. */
+  color?: PastelName;
   /** What will be here, not that nothing is. */
   title: string;
   body?: string;
@@ -28,14 +32,14 @@ export type EmptyStateProps = {
 };
 
 /** What a list or section shows before it has anything: a picture, a promise, and the first step. */
-export function EmptyState({ icon, title, body, actionLabel, onAction, compact = false }: EmptyStateProps) {
-  const { size, colors } = useTheme();
+export function EmptyState({ icon, color = 'lilac', title, body, actionLabel, onAction, compact = false }: EmptyStateProps) {
+  const { size } = useTheme();
   const styles = useStyles(createStyles);
 
   if (compact) {
     return (
       <Card style={styles.compact}>
-        <IllustrationTile><Icon name={icon} size={size.iconLarge} color={colors.selected} /></IllustrationTile>
+        <IllustrationTile color={color}><Icon name={icon} size={size.iconLarge} color={INK} /></IllustrationTile>
         <View style={styles.compactText}>
           <Text variant="bodyStrong">{title}</Text>
           {body ? <Text variant="callout" tone="muted">{body}</Text> : null}
@@ -51,7 +55,7 @@ export function EmptyState({ icon, title, body, actionLabel, onAction, compact =
 
   return (
     <View style={styles.full}>
-      <Emblem icon={icon} />
+      <Emblem icon={icon} color={color} />
       <View style={styles.fullText}>
         <Text variant="display" align="center" accessibilityRole="header">{title}</Text>
         {body ? <Text variant="body" tone="muted" align="center">{body}</Text> : null}

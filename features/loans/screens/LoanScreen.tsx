@@ -58,7 +58,7 @@ export function LoanScreen() {
     return (
       <Screen scroll={false} header={<Header onBack={back} backLabel={t('back')} />}>
         <View style={styles.centre}>
-          <Message illustration={<Emblem icon="hand-coins" />} title={t('loan.notFound')} />
+          <Message illustration={<Emblem icon="hand-coins" color="pink" />} title={t('loan.notFound')} />
         </View>
       </Screen>
     );

@@ -120,7 +120,7 @@ export function PlanScreen() {
           ) : null}
         </>
       ) : (
-        <EmptyState compact icon="hand-coins" title={t('empty.title')} body={t('empty.body')} actionLabel={t('add')} onAction={lend} />
+        <EmptyState compact icon="hand-coins" color="pink" title={t('empty.title')} body={t('empty.body')} actionLabel={t('add')} onAction={lend} />
       )}
 
       {settled.length > 0 ? (

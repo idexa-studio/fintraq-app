@@ -57,7 +57,7 @@ export function RepaymentScreen({ loanId }: { loanId: number }) {
     return (
       <Screen sheet scroll={false} header={header()}>
         <View style={styles.centre}>
-          <Message illustration={<Emblem icon="hand-coins" />} title={loan ? t('loan.settled') : t('loan.notFound')} />
+          <Message illustration={<Emblem icon="hand-coins" color="pink" />} title={loan ? t('loan.settled') : t('loan.notFound')} />
         </View>
       </Screen>
     );
