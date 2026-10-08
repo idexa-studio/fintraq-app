@@ -441,6 +441,9 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D13.05 Shared checklist
 
 ### D14. Backup
+
+Built in `features/backup` on 2026-10-08 and seen on a device only as far as the not-connected screen and the card's states in the gallery. Every task below still needs one run with the owner's Google account (connecting signs in to it and writes to its Drive, so it is his to start).
+
 - [ ] D14.01 State first, in words: when last backed up, to which account
 - [ ] D14.02 Connect and disconnect Google Drive
 - [ ] D14.03 Automatic backup switch, with the notification permission it needs

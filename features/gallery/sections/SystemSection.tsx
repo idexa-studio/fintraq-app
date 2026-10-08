@@ -5,6 +5,7 @@ import {
   lifetimeBreakEvenMonths, yearlySavingPercent,
 } from '@/features/pro';
 import type { PlanPrice, ProPlan } from '@/features/pro';
+import { BackupCard } from '@/features/backup';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
@@ -99,13 +100,25 @@ export function SystemSection() {
       </Section>
 
       <Section title="Backup">
-        <Specimen name="Backup" note="State first, in words; then the switch; then what you can do.">
-          <Notice tone="positive" title="Backed up 2 hours ago" body="john@example.com · Google Drive" />
+        <Specimen name="Backup" note="The phone and the Drive, joined once a backup is there; the state in words; then the switch.">
+          <BackupCard title="Backed up today at 2:14 PM" detail="In the Drive of john@example.com · 84 KB" hasBackup phoneLabel="This phone" driveLabel="Your Drive" backUpLabel="Back up now" restoreLabel="Restore" />
           <ListGroup>
-            <ListRow icon="cloud-arrow-up" title="Back up automatically" subtitle="Once a day, on Wi-Fi" trailing={<Switch value={backup} onValueChange={setBackup} accessibilityLabel="Back up automatically" />} />
-            <ListRow icon="reload" title="Back up now" onPress={() => {}} />
-            <ListRow icon="download-simple" title="Restore from backup" onPress={() => {}} />
+            <ListRow icon="repeat" title="Back up automatically" subtitle="Twice a day. Next around 2:14 AM." trailing={<Switch value={backup} onValueChange={setBackup} accessibilityLabel="Back up automatically" />} />
+            <ListRow icon="battery-charging" title="Keep it running" subtitle="Stop your phone closing Fintraq between backups" onPress={() => {}} />
           </ListGroup>
+        </Specimen>
+        <Specimen name="While it runs" note="The line fills towards the Drive; neither action can be started.">
+          <BackupCard title="Backing up · 62%" detail="Uploading to Google Drive..." hasBackup working={{ operation: 'backup', value: 0.62 }} phoneLabel="This phone" driveLabel="Your Drive" backUpLabel="Back up now" restoreLabel="Restore" />
+        </Specimen>
+        <Specimen name="Restoring" note="The line fills the other way: from the Drive back to the phone.">
+          <BackupCard title="Restoring · 40%" detail="Downloading backup..." hasBackup working={{ operation: 'restore', value: 0.4 }} phoneLabel="This phone" driveLabel="Your Drive" backUpLabel="Back up now" restoreLabel="Restore" />
+        </Specimen>
+        <Specimen name="Nothing backed up yet" note="Restore waits until there is something to restore.">
+          <BackupCard title="No backup yet" detail="Back up now, or switch on automatic backup below." hasBackup={false} phoneLabel="This phone" driveLabel="Your Drive" backUpLabel="Back up now" restoreLabel="Restore" />
+        </Specimen>
+        <Specimen name="Needs attention" note="A warning says what happened and what to do; a failure offers the fix.">
+          <Notice tone="warning" title="Automatic backup has stopped running" body="Your phone may be closing Fintraq in the background. Allow it to run unrestricted, then back up now." linkLabel="Open battery settings" onLink={() => {}} />
+          <Notice tone="danger" title="The backup was not made" body="Fintraq is no longer signed in to your Google account. Connect again, then retry." linkLabel="Connect again" onLink={() => {}} />
         </Specimen>
       </Section>
 
