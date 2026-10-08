@@ -103,7 +103,8 @@
       ],
       "expo-system-ui",
       "expo-secure-store",
-      "./plugins/with-fingerprint-not-required"
+      "./plugins/with-fingerprint-not-required",
+      "./plugins/with-text-measured-as-drawn"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -20,8 +20,14 @@ import notifications from '@/shared/i18n/copy/notifications.en';
 import pro from '@/shared/i18n/copy/pro.en';
 import shell from '@/shared/i18n/copy/shell.en';
 import transactions from '@/shared/i18n/copy/transactions.en';
+import bn from '@/shared/i18n/copy/bn.json';
+import es from '@/shared/i18n/copy/es.json';
+import hi from '@/shared/i18n/copy/hi.json';
 
 export * from './config';
+
+/** The languages translated so far. Add each here as its file is built. */
+const TRANSLATED = { hi, bn, es };
 
 const i18n = createInstance();
 i18n
@@ -29,8 +35,10 @@ i18n
   .init({
     compatibilityJSON: 'v4',
     resources: {
-      // The copy is written in English first, namespace by namespace. A language without its own
-      // falls back to English, never to a key. The other twelve are translated in plan task G1.02.
+      // The copy is written in English first, namespace by namespace. Each other language is one
+      // file built from its translations by `scripts/i18n/build.js`, which also reports what a
+      // language is missing. A string not translated yet falls back to English, never to a key.
+      ...TRANSLATED,
       en: { common, shell, home, transactions, activity, accounts, categories, people, loans, plan, insights, search, backup: backupCopy, export: exportCopy, lock, settings: settingsCopy, firstRun, notifications, pro },
     },
     ns: ['common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans', 'plan', 'insights', 'search', 'backup', 'export', 'lock', 'settings', 'firstRun', 'notifications', 'pro'],
