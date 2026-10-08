@@ -15,7 +15,7 @@ import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { CsvExportService, ExportDateRange } from '@/data/export/csv-export';
 import { useTranslation } from 'react-i18next';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
-import { Analytics } from '@/src/services/telemetry';
+import { Analytics } from '@/platform/telemetry';
 import { toErrorMessage } from '@/shared/errors';
 
 

@@ -1,3 +1,5 @@
+import { PRODUCT_IDS } from '@/shared/contracts/product-ids';
+
 /**
  * How Pro is sold. Three plans unlock the same features; the paywall leads
  * with Lifetime and lets the arithmetic make the case (docs/PRODUCT.md).
@@ -12,17 +14,8 @@ export const DEFAULT_PLAN: ProPlan = 'lifetime';
 
 export const isSubscription = (plan: ProPlan): boolean => plan !== 'lifetime';
 
-/**
- * Store product ids. Lifetime has been on sale since launch and existing
- * buyers own it, so its ids must never change. Monthly and yearly were
- * created in the stores before launch but disabled before anyone could buy
- * them; they are enabled for the three-plan paywall.
- */
-export const PLAN_PRODUCT_IDS: Record<ProPlan, { ios: string; android: string }> = {
-  lifetime: { ios: 'com.luno.lifetime', android: 'luno_lifetime' },
-  yearly: { ios: 'com.luno.yearly', android: 'luno_yearly' },
-  monthly: { ios: 'com.luno.monthly', android: 'luno_monthly' },
-};
+/** The store product behind each plan. The ids are a contract; see `shared/contracts/product-ids.ts`. */
+export const PLAN_PRODUCT_IDS: Record<ProPlan, { ios: string; android: string }> = PRODUCT_IDS;
 
 /** What the store returned for a plan. Amounts are in the store's currency for this user. */
 export type PlanPrice = {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
-import { NotificationService } from '@/src/services/notification.service';
+import { NotificationService } from '@/platform/notifications/notifications';
 
 /**
  * Whether reminders can fire at the exact minute (Android 12+ "Alarms & reminders" access).

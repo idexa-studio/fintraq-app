@@ -16,8 +16,8 @@ import { QueryProvider } from '@/src/providers/QueryProvider';
 import { SettingsProvider } from '@/src/providers/SettingsProvider';
 import { I18nProvider } from '@/src/providers/I18nProvider';
 import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvider';
-import { NotificationService } from '@/src/services/notification.service';
-import { ReviewPromptService } from '@/src/services/review-prompt.service';
+import { NotificationService } from '@/platform/notifications/notifications';
+import { ReviewPromptService } from '@/platform/config/review-prompt';
 import { useFonts } from 'expo-font';
 import { SystemNavBackdrop } from '@/src/components/ui/SystemNavBackdrop';
 import * as SplashScreen from 'expo-splash-screen';
@@ -27,7 +27,7 @@ import { unlockDatabaseIfLocked } from '@/data/db/client';
 // Side-effect import: must run unconditionally at module load so
 // TaskManager.defineTask is registered before the OS can headlessly relaunch
 // the JS engine to run the background backup task.
-import { syncBackgroundBackupTask } from '@/src/services/backup/background-backup.task';
+import { syncBackgroundBackupTask } from '@/platform/backup/background-backup.task';
 import { AppState, AppStateStatus } from 'react-native';
 import { FONT_ASSETS } from '@/design';
 import React, { useEffect, useState } from 'react';

@@ -2,16 +2,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AppState } from 'react-native';
 import i18n from '@/shared/i18n';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import type { CloudBackupFileMeta } from '@/src/services/backup/backup.types';
-import { runCloudBackup } from '@/src/services/backup/cloud-backup.service';
-import { runCloudRestore } from '@/src/services/backup/cloud-restore.service';
+import type { CloudBackupFileMeta } from '@/platform/backup/backup.types';
+import { runCloudBackup } from '@/platform/backup/cloud-backup';
+import { runCloudRestore } from '@/platform/backup/cloud-restore';
 import {
   CloudBackupProRequiredError,
   isAuthError,
   isBackupInProgressError,
   isNoBackupError,
-} from '@/src/services/backup/google-drive.errors';
-import { ReviewPromptService } from '@/src/services/review-prompt.service';
+} from '@/platform/drive/google-drive.errors';
+import { ReviewPromptService } from '@/platform/config/review-prompt';
 
 /** Errors shown in-app: the ones with a specific remedy keep their meaning, the rest are generic. */
 function toBackupError(error: unknown): unknown {

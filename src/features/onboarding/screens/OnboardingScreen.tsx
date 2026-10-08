@@ -24,10 +24,10 @@ import { useCreateTransaction } from '@/src/features/transactions/hooks/transact
 import { useOnboarding } from '@/src/providers/OnboardingProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { Analytics } from '@/src/services/telemetry';
-import { NotificationService } from '@/src/services/notification.service';
+import { Analytics } from '@/platform/telemetry';
+import { NotificationService } from '@/platform/notifications/notifications';
 import { toDbColor } from '@/shared/format/color';
-import { isNoBackupError, isProRequiredError } from '@/src/services/backup/google-drive.errors';
+import { isNoBackupError, isProRequiredError } from '@/platform/drive/google-drive.errors';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -38,7 +38,7 @@ import { useBackupAccount, useConnectBackupAccount, useDisconnectBackupAccount }
 import { useBackupProgress } from '@/src/features/backup/hooks/useBackupProgress';
 import { useCloudBackupActions } from '@/src/features/backup/hooks/useCloudBackupActions';
 import { useEnableCloudBackup } from '@/src/features/backup/hooks/useEnableCloudBackup';
-import { openAppSettings } from '@/src/services/backup/battery-optimization';
+import { openAppSettings } from '@/platform/backup/battery-optimization';
 
 import { CloudBackupChoice, CloudBackupStep } from '@/src/features/onboarding/components/CloudBackupStep';
 import { LoggerService } from '@/shared/logging/logger';

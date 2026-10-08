@@ -1,24 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { NotificationService } from '@/src/services/notification.service';
-import { syncReminders } from '@/src/services/reminders/reminder-sync';
-import { StorageKeys } from '@/shared/contracts/storage-keys';
+import { NotificationService } from '@/platform/notifications/notifications';
+import { syncReminders } from '@/platform/notifications/reminder-sync';
+import { DEFAULT_PROFILE, readStoredProfile, saveProfile } from '@/shared/settings/profile';
+import type { UserProfile } from '@/shared/settings/profile';
 import { LoggerService } from '@/shared/logging/logger';
-import type { AppLanguage } from '@/shared/i18n';
-
-export type UserProfile = {
-  name: string;
-  email: string;
-  phone: string;
-  defaultCurrency: string;
-  theme: 'system' | 'light' | 'dark';
-  language: AppLanguage;
-  reminderEnabled: boolean;
-  reminderTime: string; // e.g. "20:00"
-  /** Anonymous usage analytics and crash reports. On by default; older saved profiles lack it and get the default. */
-  shareUsageData: boolean;
-};
 
 type SettingsContextType = {
   profile: UserProfile;
@@ -34,18 +20,6 @@ export function useSettings() {
   return ctx;
 }
 
-const DEFAULT_PROFILE: UserProfile = {
-  name: '',
-  email: '',
-  phone: '',
-  defaultCurrency: 'USD',
-  theme: 'system',
-  language: 'system',
-  reminderEnabled: false,
-  reminderTime: '20:00',
-  shareUsageData: true,
-};
-
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,11 +27,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const storedProfile = await AsyncStorage.getItem(StorageKeys.PROFILE);
-        if (storedProfile) {
-          const parsed = JSON.parse(storedProfile);
-          setProfile(prev => ({ ...prev, ...parsed }));
-        }
+        const stored = await readStoredProfile();
+        if (stored) setProfile(prev => ({ ...prev, ...stored }));
       } catch (e) {
         LoggerService.error('SETTINGS', 'Failed to load profile settings', e);
       } finally {
@@ -88,7 +59,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const updateProfile = useCallback(async (updates: Partial<UserProfile>) => {
     try {
       const newProfile = { ...profile, ...updates };
-      await AsyncStorage.setItem(StorageKeys.PROFILE, JSON.stringify(newProfile));
+      await saveProfile(newProfile);
       setProfile(newProfile);
     } catch (e) {
       LoggerService.error('SETTINGS', 'Failed to save profile settings', e);

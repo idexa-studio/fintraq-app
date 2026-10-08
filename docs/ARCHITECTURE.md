@@ -1,9 +1,9 @@
 # Architecture & Coding Style
 
-> **Reboot in progress.** The first section below is the structure all new
-> code follows. Everything from "Stack" onwards describes the legacy `src/`
-> tree until it is emptied; its data, backup and telemetry sections remain
-> accurate.
+> **Reboot in progress.** Data, services and helpers already live in their
+> final folders (`data/`, `platform/`, `shared/`). `src/` now holds only the
+> legacy screens, components and providers, which are replaced screen by screen
+> and then deleted. Its own conventions are in this file's git history.
 
 ## Target structure (all new code)
 
@@ -83,88 +83,29 @@ contracts; each has a test that fails if it is broken.
 | Storage keys (AsyncStorage, secure store) | `shared/contracts/storage-keys.ts` | `shared/contracts/__tests__/storage-keys.test.ts` pins every key as shipped |
 | Icon names saved on categories and accounts | `shared/contracts/stored-icon-names.ts` | `design/icons/__tests__/glyphs.test.ts` |
 | Icon names written by older versions | `shared/contracts/legacy-icon-names.ts` | same test: every name they map to still draws |
-| Backup snapshot format | `src/services/backup/backup-snapshot.ts` | `__tests__/backup-snapshot.test.ts`: every older shape still restores |
-| Lifetime product ids | `features/pro/pro-plans.ts` | `features/pro/__tests__/pro-plans.test.ts` |
+| Backup snapshot format | `data/backup/snapshot.ts` | `data/backup/__tests__/snapshot.test.ts`: every older shape still restores |
+| Store product ids | `shared/contracts/product-ids.ts` | `shared/contracts/__tests__/product-ids.test.ts` |
+| Saved profile (settings) | `shared/settings/profile.ts` | `shared/settings/__tests__/profile.test.ts`: older profiles still load |
 | Pro feature ids used by old links | `features/pro/pro-features.ts` (`LEGACY_FEATURE_IDS`) | `features/pro/__tests__/pro-features.test.ts` |
 | Paths in launcher shortcuts and notifications | redirect routes, see `SCREENS.md` | To be covered when the routes are rebuilt |
 
-The data layer moves from `src/` into `data/` and `platform/` in one step of
-its own, when the first rebuilt screen needs it, and is verified by upgrading
-a phone that holds real data from the shipped version.
+The data layer was moved out of `src/` unchanged in content (phase C of the
+plan); `npm run db:generate` reports no schema changes. Before release the
+whole thing is verified by upgrading a phone that holds real data from the
+shipped version (plan task C10).
 
 ## Stack
 
 Expo SDK 54 · React Native 0.81 · React 19 (React Compiler on) · Expo Router · SQLite + Drizzle ORM ·
 TanStack Query · react-hook-form · i18next · Reanimated 4 · Hugeicons · Firebase (analytics, crashlytics, remote config, auth — see "Analytics & crash reporting").
 
-## Folder structure
-
-```
-app/                        Routes only (Expo Router). Each file re-exports a screen.
-  (onboarding)/             First-run flow
-  (main)/                   Authenticated app shell
-    (tabs)/                 Bottom-tab screens
-  transactions/ premium.tsx search.tsx
-
-src/
-  components/
-    ui/                     Design-system primitives — domain-agnostic. Barrel: index.ts
-    pickers/                Reusable pickers built on ui/ (currency, colour, icon, calculator)
-    ErrorBoundary.tsx
-  features/<feature>/
-    api/                    Data access: Drizzle queries, pure async functions
-    hooks/                  React Query hooks wrapping api/
-    components/             UI used by this feature
-    screens/                One component per route
-    constants.ts, types.ts  Optional, feature-local
-  theme/                    Design tokens — colors, typography, spacing… (no React)
-  providers/                App-wide context (Theme, Settings, Premium, Lock…)
-  services/                 Side-effectful singletons (backup, notifications, logging, IAP)
-  db/                       Drizzle client, schema, seeds
-  i18n/                     Locales + i18next config
-  hooks/                    Cross-feature hooks
-  lib/                      Framework glue (query keys)
-  utils/                    Pure helpers (format, date, icons)
-  constants/  types/
-
-drizzle/                    Generated SQL migrations — never edit by hand
-docs/                       Product & engineering docs
-plugins/                    Expo config plugins
-```
-
-### Where does new code go?
-
-| You are adding… | Put it in |
-|---|---|
-| A new route | `app/…/name.tsx` that re-exports `src/features/<f>/screens/NameScreen` |
-| A screen | `src/features/<f>/screens/` |
-| A component used by one feature | `src/features/<f>/components/` |
-| A generic, domain-agnostic component | `src/components/ui/` + a specimen in the Design Gallery |
-| A picker reused by several features | `src/components/pickers/` |
-| A DB query | `src/features/<f>/api/` |
-| A React Query hook | `src/features/<f>/hooks/` (keys in `src/lib/query-keys.ts`) |
-| Background work / platform SDK wrapper | `src/services/` |
-| A colour, size, radius or duration | `src/theme/` — never inline |
-
-### Dependency rules
-
-```
-app ──▶ features/screens
-features ──▶ components · providers · services · db · theme · utils · i18n
-components/pickers ──▶ components/ui · constants · utils
-components/ui ──▶ theme · providers/ThemeProvider · utils · types   (never features, services, db)
-theme ──▶ nothing
-```
-
-- A feature may import another feature's `components/` or `hooks/`, never its `screens/` or `api/`.
-- `components/ui` must stay product-agnostic. If a component needs to know what a transaction or loan is, it belongs in a feature.
-
 ## Coding style
 
 ### Imports
-- Use the `@/src/…` alias for anything outside the current folder. `./Sibling` only for files in the same folder. **No `../`** (lint warns).
-- Import primitives from the barrel: `import { Button, Text, ListItem } from '@/src/components/ui';`
-- Import pickers from `@/src/components/pickers`.
+
+- `@/…` for anything outside the current folder; `./Sibling` only for a file in the same folder; never `../`.
+- UI from the barrel: `import { Button, Text, ListRow } from '@/design';`
+- Who may import whom is under "Target structure" above, and lint enforces it.
 
 ### Components
 ```tsx
@@ -204,7 +145,7 @@ const createStyles = ({ colors, spacing, radius }: ThemeContextType) =>
 
 ### Data
 - Screens never call Drizzle directly: screen → hook (`features/*/hooks`) → api (`features/*/api`) → db.
-- Mutations invalidate through the shared keys in `src/lib/query-keys.ts`.
+- Mutations invalidate through the shared keys in `data/query-keys.ts`.
 - Persisted preferences go through `SettingsProvider`; secrets through `expo-secure-store`.
 
 ### Text & i18n
@@ -227,7 +168,7 @@ Explain *why*, not *what*: constraints, platform quirks, non-obvious maths. Dele
 - **Actions** — `useProAccess()` gives `isPremium`, `requirePro(feature)` (opens the paywall and returns false on the free plan) and `openPaywall(feature?)`.
 - **Routes** — Pro-only screens (`/search`, `/export`) render `ProGateScreen` for free users, so deep links can't bypass the gate.
 - **Paywall** — `/premium?feature=<id>` leads with that feature. The paywall, the Pro screen and the dashboard upsell all render from the registry.
-- **Free caps** — `FREE_LOAN_LIMIT` and `FREE_PERSON_LIMIT` in `src/constants/iap.ts`; hitting one opens the paywall on `unlimited`.
+- **Free caps** — `FREE_LIMITS` in `features/pro/pro-features.ts` (the shipped screens still read the same numbers from `src/constants/iap.ts` until they are rebuilt); hitting one opens the paywall on `unlimited`.
 - **Background work** (auto-backup) can't use hooks; it reads the persisted entitlement through `BackupPreferences.isProEntitled()`.
 - **Developer override** — the Developer screen's "Premium override" is honoured in development builds only (`IS_PREMIUM_OVERRIDE_ALLOWED`). Test Pro on a release build with a store licence-tester account.
 - **Pending purchases** (`isSettledPurchase`) never grant Pro and are never finished; the store sends another update when payment settles.
@@ -244,8 +185,8 @@ A new chart, breakdown or forecast goes in Analytics; Home links to it from the 
 ## Cloud backup
 
 Offline-first: SQLite is the source of truth; Google Drive `appDataFolder` holds one JSON snapshot
-(`fintraq_backup.json`). The format is versioned in `services/backup/backup-snapshot.ts` and every
-older shape must keep restoring — covered by `__tests__/backup-snapshot.test.ts`.
+(`fintraq_backup.json`). The format is versioned in `data/backup/snapshot.ts` and every
+older shape must keep restoring — covered by `data/backup/__tests__/snapshot.test.ts`.
 
 ```
 features/backup/hooks        React Query + useSyncExternalStore; the only thing screens import
@@ -255,16 +196,17 @@ features/backup/hooks        React Query + useSyncExternalStore; the only thing 
   useEnableCloudBackup       connect + auto-backup in one step (every "set up backup" entry point)
   useCloudBackupActions      manual backup / restore
   useBackupProgress          live progress of any run, including auto-backups
-services/backup
-  cloud-backup.service       the one backup pipeline (export → upload w/ retry → record)
-  cloud-restore.service      the one restore pipeline (locate → download → import)
-  auto-backup.service        policy: entitled? enabled? idle? due? signed in? → run
+platform/backup
+  cloud-backup               the one backup pipeline (export → upload w/ retry → record)
+  cloud-restore              the one restore pipeline (locate → download → import)
+  auto-backup                policy: entitled? enabled? idle? due? signed in? → run
   auto-backup.triggers       foreground checks: launch, resume, Android backgrounding
   background-backup.task     headless OS task (WorkManager / BGTaskScheduler) → same policy
   backup-state               single operation slot (backup | restore) + progress, shared store
   backup-preferences         the only reader/writer of backup AsyncStorage keys
   backup-schedule            pure timing rules (due, overdue, check cadence)
-  database-backup.service    snapshot export and atomic import
+  database-backup            snapshot export and atomic import
+platform/drive
   google-drive.*             Drive API, auth/session, transport, error classification
 ```
 
@@ -290,11 +232,11 @@ Open **Settings → tap the footer 10× → Developer (PIN) → Design gallery**
 
 ## Analytics & crash reporting
 
-Firebase Analytics (GA4) and Crashlytics, behind `src/services/telemetry`. Screens never import
+Firebase Analytics (GA4) and Crashlytics, behind `platform/telemetry`. Screens never import
 the Firebase SDK.
 
 ```
-services/telemetry
+platform/telemetry
   events.ts               the event catalogue: every event name + its params, typed
   analytics.ts            Analytics.track / screen / setUserProperties / setEnabled
   crashlytics.ts          Crashlytics.recordError / setEnabled

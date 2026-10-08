@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/data/query-keys';
-import { afterLedgerWrite } from '@/src/lib/after-ledger-write';
+import { afterLedgerWrite } from '@/platform/notifications/after-ledger-write';
 import * as api from '@/data/repositories/loans';
 
 export const useLoans = (type?: api.LoanType) =>

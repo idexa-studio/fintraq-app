@@ -1,4 +1,4 @@
-import { BackupPreferences } from '@/src/services/backup/backup-preferences';
+import { BackupPreferences } from '@/platform/backup/backup-preferences';
 import type { IconSource } from '@/src/components/ui';
 import {
   AlertButton,
@@ -13,13 +13,13 @@ import {
   Text,
 } from '@/src/components/ui';
 import { useKeyboardInset } from '@/src/hooks/useKeyboardInset';
-import { IS_PREMIUM_OVERRIDE_ALLOWED } from '@/src/constants/iap';
+import { IS_PREMIUM_OVERRIDE_ALLOWED } from '@/platform/purchases/dev-override';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
-import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
+import { runAutoBackupIfDue } from '@/platform/backup/auto-backup';
+import { GoogleDriveService } from '@/platform/drive/google-drive';
 import { LoggerService } from '@/shared/logging/logger';
-import { NotificationService } from '@/src/services/notification.service';
+import { NotificationService } from '@/platform/notifications/notifications';
 import { toErrorMessage } from '@/shared/errors';
 import { seedDummyData } from '@/src/utils/seed';
 import * as Notifications from 'expo-notifications';

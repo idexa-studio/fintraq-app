@@ -36,10 +36,10 @@ Current phase: **C, groundwork.** The gallery was approved on 2026-10-09
 app/              routes only; each file re-exports a screen
 design/           design system: tokens, icons, components. Knows nothing about money
 features/<name>/  one product area; used from outside only through its index.ts
-data/             database, repositories, backup format      (created in phase C)
-platform/         store purchases, Drive, notifications, lock (created in phase C)
+data/             database, repositories, backup format
+platform/         store purchases, Drive, notifications, lock, telemetry, config
 shared/           pure helpers and contracts; depends on nothing
-src/              LEGACY. Nothing new goes in; it is deleted in phase F
+src/              LEGACY screens, components and providers only. Deleted in phase F
 ```
 
 - Import UI only from `@/design`. Tokens come from its `useTheme()`. No hex
@@ -102,7 +102,7 @@ that fails if it is broken. Any change is additive.
 - **Storage keys** in AsyncStorage and the secure store: never renamed.
 - **Icon names** saved on categories and accounts
   (`shared/contracts/stored-icon-names.ts`): each keeps a glyph for ever.
-- **Store product ids** (`features/pro/pro-plans.ts`): `luno_lifetime`,
+- **Store product ids** (`shared/contracts/product-ids.ts`): `luno_lifetime`,
   `luno_yearly`, `luno_monthly` and their `com.luno.*` twins on iOS.
 - **Old paths** in pinned launcher shortcuts and notifications: kept as
   redirects (`docs/SCREENS.md`).

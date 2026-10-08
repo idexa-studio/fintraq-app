@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { GoogleUserAccount } from '@/src/services/backup/backup.types';
+import type { GoogleUserAccount } from '@/platform/backup/backup.types';
 import { useAutoBackupSetting, type SetAutoBackupResult } from './useAutoBackupSetting';
 import { useBackupAccount, useConnectBackupAccount } from './useBackupAccount';
 

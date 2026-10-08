@@ -1,11 +1,11 @@
 import { ForceUpdateScreen } from '@/src/features/update/components/ForceUpdateScreen';
-import { startAutoBackupTriggers } from '@/src/services/backup/auto-backup.triggers';
+import { startAutoBackupTriggers } from '@/platform/backup/auto-backup.triggers';
 import { LoggerService } from '@/shared/logging/logger';
 import {
   fetchRemoteAppConfig,
   initRemoteConfig,
-} from '@/src/services/remote-config.service';
-import { getAppVersion } from '@/src/utils/version';
+} from '@/platform/config/remote-config';
+import { getAppVersion } from '@/platform/config/version';
 import * as SplashScreen from 'expo-splash-screen';
 import React, {
   createContext,

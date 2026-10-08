@@ -13,9 +13,9 @@ import { useLatestBackup } from '@/src/features/backup/hooks/useLatestBackup';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { openAppSettings, openBatteryOptimizationSettings } from '@/src/services/backup/battery-optimization';
-import { isBackupOverdue } from '@/src/services/backup/backup-schedule';
-import { isNoBackupError } from '@/src/services/backup/google-drive.errors';
+import { openAppSettings, openBatteryOptimizationSettings } from '@/platform/backup/battery-optimization';
+import { isBackupOverdue } from '@/platform/backup/backup-schedule';
+import { isNoBackupError } from '@/platform/drive/google-drive.errors';
 import { LoggerService } from '@/shared/logging/logger';
 import { alpha } from '@/src/theme/tokens';
 import { formatBackupTimestamp } from '@/shared/date/date';
@@ -26,7 +26,7 @@ import { BackupActionsRow } from './BackupActionsRow';
 import { BackupConnectRow } from './BackupConnectRow';
 import { BackupProgressRow } from './BackupProgressRow';
 import { BackupStatusRow } from './BackupStatusRow';
-import { Analytics } from '@/src/services/telemetry';
+import { Analytics } from '@/platform/telemetry';
 import { BackupUpsellRow } from './BackupUpsellRow';
 
 /** The Backup screen's control surface: account, status, manual backup/restore, auto-backup. */
