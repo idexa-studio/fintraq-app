@@ -54,8 +54,8 @@ src/              LEGACY screens, components and providers only. Deleted in phas
 ## The look
 
 Matched to the owner's reference screens by measurement, not by eye: grey
-page, white cards, black actions, vivid green accent, serif headings (Lora),
-text in Hanken Grotesk, soft 12pt corners, no shadows.
+page, white cards, black actions, vivid green accent, one humanist sans
+throughout (Proza Libre, bold for headings), soft 10pt corners, no shadows.
 
 - **Gallery first.** Every widget is built in `design/`, shown in the Design
   Gallery (`features/gallery/`) and approved by the owner before a screen uses

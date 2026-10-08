@@ -72,7 +72,7 @@ export const SIZE = {
   tabMark: 2,
   /** A screen's header (reference: 44). */
   header: 44,
-  /** The header of a sheet or task, with its serif title (reference: 56). */
+  /** The header of a sheet or task, with its bold title (reference: 56). */
   taskHeader: 56,
   icon: 24,
   iconSmall: 20,

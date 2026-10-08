@@ -20,7 +20,7 @@ export function IdeasSection() {
             <Text variant="callout" style={{ color: INK }}>Up $1,223.23 this month</Text>
           </WaveCard>
         </Specimen>
-        <Specimen name="Highlight" note="A finding worth stopping for: a coloured mark, a serif sentence and the number behind it.">
+        <Specimen name="Highlight" note="A finding worth stopping for: a coloured mark, a bold sentence and the number behind it.">
           <Highlight icon="sparkle" statement="Saturdays cost you three times a weekday" detail="About $118 each Saturday over the last two months." />
           <Highlight icon="trend-down" color="teal" statement="Groceries are down $64 on last month" />
         </Specimen>

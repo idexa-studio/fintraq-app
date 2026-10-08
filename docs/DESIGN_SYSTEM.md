@@ -12,8 +12,8 @@ documentation is in this file's git history.
 
 A light grey page carries white cards with soft corners and no shadows. Black
 does the work: text, the one main button, outlines. A vivid green marks what
-is new, current or switched on, and is never used for text. Headings are a
-bold serif; everything else is a plain sans. One thing is asked at a time,
+is new, current or switched on, and is never used for text. One humanist sans
+is used throughout, bold for headings. One thing is asked at a time,
 buttons fill the width, and the button that cannot be used yet is grey and
 says why. Every value was measured from the owner's reference screens.
 
@@ -58,7 +58,11 @@ top is always black (`INK`).
 
 ### Type (`typography.ts`)
 
-Lora Bold for headings, Hanken Grotesk for everything else. A variant fixes
+Proza Libre throughout: Bold for headings, actions and names, Regular for
+running text, Medium for large figures. The reference's lettering is a
+proprietary humanist sans in the Gill Sans tradition (it is not a serif);
+Proza Libre was the closest of 40 open-licence families compared against the
+reference's own words. A variant fixes
 family, size, line height and tracking together; use `<Text variant>` and
 never set a size by hand.
 
@@ -82,7 +86,7 @@ Three behaviours are built in and must not be worked around:
 - **Other scripts.** For Hindi, Marathi, Bengali, Tamil, Telugu, Kannada and
   Japanese the whole ramp switches to the phone's own font with looser lines
   (`needsSystemFont(language)` chooses `script="system"` on the
-  `ThemeProvider`). Headings lose the serif there and stay bold.
+  `ThemeProvider`). Headings stay bold.
 - **Figures read left to right** in every language (`ltr()`, used by `Money`
   and row values), so a minus sign never jumps to the other end.
 
@@ -149,7 +153,7 @@ use it.
   colour and shows a spinner.
 - **Adding a transaction** is a single-page form. `CardStack` (one question
   per card) is for first-run setup and other guided, once-only flows.
-- **Empty:** a whole empty screen gets `EmptyState` (emblem, serif title, a
+- **Empty:** a whole empty screen gets `EmptyState` (emblem, bold title, a
   sentence, the first step). One empty section among others gets the
   `compact` version so the screen keeps its shape.
 - **Loading:** `Skeleton` in the shape of what is coming. `Spinner` only for

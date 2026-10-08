@@ -10,14 +10,14 @@ import { View } from 'react-native';
 export type HighlightProps = {
   icon: IconName;
   color?: IconCircleProps['color'];
-  /** The finding, as one short sentence. Set in the serif. */
+  /** The finding, as one short sentence. Set as a title. */
   statement: string;
   /** The figure or comparison that backs it up. */
   detail?: string;
   onPress?: () => void;
 };
 
-/** A finding worth stopping for: a coloured mark, a serif sentence and the number behind it, on a white card. */
+/** A finding worth stopping for: a coloured mark, a bold sentence and the number behind it, on a white card. */
 export function Highlight({ icon, color = 'green', statement, detail, onPress }: HighlightProps) {
   const { space } = useTheme();
   return (

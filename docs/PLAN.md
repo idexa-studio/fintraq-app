@@ -101,6 +101,7 @@ The owner handed these to Claude on 2026-10-09 ("you decide"). Each is recorded 
 - [x] B1.07 Home hero follows the reference's account card: white card, balance, two split actions, with quick actions as tiles below. A green hero with round shortcut buttons was tried on 2026-10-09 and rejected by the owner as off-aesthetic; do not reintroduce round black action buttons
 - [x] B1.08 Currency is chosen from a dropdown (`Select`) anchored to the chip on the balance card, not by cycling
 - [x] B1.09 Insights widgets added at the owner's request: change against last period, in against out, forecast bar, share kept, figures at a glance, largest expenses, weekday rhythm, month calendar, logging habit, category ring, ranked bars for categories and people
+- [x] B1.10 Typeface changed to Proza Libre throughout (owner was not convinced by Lora and Hanken Grotesk, 2026-10-09). The reference's headings are the bold of a Gill-style humanist sans, not a serif; sizes recalibrated to the reference's measured widths
 
 ### B2. Measured match against the reference
 - [x] B2.01 Measure the rendered components on the phone in points and set them beside the reference's (the phone is 360dp wide, so sizes are compared in points, not by overlay)

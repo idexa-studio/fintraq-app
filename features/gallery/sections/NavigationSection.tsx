@@ -35,7 +35,7 @@ export function NavigationSection() {
             <Header title="Categories" onBack={() => {}} right={<IconButton icon="plus" accessibilityLabel="Add category" />} />
           </View>
         </Specimen>
-        <Specimen name="Task" note="Sheets and step flows: serif title, close on the right, hairline below.">
+        <Specimen name="Task" note="Sheets and step flows: bold title, close on the right, hairline below.">
           <View style={bleed}>
             <Header task title="Add expense" onClose={() => {}} />
           </View>
