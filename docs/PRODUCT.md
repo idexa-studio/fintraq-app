@@ -142,6 +142,27 @@ The monthly and yearly products were created before the app's public release
 and disabled before anyone could buy them, so there are no existing
 subscribers to carry over.
 
+## Notifications
+
+What Fintraq says outside the app is held to one voice. The words live in
+`shared/i18n/copy/notifications.en.ts`; the list of every notification, with
+when it is sent and what a tap opens, is in `docs/SCREENS.md`.
+
+- **The title says what it is about**, in about 24 characters: a collapsed
+  notification is cut there. Who and how much go in a loan's title; when goes
+  in the body.
+- **The body is one useful sentence**, and where there is something to do it
+  says what.
+- **Nothing shouts.** No exclamation marks, no capitals for emphasis, no
+  emoji, no "action required".
+- **Nothing is claimed that the records do not back.** No streaks, no
+  "runway", no praise. A reminder may say "Yesterday is missing" or "12
+  entries this week" because the app counted; a test holds every line to this
+  voice.
+- **Quiet is a choice.** A day already recorded gets no reminder. A backup
+  that worked says nothing. After a week without an entry the reminder stops
+  counting the days and invites a fresh start, once a week, not daily.
+
 ## Ideas considered and not taken
 
 | Idea | Why not (now) |

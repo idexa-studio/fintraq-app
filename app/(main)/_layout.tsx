@@ -3,7 +3,7 @@ import React from 'react';
 import { SHEET_ROUTE } from '@/design';
 import { useLauncherShortcuts } from '@/src/hooks/useLauncherShortcuts';
 import { useOnboarding } from '@/features/onboarding';
-import { ErrorBoundary } from '@/features/shell';
+import { ErrorBoundary, useNotificationRouting } from '@/features/shell';
 
 export default function StackLayout() {
   const { hasOnboarded } = useOnboarding();
@@ -33,8 +33,12 @@ export default function StackLayout() {
   );
 }
 
-/** Registers and routes the launcher's long-press shortcuts; only mounted once onboarded. */
+/**
+ * Registers and routes the launcher's long-press shortcuts and opens the screen a tapped
+ * notification is about; only mounted once onboarded.
+ */
 function LauncherShortcuts() {
   useLauncherShortcuts();
+  useNotificationRouting();
   return null;
 }

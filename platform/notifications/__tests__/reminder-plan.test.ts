@@ -72,6 +72,8 @@ describe('planLoanReminders', () => {
     id: 7,
     type: 'lend',
     personName: 'Sam',
+    outstanding: 300,
+    currency: 'USD',
     dueDate: '2026-10-10',
     emiReminderEnabled: true,
     emiReminderDay: 5,

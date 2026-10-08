@@ -2,14 +2,8 @@ import * as Notifications from 'expo-notifications';
 import notifee, { AndroidImportance as NotifeeAndroidImportance, AndroidNotificationSetting } from 'react-native-notify-kit';
 import { Platform } from 'react-native';
 import { LoggerService } from '@/shared/logging/logger';
-import i18n from '@/shared/i18n';
-
-const REMINDER_KEYS = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8'] as const;
-
-const pickReminder = () => {
-  const key = REMINDER_KEYS[Math.floor(Math.random() * REMINDER_KEYS.length)];
-  return { title: i18n.t(`notifications.${key}.title`), body: i18n.t(`notifications.${key}.body`) };
-};
+import { backupText, channelText, NOTIFICATION_PATHS } from '@/platform/notifications/notification-copy';
+import type { NotificationText } from '@/platform/notifications/notification-copy';
 
 export const CLOUD_BACKUP_NOTIFICATION_ID = 'cloud_backup_status';
 /**
@@ -41,7 +35,7 @@ function ensureBackupChannel(): Promise<unknown> {
     backupChannelPromise = notifee
       .createChannel({
         id: BACKUP_CHANNEL_ID,
-        name: i18n.t('notifications.channelBackup'),
+        ...channelText.backup(),
         importance: NotifeeAndroidImportance.LOW,
       })
       .catch((e) => {
@@ -52,14 +46,23 @@ function ensureBackupChannel(): Promise<unknown> {
   return backupChannelPromise;
 }
 
-/**
- * NotificationService: Centralized infrastructure for local device reminders.
- * 
- * DESIGN PHILOSOPHY:
- * 1. Single Source of Truth: All OS-level notification calls happen here.
- * 2. High Reliability: Handles permission checks and re-scheduling gracefully.
- * 3. Minimal Impact: Cancels all previous schedules before creating new ones to avoid duplicates.
- */
+/** A backup notification that stays until read, and opens Backup when tapped. */
+async function presentBackupNotice({ title, body }: NotificationText): Promise<void> {
+  try {
+    await ensureBackupChannel();
+    await notifee.displayNotification({
+      id: CLOUD_BACKUP_NOTIFICATION_ID,
+      title,
+      body,
+      data: { path: NOTIFICATION_PATHS.backup },
+      android: { channelId: BACKUP_CHANNEL_ID, smallIcon: SMALL_ICON, autoCancel: true, pressAction: { id: 'default' } },
+    });
+  } catch (e) {
+    LoggerService.warn('NOTIFICATION', 'Failed to present backup notification', e);
+  }
+}
+
+/** Every call to the system's notification APIs goes through here; the words come from notification-copy. */
 export const NotificationService = {
   /**
    * Configures how the app should handle notifications while foregrounded.
@@ -77,7 +80,8 @@ export const NotificationService = {
     if (Platform.OS === 'android') {
       try {
         await Notifications.setNotificationChannelAsync(REMINDERS_CHANNEL_ID, {
-          name: i18n.t('notifications.channelReminders'),
+          // Renaming a channel keeps the user's choices for it; only a new id would reset them.
+          ...channelText.reminders(),
           importance: Notifications.AndroidImportance.MAX,
           sound: REMINDER_SOUND,
           vibrationPattern: [0, 250, 250, 250],
@@ -138,38 +142,26 @@ export const NotificationService = {
     await notifee.openAlarmPermissionSettings().catch(() => {});
   },
 
-  /**
-   * triggerInstantNotification: Fires a sample notification immediately.
-   * Useful for manual QA/Dev verification of branding and behavior.
-   */
-  async triggerInstantNotification() {
-    const message = pickReminder();
-
+  /** Posts a reminder at once, as it would arrive. For reading a line on a real lock screen. */
+  async sendNow({ title, body, path }: NotificationText & { path: string }) {
     await Notifications.scheduleNotificationAsync({
-      content: {
-        title: `[TEST] ${message.title}`,
-        body: message.body,
-        sound: REMINDER_SOUND,
-      },
+      content: { title, body, sound: REMINDER_SOUND, data: { path } },
       trigger: { channelId: REMINDERS_CHANNEL_ID }, // no date: fires immediately
     });
   },
 
-  /**
-   * presentBackupProgressNotification: Shows a sticky OS notification with native Android progress bar & text progress via react-native-notify-kit.
-   */
+  /** The ongoing notification while a backup runs: what it is doing, and how far along. */
   async presentBackupProgressNotification(progress: number, stageText: string) {
     // iOS has no ongoing/progress notification style — each update would post a fresh banner.
     if (Platform.OS !== 'android') return;
     try {
       await ensureBackupChannel();
       const clampedProgress = Math.min(100, Math.max(0, Math.round(progress)));
-      const cleanStage = stageText || i18n.t('notifications.syncingStage');
-
       await notifee.displayNotification({
         id: CLOUD_BACKUP_NOTIFICATION_ID,
-        title: i18n.t('notifications.backupSyncing'),
-        body: cleanStage,
+        title: backupText.running(),
+        body: stageText,
+        data: { path: NOTIFICATION_PATHS.backup },
         android: {
           channelId: BACKUP_CHANNEL_ID,
           smallIcon: SMALL_ICON,
@@ -188,95 +180,18 @@ export const NotificationService = {
     }
   },
 
-  /**
-   * presentBackupStartNotification: Alias for 5% initial progress notification.
-   */
-  async presentBackupStartNotification() {
-    await this.presentBackupProgressNotification(5, i18n.t('notifications.startingBackup'));
-  },
+  /** A backup failed for a reason that may pass. Left in place: a failure nobody saw is not handled. */
+  presentBackupFailedNotification: () => presentBackupNotice(backupText.failed()),
 
-  /**
-   * presentBackupCompleteNotification: Shows OS push when background backup finishes.
-   */
-  async presentBackupCompleteNotification() {
-    try {
-      await ensureBackupChannel();
-      await notifee.displayNotification({
-        id: CLOUD_BACKUP_NOTIFICATION_ID,
-        title: i18n.t('notifications.backupComplete'),
-        body: i18n.t('notifications.backupCompleteBody'),
-        android: {
-          channelId: BACKUP_CHANNEL_ID,
-          smallIcon: SMALL_ICON,
-          autoCancel: true,
-          pressAction: { id: 'default' },
-        },
-      });
-    } catch (e) {
-      LoggerService.warn('NOTIFICATION', 'Failed to present backup complete notification', e);
-    }
-  },
+  /** Backup stopped because the Google session ended: retrying cannot fix it, so say what will. */
+  presentBackupReconnectNotification: () => presentBackupNotice(backupText.reconnect()),
 
-  /**
-   * presentBackupFailedNotification: Shows OS push if background backup fails.
-   */
-  async presentBackupFailedNotification() {
-    try {
-      await ensureBackupChannel();
-      await notifee.displayNotification({
-        id: CLOUD_BACKUP_NOTIFICATION_ID,
-        title: i18n.t('notifications.backupFailed'),
-        body: i18n.t('notifications.backupFailedBody'),
-        android: {
-          channelId: BACKUP_CHANNEL_ID,
-          smallIcon: SMALL_ICON,
-          autoCancel: true,
-          pressAction: { id: 'default' },
-        },
-      });
-    } catch (e) {
-      LoggerService.warn('NOTIFICATION', 'Failed to present backup failed notification', e);
-    }
-  },
-
-  /**
-   * presentBackupReconnectNotification: Backup stopped because the Google session ended —
-   * retrying can't fix it, so tell the user the one action that will.
-   */
-  async presentBackupReconnectNotification() {
-    try {
-      await ensureBackupChannel();
-      await notifee.displayNotification({
-        id: CLOUD_BACKUP_NOTIFICATION_ID,
-        title: i18n.t('notifications.backupReconnect'),
-        body: i18n.t('notifications.backupReconnectBody'),
-        android: {
-          channelId: BACKUP_CHANNEL_ID,
-          smallIcon: SMALL_ICON,
-          autoCancel: true,
-          pressAction: { id: 'default' },
-        },
-      });
-    } catch (e) {
-      LoggerService.warn('NOTIFICATION', 'Failed to present backup reconnect notification', e);
-    }
-  },
-
-  /**
-   * dismissBackupNotification: Clears the cloud backup status notification.
-   */
+  /** Takes the backup notification away. A backup that worked says nothing: it just goes. */
   async dismissBackupNotification() {
     try {
       await notifee.cancelNotification(CLOUD_BACKUP_NOTIFICATION_ID).catch(() => {});
     } catch {
       // Ignore dismiss error
     }
-  },
-
-  /**
-   * cancelAllReminders: Stops all future notifications.
-   */
-  async cancelAllReminders() {
-    await Notifications.cancelAllScheduledNotificationsAsync();
   },
 };

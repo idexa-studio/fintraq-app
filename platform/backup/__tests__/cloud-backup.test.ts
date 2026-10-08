@@ -17,7 +17,6 @@ jest.mock('@/shared/logging/logger', () => ({
 jest.mock('@/platform/notifications/notifications', () => ({
   NotificationService: {
     presentBackupProgressNotification: jest.fn(async () => {}),
-    presentBackupCompleteNotification: jest.fn(async () => {}),
     presentBackupFailedNotification: jest.fn(async () => {}),
     presentBackupReconnectNotification: jest.fn(async () => {}),
     dismissBackupNotification: jest.fn(async () => {}),
@@ -64,7 +63,8 @@ describe('runCloudBackup', () => {
     expect(DatabaseBackupService.exportBackupData).toHaveBeenCalledTimes(1);
     expect(upload).toHaveBeenCalledWith('{"payload":true}', 'cached-id', expect.any(Function));
     expect(BackupPreferences.recordSuccessfulBackup).toHaveBeenCalledWith(META, expect.any(Number));
-    expect(NotificationService.presentBackupCompleteNotification).toHaveBeenCalled();
+    // A backup that worked says nothing: the progress line just goes.
+    expect(NotificationService.dismissBackupNotification).toHaveBeenCalled();
     expect(getBackupState()).toMatchObject({ operation: null, lastCompleted: { operation: 'backup', meta: META } });
   });
 

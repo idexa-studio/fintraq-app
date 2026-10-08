@@ -16,12 +16,13 @@ export type CloudBackupOptions = {
 
 const MAX_UPLOAD_ATTEMPTS = 2;
 const RETRY_DELAY_MS = 3_000;
-const COMPLETE_NOTIFICATION_DISMISS_MS = 3_000;
-// Android rate-limits notification updates per app and silently drops the excess — which can
-// include the final "complete" update. Only repost when progress moves meaningfully.
+// Android rate-limits notification updates per app and silently drops the excess. Only repost
+// when progress moves meaningfully.
 const NOTIFICATION_PROGRESS_STEP = 5;
 
 const PROGRESS = { preparing: 5, uploadStart: 25, uploadSpan: 65, finalizing: 95, complete: 100 } as const;
+
+const stage = i18n.getFixedT(null, 'backup');
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -46,12 +47,12 @@ async function uploadWithRetry(payload: string, knownFileId: string | undefined,
     try {
       return await GoogleDriveService.uploadBackup(payload, knownFileId, (fraction) => {
         const pct = Math.round(fraction * 100);
-        report(PROGRESS.uploadStart + fraction * PROGRESS.uploadSpan, i18n.t('backup.stageUploadingPct', { pct }));
+        report(PROGRESS.uploadStart + fraction * PROGRESS.uploadSpan, stage('stage.uploadingPct', { pct }));
       });
     } catch (e) {
       if (attempt >= MAX_UPLOAD_ATTEMPTS || !isTransientDriveError(e)) throw e;
       LoggerService.info('CLOUD_BACKUP', `[${tag}] Transient upload failure, retrying (${attempt + 1}/${MAX_UPLOAD_ATTEMPTS})`, e);
-      report(PROGRESS.uploadStart, i18n.t('backup.stageUploadingDrive'), true);
+      report(PROGRESS.uploadStart, stage('stage.uploading'), true);
       await sleep(RETRY_DELAY_MS);
     }
   }
@@ -64,21 +65,21 @@ async function execute({ trigger, notifyOnFailure = true }: CloudBackupOptions):
   let result: CloudBackupFileMeta | undefined;
 
   try {
-    report(PROGRESS.preparing, i18n.t('backup.stagePreparing'), true);
+    report(PROGRESS.preparing, stage('stage.preparing'), true);
     const [payload, cached] = await Promise.all([
       DatabaseBackupService.exportBackupData(),
       BackupPreferences.getCachedBackupMeta(),
     ]);
 
-    report(PROGRESS.uploadStart, i18n.t('backup.stageUploadingDrive'), true);
+    report(PROGRESS.uploadStart, stage('stage.uploading'), true);
     const uploaded = await uploadWithRetry(payload, cached?.id, report, tag);
 
-    report(PROGRESS.finalizing, i18n.t('backup.stageFinalizing'), true);
+    report(PROGRESS.finalizing, stage('stage.finishing'), true);
     await BackupPreferences.recordSuccessfulBackup(uploaded, startedAt);
-    reportProgress(PROGRESS.complete, i18n.t('backup.stageComplete'));
+    reportProgress(PROGRESS.complete, stage('stage.done'));
 
-    await NotificationService.presentBackupCompleteNotification();
-    setTimeout(() => void NotificationService.dismissBackupNotification(), COMPLETE_NOTIFICATION_DISMISS_MS);
+    // A backup that worked says nothing: the progress line simply goes.
+    await NotificationService.dismissBackupNotification();
 
     LoggerService.info('CLOUD_BACKUP', `[${tag}] Completed (fileId: ${uploaded.id}, size: ${uploaded.size}, ${Date.now() - startedAt}ms)`);
     result = uploaded;
@@ -107,7 +108,7 @@ async function execute({ trigger, notifyOnFailure = true }: CloudBackupOptions):
  */
 export function runCloudBackup(options: CloudBackupOptions): Promise<CloudBackupFileMeta> {
   // Claimed synchronously — before any await — so racing callers can't both start.
-  if (!tryBeginOperation('backup', i18n.t('backup.stagePreparing'))) {
+  if (!tryBeginOperation('backup', stage('stage.preparing'))) {
     return Promise.reject(new BackupInProgressError());
   }
   return execute(options);

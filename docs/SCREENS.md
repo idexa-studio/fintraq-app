@@ -156,6 +156,39 @@ file that redirects, for good.
 | `/analytics` | `/insights` |
 | `/backup`, `/export` | `/settings/backup`, `/settings/export` |
 
+## Notifications
+
+Every notification, when it is sent and what a tap opens. The same list, with
+its wording, is in Developer under "Read every notification", where each can
+be sent to the phone. The voice is in `docs/PRODUCT.md`.
+
+| Notification | Sent when | A tap opens | Channel |
+| --- | --- | --- | --- |
+| Daily reminder | Once a day at the chosen time (8 PM unless changed), 14 days kept scheduled; none on a day already recorded | `/add?kind=expense` | Reminders (`reminders_chime`) |
+| Loan due | The chosen number of days before a loan's due date, at its time | `/loans/[id]` | Reminders |
+| Loan payment day | The chosen day of each month, six months kept scheduled | `/loans/[id]` | Reminders |
+| Backing up | While a Drive backup runs, with the stage and a progress bar. Goes by itself when the backup works (Android only) | `/backup` | Backup (`backup_status`) |
+| Backup did not finish | A backup failed for a reason that may pass | `/backup` | Backup |
+| Reconnect Google Drive | A backup failed because the Google session ended | `/backup` | Backup |
+
+The daily reminder carries one of these lines, the most specific that is true
+of the day (`platform/notifications/daily-line.ts`):
+
+| Line | When |
+| --- | --- |
+| Your first entry | Nothing has ever been recorded |
+| "Priya owes you $300.00" | A loan with a person is due tomorrow and has no reminder of its own |
+| It has been a while | A week without an entry, then once a week while it stays quiet |
+| Last day of the month, with the month's count | The month ends today |
+| The month starts today | The first of the month |
+| Yesterday is missing | Nothing was added yesterday |
+| Quiet since (weekday) | Three to six days without an entry |
+| The week's count | Sunday, with entries since Monday |
+| One line per weekday | Otherwise |
+
+A reminder's text is written when it is scheduled, days ahead, and stays true
+because every change to the records schedules them all again.
+
 ## Flows
 
 ### First run

@@ -53,6 +53,19 @@ export default {
       unknown: 'Something went wrong. Everything on this phone is as it was. Try again in a moment.',
     },
   },
+  // What the work is doing right now: on the Backup screen, and in the notification while it runs.
+  stage: {
+    preparing: 'Getting your records ready',
+    uploading: 'Sending to Google Drive',
+    uploadingPct: 'Sending to Google Drive · {{pct}}%',
+    finishing: 'Finishing up',
+    done: 'Backed up',
+    locating: 'Looking for your backup',
+    downloading: 'Fetching your backup',
+    downloadingPct: 'Fetching your backup · {{pct}}%',
+    restoring: 'Putting your records back',
+    restored: 'Restored',
+  },
   running: {
     backup: 'Backing up · {{percent}}%',
     restore: 'Restoring · {{percent}}%',

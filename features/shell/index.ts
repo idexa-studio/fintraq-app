@@ -6,4 +6,5 @@ export { DatabaseGate } from './DatabaseGate';
 export { ErrorBoundary } from './ErrorBoundary';
 export { ForceUpdateScreen } from './ForceUpdateScreen';
 export { useLeaveGuard } from './useLeaveGuard';
+export { useNotificationRouting } from './useNotificationRouting';
 export { addPathFromLegacy, editPathFromLegacy, loanFormPathFromLegacy, personPathFromLegacy } from './legacy-paths';

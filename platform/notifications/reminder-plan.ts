@@ -11,6 +11,9 @@ export type LoanReminderSource = {
   id: number;
   type: 'lend' | 'borrow';
   personName: string | null;
+  /** What is still to be repaid, in `currency`. */
+  outstanding: number;
+  currency: string;
   dueDate: string | null;
   emiReminderEnabled: boolean;
   emiReminderDay: number | null;
@@ -22,8 +25,11 @@ export type LoanReminderSource = {
 
 export type PlannedReminder =
   | { kind: 'daily'; id: string; date: Date }
-  | { kind: 'emi'; id: string; date: Date; loanType: 'lend' | 'borrow'; personName: string }
-  | { kind: 'due'; id: string; date: Date; loanType: 'lend' | 'borrow'; personName: string; daysBefore: number };
+  | ({ kind: 'emi'; id: string; date: Date } & LoanSubject)
+  | ({ kind: 'due'; id: string; date: Date; daysBefore: number } & LoanSubject);
+
+/** The loan a reminder is about, as its text needs it. */
+export type LoanSubject = { loanId: number; loanType: 'lend' | 'borrow'; personName: string | null; outstanding: number; currency: string };
 
 /** Identifiers this app owns; the sync cancels exactly these before rescheduling. */
 export const REMINDER_ID_PREFIXES = ['daily_reminder', 'loan_emi_', 'loan_due_'] as const;
@@ -106,18 +112,18 @@ export function dueReminderDate(dueDate: string, daysBefore: number, time: Clock
 export function planLoanReminders(now: Date, loans: readonly LoanReminderSource[]): PlannedReminder[] {
   const planned: PlannedReminder[] = [];
   for (const loan of loans) {
-    const personName = loan.personName ?? '';
+    const subject: LoanSubject = { loanId: loan.id, loanType: loan.type, personName: loan.personName, outstanding: loan.outstanding, currency: loan.currency };
     const emiTime = parseClock(loan.emiReminderTime);
     if (loan.emiReminderEnabled && loan.emiReminderDay != null && emiTime) {
       for (const date of monthlyDates(now, loan.emiReminderDay, emiTime)) {
-        planned.push({ kind: 'emi', id: `loan_emi_${loan.id}_${date.getFullYear()}_${date.getMonth()}`, date, loanType: loan.type, personName });
+        planned.push({ kind: 'emi', id: `loan_emi_${loan.id}_${date.getFullYear()}_${date.getMonth()}`, date, ...subject });
       }
     }
     // Loans saved before the due time was stored fall back to the EMI time, then the morning.
     const dueTime = parseClock(loan.dueReminderTime) ?? emiTime ?? DEFAULT_DUE_TIME;
     if (loan.dueReminderEnabled && loan.dueDate && loan.dueReminderDaysBefore != null) {
       const date = dueReminderDate(loan.dueDate, loan.dueReminderDaysBefore, dueTime, now);
-      if (date) planned.push({ kind: 'due', id: `loan_due_${loan.id}`, date, loanType: loan.type, personName, daysBefore: loan.dueReminderDaysBefore });
+      if (date) planned.push({ kind: 'due', id: `loan_due_${loan.id}`, date, daysBefore: loan.dueReminderDaysBefore, ...subject });
     }
   }
   return planned;

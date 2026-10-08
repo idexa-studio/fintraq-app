@@ -9,7 +9,7 @@ import { StyleSheet, View } from 'react-native';
 
 /** The last step of the way in: the offer of a daily reminder, which needs the system's permission. */
 export function ReminderScreen() {
-  const { t } = useTranslation('firstRun');
+  const { t } = useTranslation(['firstRun', 'notifications']);
   const styles = useStyles(createStyles);
   const router = useRouter();
   const { updateProfile } = useSettings();
@@ -46,13 +46,13 @@ export function ReminderScreen() {
       }
     >
       <View style={styles.centre}>
-        {/* The reminder as it will arrive, rather than a picture of a bell. */}
+        {/* The reminder as it will arrive, in one of its own lines, rather than a picture of a bell. */}
         <Card style={styles.sample} accessibilityLabel={t('reminder.sample.label')}>
           <IconCircle icon="bell" color="green" />
           <View style={styles.sampleText}>
             <Text variant="caption" tone="muted">{t('reminder.sample.app')}</Text>
-            <Text variant="bodyStrong">{t('reminder.sample.title')}</Text>
-            <Text variant="callout">{t('reminder.sample.body')}</Text>
+            <Text variant="bodyStrong">{t('notifications:daily.weekday.tue.title')}</Text>
+            <Text variant="callout">{t('notifications:daily.weekday.tue.body')}</Text>
           </View>
         </Card>
         <Message title={t('reminder.title')} body={t('reminder.body')} />
