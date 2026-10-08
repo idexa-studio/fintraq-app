@@ -1,28 +1,24 @@
 import type { TextStyle } from 'react-native';
 
 /**
- * Two families, as in the reference: a bold serif for headings and a humanist
- * sans for everything else. The reference faces are proprietary; these are the
- * closest open-licence matches by measured letter shape and width (Lora and
- * Hanken Grotesk). Keys are the names the fonts are loaded under.
+ * One family throughout, as in the reference, whose lettering is a humanist
+ * sans in the Gill Sans tradition: closed two-storey g, classical capitals,
+ * headings in the bold with slightly flared strokes. That face is
+ * proprietary; Proza Libre is the closest open-licence family in letter shape
+ * and proportion, chosen by comparing 40 candidates against the reference's
+ * own words. Keys are the names the fonts are loaded under.
  */
 export const FONTS = {
-  serifBold: 'Lora_700Bold',
-  serifSemiBold: 'Lora_600SemiBold',
-  sansRegular: 'HankenGrotesk_400Regular',
-  sansMedium: 'HankenGrotesk_500Medium',
-  sansSemiBold: 'HankenGrotesk_600SemiBold',
-  sansBold: 'HankenGrotesk_700Bold',
+  regular: 'ProzaLibre_400Regular',
+  medium: 'ProzaLibre_500Medium',
+  bold: 'ProzaLibre_700Bold',
 } as const;
 
 /** Font files, keyed by the family name each is loaded under. */
 export const FONT_ASSETS = {
-  [FONTS.serifBold]: require('@/assets/fonts/Lora/Lora_700Bold.ttf'),
-  [FONTS.serifSemiBold]: require('@/assets/fonts/Lora/Lora_600SemiBold.ttf'),
-  [FONTS.sansRegular]: require('@/assets/fonts/HankenGrotesk/HankenGrotesk_400Regular.ttf'),
-  [FONTS.sansMedium]: require('@/assets/fonts/HankenGrotesk/HankenGrotesk_500Medium.ttf'),
-  [FONTS.sansSemiBold]: require('@/assets/fonts/HankenGrotesk/HankenGrotesk_600SemiBold.ttf'),
-  [FONTS.sansBold]: require('@/assets/fonts/HankenGrotesk/HankenGrotesk_700Bold.ttf'),
+  [FONTS.regular]: require('@/assets/fonts/ProzaLibre/ProzaLibre_400Regular.ttf'),
+  [FONTS.medium]: require('@/assets/fonts/ProzaLibre/ProzaLibre_500Medium.ttf'),
+  [FONTS.bold]: require('@/assets/fonts/ProzaLibre/ProzaLibre_700Bold.ttf'),
 };
 
 export type TypeStyle = Required<Pick<TextStyle, 'fontSize' | 'lineHeight' | 'letterSpacing'>> &
@@ -38,41 +34,40 @@ const v = (fontFamily: string, fontSize: number, lineHeight: number, letterSpaci
 });
 
 /**
- * The type ramp. Each size was set so that the reference's own strings, drawn
- * in these faces on a phone, come out the same width as in the reference
- * (within 2%; see the gallery's `match` page). Line heights follow the
- * reference's line pitch, which is tight: about 1.1 of the size.
+ * The type ramp. Each size is the one at which the reference's own strings,
+ * set in this family, come out the same width as in the reference. Line
+ * heights follow the reference's line pitch, which is tight.
  */
 export const TYPE = {
-  /** Serif. The one headline of a full-screen message. */
-  display: v(FONTS.serifBold, 23, 26),
-  /** Serif. Section, question, sheet and dialog titles. */
-  title: v(FONTS.serifBold, 19, 23),
+  /** The one headline of a full-screen message. */
+  display: v(FONTS.bold, 21, 26),
+  /** Section, question, sheet and dialog titles. */
+  title: v(FONTS.bold, 18, 23),
   /** Button labels and the actions at the foot of a card. */
-  action: v(FONTS.sansBold, 18, 21),
+  action: v(FONTS.bold, 16, 21),
   /** Intro copy under a headline, choice labels, step rows. */
-  lead: v(FONTS.sansRegular, 18, 19),
+  lead: v(FONTS.regular, 16.5, 20),
   /** The greeting or screen name in the header. */
-  leadStrong: v(FONTS.sansBold, 18, 21),
-  body: v(FONTS.sansRegular, 15.5, 17),
-  bodyStrong: v(FONTS.sansBold, 16, 18),
+  leadStrong: v(FONTS.bold, 16.5, 21),
+  body: v(FONTS.regular, 14.5, 18),
+  bodyStrong: v(FONTS.bold, 14.5, 18),
   /** Descriptions and field labels. */
-  callout: v(FONTS.sansRegular, 15, 17),
-  calloutStrong: v(FONTS.sansBold, 15, 17),
+  callout: v(FONTS.regular, 13.5, 17),
+  calloutStrong: v(FONTS.bold, 13.5, 17),
   /** Chips and small notes. */
-  caption: v(FONTS.sansRegular, 12.5, 15),
-  captionStrong: v(FONTS.sansBold, 12.5, 15),
+  caption: v(FONTS.regular, 11.5, 15),
+  captionStrong: v(FONTS.bold, 11.5, 15),
   /** Tab bar labels. */
-  tab: v(FONTS.sansRegular, 11.5, 13),
-  tabActive: v(FONTS.sansBold, 11.5, 13),
+  tab: v(FONTS.regular, 10.5, 13),
+  tabActive: v(FONTS.bold, 10.5, 13),
   /** Badge text, set in capitals. */
-  badge: { ...v(FONTS.sansBold, 11.5, 13, 0.3), textTransform: 'uppercase' },
+  badge: { ...v(FONTS.bold, 10.5, 13, 0.3), textTransform: 'uppercase' },
   /** A screen's headline figure. */
-  amountHero: v(FONTS.sansMedium, 34, 38),
+  amountHero: v(FONTS.medium, 30, 38),
   /** The balance on an account card. */
-  amountLarge: v(FONTS.sansMedium, 24, 28),
+  amountLarge: v(FONTS.medium, 21, 28),
   /** Figures in rows. */
-  amount: v(FONTS.sansBold, 16, 19),
+  amount: v(FONTS.bold, 14.5, 19),
 } as const satisfies Record<string, Variant>;
 
 export type TypeVariant = keyof typeof TYPE;
@@ -120,8 +115,7 @@ const weightOf = (family: string): TextStyle['fontWeight'] => (family.includes('
 
 /**
  * The ramp drawn in the phone's own font: same sizes, weight carried as a
- * weight instead of a font file, looser lines. Headings lose the serif, which
- * the system does not offer for every script; they stay bold.
+ * weight instead of a font file, looser lines.
  */
 export const TYPE_SYSTEM: TypeRamp = Object.fromEntries(
   (Object.entries(TYPE) as [TypeVariant, Variant][]).map(([name, style]) => [

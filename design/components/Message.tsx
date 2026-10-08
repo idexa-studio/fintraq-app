@@ -13,7 +13,7 @@ export type MessageProps = {
 };
 
 /**
- * A centred statement: picture, serif headline, a sentence or two. Used for a
+ * A centred statement: picture, bold headline, a sentence or two. Used for a
  * step that asks for one thing, for an empty list, and for a result.
  */
 export function Message({ illustration, title, body, children }: MessageProps) {

@@ -21,7 +21,7 @@ export function FeedbackSection() {
   return (
     <>
       <Section title="Messages">
-        <Specimen name="Message" note="One thing at a time: picture, serif headline, a sentence. Also the empty state.">
+        <Specimen name="Message" note="One thing at a time: picture, bold headline, a sentence. Also the empty state.">
           <View style={{ paddingVertical: space.xl }}>
             <Message
               illustration={<Emblem icon="bell" />}

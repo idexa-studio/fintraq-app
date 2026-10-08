@@ -12,7 +12,7 @@ export type SectionProps = {
   children: React.ReactNode;
 };
 
-/** A serif title and the content it names. */
+/** A bold title and the content it names. */
 export function Section({ title, actionLabel, onAction, children }: SectionProps) {
   const { size, space } = useTheme();
   return (
