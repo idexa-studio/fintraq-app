@@ -1,4 +1,4 @@
-import { FeatureTile, Header, IconButton, Screen, Section, useTheme } from '@/design';
+import { FeatureTile, Header, IconButton, Screen, Section, Text, useTheme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { BalanceCard } from '@/features/home/components/BalanceCard';
 import { AccountList, PeopleList, RecentList } from '@/features/home/components/HomeLists';
@@ -8,6 +8,7 @@ import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
 import { useSettings } from '@/features/settings';
 import { useTransactions } from '@/features/transactions';
 import { hasPossibleTransfer } from '@/shared/calc/transfers';
+import { currencyName } from '@/shared/currency/currencies';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,13 +26,13 @@ export function HomeScreen() {
   const { profile } = useSettings();
 
   const { data: accounts, isPending: accountsPending } = useAccounts();
-  const { data: transactions, isPending: transactionsPending } = useTransactions(RECENT_SHOWN);
   const balances = useHomeBalances(accounts);
   const { currency } = balances;
+  // Home is a view of one currency: recent activity is what moved through that currency's accounts.
+  const { data: transactions, isPending: transactionsPending } = useTransactions(RECENT_SHOWN, { accountIds: balances.accounts.map((a) => a.id) });
   const { data: people, isPending: peoplePending } = useDashboardPersons(currency);
 
-  // The accounts in the currency on show come first, so switching currency brings them into view.
-  const shownAccounts = accounts ? [...accounts].sort((a, b) => Number(b.currency === currency) - Number(a.currency === currency)).slice(0, ACCOUNTS_SHOWN) : undefined;
+  const shownAccounts = accounts ? balances.accounts.slice(0, ACCOUNTS_SHOWN) : undefined;
   // The same rule the transfer form uses, so the tile never opens a form that cannot be completed.
   const canTransfer = hasPossibleTransfer(accounts ?? []);
   const name = profile.name.trim().split(/\s+/)[0];
@@ -52,6 +53,7 @@ export function HomeScreen() {
     >
       <Section title={t('balance.title')}>
         <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('DR')} onAddIncome={() => add('CR')} onOpenAccounts={() => router.push('/accounts')} />
+        {balances.currencies.length > 1 ? <Text variant="callout" tone="muted">{t('balance.scope', { currency: currencyName(currency) })}</Text> : null}
       </Section>
 
       <Section title={t('quick.title')}>

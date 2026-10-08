@@ -25,9 +25,9 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | Phase | What | Tasks | Done | State |
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
-| B | Design sign-off | 56 | 56 | Complete |
+| B | Design sign-off | 57 | 57 | Complete |
 | C | Groundwork: shared, data, platform, shell | 86 | 55 | In progress |
-| D | Screens at parity with the shipped app | 143 | 11 | In progress |
+| D | Screens at parity with the shipped app | 144 | 12 | In progress |
 | E | Pro: three plans and gating | 26 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 22 | 0 |  |
@@ -331,6 +331,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [ ] D3.11 Backup prompt and review prompt at the same moments as today. Needs the Pro and lock state (E2, D1). The shipped rules and their test are in git: `git show 406fcb5:src/features/dashboard/hooks/useDashboardPrompt.ts`
 - [x] D3.12 Hooks on the repositories: `features/home` for summaries, and the accounts, transactions, people, loans and categories hooks in their own features, each used through its index
 - [x] D3.14 Saved colours are drawn as pastels of the same hue, so the black glyph on top stays readable; stored icon names resolve through `resolveIcon`
+- [x] D3.15 The currency switch is a lens over the whole of Home: balance, this month, accounts, recent and people all show the chosen currency only, and a line under the card says so when more than one currency is held
 - [ ] D3.13 Shared checklist
 
 ### D4. Activity
