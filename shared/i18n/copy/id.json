@@ -1382,20 +1382,28 @@
         "lifetime": "Seumur hidup",
         "yearly": "Tahunan",
         "monthly": "Bulanan",
-        "best": "Paling hemat"
+        "best": "Paling hemat",
+        "was": "Biasanya {{regular}}"
       },
       "notes": {
         "lifetime": "Bayar sekali. Milik Anda selamanya.",
         "lifetimeMonths": "Bayar sekali. Setara {{count}} bulan paket bulanan.",
         "yearly": "Setiap tahun. Batalkan kapan saja.",
         "yearlySaving": "Setiap tahun. Hemat {{percent}}% dibanding bulanan.",
-        "monthly": "Setiap bulan. Batalkan kapan saja."
+        "monthly": "Setiap bulan. Batalkan kapan saja.",
+        "lifetimeOff": "Bayar sekali. Diskon {{percent}}% dari harga biasa {{regular}}.",
+        "yearlyIntro": "{{intro}} di awal, lalu {{price}} setiap tahun.",
+        "monthlyIntro": "{{intro}} di awal, lalu {{price}} setiap bulan.",
+        "yearlyTrial": "Gratis di awal, lalu {{price}} setiap tahun.",
+        "monthlyTrial": "Gratis di awal, lalu {{price}} setiap bulan."
       },
       "buy": {
         "lifetime": "Dapatkan seumur hidup seharga {{price}}",
         "yearly": "Berlangganan {{price}} per tahun",
         "monthly": "Berlangganan {{price}} per bulan",
-        "noPrice": "Dapatkan Fintraq Pro"
+        "noPrice": "Dapatkan Fintraq Pro",
+        "intro": "Mulai dengan {{intro}}",
+        "trial": "Mulai gratis"
       },
       "terms": {
         "lifetime": "Satu kali pembayaran {{price}}. Tidak pernah diperpanjang.",
@@ -1404,7 +1412,11 @@
         "storeAndroid": "Google Play",
         "storeIos": "akun Apple Anda",
         "termsLink": "Ketentuan",
-        "privacyLink": "Privasi"
+        "privacyLink": "Privasi",
+        "yearlyTrial": "Gratis sekarang, lalu {{price}} setiap tahun sampai Anda membatalkan. Batalkan kapan saja di {{store}}.",
+        "monthlyTrial": "Gratis sekarang, lalu {{price}} setiap bulan sampai Anda membatalkan. Batalkan kapan saja di {{store}}.",
+        "yearlyIntro": "{{intro}} sekarang, lalu {{price}} setiap tahun sampai Anda membatalkan. Batalkan kapan saja di {{store}}.",
+        "monthlyIntro": "{{intro}} sekarang, lalu {{price}} setiap bulan sampai Anda membatalkan. Batalkan kapan saja di {{store}}."
       },
       "restore": "Pulihkan pembelian",
       "included": {

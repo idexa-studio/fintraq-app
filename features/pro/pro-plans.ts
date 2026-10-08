@@ -23,6 +23,20 @@ export type PlanPrice = {
   display: string;
   /** The same price as a number, for the comparisons below only. */
   amount: number;
+  /** The usual price, while the store is selling this plan for less. */
+  regular?: { display: string; amount: number };
+  /** What a subscription costs to begin with, when that is less than its price. Its amount is 0 for a free trial. */
+  intro?: { display: string; amount: number };
+};
+
+/**
+ * "P% off": how far the price now is below the usual one, rounded down so the
+ * claim is never overstated. Undefined when the store has no lower price on.
+ */
+export const discountPercent = (price?: PlanPrice): number | undefined => {
+  if (!price?.regular || price.amount <= 0 || price.regular.amount <= price.amount) return undefined;
+  const off = Math.floor((1 - price.amount / price.regular.amount) * 100);
+  return off > 0 ? off : undefined;
 };
 
 /**

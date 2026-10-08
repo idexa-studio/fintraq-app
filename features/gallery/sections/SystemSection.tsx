@@ -64,6 +64,27 @@ export function SystemSection() {
             </View>
           </View>
         </Specimen>
+        <Specimen name="Plans on offer" note="When the store has a lower price on: the usual price struck through beside the price now, and what a subscription costs to start.">
+          <View style={[frame, { gap: space.md }]}>
+            <Card compact selected style={{ gap: space.xs }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+                <Text variant="bodyStrong" style={{ flex: 1 }}>Lifetime</Text>
+                <Badge label="Best value" />
+                <Money value="$39.99" tone="muted" struck />
+                <Money value="$19.99" />
+              </View>
+              <Text variant="callout" tone="muted">Pay once. 50% off the usual $39.99.</Text>
+            </Card>
+            <Card compact style={{ gap: space.xs }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+                <Text variant="bodyStrong" style={{ flex: 1 }}>Monthly</Text>
+                <Money value="$2.99" />
+              </View>
+              <Text variant="callout" tone="muted">$0.99 to start, then $2.99 every month.</Text>
+            </Card>
+            <Button label="Get lifetime for $19.99" />
+          </View>
+        </Specimen>
         <Specimen name="What Pro includes" note="Four jobs, each with one promise. Only what exists today is sold as included.">
           {PRO_PILLARS.map((pillar) => (
             <View key={pillar} style={{ gap: space.sm }}>

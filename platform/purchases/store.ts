@@ -3,6 +3,7 @@ import type { StorePurchase } from '@/platform/purchases/entitlement';
 import { planOfProduct } from '@/platform/purchases/entitlement';
 import { PRODUCT_IDS } from '@/shared/contracts/product-ids';
 import type { ProductKey } from '@/shared/contracts/product-ids';
+import { formatCurrency } from '@/shared/format/money';
 import { LoggerService } from '@/shared/logging/logger';
 import * as IAP from 'expo-iap';
 import { Platform } from 'react-native';
@@ -13,15 +14,23 @@ import { Platform } from 'react-native';
  * the rules in `entitlement.ts`, which never see the SDK.
  */
 
-/** A plan on sale: what the store charges this user for it. */
-export type StorePlan = {
-  plan: ProductKey;
-  productId: string;
+/** A price as the store states it. */
+export type StorePrice = {
   /** As the store formats it, e.g. "₹299.00". */
   display: string;
   amount: number;
+};
+
+/** A plan on sale: what the store charges this user for it. */
+export type StorePlan = StorePrice & {
+  plan: ProductKey;
+  productId: string;
   currency: string;
-  /** Google Play needs this to start a subscription; absent for the one-time plan and on iOS. */
+  /** The usual price of the one-time plan, while the store is selling it for less. */
+  regular?: StorePrice;
+  /** What a subscription costs to begin with, when the store opens it at less than its price ("Free" for a trial). */
+  intro?: StorePrice;
+  /** Google Play needs this to start a subscription or to buy at an offer's price; absent otherwise and on iOS. */
   offerToken?: string;
 };
 
@@ -31,23 +40,58 @@ export const productIdOf = (plan: ProductKey): string => PRODUCT_IDS[plan][OS];
 
 const ALL_PRODUCT_IDS = (Object.keys(PRODUCT_IDS) as ProductKey[]).map(productIdOf);
 
-type AndroidOffer = { offerToken: string; pricingPhases?: { pricingPhaseList?: { formattedPrice: string; priceAmountMicros: string; priceCurrencyCode: string }[] } };
-type StoreProduct = { id: string; displayPrice?: string | null; price?: number | null; currency?: string | null; subscriptionOfferDetailsAndroid?: AndroidOffer[] | null };
+type AndroidPhase = { formattedPrice: string; priceAmountMicros: string; priceCurrencyCode: string };
+type AndroidOffer = { offerToken: string; pricingPhases?: { pricingPhaseList?: AndroidPhase[] } };
+type AndroidOneTimeOffer = { offerToken: string; formattedPrice: string; priceAmountMicros: string; priceCurrencyCode: string; fullPriceMicros?: string | null };
+type StoreProduct = {
+  id: string;
+  displayPrice?: string | null;
+  price?: number | null;
+  currency?: string | null;
+  subscriptionOfferDetailsAndroid?: AndroidOffer[] | null;
+  oneTimePurchaseOfferDetailsAndroid?: AndroidOneTimeOffer[] | null;
+  introductoryPriceIOS?: string | null;
+  introductoryPriceAsAmountIOS?: string | null;
+};
+
+const fromMicros = (micros: string): number => Number(micros) / 1_000_000;
+const cheapest = <T,>(items: T[], cost: (item: T) => number): T | undefined =>
+  items.reduce<T | undefined>((best, item) => (best === undefined || cost(item) < cost(best) ? item : best), undefined);
 
 /**
- * One store product as a plan. A Google Play subscription carries its price in its offer's
- * pricing phases, of which the last is what it costs once any introductory phase is over.
- * Pure, for testing. Null when the product is not one of ours or has no usable price.
+ * One store product as a plan. Pure, for testing. Null when the product is not one of ours or
+ * has no usable price.
+ *
+ * Google Play may hold several offers for a product; the buyer is given the cheapest it returns
+ * (it returns only those this buyer may have). A subscription's price is the last phase of its
+ * offer, and an earlier, cheaper phase is its opening price. A one-time product on offer states
+ * its full price beside the price now.
  */
 export function toStorePlan(product: StoreProduct): StorePlan | null {
   const plan = planOfProduct(product.id);
   if (!plan) return null;
-  const offer = product.subscriptionOfferDetailsAndroid?.[0];
-  const phase = offer?.pricingPhases?.pricingPhaseList?.at(-1);
-  const display = phase?.formattedPrice ?? product.displayPrice ?? '';
-  const amount = phase ? Number(phase.priceAmountMicros) / 1_000_000 : (product.price ?? NaN);
+
+  const offer = cheapest(product.subscriptionOfferDetailsAndroid ?? [], (o) => fromMicros(o.pricingPhases?.pricingPhaseList?.[0]?.priceAmountMicros ?? 'NaN') || 0);
+  const phases = offer?.pricingPhases?.pricingPhaseList ?? [];
+  const phase = phases.at(-1);
+  const oneTime = phase ? undefined : cheapest(product.oneTimePurchaseOfferDetailsAndroid ?? [], (o) => fromMicros(o.priceAmountMicros));
+
+  const display = phase?.formattedPrice ?? oneTime?.formattedPrice ?? product.displayPrice ?? '';
+  const amount = phase ? fromMicros(phase.priceAmountMicros) : oneTime ? fromMicros(oneTime.priceAmountMicros) : (product.price ?? NaN);
   if (!display || !Number.isFinite(amount) || amount <= 0) return null;
-  return { plan, productId: product.id, display, amount, currency: phase?.priceCurrencyCode ?? product.currency ?? '', offerToken: offer?.offerToken };
+  const currency = phase?.priceCurrencyCode ?? oneTime?.priceCurrencyCode ?? product.currency ?? '';
+
+  const sold: StorePlan = { plan, productId: product.id, display, amount, currency, offerToken: offer?.offerToken ?? oneTime?.offerToken };
+
+  const full = oneTime?.fullPriceMicros ? fromMicros(oneTime.fullPriceMicros) : NaN;
+  if (full > amount) sold.regular = { display: formatCurrency(full, currency), amount: full };
+
+  const opening = phases.length > 1 ? phases[0] : undefined;
+  const iosOpening = product.introductoryPriceIOS ? Number(product.introductoryPriceAsAmountIOS) : NaN;
+  if (opening && fromMicros(opening.priceAmountMicros) < amount) sold.intro = { display: opening.formattedPrice, amount: fromMicros(opening.priceAmountMicros) };
+  else if (product.introductoryPriceIOS && iosOpening < amount) sold.intro = { display: product.introductoryPriceIOS, amount: iosOpening };
+
+  return sold;
 }
 
 /** The plans on sale to this user. Empty when the store cannot be reached or sells none of them here. */
@@ -65,7 +109,7 @@ export async function fetchStorePlans(): Promise<StorePlan[]> {
 export async function requestStorePlan(plan: StorePlan): Promise<void> {
   await IAPService.run(async () => {
     if (plan.plan === 'lifetime') {
-      await IAP.requestPurchase({ type: 'in-app', request: { apple: { sku: plan.productId }, google: { skus: [plan.productId] } } });
+      await IAP.requestPurchase({ type: 'in-app', request: { apple: { sku: plan.productId }, google: { skus: [plan.productId], offerToken: plan.offerToken } } });
     } else {
       await IAP.requestPurchase({
         type: 'subs',

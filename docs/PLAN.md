@@ -28,7 +28,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 76 | In progress |
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
-| E | Pro: three plans and gating | 27 | 18 | In progress |
+| E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 23 | 3 | In progress |
 | H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
@@ -565,6 +565,7 @@ both stores' test accounts, and every gate reads from `features/pro`.
 - [x] E3.07 Already Pro: shows the plan held and how to manage a subscription in the store
 - [ ] E3.08 Subscriber buying lifetime is told to cancel the subscription, with the store link (built: the owned screen offers lifetime to a subscriber and the thank-you says to cancel, with the store link; not seen)
 - [x] E3.09 Home's Pro prompt for a free user after three entries, as a card with a cross, three-day cooldown under the shipped key (`UPSELL_DISMISSED_AT`); the rule joins `chooseHomePrompt` in `features/home/getting-started.ts`
+- [ ] E3.10 Store discounts on the paywall (owner, 2026-10-08): the one-time plan on offer shows its usual price struck through and "P% off the usual X"; a subscription the store opens cheaper or free says what it costs to start, on its card, its button and its terms line; Google Play's cheapest eligible offer is the one bought. Built with tests on the mapping (`toStorePlan`, `discountPercent`), copy in all 12 languages, and a gallery specimen (Pro & system, "Plans on offer"). Not ticked: not seen on the phone, and no real offer has been bought. The length of a trial or opening period is not stated in the app; the store's own sheet states it.
 
 ### E4. Gates
 - [x] E4.01 `useProAccess` on the new registry: `isPro`, `requirePro(feature)`, `openPaywall(feature)`

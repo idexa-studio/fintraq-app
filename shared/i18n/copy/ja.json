@@ -1382,20 +1382,28 @@
         "lifetime": "買い切り",
         "yearly": "年払い",
         "monthly": "月払い",
-        "best": "いちばんお得"
+        "best": "いちばんお得",
+        "was": "通常 {{regular}}"
       },
       "notes": {
         "lifetime": "支払いは一度だけ。ずっとあなたのものです。",
         "lifetimeMonths": "支払いは一度だけ。月払い{{count}}か月分と同じです。",
         "yearly": "毎年。いつでも解約できます。",
         "yearlySaving": "毎年。月払いより{{percent}}%お得です。",
-        "monthly": "毎月。いつでも解約できます。"
+        "monthly": "毎月。いつでも解約できます。",
+        "lifetimeOff": "買い切り。通常価格 {{regular}} から{{percent}}%オフ。",
+        "yearlyIntro": "最初は {{intro}}、以後は毎年 {{price}}。",
+        "monthlyIntro": "最初は {{intro}}、以後は毎月 {{price}}。",
+        "yearlyTrial": "最初は無料、以後は毎年 {{price}}。",
+        "monthlyTrial": "最初は無料、以後は毎月 {{price}}。"
       },
       "buy": {
         "lifetime": "{{price}} で買い切りを購入",
         "yearly": "年額 {{price}} で登録",
         "monthly": "月額 {{price}} で登録",
-        "noPrice": "Fintraq Pro を入手"
+        "noPrice": "Fintraq Pro を入手",
+        "intro": "{{intro}} で始める",
+        "trial": "無料で始める"
       },
       "terms": {
         "lifetime": "{{price}} を一度だけ支払います。更新はありません。",
@@ -1404,7 +1412,11 @@
         "storeAndroid": "Google Play",
         "storeIos": "Apple アカウント",
         "termsLink": "利用規約",
-        "privacyLink": "プライバシー"
+        "privacyLink": "プライバシー",
+        "yearlyTrial": "今は無料、以後は解約するまで毎年 {{price}}。{{store}}でいつでも解約できます。",
+        "monthlyTrial": "今は無料、以後は解約するまで毎月 {{price}}。{{store}}でいつでも解約できます。",
+        "yearlyIntro": "今 {{intro}}、以後は解約するまで毎年 {{price}}。{{store}}でいつでも解約できます。",
+        "monthlyIntro": "今 {{intro}}、以後は解約するまで毎月 {{price}}。{{store}}でいつでも解約できます。"
       },
       "restore": "購入を復元",
       "included": {

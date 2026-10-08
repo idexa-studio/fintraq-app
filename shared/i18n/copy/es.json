@@ -1397,20 +1397,28 @@
         "lifetime": "De por vida",
         "yearly": "Anual",
         "monthly": "Mensual",
-        "best": "Mejor precio"
+        "best": "Mejor precio",
+        "was": "Normalmente {{regular}}"
       },
       "notes": {
         "lifetime": "Paga una vez. Tuyo para siempre.",
         "lifetimeMonths": "Paga una vez. Igual que {{count}} meses del mensual.",
         "yearly": "Cada año. Cancela cuando quieras.",
         "yearlySaving": "Cada año. Ahorra un {{percent}}% frente al mensual.",
-        "monthly": "Cada mes. Cancela cuando quieras."
+        "monthly": "Cada mes. Cancela cuando quieras.",
+        "lifetimeOff": "Paga una vez. {{percent}}% menos que el precio habitual de {{regular}}.",
+        "yearlyIntro": "{{intro}} para empezar, y después {{price}} cada año.",
+        "monthlyIntro": "{{intro}} para empezar, y después {{price}} cada mes.",
+        "yearlyTrial": "Gratis para empezar, y después {{price}} cada año.",
+        "monthlyTrial": "Gratis para empezar, y después {{price}} cada mes."
       },
       "buy": {
         "lifetime": "Consíguelo de por vida por {{price}}",
         "yearly": "Suscríbete por {{price}} al año",
         "monthly": "Suscríbete por {{price}} al mes",
-        "noPrice": "Conseguir Fintraq Pro"
+        "noPrice": "Conseguir Fintraq Pro",
+        "intro": "Empieza por {{intro}}",
+        "trial": "Empieza gratis"
       },
       "terms": {
         "lifetime": "Un solo pago de {{price}}. Nunca se renueva.",
@@ -1419,7 +1427,11 @@
         "storeAndroid": "Google Play",
         "storeIos": "tu cuenta de Apple",
         "termsLink": "Condiciones",
-        "privacyLink": "Privacidad"
+        "privacyLink": "Privacidad",
+        "yearlyTrial": "Gratis ahora, y después {{price}} cada año hasta que canceles. Cancela cuando quieras en {{store}}.",
+        "monthlyTrial": "Gratis ahora, y después {{price}} cada mes hasta que canceles. Cancela cuando quieras en {{store}}.",
+        "yearlyIntro": "{{intro}} ahora, y después {{price}} cada año hasta que canceles. Cancela cuando quieras en {{store}}.",
+        "monthlyIntro": "{{intro}} ahora, y después {{price}} cada mes hasta que canceles. Cancela cuando quieras en {{store}}."
       },
       "restore": "Restaurar compras",
       "included": {

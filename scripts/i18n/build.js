@@ -6,6 +6,8 @@
  *   node scripts/i18n/build.js hi part1.tsv part2.tsv …       "n<TAB>translation" lines -> shared/i18n/copy/hi.json
  *                                                             "@namespace:key.path<TAB>translation" overrides one
  *                                                             place where the same English means something else
+ *   node scripts/i18n/build.js --add hi more.tsv               "@namespace:key.path<TAB>translation" lines added to a
+ *                                                             language already built, for copy written since
  *   node scripts/i18n/build.js --check                        what each language is missing or has left over
  *
  * A translation is refused if it drops or invents a {{placeholder}}, so a sentence can never lose
@@ -80,8 +82,31 @@ function build(language, files) {
   console.log(`${language}: ${unique.length} strings -> shared/i18n/copy/${language}.json`);
 }
 
+/** Adds or replaces single keys in a language already built, with the same placeholder check. */
+function add(language, files) {
+  const file = path.join(COPY, `${language}.json`);
+  const out = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const source = new Map(lines);
+  let added = 0;
+  for (const row of files.flatMap((name) => fs.readFileSync(name, 'utf8').split('\n'))) {
+    const match = /^@(\S+)\t(.*)$/.exec(row);
+    if (!match) continue;
+    const [, key, mine] = match;
+    if (!source.has(key)) { console.error(`no such key: ${key}`); process.exit(1); }
+    if (holes(mine) !== holes(source.get(key))) { console.error(`placeholders differ: ${key} "${source.get(key)}" -> "${mine}"`); process.exit(1); }
+    const [ns, dotted] = key.split(':');
+    out[ns] = out[ns] || {};
+    setDeep(out[ns], dotted, mine);
+    if (HAS_MANY.includes(language) && dotted.endsWith('_other')) setDeep(out[ns], dotted.replace(/_other$/, '_many'), mine);
+    added += 1;
+  }
+  fs.writeFileSync(file, `${JSON.stringify(out, null, 2)}\n`);
+  console.log(`${language}: ${added} added`);
+}
+
 const [first, ...rest] = process.argv.slice(2);
 if (first === '--source') unique.forEach((text, i) => console.log(`${i + 1}\t${text.replace(/\n/g, '\\n')}`));
 else if (first === '--check') check();
+else if (first === '--add' && LANGUAGES.includes(rest[0]) && rest.length > 1) add(rest[0], rest.slice(1));
 else if (LANGUAGES.includes(first) && rest.length) build(first, rest);
-else { console.error('usage: build.js --source | --check | <language> <file.tsv>…'); process.exit(2); }
+else { console.error('usage: build.js --source | --check | <language> <file.tsv>… | --add <language> <file.tsv>…'); process.exit(2); }

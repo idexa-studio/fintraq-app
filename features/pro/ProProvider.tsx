@@ -166,7 +166,7 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo((): ProState => {
     const prices: Partial<Record<ProPlan, PlanPrice>> = {};
-    for (const plan of plans) prices[plan.plan] = { display: plan.display, amount: plan.amount };
+    for (const plan of plans) prices[plan.plan] = { display: plan.display, amount: plan.amount, regular: plan.regular, intro: plan.intro };
     const isPro = override === 'FORCED_ON' ? true : override === 'FORCED_OFF' ? false : isProAt(entitlement, now);
     return { isPro, ready, entitlement, prices, priceState, loadPrices, buy, restore, ended, dismissEnded: () => setEnded(false) };
   }, [entitlement, override, ready, plans, priceState, loadPrices, buy, restore, ended, now]);

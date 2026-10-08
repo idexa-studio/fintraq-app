@@ -1382,20 +1382,28 @@
         "lifetime": "लाइफ़टाइम",
         "yearly": "सालाना",
         "monthly": "मासिक",
-        "best": "सबसे फ़ायदेमंद"
+        "best": "सबसे फ़ायदेमंद",
+        "was": "आमतौर पर {{regular}}"
       },
       "notes": {
         "lifetime": "एक बार भुगतान। हमेशा के लिए आपका।",
         "lifetimeMonths": "एक बार भुगतान। मासिक के {{count}} महीनों के बराबर।",
         "yearly": "हर साल। कभी भी रद्द करें।",
         "yearlySaving": "हर साल। मासिक से {{percent}}% बचत।",
-        "monthly": "हर महीने। कभी भी रद्द करें।"
+        "monthly": "हर महीने। कभी भी रद्द करें।",
+        "lifetimeOff": "एक बार भुगतान करें। सामान्य {{regular}} पर {{percent}}% की छूट।",
+        "yearlyIntro": "शुरू में {{intro}}, फिर हर साल {{price}}।",
+        "monthlyIntro": "शुरू में {{intro}}, फिर हर महीने {{price}}।",
+        "yearlyTrial": "शुरू में मुफ़्त, फिर हर साल {{price}}।",
+        "monthlyTrial": "शुरू में मुफ़्त, फिर हर महीने {{price}}।"
       },
       "buy": {
         "lifetime": "{{price}} में लाइफ़टाइम लें",
         "yearly": "{{price}} सालाना पर सब्सक्राइब करें",
         "monthly": "{{price}} मासिक पर सब्सक्राइब करें",
-        "noPrice": "Fintraq Pro लें"
+        "noPrice": "Fintraq Pro लें",
+        "intro": "{{intro}} में शुरू करें",
+        "trial": "मुफ़्त शुरू करें"
       },
       "terms": {
         "lifetime": "{{price}} का एक बार का भुगतान। यह कभी दोबारा नहीं कटता।",
@@ -1404,7 +1412,11 @@
         "storeAndroid": "Google Play",
         "storeIos": "आपके Apple खाते",
         "termsLink": "शर्तें",
-        "privacyLink": "निजता"
+        "privacyLink": "निजता",
+        "yearlyTrial": "अभी मुफ़्त, फिर रद्द करने तक हर साल {{price}}। {{store}} में कभी भी रद्द करें।",
+        "monthlyTrial": "अभी मुफ़्त, फिर रद्द करने तक हर महीने {{price}}। {{store}} में कभी भी रद्द करें।",
+        "yearlyIntro": "अभी {{intro}}, फिर रद्द करने तक हर साल {{price}}। {{store}} में कभी भी रद्द करें।",
+        "monthlyIntro": "अभी {{intro}}, फिर रद्द करने तक हर महीने {{price}}। {{store}} में कभी भी रद्द करें।"
       },
       "restore": "ख़रीद बहाल करें",
       "included": {

@@ -3,8 +3,8 @@ import type { Theme } from '@/design';
 import { useProCopy } from '@/features/pro/pro-copy.en';
 import { LIVE_FEATURES, PRO_FEATURES, UPCOMING_FEATURES } from '@/features/pro/pro-features';
 import type { ProFeatureId } from '@/features/pro/pro-features';
-import { DEFAULT_PLAN, PRO_PLANS, lifetimeBreakEvenMonths, yearlySavingPercent } from '@/features/pro/pro-plans';
-import type { ProPlan } from '@/features/pro/pro-plans';
+import { DEFAULT_PLAN, PRO_PLANS, discountPercent, lifetimeBreakEvenMonths, yearlySavingPercent } from '@/features/pro/pro-plans';
+import type { PlanPrice, ProPlan } from '@/features/pro/pro-plans';
 import { useProStore } from '@/features/pro/ProProvider';
 import { useLegalLinks } from '@/platform/config/legal-links';
 import type { SubscriptionPlan } from '@/platform/purchases/entitlement';
@@ -87,12 +87,28 @@ function Plans({ header, feature, buying, trouble, onBuy }: PlansProps) {
   const price = prices[plan];
   const months = lifetimeBreakEvenMonths(prices.lifetime, prices.monthly);
   const saving = yearlySavingPercent(prices.yearly, prices.monthly);
+  // A subscription the store opens at less than its price says so, in place of its usual line.
+  const opening = (option: ProPlan): '' | 'Intro' | 'Trial' => (!prices[option]?.intro ? '' : prices[option].intro.amount > 0 ? 'Intro' : 'Trial');
   const noteOf = (option: ProPlan): string => {
-    if (option === 'lifetime') return months ? t('paywall.notes.lifetimeMonths', { count: months }) : t('paywall.notes.lifetime');
+    const at = prices[option];
+    if (option === 'lifetime') {
+      const off = discountPercent(at);
+      if (off && at?.regular) return t('paywall.notes.lifetimeOff', { percent: off, regular: at.regular.display });
+      return months ? t('paywall.notes.lifetimeMonths', { count: months }) : t('paywall.notes.lifetime');
+    }
+    if (at?.intro) return t(`paywall.notes.${option}${opening(option) || 'Intro'}`, { intro: at.intro.display, price: at.display });
     if (option === 'yearly') return saving ? t('paywall.notes.yearlySaving', { percent: saving }) : t('paywall.notes.yearly');
     return t('paywall.notes.monthly');
   };
   const storeName = t(Platform.OS === 'ios' ? 'paywall.terms.storeIos' : 'paywall.terms.storeAndroid');
+  const termsOf = (option: ProPlan, at: PlanPrice): string =>
+    option !== 'lifetime' && at.intro
+      ? t(`paywall.terms.${option}${opening(option) || 'Intro'}`, { intro: at.intro.display, price: at.display, store: storeName })
+      : t(`paywall.terms.${option}`, { price: at.display, store: storeName });
+  const buyLabelOf = (option: ProPlan, at: PlanPrice): string => {
+    if (option !== 'lifetime' && at.intro) return at.intro.amount > 0 ? t('paywall.buy.intro', { intro: at.intro.display }) : t('paywall.buy.trial');
+    return t(`paywall.buy.${option}`, { price: at.display });
+  };
   // The feature that led here comes first in the list of what is included.
   const included = feature && LIVE_FEATURES.includes(feature) ? [feature, ...LIVE_FEATURES.filter((id) => id !== feature)] : LIVE_FEATURES;
   const lead = feature ? copy.feature(feature) : { title: t('paywall.title'), description: t('paywall.body') };
@@ -111,9 +127,9 @@ function Plans({ header, feature, buying, trouble, onBuy }: PlansProps) {
       footer={
         <>
           <Text variant="caption" tone="muted" align="center">
-            {price ? t(`paywall.terms.${plan}`, { price: price.display, store: storeName }) : t(priceState === 'loading' ? 'paywall.prices.loading' : 'paywall.prices.blocked')}
+            {price ? termsOf(plan, price) : t(priceState === 'loading' ? 'paywall.prices.loading' : 'paywall.prices.blocked')}
           </Text>
-          <Button label={price ? t(`paywall.buy.${plan}`, { price: price.display }) : t('paywall.buy.noPrice')} onPress={() => onBuy(plan)} disabled={!price || restoring} loading={buying !== null} />
+          <Button label={price ? buyLabelOf(plan, price) : t('paywall.buy.noPrice')} onPress={() => onBuy(plan)} disabled={!price || restoring} loading={buying !== null} />
           <View style={styles.links}>
             <Button label={t('paywall.restore')} variant="link" size="sm" fullWidth={false} onPress={restoreNow} disabled={buying !== null} loading={restoring} />
             {termsUrl ? <Button label={t('paywall.terms.termsLink')} variant="link" size="sm" fullWidth={false} onPress={() => void Linking.openURL(termsUrl)} /> : null}
@@ -133,10 +149,11 @@ function Plans({ header, feature, buying, trouble, onBuy }: PlansProps) {
 
       <View style={styles.plans} accessibilityRole="radiogroup" accessibilityLabel={t('paywall.plans.label')}>
         {PRO_PLANS.map((option) => (
-          <Card key={option} compact selected={plan === option} onPress={() => setPlan(option)} accessibilityLabel={`${t(`paywall.plans.${option}`)}, ${prices[option]?.display ?? ''}. ${noteOf(option)}`} style={styles.plan}>
+          <Card key={option} compact selected={plan === option} onPress={() => setPlan(option)} accessibilityLabel={`${t(`paywall.plans.${option}`)}, ${prices[option]?.display ?? ''}. ${prices[option]?.regular ? `${t('paywall.plans.was', { regular: prices[option].regular.display })}. ` : ''}${noteOf(option)}`} style={styles.plan}>
             <View style={styles.planHead}>
               <Text variant="bodyStrong" style={styles.fill}>{t(`paywall.plans.${option}`)}</Text>
               {option === DEFAULT_PLAN ? <Badge label={t('paywall.plans.best')} /> : null}
+              {prices[option]?.regular ? <Money value={prices[option].regular.display} tone="muted" struck /> : null}
               {prices[option] ? <Money value={prices[option].display} /> : priceState === 'loading' ? <Skeleton height={type.amount.lineHeight} width="25%" /> : null}
             </View>
             <Text variant="callout" tone="muted">{noteOf(option)}</Text>
