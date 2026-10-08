@@ -1,5 +1,5 @@
 import type { IconSource } from '@/src/components/ui';
-import { StorageKeys } from '@/src/constants/keys';
+import { StorageKeys } from '@/shared/contracts/storage-keys';
 
 /**
  * Tips exist only for interactions a user cannot discover by looking at the screen — hidden

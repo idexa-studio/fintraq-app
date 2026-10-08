@@ -3,7 +3,7 @@ import { alias } from 'drizzle-orm/sqlite-core';
 import { db } from '@/src/db/client';
 import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
 import { accounts, categories, payments, persons, loans } from '@/src/db/schema';
-import type { TransactionType } from '@/src/types';
+import type { TransactionType } from '@/shared/types';
 import { LoggerService } from '@/src/services/logger.service';
 import { accountDeltas, AccountDelta, isLoanPrincipal, LedgerEntry, LedgerError, loanOutstanding, loanStatus, repaymentType, validateEntry } from '@/src/features/transactions/utils/ledger';
 

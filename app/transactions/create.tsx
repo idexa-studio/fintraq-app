@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { TransactionFormPage } from '@/src/features/transactions/screens/TransactionFormPage';
-import type { TransactionType } from '@/src/types';
+import type { TransactionType } from '@/shared/types';
 
 const TYPES: readonly TransactionType[] = ['DR', 'CR', 'TR'];
 

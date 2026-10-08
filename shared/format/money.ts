@@ -1,28 +1,10 @@
-import * as Localization from 'expo-localization';
-import i18n, { getIntlLocale } from '@/src/i18n';
-import { getCurrencySymbol } from '@/src/constants/currency';
-import { parseAmountInput } from '@/src/utils/amount';
+/** Money as text: reading what was typed, and writing amounts in the app's language. */
+import { appLocale } from '@/shared/i18n/locale';
+import { getCurrencySymbol } from '@/shared/currency/currencies';
+import { parseAmountInput } from '@/shared/format/amount';
 
 /** A typed amount as a number, 0 when blank or unreadable. See parseAmountInput for the rules. */
 export const parseAmount = (value: string | undefined | null): number => parseAmountInput(value ?? '') ?? 0;
-
-/**
- * Converts a hex color string to a numeric value for database storage.
- */
-export const toDbColor = (value: string): number => {
-  return Number.parseInt(value.replace('#', ''), 16);
-};
-
-/**
- * Converts a numeric color (as stored in the DB) to a CSS hex string.
- * e.g. 11591744 → '#B0E000'
- */
-export const colorNumberToHex = (value: number): string =>
-  `#${value.toString(16).padStart(6, '0')}`;
-
-export const withAlpha = (color: string, hexAlpha: string): string =>
-  `${color}${hexAlpha}`;
-
 
 /**
  * Intl decides the layout (where the sign, symbol, separators and spaces go for the app's
@@ -75,24 +57,9 @@ const formatCompactCurrency = (amount: number, locale: string, currencyCode: str
 };
 
 /**
- * Formats a numeric amount into a currency string using the Intl library.
- * If no currency code is provided, it formats the number as a localized decimal.
+ * An amount in the app's language. With a currency code it carries the app's symbol for that
+ * currency; without one it is a plain two-decimal number. `compact` shortens it to K, M, B or T.
  */
-/** The Intl locale for the app's language, falling back to the device's. */
-const appLocale = (): string => {
-  const deviceLocale = Localization.getLocales()?.[0]?.languageTag ?? 'en-US';
-  return getIntlLocale(i18n.resolvedLanguage ?? i18n.language, deviceLocale);
-};
-
-/** Formats a date in the app's language, e.g. `formatDate(d, { dateStyle: 'full' })`. */
-export const formatDate = (date: Date, options: Intl.DateTimeFormatOptions): string => {
-  try {
-    return new Intl.DateTimeFormat(appLocale(), options).format(date);
-  } catch {
-    return date.toDateString();
-  }
-};
-
 export const formatCurrency = (amount: number, currencyCode?: string, compact?: boolean): string => {
   const locale = appLocale();
 
@@ -114,11 +81,4 @@ export const formatCurrency = (amount: number, currencyCode?: string, compact?: 
     // A code Intl doesn't know: still the app's symbol, with plain two-decimal digits.
     return `${getCurrencySymbol(currencyCode)} ${amount.toFixed(2)}`;
   }
-};
-
-/** Human-readable file size, e.g. 1536 → "1.5 KB". */
-export const formatFileSize = (bytes: number): string => {
-  const kb = bytes / 1024;
-  if (kb < 1024) return `${kb.toFixed(1)} KB`;
-  return `${(kb / 1024).toFixed(1)} MB`;
 };

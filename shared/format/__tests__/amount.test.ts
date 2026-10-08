@@ -1,4 +1,4 @@
-import { parseAmountInput } from '@/src/utils/amount';
+import { parseAmountInput } from '@/shared/format/amount';
 
 describe('parseAmountInput', () => {
   it('reads plain and comma decimals', () => {

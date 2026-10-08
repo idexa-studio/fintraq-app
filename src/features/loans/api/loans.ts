@@ -1,8 +1,8 @@
-import { OTHERS_CATEGORY } from '@/src/constants/defaultCategories';
+import { OTHERS_CATEGORY } from '@/shared/contracts/default-categories';
 import { and, desc, eq, ne, sql } from 'drizzle-orm';
 import { db } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
-import { TransactionType } from '@/src/types';
+import { TransactionType } from '@/shared/types';
 import { recordPaymentIn } from '@/src/features/transactions/api/transactions';
 import { loanOutstanding, loanStatus, repaymentType } from '@/src/features/transactions/utils/ledger';
 

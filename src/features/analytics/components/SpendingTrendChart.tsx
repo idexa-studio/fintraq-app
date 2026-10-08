@@ -6,7 +6,7 @@ import { BentoPressable, MoneyText, Text } from '@/src/components/ui';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { toTrendBars } from '@/src/utils/analytics';
 import { magnitudeRamp } from '@/src/theme/chart';
-import { formatCurrency } from '@/src/utils/format';
+import { formatCurrency } from '@/shared/format/money';
 
 export type TrendBucket = { label: string; income: number; expense: number };
 

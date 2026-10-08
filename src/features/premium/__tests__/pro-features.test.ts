@@ -1,4 +1,4 @@
-import en from '@/src/i18n/locales/en';
+import en from '@/shared/i18n/locales/en';
 import { featuresInGroup, isProFeatureId, PRO_FEATURE_GROUPS, PRO_FEATURE_IDS, HEADLINE_FEATURES } from '@/src/features/premium/pro-features';
 
 describe('Pro feature registry', () => {

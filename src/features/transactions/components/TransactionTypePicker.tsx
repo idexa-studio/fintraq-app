@@ -3,7 +3,7 @@ import { Icon } from '@/src/components/ui/Icon';
 import React, { useMemo, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
-import type { TransactionType } from '@/src/types';
+import type { TransactionType } from '@/shared/types';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';

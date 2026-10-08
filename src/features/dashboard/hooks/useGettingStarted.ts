@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
-import { StorageKeys } from '@/src/constants/keys';
+import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useAutoBackupSetting } from '@/src/features/backup/hooks/useAutoBackupSetting';
 import { useTransactionsCount } from '@/src/features/transactions/hooks/transactions';

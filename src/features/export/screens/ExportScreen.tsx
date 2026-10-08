@@ -5,9 +5,10 @@ import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { OptionsDialog } from '@/src/components/ui/OptionsDialog';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex, formatDate } from '@/src/utils/format';
+import { formatDate } from '@/shared/date/date';
+import { colorNumberToHex } from '@/shared/format/color';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
-import type { AccountType } from '@/src/types';
+import type { AccountType } from '@/shared/types';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
@@ -15,7 +16,7 @@ import { CsvExportService, ExportDateRange } from '@/src/features/export/api/csv
 import { useTranslation } from 'react-i18next';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { Analytics } from '@/src/services/telemetry';
-import { toErrorMessage } from '@/src/utils/errors';
+import { toErrorMessage } from '@/shared/errors';
 
 
 const DATE_PRESETS = [

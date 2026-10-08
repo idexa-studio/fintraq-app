@@ -6,7 +6,7 @@ import { LIST_ITEM_LEADING_SIZE, ListItem, PersonAvatar, SearchField, SheetHeade
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 import type { Person } from '@/src/features/persons/api/persons';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex } from '@/shared/format/color';
 
 type PersonPickerBottomSheetProps = {
   visible: boolean;

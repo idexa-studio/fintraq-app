@@ -20,7 +20,7 @@ import {
 } from '@/src/components/ui';
 import type { IconSource } from '@/src/components/ui';
 import { PrivacySheet } from '@/src/features/settings/components/PrivacySheet';
-import { DEFAULT_CURRENCY, getCurrencySymbol } from '@/src/constants/currency';
+import { DEFAULT_CURRENCY, getCurrencySymbol } from '@/shared/currency/currencies';
 import { useBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
 import { useLockSetting } from '@/src/features/lock/hooks/useLockSetting';
@@ -29,7 +29,7 @@ import { SettingsFooter } from '@/src/features/settings/components/SettingsFoote
 import { useExactAlarmAccess } from '@/src/features/settings/hooks/useExactAlarmAccess';
 import { useFactoryReset } from '@/src/features/settings/hooks/useFactoryReset';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
-import { languages, supportedLanguages } from '@/src/i18n';
+import { languages, supportedLanguages } from '@/shared/i18n';
 import { useAppConfig } from '@/src/providers/AppConfigProvider';
 import { useAppLanguage } from '@/src/providers/I18nProvider';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';

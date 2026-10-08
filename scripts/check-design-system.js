@@ -18,9 +18,9 @@ const EXEMPT = [
   'src/components/ui/',
   'src/theme/',
   'design/', // the new design system: the one place raw values live
-  'src/i18n/',
+  'shared/i18n/',
   'src/db/',
-  'src/constants/', // user-colour palettes, product ids — data, not UI
+  'shared/contracts/', // the colours offered to users and seeded on first run: data, not UI
   'src/utils/seed.ts', // demo data
   'src/utils/icons.ts', // stored icon strings → registry names
   'src/providers/ThemeProvider.tsx',

@@ -2,13 +2,13 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Divider, IconAvatar, Input, MoneyText, SegmentedControl, Text } from '@/src/components/ui';
-import { DEFAULT_CATEGORIES } from '@/src/constants/defaultCategories';
+import { DEFAULT_CATEGORIES } from '@/shared/contracts/default-categories';
 import { AmountField } from '@/src/features/onboarding/components/AmountField';
 import { FIRST_ENTRY_CATEGORIES } from '@/src/features/onboarding/constants';
 import type { OnboardingEntryDraft } from '@/src/features/onboarding/types';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { parseAmountInput } from '@/src/utils/amount';
-import { colorNumberToHex } from '@/src/utils/format';
+import { parseAmountInput } from '@/shared/format/amount';
+import { colorNumberToHex } from '@/shared/format/color';
 import { resolveIcon } from '@/src/utils/icons';
 
 type Props = {

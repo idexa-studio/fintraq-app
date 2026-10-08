@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TextProps } from 'react-native';
-import { formatCurrency } from '@/src/utils/format';
+import { formatCurrency } from '@/shared/format/money';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
-import { TransactionType } from '@/src/types';
+import { TransactionType } from '@/shared/types';
 import { useCountUp } from './useCountUp';
 
 interface MoneyTextProps extends TextProps {

@@ -6,11 +6,11 @@ import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { ColorPickerRow } from '@/src/components/pickers/ColorPickerRow';
 import { IconPickerBottomSheet } from '@/src/components/pickers/IconPickerBottomSheet';
 import { BentoPressable, Button, Card, Chip, FormField, Icon, IconAvatar, ListGroup, Screen, Text } from '@/src/components/ui';
-import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS } from '@/src/constants/picker';
+import { CATEGORY_COLORS, CATEGORY_ICON_GROUPS, CATEGORY_ICONS } from '@/shared/contracts/pickers';
 import { useCategories, useCreateCategory, useUpdateCategory } from '@/src/features/categories/hooks/categories';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { LoggerService } from '@/src/services/logger.service';
-import { colorNumberToHex, toDbColor } from '@/src/utils/format';
+import { colorNumberToHex, toDbColor } from '@/shared/format/color';
 import { resolveIcon } from '@/src/utils/icons';
 
 // Common picks shown inline so most people never need the full icon sheet.

@@ -10,8 +10,10 @@ import { TransactionAccountPicker } from '@/src/features/transactions/components
 import { TransactionAmountInput } from '@/src/features/transactions/components/TransactionAmountInput';
 import type { AlertOptions } from '@/src/hooks/useAlertDialog';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { toErrorMessage } from '@/src/utils/errors';
-import { colorNumberToHex, formatCurrency, formatDate, parseAmount } from '@/src/utils/format';
+import { toErrorMessage } from '@/shared/errors';
+import { formatDate } from '@/shared/date/date';
+import { colorNumberToHex } from '@/shared/format/color';
+import { formatCurrency, parseAmount } from '@/shared/format/money';
 
 type Props = {
   loan: LoanWithStats;

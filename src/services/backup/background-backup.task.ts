@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
-import { StorageKeys } from '@/src/constants/keys';
-import i18n from '@/src/i18n';
+import { StorageKeys } from '@/shared/contracts/storage-keys';
+import i18n from '@/shared/i18n';
 import { LoggerService } from '@/src/services/logger.service';
 import { NotificationService } from '@/src/services/notification.service';
 import { runAutoBackupIfDue } from './auto-backup.service';

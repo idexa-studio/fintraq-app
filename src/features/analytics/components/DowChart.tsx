@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/src/components/ui';
-import { DOW_KEYS } from '@/src/constants/calendar';
+import { DOW_KEYS } from '@/shared/date/calendar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { magnitudeRamp } from '@/src/theme/chart';
-import { formatCurrency } from '@/src/utils/format';
+import { formatCurrency } from '@/shared/format/money';
 
 /** Average spend per weekday (0 = Sunday). */
 type Props = { data: readonly { dow: number; total: number }[]; currency: string };

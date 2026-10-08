@@ -15,9 +15,10 @@ import { TransactionAmountInput } from '@/src/features/transactions/components/T
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { FREE_LOAN_LIMIT } from '@/src/constants/iap';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex, formatDate, parseAmount } from '@/src/utils/format';
-import { getLocalISOString } from '@/src/utils/date';
-import { toErrorMessage } from '@/src/utils/errors';
+import { formatDate , getLocalISOString } from '@/shared/date/date';
+import { colorNumberToHex } from '@/shared/format/color';
+import { parseAmount } from '@/shared/format/money';
+import { toErrorMessage } from '@/shared/errors';
 import { useCreateLoan, useLoansCount } from '@/src/features/loans/hooks/loans';
 import { useTranslation } from 'react-i18next';
 

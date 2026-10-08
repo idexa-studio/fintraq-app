@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
-import { StorageKeys } from '@/src/constants/keys';
+import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { db } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import { useAppLock } from '@/src/providers/AppLockProvider';

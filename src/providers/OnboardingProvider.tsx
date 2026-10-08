@@ -3,7 +3,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View } from 'react-native';
 import { DARK_THEME } from '@/src/theme/colors';
-import { StorageKeys } from '@/src/constants/keys';
+import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { LoggerService } from '@/src/services/logger.service';
 
 type OnboardingContextType = {

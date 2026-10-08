@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useState } from 'react';
-import { StorageKeys } from '@/src/constants/keys';
+import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { useBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
 import { useAppLock } from '@/src/providers/AppLockProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';

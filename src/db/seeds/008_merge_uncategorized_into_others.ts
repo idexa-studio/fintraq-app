@@ -1,7 +1,7 @@
 import { eq, inArray, sql } from 'drizzle-orm';
 import { db } from '@/src/db/client';
 import { categories, loans, payments } from '@/src/db/schema';
-import { OTHERS_CATEGORY } from '@/src/constants/defaultCategories';
+import { OTHERS_CATEGORY } from '@/shared/contracts/default-categories';
 
 export const name = '008_merge_uncategorized_into_others';
 

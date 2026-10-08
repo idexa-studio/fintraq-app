@@ -10,9 +10,10 @@ import { Category } from '@/src/features/categories/api/categories';
 import { AdvancedFilters, DEFAULT_ADVANCED_FILTERS } from '@/src/features/filters/api/advanced-filters.service';
 import { Person } from '@/src/features/persons/api/persons';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { AccountType, TransactionType } from '@/src/types';
-import { parseAmountInput } from '@/src/utils/amount';
-import { colorNumberToHex, formatDate } from '@/src/utils/format';
+import type { AccountType, TransactionType } from '@/shared/types';
+import { parseAmountInput } from '@/shared/format/amount';
+import { formatDate } from '@/shared/date/date';
+import { colorNumberToHex } from '@/shared/format/color';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 
 interface AdvancedFilterBottomSheetProps {

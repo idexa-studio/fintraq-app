@@ -6,7 +6,7 @@ import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
 import { Icon } from '@/src/components/ui/Icon';
 import { SheetHeader } from '@/src/components/ui/SheetHeader';
-import type { ColorOption } from '@/src/constants/picker';
+import type { ColorOption } from '@/shared/contracts/pickers';
 import { PICKER_CONTRAST_COLOR } from '@/src/theme/colors';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 

@@ -1,3 +1,4 @@
+import { appLocale } from '@/shared/i18n/locale';
 import { format, subDays, startOfMonth } from 'date-fns';
 
 /**
@@ -52,5 +53,14 @@ export const formatBackupTimestamp = (dateStr: string): string => {
     return format(new Date(dateStr), 'MMM d, yyyy • h:mm a');
   } catch {
     return dateStr;
+  }
+};
+
+/** Formats a date in the app's language, e.g. `formatDate(d, { dateStyle: 'full' })`. */
+export const formatDate = (date: Date, options: Intl.DateTimeFormatOptions): string => {
+  try {
+    return new Intl.DateTimeFormat(appLocale(), options).format(date);
+  } catch {
+    return date.toDateString();
   }
 };

@@ -2,12 +2,18 @@ import { and, desc, eq, sql } from 'drizzle-orm';
 import { db } from '@/src/db/client';
 import { PAYMENT_LOCAL_DAY } from '@/src/db/sql';
 import { accounts, categories, payments } from '@/src/db/schema';
-import { getDaysAgoLocal, getLocalISOString, getStartOfMonthLocal } from '@/src/utils/date';
-import { formatCurrency } from '@/src/utils/format';
-import { InsightStatus, InsightTrend, TransactionType } from '@/src/types';
+import { getDaysAgoLocal, getLocalISOString, getStartOfMonthLocal } from '@/shared/date/date';
+import { formatCurrency } from '@/shared/format/money';
+import { TransactionType } from '@/shared/types';
 import { MaterialIconName } from '@/src/utils/icons';
 import { LoggerService } from '@/src/services/logger.service';
-import i18n from '@/src/i18n';
+import i18n from '@/shared/i18n';
+
+/** How an insight card is styled. */
+export type InsightStatus = 'success' | 'danger' | 'info' | 'warning';
+
+/** Which way the figure behind an insight moved. */
+export type InsightTrend = 'up' | 'down' | 'neutral';
 
 type InsightBase = {
   id: string;

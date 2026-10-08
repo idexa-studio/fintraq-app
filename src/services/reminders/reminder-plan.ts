@@ -1,4 +1,4 @@
-import { parseDateKey } from '@/src/utils/date';
+import { parseDateKey } from '@/shared/date/date';
 
 /**
  * Which reminders should exist, and when — pure, so it's testable and the sync can simply make the

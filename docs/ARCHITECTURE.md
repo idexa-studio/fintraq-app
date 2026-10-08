@@ -79,7 +79,7 @@ contracts; each has a test that fails if it is broken.
 | Contract | Where | Guard |
 | --- | --- | --- |
 | Database file name, tables and columns | `src/db` today, `data/db` when moved | Drizzle migrations only ever add |
-| Storage keys (AsyncStorage, secure store) | `src/constants/keys.ts` | Keys are never renamed; retired ones are still cleared on reset |
+| Storage keys (AsyncStorage, secure store) | `shared/contracts/storage-keys.ts` | `shared/contracts/__tests__/storage-keys.test.ts` pins every key as shipped |
 | Icon names saved on categories and accounts | `shared/contracts/stored-icon-names.ts` | `design/icons/__tests__/glyphs.test.ts` |
 | Backup snapshot format | `src/services/backup/backup-snapshot.ts` | `__tests__/backup-snapshot.test.ts`: every older shape still restores |
 | Lifetime product ids | `features/pro/pro-plans.ts` | `features/pro/__tests__/pro-plans.test.ts` |
@@ -206,7 +206,7 @@ const createStyles = ({ colors, spacing, radius }: ThemeContextType) =>
 - Persisted preferences go through `SettingsProvider`; secrets through `expo-secure-store`.
 
 ### Text & i18n
-- Every user-facing string goes through `t('…')` with keys in `src/i18n/locales/en.ts` (the typed source); other locales follow.
+- Every user-facing string goes through `t('…')` with keys in `shared/i18n/locales/en.ts` (the typed source); other locales follow.
 - Developer tooling (Developer screen, Design Gallery) is English-only by design.
 
 ### Accessibility

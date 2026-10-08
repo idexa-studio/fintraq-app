@@ -1,4 +1,4 @@
-import type { AccountType } from '@/src/types';
+import type { AccountType } from '@/shared/types';
 import { isIconName } from '@/src/components/ui/icon-registry';
 import type { IconName } from '@/src/components/ui/icon-registry';
 

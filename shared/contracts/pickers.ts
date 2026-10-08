@@ -1,4 +1,4 @@
-import type en from '@/src/i18n/locales/en';
+import type en from '@/shared/i18n/locales/en';
 
 // ── Shared ────────────────────────────────────────────────────────────────────
 

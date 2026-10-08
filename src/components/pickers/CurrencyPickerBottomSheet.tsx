@@ -9,7 +9,7 @@ import { Icon } from '@/src/components/ui/Icon';
 import { SearchField } from '@/src/components/ui/SearchField';
 import { SheetHeader } from '@/src/components/ui/SheetHeader';
 import { Text } from '@/src/components/ui/Text';
-import { CURRENCIES, type Currency } from '@/src/constants/currency';
+import { CURRENCIES, type Currency } from '@/shared/currency/currencies';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 

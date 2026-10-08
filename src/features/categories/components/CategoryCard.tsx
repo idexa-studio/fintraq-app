@@ -3,7 +3,7 @@ import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { Icon } from '@/src/components/ui/Icon';
 import { Category } from '@/src/features/categories/api/categories';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex } from '@/shared/format/color';
 import { resolveIcon } from '@/src/utils/icons';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

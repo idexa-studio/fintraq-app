@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Text } from '@/src/components/ui';
-import { getCurrencySymbol } from '@/src/constants/currency';
+import { getCurrencySymbol } from '@/shared/currency/currencies';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type AmountFieldProps = {

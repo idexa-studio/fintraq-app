@@ -1,5 +1,5 @@
 import * as LocalAuthentication from 'expo-local-authentication';
-import i18n from '@/src/i18n';
+import i18n from '@/shared/i18n';
 
 export type BiometricCapability = {
   available: boolean;

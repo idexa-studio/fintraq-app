@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
-import { SecureStoreKeys } from '@/src/constants/keys';
+import { SecureStoreKeys } from '@/shared/contracts/storage-keys';
 import { pinLockoutMs } from '@/src/features/lock/utils/pin-lockout';
 
 const KEY_PIN_HASH = SecureStoreKeys.PIN_HASH;

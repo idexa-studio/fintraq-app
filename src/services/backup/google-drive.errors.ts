@@ -1,4 +1,4 @@
-import { getErrorCode, toErrorMessage } from '@/src/utils/errors';
+import { getErrorCode, toErrorMessage } from '@/shared/errors';
 
 /**
  * Error model for the Drive layer. The one distinction that drives behaviour:

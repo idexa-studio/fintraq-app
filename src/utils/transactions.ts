@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { formatDate } from '@/src/utils/format';
+import { formatDate } from '@/shared/date/date';
 
 type Totalable = { type: string; amount: number; account: { currency: string } };
 

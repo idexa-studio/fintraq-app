@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { StatTile } from '@/src/components/ui';
 import type { BiggestExpense, CategoryBreakdown } from '@/src/features/analytics/api/analytics';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { colorNumberToHex } from '@/src/utils/format';
+import { colorNumberToHex } from '@/shared/format/color';
 import { resolveIcon } from '@/src/utils/icons';
 
 type Props = {

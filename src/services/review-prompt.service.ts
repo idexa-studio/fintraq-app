@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as StoreReview from 'expo-store-review';
 import { LoggerService } from './logger.service';
-import { StorageKeys } from '@/src/constants/keys';
+import { StorageKeys } from '@/shared/contracts/storage-keys';
 
 const STORAGE_KEY_FIRST_LAUNCH_AT = StorageKeys.FIRST_LAUNCH_AT;
 const STORAGE_KEY_REVIEW_REQUESTED = StorageKeys.REVIEW_REQUESTED_AT;

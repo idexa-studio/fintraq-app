@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { eq, sql } from 'drizzle-orm';
 import { format } from 'date-fns';
-import { StorageKeys } from '@/src/constants/keys';
+import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { db } from '@/src/db/client';
 import { accounts, categories, loans, payments, persons } from '@/src/db/schema';
 import { LoggerService } from '@/src/services/logger.service';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
-import { toDbColor } from './format';
+import { toDbColor } from '@/shared/format/color';
 
 /**
  * Dev-only demo data (Developer → Seed dummy data): a year in the life of one person. The default
