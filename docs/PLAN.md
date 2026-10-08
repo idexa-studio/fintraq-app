@@ -28,7 +28,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 60 | In progress |
 | D | Screens at parity with the shipped app | 143 | 42 | In progress |
-| E | Pro: three plans and gating | 26 | 0 |  |
+| E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
 | H | Release 2: repeating items, budgets, net worth trend | 41 | 0 |  |
@@ -485,23 +485,23 @@ Done when: all three plans can be bought, restored and expire correctly on
 both stores' test accounts, and every gate reads from `features/pro`.
 
 ### E1. Store side (owner)
-- [ ] E1.01 Owner: enable `luno_monthly` and `luno_yearly` in Play Console
+- [x] E1.01 Owner: enable `luno_monthly` and `luno_yearly` in Play Console
 - [ ] ~~E1.02 Confirm and enable the iOS products~~ Not applicable: the app is Android only for now (owner, 2026-10-09). The iOS ids in the contract are reserved for when an iOS app exists
 - [ ] E1.03 Owner: set the three prices so lifetime is the obvious deal
 - [ ] E1.04 Owner: licence-testing and sandbox accounts available for testing
 
 ### E2. Entitlement
-- [ ] E2.01 Entitlement model: lifetime owned, or a subscription active until a date, with its plan
-- [ ] E2.02 Read the saved state of the shipped app (`@fintraq_premium_v7`) so current buyers are Pro on first launch offline
+- [x] E2.01 Entitlement model: lifetime owned, or a subscription active until a date, with its plan
+- [x] E2.02 Read the saved state of the shipped app (`@fintraq_premium_v7`) so current buyers are Pro on first launch offline
 - [ ] E2.03 Fetch the three products and prices from the store
 - [ ] E2.04 Buy lifetime (one-time) and finish the purchase
 - [ ] E2.05 Buy monthly or yearly (subscription) and acknowledge
 - [ ] E2.06 Pending payment never grants Pro and is never finished
 - [ ] E2.07 Restore finds a lifetime licence or an active subscription
 - [ ] E2.08 Renewal, expiry, grace period and refund each move the state correctly
-- [ ] E2.09 Background auto-backup reads the entitlement including its expiry
+- [x] E2.09 Background auto-backup reads the entitlement including its expiry
 - [ ] E2.10 Developer override still honoured in development builds only
-- [ ] E2.11 Tests for every transition in E2.06 to E2.09
+- [x] E2.11 Tests for every transition in E2.06 to E2.09
 
 ### E3. Paywall
 - [ ] E3.01 Paywall opens on the feature that led to it

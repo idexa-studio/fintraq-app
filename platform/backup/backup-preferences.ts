@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IS_PREMIUM_OVERRIDE_ALLOWED } from '@/platform/purchases/dev-override';
+import { isPro, parseSaved } from '@/platform/purchases/entitlement';
 import { RETIRED_AUTO_BACKUP_FREQUENCY_KEY, StorageKeys } from '@/shared/contracts/storage-keys';
 import { resolveLanguage, SupportedLanguage } from '@/shared/i18n';
 import { LoggerService } from '@/shared/logging/logger';
@@ -10,8 +11,6 @@ import type { CloudBackupFileMeta } from './backup.types';
  * The only module that reads or writes backup-related persisted state. Keys and value formats
  * are unchanged from earlier releases so existing installs keep their settings.
  */
-
-type PremiumSnapshot = { isPremium?: unknown };
 
 function parseJson<T>(raw: string | null): T | null {
   if (!raw) return null;
@@ -30,7 +29,7 @@ function isFileMeta(value: unknown): value is CloudBackupFileMeta {
 
 export const BackupPreferences = {
   /**
-   * Pro entitlement as last persisted by PremiumProvider. The headless task has no React tree,
+   * Pro entitlement as last saved by the app. The headless task has no React tree,
    * so it reads the snapshot directly; the dev override (development builds only) wins, as it
    * does in the provider.
    */
@@ -41,7 +40,8 @@ export const BackupPreferences = {
         if (devOverride[1] === 'FORCED_ON') return true;
         if (devOverride[1] === 'FORCED_OFF') return false;
       }
-      return Boolean(parseJson<PremiumSnapshot>(premium[1])?.isPremium);
+      // Read with its date: a subscription that has ended stops backing up even if the app was never reopened.
+      return isPro(parseSaved(premium[1]), Date.now());
     } catch (e) {
       LoggerService.error('BACKUP_PREFS', 'Failed to read pro status', e);
       return false;
