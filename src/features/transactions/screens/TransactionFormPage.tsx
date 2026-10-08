@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { AlertDialog, Button, FormField, ListGroup, ListItem, PersonAvatar, Screen, Skeleton, SkeletonRow, Text } from '@/src/components/ui';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';

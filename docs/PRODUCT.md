@@ -91,6 +91,8 @@ the others under "Coming to Pro, included in your purchase".
 
 ## Plans and pricing
 
+The app is on Android only for now; everything below about stores means Google Play.
+
 Pro is sold three ways from the redesign onwards (owner's decision,
 2026-10-08). All three unlock exactly the same features.
 
@@ -129,7 +131,7 @@ pressure:
 
 | Needed | Where |
 | --- | --- |
-| Re-enable the existing monthly and yearly subscription products: `luno_monthly`, `luno_yearly` on Android; `com.luno.monthly`, `com.luno.yearly` on iOS (created before launch, never sold) | Play Console and App Store Connect |
+| Re-enable the existing monthly and yearly subscription products: `luno_monthly`, `luno_yearly` (created before launch, never sold). Done by the owner, 2026-10-09 | Play Console |
 | Final prices for the three plans | Both stores |
 | Store listing and screenshots: remove "No subscriptions" wording | Both stores |
 | Subscription terms and auto-renewal disclosure next to the buy button; updated privacy policy and terms | Paywall and website |

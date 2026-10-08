@@ -8,13 +8,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/src/hooks/use-color-scheme';
 import { AppConfigProvider } from '@/src/providers/AppConfigProvider';
 import { AppLockProvider } from '@/src/providers/AppLockProvider';
-import { DatabaseProvider } from '@/src/providers/DatabaseProvider';
 import { TelemetryProvider } from '@/src/providers/TelemetryProvider';
 import { OnboardingProvider } from '@/src/providers/OnboardingProvider';
 import { PremiumProvider } from '@/src/providers/PremiumProvider';
-import { QueryProvider } from '@/src/providers/QueryProvider';
-import { SettingsProvider } from '@/src/providers/SettingsProvider';
-import { I18nProvider } from '@/src/providers/I18nProvider';
+import { QueryProvider } from '@/data/QueryProvider';
+import { SettingsProvider , I18nProvider } from '@/features/settings';
 import { ThemeProvider as CustomThemeProvider } from '@/src/providers/ThemeProvider';
 import { NotificationService } from '@/platform/notifications/notifications';
 import { ReviewPromptService } from '@/platform/config/review-prompt';
@@ -30,6 +28,7 @@ import { unlockDatabaseIfLocked } from '@/data/db/client';
 import { syncBackgroundBackupTask } from '@/platform/backup/background-backup.task';
 import { AppState, AppStateStatus } from 'react-native';
 import { FONT_ASSETS } from '@/design';
+import { AppTheme, DatabaseGate } from '@/features/shell';
 import React, { useEffect, useState } from 'react';
 import { LoggerService } from '@/shared/logging/logger';
 
@@ -84,7 +83,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <QueryProvider>
-          <DatabaseProvider>
+          <DatabaseGate>
             <SettingsProvider>
               <I18nProvider>
               <PremiumProvider>
@@ -92,6 +91,7 @@ export default function RootLayout() {
                   <OnboardingProvider>
                     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                       <CustomThemeProvider>
+                        <AppTheme>
                           <AppLockProvider>
                             <AppConfigProvider>
                               <Stack screenOptions={{ headerShown: false }} />
@@ -99,6 +99,7 @@ export default function RootLayout() {
                               <StatusBar style="auto" />
                             </AppConfigProvider>
                           </AppLockProvider>
+                        </AppTheme>
                       </CustomThemeProvider>
                     </ThemeProvider>
                   </OnboardingProvider>
@@ -106,7 +107,7 @@ export default function RootLayout() {
               </PremiumProvider>
               </I18nProvider>
             </SettingsProvider>
-          </DatabaseProvider>
+          </DatabaseGate>
         </QueryProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

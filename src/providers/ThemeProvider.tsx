@@ -18,7 +18,7 @@ import {
   tabBarClearance,
 } from '@/src/theme/tokens';
 import { TYPOGRAPHY } from '@/src/theme/typography';
-import { useSettings } from './SettingsProvider';
+import { useSettings } from '@/features/settings';
 
 export type { ThemeColors, HeroCardPalette };
 

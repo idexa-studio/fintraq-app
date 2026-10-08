@@ -19,7 +19,7 @@ import { useDeleteTransaction, useInfiniteTransactions, useTransactionTotals } f
 import { SortOption, useTransactionFilters } from '@/src/features/transactions/hooks/useTransactionFilters';
 import { useTransactionSummary } from '@/src/features/transactions/hooks/useTransactionSummary';
 import { FeatureTip } from '@/src/features/walkthrough';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { groupByDay } from '@/shared/calc/transactions';
 

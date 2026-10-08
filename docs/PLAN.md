@@ -26,11 +26,11 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 56 | 56 | Complete |
-| C | Groundwork: shared, data, platform, shell | 86 | 47 | In progress |
+| C | Groundwork: shared, data, platform, shell | 86 | 51 | In progress |
 | D | Screens at parity with the shipped app | 142 | 0 |  |
-| E | Pro: three plans and gating | 27 | 0 |  |
+| E | Pro: three plans and gating | 26 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
-| G | Release 1: the redesign | 24 | 0 |  |
+| G | Release 1: the redesign | 22 | 0 |  |
 | H | Release 2: repeating items, budgets, net worth trend | 41 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
 
@@ -244,15 +244,16 @@ go to `shared/calc`.
 
 ### C7. App state
 - [x] C7.01 One module for the saved profile, `shared/settings/profile.ts`, reading the same `@fintraq_profile` key, with a test that older saved profiles still load. All five places that read or wrote the key directly now go through it
-- [ ] C7.07 Rebuild the settings provider in the new tree on top of it
-- [ ] C7.02 Bind `design`'s `ThemeProvider` to the saved theme setting and the system scheme
-- [ ] C7.03 Onboarding state reading the same `@fintraq_onboarded` key
-- [ ] C7.04 Lock state provider on `platform/lock`
-- [ ] C7.05 Telemetry provider: same consent key, same default
-- [ ] C7.06 Query client provider
+- [x] C7.07 Settings and language providers to `features/settings`, used through its index
+- [x] C7.02 `features/shell/AppTheme`: binds `design`'s `ThemeProvider` to the saved appearance setting, the system scheme, and the type ramp for the app's language
+- [ ] C7.03 Onboarding state reading the same `@fintraq_onboarded` key (its legacy provider draws legacy UI; rebuilt with first run, D2)
+- [ ] C7.04 Lock state provider on `platform/lock` (rebuilt with the lock screen, D1)
+- [ ] C7.05 Telemetry provider: same consent key, same default (depends on the Pro state; rebuilt with E2)
+- [x] C7.06 Query client provider to `data/QueryProvider.tsx`
+- [x] C7.08 `features/shell/DatabaseGate`: migrations and data fixes before anything renders, with its waiting and failure screens on the new design
 
 ### C8. Shell and navigation
-- [ ] C8.01 New root layout: fonts, splash, old-database rename, providers, in the order the legacy root uses
+- [ ] C8.01 Root layout moves into `features/shell` once the last legacy provider it mounts is rebuilt; until then `app/_layout.tsx` composes old and new
 - [ ] C8.02 Tab layout using `TabBar`: Home, Activity, Add, Plan, Insights
 - [ ] C8.03 Centre Add opens the entry task, not a tab
 - [ ] C8.04 Task presentation (rises, serif header, close) and push presentation defined once
@@ -260,7 +261,7 @@ go to `shared/calc`.
 - [ ] C8.06 Status bar style follows the scheme
 - [ ] C8.07 Lock overlay above everything, including tasks
 - [ ] C8.08 Splash, adaptive icon and notification colours updated to the new palette in `app.json`
-- [ ] C8.09 New screens are built behind a developer switch so the shipped screens stay the default until G
+- [ ] ~~C8.09 A developer switch between old and new screens~~ Dropped: the `reboot` branch is the switch. 1.2.4 keeps shipping from `develop`, so each legacy screen is simply replaced in place here, with no second navigation tree to maintain
 
 ### C9. Old paths keep working
 - [ ] C9.01 `/transactions/create?type=DR|CR|TR` redirects to `/add?kind=…`
@@ -480,7 +481,7 @@ both stores' test accounts, and every gate reads from `features/pro`.
 
 ### E1. Store side (owner)
 - [ ] E1.01 Owner: enable `luno_monthly` and `luno_yearly` in Play Console
-- [ ] E1.02 Owner: confirm and enable `com.luno.monthly` and `com.luno.yearly` in App Store Connect
+- [ ] ~~E1.02 Confirm and enable the iOS products~~ Not applicable: the app is Android only for now (owner, 2026-10-09). The iOS ids in the contract are reserved for when an iOS app exists
 - [ ] E1.03 Owner: set the three prices so lifetime is the obvious deal
 - [ ] E1.04 Owner: licence-testing and sandbox accounts available for testing
 
@@ -548,7 +549,7 @@ Done when: the redesign is live to all users with no data loss reported.
 
 ### G2. Quality
 - [ ] G2.01 Full pass on a small Android phone (360dp) and a large one
-- [ ] G2.02 Full pass on iOS (small and large)
+- [ ] ~~G2.02 Full pass on iOS~~ Not applicable: Android only for now
 - [ ] G2.03 Android three-button and gesture navigation
 - [ ] G2.04 Dark and light, largest font size, screen reader, on the main flows
 - [ ] G2.05 Cold start time and list scrolling compared with 1.2.4
@@ -570,7 +571,7 @@ Done when: the redesign is live to all users with no data loss reported.
 ### G4. Rollout
 - [ ] G4.01 Internal track, then closed testers
 - [ ] G4.02 Staged rollout on Play: 5%, 20%, 50%, 100%, watching crashes and reviews at each step
-- [ ] G4.03 iOS phased release
+- [ ] ~~G4.03 iOS phased release~~ Not applicable: Android only for now
 - [ ] G4.04 Owner: go or no-go at each step
 
 ---

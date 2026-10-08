@@ -24,7 +24,7 @@ import { useGettingStarted } from '@/src/features/dashboard/hooks/useGettingStar
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { useTransactions } from '@/src/features/transactions/hooks/transactions';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
-import { useSettings } from '@/src/providers/SettingsProvider';
+import { useSettings } from '@/features/settings';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 const RECENT_COUNT = 5;
