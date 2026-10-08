@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Platform } from 'react-native';
 import { QUERY_KEYS } from '@/data/query-keys';
-import { usePremium } from '@/src/providers/PremiumProvider';
+import { usePro } from '@/features/pro';
 import { runAutoBackupIfDue } from '@/platform/backup/auto-backup';
 import { syncBackgroundBackupTask } from '@/platform/backup/background-backup.task';
 import { BackupPreferences } from '@/platform/backup/backup-preferences';
@@ -19,8 +19,9 @@ const NO_PROMPTS: SetAutoBackupResult = { blockedByNotifications: false, showBat
 const switchKey = QUERY_KEYS.backup.autoBackupSwitch();
 
 /** Applies the switch everywhere it matters: persisted pref, OS task, and a first run if due. */
-async function applyAutoBackup(enabled: boolean, isPremium: boolean): Promise<SetAutoBackupResult> {
-  if (enabled && !isPremium) return NO_PROMPTS;
+async function applyAutoBackup(enabled: boolean): Promise<SetAutoBackupResult> {
+  // Read from what is saved, so a purchase made a moment ago counts without waiting for a screen to refresh.
+  if (enabled && !(await BackupPreferences.isProEntitled())) return NO_PROMPTS;
 
   // Notifications are required, not advisory: backup status and "reconnect" alerts go through
   // them. Same hard gate the daily-reminder toggle uses — denied means nothing is enabled.
@@ -43,7 +44,7 @@ async function applyAutoBackup(enabled: boolean, isPremium: boolean): Promise<Se
 /** The auto-backup switch. Effective only for Pro users, whatever was persisted. */
 export function useAutoBackupSetting() {
   const queryClient = useQueryClient();
-  const { isPremium } = usePremium();
+  const { isPro } = usePro();
 
   const query = useQuery({
     queryKey: switchKey,
@@ -54,16 +55,13 @@ export function useAutoBackupSetting() {
 
   const mutation = useMutation({
     retry: false,
-    mutationFn: (enabled: boolean) => applyAutoBackup(enabled, isPremium),
-    onSuccess: (result, enabled) => {
-      if (!result.blockedByNotifications && (isPremium || !enabled)) {
-        queryClient.setQueryData(switchKey, enabled);
-      }
-    },
+    mutationFn: (enabled: boolean) => applyAutoBackup(enabled),
+    // Whatever was asked for, show what was actually saved.
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: switchKey }),
   });
 
   return {
-    autoBackupEnabled: isPremium && query.data === true,
+    autoBackupEnabled: isPro && query.data === true,
     setAutoBackupEnabled: mutation.mutateAsync,
     isUpdating: mutation.isPending,
   };

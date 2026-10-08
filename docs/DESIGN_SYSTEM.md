@@ -193,6 +193,13 @@ use it.
   underneath. A choice among a few marked things is a `MarkGrid`, picked in
   one tap, not a field that opens a list. Optional details stay folded
   behind one row. Build the next forms (category, person, loan) the same way.
+- **Show the thing, not a list about it.** Where a screen has one subject,
+  it opens on a picture of that subject built from the system's own marks,
+  and the picture carries the state. Backup is the phone and the Drive with
+  the line between them: dotted with nothing there, solid once backed up,
+  filling towards the Drive during a backup and back towards the phone
+  during a restore (`BackupLink`). A stack of rows is what is left when no
+  such picture exists (owner, 2026-10-08: "be more creative everywhere").
 - **Adding a transaction** is the reference's form inside that sheet: kind
   as a `TabStrip` under the header, the amount as the one large thing
   (`AmountField`), then labelled cards ("From:", "Details:") and outlined

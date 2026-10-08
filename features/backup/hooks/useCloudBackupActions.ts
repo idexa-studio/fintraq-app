@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AppState } from 'react-native';
 import i18n from '@/shared/i18n';
-import { usePremium } from '@/src/providers/PremiumProvider';
+import { BackupPreferences } from '@/platform/backup/backup-preferences';
 import type { CloudBackupFileMeta } from '@/platform/backup/backup.types';
 import { runCloudBackup } from '@/platform/backup/cloud-backup';
 import { runCloudRestore } from '@/platform/backup/cloud-restore';
@@ -13,17 +13,20 @@ import {
 } from '@/platform/drive/google-drive.errors';
 import { ReviewPromptService } from '@/platform/config/review-prompt';
 
-/** Errors shown in-app: the ones with a specific remedy keep their meaning, the rest are generic. */
+/**
+ * Errors carry a sentence a person can read, in their language. What went wrong stays on
+ * `cause`, so a screen can say what to do about it (see `failureOf`).
+ */
 function toBackupError(error: unknown): unknown {
-  if (isBackupInProgressError(error)) return new Error(i18n.t('backup.errInProgress'));
-  if (isAuthError(error)) return new Error(i18n.t('backup.errSessionExpired'));
-  return new Error(i18n.t('backup.errSaveDrive'));
+  if (isBackupInProgressError(error)) return new Error(i18n.t('backup.errInProgress'), { cause: error });
+  if (isAuthError(error)) return new Error(i18n.t('backup.errSessionExpired'), { cause: error });
+  return new Error(i18n.t('backup.errSaveDrive'), { cause: error });
 }
 
 function toRestoreError(error: unknown): unknown {
   if (isNoBackupError(error)) return error;
-  if (isBackupInProgressError(error)) return new Error(i18n.t('backup.errInProgress'));
-  if (isAuthError(error)) return new Error(i18n.t('backup.errSessionExpired'));
+  if (isBackupInProgressError(error)) return new Error(i18n.t('backup.errInProgress'), { cause: error });
+  if (isAuthError(error)) return new Error(i18n.t('backup.errSessionExpired'), { cause: error });
   return error;
 }
 
@@ -33,12 +36,11 @@ function toRestoreError(error: unknown): unknown {
  */
 export function useCloudBackupActions() {
   const queryClient = useQueryClient();
-  const { isPremium } = usePremium();
 
   const backup = useMutation({
     retry: false,
     mutationFn: async (): Promise<CloudBackupFileMeta> => {
-      if (!isPremium) throw new CloudBackupProRequiredError();
+      if (!(await BackupPreferences.isProEntitled())) throw new CloudBackupProRequiredError();
       try {
         return await runCloudBackup({
           trigger: 'manual',
@@ -57,7 +59,7 @@ export function useCloudBackupActions() {
   const restore = useMutation({
     retry: false,
     mutationFn: async (): Promise<CloudBackupFileMeta> => {
-      if (!isPremium) throw new CloudBackupProRequiredError();
+      if (!(await BackupPreferences.isProEntitled())) throw new CloudBackupProRequiredError();
       try {
         return await runCloudRestore();
       } catch (e) {

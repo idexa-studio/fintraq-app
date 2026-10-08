@@ -33,11 +33,7 @@ import React, { useCallback, useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
-import { useAutoBackupSetting } from '@/src/features/backup/hooks/useAutoBackupSetting';
-import { useBackupAccount, useConnectBackupAccount, useDisconnectBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
-import { useBackupProgress } from '@/src/features/backup/hooks/useBackupProgress';
-import { useCloudBackupActions } from '@/src/features/backup/hooks/useCloudBackupActions';
-import { useEnableCloudBackup } from '@/src/features/backup/hooks/useEnableCloudBackup';
+import { useAutoBackupSetting, useBackupAccount, useBackupProgress, useCloudBackupActions, useConnectBackupAccount, useDisconnectBackupAccount, useEnableCloudBackup } from '@/features/backup';
 import { openAppSettings } from '@/platform/backup/battery-optimization';
 
 import { CloudBackupChoice, CloudBackupStep } from '@/src/features/onboarding/components/CloudBackupStep';

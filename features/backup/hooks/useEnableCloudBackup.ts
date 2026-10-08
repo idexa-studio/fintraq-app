@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import type { GoogleUserAccount } from '@/platform/backup/backup.types';
-import { useAutoBackupSetting, type SetAutoBackupResult } from './useAutoBackupSetting';
-import { useBackupAccount, useConnectBackupAccount } from './useBackupAccount';
+import { useAutoBackupSetting, type SetAutoBackupResult } from '@/features/backup/hooks/useAutoBackupSetting';
+import { useBackupAccount, useConnectBackupAccount } from '@/features/backup/hooks/useBackupAccount';
 
 export type EnableCloudBackupResult =
   | { status: 'cancelled' }

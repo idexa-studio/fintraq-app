@@ -53,6 +53,8 @@ export function Card({ children, onPress, padded = true, selected = false, muted
 export type CardAction = {
   label: string;
   onPress?: () => void;
+  /** Cannot be used now. The card itself says why. */
+  disabled?: boolean;
 };
 
 export type CardActionsProps = {
@@ -70,8 +72,8 @@ export function CardActions({ actions }: CardActionsProps) {
         {actions.map((action, i) => (
           <React.Fragment key={action.label}>
             {i > 0 ? <Divider vertical /> : null}
-            <Touchable onPress={action.onPress} accessibilityLabel={action.label} style={styles.action}>
-              <Text variant="action" align="center" numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.8}>{action.label}</Text>
+            <Touchable onPress={action.onPress} disabled={action.disabled} accessibilityLabel={action.label} accessibilityState={{ disabled: !!action.disabled }} style={styles.action}>
+              <Text variant="action" tone={action.disabled ? 'disabled' : 'default'} align="center" numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.8}>{action.label}</Text>
             </Touchable>
           </React.Fragment>
         ))}

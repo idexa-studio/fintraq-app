@@ -21,7 +21,7 @@ import {
 import type { IconSource } from '@/src/components/ui';
 import { PrivacySheet } from '@/src/features/settings/components/PrivacySheet';
 import { DEFAULT_CURRENCY, getCurrencySymbol } from '@/shared/currency/currencies';
-import { useBackupAccount } from '@/src/features/backup/hooks/useBackupAccount';
+import { useBackupAccount } from '@/features/backup';
 import { PinSetupModal } from '@/src/features/lock/components/PinSetupModal';
 import { useLockSetting } from '@/src/features/lock/hooks/useLockSetting';
 import { ProfileCard } from '@/src/features/settings/components/ProfileCard';

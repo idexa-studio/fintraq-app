@@ -7,7 +7,7 @@ import { getBackupState, subscribeToBackupState } from '@/platform/backup/backup
 import { isTransientDriveError } from '@/platform/drive/google-drive.errors';
 import { GoogleDriveService } from '@/platform/drive/google-drive';
 import { LoggerService } from '@/shared/logging/logger';
-import { useBackupAccount } from './useBackupAccount';
+import { useBackupAccount } from '@/features/backup/hooks/useBackupAccount';
 
 const STALE_MS = 5 * 60 * 1000;
 

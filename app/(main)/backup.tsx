@@ -1,3 +1,1 @@
-import { BackupScreen } from '@/src/features/backup/screens/BackupScreen';
-
-export default BackupScreen;
+export { BackupScreen as default } from '@/features/backup';

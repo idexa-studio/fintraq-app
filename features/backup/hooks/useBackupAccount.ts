@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { QUERY_KEYS } from '@/data/query-keys';
-import { usePremium } from '@/src/providers/PremiumProvider';
 import type { GoogleUserAccount } from '@/platform/backup/backup.types';
 import { BackupPreferences } from '@/platform/backup/backup-preferences';
 import { CloudBackupProRequiredError } from '@/platform/drive/google-drive.errors';
@@ -36,12 +35,11 @@ export function useBackupAccount() {
 /** Google sign-in. Never retried automatically — a retry would reopen the sign-in sheet. */
 export function useConnectBackupAccount() {
   const queryClient = useQueryClient();
-  const { isPremium } = usePremium();
 
   return useMutation({
     retry: false,
     mutationFn: async (): Promise<GoogleUserAccount | null> => {
-      if (!isPremium) throw new CloudBackupProRequiredError();
+      if (!(await BackupPreferences.isProEntitled())) throw new CloudBackupProRequiredError();
       return GoogleDriveService.signIn();
     },
     onSuccess: (account) => {
