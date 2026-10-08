@@ -2,3 +2,4 @@
 export { AppTabBar } from './AppTabBar';
 export { AppTheme } from './AppTheme';
 export { DatabaseGate } from './DatabaseGate';
+export { addPathFromLegacy, editPathFromLegacy } from './legacy-paths';

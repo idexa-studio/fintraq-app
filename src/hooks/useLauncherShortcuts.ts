@@ -14,9 +14,9 @@ type Shortcut = { id: ShortcutId; href: string; iosIcon: string; androidIcon: st
 // generated from app.json's expo-quick-actions `androidIcons`; iOS uses SF Symbols so they sit
 // naturally beside the system's own menu items.
 const SHORTCUTS: Shortcut[] = [
-  { id: 'expense', href: '/transactions/create?type=DR', iosIcon: 'symbol:arrow.up.right', androidIcon: 'shortcut_expense' },
-  { id: 'income', href: '/transactions/create?type=CR', iosIcon: 'symbol:arrow.down.left', androidIcon: 'shortcut_income' },
-  { id: 'transfer', href: '/transactions/create?type=TR', iosIcon: 'symbol:arrow.left.arrow.right', androidIcon: 'shortcut_transfer' },
+  { id: 'expense', href: '/add?kind=expense', iosIcon: 'symbol:arrow.up.right', androidIcon: 'shortcut_expense' },
+  { id: 'income', href: '/add?kind=income', iosIcon: 'symbol:arrow.down.left', androidIcon: 'shortcut_income' },
+  { id: 'transfer', href: '/add?kind=transfer', iosIcon: 'symbol:arrow.left.arrow.right', androidIcon: 'shortcut_transfer' },
   { id: 'loan', href: '/(main)/loans/form', iosIcon: 'symbol:banknote', androidIcon: 'shortcut_loan' },
 ];
 

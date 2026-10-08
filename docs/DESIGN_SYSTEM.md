@@ -151,7 +151,10 @@ use it.
 - **Design the state, not the error.** A control that cannot work yet is
   disabled and the reason is visible. Work in progress keeps the button's
   colour and shows a spinner.
-- **Adding a transaction** is a single-page form. `CardStack` (one question
+- **Adding a transaction** is a single-page form in the reference's pattern:
+  labelled cards ("From:", "Details:"), outlined fields with the label
+  inside, the phone's own keyboard. No page-filling custom keypad; the
+  `Keypad` is for the calculator sheet and the PIN. `CardStack` (one question
   per card) is for first-run setup and other guided, once-only flows.
 - **Empty:** a whole empty screen gets `EmptyState` (emblem, bold title, a
   sentence, the first step). One empty section among others gets the

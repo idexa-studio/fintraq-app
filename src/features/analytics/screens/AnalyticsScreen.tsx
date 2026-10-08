@@ -176,7 +176,7 @@ export const AnalyticsScreen = React.memo(function AnalyticsScreen() {
             title={t('analytics.emptyTitle')}
             description={t('analytics.emptyHint')}
             actionLabel={t('dashboard.addTransaction')}
-            onAction={() => router.push('/transactions/create')}
+            onAction={() => router.push('/add')}
           />
           <View style={styles.emptyFeatures}>
             {EMPTY_FEATURES.map((f) => (

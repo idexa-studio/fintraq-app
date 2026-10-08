@@ -89,7 +89,7 @@ export const TransactionsScreen = React.memo(function TransactionsScreen() {
   );
   const addTransaction = useCallback(() => {
     tap();
-    router.push('/transactions/create');
+    router.push('/add');
   }, [router]);
   const openTransaction = useCallback((tx: TransactionListItem) => router.push(`/transactions/${tx.id}`), [router]);
 

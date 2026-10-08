@@ -29,7 +29,7 @@ export function AppTabBar({ state, navigation }: BottomTabBarProps) {
 
   const select = (key: TabKey) => {
     if (key === 'add') {
-      router.push('/transactions/create');
+      router.push('/add');
       return;
     }
     const route = state.routes.find((r) => r.name === key);

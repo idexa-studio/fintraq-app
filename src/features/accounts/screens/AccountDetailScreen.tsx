@@ -56,7 +56,7 @@ export const AccountDetailScreen = React.memo(function AccountDetailScreen() {
   const color = colorNumberToHex(account.color);
   const type = account.accountType as AccountType | null;
   const masked = account.accountNumber && account.accountNumber !== 'N/A' ? `•••• ${account.accountNumber.slice(-4)}` : null;
-  const addTransaction = () => router.push(`/transactions/create?accountId=${account.id}`);
+  const addTransaction = () => router.push({ pathname: '/add', params: { accountId: account.id } });
 
   return (
     <Screen
