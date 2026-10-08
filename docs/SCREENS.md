@@ -126,7 +126,13 @@ in and finish).
 | `/pro` | Paywall: pillars, three plans, lifetime first | `pro` | task | n/a |
 | `/pro/welcome` | Purchase complete | `pro` | task | n/a |
 
-### Developer (hidden, development builds and PIN)
+### Developer
+
+No PIN (owner, 2026-10-08). A development build has a "Developer options"
+row in Settings. A release build has no way in from the app and opens the
+tools only by link (`adb shell am start -d luno://developer me.nafish.luno`);
+there it shows diagnostics only, and nothing that changes a user's records
+or unlocks Pro.
 
 | Route | Screen | Feature |
 | --- | --- | --- |
