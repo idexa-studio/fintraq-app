@@ -109,20 +109,28 @@ Three behaviours are built in and must not be worked around:
 
 ## The app icon and splash (`assets/brand/`, `assets/images/`)
 
-The mark is a coin over two bars. It is drawn flat in the system's own colours:
-the coin and the upper bar in `accent`, the lower bar white on black and black
-on the light page. No gradient, no glow.
+The mark is a stack of coins: a white coin resting on a black one, both seen
+from the edge, and a green one falling onto them (owner, 2026-10-08: "a stack
+of coins, and the top is just adding into the stack"). It is drawn the way the
+screens are: flat, on the grey page, every outline one black line, the falling
+coin in the pastel green of the icon circles. No gradient, no glow.
 
 | Where | Ground | Mark |
 | --- | --- | --- |
-| App icon, adaptive icon, dark splash, shortcuts | Black | Accent and white |
-| Light splash | `background` (#F1F1F1) | Accent and black |
-| Themed icon, notification icon | The system's | One colour |
+| App icon, adaptive icon, light splash | `background` (#F1F1F1) | Black line, white coin, pastel green coin |
+| Dark splash, iOS dark icon | Black | The same with the line in white and the white coin in the dark `surface` |
+| Themed icon, notification icon | The system's | One colour: the white coin is an outline |
+| Launcher shortcuts | Pastel green | A black glyph from `design/icons/`, as an icon circle |
+
+Sizes follow each platform's rule, and are written with their reasons in the
+script: the mark is 54% of the icon a launcher shows and inside the adaptive
+icon's safe circle; the splash mark stays inside Android's splash circle; the
+notification icon keeps 2dp of padding; a shortcut glyph is 24dp in 48dp.
 
 Every file is drawn by `scripts/generate-brand.js` from one description of the
 mark; change it there and run `npm run brand:generate` (its header says how).
-Never edit the PNGs by hand. The launcher shortcut icons are glyphs from
-`design/icons/`, drawn by the same script.
+Never edit the PNGs by hand. The gallery's hidden `brand` section draws the
+same mark at launcher size, to look at on a phone before building.
 
 ## Icons (`design/icons/`)
 
