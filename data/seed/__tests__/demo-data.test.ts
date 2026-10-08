@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { buildRows } from '@/src/utils/seed';
+import { buildRows } from '@/data/seed/demo-data';
 
 jest.mock('@/data/db/client', () => ({ db: {} }));
 jest.mock('@/shared/logging/logger', () => ({ LoggerService: { error: jest.fn() } }));

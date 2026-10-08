@@ -1,5 +1,1 @@
-import { AppLogsScreen } from '@/src/features/developer/screens/AppLogsScreen';
-
-export default function Screen() {
-  return <AppLogsScreen />;
-}
+export { LogsScreen as default } from '@/features/developer';

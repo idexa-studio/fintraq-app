@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 158 | 101 | In progress |
+| D | Screens at parity with the shipped app | 157 | 102 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -222,7 +222,7 @@ go to `shared/calc`.
 - [ ] ~~C4.15 Legacy `api/` files become one-line re-exports~~ Dropped: a re-export is a patch. Each move rewrites every importer to the new path in the same change, as C1 did
 - [x] C4.16 Pure calculations to `shared/calc/` with their tests: `analytics.ts`, `month.ts` (month pulse and heat calendar), `transfers.ts` (which accounts can transfer to which), `transactions.ts` (totals by currency, grouping by day)
 - [x] C4.17 Device: transactions, analytics, accounts, people, loans and categories screens all show their data on the moved queries
-- [ ] C4.18 `net-worth.ts` moves with the accounts screens (D7), `after-ledger-write.ts` with reminders (C6.04), and the demo-data seeder with the developer tools (D17): each still depends on code that has not moved
+- [ ] C4.18 `net-worth.ts` moves with the accounts screens (D7, done), `after-ledger-write.ts` with reminders (C6.04), and the demo-data seeder with the developer tools (D17, done: `data/seed/demo-data.ts`)
 
 ### C5. `data/backup`
 - [x] C5.01 The snapshot format (`backup-snapshot.ts`) to `data/backup/snapshot.ts`. Writing and restoring a backup need device APIs and the app version, so `database-backup` and the backup types live in `platform/backup`
@@ -490,10 +490,10 @@ Built in `features/backup` on 2026-10-08 and seen on a device only as far as the
 - [ ] D16.12 Shared checklist
 
 ### D17. Developer and system screens
-- [ ] D17.01 Developer tools and logs on the new components (English only)
-- [ ] D17.02 Force-update screen
-- [ ] D17.03 Error boundary screen
-- [ ] D17.04 Feature tips at the same first-time moments, same storage keys
+- [x] D17.01 Developer tools and logs on the new components (English only)
+- [ ] D17.02 Force-update screen (built in `features/shell`; not seen: it needs the remote setting switched on)
+- [ ] D17.03 Error boundary screen (built in `features/shell`; not seen: it needs a screen to fail)
+- [ ] ~~D17.04 Feature tips at the same first-time moments, same storage keys~~ Dropped: the tips pointed at controls of the old screens, none of which exist now, and the rebuilt screens explain themselves with a line under each section title and an empty state with a first step. Their storage keys stay in the erase list so old installs are still cleaned
 - [ ] D17.05 Shared checklist
 
 ---
