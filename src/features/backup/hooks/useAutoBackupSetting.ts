@@ -2,11 +2,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Platform } from 'react-native';
 import { QUERY_KEYS } from '@/data/query-keys';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
-import { syncBackgroundBackupTask } from '@/src/services/backup/background-backup.task';
-import { BackupPreferences } from '@/src/services/backup/backup-preferences';
+import { runAutoBackupIfDue } from '@/platform/backup/auto-backup';
+import { syncBackgroundBackupTask } from '@/platform/backup/background-backup.task';
+import { BackupPreferences } from '@/platform/backup/backup-preferences';
 import { LoggerService } from '@/shared/logging/logger';
-import { NotificationService } from '@/src/services/notification.service';
+import { NotificationService } from '@/platform/notifications/notifications';
 
 export type SetAutoBackupResult = {
   /** Notification permission was denied, so nothing was enabled. */

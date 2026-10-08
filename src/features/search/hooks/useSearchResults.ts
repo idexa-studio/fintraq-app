@@ -5,7 +5,7 @@ import type { Person } from '@/data/repositories/people';
 import { useGlobalSearch } from '@/src/features/search/hooks/useGlobalSearch';
 import { useRecentSearches } from '@/src/features/search/hooks/useRecentSearches';
 import type { TransactionListItem } from '@/data/repositories/transactions';
-import { Analytics, resultBucket } from '@/src/services/telemetry';
+import { Analytics, resultBucket } from '@/platform/telemetry';
 
 export type SearchKind = 'transactions' | 'accounts' | 'categories' | 'persons';
 

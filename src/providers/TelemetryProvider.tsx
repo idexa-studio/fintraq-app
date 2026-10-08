@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { useSettings } from '@/src/providers/SettingsProvider';
-import { Analytics, Crashlytics, screenNameFromSegments } from '@/src/services/telemetry';
+import { Analytics, Crashlytics, screenNameFromSegments } from '@/platform/telemetry';
 
 /**
  * Wires Firebase Analytics and Crashlytics to app state: the user's "Share usage data" choice,

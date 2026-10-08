@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/data/query-keys';
-import { markLoggedToday } from '@/src/services/reminders/reminder-sync';
-import { afterLedgerWrite } from '@/src/lib/after-ledger-write';
+import { markLoggedToday } from '@/platform/notifications/reminder-sync';
+import { afterLedgerWrite } from '@/platform/notifications/after-ledger-write';
 import * as api from '@/data/repositories/transactions';
 
 export const useTransactions = (limit: number = 20, filters: api.TransactionFilters = {}) => {

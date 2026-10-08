@@ -9,7 +9,7 @@ import { isProFeatureId } from '@/src/features/premium/pro-features';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { HeroCardPalette, ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { Analytics } from '@/src/services/telemetry';
+import { Analytics } from '@/platform/telemetry';
 
 /**
  * The paywall. Opened from a locked feature it leads with that feature ("You tried this"), then

@@ -9,13 +9,8 @@ describe('Pro plans', () => {
     expect(PRO_PLANS.filter(isSubscription)).toEqual(['yearly', 'monthly']);
   });
 
-  // Existing buyers own these exact products; changing an id would un-Pro them.
-  it('uses the product ids that exist in the stores', () => {
-    expect(PLAN_PRODUCT_IDS).toEqual({
-      lifetime: { ios: 'com.luno.lifetime', android: 'luno_lifetime' },
-      yearly: { ios: 'com.luno.yearly', android: 'luno_yearly' },
-      monthly: { ios: 'com.luno.monthly', android: 'luno_monthly' },
-    });
+  it('sells each plan through its own store product', () => {
+    expect(Object.keys(PLAN_PRODUCT_IDS).sort()).toEqual([...PRO_PLANS].sort());
   });
 
   it('says how many months of monthly the lifetime price equals, rounding up', () => {

@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import { getBackupState, subscribeToBackupState } from '@/src/services/backup/backup-state';
+import { getBackupState, subscribeToBackupState } from '@/platform/backup/backup-state';
 
 export type BackupProgress = {
   isBackingUp: boolean;

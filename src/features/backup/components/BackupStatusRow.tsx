@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { BentoPressable, Icon, Text } from '@/src/components/ui';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { CloudBackupFileMeta } from '@/src/services/backup/backup.types';
+import type { CloudBackupFileMeta } from '@/platform/backup/backup.types';
 import { alpha } from '@/src/theme/tokens';
 import { formatBackupTimestamp } from '@/shared/date/date';
 import { formatFileSize } from '@/shared/format/file-size';

@@ -5,9 +5,9 @@ import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { db } from '@/data/db/client';
 import { accounts, categories, loans, payments, persons } from '@/data/db/schema';
 import { useAppLock } from '@/src/providers/AppLockProvider';
-import { syncReminders } from '@/src/services/reminders/reminder-sync';
-import { BackupPreferences } from '@/src/services/backup/backup-preferences';
-import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
+import { syncReminders } from '@/platform/notifications/reminder-sync';
+import { BackupPreferences } from '@/platform/backup/backup-preferences';
+import { GoogleDriveService } from '@/platform/drive/google-drive';
 
 /**
  * User-facing state a reset clears. Infra keys (purchases, review-prompt timing, migrations) stay,

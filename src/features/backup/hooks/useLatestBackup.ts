@@ -1,11 +1,11 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { QUERY_KEYS } from '@/data/query-keys';
-import type { CloudBackupFileMeta } from '@/src/services/backup/backup.types';
-import { BackupPreferences } from '@/src/services/backup/backup-preferences';
-import { getBackupState, subscribeToBackupState } from '@/src/services/backup/backup-state';
-import { isTransientDriveError } from '@/src/services/backup/google-drive.errors';
-import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
+import type { CloudBackupFileMeta } from '@/platform/backup/backup.types';
+import { BackupPreferences } from '@/platform/backup/backup-preferences';
+import { getBackupState, subscribeToBackupState } from '@/platform/backup/backup-state';
+import { isTransientDriveError } from '@/platform/drive/google-drive.errors';
+import { GoogleDriveService } from '@/platform/drive/google-drive';
 import { LoggerService } from '@/shared/logging/logger';
 import { useBackupAccount } from './useBackupAccount';
 

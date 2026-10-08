@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { TYPOGRAPHY } from '@/src/theme/typography';
 import { RADIUS } from '@/src/theme/tokens';
-import { Crashlytics } from '@/src/services/telemetry';
+import { Crashlytics } from '@/platform/telemetry';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
 

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet } from 'react-native';
 import { Text } from '@/src/components/ui';
 import { useTheme } from '@/src/providers/ThemeProvider';
-import { getFormattedAppVersion } from '@/src/utils/version';
+import { getFormattedAppVersion } from '@/platform/config/version';
 
 const DEVELOPER_TAPS = 10;
 

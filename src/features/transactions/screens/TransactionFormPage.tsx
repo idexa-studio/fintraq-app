@@ -20,7 +20,7 @@ import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import { format } from 'date-fns';
 import { TransactionType } from '@/shared/types';
-import { Analytics, type TransactionKind } from '@/src/services/telemetry';
+import { Analytics, type TransactionKind } from '@/platform/telemetry';
 import { transferDestinations } from '@/shared/calc/transfers';
 import { repaymentType } from '@/data/repositories/ledger';
 import { useTranslation } from 'react-i18next';

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LockStorage } from '@/src/features/lock/api/lockStorage';
-import { authenticateWithBiometrics, getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
+import { LockStorage } from '@/platform/lock/lock-storage';
+import { authenticateWithBiometrics, getBiometricCapability } from '@/platform/lock/useLocalAuth';
 import { useAppLock } from '@/src/providers/AppLockProvider';
 
 /**

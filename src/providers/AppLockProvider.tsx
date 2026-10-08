@@ -1,6 +1,6 @@
 import { LockScreen } from '@/src/features/lock/components/LockScreen';
-import { LockStorage, LockMode } from '@/src/features/lock/api/lockStorage';
-import { getBiometricCapability } from '@/src/features/lock/hooks/useLocalAuth';
+import { LockStorage, LockMode } from '@/platform/lock/lock-storage';
+import { getBiometricCapability } from '@/platform/lock/useLocalAuth';
 import React, {
   createContext,
   useCallback,

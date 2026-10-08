@@ -2,10 +2,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { QUERY_KEYS } from '@/data/query-keys';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import type { GoogleUserAccount } from '@/src/services/backup/backup.types';
-import { BackupPreferences } from '@/src/services/backup/backup-preferences';
-import { CloudBackupProRequiredError } from '@/src/services/backup/google-drive.errors';
-import { GoogleDriveService } from '@/src/services/backup/google-drive.service';
+import type { GoogleUserAccount } from '@/platform/backup/backup.types';
+import { BackupPreferences } from '@/platform/backup/backup-preferences';
+import { CloudBackupProRequiredError } from '@/platform/drive/google-drive.errors';
+import { GoogleDriveService } from '@/platform/drive/google-drive';
 import { LoggerService } from '@/shared/logging/logger';
 
 const accountKey = QUERY_KEYS.backup.account();

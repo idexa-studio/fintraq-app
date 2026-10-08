@@ -26,7 +26,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 56 | 56 | Complete |
-| C | Groundwork: shared, data, platform, shell | 83 | 34 | In progress |
+| C | Groundwork: shared, data, platform, shell | 86 | 46 | In progress |
 | D | Screens at parity with the shipped app | 142 | 0 |  |
 | E | Pro: three plans and gating | 27 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
@@ -223,25 +223,28 @@ go to `shared/calc`.
 - [ ] C4.18 `net-worth.ts` moves with the accounts screens (D7), `after-ledger-write.ts` with reminders (C6.04), and the demo-data seeder with the developer tools (D17): each still depends on code that has not moved
 
 ### C5. `data/backup`
-- [ ] C5.01 Move `backup-snapshot.ts`, `backup.types.ts`, `database-backup.service.ts` to `data/backup/`
-- [ ] C5.02 `backup-snapshot.test.ts` moves with it: every older shape still restores
+- [x] C5.01 The snapshot format (`backup-snapshot.ts`) to `data/backup/snapshot.ts`. Writing and restoring a backup need device APIs and the app version, so `database-backup` and the backup types live in `platform/backup`
+- [x] C5.02 The snapshot test moves with it: every older shape still restores
 - [ ] C5.03 Add a fixture backup exported from the shipped 1.2.4 build and a test that restores it
 
 ### C6. `platform/`
-- [ ] C6.01 `platform/drive/`: `google-drive.*` with their tests
-- [ ] C6.02 `platform/backup/`: cloud backup, cloud restore, auto-backup service, triggers, background task, state, preferences, schedule, battery optimisation, with tests
-- [ ] C6.03 The background task is still defined at module load from the root layout (verify a headless run on Android)
-- [ ] C6.04 `platform/notifications/`: `notification.service.ts`, `reminders/*` with test
-- [ ] C6.05 `platform/purchases/`: `iap.service.ts`
-- [ ] C6.06 `platform/telemetry/`: all of `telemetry/` with tests
-- [ ] C6.07 `platform/lock/`: `lockStorage.ts`, `useLocalAuth`, PIN lockout rules with test
-- [ ] C6.08 `platform/config/`: remote config, app config, force update, review prompt, and `src/utils/version.ts`
-- [x] C6.09 Logger to `shared/logging/logger.ts`, not `platform/`: every layer logs, including the database layer, which may import only `shared`
-- [ ] C6.10 `platform/shortcuts/`: launcher shortcuts
-- [ ] C6.11 Check `patches/expo-background-task` still applies
+- [x] C6.01 `platform/drive/`: `google-drive.*` with their tests
+- [x] C6.02 `platform/backup/`: database backup, cloud backup, cloud restore, auto-backup, triggers, background task, state, preferences, schedule, battery optimisation, with tests
+- [ ] C6.03 The background task is still defined at module load from the root layout (verify a headless run on Android with automatic backup switched on)
+- [x] C6.04 `platform/notifications/`: notifications, reminder plan and sync with test, and `after-ledger-write`
+- [x] C6.05 `platform/purchases/`: `iap.ts`, and the development-only Pro override flag
+- [x] C6.06 `platform/telemetry/`: all of `telemetry/` with tests
+- [x] C6.07 `platform/lock/`: lock storage, `useLocalAuth`, PIN lockout rules with test
+- [x] C6.08 `platform/config/`: remote config, app config, the API client, review prompt, and `version.ts`
+- [ ] C6.09 Logger to `shared/logging/logger.ts`, not `platform/`: every layer logs, including the database layer, which may import only `shared`
+- [ ] C6.10 Launcher shortcuts hook moves with the shell (C8): it depends on the accounts feature's hooks
+- [x] C6.11 Check `patches/expo-background-task` still applies
+- [x] C6.12 Store product ids to `shared/contracts/product-ids.ts`, pinned by a test; `features/pro` reads them from there
+- [x] C6.13 Device: Home, backup, add expense and Pro screens open; reminders sync; remote config loads; Pro is still active
 
 ### C7. App state
-- [ ] C7.01 Settings store in `shared/settings/` reading the same `@fintraq_profile` key; older saved profiles still load
+- [x] C7.01 One module for the saved profile, `shared/settings/profile.ts`, reading the same `@fintraq_profile` key, with a test that older saved profiles still load. All five places that read or wrote the key directly now go through it
+- [ ] C7.07 Rebuild the settings provider in the new tree on top of it
 - [ ] C7.02 Bind `design`'s `ThemeProvider` to the saved theme setting and the system scheme
 - [ ] C7.03 Onboarding state reading the same `@fintraq_onboarded` key
 - [ ] C7.04 Lock state provider on `platform/lock`

@@ -6,7 +6,7 @@ import type { InsertAccount, UpdateAccountData } from '@/data/repositories/accou
 import { useAccounts, useCreateAccount, useUpdateAccount } from '@/src/features/accounts/hooks/accounts';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { Analytics } from '@/src/services/telemetry';
+import { Analytics } from '@/platform/telemetry';
 import type { AccountType } from '@/shared/types';
 import { parseAmountInput } from '@/shared/format/amount';
 import { colorNumberToHex, toDbColor } from '@/shared/format/color';
