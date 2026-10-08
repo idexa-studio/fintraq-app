@@ -120,8 +120,8 @@ in and finish).
 | --- | --- | --- | --- | --- |
 | `/settings` | Settings: profile, currency, language, appearance, reminder | `settings` | push | Free |
 | `/settings/security` | App lock: PIN, biometrics | `lock` | push | Free |
-| `/settings/backup` | Backup: file (free), automatic cloud (Pro) | `backup` | push | Mixed |
-| `/settings/export` | Spreadsheet export | `export` | push | Pro |
+| `/backup` | Backup: file (free), automatic cloud (Pro) | `backup` | push | Mixed |
+| `/export` | Spreadsheet export | `export` | push | Pro |
 | `/settings/about` | Version, privacy, terms, usage-data switch | `settings` | push | Free |
 | `/pro` | Paywall: pillars, three plans, lifetime first | `pro` | task | n/a |
 | `/pro/welcome` | Purchase complete | `pro` | task | n/a |
@@ -154,7 +154,7 @@ file that redirects, for good.
 | `/persons`, `/persons/[id]` | `/people`, `/people/[id]` |
 | `/premium?feature=<old id>` | `/pro?feature=<id>` via `resolveProFeature` |
 | `/analytics` | `/insights` |
-| `/backup`, `/export` | `/settings/backup`, `/settings/export` |
+| `/backup`, `/export` | Unchanged: the same paths in the rebuilt app |
 
 ## Notifications
 
