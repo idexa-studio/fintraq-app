@@ -23,13 +23,18 @@ export type SquircleProps = {
  * once the box has been measured.
  */
 export function Squircle({ radius, fill, stroke, strokeWidth = 0, style, children }: SquircleProps) {
-  const [{ width, height }, setBox] = useState({ width: 0, height: 0 });
+  const [box, setBox] = useState({ width: 0, height: 0 });
+  // A measured size is often a fraction of a point. The drawing surface is cut to whole pixels,
+  // so a shape drawn to the fraction loses its last line (the bottom edge of a chip). Drawing to
+  // the whole points inside the box keeps every edge on the surface.
+  const width = Math.floor(box.width);
+  const height = Math.floor(box.height);
   // The line is centred on its path, so the path sits half a line inside the edge.
   const inset = stroke ? strokeWidth / 2 : 0;
   return (
-    <View style={style} onLayout={(e) => { const { width: w, height: h } = e.nativeEvent.layout; setBox((box) => (box.width === w && box.height === h ? box : { width: w, height: h })); }}>
+    <View style={style} onLayout={(e) => { const { width: w, height: h } = e.nativeEvent.layout; setBox((current) => (current.width === w && current.height === h ? current : { width: w, height: h })); }}>
       {width > 0 && height > 0 ? (
-        <Svg width={width} height={height} style={StyleSheet.absoluteFill} pointerEvents="none">
+        <Svg width={width} height={height} style={styles.shape} pointerEvents="none">
           <Path d={squirclePath(width, height, radius, inset)} fill={fill ?? 'none'} stroke={stroke} strokeWidth={stroke ? strokeWidth : 0} />
         </Svg>
       ) : null}
@@ -37,3 +42,8 @@ export function Squircle({ radius, fill, stroke, strokeWidth = 0, style, childre
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  // Pinned to the top-left corner at its own whole-point size, not stretched to the box.
+  shape: { position: 'absolute', top: 0, left: 0 },
+});
