@@ -1,7 +1,7 @@
-import { AmountField, Badge, Button, Card, Chip, Divider, Header, IconCircle, MarkGrid, Notice, ProgressBar, Screen, Text, TextField, pastelOf, useStyles, useTheme } from '@/design';
+import { Button, Card, Emblem, Header, IconCircle, ListRow, MarkGrid, Message, Notice, ProgressBar, Screen, Text, TextField, useStyles } from '@/design';
 import type { Theme } from '@/design';
-import { CurrencyPicker, WalletStack, accountTypeIcon, useCreateAccount } from '@/features/accounts';
-import { FIRST_ACCOUNT_KINDS, NAME_MAX, commonCurrencies, SETUP_STEPS, newSetupDraft, nextStep, openingBalance, previousStep, setupBlockerOf, withAccountName, withKind } from '@/features/onboarding/first-run-rules';
+import { CurrencyPicker, accountTypeIcon, useCreateAccount } from '@/features/accounts';
+import { FIRST_ACCOUNT_KINDS, NAME_MAX, SETUP_STEPS, newSetupDraft, nextStep, previousStep, setupBlockerOf, withAccountName, withKind } from '@/features/onboarding/first-run-rules';
 import type { FirstAccountKind, SetupDraft, SetupStep } from '@/features/onboarding/first-run-rules';
 import { useOnboarding } from '@/features/onboarding/FirstRunProvider';
 import { createWorkspace } from '@/features/onboarding/workspace';
@@ -9,7 +9,6 @@ import { useSettings } from '@/features/settings';
 import { Analytics } from '@/platform/telemetry';
 import { OFFERED_COLORS } from '@/shared/contracts/pickers';
 import { currencyName, getCurrencySymbol, getDeviceCurrencyCode } from '@/shared/currency/currencies';
-import { formatCurrency } from '@/shared/format/money';
 import { LoggerService } from '@/shared/logging/logger';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -17,24 +16,23 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 const KIND_COLORS = { cash: 'green', bank: 'lilac', ewallet: 'teal', credit_card: 'orange' } as const;
+const STEP_MARKS = { name: { icon: 'user', color: 'teal' }, currency: { icon: 'cash', color: 'green' }, account: { icon: 'wallet', color: 'lilac' } } as const;
 
 /**
- * Setting up, one question at a time, under a picture of what is being made:
- * the greeting and the first account as they will look on Home. The picture
- * fills in as each question is answered, and nothing is saved until the last.
+ * Setting up, one question at a time, each headed and laid out as the
+ * reference's own steps are: a mark, the question, then its form. Nothing is
+ * saved until the last question is answered.
  */
 export function SetupScreen() {
   const { t } = useTranslation(['firstRun', 'common']);
   const styles = useStyles(createStyles);
-  const { size } = useTheme();
   const router = useRouter();
   const { profile, updateProfile } = useSettings();
   const { completeOnboarding } = useOnboarding();
   const { mutateAsync: createAccount } = useCreateAccount();
 
   const kindName = (kind: FirstAccountKind) => t(`common:accountTypes.${kind}`);
-  const [deviceCurrency] = useState(() => getDeviceCurrencyCode());
-  const [draft, setDraft] = useState<SetupDraft>(() => newSetupDraft(deviceCurrency, kindName('cash')));
+  const [draft, setDraft] = useState<SetupDraft>(() => newSetupDraft(getDeviceCurrencyCode(), kindName('cash')));
   const [step, setStep] = useState<SetupStep>('name');
   // The first account's colour is chosen once, so the picture shows the colour that is saved.
   const [colorHex] = useState(() => OFFERED_COLORS[Math.floor(Math.random() * OFFERED_COLORS.length)]!.hex);
@@ -73,8 +71,6 @@ export function SetupScreen() {
     else void finish();
   };
 
-  const balance = openingBalance(draft.balance) ?? 0;
-
   return (
     <Screen
       keyboardAware
@@ -93,16 +89,9 @@ export function SetupScreen() {
     >
       {failed ? <Notice tone="danger" title={t('setup.failedTitle')} body={t('setup.failedBody')} /> : null}
 
-      <View style={styles.preview} accessible accessibilityRole="image" accessibilityLabel={t('setup.preview.label')}>
-        <Text variant="title">{draft.name.trim() ? t('setup.preview.greeting', { name: draft.name.trim().split(/\s+/)[0] }) : t('setup.preview.noName')}</Text>
-        <WalletStack cards={[{ key: 'first', name: draft.accountName.trim() || kindName(draft.kind), detail: `${kindName(draft.kind)} · ${currencyName(draft.currency)}`, amount: formatCurrency(balance, draft.currency), color: pastelOf(colorHex), icon: accountTypeIcon(draft.kind) }]} />
-      </View>
-
       <View style={styles.question}>
-        <View style={styles.asked}>
-          <Text variant="title" accessibilityRole="header">{t(`setup.${step}.title`)}</Text>
-          <Text variant="callout" tone="muted">{t(`setup.${step}.hint`)}</Text>
-        </View>
+        {/* Each question is headed as the reference heads a step: a mark, the question, one line. */}
+        <Message illustration={<Emblem icon={STEP_MARKS[step].icon} color={STEP_MARKS[step].color} />} title={t(`setup.${step}.title`)} body={t(`setup.${step}.hint`)} />
 
         {step === 'name' ? (
           <Card>
@@ -110,55 +99,37 @@ export function SetupScreen() {
           </Card>
         ) : null}
 
+        {/* The reference's form: a bold label, then a white card holding a row to choose from or outlined fields. */}
         {step === 'currency' ? (
-          <Card style={styles.fields}>
-            {/* The currency as the thing chosen: its sign as a mark, its code and its name. */}
-            <View style={styles.identity}>
-              <IconCircle initials={getCurrencySymbol(draft.currency)} color="green" size={size.illustrationTile} />
-              <View style={styles.asked}>
-                <Text variant="amountLarge">{draft.currency}</Text>
-                <Text variant="callout" tone="muted">{currencyName(draft.currency)}</Text>
-              </View>
-            </View>
-            <Divider />
-            <View style={styles.asked}>
-              <Text variant="callout" tone="muted">{t('setup.currency.common')}</Text>
-              <View style={styles.chips} accessibilityRole="tablist">
-                {commonCurrencies(draft.currency, deviceCurrency).map((code) => <Chip key={code} label={code} selected={code === draft.currency} onPress={() => setDraft({ ...draft, currency: code })} />)}
-              </View>
-            </View>
-            <Button label={t('setup.currency.change')} variant="secondary" onPress={() => setChoosingCurrency(true)} />
-          </Card>
+          <View style={styles.group}>
+            <Text variant="bodyStrong">{t('setup.currency.yours')}</Text>
+            <Card padded={false}>
+              <ListRow leading={<IconCircle initials={getCurrencySymbol(draft.currency)} color="green" />} strong title={currencyName(draft.currency)} subtitle={draft.currency} onPress={() => setChoosingCurrency(true)} />
+            </Card>
+            <Text variant="callout" tone="muted">{t('setup.currency.tap')}</Text>
+          </View>
         ) : null}
 
         {step === 'account' ? (
           <>
-            <Card>
-              <MarkGrid
-                columns={4}
-                marks={FIRST_ACCOUNT_KINDS.map((kind) => ({ key: kind, label: kindName(kind), icon: accountTypeIcon(kind), color: KIND_COLORS[kind] }))}
-                selectedKey={draft.kind}
-                onSelect={(kind) => setDraft(withKind(draft, kind, kindName(kind)))}
-              />
-            </Card>
-            <Card style={styles.fields}>
-              {/* The account's own mark beside its name, as on the account form. */}
-              <View style={styles.identity}>
-                <IconCircle icon={accountTypeIcon(draft.kind)} color={KIND_COLORS[draft.kind]} size={size.illustrationTile} />
-                <View style={styles.grow}>
-                  <TextField label={t('setup.account.name')} value={draft.accountName} onChangeText={(name) => setDraft(withAccountName(draft, name))} maxLength={NAME_MAX} autoCapitalize="words" helper={t('setup.account.nameHint')} />
-                </View>
-              </View>
-              <Divider />
-              <View style={styles.asked}>
-                <View style={styles.balanceHead}>
-                  <Text variant="callout" tone="muted">{t('setup.account.balance')}</Text>
-                  <Badge label={draft.currency} tone="neutral" />
-                </View>
-                <AmountField value={draft.balance} onChangeText={(text) => setDraft({ ...draft, balance: text })} symbol={getCurrencySymbol(draft.currency)} accessibilityLabel={t('setup.account.balance')} />
-                <Text variant="caption" tone="muted">{t('setup.account.balanceHint')}</Text>
-              </View>
-            </Card>
+            <View style={styles.group}>
+              <Text variant="bodyStrong">{t('setup.account.kind')}</Text>
+              <Card>
+                <MarkGrid
+                  columns={4}
+                  marks={FIRST_ACCOUNT_KINDS.map((kind) => ({ key: kind, label: kindName(kind), icon: accountTypeIcon(kind), color: KIND_COLORS[kind] }))}
+                  selectedKey={draft.kind}
+                  onSelect={(kind) => setDraft(withKind(draft, kind, kindName(kind)))}
+                />
+              </Card>
+            </View>
+            <View style={styles.group}>
+              <Text variant="bodyStrong">{t('setup.account.details')}</Text>
+              <Card style={styles.fields}>
+                <TextField label={t('setup.account.name')} value={draft.accountName} onChangeText={(name) => setDraft(withAccountName(draft, name))} maxLength={NAME_MAX} autoCapitalize="words" />
+                <TextField label={t('setup.account.balance')} prefix={getCurrencySymbol(draft.currency)} value={draft.balance} onChangeText={(text) => setDraft({ ...draft, balance: text })} placeholder={t('setup.account.zero')} keyboardType="decimal-pad" helper={t('setup.account.balanceHint')} />
+              </Card>
+            </View>
           </>
         ) : null}
       </View>
@@ -172,12 +143,8 @@ const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     count: { paddingHorizontal: space.sm },
     progress: { paddingHorizontal: size.screenPadding, paddingBottom: space.md },
-    preview: { gap: space.md },
     question: { gap: size.titleGap },
     asked: { gap: space.xs },
-    identity: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
-    grow: { flex: 1 },
-    chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
-    balanceHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-    fields: { gap: space.xl },
+    group: { gap: space.md },
+    fields: { gap: space.lg },
   });

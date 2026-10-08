@@ -312,7 +312,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D2.02 Setup, one question at a time under a picture of what is being made (the greeting and the first account as they will look on Home), not a sheet over a sheet: name
 - [x] D2.03 Setup: default currency (currency picker)
 - [x] D2.04 Setup: first account and opening balance
-- [x] D2.11 Polish (owner, 2026-10-08): the welcome leads with the wallet stack and scrolls on a short screen instead of being cut off (checked at 640dp tall); the currency step shows the currency as a mark with common choices one tap away; the account step puts the account's mark beside its name
+- [x] D2.11 Polish (owner, 2026-10-08): the welcome leads with the wallet stack and scrolls on a short screen instead of being cut off (checked at 640dp tall); each setup step is headed by a mark, the question and one line, over the reference's form (labelled card, chooser row, outlined fields). The live preview, the mark beside the name field and the common-currency chips were tried and removed at his word
 - [ ] D2.05 Creating the workspace (please wait) and failure with retry (built; not run: finishing setup on the owner's phone would overwrite his name and currency and re-add default categories)
 - [ ] D2.06 Restore: choose file or Google Drive (Drive built and seen, not run; the file is H1)
 - [ ] D2.07 Restore progress, "no backup found", try another account
