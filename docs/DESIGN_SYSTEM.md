@@ -131,8 +131,8 @@ use it.
 | --- | --- |
 | Structure | `Screen`, `Header`, `TabBar`, `Section`, `Card`, `CardActions`, `Divider` |
 | Text and figures | `Text`, `Money`, `Stat`, `Badge` |
-| Actions | `Button`, `IconButton`, `SegmentedControl`, `Chip`, `ChipRow`, `Touchable`, `SlideToConfirm` |
-| Input | `TextField`, `Select`, `Keypad`, `Radio`, `Checkbox`, `Switch`, `Calendar`, `TimePicker`, `OptionList`, `SwatchGrid`, `IconGrid`, `CardStack` |
+| Actions | `Button`, `IconButton`, `TabStrip`, `Chip`, `ChipRow`, `Touchable`, `SlideToConfirm` |
+| Input | `TextField`, `Select`, `Keypad`, `Radio`, `Checkbox`, `Switch`, `Calendar`, `TimePicker`, `OptionList`, `SwatchGrid`, `IconGrid`, `AmountField` |
 | Lists | `ListRow`, `ListGroup`, `DetailRow`, `DayHeader`, `SwipeRow`, `StepRow`, `Checklist`, `Timeline` |
 | Marks | `Icon`, `IconCircle`, `MarkTile`, `IllustrationTile`, `Emblem`, `CheckMark` |
 | Charts | `BarChart`, `LineChart`, `Ring`, `Gauge`, `HeatGrid`, `SplitBar`, `RankBars`, `PairedBars`, `PaceBar`, `Delta`, `ProgressBar`, `DayStreak`, `PeriodStepper` |
@@ -154,15 +154,17 @@ use it.
 - **Design the state, not the error.** A control that cannot work yet is
   disabled and the reason is visible. Work in progress keeps the button's
   colour and shows a spinner.
-- **A task** (adding, editing) is a sheet: `<Screen sheet>` on a route
-  presented as a transparent modal. It rises over the screen it was started
-  from and stops short of the top, with rounded corners.
-- **Entering something** is a deck of cards (`CardStack`) inside the sheet:
-  the card in front asks one thing, answered cards tuck above it, and the
-  ones still to come peek out below showing the answer each will use. Any
-  strip brings its card forward. Because defaults are visible, the entry can
-  be saved from the first card. This is the owner's chosen input pattern;
-  do not replace it with a flat form.
+- **A task** (adding, editing) is a stacked sheet: `<Screen sheet>` on a
+  route presented as a transparent modal. The backdrop goes black, the sheet
+  rises, and the screen behind stays visible as a narrower card edge above
+  it. Pickers opened from a task (`Sheet`) stack over it the same way. This
+  layering is what "stacked cards" means in this design.
+- **Adding a transaction** is the reference's form inside that sheet: kind
+  as a `TabStrip` under the header, the amount as the one large thing
+  (`AmountField`), then labelled cards ("From:", "Details:") and outlined
+  fields with the label inside. No deck of step cards inside a form, no
+  page-filling keypad, and no filled segmented bar: all three were tried and
+  rejected.
 - **Empty:** a whole empty screen gets `EmptyState` (emblem, bold title, a
   sentence, the first step). One empty section among others gets the
   `compact` version so the screen keeps its shape.

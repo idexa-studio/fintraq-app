@@ -14,13 +14,15 @@ export type HeaderProps = {
   onClose?: () => void;
   backLabel?: string;
   closeLabel?: string;
+  /** Leave out the hairline under a task header, because something attached follows it (a TabStrip). */
+  flush?: boolean;
   /** Replace the back button, or add actions on the right (IconButton). */
   left?: React.ReactNode;
   right?: React.ReactNode;
 };
 
 /** The bar at the top of a screen or sheet: centred title between icon actions. */
-export function Header({ title, task = false, onBack, onClose, backLabel = 'Back', closeLabel = 'Close', left, right }: HeaderProps) {
+export function Header({ title, task = false, flush = false, onBack, onClose, backLabel = 'Back', closeLabel = 'Close', left, right }: HeaderProps) {
   const { colors, size } = useTheme();
   const styles = useStyles(createStyles);
   // Each side takes the width of the wider one, so the title is centred on the
@@ -45,7 +47,7 @@ export function Header({ title, task = false, onBack, onClose, backLabel = 'Back
           </View>
         </View>
       </View>
-      {task ? <Divider /> : null}
+      {task && !flush ? <Divider /> : null}
     </View>
   );
 }

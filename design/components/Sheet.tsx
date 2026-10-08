@@ -1,4 +1,5 @@
 import { Header } from '@/design/components/Header';
+import { SheetFrame } from '@/design/components/SheetFrame';
 import { useStyles } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React from 'react';
@@ -37,23 +38,24 @@ export function Sheet({ visible, onClose, ...panel }: SheetProps) {
   const styles = useStyles(createStyles);
   const insets = useSafeAreaInsets();
   return (
-    <Modal visible={visible} transparent animationType="slide" statusBarTranslucent onRequestClose={onClose}>
-      <View style={[styles.scrim, { paddingTop: insets.top + styles.gap.height }]}>
+    <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
+      <View style={styles.scrim}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Close" accessibilityRole="button" />
-        <View style={[styles.holder, { paddingBottom: insets.bottom }]}>
-          <SheetPanel onClose={onClose} {...panel} />
-        </View>
+        {/* Rises over whatever is open, whose edge shows above it: sheets stack like cards. */}
+        <SheetFrame hug>
+          <View style={{ paddingBottom: insets.bottom, flexShrink: 1 }}>
+            <SheetPanel onClose={onClose} {...panel} />
+          </View>
+        </SheetFrame>
       </View>
     </Modal>
   );
 }
 
-const createStyles = ({ colors, radius, size, space }: Theme) =>
+const createStyles = ({ colors, size, space }: Theme) =>
   StyleSheet.create({
-    scrim: { flex: 1, backgroundColor: colors.scrim, justifyContent: 'flex-end' },
-    gap: { height: space.sm },
-    holder: { flexShrink: 1, backgroundColor: colors.background, borderTopLeftRadius: radius.md, borderTopRightRadius: radius.md, overflow: 'hidden' },
-    panel: { flexShrink: 1, backgroundColor: colors.background, borderTopLeftRadius: radius.md, borderTopRightRadius: radius.md, overflow: 'hidden' },
+    scrim: { flex: 1, backgroundColor: colors.scrim },
+    panel: { flexShrink: 1, backgroundColor: colors.background },
     scroll: { flexGrow: 0 },
     content: { padding: size.screenPadding, paddingTop: space.xl, gap: space.xl },
     footer: { paddingHorizontal: size.screenPadding, paddingTop: space.sm, paddingBottom: space.lg, gap: space.lg },

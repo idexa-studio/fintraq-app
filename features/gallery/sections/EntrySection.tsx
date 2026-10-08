@@ -1,6 +1,6 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
-import { Button, Card, CardStack, Divider, Header, IconButton, IconCircle, Keypad, ListGroup, ListRow, Money, SegmentedControl, Text, TextField, useTheme } from '@/design';
-import type { KeypadKey, StackCard } from '@/design';
+import { AmountField, BACKDROP, Button, Card, Header, IconButton, IconCircle, Keypad, ListGroup, ListRow, MarkTile, Money, TabStrip, Text, TextField, useTheme } from '@/design';
+import type { KeypadKey } from '@/design';
 import { calculate, isExpression } from '@/shared/format/calculate';
 import React, { useState } from 'react';
 import { View } from 'react-native';
@@ -13,88 +13,6 @@ const press = (amount: string, key: KeypadKey): string => {
   if (amount.includes('.') && amount.split('.')[1].length >= 2) return amount;
   return amount + key;
 };
-
-const ACCOUNTS = [
-  { name: 'Everyday', kind: 'Bank account', icon: 'bank', color: 'lilac' },
-  { name: 'Cash', kind: 'Wallet', icon: 'cash', color: 'green' },
-  { name: 'Travel card', kind: 'Credit card', icon: 'credit-card', color: 'orange' },
-] as const;
-
-const CATEGORIES = [
-  { name: 'Groceries', icon: 'shopping-cart', color: 'teal' },
-  { name: 'Transport', icon: 'car', color: 'orange' },
-  { name: 'Eating out', icon: 'fork-knife', color: 'pink' },
-] as const;
-
-/** One question per card; answered cards tuck behind and can be tapped to change. */
-function StackedEntry() {
-  const { space } = useTheme();
-  const [step, setStep] = useState(0);
-  const [amount, setAmount] = useState('42.10');
-  const [account, setAccount] = useState('Everyday');
-  const [category, setCategory] = useState('');
-  const [note, setNote] = useState('');
-
-  const cards: StackCard[] = [
-    {
-      key: 'amount',
-      short: 'Amount',
-      label: 'How much?',
-      value: `$${amount}`,
-      content: (
-        <View style={{ gap: space.lg }}>
-          <View style={{ alignItems: 'center' }}><Money value={`$${amount || '0'}`} variant="amountHero" tone={amount ? 'default' : 'muted'} /></View>
-          <Keypad onKey={(key) => setAmount((current) => press(current, key))} />
-        </View>
-      ),
-    },
-    {
-      key: 'account',
-      short: 'From',
-      label: 'From which account?',
-      value: account,
-      content: (
-        <View style={{ marginHorizontal: -space.lg }}>
-          {ACCOUNTS.map((item, i) => (
-            <React.Fragment key={item.name}>
-              {i > 0 ? <Divider /> : null}
-              <ListRow leading={<IconCircle icon={item.icon} color={item.color} />} strong title={item.name} subtitle={item.kind} onPress={() => { setAccount(item.name); setStep(2); }} />
-            </React.Fragment>
-          ))}
-        </View>
-      ),
-    },
-    {
-      key: 'category',
-      short: 'For',
-      label: 'What was it for?',
-      value: category || 'Choose',
-      content: (
-        <View style={{ marginHorizontal: -space.lg }}>
-          {CATEGORIES.map((item, i) => (
-            <React.Fragment key={item.name}>
-              {i > 0 ? <Divider /> : null}
-              <ListRow leading={<IconCircle icon={item.icon} color={item.color} />} strong title={item.name} onPress={() => { setCategory(item.name); setStep(3); }} />
-            </React.Fragment>
-          ))}
-        </View>
-      ),
-    },
-    {
-      key: 'details',
-      short: 'Details',
-      label: 'Anything to add?',
-      content: (
-        <View style={{ gap: space.lg }}>
-          <TextField label="Note" value={note} onChangeText={setNote} placeholder="Optional" />
-          <TextField label="When" value="Today" editable={false} />
-        </View>
-      ),
-    },
-  ];
-
-  return <CardStack cards={cards} active={step} onSelect={setStep} />;
-}
 
 function Calculator() {
   const { space } = useTheme();
@@ -114,7 +32,7 @@ function Calculator() {
 
 /** Adding a transaction: the task the app is opened for most. */
 export function EntrySection() {
-  const { colors, space, size, border } = useTheme();
+  const { colors, space, size, border, radius } = useTheme();
   const [kind, setKind] = useState('Expense');
   const [amount, setAmount] = useState('42.10');
   const [repeat, setRepeat] = useState(false);
@@ -123,8 +41,47 @@ export function EntrySection() {
 
   return (
     <>
-      <Specimen name="Add a transaction (the default)" note="A deck of cards. The card in front asks one thing; answered cards tuck above, the rest peek out below with the answer each will use. Tap any strip to bring its card forward.">
-        <StackedEntry />
+      <Specimen name="Add a transaction" note="A sheet that rises over the screen behind, whose edge still shows above it. Kind as tabs under the header, the amount as the one large thing, then the reference's form: labelled cards and outlined fields.">
+        <View style={{ marginHorizontal: -space.lg, backgroundColor: BACKDROP, paddingTop: space.lg }}>
+          <View style={{ height: size.sheetPeek + radius.sheet, marginBottom: -radius.sheet, marginHorizontal: size.sheetPeekInset, borderTopLeftRadius: radius.md, borderTopRightRadius: radius.md, backgroundColor: colors.peek }} />
+          <View style={{ backgroundColor: colors.background, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, overflow: 'hidden' }}>
+            <Header task flush title={`Add ${kind.toLowerCase()}`} onClose={() => {}} />
+            <TabStrip tabs={KINDS.map((label) => ({ key: label, label }))} value={kind} onChange={setKind} accessibilityLabel="Kind of transaction" />
+            <View style={{ padding: size.screenPadding, gap: size.sectionGap }}>
+              <Card style={{ gap: space.sm }}>
+                <Text variant="callout" tone="muted">Amount</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+                  <View style={{ flex: 1 }}><AmountField value={amount} onChangeText={setAmount} symbol="$" accessibilityLabel="Amount" /></View>
+                  <MarkTile icon="calculator" accessibilityLabel="Work out the amount" onPress={() => {}} />
+                </View>
+              </Card>
+              <View style={{ gap: space.md }}>
+                <Text variant="bodyStrong">From:</Text>
+                <Card padded={false}>
+                  <ListRow leading={<IconCircle icon="bank" color="lilac" />} strong title="Everyday" subtitle="$12,480.10 available" onPress={() => {}} />
+                </Card>
+              </View>
+              <View style={{ gap: space.md }}>
+                <Text variant="bodyStrong">Details:</Text>
+                <ListGroup>
+                  <ListRow leading={<IconCircle icon="shopping-cart" color="teal" />} strong title="Groceries" subtitle="Category" onPress={() => {}} />
+                  <View style={{ padding: size.cardPadding, gap: space.lg }}>
+                    <TextField label="Note" value={note} onChangeText={setNote} placeholder="Optional" />
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
+                      <View style={{ flex: 1 }}><TextField label="When" value="Today · 11:04 AM" onPress={() => {}} /></View>
+                      <IconButton icon="calendar" accessibilityLabel="Choose the date and time" />
+                    </View>
+                    <TextField label="With" value="No one" onPress={() => {}} />
+                  </View>
+                </ListGroup>
+              </View>
+              <View style={{ gap: space.lg }}>
+                {amount ? null : <Text variant="callout" tone="muted" align="center">Enter an amount to save</Text>}
+                <Button label={`Save ${kind.toLowerCase()}`} disabled={!amount} />
+              </View>
+            </View>
+          </View>
+        </View>
       </Specimen>
 
       <Specimen name="Working it out" note="The keypad can add up a bill. The sum shows small; the answer is the amount.">

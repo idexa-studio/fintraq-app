@@ -46,6 +46,8 @@ export type ColorRoles = {
   warning: string;
   /** Behind dialogs and sheets. */
   scrim: string;
+  /** The edge of the screen underneath, showing above a sheet that has risen over it. */
+  peek: string;
 };
 
 export const LIGHT_COLORS: ColorRoles = {
@@ -74,6 +76,7 @@ export const LIGHT_COLORS: ColorRoles = {
   onDanger: '#FFFFFF',
   warning: '#B25E00',
   scrim: 'rgba(0, 0, 0, 0.5)',
+  peek: '#D4D4D4',
 };
 
 export const DARK_COLORS: ColorRoles = {
@@ -100,6 +103,7 @@ export const DARK_COLORS: ColorRoles = {
   onDanger: '#000000',
   warning: '#FBB369',
   scrim: 'rgba(0, 0, 0, 0.7)',
+  peek: '#2E2E2E',
 };
 
 /**
@@ -115,6 +119,9 @@ export const PASTELS = {
 } as const;
 
 export type PastelName = keyof typeof PASTELS;
+
+/** Behind a risen sheet the screen goes to black in both themes, as in the reference. */
+export const BACKDROP = '#000000';
 
 /** Black, for content drawn on a pastel or on the accent green in either theme. */
 export const INK = '#000000';

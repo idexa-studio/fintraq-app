@@ -1,5 +1,8 @@
+import { SheetFrame } from '@/design/components/SheetFrame';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
+import { BACKDROP } from '@/design/tokens/colors';
+import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { Keyboard, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -54,7 +57,6 @@ function useKeyboardOverlap(enabled: boolean): number {
 export function Screen({ children, header, footer, tabBar, tabbed = false, sheet = false, scroll = true, padded = true, keyboardAware = false }: ScreenProps) {
   const styles = useStyles(createStyles);
   const { motion } = useTheme();
-  const insets = useSafeAreaInsets();
   const keyboard = useKeyboardOverlap(keyboardAware);
   const content = padded ? styles.padded : null;
   // Each section arrives a moment after the one above it, rising a little as it fades in.
@@ -65,7 +67,7 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, sheet
   ));
 
   const page = (
-    <SafeAreaView style={[styles.page, sheet ? styles.sheet : null, keyboard ? { paddingBottom: keyboard } : null]} edges={sheet ? ['bottom'] : tabBar || tabbed ? ['top'] : ['top', 'bottom']}>
+    <SafeAreaView style={[styles.page, keyboard ? { paddingBottom: keyboard } : null]} edges={sheet ? ['bottom'] : tabBar || tabbed ? ['top'] : ['top', 'bottom']}>
       {header}
       {scroll ? (
         <ScrollView style={styles.fill} contentContainerStyle={[styles.scrollContent, content]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
@@ -80,16 +82,19 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, sheet
   );
 
   if (!sheet) return page;
-  return <View style={[styles.behind, { paddingTop: insets.top + styles.gap.height }]}>{page}</View>;
+  return (
+    <View style={styles.behind}>
+      <StatusBar style="light" />
+      <SheetFrame>{page}</SheetFrame>
+    </View>
+  );
 }
 
-const createStyles = ({ colors, size, space, radius }: Theme) =>
+const createStyles = ({ colors, size, space }: Theme) =>
   StyleSheet.create({
     page: { flex: 1, backgroundColor: colors.background },
     // Sheet presentation: the dimmed strip above, then the sheet with rounded top corners.
-    behind: { flex: 1, backgroundColor: colors.scrim },
-    gap: { height: space.sm },
-    sheet: { borderTopLeftRadius: radius.md, borderTopRightRadius: radius.md, overflow: 'hidden' },
+    behind: { flex: 1, backgroundColor: BACKDROP },
     fill: { flex: 1 },
     padded: { paddingHorizontal: size.screenPadding },
     scrollContent: { paddingTop: space.sm, paddingBottom: space.xxl, gap: size.sectionGap },
