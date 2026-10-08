@@ -30,7 +30,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
-| G | Release 1: the redesign | 23 | 3 | In progress |
+| G | Release 1: the redesign | 24 | 3 | In progress |
 | H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
 
@@ -593,7 +593,7 @@ Done when: `src/` no longer exists and the app builds.
 - [x] F1.13 Trim `ARCHITECTURE.md` to the new structure only (`DESIGN_SYSTEM.md` was rewritten in B7.02)
 - [x] F1.14 Remove old store screenshots and generators that draw the old look (the three generators that drew the old look, and the old screenshots, are removed; new ones are G3.01)
 - [x] F1.15 Remove old build artefacts from the repository root (a stale `pnpm-lock.yaml` beside the npm lock is removed. The 103 MB `build-*.apk` in the root is the development build on the owner's phone: untracked, kept until the next build replaces it)
-- [ ] F1.16 Bundle size compared with 1.2.4 and recorded (the rebuilt app's Android bundle: 8.10 MB as written, 7.33 MB after tree shaking and dropping unused solid icon drawings, measured with `npx expo export --platform android` on 2026-10-08. The 1.2.4 figure and the installed size of a release build are still to be measured)
+- [ ] F1.16 Bundle size compared with 1.2.4 and recorded (the rebuilt app's Android bundle: 8.10 MB as written, 7.33 MB after tree shaking and dropping unused solid icon drawings; tree shaking was switched off again on 2026-10-08 because the store build made with it looped on its first screen, so the figure to record is the unshaken one, measured with `npx expo export --platform android` on 2026-10-08. The 1.2.4 figure and the installed size of a release build are still to be measured)
 
 ---
 
@@ -607,6 +607,7 @@ Done when: the redesign is live to all users with no data loss reported.
 - [ ] G1.03 Device: spot-check one Indic locale, German (long words) and Japanese
 
 ### G2. Quality
+- [ ] G2.00 Before any upload: the release build (the same profile as the upload) installed fresh on a phone and taken through first run to Home, and installed over 1.2.4 with data. Added 2026-10-08 after build 65 reached internal testing with a blank, flickering first screen that no dev build showed
 - [ ] G2.01 Full pass on a small Android phone (360dp) and a large one
 - [ ] G2.02 Full pass on iOS. The code is written for both platforms (owner, 2026-10-09); nothing has been run on iOS yet
 - [ ] G2.03 Android three-button and gesture navigation

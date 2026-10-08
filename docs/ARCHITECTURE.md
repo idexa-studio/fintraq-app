@@ -158,13 +158,15 @@ Explain *why*, not *what*: constraints, platform quirks, non-obvious maths. Dele
 
 ## What ships
 
-Release builds are tree-shaken: the `preview` and `production` profiles in
-`eas.json` set Expo's two tree-shaking variables, and `metro.config.js` runs the
-bundler in one process when they are set (it fails otherwise here). Code the
-app never reaches is left out of the bundle. A file that is imported only for
-its side effect must be imported by name from somewhere, or it will be dropped;
-the background backup task is, from the root layout. Checked on the device on
-2026-10-08 by loading the tree-shaken bundle and opening every main screen.
+Release builds are **not** tree-shaken. Expo's experimental tree shaking
+(`EXPO_UNSTABLE_METRO_OPTIMIZE_GRAPH`, `EXPO_UNSTABLE_TREE_SHAKING`) was on for
+one day and made the bundle 9% smaller (8.10 MB to 7.33 MB). The first store
+build made with it (2.0.0, build 65) never got past its first screen on a fresh
+install: the redirect from the main group to first run went round in a loop,
+on Android 9 and Android 16 alike. The same code built without it opens
+normally. Loading the shaken bundle from the dev server did not show the fault,
+so that is not a test of it: only a release build installed fresh on a phone
+is. Do not switch it back on without that test.
 
 ## Free vs Pro
 
