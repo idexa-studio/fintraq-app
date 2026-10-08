@@ -131,7 +131,7 @@ use it.
 | Actions | `Button`, `IconButton`, `Chip`, `ChipRow`, `Touchable`, `SlideToConfirm` |
 | Input | `TextField`, `Select`, `Keypad`, `Radio`, `Checkbox`, `Switch`, `Calendar`, `TimePicker`, `OptionList`, `SwatchGrid`, `IconGrid`, `CardStack` |
 | Lists | `ListRow`, `ListGroup`, `DetailRow`, `DayHeader`, `SwipeRow`, `StepRow`, `Checklist`, `Timeline` |
-| Marks | `Icon`, `IconCircle`, `IllustrationTile`, `Emblem`, `CheckMark` |
+| Marks | `Icon`, `IconCircle`, `MarkTile`, `IllustrationTile`, `Emblem`, `CheckMark` |
 | Charts | `BarChart`, `LineChart`, `Ring`, `Gauge`, `HeatGrid`, `SplitBar`, `RankBars`, `PairedBars`, `PaceBar`, `Delta`, `ProgressBar`, `DayStreak`, `PeriodStepper` |
 | Messages | `Message`, `EmptyState`, `Notice`, `Highlight`, `Tip`, `Toast` (`ToastProvider`, `useToast`), `LockedCard` |
 | Overlays and waiting | `Dialog`, `LoadingDialog`, `Sheet`, `Spinner`, `Skeleton`, `ProgressRow` |

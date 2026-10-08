@@ -1,6 +1,6 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
 import {
-  Card, CardActions, EmptyState, FeatureTile, Header, Select, Icon, IconButton, IconCircle, IllustrationTile, ListGroup, ListRow, Money,
+  Card, CardActions, EmptyState, FeatureTile, Header, MarkTile, Select, Icon, IconButton, IconCircle, IllustrationTile, ListGroup, ListRow, Money,
   ProgressBar, Section, Stat, TabBar, Text, useTheme,
 } from '@/design';
 import type { SelectOption, TabItem } from '@/design';
@@ -51,7 +51,10 @@ export function HomeSection() {
                     <Select options={CURRENCIES} value={currency} onChange={setCurrency} accessibilityLabel="Currency" />
                   </View>
                   <Text variant="callout" tone="muted">4 accounts · {CURRENCIES.find((c) => c.key === currency)?.detail}</Text>
-                  <Money value={BALANCES[currency]} variant="amountHero" />
+                  <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: space.md }}>
+                    <View style={{ flex: 1 }}><Money value={BALANCES[currency]} variant="amountHero" /></View>
+                    <MarkTile icon="wallet" accessibilityLabel="Accounts" onPress={() => {}} />
+                  </View>
                 </View>
                 <CardActions actions={[{ label: 'Add expense' }, { label: 'Add income' }]} />
               </Card>

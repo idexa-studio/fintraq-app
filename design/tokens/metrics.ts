@@ -79,6 +79,8 @@ export const SIZE = {
   iconLarge: 28,
   iconCircle: 40,
   illustrationTile: 64,
+  /** The small outlined mark at the corner of a card (reference: 32). */
+  markTile: 32,
   radio: 24,
   checkbox: 24,
   switchWidth: 50,

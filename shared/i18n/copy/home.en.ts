@@ -12,6 +12,7 @@ export default {
     currency: 'Currency',
     addExpense: 'Add expense',
     addIncome: 'Add income',
+    openAccounts: 'Accounts',
   },
   quick: {
     title: 'Quick actions',
