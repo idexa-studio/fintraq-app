@@ -168,6 +168,13 @@ use it.
 - **Shortcuts** the user already knows are `FeatureTile compact`: mark and
   label on one line, a few words small beneath. The full tile, with its
   sentence, is for introducing something.
+- **Settings** opens on the wave card (who you are and your plan: its one
+  brand moment), then the things recorded against as tiles with their
+  counts, then grouped rows. A choice of three (appearance) is a `Select`
+  on its row, not a sheet.
+- **The app lock** is chosen from marks (`MarkGrid`): no lock, fingerprint
+  or face, a PIN. A PIN is six marks over a `Keypad` with no decimal key;
+  the line for a wrong PIN is always there, so the pad never jumps.
 - **A section** may carry one small `hint` under its title: what it shows
   or how to use it. Cutting every such line leaves a screen looking bare
   (owner, 2026-10-08); keep them to one line.

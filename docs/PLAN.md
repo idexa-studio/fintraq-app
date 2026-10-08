@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 152 | 85 | In progress |
+| D | Screens at parity with the shipped app | 152 | 93 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -300,11 +300,11 @@ labels · light and dark viewed on the phone · analytics screen name is a
 route template · `tsc`, lint, design audit and tests clean.
 
 ### D1. Lock
-- [ ] D1.01 Unlock screen: Emblem, PIN marks, keypad without decimal
-- [ ] D1.02 Biometric prompt on open, with PIN as the way back
-- [ ] D1.03 Wrong PIN message; lockout with the time remaining shown
-- [ ] D1.04 Create PIN and confirm PIN task
-- [ ] D1.05 Lock on background after the existing timeout; screenshots blocked as today
+- [x] D1.01 Unlock screen: Emblem, PIN marks, keypad without decimal
+- [ ] D1.02 Biometric prompt on open, with PIN as the way back (built; not run, as it needs the owner's fingerprint)
+- [ ] D1.03 Wrong PIN message; lockout with the time remaining shown (wrong-PIN message seen; the lockout was not provoked on the owner's phone, its timing is covered by the platform tests)
+- [x] D1.04 Create PIN and confirm PIN task
+- [x] D1.05 Lock on background after the existing timeout; screenshots blocked as today
 - [ ] D1.06 Shared checklist
 
 ### D2. First run
@@ -469,16 +469,16 @@ Built in `features/backup` on 2026-10-08 and seen on a device only as far as the
 - [ ] D15.04 Shared checklist
 
 ### D16. Settings
-- [ ] D16.01 Profile: name
-- [ ] D16.02 Default currency
-- [ ] D16.03 Language (13 locales)
-- [ ] D16.04 Appearance: system, light, dark
-- [ ] D16.05 Daily reminder: on, time, exact-alarm permission on Android
-- [ ] D16.06 Links: categories, backup, export, app lock, Fintraq Pro
-- [ ] D16.07 App lock: off, PIN, biometrics; change PIN
-- [ ] D16.08 About: version, privacy, terms, usage-data switch
-- [ ] D16.09 Delete all data, with confirmation, clearing every key including retired ones
-- [ ] D16.10 Developer entry: a "Developer options" row in development builds only, no PIN and no hidden gesture; a release build opens `/developer` by link alone (owner, 2026-10-08; already so in the shipped Settings, to be carried into the rebuilt one)
+- [x] D16.01 Profile: name
+- [ ] D16.02 Default currency (built; picker not opened on the device)
+- [x] D16.03 Language (13 locales)
+- [x] D16.04 Appearance: system, light, dark
+- [ ] D16.05 Daily reminder: on, time, exact-alarm permission on Android (built and seen in its on state with the late-arrival notice; switch and time not changed on the owner's phone)
+- [x] D16.06 Links: categories, backup, export, app lock, Fintraq Pro
+- [ ] D16.07 App lock: off, PIN, biometrics; change PIN (PIN set, mismatch, unlock, wrong PIN and turning off all run on the device and left off; biometrics not run)
+- [ ] D16.08 About: version, privacy, terms, usage-data switch (built, inline at the foot of Settings rather than a screen of its own; links not opened)
+- [ ] D16.09 Delete all data, with confirmation, clearing every key including retired ones (built; never to be run on the owner's phone without his word)
+- [x] D16.10 Developer entry: a "Developer options" row in development builds only, no PIN and no hidden gesture; a release build opens `/developer` by link alone (owner, 2026-10-08; already so in the shipped Settings, to be carried into the rebuilt one)
 - [ ] D16.11 In-app web page for privacy and terms
 - [ ] D16.12 Shared checklist
 

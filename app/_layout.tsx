@@ -7,7 +7,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/src/hooks/use-color-scheme';
 import { AppConfigProvider } from '@/src/providers/AppConfigProvider';
-import { AppLockProvider } from '@/src/providers/AppLockProvider';
 import { TelemetryProvider } from '@/src/providers/TelemetryProvider';
 import { OnboardingProvider } from '@/src/providers/OnboardingProvider';
 import { PremiumProvider } from '@/src/providers/PremiumProvider';
@@ -28,6 +27,7 @@ import { unlockDatabaseIfLocked } from '@/data/db/client';
 import { syncBackgroundBackupTask } from '@/platform/backup/background-backup.task';
 import { AppState, AppStateStatus } from 'react-native';
 import { FONT_ASSETS, SHEET_ROUTE, ToastProvider } from '@/design';
+import { LockProvider } from '@/features/lock';
 import { ProProvider } from '@/features/pro';
 import { AppTheme, DatabaseGate } from '@/features/shell';
 import React, { useEffect, useState } from 'react';
@@ -94,7 +94,7 @@ export default function RootLayout() {
                     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                       <CustomThemeProvider>
                         <AppTheme>
-                          <AppLockProvider>
+                          <LockProvider>
                             <AppConfigProvider>
                               <ToastProvider>
                                 <Stack screenOptions={{ headerShown: false, animation: 'ios_from_right' }}>
@@ -110,7 +110,7 @@ export default function RootLayout() {
                               <SystemNavBackdrop />
                               <StatusBar style="auto" />
                             </AppConfigProvider>
-                          </AppLockProvider>
+                          </LockProvider>
                         </AppTheme>
                       </CustomThemeProvider>
                     </ThemeProvider>
