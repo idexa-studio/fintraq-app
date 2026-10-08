@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 144 | 58 | In progress |
+| D | Screens at parity with the shipped app | 144 | 69 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -419,19 +419,19 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D11.05 Shared checklist
 
 ### D12. Insights
-- [ ] D12.01 Period control
-- [ ] D12.02 Period summary with chart (free: this month and this week)
-- [ ] D12.03 Top categories (free)
-- [ ] D12.04 Extended periods and comparison (Pro: `periods`)
-- [ ] D12.05 Forecast (Pro)
-- [ ] D12.06 Full category breakdown for spending and income (Pro)
-- [ ] D12.07 Rhythm: weekdays and heat calendar (Pro)
-- [ ] D12.08 People (Pro)
-- [ ] D12.09 Insight findings (Pro)
-- [ ] D12.10 One locked card for everything Pro adds, for free users
-- [ ] D12.11 Tapping a figure opens Activity with that filter
-- [ ] D12.12 Not enough data yet state
-- [ ] D12.13 Shared checklist
+- [x] D12.01 Period control
+- [x] D12.02 Period summary with chart (free: the last 7 and the last 30 days, counted back from today as the shipped calculations do)
+- [x] D12.03 Top categories (free)
+- [x] D12.04 Extended periods and comparison (Pro: `periods`)
+- [x] D12.05 Forecast (Pro)
+- [x] D12.06 Full category breakdown for spending and income (Pro)
+- [x] D12.07 Rhythm: weekdays and heat calendar (Pro)
+- [x] D12.08 People (Pro)
+- [x] D12.09 Insight findings (Pro)
+- [ ] D12.10 One locked card for everything Pro adds, for free users (built from the registry; not seen, as the test phone is Pro)
+- [x] D12.11 Tapping a figure opens Activity with that filter
+- [ ] D12.12 Not enough data yet state (built; not seen, which needs an install with nothing recorded)
+- [x] D12.13 Shared checklist
 
 ### D13. Search (Pro)
 - [ ] D13.01 Search field, recent searches (same storage key)

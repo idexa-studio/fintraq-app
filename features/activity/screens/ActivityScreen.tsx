@@ -2,8 +2,8 @@ import type { TransactionFilters, TransactionListItem } from '@/data/repositorie
 import { Button, Card, Chip, DayHeader, Dialog, Divider, EmptyState, Header, IconButton, Screen, Select, Skeleton, Stat, SwipeRow, TabStrip, Text, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
-import { KINDS, NO_FILTERS, activeCount, toQuery } from '@/features/activity/activity-filters';
-import type { ActivityFilters, KindFilter } from '@/features/activity/activity-filters';
+import { KINDS, NO_FILTERS, activeCount, filtersFromLink, toQuery } from '@/features/activity/activity-filters';
+import type { ActivityFilters, ActivityLink, KindFilter } from '@/features/activity/activity-filters';
 import { activityItems } from '@/features/activity/activity-list';
 import type { ActivityItem } from '@/features/activity/activity-list';
 import { useCategories } from '@/features/categories';
@@ -17,11 +17,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View } from 'react-native';
-
-const numberParam = (value: string | string[] | undefined): number | undefined => {
-  const parsed = Number.parseInt(Array.isArray(value) ? value[0] : (value ?? ''), 10);
-  return Number.isFinite(parsed) ? parsed : undefined;
-};
 
 type RowProps = {
   item: Extract<ActivityItem, { kind: 'row' }>;
@@ -62,19 +57,19 @@ export function ActivityScreen() {
   const router = useRouter();
   const toast = useToast();
   const { profile } = useSettings();
-  const params = useLocalSearchParams<{ accountId?: string; categoryId?: string; personId?: string }>();
-  const linkedAccount = numberParam(params.accountId);
-  const linkedCategory = numberParam(params.categoryId);
-  const linkedPerson = numberParam(params.personId);
+  const params = useLocalSearchParams<ActivityLink>();
+  const { accountId, categoryId, personId, from, to } = params;
+  // What the link that opened the screen asks for, if anything.
+  const linked = useMemo(() => filtersFromLink({ accountId, categoryId, personId, from, to }), [accountId, categoryId, personId, from, to]);
 
   const [kind, setKind] = useState<KindFilter>('all');
-  const [filters, setFilters] = useState<ActivityFilters>({ ...NO_FILTERS, accountId: linkedAccount, categoryId: linkedCategory, personId: linkedPerson });
+  const [filters, setFilters] = useState<ActivityFilters>(linked ?? NO_FILTERS);
   const [filtering, setFiltering] = useState(false);
 
-  // Arriving from an account's, a category's or a person's screen narrows the list to it, replacing whatever was set.
+  // Arriving by a link narrows the list to what it asks for, replacing whatever was set.
   useEffect(() => {
-    if (linkedAccount !== undefined || linkedCategory !== undefined || linkedPerson !== undefined) setFilters({ ...NO_FILTERS, accountId: linkedAccount, categoryId: linkedCategory, personId: linkedPerson });
-  }, [linkedAccount, linkedCategory, linkedPerson]);
+    if (linked) setFilters(linked);
+  }, [linked]);
   const [chosenCurrency, setChosenCurrency] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<TransactionListItem | null>(null);
 
@@ -107,7 +102,7 @@ export function ActivityScreen() {
   const change = useCallback((next: ActivityFilters) => {
     setFilters(next);
     // The link that brought the user here no longer describes the list once they change it.
-    router.setParams({ accountId: undefined, categoryId: undefined, personId: undefined });
+    router.setParams({ accountId: undefined, categoryId: undefined, personId: undefined, from: undefined, to: undefined });
   }, [router]);
   const showEverything = useCallback(() => {
     setKind('all');
