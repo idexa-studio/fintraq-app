@@ -3,4 +3,3 @@ export { SettingsProvider, useSettings } from './SettingsProvider';
 export { I18nProvider, useAppLanguage } from './LanguageProvider';
 export { SettingsScreen } from './screens/SettingsScreen';
 export { AboutScreen } from './screens/AboutScreen';
-export { WebPageScreen } from './screens/WebPageScreen';

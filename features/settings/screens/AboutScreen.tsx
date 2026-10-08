@@ -24,8 +24,8 @@ export function AboutScreen() {
   const { privacyUrl, termsUrl } = useLegalLinks();
 
   const back = () => (router.canGoBack() ? router.back() : router.replace('/settings'));
-  const openPage = (url: string, title: string) => router.push({ pathname: '/webview', params: { url, title } });
-  const openSite = () => void Linking.openURL(MAKER_SITE).catch(() => toast.show({ message: t('about.maker.siteFailed') }));
+  // Pages on the web open in the phone's browser: the app carries no web view of its own.
+  const openPage = (url: string) => void Linking.openURL(url).catch(() => toast.show({ message: t('about.pageFailed') }));
 
   return (
     <Screen header={<Header title={t('about.title')} onBack={back} backLabel={t('back')} />}>
@@ -48,15 +48,15 @@ export function AboutScreen() {
       <Section title={t('about.maker.title')} hint={t('about.maker.hint')}>
         <ListGroup>
           <ListRow icon="heart" strong title={t('about.maker.name')} subtitle={t('about.maker.line')} />
-          <ListRow icon="globe" title={t('about.maker.site')} onPress={openSite} />
+          <ListRow icon="globe" title={t('about.maker.site')} onPress={() => openPage(MAKER_SITE)} />
         </ListGroup>
       </Section>
 
       <Section title={t('about.print.title')} hint={t('about.print.hint')}>
         <ListGroup>
           <ListRow icon="chart-bar" title={t('about.usage')} subtitle={t('about.usageHint')} trailing={<Switch value={profile.shareUsageData} onValueChange={(shareUsageData) => void updateProfile({ shareUsageData })} accessibilityLabel={t('about.usage')} />} />
-          <ListRow icon="shield-check" title={t('about.privacy')} disabled={!privacyUrl} onPress={() => openPage(privacyUrl, t('about.privacy'))} />
-          <ListRow icon="file-text" title={t('about.terms')} disabled={!termsUrl} onPress={() => openPage(termsUrl, t('about.terms'))} />
+          <ListRow icon="shield-check" title={t('about.privacy')} disabled={!privacyUrl} onPress={() => openPage(privacyUrl)} />
+          <ListRow icon="file-text" title={t('about.terms')} disabled={!termsUrl} onPress={() => openPage(termsUrl)} />
           {/* Development builds only. A release build opens the tools by link alone (`luno://developer`). */}
           {__DEV__ ? <ListRow icon="flask" title={t('about.developer')} subtitle={t('about.developerHint')} onPress={() => router.push('/developer')} /> : null}
         </ListGroup>

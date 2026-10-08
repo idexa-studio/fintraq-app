@@ -8,7 +8,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/src/hooks/use-color-scheme';
 import { AppConfigProvider } from '@/src/providers/AppConfigProvider';
 import { TelemetryProvider } from '@/src/providers/TelemetryProvider';
-import { OnboardingProvider } from '@/src/providers/OnboardingProvider';
 import { PremiumProvider } from '@/src/providers/PremiumProvider';
 import { QueryProvider } from '@/data/QueryProvider';
 import { SettingsProvider , I18nProvider } from '@/features/settings';
@@ -28,6 +27,7 @@ import { syncBackgroundBackupTask } from '@/platform/backup/background-backup.ta
 import { AppState, AppStateStatus } from 'react-native';
 import { FONT_ASSETS, SHEET_ROUTE, ToastProvider } from '@/design';
 import { LockProvider } from '@/features/lock';
+import { OnboardingProvider } from '@/features/onboarding';
 import { ProProvider } from '@/features/pro';
 import { AppTheme, DatabaseGate } from '@/features/shell';
 import React, { useEffect, useState } from 'react';

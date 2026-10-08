@@ -88,7 +88,6 @@ export default {
       name: 'Idexa',
       line: 'Fintraq is made by Idexa',
       site: 'Visit idexa.app',
-      siteFailed: 'The website could not be opened',
     },
     print: {
       title: 'The fine print',
@@ -101,6 +100,7 @@ export default {
     developer: 'Developer options',
     developerHint: 'Testing and debugging tools',
     stored: 'Everything is stored on this phone',
+    pageFailed: 'The page could not be opened in your browser',
   },
   erase: {
     title: 'Start over',
@@ -112,8 +112,5 @@ export default {
     keep: 'Keep my records',
     failedTitle: 'Nothing was erased',
     failedBody: 'Something went wrong before anything was deleted. Try again in a moment.',
-  },
-  web: {
-    back: 'Back',
   },
 } as const;

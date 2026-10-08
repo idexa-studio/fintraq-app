@@ -13,6 +13,7 @@ import type backup from '@/shared/i18n/copy/backup.en';
 import type exportCopy from '@/shared/i18n/copy/export.en';
 import type lock from '@/shared/i18n/copy/lock.en';
 import type settings from '@/shared/i18n/copy/settings.en';
+import type firstRun from '@/shared/i18n/copy/firstRun.en';
 import type shell from '@/shared/i18n/copy/shell.en';
 import type transactions from '@/shared/i18n/copy/transactions.en';
 import type en from '@/shared/i18n/locales/en';
@@ -33,6 +34,7 @@ declare module 'i18next' {
       export: typeof exportCopy;
       lock: typeof lock;
       settings: typeof settings;
+      firstRun: typeof firstRun;
       insights: typeof insights;
       common: typeof common;
       shell: typeof shell;

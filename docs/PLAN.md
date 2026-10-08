@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 152 | 94 | In progress |
+| D | Screens at parity with the shipped app | 151 | 98 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -308,15 +308,15 @@ route template · `tsc`, lint, design audit and tests clean.
 - [ ] D1.06 Shared checklist
 
 ### D2. First run
-- [ ] D2.01 Welcome: start fresh or restore
-- [ ] D2.02 Setup, each step a sheet over the last: name
-- [ ] D2.03 Setup: default currency (currency picker)
-- [ ] D2.04 Setup: first account and opening balance
-- [ ] D2.05 Creating the workspace (please wait) and failure with retry
-- [ ] D2.06 Restore: choose file or Google Drive
+- [x] D2.01 Welcome: start fresh or restore
+- [x] D2.02 Setup, one question at a time under a picture of what is being made (the greeting and the first account as they will look on Home), not a sheet over a sheet: name
+- [x] D2.03 Setup: default currency (currency picker)
+- [x] D2.04 Setup: first account and opening balance
+- [ ] D2.05 Creating the workspace (please wait) and failure with retry (built; not run: finishing setup on the owner's phone would overwrite his name and currency and re-add default categories)
+- [ ] D2.06 Restore: choose file or Google Drive (Drive built and seen, not run; the file is H1)
 - [ ] D2.07 Restore progress, "no backup found", try another account
-- [ ] D2.08 Reminder offer and the system permission
-- [ ] D2.09 Default categories seeded exactly as today
+- [ ] D2.08 Reminder offer and the system permission (built and seen; not pressed)
+- [ ] D2.09 Default categories seeded exactly as today (the same list and rule, moved to `features/onboarding/workspace.ts`; not run)
 - [ ] D2.10 Shared checklist
 
 ### D3. Home
@@ -479,7 +479,7 @@ Built in `features/backup` on 2026-10-08 and seen on a device only as far as the
 - [x] D16.08 About, a page of its own at `/settings/about` (owner, 2026-10-08): the idea as three promises, who makes it (Idexa, with a link to idexa.app), then version, privacy, terms and the usage-data switch; the developer row lives here in development builds
 - [ ] D16.09 Delete all data, with confirmation, clearing every key including retired ones (built; never to be run on the owner's phone without his word)
 - [x] D16.10 Developer entry: a "Developer options" row in development builds only, no PIN and no hidden gesture; a release build opens `/developer` by link alone (owner, 2026-10-08; already so in the shipped Settings, to be carried into the rebuilt one)
-- [ ] D16.11 In-app web page for privacy and terms
+- [ ] ~~D16.11 In-app web page for privacy and terms~~ Dropped (owner, 2026-10-08): the pages open in the phone's browser and `react-native-webview` is removed, one native dependency fewer
 - [ ] D16.12 Shared checklist
 
 ### D17. Developer and system screens
