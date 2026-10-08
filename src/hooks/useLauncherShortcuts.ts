@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
-import { hasPossibleTransfer } from '@/src/utils/accounts';
+import { hasPossibleTransfer } from '@/shared/calc/transfers';
 import { LoggerService } from '@/shared/logging/logger';
 
 type ShortcutId = 'expense' | 'income' | 'transfer' | 'loan';

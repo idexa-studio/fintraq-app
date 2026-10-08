@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { AdvancedFilters, AdvancedFilterService, DEFAULT_ADVANCED_FILTERS } from '@/src/features/filters/api/advanced-filters.service';
+import { AdvancedFilters, AdvancedFilterService, DEFAULT_ADVANCED_FILTERS } from '@/data/repositories/filters';
 
 /** Filters a chip can clear individually. */
 export type ClearableFilter = 'types' | 'accountIds' | 'categoryIds' | 'personIds' | 'dateRange' | 'amountRange';

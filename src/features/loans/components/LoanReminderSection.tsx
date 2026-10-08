@@ -5,7 +5,7 @@ import { ListGroup, ListItem } from '@/src/components/ui';
 import { OptionsBottomSheet } from '@/src/components/ui/OptionsBottomSheet';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { usePremium } from '@/src/providers/PremiumProvider';
-import type { LoanWithStats } from '@/src/features/loans/api/loans';
+import type { LoanWithStats } from '@/data/repositories/loans';
 import { useLoanReminders } from '@/src/features/loans/hooks/useLoanReminders';
 import { useTranslation } from 'react-i18next';
 

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { NetFlowGrid, Skeleton } from '@/src/components/ui';
 import { useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
-import { buildMonthPulse } from '@/src/features/dashboard/utils/widgets';
+import { buildMonthPulse } from '@/shared/calc/month';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 
 type Props = { currency: string };

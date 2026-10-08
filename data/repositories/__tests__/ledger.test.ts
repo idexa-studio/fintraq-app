@@ -1,4 +1,4 @@
-import { accountDeltas, isLoanPrincipal, LedgerError, loanOutstanding, loanStatus, repaymentType, validateEntry } from '@/src/features/transactions/utils/ledger';
+import { accountDeltas, isLoanPrincipal, LedgerError, loanOutstanding, loanStatus, repaymentType, validateEntry } from '@/data/repositories/ledger';
 
 describe('validateEntry', () => {
   it('accepts a normal expense, income and transfer', () => {

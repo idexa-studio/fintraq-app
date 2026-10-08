@@ -1,4 +1,4 @@
-import type { Account } from '@/src/features/accounts/api/accounts';
+import type { Account } from '@/data/repositories/accounts';
 import { netWorthByCurrency } from '@/src/features/accounts/utils/net-worth';
 
 const account = (id: number, currency: string, balance: number) => ({ id, currency, balance }) as Account;

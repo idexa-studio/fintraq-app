@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { QUERY_KEYS } from '@/src/lib/query-keys';
-import { globalSearch } from '@/src/features/search/api/global-search';
+import { QUERY_KEYS } from '@/data/query-keys';
+import { globalSearch } from '@/data/repositories/search';
 
 export function useGlobalSearch(rawQuery: string) {
   const [debouncedQuery, setDebouncedQuery] = useState('');

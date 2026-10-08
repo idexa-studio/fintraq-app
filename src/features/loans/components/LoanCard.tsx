@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BentoPressable, MoneyText, PersonAvatar, ProgressBar, Text } from '@/src/components/ui';
-import type { LoanWithStats } from '@/src/features/loans/api/loans';
+import type { LoanWithStats } from '@/data/repositories/loans';
 import { LoanStatusBadge } from '@/src/features/loans/components/LoanStatusBadge';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { formatDate , parseDateKey } from '@/shared/date/date';

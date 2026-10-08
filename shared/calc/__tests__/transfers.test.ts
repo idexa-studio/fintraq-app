@@ -1,4 +1,4 @@
-import { hasPossibleTransfer, transferDestinations } from '@/src/utils/accounts';
+import { hasPossibleTransfer, transferDestinations } from '@/shared/calc/transfers';
 
 const account = (id: number, currency: string, accountType: string | null = 'bank') => ({ id, currency, accountType });
 

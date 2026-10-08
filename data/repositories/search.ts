@@ -2,10 +2,10 @@ import { desc, eq, like, or } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import { db } from '@/data/db/client';
 import { accounts, categories, payments, persons } from '@/data/db/schema';
-import type { Account } from '@/src/features/accounts/api/accounts';
-import type { Category } from '@/src/features/categories/api/categories';
-import type { Person } from '@/src/features/persons/api/persons';
-import { TRANSACTION_LIST_SELECT, type TransactionListItem } from '@/src/features/transactions/api/transactions';
+import type { Account } from '@/data/repositories/accounts';
+import type { Category } from '@/data/repositories/categories';
+import type { Person } from '@/data/repositories/people';
+import { TRANSACTION_LIST_SELECT, type TransactionListItem } from '@/data/repositories/transactions';
 
 const toAccounts = alias(accounts, 'to_accounts');
 

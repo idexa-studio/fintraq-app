@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from '@/src/lib/query-keys';
+import { QUERY_KEYS } from '@/data/query-keys';
 import { afterLedgerWrite } from '@/src/lib/after-ledger-write';
-import * as api from '@/src/features/persons/api/persons';
+import * as api from '@/data/repositories/people';
 
 export const usePersons = () =>
   useQuery({

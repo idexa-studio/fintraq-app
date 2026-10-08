@@ -1,4 +1,4 @@
-import type { TransactionFilters } from '@/src/features/transactions/api/transactions';
+import type { TransactionFilters } from '@/data/repositories/transactions';
 
 const accounts = {
   all: ['accounts'] as const,

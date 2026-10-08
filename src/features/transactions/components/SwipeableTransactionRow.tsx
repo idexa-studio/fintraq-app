@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AccessibilityActionEvent, StyleSheet, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { BentoPressable, Icon } from '@/src/components/ui';
-import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
+import type { TransactionListItem } from '@/data/repositories/transactions';
 import { TransactionRow } from '@/src/features/transactions/components/TransactionRow';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { alpha } from '@/src/theme/tokens';

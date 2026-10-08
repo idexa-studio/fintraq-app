@@ -6,7 +6,7 @@ import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState, ListGroup, Screen, SectionHeader, Skeleton, SkeletonRow } from '@/src/components/ui';
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
-import { hasPossibleTransfer } from '@/src/utils/accounts';
+import { hasPossibleTransfer } from '@/shared/calc/transfers';
 import { BackupPromptModal } from '@/src/features/backup/components/BackupPromptModal';
 import { AccountsCarousel } from '@/src/features/dashboard/components/AccountsCarousel';
 import { DashboardHeader } from '@/src/features/dashboard/components/DashboardHeader';

@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { groupByDay, sumByCurrency } from '@/src/utils/transactions';
+import { groupByDay, sumByCurrency } from '@/shared/calc/transactions';
 
 // A fixed English formatter keeps the assertions independent of the device locale.
 const title = (d: Date, withYear: boolean) => format(d, withYear ? 'EEE, d MMM yyyy' : 'EEE, d MMM');

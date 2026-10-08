@@ -20,8 +20,8 @@ import {
   Text,
 } from '@/src/components/ui';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
-import type { TransactionDetail } from '@/src/features/transactions/api/transactions';
-import { isLoanPrincipal } from '@/src/features/transactions/utils/ledger';
+import type { TransactionDetail } from '@/data/repositories/transactions';
+import { isLoanPrincipal } from '@/data/repositories/ledger';
 import { useDeleteTransaction, useTransactionDetail } from '@/src/features/transactions/hooks/transactions';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { TransactionType } from '@/shared/types';

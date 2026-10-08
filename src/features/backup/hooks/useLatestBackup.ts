@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { QUERY_KEYS } from '@/src/lib/query-keys';
+import { QUERY_KEYS } from '@/data/query-keys';
 import type { CloudBackupFileMeta } from '@/src/services/backup/backup.types';
 import { BackupPreferences } from '@/src/services/backup/backup-preferences';
 import { getBackupState, subscribeToBackupState } from '@/src/services/backup/backup-state';

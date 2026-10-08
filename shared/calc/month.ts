@@ -1,6 +1,6 @@
 /** Pure maths behind the dashboard widgets, kept out of the components so it can be unit-tested. */
 import { format } from 'date-fns';
-import { monthEndForecast, percentChange } from '@/src/utils/analytics';
+import { monthEndForecast, percentChange } from '@/shared/calc/analytics';
 
 export type MonthTotals = {
   income: number;

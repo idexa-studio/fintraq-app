@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/src/components/ui';
-import type { LoanStatus } from '@/src/features/loans/api/loans';
+import type { LoanStatus } from '@/data/repositories/loans';
 import { useTheme } from '@/src/providers/ThemeProvider';
 
 type Props = { status: LoanStatus };

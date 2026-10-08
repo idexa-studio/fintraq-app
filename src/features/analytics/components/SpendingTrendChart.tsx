@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BentoPressable, MoneyText, Text } from '@/src/components/ui';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { toTrendBars } from '@/src/utils/analytics';
+import { toTrendBars } from '@/shared/calc/analytics';
 import { magnitudeRamp } from '@/src/theme/chart';
 import { formatCurrency } from '@/shared/format/money';
 

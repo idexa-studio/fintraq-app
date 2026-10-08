@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { StatTile } from '@/src/components/ui';
-import type { BiggestExpense, CategoryBreakdown } from '@/src/features/analytics/api/analytics';
+import type { BiggestExpense, CategoryBreakdown } from '@/data/repositories/analytics';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/shared/format/color';
 import { resolveIcon } from '@/src/utils/icons';

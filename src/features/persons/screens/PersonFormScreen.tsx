@@ -6,7 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { ColorPickerRow } from '@/src/components/pickers/ColorPickerRow';
 import { PALETTE_COLOR_OPTIONS } from '@/shared/contracts/pickers';
-import type { InsertPerson, UpdatePersonData } from '@/src/features/persons/api/persons';
+import type { InsertPerson, UpdatePersonData } from '@/data/repositories/people';
 import { useCreatePerson, usePersons, useUpdatePerson } from '@/src/features/persons/hooks/persons';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';

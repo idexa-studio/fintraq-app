@@ -9,7 +9,7 @@ import { useAccounts } from '@/src/features/accounts/hooks/accounts';
 import { useCategories } from '@/src/features/categories/hooks/categories';
 import { AdvancedFilterBottomSheet } from '@/src/features/filters/components/AdvancedFilterBottomSheet';
 import { usePersons } from '@/src/features/persons/hooks/persons';
-import type { TransactionListItem } from '@/src/features/transactions/api/transactions';
+import type { TransactionListItem } from '@/data/repositories/transactions';
 import { ActiveFilterChips } from '@/src/features/transactions/components/ActiveFilterChips';
 import { SwipeableTransactionRow } from '@/src/features/transactions/components/SwipeableTransactionRow';
 import { TransactionDayHeader } from '@/src/features/transactions/components/TransactionDayHeader';
@@ -21,7 +21,7 @@ import { useTransactionSummary } from '@/src/features/transactions/hooks/useTran
 import { FeatureTip } from '@/src/features/walkthrough';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { groupByDay } from '@/src/utils/transactions';
+import { groupByDay } from '@/shared/calc/transactions';
 
 type DaySection = { key: string; title: string; data: TransactionListItem[] };
 

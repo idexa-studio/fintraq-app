@@ -6,7 +6,7 @@ import { Banner, Chip, EmptyState, Fab, Screen, SectionHeader, SegmentedControl,
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { FREE_LOAN_LIMIT } from '@/src/constants/iap';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
-import type { LoanWithStats } from '@/src/features/loans/api/loans';
+import type { LoanWithStats } from '@/data/repositories/loans';
 import { LoanCard } from '@/src/features/loans/components/LoanCard';
 import { useLoans, useLoansCount } from '@/src/features/loans/hooks/loans';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';

@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { QUERY_KEYS } from '@/src/lib/query-keys';
-import * as api from '@/src/features/dashboard/api/dashboard';
-import * as insightsApi from '@/src/features/dashboard/api/insights';
+import { QUERY_KEYS } from '@/data/query-keys';
+import * as api from '@/data/repositories/summaries';
+import * as insightsApi from '@/data/repositories/insights';
 
 export const useMonthTotals = (currency: string) => {
   return useQuery({

@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import { LEDGER_QUERY_ROOTS } from '@/src/lib/query-keys';
+import { LEDGER_QUERY_ROOTS } from '@/data/query-keys';
 
 export function invalidateAll(queryClient: QueryClient, ...keys: readonly (readonly unknown[])[]): void {
   for (const key of keys) {

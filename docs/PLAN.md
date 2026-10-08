@@ -26,7 +26,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 56 | 56 | Complete |
-| C | Groundwork: shared, data, platform, shell | 80 | 18 | In progress |
+| C | Groundwork: shared, data, platform, shell | 83 | 34 | In progress |
 | D | Screens at parity with the shipped app | 142 | 0 |  |
 | E | Pro: three plans and gating | 27 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
@@ -199,24 +199,28 @@ phone upgraded from 1.2.4 with real data opens with everything intact.
 - [x] C3.06 Update every import; tests clean; shipped Home shows the same balances on the phone
 - [x] C3.07 Extract the map of icon names written by older versions to `shared/contracts/legacy-icon-names.ts`, with a test that every name it maps to can still be drawn
 
-### C4. `data/repositories`
-One module per entity holding every read and write, taken from the legacy
-`api/` files without changing behaviour.
-- [ ] C4.01 `accounts.ts` from `src/features/accounts/api/accounts.ts` and `src/utils/accounts.ts`
-- [ ] C4.02 `transactions.ts` from `src/features/transactions/api/transactions.ts` and `src/utils/transactions.ts`
-- [ ] C4.03 Ledger rules (`ledger.test.ts`) move with it and stay green
-- [ ] C4.04 `categories.ts`
-- [ ] C4.05 `people.ts` (table stays `persons`)
-- [ ] C4.06 `loans.ts`
-- [ ] C4.07 `summaries.ts` from `dashboard/api/dashboard.ts`
-- [ ] C4.08 `analytics.ts` from `analytics/api/analytics.ts` and `src/utils/analytics.ts`
-- [ ] C4.09 `insights.ts` from `dashboard/api/insights.ts`
-- [ ] C4.10 `search.ts` from `search/api/global-search.ts`
-- [ ] C4.11 `filters.ts` from `filters/api/advanced-filters.service.ts` with its test
-- [ ] C4.12 `streak.ts` from `reports/api/streak.service.ts`
-- [ ] C4.13 `export.ts` (CSV) from `export/api` and `export/utils` with its test
-- [ ] C4.14 `query-keys.ts` and `after-ledger-write.ts` from `src/lib/`
+### C4. `data/repositories` and `shared/calc`
+One module per entity holding every read and write, moved from the legacy
+`api/` files without changing behaviour. Calculations that touch no database
+go to `shared/calc`.
+- [x] C4.01 `accounts.ts`
+- [x] C4.02 `transactions.ts`
+- [x] C4.03 `ledger.ts` (how a transaction changes balances) with its test
+- [x] C4.04 `categories.ts`
+- [x] C4.05 `people.ts` (table stays `persons`)
+- [x] C4.06 `loans.ts`
+- [x] C4.07 `summaries.ts` from `dashboard/api/dashboard.ts`
+- [x] C4.08 `analytics.ts`
+- [x] C4.09 `insights.ts`, typed without the legacy UI's icon alias
+- [x] C4.10 `search.ts`
+- [x] C4.11 `filters.ts` with its test
+- [x] C4.12 `streak.ts`
+- [x] C4.13 CSV export to `data/export/` with its test
+- [x] C4.14 `data/query-keys.ts` and `data/query-invalidation.ts`
 - [ ] ~~C4.15 Legacy `api/` files become one-line re-exports~~ Dropped: a re-export is a patch. Each move rewrites every importer to the new path in the same change, as C1 did
+- [x] C4.16 Pure calculations to `shared/calc/` with their tests: `analytics.ts`, `month.ts` (month pulse and heat calendar), `transfers.ts` (which accounts can transfer to which), `transactions.ts` (totals by currency, grouping by day)
+- [x] C4.17 Device: transactions, analytics, accounts, people, loans and categories screens all show their data on the moved queries
+- [ ] C4.18 `net-worth.ts` moves with the accounts screens (D7), `after-ledger-write.ts` with reminders (C6.04), and the demo-data seeder with the developer tools (D17): each still depends on code that has not moved
 
 ### C5. `data/backup`
 - [ ] C5.01 Move `backup-snapshot.ts`, `backup.types.ts`, `database-backup.service.ts` to `data/backup/`

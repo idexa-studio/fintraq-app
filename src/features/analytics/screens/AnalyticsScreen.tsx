@@ -18,13 +18,13 @@ import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/ana
 import { useAnalyticsOverview } from '@/src/features/analytics/hooks/useAnalyticsOverview';
 import { useTransactionsCount } from '@/src/features/transactions/hooks/transactions';
 import { useMonthTotals } from '@/src/features/dashboard/hooks/dashboard';
-import { buildMonthPulse } from '@/src/features/dashboard/utils/widgets';
+import { buildMonthPulse } from '@/shared/calc/month';
 import { ProPreviewCard } from '@/src/features/premium/components/ProPreviewCard';
 import { useProAccess } from '@/src/features/premium/hooks/useProAccess';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import type { AccountType } from '@/shared/types';
-import { withShares } from '@/src/utils/analytics';
+import { withShares } from '@/shared/calc/analytics';
 import { colorNumberToHex } from '@/shared/format/color';
 import { resolveAccountTypeIcon, resolveIcon } from '@/src/utils/icons';
 

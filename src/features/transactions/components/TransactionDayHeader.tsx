@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { MoneyText, Text } from '@/src/components/ui';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import { sumByCurrency } from '@/src/utils/transactions';
+import { sumByCurrency } from '@/shared/calc/transactions';
 
 type TransactionDayHeaderProps = {
   title: string;
