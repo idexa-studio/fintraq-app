@@ -201,6 +201,19 @@ def centred_text(draw, text, f, cx, top, fill, leading):
     return y
 
 
+def lift(im, which, width, lean, cx, cy):
+    """Draws a card over its own place on a phone `width` across, leaning, whose middle is at (cx, cy)."""
+    # Where a point of the screen lands on the picture: the frame's inset, then the lean about the phone's middle.
+    bezel = round(width * 0.022)
+    scale = (width - 2 * bezel) / 1080
+    turn = math.radians(lean)
+    l, t, r, b = CARDS[which][1]
+    x = bezel + (l + r) / 2 * scale - width / 2
+    y = bezel + (t + b) / 2 * scale - (2340 * scale + 2 * bezel) / 2
+    put(im, card(which, round((r - l) * scale * LIFT), lean),
+        cx + x * math.cos(turn) - y * math.sin(turn), cy + x * math.sin(turn) + y * math.cos(turn))
+
+
 PANEL = (1080, 1920)
 
 
@@ -226,16 +239,8 @@ def play_strip():
         body = device(name, width, lean)
         cy = 400 * SS + body.height / 2
         put(im, body, cx, cy)
-        # Where a point of the screen lands on the picture: the frame's inset, then the lean about the phone's middle.
-        bezel = round(width * 0.022)
-        scale = (width - 2 * bezel) / 1080
-        turn = math.radians(lean)
         for which in lifted:
-            l, t, r, b = CARDS[which][1]
-            x = bezel + (l + r) / 2 * scale - width / 2
-            y = bezel + (t + b) / 2 * scale - (2340 * scale + 2 * bezel) / 2
-            put(im, card(which, round((r - l) * scale * LIFT), lean),
-                cx + x * math.cos(turn) - y * math.sin(turn), cy + x * math.sin(turn) + y * math.cos(turn))
+            lift(im, which, width, lean, cx, cy)
     return im.convert('RGB')
 
 
@@ -251,17 +256,21 @@ def lockup(im, left, top, height):
 
 
 def feature_graphic():
+    """The name and the line on the left; three phones fanned out on the right, running off the foot."""
     W, H = 1024 * SS, 500 * SS
     im = waves(W, H).convert('RGBA')
-    put(im, device('home', 300 * SS, 8), 815 * SS, 330 * SS)
-    put(im, card('stack', 270 * SS, -6), 632 * SS, 372 * SS)
-    put(im, card('donut', 184 * SS, 7), 922 * SS, 322 * SS)
+    for name, x, top, width, lean in (('insights-30b', 588, 140, 176, -7), ('loan', 912, 140, 176, 7), ('home', 750, 64, 206, 0)):
+        body = device(name, width * SS, lean)
+        cy = top * SS + body.height / 2
+        put(im, body, x * SS, cy)
+        if name == 'home':
+            lift(im, 'balance', width * SS, lean, x * SS, cy)
     d = ImageDraw.Draw(im)
     left = 64 * SS
-    y = lockup(im, left, 96 * SS, 64 * SS) + 44 * SS
+    y = lockup(im, left, 132 * SS, 66 * SS) + 40 * SS
     for line in ('Know where', 'your money goes'):
-        d.text((left, y), line, font=font('700Bold', 46 * SS), fill=INK)
-        y += 58 * SS
+        d.text((left, y), line, font=font('700Bold', 44 * SS), fill=INK)
+        y += 56 * SS
     return im.convert('RGB').resize((1024, 500), Image.LANCZOS)
 
 
