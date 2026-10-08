@@ -30,7 +30,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
-| G | Release 1: the redesign | 32 | 3 | In progress |
+| G | Release 1: the redesign | 33 | 6 | In progress |
 | H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
 
@@ -613,9 +613,10 @@ Done when: the redesign is live to all users with no data loss reported.
 - [ ] G2.13 Expo 57 upgrade checked on the iPhone: first run through to Home. Builds, signs with a free Apple account and starts on iOS 27 (2026-10-09); stopped at the update notice because remote config's `iosMinBuild` was 49
 - [ ] G2.14 Remote config `forceUpdateConfig`: `iosMinBuild` and `storeUrlIos` set for iOS before any iOS release (they held Android's 49 and a placeholder)
 - [ ] G2.15 Firebase on iOS through Swift packages, once react-native-firebase finds `GoogleService-Info.plist` in an Expo project (26.4.0 does not: the Crashlytics build step fails). Then drop `disableSPM` and static linking in `app.config.ts`. Its CocoaPods stop getting new versions after October 2026
-- [ ] G2.16 Amounts on iOS have no thousands separator and a space after the symbol ("₹ 35939.88" on the iPhone, "₹37,769.63" on Android; seen 2026-10-09). The sign also sits after the symbol there ("₹ -48.31"). The two platforms must format money the same way
-- [ ] G2.18 iOS: an amount in an Activity row is sometimes drawn tiny (the "Home internet" row on the iPhone, 2026-10-09): the text that shrinks to fit shrinks far too much
+- [x] G2.16 Amounts on iOS have no thousands separator and a space after the symbol ("₹ 35939.88" on the iPhone, "₹37,769.63" on Android; seen 2026-10-09). The sign also sits after the symbol there ("₹ -48.31"). The two platforms must format money the same way
+- [x] G2.18 iOS: an amount in an Activity row is sometimes drawn tiny (the "Home internet" row on the iPhone, 2026-10-09): the text that shrinks to fit shrinks far too much
 - [ ] G2.17 iOS: after opening a task sheet, closing it and changing tab, the tab's page is blank (owner, 2026-10-09). Not yet reproduced by me
+- [x] G2.19 The photo permission is not asked for: `expo-screen-capture` declares `READ_MEDIA_IMAGES` (for noticing screenshots, which Fintraq does not do; it only blocks capture while locked), and Play asks for a justification of it. Blocked in `app.json` with `READ_EXTERNAL_STORAGE`; the generated manifest removes both (2026-10-09)
 - [ ] G2.01 Full pass on a small Android phone (360dp) and a large one
 - [ ] G2.02 Full pass on iOS. The code is written for both platforms (owner, 2026-10-09); nothing has been run on iOS yet
 - [ ] G2.03 Android three-button and gesture navigation
