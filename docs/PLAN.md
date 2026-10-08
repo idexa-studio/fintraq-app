@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 144 | 73 | In progress |
+| D | Screens at parity with the shipped app | 144 | 77 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -394,7 +394,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D9.01 List with balances: owes you, you owe, settled. The balance is open loans only; ordinary payments are not debts (paying rent is not owing the landlord)
 - [x] D9.02 Person screen: balance, loans, shared activity
 - [x] D9.03 Form: name, phone, email, role, company, colour
-- [ ] D9.04 Free limit of 10 leads to the paywall (built; not seen, which needs ten people and a non-Pro state)
+- [ ] D9.04 Free limit of 10 leads to the paywall (built; not seen, which needs ten people)
 - [x] D9.05 Delete with confirmation
 - [ ] D9.06 Empty state (built; not seen, which needs an install with no people)
 - [x] D9.07 Shared checklist
@@ -406,7 +406,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D10.04 Record a repayment with slide to confirm
 - [x] D10.05 Due reminder and instalment reminder settings
 - [x] D10.06 Reminders rescheduled and cancelled as today, rebuilt from what is saved on the loan. One change: the due reminder is switched on once, when a loan with a due date is made; the shipped app switched it back on every time the loan was opened, undoing the user's choice
-- [ ] D10.07 Free limit of 3 active loans leads to the paywall (built; not seen, which needs a non-Pro state)
+- [x] D10.07 Free limit of 3 active loans leads to the paywall
 - [x] D10.08 Delete with confirmation
 - [x] D10.09 Shared checklist
 - [ ] D10.10 Change a loan's due date and note after it is made (`/loans/[id]/edit`; the shipped app has no way to)
@@ -414,7 +414,7 @@ route template · `tsc`, lint, design audit and tests clean.
 ### D11. Plan tab (first version)
 - [x] D11.01 Upcoming: loans due, soonest first
 - [x] D11.02 People and balances summary with "See all"
-- [ ] D11.03 Placeholders for repeating items, budgets and goals marked "Coming to Pro" (built from the registry as one card, shown to free users only; not seen, as the test phone is Pro)
+- [x] D11.03 Placeholders for repeating items, budgets and goals marked "Coming to Pro" (built from the registry as one card, shown to free users only)
 - [ ] D11.04 Empty state (built; not seen, which needs an install with no loans)
 - [x] D11.05 Shared checklist
 
@@ -428,7 +428,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D12.07 Rhythm: weekdays and heat calendar (Pro)
 - [x] D12.08 People (Pro)
 - [x] D12.09 Insight findings (Pro)
-- [ ] D12.10 One locked card for everything Pro adds, for free users (built from the registry; not seen, as the test phone is Pro)
+- [x] D12.10 One locked card for everything Pro adds, for free users (built from the registry)
 - [x] D12.11 Tapping a figure opens Activity with that filter
 - [ ] D12.12 Not enough data yet state (built; not seen, which needs an install with nothing recorded)
 - [x] D12.13 Shared checklist
@@ -437,7 +437,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D13.01 Search field, recent searches (same storage key; a search is remembered when it is submitted or a result is opened, not on every pause in typing)
 - [x] D13.02 Results grouped: transactions, accounts, people, categories (the newest 50 transactions, said on screen when reached; no cap on the rest)
 - [x] D13.03 Nothing matches state
-- [ ] D13.04 Free users reach the paywall, including by link (built as `ProGateScreen`)
+- [x] D13.04 Free users reach the paywall, including by link (built as `ProGateScreen`)
 - [x] D13.05 Shared checklist
 
 ### D14. Backup
