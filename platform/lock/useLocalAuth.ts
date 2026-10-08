@@ -3,7 +3,8 @@ import i18n from '@/shared/i18n';
 
 export type BiometricCapability = {
   available: boolean;
-  biometryType: 'face' | 'fingerprint' | 'none';
+  /** What the phone can read. `either`: it has both, and the system decides which it asks for. */
+  biometryType: 'face' | 'fingerprint' | 'either' | 'none';
 };
 
 export async function getBiometricCapability(): Promise<BiometricCapability> {
@@ -14,13 +15,20 @@ export async function getBiometricCapability(): Promise<BiometricCapability> {
     return { available: false, biometryType: 'none' };
   }
 
-  const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
-  const hasFace = types.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
+  return { available: true, biometryType: biometryOf(await LocalAuthentication.supportedAuthenticationTypesAsync()) };
+}
 
-  return {
-    available: true,
-    biometryType: hasFace ? 'face' : 'fingerprint',
-  };
+/**
+ * What to call the phone's biometrics. The system lists what the phone can read, not which of
+ * them its owner set up, and its prompt takes whichever is there: a phone that reads both must
+ * never be told it is one of them (it said "Unlock with face" to an owner using a fingerprint).
+ */
+export function biometryOf(types: readonly LocalAuthentication.AuthenticationType[]): BiometricCapability['biometryType'] {
+  const face = types.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
+  const finger = types.includes(LocalAuthentication.AuthenticationType.FINGERPRINT);
+  // An iris reader on its own has no name here: the button then just says "Unlock".
+  if (types.length > 1) return face || finger ? 'either' : 'none';
+  return face ? 'face' : finger ? 'fingerprint' : 'none';
 }
 
 /**

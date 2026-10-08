@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 178 | 146 | In progress |
+| D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 27 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -301,7 +301,7 @@ route template · `tsc`, lint, design audit and tests clean.
 
 ### D1. Lock
 - [x] D1.01 Unlock screen: Emblem, PIN marks, keypad without decimal
-- [ ] D1.02 Biometric prompt on open, with PIN as the way back (built; not run, as it needs the owner's fingerprint)
+- [x] D1.02 Biometric prompt on open, with PIN as the way back (built; not run, as it needs the owner's fingerprint) Run by the owner on 2026-10-08: it unlocks, but the button said "Unlock with face" on a phone that has both; it now says "fingerprint or face" there, and names one only when the phone reads only one
 - [ ] D1.03 Wrong PIN message; lockout with the time remaining shown (wrong-PIN message seen; the lockout was not provoked on the owner's phone, its timing is covered by the platform tests)
 - [x] D1.04 Create PIN and confirm PIN task
 - [x] D1.05 Lock on background after the existing timeout; screenshots blocked as today
