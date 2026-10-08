@@ -82,5 +82,5 @@ const createStyles = ({ colors, size, space, border, radius }: Theme) =>
     // Hangs from the bar's top hairline, its lower corners rounded.
     mark: { position: 'absolute', top: -border.thin, left: 0, height: size.tabMark + border.thin, backgroundColor: colors.accent, borderBottomLeftRadius: size.tabMark, borderBottomRightRadius: size.tabMark },
     // Green carries an outline on a light surface, as the switch does.
-    action: { width: size.minTouch + space.sm, height: size.chip + space.xs, borderRadius: radius.md, backgroundColor: colors.accent, borderWidth: border.thin, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
+    action: { width: size.minTouch, height: size.chip + space.xs, borderRadius: radius.md, backgroundColor: colors.accent, borderWidth: border.thin, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
   });

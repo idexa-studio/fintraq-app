@@ -1,4 +1,5 @@
-import { balanceMakeup, dayPart, firstName, monthShape } from '@/features/home/home-rules';
+import { OFFERED_COLORS } from '@/shared/contracts/pickers';
+import { balanceMakeup, dayPart, distinctColors, firstName, looksSame, monthShape } from '@/features/home/home-rules';
 
 const account = (id: number, balance: number) => ({ id, name: `Account ${id}`, balance, color: 0 });
 
@@ -39,5 +40,24 @@ describe('home rules', () => {
     expect(dayPart(16)).toBe('afternoon');
     expect(dayPart(17)).toBe('evening');
     expect(dayPart(2)).toBe('evening');
+  });
+
+  // Offered colours stand in for saved ones; a near match is the same colour nudged a little on every channel.
+  const nudged = (hex: string) => `#${(parseInt(hex.slice(1), 16) + 0x060606).toString(16).padStart(6, '0')}`;
+  const pick = (name: string) => OFFERED_COLORS.find((color) => color.name === name)!.hex;
+  const [lilac, blue, orange, green] = [pick('purple'), pick('blue'), pick('orange'), pick('forest')];
+  const lilacish = nudged(lilac);
+
+  it('tells a near match from a different colour', () => {
+    expect(looksSame(lilac, lilacish)).toBe(true);
+    expect(looksSame(lilac, blue)).toBe(false);
+  });
+
+  it('keeps each colour and replaces only one that looks like an earlier one', () => {
+    expect(distinctColors([blue, lilac, orange, lilacish], [lilac, blue, green])).toEqual([blue, lilac, orange, green]);
+  });
+
+  it('repeats a colour only when no spare is left', () => {
+    expect(distinctColors([lilac, lilacish], [lilac])).toEqual([lilac, lilacish]);
   });
 });

@@ -38,6 +38,7 @@ export function TransactionRow({ transaction: tx, when, onPress }: TransactionRo
     <ListRow
       leading={<IconCircle icon={transfer ? 'arrows-left-right' : resolveIcon(tx.category.icon, 'tag')} color={colorNumberToHex(tx.category.color)} />}
       strong
+      oneLine
       title={tx.note.trim() || (transfer ? t('kinds.transfer') : tx.category.name)}
       subtitle={`${lead} · ${where}`}
       value={signedAmount(tx)}

@@ -30,8 +30,8 @@ export function MonthCard({ currency }: { currency: string }) {
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xl }}>
         {/* The month as one ring: what went out in ink, what is left of what came in in green. */}
         <Ring
-          size={size.illustrationTile * 1.75}
-          thickness={space.md}
+          size={size.illustrationTile * 1.5}
+          thickness={space.sm}
           total={shape.whole}
           segments={[{ value: shape.spent, color: shape.reading === 'spentMore' ? colors.danger : colors.text }, { value: shape.kept, color: colors.brand }]}
           accessibilityLabel={line}

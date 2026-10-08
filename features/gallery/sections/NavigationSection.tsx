@@ -21,17 +21,17 @@ export function NavigationSection() {
   return (
     <>
       <Section title="Header">
-        <Specimen name="Home" note="The top of a tab: the title large at the start of the line. Home greets by the time of day under the date; the user's own mark opens Settings.">
+        <Specimen name="Home" note="The top of a tab: the title at the start of the line. Home sets the first name under a greeting by the time of day; the user’s own mark opens Settings.">
           <View style={bleed}>
             <Header
               large
-              eyebrow="Thursday, October 8"
-              title="Good afternoon, John"
+              eyebrow="Good afternoon"
+              title="John"
               right={<><IconButton icon="search" accessibilityLabel="Search" /><IconCircle initials="J" color="green" /></>}
             />
           </View>
         </Specimen>
-        <Specimen name="Another tab" note="The same large title, with the tab's own actions at the end.">
+        <Specimen name="Another tab" note="The same title, with the tab's own actions at the end.">
           <View style={bleed}>
             <Header large title="Activity" right={<><IconButton icon="filter" accessibilityLabel="Filter" /><IconButton icon="search" accessibilityLabel="Search" /></>} />
           </View>
