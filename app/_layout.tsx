@@ -32,8 +32,8 @@ import { AppTheme, DatabaseGate } from '@/features/shell';
 import React, { useEffect, useState } from 'react';
 import { LoggerService } from '@/shared/logging/logger';
 
-/** A task rises over the screen it was started from, which stays visible, dimmed, above it. */
-const TASK = { presentation: 'transparentModal', animation: 'slide_from_bottom' } as const;
+/** A task is a sheet: the backdrop fades in while the sheet itself rises (see `Screen sheet`). */
+const TASK = { presentation: 'transparentModal', animation: 'fade', animationDuration: 220 } as const;
 
 // Prevent the splash screen from auto-hiding before version check completes
 SplashScreen.preventAutoHideAsync().catch(() => {});

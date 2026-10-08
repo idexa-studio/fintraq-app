@@ -1,5 +1,5 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
-import { Button, Card, CardActions, Chip, ChipRow, IconButton, Section, SegmentedControl, Text, useTheme } from '@/design';
+import { Button, Card, CardActions, Chip, ChipRow, IconButton, Section, TabStrip, Text, useTheme } from '@/design';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
@@ -60,9 +60,9 @@ export function ActionsSection() {
         </Specimen>
       </Section>
 
-      <Section title="Segmented control">
-        <Specimen name="Segmented control" note="A few choices of equal standing that change what the screen below is. The black block slides to the choice.">
-          <SegmentedControl segments={[{ key: 'expense', label: 'Expense' }, { key: 'income', label: 'Income' }, { key: 'transfer', label: 'Transfer' }]} value={kindOf} onChange={setKindOf} accessibilityLabel="Kind of transaction" />
+      <Section title="Tab strip">
+        <Specimen name="Tab strip" note="Views of one screen, under its header. Plain labels; the active one is bold and the green mark slides to it.">
+          <TabStrip tabs={[{ key: 'expense', label: 'Expense' }, { key: 'income', label: 'Income' }, { key: 'transfer', label: 'Transfer' }]} value={kindOf} onChange={setKindOf} accessibilityLabel="Kind of transaction" />
         </Specimen>
       </Section>
 
