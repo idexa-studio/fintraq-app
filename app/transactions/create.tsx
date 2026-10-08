@@ -1,14 +1,10 @@
-import { useLocalSearchParams } from 'expo-router';
+import { addPathFromLegacy } from '@/features/shell';
+import { Redirect, useLocalSearchParams } from 'expo-router';
+import type { Href } from 'expo-router';
 import React from 'react';
-import { TransactionFormPage } from '@/src/features/transactions/screens/TransactionFormPage';
-import type { TransactionType } from '@/shared/types';
 
-const TYPES: readonly TransactionType[] = ['DR', 'CR', 'TR'];
-
-/** Optional params pre-set the form: `type` (DR | CR | TR) and `accountId`. */
-export default function CreateTransactionRoute() {
-  const { type, accountId } = useLocalSearchParams<{ type?: string; accountId?: string }>();
-  const initialType = TYPES.find((t) => t === type);
-  const parsedAccountId = Number.parseInt(accountId ?? '', 10);
-  return <TransactionFormPage mode="create" initialType={initialType} initialAccountId={Number.isFinite(parsedAccountId) ? parsedAccountId : undefined} />;
+/** The entry screen's path in the shipped app; pinned launcher shortcuts still open it. */
+export default function LegacyCreateRoute() {
+  const params = useLocalSearchParams<{ type?: string; accountId?: string }>();
+  return <Redirect href={addPathFromLegacy(params) as Href} />;
 }

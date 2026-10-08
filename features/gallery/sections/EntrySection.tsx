@@ -1,5 +1,5 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
-import { Button, CardStack, Chip, ChipRow, Divider, Header, IconCircle, Keypad, ListGroup, ListRow, Money, Switch, Text, TextField, useTheme } from '@/design';
+import { Button, Card, CardStack, Chip, ChipRow, Divider, Header, IconButton, IconCircle, Keypad, ListGroup, ListRow, Money, Text, TextField, useTheme } from '@/design';
 import type { KeypadKey, StackCard } from '@/design';
 import { calculate, isExpression } from '@/shared/format/calculate';
 import React, { useState } from 'react';
@@ -121,33 +121,41 @@ export function EntrySection() {
 
   return (
     <>
-      <Specimen name="Add a transaction (the default)" note="Everything on one page, because this is done many times a day. Kind, amount, where it came from and what it was for. Save wakes up once there is an amount.">
+      <Specimen name="Add a transaction (the default)" note="The reference's form: From and Details as labelled cards, outlined fields with the label inside, the phone's number keyboard. Save is grey, with the reason above it, until there is an amount.">
         <View style={frame}>
           <Header task title={`Add ${kind.toLowerCase()}`} onClose={() => {}} />
-          <View style={{ paddingVertical: space.lg }}>
-            <ChipRow>
+          <View style={{ padding: size.screenPadding, gap: size.sectionGap }}>
+            <ChipRow inset>
               {KINDS.map((label) => <Chip key={label} label={label} selected={label === kind} onPress={() => setKind(label)} />)}
             </ChipRow>
-          </View>
-          <View style={{ paddingHorizontal: size.screenPadding, gap: space.xl, paddingBottom: space.lg }}>
-            <View style={{ alignItems: 'center', gap: space.xs, paddingVertical: space.sm }}>
-              <Text variant="callout" tone="muted">Amount</Text>
-              <Money value={`$${amount || '0'}`} variant="amountHero" tone={amount ? 'default' : 'muted'} />
+            <View style={{ gap: space.md }}>
+              <Text variant="bodyStrong">From:</Text>
+              <Card padded={false}>
+                <ListRow leading={<IconCircle icon="bank" color="lilac" />} strong title="Everyday" subtitle="$12,480.10 available" onPress={() => {}} />
+              </Card>
             </View>
-            <ListGroup>
-              <ListRow leading={<IconCircle icon="bank" color="lilac" />} title="Everyday" subtitle="From account" onPress={() => {}} />
-              <ListRow leading={<IconCircle icon="shopping-cart" color="teal" />} title="Groceries" subtitle="Category" onPress={() => {}} />
-              <ListRow icon="calendar" title="Today" subtitle="Date" onPress={() => {}} />
-              <View style={{ padding: size.cardPadding, gap: space.lg }}>
-                <TextField label="Note" value={note} onChangeText={setNote} placeholder="Optional" />
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Text variant="body">Repeat every month</Text>
-                  <Switch value={repeat} onValueChange={setRepeat} accessibilityLabel="Repeat every month" />
+            <View style={{ gap: space.md }}>
+              <Text variant="bodyStrong">Details:</Text>
+              <ListGroup>
+                <ListRow leading={<IconCircle icon="shopping-cart" color="teal" />} strong title="Groceries" subtitle="Category" onPress={() => {}} />
+                <View style={{ padding: size.cardPadding, gap: space.lg }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
+                    <View style={{ flex: 1 }}><TextField label="Amount" prefix="$" value={amount} onChangeText={setAmount} placeholder="0.00" keyboardType="decimal-pad" /></View>
+                    <IconButton icon="calculator" accessibilityLabel="Work out the amount" />
+                  </View>
+                  <TextField label="Note" value={note} onChangeText={setNote} placeholder="Optional" />
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
+                    <View style={{ flex: 1 }}><TextField label="When" value="Today · 11:04 AM" onPress={() => {}} /></View>
+                    <IconButton icon="calendar" accessibilityLabel="Choose the date and time" />
+                  </View>
+                  <TextField label="With" value="No one" onPress={() => {}} />
                 </View>
-              </View>
-            </ListGroup>
-            <Keypad onKey={(key) => setAmount((current) => press(current, key))} />
-            <Button label={`Save ${kind.toLowerCase()}`} disabled={!amount} />
+              </ListGroup>
+            </View>
+            <View style={{ gap: space.lg }}>
+              {amount ? null : <Text variant="callout" tone="muted" align="center">Enter an amount to save</Text>}
+              <Button label={`Save ${kind.toLowerCase()}`} disabled={!amount} />
+            </View>
           </View>
         </View>
       </Specimen>

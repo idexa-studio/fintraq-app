@@ -26,8 +26,8 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | --- | --- | --- | --- | --- |
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 57 | 57 | Complete |
-| C | Groundwork: shared, data, platform, shell | 86 | 55 | In progress |
-| D | Screens at parity with the shipped app | 144 | 12 | In progress |
+| C | Groundwork: shared, data, platform, shell | 86 | 57 | In progress |
+| D | Screens at parity with the shipped app | 144 | 21 | In progress |
 | E | Pro: three plans and gating | 26 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 22 | 0 |  |
@@ -265,9 +265,9 @@ go to `shared/calc`.
 - [ ] ~~C8.09 A developer switch between old and new screens~~ Dropped: the `reboot` branch is the switch. 1.2.4 keeps shipping from `develop`, so each legacy screen is simply replaced in place here, with no second navigation tree to maintain
 
 ### C9. Old paths keep working
-- [ ] C9.01 `/transactions/create?type=DR|CR|TR` redirects to `/add?kind=…`
+- [x] C9.01 `/transactions/create?type=DR|CR|TR&accountId=` redirects to `/add?kind=…`, with a test; every caller in the app uses the new path
 - [ ] C9.02 `/(main)/loans/form` redirects to `/loans/new`
-- [ ] C9.03 `/transactions/edit/[id]` redirects to `/transactions/[id]/edit`
+- [x] C9.03 `/transactions/edit/[id]` redirects to `/transactions/[id]/edit`, with a test
 - [ ] C9.04 `/transactions?accountId=|categoryId=` redirects to `/activity` with the filter
 - [ ] C9.05 `/persons`, `/persons/[id]` redirect to `/people`, `/people/[id]`
 - [ ] C9.06 `/premium?feature=` redirects to `/pro?feature=` through `resolveProFeature`
@@ -347,20 +347,20 @@ route template · `tsc`, lint, design audit and tests clean.
 - [ ] D4.10 Shared checklist
 
 ### D5. Add and edit a transaction
-- [ ] D5.01 Kind: expense, income, transfer; preselected from the entry point
-- [ ] D5.02 Amount with keypad, quick amounts, calculator
-- [ ] D5.03 Account picker; default account preselected
-- [ ] D5.04 Destination account for transfers; same account not offered
+- [x] D5.01 Kind: expense, income, transfer; preselected from the entry point
+- [x] D5.02 Amount as an outlined field with the currency symbol, on the phone's number keyboard, with a calculator sheet beside it. (A page-filling custom keypad was tried and rejected by the owner, 2026-10-09: the entry page follows the reference's form pattern)
+- [x] D5.03 Account picker; default account preselected
+- [x] D5.04 Destination account for transfers; same account not offered
 - [ ] D5.05 Category picker filtered by kind, with "add category"
-- [ ] D5.06 Date and time
+- [x] D5.06 Date and time
 - [ ] D5.07 Note with remaining characters
-- [ ] D5.08 Person, optional
-- [ ] D5.09 Save disabled with the reason until valid
-- [ ] D5.10 Save writes through the ledger rules; balances update
+- [x] D5.08 Person, optional (hidden for transfers and when no people exist)
+- [x] D5.09 Save disabled with the reason until valid
+- [x] D5.10 Save writes through the ledger rules; balances update
 - [ ] D5.11 Edit loads an existing transaction; changing account or kind rebalances correctly
 - [ ] D5.12 Delete with confirmation
-- [ ] D5.13 Leaving with unsaved input asks first
-- [ ] D5.14 Toast after saving, with undo
+- [x] D5.13 Leaving with unsaved input asks first
+- [ ] D5.14 Toast after saving, with undo for a new entry; it sits above the tab bar
 - [ ] D5.15 Daily-reminder skip is recorded after a save, as today
 - [ ] D5.16 Shared checklist
 

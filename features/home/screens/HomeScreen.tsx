@@ -7,6 +7,7 @@ import { useDashboardPersons } from '@/features/home/hooks/summaries';
 import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
 import { useSettings } from '@/features/settings';
 import { useTransactions } from '@/features/transactions';
+import type { Kind } from '@/features/transactions';
 import { hasPossibleTransfer } from '@/shared/calc/transfers';
 import { currencyName } from '@/shared/currency/currencies';
 import { useRouter } from 'expo-router';
@@ -37,7 +38,7 @@ export function HomeScreen() {
   const canTransfer = hasPossibleTransfer(accounts ?? []);
   const name = profile.name.trim().split(/\s+/)[0];
 
-  const add = (type: 'DR' | 'CR' | 'TR') => router.push({ pathname: '/transactions/create', params: { type } });
+  const add = (kind: Kind) => router.push({ pathname: '/add', params: { kind } });
   const lend = () => router.push('/(main)/loans/form');
 
   return (
@@ -52,13 +53,13 @@ export function HomeScreen() {
       }
     >
       <Section title={t('balance.title')}>
-        <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('DR')} onAddIncome={() => add('CR')} onOpenAccounts={() => router.push('/accounts')} />
+        <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} />
         {balances.currencies.length > 1 ? <Text variant="callout" tone="muted">{t('balance.scope', { currency: currencyName(currency) })}</Text> : null}
       </Section>
 
       <Section title={t('quick.title')}>
         <View style={{ flexDirection: 'row', gap: size.cardGap }}>
-          {canTransfer ? <FeatureTile icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('TR')} /> : null}
+          {canTransfer ? <FeatureTile icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
           <FeatureTile icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
         </View>
       </Section>
@@ -72,7 +73,7 @@ export function HomeScreen() {
       </Section>
 
       <Section title={t('recent.title')} actionLabel={transactions?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/activity')}>
-        <RecentList transactions={transactions} loading={transactionsPending} onOpen={(id) => router.push({ pathname: '/transactions/[id]', params: { id } })} onAdd={() => add('DR')} />
+        <RecentList transactions={transactions} loading={transactionsPending} onOpen={(id) => router.push({ pathname: '/transactions/[id]', params: { id } })} onAdd={() => add('expense')} />
       </Section>
 
       <Section title={t('people.title')} actionLabel={people?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/persons')}>

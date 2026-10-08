@@ -59,7 +59,7 @@ export const TransactionDetailScreen = React.memo(function TransactionDetailScre
   const [leavingSnapshot, setLeavingSnapshot] = useState<TransactionDetail | null>(null);
   const tx = data ?? leavingSnapshot;
 
-  const edit = useCallback(() => router.push(`/transactions/edit/${txId}`), [router, txId]);
+  const edit = useCallback(() => router.push({ pathname: '/transactions/[id]/edit', params: { id: txId } }), [router, txId]);
   const confirmDelete = useCallback(async () => {
     try {
       setLeavingSnapshot(data ?? null);

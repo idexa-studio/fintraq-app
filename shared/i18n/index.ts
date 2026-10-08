@@ -4,6 +4,7 @@ import { getSystemLanguage } from './config';
 import common from '@/shared/i18n/copy/common.en';
 import home from '@/shared/i18n/copy/home.en';
 import shell from '@/shared/i18n/copy/shell.en';
+import transactions from '@/shared/i18n/copy/transactions.en';
 import bn from '@/shared/i18n/locales/bn';
 import de from '@/shared/i18n/locales/de';
 import en from '@/shared/i18n/locales/en';
@@ -28,7 +29,7 @@ i18n
     resources: {
       // `translation` is the shipped app's copy. The other namespaces are the rebuilt screens' copy,
       // written in English first: a language without one falls back to English, never to a key.
-      en: { translation: en, common, shell, home },
+      en: { translation: en, common, shell, home, transactions },
       hi: { translation: hi },
       bn: { translation: bn },
       ta: { translation: ta },
@@ -42,7 +43,7 @@ i18n
       de: { translation: de },
       ja: { translation: ja },
     },
-    ns: ['translation', 'common', 'shell', 'home'],
+    ns: ['translation', 'common', 'shell', 'home', 'transactions'],
     defaultNS: 'translation',
     lng: getSystemLanguage(),
     fallbackLng: 'en',

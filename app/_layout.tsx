@@ -27,7 +27,7 @@ import { unlockDatabaseIfLocked } from '@/data/db/client';
 // the JS engine to run the background backup task.
 import { syncBackgroundBackupTask } from '@/platform/backup/background-backup.task';
 import { AppState, AppStateStatus } from 'react-native';
-import { FONT_ASSETS } from '@/design';
+import { FONT_ASSETS, ToastProvider } from '@/design';
 import { AppTheme, DatabaseGate } from '@/features/shell';
 import React, { useEffect, useState } from 'react';
 import { LoggerService } from '@/shared/logging/logger';
@@ -94,7 +94,13 @@ export default function RootLayout() {
                         <AppTheme>
                           <AppLockProvider>
                             <AppConfigProvider>
-                              <Stack screenOptions={{ headerShown: false }} />
+                              <ToastProvider>
+                                <Stack screenOptions={{ headerShown: false }}>
+                                  {/* Tasks rise over the screen they were started from. */}
+                                  <Stack.Screen name="add" options={{ animation: 'slide_from_bottom' }} />
+                                  <Stack.Screen name="transactions/[id]/edit" options={{ animation: 'slide_from_bottom' }} />
+                                </Stack>
+                              </ToastProvider>
                               <SystemNavBackdrop />
                               <StatusBar style="auto" />
                             </AppConfigProvider>

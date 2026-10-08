@@ -18,7 +18,8 @@ export type ToastContent = {
 export function Toast({ message, actionLabel, onAction }: ToastContent) {
   const styles = useStyles(createStyles);
   return (
-    <View style={styles.toast} accessibilityRole="alert" accessibilityLiveRegion="polite">
+    // Announced when it appears, but not grouped into one element: Undo must stay reachable on its own.
+    <View style={styles.toast} accessibilityLiveRegion="polite">
       <Text variant="callout" tone="onAction" style={styles.message}>{message}</Text>
       {actionLabel ? (
         <Touchable onPress={onAction} accessibilityLabel={actionLabel} hitSlop={styles.hit.padding}>
@@ -41,13 +42,13 @@ const STAY = 5000;
 
 export type ToastProviderProps = {
   children: React.ReactNode;
-  /** Height of anything fixed at the bottom (the tab bar), so the toast sits above it. */
+  /** How far above the bottom edge the toast sits. Defaults to the height of the tab bar, so it never covers it. */
   bottomOffset?: number;
 };
 
 /** Mount once near the root. One toast at a time; a new one replaces the old. */
-export function ToastProvider({ children, bottomOffset = 0 }: ToastProviderProps) {
-  const { motion } = useTheme();
+export function ToastProvider({ children, bottomOffset }: ToastProviderProps) {
+  const { motion, size } = useTheme();
   const styles = useStyles(createStyles);
   const insets = useSafeAreaInsets();
   const [toast, setToast] = useState<(ToastContent & { id: number }) | null>(null);
@@ -79,7 +80,7 @@ export function ToastProvider({ children, bottomOffset = 0 }: ToastProviderProps
           entering={FadeInDown.duration(motion.normal)}
           exiting={FadeOutDown.duration(motion.fast)}
           pointerEvents="box-none"
-          style={[styles.host, { bottom: insets.bottom + bottomOffset }]}
+          style={[styles.host, { bottom: insets.bottom + (bottomOffset ?? size.tabBar) }]}
         >
           <Toast message={toast.message} actionLabel={toast.actionLabel} onAction={() => { toast.onAction?.(); hide(); }} />
         </Animated.View>
