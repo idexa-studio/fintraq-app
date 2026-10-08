@@ -1,5 +1,5 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
-import { Button, Card, CardActions, Chip, ChipRow, IconButton, Section, Text, useTheme } from '@/design';
+import { Button, Card, CardActions, Chip, ChipRow, IconButton, Section, SegmentedControl, Text, useTheme } from '@/design';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
@@ -8,6 +8,7 @@ const VIEWS = ['All', 'Expenses', 'Income', 'Transfers'];
 export function ActionsSection() {
   const { space } = useTheme();
   const [view, setView] = useState('All');
+  const [kindOf, setKindOf] = useState('expense');
   return (
     <>
       <Section title="Buttons">
@@ -56,6 +57,12 @@ export function ActionsSection() {
               {VIEWS.map((label) => <Chip key={label} label={label} selected={label === view} onPress={() => setView(label)} />)}
             </ChipRow>
           </View>
+        </Specimen>
+      </Section>
+
+      <Section title="Segmented control">
+        <Specimen name="Segmented control" note="A few choices of equal standing that change what the screen below is. The black block slides to the choice.">
+          <SegmentedControl segments={[{ key: 'expense', label: 'Expense' }, { key: 'income', label: 'Income' }, { key: 'transfer', label: 'Transfer' }]} value={kindOf} onChange={setKindOf} accessibilityLabel="Kind of transaction" />
         </Specimen>
       </Section>
 

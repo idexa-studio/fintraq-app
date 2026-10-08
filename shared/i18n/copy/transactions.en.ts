@@ -6,6 +6,7 @@ export default {
   loanPayment: 'Loan payment',
   loanRepayment: 'Loan repayment',
   close: 'Close',
+  kind: 'Kind of transaction',
   amount: 'Amount',
   from: 'From:',
   to: 'To:',

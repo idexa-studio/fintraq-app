@@ -14,7 +14,7 @@ export default function StackLayout() {
   return (
     <ErrorBoundary>
       <LauncherShortcuts />
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack screenOptions={{ headerShown: false, animation: 'ios_from_right' }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="categories" />
         <Stack.Screen name="accounts/form" />
