@@ -176,6 +176,12 @@ use it.
   screenshot and reports each card's margins and the gaps around each
   section title; the audit of 2026-10-08 found every main screen on 16pt
   margins, the first card at the same height, and the same title gaps.
+- **Text is drawn as it is measured.** On Android 15 and later the system
+  lays text out by the ink of its letters while React Native measures by
+  their advance; in Devanagari a tight bold label lost its last word.
+  `plugins/with-text-measured-as-drawn.js` turns the new behaviour off in the
+  app theme. It is native: it needs a new build, and was confirmed on the
+  owner's phone in Hindi on 2026-10-08.
 - **A task clears the keyboard it inherits.** `Screen sheet` dismisses a
   keyboard left open by the screen beneath, so it never sits over the task's
   buttons; a field that wants the keyboard asks with `focusOnArrival`.
