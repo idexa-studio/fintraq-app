@@ -162,6 +162,12 @@ use it.
   first field of a task opens the keyboard with `focusOnArrival`, never
   `autoFocus`: focusing while the sheet is still rising scrolls the field out
   of view.
+- **A search field** has no label: a magnifier, a placeholder naming what
+  can be found, and `onClear` for the cross. A screen whose results appear
+  under the keyboard sets `scrollHidesKeyboard` on its `Screen`.
+- **A screen that is Pro as a whole** (search, export) shows `ProGateScreen`
+  from `features/pro` to a free user, however they arrived, after waiting
+  for `usePro().ready`.
 - **A colour** is chosen from the eight in `OFFERED_COLORS`, shown as the
   pastels they are drawn in. The saved palette is wider; a colour saved
   before stays on offer for that item.

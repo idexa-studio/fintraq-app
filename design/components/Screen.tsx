@@ -32,10 +32,12 @@ export type ScreenProps = {
   sheet?: boolean;
   /** The screen has text fields: content and footer move up to stay above the keyboard. */
   keyboardAware?: boolean;
+  /** Scrolling puts the keyboard away: for a screen whose results appear under the keyboard as you type. */
+  scrollHidesKeyboard?: boolean;
 };
 
 /** Every screen starts here: page colour, safe areas, header, content, then footer or tab bar. */
-export function Screen({ children, header, footer, tabBar, tabbed = false, sheet = false, scroll = true, padded = true, keyboardAware = false }: ScreenProps) {
+export function Screen({ children, header, footer, tabBar, tabbed = false, sheet = false, scroll = true, padded = true, keyboardAware = false, scrollHidesKeyboard = false }: ScreenProps) {
   const styles = useStyles(createStyles);
   const { motion } = useTheme();
   const keyboard = useKeyboardOverlap(keyboardAware);
@@ -51,7 +53,7 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, sheet
     <SafeAreaView style={[styles.page, keyboard ? { paddingBottom: keyboard } : null]} edges={sheet ? ['bottom'] : tabBar || tabbed ? ['top'] : ['top', 'bottom']}>
       {header}
       {scroll ? (
-        <ScrollView style={styles.fill} contentContainerStyle={[styles.scrollContent, content]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+        <ScrollView style={styles.fill} contentContainerStyle={[styles.scrollContent, content]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode={scrollHidesKeyboard ? 'on-drag' : 'none'}>
           {arriving}
         </ScrollView>
       ) : (

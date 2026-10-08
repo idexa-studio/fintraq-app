@@ -63,6 +63,8 @@ export function ChipRow({ children, inset = false }: ChipRowProps) {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      // A chip tapped while the keyboard is up acts at once, instead of the tap only closing the keyboard.
+      keyboardShouldPersistTaps="handled"
       accessibilityRole="tablist"
       style={styles.rowScroll}
       contentContainerStyle={[styles.row, inset ? null : styles.rowMargin]}

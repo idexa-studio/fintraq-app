@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 144 | 69 | In progress |
+| D | Screens at parity with the shipped app | 144 | 73 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -434,11 +434,11 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D12.13 Shared checklist
 
 ### D13. Search (Pro)
-- [ ] D13.01 Search field, recent searches (same storage key)
-- [ ] D13.02 Results grouped: transactions, accounts, people, categories
-- [ ] D13.03 Nothing matches state
-- [ ] D13.04 Free users reach the paywall, including by link
-- [ ] D13.05 Shared checklist
+- [x] D13.01 Search field, recent searches (same storage key; a search is remembered when it is submitted or a result is opened, not on every pause in typing)
+- [x] D13.02 Results grouped: transactions, accounts, people, categories (the newest 50 transactions, said on screen when reached; no cap on the rest)
+- [x] D13.03 Nothing matches state
+- [ ] D13.04 Free users reach the paywall, including by link (built as `ProGateScreen`; not seen, as the test phone is Pro and the developer screen is behind its token)
+- [x] D13.05 Shared checklist
 
 ### D14. Backup
 - [ ] D14.01 State first, in words: when last backed up, to which account
