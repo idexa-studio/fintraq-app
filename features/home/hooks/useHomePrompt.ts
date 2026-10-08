@@ -3,6 +3,7 @@ import { BACKUP_PROMPT_COOLDOWN_MS, chooseHomePrompt, isCoolingDown } from '@/fe
 import type { HomePrompt } from '@/features/home/getting-started';
 import { usePro } from '@/features/pro';
 import { useTransactionsCount } from '@/features/transactions';
+import { IS_CLOUD_BACKUP_BUILT } from '@/platform/backup/cloud-store';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
@@ -17,7 +18,7 @@ export function useHomePrompt() {
   const { data: transactionCount } = useTransactionsCount();
   const [prompt, setPrompt] = useState<HomePrompt | null>(null);
 
-  const candidate = chooseHomePrompt({ resolved: ready && !isLoading, isPro, backupConnected: isConnected, transactionCount: transactionCount ?? 0 });
+  const candidate = chooseHomePrompt({ resolved: IS_CLOUD_BACKUP_BUILT && ready && !isLoading, isPro, backupConnected: isConnected, transactionCount: transactionCount ?? 0 });
 
   useEffect(() => {
     if (!candidate) {

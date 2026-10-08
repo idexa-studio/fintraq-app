@@ -39,14 +39,14 @@ type StripPerson = NonNullable<React.ComponentProps<typeof PeopleStrip>['people'
 const person = (id: number, name: string, color: string, net: number) => ({ id, name, color: colorOf(color), net }) as StripPerson;
 const PEOPLE = [person(1, 'Rahul Kumar', 'pink', 120), person(2, 'Aylin Sahin', 'lilac', -60), person(3, 'Mina Park', 'teal', 0)];
 
-const FIRST_STEPS = gettingStartedSteps({ accountCount: 1, transactionCount: 0, reminderOn: false, isPro: false, autoBackupOn: false });
-
 const BALANCES: Record<Currency, string> = { USD: '$36,707.27', EUR: '€4,120.00', TRY: '₺18,450.75', INR: '₹2,40,300.00' };
 
 /** The Home tab: where you stand and what to do next. */
 export function HomeSection() {
   const { colors, space, size, border } = useTheme();
   const [currency, setCurrency] = useState<Currency>('USD');
+  // Worked out here, not at the top of the file: Home's module may still be loading when this one is read.
+  const firstSteps = gettingStartedSteps({ accountCount: 1, transactionCount: 0, reminderOn: false, isPro: false, autoBackupOn: false });
   // Cancels the gallery's page margin so the screen is drawn at full width.
   const frame = { marginHorizontal: -space.lg, backgroundColor: colors.background, borderTopWidth: border.thin, borderBottomWidth: border.thin, borderColor: colors.divider };
 
@@ -110,7 +110,7 @@ export function HomeSection() {
 
       <Section title="For someone new">
         <Specimen name="Getting started" note="Under the balance until every step is done, it is hidden, or ten things are recorded. Done steps are ticked, the next one is ready to tap, the rest wait.">
-          <GettingStarted steps={FIRST_STEPS} onStep={() => {}} onHide={() => {}} />
+          <GettingStarted steps={firstSteps} onStep={() => {}} onHide={() => {}} />
         </Specimen>
         <Specimen name="Backup prompt" note="For a Pro user with no Drive connected, after three entries. A card on the page, never laid over it; put away, it stays away two weeks.">
           <Notice title="Your records live only on this phone" body="Keep a copy in your own Google Drive, updated twice a day." linkLabel="Set up backup" onDismiss={() => {}} dismissLabel="Not now" />

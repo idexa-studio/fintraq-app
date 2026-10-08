@@ -28,6 +28,11 @@ export default {
     lockedBody: 'Fintraq saves to a private folder in your own Drive twice a day, and brings everything back on a new phone.',
     seePro: 'See Fintraq Pro',
   },
+  icloud: {
+    title: 'In your iCloud',
+    soonTitle: 'iCloud backup is on its way',
+    soonBody: 'Until it arrives, save a backup file above and keep it somewhere safe, such as iCloud Drive.',
+  },
   file: {
     title: 'On this phone',
     hint: 'A file you keep yourself, whenever you choose',

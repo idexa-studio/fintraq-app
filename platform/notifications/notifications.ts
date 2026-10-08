@@ -46,8 +46,24 @@ function ensureBackupChannel(): Promise<unknown> {
   return backupChannelPromise;
 }
 
+let backupNotificationQueue: Promise<void> = Promise.resolve();
+
+/**
+ * The backup notification is one notification changed many times, and callers do not wait for
+ * each change. Run in the order asked, a late progress update can never land after the dismissal
+ * and leave "Backing up" in the shade once the backup has finished.
+ */
+function inOrder(change: () => Promise<void>): Promise<void> {
+  backupNotificationQueue = backupNotificationQueue.then(change, change);
+  return backupNotificationQueue;
+}
+
 /** A backup notification that stays until read, and opens Backup when tapped. */
-async function presentBackupNotice({ title, body }: NotificationText): Promise<void> {
+function presentBackupNotice(text: NotificationText): Promise<void> {
+  return inOrder(() => showBackupNotice(text));
+}
+
+async function showBackupNotice({ title, body }: NotificationText): Promise<void> {
   try {
     await ensureBackupChannel();
     await notifee.displayNotification({
@@ -151,33 +167,35 @@ export const NotificationService = {
   },
 
   /** The ongoing notification while a backup runs: what it is doing, and how far along. */
-  async presentBackupProgressNotification(progress: number, stageText: string) {
+  presentBackupProgressNotification(progress: number, stageText: string): Promise<void> {
     // iOS has no ongoing/progress notification style — each update would post a fresh banner.
-    if (Platform.OS !== 'android') return;
-    try {
-      await ensureBackupChannel();
-      const clampedProgress = Math.min(100, Math.max(0, Math.round(progress)));
-      await notifee.displayNotification({
-        id: CLOUD_BACKUP_NOTIFICATION_ID,
-        title: backupText.running(),
-        body: stageText,
-        data: { path: NOTIFICATION_PATHS.backup },
-        android: {
-          channelId: BACKUP_CHANNEL_ID,
-          smallIcon: SMALL_ICON,
-          ongoing: true,
-          onlyAlertOnce: true,
-          pressAction: { id: 'default' },
-          progress: {
-            max: 100,
-            current: clampedProgress,
-            indeterminate: false,
+    if (Platform.OS !== 'android') return Promise.resolve();
+    return inOrder(async () => {
+      try {
+        await ensureBackupChannel();
+        const clampedProgress = Math.min(100, Math.max(0, Math.round(progress)));
+        await notifee.displayNotification({
+          id: CLOUD_BACKUP_NOTIFICATION_ID,
+          title: backupText.running(),
+          body: stageText,
+          data: { path: NOTIFICATION_PATHS.backup },
+          android: {
+            channelId: BACKUP_CHANNEL_ID,
+            smallIcon: SMALL_ICON,
+            ongoing: true,
+            onlyAlertOnce: true,
+            pressAction: { id: 'default' },
+            progress: {
+              max: 100,
+              current: clampedProgress,
+              indeterminate: false,
+            },
           },
-        },
-      });
-    } catch (e) {
-      LoggerService.warn('NOTIFICATION', 'Failed to present backup progress notification', e);
-    }
+        });
+      } catch (e) {
+        LoggerService.warn('NOTIFICATION', 'Failed to present backup progress notification', e);
+      }
+    });
   },
 
   /** A backup failed for a reason that may pass. Left in place: a failure nobody saw is not handled. */
@@ -187,11 +205,7 @@ export const NotificationService = {
   presentBackupReconnectNotification: () => presentBackupNotice(backupText.reconnect()),
 
   /** Takes the backup notification away. A backup that worked says nothing: it just goes. */
-  async dismissBackupNotification() {
-    try {
-      await notifee.cancelNotification(CLOUD_BACKUP_NOTIFICATION_ID).catch(() => {});
-    } catch {
-      // Ignore dismiss error
-    }
+  dismissBackupNotification(): Promise<void> {
+    return inOrder(() => notifee.cancelNotification(CLOUD_BACKUP_NOTIFICATION_ID).catch(() => {}));
   },
 };
