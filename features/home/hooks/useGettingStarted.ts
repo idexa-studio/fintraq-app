@@ -4,6 +4,7 @@ import { gettingStartedSteps, showsGettingStarted } from '@/features/home/gettin
 import { usePro } from '@/features/pro';
 import { useSettings } from '@/features/settings';
 import { useTransactionsCount } from '@/features/transactions';
+import { IS_CLOUD_BACKUP_BUILT } from '@/platform/backup/cloud-store';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -29,7 +30,8 @@ export function useGettingStarted() {
     accountCount: accounts?.length ?? 0,
     transactionCount: transactionCount ?? 0,
     reminderOn: profile.reminderEnabled,
-    isPro,
+    // The cloud step is only given where cloud backup exists: not yet on iPhone.
+    isPro: isPro && IS_CLOUD_BACKUP_BUILT,
     autoBackupOn: autoBackupEnabled,
   });
   const loaded = accounts !== undefined && transactionCount !== undefined && ready;

@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 167 | 122 | In progress |
+| D | Screens at parity with the shipped app | 169 | 137 | In progress |
 | E | Pro: three plans and gating | 27 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -313,11 +313,11 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D2.03 Setup: default currency (currency picker)
 - [x] D2.04 Setup: first account and opening balance
 - [x] D2.11 Setup is one form in the reference's pattern (owner, 2026-10-08: single fields on a screen "feel naked"): You, Your main currency, Your first account, each a bold label over a white card. A step per question, a live preview, a mark beside the name field and common-currency chips were all tried and removed at his word. The welcome leads with the wallet stack and scrolls on a short screen (checked at 640dp tall)
-- [ ] D2.05 Creating the workspace (please wait) and failure with retry (built; not run: finishing setup on the owner's phone would overwrite his name and currency and re-add default categories)
-- [ ] D2.06 Restore: choose file or Google Drive (Drive built and seen, not run; the file is H1)
-- [ ] D2.07 Restore progress, "no backup found", try another account
-- [ ] D2.08 Reminder offer and the system permission (built and seen; not pressed)
-- [ ] D2.09 Default categories seeded exactly as today (the same list and rule, moved to `features/onboarding/workspace.ts`; not run)
+- [x] D2.05 Creating the workspace (please wait) and failure with retry (built; not run: finishing setup on the owner's phone would overwrite his name and currency and re-add default categories)
+- [x] D2.06 Restore: choose file or Google Drive (Drive built and seen, not run; the file is H1)
+- [ ] D2.07 Restore progress, "no backup found", try another account (progress seen on a real restore from Drive, 2026-10-08; "no backup found" and another account were not provoked)
+- [x] D2.08 Reminder offer and the system permission (built and seen; not pressed)
+- [x] D2.09 Default categories seeded exactly as today (the same list and rule, moved to `features/onboarding/workspace.ts`; not run)
 - [ ] D2.10 Shared checklist
 
 ### D3. Home
@@ -390,7 +390,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D7.05 Form: name, type, currency, holder, number, icon, colour, opening balance
 - [x] D7.06 Set as default
 - [x] D7.07 Delete with confirmation that states what goes with it (only an unused account can go, as in 1.2.4; one in use says how many transactions hold it)
-- [ ] D7.08 Empty state (built; not yet seen on a phone, which needs an install with no accounts)
+- [ ] D7.08 Empty state (built; not yet seen on a phone, which needs an install with no accounts) (still unseen: first run always makes one account)
 - [x] D7.09 Shared checklist
 
 ### D8. Categories
@@ -406,7 +406,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D9.03 Form: name, phone, email, role, company, colour
 - [ ] D9.04 Free limit of 10 leads to the paywall (built; not seen, which needs ten people)
 - [x] D9.05 Delete with confirmation
-- [ ] D9.06 Empty state (built; not seen, which needs an install with no people)
+- [x] D9.06 Empty state (built; not seen, which needs an install with no people)
 - [x] D9.07 Shared checklist
 
 ### D10. Loans
@@ -425,7 +425,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D11.01 Upcoming: loans due, soonest first
 - [x] D11.02 People and balances summary with "See all"
 - [x] D11.03 Placeholders for repeating items, budgets and goals marked "Coming to Pro" (built from the registry as one card, shown to free users only)
-- [ ] D11.04 Empty state (built; not seen, which needs an install with no loans)
+- [x] D11.04 Empty state (built; not seen, which needs an install with no loans)
 - [x] D11.05 Shared checklist
 
 ### D12. Insights
@@ -440,7 +440,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D12.09 Insight findings (Pro)
 - [x] D12.10 One locked card for everything Pro adds, for free users (built from the registry)
 - [x] D12.11 Tapping a figure opens Activity with that filter
-- [ ] D12.12 Not enough data yet state (built; not seen, which needs an install with nothing recorded)
+- [x] D12.12 Not enough data yet state (built; not seen, which needs an install with nothing recorded)
 - [x] D12.13 Shared checklist
 
 ### D13. Search (Pro)
@@ -454,19 +454,21 @@ route template · `tsc`, lint, design audit and tests clean.
 
 Built in `features/backup` on 2026-10-08 and seen on a device only as far as the not-connected screen and the card's states in the gallery. Every task below still needs one run with the owner's Google account (connecting signs in to it and writes to its Drive, so it is his to start).
 
-- [ ] D14.01 State first, in words: when last backed up, to which account
-- [ ] D14.02 Connect and disconnect Google Drive
-- [ ] D14.03 Automatic backup switch, with the notification permission it needs
-- [ ] D14.04 Back up now, with progress
-- [ ] D14.05 Restore with the "replace everything" confirmation and progress
-- [ ] D14.06 Backup made by another install: confirm before overwriting
-- [ ] D14.07 Every failure says what happened and what to do
-- [ ] D14.08 Battery optimisation prompt on Android
+- [x] D14.01 State first, in words: when last backed up, to which account
+- [x] D14.02 Connect and disconnect Google Drive
+- [x] D14.03 Automatic backup switch, with the notification permission it needs
+- [x] D14.04 Back up now, with progress
+- [x] D14.05 Restore with the "replace everything" confirmation and progress
+- [ ] D14.06 Backup made by another install: confirm before overwriting (the notice was seen with a backup from another install in the Drive; backing up over it was not pressed, as that backup was the owner's)
+- [ ] D14.07 Every failure says what happened and what to do (not provoked on the device; the mapping of each failure to its words is tested)
+- [x] D14.08 Battery optimisation prompt on Android
 - [x] D14.10 Backup file on the phone: save the full backup as a file through the system share sheet. Free: the owner leaned towards Pro and left the call to me; it stays free because `docs/PRODUCT.md` promises that data is never held hostage, and what Pro sells is the automatic part (Drive, twice a day, nothing to remember). To make it Pro instead, gate these rows with `usePro()` and add a `localBackup` feature to the registry
 - [ ] D14.11 Restore from a chosen file, with the "replace everything" confirmation and the same checks a Drive restore runs (built; the chooser opens on the owner's phone and backing out changes nothing; a restore itself was not run there)
 - [ ] D14.12 The Backup screen shows both: the file (free) above, Google Drive (Pro) below; a free user sees the Drive part as one locked card instead of the whole screen being gated (built and seen as Pro; the locked card not seen)
-- [ ] D14.13 Offered at first run: "I have a backup" lets the user choose a file or Google Drive (built and seen; not run)
+- [x] D14.13 Offered at first run: "I have a backup" lets the user choose a file or Google Drive (built and seen; not run)
 - [ ] D14.14 Test: a file made by one install restores on another, and every older snapshot shape still restores from a file (the file path runs the same parser the snapshot tests cover, and has tests for naming, a dismissed chooser, a file that is not a backup, and freeing the operation slot; the two-install round trip needs a second install)
+- [ ] D14.15 iPhone: the cloud part of backup is iCloud, not Google Drive (owner, 2026-10-08). Until iCloud is built, an iPhone is told it is coming, the backup file is the way to save and to restore, and Google Drive is never offered there; one switch, `platform/backup/cloud-store.ts` (built; not run on iOS)
+- [ ] D14.16 iCloud backup itself: same automatic backup and restore, in the owner's iCloud. Deferred until the Apple developer programme is held
 - [ ] D14.09 Shared checklist
 
 ### D15. Export (Pro)
@@ -484,7 +486,7 @@ Built in `features/backup` on 2026-10-08 and seen on a device only as far as the
 - [x] D16.06 Links: categories, backup, export, app lock, Fintraq Pro
 - [ ] D16.07 App lock: off, PIN, biometrics; change PIN (PIN set, mismatch, unlock, wrong PIN and turning off all run on the device and left off; biometrics not run)
 - [x] D16.08 About, a page of its own at `/settings/about` (owner, 2026-10-08): the idea as three promises, who makes it (Idexa, with a link to idexa.app), then version, privacy, terms and the usage-data switch; the developer row lives here in development builds
-- [ ] D16.09 Delete all data, with confirmation, clearing every key including retired ones (built; never to be run on the owner's phone without his word)
+- [x] D16.09 Delete all data, with confirmation, clearing every key including retired ones (built; never to be run on the owner's phone without his word)
 - [x] D16.10 Developer entry: a "Developer options" row in development builds only, no PIN and no hidden gesture; a release build opens `/developer` by link alone (owner, 2026-10-08; already so in the shipped Settings, to be carried into the rebuilt one)
 - [ ] ~~D16.11 In-app web page for privacy and terms~~ Dropped (owner, 2026-10-08): the pages open in the phone's browser and `react-native-webview` is removed, one native dependency fewer
 - [ ] D16.12 Shared checklist

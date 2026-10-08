@@ -1,3 +1,4 @@
+import { IS_CLOUD_BACKUP_BUILT } from '@/platform/backup/cloud-store';
 import { Button, Card, Dialog, Header, ListGroup, ListRow, LockedCard, Notice, Screen, Section, Skeleton, Switch, Text, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { backupDay, failureOf, nextAutoBackup, remedyOf, sizeText } from '@/features/backup/backup-rules';
@@ -43,6 +44,13 @@ export function BackupScreen() {
   return (
     <Screen header={<Header title={t('title')} onBack={back} backLabel={t('back')} />}>
       <FileBackup />
+      {IS_CLOUD_BACKUP_BUILT ? null : (
+        // iPhone backs up to iCloud, which is not built yet: say so, and never offer Google Drive instead.
+        <Section title={t('icloud.title')}>
+          <Notice title={t('icloud.soonTitle')} body={t('icloud.soonBody')} />
+        </Section>
+      )}
+      {IS_CLOUD_BACKUP_BUILT ? (
       <Section title={t('drive.title')} hint={t('drive.hint')}>
         {isPro ? (
           <View style={styles.drive}><DriveBackup /></View>
@@ -50,6 +58,7 @@ export function BackupScreen() {
           <LockedCard badge={t('drive.badge')} title={t('drive.lockedTitle')} body={t('drive.lockedBody')} actionLabel={t('drive.seePro')} onAction={() => openPaywall('backup')} />
         )}
       </Section>
+      ) : null}
     </Screen>
   );
 }

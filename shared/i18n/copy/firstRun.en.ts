@@ -45,6 +45,7 @@ export default {
     title: 'Bring your records back',
     back: 'Back',
     body: 'From your Google Drive, or from a backup file you saved. Fintraq brings back everything in it.',
+    bodyFileOnly: 'From a backup file you saved. Fintraq brings back everything in it.',
     file: 'Choose a backup file',
     phone: 'This phone',
     drive: 'Your Drive',

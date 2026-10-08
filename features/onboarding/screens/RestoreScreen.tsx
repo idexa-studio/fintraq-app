@@ -1,3 +1,4 @@
+import { IS_CLOUD_BACKUP_BUILT } from '@/platform/backup/cloud-store';
 import { Button, Header, Message, Notice, Screen, useStyles } from '@/design';
 import type { Theme } from '@/design';
 import { BackupLink, fileFailureOf, useAutoBackupSetting, useBackupAccount, useBackupProgress, useCloudBackupActions, useConnectBackupAccount, useDisconnectBackupAccount } from '@/features/backup';
@@ -92,17 +93,21 @@ export function RestoreScreen() {
       header={<Header onBack={working ? undefined : back} backLabel={t('restore.back')} />}
       footer={
         <>
-          <Button label={isRestoring ? t('restore.working', { percent: progress }) : t('restore.connect')} loading={working && !isRestoring} disabled={isRestoring} onPress={restore} />
-          <Button label={t('restore.file')} variant="secondary" disabled={working} onPress={restoreFile} />
+          {IS_CLOUD_BACKUP_BUILT ? <Button label={isRestoring ? t('restore.working', { percent: progress }) : t('restore.connect')} loading={working && !isRestoring} disabled={isRestoring} onPress={restore} /> : null}
+          {/* On iPhone the file is the only way back until iCloud backup is built, so it is the main button. */}
+          <Button label={t('restore.file')} variant={IS_CLOUD_BACKUP_BUILT ? 'secondary' : 'primary'} disabled={working} onPress={restoreFile} />
           <Button label={t('restore.fresh')} variant="text" disabled={working} onPress={() => router.replace('/(onboarding)/setup')} />
         </>
       }
     >
       <View style={styles.centre}>
-        <View style={styles.picture}>
-          <BackupLink state={isRestoring ? 'fetching' : 'apart'} value={progress / 100} phoneLabel={t('restore.phone')} driveLabel={t('restore.drive')} accessibilityLabel={t('restore.title')} />
-        </View>
-        <Message title={t('restore.title')} body={isRestoring && stage ? stage : t('restore.body')} />
+        {/* The phone-and-Drive picture belongs to the Drive restore; with only a file there is no Drive to draw. */}
+        {IS_CLOUD_BACKUP_BUILT ? (
+          <View style={styles.picture}>
+            <BackupLink state={isRestoring ? 'fetching' : 'apart'} value={progress / 100} phoneLabel={t('restore.phone')} driveLabel={t('restore.drive')} accessibilityLabel={t('restore.title')} />
+          </View>
+        ) : null}
+        <Message title={t('restore.title')} body={isRestoring && stage ? stage : t(IS_CLOUD_BACKUP_BUILT ? 'restore.body' : 'restore.bodyFileOnly')} />
         {failed ? (
           <Notice
             tone="danger"

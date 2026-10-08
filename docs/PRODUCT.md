@@ -142,6 +142,14 @@ The monthly and yearly products were created before the app's public release
 and disabled before anyone could buy them, so there are no existing
 subscribers to carry over.
 
+## Where the automatic backup lives
+
+Google Drive on Android, iCloud on iPhone (owner, 2026-10-08): each in the
+store the phone's owner already has. iCloud is not built yet, as it needs the
+Apple developer programme; until then an iPhone has the backup file, is told
+iCloud backup is coming, and is never offered Google Drive in its place
+(`platform/backup/cloud-store.ts`).
+
 ## Notifications
 
 What Fintraq says outside the app is held to one voice. The words live in
