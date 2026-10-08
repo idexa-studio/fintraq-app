@@ -28,14 +28,6 @@ export const useDailySpend = (currency: string, since: string) => {
   });
 };
 
-export const useDashboardPersons = (currency: string) => {
-  return useQuery({
-    queryKey: QUERY_KEYS.dashboard.topPersons(currency),
-    queryFn: () => api.getDashboardPersons(currency),
-    enabled: !!currency,
-  });
-};
-
 export const useDashboardInsights = (currency: string) => {
   const { i18n } = useTranslation();
   return useQuery({

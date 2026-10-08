@@ -1,5 +1,5 @@
 import type { Person } from '@/data/repositories/people';
-import { blockerOf, draftOf, hasDetails, initialsOf, isChanged, newDraft, payloadOf, peopleByStanding, standingOf } from '@/features/people/person-form';
+import { balancesOf, blockerOf, draftOf, hasDetails, initialsOf, isChanged, newDraft, payloadOf, peopleByStanding, standingOf } from '@/features/people/person-form';
 import { OFFERED_COLORS } from '@/shared/contracts/pickers';
 import { toDbColor } from '@/shared/format/color';
 
@@ -47,6 +47,20 @@ describe('where things stand', () => {
     expect(standingOf(10)).toBe('owesYou');
     expect(standingOf(-10)).toBe('youOwe');
     expect(standingOf(0)).toBe('settled');
+  });
+
+  it('counts only open loans as owed, either way, and never ordinary payments', () => {
+    const people = [{ id: 1, name: 'Tom', color: 0 }, { id: 2, name: 'Ana', color: 0 }, { id: 3, name: 'Li', color: 0 }];
+    const loan = (personId: number | null, type: 'lend' | 'borrow', outstanding: number, over = {}) => ({ personId, type, outstanding, currency: 'USD', computedStatus: 'active', ...over });
+    const balances = balancesOf(people, [
+      loan(2, 'lend', 100), loan(2, 'lend', 50), loan(2, 'borrow', 30),
+      loan(3, 'borrow', 80),
+      loan(3, 'lend', 999, { computedStatus: 'repaid' }),
+      loan(3, 'lend', 999, { currency: 'EUR' }),
+      loan(null, 'lend', 999),
+    ], 'USD');
+    // Tom is only ever paid (rent, say): nothing is owed either way.
+    expect(balances).toEqual([{ id: 1, name: 'Tom', color: 0, net: 0 }, { id: 2, name: 'Ana', color: 0, net: 120 }, { id: 3, name: 'Li', color: 0, net: -80 }]);
   });
 
   it('groups people by standing, largest first, with what each group adds up to', () => {

@@ -37,7 +37,6 @@ const dashboard = {
   month: (currency: string) => [...dashboard.all, 'month', currency] as const,
   lifetime: (currency: string) => [...dashboard.all, 'lifetime', currency] as const,
   dailySpend: (currency: string, since: string) => [...dashboard.all, 'daily-spend', currency, since] as const,
-  topPersons: (currency: string) => [...dashboard.all, 'top-persons', currency] as const,
   insights: (currency: string) => [...dashboard.all, 'insights', currency] as const,
 };
 

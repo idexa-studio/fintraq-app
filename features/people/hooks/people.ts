@@ -2,7 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/data/query-keys';
 import { afterLedgerWrite } from '@/platform/notifications/after-ledger-write';
 import * as api from '@/data/repositories/people';
-import { getDashboardPersons } from '@/data/repositories/summaries';
+import { useLoans } from '@/features/loans';
+import { balancesOf } from '@/features/people/person-form';
+import { useMemo } from 'react';
 
 export const usePersons = () =>
   useQuery({
@@ -59,9 +61,10 @@ export const useDeletePerson = () => {
   });
 };
 
-/** Everyone, each with what stands between you in one currency: those with a balance first. */
-export const usePeopleWithBalances = (currency: string) =>
-  useQuery({
-    queryKey: [...QUERY_KEYS.dashboard.topPersons(currency), 'everyone'],
-    queryFn: () => getDashboardPersons(currency, Number.POSITIVE_INFINITY),
-  });
+/** Everyone, each with what stands between you in one currency: open loans, not ordinary payments. */
+export const usePeopleWithBalances = (currency: string) => {
+  const people = usePersons();
+  const loans = useLoans();
+  const data = useMemo(() => (people.data && loans.data ? balancesOf(people.data, loans.data, currency) : undefined), [people.data, loans.data, currency]);
+  return { data, isPending: people.isPending || loans.isPending };
+};

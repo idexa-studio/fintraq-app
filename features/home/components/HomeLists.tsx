@@ -1,9 +1,9 @@
 import type { Account } from '@/data/repositories/accounts';
-import type { PersonNetRow } from '@/data/repositories/summaries';
 import type { TransactionListItem } from '@/data/repositories/transactions';
 import { Card, EmptyState, IconCircle, ListGroup, ListRow, Skeleton, useTheme } from '@/design';
 import type { IconName } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
+import type { PersonBalance } from '@/features/people';
 import { TransactionRow } from '@/features/transactions';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
@@ -65,7 +65,7 @@ export function RecentList({ transactions, loading, onOpen, onAdd }: RecentListP
   );
 }
 
-type PeopleListProps = { people: readonly PersonNetRow[] | undefined; currency: string; loading: boolean; onOpen: (id: number) => void; onAdd: () => void };
+type PeopleListProps = { people: readonly PersonBalance[] | undefined; currency: string; loading: boolean; onOpen: (id: number) => void; onAdd: () => void };
 
 export function PeopleList({ people, currency, loading, onOpen, onAdd }: PeopleListProps) {
   const { t } = useTranslation('home');

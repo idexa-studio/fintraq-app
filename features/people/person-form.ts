@@ -57,7 +57,27 @@ export const hasDetails = (draft: PersonDraft): boolean => !!(draft.phone || dra
 /** Up to two initials, for the mark a person is drawn with. */
 export const initialsOf = (name: string): string => name.split(/\s+/).filter(Boolean).slice(0, 2).map((word) => word[0]).join('');
 
-/** Where things stand with someone, from the net of what has passed between you. */
+/** A person with what stands between you in one currency: positive when they owe you, negative when you owe them. */
+export type PersonBalance = { id: number; name: string; color: number; net: number };
+
+type OpenLoan = { personId: number | null; type: 'lend' | 'borrow'; currency: string; outstanding: number; computedStatus: string };
+
+/**
+ * What each person owes you or is owed, in one currency. Only loans count:
+ * money lent and not yet repaid is owed to you, money borrowed and not yet
+ * repaid is owed by you. Ordinary payments are not debts (paying the rent
+ * does not mean owing the landlord), so they are left out.
+ */
+export function balancesOf(people: readonly Pick<Person, 'id' | 'name' | 'color'>[], loans: readonly OpenLoan[], currency: string): PersonBalance[] {
+  const net = new Map<number, number>();
+  for (const loan of loans) {
+    if (loan.personId === null || loan.currency !== currency || loan.computedStatus === 'repaid') continue;
+    net.set(loan.personId, (net.get(loan.personId) ?? 0) + (loan.type === 'lend' ? loan.outstanding : -loan.outstanding));
+  }
+  return people.map((person) => ({ id: person.id, name: person.name, color: person.color, net: net.get(person.id) ?? 0 }));
+}
+
+/** Where things stand with someone. */
 export type Standing = 'owesYou' | 'youOwe' | 'settled';
 export const standingOf = (net: number): Standing => (net > 0 ? 'owesYou' : net < 0 ? 'youOwe' : 'settled');
 

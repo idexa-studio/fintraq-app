@@ -7,10 +7,10 @@ export default {
   currency: 'Currency',
   standing: { owesYou: 'Owes you', youOwe: 'You owe', settled: 'All settled' },
   summary: {
-    title: 'Between you',
+    title: 'Open loans',
     owed: 'Owed to you',
     owe: 'You owe',
-    settled: 'Everyone is settled up',
+    settled: 'Nothing is owed either way',
   },
   empty: {
     title: 'Remember who owes what',

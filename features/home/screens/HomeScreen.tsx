@@ -3,21 +3,22 @@ import { useAccounts } from '@/features/accounts';
 import { BalanceCard } from '@/features/home/components/BalanceCard';
 import { AccountList, PeopleList, RecentList } from '@/features/home/components/HomeLists';
 import { MonthCard } from '@/features/home/components/MonthCard';
-import { useDashboardPersons } from '@/features/home/hooks/summaries';
 import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
+import { peopleByStanding, usePeopleWithBalances } from '@/features/people';
 import { useSettings } from '@/features/settings';
 import { useTransactions } from '@/features/transactions';
 import type { Kind } from '@/features/transactions';
 import { hasPossibleTransfer } from '@/shared/calc/transfers';
 import { currencyName } from '@/shared/currency/currencies';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 /** How many accounts, transactions and people Home lists before "See all". */
 const ACCOUNTS_SHOWN = 4;
 const RECENT_SHOWN = 5;
+const PEOPLE_SHOWN = 6;
 
 /** The Home tab: where you stand, and the way to everything done most. */
 export function HomeScreen() {
@@ -31,7 +32,9 @@ export function HomeScreen() {
   const { currency } = balances;
   // Home is a view of one currency: recent activity is what moved through that currency's accounts.
   const { data: transactions, isPending: transactionsPending } = useTransactions(RECENT_SHOWN, { accountIds: balances.accounts.map((a) => a.id) });
-  const { data: people, isPending: peoplePending } = useDashboardPersons(currency);
+  const { data: everyone, isPending: peoplePending } = usePeopleWithBalances(currency);
+  // Whoever has something outstanding first, then the rest by name.
+  const people = useMemo(() => (everyone ? peopleByStanding(everyone).flatMap((group) => group.people).slice(0, PEOPLE_SHOWN) : undefined), [everyone]);
 
   const shownAccounts = accounts ? balances.accounts.slice(0, ACCOUNTS_SHOWN) : undefined;
   // The same rule the transfer form uses, so the tile never opens a form that cannot be completed.
