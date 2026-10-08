@@ -164,7 +164,7 @@ export function ActivityScreen() {
       padded={false}
       header={
         <View>
-          <Header title={t('title')} right={
+          <Header large title={t('title')} right={
               <>
                 <IconButton icon="filter" onPress={() => setFiltering(true)} accessibilityLabel={on > 0 ? t('filter.openCount', { count: on }) : t('filter.open')} />
                 <IconButton icon="search" onPress={() => router.push('/search')} accessibilityLabel={t('search')} />

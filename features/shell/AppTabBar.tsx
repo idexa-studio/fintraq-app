@@ -24,7 +24,7 @@ export function AppTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
 
   const keys: TabKey[] = [PLACES[0], PLACES[1], 'add', PLACES[2], PLACES[3]];
-  const items: TabItem<TabKey>[] = keys.map((key) => ({ key, label: t(LABELS[key]), icon: ICONS[key] }));
+  const items: TabItem<TabKey>[] = keys.map((key) => ({ key, label: t(LABELS[key]), icon: ICONS[key], action: key === 'add' }));
   const active = state.routes[state.index]?.name as Place;
 
   const select = (key: TabKey) => {

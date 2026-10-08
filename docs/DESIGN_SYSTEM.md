@@ -155,6 +155,14 @@ use it.
 
 - **A screen** is `Screen` with a `Header`, content in `Section`s, and its
   buttons in the `footer`. Never hand-build the scaffold.
+- **The top of a tab** is `<Header large>`: the title large at the start of
+  the line, the tab's actions at the end. Home's title is a greeting by the
+  time of day under today's date, and the user's initials open Settings.
+  Pushed screens keep the small centred title; tasks keep theirs.
+- **The tab bar** holds four places and, in the middle, the one action: a
+  green tile with a plus and no label (`action` on its item), never the
+  active tab. The mark above the active tab spans half its width and slides
+  when the tab changes.
 - **A list** is `ListRow`s in a `ListGroup`. A tappable row ends in a chevron
   unless a value or a control already sits at its edge. A disabled row has no
   chevron and says why underneath.

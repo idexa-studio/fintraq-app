@@ -1,4 +1,4 @@
-import { balanceMakeup, firstName, monthShape } from '@/features/home/home-rules';
+import { balanceMakeup, dayPart, firstName, monthShape } from '@/features/home/home-rules';
 
 const account = (id: number, balance: number) => ({ id, name: `Account ${id}`, balance, color: 0 });
 
@@ -30,5 +30,14 @@ describe('home rules', () => {
   it('takes the first word of a name', () => {
     expect(firstName('  Sarah Mitchell ')).toBe('Sarah');
     expect(firstName('')).toBe('');
+  });
+
+  it('greets by the part of the day', () => {
+    expect(dayPart(5)).toBe('morning');
+    expect(dayPart(11)).toBe('morning');
+    expect(dayPart(12)).toBe('afternoon');
+    expect(dayPart(16)).toBe('afternoon');
+    expect(dayPart(17)).toBe('evening');
+    expect(dayPart(2)).toBe('evening');
   });
 });

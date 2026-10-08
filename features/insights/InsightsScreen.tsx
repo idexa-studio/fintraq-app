@@ -43,7 +43,7 @@ export function InsightsScreen() {
   const insights = useInsights(currency, period);
   const { data: findings } = useDashboardInsights(currency);
 
-  const header = <Header title={t('title')} right={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setCurrency} accessibilityLabel={t('currency')} /> : undefined} />;
+  const header = <Header large title={t('title')} right={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setCurrency} accessibilityLabel={t('currency')} /> : undefined} />;
   const openCategory = (categoryId: number) => router.push({ pathname: '/activity', params: { categoryId, from: insights.window.start, to: insights.window.end } });
 
   if (recorded === undefined || insights.loading) {
