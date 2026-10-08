@@ -16,19 +16,37 @@ export type HeaderProps = {
   closeLabel?: string;
   /** Leave out the hairline under a task header, because something attached follows it (a TabStrip). */
   flush?: boolean;
+  /**
+   * The top of a tab: the title large and at the start of the line, with the
+   * actions at the end. Pushed screens and tasks keep the small centred title.
+   */
+  large?: boolean;
+  /** A quiet line above a large title, e.g. today's date. */
+  eyebrow?: string;
   /** Replace the back button, or add actions on the right (IconButton). */
   left?: React.ReactNode;
   right?: React.ReactNode;
 };
 
 /** The bar at the top of a screen or sheet: centred title between icon actions. */
-export function Header({ title, task = false, flush = false, onBack, onClose, backLabel = 'Back', closeLabel = 'Close', left, right }: HeaderProps) {
+export function Header({ title, task = false, flush = false, large = false, eyebrow, onBack, onClose, backLabel = 'Back', closeLabel = 'Close', left, right }: HeaderProps) {
   const { colors, size } = useTheme();
   const styles = useStyles(createStyles);
   // Each side takes the width of the wider one, so the title is centred on the
   // screen however many actions sit either side of it.
   const [widths, setWidths] = useState({ left: 0, right: 0 });
   const side = { minWidth: Math.max(widths.left, widths.right) };
+  if (large) {
+    return (
+      <View style={styles.large}>
+        <View style={styles.largeText}>
+          {eyebrow ? <Text variant="callout" tone="muted" numberOfLines={1}>{eyebrow}</Text> : null}
+          <Text variant="display" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} accessibilityRole="header">{title}</Text>
+        </View>
+        <View style={styles.actions}>{right}</View>
+      </View>
+    );
+  }
   return (
     <View style={task ? { backgroundColor: colors.surface } : null}>
       <View style={[styles.bar, { minHeight: task ? size.taskHeader : size.header }]}>
@@ -60,4 +78,7 @@ const createStyles = ({ size, space }: Theme) =>
     left: { justifyContent: 'flex-start' },
     right: { justifyContent: 'flex-end' },
     title: { flex: 1 },
+    // The text starts on the page margin; the actions keep the inset of the small header.
+    large: { flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: size.taskHeader, paddingLeft: size.screenPadding, paddingRight: size.screenPadding - space.sm, paddingVertical: space.sm },
+    largeText: { flex: 1, gap: space.xxs },
   });

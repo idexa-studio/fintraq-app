@@ -1,10 +1,12 @@
-import { FeatureTile, Header, IconButton, Screen, Section, Text, useTheme } from '@/design';
+import { FeatureTile, Header, IconButton, IconCircle, Screen, Section, Text, Touchable, useTheme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { BalanceCard } from '@/features/home/components/BalanceCard';
 import { AccountList, PeopleStrip, RecentList } from '@/features/home/components/HomeLists';
 import { MonthCard } from '@/features/home/components/MonthCard';
 import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
-import { peopleByStanding, usePeopleWithBalances } from '@/features/people';
+import { initialsOf, peopleByStanding, usePeopleWithBalances } from '@/features/people';
+import { dayPart, firstName } from '@/features/home/home-rules';
+import { formatDate } from '@/shared/date/date';
 import { useSettings } from '@/features/settings';
 import { useTransactions } from '@/features/transactions';
 import type { Kind } from '@/features/transactions';
@@ -22,7 +24,7 @@ const PEOPLE_SHOWN = 8;
 /** The Home tab: where you stand, and the way to everything done most. */
 export function HomeScreen() {
   const { t } = useTranslation(['home', 'common']);
-  const { size } = useTheme();
+  const { size, space } = useTheme();
   const router = useRouter();
   const { profile } = useSettings();
 
@@ -37,7 +39,9 @@ export function HomeScreen() {
 
   // The same rule the transfer form uses, so the tile never opens a form that cannot be completed.
   const canTransfer = hasPossibleTransfer(accounts ?? []);
-  const name = profile.name.trim().split(/\s+/)[0];
+  const name = firstName(profile.name);
+  const now = new Date();
+  const part = dayPart(now.getHours());
 
   const add = (kind: Kind) => router.push({ pathname: '/add', params: { kind } });
   const lend = () => router.push('/loans/new');
@@ -48,16 +52,30 @@ export function HomeScreen() {
       tabbed
       header={
         <Header
-          title={name ? t('greeting', { name }) : t('greetingNoName')}
-          left={<IconButton icon="search" onPress={() => router.push('/search')} accessibilityLabel={t('search')} />}
-          right={<IconButton icon="user-circle" onPress={() => router.push('/settings')} accessibilityLabel={t('settings')} />}
+          large
+          eyebrow={formatDate(now, { weekday: 'long', day: 'numeric', month: 'long' })}
+          title={name ? t(`greeting.${part}`, { name }) : t(`greetingNoName.${part}`)}
+          right={
+            <>
+              <IconButton icon="search" onPress={() => router.push('/search')} accessibilityLabel={t('search')} />
+              {/* The way to Settings is the user's own mark once they have a name. */}
+              {name ? (
+                <Touchable onPress={() => router.push('/settings')} accessibilityLabel={t('settings')} style={{ width: size.minTouch, height: size.minTouch, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconCircle initials={initialsOf(profile.name)} color="green" size={size.iconCircle - space.xs} />
+                </Touchable>
+              ) : (
+                <IconButton icon="user-circle" onPress={() => router.push('/settings')} accessibilityLabel={t('settings')} />
+              )}
+            </>
+          }
         />
       }
     >
-      <Section title={t('balance.title')}>
+      {/* The greeting is the title of this part; the card says what the figure is. */}
+      <View style={{ gap: size.titleGap }}>
         <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} onOpenAccount={openAccount} />
         {balances.currencies.length > 1 ? <Text variant="callout" tone="muted">{t('balance.scope', { currency: currencyName(currency) })}</Text> : null}
-      </Section>
+      </View>
 
       {/* The balance card names the accounts; this section is only the way to add the first one. */}
       {accounts && accounts.length === 0 ? (

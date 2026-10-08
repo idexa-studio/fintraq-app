@@ -1,5 +1,5 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
-import { Header, IconButton, Section, TabBar, useTheme } from '@/design';
+import { Header, IconButton, IconCircle, Section, TabBar, useTheme } from '@/design';
 import type { TabItem } from '@/design';
 import React, { useState } from 'react';
 import { View } from 'react-native';
@@ -8,10 +8,10 @@ type TabKey = 'home' | 'accounts' | 'add' | 'insights' | 'more';
 
 const TABS: TabItem<TabKey>[] = [
   { key: 'home', label: 'Home', icon: 'house' },
-  { key: 'accounts', label: 'Accounts', icon: 'bank' },
-  { key: 'add', label: 'Add', icon: 'plus' },
-  { key: 'insights', label: 'Insights', icon: 'chart-pie' },
-  { key: 'more', label: 'More', icon: 'dots-three' },
+  { key: 'accounts', label: 'Activity', icon: 'receipt' },
+  { key: 'add', label: 'Add', icon: 'plus', action: true },
+  { key: 'insights', label: 'Plan', icon: 'calendar' },
+  { key: 'more', label: 'Insights', icon: 'chart-pie' },
 ];
 
 export function NavigationSection() {
@@ -21,13 +21,19 @@ export function NavigationSection() {
   return (
     <>
       <Section title="Header">
-        <Specimen name="Home" note="A greeting between icon actions.">
+        <Specimen name="Home" note="The top of a tab: the title large at the start of the line. Home greets by the time of day under the date; the user's own mark opens Settings.">
           <View style={bleed}>
             <Header
-              title="Hi John"
-              left={<IconButton icon="search" accessibilityLabel="Search" />}
-              right={<><IconButton icon="bell" accessibilityLabel="Reminders" /><IconButton icon="user-circle" accessibilityLabel="Profile" /></>}
+              large
+              eyebrow="Thursday, October 8"
+              title="Good afternoon, John"
+              right={<><IconButton icon="search" accessibilityLabel="Search" /><IconCircle initials="J" color="green" /></>}
             />
+          </View>
+        </Specimen>
+        <Specimen name="Another tab" note="The same large title, with the tab's own actions at the end.">
+          <View style={bleed}>
+            <Header large title="Activity" right={<><IconButton icon="filter" accessibilityLabel="Filter" /><IconButton icon="search" accessibilityLabel="Search" /></>} />
           </View>
         </Specimen>
         <Specimen name="Pushed screen" note="Back on the left, the screen’s name in the middle.">
@@ -43,9 +49,9 @@ export function NavigationSection() {
       </Section>
 
       <Section title="Tab bar">
-        <Specimen name="Tab bar" note="Five places at most. A green mark and bold label show where you are.">
+        <Specimen name="Tab bar" note="Four places and, in the middle, the one action: a green tile that adds. The mark slides to the tab you choose.">
           <View style={bleed}>
-            <TabBar items={TABS} activeKey={tab} onSelect={setTab} />
+            <TabBar items={TABS} activeKey={tab} onSelect={(key) => { if (key !== 'add') setTab(key); }} />
           </View>
         </Specimen>
       </Section>

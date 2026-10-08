@@ -1,11 +1,18 @@
 /** The Home tab. */
 export default {
-  greeting: 'Hi {{name}}',
-  greetingNoName: 'Hello',
+  greeting: {
+    morning: 'Good morning, {{name}}',
+    afternoon: 'Good afternoon, {{name}}',
+    evening: 'Good evening, {{name}}',
+  },
+  greetingNoName: {
+    morning: 'Good morning',
+    afternoon: 'Good afternoon',
+    evening: 'Good evening',
+  },
   search: 'Search',
   settings: 'Settings',
   balance: {
-    title: 'Your balance',
     allAccounts: 'All accounts',
     summary_one: '{{count}} account · {{currency}}',
     summary_other: '{{count}} accounts · {{currency}}',
