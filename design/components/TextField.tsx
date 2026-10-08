@@ -23,11 +23,14 @@ export type TextFieldProps = Omit<TextInputProps, 'style' | 'autoFocus'> & {
   onPress?: () => void;
   /** Opens the keyboard once the screen has arrived. Use this, never `autoFocus`, which fires mid-arrival. */
   focusOnArrival?: boolean;
+  /** Shows a cross that empties the field while it holds something. For search. */
+  onClear?: () => void;
+  clearLabel?: string;
 };
 
 /** An outlined field with its label inside. */
-export function TextField({ label, icon, error, helper, trailing, prefix, onPress, focusOnArrival = false, editable = true, onFocus, onBlur, ...rest }: TextFieldProps) {
-  const { colors, type, border } = useTheme();
+export function TextField({ label, icon, error, helper, trailing, prefix, onPress, focusOnArrival = false, onClear, clearLabel = 'Clear', editable = true, onFocus, onBlur, ...rest }: TextFieldProps) {
+  const { colors, type, border, space } = useTheme();
   const styles = useStyles(createStyles);
   const [focused, setFocused] = useState(false);
   const scale = useFontScale();
@@ -53,6 +56,11 @@ export function TextField({ label, icon, error, helper, trailing, prefix, onPres
           onBlur={(e) => { setFocused(false); onBlur?.(e); }}
           style={[styles.input, { fontFamily: type.body.fontFamily, fontWeight: type.body.fontWeight, fontSize: type.body.fontSize * scale, color: editable ? colors.text : colors.onDisabled }]}
         />
+        {onClear && rest.value ? (
+          <Touchable onPress={onClear} accessibilityLabel={clearLabel} hitSlop={space.md}>
+            <Icon name="x" size={styles.icon.width} color={colors.text} />
+          </Touchable>
+        ) : null}
         {trailing}
       </View>
   );

@@ -9,6 +9,7 @@ export function InputsSection() {
   const [ref, setRef] = useState('Weekly shop');
   const [answer, setAnswer] = useState<'new' | 'existing' | null>('new');
   const [agree, setAgree] = useState(true);
+  const [find, setFind] = useState('rent');
   const [repeat, setRepeat] = useState(false);
   const [alerts, setAlerts] = useState(true);
   return (
@@ -18,6 +19,9 @@ export function InputsSection() {
           <Specimen name="Label inside" note="The label sits in the field, before the value.">
             <TextField label="Amount" value={amount} onChangeText={setAmount} keyboardType="decimal-pad" />
             <TextField label="Note" value={ref} onChangeText={setRef} />
+          </Specimen>
+          <Specimen name="Search" note="No label; a cross empties it once it holds something.">
+            <TextField icon="search" value={find} onChangeText={setFind} placeholder="A note, account or person" onClear={() => setFind('')} />
           </Specimen>
           <Specimen name="With a helper beside it">
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>

@@ -7,11 +7,13 @@ import { AppState } from 'react-native';
 type ProState = {
   /** Whether Pro is unlocked. False until the saved state has been read. */
   isPro: boolean;
+  /** The saved state has been read, so `isPro` can be trusted. A screen that is Pro as a whole waits for this. */
+  ready: boolean;
   /** Reads the saved state again, e.g. on coming back from the paywall. */
   refresh: () => void;
 };
 
-const ProContext = createContext<ProState>({ isPro: false, refresh: () => undefined });
+const ProContext = createContext<ProState>({ isPro: false, ready: false, refresh: () => undefined });
 
 /**
  * Whether the user is Pro, for every rebuilt screen. It is read from what is
@@ -20,7 +22,8 @@ const ProContext = createContext<ProState>({ isPro: false, refresh: () => undefi
  */
 export function ProProvider({ children }: { children: React.ReactNode }) {
   const [isPro, setIsPro] = useState(false);
-  const refresh = useCallback(() => void readSavedPro().then(setIsPro, () => undefined), []);
+  const [ready, setReady] = useState(false);
+  const refresh = useCallback(() => void readSavedPro().then(setIsPro, () => undefined).then(() => setReady(true)), []);
 
   useEffect(() => {
     refresh();
@@ -29,7 +32,7 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
     return () => listener.remove();
   }, [refresh]);
 
-  const value = useMemo(() => ({ isPro, refresh }), [isPro, refresh]);
+  const value = useMemo(() => ({ isPro, ready, refresh }), [isPro, ready, refresh]);
   return <ProContext.Provider value={value}>{children}</ProContext.Provider>;
 }
 
@@ -39,9 +42,9 @@ export function ProProvider({ children }: { children: React.ReactNode }) {
  * comes back into view, so returning from the paywall shows the result.
  */
 export function usePro() {
-  const { isPro, refresh } = useContext(ProContext);
+  const { isPro, ready, refresh } = useContext(ProContext);
   const router = useRouter();
   useFocusEffect(refresh);
   const openPaywall = useCallback((feature?: ProFeatureId) => router.push(feature ? { pathname: '/premium', params: { feature } } : '/premium'), [router]);
-  return { isPro, openPaywall };
+  return { isPro, ready, openPaywall };
 }

@@ -17,7 +17,10 @@ export interface GlobalSearchResults {
   persons: Person[];
 }
 
-const searchTransactions = async (query: string, limit = 12): Promise<TransactionListItem[]> => {
+/** The most transactions one search returns, newest first. The screen says so when it is reached. */
+export const SEARCH_TRANSACTION_LIMIT = 50;
+
+const searchTransactions = async (query: string, limit = SEARCH_TRANSACTION_LIMIT): Promise<TransactionListItem[]> => {
   const q = `%${query}%`;
   const result = await db
     .select(TRANSACTION_LIST_SELECT)
@@ -42,12 +45,12 @@ const searchTransactions = async (query: string, limit = 12): Promise<Transactio
 
 const searchAccounts = async (query: string): Promise<Account[]> => {
   const q = `%${query}%`;
-  return db.select().from(accounts).where(like(accounts.name, q)).limit(5);
+  return db.select().from(accounts).where(like(accounts.name, q));
 };
 
 const searchCategories = async (query: string): Promise<Category[]> => {
   const q = `%${query}%`;
-  return db.select().from(categories).where(like(categories.name, q)).limit(10);
+  return db.select().from(categories).where(like(categories.name, q));
 };
 
 const searchPersons = async (query: string): Promise<Person[]> => {
@@ -60,8 +63,7 @@ const searchPersons = async (query: string): Promise<Person[]> => {
       like(persons.email, q),
       like(persons.company, q),
       like(persons.designation, q),
-    ))
-    .limit(8) as Promise<Person[]>;
+    )) as Promise<Person[]>;
 };
 
 export const globalSearch = async (query: string): Promise<GlobalSearchResults> => {

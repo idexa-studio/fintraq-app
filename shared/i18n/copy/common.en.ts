@@ -3,6 +3,12 @@ export default {
   today: 'Today',
   yesterday: 'Yesterday',
   seeAll: 'See all',
+  back: 'Back',
+  pro: {
+    badge: 'Pro',
+    see: 'See Fintraq Pro',
+    also: 'Also in Pro',
+  },
   colors: {
     forest: 'Green',
     teal: 'Teal',
