@@ -1,4 +1,4 @@
-import { buildHeatmap, buildMonthPulse, heatLevel, heatmapStart } from '@/src/features/dashboard/utils/widgets';
+import { buildHeatmap, buildMonthPulse, heatLevel, heatmapStart } from '@/shared/calc/month';
 
 describe('buildMonthPulse', () => {
   const now = new Date(2026, 8, 10); // 10 September, 30-day month

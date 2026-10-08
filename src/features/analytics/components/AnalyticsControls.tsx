@@ -5,7 +5,7 @@ import { Chip, OptionsBottomSheet, SegmentedControl, Text } from '@/src/componen
 import { CURRENCIES } from '@/shared/currency/currencies';
 import { ANALYTICS_RANGES, FREE_RANGE_DAYS, RangeDays } from '@/src/features/analytics/constants';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
-import type { AnalyticsWindow } from '@/src/utils/analytics';
+import type { AnalyticsWindow } from '@/shared/calc/analytics';
 import { formatDate } from '@/shared/date/date';
 
 type AnalyticsControlsProps = {

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, Platform, StyleSheet, View } from 'react-native';
 import { Button, Chip, FormField, LIST_ITEM_LEADING_SIZE, ListGroup, ListItem, PersonAvatar, Screen, Text } from '@/src/components/ui';
 import { useAccounts } from '@/src/features/accounts/hooks/accounts';
-import type { LoanWithStats } from '@/src/features/loans/api/loans';
+import type { LoanWithStats } from '@/data/repositories/loans';
 import { useAddRepayment } from '@/src/features/loans/hooks/loans';
 import { TransactionAccountPicker } from '@/src/features/transactions/components/TransactionAccountPicker';
 import { TransactionAmountInput } from '@/src/features/transactions/components/TransactionAmountInput';

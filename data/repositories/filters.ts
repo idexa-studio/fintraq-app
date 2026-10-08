@@ -1,5 +1,5 @@
 import type { TransactionType } from '@/shared/types';
-import type { TransactionFilters } from '@/src/features/transactions/api/transactions';
+import type { TransactionFilters } from '@/data/repositories/transactions';
 import { getLocalISOString } from '@/shared/date/date';
 
 export interface AdvancedFilters {

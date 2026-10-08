@@ -7,7 +7,7 @@ import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/shared/format/color';
 import { resolveAccountTypeIcon } from '@/src/utils/icons';
 import type { AccountType } from '@/shared/types';
-import type { Account } from '@/src/features/accounts/api/accounts';
+import type { Account } from '@/data/repositories/accounts';
 import { BentoPressable } from '@/src/components/ui/BentoPressable';
 import { useTranslation } from 'react-i18next';
 import { alpha } from '@/src/theme/tokens';

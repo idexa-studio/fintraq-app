@@ -2,8 +2,8 @@ import { and, eq, sql } from 'drizzle-orm';
 import { db } from '@/data/db/client';
 import { PAYMENT_LOCAL_DAY } from '@/data/db/sql';
 import { accounts, payments, persons } from '@/data/db/schema';
-import type { MonthTotals } from '@/src/features/dashboard/utils/widgets';
-import { getPersonsNetByCurrency } from '@/src/features/persons/api/persons';
+import type { MonthTotals } from '@/shared/calc/month';
+import { getPersonsNetByCurrency } from '@/data/repositories/people';
 import { format, startOfMonth, subMonths } from 'date-fns';
 
 export type PersonNetRow = {

@@ -1,7 +1,7 @@
 import { ListItem } from '@/src/components/ui/ListItem';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { Icon } from '@/src/components/ui/Icon';
-import { Category } from '@/src/features/categories/api/categories';
+import { Category } from '@/data/repositories/categories';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/shared/format/color';
 import { resolveIcon } from '@/src/utils/icons';

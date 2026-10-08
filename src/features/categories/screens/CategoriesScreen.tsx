@@ -1,5 +1,5 @@
 import { ConfirmDialog, EmptyState, Fab, ListGroup, OptionsDialog, Screen, SearchField, SegmentedControl, SkeletonRow } from '@/src/components/ui';
-import { Category } from '@/src/features/categories/api/categories';
+import { Category } from '@/data/repositories/categories';
 import { CategoryCard } from '@/src/features/categories/components/CategoryCard';
 import { useCategories, useDeleteCategory } from '@/src/features/categories/hooks/categories';
 import { FeatureTip } from '@/src/features/walkthrough';

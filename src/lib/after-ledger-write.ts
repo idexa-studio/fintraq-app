@@ -1,6 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { syncReminders } from '@/src/services/reminders/reminder-sync';
-import { invalidateLedger } from '@/src/utils/query';
+import { invalidateLedger } from '@/data/query-invalidation';
 
 /**
  * What every successful write to financial data triggers: refresh the screens that read it, and

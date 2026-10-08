@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Platform } from 'react-native';
-import { QUERY_KEYS } from '@/src/lib/query-keys';
+import { QUERY_KEYS } from '@/data/query-keys';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import { runAutoBackupIfDue } from '@/src/services/backup/auto-backup.service';
 import { syncBackgroundBackupTask } from '@/src/services/backup/background-backup.task';

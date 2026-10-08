@@ -12,7 +12,7 @@ import type { AccountType } from '@/shared/types';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { CsvExportService, ExportDateRange } from '@/src/features/export/api/csv-export.service';
+import { CsvExportService, ExportDateRange } from '@/data/export/csv-export';
 import { useTranslation } from 'react-i18next';
 import { useAlertDialog } from '@/src/hooks/useAlertDialog';
 import { Analytics } from '@/src/services/telemetry';

@@ -1,4 +1,4 @@
-import type { Account } from '@/src/features/accounts/api/accounts';
+import type { Account } from '@/data/repositories/accounts';
 import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 
 export type CurrencyNetWorth = {

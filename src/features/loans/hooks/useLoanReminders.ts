@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { LoanWithStats } from '@/src/features/loans/api/loans';
+import type { LoanWithStats } from '@/data/repositories/loans';
 import { useUpdateLoan } from '@/src/features/loans/hooks/loans';
 import { LoggerService } from '@/shared/logging/logger';
 import { NotificationService } from '@/src/services/notification.service';

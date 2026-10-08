@@ -1,4 +1,4 @@
-import { CSV_BOM, escapeCsvField, toCsvRow } from '@/src/features/export/utils/csv';
+import { CSV_BOM, escapeCsvField, toCsvRow } from '@/data/export/csv';
 
 describe('escapeCsvField', () => {
   it('leaves plain text and numbers alone', () => {

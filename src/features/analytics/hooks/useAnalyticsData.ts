@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import * as api from '@/src/features/analytics/api/analytics';
-import { getPersonBreakdown } from '@/src/features/persons/api/persons';
-import { QUERY_KEYS } from '@/src/lib/query-keys';
-import type { AnalyticsWindow } from '@/src/utils/analytics';
+import * as api from '@/data/repositories/analytics';
+import { getPersonBreakdown } from '@/data/repositories/people';
+import { QUERY_KEYS } from '@/data/query-keys';
+import type { AnalyticsWindow } from '@/shared/calc/analytics';
 
 // Keys carry the window's dates, so a screen left open past midnight refetches for the new day.
 const STALE = 30_000;

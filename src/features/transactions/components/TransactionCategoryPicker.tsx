@@ -6,7 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { useTheme, ThemeContextType } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/shared/format/color';
 import { resolveIcon } from '@/src/utils/icons';
-import type { Category } from '@/src/features/categories/api/categories';
+import type { Category } from '@/data/repositories/categories';
 
 type Props = {
   categories: Category[];

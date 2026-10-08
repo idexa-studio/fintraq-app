@@ -5,7 +5,6 @@ import { accounts, categories, payments } from '@/data/db/schema';
 import { getDaysAgoLocal, getLocalISOString, getStartOfMonthLocal } from '@/shared/date/date';
 import { formatCurrency } from '@/shared/format/money';
 import { TransactionType } from '@/shared/types';
-import { MaterialIconName } from '@/src/utils/icons';
 import { LoggerService } from '@/shared/logging/logger';
 import i18n from '@/shared/i18n';
 
@@ -20,7 +19,8 @@ type InsightBase = {
   type: InsightStatus;
   title: string;
   subtitle: string;
-  icon: MaterialIconName;
+  /** An icon name, as stored. */
+  icon: string;
   trend?: InsightTrend;
 };
 

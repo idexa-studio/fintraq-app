@@ -1,6 +1,6 @@
 import { db } from '@/data/db/client';
 import { PAYMENT_LOCAL_DAY } from '@/data/db/sql';
-import { CSV_BOM, toCsvRow } from '@/src/features/export/utils/csv';
+import { CSV_BOM, toCsvRow } from '@/data/export/csv';
 import { getLocalISOString } from '@/shared/date/date';
 import { accounts, categories, loans, payments, persons } from '@/data/db/schema';
 import * as Sharing from 'expo-sharing';

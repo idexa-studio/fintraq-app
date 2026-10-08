@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { LIST_ITEM_LEADING_SIZE, ListItem, PersonAvatar, SearchField, SheetHeader } from '@/src/components/ui';
 import { BentoBottomSheet, useBottomSheet } from '@/src/components/ui/BottomSheet';
-import type { Person } from '@/src/features/persons/api/persons';
+import type { Person } from '@/data/repositories/people';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { colorNumberToHex } from '@/shared/format/color';
 

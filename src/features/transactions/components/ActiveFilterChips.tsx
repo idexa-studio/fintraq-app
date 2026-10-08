@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import { Chip } from '@/src/components/ui';
-import type { AdvancedFilters } from '@/src/features/filters/api/advanced-filters.service';
+import type { AdvancedFilters } from '@/data/repositories/filters';
 import type { ClearableFilter } from '@/src/features/transactions/hooks/useTransactionFilters';
 import { useSortLabel } from '@/src/features/transactions/components/TransactionSortDialog';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { QUERY_KEYS } from '@/src/lib/query-keys';
+import { QUERY_KEYS } from '@/data/query-keys';
 import { usePremium } from '@/src/providers/PremiumProvider';
 import type { GoogleUserAccount } from '@/src/services/backup/backup.types';
 import { BackupPreferences } from '@/src/services/backup/backup-preferences';

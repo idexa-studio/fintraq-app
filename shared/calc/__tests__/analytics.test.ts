@@ -1,4 +1,4 @@
-import { analyticsWindow, averageByWeekday, monthEndForecast, percentChange, sumBuckets, toTrendBars, weekdayExtremes, weekdayOccurrences, windowSlots, withShares } from '@/src/utils/analytics';
+import { analyticsWindow, averageByWeekday, monthEndForecast, percentChange, sumBuckets, toTrendBars, weekdayExtremes, weekdayOccurrences, windowSlots, withShares } from '@/shared/calc/analytics';
 
 describe('sumBuckets', () => {
   it('totals income and expense and derives net', () => {

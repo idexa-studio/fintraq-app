@@ -1,4 +1,4 @@
-import { AdvancedFilterService, DEFAULT_ADVANCED_FILTERS } from '@/src/features/filters/api/advanced-filters.service';
+import { AdvancedFilterService, DEFAULT_ADVANCED_FILTERS } from '@/data/repositories/filters';
 
 describe('AdvancedFilterService.toBasicFilters', () => {
   it('passes every multi-select straight to SQL', () => {

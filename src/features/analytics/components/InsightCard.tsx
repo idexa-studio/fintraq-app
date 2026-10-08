@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { IconAvatar } from '@/src/components/ui/IconAvatar';
 import { ThemeContextType, useTheme } from '@/src/providers/ThemeProvider';
 import { resolveIcon } from '@/src/utils/icons';
-import { DashboardInsight } from '@/src/features/dashboard/api/insights';
+import { DashboardInsight } from '@/data/repositories/insights';
 
 interface InsightCardProps {
   insight: DashboardInsight;

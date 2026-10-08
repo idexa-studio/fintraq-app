@@ -12,7 +12,7 @@ import {
   useAnalyticsPreviousPeriod,
   useAnalyticsSeries,
 } from '@/src/features/analytics/hooks/useAnalyticsData';
-import { analyticsWindow, averageByWeekday, percentChange, sumBuckets, weekdayExtremes, windowSlots } from '@/src/utils/analytics';
+import { analyticsWindow, averageByWeekday, percentChange, sumBuckets, weekdayExtremes, windowSlots } from '@/shared/calc/analytics';
 import { getLocalISOString } from '@/shared/date/date';
 
 /**

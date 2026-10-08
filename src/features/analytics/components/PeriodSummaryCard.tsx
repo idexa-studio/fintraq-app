@@ -1,6 +1,6 @@
 import React from 'react';
 import { NetFlowGrid } from '@/src/components/ui';
-import type { Totals } from '@/src/utils/analytics';
+import type { Totals } from '@/shared/calc/analytics';
 
 type Props = {
   totals: Totals;

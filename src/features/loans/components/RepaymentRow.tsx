@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconAvatar, ListItem, MoneyText } from '@/src/components/ui';
-import type { LoanRepaymentRow, LoanType } from '@/src/features/loans/api/loans';
+import type { LoanRepaymentRow, LoanType } from '@/data/repositories/loans';
 import { useTheme } from '@/src/providers/ThemeProvider';
 import { formatDate } from '@/shared/date/date';
 

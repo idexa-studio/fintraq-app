@@ -9,7 +9,7 @@ import type { AccountType } from '@/shared/types';
 import { Badge } from '@/src/components/ui/Badge';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
-import type { Account } from '@/src/features/accounts/api/accounts';
+import type { Account } from '@/data/repositories/accounts';
 import { useTranslation } from 'react-i18next';
 
 type Props = {
