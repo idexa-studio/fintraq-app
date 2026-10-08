@@ -24,8 +24,9 @@ export type ScreenProps = {
   padded?: boolean;
   /**
    * The screen is a task that rises over the one it was started from: it
-   * stops short of the top, with rounded corners, and the edge of the screen
-   * behind shows above it. Present its route with `SHEET_ROUTE`.
+   * stops short of the top with rounded corners. On iOS the system stacks it
+   * over the screen behind; on Android it is a sheet under a black top
+   * edge. Present its route with `SHEET_ROUTE`.
    */
   sheet?: boolean;
   /** The screen has text fields: content and footer move up to stay above the keyboard. */
@@ -81,7 +82,7 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, sheet
     </SafeAreaView>
   );
 
-  // iOS stacks a presented sheet over the screen behind by itself; the look is rebuilt only where the system has none.
+  // iOS presents the sheet itself, stacked over the screen behind. Android gets a sheet under a black top edge.
   if (!sheet || Platform.OS === 'ios') return page;
   return (
     <View style={styles.behind}>

@@ -41,9 +41,8 @@ export function EntrySection() {
 
   return (
     <>
-      <Specimen name="Add a transaction" note="A sheet that rises over the screen behind, whose edge still shows above it. Kind as tabs under the header, the amount as the one large thing, then the reference's form: labelled cards and outlined fields.">
+      <Specimen name="Add a transaction" note="A sheet that rises over the screen behind (stacked by the system on iOS, a bottom sheet on Android). Kind as tabs under the header, the amount as the one large thing, then the reference's form: labelled cards and outlined fields.">
         <View style={{ marginHorizontal: -space.lg, backgroundColor: BACKDROP, paddingTop: space.lg }}>
-          <View style={{ height: size.sheetPeek + radius.sheet, marginBottom: -radius.sheet, marginHorizontal: size.sheetPeekInset, borderTopLeftRadius: radius.md, borderTopRightRadius: radius.md, backgroundColor: colors.peek }} />
           <View style={{ backgroundColor: colors.background, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, overflow: 'hidden' }}>
             <Header task flush title={`Add ${kind.toLowerCase()}`} onClose={() => {}} />
             <TabStrip tabs={KINDS.map((label) => ({ key: label, label }))} value={kind} onChange={setKind} accessibilityLabel="Kind of transaction" />

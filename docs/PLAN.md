@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 57 | 57 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 60 | In progress |
-| D | Screens at parity with the shipped app | 144 | 28 | In progress |
+| D | Screens at parity with the shipped app | 143 | 29 | In progress |
 | E | Pro: three plans and gating | 26 | 0 |  |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -338,8 +338,8 @@ route template · `tsc`, lint, design audit and tests clean.
 ### D4. Activity
 - [x] D4.01 List grouped by day with day totals
 - [x] D4.02 Kind as tabs under the header: all, expenses, income, transfers (chips were tried and looked wrong to the owner)
-- [ ] D4.03 Filter sheet and active filter chips (person, dates, amount range). The shipped sheet's logic is in git: `git show 25f92f2:src/features/filters/components/AdvancedFilterBottomSheet.tsx`; its query support is still in `data/repositories/filters.ts`
-- [ ] D4.04 Sort menu (shipped version: `git show 25f92f2:src/features/transactions/hooks/useTransactionFilters.ts`)
+- [x] D4.03 Filter: one button, a sheet with dates (presets or two dates), account, category and person, each a picker; applied filters as removable chips; totals follow. Amount range is dropped: rarely used, and search covers it (owner left the call to Claude, 2026-10-09)
+- [ ] ~~D4.04 Sort menu~~ Dropped: Activity is a record in date order, and Insights already lists the largest expenses
 - [x] D4.05 Totals of the list at the top. The currency choice is a lens over the whole screen, as on Home: it filters the list as well as the totals
 - [ ] D4.06 Swipe a row to edit or delete, with confirmation
 - [x] D4.07 Opens filtered from an account or a category

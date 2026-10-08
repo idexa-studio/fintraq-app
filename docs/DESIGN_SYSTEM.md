@@ -154,11 +154,10 @@ use it.
 - **Design the state, not the error.** A control that cannot work yet is
   disabled and the reason is visible. Work in progress keeps the button's
   colour and shows a spinner.
-- **A task** (adding, editing) is a stacked sheet: `<Screen sheet>` on a
-  route presented as a transparent modal. The backdrop goes black, the sheet
-  rises, and the screen behind stays visible as a narrower card edge above
-  it. Pickers opened from a task (`Sheet`) stack over it the same way. This
-  layering is what "stacked cards" means in this design.
+- **A task** (adding, editing) is a sheet: `<Screen sheet>` on a route
+  presented with `SHEET_ROUTE`. On iOS the system presents it stacked over the
+  screen behind, whose edge shows above it. On Android it is a sheet under a
+  black top edge, with no imitation of the iOS stack (owner, 2026-10-09). Pickers opened from a task (`Sheet`) follow the same rule.
 - **Adding a transaction** is the reference's form inside that sheet: kind
   as a `TabStrip` under the header, the amount as the one large thing
   (`AmountField`), then labelled cards ("From:", "Details:") and outlined

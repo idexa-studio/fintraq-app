@@ -2,7 +2,7 @@ import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
-import Animated, { Easing, FadeIn, SlideInDown } from 'react-native-reanimated';
+import Animated, { Easing, SlideInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export type SheetFrameProps = {
@@ -12,10 +12,10 @@ export type SheetFrameProps = {
 };
 
 /**
- * The stacked look of every sheet: the sheet has risen over what was there,
- * whose top edge still shows above it as a narrower card, so the two read as
- * cards in a stack. The sheet slides up; the edge behind settles in just
- * after it.
+ * A sheet on Android: it slides up and stops just short of the top, with
+ * rounded corners. A task screen sits under a black top edge; a picker sits
+ * over the dimmed screen. (iOS presents sheets itself, stacked over the screen
+ * behind, and does not use this.)
  */
 export function SheetFrame({ children, hug = false }: SheetFrameProps) {
   const { motion } = useTheme();
@@ -24,22 +24,17 @@ export function SheetFrame({ children, hug = false }: SheetFrameProps) {
   const rise = SlideInDown.duration(motion.sheet).easing(Easing.out(Easing.cubic));
   return (
     <View style={[styles.frame, hug ? styles.hug : null, { paddingTop: insets.top + styles.clearance.height }]} pointerEvents="box-none">
-      <Animated.View entering={rise} style={hug ? styles.stackHug : styles.stack}>
-        <Animated.View entering={FadeIn.delay(motion.sheet / 2).duration(motion.normal)} style={styles.peek} />
-        <View style={[styles.sheet, hug ? styles.sheetHug : styles.sheetFill]}>{children}</View>
-      </Animated.View>
+      <Animated.View entering={rise} style={[styles.sheet, hug ? styles.sheetHug : styles.sheetFill]}>{children}</Animated.View>
     </View>
   );
 }
 
-const createStyles = ({ colors, radius, size, space }: Theme) =>
+const createStyles = ({ colors, radius, space }: Theme) =>
   StyleSheet.create({
     frame: { flex: 1 },
     hug: { justifyContent: 'flex-end' },
-    clearance: { height: space.xs },
-    stack: { flex: 1 },
-    stackHug: { flexShrink: 1 },
-    peek: { height: size.sheetPeek + radius.sheet, marginBottom: -radius.sheet, marginHorizontal: size.sheetPeekInset, borderTopLeftRadius: radius.md, borderTopRightRadius: radius.md, backgroundColor: colors.peek },
+    // How much of the screen behind stays visible above a full-height sheet.
+    clearance: { height: space.sm },
     sheet: { backgroundColor: colors.background, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, overflow: 'hidden' },
     sheetFill: { flex: 1 },
     sheetHug: { flexShrink: 1 },
@@ -47,8 +42,8 @@ const createStyles = ({ colors, radius, size, space }: Theme) =>
 
 /**
  * How a route that holds a `<Screen sheet>` is presented. iOS has the stacked
- * sheet built in. Android has no equivalent, so there the route is drawn over
- * the screen behind and `SheetFrame` builds the same look.
+ * sheet built in. On Android the backdrop fades to black and `SheetFrame`
+ * slides the sheet up under it.
  */
 export const SHEET_ROUTE = Platform.select({
   ios: { presentation: 'modal' },

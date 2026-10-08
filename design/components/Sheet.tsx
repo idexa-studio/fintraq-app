@@ -53,7 +53,6 @@ export function Sheet({ visible, onClose, ...panel }: SheetProps) {
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
       <View style={styles.scrim}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Close" accessibilityRole="button" />
-        {/* Rises over whatever is open, whose edge shows above it: sheets stack like cards. */}
         <SheetFrame hug>
           <View style={{ paddingBottom: insets.bottom, flexShrink: 1 }}>
             <SheetPanel onClose={onClose} {...panel} />

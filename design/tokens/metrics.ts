@@ -81,9 +81,6 @@ export const SIZE = {
   iconLarge: 28,
   iconCircle: 40,
   illustrationTile: 64,
-  /** How much of the screen underneath shows above a sheet (reference: 8.7), and how far it is inset (16.2). */
-  sheetPeek: 9,
-  sheetPeekInset: 16,
   /** The small outlined mark at the corner of a card (reference: 32). */
   markTile: 32,
   radio: 24,
