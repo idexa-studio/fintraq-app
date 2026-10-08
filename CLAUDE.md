@@ -76,8 +76,8 @@ throughout (Proza Libre, bold for headings), soft 10pt corners, no shadows.
   Do not draw illustrations by hand.
 - **App icon and splash:** the mark is a stack of coins (a white coin on a black
   one, a pastel green one falling onto them), outlined in black on the grey
-  page. The launch screen is the reference's: three greens in waves, the mark,
-  the name; the phone's own splash is the brand green with the mark, and
+  page. The launch screen follows the reference's (three greens in waves, the mark,
+  the name) with the wave card's own shapes, never the bank's; the phone's own splash is the brand green with the mark, and
   `LaunchScreen` takes over from it. Images are drawn by `npm run brand:generate`,
   never edited by hand; gallery section `brand` shows both (`docs/DESIGN_SYSTEM.md`).
 - **Settled choices:** the currency menu sits on the balance card; the wave
