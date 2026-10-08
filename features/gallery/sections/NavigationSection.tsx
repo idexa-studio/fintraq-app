@@ -1,5 +1,5 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
-import { Header, IconButton, IconCircle, Section, TabBar, useTheme } from '@/design';
+import { Header, IconButton, Section, TabBar, useTheme } from '@/design';
 import type { TabItem } from '@/design';
 import React, { useState } from 'react';
 import { View } from 'react-native';
@@ -21,13 +21,13 @@ export function NavigationSection() {
   return (
     <>
       <Section title="Header">
-        <Specimen name="Home" note="The top of a tab: the title at the start of the line. Home sets the first name under a greeting by the time of day; the user’s own mark opens Settings.">
+        <Specimen name="Home" note="The top of a tab: the title at the start of the line. Home sets the first name under a greeting by the time of day; the profile icon opens Settings.">
           <View style={bleed}>
             <Header
               large
               eyebrow="Good afternoon"
               title="John"
-              right={<><IconButton icon="search" accessibilityLabel="Search" /><IconCircle initials="J" color="green" /></>}
+              right={<><IconButton icon="search" accessibilityLabel="Search" /><IconButton icon="user-circle" accessibilityLabel="Settings" /></>}
             />
           </View>
         </Specimen>

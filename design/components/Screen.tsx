@@ -7,7 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export type ScreenProps = {
   children: React.ReactNode;
@@ -36,21 +36,39 @@ export type ScreenProps = {
   scrollHidesKeyboard?: boolean;
 };
 
+/**
+ * The screen's sections, one by one. A fragment is opened up, so sections
+ * grouped under one condition are still spaced like the rest instead of
+ * arriving as a single block with nothing between them.
+ */
+function sectionsOf(children: React.ReactNode): React.ReactNode[] {
+  return React.Children.toArray(children).flatMap((child) =>
+    React.isValidElement<{ children?: React.ReactNode }>(child) && child.type === React.Fragment ? sectionsOf(child.props.children) : [child],
+  );
+}
+
 /** Every screen starts here: page colour, safe areas, header, content, then footer or tab bar. */
 export function Screen({ children, header, footer, tabBar, tabbed = false, sheet = false, scroll = true, padded = true, keyboardAware = false, scrollHidesKeyboard = false }: ScreenProps) {
   const styles = useStyles(createStyles);
   const { motion } = useTheme();
   const keyboard = useKeyboardOverlap(keyboardAware);
+  // The insets are read up front and applied as padding. A safe-area view asks for them only
+  // after it is first drawn, so a tab opened for the first time showed its header under the
+  // status bar for a moment before dropping into place.
+  const insets = useSafeAreaInsets();
+  // A sheet starts below the top edge; a tab's bar already clears the bottom.
+  const clearsTop = !sheet;
+  const clearsBottom = sheet || !(tabBar || tabbed);
   const content = padded ? styles.padded : null;
   // Each section arrives a moment after the one above it, rising a little as it fades in.
-  const arriving = React.Children.toArray(children).map((child, i) => (
+  const arriving = sectionsOf(children).map((child, i) => (
     <Animated.View key={i} entering={FadeInDown.duration(motion.enter).delay(Math.min(i, 8) * motion.stagger)}>
       {child}
     </Animated.View>
   ));
 
   const page = (
-    <SafeAreaView style={[styles.page, keyboard ? { paddingBottom: keyboard } : null]} edges={sheet ? ['bottom'] : tabBar || tabbed ? ['top'] : ['top', 'bottom']}>
+    <View style={[styles.page, { paddingTop: clearsTop ? insets.top : 0, paddingBottom: (clearsBottom ? insets.bottom : 0) + keyboard }]}>
       {header}
       {scroll ? (
         <ScrollView style={styles.fill} contentContainerStyle={[styles.scrollContent, content]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode={scrollHidesKeyboard ? 'on-drag' : 'none'}>
@@ -61,7 +79,7 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, sheet
       )}
       {footer ? <View style={styles.footer}>{footer}</View> : null}
       {tabBar}
-    </SafeAreaView>
+    </View>
   );
 
   // iOS presents the sheet itself, stacked over the screen behind. Android gets a sheet under a black top edge.

@@ -10,11 +10,12 @@ import { View } from 'react-native';
 export type FeatureTileProps = {
   icon: IconName;
   color?: IconCircleProps['color'];
-  /** What it does for you, in a sentence. Read out by a screen reader even when `compact` hides it. */
+  /** What it does for you, in a sentence. */
   description: string;
   /**
-   * The mark and the action on one line, without the sentence: for shortcuts
-   * the user already knows, where the full tile would take a third of the screen.
+   * The mark beside the action, with the sentence small beneath them: for
+   * shortcuts the user already knows, where the full tile would take a third
+   * of the screen. Keep the sentence to a few words.
    */
   compact?: boolean;
   /** The action, in bold. */
@@ -27,9 +28,13 @@ export function FeatureTile({ icon, color, description, label, compact = false, 
   const { space } = useTheme();
   if (compact) {
     return (
-      <Card onPress={onPress} accessibilityLabel={`${label}. ${description}`} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md }}>
-        <IconCircle icon={icon} color={color} />
-        <Text variant="bodyStrong" numberOfLines={2} style={{ flex: 1 }}>{label}</Text>
+      <Card onPress={onPress} accessibilityLabel={`${label}. ${description}`} style={{ flex: 1, gap: space.sm, paddingVertical: space.md }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+          <IconCircle icon={icon} color={color} />
+          <Text variant="bodyStrong" numberOfLines={1} style={{ flex: 1 }}>{label}</Text>
+        </View>
+        {/* Under the mark, across the whole tile, so the few words are never cut short. */}
+        <Text variant="caption" tone="muted" numberOfLines={2}>{description}</Text>
       </Card>
     );
   }

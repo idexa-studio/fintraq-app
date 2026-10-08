@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 150 | 81 | In progress |
+| D | Screens at parity with the shipped app | 152 | 84 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -338,8 +338,10 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D3.19 Tab tops and the tab bar polished (owner, 2026-10-08): large titles at the start of the line on all four tabs, Home greeting by time of day with the date and the user's initials; the tab bar's mark slides and Add is a green tile
 - [x] D3.20 Sizing and density pass (owner, 2026-10-08): tab titles at the reference's 18pt, tab bar 56 tall, compact shortcut tiles, one-line transaction rows, a leaner balance card whose accounts each get a colour that can be told apart, a thinner month ring, smaller faces, and Activity's totals shown only once the list is narrowed
 - [x] D3.21 Accounts on Home as a stack of cards, like a wallet (owner asked for a stacked card, 2026-10-08): each account in its own colour, the ones behind showing the edge with name and balance, the default account in front in full; five at most, then a count. It replaces the bar and legend the balance card carried in D3.16, so the balance card is the figure and its two actions again
+- [x] D3.22 Small guiding lines (owner, 2026-10-08: "looking naked"): `Section` takes a `hint` under its title, used on Home and Insights; shortcut tiles carry their few words again; the balance card says how many accounts it adds up. Header icons are drawn at 24pt, where the line matches the reference's weight; Home's initial-in-a-circle is the plain profile icon again, as there is no photo for it to stand for
+- [x] D3.23 Sections grouped under one condition had no space between them (Insights: Rhythm, People, Worth knowing): `Screen` now opens up fragments. A tab opened for the first time showed its header under the status bar for a moment: `Screen` applies the insets as padding from the first frame
 - [ ] D3.17 The gallery's Home specimen still shows the earlier Home (accounts as rows, month as a bar, people as rows); bring it in line with D3.16
-- [ ] D3.18 A full reload of the running app lands on Add expense over Home, on every reload since 2026-10-08 afternoon. The activity's intent is a plain launcher intent, so it is not the launcher shortcut; the cause is not found. In a release build the one reload is after a restore, so check there too
+- [x] D3.18 A full reload of the running app landed on Add expense over Home. Cause: the root stack named the Add task as its first screen, and with no link to follow the app starts at the first screen named. `(main)` is now named first; three forced reloads land on Home
 - [ ] D3.13 Shared checklist
 
 ### D4. Activity

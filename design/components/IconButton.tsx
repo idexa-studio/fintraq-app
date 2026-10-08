@@ -13,7 +13,11 @@ export type IconButtonProps = {
   disabled?: boolean;
 };
 
-/** A bare icon with a full-size touch target, as in the header. */
+/**
+ * A bare icon with a full-size touch target, as in the header. Drawn at the
+ * standard 24pt, where the line is the reference's weight; a larger box
+ * thickens the line with it and the icon reads as too big.
+ */
 export function IconButton({ icon, onPress, accessibilityLabel, size, disabled = false }: IconButtonProps) {
   const { size: sizes, colors } = useTheme();
   return (
@@ -24,7 +28,7 @@ export function IconButton({ icon, onPress, accessibilityLabel, size, disabled =
       accessibilityState={{ disabled }}
       style={{ width: sizes.minTouch, height: sizes.minTouch, alignItems: 'center', justifyContent: 'center' }}
     >
-      <Icon name={icon} size={size ?? sizes.iconLarge} color={disabled ? colors.onDisabled : colors.text} />
+      <Icon name={icon} size={size ?? sizes.icon} color={disabled ? colors.onDisabled : colors.text} />
     </Touchable>
   );
 }
