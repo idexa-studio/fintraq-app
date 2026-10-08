@@ -263,7 +263,7 @@ go to `shared/calc`.
 - [ ] C8.05 Android: system navigation bar colour, predictive back off as today, edge to edge
 - [x] C8.06 Status bar style follows the scheme (seen in light and dark)
 - [x] C8.07 Lock overlay above everything, including tasks (the lock is a full-screen modal opened after anything already open, so it sits above tasks and sheets; unlocked by the owner on 2026-10-08, not tried with a sheet open)
-- [ ] C8.08 Splash, adaptive icon and notification colours updated to the new palette in `app.json`
+- [ ] C8.08 Splash, adaptive icon and notification colours updated to the new palette in `app.json` Drawn and set 2026-10-08 (`scripts/generate-brand.js`: flat black ground, accent and white mark, light splash on the grey page, shortcut icons from Phosphor, notification tint `positive`). Not ticked: the icon and splash only show in a new native build, and none has been looked at on the phone yet.
 - [ ] ~~C8.09 A developer switch between old and new screens~~ Dropped: the `reboot` branch is the switch. 1.2.4 keeps shipping from `develop`, so each legacy screen is simply replaced in place here, with no second navigation tree to maintain
 
 ### C9. Old paths keep working
@@ -619,7 +619,7 @@ Done when: the redesign is live to all users with no data loss reported.
 
 ### G3. Store
 - [ ] G3.01 New screenshots and feature graphic
-- [ ] G3.02 New app icon and splash, if the brand changes with the look (owner)
+- [ ] G3.02 New app icon and splash, if the brand changes with the look (owner) Polished to the new look with C8.08; waits for the owner's eye on a build.
 - [ ] G3.03 Listing text: remove "No subscriptions"; describe the three plans
 - [ ] G3.04 Privacy policy and terms updated for subscriptions
 - [ ] G3.05 Data-safety and privacy labels reviewed

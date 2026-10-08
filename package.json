@@ -15,7 +15,8 @@
     "postinstall": "patch-package",
     "test": "jest",
     "icons:generate": "node scripts/generate-icons.js",
-    "plan:progress": "node scripts/plan-progress.js"
+    "plan:progress": "node scripts/plan-progress.js",
+    "brand:generate": "node scripts/generate-brand.js"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
