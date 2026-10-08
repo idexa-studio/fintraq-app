@@ -200,6 +200,9 @@ use it.
   filling towards the Drive during a backup and back towards the phone
   during a restore (`BackupLink`). A stack of rows is what is left when no
   such picture exists (owner, 2026-10-08: "be more creative everywhere").
+  Home does the same three times: the balance as a bar shared out among
+  its accounts, the month as a ring of spent and kept, people as faces in
+  a row.
 - **Adding a transaction** is the reference's form inside that sheet: kind
   as a `TabStrip` under the header, the amount as the one large thing
   (`AmountField`), then labelled cards ("From:", "Details:") and outlined
@@ -214,7 +217,8 @@ use it.
 - **Pro:** everything a plan adds to a screen is one `LockedCard`; a single
   Pro row inside a free list carries a badge. Never one lock per item.
 - **Home's hero** is the reference's account card: a white card with the
-  balance and two split actions, quick actions as `FeatureTile`s below. No
+  balance, what it is made of, and two split actions; quick actions as
+  `FeatureTile`s below. No
   round black action buttons.
 - **A short choice** (currency, period) is a `Select`: a chip that opens a
   list under itself. Long lists go in a `Sheet` with an `OptionList`.

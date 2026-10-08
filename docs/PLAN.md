@@ -27,7 +27,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | A | Foundations | 34 | 34 | Complete |
 | B | Design sign-off | 58 | 58 | Complete |
 | C | Groundwork: shared, data, platform, shell | 87 | 62 | In progress |
-| D | Screens at parity with the shipped app | 144 | 77 | In progress |
+| D | Screens at parity with the shipped app | 147 | 78 | In progress |
 | E | Pro: three plans and gating | 26 | 5 | In progress |
 | F | Remove the legacy code | 16 | 0 |  |
 | G | Release 1: the redesign | 23 | 0 |  |
@@ -334,6 +334,9 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D3.12 Hooks on the repositories: `features/home` for summaries, and the accounts, transactions, people, loans and categories hooks in their own features, each used through its index
 - [x] D3.14 Saved colours are drawn as pastels of the same hue, so the black glyph on top stays readable; stored icon names resolve through `resolveIcon`
 - [x] D3.15 The currency switch is a lens over the whole of Home: balance, this month, accounts, recent and people all show the chosen currency only, and a line under the card says so when more than one currency is held
+- [x] D3.16 Home shows its subjects as pictures (owner, 2026-10-08: "plain, boring"): the balance card carries a bar shared out among the accounts and names each beneath it, so the separate accounts list is gone; this month is a ring of spent and kept; people are faces in a row with what stands between you under each
+- [ ] D3.17 The gallery's Home specimen still shows the earlier Home (accounts as rows, month as a bar, people as rows); bring it in line with D3.16
+- [ ] D3.18 A reload of the running app opens Add expense again when the app was last started from the "Add expense" launcher shortcut (`expo-quick-actions` keeps its initial action across a JavaScript reload). Seen in development on every full reload; in a release build the one reload is after a restore. Clear or ignore the initial action once it has been routed
 - [ ] D3.13 Shared checklist
 
 ### D4. Activity
