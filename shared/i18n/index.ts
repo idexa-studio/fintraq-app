@@ -12,6 +12,7 @@ import people from '@/shared/i18n/copy/people.en';
 import plan from '@/shared/i18n/copy/plan.en';
 import search from '@/shared/i18n/copy/search.en';
 import backupCopy from '@/shared/i18n/copy/backup.en';
+import exportCopy from '@/shared/i18n/copy/export.en';
 import shell from '@/shared/i18n/copy/shell.en';
 import transactions from '@/shared/i18n/copy/transactions.en';
 import bn from '@/shared/i18n/locales/bn';
@@ -38,7 +39,7 @@ i18n
     resources: {
       // `translation` is the shipped app's copy. The other namespaces are the rebuilt screens' copy,
       // written in English first: a language without one falls back to English, never to a key.
-      en: { translation: en, common, shell, home, transactions, activity, accounts, categories, people, loans, plan, insights, search, backup: backupCopy },
+      en: { translation: en, common, shell, home, transactions, activity, accounts, categories, people, loans, plan, insights, search, backup: backupCopy, export: exportCopy },
       hi: { translation: hi },
       bn: { translation: bn },
       ta: { translation: ta },
@@ -52,7 +53,7 @@ i18n
       de: { translation: de },
       ja: { translation: ja },
     },
-    ns: ['translation', 'common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans', 'plan', 'insights', 'search', 'backup'],
+    ns: ['translation', 'common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans', 'plan', 'insights', 'search', 'backup', 'export'],
     defaultNS: 'translation',
     lng: getSystemLanguage(),
     fallbackLng: 'en',

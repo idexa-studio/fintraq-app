@@ -10,6 +10,7 @@ import type people from '@/shared/i18n/copy/people.en';
 import type plan from '@/shared/i18n/copy/plan.en';
 import type search from '@/shared/i18n/copy/search.en';
 import type backup from '@/shared/i18n/copy/backup.en';
+import type exportCopy from '@/shared/i18n/copy/export.en';
 import type shell from '@/shared/i18n/copy/shell.en';
 import type transactions from '@/shared/i18n/copy/transactions.en';
 import type en from '@/shared/i18n/locales/en';
@@ -27,6 +28,7 @@ declare module 'i18next' {
       plan: typeof plan;
       search: typeof search;
       backup: typeof backup;
+      export: typeof exportCopy;
       insights: typeof insights;
       common: typeof common;
       shell: typeof shell;
