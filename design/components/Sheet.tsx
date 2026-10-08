@@ -3,7 +3,7 @@ import { SheetFrame } from '@/design/components/SheetFrame';
 import { useStyles } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export type SheetPanelProps = {
@@ -37,6 +37,18 @@ export type SheetProps = SheetPanelProps & {
 export function Sheet({ visible, onClose, ...panel }: SheetProps) {
   const styles = useStyles(createStyles);
   const insets = useSafeAreaInsets();
+
+  // iOS stacks a page sheet over whatever is open by itself.
+  if (Platform.OS === 'ios') {
+    return (
+      <Modal visible={visible} presentationStyle="pageSheet" animationType="slide" onRequestClose={onClose}>
+        <View style={[styles.native, { paddingBottom: insets.bottom }]}>
+          <SheetPanel onClose={onClose} {...panel} />
+        </View>
+      </Modal>
+    );
+  }
+
   return (
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
       <View style={styles.scrim}>
@@ -55,6 +67,7 @@ export function Sheet({ visible, onClose, ...panel }: SheetProps) {
 const createStyles = ({ colors, size, space }: Theme) =>
   StyleSheet.create({
     scrim: { flex: 1, backgroundColor: colors.scrim },
+    native: { flex: 1, backgroundColor: colors.background },
     panel: { flexShrink: 1, backgroundColor: colors.background },
     scroll: { flexGrow: 0 },
     content: { padding: size.screenPadding, paddingTop: space.xl, gap: space.xl },

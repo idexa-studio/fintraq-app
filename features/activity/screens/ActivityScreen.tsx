@@ -1,17 +1,17 @@
 import type { TransactionFilters, TransactionListItem } from '@/data/repositories/transactions';
-import { Button, Card, Chip, ChipRow, DayHeader, Dialog, Divider, EmptyState, Header, IconButton, Screen, Select, Skeleton, Stat, SwipeRow, Text, useStyles, useTheme, useToast } from '@/design';
+import { Button, Card, Chip, DayHeader, Dialog, Divider, EmptyState, Header, IconButton, Screen, Select, Skeleton, Stat, SwipeRow, TabStrip, Text, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
-import { dayNet } from '@/features/activity/day-totals';
+import { activityItems } from '@/features/activity/activity-list';
+import type { ActivityItem } from '@/features/activity/activity-list';
 import { useCategories } from '@/features/categories';
 import { useSettings } from '@/features/settings';
 import { TransactionRow, useDeleteTransaction, useInfiniteTransactions, useTransactionTotals } from '@/features/transactions';
-import { groupByDay } from '@/shared/calc/transactions';
 import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { formatCurrency } from '@/shared/format/money';
 import type { TransactionType } from '@/shared/types';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View } from 'react-native';
 
@@ -24,10 +24,41 @@ const numberParam = (value: string | string[] | undefined): number | undefined =
   return Number.isFinite(parsed) ? parsed : undefined;
 };
 
-/** The Activity tab: every transaction, newest first, a day at a time. */
+type RowProps = {
+  item: Extract<ActivityItem, { kind: 'row' }>;
+  onOpen: (transaction: TransactionListItem) => void;
+  onEdit: (transaction: TransactionListItem) => void;
+  onDelete: (transaction: TransactionListItem) => void;
+  labels: { edit: string; delete: string };
+};
+
+/** One transaction line. Memoised with stable handlers, so scrolling and paging never redraw the lines already there. */
+const ActivityRow = React.memo(function ActivityRow({ item, onOpen, onEdit, onDelete, labels }: RowProps) {
+  const styles = useStyles(createStyles);
+  const { transaction } = item;
+  return (
+    <View style={[styles.row, item.first ? styles.rowFirst : null, item.last ? styles.rowLast : null]}>
+      {item.first ? null : <Divider />}
+      <SwipeRow
+        actions={[
+          { label: labels.edit, icon: 'pencil', onPress: () => onEdit(transaction) },
+          { label: labels.delete, icon: 'trash', tone: 'danger', onPress: () => onDelete(transaction) },
+        ]}
+      >
+        <TransactionRow transaction={transaction} when="time" onPress={onOpen} />
+      </SwipeRow>
+    </View>
+  );
+});
+
+/**
+ * The Activity tab: every transaction, newest first, a day at a time. One
+ * currency is shown at a time, as on Home, and the choice applies to the
+ * whole screen: the totals and the list always describe the same thing.
+ */
 export function ActivityScreen() {
   const { t, i18n } = useTranslation(['activity', 'transactions']);
-  const { size, space } = useTheme();
+  const { size } = useTheme();
   const styles = useStyles(createStyles);
   const router = useRouter();
   const toast = useToast();
@@ -40,36 +71,43 @@ export function ActivityScreen() {
   const [chosenCurrency, setChosenCurrency] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<TransactionListItem | null>(null);
 
-  const filters = useMemo<TransactionFilters>(
-    () => ({
-      ...(kind === 'all' ? {} : { types: [TYPE_OF[kind]] }),
-      ...(accountId === undefined ? {} : { accountIds: [accountId] }),
-      ...(categoryId === undefined ? {} : { categoryIds: [categoryId] }),
-    }),
-    [kind, accountId, categoryId],
-  );
-
-  const list = useInfiniteTransactions(filters);
-  const { data: totals } = useTransactionTotals(filters);
   const { data: accounts } = useAccounts();
   const { data: categories } = useCategories();
   const remove = useDeleteTransaction();
 
-  const transactions = useMemo(() => list.data?.pages.flat() ?? [], [list.data?.pages]);
-  // Day titles are written in the app's language, so a language change groups again.
-  const days = useMemo(() => groupByDay(transactions), [transactions, i18n.language]); // eslint-disable-line react-hooks/exhaustive-deps
+  // The currencies held, the default first. Scoped to one account, the screen is in that account's currency.
+  const scopedAccount = accountId === undefined ? undefined : accounts?.find((a) => a.id === accountId);
+  const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set((accounts ?? []).map((a) => a.currency))], profile.defaultCurrency), [accounts, profile.defaultCurrency]);
+  const currency = scopedAccount?.currency ?? (chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : currencies[0]);
 
-  // Totals come per currency, since currencies cannot be added together: one is shown at a time.
-  const currencies = sortCurrenciesWithDefault(Object.keys(totals ?? {}), profile.defaultCurrency);
-  const currency = chosenCurrency && currencies.includes(chosenCurrency) ? chosenCurrency : currencies[0];
+  const filters = useMemo<TransactionFilters>(() => {
+    const inCurrency = (accounts ?? []).filter((a) => a.currency === currency).map((a) => a.id);
+    return {
+      ...(kind === 'all' ? {} : { types: [TYPE_OF[kind]] }),
+      // With one currency held there is nothing to narrow; otherwise the list is that currency's accounts.
+      ...(accountId !== undefined ? { accountIds: [accountId] } : currencies.length > 1 ? { accountIds: inCurrency } : {}),
+      ...(categoryId === undefined ? {} : { categoryIds: [categoryId] }),
+    };
+  }, [kind, accountId, categoryId, accounts, currency, currencies.length]);
+
+  const list = useInfiniteTransactions(filters);
+  const { data: totals } = useTransactionTotals(filters);
+
+  const transactions = useMemo(() => list.data?.pages.flat() ?? [], [list.data?.pages]);
+  // Day titles are written in the app's language, so a language change builds the lines again.
+  const items = useMemo(() => activityItems(transactions), [transactions, i18n.language]); // eslint-disable-line react-hooks/exhaustive-deps
   const inCurrency = currency ? totals?.[currency] : undefined;
 
-  const scopedTo = accountId !== undefined ? t('filteredBy.account', { name: accounts?.find((a) => a.id === accountId)?.name ?? '' }) : categoryId !== undefined ? t('filteredBy.category', { name: categories?.find((c) => c.id === categoryId)?.name ?? '' }) : null;
-  const filtered = kind !== 'all' || scopedTo !== null;
-  const showEverything = () => {
+  const scopedTo = accountId !== undefined ? t('filteredBy.account', { name: scopedAccount?.name ?? '' }) : categoryId !== undefined ? t('filteredBy.category', { name: categories?.find((c) => c.id === categoryId)?.name ?? '' }) : null;
+  const narrowed = kind !== 'all' || scopedTo !== null;
+  const showEverything = useCallback(() => {
     setKind('all');
     router.setParams({ accountId: undefined, categoryId: undefined });
-  };
+  }, [router]);
+
+  const open = useCallback((tx: TransactionListItem) => router.push({ pathname: '/transactions/[id]', params: { id: tx.id } }), [router]);
+  const edit = useCallback((tx: TransactionListItem) => router.push({ pathname: '/transactions/[id]/edit', params: { id: tx.id } }), [router]);
+  const labels = useMemo(() => ({ edit: t('edit'), delete: t('delete') }), [t]);
 
   const confirmDelete = async () => {
     if (!deleting) return;
@@ -77,23 +115,31 @@ export function ActivityScreen() {
     setDeleting(null);
   };
 
+  const renderItem = useCallback(
+    ({ item }: { item: ActivityItem }) =>
+      item.kind === 'day' ? (
+        <View style={styles.dayHead}><DayHeader label={item.title} value={item.net} /></View>
+      ) : (
+        <ActivityRow item={item} onOpen={open} onEdit={edit} onDelete={setDeleting} labels={labels} />
+      ),
+    [styles.dayHead, open, edit, labels],
+  );
+
   const top = (
     <View style={styles.top}>
       {scopedTo ? (
         <View style={styles.scope}><Chip label={scopedTo} onRemove={showEverything} removeLabel={t('filteredBy.remove')} /></View>
       ) : null}
-      {inCurrency ? (
-        <Card style={styles.summary}>
-          <View style={styles.summaryHead}>
-            <Text variant="bodyStrong">{t('summary.title')}</Text>
-            {currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosenCurrency} accessibilityLabel={t('summary.currency')} /> : null}
-          </View>
-          <View style={styles.stats}>
-            <Stat label={t('summary.moneyIn')} value={formatCurrency(inCurrency.income, currency)} tone="positive" />
-            <Stat label={t('summary.moneyOut')} value={formatCurrency(inCurrency.expense, currency)} />
-          </View>
-        </Card>
-      ) : null}
+      <Card style={styles.summary}>
+        <View style={styles.summaryHead}>
+          <Text variant="bodyStrong">{t(`summary.title.${kind}`)}</Text>
+          {currencies.length > 1 && !scopedAccount ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosenCurrency} accessibilityLabel={t('summary.currency')} /> : null}
+        </View>
+        <View style={styles.stats}>
+          {kind === 'expense' ? null : <Stat label={t('summary.moneyIn')} value={formatCurrency(inCurrency?.income ?? 0, currency)} tone="positive" />}
+          {kind === 'income' ? null : <Stat label={t('summary.moneyOut')} value={formatCurrency(inCurrency?.expense ?? 0, currency)} />}
+        </View>
+      </Card>
     </View>
   );
 
@@ -105,11 +151,7 @@ export function ActivityScreen() {
       header={
         <View>
           <Header title={t('title')} right={<IconButton icon="search" onPress={() => router.push('/search')} accessibilityLabel={t('search')} />} />
-          <View style={styles.kinds}>
-            <ChipRow>
-              {KINDS.map((option) => <Chip key={option} label={t(`kinds.${option}`)} selected={option === kind} onPress={() => setKind(option)} />)}
-            </ChipRow>
-          </View>
+          <TabStrip tabs={KINDS.map((option) => ({ key: option, label: t(`kinds.${option}`) }))} value={kind} onChange={setKind} accessibilityLabel={t('kindLabel')} />
         </View>
       }
     >
@@ -119,9 +161,9 @@ export function ActivityScreen() {
           <Skeleton height={size.row * 3} />
           <Skeleton height={size.row * 2} />
         </View>
-      ) : days.length === 0 ? (
+      ) : items.length === 0 ? (
         <View style={styles.empty}>
-          {filtered ? (
+          {narrowed ? (
             <EmptyState icon="search" title={t('noMatchTitle')} body={t('noMatchBody')} actionLabel={t('noMatchAction')} onAction={showEverything} />
           ) : (
             <EmptyState icon="receipt" title={t('emptyTitle')} body={t('emptyBody')} actionLabel={t('emptyAction')} onAction={() => router.push('/add')} />
@@ -129,34 +171,20 @@ export function ActivityScreen() {
         </View>
       ) : (
         <FlatList
-          data={days}
-          keyExtractor={(day) => day.key}
+          data={items}
+          keyExtractor={(item) => item.key}
+          renderItem={renderItem}
           ListHeaderComponent={top}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
+          // Draw a screenful first and the rest in small batches, and keep only a few screens mounted.
+          initialNumToRender={10}
+          maxToRenderPerBatch={8}
+          windowSize={7}
+          removeClippedSubviews
           onEndReached={() => { if (list.hasNextPage && !list.isFetchingNextPage) void list.fetchNextPage(); }}
           onEndReachedThreshold={0.6}
           ListFooterComponent={list.isFetchingNextPage ? <Skeleton height={size.row} /> : null}
-          renderItem={({ item: day }) => (
-            <View style={styles.day}>
-              <DayHeader label={day.title} value={dayNet(day.data)} />
-              <View style={styles.rows}>
-                {day.data.map((tx, i) => (
-                  <React.Fragment key={tx.id}>
-                    {i > 0 ? <Divider /> : null}
-                    <SwipeRow
-                      actions={[
-                        { label: t('edit'), icon: 'pencil', onPress: () => router.push({ pathname: '/transactions/[id]/edit', params: { id: tx.id } }) },
-                        { label: t('delete'), icon: 'trash', tone: 'danger', onPress: () => setDeleting(tx) },
-                      ]}
-                    >
-                      <TransactionRow transaction={tx} when="time" onPress={() => router.push({ pathname: '/transactions/[id]', params: { id: tx.id } })} />
-                    </SwipeRow>
-                  </React.Fragment>
-                ))}
-              </View>
-            </View>
-          )}
         />
       )}
 
@@ -170,15 +198,17 @@ export function ActivityScreen() {
 
 const createStyles = ({ colors, radius, size, space }: Theme) =>
   StyleSheet.create({
-    kinds: { paddingBottom: space.md },
-    top: { gap: space.lg, paddingBottom: space.sm },
+    top: { gap: space.lg, paddingTop: space.lg },
     scope: { flexDirection: 'row' },
     summary: { gap: space.lg },
     summaryHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: size.chip },
     stats: { flexDirection: 'row', gap: space.lg },
-    list: { paddingHorizontal: size.screenPadding, paddingTop: space.sm, paddingBottom: space.xxl, gap: space.xl },
-    day: { gap: space.sm },
-    rows: { backgroundColor: colors.surface, borderRadius: radius.md, overflow: 'hidden' },
+    list: { paddingHorizontal: size.screenPadding, paddingBottom: space.xxl },
+    dayHead: { paddingTop: space.xl, paddingBottom: space.sm },
+    // A day's lines join into one card: only its first and last line are rounded.
+    row: { backgroundColor: colors.surface, overflow: 'hidden' },
+    rowFirst: { borderTopLeftRadius: radius.md, borderTopRightRadius: radius.md },
+    rowLast: { borderBottomLeftRadius: radius.md, borderBottomRightRadius: radius.md },
     loading: { padding: size.screenPadding, gap: space.lg },
     empty: { flex: 1, justifyContent: 'center', padding: size.screenPadding },
   });

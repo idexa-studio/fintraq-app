@@ -54,6 +54,7 @@ export { RankBars } from './components/RankBars';
 export type { RankItem } from './components/RankBars';
 export { Receipt, ReceiptRule } from './components/Receipt';
 export { Ring } from './components/Ring';
+export { SHEET_ROUTE } from './components/SheetFrame';
 export { Screen } from './components/Screen';
 export { Section } from './components/Section';
 export { Select } from './components/Select';

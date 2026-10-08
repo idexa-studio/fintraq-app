@@ -27,13 +27,10 @@ import { unlockDatabaseIfLocked } from '@/data/db/client';
 // the JS engine to run the background backup task.
 import { syncBackgroundBackupTask } from '@/platform/backup/background-backup.task';
 import { AppState, AppStateStatus } from 'react-native';
-import { FONT_ASSETS, ToastProvider } from '@/design';
+import { FONT_ASSETS, SHEET_ROUTE, ToastProvider } from '@/design';
 import { AppTheme, DatabaseGate } from '@/features/shell';
 import React, { useEffect, useState } from 'react';
 import { LoggerService } from '@/shared/logging/logger';
-
-/** A task is a sheet: the backdrop fades in while the sheet itself rises (see `Screen sheet`). */
-const TASK = { presentation: 'transparentModal', animation: 'fade', animationDuration: 220 } as const;
 
 // Prevent the splash screen from auto-hiding before version check completes
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -100,9 +97,9 @@ export default function RootLayout() {
                               <ToastProvider>
                                 <Stack screenOptions={{ headerShown: false, animation: 'ios_from_right' }}>
                                   {/* Tasks rise over the screen they were started from. */}
-                                  <Stack.Screen name="add" options={TASK} />
-                                  <Stack.Screen name="transactions/[id]/edit" options={TASK} />
-                                  <Stack.Screen name="transactions/[id]" options={TASK} />
+                                  <Stack.Screen name="add" options={SHEET_ROUTE} />
+                                  <Stack.Screen name="transactions/[id]/edit" options={SHEET_ROUTE} />
+                                  <Stack.Screen name="transactions/[id]" options={SHEET_ROUTE} />
                                 </Stack>
                               </ToastProvider>
                               <SystemNavBackdrop />

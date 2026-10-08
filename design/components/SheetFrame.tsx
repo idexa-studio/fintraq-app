@@ -1,7 +1,7 @@
 import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import Animated, { Easing, FadeIn, SlideInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -44,3 +44,13 @@ const createStyles = ({ colors, radius, size, space }: Theme) =>
     sheetFill: { flex: 1 },
     sheetHug: { flexShrink: 1 },
   });
+
+/**
+ * How a route that holds a `<Screen sheet>` is presented. iOS has the stacked
+ * sheet built in. Android has no equivalent, so there the route is drawn over
+ * the screen behind and `SheetFrame` builds the same look.
+ */
+export const SHEET_ROUTE = Platform.select({
+  ios: { presentation: 'modal' },
+  default: { presentation: 'transparentModal', animation: 'fade', animationDuration: 220 },
+} as const);

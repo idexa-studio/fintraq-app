@@ -19,3 +19,18 @@ describe('a day’s net', () => {
     expect(dayNet([entry('DR', 10, 'USD'), entry('DR', 10, 'EUR')])).toBeUndefined();
   });
 });
+
+describe('the list as flat lines', () => {
+  const { activityItems } = jest.requireActual<typeof import('@/features/activity/activity-list')>('@/features/activity/activity-list');
+  const tx = (id: number, datetime: string) => ({ id, datetime, type: 'DR', amount: 10, account: { currency: 'USD' } }) as never;
+
+  it('puts a heading before each day and marks where a day’s card opens and closes', () => {
+    const items = activityItems([tx(3, '2026-10-04T18:00:00'), tx(2, '2026-10-04T09:00:00'), tx(1, '2026-10-03T12:00:00')], new Date('2026-10-08T00:00:00'));
+    expect(items.map((i) => (i.kind === 'day' ? 'day' : `${i.transaction.id}:${i.first ? 'first' : ''}${i.last ? 'last' : ''}`))).toEqual(['day', '3:first', '2:last', 'day', '1:firstlast']);
+    expect(items[0]).toMatchObject({ kind: 'day', net: '-$20.00' });
+  });
+
+  it('is empty for no transactions', () => {
+    expect(activityItems([])).toEqual([]);
+  });
+});
