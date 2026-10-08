@@ -1,16 +1,17 @@
-import { Button, Dialog, Header, ListGroup, ListRow, Message, Notice, Screen, Section, Skeleton, Switch, Text, useStyles, useTheme, useToast } from '@/design';
+import { Button, Card, Dialog, Header, ListGroup, ListRow, LockedCard, Notice, Screen, Section, Skeleton, Switch, Text, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { backupDay, failureOf, nextAutoBackup, remedyOf, sizeText } from '@/features/backup/backup-rules';
 import type { BackupFailure } from '@/features/backup/backup-rules';
 import { BackupCard } from '@/features/backup/components/BackupCard';
 import { BackupLink } from '@/features/backup/components/BackupLink';
+import { FileBackup } from '@/features/backup/components/FileBackup';
 import { useAutoBackupSetting } from '@/features/backup/hooks/useAutoBackupSetting';
 import { useBackupAccount, useDisconnectBackupAccount } from '@/features/backup/hooks/useBackupAccount';
 import { useBackupProgress } from '@/features/backup/hooks/useBackupProgress';
 import { useCloudBackupActions } from '@/features/backup/hooks/useCloudBackupActions';
 import { useEnableCloudBackup } from '@/features/backup/hooks/useEnableCloudBackup';
 import { useLatestBackup } from '@/features/backup/hooks/useLatestBackup';
-import { ProGateScreen, usePro } from '@/features/pro';
+import { usePro } from '@/features/pro';
 import { isBackupOverdue } from '@/platform/backup/backup-schedule';
 import { openAppSettings, openBatteryOptimizationSettings } from '@/platform/backup/battery-optimization';
 import { restartApp } from '@/platform/config/restart';
@@ -27,17 +28,34 @@ type Attempt = 'backup' | 'restore' | 'connect' | 'disconnect' | 'auto';
 type Asking = 'restore' | 'replace' | 'disconnect' | 'battery' | 'restored' | null;
 
 /**
- * Backup to the user's own Google Drive. The screen opens on the state, in
- * words: when the last backup was made and where it is. Pro as a whole until
- * the free backup file arrives (plan H1).
+ * Backup: a file the user keeps themselves, free, and under it the automatic
+ * backup to their own Google Drive, which is Pro. A free user sees the Drive
+ * part as one locked card, not a locked screen.
  */
 export function BackupScreen() {
-  const { isPro, ready } = usePro();
+  const { t } = useTranslation('backup');
+  const styles = useStyles(createStyles);
+  const router = useRouter();
+  const { isPro, ready, openPaywall } = usePro();
+  const back = () => (router.canGoBack() ? router.back() : router.replace('/'));
   if (!ready) return <Screen>{null}</Screen>;
-  return isPro ? <Backup /> : <ProGateScreen feature="backup" />;
+
+  return (
+    <Screen header={<Header title={t('title')} onBack={back} backLabel={t('back')} />}>
+      <FileBackup />
+      <Section title={t('drive.title')} hint={t('drive.hint')}>
+        {isPro ? (
+          <View style={styles.drive}><DriveBackup /></View>
+        ) : (
+          <LockedCard badge={t('drive.badge')} title={t('drive.lockedTitle')} body={t('drive.lockedBody')} actionLabel={t('drive.seePro')} onAction={() => openPaywall('backup')} />
+        )}
+      </Section>
+    </Screen>
+  );
 }
 
-function Backup() {
+/** The Google Drive part: connecting, the state of the backup there, and what to do about it. */
+function DriveBackup() {
   const { t } = useTranslation('backup');
   const { size } = useTheme();
   const styles = useStyles(createStyles);
@@ -59,9 +77,6 @@ function Backup() {
   // The battery settings could not be opened for the user, so the way there is spelled out.
   const [batteryManual, setBatteryManual] = useState(false);
   const [restartFailed, setRestartFailed] = useState(false);
-
-  const back = () => (router.canGoBack() ? router.back() : router.replace('/'));
-  const header = <Header title={t('title')} onBack={back} backLabel={t('back')} />;
 
   const fail = (attempt: Attempt) => (error: unknown) => {
     LoggerService.warn('BACKUP_UI', `${attempt} failed`, error);
@@ -135,14 +150,7 @@ function Backup() {
     }
   };
 
-  if (findingAccount) {
-    return (
-      <Screen header={header}>
-        <Skeleton height={size.row * 3} />
-        <Skeleton height={size.row * 2} />
-      </Screen>
-    );
-  }
+  if (findingAccount) return <Skeleton height={size.row * 3} />;
 
   const failure = failed ? (
     <Notice
@@ -156,16 +164,20 @@ function Backup() {
 
   if (!account) {
     return (
-      <Screen scroll={false} header={header} footer={<Button label={t('connect.action')} loading={isEnabling} onPress={connect} />}>
-        <View style={styles.centre}>
+      <>
+        {failure}
+        <Card style={styles.connect}>
           <View style={styles.picture}>
-            <BackupLink state="apart" phoneLabel={t('phone')} driveLabel={t('drive')} accessibilityLabel={t('state.none')} />
+            <BackupLink state="apart" phoneLabel={t('phone')} driveLabel={t('drive.label')} accessibilityLabel={t('state.none')} />
           </View>
-          <Message title={t('connect.title')} body={t('connect.body')} />
-          <Text variant="callout" tone="muted" align="center">{t('connect.private')}</Text>
-          {failure}
-        </View>
-      </Screen>
+          <View style={styles.connectText}>
+            <Text variant="bodyStrong">{t('connect.title')}</Text>
+            <Text variant="callout" tone="muted">{t('connect.body')}</Text>
+          </View>
+          <Button label={t('connect.action')} loading={isEnabling} onPress={connect} />
+        </Card>
+        <Text variant="callout" tone="muted">{t('connect.private')}</Text>
+      </>
     );
   }
 
@@ -181,7 +193,7 @@ function Backup() {
   const overdue = autoBackupEnabled && isBackupOverdue(latestBackup?.modifiedTime, Date.now());
 
   return (
-    <Screen header={header}>
+    <>
       {failure}
 
       <BackupCard
@@ -190,7 +202,7 @@ function Backup() {
         hasBackup={!!latestBackup}
         working={isBusy ? { operation: isRestoring ? 'restore' : 'backup', value: progress / 100 } : undefined}
         phoneLabel={t('phone')}
-        driveLabel={t('drive')}
+        driveLabel={t('drive.label')}
         backUpLabel={t('backUp')}
         restoreLabel={t('restore')}
         // A backup this phone never restored is only replaced on purpose.
@@ -243,13 +255,16 @@ function Backup() {
       <Dialog visible={asking === 'restored'} title={t('restored.title')} body={t('restored.body', { date: dateText })}>
         <Button label={t('restored.restart')} onPress={restart} />
       </Dialog>
-    </Screen>
+    </>
   );
 }
 
-const createStyles = ({ space }: Theme) =>
+const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
-    centre: { flex: 1, justifyContent: 'center', gap: space.xl },
+    // The Drive part is one block inside its section, spaced as cards are.
+    drive: { gap: size.cardGap },
+    connect: { gap: space.xl },
+    connectText: { gap: space.xs },
     // The picture is kept narrow, so the two ends read as a pair.
-    picture: { paddingHorizontal: space.xxl },
+    picture: { paddingHorizontal: space.xl },
   });

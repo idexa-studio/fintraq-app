@@ -1,4 +1,5 @@
 import { isAuthError, isBackupInProgressError, isNoBackupError, isProRequiredError, isScopeDeniedError, isTransientDriveError } from '@/platform/drive/google-drive.errors';
+import { BackupValidationError } from '@/data/backup/snapshot';
 import { AUTO_BACKUP_INTERVAL_MS } from '@/platform/backup/backup-schedule';
 import { differenceInCalendarDays } from 'date-fns';
 
@@ -63,4 +64,14 @@ export function nextAutoBackup(lastIso: string | null | undefined, now: number =
   if (Number.isNaN(last)) return null;
   const next = last + AUTO_BACKUP_INTERVAL_MS;
   return next > now ? new Date(next) : null;
+}
+
+/** Why saving or restoring a backup file did not happen. */
+export type FileFailure = 'busy' | 'unreadable' | 'unknown';
+
+/** A file that is not a backup, or a damaged one, is told apart from everything else that can go wrong. */
+export function fileFailureOf(error: unknown): FileFailure {
+  if (isBackupInProgressError(error)) return 'busy';
+  if (error instanceof BackupValidationError) return 'unreadable';
+  return 'unknown';
 }

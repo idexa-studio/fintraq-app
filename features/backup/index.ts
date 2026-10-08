@@ -1,7 +1,9 @@
 /** Public surface of backup: its screen, and the hooks other screens connect and back up with. */
 export { BackupScreen } from './BackupScreen';
+export { fileFailureOf } from './backup-rules';
 export { BackupCard } from './components/BackupCard';
 export { BackupLink } from './components/BackupLink';
+export { FileBackup } from './components/FileBackup';
 export { useAutoBackupSetting } from './hooks/useAutoBackupSetting';
 export type { SetAutoBackupResult } from './hooks/useAutoBackupSetting';
 export { useBackupAccount, useConnectBackupAccount, useDisconnectBackupAccount } from './hooks/useBackupAccount';

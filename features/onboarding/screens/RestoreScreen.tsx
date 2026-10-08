@@ -1,8 +1,9 @@
 import { Button, Header, Message, Notice, Screen, useStyles } from '@/design';
 import type { Theme } from '@/design';
-import { BackupLink, useAutoBackupSetting, useBackupAccount, useBackupProgress, useCloudBackupActions, useConnectBackupAccount, useDisconnectBackupAccount } from '@/features/backup';
+import { BackupLink, fileFailureOf, useAutoBackupSetting, useBackupAccount, useBackupProgress, useCloudBackupActions, useConnectBackupAccount, useDisconnectBackupAccount } from '@/features/backup';
 import { useOnboarding } from '@/features/onboarding/FirstRunProvider';
 import { usePro } from '@/features/pro';
+import { chooseBackupFile, restoreBackupFile } from '@/platform/backup/file-backup';
 import { restartApp } from '@/platform/config/restart';
 import { isNoBackupError, isProRequiredError, isTransientDriveError } from '@/platform/drive/google-drive.errors';
 import { Analytics } from '@/platform/telemetry';
@@ -12,7 +13,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-type Failure = { why: 'noBackup' | 'needsPro' | 'offline' | 'other'; email: string };
+type Failure = { why: 'noBackup' | 'needsPro' | 'offline' | 'unreadable' | 'other'; email: string };
 
 /**
  * Coming back with a backup: sign in to the Drive it is in, and everything
@@ -65,6 +66,26 @@ export function RestoreScreen() {
     }
   };
 
+  // A file needs no account and no plan: it is read, checked and brought in. A fresh install has
+  // nothing to replace, so there is no question to ask first.
+  const restoreFile = async () => {
+    setWorking(true);
+    setFailed(null);
+    try {
+      const chosen = await chooseBackupFile();
+      if (!chosen) return;
+      await restoreBackupFile(chosen);
+      Analytics.track('backup_restored');
+      await completeOnboarding();
+      if (!(await restartApp())) router.replace('/(main)/(tabs)');
+    } catch (e) {
+      LoggerService.warn('FIRST_RUN', 'Restore from a file failed', e);
+      setFailed({ why: fileFailureOf(e) === 'unreadable' ? 'unreadable' : 'other', email: '' });
+    } finally {
+      setWorking(false);
+    }
+  };
+
   return (
     <Screen
       centred
@@ -72,7 +93,8 @@ export function RestoreScreen() {
       footer={
         <>
           <Button label={isRestoring ? t('restore.working', { percent: progress }) : t('restore.connect')} loading={working && !isRestoring} disabled={isRestoring} onPress={restore} />
-          <Button label={t('restore.fresh')} variant="secondary" disabled={working} onPress={() => router.replace('/(onboarding)/setup')} />
+          <Button label={t('restore.file')} variant="secondary" disabled={working} onPress={restoreFile} />
+          <Button label={t('restore.fresh')} variant="text" disabled={working} onPress={() => router.replace('/(onboarding)/setup')} />
         </>
       }
     >
