@@ -48,8 +48,6 @@ export { Money } from './components/Money';
 export { Notice } from './components/Notice';
 export { OptionList } from './components/OptionList';
 export type { Option, OptionGroup } from './components/OptionList';
-export { LimitRow } from './components/LimitRow';
-export type { LimitRowProps, LimitState } from './components/LimitRow';
 export { PaceBar } from './components/PaceBar';
 export { PairedBars } from './components/PairedBars';
 export { PeriodStepper } from './components/PeriodStepper';
