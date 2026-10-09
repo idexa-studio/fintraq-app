@@ -1,5 +1,6 @@
 import { FeatureTile, Header, IconButton, Notice, Screen, Section, useTheme } from '@/design';
 import { useAccounts } from '@/features/accounts';
+import { WhatsNewSheet, useWhatsNew } from '@/features/guide';
 import { AccountStack } from '@/features/home/components/AccountStack';
 import { BalanceCard } from '@/features/home/components/BalanceCard';
 import { GettingStarted } from '@/features/home/components/GettingStarted';
@@ -9,6 +10,7 @@ import type { GettingStartedStepId } from '@/features/home/getting-started';
 import { useGettingStarted } from '@/features/home/hooks/useGettingStarted';
 import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
 import { useHomePrompt } from '@/features/home/hooks/useHomePrompt';
+import { useAppLock } from '@/features/lock';
 import { peopleByStanding, usePeopleWithBalances } from '@/features/people';
 import { firstName } from '@/features/home/home-rules';
 import { useSettings } from '@/features/settings';
@@ -48,8 +50,12 @@ export function HomeScreen() {
   const lend = () => router.push('/loans/new');
   const start = useGettingStarted();
   const { prompt, dismiss: dismissPrompt } = useHomePrompt();
+  const whatsNew = useWhatsNew();
+  // The lock screen is a window of its own; a sheet opened under it would come up over it.
+  const { isLocked } = useAppLock();
   const doStep = (id: GettingStartedStepId) => {
     if (id === 'transaction') add('expense');
+    else if (id === 'insights') router.push('/insights');
     else if (id === 'reminder') router.push('/settings');
     else if (id === 'backup') router.push('/backup');
     else router.push('/accounts/new');
@@ -101,6 +107,8 @@ export function HomeScreen() {
       <Section title={t('people.title')} hint={people?.length ? t('people.hint') : undefined} actionLabel={people?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/people')}>
         <PeopleStrip people={people} currency={currency} loading={peoplePending} onOpen={(id) => router.push({ pathname: '/people/[id]', params: { id } })} onAdd={() => router.push('/people/new')} />
       </Section>
+
+      <WhatsNewSheet visible={whatsNew.visible && !isLocked} onClose={whatsNew.dismiss} />
     </Screen>
   );
 }

@@ -1,6 +1,7 @@
 import { Chip, ChipRow, EmptyState, Header, LockedCard, Screen, Section, Select, Skeleton, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
+import { INSIGHTS_OPENED, useSeen } from '@/features/guide';
 import { useDashboardInsights } from '@/features/home';
 import { Categories, Findings, Forecast, PeopleShare, PeriodSummary, Rhythm } from '@/features/insights/components/InsightSections';
 import { useInsights } from '@/features/insights/hooks/useInsights';
@@ -11,7 +12,7 @@ import { useSettings } from '@/features/settings';
 import { useTransactionsCount } from '@/features/transactions';
 import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { useRouter } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
@@ -34,6 +35,12 @@ export function InsightsScreen() {
   const proCopy = useProCopy();
   const { data: accounts } = useAccounts();
   const { data: recorded } = useTransactionsCount();
+  const { seen, markSeen } = useSeen();
+  // Opening this tab with something to show is Home's "see where your money goes" step.
+  const opened = seen !== undefined && (recorded ?? 0) > 0;
+  useEffect(() => {
+    if (opened) markSeen(INSIGHTS_OPENED);
+  }, [opened, markSeen]);
 
   const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set([profile.defaultCurrency, ...(accounts ?? []).map((a) => a.currency)])], profile.defaultCurrency), [accounts, profile.defaultCurrency]);
   const [chosenCurrency, setCurrency] = useState<string | null>(null);

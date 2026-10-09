@@ -631,7 +631,8 @@
         "transaction": "Enregistrez une dépense",
         "reminder": "Activez le rappel quotidien",
         "secondAccount": "Ajoutez un deuxième compte",
-        "backup": "Sauvegardez sur Google Drive"
+        "backup": "Sauvegardez sur Google Drive",
+        "insights": "Voyez où va votre argent"
       }
     },
     "prompt": {
@@ -1655,6 +1656,11 @@
       "keep": "Garder mes données",
       "failedTitle": "Rien n’a été effacé",
       "failedBody": "Un problème est survenu avant toute suppression. Réessayez dans un instant."
+    },
+    "tips": {
+      "row": "Afficher à nouveau les conseils",
+      "rowHint": "Les premiers pas sur l’Accueil et le conseil de chaque onglet",
+      "done": "Les conseils sont de retour"
     }
   },
   "shell": {
@@ -1835,6 +1841,35 @@
       "deleted": "Opération supprimée",
       "deleteFailed": "Suppression impossible",
       "deleteFailedBody": "Rien n’a été modifié. Réessayez."
+    }
+  },
+  "guide": {
+    "tips": {
+      "dismiss": "Fermer le conseil",
+      "activity": {
+        "title": "Faites glisser une opération",
+        "body": "Faites glisser une ligne vers la gauche pour la modifier ou la supprimer. Touchez-la pour voir toute l’opération."
+      },
+      "plan": {
+        "title": "Le prêt à échéance la plus proche est en haut",
+        "body": "Ouvrez un prêt pour enregistrer un remboursement ou changer son échéance."
+      }
+    },
+    "whatsNew": {
+      "title": "Fintraq change d’apparence",
+      "done": "Compris",
+      "tabs": {
+        "title": "Cinq onglets",
+        "body": "Accueil, Activité, Ajouter, Prévoir et Analyses. Les prêts et les personnes sont dans Prévoir."
+      },
+      "settings": {
+        "title": "Les réglages ont changé de place",
+        "body": "Touchez l’icône de profil en haut de l’Accueil pour les réglages, les comptes, les catégories et la sauvegarde."
+      },
+      "records": {
+        "title": "Vos données sont telles que vous les avez laissées",
+        "body": "Chaque compte, opération et prêt a été conservé. Rien n’a été modifié."
+      }
     }
   }
 }

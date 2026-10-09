@@ -2,7 +2,7 @@
  * Prints the English copy as numbered lines, "n<TAB>namespace:key.path<TAB>text", in a fixed
  * order: the source a translation is written against. Run: node scripts/i18n/flatten.js
  */
-require('sucrase/register/ts');
+// The copy is TypeScript with nothing but `as const` in it, which Node (22.18 and later) reads as it is.
 const fs = require('fs');
 const path = require('path');
 

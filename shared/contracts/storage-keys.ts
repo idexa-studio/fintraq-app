@@ -16,6 +16,10 @@ export enum StorageKeys {
   REMINDER_SKIPPED_DATE = '@fintraq_reminder_skipped_date',
   /** Set when the user closes Home's "Get started" checklist. */
   GETTING_STARTED_DISMISSED = '@fintraq_getting_started_dismissed',
+  /** JSON list of the one-time tips closed and the tabs visited, by name. */
+  GUIDE_SEEN = '@fintraq_guide_seen',
+  /** The release whose "what is new" note was seen, as a number. Written at setup on a new install. */
+  WHATS_NEW_SEEN = '@fintraq_whats_new_seen',
 
   // Walkthrough Keys
   WALKTHROUGH_DASHBOARD = '@fintraq_walkthrough_dashboard',

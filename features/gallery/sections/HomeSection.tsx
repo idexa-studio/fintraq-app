@@ -1,8 +1,10 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
 import {
-  Card, CardActions, EmptyState, FeatureTile, Header, MarkTile, Notice, Select, IconButton, IconCircle, ListGroup, ListRow, Money,
-  Section, TabBar, Text, useTheme,
+  Button, Card, CardActions, EmptyState, FeatureTile, Header, MarkTile, Notice, Select, IconButton, IconCircle, ListGroup, ListRow, Money,
+  Section, SheetPanel, TabBar, Text, useTheme,
 } from '@/design';
+import { TIP_IDS, WhatsNewPoints } from '@/features/guide';
+import guide from '@/shared/i18n/copy/guide.en';
 import { AccountStack, GettingStarted, MonthCardView, PeopleStrip, gettingStartedSteps } from '@/features/home';
 import { OFFERED_COLORS } from '@/shared/contracts/pickers';
 import { toDbColor } from '@/shared/format/color';
@@ -46,7 +48,7 @@ export function HomeSection() {
   const { colors, space, size, border } = useTheme();
   const [currency, setCurrency] = useState<Currency>('USD');
   // Worked out here, not at the top of the file: Home's module may still be loading when this one is read.
-  const firstSteps = gettingStartedSteps({ accountCount: 1, transactionCount: 0, reminderOn: false, isPro: false, autoBackupOn: false });
+  const firstSteps = gettingStartedSteps({ accountCount: 1, transactionCount: 0, insightsSeen: false, reminderOn: false, isPro: false, autoBackupOn: false });
   // Cancels the gallery's page margin so the screen is drawn at full width.
   const frame = { marginHorizontal: -space.lg, backgroundColor: colors.background, borderTopWidth: border.thin, borderBottomWidth: border.thin, borderColor: colors.divider };
 
@@ -114,6 +116,16 @@ export function HomeSection() {
         </Specimen>
         <Specimen name="Backup prompt" note="For a Pro user with no Drive connected, after three entries. A card on the page, never laid over it; put away, it stays away two weeks.">
           <Notice title="Your records live only on this phone" body="Keep a copy in your own Google Drive, updated twice a day." linkLabel="Set up backup" onDismiss={() => {}} dismissLabel="Not now" />
+        </Specimen>
+        <Specimen name="Tab tips" note="One on Activity and one on Plan, at the top, the first time there is something for it to describe. Each names what cannot be seen by looking. Closed with the cross, it never returns unless Settings brings the tips back.">
+          {TIP_IDS.map((id) => <Notice key={id} title={guide.tips[id].title} body={guide.tips[id].body} onDismiss={() => {}} dismissLabel={guide.tips.dismiss} />)}
+        </Specimen>
+        <Specimen name="What is new" note="Once, on Home, for someone updating from the old look. A new install never sees it.">
+          <View style={{ backgroundColor: colors.scrim, paddingTop: space.xl }}>
+            <SheetPanel title={guide.whatsNew.title} onClose={() => {}} footer={<Button label={guide.whatsNew.done} />}>
+              <WhatsNewPoints />
+            </SheetPanel>
+          </View>
         </Specimen>
       </Section>
 

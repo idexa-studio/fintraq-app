@@ -206,6 +206,19 @@ flowchart TD
   c -->|Maybe later| home
 ```
 
+### Finding your way
+
+There is no tour. Three things teach the app, each read from what is on the phone
+(`features/guide/`, `features/home/getting-started.ts`):
+
+| What | Where | Shown | Goes away |
+| --- | --- | --- | --- |
+| First steps | Home, under the balance | Until ten transactions are recorded | Every step done, or "Hide" |
+| A tip | Top of Activity and Plan | The first time there is something for it to describe | Its cross, for good |
+| "Fintraq has a new look" | A sheet on Home | Once, to an install set up before 2.0 | Any way of closing it |
+
+Settings, "Show tips again", brings back the first two.
+
 ### Add a transaction
 
 ```mermaid

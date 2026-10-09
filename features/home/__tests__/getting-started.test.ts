@@ -1,16 +1,20 @@
 import { BACKUP_PROMPT_COOLDOWN_MS, chooseHomePrompt, gettingStartedSteps, isCoolingDown, showsGettingStarted } from '@/features/home/getting-started';
 import type { GettingStartedInput } from '@/features/home/getting-started';
 
-const fresh: GettingStartedInput = { accountCount: 1, transactionCount: 0, reminderOn: false, isPro: false, autoBackupOn: false };
+const fresh: GettingStartedInput = { accountCount: 1, transactionCount: 0, insightsSeen: false, reminderOn: false, isPro: false, autoBackupOn: false };
 const states = (input: GettingStartedInput) => gettingStartedSteps(input).map((step) => `${step.id}:${step.state}`);
 
 describe('gettingStartedSteps', () => {
   it('ticks what is done, points at the next step and holds the rest back', () => {
-    expect(states(fresh)).toEqual(['account:done', 'transaction:current', 'reminder:upcoming', 'secondAccount:upcoming']);
+    expect(states(fresh)).toEqual(['account:done', 'transaction:current', 'insights:upcoming', 'reminder:upcoming', 'secondAccount:upcoming']);
   });
 
   it('skips over a later step already done from elsewhere', () => {
-    expect(states({ ...fresh, transactionCount: 2, accountCount: 2 })).toEqual(['account:done', 'transaction:done', 'reminder:current', 'secondAccount:done']);
+    expect(states({ ...fresh, transactionCount: 2, insightsSeen: true, accountCount: 2 })).toEqual(['account:done', 'transaction:done', 'insights:done', 'reminder:current', 'secondAccount:done']);
+  });
+
+  it('sends someone to Insights once there is something to see there', () => {
+    expect(states({ ...fresh, transactionCount: 1 })[2]).toBe('insights:current');
   });
 
   it('gives backup as a step only to someone who can turn it on', () => {
@@ -22,7 +26,7 @@ describe('gettingStartedSteps', () => {
 
 describe('showsGettingStarted', () => {
   const steps = gettingStartedSteps(fresh);
-  const allDone = gettingStartedSteps({ ...fresh, transactionCount: 1, reminderOn: true, accountCount: 2 });
+  const allDone = gettingStartedSteps({ ...fresh, transactionCount: 1, insightsSeen: true, reminderOn: true, accountCount: 2 });
 
   it('shows until every step is done', () => {
     expect(showsGettingStarted(steps, 0, false)).toBe(true);
