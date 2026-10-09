@@ -31,7 +31,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 40 | 12 | In progress |
-| H | Release 2: repeating items, budgets, net worth trend | 37 | 0 |  |
+| H | Release 2: repeating items, budgets, net worth trend | 38 | 0 |  |
 | I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
 
 ---
@@ -660,6 +660,23 @@ Asked for by the owner on 2026-10-09. No intro slides and no spotlight tour: peo
 Done when: a free user can make 2 repeating items and 1 budget, Pro removes
 the limits, and older backups still restore.
 
+### Order of release (proposed 2026-10-09, waits for the owner's yes)
+H and I were written as two large releases. Shipped that way, the first new
+feature is months off and each release changes three things at once. Smaller
+versions, one headline each, in the order that each one makes the next possible:
+
+| Version | Headline | Packages | Why here |
+| --- | --- | --- | --- |
+| 2.0.x | The redesign, settled | G2, G4, G5 | The upgrade test and staged rollout come before anything new |
+| 2.1 | Budgets | H4, H5 | The feature a money app is most asked for; one table and no date rules, so the smallest safe step; gives the Plan tab and the Pro card something real |
+| 2.2 | Repeating items | H2, H3 | The hardest rules (month ends, catch-up, notifications), so it gets a release to itself |
+| 2.3 | Goals and the net worth trend | I1, H6 | Both are read from what is already recorded; no new rules to get wrong |
+| 2.4 | Safe to spend and the monthly statement | I2, I3 | Safe to spend is worked out from budgets, repeating items and goals, so it can only come last |
+
+Alongside, whenever the owner opens an Apple developer account (it costs
+money, so it is his call): the iOS listing, the `com.luno.*` products and
+iCloud backup. The app already builds and runs on an iPhone.
+
 ### H1. Free backup file
 Moved forward to D14 (owner, 2026-10-08): see D14.10 to D14.14.
 
@@ -696,6 +713,7 @@ Moved forward to D14 (owner, 2026-10-08): see D14.10 to D14.14.
 - [ ] H5.04 Budget shown on the category in Insights
 - [ ] H5.05 Notifications at the two thresholds
 - [ ] H5.06 Free limit of 1 leads to the paywall
+- [ ] H5.08 Home's first steps gain "Set a budget", after "See where your money goes"; it opens the budget form and ticks itself when a budget exists (left out of G5 because there were no budgets)
 - [ ] H5.07 Shared checklist
 
 ### H6. Net worth over time (Pro)
