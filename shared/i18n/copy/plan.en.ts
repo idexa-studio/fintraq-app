@@ -3,6 +3,11 @@ export default {
   title: 'Plan',
   add: 'Lend or borrow',
   currency: 'Currency',
+  budgets: {
+    title: 'Budgets',
+    hint: 'What is left this month',
+    add: 'Add',
+  },
   summary: {
     title: 'Open loans',
     owed: 'Owed to you',

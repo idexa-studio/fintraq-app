@@ -31,7 +31,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 40 | 12 | In progress |
-| H | Version 2.1: budgets | 33 | 11 | In progress |
+| H | Version 2.1: budgets | 33 | 15 | In progress |
 | I | Version 2.2: repeating items | 31 | 0 |  |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
@@ -712,7 +712,7 @@ made on 2.0 still restores.
 - [x] H2.01 `budgets` table in `schema.ts` (category or none for overall, currency, monthly limit, rollover flag, created)
 - [x] H2.02 Generated migration; applies on a phone carrying 2.0 data. `drizzle/0009_normal_ezekiel.sql`: one new table and its index, nothing existing touched. Applied on the Samsung 2026-10-09 over its transactions, person and loan, which were all still there
 - [x] H2.03 Backup format version raised; a snapshot from every older version restores with no budgets, and a test holds it. Version 2. A budget whose category is missing from the backup is dropped rather than turned into a limit on everything. A version 2 file read by 2.0 restores without its budgets (2.0 ignores the key and the checksum still matches). Not yet run on a phone
-- [ ] H2.04 Repository: add, save, delete, list with spent so far this month (written, with `features/budgets/hooks`; not run on a phone until a screen calls it)
+- [x] H2.04 Repository: add, save, delete, list with spent so far this month Run on the Samsung 2026-10-09: a budget added for Rent listed with the ₹250 spent on it this month. Changing and deleting are written and not yet pressed
 - [ ] H2.05 Erase everything clears budgets; deleting a category deletes its budget, and says so before it does (the erase and the cascade are in; the category screen does not say so yet)
 
 ### H3. Rules, each with tests
@@ -723,18 +723,18 @@ made on 2.0 still restores.
 - [ ] H3.05 The free limit of 1, read from the registry
 
 ### H4. Screens
-- [ ] H4.01 Budgets on the Plan tab, above loans, each with its bar
-- [ ] H4.02 Budget screen: limit, spent, left, days left, and this month's transactions in it
-- [ ] H4.03 Form as a sheet: category or overall, amount, rollover; a category that already has a budget is not offered
+- [x] H4.01 Budgets on the Plan tab, above loans, each with its bar. Seen on the Samsung 2026-10-09, empty and with one budget. Built before the owner's word on the gallery pieces (H1.05), because he asked to see budgets in the app itself
+- [x] H4.02 Budget screen: limit, spent, left, days left, and this month's transactions in it. Seen on the Samsung 2026-10-09 (`/budgets/<id>`); delete not pressed
+- [ ] H4.03 Form as a sheet: category or overall, amount, rollover; a category that already has a budget is not offered. Adding seen on the Samsung 2026-10-09 (`/budgets/new`); the currency row (more than one currency held) and editing (`/budgets/<id>/edit`) are built and not yet seen
 - [ ] H4.04 The budget shown on its category in Insights
 - [ ] H4.05 The entry flow says what is left in the category's budget once a category is chosen
 - [ ] H4.06 The warning is said in the app when the transaction that crosses 80% or the limit is saved, with a way to open the budget. No notification in 2.1: a budget can only be crossed while recording, so it would land on the screen being looked at (decided in H1.01; notifications for budgets come with repeating items, I4)
-- [ ] H4.07 A second budget on the free plan leads to the paywall, from a control that says why
+- [ ] H4.07 A second budget on the free plan leads to the paywall, from a control that says why (built: "Add" on Plan opens Fintraq Pro at the limit, and the form reached by link says the limit; not yet seen)
 - [ ] H4.08 Home's first steps gain "Set a budget", after "See where your money goes"; it opens the form and ticks itself when a budget exists (left out of G5 because there were no budgets)
 - [ ] H4.09 Shared checklist
 
 ### H5. Ship
-- [ ] H5.01 `budgets` marked `live` in the registry; the Plan tab's "coming" card no longer lists it
+- [x] H5.01 `budgets` marked `live` in the registry; the Plan tab's "coming" card no longer lists it. Done with the screens, so the feature can be gated and named as included
 - [ ] H5.02 English copy and the 12 translations
 - [ ] H5.03 Analytics events added to the catalogue
 - [ ] H5.04 Seen on the Android phone and on the iPhone, light and dark

@@ -4,9 +4,13 @@ import { limitWithRollover } from '@/features/budgets/budget-rules';
 /** A budget as the screens draw it: what it limits, the limit, and what this month has used. */
 export type BudgetView = {
   id: number;
+  categoryId: number | null;
   /** The category it limits, or null for the budget over all spending. */
   category: { name: string; icon: string; color: number } | null;
   currency: string;
+  /** The limit as set, and whether last month's remainder is added to it. */
+  monthlyLimit: number;
+  rollover: boolean;
   /** This month's limit, rollover included. */
   limit: number;
   spent: number;
@@ -23,8 +27,11 @@ export function spentOn(budget: Pick<BudgetWithCategory, 'categoryId' | 'currenc
 export function budgetViews(budgets: readonly BudgetWithCategory[], thisMonth: readonly Spend[], lastMonth: readonly Spend[]): BudgetView[] {
   return budgets.map((budget) => ({
     id: budget.id,
+    categoryId: budget.categoryId,
     category: budget.category,
     currency: budget.currency,
+    monthlyLimit: budget.monthlyLimit,
+    rollover: budget.rollover,
     limit: limitWithRollover(budget.monthlyLimit, spentOn(budget, lastMonth), budget.rollover),
     spent: spentOn(budget, thisMonth),
   }));

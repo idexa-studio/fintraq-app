@@ -1,10 +1,11 @@
 import type { LoanWithStats } from '@/data/repositories/loans';
 import { EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, SummaryCard, Text, useTheme } from '@/design';
+import { BudgetList, useBudgets } from '@/features/budgets';
 import { TabTip } from '@/features/guide';
 import { useLoans } from '@/features/loans';
 import { initialsOf } from '@/features/people';
 import { dueWording, loanTotals, planLoans } from '@/features/plan/plan-rules';
-import { PRO_FEATURES, featuresIn, usePro, useProCopy } from '@/features/pro';
+import { PRO_FEATURES, featuresIn, isOverFreeLimit, usePro, useProCopy } from '@/features/pro';
 import { useSettings } from '@/features/settings';
 import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
@@ -30,9 +31,10 @@ export function PlanScreen() {
   const { isPro, openPaywall } = usePro();
   const proCopy = useProCopy();
   const { data: loans, isPending } = useLoans();
+  const { data: budgets } = useBudgets();
   const [showSettled, setShowSettled] = useState(false);
 
-  const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set([profile.defaultCurrency, ...(loans ?? []).map((loan) => loan.currency)])], profile.defaultCurrency), [loans, profile.defaultCurrency]);
+  const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set([profile.defaultCurrency, ...(loans ?? []).map((loan) => loan.currency), ...(budgets ?? []).map((budget) => budget.currency)])], profile.defaultCurrency), [loans, budgets, profile.defaultCurrency]);
   const [chosen, setChosen] = useState<string | null>(null);
   const currency = chosen && currencies.includes(chosen) ? chosen : currencies[0]!;
 
@@ -41,6 +43,9 @@ export function PlanScreen() {
   const today = new Date();
 
   const lend = () => router.push('/loans/new');
+  // One more than the free plan keeps is offered through Pro, from the same control.
+  const addBudget = () => (!isPro && isOverFreeLimit('budgets', budgets?.length ?? 0) ? openPaywall('unlimited') : router.push('/budgets/new'));
+  const inCurrency = (budgets ?? []).filter((budget) => budget.currency === currency);
   const open = (loan: LoanWithStats) => router.push({ pathname: '/loans/[id]', params: { id: loan.id } });
   const header = <Header title={t('title')} right={<IconButton icon="plus" onPress={lend} accessibilityLabel={t('add')} />} />;
 
@@ -73,7 +78,7 @@ export function PlanScreen() {
     />
   );
 
-  if (isPending || !loans) {
+  if (isPending || !loans || !budgets) {
     return (
       <Screen tabbed header={header}>
         <Skeleton height={size.row * 2} />
@@ -87,6 +92,10 @@ export function PlanScreen() {
   return (
     <Screen tabbed header={header}>
       <TabTip id="plan" ready={hasOpen} />
+      <Section title={t('budgets.title')} hint={inCurrency.length ? t('budgets.hint') : undefined} actionLabel={inCurrency.length ? t('budgets.add') : undefined} onAction={addBudget}>
+        <BudgetList budgets={inCurrency} onOpen={(id) => router.push({ pathname: '/budgets/[id]', params: { id } })} onAdd={addBudget} />
+      </Section>
+
       <SummaryCard
         title={t('summary.title')}
         trailing={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
