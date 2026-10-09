@@ -136,7 +136,7 @@ export function DeveloperScreen() {
       {__DEV__ ? (
         <Section title="Data" hint="These change what is stored. Development builds only.">
           <ListGroup>
-            <ListRow icon="flask" title="Add demo data" subtitle="A year of transactions, six accounts, people and loans" onPress={() => setAsking('seed')} />
+            <ListRow icon="flask" title="Add demo data" subtitle="A year of transactions, six accounts, people, loans and budgets" onPress={() => setAsking('seed')} />
             <ListRow icon="cloud-arrow-up" title="Run automatic backup now" subtitle="The same check the background task runs" onPress={() => void runAutoBackup()} />
             <ListRow icon="trash" destructive title="Delete the backup in Google Drive" subtitle="Cannot be undone" onPress={() => setAsking('deleteBackup')} />
           </ListGroup>
@@ -166,7 +166,7 @@ export function DeveloperScreen() {
         </ListGroup>
       </Section>
 
-      <Dialog visible={asking === 'seed'} onRequestClose={working ? undefined : () => setAsking(null)} title="Add demo data?" body="A year of demo transactions, six accounts, people and loans are added to what is already here. The app then starts again.">
+      <Dialog visible={asking === 'seed'} onRequestClose={working ? undefined : () => setAsking(null)} title="Add demo data?" body="A year of demo transactions, six accounts, people, loans and budgets are added to what is already here. The app then starts again.">
         <Button label="Add demo data" loading={working} onPress={seed} />
         <Button label="Cancel" variant="secondary" disabled={working} onPress={() => setAsking(null)} />
       </Dialog>

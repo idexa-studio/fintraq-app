@@ -85,14 +85,15 @@ export function PeopleStrip({ people, currency, loading, onOpen, onAdd }: People
     <Card padded={false}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.strip}>
         {people.map((person) => {
-          const standing = person.net > 0 ? t('people.owesYou') : person.net < 0 ? t('people.youOwe') : t('people.settled');
+          // A loan past its due date is the thing to know about someone, before which way the money goes.
+          const standing = person.overdue && person.net !== 0 ? t('people.overdue') : person.net > 0 ? t('people.owesYou') : person.net < 0 ? t('people.youOwe') : t('people.settled');
           const amount = person.net === 0 ? null : formatCurrency(Math.abs(person.net), currency);
           return (
             <Touchable key={person.id} onPress={() => onOpen(person.id)} accessibilityLabel={[person.name, standing, amount].filter(Boolean).join(', ')} style={styles.person}>
               <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} size={face} />
               <Text variant="callout" align="center" numberOfLines={1}>{firstName(person.name)}</Text>
               <View style={styles.standing}>
-                <Text variant="caption" tone="muted" align="center" numberOfLines={1}>{standing}</Text>
+                <Text variant="caption" tone={person.overdue && person.net !== 0 ? 'danger' : 'muted'} align="center" numberOfLines={1}>{standing}</Text>
                 {amount ? <Text variant="calloutStrong" tone={person.net > 0 ? 'positive' : 'default'} align="center" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>{ltr(amount)}</Text> : null}
               </View>
             </Touchable>

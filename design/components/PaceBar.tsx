@@ -45,7 +45,10 @@ export function PaceBar({ spent, projected, today, startLabel, endLabel, todayLa
       </View>
       <View style={styles.ends}>
         <Text variant="tab" tone="muted">{startLabel}</Text>
-        <Text variant="tab" tone="muted">{endLabel}</Text>
+        {/* The end label names the reference amount, so past it the label stays under the limit mark, not at the track's end. */}
+        <View style={over ? [styles.endAtLimit, { width: pct(1) }] : null}>
+          <Text variant="tab" tone="muted">{endLabel}</Text>
+        </View>
       </View>
     </View>
   );
@@ -61,4 +64,5 @@ const createStyles = ({ colors, radius, space, border }: Theme) =>
     limit: { position: 'absolute', top: 0, bottom: 0, width: border.thick },
     today: { position: 'absolute', top: 0, bottom: 0, width: border.thick + 1 },
     ends: { flexDirection: 'row', justifyContent: 'space-between' },
+    endAtLimit: { position: 'absolute', left: 0, top: 0, alignItems: 'flex-end' },
   });

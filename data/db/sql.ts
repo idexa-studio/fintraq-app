@@ -1,4 +1,4 @@
-import { sql } from 'drizzle-orm';
+import { isNull, sql } from 'drizzle-orm';
 import { payments } from '@/data/db/schema';
 
 /**
@@ -20,3 +20,10 @@ export const PAYMENT_LOCAL_DAY = sql<string>`date(${payments.datetime}, ${TO_LOC
 export const PAYMENT_LOCAL_MONTH = sql<string>`strftime('%Y-%m', ${payments.datetime}, ${TO_LOCAL})`;
 /** The payment's local weekday, 0 = Sunday … 6 = Saturday. */
 export const PAYMENT_LOCAL_WEEKDAY = sql<number>`CAST(strftime('%w', ${payments.datetime}, ${TO_LOCAL}) AS INTEGER)`;
+
+/**
+ * Money that is earned or spent, as opposed to lent, borrowed or repaid. A loan moves a balance,
+ * so it is in the transaction list, but it is neither income nor spending: every total that says
+ * "in", "out" or "spent" (Insights, Home's month, budgets) leaves it out, so they all agree.
+ */
+export const NOT_LOAN_MONEY = isNull(payments.loanId);

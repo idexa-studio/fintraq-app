@@ -18,7 +18,7 @@ import { StyleSheet, View } from 'react-native';
  * Every account under its kind, below what they add up to.
  */
 export function AccountsScreen() {
-  const { t } = useTranslation('accounts');
+  const { t } = useTranslation(['accounts', 'common']);
   const { colors, size } = useTheme();
   const styles = useStyles(createStyles);
   const router = useRouter();
@@ -58,7 +58,7 @@ export function AccountsScreen() {
   return (
     <Screen header={header} footer={<Button label={t('add')} onPress={add} />}>
       {shown ? (
-        <SummaryCard title={t('netWorth.title')} trailing={worth.length > 1 ? <Select options={worth.map((group) => ({ key: group.currency, label: group.currency, detail: currencyName(group.currency) }))} value={shown.currency} onChange={setCurrency} accessibilityLabel={t('netWorth.currency')} /> : null}>
+        <SummaryCard title={t('netWorth.title')} trailing={worth.length > 1 ? <Select title={t('common:pickCurrency')} options={worth.map((group) => ({ key: group.currency, label: group.currency, detail: currencyName(group.currency) }))} value={shown.currency} onChange={setCurrency} accessibilityLabel={t('netWorth.currency')} /> : null}>
           {/* Currencies are never added together, so with several held the card shows one at a time. */}
           <Money value={formatCurrency(shown.net, shown.currency)} variant="amountHero" />
           {shown.debts > 0 ? (

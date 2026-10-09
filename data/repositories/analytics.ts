@@ -1,6 +1,6 @@
 import { and, eq, sql, SQL } from 'drizzle-orm';
 import { db } from '@/data/db/client';
-import { PAYMENT_LOCAL_DAY, PAYMENT_LOCAL_MONTH, PAYMENT_LOCAL_WEEKDAY } from '@/data/db/sql';
+import { NOT_LOAN_MONEY, PAYMENT_LOCAL_DAY, PAYMENT_LOCAL_MONTH, PAYMENT_LOCAL_WEEKDAY } from '@/data/db/sql';
 import { accounts, categories, payments } from '@/data/db/schema';
 
 export type DayBucket = {
@@ -43,7 +43,7 @@ export const getDailyTimeSeries = async (currency: string, range: DayRange): Pro
     .select({ day: PAYMENT_LOCAL_DAY, income: INCOME, expense: EXPENSE })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(and(eq(accounts.currency, currency), inRange(range)))
+    .where(and(eq(accounts.currency, currency), inRange(range), NOT_LOAN_MONEY))
     .groupBy(PAYMENT_LOCAL_DAY)
     .orderBy(PAYMENT_LOCAL_DAY);
 
@@ -53,7 +53,7 @@ export const getMonthlyTimeSeries = async (currency: string, range: DayRange): P
     .select({ month: PAYMENT_LOCAL_MONTH, income: INCOME, expense: EXPENSE })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(and(eq(accounts.currency, currency), inRange(range)))
+    .where(and(eq(accounts.currency, currency), inRange(range), NOT_LOAN_MONEY))
     .groupBy(PAYMENT_LOCAL_MONTH)
     .orderBy(PAYMENT_LOCAL_MONTH);
 
@@ -74,7 +74,7 @@ const categoryBreakdown = (type: 'CR' | 'DR') => async (currency: string, range:
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
     .innerJoin(categories, eq(payments.categoryId, categories.id))
-    .where(and(eq(accounts.currency, currency), eq(payments.type, type), inRange(range)))
+    .where(and(eq(accounts.currency, currency), eq(payments.type, type), inRange(range), NOT_LOAN_MONEY))
     .groupBy(categories.id)
     .orderBy(sql`SUM(${payments.amount}) DESC`);
 
@@ -91,7 +91,7 @@ export const getPeriodSummary = async (currency: string, range: DayRange): Promi
     .select({ income: INCOME, expense: EXPENSE })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(and(eq(accounts.currency, currency), inRange(range)));
+    .where(and(eq(accounts.currency, currency), inRange(range), NOT_LOAN_MONEY));
   return rows[0] ?? { income: 0, expense: 0 };
 };
 
@@ -120,7 +120,7 @@ export const getBiggestExpense = async (currency: string, range: DayRange): Prom
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
     .innerJoin(categories, eq(payments.categoryId, categories.id))
-    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), inRange(range)))
+    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), inRange(range), NOT_LOAN_MONEY))
     .orderBy(sql`${payments.amount} DESC`)
     .limit(1);
   return row ? { ...row, note: row.note || '' } : null;
@@ -132,5 +132,5 @@ export const getSpendByDayOfWeek = async (currency: string, range: DayRange): Pr
     .select({ dow: PAYMENT_LOCAL_WEEKDAY, total: sql<number>`SUM(${payments.amount})`, count: sql<number>`COUNT(*)` })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), inRange(range)))
+    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), inRange(range), NOT_LOAN_MONEY))
     .groupBy(PAYMENT_LOCAL_WEEKDAY);

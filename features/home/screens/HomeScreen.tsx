@@ -1,5 +1,6 @@
 import { FeatureTile, Header, IconButton, Notice, Screen, Section, useTheme } from '@/design';
 import { useAccounts } from '@/features/accounts';
+import { BudgetList, byUrgency, useBudgets } from '@/features/budgets';
 import { WhatsNewSheet, useWhatsNew } from '@/features/guide';
 import { AccountStack } from '@/features/home/components/AccountStack';
 import { BalanceCard } from '@/features/home/components/BalanceCard';
@@ -25,6 +26,7 @@ import { View } from 'react-native';
 /** How many transactions and people Home shows before "See all". */
 const RECENT_SHOWN = 5;
 const PEOPLE_SHOWN = 8;
+const BUDGETS_SHOWN = 2;
 
 /** The Home tab: where you stand, and the way to everything done most. */
 export function HomeScreen() {
@@ -48,6 +50,9 @@ export function HomeScreen() {
 
   const add = (kind: Kind) => router.push({ pathname: '/add', params: { kind } });
   const lend = () => router.push('/loans/new');
+  // The budgets that most need a look, in the currency Home is showing. All of them are on Plan.
+  const { data: allBudgets } = useBudgets();
+  const budgets = byUrgency((allBudgets ?? []).filter((budget) => budget.currency === currency)).slice(0, BUDGETS_SHOWN);
   const start = useGettingStarted();
   const { prompt, dismiss: dismissPrompt } = useHomePrompt();
   const whatsNew = useWhatsNew();
@@ -56,6 +61,7 @@ export function HomeScreen() {
   const doStep = (id: GettingStartedStepId) => {
     if (id === 'transaction') add('expense');
     else if (id === 'insights') router.push('/insights');
+    else if (id === 'budget') router.push('/budgets/new');
     else if (id === 'reminder') router.push('/settings');
     else if (id === 'backup') router.push('/backup');
     else router.push('/accounts/new');
@@ -75,17 +81,32 @@ export function HomeScreen() {
     >
       <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} />
 
+      {/* The rest of what is done from here, beside the two on the card above: no heading, since the card has just said what these are. */}
+      <View style={{ flexDirection: 'row', gap: size.cardGap }}>
+        {canTransfer ? <FeatureTile compact icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
+        <FeatureTile compact icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
+      </View>
+
       {start.visible ? <GettingStarted steps={start.steps} onStep={doStep} onHide={start.dismiss} /> : null}
       {/* Someone still getting started is not also asked for anything else. */}
       {prompt && !start.visible ? (
         <Notice title={t(`prompt.${prompt}.title`)} body={t(`prompt.${prompt}.body`)} linkLabel={t(`prompt.${prompt}.link`)} onLink={() => router.push(prompt === 'pro' ? '/pro' : '/backup')} onDismiss={dismissPrompt} dismissLabel={t(`prompt.${prompt}.dismiss`)} />
       ) : null}
 
-      <Section title={t('quick.title')} hint={t('quick.hint')}>
-        <View style={{ flexDirection: 'row', gap: size.cardGap }}>
-          {canTransfer ? <FeatureTile icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
-          <FeatureTile icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
-        </View>
+      {/* In the order they are looked for: how the month stands, what is left to spend, what was just recorded; then what is held and who is owed. */}
+      <Section title={t('month.title')} hint={t('month.hint')} actionLabel={t('month.link')} onAction={() => router.push('/insights')}>
+        <MonthCard currency={currency} />
+      </Section>
+
+      {/* Only once there is a budget: making the first one is Plan's and the first steps' job, not another empty card here. */}
+      {budgets.length > 0 ? (
+        <Section title={t('budgets.title')} hint={t('budgets.hint')} actionLabel={t('common:seeAll')} onAction={() => router.push('/plan')}>
+          <BudgetList budgets={budgets} onOpen={(id) => router.push({ pathname: '/budgets/[id]', params: { id } })} onAdd={() => router.push('/budgets/new')} />
+        </Section>
+      ) : null}
+
+      <Section title={t('recent.title')} hint={transactions?.length ? t('recent.hint') : undefined} actionLabel={transactions?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/activity')}>
+        <RecentList transactions={transactions} loading={transactionsPending} onOpen={(id) => router.push({ pathname: '/transactions/[id]', params: { id } })} onAdd={() => add('expense')} />
       </Section>
 
       <Section title={t('accounts.title')} hint={balances.accounts.length > 1 ? t('accounts.hint') : undefined} actionLabel={balances.accounts.length ? t('common:seeAll') : undefined} onAction={() => router.push('/accounts')}>
@@ -94,14 +115,6 @@ export function HomeScreen() {
         ) : (
           <AccountList accounts={accounts ? [] : undefined} loading={accountsPending} onOpen={openAccount} onAdd={() => router.push('/accounts/new')} />
         )}
-      </Section>
-
-      <Section title={t('month.title')} hint={t('month.hint')} actionLabel={t('month.link')} onAction={() => router.push('/insights')}>
-        <MonthCard currency={currency} />
-      </Section>
-
-      <Section title={t('recent.title')} hint={transactions?.length ? t('recent.hint') : undefined} actionLabel={transactions?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/activity')}>
-        <RecentList transactions={transactions} loading={transactionsPending} onOpen={(id) => router.push({ pathname: '/transactions/[id]', params: { id } })} onAdd={() => add('expense')} />
       </Section>
 
       <Section title={t('people.title')} hint={people?.length ? t('people.hint') : undefined} actionLabel={people?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/people')}>

@@ -3,6 +3,7 @@ import {
   useTheme, useToast,
 } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
+import { budgetsFor, useBudgets, warningAfter } from '@/features/budgets';
 import { CalculatorSheet } from '@/features/transactions/components/CalculatorSheet';
 import { dayLabel } from '@/features/transactions/components/TransactionRow';
 import { AccountPicker, CategoryPicker, PersonPicker, WhenPicker } from '@/features/transactions/components/EntryPickers';
@@ -31,7 +32,7 @@ const initialsOf = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 
  * above it, until the entry can be saved.
  */
 export function TransactionFormScreen(options: TransactionFormOptions) {
-  const { t } = useTranslation(['transactions', 'common']);
+  const { t } = useTranslation(['transactions', 'common', 'budgets']);
   const { size, space } = useTheme();
   const router = useRouter();
   const toast = useToast();
@@ -47,15 +48,35 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
   // Opened from a launcher shortcut there is nothing to go back to, so closing lands on Home.
   const close = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
+  // A budget counts expenses of the month in progress, up to today, that are not part of a loan.
+  const { data: budgets } = useBudgets();
+  const now = new Date();
+  const counted = form.type === 'DR' && !form.loanLinked && form.when <= now && form.when.getFullYear() === now.getFullYear() && form.when.getMonth() === now.getMonth();
+  const categoryBudget = counted && form.category ? budgetsFor(budgets ?? [], { categoryId: form.category.id, currency }).find((budget) => budget.categoryId !== null) : undefined;
+  const budgetLine = (() => {
+    if (!categoryBudget) return null;
+    const left = categoryBudget.limit - categoryBudget.spent;
+    if (left > 0) return t('budgets:entry.left', { amount: formatCurrency(left, currency) });
+    return left < 0 ? t('budgets:entry.over', { amount: formatCurrency(-left, currency) }) : t('budgets:entry.reached');
+  })();
+
   const save = async () => {
     try {
+      // Read before saving: afterwards the budgets already include this expense.
+      const warning = !form.editing && counted && form.category && form.amount ? warningAfter(budgets ?? [], { categoryId: form.category.id, currency, amount: form.amount }) : null;
+      const name = warning ? warning.budget.category?.name ?? t('budgets:overall') : '';
+      const said = !warning ? t(`saved.${kind}`)
+        : warning.over > 0 ? t('budgets:saved.over', { name, amount: formatCurrency(warning.over, currency) })
+        : warning.crossing === 'over' ? t('budgets:saved.reached', { name })
+        : t('budgets:saved.near', { name, amount: formatCurrency(warning.left, currency) });
       const createdId = await form.save(t('defaultNote'));
       Analytics.track('transaction_saved', { transaction_type: kind, mode: form.editing ? 'edit' : 'create' });
+      if (warning) Analytics.track('budget_warning', { level: warning.over > 0 ? 'over' : warning.crossing === 'over' ? 'reached' : 'near' });
       guard.release();
       toast.show(
         createdId == null
           ? { message: t('changesSaved') }
-          : { message: t(`saved.${kind}`), actionLabel: t('undo'), onAction: () => void form.undo(createdId) },
+          : { message: said, actionLabel: t('undo'), onAction: () => void form.undo(createdId) },
       );
       // Leaves on the next tick, once the unsaved-input guard is off.
       setTimeout(close, 0);
@@ -169,7 +190,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
               leading={<IconCircle icon={resolveIcon(form.category.icon, 'tag')} color={colorNumberToHex(form.category.color)} />}
               strong
               title={form.category.name}
-              subtitle={t('category')}
+              subtitle={budgetLine ?? t('category')}
               onPress={() => setPicker('category')}
             />
           ) : null}

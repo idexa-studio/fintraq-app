@@ -17,8 +17,14 @@ export type MonthPulse = MonthTotals & {
   /** Share of the month that has passed, 0–1 (today counts as passed). */
   monthProgress: number;
   dailyAverage: number;
-  /** Expected spend by month end at the current daily rate. */
+  /**
+   * Where the month is expected to end. With a last month to go by: what is spent so far plus
+   * what the rest of last month cost, so a bill paid once (rent on the 1st) counts once. With
+   * none: the daily rate so far, carried to the month's end.
+   */
   projected: number;
+  /** Which of the two the projection rests on. */
+  basis: 'lastMonth' | 'pace';
   /** % change vs last month at the same point; null without a baseline. */
   deltaVsLastMonth: number | null;
   /** This month's spend as a share of last month's total; null without a baseline. */
@@ -35,7 +41,8 @@ export function buildMonthPulse(totals: MonthTotals, now: Date): MonthPulse {
     daysInMonth,
     monthProgress: dayOfMonth / daysInMonth,
     dailyAverage,
-    projected: totals.expense + monthEndForecast(dailyAverage, now),
+    projected: totals.lastMonthTotal > 0 ? totals.expense + Math.max(0, totals.lastMonthTotal - totals.lastMonthToDate) : totals.expense + monthEndForecast(dailyAverage, now),
+    basis: totals.lastMonthTotal > 0 ? 'lastMonth' : 'pace',
     deltaVsLastMonth: percentChange(totals.expense, totals.lastMonthToDate),
     shareOfLastMonth: totals.lastMonthTotal > 0 ? totals.expense / totals.lastMonthTotal : null,
   };

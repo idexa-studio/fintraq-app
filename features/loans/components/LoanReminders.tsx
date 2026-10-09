@@ -66,6 +66,7 @@ export function LoanReminders({ loan }: { loan: LoanWithStats }) {
               title={t('reminders.dueWhen')}
               trailing={
                 <Select
+                  title={t('reminders.dueWhen')}
                   options={DUE_REMINDER_DAYS.map((days) => ({ key: String(days), label: t(`reminders.days.d${days}`) }))}
                   value={String(dueDays)}
                   onChange={(days) => void orDenied(reminders.scheduleDueReminder(loan, Number(days), dueTime))}

@@ -12,7 +12,7 @@ import { ActivityFilterSheet, periodLabel } from '@/features/activity/components
 import { usePersons } from '@/features/people';
 import { useSettings } from '@/features/settings';
 import { TransactionRow, useDeleteTransaction, useInfiniteTransactions, useTransactionTotals } from '@/features/transactions';
-import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
+import { currencyName, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { formatCurrency } from '@/shared/format/money';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -52,7 +52,7 @@ const ActivityRow = React.memo(function ActivityRow({ item, onOpen, onEdit, onDe
  * whole screen: the totals and the list always describe the same thing.
  */
 export function ActivityScreen() {
-  const { t, i18n } = useTranslation(['activity', 'transactions']);
+  const { t, i18n } = useTranslation(['activity', 'transactions', 'common']);
   const { size } = useTheme();
   const styles = useStyles(createStyles);
   const router = useRouter();
@@ -150,7 +150,7 @@ export function ActivityScreen() {
         <Card style={styles.summary}>
           <View style={styles.summaryHead}>
             <Text variant="bodyStrong">{on > 0 ? t(`summary.narrowed.${kind}`) : t(`summary.title.${kind}`)}</Text>
-            {currencies.length > 1 && !scopedAccount ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosenCurrency} accessibilityLabel={t('summary.currency')} /> : null}
+            {currencies.length > 1 && !scopedAccount ? <Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setChosenCurrency} accessibilityLabel={t('summary.currency')} /> : null}
           </View>
           <View style={styles.stats}>
             {kind === 'expense' ? null : <Stat label={t('summary.moneyIn')} value={formatCurrency(inCurrency?.income ?? 0, currency)} tone="positive" />}
@@ -161,7 +161,7 @@ export function ActivityScreen() {
         // Unnarrowed, the totals would be everything ever recorded, which answers nothing; only the currency choice is kept.
         <View style={styles.summaryHead}>
           <Text variant="bodyStrong">{t('summary.title.all')}</Text>
-          <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosenCurrency} accessibilityLabel={t('summary.currency')} />
+          <Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setChosenCurrency} accessibilityLabel={t('summary.currency')} />
         </View>
       ) : null}
     </View>

@@ -1,5 +1,5 @@
 import { db } from '@/data/db/client';
-import { accounts, categories, loans, payments, persons } from '@/data/db/schema';
+import { accounts, budgets, categories, loans, payments, persons } from '@/data/db/schema';
 import { useAppLock } from '@/features/lock';
 import { BackupPreferences } from '@/platform/backup/backup-preferences';
 import { GoogleDriveService } from '@/platform/drive/google-drive';
@@ -47,6 +47,7 @@ export function useEraseEverything() {
     // Children before parents, in one transaction, so a failure cannot leave orphans behind. The
     // callback is not async: the expo-sqlite driver commits an async callback at its first await.
     db.transaction((tx) => {
+      tx.delete(budgets).run();
       tx.delete(payments).run();
       tx.delete(loans).run();
       tx.delete(persons).run();

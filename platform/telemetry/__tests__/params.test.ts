@@ -60,7 +60,7 @@ describe('isValidEventName', () => {
 
   it('accepts every event in the catalogue', () => {
     const catalogue: Record<AnalyticsEventName, true> = {
-      tutorial_begin: true, tutorial_complete: true, transaction_saved: true, account_saved: true, search_performed: true,
+      tutorial_begin: true, tutorial_complete: true, transaction_saved: true, account_saved: true, budget_saved: true, budget_warning: true, search_performed: true,
       paywall_view: true, begin_checkout: true, purchase_restore: true, backup_created: true, backup_restored: true, data_exported: true,
     };
     for (const name of Object.keys(catalogue)) expect(isValidEventName(name)).toBe(true);

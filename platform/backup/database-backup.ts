@@ -1,6 +1,6 @@
 import * as Crypto from 'expo-crypto';
 import { db, getExpoDb, resetDbConnections } from '@/data/db/client';
-import { accounts, categories, loans, payments, persons, seederState } from '@/data/db/schema';
+import { accounts, budgets, categories, loans, payments, persons, seederState } from '@/data/db/schema';
 import { runSeeds } from '@/data/db/seeds/runner';
 import { readStoredProfile, saveProfile } from '@/shared/settings/profile';
 import type { UserProfile } from '@/shared/settings/profile';
@@ -17,7 +17,8 @@ import {
   RESTORE_DELETE_ORDER,
 } from '@/data/backup/snapshot';
 
-const BACKUP_FORMAT_VERSION = 1;
+// 2: `budgets` added. A reader of version 1 ignores the key; a version 1 file restores with none.
+const BACKUP_FORMAT_VERSION = 2;
 // Lets in-flight reads on the old connection settle before the tables are replaced.
 const CONNECTION_DRAIN_MS = 150;
 
@@ -52,6 +53,7 @@ export const DatabaseBackupService = {
       persons: tx.select().from(persons).all(),
       loans: tx.select().from(loans).all(),
       payments: tx.select().from(payments).all(),
+      budgets: tx.select().from(budgets).all(),
       seederState: tx.select().from(seederState).all(),
     }));
 
@@ -67,6 +69,7 @@ export const DatabaseBackupService = {
         persons: data.persons.length,
         loans: data.loans.length,
         payments: data.payments.length,
+        budgets: data.budgets?.length ?? 0,
       },
     };
 

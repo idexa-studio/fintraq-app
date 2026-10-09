@@ -1,6 +1,6 @@
 import { and, desc, eq, sql, sum } from 'drizzle-orm';
 import { db } from '@/data/db/client';
-import { PAYMENT_LOCAL_DAY } from '@/data/db/sql';
+import { NOT_LOAN_MONEY, PAYMENT_LOCAL_DAY } from '@/data/db/sql';
 import { accounts, payments, persons } from '@/data/db/schema';
 
 export type Person = typeof persons.$inferSelect;
@@ -111,6 +111,6 @@ export const getPersonBreakdown = async (currency: string, range: { start: strin
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
     .innerJoin(persons, eq(payments.personId, persons.id))
-    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`${PAYMENT_LOCAL_DAY} BETWEEN ${range.start} AND ${range.end}`))
+    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`${PAYMENT_LOCAL_DAY} BETWEEN ${range.start} AND ${range.end}`, NOT_LOAN_MONEY))
     .groupBy(persons.id)
     .orderBy(desc(sum(payments.amount)));

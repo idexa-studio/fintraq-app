@@ -1,6 +1,6 @@
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { db } from '@/data/db/client';
-import { PAYMENT_LOCAL_DAY } from '@/data/db/sql';
+import { NOT_LOAN_MONEY, PAYMENT_LOCAL_DAY } from '@/data/db/sql';
 import { accounts, categories, payments } from '@/data/db/schema';
 import { getDaysAgoLocal, getLocalISOString, getStartOfMonthLocal } from '@/shared/date/date';
 import { formatCurrency } from '@/shared/format/money';
@@ -46,7 +46,7 @@ const getWeekSums = async (weeksBack: number, currency: string) => {
     })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(and(eq(accounts.currency, currency), sql`${PAYMENT_LOCAL_DAY} BETWEEN ${start} AND ${end}`));
+    .where(and(eq(accounts.currency, currency), sql`${PAYMENT_LOCAL_DAY} BETWEEN ${start} AND ${end}`, NOT_LOAN_MONEY));
   return { income: result?.income ?? 0, expense: result?.expense ?? 0 };
 };
 
@@ -135,7 +135,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
       .from(payments)
       .innerJoin(accounts, eq(payments.accountId, accounts.id))
       .innerJoin(categories, eq(payments.categoryId, categories.id))
-      .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR' as TransactionType), sql`${PAYMENT_LOCAL_DAY} BETWEEN ${baselineStart} AND ${getLocalISOString()}`))
+      .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR' as TransactionType), sql`${PAYMENT_LOCAL_DAY} BETWEEN ${baselineStart} AND ${getLocalISOString()}`, NOT_LOAN_MONEY))
       .groupBy(payments.categoryId)
       .having(sql`SUM(CASE WHEN ${PAYMENT_LOCAL_DAY} >= ${thisWeekStart} THEN ${payments.amount} ELSE 0 END) > 0`)
       .orderBy(desc(sql`SUM(CASE WHEN ${PAYMENT_LOCAL_DAY} >= ${thisWeekStart} THEN ${payments.amount} ELSE 0 END)`))
@@ -203,7 +203,7 @@ export const getDashboardInsights = async (currency: string): Promise<DashboardI
       })
       .from(payments)
       .innerJoin(accounts, eq(payments.accountId, accounts.id))
-      .where(and(eq(accounts.currency, currency), sql`${PAYMENT_LOCAL_DAY} BETWEEN ${getStartOfMonthLocal()} AND ${getLocalISOString()}`));
+      .where(and(eq(accounts.currency, currency), sql`${PAYMENT_LOCAL_DAY} BETWEEN ${getStartOfMonthLocal()} AND ${getLocalISOString()}`, NOT_LOAN_MONEY));
 
     const net = (monthly?.income ?? 0) - (monthly?.expense ?? 0);
     if (net !== 0) {

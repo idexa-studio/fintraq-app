@@ -1,5 +1,6 @@
 /**
- * Backup file format (v1) and the pure mapping from a parsed backup to SQL rows.
+ * Backup file format and the pure mapping from a parsed backup to SQL rows. Version 2 added
+ * `budgets`; a version 1 file has no such key and restores with no budgets.
  *
  * No I/O and no React Native imports, so the restore mapping is unit-tested against every
  * historical shape. Compatibility contract: backups written by any earlier release must keep
@@ -14,7 +15,8 @@ export type BackupMetadata = {
   appVersion: string;
   timestamp: string;
   checksum: string;
-  counts: { accounts: number; categories: number; persons: number; loans: number; payments: number };
+  /** `budgets` is counted from format version 2. */
+  counts: { accounts: number; categories: number; persons: number; loans: number; payments: number; budgets?: number };
 };
 
 export type PersonBackupRow = {
@@ -130,6 +132,21 @@ export type PaymentBackupRow = {
   updated_at?: string;
 };
 
+/** Added with migration 0009 (format version 2). */
+export type BudgetBackupRow = {
+  id: number;
+  categoryId?: number | null;
+  category_id?: number | null;
+  currency?: string | null;
+  monthlyLimit?: number | null;
+  monthly_limit?: number | null;
+  rollover?: boolean | number | null;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+};
+
 export type SeederBackupRow = {
   id: number;
   name: string;
@@ -143,6 +160,8 @@ export type BackupData = {
   persons: PersonBackupRow[];
   loans: LoanBackupRow[];
   payments: PaymentBackupRow[];
+  /** Absent from backups made before budgets existed. */
+  budgets?: BudgetBackupRow[];
   seederState: SeederBackupRow[];
 };
 
@@ -202,7 +221,7 @@ export function parseBackupPackage(json: string): BackupPackagePayload {
 export type TableInsert = { table: string; columns: readonly string[]; rows: SqlValue[][] };
 
 // Insertion order satisfies foreign keys; deletion runs children first.
-export const RESTORE_DELETE_ORDER = ['payments', 'loans', 'persons', 'categories', 'accounts', 'seeder_state'] as const;
+export const RESTORE_DELETE_ORDER = ['budgets', 'payments', 'loans', 'persons', 'categories', 'accounts', 'seeder_state'] as const;
 
 const orNull = <T extends SqlValue>(value: T | undefined): T | null => (value === undefined ? null : value);
 
@@ -228,6 +247,7 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
   const categories = legacy.categories || legacy.category || [];
   const loans = legacy.loans || legacy.loan || [];
   const payments = legacy.payments || legacy.payment || [];
+  const budgets = legacy.budgets || [];
   const seeders = legacy.seederState || legacy.seeder_state || legacy.seeder || [];
 
   if (persons.length + accounts.length + categories.length + loans.length + payments.length === 0) {
@@ -237,6 +257,7 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
   const personIds = new Set(persons.map((p) => p.id));
   const accountIds = new Set(accounts.map((a) => a.id));
   const loanIds = new Set(loans.map((l) => l.id));
+  const categoryIds = new Set(categories.map((c) => c.id));
 
   const created = (r: { createdAt?: string; created_at?: string }) => r.createdAt ?? r.created_at ?? now;
   const updated = (r: { updatedAt?: string; updated_at?: string }) => r.updatedAt ?? r.updated_at ?? now;
@@ -338,6 +359,15 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
         created(r),
         updated(r),
       ]),
+    },
+    {
+      table: 'budgets',
+      columns: ['id', 'category_id', 'currency', 'monthly_limit', 'rollover', 'created_at', 'updated_at'],
+      // No category means the budget over all spending, so a budget whose category is missing from
+      // the backup is dropped, not set to null: it would otherwise turn into a limit on everything.
+      rows: budgets
+        .filter((r) => (r.categoryId ?? r.category_id ?? null) === null || categoryIds.has((r.categoryId ?? r.category_id) as number))
+        .map((r) => [r.id, orNull(r.categoryId ?? r.category_id), r.currency ?? 'USD', r.monthlyLimit ?? r.monthly_limit ?? 0, toBooleanInt(r.rollover), created(r), updated(r)]),
     },
     {
       table: 'seeder_state',
