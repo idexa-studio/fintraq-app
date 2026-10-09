@@ -16,7 +16,7 @@ export default {
     recurring: { title: 'Repeating items', description: 'Rent, salary and subscriptions add themselves, and you see the next 30 days.' },
     goals: { title: 'Goals', description: 'A target and a date, and what to set aside each month to get there.' },
     safeToSpend: { title: 'Safe to spend', description: 'One number for today, after bills, budgets and goals are covered.' },
-    periods: { title: 'Any period, compared', description: '90 days or a whole year, and every period set against the one before.' },
+    periods: { title: 'Any period, compared', description: '30 days, 90 days or a whole year, and every period set against the one before.' },
     forecast: { title: 'Forecast', description: 'Where this month will end, from what you have spent and what last month cost.' },
     categories: { title: 'Category breakdown', description: 'Every category’s share of what came in and what went out.' },
     rhythm: { title: 'Rhythm', description: 'Which weekdays cost you most, and the last five weeks day by day.' },

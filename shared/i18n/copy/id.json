@@ -1350,7 +1350,7 @@
       },
       "periods": {
         "title": "Periode apa pun, dibandingkan",
-        "description": "90 hari atau setahun penuh, dan tiap periode dibandingkan dengan yang sebelumnya."
+        "description": "30 hari, 90 hari, atau setahun penuh, dan tiap periode dibandingkan dengan yang sebelumnya."
       },
       "forecast": {
         "title": "Perkiraan",

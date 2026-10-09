@@ -6,7 +6,9 @@ const NOW = new Date(2026, 9, 8);
 
 describe('Insights periods', () => {
   it('keeps a free period for anyone and a longer one only with Pro', () => {
-    expect(allowedPeriod(30, false)).toBe(30);
+    expect(allowedPeriod(7, false)).toBe(7);
+    expect(allowedPeriod(30, false)).toBe(7);
+    expect(allowedPeriod(30, true)).toBe(30);
     expect(allowedPeriod(90, true)).toBe(90);
     expect(allowedPeriod(365, false)).toBe(7);
   });

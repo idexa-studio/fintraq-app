@@ -67,7 +67,7 @@ paywall.
 
 | Feature | What it does | Status |
 | --- | --- | --- |
-| **Any period, compared** | 30 days, 90 days, 12 months and custom ranges, each against the period before | Live |
+| **Any period, compared** | 30 days, 90 days and 12 months, each against the period before (free: the last 7 days). Custom ranges are not built | Live |
 | **Forecast** | Daily average and where the month will end at the current pace | Live |
 | **Category breakdown** | Every category's share for spending and income | Live |
 | **Rhythm** | Which weekdays cost most, and a calendar of the month shaded by spending | Live |
