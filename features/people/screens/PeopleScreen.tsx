@@ -5,7 +5,7 @@ import { usePeopleWithBalances } from '@/features/people/hooks/people';
 import { initialsOf, peopleByStanding } from '@/features/people/person-form';
 import { FREE_LIMITS, isOverFreeLimit, usePro } from '@/features/pro';
 import { useSettings } from '@/features/settings';
-import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
+import { currencyName, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import { useRouter } from 'expo-router';
@@ -18,7 +18,7 @@ import { StyleSheet, View } from 'react-native';
  * whom you owe, and who is settled. One currency at a time, as on Home.
  */
 export function PeopleScreen() {
-  const { t } = useTranslation('people');
+  const { t } = useTranslation(['people', 'common']);
   const { colors, size } = useTheme();
   const styles = useStyles(createStyles);
   const router = useRouter();
@@ -74,7 +74,7 @@ export function PeopleScreen() {
         )
       }
     >
-      <SummaryCard title={t('summary.title')} trailing={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}>
+      <SummaryCard title={t('summary.title')} trailing={currencies.length > 1 ? <Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}>
         {owed > 0 || owe > 0 ? (
           <SplitBar
             segments={[

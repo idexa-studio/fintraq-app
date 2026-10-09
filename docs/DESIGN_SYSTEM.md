@@ -187,7 +187,7 @@ use it.
 | Input | `TextField`, `Select`, `Keypad`, `Radio`, `Checkbox`, `Switch`, `Calendar`, `TimePicker`, `OptionList`, `SwatchGrid`, `IconGrid`, `MarkGrid`, `AmountField` |
 | Lists | `ListRow`, `ListGroup`, `DetailRow`, `DayHeader`, `SwipeRow`, `StepRow`, `Checklist`, `Timeline` |
 | Marks | `Icon`, `IconCircle`, `MarkTile`, `IllustrationTile`, `Emblem`, `CheckMark` |
-| Charts | `BarChart`, `LineChart`, `Ring`, `Gauge`, `HeatGrid`, `SplitBar`, `RankBars`, `PairedBars`, `PaceBar`, `Delta`, `ProgressBar`, `DayStreak`, `PeriodStepper` |
+| Charts | `BarChart`, `LineChart`, `Ring`, `Gauge`, `HeatGrid`, `SplitBar`, `RankBars`, `PairedBars`, `PaceBar`, `Delta`, `ProgressBar` (green with room, amber `near`, red `over`), `LimitRow` (something with a limit, as a list row), `DayStreak`, `PeriodStepper` |
 | Messages | `Message`, `EmptyState`, `Notice`, `Highlight`, `Tip`, `Toast` (`ToastProvider`, `useToast`), `LockedCard` |
 | Overlays and waiting | `Dialog`, `LoadingDialog`, `Sheet`, `Spinner`, `Skeleton`, `ProgressRow` |
 | Moments | `WaveCard`, `Receipt`, `FeatureTile` |
@@ -345,8 +345,10 @@ use it.
   balance and two split actions; quick actions as compact `FeatureTile`s
   below. No
   round black action buttons.
-- **A short choice** (currency, period) is a `Select`: a chip that opens a
-  list under itself. Long lists go in a `Sheet` with an `OptionList`.
+- **A short choice** (currency, period) is a `Select`: a chip that opens its
+  options in a `Sheet`, as every other choice does. There are no dropdowns
+  (owner, 2026-10-09). Long lists go in a `Sheet` with an `OptionList` and a
+  search field.
 - **The wave card** is the one brand moment, for the single most important
   figure, at most once per screen.
 - **Charts** always carry a sentence for screen readers saying what they show.

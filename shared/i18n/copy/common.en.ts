@@ -4,6 +4,7 @@ export default {
   yesterday: 'Yesterday',
   seeAll: 'See all',
   back: 'Back',
+  pickCurrency: 'Which currency?',
   unexpectedError: 'Something went wrong',
   charactersLeft_one: '{{count}} character left',
   charactersLeft_other: '{{count}} characters left',

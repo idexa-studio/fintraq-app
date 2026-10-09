@@ -15,7 +15,7 @@ export type LockedCardProps = {
   title: string;
   body?: string;
   /** What is behind the lock, named plainly. A handful at most. */
-  items?: { icon: IconName; title: string }[];
+  items?: { icon: IconName; title: string; /** One line on what it does, so a name alone is never the whole offer. */ detail?: string }[];
   actionLabel: string;
   onAction?: () => void;
 };
@@ -39,7 +39,10 @@ export function LockedCard({ badge, title, body, items = [], actionLabel, onActi
           {items.map((item) => (
             <View key={item.title} style={styles.item}>
               <Icon name={item.icon} color={colors.textMuted} />
-              <Text variant="body" tone="muted" style={styles.itemText}>{item.title}</Text>
+              <View style={styles.itemText}>
+                <Text variant="body">{item.title}</Text>
+                {item.detail ? <Text variant="callout" tone="muted">{item.detail}</Text> : null}
+              </View>
               <Icon name="lock" size={styles.lock.width} color={colors.textMuted} />
             </View>
           ))}
@@ -56,6 +59,6 @@ const createStyles = ({ size, space }: Theme) =>
     text: { gap: space.xs },
     items: { gap: space.md },
     item: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-    itemText: { flex: 1 },
+    itemText: { flex: 1, gap: space.xxs },
     lock: { width: size.iconSmall },
   });

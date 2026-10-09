@@ -1,5 +1,6 @@
 import { useAccounts } from '@/features/accounts';
 import { useAutoBackupSetting } from '@/features/backup';
+import { useBudgetCount } from '@/features/budgets';
 import { INSIGHTS_OPENED, useSeen } from '@/features/guide';
 import { gettingStartedSteps, showsGettingStarted } from '@/features/home/getting-started';
 import { usePro } from '@/features/pro';
@@ -21,6 +22,7 @@ export function useGettingStarted() {
   const { isPro, ready } = usePro();
   const { autoBackupEnabled } = useAutoBackupSetting();
   const { seen } = useSeen();
+  const { data: budgetCount } = useBudgetCount();
   // Treated as hidden until read, so it never flashes at someone who closed it.
   const { data: dismissed = true } = useQuery({
     queryKey: DISMISSED_KEY,
@@ -32,12 +34,13 @@ export function useGettingStarted() {
     accountCount: accounts?.length ?? 0,
     transactionCount: transactionCount ?? 0,
     insightsSeen: seen?.includes(INSIGHTS_OPENED) ?? false,
+    budgetCount: budgetCount ?? 0,
     reminderOn: profile.reminderEnabled,
     // The cloud step is only given where cloud backup exists: not yet on iPhone.
     isPro: isPro && IS_CLOUD_BACKUP_BUILT,
     autoBackupOn: autoBackupEnabled,
   });
-  const loaded = accounts !== undefined && transactionCount !== undefined && seen !== undefined && ready;
+  const loaded = accounts !== undefined && transactionCount !== undefined && seen !== undefined && budgetCount !== undefined && ready;
 
   const dismiss = async () => {
     queryClient.setQueryData(DISMISSED_KEY, true);

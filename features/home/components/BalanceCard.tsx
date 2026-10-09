@@ -17,7 +17,7 @@ type BalanceCardProps = {
 
 /** What the accounts in one currency add up to, with the two things done most. */
 export function BalanceCard({ balances, loading, onAddExpense, onAddIncome, onOpenAccounts }: BalanceCardProps) {
-  const { t } = useTranslation('home');
+  const { t } = useTranslation(['home', 'common']);
   const { space, type } = useTheme();
   const { currency, currencies, setCurrency, balance, accounts } = balances;
   return (
@@ -25,6 +25,7 @@ export function BalanceCard({ balances, loading, onAddExpense, onAddIncome, onOp
       title={t('balance.allAccounts')}
       trailing={currencies.length > 1 ? (
         <Select
+          title={t('common:pickCurrency')}
           options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))}
           value={currency}
           onChange={setCurrency}

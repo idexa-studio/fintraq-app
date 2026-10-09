@@ -59,6 +59,7 @@ export default {
     },
     deleteTitle: 'Delete {{name}}?',
     deleteBody: 'Nothing uses it, so only the category itself goes. This can’t be undone.',
+    deleteBodyBudget: 'No transaction uses it. Its budget is deleted with it. This can’t be undone.',
     deleteConfirm: 'Delete category',
     deleteCancel: 'Keep it',
     deleted: '{{name}} deleted',

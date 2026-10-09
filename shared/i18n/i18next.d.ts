@@ -10,6 +10,7 @@ import type people from '@/shared/i18n/copy/people.en';
 import type plan from '@/shared/i18n/copy/plan.en';
 import type search from '@/shared/i18n/copy/search.en';
 import type backup from '@/shared/i18n/copy/backup.en';
+import type budgets from '@/shared/i18n/copy/budgets.en';
 import type exportCopy from '@/shared/i18n/copy/export.en';
 import type lock from '@/shared/i18n/copy/lock.en';
 import type settings from '@/shared/i18n/copy/settings.en';
@@ -32,6 +33,7 @@ declare module 'i18next' {
       plan: typeof plan;
       search: typeof search;
       backup: typeof backup;
+      budgets: typeof budgets;
       export: typeof exportCopy;
       lock: typeof lock;
       settings: typeof settings;

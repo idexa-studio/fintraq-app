@@ -407,7 +407,8 @@
         "body": "Yang Anda ketik tidak akan disimpan.",
         "confirm": "Buang",
         "cancel": "Lanjut mengubah"
-      }
+      },
+      "deleteBodyBudget": "Tidak ada transaksi yang memakainya. Anggarannya ikut dihapus. Ini tidak bisa dibatalkan."
     }
   },
   "common": {
@@ -442,7 +443,8 @@
       "investment": "Investasi",
       "loan": "Pinjaman",
       "ewallet": "Dompet"
-    }
+    },
+    "pickCurrency": "Mata uang apa?"
   },
   "export": {
     "dialog": {
@@ -622,7 +624,8 @@
         "reminder": "Nyalakan pengingat harian",
         "secondAccount": "Tambahkan akun kedua",
         "backup": "Cadangkan ke Google Drive",
-        "insights": "Lihat ke mana uang Anda pergi"
+        "insights": "Lihat ke mana uang Anda pergi",
+        "budget": "Tetapkan anggaran"
       }
     },
     "prompt": {
@@ -640,12 +643,10 @@
       }
     },
     "quick": {
-      "title": "Aksi cepat",
       "transfer": "Transfer",
-      "hint": "Jalan pintas ke hal yang sering Anda lakukan",
-      "transferDetail": "Pindahkan uang antar akun Anda",
-      "lend": "Meminjamkan atau meminjam",
-      "lendDetail": "Pantau uang yang dipinjamkan atau dipinjam"
+      "transferDetail": "Antar akun Anda",
+      "lend": "Pinjaman baru",
+      "lendDetail": "Uang yang dipinjamkan atau dipinjam"
     },
     "month": {
       "title": "Bulan ini",
@@ -686,7 +687,12 @@
       "emptyTitle": "Ingat siapa berutang apa",
       "emptyBody": "Pantau uang yang dipinjamkan, dipinjam, atau dibagi.",
       "emptyAction": "Tambah orang",
-      "add": "Tambah"
+      "add": "Tambah",
+      "overdue": "Lewat jatuh tempo"
+    },
+    "budgets": {
+      "title": "Anggaran",
+      "hint": "Yang paling dekat dengan batasnya bulan ini"
     }
   },
   "insights": {
@@ -719,18 +725,20 @@
       "moneyOut": "Uang keluar",
       "chart": "Pengeluaran sepanjang periode. Tertinggi {{amount}}, {{when}}.",
       "chartEmpty": "Tidak ada pengeluaran di periode ini.",
-      "week": "pekan tanggal {{date}}"
+      "week": "pekan tanggal {{date}}",
+      "notCounted": "Pinjaman dan transfer tidak dihitung: keduanya memindahkan uang, bukan pemasukan atau pengeluaran."
     },
     "forecast": {
       "title": "Ke mana arah bulan ini",
-      "hint": "Dengan laju belanja Anda bulan ini",
+      "hint": "Yang sudah Anda belanjakan, dan yang masih akan datang",
       "onCourse": "Menuju pengeluaran sebesar",
       "perDay": "Sekitar {{amount}} per hari sejauh ini.",
       "start": "1 {{month}}",
       "end": "{{amount}} bulan lalu",
       "today": "Hari ini",
       "chart": "Sudah membelanjakan {{spent}}% dari total bulan lalu saat {{gone}}% bulan ini berlalu; menuju {{projected}}%.",
-      "noBaseline": "Setelah satu bulan penuh dicatat, di sini terlihat perbandingannya."
+      "noBaseline": "Setelah satu bulan penuh dicatat, di sini terlihat perbandingannya.",
+      "fromLastMonth": "{{spent}} sejauh ini, ditambah {{rest}} biaya sisa bulan lalu."
     },
     "categories": {
       "title": "Ke mana perginya",
@@ -743,7 +751,9 @@
       "share": "{{percent}}%",
       "shareLabel": "{{name}}, {{percent}} persen",
       "ring": "{{kind}} per kategori",
-      "none": "Tidak ada apa-apa di periode ini"
+      "none": "Tidak ada apa-apa di periode ini",
+      "more_one": "{{count}} kategori lagi dengan Pro",
+      "more_other": "{{count}} kategori lagi dengan Pro"
     },
     "rhythm": {
       "title": "Ritme",
@@ -752,34 +762,36 @@
       "weekdaysChart": "Rata-rata pengeluaran per hari dalam sepekan. {{peak}} paling mahal.",
       "weekdaysChartEmpty": "Rata-rata pengeluaran per hari dalam sepekan.",
       "calendar": "Lima pekan terakhir",
-      "calendarChart": "Pengeluaran per hari selama lima pekan terakhir; lebih gelap di hari yang lebih banyak belanja."
+      "calendarChart": "Pengeluaran per hari selama lima pekan terakhir; lebih gelap di hari yang lebih banyak belanja.",
+      "calendarKey": "Setiap kotak adalah satu hari. Makin gelap, makin banyak pengeluaran Anda. Hijau adalah hari ini.",
+      "weekdaysKey": "Rata-rata biaya tiap hari dalam seminggu selama periode ini."
     },
     "people": {
       "title": "Dengan siapa Anda berbelanja",
-      "hint": "Ke siapa pengeluaran Anda pergi"
+      "hint": "Pengeluaran yang Anda catat bersama seseorang"
     },
     "findings": {
       "title": "Layak diketahui",
       "hint": "Dipilih dari yang Anda catat",
       "spendingUp": "Pengeluaran naik {{pct}}%",
-      "spendingUpHint": "Dibanding pekan lalu. Aktivitas menunjukkan ke mana perginya.",
+      "spendingUpHint": "Dalam 7 hari terakhir, dibanding 7 hari sebelumnya. Aktivitas menunjukkan ke mana perginya.",
       "spendingDown": "Pengeluaran turun {{pct}}%",
-      "spendingDownHint": "Dibanding pekan lalu.",
+      "spendingDownHint": "Dalam 7 hari terakhir, dibanding 7 hari sebelumnya.",
       "incomeUp": "Pemasukan naik {{pct}}%",
       "incomeDown": "Pemasukan turun {{pct}}%",
-      "incomeHint": "Dibanding pekan lalu.",
+      "incomeHint": "Dalam 7 hari terakhir, dibanding 7 hari sebelumnya.",
       "keeping": "Menyimpan {{rate}}% dari pemasukan",
-      "keepingUp": "Bagian yang lebih besar dari pekan lalu.",
-      "keepingDown": "Bagian yang lebih kecil dari pekan lalu.",
-      "keepingSame": "Kurang lebih sama dengan pekan lalu.",
+      "keepingUp": "Dalam 7 hari terakhir. Bagian yang lebih besar dari 7 hari sebelumnya.",
+      "keepingDown": "Dalam 7 hari terakhir. Bagian yang lebih kecil dari 7 hari sebelumnya.",
+      "keepingSame": "Dalam 7 hari terakhir. Bagian yang kurang lebih sama dengan 7 hari sebelumnya.",
       "categoryUp": "{{name}} naik {{pct}}%",
-      "categoryUpHint": "Lebih dari yang biasa Anda belanjakan untuk ini dalam sepekan.",
+      "categoryUpHint": "Dalam 7 hari terakhir, dibanding yang biasanya Anda belanjakan untuk ini dalam 7 hari.",
       "categoryDown": "{{name}} turun {{pct}}%",
-      "categoryDownHint": "Kurang dari yang biasa Anda belanjakan untuk ini dalam sepekan.",
-      "week": "Pekan ini sejauh ini",
+      "categoryDownHint": "Dalam 7 hari terakhir, dibanding yang biasanya Anda belanjakan untuk ini dalam 7 hari.",
+      "week": "7 hari terakhir",
       "weekKept": "{{income}} masuk · {{expense}} keluar · {{amount}} tersimpan",
       "weekOver": "{{income}} masuk · {{expense}} keluar · {{amount}} berlebih",
-      "bestWeek": "Simpanan terbanyak dalam sepekan selama 90 hari terakhir.",
+      "bestWeek": "Yang paling banyak tersimpan dalam 7 hari dari 35 hari terakhir.",
       "monthAhead": "Bulan ini lebih banyak masuk daripada keluar",
       "monthAheadHint": "Pemasukan masih di atas pengeluaran sejauh ini.",
       "monthBehind": "Bulan ini lebih banyak keluar daripada masuk",
@@ -795,6 +807,10 @@
       "title": "Wawasan bertambah seiring yang Anda catat",
       "body": "Tambahkan beberapa transaksi dan tab ini menunjukkan ke mana uang Anda pergi dan kapan.",
       "action": "Tambah transaksi"
+    },
+    "budget": {
+      "left": "Anggaran: sisa {{amount}} bulan ini",
+      "over": "Anggaran: lebih {{amount}} bulan ini"
     }
   },
   "loans": {
@@ -1247,16 +1263,11 @@
     "add": "Meminjamkan atau meminjam",
     "currency": "Mata uang",
     "summary": {
-      "title": "Pinjaman berjalan",
       "owed": "Piutang Anda",
       "owe": "Anda berutang",
-      "none": "Tidak ada utang di kedua pihak",
-      "lend": "Meminjamkan atau meminjam",
       "people": "Orang"
     },
     "upcoming": {
-      "title": "Akan datang",
-      "noDate": "Tanpa jatuh tempo",
       "lent": "Berutang kepada Anda",
       "borrowed": "Anda berutang",
       "someone": "Seseorang",
@@ -1286,6 +1297,17 @@
       "title": "Rencanakan ke depan, bukan hanya melihat ke belakang",
       "body": "Ini sedang disiapkan, dan termasuk saat Anda punya Pro.",
       "action": "Lihat Fintraq Pro"
+    },
+    "loans": {
+      "title": "Pinjaman",
+      "add": "Tambah",
+      "hint": "Yang terutang dari kedua arah",
+      "peopleHint": "Semua orang yang Anda pinjami atau tempat Anda meminjam"
+    },
+    "budgets": {
+      "title": "Anggaran",
+      "add": "Tambah",
+      "hint": "Yang tersisa bulan ini"
     }
   },
   "pro": {
@@ -1328,11 +1350,11 @@
       },
       "periods": {
         "title": "Periode apa pun, dibandingkan",
-        "description": "30 hari, 90 hari, setahun, atau rentang Anda sendiri, masing-masing dibanding periode sebelumnya."
+        "description": "30 hari, 90 hari, atau setahun penuh, dan tiap periode dibandingkan dengan yang sebelumnya."
       },
       "forecast": {
         "title": "Perkiraan",
-        "description": "Di mana bulan ini akan berakhir dengan laju belanja Anda."
+        "description": "Di mana bulan ini akan berakhir, dari yang sudah Anda belanjakan dan biaya bulan lalu."
       },
       "categories": {
         "title": "Rincian per kategori",
@@ -1340,15 +1362,15 @@
       },
       "rhythm": {
         "title": "Ritme",
-        "description": "Hari mana yang paling banyak menguras, sepanjang pekan dan bulan."
+        "description": "Hari apa yang paling mahal bagi Anda, dan lima minggu terakhir hari demi hari."
       },
       "people": {
         "title": "Orang",
-        "description": "Dengan siapa Anda berbelanja, dan bagaimana saldo tersebar."
+        "description": "Dengan siapa Anda berbelanja, dari yang terbesar."
       },
       "insights": {
-        "title": "Wawasan",
-        "description": "Pola yang layak diketahui, dengan kata-kata sederhana."
+        "title": "Layak diketahui",
+        "description": "Yang berubah dalam 7 hari terakhir, dengan kata-kata sederhana."
       },
       "netWorthTrend": {
         "title": "Kekayaan bersih dari waktu ke waktu",
@@ -1372,7 +1394,7 @@
       },
       "unlimited": {
         "title": "Tanpa batas",
-        "description": "Lebih dari {{people}} orang, {{loans}} pinjaman, {{budgets}} anggaran, dan {{recurring}} transaksi berulang."
+        "description": "Lebih dari {{people}} orang, {{loans}} pinjaman, dan {{budgets}} anggaran."
       }
     },
     "paywall": {
@@ -1851,7 +1873,109 @@
       "records": {
         "title": "Catatan Anda tetap seperti semula",
         "body": "Setiap akun, transaksi, dan pinjaman ikut terbawa. Tidak ada yang diubah."
+      },
+      "budgets": {
+        "title": "Anggaran",
+        "body": "Tetapkan batas bulanan untuk sebuah kategori di Rencana dan lihat sisanya saat Anda berbelanja."
       }
+    }
+  },
+  "budgets": {
+    "title": "Anggaran",
+    "head": {
+      "spent": "Dibelanjakan",
+      "left": "Sisa bulan ini",
+      "over": "Lebih bulan ini",
+      "reached": "Batas tercapai",
+      "limit": "Batas",
+      "daysLeft_one": "{{count}} hari lagi",
+      "daysLeft_other": "{{count}} hari lagi",
+      "lastDay": "Hari terakhir bulan ini",
+      "used": "Berapa banyak batas yang terpakai",
+      "perDay": "Sekitar {{amount}} sehari menjaga Anda tetap dalam batas."
+    },
+    "close": "Tutup",
+    "back": "Kembali",
+    "limit": {
+      "seePro": "Lihat Pro",
+      "reached_one": "Paket gratis menyimpan {{count}} anggaran. Pro tanpa batas.",
+      "reached_other": "Paket gratis menyimpan {{count}} anggaran. Pro tanpa batas."
+    },
+    "budget": {
+      "thisMonth": "Bulan ini",
+      "keep": "Simpan saja",
+      "deleteFailed": "Tidak bisa menghapus",
+      "deleteFailedBody": "Tidak ada yang berubah. Coba lagi.",
+      "ok": "OK",
+      "notFound": "Anggaran ini sudah tidak ada",
+      "manage": "Kelola anggaran",
+      "edit": "Ubah batas",
+      "rolled": "Termasuk sisa {{amount}} dari bulan lalu",
+      "thisMonthHint": "Yang dihitung ke dalamnya",
+      "nothing": "Belum ada pengeluaran bulan ini",
+      "delete": "Hapus anggaran",
+      "deleteTitle": "Hapus anggaran ini?",
+      "deleteBody": "Transaksi Anda tetap ada. Hanya batasnya yang dihapus.",
+      "deleteConfirm": "Hapus anggaran",
+      "deleted": "Anggaran dihapus"
+    },
+    "form": {
+      "targetHint": "Kategori",
+      "save": "Simpan",
+      "changesSaved": "Perubahan disimpan",
+      "pickCurrency": "Mata uang apa?",
+      "saveFailed": "Tidak bisa menyimpan",
+      "saveFailedBody": "Tidak ada yang berubah. Coba lagi.",
+      "ok": "OK",
+      "discard": {
+        "titleEdit": "Buang perubahan Anda?",
+        "body": "Yang Anda ketik tidak akan disimpan.",
+        "confirm": "Buang",
+        "cancel": "Lanjut mengubah",
+        "title": "Buang anggaran ini?"
+      },
+      "newTitle": "Anggaran baru",
+      "editTitle": "Ubah anggaran",
+      "amount": "Batas bulanan",
+      "lastMonth": "Bulan lalu: {{amount}} dibelanjakan",
+      "lastMonthNone": "Tidak ada pengeluaran untuk ini bulan lalu",
+      "target": "Untuk:",
+      "chooseTarget": "Pilih kategori",
+      "allHint": "Setiap pengeluaran dalam {{currency}}",
+      "currency": "Dalam:",
+      "options": "Opsi:",
+      "rollover": "Bawa sisa ke bulan depan",
+      "rolloverHint": "Yang tidak terpakai bulan ini ditambahkan ke batas bulan depan.",
+      "create": "Tambah anggaran",
+      "created": "Anggaran ditambahkan",
+      "blocked": {
+        "target": "Pilih anggaran ini untuk apa",
+        "amount": "Masukkan batas untuk menyimpan"
+      },
+      "pickTarget": "Anggaran ini untuk apa?"
+    },
+    "hint": "Yang tersisa bulan ini",
+    "add": "Tambah anggaran",
+    "overall": "Semua pengeluaran",
+    "row": {
+      "of": "{{spent}} dari {{limit}}",
+      "left": "Sisa {{amount}}",
+      "over": "Lebih {{amount}}",
+      "reached": "Batas tercapai"
+    },
+    "empty": {
+      "title": "Tetapkan batas untuk sebuah kategori",
+      "body": "Fintraq menunjukkan yang tersisa sepanjang bulan, dan memberi tahu Anda sebelum batasnya tercapai."
+    },
+    "entry": {
+      "left": "Sisa {{amount}} dari anggarannya",
+      "over": "{{amount}} di atas anggarannya",
+      "reached": "Anggarannya sudah habis"
+    },
+    "saved": {
+      "near": "Tersimpan. {{name}} masih punya {{amount}} dari anggarannya.",
+      "reached": "Tersimpan. {{name}} sudah mencapai anggarannya.",
+      "over": "Tersimpan. {{name}} melebihi anggarannya sebesar {{amount}}."
     }
   }
 }

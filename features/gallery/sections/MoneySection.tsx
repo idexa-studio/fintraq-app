@@ -2,8 +2,26 @@ import { Specimen } from '@/features/gallery/components/Specimen';
 import {
   Badge, Button, Card, CardActions, DetailRow, EmptyState, Icon, IconCircle, ListGroup, ListRow, Money, ProgressBar, Section, Text, useTheme,
 } from '@/design';
+import { BudgetHead, BudgetList } from '@/features/budgets';
+import type { BudgetView } from '@/features/budgets';
+import { OFFERED_COLORS } from '@/shared/contracts/pickers';
+import { toDbColor } from '@/shared/format/color';
 import React from 'react';
 import { View } from 'react-native';
+
+const shade = (i: number) => toDbColor(OFFERED_COLORS[i % OFFERED_COLORS.length]!.hex);
+
+/** One budget in each state: room left, near the limit, exactly at it, and over. */
+const sample = (id: number, category: BudgetView['category'], limit: number, spent: number): BudgetView => ({ id, categoryId: category ? id : null, category, currency: 'USD', monthlyLimit: limit, rollover: false, limit, spent });
+const BUDGETS: BudgetView[] = [
+  sample(1, { name: 'Groceries', icon: 'shopping-cart', color: shade(1) }, 500, 250),
+  sample(2, { name: 'Eating out', icon: 'fork-knife', color: shade(6) }, 200, 172.5),
+  sample(3, { name: 'Transport', icon: 'car', color: shade(2) }, 120, 120),
+  sample(4, { name: 'Shopping', icon: 'shopping-bag', color: shade(4) }, 150, 190),
+  sample(5, null, 2000, 1140),
+];
+/** A fixed day, so the head reads the same whenever it is looked at: the 18th of a 30-day month. */
+const DAY = new Date(2026, 10, 18);
 
 /** Accounts, transactions, people and loans: the things the app keeps. */
 export function MoneySection() {
@@ -91,6 +109,24 @@ export function MoneySection() {
             <ListRow leading={<IconCircle initials="AS" color="lilac" />} strong title="Aylin Sahin" subtitle="You owe" value="$60.00" onPress={() => {}} />
             <ListRow leading={<IconCircle initials="MJ" color="teal" />} strong title="Maya Jones" subtitle="All settled" onPress={() => {}} />
           </ListGroup>
+        </Specimen>
+      </Section>
+
+      <Section title="Budgets (2.1)">
+        <Specimen name="Budgets on Plan" note="Above loans. What is left is the figure; the bar is green with room, amber from 80%, red at the limit and past it. The last row is the budget over all spending.">
+          <BudgetList budgets={BUDGETS} onOpen={() => {}} onAdd={() => {}} />
+        </Specimen>
+        <Specimen name="No budget yet" note="One quiet card on Plan, with the first step.">
+          <BudgetList budgets={[]} onOpen={() => {}} onAdd={() => {}} />
+        </Specimen>
+        <Specimen name="A budget, with room" note="The top of its screen: what is left, how much of the limit is used, spent and limit, and what that leaves for each day still to come.">
+          <BudgetHead budget={BUDGETS[0]!} today={DAY} />
+        </Specimen>
+        <Specimen name="A budget near its limit" note="Amber from 80% used.">
+          <BudgetHead budget={BUDGETS[1]!} today={DAY} />
+        </Specimen>
+        <Specimen name="A budget over" note="The figure is how far over. Nothing is left to share over the days.">
+          <BudgetHead budget={BUDGETS[3]!} today={DAY} />
         </Specimen>
       </Section>
 

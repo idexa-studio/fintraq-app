@@ -1,6 +1,6 @@
 import { and, eq, sql } from 'drizzle-orm';
 import { db } from '@/data/db/client';
-import { PAYMENT_LOCAL_DAY } from '@/data/db/sql';
+import { NOT_LOAN_MONEY, PAYMENT_LOCAL_DAY } from '@/data/db/sql';
 import { accounts, payments } from '@/data/db/schema';
 import type { MonthTotals } from '@/shared/calc/month';
 import { format, startOfMonth, subMonths } from 'date-fns';
@@ -14,7 +14,7 @@ export const getLifetimeTotals = async (currency: string): Promise<{ income: num
     })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(eq(accounts.currency, currency));
+    .where(and(eq(accounts.currency, currency), NOT_LOAN_MONEY));
   return { income: row?.income ?? 0, expense: row?.expense ?? 0 };
 };
 
@@ -37,7 +37,7 @@ export const getMonthTotals = async (currency: string, now: Date = new Date()): 
     })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(and(eq(accounts.currency, currency), sql`${day} BETWEEN ${lastMonthStart} AND ${today}`));
+    .where(and(eq(accounts.currency, currency), sql`${day} BETWEEN ${lastMonthStart} AND ${today}`, NOT_LOAN_MONEY));
 
   return {
     income: row?.income ?? 0,
@@ -54,7 +54,7 @@ export const getDailySpend = async (currency: string, since: string): Promise<Ma
     .select({ date: day, amount: sql<number>`SUM(${payments.amount})` })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`${day} >= ${since}`))
+    .where(and(eq(accounts.currency, currency), eq(payments.type, 'DR'), sql`${day} >= ${since}`, NOT_LOAN_MONEY))
     .groupBy(day);
   return new Map(rows.map((r) => [r.date, r.amount ?? 0]));
 };

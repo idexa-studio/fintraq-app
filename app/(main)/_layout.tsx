@@ -25,6 +25,8 @@ export default function StackLayout() {
         <Stack.Screen name="loans/new" options={SHEET_ROUTE} />
         <Stack.Screen name="loans/[id]/repay" options={SHEET_ROUTE} />
         <Stack.Screen name="loans/[id]/edit" options={SHEET_ROUTE} />
+        <Stack.Screen name="budgets/new" options={SHEET_ROUTE} />
+        <Stack.Screen name="budgets/[id]/edit" options={SHEET_ROUTE} />
         <Stack.Screen name="settings/pin" options={SHEET_ROUTE} />
         <Stack.Screen name="backup" />
         <Stack.Screen name="export" />

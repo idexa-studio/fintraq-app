@@ -8,6 +8,8 @@ export type ProgressBarProps = {
   value?: number;
   /** Over the limit: the fill turns red. */
   over?: boolean;
+  /** Close to the limit, not yet over: the fill turns amber. */
+  near?: boolean;
   accessibilityLabel: string;
 };
 
@@ -15,7 +17,7 @@ export type ProgressBarProps = {
 const TRAVELLER = 0.35;
 
 /** How far along, or how much of a limit is used. */
-export function ProgressBar({ value, over = false, accessibilityLabel }: ProgressBarProps) {
+export function ProgressBar({ value, over = false, near = false, accessibilityLabel }: ProgressBarProps) {
   const { colors, space, radius, motion, border } = useTheme();
   const [width, setWidth] = useState(0);
   const unknown = value === undefined;
@@ -36,7 +38,7 @@ export function ProgressBar({ value, over = false, accessibilityLabel }: Progres
   const moving = useAnimatedStyle(() => ({ transform: [{ translateX: travel.value * width * (1 - TRAVELLER) }] }));
   // The green is too light to show against the track by itself, so the bar is
   // drawn like the switch: outlined track, and a line where the fill ends.
-  const fill = { height: '100%' as const, backgroundColor: over ? colors.danger : colors.accent, borderRightWidth: border.thin, borderColor: colors.border };
+  const fill = { height: '100%' as const, backgroundColor: over ? colors.danger : near ? colors.warning : colors.accent, borderRightWidth: border.thin, borderColor: colors.border };
 
   return (
     <View

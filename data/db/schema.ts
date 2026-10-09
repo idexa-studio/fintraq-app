@@ -1,5 +1,5 @@
 import { relations, sql } from 'drizzle-orm';
-import { index, integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, integer, real, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 export const persons = sqliteTable('persons', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -95,6 +95,23 @@ export const payments = sqliteTable('payments', {
   index('payments_type_idx').on(table.type),
   index('payments_account_datetime_idx').on(table.accountId, table.datetime),
   index('payments_loan_id_idx').on(table.loanId),
+]);
+
+/**
+ * A monthly limit on spending. `categoryId` null is the budget over all spending in that
+ * currency; there is at most one of those per currency, which the repository holds, since SQLite
+ * treats two nulls as different in a unique index.
+ */
+export const budgets = sqliteTable('budgets', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  categoryId: integer('category_id').references(() => categories.id, { onDelete: 'cascade' }),
+  currency: text('currency').notNull(),
+  monthlyLimit: real('monthly_limit').notNull(),
+  rollover: integer('rollover', { mode: 'boolean' }).notNull().default(false),
+  createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
+}, (table) => [
+  uniqueIndex('budgets_category_currency_idx').on(table.categoryId, table.currency),
 ]);
 
 export const accountsRelations = relations(accounts, ({ many }) => ({

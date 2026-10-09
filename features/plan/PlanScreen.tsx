@@ -1,12 +1,13 @@
 import type { LoanWithStats } from '@/data/repositories/loans';
-import { EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, SummaryCard, Text, useTheme } from '@/design';
+import { Card, EmptyState, Header, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, useTheme } from '@/design';
+import { BudgetList, byUrgency, useBudgets } from '@/features/budgets';
 import { TabTip } from '@/features/guide';
-import { useLoans } from '@/features/loans';
+import { LoanRow, useLoans } from '@/features/loans';
 import { initialsOf } from '@/features/people';
 import { dueWording, loanTotals, planLoans } from '@/features/plan/plan-rules';
-import { PRO_FEATURES, featuresIn, usePro, useProCopy } from '@/features/pro';
+import { PRO_FEATURES, featuresIn, isOverFreeLimit, usePro, useProCopy } from '@/features/pro';
 import { useSettings } from '@/features/settings';
-import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
+import { currencyName, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import { useRouter } from 'expo-router';
@@ -18,21 +19,23 @@ import { View } from 'react-native';
 const SOON = featuresIn('plan').filter((id) => PRO_FEATURES[id].status !== 'live');
 
 /**
- * The Plan tab: what is owed either way, then the loans in the order they
- * need attention. One currency at a time, as on Home. Budgets, repeating
- * items and goals take their place here as they are released.
+ * The Plan tab, as sections that each read the same way: a heading, its own
+ * "Add", and what it holds. Budgets first, then loans in the order they need
+ * attention. One currency at a time, as on Home. Repeating items and goals
+ * take their place here as they are released.
  */
 export function PlanScreen() {
-  const { t } = useTranslation('plan');
+  const { t } = useTranslation(['plan', 'common']);
   const { colors, size } = useTheme();
   const router = useRouter();
   const { profile } = useSettings();
   const { isPro, openPaywall } = usePro();
   const proCopy = useProCopy();
   const { data: loans, isPending } = useLoans();
+  const { data: budgets } = useBudgets();
   const [showSettled, setShowSettled] = useState(false);
 
-  const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set([profile.defaultCurrency, ...(loans ?? []).map((loan) => loan.currency)])], profile.defaultCurrency), [loans, profile.defaultCurrency]);
+  const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set([profile.defaultCurrency, ...(loans ?? []).map((loan) => loan.currency), ...(budgets ?? []).map((budget) => budget.currency)])], profile.defaultCurrency), [loans, budgets, profile.defaultCurrency]);
   const [chosen, setChosen] = useState<string | null>(null);
   const currency = chosen && currencies.includes(chosen) ? chosen : currencies[0]!;
 
@@ -41,8 +44,13 @@ export function PlanScreen() {
   const today = new Date();
 
   const lend = () => router.push('/loans/new');
+  // One more than the free plan keeps is offered through Pro, from the same control.
+  const addBudget = () => (!isPro && isOverFreeLimit('budgets', budgets?.length ?? 0) ? openPaywall('unlimited') : router.push('/budgets/new'));
+  // The budget closest to its limit comes first: it is the one being looked for.
+  const inCurrency = byUrgency((budgets ?? []).filter((budget) => budget.currency === currency));
   const open = (loan: LoanWithStats) => router.push({ pathname: '/loans/[id]', params: { id: loan.id } });
-  const header = <Header title={t('title')} right={<IconButton icon="plus" onPress={lend} accessibilityLabel={t('add')} />} />;
+  // Each section has its own "Add", so the header carries only the currency, where more than one is held.
+  const header = <Header title={t('title')} right={currencies.length > 1 ? <Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : undefined} />;
 
   const row = (loan: LoanWithStats, line: string) => (
     <ListRow
@@ -56,6 +64,7 @@ export function PlanScreen() {
       onPress={() => open(loan)}
     />
   );
+  const openRow = (loan: LoanWithStats, line: string) => <LoanRow key={loan.id} loan={loan} line={line} onOpen={() => open(loan)} />;
   const standing = (loan: LoanWithStats) => (loan.type === 'lend' ? t('upcoming.lent') : t('upcoming.borrowed'));
   const dueLine = (loan: LoanWithStats) => {
     const due = dueWording(loan.dueDate!, today);
@@ -67,13 +76,13 @@ export function PlanScreen() {
       badge={t('soon.badge')}
       title={t('soon.title')}
       body={t('soon.body')}
-      items={SOON.map((id) => ({ icon: PRO_FEATURES[id].icon, title: proCopy.feature(id).title }))}
+      items={SOON.map((id) => ({ icon: PRO_FEATURES[id].icon, title: proCopy.feature(id).title, detail: proCopy.feature(id).description }))}
       actionLabel={t('soon.action')}
       onAction={() => openPaywall()}
     />
   );
 
-  if (isPending || !loans) {
+  if (isPending || !loans || !budgets) {
     return (
       <Screen tabbed header={header}>
         <Skeleton height={size.row * 2} />
@@ -86,47 +95,44 @@ export function PlanScreen() {
 
   return (
     <Screen tabbed header={header}>
-      <TabTip id="plan" ready={hasOpen} />
-      <SummaryCard
-        title={t('summary.title')}
-        trailing={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
-        actions={[{ label: t('summary.lend'), onPress: lend }, { label: t('summary.people'), onPress: () => router.push('/people') }]}
-      >
-          {totals.owed > 0 || totals.owe > 0 ? (
-            <SplitBar
-              segments={[
-                { label: t('summary.owed'), value: totals.owed, display: formatCurrency(totals.owed, currency), color: colors.brand },
-                { label: t('summary.owe'), value: totals.owe, display: formatCurrency(totals.owe, currency), color: colors.text },
-              ]}
-            />
+      <Section title={t('budgets.title')} hint={inCurrency.length ? t('budgets.hint') : undefined} actionLabel={inCurrency.length ? t('budgets.add') : undefined} onAction={addBudget}>
+        <BudgetList budgets={inCurrency} onOpen={(id) => router.push({ pathname: '/budgets/[id]', params: { id } })} onAdd={addBudget} />
+      </Section>
+
+      {/* Loans read as budgets do: a heading with its own "Add", then what it holds. */}
+      <Section title={t('loans.title')} hint={hasOpen ? t('loans.hint') : undefined} actionLabel={hasOpen ? t('loans.add') : undefined} onAction={lend}>
+        <View style={{ gap: size.cardGap }}>
+          {hasOpen ? (
+            <>
+              <TabTip id="plan" ready />
+              {/* Owed against owing is only a picture when there is something on both sides; otherwise the list says it already. */}
+              {totals.owed > 0 && totals.owe > 0 ? (
+                <Card>
+                  <SplitBar
+                    segments={[
+                      { label: t('summary.owed'), value: totals.owed, display: formatCurrency(totals.owed, currency), color: colors.brand },
+                      { label: t('summary.owe'), value: totals.owe, display: formatCurrency(totals.owe, currency), color: colors.text },
+                    ]}
+                  />
+                </Card>
+              ) : null}
+              {/* One list, in the order they need attention: those with a due date first, soonest at the top. Each carries a bar for how much has come back. */}
+              <ListGroup>
+                {dated.map((loan) => openRow(loan, dueLine(loan)))}
+                {undated.map((loan) => openRow(loan, standing(loan)))}
+              </ListGroup>
+            </>
           ) : (
-            <Text variant="callout" tone="muted">{t('summary.none')}</Text>
+            <EmptyState compact icon="hand-coins" color="pink" title={t('empty.title')} body={t('empty.body')} actionLabel={t('add')} onAction={lend} />
           )}
-      </SummaryCard>
 
-      {hasOpen ? (
-        <>
-          {dated.length > 0 ? (
-            <Section title={t('upcoming.title')}>
-              <ListGroup>{dated.map((loan) => row(loan, dueLine(loan)))}</ListGroup>
-            </Section>
-          ) : null}
-          {undated.length > 0 ? (
-            <Section title={t('upcoming.noDate')}>
-              <ListGroup>{undated.map((loan) => row(loan, standing(loan)))}</ListGroup>
-            </Section>
-          ) : null}
-        </>
-      ) : (
-        <EmptyState compact icon="hand-coins" color="pink" title={t('empty.title')} body={t('empty.body')} actionLabel={t('add')} onAction={lend} />
-      )}
-
-      {settled.length > 0 ? (
-        <ListGroup>
-          <ListRow icon="check-circle" title={showSettled ? t('settled.hide') : t('settled.show', { count: settled.length })} onPress={() => setShowSettled((shown) => !shown)} trailing={<View />} />
-          {showSettled ? settled.map((loan) => row(loan, t('settled.row'))) : null}
-        </ListGroup>
-      ) : null}
+          <ListGroup>
+            {settled.length > 0 ? <ListRow icon="check-circle" title={showSettled ? t('settled.hide') : t('settled.show', { count: settled.length })} onPress={() => setShowSettled((shown) => !shown)} trailing={<View />} /> : null}
+            {showSettled ? settled.map((loan) => row(loan, t('settled.row'))) : null}
+            <ListRow icon="users" title={t('summary.people')} subtitle={t('loans.peopleHint')} onPress={() => router.push('/people')} />
+          </ListGroup>
+        </View>
+      </Section>
 
       {soon}
     </Screen>

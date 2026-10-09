@@ -131,7 +131,7 @@ export function SettingsScreen() {
           <ListRow
             icon="moon"
             title={t('prefs.appearance')}
-            trailing={<Select options={APPEARANCES.map((key) => ({ key, label: t(`prefs.appearances.${key}`) }))} value={profile.theme || 'system'} onChange={(theme) => void updateProfile({ theme })} accessibilityLabel={t('prefs.appearance')} />}
+            trailing={<Select title={t('prefs.appearance')} options={APPEARANCES.map((key) => ({ key, label: t(`prefs.appearances.${key}`) }))} value={profile.theme || 'system'} onChange={(theme) => void updateProfile({ theme })} accessibilityLabel={t('prefs.appearance')} />}
           />
         </ListGroup>
       </Section>

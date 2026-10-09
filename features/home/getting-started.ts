@@ -5,7 +5,7 @@ import type { StepState } from '@/design';
  * ticks itself off whichever screen it was done from. Pure, for testing.
  */
 
-export type GettingStartedStepId = 'account' | 'transaction' | 'insights' | 'reminder' | 'secondAccount' | 'backup';
+export type GettingStartedStepId = 'account' | 'transaction' | 'insights' | 'budget' | 'reminder' | 'secondAccount' | 'backup';
 export type GettingStartedStep = { id: GettingStartedStepId; state: StepState };
 
 export type GettingStartedInput = {
@@ -13,6 +13,7 @@ export type GettingStartedInput = {
   transactionCount: number;
   /** Insights has been opened with something recorded: the one step that is a look, not a record. */
   insightsSeen: boolean;
+  budgetCount: number;
   reminderOn: boolean;
   /** Backing up to Google Drive is part of Pro, so only a Pro user is given it as a step. */
   isPro: boolean;
@@ -28,6 +29,7 @@ export function gettingStartedSteps(input: GettingStartedInput): GettingStartedS
     ['account', input.accountCount > 0],
     ['transaction', input.transactionCount > 0],
     ['insights', input.insightsSeen],
+    ['budget', input.budgetCount > 0],
     ['reminder', input.reminderOn],
     ['secondAccount', input.accountCount > 1],
     ...(input.isPro ? ([['backup', input.autoBackupOn]] as [GettingStartedStepId, boolean][]) : []),

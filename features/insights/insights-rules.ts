@@ -2,10 +2,10 @@ import type { AnalyticsWindow } from '@/shared/calc/analytics';
 import { windowSlots } from '@/shared/calc/analytics';
 import type { HeatCell } from '@/shared/calc/month';
 
-/** The periods Insights can look back over. The longer two are part of Pro (`periods`). */
+/** The periods Insights can look back over. Only the last 7 days is free, as in the shipped app; the rest are part of Pro (`periods`). */
 export const PERIODS = [
   { days: 7, pro: false },
-  { days: 30, pro: false },
+  { days: 30, pro: true },
   { days: 90, pro: true },
   { days: 365, pro: true },
 ] as const;
@@ -63,4 +63,18 @@ export function heatValues(weeks: readonly HeatCell[][]): { values: number[]; to
 export function pace(pulse: { expense: number; projected: number; lastMonthTotal: number; monthProgress: number }): { spent: number; projected: number; today: number } | null {
   if (pulse.lastMonthTotal <= 0) return null;
   return { spent: pulse.expense / pulse.lastMonthTotal, projected: pulse.projected / pulse.lastMonthTotal, today: pulse.monthProgress };
+}
+
+/**
+ * The findings worth showing under a period. Each is about the last 7 days, so under the 7-day
+ * period the two that restate the summary above them (the change in spending, and in, out and
+ * kept) are left out. A category's rise is left out when it has a budget with room: the budget is
+ * the measure the user chose for it, and a red mark beside a green bar says two things at once.
+ */
+export function findingsToShow<F extends { id: string }>(findings: readonly F[], period: PeriodDays, budgetedWithRoom: ReadonlySet<number>): F[] {
+  return findings.filter((finding) => {
+    if (period === 7 && (finding.id === 'weekly-spend' || finding.id === 'weekly-summary')) return false;
+    const category = /^cat-(\d+)$/.exec(finding.id);
+    return !(category && budgetedWithRoom.has(Number(category[1])));
+  });
 }
