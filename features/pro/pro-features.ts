@@ -12,8 +12,8 @@ export const PRO_PILLARS = ['plan', 'understand', 'find', 'protect'] as const;
 export type ProPillar = (typeof PRO_PILLARS)[number];
 
 /**
- * live: in the app today. next: the first release after the redesign.
- * later: the one after. Only live features may be gated or sold as included.
+ * live: in the app today. next: the version being built now (`docs/PLAN.md`).
+ * later: the versions after it. Only live features may be gated or sold as included.
  */
 export type ProStatus = 'live' | 'next' | 'later';
 
@@ -21,7 +21,7 @@ type ProFeature = { pillar: ProPillar; icon: IconName; status: ProStatus };
 
 export const PRO_FEATURES = {
   budgets: { pillar: 'plan', icon: 'pie-chart', status: 'next' },
-  recurring: { pillar: 'plan', icon: 'repeat', status: 'next' },
+  recurring: { pillar: 'plan', icon: 'repeat', status: 'later' },
   goals: { pillar: 'plan', icon: 'flag', status: 'later' },
   safeToSpend: { pillar: 'plan', icon: 'dashboard-speed', status: 'later' },
 
@@ -31,7 +31,7 @@ export const PRO_FEATURES = {
   rhythm: { pillar: 'understand', icon: 'chart-bar', status: 'live' },
   people: { pillar: 'understand', icon: 'users', status: 'live' },
   insights: { pillar: 'understand', icon: 'sparkle', status: 'live' },
-  netWorthTrend: { pillar: 'understand', icon: 'chart-up', status: 'next' },
+  netWorthTrend: { pillar: 'understand', icon: 'chart-up', status: 'later' },
 
   search: { pillar: 'find', icon: 'search', status: 'live' },
   export: { pillar: 'find', icon: 'download-simple', status: 'live' },

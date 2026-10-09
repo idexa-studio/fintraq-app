@@ -13,7 +13,7 @@ design/                 The design system. Knows nothing about money or Fintraq.
   components/           One component per file
   index.ts              The only door: import UI from '@/design'
 features/<name>/        One product area (home, activity, transactions, accounts, people,
-                        loans, plan, insights, pro, backup, lock, onboarding, settings, gallery…)
+                        loans, plan, budgets, guide, insights, pro, backup, lock, onboarding, settings, gallery…)
   screens/              One component per route
   components/           UI used only by this feature, built from '@/design'
   hooks/                State and queries for this feature
