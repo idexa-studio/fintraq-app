@@ -675,6 +675,14 @@ versions, in the order that each one makes the next possible:
 | 2.3 | J | Goals and the net worth trend | Both are read from what is already recorded |
 | 2.4 | K | Safe to spend and the monthly statement | Safe to spend is worked out from budgets, repeating items and goals, so it comes last |
 
+**Store numbers (owner, 2026-10-09).** The redesign and budgets go out together
+as **2.0.0**: build 65 of 2.0.0 never left internal testing, so the public moves
+from 1.2.4 straight to this release, and its notes introduce the new look and
+budgets at once. The names above and the phase headings ("Version 2.1" to
+"Version 2.4") are kept as working names; in the store each is one lower from
+here on: repeating items 2.1, goals and the net worth trend 2.2, safe to spend
+and the statement 2.3.
+
 Rules for every version:
 
 - A version starts on its own branch from `develop`, only after the version
