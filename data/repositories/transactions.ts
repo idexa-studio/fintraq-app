@@ -1,4 +1,4 @@
-import { SQL, and, asc, count, desc, eq, inArray, or, sql } from 'drizzle-orm';
+import { SQL, and, asc, count, desc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import { db } from '@/data/db/client';
 import { PAYMENT_LOCAL_DAY } from '@/data/db/sql';
@@ -30,6 +30,8 @@ export type TransactionFilters = {
   endDate?: string;   // local YYYY-MM-DD, inclusive
   minAmount?: number;
   maxAmount?: number;
+  /** Leaves out money lent, borrowed or repaid: what a budget counts as spending. */
+  withoutLoans?: boolean;
   sortBy?: 'date' | 'amount';
   sortOrder?: 'asc' | 'desc';
 };
@@ -150,6 +152,7 @@ const buildWhere = (filters: TransactionFilters): SQL | undefined => {
   if (filters.endDate) conditions.push(sql`${PAYMENT_LOCAL_DAY} <= ${filters.endDate}`);
   if (filters.minAmount != null) conditions.push(sql`${payments.amount} >= ${filters.minAmount}`);
   if (filters.maxAmount != null) conditions.push(sql`${payments.amount} <= ${filters.maxAmount}`);
+  if (filters.withoutLoans) conditions.push(isNull(payments.loanId));
   return conditions.length > 0 ? and(...conditions) : undefined;
 };
 

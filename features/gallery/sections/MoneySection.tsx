@@ -12,12 +12,13 @@ import { View } from 'react-native';
 const shade = (i: number) => toDbColor(OFFERED_COLORS[i % OFFERED_COLORS.length]!.hex);
 
 /** One budget in each state: room left, near the limit, exactly at it, and over. */
+const sample = (id: number, category: BudgetView['category'], limit: number, spent: number): BudgetView => ({ id, categoryId: category ? id : null, category, currency: 'USD', monthlyLimit: limit, rollover: false, limit, spent });
 const BUDGETS: BudgetView[] = [
-  { id: 1, category: { name: 'Groceries', icon: 'shopping-cart', color: shade(1) }, currency: 'USD', limit: 500, spent: 250 },
-  { id: 2, category: { name: 'Eating out', icon: 'fork-knife', color: shade(6) }, currency: 'USD', limit: 200, spent: 172.5 },
-  { id: 3, category: { name: 'Transport', icon: 'car', color: shade(2) }, currency: 'USD', limit: 120, spent: 120 },
-  { id: 4, category: { name: 'Shopping', icon: 'shopping-bag', color: shade(4) }, currency: 'USD', limit: 150, spent: 190 },
-  { id: 5, category: null, currency: 'USD', limit: 2000, spent: 1140 },
+  sample(1, { name: 'Groceries', icon: 'shopping-cart', color: shade(1) }, 500, 250),
+  sample(2, { name: 'Eating out', icon: 'fork-knife', color: shade(6) }, 200, 172.5),
+  sample(3, { name: 'Transport', icon: 'car', color: shade(2) }, 120, 120),
+  sample(4, { name: 'Shopping', icon: 'shopping-bag', color: shade(4) }, 150, 190),
+  sample(5, null, 2000, 1140),
 ];
 /** A fixed day, so the head reads the same whenever it is looked at: the 18th of a 30-day month. */
 const DAY = new Date(2026, 10, 18);

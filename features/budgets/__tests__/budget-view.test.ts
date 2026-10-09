@@ -23,7 +23,7 @@ describe('spentOn', () => {
 
 describe('budgetViews', () => {
   it('sets this month against the limit', () => {
-    expect(budgetViews([budget({})], spend, [])).toEqual([{ id: 1, category: { name: 'Groceries', icon: 'shopping-cart', color: 1 }, currency: 'USD', limit: 500, spent: 320 }]);
+    expect(budgetViews([budget({})], spend, [])).toEqual([{ id: 1, categoryId: 3, category: { name: 'Groceries', icon: 'shopping-cart', color: 1 }, currency: 'USD', monthlyLimit: 500, rollover: false, limit: 500, spent: 320 }]);
   });
 
   it('adds what was left last month only where the budget rolls over', () => {
