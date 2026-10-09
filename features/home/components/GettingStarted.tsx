@@ -9,6 +9,7 @@ const ICONS: Record<GettingStartedStepId, IconName> = {
   account: 'wallet',
   transaction: 'receipt',
   insights: 'chart-pie',
+  budget: 'pie-chart',
   reminder: 'bell',
   secondAccount: 'coins-stack',
   backup: 'cloud-check',

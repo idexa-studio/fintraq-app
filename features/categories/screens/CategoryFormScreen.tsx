@@ -5,6 +5,7 @@ import {
 import type { Theme } from '@/design';
 import { CATEGORY_KINDS, NAME_MAX, blockerOf, draftOf, isChanged, newDraft, payloadOf, toggleKind } from '@/features/categories/category-form';
 import type { CategoryDraft } from '@/features/categories/category-form';
+import { useBudgets } from '@/features/budgets';
 import { useCategories, useCategoryUsage, useCreateCategory, useDeleteCategory, useUpdateCategory } from '@/features/categories/hooks/categories';
 import { useLeaveGuard } from '@/features/shell';
 import { CATEGORY_ICON_GROUPS, OFFERED_COLORS } from '@/shared/contracts/pickers';
@@ -39,6 +40,9 @@ export function CategoryFormScreen({ categoryId, initialKind = 'DR' }: CategoryF
   const { data: categories, isPending } = useCategories();
   const category = editing ? categories?.find((c) => c.id === categoryId) : undefined;
   const { data: usage } = useCategoryUsage(category?.id);
+  const { data: budgets } = useBudgets();
+  // The category's budget is deleted with it, so the question says so first.
+  const hasBudget = category != null && (budgets ?? []).some((budget) => budget.categoryId === category.id);
   const create = useCreateCategory();
   const update = useUpdateCategory();
   const remove = useDeleteCategory();
@@ -180,7 +184,7 @@ export function CategoryFormScreen({ categoryId, initialKind = 'DR' }: CategoryF
         </Card>
       ) : null}
 
-      <Dialog visible={confirming} onRequestClose={() => setConfirming(false)} title={t('form.deleteTitle', { name: initial.name })} body={t('form.deleteBody')}>
+      <Dialog visible={confirming} onRequestClose={() => setConfirming(false)} title={t('form.deleteTitle', { name: initial.name })} body={hasBudget ? t('form.deleteBodyBudget') : t('form.deleteBody')}>
         <Button label={t('form.deleteConfirm')} variant="danger" onPress={confirmDelete} loading={remove.isPending} />
         <Button label={t('form.deleteCancel')} variant="secondary" onPress={() => setConfirming(false)} />
       </Dialog>

@@ -56,6 +56,7 @@ export function HomeScreen() {
   const doStep = (id: GettingStartedStepId) => {
     if (id === 'transaction') add('expense');
     else if (id === 'insights') router.push('/insights');
+    else if (id === 'budget') router.push('/budgets/new');
     else if (id === 'reminder') router.push('/settings');
     else if (id === 'backup') router.push('/backup');
     else router.push('/accounts/new');

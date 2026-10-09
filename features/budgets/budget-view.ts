@@ -1,5 +1,6 @@
 import type { BudgetWithCategory, Spend } from '@/data/repositories/budgets';
-import { limitWithRollover } from '@/features/budgets/budget-rules';
+import { budgetStanding, crossingOf, limitWithRollover } from '@/features/budgets/budget-rules';
+import type { Crossing } from '@/features/budgets/budget-rules';
 
 /** A budget as the screens draw it: what it limits, the limit, and what this month has used. */
 export type BudgetView = {
@@ -35,4 +36,26 @@ export function budgetViews(budgets: readonly BudgetWithCategory[], thisMonth: r
     limit: limitWithRollover(budget.monthlyLimit, spentOn(budget, lastMonth), budget.rollover),
     spent: spentOn(budget, thisMonth),
   }));
+}
+
+/** An expense about to be counted: what it is for and how much. */
+export type Expense = { categoryId: number; currency: string; amount: number };
+
+/** The budgets an expense counts towards: its category's, and the one over all spending, in its currency. */
+export const budgetsFor = (budgets: readonly BudgetView[], expense: Pick<Expense, 'categoryId' | 'currency'>): BudgetView[] =>
+  budgets.filter((budget) => budget.currency === expense.currency && (budget.categoryId === null || budget.categoryId === expense.categoryId));
+
+export type BudgetWarning = { budget: BudgetView; crossing: Crossing; left: number; over: number };
+
+/**
+ * The one thing worth saying after an expense is saved: the budget it took to its limit, else the
+ * one it took into its last fifth. The category's budget speaks before the one over all spending.
+ */
+export function warningAfter(budgets: readonly BudgetView[], expense: Expense): BudgetWarning | null {
+  const crossed = budgetsFor(budgets, expense)
+    .map((budget) => ({ budget, crossing: crossingOf(budget.spent, budget.spent + expense.amount, budget.limit), ...budgetStanding(budget.spent + expense.amount, budget.limit) }))
+    .filter((item): item is typeof item & { crossing: Crossing } => item.crossing !== null)
+    .sort((a, b) => Number(b.crossing === 'over') - Number(a.crossing === 'over') || Number(a.budget.categoryId === null) - Number(b.budget.categoryId === null));
+  const first = crossed[0];
+  return first ? { budget: first.budget, crossing: first.crossing, left: first.left, over: first.over } : null;
 }

@@ -28,6 +28,16 @@ export default {
     title: 'Set a limit for a category',
     body: 'Fintraq shows what is left as the month goes, and tells you before you reach it.',
   },
+  entry: {
+    left: '{{amount}} left of its budget',
+    over: '{{amount}} over its budget',
+    reached: 'Its budget is used up',
+  },
+  saved: {
+    near: 'Saved. {{name}} has {{amount}} left of its budget.',
+    reached: 'Saved. {{name}} has reached its budget.',
+    over: 'Saved. {{name}} is {{amount}} over its budget.',
+  },
   close: 'Close',
   back: 'Back',
   limit: {

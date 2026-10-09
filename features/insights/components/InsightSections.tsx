@@ -115,7 +115,7 @@ const SHADES = [PASTELS.teal, PASTELS.orange, PASTELS.pink, PASTELS.lilac, PASTE
  * categories. With Pro: spending or income, all of it, around a ring of
  * shares. Each one opens its transactions.
  */
-export function Categories({ insights, currency, full, limit, onOpen }: Common & { full: boolean; limit: number; onOpen: (categoryId: number) => void }) {
+export function Categories({ insights, currency, full, limit, onOpen, budgetNote }: Common & { full: boolean; limit: number; onOpen: (categoryId: number) => void; /** What a category's budget has left this month, in words, for those that have one. */ budgetNote?: (categoryId: number) => string | null }) {
   const { t } = useTranslation('insights');
   const { size } = useTheme();
   const styles = useStyles(createStyles);
@@ -139,6 +139,7 @@ export function Categories({ insights, currency, full, limit, onOpen }: Common &
               <Money value={money(category.amount)} />
             </View>
             <ProgressBar value={category.share} accessibilityLabel={t('categories.shareLabel', { name: category.name, percent: percentOf(category.share) })} />
+            {budgetNote?.(category.id) ? <Text variant="callout" tone="muted">{budgetNote(category.id)}</Text> : null}
           </Touchable>
         ))}
       </Card>
@@ -173,6 +174,7 @@ export function Categories({ insights, currency, full, limit, onOpen }: Common &
               value: category.amount,
               display: money(category.amount),
               note: t('categories.share', { percent: percentOf(category.share) }),
+              caption: (kind === 'spending' ? budgetNote?.(category.id) : null) ?? undefined,
               leading: <IconCircle icon={resolveIcon(category.icon, 'tag')} color={colorNumberToHex(category.color)} size={mark} />,
               onPress: () => onOpen(category.id),
             }))}

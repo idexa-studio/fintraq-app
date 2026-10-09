@@ -92,4 +92,8 @@ export default {
     body: 'Add a few transactions and this tab shows where your money goes and when.',
     action: 'Add a transaction',
   },
+  budget: {
+    left: 'Budget: {{amount}} left this month',
+    over: 'Budget: {{amount}} over this month',
+  },
 } as const;

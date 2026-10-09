@@ -1,6 +1,7 @@
 import { Chip, ChipRow, EmptyState, Header, LockedCard, Screen, Section, Select, Skeleton, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
+import { useBudgets } from '@/features/budgets';
 import { INSIGHTS_OPENED, useSeen } from '@/features/guide';
 import { useDashboardInsights } from '@/features/home';
 import { Categories, Findings, Forecast, PeopleShare, PeriodSummary, Rhythm } from '@/features/insights/components/InsightSections';
@@ -11,6 +12,7 @@ import { PRO_FEATURES, featuresIn, usePro, useProCopy } from '@/features/pro';
 import { useSettings } from '@/features/settings';
 import { useTransactionsCount } from '@/features/transactions';
 import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
+import { formatCurrency } from '@/shared/format/money';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +37,7 @@ export function InsightsScreen() {
   const proCopy = useProCopy();
   const { data: accounts } = useAccounts();
   const { data: recorded } = useTransactionsCount();
+  const { data: budgets } = useBudgets();
   const { seen, markSeen } = useSeen();
   // Opening this tab with something to show is Home's "see where your money goes" step.
   const opened = seen !== undefined && (recorded ?? 0) > 0;
@@ -52,6 +55,13 @@ export function InsightsScreen() {
   const { data: findings } = useDashboardInsights(currency);
 
   const header = <Header title={t('title')} right={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setCurrency} accessibilityLabel={t('currency')} /> : undefined} />;
+  // A budget is for the calendar month, whatever period is shown, so its note says "this month".
+  const budgetNote = (categoryId: number) => {
+    const budget = (budgets ?? []).find((item) => item.categoryId === categoryId && item.currency === currency);
+    if (!budget) return null;
+    const left = budget.limit - budget.spent;
+    return left >= 0 ? t('budget.left', { amount: formatCurrency(left, currency) }) : t('budget.over', { amount: formatCurrency(-left, currency) });
+  };
   const openCategory = (categoryId: number) => router.push({ pathname: '/activity', params: { categoryId, from: insights.window.start, to: insights.window.end } });
 
   if (recorded === undefined || insights.loading) {
@@ -95,7 +105,7 @@ export function InsightsScreen() {
       ) : null}
 
       <Section title={t('categories.title')} hint={t('categories.hint')}>
-        <Categories insights={insights} currency={currency} full={isPro} limit={FREE_CATEGORIES} onOpen={openCategory} />
+        <Categories budgetNote={budgetNote} insights={insights} currency={currency} full={isPro} limit={FREE_CATEGORIES} onOpen={openCategory} />
       </Section>
 
       {isPro ? (
