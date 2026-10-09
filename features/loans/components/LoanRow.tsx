@@ -1,5 +1,5 @@
 import type { LoanWithStats } from '@/data/repositories/loans';
-import { IconCircle, ProgressBar, Text, Touchable, ltr, useStyles } from '@/design';
+import { Icon, IconCircle, ProgressBar, Text, Touchable, ltr, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
 import { repaidShare } from '@/features/loans/loan-rules';
 import { initialsOf } from '@/features/people';
@@ -23,6 +23,7 @@ type LoanRowProps = {
  */
 export function LoanRow({ loan, line, onOpen }: LoanRowProps) {
   const { t } = useTranslation('loans');
+  const { colors } = useTheme();
   const styles = useStyles(createStyles);
   const owed = formatCurrency(loan.outstanding, loan.currency);
   const name = loan.personName ?? t(loan.type === 'lend' ? 'title.lendNoName' : 'title.borrowNoName');
@@ -38,6 +39,7 @@ export function LoanRow({ loan, line, onOpen }: LoanRowProps) {
         <ProgressBar value={repaidShare(loan)} accessibilityLabel={t('loan.progressLabel')} />
         <Text variant="callout" tone={loan.computedStatus === 'overdue' ? 'danger' : 'muted'} numberOfLines={1}>{line}</Text>
       </View>
+      <Icon name="chevron-right" color={colors.text} />
     </Touchable>
   );
 }

@@ -31,7 +31,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 40 | 12 | In progress |
-| H | Version 2.1: budgets | 34 | 21 | In progress |
+| H | Version 2.1: budgets | 35 | 21 | In progress |
 | I | Version 2.2: repeating items | 31 | 0 |  |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
@@ -732,6 +732,7 @@ made on 2.0 still restores.
 - [ ] H4.07 A second budget on the free plan leads to the paywall, from a control that says why (built: "Add" on Plan opens Fintraq Pro at the limit, and the form reached by link says the limit; not yet seen)
 - [x] H4.08 (seen on the Samsung 2026-10-09, ticked by the budget made there) Home's first steps gain "Set a budget", after "See where your money goes"; it opens the form and ticks itself when a budget exists (left out of G5 because there were no budgets)
 - [x] H4.10 The plus at the top of Plan asks what to add (a budget or a loan) instead of opening the loan form; the loan tip sits beside the loans, not above the budgets (owner, 2026-10-09: the plus opening a loan was confusing). Seen on the Samsung the same day. Replaced later that day after the owner asked for an audit of the tab: it had three ways to add, a loans card with no heading, and "No due date" reading as a section equal to Budgets. Plan is now two sections of one shape (Budgets, Loans: heading, hint, its own "Add"), loans in one list with those due first, People as a row at the foot, the currency menu in the header, and no plus. Seen on the Samsung
+- [ ] H4.11 Loans on Plan are rows of the budget row's shape (owner, 2026-10-09): the person's mark, the name with what is still owed opposite, a bar for how much has come back, and who owes whom beneath, in red when overdue. A taller card with a "Record a repayment" button was tried and withdrawn at his word: the button is already on the loan's screen and the card took too much room. Budgets as dials (a ring with a mark for today) were also tried the same day and withdrawn: he kept the bar rows. Seen on the Samsung, light
 - [ ] H4.09 Shared checklist
 
 ### H5. Ship
