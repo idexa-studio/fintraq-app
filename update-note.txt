@@ -1,8 +1,135 @@
-What's New
-
-- Budgets: set a monthly limit for a category, or for all your spending, under Plan
-- See what is left as the month goes, on Home and on Plan
-- Fintraq tells you when an expense takes a budget close to its limit, or past it
-- Insights leaves loans and transfers out of income and spending, and its month forecast is more accurate
-- Transfer and New loan are one tap from Home
-- Bug fixes and stability improvements
+<en-US>
+Budgets are here.
+• Set a monthly limit for a category, or for all your spending, under Plan
+• See what is left on Home and Plan as the month goes
+• Get told when an expense takes a budget close to its limit, or past it
+• Insights no longer counts loans and transfers as income or spending
+• Transfer and New loan are one tap from Home
+• Fixes and improvements
+</en-US>
+<bn-BD>
+বাজেট এসে গেছে।
+• পরিকল্পনায় একটি বিভাগের জন্য, বা সব খরচের জন্য মাসিক সীমা ঠিক করুন
+• মাসজুড়ে হোম ও পরিকল্পনায় দেখুন কত বাকি আছে
+• কোনো খরচ বাজেটকে সীমার কাছে বা তার ওপরে নিলে জানানো হবে
+• বিশ্লেষণ এখন ধার ও ট্রান্সফারকে আয় বা খরচ হিসেবে গোনে না
+• ট্রান্সফার ও নতুন ধার হোম থেকে এক ট্যাপে
+• ত্রুটি সংশোধন ও উন্নতি
+</bn-BD>
+<de-DE>
+Budgets sind da.
+• Lege unter Planen ein Monatslimit für eine Kategorie oder für alle Ausgaben fest
+• Sieh auf Start und unter Planen, was im Lauf des Monats übrig ist
+• Du erfährst, wenn eine Ausgabe ein Budget nah an sein Limit oder darüber bringt
+• Einblicke zählt Darlehen und Umbuchungen nicht mehr als Einnahmen oder Ausgaben
+• Umbuchung und Neues Darlehen sind auf Start einen Tipp entfernt
+• Fehlerbehebungen und Verbesserungen
+</de-DE>
+<es-ES>
+Llegan los presupuestos.
+• Pon un límite mensual a una categoría, o a todo tu gasto, en Plan
+• Mira lo que queda en Inicio y en Plan según avanza el mes
+• Te avisamos cuando un gasto acerca un presupuesto a su límite o lo supera
+• Análisis ya no cuenta préstamos ni transferencias como ingresos o gastos
+• Transferencia y Préstamo nuevo, a un toque desde Inicio
+• Correcciones y mejoras
+</es-ES>
+<fr-FR>
+Les budgets arrivent.
+• Fixez une limite mensuelle pour une catégorie, ou pour toutes vos dépenses, dans Prévoir
+• Voyez ce qu’il reste sur l’Accueil et dans Prévoir au fil du mois
+• Vous êtes prévenu quand une dépense approche un budget de sa limite ou la dépasse
+• Analyses ne compte plus les prêts et les virements comme revenus ou dépenses
+• Virement et Nouveau prêt sont à un geste de l’Accueil
+• Corrections et améliorations
+</fr-FR>
+<hi-IN>
+बजट आ गए हैं।
+• योजना में किसी श्रेणी के लिए, या सारे खर्च के लिए महीने की सीमा तय करें
+• महीने भर होम और योजना में देखें कि कितना बचा है
+• कोई खर्च बजट को सीमा के पास या उसके पार ले जाए तो आपको बताया जाएगा
+• जानकारी अब उधार और ट्रांसफ़र को आय या खर्च में नहीं गिनती
+• ट्रांसफ़र और नया उधार होम से एक टैप पर
+• सुधार और बेहतरियाँ
+</hi-IN>
+<id>
+Anggaran sudah hadir.
+• Tetapkan batas bulanan untuk sebuah kategori, atau untuk semua pengeluaran, di Rencana
+• Lihat sisanya di Beranda dan Rencana sepanjang bulan
+• Anda diberi tahu saat pengeluaran membuat anggaran mendekati atau melewati batasnya
+• Wawasan tidak lagi menghitung pinjaman dan transfer sebagai pemasukan atau pengeluaran
+• Transfer dan Pinjaman baru cukup satu ketukan dari Beranda
+• Perbaikan dan peningkatan
+</id>
+<ja-JP>
+予算機能を追加しました。
+• 「予定」でカテゴリごと、またはすべての支出に月の上限を設定
+• ホームと「予定」で、月の途中の残りを確認
+• 支出で予算が上限に近づいたとき、超えたときにお知らせ
+• 分析では、貸し借りと振替を収入や支出に含めなくなりました
+• 振替と新しい貸し借りはホームからワンタップ
+• 不具合の修正と改善
+</ja-JP>
+<kn-IN>
+ಬಜೆಟ್‌ಗಳು ಬಂದಿವೆ.
+• ಯೋಜನೆಯಲ್ಲಿ ಒಂದು ವರ್ಗಕ್ಕೆ ಅಥವಾ ಎಲ್ಲಾ ಖರ್ಚಿಗೆ ತಿಂಗಳ ಮಿತಿ ಇಡಿ
+• ತಿಂಗಳು ಸಾಗಿದಂತೆ ಹೋಮ್ ಮತ್ತು ಯೋಜನೆಯಲ್ಲಿ ಎಷ್ಟು ಉಳಿದಿದೆ ನೋಡಿ
+• ಒಂದು ಖರ್ಚು ಬಜೆಟ್ ಅನ್ನು ಮಿತಿಯ ಹತ್ತಿರ ಅಥವಾ ಅದರಾಚೆ ಒಯ್ದಾಗ ತಿಳಿಸಲಾಗುತ್ತದೆ
+• ವಿಶ್ಲೇಷಣೆ ಈಗ ಸಾಲ ಮತ್ತು ವರ್ಗಾವಣೆಗಳನ್ನು ಆದಾಯ ಅಥವಾ ಖರ್ಚು ಎಂದು ಎಣಿಸುವುದಿಲ್ಲ
+• ವರ್ಗಾವಣೆ ಮತ್ತು ಹೊಸ ಸಾಲ ಹೋಮ್‌ನಿಂದ ಒಂದೇ ಟ್ಯಾಪ್
+• ದೋಷ ಪರಿಹಾರಗಳು ಮತ್ತು ಸುಧಾರಣೆಗಳು
+</kn-IN>
+<ko-KR>
+예산 기능이 추가되었습니다.
+• 플랜에서 카테고리별 또는 전체 지출에 월 한도를 설정하세요
+• 홈과 플랜에서 한 달 동안 남은 금액을 확인하세요
+• 지출로 예산이 한도에 가까워지거나 넘으면 알려 드립니다
+• 인사이트에서 대출과 이체를 더 이상 수입이나 지출로 계산하지 않습니다
+• 홈에서 한 번의 탭으로 이체와 새 대출을 기록하세요
+• 버그 수정 및 개선
+</ko-KR>
+<mr-IN>
+बजेट आले आहेत.
+• नियोजनमध्ये एखाद्या श्रेणीसाठी किंवा सर्व खर्चासाठी महिन्याची मर्यादा ठरवा
+• महिनाभर होम आणि नियोजनमध्ये किती उरले ते पहा
+• एखादा खर्च बजेटला मर्यादेजवळ किंवा तिच्या पुढे नेतो तेव्हा तुम्हाला कळवले जाते
+• माहिती आता उधारी आणि ट्रान्सफर उत्पन्न किंवा खर्चात मोजत नाही
+• ट्रान्सफर आणि नवीन उधारी होमवरून एका टॅपवर
+• दुरुस्त्या आणि सुधारणा
+</mr-IN>
+<pt-BR>
+Os orçamentos chegaram.
+• Defina um limite mensal para uma categoria, ou para todos os gastos, em Planejar
+• Veja o que resta no Início e em Planejar ao longo do mês
+• Você é avisado quando uma despesa leva um orçamento para perto do limite ou além dele
+• Análises não conta mais empréstimos e transferências como receita ou gasto
+• Transferência e Novo empréstimo a um toque do Início
+• Correções e melhorias
+</pt-BR>
+<ru-RU>
+Появились бюджеты.
+• Задайте месячный лимит для категории или для всех расходов в разделе «План»
+• Смотрите остаток на главном экране и в «Плане» в течение месяца
+• Приложение сообщит, когда расход приблизит бюджет к лимиту или превысит его
+• В «Аналитике» займы и переводы больше не считаются доходом или расходом
+• Перевод и новый заём доступны в одно касание с главного экрана
+• Исправления и улучшения
+</ru-RU>
+<ta-IN>
+பட்ஜெட்டுகள் வந்துவிட்டன.
+• திட்டத்தில் ஒரு வகைக்கு அல்லது எல்லா செலவுக்கும் மாத வரம்பு அமைக்கவும்
+• மாதம் செல்லச் செல்ல முகப்பிலும் திட்டத்திலும் மீதம் எவ்வளவு என்று பாருங்கள்
+• ஒரு செலவு பட்ஜெட்டை வரம்புக்கு அருகில் அல்லது அதைத் தாண்டி கொண்டு சென்றால் தெரிவிக்கப்படும்
+• பகுப்பாய்வு இனி கடன்களையும் பரிமாற்றங்களையும் வருமானம் அல்லது செலவாகக் கணக்கிடாது
+• பரிமாற்றமும் புதிய கடனும் முகப்பிலிருந்து ஒரே தட்டலில்
+• பிழை திருத்தங்களும் மேம்பாடுகளும்
+</ta-IN>
+<te-IN>
+బడ్జెట్‌లు వచ్చేశాయి.
+• ప్లాన్‌లో ఒక వర్గానికి లేదా మొత్తం ఖర్చుకు నెలవారీ పరిమితి పెట్టండి
+• నెల గడిచేకొద్దీ హోమ్‌లో, ప్లాన్‌లో ఎంత మిగిలిందో చూడండి
+• ఒక ఖర్చు బడ్జెట్‌ను పరిమితికి దగ్గరగా లేదా దాటి తీసుకెళ్తే మీకు తెలియజేస్తాం
+• విశ్లేషణ ఇకపై అప్పులు, బదిలీలను ఆదాయం లేదా ఖర్చుగా లెక్కించదు
+• బదిలీ, కొత్త అప్పు హోమ్ నుంచి ఒక్క ట్యాప్‌లో
+• లోపాల సవరణలు, మెరుగుదలలు
+</te-IN>
