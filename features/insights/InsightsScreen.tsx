@@ -6,7 +6,7 @@ import { INSIGHTS_OPENED, useSeen } from '@/features/guide';
 import { useDashboardInsights } from '@/features/home';
 import { Categories, Findings, Forecast, PeopleShare, PeriodSummary, Rhythm } from '@/features/insights/components/InsightSections';
 import { useInsights } from '@/features/insights/hooks/useInsights';
-import { DEFAULT_PERIOD, FREE_CATEGORIES, PERIODS, allowedPeriod } from '@/features/insights/insights-rules';
+import { DEFAULT_PERIOD, FREE_CATEGORIES, PERIODS, allowedPeriod, findingsToShow } from '@/features/insights/insights-rules';
 import type { PeriodDays } from '@/features/insights/insights-rules';
 import { PRO_FEATURES, featuresIn, usePro, useProCopy } from '@/features/pro';
 import { useSettings } from '@/features/settings';
@@ -52,7 +52,7 @@ export function InsightsScreen() {
   const [chosenPeriod, setPeriod] = useState<PeriodDays>(DEFAULT_PERIOD);
   const period = allowedPeriod(chosenPeriod, isPro);
   const insights = useInsights(currency, period);
-  const { data: findings } = useDashboardInsights(currency);
+  const { data: allFindings } = useDashboardInsights(currency);
 
   const header = <Header title={t('title')} right={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setCurrency} accessibilityLabel={t('currency')} /> : undefined} />;
   // A budget is for the calendar month, whatever period is shown, so its note says "this month".
@@ -62,6 +62,9 @@ export function InsightsScreen() {
     const left = budget.limit - budget.spent;
     return left >= 0 ? t('budget.left', { amount: formatCurrency(left, currency) }) : t('budget.over', { amount: formatCurrency(-left, currency) });
   };
+  // A budget under four fifths used has room: its category's rise in a week is not flagged as well.
+  const withRoom = new Set((budgets ?? []).filter((item) => item.categoryId !== null && item.currency === currency && item.limit > 0 && item.spent / item.limit < 0.8).map((item) => item.categoryId as number));
+  const findings = findingsToShow(allFindings ?? [], period, withRoom);
   const openCategory = (categoryId: number) => router.push({ pathname: '/activity', params: { categoryId, from: insights.window.start, to: insights.window.end } });
 
   if (recorded === undefined || insights.loading) {
@@ -105,20 +108,20 @@ export function InsightsScreen() {
       ) : null}
 
       <Section title={t('categories.title')} hint={t('categories.hint')}>
-        <Categories budgetNote={budgetNote} insights={insights} currency={currency} full={isPro} limit={FREE_CATEGORIES} onOpen={openCategory} />
+        <Categories budgetNote={budgetNote} insights={insights} currency={currency} full={isPro} limit={FREE_CATEGORIES} onOpen={openCategory} onMore={() => openPaywall('categories')} />
       </Section>
 
       {isPro ? (
         <>
           <Section title={t('rhythm.title')} hint={t('rhythm.hint')}>
-            <View style={styles.stack}><Rhythm insights={insights} /></View>
+            <View style={styles.stack}><Rhythm insights={insights} typicalWeek={period > 7} /></View>
           </Section>
           {insights.people.length > 0 ? (
             <Section title={t('people.title')} hint={t('people.hint')}>
               <PeopleShare insights={insights} currency={currency} onOpen={(id) => router.push({ pathname: '/people/[id]', params: { id } })} />
             </Section>
           ) : null}
-          {findings && findings.length > 0 ? (
+          {findings.length > 0 ? (
             <Section title={t('findings.title')} hint={t('findings.hint')}>
               <Findings findings={findings} />
             </Section>
@@ -129,7 +132,7 @@ export function InsightsScreen() {
           badge={t('locked.badge')}
           title={t('locked.title')}
           body={t('locked.body')}
-          items={PRO_HERE.map((id) => ({ icon: PRO_FEATURES[id].icon, title: proCopy.feature(id).title }))}
+          items={PRO_HERE.map((id) => ({ icon: PRO_FEATURES[id].icon, title: proCopy.feature(id).title, detail: proCopy.feature(id).description }))}
           actionLabel={t('locked.action')}
           onAction={() => openPaywall('periods')}
         />

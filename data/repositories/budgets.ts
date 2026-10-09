@@ -1,5 +1,5 @@
 import { db } from '@/data/db/client';
-import { PAYMENT_LOCAL_DAY } from '@/data/db/sql';
+import { NOT_LOAN_MONEY, PAYMENT_LOCAL_DAY } from '@/data/db/sql';
 import { accounts, budgets, categories, payments } from '@/data/db/schema';
 import { and, count, eq, isNull, ne, sql } from 'drizzle-orm';
 
@@ -71,7 +71,7 @@ export const getSpend = async (from: string, to: string): Promise<Spend[]> => {
     .select({ currency: accounts.currency, categoryId: payments.categoryId, amount: sql<number>`SUM(${payments.amount})` })
     .from(payments)
     .innerJoin(accounts, eq(payments.accountId, accounts.id))
-    .where(and(eq(payments.type, 'DR'), isNull(payments.loanId), sql`${day} BETWEEN ${from} AND ${to}`, ne(payments.amount, 0)))
+    .where(and(eq(payments.type, 'DR'), NOT_LOAN_MONEY, sql`${day} BETWEEN ${from} AND ${to}`, ne(payments.amount, 0)))
     .groupBy(accounts.currency, payments.categoryId);
   return rows.map((row) => ({ currency: row.currency, categoryId: row.categoryId, amount: row.amount ?? 0 }));
 };

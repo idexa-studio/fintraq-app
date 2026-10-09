@@ -72,6 +72,8 @@ export function PeriodSummary({ insights, currency, period, compare }: Common & 
         <Stat label={t('summary.moneyIn')} value={money(insights.totals.income)} tone="positive" />
         <Stat label={t('summary.moneyOut')} value={money(insights.totals.expense)} />
       </View>
+      {/* Said once, here, so a total that differs from the Activity list is explained before it is doubted. */}
+      <Text variant="callout" tone="muted">{t('summary.notCounted')}</Text>
     </Card>
   );
 }
@@ -89,7 +91,9 @@ export function Forecast({ insights, currency }: Common) {
       <View style={styles.tight}>
         <Text variant="callout" tone="muted">{t('forecast.onCourse')}</Text>
         <Money value={money(pulse.projected)} variant="amountLarge" />
-        <Text variant="callout" tone="muted">{t('forecast.perDay', { amount: money(pulse.dailyAverage) })}</Text>
+        <Text variant="callout" tone="muted">
+          {pulse.basis === 'lastMonth' ? t('forecast.fromLastMonth', { spent: money(pulse.expense), rest: money(pulse.projected - pulse.expense) }) : t('forecast.perDay', { amount: money(pulse.dailyAverage) })}
+        </Text>
       </View>
       {pace ? (
         <PaceBar
@@ -115,7 +119,7 @@ const SHADES = [PASTELS.teal, PASTELS.orange, PASTELS.pink, PASTELS.lilac, PASTE
  * categories. With Pro: spending or income, all of it, around a ring of
  * shares. Each one opens its transactions.
  */
-export function Categories({ insights, currency, full, limit, onOpen, budgetNote }: Common & { full: boolean; limit: number; onOpen: (categoryId: number) => void; /** What a category's budget has left this month, in words, for those that have one. */ budgetNote?: (categoryId: number) => string | null }) {
+export function Categories({ insights, currency, full, limit, onOpen, onMore, budgetNote }: Common & { full: boolean; limit: number; onOpen: (categoryId: number) => void; /** Without Pro: where the line naming the categories not shown leads. */ onMore?: () => void; /** What a category's budget has left this month, in words, for those that have one. */ budgetNote?: (categoryId: number) => string | null }) {
   const { t } = useTranslation('insights');
   const { size } = useTheme();
   const styles = useStyles(createStyles);
@@ -142,6 +146,12 @@ export function Categories({ insights, currency, full, limit, onOpen, budgetNote
             {budgetNote?.(category.id) ? <Text variant="callout" tone="muted">{budgetNote(category.id)}</Text> : null}
           </Touchable>
         ))}
+        {/* Says that there is more, and how much, instead of a list that looks complete. */}
+        {shown.length > top.length && onMore ? (
+          <Touchable onPress={onMore} accessibilityRole="link" accessibilityLabel={t('categories.more', { count: shown.length - top.length })}>
+            <Text variant="callout" underline>{t('categories.more', { count: shown.length - top.length })}</Text>
+          </Touchable>
+        ) : null}
       </Card>
     );
   }
@@ -186,7 +196,7 @@ export function Categories({ insights, currency, full, limit, onOpen, budgetNote
 }
 
 /** When the money goes: what a typical week costs day by day, then the last five weeks as a calendar. */
-export function Rhythm({ insights }: Pick<Common, 'insights'>) {
+export function Rhythm({ insights, typicalWeek }: Pick<Common, 'insights'> & { /** Off for a single week: its days are the summary's own chart, and one week is not a pattern. */ typicalWeek: boolean }) {
   const { t } = useTranslation('insights');
   const styles = useStyles(createStyles);
   // Any Monday to Sunday serves to name the weekdays.
@@ -194,17 +204,21 @@ export function Rhythm({ insights }: Pick<Common, 'insights'>) {
   const peak = peakIndex(insights.weekdays.map((day) => day.total));
   return (
     <>
-      <Card style={styles.card}>
-        <Text variant="bodyStrong">{t('rhythm.weekdays')}</Text>
-        <BarChart
-          bars={insights.weekdays.map((day) => ({ label: dayName(day.dow, 'short'), value: day.total }))}
-          highlight={peak}
-          accessibilityLabel={peak === undefined ? t('rhythm.weekdaysChartEmpty') : t('rhythm.weekdaysChart', { peak: dayName(insights.weekdays[peak]!.dow, 'long') })}
-        />
-      </Card>
+      {typicalWeek ? (
+        <Card style={styles.card}>
+          <Text variant="bodyStrong">{t('rhythm.weekdays')}</Text>
+          <Text variant="callout" tone="muted">{t('rhythm.weekdaysKey')}</Text>
+          <BarChart
+            bars={insights.weekdays.map((day) => ({ label: dayName(day.dow, 'short'), value: day.total }))}
+            highlight={peak}
+            accessibilityLabel={peak === undefined ? t('rhythm.weekdaysChartEmpty') : t('rhythm.weekdaysChart', { peak: dayName(insights.weekdays[peak]!.dow, 'long') })}
+          />
+        </Card>
+      ) : null}
       <Card style={styles.card}>
         <Text variant="bodyStrong">{t('rhythm.calendar')}</Text>
         <HeatGrid values={insights.heat.values} columns={[1, 2, 3, 4, 5, 6, 0].map((dow) => dayName(dow, 'narrow'))} highlight={insights.heat.today} accessibilityLabel={t('rhythm.calendarChart')} />
+        <Text variant="callout" tone="muted">{t('rhythm.calendarKey')}</Text>
       </Card>
     </>
   );

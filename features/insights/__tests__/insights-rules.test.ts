@@ -1,4 +1,4 @@
-import { allowedPeriod, chartRuns, heatValues, pace, peakIndex, weekFromMonday } from '@/features/insights/insights-rules';
+import { allowedPeriod, chartRuns, findingsToShow, heatValues, pace, peakIndex, weekFromMonday } from '@/features/insights/insights-rules';
 import { analyticsWindow } from '@/shared/calc/analytics';
 import type { HeatCell } from '@/shared/calc/month';
 
@@ -61,5 +61,19 @@ describe('where the month is heading', () => {
 
   it('has nothing to measure against without a last month', () => {
     expect(pace({ expense: 860, projected: 1070, lastMonthTotal: 0, monthProgress: 0.29 })).toBeNull();
+  });
+});
+
+describe('findingsToShow', () => {
+  const findings = [{ id: 'weekly-spend' }, { id: 'savings-rate' }, { id: 'cat-3' }, { id: 'weekly-summary' }, { id: 'monthly-net' }];
+
+  it('leaves out what the 7-day summary already says', () => {
+    expect(findingsToShow(findings, 7, new Set()).map((f) => f.id)).toEqual(['savings-rate', 'cat-3', 'monthly-net']);
+    expect(findingsToShow(findings, 30, new Set())).toHaveLength(5);
+  });
+
+  it('leaves out a category that has a budget with room', () => {
+    expect(findingsToShow(findings, 30, new Set([3])).some((f) => f.id === 'cat-3')).toBe(false);
+    expect(findingsToShow(findings, 30, new Set([4])).some((f) => f.id === 'cat-3')).toBe(true);
   });
 });

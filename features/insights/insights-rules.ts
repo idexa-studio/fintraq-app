@@ -64,3 +64,17 @@ export function pace(pulse: { expense: number; projected: number; lastMonthTotal
   if (pulse.lastMonthTotal <= 0) return null;
   return { spent: pulse.expense / pulse.lastMonthTotal, projected: pulse.projected / pulse.lastMonthTotal, today: pulse.monthProgress };
 }
+
+/**
+ * The findings worth showing under a period. Each is about the last 7 days, so under the 7-day
+ * period the two that restate the summary above them (the change in spending, and in, out and
+ * kept) are left out. A category's rise is left out when it has a budget with room: the budget is
+ * the measure the user chose for it, and a red mark beside a green bar says two things at once.
+ */
+export function findingsToShow<F extends { id: string }>(findings: readonly F[], period: PeriodDays, budgetedWithRoom: ReadonlySet<number>): F[] {
+  return findings.filter((finding) => {
+    if (period === 7 && (finding.id === 'weekly-spend' || finding.id === 'weekly-summary')) return false;
+    const category = /^cat-(\d+)$/.exec(finding.id);
+    return !(category && budgetedWithRoom.has(Number(category[1])));
+  });
+}

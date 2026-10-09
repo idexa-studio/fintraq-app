@@ -76,7 +76,7 @@ export function PlanScreen() {
       badge={t('soon.badge')}
       title={t('soon.title')}
       body={t('soon.body')}
-      items={SOON.map((id) => ({ icon: PRO_FEATURES[id].icon, title: proCopy.feature(id).title }))}
+      items={SOON.map((id) => ({ icon: PRO_FEATURES[id].icon, title: proCopy.feature(id).title, detail: proCopy.feature(id).description }))}
       actionLabel={t('soon.action')}
       onAction={() => openPaywall()}
     />
