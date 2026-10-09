@@ -1247,16 +1247,11 @@
     "add": "Meminjamkan atau meminjam",
     "currency": "Mata uang",
     "summary": {
-      "title": "Pinjaman berjalan",
       "owed": "Piutang Anda",
       "owe": "Anda berutang",
-      "none": "Tidak ada utang di kedua pihak",
-      "lend": "Meminjamkan atau meminjam",
       "people": "Orang"
     },
     "upcoming": {
-      "title": "Akan datang",
-      "noDate": "Tanpa jatuh tempo",
       "lent": "Berutang kepada Anda",
       "borrowed": "Anda berutang",
       "someone": "Seseorang",

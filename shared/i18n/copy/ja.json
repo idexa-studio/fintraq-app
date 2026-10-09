@@ -1247,16 +1247,11 @@
     "add": "貸す・借りる",
     "currency": "通貨",
     "summary": {
-      "title": "未精算の貸し借り",
       "owed": "貸している額",
       "owe": "借りている額",
-      "none": "貸し借りはありません",
-      "lend": "貸す・借りる",
       "people": "相手"
     },
     "upcoming": {
-      "title": "今後の予定",
-      "noDate": "期日なし",
       "lent": "貸している",
       "borrowed": "借りている額",
       "someone": "誰か",

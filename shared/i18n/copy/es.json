@@ -1259,16 +1259,11 @@
     "add": "Prestar o pedir prestado",
     "currency": "Moneda",
     "summary": {
-      "title": "Préstamos abiertos",
       "owed": "Te deben",
       "owe": "Debes",
-      "none": "Nadie debe nada",
-      "lend": "Prestar o pedir prestado",
       "people": "Personas"
     },
     "upcoming": {
-      "title": "Próximamente",
-      "noDate": "Sin fecha de vencimiento",
       "lent": "Te debe",
       "borrowed": "Debes",
       "someone": "Alguien",

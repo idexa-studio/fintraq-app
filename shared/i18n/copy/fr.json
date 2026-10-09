@@ -1259,16 +1259,11 @@
     "add": "Prêter ou emprunter",
     "currency": "Devise",
     "summary": {
-      "title": "Prêts en cours",
       "owed": "On vous doit",
       "owe": "Vous devez",
-      "none": "Personne ne doit rien",
-      "lend": "Prêter ou emprunter",
       "people": "Personnes"
     },
     "upcoming": {
-      "title": "À venir",
-      "noDate": "Pas d’échéance",
       "lent": "Vous doit",
       "borrowed": "Vous devez",
       "someone": "Quelqu’un",
