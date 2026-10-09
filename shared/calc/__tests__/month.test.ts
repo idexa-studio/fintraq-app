@@ -9,7 +9,9 @@ describe('buildMonthPulse', () => {
     expect(pulse.daysInMonth).toBe(30);
     expect(pulse.monthProgress).toBeCloseTo(1 / 3);
     expect(pulse.dailyAverage).toBe(30);
-    expect(pulse.projected).toBe(900);
+    // 300 so far, plus the 700 the rest of last month cost.
+    expect(pulse.projected).toBe(1000);
+    expect(pulse.basis).toBe('lastMonth');
     expect(pulse.deltaVsLastMonth).toBe(50);
     expect(pulse.shareOfLastMonth).toBeCloseTo(1 / 3);
   });
@@ -18,6 +20,14 @@ describe('buildMonthPulse', () => {
     const pulse = buildMonthPulse({ income: 0, expense: 100, lastMonthToDate: 0, lastMonthTotal: 0 }, now);
     expect(pulse.deltaVsLastMonth).toBeNull();
     expect(pulse.shareOfLastMonth).toBeNull();
+    // Nothing to go by, so the daily rate so far is carried to the end: 10 a day for 30 days.
+    expect(pulse.projected).toBe(300);
+    expect(pulse.basis).toBe('pace');
+  });
+
+  it('counts a bill paid once only once: rent on the 1st does not repeat every day', () => {
+    const pulse = buildMonthPulse({ income: 0, expense: 2000, lastMonthToDate: 2000, lastMonthTotal: 3000 }, now);
+    expect(pulse.projected).toBe(3000);
   });
 });
 
