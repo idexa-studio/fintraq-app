@@ -2,7 +2,7 @@ import type { LoanWithStats } from '@/data/repositories/loans';
 import { Card, EmptyState, Header, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, useTheme } from '@/design';
 import { BudgetList, useBudgets } from '@/features/budgets';
 import { TabTip } from '@/features/guide';
-import { useLoans } from '@/features/loans';
+import { LoanCard, useLoans } from '@/features/loans';
 import { initialsOf } from '@/features/people';
 import { dueWording, loanTotals, planLoans } from '@/features/plan/plan-rules';
 import { PRO_FEATURES, featuresIn, isOverFreeLimit, usePro, useProCopy } from '@/features/pro';
@@ -63,6 +63,9 @@ export function PlanScreen() {
       onPress={() => open(loan)}
     />
   );
+  const card = (loan: LoanWithStats, line: string) => (
+    <LoanCard key={loan.id} loan={loan} line={line} onOpen={() => open(loan)} onRepay={() => router.push({ pathname: '/loans/[id]/repay', params: { id: loan.id } })} />
+  );
   const standing = (loan: LoanWithStats) => (loan.type === 'lend' ? t('upcoming.lent') : t('upcoming.borrowed'));
   const dueLine = (loan: LoanWithStats) => {
     const due = dueWording(loan.dueDate!, today);
@@ -111,11 +114,9 @@ export function PlanScreen() {
                 />
               </Card>
               <TabTip id="plan" ready />
-              {/* One list, in the order they need attention: those with a due date first, soonest at the top. */}
-              <ListGroup>
-                {dated.map((loan) => row(loan, dueLine(loan)))}
-                {undated.map((loan) => row(loan, standing(loan)))}
-              </ListGroup>
+              {/* Each open loan as its own card, in the order they need attention: those with a due date first, soonest at the top. */}
+              {dated.map((loan) => card(loan, dueLine(loan)))}
+              {undated.map((loan) => card(loan, standing(loan)))}
             </>
           ) : (
             <EmptyState compact icon="hand-coins" color="pink" title={t('empty.title')} body={t('empty.body')} actionLabel={t('add')} onAction={lend} />
