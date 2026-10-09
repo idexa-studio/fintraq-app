@@ -1,10 +1,9 @@
-import { Button, Dialog, Emblem, Header, IconCircle, ListGroup, Message, Screen, Section, Skeleton, Text, resolveIcon, useStyles, useTheme, useToast } from '@/design';
+import { Button, Dialog, Emblem, Header, IconButton, ListGroup, ListRow, Message, Screen, Section, Sheet, Skeleton, Text, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { BudgetHead } from '@/features/budgets/components/BudgetHead';
 import { useBudgets, useDeleteBudget } from '@/features/budgets/hooks/budgets';
 import { TransactionRow, useTransactions } from '@/features/transactions';
-import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import { format, startOfMonth } from 'date-fns';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -42,6 +41,7 @@ export function BudgetScreen() {
   const accountIds = (accounts ?? []).filter((account) => account.currency === budget?.currency).map((account) => account.id);
   const { data: transactions } = useTransactions(SHOWN + 1, { types: ['DR'], accountIds, categoryIds: budget?.categoryId != null ? [budget.categoryId] : undefined, startDate: from, endDate: to, withoutLoans: true });
 
+  const [managing, setManaging] = useState(false);
   const [asking, setAsking] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -85,17 +85,8 @@ export function BudgetScreen() {
 
   return (
     <Screen
-      header={<Header title={budget.category?.name ?? t('overall')} onBack={back} backLabel={t('back')} />}
-      footer={
-        <>
-          <Button label={t('budget.edit')} variant="secondary" onPress={() => router.push({ pathname: '/budgets/[id]/edit', params: { id: budget.id } })} />
-          <Button label={t('budget.delete')} variant="link" onPress={() => setAsking(true)} />
-        </>
-      }
+      header={<Header title={budget.category?.name ?? t('overall')} onBack={back} backLabel={t('back')} right={<IconButton icon="dots-three" onPress={() => setManaging(true)} accessibilityLabel={t('budget.manage')} />} />}
     >
-      <View style={styles.mark}>
-        {budget.category ? <IconCircle icon={resolveIcon(budget.category.icon, 'tag')} color={colorNumberToHex(budget.category.color)} /> : <IconCircle icon="pie-chart" color="teal" />}
-      </View>
       <BudgetHead budget={budget} today={today} />
       {rolled > 0 ? <Text variant="callout" tone="muted" align="center">{t('budget.rolled', { amount: formatCurrency(rolled, budget.currency) })}</Text> : null}
 
@@ -108,6 +99,13 @@ export function BudgetScreen() {
           <Text variant="callout" tone="muted">{t('budget.nothing')}</Text>
         )}
       </Section>
+
+      <Sheet visible={managing} onClose={() => setManaging(false)} title={t('budget.manage')}>
+        <ListGroup>
+          <ListRow icon="pencil-simple" title={t('budget.edit')} onPress={() => { setManaging(false); router.push({ pathname: '/budgets/[id]/edit', params: { id: budget.id } }); }} />
+          <ListRow icon="trash" title={t('budget.delete')} destructive onPress={() => { setManaging(false); setAsking(true); }} trailing={<View />} />
+        </ListGroup>
+      </Sheet>
 
       <Dialog visible={asking} onRequestClose={() => setAsking(false)} title={t('budget.deleteTitle')} body={t('budget.deleteBody')}>
         <Button label={t('budget.deleteConfirm')} variant="danger" loading={remove.isPending} onPress={confirmDelete} />
@@ -123,5 +121,4 @@ export function BudgetScreen() {
 const createStyles = (_: Theme) =>
   StyleSheet.create({
     centre: { flex: 1, justifyContent: 'center' },
-    mark: { alignItems: 'center' },
   });

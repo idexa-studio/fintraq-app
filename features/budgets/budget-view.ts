@@ -59,3 +59,7 @@ export function warningAfter(budgets: readonly BudgetView[], expense: Expense): 
   const first = crossed[0];
   return first ? { budget: first.budget, crossing: first.crossing, left: first.left, over: first.over } : null;
 }
+
+/** The order budgets are listed in: the one closest to its limit, or furthest past it, first. */
+export const byUrgency = (budgets: readonly BudgetView[]): BudgetView[] =>
+  [...budgets].sort((a, b) => budgetStanding(b.spent, b.limit).share - budgetStanding(a.spent, a.limit).share || a.id - b.id);
