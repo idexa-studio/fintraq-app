@@ -76,6 +76,26 @@ describe('buildRestorePlan', () => {
     expect(plan.map((t) => t.table)).toEqual(['persons', 'accounts', 'categories', 'seeder_state']);
   });
 
+  it('restores a backup from before budgets with none, and one from after with its budgets', () => {
+    expect(buildRestorePlan(currentExport, NOW).some((t) => t.table === 'budgets')).toBe(false);
+    const withBudgets: BackupData = {
+      ...currentExport,
+      budgets: [
+        { id: 1, categoryId: 3, currency: 'INR', monthlyLimit: 5000, rollover: true, createdAt: '2026-01-01', updatedAt: '2026-01-02' },
+        { id: 2, category_id: null, currency: 'INR', monthly_limit: 20000, rollover: 0 },
+      ],
+    };
+    const plan = buildRestorePlan(withBudgets, NOW);
+    expect(plan.map((t) => t.table)).toEqual(['persons', 'accounts', 'categories', 'loans', 'payments', 'budgets', 'seeder_state']);
+    expect(rowOf(plan, 'budgets')).toEqual({ id: 1, category_id: 3, currency: 'INR', monthly_limit: 5000, rollover: 1, created_at: '2026-01-01', updated_at: '2026-01-02' });
+    expect(rowOf(plan, 'budgets', 1)).toEqual({ id: 2, category_id: null, currency: 'INR', monthly_limit: 20000, rollover: 0, created_at: NOW, updated_at: NOW });
+  });
+
+  it('drops a budget whose category is not in the backup, so it never becomes a limit on everything', () => {
+    const plan = buildRestorePlan({ ...currentExport, budgets: [{ id: 1, categoryId: 99, currency: 'INR', monthlyLimit: 100 }] }, NOW);
+    expect(plan.some((t) => t.table === 'budgets')).toBe(false);
+  });
+
   it('maps the current camelCase export column-for-column', () => {
     const plan = buildRestorePlan(currentExport, NOW);
     expect(rowOf(plan, 'accounts')).toEqual({
