@@ -31,7 +31,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 40 | 12 | In progress |
-| H | Version 2.1: budgets | 33 | 15 | In progress |
+| H | Version 2.1: budgets | 34 | 16 | In progress |
 | I | Version 2.2: repeating items | 31 | 0 |  |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
@@ -731,6 +731,7 @@ made on 2.0 still restores.
 - [ ] H4.06 The warning is said in the app when the transaction that crosses 80% or the limit is saved, with a way to open the budget. No notification in 2.1: a budget can only be crossed while recording, so it would land on the screen being looked at (decided in H1.01; notifications for budgets come with repeating items, I4)
 - [ ] H4.07 A second budget on the free plan leads to the paywall, from a control that says why (built: "Add" on Plan opens Fintraq Pro at the limit, and the form reached by link says the limit; not yet seen)
 - [ ] H4.08 Home's first steps gain "Set a budget", after "See where your money goes"; it opens the form and ticks itself when a budget exists (left out of G5 because there were no budgets)
+- [x] H4.10 The plus at the top of Plan asks what to add (a budget or a loan) instead of opening the loan form; the loan tip sits beside the loans, not above the budgets (owner, 2026-10-09: the plus opening a loan was confusing). Seen on the Samsung the same day
 - [ ] H4.09 Shared checklist
 
 ### H5. Ship

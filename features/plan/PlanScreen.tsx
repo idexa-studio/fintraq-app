@@ -1,5 +1,5 @@
 import type { LoanWithStats } from '@/data/repositories/loans';
-import { EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, SummaryCard, Text, useTheme } from '@/design';
+import { EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, LockedCard, OptionList, Screen, Section, Select, Sheet, Skeleton, SplitBar, SummaryCard, Text, useTheme } from '@/design';
 import { BudgetList, useBudgets } from '@/features/budgets';
 import { TabTip } from '@/features/guide';
 import { useLoans } from '@/features/loans';
@@ -33,6 +33,8 @@ export function PlanScreen() {
   const { data: loans, isPending } = useLoans();
   const { data: budgets } = useBudgets();
   const [showSettled, setShowSettled] = useState(false);
+  /** The tab holds two kinds of thing, so its plus asks which one. */
+  const [adding, setAdding] = useState(false);
 
   const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set([profile.defaultCurrency, ...(loans ?? []).map((loan) => loan.currency), ...(budgets ?? []).map((budget) => budget.currency)])], profile.defaultCurrency), [loans, budgets, profile.defaultCurrency]);
   const [chosen, setChosen] = useState<string | null>(null);
@@ -47,7 +49,7 @@ export function PlanScreen() {
   const addBudget = () => (!isPro && isOverFreeLimit('budgets', budgets?.length ?? 0) ? openPaywall('unlimited') : router.push('/budgets/new'));
   const inCurrency = (budgets ?? []).filter((budget) => budget.currency === currency);
   const open = (loan: LoanWithStats) => router.push({ pathname: '/loans/[id]', params: { id: loan.id } });
-  const header = <Header title={t('title')} right={<IconButton icon="plus" onPress={lend} accessibilityLabel={t('add')} />} />;
+  const header = <Header title={t('title')} right={<IconButton icon="plus" onPress={() => setAdding(true)} accessibilityLabel={t('addAny.label')} />} />;
 
   const row = (loan: LoanWithStats, line: string) => (
     <ListRow
@@ -91,11 +93,12 @@ export function PlanScreen() {
 
   return (
     <Screen tabbed header={header}>
-      <TabTip id="plan" ready={hasOpen} />
       <Section title={t('budgets.title')} hint={inCurrency.length ? t('budgets.hint') : undefined} actionLabel={inCurrency.length ? t('budgets.add') : undefined} onAction={addBudget}>
         <BudgetList budgets={inCurrency} onOpen={(id) => router.push({ pathname: '/budgets/[id]', params: { id } })} onAdd={addBudget} />
       </Section>
 
+      {/* The tip is about loans, so it sits with them, not above the budgets. */}
+      <TabTip id="plan" ready={hasOpen} />
       <SummaryCard
         title={t('summary.title')}
         trailing={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
@@ -138,6 +141,16 @@ export function PlanScreen() {
       ) : null}
 
       {soon}
+
+      <Sheet visible={adding} onClose={() => setAdding(false)} title={t('addAny.title')}>
+        <OptionList
+          groups={[{ options: [
+            { key: 'budget', title: t('addAny.budget'), subtitle: t('addAny.budgetHint'), leading: <IconCircle icon="pie-chart" color="teal" /> },
+            { key: 'loan', title: t('addAny.loan'), subtitle: t('addAny.loanHint'), leading: <IconCircle icon="hand-coins" color="pink" /> },
+          ] }]}
+          onSelect={(key) => { setAdding(false); if (key === 'budget') addBudget(); else lend(); }}
+        />
+      </Sheet>
     </Screen>
   );
 }

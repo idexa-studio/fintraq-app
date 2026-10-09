@@ -2,6 +2,14 @@
 export default {
   title: 'Plan',
   add: 'Lend or borrow',
+  addAny: {
+    label: 'Add a budget or a loan',
+    title: 'What do you want to add?',
+    budget: 'A budget',
+    budgetHint: 'A monthly limit for a category',
+    loan: 'A loan',
+    loanHint: 'Money you lent or borrowed',
+  },
   currency: 'Currency',
   budgets: {
     title: 'Budgets',
