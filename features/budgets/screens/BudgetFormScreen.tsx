@@ -3,13 +3,15 @@ import type { OptionGroup, Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { budgetBlockerOf, canBudgetAllSpending, draftOfBudget, isBudgetChanged, limitOf, newBudgetDraft, newBudgetOf, unbudgetedCategories } from '@/features/budgets/budget-form';
 import type { BudgetDraft, BudgetTarget } from '@/features/budgets/budget-form';
-import { useBudgets, useCreateBudget, useUpdateBudget } from '@/features/budgets/hooks/budgets';
+import { spentOn } from '@/features/budgets/budget-view';
+import { useBudgets, useCreateBudget, useLastMonthSpend, useUpdateBudget } from '@/features/budgets/hooks/budgets';
 import { useCategories } from '@/features/categories';
 import { FREE_LIMITS, isOverFreeLimit, usePro } from '@/features/pro';
 import { useSettings } from '@/features/settings';
 import { useLeaveGuard } from '@/features/shell';
 import { getCurrencySymbol, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
+import { formatCurrency } from '@/shared/format/money';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -40,6 +42,7 @@ export function BudgetFormScreen({ budgetId }: BudgetFormOptions) {
   const { data: budgets } = useBudgets();
   const { data: categories } = useCategories();
   const { data: accounts } = useAccounts();
+  const { data: lastMonth } = useLastMonthSpend();
   const create = useCreateBudget();
   const update = useUpdateBudget();
   const existing = editing ? budgets?.find((budget) => budget.id === budgetId) : undefined;
@@ -101,6 +104,9 @@ export function BudgetFormScreen({ budgetId }: BudgetFormOptions) {
   const allOffered = canBudgetAllSpending(budgets, draft.currency);
   const category = typeof draft.target === 'number' ? categories.find((c) => c.id === draft.target) : undefined;
 
+  // What was spent on it last month, to choose a limit against, once it is known what the budget is for.
+  const spentBefore = draft.target !== null && lastMonth ? spentOn({ categoryId: draft.target === ALL ? null : draft.target, currency: draft.currency }, lastMonth) : null;
+
   const blocker = budgetBlockerOf(draft);
   const saving = create.isPending || update.isPending;
 
@@ -142,6 +148,7 @@ export function BudgetFormScreen({ budgetId }: BudgetFormOptions) {
       <Card style={{ gap: space.sm }}>
         <Text variant="callout" tone="muted">{t('form.amount')}</Text>
         <AmountField value={draft.amountText} onChangeText={(text) => set('amountText', text)} symbol={getCurrencySymbol(draft.currency)} accessibilityLabel={t('form.amount')} focusOnArrival={!editing} />
+        {spentBefore === null ? null : <Text variant="callout" tone="muted">{spentBefore > 0 ? t('form.lastMonth', { amount: formatCurrency(spentBefore, draft.currency) }) : t('form.lastMonthNone')}</Text>}
       </Card>
 
       <FormBlock label={t('form.target')}>

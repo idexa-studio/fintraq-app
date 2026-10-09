@@ -1,5 +1,5 @@
 import type { BudgetWithCategory, Spend } from '@/data/repositories/budgets';
-import { budgetViews, budgetsFor, spentOn, warningAfter } from '@/features/budgets/budget-view';
+import { budgetViews, budgetsFor, byUrgency, spentOn, warningAfter } from '@/features/budgets/budget-view';
 import type { BudgetView } from '@/features/budgets/budget-view';
 
 const budget = (over: Partial<BudgetWithCategory>): BudgetWithCategory => ({
@@ -56,5 +56,12 @@ describe('after an expense', () => {
   it('puts a limit reached before a last fifth, and the category before all spending', () => {
     expect(warningAfter([food, all], { categoryId: 3, currency: 'USD', amount: 250 })).toMatchObject({ budget: { id: 1 }, crossing: 'over', over: 50 });
     expect(warningAfter([food, all], { categoryId: 9, currency: 'USD', amount: 320 })).toMatchObject({ budget: { id: 2 }, crossing: 'over', over: 20 });
+  });
+});
+
+describe('byUrgency', () => {
+  it('lists the budget closest to its limit first', () => {
+    const view = (id: number, limit: number, spent: number): BudgetView => ({ id, categoryId: id, category: null, currency: 'USD', monthlyLimit: limit, rollover: false, limit, spent });
+    expect(byUrgency([view(1, 500, 100), view(2, 200, 190), view(3, 100, 130)]).map((b) => b.id)).toEqual([3, 2, 1]);
   });
 });

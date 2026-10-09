@@ -27,6 +27,13 @@ export const useBudgets = () => {
   });
 };
 
+/** Last calendar month's spending, to choose a limit against. */
+export const useLastMonthSpend = () => {
+  const lastMonth = subMonths(new Date(), 1);
+  const from = format(startOfMonth(lastMonth), DAY);
+  return useQuery({ queryKey: [...QUERY_KEYS.budgets.all, 'spend', from], queryFn: () => api.getSpend(from, format(endOfMonth(lastMonth), DAY)) });
+};
+
 export const useBudgetCount = () => useQuery({ queryKey: QUERY_KEYS.budgets.count(), queryFn: api.countBudgets });
 
 export const useCreateBudget = () => {

@@ -40,8 +40,12 @@ export function monthProgress(today: Date): MonthProgress {
   return { elapsed: today.getDate() / days, daysLeft: days - today.getDate() };
 }
 
-/** Where spending ends if the rest of the month goes as it has so far. */
-export const projectedSpend = (spent: number, elapsed: number): number => (elapsed > 0 ? Math.max(0, spent) / elapsed : Math.max(0, spent));
+/**
+ * What is left, shared over the days still to come, today included: the amount a day that keeps
+ * the budget. It holds whatever the budget is for, where a forecast from the pace so far does not
+ * (rent is paid once, not a little each day).
+ */
+export const perDayLeft = (left: number, daysLeft: number): number => Math.max(0, left) / (Math.max(0, daysLeft) + 1);
 
 /**
  * This month's limit when what was left last month is carried over. Only last month's remainder

@@ -1,6 +1,6 @@
 import type { LoanWithStats } from '@/data/repositories/loans';
 import { Card, EmptyState, Header, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, useTheme } from '@/design';
-import { BudgetList, useBudgets } from '@/features/budgets';
+import { BudgetList, byUrgency, useBudgets } from '@/features/budgets';
 import { TabTip } from '@/features/guide';
 import { LoanRow, useLoans } from '@/features/loans';
 import { initialsOf } from '@/features/people';
@@ -46,7 +46,8 @@ export function PlanScreen() {
   const lend = () => router.push('/loans/new');
   // One more than the free plan keeps is offered through Pro, from the same control.
   const addBudget = () => (!isPro && isOverFreeLimit('budgets', budgets?.length ?? 0) ? openPaywall('unlimited') : router.push('/budgets/new'));
-  const inCurrency = (budgets ?? []).filter((budget) => budget.currency === currency);
+  // The budget closest to its limit comes first: it is the one being looked for.
+  const inCurrency = byUrgency((budgets ?? []).filter((budget) => budget.currency === currency));
   const open = (loan: LoanWithStats) => router.push({ pathname: '/loans/[id]', params: { id: loan.id } });
   // Each section has its own "Add", so the header carries only the currency, where more than one is held.
   const header = <Header title={t('title')} right={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : undefined} />;
@@ -103,15 +104,18 @@ export function PlanScreen() {
         <View style={{ gap: size.cardGap }}>
           {hasOpen ? (
             <>
-              <Card>
-                <SplitBar
-                  segments={[
-                    { label: t('summary.owed'), value: totals.owed, display: formatCurrency(totals.owed, currency), color: colors.brand },
-                    { label: t('summary.owe'), value: totals.owe, display: formatCurrency(totals.owe, currency), color: colors.text },
-                  ]}
-                />
-              </Card>
               <TabTip id="plan" ready />
+              {/* Owed against owing is only a picture when there is something on both sides; otherwise the list says it already. */}
+              {totals.owed > 0 && totals.owe > 0 ? (
+                <Card>
+                  <SplitBar
+                    segments={[
+                      { label: t('summary.owed'), value: totals.owed, display: formatCurrency(totals.owed, currency), color: colors.brand },
+                      { label: t('summary.owe'), value: totals.owe, display: formatCurrency(totals.owe, currency), color: colors.text },
+                    ]}
+                  />
+                </Card>
+              ) : null}
               {/* One list, in the order they need attention: those with a due date first, soonest at the top. Each carries a bar for how much has come back. */}
               <ListGroup>
                 {dated.map((loan) => openRow(loan, dueLine(loan)))}

@@ -1,4 +1,4 @@
-import { budgetStanding, crossingOf, limitWithRollover, monthProgress, projectedSpend } from '@/features/budgets/budget-rules';
+import { budgetStanding, crossingOf, limitWithRollover, monthProgress, perDayLeft } from '@/features/budgets/budget-rules';
 
 describe('budgetStanding', () => {
   it('has room below four fifths of the limit', () => {
@@ -27,10 +27,11 @@ describe('monthProgress', () => {
   });
 });
 
-describe('projectedSpend', () => {
-  it('carries the pace so far to the end of the month', () => {
-    expect(projectedSpend(150, 0.5)).toBe(300);
-    expect(projectedSpend(150, 1)).toBe(150);
+describe('perDayLeft', () => {
+  it('shares what is left over today and the days still to come', () => {
+    expect(perDayLeft(150, 2)).toBe(50);
+    expect(perDayLeft(150, 0)).toBe(150);
+    expect(perDayLeft(-20, 5)).toBe(0);
   });
 });
 

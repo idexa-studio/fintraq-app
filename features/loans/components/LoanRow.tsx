@@ -17,8 +17,8 @@ type LoanRowProps = {
 };
 
 /**
- * An open loan as one row of a list: whose it is, what is still owed, and a bar for how much of
- * it has come back. Green when the money is coming to you. What is done with a loan (a repayment,
+ * An open loan as one row of a list: whose it is, what is still owed, and, once a repayment has
+ * been made, a bar for how much of it has come back. Green when the money is coming to you. What is done with a loan (a repayment,
  * its due date) is on its own screen, so the row only opens it.
  */
 export function LoanRow({ loan, line, onOpen }: LoanRowProps) {
@@ -36,7 +36,8 @@ export function LoanRow({ loan, line, onOpen }: LoanRowProps) {
           <Text variant="bodyStrong" numberOfLines={1} style={styles.name}>{name}</Text>
           <Text variant="amount" tone={loan.type === 'lend' ? 'positive' : 'default'}>{ltr(owed)}</Text>
         </View>
-        <ProgressBar value={repaidShare(loan)} accessibilityLabel={t('loan.progressLabel')} />
+        {/* A bar with nothing in it reads as an empty field, so it waits for the first repayment. */}
+        {loan.repaid > 0 ? <ProgressBar value={repaidShare(loan)} accessibilityLabel={t('loan.progressLabel')} /> : null}
         <Text variant="callout" tone={loan.computedStatus === 'overdue' ? 'danger' : 'muted'} numberOfLines={1}>{line}</Text>
       </View>
       <Icon name="chevron-right" color={colors.text} />

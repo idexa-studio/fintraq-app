@@ -119,13 +119,13 @@ export function MoneySection() {
         <Specimen name="No budget yet" note="One quiet card on Plan, with the first step.">
           <BudgetList budgets={[]} onOpen={() => {}} onAdd={() => {}} />
         </Specimen>
-        <Specimen name="A budget, with room" note="The top of its screen: what is left, then spent and limit, then the month on one line. Solid is spent, the lighter run is where the pace so far ends, the mark is today.">
+        <Specimen name="A budget, with room" note="The top of its screen: what is left, how much of the limit is used, spent and limit, and what that leaves for each day still to come.">
           <BudgetHead budget={BUDGETS[0]!} today={DAY} />
         </Specimen>
-        <Specimen name="A budget heading over" note="Still under today, but the pace ends past the limit: the forecast turns red and says by how much.">
+        <Specimen name="A budget near its limit" note="Amber from 80% used.">
           <BudgetHead budget={BUDGETS[1]!} today={DAY} />
         </Specimen>
-        <Specimen name="A budget over" note="The figure is how far over. Nothing is forecast: the limit is already passed.">
+        <Specimen name="A budget over" note="The figure is how far over. Nothing is left to share over the days.">
           <BudgetHead budget={BUDGETS[3]!} today={DAY} />
         </Specimen>
       </Section>
