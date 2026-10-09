@@ -1350,7 +1350,7 @@
       },
       "periods": {
         "title": "Jeder Zeitraum, im Vergleich",
-        "description": "90 Tage oder ein ganzes Jahr, und jeder Zeitraum im Vergleich zum vorherigen."
+        "description": "30 Tage, 90 Tage oder ein ganzes Jahr, und jeder Zeitraum im Vergleich zum vorherigen."
       },
       "forecast": {
         "title": "Prognose",

@@ -2,10 +2,10 @@ import type { AnalyticsWindow } from '@/shared/calc/analytics';
 import { windowSlots } from '@/shared/calc/analytics';
 import type { HeatCell } from '@/shared/calc/month';
 
-/** The periods Insights can look back over. The longer two are part of Pro (`periods`). */
+/** The periods Insights can look back over. Only the last 7 days is free, as in the shipped app; the rest are part of Pro (`periods`). */
 export const PERIODS = [
   { days: 7, pro: false },
-  { days: 30, pro: false },
+  { days: 30, pro: true },
   { days: 90, pro: true },
   { days: 365, pro: true },
 ] as const;

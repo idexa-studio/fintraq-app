@@ -434,7 +434,7 @@ route template · `tsc`, lint, design audit and tests clean.
 
 ### D12. Insights
 - [x] D12.01 Period control
-- [x] D12.02 Period summary with chart (free: the last 7 and the last 30 days, counted back from today as the shipped calculations do)
+- [x] D12.02 Period summary with chart (free: the last 7 days, counted back from today as the shipped calculations do. It was built with 30 days free as well, which the shipped app sold as Pro and `docs/PRODUCT.md` lists under Pro; the owner caught it on 2026-10-09 and 30 days is Pro again)
 - [x] D12.03 Top categories (free)
 - [x] D12.04 Extended periods and comparison (Pro: `periods`)
 - [x] D12.05 Forecast (Pro)
@@ -726,7 +726,7 @@ made on 2.0 still restores.
 - [x] H4.01 Budgets on the Plan tab, above loans, each with its bar. Seen on the Samsung 2026-10-09, empty and with one budget. Built before the owner's word on the gallery pieces (H1.05), because he asked to see budgets in the app itself
 - [x] H4.02 Budget screen: limit, spent, left, days left, and this month's transactions in it. Seen on the Samsung 2026-10-09 (`/budgets/<id>`); delete not pressed
 - [x] H4.03 Form as a sheet: category or overall, amount, rollover; a category that already has a budget is not offered. Adding seen on the Samsung 2026-10-09 (`/budgets/new`); the currency row (three currencies held) and editing (a limit changed from 200 to 205) seen the same day
-- [x] H4.04 The budget shown on its category in Insights. A line under the category's bar ("Budget: ₹150 left this month"), since a budget is for the calendar month whatever period is shown; `RankBars` gained a caption line for it. Seen on the Samsung 2026-10-09 with Pro; the free list is built the same way and not yet seen
+- [x] H4.04 The budget shown on its category in Insights. A line under the category's bar ("Budget: ₹150 left this month"), since a budget is for the calendar month whatever period is shown; `RankBars` gained a caption line for it. Seen on the Samsung 2026-10-09 with Pro and as a free user; the 30, 90 and 12 month periods were opened there too
 - [x] H4.05 The entry flow says what is left in the category's budget once a category is chosen. Under the category's name, for an expense dated this month. Seen on the Samsung 2026-10-09
 - [x] H4.06 The warning is said in the app when the transaction that crosses 80% or the limit is saved, in the saved message, beside Undo ("Saved. Rent has ₹150.00 left of its budget."). Seen on the Samsung 2026-10-09 for the 80% line; reaching ("Shopping has reached its budget") and passing ("Dining Out is ₹8.31 over its budget") seen the same day. No notification in 2.1: a budget can only be crossed while recording, so it would land on the screen being looked at (decided in H1.01; notifications for budgets come with repeating items, I4)
 - [x] H4.07 A second budget on the free plan leads to the paywall, from a control that says why ("Add" on Plan opens Fintraq Pro on "No limits"; seen on the Samsung 2026-10-09 as a free user holding four budgets, which all stayed. Two flaws on the paywall were found there and fixed: "Lifetime" broke across two lines beside its badge and two prices, and "No limits" promised repeating items, which are not built)
@@ -747,7 +747,7 @@ made on 2.0 still restores.
 - [x] H5.03 Analytics events added to the catalogue: `budget_saved` (one category or all spending; added or changed) and `budget_warning` (near, reached, over). No amounts, names or ids. Both want a custom definition in the GA4 console
 - [ ] H5.04 Seen on the Android phone and on the iPhone, light and dark (Samsung: Plan, a budget, its form, Home and the paywall in light and dark, 2026-10-09. iPhone: only Home, in light; nothing there can be tapped from the Mac, so the owner has to walk through Plan and a budget on it)
 - [ ] H5.05 Upgrade test from 2.0 with real data, on the release build
-- [ ] H5.06 Store listing, screenshots and release notes
+- [ ] H5.06 Store listing, screenshots and release notes (release notes written in `update-note.txt` on 2026-10-09; the listing and screenshots wait for the owner)
 - [ ] H5.07 Staged rollout: 5%, 20%, 50%, 100%
 - [ ] H5.08 Owner: go or no-go at each step
 

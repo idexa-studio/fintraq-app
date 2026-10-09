@@ -1366,7 +1366,7 @@
       },
       "periods": {
         "title": "Cualquier periodo, comparado",
-        "description": "90 días o un año entero, y cada periodo comparado con el anterior."
+        "description": "30 días, 90 días o un año entero, y cada periodo comparado con el anterior."
       },
       "forecast": {
         "title": "Previsión",

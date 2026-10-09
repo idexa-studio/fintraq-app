@@ -1,5 +1,8 @@
 What's New
 
-- Cloud backup and restore now more reliable
-- Automatic backups run in the background
+- Budgets: set a monthly limit for a category, or for all your spending, under Plan
+- See what is left as the month goes, on Home and on Plan
+- Fintraq tells you when an expense takes a budget close to its limit, or past it
+- Insights leaves loans and transfers out of income and spending, and its month forecast is more accurate
+- Transfer and New loan are one tap from Home
 - Bug fixes and stability improvements

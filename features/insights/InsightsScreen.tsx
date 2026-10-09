@@ -90,14 +90,16 @@ export function InsightsScreen() {
 
   return (
     <Screen tabbed header={header}>
-      <View style={styles.periods}>
-        {/* Only the periods this plan has: the longer ones are named on the Pro card, not shown locked here. */}
-        <ChipRow>
-          {PERIODS.filter((option) => isPro || !option.pro).map((option) => (
-            <Chip key={option.days} label={t(`periods.d${option.days}`)} selected={option.days === period} onPress={() => setPeriod(option.days)} />
-          ))}
-        </ChipRow>
-      </View>
+      {/* Only with Pro is there a period to choose: without it the one period is named by the summary, and the longer ones on the Pro card. */}
+      {isPro ? (
+        <View style={styles.periods}>
+          <ChipRow>
+            {PERIODS.map((option) => (
+              <Chip key={option.days} label={t(`periods.d${option.days}`)} selected={option.days === period} onPress={() => setPeriod(option.days)} />
+            ))}
+          </ChipRow>
+        </View>
+      ) : null}
 
       <PeriodSummary insights={insights} currency={currency} period={period} compare={isPro} />
 
