@@ -26,6 +26,10 @@ export type AnalyticsEvents = {
   tutorial_complete: { first_entry: 'added' | 'skipped' };
   transaction_saved: { transaction_type: TransactionKind; mode: SaveMode };
   account_saved: { account_type: string; mode: SaveMode };
+  /** A budget added or changed; `scope` is one category or all spending. The limit itself is never sent. */
+  budget_saved: { scope: 'category' | 'overall'; mode: SaveMode };
+  /** Saving an expense took a budget to four fifths of its limit, to the limit, or past it. */
+  budget_warning: { level: 'near' | 'reached' | 'over' };
   /** A settled global search. The query itself is never sent, only how many results it found. */
   search_performed: { results: ResultBucket };
   /** Paywall shown; `source` is the Pro feature the user tried, or `direct`. */

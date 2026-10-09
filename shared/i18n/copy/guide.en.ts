@@ -22,6 +22,10 @@ export default {
       title: 'Settings moved',
       body: 'Tap the profile icon at the top of Home for settings, accounts, categories and backup.',
     },
+    budgets: {
+      title: 'Budgets',
+      body: 'Set a monthly limit for a category under Plan and see what is left as you spend.',
+    },
     records: {
       title: 'Your records are as you left them',
       body: 'Every account, transaction and loan carried over. Nothing was changed.',

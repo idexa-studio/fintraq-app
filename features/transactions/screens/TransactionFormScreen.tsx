@@ -71,6 +71,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
         : t('budgets:saved.near', { name, amount: formatCurrency(warning.left, currency) });
       const createdId = await form.save(t('defaultNote'));
       Analytics.track('transaction_saved', { transaction_type: kind, mode: form.editing ? 'edit' : 'create' });
+      if (warning) Analytics.track('budget_warning', { level: warning.over > 0 ? 'over' : warning.crossing === 'over' ? 'reached' : 'near' });
       guard.release();
       toast.show(
         createdId == null

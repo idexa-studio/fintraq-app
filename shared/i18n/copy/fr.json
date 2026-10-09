@@ -412,7 +412,8 @@
         "body": "Ce que vous avez saisi ne sera pas enregistré.",
         "confirm": "Abandonner",
         "cancel": "Continuer la saisie"
-      }
+      },
+      "deleteBodyBudget": "Aucune transaction ne l’utilise. Son budget est supprimé avec elle. Cette action est définitive."
     }
   },
   "common": {
@@ -448,7 +449,8 @@
       "investment": "Placement",
       "loan": "Prêt",
       "ewallet": "Portefeuille"
-    }
+    },
+    "pickCurrency": "Quelle devise ?"
   },
   "export": {
     "dialog": {
@@ -632,7 +634,8 @@
         "reminder": "Activez le rappel quotidien",
         "secondAccount": "Ajoutez un deuxième compte",
         "backup": "Sauvegardez sur Google Drive",
-        "insights": "Voyez où va votre argent"
+        "insights": "Voyez où va votre argent",
+        "budget": "Définir un budget"
       }
     },
     "prompt": {
@@ -650,12 +653,10 @@
       }
     },
     "quick": {
-      "title": "Actions rapides",
       "transfer": "Virement",
-      "hint": "Raccourcis vers ce que vous faites souvent",
-      "transferDetail": "Déplacez de l’argent entre vos comptes",
-      "lend": "Prêter ou emprunter",
-      "lendDetail": "Suivez l’argent prêté ou emprunté"
+      "transferDetail": "Entre vos comptes",
+      "lend": "Nouveau prêt",
+      "lendDetail": "Argent prêté ou emprunté"
     },
     "month": {
       "title": "Ce mois-ci",
@@ -697,7 +698,12 @@
       "emptyTitle": "Souvenez-vous de qui doit quoi",
       "emptyBody": "Suivez l’argent prêté, emprunté ou partagé.",
       "emptyAction": "Ajouter une personne",
-      "add": "Ajouter"
+      "add": "Ajouter",
+      "overdue": "En retard"
+    },
+    "budgets": {
+      "title": "Budgets",
+      "hint": "Les plus proches de leur limite ce mois-ci"
     }
   },
   "insights": {
@@ -730,18 +736,20 @@
       "moneyOut": "Sorties",
       "chart": "Dépenses sur la période. Le maximum a été de {{amount}}, {{when}}.",
       "chartEmpty": "Rien n’a été dépensé sur cette période.",
-      "week": "la semaine du {{date}}"
+      "week": "la semaine du {{date}}",
+      "notCounted": "Les prêts et les virements ne sont pas comptés : ils déplacent de l’argent, ce ne sont ni des revenus ni des dépenses."
     },
     "forecast": {
       "title": "Où va le mois",
-      "hint": "Au rythme de vos dépenses ce mois-ci",
+      "hint": "Ce que vous avez dépensé et ce qui reste à venir",
       "onCourse": "En passe de dépenser",
       "perDay": "Environ {{amount}} par jour jusqu’ici.",
       "start": "1er {{month}}",
       "end": "Les {{amount}} du mois dernier",
       "today": "Aujourd’hui",
       "chart": "{{spent}} % du total du mois dernier dépensés alors que {{gone}} % de ce mois sont écoulés ; en route vers {{projected}} %.",
-      "noBaseline": "Avec un mois complet enregistré, vous verrez ici la comparaison."
+      "noBaseline": "Avec un mois complet enregistré, vous verrez ici la comparaison.",
+      "fromLastMonth": "{{spent}} jusqu’ici, plus les {{rest}} qu’a coûté le reste du mois dernier."
     },
     "categories": {
       "title": "Où c’est passé",
@@ -754,7 +762,10 @@
       "share": "{{percent}} %",
       "shareLabel": "{{name}}, {{percent}} pour cent",
       "ring": "{{kind}} par catégorie",
-      "none": "Rien ici sur cette période"
+      "none": "Rien ici sur cette période",
+      "more_one": "{{count}} catégorie de plus avec Pro",
+      "more_other": "{{count}} catégories de plus avec Pro",
+      "more_many": "{{count}} catégories de plus avec Pro"
     },
     "rhythm": {
       "title": "Rythme",
@@ -763,34 +774,36 @@
       "weekdaysChart": "Dépense moyenne par jour de la semaine. C’est le {{peak}} qui coûte le plus.",
       "weekdaysChartEmpty": "Dépense moyenne par jour de la semaine.",
       "calendar": "Les cinq dernières semaines",
-      "calendarChart": "Dépenses par jour sur les cinq dernières semaines ; plus foncé là où il a été dépensé davantage."
+      "calendarChart": "Dépenses par jour sur les cinq dernières semaines ; plus foncé là où il a été dépensé davantage.",
+      "calendarKey": "Chaque carré est un jour. Plus il est foncé, plus vous avez dépensé. Le vert, c’est aujourd’hui.",
+      "weekdaysKey": "Ce que coûte en moyenne chaque jour de la semaine sur cette période."
     },
     "people": {
       "title": "Avec qui vous dépensez",
-      "hint": "Vers qui vont vos dépenses"
+      "hint": "Dépenses enregistrées avec une personne"
     },
     "findings": {
       "title": "Bon à savoir",
       "hint": "Tiré de ce que vous avez enregistré",
       "spendingUp": "Dépenses en hausse de {{pct}} %",
-      "spendingUpHint": "Par rapport à la semaine dernière. Activité montre où c’est passé.",
+      "spendingUpHint": "Sur les 7 derniers jours, par rapport aux 7 précédents. Activité montre où c’est passé.",
       "spendingDown": "Dépenses en baisse de {{pct}} %",
-      "spendingDownHint": "Par rapport à la semaine dernière.",
+      "spendingDownHint": "Sur les 7 derniers jours, par rapport aux 7 précédents.",
       "incomeUp": "Revenus en hausse de {{pct}} %",
       "incomeDown": "Revenus en baisse de {{pct}} %",
-      "incomeHint": "Par rapport à la semaine dernière.",
+      "incomeHint": "Sur les 7 derniers jours, par rapport aux 7 précédents.",
       "keeping": "{{rate}} % des revenus gardés",
-      "keepingUp": "Une part plus grande que la semaine dernière.",
-      "keepingDown": "Une part plus petite que la semaine dernière.",
-      "keepingSame": "À peu près la même part que la semaine dernière.",
+      "keepingUp": "Sur les 7 derniers jours. Une part plus grande que sur les 7 précédents.",
+      "keepingDown": "Sur les 7 derniers jours. Une part plus petite que sur les 7 précédents.",
+      "keepingSame": "Sur les 7 derniers jours. À peu près la même part que sur les 7 précédents.",
       "categoryUp": "{{name}} en hausse de {{pct}} %",
-      "categoryUpHint": "Plus que ce que vous y dépensez d’habitude en une semaine.",
+      "categoryUpHint": "Sur les 7 derniers jours, par rapport à ce que vous y dépensez d’habitude en 7.",
       "categoryDown": "{{name}} en baisse de {{pct}} %",
-      "categoryDownHint": "Moins que ce que vous y dépensez d’habitude en une semaine.",
-      "week": "Cette semaine jusqu’ici",
+      "categoryDownHint": "Sur les 7 derniers jours, par rapport à ce que vous y dépensez d’habitude en 7.",
+      "week": "Les 7 derniers jours",
       "weekKept": "{{income}} entrés · {{expense}} sortis · {{amount}} gardés",
       "weekOver": "{{income}} entrés · {{expense}} sortis · {{amount}} de trop",
-      "bestWeek": "Le plus gardé en une semaine sur les 90 derniers jours.",
+      "bestWeek": "Le plus gardé en 7 jours sur les 35 derniers.",
       "monthAhead": "Plus d’entrées que de sorties ce mois-ci",
       "monthAheadHint": "Les revenus devancent les dépenses jusqu’ici.",
       "monthBehind": "Plus de sorties que d’entrées ce mois-ci",
@@ -806,6 +819,10 @@
       "title": "Les analyses grandissent avec ce que vous enregistrez",
       "body": "Ajoutez quelques opérations et cet onglet montrera où va votre argent, et quand.",
       "action": "Ajouter une opération"
+    },
+    "budget": {
+      "left": "Budget : reste {{amount}} ce mois-ci",
+      "over": "Budget : {{amount}} de trop ce mois-ci"
     }
   },
   "loans": {
@@ -1296,6 +1313,17 @@
       "title": "Prévoyez, ne regardez pas seulement en arrière",
       "body": "Ils arrivent, et sont inclus quand vous avez Pro.",
       "action": "Voir Fintraq Pro"
+    },
+    "loans": {
+      "title": "Prêts",
+      "add": "Ajouter",
+      "hint": "Ce qui est dû, dans un sens ou dans l’autre",
+      "peopleHint": "Toutes les personnes à qui vous prêtez ou empruntez"
+    },
+    "budgets": {
+      "title": "Budgets",
+      "add": "Ajouter",
+      "hint": "Ce qu’il reste ce mois-ci"
     }
   },
   "pro": {
@@ -1338,11 +1366,11 @@
       },
       "periods": {
         "title": "Toute période, comparée",
-        "description": "30 jours, 90 jours, un an ou votre propre période, chacune face à la précédente."
+        "description": "90 jours ou une année entière, et chaque période comparée à la précédente."
       },
       "forecast": {
         "title": "Prévision",
-        "description": "Où ce mois finira au rythme de vos dépenses."
+        "description": "Où ce mois finira, d’après ce que vous avez dépensé et ce qu’a coûté le mois dernier."
       },
       "categories": {
         "title": "Répartition par catégorie",
@@ -1350,15 +1378,15 @@
       },
       "rhythm": {
         "title": "Rythme",
-        "description": "Quels jours vous coûtent le plus, sur la semaine et sur le mois."
+        "description": "Les jours de la semaine qui vous coûtent le plus, et les cinq dernières semaines jour par jour."
       },
       "people": {
         "title": "Personnes",
-        "description": "Avec qui vous dépensez, et comment les soldes se répartissent."
+        "description": "Avec qui vous dépensez, du plus grand au plus petit."
       },
       "insights": {
-        "title": "Analyses",
-        "description": "Des tendances utiles à connaître, en mots simples."
+        "title": "Bon à savoir",
+        "description": "Ce qui a changé sur les 7 derniers jours, en mots simples."
       },
       "netWorthTrend": {
         "title": "Patrimoine net dans le temps",
@@ -1382,7 +1410,7 @@
       },
       "unlimited": {
         "title": "Sans limites",
-        "description": "Plus de {{people}} personnes, {{loans}} prêts, {{budgets}} budget et {{recurring}} opérations récurrentes."
+        "description": "Plus de {{people}} personnes, {{loans}} prêts et {{budgets}} budget."
       }
     },
     "paywall": {
@@ -1864,7 +1892,111 @@
       "records": {
         "title": "Vos données sont telles que vous les avez laissées",
         "body": "Chaque compte, opération et prêt a été conservé. Rien n’a été modifié."
+      },
+      "budgets": {
+        "title": "Budgets",
+        "body": "Fixez une limite mensuelle pour une catégorie dans Prévoir et voyez ce qu’il reste au fil de vos dépenses."
       }
+    }
+  },
+  "budgets": {
+    "title": "Budgets",
+    "head": {
+      "spent": "Dépensé",
+      "left": "Reste ce mois-ci",
+      "over": "Dépassement ce mois-ci",
+      "reached": "Limite atteinte",
+      "limit": "Limite",
+      "daysLeft_one": "{{count}} jour restant",
+      "daysLeft_other": "{{count}} jours restants",
+      "daysLeft_many": "{{count}} jours restants",
+      "lastDay": "Dernier jour du mois",
+      "used": "Part de la limite utilisée",
+      "perDay": "Environ {{amount}} par jour pour rester dans la limite."
+    },
+    "close": "Fermer",
+    "back": "Retour",
+    "limit": {
+      "seePro": "Voir Pro",
+      "reached_one": "L’offre gratuite garde {{count}} budget. Pro n’a pas de limite.",
+      "reached_other": "L’offre gratuite garde {{count}} budgets. Pro n’a pas de limite.",
+      "reached_many": "L’offre gratuite garde {{count}} budgets. Pro n’a pas de limite."
+    },
+    "budget": {
+      "thisMonth": "Ce mois-ci",
+      "keep": "Le garder",
+      "deleteFailed": "Suppression impossible",
+      "deleteFailedBody": "Rien n’a été modifié. Réessayez.",
+      "ok": "OK",
+      "notFound": "Ce budget n’existe plus",
+      "manage": "Gérer le budget",
+      "edit": "Modifier la limite",
+      "rolled": "Inclut {{amount}} restés du mois dernier",
+      "thisMonthHint": "Ce qui a compté",
+      "nothing": "Aucune dépense ce mois-ci pour l’instant",
+      "delete": "Supprimer le budget",
+      "deleteTitle": "Supprimer ce budget ?",
+      "deleteBody": "Vos transactions restent. Seule la limite est retirée.",
+      "deleteConfirm": "Supprimer le budget",
+      "deleted": "Budget supprimé"
+    },
+    "form": {
+      "targetHint": "Catégorie",
+      "save": "Enregistrer",
+      "changesSaved": "Modifications enregistrées",
+      "pickCurrency": "Quelle devise ?",
+      "saveFailed": "Enregistrement impossible",
+      "saveFailedBody": "Rien n’a été modifié. Réessayez.",
+      "ok": "OK",
+      "discard": {
+        "titleEdit": "Abandonner vos modifications ?",
+        "body": "Ce que vous avez saisi ne sera pas enregistré.",
+        "confirm": "Abandonner",
+        "cancel": "Continuer la saisie",
+        "title": "Abandonner ce budget ?"
+      },
+      "newTitle": "Nouveau budget",
+      "editTitle": "Modifier le budget",
+      "amount": "Limite mensuelle",
+      "lastMonth": "Mois dernier : {{amount}} dépensés",
+      "lastMonthNone": "Rien n’y a été dépensé le mois dernier",
+      "target": "Pour :",
+      "chooseTarget": "Choisissez une catégorie",
+      "allHint": "Toutes les dépenses en {{currency}}",
+      "currency": "En :",
+      "options": "Options :",
+      "rollover": "Reporter ce qu’il reste",
+      "rolloverHint": "Ce qui n’est pas dépensé ce mois-ci s’ajoute à la limite du mois suivant.",
+      "create": "Ajouter le budget",
+      "created": "Budget ajouté",
+      "blocked": {
+        "target": "Choisissez à quoi sert le budget",
+        "amount": "Saisissez une limite pour enregistrer"
+      },
+      "pickTarget": "À quoi sert ce budget ?"
+    },
+    "hint": "Ce qu’il reste ce mois-ci",
+    "add": "Ajouter un budget",
+    "overall": "Toutes les dépenses",
+    "row": {
+      "of": "{{spent}} sur {{limit}}",
+      "left": "Reste {{amount}}",
+      "over": "{{amount}} de trop",
+      "reached": "Limite atteinte"
+    },
+    "empty": {
+      "title": "Fixez une limite pour une catégorie",
+      "body": "Fintraq montre ce qu’il reste au fil du mois et vous prévient avant que vous l’atteigniez."
+    },
+    "entry": {
+      "left": "Reste {{amount}} sur son budget",
+      "over": "{{amount}} au-dessus de son budget",
+      "reached": "Son budget est épuisé"
+    },
+    "saved": {
+      "near": "Enregistré. Il reste {{amount}} sur le budget de {{name}}.",
+      "reached": "Enregistré. {{name}} a atteint son budget.",
+      "over": "Enregistré. {{name}} dépasse son budget de {{amount}}."
     }
   }
 }

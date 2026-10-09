@@ -407,7 +407,8 @@
         "body": "入力した内容は保存されません。",
         "confirm": "破棄",
         "cancel": "編集を続ける"
-      }
+      },
+      "deleteBodyBudget": "どの取引にも使われていません。このカテゴリの予算も一緒に削除されます。この操作は取り消せません。"
     }
   },
   "common": {
@@ -442,7 +443,8 @@
       "investment": "投資",
       "loan": "貸し借り",
       "ewallet": "ウォレット"
-    }
+    },
+    "pickCurrency": "どの通貨ですか？"
   },
   "export": {
     "dialog": {
@@ -622,7 +624,8 @@
         "reminder": "毎日のリマインダーをオンにする",
         "secondAccount": "2つ目の口座を追加する",
         "backup": "Google ドライブにバックアップする",
-        "insights": "お金の行き先を見る"
+        "insights": "お金の行き先を見る",
+        "budget": "予算を決める"
       }
     },
     "prompt": {
@@ -640,12 +643,10 @@
       }
     },
     "quick": {
-      "title": "クイック操作",
       "transfer": "振替",
-      "hint": "よく使う操作への近道",
-      "transferDetail": "口座間でお金を移す",
-      "lend": "貸す・借りる",
-      "lendDetail": "貸したお金、借りたお金を管理"
+      "transferDetail": "自分の口座間で",
+      "lend": "新しい貸し借り",
+      "lendDetail": "貸したお金・借りたお金"
     },
     "month": {
       "title": "今月",
@@ -686,7 +687,12 @@
       "emptyTitle": "誰にいくらあるかを覚えておく",
       "emptyBody": "貸したお金、借りたお金、割り勘を管理します。",
       "emptyAction": "相手を追加",
-      "add": "追加"
+      "add": "追加",
+      "overdue": "期限超過"
+    },
+    "budgets": {
+      "title": "予算",
+      "hint": "今月、上限に最も近いもの"
     }
   },
   "insights": {
@@ -719,18 +725,20 @@
       "moneyOut": "出金",
       "chart": "期間中の支出。最も多かったのは{{when}}の {{amount}} です。",
       "chartEmpty": "この期間は支出がありません。",
-      "week": "{{date}} の週"
+      "week": "{{date}} の週",
+      "notCounted": "貸し借りと振替は含みません。お金を動かすだけで、収入でも支出でもないためです。"
     },
     "forecast": {
       "title": "今月の見通し",
-      "hint": "今月の支出ペースのままなら",
+      "hint": "これまでの支出と、これからの見込み",
       "onCourse": "このままだと支出は",
       "perDay": "これまで1日あたり約 {{amount}}。",
       "start": "{{month}}1日",
       "end": "先月は {{amount}}",
       "today": "今日",
       "chart": "今月の{{gone}}%が過ぎた時点で、先月合計の{{spent}}%を使いました。このままだと{{projected}}%になります。",
-      "noBaseline": "1か月分の記録がそろうと、ここで比較できます。"
+      "noBaseline": "1か月分の記録がそろうと、ここで比較できます。",
+      "fromLastMonth": "これまでに{{spent}}、さらに先月の残り期間にかかった{{rest}}。"
     },
     "categories": {
       "title": "お金の行き先",
@@ -743,7 +751,9 @@
       "share": "{{percent}}%",
       "shareLabel": "{{name}}、{{percent}}パーセント",
       "ring": "カテゴリ別の{{kind}}",
-      "none": "この期間は何もありません"
+      "none": "この期間は何もありません",
+      "more_one": "Proであと{{count}}カテゴリ",
+      "more_other": "Proであと{{count}}カテゴリ"
     },
     "rhythm": {
       "title": "リズム",
@@ -752,34 +762,36 @@
       "weekdaysChart": "曜日ごとの平均支出。最も多いのは{{peak}}です。",
       "weekdaysChartEmpty": "曜日ごとの平均支出。",
       "calendar": "過去5週間",
-      "calendarChart": "過去5週間の日ごとの支出。多い日ほど濃く表示されます。"
+      "calendarChart": "過去5週間の日ごとの支出。多い日ほど濃く表示されます。",
+      "calendarKey": "1マスが1日です。色が濃いほど多く使った日です。緑は今日です。",
+      "weekdaysKey": "この期間の曜日ごとの平均支出です。"
     },
     "people": {
       "title": "誰と使っているか",
-      "hint": "支出の相手"
+      "hint": "人と一緒に記録した支出"
     },
     "findings": {
       "title": "知っておきたいこと",
       "hint": "記録の中から選びました",
       "spendingUp": "支出が{{pct}}%増加",
-      "spendingUpHint": "先週との比較。行き先は「履歴」で確認できます。",
+      "spendingUpHint": "直近7日間を、その前の7日間と比べています。行き先は「履歴」でわかります。",
       "spendingDown": "支出が{{pct}}%減少",
-      "spendingDownHint": "先週との比較。",
+      "spendingDownHint": "直近7日間を、その前の7日間と比べています。",
       "incomeUp": "収入が{{pct}}%増加",
       "incomeDown": "収入が{{pct}}%減少",
-      "incomeHint": "先週との比較。",
+      "incomeHint": "直近7日間を、その前の7日間と比べています。",
       "keeping": "収入の{{rate}}%が残っています",
-      "keepingUp": "先週より大きい割合です。",
-      "keepingDown": "先週より小さい割合です。",
-      "keepingSame": "先週とほぼ同じ割合です。",
+      "keepingUp": "直近7日間。その前の7日間より大きい割合です。",
+      "keepingDown": "直近7日間。その前の7日間より小さい割合です。",
+      "keepingSame": "直近7日間。その前の7日間とほぼ同じ割合です。",
       "categoryUp": "{{name}} が{{pct}}%増加",
-      "categoryUpHint": "ふだんの1週間より多く使っています。",
+      "categoryUpHint": "直近7日間を、ふだん7日間で使う額と比べています。",
       "categoryDown": "{{name}} が{{pct}}%減少",
-      "categoryDownHint": "ふだんの1週間より少なく使っています。",
-      "week": "今週ここまで",
+      "categoryDownHint": "直近7日間を、ふだん7日間で使う額と比べています。",
+      "week": "直近7日間",
       "weekKept": "入金 {{income}} · 出金 {{expense}} · 残り {{amount}}",
       "weekOver": "入金 {{income}} · 出金 {{expense}} · 超過 {{amount}}",
-      "bestWeek": "過去90日間で、1週間に最も多く残した額です。",
+      "bestWeek": "直近35日のうち、7日間で最も多く残りました。",
       "monthAhead": "今月は入金が出金を上回っています",
       "monthAheadHint": "ここまでは収入が支出を上回っています。",
       "monthBehind": "今月は出金が入金を上回っています",
@@ -795,6 +807,10 @@
       "title": "記録が増えるほど分析も充実します",
       "body": "取引をいくつか追加すると、このタブでお金の行き先と時期がわかります。",
       "action": "取引を追加"
+    },
+    "budget": {
+      "left": "予算：今月の残り{{amount}}",
+      "over": "予算：今月{{amount}}超過"
     }
   },
   "loans": {
@@ -1281,6 +1297,17 @@
       "title": "振り返るだけでなく、先の計画も",
       "body": "これらは準備中で、Pro をお持ちなら含まれます。",
       "action": "Fintraq Pro を見る"
+    },
+    "loans": {
+      "title": "貸し借り",
+      "add": "追加",
+      "hint": "貸している分と借りている分",
+      "peopleHint": "貸し借りのあるすべての人"
+    },
+    "budgets": {
+      "title": "予算",
+      "add": "追加",
+      "hint": "今月の残り"
     }
   },
   "pro": {
@@ -1323,11 +1350,11 @@
       },
       "periods": {
         "title": "期間を選んで比較",
-        "description": "30日間、90日間、1年間、または自分で決めた期間を、その前の期間と比べます。"
+        "description": "90日間または1年間。どの期間も前の期間と比べられます。"
       },
       "forecast": {
         "title": "予測",
-        "description": "今の支出ペースで今月がどこに着地するか。"
+        "description": "これまでの支出と先月の実績から、今月の着地を示します。"
       },
       "categories": {
         "title": "カテゴリ別の内訳",
@@ -1335,15 +1362,15 @@
       },
       "rhythm": {
         "title": "リズム",
-        "description": "週と月の中で、どの日に最もお金がかかるか。"
+        "description": "支出の多い曜日と、直近5週間の日ごとの様子。"
       },
       "people": {
         "title": "相手",
-        "description": "誰と使っているか、差額がどう分かれているか。"
+        "description": "誰との支出が多いか、多い順に。"
       },
       "insights": {
-        "title": "分析",
-        "description": "知っておきたい傾向を、平易な言葉で。"
+        "title": "知っておきたいこと",
+        "description": "直近7日間の変化を、わかりやすい言葉で。"
       },
       "netWorthTrend": {
         "title": "純資産の推移",
@@ -1367,7 +1394,7 @@
       },
       "unlimited": {
         "title": "上限なし",
-        "description": "相手{{people}}人、貸し借り{{loans}}件、予算{{budgets}}件、繰り返しの取引{{recurring}}件を超えて使えます。"
+        "description": "{{people}}人、貸し借り{{loans}}件、予算{{budgets}}件を超えて使えます。"
       }
     },
     "paywall": {
@@ -1846,7 +1873,109 @@
       "records": {
         "title": "記録はそのまま残っています",
         "body": "すべての口座、取引、貸し借りを引き継ぎました。変更はありません。"
+      },
+      "budgets": {
+        "title": "予算",
+        "body": "「予定」でカテゴリに月の上限を決めると、使うたびに残りがわかります。"
       }
+    }
+  },
+  "budgets": {
+    "title": "予算",
+    "head": {
+      "spent": "使った額",
+      "left": "今月の残り",
+      "over": "今月の超過",
+      "reached": "上限に達しました",
+      "limit": "上限",
+      "daysLeft_one": "あと{{count}}日",
+      "daysLeft_other": "あと{{count}}日",
+      "lastDay": "月の最終日",
+      "used": "上限のうち使った割合",
+      "perDay": "1日あたり約{{amount}}なら上限内に収まります。"
+    },
+    "close": "閉じる",
+    "back": "戻る",
+    "limit": {
+      "seePro": "Pro を見る",
+      "reached_one": "無料プランでは予算は{{count}}件までです。Proは無制限です。",
+      "reached_other": "無料プランでは予算は{{count}}件までです。Proは無制限です。"
+    },
+    "budget": {
+      "thisMonth": "今月",
+      "keep": "残す",
+      "deleteFailed": "削除できませんでした",
+      "deleteFailedBody": "何も変更されていません。もう一度お試しください。",
+      "ok": "OK",
+      "notFound": "この予算はもうありません",
+      "manage": "予算の管理",
+      "edit": "上限を変更",
+      "rolled": "先月の残り{{amount}}を含みます",
+      "thisMonthHint": "この予算に数えたもの",
+      "nothing": "今月はまだ支出がありません",
+      "delete": "予算を削除",
+      "deleteTitle": "この予算を削除しますか？",
+      "deleteBody": "取引はそのまま残ります。上限だけがなくなります。",
+      "deleteConfirm": "予算を削除",
+      "deleted": "予算を削除しました"
+    },
+    "form": {
+      "targetHint": "カテゴリ",
+      "save": "保存",
+      "changesSaved": "変更を保存しました",
+      "pickCurrency": "どの通貨ですか？",
+      "saveFailed": "保存できませんでした",
+      "saveFailedBody": "何も変更されていません。もう一度お試しください。",
+      "ok": "OK",
+      "discard": {
+        "titleEdit": "変更を破棄しますか？",
+        "body": "入力した内容は保存されません。",
+        "confirm": "破棄",
+        "cancel": "編集を続ける",
+        "title": "この予算を破棄しますか？"
+      },
+      "newTitle": "新しい予算",
+      "editTitle": "予算を編集",
+      "amount": "月の上限",
+      "lastMonth": "先月：{{amount}}の支出",
+      "lastMonthNone": "先月はこの支出がありませんでした",
+      "target": "対象：",
+      "chooseTarget": "カテゴリを選ぶ",
+      "allHint": "{{currency}}のすべての支出",
+      "currency": "通貨：",
+      "options": "オプション：",
+      "rollover": "残りを繰り越す",
+      "rolloverHint": "今月使わなかった分が来月の上限に加わります。",
+      "create": "予算を追加",
+      "created": "予算を追加しました",
+      "blocked": {
+        "target": "予算の対象を選んでください",
+        "amount": "保存するには上限を入力してください"
+      },
+      "pickTarget": "何の予算ですか？"
+    },
+    "hint": "今月の残り",
+    "add": "予算を追加",
+    "overall": "すべての支出",
+    "row": {
+      "of": "{{limit}}のうち{{spent}}",
+      "left": "残り{{amount}}",
+      "over": "{{amount}}超過",
+      "reached": "上限に達しました"
+    },
+    "empty": {
+      "title": "カテゴリに上限を決める",
+      "body": "Fintraqが月の途中で残りを示し、上限に達する前にお知らせします。"
+    },
+    "entry": {
+      "left": "予算の残り{{amount}}",
+      "over": "予算を{{amount}}超過",
+      "reached": "予算を使い切りました"
+    },
+    "saved": {
+      "near": "保存しました。{{name}}の予算は残り{{amount}}です。",
+      "reached": "保存しました。{{name}}は予算に達しました。",
+      "over": "保存しました。{{name}}は予算を{{amount}}超えています。"
     }
   }
 }

@@ -9,7 +9,8 @@ import { useCategories } from '@/features/categories';
 import { FREE_LIMITS, isOverFreeLimit, usePro } from '@/features/pro';
 import { useSettings } from '@/features/settings';
 import { useLeaveGuard } from '@/features/shell';
-import { getCurrencySymbol, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
+import { Analytics } from '@/platform/telemetry';
+import { currencyName, getCurrencySymbol, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import { useRouter } from 'expo-router';
@@ -119,6 +120,7 @@ export function BudgetFormScreen({ budgetId }: BudgetFormOptions) {
     try {
       if (editing) await update.mutateAsync({ id: budgetId, data: { monthlyLimit: limitOf(draft), rollover: draft.rollover } });
       else await create.mutateAsync(newBudgetOf(draft));
+      Analytics.track('budget_saved', { scope: draft.target === 'all' ? 'overall' : 'category', mode: editing ? 'edit' : 'create' });
       guard.release();
       toast.show({ message: editing ? t('form.changesSaved') : t('form.created') });
       // Leaves on the next tick, once the unsaved-input guard is off.
@@ -183,7 +185,7 @@ export function BudgetFormScreen({ budgetId }: BudgetFormOptions) {
         <OptionList groups={targetGroups} selectedKey={draft.target === null ? undefined : String(draft.target)} onSelect={(key) => { set('target', key === ALL ? ALL : (Number(key) as BudgetTarget)); setPicker(null); }} />
       </Sheet>
       <Sheet visible={picker === 'currency'} onClose={() => setPicker(null)} title={t('form.pickCurrency')}>
-        <OptionList groups={[{ options: currencies.map((code) => ({ key: code, title: code })) }]} selectedKey={draft.currency} onSelect={(code) => { setCurrency(code); setPicker(null); }} />
+        <OptionList groups={[{ options: currencies.map((code) => ({ key: code, title: code, subtitle: currencyName(code) })) }]} selectedKey={draft.currency} onSelect={(code) => { setCurrency(code); setPicker(null); }} />
       </Sheet>
 
       <Dialog visible={guard.asking} onRequestClose={guard.stay} title={editing ? t('form.discard.titleEdit') : t('form.discard.title')} body={t('form.discard.body')}>

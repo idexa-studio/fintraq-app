@@ -8,7 +8,7 @@ import { useDeletePerson, usePersonWithStats } from '@/features/people/hooks/peo
 import { balancesOf, initialsOf, standingOf } from '@/features/people/person-form';
 import { useSettings } from '@/features/settings';
 import { TransactionRow, useTransactions } from '@/features/transactions';
-import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
+import { currencyName, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { formatDate, parseDateKey } from '@/shared/date/date';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
@@ -24,7 +24,7 @@ const HISTORY = 50;
 
 /** One person: where things stand between you, how to reach them, open loans, and what you recorded together. */
 export function PersonScreen() {
-  const { t } = useTranslation('people');
+  const { t } = useTranslation(['people', 'common']);
   const { size } = useTheme();
   const styles = useStyles(createStyles);
   const router = useRouter();
@@ -106,7 +106,7 @@ export function PersonScreen() {
               <Text variant="bodyStrong">{t(`standing.${standing}`)}</Text>
               {about ? <Text variant="callout" tone="muted">{about}</Text> : null}
             </View>
-            {currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
+            {currencies.length > 1 ? <Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
           </View>
           {standing === 'settled' ? null : <Money value={formatCurrency(Math.abs(net), currency)} variant="amountHero" tone={standing === 'owesYou' ? 'positive' : 'default'} />}
           <View style={styles.stats}>

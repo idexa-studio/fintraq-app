@@ -81,13 +81,19 @@ export function HomeScreen() {
     >
       <BalanceCard balances={balances} loading={accountsPending} onAddExpense={() => add('expense')} onAddIncome={() => add('income')} onOpenAccounts={() => router.push('/accounts')} />
 
+      {/* The rest of what is done from here, beside the two on the card above: no heading, since the card has just said what these are. */}
+      <View style={{ flexDirection: 'row', gap: size.cardGap }}>
+        {canTransfer ? <FeatureTile compact icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
+        <FeatureTile compact icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
+      </View>
+
       {start.visible ? <GettingStarted steps={start.steps} onStep={doStep} onHide={start.dismiss} /> : null}
       {/* Someone still getting started is not also asked for anything else. */}
       {prompt && !start.visible ? (
         <Notice title={t(`prompt.${prompt}.title`)} body={t(`prompt.${prompt}.body`)} linkLabel={t(`prompt.${prompt}.link`)} onLink={() => router.push(prompt === 'pro' ? '/pro' : '/backup')} onDismiss={dismissPrompt} dismissLabel={t(`prompt.${prompt}.dismiss`)} />
       ) : null}
 
-      {/* In the order they are looked for: how the month stands, what is left to spend, what was just recorded; then what is held, who is owed, and the shortcuts. */}
+      {/* In the order they are looked for: how the month stands, what is left to spend, what was just recorded; then what is held and who is owed. */}
       <Section title={t('month.title')} hint={t('month.hint')} actionLabel={t('month.link')} onAction={() => router.push('/insights')}>
         <MonthCard currency={currency} />
       </Section>
@@ -113,13 +119,6 @@ export function HomeScreen() {
 
       <Section title={t('people.title')} hint={people?.length ? t('people.hint') : undefined} actionLabel={people?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/people')}>
         <PeopleStrip people={people} currency={currency} loading={peoplePending} onOpen={(id) => router.push({ pathname: '/people/[id]', params: { id } })} onAdd={() => router.push('/people/new')} />
-      </Section>
-
-      <Section title={t('quick.title')} hint={t('quick.hint')}>
-        <View style={{ flexDirection: 'row', gap: size.cardGap }}>
-          {canTransfer ? <FeatureTile icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
-          <FeatureTile icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
-        </View>
       </Section>
 
       <WhatsNewSheet visible={whatsNew.visible && !isLocked} onClose={whatsNew.dismiss} />

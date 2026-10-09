@@ -7,7 +7,7 @@ import { initialsOf } from '@/features/people';
 import { dueWording, loanTotals, planLoans } from '@/features/plan/plan-rules';
 import { PRO_FEATURES, featuresIn, isOverFreeLimit, usePro, useProCopy } from '@/features/pro';
 import { useSettings } from '@/features/settings';
-import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
+import { currencyName, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import { useRouter } from 'expo-router';
@@ -25,7 +25,7 @@ const SOON = featuresIn('plan').filter((id) => PRO_FEATURES[id].status !== 'live
  * take their place here as they are released.
  */
 export function PlanScreen() {
-  const { t } = useTranslation('plan');
+  const { t } = useTranslation(['plan', 'common']);
   const { colors, size } = useTheme();
   const router = useRouter();
   const { profile } = useSettings();
@@ -50,7 +50,7 @@ export function PlanScreen() {
   const inCurrency = byUrgency((budgets ?? []).filter((budget) => budget.currency === currency));
   const open = (loan: LoanWithStats) => router.push({ pathname: '/loans/[id]', params: { id: loan.id } });
   // Each section has its own "Add", so the header carries only the currency, where more than one is held.
-  const header = <Header title={t('title')} right={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : undefined} />;
+  const header = <Header title={t('title')} right={currencies.length > 1 ? <Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : undefined} />;
 
   const row = (loan: LoanWithStats, line: string) => (
     <ListRow
