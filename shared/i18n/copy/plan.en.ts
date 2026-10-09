@@ -11,7 +11,7 @@ export default {
   },
   budgets: {
     title: 'Budgets',
-    hint: 'What is left this month',
+    hint: 'The ring is what you have spent. The mark is today.',
     add: 'Add',
   },
   summary: {
