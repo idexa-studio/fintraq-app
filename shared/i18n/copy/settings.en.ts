@@ -68,6 +68,11 @@ export default {
     backupOn: 'To the Drive of {{email}}',
     backupOff: 'Not set up',
   },
+  tips: {
+    row: 'Show tips again',
+    rowHint: 'The first steps on Home and the tips on the tabs',
+    done: 'The tips are back',
+  },
   about: {
     row: 'About Fintraq',
     rowHint: 'The idea, who makes it, and the fine print',

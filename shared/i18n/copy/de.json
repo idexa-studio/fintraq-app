@@ -621,7 +621,8 @@
         "transaction": "Erfasse eine Ausgabe",
         "reminder": "Schalte die tägliche Erinnerung ein",
         "secondAccount": "Füge ein zweites Konto hinzu",
-        "backup": "Sichere in Google Drive"
+        "backup": "Sichere in Google Drive",
+        "insights": "Sieh, wohin dein Geld geht"
       }
     },
     "prompt": {
@@ -1637,6 +1638,11 @@
       "keep": "Meine Daten behalten",
       "failedTitle": "Es wurde nichts gelöscht",
       "failedBody": "Etwas ist schiefgegangen, bevor etwas gelöscht wurde. Versuch es gleich noch einmal."
+    },
+    "tips": {
+      "row": "Tipps wieder anzeigen",
+      "rowHint": "Die ersten Schritte auf Start und der Tipp auf jedem Tab",
+      "done": "Die Tipps sind wieder da"
     }
   },
   "shell": {
@@ -1817,6 +1823,35 @@
       "deleted": "Buchung gelöscht",
       "deleteFailed": "Löschen nicht möglich",
       "deleteFailedBody": "Es wurde nichts geändert. Versuch es noch einmal."
+    }
+  },
+  "guide": {
+    "tips": {
+      "dismiss": "Tipp schließen",
+      "activity": {
+        "title": "Buchung wischen",
+        "body": "Wische eine Zeile nach links, um sie zu bearbeiten oder zu löschen. Tippe darauf, um die ganze Buchung zu sehen."
+      },
+      "plan": {
+        "title": "Das Darlehen, das zuerst fällig ist, steht oben",
+        "body": "Öffne ein Darlehen, um eine Rückzahlung zu erfassen oder die Fälligkeit zu ändern."
+      }
+    },
+    "whatsNew": {
+      "title": "Fintraq sieht jetzt anders aus",
+      "done": "Verstanden",
+      "tabs": {
+        "title": "Fünf Tabs",
+        "body": "Start, Aktivität, Hinzufügen, Planen und Einblicke. Darlehen und Personen stehen unter Planen."
+      },
+      "settings": {
+        "title": "Die Einstellungen sind umgezogen",
+        "body": "Tippe oben auf Start auf das Profilsymbol für Einstellungen, Konten, Kategorien und Backup."
+      },
+      "records": {
+        "title": "Deine Daten sind, wie du sie verlassen hast",
+        "body": "Jedes Konto, jede Buchung und jedes Darlehen ist mitgekommen. Nichts wurde geändert."
+      }
     }
   }
 }

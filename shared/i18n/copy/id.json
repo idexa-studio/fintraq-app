@@ -621,7 +621,8 @@
         "transaction": "Catat sesuatu yang Anda belanjakan",
         "reminder": "Nyalakan pengingat harian",
         "secondAccount": "Tambahkan akun kedua",
-        "backup": "Cadangkan ke Google Drive"
+        "backup": "Cadangkan ke Google Drive",
+        "insights": "Lihat ke mana uang Anda pergi"
       }
     },
     "prompt": {
@@ -1637,6 +1638,11 @@
       "keep": "Pertahankan catatan saya",
       "failedTitle": "Tidak ada yang dihapus",
       "failedBody": "Ada yang tidak beres sebelum apa pun dihapus. Coba lagi sebentar lagi."
+    },
+    "tips": {
+      "row": "Tampilkan tips lagi",
+      "rowHint": "Langkah pertama di Beranda dan tips di setiap tab",
+      "done": "Tips sudah kembali"
     }
   },
   "shell": {
@@ -1817,6 +1823,35 @@
       "deleted": "Transaksi dihapus",
       "deleteFailed": "Tidak bisa menghapus",
       "deleteFailedBody": "Tidak ada yang berubah. Coba lagi."
+    }
+  },
+  "guide": {
+    "tips": {
+      "dismiss": "Tutup tips",
+      "activity": {
+        "title": "Geser transaksi",
+        "body": "Geser baris ke kiri untuk mengubah atau menghapusnya. Ketuk untuk melihat seluruh transaksi."
+      },
+      "plan": {
+        "title": "Pinjaman yang jatuh tempo lebih dulu ada di atas",
+        "body": "Buka pinjaman untuk mencatat pembayaran atau mengubah tanggal jatuh temponya."
+      }
+    },
+    "whatsNew": {
+      "title": "Fintraq punya tampilan baru",
+      "done": "Mengerti",
+      "tabs": {
+        "title": "Lima tab",
+        "body": "Beranda, Aktivitas, Tambah, Rencana, dan Wawasan. Pinjaman dan orang ada di Rencana."
+      },
+      "settings": {
+        "title": "Pengaturan pindah",
+        "body": "Ketuk ikon profil di bagian atas Beranda untuk pengaturan, akun, kategori, dan cadangan."
+      },
+      "records": {
+        "title": "Catatan Anda tetap seperti semula",
+        "body": "Setiap akun, transaksi, dan pinjaman ikut terbawa. Tidak ada yang diubah."
+      }
     }
   }
 }

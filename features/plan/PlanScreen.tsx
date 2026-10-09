@@ -1,5 +1,6 @@
 import type { LoanWithStats } from '@/data/repositories/loans';
 import { EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, SummaryCard, Text, useTheme } from '@/design';
+import { TabTip } from '@/features/guide';
 import { useLoans } from '@/features/loans';
 import { initialsOf } from '@/features/people';
 import { dueWording, loanTotals, planLoans } from '@/features/plan/plan-rules';
@@ -85,6 +86,7 @@ export function PlanScreen() {
 
   return (
     <Screen tabbed header={header}>
+      <TabTip id="plan" ready={hasOpen} />
       <SummaryCard
         title={t('summary.title')}
         trailing={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
