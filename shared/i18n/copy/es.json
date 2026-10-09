@@ -631,7 +631,8 @@
         "transaction": "Registra algo que hayas gastado",
         "reminder": "Activa el recordatorio diario",
         "secondAccount": "Añade una segunda cuenta",
-        "backup": "Haz una copia en Google Drive"
+        "backup": "Haz una copia en Google Drive",
+        "insights": "Mira adónde va tu dinero"
       }
     },
     "prompt": {
@@ -1655,6 +1656,11 @@
       "keep": "Conservar mis registros",
       "failedTitle": "No se borró nada",
       "failedBody": "Algo salió mal antes de eliminar nada. Inténtalo de nuevo en un momento."
+    },
+    "tips": {
+      "row": "Mostrar los consejos otra vez",
+      "rowHint": "Los primeros pasos de Inicio y el consejo de cada pestaña",
+      "done": "Los consejos han vuelto"
     }
   },
   "shell": {
@@ -1835,6 +1841,35 @@
       "deleted": "Movimiento eliminado",
       "deleteFailed": "No se pudo eliminar",
       "deleteFailedBody": "No se cambió nada. Inténtalo de nuevo."
+    }
+  },
+  "guide": {
+    "tips": {
+      "dismiss": "Cerrar consejo",
+      "activity": {
+        "title": "Desliza un movimiento",
+        "body": "Desliza una fila hacia la izquierda para editarla o eliminarla. Tócala para ver el movimiento completo."
+      },
+      "plan": {
+        "title": "El préstamo que vence antes está arriba",
+        "body": "Abre un préstamo para registrar un pago o cambiar su fecha de vencimiento."
+      }
+    },
+    "whatsNew": {
+      "title": "Fintraq tiene un aspecto nuevo",
+      "done": "Entendido",
+      "tabs": {
+        "title": "Cinco pestañas",
+        "body": "Inicio, Actividad, Añadir, Plan y Análisis. Los préstamos y las personas están en Plan."
+      },
+      "settings": {
+        "title": "Los ajustes se han movido",
+        "body": "Toca el icono de perfil en la parte superior de Inicio para ver ajustes, cuentas, categorías y copia de seguridad."
+      },
+      "records": {
+        "title": "Tus registros están como los dejaste",
+        "body": "Todas las cuentas, movimientos y préstamos se han conservado. No se ha cambiado nada."
+      }
     }
   }
 }

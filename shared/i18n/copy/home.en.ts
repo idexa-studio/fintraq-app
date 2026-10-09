@@ -22,6 +22,7 @@ export default {
     steps: {
       account: 'Add your first account',
       transaction: 'Record something you spent',
+      insights: 'See where your money goes',
       reminder: 'Turn on the daily reminder',
       secondAccount: 'Add a second account',
       backup: 'Back up to Google Drive',

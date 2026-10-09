@@ -8,6 +8,7 @@ import { View } from 'react-native';
 const ICONS: Record<GettingStartedStepId, IconName> = {
   account: 'wallet',
   transaction: 'receipt',
+  insights: 'chart-pie',
   reminder: 'bell',
   secondAccount: 'coins-stack',
   backup: 'cloud-check',
