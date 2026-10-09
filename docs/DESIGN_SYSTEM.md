@@ -345,8 +345,10 @@ use it.
   balance and two split actions; quick actions as compact `FeatureTile`s
   below. No
   round black action buttons.
-- **A short choice** (currency, period) is a `Select`: a chip that opens a
-  list under itself. Long lists go in a `Sheet` with an `OptionList`.
+- **A short choice** (currency, period) is a `Select`: a chip that opens its
+  options in a `Sheet`, as every other choice does. There are no dropdowns
+  (owner, 2026-10-09). Long lists go in a `Sheet` with an `OptionList` and a
+  search field.
 - **The wave card** is the one brand moment, for the single most important
   figure, at most once per screen.
 - **Charts** always carry a sentence for screen readers saying what they show.

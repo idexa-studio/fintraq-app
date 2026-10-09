@@ -44,12 +44,10 @@ export default {
     },
   },
   quick: {
-    title: 'Quick actions',
     transfer: 'Transfer',
-    hint: 'Shortcuts to what you do often',
-    transferDetail: 'Move money between your accounts',
-    lend: 'Lend or borrow',
-    lendDetail: 'Track money lent or borrowed',
+    transferDetail: 'Between your accounts',
+    lend: 'New loan',
+    lendDetail: 'Money lent or borrowed',
   },
   month: {
     title: 'This month',

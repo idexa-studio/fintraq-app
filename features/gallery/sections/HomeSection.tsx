@@ -67,7 +67,7 @@ export function HomeSection() {
                 <View style={{ padding: size.cardPadding, gap: space.sm }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Text variant="bodyStrong">All accounts</Text>
-                    <Select options={CURRENCIES} value={currency} onChange={setCurrency} accessibilityLabel="Currency" />
+                    <Select title="Which currency?" options={CURRENCIES} value={currency} onChange={setCurrency} accessibilityLabel="Currency" />
                   </View>
                   <Text variant="callout" tone="muted">4 accounts · {CURRENCIES.find((c) => c.key === currency)?.detail}</Text>
                   <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: space.md }}>

@@ -151,8 +151,11 @@ function Plans({ header, feature, buying, trouble, onBuy }: PlansProps) {
         {PRO_PLANS.map((option) => (
           <Card key={option} compact selected={plan === option} onPress={() => setPlan(option)} accessibilityLabel={`${t(`paywall.plans.${option}`)}, ${prices[option]?.display ?? ''}. ${prices[option]?.regular ? `${t('paywall.plans.was', { regular: prices[option].regular.display })}. ` : ''}${noteOf(option)}`} style={styles.plan}>
             <View style={styles.planHead}>
-              <Text variant="bodyStrong" style={styles.fill}>{t(`paywall.plans.${option}`)}</Text>
-              {option === DEFAULT_PLAN ? <Badge label={t('paywall.plans.best')} /> : null}
+              {/* The name and its badge share what the prices leave: when that is too little the badge drops under the name, and the name is never broken. */}
+              <View style={styles.planName}>
+                <Text variant="bodyStrong">{t(`paywall.plans.${option}`)}</Text>
+                {option === DEFAULT_PLAN ? <Badge label={t('paywall.plans.best')} /> : null}
+              </View>
               {prices[option]?.regular ? <Money value={prices[option].regular.display} tone="muted" struck /> : null}
               {prices[option] ? <Money value={prices[option].display} /> : priceState === 'loading' ? <Skeleton height={type.amount.lineHeight} width="25%" /> : null}
             </View>
@@ -258,6 +261,6 @@ const createStyles = ({ space }: Theme) =>
     plans: { gap: space.md },
     plan: { gap: space.xs },
     planHead: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-    fill: { flex: 1 },
+    planName: { flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: space.md, rowGap: space.xs },
     links: { flexDirection: 'row', justifyContent: 'center', gap: space.xl },
   });

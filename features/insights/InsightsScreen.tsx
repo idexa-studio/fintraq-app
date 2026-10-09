@@ -11,7 +11,7 @@ import type { PeriodDays } from '@/features/insights/insights-rules';
 import { PRO_FEATURES, featuresIn, usePro, useProCopy } from '@/features/pro';
 import { useSettings } from '@/features/settings';
 import { useTransactionsCount } from '@/features/transactions';
-import { sortCurrenciesWithDefault } from '@/shared/currency/currencies';
+import { currencyName, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { formatCurrency } from '@/shared/format/money';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -28,7 +28,7 @@ const PRO_HERE = featuresIn('understand', 'live');
  * the rhythm, people and findings, all named on one card for free users.
  */
 export function InsightsScreen() {
-  const { t } = useTranslation('insights');
+  const { t } = useTranslation(['insights', 'common']);
   const { size } = useTheme();
   const styles = useStyles(createStyles);
   const router = useRouter();
@@ -54,7 +54,7 @@ export function InsightsScreen() {
   const insights = useInsights(currency, period);
   const { data: allFindings } = useDashboardInsights(currency);
 
-  const header = <Header title={t('title')} right={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setCurrency} accessibilityLabel={t('currency')} /> : undefined} />;
+  const header = <Header title={t('title')} right={currencies.length > 1 ? <Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setCurrency} accessibilityLabel={t('currency')} /> : undefined} />;
   // A budget is for the calendar month, whatever period is shown, so its note says "this month".
   const budgetNote = (categoryId: number) => {
     const budget = (budgets ?? []).find((item) => item.categoryId === categoryId && item.currency === currency);

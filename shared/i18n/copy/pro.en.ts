@@ -27,7 +27,7 @@ export default {
     export: { title: 'Spreadsheet export', description: 'Transactions and loans as a CSV file to save or share.' },
     statement: { title: 'Monthly statement', description: 'The month on one page as a PDF, ready to send.' },
     backup: { title: 'Automatic cloud backup', description: 'Saved to your own Google Drive twice a day, restorable on any phone.' },
-    unlimited: { title: 'No limits', description: 'More than {{people}} people, {{loans}} loans, {{budgets}} budget and {{recurring}} repeating items.' },
+    unlimited: { title: 'No limits', description: 'More than {{people}} people, {{loans}} loans and {{budgets}} budget.' },
   },
   paywall: {
     title: 'Get more from your money',
