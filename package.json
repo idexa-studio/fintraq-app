@@ -14,7 +14,19 @@
     "test": "jest",
     "icons:generate": "node scripts/generate-icons.js",
     "plan:progress": "node scripts/plan-progress.js",
-    "brand:generate": "node scripts/generate-brand.js"
+    "brand:generate": "node scripts/generate-brand.js",
+    "build:dev:android": "eas build --profile development --platform android --local",
+    "build:dev:ios": "eas build --profile development --platform ios --local",
+    "build:preview:android": "eas build --profile preview --platform android --local",
+    "build:preview:ios": "eas build --profile preview --platform ios --local",
+    "build:prod:android": "eas build --profile production --platform android --local",
+    "build:prod:ios": "eas build --profile production --platform ios --local",
+    "build:cloud:dev:android": "eas build --profile development --platform android",
+    "build:cloud:dev:ios": "eas build --profile development --platform ios",
+    "build:cloud:preview:android": "eas build --profile preview --platform android",
+    "build:cloud:preview:ios": "eas build --profile preview --platform ios",
+    "build:cloud:prod:android": "eas build --profile production --platform android",
+    "build:cloud:prod:ios": "eas build --profile production --platform ios"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
