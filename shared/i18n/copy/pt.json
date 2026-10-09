@@ -1259,16 +1259,11 @@
     "add": "Emprestar ou pegar emprestado",
     "currency": "Moeda",
     "summary": {
-      "title": "Empréstimos em aberto",
       "owed": "Devem a você",
       "owe": "Você deve",
-      "none": "Ninguém deve nada",
-      "lend": "Emprestar ou pegar emprestado",
       "people": "Pessoas"
     },
     "upcoming": {
-      "title": "Em breve",
-      "noDate": "Sem data de vencimento",
       "lent": "Deve a você",
       "borrowed": "Você deve",
       "someone": "Alguém",

@@ -2,31 +2,24 @@
 export default {
   title: 'Plan',
   add: 'Lend or borrow',
-  addAny: {
-    label: 'Add a budget or a loan',
-    title: 'What do you want to add?',
-    budget: 'A budget',
-    budgetHint: 'A monthly limit for a category',
-    loan: 'A loan',
-    loanHint: 'Money you lent or borrowed',
-  },
   currency: 'Currency',
+  loans: {
+    title: 'Loans',
+    hint: 'What is owed either way',
+    add: 'Add',
+    peopleHint: 'Everyone you lend to or borrow from',
+  },
   budgets: {
     title: 'Budgets',
     hint: 'What is left this month',
     add: 'Add',
   },
   summary: {
-    title: 'Open loans',
     owed: 'Owed to you',
     owe: 'You owe',
-    none: 'Nothing is owed either way',
-    lend: 'Lend or borrow',
     people: 'People',
   },
   upcoming: {
-    title: 'Coming up',
-    noDate: 'No due date',
     lent: 'Owes you',
     borrowed: 'You owe',
     someone: 'Someone',

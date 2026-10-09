@@ -1247,16 +1247,11 @@
     "add": "Verleihen oder leihen",
     "currency": "Währung",
     "summary": {
-      "title": "Offene Darlehen",
       "owed": "Dir geschuldet",
       "owe": "Du schuldest",
-      "none": "Niemand schuldet etwas",
-      "lend": "Verleihen oder leihen",
       "people": "Personen"
     },
     "upcoming": {
-      "title": "Demnächst",
-      "noDate": "Keine Fälligkeit",
       "lent": "Schuldet dir",
       "borrowed": "Du schuldest",
       "someone": "Jemand",

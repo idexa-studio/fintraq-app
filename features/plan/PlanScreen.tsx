@@ -1,5 +1,5 @@
 import type { LoanWithStats } from '@/data/repositories/loans';
-import { EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, LockedCard, OptionList, Screen, Section, Select, Sheet, Skeleton, SplitBar, SummaryCard, Text, useTheme } from '@/design';
+import { Card, EmptyState, Header, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, useTheme } from '@/design';
 import { BudgetList, useBudgets } from '@/features/budgets';
 import { TabTip } from '@/features/guide';
 import { useLoans } from '@/features/loans';
@@ -19,9 +19,10 @@ import { View } from 'react-native';
 const SOON = featuresIn('plan').filter((id) => PRO_FEATURES[id].status !== 'live');
 
 /**
- * The Plan tab: what is owed either way, then the loans in the order they
- * need attention. One currency at a time, as on Home. Budgets, repeating
- * items and goals take their place here as they are released.
+ * The Plan tab, as sections that each read the same way: a heading, its own
+ * "Add", and what it holds. Budgets first, then loans in the order they need
+ * attention. One currency at a time, as on Home. Repeating items and goals
+ * take their place here as they are released.
  */
 export function PlanScreen() {
   const { t } = useTranslation('plan');
@@ -33,8 +34,6 @@ export function PlanScreen() {
   const { data: loans, isPending } = useLoans();
   const { data: budgets } = useBudgets();
   const [showSettled, setShowSettled] = useState(false);
-  /** The tab holds two kinds of thing, so its plus asks which one. */
-  const [adding, setAdding] = useState(false);
 
   const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set([profile.defaultCurrency, ...(loans ?? []).map((loan) => loan.currency), ...(budgets ?? []).map((budget) => budget.currency)])], profile.defaultCurrency), [loans, budgets, profile.defaultCurrency]);
   const [chosen, setChosen] = useState<string | null>(null);
@@ -49,7 +48,8 @@ export function PlanScreen() {
   const addBudget = () => (!isPro && isOverFreeLimit('budgets', budgets?.length ?? 0) ? openPaywall('unlimited') : router.push('/budgets/new'));
   const inCurrency = (budgets ?? []).filter((budget) => budget.currency === currency);
   const open = (loan: LoanWithStats) => router.push({ pathname: '/loans/[id]', params: { id: loan.id } });
-  const header = <Header title={t('title')} right={<IconButton icon="plus" onPress={() => setAdding(true)} accessibilityLabel={t('addAny.label')} />} />;
+  // Each section has its own "Add", so the header carries only the currency, where more than one is held.
+  const header = <Header title={t('title')} right={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : undefined} />;
 
   const row = (loan: LoanWithStats, line: string) => (
     <ListRow
@@ -97,60 +97,39 @@ export function PlanScreen() {
         <BudgetList budgets={inCurrency} onOpen={(id) => router.push({ pathname: '/budgets/[id]', params: { id } })} onAdd={addBudget} />
       </Section>
 
-      {/* The tip is about loans, so it sits with them, not above the budgets. */}
-      <TabTip id="plan" ready={hasOpen} />
-      <SummaryCard
-        title={t('summary.title')}
-        trailing={currencies.length > 1 ? <Select options={currencies.map((code) => ({ key: code, label: code }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
-        actions={[{ label: t('summary.lend'), onPress: lend }, { label: t('summary.people'), onPress: () => router.push('/people') }]}
-      >
-          {totals.owed > 0 || totals.owe > 0 ? (
-            <SplitBar
-              segments={[
-                { label: t('summary.owed'), value: totals.owed, display: formatCurrency(totals.owed, currency), color: colors.brand },
-                { label: t('summary.owe'), value: totals.owe, display: formatCurrency(totals.owe, currency), color: colors.text },
-              ]}
-            />
+      {/* Loans read as budgets do: a heading with its own "Add", then what it holds. */}
+      <Section title={t('loans.title')} hint={hasOpen ? t('loans.hint') : undefined} actionLabel={hasOpen ? t('loans.add') : undefined} onAction={lend}>
+        <View style={{ gap: size.cardGap }}>
+          {hasOpen ? (
+            <>
+              <Card>
+                <SplitBar
+                  segments={[
+                    { label: t('summary.owed'), value: totals.owed, display: formatCurrency(totals.owed, currency), color: colors.brand },
+                    { label: t('summary.owe'), value: totals.owe, display: formatCurrency(totals.owe, currency), color: colors.text },
+                  ]}
+                />
+              </Card>
+              <TabTip id="plan" ready />
+              {/* One list, in the order they need attention: those with a due date first, soonest at the top. */}
+              <ListGroup>
+                {dated.map((loan) => row(loan, dueLine(loan)))}
+                {undated.map((loan) => row(loan, standing(loan)))}
+              </ListGroup>
+            </>
           ) : (
-            <Text variant="callout" tone="muted">{t('summary.none')}</Text>
+            <EmptyState compact icon="hand-coins" color="pink" title={t('empty.title')} body={t('empty.body')} actionLabel={t('add')} onAction={lend} />
           )}
-      </SummaryCard>
 
-      {hasOpen ? (
-        <>
-          {dated.length > 0 ? (
-            <Section title={t('upcoming.title')}>
-              <ListGroup>{dated.map((loan) => row(loan, dueLine(loan)))}</ListGroup>
-            </Section>
-          ) : null}
-          {undated.length > 0 ? (
-            <Section title={t('upcoming.noDate')}>
-              <ListGroup>{undated.map((loan) => row(loan, standing(loan)))}</ListGroup>
-            </Section>
-          ) : null}
-        </>
-      ) : (
-        <EmptyState compact icon="hand-coins" color="pink" title={t('empty.title')} body={t('empty.body')} actionLabel={t('add')} onAction={lend} />
-      )}
-
-      {settled.length > 0 ? (
-        <ListGroup>
-          <ListRow icon="check-circle" title={showSettled ? t('settled.hide') : t('settled.show', { count: settled.length })} onPress={() => setShowSettled((shown) => !shown)} trailing={<View />} />
-          {showSettled ? settled.map((loan) => row(loan, t('settled.row'))) : null}
-        </ListGroup>
-      ) : null}
+          <ListGroup>
+            {settled.length > 0 ? <ListRow icon="check-circle" title={showSettled ? t('settled.hide') : t('settled.show', { count: settled.length })} onPress={() => setShowSettled((shown) => !shown)} trailing={<View />} /> : null}
+            {showSettled ? settled.map((loan) => row(loan, t('settled.row'))) : null}
+            <ListRow icon="users" title={t('summary.people')} subtitle={t('loans.peopleHint')} onPress={() => router.push('/people')} />
+          </ListGroup>
+        </View>
+      </Section>
 
       {soon}
-
-      <Sheet visible={adding} onClose={() => setAdding(false)} title={t('addAny.title')}>
-        <OptionList
-          groups={[{ options: [
-            { key: 'budget', title: t('addAny.budget'), subtitle: t('addAny.budgetHint'), leading: <IconCircle icon="pie-chart" color="teal" /> },
-            { key: 'loan', title: t('addAny.loan'), subtitle: t('addAny.loanHint'), leading: <IconCircle icon="hand-coins" color="pink" /> },
-          ] }]}
-          onSelect={(key) => { setAdding(false); if (key === 'budget') addBudget(); else lend(); }}
-        />
-      </Sheet>
     </Screen>
   );
 }
