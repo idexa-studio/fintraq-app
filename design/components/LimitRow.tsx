@@ -38,7 +38,8 @@ export function LimitRow({ leading, title, detail, remaining, share, state = 'un
       <View style={styles.text}>
         <View style={styles.head}>
           <Text variant="bodyStrong" numberOfLines={1} style={styles.title}>{title}</Text>
-          <Text variant="calloutStrong" tone={state === 'over' ? 'danger' : 'default'} numberOfLines={1}>{ltr(remaining)}</Text>
+          {/* A long figure gives way before the name does: it shrinks to fit rather than cutting the name short. */}
+          <Text variant="calloutStrong" tone={state === 'over' ? 'danger' : 'default'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} style={styles.remaining}>{ltr(remaining)}</Text>
         </View>
         <ProgressBar value={share} over={state === 'over'} near={state === 'near'} accessibilityLabel={title} />
         <Text variant="callout" tone="muted" numberOfLines={1}>{ltr(detail)}</Text>
@@ -59,6 +60,8 @@ const createStyles = ({ size, space }: Theme) =>
     // The list row's own measures, so it sits in a ListGroup among ordinary rows.
     row: { minHeight: size.row, flexDirection: 'row', alignItems: 'center', gap: space.lg, paddingHorizontal: size.cardPadding, paddingVertical: space.lg },
     text: { flex: 1, gap: space.sm },
-    head: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: space.lg },
+    head: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: space.md },
     title: { flex: 1 },
+    // Bounded, so that fitting has a width to fit to; the name keeps the rest.
+    remaining: { maxWidth: '40%', textAlign: 'right' },
   });

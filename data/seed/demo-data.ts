@@ -3,7 +3,7 @@ import { eq, sql } from 'drizzle-orm';
 import { format } from 'date-fns';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { db } from '@/data/db/client';
-import { accounts, categories, loans, payments, persons } from '@/data/db/schema';
+import { accounts, budgets, categories, loans, payments, persons } from '@/data/db/schema';
 import { LoggerService } from '@/shared/logging/logger';
 import { PALETTE_COLOR_OPTIONS } from '@/shared/contracts/pickers';
 import { toDbColor } from '@/shared/format/color';
@@ -13,7 +13,8 @@ import { toDbColor } from '@/shared/format/color';
  * account becomes their everyday checking; savings, cash and a card are added in the same currency,
  * plus accounts in EUR, TRY and INR. Money comes in the way it really does (two paychecks, side
  * work, cashback, friends paying back) as well as going out. Notes always match their category, bills recur on fixed days,
- * and every balance is the sum of what was logged — so each screen tells the same story.
+ * and every balance is the sum of what was logged — so each screen tells the same story. Budgets are set
+ * against what the month has actually spent, so the Plan tab opens on one in each state.
  */
 
 /** A colour from the app's own palette, by name, so demo data uses only colours a user could have picked. */
@@ -182,6 +183,36 @@ export function buildRows(now: Date): Row[] {
   return rows.filter((r) => r.date <= now);
 }
 
+const HOME_ACCOUNTS: readonly Acct[] = ['checking', 'savings', 'cash', 'card'];
+
+export type BudgetSeed = { currency: 'home' | 'EUR'; cat: string | null; limit: number; rollover: boolean };
+
+/**
+ * One budget in each state the app can show, whatever day the data is made on: each limit is set
+ * from what this month has spent so far and the share of it that should read as used. `fallback`
+ * is the limit when nothing has been spent on it yet this month (the first days of a month).
+ */
+const BUDGET_PLAN: { currency: 'home' | 'EUR'; cat: string | null; used: number; fallback: number; rollover: boolean }[] = [
+  { currency: 'home', cat: 'Groceries', used: 0.45, fallback: 450, rollover: true },
+  { currency: 'home', cat: 'Dining Out', used: 0.86, fallback: 180, rollover: false },
+  { currency: 'home', cat: 'Coffee', used: 1.18, fallback: 60, rollover: false },
+  { currency: 'home', cat: 'Shopping', used: 0.3, fallback: 200, rollover: false },
+  { currency: 'home', cat: null, used: 0.64, fallback: 3600, rollover: false },
+  { currency: 'EUR', cat: 'Dining Out', used: 0.72, fallback: 160, rollover: false },
+];
+
+export function buildBudgets(rows: readonly Row[], now: Date): BudgetSeed[] {
+  const thisMonth = rows.filter((row) => row.type === 'DR' && row.date.getFullYear() === now.getFullYear() && row.date.getMonth() === now.getMonth());
+  return BUDGET_PLAN.map((plan) => {
+    const spent = thisMonth
+      .filter((row) => (plan.currency === 'home' ? HOME_ACCOUNTS.includes(row.acct) : row.acct === 'eur') && (plan.cat === null || row.cat === plan.cat))
+      .reduce((sum, row) => sum + row.amount, 0);
+    // Rounded to a figure someone would choose, and never below ten.
+    const limit = spent > 0 ? Math.max(10, Math.round(spent / plan.used / 5) * 5) : plan.fallback;
+    return { currency: plan.currency, cat: plan.cat, limit, rollover: plan.rollover };
+  });
+}
+
 /** Where each added account ends up; its opening balance is back-solved from what was logged. */
 const CLOSING_BALANCE: Record<Exclude<Acct, 'checking'>, number> = { savings: 26400, cash: 186.5, card: -412.18, eur: 3480.6, try: 42750, inr: 186400 };
 
@@ -233,7 +264,8 @@ export async function seedDummyData() {
     const personId = (name?: string) => people.find((p) => p.name === name)?.id ?? null;
 
     // ── Transactions
-    const values = buildRows(now).flatMap((r) => {
+    const rows = buildRows(now);
+    const values = rows.flatMap((r) => {
       const accountId = acctId[r.acct];
       if (accountId === undefined) return [];
       const iso = r.date.toISOString();
@@ -279,6 +311,12 @@ export async function seedDummyData() {
     }
 
     for (let i = 0; i < values.length; i += 100) await db.insert(payments).values(values.slice(i, i + 100));
+
+    // ── Budgets: one in each state, in the home currency, and one in euros where that account exists
+    const budgetValues = buildBudgets(rows, now)
+      .filter((b) => b.currency === 'home' || acctId.eur !== undefined)
+      .map((b) => ({ categoryId: b.cat === null ? null : catId(b.cat), currency: b.currency === 'home' ? checking.currency : 'EUR', monthlyLimit: b.limit, rollover: b.rollover }));
+    await db.insert(budgets).values(budgetValues);
 
     // ── Balances follow from the rows. The default account moves by its net; each new account
     // gets whatever opening balance lands it on its closing figure.
