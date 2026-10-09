@@ -42,5 +42,7 @@ app-example
 /ios
 /android
 
-build-*.apk
-build-*.abb
+# build output
+*.apk
+*.aab
+*.ipa
