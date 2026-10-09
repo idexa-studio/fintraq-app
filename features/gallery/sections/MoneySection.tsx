@@ -113,16 +113,16 @@ export function MoneySection() {
       </Section>
 
       <Section title="Budgets (2.1)">
-        <Specimen name="Budgets on Plan" note="Above loans. What is left is the figure; the bar is green with room, amber from 80%, red at the limit and past it. The last row is the budget over all spending.">
-          <BudgetList budgets={BUDGETS} onOpen={() => {}} onAdd={() => {}} />
+        <Specimen name="Budgets on Plan" note="Each budget is a dial: the ring fills with what is spent (green with room, amber from 80%, red at the limit and past it) and the ink mark is today, so a fill behind the mark is a month going to plan. The last one is the budget over all spending.">
+          <BudgetList budgets={BUDGETS} today={DAY} onOpen={() => {}} onAdd={() => {}} />
         </Specimen>
         <Specimen name="No budget yet" note="One quiet card on Plan, with the first step.">
-          <BudgetList budgets={[]} onOpen={() => {}} onAdd={() => {}} />
+          <BudgetList budgets={[]} today={DAY} onOpen={() => {}} onAdd={() => {}} />
         </Specimen>
-        <Specimen name="A budget, with room" note="The top of its screen: what is left, then spent and limit, then the month on one line. Solid is spent, the lighter run is where the pace so far ends, the mark is today.">
+        <Specimen name="A budget, with room" note="The top of its screen: the same dial drawn large with what is left inside it, then spent and limit, then where the month ends at this pace.">
           <BudgetHead budget={BUDGETS[0]!} today={DAY} />
         </Specimen>
-        <Specimen name="A budget heading over" note="Still under today, but the pace ends past the limit: the forecast turns red and says by how much.">
+        <Specimen name="A budget heading over" note="The fill is ahead of the mark: the line beneath says by how much the month ends over.">
           <BudgetHead budget={BUDGETS[1]!} today={DAY} />
         </Specimen>
         <Specimen name="A budget over" note="The figure is how far over. Nothing is forecast: the limit is already passed.">

@@ -1,10 +1,9 @@
-import { Button, Dialog, Emblem, Header, IconCircle, ListGroup, Message, Screen, Section, Skeleton, Text, resolveIcon, useStyles, useTheme, useToast } from '@/design';
+import { Button, Dialog, Emblem, Header, ListGroup, Message, Screen, Section, Skeleton, Text, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { BudgetHead } from '@/features/budgets/components/BudgetHead';
 import { useBudgets, useDeleteBudget } from '@/features/budgets/hooks/budgets';
 import { TransactionRow, useTransactions } from '@/features/transactions';
-import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import { format, startOfMonth } from 'date-fns';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -93,9 +92,6 @@ export function BudgetScreen() {
         </>
       }
     >
-      <View style={styles.mark}>
-        {budget.category ? <IconCircle icon={resolveIcon(budget.category.icon, 'tag')} color={colorNumberToHex(budget.category.color)} /> : <IconCircle icon="pie-chart" color="teal" />}
-      </View>
       <BudgetHead budget={budget} today={today} />
       {rolled > 0 ? <Text variant="callout" tone="muted" align="center">{t('budget.rolled', { amount: formatCurrency(rolled, budget.currency) })}</Text> : null}
 
@@ -123,5 +119,4 @@ export function BudgetScreen() {
 const createStyles = (_: Theme) =>
   StyleSheet.create({
     centre: { flex: 1, justifyContent: 'center' },
-    mark: { alignItems: 'center' },
   });
