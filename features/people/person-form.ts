@@ -58,7 +58,7 @@ export const hasDetails = (draft: PersonDraft): boolean => !!(draft.phone || dra
 export const initialsOf = (name: string): string => name.split(/\s+/).filter(Boolean).slice(0, 2).map((word) => word[0]).join('');
 
 /** A person with what stands between you in one currency: positive when they owe you, negative when you owe them. */
-export type PersonBalance = { id: number; name: string; color: number; net: number };
+export type PersonBalance = { id: number; name: string; color: number; net: number; /** An open loan with them is past its due date. */ overdue: boolean };
 
 type OpenLoan = { personId: number | null; type: 'lend' | 'borrow'; currency: string; outstanding: number; computedStatus: string };
 
@@ -70,11 +70,13 @@ type OpenLoan = { personId: number | null; type: 'lend' | 'borrow'; currency: st
  */
 export function balancesOf(people: readonly Pick<Person, 'id' | 'name' | 'color'>[], loans: readonly OpenLoan[], currency: string): PersonBalance[] {
   const net = new Map<number, number>();
+  const overdue = new Set<number>();
   for (const loan of loans) {
     if (loan.personId === null || loan.currency !== currency || loan.computedStatus === 'repaid') continue;
     net.set(loan.personId, (net.get(loan.personId) ?? 0) + (loan.type === 'lend' ? loan.outstanding : -loan.outstanding));
+    if (loan.computedStatus === 'overdue') overdue.add(loan.personId);
   }
-  return people.map((person) => ({ id: person.id, name: person.name, color: person.color, net: net.get(person.id) ?? 0 }));
+  return people.map((person) => ({ id: person.id, name: person.name, color: person.color, net: net.get(person.id) ?? 0, overdue: overdue.has(person.id) }));
 }
 
 /** Where things stand with someone. */

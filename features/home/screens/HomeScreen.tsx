@@ -1,5 +1,6 @@
 import { FeatureTile, Header, IconButton, Notice, Screen, Section, useTheme } from '@/design';
 import { useAccounts } from '@/features/accounts';
+import { BudgetList, byUrgency, useBudgets } from '@/features/budgets';
 import { WhatsNewSheet, useWhatsNew } from '@/features/guide';
 import { AccountStack } from '@/features/home/components/AccountStack';
 import { BalanceCard } from '@/features/home/components/BalanceCard';
@@ -25,6 +26,7 @@ import { View } from 'react-native';
 /** How many transactions and people Home shows before "See all". */
 const RECENT_SHOWN = 5;
 const PEOPLE_SHOWN = 8;
+const BUDGETS_SHOWN = 2;
 
 /** The Home tab: where you stand, and the way to everything done most. */
 export function HomeScreen() {
@@ -48,6 +50,9 @@ export function HomeScreen() {
 
   const add = (kind: Kind) => router.push({ pathname: '/add', params: { kind } });
   const lend = () => router.push('/loans/new');
+  // The budgets that most need a look, in the currency Home is showing. All of them are on Plan.
+  const { data: allBudgets } = useBudgets();
+  const budgets = byUrgency((allBudgets ?? []).filter((budget) => budget.currency === currency)).slice(0, BUDGETS_SHOWN);
   const start = useGettingStarted();
   const { prompt, dismiss: dismissPrompt } = useHomePrompt();
   const whatsNew = useWhatsNew();
@@ -100,6 +105,13 @@ export function HomeScreen() {
       <Section title={t('month.title')} hint={t('month.hint')} actionLabel={t('month.link')} onAction={() => router.push('/insights')}>
         <MonthCard currency={currency} />
       </Section>
+
+      {/* Only once there is a budget: making the first one is Plan's and the first steps' job, not another empty card here. */}
+      {budgets.length > 0 ? (
+        <Section title={t('budgets.title')} hint={t('budgets.hint')} actionLabel={t('common:seeAll')} onAction={() => router.push('/plan')}>
+          <BudgetList budgets={budgets} onOpen={(id) => router.push({ pathname: '/budgets/[id]', params: { id } })} onAdd={() => router.push('/budgets/new')} />
+        </Section>
+      ) : null}
 
       <Section title={t('recent.title')} hint={transactions?.length ? t('recent.hint') : undefined} actionLabel={transactions?.length ? t('common:seeAll') : undefined} onAction={() => router.push('/activity')}>
         <RecentList transactions={transactions} loading={transactionsPending} onOpen={(id) => router.push({ pathname: '/transactions/[id]', params: { id } })} onAdd={() => add('expense')} />

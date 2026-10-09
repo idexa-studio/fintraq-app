@@ -74,6 +74,10 @@ export default {
     emptyBody: 'One account is enough to start.',
     emptyAction: 'Add an account',
   },
+  budgets: {
+    title: 'Budgets',
+    hint: 'The ones closest to their limit this month',
+  },
   recent: {
     title: 'Recent',
     hint: 'The latest things you recorded',
@@ -87,6 +91,7 @@ export default {
     owesYou: 'Owes you',
     youOwe: 'You owe',
     settled: 'All settled',
+    overdue: 'Overdue',
     emptyTitle: 'Remember who owes what',
     emptyBody: 'Track money lent, borrowed or split.',
     emptyAction: 'Add a person',
