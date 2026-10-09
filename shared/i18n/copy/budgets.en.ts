@@ -1,7 +1,7 @@
 /** Budgets: a monthly limit for a category or for everything, and how the month stands against it. */
 export default {
   title: 'Budgets',
-  hint: 'What is left this month',
+  hint: 'The ring is what you have spent. The mark is today.',
   add: 'Add a budget',
   overall: 'All spending',
   row: {
@@ -9,6 +9,10 @@ export default {
     left: '{{amount}} left',
     over: '{{amount}} over',
     reached: 'Limit reached',
+  },
+  card: {
+    left: 'Left',
+    over: 'Over',
   },
   head: {
     left: 'Left this month',
@@ -19,10 +23,10 @@ export default {
     daysLeft_one: '{{count}} day left',
     daysLeft_other: '{{count}} days left',
     lastDay: 'Last day of the month',
-    today: 'Today',
     paceUnder: 'At this pace the month ends {{amount}} under.',
     paceOver: 'At this pace the month ends {{amount}} over.',
-    pace: 'Spending against the limit, and where the month is heading',
+    pace: 'What is spent of the limit, with a mark for today',
+    reading: 'The ring fills as you spend. The mark is today: a fill behind it is a month going to plan.',
   },
   empty: {
     title: 'Set a limit for a category',

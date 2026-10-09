@@ -94,7 +94,7 @@ export function PlanScreen() {
   return (
     <Screen tabbed header={header}>
       <Section title={t('budgets.title')} hint={inCurrency.length ? t('budgets.hint') : undefined} actionLabel={inCurrency.length ? t('budgets.add') : undefined} onAction={addBudget}>
-        <BudgetList budgets={inCurrency} onOpen={(id) => router.push({ pathname: '/budgets/[id]', params: { id } })} onAdd={addBudget} />
+        <BudgetList budgets={inCurrency} today={today} onOpen={(id) => router.push({ pathname: '/budgets/[id]', params: { id } })} onAdd={addBudget} />
       </Section>
 
       {/* Loans read as budgets do: a heading with its own "Add", then what it holds. */}
