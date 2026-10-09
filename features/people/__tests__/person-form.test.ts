@@ -60,7 +60,16 @@ describe('where things stand', () => {
       loan(null, 'lend', 999),
     ], 'USD');
     // Tom is only ever paid (rent, say): nothing is owed either way.
-    expect(balances).toEqual([{ id: 1, name: 'Tom', color: 0, net: 0 }, { id: 2, name: 'Ana', color: 0, net: 120 }, { id: 3, name: 'Li', color: 0, net: -80 }]);
+    expect(balances).toEqual([{ id: 1, name: 'Tom', color: 0, net: 0, overdue: false }, { id: 2, name: 'Ana', color: 0, net: 120, overdue: false }, { id: 3, name: 'Li', color: 0, net: -80, overdue: false }]);
+  });
+
+  it('marks someone with an open loan past its due date', () => {
+    const people = [{ id: 1, name: 'Tom', color: 0 }, { id: 2, name: 'Ana', color: 0 }];
+    const balances = balancesOf(people, [
+      { personId: 1, type: 'lend', outstanding: 40, currency: 'USD', computedStatus: 'overdue' },
+      { personId: 2, type: 'lend', outstanding: 40, currency: 'USD', computedStatus: 'active' },
+    ], 'USD');
+    expect(balances.map((b) => b.overdue)).toEqual([true, false]);
   });
 
   it('groups people by standing, largest first, with what each group adds up to', () => {

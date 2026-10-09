@@ -247,7 +247,7 @@ export async function seedDummyData() {
     const foreign = FOREIGN_ACCOUNTS.filter((f) => f.currency !== home);
     const created = await db.insert(accounts).values([
       { ...base, currency: home, name: 'Savings', accountNumber: '••••  7203', accountType: 'savings' as const, icon: ACCOUNT_ICON, color: toDbColor(shade('blue')) },
-      { ...base, currency: home, name: 'Cash', accountNumber: '', accountType: 'cash' as const, icon: ACCOUNT_ICON, color: toDbColor(shade('amber')) },
+      { ...base, currency: home, name: checking.name.trim().toLowerCase() === 'cash' ? 'Wallet' : 'Cash', accountNumber: '', accountType: 'cash' as const, icon: ACCOUNT_ICON, color: toDbColor(shade('amber')) },
       { ...base, currency: home, name: 'Credit Card', accountNumber: '••••  9914', accountType: 'credit_card' as const, icon: ACCOUNT_ICON, color: toDbColor(shade('purple')) },
       ...foreign.map((f) => ({ ...base, currency: f.currency, name: f.name, accountNumber: f.accountNumber, accountType: f.accountType, icon: ACCOUNT_ICON, color: toDbColor(f.color) })),
     ]).returning();
