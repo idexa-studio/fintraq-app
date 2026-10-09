@@ -1,3 +1,4 @@
+import { markWhatsNewSeen } from '@/features/guide';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { LoggerService } from '@/shared/logging/logger';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,6 +35,8 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
   const completeOnboarding = useCallback(async () => {
     try {
+      // Someone who has just arrived has nothing to be told is new.
+      await markWhatsNewSeen();
       await AsyncStorage.setItem(StorageKeys.ONBOARDED, 'true');
       setHasOnboarded(true);
     } catch (e) {

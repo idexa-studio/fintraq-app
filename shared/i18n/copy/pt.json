@@ -631,7 +631,8 @@
         "transaction": "Registre algo que você gastou",
         "reminder": "Ative o lembrete diário",
         "secondAccount": "Adicione uma segunda conta",
-        "backup": "Faça backup no Google Drive"
+        "backup": "Faça backup no Google Drive",
+        "insights": "Veja para onde vai seu dinheiro"
       }
     },
     "prompt": {
@@ -1655,6 +1656,11 @@
       "keep": "Manter meus registros",
       "failedTitle": "Nada foi apagado",
       "failedBody": "Algo deu errado antes de qualquer coisa ser excluída. Tente de novo em instantes."
+    },
+    "tips": {
+      "row": "Mostrar as dicas de novo",
+      "rowHint": "Os primeiros passos no Início e a dica de cada aba",
+      "done": "As dicas voltaram"
     }
   },
   "shell": {
@@ -1835,6 +1841,35 @@
       "deleted": "Transação excluída",
       "deleteFailed": "Não foi possível excluir",
       "deleteFailedBody": "Nada foi alterado. Tente de novo."
+    }
+  },
+  "guide": {
+    "tips": {
+      "dismiss": "Fechar dica",
+      "activity": {
+        "title": "Deslize uma transação",
+        "body": "Deslize uma linha para a esquerda para editar ou excluir. Toque nela para ver a transação inteira."
+      },
+      "plan": {
+        "title": "O empréstimo que vence primeiro fica no topo",
+        "body": "Abra um empréstimo para registrar um pagamento ou mudar a data de vencimento."
+      }
+    },
+    "whatsNew": {
+      "title": "O Fintraq está de cara nova",
+      "done": "Entendi",
+      "tabs": {
+        "title": "Cinco abas",
+        "body": "Início, Atividade, Adicionar, Planejar e Análises. Empréstimos e pessoas ficam em Planejar."
+      },
+      "settings": {
+        "title": "As configurações mudaram de lugar",
+        "body": "Toque no ícone de perfil no topo do Início para ver configurações, contas, categorias e backup."
+      },
+      "records": {
+        "title": "Seus registros estão como você deixou",
+        "body": "Todas as contas, transações e empréstimos vieram junto. Nada foi alterado."
+      }
     }
   }
 }

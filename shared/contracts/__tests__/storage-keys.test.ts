@@ -17,6 +17,8 @@ const STORAGE_KEYS_ON_DEVICES: Record<string, string> = {
   BACKUP_PROMPT_DISMISSED_AT: '@fintraq_backup_prompt_dismissed_at',
   REMINDER_SKIPPED_DATE: '@fintraq_reminder_skipped_date',
   GETTING_STARTED_DISMISSED: '@fintraq_getting_started_dismissed',
+  GUIDE_SEEN: '@fintraq_guide_seen',
+  WHATS_NEW_SEEN: '@fintraq_whats_new_seen',
   WALKTHROUGH_DASHBOARD: '@fintraq_walkthrough_dashboard',
   WALKTHROUGH_CATEGORIES: '@fintraq_walkthrough_categories',
   WALKTHROUGH_ANALYTICS: '@fintraq_walkthrough_analytics',

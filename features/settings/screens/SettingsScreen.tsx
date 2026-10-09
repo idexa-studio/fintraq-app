@@ -3,6 +3,7 @@ import type { Theme } from '@/design';
 import { CurrencyPicker, useAccounts } from '@/features/accounts';
 import { useBackupAccount } from '@/features/backup';
 import { useCategories } from '@/features/categories';
+import { useShowTipsAgain } from '@/features/guide';
 import { useAppLock } from '@/features/lock';
 import { usePersons } from '@/features/people';
 import { usePro } from '@/features/pro';
@@ -46,6 +47,7 @@ export function SettingsScreen() {
   const { data: people } = usePersons();
   const exactAlarm = useExactAlarmAccess();
   const erase = useEraseEverything();
+  const showTipsAgain = useShowTipsAgain();
 
   const [open, setOpen] = useState<Open>(null);
   const [name, setName] = useState(profile.name);
@@ -154,6 +156,7 @@ export function SettingsScreen() {
           <ListRow icon="cloud-arrow-up" title={t('safety.backup')} subtitle={backupAccount ? t('safety.backupOn', { email: backupAccount.email }) : t('safety.backupOff')} onPress={() => router.push('/backup')} />
         </ListGroup>
         <ListGroup>
+          <ListRow icon="bulb" title={t('tips.row')} subtitle={t('tips.rowHint')} trailing={<View />} onPress={() => void showTipsAgain().then(() => toast.show({ message: t('tips.done') }))} />
           <ListRow icon="info" title={t('about.row')} subtitle={t('about.rowHint')} onPress={() => router.push('/settings/about')} />
         </ListGroup>
       </Section>

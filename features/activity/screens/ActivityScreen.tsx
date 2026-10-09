@@ -2,6 +2,7 @@ import type { TransactionFilters, TransactionListItem } from '@/data/repositorie
 import { Button, Card, Chip, DayHeader, Dialog, Divider, EmptyState, Header, IconButton, Screen, Select, Skeleton, Stat, SwipeRow, TabStrip, Text, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
+import { TabTip } from '@/features/guide';
 import { KINDS, NO_FILTERS, activeCount, filtersFromLink, toQuery } from '@/features/activity/activity-filters';
 import type { ActivityFilters, ActivityLink, KindFilter } from '@/features/activity/activity-filters';
 import { activityItems } from '@/features/activity/activity-list';
@@ -139,6 +140,7 @@ export function ActivityScreen() {
 
   const top = (
     <View style={styles.top}>
+      <TabTip id="activity" ready />
       {applied.length > 0 ? (
         <View style={styles.applied}>
           {applied.map((chip) => <Chip key={chip.key} label={chip.label} onRemove={() => change(chip.without)} removeLabel={t('filter.remove', { name: chip.label })} />)}

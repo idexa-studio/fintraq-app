@@ -14,6 +14,7 @@ import type exportCopy from '@/shared/i18n/copy/export.en';
 import type lock from '@/shared/i18n/copy/lock.en';
 import type settings from '@/shared/i18n/copy/settings.en';
 import type firstRun from '@/shared/i18n/copy/firstRun.en';
+import type guide from '@/shared/i18n/copy/guide.en';
 import type notifications from '@/shared/i18n/copy/notifications.en';
 import type pro from '@/shared/i18n/copy/pro.en';
 import type shell from '@/shared/i18n/copy/shell.en';
@@ -35,6 +36,7 @@ declare module 'i18next' {
       lock: typeof lock;
       settings: typeof settings;
       firstRun: typeof firstRun;
+      guide: typeof guide;
       notifications: typeof notifications;
       pro: typeof pro;
       insights: typeof insights;
