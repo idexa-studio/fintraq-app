@@ -187,7 +187,7 @@ use it.
 | Input | `TextField`, `Select`, `Keypad`, `Radio`, `Checkbox`, `Switch`, `Calendar`, `TimePicker`, `OptionList`, `SwatchGrid`, `IconGrid`, `MarkGrid`, `AmountField` |
 | Lists | `ListRow`, `ListGroup`, `DetailRow`, `DayHeader`, `SwipeRow`, `StepRow`, `Checklist`, `Timeline` |
 | Marks | `Icon`, `IconCircle`, `MarkTile`, `IllustrationTile`, `Emblem`, `CheckMark` |
-| Charts | `BarChart`, `LineChart`, `Ring` (with an optional `marker`: an ink mark at a point along it, e.g. today in the month), `Gauge`, `HeatGrid`, `SplitBar`, `RankBars`, `PairedBars`, `PaceBar`, `Delta`, `ProgressBar` (green with room, amber `near`, red `over`), `DayStreak`, `PeriodStepper` |
+| Charts | `BarChart`, `LineChart`, `Ring`, `Gauge`, `HeatGrid`, `SplitBar`, `RankBars`, `PairedBars`, `PaceBar`, `Delta`, `ProgressBar` (green with room, amber `near`, red `over`), `LimitRow` (something with a limit, as a list row), `DayStreak`, `PeriodStepper` |
 | Messages | `Message`, `EmptyState`, `Notice`, `Highlight`, `Tip`, `Toast` (`ToastProvider`, `useToast`), `LockedCard` |
 | Overlays and waiting | `Dialog`, `LoadingDialog`, `Sheet`, `Spinner`, `Skeleton`, `ProgressRow` |
 | Moments | `WaveCard`, `Receipt`, `FeatureTile` |
