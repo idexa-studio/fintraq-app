@@ -31,8 +31,12 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 40 | 12 | In progress |
-| H | Release 2: repeating items, budgets, net worth trend | 38 | 0 |  |
-| I | Release 3: goals, safe to spend, statement | 27 | 0 |  |
+| H | Version 2.1: budgets | 33 | 0 |  |
+| I | Version 2.2: repeating items | 31 | 0 |  |
+| J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
+| K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
+| L | iPhone on the App Store | 8 | 0 |  |
+| M | To reconsider after 2.4 | 4 | 0 |  |
 
 ---
 
@@ -314,7 +318,7 @@ route template · `tsc`, lint, design audit and tests clean.
 - [x] D2.04 Setup: first account and opening balance
 - [x] D2.11 Setup is one form in the reference's pattern (owner, 2026-10-08: single fields on a screen "feel naked"): You, Your main currency, Your first account, each a bold label over a white card. A step per question, a live preview, a mark beside the name field and common-currency chips were all tried and removed at his word. The welcome leads with the wallet stack and scrolls on a short screen (checked at 640dp tall)
 - [x] D2.05 Creating the workspace (please wait) and failure with retry (built; not run: finishing setup on the owner's phone would overwrite his name and currency and re-add default categories)
-- [x] D2.06 Restore: choose file or Google Drive (Drive built and seen, not run; the file is H1)
+- [x] D2.06 Restore: choose file or Google Drive (Drive built and seen, not run; the file is D14)
 - [ ] D2.07 Restore progress, "no backup found", try another account (progress seen on a real restore from Drive, 2026-10-08; "no backup found" and another account were not provoked)
 - [x] D2.08 Reminder offer and the system permission (built and seen; not pressed)
 - [x] D2.09 Default categories seeded exactly as today (the same list and rule, moved to `features/onboarding/workspace.ts`; not run)
@@ -644,7 +648,7 @@ Done when: the redesign is live to all users with no data loss reported.
 - [ ] G4.04 Owner: go or no-go at each step
 
 ### G5. Finding your way (for 2.0.1; branch `walkthrough`)
-Asked for by the owner on 2026-10-09. No intro slides and no spotlight tour: people learn a money app by recording their own money, so the walkthrough is Home's first steps, one tip per tab, and one note for people updating. Budgets are Release 2, so there is no budget step yet.
+Asked for by the owner on 2026-10-09. No intro slides and no spotlight tour: people learn a money app by recording their own money, so the walkthrough is Home's first steps, one tip per tab, and one note for people updating. Budgets come in version 2.1, so there is no budget step yet (H4.08).
 - [x] G5.01 `features/guide/`: what has been seen on this phone (`@fintraq_guide_seen`, a list of names; `@fintraq_whats_new_seen`, a release number), its rules and their test. Both keys are new, are in the storage-key contract test, and are cleared by Erase everything
 - [x] G5.02 Home's first steps gain "See where your money goes" after the first transaction: it opens Insights and ticks itself once Insights has been opened with something recorded. Seen on the Samsung 2026-10-09 from a fresh install: upcoming, then current after the first expense, then ticked after opening Insights
 - [x] G5.03 One tip at the top of Activity and of Plan, each naming what cannot be seen by looking (swipe a row; the loan due first, and what opening one does). Insights has none: its own section hint already says a category can be tapped, and a tip saying so again was removed after it was seen on the phone. Shown the first time there is something for it to describe, closed for good with its cross. It is the existing `Notice`, in the gallery under Home, "For someone new" (Activity's tip seen on the Samsung 2026-10-09: shown, closed, stays closed. Plan's tip seen the same day once a loan was recorded, and absent before. The owner's eye is G5.07)
@@ -655,118 +659,223 @@ Asked for by the owner on 2026-10-09. No intro slides and no spotlight tour: peo
 
 ---
 
-## H. Release 2: repeating items, budgets, net worth trend
+## After 2.0: one headline per version
 
-Done when: a free user can make 2 repeating items and 1 budget, Pro removes
-the limits, and older backups still restore.
+Approved by the owner on 2026-10-09. The features were first written as two
+large releases (budgets, repeating items and the net worth trend together, then
+goals, safe to spend and the statement). Shipped that way the first new feature
+was months off and each release changed three things at once. They are now four
+versions, in the order that each one makes the next possible:
 
-### Order of release (proposed 2026-10-09, waits for the owner's yes)
-H and I were written as two large releases. Shipped that way, the first new
-feature is months off and each release changes three things at once. Smaller
-versions, one headline each, in the order that each one makes the next possible:
-
-| Version | Headline | Packages | Why here |
+| Version | Phase | Headline | Why here |
 | --- | --- | --- | --- |
-| 2.0.x | The redesign, settled | G2, G4, G5 | The upgrade test and staged rollout come before anything new |
-| 2.1 | Budgets | H4, H5 | The feature a money app is most asked for; one table and no date rules, so the smallest safe step; gives the Plan tab and the Pro card something real |
-| 2.2 | Repeating items | H2, H3 | The hardest rules (month ends, catch-up, notifications), so it gets a release to itself |
-| 2.3 | Goals and the net worth trend | I1, H6 | Both are read from what is already recorded; no new rules to get wrong |
-| 2.4 | Safe to spend and the monthly statement | I2, I3 | Safe to spend is worked out from budgets, repeating items and goals, so it can only come last |
+| 2.0.x | G | The redesign, settled | The upgrade test and the staged rollout come before anything new |
+| 2.1 | H | Budgets | What a money app is asked for first; one table and no date rules, so the smallest safe step |
+| 2.2 | I | Repeating items | The hardest rules (month ends, catch-up, notifications), so a version to itself |
+| 2.3 | J | Goals and the net worth trend | Both are read from what is already recorded |
+| 2.4 | K | Safe to spend and the monthly statement | Safe to spend is worked out from budgets, repeating items and goals, so it comes last |
 
-Alongside, whenever the owner opens an Apple developer account (it costs
-money, so it is his call): the iOS listing, the `com.luno.*` products and
-iCloud backup. The app already builds and runs on an iPhone.
+Rules for every version:
 
-### H1. Free backup file
-Moved forward to D14 (owner, 2026-10-08): see D14.10 to D14.14.
+- A version starts on its own branch from `develop`, only after the version
+  before it is at 100% on Play with no open crash.
+- Its widgets are built in `design/`, shown in the gallery and approved before
+  a screen uses them.
+- A new table is additive: a generated migration, a raised backup format
+  version, and a test that every older backup still restores.
+- A feature is marked `live` in `features/pro/pro-features.ts` only in the
+  version that ships it; until then the Plan tab names it as coming.
+- Free limits are those in `docs/PRODUCT.md`: 1 budget, 2 repeating items,
+  1 goal. A lapsed subscriber keeps everything made and can still edit and
+  delete it; only making more is gated.
 
-### H2. Repeating items: data
-- [ ] H2.01 `recurring_rules` table in the schema (template, cadence, next due, auto or confirm, end)
-- [ ] H2.02 Generated migration; applies on a phone with existing data
-- [ ] H2.03 Backup format version raised; older backups restore with no rules
-- [ ] H2.04 Repository: create, edit, pause, delete, list upcoming
-- [ ] H2.05 Rule for the next due date across month ends and leap years, with tests
-- [ ] H2.06 Catch-up when the app has not been opened for several periods, with tests
-
-### H3. Repeating items: screens
-- [ ] H3.01 "Repeat" on the entry flow creates a rule
-- [ ] H3.02 List of repeating items with next date and amount
-- [ ] H3.03 Rule screen: edit, pause, delete, history of what it created
-- [ ] H3.04 Upcoming on the Plan tab: the next 30 days
-- [ ] H3.05 Due today: add automatically or confirm with one tap
-- [ ] H3.06 Notification for items awaiting confirmation
-- [ ] H3.07 Free limit of 2 leads to the paywall
-- [ ] H3.08 Shared checklist
-
-### H4. Budgets: data
-- [ ] H4.01 `budgets` table (category or overall, currency, limit, rollover)
-- [ ] H4.02 Generated migration; applies on a phone with existing data
-- [ ] H4.03 Backup format version raised; older backups restore with no budgets
-- [ ] H4.04 Repository: create, edit, delete, spent so far this month
-- [ ] H4.05 Rollover rule with tests
-- [ ] H4.06 Warning thresholds at 80% and 100%, each sent once a month, with tests
-
-### H5. Budgets: screens
-- [ ] H5.01 Budgets on the Plan tab with progress bars
-- [ ] H5.02 Budget screen: limit, spent, left, days left, its transactions
-- [ ] H5.03 Form: category or overall, amount, rollover
-- [ ] H5.04 Budget shown on the category in Insights
-- [ ] H5.05 Notifications at the two thresholds
-- [ ] H5.06 Free limit of 1 leads to the paywall
-- [ ] H5.08 Home's first steps gain "Set a budget", after "See where your money goes"; it opens the budget form and ticks itself when a budget exists (left out of G5 because there were no budgets)
-- [ ] H5.07 Shared checklist
-
-### H6. Net worth over time (Pro)
-- [ ] H6.01 Month-end net worth computed from transaction history, per currency, with tests
-- [ ] H6.02 Line chart on Accounts and in Insights
-- [ ] H6.03 Locked state for free users
-
-### H7. Ship
-- [ ] H7.01 Mark `budgets`, `recurring`, `netWorthTrend` as `live` in the registry
-- [ ] H7.02 English copy and the 12 translations
-- [ ] H7.03 Analytics events added to the catalogue
-- [ ] H7.04 Upgrade test from Release 1 with real data
-- [ ] H7.05 Owner: price change for new buyers, if any
-- [ ] H7.06 Store listing and screenshots updated
-- [ ] H7.07 Staged rollout
+Alongside any version, when the owner opens an Apple developer account (it
+costs money, so it is his call): phase L.
 
 ---
 
-## I. Release 3: goals, safe to spend, statement
+## H. Version 2.1: budgets
 
-### I1. Goals
-- [ ] I1.01 `goals` table (name, target, date, linked account, icon, colour)
-- [ ] I1.02 Generated migration; backup format version raised; older backups restore
-- [ ] I1.03 Repository and the "set aside each month" rule, with tests
-- [ ] I1.04 Goals on the Plan tab with a ring
-- [ ] I1.05 Goal screen and form
-- [ ] I1.06 Reached-goal moment
-- [ ] I1.07 Free limit of 1 leads to the paywall
-- [ ] I1.08 Shared checklist
+Done when: a free user can set one budget and see it fill through the month,
+Pro removes the limit, a warning arrives at 80% and at the limit, and a backup
+made on 2.0 still restores.
 
-### I2. Safe to spend (Pro)
-- [ ] I2.01 The rule: expected income, minus repeating items still due, minus budgets and goal contributions, over days left; with tests for each term
-- [ ] I2.02 What it shows when there is too little data to be honest
-- [ ] I2.03 Gauge on Home for Pro users
-- [ ] I2.04 "How this is worked out" sheet
-- [ ] I2.05 Locked state for free users
+### H1. Design first
+- [ ] H1.01 Read `docs/PRODUCT.md` on budgets and write the open questions down with a decision for each: what a month is (calendar month), which transactions count (expenses in the budget's currency, transfers never), a budget for a deleted category, more than one currency
+- [ ] H1.02 Gallery: a budget row (category mark, name, spent of limit, bar, what is left) in its four states: under, near (80%), at the limit, over
+- [ ] H1.03 Gallery: the budget screen's head (limit, spent, left, days left, the pace line against the month)
+- [ ] H1.04 Gallery: the Plan tab with budgets above loans, and with none (the empty state invites the first one)
+- [ ] H1.05 Owner: the gallery pieces approved
+- [ ] H1.06 `docs/PRODUCT.md` and the registry agree with this order: only budgets is `next`; repeating items and the net worth trend become `later`
 
-### I3. Monthly statement (Pro)
-- [ ] I3.01 Choose a way to make a PDF on both platforms
-- [ ] I3.02 One-page layout: totals, categories, largest items, net worth
-- [ ] I3.03 Choose the month; save or share
-- [ ] I3.04 Renders correctly in every locale and script
-- [ ] I3.05 Locked state for free users
+### H2. Data
+- [ ] H2.01 `budgets` table in `schema.ts` (category or none for overall, currency, monthly limit, rollover flag, created)
+- [ ] H2.02 Generated migration; applies on a phone carrying 2.0 data
+- [ ] H2.03 Backup format version raised; a snapshot from every older version restores with no budgets, and a test holds it
+- [ ] H2.04 Repository: add, save, delete, list with spent so far this month
+- [ ] H2.05 Erase everything clears budgets; deleting a category deletes its budget, and says so before it does
 
-### I4. Ship
-- [ ] I4.01 Mark `goals`, `safeToSpend`, `statement` as `live`
-- [ ] I4.02 Copy and translations
-- [ ] I4.03 Analytics events
-- [ ] I4.04 Upgrade test from Release 2 with real data
-- [ ] I4.05 Store listing updated
-- [ ] I4.06 Staged rollout
+### H3. Rules, each with tests
+- [ ] H3.01 Spent this month for a category budget and for the overall one
+- [ ] H3.02 Rollover: what was left last month is added to this one; an overspend is not carried
+- [ ] H3.03 State of a budget: under, near, at, over, and the pace against the day of the month
+- [ ] H3.04 Warnings at 80% and at the limit, each sent once a month per budget, never for a month already over
+- [ ] H3.05 The free limit of 1, read from the registry
 
-### I5. Reconsider after Release 3
-- [ ] I5.01 Receipt photos
-- [ ] I5.02 Auto-categorising rules
-- [ ] I5.03 A free trial, with conversion data in hand
+### H4. Screens
+- [ ] H4.01 Budgets on the Plan tab, above loans, each with its bar
+- [ ] H4.02 Budget screen: limit, spent, left, days left, and this month's transactions in it
+- [ ] H4.03 Form as a sheet: category or overall, amount, rollover; a category that already has a budget is not offered
+- [ ] H4.04 The budget shown on its category in Insights
+- [ ] H4.05 The entry flow says what is left in the category's budget once a category is chosen
+- [ ] H4.06 Notifications at the two thresholds; a tap opens the budget; added to the list in `docs/SCREENS.md`
+- [ ] H4.07 A second budget on the free plan leads to the paywall, from a control that says why
+- [ ] H4.08 Home's first steps gain "Set a budget", after "See where your money goes"; it opens the form and ticks itself when a budget exists (left out of G5 because there were no budgets)
+- [ ] H4.09 Shared checklist
+
+### H5. Ship
+- [ ] H5.01 `budgets` marked `live` in the registry; the Plan tab's "coming" card no longer lists it
+- [ ] H5.02 English copy and the 12 translations
+- [ ] H5.03 Analytics events added to the catalogue
+- [ ] H5.04 Seen on the Android phone and on the iPhone, light and dark
+- [ ] H5.05 Upgrade test from 2.0 with real data, on the release build
+- [ ] H5.06 Store listing, screenshots and release notes
+- [ ] H5.07 Staged rollout: 5%, 20%, 50%, 100%
+- [ ] H5.08 Owner: go or no-go at each step
+
+---
+
+## I. Version 2.2: repeating items
+
+Done when: rent, a salary and a subscription can each be set once and appear on
+their day without being typed again, a free user can keep two, and a phone left
+unopened for three months catches up correctly.
+
+### I1. Design first
+- [ ] I1.01 Decisions written down: the cadences offered (weekly, every two weeks, monthly, yearly), what "the 31st" means in a short month, add automatically or ask first, what an end date does
+- [ ] I1.02 Gallery: a repeating item row (what, how often, next date, amount)
+- [ ] I1.03 Gallery: "Repeat" on the entry form, closed and open
+- [ ] I1.04 Gallery: Upcoming on the Plan tab, the next 30 days, with loans' due dates among them
+- [ ] I1.05 Owner: the gallery pieces approved
+
+### I2. Data
+- [ ] I2.01 `recurring_rules` table (the transaction it copies, cadence, next due, automatic or confirm, end, paused)
+- [ ] I2.02 Generated migration; applies on a phone carrying 2.1 data
+- [ ] I2.03 Backup format version raised; older backups restore with no rules
+- [ ] I2.04 Repository: add, save, pause, delete, list upcoming, what a rule has made
+- [ ] I2.05 A transaction made by a rule remembers the rule; deleting the rule keeps its transactions
+
+### I3. Rules, each with tests
+- [ ] I3.01 The next due date across month ends, leap years and a change of time zone
+- [ ] I3.02 Catch-up when the app was not opened for several periods: every missed one is made or offered, none twice
+- [ ] I3.03 A rule whose account or category was deleted stops and says why
+- [ ] I3.04 The free limit of 2, read from the registry
+
+### I4. Screens
+- [ ] I4.01 "Repeat" on the entry flow makes a rule from the transaction being saved
+- [ ] I4.02 List of repeating items with next date and amount
+- [ ] I4.03 Rule screen: change, pause, delete, and what it has made
+- [ ] I4.04 Upcoming on the Plan tab: the next 30 days
+- [ ] I4.05 Due today: added automatically, or confirmed with one tap from Home
+- [ ] I4.06 Notification for items waiting to be confirmed; added to the list in `docs/SCREENS.md`
+- [ ] I4.07 A third item on the free plan leads to the paywall
+- [ ] I4.08 A budget counts what is still to come this month from repeating items (shown, not yet subtracted)
+- [ ] I4.09 Shared checklist
+
+### I5. Ship
+- [ ] I5.01 `recurring` marked `live` in the registry
+- [ ] I5.02 English copy and the 12 translations
+- [ ] I5.03 Analytics events added to the catalogue
+- [ ] I5.04 Seen on the Android phone and on the iPhone, light and dark
+- [ ] I5.05 Upgrade test from 2.1 with real data, on the release build
+- [ ] I5.06 Store listing, screenshots and release notes
+- [ ] I5.07 Staged rollout
+- [ ] I5.08 Owner: go or no-go at each step
+
+---
+
+## J. Version 2.3: goals and the net worth trend
+
+Done when: a free user can save towards one goal and see how much to set aside
+each month, and a Pro user sees what they are worth month by month.
+
+### J1. Goals
+- [ ] J1.01 Decisions written down: whether a goal is tied to an account or counted by hand, what "set aside each month" means when the date has passed
+- [ ] J1.02 Gallery: a goal with its ring, the goal screen's head, the reached-goal moment; approved by the owner
+- [ ] J1.03 `goals` table (name, target, date, linked account, icon, colour); generated migration; backup format version raised; older backups restore
+- [ ] J1.04 Repository and the "set aside each month" rule, with tests
+- [ ] J1.05 Goals on the Plan tab
+- [ ] J1.06 Goal screen and form
+- [ ] J1.07 The moment a goal is reached
+- [ ] J1.08 A second goal on the free plan leads to the paywall
+- [ ] J1.09 Shared checklist
+
+### J2. Net worth over time (Pro)
+- [ ] J2.01 Month-end net worth worked out from the transaction history, per currency, with tests (opening balances, transfers, deleted accounts)
+- [ ] J2.02 Gallery: the line with its months; approved by the owner
+- [ ] J2.03 The line on Accounts and in Insights
+- [ ] J2.04 What a free user sees in its place
+
+### J3. Ship
+- [ ] J3.01 `goals` and `netWorthTrend` marked `live` in the registry
+- [ ] J3.02 English copy and the 12 translations
+- [ ] J3.03 Analytics events added to the catalogue
+- [ ] J3.04 Seen on the Android phone and on the iPhone, light and dark
+- [ ] J3.05 Upgrade test from 2.2 with real data, on the release build
+- [ ] J3.06 Store listing, screenshots and release notes
+- [ ] J3.07 Staged rollout, with the owner's go or no-go at each step
+
+---
+
+## K. Version 2.4: safe to spend and the monthly statement
+
+Done when: a Pro user opens Home to one honest number for today, and can save
+a month as a one-page PDF.
+
+### K1. Safe to spend (Pro)
+- [ ] K1.01 The rule: income expected this month, minus repeating items still due, minus what budgets and goals have set aside, over the days left; a test for each term
+- [ ] K1.02 What it shows when there is too little recorded to be honest
+- [ ] K1.03 Gallery: the gauge on Home and the "How this is worked out" sheet; approved by the owner
+- [ ] K1.04 The gauge on Home for Pro users
+- [ ] K1.05 "How this is worked out", with this month's own figures in it
+- [ ] K1.06 What a free user sees in its place
+
+### K2. Monthly statement (Pro)
+- [ ] K2.01 Choose a way to make a PDF on both platforms, and say why
+- [ ] K2.02 One-page layout: totals, categories, largest items, net worth; approved by the owner
+- [ ] K2.03 Choose the month; save or share
+- [ ] K2.04 Renders correctly in every language and script offered
+- [ ] K2.05 What a free user sees in its place
+
+### K3. Ship
+- [ ] K3.01 `safeToSpend` and `statement` marked `live` in the registry
+- [ ] K3.02 English copy and the 12 translations
+- [ ] K3.03 Analytics events added to the catalogue
+- [ ] K3.04 Seen on the Android phone and on the iPhone, light and dark
+- [ ] K3.05 Upgrade test from 2.3 with real data, on the release build
+- [ ] K3.06 Store listing, screenshots and release notes
+- [ ] K3.07 Staged rollout, with the owner's go or no-go at each step
+
+---
+
+## L. iPhone on the App Store (alongside, when the owner decides)
+
+Needs a paid Apple developer account. The app already builds, signs with a free
+account and runs on the owner's iPhone.
+
+- [ ] L1.01 Owner: Apple developer account opened
+- [ ] L1.02 The `com.luno.*` products made in App Store Connect and bought once in the sandbox
+- [ ] L1.03 iCloud backup, so an iPhone has the automatic backup Android has in Drive
+- [ ] L1.04 Push entitlement decided: reminders are local, so `plugins/with-no-push-entitlement.js` stays or goes with a reason
+- [ ] L1.05 Firebase through Swift packages once the Crashlytics path fault is fixed upstream; CocoaPods until then
+- [ ] L1.06 Listing, screenshots and privacy labels for the App Store
+- [ ] L1.07 TestFlight, then a phased release
+- [ ] L1.08 Remote config: `iosMinBuild` and `storeUrlIos` set for the real listing
+
+---
+
+## M. To reconsider after 2.4
+- [ ] M1.01 Receipt photos
+- [ ] M1.02 Auto-categorising rules
+- [ ] M1.03 A free trial, with conversion data in hand
+- [ ] M1.04 A native reader for each of the twelve translations
