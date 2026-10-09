@@ -31,7 +31,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 40 | 12 | In progress |
-| H | Version 2.1: budgets | 33 | 0 |  |
+| H | Version 2.1: budgets | 33 | 5 | In progress |
 | I | Version 2.2: repeating items | 31 | 0 |  |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
@@ -701,12 +701,12 @@ Pro removes the limit, a warning arrives at 80% and at the limit, and a backup
 made on 2.0 still restores.
 
 ### H1. Design first
-- [ ] H1.01 Read `docs/PRODUCT.md` on budgets and write the open questions down with a decision for each: what a month is (calendar month), which transactions count (expenses in the budget's currency, transfers never), a budget for a deleted category, more than one currency
-- [ ] H1.02 Gallery: a budget row (category mark, name, spent of limit, bar, what is left) in its four states: under, near (80%), at the limit, over
-- [ ] H1.03 Gallery: the budget screen's head (limit, spent, left, days left, the pace line against the month)
-- [ ] H1.04 Gallery: the Plan tab with budgets above loans, and with none (the empty state invites the first one)
+- [x] H1.01 Read `docs/PRODUCT.md` on budgets and write the open questions down with a decision for each: what a month is (calendar month), which transactions count (expenses in the budget's currency, transfers never), a budget for a deleted category, more than one currency. Written as "How a budget works" in `docs/PRODUCT.md`, eleven decisions with reasons
+- [x] H1.02 Gallery: a budget row (category mark, name, spent of limit, bar, what is left) in its four states: under, near (80%), at the limit, over. `LimitRow` in the design system, `BudgetRow` in `features/budgets`; in the gallery under Money, "Budgets (2.1)". Seen on the Samsung 2026-10-09, light and dark
+- [x] H1.03 Gallery: the budget screen's head (limit, spent, left, days left, the pace line against the month). `BudgetHead`, in three cases: with room, heading over, over. Seen on the Samsung 2026-10-09, light and dark. `PaceBar` now keeps the limit's amount under the limit mark when the forecast runs past it
+- [x] H1.04 Gallery: the Plan tab with budgets above loans, and with none (the empty state invites the first one). The list and the empty card are shown as they will sit on Plan; the Plan screen itself is H4.01
 - [ ] H1.05 Owner: the gallery pieces approved
-- [ ] H1.06 `docs/PRODUCT.md` and the registry agree with this order: only budgets is `next`; repeating items and the net worth trend become `later`
+- [x] H1.06 `docs/PRODUCT.md` and the registry agree with this order: only budgets is `next`; repeating items and the net worth trend become `later` (nothing on screen changes: the app only tells live from not live)
 
 ### H2. Data
 - [ ] H2.01 `budgets` table in `schema.ts` (category or none for overall, currency, monthly limit, rollover flag, created)
@@ -719,7 +719,7 @@ made on 2.0 still restores.
 - [ ] H3.01 Spent this month for a category budget and for the overall one
 - [ ] H3.02 Rollover: what was left last month is added to this one; an overspend is not carried
 - [ ] H3.03 State of a budget: under, near, at, over, and the pace against the day of the month
-- [ ] H3.04 Warnings at 80% and at the limit, each sent once a month per budget, never for a month already over
+- [ ] H3.04 Warnings at 80% and at the limit, each said once a month per budget, only by the transaction that crosses it
 - [ ] H3.05 The free limit of 1, read from the registry
 
 ### H4. Screens
@@ -728,7 +728,7 @@ made on 2.0 still restores.
 - [ ] H4.03 Form as a sheet: category or overall, amount, rollover; a category that already has a budget is not offered
 - [ ] H4.04 The budget shown on its category in Insights
 - [ ] H4.05 The entry flow says what is left in the category's budget once a category is chosen
-- [ ] H4.06 Notifications at the two thresholds; a tap opens the budget; added to the list in `docs/SCREENS.md`
+- [ ] H4.06 The warning is said in the app when the transaction that crosses 80% or the limit is saved, with a way to open the budget. No notification in 2.1: a budget can only be crossed while recording, so it would land on the screen being looked at (decided in H1.01; notifications for budgets come with repeating items, I4)
 - [ ] H4.07 A second budget on the free plan leads to the paywall, from a control that says why
 - [ ] H4.08 Home's first steps gain "Set a budget", after "See where your money goes"; it opens the form and ticks itself when a budget exists (left out of G5 because there were no budgets)
 - [ ] H4.09 Shared checklist

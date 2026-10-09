@@ -12,6 +12,7 @@ import people from '@/shared/i18n/copy/people.en';
 import plan from '@/shared/i18n/copy/plan.en';
 import search from '@/shared/i18n/copy/search.en';
 import backupCopy from '@/shared/i18n/copy/backup.en';
+import budgets from '@/shared/i18n/copy/budgets.en';
 import exportCopy from '@/shared/i18n/copy/export.en';
 import lock from '@/shared/i18n/copy/lock.en';
 import settingsCopy from '@/shared/i18n/copy/settings.en';
@@ -49,9 +50,9 @@ i18n
       // file built from its translations by `scripts/i18n/build.js`, which also reports what a
       // language is missing. A string not translated yet falls back to English, never to a key.
       ...TRANSLATED,
-      en: { common, shell, home, transactions, activity, accounts, categories, people, loans, plan, insights, search, backup: backupCopy, export: exportCopy, lock, settings: settingsCopy, firstRun, guide, notifications, pro },
+      en: { common, shell, home, transactions, activity, accounts, categories, people, loans, plan, insights, search, backup: backupCopy, budgets, export: exportCopy, lock, settings: settingsCopy, firstRun, guide, notifications, pro },
     },
-    ns: ['common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans', 'plan', 'insights', 'search', 'backup', 'export', 'lock', 'settings', 'firstRun', 'guide', 'notifications', 'pro'],
+    ns: ['common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans', 'plan', 'insights', 'search', 'backup', 'budgets', 'export', 'lock', 'settings', 'firstRun', 'guide', 'notifications', 'pro'],
     defaultNS: 'common',
     lng: getSystemLanguage(),
     fallbackLng: 'en',

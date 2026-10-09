@@ -43,9 +43,25 @@ paywall.
 | Feature | What it does | Free allowance | Status |
 | --- | --- | --- | --- |
 | **Budgets** | A monthly limit per category or overall, with progress, a warning at 80% and at the limit, and optional rollover of what was left | 1 budget | Next |
-| **Repeating items** | Rent, salary, subscriptions: entered once, then added automatically or offered for one-tap confirmation on the day. An "Upcoming" list shows the next 30 days | 2 items | Next |
+| **Repeating items** | Rent, salary, subscriptions: entered once, then added automatically or offered for one-tap confirmation on the day. An "Upcoming" list shows the next 30 days | 2 items | Later |
 | **Goals** | A target amount and date, fed from an account; shows what to set aside each month to get there | 1 goal | Later |
 | **Safe to spend** | One number for today: income expected this month, minus bills still to come, minus budgets and goal contributions, divided by the days left | Pro only | Later |
+
+**How a budget works** (decided 2026-10-09, for version 2.1)
+
+| Question | Decision | Why |
+| --- | --- | --- |
+| What is a month? | The calendar month on the phone | It is what "this month" already means on Home and in Insights |
+| What counts as spent? | Expenses in the budget's category, from accounts in the budget's currency. The budget over all spending counts every expense in that currency | A limit is on spending. Transfers move money, loans are owed back, income is not spending: none of them count |
+| How many per category? | One per category per currency, and one over all spending per currency | Two limits on the same thing would disagree |
+| More than one currency | Plan shows one currency at a time, as it does for loans; a budget never adds currencies together | The app converts nothing anywhere else |
+| The limit is changed mid-month | The new limit applies to the month in progress | The user is correcting the plan, not the past |
+| Rollover | Only what was left last month is added to this month's limit. An overspend is not carried, and remainders do not pile up month on month | A bad month should not shrink the next one, and a limit that grows unseen stops being a limit. It is worked out from the transactions, so nothing extra is stored |
+| States | Under; near from 80% used; over from the limit itself | 80% is the point where there is still time to act |
+| The warning | Said in the app when the transaction that crosses 80% or the limit is saved, once each per budget per month | In 2.1 a budget can only be crossed while the user is recording something, so a notification would arrive on top of the screen they are looking at. Notifications for budgets come with repeating items (2.2), which spend while the app is closed |
+| A category is deleted | Its budget goes with it, and the question says so first | A budget for nothing can never be met |
+| Free plan | One budget in all. A second is offered through the paywall | As listed above |
+| Pro lapses | Every budget stays, can be changed and deleted; only adding another asks for Pro | The fairness rule below |
 
 ### Understand: see why (exists today, regrouped)
 
@@ -57,7 +73,7 @@ paywall.
 | **Rhythm** | Which weekdays cost most, and a calendar of the month shaded by spending | Live |
 | **People** | Who you spend with and how balances are spread | Live |
 | **Insights** | Plain-language findings (the old "Highlights" are folded in here) | Live |
-| **Net worth over time** | The line of what you have minus what you owe, month by month | Next |
+| **Net worth over time** | The line of what you have minus what you owe, month by month | Later |
 
 ### Find and share: get it out
 
@@ -213,7 +229,7 @@ backups still restore.
 
 | Table | Holds | For |
 | --- | --- | --- |
-| `budgets` | category (or none for overall), currency, monthly limit, rollover flag | Budgets |
+| `budgets` | category (or none for overall), currency, monthly limit, rollover flag | Budgets (2.1) |
 | `recurring_rules` | template of a transaction, cadence, next due date, auto-add or confirm, end date | Repeating items |
 | `goals` | name, target amount, target date, linked account, icon and colour | Goals |
 
