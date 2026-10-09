@@ -1,4 +1,4 @@
-import { budgetStanding, limitWithRollover, monthProgress, projectedSpend } from '@/features/budgets/budget-rules';
+import { budgetStanding, crossingOf, limitWithRollover, monthProgress, projectedSpend } from '@/features/budgets/budget-rules';
 
 describe('budgetStanding', () => {
   it('has room below four fifths of the limit', () => {
@@ -39,5 +39,19 @@ describe('limitWithRollover', () => {
     expect(limitWithRollover(500, 380, true)).toBe(620);
     expect(limitWithRollover(500, 700, true)).toBe(500);
     expect(limitWithRollover(500, 380, false)).toBe(500);
+  });
+});
+
+describe('crossingOf', () => {
+  it('reports the expense that takes a budget into its last fifth, or to its limit', () => {
+    expect(crossingOf(300, 420, 500)).toBe('near');
+    expect(crossingOf(420, 500, 500)).toBe('over');
+    expect(crossingOf(300, 620, 500)).toBe('over');
+  });
+
+  it('is quiet for an expense that changes nothing, so each warning is given once', () => {
+    expect(crossingOf(100, 200, 500)).toBeNull();
+    expect(crossingOf(420, 460, 500)).toBeNull();
+    expect(crossingOf(520, 600, 500)).toBeNull();
   });
 });

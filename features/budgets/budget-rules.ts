@@ -48,3 +48,17 @@ export const projectedSpend = (spent: number, elapsed: number): number => (elaps
  * is added, and an overspend is never carried: a bad month does not shrink the next one.
  */
 export const limitWithRollover = (limit: number, lastMonthSpent: number, rollover: boolean): number => (rollover ? limit + Math.max(0, limit - Math.max(0, lastMonthSpent)) : limit);
+
+/** What one more expense does to a budget: takes it to the limit or past it, into the last fifth, or neither. */
+export type Crossing = 'near' | 'over';
+
+/**
+ * Whether adding to what was spent moves the budget into a new state. Only the expense that
+ * crosses a line reports it, so each warning is given once: later expenses in the same state are quiet.
+ */
+export function crossingOf(spentBefore: number, spentAfter: number, limit: number): Crossing | null {
+  const before = budgetStanding(spentBefore, limit).state;
+  const after = budgetStanding(spentAfter, limit).state;
+  if (after === before || after === 'under') return null;
+  return after;
+}

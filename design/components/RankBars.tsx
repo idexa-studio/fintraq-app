@@ -15,6 +15,8 @@ export type RankItem = {
   display: string;
   /** A second, quieter figure, e.g. "29%". */
   note?: string;
+  /** A line of its own under the bar, for what does not fit beside the figure, e.g. what a budget has left. */
+  caption?: string;
   /** A mark before the label, e.g. an IconCircle. */
   leading?: React.ReactNode;
   /** Where the item leads, e.g. the transactions behind the figure. */
@@ -37,7 +39,7 @@ export function RankBars({ items }: RankBarsProps) {
   return (
     <View style={styles.wrap}>
       {items.map((item) => {
-        const label = [item.label, item.display, item.note].filter(Boolean).join(', ');
+        const label = [item.label, item.display, item.note, item.caption].filter(Boolean).join(', ');
         const content = (
           <>
             {item.leading}
@@ -50,6 +52,7 @@ export function RankBars({ items }: RankBarsProps) {
               <View style={styles.track}>
                 <View style={[styles.bar, { width: widthOf(item, max), backgroundColor: colors.text }]} />
               </View>
+              {item.caption ? <Text variant="callout" tone="muted">{ltr(item.caption)}</Text> : null}
             </View>
           </>
         );

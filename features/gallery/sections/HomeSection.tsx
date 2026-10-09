@@ -48,7 +48,7 @@ export function HomeSection() {
   const { colors, space, size, border } = useTheme();
   const [currency, setCurrency] = useState<Currency>('USD');
   // Worked out here, not at the top of the file: Home's module may still be loading when this one is read.
-  const firstSteps = gettingStartedSteps({ accountCount: 1, transactionCount: 0, insightsSeen: false, reminderOn: false, isPro: false, autoBackupOn: false });
+  const firstSteps = gettingStartedSteps({ accountCount: 1, transactionCount: 0, insightsSeen: false, budgetCount: 0, reminderOn: false, isPro: false, autoBackupOn: false });
   // Cancels the gallery's page margin so the screen is drawn at full width.
   const frame = { marginHorizontal: -space.lg, backgroundColor: colors.background, borderTopWidth: border.thin, borderBottomWidth: border.thin, borderColor: colors.divider };
 
