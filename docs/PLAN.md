@@ -31,7 +31,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 40 | 12 | In progress |
-| H | Version 2.1: budgets | 33 | 5 | In progress |
+| H | Version 2.1: budgets | 33 | 11 | In progress |
 | I | Version 2.2: repeating items | 31 | 0 |  |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
@@ -709,16 +709,16 @@ made on 2.0 still restores.
 - [x] H1.06 `docs/PRODUCT.md` and the registry agree with this order: only budgets is `next`; repeating items and the net worth trend become `later` (nothing on screen changes: the app only tells live from not live)
 
 ### H2. Data
-- [ ] H2.01 `budgets` table in `schema.ts` (category or none for overall, currency, monthly limit, rollover flag, created)
-- [ ] H2.02 Generated migration; applies on a phone carrying 2.0 data
-- [ ] H2.03 Backup format version raised; a snapshot from every older version restores with no budgets, and a test holds it
-- [ ] H2.04 Repository: add, save, delete, list with spent so far this month
-- [ ] H2.05 Erase everything clears budgets; deleting a category deletes its budget, and says so before it does
+- [x] H2.01 `budgets` table in `schema.ts` (category or none for overall, currency, monthly limit, rollover flag, created)
+- [x] H2.02 Generated migration; applies on a phone carrying 2.0 data. `drizzle/0009_normal_ezekiel.sql`: one new table and its index, nothing existing touched. Applied on the Samsung 2026-10-09 over its transactions, person and loan, which were all still there
+- [x] H2.03 Backup format version raised; a snapshot from every older version restores with no budgets, and a test holds it. Version 2. A budget whose category is missing from the backup is dropped rather than turned into a limit on everything. A version 2 file read by 2.0 restores without its budgets (2.0 ignores the key and the checksum still matches). Not yet run on a phone
+- [ ] H2.04 Repository: add, save, delete, list with spent so far this month (written, with `features/budgets/hooks`; not run on a phone until a screen calls it)
+- [ ] H2.05 Erase everything clears budgets; deleting a category deletes its budget, and says so before it does (the erase and the cascade are in; the category screen does not say so yet)
 
 ### H3. Rules, each with tests
-- [ ] H3.01 Spent this month for a category budget and for the overall one
-- [ ] H3.02 Rollover: what was left last month is added to this one; an overspend is not carried
-- [ ] H3.03 State of a budget: under, near, at, over, and the pace against the day of the month
+- [x] H3.01 Spent this month for a category budget and for the overall one. Money tied to a loan is left out, so the budget over all spending can read lower than Home's "spent this month", which counts money lent
+- [x] H3.02 Rollover: what was left last month is added to this one; an overspend is not carried
+- [x] H3.03 State of a budget: under, near, at, over, and the pace against the day of the month
 - [ ] H3.04 Warnings at 80% and at the limit, each said once a month per budget, only by the transaction that crosses it
 - [ ] H3.05 The free limit of 1, read from the registry
 

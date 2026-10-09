@@ -71,6 +71,14 @@ const loans = {
   summary: (currency: string) => [...loans.all, 'summary', currency] as const,
 };
 
+const budgets = {
+  all: ['budgets'] as const,
+  lists: () => [...budgets.all, 'list'] as const,
+  /** `month` is 'yyyy-MM', so a list read last month is not shown as this month's. */
+  views: (month: string) => [...budgets.all, 'views', month] as const,
+  count: () => [...budgets.all, 'count'] as const,
+};
+
 const backup = {
   all: ['backup'] as const,
   account: () => [...backup.all, 'account'] as const,
@@ -80,7 +88,7 @@ const backup = {
   autoBackupSwitch: () => [...backup.all, 'auto-backup-switch'] as const,
 };
 
-export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics, loans, backup } as const;
+export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics, loans, budgets, backup } as const;
 
 /**
  * Every query family read from the financial tables. Payments, accounts, categories, persons and
@@ -94,6 +102,7 @@ export const LEDGER_QUERY_ROOTS = [
   categories.all,
   persons.all,
   loans.all,
+  budgets.all,
   dashboard.all,
   analytics.all,
   reports.all,
