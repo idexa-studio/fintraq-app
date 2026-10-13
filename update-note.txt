@@ -1,135 +1,105 @@
 <en-US>
-Fintraq has a new look.
-• Redesigned from the ground up: cleaner and easier to read
-• Five tabs: Home, Activity, Add, Plan and Insights
-• New: budgets. Set a monthly limit for a category and see what is left
-• Insights shows where your money went, by category, day and person
-• Settings, accounts and backup are under the profile icon on Home
-• Your records are as you left them. Nothing was changed
+Fintraq now fits every screen.
+• Tablets and foldables: a tidy layout upright, and tabs at the side with two columns when turned
+• Small phones: the amount stays in view while you type
+• Budget names are no longer cut short on narrow screens
+• Amounts take only numbers, whatever keyboard you use
 </en-US>
 <bn-BD>
-Fintraq এখন নতুন চেহারায়।
-• গোড়া থেকে নতুন করে সাজানো: আরও পরিষ্কার, পড়তে সহজ
-• পাঁচটি ট্যাব: হোম, কার্যকলাপ, যোগ করুন, পরিকল্পনা ও বিশ্লেষণ
-• নতুন: বাজেট। একটি বিভাগের জন্য মাসিক সীমা ঠিক করুন আর দেখুন কত বাকি
-• বিশ্লেষণ দেখায় টাকা কোথায় গেল: বিভাগ, দিন ও ব্যক্তি অনুযায়ী
-• সেটিংস, অ্যাকাউন্ট ও ব্যাকআপ হোমের প্রোফাইল আইকনে
-• আপনার সব তথ্য আগের মতোই আছে। কিছুই বদলায়নি
+Fintraq এখন সব মাপের স্ক্রিনে মানানসই।
+• ট্যাবলেট ও ফোল্ডেবল: খাড়া অবস্থায় গোছানো বিন্যাস, আর ঘোরালে পাশে ট্যাব ও দুই কলাম
+• ছোট ফোন: লেখার সময় অঙ্কটি চোখের সামনেই থাকে
+• সরু স্ক্রিনে বাজেটের নাম আর কাটা পড়ে না
+• যে কিবোর্ডই হোক, অঙ্কের ঘরে শুধু সংখ্যা বসে
 </bn-BD>
 <de-DE>
-Fintraq hat ein neues Aussehen.
-• Von Grund auf neu gestaltet: klarer und leichter zu lesen
-• Fünf Tabs: Start, Aktivität, Hinzufügen, Planen und Einblicke
-• Neu: Budgets. Lege ein Monatslimit für eine Kategorie fest und sieh, was übrig ist
-• Einblicke zeigt, wohin dein Geld ging: nach Kategorie, Tag und Person
-• Einstellungen, Konten und Backup findest du über das Profilsymbol auf Start
-• Deine Daten sind so, wie du sie verlassen hast. Nichts wurde geändert
+Fintraq passt jetzt auf jeden Bildschirm.
+• Tablets und Foldables: aufgeräumtes Layout im Hochformat, im Querformat Tabs an der Seite und zwei Spalten
+• Kleine Handys: Der Betrag bleibt beim Tippen sichtbar
+• Budgetnamen werden auf schmalen Bildschirmen nicht mehr abgeschnitten
+• Beträge nehmen nur Zahlen an, egal mit welcher Tastatur
 </de-DE>
 <es-ES>
-Fintraq estrena imagen.
-• Rediseñada desde cero: más limpia y más fácil de leer
-• Cinco pestañas: Inicio, Actividad, Añadir, Plan y Análisis
-• Novedad: presupuestos. Pon un límite mensual a una categoría y mira lo que queda
-• Análisis muestra adónde fue tu dinero: por categoría, día y persona
-• Ajustes, cuentas y copia de seguridad están en el icono de perfil de Inicio
-• Tus datos siguen como los dejaste. No se ha cambiado nada
+Fintraq ahora se adapta a cualquier pantalla.
+• Tabletas y plegables: diseño ordenado en vertical, y pestañas a un lado con dos columnas en horizontal
+• Móviles pequeños: el importe sigue a la vista mientras escribes
+• Los nombres de los presupuestos ya no se cortan en pantallas estrechas
+• Los importes solo aceptan números, uses el teclado que uses
 </es-ES>
 <fr-FR>
-Fintraq change de look.
-• Entièrement repensée : plus claire et plus facile à lire
-• Cinq onglets : Accueil, Activité, Ajouter, Prévoir et Analyses
-• Nouveau : les budgets. Fixez une limite mensuelle pour une catégorie et voyez ce qu’il reste
-• Analyses montre où est passé votre argent : par catégorie, par jour et par personne
-• Réglages, comptes et sauvegarde sont sous l’icône de profil de l’Accueil
-• Vos données sont telles que vous les avez laissées. Rien n’a été modifié
+Fintraq s’adapte désormais à tous les écrans.
+• Tablettes et pliables : une mise en page soignée en portrait, et les onglets sur le côté avec deux colonnes en paysage
+• Petits téléphones : le montant reste visible pendant la saisie
+• Les noms de budgets ne sont plus coupés sur les écrans étroits
+• Les montants n’acceptent que des chiffres, quel que soit le clavier
 </fr-FR>
 <hi-IN>
-Fintraq अब नए रूप में।
-• नए सिरे से बनाया गया: ज़्यादा साफ़ और पढ़ने में आसान
-• पाँच टैब: होम, गतिविधि, जोड़ें, योजना और जानकारी
-• नया: बजट। किसी श्रेणी के लिए महीने की सीमा तय करें और देखें कि कितना बचा है
-• जानकारी दिखाती है कि पैसा कहाँ गया: श्रेणी, दिन और व्यक्ति के हिसाब से
-• सेटिंग, खाते और बैकअप होम के प्रोफ़ाइल आइकन में हैं
-• आपका सारा डेटा वैसा ही है जैसा आपने छोड़ा था। कुछ नहीं बदला
+Fintraq अब हर स्क्रीन पर ठीक बैठता है।
+• टैबलेट और फ़ोल्डेबल: सीधा रखने पर साफ़ लेआउट, और घुमाने पर किनारे टैब व दो कॉलम
+• छोटे फ़ोन: लिखते समय रकम सामने दिखती रहती है
+• पतली स्क्रीन पर बजट के नाम अब कटते नहीं
+• कीबोर्ड कोई भी हो, रकम में सिर्फ़ अंक ही आते हैं
 </hi-IN>
 <id>
-Fintraq tampil dengan wajah baru.
-• Dirancang ulang dari awal: lebih bersih dan lebih mudah dibaca
-• Lima tab: Beranda, Aktivitas, Tambah, Rencana, dan Wawasan
-• Baru: anggaran. Tetapkan batas bulanan untuk sebuah kategori dan lihat sisanya
-• Wawasan menunjukkan ke mana uang Anda pergi: per kategori, hari, dan orang
-• Pengaturan, akun, dan cadangan ada di ikon profil di Beranda
-• Catatan Anda tetap seperti semula. Tidak ada yang diubah
+Fintraq kini pas di semua layar.
+• Tablet dan ponsel lipat: tata letak rapi saat tegak, serta tab di samping dan dua kolom saat diputar
+• Ponsel kecil: jumlah tetap terlihat saat Anda mengetik
+• Nama anggaran tidak lagi terpotong di layar sempit
+• Jumlah hanya menerima angka, apa pun keyboardnya
 </id>
 <ja-JP>
-Fintraqのデザインが新しくなりました。
-• 一から作り直し、すっきりと見やすく
-• 5つのタブ：ホーム、履歴、追加、予定、分析
-• 新機能：予算。カテゴリに月の上限を決めて、残りを確認できます
-• 分析で、お金の行き先をカテゴリ・日・人ごとに確認
-• 設定、口座、バックアップはホームのプロフィールアイコンから
-• これまでの記録はそのままです。何も変わっていません
+Fintraqがあらゆる画面サイズに対応しました。
+• タブレットと折りたたみ端末：縦向きでは整ったレイアウト、横向きではタブが横に並び2列表示
+• 小さなスマートフォン：入力中も金額が隠れません
+• 幅の狭い画面でも予算名が途中で切れません
+• どのキーボードでも、金額には数字だけが入ります
 </ja-JP>
 <kn-IN>
-Fintraq ಈಗ ಹೊಸ ರೂಪದಲ್ಲಿ.
-• ಮೊದಲಿನಿಂದ ಮರುವಿನ್ಯಾಸ: ಹೆಚ್ಚು ಸ್ವಚ್ಛ, ಓದಲು ಸುಲಭ
-• ಐದು ಟ್ಯಾಬ್‌ಗಳು: ಹೋಮ್, ಚಟುವಟಿಕೆ, ಸೇರಿಸಿ, ಯೋಜನೆ ಮತ್ತು ವಿಶ್ಲೇಷಣೆ
-• ಹೊಸದು: ಬಜೆಟ್‌ಗಳು. ಒಂದು ವರ್ಗಕ್ಕೆ ತಿಂಗಳ ಮಿತಿ ಇಟ್ಟು ಎಷ್ಟು ಉಳಿದಿದೆ ನೋಡಿ
-• ವಿಶ್ಲೇಷಣೆ ನಿಮ್ಮ ಹಣ ಎಲ್ಲಿಗೆ ಹೋಯಿತು ತೋರಿಸುತ್ತದೆ: ವರ್ಗ, ದಿನ ಮತ್ತು ವ್ಯಕ್ತಿಯ ಪ್ರಕಾರ
-• ಸೆಟ್ಟಿಂಗ್‌ಗಳು, ಖಾತೆಗಳು ಮತ್ತು ಬ್ಯಾಕಪ್ ಹೋಮ್‌ನ ಪ್ರೊಫೈಲ್ ಐಕಾನ್‌ನಲ್ಲಿವೆ
-• ನಿಮ್ಮ ದಾಖಲೆಗಳು ನೀವು ಬಿಟ್ಟಂತೆಯೇ ಇವೆ. ಏನೂ ಬದಲಾಗಿಲ್ಲ
+Fintraq ಈಗ ಎಲ್ಲಾ ಪರದೆಗಳಿಗೂ ಹೊಂದುತ್ತದೆ.
+• ಟ್ಯಾಬ್ಲೆಟ್ ಮತ್ತು ಫೋಲ್ಡಬಲ್: ನೇರವಾಗಿ ಹಿಡಿದಾಗ ಅಚ್ಚುಕಟ್ಟಾದ ವಿನ್ಯಾಸ, ತಿರುಗಿಸಿದಾಗ ಬದಿಯಲ್ಲಿ ಟ್ಯಾಬ್‌ಗಳು ಮತ್ತು ಎರಡು ಕಾಲಮ್‌ಗಳು
+• ಚಿಕ್ಕ ಫೋನ್‌ಗಳು: ಟೈಪ್ ಮಾಡುವಾಗ ಮೊತ್ತ ಕಾಣುತ್ತಲೇ ಇರುತ್ತದೆ
+• ಕಿರಿದಾದ ಪರದೆಯಲ್ಲಿ ಬಜೆಟ್ ಹೆಸರುಗಳು ಇನ್ನು ಕತ್ತರಿಸುವುದಿಲ್ಲ
+• ಯಾವ ಕೀಬೋರ್ಡ್ ಆದರೂ ಮೊತ್ತದಲ್ಲಿ ಸಂಖ್ಯೆಗಳು ಮಾತ್ರ
 </kn-IN>
 <ko-KR>
-Fintraq이 새로운 모습으로 바뀌었습니다.
-• 처음부터 새로 디자인: 더 깔끔하고 읽기 쉽게
-• 다섯 개의 탭: 홈, 내역, 추가, 플랜, 인사이트
-• 새 기능: 예산. 카테고리에 월 한도를 정하고 남은 금액을 확인하세요
-• 인사이트에서 돈이 어디로 갔는지 카테고리, 날짜, 사람별로 확인하세요
-• 설정, 계좌, 백업은 홈의 프로필 아이콘에 있습니다
-• 기록은 그대로입니다. 아무것도 바뀌지 않았습니다
+Fintraq이 이제 모든 화면에 맞습니다.
+• 태블릿과 폴더블: 세로에서는 정돈된 레이아웃, 가로에서는 옆쪽 탭과 두 개의 열
+• 작은 휴대폰: 입력하는 동안 금액이 가려지지 않습니다
+• 좁은 화면에서 예산 이름이 더 이상 잘리지 않습니다
+• 어떤 키보드를 쓰든 금액에는 숫자만 입력됩니다
 </ko-KR>
 <mr-IN>
-Fintraq आता नव्या रूपात.
-• पूर्णपणे नव्याने रचलेले: अधिक स्वच्छ आणि वाचायला सोपे
-• पाच टॅब: होम, हालचाल, जोडा, नियोजन आणि माहिती
-• नवीन: बजेट. एखाद्या श्रेणीसाठी महिन्याची मर्यादा ठरवा आणि किती उरले ते पहा
-• माहिती दाखवते तुमचे पैसे कुठे गेले: श्रेणी, दिवस आणि व्यक्तीनुसार
-• सेटिंग्ज, खाती आणि बॅकअप होमवरील प्रोफाइल आयकॉनमध्ये आहेत
-• तुमच्या नोंदी तुम्ही ठेवल्या तशाच आहेत. काहीही बदललेले नाही
+Fintraq आता प्रत्येक स्क्रीनवर नीट बसते.
+• टॅबलेट आणि फोल्डेबल: उभे धरल्यावर नीटनेटकी मांडणी, आणि फिरवल्यावर बाजूला टॅब व दोन स्तंभ
+• लहान फोन: टाइप करताना रक्कम दिसत राहते
+• अरुंद स्क्रीनवर बजेटची नावे आता कापली जात नाहीत
+• कीबोर्ड कोणताही असो, रकमेत फक्त अंकच येतात
 </mr-IN>
 <pt-BR>
-O Fintraq está de cara nova.
-• Redesenhado do zero: mais limpo e mais fácil de ler
-• Cinco abas: Início, Atividade, Adicionar, Planejar e Análises
-• Novidade: orçamentos. Defina um limite mensal para uma categoria e veja o que resta
-• Análises mostra para onde foi seu dinheiro: por categoria, dia e pessoa
-• Ajustes, contas e backup ficam no ícone de perfil do Início
-• Seus registros estão como você deixou. Nada foi alterado
+O Fintraq agora se ajusta a qualquer tela.
+• Tablets e dobráveis: layout organizado na vertical, e abas na lateral com duas colunas na horizontal
+• Celulares pequenos: o valor continua à vista enquanto você digita
+• Os nomes dos orçamentos não são mais cortados em telas estreitas
+• Os valores aceitam apenas números, seja qual for o teclado
 </pt-BR>
 <ru-RU>
-У Fintraq новый облик.
-• Полностью новый дизайн: чище и удобнее для чтения
-• Пять вкладок: «Главная», «Операции», «Добавить», «План» и «Аналитика»
-• Новое: бюджеты. Задайте месячный лимит для категории и следите за остатком
-• «Аналитика» показывает, куда ушли деньги: по категориям, дням и людям
-• Настройки, счета и резервная копия — под значком профиля на главном экране
-• Ваши записи остались такими, какими вы их оставили. Ничего не изменилось
+Fintraq теперь подходит для любого экрана.
+• Планшеты и складные телефоны: аккуратный макет в портретном режиме, а в альбомном — вкладки сбоку и две колонки
+• Небольшие телефоны: сумма остаётся на виду, пока вы её вводите
+• Названия бюджетов больше не обрезаются на узких экранах
+• В сумму попадают только цифры, какой бы ни была клавиатура
 </ru-RU>
 <ta-IN>
-Fintraq புதிய தோற்றத்தில்.
-• அடிப்படையிலிருந்து மறுவடிவமைப்பு: தெளிவாகவும் படிக்க எளிதாகவும்
-• ஐந்து தாவல்கள்: முகப்பு, செயல்பாடு, சேர், திட்டம், பகுப்பாய்வு
-• புதியது: பட்ஜெட்டுகள். ஒரு வகைக்கு மாத வரம்பு அமைத்து மீதம் எவ்வளவு என்று பாருங்கள்
-• பகுப்பாய்வு உங்கள் பணம் எங்கே போனது என்று காட்டும்: வகை, நாள், நபர் வாரியாக
-• அமைப்புகள், கணக்குகள், காப்புப்பிரதி முகப்பின் சுயவிவர ஐகானில் உள்ளன
-• உங்கள் பதிவுகள் நீங்கள் விட்டபடியே உள்ளன. எதுவும் மாறவில்லை
+Fintraq இப்போது எல்லா திரைகளுக்கும் பொருந்தும்.
+• டேப்லெட் மற்றும் மடிக்கும் போன்கள்: நேராகப் பிடித்தால் நேர்த்தியான அமைப்பு, திருப்பினால் பக்கத்தில் தாவல்கள் மற்றும் இரண்டு நெடுவரிசைகள்
+• சிறிய போன்கள்: தட்டச்சு செய்யும்போது தொகை தெரிந்தபடியே இருக்கும்
+• குறுகிய திரைகளில் பட்ஜெட் பெயர்கள் இனி வெட்டப்படாது
+• எந்த விசைப்பலகையாக இருந்தாலும் தொகையில் எண்கள் மட்டுமே
 </ta-IN>
 <te-IN>
-Fintraq ఇప్పుడు కొత్త రూపంలో.
-• మొదటి నుంచి కొత్తగా రూపొందించాం: మరింత శుభ్రంగా, చదవడానికి సులభంగా
-• ఐదు ట్యాబ్‌లు: హోమ్, కార్యకలాపం, జోడించండి, ప్లాన్, విశ్లేషణ
-• కొత్తది: బడ్జెట్‌లు. ఒక వర్గానికి నెలవారీ పరిమితి పెట్టి ఎంత మిగిలిందో చూడండి
-• విశ్లేషణ మీ డబ్బు ఎక్కడికి పోయిందో చూపిస్తుంది: వర్గం, రోజు, వ్యక్తి వారీగా
-• సెట్టింగ్‌లు, ఖాతాలు, బ్యాకప్ హోమ్‌లోని ప్రొఫైల్ ఐకాన్‌లో ఉన్నాయి
-• మీ రికార్డులు మీరు వదిలినట్లే ఉన్నాయి. ఏదీ మారలేదు
+Fintraq ఇప్పుడు ప్రతి స్క్రీన్‌కూ సరిపోతుంది.
+• ట్యాబ్లెట్‌లు, ఫోల్డబుల్‌లు: నిలువుగా చక్కని అమరిక, తిప్పితే పక్కన ట్యాబ్‌లు, రెండు నిలువు వరుసలు
+• చిన్న ఫోన్‌లు: టైప్ చేస్తున్నప్పుడు మొత్తం కనిపిస్తూనే ఉంటుంది
+• ఇరుకైన స్క్రీన్‌లలో బడ్జెట్ పేర్లు ఇక కత్తిరించబడవు
+• ఏ కీబోర్డ్ అయినా మొత్తంలో అంకెలు మాత్రమే
 </te-IN>
