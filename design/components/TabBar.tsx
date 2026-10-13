@@ -27,9 +27,9 @@ export type TabBarProps<K extends string = string> = {
 
 /**
  * The bottom bar, as the reference draws it: white, edge to edge, every item
- * an icon over its label. A short green mark hangs from the bar's top edge
- * over the active tab's icon, which is solid, with its label bold. The mark
- * slides across when the tab changes.
+ * an icon over its label. A green mark as wide as the tab sits on the bar's
+ * top edge above the active tab, whose icon is solid and whose label is bold.
+ * The mark slides across when the tab changes.
  */
 export function TabBar<K extends string>({ items, activeKey, onSelect, bottomInset = 0 }: TabBarProps<K>) {
   const { motion, size } = useTheme();
@@ -44,9 +44,7 @@ export function TabBar<K extends string>({ items, activeKey, onSelect, bottomIns
   }, [index, position, motion.normal, motion.fast]);
 
   const direction = I18nManager.isRTL ? -1 : 1;
-  // Centred over its tab's icon.
-  const inset = (tabWidth - size.tabMarkWidth) / 2;
-  const sliding = useAnimatedStyle(() => ({ transform: [{ translateX: (position.value * tabWidth + inset) * direction }] }));
+  const sliding = useAnimatedStyle(() => ({ transform: [{ translateX: position.value * tabWidth * direction }] }));
 
   return (
     <View accessibilityRole="tablist" onLayout={(e) => setWidth(e.nativeEvent.layout.width)} style={[styles.bar, { paddingBottom: bottomInset }]}>
@@ -59,7 +57,7 @@ export function TabBar<K extends string>({ items, activeKey, onSelect, bottomIns
           </Touchable>
         );
       })}
-      {width > 0 ? <Animated.View pointerEvents="none" style={[styles.mark, sliding]} /> : null}
+      {width > 0 ? <Animated.View pointerEvents="none" style={[styles.mark, { width: tabWidth }, sliding]} /> : null}
     </View>
   );
 }
@@ -69,6 +67,6 @@ const createStyles = ({ colors, size, space, border }: Theme) =>
     bar: { flexDirection: 'row', backgroundColor: colors.surface, borderTopWidth: border.thin, borderTopColor: colors.divider },
     tab: { flex: 1, minHeight: size.tabBar, paddingVertical: space.xs, alignItems: 'center', justifyContent: 'center', gap: space.xs },
     label: { alignSelf: 'stretch', textAlign: 'center', paddingHorizontal: space.xxs },
-    // Hangs from the bar's top hairline, its lower corners rounded.
-    mark: { position: 'absolute', top: -border.thin, left: 0, width: size.tabMarkWidth, height: size.tabMark, borderBottomLeftRadius: size.tabMark, borderBottomRightRadius: size.tabMark, backgroundColor: colors.accent },
+    // Sits on the bar's top hairline, the full width of its tab.
+    mark: { position: 'absolute', top: -border.thin, left: 0, height: size.tabBarMark, backgroundColor: colors.accent },
   });

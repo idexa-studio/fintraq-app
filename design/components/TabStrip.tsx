@@ -59,5 +59,5 @@ const createStyles = ({ colors, size, border }: Theme) =>
     strip: { flexDirection: 'row', backgroundColor: colors.surface, borderBottomWidth: border.thin, borderBottomColor: colors.divider },
     tab: { flex: 1, minHeight: size.minTouch, alignItems: 'center', justifyContent: 'center' },
     // Sits on the strip's bottom hairline, as the tab bar's mark sits on its top one.
-    mark: { position: 'absolute', left: 0, bottom: -border.thin, height: size.tabMark + 1, backgroundColor: colors.accent },
+    mark: { position: 'absolute', left: 0, bottom: -border.thin, height: size.tabStripMark, backgroundColor: colors.accent },
   });
