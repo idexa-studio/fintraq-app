@@ -1,7 +1,8 @@
-import { Button, ListRow, Sheet } from '@/design';
+import { Button, ListRow, Sheet, useTheme } from '@/design';
 import { PRO_FEATURES, PRO_PILLARS, featuresIn, useProCopy } from '@/features/pro';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
 /** One thing Pro adds from each of its four parts, so the sheet says what Pro is in four lines. */
 const SHOWN = PRO_PILLARS.flatMap((pillar) => featuresIn(pillar, 'live').slice(0, 1));
@@ -9,10 +10,11 @@ const SHOWN = PRO_PILLARS.flatMap((pillar) => featuresIn(pillar, 'live').slice(0
 /** What the offer says, without the sheet round it: for the gallery too. */
 export function ProOfferPoints() {
   const copy = useProCopy();
+  const { space } = useTheme();
   return (
-    <>
+    <View style={{ gap: space.xs }}>
       {SHOWN.map((id) => <ListRow key={id} icon={PRO_FEATURES[id].icon} strong title={copy.feature(id).title} subtitle={copy.feature(id).description} />)}
-    </>
+    </View>
   );
 }
 

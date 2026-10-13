@@ -12,7 +12,6 @@ export default {
     },
   },
   whatsNew: {
-    heading: 'What’s new',
     title: 'Fintraq has a new look',
     done: 'Got it',
     tabs: {
