@@ -1,3 +1,4 @@
+import { useLayout } from '@/design';
 import { AppTabBar } from '@/features/shell';
 import { Tabs } from 'expo-router';
 import React from 'react';
@@ -12,8 +13,10 @@ import { Platform } from 'react-native';
 const TAB_CHANGE = Platform.OS === 'ios' ? 'none' : 'shift';
 
 export default function TabsLayout() {
+  // A screen wide enough for it carries the tabs as a rail at the side.
+  const { isExpanded } = useLayout();
   return (
-    <Tabs tabBar={(props) => <AppTabBar {...props} />} screenOptions={{ headerShown: false, animation: TAB_CHANGE }}>
+    <Tabs tabBar={(props) => <AppTabBar {...props} />} screenOptions={{ headerShown: false, animation: TAB_CHANGE, tabBarPosition: isExpanded ? 'left' : 'bottom' }}>
       <Tabs.Screen name="index" />
       <Tabs.Screen name="activity" />
       <Tabs.Screen name="plan" />

@@ -58,6 +58,8 @@ export function TextField({ label, icon, error, helper, trailing, prefix, onPres
         <TextInput
           {...rest}
           ref={input}
+          // On its side Android would otherwise replace the whole screen with the keyboard's own field.
+          disableFullscreenUI
           editable={editable && !onPress}
           pointerEvents={onPress ? 'none' : undefined}
           allowFontScaling={false}

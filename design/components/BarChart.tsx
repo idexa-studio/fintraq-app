@@ -33,7 +33,7 @@ export function BarChart({ bars, highlight, height = 120, accessibilityLabel }: 
           <View style={[styles.track, { height }]}>
             <View style={[styles.bar, { height: heightOf(bar, max), backgroundColor: i === highlight ? colors.accent : colors.text, borderColor: colors.text }]} />
           </View>
-          <Text variant={i === highlight ? 'tabActive' : 'tab'} tone={i === highlight ? 'default' : 'muted'} numberOfLines={1}>{bar.label}</Text>
+          <Text variant={i === highlight ? 'tabActive' : 'tab'} tone={i === highlight ? 'default' : 'muted'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>{bar.label}</Text>
         </View>
       ))}
     </View>

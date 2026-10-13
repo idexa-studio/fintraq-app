@@ -1,7 +1,7 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
-import { BRAND_MARK, BrandMark, LaunchArt, LIGHT_COLORS, PASTELS, Section, useTheme } from '@/design';
+import { BRAND_MARK, BrandMark, LaunchArt, LIGHT_COLORS, PASTELS, Section, useLayout, useTheme } from '@/design';
 import React from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { View } from 'react-native';
 
 /** The launcher draws an icon about this large, and shows the middle two thirds of its canvas. */
 const LAUNCHER = 60;
@@ -27,7 +27,7 @@ function IconTile({ size, shape }: TileProps) {
 export function BrandSection() {
   const { radius, space } = useTheme();
   // The launch screen at the phone's own size, shrunk as a whole so its proportions are the real ones.
-  const screen = useWindowDimensions();
+  const screen = useLayout();
   const shrink = 0.6;
   return (
     <Section title="Brand">

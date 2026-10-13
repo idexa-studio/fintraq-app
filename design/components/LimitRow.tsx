@@ -38,7 +38,7 @@ export function LimitRow({ leading, title, detail, remaining, share, state = 'un
       <View style={styles.text}>
         <View style={styles.head}>
           <Text variant="bodyStrong" numberOfLines={1} style={styles.title}>{title}</Text>
-          {/* What is left is the point of the row, so it may take the larger part of the line; it shrinks only when even that is too little. */}
+          {/* Beside the name when both fit; on a narrow phone or with a long name it drops under it, so neither is cut short. */}
           <Text variant="calloutStrong" tone={state === 'over' ? 'danger' : 'default'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} style={styles.remaining}>{ltr(remaining)}</Text>
         </View>
         <ProgressBar value={share} over={state === 'over'} near={state === 'near'} accessibilityLabel={title} />
@@ -60,8 +60,8 @@ const createStyles = ({ size, space }: Theme) =>
     // The list row's own measures, so it sits in a ListGroup among ordinary rows.
     row: { minHeight: size.row, flexDirection: 'row', alignItems: 'center', gap: space.lg, paddingHorizontal: size.cardPadding, paddingVertical: space.lg },
     text: { flex: 1, gap: space.sm },
-    head: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: space.md },
-    title: { flex: 1 },
-    // Bounded, so that fitting has a width to fit to; the name keeps the rest.
-    remaining: { maxWidth: '60%', textAlign: 'right' },
+    head: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: space.md, rowGap: space.xxs },
+    title: { flexShrink: 1 },
+    // Pushed to the end of whichever line it lands on. Bounded, so that fitting has a width to fit to.
+    remaining: { marginStart: 'auto', maxWidth: '100%', textAlign: 'right' },
   });
