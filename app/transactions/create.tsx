@@ -1,6 +1,10 @@
+import { addPathFromLegacy } from '@/features/shell';
+import { Redirect, useLocalSearchParams } from 'expo-router';
+import type { Href } from 'expo-router';
 import React from 'react';
-import { TransactionFormPage } from '../../src/features/transactions/screens/TransactionFormPage';
 
-export default function CreateTransactionRoute() {
-  return <TransactionFormPage mode="create" />;
+/** The entry screen's path in the shipped app; pinned launcher shortcuts still open it. */
+export default function LegacyCreateRoute() {
+  const params = useLocalSearchParams<{ type?: string; accountId?: string }>();
+  return <Redirect href={addPathFromLegacy(params) as Href} />;
 }

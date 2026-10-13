@@ -1,8 +1,8 @@
-import { usePremium } from '@/src/providers/PremiumProvider';
-import { PremiumScreen } from '@/src/features/premium/screens/PremiumScreen';
-import { ProSuccessScreen } from '@/src/features/premium/screens/ProSuccessScreen';
+import { Redirect, useLocalSearchParams } from 'expo-router';
+import React from 'react';
 
-export default function Screen() {
-  const { isPremium } = usePremium();
-  return isPremium ? <ProSuccessScreen /> : <PremiumScreen />;
+/** `/premium?feature=<old id>`, the paywall's path in the shipped app. It is `/pro` now. */
+export default function LegacyPremiumRoute() {
+  const { feature } = useLocalSearchParams<{ feature?: string }>();
+  return <Redirect href={feature ? { pathname: '/pro', params: { feature } } : '/pro'} />;
 }

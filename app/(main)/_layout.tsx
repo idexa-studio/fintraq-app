@@ -1,7 +1,8 @@
 import { Redirect, Stack } from 'expo-router'; // Refreshing layout resolution
 import React from 'react';
-import { ErrorBoundary } from '../../src/components/ui/ErrorBoundary';
-import { useOnboarding } from '../../src/providers/OnboardingProvider';
+import { SHEET_ROUTE } from '@/design';
+import { useOnboarding } from '@/features/onboarding';
+import { ErrorBoundary, useLauncherShortcuts, useNotificationRouting } from '@/features/shell';
 
 export default function StackLayout() {
   const { hasOnboarded } = useOnboarding();
@@ -12,20 +13,34 @@ export default function StackLayout() {
 
   return (
     <ErrorBoundary>
-      <Stack screenOptions={{ headerShown: false }}>
+      <LauncherShortcuts />
+      <Stack screenOptions={{ headerShown: false, animation: 'ios_from_right' }}>
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="categories" />
-        <Stack.Screen name="accounts/form" />
-        <Stack.Screen name="categories/form" />
-        <Stack.Screen name="persons/form" />
-        <Stack.Screen name="persons/[id]" />
-        <Stack.Screen name="loans" />
-        <Stack.Screen name="loans/form" />
-        <Stack.Screen name="loans/[id]" />
+        <Stack.Screen name="accounts/new" options={SHEET_ROUTE} />
+        <Stack.Screen name="accounts/[id]/edit" options={SHEET_ROUTE} />
+        <Stack.Screen name="categories/new" options={SHEET_ROUTE} />
+        <Stack.Screen name="categories/[id]/edit" options={SHEET_ROUTE} />
+        <Stack.Screen name="people/new" options={SHEET_ROUTE} />
+        <Stack.Screen name="people/[id]/edit" options={SHEET_ROUTE} />
+        <Stack.Screen name="loans/new" options={SHEET_ROUTE} />
+        <Stack.Screen name="loans/[id]/repay" options={SHEET_ROUTE} />
+        <Stack.Screen name="loans/[id]/edit" options={SHEET_ROUTE} />
+        <Stack.Screen name="budgets/new" options={SHEET_ROUTE} />
+        <Stack.Screen name="budgets/[id]/edit" options={SHEET_ROUTE} />
+        <Stack.Screen name="settings/pin" options={SHEET_ROUTE} />
         <Stack.Screen name="backup" />
         <Stack.Screen name="export" />
-        <Stack.Screen name="webview" />
       </Stack>
     </ErrorBoundary>
   );
+}
+
+/**
+ * Registers and routes the launcher's long-press shortcuts and opens the screen a tapped
+ * notification is about; only mounted once onboarded.
+ */
+function LauncherShortcuts() {
+  useLauncherShortcuts();
+  useNotificationRouting();
+  return null;
 }

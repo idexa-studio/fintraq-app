@@ -1,5 +1,135 @@
-What's New
-
-- Cloud backup and restore now more reliable
-- Automatic backups run in the background
-- Bug fixes and stability improvements
+<en-US>
+Fintraq has a new look.
+• Redesigned from the ground up: cleaner and easier to read
+• Five tabs: Home, Activity, Add, Plan and Insights
+• New: budgets. Set a monthly limit for a category and see what is left
+• Insights shows where your money went, by category, day and person
+• Settings, accounts and backup are under the profile icon on Home
+• Your records are as you left them. Nothing was changed
+</en-US>
+<bn-BD>
+Fintraq এখন নতুন চেহারায়।
+• গোড়া থেকে নতুন করে সাজানো: আরও পরিষ্কার, পড়তে সহজ
+• পাঁচটি ট্যাব: হোম, কার্যকলাপ, যোগ করুন, পরিকল্পনা ও বিশ্লেষণ
+• নতুন: বাজেট। একটি বিভাগের জন্য মাসিক সীমা ঠিক করুন আর দেখুন কত বাকি
+• বিশ্লেষণ দেখায় টাকা কোথায় গেল: বিভাগ, দিন ও ব্যক্তি অনুযায়ী
+• সেটিংস, অ্যাকাউন্ট ও ব্যাকআপ হোমের প্রোফাইল আইকনে
+• আপনার সব তথ্য আগের মতোই আছে। কিছুই বদলায়নি
+</bn-BD>
+<de-DE>
+Fintraq hat ein neues Aussehen.
+• Von Grund auf neu gestaltet: klarer und leichter zu lesen
+• Fünf Tabs: Start, Aktivität, Hinzufügen, Planen und Einblicke
+• Neu: Budgets. Lege ein Monatslimit für eine Kategorie fest und sieh, was übrig ist
+• Einblicke zeigt, wohin dein Geld ging: nach Kategorie, Tag und Person
+• Einstellungen, Konten und Backup findest du über das Profilsymbol auf Start
+• Deine Daten sind so, wie du sie verlassen hast. Nichts wurde geändert
+</de-DE>
+<es-ES>
+Fintraq estrena imagen.
+• Rediseñada desde cero: más limpia y más fácil de leer
+• Cinco pestañas: Inicio, Actividad, Añadir, Plan y Análisis
+• Novedad: presupuestos. Pon un límite mensual a una categoría y mira lo que queda
+• Análisis muestra adónde fue tu dinero: por categoría, día y persona
+• Ajustes, cuentas y copia de seguridad están en el icono de perfil de Inicio
+• Tus datos siguen como los dejaste. No se ha cambiado nada
+</es-ES>
+<fr-FR>
+Fintraq change de look.
+• Entièrement repensée : plus claire et plus facile à lire
+• Cinq onglets : Accueil, Activité, Ajouter, Prévoir et Analyses
+• Nouveau : les budgets. Fixez une limite mensuelle pour une catégorie et voyez ce qu’il reste
+• Analyses montre où est passé votre argent : par catégorie, par jour et par personne
+• Réglages, comptes et sauvegarde sont sous l’icône de profil de l’Accueil
+• Vos données sont telles que vous les avez laissées. Rien n’a été modifié
+</fr-FR>
+<hi-IN>
+Fintraq अब नए रूप में।
+• नए सिरे से बनाया गया: ज़्यादा साफ़ और पढ़ने में आसान
+• पाँच टैब: होम, गतिविधि, जोड़ें, योजना और जानकारी
+• नया: बजट। किसी श्रेणी के लिए महीने की सीमा तय करें और देखें कि कितना बचा है
+• जानकारी दिखाती है कि पैसा कहाँ गया: श्रेणी, दिन और व्यक्ति के हिसाब से
+• सेटिंग, खाते और बैकअप होम के प्रोफ़ाइल आइकन में हैं
+• आपका सारा डेटा वैसा ही है जैसा आपने छोड़ा था। कुछ नहीं बदला
+</hi-IN>
+<id>
+Fintraq tampil dengan wajah baru.
+• Dirancang ulang dari awal: lebih bersih dan lebih mudah dibaca
+• Lima tab: Beranda, Aktivitas, Tambah, Rencana, dan Wawasan
+• Baru: anggaran. Tetapkan batas bulanan untuk sebuah kategori dan lihat sisanya
+• Wawasan menunjukkan ke mana uang Anda pergi: per kategori, hari, dan orang
+• Pengaturan, akun, dan cadangan ada di ikon profil di Beranda
+• Catatan Anda tetap seperti semula. Tidak ada yang diubah
+</id>
+<ja-JP>
+Fintraqのデザインが新しくなりました。
+• 一から作り直し、すっきりと見やすく
+• 5つのタブ：ホーム、履歴、追加、予定、分析
+• 新機能：予算。カテゴリに月の上限を決めて、残りを確認できます
+• 分析で、お金の行き先をカテゴリ・日・人ごとに確認
+• 設定、口座、バックアップはホームのプロフィールアイコンから
+• これまでの記録はそのままです。何も変わっていません
+</ja-JP>
+<kn-IN>
+Fintraq ಈಗ ಹೊಸ ರೂಪದಲ್ಲಿ.
+• ಮೊದಲಿನಿಂದ ಮರುವಿನ್ಯಾಸ: ಹೆಚ್ಚು ಸ್ವಚ್ಛ, ಓದಲು ಸುಲಭ
+• ಐದು ಟ್ಯಾಬ್‌ಗಳು: ಹೋಮ್, ಚಟುವಟಿಕೆ, ಸೇರಿಸಿ, ಯೋಜನೆ ಮತ್ತು ವಿಶ್ಲೇಷಣೆ
+• ಹೊಸದು: ಬಜೆಟ್‌ಗಳು. ಒಂದು ವರ್ಗಕ್ಕೆ ತಿಂಗಳ ಮಿತಿ ಇಟ್ಟು ಎಷ್ಟು ಉಳಿದಿದೆ ನೋಡಿ
+• ವಿಶ್ಲೇಷಣೆ ನಿಮ್ಮ ಹಣ ಎಲ್ಲಿಗೆ ಹೋಯಿತು ತೋರಿಸುತ್ತದೆ: ವರ್ಗ, ದಿನ ಮತ್ತು ವ್ಯಕ್ತಿಯ ಪ್ರಕಾರ
+• ಸೆಟ್ಟಿಂಗ್‌ಗಳು, ಖಾತೆಗಳು ಮತ್ತು ಬ್ಯಾಕಪ್ ಹೋಮ್‌ನ ಪ್ರೊಫೈಲ್ ಐಕಾನ್‌ನಲ್ಲಿವೆ
+• ನಿಮ್ಮ ದಾಖಲೆಗಳು ನೀವು ಬಿಟ್ಟಂತೆಯೇ ಇವೆ. ಏನೂ ಬದಲಾಗಿಲ್ಲ
+</kn-IN>
+<ko-KR>
+Fintraq이 새로운 모습으로 바뀌었습니다.
+• 처음부터 새로 디자인: 더 깔끔하고 읽기 쉽게
+• 다섯 개의 탭: 홈, 내역, 추가, 플랜, 인사이트
+• 새 기능: 예산. 카테고리에 월 한도를 정하고 남은 금액을 확인하세요
+• 인사이트에서 돈이 어디로 갔는지 카테고리, 날짜, 사람별로 확인하세요
+• 설정, 계좌, 백업은 홈의 프로필 아이콘에 있습니다
+• 기록은 그대로입니다. 아무것도 바뀌지 않았습니다
+</ko-KR>
+<mr-IN>
+Fintraq आता नव्या रूपात.
+• पूर्णपणे नव्याने रचलेले: अधिक स्वच्छ आणि वाचायला सोपे
+• पाच टॅब: होम, हालचाल, जोडा, नियोजन आणि माहिती
+• नवीन: बजेट. एखाद्या श्रेणीसाठी महिन्याची मर्यादा ठरवा आणि किती उरले ते पहा
+• माहिती दाखवते तुमचे पैसे कुठे गेले: श्रेणी, दिवस आणि व्यक्तीनुसार
+• सेटिंग्ज, खाती आणि बॅकअप होमवरील प्रोफाइल आयकॉनमध्ये आहेत
+• तुमच्या नोंदी तुम्ही ठेवल्या तशाच आहेत. काहीही बदललेले नाही
+</mr-IN>
+<pt-BR>
+O Fintraq está de cara nova.
+• Redesenhado do zero: mais limpo e mais fácil de ler
+• Cinco abas: Início, Atividade, Adicionar, Planejar e Análises
+• Novidade: orçamentos. Defina um limite mensal para uma categoria e veja o que resta
+• Análises mostra para onde foi seu dinheiro: por categoria, dia e pessoa
+• Ajustes, contas e backup ficam no ícone de perfil do Início
+• Seus registros estão como você deixou. Nada foi alterado
+</pt-BR>
+<ru-RU>
+У Fintraq новый облик.
+• Полностью новый дизайн: чище и удобнее для чтения
+• Пять вкладок: «Главная», «Операции», «Добавить», «План» и «Аналитика»
+• Новое: бюджеты. Задайте месячный лимит для категории и следите за остатком
+• «Аналитика» показывает, куда ушли деньги: по категориям, дням и людям
+• Настройки, счета и резервная копия — под значком профиля на главном экране
+• Ваши записи остались такими, какими вы их оставили. Ничего не изменилось
+</ru-RU>
+<ta-IN>
+Fintraq புதிய தோற்றத்தில்.
+• அடிப்படையிலிருந்து மறுவடிவமைப்பு: தெளிவாகவும் படிக்க எளிதாகவும்
+• ஐந்து தாவல்கள்: முகப்பு, செயல்பாடு, சேர், திட்டம், பகுப்பாய்வு
+• புதியது: பட்ஜெட்டுகள். ஒரு வகைக்கு மாத வரம்பு அமைத்து மீதம் எவ்வளவு என்று பாருங்கள்
+• பகுப்பாய்வு உங்கள் பணம் எங்கே போனது என்று காட்டும்: வகை, நாள், நபர் வாரியாக
+• அமைப்புகள், கணக்குகள், காப்புப்பிரதி முகப்பின் சுயவிவர ஐகானில் உள்ளன
+• உங்கள் பதிவுகள் நீங்கள் விட்டபடியே உள்ளன. எதுவும் மாறவில்லை
+</ta-IN>
+<te-IN>
+Fintraq ఇప్పుడు కొత్త రూపంలో.
+• మొదటి నుంచి కొత్తగా రూపొందించాం: మరింత శుభ్రంగా, చదవడానికి సులభంగా
+• ఐదు ట్యాబ్‌లు: హోమ్, కార్యకలాపం, జోడించండి, ప్లాన్, విశ్లేషణ
+• కొత్తది: బడ్జెట్‌లు. ఒక వర్గానికి నెలవారీ పరిమితి పెట్టి ఎంత మిగిలిందో చూడండి
+• విశ్లేషణ మీ డబ్బు ఎక్కడికి పోయిందో చూపిస్తుంది: వర్గం, రోజు, వ్యక్తి వారీగా
+• సెట్టింగ్‌లు, ఖాతాలు, బ్యాకప్ హోమ్‌లోని ప్రొఫైల్ ఐకాన్‌లో ఉన్నాయి
+• మీ రికార్డులు మీరు వదిలినట్లే ఉన్నాయి. ఏదీ మారలేదు
+</te-IN>

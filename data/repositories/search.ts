@@ -1,0 +1,84 @@
+import { desc, eq, like, or } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
+import { db } from '@/data/db/client';
+import { accounts, categories, payments, persons } from '@/data/db/schema';
+import type { Account } from '@/data/repositories/accounts';
+import type { Category } from '@/data/repositories/categories';
+import type { Person } from '@/data/repositories/people';
+import { TRANSACTION_LIST_SELECT, type TransactionListItem } from '@/data/repositories/transactions';
+
+const toAccounts = alias(accounts, 'to_accounts');
+
+export interface GlobalSearchResults {
+  query: string;
+  transactions: TransactionListItem[];
+  accounts: Account[];
+  categories: Category[];
+  persons: Person[];
+}
+
+/** The most transactions one search returns, newest first. The screen says so when it is reached. */
+export const SEARCH_TRANSACTION_LIMIT = 50;
+
+const searchTransactions = async (query: string, limit = SEARCH_TRANSACTION_LIMIT): Promise<TransactionListItem[]> => {
+  const q = `%${query}%`;
+  const result = await db
+    .select(TRANSACTION_LIST_SELECT)
+    .from(payments)
+    .innerJoin(accounts, eq(payments.accountId, accounts.id))
+    .innerJoin(categories, eq(payments.categoryId, categories.id))
+    .leftJoin(toAccounts, eq(payments.toAccountId, toAccounts.id))
+    .leftJoin(persons, eq(payments.personId, persons.id))
+    .where(
+      or(
+        like(payments.note, q),
+        like(accounts.name, q),
+        like(categories.name, q),
+        like(persons.name, q),
+      ),
+    )
+    .orderBy(desc(payments.datetime))
+    .limit(limit);
+
+  return result as TransactionListItem[];
+};
+
+const searchAccounts = async (query: string): Promise<Account[]> => {
+  const q = `%${query}%`;
+  return db.select().from(accounts).where(like(accounts.name, q));
+};
+
+const searchCategories = async (query: string): Promise<Category[]> => {
+  const q = `%${query}%`;
+  return db.select().from(categories).where(like(categories.name, q));
+};
+
+const searchPersons = async (query: string): Promise<Person[]> => {
+  const q = `%${query}%`;
+  return db
+    .select()
+    .from(persons)
+    .where(or(
+      like(persons.name, q),
+      like(persons.email, q),
+      like(persons.company, q),
+      like(persons.designation, q),
+    )) as Promise<Person[]>;
+};
+
+export const globalSearch = async (query: string): Promise<GlobalSearchResults> => {
+  const trimmed = query.trim();
+  const [txResults, acctResults, catResults, personResults] = await Promise.all([
+    searchTransactions(trimmed),
+    searchAccounts(trimmed),
+    searchCategories(trimmed),
+    searchPersons(trimmed),
+  ]);
+  return {
+    query: trimmed,
+    transactions: txResults,
+    accounts: acctResults,
+    categories: catResults,
+    persons: personResults,
+  };
+};
