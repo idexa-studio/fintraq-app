@@ -3,7 +3,7 @@ import type { Theme } from '@/design';
 import { CurrencyPicker, useAccounts } from '@/features/accounts';
 import { useBackupAccount } from '@/features/backup';
 import { useCategories } from '@/features/categories';
-import { useShowTipsAgain } from '@/features/guide';
+import { WhatsNewSheet, useShowTipsAgain } from '@/features/guide';
 import { useAppLock } from '@/features/lock';
 import { usePersons } from '@/features/people';
 import { usePro } from '@/features/pro';
@@ -24,7 +24,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-type Open = 'name' | 'currency' | 'language' | 'time' | 'erase' | null;
+type Open = 'name' | 'currency' | 'language' | 'time' | 'erase' | 'whatsNew' | null;
 
 /**
  * Settings, in the order people come for them: who you are and your plan,
@@ -157,6 +157,8 @@ export function SettingsScreen() {
         </ListGroup>
         <ListGroup>
           <ListRow icon="bulb" title={t('tips.row')} subtitle={t('tips.rowHint')} trailing={<View />} onPress={() => void showTipsAgain().then(() => toast.show({ message: t('tips.done') }))} />
+          {/* The same note an update shows once on Home, here for whenever it is wanted. */}
+          <ListRow icon="sparkle" title={t('whatsNew.row')} subtitle={t('whatsNew.rowHint')} onPress={() => setOpen('whatsNew')} />
           <ListRow icon="info" title={t('about.row')} subtitle={t('about.rowHint')} onPress={() => router.push('/settings/about')} />
         </ListGroup>
       </Section>
@@ -192,6 +194,7 @@ export function SettingsScreen() {
         <Button label={t('erase.confirm')} variant="danger" loading={erasing} onPress={eraseAll} />
         <Button label={t('erase.keep')} variant="secondary" disabled={erasing} onPress={close} />
       </Dialog>
+      <WhatsNewSheet visible={open === 'whatsNew'} onClose={close} />
     </Screen>
   );
 }

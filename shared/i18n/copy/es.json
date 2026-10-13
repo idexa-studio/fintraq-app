@@ -1687,6 +1687,10 @@
       "row": "Mostrar los consejos otra vez",
       "rowHint": "Los primeros pasos de Inicio y el consejo de cada pestaña",
       "done": "Los consejos han vuelto"
+    },
+    "whatsNew": {
+      "row": "Novedades",
+      "rowHint": "Qué ha cambiado en esta versión"
     }
   },
   "shell": {

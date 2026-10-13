@@ -1668,6 +1668,10 @@
       "row": "Tipps wieder anzeigen",
       "rowHint": "Die ersten Schritte auf Start und der Tipp auf jedem Tab",
       "done": "Die Tipps sind wieder da"
+    },
+    "whatsNew": {
+      "row": "Was ist neu",
+      "rowHint": "Was sich in dieser Version geändert hat"
     }
   },
   "shell": {

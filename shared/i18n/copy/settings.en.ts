@@ -73,6 +73,10 @@ export default {
     rowHint: 'The first steps on Home and the tips on the tabs',
     done: 'The tips are back',
   },
+  whatsNew: {
+    row: 'What’s new',
+    rowHint: 'What changed in this version',
+  },
   about: {
     row: 'About Fintraq',
     rowHint: 'The idea, who makes it, and the fine print',

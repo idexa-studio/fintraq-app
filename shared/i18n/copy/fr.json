@@ -1687,6 +1687,10 @@
       "row": "Afficher à nouveau les conseils",
       "rowHint": "Les premiers pas sur l’Accueil et le conseil de chaque onglet",
       "done": "Les conseils sont de retour"
+    },
+    "whatsNew": {
+      "row": "Nouveautés",
+      "rowHint": "Ce qui a changé dans cette version"
     }
   },
   "shell": {

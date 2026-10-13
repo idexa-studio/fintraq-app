@@ -1668,6 +1668,10 @@
       "row": "Tampilkan tips lagi",
       "rowHint": "Langkah pertama di Beranda dan tips di setiap tab",
       "done": "Tips sudah kembali"
+    },
+    "whatsNew": {
+      "row": "Yang baru",
+      "rowHint": "Yang berubah di versi ini"
     }
   },
   "shell": {

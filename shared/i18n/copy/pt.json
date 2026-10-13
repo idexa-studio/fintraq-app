@@ -1687,6 +1687,10 @@
       "row": "Mostrar as dicas de novo",
       "rowHint": "Os primeiros passos no Início e a dica de cada aba",
       "done": "As dicas voltaram"
+    },
+    "whatsNew": {
+      "row": "Novidades",
+      "rowHint": "O que mudou nesta versão"
     }
   },
   "shell": {
