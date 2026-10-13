@@ -31,7 +31,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 40 | 12 | In progress |
-| H | Version 2.1: budgets | 41 | 33 | In progress |
+| H | Version 2.1: budgets | 42 | 33 | In progress |
 | I | Version 2.2: repeating items | 31 | 0 |  |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
@@ -747,6 +747,7 @@ made on 2.0 still restores.
 - [x] H4.15 Home's shortcuts sit directly under the balance card as two compact tiles with no heading ("Transfer: Between your accounts", "New loan: Money lent or borrowed"), at the owner's word on 2026-10-09 that they belong at the top. Seen on the Samsung light and dark, and on the iPhone
 - [x] H4.16 A short choice opens a bottom sheet, not a dropdown (owner, 2026-10-09: "currency choose will be bottom sheet for the hero or anywhere"). `Select` keeps its chip and now opens a `Sheet` with an `OptionList`, so the currency on Home, Plan, Insights, Activity, People, a person and Accounts, the appearance in Settings and a loan reminder's days all choose the same way; currencies are listed with their names. Seen on the Samsung for Home's currency and Settings' appearance; the others share the component and were not each opened
 - [x] H4.17 "What is new" names budgets, for someone updating from 1.2.4 or 2.0
+- [ ] H4.18 Density and text audit of every screen (owner, 2026-10-13), done on the Samsung's release build 71 with large figures (lakhs of rupees). Found and changed, **none of it yet seen on a phone** (the installed build is Play-signed, so a build from this Mac cannot replace it; it is seen once build 72 is on the internal track): (1) a transaction dated between midnight and 5:30 am in India showed the day before in Home's Recent, an account's list, a budget's list and the export preview, because the row read the day from the UTC text; (2) in transaction rows the account's name was cut ("HDFC B…") by a long amount: the amount now sits on the title's line and the description runs the full width; (3) a budget row shrank "₹306,546.00 over" to a caption's size: what is left may now take three fifths of the line; (4) a loan row cut the person's name: it may take two lines; (5) Insights listed all 44 categories before the rest of the tab: it opens on the largest 8 with "Show all 44"; (6) About cut "Share usage data" short at three lines: a row's description outside a scanned list is no longer cut; (7) the currency chip in Plan's and Insights' header sat nearer the edge than the page margin; (8) Settings' "Categories" tile had a smaller label than its neighbours: the label has 4pt more room; (9) amounts in Home's people strip nearly touched. Seen and left alone: Accounts, an account, a person, a loan, a budget, the receipt, Settings, App lock, Backup, Export, Categories, Search, the Pro screen
 - [ ] H4.09 Shared checklist (all but one point holds: built from `@/design`, states designed, copy through i18n, blocked controls say why, labels for screen readers, light and dark seen on the Samsung, checks clean. Not done: a pass with TalkBack on)
 
 ### H5. Ship

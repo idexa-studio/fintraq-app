@@ -33,7 +33,7 @@ export function LoanRow({ loan, line, onOpen }: LoanRowProps) {
       {loan.personName ? <IconCircle initials={initialsOf(loan.personName)} color={colorNumberToHex(loan.personColor ?? 0)} /> : <IconCircle icon="hand-coins" color="pink" />}
       <View style={styles.text}>
         <View style={styles.head}>
-          <Text variant="bodyStrong" numberOfLines={1} style={styles.name}>{name}</Text>
+          <Text variant="bodyStrong" numberOfLines={2} style={styles.name}>{name}</Text>
           <Text variant="amount" tone={loan.type === 'lend' ? 'positive' : 'default'}>{ltr(owed)}</Text>
         </View>
         {/* A bar with nothing in it reads as an empty field, so it waits for the first repayment. */}

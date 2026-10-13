@@ -753,7 +753,9 @@
       "ring": "ವರ್ಗವಾರು {{kind}}",
       "none": "ಈ ಅವಧಿಯಲ್ಲಿ ಇಲ್ಲಿ ಏನೂ ಇಲ್ಲ",
       "more_one": "Pro ಜೊತೆ ಇನ್ನೂ {{count}} ವರ್ಗ",
-      "more_other": "Pro ಜೊತೆ ಇನ್ನೂ {{count}} ವರ್ಗಗಳು"
+      "more_other": "Pro ಜೊತೆ ಇನ್ನೂ {{count}} ವರ್ಗಗಳು",
+      "all": "ಎಲ್ಲಾ {{count}} ತೋರಿಸಿ",
+      "fewer": "ಕಡಿಮೆ ತೋರಿಸಿ"
     },
     "rhythm": {
       "title": "ಲಯ",

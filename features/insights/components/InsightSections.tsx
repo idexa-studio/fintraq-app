@@ -119,11 +119,15 @@ const SHADES = [PASTELS.teal, PASTELS.orange, PASTELS.pink, PASTELS.lilac, PASTE
  * categories. With Pro: spending or income, all of it, around a ring of
  * shares. Each one opens its transactions.
  */
+/** How many categories the full breakdown opens with. */
+const FIRST_CATEGORIES = 8;
+
 export function Categories({ insights, currency, full, limit, onOpen, onMore, budgetNote }: Common & { full: boolean; limit: number; onOpen: (categoryId: number) => void; /** Without Pro: where the line naming the categories not shown leads. */ onMore?: () => void; /** What a category's budget has left this month, in words, for those that have one. */ budgetNote?: (categoryId: number) => string | null }) {
   const { t } = useTranslation('insights');
   const { size } = useTheme();
   const styles = useStyles(createStyles);
   const [kind, setKind] = useState<'spending' | 'income'>('spending');
+  const [all, setAll] = useState(false);
   const shown = full && kind === 'income' ? insights.income : insights.spending;
   const total = full && kind === 'income' ? insights.totals.income : insights.totals.expense;
   const money = (amount: number) => formatCurrency(amount, currency);
@@ -178,7 +182,7 @@ export function Categories({ insights, currency, full, limit, onOpen, onMore, bu
             </Ring>
           </View>
           <RankBars
-            items={shown.map((category) => ({
+            items={(all ? shown : shown.slice(0, FIRST_CATEGORIES)).map((category) => ({
               key: String(category.id),
               label: category.name,
               value: category.amount,
@@ -189,6 +193,12 @@ export function Categories({ insights, currency, full, limit, onOpen, onMore, bu
               onPress: () => onOpen(category.id),
             }))}
           />
+          {/* Forty categories at one percent each pushed the rest of the tab three screens down: the largest come first, the rest on request. */}
+          {shown.length > FIRST_CATEGORIES ? (
+            <Touchable onPress={() => setAll(!all)} accessibilityRole="button" accessibilityLabel={all ? t('categories.fewer') : t('categories.all', { count: shown.length })}>
+              <Text variant="callout" underline>{all ? t('categories.fewer') : t('categories.all', { count: shown.length })}</Text>
+            </Touchable>
+          ) : null}
         </>
       )}
     </Card>

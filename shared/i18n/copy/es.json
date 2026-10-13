@@ -765,7 +765,9 @@
       "none": "Nada aquí en este periodo",
       "more_one": "{{count}} categoría más con Pro",
       "more_other": "{{count}} categorías más con Pro",
-      "more_many": "{{count}} categorías más con Pro"
+      "more_many": "{{count}} categorías más con Pro",
+      "all": "Mostrar las {{count}}",
+      "fewer": "Mostrar menos"
     },
     "rhythm": {
       "title": "Ritmo",

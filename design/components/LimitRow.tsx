@@ -38,7 +38,7 @@ export function LimitRow({ leading, title, detail, remaining, share, state = 'un
       <View style={styles.text}>
         <View style={styles.head}>
           <Text variant="bodyStrong" numberOfLines={1} style={styles.title}>{title}</Text>
-          {/* A long figure gives way before the name does: it shrinks to fit rather than cutting the name short. */}
+          {/* What is left is the point of the row, so it may take the larger part of the line; it shrinks only when even that is too little. */}
           <Text variant="calloutStrong" tone={state === 'over' ? 'danger' : 'default'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} style={styles.remaining}>{ltr(remaining)}</Text>
         </View>
         <ProgressBar value={share} over={state === 'over'} near={state === 'near'} accessibilityLabel={title} />
@@ -63,5 +63,5 @@ const createStyles = ({ size, space }: Theme) =>
     head: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: space.md },
     title: { flex: 1 },
     // Bounded, so that fitting has a width to fit to; the name keeps the rest.
-    remaining: { maxWidth: '40%', textAlign: 'right' },
+    remaining: { maxWidth: '60%', textAlign: 'right' },
   });

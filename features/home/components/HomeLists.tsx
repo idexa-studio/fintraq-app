@@ -112,7 +112,7 @@ export function PeopleStrip({ people, currency, loading, onOpen, onAdd }: People
 
 const createStyles = ({ colors, border, size, space }: Theme) =>
   StyleSheet.create({
-    strip: { padding: size.cardPadding, gap: space.md },
+    strip: { padding: size.cardPadding, gap: space.lg },
     // Wide enough for an amount under the face, narrow enough that the next one peeks in and shows the row scrolls.
     person: { width: size.illustrationTile + space.sm, alignItems: 'center', gap: space.sm },
     standing: { alignSelf: 'stretch' },

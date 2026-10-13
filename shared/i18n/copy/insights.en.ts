@@ -34,6 +34,8 @@ export default {
     hint: 'Tap a category to see its transactions',
     more_one: '{{count}} more category with Pro',
     more_other: '{{count}} more categories with Pro',
+    all: 'Show all {{count}}',
+    fewer: 'Show fewer',
     spending: 'Spending',
     income: 'Income',
     kind: 'Show',

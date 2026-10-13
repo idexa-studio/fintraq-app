@@ -29,7 +29,7 @@ export function FeatureTile({ icon, color, description, label, compact = false, 
   if (compact) {
     return (
       <Card onPress={onPress} accessibilityLabel={`${label}. ${description}`} style={{ flex: 1, gap: space.sm, paddingVertical: space.md }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
           <IconCircle icon={icon} color={color} />
           <Text variant="bodyStrong" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85} style={{ flex: 1 }}>{label}</Text>
         </View>

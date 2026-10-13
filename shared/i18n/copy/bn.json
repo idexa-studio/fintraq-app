@@ -753,7 +753,9 @@
       "ring": "বিভাগ অনুযায়ী {{kind}}",
       "none": "এই সময়কালে এখানে কিছু নেই",
       "more_one": "Pro-তে আরও {{count}}টি বিভাগ",
-      "more_other": "Pro-তে আরও {{count}}টি বিভাগ"
+      "more_other": "Pro-তে আরও {{count}}টি বিভাগ",
+      "all": "সব {{count}}টি দেখান",
+      "fewer": "কম দেখান"
     },
     "rhythm": {
       "title": "ছন্দ",

@@ -753,7 +753,9 @@
       "ring": "వర్గాల వారీగా {{kind}}",
       "none": "ఈ వ్యవధిలో ఇక్కడ ఏదీ లేదు",
       "more_one": "Pro తో మరో {{count}} వర్గం",
-      "more_other": "Pro తో మరో {{count}} వర్గాలు"
+      "more_other": "Pro తో మరో {{count}} వర్గాలు",
+      "all": "మొత్తం {{count}} చూపించండి",
+      "fewer": "తక్కువ చూపించండి"
     },
     "rhythm": {
       "title": "లయ",

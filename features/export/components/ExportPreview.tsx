@@ -2,7 +2,6 @@ import type { TransactionListItem } from '@/data/repositories/transactions';
 import { Card, Divider, IconCircle, Skeleton, Text, ltr, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
 import { dayLabel, signedAmount } from '@/features/transactions';
-import { parseDateKey } from '@/shared/date/date';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -63,7 +62,7 @@ export function ExportPreview({ title, scope, rows, more, empty, note, columns, 
             <React.Fragment key={tx.id}>
               <Divider />
               <View style={styles.row}>
-                <Text variant="caption" tone="muted" numberOfLines={1} style={styles.date}>{dayLabel(parseDateKey(tx.datetime), today, yesterday)}</Text>
+                <Text variant="caption" tone="muted" numberOfLines={1} style={styles.date}>{dayLabel(new Date(tx.datetime), today, yesterday)}</Text>
                 <Text variant="caption" numberOfLines={1} style={styles.what}>{tx.note.trim() || tx.category.name}</Text>
                 <Text variant="caption" numberOfLines={1} style={styles.amount}>{ltr(signedAmount(tx))}</Text>
               </View>

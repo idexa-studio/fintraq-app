@@ -753,7 +753,9 @@
       "ring": "{{kind}} nach Kategorie",
       "none": "In diesem Zeitraum nichts",
       "more_one": "{{count}} weitere Kategorie mit Pro",
-      "more_other": "{{count}} weitere Kategorien mit Pro"
+      "more_other": "{{count}} weitere Kategorien mit Pro",
+      "all": "Alle {{count}} anzeigen",
+      "fewer": "Weniger anzeigen"
     },
     "rhythm": {
       "title": "Rhythmus",

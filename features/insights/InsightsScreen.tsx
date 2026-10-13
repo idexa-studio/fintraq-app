@@ -29,7 +29,7 @@ const PRO_HERE = featuresIn('understand', 'live');
  */
 export function InsightsScreen() {
   const { t } = useTranslation(['insights', 'common']);
-  const { size } = useTheme();
+  const { size, space } = useTheme();
   const styles = useStyles(createStyles);
   const router = useRouter();
   const { profile } = useSettings();
@@ -54,7 +54,7 @@ export function InsightsScreen() {
   const insights = useInsights(currency, period);
   const { data: allFindings } = useDashboardInsights(currency);
 
-  const header = <Header title={t('title')} right={currencies.length > 1 ? <Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setCurrency} accessibilityLabel={t('currency')} /> : undefined} />;
+  const header = <Header title={t('title')} right={currencies.length > 1 ? <View style={{ marginEnd: space.sm }}><Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setCurrency} accessibilityLabel={t('currency')} /></View> : undefined} />;
   // A budget is for the calendar month, whatever period is shown, so its note says "this month".
   const budgetNote = (categoryId: number) => {
     const budget = (budgets ?? []).find((item) => item.categoryId === categoryId && item.currency === currency);

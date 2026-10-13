@@ -1,6 +1,6 @@
 import type { TransactionListItem } from '@/data/repositories/transactions';
 import { IconCircle, ListRow, resolveIcon } from '@/design';
-import { formatDate, parseDateKey } from '@/shared/date/date';
+import { formatDate } from '@/shared/date/date';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import { differenceInCalendarDays } from 'date-fns';
@@ -33,7 +33,7 @@ export function TransactionRow({ transaction: tx, when, onPress }: TransactionRo
   const { t } = useTranslation(['transactions', 'common']);
   const transfer = tx.type === 'TR';
   const where = transfer && tx.toAccount ? t('transferRoute', { from: tx.account.name, to: tx.toAccount.name }) : tx.account.name;
-  const lead = when === 'day' ? dayLabel(parseDateKey(tx.datetime), t('common:today'), t('common:yesterday')) : formatDate(new Date(tx.datetime), { hour: 'numeric', minute: '2-digit' });
+  const lead = when === 'day' ? dayLabel(new Date(tx.datetime), t('common:today'), t('common:yesterday')) : formatDate(new Date(tx.datetime), { hour: 'numeric', minute: '2-digit' });
   return (
     <ListRow
       leading={<IconCircle icon={transfer ? 'arrows-left-right' : resolveIcon(tx.category.icon, 'tag')} color={colorNumberToHex(tx.category.color)} />}

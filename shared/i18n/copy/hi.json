@@ -753,7 +753,9 @@
       "ring": "श्रेणी के हिसाब से {{kind}}",
       "none": "इस अवधि में यहाँ कुछ नहीं",
       "more_one": "Pro के साथ {{count}} और श्रेणी",
-      "more_other": "Pro के साथ {{count}} और श्रेणियाँ"
+      "more_other": "Pro के साथ {{count}} और श्रेणियाँ",
+      "all": "सभी {{count}} दिखाएँ",
+      "fewer": "कम दिखाएँ"
     },
     "rhythm": {
       "title": "लय",

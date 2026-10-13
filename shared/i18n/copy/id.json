@@ -753,7 +753,9 @@
       "ring": "{{kind}} per kategori",
       "none": "Tidak ada apa-apa di periode ini",
       "more_one": "{{count}} kategori lagi dengan Pro",
-      "more_other": "{{count}} kategori lagi dengan Pro"
+      "more_other": "{{count}} kategori lagi dengan Pro",
+      "all": "Tampilkan semua {{count}}",
+      "fewer": "Tampilkan lebih sedikit"
     },
     "rhythm": {
       "title": "Ritme",

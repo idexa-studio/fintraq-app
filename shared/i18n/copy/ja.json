@@ -753,7 +753,9 @@
       "ring": "カテゴリ別の{{kind}}",
       "none": "この期間は何もありません",
       "more_one": "Proであと{{count}}カテゴリ",
-      "more_other": "Proであと{{count}}カテゴリ"
+      "more_other": "Proであと{{count}}カテゴリ",
+      "all": "すべて表示（{{count}}件）",
+      "fewer": "一部だけ表示"
     },
     "rhythm": {
       "title": "リズム",

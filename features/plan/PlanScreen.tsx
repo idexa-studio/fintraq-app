@@ -26,7 +26,7 @@ const SOON = featuresIn('plan').filter((id) => PRO_FEATURES[id].status !== 'live
  */
 export function PlanScreen() {
   const { t } = useTranslation(['plan', 'common']);
-  const { colors, size } = useTheme();
+  const { colors, size, space } = useTheme();
   const router = useRouter();
   const { profile } = useSettings();
   const { isPro, openPaywall } = usePro();
@@ -50,7 +50,7 @@ export function PlanScreen() {
   const inCurrency = byUrgency((budgets ?? []).filter((budget) => budget.currency === currency));
   const open = (loan: LoanWithStats) => router.push({ pathname: '/loans/[id]', params: { id: loan.id } });
   // Each section has its own "Add", so the header carries only the currency, where more than one is held.
-  const header = <Header title={t('title')} right={currencies.length > 1 ? <Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : undefined} />;
+  const header = <Header title={t('title')} right={currencies.length > 1 ? <View style={{ marginEnd: space.sm }}><Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /></View> : undefined} />;
 
   const row = (loan: LoanWithStats, line: string) => (
     <ListRow
