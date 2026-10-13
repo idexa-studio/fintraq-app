@@ -57,7 +57,7 @@ const createStyles = ({ size, space, border }: Theme) =>
     item: { flexDirection: 'row', gap: space.md },
     rail: { alignItems: 'center', width: size.icon },
     dot: { width: size.icon, height: size.icon, borderRadius: size.icon / 2, borderWidth: border.thick, alignItems: 'center', justifyContent: 'center' },
-    tick: { width: space.lg },
+    tick: { width: size.tick },
     line: { flex: 1, width: border.thick, marginVertical: space.xs },
     text: { flex: 1, gap: space.xxs, paddingTop: space.xxs },
     gap: { paddingBottom: space.xl },

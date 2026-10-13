@@ -30,13 +30,13 @@ export function Radio({ label, selected, onPress, disabled = false }: ChoiceProp
 
 /** One of several answers that can be combined, or a single thing to agree to. */
 export function Checkbox({ label, selected, onPress, disabled = false }: ChoiceProps) {
-  const { colors } = useTheme();
+  const { colors, size } = useTheme();
   const styles = useStyles(createStyles);
   const ink = disabled ? colors.onDisabled : colors.border;
   return (
     <Touchable onPress={onPress} disabled={disabled} accessibilityRole="checkbox" accessibilityState={{ checked: selected, disabled }} accessibilityLabel={label} style={styles.row}>
       <View style={[styles.box, { borderColor: ink }, selected ? { backgroundColor: ink } : null]}>
-        {selected ? <Icon name="tick" size={styles.box.width * 0.7} color={colors.onAction} /> : null}
+        {selected ? <Icon name="tick" size={size.tick} color={colors.onAction} /> : null}
       </View>
       <Text variant="lead" tone={disabled ? 'disabled' : 'default'} style={styles.label}>{label}</Text>
     </Touchable>

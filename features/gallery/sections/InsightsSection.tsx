@@ -188,10 +188,10 @@ export function InsightsSection() {
           <Card>
             <RankBars
               items={[
-                { key: 'g', label: 'Groceries', value: 640, display: '$640.20', note: '29%', leading: <IconCircle icon="shopping-cart" color="teal" size={size.icon + space.sm} /> },
-                { key: 't', label: 'Transport', value: 410, display: '$410.00', note: '18%', leading: <IconCircle icon="car" color="orange" size={size.icon + space.sm} /> },
-                { key: 'e', label: 'Eating out', value: 357, display: '$356.75', note: '16%', leading: <IconCircle icon="fork-knife" color="pink" size={size.icon + space.sm} /> },
-                { key: 'f', label: 'Fun', value: 120, display: '$120.00', note: '5%', leading: <IconCircle icon="gamepad" color="lilac" size={size.icon + space.sm} /> },
+                { key: 'g', label: 'Groceries', value: 640, display: '$640.20', note: '29%', leading: <IconCircle icon="shopping-cart" color="teal" size={size.iconCircleSmall} /> },
+                { key: 't', label: 'Transport', value: 410, display: '$410.00', note: '18%', leading: <IconCircle icon="car" color="orange" size={size.iconCircleSmall} /> },
+                { key: 'e', label: 'Eating out', value: 357, display: '$356.75', note: '16%', leading: <IconCircle icon="fork-knife" color="pink" size={size.iconCircleSmall} /> },
+                { key: 'f', label: 'Fun', value: 120, display: '$120.00', note: '5%', leading: <IconCircle icon="gamepad" color="lilac" size={size.iconCircleSmall} /> },
               ]}
             />
           </Card>
@@ -200,9 +200,9 @@ export function InsightsSection() {
           <Card>
             <RankBars
               items={[
-                { key: 'rk', label: 'Rahul Kumar', value: 420, display: '$420.00', note: '12 times', leading: <IconCircle initials="RK" color="pink" size={size.icon + space.sm} /> },
-                { key: 'as', label: 'Aylin Sahin', value: 260, display: '$260.00', note: '5 times', leading: <IconCircle initials="AS" color="lilac" size={size.icon + space.sm} /> },
-                { key: 'mj', label: 'Maya Jones', value: 75, display: '$75.00', note: 'twice', leading: <IconCircle initials="MJ" color="teal" size={size.icon + space.sm} /> },
+                { key: 'rk', label: 'Rahul Kumar', value: 420, display: '$420.00', note: '12 times', leading: <IconCircle initials="RK" color="pink" size={size.iconCircleSmall} /> },
+                { key: 'as', label: 'Aylin Sahin', value: 260, display: '$260.00', note: '5 times', leading: <IconCircle initials="AS" color="lilac" size={size.iconCircleSmall} /> },
+                { key: 'mj', label: 'Maya Jones', value: 75, display: '$75.00', note: 'twice', leading: <IconCircle initials="MJ" color="teal" size={size.iconCircleSmall} /> },
               ]}
             />
           </Card>
@@ -215,7 +215,7 @@ export function InsightsSection() {
             {TOP.map((item) => (
               <View key={item.name} style={{ gap: space.sm }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
-                  <IconCircle icon={item.icon} color={item.color} size={size.icon + space.sm} />
+                  <IconCircle icon={item.icon} color={item.color} size={size.iconCircleSmall} />
                   <Text variant="bodyStrong" style={{ flex: 1 }}>{item.name}</Text>
                   <Money value={item.amount} />
                 </View>

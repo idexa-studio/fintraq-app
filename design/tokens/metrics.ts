@@ -83,11 +83,18 @@ export const SIZE = {
   header: 44,
   /** The header of a sheet or task, with its bold title (reference: 56). */
   taskHeader: 56,
-  icon: 24,
+  /**
+   * The icon scale. Small sits inside a control (a chip, a field, a button); the plain size leads
+   * a row or ends it; large stands alone (a header's actions, the tab bar, an empty state). Large
+   * is the smallest size still drawn with the light line, so it never reads heavier than a row's icon.
+   */
   iconSmall: 20,
-  iconLarge: 28,
-  /** Tab bar icons: about 21pt of ink, a step under the reference's 23 (owner, 2026-10-13), and still the light line. */
+  icon: 24,
+  iconLarge: 27,
+  /** Tab bar icons: the large size, a step under the reference's (owner, 2026-10-13). */
   iconTab: 27,
+  /** A tick inside a 24pt mark (a checkbox, a done step, a chosen option): two thirds of it. */
+  tick: 16,
   iconCircle: 40,
   /** A mark beside a line of a finding or a ranked list, where a full circle would crowd the text. */
   iconCircleSmall: 32,

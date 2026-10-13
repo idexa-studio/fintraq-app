@@ -38,7 +38,7 @@ export function CheckMark({ size }: { size?: number }) {
   const diameter = size ?? sizes.icon;
   return (
     <View style={{ width: diameter, height: diameter, borderRadius: diameter / 2, backgroundColor: colors.action, alignItems: 'center', justifyContent: 'center' }}>
-      <Icon name="tick" size={diameter * 0.62} color={colors.onAction} />
+      <Icon name="tick" size={(diameter * sizes.tick) / sizes.icon} color={colors.onAction} />
     </View>
   );
 }
