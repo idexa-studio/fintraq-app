@@ -7,6 +7,7 @@ import { BalanceCard } from '@/features/home/components/BalanceCard';
 import { GettingStarted } from '@/features/home/components/GettingStarted';
 import { AccountList, PeopleStrip, RecentList } from '@/features/home/components/HomeLists';
 import { MonthCard } from '@/features/home/components/MonthCard';
+import { ProOfferSheet } from '@/features/home/components/ProOfferSheet';
 import type { GettingStartedStepId } from '@/features/home/getting-started';
 import { useGettingStarted } from '@/features/home/hooks/useGettingStarted';
 import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
@@ -89,8 +90,8 @@ export function HomeScreen() {
 
       {start.visible ? <GettingStarted steps={start.steps} onStep={doStep} onHide={start.dismiss} /> : null}
       {/* Someone still getting started is not also asked for anything else. */}
-      {prompt && !start.visible ? (
-        <Notice title={t(`prompt.${prompt}.title`)} body={t(`prompt.${prompt}.body`)} linkLabel={t(`prompt.${prompt}.link`)} onLink={() => router.push(prompt === 'pro' ? '/pro' : '/backup')} onDismiss={dismissPrompt} dismissLabel={t(`prompt.${prompt}.dismiss`)} />
+      {prompt === 'backup' && !start.visible ? (
+        <Notice title={t('prompt.backup.title')} body={t('prompt.backup.body')} linkLabel={t('prompt.backup.link')} onLink={() => router.push('/backup')} onDismiss={dismissPrompt} dismissLabel={t('prompt.backup.dismiss')} />
       ) : null}
 
       {/* In the order they are looked for: how the month stands, what is left to spend, what was just recorded; then what is held and who is owed. */}
@@ -122,6 +123,8 @@ export function HomeScreen() {
       </Section>
 
       <WhatsNewSheet visible={whatsNew.visible && !isLocked} onClose={whatsNew.dismiss} />
+      {/* One thing over Home at a time: never with the note about what is new, the first steps, or the lock. */}
+      <ProOfferSheet visible={prompt === 'pro' && !whatsNew.visible && !start.visible && !isLocked} onSee={() => { dismissPrompt(); router.push('/pro'); }} onClose={dismissPrompt} />
     </Screen>
   );
 }

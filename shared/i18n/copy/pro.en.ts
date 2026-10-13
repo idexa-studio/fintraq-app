@@ -93,6 +93,7 @@ export default {
     renews: '{{plan}} plan. Renews on {{date}}.',
     ends: '{{plan}} plan, cancelled. Pro stays on until {{date}}.',
     override: 'Turned on by the developer override. Nothing was bought.',
+    upcomingHint: 'Yours when it arrives, at no extra cost',
     manage: 'Manage in the store',
     done: 'Done',
     goLifetime: { title: 'Switch to lifetime', body: 'Pay once and stop paying every {{period}}.', month: 'month', year: 'year', action: 'Get lifetime for {{price}}' },

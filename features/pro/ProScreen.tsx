@@ -186,6 +186,7 @@ function Owned({ header, buying, trouble, onBuyLifetime, onDone }: OwnedProps) {
   const { t } = useTranslation('pro');
   const styles = useStyles(createStyles);
   const { entitlement, prices } = useProStore();
+  const copy = useProCopy();
   const subscription = entitlement.kind === 'subscription' ? entitlement : null;
   const until = subscription ? formatDate(new Date(subscription.activeUntil), { day: 'numeric', month: 'long', year: 'numeric' }) : '';
   const line = entitlement.kind === 'lifetime'
@@ -197,7 +198,6 @@ function Owned({ header, buying, trouble, onBuyLifetime, onDone }: OwnedProps) {
   return (
     <Screen
       sheet
-      centred
       header={header}
       footer={
         <>
@@ -206,7 +206,7 @@ function Owned({ header, buying, trouble, onBuyLifetime, onDone }: OwnedProps) {
         </>
       }
     >
-      <View style={styles.centre}>
+      <View style={[styles.centre, styles.lead]}>
         <Message illustration={<Emblem icon="crown" color="green" />} title={t('owned.title')} body={line} />
         {trouble ? <Notice tone={trouble === 'failed' ? 'danger' : 'info'} title={t(`paywall.${trouble}.title`)} body={t(`paywall.${trouble}.body`)} /> : null}
         {/* A subscriber is shown the one-time plan once, plainly: it ends the payments. */}
@@ -218,6 +218,12 @@ function Owned({ header, buying, trouble, onBuyLifetime, onDone }: OwnedProps) {
           </Card>
         ) : null}
       </View>
+      {/* What they are waiting for is theirs already: said here, since the paywall that lists it is never seen again. */}
+      <Section title={t('paywall.upcoming.title')} hint={t('owned.upcomingHint')}>
+        <ListGroup>
+          {UPCOMING_FEATURES.map((id) => <ListRow key={id} icon={PRO_FEATURES[id].icon} title={copy.feature(id).title} subtitle={copy.feature(id).description} />)}
+        </ListGroup>
+      </Section>
     </Screen>
   );
 }

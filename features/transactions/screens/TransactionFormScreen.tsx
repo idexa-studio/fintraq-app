@@ -12,6 +12,8 @@ import type { TransactionFormOptions } from '@/features/transactions/hooks/useTr
 import { KINDS, kindOfType, typeOfKind } from '@/features/transactions/transaction-form';
 import { useSettings } from '@/features/settings';
 import { useLeaveGuard } from '@/features/shell';
+import { useTransactionsCount } from '@/features/transactions/hooks/transactions';
+import { ReviewPromptService } from '@/platform/config/review-prompt';
 import { Analytics } from '@/platform/telemetry';
 import { formatDate } from '@/shared/date/date';
 import { getCurrencySymbol } from '@/shared/currency/currencies';
@@ -23,6 +25,9 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 type Picker = 'account' | 'toAccount' | 'category' | 'person' | 'when' | 'calculator' | null;
+
+/** After a save: long enough for the sheet to close and the saved message to be read. */
+const REVIEW_AFTER_MS = 2500;
 
 const initialsOf = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((word) => word[0]).join('');
 
@@ -50,6 +55,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
 
   // A budget counts expenses of the month in progress, up to today, that are not part of a loan.
   const { data: budgets } = useBudgets();
+  const { data: recorded } = useTransactionsCount();
   const now = new Date();
   const counted = form.type === 'DR' && !form.loanLinked && form.when <= now && form.when.getFullYear() === now.getFullYear() && form.when.getMonth() === now.getMonth();
   const categoryBudget = counted && form.category ? budgetsFor(budgets ?? [], { categoryId: form.category.id, currency }).find((budget) => budget.categoryId !== null) : undefined;
@@ -80,6 +86,8 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
       );
       // Leaves on the next tick, once the unsaved-input guard is off.
       setTimeout(close, 0);
+      // Something just recorded is the moment to ask what they think of the app; once the sheet has gone and the message been read.
+      if (createdId != null) setTimeout(() => void ReviewPromptService.maybeRequestReview({ transactions: (recorded ?? 0) + 1 }), REVIEW_AFTER_MS);
     } catch {
       setFailed(true);
     }

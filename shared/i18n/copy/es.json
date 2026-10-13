@@ -1503,7 +1503,8 @@
         "month": "mes",
         "year": "año",
         "action": "Consíguelo de por vida por {{price}}"
-      }
+      },
+      "upcomingHint": "Tuyo cuando llegue, sin coste adicional"
     },
     "bought": {
       "title": "Tienes Fintraq Pro",

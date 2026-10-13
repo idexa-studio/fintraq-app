@@ -5,7 +5,7 @@ import {
 } from '@/design';
 import { TIP_IDS, WhatsNewPoints } from '@/features/guide';
 import guide from '@/shared/i18n/copy/guide.en';
-import { AccountStack, GettingStarted, MonthCardView, PeopleStrip, gettingStartedSteps } from '@/features/home';
+import { AccountStack, GettingStarted, gettingStartedSteps, MonthCardView, PeopleStrip, ProOfferPoints } from '@/features/home';
 import { OFFERED_COLORS } from '@/shared/contracts/pickers';
 import { toDbColor } from '@/shared/format/color';
 import type { SelectOption, TabItem } from '@/design';
@@ -119,6 +119,13 @@ export function HomeSection() {
         </Specimen>
         <Specimen name="Tab tips" note="One on Activity and one on Plan, at the top, the first time there is something for it to describe. Each names what cannot be seen by looking. Closed with the cross, it never returns unless Settings brings the tips back.">
           {TIP_IDS.map((id) => <Notice key={id} title={guide.tips[id].title} body={guide.tips[id].body} onDismiss={() => {}} dismissLabel={guide.tips.dismiss} />)}
+        </Specimen>
+        <Specimen name="The Pro offer" note="Over Home, for someone on the free plan with ten or more transactions, at most once a fortnight, and never together with the note about what is new or the first steps. One line from each part of Pro, read from the registry.">
+          <View style={{ backgroundColor: colors.scrim, paddingTop: space.xl }}>
+            <SheetPanel title="There is more in Fintraq Pro" onClose={() => {}} footer={<><Button label="See Fintraq Pro" /><Button label="Not now" variant="link" /></>}>
+              <ProOfferPoints />
+            </SheetPanel>
+          </View>
         </Specimen>
         <Specimen name="What is new" note="Once, on Home, for someone updating from the old look. A new install never sees it.">
           <View style={{ backgroundColor: colors.scrim, paddingTop: space.xl }}>

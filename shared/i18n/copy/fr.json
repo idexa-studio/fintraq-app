@@ -1503,7 +1503,8 @@
         "month": "mois",
         "year": "année",
         "action": "Obtenir l’offre à vie pour {{price}}"
-      }
+      },
+      "upcomingHint": "À vous dès son arrivée, sans frais supplémentaires"
     },
     "bought": {
       "title": "Vous avez Fintraq Pro",

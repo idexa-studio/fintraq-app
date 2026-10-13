@@ -6,4 +6,5 @@ export { AccountStack } from './components/AccountStack';
 export { GettingStarted } from './components/GettingStarted';
 export { PeopleStrip } from './components/HomeLists';
 export { MonthCardView } from './components/MonthCard';
+export { ProOfferPoints } from './components/ProOfferSheet';
 export { gettingStartedSteps } from './getting-started';

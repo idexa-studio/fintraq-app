@@ -1503,7 +1503,8 @@
         "month": "mês",
         "year": "ano",
         "action": "Obter o vitalício por {{price}}"
-      }
+      },
+      "upcomingHint": "Seu quando chegar, sem custo extra"
     },
     "bought": {
       "title": "Você tem o Fintraq Pro",

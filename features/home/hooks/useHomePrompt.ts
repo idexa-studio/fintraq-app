@@ -12,9 +12,8 @@ import { useEffect, useState } from 'react';
 const DISMISSED_KEY: Record<HomePrompt, StorageKeys> = { backup: StorageKeys.BACKUP_PROMPT_DISMISSED_AT, pro: StorageKeys.UPSELL_DISMISSED_AT };
 
 /**
- * The one prompt Home may show: Pro for a free user, backup for a Pro user with no Drive
- * connected. It is a card on the page, not something laid over it, and once dismissed it stays
- * away for its cooldown (three days for Pro, two weeks for backup).
+ * The one prompt Home may show: Pro for a free user, as a sheet over the page; backup for a Pro
+ * user with no Drive connected, as a card on it. Once closed, either stays away for two weeks.
  */
 export function useHomePrompt() {
   const { isPro, ready } = usePro();

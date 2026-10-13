@@ -1487,7 +1487,8 @@
         "month": "মাসে",
         "year": "বছরে",
         "action": "{{price}}-এ আজীবন নিন"
-      }
+      },
+      "upcomingHint": "এলে আপনারই, বাড়তি কোনো খরচ ছাড়া"
     },
     "bought": {
       "title": "আপনার Fintraq Pro আছে",

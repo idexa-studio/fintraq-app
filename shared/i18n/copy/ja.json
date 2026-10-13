@@ -1487,7 +1487,8 @@
         "month": "毎月",
         "year": "毎年",
         "action": "{{price}} で買い切りを購入"
-      }
+      },
+      "upcomingHint": "追加料金なしで、登場したらそのまま使えます"
     },
     "bought": {
       "title": "Fintraq Pro をご利用中です",

@@ -1,13 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as StoreReview from 'expo-store-review';
+import { shouldAskForReview } from '@/platform/config/review-rules';
 import { LoggerService } from '@/shared/logging/logger';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
 
 const STORAGE_KEY_FIRST_LAUNCH_AT = StorageKeys.FIRST_LAUNCH_AT;
 const STORAGE_KEY_REVIEW_REQUESTED = StorageKeys.REVIEW_REQUESTED_AT;
 
-const MIN_DAYS_SINCE_INSTALL = 2;
-const MIN_DAYS_SINCE_INSTALL_MS = MIN_DAYS_SINCE_INSTALL * 24 * 60 * 60 * 1000;
+const stamp = (value: string | null): number | null => {
+  const at = Number.parseInt(value ?? '', 10);
+  return Number.isFinite(at) ? at : null;
+};
 
 export const ReviewPromptService = {
   /** Records first-launch timestamp once; no-op on repeat calls. */
@@ -21,22 +24,22 @@ export const ReviewPromptService = {
     }
   },
 
-  /** Asks OS to show review prompt once, 2+ days after install. Call from a positive moment. */
-  async maybeRequestReview(): Promise<void> {
+  /**
+   * Asks the phone to show its own review prompt, if this is a moment for it (`shouldAskForReview`).
+   * Call straight after something went well: a saved transaction, a finished backup. Pass how many
+   * transactions are recorded where it is known. The stores decide whether the prompt really appears.
+   */
+  async maybeRequestReview(known: { transactions?: number } = {}): Promise<void> {
     try {
-      const [firstLaunchStr, alreadyRequested, isAvailable] = await Promise.all([
+      const [firstLaunch, lastAsked, isAvailable] = await Promise.all([
         AsyncStorage.getItem(STORAGE_KEY_FIRST_LAUNCH_AT),
         AsyncStorage.getItem(STORAGE_KEY_REVIEW_REQUESTED),
         StoreReview.isAvailableAsync(),
       ]);
+      const now = Date.now();
+      if (!isAvailable || !shouldAskForReview({ firstLaunchAt: stamp(firstLaunch), lastAskedAt: stamp(lastAsked), now, transactions: known.transactions })) return;
 
-      if (alreadyRequested || !isAvailable) return;
-
-      const firstLaunchAt = firstLaunchStr ? parseInt(firstLaunchStr, 10) : Date.now();
-      const daysSinceInstall = Date.now() - firstLaunchAt;
-      if (daysSinceInstall < MIN_DAYS_SINCE_INSTALL_MS) return;
-
-      await AsyncStorage.setItem(STORAGE_KEY_REVIEW_REQUESTED, String(Date.now()));
+      await AsyncStorage.setItem(STORAGE_KEY_REVIEW_REQUESTED, String(now));
       await StoreReview.requestReview();
     } catch (e) {
       LoggerService.warn('REVIEW_PROMPT', 'Failed to request app review', e);

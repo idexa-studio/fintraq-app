@@ -55,19 +55,21 @@ export type HomePromptInput = {
 
 /** Only after someone has used the app: a prompt on an empty Home has nothing to protect. */
 export const PROMPT_FROM_TRANSACTIONS = 3;
+/** The Pro offer rises over Home, so it waits for someone who has made the app a habit. */
+export const PRO_OFFER_FROM_TRANSACTIONS = 10;
 const DAY_MS = 24 * 60 * 60 * 1000;
-/** How long each prompt stays away once dismissed, as in the shipped app. */
-export const PROMPT_COOLDOWN_MS: Record<HomePrompt, number> = { backup: 14 * DAY_MS, pro: 3 * DAY_MS };
+/** How long each prompt stays away once closed. The Pro offer was a card every three days; as a sheet it comes once a fortnight. */
+export const PROMPT_COOLDOWN_MS: Record<HomePrompt, number> = { backup: 14 * DAY_MS, pro: 14 * DAY_MS };
 export const BACKUP_PROMPT_COOLDOWN_MS = PROMPT_COOLDOWN_MS.backup;
 
 /**
- * The one prompt Home may show, ignoring cooldowns: Pro for a free user, backup for a Pro user
- * with no Drive connected. Connecting Drive needs Pro, so a free user is never offered something
+ * The one prompt Home may show, ignoring cooldowns: Pro for a free user (a sheet, now and then),
+ * backup for a Pro user with no Drive connected (a card on the page). Connecting Drive needs Pro, so a free user is never offered something
  * they cannot finish.
  */
 export function chooseHomePrompt(input: HomePromptInput): HomePrompt | null {
   if (!input.resolved || input.transactionCount < PROMPT_FROM_TRANSACTIONS) return null;
-  if (!input.isPro) return 'pro';
+  if (!input.isPro) return input.transactionCount >= PRO_OFFER_FROM_TRANSACTIONS ? 'pro' : null;
   return input.backupConnected ? null : 'backup';
 }
 

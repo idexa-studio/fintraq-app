@@ -1487,7 +1487,8 @@
         "month": "Monat",
         "year": "Jahr",
         "action": "Lebenslang für {{price}} holen"
-      }
+      },
+      "upcomingHint": "Gehört dir, sobald es da ist, ohne Aufpreis"
     },
     "bought": {
       "title": "Du hast Fintraq Pro",

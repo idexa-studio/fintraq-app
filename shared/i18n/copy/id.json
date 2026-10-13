@@ -1487,7 +1487,8 @@
         "month": "bulan",
         "year": "tahun",
         "action": "Dapatkan seumur hidup seharga {{price}}"
-      }
+      },
+      "upcomingHint": "Menjadi milik Anda saat hadir, tanpa biaya tambahan"
     },
     "bought": {
       "title": "Anda punya Fintraq Pro",
