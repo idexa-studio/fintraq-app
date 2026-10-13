@@ -46,5 +46,12 @@ export function pressAmountKey(text: string, key: AmountKey): string {
   return text + key;
 }
 
+/**
+ * What is kept of text typed or pasted into an amount: figures, a decimal dot or comma, and the
+ * keypad's own operators. A phone's number pad sends nothing else, but a hardware keyboard, a
+ * paste or a voice keyboard can, and "12 dollars" must not sit in the field as if it were a sum.
+ */
+export const typedAmount = (text: string): string => text.replace(new RegExp(`[^0-9.,${OPERATORS.join('')}]`, 'g'), '');
+
 /** What the amount text comes to, or undefined while it is empty, unfinished or not a valid amount. */
 export const amountValue = (text: string): number | undefined => (text === '' ? undefined : calculate(text));
