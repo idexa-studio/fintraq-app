@@ -1,6 +1,7 @@
 import { Spinner } from '@/design/components/Spinner';
 import { Text } from '@/design/components/Text';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
+import { LAYOUT } from '@/design/tokens/layout';
 import type { Theme } from '@/design/ThemeProvider';
 import React from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
@@ -66,7 +67,8 @@ export function LoadingDialog({ visible, title }: LoadingDialogProps) {
 const createStyles = ({ colors, radius, size, space }: Theme) =>
   StyleSheet.create({
     scrim: { flex: 1, backgroundColor: colors.scrim, alignItems: 'stretch', justifyContent: 'center', paddingHorizontal: size.dialogMargin },
-    panel: { borderRadius: radius.sm, overflow: 'hidden', backgroundColor: colors.surface },
+    // Never wider than a dialog reads well: on a tablet it is a box in the middle, not a band across it.
+    panel: { alignSelf: 'center', width: '100%', maxWidth: LAYOUT.dialog, borderRadius: radius.sm, overflow: 'hidden', backgroundColor: colors.surface },
     head: { minHeight: size.cardAction, justifyContent: 'center', paddingHorizontal: size.cardPadding, paddingVertical: space.md, backgroundColor: colors.background },
     body: { padding: space.xl, gap: space.lg },
   });

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Fintraq",
     "slug": "luno",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "luno",
@@ -88,7 +88,8 @@
       "expo-system-ui",
       "expo-secure-store",
       "./plugins/with-fingerprint-not-required",
-      "./plugins/with-text-measured-as-drawn"
+      "./plugins/with-text-measured-as-drawn",
+      "./plugins/with-any-screen-size"
     ],
     "experiments": {
       "typedRoutes": true,

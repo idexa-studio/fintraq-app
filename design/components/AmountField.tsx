@@ -2,6 +2,7 @@ import { Text } from '@/design/components/Text';
 import { useFontScale, useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import { useFocusOnArrival } from '@/design/components/useFocusOnArrival';
+import { typedAmount } from '@/shared/format/amount-entry';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
@@ -29,8 +30,10 @@ export function AmountField({ value, onChangeText, symbol, accessibilityLabel, f
       <Text variant="amountHero" tone={value ? 'default' : 'muted'}>{symbol}</Text>
       <TextInput
         ref={input}
+        disableFullscreenUI
         value={value}
-        onChangeText={onChangeText}
+        // Only what an amount is made of gets through, whatever keyboard it came from.
+        onChangeText={(text) => onChangeText(typedAmount(text))}
         placeholder="0.00"
         placeholderTextColor={colors.textMuted}
         selectionColor={colors.selected}

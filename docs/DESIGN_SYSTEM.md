@@ -107,6 +107,31 @@ Three behaviours are built in and must not be worked around:
   except the spinner and a progress bar of unknown length, which keep moving
   so the app never looks hung.
 
+## Screen sizes (`design/tokens/layout.ts`, `design/layout.tsx`)
+
+The app is drawn for a phone and answers a wider window in three steps, the
+platforms' own: **compact** under 600, **medium** 600 to 839 (a small tablet
+upright, a phone unfolded), **expanded** 840 and up (a tablet on its side).
+
+| | Compact | Medium | Expanded |
+| --- | --- | --- | --- |
+| Content | Edge to edge, margin 16 | One column, 600 wide, centred | The same; two columns of cards where a screen asks (1040) |
+| Tabs | Bar at the bottom | Bar at the bottom, tabs held to the column | `TabRail` at the leading edge |
+| A task or a picker | Sheet from the bottom | A card in the middle, 560 wide | The same |
+| A dialog | 32 from each edge | 400 wide | The same |
+
+- `Screen`, `Header`, `TabBar`, `TabStrip`, `Sheet`, `SheetFrame` and `Dialog`
+  do this themselves. A screen built from them needs nothing.
+- A screen that must know asks `useLayout()` (`widthClass`, `isCompact`,
+  `isExpanded`). Lint refuses `Dimensions` and `useWindowDimensions` in
+  `features/`.
+- `LayoutProvider` draws its children as if the window were another size, for
+  gallery previews.
+- A phone is held upright; a screen 600dp or more on its shorter side turns
+  (`plugins/with-any-screen-size.js` on Android, Expo's own setting on iOS).
+- Check a size on the phone: `adb shell wm size 1600x2560; adb shell wm density 320`
+  is an 800 x 1280 tablet; `wm size reset; wm density reset` puts it back.
+
 ## The app icon and splash (`assets/brand/`, `assets/images/`)
 
 The mark is a stack of coins: a white coin resting on a black one, both seen

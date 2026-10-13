@@ -12,6 +12,7 @@ import { MatchSection } from '@/features/gallery/sections/MatchSection';
 import { MoneySection } from '@/features/gallery/sections/MoneySection';
 import { NavigationSection } from '@/features/gallery/sections/NavigationSection';
 import { PickersSection } from '@/features/gallery/sections/PickersSection';
+import { SizesSection } from '@/features/gallery/sections/SizesSection';
 import { ScriptsSection } from '@/features/gallery/sections/ScriptsSection';
 import { StressSection } from '@/features/gallery/sections/StressSection';
 import { SystemSection } from '@/features/gallery/sections/SystemSection';
@@ -37,6 +38,7 @@ const SECTIONS = [
   { key: 'display', label: 'Display', Component: DisplaySection },
   { key: 'feedback', label: 'Feedback', Component: FeedbackSection },
   { key: 'navigation', label: 'Navigation', Component: NavigationSection },
+  { key: 'sizes', label: 'Sizes', Component: SizesSection },
 ] as const;
 
 /** Reachable by link only: tools for tuning the system, not specimens. */

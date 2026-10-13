@@ -2,6 +2,7 @@ import { Icon } from '@/design/components/Icon';
 import type { SolidIconName } from '@/design/icons/index';
 import { Text } from '@/design/components/Text';
 import { Touchable } from '@/design/components/Touchable';
+import { useLayout } from '@/design/layout';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React, { useEffect, useState } from 'react';
@@ -34,6 +35,7 @@ export type TabBarProps<K extends string = string> = {
 export function TabBar<K extends string>({ items, activeKey, onSelect, bottomInset = 0 }: TabBarProps<K>) {
   const { motion, size } = useTheme();
   const styles = useStyles(createStyles);
+  const { column } = useLayout();
   const [width, setWidth] = useState(0);
   const tabWidth = items.length ? width / items.length : 0;
   const index = Math.max(0, items.findIndex((item) => item.key === activeKey));
@@ -47,24 +49,28 @@ export function TabBar<K extends string>({ items, activeKey, onSelect, bottomIns
   const sliding = useAnimatedStyle(() => ({ transform: [{ translateX: position.value * tabWidth * direction }] }));
 
   return (
-    <View accessibilityRole="tablist" onLayout={(e) => setWidth(e.nativeEvent.layout.width)} style={[styles.bar, { paddingBottom: bottomInset }]}>
-      {items.map((item) => {
-        const active = item.key === activeKey;
-        return (
-          <Touchable key={item.key} onPress={() => onSelect?.(item.key)} accessibilityRole={item.action ? 'button' : 'tab'} accessibilityLabel={item.label} accessibilityState={item.action ? undefined : { selected: active }} style={styles.tab}>
-            <Icon name={item.icon} size={size.iconTab} filled={active} />
-            <Text variant={active ? 'tabActive' : 'tab'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} style={styles.label}>{item.label}</Text>
-          </Touchable>
-        );
-      })}
-      {width > 0 ? <Animated.View pointerEvents="none" style={[styles.mark, { width: tabWidth }, sliding]} /> : null}
+    <View style={[styles.bar, { paddingBottom: bottomInset }]}>
+      <View accessibilityRole="tablist" onLayout={(e) => setWidth(e.nativeEvent.layout.width)} style={[styles.tabs, { maxWidth: column }]}>
+        {items.map((item) => {
+          const active = item.key === activeKey;
+          return (
+            <Touchable key={item.key} onPress={() => onSelect?.(item.key)} accessibilityRole={item.action ? 'button' : 'tab'} accessibilityLabel={item.label} accessibilityState={item.action ? undefined : { selected: active }} style={styles.tab}>
+              <Icon name={item.icon} size={size.iconTab} filled={active} />
+              <Text variant={active ? 'tabActive' : 'tab'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} style={styles.label}>{item.label}</Text>
+            </Touchable>
+          );
+        })}
+        {width > 0 ? <Animated.View pointerEvents="none" style={[styles.mark, { width: tabWidth }, sliding]} /> : null}
+      </View>
     </View>
   );
 }
 
 const createStyles = ({ colors, size, space, border }: Theme) =>
   StyleSheet.create({
-    bar: { flexDirection: 'row', backgroundColor: colors.surface, borderTopWidth: border.thin, borderTopColor: colors.divider },
+    bar: { backgroundColor: colors.surface, borderTopWidth: border.thin, borderTopColor: colors.divider },
+    // The tabs keep to the screen's column on a wide screen; the bar itself still runs edge to edge.
+    tabs: { flexDirection: 'row', alignSelf: 'center', width: '100%' },
     tab: { flex: 1, minHeight: size.tabBar, paddingVertical: space.xs, alignItems: 'center', justifyContent: 'center', gap: space.xs },
     label: { alignSelf: 'stretch', textAlign: 'center', paddingHorizontal: space.xxs },
     // Sits on the bar's top hairline, the full width of its tab.

@@ -1,4 +1,4 @@
-import { Chip, ChipRow, EmptyState, Header, LockedCard, Screen, Section, Select, Skeleton, useStyles, useTheme } from '@/design';
+import { Chip, ChipRow, Column, Columns, EmptyState, Header, LockedCard, Screen, Section, Select, Skeleton, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { useBudgets } from '@/features/budgets';
@@ -101,44 +101,50 @@ export function InsightsScreen() {
         </View>
       ) : null}
 
-      <PeriodSummary insights={insights} currency={currency} period={period} compare={isPro} />
+      {/* On a tablet held sideways: what was spent and where on one side, its rhythm and findings on the other. */}
+      <Columns>
+        <Column>
+          <PeriodSummary insights={insights} currency={currency} period={period} compare={isPro} />
 
-      {isPro ? (
-        <Section title={t('forecast.title')} hint={t('forecast.hint')}>
-          <Forecast insights={insights} currency={currency} />
-        </Section>
-      ) : null}
+          {isPro ? (
+            <Section title={t('forecast.title')} hint={t('forecast.hint')}>
+              <Forecast insights={insights} currency={currency} />
+            </Section>
+          ) : null}
 
-      <Section title={t('categories.title')} hint={t('categories.hint')}>
-        <Categories budgetNote={budgetNote} insights={insights} currency={currency} full={isPro} limit={FREE_CATEGORIES} onOpen={openCategory} onMore={() => openPaywall('categories')} />
-      </Section>
-
-      {isPro ? (
-        <>
-          <Section title={t('rhythm.title')} hint={t('rhythm.hint')}>
-            <View style={styles.stack}><Rhythm insights={insights} typicalWeek={period > 7} /></View>
+          <Section title={t('categories.title')} hint={t('categories.hint')}>
+            <Categories budgetNote={budgetNote} insights={insights} currency={currency} full={isPro} limit={FREE_CATEGORIES} onOpen={openCategory} onMore={() => openPaywall('categories')} />
           </Section>
-          {insights.people.length > 0 ? (
-            <Section title={t('people.title')} hint={t('people.hint')}>
-              <PeopleShare insights={insights} currency={currency} onOpen={(id) => router.push({ pathname: '/people/[id]', params: { id } })} />
-            </Section>
-          ) : null}
-          {findings.length > 0 ? (
-            <Section title={t('findings.title')} hint={t('findings.hint')}>
-              <Findings findings={findings} />
-            </Section>
-          ) : null}
-        </>
-      ) : (
-        <LockedCard
-          badge={t('locked.badge')}
-          title={t('locked.title')}
-          body={t('locked.body')}
-          items={PRO_HERE.map((id) => ({ icon: PRO_FEATURES[id].icon, title: proCopy.feature(id).title, detail: proCopy.feature(id).description }))}
-          actionLabel={t('locked.action')}
-          onAction={() => openPaywall('periods')}
-        />
-      )}
+        </Column>
+        <Column>
+          {isPro ? (
+            <>
+              <Section title={t('rhythm.title')} hint={t('rhythm.hint')}>
+                <View style={styles.stack}><Rhythm insights={insights} typicalWeek={period > 7} /></View>
+              </Section>
+              {insights.people.length > 0 ? (
+                <Section title={t('people.title')} hint={t('people.hint')}>
+                  <PeopleShare insights={insights} currency={currency} onOpen={(id) => router.push({ pathname: '/people/[id]', params: { id } })} />
+                </Section>
+              ) : null}
+              {findings.length > 0 ? (
+                <Section title={t('findings.title')} hint={t('findings.hint')}>
+                  <Findings findings={findings} />
+                </Section>
+              ) : null}
+            </>
+          ) : (
+            <LockedCard
+              badge={t('locked.badge')}
+              title={t('locked.title')}
+              body={t('locked.body')}
+              items={PRO_HERE.map((id) => ({ icon: PRO_FEATURES[id].icon, title: proCopy.feature(id).title, detail: proCopy.feature(id).description }))}
+              actionLabel={t('locked.action')}
+              onAction={() => openPaywall('periods')}
+            />
+          )}
+        </Column>
+      </Columns>
     </Screen>
   );
 }

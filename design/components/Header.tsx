@@ -1,6 +1,7 @@
 import { Divider } from '@/design/components/Divider';
 import { IconButton } from '@/design/components/IconButton';
 import { Text } from '@/design/components/Text';
+import { useLayout } from '@/design/layout';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React, { useState } from 'react';
@@ -25,13 +26,14 @@ export type HeaderProps = {
 export function Header({ title, task = false, flush = false, onBack, onClose, backLabel = 'Back', closeLabel = 'Close', left, right }: HeaderProps) {
   const { colors, size } = useTheme();
   const styles = useStyles(createStyles);
+  const { column } = useLayout();
   // Each side takes the width of the wider one, so the title is centred on the
   // screen however many actions sit either side of it.
   const [widths, setWidths] = useState({ left: 0, right: 0 });
   const side = { minWidth: Math.max(widths.left, widths.right) };
   return (
     <View style={task ? { backgroundColor: colors.surface } : null}>
-      <View style={[styles.bar, { minHeight: task ? size.taskHeader : size.header }]}>
+      <View style={[styles.bar, { minHeight: task ? size.taskHeader : size.header, maxWidth: column }]}>
         <View style={[styles.side, styles.left, side]}>
           <View style={styles.actions} onLayout={(e) => { const left = e.nativeEvent.layout.width; setWidths((w) => (w.left === left ? w : { ...w, left })); }}>
             {left ?? (onBack ? <IconButton icon="arrow-left" onPress={onBack} accessibilityLabel={backLabel} /> : null)}
@@ -54,7 +56,8 @@ export function Header({ title, task = false, flush = false, onBack, onClose, ba
 
 const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
-    bar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: size.screenPadding - space.sm },
+    // Held to the screen's column, so its actions stand over the cards' edges on a wide screen.
+    bar: { flexDirection: 'row', alignItems: 'center', alignSelf: 'center', width: '100%', paddingHorizontal: size.screenPadding - space.sm },
     side: { flexDirection: 'row', alignItems: 'center' },
     actions: { flexDirection: 'row', alignItems: 'center' },
     left: { justifyContent: 'flex-start' },

@@ -1,5 +1,5 @@
 import { SEARCH_TRANSACTION_LIMIT } from '@/data/repositories/search';
-import { Chip, ChipRow, EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, Screen, Section, Skeleton, Text, TextField, resolveIcon, useStyles, useTheme } from '@/design';
+import { Chip, ChipRow, EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, Screen, Section, Skeleton, Text, TextField, resolveIcon, useLayout, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
 import { accountTypeIcon, maskedNumber } from '@/features/accounts';
 import { initialsOf } from '@/features/people';
@@ -30,6 +30,7 @@ export function SearchScreen() {
 function Search() {
   const { t } = useTranslation('search');
   const { size } = useTheme();
+  const { column } = useLayout();
   const styles = useStyles(createStyles);
   const router = useRouter();
   const [typed, setTyped] = useState('');
@@ -130,7 +131,7 @@ function Search() {
       header={
         <View style={styles.head}>
           <Header title={t('title')} onBack={back} backLabel={t('back')} />
-          <View style={styles.field}>
+          <View style={[styles.field, { maxWidth: column }]}>
             <TextField
               icon="search"
               value={typed}
@@ -164,5 +165,6 @@ function Search() {
 const createStyles = ({ size, space }: Theme) =>
   StyleSheet.create({
     head: { gap: space.md, paddingBottom: space.md },
-    field: { paddingHorizontal: size.screenPadding },
+    // Held to the page's column, as the results under it are.
+    field: { alignSelf: 'center', width: '100%', paddingHorizontal: size.screenPadding },
   });
