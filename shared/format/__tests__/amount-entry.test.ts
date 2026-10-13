@@ -1,4 +1,4 @@
-import { amountValue, pressAmountKey } from '@/shared/format/amount-entry';
+import { amountValue, pressAmountKey, typedAmount } from '@/shared/format/amount-entry';
 import type { AmountKey } from '@/shared/format/amount-entry';
 
 const type = (keys: string, start = '') => [...keys].reduce((text, key) => pressAmountKey(text, (key === '<' ? 'delete' : key) as AmountKey), start);
@@ -39,5 +39,20 @@ describe('amount entry', () => {
 
   it('stops at a sensible length', () => {
     expect(type('1234567890123456')).toBe('123456789012');
+  });
+});
+
+describe('text typed or pasted into an amount', () => {
+  it.each([
+    ['42.50', '42.50'],
+    ['12,50', '12,50'],
+    ['.50Weekly shop', '.50'],
+    ['$1,234.56', '1,234.56'],
+    ['12 dollars', '12'],
+    ['12+3×2', '12+3×2'],
+    ['abc', ''],
+    ['', ''],
+  ])('%s is kept as %s', (typed, kept) => {
+    expect(typedAmount(typed)).toBe(kept);
   });
 });

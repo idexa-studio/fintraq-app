@@ -1,8 +1,11 @@
+import { Column, Columns } from '@/design/components/Columns';
 import { SheetFrame } from '@/design/components/SheetFrame';
 import { useKeyboardOverlap } from '@/design/components/useKeyboardOverlap';
+import { useLayout, WidePage } from '@/design/layout';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import { BACKDROP } from '@/design/tokens/colors';
+import { LAYOUT } from '@/design/tokens/layout';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { Keyboard, Platform, ScrollView, StyleSheet, View } from 'react-native';
@@ -44,13 +47,19 @@ export type ScreenProps = {
 /**
  * The screen's sections, one by one. A fragment is opened up, so sections
  * grouped under one condition are still spaced like the rest instead of
- * arriving as a single block with nothing between them.
+ * arriving as a single block with nothing between them. So is `Columns`, unless the screen is
+ * wide enough to lay them side by side: then it stays whole, as one section.
  */
-function sectionsOf(children: React.ReactNode): React.ReactNode[] {
-  return React.Children.toArray(children).flatMap((child) =>
-    React.isValidElement<{ children?: React.ReactNode }>(child) && child.type === React.Fragment ? sectionsOf(child.props.children) : [child],
-  );
+function sectionsOf(children: React.ReactNode, sideBySide: boolean): React.ReactNode[] {
+  return React.Children.toArray(children).flatMap((child) => {
+    if (!React.isValidElement<{ children?: React.ReactNode }>(child)) return [child];
+    const opened = child.type === React.Fragment || (!sideBySide && (child.type === Columns || child.type === Column));
+    return opened ? sectionsOf(child.props.children, sideBySide) : [child];
+  });
 }
+
+const hasColumns = (children: React.ReactNode): boolean =>
+  React.Children.toArray(children).some((child) => React.isValidElement<{ children?: React.ReactNode }>(child) && (child.type === Columns || (child.type === React.Fragment && hasColumns(child.props.children))));
 
 /**
  * One section of a screen. It arrives a moment after the one above it, rising a little as it
@@ -80,6 +89,16 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, sheet
   // after it is first drawn, so a tab opened for the first time showed its header under the
   // status bar for a moment before dropping into place.
   const insets = useSafeAreaInsets();
+  const layout = useLayout();
+  // On a wide screen an Android task is a card in the middle, clear of the edges and their insets.
+  const card = sheet && Platform.OS !== 'ios' && !layout.isCompact;
+  // The content keeps to a column in the middle of a wide screen; the page colour still fills it.
+  // A screen that lays its cards in two columns takes the wider page.
+  const sideBySide = layout.isExpanded && hasColumns(children);
+  const column = { width: '100%', maxWidth: sideBySide ? layout.wide : layout.column, alignSelf: 'center' } as const;
+
+  // On a short screen the keyboard leaves no room for both the field and the buttons: the field wins.
+  const cramped = keyboard > 0 && layout.height - insets.top - keyboard < LAYOUT.roomForFooter;
 
   // A keyboard left open by the screen beneath (a search field, say) would sit over a task's
   // buttons. A field that wants the keyboard asks for it once the task has arrived.
@@ -88,30 +107,32 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, sheet
   }, [sheet]);
   // A sheet starts below the top edge; a tab's bar already clears the bottom.
   const clearsTop = !sheet;
-  const clearsBottom = sheet || !(tabBar || tabbed);
+  // On an expanded screen the tabs stand as a rail at the side, so a tab clears the bottom itself.
+  const clearsBottom = sheet || !(tabBar || (tabbed && !layout.isExpanded));
   const content = padded ? styles.padded : null;
-  const arriving = sectionsOf(children).map((child, i) => <Section key={i} index={i}>{child}</Section>);
+  const arriving = sectionsOf(children, sideBySide).map((child, i) => <Section key={i} index={i}>{child}</Section>);
 
   const page = (
-    <View style={[styles.page, { paddingTop: clearsTop ? insets.top : 0, paddingBottom: (clearsBottom ? insets.bottom : 0) + keyboard }]}>
+    <View style={[styles.page, { paddingTop: clearsTop ? insets.top : 0, paddingBottom: card ? 0 : (clearsBottom ? insets.bottom : 0) + keyboard }]}>
       {header}
       {scroll ? (
-        <ScrollView style={styles.fill} contentContainerStyle={[styles.scrollContent, content, centred ? styles.centred : null]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode={scrollHidesKeyboard ? 'on-drag' : 'none'}>
+        <ScrollView style={styles.fill} contentContainerStyle={[styles.scrollContent, column, content, centred ? styles.centred : null]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode={scrollHidesKeyboard ? 'on-drag' : 'none'}>
           {arriving}
         </ScrollView>
       ) : (
-        <View style={[styles.fill, content]}>{children}</View>
+        <View style={[styles.fill, column, content]}>{children}</View>
       )}
-      {footer ? <View style={styles.footer}>{footer}</View> : null}
+      {footer && !cramped ? <View style={[styles.footer, column]}>{footer}</View> : null}
       {tabBar}
     </View>
   );
 
   // iOS presents the sheet itself, stacked over the screen behind. Android gets a sheet under a black top edge.
+  if (sideBySide) return <WidePage>{page}</WidePage>;
   if (!sheet || Platform.OS === 'ios') return page;
   return (
-    <View style={styles.behind}>
-      <StatusBar style="light" />
+    <View style={[styles.behind, card ? [styles.dimmed, { paddingBottom: keyboard }] : null]}>
+      {card ? null : <StatusBar style="light" />}
       <SheetFrame>{page}</SheetFrame>
     </View>
   );
@@ -122,6 +143,8 @@ const createStyles = ({ colors, size, space }: Theme) =>
     page: { flex: 1, backgroundColor: colors.background },
     // Sheet presentation: the dimmed strip above, then the sheet with rounded top corners.
     behind: { flex: 1, backgroundColor: BACKDROP },
+    // A card leaves the screen it rose over in view all round it, dimmed as under a picker.
+    dimmed: { backgroundColor: colors.scrim },
     fill: { flex: 1 },
     padded: { paddingHorizontal: size.screenPadding },
     scrollContent: { paddingTop: space.sm, paddingBottom: space.xxl, gap: size.sectionGap },

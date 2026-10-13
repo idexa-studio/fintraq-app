@@ -32,6 +32,7 @@ module.exports = defineConfig([
     rules: {
       'no-restricted-imports': ['error', {
         patterns: [RELATIVE, LEGACY, { group: ['@/app/*'], message: 'Features do not import routes.' }, { group: ['@/design/*'], message: "Import UI from the '@/design' barrel." }],
+        paths: [{ name: 'react-native', importNames: ['Dimensions', 'useWindowDimensions'], message: "A screen does not measure the window: ask useLayout() from '@/design'." }],
       }],
     },
   },

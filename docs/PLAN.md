@@ -37,6 +37,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
+| N | Every screen size | 37 | 18 | In progress |
 
 ---
 
@@ -634,6 +635,7 @@ Done when: the redesign is live to all users with no data loss reported.
 
 ### G3. Store
 - [ ] G3.01 New screenshots and feature graphic Made 2026-10-08 in `store/` by `scripts/generate-store-assets.py` from Samsung captures with demo data (dollar main, euro, lira and rupee accounts), light mode: seven Play screenshots (1080 x 1920), the feature graphic (1024 x 500) and phone mockups. Not ticked: the owner has not chosen among them, they are English only, and there are no videos (owner: later).
+  - Retaken 2026-10-13 from the current app (dollar demo data, light): eight phone screenshots with budgets among them, the feature graphic and the mockups. Still the owner's to choose and upload
 - [ ] G3.02 New app icon and splash, if the brand changes with the look (owner) Polished to the new look with C8.08; waits for the owner's eye on a build.
 - [ ] G3.03 Listing text: remove "No subscriptions"; describe the three plans
 - [ ] G3.04 Privacy policy and terms updated for subscriptions
@@ -899,3 +901,99 @@ account and runs on the owner's iPhone.
 - [ ] M1.02 Auto-categorising rules
 - [ ] M1.03 A free trial, with conversion data in hand
 - [ ] M1.04 A native reader for each of the twelve translations
+
+---
+
+## N. Every screen size (alongside, after 2.0.0 is out)
+
+Asked for by the owner on 2026-10-13: "fully responsive on tablet and all sized
+screens". Measured that day on the Samsung with its display set to other sizes:
+
+| Size | What happens today |
+| --- | --- |
+| Tablet upright, 800 x 1280 | Works, as a stretched phone: cards and bars 768 wide, the tab mark 160 wide, a sheet edge to edge |
+| Tablet on its side, 1280 x 800 | Works, stretched further: two cards fill the height, a bar chart 1250 wide |
+| Small phone, 320 x 569 | Home and Pro hold. On Add, the keyboard leaves 35pt for the form: the amount being typed is hidden |
+
+The app is locked upright, but it targets Android 16 (API 36), which ignores
+that lock on any screen 600 wide or more. So tablets and unfolded phones
+already turn it and resize it; the layout has to answer.
+
+Decisions, with reasons (to be confirmed in the gallery, N2.06):
+
+- **Three widths**, the platforms' own: compact under 600, medium 600 to 839,
+  expanded 840 and up. Read live from the window, so folding, split screen and
+  turning change the layout without a restart or lost input.
+- **Phones stay upright.** A screen 600 wide or more turns freely.
+- **Compact** is today's design, unchanged, down to 320 wide.
+- **Medium:** one column, 600 wide at most, centred. The page margin stays 16
+  at every width: once the column is centred, the room beside it is the margin.
+  The tab bar stays at the bottom with its five tabs held to the column.
+- **Expanded:** the tabs move to a rail on the left edge; content is two
+  columns of cards, 1040 wide at most. Lists (Activity, loans, people) stay one
+  600 column: a row read across 1000pt loses its amount.
+- **A task or picker** on medium and expanded is a card in the middle of the
+  dimmed screen, 560 wide at most, not a sheet across the whole bottom edge. A
+  dialog is 400 wide at most.
+- **Charts** take the column's width, never the window's.
+- Nothing is removed or hidden at any size.
+
+Done when: every screen has been seen at 320, 360, 412, 600, 800 and 1280
+wide, upright and on its side where it turns, light and dark, at the largest
+font size, and nothing is stretched, cut off or hidden by the keyboard.
+
+### N1. Prove the risky parts
+- [ ] N1.01 Turning: phones locked upright and 600-wide screens free, on Android 15 and 16 and on iPad, from `app.json` or a config plugin, without a library that locks at run time if the manifest can do it. Device
+  - `plugins/with-any-screen-size.js` removes the manifest's lock and has `MainActivity` hold the screen upright under 600dp. Seen on the Samsung (Android 16) on 2026-10-13: set to 800 x 1280 it turned, at its own size it stayed upright. iOS needs nothing: Expo already frees the iPad and holds the iPhone. Still open: a device on Android 15 or older, and an iPad
+- [x] N1.02 A resize (fold, split screen, turn) keeps the open screen, a half-filled form and an open sheet. Device
+  - Seen on the Samsung, 2026-10-13: a size change and a turn kept Add with its typed amount. A **density** or **font size** change does not: Android restarts the activity and the app opens at Home. Handling them in place was tried and is worse (React Native keeps measured text, so labels were clipped and a new font size was ignored), so the restart stays; N1.04 keeps what was typed
+- [ ] N1.03 iPad: a task presented by iOS itself (`presentation: 'modal'`) on a wide screen; decide between the system's form sheet and the app's own card. Not runnable until an iPad or the owner's word on a simulator
+
+- [ ] N1.04 A transaction being typed survives a restart of the activity (a density or font-size change, or Android reclaiming the app): the draft is kept and offered back, with a test
+
+### N2. Design system, gallery first
+- [x] N2.01 `design/tokens/layout.ts`: the three widths, the column widths (600, 1040), the card widths (560, 400), with a test
+- [x] N2.02 `useLayout()` in `design/`: the width class and the column's width, from the window less its safe areas
+- [x] N2.03 `Screen` holds its content, header and footer to the column; the page colour still fills the window
+- [x] N2.04 `TabBar` held to the column on medium; a new `TabRail` for expanded, same icons, mark and labels
+- [x] N2.05 `Sheet`, `SheetFrame` and `Dialog` as centred cards on medium and expanded; the keyboard still moves them
+- [~] N2.06 Gallery: a width control that draws any section at 320, 360, 600, 840 and 1280, and a section showing the bar, the rail and the three task shapes. Owner
+  - Built 2026-10-13 as the gallery's `Sizes` section: Home drawn to scale at 320, 412, 800 and 1280 wide, and a picker and a dialog on a phone and a tablet. Waiting on the owner. In the 800 frame a section's link is drawn short ("See" for "See all"); at a real 800 it is whole, so it is the preview's scaling, still to be run down
+- [x] N2.07 `Columns`: sections flow into two columns on expanded and one below it, without a screen measuring anything itself
+- [x] N2.08 Charts (`BarChart`, `LineChart`, `HeatGrid`, `PairedBars`, `Ring`) drawn from their own measured width, each with a widest size
+  - Seen at 800 and 1280 on the Samsung: each chart is as wide as its card, which the column bounds (600, or half of 1040). The bar chart's day labels now shrink to fit instead of being cut at the largest font
+- [x] N2.09 A lint rule: no `Dimensions` or `useWindowDimensions` in `features/`; a screen asks `useLayout()`
+- [x] N2.10 Text fields keep the screen when the keyboard opens on a turned tablet (`disableFullscreenUI`, set on both inputs). Device
+
+### N3. Small phones
+- [x] N3.01 Add and every form at 320 x 569 with the keyboard open: the field being typed in stays in view, the save button stays reachable. Device
+  - On a screen with less than 400pt above the keyboard the pinned buttons step aside while it is up (`LAYOUT.roomForFooter`), so the field is not squeezed out. Seen at 320 x 569 on Add, New budget and New loan: the amount is in view while typing and Save is back when the keyboard closes
+- [ ] N3.02 Every screen at 320 wide at the largest font size: no clipped label, no row whose amount is pushed off. Device
+  - Seen at 320 with the font at 1.3: Home, Activity, Plan, Insights, Settings. Fixed: a budget's amount drops under a long name (`LimitRow`) instead of cutting it to "All sp…". Still open: the other screens, and a tile's label shrinking ("Categories")
+- [ ] N3.03 The launch screen and the onboarding at 320 x 569. Device
+
+### N4. Screens on medium and expanded
+- [x] N4.01 The shell: bar or rail by width, the Add tab opening its task as a card
+- [x] N4.02 Home: balance and the month beside budgets, recent and accounts on expanded
+- [ ] N4.03 Activity, search and the transaction receipt
+- [ ] N4.04 Plan and a budget's page
+- [x] N4.05 Insights: cards in two columns on expanded
+- [ ] N4.06 Accounts, categories, people and loans, with their pages
+- [ ] N4.07 Every form and picker as a card
+- [ ] N4.08 Settings, backup, export, security, about
+- [x] N4.09 Pro on medium and expanded
+  - A task is a 560 card on a tablet, so there is no room to set the plans side by side and no need: seen as a card at 800 and 1280
+- [ ] N4.10 Onboarding, the lock screen and the launch screen
+- [ ] N4.11 What's new, the Pro offer, toasts and notices
+- [x] N4.12 A task card on a tablet stands over the dimmed screen it rose from, not over solid black (seen on Add at 600 and 1280 wide)
+- [x] N4.13 ~~Add opened by a link when the app was not running leaves a black screen when closed~~ Not a fault: retried on 2026-10-13 after leaving the app with Back, and closing, saving and discarding each land on Home. The black screen came from a blind tap of mine that could not be repeated
+- [x] N4.14 The amount field took letters typed from a hardware keyboard (seen with adb: "$.50Weekly shop"). It should take figures only, with a test
+
+### N5. Audit and ship
+- [ ] N5.01 Every screen at the six widths, light and dark, upright and turned, largest font. Device (the Samsung set to each size)
+- [ ] N5.02 A real tablet and a real folding phone, or said plainly that none was at hand
+- [ ] N5.03 iPad, upright, turned and in split view
+- [ ] N5.04 `docs/DESIGN_SYSTEM.md` and `docs/SCREENS.md` say how a screen answers each width
+- [ ] N5.05 Play: 7-inch and 10-inch screenshots; the listing marked for tablets
+  - Drawn 2026-10-13 by `scripts/generate-store-assets.py`: `store/play-tablet7` (five, 1080 x 1920, a small tablet upright) and `store/play-tablet10` (five, 2560 x 1440, a large tablet on its side with the rail and two columns), from the Samsung set to those sizes. Six in each. Uploading is the owner's
+- [ ] N5.06 Release notes in `update-note.txt`

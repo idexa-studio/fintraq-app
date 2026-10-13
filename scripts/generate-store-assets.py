@@ -6,11 +6,19 @@ Draws the store's pictures from the phone screenshots in store/raw:
                             so a raw 1080 x 2340 capture cannot be uploaded as it is). They are cut from
                             one long picture, so the grounds and the lifted cards run on from each into the next.
   store/play-strip.jpg      that long picture, reduced, to look at
+  store/play-tablet7/…png   the same for Play's 7-inch tablet slot, 1080 x 1920: a small tablet upright
+  store/play-tablet10/…png  and for its 10-inch slot, 2560 x 1440: a large tablet on its side
+                            (Play takes only 16:9 or 9:16 in both slots)
   store/feature-graphic.png Google Play feature graphic, 1024 x 500
   store/mockups/…png        each screen in a phone frame on a clear ground, and the phones
                             together: a fan, a cascade and the cards by themselves
 
     python3 scripts/generate-store-assets.py      (needs Pillow)
+
+The tablet captures are taken on the same phone with its display set to a tablet's size
+(`adb shell wm size 1200x1920; adb shell wm density 320` is a 7-inch tablet upright, 600 x 960;
+`wm size 2560x1600` a 10-inch one on its side, 1280 x 800) and kept in store/raw/tablet7 and
+store/raw/tablet10 under the names in TABLETS below.
 
 The screenshots are taken on the phone with demo data (Developer, Add demo data), in light mode,
 with the status bar cleaned (`adb shell am broadcast -a com.android.systemui.demo …`). Colours,
@@ -36,16 +44,16 @@ PASTEL = {'lilac': (165, 158, 254), 'pink': (244, 183, 238), 'orange': (251, 179
 
 # The cards lifted out of a screen: the capture, and roughly where the card is in it (snapped to its edge).
 CARDS = {
-    'balance': ('home', (48, 259, 1032, 823)),
-    'stack': ('home-accounts', (48, 793, 1032, 1533)),
-    'amount': ('add', (48, 454, 1032, 748)),
-    'euro': ('accounts', (48, 503, 1032, 694)),
-    'rupee': ('accounts', (48, 1507, 1032, 1893)),
-    'forecast': ('insights-30b', (48, 427, 1032, 951)),
-    'donut': ('insights-30b', (48, 1400, 1032, 2075)),
-    'loan': ('loan', (48, 259, 1032, 949)),
-    'day': ('activity', (48, 664, 1032, 1051)),
-    'spending': ('insights-30c', (48, 690, 1032, 1160)),
+    'balance': ('home', (48, 260, 1032, 822)),
+    'stack': ('home-accounts', (48, 928, 1032, 1669)),
+    'amount': ('add', (48, 455, 1032, 747)),
+    'worth': ('accounts', (48, 260, 1032, 792)),
+    'euro': ('accounts', (48, 1201, 1032, 1392)),
+    'budget': ('plan', (48, 440, 1032, 1000)),
+    'forecast': ('insights-30b', (48, 1057, 1032, 1631)),
+    'donut': ('insights-30c', (48, 954, 1032, 2123)),
+    'loan': ('loan', (48, 260, 1032, 948)),
+    'day': ('activity', (48, 665, 1032, 1050)),
 }
 
 # Each Play screenshot: the capture, the line over it, its ground ('waves' is the launch screen's),
@@ -54,12 +62,48 @@ CARDS = {
 SCREENS = [
     ('home', 'Know where your\nmoney goes', 'waves', ['balance']),
     ('add', 'Add an expense\nin seconds', 'lilac', ['amount']),
-    ('accounts', 'Every account,\nevery currency', 'orange', ['euro', 'rupee']),
+    ('plan', 'Budgets that show\nwhat is left', 'orange', ['budget']),
     ('insights-30b', 'See where the\nmonth is heading', 'teal', ['forecast']),
-    ('insights-30c', 'Know what\nyou spend on', 'pink', ['spending']),
-    ('loan', 'Lent or borrowed,\nnever forgotten', 'blue', ['loan']),
+    ('accounts', 'Every account,\nevery currency', 'blue', ['worth', 'euro']),
+    ('insights-30c', 'Know what\nyou spend on', 'pink', []),
+    ('loan', 'Lent or borrowed,\nnever forgotten', 'green', ['loan']),
     ('activity', 'Everything you\nrecorded, in one list', 'page', ['day']),
 ]
+
+# The status bar is painted over in every capture (the phone's demo mode does not hold on this
+# Samsung): this many rows from the top take the colour found in the middle of them. A tablet on
+# its side is captured with an empty band above the header, which is cut off instead.
+STATUS = {'phone': 100, 'tablet7': 68, 'tablet10': 0}
+CUT_TOP = {'tablet10': 250}
+
+# Play's two tablet slots. Each: the folder of captures, the picture's size, how wide the tablet is drawn,
+# where its top edge sits, the headline's size and leading, and the screens with their lines and grounds.
+# A small tablet upright shows the one-column layout; a large one on its side shows the rail and two columns.
+TABLETS = {
+    'tablet7': {
+        'panel': (1080, 1920), 'width': 940, 'top': 400, 'type': (84, 104),
+        'screens': [
+            ('home', 'Know where your\nmoney goes', 'waves'),
+            ('add', 'Add an expense\nin seconds', 'lilac'),
+            ('plan', 'Budgets that show\nwhat is left', 'orange'),
+            ('insights', 'See where the\nmonth is heading', 'teal'),
+            ('activity', 'Everything you\nrecorded, in one list', 'pink'),
+            ('accounts', 'Every account,\nevery currency', 'blue'),
+        ],
+    },
+    'tablet10': {
+        'panel': (2560, 1440), 'width': 1960, 'top': 330, 'type': (108, 128),
+        'screens': [
+            ('home', 'Know where your money goes', 'waves'),
+            ('insights', 'See where the month is heading', 'teal'),
+            ('plan', 'Budgets that show what is left', 'orange'),
+            ('activity', 'Everything you recorded, in one list', 'pink'),
+            ('add', 'Add an expense in seconds', 'lilac'),
+            ('accounts', 'Every account, every currency', 'blue'),
+        ],
+    },
+}
+
 LIFT = 1.13  # how much larger a lifted card is than the same card on the phone under it
 
 SS = 2  # everything is drawn at twice its size and reduced, for clean edges
@@ -111,6 +155,23 @@ def phone(shot, width):
     return frame
 
 
+def tablet(shot, width):
+    """A screenshot in a plain black tablet frame, `width` across: an even bezel, gentler corners, no camera."""
+    bezel = round(min(width, width * shot.height / shot.width) * 0.034)
+    screen_w = width - 2 * bezel
+    screen_h = round(screen_w * shot.height / shot.width)
+    height = screen_h + 2 * bezel
+    outer = round(bezel * 2.1)
+    inner = outer - bezel
+    frame = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+    ImageDraw.Draw(frame).rounded_rectangle((0, 0, width - 1, height - 1), radius=outer, fill=INK + (255,))
+    screen = shot.convert('RGBA').resize((screen_w, screen_h), Image.LANCZOS)
+    mask = Image.new('L', (screen_w, screen_h), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, screen_w - 1, screen_h - 1), radius=inner, fill=255)
+    frame.paste(screen, (bezel, bezel), mask)
+    return frame
+
+
 def mark(width):
     """The app's mark, cut from the splash image the brand script draws."""
     im = Image.open(ROOT / 'assets' / 'images' / 'splash.png').convert('RGBA')
@@ -118,8 +179,19 @@ def mark(width):
     return im.resize((width, round(width * im.height / im.width)), Image.LANCZOS)
 
 
+def clean(im, kind):
+    """A capture with its status bar painted out, and (a tablet on its side) the empty band above its header cut off."""
+    im = im.convert('RGB')
+    if CUT_TOP.get(kind):
+        im = im.crop((0, CUT_TOP[kind], im.width, im.height))
+    band = STATUS[kind]
+    if band:
+        ImageDraw.Draw(im).rectangle((0, 0, im.width, band), fill=im.getpixel((im.width // 2, band // 2)))
+    return im
+
+
 def shot(name):
-    return Image.open(RAW / f'{name}.png').convert('RGB')
+    return clean(Image.open(RAW / f'{name}.png'), 'phone')
 
 
 def shadowed(layer, blur, drop, strength=70):
@@ -244,6 +316,32 @@ def play_strip():
     return im.convert('RGB')
 
 
+def tablet_strip(kind):
+    """One tablet slot's screenshots as one picture, drawn as the phones' are: the grounds run on, the tablets stand upright."""
+    spec = TABLETS[kind]
+    screens = spec['screens']
+    pw, ph = spec['panel'][0] * SS, spec['panel'][1] * SS
+    W, H = pw * len(screens), ph
+    im = Image.new('RGBA', (W, H), BRAND + (255,))
+    im.paste(waves(pw + 200 * SS, H, deep=0.3), (0, 0))
+    d = ImageDraw.Draw(im)
+    for i, (_, _, ground) in enumerate(screens):
+        if i == 0:
+            continue
+        edge = [(i * pw + 64 * SS * math.sin(2 * math.pi * y / H * 0.9 + i * 1.9), y) for y in range(0, H + 16, 16)]
+        d.polygon(edge + [(W, H), (W, 0)], fill=PAGE if ground == 'page' else PASTEL[ground])
+    size, leading = spec['type']
+    for i, (name, headline, _) in enumerate(screens):
+        cx = i * pw + pw // 2
+        lines = headline.count('\n') + 1
+        # A one-line headline sits where the middle of a two-line one would.
+        centred_text(d, headline, font('700Bold', size * SS), cx, (116 + (leading // 2 if lines == 1 and spec['panel'][1] > spec['panel'][0] else 0)) * SS, INK, leading * SS)
+        raw = clean(Image.open(RAW / kind / f'{name}.png'), kind)
+        body = shadowed(tablet(raw, spec['width'] * SS), round(spec['width'] * SS * 0.02), round(spec['width'] * SS * 0.016), 72)
+        put(im, body, cx, spec['top'] * SS + body.height / 2)
+    return im.convert('RGB')
+
+
 def app_icon(size):
     """The app icon as a launcher shows it: the square icon with its corners rounded."""
     icon = Image.open(ROOT / 'assets' / 'images' / 'icon.png').convert('RGBA').resize((size, size), Image.LANCZOS)
@@ -321,9 +419,19 @@ def main():
     for i, (name, *_) in enumerate(SCREENS):
         strip.crop((i * pw, 0, (i + 1) * pw, strip.height)).resize(PANEL, Image.LANCZOS).save(OUT / 'play' / f'{i + 1:02d}-{name}.png', optimize=True)
     strip.resize((PANEL[0] * len(SCREENS) // 3, PANEL[1] // 3), Image.LANCZOS).save(OUT / 'play-strip.jpg', quality=90)
+    for kind, spec in TABLETS.items():
+        if not (RAW / kind).is_dir():
+            print(f'store/raw/{kind} is missing: its screenshots were not drawn')
+            continue
+        (OUT / f'play-{kind}').mkdir(parents=True, exist_ok=True)
+        strip, panel = tablet_strip(kind), spec['panel']
+        for i, (name, *_) in enumerate(spec['screens']):
+            strip.crop((i * panel[0] * SS, 0, (i + 1) * panel[0] * SS, strip.height)).resize(panel, Image.LANCZOS).save(OUT / f'play-{kind}' / f'{i + 1:02d}-{name}.png', optimize=True)
+        strip.resize((panel[0] * len(spec['screens']) // 4, panel[1] // 4), Image.LANCZOS).save(OUT / f'play-{kind}-strip.jpg', quality=90)
     feature_graphic().save(OUT / 'feature-graphic.png', optimize=True)
+    # Only the phone captures: the tablets' are in folders of their own.
     for raw in sorted(RAW.glob('*.png')):
-        phone(Image.open(raw), 900).save(OUT / 'mockups' / raw.name, optimize=True)
+        phone(clean(Image.open(raw), 'phone'), 900).save(OUT / 'mockups' / raw.name, optimize=True)
     fan().save(OUT / 'mockups' / 'fan.jpg', quality=92)
     cascade().save(OUT / 'mockups' / 'cascade.jpg', quality=92)
     cards().save(OUT / 'mockups' / 'cards.jpg', quality=92)

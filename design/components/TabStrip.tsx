@@ -1,4 +1,5 @@
 import { Text } from '@/design/components/Text';
+import { useLayout } from '@/design/layout';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React, { useEffect, useState } from 'react';
@@ -27,6 +28,7 @@ export type TabStripProps<K extends string = string> = {
 export function TabStrip<K extends string>({ tabs, value, onChange, accessibilityLabel }: TabStripProps<K>) {
   const { motion } = useTheme();
   const styles = useStyles(createStyles);
+  const { column } = useLayout();
   const [width, setWidth] = useState(0);
   const index = Math.max(0, tabs.findIndex((tab) => tab.key === value));
   const tabWidth = width / tabs.length;
@@ -40,23 +42,26 @@ export function TabStrip<K extends string>({ tabs, value, onChange, accessibilit
   const mark = useAnimatedStyle(() => ({ transform: [{ translateX: position.value * tabWidth * direction }] }));
 
   return (
-    <View accessibilityRole="tablist" accessibilityLabel={accessibilityLabel} style={styles.strip} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
-      {tabs.map((tab) => {
-        const selected = tab.key === value;
-        return (
-          <Pressable key={tab.key} onPress={() => onChange?.(tab.key)} accessibilityRole="tab" accessibilityLabel={tab.label} accessibilityState={{ selected }} style={styles.tab}>
-            <Text variant={selected ? 'bodyStrong' : 'body'} tone={selected ? 'default' : 'muted'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>{tab.label}</Text>
-          </Pressable>
-        );
-      })}
-      {width > 0 ? <Animated.View style={[styles.mark, { width: tabWidth }, mark]} /> : null}
+    <View style={styles.strip}>
+      <View accessibilityRole="tablist" accessibilityLabel={accessibilityLabel} style={[styles.tabs, { maxWidth: column }]} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
+        {tabs.map((tab) => {
+          const selected = tab.key === value;
+          return (
+            <Pressable key={tab.key} onPress={() => onChange?.(tab.key)} accessibilityRole="tab" accessibilityLabel={tab.label} accessibilityState={{ selected }} style={styles.tab}>
+              <Text variant={selected ? 'bodyStrong' : 'body'} tone={selected ? 'default' : 'muted'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>{tab.label}</Text>
+            </Pressable>
+          );
+        })}
+        {width > 0 ? <Animated.View style={[styles.mark, { width: tabWidth }, mark]} /> : null}
+      </View>
     </View>
   );
 }
 
 const createStyles = ({ colors, size, border }: Theme) =>
   StyleSheet.create({
-    strip: { flexDirection: 'row', backgroundColor: colors.surface, borderBottomWidth: border.thin, borderBottomColor: colors.divider },
+    strip: { backgroundColor: colors.surface, borderBottomWidth: border.thin, borderBottomColor: colors.divider },
+    tabs: { flexDirection: 'row', alignSelf: 'center', width: '100%' },
     tab: { flex: 1, minHeight: size.minTouch, alignItems: 'center', justifyContent: 'center' },
     // Sits on the strip's bottom hairline, as the tab bar's mark sits on its top one.
     mark: { position: 'absolute', left: 0, bottom: -border.thin, height: size.tabStripMark, backgroundColor: colors.accent },

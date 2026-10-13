@@ -1,4 +1,4 @@
-import { TabBar } from '@/design';
+import { TabBar, TabRail, useLayout } from '@/design';
 import type { SolidIconName, TabItem } from '@/design';
 import type { BottomTabBarProps } from 'expo-router/js-tabs';
 import { useRouter } from 'expo-router';
@@ -16,12 +16,14 @@ const LABELS = { index: 'tabs.home', activity: 'tabs.activity', add: 'tabs.add',
 
 /**
  * The app's tab bar: four places with Add in the middle. Add is not a place:
- * it opens the entry task over whichever tab is showing.
+ * it opens the entry task over whichever tab is showing. On a screen wide enough for it the
+ * bar stands as a rail at the leading edge (`TabsLayout` puts it there).
  */
 export function AppTabBar({ state, navigation }: BottomTabBarProps) {
   const { t } = useTranslation('shell');
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { isExpanded } = useLayout();
 
   const keys: TabKey[] = [PLACES[0], PLACES[1], 'add', PLACES[2], PLACES[3]];
   const items: TabItem<TabKey>[] = keys.map((key) => ({ key, label: t(LABELS[key]), icon: ICONS[key], action: key === 'add' }));
@@ -38,5 +40,6 @@ export function AppTabBar({ state, navigation }: BottomTabBarProps) {
     if (key !== active && !event.defaultPrevented) navigation.navigate(route.name, route.params);
   };
 
+  if (isExpanded) return <TabRail items={items} activeKey={active} onSelect={select} insets={{ top: insets.top, bottom: insets.bottom, start: insets.left }} />;
   return <TabBar items={items} activeKey={active} onSelect={select} bottomInset={insets.bottom} />;
 }

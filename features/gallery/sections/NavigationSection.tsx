@@ -1,5 +1,5 @@
 import { Specimen } from '@/features/gallery/components/Specimen';
-import { Header, IconButton, Section, TabBar, useTheme } from '@/design';
+import { Header, IconButton, Section, TabBar, TabRail, useTheme } from '@/design';
 import type { TabItem } from '@/design';
 import React, { useState } from 'react';
 import { View } from 'react-native';
@@ -47,6 +47,11 @@ export function NavigationSection() {
         <Specimen name="Tab bar" note="As the reference: every item an icon over its label, a green mark the width of the tab above the active one. Add opens the entry task and is never the active tab.">
           <View style={bleed}>
             <TabBar items={TABS} activeKey={tab} onSelect={(key) => { if (key !== 'add') setTab(key); }} />
+          </View>
+        </Specimen>
+        <Specimen name="Tab rail" note="The same bar on its side, for a tablet held sideways (840 wide and up): it stands at the leading edge, the mark on the edge that meets the page.">
+          <View style={{ flexDirection: 'row', height: 420, marginHorizontal: -space.lg, backgroundColor: colors.background }}>
+            <TabRail items={TABS} activeKey={tab} onSelect={(key) => { if (key !== 'add') setTab(key); }} />
           </View>
         </Specimen>
       </Section>

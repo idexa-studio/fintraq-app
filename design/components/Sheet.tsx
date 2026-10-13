@@ -1,6 +1,7 @@
 import { Header } from '@/design/components/Header';
 import { SheetFrame } from '@/design/components/SheetFrame';
 import { useKeyboardOverlap } from '@/design/components/useKeyboardOverlap';
+import { useLayout } from '@/design/layout';
 import { useStyles } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React from 'react';
@@ -46,6 +47,7 @@ export type SheetProps = SheetPanelProps & {
 export function Sheet({ visible, onClose, ...panel }: SheetProps) {
   const styles = useStyles(createStyles);
   const insets = useSafeAreaInsets();
+  const { isCompact } = useLayout();
   // A sheet with a search field rises with the keyboard; otherwise the keyboard would cover it.
   const keyboard = useKeyboardOverlap(visible);
 
@@ -54,7 +56,7 @@ export function Sheet({ visible, onClose, ...panel }: SheetProps) {
       <View style={[styles.scrim, { paddingBottom: keyboard }]}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Close" accessibilityRole="button" />
         <SheetFrame hug>
-          <View style={{ paddingBottom: insets.bottom, flexShrink: 1 }}>
+          <View style={{ paddingBottom: isCompact ? insets.bottom : 0, flexShrink: 1 }}>
             <SheetPanel onClose={onClose} {...panel} />
           </View>
         </SheetFrame>
