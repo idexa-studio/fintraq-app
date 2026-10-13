@@ -130,7 +130,10 @@ wave shapes are Fintraq's own, the wave card's two waves set for a tall screen
 colour and an image, so it shows the brand green and the mark; as soon as the
 app can draw, `LaunchScreen` (`features/shell/`) takes over with `LaunchArt`
 (`WaveField`, `BrandMark`, the name), the mark in the same place at the same
-size, and fades when the app behind it is ready. The mark's size there is tied
+size; as the name appears the mark rises a little, so the two together sit in
+the middle (owner, 2026-10-13: the mark alone in the middle with the name
+hanging under it read as off-centre, and the mark as too large; the splash
+image went from 134 to 108). It fades when the app behind it is ready. The mark's size there is tied
 to `imageWidth` in `app.json` and the splash scale in the script; change the
 three together.
 

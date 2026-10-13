@@ -75,7 +75,9 @@ export const SIZE = {
   cardAction: 52,
   tabBar: 56,
   /** Height of the mark above the active tab. */
-  tabMark: 2,
+  /** The active tab's mark: a short bar hanging from the bar's top edge, over the icon. */
+  tabMark: 3,
+  tabMarkWidth: 32,
   /** A screen's header (reference: 44). */
   header: 44,
   /** The header of a sheet or task, with its bold title (reference: 56). */
