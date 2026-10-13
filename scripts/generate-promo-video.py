@@ -19,7 +19,8 @@ Needs Pillow, numpy, an ffmpeg binary and, for the voice, `kokoro-onnx` with its
 (kokoro-v1.0.int8.onnx, voices-v1.0.bin); none is kept in the project. `--voice` picks another
 Kokoro voice (af_heart, af_bella, am_michael, bm_george …). Without `--kokoro` the Mac's own `say`
 speaks instead. `--music FILE` plays that file under the voice in place of the bed made here.
-`--silent` leaves the voice out, to lay a recorded one over the music.
+`--silent` leaves the voice out, to lay a recorded one over the music. `--reel` draws the same
+film upright (1080 x 1920) for Reels, Shorts and TikTok, as store/promo/fintraq-reel.mp4.
 """
 import argparse
 import importlib.util
@@ -39,6 +40,7 @@ art = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(art)
 
 W, H, FPS = 1920, 1080, 30
+UPRIGHT = False  # the reel: 1080 x 1920, the words over the phone instead of beside it (see `stand_upright`)
 RATE = 44100
 BEAT = 60 / 110
 BAR = BEAT * 4
@@ -76,6 +78,7 @@ CLOSING = {'says': [('It is free to record, and it stays on your phone.', 0.98),
 
 PHONE_W, PHONE_X, PHONE_TOP = 480, 1340, 90
 TEXT_X = 150
+WORDS_TOP = 250  # upright: where the words start, under what a reel's own buttons cover at the top
 WIPE_S = 0.6  # one scene sweeping the last away
 CARD_AT_S = 1.15  # when the card lifts out of the phone
 PILL_AT_S, PILL_EVERY_S = 1.7, 0.32
@@ -212,10 +215,20 @@ BESIDE_WORDS = [(70, 430, 70, 220), (520, 760, 110, 250), (80, 420, 860, 1010), 
 AT_THE_EDGES = [(90, 380, 110, 330), (120, 420, 700, 960), (1540, 1820, 120, 340), (1500, 1800, 720, 960), (560, 660, 880, 1000)]
 
 
-def drifting(frame, t, seed, zones=BESIDE_WORDS):
+def stand_upright():
+    """Turns the film on end for a reel: the same parts, laid out top to bottom."""
+    global W, H, UPRIGHT, PHONE_W, PHONE_X, PHONE_TOP, BESIDE_WORDS, AT_THE_EDGES
+    W, H, UPRIGHT = 1080, 1920, True
+    PHONE_W, PHONE_X, PHONE_TOP = 600, 540, 700
+    # Down the two sides of the phone, and in the corners above the words.
+    BESIDE_WORDS = [(50, 190, 70, 190), (880, 1030, 90, 200), (40, 170, 760, 1040), (910, 1040, 820, 1120), (50, 180, 1380, 1620)]
+    AT_THE_EDGES = [(60, 240, 140, 380), (840, 1020, 200, 420), (50, 220, 1280, 1520), (860, 1030, 1340, 1600), (420, 660, 1560, 1700)]
+
+
+def drifting(frame, t, seed, zones=None):
     """A few of the mark's pale coins adrift behind everything, rising slowly: the one motif the whole film shares."""
     rng = np.random.default_rng(seed)
-    for i, (l, r, top, bottom) in enumerate(zones):
+    for i, (l, r, top, bottom) in enumerate(zones or BESIDE_WORDS):
         x, y = rng.uniform(l, r), rng.uniform(top, bottom)
         width = int(rng.choice([130, 170, 220]))
         shown = spring((t - 0.25 - i * 0.07) * 1.2)
@@ -250,9 +263,9 @@ class Scene:
         drifting(frame, t, 40 + self.index)
 
         # The words land one at a time, each a breath after the last; a short bar draws itself under them.
-        n, y = 0, H // 2 - (len(self.lines) * 136 + 40) // 2
+        n, y = 0, WORDS_TOP if UPRIGHT else H // 2 - (len(self.lines) * 136 + 40) // 2
         for line in self.lines:
-            x = TEXT_X
+            x = (W - sum(s.width for s in line) - 22 * (len(line) - 1)) / 2 if UPRIGHT else TEXT_X
             for sprite in line:
                 at = t - 0.3 - n * 0.11
                 paste(frame, sprite, x + sprite.width / 2, y + sprite.height / 2 + (1 - spring(at * 1.1)) * 46, min(1, max(0, at / 0.16)))
@@ -261,12 +274,13 @@ class Scene:
             y += 136
         bar = ease((t - 0.3 - n * 0.11) / 0.5)
         if bar > 0:
-            ImageDraw.Draw(frame).rounded_rectangle((TEXT_X + 4, y + 26, TEXT_X + 4 + 190 * bar, y + 42), radius=8, fill=art.INK)
+            left = W / 2 - 95 * bar if UPRIGHT else TEXT_X + 4
+            ImageDraw.Draw(frame).rounded_rectangle((left, y + 26, left + 190 * bar, y + 42), radius=8, fill=art.INK)
 
         # The phone springs up from below and then never quite stands still.
         rise = spring((t - 0.1) * 0.95, 7.5, 5.2)
         bob = 7 * math.sin(t * 1.5)
-        cy = PHONE_TOP + self.phone.height / 2 + (1 - rise) * 980 + bob
+        cy = PHONE_TOP + self.phone.height / 2 + (1 - rise) * (1400 if UPRIGHT else 980) + bob
         paste(frame, self.phone, PHONE_X, cy)
 
         # Its card lifts out towards you, and floats a little apart from it.
@@ -275,9 +289,18 @@ class Scene:
             paste(frame, self.card, PHONE_X + self.card_x - 10 * out, cy + self.card_y - 8 * out + 5 * math.sin(t * 1.9 + 1), min(1, (t - CARD_AT_S) / 0.1), (1 / 1.2) + (1 - 1 / 1.2) * out)
 
         # Then the callouts, one after another, each from its own side.
+        pills = [pill(text, art.PASTEL[dot]) for text, _, _, dot in self.spec['pills']]
+        if UPRIGHT:
+            # No room beside the phone: they line up between the words and it, popping in from left to right.
+            x = (W - sum(s.width - 60 for s in pills) - 16 * (len(pills) - 1)) / 2
+            for i, sprite in enumerate(pills):
+                at = t - PILL_AT_S - i * PILL_EVERY_S
+                paste(frame, sprite, x + (sprite.width - 60) / 2, WORDS_TOP + len(self.lines) * 136 + 118 + (1 - ease(at / 0.4)) * 40 + 4 * math.sin(t * 1.3 + i * 2), min(1, max(0, at / 0.12)), 0.6 + 0.4 * spring(at * 1.3, 11, 7))
+                x += sprite.width - 60 + 16
+            return frame
         for i, (text, side, down, dot) in enumerate(self.spec['pills']):
             at = t - PILL_AT_S - i * PILL_EVERY_S
-            sprite = pill(text, art.PASTEL[dot])
+            sprite = pills[i]
             # Clear of the phone and of the card that stands out past it, so it never covers what the screen says.
             x = PHONE_X + (-1 if side == 'left' else 1) * (PHONE_W / 2 + 22 + (sprite.width - 60) / 2)
             paste(frame, sprite, x + (-1 if side == 'left' else 1) * (1 - ease(at / 0.4)) * 60, down + 6 * math.sin(t * 1.3 + i * 2), min(1, max(0, at / 0.12)), 0.6 + 0.4 * spring(at * 1.3, 11, 7))
@@ -326,7 +349,7 @@ class Closing:
     def __init__(self):
         self.icon = art.shadowed(art.app_icon(210), 16, 12, 60)
         self.name = word(CLOSING['name'], 132)
-        self.line = [word(w, 70) for w in CLOSING['line'].split(' ')]
+        self.line = [word(w, 56 if UPRIGHT else 70) for w in CLOSING['line'].split(' ')]
         self.small = word(CLOSING['small'], 40, '500Medium')
         self.pill = pill(CLOSING['pill'], art.PASTEL['green'])
 
@@ -335,17 +358,18 @@ class Closing:
         roll(frame, art.BRAND_DEEP, t, False, 0.45)
         roll(frame, art.BRAND_BRIGHT, t, True, 0.15)
         drifting(frame, t, 91, AT_THE_EDGES)
-        paste(frame, self.icon, W / 2, 270 + 6 * math.sin(t * 1.4), min(1, t / 0.15), 0.5 + 0.5 * spring(t * 1.2, 10, 6))
+        mid = H / 2
+        paste(frame, self.icon, W / 2, mid - 270 + 6 * math.sin(t * 1.4), min(1, t / 0.15), 0.5 + 0.5 * spring(t * 1.2, 10, 6))
         at = t - 0.3
-        paste(frame, self.name, W / 2, 475 + (1 - spring(at * 1.1)) * 50, min(1, max(0, at / 0.18)))
+        paste(frame, self.name, W / 2, mid - 65 + (1 - spring(at * 1.1)) * 50, min(1, max(0, at / 0.18)))
         x = (W - sum(s.width for s in self.line) - 18 * (len(self.line) - 1)) / 2
         for i, sprite in enumerate(self.line):
             at = t - 0.75 - i * 0.1
-            paste(frame, sprite, x + sprite.width / 2, 610 + (1 - spring(at * 1.1)) * 36, min(1, max(0, at / 0.15)))
+            paste(frame, sprite, x + sprite.width / 2, mid + 70 + (1 - spring(at * 1.1)) * 36, min(1, max(0, at / 0.15)))
             x += sprite.width + 18
-        paste(frame, self.small, W / 2, 700, ease((t - 1.6) / 0.5))
+        paste(frame, self.small, W / 2, mid + 160, ease((t - 1.6) / 0.5))
         at = t - 2.1
-        paste(frame, self.pill, W / 2, 810, min(1, max(0, at / 0.12)), 0.6 + 0.4 * spring(at * 1.3, 11, 7))
+        paste(frame, self.pill, W / 2, mid + 270, min(1, max(0, at / 0.12)), 0.6 + 0.4 * spring(at * 1.3, 11, 7))
         return frame
 
 
@@ -565,8 +589,11 @@ def main():
     args.add_argument('--voice', help="a Kokoro voice with --kokoro (af_heart), otherwise one of the Mac's (Samantha)")
     args.add_argument('--music', help='a music file to play under the voice, instead of the bed made here')
     args.add_argument('--silent', action='store_true')
-    args.add_argument('--out', default=str(ROOT / 'store' / 'promo' / 'fintraq-promo.mp4'))
+    args.add_argument('--reel', action='store_true', help='draw it upright, 1080 x 1920, as store/promo/fintraq-reel.mp4')
+    args.add_argument('--out')
     opts = args.parse_args()
+    if opts.reel:
+        stand_upright()
     work = Path(tempfile.mkdtemp(prefix='fintraq-promo-'))
 
     def speak(text, speed=1.0):
@@ -611,7 +638,7 @@ def main():
         mixed = soundtrack(total, [] if opts.silent else spoken, starts[0][0], starts[2][0], ends, (sweeps, pops, ticks, drops), opts.music, opts.ffmpeg)
         w.writeframes((np.clip(mixed, -1, 1) * 32767).astype(np.int16).tobytes())
 
-    out = Path(opts.out)
+    out = Path(opts.out or ROOT / 'store' / 'promo' / ('fintraq-reel.mp4' if opts.reel else 'fintraq-promo.mp4'))
     out.parent.mkdir(parents=True, exist_ok=True)
     ffmpeg = subprocess.Popen(
         [opts.ffmpeg, '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}', '-r', str(FPS), '-i', '-', '-i', str(audio),
