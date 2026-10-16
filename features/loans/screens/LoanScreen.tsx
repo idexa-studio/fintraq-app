@@ -1,5 +1,5 @@
 import {
-  Badge, Button, Card, CardActions, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Money, ProgressBar, Screen, Section, Sheet, Skeleton, Text, Timeline,
+  Badge, Button, Card, CardActions, Column, Columns, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Money, ProgressBar, Screen, Section, Sheet, Skeleton, Text, Timeline,
   useStyles, useTheme, useToast,
 } from '@/design';
 import type { Theme, TimelineItem } from '@/design';
@@ -108,40 +108,46 @@ export function LoanScreen() {
 
   return (
     <Screen header={<Header title={title} onBack={back} backLabel={t('back')} right={<IconButton icon="dots-three" onPress={() => setManaging(true)} accessibilityLabel={t('loan.manage')} />} />}>
-      <Card padded={false}>
-        <View style={styles.summary}>
-          <View style={styles.identity}>
-            {loan.personName ? <IconCircle initials={initialsOf(loan.personName)} color={colorNumberToHex(loan.personColor ?? 0)} /> : <IconCircle icon="hand-coins" />}
-            <View style={styles.fill}>
-              <Text variant="bodyStrong">{open ? t(`loan.outstanding.${type}`) : t('loan.settled')}</Text>
-              <Text variant="callout" tone="muted">{loan.accountName}</Text>
+      {/* On a tablet on its side, the loan's story stands beside it. */}
+      <Columns>
+        <Column>
+          <Card padded={false}>
+            <View style={styles.summary}>
+              <View style={styles.identity}>
+                {loan.personName ? <IconCircle initials={initialsOf(loan.personName)} color={colorNumberToHex(loan.personColor ?? 0)} /> : <IconCircle icon="hand-coins" />}
+                <View style={styles.fill}>
+                  <Text variant="bodyStrong">{open ? t(`loan.outstanding.${type}`) : t('loan.settled')}</Text>
+                  <Text variant="callout" tone="muted">{loan.accountName}</Text>
+                </View>
+                <Badge label={t(`status.${loan.computedStatus}`)} tone={STATUS_TONE[loan.computedStatus]} />
+              </View>
+              <Money value={money(open ? loan.outstanding : loan.principal)} variant="amountHero" tone={open && type === 'lend' ? 'positive' : 'default'} />
+              <View style={styles.progress}>
+                <ProgressBar value={repaidShare(loan)} accessibilityLabel={t('loan.progressLabel')} />
+                <Text variant="callout" tone="muted">{t('loan.progress', { repaid: money(loan.repaid), total: money(loan.principal) })}</Text>
+              </View>
             </View>
-            <Badge label={t(`status.${loan.computedStatus}`)} tone={STATUS_TONE[loan.computedStatus]} />
-          </View>
-          <Money value={money(open ? loan.outstanding : loan.principal)} variant="amountHero" tone={open && type === 'lend' ? 'positive' : 'default'} />
-          <View style={styles.progress}>
-            <ProgressBar value={repaidShare(loan)} accessibilityLabel={t('loan.progressLabel')} />
-            <Text variant="callout" tone="muted">{t('loan.progress', { repaid: money(loan.repaid), total: money(loan.principal) })}</Text>
-          </View>
-        </View>
-        {open ? <CardActions actions={[{ label: t('loan.repay'), onPress: () => router.push({ pathname: '/loans/[id]/repay', params: { id: loan.id } }) }]} /> : null}
-      </Card>
+            {open ? <CardActions actions={[{ label: t('loan.repay'), onPress: () => router.push({ pathname: '/loans/[id]/repay', params: { id: loan.id } }) }]} /> : null}
+          </Card>
+        </Column>
+        <Column>
+          <Section title={t('loan.story')}>
+            <Card>{payments ? <Timeline items={loanStory(loan, payments).map(line)} /> : <Skeleton height={size.row * 2} />}</Card>
+          </Section>
 
-      <Section title={t('loan.story')}>
-        <Card>{payments ? <Timeline items={loanStory(loan, payments).map(line)} /> : <Skeleton height={size.row * 2} />}</Card>
-      </Section>
+          {open ? (
+            <Section title={t('reminders.title')}>
+              <LoanReminders loan={loan} />
+            </Section>
+          ) : null}
 
-      {open ? (
-        <Section title={t('reminders.title')}>
-          <LoanReminders loan={loan} />
-        </Section>
-      ) : null}
-
-      {loan.note ? (
-        <Section title={t('loan.note')}>
-          <Card><Text variant="body">{loan.note}</Text></Card>
-        </Section>
-      ) : null}
+          {loan.note ? (
+            <Section title={t('loan.note')}>
+              <Card><Text variant="body">{loan.note}</Text></Card>
+            </Section>
+          ) : null}
+        </Column>
+      </Columns>
 
       <Sheet visible={managing} onClose={() => setManaging(false)} title={t('loan.manage')}>
         <ListGroup>

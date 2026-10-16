@@ -1,5 +1,5 @@
 import {
-  Button, Card, CardActions, Dialog, Emblem, EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Money, Screen, Section, Sheet, Skeleton, Stat, Text,
+  Button, Card, CardActions, Column, Columns, Dialog, Emblem, EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Money, Screen, Section, Sheet, Skeleton, Stat, Text,
   useStyles, useTheme, useToast,
 } from '@/design';
 import type { Theme } from '@/design';
@@ -89,38 +89,44 @@ export function AccountScreen() {
 
   return (
     <Screen header={<Header title={account.name} onBack={back} backLabel={t('back')} right={<IconButton icon="dots-three" onPress={() => setManaging(true)} accessibilityLabel={t('account.manage')} />} />}>
-      <Card padded={false}>
-        <View style={styles.summary}>
-          <View style={styles.identity}>
-            <IconCircle icon={accountTypeIcon(account.accountType)} color={colorNumberToHex(account.color)} />
-            <View style={styles.fill}>
-              {/* The name is the screen's title; the card says what kind of account it is. */}
-              <Text variant="bodyStrong" numberOfLines={1}>{t(`common:accountTypes.${account.accountType ?? 'bank'}`)}</Text>
-              <Text variant="callout" tone="muted">{about}</Text>
+      {/* On a tablet on its side, the recent transactions stand beside the account. */}
+      <Columns>
+        <Column>
+          <Card padded={false}>
+            <View style={styles.summary}>
+              <View style={styles.identity}>
+                <IconCircle icon={accountTypeIcon(account.accountType)} color={colorNumberToHex(account.color)} />
+                <View style={styles.fill}>
+                  {/* The name is the screen's title; the card says what kind of account it is. */}
+                  <Text variant="bodyStrong" numberOfLines={1}>{t(`common:accountTypes.${account.accountType ?? 'bank'}`)}</Text>
+                  <Text variant="callout" tone="muted">{about}</Text>
+                </View>
+              </View>
+              <Money value={formatCurrency(account.balance, account.currency)} variant="amountHero" />
+              <View style={styles.stats}>
+                <Stat label={t('account.moneyIn')} value={formatCurrency(account.income, account.currency)} tone="positive" />
+                <Stat label={t('account.moneyOut')} value={formatCurrency(account.expense, account.currency)} />
+              </View>
             </View>
-          </View>
-          <Money value={formatCurrency(account.balance, account.currency)} variant="amountHero" />
-          <View style={styles.stats}>
-            <Stat label={t('account.moneyIn')} value={formatCurrency(account.income, account.currency)} tone="positive" />
-            <Stat label={t('account.moneyOut')} value={formatCurrency(account.expense, account.currency)} />
-          </View>
-        </View>
-        <CardActions actions={[{ label: t('account.addTransaction'), onPress: () => add('expense') }, { label: t('account.transfer'), onPress: () => add('transfer') }]} />
-      </Card>
-
-      <Section title={t('account.recent')} actionLabel={recent?.length ? t('account.seeAll') : undefined} onAction={() => router.push({ pathname: '/activity', params: { accountId: account.id } })}>
-        {!recent ? (
-          <Skeleton height={size.row * 2} />
-        ) : recent.length === 0 ? (
-          <EmptyState compact icon="receipt" color="orange" title={t('account.noActivityTitle')} body={t('account.noActivityBody')} actionLabel={t('account.addTransaction')} onAction={() => add('expense')} />
-        ) : (
-          <ListGroup>
-            {recent.map((transaction) => (
-              <TransactionRow key={transaction.id} transaction={transaction} when="day" onPress={(tx) => router.push({ pathname: '/transactions/[id]', params: { id: tx.id } })} />
-            ))}
-          </ListGroup>
-        )}
-      </Section>
+            <CardActions actions={[{ label: t('account.addTransaction'), onPress: () => add('expense') }, { label: t('account.transfer'), onPress: () => add('transfer') }]} />
+          </Card>
+        </Column>
+        <Column>
+          <Section title={t('account.recent')} actionLabel={recent?.length ? t('account.seeAll') : undefined} onAction={() => router.push({ pathname: '/activity', params: { accountId: account.id } })}>
+            {!recent ? (
+              <Skeleton height={size.row * 2} />
+            ) : recent.length === 0 ? (
+              <EmptyState compact icon="receipt" color="orange" title={t('account.noActivityTitle')} body={t('account.noActivityBody')} actionLabel={t('account.addTransaction')} onAction={() => add('expense')} />
+            ) : (
+              <ListGroup>
+                {recent.map((transaction) => (
+                  <TransactionRow key={transaction.id} transaction={transaction} when="day" onPress={(tx) => router.push({ pathname: '/transactions/[id]', params: { id: tx.id } })} />
+                ))}
+              </ListGroup>
+            )}
+          </Section>
+        </Column>
+      </Columns>
 
       <Sheet visible={managing} onClose={() => setManaging(false)} title={t('account.manage')}>
         <ListGroup>

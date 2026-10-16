@@ -37,7 +37,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
-| N | Every screen size | 37 | 20 | In progress |
+| N | Every screen size | 37 | 21 | In progress |
 
 ---
 
@@ -986,7 +986,8 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
 - [x] N4.04 Plan and a budget's page
   - Seen at 1280 x 800, 2026-10-16: on Plan, budgets stand beside loans; on a budget's page, the budget beside what counted towards it. One column below expanded, in the same order as before
 - [x] N4.05 Insights: cards in two columns on expanded
-- [ ] N4.06 Accounts, categories, people and loans, with their pages
+- [x] N4.06 Accounts, categories, people and loans, with their pages
+  - Seen at 1280 x 800, 2026-10-16: an account's, a person's and a loan's page set the summary card beside the recent transactions (or the loan's story, reminders and note). The lists (accounts, categories, people) stay one column, as decided above
 - [ ] N4.07 Every form and picker as a card
 - [ ] N4.08 Settings, backup, export, security, about
 - [x] N4.09 Pro on medium and expanded

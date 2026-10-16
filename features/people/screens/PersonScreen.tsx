@@ -1,5 +1,5 @@
 import {
-  Button, Card, CardActions, Dialog, Emblem, EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Money, Screen, Section, Select, Sheet, Skeleton, Stat, Text,
+  Button, Card, CardActions, Column, Columns, Dialog, Emblem, EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Money, Screen, Section, Select, Sheet, Skeleton, Stat, Text,
   useStyles, useTheme, useToast,
 } from '@/design';
 import type { Theme } from '@/design';
@@ -98,57 +98,63 @@ export function PersonScreen() {
 
   return (
     <Screen header={<Header title={person.name} onBack={back} backLabel={t('back')} right={<IconButton icon="dots-three" onPress={() => setManaging(true)} accessibilityLabel={t('person.manage')} />} />}>
-      <Card padded={false}>
-        <View style={styles.summary}>
-          <View style={styles.identity}>
-            <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} />
-            <View style={styles.fill}>
-              <Text variant="bodyStrong">{t(`standing.${standing}`)}</Text>
-              {about ? <Text variant="callout" tone="muted">{about}</Text> : null}
+      {/* On a tablet on its side, the recent transactions stand beside the person and their loans. */}
+      <Columns>
+        <Column>
+          <Card padded={false}>
+            <View style={styles.summary}>
+              <View style={styles.identity}>
+                <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} />
+                <View style={styles.fill}>
+                  <Text variant="bodyStrong">{t(`standing.${standing}`)}</Text>
+                  {about ? <Text variant="callout" tone="muted">{about}</Text> : null}
+                </View>
+                {currencies.length > 1 ? <Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
+              </View>
+              {standing === 'settled' ? null : <Money value={formatCurrency(Math.abs(net), currency)} variant="amountHero" tone={standing === 'owesYou' ? 'positive' : 'default'} />}
+              <View style={styles.stats}>
+                <Stat label={t('person.spent')} value={formatCurrency(person.totalSpent, currency)} />
+                <Stat label={t('person.received')} value={formatCurrency(person.totalReceived, currency)} tone="positive" />
+              </View>
             </View>
-            {currencies.length > 1 ? <Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /> : null}
-          </View>
-          {standing === 'settled' ? null : <Money value={formatCurrency(Math.abs(net), currency)} variant="amountHero" tone={standing === 'owesYou' ? 'positive' : 'default'} />}
-          <View style={styles.stats}>
-            <Stat label={t('person.spent')} value={formatCurrency(person.totalSpent, currency)} />
-            <Stat label={t('person.received')} value={formatCurrency(person.totalReceived, currency)} tone="positive" />
-          </View>
-        </View>
-        {reach.length > 0 ? <CardActions actions={reach} /> : null}
-      </Card>
+            {reach.length > 0 ? <CardActions actions={reach} /> : null}
+          </Card>
 
-      {openLoans.length > 0 ? (
-        <Section title={t('person.loans')}>
-          <ListGroup>
-            {openLoans.map((loan) => (
-              <ListRow
-                key={loan.id}
-                leading={<IconCircle icon="hand-coins" color="pink" />}
-                strong
-                title={loan.type === 'lend' ? t('person.lent') : t('person.borrowed')}
-                subtitle={loan.dueDate ? t('person.due', { date: formatDate(parseDateKey(loan.dueDate), { day: 'numeric', month: 'short', year: 'numeric' }) }) : loan.accountName}
-                value={formatCurrency(loan.outstanding, loan.currency)}
-                valueTone={loan.type === 'lend' ? 'positive' : 'default'}
-                onPress={() => router.push({ pathname: '/loans/[id]', params: { id: loan.id } })}
-              />
-            ))}
-          </ListGroup>
-        </Section>
-      ) : null}
-
-      <Section title={t('person.recent')} actionLabel={recent.length ? t('person.seeAll') : undefined} onAction={() => router.push({ pathname: '/activity', params: { personId: person.id } })}>
-        {!transactions ? (
-          <Skeleton height={size.row * 2} />
-        ) : recent.length === 0 ? (
-          <EmptyState compact icon="receipt" color="orange" title={t('person.noActivityTitle')} body={t('person.noActivityBody')} />
-        ) : (
-          <ListGroup>
-            {recent.map((transaction) => (
-              <TransactionRow key={transaction.id} transaction={transaction} when="day" onPress={(tx) => router.push({ pathname: '/transactions/[id]', params: { id: tx.id } })} />
-            ))}
-          </ListGroup>
-        )}
-      </Section>
+          {openLoans.length > 0 ? (
+            <Section title={t('person.loans')}>
+              <ListGroup>
+                {openLoans.map((loan) => (
+                  <ListRow
+                    key={loan.id}
+                    leading={<IconCircle icon="hand-coins" color="pink" />}
+                    strong
+                    title={loan.type === 'lend' ? t('person.lent') : t('person.borrowed')}
+                    subtitle={loan.dueDate ? t('person.due', { date: formatDate(parseDateKey(loan.dueDate), { day: 'numeric', month: 'short', year: 'numeric' }) }) : loan.accountName}
+                    value={formatCurrency(loan.outstanding, loan.currency)}
+                    valueTone={loan.type === 'lend' ? 'positive' : 'default'}
+                    onPress={() => router.push({ pathname: '/loans/[id]', params: { id: loan.id } })}
+                  />
+                ))}
+              </ListGroup>
+            </Section>
+          ) : null}
+        </Column>
+        <Column>
+          <Section title={t('person.recent')} actionLabel={recent.length ? t('person.seeAll') : undefined} onAction={() => router.push({ pathname: '/activity', params: { personId: person.id } })}>
+            {!transactions ? (
+              <Skeleton height={size.row * 2} />
+            ) : recent.length === 0 ? (
+              <EmptyState compact icon="receipt" color="orange" title={t('person.noActivityTitle')} body={t('person.noActivityBody')} />
+            ) : (
+              <ListGroup>
+                {recent.map((transaction) => (
+                  <TransactionRow key={transaction.id} transaction={transaction} when="day" onPress={(tx) => router.push({ pathname: '/transactions/[id]', params: { id: tx.id } })} />
+                ))}
+              </ListGroup>
+            )}
+          </Section>
+        </Column>
+      </Columns>
 
       <Sheet visible={managing} onClose={() => setManaging(false)} title={person.name}>
         <ListGroup>
