@@ -37,7 +37,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
-| N | Every screen size | 37 | 19 | In progress |
+| N | Every screen size | 37 | 20 | In progress |
 
 ---
 
@@ -983,7 +983,8 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
 - [x] N4.02 Home: balance and the month beside budgets, recent and accounts on expanded
 - [x] N4.03 Activity, search and the transaction receipt
   - Seen on the Samsung at 1280 x 800, 800 x 1280 and its own size, 2026-10-16. Activity is a `List` (new in `design/`): it spans the window, so a swipe beside the column scrolls it, and its rows, loading and "nothing matches" keep to the column. `ChipRow` keeps to the column, so Search's kinds line up under its field. The receipt was already a 560 card
-- [ ] N4.04 Plan and a budget's page
+- [x] N4.04 Plan and a budget's page
+  - Seen at 1280 x 800, 2026-10-16: on Plan, budgets stand beside loans; on a budget's page, the budget beside what counted towards it. One column below expanded, in the same order as before
 - [x] N4.05 Insights: cards in two columns on expanded
 - [ ] N4.06 Accounts, categories, people and loans, with their pages
 - [ ] N4.07 Every form and picker as a card
