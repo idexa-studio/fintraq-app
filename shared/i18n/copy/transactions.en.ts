@@ -25,6 +25,8 @@ export default {
   date: 'Date',
   person: 'Person',
   noPerson: 'No one',
+  choosePerson: 'Choose a person',
+  personHint: 'Who it was with, if anyone',
   note: 'Note',
   noteOptional: 'Optional',
   available: '{{amount}} available',
@@ -81,6 +83,11 @@ export default {
   saveFailed: 'Couldn’t save',
   saveFailedBody: 'Nothing was changed. Try again.',
   tryAgain: 'OK',
+  restored: {
+    title: 'Picked up where you left off',
+    body: 'Fintraq kept what you were typing.',
+    discard: 'Discard and start again',
+  },
   discard: {
     title: 'Discard this transaction?',
     body: 'What you’ve entered won’t be saved.',

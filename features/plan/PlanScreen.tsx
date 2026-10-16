@@ -1,5 +1,5 @@
 import type { LoanWithStats } from '@/data/repositories/loans';
-import { Card, EmptyState, Header, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, useTheme } from '@/design';
+import { Card, Column, Columns, EmptyState, Header, IconCircle, ListGroup, ListRow, LockedCard, Screen, Section, Select, Skeleton, SplitBar, useTheme } from '@/design';
 import { BudgetList, byUrgency, useBudgets } from '@/features/budgets';
 import { TabTip } from '@/features/guide';
 import { LoanRow, useLoans } from '@/features/loans';
@@ -95,46 +95,52 @@ export function PlanScreen() {
 
   return (
     <Screen tabbed header={header}>
-      <Section title={t('budgets.title')} hint={inCurrency.length ? t('budgets.hint') : undefined} actionLabel={inCurrency.length ? t('budgets.add') : undefined} onAction={addBudget}>
-        <BudgetList budgets={inCurrency} onOpen={(id) => router.push({ pathname: '/budgets/[id]', params: { id } })} onAdd={addBudget} />
-      </Section>
+      {/* On a tablet on its side, budgets stand beside loans. */}
+      <Columns>
+        <Column>
+          <Section title={t('budgets.title')} hint={inCurrency.length ? t('budgets.hint') : undefined} actionLabel={inCurrency.length ? t('budgets.add') : undefined} onAction={addBudget}>
+            <BudgetList budgets={inCurrency} onOpen={(id) => router.push({ pathname: '/budgets/[id]', params: { id } })} onAdd={addBudget} />
+          </Section>
+        </Column>
+        <Column>
+          {/* Loans read as budgets do: a heading with its own "Add", then what it holds. */}
+          <Section title={t('loans.title')} hint={hasOpen ? t('loans.hint') : undefined} actionLabel={hasOpen ? t('loans.add') : undefined} onAction={lend}>
+            <View style={{ gap: size.cardGap }}>
+              {hasOpen ? (
+                <>
+                  <TabTip id="plan" ready />
+                  {/* Owed against owing is only a picture when there is something on both sides; otherwise the list says it already. */}
+                  {totals.owed > 0 && totals.owe > 0 ? (
+                    <Card>
+                      <SplitBar
+                        segments={[
+                          { label: t('summary.owed'), value: totals.owed, display: formatCurrency(totals.owed, currency), color: colors.brand },
+                          { label: t('summary.owe'), value: totals.owe, display: formatCurrency(totals.owe, currency), color: colors.text },
+                        ]}
+                      />
+                    </Card>
+                  ) : null}
+                  {/* One list, in the order they need attention: those with a due date first, soonest at the top. Each carries a bar for how much has come back. */}
+                  <ListGroup>
+                    {dated.map((loan) => openRow(loan, dueLine(loan)))}
+                    {undated.map((loan) => openRow(loan, standing(loan)))}
+                  </ListGroup>
+                </>
+              ) : (
+                <EmptyState compact icon="hand-coins" color="pink" title={t('empty.title')} body={t('empty.body')} actionLabel={t('add')} onAction={lend} />
+              )}
 
-      {/* Loans read as budgets do: a heading with its own "Add", then what it holds. */}
-      <Section title={t('loans.title')} hint={hasOpen ? t('loans.hint') : undefined} actionLabel={hasOpen ? t('loans.add') : undefined} onAction={lend}>
-        <View style={{ gap: size.cardGap }}>
-          {hasOpen ? (
-            <>
-              <TabTip id="plan" ready />
-              {/* Owed against owing is only a picture when there is something on both sides; otherwise the list says it already. */}
-              {totals.owed > 0 && totals.owe > 0 ? (
-                <Card>
-                  <SplitBar
-                    segments={[
-                      { label: t('summary.owed'), value: totals.owed, display: formatCurrency(totals.owed, currency), color: colors.brand },
-                      { label: t('summary.owe'), value: totals.owe, display: formatCurrency(totals.owe, currency), color: colors.text },
-                    ]}
-                  />
-                </Card>
-              ) : null}
-              {/* One list, in the order they need attention: those with a due date first, soonest at the top. Each carries a bar for how much has come back. */}
               <ListGroup>
-                {dated.map((loan) => openRow(loan, dueLine(loan)))}
-                {undated.map((loan) => openRow(loan, standing(loan)))}
+                {settled.length > 0 ? <ListRow icon="check-circle" title={showSettled ? t('settled.hide') : t('settled.show', { count: settled.length })} onPress={() => setShowSettled((shown) => !shown)} trailing={<View />} /> : null}
+                {showSettled ? settled.map((loan) => row(loan, t('settled.row'))) : null}
+                <ListRow icon="users" title={t('summary.people')} subtitle={t('loans.peopleHint')} onPress={() => router.push('/people')} />
               </ListGroup>
-            </>
-          ) : (
-            <EmptyState compact icon="hand-coins" color="pink" title={t('empty.title')} body={t('empty.body')} actionLabel={t('add')} onAction={lend} />
-          )}
+            </View>
+          </Section>
 
-          <ListGroup>
-            {settled.length > 0 ? <ListRow icon="check-circle" title={showSettled ? t('settled.hide') : t('settled.show', { count: settled.length })} onPress={() => setShowSettled((shown) => !shown)} trailing={<View />} /> : null}
-            {showSettled ? settled.map((loan) => row(loan, t('settled.row'))) : null}
-            <ListRow icon="users" title={t('summary.people')} subtitle={t('loans.peopleHint')} onPress={() => router.push('/people')} />
-          </ListGroup>
-        </View>
-      </Section>
-
-      {soon}
+          {soon}
+        </Column>
+      </Columns>
     </Screen>
   );
 }

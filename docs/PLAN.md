@@ -37,7 +37,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
-| N | Every screen size | 37 | 18 | In progress |
+| N | Every screen size | 37 | 25 | In progress |
 
 ---
 
@@ -685,6 +685,12 @@ budgets at once. The names above and the phase headings ("Version 2.1" to
 here on: repeating items 2.1, goals and the net worth trend 2.2, safe to spend
 and the statement 2.3.
 
+**Store 2.1 (owner, 2026-10-16):** repeating items (phase I) and every screen
+size (phase N, the part not in 2.0.1) go out together as **2.1**. 2.0.1 is in
+review on Play. Building both starts now, each on its own branch into `develop`;
+the release branch `release/2.1.0` is cut only once 2.0.1 is at 100% with no
+open crash.
+
 Rules for every version:
 
 - A version starts on its own branch from `develop`, only after the version
@@ -767,7 +773,7 @@ made on 2.0 still restores.
 
 ---
 
-## I. Version 2.2: repeating items
+## I. Version 2.2: repeating items (store 2.1, with phase N)
 
 Done when: rent, a salary and a subscription can each be set once and appear on
 their day without being typed again, a free user can keep two, and a phone left
@@ -904,7 +910,7 @@ account and runs on the owner's iPhone.
 
 ---
 
-## N. Every screen size (alongside, after 2.0.0 is out)
+## N. Every screen size (the foundation shipped in 2.0.1; the rest goes out in 2.1)
 
 Asked for by the owner on 2026-10-13: "fully responsive on tablet and all sized
 screens". Measured that day on the Samsung with its display set to other sizes:
@@ -975,16 +981,23 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
 ### N4. Screens on medium and expanded
 - [x] N4.01 The shell: bar or rail by width, the Add tab opening its task as a card
 - [x] N4.02 Home: balance and the month beside budgets, recent and accounts on expanded
-- [ ] N4.03 Activity, search and the transaction receipt
-- [ ] N4.04 Plan and a budget's page
+- [x] N4.03 Activity, search and the transaction receipt
+  - Seen on the Samsung at 1280 x 800, 800 x 1280 and its own size, 2026-10-16. Activity is a `List` (new in `design/`): it spans the window, so a swipe beside the column scrolls it, and its rows, loading and "nothing matches" keep to the column. `ChipRow` keeps to the column, so Search's kinds line up under its field. The receipt was already a 560 card
+- [x] N4.04 Plan and a budget's page
+  - Seen at 1280 x 800, 2026-10-16: on Plan, budgets stand beside loans; on a budget's page, the budget beside what counted towards it. One column below expanded, in the same order as before
 - [x] N4.05 Insights: cards in two columns on expanded
-- [ ] N4.06 Accounts, categories, people and loans, with their pages
-- [ ] N4.07 Every form and picker as a card
-- [ ] N4.08 Settings, backup, export, security, about
+- [x] N4.06 Accounts, categories, people and loans, with their pages
+  - Seen at 1280 x 800, 2026-10-16: an account's, a person's and a loan's page set the summary card beside the recent transactions (or the loan's story, reminders and note). The lists (accounts, categories, people) stay one column, as decided above
+- [x] N4.07 Every form and picker as a card
+  - Seen 2026-10-16 at 1280 x 800, 800 x 1280 and 600 x 960, keyboard up and down: every task (Add, edit, account, category, person, loan, its due date, repayment, budget) is a 560 card of one height, as an iPad form sheet is, shrinking only for the keyboard or a short screen; every picker (category, account, calculator, currency, filter, dates, calendar) is a card that hugs its content, standing over the dimmed task; a dialog is 400. Nothing needed changing
+- [x] N4.08 Settings, backup, export, security, about
+  - Seen at 1280 x 800, 2026-10-16: Settings, six sections long, stands in two columns (who you are, your money and preferences; then the reminder, safety and erasing). Backup, export, security and about fit one screen in one column, so they stay so. The phone's order is unchanged
 - [x] N4.09 Pro on medium and expanded
   - A task is a 560 card on a tablet, so there is no room to set the plans side by side and no need: seen as a card at 800 and 1280
-- [ ] N4.10 Onboarding, the lock screen and the launch screen
-- [ ] N4.11 What's new, the Pro offer, toasts and notices
+- [x] N4.10 Onboarding, the lock screen and the launch screen
+  - Seen 2026-10-16 at 1280 x 800 from a cleared install: the phone's splash, the launch screen (its waves widen with the screen and keep their shape; the mark and name stay in the middle), welcome, restore, setup with the keyboard up and down, the reminder offer, and the PIN lock (also at 800 x 1280) all keep to the column. Nothing needed changing
+- [x] N4.11 What's new, the Pro offer, toasts and notices
+  - Seen at 1280 x 800, 2026-10-16: What's new is a card (the Pro offer is the same `Sheet`); notices sit in their column. A toast ran across the whole window: now a 560 card in the middle on a wide screen, as a task is; unchanged on a phone (both seen)
 - [x] N4.12 A task card on a tablet stands over the dimmed screen it rose from, not over solid black (seen on Add at 600 and 1280 wide)
 - [x] N4.13 ~~Add opened by a link when the app was not running leaves a black screen when closed~~ Not a fault: retried on 2026-10-13 after leaving the app with Back, and closing, saving and discarding each land on Home. The black screen came from a blind tap of mine that could not be repeated
 - [x] N4.14 The amount field took letters typed from a hardware keyboard (seen with adb: "$.50Weekly shop"). It should take figures only, with a test

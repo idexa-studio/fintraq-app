@@ -98,12 +98,19 @@ export function DisplaySection() {
             <FeatureTile icon="dashboard-speed" color="pink" description="See where this month’s money went" label="Your insights" onPress={() => {}} />
           </View>
         </Specimen>
+        <Specimen name="A choice in a form" note="Before and after: a choice not made yet keeps the circle, plain, with the glyph of what is to be chosen.">
+          <ListGroup>
+            <ListRow leading={<IconCircle icon="user" plain />} strong title="Choose a person" subtitle="Who it was with, if anyone" onPress={() => {}} />
+            <ListRow leading={<IconCircle initials="RK" color="pink" />} strong title="Rahul Kumar" subtitle="With" onPress={() => {}} />
+          </ListGroup>
+        </Specimen>
         <Specimen name="Icon circles and badges" row>
           <MarkTile icon="wallet" />
           <MarkTile icon="bank" />
           <IconCircle icon="flag" color="orange" />
           <IconCircle icon="leaf" color="teal" />
           <IconCircle initials="NA" color="lilac" />
+          <IconCircle icon="user" plain />
           <Badge label="New" />
           <Badge label="Pro" tone="neutral" />
           <Badge label="Overdue" tone="danger" />

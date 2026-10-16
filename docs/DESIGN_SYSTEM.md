@@ -120,8 +120,15 @@ upright, a phone unfolded), **expanded** 840 and up (a tablet on its side).
 | A task or a picker | Sheet from the bottom | A card in the middle, 560 wide | The same |
 | A dialog | 32 from each edge | 400 wide | The same |
 
-- `Screen`, `Header`, `TabBar`, `TabStrip`, `Sheet`, `SheetFrame` and `Dialog`
+- `Screen`, `Header`, `TabBar`, `TabStrip`, `ChipRow`, `Sheet`, `SheetFrame` and `Dialog`
   do this themselves. A screen built from them needs nothing.
+- Two columns: wrap the screen's sections in `Columns`, each side a `Column`
+  (what leads the screen first). Below expanded they run as one column, in the
+  order written. A page's summary card goes beside its list; a list itself
+  stays one column.
+- A list without end (Activity) is a `List` inside `Screen scroll={false}`: it
+  spans the window, so a swipe beside the column scrolls it, and keeps its rows,
+  its loading and its empty state to the column.
 - A screen that must know asks `useLayout()` (`widthClass`, `isCompact`,
   `isExpanded`). Lint refuses `Dimensions` and `useWindowDimensions` in
   `features/`.

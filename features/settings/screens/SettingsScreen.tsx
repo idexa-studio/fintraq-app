@@ -1,4 +1,4 @@
-import { Badge, Button, Dialog, FeatureTile, Header, IconButton, INK, ListGroup, ListRow, Notice, OptionList, Screen, Section, Select, Sheet, Switch, Text, TextField, TimePicker, Touchable, WaveCard, useStyles, useToast } from '@/design';
+import { Badge, Button, Column, Columns, Dialog, FeatureTile, Header, IconButton, INK, ListGroup, ListRow, Notice, OptionList, Screen, Section, Select, Sheet, Switch, Text, TextField, TimePicker, Touchable, WaveCard, useStyles, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { CurrencyPicker, useAccounts } from '@/features/accounts';
 import { useBackupAccount } from '@/features/backup';
@@ -95,79 +95,84 @@ export function SettingsScreen() {
 
   return (
     <Screen header={<Header title={t('title')} onBack={back} backLabel={t('back')} />}>
-      {eraseFailed ? <Notice tone="danger" title={t('erase.failedTitle')} body={t('erase.failedBody')} /> : null}
-
-      <WaveCard>
-        <View style={styles.profile}>
-          <View style={styles.who}>
-            <View style={styles.whoText}>
-              <Text variant="display" numberOfLines={1} style={styles.ink}>{profile.name.trim() || t('profile.noName')}</Text>
-              <Text variant="callout" style={styles.ink}>{t('profile.hello')}</Text>
+      {/* On a tablet on its side, the settings stand in two columns: who and what first, then reminders, safety and erasing. */}
+      <Columns>
+        <Column>
+          {eraseFailed ? <Notice tone="danger" title={t('erase.failedTitle')} body={t('erase.failedBody')} /> : null}
+          <WaveCard>
+            <View style={styles.profile}>
+              <View style={styles.who}>
+                <View style={styles.whoText}>
+                  <Text variant="display" numberOfLines={1} style={styles.ink}>{profile.name.trim() || t('profile.noName')}</Text>
+                  <Text variant="callout" style={styles.ink}>{t('profile.hello')}</Text>
+                </View>
+                <IconButton icon="pencil" onPress={() => { setName(profile.name); setOpen('name'); }} accessibilityLabel={t('profile.edit')} />
+              </View>
+              <Touchable onPress={() => openPaywall()} accessibilityRole="link" accessibilityLabel={isPro ? t('profile.managePro') : t('profile.seePro')} style={styles.plan}>
+                {isPro ? <Badge label={t('profile.pro')} tone="neutral" /> : <Text variant="calloutStrong" style={styles.ink}>{t('profile.free')}</Text>}
+                <Text variant="calloutStrong" underline style={styles.ink}>{isPro ? t('profile.managePro') : t('profile.seePro')}</Text>
+              </Touchable>
             </View>
-            <IconButton icon="pencil" onPress={() => { setName(profile.name); setOpen('name'); }} accessibilityLabel={t('profile.edit')} />
-          </View>
-          <Touchable onPress={() => openPaywall()} accessibilityRole="link" accessibilityLabel={isPro ? t('profile.managePro') : t('profile.seePro')} style={styles.plan}>
-            {isPro ? <Badge label={t('profile.pro')} tone="neutral" /> : <Text variant="calloutStrong" style={styles.ink}>{t('profile.free')}</Text>}
-            <Text variant="calloutStrong" underline style={styles.ink}>{isPro ? t('profile.managePro') : t('profile.seePro')}</Text>
-          </Touchable>
-        </View>
-      </WaveCard>
+          </WaveCard>
 
-      <Section title={t('money.title')} hint={t('money.hint')}>
-        <View style={styles.tiles}>
-          <FeatureTile compact icon="bank" color="lilac" label={t('money.accounts')} description={t('money.accountsCount', { count: accounts?.length ?? 0 })} onPress={() => router.push('/accounts')} />
-          <FeatureTile compact icon="tag" color="orange" label={t('money.categories')} description={t('money.categoriesCount', { count: categories?.length ?? 0 })} onPress={() => router.push('/categories')} />
-        </View>
-        <View style={styles.tiles}>
-          <FeatureTile compact icon="users" color="teal" label={t('money.people')} description={t('money.peopleCount', { count: people?.length ?? 0 })} onPress={() => router.push('/people')} />
-          <FeatureTile compact icon="file-text" color="pink" label={t('money.export')} description={t('money.exportHint')} onPress={() => router.push('/export')} />
-        </View>
-      </Section>
+          <Section title={t('money.title')} hint={t('money.hint')}>
+            <View style={styles.tiles}>
+              <FeatureTile compact icon="bank" color="lilac" label={t('money.accounts')} description={t('money.accountsCount', { count: accounts?.length ?? 0 })} onPress={() => router.push('/accounts')} />
+              <FeatureTile compact icon="tag" color="orange" label={t('money.categories')} description={t('money.categoriesCount', { count: categories?.length ?? 0 })} onPress={() => router.push('/categories')} />
+            </View>
+            <View style={styles.tiles}>
+              <FeatureTile compact icon="users" color="teal" label={t('money.people')} description={t('money.peopleCount', { count: people?.length ?? 0 })} onPress={() => router.push('/people')} />
+              <FeatureTile compact icon="file-text" color="pink" label={t('money.export')} description={t('money.exportHint')} onPress={() => router.push('/export')} />
+            </View>
+          </Section>
 
-      <Section title={t('prefs.title')} hint={t('prefs.hint')}>
-        <ListGroup>
-          <ListRow icon="cash" title={t('prefs.currency')} subtitle={t('prefs.currencyHint')} value={currency} onPress={() => setOpen('currency')} />
-          <ListRow icon="translate" title={t('prefs.language')} subtitle={language === 'system' ? t('prefs.systemLanguage') : languages[language].nativeName} onPress={() => setOpen('language')} />
-          <ListRow
-            icon="moon"
-            title={t('prefs.appearance')}
-            trailing={<Select title={t('prefs.appearance')} options={APPEARANCES.map((key) => ({ key, label: t(`prefs.appearances.${key}`) }))} value={profile.theme || 'system'} onChange={(theme) => void updateProfile({ theme })} accessibilityLabel={t('prefs.appearance')} />}
-          />
-        </ListGroup>
-      </Section>
+          <Section title={t('prefs.title')} hint={t('prefs.hint')}>
+            <ListGroup>
+              <ListRow icon="cash" title={t('prefs.currency')} subtitle={t('prefs.currencyHint')} value={currency} onPress={() => setOpen('currency')} />
+              <ListRow icon="translate" title={t('prefs.language')} subtitle={language === 'system' ? t('prefs.systemLanguage') : languages[language].nativeName} onPress={() => setOpen('language')} />
+              <ListRow
+                icon="moon"
+                title={t('prefs.appearance')}
+                trailing={<Select title={t('prefs.appearance')} options={APPEARANCES.map((key) => ({ key, label: t(`prefs.appearances.${key}`) }))} value={profile.theme || 'system'} onChange={(theme) => void updateProfile({ theme })} accessibilityLabel={t('prefs.appearance')} />}
+              />
+            </ListGroup>
+          </Section>
+        </Column>
+        <Column>
+          <Section title={t('reminder.title')} hint={t('reminder.hint')}>
+            <ListGroup>
+              <ListRow
+                icon="bell"
+                title={t('reminder.label')}
+                subtitle={profile.reminderEnabled ? t('reminder.on', { time: timeText }) : t('reminder.off')}
+                trailing={<Switch value={profile.reminderEnabled} onValueChange={setReminder} accessibilityLabel={t('reminder.label')} />}
+              />
+              {profile.reminderEnabled ? <ListRow icon="clock" title={t('reminder.time')} value={timeText} onPress={() => setOpen('time')} /> : null}
+            </ListGroup>
+            {denied ? <Notice tone="warning" title={t('reminder.deniedTitle')} body={t('reminder.deniedBody')} linkLabel={t('reminder.openSettings')} onLink={() => void openAppSettings()} /> : null}
+            {profile.reminderEnabled && !exactAlarm.hasAccess ? <Notice tone="warning" title={t('reminder.lateTitle')} body={t('reminder.lateBody')} linkLabel={t('reminder.lateLink')} onLink={() => void exactAlarm.openSettings()} /> : null}
+          </Section>
 
-      <Section title={t('reminder.title')} hint={t('reminder.hint')}>
-        <ListGroup>
-          <ListRow
-            icon="bell"
-            title={t('reminder.label')}
-            subtitle={profile.reminderEnabled ? t('reminder.on', { time: timeText }) : t('reminder.off')}
-            trailing={<Switch value={profile.reminderEnabled} onValueChange={setReminder} accessibilityLabel={t('reminder.label')} />}
-          />
-          {profile.reminderEnabled ? <ListRow icon="clock" title={t('reminder.time')} value={timeText} onPress={() => setOpen('time')} /> : null}
-        </ListGroup>
-        {denied ? <Notice tone="warning" title={t('reminder.deniedTitle')} body={t('reminder.deniedBody')} linkLabel={t('reminder.openSettings')} onLink={() => void openAppSettings()} /> : null}
-        {profile.reminderEnabled && !exactAlarm.hasAccess ? <Notice tone="warning" title={t('reminder.lateTitle')} body={t('reminder.lateBody')} linkLabel={t('reminder.lateLink')} onLink={() => void exactAlarm.openSettings()} /> : null}
-      </Section>
+          <Section title={t('safety.title')} hint={t('safety.hint')}>
+            <ListGroup>
+              <ListRow icon={lockMode ? 'lock-key' : 'lock-open'} title={t('safety.lock')} subtitle={t(`safety.lockState.${lockMode ?? 'off'}`)} onPress={() => router.push('/settings/security')} />
+              <ListRow icon="cloud-arrow-up" title={t('safety.backup')} subtitle={backupAccount ? t('safety.backupOn', { email: backupAccount.email }) : t('safety.backupOff')} onPress={() => router.push('/backup')} />
+            </ListGroup>
+            <ListGroup>
+              <ListRow icon="bulb" title={t('tips.row')} subtitle={t('tips.rowHint')} trailing={<View />} onPress={() => void showTipsAgain().then(() => toast.show({ message: t('tips.done') }))} />
+              {/* The same note an update shows once on Home, here for whenever it is wanted. */}
+              <ListRow icon="sparkle" title={t('whatsNew.row')} subtitle={t('whatsNew.rowHint')} onPress={() => setOpen('whatsNew')} />
+              <ListRow icon="info" title={t('about.row')} subtitle={t('about.rowHint')} onPress={() => router.push('/settings/about')} />
+            </ListGroup>
+          </Section>
 
-      <Section title={t('safety.title')} hint={t('safety.hint')}>
-        <ListGroup>
-          <ListRow icon={lockMode ? 'lock-key' : 'lock-open'} title={t('safety.lock')} subtitle={t(`safety.lockState.${lockMode ?? 'off'}`)} onPress={() => router.push('/settings/security')} />
-          <ListRow icon="cloud-arrow-up" title={t('safety.backup')} subtitle={backupAccount ? t('safety.backupOn', { email: backupAccount.email }) : t('safety.backupOff')} onPress={() => router.push('/backup')} />
-        </ListGroup>
-        <ListGroup>
-          <ListRow icon="bulb" title={t('tips.row')} subtitle={t('tips.rowHint')} trailing={<View />} onPress={() => void showTipsAgain().then(() => toast.show({ message: t('tips.done') }))} />
-          {/* The same note an update shows once on Home, here for whenever it is wanted. */}
-          <ListRow icon="sparkle" title={t('whatsNew.row')} subtitle={t('whatsNew.rowHint')} onPress={() => setOpen('whatsNew')} />
-          <ListRow icon="info" title={t('about.row')} subtitle={t('about.rowHint')} onPress={() => router.push('/settings/about')} />
-        </ListGroup>
-      </Section>
-
-      <Section title={t('erase.title')}>
-        <ListGroup>
-          <ListRow icon="trash" destructive title={t('erase.row')} subtitle={t('erase.rowHint')} onPress={() => setOpen('erase')} />
-        </ListGroup>
-      </Section>
+          <Section title={t('erase.title')}>
+            <ListGroup>
+              <ListRow icon="trash" destructive title={t('erase.row')} subtitle={t('erase.rowHint')} onPress={() => setOpen('erase')} />
+            </ListGroup>
+          </Section>
+        </Column>
+      </Columns>
 
       <Sheet visible={open === 'name'} onClose={close} title={t('name.title')} footer={<Button label={t('name.save')} onPress={saveName} />}>
         <TextField label={t('name.label')} value={name} onChangeText={setName} maxLength={NAME_MAX} autoCapitalize="words" autoCorrect={false} focusOnArrival returnKeyType="done" onSubmitEditing={saveName} helper={t('name.hint')} />

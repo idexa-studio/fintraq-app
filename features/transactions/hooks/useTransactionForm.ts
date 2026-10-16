@@ -5,13 +5,18 @@ import { useAccounts } from '@/features/accounts';
 import { useCategories } from '@/features/categories';
 import { useLoanWithStats } from '@/features/loans';
 import { usePersons } from '@/features/people';
+import { forgetDraft, keepDraft, loadDraft } from '@/features/transactions/entry-draft-store';
+import { isWorthKeeping } from '@/features/transactions/entry-draft';
 import { useCreateTransaction, useDeleteTransaction, useTransactionById, useUpdateTransaction } from '@/features/transactions/hooks/transactions';
 import { blockerOf, categoriesFor, defaultAccountId, defaultCategoryId, payloadOf, typeOfKind } from '@/features/transactions/transaction-form';
 import type { Blocker, FormState, Kind } from '@/features/transactions/transaction-form';
 import { transferDestinations } from '@/shared/calc/transfers';
 import { parseAmountInput } from '@/shared/format/amount';
 import type { TransactionType } from '@/shared/types';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+
+/** How long after the last change the entry is kept: one write per pause, not one per keystroke. */
+const KEEP_AFTER_MS = 300;
 
 export type TransactionFormOptions = {
   /** Editing this transaction; leave out to add a new one. */
@@ -57,6 +62,55 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
   const [note, setNote] = useState('');
   /** True once the user has changed anything, so leaving can ask before discarding it. */
   const [touched, setTouched] = useState(false);
+
+  // A new entry picks up what was being typed when the app was last started again under it (a
+  // font or display size change, or Android reclaiming it), unless typing has already begun.
+  const [restored, setRestored] = useState(false);
+  const [draftChecked, setDraftChecked] = useState(editing);
+  /** Set by the first change, so a draft that arrives late never overwrites what is being typed. */
+  const typed = useRef(false);
+  useEffect(() => {
+    if (editing) return;
+    let gone = false;
+    void loadDraft().then((draft) => {
+      if (gone) return;
+      if (draft && !typed.current) {
+        setTypeState(draft.type);
+        setAmountText(draft.amountText);
+        setAccountId(draft.accountId);
+        setToAccountId(draft.toAccountId);
+        setCategoryId(draft.categoryId);
+        setPersonId(draft.personId);
+        setWhen(draft.when);
+        setNote(draft.note);
+        setTouched(true);
+        setRestored(true);
+      }
+      setDraftChecked(true);
+    });
+    return () => {
+      gone = true;
+    };
+  }, [editing]);
+
+  // Kept a moment after each change, until it is saved or thrown away.
+  const finished = useRef(false);
+  const keeping = !editing && draftChecked && touched;
+  useEffect(() => {
+    if (!keeping) return;
+    const draft = { type, amountText, accountId, toAccountId, categoryId, personId, when, note, savedAt: 0 };
+    const timer = setTimeout(() => {
+      if (finished.current) return;
+      void (isWorthKeeping(draft) ? keepDraft({ ...draft, savedAt: Date.now() }) : forgetDraft());
+    }, KEEP_AFTER_MS);
+    return () => clearTimeout(timer);
+  }, [keeping, type, amountText, accountId, toAccountId, categoryId, personId, when, note]);
+
+  /** The entry is done with, saved or thrown away: it is no longer kept or offered back. */
+  const letGo = () => {
+    finished.current = true;
+    void forgetDraft();
+  };
 
   // Editing: start from the saved transaction, once it has loaded.
   const [readFrom, setReadFrom] = useState<typeof existing>(null);
@@ -104,6 +158,7 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
   const blocker: Blocker | null = blockerOf(state, repaymentLimit);
 
   const touch = <T,>(set: (value: T) => void) => (value: T) => {
+    typed.current = true;
     setTouched(true);
     set(value);
   };
@@ -116,7 +171,23 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
       return null;
     }
     const created = await create.mutateAsync(payload);
+    letGo();
     return created?.id ?? null;
+  };
+
+  /** Clears an entry that was offered back, and starts again from nothing. */
+  const startOver = () => {
+    void forgetDraft();
+    setTypeState(typeOfKind(initialKind));
+    setAmountText('');
+    setAccountId(null);
+    setToAccountId(null);
+    setCategoryId(null);
+    setPersonId(null);
+    setWhen(new Date());
+    setNote('');
+    setTouched(false);
+    setRestored(false);
   };
 
   return {
@@ -156,6 +227,9 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
     people,
 
     touched,
+    restored,
+    startOver,
+    discard: letGo,
     blocker,
     saving,
     save,
