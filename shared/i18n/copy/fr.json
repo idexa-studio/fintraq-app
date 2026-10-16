@@ -1871,6 +1871,11 @@
       "deleted": "Opération supprimée",
       "deleteFailed": "Suppression impossible",
       "deleteFailedBody": "Rien n’a été modifié. Réessayez."
+    },
+    "restored": {
+      "title": "Repris là où vous en étiez",
+      "body": "Fintraq a gardé ce que vous saisissiez.",
+      "discard": "Abandonner et recommencer"
     }
   },
   "guide": {

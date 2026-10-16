@@ -1852,6 +1852,11 @@
       "deleted": "取引を削除しました",
       "deleteFailed": "削除できませんでした",
       "deleteFailedBody": "何も変更されていません。もう一度お試しください。"
+    },
+    "restored": {
+      "title": "入力の途中から再開しました",
+      "body": "入力中の内容を Fintraq が残しました。",
+      "discard": "破棄して最初から"
     }
   },
   "guide": {

@@ -1871,6 +1871,11 @@
       "deleted": "Movimiento eliminado",
       "deleteFailed": "No se pudo eliminar",
       "deleteFailedBody": "No se cambió nada. Inténtalo de nuevo."
+    },
+    "restored": {
+      "title": "Retomado donde lo dejaste",
+      "body": "Fintraq guardó lo que estabas escribiendo.",
+      "discard": "Descartar y empezar de nuevo"
     }
   },
   "guide": {

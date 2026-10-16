@@ -20,6 +20,8 @@ export enum StorageKeys {
   GUIDE_SEEN = '@fintraq_guide_seen',
   /** The release whose "what is new" note was seen, as a number. Written at setup on a new install. */
   WHATS_NEW_SEEN = '@fintraq_whats_new_seen',
+  /** JSON: a new transaction being typed, so it outlives the app being started again under it. */
+  ENTRY_DRAFT = '@fintraq_entry_draft',
 
   // Walkthrough Keys
   WALKTHROUGH_DASHBOARD = '@fintraq_walkthrough_dashboard',

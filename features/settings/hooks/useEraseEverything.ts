@@ -25,6 +25,7 @@ export const ERASED_KEYS: readonly string[] = [
   StorageKeys.GETTING_STARTED_DISMISSED,
   StorageKeys.GUIDE_SEEN,
   StorageKeys.WHATS_NEW_SEEN,
+  StorageKeys.ENTRY_DRAFT,
   StorageKeys.WALKTHROUGH_DASHBOARD,
   StorageKeys.WALKTHROUGH_CATEGORIES,
   StorageKeys.WALKTHROUGH_ANALYTICS,

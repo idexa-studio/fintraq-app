@@ -1,5 +1,5 @@
 import {
-  FormBlock, AmountField, Button, Card, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, MarkTile, Message, Screen, Skeleton, TabStrip, Text, TextField, resolveIcon,
+  FormBlock, AmountField, Button, Card, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, MarkTile, Message, Notice, Screen, Skeleton, TabStrip, Text, TextField, resolveIcon,
   useTheme, useToast,
 } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
@@ -141,6 +141,9 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
         </>
       }
     >
+      {/* Fintraq was started again under an entry being typed: it is back, with a way to drop it. */}
+      {form.restored ? <Notice title={t('restored.title')} body={t('restored.body')} linkLabel={t('restored.discard')} onLink={form.startOver} /> : null}
+
       <Card style={{ gap: space.sm }}>
         <Text variant="callout" tone="muted">{t('amount')}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
@@ -223,7 +226,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
       <WhenPicker visible={picker === 'when'} onClose={() => setPicker(null)} value={form.when} onChange={form.setWhen} />
 
       <Dialog visible={guard.asking} onRequestClose={guard.stay} title={t('discard.title')} body={t('discard.body')}>
-        <Button label={t('discard.confirm')} variant="danger" onPress={guard.leave} />
+        <Button label={t('discard.confirm')} variant="danger" onPress={() => { form.discard(); guard.leave(); }} />
         <Button label={t('discard.cancel')} variant="secondary" onPress={guard.stay} />
       </Dialog>
       <Dialog visible={failed} onRequestClose={() => setFailed(false)} title={t('saveFailed')} body={t('saveFailedBody')}>

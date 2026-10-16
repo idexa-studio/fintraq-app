@@ -1852,6 +1852,11 @@
       "deleted": "Transaksi dihapus",
       "deleteFailed": "Tidak bisa menghapus",
       "deleteFailedBody": "Tidak ada yang berubah. Coba lagi."
+    },
+    "restored": {
+      "title": "Lanjut dari yang tadi",
+      "body": "Fintraq menyimpan yang sedang Anda ketik.",
+      "discard": "Buang dan mulai lagi"
     }
   },
   "guide": {
