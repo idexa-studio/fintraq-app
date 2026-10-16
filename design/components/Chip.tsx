@@ -2,6 +2,7 @@ import { Icon } from '@/design/components/Icon';
 import { Squircle } from '@/design/components/Squircle';
 import { Text } from '@/design/components/Text';
 import { Touchable } from '@/design/components/Touchable';
+import { useLayout } from '@/design/layout';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import { INK } from '@/design/tokens/colors';
@@ -61,9 +62,10 @@ export type ChipRowProps = {
   inset?: boolean;
 };
 
-/** Chips in one line that scrolls off the right edge of the page. */
+/** Chips in one line that scrolls off the right edge of the page, held to the screen's column on a wide one. */
 export function ChipRow({ children, inset = false }: ChipRowProps) {
   const styles = useStyles(createStyles);
+  const { column } = useLayout();
   return (
     <ScrollView
       horizontal
@@ -71,7 +73,7 @@ export function ChipRow({ children, inset = false }: ChipRowProps) {
       // A chip tapped while the keyboard is up acts at once, instead of the tap only closing the keyboard.
       keyboardShouldPersistTaps="handled"
       accessibilityRole="tablist"
-      style={styles.rowScroll}
+      style={[styles.rowScroll, { maxWidth: column }]}
       contentContainerStyle={[styles.row, inset ? null : styles.rowMargin]}
     >
       {children}
@@ -91,7 +93,7 @@ const createStyles = ({ size, space }: Theme) =>
       gap: space.xs,
     },
     menu: { minWidth: 0, paddingLeft: space.md, paddingRight: space.sm },
-    rowScroll: { flexGrow: 0 },
+    rowScroll: { flexGrow: 0, width: '100%', alignSelf: 'center' },
     row: { gap: space.md },
     rowMargin: { paddingHorizontal: size.screenPadding },
   });
