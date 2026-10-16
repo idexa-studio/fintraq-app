@@ -1876,7 +1876,9 @@
       "title": "Repris là où vous en étiez",
       "body": "Fintraq a gardé ce que vous saisissiez.",
       "discard": "Abandonner et recommencer"
-    }
+    },
+    "choosePerson": "Choisir une personne",
+    "personHint": "Avec qui, le cas échéant"
   },
   "guide": {
     "tips": {

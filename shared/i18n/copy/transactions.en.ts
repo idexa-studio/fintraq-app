@@ -25,6 +25,8 @@ export default {
   date: 'Date',
   person: 'Person',
   noPerson: 'No one',
+  choosePerson: 'Choose a person',
+  personHint: 'Who it was with, if anyone',
   note: 'Note',
   noteOptional: 'Optional',
   available: '{{amount}} available',

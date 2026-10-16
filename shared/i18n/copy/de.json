@@ -1857,7 +1857,9 @@
       "title": "Da weiter, wo du warst",
       "body": "Fintraq hat behalten, was du eingegeben hast.",
       "discard": "Verwerfen und neu beginnen"
-    }
+    },
+    "choosePerson": "Person auswählen",
+    "personHint": "Mit wem, falls mit jemandem"
   },
   "guide": {
     "tips": {

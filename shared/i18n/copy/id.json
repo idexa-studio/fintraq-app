@@ -1857,7 +1857,9 @@
       "title": "Lanjut dari yang tadi",
       "body": "Fintraq menyimpan yang sedang Anda ketik.",
       "discard": "Buang dan mulai lagi"
-    }
+    },
+    "choosePerson": "Pilih orang",
+    "personHint": "Dengan siapa, jika ada"
   },
   "guide": {
     "tips": {

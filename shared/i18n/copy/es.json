@@ -1876,7 +1876,9 @@
       "title": "Retomado donde lo dejaste",
       "body": "Fintraq guardó lo que estabas escribiendo.",
       "discard": "Descartar y empezar de nuevo"
-    }
+    },
+    "choosePerson": "Elegir una persona",
+    "personHint": "Con quién fue, si con alguien"
   },
   "guide": {
     "tips": {

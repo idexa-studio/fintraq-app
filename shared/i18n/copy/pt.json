@@ -1876,7 +1876,9 @@
       "title": "Retomado de onde você parou",
       "body": "O Fintraq guardou o que você estava digitando.",
       "discard": "Descartar e começar de novo"
-    }
+    },
+    "choosePerson": "Escolher uma pessoa",
+    "personHint": "Com quem foi, se com alguém"
   },
   "guide": {
     "tips": {

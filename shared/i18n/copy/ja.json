@@ -1857,7 +1857,9 @@
       "title": "入力の途中から再開しました",
       "body": "入力中の内容を Fintraq が残しました。",
       "discard": "破棄して最初から"
-    }
+    },
+    "choosePerson": "相手を選ぶ",
+    "personHint": "誰と一緒だったか（いれば）"
   },
   "guide": {
     "tips": {

@@ -205,15 +205,23 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
               onPress={() => setPicker('category')}
             />
           ) : null}
+          {/* Who it was with is a choice from a list, so it is a row that opens one, like the category. */}
+          {!form.loanLinked && form.people.length > 0 && form.type !== 'TR' ? (
+            <ListRow
+              leading={form.person ? <IconCircle initials={initialsOf(form.person.name)} color={colorNumberToHex(form.person.color)} /> : undefined}
+              icon={form.person ? undefined : 'user'}
+              strong
+              title={form.person?.name ?? t('choosePerson')}
+              subtitle={form.person ? t('with') : t('personHint')}
+              onPress={() => setPicker('person')}
+            />
+          ) : null}
           <View style={{ padding: size.cardPadding, gap: space.lg }}>
             <TextField label={t('note')} value={form.note} onChangeText={form.setNote} placeholder={t('noteOptional')} maxLength={120} remaining={(count) => t('common:charactersLeft', { count })} />
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
               <View style={{ flex: 1 }}><TextField label={t('when')} value={when} onPress={() => setPicker('when')} /></View>
               <IconButton icon="calendar" onPress={() => setPicker('when')} accessibilityLabel={t('pickDate')} />
             </View>
-            {!form.loanLinked && form.people.length > 0 && form.type !== 'TR' ? (
-              <TextField label={t('with')} value={form.person?.name ?? t('noPerson')} onPress={() => setPicker('person')} />
-            ) : null}
           </View>
         </ListGroup>
       </FormBlock>
