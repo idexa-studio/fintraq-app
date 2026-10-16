@@ -1,7 +1,9 @@
 import { Text } from '@/design/components/Text';
 import { Touchable } from '@/design/components/Touchable';
+import { useLayout } from '@/design/layout';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
+import { LAYOUT } from '@/design/tokens/layout';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
@@ -51,6 +53,7 @@ export function ToastProvider({ children, bottomOffset }: ToastProviderProps) {
   const { motion, size } = useTheme();
   const styles = useStyles(createStyles);
   const insets = useSafeAreaInsets();
+  const { isCompact } = useLayout();
   const [toast, setToast] = useState<(ToastContent & { id: number }) | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const count = useRef(0);
@@ -82,7 +85,10 @@ export function ToastProvider({ children, bottomOffset }: ToastProviderProps) {
           pointerEvents="box-none"
           style={[styles.host, { bottom: insets.bottom + (bottomOffset ?? size.tabBar) }]}
         >
-          <Toast message={toast.message} actionLabel={toast.actionLabel} onAction={() => { toast.onAction?.(); hide(); }} />
+          {/* On a wide screen it is a card in the middle, as wide as a task, not a bar across the window. */}
+          <View style={isCompact ? null : styles.card}>
+            <Toast message={toast.message} actionLabel={toast.actionLabel} onAction={() => { toast.onAction?.(); hide(); }} />
+          </View>
         </Animated.View>
       ) : null}
     </ToastContext.Provider>
@@ -92,6 +98,7 @@ export function ToastProvider({ children, bottomOffset }: ToastProviderProps) {
 const createStyles = ({ colors, radius, size, space }: Theme) =>
   StyleSheet.create({
     host: { position: 'absolute', left: 0, right: 0, padding: size.screenPadding },
+    card: { width: '100%', maxWidth: LAYOUT.task, alignSelf: 'center' },
     toast: { minHeight: size.button, borderRadius: radius.md, backgroundColor: colors.action, flexDirection: 'row', alignItems: 'center', gap: space.lg, paddingHorizontal: size.cardPadding, paddingVertical: space.md },
     message: { flex: 1 },
     hit: { padding: space.md },

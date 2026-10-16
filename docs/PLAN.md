@@ -37,7 +37,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
-| N | Every screen size | 37 | 24 | In progress |
+| N | Every screen size | 37 | 25 | In progress |
 
 ---
 
@@ -996,7 +996,8 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
   - A task is a 560 card on a tablet, so there is no room to set the plans side by side and no need: seen as a card at 800 and 1280
 - [x] N4.10 Onboarding, the lock screen and the launch screen
   - Seen 2026-10-16 at 1280 x 800 from a cleared install: the phone's splash, the launch screen (its waves widen with the screen and keep their shape; the mark and name stay in the middle), welcome, restore, setup with the keyboard up and down, the reminder offer, and the PIN lock (also at 800 x 1280) all keep to the column. Nothing needed changing
-- [ ] N4.11 What's new, the Pro offer, toasts and notices
+- [x] N4.11 What's new, the Pro offer, toasts and notices
+  - Seen at 1280 x 800, 2026-10-16: What's new is a card (the Pro offer is the same `Sheet`); notices sit in their column. A toast ran across the whole window: now a 560 card in the middle on a wide screen, as a task is; unchanged on a phone (both seen)
 - [x] N4.12 A task card on a tablet stands over the dimmed screen it rose from, not over solid black (seen on Add at 600 and 1280 wide)
 - [x] N4.13 ~~Add opened by a link when the app was not running leaves a black screen when closed~~ Not a fault: retried on 2026-10-13 after leaving the app with Back, and closing, saving and discarding each land on Home. The black screen came from a blind tap of mine that could not be repeated
 - [x] N4.14 The amount field took letters typed from a hardware keyboard (seen with adb: "$.50Weekly shop"). It should take figures only, with a test
