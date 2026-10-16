@@ -156,8 +156,7 @@ export function BudgetFormScreen({ budgetId }: BudgetFormOptions) {
       <FormBlock label={t('form.target')}>
         <Card padded={false}>
           <ListRow
-            leading={draft.target === ALL ? <IconCircle icon="pie-chart" color="teal" /> : category ? <IconCircle icon={resolveIcon(category.icon, 'tag')} color={colorNumberToHex(category.color)} /> : undefined}
-            icon={draft.target === null ? 'tag' : undefined}
+            leading={draft.target === ALL ? <IconCircle icon="pie-chart" color="teal" /> : category ? <IconCircle icon={resolveIcon(category.icon, 'tag')} color={colorNumberToHex(category.color)} /> : <IconCircle icon="tag" plain />}
             strong
             title={draft.target === ALL ? t('overall') : category?.name ?? t('form.chooseTarget')}
             subtitle={draft.target === ALL ? t('form.allHint', { currency: draft.currency }) : category ? t('form.targetHint') : undefined}
@@ -170,7 +169,7 @@ export function BudgetFormScreen({ budgetId }: BudgetFormOptions) {
       {!editing && currencies.length > 1 ? (
         <FormBlock label={t('form.currency')}>
           <Card padded={false}>
-            <ListRow icon="coins-stack" strong title={draft.currency} onPress={() => setPicker('currency')} />
+            <ListRow leading={<IconCircle icon="coins-stack" plain />} strong title={draft.currency} onPress={() => setPicker('currency')} />
           </Card>
         </FormBlock>
       ) : null}

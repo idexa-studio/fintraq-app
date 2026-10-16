@@ -157,8 +157,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
       <FormBlock label={t('from')}>
         <Card padded={false}>
           <ListRow
-            leading={form.account ? <IconCircle icon={accountTypeIcon(form.account.accountType)} color={colorNumberToHex(form.account.color)} /> : undefined}
-            icon={form.account ? undefined : 'wallet'}
+            leading={form.account ? <IconCircle icon={accountTypeIcon(form.account.accountType)} color={colorNumberToHex(form.account.color)} /> : <IconCircle icon="wallet" plain />}
             strong
             title={form.account?.name ?? t('chooseAccount')}
             subtitle={form.account ? t('available', { amount: formatCurrency(form.account.balance, form.account.currency) }) : undefined}
@@ -172,8 +171,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
           <Card padded={false}>
             {form.destinations.length > 0 ? (
               <ListRow
-                leading={form.toAccount ? <IconCircle icon={accountTypeIcon(form.toAccount.accountType)} color={colorNumberToHex(form.toAccount.color)} /> : undefined}
-                icon={form.toAccount ? undefined : 'wallet'}
+                leading={form.toAccount ? <IconCircle icon={accountTypeIcon(form.toAccount.accountType)} color={colorNumberToHex(form.toAccount.color)} /> : <IconCircle icon="wallet" plain />}
                 strong
                 title={form.toAccount?.name ?? t('chooseAccount')}
                 subtitle={form.toAccount ? formatCurrency(form.toAccount.balance, form.toAccount.currency) : undefined}
@@ -208,8 +206,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
           {/* Who it was with is a choice from a list, so it is a row that opens one, like the category. */}
           {!form.loanLinked && form.people.length > 0 && form.type !== 'TR' ? (
             <ListRow
-              leading={form.person ? <IconCircle initials={initialsOf(form.person.name)} color={colorNumberToHex(form.person.color)} /> : undefined}
-              icon={form.person ? undefined : 'user'}
+              leading={form.person ? <IconCircle initials={initialsOf(form.person.name)} color={colorNumberToHex(form.person.color)} /> : <IconCircle icon="user" plain />}
               strong
               title={form.person?.name ?? t('choosePerson')}
               subtitle={form.person ? t('with') : t('personHint')}
