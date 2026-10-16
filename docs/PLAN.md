@@ -685,6 +685,12 @@ budgets at once. The names above and the phase headings ("Version 2.1" to
 here on: repeating items 2.1, goals and the net worth trend 2.2, safe to spend
 and the statement 2.3.
 
+**Store 2.1 (owner, 2026-10-16):** repeating items (phase I) and every screen
+size (phase N, the part not in 2.0.1) go out together as **2.1**. 2.0.1 is in
+review on Play. Building both starts now, each on its own branch into `develop`;
+the release branch `release/2.1.0` is cut only once 2.0.1 is at 100% with no
+open crash.
+
 Rules for every version:
 
 - A version starts on its own branch from `develop`, only after the version
@@ -767,7 +773,7 @@ made on 2.0 still restores.
 
 ---
 
-## I. Version 2.2: repeating items
+## I. Version 2.2: repeating items (store 2.1, with phase N)
 
 Done when: rent, a salary and a subscription can each be set once and appear on
 their day without being typed again, a free user can keep two, and a phone left
@@ -904,7 +910,7 @@ account and runs on the owner's iPhone.
 
 ---
 
-## N. Every screen size (alongside, after 2.0.0 is out)
+## N. Every screen size (the foundation shipped in 2.0.1; the rest goes out in 2.1)
 
 Asked for by the owner on 2026-10-13: "fully responsive on tablet and all sized
 screens". Measured that day on the Samsung with its display set to other sizes:
