@@ -37,7 +37,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
-| N | Every screen size | 37 | 22 | In progress |
+| N | Every screen size | 37 | 23 | In progress |
 
 ---
 
@@ -990,7 +990,8 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
   - Seen at 1280 x 800, 2026-10-16: an account's, a person's and a loan's page set the summary card beside the recent transactions (or the loan's story, reminders and note). The lists (accounts, categories, people) stay one column, as decided above
 - [x] N4.07 Every form and picker as a card
   - Seen 2026-10-16 at 1280 x 800, 800 x 1280 and 600 x 960, keyboard up and down: every task (Add, edit, account, category, person, loan, its due date, repayment, budget) is a 560 card of one height, as an iPad form sheet is, shrinking only for the keyboard or a short screen; every picker (category, account, calculator, currency, filter, dates, calendar) is a card that hugs its content, standing over the dimmed task; a dialog is 400. Nothing needed changing
-- [ ] N4.08 Settings, backup, export, security, about
+- [x] N4.08 Settings, backup, export, security, about
+  - Seen at 1280 x 800, 2026-10-16: Settings, six sections long, stands in two columns (who you are, your money and preferences; then the reminder, safety and erasing). Backup, export, security and about fit one screen in one column, so they stay so. The phone's order is unchanged
 - [x] N4.09 Pro on medium and expanded
   - A task is a 560 card on a tablet, so there is no room to set the plans side by side and no need: seen as a card at 800 and 1280
 - [ ] N4.10 Onboarding, the lock screen and the launch screen
