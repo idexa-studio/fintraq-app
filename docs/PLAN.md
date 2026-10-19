@@ -30,7 +30,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
-| G | Release 1: the redesign | 46 | 16 | In progress |
+| G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
 | I | Version 2.2: repeating items | 31 | 0 |  |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
@@ -636,12 +636,15 @@ Done when: the redesign is live to all users with no data loss reported.
 ### G3. Store
 - [ ] G3.01 New screenshots and feature graphic Made 2026-10-08 in `store/` by `scripts/generate-store-assets.py` from Samsung captures with demo data (dollar main, euro, lira and rupee accounts), light mode: seven Play screenshots (1080 x 1920), the feature graphic (1024 x 500) and phone mockups. Not ticked: the owner has not chosen among them, they are English only, and there are no videos (owner: later).
   - Retaken 2026-10-13 from the current app (dollar demo data, light): eight phone screenshots with budgets among them, the feature graphic and the mockups. Still the owner's to choose and upload
+  - India set made 2026-10-20 for an en-IN listing, after an ASO review: `store/india/` from captures in `store/raw/india` (rupees as main currency; dollar, euro and lira accounts; Indian demo data: chai, petrol, a bike EMI, a UPI wallet, Rahul owes ₹1,500, you owe Priya ₹600). Udhar is the second screenshot ("Udhar: see who owes you"), the first says "Know where every ₹ goes"; brand names the review suggested (Swiggy, HDFC) are left out, as Play's metadata policy forbids others' marks. The demo data takes the home currency's life from `HOME_PROFILES` in `data/seed/demo-data.ts`; the dollar one is unchanged. Still the owner's to choose and upload. The earlier pictures moved to `store/global/` (captures `store/raw/global/`) for the default listing; `store/README.md` says which set goes where
 - [ ] G3.02 New app icon and splash, if the brand changes with the look (owner) Polished to the new look with C8.08; waits for the owner's eye on a build.
 - [ ] G3.03 Listing text: remove "No subscriptions"; describe the three plans
 - [ ] G3.04 Privacy policy and terms updated for subscriptions
 - [ ] G3.05 Data-safety and privacy labels reviewed
 - [ ] G3.06 Release notes
 - [x] G3.07 Version number decided (a redesign suggests 2.0.0) Set to 2.0.0 on 2026-10-08 in `app.json` and `package.json`; the build number is kept by EAS (`appVersionSource: remote`).
+- [ ] G3.08 Rupees as Indians write them: ₹8,25,487, not ₹825,487.00. Amounts follow the app's language (`appLocale()` in `shared/format/money.ts`), so English gives Western grouping and paise on every whole rupee. Decide with the owner whether INR is grouped in lakhs whatever the language and whole rupees drop the `.00`; then retake the India set (G3.01). Found 2026-10-20
+- [ ] G3.09 A budget row whose name and amount do not fit on one line wraps the amount under the name ("All spending" with ₹35,400.00 left, on a phone). Five-figure rupee amounts are common; design the row for them in the gallery first. Found 2026-10-20 while capturing the India set
 
 ### G4. Rollout
 - [ ] G4.01 Internal track, then closed testers
@@ -1021,5 +1024,5 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
 - [ ] N5.03 iPad, upright, turned and in split view
 - [ ] N5.04 `docs/DESIGN_SYSTEM.md` and `docs/SCREENS.md` say how a screen answers each width
 - [ ] N5.05 Play: 7-inch and 10-inch screenshots; the listing marked for tablets
-  - Drawn 2026-10-13 by `scripts/generate-store-assets.py`: `store/play-tablet7` (five, 1080 x 1920, a small tablet upright) and `store/play-tablet10` (five, 2560 x 1440, a large tablet on its side with the rail and two columns), from the Samsung set to those sizes. Six in each. Uploading is the owner's
+  - Drawn 2026-10-13 by `scripts/generate-store-assets.py`: `store/global/tablet7` (moved there 2026-10-20; five, 1080 x 1920, a small tablet upright) and `store/global/tablet10` (five, 2560 x 1440, a large tablet on its side with the rail and two columns), from the Samsung set to those sizes. Six in each. Uploading is the owner's
 - [ ] N5.06 Release notes in `update-note.txt`

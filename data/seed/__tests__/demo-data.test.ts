@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { buildBudgets, buildRows } from '@/data/seed/demo-data';
+import { buildBudgets, buildRows, HOME_ACCOUNTS } from '@/data/seed/demo-data';
 
 jest.mock('@/data/db/client', () => ({ db: {} }));
 jest.mock('@/shared/logging/logger', () => ({ LoggerService: { error: jest.fn() } }));
@@ -36,7 +36,7 @@ describe('demo data', () => {
   });
 
   it('earns more than it spends in the home currency, so balances stay believable', () => {
-    const home = rows.filter((r) => ['checking', 'savings', 'cash', 'card'].includes(r.acct));
+    const home = rows.filter((r) => HOME_ACCOUNTS.includes(r.acct));
     const sum = (type: string) => home.filter((r) => r.type === type).reduce((s, r) => s + r.amount, 0);
     expect(sum('CR')).toBeGreaterThan(sum('DR'));
   });
@@ -44,7 +44,7 @@ describe('demo data', () => {
   it('sets budgets that open on every state: room, near the limit, and over it', () => {
     const budgets = buildBudgets(rows, NOW);
     const spentOn = (cat: string | null, eur: boolean) =>
-      rows.filter((r) => r.type === 'DR' && monthOf(r.date) === monthOf(NOW) && (eur ? r.acct === 'eur' : ['checking', 'savings', 'cash', 'card'].includes(r.acct)) && (cat === null || r.cat === cat)).reduce((s, r) => s + r.amount, 0);
+      rows.filter((r) => r.type === 'DR' && monthOf(r.date) === monthOf(NOW) && (eur ? r.acct === 'eur' : HOME_ACCOUNTS.includes(r.acct)) && (cat === null || r.cat === cat)).reduce((s, r) => s + r.amount, 0);
     const shares = budgets.map((b) => spentOn(b.cat, b.currency === 'EUR') / b.limit);
     expect(budgets.some((b) => b.cat === null)).toBe(true);
     expect(budgets.every((b) => b.limit >= 10)).toBe(true);
@@ -56,7 +56,7 @@ describe('demo data', () => {
 
   describe('in a rupee home', () => {
     const inr = buildRows(NOW, 'INR');
-    const home = inr.filter((r) => ['checking', 'savings', 'cash', 'card'].includes(r.acct));
+    const home = inr.filter((r) => HOME_ACCOUNTS.includes(r.acct));
 
     it('holds dollars, euros and lira beside it, not a second rupee account', () => {
       expect(new Set(inr.filter((r) => !home.includes(r)).map((r) => r.acct))).toEqual(new Set(['usd', 'eur', 'try']));
@@ -69,6 +69,13 @@ describe('demo data', () => {
       const salaries = home.filter((r) => r.cat === 'Salary' && monthOf(r.date) === '2026-09');
       expect(salaries).toHaveLength(1);
       expect(salaries[0]!.note).toBe('Salary');
+    });
+
+    it('reads as a month in India: chai, petrol, an EMI and a UPI wallet', () => {
+      const notes = new Set(home.map((r) => r.note));
+      for (const note of ['Chai', 'Petrol', 'Bike EMI', 'Salary', 'Monthly rent', 'Wallet top-up']) expect(notes).toContain(note);
+      expect([...notes].some((note) => /latte|gas station|paycheck/i.test(note))).toBe(false);
+      expect(home.some((r) => r.acct === 'wallet' && r.type === 'DR')).toBe(true);
     });
 
     it('still earns more than it spends', () => {

@@ -38,6 +38,8 @@ ROOT = Path(__file__).resolve().parent.parent
 spec = importlib.util.spec_from_file_location('store_assets', ROOT / 'scripts' / 'generate-store-assets.py')
 art = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(art)
+# The film is drawn from the global set's captures.
+LISTING = art.LISTINGS['global']
 
 W, H, FPS = 1920, 1080, 30
 UPRIGHT = False  # the reel: 1080 x 1920, the words over the phone instead of beside it (see `stand_upright`)
@@ -243,7 +245,7 @@ def lifted_card(which, lean):
     l, t, r, b = art.CARDS[which][1]
     x = bezel + (l + r) / 2 * scale - PHONE_W / 2
     y = bezel + (t + b) / 2 * scale - (2340 * scale + 2 * bezel) / 2
-    sprite = art.card(which, round((r - l) * scale * 1.2), lean)
+    sprite = art.card(LISTING, which, round((r - l) * scale * 1.2), lean)
     return sprite, x * math.cos(turn) - y * math.sin(turn), x * math.sin(turn) + y * math.cos(turn)
 
 
@@ -252,7 +254,7 @@ class Scene:
         self.spec, self.index = spec, index
         self.lean = -4 if index % 2 == 0 else 4
         self.ground, self.foot, self.top = tones(spec['ground'])
-        self.phone = art.device(spec['shot'], PHONE_W, self.lean)
+        self.phone = art.device(LISTING, spec['shot'], PHONE_W, self.lean)
         self.card, self.card_x, self.card_y = lifted_card(spec['card'], self.lean)
         self.lines = [[word(w, 118) for w in line.split(' ')] for line in spec['words'].split('\n')]
 
