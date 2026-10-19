@@ -20,6 +20,7 @@ const STORAGE_KEYS_ON_DEVICES: Record<string, string> = {
   GUIDE_SEEN: '@fintraq_guide_seen',
   WHATS_NEW_SEEN: '@fintraq_whats_new_seen',
   ENTRY_DRAFT: '@fintraq_entry_draft',
+  UPDATE_OFFERED_BUILD: '@fintraq_update_offered_build',
   WALKTHROUGH_DASHBOARD: '@fintraq_walkthrough_dashboard',
   WALKTHROUGH_CATEGORIES: '@fintraq_walkthrough_categories',
   WALKTHROUGH_ANALYTICS: '@fintraq_walkthrough_analytics',

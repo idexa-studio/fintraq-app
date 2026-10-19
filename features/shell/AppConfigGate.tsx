@@ -1,9 +1,18 @@
 import { ForceUpdateScreen } from '@/features/shell/ForceUpdateScreen';
 import { startAutoBackupTriggers } from '@/platform/backup/auto-backup.triggers';
 import { fetchRemoteAppConfig, initRemoteConfig } from '@/platform/config/remote-config';
+import type { LatestVersion } from '@/platform/config/update-rules';
 import { LoggerService } from '@/shared/logging/logger';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
+
+/** The newest release announced for this platform. */
+export type AnnouncedRelease = LatestVersion;
+
+const AnnouncedReleaseContext = createContext<AnnouncedRelease | null>(null);
+
+/** The newest release announced in the remote settings, or null; Home decides whether to offer it. */
+export const useAnnouncedRelease = (): AnnouncedRelease | null => useContext(AnnouncedReleaseContext);
 
 /** The remote settings are not asked for again within this time of the last answer. */
 const COOLDOWN_MS = 10 * 60 * 1000;
@@ -16,17 +25,19 @@ const withDeadline = <T,>(promise: Promise<T>, ms: number): Promise<T | undefine
 /**
  * Reads the app's remote settings at launch and on return, says the app is ready to be seen once
  * they are in (or the deadline passes), and replaces the app with the update screen when this
- * version is too old. It also starts the checks that run automatic backup while the app is open.
+ * version is too old. The newest release it hears of is passed down, for Home to offer. It also starts the checks that run automatic backup while the app is open.
  */
 export function AppConfigGate({ children, onReady }: { children: React.ReactNode; onReady: () => void }) {
-  const [update, setUpdate] = useState<{ storeUrl: string; version: string } | null>(null);
+  const [update, setUpdate] = useState<{ version: string } | null>(null);
+  const [announced, setAnnounced] = useState<AnnouncedRelease | null>(null);
   const lastChecked = useRef(0);
 
   const check = useCallback(async (force = false) => {
     if (!force && !__DEV__ && lastChecked.current > 0 && Date.now() - lastChecked.current < COOLDOWN_MS) return;
     try {
-      const { forceUpdate } = await fetchRemoteAppConfig();
-      setUpdate(forceUpdate.required ? { storeUrl: forceUpdate.storeUrl, version: forceUpdate.versionName } : null);
+      const { forceUpdate, latest } = await fetchRemoteAppConfig();
+      setUpdate(forceUpdate.required ? { version: forceUpdate.versionName } : null);
+      setAnnounced(latest);
       lastChecked.current = Date.now();
     } catch (e) {
       if (__DEV__) LoggerService.warn('APP_CONFIG', 'Could not read the remote settings', e);
@@ -64,5 +75,6 @@ export function AppConfigGate({ children, onReady }: { children: React.ReactNode
   // The main way automatic backup runs. Each check does nothing when it is not due, not Pro, or signed out.
   useEffect(() => startAutoBackupTriggers(), []);
 
-  return update ? <ForceUpdateScreen storeUrl={update.storeUrl} version={update.version} /> : <>{children}</>;
+  if (update) return <ForceUpdateScreen version={update.version} />;
+  return <AnnouncedReleaseContext.Provider value={announced}>{children}</AnnouncedReleaseContext.Provider>;
 }

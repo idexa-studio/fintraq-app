@@ -11,7 +11,8 @@ import { toDbColor } from '@/shared/format/color';
 /**
  * Dev-only demo data (Developer → Seed dummy data): a year in the life of one person. The default
  * account becomes their everyday checking; savings, cash and a card are added in the same currency,
- * plus accounts in EUR, TRY and INR. Money comes in the way it really does (two paychecks, side
+ * plus accounts in three others (EUR, TRY and INR; USD in place of the home one). Amounts in the home
+ * currency are sized for it (`HOME_PROFILES`), so a rupee home reads as a life in India, not dollars relabelled. Money comes in the way it really does (two paychecks, side
  * work, cashback, friends paying back) as well as going out. Notes always match their category, bills recur on fixed days,
  * and every balance is the sum of what was logged — so each screen tells the same story. Budgets are set
  * against what the month has actually spent, so the Plan tab opens on one in each state.
@@ -32,7 +33,32 @@ function rand() {
 const between = (min: number, max: number) => Math.round((min + rand() * (max - min)) * 100) / 100;
 const pick = <T,>(arr: readonly T[]): T => arr[Math.floor(rand() * arr.length)];
 
-type Acct = 'checking' | 'savings' | 'cash' | 'card' | 'eur' | 'try' | 'inr';
+type Acct = 'checking' | 'savings' | 'cash' | 'card' | 'usd' | 'eur' | 'try' | 'inr';
+type Foreign = 'usd' | 'eur' | 'try' | 'inr';
+
+/**
+ * How the home currency's figures are sized. The figures below are written in dollars; `scale` turns
+ * them into the home currency, `whole` drops the cents, and `fixed` names the ones that do not follow
+ * the scale (a bill priced locally). A currency without a profile keeps the figures as written.
+ */
+type Fixed = 'salary' | 'rent' | 'gym' | 'streaming' | 'internet' | 'music' | 'phone' | 'insurance' | 'transit' | 'savings' | 'cash' | 'card';
+type HomeProfile = { scale: number; whole: boolean; paychecks: 1 | 2; budgetStep: number; fixed: Partial<Record<Fixed, number>>; notes: Partial<Record<string, string[]>> };
+const HOME_PROFILES: Record<string, HomeProfile> = {
+  INR: {
+    scale: 40,
+    whole: true,
+    paychecks: 1,
+    budgetStep: 100,
+    fixed: { salary: 140000, rent: 32000, gym: 2000, streaming: 649, internet: 999, music: 119, phone: 399, insurance: 3500, transit: 1500, savings: 685000, cash: 4350, card: -18640 },
+    notes: { Paycheck: ['Salary'], 'Gas station': ['Petrol pump'], 'Renters & auto insurance': ['Health & car insurance'], 'Farmers market': ['Sabzi market'], 'Corner café': ['Chai stall'] },
+  },
+};
+const AS_WRITTEN: HomeProfile = { scale: 1, whole: false, paychecks: 2, budgetStep: 5, fixed: {}, notes: {} };
+const profileFor = (home: string): HomeProfile => HOME_PROFILES[home.toUpperCase()] ?? AS_WRITTEN;
+
+/** The other currencies' accounts, in the order they are made: the first three that are not the home one. */
+const FOREIGN_ORDER: readonly Foreign[] = ['usd', 'eur', 'try', 'inr'];
+const foreignFor = (home: string): Foreign[] => FOREIGN_ORDER.filter((key) => key.toUpperCase() !== home.toUpperCase()).slice(0, 3);
 type Row = { acct: Acct; to?: Acct; cat: string; type: 'CR' | 'DR' | 'TR'; amount: number; date: Date; note: string; person?: string };
 
 const VARIABLE: { cat: string; notes: string[]; min: number; max: number; perMonth: [number, number]; accts: Acct[]; person?: string }[] = [
@@ -49,7 +75,17 @@ const VARIABLE: { cat: string; notes: string[]; min: number; max: number; perMon
 ];
 
 // Accounts held in other currencies: amounts are native to each (no conversion).
-const FOREIGN: { acct: Acct; income: { cat: string; note: string; amount: number; day: number; every: number }[]; spend: { cat: string; notes: string[]; min: number; max: number; perMonth: [number, number] }[] }[] = [
+const FOREIGN: { acct: Foreign; income: { cat: string; note: string; amount: number; day: number; every: number }[]; spend: { cat: string; notes: string[]; min: number; max: number; perMonth: [number, number] }[] }[] = [
+  {
+    acct: 'usd',
+    income: [{ cat: 'Freelance', note: 'Client retainer — New York', amount: 1200, day: 12, every: 1 }],
+    spend: [
+      { cat: 'Subscrip.', notes: ['Cloud hosting'], min: 20, max: 20, perMonth: [1, 1] },
+      { cat: 'Shopping', notes: ['Online order', 'Course purchase'], min: 12, max: 90, perMonth: [1, 2] },
+      { cat: 'Travel', notes: ['Conference ticket', 'Hotel — 1 night'], min: 60, max: 280, perMonth: [0, 1] },
+      { cat: 'Dining Out', notes: ['Client lunch', 'Airport dinner'], min: 18, max: 64, perMonth: [1, 2] },
+    ],
+  },
   {
     acct: 'eur',
     income: [{ cat: 'Freelance', note: 'Client retainer — Berlin', amount: 1400, day: 10, every: 1 }],
@@ -89,8 +125,14 @@ function at(year: number, month: number, day: number, hour = 9, minute = 0) {
   return new Date(year, month, day, hour, minute, 0);
 }
 
-export function buildRows(now: Date): Row[] {
+export function buildRows(now: Date, home = 'USD'): Row[] {
   const rows: Row[] = [];
+  const profile = profileFor(home);
+  // A figure written in dollars, in the home currency: scaled, and in whole units where the currency has no cents.
+  const money = (usd: number) => (profile.whole ? Math.round(usd * profile.scale) : Math.round(usd * profile.scale * 100) / 100);
+  const fixed = (name: Fixed, usd: number) => profile.fixed[name] ?? money(usd);
+  const note = (written: string) => { const local = profile.notes[written]; return local ? pick(local) : written; };
+  const foreign = foreignFor(home);
   const y = now.getFullYear();
   const mo = now.getMonth();
 
@@ -109,44 +151,44 @@ export function buildRows(now: Date): Row[] {
 
     // ── Income: money arrives the way it does in a real month — two paychecks, side work most
     // months, and the small stuff (cashback, a friend paying back, something sold, interest).
-    rows.push({ acct: 'checking', cat: 'Salary', type: 'CR', amount: 2600, date: at(yy, mm, 1, 9, 5), note: 'Paycheck' });
-    if (ok(15)) rows.push({ acct: 'checking', cat: 'Salary', type: 'CR', amount: 2600, date: at(yy, mm, 15, 9, 5), note: 'Paycheck' });
-    if (m % 4 !== 3) rows.push({ acct: 'checking', cat: 'Freelance', type: 'CR', amount: pick([450, 650, 850, 1200]), date: time(Math.min(18, lastDay)), note: pick(['Landing page project', 'Logo design', 'Consulting session', 'Website maintenance']) });
-    if (ok(28)) rows.push({ acct: 'card', cat: 'Refunds', type: 'CR', amount: between(8, 24), date: at(yy, mm, 28, 6, 30), note: 'Card cashback' });
-    if (m % 2 === 0) rows.push({ acct: 'checking', cat: 'Other Income', type: 'CR', amount: between(22, 58), date: time(day()), note: pick(['Sarah paid back brunch', 'Split bill settled']), person: 'Sarah Mitchell' });
-    if (m % 3 === 1) rows.push({ acct: 'checking', cat: 'Other Income', type: 'CR', amount: between(40, 120), date: time(day()), note: pick(['Expense reimbursement', 'Travel reimbursement']), person: 'James Okafor' });
-    if (m % 5 === 3) rows.push({ acct: 'cash', cat: 'Sales', type: 'CR', amount: pick([60, 120, 240]), date: time(day()), note: pick(['Sold old monitor', 'Sold bike rack', 'Sold textbooks']) });
-    if (m % 3 === 2 && ok(22)) rows.push({ acct: 'savings', cat: 'Dividends', type: 'CR', amount: between(38, 64), date: at(yy, mm, 22, 10, 0), note: 'Quarterly dividend' });
-    if (m > 0) rows.push({ acct: 'savings', cat: 'Interests', type: 'CR', amount: between(28, 36), date: at(yy, mm, lastDay, 7, 0), note: 'Savings interest' });
+    rows.push({ acct: 'checking', cat: 'Salary', type: 'CR', amount: fixed('salary', 2600), date: at(yy, mm, 1, 9, 5), note: note('Paycheck') });
+    if (profile.paychecks === 2 && ok(15)) rows.push({ acct: 'checking', cat: 'Salary', type: 'CR', amount: fixed('salary', 2600), date: at(yy, mm, 15, 9, 5), note: note('Paycheck') });
+    if (m % 4 !== 3) rows.push({ acct: 'checking', cat: 'Freelance', type: 'CR', amount: money(pick([450, 650, 850, 1200])), date: time(Math.min(18, lastDay)), note: pick(['Landing page project', 'Logo design', 'Consulting session', 'Website maintenance']) });
+    if (ok(28)) rows.push({ acct: 'card', cat: 'Refunds', type: 'CR', amount: money(between(8, 24)), date: at(yy, mm, 28, 6, 30), note: 'Card cashback' });
+    if (m % 2 === 0) rows.push({ acct: 'checking', cat: 'Other Income', type: 'CR', amount: money(between(22, 58)), date: time(day()), note: pick(['Sarah paid back brunch', 'Split bill settled']), person: 'Sarah Mitchell' });
+    if (m % 3 === 1) rows.push({ acct: 'checking', cat: 'Other Income', type: 'CR', amount: money(between(40, 120)), date: time(day()), note: pick(['Expense reimbursement', 'Travel reimbursement']), person: 'James Okafor' });
+    if (m % 5 === 3) rows.push({ acct: 'cash', cat: 'Sales', type: 'CR', amount: money(pick([60, 120, 240])), date: time(day()), note: pick(['Sold old monitor', 'Sold bike rack', 'Sold textbooks']) });
+    if (m % 3 === 2 && ok(22)) rows.push({ acct: 'savings', cat: 'Dividends', type: 'CR', amount: money(between(38, 64)), date: at(yy, mm, 22, 10, 0), note: 'Quarterly dividend' });
+    if (m > 0) rows.push({ acct: 'savings', cat: 'Interests', type: 'CR', amount: money(between(28, 36)), date: at(yy, mm, lastDay, 7, 0), note: 'Savings interest' });
 
     // ── Fixed bills
-    rows.push({ acct: 'checking', cat: 'Rent', type: 'DR', amount: 1850, date: at(yy, mm, 1, 10, 30), note: 'Monthly rent' });
-    if (ok(3)) rows.push({ acct: 'card', cat: 'Gym', type: 'DR', amount: 39, date: at(yy, mm, 3, 7, 15), note: 'Gym membership' });
-    if (ok(5)) rows.push({ acct: 'card', cat: 'Subscrip.', type: 'DR', amount: 15.49, date: at(yy, mm, 5, 6, 0), note: 'Streaming plan' });
-    if (ok(8)) rows.push({ acct: 'checking', cat: 'Internet', type: 'DR', amount: 59.99, date: at(yy, mm, 8, 9, 0), note: 'Home internet' });
-    if (ok(9)) rows.push({ acct: 'card', cat: 'Subscrip.', type: 'DR', amount: 10.99, date: at(yy, mm, 9, 6, 0), note: 'Music subscription' });
-    if (ok(12)) rows.push({ acct: 'checking', cat: 'Electricity', type: 'DR', amount: between(72, 118), date: at(yy, mm, 12, 9, 0), note: 'Electricity bill' });
-    if (ok(15)) rows.push({ acct: 'checking', cat: 'Phone', type: 'DR', amount: 45, date: at(yy, mm, 15, 9, 0), note: 'Phone plan' });
-    if (ok(20)) rows.push({ acct: 'checking', cat: 'Insurance', type: 'DR', amount: 124, date: at(yy, mm, 20, 9, 0), note: 'Renters & auto insurance' });
-    if (ok(2)) rows.push({ acct: 'checking', cat: 'Public Transit', type: 'DR', amount: 65, date: at(yy, mm, 2, 8, 10), note: 'Monthly train pass' });
+    rows.push({ acct: 'checking', cat: 'Rent', type: 'DR', amount: fixed('rent', 1850), date: at(yy, mm, 1, 10, 30), note: 'Monthly rent' });
+    if (ok(3)) rows.push({ acct: 'card', cat: 'Gym', type: 'DR', amount: fixed('gym', 39), date: at(yy, mm, 3, 7, 15), note: 'Gym membership' });
+    if (ok(5)) rows.push({ acct: 'card', cat: 'Subscrip.', type: 'DR', amount: fixed('streaming', 15.49), date: at(yy, mm, 5, 6, 0), note: 'Streaming plan' });
+    if (ok(8)) rows.push({ acct: 'checking', cat: 'Internet', type: 'DR', amount: fixed('internet', 59.99), date: at(yy, mm, 8, 9, 0), note: 'Home internet' });
+    if (ok(9)) rows.push({ acct: 'card', cat: 'Subscrip.', type: 'DR', amount: fixed('music', 10.99), date: at(yy, mm, 9, 6, 0), note: 'Music subscription' });
+    if (ok(12)) rows.push({ acct: 'checking', cat: 'Electricity', type: 'DR', amount: money(between(72, 118)), date: at(yy, mm, 12, 9, 0), note: 'Electricity bill' });
+    if (ok(15)) rows.push({ acct: 'checking', cat: 'Phone', type: 'DR', amount: fixed('phone', 45), date: at(yy, mm, 15, 9, 0), note: 'Phone plan' });
+    if (ok(20)) rows.push({ acct: 'checking', cat: 'Insurance', type: 'DR', amount: fixed('insurance', 124), date: at(yy, mm, 20, 9, 0), note: note('Renters & auto insurance') });
+    if (ok(2)) rows.push({ acct: 'checking', cat: 'Public Transit', type: 'DR', amount: fixed('transit', 65), date: at(yy, mm, 2, 8, 10), note: 'Monthly train pass' });
 
     // ── Transfers
-    if (ok(2)) rows.push({ acct: 'checking', to: 'savings', cat: 'Transfer', type: 'TR', amount: 1500, date: at(yy, mm, 2, 11, 0), note: 'Monthly savings' });
-    if (ok(25)) rows.push({ acct: 'checking', to: 'card', cat: 'Transfer', type: 'TR', amount: between(780, 980), date: at(yy, mm, 25, 11, 0), note: 'Card payment' });
-    if (ok(6)) rows.push({ acct: 'checking', to: 'cash', cat: 'Transfer', type: 'TR', amount: 80, date: at(yy, mm, 6, 17, 30), note: 'ATM withdrawal' });
+    if (ok(2)) rows.push({ acct: 'checking', to: 'savings', cat: 'Transfer', type: 'TR', amount: money(1500), date: at(yy, mm, 2, 11, 0), note: 'Monthly savings' });
+    if (ok(25)) rows.push({ acct: 'checking', to: 'card', cat: 'Transfer', type: 'TR', amount: money(between(780, 980)), date: at(yy, mm, 25, 11, 0), note: 'Card payment' });
+    if (ok(6)) rows.push({ acct: 'checking', to: 'cash', cat: 'Transfer', type: 'TR', amount: money(80), date: at(yy, mm, 6, 17, 30), note: 'ATM withdrawal' });
 
     // ── Everyday spending (current month is only a few days old, so scale counts down)
     const scale = lastDay / 30;
     for (const v of VARIABLE) {
       const n = Math.round((v.perMonth[0] + Math.floor(rand() * (v.perMonth[1] - v.perMonth[0] + 1))) * (m === 0 ? Math.max(scale, 0.34) : 1));
       for (let i = 0; i < n; i++) {
-        const note = pick(v.notes);
-        rows.push({ acct: pick(v.accts), cat: v.cat, type: 'DR', amount: between(v.min, v.max), date: time(day()), note, person: note === 'Brunch with friends' ? 'Sarah Mitchell' : note === 'Team lunch' ? 'James Okafor' : undefined });
+        const written = pick(v.notes);
+        rows.push({ acct: pick(v.accts), cat: v.cat, type: 'DR', amount: money(between(v.min, v.max)), date: time(day()), note: note(written), person: written === 'Brunch with friends' ? 'Sarah Mitchell' : written === 'Team lunch' ? 'James Okafor' : undefined });
       }
     }
 
     // ── Accounts in other currencies
-    for (const f of FOREIGN) {
+    for (const f of FOREIGN.filter((spec) => foreign.includes(spec.acct))) {
       for (const inc of f.income) {
         if (m % inc.every === 0 && ok(inc.day)) rows.push({ acct: f.acct, cat: inc.cat, type: 'CR', amount: inc.amount, date: at(yy, mm, inc.day, 10, 15), note: inc.note });
       }
@@ -157,27 +199,27 @@ export function buildRows(now: Date): Row[] {
     }
 
     // ── One-offs that give the year some shape
-    if (m === 2) rows.push({ acct: 'card', cat: 'Travel', type: 'DR', amount: 486.4, date: at(yy, mm, 14, 13, 20), note: 'Weekend trip — flights' });
-    if (m === 2) rows.push({ acct: 'card', cat: 'Travel', type: 'DR', amount: 312, date: at(yy, mm, 16, 15, 0), note: 'Lake cabin stay' });
-    if (m === 4) rows.push({ acct: 'card', cat: 'Electronics', type: 'DR', amount: 329, date: at(yy, mm, 11, 16, 40), note: 'Noise-cancelling headphones' });
-    if (m === 6) rows.push({ acct: 'checking', cat: 'Refunds', type: 'CR', amount: 218.5, date: at(yy, mm, 19, 12, 0), note: 'Tax refund' });
-    if (m === 9) rows.push({ acct: 'checking', cat: 'Gifts', type: 'CR', amount: 150, date: at(yy, mm, 24, 18, 0), note: 'Birthday gift' });
-    if (m === 1) rows.push({ acct: 'card', cat: 'Gifts given', type: 'DR', amount: 64, date: at(yy, mm, 21, 14, 0), note: 'Anniversary flowers' });
+    if (m === 2) rows.push({ acct: 'card', cat: 'Travel', type: 'DR', amount: money(486.4), date: at(yy, mm, 14, 13, 20), note: 'Weekend trip — flights' });
+    if (m === 2) rows.push({ acct: 'card', cat: 'Travel', type: 'DR', amount: money(312), date: at(yy, mm, 16, 15, 0), note: 'Lake cabin stay' });
+    if (m === 4) rows.push({ acct: 'card', cat: 'Electronics', type: 'DR', amount: money(329), date: at(yy, mm, 11, 16, 40), note: 'Noise-cancelling headphones' });
+    if (m === 6) rows.push({ acct: 'checking', cat: 'Refunds', type: 'CR', amount: money(218.5), date: at(yy, mm, 19, 12, 0), note: 'Tax refund' });
+    if (m === 9) rows.push({ acct: 'checking', cat: 'Gifts', type: 'CR', amount: money(150), date: at(yy, mm, 24, 18, 0), note: 'Birthday gift' });
+    if (m === 1) rows.push({ acct: 'card', cat: 'Gifts given', type: 'DR', amount: money(64), date: at(yy, mm, 21, 14, 0), note: 'Anniversary flowers' });
   }
 
   // The last few days carry money in as well as out, so Home's recent list and "This month"
   // open on a believable mix rather than a column of expenses.
   const daysAgo = (d: number, hour: number, minute: number) => at(now.getFullYear(), now.getMonth(), now.getDate() - d, hour, minute);
-  rows.push({ acct: 'checking', cat: 'Freelance', type: 'CR', amount: 780, date: daysAgo(1, 16, 40), note: 'Invoice paid — brand refresh' });
-  rows.push({ acct: 'card', cat: 'Refunds', type: 'CR', amount: 34.99, date: daysAgo(2, 11, 15), note: 'Refund — returned headphones case' });
-  rows.push({ acct: 'checking', to: 'savings', cat: 'Transfer', type: 'TR', amount: 250, date: daysAgo(3, 19, 5), note: 'Extra to savings' });
+  rows.push({ acct: 'checking', cat: 'Freelance', type: 'CR', amount: money(780), date: daysAgo(1, 16, 40), note: 'Invoice paid — brand refresh' });
+  rows.push({ acct: 'card', cat: 'Refunds', type: 'CR', amount: money(34.99), date: daysAgo(2, 11, 15), note: 'Refund — returned headphones case' });
+  rows.push({ acct: 'checking', to: 'savings', cat: 'Transfer', type: 'TR', amount: money(250), date: daysAgo(3, 19, 5), note: 'Extra to savings' });
 
   // A coffee on every recent day without an entry keeps the logging streak unbroken.
   for (let d = 0; d < 26; d++) {
     const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() - d);
     const key = format(date, 'yyyy-MM-dd');
     if (!rows.some((r) => format(r.date, 'yyyy-MM-dd') === key)) {
-      rows.push({ acct: 'cash', cat: 'Coffee', type: 'DR', amount: between(4, 9), date: at(date.getFullYear(), date.getMonth(), date.getDate(), 8, 20), note: 'Morning latte' });
+      rows.push({ acct: 'cash', cat: 'Coffee', type: 'DR', amount: money(between(4, 9)), date: at(date.getFullYear(), date.getMonth(), date.getDate(), 8, 20), note: 'Morning latte' });
     }
   }
   return rows.filter((r) => r.date <= now);
@@ -201,22 +243,26 @@ const BUDGET_PLAN: { currency: 'home' | 'EUR'; cat: string | null; used: number;
   { currency: 'EUR', cat: 'Dining Out', used: 0.72, fallback: 160, rollover: false },
 ];
 
-export function buildBudgets(rows: readonly Row[], now: Date): BudgetSeed[] {
+export function buildBudgets(rows: readonly Row[], now: Date, home = 'USD'): BudgetSeed[] {
+  const profile = profileFor(home);
   const thisMonth = rows.filter((row) => row.type === 'DR' && row.date.getFullYear() === now.getFullYear() && row.date.getMonth() === now.getMonth());
   return BUDGET_PLAN.map((plan) => {
     const spent = thisMonth
       .filter((row) => (plan.currency === 'home' ? HOME_ACCOUNTS.includes(row.acct) : row.acct === 'eur') && (plan.cat === null || row.cat === plan.cat))
       .reduce((sum, row) => sum + row.amount, 0);
-    // Rounded to a figure someone would choose, and never below ten.
-    const limit = spent > 0 ? Math.max(10, Math.round(spent / plan.used / 5) * 5) : plan.fallback;
+    // Rounded to a figure someone would choose, and never below two steps. The euro budget is always in euros.
+    const scale = plan.currency === 'home' ? profile.scale : 1;
+    const step = plan.currency === 'home' ? profile.budgetStep : 5;
+    const limit = spent > 0 ? Math.max(2 * step, Math.round(spent / plan.used / step) * step) : plan.fallback * scale;
     return { currency: plan.currency, cat: plan.cat, limit, rollover: plan.rollover };
   });
 }
 
 /** Where each added account ends up; its opening balance is back-solved from what was logged. */
-const CLOSING_BALANCE: Record<Exclude<Acct, 'checking'>, number> = { savings: 26400, cash: 186.5, card: -412.18, eur: 3480.6, try: 42750, inr: 186400 };
+const CLOSING_BALANCE: Record<Exclude<Acct, 'checking'>, number> = { savings: 26400, cash: 186.5, card: -412.18, usd: 2140.35, eur: 3480.6, try: 42750, inr: 186400 };
 
 const FOREIGN_ACCOUNTS = [
+  { key: 'usd', currency: 'USD', name: 'Dollar Account', accountNumber: '••••  4418', accountType: 'bank', color: shade('green') },
   { key: 'eur', currency: 'EUR', name: 'Euro Account', accountNumber: '••••  3306', accountType: 'bank', color: shade('teal') },
   { key: 'try', currency: 'TRY', name: 'Lira Wallet', accountNumber: '', accountType: 'ewallet', color: shade('red') },
   { key: 'inr', currency: 'INR', name: 'Rupee Savings', accountNumber: '••••  5527', accountType: 'savings', color: shade('orange') },
@@ -234,6 +280,8 @@ export async function seedDummyData() {
     const checking = existing.find((a) => a.isDefault) ?? existing[0];
     if (!checking) throw new Error('No account found. Finish onboarding first.');
     const home = checking.currency.toUpperCase();
+    const profile = profileFor(home);
+    const homeMoney = (usd: number) => (profile.whole ? Math.round(usd * profile.scale) : usd * profile.scale);
 
     const cats = await db.select().from(categories);
     const catId = (name: string) => {
@@ -244,7 +292,7 @@ export async function seedDummyData() {
 
     // ── Accounts: three more in the home currency, one in each other currency
     const base = { holderName: checking.holderName, isDefault: false, balance: 0, income: 0, expense: 0 };
-    const foreign = FOREIGN_ACCOUNTS.filter((f) => f.currency !== home);
+    const foreign = foreignFor(home).map((key) => FOREIGN_ACCOUNTS.find((f) => f.key === key)!);
     const created = await db.insert(accounts).values([
       { ...base, currency: home, name: 'Savings', accountNumber: '••••  7203', accountType: 'savings' as const, icon: ACCOUNT_ICON, color: toDbColor(shade('blue')) },
       { ...base, currency: home, name: checking.name.trim().toLowerCase() === 'cash' ? 'Wallet' : 'Cash', accountNumber: '', accountType: 'cash' as const, icon: ACCOUNT_ICON, color: toDbColor(shade('amber')) },
@@ -264,7 +312,7 @@ export async function seedDummyData() {
     const personId = (name?: string) => people.find((p) => p.name === name)?.id ?? null;
 
     // ── Transactions
-    const rows = buildRows(now);
+    const rows = buildRows(now, home);
     const values = rows.flatMap((r) => {
       const accountId = acctId[r.acct];
       if (accountId === undefined) return [];
@@ -295,11 +343,15 @@ export async function seedDummyData() {
       { acct: 'checking', person: 2, type: 'lend', principal: 300, status: 'active', dueIn: -5, note: 'Dinner split share', opened: 45, moves: [[300, 'DR', 45, 'Loan given']] },
       { acct: 'checking', person: 0, type: 'lend', principal: 200, status: 'repaid', note: 'Conference ticket split', opened: 75, moves: [[200, 'DR', 75, 'Loan given'], [200, 'CR', 40, 'Loan repayment received']] },
       { acct: 'eur', person: 2, type: 'lend', principal: 250, status: 'active', dueIn: 20, note: 'Shared hotel booking', opened: 12, moves: [[250, 'DR', 12, 'Loan given']] },
+      { acct: 'usd', person: 1, type: 'borrow', principal: 600, status: 'active', dueIn: 60, note: 'Advance for flight tickets', opened: 22, moves: [[600, 'CR', 22, 'Loan received'], [150, 'DR', 4, 'Loan repayment sent']] },
       { acct: 'inr', person: 1, type: 'borrow', principal: 20000, status: 'active', dueIn: 60, note: 'Advance for flight tickets', opened: 22, moves: [[20000, 'CR', 22, 'Loan received'], [5000, 'DR', 4, 'Loan repayment sent']] },
     ];
-    for (const l of loanSeeds) {
-      const accountId = acctId[l.acct];
+    for (const seed of loanSeeds) {
+      const accountId = acctId[seed.acct];
       if (accountId === undefined) continue;
+      // Loans in the home currency are written in dollars like the rest; the others are in their own.
+      const sized = (n: number) => (seed.acct === 'checking' ? homeMoney(n) : n);
+      const l = { ...seed, principal: sized(seed.principal), moves: seed.moves.map(([amount, ...rest]) => [sized(amount), ...rest] as LoanSeed['moves'][number]) };
       const currency = l.acct === 'checking' ? checking.currency : l.acct.toUpperCase();
       const [loan] = await db.insert(loans).values({
         personId: people[l.person].id, type: l.type, principal: l.principal, currency, accountId, categoryId: loanCat,
@@ -313,7 +365,7 @@ export async function seedDummyData() {
     for (let i = 0; i < values.length; i += 100) await db.insert(payments).values(values.slice(i, i + 100));
 
     // ── Budgets: one in each state, in the home currency, and one in euros where that account exists
-    const budgetValues = buildBudgets(rows, now)
+    const budgetValues = buildBudgets(rows, now, home)
       .filter((b) => b.currency === 'home' || acctId.eur !== undefined)
       .map((b) => ({ categoryId: b.cat === null ? null : catId(b.cat), currency: b.currency === 'home' ? checking.currency : 'EUR', monthlyLimit: b.limit, rollover: b.rollover }));
     await db.insert(budgets).values(budgetValues);
@@ -340,7 +392,7 @@ export async function seedDummyData() {
       if (id === undefined) continue;
       const t = totals[id] ?? { income: 0, expense: 0 };
       await db.update(accounts).set({
-        balance: key === 'checking' ? sql`${accounts.balance} + ${cents(moved[id] ?? 0)}` : CLOSING_BALANCE[key],
+        balance: key === 'checking' ? sql`${accounts.balance} + ${cents(moved[id] ?? 0)}` : key === 'savings' || key === 'cash' || key === 'card' ? profile.fixed[key] ?? homeMoney(CLOSING_BALANCE[key]) : CLOSING_BALANCE[key],
         income: sql`${accounts.income} + ${cents(t.income)}`,
         expense: sql`${accounts.expense} + ${cents(t.expense)}`,
         updatedAt: now.toISOString(),

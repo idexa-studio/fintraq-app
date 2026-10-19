@@ -1,4 +1,6 @@
 import { Platform } from 'react-native';
+import { readLatest } from '@/platform/config/update-rules';
+import type { LatestVersion, LatestVersionConfig } from '@/platform/config/update-rules';
 import { getAppBuildNumber } from '@/platform/config/version';
 import { LoggerService } from '@/shared/logging/logger';
 
@@ -9,8 +11,8 @@ export interface ForceUpdateConfig {
   androidVersionName: string;
   iosMinBuild: number;
   iosVersionName: string;
-  storeUrlAndroid: string;
-  storeUrlIos: string;
+  // `storeUrlAndroid` and `storeUrlIos` are still in the console for 2.0.x installs, which open the
+  // store with them. This build does not read them: the store link is built in (`openStore`).
 }
 
 export interface PlatformUrlConfig {
@@ -24,8 +26,9 @@ export interface RemoteAppConfig {
   forceUpdate: {
     required: boolean;
     versionName: string;
-    storeUrl: string;
   };
+  /** The newest release on this platform's store, as announced in `latestVersionConfig`; null when none is. */
+  latest: LatestVersion | null;
   privacyUrl: string;
   termsUrl: string;
 }
@@ -37,8 +40,6 @@ const DEFAULT_FORCE_UPDATE: ForceUpdateConfig = {
   androidVersionName: '1.0.0',
   iosMinBuild: 0,
   iosVersionName: '1.0.0',
-  storeUrlAndroid: 'https://play.google.com/store',
-  storeUrlIos: 'https://apps.apple.com',
 };
 
 const DEFAULT_PRIVACY_URL_CONFIG: PlatformUrlConfig = {
@@ -51,8 +52,15 @@ const DEFAULT_TERMS_URL_CONFIG: PlatformUrlConfig = {
   iosUrl: '',
 };
 
+/** Nothing announced: no offer is made until the console says which release is newest. */
+const DEFAULT_LATEST_VERSION: LatestVersionConfig = {
+  android: { build: 0, version: '' },
+  ios: { build: 0, version: '' },
+};
+
 const RC_DEFAULTS: Record<string, string> = {
   forceUpdateConfig: JSON.stringify(DEFAULT_FORCE_UPDATE),
+  latestVersionConfig: JSON.stringify(DEFAULT_LATEST_VERSION),
   privacyUrlConfig: JSON.stringify(DEFAULT_PRIVACY_URL_CONFIG),
   termsUrlConfig: JSON.stringify(DEFAULT_TERMS_URL_CONFIG),
 };
@@ -69,6 +77,7 @@ function safeParse<T>(raw: string, fallback: T): T {
 
 function deriveConfig(
   forceUpdate: ForceUpdateConfig,
+  latestVersion: LatestVersionConfig | null,
   privacyUrlConfig: PlatformUrlConfig,
   termsUrlConfig: PlatformUrlConfig,
 ): RemoteAppConfig {
@@ -77,7 +86,6 @@ function deriveConfig(
 
   const minBuild = platform === 'ios' ? forceUpdate.iosMinBuild : forceUpdate.androidMinBuild;
   const versionName = platform === 'ios' ? forceUpdate.iosVersionName : forceUpdate.androidVersionName;
-  const storeUrl = platform === 'ios' ? forceUpdate.storeUrlIos : forceUpdate.storeUrlAndroid;
 
   const forceRequired = minBuild > 0 && currentBuild > 0 && currentBuild < minBuild;
 
@@ -85,7 +93,8 @@ function deriveConfig(
   const termsUrl = platform === 'ios' ? termsUrlConfig.iosUrl : termsUrlConfig.androidUrl;
 
   return {
-    forceUpdate: { required: forceRequired, versionName, storeUrl },
+    forceUpdate: { required: forceRequired, versionName },
+    latest: readLatest(latestVersion, platform),
     privacyUrl,
     termsUrl,
   };
@@ -114,6 +123,10 @@ export async function fetchRemoteAppConfig(): Promise<RemoteAppConfig> {
     getValue(rc, 'forceUpdateConfig').asString(),
     DEFAULT_FORCE_UPDATE,
   );
+  const latestVersion = safeParse<LatestVersionConfig | null>(
+    getValue(rc, 'latestVersionConfig').asString(),
+    DEFAULT_LATEST_VERSION,
+  );
   const privacyUrlConfig = safeParse<PlatformUrlConfig>(
     getValue(rc, 'privacyUrlConfig').asString(),
     DEFAULT_PRIVACY_URL_CONFIG,
@@ -125,11 +138,12 @@ export async function fetchRemoteAppConfig(): Promise<RemoteAppConfig> {
 
   if (__DEV__) {
     LoggerService.info('REMOTE_CONFIG', 'Force-update config', JSON.stringify(forceUpdate));
+    LoggerService.info('REMOTE_CONFIG', 'Latest-version config', JSON.stringify(latestVersion));
     LoggerService.info('REMOTE_CONFIG', `Current build ${getAppBuildNumber()} on ${Platform.OS}`);
-    const result = deriveConfig(forceUpdate, privacyUrlConfig, termsUrlConfig);
+    const result = deriveConfig(forceUpdate, latestVersion, privacyUrlConfig, termsUrlConfig);
     LoggerService.info('REMOTE_CONFIG', `Derived forceUpdateRequired: ${result.forceUpdate.required}`);
     return result;
   }
 
-  return deriveConfig(forceUpdate, privacyUrlConfig, termsUrlConfig);
+  return deriveConfig(forceUpdate, latestVersion, privacyUrlConfig, termsUrlConfig);
 }

@@ -650,6 +650,12 @@
         "body": "Guarda una copia en tu propio Google Drive, actualizada dos veces al día.",
         "link": "Configurar la copia",
         "dismiss": "Ahora no"
+      },
+      "update": {
+        "title": "Fintraq {{version}} ya está disponible",
+        "body": "Actualizar lleva un minuto. Todo lo que registraste se queda en este teléfono.",
+        "link": "Actualizar Fintraq",
+        "dismiss": "Ahora no"
       }
     },
     "quick": {

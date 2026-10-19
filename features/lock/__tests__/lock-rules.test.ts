@@ -1,4 +1,4 @@
-import { GRACE_PERIOD_MS, PIN_LENGTH, isCompletePin, pinAfter, pinSetupAfter, shouldLockAfter } from '@/features/lock/lock-rules';
+import { GRACE_PERIOD_MS, PIN_LENGTH, hasLeftTheApp, isCompletePin, pinAfter, pinSetupAfter, shouldLockOnReturn } from '@/features/lock/lock-rules';
 
 describe('lock rules', () => {
   it('adds digits up to six and removes the last', () => {
@@ -19,10 +19,14 @@ describe('lock rules', () => {
     expect(isCompletePin('123456')).toBe(true);
   });
 
-  it('locks after more than a glance away, or an unknown time', () => {
-    expect(shouldLockAfter(GRACE_PERIOD_MS)).toBe(false);
-    expect(shouldLockAfter(GRACE_PERIOD_MS + 1)).toBe(true);
-    expect(shouldLockAfter(null)).toBe(true);
+  it('locks again after more than a glance away', () => {
+    const now = 1_000_000;
+    expect(shouldLockOnReturn(now - GRACE_PERIOD_MS, now)).toBe(false);
+    expect(shouldLockOnReturn(now - GRACE_PERIOD_MS - 1, now)).toBe(true);
+  });
+
+  it('never locks again on becoming active without having left, as when the Face ID sheet closes', () => {
+    expect(shouldLockOnReturn(null, 1_000_000)).toBe(false);
   });
 
   it('asks for a new PIN twice', () => {
@@ -33,5 +37,11 @@ describe('lock rules', () => {
 
   it('starts again when the second entry differs', () => {
     expect(pinSetupAfter({ step: 'confirm', first: '123456' }, '654321')).toEqual({ kind: 'mismatch', setup: { step: 'choose' } });
+  });
+
+  it('counts only going to the background as leaving, not being covered by Face ID or Control Centre', () => {
+    expect(hasLeftTheApp('background')).toBe(true);
+    expect(hasLeftTheApp('inactive')).toBe(false);
+    expect(hasLeftTheApp('active')).toBe(false);
   });
 });

@@ -1,4 +1,5 @@
 import type { KeypadKey } from '@/design';
+import type { AppStateStatus } from 'react-native';
 
 /** How many digits a PIN has. The shipped app's PINs are six digits and stay valid. */
 export const PIN_LENGTH = 6;
@@ -15,8 +16,22 @@ export function pinAfter(pin: string, key: KeypadKey): string {
 
 export const isCompletePin = (pin: string): boolean => pin.length === PIN_LENGTH;
 
-/** Whether coming back after `elapsed` away should ask for the lock again. An unknown time away counts as long. */
-export const shouldLockAfter = (elapsed: number | null): boolean => elapsed === null || elapsed > GRACE_PERIOD_MS;
+/**
+ * Whether the app has been left. Only `background` counts. On iOS the app is also `inactive` while
+ * something covers it without leaving it: the Face ID sheet the lock itself asks for, Control
+ * Centre, a call banner. Counting that as leaving locked the app again the moment Face ID unlocked
+ * it, and asked again, without end. Android never reports `inactive`.
+ */
+export const hasLeftTheApp = (state: AppStateStatus): boolean => state === 'background';
+
+/**
+ * Whether becoming active again asks for the lock: only when the app was left (`leftAt`, from
+ * `hasLeftTheApp`) for longer than the grace period. Becoming active without having been left, as
+ * the Face ID sheet closing does, never asks: counting that as an unknown time away locked the app
+ * the moment Face ID unlocked it, and asked again without end. A cold start is locked from the
+ * start, so it needs nothing here.
+ */
+export const shouldLockOnReturn = (leftAt: number | null, now: number): boolean => leftAt !== null && now - leftAt > GRACE_PERIOD_MS;
 
 /** Choosing a PIN: typed once, then typed again to make sure. */
 export type PinSetup = { step: 'choose' } | { step: 'confirm'; first: string };

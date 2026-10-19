@@ -22,6 +22,8 @@ export enum StorageKeys {
   WHATS_NEW_SEEN = '@fintraq_whats_new_seen',
   /** JSON: a new transaction being typed, so it outlives the app being started again under it. */
   ENTRY_DRAFT = '@fintraq_entry_draft',
+  /** The newest build offered as an update on this phone, taken or put off: each is offered once. */
+  UPDATE_OFFERED_BUILD = '@fintraq_update_offered_build',
 
   // Walkthrough Keys
   WALKTHROUGH_DASHBOARD = '@fintraq_walkthrough_dashboard',

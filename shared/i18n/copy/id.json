@@ -640,6 +640,12 @@
         "body": "Simpan salinan di Google Drive Anda sendiri, diperbarui dua kali sehari.",
         "link": "Siapkan pencadangan",
         "dismiss": "Nanti saja"
+      },
+      "update": {
+        "title": "Fintraq {{version}} sudah tersedia",
+        "body": "Memperbarui hanya butuh semenit. Semua yang Anda catat tetap di ponsel ini.",
+        "link": "Perbarui Fintraq",
+        "dismiss": "Nanti saja"
       }
     },
     "quick": {

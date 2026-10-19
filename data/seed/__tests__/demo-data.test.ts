@@ -53,4 +53,32 @@ describe('demo data', () => {
     if (spentOn('Coffee', false) > 0) expect(shares.some((share) => share >= 1)).toBe(true);
     if (spentOn('Dining Out', false) > 0) expect(shares.some((share) => share >= 0.8 && share < 1)).toBe(true);
   });
+
+  describe('in a rupee home', () => {
+    const inr = buildRows(NOW, 'INR');
+    const home = inr.filter((r) => ['checking', 'savings', 'cash', 'card'].includes(r.acct));
+
+    it('holds dollars, euros and lira beside it, not a second rupee account', () => {
+      expect(new Set(inr.filter((r) => !home.includes(r)).map((r) => r.acct))).toEqual(new Set(['usd', 'eur', 'try']));
+    });
+
+    it('records whole rupees at Indian prices, not dollar figures relabelled', () => {
+      expect(home.every((r) => Number.isInteger(r.amount))).toBe(true);
+      const rent = home.find((r) => r.cat === 'Rent')!;
+      expect(rent.amount).toBeGreaterThan(10000);
+      const salaries = home.filter((r) => r.cat === 'Salary' && monthOf(r.date) === '2026-09');
+      expect(salaries).toHaveLength(1);
+      expect(salaries[0]!.note).toBe('Salary');
+    });
+
+    it('still earns more than it spends', () => {
+      const sum = (type: string) => home.filter((r) => r.type === type).reduce((s, r) => s + r.amount, 0);
+      expect(sum('CR')).toBeGreaterThan(sum('DR'));
+    });
+
+    it('sets rupee budgets in round hundreds', () => {
+      const budgets = buildBudgets(inr, NOW, 'INR').filter((b) => b.currency === 'home');
+      expect(budgets.every((b) => b.limit % 100 === 0 && b.limit >= 200)).toBe(true);
+    });
+  });
 });

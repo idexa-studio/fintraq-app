@@ -30,7 +30,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
-| G | Release 1: the redesign | 40 | 12 | In progress |
+| G | Release 1: the redesign | 46 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
 | I | Version 2.2: repeating items | 31 | 0 |  |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
@@ -616,7 +616,7 @@ Done when: the redesign is live to all users with no data loss reported.
 - [ ] G2.11 The amount field takes letters: text sent to it from a hardware keyboard, a paste or adb is kept ("$.10Weekly shop" was seen while scripting on 2026-10-08). It must keep digits and one separator only
 - [ ] G2.12 Expo 57 upgrade checked on the Android phone (upgraded from 54 on 2026-10-08, branch `upgrade-expo`): a new development build runs, and the screens whose code changed for the stricter lint rules behave as before: add and edit a transaction (account, category and transfer destination stay valid), the account, category and person forms when editing, loan edit, Activity opened from a link, the PIN wait after wrong tries, Home's prompt, the slide-to-confirm control, a notification tap that starts the app. Seen on the Samsung 2026-10-09 with a new development build: first run, setup, Home, add an expense (account and category chosen by default), Activity, the receipt, and the edit form filled from the saved transaction. The rest of the list is not yet looked at
 - [ ] G2.13 Expo 57 upgrade checked on the iPhone: first run through to Home. Builds, signs with a free Apple account and starts on iOS 27 (2026-10-09); stopped at the update notice because remote config's `iosMinBuild` was 49
-- [ ] G2.14 Remote config `forceUpdateConfig`: `iosMinBuild` and `storeUrlIos` set for iOS before any iOS release (they held Android's 49 and a placeholder)
+- [ ] G2.14 Before any iOS release: `iosMinBuild` in `forceUpdateConfig` and `ios` in `latestVersionConfig` set in the console, and the App Store id put into `features/shell/open-store.ts`. Since 2026-10-17 the store link is built into the app; the console's `storeUrl*` are read only by 2.0.x installs, so they stay there
 - [ ] G2.15 Firebase on iOS through Swift packages, once react-native-firebase finds `GoogleService-Info.plist` in an Expo project (26.4.0 does not: the Crashlytics build step fails). Then drop `disableSPM` and static linking in `app.config.ts`. Its CocoaPods stop getting new versions after October 2026
 - [x] G2.16 Amounts on iOS have no thousands separator and a space after the symbol ("₹ 35939.88" on the iPhone, "₹37,769.63" on Android; seen 2026-10-09). The sign also sits after the symbol there ("₹ -48.31"). The two platforms must format money the same way
 - [x] G2.18 iOS: an amount in an Activity row is sometimes drawn tiny (the "Home internet" row on the iPhone, 2026-10-09): the text that shrinks to fit shrinks far too much
@@ -660,6 +660,19 @@ Asked for by the owner on 2026-10-09. No intro slides and no spotlight tour: peo
 - [ ] G5.07 Owner: the tips and the note read right, on a phone
 
 ---
+
+### G6. Telling people a new version is out (store 2.1; branch `feat/update-notice`)
+Asked for by the owner on 2026-10-17: nothing told someone on an older build that a newer one was
+out, short of the update screen that blocks the app. A second Remote Config key, `latestVersionConfig`
+(`{"android": {"build", "version"}, "ios": {...}}`), kept apart from `forceUpdateConfig` so that
+editing it every release can never switch the forced update off. Set it to a release's real build and
+version only once that release is at 100% on Play; before then most people cannot get it yet.
+- [x] G6.01 The rule, with tests (`platform/config/update-rules.ts`): a newer build is offered once; a newer one announced is offered again; anything missing, misspelt or zero offers nothing
+- [x] G6.02 Read `latestVersionConfig` with the other remote settings; `AppConfigGate` passes the release down; the forced update still wins
+- [x] G6.03 `UpdateSheet` over Home, after "What's new" and before the Pro offer; it does not wait for the first steps, which can stay up for days (found on the Honor, 2026-10-17); Update opens the store (one `openStore`, shared with the update screen); the build offered is kept under a new storage key, cleared by Erase everything
+- [x] G6.04 English copy and the 12 translations
+- [ ] G6.05 Owner: the sheet approved in the gallery (Home section, "A newer version")
+- [ ] G6.06 Seen on a device, with the owner's word on which: offered, put off, and not offered again for the same build
 
 ## After 2.0: one headline per version
 
