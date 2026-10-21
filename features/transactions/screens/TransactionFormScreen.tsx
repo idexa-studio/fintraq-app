@@ -80,6 +80,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
         : t('budgets:saved.near', { name, amount: formatCurrency(warning.left, currency) });
       const createdId = await form.save(t('defaultNote'));
       if (!form.item) Analytics.track('transaction_saved', { transaction_type: kind, mode: form.editing ? 'edit' : 'create' });
+      if (form.repeat.cadence) Analytics.track('recurring_saved', { cadence: form.repeat.cadence, on_day: form.repeat.mode, mode: form.item ? 'edit' : 'create' });
       if (warning) Analytics.track('budget_warning', { level: warning.over > 0 ? 'over' : warning.crossing === 'over' ? 'reached' : 'near' });
       guard.release();
       toast.show(

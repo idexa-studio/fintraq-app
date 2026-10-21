@@ -7,6 +7,7 @@ import { useAddOccurrence, useRecurringRules, useSkipOccurrence, useToday } from
 import { useRepeatWords } from '@/features/recurring/hooks/useRepeatWords';
 import type { Waiting } from '@/features/recurring/recurring-view';
 import { waitingItems } from '@/features/recurring/recurring-view';
+import { Analytics } from '@/platform/telemetry';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
@@ -37,6 +38,7 @@ export function DueToday() {
     setBusy(work.rule.id);
     try {
       await add.mutateAsync({ work, amount });
+      Analytics.track('recurring_due', { action: amount !== undefined && amount !== work.rule.amount ? 'changed' : 'added' });
       toast.show({ message: t('due.added') });
     } catch {
       setFailed(true);
@@ -48,6 +50,7 @@ export function DueToday() {
     setBusy(work.rule.id);
     try {
       await skip.mutateAsync(work);
+      Analytics.track('recurring_due', { action: 'skipped' });
       toast.show({ message: t('due.skipped') });
     } catch {
       setFailed(true);

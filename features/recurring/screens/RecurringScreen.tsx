@@ -11,6 +11,7 @@ import { resumedNextDue, stoppedBecause } from '@/shared/calc/recurrence';
 import { dayLabel, getLocalISOString } from '@/shared/date/date';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency, signedAmount } from '@/shared/format/money';
+import { Analytics } from '@/platform/telemetry';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -69,6 +70,7 @@ export function RecurringScreen() {
     try {
       const resuming = rule.paused;
       await pause.mutateAsync({ rule, paused: !resuming });
+      Analytics.track('recurring_state', { state: resuming ? 'resumed' : 'paused' });
       toast.show({ message: resuming ? t('item.resumed', { date: words.day(resumedNextDue(rule, getLocalISOString())) }) : t('item.paused') });
     } catch {
       setFailed(true);
@@ -77,6 +79,7 @@ export function RecurringScreen() {
   const confirmDelete = async () => {
     try {
       await remove.mutateAsync(rule.id);
+      Analytics.track('recurring_state', { state: 'deleted' });
       setAsking(false);
       toast.show({ message: t('item.deleted') });
       back();

@@ -30,6 +30,12 @@ export type AnalyticsEvents = {
   budget_saved: { scope: 'category' | 'overall'; mode: SaveMode };
   /** Saving an expense took a budget to four fifths of its limit, to the limit, or past it. */
   budget_warning: { level: 'near' | 'reached' | 'over' };
+  /** A repeating item made from Add or changed: how often, and whether it is asked about or added on its day. */
+  recurring_saved: { cadence: 'week' | 'twoWeeks' | 'month' | 'year'; on_day: 'ask' | 'add'; mode: SaveMode };
+  /** An item waiting on Home was added (`changed`: with a different amount this time) or skipped. */
+  recurring_due: { action: 'added' | 'changed' | 'skipped' };
+  /** An item paused, resumed or deleted from its page. */
+  recurring_state: { state: 'paused' | 'resumed' | 'deleted' };
   /** A settled global search. The query itself is never sent, only how many results it found. */
   search_performed: { results: ResultBucket };
   /** Paywall shown; `source` is the Pro feature the user tried, or `direct`. */
