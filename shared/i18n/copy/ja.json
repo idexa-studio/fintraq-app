@@ -612,7 +612,10 @@
       "summary_one": "{{count}}口座",
       "summary_other": "{{count}}口座の合計",
       "scope_one": "{{currency}} の{{count}}口座",
-      "scope_other": "{{currency}} の{{count}}口座の合計"
+      "scope_other": "{{currency}} の{{count}}口座の合計",
+      "readyToSpend": "使えるお金",
+      "putAside_one": "{{count}}口座に{{amount}}を取り置き",
+      "putAside_other": "{{count}}口座に{{amount}}を取り置き"
     },
     "start": {
       "title": "はじめに",

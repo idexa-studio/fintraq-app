@@ -612,7 +612,10 @@
       "summary_one": "{{count}} ಖಾತೆಯಲ್ಲಿ",
       "summary_other": "{{count}} ಖಾತೆಗಳಲ್ಲಿ",
       "scope_one": "{{currency}} ನಲ್ಲಿ {{count}} ಖಾತೆಯಲ್ಲಿ",
-      "scope_other": "{{currency}} ನಲ್ಲಿ {{count}} ಖಾತೆಗಳಲ್ಲಿ"
+      "scope_other": "{{currency}} ನಲ್ಲಿ {{count}} ಖಾತೆಗಳಲ್ಲಿ",
+      "readyToSpend": "ಖರ್ಚಿಗೆ ಸಿದ್ಧ",
+      "putAside_one": "{{amount}} {{count}} ಖಾತೆಯಲ್ಲಿ ತೆಗೆದಿಡಲಾಗಿದೆ",
+      "putAside_other": "{{amount}} {{count}} ಖಾತೆಗಳಲ್ಲಿ ತೆಗೆದಿಡಲಾಗಿದೆ"
     },
     "start": {
       "title": "ಶುರುಮಾಡುವುದು",

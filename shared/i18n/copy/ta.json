@@ -612,7 +612,10 @@
       "summary_one": "{{count}} கணக்கில்",
       "summary_other": "{{count}} கணக்குகளில்",
       "scope_one": "{{currency}} இல் {{count}} கணக்கில்",
-      "scope_other": "{{currency}} இல் {{count}} கணக்குகளில்"
+      "scope_other": "{{currency}} இல் {{count}} கணக்குகளில்",
+      "readyToSpend": "செலவுக்குத் தயார்",
+      "putAside_one": "{{amount}} {{count}} கணக்கில் ஒதுக்கி வைக்கப்பட்டது",
+      "putAside_other": "{{amount}} {{count}} கணக்குகளில் ஒதுக்கி வைக்கப்பட்டது"
     },
     "start": {
       "title": "தொடக்கம்",

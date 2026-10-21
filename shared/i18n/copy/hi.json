@@ -612,7 +612,10 @@
       "summary_one": "{{count}} खाते में",
       "summary_other": "{{count}} खातों में",
       "scope_one": "{{currency}} के {{count}} खाते में",
-      "scope_other": "{{currency}} के {{count}} खातों में"
+      "scope_other": "{{currency}} के {{count}} खातों में",
+      "readyToSpend": "खर्च के लिए तैयार",
+      "putAside_one": "{{amount}} {{count}} खाते में अलग रखा",
+      "putAside_other": "{{amount}} {{count}} खातों में अलग रखा"
     },
     "start": {
       "title": "शुरुआत",

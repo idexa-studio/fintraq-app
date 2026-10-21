@@ -622,7 +622,11 @@
       "summary_many": "En {{count}} cuentas",
       "scope_one": "En {{count}} cuenta en {{currency}}",
       "scope_other": "En {{count}} cuentas en {{currency}}",
-      "scope_many": "En {{count}} cuentas en {{currency}}"
+      "scope_many": "En {{count}} cuentas en {{currency}}",
+      "readyToSpend": "Disponible para gastar",
+      "putAside_one": "{{amount}} apartado en {{count}} cuenta",
+      "putAside_other": "{{amount}} apartado en {{count}} cuentas",
+      "putAside_many": "{{amount}} apartado en {{count}} cuentas"
     },
     "start": {
       "title": "Primeros pasos",

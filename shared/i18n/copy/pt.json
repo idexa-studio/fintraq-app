@@ -622,7 +622,11 @@
       "summary_many": "Em {{count}} contas",
       "scope_one": "Em {{count}} conta em {{currency}}",
       "scope_other": "Em {{count}} contas em {{currency}}",
-      "scope_many": "Em {{count}} contas em {{currency}}"
+      "scope_many": "Em {{count}} contas em {{currency}}",
+      "readyToSpend": "Disponível para gastar",
+      "putAside_one": "{{amount}} guardado em {{count}} conta",
+      "putAside_other": "{{amount}} guardado em {{count}} contas",
+      "putAside_many": "{{amount}} guardado em {{count}} contas"
     },
     "start": {
       "title": "Primeiros passos",

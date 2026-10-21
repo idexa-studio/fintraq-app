@@ -612,7 +612,10 @@
       "summary_one": "Auf {{count}} Konto",
       "summary_other": "Auf {{count}} Konten",
       "scope_one": "Auf {{count}} Konto in {{currency}}",
-      "scope_other": "Auf {{count}} Konten in {{currency}}"
+      "scope_other": "Auf {{count}} Konten in {{currency}}",
+      "readyToSpend": "Verfügbar",
+      "putAside_one": "{{amount}} zurückgelegt auf {{count}} Konto",
+      "putAside_other": "{{amount}} zurückgelegt auf {{count}} Konten"
     },
     "start": {
       "title": "Erste Schritte",

@@ -612,7 +612,10 @@
       "summary_one": "{{count}} ఖాతాలో",
       "summary_other": "{{count}} ఖాతాల్లో",
       "scope_one": "{{currency}} లో {{count}} ఖాతాలో",
-      "scope_other": "{{currency}} లో {{count}} ఖాతాల్లో"
+      "scope_other": "{{currency}} లో {{count}} ఖాతాల్లో",
+      "readyToSpend": "ఖర్చుకు సిద్ధం",
+      "putAside_one": "{{amount}} {{count}} ఖాతాలో పక్కన పెట్టారు",
+      "putAside_other": "{{amount}} {{count}} ఖాతాలలో పక్కన పెట్టారు"
     },
     "start": {
       "title": "మొదలుపెట్టడం",

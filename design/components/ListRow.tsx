@@ -121,5 +121,6 @@ const createStyles = ({ colors, radius, size, space }: Theme) =>
     trailing: { alignSelf: 'center' },
     value: { flexShrink: 1, maxWidth: '50%', textAlign: 'right' },
     group: { backgroundColor: colors.surface, borderRadius: radius.md, overflow: 'hidden' },
-    detail: { paddingHorizontal: size.cardPadding, paddingVertical: space.lg + space.xs, gap: space.sm },
+    // The same spacing as a row's: a list of details reads as a list, not as spaced-out blocks.
+    detail: { paddingHorizontal: size.cardPadding, paddingVertical: space.md, gap: space.xs },
   });

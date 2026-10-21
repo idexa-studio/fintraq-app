@@ -612,7 +612,10 @@
       "summary_one": "{{count}}টি অ্যাকাউন্টে",
       "summary_other": "{{count}}টি অ্যাকাউন্টে",
       "scope_one": "{{currency}}-এর {{count}}টি অ্যাকাউন্টে",
-      "scope_other": "{{currency}}-এর {{count}}টি অ্যাকাউন্টে"
+      "scope_other": "{{currency}}-এর {{count}}টি অ্যাকাউন্টে",
+      "readyToSpend": "খরচের জন্য প্রস্তুত",
+      "putAside_one": "{{amount}} {{count}}টি অ্যাকাউন্টে আলাদা রাখা",
+      "putAside_other": "{{amount}} {{count}}টি অ্যাকাউন্টে আলাদা রাখা"
     },
     "start": {
       "title": "শুরু করা যাক",

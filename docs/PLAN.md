@@ -32,13 +32,13 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Release 2.1.0: repeating items | 31 | 1 | In progress |
+| I | Release 2.1.0: repeating items | 31 | 5 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
 | N | Every screen size | 37 | 25 | In progress |
-| O | Release 2.1.0: spendable balance | 12 | 1 | In progress |
+| O | Release 2.1.0: spendable balance | 12 | 3 | In progress |
 | P | Release 2.1.0: build and Play Console | 7 | 0 |  |
 
 ---
@@ -845,10 +845,14 @@ unopened for three months catches up correctly.
   - **Free plan:** 2 items; Pro has no limit. A lapsed subscriber keeps every item, and can edit, pause and delete them; only adding a third is gated
   - **Where:** "Repeat" on the Add form (Never by default); the list and Upcoming (the next 30 days, with loans' due dates) on the Plan tab; an item's own page from either
   - **Budgets:** a budget shows what is still to come this month from repeating items, as a line; it is not taken off what is left
-- [ ] I1.02 Gallery: a repeating item row (what, how often, next date, amount)
-- [ ] I1.03 Gallery: "Repeat" on the entry form, closed and open
-- [ ] I1.04 Gallery: Upcoming on the Plan tab, the next 30 days, with loans' due dates among them
-- [ ] I1.05 Owner: the gallery pieces approved
+- [x] I1.02 Gallery: a repeating item row (what, how often, next date, amount)
+  - Built 2026-10-21 in the gallery's 2.1.0 section, with paused and stopped rows, the free-plan limit, Due today on Home, the item's page, the budget line and the notification; seen on the Samsung, light and dark
+- [x] I1.03 Gallery: "Repeat" on the entry form, closed and open
+  - The Repeat row not set and set, and the How often sheet with On its day and Ends; seen on the Samsung
+- [x] I1.04 Gallery: Upcoming on the Plan tab, the next 30 days, with loans' due dates among them
+  - Seen on the Samsung, light and dark
+- [x] I1.05 Owner: the gallery pieces approved
+  - Approved on the Samsung, 2026-10-21 ("looking good so far"), after the sheet was made one pattern and the details' spacing brought to `ListRow`'s
 
 ### I2. Data
 - [ ] I2.01 `recurring_rules` table (the transaction it copies, cadence, next due, automatic or confirm, end, paused)
@@ -905,8 +909,10 @@ changes the first and not their spending.
   - Home's balance card: the total ready to spend, large, as now; under it "₹26,400.00 put aside" when anything is put aside, and nothing extra when nothing is. Per currency, as today
   - The Accounts screen's net worth is unchanged: everything, put aside included. Insights and budgets are unchanged: a transfer to savings is not spending
   - Free, for everyone: it is about recording, which is never gated
-- [ ] O1.02 Gallery: the balance card with and without a put-aside line; the account form's switch
-- [ ] O1.03 Owner: the gallery pieces approved
+- [x] O1.02 Gallery: the balance card with and without a put-aside line; the account form's switch
+  - The real `BalanceCard` (it now takes `putAside`, unused by the app until O3), the form's switch and the account page's Put aside badge; seen on the Samsung, light and dark
+- [x] O1.03 Owner: the gallery pieces approved
+  - Approved with I1.05, 2026-10-21
 
 ### O2. Data
 - [ ] O2.01 `accounts.counts_as_spendable`: a new nullable column (null means "by type"), added in `data/db/schema.ts` and generated with `npm run db:generate`

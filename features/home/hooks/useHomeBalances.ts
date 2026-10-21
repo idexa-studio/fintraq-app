@@ -13,6 +13,11 @@ export type HomeBalances = {
   balance: number;
   /** The accounts in `currency`, in their saved order. Home lists only these. */
   accounts: Account[];
+  /**
+   * What is put aside in `currency` (savings, investments: phase O), kept out of `balance`; how
+   * much and in how many accounts. Absent when nothing is put aside, and the card is as before.
+   */
+  putAside?: { amount: number; accounts: number };
 };
 
 /**

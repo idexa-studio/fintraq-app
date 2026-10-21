@@ -612,7 +612,10 @@
       "summary_one": "Di {{count}} akun",
       "summary_other": "Di {{count}} akun",
       "scope_one": "Di {{count}} akun dalam {{currency}}",
-      "scope_other": "Di {{count}} akun dalam {{currency}}"
+      "scope_other": "Di {{count}} akun dalam {{currency}}",
+      "readyToSpend": "Siap dipakai",
+      "putAside_one": "{{amount}} disisihkan di {{count}} akun",
+      "putAside_other": "{{amount}} disisihkan di {{count}} akun"
     },
     "start": {
       "title": "Langkah awal",
