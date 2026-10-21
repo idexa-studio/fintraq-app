@@ -32,7 +32,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Release 2.1.0: repeating items | 32 | 14 | In progress |
+| I | Release 2.1.0: repeating items | 32 | 21 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
@@ -861,10 +861,10 @@ unopened for three months catches up correctly.
   - `drizzle/0010_open_doctor_faustus.sql`: one new table and index, three columns added in place, one unique index; nothing existing rebuilt. `data/db/__tests__/migration-0010.test.ts` runs migrations 0000 to 0010 on Node's SQLite over 2.0.2-shaped data: every account, balance, transaction and budget is unchanged. Applied on the Samsung, 2026-10-21, over its demo data (five accounts, a savings account among them, a year of transactions): the app opened, and Accounts' net worth was the same ₹735,899
 - [x] I2.03 Backup format version raised; older backups restore with no rules
   - Version 3, with tests: an older file restores with no items, accounts by their kind and transactions made by no item; items restore before the transactions they made; an item whose account is missing stops; a transaction whose item is missing is freed. Erase everything clears the items
-- [ ] I2.04 Repository: add, save, pause, delete, list upcoming, what a rule has made
-  - `data/repositories/recurring.ts`, 2026-10-21: list with what each item points at, one, count, add, change (pause is a change), delete, what an item made, and recording or skipping one occurrence. Recording goes through `recordPaymentIn`, the one path money enters the ledger, and never makes an occurrence twice. Upcoming is worked out by the rules (I3), not stored. Not yet run on a phone
+- [x] I2.04 Repository: add, save, pause, delete, list upcoming, what a rule has made
+  - `data/repositories/recurring.ts`, 2026-10-21: list with what each item points at, one, count, add, change (pause is a change), delete, what an item made, and recording or skipping one occurrence. Recording goes through `recordPaymentIn`, the one path money enters the ledger, and never makes an occurrence twice. Upcoming is worked out by the rules (I3), not stored. Run on the Samsung 2026-10-21: two items added, changed, paused and resumed, their occurrences recorded (each once: Home's month moved by exactly their amounts), and what each made listed
 - [ ] I2.05 A transaction made by a rule remembers the rule; deleting the rule keeps its transactions
-  - `recordOccurrence` stores the item and the day on the transaction; `deleteRecurringRule` clears them and deletes the item in one transaction. Not yet run on a phone
+  - `recordOccurrence` stores the item and the day on the transaction; `deleteRecurringRule` clears them and deletes the item in one transaction. On the Samsung 2026-10-21 each item's page listed exactly what it made. Not yet seen: deleting an item that still has transactions (the one deleted had none left)
 
 ### I3. Rules, each with tests
 - [x] I3.01 The next due date across month ends, leap years and a change of time zone
@@ -884,22 +884,22 @@ unopened for three months catches up correctly.
   - The date rules moved to `shared/calc/recurrence.ts` so the notification sync in `platform/` can use them
 
 ### I4. Screens
-- [ ] I4.01 "Repeat" on the entry flow makes a rule from the transaction being saved
-  - Built 2026-10-21: the Repeat row among the details of a new transaction (not on a loan payment), its sheet as in the gallery with the end date chosen on a calendar and the number of times typed; the transaction and its item are saved together in one database transaction, Undo takes both back, and Repeat is kept with the entry being typed. Plan's "Add" opens Add already set to every month. Not yet run on a phone
-- [ ] I4.02 List of repeating items with next date and amount
-  - Built 2026-10-21: "Repeating" on Plan after Budgets, running items soonest first, then paused, ended and stopped, each saying so; an item with no account left shows in every currency. Not yet run on a phone
+- [x] I4.01 "Repeat" on the entry flow makes a rule from the transaction being saved
+  - Built 2026-10-21: the Repeat row among the details of a new transaction (not on a loan payment), its sheet as in the gallery with the end date chosen on a calendar and the number of times typed; the transaction and its item are saved together in one database transaction, Undo takes both back, and Repeat is kept with the entry being typed. Plan's "Add" opens Add already set to every month. Seen on the Samsung 2026-10-21: an asked monthly item dated a month back and a weekly one added by itself; the sheet, an end date on the calendar, and the number of times refusing 1 with its reason. Closing the sheet without Done leaves Repeat as it was. Undo after saving was not pressed
+- [x] I4.02 List of repeating items with next date and amount
+  - Built 2026-10-21: "Repeating" on Plan after Budgets, running items soonest first, then paused, ended and stopped, each saying so; an item with no account left shows in every currency. Seen on the Samsung 2026-10-21, light and dark, running items soonest first. A paused or stopped row in the list was not seen (the paused badge was, on the item's page)
 - [ ] I4.03 Rule screen: change, pause, delete, and what it has made
-  - Built 2026-10-21: `/recurring/[id]` as in the gallery, with a notice when it has stopped or ended. Change opens the Add form on the item (`/recurring/[id]/edit`), with Next in place of When and no Never. Not yet run on a phone
-- [ ] I4.04 Upcoming on the Plan tab: the next 30 days
-  - Built 2026-10-21: after Repeating, each day an item falls and each loan due, in date order; hidden when nothing falls. Not yet run on a phone
-- [ ] I4.05 Due today: added automatically, or confirmed with one tap from Home
-  - Built 2026-10-21: items added by themselves are made on opening the app and on every return to it (`useRecurringCatchUp`, mounted once beside the screens); asked ones wait on Home under the shortcuts, with Skip and Add, and the row opens a sheet to change the amount. Not yet run on a phone
+  - Built 2026-10-21: `/recurring/[id]` as in the gallery, with a notice when it has stopped or ended. Change opens the Add form on the item (`/recurring/[id]/edit`), with Next in place of When and no Never. Seen on the Samsung 2026-10-21, light and dark: pause and resume with their notes, Change (the amount changed, the dates and what was made left alone), what it made, and the delete dialog. Delete was pressed as the phone disconnected, so its result is not yet seen. A stopped or ended item was not seen
+- [x] I4.04 Upcoming on the Plan tab: the next 30 days
+  - Built 2026-10-21: after Repeating, each day an item falls and each loan due, in date order; hidden when nothing falls. Seen on the Samsung 2026-10-21, with a loan due among the items
+- [x] I4.05 Due today: added automatically, or confirmed with one tap from Home
+  - Built 2026-10-21: items added by themselves are made on opening the app and on every return to it (`useRecurringCatchUp`, mounted once beside the screens); asked ones wait on Home under the shortcuts, with Skip and Add, and the row opens a sheet to change the amount. Seen on the Samsung 2026-10-21: the weekly item dated two weeks back made its two missed weeks the moment it was saved (catch-up now also runs after an item is saved, changed or resumed, found on the phone), and the asked one was added with its amount changed for that time. Skip was not pressed
 - [ ] I4.06 Notification for items waiting to be confirmed; added to the list in `docs/SCREENS.md`
-  - Built 2026-10-21: scheduled with the other reminders, in Developer's list of every notification, and in `docs/SCREENS.md`. Not yet seen on a phone
-- [ ] I4.07 A third item on the free plan leads to the paywall
-  - Built 2026-10-21: the Repeat sheet shows the limit in place of the choices, and Plan's "Add" opens Fintraq Pro. Not yet run on a phone
-- [ ] I4.08 A budget counts what is still to come this month from repeating items (shown, not yet subtracted)
-  - Built 2026-10-21: the line under the budget's head. Not yet run on a phone
+  - Built 2026-10-21: scheduled with the other reminders, in Developer's list of every notification, and in `docs/SCREENS.md`. The words seen on the Samsung's shade 2026-10-21, and a tap opens Home. A real 9:00 reminder has not been seen: none fell in the window while testing
+- [x] I4.07 A third item on the free plan leads to the paywall
+  - Built 2026-10-21: the Repeat sheet shows the limit in place of the choices, and Plan's "Add" opens Fintraq Pro. Seen on the Samsung 2026-10-21 as a free user (Developer's "Always free"): both, and "No limits" naming 2 repeating items
+- [x] I4.08 A budget counts what is still to come this month from repeating items (shown, not yet subtracted)
+  - Built 2026-10-21: the line under the budget's head. Seen on the Samsung 2026-10-21: "₹500.00 still to come this month from repeating items" on All spending, and nothing on Groceries, which has none
 - [ ] I4.09 Shared checklist
 
 ### I5. Ship

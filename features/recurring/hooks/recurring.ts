@@ -10,6 +10,7 @@ import { resumedNextDue } from '@/shared/calc/recurrence';
 import { getLocalISOString } from '@/shared/date/date';
 import { LoggerService } from '@/shared/logging/logger';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { QueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 
@@ -47,7 +48,7 @@ export const useCreateRepeating = () => {
     onSuccess: async () => {
       // Logged today, as for any transaction: today's reminder is no longer needed.
       await markLoggedToday();
-      afterLedgerWrite(queryClient);
+      afterRuleWrite(queryClient);
     },
   });
 };
@@ -56,7 +57,7 @@ export const useUpdateRecurring = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<api.NewRecurringRule> }) => api.updateRecurringRule(id, data),
-    onSuccess: () => afterLedgerWrite(queryClient),
+    onSuccess: () => afterRuleWrite(queryClient),
   });
 };
 
@@ -66,7 +67,7 @@ export const usePauseRecurring = () => {
   return useMutation({
     mutationFn: ({ rule, paused }: { rule: RecurringRule; paused: boolean }) =>
       api.updateRecurringRule(rule.id, paused ? { paused: true } : { paused: false, nextDue: resumedNextDue(rule, getLocalISOString()) }),
-    onSuccess: () => afterLedgerWrite(queryClient),
+    onSuccess: () => afterRuleWrite(queryClient),
   });
 };
 
@@ -120,20 +121,41 @@ async function catchUp(): Promise<number> {
 }
 
 let running: Promise<void> | null = null;
+let again = false;
+
+/**
+ * Runs the catch-up, one at a time: asked while one runs, it runs once more after, so an item
+ * saved mid-run is not missed.
+ */
+function startCatchUp(queryClient: QueryClient): void {
+  if (running) {
+    again = true;
+    return;
+  }
+  running = catchUp()
+    .then((made) => { if (made > 0) afterLedgerWrite(queryClient); })
+    .catch((e) => LoggerService.warn('RECURRING', 'Catch-up failed', e))
+    .finally(() => {
+      running = null;
+      if (again) {
+        again = false;
+        startCatchUp(queryClient);
+      }
+    });
+}
 
 /** Catches up on opening the app and on every return to it. Mounted once, beside the app's screens. */
 export function useRecurringCatchUp(): void {
   const queryClient = useQueryClient();
   useEffect(() => {
-    const run = () => {
-      if (running) return;
-      running = catchUp()
-        .then((made) => { if (made > 0) afterLedgerWrite(queryClient); })
-        .catch((e) => LoggerService.warn('RECURRING', 'Catch-up failed', e))
-        .finally(() => { running = null; });
-    };
-    run();
-    const listener = AppState.addEventListener('change', (state) => { if (state === 'active') run(); });
+    startCatchUp(queryClient);
+    const listener = AppState.addEventListener('change', (state) => { if (state === 'active') startCatchUp(queryClient); });
     return () => listener.remove();
   }, [queryClient]);
 }
+
+/** After an item is saved, changed or resumed: a day already past is made at once, not on the next opening. */
+const afterRuleWrite = (queryClient: QueryClient): void => {
+  afterLedgerWrite(queryClient);
+  startCatchUp(queryClient);
+};
