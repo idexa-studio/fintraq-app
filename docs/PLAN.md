@@ -32,12 +32,14 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Version 2.2: repeating items | 31 | 0 |  |
+| I | Release 2.1.0: repeating items | 31 | 1 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
 | N | Every screen size | 37 | 25 | In progress |
+| O | Release 2.1.0: spendable balance | 12 | 1 | In progress |
+| P | Release 2.1.0: build and Play Console | 7 | 0 |  |
 
 ---
 
@@ -701,11 +703,43 @@ budgets at once. The names above and the phase headings ("Version 2.1" to
 here on: repeating items 2.1, goals and the net worth trend 2.2, safe to spend
 and the statement 2.3.
 
-**Store 2.1 (owner, 2026-10-16):** repeating items (phase I) and every screen
-size (phase N, the part not in 2.0.1) go out together as **2.1**. 2.0.1 is in
-review on Play. Building both starts now, each on its own branch into `develop`;
-the release branch `release/2.1.0` is cut only once 2.0.1 is at 100% with no
-open crash.
+## Release 2.1.0 (branch `release/2.1.0`, from 2.0.2)
+
+Decided by the owner on 2026-10-21. From this release on, work goes by release, not
+by feature: everything for a version is built on its own `release/x.y.z` branch,
+one commit per task, and merged to `develop` and `main` and tagged when it ships.
+
+| Part | What | Why in this release |
+| --- | --- | --- |
+| Phase I | **Repeating items**, the headline | The plan's next headline: what a tracker user asks for after budgets |
+| Phase O | **Spendable balance**: savings and investments kept out of Home's total | A Play review (2026-10-16): the user records money saved as an expense to make Home's total true, which spoils their spending and budgets |
+| Phase N, the rest | Small phones, the size audit, iPad and DeX | The foundation shipped in 2.0.1 and 2.0.2; this finishes it |
+| P1 | **R8 on the store build** (Play Console, 2026-10-21) | Smaller, faster build. Two settings, one careful release test |
+| Owner checks | Gallery approvals and device checks still open from earlier phases | Done alongside, as the owner has time; they do not hold the release |
+
+Order of work on the branch, each step finished before the next (the seven
+phases in `~/.claude/CLAUDE.md`):
+
+1. **Plan:** this section, I1.01's rules and O1.01's rules approved by the owner.
+2. **Design:** the gallery pieces for I and O approved (I1.05, O1.03).
+3. **Data:** the two schema changes in one migration and one backup format raise (I2, O2).
+4. **Rules with tests** (I3, O3).
+5. **Screens** wired to them (I4, O4); phase N's remaining screens in between.
+6. **Audit:** the size audit (N5.01), every new screen at the six widths, light and dark, largest font.
+7. **Ship (P2):** copy and translations, R8 release build tested fresh on a phone, version 2.1.0,
+   release notes, `latestVersionConfig` set only once 2.1.0 is at 100%.
+
+Not in 2.1.0: goals and the net worth trend (phase J, next), safe to spend (K),
+the App Store (L).
+
+### P. Release 2.1.0: build and Play Console
+- [ ] P1.01 R8: `android.enableMinifyInReleaseBuilds` and `android.enableShrinkResourcesInReleaseBuilds` set through `expo-build-properties` in `app.json` (the local `android/` folder is a stale prebuild; only `app.json` counts). Play Console recommended it on build 74
+- [ ] P1.02 The R8 release build installed fresh on the Samsung and the Honor (with the owner's word on each): first run to Home, add and edit a transaction, a budget, a loan, backup to a file and restore, the Pro page with its prices, the lock, a reminder. A library looked up by name and stripped by R8 shows here or nowhere
+- [ ] P1.03 Play's "deprecated edge-to-edge APIs": the calls are in React Native's `StatusBarModule` and in `react-native-screens`, not in Fintraq. Take the Expo SDK 57 patch updates (`npx expo install --check`; 57.0.30 was out on 2026-10-21) and recheck in Play Console after 2.1.0. No patching of the libraries
+- [ ] P1.04 Play's "bitmap downsampling": Fintraq draws no bitmaps (icons and art are vector), so nothing in the app to change; recheck in Play Console after 2.1.0
+- [ ] P2.01 Version 2.1.0 in `app.json` and `package.json`; release notes in `update-note.txt` (15 locales, 500 characters)
+- [ ] P2.02 Owner: upload, staged rollout, go or no-go at each step
+- [ ] P2.03 Once at 100%: `latestVersionConfig` set to 2.1.0's build and version
 
 Rules for every version:
 
@@ -789,14 +823,28 @@ made on 2.0 still restores.
 
 ---
 
-## I. Version 2.2: repeating items (store 2.1, with phase N)
+## I. Repeating items (release 2.1.0)
 
 Done when: rent, a salary and a subscription can each be set once and appear on
 their day without being typed again, a free user can keep two, and a phone left
 unopened for three months catches up correctly.
 
 ### I1. Design first
-- [ ] I1.01 Decisions written down: the cadences offered (weekly, every two weeks, monthly, yearly), what "the 31st" means in a short month, add automatically or ask first, what an end date does
+- [x] I1.01 Owner: the rules below approved (written and approved 2026-10-21)
+  - **What repeats:** an expense, income or a transfer. Not a loan or a repayment: a loan has its own due date and reminders
+  - **How often:** every week, every 2 weeks, every month, every year. The first time is the transaction being saved; the next is one period after its date
+  - **Short months:** a monthly item on the 29th, 30th or 31st falls on the month's last day when the month is shorter, and returns to its own day the month after. A yearly item on 29 February falls on 28 February outside leap years
+  - **Added or asked:** each item is either *added on its day* or *asked about on its day*; a new item is *asked*, since amounts like a bill change. Asked items wait on Home as "Due today" with Add (with the amount editable) and Skip
+  - **The time:** an item made on its day takes the original transaction's time of day
+  - **Catch-up:** when the app was not opened for a while, every missed occurrence is made (added items, dated their own day) or listed (asked items), oldest first. Each occurrence is made at most once: the rule and its date are stored on the transaction it made
+  - **End:** never, on a date, or after a number of times. An ended item stays in the list, marked ended, until deleted
+  - **Pause:** a paused item makes nothing; on resume it continues from its next date after today, and what fell while paused is not caught up
+  - **Changing an item** changes what it makes from now on; transactions it already made stay as they are. **Deleting** an item keeps its transactions
+  - **When its account or category is deleted** the item stops and says why, until it is pointed at another
+  - **Notification:** one a day at 9:00 when asked items are waiting ("2 things are due today"), only with notifications allowed; nothing for added items
+  - **Free plan:** 2 items; Pro has no limit. A lapsed subscriber keeps every item, and can edit, pause and delete them; only adding a third is gated
+  - **Where:** "Repeat" on the Add form (Never by default); the list and Upcoming (the next 30 days, with loans' due dates) on the Plan tab; an item's own page from either
+  - **Budgets:** a budget shows what is still to come this month from repeating items, as a line; it is not taken off what is left
 - [ ] I1.02 Gallery: a repeating item row (what, how often, next date, amount)
 - [ ] I1.03 Gallery: "Repeat" on the entry form, closed and open
 - [ ] I1.04 Gallery: Upcoming on the Plan tab, the next 30 days, with loans' due dates among them
@@ -837,6 +885,43 @@ unopened for three months catches up correctly.
 - [ ] I5.08 Owner: go or no-go at each step
 
 ---
+
+## O. Spendable balance (release 2.1.0)
+
+From a Play review, 2026-10-16: "the dashboard to show the cash available from the
+income, not including the savings ... savings to go into separate account and it
+should not reflect in the available balance". Home's total adds every account, so
+money put aside looks spendable; the reviewer records savings as an expense to
+hide it, which counts it as spending in Insights and in budgets.
+
+Done when: someone with a savings account sees on Home what is ready to spend,
+with what is put aside under it, and moving money to savings is a transfer that
+changes the first and not their spending.
+
+### O1. Plan and design
+- [x] O1.01 Owner: the rules below approved (written and approved 2026-10-21)
+  - Each account either **counts as ready to spend** or is **put aside**. By type: savings and investment are put aside; cash, bank, e-wallet, credit card and loan accounts count (a card's or a loan's balance below zero takes from what is ready)
+  - The account form has a switch, "Count in what I can spend", set by the type until changed by hand; changing the type later moves it only if it was never changed by hand
+  - Home's balance card: the total ready to spend, large, as now; under it "₹26,400.00 put aside" when anything is put aside, and nothing extra when nothing is. Per currency, as today
+  - The Accounts screen's net worth is unchanged: everything, put aside included. Insights and budgets are unchanged: a transfer to savings is not spending
+  - Free, for everyone: it is about recording, which is never gated
+- [ ] O1.02 Gallery: the balance card with and without a put-aside line; the account form's switch
+- [ ] O1.03 Owner: the gallery pieces approved
+
+### O2. Data
+- [ ] O2.01 `accounts.counts_as_spendable`: a new nullable column (null means "by type"), added in `data/db/schema.ts` and generated with `npm run db:generate`
+- [ ] O2.02 Backup format raised once with phase I's table; a backup made before it restores with every account "by type"
+- [ ] O2.03 Test: a 2.0.2 database migrates with every balance and total unchanged
+
+### O3. Rules, each with tests
+- [ ] O3.01 Whether an account counts: its own setting, or else its type
+- [ ] O3.02 Ready to spend and put aside, per currency, from the same accounts that make today's total; the two always add up to it
+
+### O4. Screens
+- [ ] O4.01 Home's balance card with the put-aside line
+- [ ] O4.02 The switch on the account form, and the account's page saying "Put aside" when it is
+- [ ] O4.03 Copy and the 12 translations; seen on a phone with the owner's word, light and dark
+- [ ] O4.04 Owner: a reply to the review, once 2.1.0 is live (the owner posts it)
 
 ## J. Version 2.3: goals and the net worth trend
 
@@ -926,7 +1011,7 @@ account and runs on the owner's iPhone.
 
 ---
 
-## N. Every screen size (the foundation shipped in 2.0.1; the rest goes out in 2.1)
+## N. Every screen size (foundation in 2.0.1 and 2.0.2; the rest in release 2.1.0)
 
 Asked for by the owner on 2026-10-13: "fully responsive on tablet and all sized
 screens". Measured that day on the Samsung with its display set to other sizes:
