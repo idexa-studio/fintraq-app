@@ -1,13 +1,13 @@
 import { db } from '@/data/db/client';
 import { accounts, categories, payments, persons, recurringRules } from '@/data/db/schema';
-import type { DbTx, Payment } from '@/data/repositories/transactions';
+import type { DbTx, InsertPayment, Payment } from '@/data/repositories/transactions';
 import { recordPaymentIn } from '@/data/repositories/transactions';
-import { and, count, desc, eq } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
 /**
  * Repeating items (release 2.1.0). This file only reads and writes them; when an item is due and
- * what its next day is are worked out by the rules in `features/recurring`, and passed in.
+ * what its next day is are worked out by the rules in `shared/calc/recurrence.ts`, and passed in.
  */
 
 export type RecurringRule = typeof recurringRules.$inferSelect;
@@ -66,6 +66,16 @@ export const createRecurringRule = async (data: NewRecurringRule): Promise<Recur
   return row!;
 };
 
+/**
+ * A transaction saved with Repeat set: the item, and the transaction as its first occurrence, in
+ * one transaction, so neither is ever saved without the other.
+ */
+export const createRepeating = async ({ rule, payment }: { rule: NewRecurringRule; payment: InsertPayment }): Promise<{ rule: RecurringRule; payment: Payment }> =>
+  db.transaction((tx) => {
+    const made = tx.insert(recurringRules).values(rule).returning().get();
+    return { rule: made, payment: recordPaymentIn(tx, { ...payment, recurringRuleId: made.id, recurringDate: rule.anchorDate }) };
+  });
+
 /** Changes what an item makes from now on; the transactions it made already stay as they are. */
 export const updateRecurringRule = async (id: number, data: Partial<NewRecurringRule>): Promise<RecurringRule | undefined> => {
   const [row] = await db.update(recurringRules).set({ ...data, updatedAt: new Date().toISOString() }).where(eq(recurringRules.id, id)).returning();
@@ -82,10 +92,6 @@ export const deleteRecurringRule = async (id: number): Promise<void> => {
     tx.delete(recurringRules).where(eq(recurringRules.id, id)).run();
   });
 };
-
-/** The transactions an item has made, newest first. */
-export const getTransactionsMadeBy = async (id: number): Promise<Payment[]> =>
-  db.select().from(payments).where(eq(payments.recurringRuleId, id)).orderBy(desc(payments.datetime), desc(payments.id));
 
 /** Where an item stands after one occurrence, made or skipped: worked out by the rules. */
 export type Advance = { nextDue: string; occurrences: number };

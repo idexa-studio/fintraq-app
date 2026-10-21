@@ -8,6 +8,7 @@ import React, { useMemo } from 'react';
 const GROUPS: { name: NotificationPreview['group']; hint: string }[] = [
   { name: 'Daily reminder', hint: 'One a day at the chosen time, and none on a day already recorded. A tap opens Add expense.' },
   { name: 'Loans', hint: 'Set per loan. A tap opens the loan.' },
+  { name: 'Repeating items', hint: 'At 9:00 while an item asked about on its day waits. A tap opens Home.' },
   { name: 'Backup', hint: 'A backup that works says nothing. A tap opens Backup.' },
 ];
 

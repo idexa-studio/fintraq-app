@@ -48,6 +48,7 @@ export default {
     manage: 'Manage budget',
     edit: 'Change the limit',
     rolled: 'Includes {{amount}} left from last month',
+    toCome: '{{amount}} still to come this month from repeating items',
     thisMonth: 'This month',
     thisMonthHint: 'What counted towards it',
     nothing: 'Nothing spent yet this month',

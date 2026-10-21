@@ -6,7 +6,10 @@ import { LoanRow, useLoans } from '@/features/loans';
 import { initialsOf } from '@/features/people';
 import { dueWording, loanTotals, planLoans } from '@/features/plan/plan-rules';
 import { PRO_FEATURES, featuresIn, isOverFreeLimit, usePro, useProCopy } from '@/features/pro';
+import { RecurringRow, stateOf, upcoming, useRecurringRules, useRepeatWords, useToday } from '@/features/recurring';
+import type { RuleState } from '@/features/recurring';
 import { useSettings } from '@/features/settings';
+import { addDays } from '@/shared/calc/recurrence';
 import { currencyName, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
@@ -18,14 +21,20 @@ import { View } from 'react-native';
 /** What Pro will add to this tab: the Plan features not out yet, named from the registry. */
 const SOON = featuresIn('plan').filter((id) => PRO_FEATURES[id].status !== 'live');
 
+/** Running items first, soonest next; then those that make nothing, in the order they need a look. */
+const STATE_ORDER: Record<RuleState, number> = { running: 0, paused: 1, ended: 2, stopped: 3 };
+
+/** How far ahead Upcoming looks. */
+const UPCOMING_DAYS = 30;
+
 /**
  * The Plan tab, as sections that each read the same way: a heading, its own
- * "Add", and what it holds. Budgets first, then loans in the order they need
- * attention. One currency at a time, as on Home. Repeating items and goals
- * take their place here as they are released.
+ * "Add", and what it holds. Budgets, repeating items, what is coming in the next
+ * 30 days, then loans in the order they need attention. One currency at a time,
+ * as on Home. Goals take their place here as they are released.
  */
 export function PlanScreen() {
-  const { t } = useTranslation(['plan', 'common']);
+  const { t } = useTranslation(['plan', 'common', 'recurring']);
   const { colors, size, space } = useTheme();
   const router = useRouter();
   const { profile } = useSettings();
@@ -33,9 +42,17 @@ export function PlanScreen() {
   const proCopy = useProCopy();
   const { data: loans, isPending } = useLoans();
   const { data: budgets } = useBudgets();
+  const { data: rules } = useRecurringRules();
+  const words = useRepeatWords();
+  const day = useToday();
   const [showSettled, setShowSettled] = useState(false);
 
-  const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set([profile.defaultCurrency, ...(loans ?? []).map((loan) => loan.currency), ...(budgets ?? []).map((budget) => budget.currency)])], profile.defaultCurrency), [loans, budgets, profile.defaultCurrency]);
+  const currencies = useMemo(() => sortCurrenciesWithDefault([...new Set([
+    profile.defaultCurrency,
+    ...(loans ?? []).map((loan) => loan.currency),
+    ...(budgets ?? []).map((budget) => budget.currency),
+    ...(rules ?? []).flatMap((rule) => (rule.account ? [rule.account.currency] : [])),
+  ])], profile.defaultCurrency), [loans, budgets, rules, profile.defaultCurrency]);
   const [chosen, setChosen] = useState<string | null>(null);
   const currency = chosen && currencies.includes(chosen) ? chosen : currencies[0]!;
 
@@ -49,6 +66,26 @@ export function PlanScreen() {
   // The budget closest to its limit comes first: it is the one being looked for.
   const inCurrency = byUrgency((budgets ?? []).filter((budget) => budget.currency === currency));
   const open = (loan: LoanWithStats) => router.push({ pathname: '/loans/[id]', params: { id: loan.id } });
+
+  // An item whose account was deleted has no currency left: it is shown in every one, as it needs a look.
+  const repeating = useMemo(
+    () => (rules ?? [])
+      .filter((rule) => !rule.account || rule.account.currency === currency)
+      .sort((a, b) => STATE_ORDER[stateOf(a)] - STATE_ORDER[stateOf(b)] || a.nextDue.localeCompare(b.nextDue) || a.id - b.id),
+    [rules, currency],
+  );
+  // A third item on the free plan is offered through Pro, from the same control.
+  const addRepeating = () => (!isPro && isOverFreeLimit('recurring', rules?.length ?? 0) ? openPaywall('unlimited') : router.push({ pathname: '/add', params: { kind: 'expense', repeat: '1' } }));
+  const openRule = (id: number) => router.push({ pathname: '/recurring/[id]', params: { id } });
+
+  // The next 30 days: each time an item falls, and each loan due, in date order.
+  const coming = useMemo(() => {
+    const last = addDays(day, UPCOMING_DAYS);
+    const items = upcoming(repeating, day, UPCOMING_DAYS).map((next) => ({ day: next.day, rule: repeating.find((rule) => rule.id === next.ruleId)!, loan: null }));
+    const due = dated.filter((loan) => loan.dueDate!.slice(0, 10) >= day && loan.dueDate!.slice(0, 10) <= last).map((loan) => ({ day: loan.dueDate!.slice(0, 10), rule: null, loan }));
+    // On the same day, items before loans: a stable sort keeps them so.
+    return [...items, ...due].sort((a, b) => a.day.localeCompare(b.day));
+  }, [repeating, dated, day]);
   // Each section has its own "Add", so the header carries only the currency, where more than one is held.
   const header = <Header title={t('title')} right={currencies.length > 1 ? <View style={{ marginEnd: space.sm }}><Select title={t('common:pickCurrency')} options={currencies.map((code) => ({ key: code, label: code, detail: currencyName(code) }))} value={currency} onChange={setChosen} accessibilityLabel={t('currency')} /></View> : undefined} />;
 
@@ -82,7 +119,7 @@ export function PlanScreen() {
     />
   );
 
-  if (isPending || !loans || !budgets) {
+  if (isPending || !loans || !budgets || !rules) {
     return (
       <Screen tabbed header={header}>
         <Skeleton height={size.row * 2} />
@@ -101,8 +138,42 @@ export function PlanScreen() {
           <Section title={t('budgets.title')} hint={inCurrency.length ? t('budgets.hint') : undefined} actionLabel={inCurrency.length ? t('budgets.add') : undefined} onAction={addBudget}>
             <BudgetList budgets={inCurrency} onOpen={(id) => router.push({ pathname: '/budgets/[id]', params: { id } })} onAdd={addBudget} />
           </Section>
+
+          <Section title={t('recurring:list.title')} hint={repeating.length ? t('recurring:list.hint') : undefined} actionLabel={repeating.length ? t('recurring:list.add') : undefined} onAction={addRepeating}>
+            {repeating.length > 0 ? (
+              <ListGroup>
+                {repeating.map((rule) => <RecurringRow key={rule.id} rule={rule} onPress={() => openRule(rule.id)} />)}
+              </ListGroup>
+            ) : (
+              <EmptyState compact icon="repeat" color="lilac" title={t('recurring:list.empty.title')} body={t('recurring:list.empty.body')} actionLabel={t('recurring:list.empty.action')} onAction={addRepeating} />
+            )}
+          </Section>
         </Column>
         <Column>
+          {/* Nothing in the next 30 days: no heading over nothing. */}
+          {coming.length > 0 ? (
+            <Section title={t('recurring:upcoming.title')} hint={t('recurring:upcoming.hint')}>
+              <ListGroup>
+                {coming.map((entry) => (entry.rule ? (
+                  <RecurringRow key={`r${entry.rule.id}-${entry.day}`} rule={entry.rule} line={words.day(entry.day)} onPress={() => openRule(entry.rule.id)} />
+                ) : (
+                  <ListRow
+                    key={`l${entry.loan.id}`}
+                    leading={entry.loan.personName ? <IconCircle initials={initialsOf(entry.loan.personName)} color={colorNumberToHex(entry.loan.personColor ?? 0)} /> : <IconCircle icon="hand-coins" />}
+                    strong
+                    title={entry.loan.type === 'lend'
+                      ? (entry.loan.personName ? t('recurring:upcoming.owesYou', { name: entry.loan.personName }) : t('recurring:upcoming.someoneOwes'))
+                      : (entry.loan.personName ? t('recurring:upcoming.youOwe', { name: entry.loan.personName }) : t('recurring:upcoming.youOweSomeone'))}
+                    subtitle={t('recurring:upcoming.loan', { date: words.day(entry.day) })}
+                    value={formatCurrency(entry.loan.outstanding, entry.loan.currency)}
+                    valueTone={entry.loan.type === 'lend' ? 'positive' : 'default'}
+                    onPress={() => open(entry.loan)}
+                  />
+                )))}
+              </ListGroup>
+            </Section>
+          ) : null}
+
           {/* Loans read as budgets do: a heading with its own "Add", then what it holds. */}
           <Section title={t('loans.title')} hint={hasOpen ? t('loans.hint') : undefined} actionLabel={hasOpen ? t('loans.add') : undefined} onAction={lend}>
             <View style={{ gap: size.cardGap }}>

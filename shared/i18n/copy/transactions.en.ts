@@ -3,6 +3,7 @@ export default {
   kinds: { expense: 'Expense', income: 'Income', transfer: 'Transfer' },
   addTitle: { expense: 'Add expense', income: 'Add income', transfer: 'Add transfer' },
   editTitle: { expense: 'Edit expense', income: 'Edit income', transfer: 'Edit transfer' },
+  changeItem: 'Change repeating item',
   loanPayment: 'Loan payment',
   loanRepayment: 'Loan repayment',
   close: 'Close',
@@ -13,6 +14,8 @@ export default {
   to: 'To:',
   details: 'Details:',
   when: 'When',
+  /** A repeating item's next day, where a transaction has When. */
+  next: 'Next',
   with: 'With',
   pickDate: 'Choose the date and time',
   calculator: { open: 'Work out the amount', title: 'Work it out', use: 'Use this amount' },

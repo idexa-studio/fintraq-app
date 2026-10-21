@@ -2,6 +2,7 @@
 import { appLocale } from '@/shared/i18n/locale';
 import { getCurrencySymbol } from '@/shared/currency/currencies';
 import { parseAmountInput } from '@/shared/format/amount';
+import type { TransactionType } from '@/shared/types';
 
 /** A typed amount as a number, 0 when blank or unreadable. See parseAmountInput for the rules. */
 export const parseAmount = (value: string | undefined | null): number => parseAmountInput(value ?? '') ?? 0;
@@ -99,3 +100,9 @@ export const formatCurrency = (amount: number, currencyCode?: string, compact?: 
     return `${getCurrencySymbol(currencyCode)} ${amount.toFixed(2)}`;
   }
 };
+
+/** Money out carries the minus sign the app's language uses; money in is marked with a plus; a transfer is neither. */
+export function signedAmount(transaction: { type: TransactionType; amount: number; account: { currency: string } }): string {
+  const amount = formatCurrency(transaction.type === 'DR' ? -transaction.amount : transaction.amount, transaction.account.currency);
+  return transaction.type === 'CR' ? `+${amount}` : amount;
+}

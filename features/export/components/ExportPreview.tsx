@@ -1,7 +1,8 @@
 import type { TransactionListItem } from '@/data/repositories/transactions';
 import { Card, Divider, IconCircle, Skeleton, Text, ltr, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
-import { dayLabel, signedAmount } from '@/features/transactions';
+import { dayLabel } from '@/shared/date/date';
+import { signedAmount } from '@/shared/format/money';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 

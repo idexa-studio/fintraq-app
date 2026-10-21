@@ -1,5 +1,5 @@
 import { appLocale } from '@/shared/i18n/locale';
-import { format, subDays, startOfMonth } from 'date-fns';
+import { differenceInCalendarDays, format, subDays, startOfMonth } from 'date-fns';
 
 /**
  * getLocalISOString: Returns the date portion of the current local time (YYYY-MM-DD).
@@ -64,3 +64,11 @@ export const formatDate = (date: Date, options: Intl.DateTimeFormatOptions): str
     return date.toDateString();
   }
 };
+
+/** "Today", "Yesterday", or the date, with the year only when it is not this one. */
+export function dayLabel(date: Date, today: string, yesterday: string, now: Date = new Date()): string {
+  const ago = differenceInCalendarDays(now, date);
+  if (ago === 0) return today;
+  if (ago === 1) return yesterday;
+  return formatDate(date, date.getFullYear() === now.getFullYear() ? { weekday: 'short', day: 'numeric', month: 'short' } : { day: 'numeric', month: 'short', year: 'numeric' });
+}

@@ -32,7 +32,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Release 2.1.0: repeating items | 31 | 12 | In progress |
+| I | Release 2.1.0: repeating items | 32 | 14 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
@@ -868,28 +868,45 @@ unopened for three months catches up correctly.
 
 ### I3. Rules, each with tests
 - [x] I3.01 The next due date across month ends, leap years and a change of time zone
-  - `features/recurring/recurring-rules.ts`, tested: the 31st falls on a short month's last day and comes back; 29 February on the 28th outside leap years; days are calendar days, never moments, so no clock or zone change moves them
+  - `shared/calc/recurrence.ts` (pure, so the notification sync in `platform/` can use it too), tested: the 31st falls on a short month's last day and comes back; 29 February on the 28th outside leap years; days are calendar days, never moments, so no clock or zone change moves them
 - [x] I3.02 Catch-up when the app was not opened for several periods: every missed one is made or offered, none twice
   - Tested: three months away makes three, oldest first; an end date or a count stops it; paused makes none and resume lets them go. None twice: the rules move the item past each one, and the repository refuses a second transaction for the same day
 - [x] I3.03 A rule whose account or category was deleted stops and says why
-  - The rule (`stoppedBecause`: account, destination or category) is tested; the screens say it in I4.02 and I4.03
+  - The rule (`stoppedBecause`: account, destination or category) is tested; the screens say it in I4.02 and I4.03. Corrected while building the screens: a transfer item whose category is deleted stops too, since every transaction, a transfer's included, is stored with a category
 - [x] I3.04 The free limit of 2, read from the registry
   - `FREE_LIMITS.recurring` and `isOverFreeLimit`, tested in the Pro registry's tests
+- [x] I3.05 Rules found while building the screens (2026-10-21), each tested
+  - **Changing an item:** a new next day or a new cadence starts it again from that day; changing only what it makes leaves its days alone (`rescheduled` in `shared/calc/recurrence.ts`)
+  - **Repairing a stopped item:** pointed at another account or category, it carries on from its next day after today, as a resumed one does, so an item added by itself does not make every missed month at once (`changedRuleOf`)
+  - **Due today:** each asked item offers only its oldest waiting day, with how many wait, so they are added or skipped in order and none is passed over (`waitingItems`)
+  - **Still to come on a budget:** every occurrence not yet made this month, the 1st to the last day, waiting ones included (`stillToCome`)
+  - **The 9:00 reminder:** on each day something asked is waiting, from its day until it is added or skipped, 14 days kept scheduled (`planRepeatReminders`)
+  - The date rules moved to `shared/calc/recurrence.ts` so the notification sync in `platform/` can use them
 
 ### I4. Screens
 - [ ] I4.01 "Repeat" on the entry flow makes a rule from the transaction being saved
+  - Built 2026-10-21: the Repeat row among the details of a new transaction (not on a loan payment), its sheet as in the gallery with the end date chosen on a calendar and the number of times typed; the transaction and its item are saved together in one database transaction, Undo takes both back, and Repeat is kept with the entry being typed. Plan's "Add" opens Add already set to every month. Not yet run on a phone
 - [ ] I4.02 List of repeating items with next date and amount
+  - Built 2026-10-21: "Repeating" on Plan after Budgets, running items soonest first, then paused, ended and stopped, each saying so; an item with no account left shows in every currency. Not yet run on a phone
 - [ ] I4.03 Rule screen: change, pause, delete, and what it has made
+  - Built 2026-10-21: `/recurring/[id]` as in the gallery, with a notice when it has stopped or ended. Change opens the Add form on the item (`/recurring/[id]/edit`), with Next in place of When and no Never. Not yet run on a phone
 - [ ] I4.04 Upcoming on the Plan tab: the next 30 days
+  - Built 2026-10-21: after Repeating, each day an item falls and each loan due, in date order; hidden when nothing falls. Not yet run on a phone
 - [ ] I4.05 Due today: added automatically, or confirmed with one tap from Home
+  - Built 2026-10-21: items added by themselves are made on opening the app and on every return to it (`useRecurringCatchUp`, mounted once beside the screens); asked ones wait on Home under the shortcuts, with Skip and Add, and the row opens a sheet to change the amount. Not yet run on a phone
 - [ ] I4.06 Notification for items waiting to be confirmed; added to the list in `docs/SCREENS.md`
+  - Built 2026-10-21: scheduled with the other reminders, in Developer's list of every notification, and in `docs/SCREENS.md`. Not yet seen on a phone
 - [ ] I4.07 A third item on the free plan leads to the paywall
+  - Built 2026-10-21: the Repeat sheet shows the limit in place of the choices, and Plan's "Add" opens Fintraq Pro. Not yet run on a phone
 - [ ] I4.08 A budget counts what is still to come this month from repeating items (shown, not yet subtracted)
+  - Built 2026-10-21: the line under the budget's head. Not yet run on a phone
 - [ ] I4.09 Shared checklist
 
 ### I5. Ship
-- [ ] I5.01 `recurring` marked `live` in the registry
+- [x] I5.01 `recurring` marked `live` in the registry
+  - Done with the screens, as budgets were, so Plan's "Coming to Pro" card no longer lists it beside its own section. "No limits" now names 2 repeating items; `docs/PRODUCT.md` says live
 - [ ] I5.02 English copy and the 12 translations
+  - English written 2026-10-21 (`recurring` namespace, and lines in transactions, budgets, notifications and pro). The 118 lines go to the 12 languages after the owner has read them on the phone; until then those languages show English there, and the reminders channel's description and "No limits" carry their old wording
 - [ ] I5.03 Analytics events added to the catalogue
 - [ ] I5.04 Seen on the Android phone and on the iPhone, light and dark
 - [ ] I5.05 Upgrade test from 2.1 with real data, on the release build

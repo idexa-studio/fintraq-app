@@ -8,7 +8,9 @@ import {
   parseClock,
   planDailyReminders,
   planLoanReminders,
+  planRepeatReminders,
 } from '@/platform/notifications/reminder-plan';
+import type { RepeatReminderSource } from '@/platform/notifications/reminder-plan';
 
 // 30 Sep 2026, 10:00 local.
 const NOW = new Date(2026, 8, 30, 10, 0, 0);
@@ -115,5 +117,36 @@ describe('capReminders and ids', () => {
     expect(isAppReminderId('loan_emi_3_2026_9')).toBe(true);
     expect(isAppReminderId('loan_due_3')).toBe(true);
     expect(isAppReminderId('cloud_backup_status')).toBe(false);
+  });
+});
+
+describe('planRepeatReminders', () => {
+  const item = (over: Partial<RepeatReminderSource> = {}): RepeatReminderSource => ({
+    id: 1, name: 'Rent', mode: 'ask', type: 'DR', accountId: 1, toAccountId: null, categoryId: 1,
+    cadence: 'month', anchorDate: '2026-09-02', nextDue: '2026-10-02', ends: 'never', endDate: null, endTimes: null, occurrences: 1, paused: false,
+    ...over,
+  });
+
+  it('says it at 9:00 from its day, and each day after while it waits', () => {
+    const plan = planRepeatReminders(NOW, [item()], 4);
+    expect(plan.map((p) => [localDateKey(p.date), p.date.getHours()])).toEqual([['2026-10-02', 9], ['2026-10-03', 9]]);
+    expect(plan[0]).toMatchObject({ kind: 'repeat', id: 'repeat_due_2026-10-02', names: ['Rent'] });
+  });
+
+  it('leaves out today once 9:00 has passed, even with something waiting', () => {
+    expect(planRepeatReminders(NOW, [item({ nextDue: '2026-09-29' })], 2).map((p) => localDateKey(p.date))).toEqual(['2026-10-01']);
+  });
+
+  it('names every item waiting that day, in one reminder', () => {
+    const plan = planRepeatReminders(NOW, [item(), item({ id: 2, name: 'Phone', nextDue: '2026-10-01' })], 3);
+    expect(plan.map((p) => (p.kind === 'repeat' ? p.names : []))).toEqual([['Phone'], ['Rent', 'Phone']]);
+  });
+
+  it('says nothing for items added by themselves, paused or stopped', () => {
+    expect(planRepeatReminders(NOW, [item({ mode: 'add' }), item({ paused: true }), item({ accountId: null })], 5)).toEqual([]);
+  });
+
+  it('is cancelled and rescheduled with the app’s own reminders', () => {
+    expect(isAppReminderId('repeat_due_2026-10-02')).toBe(true);
   });
 });

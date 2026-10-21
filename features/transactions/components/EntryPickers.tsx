@@ -103,10 +103,17 @@ export function PersonPicker({ people, ...picker }: PickerProps<number | null> &
   return <PickerSheet title={t('pick.person')} visible={picker.visible} onClose={picker.onClose} groups={groups} selectedKey={picker.selectedId == null ? NO_ONE : String(picker.selectedId)} onSelect={(key) => picker.onSelect(key === NO_ONE ? null : Number(key))} />;
 }
 
-type WhenPickerProps = { visible: boolean; onClose: () => void; value: Date; onChange: (value: Date) => void };
+type WhenPickerProps = {
+  visible: boolean;
+  onClose: () => void;
+  value: Date;
+  onChange: (value: Date) => void;
+  /** For a day still to come, such as a repeating item's next: from today on, with no Yesterday. */
+  fromToday?: boolean;
+};
 
 /** The day, with shortcuts for the two days most entries are for, and the time under it. */
-export function WhenPicker({ visible, onClose, value, onChange }: WhenPickerProps) {
+export function WhenPicker({ visible, onClose, value, onChange, fromToday = false }: WhenPickerProps) {
   const { t } = useTranslation(['transactions', 'common']);
   const { space } = useTheme();
   const today = new Date();
@@ -120,10 +127,10 @@ export function WhenPicker({ visible, onClose, value, onChange }: WhenPickerProp
     <Sheet visible={visible} onClose={onClose} title={t('pick.date')} footer={<Button label={t('pick.done')} onPress={onClose} />}>
       <View style={{ flexDirection: 'row', gap: space.md }}>
         <Chip label={t('common:today')} selected={sameDay(value, today)} onPress={() => setDay(today)} />
-        <Chip label={t('common:yesterday')} selected={sameDay(value, yesterday)} onPress={() => setDay(yesterday)} />
+        {fromToday ? null : <Chip label={t('common:yesterday')} selected={sameDay(value, yesterday)} onPress={() => setDay(yesterday)} />}
       </View>
       {/* Keyed by the day so a shortcut also turns the calendar to that month. */}
-      <Calendar key={value.toDateString()} value={value} onChange={setDay} />
+      <Calendar key={value.toDateString()} value={value} onChange={setDay} min={fromToday ? today : undefined} />
       <View style={{ gap: space.sm }}>
         <Text variant="bodyStrong">{t('pick.time')}</Text>
         <View style={{ alignItems: 'center' }}>

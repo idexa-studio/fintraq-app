@@ -20,6 +20,7 @@ import firstRun from '@/shared/i18n/copy/firstRun.en';
 import guide from '@/shared/i18n/copy/guide.en';
 import notifications from '@/shared/i18n/copy/notifications.en';
 import pro from '@/shared/i18n/copy/pro.en';
+import recurring from '@/shared/i18n/copy/recurring.en';
 import shell from '@/shared/i18n/copy/shell.en';
 import transactions from '@/shared/i18n/copy/transactions.en';
 import bn from '@/shared/i18n/copy/bn.json';
@@ -50,9 +51,9 @@ i18n
       // file built from its translations by `scripts/i18n/build.js`, which also reports what a
       // language is missing. A string not translated yet falls back to English, never to a key.
       ...TRANSLATED,
-      en: { common, shell, home, transactions, activity, accounts, categories, people, loans, plan, insights, search, backup: backupCopy, budgets, export: exportCopy, lock, settings: settingsCopy, firstRun, guide, notifications, pro },
+      en: { common, shell, home, transactions, activity, accounts, categories, people, loans, plan, insights, search, backup: backupCopy, budgets, export: exportCopy, lock, settings: settingsCopy, firstRun, guide, notifications, pro, recurring },
     },
-    ns: ['common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans', 'plan', 'insights', 'search', 'backup', 'budgets', 'export', 'lock', 'settings', 'firstRun', 'guide', 'notifications', 'pro'],
+    ns: ['common', 'shell', 'home', 'transactions', 'activity', 'accounts', 'categories', 'people', 'loans', 'plan', 'insights', 'search', 'backup', 'budgets', 'export', 'lock', 'settings', 'firstRun', 'guide', 'notifications', 'pro', 'recurring'],
     defaultNS: 'common',
     lng: getSystemLanguage(),
     fallbackLng: 'en',

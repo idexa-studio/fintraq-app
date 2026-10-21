@@ -46,4 +46,15 @@ describe('a new transaction kept while typing', () => {
     expect(back?.categoryId).toBeNull();
     expect(back?.amountText).toBe('42.50');
   });
+
+  it('keeps how it repeats, and reads one kept before 2.1.0 as not repeating', () => {
+    const repeating = draft({ repeat: { cadence: 'month', mode: 'add', ends: 'times', endDate: null, endTimes: 6 } });
+    expect(readDraft(writeDraft(repeating), NOW)).toEqual(repeating);
+    expect(readDraft(writeDraft(draft()), NOW)?.repeat).toBeUndefined();
+  });
+
+  it('drops a Repeat it cannot read, and keeps the rest', () => {
+    const raw = JSON.stringify({ ...JSON.parse(writeDraft(draft())), repeat: { cadence: 'daily', mode: 'ask', ends: 'never' } });
+    expect(readDraft(raw, NOW)).toEqual(draft());
+  });
 });

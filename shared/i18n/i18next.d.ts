@@ -18,6 +18,7 @@ import type firstRun from '@/shared/i18n/copy/firstRun.en';
 import type guide from '@/shared/i18n/copy/guide.en';
 import type notifications from '@/shared/i18n/copy/notifications.en';
 import type pro from '@/shared/i18n/copy/pro.en';
+import type recurring from '@/shared/i18n/copy/recurring.en';
 import type shell from '@/shared/i18n/copy/shell.en';
 import type transactions from '@/shared/i18n/copy/transactions.en';
 
@@ -41,6 +42,7 @@ declare module 'i18next' {
       guide: typeof guide;
       notifications: typeof notifications;
       pro: typeof pro;
+      recurring: typeof recurring;
       insights: typeof insights;
       common: typeof common;
       shell: typeof shell;

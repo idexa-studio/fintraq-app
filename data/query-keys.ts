@@ -79,6 +79,12 @@ const budgets = {
   count: () => [...budgets.all, 'count'] as const,
 };
 
+const recurring = {
+  all: ['recurring'] as const,
+  lists: () => [...recurring.all, 'list'] as const,
+  count: () => [...recurring.all, 'count'] as const,
+};
+
 const backup = {
   all: ['backup'] as const,
   account: () => [...backup.all, 'account'] as const,
@@ -88,7 +94,7 @@ const backup = {
   autoBackupSwitch: () => [...backup.all, 'auto-backup-switch'] as const,
 };
 
-export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics, loans, budgets, backup } as const;
+export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics, loans, budgets, recurring, backup } as const;
 
 /**
  * Every query family read from the financial tables. Payments, accounts, categories, persons and
@@ -103,6 +109,8 @@ export const LEDGER_QUERY_ROOTS = [
   persons.all,
   loans.all,
   budgets.all,
+  // An item names its account and category, and recording one moves balances.
+  recurring.all,
   dashboard.all,
   analytics.all,
   reports.all,

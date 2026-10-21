@@ -4,8 +4,9 @@ import {
 } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
 import { budgetsFor, useBudgets, warningAfter } from '@/features/budgets';
+import { FREE_LIMITS, isOverFreeLimit, usePro } from '@/features/pro';
+import { RepeatRow, RepeatSheet, useRecurringCount } from '@/features/recurring';
 import { CalculatorSheet } from '@/features/transactions/components/CalculatorSheet';
-import { dayLabel } from '@/features/transactions/components/TransactionRow';
 import { AccountPicker, CategoryPicker, PersonPicker, WhenPicker } from '@/features/transactions/components/EntryPickers';
 import { useTransactionForm } from '@/features/transactions/hooks/useTransactionForm';
 import type { TransactionFormOptions } from '@/features/transactions/hooks/useTransactionForm';
@@ -15,7 +16,7 @@ import { useLeaveGuard } from '@/features/shell';
 import { useTransactionsCount } from '@/features/transactions/hooks/transactions';
 import { ReviewPromptService } from '@/platform/config/review-prompt';
 import { Analytics } from '@/platform/telemetry';
-import { formatDate } from '@/shared/date/date';
+import { dayLabel, formatDate, getLocalISOString } from '@/shared/date/date';
 import { getCurrencySymbol } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
@@ -24,7 +25,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-type Picker = 'account' | 'toAccount' | 'category' | 'person' | 'when' | 'calculator' | null;
+type Picker = 'account' | 'toAccount' | 'category' | 'person' | 'when' | 'calculator' | 'repeat' | null;
 
 /** After a save: long enough for the sheet to close and the saved message to be read. */
 const REVIEW_AFTER_MS = 2500;
@@ -43,6 +44,8 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
   const toast = useToast();
   const { profile } = useSettings();
   const form = useTransactionForm(options);
+  const { isPro, openPaywall } = usePro();
+  const { data: repeating } = useRecurringCount();
 
   const [picker, setPicker] = useState<Picker>(null);
   const [failed, setFailed] = useState(false);
@@ -76,7 +79,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
         : warning.crossing === 'over' ? t('budgets:saved.reached', { name })
         : t('budgets:saved.near', { name, amount: formatCurrency(warning.left, currency) });
       const createdId = await form.save(t('defaultNote'));
-      Analytics.track('transaction_saved', { transaction_type: kind, mode: form.editing ? 'edit' : 'create' });
+      if (!form.item) Analytics.track('transaction_saved', { transaction_type: kind, mode: form.editing ? 'edit' : 'create' });
       if (warning) Analytics.track('budget_warning', { level: warning.over > 0 ? 'over' : warning.crossing === 'over' ? 'reached' : 'near' });
       guard.release();
       toast.show(
@@ -113,8 +116,11 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
     );
   }
 
-  const title = form.loanLinked ? (form.isRepayment ? t('loanRepayment') : t('loanPayment')) : form.editing ? t(`editTitle.${kind}`) : t(`addTitle.${kind}`);
+  const title = form.item ? t('changeItem') : form.loanLinked ? (form.isRepayment ? t('loanRepayment') : t('loanPayment')) : form.editing ? t(`editTitle.${kind}`) : t(`addTitle.${kind}`);
   const when = `${dayLabel(form.when, t('common:today'), t('common:yesterday'))} · ${formatDate(form.when, { hour: 'numeric', minute: '2-digit' })}`;
+  const canRepeat = form.item || (!form.editing && !form.loanLinked);
+  // One more than the free plan keeps is offered through Pro, from the sheet that would make it.
+  const limited = !form.item && !isPro && isOverFreeLimit('recurring', repeating ?? 0);
   const blockedLine = form.blocker
     ? form.blocker === 'repaymentTooHigh'
       ? t('blocked.repaymentTooHigh', { max: formatCurrency(form.repaymentLimit ?? 0, currency) })
@@ -213,10 +219,12 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
               onPress={() => setPicker('person')}
             />
           ) : null}
+          {/* A new transaction can be made to repeat; an item being changed keeps repeating. A loan has its own due dates. */}
+          {canRepeat ? <RepeatRow value={form.repeat} onPress={() => setPicker('repeat')} /> : null}
           <View style={{ padding: size.cardPadding, gap: space.lg }}>
             <TextField label={t('note')} value={form.note} onChangeText={form.setNote} placeholder={t('noteOptional')} maxLength={120} remaining={(count) => t('common:charactersLeft', { count })} />
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
-              <View style={{ flex: 1 }}><TextField label={t('when')} value={when} onPress={() => setPicker('when')} /></View>
+              <View style={{ flex: 1 }}><TextField label={form.item ? t('next') : t('when')} value={when} onPress={() => setPicker('when')} /></View>
               <IconButton icon="calendar" onPress={() => setPicker('when')} accessibilityLabel={t('pickDate')} />
             </View>
           </View>
@@ -228,7 +236,16 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
       <CategoryPicker kind={form.type} visible={picker === 'category'} onClose={() => setPicker(null)} categories={form.offeredCategories} selectedId={form.category?.id ?? null} onSelect={form.setCategoryId} />
       <PersonPicker visible={picker === 'person'} onClose={() => setPicker(null)} people={form.people} selectedId={form.person?.id ?? null} onSelect={form.setPersonId} />
       <CalculatorSheet visible={picker === 'calculator'} onClose={() => setPicker(null)} currency={currency} onUse={(amount) => form.setAmountText(String(amount))} />
-      <WhenPicker visible={picker === 'when'} onClose={() => setPicker(null)} value={form.when} onChange={form.setWhen} />
+      <WhenPicker visible={picker === 'when'} onClose={() => setPicker(null)} value={form.when} onChange={form.setWhen} fromToday={form.item} />
+      <RepeatSheet
+        visible={picker === 'repeat'}
+        onClose={() => setPicker(null)}
+        value={form.repeat}
+        onDone={form.setRepeat}
+        firstDay={getLocalISOString(form.when)}
+        allowNever={!form.item}
+        limit={limited ? { count: repeating ?? 0, keeps: FREE_LIMITS.recurring, onSeePro: () => { setPicker(null); openPaywall('unlimited'); } } : undefined}
+      />
 
       <Dialog visible={guard.asking} onRequestClose={guard.stay} title={t('discard.title')} body={t('discard.body')}>
         <Button label={t('discard.confirm')} variant="danger" onPress={() => { form.discard(); guard.leave(); }} />

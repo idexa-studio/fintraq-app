@@ -1,9 +1,8 @@
 import type { TransactionListItem } from '@/data/repositories/transactions';
 import { IconCircle, ListRow, resolveIcon } from '@/design';
-import { formatDate } from '@/shared/date/date';
+import { dayLabel, formatDate } from '@/shared/date/date';
 import { colorNumberToHex } from '@/shared/format/color';
-import { formatCurrency } from '@/shared/format/money';
-import { differenceInCalendarDays } from 'date-fns';
+import { signedAmount } from '@/shared/format/money';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -13,20 +12,6 @@ export type TransactionRowProps = {
   when: 'day' | 'time';
   onPress?: (transaction: TransactionListItem) => void;
 };
-
-/** "Today", "Yesterday", or the date, with the year only when it is not this one. */
-export function dayLabel(date: Date, today: string, yesterday: string, now: Date = new Date()): string {
-  const ago = differenceInCalendarDays(now, date);
-  if (ago === 0) return today;
-  if (ago === 1) return yesterday;
-  return formatDate(date, date.getFullYear() === now.getFullYear() ? { weekday: 'short', day: 'numeric', month: 'short' } : { day: 'numeric', month: 'short', year: 'numeric' });
-}
-
-/** Money out carries the minus sign the app's language uses; money in is marked with a plus; a transfer is neither. */
-export function signedAmount(transaction: Pick<TransactionListItem, 'type' | 'amount'> & { account: { currency: string } }): string {
-  const amount = formatCurrency(transaction.type === 'DR' ? -transaction.amount : transaction.amount, transaction.account.currency);
-  return transaction.type === 'CR' ? `+${amount}` : amount;
-}
 
 /** One transaction in any list: its category mark, what it was, when and where, and the amount. */
 export function TransactionRow({ transaction: tx, when, onPress }: TransactionRowProps) {

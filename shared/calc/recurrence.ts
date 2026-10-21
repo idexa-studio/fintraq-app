@@ -97,10 +97,13 @@ export function hasEnded(rule: Pick<RuleTiming, 'ends' | 'endDate' | 'endTimes' 
 
 export type StopReason = 'account' | 'toAccount' | 'category';
 
-/** Why an item cannot run, when something it points at was deleted; null when it can. */
+/**
+ * Why an item cannot run, when something it points at was deleted; null when it can. Every
+ * transaction has a category, a transfer's too, so a deleted category stops any item.
+ */
 export function stoppedBecause(rule: RuleTargets): StopReason | null {
   if (rule.accountId === null) return 'account';
-  if (rule.type === 'TR') return rule.toAccountId === null ? 'toAccount' : null;
+  if (rule.type === 'TR' && rule.toAccountId === null) return 'toAccount';
   return rule.categoryId === null ? 'category' : null;
 }
 
@@ -111,18 +114,28 @@ export const afterOccurrence = (rule: Pick<RuleTiming, 'anchorDate' | 'cadence' 
 });
 
 /**
+ * Every occurrence not yet made or skipped, from the item's next due up to `last`, oldest first,
+ * stopping at its end. Whether the item may run (paused, stopped) is for the caller to ask.
+ */
+export function pendingThrough(rule: RuleTiming, last: string): string[] {
+  const days: string[] = [];
+  let state = { nextDue: rule.nextDue, occurrences: rule.occurrences };
+  while (state.nextDue <= last && !hasEnded({ ...rule, ...state })) {
+    days.push(state.nextDue);
+    state = afterOccurrence({ ...rule, occurrences: state.occurrences }, state.nextDue);
+  }
+  return days;
+}
+
+/** Whether an item makes anything: not paused, and nothing it points at deleted. */
+export const isRunning = (rule: Pick<RuleTiming, 'paused'> & RuleTargets): boolean => !rule.paused && stoppedBecause(rule) === null;
+
+/**
  * The occurrences that are due by `today` and not yet made or skipped, oldest first: every day
  * from the item's next due up to today, stopping at its end. None while paused or stopped.
  */
 export function dueOccurrences(rule: RuleTiming & RuleTargets, today: string): string[] {
-  if (rule.paused || stoppedBecause(rule) !== null) return [];
-  const due: string[] = [];
-  let state = { nextDue: rule.nextDue, occurrences: rule.occurrences };
-  while (state.nextDue <= today && !hasEnded({ ...rule, ...state })) {
-    due.push(state.nextDue);
-    state = afterOccurrence({ ...rule, occurrences: state.occurrences }, state.nextDue);
-  }
-  return due;
+  return isRunning(rule) ? pendingThrough(rule, today) : [];
 }
 
 /** On resume, an item carries on from its next day after today; what fell while paused is let go. */
@@ -136,13 +149,19 @@ export function upcoming(rules: readonly (RuleTiming & RuleTargets & { id: numbe
   const last = addDays(today, days);
   const out: Upcoming[] = [];
   for (const rule of rules) {
-    if (rule.paused || stoppedBecause(rule) !== null) continue;
+    if (!isRunning(rule)) continue;
     // Days already past are not upcoming: an asked item waiting from before today is on Home's Due today.
-    let state = { nextDue: rule.nextDue, occurrences: rule.occurrences };
-    while (state.nextDue <= last && !hasEnded({ ...rule, ...state })) {
-      if (state.nextDue >= today) out.push({ day: state.nextDue, ruleId: rule.id });
-      state = afterOccurrence({ ...rule, occurrences: state.occurrences }, state.nextDue);
-    }
+    for (const day of pendingThrough(rule, last)) if (day >= today) out.push({ day, ruleId: rule.id });
   }
   return out.sort((a, b) => (a.day === b.day ? a.ruleId - b.ruleId : a.day < b.day ? -1 : 1));
+}
+
+/**
+ * Where an item stands after it is changed to fall on `day`, every `cadence`. A new day or a new
+ * cadence starts the item again from that day, as if it were first made then; otherwise it is left
+ * where it was, so changing only its amount never moves or repeats a date.
+ */
+export function rescheduled(rule: Pick<RuleTiming, 'anchorDate' | 'cadence' | 'nextDue'>, change: { cadence: Cadence; day: string }): Pick<RuleTiming, 'anchorDate' | 'cadence' | 'nextDue'> {
+  if (change.cadence === rule.cadence && change.day === rule.nextDue) return { anchorDate: rule.anchorDate, cadence: rule.cadence, nextDue: rule.nextDue };
+  return { anchorDate: change.day, cadence: change.cadence, nextDue: change.day };
 }

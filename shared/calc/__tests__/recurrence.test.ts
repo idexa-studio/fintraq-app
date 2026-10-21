@@ -1,5 +1,5 @@
-import { addDays, dueOccurrences, firstDue, hasEnded, nextAfter, occurrence, resumedNextDue, stoppedBecause, upcoming } from '@/features/recurring/recurring-rules';
-import type { RuleTargets, RuleTiming } from '@/features/recurring/recurring-rules';
+import { addDays, dueOccurrences, firstDue, hasEnded, nextAfter, occurrence, pendingThrough, rescheduled, resumedNextDue, stoppedBecause, upcoming } from '@/shared/calc/recurrence';
+import type { RuleTargets, RuleTiming } from '@/shared/calc/recurrence';
 
 const rule = (over: Partial<RuleTiming & RuleTargets & { id: number }> = {}): RuleTiming & RuleTargets & { id: number } => ({
   id: 1, type: 'DR', accountId: 1, toAccountId: null, categoryId: 1,
@@ -78,7 +78,9 @@ describe('an item that cannot run', () => {
     expect(stoppedBecause({ type: 'DR', accountId: null, toAccountId: null, categoryId: 1 })).toBe('account');
     expect(stoppedBecause({ type: 'DR', accountId: 1, toAccountId: null, categoryId: null })).toBe('category');
     expect(stoppedBecause({ type: 'TR', accountId: 1, toAccountId: null, categoryId: null })).toBe('toAccount');
-    expect(stoppedBecause({ type: 'TR', accountId: 1, toAccountId: 2, categoryId: null })).toBeNull();
+    // A transfer is recorded with a category like any transaction, so losing it stops a transfer too.
+    expect(stoppedBecause({ type: 'TR', accountId: 1, toAccountId: 2, categoryId: null })).toBe('category');
+    expect(stoppedBecause({ type: 'TR', accountId: 1, toAccountId: 2, categoryId: 3 })).toBeNull();
   });
 
   it('makes nothing and shows nothing upcoming while stopped', () => {
@@ -105,5 +107,25 @@ describe('upcoming', () => {
   it('leaves out paused items and days past their end', () => {
     expect(upcoming([rule({ paused: true })], '2026-02-01')).toEqual([]);
     expect(upcoming([rule({ ends: 'times', endTimes: 0 })], '2026-02-01')).toEqual([]);
+  });
+});
+
+describe('what is still to be made', () => {
+  it('lists every day up to a given one, paused or not: running is asked separately', () => {
+    expect(pendingThrough(rule({ paused: true }), '2026-04-30')).toEqual(['2026-02-28', '2026-03-31', '2026-04-30']);
+    expect(pendingThrough(rule({ ends: 'times', endTimes: 2, occurrences: 1 }), '2026-12-31')).toEqual(['2026-02-28']);
+  });
+});
+
+describe('changing an item', () => {
+  const item = { anchorDate: '2026-01-31', cadence: 'month' as const, nextDue: '2026-02-28' };
+
+  it('leaves its days alone when only what it makes changes', () => {
+    expect(rescheduled(item, { cadence: 'month', day: '2026-02-28' })).toEqual(item);
+  });
+
+  it('starts again from a new day, or with a new cadence from its next day', () => {
+    expect(rescheduled(item, { cadence: 'month', day: '2026-03-05' })).toEqual({ anchorDate: '2026-03-05', cadence: 'month', nextDue: '2026-03-05' });
+    expect(rescheduled(item, { cadence: 'week', day: '2026-02-28' })).toEqual({ anchorDate: '2026-02-28', cadence: 'week', nextDue: '2026-02-28' });
   });
 });

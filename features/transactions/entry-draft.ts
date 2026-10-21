@@ -1,3 +1,6 @@
+import type { RepeatDraft } from '@/features/recurring';
+import { CADENCES } from '@/shared/calc/recurrence';
+import type { Cadence } from '@/shared/calc/recurrence';
 import type { TransactionType } from '@/shared/types';
 
 /**
@@ -15,6 +18,8 @@ export type EntryDraft = {
   /** When the transaction happened, as typed or as it stood when the entry was opened. */
   when: Date;
   note: string;
+  /** How it repeats, once Repeat is chosen. Left out by drafts kept before 2.1.0, which do not repeat. */
+  repeat?: RepeatDraft;
   /** When the draft was last written (epoch ms). */
   savedAt: number;
 };
@@ -31,6 +36,17 @@ export const isWorthKeeping = (draft: Pick<EntryDraft, 'amountText' | 'note'>): 
 export const writeDraft = (draft: EntryDraft): string => JSON.stringify({ ...draft, when: draft.when.getTime() });
 
 const idOrNull = (value: unknown): number | null => (typeof value === 'number' && Number.isInteger(value) ? value : null);
+
+const ENDS: readonly unknown[] = ['never', 'date', 'times'];
+
+/** A kept Repeat, or undefined when there is none or it cannot be read: the entry then does not repeat. */
+function repeatOf(value: unknown): RepeatDraft | undefined {
+  if (typeof value !== 'object' || value === null) return undefined;
+  const r = value as Record<string, unknown>;
+  const cadence = r.cadence === null ? null : CADENCES.includes(r.cadence as Cadence) ? (r.cadence as Cadence) : undefined;
+  if (cadence === undefined || (r.mode !== 'ask' && r.mode !== 'add') || !ENDS.includes(r.ends)) return undefined;
+  return { cadence, mode: r.mode, ends: r.ends as RepeatDraft['ends'], endDate: typeof r.endDate === 'string' ? r.endDate : null, endTimes: idOrNull(r.endTimes) };
+}
 
 /** The stored draft, if there is one still worth offering at `now`; anything unreadable is no draft. */
 export function readDraft(raw: string | null, now: number): EntryDraft | null {
@@ -55,6 +71,7 @@ export function readDraft(raw: string | null, now: number): EntryDraft | null {
     personId: idOrNull(v.personId),
     when: new Date(v.when),
     note: v.note,
+    ...(repeatOf(v.repeat) ? { repeat: repeatOf(v.repeat) } : {}),
     savedAt: v.savedAt,
   };
   return isWorthKeeping(draft) ? draft : null;

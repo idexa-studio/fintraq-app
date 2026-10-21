@@ -5,12 +5,15 @@ import { useAccounts } from '@/features/accounts';
 import { useCategories } from '@/features/categories';
 import { useLoanWithStats } from '@/features/loans';
 import { usePersons } from '@/features/people';
+import { NO_REPEAT, changedRuleOf, momentOf, newRuleOf, repeatOf, useCreateRepeating, useDeleteRecurring, useRecurringRule, useUpdateRecurring } from '@/features/recurring';
+import type { RepeatDraft, RulePayment } from '@/features/recurring';
 import { forgetDraft, keepDraft, loadDraft } from '@/features/transactions/entry-draft-store';
 import { isWorthKeeping } from '@/features/transactions/entry-draft';
 import { useCreateTransaction, useDeleteTransaction, useTransactionById, useUpdateTransaction } from '@/features/transactions/hooks/transactions';
 import { blockerOf, categoriesFor, defaultAccountId, defaultCategoryId, payloadOf, typeOfKind } from '@/features/transactions/transaction-form';
 import type { Blocker, FormState, Kind } from '@/features/transactions/transaction-form';
 import { transferDestinations } from '@/shared/calc/transfers';
+import { getLocalISOString } from '@/shared/date/date';
 import { parseAmountInput } from '@/shared/format/amount';
 import type { TransactionType } from '@/shared/types';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -25,26 +28,37 @@ export type TransactionFormOptions = {
   initialKind?: Kind;
   /** The account a new entry starts on, e.g. when opened from that account. Ignored when editing. */
   initialAccountId?: number;
+  /** Changing this repeating item: what it makes, and when and how it repeats. */
+  ruleId?: number | null;
+  /** A new entry that starts repeating every month, opened from Plan's repeating items. Ignored when editing. */
+  initialRepeat?: boolean;
 };
 
 /**
  * Everything the entry screen needs: the values being edited, what they may
  * be changed to, why saving is not possible yet, and saving itself.
  */
-export function useTransactionForm({ transactionId, initialKind = 'expense', initialAccountId }: TransactionFormOptions) {
-  const editing = transactionId != null;
+export function useTransactionForm({ transactionId, initialKind = 'expense', initialAccountId, ruleId, initialRepeat = false }: TransactionFormOptions) {
+  /** Changing a repeating item rather than a transaction: the same form, saved to the item. */
+  const item = ruleId != null;
+  const editing = transactionId != null || item;
   const accountsQuery = useAccounts();
   const categoriesQuery = useCategories();
   const peopleQuery = usePersons();
-  const existingQuery = useTransactionById(editing ? transactionId : null);
+  const existingQuery = useTransactionById(transactionId ?? null);
+  const ruleQuery = useRecurringRule(item ? ruleId : null);
   const create = useCreateTransaction();
+  const createRepeating = useCreateRepeating();
+  const updateRule = useUpdateRecurring();
+  const removeRule = useDeleteRecurring();
   const update = useUpdateTransaction();
   const remove = useDeleteTransaction();
 
   const accounts = useMemo<Account[]>(() => accountsQuery.data ?? [], [accountsQuery.data]);
   const categories = useMemo<Category[]>(() => categoriesQuery.data ?? [], [categoriesQuery.data]);
   const people = useMemo(() => peopleQuery.data ?? [], [peopleQuery.data]);
-  const existing = editing ? (existingQuery.data ?? null) : null;
+  const existing = transactionId != null ? (existingQuery.data ?? null) : null;
+  const rule = item ? (ruleQuery.data ?? null) : null;
 
   // A loan-linked payment is the loan's principal or one of its repayments. The loan owns its
   // type and category, so neither can be changed here; a repayment is also capped by what was owed.
@@ -60,6 +74,9 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
   const [personId, setPersonId] = useState<number | null>(null);
   const [when, setWhen] = useState(() => new Date());
   const [note, setNote] = useState('');
+  // What Repeat starts as: fixed for the life of the form.
+  const [startRepeat] = useState<RepeatDraft>(() => (initialRepeat && !editing ? { ...NO_REPEAT, cadence: 'month' } : NO_REPEAT));
+  const [repeat, setRepeat] = useState<RepeatDraft>(startRepeat);
   /** True once the user has changed anything, so leaving can ask before discarding it. */
   const [touched, setTouched] = useState(false);
 
@@ -83,6 +100,7 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
         setPersonId(draft.personId);
         setWhen(draft.when);
         setNote(draft.note);
+        setRepeat(draft.repeat ?? startRepeat);
         setTouched(true);
         setRestored(true);
       }
@@ -91,20 +109,20 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
     return () => {
       gone = true;
     };
-  }, [editing]);
+  }, [editing, startRepeat]);
 
   // Kept a moment after each change, until it is saved or thrown away.
   const finished = useRef(false);
   const keeping = !editing && draftChecked && touched;
   useEffect(() => {
     if (!keeping) return;
-    const draft = { type, amountText, accountId, toAccountId, categoryId, personId, when, note, savedAt: 0 };
+    const draft = { type, amountText, accountId, toAccountId, categoryId, personId, when, note, repeat, savedAt: 0 };
     const timer = setTimeout(() => {
       if (finished.current) return;
       void (isWorthKeeping(draft) ? keepDraft({ ...draft, savedAt: Date.now() }) : forgetDraft());
     }, KEEP_AFTER_MS);
     return () => clearTimeout(timer);
-  }, [keeping, type, amountText, accountId, toAccountId, categoryId, personId, when, note]);
+  }, [keeping, type, amountText, accountId, toAccountId, categoryId, personId, when, note, repeat]);
 
   /** The entry is done with, saved or thrown away: it is no longer kept or offered back. */
   const letGo = () => {
@@ -124,6 +142,21 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
     setPersonId(existing.personId ?? null);
     setWhen(new Date(existing.datetime));
     setNote(existing.note ?? '');
+  }
+
+  // Changing an item: start from what it makes, dated its next day at its time.
+  const [readRule, setReadRule] = useState<typeof rule>(null);
+  if (rule && readRule !== rule) {
+    setReadRule(rule);
+    setTypeState(rule.type);
+    setAmountText(String(rule.amount));
+    setAccountId(rule.accountId);
+    setToAccountId(rule.toAccountId);
+    setCategoryId(rule.categoryId);
+    setPersonId(rule.personId);
+    setWhen(momentOf(rule.nextDue, rule.time));
+    setNote(rule.note);
+    setRepeat(repeatOf(rule));
   }
 
   // Keep the account valid: start on the preferred one, and recover if the chosen one disappears.
@@ -154,7 +187,7 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
   const amount = parseAmountInput(amountText) ?? undefined;
   const state: FormState = { type, amount, accountId, toAccountId, categoryId, personId, when, note };
   const repaymentLimit = isRepayment && loan && existing ? loan.outstanding + existing.amount : undefined;
-  const saving = create.isPending || update.isPending;
+  const saving = create.isPending || update.isPending || createRepeating.isPending || updateRule.isPending;
   const blocker: Blocker | null = blockerOf(state, repaymentLimit);
 
   const touch = <T,>(set: (value: T) => void) => (value: T) => {
@@ -163,16 +196,36 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
     set(value);
   };
 
+  /** The item a newly added transaction started, so Undo takes both back. */
+  const startedRule = useRef<number | null>(null);
+
   /** Saves the entry. Resolves to the id of a newly added transaction, or null after an edit. */
   const save = async (fallbackNote: string): Promise<number | null> => {
     const payload = payloadOf(state, categories.find((c) => c.id === categoryId)?.name, fallbackNote);
+    const made: RulePayment = { type: payload.type, amount: payload.amount, accountId: payload.accountId, toAccountId: payload.toAccountId, categoryId: payload.categoryId, personId: payload.personId, note: payload.note };
+    if (rule && repeat.cadence) {
+      await updateRule.mutateAsync({ id: rule.id, data: changedRuleOf(rule, made, { ...repeat, cadence: repeat.cadence }, when, getLocalISOString()) });
+      return null;
+    }
     if (existing) {
       await update.mutateAsync({ id: existing.id, data: payload });
       return null;
     }
+    if (repeat.cadence) {
+      const started = await createRepeating.mutateAsync({ rule: newRuleOf(made, { ...repeat, cadence: repeat.cadence }, when), payment: payload });
+      startedRule.current = started.rule.id;
+      letGo();
+      return started.payment.id;
+    }
     const created = await create.mutateAsync(payload);
     letGo();
     return created?.id ?? null;
+  };
+
+  /** Takes back a transaction just added, and the item it started, if it started one. */
+  const undo = async (id: number) => {
+    if (startedRule.current !== null) await removeRule.mutateAsync(startedRule.current);
+    await remove.mutateAsync(id);
   };
 
   /** Clears an entry that was offered back, and starts again from nothing. */
@@ -186,14 +239,16 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
     setPersonId(null);
     setWhen(new Date());
     setNote('');
+    setRepeat(startRepeat);
     setTouched(false);
     setRestored(false);
   };
 
   return {
     editing,
-    loading: editing && (existingQuery.isPending || accountsQuery.isPending || categoriesQuery.isPending),
-    missing: editing && !existingQuery.isPending && !existing,
+    loading: editing && ((item ? ruleQuery.isPending : existingQuery.isPending) || accountsQuery.isPending || categoriesQuery.isPending),
+    missing: editing && (item ? !ruleQuery.isPending && !rule : !existingQuery.isPending && !existing),
+    item,
     loanLinked,
     isRepayment,
     loan: loan ?? null,
@@ -220,6 +275,8 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
     setWhen: touch(setWhen),
     note,
     setNote: touch(setNote),
+    repeat,
+    setRepeat: touch(setRepeat),
 
     accounts,
     destinations,
@@ -233,7 +290,7 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
     blocker,
     saving,
     save,
-    undo: (id: number) => remove.mutateAsync(id),
+    undo,
   };
 }
 

@@ -16,6 +16,8 @@ export const NOTIFICATION_PATHS = {
   daily: '/add?kind=expense',
   loan: (loanId: number) => `/loans/${loanId}`,
   backup: '/backup',
+  /** Home, where items waiting on their day are added or skipped. */
+  repeat: '/',
 } as const;
 
 const t = i18n.getFixedT(null, 'notifications');
@@ -64,6 +66,15 @@ export function loanInstalmentText(loan: LoanSubject): NotificationText {
   };
 }
 
+/** Items asked about on their day and waiting: how many, then the first two by name. */
+export function repeatDueText(names: readonly string[]): NotificationText {
+  const [first = '', second = ''] = names;
+  const body = names.length === 1 ? t('repeat.body.one', { first })
+    : names.length === 2 ? t('repeat.body.two', { first, second })
+    : t('repeat.body.more', { first, second, count: names.length - 2 });
+  return { title: t('repeat.title', { count: names.length }), body };
+}
+
 /** A planned reminder as it will read, with where its tap goes. `daily` is that day's line. */
 export function reminderContent(reminder: PlannedReminder, daily: DailyLine): NotificationText & { path: string } {
   switch (reminder.kind) {
@@ -73,6 +84,8 @@ export function reminderContent(reminder: PlannedReminder, daily: DailyLine): No
       return { ...loanInstalmentText(reminder), path: NOTIFICATION_PATHS.loan(reminder.loanId) };
     case 'due':
       return { ...loanDueText(reminder, reminder.daysBefore), path: NOTIFICATION_PATHS.loan(reminder.loanId) };
+    case 'repeat':
+      return { ...repeatDueText(reminder.names), path: NOTIFICATION_PATHS.repeat };
   }
 }
 

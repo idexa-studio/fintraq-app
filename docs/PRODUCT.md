@@ -43,7 +43,7 @@ paywall.
 | Feature | What it does | Free allowance | Status |
 | --- | --- | --- | --- |
 | **Budgets** | A monthly limit per category or overall, with progress, a warning at 80% and at the limit, and optional rollover of what was left | 1 budget | Next |
-| **Repeating items** | Rent, salary, subscriptions: entered once, then added automatically or offered for one-tap confirmation on the day. An "Upcoming" list shows the next 30 days | 2 items | Later |
+| **Repeating items** | Rent, salary, subscriptions: entered once, then added automatically or offered for one-tap confirmation on the day. An "Upcoming" list shows the next 30 days | 2 items | Live (2.1.0) |
 | **Goals** | A target amount and date, fed from an account; shows what to set aside each month to get there | 1 goal | Later |
 | **Safe to spend** | One number for today: income expected this month, minus bills still to come, minus budgets and goal contributions, divided by the days left | Pro only | Later |
 

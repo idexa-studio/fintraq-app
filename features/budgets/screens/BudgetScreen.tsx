@@ -3,6 +3,7 @@ import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { BudgetHead } from '@/features/budgets/components/BudgetHead';
 import { useBudgets, useDeleteBudget } from '@/features/budgets/hooks/budgets';
+import { stillToCome, useRecurringRules, useToday } from '@/features/recurring';
 import { TransactionRow, useTransactions } from '@/features/transactions';
 import { formatCurrency } from '@/shared/format/money';
 import { format, startOfMonth } from 'date-fns';
@@ -32,6 +33,8 @@ export function BudgetScreen() {
   const { data: budgets, isPending } = useBudgets();
   const { data: accounts } = useAccounts();
   const remove = useDeleteBudget();
+  const { data: rules } = useRecurringRules();
+  const day = useToday();
   const budget = budgets?.find((item) => item.id === id);
 
   const today = new Date();
@@ -79,6 +82,8 @@ export function BudgetScreen() {
   };
 
   const rolled = budget.limit - budget.monthlyLimit;
+  // Shown beside what is left, never taken off it: an asked bill may be skipped or come to a different amount.
+  const toCome = stillToCome(rules ?? [], { categoryId: budget.categoryId, currency: budget.currency }, day);
   const rows = (transactions ?? []).slice(0, SHOWN);
   const more = (transactions?.length ?? 0) > SHOWN;
   const seeAll = () => router.push({ pathname: '/activity', params: { ...(budget.categoryId != null ? { categoryId: budget.categoryId } : {}), from, to } });
@@ -92,6 +97,7 @@ export function BudgetScreen() {
         <Column>
           <BudgetHead budget={budget} today={today} />
           {rolled > 0 ? <Text variant="callout" tone="muted" align="center">{t('budget.rolled', { amount: formatCurrency(rolled, budget.currency) })}</Text> : null}
+          {toCome > 0 ? <Text variant="callout" tone="muted" align="center">{t('budget.toCome', { amount: formatCurrency(toCome, budget.currency) })}</Text> : null}
         </Column>
         <Column>
           <Section title={t('budget.thisMonth')} hint={rows.length ? t('budget.thisMonthHint') : undefined} actionLabel={more ? t('common:seeAll') : undefined} onAction={seeAll}>

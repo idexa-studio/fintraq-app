@@ -1,11 +1,11 @@
 import type { TransactionDetail } from '@/data/repositories/transactions';
 import { Button, Dialog, Emblem, Header, IconCircle, ListGroup, ListRow, Message, Money, Receipt, ReceiptRule, Screen, Skeleton, Text, resolveIcon, useTheme, useToast } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
-import { signedAmount } from '@/features/transactions/components/TransactionRow';
 import { useDeleteTransaction, useTransactionDetail } from '@/features/transactions/hooks/transactions';
 import { kindOfType } from '@/features/transactions/transaction-form';
 import { formatDate } from '@/shared/date/date';
 import { colorNumberToHex } from '@/shared/format/color';
+import { signedAmount } from '@/shared/format/money';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';

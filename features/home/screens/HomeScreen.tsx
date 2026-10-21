@@ -15,6 +15,7 @@ import { useGettingStarted } from '@/features/home/hooks/useGettingStarted';
 import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
 import { useHomePrompt } from '@/features/home/hooks/useHomePrompt';
 import { useAppLock } from '@/features/lock';
+import { DueToday } from '@/features/recurring';
 import { peopleByStanding, usePeopleWithBalances } from '@/features/people';
 import { firstName } from '@/features/home/home-rules';
 import { useSettings } from '@/features/settings';
@@ -93,6 +94,9 @@ export function HomeScreen() {
             {canTransfer ? <FeatureTile compact icon="arrows-left-right" color="lilac" description={t('quick.transferDetail')} label={t('quick.transfer')} onPress={() => add('transfer')} /> : null}
             <FeatureTile compact icon="hand-coins" color="pink" description={t('quick.lendDetail')} label={t('quick.lend')} onPress={lend} />
           </View>
+
+          {/* Repeating items asked about on their day: what needs doing today, so above the rest. */}
+          <DueToday />
 
           {start.visible ? <GettingStarted steps={start.steps} onStep={doStep} onHide={start.dismiss} /> : null}
           {/* Someone still getting started is not also asked for anything else. */}
