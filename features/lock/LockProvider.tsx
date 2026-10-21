@@ -1,5 +1,5 @@
 import { LockScreen } from '@/features/lock/LockScreen';
-import { shouldLockAfter } from '@/features/lock/lock-rules';
+import { hasLeftTheApp, shouldLockOnReturn } from '@/features/lock/lock-rules';
 import { LockStorage } from '@/platform/lock/lock-storage';
 import type { LockMode } from '@/platform/lock/lock-storage';
 import { LoggerService } from '@/shared/logging/logger';
@@ -69,10 +69,10 @@ export function LockProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const listener = AppState.addEventListener('change', (state) => {
-      if (state === 'background' || state === 'inactive') {
+      if (hasLeftTheApp(state)) {
         leftAt.current = Date.now();
       } else if (state === 'active') {
-        if (lockMode && shouldLockAfter(leftAt.current === null ? null : Date.now() - leftAt.current)) setIsLocked(true);
+        if (lockMode && shouldLockOnReturn(leftAt.current, Date.now())) setIsLocked(true);
         leftAt.current = null;
       }
     });

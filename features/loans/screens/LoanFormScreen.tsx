@@ -128,8 +128,7 @@ export function LoanFormScreen({ initialType = 'lend', initialPersonId }: LoanFo
       <FormBlock label={lending ? t('form.to') : t('form.from')}>
         <Card padded={false}>
           <ListRow
-            leading={person ? <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} /> : undefined}
-            icon={person ? undefined : 'user'}
+            leading={person ? <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} /> : <IconCircle icon="user" plain />}
             strong
             title={person?.name ?? (lending ? t('form.choosePerson') : t('form.anyone'))}
             onPress={() => setPicker('person')}
@@ -140,8 +139,7 @@ export function LoanFormScreen({ initialType = 'lend', initialPersonId }: LoanFo
       <FormBlock label={lending ? t('form.outOf') : t('form.into')}>
         <Card padded={false}>
           <ListRow
-            leading={account ? <IconCircle icon={accountTypeIcon(account.accountType)} color={colorNumberToHex(account.color)} /> : undefined}
-            icon={account ? undefined : 'wallet'}
+            leading={account ? <IconCircle icon={accountTypeIcon(account.accountType)} color={colorNumberToHex(account.color)} /> : <IconCircle icon="wallet" plain />}
             strong
             title={account?.name ?? t('form.chooseAccount')}
             subtitle={account ? t('form.available', { amount: formatCurrency(account.balance, account.currency) }) : undefined}

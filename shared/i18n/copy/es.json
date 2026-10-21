@@ -650,6 +650,12 @@
         "body": "Guarda una copia en tu propio Google Drive, actualizada dos veces al día.",
         "link": "Configurar la copia",
         "dismiss": "Ahora no"
+      },
+      "update": {
+        "title": "Fintraq {{version}} ya está disponible",
+        "body": "Actualizar lleva un minuto. Todo lo que registraste se queda en este teléfono.",
+        "link": "Actualizar Fintraq",
+        "dismiss": "Ahora no"
       }
     },
     "quick": {
@@ -1871,7 +1877,14 @@
       "deleted": "Movimiento eliminado",
       "deleteFailed": "No se pudo eliminar",
       "deleteFailedBody": "No se cambió nada. Inténtalo de nuevo."
-    }
+    },
+    "restored": {
+      "title": "Retomado donde lo dejaste",
+      "body": "Fintraq guardó lo que estabas escribiendo.",
+      "discard": "Descartar y empezar de nuevo"
+    },
+    "choosePerson": "Elegir una persona",
+    "personHint": "Con quién fue, si con alguien"
   },
   "guide": {
     "tips": {

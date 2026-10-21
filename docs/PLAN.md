@@ -30,14 +30,14 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | D | Screens at parity with the shipped app | 178 | 147 | In progress |
 | E | Pro: three plans and gating | 28 | 18 | In progress |
 | F | Remove the legacy code | 14 | 13 | In progress |
-| G | Release 1: the redesign | 40 | 12 | In progress |
+| G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
 | I | Version 2.2: repeating items | 31 | 0 |  |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
-| N | Every screen size | 37 | 18 | In progress |
+| N | Every screen size | 37 | 25 | In progress |
 
 ---
 
@@ -616,7 +616,7 @@ Done when: the redesign is live to all users with no data loss reported.
 - [ ] G2.11 The amount field takes letters: text sent to it from a hardware keyboard, a paste or adb is kept ("$.10Weekly shop" was seen while scripting on 2026-10-08). It must keep digits and one separator only
 - [ ] G2.12 Expo 57 upgrade checked on the Android phone (upgraded from 54 on 2026-10-08, branch `upgrade-expo`): a new development build runs, and the screens whose code changed for the stricter lint rules behave as before: add and edit a transaction (account, category and transfer destination stay valid), the account, category and person forms when editing, loan edit, Activity opened from a link, the PIN wait after wrong tries, Home's prompt, the slide-to-confirm control, a notification tap that starts the app. Seen on the Samsung 2026-10-09 with a new development build: first run, setup, Home, add an expense (account and category chosen by default), Activity, the receipt, and the edit form filled from the saved transaction. The rest of the list is not yet looked at
 - [ ] G2.13 Expo 57 upgrade checked on the iPhone: first run through to Home. Builds, signs with a free Apple account and starts on iOS 27 (2026-10-09); stopped at the update notice because remote config's `iosMinBuild` was 49
-- [ ] G2.14 Remote config `forceUpdateConfig`: `iosMinBuild` and `storeUrlIos` set for iOS before any iOS release (they held Android's 49 and a placeholder)
+- [ ] G2.14 Before any iOS release: `iosMinBuild` in `forceUpdateConfig` and `ios` in `latestVersionConfig` set in the console, and the App Store id put into `features/shell/open-store.ts`. Since 2026-10-17 the store link is built into the app; the console's `storeUrl*` are read only by 2.0.x installs, so they stay there
 - [ ] G2.15 Firebase on iOS through Swift packages, once react-native-firebase finds `GoogleService-Info.plist` in an Expo project (26.4.0 does not: the Crashlytics build step fails). Then drop `disableSPM` and static linking in `app.config.ts`. Its CocoaPods stop getting new versions after October 2026
 - [x] G2.16 Amounts on iOS have no thousands separator and a space after the symbol ("₹ 35939.88" on the iPhone, "₹37,769.63" on Android; seen 2026-10-09). The sign also sits after the symbol there ("₹ -48.31"). The two platforms must format money the same way
 - [x] G2.18 iOS: an amount in an Activity row is sometimes drawn tiny (the "Home internet" row on the iPhone, 2026-10-09): the text that shrinks to fit shrinks far too much
@@ -636,12 +636,15 @@ Done when: the redesign is live to all users with no data loss reported.
 ### G3. Store
 - [ ] G3.01 New screenshots and feature graphic Made 2026-10-08 in `store/` by `scripts/generate-store-assets.py` from Samsung captures with demo data (dollar main, euro, lira and rupee accounts), light mode: seven Play screenshots (1080 x 1920), the feature graphic (1024 x 500) and phone mockups. Not ticked: the owner has not chosen among them, they are English only, and there are no videos (owner: later).
   - Retaken 2026-10-13 from the current app (dollar demo data, light): eight phone screenshots with budgets among them, the feature graphic and the mockups. Still the owner's to choose and upload
+  - India set made 2026-10-20 for an en-IN listing, after an ASO review: `store/india/` from captures in `store/raw/india` (rupees as main currency; dollar, euro and lira accounts; Indian demo data: chai, petrol, a bike EMI, a UPI wallet, Rahul owes ₹1,500, you owe Priya ₹600). Udhar is the second screenshot ("Udhar: see who owes you"), the first says "Know where every ₹ goes"; brand names the review suggested (Swiggy, HDFC) are left out, as Play's metadata policy forbids others' marks. The demo data takes the home currency's life from `HOME_PROFILES` in `data/seed/demo-data.ts`; the dollar one is unchanged. Still the owner's to choose and upload. The earlier pictures moved to `store/global/` (captures `store/raw/global/`) for the default listing; `store/README.md` says which set goes where
 - [ ] G3.02 New app icon and splash, if the brand changes with the look (owner) Polished to the new look with C8.08; waits for the owner's eye on a build.
 - [ ] G3.03 Listing text: remove "No subscriptions"; describe the three plans
 - [ ] G3.04 Privacy policy and terms updated for subscriptions
 - [ ] G3.05 Data-safety and privacy labels reviewed
 - [ ] G3.06 Release notes
 - [x] G3.07 Version number decided (a redesign suggests 2.0.0) Set to 2.0.0 on 2026-10-08 in `app.json` and `package.json`; the build number is kept by EAS (`appVersionSource: remote`).
+- [ ] G3.08 Rupees as Indians write them: ₹8,25,487, not ₹825,487.00. Amounts follow the app's language (`appLocale()` in `shared/format/money.ts`), so English gives Western grouping and paise on every whole rupee. Decide with the owner whether INR is grouped in lakhs whatever the language and whole rupees drop the `.00`; then retake the India set (G3.01). Found 2026-10-20
+- [ ] G3.09 A budget row whose name and amount do not fit on one line wraps the amount under the name ("All spending" with ₹35,400.00 left, on a phone). Five-figure rupee amounts are common; design the row for them in the gallery first. Found 2026-10-20 while capturing the India set
 
 ### G4. Rollout
 - [ ] G4.01 Internal track, then closed testers
@@ -660,6 +663,19 @@ Asked for by the owner on 2026-10-09. No intro slides and no spotlight tour: peo
 - [ ] G5.07 Owner: the tips and the note read right, on a phone
 
 ---
+
+### G6. Telling people a new version is out (store 2.1; branch `feat/update-notice`)
+Asked for by the owner on 2026-10-17: nothing told someone on an older build that a newer one was
+out, short of the update screen that blocks the app. A second Remote Config key, `latestVersionConfig`
+(`{"android": {"build", "version"}, "ios": {...}}`), kept apart from `forceUpdateConfig` so that
+editing it every release can never switch the forced update off. Set it to a release's real build and
+version only once that release is at 100% on Play; before then most people cannot get it yet.
+- [x] G6.01 The rule, with tests (`platform/config/update-rules.ts`): a newer build is offered once; a newer one announced is offered again; anything missing, misspelt or zero offers nothing
+- [x] G6.02 Read `latestVersionConfig` with the other remote settings; `AppConfigGate` passes the release down; the forced update still wins
+- [x] G6.03 `UpdateSheet` over Home, after "What's new" and before the Pro offer; it does not wait for the first steps, which can stay up for days (found on the Honor, 2026-10-17); Update opens the store (one `openStore`, shared with the update screen); the build offered is kept under a new storage key, cleared by Erase everything
+- [x] G6.04 English copy and the 12 translations
+- [ ] G6.05 Owner: the sheet approved in the gallery (Home section, "A newer version")
+- [ ] G6.06 Seen on a device, with the owner's word on which: offered, put off, and not offered again for the same build
 
 ## After 2.0: one headline per version
 
@@ -684,6 +700,12 @@ budgets at once. The names above and the phase headings ("Version 2.1" to
 "Version 2.4") are kept as working names; in the store each is one lower from
 here on: repeating items 2.1, goals and the net worth trend 2.2, safe to spend
 and the statement 2.3.
+
+**Store 2.1 (owner, 2026-10-16):** repeating items (phase I) and every screen
+size (phase N, the part not in 2.0.1) go out together as **2.1**. 2.0.1 is in
+review on Play. Building both starts now, each on its own branch into `develop`;
+the release branch `release/2.1.0` is cut only once 2.0.1 is at 100% with no
+open crash.
 
 Rules for every version:
 
@@ -767,7 +789,7 @@ made on 2.0 still restores.
 
 ---
 
-## I. Version 2.2: repeating items
+## I. Version 2.2: repeating items (store 2.1, with phase N)
 
 Done when: rent, a salary and a subscription can each be set once and appear on
 their day without being typed again, a free user can keep two, and a phone left
@@ -904,7 +926,7 @@ account and runs on the owner's iPhone.
 
 ---
 
-## N. Every screen size (alongside, after 2.0.0 is out)
+## N. Every screen size (the foundation shipped in 2.0.1; the rest goes out in 2.1)
 
 Asked for by the owner on 2026-10-13: "fully responsive on tablet and all sized
 screens". Measured that day on the Samsung with its display set to other sizes:
@@ -975,16 +997,23 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
 ### N4. Screens on medium and expanded
 - [x] N4.01 The shell: bar or rail by width, the Add tab opening its task as a card
 - [x] N4.02 Home: balance and the month beside budgets, recent and accounts on expanded
-- [ ] N4.03 Activity, search and the transaction receipt
-- [ ] N4.04 Plan and a budget's page
+- [x] N4.03 Activity, search and the transaction receipt
+  - Seen on the Samsung at 1280 x 800, 800 x 1280 and its own size, 2026-10-16. Activity is a `List` (new in `design/`): it spans the window, so a swipe beside the column scrolls it, and its rows, loading and "nothing matches" keep to the column. `ChipRow` keeps to the column, so Search's kinds line up under its field. The receipt was already a 560 card
+- [x] N4.04 Plan and a budget's page
+  - Seen at 1280 x 800, 2026-10-16: on Plan, budgets stand beside loans; on a budget's page, the budget beside what counted towards it. One column below expanded, in the same order as before
 - [x] N4.05 Insights: cards in two columns on expanded
-- [ ] N4.06 Accounts, categories, people and loans, with their pages
-- [ ] N4.07 Every form and picker as a card
-- [ ] N4.08 Settings, backup, export, security, about
+- [x] N4.06 Accounts, categories, people and loans, with their pages
+  - Seen at 1280 x 800, 2026-10-16: an account's, a person's and a loan's page set the summary card beside the recent transactions (or the loan's story, reminders and note). The lists (accounts, categories, people) stay one column, as decided above
+- [x] N4.07 Every form and picker as a card
+  - Seen 2026-10-16 at 1280 x 800, 800 x 1280 and 600 x 960, keyboard up and down: every task (Add, edit, account, category, person, loan, its due date, repayment, budget) is a 560 card of one height, as an iPad form sheet is, shrinking only for the keyboard or a short screen; every picker (category, account, calculator, currency, filter, dates, calendar) is a card that hugs its content, standing over the dimmed task; a dialog is 400. Nothing needed changing
+- [x] N4.08 Settings, backup, export, security, about
+  - Seen at 1280 x 800, 2026-10-16: Settings, six sections long, stands in two columns (who you are, your money and preferences; then the reminder, safety and erasing). Backup, export, security and about fit one screen in one column, so they stay so. The phone's order is unchanged
 - [x] N4.09 Pro on medium and expanded
   - A task is a 560 card on a tablet, so there is no room to set the plans side by side and no need: seen as a card at 800 and 1280
-- [ ] N4.10 Onboarding, the lock screen and the launch screen
-- [ ] N4.11 What's new, the Pro offer, toasts and notices
+- [x] N4.10 Onboarding, the lock screen and the launch screen
+  - Seen 2026-10-16 at 1280 x 800 from a cleared install: the phone's splash, the launch screen (its waves widen with the screen and keep their shape; the mark and name stay in the middle), welcome, restore, setup with the keyboard up and down, the reminder offer, and the PIN lock (also at 800 x 1280) all keep to the column. Nothing needed changing
+- [x] N4.11 What's new, the Pro offer, toasts and notices
+  - Seen at 1280 x 800, 2026-10-16: What's new is a card (the Pro offer is the same `Sheet`); notices sit in their column. A toast ran across the whole window: now a 560 card in the middle on a wide screen, as a task is; unchanged on a phone (both seen)
 - [x] N4.12 A task card on a tablet stands over the dimmed screen it rose from, not over solid black (seen on Add at 600 and 1280 wide)
 - [x] N4.13 ~~Add opened by a link when the app was not running leaves a black screen when closed~~ Not a fault: retried on 2026-10-13 after leaving the app with Back, and closing, saving and discarding each land on Home. The black screen came from a blind tap of mine that could not be repeated
 - [x] N4.14 The amount field took letters typed from a hardware keyboard (seen with adb: "$.50Weekly shop"). It should take figures only, with a test
@@ -995,5 +1024,5 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
 - [ ] N5.03 iPad, upright, turned and in split view
 - [ ] N5.04 `docs/DESIGN_SYSTEM.md` and `docs/SCREENS.md` say how a screen answers each width
 - [ ] N5.05 Play: 7-inch and 10-inch screenshots; the listing marked for tablets
-  - Drawn 2026-10-13 by `scripts/generate-store-assets.py`: `store/play-tablet7` (five, 1080 x 1920, a small tablet upright) and `store/play-tablet10` (five, 2560 x 1440, a large tablet on its side with the rail and two columns), from the Samsung set to those sizes. Six in each. Uploading is the owner's
+  - Drawn 2026-10-13 by `scripts/generate-store-assets.py`: `store/global/tablet7` (moved there 2026-10-20; five, 1080 x 1920, a small tablet upright) and `store/global/tablet10` (five, 2560 x 1440, a large tablet on its side with the rail and two columns), from the Samsung set to those sizes. Six in each. Uploading is the owner's
 - [ ] N5.06 Release notes in `update-note.txt`

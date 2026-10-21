@@ -1,5 +1,6 @@
 import { Column, Columns } from '@/design/components/Columns';
 import { SheetFrame } from '@/design/components/SheetFrame';
+import { List } from '@/design/components/List';
 import { useKeyboardOverlap } from '@/design/components/useKeyboardOverlap';
 import { useLayout, WidePage } from '@/design/layout';
 import { useStyles, useTheme } from '@/design/ThemeProvider';
@@ -58,8 +59,8 @@ function sectionsOf(children: React.ReactNode, sideBySide: boolean): React.React
   });
 }
 
-const hasColumns = (children: React.ReactNode): boolean =>
-  React.Children.toArray(children).some((child) => React.isValidElement<{ children?: React.ReactNode }>(child) && (child.type === Columns || (child.type === React.Fragment && hasColumns(child.props.children))));
+const holds = (type: unknown, children: React.ReactNode): boolean =>
+  React.Children.toArray(children).some((child) => React.isValidElement<{ children?: React.ReactNode }>(child) && (child.type === type || (child.type === React.Fragment && holds(type, child.props.children))));
 
 /**
  * One section of a screen. It arrives a moment after the one above it, rising a little as it
@@ -94,8 +95,10 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, sheet
   const card = sheet && Platform.OS !== 'ios' && !layout.isCompact;
   // The content keeps to a column in the middle of a wide screen; the page colour still fills it.
   // A screen that lays its cards in two columns takes the wider page.
-  const sideBySide = layout.isExpanded && hasColumns(children);
+  const sideBySide = layout.isExpanded && holds(Columns, children);
   const column = { width: '100%', maxWidth: sideBySide ? layout.wide : layout.column, alignSelf: 'center' } as const;
+  // A `List` keeps to the column itself, and spans the window so the room beside it scrolls it too.
+  const spans = !scroll && holds(List, children);
 
   // On a short screen the keyboard leaves no room for both the field and the buttons: the field wins.
   const cramped = keyboard > 0 && layout.height - insets.top - keyboard < LAYOUT.roomForFooter;
@@ -120,7 +123,7 @@ export function Screen({ children, header, footer, tabBar, tabbed = false, sheet
           {arriving}
         </ScrollView>
       ) : (
-        <View style={[styles.fill, column, content]}>{children}</View>
+        <View style={[styles.fill, spans ? null : column, content]}>{children}</View>
       )}
       {footer && !cramped ? <View style={[styles.footer, column]}>{footer}</View> : null}
       {tabBar}

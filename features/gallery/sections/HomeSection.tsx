@@ -120,6 +120,13 @@ export function HomeSection() {
         <Specimen name="Tab tips" note="One on Activity and one on Plan, at the top, the first time there is something for it to describe. Each names what cannot be seen by looking. Closed with the cross, it never returns unless Settings brings the tips back.">
           {TIP_IDS.map((id) => <Notice key={id} title={guide.tips[id].title} body={guide.tips[id].body} onDismiss={() => {}} dismissLabel={guide.tips.dismiss} />)}
         </Specimen>
+        <Specimen name="A newer version" note="Over Home, once for each release announced in the remote settings (latestVersionConfig), when this build is older. Before the Pro offer, after the note about what is new. Unlike the update screen, it can be put off.">
+          <View style={{ backgroundColor: colors.scrim, paddingTop: space.xl }}>
+            <SheetPanel title="Fintraq 2.1.0 is ready" onClose={() => {}} footer={<><Button label="Update Fintraq" /><Button label="Not now" variant="link" /></>}>
+              <Text variant="body" tone="muted">Updating takes a minute. Everything you recorded stays on this phone.</Text>
+            </SheetPanel>
+          </View>
+        </Specimen>
         <Specimen name="The Pro offer" note="Over Home, for someone on the free plan with ten or more transactions, at most once a fortnight, and never together with the note about what is new or the first steps. One line from each part of Pro, read from the registry.">
           <View style={{ backgroundColor: colors.scrim, paddingTop: space.xl }}>
             <SheetPanel title="There is more in Fintraq Pro" onClose={() => {}} footer={<><Button label="See Fintraq Pro" /><Button label="Not now" variant="link" /></>}>

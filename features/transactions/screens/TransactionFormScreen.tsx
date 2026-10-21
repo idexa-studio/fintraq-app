@@ -1,5 +1,5 @@
 import {
-  FormBlock, AmountField, Button, Card, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, MarkTile, Message, Screen, Skeleton, TabStrip, Text, TextField, resolveIcon,
+  FormBlock, AmountField, Button, Card, Dialog, Emblem, Header, IconButton, IconCircle, ListGroup, ListRow, MarkTile, Message, Notice, Screen, Skeleton, TabStrip, Text, TextField, resolveIcon,
   useTheme, useToast,
 } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
@@ -141,6 +141,9 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
         </>
       }
     >
+      {/* Fintraq was started again under an entry being typed: it is back, with a way to drop it. */}
+      {form.restored ? <Notice title={t('restored.title')} body={t('restored.body')} linkLabel={t('restored.discard')} onLink={form.startOver} /> : null}
+
       <Card style={{ gap: space.sm }}>
         <Text variant="callout" tone="muted">{t('amount')}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
@@ -154,8 +157,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
       <FormBlock label={t('from')}>
         <Card padded={false}>
           <ListRow
-            leading={form.account ? <IconCircle icon={accountTypeIcon(form.account.accountType)} color={colorNumberToHex(form.account.color)} /> : undefined}
-            icon={form.account ? undefined : 'wallet'}
+            leading={form.account ? <IconCircle icon={accountTypeIcon(form.account.accountType)} color={colorNumberToHex(form.account.color)} /> : <IconCircle icon="wallet" plain />}
             strong
             title={form.account?.name ?? t('chooseAccount')}
             subtitle={form.account ? t('available', { amount: formatCurrency(form.account.balance, form.account.currency) }) : undefined}
@@ -169,8 +171,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
           <Card padded={false}>
             {form.destinations.length > 0 ? (
               <ListRow
-                leading={form.toAccount ? <IconCircle icon={accountTypeIcon(form.toAccount.accountType)} color={colorNumberToHex(form.toAccount.color)} /> : undefined}
-                icon={form.toAccount ? undefined : 'wallet'}
+                leading={form.toAccount ? <IconCircle icon={accountTypeIcon(form.toAccount.accountType)} color={colorNumberToHex(form.toAccount.color)} /> : <IconCircle icon="wallet" plain />}
                 strong
                 title={form.toAccount?.name ?? t('chooseAccount')}
                 subtitle={form.toAccount ? formatCurrency(form.toAccount.balance, form.toAccount.currency) : undefined}
@@ -202,15 +203,22 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
               onPress={() => setPicker('category')}
             />
           ) : null}
+          {/* Who it was with is a choice from a list, so it is a row that opens one, like the category. */}
+          {!form.loanLinked && form.people.length > 0 && form.type !== 'TR' ? (
+            <ListRow
+              leading={form.person ? <IconCircle initials={initialsOf(form.person.name)} color={colorNumberToHex(form.person.color)} /> : <IconCircle icon="user" plain />}
+              strong
+              title={form.person?.name ?? t('choosePerson')}
+              subtitle={form.person ? t('with') : t('personHint')}
+              onPress={() => setPicker('person')}
+            />
+          ) : null}
           <View style={{ padding: size.cardPadding, gap: space.lg }}>
             <TextField label={t('note')} value={form.note} onChangeText={form.setNote} placeholder={t('noteOptional')} maxLength={120} remaining={(count) => t('common:charactersLeft', { count })} />
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
               <View style={{ flex: 1 }}><TextField label={t('when')} value={when} onPress={() => setPicker('when')} /></View>
               <IconButton icon="calendar" onPress={() => setPicker('when')} accessibilityLabel={t('pickDate')} />
             </View>
-            {!form.loanLinked && form.people.length > 0 && form.type !== 'TR' ? (
-              <TextField label={t('with')} value={form.person?.name ?? t('noPerson')} onPress={() => setPicker('person')} />
-            ) : null}
           </View>
         </ListGroup>
       </FormBlock>
@@ -223,7 +231,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
       <WhenPicker visible={picker === 'when'} onClose={() => setPicker(null)} value={form.when} onChange={form.setWhen} />
 
       <Dialog visible={guard.asking} onRequestClose={guard.stay} title={t('discard.title')} body={t('discard.body')}>
-        <Button label={t('discard.confirm')} variant="danger" onPress={guard.leave} />
+        <Button label={t('discard.confirm')} variant="danger" onPress={() => { form.discard(); guard.leave(); }} />
         <Button label={t('discard.cancel')} variant="secondary" onPress={guard.stay} />
       </Dialog>
       <Dialog visible={failed} onRequestClose={() => setFailed(false)} title={t('saveFailed')} body={t('saveFailedBody')}>

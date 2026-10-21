@@ -650,6 +650,12 @@
         "body": "Gardez une copie dans votre propre Google Drive, mise à jour deux fois par jour.",
         "link": "Configurer la sauvegarde",
         "dismiss": "Pas maintenant"
+      },
+      "update": {
+        "title": "Fintraq {{version}} est disponible",
+        "body": "La mise à jour prend une minute. Tout ce que vous avez enregistré reste sur ce téléphone.",
+        "link": "Mettre à jour Fintraq",
+        "dismiss": "Pas maintenant"
       }
     },
     "quick": {
@@ -1871,7 +1877,14 @@
       "deleted": "Opération supprimée",
       "deleteFailed": "Suppression impossible",
       "deleteFailedBody": "Rien n’a été modifié. Réessayez."
-    }
+    },
+    "restored": {
+      "title": "Repris là où vous en étiez",
+      "body": "Fintraq a gardé ce que vous saisissiez.",
+      "discard": "Abandonner et recommencer"
+    },
+    "choosePerson": "Choisir une personne",
+    "personHint": "Avec qui, le cas échéant"
   },
   "guide": {
     "tips": {

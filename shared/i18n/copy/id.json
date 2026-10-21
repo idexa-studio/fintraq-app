@@ -640,6 +640,12 @@
         "body": "Simpan salinan di Google Drive Anda sendiri, diperbarui dua kali sehari.",
         "link": "Siapkan pencadangan",
         "dismiss": "Nanti saja"
+      },
+      "update": {
+        "title": "Fintraq {{version}} sudah tersedia",
+        "body": "Memperbarui hanya butuh semenit. Semua yang Anda catat tetap di ponsel ini.",
+        "link": "Perbarui Fintraq",
+        "dismiss": "Nanti saja"
       }
     },
     "quick": {
@@ -1852,7 +1858,14 @@
       "deleted": "Transaksi dihapus",
       "deleteFailed": "Tidak bisa menghapus",
       "deleteFailedBody": "Tidak ada yang berubah. Coba lagi."
-    }
+    },
+    "restored": {
+      "title": "Lanjut dari yang tadi",
+      "body": "Fintraq menyimpan yang sedang Anda ketik.",
+      "discard": "Buang dan mulai lagi"
+    },
+    "choosePerson": "Pilih orang",
+    "personHint": "Dengan siapa, jika ada"
   },
   "guide": {
     "tips": {

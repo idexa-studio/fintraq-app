@@ -8,6 +8,8 @@ import { GettingStarted } from '@/features/home/components/GettingStarted';
 import { AccountList, PeopleStrip, RecentList } from '@/features/home/components/HomeLists';
 import { MonthCard } from '@/features/home/components/MonthCard';
 import { ProOfferSheet } from '@/features/home/components/ProOfferSheet';
+import { UpdateSheet } from '@/features/home/components/UpdateSheet';
+import { useUpdateOffer } from '@/features/home/hooks/useUpdateOffer';
 import type { GettingStartedStepId } from '@/features/home/getting-started';
 import { useGettingStarted } from '@/features/home/hooks/useGettingStarted';
 import { useHomeBalances } from '@/features/home/hooks/useHomeBalances';
@@ -57,6 +59,7 @@ export function HomeScreen() {
   const start = useGettingStarted();
   const { prompt, dismiss: dismissPrompt } = useHomePrompt();
   const whatsNew = useWhatsNew();
+  const update = useUpdateOffer();
   // The lock screen is a window of its own; a sheet opened under it would come up over it.
   const { isLocked } = useAppLock();
   const doStep = (id: GettingStartedStepId) => {
@@ -130,7 +133,10 @@ export function HomeScreen() {
 
       <WhatsNewSheet visible={whatsNew.visible && !isLocked} onClose={whatsNew.dismiss} />
       {/* One thing over Home at a time: never with the note about what is new, the first steps, or the lock. */}
-      <ProOfferSheet visible={prompt === 'pro' && !whatsNew.visible && !start.visible && !isLocked} onSee={() => { dismissPrompt(); router.push('/pro'); }} onClose={dismissPrompt} />
+      {/* One sheet at a time over Home: what is new first, then a newer version, then Pro. A newer
+          version does not wait for the first steps, a card that can stay up for days; Pro does. */}
+      <UpdateSheet version={update.release && !whatsNew.visible && !isLocked ? update.release.version : null} onUpdate={update.update} onClose={update.dismiss} />
+      <ProOfferSheet visible={prompt === 'pro' && !update.release && !whatsNew.visible && !start.visible && !isLocked} onSee={() => { dismissPrompt(); router.push('/pro'); }} onClose={dismissPrompt} />
     </Screen>
   );
 }

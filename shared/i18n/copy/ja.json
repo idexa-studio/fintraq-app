@@ -640,6 +640,12 @@
         "body": "あなた自身の Google ドライブにコピーを保管し、1日2回更新します。",
         "link": "バックアップを設定",
         "dismiss": "今はしない"
+      },
+      "update": {
+        "title": "Fintraq {{version}} が公開されました",
+        "body": "アップデートは1分ほどで終わります。記録した内容はすべてこのスマートフォンに残ります。",
+        "link": "Fintraq をアップデート",
+        "dismiss": "今はしない"
       }
     },
     "quick": {
@@ -1852,7 +1858,14 @@
       "deleted": "取引を削除しました",
       "deleteFailed": "削除できませんでした",
       "deleteFailedBody": "何も変更されていません。もう一度お試しください。"
-    }
+    },
+    "restored": {
+      "title": "入力の途中から再開しました",
+      "body": "入力中の内容を Fintraq が残しました。",
+      "discard": "破棄して最初から"
+    },
+    "choosePerson": "相手を選ぶ",
+    "personHint": "誰と一緒だったか（いれば）"
   },
   "guide": {
     "tips": {

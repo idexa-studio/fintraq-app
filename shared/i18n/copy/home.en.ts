@@ -36,6 +36,12 @@ export default {
       link: 'See Fintraq Pro',
       dismiss: 'Not now',
     },
+    update: {
+      title: 'Fintraq {{version}} is ready',
+      body: 'Updating takes a minute. Everything you recorded stays on this phone.',
+      link: 'Update Fintraq',
+      dismiss: 'Not now',
+    },
     backup: {
       title: 'Your records live only on this phone',
       body: 'Keep a copy in your own Google Drive, updated twice a day.',

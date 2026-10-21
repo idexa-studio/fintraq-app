@@ -1,5 +1,5 @@
 import type { TransactionFilters, TransactionListItem } from '@/data/repositories/transactions';
-import { Button, Card, Chip, DayHeader, Dialog, Divider, EmptyState, Header, IconButton, Screen, Select, Skeleton, Stat, SwipeRow, TabStrip, Text, useStyles, useTheme, useToast } from '@/design';
+import { Button, Card, Chip, DayHeader, Dialog, Divider, EmptyState, Header, IconButton, List, Screen, Select, Skeleton, Stat, SwipeRow, TabStrip, Text, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { TabTip } from '@/features/guide';
@@ -17,7 +17,7 @@ import { formatCurrency } from '@/shared/format/money';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 type RowProps = {
   item: Extract<ActivityItem, { kind: 'row' }>;
@@ -185,38 +185,38 @@ export function ActivityScreen() {
         </View>
       }
     >
-      {list.isPending ? (
-        <View style={styles.loading}>
-          <Skeleton height={size.row * 2} />
-          <Skeleton height={size.row * 3} />
-          <Skeleton height={size.row * 2} />
-        </View>
-      ) : items.length === 0 ? (
-        <View style={styles.empty}>
-          {narrowed ? (
-            <EmptyState icon="search" title={t('noMatchTitle')} body={t('noMatchBody')} actionLabel={t('noMatchAction')} onAction={showEverything} />
+      <List
+        data={items}
+        keyExtractor={(item) => item.key}
+        renderItem={renderItem}
+        ListHeaderComponent={items.length > 0 ? top : null}
+        ListEmptyComponent={
+          list.isPending ? (
+            <View style={styles.loading}>
+              <Skeleton height={size.row * 2} />
+              <Skeleton height={size.row * 3} />
+              <Skeleton height={size.row * 2} />
+            </View>
           ) : (
-            <EmptyState icon="receipt" color="orange" title={t('emptyTitle')} body={t('emptyBody')} actionLabel={t('emptyAction')} onAction={() => router.push('/add')} />
-          )}
-        </View>
-      ) : (
-        <FlatList
-          data={items}
-          keyExtractor={(item) => item.key}
-          renderItem={renderItem}
-          ListHeaderComponent={top}
-          contentContainerStyle={styles.list}
-          showsVerticalScrollIndicator={false}
-          // Draw a screenful first and the rest in small batches, and keep only a few screens mounted.
-          initialNumToRender={10}
-          maxToRenderPerBatch={8}
-          windowSize={7}
-          removeClippedSubviews
-          onEndReached={() => { if (list.hasNextPage && !list.isFetchingNextPage) void list.fetchNextPage(); }}
-          onEndReachedThreshold={0.6}
-          ListFooterComponent={list.isFetchingNextPage ? <Skeleton height={size.row} /> : null}
-        />
-      )}
+            <View style={styles.empty}>
+              {narrowed ? (
+                <EmptyState icon="search" title={t('noMatchTitle')} body={t('noMatchBody')} actionLabel={t('noMatchAction')} onAction={showEverything} />
+              ) : (
+                <EmptyState icon="receipt" color="orange" title={t('emptyTitle')} body={t('emptyBody')} actionLabel={t('emptyAction')} onAction={() => router.push('/add')} />
+              )}
+            </View>
+          )
+        }
+        contentContainerStyle={[styles.list, items.length === 0 ? styles.fill : null]}
+        // Draw a screenful first and the rest in small batches, and keep only a few screens mounted.
+        initialNumToRender={10}
+        maxToRenderPerBatch={8}
+        windowSize={7}
+        removeClippedSubviews
+        onEndReached={() => { if (list.hasNextPage && !list.isFetchingNextPage) void list.fetchNextPage(); }}
+        onEndReachedThreshold={0.6}
+        ListFooterComponent={list.isFetchingNextPage ? <Skeleton height={size.row} /> : null}
+      />
 
       <ActivityFilterSheet visible={filtering} onClose={() => setFiltering(false)} filters={filters} onChange={change} accounts={accounts ?? []} categories={categories ?? []} people={people ?? []} />
 
@@ -241,6 +241,8 @@ const createStyles = ({ colors, radius, size, space }: Theme) =>
     row: { backgroundColor: colors.surface, overflow: 'hidden' },
     rowFirst: { borderTopLeftRadius: radius.md, borderTopRightRadius: radius.md },
     rowLast: { borderBottomLeftRadius: radius.md, borderBottomRightRadius: radius.md },
-    loading: { padding: size.screenPadding, gap: space.lg },
-    empty: { flex: 1, justifyContent: 'center', padding: size.screenPadding },
+    // An empty list fills the screen, so its message can stand in the middle.
+    fill: { flexGrow: 1 },
+    loading: { paddingVertical: size.screenPadding, gap: space.lg },
+    empty: { flex: 1, justifyContent: 'center', paddingVertical: size.screenPadding },
   });

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Fintraq",
     "slug": "luno",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "luno",
@@ -87,6 +87,12 @@
       ],
       "expo-system-ui",
       "expo-secure-store",
+      [
+        "expo-build-properties",
+        {
+          "ios": { "usePrecompiledModules": false }
+        }
+      ],
       "./plugins/with-fingerprint-not-required",
       "./plugins/with-text-measured-as-drawn",
       "./plugins/with-any-screen-size"

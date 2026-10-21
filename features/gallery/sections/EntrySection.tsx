@@ -55,13 +55,13 @@ export function EntrySection() {
                 <Text variant="bodyStrong">Details:</Text>
                 <ListGroup>
                   <ListRow leading={<IconCircle icon="shopping-cart" color="teal" />} strong title="Groceries" subtitle="Category" onPress={() => {}} />
+                  <ListRow leading={<IconCircle icon="user" plain />} strong title="Choose a person" subtitle="Who it was with, if anyone" onPress={() => {}} />
                   <View style={{ padding: size.cardPadding, gap: space.lg }}>
                     <TextField label="Note" value={note} onChangeText={setNote} placeholder="Optional" />
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
                       <View style={{ flex: 1 }}><TextField label="When" value="Today · 11:04 AM" onPress={() => {}} /></View>
                       <IconButton icon="calendar" accessibilityLabel="Choose the date and time" />
                     </View>
-                    <TextField label="With" value="No one" onPress={() => {}} />
                   </View>
                 </ListGroup>
               </View>

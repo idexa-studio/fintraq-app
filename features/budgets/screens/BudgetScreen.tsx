@@ -1,4 +1,4 @@
-import { Button, Dialog, Emblem, Header, IconButton, ListGroup, ListRow, Message, Screen, Section, Sheet, Skeleton, Text, useStyles, useTheme, useToast } from '@/design';
+import { Button, Column, Columns, Dialog, Emblem, Header, IconButton, ListGroup, ListRow, Message, Screen, Section, Sheet, Skeleton, Text, useStyles, useTheme, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
 import { BudgetHead } from '@/features/budgets/components/BudgetHead';
@@ -87,18 +87,24 @@ export function BudgetScreen() {
     <Screen
       header={<Header title={budget.category?.name ?? t('overall')} onBack={back} backLabel={t('back')} right={<IconButton icon="dots-three" onPress={() => setManaging(true)} accessibilityLabel={t('budget.manage')} />} />}
     >
-      <BudgetHead budget={budget} today={today} />
-      {rolled > 0 ? <Text variant="callout" tone="muted" align="center">{t('budget.rolled', { amount: formatCurrency(rolled, budget.currency) })}</Text> : null}
-
-      <Section title={t('budget.thisMonth')} hint={rows.length ? t('budget.thisMonthHint') : undefined} actionLabel={more ? t('common:seeAll') : undefined} onAction={seeAll}>
-        {rows.length > 0 ? (
-          <ListGroup>
-            {rows.map((tx) => <TransactionRow key={tx.id} transaction={tx} when="day" onPress={() => router.push({ pathname: '/transactions/[id]', params: { id: tx.id } })} />)}
-          </ListGroup>
-        ) : (
-          <Text variant="callout" tone="muted">{t('budget.nothing')}</Text>
-        )}
-      </Section>
+      {/* On a tablet on its side, the month's spending stands beside the budget. */}
+      <Columns>
+        <Column>
+          <BudgetHead budget={budget} today={today} />
+          {rolled > 0 ? <Text variant="callout" tone="muted" align="center">{t('budget.rolled', { amount: formatCurrency(rolled, budget.currency) })}</Text> : null}
+        </Column>
+        <Column>
+          <Section title={t('budget.thisMonth')} hint={rows.length ? t('budget.thisMonthHint') : undefined} actionLabel={more ? t('common:seeAll') : undefined} onAction={seeAll}>
+            {rows.length > 0 ? (
+              <ListGroup>
+                {rows.map((tx) => <TransactionRow key={tx.id} transaction={tx} when="day" onPress={() => router.push({ pathname: '/transactions/[id]', params: { id: tx.id } })} />)}
+              </ListGroup>
+            ) : (
+              <Text variant="callout" tone="muted">{t('budget.nothing')}</Text>
+            )}
+          </Section>
+        </Column>
+      </Columns>
 
       <Sheet visible={managing} onClose={() => setManaging(false)} title={t('budget.manage')}>
         <ListGroup>
