@@ -1067,7 +1067,7 @@
     "channels": {
       "reminders": {
         "name": "Pengingat",
-        "description": "Pengingat harian dan jatuh tempo pinjaman Anda"
+        "description": "Pengingat harian, jatuh tempo pinjaman, dan transaksi berulang Anda"
       },
       "backup": {
         "name": "Cadangan",
@@ -1187,6 +1187,16 @@
       "reconnect": {
         "title": "Hubungkan lagi Google Drive",
         "body": "Fintraq keluar dari akun Google Anda. Hubungkan lagi dan pencadangan berlanjut."
+      }
+    },
+    "repeat": {
+      "title_one": "{{count}} hal jatuh tempo hari ini",
+      "title_other": "{{count}} hal jatuh tempo hari ini",
+      "body": {
+        "one": "{{first}}. Tambahkan atau lewati di Fintraq.",
+        "two": "{{first}} dan {{second}}. Tambahkan atau lewati di Fintraq.",
+        "more_one": "{{first}}, {{second}}, dan {{count}} lainnya. Tambahkan atau lewati di Fintraq.",
+        "more_other": "{{first}}, {{second}}, dan {{count}} lainnya. Tambahkan atau lewati di Fintraq."
       }
     }
   },
@@ -1409,7 +1419,7 @@
       },
       "unlimited": {
         "title": "Tanpa batas",
-        "description": "Lebih dari {{people}} orang, {{loans}} pinjaman, dan {{budgets}} anggaran."
+        "description": "Lebih dari {{people}} orang, {{loans}} pinjaman, {{budgets}} anggaran, dan {{recurring}} transaksi berulang."
       }
     },
     "paywall": {
@@ -1872,7 +1882,9 @@
       "discard": "Buang dan mulai lagi"
     },
     "choosePerson": "Pilih orang",
-    "personHint": "Dengan siapa, jika ada"
+    "personHint": "Dengan siapa, jika ada",
+    "changeItem": "Ubah transaksi berulang",
+    "next": "Berikutnya"
   },
   "guide": {
     "tips": {
@@ -1944,7 +1956,8 @@
       "deleteTitle": "Hapus anggaran ini?",
       "deleteBody": "Transaksi Anda tetap ada. Hanya batasnya yang dihapus.",
       "deleteConfirm": "Hapus anggaran",
-      "deleted": "Anggaran dihapus"
+      "deleted": "Anggaran dihapus",
+      "toCome": "{{amount}} masih akan datang bulan ini dari transaksi berulang"
     },
     "form": {
       "targetHint": "Kategori",
@@ -2003,6 +2016,145 @@
       "near": "Tersimpan. {{name}} masih punya {{amount}} dari anggarannya.",
       "reached": "Tersimpan. {{name}} sudah mencapai anggarannya.",
       "over": "Tersimpan. {{name}} melebihi anggarannya sebesar {{amount}}."
+    }
+  },
+  "recurring": {
+    "cadence": {
+      "week": "Setiap minggu",
+      "twoWeeks": "Setiap 2 minggu",
+      "month": "Setiap bulan",
+      "year": "Setiap tahun"
+    },
+    "repeat": {
+      "label": "Ulangi",
+      "none": "Tidak berulang",
+      "asked": "Ditanyakan pada harinya",
+      "added": "Ditambahkan sendiri",
+      "noEnd": "tanpa akhir",
+      "until": "sampai {{date}}",
+      "times_one": "{{count}} kali total",
+      "times_other": "{{count}} kali total"
+    },
+    "sheet": {
+      "title": "Ulangi",
+      "howOften": "Seberapa sering:",
+      "never": "Tidak pernah",
+      "onItsDay": "Pada harinya:",
+      "askFirst": "Tanya saya dulu",
+      "addItself": "Tambahkan sendiri",
+      "ends": "Berakhir:",
+      "endNever": "Tidak pernah",
+      "endDate": "Pada tanggal",
+      "endTimes": "Setelah sejumlah kali",
+      "times": "Jumlah kali",
+      "timesHelper": "Yang ini dihitung sebagai yang pertama",
+      "blocked": {
+        "endDate": "Pilih hari terakhir setelah hari pertama",
+        "endTimes": "Pilih 2 kali atau lebih"
+      },
+      "done": "Selesai",
+      "limit": {
+        "title_one": "Anda punya {{count}} transaksi berulang",
+        "title_other": "Anda punya {{count}} transaksi berulang",
+        "body_one": "Paket gratis menyimpan {{count}}. Fintraq Pro tanpa batas.",
+        "body_other": "Paket gratis menyimpan {{count}}. Fintraq Pro tanpa batas.",
+        "link": "Lihat Fintraq Pro"
+      }
+    },
+    "row": {
+      "next": "berikutnya {{date}}",
+      "added": "ditambahkan sendiri",
+      "route": "{{from}} ke {{to}}",
+      "paused": "Dijeda",
+      "ended": "Selesai",
+      "stopped": "Berhenti",
+      "stoppedBecause": {
+        "account": "Akunnya dihapus",
+        "toAccount": "Akun tujuan uangnya dihapus",
+        "category": "Kategorinya dihapus"
+      }
+    },
+    "list": {
+      "title": "Berulang",
+      "hint": "Atur sekali, kembali pada harinya",
+      "add": "Tambah",
+      "empty": {
+        "title": "Belum ada yang berulang",
+        "body": "Pilih Ulangi saat menambahkan sewa, gaji, atau langganan, dan itu kembali pada harinya.",
+        "action": "Tambah transaksi"
+      }
+    },
+    "upcoming": {
+      "title": "Mendatang",
+      "hint": "30 hari ke depan",
+      "loan": "Jatuh tempo {{date}} · pinjaman",
+      "owesYou": "{{name}} berutang kepada Anda",
+      "youOwe": "Anda berutang kepada {{name}}",
+      "someoneOwes": "Seseorang berutang kepada Anda",
+      "youOweSomeone": "Anda berutang"
+    },
+    "due": {
+      "title": "Jatuh tempo hari ini",
+      "hint": "Tambahkan masing-masing, atau lewati kali ini",
+      "skip": "Lewati",
+      "add": "Tambah",
+      "since": "{{date}} · {{count}} menunggu",
+      "added": "Ditambahkan",
+      "skipped": "Dilewati",
+      "failed": "Tidak bisa menambahkan",
+      "failedBody": "Tidak ada yang dicatat. Periksa akunnya di halaman transaksi dan coba lagi.",
+      "ok": "OK",
+      "sheetHint": "Untuk {{date}}. Ubah jumlahnya jika kali ini berbeda."
+    },
+    "item": {
+      "notFound": "Transaksi berulang ini sudah tidak ada",
+      "back": "Kembali",
+      "manage": "Kelola transaksi berulang",
+      "kind": {
+        "DR": "Pengeluaran",
+        "CR": "Pemasukan",
+        "TR": "Transfer"
+      },
+      "howOften": "Seberapa sering",
+      "next": "Berikutnya",
+      "onItsDay": "Pada harinya",
+      "ends": "Berakhir",
+      "every": {
+        "week": "Setiap minggu, hari {{weekday}}",
+        "twoWeeks": "Setiap 2 minggu, hari {{weekday}}",
+        "month": "Setiap bulan, tanggal {{day}}",
+        "monthEnd": "Setiap bulan, tanggal {{day}} atau hari terakhir bulan itu",
+        "year": "Setiap tahun, pada {{date}}"
+      },
+      "askedFirst": "Ditanyakan dulu",
+      "addedItself": "Ditambahkan sendiri",
+      "endsNever": "Tidak pernah",
+      "endsOn": "Tidak ada setelah {{date}}",
+      "endsAfter_one": "Setelah {{count}} kali, {{made}} sejauh ini",
+      "endsAfter_other": "Setelah {{count}} kali, {{made}} sejauh ini",
+      "nextPaused": "Tidak selama dijeda",
+      "nextEnded": "Tidak ada lagi",
+      "nextStopped": "Tidak sampai diubah",
+      "pause": "Jeda",
+      "resume": "Lanjutkan",
+      "change": "Ubah",
+      "paused": "Dijeda. Tidak ada yang dibuat sampai Anda melanjutkannya.",
+      "resumed": "Dilanjutkan. Berikutnya pada {{date}}.",
+      "ended": "Sudah selesai. Ubah untuk melanjutkan.",
+      "stopped": "Sudah berhenti",
+      "stoppedBody": "Ubah untuk memilih yang lain, dan ia berlanjut dari hari berikutnya.",
+      "made": "Yang sudah dibuat",
+      "madeHint": "Terbaru dulu",
+      "nothingMade": "Belum ada",
+      "delete": "Hapus transaksi berulang",
+      "deleteTitle": "Hapus transaksi berulang ini?",
+      "deleteBody": "Transaksi yang sudah dibuat tetap ada. Tidak ada lagi yang dibuat.",
+      "deleteConfirm": "Hapus",
+      "keep": "Simpan saja",
+      "deleted": "Transaksi berulang dihapus",
+      "failed": "Tidak bisa menyimpan",
+      "failedBody": "Tidak ada yang berubah. Coba lagi.",
+      "ok": "OK"
     }
   }
 }

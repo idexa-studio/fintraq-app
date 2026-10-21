@@ -1067,7 +1067,7 @@
     "channels": {
       "reminders": {
         "name": "Erinnerungen",
-        "description": "Deine tägliche Erinnerung und Fälligkeiten von Darlehen"
+        "description": "Deine tägliche Erinnerung, Fälligkeiten von Darlehen und wiederkehrende Buchungen"
       },
       "backup": {
         "name": "Backup",
@@ -1187,6 +1187,16 @@
       "reconnect": {
         "title": "Google Drive neu verbinden",
         "body": "Fintraq wurde von deinem Google-Konto abgemeldet. Verbinde es wieder, dann laufen die Backups weiter."
+      }
+    },
+    "repeat": {
+      "title_one": "{{count}} Sache heute fällig",
+      "title_other": "{{count}} Sachen heute fällig",
+      "body": {
+        "one": "{{first}}. Füge sie in Fintraq hinzu oder überspringe sie.",
+        "two": "{{first}} und {{second}}. Füge sie in Fintraq hinzu oder überspringe sie.",
+        "more_one": "{{first}}, {{second}} und {{count}} weitere. Füge sie in Fintraq hinzu oder überspringe sie.",
+        "more_other": "{{first}}, {{second}} und {{count}} weitere. Füge sie in Fintraq hinzu oder überspringe sie."
       }
     }
   },
@@ -1409,7 +1419,7 @@
       },
       "unlimited": {
         "title": "Keine Limits",
-        "description": "Mehr als {{people}} Personen, {{loans}} Darlehen und {{budgets}} Budget."
+        "description": "Mehr als {{people}} Personen, {{loans}} Darlehen, {{budgets}} Budget und {{recurring}} wiederkehrende Buchungen."
       }
     },
     "paywall": {
@@ -1872,7 +1882,9 @@
       "discard": "Verwerfen und neu beginnen"
     },
     "choosePerson": "Person auswählen",
-    "personHint": "Mit wem, falls mit jemandem"
+    "personHint": "Mit wem, falls mit jemandem",
+    "changeItem": "Wiederkehrende Buchung ändern",
+    "next": "Nächste"
   },
   "guide": {
     "tips": {
@@ -1944,7 +1956,8 @@
       "deleteTitle": "Dieses Budget löschen?",
       "deleteBody": "Deine Buchungen bleiben. Nur das Limit wird entfernt.",
       "deleteConfirm": "Budget löschen",
-      "deleted": "Budget gelöscht"
+      "deleted": "Budget gelöscht",
+      "toCome": "Noch {{amount}} diesen Monat aus wiederkehrenden Buchungen"
     },
     "form": {
       "targetHint": "Kategorie",
@@ -2003,6 +2016,145 @@
       "near": "Gespeichert. {{name}} hat noch {{amount}} vom Budget.",
       "reached": "Gespeichert. {{name}} hat das Budget erreicht.",
       "over": "Gespeichert. {{name}} liegt {{amount}} über dem Budget."
+    }
+  },
+  "recurring": {
+    "cadence": {
+      "week": "Jede Woche",
+      "twoWeeks": "Alle 2 Wochen",
+      "month": "Jeden Monat",
+      "year": "Jedes Jahr"
+    },
+    "repeat": {
+      "label": "Wiederholen",
+      "none": "Wiederholt sich nicht",
+      "asked": "Am Tag nachgefragt",
+      "added": "Von selbst gebucht",
+      "noEnd": "ohne Ende",
+      "until": "bis {{date}}",
+      "times_one": "{{count}}-mal insgesamt",
+      "times_other": "{{count}}-mal insgesamt"
+    },
+    "sheet": {
+      "title": "Wiederholen",
+      "howOften": "Wie oft:",
+      "never": "Nie",
+      "onItsDay": "An ihrem Tag:",
+      "askFirst": "Vorher fragen",
+      "addItself": "Von selbst buchen",
+      "ends": "Endet:",
+      "endNever": "Nie",
+      "endDate": "An einem Datum",
+      "endTimes": "Nach einer Anzahl von Malen",
+      "times": "Anzahl insgesamt",
+      "timesHelper": "Diese zählt als die erste",
+      "blocked": {
+        "endDate": "Wähle einen letzten Tag nach dem ersten",
+        "endTimes": "Wähle 2-mal oder öfter"
+      },
+      "done": "Fertig",
+      "limit": {
+        "title_one": "Du hast {{count}} wiederkehrende Buchung",
+        "title_other": "Du hast {{count}} wiederkehrende Buchungen",
+        "body_one": "Der kostenlose Plan behält {{count}}. Fintraq Pro hat keine Grenze.",
+        "body_other": "Der kostenlose Plan behält {{count}}. Fintraq Pro hat keine Grenze.",
+        "link": "Fintraq Pro ansehen"
+      }
+    },
+    "row": {
+      "next": "nächste {{date}}",
+      "added": "von selbst gebucht",
+      "route": "{{from}} an {{to}}",
+      "paused": "Pausiert",
+      "ended": "Beendet",
+      "stopped": "Gestoppt",
+      "stoppedBecause": {
+        "account": "Ihr Konto wurde gelöscht",
+        "toAccount": "Das Konto, auf das sie bucht, wurde gelöscht",
+        "category": "Ihre Kategorie wurde gelöscht"
+      }
+    },
+    "list": {
+      "title": "Wiederkehrend",
+      "hint": "Einmal eingerichtet, am Tag wieder da",
+      "add": "Hinzufügen",
+      "empty": {
+        "title": "Noch wiederholt sich nichts",
+        "body": "Wähle Wiederholen, wenn du Miete, ein Gehalt oder ein Abo hinzufügst, und es kommt an seinem Tag wieder.",
+        "action": "Buchung hinzufügen"
+      }
+    },
+    "upcoming": {
+      "title": "Demnächst",
+      "hint": "Die nächsten 30 Tage",
+      "loan": "Fällig {{date}} · ein Darlehen",
+      "owesYou": "{{name}} schuldet dir",
+      "youOwe": "Du schuldest {{name}}",
+      "someoneOwes": "Jemand schuldet dir",
+      "youOweSomeone": "Du schuldest"
+    },
+    "due": {
+      "title": "Heute fällig",
+      "hint": "Buche jede, oder überspringe sie diesmal",
+      "skip": "Überspringen",
+      "add": "Hinzufügen",
+      "since": "{{date}} · {{count}} offen",
+      "added": "Hinzugefügt",
+      "skipped": "Übersprungen",
+      "failed": "Hinzufügen nicht möglich",
+      "failedBody": "Nichts wurde gebucht. Prüfe ihr Konto auf der Seite der Buchung und versuche es erneut.",
+      "ok": "OK",
+      "sheetHint": "Für {{date}}. Ändere den Betrag, wenn er diesmal anders war."
+    },
+    "item": {
+      "notFound": "Diese wiederkehrende Buchung gibt es nicht mehr",
+      "back": "Zurück",
+      "manage": "Wiederkehrende Buchung verwalten",
+      "kind": {
+        "DR": "Ausgabe",
+        "CR": "Einnahme",
+        "TR": "Umbuchung"
+      },
+      "howOften": "Wie oft",
+      "next": "Nächste",
+      "onItsDay": "An ihrem Tag",
+      "ends": "Endet",
+      "every": {
+        "week": "Jede Woche am {{weekday}}",
+        "twoWeeks": "Alle 2 Wochen am {{weekday}}",
+        "month": "Jeden Monat am {{day}}.",
+        "monthEnd": "Jeden Monat am {{day}}. oder am Monatsletzten",
+        "year": "Jedes Jahr am {{date}}"
+      },
+      "askedFirst": "Vorher gefragt",
+      "addedItself": "Von selbst gebucht",
+      "endsNever": "Nie",
+      "endsOn": "Nichts nach dem {{date}}",
+      "endsAfter_one": "Nach {{count}}-mal, bisher {{made}}",
+      "endsAfter_other": "Nach {{count}}-mal, bisher {{made}}",
+      "nextPaused": "Nicht, solange pausiert",
+      "nextEnded": "Nichts mehr",
+      "nextStopped": "Erst, wenn sie geändert ist",
+      "pause": "Pausieren",
+      "resume": "Fortsetzen",
+      "change": "Ändern",
+      "paused": "Pausiert. Nichts wird gebucht, bis du sie fortsetzt.",
+      "resumed": "Fortgesetzt. Nächste am {{date}}.",
+      "ended": "Sie ist abgelaufen. Ändere sie, um weiterzumachen.",
+      "stopped": "Sie ist gestoppt",
+      "stoppedBody": "Ändere sie, um ein anderes zu wählen, und sie läuft ab ihrem nächsten Tag weiter.",
+      "made": "Was sie gebucht hat",
+      "madeHint": "Neueste zuerst",
+      "nothingMade": "Noch nichts",
+      "delete": "Wiederkehrende Buchung löschen",
+      "deleteTitle": "Diese wiederkehrende Buchung löschen?",
+      "deleteBody": "Die Buchungen, die sie gemacht hat, bleiben. Es wird nichts mehr gebucht.",
+      "deleteConfirm": "Löschen",
+      "keep": "Behalten",
+      "deleted": "Wiederkehrende Buchung gelöscht",
+      "failed": "Speichern nicht möglich",
+      "failedBody": "Nichts wurde geändert. Versuche es erneut.",
+      "ok": "OK"
     }
   }
 }

@@ -32,7 +32,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Release 2.1.0: repeating items | 32 | 24 | In progress |
+| I | Release 2.1.0: repeating items | 32 | 25 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
@@ -905,8 +905,8 @@ unopened for three months catches up correctly.
 ### I5. Ship
 - [x] I5.01 `recurring` marked `live` in the registry
   - Done with the screens, as budgets were, so Plan's "Coming to Pro" card no longer lists it beside its own section. "No limits" now names 2 repeating items; `docs/PRODUCT.md` says live
-- [ ] I5.02 English copy and the 12 translations
-  - English written 2026-10-21 (`recurring` namespace, and lines in transactions, budgets, notifications and pro). The 118 lines go to the 12 languages after the owner has read them on the phone; until then those languages show English there, and the reminders channel's description and "No limits" carry their old wording
+- [x] I5.02 English copy and the 12 translations
+  - English written 2026-10-21 (`recurring` namespace, and lines in transactions, budgets, notifications and pro), read on the Samsung. 120 lines in each of the twelve languages the same day: the 118 new ones and the two whose English changed (the reminders channel's description, "No limits"). Each uses its language's own word for a transaction (es movimiento, fr opération, de Buchung, ja 取引, hi लेन-देन). Machine translations like the rest, wanting a native reader; `--check` is complete. Not looked at on a phone in any language but English
 - [x] I5.03 Analytics events added to the catalogue
   - `recurring_saved` (cadence, `on_day` ask or add, made or changed), `recurring_due` (added, added with the amount changed, skipped) and `recurring_state` (paused, resumed, deleted). No amounts, names or ids. The params `cadence`, `on_day`, `action` and `state` want custom definitions in the GA4 console (owner)
 - [ ] I5.04 Seen on the Android phone and on the iPhone, light and dark

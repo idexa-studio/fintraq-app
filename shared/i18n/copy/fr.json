@@ -1080,7 +1080,7 @@
     "channels": {
       "reminders": {
         "name": "Rappels",
-        "description": "Votre rappel quotidien et les échéances de prêts"
+        "description": "Votre rappel quotidien, les échéances de prêts et les opérations récurrentes"
       },
       "backup": {
         "name": "Sauvegarde",
@@ -1201,6 +1201,18 @@
       "reconnect": {
         "title": "Reconnectez Google Drive",
         "body": "Fintraq a été déconnecté de votre compte Google. Reconnectez-le et les sauvegardes reprennent."
+      }
+    },
+    "repeat": {
+      "title_one": "{{count}} chose due aujourd’hui",
+      "title_other": "{{count}} choses dues aujourd’hui",
+      "title_many": "{{count}} choses dues aujourd’hui",
+      "body": {
+        "one": "{{first}}. Ajoutez-la ou passez-la dans Fintraq.",
+        "two": "{{first}} et {{second}}. Ajoutez-les ou passez-les dans Fintraq.",
+        "more_one": "{{first}}, {{second}} et {{count}} autre. Ajoutez-les ou passez-les dans Fintraq.",
+        "more_other": "{{first}}, {{second}} et {{count}} autres. Ajoutez-les ou passez-les dans Fintraq.",
+        "more_many": "{{first}}, {{second}} et {{count}} autres. Ajoutez-les ou passez-les dans Fintraq."
       }
     }
   },
@@ -1426,7 +1438,7 @@
       },
       "unlimited": {
         "title": "Sans limites",
-        "description": "Plus de {{people}} personnes, {{loans}} prêts et {{budgets}} budget."
+        "description": "Plus de {{people}} personnes, {{loans}} prêts, {{budgets}} budget et {{recurring}} opérations récurrentes."
       }
     },
     "paywall": {
@@ -1892,7 +1904,9 @@
       "discard": "Abandonner et recommencer"
     },
     "choosePerson": "Choisir une personne",
-    "personHint": "Avec qui, le cas échéant"
+    "personHint": "Avec qui, le cas échéant",
+    "changeItem": "Modifier l’opération récurrente",
+    "next": "Prochaine"
   },
   "guide": {
     "tips": {
@@ -1966,7 +1980,8 @@
       "deleteTitle": "Supprimer ce budget ?",
       "deleteBody": "Vos transactions restent. Seule la limite est retirée.",
       "deleteConfirm": "Supprimer le budget",
-      "deleted": "Budget supprimé"
+      "deleted": "Budget supprimé",
+      "toCome": "Encore {{amount}} à venir ce mois-ci des opérations récurrentes"
     },
     "form": {
       "targetHint": "Catégorie",
@@ -2025,6 +2040,149 @@
       "near": "Enregistré. Il reste {{amount}} sur le budget de {{name}}.",
       "reached": "Enregistré. {{name}} a atteint son budget.",
       "over": "Enregistré. {{name}} dépasse son budget de {{amount}}."
+    }
+  },
+  "recurring": {
+    "cadence": {
+      "week": "Chaque semaine",
+      "twoWeeks": "Toutes les 2 semaines",
+      "month": "Chaque mois",
+      "year": "Chaque année"
+    },
+    "repeat": {
+      "label": "Répéter",
+      "none": "Ne se répète pas",
+      "asked": "Demandée le jour venu",
+      "added": "Ajoutée d’elle-même",
+      "noEnd": "sans fin",
+      "until": "jusqu’au {{date}}",
+      "times_one": "{{count}} fois en tout",
+      "times_other": "{{count}} fois en tout",
+      "times_many": "{{count}} fois en tout"
+    },
+    "sheet": {
+      "title": "Répéter",
+      "howOften": "À quelle fréquence :",
+      "never": "Jamais",
+      "onItsDay": "Le jour venu :",
+      "askFirst": "Me demander d’abord",
+      "addItself": "L’ajouter d’elle-même",
+      "ends": "Fin :",
+      "endNever": "Jamais",
+      "endDate": "À une date",
+      "endTimes": "Après un nombre de fois",
+      "times": "Nombre de fois",
+      "timesHelper": "Celle-ci compte comme la première",
+      "blocked": {
+        "endDate": "Choisissez un dernier jour après le premier",
+        "endTimes": "Choisissez 2 fois ou plus"
+      },
+      "done": "Terminé",
+      "limit": {
+        "title_one": "Vous avez {{count}} opération récurrente",
+        "title_other": "Vous avez {{count}} opérations récurrentes",
+        "title_many": "Vous avez {{count}} opérations récurrentes",
+        "body_one": "L’offre gratuite en garde {{count}}. Fintraq Pro n’a pas de limite.",
+        "body_other": "L’offre gratuite en garde {{count}}. Fintraq Pro n’a pas de limite.",
+        "body_many": "L’offre gratuite en garde {{count}}. Fintraq Pro n’a pas de limite.",
+        "link": "Voir Fintraq Pro"
+      }
+    },
+    "row": {
+      "next": "prochaine le {{date}}",
+      "added": "ajoutée d’elle-même",
+      "route": "{{from}} vers {{to}}",
+      "paused": "En pause",
+      "ended": "Terminée",
+      "stopped": "Arrêtée",
+      "stoppedBecause": {
+        "account": "Son compte a été supprimé",
+        "toAccount": "Le compte vers lequel elle verse a été supprimé",
+        "category": "Sa catégorie a été supprimée"
+      }
+    },
+    "list": {
+      "title": "Récurrentes",
+      "hint": "Réglées une fois, de retour le jour venu",
+      "add": "Ajouter",
+      "empty": {
+        "title": "Rien ne se répète encore",
+        "body": "Choisissez Répéter en ajoutant le loyer, un salaire ou un abonnement, et il revient le jour venu.",
+        "action": "Ajouter une opération"
+      }
+    },
+    "upcoming": {
+      "title": "À venir",
+      "hint": "Les 30 prochains jours",
+      "loan": "Échéance le {{date}} · un prêt",
+      "owesYou": "{{name}} vous doit",
+      "youOwe": "Vous devez à {{name}}",
+      "someoneOwes": "Quelqu’un vous doit",
+      "youOweSomeone": "Vous devez"
+    },
+    "due": {
+      "title": "Dû aujourd’hui",
+      "hint": "Ajoutez chacune, ou passez-la cette fois",
+      "skip": "Passer",
+      "add": "Ajouter",
+      "since": "{{date}} · {{count}} en attente",
+      "added": "Ajoutée",
+      "skipped": "Passée",
+      "failed": "Ajout impossible",
+      "failedBody": "Rien n’a été enregistré. Vérifiez son compte sur la page de l’opération et réessayez.",
+      "ok": "OK",
+      "sheetHint": "Pour le {{date}}. Modifiez le montant s’il était différent cette fois."
+    },
+    "item": {
+      "notFound": "Cette opération récurrente n’existe plus",
+      "back": "Retour",
+      "manage": "Gérer l’opération récurrente",
+      "kind": {
+        "DR": "Dépense",
+        "CR": "Revenu",
+        "TR": "Virement"
+      },
+      "howOften": "Fréquence",
+      "next": "Prochaine",
+      "onItsDay": "Le jour venu",
+      "ends": "Fin",
+      "every": {
+        "week": "Chaque semaine, le {{weekday}}",
+        "twoWeeks": "Toutes les 2 semaines, le {{weekday}}",
+        "month": "Chaque mois, le {{day}}",
+        "monthEnd": "Chaque mois, le {{day}} ou le dernier jour du mois",
+        "year": "Chaque année, le {{date}}"
+      },
+      "askedFirst": "Demandée d’abord",
+      "addedItself": "Ajoutée d’elle-même",
+      "endsNever": "Jamais",
+      "endsOn": "Rien après le {{date}}",
+      "endsAfter_one": "Après {{count}} fois, {{made}} jusqu’ici",
+      "endsAfter_other": "Après {{count}} fois, {{made}} jusqu’ici",
+      "endsAfter_many": "Après {{count}} fois, {{made}} jusqu’ici",
+      "nextPaused": "Pas tant qu’elle est en pause",
+      "nextEnded": "Plus rien",
+      "nextStopped": "Pas avant d’être modifiée",
+      "pause": "Mettre en pause",
+      "resume": "Reprendre",
+      "change": "Modifier",
+      "paused": "En pause. Rien n’est créé tant que vous ne la reprenez pas.",
+      "resumed": "Reprise. Prochaine le {{date}}.",
+      "ended": "Elle est arrivée à son terme. Modifiez-la pour continuer.",
+      "stopped": "Elle s’est arrêtée",
+      "stoppedBody": "Modifiez-la pour en choisir un autre, et elle reprend à son prochain jour.",
+      "made": "Ce qu’elle a créé",
+      "madeHint": "Les plus récentes d’abord",
+      "nothingMade": "Rien pour l’instant",
+      "delete": "Supprimer l’opération récurrente",
+      "deleteTitle": "Supprimer cette opération récurrente ?",
+      "deleteBody": "Les opérations qu’elle a créées restent. Rien de plus n’est créé.",
+      "deleteConfirm": "Supprimer",
+      "keep": "La garder",
+      "deleted": "Opération récurrente supprimée",
+      "failed": "Enregistrement impossible",
+      "failedBody": "Rien n’a changé. Réessayez.",
+      "ok": "OK"
     }
   }
 }

@@ -1080,7 +1080,7 @@
     "channels": {
       "reminders": {
         "name": "Recordatorios",
-        "description": "Tu recordatorio diario y los vencimientos de préstamos"
+        "description": "Tu recordatorio diario, los vencimientos de préstamos y los movimientos recurrentes"
       },
       "backup": {
         "name": "Copia de seguridad",
@@ -1201,6 +1201,18 @@
       "reconnect": {
         "title": "Vuelve a conectar Google Drive",
         "body": "Se cerró la sesión de Fintraq en tu cuenta de Google. Conéctala otra vez y las copias continúan."
+      }
+    },
+    "repeat": {
+      "title_one": "{{count}} cosa vence hoy",
+      "title_other": "{{count}} cosas vencen hoy",
+      "title_many": "{{count}} cosas vencen hoy",
+      "body": {
+        "one": "{{first}}. Añádelo u omítelo en Fintraq.",
+        "two": "{{first}} y {{second}}. Añádelos u omítelos en Fintraq.",
+        "more_one": "{{first}}, {{second}} y {{count}} más. Añádelos u omítelos en Fintraq.",
+        "more_other": "{{first}}, {{second}} y {{count}} más. Añádelos u omítelos en Fintraq.",
+        "more_many": "{{first}}, {{second}} y {{count}} más. Añádelos u omítelos en Fintraq."
       }
     }
   },
@@ -1426,7 +1438,7 @@
       },
       "unlimited": {
         "title": "Sin límites",
-        "description": "Más de {{people}} personas, {{loans}} préstamos y {{budgets}} presupuesto."
+        "description": "Más de {{people}} personas, {{loans}} préstamos, {{budgets}} presupuesto y {{recurring}} movimientos recurrentes."
       }
     },
     "paywall": {
@@ -1892,7 +1904,9 @@
       "discard": "Descartar y empezar de nuevo"
     },
     "choosePerson": "Elegir una persona",
-    "personHint": "Con quién fue, si con alguien"
+    "personHint": "Con quién fue, si con alguien",
+    "changeItem": "Cambiar movimiento recurrente",
+    "next": "Próximo"
   },
   "guide": {
     "tips": {
@@ -1966,7 +1980,8 @@
       "deleteTitle": "¿Eliminar este presupuesto?",
       "deleteBody": "Tus transacciones se quedan. Solo se quita el límite.",
       "deleteConfirm": "Eliminar presupuesto",
-      "deleted": "Presupuesto eliminado"
+      "deleted": "Presupuesto eliminado",
+      "toCome": "{{amount}} aún por llegar este mes de movimientos recurrentes"
     },
     "form": {
       "targetHint": "Categoría",
@@ -2025,6 +2040,149 @@
       "near": "Guardado. A {{name}} le quedan {{amount}} de su presupuesto.",
       "reached": "Guardado. {{name}} ha alcanzado su presupuesto.",
       "over": "Guardado. {{name}} supera su presupuesto en {{amount}}."
+    }
+  },
+  "recurring": {
+    "cadence": {
+      "week": "Cada semana",
+      "twoWeeks": "Cada 2 semanas",
+      "month": "Cada mes",
+      "year": "Cada año"
+    },
+    "repeat": {
+      "label": "Repetir",
+      "none": "No se repite",
+      "asked": "Se pregunta en su día",
+      "added": "Se añade solo",
+      "noEnd": "sin fin",
+      "until": "hasta el {{date}}",
+      "times_one": "{{count}} vez en total",
+      "times_other": "{{count}} veces en total",
+      "times_many": "{{count}} veces en total"
+    },
+    "sheet": {
+      "title": "Repetir",
+      "howOften": "Frecuencia:",
+      "never": "Nunca",
+      "onItsDay": "En su día:",
+      "askFirst": "Preguntarme antes",
+      "addItself": "Añadirlo solo",
+      "ends": "Termina:",
+      "endNever": "Nunca",
+      "endDate": "En una fecha",
+      "endTimes": "Tras un número de veces",
+      "times": "Veces en total",
+      "timesHelper": "Este cuenta como el primero",
+      "blocked": {
+        "endDate": "Elige un último día posterior al primero",
+        "endTimes": "Elige 2 veces o más"
+      },
+      "done": "Listo",
+      "limit": {
+        "title_one": "Tienes {{count}} movimiento recurrente",
+        "title_other": "Tienes {{count}} movimientos recurrentes",
+        "title_many": "Tienes {{count}} movimientos recurrentes",
+        "body_one": "El plan gratuito guarda {{count}}. Fintraq Pro no tiene límite.",
+        "body_other": "El plan gratuito guarda {{count}}. Fintraq Pro no tiene límite.",
+        "body_many": "El plan gratuito guarda {{count}}. Fintraq Pro no tiene límite.",
+        "link": "Ver Fintraq Pro"
+      }
+    },
+    "row": {
+      "next": "próximo {{date}}",
+      "added": "se añade solo",
+      "route": "{{from}} a {{to}}",
+      "paused": "En pausa",
+      "ended": "Terminado",
+      "stopped": "Detenido",
+      "stoppedBecause": {
+        "account": "Se eliminó su cuenta",
+        "toAccount": "Se eliminó la cuenta a la que mueve dinero",
+        "category": "Se eliminó su categoría"
+      }
+    },
+    "list": {
+      "title": "Recurrentes",
+      "hint": "Se configuran una vez y vuelven en su día",
+      "add": "Añadir",
+      "empty": {
+        "title": "Nada se repite todavía",
+        "body": "Elige Repetir al añadir el alquiler, un sueldo o una suscripción, y volverá en su día.",
+        "action": "Añadir un movimiento"
+      }
+    },
+    "upcoming": {
+      "title": "Próximamente",
+      "hint": "Los próximos 30 días",
+      "loan": "Vence {{date}} · un préstamo",
+      "owesYou": "{{name}} te debe",
+      "youOwe": "Le debes a {{name}}",
+      "someoneOwes": "Alguien te debe",
+      "youOweSomeone": "Debes"
+    },
+    "due": {
+      "title": "Vence hoy",
+      "hint": "Añade cada uno u omítelo esta vez",
+      "skip": "Omitir",
+      "add": "Añadir",
+      "since": "{{date}} · {{count}} pendientes",
+      "added": "Añadido",
+      "skipped": "Omitido",
+      "failed": "No se pudo añadir",
+      "failedBody": "No se registró nada. Revisa su cuenta en la página del movimiento e inténtalo de nuevo.",
+      "ok": "Aceptar",
+      "sheetHint": "Para el {{date}}. Cambia el importe si esta vez fue distinto."
+    },
+    "item": {
+      "notFound": "Este movimiento recurrente ya no existe",
+      "back": "Atrás",
+      "manage": "Gestionar movimiento recurrente",
+      "kind": {
+        "DR": "Gasto",
+        "CR": "Ingreso",
+        "TR": "Transferencia"
+      },
+      "howOften": "Frecuencia",
+      "next": "Próximo",
+      "onItsDay": "En su día",
+      "ends": "Termina",
+      "every": {
+        "week": "Cada semana, el {{weekday}}",
+        "twoWeeks": "Cada 2 semanas, el {{weekday}}",
+        "month": "Cada mes, el día {{day}}",
+        "monthEnd": "Cada mes, el día {{day}} o el último del mes",
+        "year": "Cada año, el {{date}}"
+      },
+      "askedFirst": "Se pregunta antes",
+      "addedItself": "Se añade solo",
+      "endsNever": "Nunca",
+      "endsOn": "Nada después del {{date}}",
+      "endsAfter_one": "Tras {{count}} vez, {{made}} hasta ahora",
+      "endsAfter_other": "Tras {{count}} veces, {{made}} hasta ahora",
+      "endsAfter_many": "Tras {{count}} veces, {{made}} hasta ahora",
+      "nextPaused": "No mientras está en pausa",
+      "nextEnded": "Nada más",
+      "nextStopped": "No hasta que se cambie",
+      "pause": "Pausar",
+      "resume": "Reanudar",
+      "change": "Cambiar",
+      "paused": "En pausa. No se crea nada hasta que lo reanudes.",
+      "resumed": "Reanudado. Próximo el {{date}}.",
+      "ended": "Ha cumplido su ciclo. Cámbialo para seguir.",
+      "stopped": "Se ha detenido",
+      "stoppedBody": "Cámbialo para elegir otra y seguirá desde su próximo día.",
+      "made": "Lo que ha creado",
+      "madeHint": "Lo más reciente primero",
+      "nothingMade": "Nada todavía",
+      "delete": "Eliminar movimiento recurrente",
+      "deleteTitle": "¿Eliminar este movimiento recurrente?",
+      "deleteBody": "Los movimientos que creó se quedan. No se crea nada más.",
+      "deleteConfirm": "Eliminar",
+      "keep": "Conservar",
+      "deleted": "Movimiento recurrente eliminado",
+      "failed": "No se pudo guardar",
+      "failedBody": "No se cambió nada. Inténtalo de nuevo.",
+      "ok": "Aceptar"
     }
   }
 }
