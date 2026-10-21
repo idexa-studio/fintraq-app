@@ -1855,7 +1855,14 @@
       "person": "Com quem foi?",
       "date": "Quando foi?",
       "time": "Horário",
-      "done": "Concluir"
+      "done": "Concluir",
+      "newPerson": "Adicionar uma pessoa",
+      "personName": "Nome",
+      "personHintNew": "Telefone, e-mail e trabalho podem ser adicionados depois em Pessoas.",
+      "addPerson": "Adicionar e escolher",
+      "personFailed": "A pessoa não foi adicionada",
+      "personFailedBody": "Nada foi alterado. Tente de novo.",
+      "noPeopleYet": "Ainda não há ninguém. Adicione a pessoa com quem está esse dinheiro."
     },
     "saved": {
       "expense": "Despesa salva",

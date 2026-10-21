@@ -1833,7 +1833,14 @@
       "person": "Dengan siapa?",
       "date": "Kapan?",
       "time": "Waktu",
-      "done": "Selesai"
+      "done": "Selesai",
+      "newPerson": "Tambah orang",
+      "personName": "Nama",
+      "personHintNew": "Telepon, email, dan pekerjaannya bisa ditambahkan nanti di Orang.",
+      "addPerson": "Tambah dan pilih",
+      "personFailed": "Orang itu tidak ditambahkan",
+      "personFailedBody": "Tidak ada yang berubah. Coba lagi.",
+      "noPeopleYet": "Belum ada siapa pun. Tambahkan orang yang terkait dengan uang ini."
     },
     "saved": {
       "expense": "Pengeluaran disimpan",

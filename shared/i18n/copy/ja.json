@@ -1833,7 +1833,14 @@
       "person": "誰と一緒でしたか？",
       "date": "いつでしたか？",
       "time": "時刻",
-      "done": "完了"
+      "done": "完了",
+      "newPerson": "人を追加",
+      "personName": "名前",
+      "personHintNew": "電話、メール、仕事はあとで「人」で追加できます。",
+      "addPerson": "追加して選ぶ",
+      "personFailed": "追加できませんでした",
+      "personFailedBody": "何も変更されていません。もう一度お試しください。",
+      "noPeopleYet": "まだ誰もいません。このお金の相手を追加してください。"
     },
     "saved": {
       "expense": "支出を保存しました",

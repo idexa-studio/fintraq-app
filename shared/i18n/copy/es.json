@@ -1855,7 +1855,14 @@
       "person": "¿Con quién fue?",
       "date": "¿Cuándo fue?",
       "time": "Hora",
-      "done": "Listo"
+      "done": "Listo",
+      "newPerson": "Añadir una persona",
+      "personName": "Nombre",
+      "personHintNew": "Su teléfono, correo y trabajo se pueden añadir luego en Personas.",
+      "addPerson": "Añadir y elegir",
+      "personFailed": "No se añadió la persona",
+      "personFailedBody": "No se cambió nada. Inténtalo de nuevo.",
+      "noPeopleYet": "Aún no hay nadie. Añade a la persona con la que es este dinero."
     },
     "saved": {
       "expense": "Gasto guardado",

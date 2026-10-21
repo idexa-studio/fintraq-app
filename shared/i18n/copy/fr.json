@@ -1855,7 +1855,14 @@
       "person": "C’était avec qui ?",
       "date": "C’était quand ?",
       "time": "Heure",
-      "done": "Terminé"
+      "done": "Terminé",
+      "newPerson": "Ajouter une personne",
+      "personName": "Nom",
+      "personHintNew": "Son téléphone, son e-mail et son travail peuvent être ajoutés plus tard dans Personnes.",
+      "addPerson": "Ajouter et choisir",
+      "personFailed": "La personne n’a pas été ajoutée",
+      "personFailedBody": "Rien n’a changé. Réessayez.",
+      "noPeopleYet": "Personne pour l’instant. Ajoutez la personne concernée par cet argent."
     },
     "saved": {
       "expense": "Dépense enregistrée",

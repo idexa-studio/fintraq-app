@@ -5,6 +5,8 @@ import { Button, Calendar, Chip, IconCircle, MarkGrid, Notice, OptionList, Sheet
 import type { OptionGroup } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
 import { useQuickCategory } from '@/features/categories';
+import { useQuickPerson } from '@/features/people';
+import { isOverFreeLimit, usePro } from '@/features/pro';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
 import type { TransactionType } from '@/shared/types';
@@ -94,13 +96,69 @@ export function CategoryPicker({ categories, kind, ...picker }: PickerProps<numb
 
 const NO_ONE = 'none';
 
-export function PersonPicker({ people, ...picker }: PickerProps<number | null> & { people: readonly Person[] }) {
+type PersonPickerProps = PickerProps<number | null> & {
+  people: readonly Person[];
+  /** A person must be chosen, as for money lent: "No one" is not offered. */
+  required?: boolean;
+};
+
+/**
+ * Who it was with. Someone not there yet is added here from their name, without leaving what is
+ * being recorded; a loan cannot be saved without them. Past the free plan's people, the same
+ * button offers Fintraq Pro.
+ */
+export function PersonPicker({ people, required = false, ...picker }: PersonPickerProps) {
   const { t } = useTranslation('transactions');
+  const { space } = useTheme();
+  const quick = useQuickPerson();
+  const { isPro, openPaywall } = usePro();
+  const atLimit = !isPro && isOverFreeLimit('people', people.length);
+  const [naming, setNaming] = useState(false);
+  const [name, setName] = useState('');
+  const [failed, setFailed] = useState(false);
+
+  const backToList = () => { setNaming(false); setName(''); setFailed(false); };
+  const close = () => { backToList(); picker.onClose(); };
+  const add = async () => {
+    try {
+      setFailed(false);
+      picker.onSelect(await quick.add(name));
+      close();
+    } catch {
+      setFailed(true);
+    }
+  };
+
+  if (naming) {
+    return (
+      // Closing the name goes back to the list, not out of it.
+      <Sheet visible={picker.visible} onClose={backToList} title={t('pick.newPerson')} footer={<Button label={t('pick.addPerson')} onPress={add} disabled={!quick.isNameOk(name)} loading={quick.adding} />}>
+        <View style={{ gap: space.lg }}>
+          <TextField label={t('pick.personName')} value={name} onChangeText={setName} maxLength={quick.nameMax} helper={t('pick.personHintNew')} focusOnArrival autoCapitalize="words" returnKeyType="done" onSubmitEditing={() => { if (quick.isNameOk(name)) void add(); }} />
+          {failed ? <Notice tone="danger" title={t('pick.personFailed')} body={t('pick.personFailedBody')} /> : null}
+        </View>
+      </Sheet>
+    );
+  }
+
   const groups: OptionGroup[] = [
-    { options: [{ key: NO_ONE, title: t('noPerson'), icon: 'x-circle' }] },
-    { options: people.map((person) => ({ key: String(person.id), title: person.name, leading: <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} /> })) },
+    ...(required ? [] : [{ options: [{ key: NO_ONE, title: t('noPerson'), icon: 'x-circle' as const }] }]),
+    ...(people.length > 0 ? [{ options: people.map((person) => ({ key: String(person.id), title: person.name, leading: <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} /> })) }] : []),
   ];
-  return <PickerSheet title={t('pick.person')} visible={picker.visible} onClose={picker.onClose} groups={groups} selectedKey={picker.selectedId == null ? NO_ONE : String(picker.selectedId)} onSelect={(key) => picker.onSelect(key === NO_ONE ? null : Number(key))} />;
+  return (
+    <Sheet
+      visible={picker.visible}
+      onClose={close}
+      title={t('pick.person')}
+      footer={<Button label={t('pick.newPerson')} variant="secondary" onPress={() => (atLimit ? (close(), openPaywall('unlimited')) : setNaming(true))} />}
+    >
+      {groups.length > 0 ? (
+        <OptionList groups={groups} selectedKey={picker.selectedId == null ? (required ? undefined : NO_ONE) : String(picker.selectedId)} onSelect={(key) => { picker.onSelect(key === NO_ONE ? null : Number(key)); close(); }} />
+      ) : (
+        <Text variant="callout" tone="muted">{t('pick.noPeopleYet')}</Text>
+      )}
+    </Sheet>
+  );
 }
 
 type WhenPickerProps = {

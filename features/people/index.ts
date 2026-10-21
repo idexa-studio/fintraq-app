@@ -1,5 +1,6 @@
 /** Public surface of people: reading and changing them, and their screens. */
 export * from './hooks/people';
+export { useQuickPerson } from './hooks/useQuickPerson';
 export { initialsOf, peopleByStanding, standingOf } from './person-form';
 export type { PersonBalance } from './person-form';
 export { PeopleScreen } from './screens/PeopleScreen';

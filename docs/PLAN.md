@@ -32,14 +32,14 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Release 2.1.0: repeating items | 32 | 25 | In progress |
+| I | Release 2.1.0: repeating items | 33 | 26 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
 | N | Every screen size | 37 | 26 | In progress |
 | O | Release 2.1.0: spendable balance | 12 | 11 | In progress |
-| P | Release 2.1.0: build and Play Console | 7 | 1 | In progress |
+| P | Release 2.1.0: build and Play Console | 7 | 2 | In progress |
 
 ---
 
@@ -736,10 +736,12 @@ the App Store (L).
 - [x] P1.01 R8: `android.enableMinifyInReleaseBuilds` and `android.enableShrinkResourcesInReleaseBuilds` set through `expo-build-properties` in `app.json` (the local `android/` folder is a stale prebuild; only `app.json` counts). Play Console recommended it on build 74
   - Set 2026-10-21. Resource shrinking cannot see resources looked up by name from JavaScript, so `plugins/with-kept-resources.js` keeps them: the reminder's chime, the notification icon and the launcher shortcuts' icons (its output checked by running the plugin). Native code: React Native keeps its bridge classes, Firebase and Billing ship their rules, and Expo's template keeps Reanimated. None of it is proven until P1.02 runs a release build
 - [ ] P1.02 The R8 release build installed fresh on the Samsung and the Honor (with the owner's word on each): first run to Home, add and edit a transaction, a budget, a loan, backup to a file and restore, the Pro page with its prices, the lock, a reminder. A library looked up by name and stripped by R8 shows here or nowhere
+  - Samsung, 2026-10-21, a release APK built locally from `app.json` (R8 and resource shrinking on, arm64, build 80, 2.1.0), installed fresh: first run to Home with no flicker; an expense repeating monthly, waiting on Home and skipped; a transaction changed (the balance followed) and one undone; a budget; a loan, to a person added from the loan form; a backup file made (the share sheet was left, as it leads into other apps) and the restore's file picker opened; Pro with its store prices (nothing bought); a PIN set, asked for on return, and turned off; a reminder posted on the chime channel and its tap opening Add; the launcher shortcuts with their icons. Found and fixed on the way: (1) the first build lost the reminder's chime, because React Native's own `res/raw/keep.xml` replaced ours: ours is now `fintraq_keep.xml`, and the chime, the notification icon and the shortcut icons were checked inside the APK; (2) a loan could not be recorded by someone with no people: see I4.10. Not run: a restore from a file (no file could be put on the phone without another app), and the Honor, which was not connected
 - [ ] P1.03 Play's "deprecated edge-to-edge APIs": the calls are in React Native's `StatusBarModule` and in `react-native-screens`, not in Fintraq. Take the Expo SDK 57 patch updates (`npx expo install --check`; 57.0.30 was out on 2026-10-21) and recheck in Play Console after 2.1.0. No patching of the libraries
   - Patch updates taken 2026-10-21: expo 57.0.30 and ten of its packages (router, notifications, splash screen, updates and others); `expo install --check` says up to date, all checks pass. Not yet run on a phone: the dev builds on the Samsung and the Honor carry the old native code, so they want rebuilding before they show these, and Metro restarting. The Play Console recheck waits for 2.1.0
 - [ ] P1.04 Play's "bitmap downsampling": Fintraq draws no bitmaps (icons and art are vector), so nothing in the app to change; recheck in Play Console after 2.1.0
-- [ ] P2.01 Version 2.1.0 in `app.json` and `package.json`; release notes in `update-note.txt` (15 locales, 500 characters)
+- [x] P2.01 Version 2.1.0 in `app.json` and `package.json`; release notes in `update-note.txt` (15 locales, 500 characters)
+  - 2026-10-21: version 2.1.0 (the build number comes from EAS); notes for repeating items, Upcoming, the spendable balance and small phones in the 15 store languages, the longest 488 characters. Korean and Russian are store languages only and were translated for the notes
 - [ ] P2.02 Owner: upload, staged rollout, go or no-go at each step
 - [ ] P2.03 Once at 100%: `latestVersionConfig` set to 2.1.0's build and version
 
@@ -902,6 +904,7 @@ unopened for three months catches up correctly.
   - Built 2026-10-21: the Repeat sheet shows the limit in place of the choices, and Plan's "Add" opens Fintraq Pro. Seen on the Samsung 2026-10-21 as a free user (Developer's "Always free"): both, and "No limits" naming 2 repeating items
 - [x] I4.08 A budget counts what is still to come this month from repeating items (shown, not yet subtracted)
   - Built 2026-10-21: the line under the budget's head. Seen on the Samsung 2026-10-21: "₹500.00 still to come this month from repeating items" on All spending, and nothing on Groceries, which has none
+- [x] I4.10 Someone with no people can record a loan: the person picker offers "Add a person" from a name, as the category picker does (`useQuickPerson`), leaves out "No one" when lending, and past the free plan's 10 people opens Fintraq Pro. Found in the 2.1.0 release test on a fresh install, where the picker offered only "No one" and the loan could not be saved. Seen on the Samsung's release build: Asha added from the loan form and the loan recorded. The seven new lines are in the 12 languages
 - [ ] I4.09 Shared checklist
 
 ### I5. Ship

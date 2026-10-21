@@ -1833,7 +1833,14 @@
       "person": "Mit wem war es?",
       "date": "Wann war es?",
       "time": "Uhrzeit",
-      "done": "Fertig"
+      "done": "Fertig",
+      "newPerson": "Person hinzufügen",
+      "personName": "Name",
+      "personHintNew": "Telefon, E-Mail und Beruf lassen sich später unter Personen ergänzen.",
+      "addPerson": "Hinzufügen und wählen",
+      "personFailed": "Die Person wurde nicht hinzugefügt",
+      "personFailedBody": "Nichts wurde geändert. Versuche es erneut.",
+      "noPeopleYet": "Noch niemand. Füge die Person hinzu, um die es bei diesem Geld geht."
     },
     "saved": {
       "expense": "Ausgabe gespeichert",
