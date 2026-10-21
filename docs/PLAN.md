@@ -39,7 +39,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | M | To reconsider after 2.4 | 4 | 0 |  |
 | N | Every screen size | 37 | 26 | In progress |
 | O | Release 2.1.0: spendable balance | 12 | 11 | In progress |
-| P | Release 2.1.0: build and Play Console | 7 | 0 |  |
+| P | Release 2.1.0: build and Play Console | 7 | 1 | In progress |
 
 ---
 
@@ -733,7 +733,8 @@ Not in 2.1.0: goals and the net worth trend (phase J, next), safe to spend (K),
 the App Store (L).
 
 ### P. Release 2.1.0: build and Play Console
-- [ ] P1.01 R8: `android.enableMinifyInReleaseBuilds` and `android.enableShrinkResourcesInReleaseBuilds` set through `expo-build-properties` in `app.json` (the local `android/` folder is a stale prebuild; only `app.json` counts). Play Console recommended it on build 74
+- [x] P1.01 R8: `android.enableMinifyInReleaseBuilds` and `android.enableShrinkResourcesInReleaseBuilds` set through `expo-build-properties` in `app.json` (the local `android/` folder is a stale prebuild; only `app.json` counts). Play Console recommended it on build 74
+  - Set 2026-10-21. Resource shrinking cannot see resources looked up by name from JavaScript, so `plugins/with-kept-resources.js` keeps them: the reminder's chime, the notification icon and the launcher shortcuts' icons (its output checked by running the plugin). Native code: React Native keeps its bridge classes, Firebase and Billing ship their rules, and Expo's template keeps Reanimated. None of it is proven until P1.02 runs a release build
 - [ ] P1.02 The R8 release build installed fresh on the Samsung and the Honor (with the owner's word on each): first run to Home, add and edit a transaction, a budget, a loan, backup to a file and restore, the Pro page with its prices, the lock, a reminder. A library looked up by name and stripped by R8 shows here or nowhere
 - [ ] P1.03 Play's "deprecated edge-to-edge APIs": the calls are in React Native's `StatusBarModule` and in `react-native-screens`, not in Fintraq. Take the Expo SDK 57 patch updates (`npx expo install --check`; 57.0.30 was out on 2026-10-21) and recheck in Play Console after 2.1.0. No patching of the libraries
 - [ ] P1.04 Play's "bitmap downsampling": Fintraq draws no bitmaps (icons and art are vector), so nothing in the app to change; recheck in Play Console after 2.1.0

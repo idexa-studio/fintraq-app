@@ -90,12 +90,14 @@
       [
         "expo-build-properties",
         {
+          "android": { "enableMinifyInReleaseBuilds": true, "enableShrinkResourcesInReleaseBuilds": true },
           "ios": { "usePrecompiledModules": false }
         }
       ],
       "./plugins/with-fingerprint-not-required",
       "./plugins/with-text-measured-as-drawn",
-      "./plugins/with-any-screen-size"
+      "./plugins/with-any-screen-size",
+      "./plugins/with-kept-resources"
     ],
     "experiments": {
       "typedRoutes": true,
