@@ -40,7 +40,8 @@ export function Header({ title, task = false, flush = false, onBack, onClose, ba
           </View>
         </View>
         {title ? (
-          <Text variant={task ? 'title' : 'leadStrong'} align="center" numberOfLines={1} accessibilityRole="header" style={styles.title}>{title}</Text>
+          // One line, shrinking to fit before it is cut: a long name on a narrow phone at a large font.
+          <Text variant={task ? 'title' : 'leadStrong'} align="center" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} accessibilityRole="header" style={styles.title}>{title}</Text>
         ) : <View style={styles.title} />}
         <View style={[styles.side, styles.right, side]}>
           <View style={styles.actions} onLayout={(e) => { const right = e.nativeEvent.layout.width; setWidths((w) => (w.right === right ? w : { ...w, right })); }}>

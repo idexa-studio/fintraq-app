@@ -37,8 +37,8 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
-| N | Every screen size | 37 | 25 | In progress |
-| O | Release 2.1.0: spendable balance | 12 | 10 | In progress |
+| N | Every screen size | 37 | 26 | In progress |
+| O | Release 2.1.0: spendable balance | 12 | 11 | In progress |
 | P | Release 2.1.0: build and Play Console | 7 | 0 |  |
 
 ---
@@ -960,8 +960,8 @@ changes the first and not their spending.
   - Seen on the Samsung, 2026-10-21: "Ready to spend ₹50,899.00, across 4 accounts" and "₹685,000.00 put aside in 1 account"; Accounts' net worth ₹735,899.00 is the two together
 - [x] O4.02 The switch on the account form, and the account's page saying "Put aside" when it is
   - Seen on the Samsung: on for a bank account and off for Savings on a new account; Savings' page shows Put aside; switched on and saved, Home read "All accounts ₹735,899.00 across 5", and switched back it read as before
-- [ ] O4.03 Copy and the 12 translations; seen on a phone with the owner's word, light and dark
-  - Copy and translations done (each language's own name for Home); seen in light only so far
+- [x] O4.03 Copy and the 12 translations; seen on a phone with the owner's word, light and dark
+  - Copy and translations done (each language's own name for Home). Home's card seen on the Samsung in light and, on 2026-10-21, in dark. The account form's switch and the Put aside badge were not opened in dark; both are design-system pieces seen in dark elsewhere
 - [ ] O4.04 Owner: a reply to the review, once 2.1.0 is live (the owner posts it)
 
 ## J. Version 2.3: goals and the net worth trend
@@ -1097,7 +1097,8 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
   - Seen on the Samsung, 2026-10-13: a size change and a turn kept Add with its typed amount. A **density** or **font size** change does not: Android restarts the activity and the app opens at Home. Handling them in place was tried and is worse (React Native keeps measured text, so labels were clipped and a new font size was ignored), so the restart stays; N1.04 keeps what was typed
 - [ ] N1.03 iPad: a task presented by iOS itself (`presentation: 'modal'`) on a wide screen; decide between the system's form sheet and the app's own card. Not runnable until an iPad or the owner's word on a simulator
 
-- [ ] N1.04 A transaction being typed survives a restart of the activity (a density or font-size change, or Android reclaiming the app): the draft is kept and offered back, with a test
+- [x] N1.04 A transaction being typed survives a restart of the activity (a density or font-size change, or Android reclaiming the app): the draft is kept and offered back, with a test
+  - Seen on the Samsung 2026-10-21: ₹77 typed on Add, the font size changed (Android restarted the app at Home), and Add offered the ₹77 back with "Fintraq kept what you were typing" and a way to discard it. Repeat is kept with it since 2.1.0
 
 ### N2. Design system, gallery first
 - [x] N2.01 `design/tokens/layout.ts`: the three widths, the column widths (600, 1040), the card widths (560, 400), with a test
@@ -1117,7 +1118,8 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
 - [x] N3.01 Add and every form at 320 x 569 with the keyboard open: the field being typed in stays in view, the save button stays reachable. Device
   - On a screen with less than 400pt above the keyboard the pinned buttons step aside while it is up (`LAYOUT.roomForFooter`), so the field is not squeezed out. Seen at 320 x 569 on Add, New budget and New loan: the amount is in view while typing and Save is back when the keyboard closes
 - [ ] N3.02 Every screen at 320 wide at the largest font size: no clipped label, no row whose amount is pushed off. Device
-  - Seen at 320 with the font at 1.3: Home, Activity, Plan, Insights, Settings. Fixed: a budget's amount drops under a long name (`LimitRow`) instead of cutting it to "All sp…". Still open: the other screens, and a tile's label shrinking ("Categories")
+  - Seen at 320 with the font at 1.3: Home, Activity, Plan, Insights, Settings. Fixed: a budget's amount drops under a long name (`LimitRow`) instead of cutting it to "All sp…"
+  - Second pass on the Samsung 2026-10-21 (density 540, so 320 wide, font 1.3), and fixed, each seen after: (1) Add's When showed "ıy · 4:45 PM": a field that opens a picker now shows its value as wrapping text (`TextField`); (2) list rows cut titles to a word ("Health i..") and broke names mid-word ("Savin / gs"): `ListRow`'s figure now drops under the title when both do not fit, as `LimitRow`'s does; (3) category names broke mid-word ("Entertain / ment"): `MarkGrid` takes fewer columns; (4) a budget's "₹66,678.00 of ₹1…" wraps instead; (5) Plan's loans broke and cut names ("Ra / hul…") and the overdue line: `LoanRow` wraps the same way; (6) a header title shrinks before it is cut ("Lent to Rahul Sharma"); (7) Export's preview cut amounts ("-₹540…."): the column is as wide as its figure; (8) Settings' tile labels shrank below their neighbours': they drop under the mark; (9) "Appear / ance" beside its chip: Appearance is now a row like Language, with a sheet; (10) Insights' category names cut ("Insu…"): the share and amount wrap; (11) the receipt's time was pushed off its edge: it drops under the day. Also seen whole: Accounts, an account, a person, People, Categories, the four forms (account, budget, loan, person), a loan, a budget, Backup, Pro. Back at the phone's own size the figures stay on the title's line; only titles too long for both now show whole with the figure under them. Still open at 320: Search, App lock, About, the repeating-item screens (none existed during the pass) and onboarding. Backup's Drive address wraps at its dots, readable but awkward
 - [ ] N3.03 The launch screen and the onboarding at 320 x 569. Device
 
 ### N4. Screens on medium and expanded

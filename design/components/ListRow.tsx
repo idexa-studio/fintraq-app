@@ -28,9 +28,9 @@ export type ListRowProps = {
   disabled?: boolean;
   destructive?: boolean;
   /**
-   * Title and description are cut at one line each, so every row is the same height: for a long
-   * list that is scanned, not read. A value then sits on the title's line and the description
-   * runs the full width beneath them, so a long figure cuts the title short but never the description.
+   * Title and description are cut at one line each: for a long list that is scanned, not read.
+   * Any row's value sits on the title's line when both fit, and drops to a line of its own when
+   * they do not (a long title, a narrow phone, a large font).
    */
   oneLine?: boolean;
 };
@@ -41,28 +41,19 @@ export function ListRow({ title, subtitle, icon, leading, strong = false, value,
   const styles = useStyles(createStyles);
   const tone: TextTone = disabled ? 'disabled' : destructive ? 'danger' : 'default';
   const amount = value ? <Text variant="amount" tone={disabled ? 'disabled' : valueTone} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} style={styles.value}>{ltr(value)}</Text> : null;
-  const body = oneLine && value && subtitle ? (
+  const name = <Text variant={strong ? 'bodyStrong' : 'body'} tone={tone} numberOfLines={oneLine ? 1 : 2} style={amount ? styles.title : undefined}>{title}</Text>;
+  const body = (
     <>
       {leading ?? (icon ? <Icon name={icon} color={disabled ? colors.onDisabled : destructive ? colors.danger : colors.text} /> : null)}
       <View style={styles.text}>
-        <View style={styles.head}>
-          <Text variant={strong ? 'bodyStrong' : 'body'} tone={tone} numberOfLines={1} style={styles.fill}>{title}</Text>
-          {amount}
-        </View>
-        <Text variant="callout" tone={disabled ? 'disabled' : 'muted'} numberOfLines={1}>{subtitle}</Text>
-      </View>
-      {trailing ? <View style={styles.trailing}>{trailing}</View> : null}
-    </>
-  ) : (
-    <>
-      {leading ?? (icon ? <Icon name={icon} color={disabled ? colors.onDisabled : destructive ? colors.danger : colors.text} /> : null)}
-      <View style={styles.text}>
-        <Text variant={strong ? 'bodyStrong' : 'body'} tone={tone} numberOfLines={oneLine ? 1 : 2}>{title}</Text>
-        {/* Outside a scanned list a description is there to be read, so it is never cut. */}
+        {/*
+          A figure sits on the title's line when both fit; otherwise (a long title, a narrow phone, a
+          large font) it drops to a line of its own, as in a budget's row, so neither is cut to a word.
+        */}
+        {amount ? <View style={styles.head}>{name}{amount}</View> : name}
+        {/* In a scanned list a description is one line; elsewhere it is there to be read, so it is never cut. */}
         {subtitle ? <Text variant="callout" tone={disabled ? 'disabled' : 'muted'} numberOfLines={oneLine ? 1 : undefined}>{subtitle}</Text> : null}
       </View>
-      {/* A figure is never cut short: it shrinks to fit, and may take up to half the row. */}
-      {amount}
       {/* Wrapped so a trailing control that hugs its own top, such as a Badge, still sits mid-row. */}
       {trailing ? <View style={styles.trailing}>{trailing}</View> : onPress && !value && !disabled ? <Icon name="chevron-right" color={colors.text} /> : null}
     </>
@@ -116,10 +107,12 @@ const createStyles = ({ colors, radius, size, space }: Theme) =>
   StyleSheet.create({
     row: { minHeight: size.row, flexDirection: 'row', alignItems: 'center', gap: space.lg, paddingHorizontal: size.cardPadding, paddingVertical: space.md },
     text: { flex: 1, gap: space.xs },
-    head: { flexDirection: 'row', alignItems: 'baseline', gap: space.md },
-    fill: { flex: 1 },
+    head: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: space.md, rowGap: space.xxs },
+    // Never squeezed for the figure: when both do not fit, the figure wraps. Cut only when longer than a whole line.
+    title: { flexShrink: 1 },
     trailing: { alignSelf: 'center' },
-    value: { flexShrink: 1, maxWidth: '50%', textAlign: 'right' },
+    // Pushed to the end of whichever line it lands on, and shrinks to fit rather than being cut.
+    value: { marginStart: 'auto', maxWidth: '100%', textAlign: 'right' },
     group: { backgroundColor: colors.surface, borderRadius: radius.md, overflow: 'hidden' },
     // The same spacing as a row's: a list of details reads as a list, not as spaced-out blocks.
     detail: { paddingHorizontal: size.cardPadding, paddingVertical: space.md, gap: space.xs },

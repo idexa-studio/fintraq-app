@@ -29,9 +29,10 @@ export function FeatureTile({ icon, color, description, label, compact = false, 
   if (compact) {
     return (
       <Card onPress={onPress} accessibilityLabel={`${label}. ${description}`} style={{ flex: 1, gap: space.sm, paddingVertical: space.md }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+        {/* Beside the mark when it fits; on a narrow phone at a large font it drops under it, rather than shrinking smaller than its neighbours' labels. */}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: space.sm, rowGap: space.xs }}>
           <IconCircle icon={icon} color={color} />
-          <Text variant="bodyStrong" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85} style={{ flex: 1 }}>{label}</Text>
+          <Text variant="bodyStrong" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85} style={{ flexShrink: 1, maxWidth: '100%' }}>{label}</Text>
         </View>
         {/* Under the mark, across the whole tile, so the few words are never cut short. */}
         <Text variant="caption" tone="muted" numberOfLines={2}>{description}</Text>

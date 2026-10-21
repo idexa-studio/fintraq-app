@@ -4,7 +4,7 @@ import type { IconName } from '@/design/components/Icon';
 import { Text } from '@/design/components/Text';
 import { TextField } from '@/design/components/TextField';
 import { Touchable } from '@/design/components/Touchable';
-import { useStyles } from '@/design/ThemeProvider';
+import { useFontScale, useStyles } from '@/design/ThemeProvider';
 import type { Theme } from '@/design/ThemeProvider';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -29,6 +29,12 @@ export type MarkGridProps<K extends string = string> = {
 };
 
 /**
+ * The narrowest a tile may be at the normal font size: room for a name of one long word,
+ * "Entertainment" or "Electronics", without breaking it. It grows with the font size.
+ */
+const MIN_TILE = 88;
+
+/**
  * A choice among things that each have a mark: categories, kinds of account.
  * Quicker to scan than a list of the same length, and the choice is one tap.
  */
@@ -37,13 +43,17 @@ export function MarkGrid<K extends string>({ marks, selectedKey, onSelect, colum
   const [query, setQuery] = useState('');
   const needle = query.trim().toLowerCase();
   const shown = useMemo(() => (needle ? marks.filter((mark) => mark.label.toLowerCase().includes(needle)) : marks), [marks, needle]);
+  // Fewer across when the asked-for number would cut a name mid-word: a narrow phone, a large font.
+  const scale = useFontScale();
+  const [width, setWidth] = useState(0);
+  const across = width > 0 ? Math.max(2, Math.min(columns, Math.floor(width / (MIN_TILE * scale)))) : columns;
 
   const grid = (
-    <View style={styles.grid} accessibilityRole="radiogroup">
+    <View style={styles.grid} accessibilityRole="radiogroup" onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
       {shown.map((mark) => {
         const selected = mark.key === selectedKey;
         return (
-          <Touchable key={mark.key} onPress={() => onSelect?.(mark.key)} accessibilityRole="radio" accessibilityLabel={mark.label} accessibilityState={{ selected }} style={[styles.tile, columns === 4 ? styles.quarter : styles.third, selected ? styles.selected : null]}>
+          <Touchable key={mark.key} onPress={() => onSelect?.(mark.key)} accessibilityRole="radio" accessibilityLabel={mark.label} accessibilityState={{ selected }} style={[styles.tile, { width: `${100 / across}%` }, selected ? styles.selected : null]}>
             <IconCircle icon={mark.icon} color={mark.color} />
             <Text variant={selected ? 'captionStrong' : 'caption'} align="center" numberOfLines={2}>{mark.label}</Text>
           </Touchable>
@@ -67,7 +77,5 @@ const createStyles = ({ colors, radius, space, border }: Theme) =>
     grid: { flexDirection: 'row', flexWrap: 'wrap' },
     // The outline is always there, transparent, so choosing a tile never moves the others.
     tile: { alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.xs, borderRadius: radius.md, borderWidth: border.thick, borderColor: 'transparent' },
-    third: { width: '33.333%' },
-    quarter: { width: '25%' },
     selected: { borderColor: colors.selected },
   });

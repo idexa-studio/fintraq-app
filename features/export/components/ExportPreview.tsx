@@ -65,7 +65,7 @@ export function ExportPreview({ title, scope, rows, more, empty, note, columns, 
               <View style={styles.row}>
                 <Text variant="caption" tone="muted" numberOfLines={1} style={styles.date}>{dayLabel(new Date(tx.datetime), today, yesterday)}</Text>
                 <Text variant="caption" numberOfLines={1} style={styles.what}>{tx.note.trim() || tx.category.name}</Text>
-                <Text variant="caption" numberOfLines={1} style={styles.amount}>{ltr(signedAmount(tx))}</Text>
+                <Text variant="caption" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} style={styles.amount}>{ltr(signedAmount(tx))}</Text>
               </View>
             </React.Fragment>
           ))
@@ -94,5 +94,6 @@ const createStyles = ({ colors, border, radius, space }: Theme) =>
     headRow: { backgroundColor: colors.surfaceMuted },
     date: { width: '26%' },
     what: { flex: 1 },
-    amount: { width: '28%', textAlign: 'right' },
+    // As wide as its figure, never cut: right-aligned, so the column still lines up; what it was for gives way.
+    amount: { flexShrink: 0, maxWidth: '45%', textAlign: 'right' },
   });
