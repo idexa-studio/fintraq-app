@@ -33,7 +33,7 @@ const colorOf = (name: string) => toDbColor((OFFERED_COLORS.find((offered) => of
 
 type StackAccount = React.ComponentProps<typeof AccountStack>['accounts'][number];
 const account = (id: number, name: string, accountType: StackAccount['accountType'], color: string, balance: number, isDefault = false): StackAccount => ({
-  id, name, accountType, color: colorOf(color), balance, isDefault, currency: 'USD', holderName: '', accountNumber: '', icon: 'building', income: 0, expense: 0, createdAt: '', updatedAt: '',
+  id, name, accountType, color: colorOf(color), balance, isDefault, currency: 'USD', holderName: '', accountNumber: '', icon: 'building', income: 0, expense: 0, countsAsSpendable: null, createdAt: '', updatedAt: '',
 });
 const ACCOUNTS = [account(1, 'Everyday', 'bank', 'lilac', 12480.1, true), account(2, 'Cash', 'cash', 'green', 227.17), account(3, 'Travel card', 'credit_card', 'orange', -640)];
 

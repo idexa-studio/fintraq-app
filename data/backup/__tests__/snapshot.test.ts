@@ -91,6 +91,43 @@ describe('buildRestorePlan', () => {
     expect(rowOf(plan, 'budgets', 1)).toEqual({ id: 2, category_id: null, currency: 'INR', monthly_limit: 20000, rollover: 0, created_at: NOW, updated_at: NOW });
   });
 
+  it('restores a backup from before repeating items with none, accounts by their kind and transactions made by no item', () => {
+    const plan = buildRestorePlan(currentExport, NOW);
+    expect(plan.some((t) => t.table === 'recurring_rules')).toBe(false);
+    expect(rowOf(plan, 'accounts').counts_as_spendable).toBeNull();
+    expect(rowOf(plan, 'payments')).toMatchObject({ recurring_rule_id: null, recurring_date: null });
+  });
+
+  it('restores repeating items before the transactions they made, and an account set by hand', () => {
+    const withRules: BackupData = {
+      ...currentExport,
+      accounts: [{ ...currentExport.accounts[0], countsAsSpendable: false }, currentExport.accounts[1]],
+      payments: [{ ...currentExport.payments[0], recurringRuleId: 4, recurringDate: '2025-02-01' }],
+      recurringRules: [{
+        id: 4, type: 'DR', amount: 25, accountId: 1, categoryId: 3, personId: 1, note: 'Rent', cadence: 'month', anchorDate: '2025-01-31', time: '09:00',
+        nextDue: '2025-03-31', mode: 'add', ends: 'times', endTimes: 12, occurrences: 2, paused: false, createdAt: '2025-01-31', updatedAt: '2025-02-01',
+      }],
+    };
+    const plan = buildRestorePlan(withRules, NOW);
+    expect(plan.map((t) => t.table)).toEqual(['persons', 'accounts', 'categories', 'loans', 'recurring_rules', 'payments', 'seeder_state']);
+    expect(rowOf(plan, 'accounts').counts_as_spendable).toBe(0);
+    expect(rowOf(plan, 'recurring_rules')).toEqual({
+      id: 4, type: 'DR', amount: 25, account_id: 1, to_account_id: null, category_id: 3, person_id: 1, note: 'Rent', cadence: 'month', anchor_date: '2025-01-31', time: '09:00',
+      next_due: '2025-03-31', mode: 'add', ends: 'times', end_date: null, end_times: 12, occurrences: 2, paused: 0, created_at: '2025-01-31', updated_at: '2025-02-01',
+    });
+    expect(rowOf(plan, 'payments')).toMatchObject({ recurring_rule_id: 4, recurring_date: '2025-02-01' });
+  });
+
+  it('stops an item whose account is not in the backup, and frees a transaction whose item is not', () => {
+    const plan = buildRestorePlan({
+      ...currentExport,
+      payments: [{ ...currentExport.payments[0], recurringRuleId: 99, recurringDate: '2025-02-01' }],
+      recurringRules: [{ id: 4, accountId: 77, categoryId: 3, cadence: 'week', anchorDate: '2025-01-01', time: '08:00', nextDue: '2025-01-08' }],
+    }, NOW);
+    expect(rowOf(plan, 'recurring_rules')).toMatchObject({ account_id: null, category_id: 3 });
+    expect(rowOf(plan, 'payments')).toMatchObject({ recurring_rule_id: null, recurring_date: null });
+  });
+
   it('drops a budget whose category is not in the backup, so it never becomes a limit on everything', () => {
     const plan = buildRestorePlan({ ...currentExport, budgets: [{ id: 1, categoryId: 99, currency: 'INR', monthlyLimit: 100 }] }, NOW);
     expect(plan.some((t) => t.table === 'budgets')).toBe(false);
@@ -100,7 +137,7 @@ describe('buildRestorePlan', () => {
     const plan = buildRestorePlan(currentExport, NOW);
     expect(rowOf(plan, 'accounts')).toEqual({
       id: 1, name: 'Bank', holderName: 'Asha', accountNumber: '42', icon: 'building', account_type: 'bank', color: 1,
-      isDefault: 1, currency: 'INR', balance: 100, income: 150, expense: 50, created_at: '2025-01-01', updated_at: '2025-01-01',
+      isDefault: 1, currency: 'INR', balance: 100, income: 150, expense: 50, counts_as_spendable: null, created_at: '2025-01-01', updated_at: '2025-01-01',
     });
     expect(rowOf(plan, 'loans')).toMatchObject({
       person_id: 1, emi_reminder_enabled: 1, emi_reminder_day: 5, emi_notification_ids: '["a"]', due_reminder_enabled: 0, due_notification_id: 'due-1',

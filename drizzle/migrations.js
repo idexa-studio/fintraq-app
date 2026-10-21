@@ -11,6 +11,7 @@ import m0006 from './0006_little_wind_dancer.sql';
 import m0007 from './0007_worried_paladin.sql';
 import m0008 from './0008_quick_lila_cheney.sql';
 import m0009 from './0009_normal_ezekiel.sql';
+import m0010 from './0010_open_doctor_faustus.sql';
 
   export default {
     journal,
@@ -24,7 +25,8 @@ m0005,
 m0006,
 m0007,
 m0008,
-m0009
+m0009,
+m0010
     }
   }
   

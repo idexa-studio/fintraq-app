@@ -1,6 +1,9 @@
 /**
  * Backup file format and the pure mapping from a parsed backup to SQL rows. Version 2 added
- * `budgets`; a version 1 file has no such key and restores with no budgets.
+ * `budgets`; a version 1 file has no such key and restores with no budgets. Version 3 (release
+ * 2.1.0) added `recurringRules`, an account's `countsAsSpendable` and a transaction's
+ * `recurringRuleId` and `recurringDate`; an older file restores with none of them, every account
+ * decided by its kind. An older app reading a version 3 file ignores what it does not know.
  *
  * No I/O and no React Native imports, so the restore mapping is unit-tested against every
  * historical shape. Compatibility contract: backups written by any earlier release must keep
@@ -15,8 +18,8 @@ export type BackupMetadata = {
   appVersion: string;
   timestamp: string;
   checksum: string;
-  /** `budgets` is counted from format version 2. */
-  counts: { accounts: number; categories: number; persons: number; loans: number; payments: number; budgets?: number };
+  /** `budgets` is counted from format version 2, `recurringRules` from 3. */
+  counts: { accounts: number; categories: number; persons: number; loans: number; payments: number; budgets?: number; recurringRules?: number };
 };
 
 export type PersonBackupRow = {
@@ -50,6 +53,9 @@ export type AccountBackupRow = {
   balance?: number | null;
   income?: number | null;
   expense?: number | null;
+  /** Added with migration 0010 (format version 3); absent means decided by the kind of account. */
+  countsAsSpendable?: boolean | number | null;
+  counts_as_spendable?: boolean | number | null;
   createdAt?: string;
   created_at?: string;
   updatedAt?: string;
@@ -126,6 +132,11 @@ export type PaymentBackupRow = {
   type?: string | null;
   datetime?: string | null;
   note?: string | null;
+  /** Added with migration 0010 (format version 3). */
+  recurringRuleId?: number | null;
+  recurring_rule_id?: number | null;
+  recurringDate?: string | null;
+  recurring_date?: string | null;
   createdAt?: string;
   created_at?: string;
   updatedAt?: string;
@@ -147,6 +158,40 @@ export type BudgetBackupRow = {
   updated_at?: string;
 };
 
+/** Added with migration 0010 (format version 3). */
+export type RecurringRuleBackupRow = {
+  id: number;
+  type?: string | null;
+  amount?: number | null;
+  accountId?: number | null;
+  account_id?: number | null;
+  toAccountId?: number | null;
+  to_account_id?: number | null;
+  categoryId?: number | null;
+  category_id?: number | null;
+  personId?: number | null;
+  person_id?: number | null;
+  note?: string | null;
+  cadence?: string | null;
+  anchorDate?: string | null;
+  anchor_date?: string | null;
+  time?: string | null;
+  nextDue?: string | null;
+  next_due?: string | null;
+  mode?: string | null;
+  ends?: string | null;
+  endDate?: string | null;
+  end_date?: string | null;
+  endTimes?: number | null;
+  end_times?: number | null;
+  occurrences?: number | null;
+  paused?: boolean | number | null;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+};
+
 export type SeederBackupRow = {
   id: number;
   name: string;
@@ -162,6 +207,8 @@ export type BackupData = {
   payments: PaymentBackupRow[];
   /** Absent from backups made before budgets existed. */
   budgets?: BudgetBackupRow[];
+  /** Absent from backups made before repeating items existed (format version 3). */
+  recurringRules?: RecurringRuleBackupRow[];
   seederState: SeederBackupRow[];
 };
 
@@ -221,7 +268,7 @@ export function parseBackupPackage(json: string): BackupPackagePayload {
 export type TableInsert = { table: string; columns: readonly string[]; rows: SqlValue[][] };
 
 // Insertion order satisfies foreign keys; deletion runs children first.
-export const RESTORE_DELETE_ORDER = ['budgets', 'payments', 'loans', 'persons', 'categories', 'accounts', 'seeder_state'] as const;
+export const RESTORE_DELETE_ORDER = ['budgets', 'payments', 'recurring_rules', 'loans', 'persons', 'categories', 'accounts', 'seeder_state'] as const;
 
 const orNull = <T extends SqlValue>(value: T | undefined): T | null => (value === undefined ? null : value);
 
@@ -229,6 +276,11 @@ function toBooleanInt(value: unknown, fallback = 0): number {
   if (value === true || value === 1 || value === '1' || value === 'true' || value === 'TRUE') return 1;
   if (value === false || value === 0 || value === '0' || value === 'false' || value === 'FALSE') return 0;
   return fallback;
+}
+
+/** A boolean that may be absent: null stays null (for a setting that falls back to a default). */
+function toBooleanIntOrNull(value: unknown): number | null {
+  return value === null || value === undefined ? null : toBooleanInt(value);
 }
 
 /** A reference to a row that isn't in the backup becomes NULL, matching the schema's `set null`. */
@@ -248,6 +300,7 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
   const loans = legacy.loans || legacy.loan || [];
   const payments = legacy.payments || legacy.payment || [];
   const budgets = legacy.budgets || [];
+  const rules = legacy.recurringRules || [];
   const seeders = legacy.seederState || legacy.seeder_state || legacy.seeder || [];
 
   if (persons.length + accounts.length + categories.length + loans.length + payments.length === 0) {
@@ -258,6 +311,7 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
   const accountIds = new Set(accounts.map((a) => a.id));
   const loanIds = new Set(loans.map((l) => l.id));
   const categoryIds = new Set(categories.map((c) => c.id));
+  const ruleIds = new Set(rules.map((r) => r.id));
 
   const created = (r: { createdAt?: string; created_at?: string }) => r.createdAt ?? r.created_at ?? now;
   const updated = (r: { updatedAt?: string; updated_at?: string }) => r.updatedAt ?? r.updated_at ?? now;
@@ -280,7 +334,7 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
     },
     {
       table: 'accounts',
-      columns: ['id', 'name', 'holderName', 'accountNumber', 'icon', 'account_type', 'color', 'isDefault', 'currency', 'balance', 'income', 'expense', 'created_at', 'updated_at'],
+      columns: ['id', 'name', 'holderName', 'accountNumber', 'icon', 'account_type', 'color', 'isDefault', 'currency', 'balance', 'income', 'expense', 'counts_as_spendable', 'created_at', 'updated_at'],
       rows: accounts.map((r) => [
         r.id,
         r.name ?? '',
@@ -294,6 +348,7 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
         r.balance ?? 0,
         r.income ?? 0,
         r.expense ?? 0,
+        toBooleanIntOrNull(r.countsAsSpendable ?? r.counts_as_spendable),
         created(r),
         updated(r),
       ]),
@@ -343,8 +398,38 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
       ]),
     },
     {
+      table: 'recurring_rules',
+      columns: [
+        'id', 'type', 'amount', 'account_id', 'to_account_id', 'category_id', 'person_id', 'note', 'cadence', 'anchor_date', 'time', 'next_due',
+        'mode', 'ends', 'end_date', 'end_times', 'occurrences', 'paused', 'created_at', 'updated_at',
+      ],
+      // A reference missing from the backup becomes null, as deleting it would: the item stops and says why.
+      rows: rules.map((r) => [
+        r.id,
+        r.type ?? 'DR',
+        r.amount ?? 0,
+        validRef(r.accountId ?? r.account_id, accountIds),
+        validRef(r.toAccountId ?? r.to_account_id, accountIds),
+        validRef(r.categoryId ?? r.category_id, categoryIds),
+        validRef(r.personId ?? r.person_id, personIds),
+        r.note ?? '',
+        r.cadence ?? 'month',
+        r.anchorDate ?? r.anchor_date ?? now.slice(0, 10),
+        r.time ?? '09:00',
+        r.nextDue ?? r.next_due ?? now.slice(0, 10),
+        r.mode ?? 'ask',
+        r.ends ?? 'never',
+        orNull(r.endDate ?? r.end_date),
+        orNull(r.endTimes ?? r.end_times),
+        r.occurrences ?? 0,
+        toBooleanInt(r.paused),
+        created(r),
+        updated(r),
+      ]),
+    },
+    {
       table: 'payments',
-      columns: ['id', 'account_id', 'category_id', 'to_account_id', 'person_id', 'loan_id', 'amount', 'type', 'datetime', 'note', 'created_at', 'updated_at'],
+      columns: ['id', 'account_id', 'category_id', 'to_account_id', 'person_id', 'loan_id', 'amount', 'type', 'datetime', 'note', 'recurring_rule_id', 'recurring_date', 'created_at', 'updated_at'],
       rows: payments.map((r) => [
         r.id,
         orNull(r.accountId ?? r.account_id),
@@ -356,6 +441,9 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
         r.type ?? 'DR',
         r.datetime ?? now,
         r.note ?? '',
+        // Kept only with its item: a transaction whose item is not in the backup was made by none.
+        validRef(r.recurringRuleId ?? r.recurring_rule_id, ruleIds),
+        validRef(r.recurringRuleId ?? r.recurring_rule_id, ruleIds) === null ? null : orNull(r.recurringDate ?? r.recurring_date),
         created(r),
         updated(r),
       ]),

@@ -71,6 +71,13 @@
       "when": 1791522906794,
       "tag": "0009_normal_ezekiel",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1792574023973,
+      "tag": "0010_open_doctor_faustus",
+      "breakpoints": true
     }
   ]
 }

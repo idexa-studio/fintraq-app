@@ -32,13 +32,13 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Release 2.1.0: repeating items | 31 | 5 | In progress |
+| I | Release 2.1.0: repeating items | 31 | 7 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
 | N | Every screen size | 37 | 25 | In progress |
-| O | Release 2.1.0: spendable balance | 12 | 3 | In progress |
+| O | Release 2.1.0: spendable balance | 12 | 6 | In progress |
 | P | Release 2.1.0: build and Play Console | 7 | 0 |  |
 
 ---
@@ -855,9 +855,12 @@ unopened for three months catches up correctly.
   - Approved on the Samsung, 2026-10-21 ("looking good so far"), after the sheet was made one pattern and the details' spacing brought to `ListRow`'s
 
 ### I2. Data
-- [ ] I2.01 `recurring_rules` table (the transaction it copies, cadence, next due, automatic or confirm, end, paused)
+- [x] I2.01 `recurring_rules` table (the transaction it copies, cadence, next due, automatic or confirm, end, paused)
+  - Written 2026-10-21 as its own copy of a transaction's fields (type, amount, account, destination, category, person, note), not a link to one, so editing or deleting a transaction never changes the item; with cadence, anchor day, time, next due, ask or add, end (never, date, times), occurrences and paused. Its references are set null when they are deleted, which stops the item. `payments` gains `recurring_rule_id` and `recurring_date`, plain columns so the migration adds them in place instead of rebuilding the table; a unique index on the two makes a second transaction for the same day impossible
 - [ ] I2.02 Generated migration; applies on a phone carrying 2.1 data
-- [ ] I2.03 Backup format version raised; older backups restore with no rules
+  - `drizzle/0010_open_doctor_faustus.sql`: one new table and index, three columns added in place, one unique index; nothing existing rebuilt. `data/db/__tests__/migration-0010.test.ts` runs migrations 0000 to 0010 on Node's SQLite over 2.0.2-shaped data: every account, balance, transaction and budget is unchanged. Not yet applied on a phone
+- [x] I2.03 Backup format version raised; older backups restore with no rules
+  - Version 3, with tests: an older file restores with no items, accounts by their kind and transactions made by no item; items restore before the transactions they made; an item whose account is missing stops; a transaction whose item is missing is freed. Erase everything clears the items
 - [ ] I2.04 Repository: add, save, pause, delete, list upcoming, what a rule has made
 - [ ] I2.05 A transaction made by a rule remembers the rule; deleting the rule keeps its transactions
 
@@ -915,9 +918,12 @@ changes the first and not their spending.
   - Approved with I1.05, 2026-10-21
 
 ### O2. Data
-- [ ] O2.01 `accounts.counts_as_spendable`: a new nullable column (null means "by type"), added in `data/db/schema.ts` and generated with `npm run db:generate`
-- [ ] O2.02 Backup format raised once with phase I's table; a backup made before it restores with every account "by type"
-- [ ] O2.03 Test: a 2.0.2 database migrates with every balance and total unchanged
+- [x] O2.01 `accounts.counts_as_spendable`: a new nullable column (null means "by type"), added in `data/db/schema.ts` and generated with `npm run db:generate`
+  - In migration 0010 with phase I's table
+- [x] O2.02 Backup format raised once with phase I's table; a backup made before it restores with every account "by type"
+  - Version 3, tested with I2.03
+- [x] O2.03 Test: a 2.0.2 database migrates with every balance and total unchanged
+  - `data/db/__tests__/migration-0010.test.ts`
 
 ### O3. Rules, each with tests
 - [ ] O3.01 Whether an account counts: its own setting, or else its type
