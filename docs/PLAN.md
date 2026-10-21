@@ -32,13 +32,13 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Release 2.1.0: repeating items | 31 | 7 | In progress |
+| I | Release 2.1.0: repeating items | 31 | 11 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
 | N | Every screen size | 37 | 25 | In progress |
-| O | Release 2.1.0: spendable balance | 12 | 6 | In progress |
+| O | Release 2.1.0: spendable balance | 12 | 8 | In progress |
 | P | Release 2.1.0: build and Play Console | 7 | 0 |  |
 
 ---
@@ -862,13 +862,19 @@ unopened for three months catches up correctly.
 - [x] I2.03 Backup format version raised; older backups restore with no rules
   - Version 3, with tests: an older file restores with no items, accounts by their kind and transactions made by no item; items restore before the transactions they made; an item whose account is missing stops; a transaction whose item is missing is freed. Erase everything clears the items
 - [ ] I2.04 Repository: add, save, pause, delete, list upcoming, what a rule has made
+  - `data/repositories/recurring.ts`, 2026-10-21: list with what each item points at, one, count, add, change (pause is a change), delete, what an item made, and recording or skipping one occurrence. Recording goes through `recordPaymentIn`, the one path money enters the ledger, and never makes an occurrence twice. Upcoming is worked out by the rules (I3), not stored. Not yet run on a phone
 - [ ] I2.05 A transaction made by a rule remembers the rule; deleting the rule keeps its transactions
+  - `recordOccurrence` stores the item and the day on the transaction; `deleteRecurringRule` clears them and deletes the item in one transaction. Not yet run on a phone
 
 ### I3. Rules, each with tests
-- [ ] I3.01 The next due date across month ends, leap years and a change of time zone
-- [ ] I3.02 Catch-up when the app was not opened for several periods: every missed one is made or offered, none twice
-- [ ] I3.03 A rule whose account or category was deleted stops and says why
-- [ ] I3.04 The free limit of 2, read from the registry
+- [x] I3.01 The next due date across month ends, leap years and a change of time zone
+  - `features/recurring/recurring-rules.ts`, tested: the 31st falls on a short month's last day and comes back; 29 February on the 28th outside leap years; days are calendar days, never moments, so no clock or zone change moves them
+- [x] I3.02 Catch-up when the app was not opened for several periods: every missed one is made or offered, none twice
+  - Tested: three months away makes three, oldest first; an end date or a count stops it; paused makes none and resume lets them go. None twice: the rules move the item past each one, and the repository refuses a second transaction for the same day
+- [x] I3.03 A rule whose account or category was deleted stops and says why
+  - The rule (`stoppedBecause`: account, destination or category) is tested; the screens say it in I4.02 and I4.03
+- [x] I3.04 The free limit of 2, read from the registry
+  - `FREE_LIMITS.recurring` and `isOverFreeLimit`, tested in the Pro registry's tests
 
 ### I4. Screens
 - [ ] I4.01 "Repeat" on the entry flow makes a rule from the transaction being saved
@@ -926,8 +932,10 @@ changes the first and not their spending.
   - `data/db/__tests__/migration-0010.test.ts`
 
 ### O3. Rules, each with tests
-- [ ] O3.01 Whether an account counts: its own setting, or else its type
-- [ ] O3.02 Ready to spend and put aside, per currency, from the same accounts that make today's total; the two always add up to it
+- [x] O3.01 Whether an account counts: its own setting, or else its type
+  - `features/accounts/spendable.ts`, tested
+- [x] O3.02 Ready to spend and put aside, per currency, from the same accounts that make today's total; the two always add up to it
+  - Tested, with a card's debt taking from what is ready
 
 ### O4. Screens
 - [ ] O4.01 Home's balance card with the put-aside line

@@ -3,6 +3,8 @@ export * from './hooks/accounts';
 export { accountTypeIcon } from './account-icons';
 export { maskedNumber } from './account-form';
 export { netWorthByCurrency } from './net-worth';
+export { PUT_ASIDE_KINDS, countsAsSpendable, spendableSplit } from './spendable';
+export type { SpendableSplit } from './spendable';
 export type { CurrencyNetWorth } from './net-worth';
 export { CurrencyPicker } from './components/CurrencyPicker';
 export { WalletStack } from './components/WalletStack';
