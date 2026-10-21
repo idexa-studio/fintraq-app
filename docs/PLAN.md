@@ -32,7 +32,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Release 2.1.0: repeating items | 32 | 21 | In progress |
+| I | Release 2.1.0: repeating items | 32 | 23 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
@@ -863,8 +863,8 @@ unopened for three months catches up correctly.
   - Version 3, with tests: an older file restores with no items, accounts by their kind and transactions made by no item; items restore before the transactions they made; an item whose account is missing stops; a transaction whose item is missing is freed. Erase everything clears the items
 - [x] I2.04 Repository: add, save, pause, delete, list upcoming, what a rule has made
   - `data/repositories/recurring.ts`, 2026-10-21: list with what each item points at, one, count, add, change (pause is a change), delete, what an item made, and recording or skipping one occurrence. Recording goes through `recordPaymentIn`, the one path money enters the ledger, and never makes an occurrence twice. Upcoming is worked out by the rules (I3), not stored. Run on the Samsung 2026-10-21: two items added, changed, paused and resumed, their occurrences recorded (each once: Home's month moved by exactly their amounts), and what each made listed
-- [ ] I2.05 A transaction made by a rule remembers the rule; deleting the rule keeps its transactions
-  - `recordOccurrence` stores the item and the day on the transaction; `deleteRecurringRule` clears them and deletes the item in one transaction. On the Samsung 2026-10-21 each item's page listed exactly what it made. Not yet seen: deleting an item that still has transactions (the one deleted had none left)
+- [x] I2.05 A transaction made by a rule remembers the rule; deleting the rule keeps its transactions
+  - `recordOccurrence` stores the item and the day on the transaction; `deleteRecurringRule` clears them and deletes the item in one transaction. On the Samsung 2026-10-21 each item's page listed exactly what it made. Deleting Rent with its two transactions, on the Samsung the same day, kept both: they stayed in Activity and Search until deleted by hand
 
 ### I3. Rules, each with tests
 - [x] I3.01 The next due date across month ends, leap years and a change of time zone
@@ -888,8 +888,8 @@ unopened for three months catches up correctly.
   - Built 2026-10-21: the Repeat row among the details of a new transaction (not on a loan payment), its sheet as in the gallery with the end date chosen on a calendar and the number of times typed; the transaction and its item are saved together in one database transaction, Undo takes both back, and Repeat is kept with the entry being typed. Plan's "Add" opens Add already set to every month. Seen on the Samsung 2026-10-21: an asked monthly item dated a month back and a weekly one added by itself; the sheet, an end date on the calendar, and the number of times refusing 1 with its reason. Closing the sheet without Done leaves Repeat as it was. Undo after saving was not pressed
 - [x] I4.02 List of repeating items with next date and amount
   - Built 2026-10-21: "Repeating" on Plan after Budgets, running items soonest first, then paused, ended and stopped, each saying so; an item with no account left shows in every currency. Seen on the Samsung 2026-10-21, light and dark, running items soonest first. A paused or stopped row in the list was not seen (the paused badge was, on the item's page)
-- [ ] I4.03 Rule screen: change, pause, delete, and what it has made
-  - Built 2026-10-21: `/recurring/[id]` as in the gallery, with a notice when it has stopped or ended. Change opens the Add form on the item (`/recurring/[id]/edit`), with Next in place of When and no Never. Seen on the Samsung 2026-10-21, light and dark: pause and resume with their notes, Change (the amount changed, the dates and what was made left alone), what it made, and the delete dialog. Delete was pressed as the phone disconnected, so its result is not yet seen. A stopped or ended item was not seen
+- [x] I4.03 Rule screen: change, pause, delete, and what it has made
+  - Built 2026-10-21: `/recurring/[id]` as in the gallery, with a notice when it has stopped or ended. Change opens the Add form on the item (`/recurring/[id]/edit`), with Next in place of When and no Never. Seen on the Samsung 2026-10-21, light and dark: pause and resume with their notes, Change (the amount changed, the dates and what was made left alone), what it made, and the delete dialog. Delete seen too: the item goes, with "Repeating item deleted", and Plan shows the empty state again. A stopped or ended item was not seen
 - [x] I4.04 Upcoming on the Plan tab: the next 30 days
   - Built 2026-10-21: after Repeating, each day an item falls and each loan due, in date order; hidden when nothing falls. Seen on the Samsung 2026-10-21, with a loan due among the items
 - [x] I4.05 Due today: added automatically, or confirmed with one tap from Home
