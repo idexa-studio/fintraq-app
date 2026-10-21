@@ -1,105 +1,120 @@
 <en-US>
-Fintraq now fits every screen.
-• Tablets and foldables: a tidy layout upright, and tabs at the side with two columns when turned
-• Small phones: the amount stays in view while you type
-• Budget names are no longer cut short on narrow screens
-• Amounts take only numbers, whatever keyboard you use
+Fintraq 2.0.2
+• Tablets: Activity, Plan, Settings and the pages for accounts, people, loans and budgets now use the extra room
+• Samsung DeX and other external screens: text is drawn at the right size
+• A transaction you were typing comes back if the app restarts before you save it
+• Choosing who a transaction was with is clearer
+• Fintraq now tells you when a newer version is ready
 </en-US>
 <bn-BD>
-Fintraq এখন সব মাপের স্ক্রিনে মানানসই।
-• ট্যাবলেট ও ফোল্ডেবল: খাড়া অবস্থায় গোছানো বিন্যাস, আর ঘোরালে পাশে ট্যাব ও দুই কলাম
-• ছোট ফোন: লেখার সময় অঙ্কটি চোখের সামনেই থাকে
-• সরু স্ক্রিনে বাজেটের নাম আর কাটা পড়ে না
-• যে কিবোর্ডই হোক, অঙ্কের ঘরে শুধু সংখ্যা বসে
+Fintraq 2.0.2
+• ট্যাবলেট: অ্যাক্টিভিটি, প্ল্যান, সেটিংস এবং অ্যাকাউন্ট, মানুষ, ঋণ ও বাজেটের পাতা এখন বাড়তি জায়গা কাজে লাগায়
+• Samsung DeX ও অন্য বাইরের স্ক্রিন: লেখা সঠিক মাপে দেখায়
+• সেভ করার আগে অ্যাপ আবার চালু হলে লিখতে থাকা লেনদেনটি ফিরে আসে
+• লেনদেনটি কার সঙ্গে ছিল, তা বেছে নেওয়া এখন আরও স্পষ্ট
+• নতুন সংস্করণ এলে Fintraq এখন জানিয়ে দেয়
 </bn-BD>
 <de-DE>
-Fintraq passt jetzt auf jeden Bildschirm.
-• Tablets und Foldables: aufgeräumtes Layout im Hochformat, im Querformat Tabs an der Seite und zwei Spalten
-• Kleine Handys: Der Betrag bleibt beim Tippen sichtbar
-• Budgetnamen werden auf schmalen Bildschirmen nicht mehr abgeschnitten
-• Beträge nehmen nur Zahlen an, egal mit welcher Tastatur
+Fintraq 2.0.2
+• Tablets: Aktivität, Plan, Einstellungen und die Seiten für Konten, Personen, Kredite und Budgets nutzen jetzt den zusätzlichen Platz
+• Samsung DeX und andere externe Bildschirme: Text wird in der richtigen Größe angezeigt
+• Eine Buchung, die du gerade eingibst, kommt zurück, wenn die App vor dem Speichern neu startet
+• Auszuwählen, mit wem eine Buchung war, ist jetzt klarer
+• Fintraq sagt dir jetzt, wenn eine neue Version bereitsteht
 </de-DE>
 <es-ES>
-Fintraq ahora se adapta a cualquier pantalla.
-• Tabletas y plegables: diseño ordenado en vertical, y pestañas a un lado con dos columnas en horizontal
-• Móviles pequeños: el importe sigue a la vista mientras escribes
-• Los nombres de los presupuestos ya no se cortan en pantallas estrechas
-• Los importes solo aceptan números, uses el teclado que uses
+Fintraq 2.0.2
+• Tabletas: Actividad, Plan, Ajustes y las páginas de cuentas, personas, préstamos y presupuestos aprovechan ahora el espacio extra
+• Samsung DeX y otras pantallas externas: el texto se muestra al tamaño correcto
+• Si la app se reinicia antes de guardar, la transacción que escribías vuelve
+• Elegir con quién fue una transacción es ahora más claro
+• Fintraq te avisa cuando hay una versión nueva
 </es-ES>
 <fr-FR>
-Fintraq s’adapte désormais à tous les écrans.
-• Tablettes et pliables : une mise en page soignée en portrait, et les onglets sur le côté avec deux colonnes en paysage
-• Petits téléphones : le montant reste visible pendant la saisie
-• Les noms de budgets ne sont plus coupés sur les écrans étroits
-• Les montants n’acceptent que des chiffres, quel que soit le clavier
+Fintraq 2.0.2
+• Tablettes : Activité, Plan, Réglages et les pages des comptes, personnes, prêts et budgets profitent désormais de l’espace en plus
+• Samsung DeX et autres écrans externes : le texte s’affiche à la bonne taille
+• Une transaction en cours de saisie revient si l’app redémarre avant l’enregistrement
+• Choisir avec qui une transaction a eu lieu est plus clair
+• Fintraq vous prévient quand une nouvelle version est prête
 </fr-FR>
 <hi-IN>
-Fintraq अब हर स्क्रीन पर ठीक बैठता है।
-• टैबलेट और फ़ोल्डेबल: सीधा रखने पर साफ़ लेआउट, और घुमाने पर किनारे टैब व दो कॉलम
-• छोटे फ़ोन: लिखते समय रकम सामने दिखती रहती है
-• पतली स्क्रीन पर बजट के नाम अब कटते नहीं
-• कीबोर्ड कोई भी हो, रकम में सिर्फ़ अंक ही आते हैं
+Fintraq 2.0.2
+• टैबलेट: गतिविधि, योजना, सेटिंग्स और खातों, लोगों, ऋणों व बजट के पेज अब अतिरिक्त जगह का इस्तेमाल करते हैं
+• Samsung DeX और दूसरी बाहरी स्क्रीन: लिखावट सही आकार में दिखती है
+• सेव करने से पहले ऐप दोबारा शुरू हो जाए, तो लिखा जा रहा लेनदेन वापस आ जाता है
+• लेनदेन किसके साथ था, यह चुनना अब ज़्यादा साफ़ है
+• नया संस्करण आने पर Fintraq अब आपको बताता है
 </hi-IN>
 <id>
-Fintraq kini pas di semua layar.
-• Tablet dan ponsel lipat: tata letak rapi saat tegak, serta tab di samping dan dua kolom saat diputar
-• Ponsel kecil: jumlah tetap terlihat saat Anda mengetik
-• Nama anggaran tidak lagi terpotong di layar sempit
-• Jumlah hanya menerima angka, apa pun keyboardnya
+Fintraq 2.0.2
+• Tablet: Aktivitas, Rencana, Pengaturan, serta halaman akun, orang, pinjaman, dan anggaran kini memakai ruang lebih
+• Samsung DeX dan layar eksternal lain: teks tampil dengan ukuran yang tepat
+• Transaksi yang sedang Anda ketik kembali jika aplikasi dimulai ulang sebelum disimpan
+• Memilih dengan siapa transaksi terjadi kini lebih jelas
+• Fintraq kini memberi tahu saat versi baru tersedia
 </id>
 <ja-JP>
-Fintraqがあらゆる画面サイズに対応しました。
-• タブレットと折りたたみ端末：縦向きでは整ったレイアウト、横向きではタブが横に並び2列表示
-• 小さなスマートフォン：入力中も金額が隠れません
-• 幅の狭い画面でも予算名が途中で切れません
-• どのキーボードでも、金額には数字だけが入ります
+Fintraq 2.0.2
+• タブレット：アクティビティ、プラン、設定、口座・相手・貸し借り・予算の各ページが広い画面を活かすようになりました
+• Samsung DeX などの外部ディスプレイ：文字が正しい大きさで表示されます
+• 保存前にアプリが再起動しても、入力中の記録が戻ります
+• 誰との記録かを選ぶ操作がわかりやすくなりました
+• 新しいバージョンが出ると Fintraq がお知らせします
 </ja-JP>
 <kn-IN>
-Fintraq ಈಗ ಎಲ್ಲಾ ಪರದೆಗಳಿಗೂ ಹೊಂದುತ್ತದೆ.
-• ಟ್ಯಾಬ್ಲೆಟ್ ಮತ್ತು ಫೋಲ್ಡಬಲ್: ನೇರವಾಗಿ ಹಿಡಿದಾಗ ಅಚ್ಚುಕಟ್ಟಾದ ವಿನ್ಯಾಸ, ತಿರುಗಿಸಿದಾಗ ಬದಿಯಲ್ಲಿ ಟ್ಯಾಬ್‌ಗಳು ಮತ್ತು ಎರಡು ಕಾಲಮ್‌ಗಳು
-• ಚಿಕ್ಕ ಫೋನ್‌ಗಳು: ಟೈಪ್ ಮಾಡುವಾಗ ಮೊತ್ತ ಕಾಣುತ್ತಲೇ ಇರುತ್ತದೆ
-• ಕಿರಿದಾದ ಪರದೆಯಲ್ಲಿ ಬಜೆಟ್ ಹೆಸರುಗಳು ಇನ್ನು ಕತ್ತರಿಸುವುದಿಲ್ಲ
-• ಯಾವ ಕೀಬೋರ್ಡ್ ಆದರೂ ಮೊತ್ತದಲ್ಲಿ ಸಂಖ್ಯೆಗಳು ಮಾತ್ರ
+Fintraq 2.0.2
+• ಟ್ಯಾಬ್ಲೆಟ್: ಚಟುವಟಿಕೆ, ಯೋಜನೆ, ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಖಾತೆ, ವ್ಯಕ್ತಿ, ಸಾಲ, ಬಜೆಟ್ ಪುಟಗಳು ಈಗ ಹೆಚ್ಚುವರಿ ಜಾಗವನ್ನು ಬಳಸುತ್ತವೆ
+• Samsung DeX ಮತ್ತು ಇತರ ಬಾಹ್ಯ ಪರದೆಗಳು: ಪಠ್ಯ ಸರಿಯಾದ ಗಾತ್ರದಲ್ಲಿ ಕಾಣುತ್ತದೆ
+• ಉಳಿಸುವ ಮೊದಲು ಆ್ಯಪ್ ಮರುಪ್ರಾರಂಭವಾದರೆ, ಟೈಪ್ ಮಾಡುತ್ತಿದ್ದ ವಹಿವಾಟು ಮರಳಿ ಬರುತ್ತದೆ
+• ವಹಿವಾಟು ಯಾರ ಜೊತೆ ಇತ್ತು ಎಂದು ಆರಿಸುವುದು ಈಗ ಸ್ಪಷ್ಟ
+• ಹೊಸ ಆವೃತ್ತಿ ಬಂದಾಗ Fintraq ಈಗ ತಿಳಿಸುತ್ತದೆ
 </kn-IN>
 <ko-KR>
-Fintraq이 이제 모든 화면에 맞습니다.
-• 태블릿과 폴더블: 세로에서는 정돈된 레이아웃, 가로에서는 옆쪽 탭과 두 개의 열
-• 작은 휴대폰: 입력하는 동안 금액이 가려지지 않습니다
-• 좁은 화면에서 예산 이름이 더 이상 잘리지 않습니다
-• 어떤 키보드를 쓰든 금액에는 숫자만 입력됩니다
+Fintraq 2.0.2
+• 태블릿: 활동, 계획, 설정과 계좌·사람·대출·예산 페이지가 이제 넓은 화면을 활용합니다
+• Samsung DeX 및 기타 외부 화면: 글자가 올바른 크기로 표시됩니다
+• 저장하기 전에 앱이 다시 시작되어도 입력 중이던 거래가 돌아옵니다
+• 거래를 누구와 했는지 고르기가 더 분명해졌습니다
+• 새 버전이 나오면 Fintraq이 알려 드립니다
 </ko-KR>
 <mr-IN>
-Fintraq आता प्रत्येक स्क्रीनवर नीट बसते.
-• टॅबलेट आणि फोल्डेबल: उभे धरल्यावर नीटनेटकी मांडणी, आणि फिरवल्यावर बाजूला टॅब व दोन स्तंभ
-• लहान फोन: टाइप करताना रक्कम दिसत राहते
-• अरुंद स्क्रीनवर बजेटची नावे आता कापली जात नाहीत
-• कीबोर्ड कोणताही असो, रकमेत फक्त अंकच येतात
+Fintraq 2.0.2
+• टॅबलेट: क्रियाकलाप, योजना, सेटिंग्ज आणि खाती, व्यक्ती, कर्जे व बजेटची पाने आता जास्तीची जागा वापरतात
+• Samsung DeX आणि इतर बाह्य स्क्रीन: मजकूर योग्य आकारात दिसतो
+• जतन करण्यापूर्वी ॲप पुन्हा सुरू झाले तर लिहीत असलेला व्यवहार परत येतो
+• व्यवहार कोणासोबत होता हे निवडणे आता अधिक स्पष्ट
+• नवी आवृत्ती आल्यावर Fintraq आता सांगते
 </mr-IN>
 <pt-BR>
-O Fintraq agora se ajusta a qualquer tela.
-• Tablets e dobráveis: layout organizado na vertical, e abas na lateral com duas colunas na horizontal
-• Celulares pequenos: o valor continua à vista enquanto você digita
-• Os nomes dos orçamentos não são mais cortados em telas estreitas
-• Os valores aceitam apenas números, seja qual for o teclado
+Fintraq 2.0.2
+• Tablets: Atividade, Plano, Ajustes e as páginas de contas, pessoas, empréstimos e orçamentos agora aproveitam o espaço extra
+• Samsung DeX e outras telas externas: o texto aparece no tamanho certo
+• Se o app reiniciar antes de salvar, a transação que você digitava volta
+• Escolher com quem foi uma transação ficou mais claro
+• O Fintraq avisa quando há uma versão nova
 </pt-BR>
 <ru-RU>
-Fintraq теперь подходит для любого экрана.
-• Планшеты и складные телефоны: аккуратный макет в портретном режиме, а в альбомном — вкладки сбоку и две колонки
-• Небольшие телефоны: сумма остаётся на виду, пока вы её вводите
-• Названия бюджетов больше не обрезаются на узких экранах
-• В сумму попадают только цифры, какой бы ни была клавиатура
+Fintraq 2.0.2
+• Планшеты: «Активность», «План», «Настройки» и страницы счетов, людей, долгов и бюджетов теперь используют дополнительное место
+• Samsung DeX и другие внешние экраны: текст отображается нужного размера
+• Если приложение перезапустится до сохранения, вводимая операция вернётся
+• Выбрать, с кем была операция, стало понятнее
+• Fintraq сообщает, когда выходит новая версия
 </ru-RU>
 <ta-IN>
-Fintraq இப்போது எல்லா திரைகளுக்கும் பொருந்தும்.
-• டேப்லெட் மற்றும் மடிக்கும் போன்கள்: நேராகப் பிடித்தால் நேர்த்தியான அமைப்பு, திருப்பினால் பக்கத்தில் தாவல்கள் மற்றும் இரண்டு நெடுவரிசைகள்
-• சிறிய போன்கள்: தட்டச்சு செய்யும்போது தொகை தெரிந்தபடியே இருக்கும்
-• குறுகிய திரைகளில் பட்ஜெட் பெயர்கள் இனி வெட்டப்படாது
-• எந்த விசைப்பலகையாக இருந்தாலும் தொகையில் எண்கள் மட்டுமே
+Fintraq 2.0.2
+• டேப்லெட்: செயல்பாடு, திட்டம், அமைப்புகள் மற்றும் கணக்கு, நபர், கடன், பட்ஜெட் பக்கங்கள் இப்போது கூடுதல் இடத்தைப் பயன்படுத்துகின்றன
+• Samsung DeX மற்றும் பிற வெளித் திரைகள்: எழுத்துகள் சரியான அளவில் தெரியும்
+• சேமிக்கும் முன் ஆப் மீண்டும் தொடங்கினால், உள்ளிட்டுக்கொண்டிருந்த பரிவர்த்தனை திரும்ப வரும்
+• பரிவர்த்தனை யாருடன் என்பதைத் தேர்வு செய்வது இப்போது தெளிவு
+• புதிய பதிப்பு வந்தால் Fintraq இப்போது சொல்லும்
 </ta-IN>
 <te-IN>
-Fintraq ఇప్పుడు ప్రతి స్క్రీన్‌కూ సరిపోతుంది.
-• ట్యాబ్లెట్‌లు, ఫోల్డబుల్‌లు: నిలువుగా చక్కని అమరిక, తిప్పితే పక్కన ట్యాబ్‌లు, రెండు నిలువు వరుసలు
-• చిన్న ఫోన్‌లు: టైప్ చేస్తున్నప్పుడు మొత్తం కనిపిస్తూనే ఉంటుంది
-• ఇరుకైన స్క్రీన్‌లలో బడ్జెట్ పేర్లు ఇక కత్తిరించబడవు
-• ఏ కీబోర్డ్ అయినా మొత్తంలో అంకెలు మాత్రమే
+Fintraq 2.0.2
+• ట్యాబ్లెట్‌లు: యాక్టివిటీ, ప్లాన్, సెట్టింగ్‌లు, ఖాతాలు, వ్యక్తులు, అప్పులు, బడ్జెట్‌ల పేజీలు ఇప్పుడు అదనపు స్థలాన్ని వాడుకుంటాయి
+• Samsung DeX, ఇతర బయటి స్క్రీన్‌లు: అక్షరాలు సరైన పరిమాణంలో కనిపిస్తాయి
+• సేవ్ చేసే ముందు యాప్ మళ్లీ మొదలైతే, మీరు నమోదు చేస్తున్న లావాదేవీ తిరిగి వస్తుంది
+• లావాదేవీ ఎవరితో జరిగిందో ఎంచుకోవడం ఇప్పుడు స్పష్టంగా ఉంది
+• కొత్త వెర్షన్ వచ్చినప్పుడు Fintraq ఇప్పుడు చెబుతుంది
 </te-IN>
