@@ -54,7 +54,8 @@
       "deleted": "{{name}} を削除しました",
       "failed": "実行できませんでした",
       "failedBody": "何も変更されていません。もう一度お試しください。",
-      "ok": "OK"
+      "ok": "OK",
+      "putAside": "取り置き"
     },
     "form": {
       "newTitle": "新しい口座",
@@ -100,7 +101,10 @@
         "body": "入力した内容は保存されません。",
         "confirm": "破棄",
         "cancel": "編集を続ける"
-      }
+      },
+      "spendable": "使えるお金に含める",
+      "spendableOn": "ホームの「使えるお金」に含まれます",
+      "spendableOff": "ホームの合計には含めず、取り置きとして表示します"
     }
   },
   "activity": {

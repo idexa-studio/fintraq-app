@@ -54,7 +54,8 @@
       "deleted": "{{name}} gelöscht",
       "failed": "Das hat nicht geklappt",
       "failedBody": "Es wurde nichts geändert. Versuch es noch einmal.",
-      "ok": "OK"
+      "ok": "OK",
+      "putAside": "Zurückgelegt"
     },
     "form": {
       "newTitle": "Neues Konto",
@@ -100,7 +101,10 @@
         "body": "Was du eingegeben hast, wird nicht gespeichert.",
         "confirm": "Verwerfen",
         "cancel": "Weiter bearbeiten"
-      }
+      },
+      "spendable": "In „Verfügbar“ mitzählen",
+      "spendableOn": "Zählt zu dem, was Start als verfügbar zeigt",
+      "spendableOff": "Nicht in der Summe auf Start, als zurückgelegt gezeigt"
     }
   },
   "activity": {

@@ -54,7 +54,8 @@
       "deleted": "{{name}} dihapus",
       "failed": "Tidak bisa dilakukan",
       "failedBody": "Tidak ada yang berubah. Coba lagi.",
-      "ok": "OK"
+      "ok": "OK",
+      "putAside": "Disisihkan"
     },
     "form": {
       "newTitle": "Akun baru",
@@ -100,7 +101,10 @@
         "body": "Yang Anda ketik tidak akan disimpan.",
         "confirm": "Buang",
         "cancel": "Lanjut mengubah"
-      }
+      },
+      "spendable": "Hitung dalam yang siap dipakai",
+      "spendableOn": "Termasuk yang siap dipakai di Beranda",
+      "spendableOff": "Tidak masuk total Beranda, ditampilkan sebagai disisihkan"
     }
   },
   "activity": {

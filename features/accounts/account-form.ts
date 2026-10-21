@@ -22,6 +22,8 @@ export type AccountDraft = {
   accountNumber: string;
   /** Hex, from the saved palette. */
   color: string;
+  /** Whether it counts in what is ready to spend; null until changed by hand, the kind deciding. */
+  countsAsSpendable: boolean | null;
 };
 
 /** Why the form cannot be saved yet. */
@@ -29,7 +31,7 @@ export type AccountBlocker = 'name' | 'balance';
 
 export const typeOf = (account: Pick<Account, 'accountType'>): AccountType => (account.accountType as AccountType | null) ?? 'bank';
 
-export const newDraft = (currency: string, color: string): AccountDraft => ({ name: '', type: 'bank', currency, openingBalance: '', holderName: '', accountNumber: '', color });
+export const newDraft = (currency: string, color: string): AccountDraft => ({ name: '', type: 'bank', currency, openingBalance: '', holderName: '', accountNumber: '', color, countsAsSpendable: null });
 
 export const draftOf = (account: Account): AccountDraft => ({
   name: account.name,
@@ -39,6 +41,7 @@ export const draftOf = (account: Account): AccountDraft => ({
   holderName: account.holderName,
   accountNumber: isRealNumber(account.accountNumber) ? account.accountNumber : '',
   color: colorNumberToHex(account.color).toUpperCase(),
+  countsAsSpendable: account.countsAsSpendable,
 });
 
 /** An opening balance is optional, and never below zero. */
@@ -65,6 +68,7 @@ export const createPayloadOf = (draft: AccountDraft): InsertAccount => ({
   icon: 'building',
   accountType: draft.type,
   isDefault: false,
+  countsAsSpendable: draft.countsAsSpendable,
 });
 
 /** The kind is fixed once made, and so is the currency once anything is recorded in it. */
@@ -73,6 +77,7 @@ export const updatePayloadOf = (draft: AccountDraft, currencyLocked: boolean): U
   holderName: draft.holderName.trim(),
   accountNumber: draft.accountNumber.trim(),
   color: toDbColor(draft.color),
+  countsAsSpendable: draft.countsAsSpendable,
   ...(currencyLocked ? null : { currency: draft.currency }),
 });
 

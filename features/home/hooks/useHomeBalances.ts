@@ -1,4 +1,5 @@
 import type { Account } from '@/data/repositories/accounts';
+import { spendableSplit } from '@/features/accounts';
 import { useSettings } from '@/features/settings';
 import { DEFAULT_CURRENCY, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
 import { useMemo, useState } from 'react';
@@ -9,7 +10,7 @@ export type HomeBalances = {
   /** Every currency the user holds, the default first. One entry means no switcher. */
   currencies: string[];
   setCurrency: (currency: string) => void;
-  /** Sum of the balances of the accounts in `currency`. */
+  /** What is ready to spend in `currency`: every account's balance, less what is put aside. */
   balance: number;
   /** The accounts in `currency`, in their saved order. Home lists only these. */
   accounts: Account[];
@@ -36,6 +37,10 @@ export function useHomeBalances(accounts: readonly Account[] | undefined): HomeB
     // Falls back when the chosen currency disappears, e.g. its last account was deleted.
     const currency = chosen && currencies.includes(chosen) ? chosen : currencies[0];
     const inCurrency = (accounts ?? []).filter((a) => a.currency === currency);
-    return { currency, currencies, setCurrency: setChosen, balance: inCurrency.reduce((sum, a) => sum + a.balance, 0), accounts: inCurrency };
+    const split = spendableSplit(inCurrency, currency);
+    return {
+      currency, currencies, setCurrency: setChosen, balance: split.ready, accounts: inCurrency,
+      ...(split.putAsideAccounts > 0 ? { putAside: { amount: split.putAside, accounts: split.putAsideAccounts } } : {}),
+    };
   }, [accounts, chosen, profile.defaultCurrency]);
 }

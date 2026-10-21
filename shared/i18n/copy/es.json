@@ -56,7 +56,8 @@
       "deleted": "{{name}} eliminada",
       "failed": "No se pudo hacer",
       "failedBody": "No se cambió nada. Inténtalo de nuevo.",
-      "ok": "Aceptar"
+      "ok": "Aceptar",
+      "putAside": "Apartado"
     },
     "form": {
       "newTitle": "Cuenta nueva",
@@ -102,7 +103,10 @@
         "body": "Lo que has escrito no se guardará.",
         "confirm": "Descartar",
         "cancel": "Seguir editando"
-      }
+      },
+      "spendable": "Contar en lo disponible para gastar",
+      "spendableOn": "Parte de lo que Inicio muestra como disponible para gastar",
+      "spendableOff": "Fuera del total de Inicio, se muestra como apartado"
     }
   },
   "activity": {

@@ -56,7 +56,8 @@
       "deleted": "{{name}} supprimé",
       "failed": "Impossible de faire cela",
       "failedBody": "Rien n’a été modifié. Réessayez.",
-      "ok": "OK"
+      "ok": "OK",
+      "putAside": "Mis de côté"
     },
     "form": {
       "newTitle": "Nouveau compte",
@@ -102,7 +103,10 @@
         "body": "Ce que vous avez saisi ne sera pas enregistré.",
         "confirm": "Abandonner",
         "cancel": "Continuer la saisie"
-      }
+      },
+      "spendable": "Compter dans ce que je peux dépenser",
+      "spendableOn": "Compte dans ce que l’Accueil montre comme disponible",
+      "spendableOff": "Hors du total de l’Accueil, affiché comme mis de côté"
     }
   },
   "activity": {

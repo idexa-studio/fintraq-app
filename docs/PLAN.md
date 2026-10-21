@@ -32,13 +32,13 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Release 2.1.0: repeating items | 31 | 11 | In progress |
+| I | Release 2.1.0: repeating items | 31 | 12 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
 | N | Every screen size | 37 | 25 | In progress |
-| O | Release 2.1.0: spendable balance | 12 | 8 | In progress |
+| O | Release 2.1.0: spendable balance | 12 | 10 | In progress |
 | P | Release 2.1.0: build and Play Console | 7 | 0 |  |
 
 ---
@@ -857,8 +857,8 @@ unopened for three months catches up correctly.
 ### I2. Data
 - [x] I2.01 `recurring_rules` table (the transaction it copies, cadence, next due, automatic or confirm, end, paused)
   - Written 2026-10-21 as its own copy of a transaction's fields (type, amount, account, destination, category, person, note), not a link to one, so editing or deleting a transaction never changes the item; with cadence, anchor day, time, next due, ask or add, end (never, date, times), occurrences and paused. Its references are set null when they are deleted, which stops the item. `payments` gains `recurring_rule_id` and `recurring_date`, plain columns so the migration adds them in place instead of rebuilding the table; a unique index on the two makes a second transaction for the same day impossible
-- [ ] I2.02 Generated migration; applies on a phone carrying 2.1 data
-  - `drizzle/0010_open_doctor_faustus.sql`: one new table and index, three columns added in place, one unique index; nothing existing rebuilt. `data/db/__tests__/migration-0010.test.ts` runs migrations 0000 to 0010 on Node's SQLite over 2.0.2-shaped data: every account, balance, transaction and budget is unchanged. Not yet applied on a phone
+- [x] I2.02 Generated migration; applies on a phone carrying 2.1 data
+  - `drizzle/0010_open_doctor_faustus.sql`: one new table and index, three columns added in place, one unique index; nothing existing rebuilt. `data/db/__tests__/migration-0010.test.ts` runs migrations 0000 to 0010 on Node's SQLite over 2.0.2-shaped data: every account, balance, transaction and budget is unchanged. Applied on the Samsung, 2026-10-21, over its demo data (five accounts, a savings account among them, a year of transactions): the app opened, and Accounts' net worth was the same ₹735,899
 - [x] I2.03 Backup format version raised; older backups restore with no rules
   - Version 3, with tests: an older file restores with no items, accounts by their kind and transactions made by no item; items restore before the transactions they made; an item whose account is missing stops; a transaction whose item is missing is freed. Erase everything clears the items
 - [ ] I2.04 Repository: add, save, pause, delete, list upcoming, what a rule has made
@@ -938,9 +938,12 @@ changes the first and not their spending.
   - Tested, with a card's debt taking from what is ready
 
 ### O4. Screens
-- [ ] O4.01 Home's balance card with the put-aside line
-- [ ] O4.02 The switch on the account form, and the account's page saying "Put aside" when it is
+- [x] O4.01 Home's balance card with the put-aside line
+  - Seen on the Samsung, 2026-10-21: "Ready to spend ₹50,899.00, across 4 accounts" and "₹685,000.00 put aside in 1 account"; Accounts' net worth ₹735,899.00 is the two together
+- [x] O4.02 The switch on the account form, and the account's page saying "Put aside" when it is
+  - Seen on the Samsung: on for a bank account and off for Savings on a new account; Savings' page shows Put aside; switched on and saved, Home read "All accounts ₹735,899.00 across 5", and switched back it read as before
 - [ ] O4.03 Copy and the 12 translations; seen on a phone with the owner's word, light and dark
+  - Copy and translations done (each language's own name for Home); seen in light only so far
 - [ ] O4.04 Owner: a reply to the review, once 2.1.0 is live (the owner posts it)
 
 ## J. Version 2.3: goals and the net worth trend

@@ -22,10 +22,10 @@ const READY_TOTAL = READY.reduce((sum, a) => sum + a.balance, 0);
 const SAVED = 12400;
 const SAVINGS = account(4, 'Savings', 'savings', 'teal', SAVED);
 
-/** Nothing put aside: all four accounts count. Put aside: the three, with the savings on the line under. */
+/** Nothing put aside: all four accounts count. Put aside: three count, the savings on the line under. */
 const balances = (putAside?: { amount: number; accounts: number }) => ({
   currency: 'USD', currencies: ['USD'], setCurrency: () => {},
-  accounts: putAside ? READY : [...READY, SAVINGS],
+  accounts: [...READY, SAVINGS],
   balance: putAside ? READY_TOTAL : READY_TOTAL + SAVED,
   ...(putAside ? { putAside } : {}),
 });

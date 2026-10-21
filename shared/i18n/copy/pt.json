@@ -56,7 +56,8 @@
       "deleted": "{{name}} excluída",
       "failed": "Não foi possível",
       "failedBody": "Nada foi alterado. Tente de novo.",
-      "ok": "OK"
+      "ok": "OK",
+      "putAside": "Guardado"
     },
     "form": {
       "newTitle": "Nova conta",
@@ -102,7 +103,10 @@
         "body": "O que você digitou não será salvo.",
         "confirm": "Descartar",
         "cancel": "Continuar editando"
-      }
+      },
+      "spendable": "Contar no disponível para gastar",
+      "spendableOn": "Parte do que o Início mostra como disponível para gastar",
+      "spendableOff": "Fora do total do Início, mostrado como guardado"
     }
   },
   "activity": {

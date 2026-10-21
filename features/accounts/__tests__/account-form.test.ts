@@ -29,14 +29,20 @@ describe('account form rules', () => {
 
   it('writes a new account as every version has: trimmed, not default, the fixed icon', () => {
     expect(createPayloadOf(draft({ name: ' Everyday ', type: 'cash', holderName: ' Me ' }))).toEqual({
-      name: 'Everyday', holderName: 'Me', accountNumber: '', balance: 0, currency: 'USD', color: toDbColor(GREEN), icon: 'building', accountType: 'cash', isDefault: false,
+      name: 'Everyday', holderName: 'Me', accountNumber: '', balance: 0, currency: 'USD', color: toDbColor(GREEN), icon: 'building', accountType: 'cash', isDefault: false, countsAsSpendable: null,
     });
   });
 
   it('never changes the balance or the kind on edit, and the currency only while unused', () => {
     const changed = draft({ currency: 'EUR', type: 'cash' as const });
-    expect(updatePayloadOf(changed, false)).toEqual({ name: 'Everyday', holderName: '', accountNumber: '', color: toDbColor(GREEN), currency: 'EUR' });
-    expect(updatePayloadOf(changed, true)).toEqual({ name: 'Everyday', holderName: '', accountNumber: '', color: toDbColor(GREEN) });
+    expect(updatePayloadOf(changed, false)).toEqual({ name: 'Everyday', holderName: '', accountNumber: '', color: toDbColor(GREEN), countsAsSpendable: null, currency: 'EUR' });
+    expect(updatePayloadOf(changed, true)).toEqual({ name: 'Everyday', holderName: '', accountNumber: '', color: toDbColor(GREEN), countsAsSpendable: null });
+  });
+
+  it('leaves the spendable choice to the kind until it is set by hand, then keeps it', () => {
+    expect(createPayloadOf(draft()).countsAsSpendable).toBeNull();
+    expect(createPayloadOf(draft({ type: 'savings', countsAsSpendable: true })).countsAsSpendable).toBe(true);
+    expect(draftOf(account({ countsAsSpendable: false })).countsAsSpendable).toBe(false);
   });
 
   it('reads an account back into the form, dropping the old "N/A" number', () => {

@@ -1,5 +1,5 @@
 import {
-  FormBlock, FieldStack, AmountField, Button, Card, Chip, Dialog, Divider, Emblem, Header, IconCircle, ListRow, MarkGrid, Message, Money, Screen, Skeleton, SwatchGrid, Text, TextField, pastelOf,
+  FormBlock, FieldStack, AmountField, Button, Card, Chip, Dialog, Divider, Emblem, Header, IconCircle, ListRow, MarkGrid, Message, Money, Screen, Skeleton, SwatchGrid, Switch, Text, TextField, pastelOf,
   useStyles, useTheme, useToast,
 } from '@/design';
 import type { Theme } from '@/design';
@@ -7,6 +7,7 @@ import { accountTypeIcon } from '@/features/accounts/account-icons';
 import { ACCOUNT_TYPES, HOLDER_MAX, NAME_MAX, NUMBER_MAX, blockerOf, createPayloadOf, draftOf, isChanged, newDraft, updatePayloadOf } from '@/features/accounts/account-form';
 import type { AccountDraft } from '@/features/accounts/account-form';
 import { CurrencyPicker } from '@/features/accounts/components/CurrencyPicker';
+import { countsAsSpendable } from '@/features/accounts/spendable';
 import { useAccount, useAccountUsage, useAccounts, useCreateAccount, useUpdateAccount } from '@/features/accounts/hooks/accounts';
 import { useSettings } from '@/features/settings';
 import { useLeaveGuard } from '@/features/shell';
@@ -66,6 +67,7 @@ export function AccountFormScreen({ accountId }: AccountFormOptions) {
 
   const guard = useLeaveGuard(isChanged(draft, initial));
   const set = <K extends keyof AccountDraft>(key: K, value: AccountDraft[K]) => setDraft((current) => ({ ...current, [key]: value }));
+  const spendable = countsAsSpendable({ accountType: draft.type, countsAsSpendable: draft.countsAsSpendable });
   const close = () => (router.canGoBack() ? router.back() : router.replace('/accounts'));
   const header = (title?: string) => <Header task title={title} onClose={close} closeLabel={t('close')} />;
 
@@ -165,6 +167,16 @@ export function AccountFormScreen({ accountId }: AccountFormOptions) {
           </Card>
         </FormBlock>
       )}
+
+      {/* Set by the kind until changed here: savings and investments are put aside. */}
+      <Card padded={false}>
+        <ListRow
+          icon="wallet"
+          title={t('form.spendable')}
+          subtitle={spendable ? t('form.spendableOn') : t('form.spendableOff')}
+          trailing={<Switch value={spendable} onValueChange={(value) => set('countsAsSpendable', value)} accessibilityLabel={t('form.spendable')} />}
+        />
+      </Card>
 
       {showMore ? (
         <Card><FieldStack>
