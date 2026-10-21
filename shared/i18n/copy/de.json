@@ -1923,6 +1923,19 @@
       "budgets": {
         "title": "Budgets",
         "body": "Lege unter Planen ein Monatslimit für eine Kategorie fest und sieh beim Ausgeben, was übrig ist."
+      },
+      "titleLatest": "Neu in Fintraq 2.1",
+      "repeating": {
+        "title": "Wiederkehrende Buchungen",
+        "body": "Wähle Wiederholen, wenn du Miete, ein Gehalt oder ein Abo hinzufügst, und es kommt an seinem Tag wieder."
+      },
+      "upcoming": {
+        "title": "Die nächsten 30 Tage",
+        "body": "Planen zeigt Tag für Tag, was kommt: wiederkehrende Buchungen und fällige Darlehen."
+      },
+      "spendable": {
+        "title": "Verfügbar",
+        "body": "Sparen und Investments zählen nicht zur Summe auf Start und stehen als zurückgelegt da. Bei jedem Konto änderbar."
       }
     }
   },

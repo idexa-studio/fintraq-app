@@ -136,8 +136,8 @@ export function HomeSection() {
         </Specimen>
         <Specimen name="What is new" note="Once, on Home, for someone updating from the old look. A new install never sees it.">
           <View style={{ backgroundColor: colors.scrim, paddingTop: space.xl }}>
-            <SheetPanel title={guide.whatsNew.title} onClose={() => {}} footer={<Button label={guide.whatsNew.done} />}>
-              <WhatsNewPoints />
+            <SheetPanel title={guide.whatsNew.titleLatest} onClose={() => {}} footer={<Button label={guide.whatsNew.done} />}>
+              <WhatsNewPoints note="latest" />
             </SheetPanel>
           </View>
         </Specimen>

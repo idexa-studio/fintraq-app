@@ -905,6 +905,7 @@ unopened for three months catches up correctly.
 - [x] I4.08 A budget counts what is still to come this month from repeating items (shown, not yet subtracted)
   - Built 2026-10-21: the line under the budget's head. Seen on the Samsung 2026-10-21: "₹500.00 still to come this month from repeating items" on All spending, and nothing on Groceries, which has none
 - [x] I4.10 Someone with no people can record a loan: the person picker offers "Add a person" from a name, as the category picker does (`useQuickPerson`), leaves out "No one" when lending, and past the free plan's 10 people opens Fintraq Pro. Found in the 2.1.0 release test on a fresh install, where the picker offered only "No one" and the loan could not be saved. Seen on the Samsung's release build: Asha added from the loan form and the loan recorded. The seven new lines are in the 12 languages
+- [~] I4.11 "What is new" for 2.1.0: someone updating from 2.0 sees "New in Fintraq 2.1" (repeating items, the next 30 days, ready to spend); someone from 1.2.4, who never saw the new look, gets the new-look note with repeating items and ready to spend in it (`whatsNewNote`, tested). Settings' row shows the 2.1 note. In the 12 languages. Seen on a phone: pending the release build updating the Samsung's 2.1 install set up as release 2
 - [ ] I4.09 Shared checklist
 
 ### I5. Ship

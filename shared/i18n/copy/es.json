@@ -1945,6 +1945,19 @@
       "budgets": {
         "title": "Presupuestos",
         "body": "Pon un límite mensual a una categoría en Plan y mira lo que queda a medida que gastas."
+      },
+      "titleLatest": "Novedades de Fintraq 2.1",
+      "repeating": {
+        "title": "Movimientos recurrentes",
+        "body": "Elige Repetir al añadir el alquiler, un sueldo o una suscripción, y volverá en su día."
+      },
+      "upcoming": {
+        "title": "Los próximos 30 días",
+        "body": "Plan muestra lo que viene, día a día: movimientos recurrentes y préstamos que vencen."
+      },
+      "spendable": {
+        "title": "Disponible para gastar",
+        "body": "Los ahorros y las inversiones quedan fuera del total de Inicio y se muestran como apartados. Cámbialo en cualquier cuenta."
       }
     }
   },

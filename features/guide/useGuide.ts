@@ -1,4 +1,4 @@
-import { showsWhatsNew, withSeen } from '@/features/guide/guide-rules';
+import { whatsNewNote, withSeen } from '@/features/guide/guide-rules';
 import type { TipId } from '@/features/guide/guide-rules';
 import { addSeen, forgetTips, markWhatsNewSeen, readSeen, readWhatsNewSeen } from '@/features/guide/guide-store';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -30,15 +30,15 @@ export function useTip(id: TipId, ready: boolean) {
   return { visible: ready && seen !== undefined && !seen.includes(id), dismiss: () => markSeen(id) };
 }
 
-/** The note for someone arriving from an older version. */
+/** The note for someone arriving from an older version, and which one. */
 export function useWhatsNew() {
   const queryClient = useQueryClient();
-  const { data: visible = false } = useQuery({ queryKey: WHATS_NEW_KEY, queryFn: async () => showsWhatsNew(await readWhatsNewSeen()), staleTime: Infinity });
+  const { data: note = null } = useQuery({ queryKey: WHATS_NEW_KEY, queryFn: async () => whatsNewNote(await readWhatsNewSeen()), staleTime: Infinity });
   const dismiss = () => {
-    queryClient.setQueryData(WHATS_NEW_KEY, false);
+    queryClient.setQueryData(WHATS_NEW_KEY, null);
     void markWhatsNewSeen();
   };
-  return { visible, dismiss };
+  return { visible: note !== null, note: note ?? 'latest', dismiss };
 }
 
 /** Settings' way to see the tips and Home's first steps again. */

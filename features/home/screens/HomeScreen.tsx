@@ -135,7 +135,7 @@ export function HomeScreen() {
         </Column>
       </Columns>
 
-      <WhatsNewSheet visible={whatsNew.visible && !isLocked} onClose={whatsNew.dismiss} />
+      <WhatsNewSheet visible={whatsNew.visible && !isLocked} onClose={whatsNew.dismiss} note={whatsNew.note} />
       {/* One thing over Home at a time: never with the note about what is new, the first steps, or the lock. */}
       {/* One sheet at a time over Home: what is new first, then a newer version, then Pro. A newer
           version does not wait for the first steps, a card that can stay up for days; Pro does. */}

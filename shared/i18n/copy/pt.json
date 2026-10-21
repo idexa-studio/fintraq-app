@@ -1945,6 +1945,19 @@
       "budgets": {
         "title": "Orçamentos",
         "body": "Defina um limite mensal para uma categoria em Planejar e veja o que resta conforme você gasta."
+      },
+      "titleLatest": "Novidades no Fintraq 2.1",
+      "repeating": {
+        "title": "Transações recorrentes",
+        "body": "Escolha Repetir ao adicionar o aluguel, um salário ou uma assinatura, e ele volta no dia certo."
+      },
+      "upcoming": {
+        "title": "Os próximos 30 dias",
+        "body": "Planejar mostra o que vem, dia a dia: transações recorrentes e empréstimos que vencem."
+      },
+      "spendable": {
+        "title": "Disponível para gastar",
+        "body": "Poupança e investimentos ficam fora do total do Início e aparecem como guardados. Mude em qualquer conta."
       }
     }
   },

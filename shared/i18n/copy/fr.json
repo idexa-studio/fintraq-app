@@ -1945,6 +1945,19 @@
       "budgets": {
         "title": "Budgets",
         "body": "Fixez une limite mensuelle pour une catégorie dans Prévoir et voyez ce qu’il reste au fil de vos dépenses."
+      },
+      "titleLatest": "Nouveau dans Fintraq 2.1",
+      "repeating": {
+        "title": "Opérations récurrentes",
+        "body": "Choisissez Répéter en ajoutant le loyer, un salaire ou un abonnement, et il revient le jour venu."
+      },
+      "upcoming": {
+        "title": "Les 30 prochains jours",
+        "body": "Prévoir montre ce qui arrive, jour après jour : opérations récurrentes et prêts à échéance."
+      },
+      "spendable": {
+        "title": "Disponible à dépenser",
+        "body": "L’épargne et les placements sont exclus du total d’Accueil et montrés comme mis de côté. Modifiable sur chaque compte."
       }
     }
   },

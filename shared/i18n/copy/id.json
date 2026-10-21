@@ -1923,6 +1923,19 @@
       "budgets": {
         "title": "Anggaran",
         "body": "Tetapkan batas bulanan untuk sebuah kategori di Rencana dan lihat sisanya saat Anda berbelanja."
+      },
+      "titleLatest": "Baru di Fintraq 2.1",
+      "repeating": {
+        "title": "Transaksi berulang",
+        "body": "Pilih Ulangi saat menambahkan sewa, gaji, atau langganan, dan itu kembali pada harinya."
+      },
+      "upcoming": {
+        "title": "30 hari ke depan",
+        "body": "Rencana menampilkan yang akan datang hari demi hari: transaksi berulang dan pinjaman jatuh tempo."
+      },
+      "spendable": {
+        "title": "Siap dipakai",
+        "body": "Tabungan dan investasi tidak dihitung di total Beranda dan ditampilkan sebagai disisihkan. Ubah di akun mana pun."
       }
     }
   },
