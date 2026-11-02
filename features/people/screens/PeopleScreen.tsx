@@ -1,8 +1,8 @@
-import { Button, EmptyState, Header, IconCircle, ListGroup, ListRow, Screen, Section, Select, Skeleton, SplitBar, SummaryCard, Text, useStyles, useTheme } from '@/design';
+import { Button, EmptyState, Header, IconCircle, ListGroup, ListRow, Screen, Section, Select, Skeleton, SplitBar, SummaryCard, Text, TextField, useStyles, useTheme } from '@/design';
 import type { Theme } from '@/design';
 import { useAccounts } from '@/features/accounts';
-import { usePeopleWithBalances } from '@/features/people/hooks/people';
-import { initialsOf, peopleByStanding } from '@/features/people/person-form';
+import { usePeopleWithBalances, usePersons } from '@/features/people/hooks/people';
+import { PEOPLE_SEARCH_FROM, initialsOf, matchesPerson, peopleByStanding } from '@/features/people/person-form';
 import { FREE_LIMITS, isOverFreeLimit, usePro } from '@/features/pro';
 import { useSettings } from '@/features/settings';
 import { currencyName, sortCurrenciesWithDefault } from '@/shared/currency/currencies';
@@ -31,9 +31,18 @@ export function PeopleScreen() {
   const currency = chosen && currencies.includes(chosen) ? chosen : currencies[0]!;
 
   const { data: people, isPending } = usePeopleWithBalances(currency);
-  const groups = useMemo(() => peopleByStanding(people ?? []), [people]);
-  const owed = groups.find((group) => group.standing === 'owesYou')?.total ?? 0;
-  const owe = groups.find((group) => group.standing === 'youOwe')?.total ?? 0;
+  // Their phone, email and work, for the search: the balances carry only the name.
+  const { data: persons } = usePersons();
+  const [query, setQuery] = useState('');
+  const all = useMemo(() => peopleByStanding(people ?? []), [people]);
+  const groups = useMemo(() => {
+    if (!query.trim()) return all;
+    const details = new Map((persons ?? []).map((person) => [person.id, person]));
+    return peopleByStanding((people ?? []).filter((person) => matchesPerson(details.get(person.id) ?? person, query)));
+  }, [all, people, persons, query]);
+  // What stands between you is everyone's, whatever is being searched for.
+  const owed = all.find((group) => group.standing === 'owesYou')?.total ?? 0;
+  const owe = all.find((group) => group.standing === 'youOwe')?.total ?? 0;
   const atLimit = !isPro && isOverFreeLimit('people', people?.length ?? 0);
 
   const back = () => (router.canGoBack() ? router.back() : router.replace('/'));
@@ -86,6 +95,12 @@ export function PeopleScreen() {
           <Text variant="callout" tone="muted">{t('summary.settled')}</Text>
         )}
       </SummaryCard>
+
+      {/* A handful is taken in at a glance; past that, typing a name is quicker than looking. */}
+      {people.length > PEOPLE_SEARCH_FROM ? (
+        <TextField icon="search" value={query} onChangeText={setQuery} placeholder={t('search')} accessibilityLabel={t('search')} autoCorrect={false} autoCapitalize="none" onClear={() => setQuery('')} clearLabel={t('clearSearch')} />
+      ) : null}
+      {groups.length === 0 ? <Text variant="callout" tone="muted" align="center">{t('noMatch', { query: query.trim() })}</Text> : null}
 
       {groups.map((group) => (
         <Section key={group.standing} title={t(`standing.${group.standing}`)}>

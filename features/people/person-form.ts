@@ -94,3 +94,22 @@ export function peopleByStanding<T extends { net: number; name: string }>(people
     })
     .filter((group) => group.people.length > 0);
 }
+
+/** From how many people a list of them offers a search: a handful is taken in at a glance. */
+export const PEOPLE_SEARCH_FROM = 8;
+
+type Findable = Pick<Person, 'name'> & Partial<Pick<Person, 'phone' | 'email' | 'designation' | 'company'>>;
+
+/**
+ * Whether someone is what was searched for: their name, what they do or where, their email, or
+ * their phone number however it was typed ("98 765" finds +91 98765 43210). Case is ignored; an
+ * empty search finds everyone.
+ */
+export function matchesPerson(person: Findable, query: string): boolean {
+  const needle = query.trim().toLowerCase();
+  if (!needle) return true;
+  const words = [person.name, person.designation, person.company, person.email].filter(Boolean).join(' ').toLowerCase();
+  if (words.includes(needle)) return true;
+  const digits = needle.replace(/\D/g, '');
+  return digits.length >= 3 && (person.phone ?? '').replace(/\D/g, '').includes(digits);
+}
