@@ -55,10 +55,11 @@ export function blockerOf(state: FormState, repaymentLimit?: number): Blocker | 
 }
 
 /**
- * The record to save. A blank note is stored as the category's name, as the
- * app has always done, so lists and exports never show an empty description.
+ * The record to save. A note left blank is stored blank: every list names such a transaction by
+ * its category as it is now. (Until 2.1.0 the category's name was stored in its place, a copy
+ * that went stale when the category was changed or renamed; migration 0011 cleared those copies.)
  */
-export function payloadOf(state: FormState, categoryName: string | undefined, fallbackNote: string) {
+export function payloadOf(state: FormState) {
   return {
     accountId: state.accountId as number,
     categoryId: state.categoryId as number,
@@ -67,6 +68,6 @@ export function payloadOf(state: FormState, categoryName: string | undefined, fa
     amount: state.amount as number,
     type: state.type,
     datetime: state.when.toISOString(),
-    note: state.note.trim() || categoryName || fallbackNote,
+    note: state.note.trim(),
   };
 }

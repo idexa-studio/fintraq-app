@@ -128,6 +128,14 @@ describe('buildRestorePlan', () => {
     expect(rowOf(plan, 'payments')).toMatchObject({ recurring_rule_id: null, recurring_date: null });
   });
 
+  it('restores a note that was only its category’s name blank, so it follows the category; a typed note stays', () => {
+    const plan = buildRestorePlan({ ...currentExport, payments: [
+      { ...currentExport.payments![0]!, id: 9, note: 'Food' },
+      { ...currentExport.payments![0]!, id: 10, note: 'Lunch' },
+    ] }, NOW);
+    expect(tableOf(plan, 'payments').rows.map((row) => row[9])).toEqual(['', 'Lunch']);
+  });
+
   it('drops a budget whose category is not in the backup, so it never becomes a limit on everything', () => {
     const plan = buildRestorePlan({ ...currentExport, budgets: [{ id: 1, categoryId: 99, currency: 'INR', monthlyLimit: 100 }] }, NOW);
     expect(plan.some((t) => t.table === 'budgets')).toBe(false);

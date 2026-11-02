@@ -200,8 +200,8 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
   const startedRule = useRef<number | null>(null);
 
   /** Saves the entry. Resolves to the id of a newly added transaction, or null after an edit. */
-  const save = async (fallbackNote: string): Promise<number | null> => {
-    const payload = payloadOf(state, categories.find((c) => c.id === categoryId)?.name, fallbackNote);
+  const save = async (): Promise<number | null> => {
+    const payload = payloadOf(state);
     const made: RulePayment = { type: payload.type, amount: payload.amount, accountId: payload.accountId, toAccountId: payload.toAccountId, categoryId: payload.categoryId, personId: payload.personId, note: payload.note };
     if (rule && repeat.cadence) {
       await updateRule.mutateAsync({ id: rule.id, data: changedRuleOf(rule, made, { ...repeat, cadence: repeat.cadence }, when, getLocalISOString()) });

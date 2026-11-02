@@ -312,6 +312,11 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
   const loanIds = new Set(loans.map((l) => l.id));
   const categoryIds = new Set(categories.map((c) => c.id));
   const ruleIds = new Set(rules.map((r) => r.id));
+  // A backup made before 2.1.0 holds its category's name where a transaction had no note; it is
+  // restored blank, as migration 0011 clears it on a phone, so the name follows the category.
+  const categoryNames = new Map(categories.map((c) => [c.id, c.name]));
+  const noteOf = (note: string | null | undefined, categoryId: number | null | undefined): string =>
+    note && categoryId != null && note === categoryNames.get(categoryId) ? '' : (note ?? '');
 
   const created = (r: { createdAt?: string; created_at?: string }) => r.createdAt ?? r.created_at ?? now;
   const updated = (r: { updatedAt?: string; updated_at?: string }) => r.updatedAt ?? r.updated_at ?? now;
@@ -412,7 +417,7 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
         validRef(r.toAccountId ?? r.to_account_id, accountIds),
         validRef(r.categoryId ?? r.category_id, categoryIds),
         validRef(r.personId ?? r.person_id, personIds),
-        r.note ?? '',
+        noteOf(r.note, r.categoryId ?? r.category_id),
         r.cadence ?? 'month',
         r.anchorDate ?? r.anchor_date ?? now.slice(0, 10),
         r.time ?? '09:00',
@@ -440,7 +445,7 @@ export function buildRestorePlan(data: BackupData, now: string): TableInsert[] {
         r.amount ?? 0,
         r.type ?? 'DR',
         r.datetime ?? now,
-        r.note ?? '',
+        noteOf(r.note, r.categoryId ?? r.category_id),
         // Kept only with its item: a transaction whose item is not in the backup was made by none.
         validRef(r.recurringRuleId ?? r.recurring_rule_id, ruleIds),
         validRef(r.recurringRuleId ?? r.recurring_rule_id, ruleIds) === null ? null : orNull(r.recurringDate ?? r.recurring_date),
