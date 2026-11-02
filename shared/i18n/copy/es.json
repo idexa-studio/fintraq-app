@@ -1297,7 +1297,10 @@
         "confirm": "Descartar",
         "cancel": "Seguir editando"
       }
-    }
+    },
+    "search": "Busca por nombre, teléfono o trabajo",
+    "clearSearch": "Borrar la búsqueda",
+    "noMatch": "Nadie coincide con “{{query}}”"
   },
   "plan": {
     "title": "Plan",
@@ -1799,7 +1802,6 @@
     "note": "Nota",
     "noteOptional": "Opcional",
     "available": "{{amount}} disponibles",
-    "defaultNote": "Movimiento",
     "save": {
       "expense": "Guardar gasto",
       "income": "Guardar ingreso",
@@ -1862,7 +1864,9 @@
       "addPerson": "Añadir y elegir",
       "personFailed": "No se añadió la persona",
       "personFailedBody": "No se cambió nada. Inténtalo de nuevo.",
-      "noPeopleYet": "Aún no hay nadie. Añade a la persona con la que es este dinero."
+      "noPeopleYet": "Aún no hay nadie. Añade a la persona con la que es este dinero.",
+      "searchPerson": "Buscar personas",
+      "noPersonMatch": "Nadie coincide con “{{query}}”"
     },
     "saved": {
       "expense": "Gasto guardado",
@@ -1972,9 +1976,10 @@
       "daysLeft_one": "Queda {{count}} día",
       "daysLeft_other": "Quedan {{count}} días",
       "daysLeft_many": "Quedan {{count}} días",
-      "lastDay": "Último día del mes",
+      "lastDay": "Último día de este mes de presupuesto",
       "used": "Cuánto del límite se ha usado",
-      "perDay": "Con unos {{amount}} al día te mantienes dentro."
+      "perDay": "Con unos {{amount}} al día te mantienes dentro.",
+      "period": "Del {{from}} al {{to}}"
     },
     "close": "Cerrar",
     "back": "Atrás",
@@ -2036,7 +2041,13 @@
         "target": "Elige para qué es el presupuesto",
         "amount": "Introduce un límite para guardar"
       },
-      "pickTarget": "¿Para qué es el presupuesto?"
+      "pickTarget": "¿Para qué es el presupuesto?",
+      "startsCalendar": "Cada mes empieza el día 1",
+      "startsOn": "Cada mes empieza el día {{day}}",
+      "startsHint": "Para todos los presupuestos. Elige tu día de cobro, y cada presupuesto irá de un sueldo al siguiente.",
+      "pickStart": "Los presupuestos empiezan el",
+      "startOptionCalendar": "Día 1, el mes natural",
+      "startOption": "Día {{day}}"
     },
     "hint": "Lo que queda este mes",
     "add": "Añadir un presupuesto",

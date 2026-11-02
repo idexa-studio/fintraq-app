@@ -19,6 +19,11 @@ export type UserProfile = {
   reminderTime: string;
   /** Anonymous usage analytics and crash reports. On unless the user turns it off. */
   shareUsageData: boolean;
+  /**
+   * The day of the month every budget starts on, 1 to 28 (since 2.1.0): a budget from the 28th
+   * runs to the 27th of the next month, for someone paid on the 28th. 1 is the calendar month.
+   */
+  budgetStartDay: number;
 };
 
 export const DEFAULT_PROFILE: UserProfile = {
@@ -31,6 +36,7 @@ export const DEFAULT_PROFILE: UserProfile = {
   reminderEnabled: false,
   reminderTime: '20:00',
   shareUsageData: true,
+  budgetStartDay: 1,
 };
 
 /**

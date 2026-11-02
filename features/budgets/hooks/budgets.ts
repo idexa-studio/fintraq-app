@@ -1,37 +1,46 @@
 import { QUERY_KEYS } from '@/data/query-keys';
 import * as api from '@/data/repositories/budgets';
+import { budgetPeriod, budgetStartDayOf } from '@/features/budgets/budget-rules';
 import { budgetViews } from '@/features/budgets/budget-view';
+import { useSettings } from '@/features/settings';
 import { afterLedgerWrite } from '@/platform/notifications/after-ledger-write';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
+import { format } from 'date-fns';
 
 const DAY = 'yyyy-MM-dd';
 
+/** The day budgets start on, from settings, and the budget month in progress. */
+export function useBudgetPeriod() {
+  const { profile, updateProfile } = useSettings();
+  const startDay = budgetStartDayOf(profile.budgetStartDay);
+  return { startDay, period: budgetPeriod(new Date(), startDay), setStartDay: (day: number) => updateProfile({ budgetStartDay: budgetStartDayOf(day) }) };
+}
+
 /**
- * Every budget against the month in progress. Spending is counted to today, as on Home: a
- * transaction dated later this month has not happened yet.
+ * Every budget against its month in progress, which starts on the day set for budgets (the 1st
+ * unless changed). Spending is counted to today, as on Home: a transaction dated later has not
+ * happened yet.
  */
 export const useBudgets = () => {
-  const now = new Date();
+  const { period } = useBudgetPeriod();
+  const today = format(new Date(), DAY);
   return useQuery({
-    queryKey: QUERY_KEYS.budgets.views(format(now, 'yyyy-MM')),
+    queryKey: QUERY_KEYS.budgets.views(period.start),
     queryFn: async () => {
-      const lastMonth = subMonths(now, 1);
       const [budgets, thisMonth, before] = await Promise.all([
         api.getBudgets(),
-        api.getSpend(format(startOfMonth(now), DAY), format(now, DAY)),
-        api.getSpend(format(startOfMonth(lastMonth), DAY), format(endOfMonth(lastMonth), DAY)),
+        api.getSpend(period.start, today),
+        api.getSpend(period.previousStart, period.previousEnd),
       ]);
       return budgetViews(budgets, thisMonth, before);
     },
   });
 };
 
-/** Last calendar month's spending, to choose a limit against. */
+/** The last budget month's spending, to choose a limit against. */
 export const useLastMonthSpend = () => {
-  const lastMonth = subMonths(new Date(), 1);
-  const from = format(startOfMonth(lastMonth), DAY);
-  return useQuery({ queryKey: [...QUERY_KEYS.budgets.all, 'spend', from], queryFn: () => api.getSpend(from, format(endOfMonth(lastMonth), DAY)) });
+  const { period } = useBudgetPeriod();
+  return useQuery({ queryKey: [...QUERY_KEYS.budgets.all, 'spend', period.previousStart], queryFn: () => api.getSpend(period.previousStart, period.previousEnd) });
 };
 
 export const useBudgetCount = () => useQuery({ queryKey: QUERY_KEYS.budgets.count(), queryFn: api.countBudgets });

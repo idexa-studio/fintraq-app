@@ -3,7 +3,7 @@ import {
   useTheme, useToast,
 } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
-import { budgetsFor, useBudgets, warningAfter } from '@/features/budgets';
+import { budgetsFor, useBudgetPeriod, useBudgets, warningAfter } from '@/features/budgets';
 import { FREE_LIMITS, isOverFreeLimit, usePro } from '@/features/pro';
 import { RepeatRow, RepeatSheet, useRecurringCount } from '@/features/recurring';
 import { CalculatorSheet } from '@/features/transactions/components/CalculatorSheet';
@@ -56,11 +56,13 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
   // Opened from a launcher shortcut there is nothing to go back to, so closing lands on Home.
   const close = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
-  // A budget counts expenses of the month in progress, up to today, that are not part of a loan.
+  // A budget counts expenses of its month in progress (which may start on a day other than the
+  // 1st), up to today, that are not part of a loan.
   const { data: budgets } = useBudgets();
+  const { period } = useBudgetPeriod();
   const { data: recorded } = useTransactionsCount();
   const now = new Date();
-  const counted = form.type === 'DR' && !form.loanLinked && form.when <= now && form.when.getFullYear() === now.getFullYear() && form.when.getMonth() === now.getMonth();
+  const counted = form.type === 'DR' && !form.loanLinked && form.when <= now && getLocalISOString(form.when) >= period.start;
   const categoryBudget = counted && form.category ? budgetsFor(budgets ?? [], { categoryId: form.category.id, currency }).find((budget) => budget.categoryId !== null) : undefined;
   const budgetLine = (() => {
     if (!categoryBudget) return null;
@@ -78,7 +80,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
         : warning.over > 0 ? t('budgets:saved.over', { name, amount: formatCurrency(warning.over, currency) })
         : warning.crossing === 'over' ? t('budgets:saved.reached', { name })
         : t('budgets:saved.near', { name, amount: formatCurrency(warning.left, currency) });
-      const createdId = await form.save(t('defaultNote'));
+      const createdId = await form.save();
       if (!form.item) Analytics.track('transaction_saved', { transaction_type: kind, mode: form.editing ? 'edit' : 'create' });
       if (form.repeat.cadence) Analytics.track('recurring_saved', { cadence: form.repeat.cadence, on_day: form.repeat.mode, mode: form.item ? 'edit' : 'create' });
       if (warning) Analytics.track('budget_warning', { level: warning.over > 0 ? 'over' : warning.crossing === 'over' ? 'reached' : 'near' });

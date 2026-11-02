@@ -1297,7 +1297,10 @@
         "confirm": "Descartar",
         "cancel": "Continuar editando"
       }
-    }
+    },
+    "search": "Busque por nome, telefone ou trabalho",
+    "clearSearch": "Limpar a busca",
+    "noMatch": "Ninguém corresponde a “{{query}}”"
   },
   "plan": {
     "title": "Planejar",
@@ -1799,7 +1802,6 @@
     "note": "Nota",
     "noteOptional": "Opcional",
     "available": "{{amount}} disponíveis",
-    "defaultNote": "Transação",
     "save": {
       "expense": "Salvar despesa",
       "income": "Salvar receita",
@@ -1862,7 +1864,9 @@
       "addPerson": "Adicionar e escolher",
       "personFailed": "A pessoa não foi adicionada",
       "personFailedBody": "Nada foi alterado. Tente de novo.",
-      "noPeopleYet": "Ainda não há ninguém. Adicione a pessoa com quem está esse dinheiro."
+      "noPeopleYet": "Ainda não há ninguém. Adicione a pessoa com quem está esse dinheiro.",
+      "searchPerson": "Buscar pessoas",
+      "noPersonMatch": "Ninguém corresponde a “{{query}}”"
     },
     "saved": {
       "expense": "Despesa salva",
@@ -1972,9 +1976,10 @@
       "daysLeft_one": "Resta {{count}} dia",
       "daysLeft_other": "Restam {{count}} dias",
       "daysLeft_many": "Restam {{count}} dias",
-      "lastDay": "Último dia do mês",
+      "lastDay": "Último dia deste mês de orçamento",
       "used": "Quanto do limite foi usado",
-      "perDay": "Cerca de {{amount}} por dia mantém você dentro dele."
+      "perDay": "Cerca de {{amount}} por dia mantém você dentro dele.",
+      "period": "{{from}} a {{to}}"
     },
     "close": "Fechar",
     "back": "Voltar",
@@ -2036,7 +2041,13 @@
         "target": "Escolha para que é o orçamento",
         "amount": "Informe um limite para salvar"
       },
-      "pickTarget": "Para que é o orçamento?"
+      "pickTarget": "Para que é o orçamento?",
+      "startsCalendar": "Cada mês começa no dia 1",
+      "startsOn": "Cada mês começa no dia {{day}}",
+      "startsHint": "Para todos os orçamentos. Escolha o dia do seu pagamento, e cada orçamento vai de um salário ao próximo.",
+      "pickStart": "Os orçamentos começam no",
+      "startOptionCalendar": "Dia 1, o mês do calendário",
+      "startOption": "Dia {{day}}"
     },
     "hint": "O que resta neste mês",
     "add": "Adicionar um orçamento",

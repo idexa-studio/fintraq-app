@@ -1281,7 +1281,10 @@
         "confirm": "Buang",
         "cancel": "Lanjut mengubah"
       }
-    }
+    },
+    "search": "Cari dengan nama, telepon, atau pekerjaan",
+    "clearSearch": "Hapus pencarian",
+    "noMatch": "Tidak ada yang cocok dengan “{{query}}”"
   },
   "plan": {
     "title": "Rencana",
@@ -1777,7 +1780,6 @@
     "note": "Catatan",
     "noteOptional": "Opsional",
     "available": "{{amount}} tersedia",
-    "defaultNote": "Transaksi",
     "save": {
       "expense": "Simpan pengeluaran",
       "income": "Simpan pemasukan",
@@ -1840,7 +1842,9 @@
       "addPerson": "Tambah dan pilih",
       "personFailed": "Orang itu tidak ditambahkan",
       "personFailedBody": "Tidak ada yang berubah. Coba lagi.",
-      "noPeopleYet": "Belum ada siapa pun. Tambahkan orang yang terkait dengan uang ini."
+      "noPeopleYet": "Belum ada siapa pun. Tambahkan orang yang terkait dengan uang ini.",
+      "searchPerson": "Cari orang",
+      "noPersonMatch": "Tidak ada yang cocok dengan “{{query}}”"
     },
     "saved": {
       "expense": "Pengeluaran disimpan",
@@ -1949,9 +1953,10 @@
       "limit": "Batas",
       "daysLeft_one": "{{count}} hari lagi",
       "daysLeft_other": "{{count}} hari lagi",
-      "lastDay": "Hari terakhir bulan ini",
+      "lastDay": "Hari terakhir bulan anggaran ini",
       "used": "Berapa banyak batas yang terpakai",
-      "perDay": "Sekitar {{amount}} sehari menjaga Anda tetap dalam batas."
+      "perDay": "Sekitar {{amount}} sehari menjaga Anda tetap dalam batas.",
+      "period": "{{from}} sampai {{to}}"
     },
     "close": "Tutup",
     "back": "Kembali",
@@ -2012,7 +2017,13 @@
         "target": "Pilih anggaran ini untuk apa",
         "amount": "Masukkan batas untuk menyimpan"
       },
-      "pickTarget": "Anggaran ini untuk apa?"
+      "pickTarget": "Anggaran ini untuk apa?",
+      "startsCalendar": "Setiap bulan mulai tanggal 1",
+      "startsOn": "Setiap bulan mulai tanggal {{day}}",
+      "startsHint": "Untuk semua anggaran. Pilih tanggal gajian, agar setiap anggaran berjalan dari satu gaji ke gaji berikutnya.",
+      "pickStart": "Anggaran mulai pada",
+      "startOptionCalendar": "Tanggal 1, bulan kalender",
+      "startOption": "Tanggal {{day}}"
     },
     "hint": "Yang tersisa bulan ini",
     "add": "Tambah anggaran",

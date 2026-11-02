@@ -5,7 +5,7 @@ import { Button, Calendar, Chip, IconCircle, MarkGrid, Notice, OptionList, Sheet
 import type { OptionGroup } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
 import { useQuickCategory } from '@/features/categories';
-import { useQuickPerson } from '@/features/people';
+import { PEOPLE_SEARCH_FROM, useQuickPerson } from '@/features/people';
 import { isOverFreeLimit, usePro } from '@/features/pro';
 import { colorNumberToHex } from '@/shared/format/color';
 import { formatCurrency } from '@/shared/format/money';
@@ -143,7 +143,13 @@ export function PersonPicker({ people, required = false, ...picker }: PersonPick
 
   const groups: OptionGroup[] = [
     ...(required ? [] : [{ options: [{ key: NO_ONE, title: t('noPerson'), icon: 'x-circle' as const }] }]),
-    ...(people.length > 0 ? [{ options: people.map((person) => ({ key: String(person.id), title: person.name, leading: <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} /> })) }] : []),
+    ...(people.length > 0 ? [{ options: people.map((person) => ({
+      key: String(person.id),
+      title: person.name,
+      // Found by what they do, where, or their number, as on People.
+      keywords: [person.designation, person.company, person.email, person.phone].filter(Boolean).join(' '),
+      leading: <IconCircle initials={initialsOf(person.name)} color={colorNumberToHex(person.color)} />,
+    })) }] : []),
   ];
   return (
     <Sheet
@@ -153,7 +159,13 @@ export function PersonPicker({ people, required = false, ...picker }: PersonPick
       footer={<Button label={t('pick.newPerson')} variant="secondary" onPress={() => (atLimit ? (close(), openPaywall('unlimited')) : setNaming(true))} />}
     >
       {groups.length > 0 ? (
-        <OptionList groups={groups} selectedKey={picker.selectedId == null ? (required ? undefined : NO_ONE) : String(picker.selectedId)} onSelect={(key) => { picker.onSelect(key === NO_ONE ? null : Number(key)); close(); }} />
+        <OptionList
+          groups={groups}
+          selectedKey={picker.selectedId == null ? (required ? undefined : NO_ONE) : String(picker.selectedId)}
+          onSelect={(key) => { picker.onSelect(key === NO_ONE ? null : Number(key)); close(); }}
+          searchPlaceholder={people.length > PEOPLE_SEARCH_FROM ? t('pick.searchPerson') : undefined}
+          noMatch={(query) => t('pick.noPersonMatch', { query })}
+        />
       ) : (
         <Text variant="callout" tone="muted">{t('pick.noPeopleYet')}</Text>
       )}

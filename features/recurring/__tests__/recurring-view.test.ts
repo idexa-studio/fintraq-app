@@ -73,20 +73,27 @@ describe('items waiting to be asked about', () => {
 });
 
 describe('what is still to come on a budget this month', () => {
+  const SEPTEMBER = { start: '2026-09-01', end: '2026-09-30' };
   it('adds every expense not yet made this month, in the budget’s category and currency', () => {
     const weekly = inRupees({ id: 2, amount: 100, cadence: 'week', anchorDate: '2026-09-02', nextDue: '2026-09-16' });
     // Rent on the 1st is still waiting (asked, not yet added); the weekly falls on the 16th, 23rd and 30th.
-    expect(stillToCome([inRupees(), weekly], { categoryId: 4, currency: 'INR' }, '2026-09-15')).toBe(1200 + 300);
+    expect(stillToCome([inRupees(), weekly], { categoryId: 4, currency: 'INR' }, SEPTEMBER)).toBe(1200 + 300);
   });
 
   it('counts nothing made already, nothing next month, and nothing paused', () => {
-    expect(stillToCome([inRupees({ nextDue: '2026-10-01' })], { categoryId: null, currency: 'INR' }, '2026-09-15')).toBe(0);
-    expect(stillToCome([inRupees({ paused: true })], { categoryId: null, currency: 'INR' }, '2026-09-15')).toBe(0);
+    expect(stillToCome([inRupees({ nextDue: '2026-10-01' })], { categoryId: null, currency: 'INR' }, SEPTEMBER)).toBe(0);
+    expect(stillToCome([inRupees({ paused: true })], { categoryId: null, currency: 'INR' }, SEPTEMBER)).toBe(0);
+  });
+
+  it('counts a budget month that starts on another day, to its own last day', () => {
+    // Budgets from the 28th: 28 September to 27 October holds the weekly on 30 Sep, 7, 14, 21 Oct, and Rent on 1 Oct.
+    const weekly = inRupees({ id: 2, amount: 100, cadence: 'week', anchorDate: '2026-09-23', nextDue: '2026-09-30' });
+    expect(stillToCome([inRupees({ nextDue: '2026-10-01' }), weekly], { categoryId: 4, currency: 'INR' }, { start: '2026-09-28', end: '2026-10-27' })).toBe(1200 + 400);
   });
 
   it('leaves out income, other categories and other currencies, but not for the budget over all spending', () => {
     const items = [inRupees({ type: 'CR' }), inRupees({ categoryId: 5, amount: 50 }), { ...rule(), account: { currency: 'USD' } }];
-    expect(stillToCome(items, { categoryId: 4, currency: 'INR' }, '2026-09-15')).toBe(0);
-    expect(stillToCome(items, { categoryId: null, currency: 'INR' }, '2026-09-15')).toBe(50);
+    expect(stillToCome(items, { categoryId: 4, currency: 'INR' }, SEPTEMBER)).toBe(0);
+    expect(stillToCome(items, { categoryId: null, currency: 'INR' }, SEPTEMBER)).toBe(50);
   });
 });

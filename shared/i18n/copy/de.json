@@ -1281,7 +1281,10 @@
         "confirm": "Verwerfen",
         "cancel": "Weiter bearbeiten"
       }
-    }
+    },
+    "search": "Nach Name, Telefon oder Beruf suchen",
+    "clearSearch": "Suche löschen",
+    "noMatch": "Niemand passt zu „{{query}}“"
   },
   "plan": {
     "title": "Planen",
@@ -1777,7 +1780,6 @@
     "note": "Notiz",
     "noteOptional": "Optional",
     "available": "{{amount}} verfügbar",
-    "defaultNote": "Buchung",
     "save": {
       "expense": "Ausgabe speichern",
       "income": "Einnahme speichern",
@@ -1840,7 +1842,9 @@
       "addPerson": "Hinzufügen und wählen",
       "personFailed": "Die Person wurde nicht hinzugefügt",
       "personFailedBody": "Nichts wurde geändert. Versuche es erneut.",
-      "noPeopleYet": "Noch niemand. Füge die Person hinzu, um die es bei diesem Geld geht."
+      "noPeopleYet": "Noch niemand. Füge die Person hinzu, um die es bei diesem Geld geht.",
+      "searchPerson": "Personen suchen",
+      "noPersonMatch": "Niemand passt zu „{{query}}“"
     },
     "saved": {
       "expense": "Ausgabe gespeichert",
@@ -1949,9 +1953,10 @@
       "limit": "Limit",
       "daysLeft_one": "Noch {{count}} Tag",
       "daysLeft_other": "Noch {{count}} Tage",
-      "lastDay": "Letzter Tag des Monats",
+      "lastDay": "Letzter Tag dieses Budgetmonats",
       "used": "Wie viel vom Limit verbraucht ist",
-      "perDay": "Mit etwa {{amount}} am Tag bleibst du im Limit."
+      "perDay": "Mit etwa {{amount}} am Tag bleibst du im Limit.",
+      "period": "{{from}} bis {{to}}"
     },
     "close": "Schließen",
     "back": "Zurück",
@@ -2012,7 +2017,13 @@
         "target": "Wähle, wofür das Budget ist",
         "amount": "Gib zum Speichern ein Limit ein"
       },
-      "pickTarget": "Wofür ist das Budget?"
+      "pickTarget": "Wofür ist das Budget?",
+      "startsCalendar": "Jeder Monat beginnt am 1.",
+      "startsOn": "Jeder Monat beginnt am {{day}}.",
+      "startsHint": "Für alle Budgets. Wähle deinen Zahltag, dann läuft jedes Budget von einem Gehalt zum nächsten.",
+      "pickStart": "Budgets beginnen am",
+      "startOptionCalendar": "Am 1., der Kalendermonat",
+      "startOption": "Am {{day}}."
     },
     "hint": "Was diesen Monat übrig ist",
     "add": "Budget hinzufügen",

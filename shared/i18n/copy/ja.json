@@ -1281,7 +1281,10 @@
         "confirm": "破棄",
         "cancel": "編集を続ける"
       }
-    }
+    },
+    "search": "名前、電話、仕事で検索",
+    "clearSearch": "検索を消去",
+    "noMatch": "「{{query}}」に一致する人はいません"
   },
   "plan": {
     "title": "予定",
@@ -1777,7 +1780,6 @@
     "note": "メモ",
     "noteOptional": "任意",
     "available": "利用可能 {{amount}}",
-    "defaultNote": "取引",
     "save": {
       "expense": "支出を保存",
       "income": "収入を保存",
@@ -1840,7 +1842,9 @@
       "addPerson": "追加して選ぶ",
       "personFailed": "追加できませんでした",
       "personFailedBody": "何も変更されていません。もう一度お試しください。",
-      "noPeopleYet": "まだ誰もいません。このお金の相手を追加してください。"
+      "noPeopleYet": "まだ誰もいません。このお金の相手を追加してください。",
+      "searchPerson": "人を検索",
+      "noPersonMatch": "「{{query}}」に一致する人はいません"
     },
     "saved": {
       "expense": "支出を保存しました",
@@ -1949,9 +1953,10 @@
       "limit": "上限",
       "daysLeft_one": "あと{{count}}日",
       "daysLeft_other": "あと{{count}}日",
-      "lastDay": "月の最終日",
+      "lastDay": "この予算月の最終日",
       "used": "上限のうち使った割合",
-      "perDay": "1日あたり約{{amount}}なら上限内に収まります。"
+      "perDay": "1日あたり約{{amount}}なら上限内に収まります。",
+      "period": "{{from}}〜{{to}}"
     },
     "close": "閉じる",
     "back": "戻る",
@@ -2012,7 +2017,13 @@
         "target": "予算の対象を選んでください",
         "amount": "保存するには上限を入力してください"
       },
-      "pickTarget": "何の予算ですか？"
+      "pickTarget": "何の予算ですか？",
+      "startsCalendar": "毎月1日に始まります",
+      "startsOn": "毎月{{day}}日に始まります",
+      "startsHint": "すべての予算に共通です。給料日を選ぶと、各予算が給料日から次の給料日まで続きます。",
+      "pickStart": "予算の開始日",
+      "startOptionCalendar": "1日（カレンダーの月）",
+      "startOption": "{{day}}日"
     },
     "hint": "今月の残り",
     "add": "予算を追加",

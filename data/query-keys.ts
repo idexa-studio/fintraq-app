@@ -74,8 +74,8 @@ const loans = {
 const budgets = {
   all: ['budgets'] as const,
   lists: () => [...budgets.all, 'list'] as const,
-  /** `month` is 'yyyy-MM', so a list read last month is not shown as this month's. */
-  views: (month: string) => [...budgets.all, 'views', month] as const,
+  /** `periodStart` is the budget month's first day, so a list read last month is not shown as this month's. */
+  views: (periodStart: string) => [...budgets.all, 'views', periodStart] as const,
   count: () => [...budgets.all, 'count'] as const,
 };
 

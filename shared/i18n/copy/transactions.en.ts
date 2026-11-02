@@ -33,7 +33,6 @@ export default {
   note: 'Note',
   noteOptional: 'Optional',
   available: '{{amount}} available',
-  defaultNote: 'Transaction',
   save: { expense: 'Save expense', income: 'Save income', transfer: 'Save transfer' },
   saveChanges: 'Save changes',
   step: {
@@ -82,6 +81,8 @@ export default {
     personFailed: 'The person was not added',
     personFailedBody: 'Nothing was changed. Try again.',
     noPeopleYet: 'No one yet. Add the person this money is with.',
+    searchPerson: 'Search people',
+    noPersonMatch: 'No one matches “{{query}}”',
     person: 'Who was it with?',
     date: 'When was it?',
     time: 'Time',

@@ -1297,7 +1297,10 @@
         "confirm": "Abandonner",
         "cancel": "Continuer la saisie"
       }
-    }
+    },
+    "search": "Chercher par nom, téléphone ou travail",
+    "clearSearch": "Effacer la recherche",
+    "noMatch": "Personne ne correspond à « {{query}} »"
   },
   "plan": {
     "title": "Prévoir",
@@ -1799,7 +1802,6 @@
     "note": "Note",
     "noteOptional": "Facultatif",
     "available": "{{amount}} disponibles",
-    "defaultNote": "Opération",
     "save": {
       "expense": "Enregistrer la dépense",
       "income": "Enregistrer le revenu",
@@ -1862,7 +1864,9 @@
       "addPerson": "Ajouter et choisir",
       "personFailed": "La personne n’a pas été ajoutée",
       "personFailedBody": "Rien n’a changé. Réessayez.",
-      "noPeopleYet": "Personne pour l’instant. Ajoutez la personne concernée par cet argent."
+      "noPeopleYet": "Personne pour l’instant. Ajoutez la personne concernée par cet argent.",
+      "searchPerson": "Rechercher des personnes",
+      "noPersonMatch": "Personne ne correspond à « {{query}} »"
     },
     "saved": {
       "expense": "Dépense enregistrée",
@@ -1972,9 +1976,10 @@
       "daysLeft_one": "{{count}} jour restant",
       "daysLeft_other": "{{count}} jours restants",
       "daysLeft_many": "{{count}} jours restants",
-      "lastDay": "Dernier jour du mois",
+      "lastDay": "Dernier jour de ce mois de budget",
       "used": "Part de la limite utilisée",
-      "perDay": "Environ {{amount}} par jour pour rester dans la limite."
+      "perDay": "Environ {{amount}} par jour pour rester dans la limite.",
+      "period": "Du {{from}} au {{to}}"
     },
     "close": "Fermer",
     "back": "Retour",
@@ -2036,7 +2041,13 @@
         "target": "Choisissez à quoi sert le budget",
         "amount": "Saisissez une limite pour enregistrer"
       },
-      "pickTarget": "À quoi sert ce budget ?"
+      "pickTarget": "À quoi sert ce budget ?",
+      "startsCalendar": "Chaque mois commence le 1er",
+      "startsOn": "Chaque mois commence le {{day}}",
+      "startsHint": "Pour tous les budgets. Choisissez votre jour de paie : chaque budget court d’une paie à la suivante.",
+      "pickStart": "Les budgets commencent le",
+      "startOptionCalendar": "Le 1er, le mois civil",
+      "startOption": "Le {{day}}"
     },
     "hint": "Ce qu’il reste ce mois-ci",
     "add": "Ajouter un budget",

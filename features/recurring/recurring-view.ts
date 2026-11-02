@@ -74,18 +74,18 @@ export function waitingItems<T extends RecurringRule>(rules: readonly T[], today
 }
 
 /**
- * What repeating expenses will still take from a budget this month: every occurrence not yet made
- * from the 1st to the month's last day, in the budget's currency and category (any, for the budget
- * over all spending). Shown beside the budget, never taken off what is left.
+ * What repeating expenses will still take from a budget in its month: every occurrence not yet
+ * made from the month's first day to its last (the budget month, which may start on a day other
+ * than the 1st), in the budget's currency and category (any, for the budget over all spending).
+ * Shown beside the budget, never taken off what is left.
  */
 export function stillToCome(
   rules: readonly (RecurringRule & { account: { currency: string } | null })[],
   budget: { categoryId: number | null; currency: string },
-  today: string,
+  month: { start: string; end: string },
 ): number {
-  const first = `${today.slice(0, 8)}01`;
-  const [y, m] = today.split('-').map(Number) as [number, number];
-  const last = `${today.slice(0, 8)}${String(new Date(Date.UTC(y, m, 0)).getUTCDate()).padStart(2, '0')}`;
+  const first = month.start;
+  const last = month.end;
   let total = 0;
   for (const rule of rules) {
     if (rule.type !== 'DR' || !isRunning(rule) || rule.account?.currency !== budget.currency) continue;

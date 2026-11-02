@@ -32,7 +32,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Release 2.1.0: repeating items | 33 | 26 | In progress |
+| I | Release 2.1.0: repeating items | 34 | 26 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
@@ -40,6 +40,7 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | N | Every screen size | 37 | 26 | In progress |
 | O | Release 2.1.0: spendable balance | 12 | 11 | In progress |
 | P | Release 2.1.0: build and Play Console | 7 | 2 | In progress |
+| Q | Release 2.1.0: what customers reported | 4 | 1 | In progress |
 
 ---
 
@@ -731,6 +732,12 @@ phases in `~/.claude/CLAUDE.md`):
 
 Not in 2.1.0: goals and the net worth trend (phase J, next), safe to spend (K),
 the App Store (L).
+
+### Q. Release 2.1.0: what customers reported (2026-11-02)
+- [ ] Q1.01 Bug: changing a transaction's category seemed not to work. Cause: a transaction saved with no note had its category's name stored as its note, and lists, the receipt and search show the note, so the old name stayed after the category was changed (and after a category was renamed). Fixed at the cause: a blank note is stored blank and every list names it by its category as it is now; migration 0011 clears the copies already saved (tested over a 2.0.2-shaped database: a note that is only its own category's name is cleared, a typed one and one naming another category stay, nothing else changes); a restored backup clears them the same way (tested). Device: pending
+- [ ] Q1.02 Search for people: on People from 9 people up (name, what they do, where, email, or phone however typed, from three digits; `matchesPerson`, tested), and in the person picker of a transaction or loan. The summary still counts everyone. Device: pending
+- [ ] Q1.03 A budget month that starts on any day from 1 to 28 (a customer paid on the 28th: "on 1st November the budget gets reset"). Decided: one day for every budget, kept in settings (`budgetStartDay`, 1 unless changed, carried in backups), set from the budget form ("Each month starts on day 28", for every budget); 29 to 31 are not offered, since a short month lacks them. It moves everything a budget counts: spent, days left and the day's allowance, rollover from the budget month before, the warnings, Add's "left of its budget", and what is still to come from repeating items. The budget's head shows its dates when it does not start on the 1st ("26 days left · 28 Oct to 27 Nov"). Home's and Insights' months stay the calendar's. Tested: `budgetPeriod` and `monthProgress` across month ends, a year and February. Device: pending
+- [x] Q1.04 The copy for these in the 12 languages (done 2026-11-02; machine translations like the rest)
 
 ### P. Release 2.1.0: build and Play Console
 - [x] P1.01 R8: `android.enableMinifyInReleaseBuilds` and `android.enableShrinkResourcesInReleaseBuilds` set through `expo-build-properties` in `app.json` (the local `android/` folder is a stale prebuild; only `app.json` counts). Play Console recommended it on build 74
