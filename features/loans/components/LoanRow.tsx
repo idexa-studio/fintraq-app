@@ -34,11 +34,13 @@ export function LoanRow({ loan, line, onOpen }: LoanRowProps) {
       <View style={styles.text}>
         <View style={styles.head}>
           <Text variant="bodyStrong" numberOfLines={2} style={styles.name}>{name}</Text>
-          <Text variant="amount" tone={loan.type === 'lend' ? 'positive' : 'default'}>{ltr(owed)}</Text>
+          {/* Beside the name when both fit; otherwise under it, as in a budget's row, so the name is never cut to a syllable. */}
+          <Text variant="amount" tone={loan.type === 'lend' ? 'positive' : 'default'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} style={styles.owed}>{ltr(owed)}</Text>
         </View>
         {/* A bar with nothing in it reads as an empty field, so it waits for the first repayment. */}
         {loan.repaid > 0 ? <ProgressBar value={repaidShare(loan)} accessibilityLabel={t('loan.progressLabel')} /> : null}
-        <Text variant="callout" tone={loan.computedStatus === 'overdue' ? 'danger' : 'muted'} numberOfLines={1}>{line}</Text>
+        {/* Says when it is due, or by how long it is overdue: read, not scanned, so it wraps rather than being cut. */}
+        <Text variant="callout" tone={loan.computedStatus === 'overdue' ? 'danger' : 'muted'}>{line}</Text>
       </View>
       <Icon name="chevron-right" color={colors.text} />
     </Touchable>
@@ -50,6 +52,7 @@ const createStyles = ({ size, space }: Theme) =>
     // The list row's own measures, so it sits in a ListGroup among ordinary rows.
     row: { minHeight: size.row, flexDirection: 'row', alignItems: 'center', gap: space.lg, paddingHorizontal: size.cardPadding, paddingVertical: space.lg },
     text: { flex: 1, gap: space.sm },
-    head: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: space.lg },
-    name: { flex: 1 },
+    head: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: space.lg, rowGap: space.xxs },
+    name: { flexShrink: 1 },
+    owed: { marginStart: 'auto', maxWidth: '100%', textAlign: 'right' },
   });

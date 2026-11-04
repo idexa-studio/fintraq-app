@@ -1,4 +1,4 @@
-import { budgetStanding, crossingOf, limitWithRollover, monthProgress, perDayLeft } from '@/features/budgets/budget-rules';
+import { budgetPeriod, budgetStartDayOf, budgetStanding, crossingOf, limitWithRollover, monthProgress, perDayLeft } from '@/features/budgets/budget-rules';
 
 describe('budgetStanding', () => {
   it('has room below four fifths of the limit', () => {
@@ -54,5 +54,32 @@ describe('crossingOf', () => {
     expect(crossingOf(100, 200, 500)).toBeNull();
     expect(crossingOf(420, 460, 500)).toBeNull();
     expect(crossingOf(520, 600, 500)).toBeNull();
+  });
+});
+
+describe('a budget month that starts on another day', () => {
+  it('is the calendar month when budgets start on the 1st', () => {
+    expect(budgetPeriod(new Date(2026, 10, 2), 1)).toEqual({ start: '2026-11-01', end: '2026-11-30', previousStart: '2026-10-01', previousEnd: '2026-10-31' });
+  });
+
+  it('runs from the 28th to the 27th, so the 1st does not reset it', () => {
+    // The customer's case: a budget set on 28 October is still running on 1 November.
+    expect(budgetPeriod(new Date(2026, 10, 1), 28)).toEqual({ start: '2026-10-28', end: '2026-11-27', previousStart: '2026-09-28', previousEnd: '2026-10-27' });
+    expect(budgetPeriod(new Date(2026, 10, 28), 28).start).toBe('2026-11-28');
+    expect(budgetPeriod(new Date(2026, 10, 27), 28).end).toBe('2026-11-27');
+  });
+
+  it('crosses a year, and February', () => {
+    expect(budgetPeriod(new Date(2027, 0, 5), 15)).toMatchObject({ start: '2026-12-15', end: '2027-01-14' });
+    expect(budgetPeriod(new Date(2027, 1, 20), 28)).toMatchObject({ start: '2027-01-28', end: '2027-02-27' });
+  });
+
+  it('counts the days left in the budget month, not the calendar month', () => {
+    expect(monthProgress(new Date(2026, 10, 1), 28)).toEqual({ elapsed: 5 / 31, daysLeft: 26 });
+    expect(monthProgress(new Date(2026, 10, 27), 28).daysLeft).toBe(0);
+  });
+
+  it('reads anything but a day from 1 to 28 as the 1st', () => {
+    expect([28, 1, 0, 29, 31, 2.5, '5', undefined].map(budgetStartDayOf)).toEqual([28, 1, 1, 1, 1, 1, 1, 1]);
   });
 });

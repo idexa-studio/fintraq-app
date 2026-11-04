@@ -1,6 +1,6 @@
 import type { Account } from '@/data/repositories/accounts';
 import type { Category } from '@/data/repositories/categories';
-import { blockerOf, categoriesFor, defaultAccountId, defaultCategoryId, isKind, kindOfType, payloadOf, typeOfKind } from '@/features/transactions/transaction-form';
+import { availableFor, blockerOf, categoriesFor, defaultAccountId, defaultCategoryId, isKind, kindOfType, payloadOf, typeOfKind } from '@/features/transactions/transaction-form';
 import type { FormState } from '@/features/transactions/transaction-form';
 
 const category = (id: number, type: string, isSystem = false) => ({ id, name: `c${id}`, type, isSystem }) as Category;
@@ -52,12 +52,33 @@ describe('transaction form rules', () => {
     expect(blockerOf(state({ amount: 100 }), 100)).toBeNull();
   });
 
-  it('builds the record, with the category name standing in for a blank note', () => {
-    expect(payloadOf(state({ note: '  ' }), 'Groceries', 'Transaction')).toMatchObject({ note: 'Groceries', toAccountId: null, datetime: '2026-10-08T10:00:00.000Z' });
-    expect(payloadOf(state({ note: ' Weekly shop ' }), 'Groceries', 'Transaction').note).toBe('Weekly shop');
-    expect(payloadOf(state(), undefined, 'Transaction').note).toBe('Transaction');
+  it('builds the record, keeping a blank note blank', () => {
+    // A blank note stays blank, so the transaction is named by its category as it is now, not a stale copy of its name.
+    expect(payloadOf(state({ note: '  ' }))).toMatchObject({ note: '', toAccountId: null, datetime: '2026-10-08T10:00:00.000Z' });
+    expect(payloadOf(state({ note: ' Weekly shop ' })).note).toBe('Weekly shop');
     // A destination left over from an earlier choice is not saved on an expense.
-    expect(payloadOf(state({ toAccountId: 2 }), 'x', 'y').toAccountId).toBeNull();
-    expect(payloadOf(state({ type: 'TR', toAccountId: 2 }), 'x', 'y').toAccountId).toBe(2);
+    expect(payloadOf(state({ toAccountId: 2 })).toAccountId).toBeNull();
+    expect(payloadOf(state({ type: 'TR', toAccountId: 2 })).toAccountId).toBe(2);
+  });
+});
+
+
+describe('what an account has for the entry being written', () => {
+  const cash = { id: 1, balance: -250 };
+  const saved = (type: 'DR' | 'CR' | 'TR', accountId = 1, toAccountId: number | null = null) => ({ type, amount: 250, accountId, toAccountId });
+
+  it('is the balance for a new entry', () => {
+    expect(availableFor(cash, null)).toBe(-250);
+  });
+
+  it('takes back the transaction being changed, on its own account', () => {
+    expect(availableFor(cash, saved('DR'))).toBe(0);
+    expect(availableFor(cash, saved('CR'))).toBe(-500);
+    expect(availableFor(cash, saved('TR', 1, 2))).toBe(0);
+    expect(availableFor(cash, saved('TR', 2, 1))).toBe(-500);
+  });
+
+  it('leaves another account as it is', () => {
+    expect(availableFor(cash, saved('DR', 2))).toBe(-250);
   });
 });

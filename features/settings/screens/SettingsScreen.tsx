@@ -1,4 +1,4 @@
-import { Badge, Button, Column, Columns, Dialog, FeatureTile, Header, IconButton, INK, ListGroup, ListRow, Notice, OptionList, Screen, Section, Select, Sheet, Switch, Text, TextField, TimePicker, Touchable, WaveCard, useStyles, useToast } from '@/design';
+import { Badge, Button, Column, Columns, Dialog, FeatureTile, Header, IconButton, INK, ListGroup, ListRow, Notice, OptionList, Screen, Section, Sheet, Switch, Text, TextField, TimePicker, Touchable, WaveCard, useStyles, useToast } from '@/design';
 import type { Theme } from '@/design';
 import { CurrencyPicker, useAccounts } from '@/features/accounts';
 import { useBackupAccount } from '@/features/backup';
@@ -24,7 +24,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-type Open = 'name' | 'currency' | 'language' | 'time' | 'erase' | 'whatsNew' | null;
+type Open = 'name' | 'currency' | 'language' | 'appearance' | 'time' | 'erase' | 'whatsNew' | null;
 
 /**
  * Settings, in the order people come for them: who you are and your plan,
@@ -130,11 +130,8 @@ export function SettingsScreen() {
             <ListGroup>
               <ListRow icon="cash" title={t('prefs.currency')} subtitle={t('prefs.currencyHint')} value={currency} onPress={() => setOpen('currency')} />
               <ListRow icon="translate" title={t('prefs.language')} subtitle={language === 'system' ? t('prefs.systemLanguage') : languages[language].nativeName} onPress={() => setOpen('language')} />
-              <ListRow
-                icon="moon"
-                title={t('prefs.appearance')}
-                trailing={<Select title={t('prefs.appearance')} options={APPEARANCES.map((key) => ({ key, label: t(`prefs.appearances.${key}`) }))} value={profile.theme || 'system'} onChange={(theme) => void updateProfile({ theme })} accessibilityLabel={t('prefs.appearance')} />}
-              />
+              {/* Read like Language above it: the choice under the name, a sheet to change it. A chip beside the name squeezed it on a narrow phone. */}
+              <ListRow icon="moon" title={t('prefs.appearance')} subtitle={t(`prefs.appearances.${profile.theme || 'system'}`)} onPress={() => setOpen('appearance')} />
             </ListGroup>
           </Section>
         </Column>
@@ -186,6 +183,17 @@ export function SettingsScreen() {
           selectedKey={language}
           onSelect={(key) => {
             void setLanguage(key as typeof language);
+            close();
+          }}
+        />
+      </Sheet>
+
+      <Sheet visible={open === 'appearance'} onClose={close} title={t('prefs.appearance')}>
+        <OptionList
+          groups={[{ options: APPEARANCES.map((key) => ({ key, title: t(`prefs.appearances.${key}`) })) }]}
+          selectedKey={profile.theme || 'system'}
+          onSelect={(key) => {
+            void updateProfile({ theme: key as (typeof APPEARANCES)[number] });
             close();
           }}
         />

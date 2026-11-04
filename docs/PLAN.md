@@ -32,12 +32,15 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | F | Remove the legacy code | 14 | 13 | In progress |
 | G | Release 1: the redesign | 48 | 16 | In progress |
 | H | Version 2.1: budgets | 45 | 36 | In progress |
-| I | Version 2.2: repeating items | 31 | 0 |  |
+| I | Release 2.1.0: repeating items | 34 | 26 | In progress |
 | J | Version 2.3: goals and the net worth trend | 20 | 0 |  |
 | K | Version 2.4: safe to spend and the monthly statement | 18 | 0 |  |
 | L | iPhone on the App Store | 8 | 0 |  |
 | M | To reconsider after 2.4 | 4 | 0 |  |
-| N | Every screen size | 37 | 25 | In progress |
+| N | Every screen size | 37 | 26 | In progress |
+| O | Release 2.1.0: spendable balance | 12 | 11 | In progress |
+| P | Release 2.1.0: build and Play Console | 7 | 2 | In progress |
+| Q | Release 2.1.0: what customers reported | 6 | 6 | Done |
 
 ---
 
@@ -264,7 +267,7 @@ go to `shared/calc`.
 - [x] C8.02 Tab layout using `TabBar`: Home, Activity, Add, Plan, Insights. Until D4, D11 and D12 the Activity, Plan and Insights tabs show the shipped transactions, loans and analytics screens; Accounts and Settings are ordinary screens
 - [x] C8.03 Centre Add opens the entry task, not a tab
 - [x] C8.04 Task presentation (a sheet that rises and stops short of the top, as in the reference) and push presentation (slides in from the side) defined once
-- [x] C8.10 Motion: sections arrive in sequence, presses ease, the segmented control slides, progress bars grow, tabs shift
+- [x] C8.10 Motion: sections arrive in sequence, presses ease, the segmented control slides, progress bars grow, tabs shift (tabs since change at once: see Q1.06)
 - [ ] C8.05 Android: system navigation bar colour, predictive back off as today, edge to edge
 - [x] C8.06 Status bar style follows the scheme (seen in light and dark)
 - [x] C8.07 Lock overlay above everything, including tasks (the lock is a full-screen modal opened after anything already open, so it sits above tasks and sheets; unlocked by the owner on 2026-10-08, not tried with a sheet open)
@@ -701,11 +704,55 @@ budgets at once. The names above and the phase headings ("Version 2.1" to
 here on: repeating items 2.1, goals and the net worth trend 2.2, safe to spend
 and the statement 2.3.
 
-**Store 2.1 (owner, 2026-10-16):** repeating items (phase I) and every screen
-size (phase N, the part not in 2.0.1) go out together as **2.1**. 2.0.1 is in
-review on Play. Building both starts now, each on its own branch into `develop`;
-the release branch `release/2.1.0` is cut only once 2.0.1 is at 100% with no
-open crash.
+## Release 2.1.0 (branch `release/2.1.0`, from 2.0.2)
+
+Decided by the owner on 2026-10-21. From this release on, work goes by release, not
+by feature: everything for a version is built on its own `release/x.y.z` branch,
+one commit per task, and merged to `develop` and `main` and tagged when it ships.
+
+| Part | What | Why in this release |
+| --- | --- | --- |
+| Phase I | **Repeating items**, the headline | The plan's next headline: what a tracker user asks for after budgets |
+| Phase O | **Spendable balance**: savings and investments kept out of Home's total | A Play review (2026-10-16): the user records money saved as an expense to make Home's total true, which spoils their spending and budgets |
+| Phase N, the rest | Small phones, the size audit, iPad and DeX | The foundation shipped in 2.0.1 and 2.0.2; this finishes it |
+| P1 | **R8 on the store build** (Play Console, 2026-10-21) | Smaller, faster build. Two settings, one careful release test |
+| Owner checks | Gallery approvals and device checks still open from earlier phases | Done alongside, as the owner has time; they do not hold the release |
+
+Order of work on the branch, each step finished before the next (the seven
+phases in `~/.claude/CLAUDE.md`):
+
+1. **Plan:** this section, I1.01's rules and O1.01's rules approved by the owner.
+2. **Design:** the gallery pieces for I and O approved (I1.05, O1.03).
+3. **Data:** the two schema changes in one migration and one backup format raise (I2, O2).
+4. **Rules with tests** (I3, O3).
+5. **Screens** wired to them (I4, O4); phase N's remaining screens in between.
+6. **Audit:** the size audit (N5.01), every new screen at the six widths, light and dark, largest font.
+7. **Ship (P2):** copy and translations, R8 release build tested fresh on a phone, version 2.1.0,
+   release notes, `latestVersionConfig` set only once 2.1.0 is at 100%.
+
+Not in 2.1.0: goals and the net worth trend (phase J, next), safe to spend (K),
+the App Store (L).
+
+### Q. Release 2.1.0: what customers reported (2026-11-02)
+- [x] Q1.01 Bug: changing a transaction's category seemed not to work. Cause: a transaction saved with no note had its category's name stored as its note, and lists, the receipt and search show the note, so the old name stayed after the category was changed (and after a category was renamed). Fixed at the cause: a blank note is stored blank and every list names it by its category as it is now; migration 0011 clears the copies already saved (tested over a 2.0.2-shaped database: a note that is only its own category's name is cleared, a typed one and one naming another category stay, nothing else changes); a restored backup clears them the same way (tested). Device: Samsung S25, release build, fresh install (2026-11-02): an expense saved without a note as Rent, changed to Groceries, reads Groceries on Activity and on its receipt. Migration 0011 on a real 2.0.2 install: not yet (the upgrade test)
+- [x] Q1.02 Search for people: on People from 9 people up (name, what they do, where, email, or phone however typed, from three digits; `matchesPerson`, tested), and in the person picker of a transaction or loan. The summary still counts everyone. Device: Samsung S25, release build (2026-11-02): with 9 people the search shows on People; "98765" (phone), "volt" (company), "ELECTR" (role), "div" (name) each find the one person; "zzz" reads No one matches; in a new loan's person picker "43210" finds Ivan and choosing him fills To
+- [x] Q1.03 A budget month that starts on any day from 1 to 28 (a customer paid on the 28th: "on 1st November the budget gets reset"). Decided: one day for every budget, kept in settings (`budgetStartDay`, 1 unless changed, carried in backups), set from the budget form ("Each month starts on day 28", for every budget); 29 to 31 are not offered, since a short month lacks them. It moves everything a budget counts: spent, days left and the day's allowance, rollover from the budget month before, the warnings, Add's "left of its budget", and what is still to come from repeating items. The budget's head shows its dates when it does not start on the 1st ("26 days left · 28 Oct to 27 Nov"). Home's and Insights' months stay the calendar's. Tested: `budgetPeriod` and `monthProgress` across month ends, a year and February. Device: Samsung S25, release build (2026-11-02): start day 28 on a new budget; its head reads "25 days left · Oct 28 to Nov 27"; expenses on 2 Nov and 29 Oct count (₹350), one on 27 Oct does not, and Add drops the "left of its budget" line for 27 Oct
+- [x] Q1.04 The copy for these in the 12 languages (done 2026-11-02; machine translations like the rest)
+- [x] Q1.05 Found testing Q1.01: changing a transaction, its account's "available" counted that same transaction against it (a ₹250 expense on an account at -₹250 read "-₹250.00 available", where ₹0.00 is available for it). Fixed: `availableFor` takes back what the transaction being changed did to that account (expense, income, either side of a transfer), tested. Device: Samsung S25, release build (2026-11-02): Cash at -₹433.00; changing its ₹250 expense reads "-₹183.00 available"
+- [x] Q1.06 Found testing Q1.03 (Samsung, release build): choosing a tab within a second of saving an expense left that tab blank (Plan, Insights) until another tab was chosen and it again. Cause: the Android tab change ("shift") starts the page invisible and 50pt aside and lets the native animation driver bring it in; after a sheet closes that animation can fail to run (the page sat 150px aside, invisible). The same failure was why iOS already changed tabs at once. Fixed: tabs change at once on both platforms (`app/(main)/(tabs)/_layout.tsx`). Device: Samsung S25, release build (2026-11-02): an expense saved and Plan or Insights chosen 0.6 s later, five times (three Plan, two Insights): each drew at once, with the saved message still showing
+
+### P. Release 2.1.0: build and Play Console
+- [x] P1.01 R8: `android.enableMinifyInReleaseBuilds` and `android.enableShrinkResourcesInReleaseBuilds` set through `expo-build-properties` in `app.json` (the local `android/` folder is a stale prebuild; only `app.json` counts). Play Console recommended it on build 74
+  - Set 2026-10-21. Resource shrinking cannot see resources looked up by name from JavaScript, so `plugins/with-kept-resources.js` keeps them: the reminder's chime, the notification icon and the launcher shortcuts' icons (its output checked by running the plugin). Native code: React Native keeps its bridge classes, Firebase and Billing ship their rules, and Expo's template keeps Reanimated. None of it is proven until P1.02 runs a release build
+- [ ] P1.02 The R8 release build installed fresh on the Samsung and the Honor (with the owner's word on each): first run to Home, add and edit a transaction, a budget, a loan, backup to a file and restore, the Pro page with its prices, the lock, a reminder. A library looked up by name and stripped by R8 shows here or nowhere
+  - Samsung, 2026-10-21, a release APK built locally from `app.json` (R8 and resource shrinking on, arm64, build 80, 2.1.0), installed fresh: first run to Home with no flicker; an expense repeating monthly, waiting on Home and skipped; a transaction changed (the balance followed) and one undone; a budget; a loan, to a person added from the loan form; a backup file made (the share sheet was left, as it leads into other apps) and the restore's file picker opened; Pro with its store prices (nothing bought); a PIN set, asked for on return, and turned off; a reminder posted on the chime channel and its tap opening Add; the launcher shortcuts with their icons. Found and fixed on the way: (1) the first build lost the reminder's chime, because React Native's own `res/raw/keep.xml` replaced ours: ours is now `fintraq_keep.xml`, and the chime, the notification icon and the shortcut icons were checked inside the APK; (2) a loan could not be recorded by someone with no people: see I4.10. Not run: a restore from a file (no file could be put on the phone without another app), and the Honor, which was not connected
+- [ ] P1.03 Play's "deprecated edge-to-edge APIs": the calls are in React Native's `StatusBarModule` and in `react-native-screens`, not in Fintraq. Take the Expo SDK 57 patch updates (`npx expo install --check`; 57.0.30 was out on 2026-10-21) and recheck in Play Console after 2.1.0. No patching of the libraries
+  - Patch updates taken 2026-10-21: expo 57.0.30 and ten of its packages (router, notifications, splash screen, updates and others); `expo install --check` says up to date, all checks pass. Not yet run on a phone: the dev builds on the Samsung and the Honor carry the old native code, so they want rebuilding before they show these, and Metro restarting. The Play Console recheck waits for 2.1.0
+- [ ] P1.04 Play's "bitmap downsampling": Fintraq draws no bitmaps (icons and art are vector), so nothing in the app to change; recheck in Play Console after 2.1.0
+- [x] P2.01 Version 2.1.0 in `app.json` and `package.json`; release notes in `update-note.txt` (15 locales, 500 characters)
+  - 2026-10-21: version 2.1.0 (the build number comes from EAS); notes for repeating items, Upcoming, the spendable balance and small phones in the 15 store languages, the longest 488 characters. Korean and Russian are store languages only and were translated for the notes
+- [ ] P2.02 Owner: upload, staged rollout, go or no-go at each step
+- [ ] P2.03 Once at 100%: `latestVersionConfig` set to 2.1.0's build and version
 
 Rules for every version:
 
@@ -789,47 +836,94 @@ made on 2.0 still restores.
 
 ---
 
-## I. Version 2.2: repeating items (store 2.1, with phase N)
+## I. Repeating items (release 2.1.0)
 
 Done when: rent, a salary and a subscription can each be set once and appear on
 their day without being typed again, a free user can keep two, and a phone left
 unopened for three months catches up correctly.
 
 ### I1. Design first
-- [ ] I1.01 Decisions written down: the cadences offered (weekly, every two weeks, monthly, yearly), what "the 31st" means in a short month, add automatically or ask first, what an end date does
-- [ ] I1.02 Gallery: a repeating item row (what, how often, next date, amount)
-- [ ] I1.03 Gallery: "Repeat" on the entry form, closed and open
-- [ ] I1.04 Gallery: Upcoming on the Plan tab, the next 30 days, with loans' due dates among them
-- [ ] I1.05 Owner: the gallery pieces approved
+- [x] I1.01 Owner: the rules below approved (written and approved 2026-10-21)
+  - **What repeats:** an expense, income or a transfer. Not a loan or a repayment: a loan has its own due date and reminders
+  - **How often:** every week, every 2 weeks, every month, every year. The first time is the transaction being saved; the next is one period after its date
+  - **Short months:** a monthly item on the 29th, 30th or 31st falls on the month's last day when the month is shorter, and returns to its own day the month after. A yearly item on 29 February falls on 28 February outside leap years
+  - **Added or asked:** each item is either *added on its day* or *asked about on its day*; a new item is *asked*, since amounts like a bill change. Asked items wait on Home as "Due today" with Add (with the amount editable) and Skip
+  - **The time:** an item made on its day takes the original transaction's time of day
+  - **Catch-up:** when the app was not opened for a while, every missed occurrence is made (added items, dated their own day) or listed (asked items), oldest first. Each occurrence is made at most once: the rule and its date are stored on the transaction it made
+  - **End:** never, on a date, or after a number of times. An ended item stays in the list, marked ended, until deleted
+  - **Pause:** a paused item makes nothing; on resume it continues from its next date after today, and what fell while paused is not caught up
+  - **Changing an item** changes what it makes from now on; transactions it already made stay as they are. **Deleting** an item keeps its transactions
+  - **When its account or category is deleted** the item stops and says why, until it is pointed at another
+  - **Notification:** one a day at 9:00 when asked items are waiting ("2 things are due today"), only with notifications allowed; nothing for added items
+  - **Free plan:** 2 items; Pro has no limit. A lapsed subscriber keeps every item, and can edit, pause and delete them; only adding a third is gated
+  - **Where:** "Repeat" on the Add form (Never by default); the list and Upcoming (the next 30 days, with loans' due dates) on the Plan tab; an item's own page from either
+  - **Budgets:** a budget shows what is still to come this month from repeating items, as a line; it is not taken off what is left
+- [x] I1.02 Gallery: a repeating item row (what, how often, next date, amount)
+  - Built 2026-10-21 in the gallery's 2.1.0 section, with paused and stopped rows, the free-plan limit, Due today on Home, the item's page, the budget line and the notification; seen on the Samsung, light and dark
+- [x] I1.03 Gallery: "Repeat" on the entry form, closed and open
+  - The Repeat row not set and set, and the How often sheet with On its day and Ends; seen on the Samsung
+- [x] I1.04 Gallery: Upcoming on the Plan tab, the next 30 days, with loans' due dates among them
+  - Seen on the Samsung, light and dark
+- [x] I1.05 Owner: the gallery pieces approved
+  - Approved on the Samsung, 2026-10-21 ("looking good so far"), after the sheet was made one pattern and the details' spacing brought to `ListRow`'s
 
 ### I2. Data
-- [ ] I2.01 `recurring_rules` table (the transaction it copies, cadence, next due, automatic or confirm, end, paused)
-- [ ] I2.02 Generated migration; applies on a phone carrying 2.1 data
-- [ ] I2.03 Backup format version raised; older backups restore with no rules
-- [ ] I2.04 Repository: add, save, pause, delete, list upcoming, what a rule has made
-- [ ] I2.05 A transaction made by a rule remembers the rule; deleting the rule keeps its transactions
+- [x] I2.01 `recurring_rules` table (the transaction it copies, cadence, next due, automatic or confirm, end, paused)
+  - Written 2026-10-21 as its own copy of a transaction's fields (type, amount, account, destination, category, person, note), not a link to one, so editing or deleting a transaction never changes the item; with cadence, anchor day, time, next due, ask or add, end (never, date, times), occurrences and paused. Its references are set null when they are deleted, which stops the item. `payments` gains `recurring_rule_id` and `recurring_date`, plain columns so the migration adds them in place instead of rebuilding the table; a unique index on the two makes a second transaction for the same day impossible
+- [x] I2.02 Generated migration; applies on a phone carrying 2.1 data
+  - `drizzle/0010_open_doctor_faustus.sql`: one new table and index, three columns added in place, one unique index; nothing existing rebuilt. `data/db/__tests__/migration-0010.test.ts` runs migrations 0000 to 0010 on Node's SQLite over 2.0.2-shaped data: every account, balance, transaction and budget is unchanged. Applied on the Samsung, 2026-10-21, over its demo data (five accounts, a savings account among them, a year of transactions): the app opened, and Accounts' net worth was the same ₹735,899
+- [x] I2.03 Backup format version raised; older backups restore with no rules
+  - Version 3, with tests: an older file restores with no items, accounts by their kind and transactions made by no item; items restore before the transactions they made; an item whose account is missing stops; a transaction whose item is missing is freed. Erase everything clears the items
+- [x] I2.04 Repository: add, save, pause, delete, list upcoming, what a rule has made
+  - `data/repositories/recurring.ts`, 2026-10-21: list with what each item points at, one, count, add, change (pause is a change), delete, what an item made, and recording or skipping one occurrence. Recording goes through `recordPaymentIn`, the one path money enters the ledger, and never makes an occurrence twice. Upcoming is worked out by the rules (I3), not stored. Run on the Samsung 2026-10-21: two items added, changed, paused and resumed, their occurrences recorded (each once: Home's month moved by exactly their amounts), and what each made listed
+- [x] I2.05 A transaction made by a rule remembers the rule; deleting the rule keeps its transactions
+  - `recordOccurrence` stores the item and the day on the transaction; `deleteRecurringRule` clears them and deletes the item in one transaction. On the Samsung 2026-10-21 each item's page listed exactly what it made. Deleting Rent with its two transactions, on the Samsung the same day, kept both: they stayed in Activity and Search until deleted by hand
 
 ### I3. Rules, each with tests
-- [ ] I3.01 The next due date across month ends, leap years and a change of time zone
-- [ ] I3.02 Catch-up when the app was not opened for several periods: every missed one is made or offered, none twice
-- [ ] I3.03 A rule whose account or category was deleted stops and says why
-- [ ] I3.04 The free limit of 2, read from the registry
+- [x] I3.01 The next due date across month ends, leap years and a change of time zone
+  - `shared/calc/recurrence.ts` (pure, so the notification sync in `platform/` can use it too), tested: the 31st falls on a short month's last day and comes back; 29 February on the 28th outside leap years; days are calendar days, never moments, so no clock or zone change moves them
+- [x] I3.02 Catch-up when the app was not opened for several periods: every missed one is made or offered, none twice
+  - Tested: three months away makes three, oldest first; an end date or a count stops it; paused makes none and resume lets them go. None twice: the rules move the item past each one, and the repository refuses a second transaction for the same day
+- [x] I3.03 A rule whose account or category was deleted stops and says why
+  - The rule (`stoppedBecause`: account, destination or category) is tested; the screens say it in I4.02 and I4.03. Corrected while building the screens: a transfer item whose category is deleted stops too, since every transaction, a transfer's included, is stored with a category
+- [x] I3.04 The free limit of 2, read from the registry
+  - `FREE_LIMITS.recurring` and `isOverFreeLimit`, tested in the Pro registry's tests
+- [x] I3.05 Rules found while building the screens (2026-10-21), each tested
+  - **Changing an item:** a new next day or a new cadence starts it again from that day; changing only what it makes leaves its days alone (`rescheduled` in `shared/calc/recurrence.ts`)
+  - **Repairing a stopped item:** pointed at another account or category, it carries on from its next day after today, as a resumed one does, so an item added by itself does not make every missed month at once (`changedRuleOf`)
+  - **Due today:** each asked item offers only its oldest waiting day, with how many wait, so they are added or skipped in order and none is passed over (`waitingItems`)
+  - **Still to come on a budget:** every occurrence not yet made this month, the 1st to the last day, waiting ones included (`stillToCome`)
+  - **The 9:00 reminder:** on each day something asked is waiting, from its day until it is added or skipped, 14 days kept scheduled (`planRepeatReminders`)
+  - The date rules moved to `shared/calc/recurrence.ts` so the notification sync in `platform/` can use them
 
 ### I4. Screens
-- [ ] I4.01 "Repeat" on the entry flow makes a rule from the transaction being saved
-- [ ] I4.02 List of repeating items with next date and amount
-- [ ] I4.03 Rule screen: change, pause, delete, and what it has made
-- [ ] I4.04 Upcoming on the Plan tab: the next 30 days
-- [ ] I4.05 Due today: added automatically, or confirmed with one tap from Home
+- [x] I4.01 "Repeat" on the entry flow makes a rule from the transaction being saved
+  - Built 2026-10-21: the Repeat row among the details of a new transaction (not on a loan payment), its sheet as in the gallery with the end date chosen on a calendar and the number of times typed; the transaction and its item are saved together in one database transaction, Undo takes both back, and Repeat is kept with the entry being typed. Plan's "Add" opens Add already set to every month. Seen on the Samsung 2026-10-21: an asked monthly item dated a month back and a weekly one added by itself; the sheet, an end date on the calendar, and the number of times refusing 1 with its reason. Closing the sheet without Done leaves Repeat as it was. Undo after saving was not pressed
+- [x] I4.02 List of repeating items with next date and amount
+  - Built 2026-10-21: "Repeating" on Plan after Budgets, running items soonest first, then paused, ended and stopped, each saying so; an item with no account left shows in every currency. Seen on the Samsung 2026-10-21, light and dark, running items soonest first. A paused or stopped row in the list was not seen (the paused badge was, on the item's page)
+- [x] I4.03 Rule screen: change, pause, delete, and what it has made
+  - Built 2026-10-21: `/recurring/[id]` as in the gallery, with a notice when it has stopped or ended. Change opens the Add form on the item (`/recurring/[id]/edit`), with Next in place of When and no Never. Seen on the Samsung 2026-10-21, light and dark: pause and resume with their notes, Change (the amount changed, the dates and what was made left alone), what it made, and the delete dialog. Delete seen too: the item goes, with "Repeating item deleted", and Plan shows the empty state again. A stopped or ended item was not seen
+- [x] I4.04 Upcoming on the Plan tab: the next 30 days
+  - Built 2026-10-21: after Repeating, each day an item falls and each loan due, in date order; hidden when nothing falls. Seen on the Samsung 2026-10-21, with a loan due among the items
+- [x] I4.05 Due today: added automatically, or confirmed with one tap from Home
+  - Built 2026-10-21: items added by themselves are made on opening the app and on every return to it (`useRecurringCatchUp`, mounted once beside the screens); asked ones wait on Home under the shortcuts, with Skip and Add, and the row opens a sheet to change the amount. Seen on the Samsung 2026-10-21: the weekly item dated two weeks back made its two missed weeks the moment it was saved (catch-up now also runs after an item is saved, changed or resumed, found on the phone), and the asked one was added with its amount changed for that time. Skip was not pressed
 - [ ] I4.06 Notification for items waiting to be confirmed; added to the list in `docs/SCREENS.md`
-- [ ] I4.07 A third item on the free plan leads to the paywall
-- [ ] I4.08 A budget counts what is still to come this month from repeating items (shown, not yet subtracted)
+  - Built 2026-10-21: scheduled with the other reminders, in Developer's list of every notification, and in `docs/SCREENS.md`. The words seen on the Samsung's shade 2026-10-21, and a tap opens Home. A real 9:00 reminder has not been seen: none fell in the window while testing
+- [x] I4.07 A third item on the free plan leads to the paywall
+  - Built 2026-10-21: the Repeat sheet shows the limit in place of the choices, and Plan's "Add" opens Fintraq Pro. Seen on the Samsung 2026-10-21 as a free user (Developer's "Always free"): both, and "No limits" naming 2 repeating items
+- [x] I4.08 A budget counts what is still to come this month from repeating items (shown, not yet subtracted)
+  - Built 2026-10-21: the line under the budget's head. Seen on the Samsung 2026-10-21: "₹500.00 still to come this month from repeating items" on All spending, and nothing on Groceries, which has none
+- [x] I4.10 Someone with no people can record a loan: the person picker offers "Add a person" from a name, as the category picker does (`useQuickPerson`), leaves out "No one" when lending, and past the free plan's 10 people opens Fintraq Pro. Found in the 2.1.0 release test on a fresh install, where the picker offered only "No one" and the loan could not be saved. Seen on the Samsung's release build: Asha added from the loan form and the loan recorded. The seven new lines are in the 12 languages
+- [~] I4.11 "What is new" for 2.1.0: someone updating from 2.0 sees "New in Fintraq 2.1" (repeating items, the next 30 days, ready to spend); someone from 1.2.4, who never saw the new look, gets the new-look note with repeating items and ready to spend in it (`whatsNewNote`, tested). Settings' row shows the 2.1 note. In the 12 languages. Seen on a phone: pending the release build updating the Samsung's 2.1 install set up as release 2
 - [ ] I4.09 Shared checklist
 
 ### I5. Ship
-- [ ] I5.01 `recurring` marked `live` in the registry
-- [ ] I5.02 English copy and the 12 translations
-- [ ] I5.03 Analytics events added to the catalogue
+- [x] I5.01 `recurring` marked `live` in the registry
+  - Done with the screens, as budgets were, so Plan's "Coming to Pro" card no longer lists it beside its own section. "No limits" now names 2 repeating items; `docs/PRODUCT.md` says live
+- [x] I5.02 English copy and the 12 translations
+  - English written 2026-10-21 (`recurring` namespace, and lines in transactions, budgets, notifications and pro), read on the Samsung. 120 lines in each of the twelve languages the same day: the 118 new ones and the two whose English changed (the reminders channel's description, "No limits"). Each uses its language's own word for a transaction (es movimiento, fr opération, de Buchung, ja 取引, hi लेन-देन). Machine translations like the rest, wanting a native reader; `--check` is complete. Not looked at on a phone in any language but English
+- [x] I5.03 Analytics events added to the catalogue
+  - `recurring_saved` (cadence, `on_day` ask or add, made or changed), `recurring_due` (added, added with the amount changed, skipped) and `recurring_state` (paused, resumed, deleted). No amounts, names or ids. The params `cadence`, `on_day`, `action` and `state` want custom definitions in the GA4 console (owner)
 - [ ] I5.04 Seen on the Android phone and on the iPhone, light and dark
 - [ ] I5.05 Upgrade test from 2.1 with real data, on the release build
 - [ ] I5.06 Store listing, screenshots and release notes
@@ -837,6 +931,53 @@ unopened for three months catches up correctly.
 - [ ] I5.08 Owner: go or no-go at each step
 
 ---
+
+## O. Spendable balance (release 2.1.0)
+
+From a Play review, 2026-10-16: "the dashboard to show the cash available from the
+income, not including the savings ... savings to go into separate account and it
+should not reflect in the available balance". Home's total adds every account, so
+money put aside looks spendable; the reviewer records savings as an expense to
+hide it, which counts it as spending in Insights and in budgets.
+
+Done when: someone with a savings account sees on Home what is ready to spend,
+with what is put aside under it, and moving money to savings is a transfer that
+changes the first and not their spending.
+
+### O1. Plan and design
+- [x] O1.01 Owner: the rules below approved (written and approved 2026-10-21)
+  - Each account either **counts as ready to spend** or is **put aside**. By type: savings and investment are put aside; cash, bank, e-wallet, credit card and loan accounts count (a card's or a loan's balance below zero takes from what is ready)
+  - The account form has a switch, "Count in what I can spend", set by the type until changed by hand; changing the type later moves it only if it was never changed by hand
+  - Home's balance card: the total ready to spend, large, as now; under it "₹26,400.00 put aside" when anything is put aside, and nothing extra when nothing is. Per currency, as today
+  - The Accounts screen's net worth is unchanged: everything, put aside included. Insights and budgets are unchanged: a transfer to savings is not spending
+  - Free, for everyone: it is about recording, which is never gated
+- [x] O1.02 Gallery: the balance card with and without a put-aside line; the account form's switch
+  - The real `BalanceCard` (it now takes `putAside`, unused by the app until O3), the form's switch and the account page's Put aside badge; seen on the Samsung, light and dark
+- [x] O1.03 Owner: the gallery pieces approved
+  - Approved with I1.05, 2026-10-21
+
+### O2. Data
+- [x] O2.01 `accounts.counts_as_spendable`: a new nullable column (null means "by type"), added in `data/db/schema.ts` and generated with `npm run db:generate`
+  - In migration 0010 with phase I's table
+- [x] O2.02 Backup format raised once with phase I's table; a backup made before it restores with every account "by type"
+  - Version 3, tested with I2.03
+- [x] O2.03 Test: a 2.0.2 database migrates with every balance and total unchanged
+  - `data/db/__tests__/migration-0010.test.ts`
+
+### O3. Rules, each with tests
+- [x] O3.01 Whether an account counts: its own setting, or else its type
+  - `features/accounts/spendable.ts`, tested
+- [x] O3.02 Ready to spend and put aside, per currency, from the same accounts that make today's total; the two always add up to it
+  - Tested, with a card's debt taking from what is ready
+
+### O4. Screens
+- [x] O4.01 Home's balance card with the put-aside line
+  - Seen on the Samsung, 2026-10-21: "Ready to spend ₹50,899.00, across 4 accounts" and "₹685,000.00 put aside in 1 account"; Accounts' net worth ₹735,899.00 is the two together
+- [x] O4.02 The switch on the account form, and the account's page saying "Put aside" when it is
+  - Seen on the Samsung: on for a bank account and off for Savings on a new account; Savings' page shows Put aside; switched on and saved, Home read "All accounts ₹735,899.00 across 5", and switched back it read as before
+- [x] O4.03 Copy and the 12 translations; seen on a phone with the owner's word, light and dark
+  - Copy and translations done (each language's own name for Home). Home's card seen on the Samsung in light and, on 2026-10-21, in dark. The account form's switch and the Put aside badge were not opened in dark; both are design-system pieces seen in dark elsewhere
+- [ ] O4.04 Owner: a reply to the review, once 2.1.0 is live (the owner posts it)
 
 ## J. Version 2.3: goals and the net worth trend
 
@@ -926,7 +1067,7 @@ account and runs on the owner's iPhone.
 
 ---
 
-## N. Every screen size (the foundation shipped in 2.0.1; the rest goes out in 2.1)
+## N. Every screen size (foundation in 2.0.1 and 2.0.2; the rest in release 2.1.0)
 
 Asked for by the owner on 2026-10-13: "fully responsive on tablet and all sized
 screens". Measured that day on the Samsung with its display set to other sizes:
@@ -971,7 +1112,8 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
   - Seen on the Samsung, 2026-10-13: a size change and a turn kept Add with its typed amount. A **density** or **font size** change does not: Android restarts the activity and the app opens at Home. Handling them in place was tried and is worse (React Native keeps measured text, so labels were clipped and a new font size was ignored), so the restart stays; N1.04 keeps what was typed
 - [ ] N1.03 iPad: a task presented by iOS itself (`presentation: 'modal'`) on a wide screen; decide between the system's form sheet and the app's own card. Not runnable until an iPad or the owner's word on a simulator
 
-- [ ] N1.04 A transaction being typed survives a restart of the activity (a density or font-size change, or Android reclaiming the app): the draft is kept and offered back, with a test
+- [x] N1.04 A transaction being typed survives a restart of the activity (a density or font-size change, or Android reclaiming the app): the draft is kept and offered back, with a test
+  - Seen on the Samsung 2026-10-21: ₹77 typed on Add, the font size changed (Android restarted the app at Home), and Add offered the ₹77 back with "Fintraq kept what you were typing" and a way to discard it. Repeat is kept with it since 2.1.0
 
 ### N2. Design system, gallery first
 - [x] N2.01 `design/tokens/layout.ts`: the three widths, the column widths (600, 1040), the card widths (560, 400), with a test
@@ -991,7 +1133,8 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
 - [x] N3.01 Add and every form at 320 x 569 with the keyboard open: the field being typed in stays in view, the save button stays reachable. Device
   - On a screen with less than 400pt above the keyboard the pinned buttons step aside while it is up (`LAYOUT.roomForFooter`), so the field is not squeezed out. Seen at 320 x 569 on Add, New budget and New loan: the amount is in view while typing and Save is back when the keyboard closes
 - [ ] N3.02 Every screen at 320 wide at the largest font size: no clipped label, no row whose amount is pushed off. Device
-  - Seen at 320 with the font at 1.3: Home, Activity, Plan, Insights, Settings. Fixed: a budget's amount drops under a long name (`LimitRow`) instead of cutting it to "All sp…". Still open: the other screens, and a tile's label shrinking ("Categories")
+  - Seen at 320 with the font at 1.3: Home, Activity, Plan, Insights, Settings. Fixed: a budget's amount drops under a long name (`LimitRow`) instead of cutting it to "All sp…"
+  - Second pass on the Samsung 2026-10-21 (density 540, so 320 wide, font 1.3), and fixed, each seen after: (1) Add's When showed "ıy · 4:45 PM": a field that opens a picker now shows its value as wrapping text (`TextField`); (2) list rows cut titles to a word ("Health i..") and broke names mid-word ("Savin / gs"): `ListRow`'s figure now drops under the title when both do not fit, as `LimitRow`'s does; (3) category names broke mid-word ("Entertain / ment"): `MarkGrid` takes fewer columns; (4) a budget's "₹66,678.00 of ₹1…" wraps instead; (5) Plan's loans broke and cut names ("Ra / hul…") and the overdue line: `LoanRow` wraps the same way; (6) a header title shrinks before it is cut ("Lent to Rahul Sharma"); (7) Export's preview cut amounts ("-₹540…."): the column is as wide as its figure; (8) Settings' tile labels shrank below their neighbours': they drop under the mark; (9) "Appear / ance" beside its chip: Appearance is now a row like Language, with a sheet; (10) Insights' category names cut ("Insu…"): the share and amount wrap; (11) the receipt's time was pushed off its edge: it drops under the day. Also seen whole: Accounts, an account, a person, People, Categories, the four forms (account, budget, loan, person), a loan, a budget, Backup, Pro. Back at the phone's own size the figures stay on the title's line; only titles too long for both now show whole with the figure under them. Search, App lock and About seen whole the same day; Search's placeholder ("A note, account, person or category") is cut at this size only, beside the field's own icon and the screen's title. Still open at 320: the repeating-item screens (none existed during the pass) and onboarding (N3.03). Backup's Drive address wraps at its dots, readable but awkward
 - [ ] N3.03 The launch screen and the onboarding at 320 x 569. Device
 
 ### N4. Screens on medium and expanded

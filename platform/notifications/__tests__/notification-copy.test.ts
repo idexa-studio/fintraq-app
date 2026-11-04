@@ -1,4 +1,4 @@
-import { dailyText, loanDueText } from '@/platform/notifications/notification-copy';
+import { dailyText, loanDueText, repeatDueText } from '@/platform/notifications/notification-copy';
 import { notificationPreviews } from '@/platform/notifications/notification-previews';
 
 jest.mock('@/platform/notifications/notifications', () => ({ NotificationService: {} }));
@@ -46,5 +46,11 @@ describe('the words', () => {
       title: 'Last day of October',
       body: '42 recorded so far. Add anything missing and the month is complete.',
     });
+  });
+
+  it('counts what is waiting on its day and names the first two', () => {
+    expect(repeatDueText(['Rent'])).toEqual({ title: '1 thing is due today', body: 'Rent. Add it or skip it in Fintraq.' });
+    expect(repeatDueText(['Rent', 'Electricity bill'])).toEqual({ title: '2 things are due today', body: 'Rent and Electricity bill. Add them or skip them in Fintraq.' });
+    expect(repeatDueText(['Rent', 'Electricity bill', 'Phone']).body).toBe('Rent, Electricity bill and 1 more. Add them or skip them in Fintraq.');
   });
 });

@@ -32,6 +32,8 @@ export type TransactionFilters = {
   maxAmount?: number;
   /** Leaves out money lent, borrowed or repaid: what a budget counts as spending. */
   withoutLoans?: boolean;
+  /** Only what this repeating item made. */
+  recurringRuleId?: number;
   sortBy?: 'date' | 'amount';
   sortOrder?: 'asc' | 'desc';
 };
@@ -153,6 +155,7 @@ const buildWhere = (filters: TransactionFilters): SQL | undefined => {
   if (filters.minAmount != null) conditions.push(sql`${payments.amount} >= ${filters.minAmount}`);
   if (filters.maxAmount != null) conditions.push(sql`${payments.amount} <= ${filters.maxAmount}`);
   if (filters.withoutLoans) conditions.push(isNull(payments.loanId));
+  if (filters.recurringRuleId != null) conditions.push(eq(payments.recurringRuleId, filters.recurringRuleId));
   return conditions.length > 0 ? and(...conditions) : undefined;
 };
 

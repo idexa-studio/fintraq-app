@@ -55,10 +55,11 @@ export function blockerOf(state: FormState, repaymentLimit?: number): Blocker | 
 }
 
 /**
- * The record to save. A blank note is stored as the category's name, as the
- * app has always done, so lists and exports never show an empty description.
+ * The record to save. A note left blank is stored blank: every list names such a transaction by
+ * its category as it is now. (Until 2.1.0 the category's name was stored in its place, a copy
+ * that went stale when the category was changed or renamed; migration 0011 cleared those copies.)
  */
-export function payloadOf(state: FormState, categoryName: string | undefined, fallbackNote: string) {
+export function payloadOf(state: FormState) {
   return {
     accountId: state.accountId as number,
     categoryId: state.categoryId as number,
@@ -67,6 +68,20 @@ export function payloadOf(state: FormState, categoryName: string | undefined, fa
     amount: state.amount as number,
     type: state.type,
     datetime: state.when.toISOString(),
-    note: state.note.trim() || categoryName || fallbackNote,
+    note: state.note.trim(),
   };
 }
+
+/** What a saved transaction did to one account's balance: taken out, put in, or nothing. */
+export function effectOn(accountId: number, saved: { type: TransactionType; amount: number; accountId: number; toAccountId: number | null }): number {
+  if (saved.type === 'TR') return (saved.toAccountId === accountId ? saved.amount : 0) - (saved.accountId === accountId ? saved.amount : 0);
+  if (saved.accountId !== accountId) return 0;
+  return saved.type === 'CR' ? saved.amount : -saved.amount;
+}
+
+/**
+ * What an account has for the entry being written. Its balance already counts the transaction
+ * being changed, so that is taken back out: changing a ₹250 expense on an account at -₹250 has ₹0.
+ */
+export const availableFor = (account: { id: number; balance: number }, saved: Parameters<typeof effectOn>[1] | null): number =>
+  saved ? account.balance - effectOn(account.id, saved) : account.balance;

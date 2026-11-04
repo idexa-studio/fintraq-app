@@ -56,7 +56,8 @@
       "deleted": "{{name}} excluída",
       "failed": "Não foi possível",
       "failedBody": "Nada foi alterado. Tente de novo.",
-      "ok": "OK"
+      "ok": "OK",
+      "putAside": "Guardado"
     },
     "form": {
       "newTitle": "Nova conta",
@@ -102,7 +103,10 @@
         "body": "O que você digitou não será salvo.",
         "confirm": "Descartar",
         "cancel": "Continuar editando"
-      }
+      },
+      "spendable": "Contar no disponível para gastar",
+      "spendableOn": "Parte do que o Início mostra como disponível para gastar",
+      "spendableOff": "Fora do total do Início, mostrado como guardado"
     }
   },
   "activity": {
@@ -622,7 +626,11 @@
       "summary_many": "Em {{count}} contas",
       "scope_one": "Em {{count}} conta em {{currency}}",
       "scope_other": "Em {{count}} contas em {{currency}}",
-      "scope_many": "Em {{count}} contas em {{currency}}"
+      "scope_many": "Em {{count}} contas em {{currency}}",
+      "readyToSpend": "Disponível para gastar",
+      "putAside_one": "{{amount}} guardado em {{count}} conta",
+      "putAside_other": "{{amount}} guardado em {{count}} contas",
+      "putAside_many": "{{amount}} guardado em {{count}} contas"
     },
     "start": {
       "title": "Primeiros passos",
@@ -1072,7 +1080,7 @@
     "channels": {
       "reminders": {
         "name": "Lembretes",
-        "description": "Seu lembrete diário e os vencimentos de empréstimos"
+        "description": "Seu lembrete diário, os vencimentos de empréstimos e as transações recorrentes"
       },
       "backup": {
         "name": "Backup",
@@ -1194,6 +1202,18 @@
         "title": "Reconecte o Google Drive",
         "body": "O Fintraq foi desconectado da sua conta do Google. Conecte de novo e os backups continuam."
       }
+    },
+    "repeat": {
+      "title_one": "{{count}} item vence hoje",
+      "title_other": "{{count}} itens vencem hoje",
+      "title_many": "{{count}} itens vencem hoje",
+      "body": {
+        "one": "{{first}}. Adicione ou pule no Fintraq.",
+        "two": "{{first}} e {{second}}. Adicione ou pule no Fintraq.",
+        "more_one": "{{first}}, {{second}} e mais {{count}}. Adicione ou pule no Fintraq.",
+        "more_other": "{{first}}, {{second}} e mais {{count}}. Adicione ou pule no Fintraq.",
+        "more_many": "{{first}}, {{second}} e mais {{count}}. Adicione ou pule no Fintraq."
+      }
     }
   },
   "people": {
@@ -1277,7 +1297,10 @@
         "confirm": "Descartar",
         "cancel": "Continuar editando"
       }
-    }
+    },
+    "search": "Busque por nome, telefone ou trabalho",
+    "clearSearch": "Limpar a busca",
+    "noMatch": "Ninguém corresponde a “{{query}}”"
   },
   "plan": {
     "title": "Planejar",
@@ -1418,7 +1441,7 @@
       },
       "unlimited": {
         "title": "Sem limites",
-        "description": "Mais de {{people}} pessoas, {{loans}} empréstimos e {{budgets}} orçamento."
+        "description": "Mais de {{people}} pessoas, {{loans}} empréstimos, {{budgets}} orçamento e {{recurring}} transações recorrentes."
       }
     },
     "paywall": {
@@ -1779,7 +1802,6 @@
     "note": "Nota",
     "noteOptional": "Opcional",
     "available": "{{amount}} disponíveis",
-    "defaultNote": "Transação",
     "save": {
       "expense": "Salvar despesa",
       "income": "Salvar receita",
@@ -1835,7 +1857,16 @@
       "person": "Com quem foi?",
       "date": "Quando foi?",
       "time": "Horário",
-      "done": "Concluir"
+      "done": "Concluir",
+      "newPerson": "Adicionar uma pessoa",
+      "personName": "Nome",
+      "personHintNew": "Telefone, e-mail e trabalho podem ser adicionados depois em Pessoas.",
+      "addPerson": "Adicionar e escolher",
+      "personFailed": "A pessoa não foi adicionada",
+      "personFailedBody": "Nada foi alterado. Tente de novo.",
+      "noPeopleYet": "Ainda não há ninguém. Adicione a pessoa com quem está esse dinheiro.",
+      "searchPerson": "Buscar pessoas",
+      "noPersonMatch": "Ninguém corresponde a “{{query}}”"
     },
     "saved": {
       "expense": "Despesa salva",
@@ -1884,7 +1915,9 @@
       "discard": "Descartar e começar de novo"
     },
     "choosePerson": "Escolher uma pessoa",
-    "personHint": "Com quem foi, se com alguém"
+    "personHint": "Com quem foi, se com alguém",
+    "changeItem": "Alterar transação recorrente",
+    "next": "Próxima"
   },
   "guide": {
     "tips": {
@@ -1916,6 +1949,19 @@
       "budgets": {
         "title": "Orçamentos",
         "body": "Defina um limite mensal para uma categoria em Planejar e veja o que resta conforme você gasta."
+      },
+      "titleLatest": "Novidades no Fintraq 2.1",
+      "repeating": {
+        "title": "Transações recorrentes",
+        "body": "Escolha Repetir ao adicionar o aluguel, um salário ou uma assinatura, e ele volta no dia certo."
+      },
+      "upcoming": {
+        "title": "Os próximos 30 dias",
+        "body": "Planejar mostra o que vem, dia a dia: transações recorrentes e empréstimos que vencem."
+      },
+      "spendable": {
+        "title": "Disponível para gastar",
+        "body": "Poupança e investimentos ficam fora do total do Início e aparecem como guardados. Mude em qualquer conta."
       }
     }
   },
@@ -1930,9 +1976,10 @@
       "daysLeft_one": "Resta {{count}} dia",
       "daysLeft_other": "Restam {{count}} dias",
       "daysLeft_many": "Restam {{count}} dias",
-      "lastDay": "Último dia do mês",
+      "lastDay": "Último dia deste mês de orçamento",
       "used": "Quanto do limite foi usado",
-      "perDay": "Cerca de {{amount}} por dia mantém você dentro dele."
+      "perDay": "Cerca de {{amount}} por dia mantém você dentro dele.",
+      "period": "{{from}} a {{to}}"
     },
     "close": "Fechar",
     "back": "Voltar",
@@ -1958,7 +2005,8 @@
       "deleteTitle": "Excluir este orçamento?",
       "deleteBody": "Suas transações ficam. Só o limite é removido.",
       "deleteConfirm": "Excluir orçamento",
-      "deleted": "Orçamento excluído"
+      "deleted": "Orçamento excluído",
+      "toCome": "{{amount}} ainda por vir este mês de transações recorrentes"
     },
     "form": {
       "targetHint": "Categoria",
@@ -1993,7 +2041,13 @@
         "target": "Escolha para que é o orçamento",
         "amount": "Informe um limite para salvar"
       },
-      "pickTarget": "Para que é o orçamento?"
+      "pickTarget": "Para que é o orçamento?",
+      "startsCalendar": "Cada mês começa no dia 1",
+      "startsOn": "Cada mês começa no dia {{day}}",
+      "startsHint": "Para todos os orçamentos. Escolha o dia do seu pagamento, e cada orçamento vai de um salário ao próximo.",
+      "pickStart": "Os orçamentos começam no",
+      "startOptionCalendar": "Dia 1, o mês do calendário",
+      "startOption": "Dia {{day}}"
     },
     "hint": "O que resta neste mês",
     "add": "Adicionar um orçamento",
@@ -2017,6 +2071,149 @@
       "near": "Salvo. {{name}} ainda tem {{amount}} do orçamento.",
       "reached": "Salvo. {{name}} atingiu o orçamento.",
       "over": "Salvo. {{name}} está {{amount}} acima do orçamento."
+    }
+  },
+  "recurring": {
+    "cadence": {
+      "week": "Toda semana",
+      "twoWeeks": "A cada 2 semanas",
+      "month": "Todo mês",
+      "year": "Todo ano"
+    },
+    "repeat": {
+      "label": "Repetir",
+      "none": "Não se repete",
+      "asked": "Perguntado no dia",
+      "added": "Adicionado sozinho",
+      "noEnd": "sem fim",
+      "until": "até {{date}}",
+      "times_one": "{{count}} vez no total",
+      "times_other": "{{count}} vezes no total",
+      "times_many": "{{count}} vezes no total"
+    },
+    "sheet": {
+      "title": "Repetir",
+      "howOften": "Com que frequência:",
+      "never": "Nunca",
+      "onItsDay": "No dia:",
+      "askFirst": "Perguntar antes",
+      "addItself": "Adicionar sozinho",
+      "ends": "Termina:",
+      "endNever": "Nunca",
+      "endDate": "Numa data",
+      "endTimes": "Depois de um número de vezes",
+      "times": "Vezes no total",
+      "timesHelper": "Esta conta como a primeira",
+      "blocked": {
+        "endDate": "Escolha um último dia depois do primeiro",
+        "endTimes": "Escolha 2 vezes ou mais"
+      },
+      "done": "Concluir",
+      "limit": {
+        "title_one": "Você tem {{count}} transação recorrente",
+        "title_other": "Você tem {{count}} transações recorrentes",
+        "title_many": "Você tem {{count}} transações recorrentes",
+        "body_one": "O plano gratuito mantém {{count}}. O Fintraq Pro não tem limite.",
+        "body_other": "O plano gratuito mantém {{count}}. O Fintraq Pro não tem limite.",
+        "body_many": "O plano gratuito mantém {{count}}. O Fintraq Pro não tem limite.",
+        "link": "Ver o Fintraq Pro"
+      }
+    },
+    "row": {
+      "next": "próxima {{date}}",
+      "added": "adicionada sozinha",
+      "route": "{{from}} para {{to}}",
+      "paused": "Pausada",
+      "ended": "Encerrada",
+      "stopped": "Parada",
+      "stoppedBecause": {
+        "account": "A conta dela foi excluída",
+        "toAccount": "A conta para onde ela move dinheiro foi excluída",
+        "category": "A categoria dela foi excluída"
+      }
+    },
+    "list": {
+      "title": "Recorrentes",
+      "hint": "Configure uma vez, de volta no dia certo",
+      "add": "Adicionar",
+      "empty": {
+        "title": "Nada se repete ainda",
+        "body": "Escolha Repetir ao adicionar o aluguel, um salário ou uma assinatura, e ele volta no dia certo.",
+        "action": "Adicionar uma transação"
+      }
+    },
+    "upcoming": {
+      "title": "Em breve",
+      "hint": "Os próximos 30 dias",
+      "loan": "Vence {{date}} · um empréstimo",
+      "owesYou": "{{name}} deve a você",
+      "youOwe": "Você deve a {{name}}",
+      "someoneOwes": "Alguém deve a você",
+      "youOweSomeone": "Você deve"
+    },
+    "due": {
+      "title": "Vence hoje",
+      "hint": "Adicione cada uma ou pule desta vez",
+      "skip": "Pular",
+      "add": "Adicionar",
+      "since": "{{date}} · {{count}} pendentes",
+      "added": "Adicionada",
+      "skipped": "Pulada",
+      "failed": "Não foi possível adicionar",
+      "failedBody": "Nada foi registrado. Confira a conta na página da transação e tente de novo.",
+      "ok": "OK",
+      "sheetHint": "Para {{date}}. Mude o valor se desta vez foi diferente."
+    },
+    "item": {
+      "notFound": "Esta transação recorrente não existe mais",
+      "back": "Voltar",
+      "manage": "Gerenciar transação recorrente",
+      "kind": {
+        "DR": "Despesa",
+        "CR": "Receita",
+        "TR": "Transferência"
+      },
+      "howOften": "Com que frequência",
+      "next": "Próxima",
+      "onItsDay": "No dia",
+      "ends": "Termina",
+      "every": {
+        "week": "Toda semana, na {{weekday}}",
+        "twoWeeks": "A cada 2 semanas, na {{weekday}}",
+        "month": "Todo mês, no dia {{day}}",
+        "monthEnd": "Todo mês, no dia {{day}} ou no último dia do mês",
+        "year": "Todo ano, em {{date}}"
+      },
+      "askedFirst": "Perguntado antes",
+      "addedItself": "Adicionada sozinha",
+      "endsNever": "Nunca",
+      "endsOn": "Nada depois de {{date}}",
+      "endsAfter_one": "Depois de {{count}} vez, {{made}} até agora",
+      "endsAfter_other": "Depois de {{count}} vezes, {{made}} até agora",
+      "endsAfter_many": "Depois de {{count}} vezes, {{made}} até agora",
+      "nextPaused": "Não enquanto pausada",
+      "nextEnded": "Nada mais",
+      "nextStopped": "Só depois de alterada",
+      "pause": "Pausar",
+      "resume": "Retomar",
+      "change": "Alterar",
+      "paused": "Pausada. Nada é criado até você retomar.",
+      "resumed": "Retomada. Próxima em {{date}}.",
+      "ended": "Ela chegou ao fim. Altere-a para continuar.",
+      "stopped": "Ela parou",
+      "stoppedBody": "Altere-a para escolher outra, e ela continua a partir do próximo dia.",
+      "made": "O que ela criou",
+      "madeHint": "Mais recentes primeiro",
+      "nothingMade": "Nada ainda",
+      "delete": "Excluir transação recorrente",
+      "deleteTitle": "Excluir esta transação recorrente?",
+      "deleteBody": "As transações que ela criou ficam. Nada mais é criado.",
+      "deleteConfirm": "Excluir",
+      "keep": "Manter",
+      "deleted": "Transação recorrente excluída",
+      "failed": "Não foi possível salvar",
+      "failedBody": "Nada foi alterado. Tente de novo.",
+      "ok": "OK"
     }
   }
 }

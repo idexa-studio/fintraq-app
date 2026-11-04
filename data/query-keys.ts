@@ -74,9 +74,15 @@ const loans = {
 const budgets = {
   all: ['budgets'] as const,
   lists: () => [...budgets.all, 'list'] as const,
-  /** `month` is 'yyyy-MM', so a list read last month is not shown as this month's. */
-  views: (month: string) => [...budgets.all, 'views', month] as const,
+  /** `periodStart` is the budget month's first day, so a list read last month is not shown as this month's. */
+  views: (periodStart: string) => [...budgets.all, 'views', periodStart] as const,
   count: () => [...budgets.all, 'count'] as const,
+};
+
+const recurring = {
+  all: ['recurring'] as const,
+  lists: () => [...recurring.all, 'list'] as const,
+  count: () => [...recurring.all, 'count'] as const,
 };
 
 const backup = {
@@ -88,7 +94,7 @@ const backup = {
   autoBackupSwitch: () => [...backup.all, 'auto-backup-switch'] as const,
 };
 
-export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics, loans, budgets, backup } as const;
+export const QUERY_KEYS = { accounts, categories, transactions, persons, dashboard, reports, search, analytics, loans, budgets, recurring, backup } as const;
 
 /**
  * Every query family read from the financial tables. Payments, accounts, categories, persons and
@@ -103,6 +109,8 @@ export const LEDGER_QUERY_ROOTS = [
   persons.all,
   loans.all,
   budgets.all,
+  // An item names its account and category, and recording one moves balances.
+  recurring.all,
   dashboard.all,
   analytics.all,
   reports.all,

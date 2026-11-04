@@ -308,7 +308,16 @@ use it.
   icon (28pt box, about 22pt of ink) and a tab icon (30pt) are the
   reference's size without a heavier line.
 - **Rows that are scanned** (transactions) set `oneLine`, so a long note
-  cannot make one row taller than its neighbours.
+  is cut at one line rather than running on.
+- **A name is never squeezed for a figure** (2026-10-21, from the 320-wide
+  audit). In `ListRow`, `LimitRow`, `RankBars`, `LoanRow` and a compact
+  `FeatureTile` the figure (or the label beside a mark) sits on the name's
+  line when both fit, and drops to a line of its own when they do not; the
+  name is cut only when it is longer than a whole line. On a normal phone
+  only long names are affected. A figure is never cut: it shrinks to fit.
+  A `MarkGrid` takes fewer columns rather than break a name mid-word, a
+  header title shrinks to three quarters before it is cut, and a field that
+  opens a picker shows its value as text that wraps.
 - **A list** is `ListRow`s in a `ListGroup`. A tappable row ends in a chevron
   unless a value or a control already sits at its edge. A disabled row has no
   chevron and says why underneath.

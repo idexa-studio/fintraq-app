@@ -42,7 +42,8 @@ export function LimitRow({ leading, title, detail, remaining, share, state = 'un
           <Text variant="calloutStrong" tone={state === 'over' ? 'danger' : 'default'} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} style={styles.remaining}>{ltr(remaining)}</Text>
         </View>
         <ProgressBar value={share} over={state === 'over'} near={state === 'near'} accessibilityLabel={title} />
-        <Text variant="callout" tone="muted" numberOfLines={1}>{ltr(detail)}</Text>
+        {/* Two figures that must both be read: on a narrow phone or at a large font the line wraps rather than cutting the limit. */}
+        <Text variant="callout" tone="muted">{ltr(detail)}</Text>
       </View>
       {onPress ? <Icon name="chevron-right" color={colors.text} /> : null}
     </>

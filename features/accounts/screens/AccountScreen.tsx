@@ -1,9 +1,10 @@
 import {
-  Button, Card, CardActions, Column, Columns, Dialog, Emblem, EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Money, Screen, Section, Sheet, Skeleton, Stat, Text,
+  Badge, Button, Card, CardActions, Column, Columns, Dialog, Emblem, EmptyState, Header, IconButton, IconCircle, ListGroup, ListRow, Message, Money, Screen, Section, Sheet, Skeleton, Stat, Text,
   useStyles, useTheme, useToast,
 } from '@/design';
 import type { Theme } from '@/design';
 import { accountTypeIcon } from '@/features/accounts/account-icons';
+import { countsAsSpendable } from '@/features/accounts/spendable';
 import { maskedNumber } from '@/features/accounts/account-form';
 import { useAccount, useAccountUsage, useDeleteAccount, useSetDefaultAccount } from '@/features/accounts/hooks/accounts';
 import { TransactionRow, useTransactions } from '@/features/transactions';
@@ -101,6 +102,7 @@ export function AccountScreen() {
                   <Text variant="bodyStrong" numberOfLines={1}>{t(`common:accountTypes.${account.accountType ?? 'bank'}`)}</Text>
                   <Text variant="callout" tone="muted">{about}</Text>
                 </View>
+                {countsAsSpendable(account) ? null : <Badge label={t('account.putAside')} tone="neutral" />}
               </View>
               <Money value={formatCurrency(account.balance, account.currency)} variant="amountHero" />
               <View style={styles.stats}>

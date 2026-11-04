@@ -1,11 +1,11 @@
 import type { TransactionDetail } from '@/data/repositories/transactions';
 import { Button, Dialog, Emblem, Header, IconCircle, ListGroup, ListRow, Message, Money, Receipt, ReceiptRule, Screen, Skeleton, Text, resolveIcon, useTheme, useToast } from '@/design';
 import { accountTypeIcon } from '@/features/accounts';
-import { signedAmount } from '@/features/transactions/components/TransactionRow';
 import { useDeleteTransaction, useTransactionDetail } from '@/features/transactions/hooks/transactions';
 import { kindOfType } from '@/features/transactions/transaction-form';
 import { formatDate } from '@/shared/date/date';
 import { colorNumberToHex } from '@/shared/format/color';
+import { signedAmount } from '@/shared/format/money';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -91,9 +91,10 @@ export function TransactionScreen() {
           <Money value={signedAmount(tx)} variant="amountHero" tone={tx.type === 'CR' ? 'positive' : 'default'} />
         </View>
         <ReceiptRule />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: space.lg }}>
-          <Text variant="callout" tone="muted">{formatDate(when, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</Text>
-          <Text variant="calloutStrong">{formatDate(when, { hour: 'numeric', minute: '2-digit' })}</Text>
+        {/* The day and the time on one line; the time drops under the day when both do not fit, never off the receipt's edge. */}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: space.lg, rowGap: space.xxs }}>
+          <Text variant="callout" tone="muted" style={{ flexShrink: 1 }}>{formatDate(when, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</Text>
+          <Text variant="calloutStrong" style={{ marginStart: 'auto' }}>{formatDate(when, { hour: 'numeric', minute: '2-digit' })}</Text>
         </View>
       </Receipt>
 

@@ -162,7 +162,7 @@ export function LoanFormScreen({ initialType = 'lend', initialPersonId }: LoanFo
         </ListGroup>
       </FormBlock>
 
-      <PersonPicker visible={picker === 'person'} onClose={() => setPicker(null)} people={people} selectedId={person?.id ?? null} onSelect={(id) => set('personId', id)} />
+      <PersonPicker visible={picker === 'person'} onClose={() => setPicker(null)} people={people} required={lending} selectedId={person?.id ?? null} onSelect={(id) => set('personId', id)} />
       <AccountPicker title={lending ? t('form.outOf') : t('form.into')} visible={picker === 'account'} onClose={() => setPicker(null)} accounts={accounts} selectedId={account?.id ?? null} onSelect={(id) => set('accountId', id)} />
       <Sheet visible={picker === 'due'} onClose={() => setPicker(null)} title={t('form.pickDue')}>
         {/* A due date is ahead of today; the day chosen closes the sheet. */}

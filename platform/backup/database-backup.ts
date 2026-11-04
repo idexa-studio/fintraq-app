@@ -1,6 +1,6 @@
 import * as Crypto from 'expo-crypto';
 import { db, getExpoDb, resetDbConnections } from '@/data/db/client';
-import { accounts, budgets, categories, loans, payments, persons, seederState } from '@/data/db/schema';
+import { accounts, budgets, categories, loans, payments, persons, recurringRules, seederState } from '@/data/db/schema';
 import { runSeeds } from '@/data/db/seeds/runner';
 import { readStoredProfile, saveProfile } from '@/shared/settings/profile';
 import type { UserProfile } from '@/shared/settings/profile';
@@ -17,8 +17,10 @@ import {
   RESTORE_DELETE_ORDER,
 } from '@/data/backup/snapshot';
 
-// 2: `budgets` added. A reader of version 1 ignores the key; a version 1 file restores with none.
-const BACKUP_FORMAT_VERSION = 2;
+// 2: `budgets` added. 3 (release 2.1.0): repeating items, and the fields that go with them on
+// accounts and transactions. An older reader ignores what it does not know; an older file
+// restores with none of them.
+const BACKUP_FORMAT_VERSION = 3;
 // Lets in-flight reads on the old connection settle before the tables are replaced.
 const CONNECTION_DRAIN_MS = 150;
 
@@ -54,6 +56,7 @@ export const DatabaseBackupService = {
       loans: tx.select().from(loans).all(),
       payments: tx.select().from(payments).all(),
       budgets: tx.select().from(budgets).all(),
+      recurringRules: tx.select().from(recurringRules).all(),
       seederState: tx.select().from(seederState).all(),
     }));
 
@@ -70,6 +73,7 @@ export const DatabaseBackupService = {
         loans: data.loans.length,
         payments: data.payments.length,
         budgets: data.budgets?.length ?? 0,
+        recurringRules: data.recurringRules?.length ?? 0,
       },
     };
 

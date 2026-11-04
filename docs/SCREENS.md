@@ -110,8 +110,9 @@ in and finish).
 | `/loans/[id]` | Loan, as a timeline | `loans` | push | Free |
 | `/loans/new`, `/loans/[id]/edit` | Loan form | `loans` | task | Free up to 3 active |
 | `/loans/[id]/repay` | Record repayment, slide to confirm | `loans` | task | Free |
-| `/recurring`, `/recurring/[id]` | Repeating items | `recurring` | push, task | Next. Free up to 2 |
-| `/budgets/[id]`, `/budgets/new` | Budget | `budgets` | push, task | Next. Free up to 1 |
+| `/recurring/[id]` | Repeating item: what it makes and when, Pause, Change, Delete, and what it made. Its list and Upcoming are on Plan; it is made from Add (`/add?repeat=1` from Plan) | `recurring` | push | Free up to 2 (2.1.0) |
+| `/recurring/[id]/edit` | Change a repeating item: the Add form, saved to the item | `transactions` | task | Free |
+| `/budgets/[id]`, `/budgets/new` | Budget | `budgets` | push, task | Free up to 1 |
 | `/goals/[id]`, `/goals/new` | Goal | `goals` | push, task | Later. Free up to 1 |
 
 ### Settings and Pro
@@ -166,6 +167,7 @@ be sent to the phone. The voice is in `docs/PRODUCT.md`.
 | Daily reminder | Once a day at the chosen time (8 PM unless changed), 14 days kept scheduled; none on a day already recorded | `/add?kind=expense` | Reminders (`reminders_chime`) |
 | Loan due | The chosen number of days before a loan's due date, at its time | `/loans/[id]` | Reminders |
 | Loan payment day | The chosen day of each month, six months kept scheduled | `/loans/[id]` | Reminders |
+| Repeating items due | 9:00 on each day an item asked about on its day is waiting, until it is added or skipped; 14 days kept scheduled; nothing for items added by themselves | `/` (Home, Due today) | Reminders |
 | Backing up | While a Drive backup runs, with the stage and a progress bar. Goes by itself when the backup works (Android only) | `/backup` | Backup (`backup_status`) |
 | Backup did not finish | A backup failed for a reason that may pass | `/backup` | Backup |
 | Reconnect Google Drive | A backup failed because the Google session ended | `/backup` | Backup |

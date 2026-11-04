@@ -12,6 +12,7 @@ import { MatchSection } from '@/features/gallery/sections/MatchSection';
 import { MoneySection } from '@/features/gallery/sections/MoneySection';
 import { NavigationSection } from '@/features/gallery/sections/NavigationSection';
 import { PickersSection } from '@/features/gallery/sections/PickersSection';
+import { ReleaseSection } from '@/features/gallery/sections/ReleaseSection';
 import { SizesSection } from '@/features/gallery/sections/SizesSection';
 import { ScriptsSection } from '@/features/gallery/sections/ScriptsSection';
 import { StressSection } from '@/features/gallery/sections/StressSection';
@@ -25,6 +26,7 @@ import { View } from 'react-native';
 
 const SECTIONS = [
   // The app's own widgets first, then the parts they are built from.
+  { key: 'release', label: '2.1.0', Component: ReleaseSection },
   { key: 'home', label: 'Home', Component: HomeSection },
   { key: 'entry', label: 'Add', Component: EntrySection },
   { key: 'money', label: 'Money', Component: MoneySection },

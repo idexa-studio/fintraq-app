@@ -2,6 +2,7 @@ import { Redirect, Stack } from 'expo-router'; // Refreshing layout resolution
 import React from 'react';
 import { SHEET_ROUTE } from '@/design';
 import { useOnboarding } from '@/features/onboarding';
+import { useRecurringCatchUp } from '@/features/recurring';
 import { ErrorBoundary, useLauncherShortcuts, useNotificationRouting } from '@/features/shell';
 
 export default function StackLayout() {
@@ -14,6 +15,7 @@ export default function StackLayout() {
   return (
     <ErrorBoundary>
       <LauncherShortcuts />
+      <RecurringCatchUp />
       <Stack screenOptions={{ headerShown: false, animation: 'ios_from_right' }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="accounts/new" options={SHEET_ROUTE} />
@@ -27,6 +29,7 @@ export default function StackLayout() {
         <Stack.Screen name="loans/[id]/edit" options={SHEET_ROUTE} />
         <Stack.Screen name="budgets/new" options={SHEET_ROUTE} />
         <Stack.Screen name="budgets/[id]/edit" options={SHEET_ROUTE} />
+        <Stack.Screen name="recurring/[id]/edit" options={SHEET_ROUTE} />
         <Stack.Screen name="settings/pin" options={SHEET_ROUTE} />
         <Stack.Screen name="backup" />
         <Stack.Screen name="export" />
@@ -42,5 +45,11 @@ export default function StackLayout() {
 function LauncherShortcuts() {
   useLauncherShortcuts();
   useNotificationRouting();
+  return null;
+}
+
+/** Makes what repeating items added by themselves owe since the app was last open, on opening and on every return. */
+function RecurringCatchUp() {
+  useRecurringCatchUp();
   return null;
 }

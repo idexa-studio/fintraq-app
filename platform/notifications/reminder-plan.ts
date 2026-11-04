@@ -1,3 +1,5 @@
+import { isRunning, pendingThrough } from '@/shared/calc/recurrence';
+import type { RuleTargets, RuleTiming } from '@/shared/calc/recurrence';
 import { parseDateKey } from '@/shared/date/date';
 
 /**
@@ -26,13 +28,17 @@ export type LoanReminderSource = {
 export type PlannedReminder =
   | { kind: 'daily'; id: string; date: Date }
   | ({ kind: 'emi'; id: string; date: Date } & LoanSubject)
-  | ({ kind: 'due'; id: string; date: Date; daysBefore: number } & LoanSubject);
+  | ({ kind: 'due'; id: string; date: Date; daysBefore: number } & LoanSubject)
+  | { kind: 'repeat'; id: string; date: Date; names: string[] };
+
+/** A repeating item, as its reminder needs it. */
+export type RepeatReminderSource = RuleTiming & RuleTargets & { id: number; mode: 'ask' | 'add'; name: string };
 
 /** The loan a reminder is about, as its text needs it. */
 export type LoanSubject = { loanId: number; loanType: 'lend' | 'borrow'; personName: string | null; outstanding: number; currency: string };
 
 /** Identifiers this app owns; the sync cancels exactly these before rescheduling. */
-export const REMINDER_ID_PREFIXES = ['daily_reminder', 'loan_emi_', 'loan_due_'] as const;
+export const REMINDER_ID_PREFIXES = ['daily_reminder', 'loan_emi_', 'loan_due_', 'repeat_due_'] as const;
 export const isAppReminderId = (id: string): boolean => REMINDER_ID_PREFIXES.some((p) => id.startsWith(p));
 
 /** Days of daily reminders kept scheduled ahead; topped up on every launch and resume. */
@@ -40,6 +46,8 @@ export const DAILY_WINDOW_DAYS = 14;
 /** Months of EMI reminders kept scheduled ahead. */
 export const EMI_WINDOW_MONTHS = 6;
 export const DEFAULT_DUE_TIME: Clock = { hours: 9, minutes: 0 };
+/** When repeating items waiting to be asked about are said. */
+export const REPEAT_DUE_TIME: Clock = { hours: 9, minutes: 0 };
 
 /** iOS keeps at most 64 pending local notifications; stay under it, nearest first. */
 export const IOS_PENDING_LIMIT = 60;
@@ -125,6 +133,24 @@ export function planLoanReminders(now: Date, loans: readonly LoanReminderSource[
       const date = dueReminderDate(loan.dueDate, loan.dueReminderDaysBefore, dueTime, now);
       if (date) planned.push({ kind: 'due', id: `loan_due_${loan.id}`, date, daysBefore: loan.dueReminderDaysBefore, ...subject });
     }
+  }
+  return planned;
+}
+
+/**
+ * One reminder at 9:00 on each day that something asked about on its day is waiting: from the day
+ * it falls until it is added or skipped, which reschedules these. Items added by themselves, paused
+ * or stopped need no reminder.
+ */
+export function planRepeatReminders(now: Date, rules: readonly RepeatReminderSource[], days = DAILY_WINDOW_DAYS): PlannedReminder[] {
+  const asked = rules.filter((rule) => rule.mode === 'ask' && isRunning(rule));
+  const planned: PlannedReminder[] = [];
+  for (let i = 0; i < days; i++) {
+    const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, REPEAT_DUE_TIME.hours, REPEAT_DUE_TIME.minutes, 0, 0);
+    if (date <= now) continue;
+    const key = localDateKey(date);
+    const names = asked.filter((rule) => pendingThrough(rule, key).length > 0).map((rule) => rule.name);
+    if (names.length > 0) planned.push({ kind: 'repeat', id: `repeat_due_${key}`, date, names });
   }
   return planned;
 }

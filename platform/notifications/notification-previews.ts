@@ -1,6 +1,6 @@
 import { WEEKDAYS } from '@/platform/notifications/daily-line';
 import type { DailyLine } from '@/platform/notifications/daily-line';
-import { backupText, dailyText, loanDueText, loanInstalmentText, NOTIFICATION_PATHS } from '@/platform/notifications/notification-copy';
+import { backupText, dailyText, loanDueText, loanInstalmentText, NOTIFICATION_PATHS, repeatDueText } from '@/platform/notifications/notification-copy';
 import type { NotificationText } from '@/platform/notifications/notification-copy';
 import { NotificationService } from '@/platform/notifications/notifications';
 import type { LoanSubject } from '@/platform/notifications/reminder-plan';
@@ -14,7 +14,7 @@ import i18n from '@/shared/i18n';
 
 export type NotificationPreview = NotificationText & {
   id: string;
-  group: 'Daily reminder' | 'Loans' | 'Backup';
+  group: 'Daily reminder' | 'Loans' | 'Repeating items' | 'Backup';
   /** When the app sends it. */
   when: string;
   /** The screen a tap opens. */
@@ -56,6 +56,12 @@ const LOANS: { id: string; when: string; text: () => NotificationText }[] = [
   { id: 'instalment-borrow-unnamed', when: 'Monthly payment day, loan you took, no person', text: () => loanInstalmentText(unnamed(borrowed)) },
 ];
 
+const REPEATING: { id: string; when: string; names: string[] }[] = [
+  { id: 'repeat-one', when: '9:00, one item asked about on its day is waiting', names: ['Rent'] },
+  { id: 'repeat-two', when: '9:00, two items waiting', names: ['Rent', 'Electricity bill'] },
+  { id: 'repeat-more', when: '9:00, more than two items waiting', names: ['Rent', 'Electricity bill', 'Phone', 'Gym'] },
+];
+
 export function notificationPreviews(): NotificationPreview[] {
   const stage = i18n.getFixedT(null, 'backup');
   const reminder = (group: NotificationPreview['group'], id: string, when: string, text: NotificationText, path: string, opens: string): NotificationPreview => ({
@@ -67,6 +73,7 @@ export function notificationPreviews(): NotificationPreview[] {
     ...DAILY.map(({ id, when, line }) => reminder('Daily reminder', id, when, dailyText(line), NOTIFICATION_PATHS.daily, 'Add expense')),
     // The sample loan has no record behind it, so its preview opens the loans list instead.
     ...LOANS.map(({ id, when, text }) => reminder('Loans', id, when, text(), '/loans', 'The loan')),
+    ...REPEATING.map(({ id, when, names }) => reminder('Repeating items', id, when, repeatDueText(names), NOTIFICATION_PATHS.repeat, 'Home')),
     { id: 'backup-running', group: 'Backup', when: 'While a backup runs. Goes by itself when it works', opens: 'Backup', title: backupText.running(), body: uploading, send: () => NotificationService.presentBackupProgressNotification(40, uploading) },
     { id: 'backup-failed', group: 'Backup', when: 'A backup failed for a reason that may pass', opens: 'Backup', ...backupText.failed(), send: () => NotificationService.presentBackupFailedNotification() },
     { id: 'backup-reconnect', group: 'Backup', when: 'Fintraq was signed out of Google', opens: 'Backup', ...backupText.reconnect(), send: () => NotificationService.presentBackupReconnectNotification() },

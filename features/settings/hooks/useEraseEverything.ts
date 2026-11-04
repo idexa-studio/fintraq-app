@@ -1,5 +1,5 @@
 import { db } from '@/data/db/client';
-import { accounts, budgets, categories, loans, payments, persons } from '@/data/db/schema';
+import { accounts, budgets, categories, loans, payments, persons, recurringRules } from '@/data/db/schema';
 import { useAppLock } from '@/features/lock';
 import { BackupPreferences } from '@/platform/backup/backup-preferences';
 import { GoogleDriveService } from '@/platform/drive/google-drive';
@@ -51,6 +51,7 @@ export function useEraseEverything() {
     db.transaction((tx) => {
       tx.delete(budgets).run();
       tx.delete(payments).run();
+      tx.delete(recurringRules).run();
       tx.delete(loans).run();
       tx.delete(persons).run();
       tx.delete(categories).run();

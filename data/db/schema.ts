@@ -30,6 +30,11 @@ export const accounts = sqliteTable('accounts', {
   balance: real('balance').notNull().default(0),
   income: real('income').notNull().default(0),
   expense: real('expense').notNull().default(0),
+  /**
+   * Whether the balance counts in what Home shows as ready to spend (release 2.1.0). Null: decided
+   * by the kind of account (savings and investments are put aside); set only once changed by hand.
+   */
+  countsAsSpendable: integer('counts_as_spendable', { mode: 'boolean' }),
   createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
 });
@@ -84,6 +89,14 @@ export const payments = sqliteTable('payments', {
   type: text('type', { enum: ['CR', 'DR', 'TR'] }).notNull(),
   datetime: text('datetime').notNull(),
   note: text('note').notNull(),
+  /**
+   * The repeating item that made this transaction, and the day it was made for (YYYY-MM-DD), so
+   * no occurrence is ever made twice (release 2.1.0). Plain columns, not a foreign key: adding a
+   * key to this table would make the migration rebuild it, copying every transaction a user has.
+   * Deleting an item clears these and keeps the transactions.
+   */
+  recurringRuleId: integer('recurring_rule_id'),
+  recurringDate: text('recurring_date'),
   createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
 }, (table) => [
@@ -95,6 +108,7 @@ export const payments = sqliteTable('payments', {
   index('payments_type_idx').on(table.type),
   index('payments_account_datetime_idx').on(table.accountId, table.datetime),
   index('payments_loan_id_idx').on(table.loanId),
+  uniqueIndex('payments_recurring_occurrence_idx').on(table.recurringRuleId, table.recurringDate),
 ]);
 
 /**
@@ -112,6 +126,41 @@ export const budgets = sqliteTable('budgets', {
   updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
 }, (table) => [
   uniqueIndex('budgets_category_currency_idx').on(table.categoryId, table.currency),
+]);
+
+/**
+ * A repeating item (release 2.1.0): a transaction's fields kept on their own, so editing or
+ * deleting a transaction it made never changes the item. Its account, destination, category or
+ * person going away sets that field to null, which stops the item until another is chosen.
+ */
+export const recurringRules = sqliteTable('recurring_rules', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  type: text('type', { enum: ['CR', 'DR', 'TR'] }).notNull(),
+  amount: real('amount').notNull(),
+  accountId: integer('account_id').references(() => accounts.id, { onDelete: 'set null' }),
+  toAccountId: integer('to_account_id').references(() => accounts.id, { onDelete: 'set null' }),
+  categoryId: integer('category_id').references(() => categories.id, { onDelete: 'set null' }),
+  personId: integer('person_id').references(() => persons.id, { onDelete: 'set null' }),
+  note: text('note').notNull().default(''),
+  cadence: text('cadence', { enum: ['week', 'twoWeeks', 'month', 'year'] }).notNull(),
+  /** The day it repeats from (YYYY-MM-DD): a monthly item on the 31st keeps the 31st after a short month. */
+  anchorDate: text('anchor_date').notNull(),
+  /** The time of day its transactions take (HH:mm), the original's. */
+  time: text('time').notNull(),
+  /** The next day it is due (YYYY-MM-DD). */
+  nextDue: text('next_due').notNull(),
+  /** `ask`: waits on Home on its day. `add`: made by itself. */
+  mode: text('mode', { enum: ['ask', 'add'] }).notNull().default('ask'),
+  ends: text('ends', { enum: ['never', 'date', 'times'] }).notNull().default('never'),
+  endDate: text('end_date'),
+  endTimes: integer('end_times'),
+  /** Occurrences passed, made or skipped, counted against `endTimes`. */
+  occurrences: integer('occurrences').notNull().default(0),
+  paused: integer('paused', { mode: 'boolean' }).notNull().default(false),
+  createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text('updated_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
+}, (table) => [
+  index('recurring_rules_next_due_idx').on(table.nextDue),
 ]);
 
 export const accountsRelations = relations(accounts, ({ many }) => ({

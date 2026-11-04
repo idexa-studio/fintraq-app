@@ -33,7 +33,7 @@ const colorOf = (name: string) => toDbColor((OFFERED_COLORS.find((offered) => of
 
 type StackAccount = React.ComponentProps<typeof AccountStack>['accounts'][number];
 const account = (id: number, name: string, accountType: StackAccount['accountType'], color: string, balance: number, isDefault = false): StackAccount => ({
-  id, name, accountType, color: colorOf(color), balance, isDefault, currency: 'USD', holderName: '', accountNumber: '', icon: 'building', income: 0, expense: 0, createdAt: '', updatedAt: '',
+  id, name, accountType, color: colorOf(color), balance, isDefault, currency: 'USD', holderName: '', accountNumber: '', icon: 'building', income: 0, expense: 0, countsAsSpendable: null, createdAt: '', updatedAt: '',
 });
 const ACCOUNTS = [account(1, 'Everyday', 'bank', 'lilac', 12480.1, true), account(2, 'Cash', 'cash', 'green', 227.17), account(3, 'Travel card', 'credit_card', 'orange', -640)];
 
@@ -136,8 +136,8 @@ export function HomeSection() {
         </Specimen>
         <Specimen name="What is new" note="Once, on Home, for someone updating from the old look. A new install never sees it.">
           <View style={{ backgroundColor: colors.scrim, paddingTop: space.xl }}>
-            <SheetPanel title={guide.whatsNew.title} onClose={() => {}} footer={<Button label={guide.whatsNew.done} />}>
-              <WhatsNewPoints />
+            <SheetPanel title={guide.whatsNew.titleLatest} onClose={() => {}} footer={<Button label={guide.whatsNew.done} />}>
+              <WhatsNewPoints note="latest" />
             </SheetPanel>
           </View>
         </Specimen>

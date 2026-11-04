@@ -1,3 +1,4 @@
+import { getRecurringRules } from '@/data/repositories/recurring';
 import { getEntryDays, getReminderLoans } from '@/data/repositories/reminders';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
 import { LoggerService } from '@/shared/logging/logger';
@@ -18,6 +19,7 @@ import {
   parseClock,
   planDailyReminders,
   planLoanReminders,
+  planRepeatReminders,
   PlannedReminder,
 } from '@/platform/notifications/reminder-plan';
 
@@ -41,11 +43,15 @@ async function runSync(): Promise<void> {
   let facts: DailyFacts = { entryDays: [], lastEntryDay: null, loans: [] };
   if (permission.status === 'granted') {
     const dailyTime = profile.reminderEnabled ? parseClock(profile.reminderTime ?? '20:00') : null;
-    const [loanRows, entries] = await Promise.all([getReminderLoans(), getEntryDays(localDateKey(factsWindowStart(now)), localDateKey(now))]);
+    const [loanRows, entries, rules] = await Promise.all([getReminderLoans(), getEntryDays(localDateKey(factsWindowStart(now)), localDateKey(now)), getRecurringRules()]);
     facts = { ...entries, loans: loanRows.map((loan) => ({ ...loan, hasOwnReminder: loan.dueReminderEnabled })) };
 
     planned = capReminders(
-      [...(dailyTime ? planDailyReminders(now, dailyTime, skipDateKey) : []), ...planLoanReminders(now, loanRows)],
+      [
+        ...(dailyTime ? planDailyReminders(now, dailyTime, skipDateKey) : []),
+        ...planLoanReminders(now, loanRows),
+        ...planRepeatReminders(now, rules.map((rule) => ({ ...rule, name: rule.note.trim() || rule.category?.name || '' }))),
+      ],
       Platform.OS === 'ios' ? IOS_PENDING_LIMIT : null,
     );
   }

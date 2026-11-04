@@ -46,8 +46,11 @@ export function RankBars({ items }: RankBarsProps) {
             <View style={styles.body}>
               <View style={styles.head}>
                 <Text variant="bodyStrong" numberOfLines={1} style={styles.label}>{item.label}</Text>
-                {item.note ? <Text variant="callout" tone="muted">{item.note}</Text> : null}
-                <Text variant="amount">{ltr(item.display)}</Text>
+                {/* The share and the amount, together at the line's end; under the name when they do not fit beside it. */}
+                <View style={styles.figures}>
+                  {item.note ? <Text variant="callout" tone="muted">{item.note}</Text> : null}
+                  <Text variant="amount">{ltr(item.display)}</Text>
+                </View>
               </View>
               <View style={styles.track}>
                 <View style={[styles.bar, { width: widthOf(item, max), backgroundColor: colors.text }]} />
@@ -71,8 +74,10 @@ const createStyles = ({ colors, radius, space }: Theme) =>
     wrap: { gap: space.lg },
     item: { flexDirection: 'row', alignItems: 'center', gap: space.md },
     body: { flex: 1, gap: space.sm },
-    head: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
-    label: { flex: 1 },
+    head: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', columnGap: space.sm, rowGap: space.xxs },
+    // Never squeezed for the figures: they wrap first. Cut only when longer than a whole line.
+    label: { flexShrink: 1 },
+    figures: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm, marginStart: 'auto' },
     track: { height: space.sm, borderRadius: radius.pill, backgroundColor: colors.divider, overflow: 'hidden' },
     bar: { height: '100%', borderRadius: radius.pill },
   });

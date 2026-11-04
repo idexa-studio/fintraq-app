@@ -1,5 +1,8 @@
 /** People: who owes what, one person, and the form. */
 export default {
+  search: 'Search by name, phone or work',
+  clearSearch: 'Clear the search',
+  noMatch: 'No one matches “{{query}}”',
   title: 'People',
   back: 'Back',
   close: 'Close',

@@ -8,7 +8,7 @@
  */
 export default {
   channels: {
-    reminders: { name: 'Reminders', description: 'Your daily reminder and loan due dates' },
+    reminders: { name: 'Reminders', description: 'Your daily reminder, loan due dates and repeating items' },
     backup: { name: 'Backup', description: 'Shown while a backup runs, and when one needs you' },
   },
   daily: {
@@ -48,6 +48,16 @@ export default {
     instalment: {
       lend: { title: '{{name}} pays you today', titleNoName: 'A payment comes in today', body: '{{amount}} still to come. Add it when it arrives.' },
       borrow: { title: 'Pay {{name}} today', titleNoName: 'Loan payment due today', body: '{{amount}} left to repay. Add it once you have paid.' },
+    },
+  },
+  repeat: {
+    title_one: '{{count}} thing is due today',
+    title_other: '{{count}} things are due today',
+    body: {
+      one: '{{first}}. Add it or skip it in Fintraq.',
+      two: '{{first}} and {{second}}. Add them or skip them in Fintraq.',
+      more_one: '{{first}}, {{second}} and {{count}} more. Add them or skip them in Fintraq.',
+      more_other: '{{first}}, {{second}} and {{count}} more. Add them or skip them in Fintraq.',
     },
   },
   backup: {

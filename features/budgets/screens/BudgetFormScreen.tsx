@@ -4,7 +4,8 @@ import { useAccounts } from '@/features/accounts';
 import { budgetBlockerOf, canBudgetAllSpending, draftOfBudget, isBudgetChanged, limitOf, newBudgetDraft, newBudgetOf, unbudgetedCategories } from '@/features/budgets/budget-form';
 import type { BudgetDraft, BudgetTarget } from '@/features/budgets/budget-form';
 import { spentOn } from '@/features/budgets/budget-view';
-import { useBudgets, useCreateBudget, useLastMonthSpend, useUpdateBudget } from '@/features/budgets/hooks/budgets';
+import { BUDGET_START_DAYS } from '@/features/budgets/budget-rules';
+import { useBudgetPeriod, useBudgets, useCreateBudget, useLastMonthSpend, useUpdateBudget } from '@/features/budgets/hooks/budgets';
 import { useCategories } from '@/features/categories';
 import { FREE_LIMITS, isOverFreeLimit, usePro } from '@/features/pro';
 import { useSettings } from '@/features/settings';
@@ -52,7 +53,8 @@ export function BudgetFormScreen({ budgetId }: BudgetFormOptions) {
   const [draft, setDraft] = useState<BudgetDraft>(blank);
   /** What the form started as, to tell whether anything was entered. */
   const [initial, setInitial] = useState<BudgetDraft>(blank);
-  const [picker, setPicker] = useState<'target' | 'currency' | null>(null);
+  const [picker, setPicker] = useState<'target' | 'currency' | 'start' | null>(null);
+  const { startDay, setStartDay } = useBudgetPeriod();
   const [failed, setFailed] = useState(false);
 
   // Editing: start from the saved budget, once it has loaded.
@@ -177,6 +179,8 @@ export function BudgetFormScreen({ budgetId }: BudgetFormOptions) {
       <FormBlock label={t('form.options')}>
         <ListGroup>
           <ListRow icon="arrows-clockwise" title={t('form.rollover')} subtitle={t('form.rolloverHint')} trailing={<Switch value={draft.rollover} onValueChange={(value) => set('rollover', value)} accessibilityLabel={t('form.rollover')} />} />
+          {/* For someone paid on the 28th: every budget's month runs from that day. One day for all, so they all reset together. */}
+          <ListRow icon="calendar" title={startDay === 1 ? t('form.startsCalendar') : t('form.startsOn', { day: startDay })} subtitle={t('form.startsHint')} onPress={() => setPicker('start')} />
         </ListGroup>
       </FormBlock>
 
@@ -185,6 +189,14 @@ export function BudgetFormScreen({ budgetId }: BudgetFormOptions) {
       </Sheet>
       <Sheet visible={picker === 'currency'} onClose={() => setPicker(null)} title={t('form.pickCurrency')}>
         <OptionList groups={[{ options: currencies.map((code) => ({ key: code, title: code, subtitle: currencyName(code) })) }]} selectedKey={draft.currency} onSelect={(code) => { setCurrency(code); setPicker(null); }} />
+      </Sheet>
+
+      <Sheet visible={picker === 'start'} onClose={() => setPicker(null)} title={t('form.pickStart')}>
+        <OptionList
+          groups={[{ options: BUDGET_START_DAYS.map((day) => ({ key: String(day), title: day === 1 ? t('form.startOptionCalendar') : t('form.startOption', { day }) })) }]}
+          selectedKey={String(startDay)}
+          onSelect={(key) => { void setStartDay(Number(key)); setPicker(null); }}
+        />
       </Sheet>
 
       <Dialog visible={guard.asking} onRequestClose={guard.stay} title={editing ? t('form.discard.titleEdit') : t('form.discard.title')} body={t('form.discard.body')}>

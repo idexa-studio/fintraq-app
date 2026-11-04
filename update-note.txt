@@ -1,120 +1,150 @@
 <en-US>
-Fintraq 2.0.2
-• Tablets: Activity, Plan, Settings and the pages for accounts, people, loans and budgets now use the extra room
-• Samsung DeX and other external screens: text is drawn at the right size
-• A transaction you were typing comes back if the app restarts before you save it
-• Choosing who a transaction was with is clearer
-• Fintraq now tells you when a newer version is ready
+Fintraq 2.1.0
+• Repeating items: choose Repeat for rent, a salary or a subscription, and it comes back on its day, added by itself or waiting on Home for one tap
+• Plan shows what is coming in the next 30 days
+• Savings and investments are kept out of Home's total, so it shows what is ready to spend
+• Budgets can start on your payday, any day from 1 to 28
+• Search people by name, phone or work
+• A changed category now shows everywhere
+• Easier to read on small phones and with large text
 </en-US>
 <bn-BD>
-Fintraq 2.0.2
-• ট্যাবলেট: অ্যাক্টিভিটি, প্ল্যান, সেটিংস এবং অ্যাকাউন্ট, মানুষ, ঋণ ও বাজেটের পাতা এখন বাড়তি জায়গা কাজে লাগায়
-• Samsung DeX ও অন্য বাইরের স্ক্রিন: লেখা সঠিক মাপে দেখায়
-• সেভ করার আগে অ্যাপ আবার চালু হলে লিখতে থাকা লেনদেনটি ফিরে আসে
-• লেনদেনটি কার সঙ্গে ছিল, তা বেছে নেওয়া এখন আরও স্পষ্ট
-• নতুন সংস্করণ এলে Fintraq এখন জানিয়ে দেয়
+Fintraq 2.1.0
+• নিয়মিত লেনদেন: ভাড়া, বেতন বা সাবস্ক্রিপশনে পুনরাবৃত্তি বাছুন, সেটি নিজের দিনে ফিরে আসবে, নিজে যোগ হয়ে বা হোম-এ এক ট্যাপের অপেক্ষায়
+• পরিকল্পনা পরের 30 দিনে কী আসছে দেখায়
+• সঞ্চয় ও বিনিয়োগ হোম-এর মোটে ধরা হয় না, তাই দেখা যায় খরচের জন্য কত প্রস্তুত
+• বাজেট আপনার বেতনের দিন থেকে শুরু হতে পারে, 1 থেকে 28 যেকোনো দিন
+• নাম, ফোন বা কাজ দিয়ে মানুষ খুঁজুন
+• বদলানো বিভাগ এখন সব জায়গায় দেখা যায়
+• ছোট ফোনে ও বড় লেখায় পড়া আরও সহজ
 </bn-BD>
 <de-DE>
-Fintraq 2.0.2
-• Tablets: Aktivität, Plan, Einstellungen und die Seiten für Konten, Personen, Kredite und Budgets nutzen jetzt den zusätzlichen Platz
-• Samsung DeX und andere externe Bildschirme: Text wird in der richtigen Größe angezeigt
-• Eine Buchung, die du gerade eingibst, kommt zurück, wenn die App vor dem Speichern neu startet
-• Auszuwählen, mit wem eine Buchung war, ist jetzt klarer
-• Fintraq sagt dir jetzt, wenn eine neue Version bereitsteht
+Fintraq 2.1.0
+• Wiederkehrende Buchungen: Wiederholen für Miete, Gehalt oder Abo wählen, es kommt an seinem Tag wieder, von selbst oder mit einem Tipp
+• Planen zeigt die nächsten 30 Tage
+• Sparen und Investments zählen nicht zur Summe auf Start: Du siehst das Verfügbare
+• Budgets können an deinem Zahltag beginnen, an jedem Tag von 1 bis 28
+• Personen nach Name, Telefon oder Beruf suchen
+• Eine geänderte Kategorie zeigt sich jetzt überall
+• Besser lesbar auf kleinen Handys und in großer Schrift
 </de-DE>
 <es-ES>
-Fintraq 2.0.2
-• Tabletas: Actividad, Plan, Ajustes y las páginas de cuentas, personas, préstamos y presupuestos aprovechan ahora el espacio extra
-• Samsung DeX y otras pantallas externas: el texto se muestra al tamaño correcto
-• Si la app se reinicia antes de guardar, la transacción que escribías vuelve
-• Elegir con quién fue una transacción es ahora más claro
-• Fintraq te avisa cuando hay una versión nueva
+Fintraq 2.1.0
+• Movimientos recurrentes: elige Repetir para alquiler, sueldo o suscripción, y vuelve en su día, solo o con un toque en Inicio
+• Plan muestra lo que viene en los próximos 30 días
+• Ahorros e inversiones quedan fuera del total de Inicio: ves lo disponible para gastar
+• Los presupuestos pueden empezar en tu día de cobro, del 1 al 28
+• Busca personas por nombre, teléfono o trabajo
+• Una categoría cambiada ya se ve en todas partes
+• Más legible en móviles pequeños y con texto grande
 </es-ES>
 <fr-FR>
-Fintraq 2.0.2
-• Tablettes : Activité, Plan, Réglages et les pages des comptes, personnes, prêts et budgets profitent désormais de l’espace en plus
-• Samsung DeX et autres écrans externes : le texte s’affiche à la bonne taille
-• Une transaction en cours de saisie revient si l’app redémarre avant l’enregistrement
-• Choisir avec qui une transaction a eu lieu est plus clair
-• Fintraq vous prévient quand une nouvelle version est prête
+Fintraq 2.1.0
+• Opérations récurrentes : choisissez Répéter pour le loyer, un salaire ou un abonnement, il revient le jour venu, seul ou d’un geste
+• Prévoir montre les 30 prochains jours
+• L’épargne et les placements sont exclus du total d’Accueil : vous voyez le disponible
+• Les budgets peuvent commencer à votre jour de paie, du 1 au 28
+• Cherchez vos contacts par nom, téléphone ou travail
+• Une catégorie changée s’affiche désormais partout
+• Plus lisible sur petit écran et en grand texte
 </fr-FR>
 <hi-IN>
-Fintraq 2.0.2
-• टैबलेट: गतिविधि, योजना, सेटिंग्स और खातों, लोगों, ऋणों व बजट के पेज अब अतिरिक्त जगह का इस्तेमाल करते हैं
-• Samsung DeX और दूसरी बाहरी स्क्रीन: लिखावट सही आकार में दिखती है
-• सेव करने से पहले ऐप दोबारा शुरू हो जाए, तो लिखा जा रहा लेनदेन वापस आ जाता है
-• लेनदेन किसके साथ था, यह चुनना अब ज़्यादा साफ़ है
-• नया संस्करण आने पर Fintraq अब आपको बताता है
+Fintraq 2.1.0
+• नियमित लेन-देन: किराया, तनख़्वाह या सब्सक्रिप्शन पर दोहराएँ चुनें, वह अपने दिन फिर आएगा, अपने आप जुड़कर या होम पर एक टैप के इंतज़ार में
+• योजना अगले 30 दिनों में आने वाला दिखाती है
+• बचत और निवेश होम के कुल में नहीं गिने जाते, ताकि दिखे कि खर्च के लिए कितना तैयार है
+• बजट आपकी तनख़्वाह के दिन से शुरू हो सकते हैं, 1 से 28 तक कोई भी दिन
+• नाम, फ़ोन या काम से लोगों को खोजें
+• बदली गई श्रेणी अब हर जगह दिखती है
+• छोटे फ़ोन और बड़े अक्षरों में पढ़ना आसान
 </hi-IN>
 <id>
-Fintraq 2.0.2
-• Tablet: Aktivitas, Rencana, Pengaturan, serta halaman akun, orang, pinjaman, dan anggaran kini memakai ruang lebih
-• Samsung DeX dan layar eksternal lain: teks tampil dengan ukuran yang tepat
-• Transaksi yang sedang Anda ketik kembali jika aplikasi dimulai ulang sebelum disimpan
-• Memilih dengan siapa transaksi terjadi kini lebih jelas
-• Fintraq kini memberi tahu saat versi baru tersedia
+Fintraq 2.1.0
+• Transaksi berulang: pilih Ulangi untuk sewa, gaji, atau langganan, dan itu kembali pada harinya, otomatis atau dengan satu ketukan
+• Rencana menampilkan 30 hari ke depan
+• Tabungan dan investasi tidak dihitung di total Beranda, jadi terlihat yang siap dipakai
+• Anggaran bisa mulai pada tanggal gajian, tanggal 1 sampai 28
+• Cari orang dengan nama, telepon, atau pekerjaan
+• Kategori yang diubah kini tampil di mana-mana
+• Lebih mudah dibaca di ponsel kecil dan teks besar
 </id>
 <ja-JP>
-Fintraq 2.0.2
-• タブレット：アクティビティ、プラン、設定、口座・相手・貸し借り・予算の各ページが広い画面を活かすようになりました
-• Samsung DeX などの外部ディスプレイ：文字が正しい大きさで表示されます
-• 保存前にアプリが再起動しても、入力中の記録が戻ります
-• 誰との記録かを選ぶ操作がわかりやすくなりました
-• 新しいバージョンが出ると Fintraq がお知らせします
+Fintraq 2.1.0
+• 繰り返しの取引：家賃、給料、サブスクで「繰り返し」を選ぶと、その日にまた現れます。自動で追加するか、ホームでワンタップで追加
+• 予定に、これから30日間の予定が表示されます
+• 貯金と投資はホームの合計から外れ、使えるお金がわかります
+• 予算を給料日から始められます（1日から28日）
+• 名前、電話、仕事で人を検索できます
+• 変更したカテゴリがどこでも反映されます
+• 小さな画面や大きな文字でも読みやすくなりました
 </ja-JP>
 <kn-IN>
-Fintraq 2.0.2
-• ಟ್ಯಾಬ್ಲೆಟ್: ಚಟುವಟಿಕೆ, ಯೋಜನೆ, ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಖಾತೆ, ವ್ಯಕ್ತಿ, ಸಾಲ, ಬಜೆಟ್ ಪುಟಗಳು ಈಗ ಹೆಚ್ಚುವರಿ ಜಾಗವನ್ನು ಬಳಸುತ್ತವೆ
-• Samsung DeX ಮತ್ತು ಇತರ ಬಾಹ್ಯ ಪರದೆಗಳು: ಪಠ್ಯ ಸರಿಯಾದ ಗಾತ್ರದಲ್ಲಿ ಕಾಣುತ್ತದೆ
-• ಉಳಿಸುವ ಮೊದಲು ಆ್ಯಪ್ ಮರುಪ್ರಾರಂಭವಾದರೆ, ಟೈಪ್ ಮಾಡುತ್ತಿದ್ದ ವಹಿವಾಟು ಮರಳಿ ಬರುತ್ತದೆ
-• ವಹಿವಾಟು ಯಾರ ಜೊತೆ ಇತ್ತು ಎಂದು ಆರಿಸುವುದು ಈಗ ಸ್ಪಷ್ಟ
-• ಹೊಸ ಆವೃತ್ತಿ ಬಂದಾಗ Fintraq ಈಗ ತಿಳಿಸುತ್ತದೆ
+Fintraq 2.1.0
+• ಪುನರಾವರ್ತಿತ ವಹಿವಾಟುಗಳು: ಬಾಡಿಗೆ, ಸಂಬಳ ಅಥವಾ ಚಂದಾದಾರಿಕೆಗೆ ಪುನರಾವರ್ತಿಸಿ ಆರಿಸಿ, ಅದು ತನ್ನ ದಿನ ಮತ್ತೆ ಬರುತ್ತದೆ, ತಾನಾಗಿ ಸೇರಿ ಅಥವಾ ಹೋಮ್‌ನಲ್ಲಿ ಒಂದು ಟ್ಯಾಪ್‌ಗೆ ಕಾದು
+• ಯೋಜನೆ ಮುಂದಿನ 30 ದಿನಗಳನ್ನು ತೋರಿಸುತ್ತದೆ
+• ಉಳಿತಾಯ, ಹೂಡಿಕೆ ಹೋಮ್‌ನ ಒಟ್ಟಿನಲ್ಲಿ ಸೇರುವುದಿಲ್ಲ, ಖರ್ಚಿಗೆ ಸಿದ್ಧವಿರುವುದು ಕಾಣುತ್ತದೆ
+• ಬಜೆಟ್ ನಿಮ್ಮ ಸಂಬಳದ ದಿನದಿಂದ ಶುರುವಾಗಬಹುದು, 1 ರಿಂದ 28
+• ಹೆಸರು, ಫೋನ್ ಅಥವಾ ಕೆಲಸದಿಂದ ಜನರನ್ನು ಹುಡುಕಿ
+• ಬದಲಿಸಿದ ವರ್ಗ ಈಗ ಎಲ್ಲೆಡೆ ಕಾಣುತ್ತದೆ
+• ಸಣ್ಣ ಫೋನ್, ದೊಡ್ಡ ಅಕ್ಷರಗಳಲ್ಲಿ ಓದಲು ಸುಲಭ
 </kn-IN>
 <ko-KR>
-Fintraq 2.0.2
-• 태블릿: 활동, 계획, 설정과 계좌·사람·대출·예산 페이지가 이제 넓은 화면을 활용합니다
-• Samsung DeX 및 기타 외부 화면: 글자가 올바른 크기로 표시됩니다
-• 저장하기 전에 앱이 다시 시작되어도 입력 중이던 거래가 돌아옵니다
-• 거래를 누구와 했는지 고르기가 더 분명해졌습니다
-• 새 버전이 나오면 Fintraq이 알려 드립니다
+Fintraq 2.1.0
+• 반복 거래: 월세, 급여, 구독에 반복을 선택하면 그날 다시 나타납니다. 자동으로 추가되거나 홈에서 한 번 탭하면 됩니다
+• 계획에서 앞으로 30일 동안 다가올 일을 보여 줍니다
+• 저축과 투자는 홈의 합계에서 빠져, 쓸 수 있는 돈이 보입니다
+• 예산을 월급날부터 시작할 수 있습니다 (1일~28일)
+• 이름, 전화번호, 직업으로 사람을 검색하세요
+• 바꾼 카테고리가 이제 모든 곳에 표시됩니다
+• 작은 휴대폰과 큰 글자에서 더 읽기 쉬워졌습니다
 </ko-KR>
 <mr-IN>
-Fintraq 2.0.2
-• टॅबलेट: क्रियाकलाप, योजना, सेटिंग्ज आणि खाती, व्यक्ती, कर्जे व बजेटची पाने आता जास्तीची जागा वापरतात
-• Samsung DeX आणि इतर बाह्य स्क्रीन: मजकूर योग्य आकारात दिसतो
-• जतन करण्यापूर्वी ॲप पुन्हा सुरू झाले तर लिहीत असलेला व्यवहार परत येतो
-• व्यवहार कोणासोबत होता हे निवडणे आता अधिक स्पष्ट
-• नवी आवृत्ती आल्यावर Fintraq आता सांगते
+Fintraq 2.1.0
+• नियमित व्यवहार: भाडे, पगार किंवा सबस्क्रिप्शनसाठी पुन्हा करा निवडा, ते आपल्या दिवशी परत येईल, आपोआप जोडले जाऊन किंवा होम वर एका टॅपच्या प्रतीक्षेत
+• नियोजन पुढच्या 30 दिवसांत येणारे दाखवते
+• बचत आणि गुंतवणूक होमच्या एकूण रकमेत धरली जात नाही, खर्चासाठी तयार किती ते दिसते
+• बजेट तुमच्या पगाराच्या दिवशी सुरू होऊ शकते, 1 ते 28 कोणताही दिवस
+• नाव, फोन किंवा कामाने लोक शोधा
+• बदललेली श्रेणी आता सगळीकडे दिसते
+• लहान फोनवर आणि मोठ्या अक्षरांत वाचणे सोपे
 </mr-IN>
 <pt-BR>
-Fintraq 2.0.2
-• Tablets: Atividade, Plano, Ajustes e as páginas de contas, pessoas, empréstimos e orçamentos agora aproveitam o espaço extra
-• Samsung DeX e outras telas externas: o texto aparece no tamanho certo
-• Se o app reiniciar antes de salvar, a transação que você digitava volta
-• Escolher com quem foi uma transação ficou mais claro
-• O Fintraq avisa quando há uma versão nova
+Fintraq 2.1.0
+• Transações recorrentes: escolha Repetir para aluguel, salário ou assinatura, e ela volta no dia certo, sozinha ou com um toque no Início
+• Planejar mostra os próximos 30 dias
+• Poupança e investimentos ficam fora do total do Início: veja o que dá para gastar
+• Orçamentos podem começar no dia do seu pagamento, do 1 ao 28
+• Busque pessoas por nome, telefone ou trabalho
+• Uma categoria alterada agora aparece em todo lugar
+• Mais fácil de ler em celulares pequenos e com texto grande
 </pt-BR>
 <ru-RU>
-Fintraq 2.0.2
-• Планшеты: «Активность», «План», «Настройки» и страницы счетов, людей, долгов и бюджетов теперь используют дополнительное место
-• Samsung DeX и другие внешние экраны: текст отображается нужного размера
-• Если приложение перезапустится до сохранения, вводимая операция вернётся
-• Выбрать, с кем была операция, стало понятнее
-• Fintraq сообщает, когда выходит новая версия
+Fintraq 2.1.0
+• Повторяющиеся операции: выберите «Повторять» для аренды, зарплаты или подписки, и она вернётся в свой день, сама или с одним касанием на главной
+• План показывает ближайшие 30 дней
+• Сбережения и инвестиции не входят в итог на главной: видно, что можно тратить
+• Бюджет может начинаться в день зарплаты, с 1 по 28 число
+• Ищите людей по имени, телефону или работе
+• Изменённая категория теперь видна везде
+• Удобнее читать на маленьких телефонах и с крупным шрифтом
 </ru-RU>
 <ta-IN>
-Fintraq 2.0.2
-• டேப்லெட்: செயல்பாடு, திட்டம், அமைப்புகள் மற்றும் கணக்கு, நபர், கடன், பட்ஜெட் பக்கங்கள் இப்போது கூடுதல் இடத்தைப் பயன்படுத்துகின்றன
-• Samsung DeX மற்றும் பிற வெளித் திரைகள்: எழுத்துகள் சரியான அளவில் தெரியும்
-• சேமிக்கும் முன் ஆப் மீண்டும் தொடங்கினால், உள்ளிட்டுக்கொண்டிருந்த பரிவர்த்தனை திரும்ப வரும்
-• பரிவர்த்தனை யாருடன் என்பதைத் தேர்வு செய்வது இப்போது தெளிவு
-• புதிய பதிப்பு வந்தால் Fintraq இப்போது சொல்லும்
+Fintraq 2.1.0
+• தொடர் பரிவர்த்தனைகள்: வாடகை, சம்பளம், சந்தாவுக்கு மீண்டும் செய் தேர்வு செய்யுங்கள், அது தன் நாளில் வரும், தானாகவோ முகப்பில் ஒரு தட்டலிலோ
+• திட்டம் அடுத்த 30 நாட்களைக் காட்டுகிறது
+• சேமிப்பும் முதலீடும் முகப்பின் மொத்தத்தில் சேராது, செலவுக்குத் தயார் தெரியும்
+• பட்ஜெட் உங்கள் சம்பள நாளில் தொடங்கலாம், 1 முதல் 28 வரை
+• பெயர், போன் அல்லது வேலையால் நபர்களைத் தேடுங்கள்
+• மாற்றிய வகை இப்போது எங்கும் தெரியும்
+• சிறிய போன், பெரிய எழுத்தில் படிக்க எளிது
 </ta-IN>
 <te-IN>
-Fintraq 2.0.2
-• ట్యాబ్లెట్‌లు: యాక్టివిటీ, ప్లాన్, సెట్టింగ్‌లు, ఖాతాలు, వ్యక్తులు, అప్పులు, బడ్జెట్‌ల పేజీలు ఇప్పుడు అదనపు స్థలాన్ని వాడుకుంటాయి
-• Samsung DeX, ఇతర బయటి స్క్రీన్‌లు: అక్షరాలు సరైన పరిమాణంలో కనిపిస్తాయి
-• సేవ్ చేసే ముందు యాప్ మళ్లీ మొదలైతే, మీరు నమోదు చేస్తున్న లావాదేవీ తిరిగి వస్తుంది
-• లావాదేవీ ఎవరితో జరిగిందో ఎంచుకోవడం ఇప్పుడు స్పష్టంగా ఉంది
-• కొత్త వెర్షన్ వచ్చినప్పుడు Fintraq ఇప్పుడు చెబుతుంది
+Fintraq 2.1.0
+• పునరావృత లావాదేవీలు: అద్దె, జీతం లేదా సబ్‌స్క్రిప్షన్‌కు పునరావృతం ఎంచుకోండి, అది తన రోజున తిరిగి వస్తుంది, తనంతట తానే లేదా హోమ్‌లో ఒక ట్యాప్‌తో
+• ప్లాన్ రాబోయే 30 రోజులను చూపిస్తుంది
+• పొదుపు, పెట్టుబడులు హోమ్ మొత్తంలో కలవవు, ఖర్చుకు సిద్ధం ఎంత అనేది కనిపిస్తుంది
+• బడ్జెట్ మీ జీతం రోజు నుండి మొదలవచ్చు, 1 నుండి 28 వరకు
+• పేరు, ఫోన్ లేదా పనితో వ్యక్తులను వెతకండి
+• మార్చిన వర్గం ఇప్పుడు అన్నిచోట్లా కనిపిస్తుంది
+• చిన్న ఫోన్‌లలో, పెద్ద అక్షరాలలో చదవడం సులభం
 </te-IN>

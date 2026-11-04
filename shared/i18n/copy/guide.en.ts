@@ -13,6 +13,7 @@ export default {
   },
   whatsNew: {
     title: 'Fintraq has a new look',
+    titleLatest: 'New in Fintraq 2.1',
     done: 'Got it',
     tabs: {
       title: 'Five tabs',
@@ -25,6 +26,18 @@ export default {
     budgets: {
       title: 'Budgets',
       body: 'Set a monthly limit for a category under Plan and see what is left as you spend.',
+    },
+    repeating: {
+      title: 'Repeating items',
+      body: 'Choose Repeat when you add rent, a salary or a subscription, and it comes back on its day.',
+    },
+    upcoming: {
+      title: 'The next 30 days',
+      body: 'Plan lists what is coming, repeating items and loans due, day by day.',
+    },
+    spendable: {
+      title: 'Ready to spend',
+      body: 'Savings and investments are kept out of Home’s total and shown as put aside. Change it on any account.',
     },
     records: {
       title: 'Your records are as you left them',

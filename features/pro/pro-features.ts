@@ -21,7 +21,7 @@ type ProFeature = { pillar: ProPillar; icon: IconName; status: ProStatus };
 
 export const PRO_FEATURES = {
   budgets: { pillar: 'plan', icon: 'pie-chart', status: 'live' },
-  recurring: { pillar: 'plan', icon: 'repeat', status: 'later' },
+  recurring: { pillar: 'plan', icon: 'repeat', status: 'live' },
   goals: { pillar: 'plan', icon: 'flag', status: 'later' },
   safeToSpend: { pillar: 'plan', icon: 'dashboard-speed', status: 'later' },
 

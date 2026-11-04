@@ -1,5 +1,5 @@
 import type { Person } from '@/data/repositories/people';
-import { balancesOf, blockerOf, draftOf, hasDetails, initialsOf, isChanged, newDraft, payloadOf, peopleByStanding, standingOf } from '@/features/people/person-form';
+import { balancesOf, blockerOf, draftOf, hasDetails, initialsOf, isChanged, newDraft, payloadOf, peopleByStanding, standingOf, matchesPerson } from '@/features/people/person-form';
 import { OFFERED_COLORS } from '@/shared/contracts/pickers';
 import { toDbColor } from '@/shared/format/color';
 
@@ -84,5 +84,33 @@ describe('where things stand', () => {
 
   it('leaves out a standing nobody is in', () => {
     expect(peopleByStanding([{ name: 'Amy', net: 0 }]).map((g) => g.standing)).toEqual(['settled']);
+  });
+});
+
+describe('finding someone', () => {
+  const priya = { name: 'Priya Verma', phone: '+91 98765 43210', email: 'priya@acme.in', designation: 'Designer', company: 'Acme Corp' };
+
+  it('finds by any part of the name, whatever the case', () => {
+    expect(matchesPerson(priya, 'verma')).toBe(true);
+    expect(matchesPerson(priya, ' PRI ')).toBe(true);
+    expect(matchesPerson(priya, 'rahul')).toBe(false);
+  });
+
+  it('finds by what they do, where, and their email', () => {
+    expect(matchesPerson(priya, 'acme')).toBe(true);
+    expect(matchesPerson(priya, 'designer')).toBe(true);
+    expect(matchesPerson(priya, 'priya@')).toBe(true);
+  });
+
+  it('finds by a phone number typed with or without its spaces, from three digits', () => {
+    expect(matchesPerson(priya, '9876543')).toBe(true);
+    expect(matchesPerson(priya, '98 765')).toBe(true);
+    expect(matchesPerson(priya, '98')).toBe(false);
+  });
+
+  it('finds everyone for an empty search, and someone with no details by name alone', () => {
+    expect(matchesPerson(priya, '  ')).toBe(true);
+    expect(matchesPerson({ name: 'Asha' }, 'ash')).toBe(true);
+    expect(matchesPerson({ name: 'Asha' }, '123')).toBe(false);
   });
 });

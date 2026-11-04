@@ -54,7 +54,8 @@
       "deleted": "{{name}} を削除しました",
       "failed": "実行できませんでした",
       "failedBody": "何も変更されていません。もう一度お試しください。",
-      "ok": "OK"
+      "ok": "OK",
+      "putAside": "取り置き"
     },
     "form": {
       "newTitle": "新しい口座",
@@ -100,7 +101,10 @@
         "body": "入力した内容は保存されません。",
         "confirm": "破棄",
         "cancel": "編集を続ける"
-      }
+      },
+      "spendable": "使えるお金に含める",
+      "spendableOn": "ホームの「使えるお金」に含まれます",
+      "spendableOff": "ホームの合計には含めず、取り置きとして表示します"
     }
   },
   "activity": {
@@ -612,7 +616,10 @@
       "summary_one": "{{count}}口座",
       "summary_other": "{{count}}口座の合計",
       "scope_one": "{{currency}} の{{count}}口座",
-      "scope_other": "{{currency}} の{{count}}口座の合計"
+      "scope_other": "{{currency}} の{{count}}口座の合計",
+      "readyToSpend": "使えるお金",
+      "putAside_one": "{{count}}口座に{{amount}}を取り置き",
+      "putAside_other": "{{count}}口座に{{amount}}を取り置き"
     },
     "start": {
       "title": "はじめに",
@@ -1060,7 +1067,7 @@
     "channels": {
       "reminders": {
         "name": "リマインダー",
-        "description": "毎日のリマインダーと貸し借りの期日"
+        "description": "毎日のリマインダー、貸し借りの期日、繰り返しの取引"
       },
       "backup": {
         "name": "バックアップ",
@@ -1181,6 +1188,16 @@
         "title": "Google ドライブを再接続",
         "body": "Fintraq が Google アカウントからログアウトされました。再接続するとバックアップが続きます。"
       }
+    },
+    "repeat": {
+      "title_one": "今日が期日のものが{{count}}件",
+      "title_other": "今日が期日のものが{{count}}件",
+      "body": {
+        "one": "{{first}}。Fintraqで追加するかスキップしてください。",
+        "two": "{{first}}と{{second}}。Fintraqで追加するかスキップしてください。",
+        "more_one": "{{first}}、{{second}}ほか{{count}}件。Fintraqで追加するかスキップしてください。",
+        "more_other": "{{first}}、{{second}}ほか{{count}}件。Fintraqで追加するかスキップしてください。"
+      }
     }
   },
   "people": {
@@ -1264,7 +1281,10 @@
         "confirm": "破棄",
         "cancel": "編集を続ける"
       }
-    }
+    },
+    "search": "名前、電話、仕事で検索",
+    "clearSearch": "検索を消去",
+    "noMatch": "「{{query}}」に一致する人はいません"
   },
   "plan": {
     "title": "予定",
@@ -1402,7 +1422,7 @@
       },
       "unlimited": {
         "title": "上限なし",
-        "description": "{{people}}人、貸し借り{{loans}}件、予算{{budgets}}件を超えて使えます。"
+        "description": "{{people}}人、貸し借り{{loans}}件、予算{{budgets}}件、繰り返しの取引{{recurring}}件を超えて使えます。"
       }
     },
     "paywall": {
@@ -1760,7 +1780,6 @@
     "note": "メモ",
     "noteOptional": "任意",
     "available": "利用可能 {{amount}}",
-    "defaultNote": "取引",
     "save": {
       "expense": "支出を保存",
       "income": "収入を保存",
@@ -1816,7 +1835,16 @@
       "person": "誰と一緒でしたか？",
       "date": "いつでしたか？",
       "time": "時刻",
-      "done": "完了"
+      "done": "完了",
+      "newPerson": "人を追加",
+      "personName": "名前",
+      "personHintNew": "電話、メール、仕事はあとで「人」で追加できます。",
+      "addPerson": "追加して選ぶ",
+      "personFailed": "追加できませんでした",
+      "personFailedBody": "何も変更されていません。もう一度お試しください。",
+      "noPeopleYet": "まだ誰もいません。このお金の相手を追加してください。",
+      "searchPerson": "人を検索",
+      "noPersonMatch": "「{{query}}」に一致する人はいません"
     },
     "saved": {
       "expense": "支出を保存しました",
@@ -1865,7 +1893,9 @@
       "discard": "破棄して最初から"
     },
     "choosePerson": "相手を選ぶ",
-    "personHint": "誰と一緒だったか（いれば）"
+    "personHint": "誰と一緒だったか（いれば）",
+    "changeItem": "繰り返しの取引を変更",
+    "next": "次回"
   },
   "guide": {
     "tips": {
@@ -1897,6 +1927,19 @@
       "budgets": {
         "title": "予算",
         "body": "「予定」でカテゴリに月の上限を決めると、使うたびに残りがわかります。"
+      },
+      "titleLatest": "Fintraq 2.1の新機能",
+      "repeating": {
+        "title": "繰り返しの取引",
+        "body": "家賃、給料、サブスクを追加するときに「繰り返し」を選ぶと、その日にまた現れます。"
+      },
+      "upcoming": {
+        "title": "これから30日間",
+        "body": "「予定」に、これからの予定が日ごとに並びます：繰り返しの取引と期日のある貸し借り。"
+      },
+      "spendable": {
+        "title": "使えるお金",
+        "body": "貯金と投資はホームの合計から外れ、取り置きとして表示されます。口座ごとに変えられます。"
       }
     }
   },
@@ -1910,9 +1953,10 @@
       "limit": "上限",
       "daysLeft_one": "あと{{count}}日",
       "daysLeft_other": "あと{{count}}日",
-      "lastDay": "月の最終日",
+      "lastDay": "この予算月の最終日",
       "used": "上限のうち使った割合",
-      "perDay": "1日あたり約{{amount}}なら上限内に収まります。"
+      "perDay": "1日あたり約{{amount}}なら上限内に収まります。",
+      "period": "{{from}}〜{{to}}"
     },
     "close": "閉じる",
     "back": "戻る",
@@ -1937,7 +1981,8 @@
       "deleteTitle": "この予算を削除しますか？",
       "deleteBody": "取引はそのまま残ります。上限だけがなくなります。",
       "deleteConfirm": "予算を削除",
-      "deleted": "予算を削除しました"
+      "deleted": "予算を削除しました",
+      "toCome": "繰り返しの取引から今月まだ{{amount}}が予定されています"
     },
     "form": {
       "targetHint": "カテゴリ",
@@ -1972,7 +2017,13 @@
         "target": "予算の対象を選んでください",
         "amount": "保存するには上限を入力してください"
       },
-      "pickTarget": "何の予算ですか？"
+      "pickTarget": "何の予算ですか？",
+      "startsCalendar": "毎月1日に始まります",
+      "startsOn": "毎月{{day}}日に始まります",
+      "startsHint": "すべての予算に共通です。給料日を選ぶと、各予算が給料日から次の給料日まで続きます。",
+      "pickStart": "予算の開始日",
+      "startOptionCalendar": "1日（カレンダーの月）",
+      "startOption": "{{day}}日"
     },
     "hint": "今月の残り",
     "add": "予算を追加",
@@ -1996,6 +2047,145 @@
       "near": "保存しました。{{name}}の予算は残り{{amount}}です。",
       "reached": "保存しました。{{name}}は予算に達しました。",
       "over": "保存しました。{{name}}は予算を{{amount}}超えています。"
+    }
+  },
+  "recurring": {
+    "cadence": {
+      "week": "毎週",
+      "twoWeeks": "2週間ごと",
+      "month": "毎月",
+      "year": "毎年"
+    },
+    "repeat": {
+      "label": "繰り返し",
+      "none": "繰り返さない",
+      "asked": "その日に確認",
+      "added": "自動で追加",
+      "noEnd": "終了なし",
+      "until": "{{date}}まで",
+      "times_one": "全{{count}}回",
+      "times_other": "全{{count}}回"
+    },
+    "sheet": {
+      "title": "繰り返し",
+      "howOften": "頻度:",
+      "never": "しない",
+      "onItsDay": "その日に:",
+      "askFirst": "先に確認する",
+      "addItself": "自動で追加する",
+      "ends": "終了:",
+      "endNever": "なし",
+      "endDate": "日付で",
+      "endTimes": "回数で",
+      "times": "合計回数",
+      "timesHelper": "この取引を1回目として数えます",
+      "blocked": {
+        "endDate": "最初の日より後の最終日を選んでください",
+        "endTimes": "2回以上を選んでください"
+      },
+      "done": "完了",
+      "limit": {
+        "title_one": "繰り返しの取引が{{count}}件あります",
+        "title_other": "繰り返しの取引が{{count}}件あります",
+        "body_one": "無料プランでは{{count}}件までです。Fintraq Pro は無制限です。",
+        "body_other": "無料プランでは{{count}}件までです。Fintraq Pro は無制限です。",
+        "link": "Fintraq Pro を見る"
+      }
+    },
+    "row": {
+      "next": "次は{{date}}",
+      "added": "自動で追加",
+      "route": "{{from}}から{{to}}へ",
+      "paused": "一時停止中",
+      "ended": "終了",
+      "stopped": "停止",
+      "stoppedBecause": {
+        "account": "口座が削除されました",
+        "toAccount": "振替先の口座が削除されました",
+        "category": "カテゴリが削除されました"
+      }
+    },
+    "list": {
+      "title": "繰り返し",
+      "hint": "一度設定すれば、その日にまた現れます",
+      "add": "追加",
+      "empty": {
+        "title": "まだ繰り返しはありません",
+        "body": "家賃、給料、サブスクを追加するときに「繰り返し」を選ぶと、その日にまた現れます。",
+        "action": "取引を追加"
+      }
+    },
+    "upcoming": {
+      "title": "今後の予定",
+      "hint": "これから30日間",
+      "loan": "期日 {{date}} · 貸し借り",
+      "owesYou": "{{name}}さんから返してもらう",
+      "youOwe": "{{name}}さんに返す",
+      "someoneOwes": "返してもらう",
+      "youOweSomeone": "返す"
+    },
+    "due": {
+      "title": "今日が期日",
+      "hint": "それぞれ追加するか、今回はスキップします",
+      "skip": "スキップ",
+      "add": "追加",
+      "since": "{{date}} · {{count}}件待ち",
+      "added": "追加しました",
+      "skipped": "スキップしました",
+      "failed": "追加できませんでした",
+      "failedBody": "何も記録されていません。取引のページで口座を確認して、もう一度お試しください。",
+      "ok": "OK",
+      "sheetHint": "{{date}}の分です。今回金額が違えば変更してください。"
+    },
+    "item": {
+      "notFound": "この繰り返しの取引はもうありません",
+      "back": "戻る",
+      "manage": "繰り返しの取引を管理",
+      "kind": {
+        "DR": "支出",
+        "CR": "収入",
+        "TR": "振替"
+      },
+      "howOften": "頻度",
+      "next": "次回",
+      "onItsDay": "その日に",
+      "ends": "終了",
+      "every": {
+        "week": "毎週{{weekday}}",
+        "twoWeeks": "2週間ごとの{{weekday}}",
+        "month": "毎月{{day}}日",
+        "monthEnd": "毎月{{day}}日（ない月は月末）",
+        "year": "毎年{{date}}"
+      },
+      "askedFirst": "先に確認",
+      "addedItself": "自動で追加",
+      "endsNever": "なし",
+      "endsOn": "{{date}}より後はなし",
+      "endsAfter_one": "{{count}}回で終了、これまで{{made}}回",
+      "endsAfter_other": "{{count}}回で終了、これまで{{made}}回",
+      "nextPaused": "一時停止中はなし",
+      "nextEnded": "これ以上なし",
+      "nextStopped": "変更するまでなし",
+      "pause": "一時停止",
+      "resume": "再開",
+      "change": "変更",
+      "paused": "一時停止しました。再開するまで何も作成されません。",
+      "resumed": "再開しました。次は{{date}}です。",
+      "ended": "予定の回数を終えました。続けるには変更してください。",
+      "stopped": "停止しています",
+      "stoppedBody": "変更して別のものを選ぶと、次の日から続きます。",
+      "made": "作成した取引",
+      "madeHint": "新しい順",
+      "nothingMade": "まだありません",
+      "delete": "繰り返しの取引を削除",
+      "deleteTitle": "この繰り返しの取引を削除しますか？",
+      "deleteBody": "作成済みの取引は残ります。これ以上は作成されません。",
+      "deleteConfirm": "削除",
+      "keep": "残す",
+      "deleted": "繰り返しの取引を削除しました",
+      "failed": "保存できませんでした",
+      "failedBody": "何も変更されていません。もう一度お試しください。",
+      "ok": "OK"
     }
   }
 }

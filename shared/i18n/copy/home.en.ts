@@ -6,6 +6,9 @@ export default {
   settings: 'Settings',
   balance: {
     allAccounts: 'All accounts',
+    readyToSpend: 'Ready to spend',
+    putAside_one: '{{amount}} put aside in {{count}} account',
+    putAside_other: '{{amount}} put aside in {{count}} accounts',
     currency: 'Currency',
     addExpense: 'Add expense',
     addIncome: 'Add income',

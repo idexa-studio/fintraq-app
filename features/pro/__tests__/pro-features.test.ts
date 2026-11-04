@@ -48,5 +48,9 @@ describe('Pro registry', () => {
   it('asks for Pro at the limit, not before', () => {
     expect(isOverFreeLimit('loans', FREE_LIMITS.loans - 1)).toBe(false);
     expect(isOverFreeLimit('loans', FREE_LIMITS.loans)).toBe(true);
+    // Repeating items (release 2.1.0): two on the free plan, a third needs Pro.
+    expect(FREE_LIMITS.recurring).toBe(2);
+    expect(isOverFreeLimit('recurring', 1)).toBe(false);
+    expect(isOverFreeLimit('recurring', 2)).toBe(true);
   });
 });

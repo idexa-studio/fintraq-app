@@ -55,6 +55,11 @@ export function TextField({ label, icon, error, helper, trailing, prefix, onPres
         {icon ? <Icon name={icon} size={styles.icon.width} color={editable ? colors.text : colors.onDisabled} /> : null}
         {label ? <Text variant="body" tone={editable ? 'default' : 'disabled'}>{`${label}:`}</Text> : null}
         {prefix ? <Text variant="body" tone={editable ? 'default' : 'disabled'} style={styles.prefix}>{prefix}</Text> : null}
+        {onPress ? (
+          // A value chosen from a picker is read, not typed: drawn as text, it wraps rather than
+          // scrolling its start out of sight, as an input does with "Today · 4:45 PM" at 320 wide.
+          <Text variant="body" tone={rest.value ? (editable ? 'default' : 'disabled') : 'muted'} style={styles.value}>{rest.value || rest.placeholder || ''}</Text>
+        ) : (
         <TextInput
           {...rest}
           ref={input}
@@ -70,6 +75,7 @@ export function TextField({ label, icon, error, helper, trailing, prefix, onPres
           onBlur={(e) => { setFocused(false); onBlur?.(e); }}
           style={[styles.input, { fontFamily: type.body.fontFamily, fontWeight: type.body.fontWeight, fontSize: type.body.fontSize * scale, color: editable ? colors.text : colors.onDisabled }]}
         />
+        )}
         {onClear && rest.value ? (
           <Touchable onPress={onClear} accessibilityLabel={clearLabel} hitSlop={space.md}>
             <Icon name="x" size={styles.icon.width} color={colors.text} />
@@ -94,6 +100,8 @@ const createStyles = ({ radius, size, space }: Theme) =>
     wrap: { gap: space.xs + space.xxs, alignSelf: 'stretch' },
     field: { minHeight: size.field, borderRadius: radius.field, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg },
     input: { flex: 1, alignSelf: 'stretch', padding: 0, minWidth: 0 },
+    // Room above and below once a long value takes a second line; one line still sits in the field's height.
+    value: { flex: 1, minWidth: 0, paddingVertical: space.sm },
     icon: { width: size.iconSmall },
     // Sits tight against the value it belongs to.
     prefix: { marginRight: -space.sm },
