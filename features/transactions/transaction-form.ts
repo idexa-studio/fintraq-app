@@ -71,3 +71,17 @@ export function payloadOf(state: FormState) {
     note: state.note.trim(),
   };
 }
+
+/** What a saved transaction did to one account's balance: taken out, put in, or nothing. */
+export function effectOn(accountId: number, saved: { type: TransactionType; amount: number; accountId: number; toAccountId: number | null }): number {
+  if (saved.type === 'TR') return (saved.toAccountId === accountId ? saved.amount : 0) - (saved.accountId === accountId ? saved.amount : 0);
+  if (saved.accountId !== accountId) return 0;
+  return saved.type === 'CR' ? saved.amount : -saved.amount;
+}
+
+/**
+ * What an account has for the entry being written. Its balance already counts the transaction
+ * being changed, so that is taken back out: changing a ₹250 expense on an account at -₹250 has ₹0.
+ */
+export const availableFor = (account: { id: number; balance: number }, saved: Parameters<typeof effectOn>[1] | null): number =>
+  saved ? account.balance - effectOn(account.id, saved) : account.balance;

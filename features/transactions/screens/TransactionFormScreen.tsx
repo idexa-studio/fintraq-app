@@ -169,7 +169,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
             leading={form.account ? <IconCircle icon={accountTypeIcon(form.account.accountType)} color={colorNumberToHex(form.account.color)} /> : <IconCircle icon="wallet" plain />}
             strong
             title={form.account?.name ?? t('chooseAccount')}
-            subtitle={form.account ? t('available', { amount: formatCurrency(form.account.balance, form.account.currency) }) : undefined}
+            subtitle={form.account && form.available !== null ? t('available', { amount: formatCurrency(form.available, form.account.currency) }) : undefined}
             onPress={() => setPicker('account')}
           />
         </Card>

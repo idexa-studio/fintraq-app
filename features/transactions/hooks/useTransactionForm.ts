@@ -10,7 +10,7 @@ import type { RepeatDraft, RulePayment } from '@/features/recurring';
 import { forgetDraft, keepDraft, loadDraft } from '@/features/transactions/entry-draft-store';
 import { isWorthKeeping } from '@/features/transactions/entry-draft';
 import { useCreateTransaction, useDeleteTransaction, useTransactionById, useUpdateTransaction } from '@/features/transactions/hooks/transactions';
-import { blockerOf, categoriesFor, defaultAccountId, defaultCategoryId, payloadOf, typeOfKind } from '@/features/transactions/transaction-form';
+import { availableFor, blockerOf, categoriesFor, defaultAccountId, defaultCategoryId, payloadOf, typeOfKind } from '@/features/transactions/transaction-form';
 import type { Blocker, FormState, Kind } from '@/features/transactions/transaction-form';
 import { transferDestinations } from '@/shared/calc/transfers';
 import { getLocalISOString } from '@/shared/date/date';
@@ -253,6 +253,8 @@ export function useTransactionForm({ transactionId, initialKind = 'expense', ini
     isRepayment,
     loan: loan ?? null,
     repaymentLimit,
+    /** What the chosen account has for this entry, with the transaction being changed taken back out. */
+    available: account ? availableFor(account, existing ? { ...existing, toAccountId: existing.toAccountId ?? null } : null) : null,
 
     type,
     setType: touch((next: TransactionType) => {

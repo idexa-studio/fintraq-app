@@ -1,6 +1,6 @@
 import type { Account } from '@/data/repositories/accounts';
 import type { Category } from '@/data/repositories/categories';
-import { blockerOf, categoriesFor, defaultAccountId, defaultCategoryId, isKind, kindOfType, payloadOf, typeOfKind } from '@/features/transactions/transaction-form';
+import { availableFor, blockerOf, categoriesFor, defaultAccountId, defaultCategoryId, isKind, kindOfType, payloadOf, typeOfKind } from '@/features/transactions/transaction-form';
 import type { FormState } from '@/features/transactions/transaction-form';
 
 const category = (id: number, type: string, isSystem = false) => ({ id, name: `c${id}`, type, isSystem }) as Category;
@@ -62,3 +62,23 @@ describe('transaction form rules', () => {
   });
 });
 
+
+describe('what an account has for the entry being written', () => {
+  const cash = { id: 1, balance: -250 };
+  const saved = (type: 'DR' | 'CR' | 'TR', accountId = 1, toAccountId: number | null = null) => ({ type, amount: 250, accountId, toAccountId });
+
+  it('is the balance for a new entry', () => {
+    expect(availableFor(cash, null)).toBe(-250);
+  });
+
+  it('takes back the transaction being changed, on its own account', () => {
+    expect(availableFor(cash, saved('DR'))).toBe(0);
+    expect(availableFor(cash, saved('CR'))).toBe(-500);
+    expect(availableFor(cash, saved('TR', 1, 2))).toBe(0);
+    expect(availableFor(cash, saved('TR', 2, 1))).toBe(-500);
+  });
+
+  it('leaves another account as it is', () => {
+    expect(availableFor(cash, saved('DR', 2))).toBe(-250);
+  });
+});
