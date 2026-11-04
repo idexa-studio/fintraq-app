@@ -5,8 +5,14 @@ task, done and open, is in `docs/PLAN.md`. Updated 2026-11-02.
 
 ## Now
 
-- **Branch:** `release/2.1.0`, cut from `develop` after 2.0.2. Nothing on it is pushed; the owner
-  says when. Commits are local, in Conventional Commits form, with no Claude attribution.
+- **Branches:** 2.1.0 is merged (2026-11-04): `release/2.1.0` into `develop`, `develop` into `main`
+  ("chore(release): merge develop into main for v2.1.0"), tagged `2.1.0` locally. The local
+  `release/2.1.0` is deleted; `origin/release/2.1.0` still exists (deleting it needs a push, his
+  to do). `main` matches `origin/main`; `develop` and the tag are not pushed. Commits are in
+  Conventional Commits form, with no Claude attribution.
+- **Store builds:** EAS production, Android: build 75 on EAS's servers
+  (f36ef513-c0a7-4e34-a2bb-b7c3eb354a9c, queued) and build 76 run locally with `--local`
+  (`fintraq-2.1.0.aab` in the project root, git-ignored). Only one is to be uploaded.
 - **Version:** 2.1.0 in `app.json` and `package.json`; the build number comes from EAS. Release
   notes for the 15 store languages are in `update-note.txt`.
 - **In the release:** repeating items (phase I), the spendable balance (O), the 320-wide pass of
@@ -20,9 +26,9 @@ task, done and open, is in `docs/PLAN.md`. Updated 2026-11-02.
 
 1. I4.11 on a phone: the release installed over a 2.0.x install shows "New in Fintraq 2.1".
 2. P1.02 on the Honor (not connected so far), and a restore from a backup file.
-3. Owner: `eas build`, internal track, an upgrade from 2.0.2 with real data, rollout,
+3. Owner: upload one of the builds above to the internal track, an upgrade from 2.0.2 with real data, rollout,
    `latestVersionConfig` once at 100%, GA4 custom definitions (`cadence`, `on_day`, `action`,
-   `state`). Then merge to `develop` and `main`, tag 2.1.0 and push, on his word.
+   `state`). Then push `develop` and the `2.1.0` tag, on his word.
 
 ## Not verified
 
