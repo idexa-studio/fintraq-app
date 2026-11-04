@@ -11,8 +11,10 @@ task, done and open, is in `docs/PLAN.md`. Updated 2026-11-02.
   to do). `main` matches `origin/main`; `develop` and the tag are not pushed. Commits are in
   Conventional Commits form, with no Claude attribution.
 - **Store builds:** EAS production, Android: build 75 on EAS's servers
-  (f36ef513-c0a7-4e34-a2bb-b7c3eb354a9c, queued) and build 76 run locally with `--local`
-  (`fintraq-2.1.0.aab` in the project root, git-ignored). Only one is to be uploaded.
+  (f36ef513-c0a7-4e34-a2bb-b7c3eb354a9c, queued) and build 76, built locally with `--local` on
+  2026-11-04 and done: `fintraq-2.1.0.aab` (83 MB) in the project root, git-ignored. Build 76 is
+  the one to upload; 75 can be cancelled. A local EAS build leaves its Gradle and Kotlin daemons
+  running (about 4 GB): stop them afterwards.
 - **Version:** 2.1.0 in `app.json` and `package.json`; the build number comes from EAS. Release
   notes for the 15 store languages are in `update-note.txt`.
 - **In the release:** repeating items (phase I), the spendable balance (O), the 320-wide pass of
