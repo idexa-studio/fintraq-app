@@ -2,15 +2,17 @@ import { useLayout } from '@/design';
 import { AppTabBar } from '@/features/shell';
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
 
 /**
- * Changing tab slides the new page in on Android. On iOS it changes at once, as iOS's own tab
- * bars do, and for a second reason: there the slide leaves a page invisible when it is first
- * opened after a task sheet has been shown and closed (seen on iOS 27 with React Native 0.86).
- * The page's fade is run by the native animation driver and never finishes.
+ * Changing tab shows the new page at once, on both platforms, as the phones' own tab bars do.
+ * A tab-change animation (bottom-tabs' "shift" or "fade") starts the new page invisible and has
+ * React Native's native animation driver bring it in. After a task sheet has been shown and
+ * closed, that animation can fail to run, and the page stays invisible until another tab is
+ * chosen and this one again: seen on iOS 27, and on Android (Samsung S25, 2.1.0 release build) when a tab was
+ * chosen just after saving an expense. bottom-tabs always uses the native driver, so no
+ * animation is safe here.
  */
-const TAB_CHANGE = Platform.OS === 'ios' ? 'none' : 'shift';
+const TAB_CHANGE = 'none';
 
 export default function TabsLayout() {
   // A screen wide enough for it carries the tabs as a rail at the side.
