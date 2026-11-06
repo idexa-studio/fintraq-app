@@ -93,7 +93,7 @@ export function TransactionFormScreen(options: TransactionFormOptions) {
       // Leaves on the next tick, once the unsaved-input guard is off.
       setTimeout(close, 0);
       // Something just recorded is the moment to ask what they think of the app; once the sheet has gone and the message been read.
-      if (createdId != null) setTimeout(() => void ReviewPromptService.maybeRequestReview({ transactions: (recorded ?? 0) + 1 }), REVIEW_AFTER_MS);
+      if (createdId != null) setTimeout(() => void ReviewPromptService.maybeRequestReview('transaction', { transactions: (recorded ?? 0) + 1 }), REVIEW_AFTER_MS);
     } catch {
       setFailed(true);
     }

@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as StoreReview from 'expo-store-review';
 import { shouldAskForReview } from '@/platform/config/review-rules';
+import { Analytics } from '@/platform/telemetry';
+import type { ReviewTrigger } from '@/platform/telemetry';
 import { LoggerService } from '@/shared/logging/logger';
 import { StorageKeys } from '@/shared/contracts/storage-keys';
 
@@ -26,10 +28,11 @@ export const ReviewPromptService = {
 
   /**
    * Asks the phone to show its own review prompt, if this is a moment for it (`shouldAskForReview`).
-   * Call straight after something went well: a saved transaction, a finished backup. Pass how many
-   * transactions are recorded where it is known. The stores decide whether the prompt really appears.
+   * Call straight after something went well (`moment`): a saved transaction, a loan settled, a finished
+   * backup. Pass how many transactions are recorded where it is known. The stores decide whether the
+   * prompt really appears; `review_requested` counts each ask.
    */
-  async maybeRequestReview(known: { transactions?: number } = {}): Promise<void> {
+  async maybeRequestReview(moment: ReviewTrigger, known: { transactions?: number } = {}): Promise<void> {
     try {
       const [firstLaunch, lastAsked, isAvailable] = await Promise.all([
         AsyncStorage.getItem(STORAGE_KEY_FIRST_LAUNCH_AT),
@@ -40,6 +43,7 @@ export const ReviewPromptService = {
       if (!isAvailable || !shouldAskForReview({ firstLaunchAt: stamp(firstLaunch), lastAskedAt: stamp(lastAsked), now, transactions: known.transactions })) return;
 
       await AsyncStorage.setItem(STORAGE_KEY_REVIEW_REQUESTED, String(now));
+      Analytics.track('review_requested', { moment });
       await StoreReview.requestReview();
     } catch (e) {
       LoggerService.warn('REVIEW_PROMPT', 'Failed to request app review', e);

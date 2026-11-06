@@ -30,7 +30,7 @@ export function useCloudBackupActions() {
     },
     // A successful backup is a real trust moment — ask for a review here rather than on a
     // random screen mount. No-ops after the first ask or before day 2 (see ReviewPromptService).
-    onSuccess: () => void ReviewPromptService.maybeRequestReview(),
+    onSuccess: () => void ReviewPromptService.maybeRequestReview('backup'),
   });
 
   const restore = useMutation({
