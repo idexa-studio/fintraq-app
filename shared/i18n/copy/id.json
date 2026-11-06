@@ -545,7 +545,7 @@
       "you": "Anda:",
       "name": {
         "label": "Nama",
-        "hint": "Hanya untuk menyapa Anda. Tidak pernah keluar dari ponsel ini."
+        "hint": "Opsional. Hanya untuk menyapa Anda. Tidak pernah keluar dari ponsel ini."
       },
       "currency": {
         "label": "Mata uang utama Anda:",
@@ -560,7 +560,6 @@
       },
       "finish": "Buka Fintraq",
       "blocked": {
-        "name": "Ketik nama Anda untuk melanjutkan",
         "accountName": "Beri nama akun",
         "balance": "Saldo itu bukan angka"
       },

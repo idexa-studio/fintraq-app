@@ -553,7 +553,7 @@
       "you": "Vous :",
       "name": {
         "label": "Nom",
-        "hint": "Seulement pour vous saluer. Il ne quitte jamais ce téléphone."
+        "hint": "Facultatif. Seulement pour vous saluer. Il ne quitte jamais ce téléphone."
       },
       "currency": {
         "label": "Votre devise principale :",
@@ -568,7 +568,6 @@
       },
       "finish": "Ouvrir Fintraq",
       "blocked": {
-        "name": "Saisissez votre nom pour continuer",
         "accountName": "Donnez un nom au compte",
         "balance": "Ce solde n’est pas un nombre"
       },
