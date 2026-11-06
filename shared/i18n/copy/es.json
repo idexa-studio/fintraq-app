@@ -1720,6 +1720,10 @@
     "whatsNew": {
       "row": "Novedades",
       "rowHint": "Qué ha cambiado en esta versión"
+    },
+    "rate": {
+      "row": "Valora Fintraq",
+      "rowHint": "Danos tu opinión en Google Play"
     }
   },
   "shell": {

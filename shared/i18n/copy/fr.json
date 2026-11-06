@@ -1720,6 +1720,10 @@
     "whatsNew": {
       "row": "Nouveautés",
       "rowHint": "Ce qui a changé dans cette version"
+    },
+    "rate": {
+      "row": "Noter Fintraq",
+      "rowHint": "Donnez votre avis sur Google Play"
     }
   },
   "shell": {

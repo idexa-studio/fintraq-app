@@ -1698,6 +1698,10 @@
     "whatsNew": {
       "row": "Was ist neu",
       "rowHint": "Was sich in dieser Version geändert hat"
+    },
+    "rate": {
+      "row": "Fintraq bewerten",
+      "rowHint": "Sag deine Meinung auf Google Play"
     }
   },
   "shell": {

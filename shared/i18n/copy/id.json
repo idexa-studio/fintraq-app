@@ -1698,6 +1698,10 @@
     "whatsNew": {
       "row": "Yang baru",
       "rowHint": "Yang berubah di versi ini"
+    },
+    "rate": {
+      "row": "Beri nilai Fintraq",
+      "rowHint": "Sampaikan pendapat Anda di Google Play"
     }
   },
   "shell": {

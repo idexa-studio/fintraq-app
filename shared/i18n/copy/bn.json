@@ -1698,6 +1698,10 @@
     "whatsNew": {
       "row": "নতুন কী",
       "rowHint": "এই সংস্করণে কী বদলেছে"
+    },
+    "rate": {
+      "row": "Fintraq-কে রেটিং দিন",
+      "rowHint": "Google Play-তে আপনার মতামত জানান"
     }
   },
   "shell": {
