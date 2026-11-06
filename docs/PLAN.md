@@ -40,7 +40,8 @@ Marks: `[ ]` to do · `[x]` done · `[~]` in progress · `[!]` blocked (say on w
 | N | Every screen size | 37 | 26 | In progress |
 | O | Release 2.1.0: spendable balance | 12 | 11 | In progress |
 | P | Release 2.1.0: build and Play Console | 7 | 2 | In progress |
-| Q | Release 2.1.0: what customers reported | 6 | 6 | Done |
+| Q | Release 2.1.0: what customers reported | 6 | 6 | Complete |
+| R | Organic growth (alongside) | 9 | 2 | In progress |
 
 ---
 
@@ -1169,3 +1170,28 @@ font size, and nothing is stretched, cut off or hidden by the keyboard.
 - [ ] N5.05 Play: 7-inch and 10-inch screenshots; the listing marked for tablets
   - Drawn 2026-10-13 by `scripts/generate-store-assets.py`: `store/global/tablet7` (moved there 2026-10-20; five, 1080 x 1920, a small tablet upright) and `store/global/tablet10` (five, 2560 x 1440, a large tablet on its side with the rail and two columns), from the Samsung set to those sizes. Six in each. Uploading is the owner's
 - [ ] N5.06 Release notes in `update-note.txt`
+
+## R. Organic growth (alongside, from 2026-11-06)
+
+Why: Fintraq is not in the top 30 on Play India for any generic term. Play ranks on the title's
+words, installs from a keyword, ratings, retention and vitals. Vitals are fine (crash and ANR rate
+0.03%); ratings are thin (20) and only about one person in eight is still here on day 7 (GA4: day 1
+27.9%, day 7 12.2%, day 30 7.3%), so the review card reached almost no one. The research and the
+numbers are in the "Fintraq Growth Diagnosis" doc.
+
+### R1. Reviews
+- [x] R1.01 Ask for a review from day 2 and 5 transactions (was day 3 and 10), with the rules' test unchanged
+- [~] R1.02 A loan settled in full is a moment to ask for a review, as a saved transaction and a finished backup are. Device
+- [~] R1.03 `review_requested` sent with the moment it followed (`transaction`, `loan_settled`, `backup`), so the asks can be counted; `moment` registered as a custom dimension in GA4. Owner
+- [~] R1.04 Settings: "Rate Fintraq" opens the Play listing (Android only until phase L), in all thirteen languages. Device
+  - Never the review API from a button: Google may show nothing once a person has used their quota
+
+### R2. Coming back
+- [ ] R2.01 A home-screen widget to add an expense without opening the app: gallery first, then Android. Owner, Device
+- [x] R2.02 Uninstalls by days since install (GA4 exploration on `app_remove`), and a task for the day it peaks
+  - GA4 cohort exploration, first touch 9 Oct to 5 Nov, daily, return criterion `app_remove`: 42 of about 254 new users removed the app on day 0, then 1 or 2 a day. About four in five uninstalls happen the day of install, so the first session is where they are lost (R2.03, R2.04)
+- [~] R2.03 Setup no longer needs a name: it only greets, and Home and Settings already have words for no name; the hint says it is optional, in all thirteen languages. Device
+- [ ] R2.04 After setup and the reminder offer, land on Add with the first expense waiting to be typed (`tutorial_complete` then says `first_entry: added` or `skipped`, as its parameter intends; today it is always `skipped`). Gallery first, Owner
+
+### R3. The listing
+- [ ] R3.01 Re-audit on or after 2026-11-20: search terms, ranks for "iou tracker", "lend money tracker", "who owes me money", "offline expense tracker"; then decide the en-IN title ("Fintraq: Expense & IOU Tracker" proposed, in place of "+Loans", which draws people looking to borrow). Owner
