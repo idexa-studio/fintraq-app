@@ -67,7 +67,7 @@ export async function runAutoBackupIfDue(force = false): Promise<AutoBackupResul
       trigger: force ? 'dev_qa' : isBackground ? 'auto_background' : 'auto_foreground',
     });
     // The review dialog needs a foreground screen.
-    if (!isBackground) void ReviewPromptService.maybeRequestReview();
+    if (!isBackground) void ReviewPromptService.maybeRequestReview('backup');
     return { outcome: 'ran', meta };
   } catch (error) {
     // Lost a race for the operation slot between the busy check and starting — not a failure.

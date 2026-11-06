@@ -6,6 +6,7 @@ import { useAddRepayment, useLoanWithStats } from '@/features/loans/hooks/loans'
 import { NOTE_MAX, repaymentAccounts, repaymentAmountOf, repaymentBlockerOf } from '@/features/loans/loan-rules';
 import { useLeaveGuard } from '@/features/shell';
 import { AccountPicker, WhenPicker } from '@/features/transactions';
+import { ReviewPromptService } from '@/platform/config/review-prompt';
 import { dayLabel, formatDate } from '@/shared/date/date';
 import { getCurrencySymbol } from '@/shared/currency/currencies';
 import { colorNumberToHex } from '@/shared/format/color';
@@ -14,6 +15,9 @@ import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+
+/** After a loan is settled: long enough for the sheet to close and the message to be read. */
+const REVIEW_AFTER_MS = 2500;
 
 /**
  * Recording money coming back, or going back. Sliding, not tapping, records
@@ -84,6 +88,8 @@ export function RepaymentScreen({ loanId }: { loanId: number }) {
       toast.show({ message: result.isFullyRepaid ? (loan.personName ? t('repay.settledWith', { name: loan.personName }) : t('repay.settled')) : t('repay.recorded') });
       // Leaves on the next tick, once the unsaved-input guard is off.
       setTimeout(close, 0);
+      // Money back in full is a good moment to ask what they think of the app, once the message has been read.
+      if (result.isFullyRepaid) setTimeout(() => void ReviewPromptService.maybeRequestReview('loan_settled'), REVIEW_AFTER_MS);
     } catch {
       setFailed(true);
     }

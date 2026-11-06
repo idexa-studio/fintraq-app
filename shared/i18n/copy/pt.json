@@ -553,7 +553,7 @@
       "you": "Você:",
       "name": {
         "label": "Nome",
-        "hint": "Só para cumprimentar você. Nunca sai deste celular."
+        "hint": "Opcional. Só para cumprimentar você. Nunca sai deste celular."
       },
       "currency": {
         "label": "Sua moeda principal:",
@@ -568,7 +568,6 @@
       },
       "finish": "Abrir o Fintraq",
       "blocked": {
-        "name": "Digite seu nome para continuar",
         "accountName": "Dê um nome à conta",
         "balance": "Esse saldo não é um número"
       },
@@ -1720,6 +1719,10 @@
     "whatsNew": {
       "row": "Novidades",
       "rowHint": "O que mudou nesta versão"
+    },
+    "rate": {
+      "row": "Avalie o Fintraq",
+      "rowHint": "Diga o que acha no Google Play"
     }
   },
   "shell": {

@@ -77,6 +77,10 @@ export default {
     row: 'What’s new',
     rowHint: 'What changed in this version',
   },
+  rate: {
+    row: 'Rate Fintraq',
+    rowHint: 'Say what you think on Google Play',
+  },
   about: {
     row: 'About Fintraq',
     rowHint: 'The idea, who makes it, and the fine print',

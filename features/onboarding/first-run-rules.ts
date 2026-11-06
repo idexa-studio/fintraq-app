@@ -31,11 +31,14 @@ export function openingBalance(typed: string): number | null {
   return typed.trim() ? parseAmountInput(typed) : 0;
 }
 
-/** Why setup cannot be finished yet, in the order the form asks, or null when it can. */
-export type SetupBlocker = 'name' | 'accountName' | 'balance';
+/**
+ * Why setup cannot be finished yet, in the order the form asks, or null when it can. The name is
+ * optional: it only greets, Home and Settings already have words for no name, and a required field
+ * on the first screen is a reason to leave on day 0 (where about four in five uninstalls happen).
+ */
+export type SetupBlocker = 'accountName' | 'balance';
 
 export function setupBlockerOf(draft: SetupDraft): SetupBlocker | null {
-  if (!draft.name.trim()) return 'name';
   if (!draft.accountName.trim()) return 'accountName';
   if (openingBalance(draft.balance) === null) return 'balance';
   return null;
