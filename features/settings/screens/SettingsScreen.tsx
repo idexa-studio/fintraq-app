@@ -7,6 +7,7 @@ import { WhatsNewSheet, useShowTipsAgain } from '@/features/guide';
 import { useAppLock } from '@/features/lock';
 import { usePersons } from '@/features/people';
 import { usePro } from '@/features/pro';
+import { openStore } from '@/features/shell';
 import { useEraseEverything } from '@/features/settings/hooks/useEraseEverything';
 import { useExactAlarmAccess } from '@/features/settings/hooks/useExactAlarmAccess';
 import { useAppLanguage } from '@/features/settings/LanguageProvider';
@@ -22,7 +23,7 @@ import { LoggerService } from '@/shared/logging/logger';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 type Open = 'name' | 'currency' | 'language' | 'appearance' | 'time' | 'erase' | 'whatsNew' | null;
 
@@ -159,6 +160,8 @@ export function SettingsScreen() {
               <ListRow icon="bulb" title={t('tips.row')} subtitle={t('tips.rowHint')} trailing={<View />} onPress={() => void showTipsAgain().then(() => toast.show({ message: t('tips.done') }))} />
               {/* The same note an update shows once on Home, here for whenever it is wanted. */}
               <ListRow icon="sparkle" title={t('whatsNew.row')} subtitle={t('whatsNew.rowHint')} onPress={() => setOpen('whatsNew')} />
+              {/* Google Play only for now: there is no App Store listing to send anyone to yet (phase L). */}
+              {Platform.OS === 'android' ? <ListRow icon="star" title={t('rate.row')} subtitle={t('rate.rowHint')} onPress={() => void openStore()} /> : null}
               <ListRow icon="info" title={t('about.row')} subtitle={t('about.rowHint')} onPress={() => router.push('/settings/about')} />
             </ListGroup>
           </Section>

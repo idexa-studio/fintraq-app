@@ -19,7 +19,7 @@ export default {
     you: 'You:',
     name: {
       label: 'Name',
-      hint: 'Only to greet you. It never leaves this phone.',
+      hint: 'Optional. Only to greet you. It never leaves this phone.',
     },
     currency: {
       label: 'Your main currency:',
@@ -34,7 +34,6 @@ export default {
     },
     finish: 'Open Fintraq',
     blocked: {
-      name: 'Type your name to continue',
       accountName: 'Give the account a name',
       balance: 'That balance is not a number',
     },

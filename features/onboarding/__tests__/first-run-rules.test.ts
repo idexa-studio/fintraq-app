@@ -8,9 +8,9 @@ describe('first-run rules', () => {
     expect(draft()).toMatchObject({ kind: 'cash', accountName: 'Cash', balance: '', currency: 'USD' });
   });
 
-  it('needs a name first', () => {
-    expect(setupBlockerOf(draft())).toBe('name');
-    expect(setupBlockerOf({ ...draft(), name: '  ' })).toBe('name');
+  it('does not need a name: it only greets', () => {
+    expect(setupBlockerOf(draft())).toBeNull();
+    expect(setupBlockerOf({ ...draft(), name: '  ' })).toBeNull();
     expect(setupBlockerOf(named())).toBeNull();
   });
 

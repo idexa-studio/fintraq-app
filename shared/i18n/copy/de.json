@@ -545,7 +545,7 @@
       "you": "Du:",
       "name": {
         "label": "Name",
-        "hint": "Nur um dich zu begrüßen. Er verlässt dieses Handy nie."
+        "hint": "Optional. Nur um dich zu begrüßen. Er verlässt dieses Handy nie."
       },
       "currency": {
         "label": "Deine Hauptwährung:",
@@ -560,7 +560,6 @@
       },
       "finish": "Fintraq öffnen",
       "blocked": {
-        "name": "Gib deinen Namen ein, um fortzufahren",
         "accountName": "Gib dem Konto einen Namen",
         "balance": "Dieser Kontostand ist keine Zahl"
       },
@@ -1698,6 +1697,10 @@
     "whatsNew": {
       "row": "Was ist neu",
       "rowHint": "Was sich in dieser Version geändert hat"
+    },
+    "rate": {
+      "row": "Fintraq bewerten",
+      "rowHint": "Sag deine Meinung auf Google Play"
     }
   },
   "shell": {

@@ -18,6 +18,8 @@ export type TransactionKind = 'income' | 'expense' | 'transfer';
 export type SaveMode = 'create' | 'edit';
 export type ResultBucket = '0' | '1-5' | '6-20' | '21+';
 export type AnalyticsItem = { item_id: string; item_name?: string };
+/** The good moment after which the app asks for a review. */
+export type ReviewTrigger = 'transaction' | 'loan_settled' | 'backup';
 
 export type AnalyticsEvents = {
   /** Onboarding opened on a fresh install. */
@@ -48,6 +50,11 @@ export type AnalyticsEvents = {
   backup_created: undefined;
   backup_restored: undefined;
   data_exported: { destination: 'save' | 'share' };
+  /**
+   * The app asked the phone for its review card, after `moment`. The store decides whether the card
+   * really appears, and never says, so this counts asks, not reviews.
+   */
+  review_requested: { moment: ReviewTrigger };
 };
 
 export type AnalyticsEventName = keyof AnalyticsEvents;

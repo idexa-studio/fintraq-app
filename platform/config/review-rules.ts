@@ -1,9 +1,12 @@
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-/** The app has to have been in use this long before it asks. */
-export const REVIEW_FROM_DAYS = 3;
+/**
+ * The app has to have been in use this long before it asks. Two days, not more: only about one
+ * person in eight still opens the app on day 7 (GA4, Nov 2026), so a later ask reaches almost no one.
+ */
+export const REVIEW_FROM_DAYS = 2;
 /** And this much has to have been recorded, where the count is known. */
-export const REVIEW_FROM_TRANSACTIONS = 10;
+export const REVIEW_FROM_TRANSACTIONS = 5;
 /** Once asked, it does not ask again for this long. The stores keep their own, stricter count on top. */
 export const REVIEW_AGAIN_DAYS = 90;
 
